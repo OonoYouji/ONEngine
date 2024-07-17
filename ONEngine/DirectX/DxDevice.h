@@ -9,7 +9,7 @@ using namespace Microsoft::WRL;
 namespace ONE {
 
 	/// ===================================================
-	/// Deviceの管理
+	/// DirectX12 Deviceの管理
 	/// ===================================================
 	class DxDevice final {
 	public:

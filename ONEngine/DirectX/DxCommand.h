@@ -1,30 +1,26 @@
 #pragma once
 
-#include <memory>
+#include <d3d12.h>
+#include <wrl/client.h>
+
+using namespace Microsoft::WRL;
+
 
 namespace ONE {
 
-	class DxDevice;
-	class DxCommand;
-
-
 	/// ===================================================
-	/// DirectX12汎用クラス
+	/// DirectX Commandの管理クラス
 	/// ===================================================
-	class DxCommon final {
-		DxCommon() = default;
-		~DxCommon() = default;
+	class DxCommand final {
 	public:
+		DxCommand();
+		~DxCommand();
 
 		/// ===================================================
 		/// public : methods
 		/// ===================================================
 
-		static DxCommon* GetInstance();
-
-		void Initialize();
-
-		void Finalize();
+		void Initialize(ID3D12Device* device);
 
 	private:
 
@@ -39,15 +35,16 @@ namespace ONE {
 		/// private : objects
 		/// ===================================================
 
-		std::unique_ptr<DxDevice> device_ = nullptr;
-		std::unique_ptr<DxCommand> command_ = nullptr;
-
+		ComPtr<ID3D12CommandQueue> queue_ = nullptr;
+		ComPtr<ID3D12CommandAllocator> allocator_ = nullptr;
+		ComPtr<ID3D12GraphicsCommandList> list_ = nullptr;
+		
 
 	private:
-		DxCommon(const DxCommon&) = delete;
-		DxCommon(DxCommon&&) = delete;
-		DxCommon& operator=(const DxCommon&) = delete;
-		DxCommon& operator=(DxCommon&&) = delete;
+		DxCommand(const DxCommand&) = delete;
+		DxCommand(DxCommand&&) = delete;
+		DxCommand& operator=(const DxCommand&) = delete;
+		DxCommand& operator=(DxCommand&&) = delete;
 	};
 
 }

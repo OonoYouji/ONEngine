@@ -8,9 +8,9 @@
 
 ONE::DxDevice::DxDevice() {}
 ONE::DxDevice::~DxDevice() {
-	dxgiFactory_.Reset();
-	useAdapter_.Reset();
 	device_.Reset();
+	useAdapter_.Reset();
+	dxgiFactory_.Reset();
 }
 
 

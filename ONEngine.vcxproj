@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxDevice.cpp" />
     <ClCompile Include="ONEngine\FrameTimer\FrameTimer.cpp" />
@@ -19,6 +20,7 @@
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />
     <ClInclude Include="ONEngine\DirectX\DxDevice.h" />
     <ClInclude Include="ONEngine\FrameTimer\FrameTimer.h" />
