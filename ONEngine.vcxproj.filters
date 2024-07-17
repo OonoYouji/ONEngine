@@ -8,6 +8,9 @@
     <ClCompile Include="ONEngine\Logger\Logger.cpp">
       <Filter>ONEngine\Logger</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxCommon.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -19,6 +22,9 @@
     <Filter Include="ONEngine\Logger">
       <UniqueIdentifier>{8a6708dd-c149-4e8c-b62f-7afae548c7aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ONEngine\DirectX">
+      <UniqueIdentifier>{c6f6f37c-c908-44e7-ad6b-7872ef8fa652}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -26,6 +32,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Logger\Logger.h">
       <Filter>ONEngine\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxCommon.h">
+      <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

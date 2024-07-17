@@ -4,6 +4,9 @@
 
 namespace ONE {
 
+	/// ===================================================
+	/// ログ出力
+	/// ===================================================
 	namespace Logger {
 
 		void ConsolePrint(const std::string& outputString);

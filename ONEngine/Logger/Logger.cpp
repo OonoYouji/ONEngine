@@ -2,6 +2,11 @@
 
 #include <Windows.h>
 
+
+
+/// ===================================================
+/// 無記名名前空間 : cppで使う関数を定義
+/// ===================================================
 namespace {
 	std::string ConvertString(const std::wstring& str) {
 		if(str.empty()) {
@@ -19,10 +24,18 @@ namespace {
 } ///- namespace
 
 
+
+/// ===================================================
+/// string用コンソールログ出力
+/// ===================================================
 void ONE::Logger::ConsolePrint(const std::string& outputString) {
 	OutputDebugStringA(("ONE : " + outputString).c_str());
 }
 
+
+/// ===================================================
+/// wstring用コンソールログ出力
+/// ===================================================
 void ONE::Logger::ConsolePrint(const std::wstring& outputString) {
 	OutputDebugStringA(("ONE : " + ConvertString(outputString)).c_str());
 }
