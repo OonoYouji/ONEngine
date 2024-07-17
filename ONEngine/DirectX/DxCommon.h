@@ -6,6 +6,7 @@ namespace ONE {
 
 	class DxDevice;
 	class DxCommand;
+	class DxDoubleBuffer;
 
 
 	/// ===================================================
@@ -20,10 +21,19 @@ namespace ONE {
 		/// public : methods
 		/// ===================================================
 
+		/// <summary>
+		/// インスタンス確保
+		/// </summary>
 		static DxCommon* GetInstance();
 
+		/// <summary>
+		/// 初期化
+		/// </summary>
 		void Initialize();
 
+		/// <summary>
+		/// 終了処理
+		/// </summary>
 		void Finalize();
 
 	private:
@@ -41,6 +51,7 @@ namespace ONE {
 
 		std::unique_ptr<DxDevice> device_ = nullptr;
 		std::unique_ptr<DxCommand> command_ = nullptr;
+		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
 
 
 	private:

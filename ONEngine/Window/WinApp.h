@@ -13,7 +13,14 @@ namespace ONE {
 		WinApp() = default;
 		~WinApp() = default;
 	public:
+		/// ===================================================
+		/// public : static objects
+		/// ===================================================
 
+		static const int kWindowSizeX = 1280;
+		static const int kWindowSizeY = 720;
+
+	public:
 		/// ===================================================
 		/// public : methods
 		/// ===================================================
@@ -25,6 +32,10 @@ namespace ONE {
 		void Finalize();
 
 		UINT ProcessMessage();
+
+
+
+		const HWND& GetHWND() const { return hwnd_; }
 
 	private:
 		

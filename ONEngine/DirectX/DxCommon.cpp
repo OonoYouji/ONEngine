@@ -5,6 +5,7 @@
 #include <Logger.h>
 #include <DxDevice.h>
 #include <DxCommand.h>
+#include <DxDoubleBuffer.h>
 
 
 #pragma comment(lib, "d3d12.lib")
@@ -31,6 +32,9 @@ void ONE::DxCommon::Initialize() {
 	command_.reset(new DxCommand());
 	command_->Initialize(device_->GetDevice());
 
+	doubleBuffer_.reset(new DxDoubleBuffer());
+	doubleBuffer_->Initialize(device_->GetFactory(), command_->GetQueue());
+
 }
 
 
@@ -39,6 +43,7 @@ void ONE::DxCommon::Initialize() {
 /// ===================================================
 void ONE::DxCommon::Finalize() {
 
+	doubleBuffer_.reset();
 	command_.reset();
 	device_.reset();
 

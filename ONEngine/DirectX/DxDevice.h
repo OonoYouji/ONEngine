@@ -33,6 +33,12 @@ namespace ONE {
 		/// <returns></returns>
 		ID3D12Device* GetDevice() const { return device_.Get(); }
 
+		/// <summary>
+		/// Factoryのゲッタ
+		/// </summary>
+		/// <returns></returns>
+		IDXGIFactory7* GetFactory() const { return dxgiFactory_.Get(); }
+
 	private:
 
 		/// ===================================================

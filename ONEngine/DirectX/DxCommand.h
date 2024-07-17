@@ -20,7 +20,15 @@ namespace ONE {
 		/// public : methods
 		/// ===================================================
 
+		/// <summary>
+		/// 初期化
+		/// </summary>
 		void Initialize(ID3D12Device* device);
+
+		/// <summary>
+		/// Queueのゲッタ
+		/// </summary>
+		ID3D12CommandQueue* GetQueue() const { return queue_.Get(); }
 
 	private:
 

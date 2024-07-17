@@ -20,6 +20,12 @@
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxDoubleBuffer.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxDescriptor.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -55,6 +61,12 @@
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxCommand.h">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxDoubleBuffer.h">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxDescriptor.h">
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
