@@ -27,7 +27,6 @@ void ONE::DxDoubleBuffer::Initialize(DxDevice* dxDevice, DxDescriptor* dxDescrip
 void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	CreateBarrier(commandList, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
