@@ -1,10 +1,8 @@
 #pragma once
 
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <wrl/client.h>
+#include <memory>
 
-using namespace Microsoft::WRL;
+class DxDevice;
 
 namespace ONE {
 
@@ -32,7 +30,6 @@ namespace ONE {
 		/// private : methods
 		/// ===================================================
 
-		void InitializeDevice();
 
 	private:
 		
@@ -40,9 +37,7 @@ namespace ONE {
 		/// private : objects
 		/// ===================================================
 
-		ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
-		ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
-		ComPtr<ID3D12Device> device_ = nullptr;
+		std::unique_ptr<DxDevice> device_ = nullptr;
 
 
 	private:
