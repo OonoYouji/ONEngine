@@ -26,6 +26,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		dxCommon->PreDraw();
+		dxCommon->PostDraw();
+
 	}
 
 

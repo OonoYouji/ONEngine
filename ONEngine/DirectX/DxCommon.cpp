@@ -53,4 +53,18 @@ void ONE::DxCommon::Finalize() {
 
 }
 
+void ONE::DxCommon::PreDraw() {
+	doubleBuffer_->ClearBB(command_->GetList());
+}
+
+void ONE::DxCommon::PostDraw() {
+	
+	command_->Close();
+
+	command_->Execution();
+	doubleBuffer_->Present();
+	command_->Reset();
+
+}
+
 

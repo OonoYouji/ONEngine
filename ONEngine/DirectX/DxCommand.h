@@ -30,6 +30,17 @@ namespace ONE {
 		/// </summary>
 		ID3D12CommandQueue* GetQueue() const { return queue_.Get(); }
 
+		/// <summary>
+		/// Listのゲッタ
+		/// </summary>
+		ID3D12GraphicsCommandList* GetList() const { return list_.Get(); }
+
+		void Close();
+
+		void Execution();
+
+		void Reset();
+
 	private:
 
 		/// ===================================================

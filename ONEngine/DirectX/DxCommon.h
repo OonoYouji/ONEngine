@@ -37,6 +37,10 @@ namespace ONE {
 		/// </summary>
 		void Finalize();
 
+		void PreDraw();
+
+		void PostDraw();
+
 	private:
 
 		/// ===================================================

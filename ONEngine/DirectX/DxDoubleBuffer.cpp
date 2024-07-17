@@ -22,6 +22,24 @@ void ONE::DxDoubleBuffer::Initialize(DxDevice* dxDevice, DxDescriptor* dxDescrip
 
 
 /// ===================================================
+/// BackBufferの色をクリア
+/// ===================================================
+void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
+	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
+
+	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, nullptr);
+	float clearColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	commandList->ClearRenderTargetView(rtvHandle_[bbIndex], clearColor, 0, nullptr);
+
+}
+
+void ONE::DxDoubleBuffer::Present() {
+	HRESULT hr = swapChain_->Present(1, 0);
+	assert(SUCCEEDED(hr));
+}
+
+
+/// ===================================================
 /// swapChainの初期化
 /// ===================================================
 void ONE::DxDoubleBuffer::InitializeSwapChain(IDXGIFactory7* factory, ID3D12CommandQueue* commandQueue) {
@@ -58,13 +76,13 @@ void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptor* 
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle[kBufferCount];
 	buffers_.resize(kBufferCount);
+	rtvHandle_.resize(kBufferCount);
 
 	for(uint8_t i = 0u; i < kBufferCount; ++i) {
-		cpuHandle[i] = dxDescriptor->GetRtvCpuHandle();
+		rtvHandle_[i] = dxDescriptor->GetRtvCpuHandle();
 		dxDescriptor->AddRtvUsedCount();
-		device->CreateRenderTargetView(buffers_[i].Get(), &desc, cpuHandle[i]);
+		device->CreateRenderTargetView(buffers_[i].Get(), &desc, rtvHandle_[i]);
 	}
 
 }

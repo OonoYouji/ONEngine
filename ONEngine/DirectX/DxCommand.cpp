@@ -15,7 +15,6 @@ ONE::DxCommand::~DxCommand() {
 /// 初期化
 /// ===================================================
 void ONE::DxCommand::Initialize(ID3D12Device* device) {
-
 	HRESULT hr = S_FALSE;
 
 	/// ---------------------------------------------------
@@ -47,6 +46,23 @@ void ONE::DxCommand::Initialize(ID3D12Device* device) {
 	assert(SUCCEEDED(hr));
 
 
+}
+
+void ONE::DxCommand::Close() {
+	HRESULT hr = list_->Close();
+	assert(SUCCEEDED(hr));
+}
+
+void ONE::DxCommand::Execution() {
+	ID3D12CommandList* commandLists[] = { list_.Get() };
+	queue_->ExecuteCommandLists(1, commandLists);
+}
+
+void ONE::DxCommand::Reset() {
+	HRESULT hr = allocator_->Reset();
+	assert(SUCCEEDED(hr));
+	hr = list_->Reset(allocator_.Get(), nullptr);
+	assert(SUCCEEDED(hr));
 }
 
 

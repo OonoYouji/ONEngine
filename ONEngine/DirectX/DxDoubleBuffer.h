@@ -14,6 +14,7 @@ namespace ONE {
 
 	class DxDevice;
 	class DxDescriptor;
+	class DxCommand;
 
 	/// ===================================================
 	/// DirectX12 ダブルバッファ
@@ -45,6 +46,10 @@ namespace ONE {
 			ID3D12CommandQueue* commandQueue
 		);
 
+		void ClearBB(ID3D12GraphicsCommandList* commandList);
+
+		void Present();
+
 	private:
 
 		/// ===================================================
@@ -66,6 +71,7 @@ namespace ONE {
 
 		ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 		std::vector<ComPtr<ID3D12Resource>> buffers_{};
+		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandle_;
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;
