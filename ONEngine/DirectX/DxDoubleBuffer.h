@@ -50,6 +50,8 @@ namespace ONE {
 
 		void Present();
 
+		void CreateBarrier(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
+
 	private:
 
 		/// ===================================================

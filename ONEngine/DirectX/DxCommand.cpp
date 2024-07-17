@@ -46,6 +46,9 @@ void ONE::DxCommand::Initialize(ID3D12Device* device) {
 	assert(SUCCEEDED(hr));
 
 
+	InitializeFence(device);
+
+
 }
 
 void ONE::DxCommand::Close() {
@@ -56,6 +59,15 @@ void ONE::DxCommand::Close() {
 void ONE::DxCommand::Execution() {
 	ID3D12CommandList* commandLists[] = { list_.Get() };
 	queue_->ExecuteCommandLists(1, commandLists);
+
+	++fenceValue_;
+	queue_->Signal(fence_.Get(), fenceValue_);
+
+	if(fence_->GetCompletedValue() < fenceValue_) {
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
 }
 
 void ONE::DxCommand::Reset() {
@@ -63,6 +75,17 @@ void ONE::DxCommand::Reset() {
 	assert(SUCCEEDED(hr));
 	hr = list_->Reset(allocator_.Get(), nullptr);
 	assert(SUCCEEDED(hr));
+}
+
+void ONE::DxCommand::InitializeFence(ID3D12Device* device) {
+
+	fenceValue_ = 0;
+	HRESULT hr = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	assert(SUCCEEDED(hr));
+
+	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
+	assert(fenceEvent_ != nullptr);
+
 }
 
 

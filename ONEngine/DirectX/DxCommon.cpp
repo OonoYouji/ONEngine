@@ -7,6 +7,7 @@
 #include <DxCommand.h>
 #include <DxDescriptor.h>
 #include <DxDoubleBuffer.h>
+#include <DxDebug.h>
 
 
 #pragma comment(lib, "d3d12.lib")
@@ -27,8 +28,13 @@ ONE::DxCommon* ONE::DxCommon::GetInstance() {
 /// ===================================================
 void ONE::DxCommon::Initialize() {
 
+	debug_.reset(new DxDebug());
+	debug_->SetDebugLayer();
+
 	device_.reset(new DxDevice());
 	device_->Initialize();
+
+	debug_->Initialize(device_->GetDevice());
 
 	command_.reset(new DxCommand());
 	command_->Initialize(device_->GetDevice());
@@ -51,13 +57,18 @@ void ONE::DxCommon::Finalize() {
 	command_.reset();
 	device_.reset();
 
+	debug_.reset();
+
 }
 
 void ONE::DxCommon::PreDraw() {
+
 	doubleBuffer_->ClearBB(command_->GetList());
 }
 
 void ONE::DxCommon::PostDraw() {
+	
+	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	
 	command_->Close();
 

@@ -26,6 +26,9 @@
     <ClCompile Include="ONEngine\DirectX\DxDescriptor.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxDebug.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -67,6 +70,9 @@
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxDescriptor.h">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxDebug.h">
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>

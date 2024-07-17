@@ -3,6 +3,8 @@
 #include <d3d12.h>
 #include <wrl/client.h>
 
+#include <cmath>
+
 using namespace Microsoft::WRL;
 
 
@@ -47,6 +49,7 @@ namespace ONE {
 		/// private : methods
 		/// ===================================================
 
+		void InitializeFence(ID3D12Device* device);
 
 	private:
 
@@ -58,6 +61,10 @@ namespace ONE {
 		ComPtr<ID3D12CommandAllocator> allocator_ = nullptr;
 		ComPtr<ID3D12GraphicsCommandList> list_ = nullptr;
 		
+		ComPtr<ID3D12Fence> fence_ = nullptr;
+		uint64_t fenceValue_ = 0;
+		HANDLE fenceEvent_;
+
 
 	private:
 		DxCommand(const DxCommand&) = delete;

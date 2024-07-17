@@ -8,6 +8,7 @@ namespace ONE {
 	class DxCommand;
 	class DxDoubleBuffer;
 	class DxDescriptor;
+	class DxDebug;
 
 
 	/// ===================================================
@@ -59,6 +60,7 @@ namespace ONE {
 		std::unique_ptr<DxDescriptor> descriptor_ = nullptr;
 		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
 
+		std::unique_ptr<DxDebug> debug_ = nullptr;
 
 	private:
 		DxCommon(const DxCommon&) = delete;
