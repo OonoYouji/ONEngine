@@ -3,7 +3,8 @@
 #include <cassert>
 
 #include <WinApp.h>
-
+#include <DxDescriptor.h>
+#include <DxDevice.h>
 
 ONE::DxDoubleBuffer::DxDoubleBuffer() {}
 ONE::DxDoubleBuffer::~DxDoubleBuffer() {
@@ -14,8 +15,9 @@ ONE::DxDoubleBuffer::~DxDoubleBuffer() {
 /// ===================================================
 /// thisの初期化
 /// ===================================================
-void ONE::DxDoubleBuffer::Initialize(IDXGIFactory7* factory, ID3D12CommandQueue* commandQueue) {
-	InitializeSwapChain(factory, commandQueue);
+void ONE::DxDoubleBuffer::Initialize(DxDevice* dxDevice, DxDescriptor* dxDescriptor, ID3D12CommandQueue* commandQueue) {
+	InitializeSwapChain(dxDevice->GetFactory(), commandQueue);
+	InitializeBuffers(dxDevice->GetDevice(), dxDescriptor);
 }
 
 
@@ -45,3 +47,25 @@ void ONE::DxDoubleBuffer::InitializeSwapChain(IDXGIFactory7* factory, ID3D12Comm
 	result = swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain_));
 	assert(SUCCEEDED(result));
 }
+
+
+/// ===================================================
+/// Bufferの初期化
+/// ===================================================
+void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptor* dxDescriptor) {
+
+	D3D12_RENDER_TARGET_VIEW_DESC desc{};
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle[kBufferCount];
+	buffers_.resize(kBufferCount);
+
+	for(uint8_t i = 0u; i < kBufferCount; ++i) {
+		cpuHandle[i] = dxDescriptor->GetRtvCpuHandle();
+		dxDescriptor->AddRtvUsedCount();
+		device->CreateRenderTargetView(buffers_[i].Get(), &desc, cpuHandle[i]);
+	}
+
+}
+

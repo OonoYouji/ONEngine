@@ -5,6 +5,7 @@
 #include <Logger.h>
 #include <DxDevice.h>
 #include <DxCommand.h>
+#include <DxDescriptor.h>
 #include <DxDoubleBuffer.h>
 
 
@@ -32,8 +33,11 @@ void ONE::DxCommon::Initialize() {
 	command_.reset(new DxCommand());
 	command_->Initialize(device_->GetDevice());
 
+	descriptor_.reset(new DxDescriptor());
+	descriptor_->Initialize(device_->GetDevice());
+
 	doubleBuffer_.reset(new DxDoubleBuffer());
-	doubleBuffer_->Initialize(device_->GetFactory(), command_->GetQueue());
+	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
 
 }
 

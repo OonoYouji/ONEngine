@@ -7,6 +7,7 @@ namespace ONE {
 	class DxDevice;
 	class DxCommand;
 	class DxDoubleBuffer;
+	class DxDescriptor;
 
 
 	/// ===================================================
@@ -51,6 +52,7 @@ namespace ONE {
 
 		std::unique_ptr<DxDevice> device_ = nullptr;
 		std::unique_ptr<DxCommand> command_ = nullptr;
+		std::unique_ptr<DxDescriptor> descriptor_ = nullptr;
 		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
 
 

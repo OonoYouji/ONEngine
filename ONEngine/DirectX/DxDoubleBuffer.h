@@ -4,12 +4,16 @@
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
+#include <vector>
+
 using namespace Microsoft::WRL;
 
 
 
 namespace ONE {
 
+	class DxDevice;
+	class DxDescriptor;
 
 	/// ===================================================
 	/// DirectX12 ダブルバッファ
@@ -35,7 +39,11 @@ namespace ONE {
 		/// <summary>
 		/// このクラスの初期化
 		/// </summary>
-		void Initialize(IDXGIFactory7* factory, ID3D12CommandQueue* commandQueue);
+		void Initialize(
+			DxDevice* dxDevice,
+			DxDescriptor* dxDescriptor, 
+			ID3D12CommandQueue* commandQueue
+		);
 
 	private:
 
@@ -48,6 +56,8 @@ namespace ONE {
 		/// </summary>
 		void InitializeSwapChain(IDXGIFactory7* factory,ID3D12CommandQueue* commandQueue);
 
+		void InitializeBuffers(ID3D12Device* device, DxDescriptor* dxDescriptor);
+
 	private:
 
 		/// ===================================================
@@ -55,6 +65,7 @@ namespace ONE {
 		/// ===================================================
 
 		ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
+		std::vector<ComPtr<ID3D12Resource>> buffers_{};
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;
