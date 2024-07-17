@@ -1,11 +1,12 @@
 #include <Windows.h>
 
 #include <WinApp.h>
+#include <Logger.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	OutputDebugStringA("ONE : Hellow\n");
+	ONE::Logger::ConsolePrint("execution!!!\n");
 
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	winApp->Initialize();
