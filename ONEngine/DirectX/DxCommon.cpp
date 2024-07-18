@@ -3,11 +3,13 @@
 #include <cassert>
 
 #include <Logger.h>
+
 #include <DxDevice.h>
 #include <DxCommand.h>
 #include <DxDescriptor.h>
 #include <DxDoubleBuffer.h>
 #include <DxDebug.h>
+#include <DxShaderCompiler.h>
 
 
 #pragma comment(lib, "d3d12.lib")
@@ -45,6 +47,9 @@ void ONE::DxCommon::Initialize() {
 	doubleBuffer_.reset(new DxDoubleBuffer());
 	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
 
+	shaderCompiler_.reset(new DxShaderCompiler());
+	shaderCompiler_->Initialize();
+
 }
 
 
@@ -53,7 +58,9 @@ void ONE::DxCommon::Initialize() {
 /// ===================================================
 void ONE::DxCommon::Finalize() {
 
+	shaderCompiler_.reset();
 	doubleBuffer_.reset();
+	descriptor_.reset();
 	command_.reset();
 	device_.reset();
 

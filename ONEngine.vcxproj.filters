@@ -29,6 +29,9 @@
     <ClCompile Include="ONEngine\DirectX\DxDebug.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxShaderCompiler.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -73,6 +76,9 @@
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxDebug.h">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxShaderCompiler.h">
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
