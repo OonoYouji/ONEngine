@@ -29,7 +29,7 @@ namespace {
 /// string用コンソールログ出力
 /// ===================================================
 void ONE::Logger::ConsolePrint(const std::string& outputString) {
-	OutputDebugStringA(("### ONE : " + outputString).c_str());
+	OutputDebugStringA(("### ONE : " + outputString +"\n").c_str());
 }
 
 
@@ -37,5 +37,5 @@ void ONE::Logger::ConsolePrint(const std::string& outputString) {
 /// wstring用コンソールログ出力
 /// ===================================================
 void ONE::Logger::ConsolePrint(const std::wstring& outputString) {
-	OutputDebugStringA(("### ONE : " + ConvertString(outputString)).c_str());
+	OutputDebugStringA(("### ONE : " + ConvertString(outputString) + "\n").c_str());
 }

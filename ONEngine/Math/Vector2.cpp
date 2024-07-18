@@ -17,5 +17,5 @@ Vector2::Vector2() {
 
 Vector2::Vector2(float x, float y) {
 	this->x = x;
-	this->x = y;
+	this->y = y;
 }

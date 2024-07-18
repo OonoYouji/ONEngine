@@ -5,6 +5,9 @@
 #include <DxCommon.h>
 #include <FrameTimer.h>
 
+#include <Vector2.h>
+#include <Vector3.h>
+#include <Vector4.h>
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -22,7 +25,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
-
 
 	while(!winApp->ProcessMessage()) {
 

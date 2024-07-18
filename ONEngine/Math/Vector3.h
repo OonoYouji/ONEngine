@@ -40,7 +40,7 @@ public:
 	inline Vector3& operator-= (const Vector3& other);
 	inline Vector3& operator/= (const Vector3& other);
 	inline Vector3& operator*= (const Vector3& other);
-	
+
 	inline Vector3& operator/= (float scaler);
 	inline Vector3& operator*= (float scaler);
 
@@ -58,54 +58,54 @@ public:
 
 inline Vector3 operator+ (const Vector3& v1, const Vector3& v2) {
 	return {
-			v1.x + v2.x,
-			v1.y + v2.y,
-			v1.z + v2.z
+		v1.x + v2.x,
+		v1.y + v2.y,
+		v1.z + v2.z
 	};
 }
 
 
 inline Vector3 operator- (const Vector3& v1, const Vector3& v2) {
 	return {
-			v1.x - v2.x,
-			v1.y - v2.y,
-			v1.z - v2.z
+		v1.x - v2.x,
+		v1.y - v2.y,
+		v1.z - v2.z
 	};
 }
 
 
 inline Vector3 operator/ (const Vector3& v1, const Vector3& v2) {
 	return {
-			v1.x / v2.x,
-			v1.y / v2.y,
-			v1.z / v2.z
+		v1.x / v2.x,
+		v1.y / v2.y,
+		v1.z / v2.z
 	};
 }
 
 
 inline Vector3 operator/ (const Vector3& v, float scaler) {
 	return {
-			v.x / scaler,
-			v.y / scaler,
-			v.z / scaler
+		v.x / scaler,
+		v.y / scaler,
+		v.z / scaler
 	};
 }
 
 
 inline Vector3 operator* (const Vector3& v1, const Vector3& v2) {
 	return {
-			v1.x * v2.x,
-			v1.y * v2.y,
-			v1.z * v2.z
+		v1.x * v2.x,
+		v1.y * v2.y,
+		v1.z * v2.z
 	};
 }
 
 
 inline Vector3 operator* (const Vector3& v, float scaler) {
 	return {
-			v.x * scaler,
-			v.y * scaler,
-			v.z * scaler
+		v.x * scaler,
+		v.y * scaler,
+		v.z * scaler
 	};
 }
 
