@@ -5,10 +5,8 @@
 #include <DxCommon.h>
 #include <FrameTimer.h>
 
-#include <Vector2.h>
-#include <Vector3.h>
-#include <Vector4.h>
-#include <Matrix4x4.h>
+#include <ModelManager.h>
+
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -20,15 +18,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 
+	ModelManager* modelManager = ModelManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
+
+	modelManager->Initialize();
 
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
 
 	
-
 	while(!winApp->ProcessMessage()) {
 		
 		dxCommon->PreDraw();
@@ -36,6 +36,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	}
 
+
+	modelManager->Finalize();
 
 	dxCommon->Finalize();
 	winApp->Finalize();

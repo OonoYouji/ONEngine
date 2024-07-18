@@ -1,5 +1,7 @@
 #pragma once
 
+#include <d3d12.h>
+
 #include <memory>
 
 namespace ONE {
@@ -49,6 +51,8 @@ namespace ONE {
 		/// ===================================================
 
 		DxShaderCompiler* GetShaderCompiler() const { return shaderCompiler_.get(); }
+
+		ID3D12Device* GetDevice() const;
 
 	private:
 

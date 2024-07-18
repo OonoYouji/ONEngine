@@ -68,12 +68,20 @@ void ONE::DxCommon::Finalize() {
 
 }
 
+
+/// ===================================================
+/// 描画前処理
+/// ===================================================
 void ONE::DxCommon::PreDraw() {
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	doubleBuffer_->ClearBB(command_->GetList());
 }
 
+
+/// ===================================================
+/// 描画後処理
+/// ===================================================
 void ONE::DxCommon::PostDraw() {
 	
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -84,6 +92,14 @@ void ONE::DxCommon::PostDraw() {
 	doubleBuffer_->Present();
 	command_->Reset();
 
+}
+
+
+/// ===================================================
+/// Deviceのゲッタ
+/// ===================================================
+ID3D12Device* ONE::DxCommon::GetDevice() const {
+	return device_->GetDevice();
 }
 
 

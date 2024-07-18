@@ -63,8 +63,6 @@ namespace ONE {
 		
 		ComPtr<ID3D12Fence> fence_ = nullptr;
 		uint64_t fenceValue_ = 0;
-		HANDLE fenceEvent_;
-
 
 	private:
 		DxCommand(const DxCommand&) = delete;
