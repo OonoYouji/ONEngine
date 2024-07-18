@@ -21,6 +21,9 @@
     <ClCompile Include="ONEngine\DirectX\DxShaderCompiler.cpp" />
     <ClCompile Include="ONEngine\FrameTimer\FrameTimer.cpp" />
     <ClCompile Include="ONEngine\Logger\Logger.cpp" />
+    <ClCompile Include="ONEngine\Math\Vector2.cpp" />
+    <ClCompile Include="ONEngine\Math\Vector3.cpp" />
+    <ClCompile Include="ONEngine\Math\Vector4.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +36,9 @@
     <ClInclude Include="ONEngine\DirectX\DxShaderCompiler.h" />
     <ClInclude Include="ONEngine\FrameTimer\FrameTimer.h" />
     <ClInclude Include="ONEngine\Logger\Logger.h" />
+    <ClInclude Include="ONEngine\Math\Vector2.h" />
+    <ClInclude Include="ONEngine\Math\Vector3.h" />
+    <ClInclude Include="ONEngine\Math\Vector4.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -82,7 +88,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -106,6 +112,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
