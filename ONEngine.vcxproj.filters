@@ -44,6 +44,15 @@
     <ClCompile Include="ONEngine\Math\Matrix4x4.cpp">
       <Filter>ONEngine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp">
+      <Filter>ONEngine\Graphics\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Model\Model.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Model\ModelManager.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -63,6 +72,27 @@
     </Filter>
     <Filter Include="ONEngine\Math">
       <UniqueIdentifier>{b6760612-73c0-4d5f-a6b0-c2fcc4ff5c14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{c9dc5f27-2b20-4d24-9883-7bad61004c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{8af808c5-eca5-4334-b83b-c7d7353036ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics">
+      <UniqueIdentifier>{d3d35a13-36cf-42a7-869d-99427924ea25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\PipelineState">
+      <UniqueIdentifier>{4a0b1795-325b-41ea-81da-f08e24fd4738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer">
+      <UniqueIdentifier>{23b41f41-b579-4c94-a15f-649d3f1cdc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Model">
+      <UniqueIdentifier>{5ba0affc-c19d-4e47-bd0f-8ab6e6318811}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Model">
+      <UniqueIdentifier>{7355deb2-de0c-41a4-9f8d-f937a9a53c0d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -108,5 +138,25 @@
     <ClInclude Include="ONEngine\Math\Matrix4x4.h">
       <Filter>ONEngine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h">
+      <Filter>ONEngine\Graphics\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Model\Model.h">
+      <Filter>ONEngine\Graphics\Drawer\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Model\ModelManager.h">
+      <Filter>ONEngine\Graphics\Drawer\Model</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\Model\Model.hlsli">
+      <Filter>Resources\Shaders\Model</Filter>
+    </None>
+    <None Include="Resources\Shaders\Model\Model.PS.hlsli">
+      <Filter>Resources\Shaders\Model</Filter>
+    </None>
+    <None Include="Resources\Shaders\Model\Model.VS.hlsli">
+      <Filter>Resources\Shaders\Model</Filter>
+    </None>
   </ItemGroup>
 </Project>

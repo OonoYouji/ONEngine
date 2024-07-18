@@ -42,12 +42,13 @@ namespace ONE {
 
 		void PostDraw();
 
-	private:
+	public:
 
 		/// ===================================================
-		/// private : methods
+		/// public : accessor
 		/// ===================================================
 
+		DxShaderCompiler* GetShaderCompiler() const { return shaderCompiler_.get(); }
 
 	private:
 
