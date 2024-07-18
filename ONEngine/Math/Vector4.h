@@ -23,7 +23,11 @@ public:
 	/// public : static objects
 	/// ===================================================
 
-	//static const Vector4 k
+	static const Vector4 k1000;
+	static const Vector4 k0100;
+	static const Vector4 k0010;
+	static const Vector4 k0001;
+	
 
 public:
 
