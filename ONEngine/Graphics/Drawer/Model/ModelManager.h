@@ -4,7 +4,7 @@
 #include <list>
 #include <vector>
 
-class PipelineState;
+#include <PipelineState.h>
 class Model;
 
 
@@ -42,6 +42,11 @@ public:
 	/// 描画後処理
 	/// </summary>
 	void PostDraw();
+
+	/// <summary>
+	/// command list に pipeline state をセット
+	/// </summary>
+	void SetPipelineState(FillMode fillMode);
 
 private:
 

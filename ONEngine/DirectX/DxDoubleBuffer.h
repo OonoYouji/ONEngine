@@ -51,6 +51,9 @@ namespace ONE {
 		void Present();
 
 		void CreateBarrier(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
+		
+		void SetViewport(ID3D12GraphicsCommandList* commandList);
+		void SetSiccorRect(ID3D12GraphicsCommandList* commandList);
 
 	private:
 
@@ -74,6 +77,9 @@ namespace ONE {
 		ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 		std::vector<ComPtr<ID3D12Resource>> buffers_{};
 		std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandle_;
+
+		D3D12_VIEWPORT viewprot_{};
+		D3D12_RECT sicssorRect_{};
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;

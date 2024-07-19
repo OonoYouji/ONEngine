@@ -6,6 +6,7 @@
 #include <FrameTimer.h>
 
 #include <ModelManager.h>
+#include <Model.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -29,14 +30,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
 
 	
+	std::unique_ptr<Model> model(std::make_unique<Model>());
+	model->Initialize();
+
 	while(!winApp->ProcessMessage()) {
 		
 		dxCommon->PreDraw();
+
+		model->Draw();
+
 		dxCommon->PostDraw();
 
 	}
 
 
+	model.reset();
 	modelManager->Finalize();
 
 	dxCommon->Finalize();

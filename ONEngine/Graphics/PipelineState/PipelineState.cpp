@@ -4,6 +4,7 @@
 
 #include <Logger.h>
 #include <DxCommon.h>
+#include <DxCommand.h>
 #include <DxShaderCompiler.h>
 
 
@@ -20,7 +21,7 @@ PipelineState::~PipelineState() {}
 /// ===================================================
 /// Shaderの初期化
 /// ===================================================
-void PipelineState::CreaeteShader(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
+void PipelineState::ShaderCompile(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 
 	shader_.vs = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
@@ -73,6 +74,16 @@ void PipelineState::SetFillMode(FillMode fillMode) {
 /// ===================================================
 void PipelineState::SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE type) {
 	topology_ = type;
+}
+
+
+/// ===================================================
+/// PipelineStateをCommandListにセット
+/// ===================================================
+void PipelineState::SetPipelineState() {
+	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetCommand()->GetList();
+	commandList->SetGraphicsRootSignature(rootSignature_.Get());
+	commandList->SetPipelineState(pipelineState_.Get());
 }
 
 

@@ -74,6 +74,9 @@ void ONE::DxCommon::Finalize() {
 /// ===================================================
 void ONE::DxCommon::PreDraw() {
 
+	doubleBuffer_->SetViewport(command_->GetList());
+	doubleBuffer_->SetSiccorRect(command_->GetList());
+
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	doubleBuffer_->ClearBB(command_->GetList());
 }

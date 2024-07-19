@@ -1,7 +1,11 @@
 #include <ModelManager.h>
 
+#include <DxCommon.h>
+#include <DxCommand.h>
+
 #include <PipelineState.h>
 #include <Model.h>
+
 
 /// ===================================================
 /// インスタンス確保
@@ -25,7 +29,7 @@ void ModelManager::Initialize() {
 	pipelines_[kWireFrame]->SetFillMode(kWireFrame);
 
 	for(auto& pipeline : pipelines_) {
-		pipeline->CreaeteShader(
+		pipeline->ShaderCompile(
 			L"Model/Model.VS.hlsl", L"vs_6_0",
 			L"Model/Model.PS.hlsl", L"ps_6_0"
 		);
@@ -79,4 +83,8 @@ void ModelManager::PostDraw() {
 
 
 
+}
+
+void ModelManager::SetPipelineState(FillMode fillMode) {
+	pipelines_[fillMode]->SetPipelineState();
 }

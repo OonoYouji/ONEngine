@@ -6,6 +6,8 @@
 #include <DxDescriptor.h>
 #include <DxDevice.h>
 
+#include <WinApp.h>
+
 ONE::DxDoubleBuffer::DxDoubleBuffer() {}
 ONE::DxDoubleBuffer::~DxDoubleBuffer() {
 	swapChain_.Reset();
@@ -18,6 +20,20 @@ ONE::DxDoubleBuffer::~DxDoubleBuffer() {
 void ONE::DxDoubleBuffer::Initialize(DxDevice* dxDevice, DxDescriptor* dxDescriptor, ID3D12CommandQueue* commandQueue) {
 	InitializeSwapChain(dxDevice->GetFactory(), commandQueue);
 	InitializeBuffers(dxDevice->GetDevice(), dxDescriptor);
+
+	viewprot_.Width = ONE::WinApp::kWindowSizeX;
+	viewprot_.Height = ONE::WinApp::kWindowSizeY;
+	viewprot_.TopLeftX = 0;
+	viewprot_.TopLeftY = 0;
+	viewprot_.MinDepth = 0.0f;
+	viewprot_.MaxDepth = 1.0f;
+
+	sicssorRect_.left = 0;
+	sicssorRect_.right = ONE::WinApp::kWindowSizeX;
+	sicssorRect_.top = 0;
+	sicssorRect_.bottom = ONE::WinApp::kWindowSizeY;
+
+
 }
 
 
@@ -55,6 +71,14 @@ void ONE::DxDoubleBuffer::CreateBarrier(ID3D12GraphicsCommandList* commandList, 
 	barrier.Transition.StateBefore = before;
 	barrier.Transition.StateAfter = after;
 	commandList->ResourceBarrier(1, &barrier);
+}
+
+void ONE::DxDoubleBuffer::SetViewport(ID3D12GraphicsCommandList* commandList) {
+	commandList->RSSetViewports(1, &viewprot_);
+}
+
+void ONE::DxDoubleBuffer::SetSiccorRect(ID3D12GraphicsCommandList* commandList) {
+	commandList->RSSetScissorRects(1, &sicssorRect_);
 }
 
 

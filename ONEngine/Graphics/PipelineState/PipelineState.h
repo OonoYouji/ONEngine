@@ -44,23 +44,65 @@ public:
 	/// ===================================================
 
 
-	void CreaeteShader(
+	/// <summary>
+	/// shaderのコンパイル
+	/// </summary>
+	/// <param name="vsFilePath"> : vertex shader の file path</param>
+	/// <param name="vsProfile"> : vertex shader の version</param>
+	/// <param name="psFilePath"> : pixel shader の file path</param>
+	/// <param name="psProfile"> : vertex shader の version</param>
+	void ShaderCompile(
 		const std::wstring& vsFilePath, const wchar_t* vsProfile,
 		const std::wstring& psFilePath, const wchar_t* psProfile
 	);
 
+	/// <summary>
+	/// root signature と pipeline stateの初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// input layout elementの追加
+	/// </summary>
+	/// <param name="semanticName"></param>
+	/// <param name="semanticIndex"></param>
+	/// <param name="format"></param>
 	void AddInputElement(const std::string& semanticName, uint32_t semanticIndex, DXGI_FORMAT format);
 
+	/// <summary>
+	/// FillModeのセット
+	/// </summary>
+	/// <param name="fillMode"></param>
 	void SetFillMode(FillMode fillMode);
 
+	/// <summary>
+	/// 描画する形状のセット
+	/// </summary>
+	/// <param name="type"></param>
 	void SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE type);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void SetPipelineState();
 
 private:
 
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+
+	/// <summary>
+	/// root signature の生成
+	/// </summary>
+	/// <param name="device"></param>
 	void CreateRootSignature(ID3D12Device* device);
 
+	/// <summary>
+	/// pipeline state の生成
+	/// </summary>
+	/// <param name="device"></param>
 	void CreatePipelineState(ID3D12Device* device);
 
 private:
@@ -103,7 +145,6 @@ private:
 
 	//std::vector<D3D12_ROOT_PARAMETER> rootParameters_;
 	//std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers_;
-
 	//std::vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges_;
 
 };

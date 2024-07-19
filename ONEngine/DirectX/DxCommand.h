@@ -37,10 +37,19 @@ namespace ONE {
 		/// </summary>
 		ID3D12GraphicsCommandList* GetList() const { return list_.Get(); }
 
+		/// <summary>
+		/// command list の close
+		/// </summary>
 		void Close();
 
+		/// <summary>
+		/// command list の実行
+		/// </summary>
 		void Execution();
 
+		/// <summary>
+		/// allocator と list のリセット
+		/// </summary>
 		void Reset();
 
 	private:

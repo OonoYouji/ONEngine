@@ -40,9 +40,16 @@ namespace ONE {
 		/// </summary>
 		void Finalize();
 
+		/// <summary>
+		/// 描画前処理
+		/// </summary>
 		void PreDraw();
 
+		/// <summary>
+		/// 描画後処理
+		/// </summary>
 		void PostDraw();
+
 
 	public:
 
@@ -51,6 +58,8 @@ namespace ONE {
 		/// ===================================================
 
 		DxShaderCompiler* GetShaderCompiler() const { return shaderCompiler_.get(); }
+
+		DxCommand* GetCommand() const { return command_.get(); }
 
 		ID3D12Device* GetDevice() const;
 
