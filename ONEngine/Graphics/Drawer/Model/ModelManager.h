@@ -43,6 +43,12 @@ public:
 	void PostDraw();
 
 	/// <summary>
+	/// モデルの追加
+	/// </summary>
+	/// <param name="model"></param>
+	void AddModel(Model* model);
+
+	/// <summary>
 	/// command list に pipeline state をセット
 	/// </summary>
 	void SetPipelineState(FillMode fillMode);
@@ -57,6 +63,10 @@ private:
 	PipelineState::Shader shader_{};
 
 	std::list<std::unique_ptr<Model>> models_;
+
+	
+	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
+	ViewProjectionData* viewProjectionData_ = nullptr;
 
 private:
 	ModelManager(const ModelManager&) = delete;

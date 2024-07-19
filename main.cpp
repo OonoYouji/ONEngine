@@ -31,8 +31,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Initialize();
 
 
-	std::unique_ptr<Model> model(std::make_unique<Model>());
+	Model* model = new Model();
 	model->Initialize();
+	model->SetFillMode(kSolid);
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
@@ -48,15 +49,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		cameraManager->Update();
 
 		dxCommon->PreDraw();
+		modelManager->PreDraw();
 
-		model->Draw();
 
+
+		modelManager->PostDraw();
 		dxCommon->PostDraw();
 
 	}
 
 
-	model.reset();
 	modelManager->Finalize();
 
 	dxCommon->Finalize();

@@ -36,7 +36,7 @@ public:
 	/// ===================================================
 
 
-	inline Vector4& operator= (const Vector4& other);
+	inline Vector4& operator= (const Vector4& other) = default;
 	inline Vector4& operator+= (const Vector4& other);
 	inline Vector4& operator-= (const Vector4& other);
 	inline Vector4& operator/= (const Vector4& other);
@@ -137,13 +137,13 @@ inline bool operator==(const Vector4& v1, const Vector4& v2) {
 /// ===================================================
 
 
-inline Vector4& Vector4::operator= (const Vector4& other) {
-	this->x = other.x;
-	this->y = other.y;
-	this->z = other.z;
-	this->w = other.w;
-	return *this;
-}
+//inline Vector4& Vector4::operator= (const Vector4& other) {
+//	this->x = other.x;
+//	this->y = other.y;
+//	this->z = other.z;
+//	this->w = other.w;
+//	return *this;
+//}
 
 
 inline Vector4& Vector4::operator+= (const Vector4& other) {

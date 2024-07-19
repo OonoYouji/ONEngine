@@ -10,7 +10,7 @@
 
 struct VertexData {
 	Vec4 pos;
-	//Vec2 texcoord;
+	Vec2 texcoord;
 };
 
 struct TransformData {
@@ -19,6 +19,10 @@ struct TransformData {
 
 struct ViewProjectionData {
 	Mat4 matVp;
+};
+
+struct MaterialData {
+	Vec4 color;
 };
 
 
@@ -48,6 +52,11 @@ public:
 	void Draw();
 
 	/// <summary>
+	/// CommandListに必要な情報をセット
+	/// </summary>
+	void DrawCall(ID3D12GraphicsCommandList* commandList);
+
+	/// <summary>
 	/// FillModeのセット
 	/// </summary>
 	/// <param name="fillMode"></param>
@@ -58,7 +67,6 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	inline FillMode GetFillMode() const { return fillMode_; }
-
 
 private:
 
@@ -75,9 +83,8 @@ private:
 
 	ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
 	TransformData* transformData_ = nullptr;
-
-	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
-	ViewProjectionData* viewProjectionData_ = nullptr;
-
+	
+	ComPtr<ID3D12Resource> materialBuffer_ = nullptr;
+	MaterialData* materialData_ = nullptr;
 
 };
