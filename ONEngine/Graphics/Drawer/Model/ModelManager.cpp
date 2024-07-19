@@ -25,14 +25,16 @@ void ModelManager::Initialize() {
 		pipelines_.push_back(std::make_unique<PipelineState>());
 	}
 
+	shader_.ShaderCompile(
+		L"Model/Model.VS.hlsl", L"vs_6_0",
+		L"Model/Model.PS.hlsl", L"ps_6_0"
+	);
+
 	pipelines_[kSolid]->SetFillMode(kSolid);
 	pipelines_[kWireFrame]->SetFillMode(kWireFrame);
 
 	for(auto& pipeline : pipelines_) {
-		pipeline->ShaderCompile(
-			L"Model/Model.VS.hlsl", L"vs_6_0",
-			L"Model/Model.PS.hlsl", L"ps_6_0"
-		);
+		pipeline->SetShader(&shader_);
 
 		pipeline->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 

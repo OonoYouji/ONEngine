@@ -5,8 +5,7 @@
 #include <vector>
 
 #include <PipelineState.h>
-class Model;
-
+#include <Model.h>
 
 
 /// ===================================================
@@ -55,6 +54,7 @@ private:
 	/// ===================================================
 
 	std::vector<std::unique_ptr<PipelineState>> pipelines_;
+	PipelineState::Shader shader_{};
 
 	std::list<std::unique_ptr<Model>> models_;
 

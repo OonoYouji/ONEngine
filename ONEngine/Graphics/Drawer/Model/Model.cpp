@@ -1,5 +1,7 @@
 #include <Model.h>
 
+#include <ModelManager.h>
+
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxResourceCreator.h>

@@ -6,7 +6,6 @@
 #include <FrameTimer.h>
 
 #include <ModelManager.h>
-#include <Model.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {

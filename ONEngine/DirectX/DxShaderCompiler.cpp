@@ -37,7 +37,7 @@ void ONE::DxShaderCompiler::Initialize() {
 ComPtr<IDxcBlob> ONE::DxShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile) {
 	HRESULT hr = S_FALSE;
 
-	Logger::ConsolePrint(std::format(L"Begin CompileShader, path:{}, profile;{}\n", filePath, profile));
+	Logger::ConsolePrint(std::format(L"Begin CompileShader,   path:{},   profile:{}\n", filePath, profile));
 
 	///- hlslを読み込む
 	ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
@@ -84,7 +84,7 @@ ComPtr<IDxcBlob> ONE::DxShaderCompiler::CompileShader(const std::wstring& filePa
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 	assert(SUCCEEDED(hr));
 	//- 成功したログ出力
-	Logger::ConsolePrint(std::format(L"Compile Succeended, path:{}, profile:{}\n", filePath, profile));
+	Logger::ConsolePrint(std::format(L"Compile Succeended,    path:{},   profile:{}\n", filePath, profile));
 
 	///- 不要になったリソースの解放
 	shaderSource.Reset();

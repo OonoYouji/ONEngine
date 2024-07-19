@@ -31,6 +31,19 @@ public:
 	struct Shader final {
 		ComPtr<IDxcBlob> vs = nullptr;
 		ComPtr<IDxcBlob> ps = nullptr;
+
+		/// <summary>
+		/// shaderのコンパイル
+		/// </summary>
+		/// <param name="vsFilePath"> : vertex shader の file path</param>
+		/// <param name="vsProfile">  : vertex shader の version</param>
+		/// <param name="psFilePath"> : pixel shader  の file path</param>
+		/// <param name="psProfile">  : pixel shader  の version</param>
+		void ShaderCompile(
+			const std::wstring& vsFilePath, const wchar_t* vsProfile,
+			const std::wstring& psFilePath, const wchar_t* psProfile
+		);
+
 	};
 
 public:
@@ -44,22 +57,17 @@ public:
 	/// ===================================================
 
 
-	/// <summary>
-	/// shaderのコンパイル
-	/// </summary>
-	/// <param name="vsFilePath"> : vertex shader の file path</param>
-	/// <param name="vsProfile"> : vertex shader の version</param>
-	/// <param name="psFilePath"> : pixel shader の file path</param>
-	/// <param name="psProfile"> : vertex shader の version</param>
-	void ShaderCompile(
-		const std::wstring& vsFilePath, const wchar_t* vsProfile,
-		const std::wstring& psFilePath, const wchar_t* psProfile
-	);
-
+	
 	/// <summary>
 	/// root signature と pipeline stateの初期化
 	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// shaderのセット
+	/// </summary>
+	/// <param name="shader"></param>
+	void SetShader(Shader* shader);
 
 	/// <summary>
 	/// input layout elementの追加
@@ -135,7 +143,7 @@ private:
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 	ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
 
-	Shader shader_;
+	Shader* shader_;
 
 	std::vector<D3D12_INPUT_ELEMENT_DESC> inputElements_;
 	std::vector<std::string> semanticNames_;

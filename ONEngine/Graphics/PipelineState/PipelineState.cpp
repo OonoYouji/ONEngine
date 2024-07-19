@@ -18,16 +18,6 @@ PipelineState::PipelineState() {}
 PipelineState::~PipelineState() {}
 
 
-/// ===================================================
-/// Shaderの初期化
-/// ===================================================
-void PipelineState::ShaderCompile(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
-	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
-
-	shader_.vs = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
-	shader_.ps = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
-
-}
 
 
 /// ===================================================
@@ -38,6 +28,14 @@ void PipelineState::Initialize() {
 	CreateRootSignature(ONE::DxCommon::GetInstance()->GetDevice());
 	CreatePipelineState(ONE::DxCommon::GetInstance()->GetDevice());
 
+}
+
+
+/// ===================================================
+/// shaderのセット
+/// ===================================================
+void PipelineState::SetShader(Shader* shader) {
+	shader_ = shader;
 }
 
 
@@ -167,12 +165,12 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 
 	///- Shaderの設定
 	desc.VS = {
-		shader_.vs->GetBufferPointer(),
-		shader_.vs->GetBufferSize()
+		shader_->vs->GetBufferPointer(),
+		shader_->vs->GetBufferSize()
 	};
 	desc.PS = {
-		shader_.ps->GetBufferPointer(),
-		shader_.ps->GetBufferSize()
+		shader_->ps->GetBufferPointer(),
+		shader_->ps->GetBufferSize()
 	};
 
 
@@ -192,5 +190,19 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 		&desc, IID_PPV_ARGS(&pipelineState_)
 	);
 	assert(SUCCEEDED(result));
+
+}
+
+
+
+/// ===================================================
+/// Shaderの初期化
+/// ===================================================
+void PipelineState::Shader::ShaderCompile(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
+	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
+
+	vs = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
+	ps = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
+
 
 }

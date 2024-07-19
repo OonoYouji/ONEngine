@@ -1,6 +1,5 @@
 #pragma once
 
-#include <ModelManager.h>
 #include <PipelineState.h>
 
 #include <Vector4.h>
