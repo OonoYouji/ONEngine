@@ -7,6 +7,7 @@
 using namespace DirectX;
 
 
+class Vector3;
 class Vector4;
 
 
@@ -29,7 +30,7 @@ public:
 	/// public : operator
 	/// ===================================================
 
-	Matrix4x4 Inverse();
+	Matrix4x4 Inverse() const;
 
 
 public:
@@ -39,6 +40,7 @@ public:
 	/// ===================================================
 
 	float m[4][4];
+
 
 
 public:
@@ -51,6 +53,26 @@ public:
 	/// >> 単位行列
 	/// </summary>
 	static const Matrix4x4 kIdentity;
+
+
+public:
+
+	/// ===================================================
+	/// public : static methods
+	/// ===================================================
+
+	static Matrix4x4 MakeScale(const Vector3& v);
+	static Matrix4x4 MakeRotateX(float theta);
+	static Matrix4x4 MakeRotateY(float theta);
+	static Matrix4x4 MakeRotateZ(float theta);
+	static Matrix4x4 MakeRotate(const Vector3& v);
+	static Matrix4x4 MakeTranslate(const Vector3& v);
+	static Matrix4x4 MakeAffine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+	static Matrix4x4 MakeInverse(const Matrix4x4& m);
+
+	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);
+	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
 public:
 

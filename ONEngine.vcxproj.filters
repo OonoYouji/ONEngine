@@ -56,6 +56,12 @@
     <ClCompile Include="ONEngine\DirectX\DxResourceCreator.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -96,6 +102,18 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\Drawer\Model">
       <UniqueIdentifier>{7355deb2-de0c-41a4-9f8d-f937a9a53c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{16ef1da1-321e-44d1-8482-d88bd256d33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects">
+      <UniqueIdentifier>{3abca373-2425-49ed-adb3-129d0cae7142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Camera">
+      <UniqueIdentifier>{cfd5df0c-e660-40ca-8bad-8127c86151bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Camera\Manager">
+      <UniqueIdentifier>{9e289f59-85c1-4105-abb6-fdddd87b8b04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +170,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxResourceCreator.h">
       <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h">
+      <Filter>Game\Objects\Camera\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

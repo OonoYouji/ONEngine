@@ -1,5 +1,6 @@
 #include <Matrix4x4.h>
 
+#include <Vector3.h>
 #include <Vector4.h>
 
 
@@ -53,7 +54,90 @@ Matrix4x4::Matrix4x4(const XMMATRIX& xm) {
 	(*this) = ConvertToMatrix4x4(xm);
 }
 
-Matrix4x4 Matrix4x4::Inverse() {
+Matrix4x4 Matrix4x4::Inverse() const {
 	return Matrix4x4(ComputeInverseMatrix(ConvertToXMMATRIX((*this))));
+}
+
+
+
+/// ===================================================
+/// static methods
+/// ===================================================
+
+Matrix4x4 Matrix4x4::MakeScale(const Vector3& v) {
+	return Matrix4x4(
+		{ v.x, 0.0f, 0.0f, 0.0f },
+		{ 0.0f,  v.y, 0.0f, 0.0f },
+		{ 0.0f, 0.0f,  v.z, 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	);
+}
+
+Matrix4x4 Matrix4x4::MakeRotateX(float theta) {
+	return Matrix4x4(
+		{ 1.0f, 0.0f, 0.0f, 0.0f },
+		{ 0.0f,  std::cos(theta), std::sin(theta), 0.0f },
+		{ 0.0f, -std::sin(theta), std::cos(theta), 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	);
+}
+
+Matrix4x4 Matrix4x4::MakeRotateY(float theta) {
+	return Matrix4x4(
+		{ std::cos(theta), 0.0f, -std::sin(theta), 0.0f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f },
+		{ std::sin(theta), 0.0f,  std::cos(theta), 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	);
+}
+
+Matrix4x4 Matrix4x4::MakeRotateZ(float theta) {
+	return Matrix4x4(
+		{ std::cos(theta), std::sin(theta), 0.0f, 0.0f },
+		{ -std::sin(theta), std::cos(theta), 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f }
+	);
+}
+
+Matrix4x4 Matrix4x4::MakeRotate(const Vector3& v) {
+	return MakeRotateY(v.y) * MakeRotateX(v.x) * MakeRotateZ(v.z);
+}
+
+Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& v) {
+	return Matrix4x4(
+		{ 1.0f, 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f, 0.0f },
+		{ v.x,  v.y,  v.z, 1.0f }
+	);
+}
+
+Matrix4x4 Matrix4x4::MakeAffine(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+	return MakeScale(scale) * MakeRotate(rotate) * MakeTranslate(translate);
+}
+
+Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& m) {
+	return m.Inverse();
+}
+
+Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {
+	Vector3 result{};
+
+	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + 1.0f * m.m[3][0];
+	result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + 1.0f * m.m[3][1];
+	result.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + 1.0f * m.m[3][2];
+	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + 1.0f * m.m[3][3];
+
+	assert(w != 0.0f);
+	return result / w;
+}
+
+Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
+	return Vector3 {
+		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
+		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
+		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
+	};
 }
 

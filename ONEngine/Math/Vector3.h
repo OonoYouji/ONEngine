@@ -29,6 +29,8 @@ public:
 	static const Vector3 kFront;	//- ( 0,  0, -1 )
 	static const Vector3 kBack;		//- ( 0,  0,  1 )
 
+	static const Vector3 kOne;		//- ( 1,  1,  1 )
+
 public:
 
 	/// ===================================================
