@@ -15,7 +15,7 @@ GameCamera::~GameCamera() {}
 /// ===================================================
 void GameCamera::Initialize() {
 
-	position_ = { 0.0f, 0.0f, -5.0f };
+	transform_.position = { 0.0f, 0.0f, -5.0f };
 
 	BaseCamera::BaseInitialize();
 

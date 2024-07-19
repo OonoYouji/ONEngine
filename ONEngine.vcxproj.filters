@@ -65,6 +65,9 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp">
       <Filter>Game\Objects\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Transform\Transform.cpp">
+      <Filter>ONEngine\Transform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -117,6 +120,9 @@
     </Filter>
     <Filter Include="Game\Objects\Camera\Manager">
       <UniqueIdentifier>{9e289f59-85c1-4105-abb6-fdddd87b8b04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Transform">
+      <UniqueIdentifier>{e6b75b98-7297-4591-b588-9c2cab66e066}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -183,16 +189,21 @@
     <ClInclude Include="Game\Objects\Camera\GameCamera.h">
       <Filter>Game\Objects\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Transform\Transform.h">
+      <Filter>ONEngine\Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
       <Filter>Resources\Shaders\Model</Filter>
     </None>
-    <None Include="Resources\Shaders\Model\Model.PS.hlsli">
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
       <Filter>Resources\Shaders\Model</Filter>
-    </None>
-    <None Include="Resources\Shaders\Model\Model.VS.hlsli">
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
       <Filter>Resources\Shaders\Model</Filter>
-    </None>
+    </FxCompile>
   </ItemGroup>
 </Project>

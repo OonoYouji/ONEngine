@@ -40,6 +40,9 @@ void ModelManager::Initialize() {
 
 		pipeline->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
+		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- transform
+		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- viewProjection
+
 		pipeline->Initialize();
 	}
 

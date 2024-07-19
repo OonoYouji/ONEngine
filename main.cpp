@@ -17,7 +17,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
 	frameTimer->Start();
 
-	ONE::Logger::ConsolePrint("execution!!!\n");
+	ONE::Logger::ConsolePrint("execution!!!");
 
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
@@ -36,10 +36,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
+	cameraManager->SetMainCamera("GameCamera");
 
 
 	float executionTime = frameTimer->End();
-	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
+	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
 
 
 	while(!winApp->ProcessMessage()) {

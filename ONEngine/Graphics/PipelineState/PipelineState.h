@@ -72,25 +72,27 @@ public:
 	/// <summary>
 	/// input layout elementの追加
 	/// </summary>
-	/// <param name="semanticName"></param>
-	/// <param name="semanticIndex"></param>
-	/// <param name="format"></param>
 	void AddInputElement(const std::string& semanticName, uint32_t semanticIndex, DXGI_FORMAT format);
+
+	/// <summary>
+	/// 定数バッファのパラメータを追加
+	/// </summary>
+	/// <param name="shaderVisibilty"> : 使用するshader</param>
+	/// <param name="shaderRegister"> : レジスタ番号</param>
+	void AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t shaderRegister);
 
 	/// <summary>
 	/// FillModeのセット
 	/// </summary>
-	/// <param name="fillMode"></param>
 	void SetFillMode(FillMode fillMode);
 
 	/// <summary>
 	/// 描画する形状のセット
 	/// </summary>
-	/// <param name="type"></param>
 	void SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE type);
 
 	/// <summary>
-	/// 
+	/// root signatureとpipeline stateをcommand listに設定
 	/// </summary>
 	void SetPipelineState();
 
@@ -151,7 +153,7 @@ private:
 	D3D12_RASTERIZER_DESC rasterizerDesc_{};
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE topology_{};
 
-	//std::vector<D3D12_ROOT_PARAMETER> rootParameters_;
+	std::vector<D3D12_ROOT_PARAMETER> rootParameters_;
 	//std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers_;
 	//std::vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges_;
 

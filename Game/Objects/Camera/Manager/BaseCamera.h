@@ -2,9 +2,7 @@
 
 #include <string>
 
-#include <Vector3.h>
-#include <Matrix4x4.h>
-
+#include <Transform.h>
 
 /// ===================================================
 /// カメラの基底クラス
@@ -24,6 +22,7 @@ public:
 
 	const Mat4& GetMatView() const { return matView_; }
 	const Mat4& GetMatProjection() const { return matProjection_; }
+	const Mat4& GetMatVp() const { return matVp_; }
 
 	bool GetIsAcitve() const { return isActive_; }
 
@@ -32,15 +31,15 @@ protected:
 	std::string name_ = "BaseCamera";
 	bool isActive_ = true;
 
-	Vec3 position_{};
-	Vec3 rotate_{};
+	Transform transform_{};
 
 	float fovY_ = 0.45f;
 	float farZ_ = 1000.0f;
 
-	Mat4 matWorld_;
 	Mat4 matView_;
 	Mat4 matProjection_;
+
+	Mat4 matVp_;
 
 public:
 	inline BaseCamera& operator=(const BaseCamera& other) = default;

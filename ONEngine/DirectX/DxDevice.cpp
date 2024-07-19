@@ -39,7 +39,7 @@ void ONE::DxDevice::Initialize() {
 
 		///- ソフトウェアアダプタでなければ採用
 		if(!(desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-			ONE::Logger::ConsolePrint(std::format(L"Use Adapter:{}\n", desc.Description));
+			ONE::Logger::ConsolePrint(std::format(L"Use Adapter:{}", desc.Description));
 			break;
 		}
 
@@ -67,13 +67,13 @@ void ONE::DxDevice::Initialize() {
 		// 指定した機能れhベルで生成できたか確認
 		if(SUCCEEDED(hr)) {
 			// 生成後にログ出力
-			ONE::Logger::ConsolePrint(std::format("FeatureLevel : {}\n", featureLevelStaring[i]));
+			ONE::Logger::ConsolePrint(std::format("FeatureLevel : {}", featureLevelStaring[i]));
 			break;
 		}
 	}
 
 	///- 生成できたか確認; 生成出来ていたらログ出力する
 	assert(device_ != nullptr);
-	ONE::Logger::ConsolePrint("Compile create D3D12Device!!!\n");
+	ONE::Logger::ConsolePrint("Compile create D3D12Device!!!");
 
 }

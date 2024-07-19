@@ -55,6 +55,19 @@ void PipelineState::AddInputElement(const std::string& semanticName, uint32_t se
 }
 
 
+
+/// ===================================================
+/// ConstantBufferViewを設定
+/// ===================================================
+void PipelineState::AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t shaderRegister) {
+	D3D12_ROOT_PARAMETER rootParameter{};
+	rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameter.ShaderVisibility = shaderVisibilty;
+	rootParameter.Descriptor.ShaderRegister = shaderRegister;
+	rootParameters_.push_back(rootParameter);
+}
+
+
 /// ===================================================
 /// FillModeの設定
 /// ===================================================
@@ -95,8 +108,8 @@ void PipelineState::CreateRootSignature(ID3D12Device* device) {
 
 	D3D12_ROOT_SIGNATURE_DESC desc{};
 	desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	//desc.pParameters = rootParameters_.data();							//- RootParameter配列へのポインタ
-	//desc.NumParameters = static_cast<UINT>(rootParameters_.size());		//- RootParameterの配列の長さ
+	desc.pParameters = rootParameters_.data();							//- RootParameter配列へのポインタ
+	desc.NumParameters = static_cast<UINT>(rootParameters_.size());		//- RootParameterの配列の長さ
 	//desc.pStaticSamplers = staticSamplers_.data();						//- StaticSampler配列へのポインタ
 	//desc.NumStaticSamplers = static_cast<UINT>(staticSamplers_.size());	//- StaticSamplerの配列の長さ
 

@@ -32,6 +32,7 @@
     <ClCompile Include="ONEngine\Math\Vector2.cpp" />
     <ClCompile Include="ONEngine\Math\Vector3.cpp" />
     <ClCompile Include="ONEngine\Math\Vector4.cpp" />
+    <ClCompile Include="ONEngine\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +56,7 @@
     <ClInclude Include="ONEngine\Math\Vector2.h" />
     <ClInclude Include="ONEngine\Math\Vector3.h" />
     <ClInclude Include="ONEngine\Math\Vector4.h" />
+    <ClInclude Include="ONEngine\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
@@ -62,14 +64,16 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Resources\Shaders\Model\Model.PS.hlsli">
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Resources\Shaders\Model\Model.VS.hlsli">
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -121,7 +125,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +149,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
