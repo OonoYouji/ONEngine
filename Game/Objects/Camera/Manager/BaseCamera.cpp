@@ -6,15 +6,16 @@
 /// ===================================================
 /// コンストラクタ
 /// ===================================================
-BaseCamera::BaseCamera() {}
-BaseCamera::~BaseCamera() {}
+BaseCamera::BaseCamera() {
+
+}
 
 
 
 /// ===================================================
 /// 初期化
 /// ===================================================
-void BaseCamera::Initialize() {
+void BaseCamera::BaseInitialize() {
 
 	matWorld_ = Mat4::MakeAffine(Vec3::kOne, rotate_, position_);
 	matView_ = matWorld_.Inverse();

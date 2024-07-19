@@ -19,10 +19,35 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/// <summary>
+	/// インスタンス確保
+	/// </summary>
+	/// <returns></returns>
 	static CameraManager* GetInstance();
 
+	/// <summary>
+	/// mapのカメラを更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// BaseCameraをmapに追加
+	/// </summary>
+	/// <param name="name"> : map_key</param>
+	/// <param name="camera"> : camera pointer</param>
 	void AddCamera(const std::string& name, BaseCamera* camera);
 
+	/// <summary>
+	/// メインカメラのセット
+	/// </summary>
+	/// <param name="name"></param>
+	void SetMainCamera(const std::string& name);
+
+	/// <summary>
+	/// メインカメラのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	BaseCamera* GetMainCamera() const { return mainCamera_; }
 
 private:
 

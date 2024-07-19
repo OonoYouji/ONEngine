@@ -6,6 +6,10 @@
 #include <FrameTimer.h>
 
 #include <ModelManager.h>
+#include <CameraManager.h>
+
+#include <GameCamera.h>
+
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -19,21 +23,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 
 	ModelManager* modelManager = ModelManager::GetInstance();
+	CameraManager* cameraManager = CameraManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
 
 	modelManager->Initialize();
 
-	float executionTime = frameTimer->End();
-	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
 
-	
 	std::unique_ptr<Model> model(std::make_unique<Model>());
 	model->Initialize();
 
+	GameCamera* gameCamera = new GameCamera();
+	gameCamera->Initialize();
+
+
+	float executionTime = frameTimer->End();
+	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s\n", executionTime));
+
+
 	while(!winApp->ProcessMessage()) {
-		
+
+		cameraManager->Update();
+
 		dxCommon->PreDraw();
 
 		model->Draw();

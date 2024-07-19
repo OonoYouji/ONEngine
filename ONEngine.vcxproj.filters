@@ -62,6 +62,9 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp">
       <Filter>Game\Objects\Camera\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\GameCamera.cpp">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -176,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h">
       <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\GameCamera.h">
+      <Filter>Game\Objects\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
