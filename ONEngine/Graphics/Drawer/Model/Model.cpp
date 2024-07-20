@@ -6,6 +6,8 @@
 
 #include <ModelManager.h>
 #include <CameraManager.h>
+#include <TextureManager.h>
+
 
 
 Model::Model() {
@@ -26,9 +28,9 @@ void Model::Initialize() {
 	VertexData* vertexData_ = nullptr;
 	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 
-	vertexData_[0] = { {-0.5f, -0.25f, 0.0f, 1.0f}, {0.0f, 0.0f} };
-	vertexData_[1] = { { 0.0f,  0.25f, 0.0f, 1.0f}, {0.0f, 0.0f} };
-	vertexData_[2] = { { 0.5f, -0.25f, 0.0f, 1.0f}, {0.0f, 0.0f} };
+	vertexData_[0] = { {-0.5f, -0.5f, 0.0f, 1.0f}, {0.0f, 1.0f} };
+	vertexData_[1] = { { 0.0f,  0.5f, 0.0f, 1.0f}, {0.5f, 0.0f} };
+	vertexData_[2] = { { 0.5f, -0.5f, 0.0f, 1.0f}, {1.0f, 1.0f} };
 
 	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(TransformData));
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&transformData_));
@@ -66,6 +68,7 @@ void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(2, materialBuffer_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootDescriptorTable(3, TextureManager::GetInstance()->GetTexture("uvChecker").GetGPUHandle());
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 }

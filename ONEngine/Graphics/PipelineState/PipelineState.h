@@ -57,7 +57,7 @@ public:
 	/// ===================================================
 
 
-	
+
 	/// <summary>
 	/// root signature と pipeline stateの初期化
 	/// </summary>
@@ -68,6 +68,9 @@ public:
 	/// </summary>
 	/// <param name="shader"></param>
 	void SetShader(Shader* shader);
+
+
+
 
 	/// <summary>
 	/// input layout elementの追加
@@ -80,6 +83,31 @@ public:
 	/// <param name="shaderVisibilty"> : 使用するshader</param>
 	/// <param name="shaderRegister"> : レジスタ番号</param>
 	void AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t shaderRegister);
+
+	/// <summary>
+	/// ディスクリプターレンジの追加
+	/// </summary>
+	/// <param name="baseShaderRegister"> : レジスタ番号</param>
+	/// <param name="numDescriptor"> : 使用するSRVの数</param>
+	/// <param name="rangeType"></param>
+	void AddDescriptorRange(uint32_t baseShaderRegister, uint32_t numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE rangeType);
+
+	/// <summary>
+	/// ディスクリプターテーブルの追加
+	/// </summary>
+	/// <param name="shaderVisibilty"> : 使用するshader</param>
+	/// <param name="descriptorIndex"> : DescriptorRangeの配列index !!!範囲外参照に注意!!! </param>
+	void AddDescriptorTable(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t descriptorIndex);
+
+	/// <summary>
+	/// サンプラーの追加
+	/// </summary>
+	/// <param name="shaderVisibility"></param>
+	/// <param name="shaderRegister"></param>
+	void AddStaticSampler(D3D12_SHADER_VISIBILITY shaderVisibility, uint32_t shaderRegister);
+
+	
+
 
 	/// <summary>
 	/// FillModeのセット
@@ -154,7 +182,7 @@ private:
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE topology_{};
 
 	std::vector<D3D12_ROOT_PARAMETER> rootParameters_;
-	//std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers_;
-	//std::vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges_;
+	std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers_;
+	std::vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges_;
 
 };

@@ -2,6 +2,8 @@
 
 #include <assert.h>
 
+#include <DxCommon.h>
+#include <DxCommand.h>
 #include <DxDoubleBuffer.h>
 
 
@@ -64,6 +66,15 @@ D3D12_GPU_DESCRIPTOR_HANDLE ONE::DxDescriptor::GetSrvGpuHandle() {
 /// ===================================================
 void ONE::DxDescriptor::AddSrvUsedCount() {
 	++srvUsedCount_;
+}
+
+
+/// ===================================================
+/// SARHeapをCommandListにセットする
+/// ===================================================
+void ONE::DxDescriptor::SetSRVHeap(ID3D12GraphicsCommandList* commandList) {
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvHeap_.Get()};
+	commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 }
 
 

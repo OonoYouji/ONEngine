@@ -4,6 +4,7 @@
 #include <DxCommand.h>
 #include <DxShaderCompiler.h>
 #include <DxResourceCreator.h>
+#include <DxDescriptor.h>
 
 #include <CameraManager.h>
 
@@ -44,6 +45,10 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
+
+		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline->Initialize();
 	}
@@ -96,6 +101,8 @@ void ModelManager::PostDraw() {
 
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	viewProjectionData_->matVp = CameraManager::GetInstance()->GetMainCamera()->GetMatVp();
+
+	ONE::DxCommon::GetInstance()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	/// ---------------------------------------------------
 	/// Solidの描画

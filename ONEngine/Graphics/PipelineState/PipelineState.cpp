@@ -55,7 +55,6 @@ void PipelineState::AddInputElement(const std::string& semanticName, uint32_t se
 }
 
 
-
 /// ===================================================
 /// ConstantBufferViewを設定
 /// ===================================================
@@ -65,6 +64,50 @@ void PipelineState::AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t sha
 	rootParameter.ShaderVisibility = shaderVisibilty;
 	rootParameter.Descriptor.ShaderRegister = shaderRegister;
 	rootParameters_.push_back(rootParameter);
+}
+
+
+/// ===================================================
+/// DescriptorRangeの追加
+/// ===================================================
+void PipelineState::AddDescriptorRange(uint32_t baseShaderRegister, uint32_t numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE rangeType) {
+	D3D12_DESCRIPTOR_RANGE descriptorRange{};
+	descriptorRange.BaseShaderRegister = baseShaderRegister;									//- 開始する番号
+	descriptorRange.NumDescriptors = numDescriptor;												//- 使用するTextureの数
+	descriptorRange.RangeType = rangeType;														//- 使用するRangeType
+	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;	//- 
+	descriptorRanges_.push_back(descriptorRange);
+}
+
+
+/// ===================================================
+/// DescriptorTableの追加
+/// ===================================================
+void PipelineState::AddDescriptorTable(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t descriptorIndex) {
+	assert(descriptorIndex <= descriptorRanges_.size());
+	D3D12_ROOT_PARAMETER rootParameter{};
+	rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;								//- 使用するRegisterの種類
+	rootParameter.ShaderVisibility = shaderVisibilty;														//- 使用するShader
+	rootParameter.DescriptorTable.pDescriptorRanges = &descriptorRanges_[descriptorIndex];					//- Tableの中身の配列
+	rootParameter.DescriptorTable.NumDescriptorRanges = descriptorRanges_[descriptorIndex].NumDescriptors;	//- Tableで使用する数
+	rootParameters_.push_back(rootParameter);
+}
+
+
+/// ===================================================
+/// Samplerの追加
+/// ===================================================
+void PipelineState::AddStaticSampler(D3D12_SHADER_VISIBILITY shaderVisibility, uint32_t shaderRegister) {
+	D3D12_STATIC_SAMPLER_DESC staticSampler{};
+	staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;		//- バイリニアフィルタ
+	staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;	//- 0~1の範囲外をリピート
+	staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;	//- 比較しない
+	staticSampler.MaxLOD = D3D12_FLOAT32_MAX;					//- ありったけのMipMapを使う
+	staticSampler.ShaderRegister = shaderRegister;				//- 使用するRegister番号
+	staticSampler.ShaderVisibility = shaderVisibility;			//- 使用するShader
+	staticSamplers_.push_back(staticSampler);
 }
 
 
@@ -110,8 +153,8 @@ void PipelineState::CreateRootSignature(ID3D12Device* device) {
 	desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	desc.pParameters = rootParameters_.data();							//- RootParameter配列へのポインタ
 	desc.NumParameters = static_cast<UINT>(rootParameters_.size());		//- RootParameterの配列の長さ
-	//desc.pStaticSamplers = staticSamplers_.data();						//- StaticSampler配列へのポインタ
-	//desc.NumStaticSamplers = static_cast<UINT>(staticSamplers_.size());	//- StaticSamplerの配列の長さ
+	desc.pStaticSamplers = staticSamplers_.data();						//- StaticSampler配列へのポインタ
+	desc.NumStaticSamplers = static_cast<UINT>(staticSamplers_.size());	//- StaticSamplerの配列の長さ
 
 	///- シリアライズしてバイナリ
 	hr = D3D12SerializeRootSignature(

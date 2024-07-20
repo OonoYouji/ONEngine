@@ -64,6 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	modelManager->Finalize();
+	textureManager->Finalize();
 
 	dxCommon->Finalize();
 	winApp->Finalize();

@@ -25,6 +25,13 @@ public:
 	/// </summary>
 	static TextureManager* GetInstance();
 
+
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	void Finalize();
+
+
 	/// <summary>
 	/// テクスチャのゲッタ
 	/// </summary>

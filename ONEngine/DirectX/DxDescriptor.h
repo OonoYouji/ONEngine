@@ -43,20 +43,26 @@ namespace ONE {
 
 
 		/// <summary>
-		/// RTVのCPUHandleを得る
+		/// SRVのCPUHandleを得る
 		/// </summary>
 		D3D12_CPU_DESCRIPTOR_HANDLE GetSrvCpuHandle();
 
 		/// <summary>
-		/// 
+		/// SRVのGPUHandleを得る
 		/// </summary>
 		/// <returns></returns>
 		D3D12_GPU_DESCRIPTOR_HANDLE GetSrvGpuHandle();
 
 		/// <summary>
-		/// RTVの使用カウントを増やす
+		/// SRVの使用カウントを増やす
 		/// </summary>
 		void AddSrvUsedCount();
+
+
+		/// <summary>
+		/// srvHeapをCommandListにセットする
+		/// </summary>
+		void SetSRVHeap(ID3D12GraphicsCommandList* commandList);
 
 	private:
 

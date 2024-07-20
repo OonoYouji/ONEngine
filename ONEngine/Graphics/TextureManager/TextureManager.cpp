@@ -15,6 +15,7 @@
 /// ===================================================
 /// 無記名名前空間 : 関数の定義
 /// ===================================================
+#pragma region namespace methods
 namespace {
 
 
@@ -121,6 +122,8 @@ namespace {
 
 
 } ///- namespace
+#pragma endregion
+
 
 
 /// ===================================================
@@ -131,12 +134,22 @@ const std::string TextureManager::kDirectoryPath_ = "./Resources/Textures/";
 
 
 
+
+
 /// ===================================================
 /// インスタンス確保
 /// ===================================================
 TextureManager* TextureManager::GetInstance() {
 	static TextureManager instance;
 	return &instance;
+}
+
+
+/// ===================================================
+/// 終了処理
+/// ===================================================
+void TextureManager::Finalize() {
+	textures_.clear();
 }
 
 
