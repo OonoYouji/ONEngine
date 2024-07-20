@@ -26,6 +26,11 @@ public:
 	static CameraManager* GetInstance();
 
 	/// <summary>
+	/// 終了処理
+	/// </summary>
+	void Finalize();
+
+	/// <summary>
 	/// mapのカメラを更新
 	/// </summary>
 	void Update();

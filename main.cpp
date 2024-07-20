@@ -63,6 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
+	cameraManager->Finalize();
 	modelManager->Finalize();
 	textureManager->Finalize();
 
