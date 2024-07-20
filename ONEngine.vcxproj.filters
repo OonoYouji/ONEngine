@@ -71,6 +71,12 @@
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp">
       <Filter>ONEngine\Graphics\TextureManager</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp">
+      <Filter>ONEngine\Graphics\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -200,6 +206,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h">
       <Filter>ONEngine\Graphics\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h">
+      <Filter>ONEngine\Graphics\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h">
+      <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

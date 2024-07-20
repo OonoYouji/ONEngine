@@ -92,7 +92,7 @@ void PipelineState::SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE type) {
 /// PipelineStateをCommandListにセット
 /// ===================================================
 void PipelineState::SetPipelineState() {
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	commandList->SetGraphicsRootSignature(rootSignature_.Get());
 	commandList->SetPipelineState(pipelineState_.Get());
 }
@@ -214,8 +214,8 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 void PipelineState::Shader::ShaderCompile(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 
-	vs = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
-	ps = dxCommon->GetShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
+	vs = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
+	ps = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
 
 
 }

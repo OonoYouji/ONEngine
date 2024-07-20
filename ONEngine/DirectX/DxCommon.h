@@ -50,6 +50,11 @@ namespace ONE {
 		/// </summary>
 		void PostDraw();
 
+		/// <summary>
+		/// CommandList内にある命令を実行する
+		/// </summary>
+		void ExecuteCommands();
+
 
 	public:
 
@@ -57,11 +62,13 @@ namespace ONE {
 		/// public : accessor
 		/// ===================================================
 
-		DxShaderCompiler* GetShaderCompiler() const { return shaderCompiler_.get(); }
+		DxShaderCompiler* GetDxShaderCompiler() const { return shaderCompiler_.get(); }
 
-		DxCommand* GetCommand() const { return command_.get(); }
+		DxCommand* GetDxCommand() const { return command_.get(); }
 
 		ID3D12Device* GetDevice() const;
+
+		DxDescriptor* GetDxDescriptor() const { return descriptor_.get(); }
 
 	private:
 

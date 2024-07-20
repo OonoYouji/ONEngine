@@ -7,6 +7,7 @@
 
 #include <ModelManager.h>
 #include <CameraManager.h>
+#include <TextureManager.h>
 
 #include <GameCamera.h>
 
@@ -24,9 +25,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ModelManager* modelManager = ModelManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
+	TextureManager* textureManager = TextureManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
+
+	textureManager->Load("uvChecker", "uvChecker.png");
 
 	modelManager->Initialize();
 

@@ -29,6 +29,8 @@ namespace ONE {
 		/// </summary>
 		void Initialize(ID3D12Device* device);
 
+
+
 		/// <summary>
 		/// RTVのCPUHandleを得る
 		/// </summary>
@@ -38,6 +40,23 @@ namespace ONE {
 		/// RTVの使用カウントを増やす
 		/// </summary>
 		void AddRtvUsedCount();
+
+
+		/// <summary>
+		/// RTVのCPUHandleを得る
+		/// </summary>
+		D3D12_CPU_DESCRIPTOR_HANDLE GetSrvCpuHandle();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		D3D12_GPU_DESCRIPTOR_HANDLE GetSrvGpuHandle();
+
+		/// <summary>
+		/// RTVの使用カウントを増やす
+		/// </summary>
+		void AddSrvUsedCount();
 
 	private:
 
@@ -55,6 +74,11 @@ namespace ONE {
 		/// </summary>
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle(ID3D12DescriptorHeap* heap, uint32_t heapSize, uint32_t index);
 
+		/// <summary>
+		/// 引数のHeapからindex分先のGpuHandleを得る
+		/// </summary>
+		D3D12_GPU_DESCRIPTOR_HANDLE GetGpuHandle(ID3D12DescriptorHeap* heap, uint32_t heapSize, uint32_t index);
+
 	private:
 
 		/// ===================================================
@@ -62,9 +86,13 @@ namespace ONE {
 		/// ===================================================
 
 		ComPtr<ID3D12DescriptorHeap> rtvHeap_ = nullptr;
-
 		uint32_t rtvUsedCount_ = 0;
 		uint32_t rtvHeapSize_;
+
+		ComPtr<ID3D12DescriptorHeap> srvHeap_ = nullptr;
+		uint32_t srvUsedCount_ = 0;
+		uint32_t srvHeapSize_;
+
 
 	private:
 		DxDescriptor(const DxDescriptor&) = delete;

@@ -99,6 +99,18 @@ void ONE::DxCommon::PostDraw() {
 
 
 /// ===================================================
+/// CommandList内にある命令を実行する
+/// ===================================================
+void ONE::DxCommon::ExecuteCommands() {
+
+	command_->Close();		//- listを閉じる
+	command_->Execution();	//- 実行
+	command_->Reset();		//- 実行し終わったらlistのリセット	
+
+}
+
+
+/// ===================================================
 /// Deviceのゲッタ
 /// ===================================================
 ID3D12Device* ONE::DxCommon::GetDevice() const {

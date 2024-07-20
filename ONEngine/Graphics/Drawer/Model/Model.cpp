@@ -17,7 +17,7 @@ Model::~Model() {}
 
 void Model::Initialize() {
 
-	vertexBuffer_ = ONE::DxResourceCreate::CreateResource(sizeof(VertexData) * 3);
+	vertexBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(VertexData) * 3);
 
 	vbv_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();
 	vbv_.SizeInBytes = sizeof(VertexData) * 3;
@@ -30,11 +30,11 @@ void Model::Initialize() {
 	vertexData_[1] = { { 0.0f,  0.25f, 0.0f, 1.0f}, {0.0f, 0.0f} };
 	vertexData_[2] = { { 0.5f, -0.25f, 0.0f, 1.0f}, {0.0f, 0.0f} };
 
-	transformBuffer_ = ONE::DxResourceCreate::CreateResource(sizeof(TransformData));
+	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(TransformData));
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&transformData_));
 	transformData_->matWorld = Mat4::kIdentity;
 
-	materialBuffer_ = ONE::DxResourceCreate::CreateResource(sizeof(MaterialData));
+	materialBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(MaterialData));
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vec4(1,0,0,1);
 

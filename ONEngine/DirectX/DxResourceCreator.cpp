@@ -9,7 +9,7 @@
 /// ===================================================
 /// Resourceの生成
 /// ===================================================
-ComPtr<ID3D12Resource> ONE::DxResourceCreate::CreateResource(size_t sizeInByte) {
+ComPtr<ID3D12Resource> ONE::DxResourceCreator::CreateResource(size_t sizeInByte) {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3D12Resource> resource = nullptr;
 

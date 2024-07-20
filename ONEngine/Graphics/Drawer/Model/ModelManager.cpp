@@ -49,7 +49,7 @@ void ModelManager::Initialize() {
 	}
 
 
-	viewProjectionBuffer_ = ONE::DxResourceCreate::CreateResource(sizeof(ViewProjectionData));
+	viewProjectionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(ViewProjectionData));
 	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&viewProjectionData_));
 	viewProjectionData_->matVp = Mat4::kIdentity;
 
@@ -94,7 +94,7 @@ void ModelManager::PostDraw() {
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	viewProjectionData_->matVp = CameraManager::GetInstance()->GetMainCamera()->GetMatVp();
 
 	/// ---------------------------------------------------

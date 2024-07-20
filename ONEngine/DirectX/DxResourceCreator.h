@@ -10,9 +10,9 @@ namespace ONE {
 	/// ===================================================
 	/// Resourceの生成
 	/// ===================================================
-	class DxResourceCreate {
-		DxResourceCreate() = default;
-		~DxResourceCreate() = default;
+	class DxResourceCreator {
+		DxResourceCreator() = default;
+		~DxResourceCreator() = default;
 	public:
 
 		/// <summary>
@@ -23,10 +23,10 @@ namespace ONE {
 		static ComPtr<ID3D12Resource> CreateResource(size_t sizeInByte);
 
 	private:
-		DxResourceCreate(const DxResourceCreate&) = delete;
-		DxResourceCreate(DxResourceCreate&&) = delete;
-		DxResourceCreate& operator= (const DxResourceCreate&) = delete;
-		DxResourceCreate& operator= (DxResourceCreate&&) = delete;
+		DxResourceCreator(const DxResourceCreator&) = delete;
+		DxResourceCreator(DxResourceCreator&&) = delete;
+		DxResourceCreator& operator= (const DxResourceCreator&) = delete;
+		DxResourceCreator& operator= (DxResourceCreator&&) = delete;
 	};
 
 
