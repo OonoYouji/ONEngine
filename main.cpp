@@ -30,9 +30,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	winApp->Initialize();
 	dxCommon->Initialize();
 
-	textureManager->Load("uvChecker", "uvChecker.png");
-
 	modelManager->Initialize();
+	modelManager->Load("Teapot/Teapot.obj");
+
+	textureManager->Load("uvChecker.png");
 
 
 	Model* model = new Model();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <list>
+
 #include <PipelineState.h>
 
 #include <Vector2.h>
@@ -7,6 +9,10 @@
 #include <Matrix4x4.h>
 
 #include <Transform.h>
+
+#include <Mesh.h>
+#include <Material.h>
+
 
 struct VertexData {
 	Vec4 pos;
@@ -68,6 +74,12 @@ public:
 	/// <returns></returns>
 	inline FillMode GetFillMode() const { return fillMode_; }
 
+
+
+	void AddMesh(const Mesh& mesh);
+
+	void AddMaterial(const Material& material);
+
 private:
 
 	/// ===================================================
@@ -86,5 +98,8 @@ private:
 	
 	ComPtr<ID3D12Resource> materialBuffer_ = nullptr;
 	MaterialData* materialData_ = nullptr;
+
+	std::list<Mesh> meshes_;
+	std::list<Material> materials_;
 
 };

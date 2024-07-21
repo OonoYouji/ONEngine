@@ -32,6 +32,15 @@ public:
 	/// </summary>
 	void Finalize();
 
+
+
+	/// <summary>
+	/// モデル読み込み
+	/// </summary>
+	Model* Load(const std::string& filePath);
+
+
+
 	/// <summary>
 	/// 描画前処理
 	/// </summary>
@@ -41,6 +50,8 @@ public:
 	/// 描画後処理
 	/// </summary>
 	void PostDraw();
+
+
 
 	/// <summary>
 	/// モデルの追加
@@ -58,6 +69,9 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	const std::string kDirectoryPath_ = "./Resources/Models/";
+
 
 	std::vector<std::unique_ptr<PipelineState>> pipelines_;
 	PipelineState::Shader shader_{};

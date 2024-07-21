@@ -164,7 +164,7 @@ const Texture& TextureManager::GetTexture(const std::string& name) const {
 /// ===================================================
 /// テクスチャの読み込み
 /// ===================================================
-void TextureManager::Load(const std::string& name, const std::string& filePath) {
+void TextureManager::Load(const std::string& filePath) {
 
 	Texture newTexture{};
 	DirectX::ScratchImage mipImages = LoadTexture(kDirectoryPath_ + filePath);
@@ -193,6 +193,6 @@ void TextureManager::Load(const std::string& name, const std::string& filePath) 
 	ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
 	device->CreateShaderResourceView(newTexture.resource_.Get(), &srvDesc, newTexture.cpuHandle_);
 
-	textures_[name] = newTexture;
+	textures_[filePath] = newTexture;
 
 }

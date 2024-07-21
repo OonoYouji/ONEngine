@@ -77,6 +77,12 @@
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Mesh\Mesh.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Material\Material.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Material</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -135,6 +141,12 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\TextureManager">
       <UniqueIdentifier>{a47df584-6006-4bbe-ada9-266ca3eeb47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Mesh">
+      <UniqueIdentifier>{96560b34-24be-4b34-b602-2bf3e66bec39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Material">
+      <UniqueIdentifier>{e1a0e41f-2518-407e-97d5-292e059cf814}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -212,6 +224,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h">
       <Filter>ONEngine\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Mesh\Mesh.h">
+      <Filter>ONEngine\Graphics\Drawer\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Material\Material.h">
+      <Filter>ONEngine\Graphics\Drawer\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

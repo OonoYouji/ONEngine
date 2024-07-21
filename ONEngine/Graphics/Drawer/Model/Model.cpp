@@ -78,3 +78,19 @@ void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
 void Model::SetFillMode(FillMode fillMode) {
 	fillMode_ = fillMode;
 }
+
+
+/// ===================================================
+/// Meshの追加
+/// ===================================================
+void Model::AddMesh(const Mesh& mesh) {
+	meshes_.push_back(mesh);
+}
+
+
+/// ===================================================
+/// Materialの追加
+/// ===================================================
+void Model::AddMaterial(const Material& material) {
+	materials_.push_back(material);
+}
