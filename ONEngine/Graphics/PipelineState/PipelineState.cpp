@@ -181,6 +181,16 @@ void PipelineState::CreateRootSignature(ID3D12Device* device) {
 /// ===================================================
 void PipelineState::CreatePipelineState(ID3D12Device* device) {
 
+
+	/// ---------------------------------------------------
+	/// depth stencil
+	/// ---------------------------------------------------
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
+	depthStencilDesc.DepthEnable = true;							//- Depth機能の有効化or無効化
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;	//- 書き込み設定
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;	//- 比較関数の設定
+
+
 	/// ---------------------------------------------------
 	/// input layout 
 	/// ---------------------------------------------------
@@ -230,15 +240,15 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 	};
 
 
-	desc.BlendState = blendDesc;			//- BlendState
-	desc.RasterizerState = rasterizerDesc_;  //- RasterizerState
+	desc.BlendState = blendDesc;				//- BlendState
+	desc.RasterizerState = rasterizerDesc_;		//- RasterizerState
 
 	desc.NumRenderTargets = 1;								//- 
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;	//- 
-	desc.PrimitiveTopologyType = topology_;				//- 使用する形状Type
+	desc.PrimitiveTopologyType = topology_;					//- 使用する形状Type
 	desc.SampleDesc.Count = 1;								//- 
 	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;			//- 
-	//desc.DepthStencilState = depthStencilDesc;				//- 
+	desc.DepthStencilState = depthStencilDesc;				//- 
 	desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;			//- 
 
 	///- 生成

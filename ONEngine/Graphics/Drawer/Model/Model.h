@@ -5,6 +5,7 @@
 #include <PipelineState.h>
 
 #include <Vector2.h>
+#include <Vector3.h>
 #include <Vector4.h>
 #include <Matrix4x4.h>
 
@@ -75,10 +76,13 @@ public:
 	inline FillMode GetFillMode() const { return fillMode_; }
 
 
-
 	void AddMesh(const Mesh& mesh);
 
 	void AddMaterial(const Material& material);
+
+	
+	void SetRotate(const Vec3& rotate);
+
 
 private:
 

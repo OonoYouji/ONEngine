@@ -25,6 +25,16 @@ namespace ONE {
 	private:
 
 		/// ===================================================
+		/// private : methods
+		/// ===================================================
+
+		void CreateDepthStencil(ID3D12Device* device);
+
+		void CreateView(ID3D12Device* device);
+
+	private:
+
+		/// ===================================================
 		/// private : objects
 		/// ===================================================
 

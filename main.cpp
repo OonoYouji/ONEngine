@@ -40,6 +40,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera("GameCamera");
 
+	Model* model = modelManager->GetModel("MultiMaterial/MultiMaterial.obj");
+	Vec3 rotate{};
 
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
@@ -48,10 +50,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	while(!winApp->ProcessMessage()) {
 
 		cameraManager->Update();
+		
+		rotate.y += 1.0f / 64.0f;
+		model->SetRotate(rotate);
+
 
 		dxCommon->PreDraw();
 		modelManager->PreDraw();
-
 
 
 		modelManager->PostDraw();

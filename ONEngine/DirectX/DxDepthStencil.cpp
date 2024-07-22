@@ -1,14 +1,24 @@
 #include <DxDepthStencil.h>
 
-#include <WinApp.h>
 #include <cassert>
+
+#include <WinApp.h>
+
+#include <DxCommon.h>
+#include <DxDescriptor.h>
 
 
 ONE::DxDepthStencil::DxDepthStencil() {}
 ONE::DxDepthStencil::~DxDepthStencil() {}
 
 void ONE::DxDepthStencil::Initialize(ID3D12Device* device) {
-	HRESULT hr = S_FALSE;
+	
+	CreateDepthStencil(device);
+	CreateView(device);
+	
+}
+
+void ONE::DxDepthStencil::CreateDepthStencil(ID3D12Device* device) {
 
 	D3D12_RESOURCE_DESC desc{};
 	desc.Width = ONE::WinApp::kWindowSizeX;
@@ -27,7 +37,7 @@ void ONE::DxDepthStencil::Initialize(ID3D12Device* device) {
 	depthClearValue.DepthStencil.Depth = 1.0f;
 	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	hr = device->CreateCommittedResource(
+	HRESULT hr = device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,
@@ -37,5 +47,16 @@ void ONE::DxDepthStencil::Initialize(ID3D12Device* device) {
 	);
 
 	assert(SUCCEEDED(hr));
+}
+
+void ONE::DxDepthStencil::CreateView(ID3D12Device* device) {
+	D3D12_DEPTH_STENCIL_VIEW_DESC desc{};
+	desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+
+	device->CreateDepthStencilView(
+		depthStencilResource_.Get(), &desc, 
+		ONE::DxCommon::GetInstance()->GetDxDescriptor()->GetDsvCpuHandle()
+	);
 
 }

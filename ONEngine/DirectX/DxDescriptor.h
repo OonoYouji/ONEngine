@@ -60,6 +60,13 @@ namespace ONE {
 
 
 		/// <summary>
+		/// DSVは1つしかないので常に先頭を指す
+		/// </summary>
+		/// <returns></returns>
+		D3D12_CPU_DESCRIPTOR_HANDLE GetDsvCpuHandle();
+
+
+		/// <summary>
 		/// srvHeapをCommandListにセットする
 		/// </summary>
 		void SetSRVHeap(ID3D12GraphicsCommandList* commandList);
@@ -98,6 +105,10 @@ namespace ONE {
 		ComPtr<ID3D12DescriptorHeap> srvHeap_ = nullptr;
 		uint32_t srvUsedCount_ = 0;
 		uint32_t srvHeapSize_;
+
+		ComPtr<ID3D12DescriptorHeap> dsvHeap_ = nullptr;
+		uint32_t dsvUsedCount_ = 0;
+		uint32_t dsvHeapSize_;
 
 
 	private:

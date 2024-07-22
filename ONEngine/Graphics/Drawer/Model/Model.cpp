@@ -83,3 +83,9 @@ void Model::AddMesh(const Mesh& mesh) {
 void Model::AddMaterial(const Material& material) {
 	materials_.push_back(material);
 }
+
+
+void Model::SetRotate(const Vec3& rotate) {
+	transform_.rotate = rotate;
+	transform_.UpdateMatrix();
+}

@@ -49,7 +49,7 @@ void ONE::DxCommon::Initialize() {
 	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
 
 	depthStencil.reset(new DxDepthStencil());
-
+	depthStencil->Initialize(device_->GetDevice());
 
 	shaderCompiler_.reset(new DxShaderCompiler());
 	shaderCompiler_->Initialize();

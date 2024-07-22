@@ -3,10 +3,11 @@
 #include <cassert>
 
 #include <WinApp.h>
+
+#include <DxCommon.h>
 #include <DxDescriptor.h>
 #include <DxDevice.h>
 
-#include <WinApp.h>
 
 ONE::DxDoubleBuffer::DxDoubleBuffer() {}
 ONE::DxDoubleBuffer::~DxDoubleBuffer() {
@@ -44,7 +45,9 @@ void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
 
-	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, nullptr);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = ONE::DxCommon::GetInstance()->GetDxDescriptor()->GetDsvCpuHandle();
+	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList->ClearRenderTargetView(rtvHandle_[bbIndex], clearColor, 0, nullptr);
 
@@ -118,7 +121,7 @@ void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptor* 
 	D3D12_RENDER_TARGET_VIEW_DESC desc{};
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	
+
 	buffers_.resize(kBufferCount);
 	rtvHandle_.resize(kBufferCount);
 

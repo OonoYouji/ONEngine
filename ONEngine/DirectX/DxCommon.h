@@ -71,6 +71,8 @@ namespace ONE {
 
 		DxDescriptor* GetDxDescriptor() const { return descriptor_.get(); }
 
+		DxDepthStencil* GetDxDepthStencil() const { return depthStencil.get(); }
+
 	private:
 
 		/// ===================================================
