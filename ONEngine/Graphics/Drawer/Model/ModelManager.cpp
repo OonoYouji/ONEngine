@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <unordered_map>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -15,6 +16,7 @@
 #include <DxDescriptor.h>
 
 #include <CameraManager.h>
+
 
 /// ===================================================
 /// インスタンス確保
@@ -86,7 +88,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	Assimp::Importer importer;
 	std::string objPath = kDirectoryPath_ + filePath;
-	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder  | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 	Model* model = new Model();
 
@@ -103,6 +105,22 @@ Model* ModelManager::Load(const std::string& filePath) {
 		/// ---------------------------------------------------
 		/// vertex解析
 		/// ---------------------------------------------------
+		for(uint32_t i = 0; i < mesh->mNumVertices; ++i) {
+			aiVector3D& position = mesh->mVertices[i];
+			aiVector3D& normal = mesh->mNormals[i];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][i];
+
+			Mesh::VertexData vertex;
+			vertex.position = { position.x, position.y, position.z, 1.0f };
+			vertex.texcoord = { texcoord.x, texcoord.y };
+			vertex.position.x *= -1.0f;
+
+			modelMesh.AddVertex(vertex);
+		}
+
+		/// ---------------------------------------------------
+		/// index解析
+		/// ---------------------------------------------------
 		for(uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
@@ -112,54 +130,55 @@ Model* ModelManager::Load(const std::string& filePath) {
 				aiVector3D& position = mesh->mVertices[vertexIndex];
 				aiVector3D& normal = mesh->mNormals[vertexIndex];
 				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+				uint32_t& index = face.mIndices[element];
 
 				Mesh::VertexData vertex;
 				vertex.position = { position.x, position.y, position.z, 1.0f };
 				vertex.texcoord = { texcoord.x, texcoord.y };
-
 				vertex.position.x *= -1.0f;
 
-				modelMesh.AddVertex(vertex);
-				modelMesh.AddIndex(vertexIndex);
+				modelMesh.AddIndex(index);
 
 			}
 
 		}
-
-
-		/// ---------------------------------------------------
-		/// material解析
-		/// ---------------------------------------------------
-		for(uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
-			aiMaterial* material = scene->mMaterials[materialIndex];
-			uint32_t texCount = material->GetTextureCount(aiTextureType_DIFFUSE);
-			if(!texCount) {
-				continue;
-			}
-
-			aiString texFilePath;
-			material->GetTexture(aiTextureType_DIFFUSE, 0, &texFilePath);
-			Material modelMaterial;
-			modelMaterial.SetFilePath(texFilePath.C_Str());
-
-			std::filesystem::path path(texFilePath.C_Str());
-			std::string texPath = path.filename().string();
-			std::string::size_type dotIndex = texPath.rfind('.');
-			if(dotIndex != std::string::npos) {
-				texPath = texPath.substr(0, dotIndex);
-			}
-			modelMaterial.SetTextureName(texPath);
-
-			modelMaterial.Create();
-			model->AddMaterial(modelMaterial);
-
-		}
-
 
 		modelMesh.Create();
 		model->AddMesh(modelMesh);
 
 	}
+
+
+	/// ---------------------------------------------------
+	/// material解析
+	/// ---------------------------------------------------
+	for(uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
+		aiMaterial* material = scene->mMaterials[materialIndex];
+		uint32_t texCount = material->GetTextureCount(aiTextureType_DIFFUSE);
+		if(!texCount) {
+			continue;
+		}
+
+		aiString texFilePath;
+		material->GetTexture(aiTextureType_DIFFUSE, 0, &texFilePath);
+		Material modelMaterial;
+		modelMaterial.SetFilePath(texFilePath.C_Str());
+
+		std::filesystem::path path(texFilePath.C_Str());
+		std::string texPath = path.filename().string();
+		std::string::size_type dotIndex = texPath.rfind('.');
+		if(dotIndex != std::string::npos) {
+			texPath = texPath.substr(0, dotIndex);
+		}
+		modelMaterial.SetTextureName(texPath);
+
+		modelMaterial.Create();
+		model->AddMaterial(modelMaterial);
+
+	}
+
+
+
 
 	model->Initialize();
 	model->SetFillMode(kSolid);

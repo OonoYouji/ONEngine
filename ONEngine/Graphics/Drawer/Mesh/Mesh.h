@@ -26,6 +26,7 @@ public:
 	struct VertexData final {
 		Vec4 position;
 		Vec2 texcoord;
+		bool operator==(const VertexData&) const = default;
 	};
 
 public:
@@ -50,7 +51,6 @@ public:
 	/// </summary>
 	/// <param name="index"> : uint32_t</param>
 	void AddIndex(uint32_t index);
-
 
 	/// <summary>
 	/// バッファの作成
