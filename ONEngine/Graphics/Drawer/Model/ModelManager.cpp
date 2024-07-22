@@ -1,9 +1,7 @@
 #include <ModelManager.h>
 
-#include <fstream>
-#include <sstream>
-#include <cassert>
 #include <iostream>
+#include <string>
 #include <filesystem>
 
 #include <assimp/Importer.hpp>
@@ -87,8 +85,8 @@ void ModelManager::Finalize() {
 Model* ModelManager::Load(const std::string& filePath) {
 
 	Assimp::Importer importer;
-	std::string path = kDirectoryPath_ + filePath;
-	const aiScene* scene = importer.ReadFile(path.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	std::string objPath = kDirectoryPath_ + filePath;
+	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 
 	Model* model = new Model();
 
@@ -137,21 +135,28 @@ Model* ModelManager::Load(const std::string& filePath) {
 			aiMaterial* material = scene->mMaterials[materialIndex];
 			uint32_t texCount = material->GetTextureCount(aiTextureType_DIFFUSE);
 			if(!texCount) {
-				Material modelMaterial;
-				modelMaterial.SetTextureName("uvChecker.png"); //- white1x1に統一する
-				modelMaterial.Create();
-				model->AddMaterial(modelMaterial);
-				break;
+				//Material modelMaterial;
+				//modelMaterial.SetTextureName("uvChecker.png"); //- white1x1に統一する
+				//modelMaterial.Create();
+				//model->AddMaterial(modelMaterial);
+				continue;
 			}
 
-			for(uint32_t texIndex = 0; texIndex < texCount; ++texIndex) {
-				aiString texFilePath;
-				material->GetTexture(aiTextureType_DIFFUSE, 0, &texFilePath);
-				Material modelMaterial;
-				modelMaterial.SetTextureName(texFilePath.C_Str());
-				modelMaterial.Create();
-				model->AddMaterial(modelMaterial);
+			aiString texFilePath;
+			material->GetTexture(aiTextureType_DIFFUSE, 0, &texFilePath);
+			Material modelMaterial;
+			modelMaterial.SetFilePath(texFilePath.C_Str());
+
+			std::filesystem::path path(texFilePath.C_Str());
+			std::string texPath = path.filename().string();
+			std::string::size_type dotIndex = texPath.rfind('.');
+			if(dotIndex != std::string::npos) {
+				texPath = texPath.substr(0, dotIndex);
 			}
+			modelMaterial.SetTextureName(texPath);
+
+			modelMaterial.Create();
+			model->AddMaterial(modelMaterial);
 
 		}
 
@@ -181,7 +186,7 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	activeModels_.push_back(GetModel("Teapot/Teapot.obj"));
+	activeModels_.push_back(GetModel("MultiMaterial/MultiMaterial.obj"));
 
 	std::list<Model*> solid;
 	std::list<Model*> wire;

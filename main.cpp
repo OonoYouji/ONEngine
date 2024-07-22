@@ -31,9 +31,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize();
 
 	modelManager->Initialize();
-	modelManager->Load("Teapot/Teapot.obj");
+	modelManager->Load("MultiMaterial/MultiMaterial.obj");
 
-	textureManager->Load("uvChecker.png");
+	textureManager->Load("uvChecker", "uvChecker.png");
+	textureManager->Load("monsterBall", "monsterBall.png");
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();

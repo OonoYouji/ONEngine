@@ -21,10 +21,18 @@ void Material::Create() {
 
 
 /// ===================================================
+/// テクスチャのファイルパスをセット
+/// ===================================================
+void Material::SetFilePath(const std::string& filePath) {
+	filePath_ = filePath;
+}
+
+
+/// ===================================================
 /// テクスチャの名前をセット
 /// ===================================================
-void Material::SetTextureName(const std::string& filePath) {
-	filePath_ = filePath;
+void Material::SetTextureName(const std::string& textureName) {
+	texName_ = textureName;
 }
 
 
@@ -32,7 +40,7 @@ void Material::SetTextureName(const std::string& filePath) {
 /// テクスチャのバインド
 /// ===================================================
 void Material::BindTexture(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex) {
-	commandList->SetGraphicsRootDescriptorTable(rootParamIndex, TextureManager::GetInstance()->GetTexture(filePath_).GetGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(rootParamIndex, TextureManager::GetInstance()->GetTexture(texName_).GetGPUHandle());
 }
 
 

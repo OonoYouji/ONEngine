@@ -40,7 +40,10 @@ public:
 	/// テクスチャのファイルパスをセット
 	/// </summary>
 	/// <param name="filePath"> : TextureManager::Load();の引数と同じ</param>
-	void SetTextureName(const std::string& filePath);
+	void SetFilePath(const std::string& filePath);
+
+	void SetTextureName(const std::string& textureName);
+	
 
 	/// <summary>
 	/// commandListにテクスチャを積む
@@ -63,7 +66,8 @@ private:
 	/// ===================================================
 
 	std::string filePath_;
-	
+	std::string texName_;
+
 	ComPtr<ID3D12Resource> materialBuffer_;
 	MaterialData* materialData_ = nullptr;
 

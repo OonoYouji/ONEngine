@@ -44,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <param name="filePath"></param>
-	void Load(const std::string& filePath);
+	void Load(const std::string& texName, const std::string& filePath);
 
 private:
 
