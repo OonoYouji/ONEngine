@@ -19,7 +19,9 @@ Model::~Model() {
 }
 
 
-
+/// ===================================================
+/// 初期化処理
+/// ===================================================
 void Model::Initialize() {
 
 	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(TransformData));
@@ -31,39 +33,35 @@ void Model::Initialize() {
 
 }
 
+
+/// ===================================================
+/// 描画
+/// ===================================================
 void Model::Draw() {
-	/*ModelManager::GetInstance()->SetPipelineState(kSolid);
-
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetCommand()->GetList();
-
-	transformData_->matWorld = transform_.matTransform;
-
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	commandList->SetGraphicsRootConstantBufferView(0, transformBuffer_->GetGPUVirtualAddress());
-
-	commandList->DrawInstanced(3, 1, 0, 0);*/
-
 
 }
 
+
+/// ===================================================
+/// DrawCallの呼び出し
+/// ===================================================
 void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
 	transformData_->matWorld = transform_.matTransform;
 
 	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
-
 
 	for(uint32_t index = 0; index < meshes_.size(); ++index) {
 		materials_[index].BindMaterial(commandList, 2);
 		materials_[index].BindTexture(commandList, 3);
 		meshes_[index].Draw(commandList, true);
 	}
-	//commandList->DrawInstanced(3, 1, 0, 0);
+
 }
 
 
-
+/// ===================================================
+/// FillModeのセット
+/// ===================================================
 void Model::SetFillMode(FillMode fillMode) {
 	fillMode_ = fillMode;
 }
@@ -85,6 +83,9 @@ void Model::AddMaterial(const Material& material) {
 }
 
 
+/// ===================================================
+/// 回転のセット
+/// ===================================================
 void Model::SetRotate(const Vec3& rotate) {
 	transform_.rotate = rotate;
 	transform_.UpdateMatrix();

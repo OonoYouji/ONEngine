@@ -15,21 +15,12 @@
 #include <Material.h>
 
 
-struct VertexData {
-	Vec4 pos;
-	Vec2 texcoord;
-};
-
 struct TransformData {
 	Mat4 matWorld;
 };
 
 struct ViewProjectionData {
 	Mat4 matVp;
-};
-
-struct MaterialData {
-	Vec4 color;
 };
 
 
@@ -75,14 +66,21 @@ public:
 	/// <returns></returns>
 	inline FillMode GetFillMode() const { return fillMode_; }
 
-
+	
+	/// <summary>
+	/// メッシュの追加
+	/// </summary>
+	/// <param name="mesh"></param>
 	void AddMesh(const Mesh& mesh);
 
+	/// <summary>
+	/// マテリアルの追加
+	/// </summary>
+	/// <param name="material"></param>
 	void AddMaterial(const Material& material);
 
 	
 	void SetRotate(const Vec3& rotate);
-
 
 private:
 
@@ -99,5 +97,6 @@ private:
 	
 	std::vector<Mesh> meshes_;
 	std::vector<Material> materials_;
+
 
 };
