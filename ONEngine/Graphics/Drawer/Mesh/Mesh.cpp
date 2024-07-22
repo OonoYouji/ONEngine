@@ -62,7 +62,8 @@ void Mesh::Draw(ID3D12GraphicsCommandList* commandList, bool isDrawCall) {
 
 	if(!isDrawCall) { return; }
 
-	commandList->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
+	//commandList->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
+	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 
 }
 

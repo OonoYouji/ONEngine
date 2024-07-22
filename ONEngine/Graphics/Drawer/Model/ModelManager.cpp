@@ -86,7 +86,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	Assimp::Importer importer;
 	std::string objPath = kDirectoryPath_ + filePath;
-	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder  | aiProcess_FlipUVs);
 
 	Model* model = new Model();
 
@@ -118,7 +118,6 @@ Model* ModelManager::Load(const std::string& filePath) {
 				vertex.texcoord = { texcoord.x, texcoord.y };
 
 				vertex.position.x *= -1.0f;
-				vertex.texcoord.x *= -1.0f;
 
 				modelMesh.AddVertex(vertex);
 				modelMesh.AddIndex(vertexIndex);
@@ -135,10 +134,6 @@ Model* ModelManager::Load(const std::string& filePath) {
 			aiMaterial* material = scene->mMaterials[materialIndex];
 			uint32_t texCount = material->GetTextureCount(aiTextureType_DIFFUSE);
 			if(!texCount) {
-				//Material modelMaterial;
-				//modelMaterial.SetTextureName("uvChecker.png"); //- white1x1に統一する
-				//modelMaterial.Create();
-				//model->AddMaterial(modelMaterial);
 				continue;
 			}
 
