@@ -1,8 +1,9 @@
 #pragma once
 
 #include <memory>
-#include <list>
+#include <unordered_map>
 #include <vector>
+#include <list>
 
 #include <PipelineState.h>
 #include <Model.h>
@@ -52,12 +53,13 @@ public:
 	void PostDraw();
 
 
+	Model* GetModel(const std::string& filePath);
 
 	/// <summary>
 	/// モデルの追加
 	/// </summary>
 	/// <param name="model"></param>
-	void AddModel(Model* model);
+	void AddModel(const std::string& filePath,Model* model);
 
 	/// <summary>
 	/// command list に pipeline state をセット
@@ -76,7 +78,8 @@ private:
 	std::vector<std::unique_ptr<PipelineState>> pipelines_;
 	PipelineState::Shader shader_{};
 
-	std::list<std::unique_ptr<Model>> models_;
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+	std::list<Model*> activeModels_;
 
 	
 	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;

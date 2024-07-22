@@ -1,13 +1,25 @@
 #pragma once
 
+#include <wrl/client.h>
+#include <d3d12.h>
+
 #include <string>
 
+#include <Vector4.h>
 
+
+using namespace Microsoft::WRL;
 
 /// ===================================================
 /// マテリアル
 /// ===================================================
 class Material final {
+public:
+
+	struct MaterialData final {
+		Vec4 color;
+	};
+
 public:
 
 	Material();
@@ -17,6 +29,12 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/// <summary>
+	/// バッファの生成
+	/// </summary>
+	void Create();
+
+
 
 	/// <summary>
 	/// テクスチャのファイルパスをセット
@@ -24,7 +42,19 @@ public:
 	/// <param name="filePath"> : TextureManager::Load();の引数と同じ</param>
 	void SetTextureName(const std::string& filePath);
 
+	/// <summary>
+	/// commandListにテクスチャを積む
+	/// </summary>
+	/// <param name="commandList"> : コマンドリスト</param>
+	/// <param name="rootParamIndex"> : ルートパラメータのインデックス</param>
+	void BindTexture(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex);
 
+	/// <summary>
+	/// commandListにマテリアルを積む
+	/// </summary>
+	/// <param name="commandList"> : コマンドリスト</param>
+	/// <param name="rootParamIndex"> : ルートパラメータのインデックス</param>
+	void BindMaterial(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex);
 
 private:
 
@@ -34,5 +64,7 @@ private:
 
 	std::string filePath_;
 	
-	///- uvTransform
+	ComPtr<ID3D12Resource> materialBuffer_;
+	MaterialData* materialData_ = nullptr;
+
 };

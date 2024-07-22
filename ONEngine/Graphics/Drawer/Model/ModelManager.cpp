@@ -90,6 +90,8 @@ Model* ModelManager::Load(const std::string& filePath) {
 	std::string path = kDirectoryPath_ + filePath;
 	const aiScene* scene = importer.ReadFile(path.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 
+	Model* model = new Model();
+
 	/// ---------------------------------------------------
 	/// mesh解析
 	/// ---------------------------------------------------
@@ -98,8 +100,11 @@ Model* ModelManager::Load(const std::string& filePath) {
 		assert(mesh->HasNormals());
 		assert(mesh->HasTextureCoords(0));
 
-		Mesh texcoord;
+		Mesh modelMesh;
 
+		/// ---------------------------------------------------
+		/// vertex解析
+		/// ---------------------------------------------------
 		for(uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
@@ -110,20 +115,56 @@ Model* ModelManager::Load(const std::string& filePath) {
 				aiVector3D& normal = mesh->mNormals[vertexIndex];
 				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
 
-				VertexData vertex;
-				vertex.pos = { position.x, position.y, position.z, 1.0f };
-				vertex.texcoord = { texcoord.x, texcoord.y};
+				Mesh::VertexData vertex;
+				vertex.position = { position.x, position.y, position.z, 1.0f };
+				vertex.texcoord = { texcoord.x, texcoord.y };
 
-				vertex.pos.x *= -1.0f;
+				vertex.position.x *= -1.0f;
 				vertex.texcoord.x *= -1.0f;
-				
+
+				modelMesh.AddVertex(vertex);
+				modelMesh.AddIndex(vertexIndex);
+
 			}
 
 		}
 
+
+		/// ---------------------------------------------------
+		/// material解析
+		/// ---------------------------------------------------
+		for(uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
+			aiMaterial* material = scene->mMaterials[materialIndex];
+			uint32_t texCount = material->GetTextureCount(aiTextureType_DIFFUSE);
+			if(!texCount) {
+				Material modelMaterial;
+				modelMaterial.SetTextureName("uvChecker.png"); //- white1x1に統一する
+				modelMaterial.Create();
+				model->AddMaterial(modelMaterial);
+				break;
+			}
+
+			for(uint32_t texIndex = 0; texIndex < texCount; ++texIndex) {
+				aiString texFilePath;
+				material->GetTexture(aiTextureType_DIFFUSE, 0, &texFilePath);
+				Material modelMaterial;
+				modelMaterial.SetTextureName(texFilePath.C_Str());
+				modelMaterial.Create();
+				model->AddMaterial(modelMaterial);
+			}
+
+		}
+
+
+		modelMesh.Create();
+		model->AddMesh(modelMesh);
+
 	}
 
-	return nullptr;
+	model->Initialize();
+	model->SetFillMode(kSolid);
+	AddModel(filePath, model);
+	return GetModel(filePath);
 }
 
 
@@ -131,7 +172,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 /// 描画前処理
 /// ===================================================
 void ModelManager::PreDraw() {
-
+	activeModels_.clear();
 }
 
 
@@ -140,17 +181,19 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
+	activeModels_.push_back(GetModel("Teapot/Teapot.obj"));
+
 	std::list<Model*> solid;
 	std::list<Model*> wire;
 
 	/// ---------------------------------------------------
 	/// SolidとWireFrameで仕分け
 	/// ---------------------------------------------------
-	for(const auto& model : models_) {
+	for(const auto& model : activeModels_) {
 		if(model->GetFillMode() == FillMode::kSolid) {
-			solid.push_back(model.get());
+			solid.push_back(model);
 		} else {
-			wire.push_back(model.get());
+			wire.push_back(model);
 		}
 	}
 
@@ -163,7 +206,7 @@ void ModelManager::PostDraw() {
 	/// ---------------------------------------------------
 	/// Solidの描画
 	/// ---------------------------------------------------
-	
+
 	pipelines_[kSolid]->SetPipelineState();
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -186,13 +229,17 @@ void ModelManager::PostDraw() {
 
 }
 
+Model* ModelManager::GetModel(const std::string& filePath) {
+	return models_.at(filePath).get();
+}
+
 
 /// ===================================================
 /// Modelの追加
 /// ===================================================
-void ModelManager::AddModel(Model* model) {
+void ModelManager::AddModel(const std::string& name, Model* model) {
 	std::unique_ptr<Model> add(model);
-	models_.push_back(std::move(add));
+	models_[name] = std::move(add);
 }
 
 

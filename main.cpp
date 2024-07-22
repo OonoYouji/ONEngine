@@ -35,11 +35,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	textureManager->Load("uvChecker.png");
 
-
-	Model* model = new Model();
-	model->Initialize();
-	model->SetFillMode(kSolid);
-
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera("GameCamera");

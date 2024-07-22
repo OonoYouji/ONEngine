@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include <vector>
 
 #include <PipelineState.h>
 
@@ -90,16 +90,10 @@ private:
 
 	FillMode fillMode_;
 
-	ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW vbv_;
-
 	ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
 	TransformData* transformData_ = nullptr;
 	
-	ComPtr<ID3D12Resource> materialBuffer_ = nullptr;
-	MaterialData* materialData_ = nullptr;
-
-	std::list<Mesh> meshes_;
-	std::list<Material> materials_;
+	std::vector<Mesh> meshes_;
+	std::vector<Material> materials_;
 
 };
