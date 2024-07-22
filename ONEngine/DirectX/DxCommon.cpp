@@ -8,6 +8,7 @@
 #include <DxCommand.h>
 #include <DxDescriptor.h>
 #include <DxDoubleBuffer.h>
+#include <DxDepthStencil.h>
 #include <DxDebug.h>
 #include <DxShaderCompiler.h>
 
@@ -47,8 +48,12 @@ void ONE::DxCommon::Initialize() {
 	doubleBuffer_.reset(new DxDoubleBuffer());
 	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
 
+	depthStencil.reset(new DxDepthStencil());
+
+
 	shaderCompiler_.reset(new DxShaderCompiler());
 	shaderCompiler_->Initialize();
+
 
 }
 
@@ -59,6 +64,7 @@ void ONE::DxCommon::Initialize() {
 void ONE::DxCommon::Finalize() {
 
 	shaderCompiler_.reset();
+	depthStencil.reset();
 	doubleBuffer_.reset();
 	descriptor_.reset();
 	command_.reset();

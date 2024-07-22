@@ -83,6 +83,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Material\Material.cpp">
       <Filter>ONEngine\Graphics\Drawer\Material</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\DirectX\DxDepthStencil.cpp">
+      <Filter>ONEngine\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -230,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Material\Material.h">
       <Filter>ONEngine\Graphics\Drawer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\DirectX\DxDepthStencil.h">
+      <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

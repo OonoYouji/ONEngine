@@ -1,7 +1,7 @@
 #include <DxBarrierCreator.h>
 
-#include <DxCommon.h>
 #include <DxCommand.h>
+#include <DxCommon.h>
 
 
 void ONE::DxBarrierCreator::CreateBarrier(ID3D12Resource* resourec, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after) {

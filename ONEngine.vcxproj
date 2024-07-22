@@ -19,6 +19,7 @@
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxDebug.cpp" />
+    <ClCompile Include="ONEngine\DirectX\DxDepthStencil.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxDescriptor.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxDevice.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxDoubleBuffer.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />
     <ClInclude Include="ONEngine\DirectX\DxDebug.h" />
+    <ClInclude Include="ONEngine\DirectX\DxDepthStencil.h" />
     <ClInclude Include="ONEngine\DirectX\DxDescriptor.h" />
     <ClInclude Include="ONEngine\DirectX\DxDevice.h" />
     <ClInclude Include="ONEngine\DirectX\DxDoubleBuffer.h" />

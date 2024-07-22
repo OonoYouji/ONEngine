@@ -12,6 +12,7 @@ namespace ONE {
 	class DxDescriptor;
 	class DxDebug;
 	class DxShaderCompiler;
+	class DxDepthStencil;
 
 	/// ===================================================
 	/// DirectX12汎用クラス
@@ -80,6 +81,7 @@ namespace ONE {
 		std::unique_ptr<DxCommand> command_ = nullptr;
 		std::unique_ptr<DxDescriptor> descriptor_ = nullptr;
 		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
+		std::unique_ptr<DxDepthStencil> depthStencil = nullptr;
 
 		std::unique_ptr<DxDebug> debug_ = nullptr;
 
