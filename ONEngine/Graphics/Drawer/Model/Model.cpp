@@ -68,7 +68,7 @@ void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(2, materialBuffer_->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootDescriptorTable(3, TextureManager::GetInstance()->GetTexture("uvChecker").GetGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, TextureManager::GetInstance()->GetTexture("uvChecker.png").GetGPUHandle());
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 }
