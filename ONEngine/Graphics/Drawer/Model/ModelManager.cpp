@@ -87,7 +87,7 @@ void ModelManager::Finalize() {
 Model* ModelManager::Load(const std::string& filePath) {
 
 	Assimp::Importer importer;
-	std::string objPath = kDirectoryPath_ + filePath;
+	std::string objPath = kDirectoryPath_ + filePath + "/" + filePath + ".obj";
 	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 	Model* model = new Model();
@@ -200,7 +200,7 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	activeModels_.push_back(GetModel("MultiMaterial/MultiMaterial.obj"));
+	activeModels_.push_back(GetModel("MultiMaterial"));
 
 	std::list<Model*> solid;
 	std::list<Model*> wire;

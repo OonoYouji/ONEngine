@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize();
 
 	modelManager->Initialize();
-	modelManager->Load("MultiMaterial/MultiMaterial.obj");
+	modelManager->Load("MultiMaterial");
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera("GameCamera");
 
-	Model* model = modelManager->GetModel("MultiMaterial/MultiMaterial.obj");
+	Model* model = modelManager->GetModel("MultiMaterial");
 	Vec3 rotate{};
 
 	float executionTime = frameTimer->End();
