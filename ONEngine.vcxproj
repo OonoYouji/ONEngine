@@ -11,6 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Externals\imgui\imgui.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
@@ -33,6 +40,7 @@
     <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="ONEngine\Logger\Logger.cpp" />
     <ClCompile Include="ONEngine\Math\Matrix4x4.cpp" />
     <ClCompile Include="ONEngine\Math\Vector2.cpp" />
@@ -42,6 +50,14 @@
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Externals\imgui\imconfig.h" />
+    <ClInclude Include="Externals\imgui\imgui.h" />
+    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="Externals\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Externals\imgui\imgui_internal.h" />
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Externals\imgui\imstb_textedit.h" />
+    <ClInclude Include="Externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
@@ -63,6 +79,7 @@
     <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h" />
+    <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="ONEngine\Logger\Logger.h" />
     <ClInclude Include="ONEngine\Math\Matrix4x4.h" />
     <ClInclude Include="ONEngine\Math\Vector2.h" />
@@ -91,6 +108,9 @@
     <ProjectReference Include="Externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Externals\imgui\LICENSE.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -142,7 +162,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

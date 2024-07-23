@@ -86,6 +86,30 @@
     <ClCompile Include="ONEngine\DirectX\DxDepthStencil.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_demo.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp">
+      <Filter>ONEngine\ImGuiManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -150,6 +174,15 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\Drawer\Material">
       <UniqueIdentifier>{e1a0e41f-2518-407e-97d5-292e059cf814}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals">
+      <UniqueIdentifier>{dda628e9-efba-4166-95bf-477032782464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals\imgui">
+      <UniqueIdentifier>{f607e672-bd36-4eb2-85b0-4691b97fb9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ImGuiManager">
+      <UniqueIdentifier>{fc0c0eb1-897c-4cee-b2e7-1b0b1f2f4202}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +270,33 @@
     <ClInclude Include="ONEngine\DirectX\DxDepthStencil.h">
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
+    <ClInclude Include="Externals\imgui\imconfig.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_win32.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_internal.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_textedit.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h">
+      <Filter>ONEngine\ImGuiManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -250,5 +310,10 @@
     <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
       <Filter>Resources\Shaders\Model</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Externals\imgui\LICENSE.txt">
+      <Filter>Externals\imgui</Filter>
+    </Text>
   </ItemGroup>
 </Project>

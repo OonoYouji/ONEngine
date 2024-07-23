@@ -5,6 +5,7 @@
 #include <DxCommon.h>
 #include <FrameTimer.h>
 
+#include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <CameraManager.h>
 #include <TextureManager.h>
@@ -26,9 +27,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ModelManager* modelManager = ModelManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
+	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
+
+	imGuiManager->Initialize(winApp, dxCommon);
 
 	modelManager->Initialize();
 	modelManager->Load("MultiMaterial");
@@ -49,6 +53,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		imGuiManager->BeginFrame();
+
 		cameraManager->Update();
 		
 		rotate.y += 1.0f / 64.0f;
@@ -60,6 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		modelManager->PostDraw();
+		imGuiManager->EndFrame();
 		dxCommon->PostDraw();
 
 	}
@@ -69,6 +76,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Finalize();
 	textureManager->Finalize();
 
+	imGuiManager->Finalize();
 	dxCommon->Finalize();
 	winApp->Finalize();
 

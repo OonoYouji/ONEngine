@@ -71,6 +71,13 @@ namespace ONE {
 		/// </summary>
 		void SetSRVHeap(ID3D12GraphicsCommandList* commandList);
 
+
+		/// <summary>
+		/// SRVHeapのゲッタ
+		/// </summary>
+		/// <returns></returns>
+		ID3D12DescriptorHeap* GetSRV() const { return srvHeap_.Get(); }
+
 	private:
 
 		/// ===================================================
