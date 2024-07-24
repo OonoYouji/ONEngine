@@ -14,32 +14,84 @@
 namespace ONE {
 	class WinApp;
 	class DxCommon;
+	class DxDescriptor;
 }
 
 using namespace Microsoft::WRL;
 
-class ImGuiManager final {
-private:
 
+/// ===================================================
+/// Imguiの管理クラス
+/// ===================================================
+class ImGuiManager final {
 	ImGuiManager() = default;
 	~ImGuiManager() = default;
-
-	ONE::DxCommon* dxCommon_;
-
 public:
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	/// <summary>
+	/// インスタンス確保
+	/// </summary>
+	/// <returns></returns>
 	static ImGuiManager* GetInstance();
 
+
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon);
+
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
+
+
+	/// <summary>
+	/// フレームの最初に行う処理
+	/// </summary>
 	void BeginFrame();
+
+	/// <summary>
+	/// フレームの最後に行う処理
+	/// </summary>
 	void EndFrame();
 
 private:
 
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	/// <summary>
+	/// imguiの見た目の設定
+	/// </summary>
 	void StyleSetting();
+
+	/// <summary>
+	/// カラーコードをimguiのvector4に変換する
+	/// </summary>
 	ImVec4 ColorToVec4(uint32_t color);
 
+
+private:
+
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+	ONE::DxCommon* dxCommon_ = nullptr;
+	ONE::DxDescriptor* dxDescriptor_ = nullptr;
+
+private:
+	ImGuiManager(const ImGuiManager&) = delete;
+	ImGuiManager(ImGuiManager&&) = delete;
+	ImGuiManager& operator= (const ImGuiManager&) = delete;
+	ImGuiManager& operator= (ImGuiManager&&) = delete;
 };
 

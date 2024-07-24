@@ -8,19 +8,23 @@
 #include <WinApp.h>
 
 
+
+/// ===================================================
+/// インスタンス確保
+/// ===================================================
 ImGuiManager* ImGuiManager::GetInstance() {
 	static ImGuiManager instance;
 	return &instance;
 }
 
 
-
+/// ===================================================
+/// 初期化
+/// ===================================================
 void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
 	dxCommon_ = dxCommon;
-
-	ONE::DxDescriptor* dxDescriptor = dxCommon_->GetDxDescriptor();
-	ID3D12DescriptorHeap* srvHeap = dxDescriptor->GetSRV();
+	dxDescriptor_ = dxCommon->GetDxDescriptor();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -33,21 +37,25 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 	StyleSetting();
 	ImGui_ImplWin32_Init(winApp->GetHWND());
 	ImGui_ImplDX12_Init(
-		dxCommon_->GetDevice(),
+		dxCommon->GetDevice(),
 		ONE::DxDoubleBuffer::kBufferCount,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		srvHeap,
-		dxDescriptor->GetSrvCpuHandle(),
-		dxDescriptor->GetSrvGpuHandle()
+		dxDescriptor_->GetSRV(),
+		dxDescriptor_->GetSrvCpuHandle(),
+		dxDescriptor_->GetSrvGpuHandle()
 	);
 
-	dxDescriptor->AddSrvUsedCount();
+	dxDescriptor_->AddSrvUsedCount();
 
 }
 
+
+/// ===================================================
+/// 終了処理
+/// ===================================================
 void ImGuiManager::Finalize() {
 
-	dxCommon_ = nullptr;
+	dxDescriptor_ = nullptr;
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -56,35 +64,36 @@ void ImGuiManager::Finalize() {
 }
 
 
+/// ===================================================
+/// 毎フレーム最初に行う
+/// ===================================================
 void ImGuiManager::BeginFrame() {
-
-
 
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	dxCommon_->GetDxDescriptor()->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
-
-
-
-
+	dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 }
 
+
+/// ===================================================
+/// 毎フレーム最後に行う
+/// ===================================================
 void ImGuiManager::EndFrame() {
 
-
-
-
-
-	dxCommon_->GetDxDescriptor()->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
+	dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetDxCommand()->GetList());
 
 }
 
+
+/// ===================================================
+/// imguiの見た目設定
+/// ===================================================
 void ImGuiManager::StyleSetting() {
 	ImGuiStyle& style = ImGui::GetStyle();
 
@@ -99,14 +108,15 @@ void ImGuiManager::StyleSetting() {
 
 }
 
+
+/// ===================================================
+/// カラーコードをImGui::Vector4に変換する
+/// ===================================================
 ImVec4 ImGuiManager::ColorToVec4(uint32_t color) {
-	ImVec4 colorf = {
+	return {
 		((color >> 24) & 0xff) / 255.0f, //- R
 		((color >> 16) & 0xff) / 255.0f, //- G
 		((color >> 8) & 0xff) / 255.0f,  //- B
 		((color >> 0) & 0xff) / 255.0f   //- A
 	};
-
-
-	return colorf;
 }
