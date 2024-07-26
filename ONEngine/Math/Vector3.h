@@ -22,14 +22,14 @@ public:
 	/// public : static objects
 	/// ===================================================
 
-	static const Vector3 kUp;		//- ( 0,  1,  0 )
-	static const Vector3 kDown;		//- ( 0, -1,  0 )
-	static const Vector3 kLeft;		//- (-1,  0,  0 )
-	static const Vector3 kRight;	//- ( 1,  0,  0 )
-	static const Vector3 kFront;	//- ( 0,  0, -1 )
-	static const Vector3 kBack;		//- ( 0,  0,  1 )
+	static const Vector3 kUp;		// ( 0,  1,  0 )
+	static const Vector3 kDown;		// ( 0, -1,  0 )
+	static const Vector3 kLeft;		// (-1,  0,  0 )
+	static const Vector3 kRight;	// ( 1,  0,  0 )
+	static const Vector3 kFront;	// ( 0,  0, -1 )
+	static const Vector3 kBack;		// ( 0,  0,  1 )
 
-	static const Vector3 kOne;		//- ( 1,  1,  1 )
+	static const Vector3 kOne;		// ( 1,  1,  1 )
 
 public:
 
