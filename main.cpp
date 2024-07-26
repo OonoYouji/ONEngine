@@ -5,10 +5,11 @@
 #include <DxCommon.h>
 #include <FrameTimer.h>
 
-#include <ImGuiManager.h>
+#include <SceneManager.h>
 #include <ModelManager.h>
-#include <CameraManager.h>
 #include <TextureManager.h>
+#include <ImGuiManager.h>
+#include <CameraManager.h>
 
 #include <GameCamera.h>
 
@@ -24,18 +25,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 
+	SceneManager* sceneManager = SceneManager::GetInstance();
 	ModelManager* modelManager = ModelManager::GetInstance();
-	CameraManager* cameraManager = CameraManager::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
+	CameraManager* cameraManager = CameraManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
-
 	imGuiManager->Initialize(winApp, dxCommon);
-
 	modelManager->Initialize();
-	//modelManager->Load("MultiMaterial");
+	sceneManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
@@ -44,9 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera("GameCamera");
 
-	Model* model = modelManager->CreateCube();
-	Vec3 rotate{};
 
+	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
 
@@ -56,15 +55,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imGuiManager->BeginFrame();
 
 		cameraManager->Update();
-		
-		rotate.y += 1.0f / 64.0f;
-		model->SetRotate(rotate);
+		sceneManager->Update();
 
 
 		dxCommon->PreDraw();
 		modelManager->PreDraw();
 
-		model->Draw();
+		sceneManager->Draw();
 
 		modelManager->PostDraw();
 		imGuiManager->EndFrame();

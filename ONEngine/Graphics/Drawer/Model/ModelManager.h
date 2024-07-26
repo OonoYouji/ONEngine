@@ -44,13 +44,13 @@ public:
 	/// 平面の生成
 	/// </summary>
 	/// <returns></returns>
-	Model* CreatePlane();
+	static Model* CreatePlane();
 
 	/// <summary>
 	/// 立方体の生成
 	/// </summary>
 	/// <returns></returns>
-	Model* CreateCube();
+	static Model* CreateCube();
 
 	/// <summary>
 	/// 描画前処理

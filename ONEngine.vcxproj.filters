@@ -110,6 +110,15 @@
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp">
       <Filter>ONEngine\ImGuiManager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Game.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -183,6 +192,12 @@
     </Filter>
     <Filter Include="ONEngine\ImGuiManager">
       <UniqueIdentifier>{fc0c0eb1-897c-4cee-b2e7-1b0b1f2f4202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes">
+      <UniqueIdentifier>{26b6aa1b-3b4a-4214-b77d-5edd7024a2a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\Manager">
+      <UniqueIdentifier>{52971ea5-3cfa-4686-8b35-14d708cda332}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -296,6 +311,15 @@
     </ClInclude>
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h">
       <Filter>ONEngine\ImGuiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Manager\BaseScene.h">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Manager\SceneManager.h">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Game.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

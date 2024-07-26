@@ -219,8 +219,8 @@ Model* ModelManager::CreatePlane() {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	AddModel("Plane", model);
-	return GetModel("Plane");
+	GetInstance()->AddModel("Plane", model);
+	return GetInstance()->GetModel("Plane");
 }
 
 
@@ -290,8 +290,8 @@ Model* ModelManager::CreateCube() {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	AddModel("Cube", model);
-	return GetModel("Cube");
+	GetInstance()->AddModel("Cube", model);
+	return GetInstance()->GetModel("Cube");
 }
 
 
