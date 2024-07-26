@@ -188,6 +188,114 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 
 /// ===================================================
+/// 平面の生成
+/// ===================================================
+Model* ModelManager::CreatePlane() {
+	Model* model = new Model();
+
+	Mesh mesh{};
+	Material material{};
+
+	mesh.AddVertex({ { -0.5f, 0.0f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f, 0.0f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.0f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.0f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+
+	mesh.AddIndex(0);
+	mesh.AddIndex(1);
+	mesh.AddIndex(2);
+	mesh.AddIndex(0);
+	mesh.AddIndex(2);
+	mesh.AddIndex(3);
+
+	material.SetTextureName("uvChecker");
+	material.SetFilePath("uvChecker.png");
+
+	mesh.Create();
+	material.Create();
+
+	model->AddMesh(mesh);
+	model->AddMaterial(material);
+
+	model->Initialize();
+	model->SetFillMode(kSolid);
+	AddModel("Plane", model);
+	return GetModel("Plane");
+}
+
+
+/// ===================================================
+/// 立方体の生成
+/// ===================================================
+Model* ModelManager::CreateCube() {
+	Model* model = new Model();
+
+	Mesh mesh{};
+	Material material{};
+
+	///- 上面
+	mesh.AddVertex({ { -0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f, 0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+	
+	///- 下面
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+
+	///- 前面
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+	
+	///- 後面
+	mesh.AddVertex({ {  0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f, 0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f, 0.5f, 1.0f }, { 1.0f, 1.0f } });
+
+	///- 左面
+	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+
+	///- 右面
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f } });
+
+
+	for(uint32_t i = 0u; i < 6; ++i) {
+		mesh.AddIndex(0 + (i * 4));
+		mesh.AddIndex(1 + (i * 4));
+		mesh.AddIndex(2 + (i * 4));
+		mesh.AddIndex(0 + (i * 4));
+		mesh.AddIndex(2 + (i * 4));
+		mesh.AddIndex(3 + (i * 4));
+	}
+
+	material.SetTextureName("uvChecker");
+	material.SetFilePath("uvChecker.png");
+
+	mesh.Create();
+	material.Create();
+
+	model->AddMesh(mesh);
+	model->AddMaterial(material);
+
+	model->Initialize();
+	model->SetFillMode(kSolid);
+	AddModel("Cube", model);
+	return GetModel("Cube");
+}
+
+
+/// ===================================================
 /// 描画前処理
 /// ===================================================
 void ModelManager::PreDraw() {
@@ -200,7 +308,7 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	activeModels_.push_back(GetModel("MultiMaterial"));
+	activeModels_.push_back(GetModel("Cube"));
 
 	std::list<Model*> solid;
 	std::list<Model*> wire;

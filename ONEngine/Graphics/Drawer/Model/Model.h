@@ -49,6 +49,7 @@ public:
 	/// </summary>
 	void Draw();
 
+
 	/// <summary>
 	/// CommandListに必要な情報をセット
 	/// </summary>

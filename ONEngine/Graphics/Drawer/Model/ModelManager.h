@@ -40,7 +40,17 @@ public:
 	/// </summary>
 	Model* Load(const std::string& filePath);
 
+	/// <summary>
+	/// 平面の生成
+	/// </summary>
+	/// <returns></returns>
+	Model* CreatePlane();
 
+	/// <summary>
+	/// 立方体の生成
+	/// </summary>
+	/// <returns></returns>
+	Model* CreateCube();
 
 	/// <summary>
 	/// 描画前処理
