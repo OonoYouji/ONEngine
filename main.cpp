@@ -64,6 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PreDraw();
 		modelManager->PreDraw();
 
+		model->Draw();
 
 		modelManager->PostDraw();
 		imGuiManager->EndFrame();

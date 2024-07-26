@@ -308,8 +308,6 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	activeModels_.push_back(GetModel("Cube"));
-
 	std::list<Model*> solid;
 	std::list<Model*> wire;
 
@@ -375,4 +373,12 @@ void ModelManager::AddModel(const std::string& name, Model* model) {
 /// ===================================================
 void ModelManager::SetPipelineState(FillMode fillMode) {
 	pipelines_[fillMode]->SetPipelineState();
+}
+
+
+/// ===================================================
+/// アクティブなモデルの追加
+/// ===================================================
+void ModelManager::AddActiveModel(Model* model) {
+	activeModels_.push_back(model);
 }

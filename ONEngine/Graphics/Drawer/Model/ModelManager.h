@@ -76,6 +76,11 @@ public:
 	/// </summary>
 	void SetPipelineState(FillMode fillMode);
 
+	/// <summary>
+	/// アクティブなモデルの追加
+	/// </summary>
+	void AddActiveModel(Model* model);
+
 private:
 
 	/// ===================================================

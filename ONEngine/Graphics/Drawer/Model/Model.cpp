@@ -38,7 +38,7 @@ void Model::Initialize() {
 /// 描画
 /// ===================================================
 void Model::Draw() {
-
+	ModelManager::GetInstance()->AddActiveModel(this);
 }
 
 
