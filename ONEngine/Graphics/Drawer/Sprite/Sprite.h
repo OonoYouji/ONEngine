@@ -14,11 +14,7 @@
 #include <Vector4.h>
 #include <Matrix4x4.h>
 
-#include <Model.h>
-
 using namespace Microsoft::WRL;
-
-
 
 /// ===================================================
 /// 2d textureの描画クラス
@@ -42,16 +38,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	/// <summary>
-	/// static変数の初期化
-	/// </summary>
-	static void StaticInitialize();
 	
-	/// <summary>
-	/// static変数の終了処理
-	/// </summary>
-	static void StaticFinalize();
-
+	
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -64,20 +52,20 @@ public:
 	/// </summary>
 	void Draw();
 
+
+	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
+
 private:
+
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
 
 	void CreateVertexBuffer();
 
 	void CreateConstantBuffer();
 
-private:
-
-	/// ===================================================
-	/// private : static objects
-	/// ===================================================
-
-	static std::unique_ptr<PipelineState> pipelineState_;
-	static PipelineState::Shader shader_;
 
 private:
 
@@ -96,10 +84,8 @@ private:
 
 
 	ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
-	TransformData* transformData_ = nullptr;
+	Mat4* matTransformData_ = nullptr;
 	
-	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
-	ViewProjectionData* viewProjectionData_ = nullptr;
 
 	Material material_;
 

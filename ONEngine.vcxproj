@@ -41,6 +41,7 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\Model.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\ModelManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\Sprite.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp" />
@@ -84,6 +85,7 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\Model.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\ModelManager.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\Sprite.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h" />
     <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h" />

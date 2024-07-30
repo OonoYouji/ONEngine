@@ -7,12 +7,12 @@
 
 #include <SceneManager.h>
 #include <ModelManager.h>
+#include <SpriteManager.h>
 #include <TextureManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 
 #include <GameCamera.h>
-#include <Sprite.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -27,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	SceneManager* sceneManager = SceneManager::GetInstance();
 	ModelManager* modelManager = ModelManager::GetInstance();
+	SpriteManager* spriteManager = SpriteManager::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
@@ -35,7 +36,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize();
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
-	Sprite::StaticInitialize();
+	spriteManager->Initialize();
 	sceneManager->Initialize();
 
 
@@ -62,10 +63,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		dxCommon->PreDraw();
 		modelManager->PreDraw();
+		spriteManager->PreDraw();
 
 		sceneManager->Draw();
 
 		modelManager->PostDraw();
+		spriteManager->PostDraw();
+
 		imGuiManager->EndFrame();
 		dxCommon->PostDraw();
 
@@ -73,7 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	sceneManager->Finalize();
-	Sprite::StaticFinalize();
+	spriteManager->Finalize();
 	cameraManager->Finalize();
 	modelManager->Finalize();
 	textureManager->Finalize();

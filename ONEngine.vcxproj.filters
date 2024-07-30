@@ -122,6 +122,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\Sprite.cpp">
       <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -331,6 +334,9 @@
       <Filter>Game\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\Sprite.h">
+      <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h">
       <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
