@@ -1,9 +1,9 @@
-#include "Model.hlsli"
-
+#include "Sprite.hlsli"
 
 struct Material {
 	float4 color;
 };
+
 
 ConstantBuffer<Material> gMaterial : register(b0);
 Texture2D<float4> gTexture : register(t0);

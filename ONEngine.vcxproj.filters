@@ -119,6 +119,9 @@
     <ClCompile Include="Game\Scenes\Scene_Game.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\Sprite.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -198,6 +201,12 @@
     </Filter>
     <Filter Include="Game\Scenes\Manager">
       <UniqueIdentifier>{52971ea5-3cfa-4686-8b35-14d708cda332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Sprite">
+      <UniqueIdentifier>{de779581-725a-4994-b6f2-ab35b70adf9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Sprite">
+      <UniqueIdentifier>{9cb97157-f504-499e-97ba-f35a64f5082f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -321,10 +330,16 @@
     <ClInclude Include="Game\Scenes\Scene_Game.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\Sprite.h">
+      <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
       <Filter>Resources\Shaders\Model</Filter>
+    </None>
+    <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
+      <Filter>Resources\Shaders\Sprite</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +348,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
       <Filter>Resources\Shaders\Model</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.PS.hlsl">
+      <Filter>Resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl">
+      <Filter>Resources\Shaders\Sprite</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

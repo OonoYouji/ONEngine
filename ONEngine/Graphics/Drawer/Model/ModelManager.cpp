@@ -51,6 +51,7 @@ void ModelManager::Initialize() {
 
 		pipeline->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+		pipeline->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
@@ -113,6 +114,8 @@ Model* ModelManager::Load(const std::string& filePath) {
 			Mesh::VertexData vertex;
 			vertex.position = { position.x, position.y, position.z, 1.0f };
 			vertex.texcoord = { texcoord.x, texcoord.y };
+			vertex.normal = { normal.x, normal.y, normal.z };
+
 			vertex.position.x *= -1.0f;
 
 			modelMesh.AddVertex(vertex);
@@ -196,10 +199,10 @@ Model* ModelManager::CreatePlane() {
 	Mesh mesh{};
 	Material material{};
 
-	mesh.AddVertex({ { -0.5f, 0.0f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ { -0.5f, 0.0f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.0f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.0f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f, 0.0f, -0.5f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ { -0.5f, 0.0f,  0.5f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.0f,  0.5f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ {  0.5f, 0.0f, -0.5f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
 
 	mesh.AddIndex(0);
 	mesh.AddIndex(1);
@@ -234,40 +237,40 @@ Model* ModelManager::CreateCube() {
 	Material material{};
 
 	///- 上面
-	mesh.AddVertex({ { -0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ { -0.5f, 0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
-	
+	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
+
 	///- 下面
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
 
 	///- 前面
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
-	
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
+
 	///- 後面
-	mesh.AddVertex({ {  0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f, 0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f, 0.5f, 1.0f }, { 1.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
 
 	///- 左面
-	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
 
 	///- 右面
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f } });
+	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
 
 
 	for(uint32_t i = 0u; i < 6; ++i) {

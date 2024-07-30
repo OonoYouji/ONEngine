@@ -12,7 +12,7 @@
 #include <CameraManager.h>
 
 #include <GameCamera.h>
-
+#include <Sprite.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -35,7 +35,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize();
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
+	Sprite::StaticInitialize();
 	sceneManager->Initialize();
+
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
@@ -70,6 +72,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
+	sceneManager->Finalize();
+	Sprite::StaticFinalize();
 	cameraManager->Finalize();
 	modelManager->Finalize();
 	textureManager->Finalize();

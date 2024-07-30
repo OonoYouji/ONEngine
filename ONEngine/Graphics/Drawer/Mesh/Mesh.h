@@ -26,7 +26,7 @@ public:
 	struct VertexData final {
 		Vec4 position;
 		Vec2 texcoord;
-		bool operator==(const VertexData&) const = default;
+		Vec3 normal;
 	};
 
 public:
