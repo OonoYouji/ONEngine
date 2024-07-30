@@ -12,7 +12,7 @@
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="ONEngine\FrameTimer\FrameTimer.cpp">
-      <Filter>ONEngine\FramTimer</Filter>
+      <Filter>ONEngine\FrameTimer</Filter>
     </ClCompile>
     <ClCompile Include="ONEngine\DirectX\DxDevice.cpp">
       <Filter>ONEngine\DirectX</Filter>
@@ -139,9 +139,6 @@
     <Filter Include="ONEngine\DirectX">
       <UniqueIdentifier>{c6f6f37c-c908-44e7-ad6b-7872ef8fa652}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\FramTimer">
-      <UniqueIdentifier>{d6093c69-a674-4b94-8898-228b1db0f71c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ONEngine\Math">
       <UniqueIdentifier>{b6760612-73c0-4d5f-a6b0-c2fcc4ff5c14}</UniqueIdentifier>
     </Filter>
@@ -211,6 +208,9 @@
     <Filter Include="Resources\Shaders\Sprite">
       <UniqueIdentifier>{9cb97157-f504-499e-97ba-f35a64f5082f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ONEngine\FrameTimer">
+      <UniqueIdentifier>{d6093c69-a674-4b94-8898-228b1db0f71c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -223,7 +223,7 @@
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\FrameTimer\FrameTimer.h">
-      <Filter>ONEngine\FramTimer</Filter>
+      <Filter>ONEngine\FrameTimer</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxDevice.h">
       <Filter>ONEngine\DirectX</Filter>
