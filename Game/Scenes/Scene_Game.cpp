@@ -15,10 +15,11 @@ Scene_Game::~Scene_Game() {
 void Scene_Game::Initialize() {
 
 	model_ = ModelManager::CreateCube();
+	model_->Initialize();
 
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("uvChecker", "uvChecker.png");
-
+	
 }
 
 
@@ -40,6 +41,7 @@ void Scene_Game::Update() {
 	if(isRotateX) { rotate_.x += 1.0f / 60.0f; }
 	if(isRotateY) { rotate_.y += 1.0f / 60.0f; }
 	if(isRotateZ) { rotate_.z += 1.0f / 60.0f; }
+
 
 	ImGui::End();
 #endif // _DEBUG

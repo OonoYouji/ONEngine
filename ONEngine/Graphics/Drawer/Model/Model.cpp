@@ -28,7 +28,7 @@ void Model::Initialize() {
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&transformData_));
 	transformData_->matWorld = Mat4::kIdentity;
 
-	transform_.position.z = 8.0f;
+	//transform_.position.z = 8.0f;
 	transform_.Initialize();
 
 }
@@ -89,4 +89,8 @@ void Model::AddMaterial(const Material& material) {
 void Model::SetRotate(const Vec3& rotate) {
 	transform_.rotate = rotate;
 	transform_.UpdateMatrix();
+}
+
+void Model::SetPos(const Vec3& position) {
+	transform_.position = position;
 }

@@ -65,6 +65,11 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 }
 
 
+void Sprite::SetPos(const Vec3& pos) {
+	*matTransformData_ = Mat4::MakeScale(Vec3(100, 100, 1.0f)) * Mat4::MakeTranslate(pos);
+}
+
+
 
 
 /// ===================================================
@@ -72,10 +77,10 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 /// ===================================================
 void Sprite::CreateVertexBuffer() {
 
-	vertices_.push_back({ { -1.0f, -1.0f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
-	vertices_.push_back({ { -1.0f,  1.0f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
-	vertices_.push_back({ {  1.0f,  1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
-	vertices_.push_back({ {  1.0f, -1.0f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
+	vertices_.push_back({ { -1.0f,  1.0f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
+	vertices_.push_back({ { -1.0f, -1.0f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
+	vertices_.push_back({ {  1.0f, -1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
+	vertices_.push_back({ {  1.0f,  1.0f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
 
 	indices_.push_back(0);
 	indices_.push_back(1);
@@ -124,7 +129,7 @@ void Sprite::CreateConstantBuffer() {
 	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
 
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matTransformData_));
-	*matTransformData_ = Mat4::MakeScale(Vec3(100, 100, 1.0f)) * Mat4::MakeTranslate(Vec3(200, -200, 0));
+	*matTransformData_ = Mat4::MakeScale(Vec3(100, 100, 1.0f)) * Mat4::MakeTranslate(Vec3(200, 200, 0));
 
 }
 

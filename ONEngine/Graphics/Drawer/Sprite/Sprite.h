@@ -11,6 +11,7 @@
 #include <PipelineState.h>
 
 #include <Vector2.h>
+#include <Vector3.h>
 #include <Vector4.h>
 #include <Matrix4x4.h>
 
@@ -54,6 +55,10 @@ public:
 
 
 	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
+
+
+
+	void SetPos(const Vec3& pos);
 
 private:
 

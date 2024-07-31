@@ -82,6 +82,7 @@ public:
 
 	
 	void SetRotate(const Vec3& rotate);
+	void SetPos(const Vec3& position);
 
 private:
 

@@ -73,7 +73,7 @@ void SpriteManager::Initialize() {
 
 	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matViewProjectionData_));
 
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(-ONE::WinApp::kWindowSizeY), 0.0f, 100.0f);
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(ONE::WinApp::kWindowSizeY), 0.0f, 1000.0f);
 	*matViewProjectionData_ = Mat4::kIdentity * projectionMatrix;
 
 
