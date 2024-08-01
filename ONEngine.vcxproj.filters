@@ -125,6 +125,12 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp">
       <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Input\Keyboard.cpp">
+      <Filter>ONEngine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Input\Input.cpp">
+      <Filter>ONEngine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -210,6 +216,9 @@
     </Filter>
     <Filter Include="ONEngine\FrameTimer">
       <UniqueIdentifier>{d6093c69-a674-4b94-8898-228b1db0f71c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Input">
+      <UniqueIdentifier>{33ea2c36-9823-4ff1-86d0-4030f2edee2d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -338,6 +347,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h">
       <Filter>ONEngine\Graphics\Drawer\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Input\Keyboard.h">
+      <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Input\Input.h">
+      <Filter>ONEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
