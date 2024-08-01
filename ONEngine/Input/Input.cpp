@@ -190,51 +190,53 @@ void Input::Begin() {
 	keyboard_->Begin();
 	mouse_->Begin();
 
-#ifdef _DEBUG
-	ImGui::Begin("Input");
-
-	/// ---------------------------------------------------
-	/// キーボードの入力チェック
-	/// ---------------------------------------------------
-	if(ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		for(uint32_t key = 0u; key < 256; ++key) {
-			if(keyboard_->Press(KeyCode(key))) {
-				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
-			}
-		}
-
-		ImGui::TreePop();
-	}
 
 
-	/// ---------------------------------------------------
-	/// マウスの入力チェック
-	/// ---------------------------------------------------
-	if(ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		for(uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
-			if(PressMouse(MouseCode(button))) {
-				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
-			}
-		}
-
-		ImGui::Separator();
-
-		Vec2 position = MousePosition();
-		Vec2 velocity = MouseVelocity();
-		ImGui::Text("position : Vec2( %0.2f, %0.2f )", position.x, position.y);
-		ImGui::Text("velocity : Vec2( %0.2f, %0.2f )", velocity.x, velocity.y);
-
-		ImGui::Separator();
-
-		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
-
-		ImGui::TreePop();
-	}
-
-	ImGui::End();
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	ImGui::Begin("Input");
+//
+//	/// ---------------------------------------------------
+//	/// キーボードの入力チェック
+//	/// ---------------------------------------------------
+//	if(ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		for(uint32_t key = 0u; key < 256; ++key) {
+//			if(keyboard_->Press(KeyCode(key))) {
+//				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
+//			}
+//		}
+//
+//		ImGui::TreePop();
+//	}
+//
+//
+//	/// ---------------------------------------------------
+//	/// マウスの入力チェック
+//	/// ---------------------------------------------------
+//	if(ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		for(uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
+//			if(PressMouse(MouseCode(button))) {
+//				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
+//			}
+//		}
+//
+//		ImGui::Separator();
+//
+//		Vec2 position = MousePosition();
+//		Vec2 velocity = MouseVelocity();
+//		ImGui::Text("position : Vec2( %0.2f, %0.2f )", position.x, position.y);
+//		ImGui::Text("velocity : Vec2( %0.2f, %0.2f )", velocity.x, velocity.y);
+//
+//		ImGui::Separator();
+//
+//		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
+//
+//		ImGui::TreePop();
+//	}
+//
+//	ImGui::End();
+//#endif // _DEBUG
 }
 
 
