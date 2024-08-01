@@ -156,7 +156,7 @@ public:
 
 	void Begin();
 
-	bool Push(KeyCode keycode) const;
+	bool Press(KeyCode keycode) const;
 	bool Trigger(KeyCode keycode) const;
 	bool Release(KeyCode keycode) const;
 

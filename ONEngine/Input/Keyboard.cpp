@@ -60,14 +60,14 @@ void Keyboard::Begin() {
 /// ===================================================
 /// キー入力の取得
 /// ===================================================
-bool Keyboard::Push(KeyCode keycode) const {
+bool Keyboard::Press(KeyCode keycode) const {
 	return keys_[static_cast<BYTE>(keycode)];
 }
 
 bool Keyboard::Trigger(KeyCode keycode) const {
-	return Push(keycode) && !preKeys_[static_cast<uint8_t>(keycode)];
+	return Press(keycode) && !preKeys_[static_cast<uint8_t>(keycode)];
 }
 
 bool Keyboard::Release(KeyCode keycode) const {
-	return !Push(keycode) && preKeys_[static_cast<uint8_t>(keycode)];
+	return !Press(keycode) && preKeys_[static_cast<uint8_t>(keycode)];
 }

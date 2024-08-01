@@ -131,6 +131,9 @@
     <ClCompile Include="ONEngine\Input\Input.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Input\Mouse.cpp">
+      <Filter>ONEngine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -352,6 +355,9 @@
       <Filter>ONEngine\Input</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Input\Input.h">
+      <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Input\Mouse.h">
       <Filter>ONEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>

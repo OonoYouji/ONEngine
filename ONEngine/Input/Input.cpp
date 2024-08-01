@@ -115,11 +115,27 @@ namespace {
 		}
 	}
 
+
+	// MouseCodeからボタン名を取得
+	const char* GetMouseButtonName(MouseCode code) {
+		switch(code) {
+		case MouseCode::Left: return "Left Button";
+		case MouseCode::Right: return "Right Button";
+		case MouseCode::Whell: return "Wheel Button";
+		case MouseCode::Side1: return "Side Button 1";
+		case MouseCode::Side2: return "Side Button 2";
+		case MouseCode::Side3: return "Side Button 3";
+		case MouseCode::Side4: return "Side Button 4";
+		default: return "Unknown Button";
+		}
+	}
+
 }
 
 
 
 std::unique_ptr<Keyboard> Input::keyboard_ = nullptr;
+std::unique_ptr<Mouse> Input::mouse_ = nullptr;
 
 
 /// ===================================================
@@ -150,6 +166,10 @@ void Input::Initialize(ONE::WinApp* winApp) {
 
 	keyboard_.reset(new Keyboard);
 	keyboard_->Initialize(directInput_.Get(), winApp);
+
+	mouse_.reset(new Mouse());
+	mouse_->Initialize(directInput_.Get(), winApp);
+
 }
 
 
@@ -168,24 +188,61 @@ void Input::Finalize() {
 void Input::Begin() {
 
 	keyboard_->Begin();
+	mouse_->Begin();
 
+#ifdef _DEBUG
 	ImGui::Begin("Input");
 
-	for(uint32_t key = 0u; key < 256; ++key) {
-		if(keyboard_->Push(KeyCode(key))) {
-			ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
+	/// ---------------------------------------------------
+	/// キーボードの入力チェック
+	/// ---------------------------------------------------
+	if(ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		for(uint32_t key = 0u; key < 256; ++key) {
+			if(keyboard_->Press(KeyCode(key))) {
+				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
+			}
 		}
+
+		ImGui::TreePop();
+	}
+
+
+	/// ---------------------------------------------------
+	/// マウスの入力チェック
+	/// ---------------------------------------------------
+	if(ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		for(uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
+			if(PressMouse(MouseCode(button))) {
+				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
+			}
+		}
+
+		ImGui::Separator();
+
+		Vec2 position = MousePosition();
+		Vec2 velocity = MouseVelocity();
+		ImGui::Text("position : Vec2( %0.2f, %0.2f )", position.x, position.y);
+		ImGui::Text("velocity : Vec2( %0.2f, %0.2f )", velocity.x, velocity.y);
+
+		ImGui::Separator();
+
+		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
+
+		ImGui::TreePop();
 	}
 
 	ImGui::End();
+#endif // _DEBUG
 }
 
 
 /// ===================================================
 /// キーボードのキー入力
 /// ===================================================
-bool Input::PushKey(KeyCode keycode) {
-	return keyboard_->Push(keycode);
+bool Input::PressKey(KeyCode keycode) {
+	return keyboard_->Press(keycode);
 }
 
 bool Input::TriggerKey(KeyCode keycode) {
@@ -194,4 +251,32 @@ bool Input::TriggerKey(KeyCode keycode) {
 
 bool Input::ReleaseKey(KeyCode keycode) {
 	return keyboard_->Release(keycode);
+}
+
+
+/// ===================================================
+/// マウス入力
+/// ===================================================
+bool Input::PressMouse(MouseCode mouseCode) {
+	return mouse_->Press(mouseCode);
+}
+
+bool Input::TriggerMouse(MouseCode mouseCode) {
+	return mouse_->Trigger(mouseCode);
+}
+
+bool Input::ReleaseMouse(MouseCode mouseCode) {
+	return mouse_->Release(mouseCode);
+}
+
+Vec2 Input::MousePosition() {
+	return mouse_->GetPosition();
+}
+
+Vec2 Input::MouseVelocity() {
+	return mouse_->GetVelocity();
+}
+
+float Input::MouseScroll() {
+	return mouse_->GetScroll();
 }

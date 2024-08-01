@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <Keyboard.h>
+#include <Mouse.h>
 
 namespace ONE { class WinApp; }
 
@@ -31,11 +32,17 @@ public:
 
 
 
-	static bool PushKey(KeyCode keycode);		/// 入力中か
+	static bool PressKey(KeyCode keycode);		/// 入力中か
 	static bool TriggerKey(KeyCode keycode);	/// 押した瞬間か
 	static bool ReleaseKey(KeyCode keycode);	/// 離した瞬間か
 
+	static bool PressMouse(MouseCode mouseCode);
+	static bool TriggerMouse(MouseCode mouseCode);
+	static bool ReleaseMouse(MouseCode mouseCode);
 
+	static Vec2 MousePosition();
+	static Vec2 MouseVelocity();
+	static float MouseScroll();
 
 private:
 
@@ -44,6 +51,7 @@ private:
 	/// ===================================================
 
 	static std::unique_ptr<Keyboard> keyboard_;
+	static std::unique_ptr<Mouse> mouse_;
 
 private:
 
