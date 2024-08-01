@@ -4,6 +4,7 @@
 #include <Logger.h>
 #include <DxCommon.h>
 #include <FrameTimer.h>
+#include <Input.h>
 
 #include <SceneManager.h>
 #include <ModelManager.h>
@@ -15,6 +16,7 @@
 #include <GameCamera.h>
 
 
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
@@ -24,6 +26,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
+	Input* input = Input::GetInsatnce();
 
 	SceneManager* sceneManager = SceneManager::GetInstance();
 	ModelManager* modelManager = ModelManager::GetInstance();
@@ -34,6 +37,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	winApp->Initialize();
 	dxCommon->Initialize();
+
+	input->Initialize(winApp);
+
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
@@ -56,6 +62,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	while(!winApp->ProcessMessage()) {
 
 		imGuiManager->BeginFrame();
+		input->Begin();
+
 
 		cameraManager->Update();
 		sceneManager->Update();
@@ -83,6 +91,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Finalize();
 
 	imGuiManager->Finalize();
+	input->Finalize();
 	dxCommon->Finalize();
 	winApp->Finalize();
 

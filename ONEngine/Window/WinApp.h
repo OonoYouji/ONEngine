@@ -37,6 +37,8 @@ namespace ONE {
 
 		const HWND& GetHWND() const { return hwnd_; }
 
+		const WNDCLASS& GetWNDCLASS() const { return wc_; }
+
 	private:
 		
 		/// ===================================================

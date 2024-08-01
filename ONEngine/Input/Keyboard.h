@@ -9,6 +9,9 @@
 #include <array>
 
 
+namespace ONE { class WinApp; }
+
+
 /// <summary>
 /// キー入力に使う
 /// </summary>
@@ -109,7 +112,7 @@ enum class KeyCode : BYTE {
 	BackSlash    = DIK_BACKSLASH,
 	Comma        = DIK_COMMA,
 	Period       = DIK_PERIOD,
-	Munus        = DIK_MINUS,
+	Minus        = DIK_MINUS,
 	Equals       = DIK_EQUALS,
 	Grave        = DIK_GRAVE,
 	LeftBracket  = DIK_LBRACKET, LBracket = DIK_LBRACKET, 
@@ -131,10 +134,10 @@ enum class KeyCode : BYTE {
 	Delete    = DIK_DELETE,
 	Home      = DIK_HOME,
 	End       = DIK_END,
-	PageUP    = DIK_PGUP,
+	PageUp    = DIK_PGUP,
 	PageDown  = DIK_PGDN,
-	LeftWind  = DIK_LWIN,        LWind = DIK_LWIN, 
-	RightWind = DIK_RWIN,        RWind = DIK_RWIN, 
+	LeftWin   = DIK_LWIN,        LWin = DIK_LWIN, 
+	RightWin  = DIK_RWIN,        RWin = DIK_RWIN, 
 };
 
 
@@ -148,7 +151,14 @@ public:
 	Keyboard();
 	~Keyboard();
 
-	void Initialize(IDirectInput8* directInput);
+	void Initialize(IDirectInput8* directInput, ONE::WinApp* winApp);
+
+
+	void Begin();
+
+	bool Push(KeyCode keycode) const;
+	bool Trigger(KeyCode keycode) const;
+	bool Release(KeyCode keycode) const;
 
 	const std::array<BYTE, 256>& GetKeys()    const { return keys_; }
 	const std::array<BYTE, 256>& GetPreKeys() const { return preKeys_; }
@@ -159,14 +169,6 @@ private:
 
 	std::array<BYTE, 256> keys_;	//- 今フレームの入力
 	std::array<BYTE, 256> preKeys_; //- 前フレームの入力
-
-
-	void Begin();
-
-	bool Push(KeyCode keycode) const;
-	bool Trigger(KeyCode keycode) const;
-	bool Release(KeyCode keycode) const;
-
 
 private:
 	Keyboard(const Keyboard&) = delete;
