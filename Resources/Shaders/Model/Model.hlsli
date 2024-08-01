@@ -11,3 +11,7 @@ struct VSOutput {
 	float3 normal : NORMAL0;
 };
 
+struct PSOutput {
+	float4 color1 : SV_TARGET0;
+	float4 color2 : SV_TARGET1;
+};

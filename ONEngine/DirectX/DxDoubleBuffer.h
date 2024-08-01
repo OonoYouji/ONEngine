@@ -55,6 +55,10 @@ namespace ONE {
 		void SetViewport(ID3D12GraphicsCommandList* commandList);
 		void SetSiccorRect(ID3D12GraphicsCommandList* commandList);
 
+		void SetRanderTarget(DxCommand* command, DxDescriptor* descriptor);
+
+		void CopyToBB(ID3D12GraphicsCommandList* commnadList, ID3D12Resource* resource, D3D12_RESOURCE_STATES current);
+
 	private:
 
 		/// ===================================================

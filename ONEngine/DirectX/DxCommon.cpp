@@ -12,6 +12,8 @@
 #include <DxDebug.h>
 #include <DxShaderCompiler.h>
 
+#include <SceneManager.h>
+
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -93,6 +95,8 @@ void ONE::DxCommon::PreDraw() {
 /// ===================================================
 void ONE::DxCommon::PostDraw() {
 	
+	//doubleBuffer_->CopyToBB(command_->GetList(), SceneManager::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PRESENT);
+
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	
 	command_->Close();
@@ -113,6 +117,10 @@ void ONE::DxCommon::ExecuteCommands() {
 	command_->Execution();	//- 実行
 	command_->Reset();		//- 実行し終わったらlistのリセット	
 
+}
+
+void ONE::DxCommon::SetRenderTarget() {
+	doubleBuffer_->SetRanderTarget(command_.get(), descriptor_.get());
 }
 
 

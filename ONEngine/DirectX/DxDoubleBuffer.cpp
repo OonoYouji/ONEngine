@@ -5,7 +5,9 @@
 #include <WinApp.h>
 
 #include <DxCommon.h>
+#include <DxCommand.h>
 #include <DxDescriptor.h>
+#include <DxBarrierCreator.h>
 #include <DxDevice.h>
 
 
@@ -82,6 +84,26 @@ void ONE::DxDoubleBuffer::SetViewport(ID3D12GraphicsCommandList* commandList) {
 
 void ONE::DxDoubleBuffer::SetSiccorRect(ID3D12GraphicsCommandList* commandList) {
 	commandList->RSSetScissorRects(1, &sicssorRect_);
+}
+
+void ONE::DxDoubleBuffer::SetRanderTarget(DxCommand* command, DxDescriptor* descriptor) {
+	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
+	ID3D12GraphicsCommandList* commandList = command->GetList();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = descriptor->GetDsvCpuHandle();
+	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
+}
+
+
+void ONE::DxDoubleBuffer::CopyToBB(ID3D12GraphicsCommandList* commnadList, ID3D12Resource* resource, D3D12_RESOURCE_STATES current) {
+	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
+
+	ONE::DxBarrierCreator::CreateBarrier(resource, current, D3D12_RESOURCE_STATE_COPY_SOURCE);
+	ONE::DxBarrierCreator::CreateBarrier(buffers_[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST);
+
+	commnadList->CopyResource(buffers_[bbIndex].Get(), resource);
+
+	ONE::DxBarrierCreator::CreateBarrier(resource, D3D12_RESOURCE_STATE_COPY_SOURCE, current);
+	ONE::DxBarrierCreator::CreateBarrier(buffers_[bbIndex].Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
 

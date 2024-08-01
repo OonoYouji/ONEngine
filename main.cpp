@@ -70,6 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		dxCommon->PreDraw();
+		sceneManager->PreDraw();
 		modelManager->PreDraw();
 		spriteManager->PreDraw();
 
@@ -78,6 +79,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PostDraw();
 		spriteManager->PostDraw();
 
+		sceneManager->PostDraw();
+		
+		sceneManager->SceneDraw();
+
+		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
 		dxCommon->PostDraw();
 

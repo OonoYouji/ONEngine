@@ -10,11 +10,13 @@ Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 
-float4 main(VSOutput input) : SV_TARGET0 {
-	float4 outputColor;
+PSOutput main(VSOutput input) {
+	PSOutput output;
 
-	outputColor = gTexture.Sample(gSampler, input.texcoord);
-	outputColor *= gMaterial.color;
+	output.color1 = gTexture.Sample(gSampler, input.texcoord);
+	output.color1 *= gMaterial.color;
 
-	return outputColor;
+	output.color2 = output.color1;
+	return output;
+
 }

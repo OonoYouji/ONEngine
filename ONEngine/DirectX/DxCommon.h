@@ -57,6 +57,9 @@ namespace ONE {
 		void ExecuteCommands();
 
 
+		void SetRenderTarget();
+
+
 	public:
 
 		/// ===================================================

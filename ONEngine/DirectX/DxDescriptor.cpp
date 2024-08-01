@@ -19,7 +19,7 @@ ONE::DxDescriptor::~DxDescriptor() {
 /// ===================================================
 void ONE::DxDescriptor::Initialize(ID3D12Device* device) {
 
-	rtvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+	rtvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 4, false);
 	rtvHeapSize_ = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	srvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
