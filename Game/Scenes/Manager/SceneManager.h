@@ -67,6 +67,9 @@ public:
 
 	void ImGuiDraw(const std::string& name, RTVIndex index);
 
+	void SetRenderTarget(RTVIndex index);
+
+
 	ID3D12Resource* GetResource() const { return renderTargets_[kCurrentScene].Get(); }
 
 private:

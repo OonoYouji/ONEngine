@@ -1,5 +1,7 @@
 #include <Vector3.h>
 
+#include <cmath>
+#include <Vector2.h>
 
 /// ===================================================
 /// static objects initialize
@@ -25,4 +27,16 @@ Vector3::Vector3(float x, float y, float z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
+}
+
+Vector3::Vector3(const Vector2& v, float z) {
+	this->x = v.x;
+	this->y = v.y;
+	this->z = z;
+}
+
+
+
+float Vector3::Len() const {
+	return std::sqrt(x * x + y * y + z * z);
 }

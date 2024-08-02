@@ -2,17 +2,22 @@
 
 #include <BaseCamera.h>
 
+#include <Vector3.h>
 
 /// ===================================================
 /// デバッグ用カメラ
 /// ===================================================
-class DebugCamare final : public BaseCamera {
+class DebugCamera final : public BaseCamera {
 public:
 
-	DebugCamare();
-	~DebugCamare();
+	DebugCamera();
+	~DebugCamera();
 
 	void Initialize() override;
 	void Update() override;
+	
+private:
+
+	Vec3 velocity_{};
 
 };

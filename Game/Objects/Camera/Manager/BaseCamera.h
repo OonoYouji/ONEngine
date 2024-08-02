@@ -1,5 +1,8 @@
 #pragma once
 
+#include <wrl/client.h>
+#include <d3d12.h>
+
 #include <string>
 
 #include <Transform.h>
@@ -26,6 +29,10 @@ public:
 
 	bool GetIsAcitve() const { return isActive_; }
 
+	void Transfer();
+
+	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
+
 protected:
 
 	std::string name_ = "BaseCamera";
@@ -40,6 +47,10 @@ protected:
 	Mat4 matProjection_;
 
 	Mat4 matVp_;
+
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
+	Mat4* matVpData_ = nullptr;
 
 public:
 	inline BaseCamera& operator=(const BaseCamera& other) = default;

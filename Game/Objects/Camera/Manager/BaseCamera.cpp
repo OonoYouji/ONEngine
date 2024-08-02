@@ -5,6 +5,8 @@
 
 #include <Vector4.h>
 
+#include <DxResourceCreator.h>
+
 namespace {
 
 	float Cot(float t) {
@@ -44,4 +46,14 @@ void BaseCamera::BaseInitialize() {
 		0.1f, farZ_);
 
 	matVp_ = matView_ * matProjection_;
+
+	viewProjectionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
+	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matVpData_));
+	*matVpData_ = matVp_;
+
+}
+
+void BaseCamera::Transfer() {
+	matVp_ = matView_ * matProjection_;
+	*matVpData_ = matVp_;
 }

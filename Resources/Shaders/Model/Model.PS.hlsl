@@ -16,7 +16,7 @@ PSOutput main(VSOutput input) {
 	output.color1 = gTexture.Sample(gSampler, input.texcoord);
 	output.color1 *= gMaterial.color;
 
-	output.color2 = output.color1;
+	//output.color2 = output.color1;
 	return output;
 
 }

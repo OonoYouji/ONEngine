@@ -1,6 +1,8 @@
 #pragma once
 
 
+class Vector2;
+
 /// ===================================================
 /// 3次元ベクトル
 /// ===================================================
@@ -9,6 +11,7 @@ public:
 
 	Vector3();
 	Vector3(float x, float y, float z);
+	Vector3(const Vector2& v , float z);
 	Vector3(const Vector3&) = default;
 	Vector3(Vector3&&) = default;
 
@@ -30,6 +33,14 @@ public:
 	static const Vector3 kBack;		// ( 0,  0,  1 )
 
 	static const Vector3 kOne;		// ( 1,  1,  1 )
+
+public:
+
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	float Len() const;
 
 public:
 

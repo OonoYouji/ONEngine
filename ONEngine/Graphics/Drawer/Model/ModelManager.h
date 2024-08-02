@@ -96,10 +96,6 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 	std::list<Model*> activeModels_;
 
-	
-	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
-	ViewProjectionData* viewProjectionData_ = nullptr;
-
 private:
 	ModelManager(const ModelManager&) = delete;
 	ModelManager(ModelManager&&) = delete;

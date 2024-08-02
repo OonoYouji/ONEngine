@@ -11,5 +11,5 @@ struct VSOutput {
 
 struct PSOutput {
 	float4 color1 : SV_TARGET0;
-	float4 color2 : SV_TARGET1;
+	//float4 color2 : SV_TARGET1;
 };

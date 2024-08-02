@@ -28,6 +28,7 @@ void GameCamera::Initialize() {
 /// ===================================================
 void GameCamera::Update() {
 
-
+	
+	Transfer();
 
 }

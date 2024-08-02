@@ -1,18 +1,20 @@
 #include <DebugCamera.h>
 
 #include <CameraManager.h>
+#include <Input.h>
 
-DebugCamare::DebugCamare() {
+
+DebugCamera::DebugCamera() {
 	name_ = "DebugCamera";
 	CameraManager::GetInstance()->AddCamera(name_, this);
 }
-DebugCamare::~DebugCamare() {}
+DebugCamera::~DebugCamera() {}
 
 
 /// ===================================================
 /// 初期化
 /// ===================================================
-void DebugCamare::Initialize() {
+void DebugCamera::Initialize() {
 
 	transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
 
@@ -23,6 +25,30 @@ void DebugCamare::Initialize() {
 /// ===================================================
 /// 描画
 /// ===================================================
-void DebugCamare::Update() {
+void DebugCamera::Update() {
+	velocity_ = { 0.0f,0.0f,0.0f };
 
+	if(Input::PressMouse(MouseCode::Center)) {
+		velocity_ += (Vec3(Input::MouseVelocity(), 0.0f) / 256.0f) * -1.0f;
+		velocity_.y *= -1.0f;
+		velocity_.z = 0.0f;
+	}
+
+	velocity_.z = Input::MouseScroll() / 256.0f;
+	velocity_.x *= 1.0f + transform_.position.Len() / 32.0f;
+	velocity_.y *= 1.0f + transform_.position.Len() / 32.0f;
+
+	if(Input::PressMouse(MouseCode::Right)) {
+		transform_.rotate.x += Input::MouseVelocity().y / 256.0f;
+		transform_.rotate.y += Input::MouseVelocity().x / 256.0f;
+	}
+
+	velocity_ = Mat4::Transform(velocity_, Mat4::MakeRotate(transform_.rotate));
+	transform_.position += velocity_;
+
+	transform_.UpdateMatrix();
+	matView_ = transform_.matTransform.Inverse();
+	matVp_ = matView_ * matProjection_;
+
+	Transfer();
 }

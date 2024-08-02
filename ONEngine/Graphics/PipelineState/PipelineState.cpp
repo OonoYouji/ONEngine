@@ -243,9 +243,9 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 	desc.BlendState = blendDesc;				//- BlendState
 	desc.RasterizerState = rasterizerDesc_;		//- RasterizerState
 
-	desc.NumRenderTargets = 2;								//- 
+	desc.NumRenderTargets = 1;								//- 
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;	//- 
-	desc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;	//- 
+	//desc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;	//- 
 	desc.PrimitiveTopologyType = topology_;					//- 使用する形状Type
 	desc.SampleDesc.Count = 1;								//- 
 	desc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;			//- 

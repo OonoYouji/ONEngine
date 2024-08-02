@@ -65,10 +65,6 @@ void ModelManager::Initialize() {
 	}
 
 
-	viewProjectionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(ViewProjectionData));
-	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&viewProjectionData_));
-	viewProjectionData_->matVp = Mat4::kIdentity;
-
 }
 
 
@@ -76,7 +72,6 @@ void ModelManager::Initialize() {
 /// 終了処理
 /// ===================================================
 void ModelManager::Finalize() {
-	viewProjectionBuffer_.Reset();
 	models_.clear();
 	pipelines_.clear();
 }
@@ -327,7 +322,7 @@ void ModelManager::PostDraw() {
 
 
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
-	viewProjectionData_->matVp = CameraManager::GetInstance()->GetMainCamera()->GetMatVp();
+	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	ONE::DxCommon::GetInstance()->GetDxDescriptor()->SetSRVHeap(commandList);
 
@@ -338,7 +333,7 @@ void ModelManager::PostDraw() {
 	pipelines_[kSolid]->SetPipelineState();
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
 	for(auto& model : solid) {
 		model->DrawCall(commandList);
