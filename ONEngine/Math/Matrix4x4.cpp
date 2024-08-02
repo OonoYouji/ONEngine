@@ -50,6 +50,28 @@ Matrix4x4::Matrix4x4(const Vector4& row1, const Vector4& row2, const Vector4& ro
 
 }
 
+Matrix4x4::Matrix4x4(float aa, float ab, float ac, float ad, float ba, float bb, float bc, float bd, float ca, float cb, float cc, float cd, float da, float db, float dc, float dd) {
+	this->m[0][0] = aa;
+	this->m[0][1] = ab;
+	this->m[0][2] = ac;
+	this->m[0][3] = ad;
+
+	this->m[1][0] = ba;
+	this->m[1][1] = bb;
+	this->m[1][2] = bc;
+	this->m[1][3] = bd;
+	
+	this->m[2][0] = ca;
+	this->m[2][1] = cb;
+	this->m[2][2] = cc;
+	this->m[2][3] = cd;
+	
+	this->m[3][0] = da;
+	this->m[3][1] = db;
+	this->m[3][2] = dc;
+	this->m[3][3] = dd;
+}
+
 Matrix4x4::Matrix4x4(const XMMATRIX& xm) {
 	(*this) = ConvertToMatrix4x4(xm);
 }
