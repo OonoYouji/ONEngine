@@ -2,6 +2,7 @@
 
 #include <BaseScene.h>
 
+#include <memory>
 
 class CameraManager;
 class SpriteManager;
@@ -9,6 +10,7 @@ class ModelManager;
 class SceneManager;
 
 class DebugCamera;
+class Floor;
 
 /// ===================================================
 /// デバッグ用シーン
@@ -31,5 +33,7 @@ private:
 	SceneManager* sceneManager_ = nullptr;
 
 	DebugCamera* debugCamera_ = nullptr;
+
+	std::unique_ptr<Floor> floor_ = nullptr;
 
 };

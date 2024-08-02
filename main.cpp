@@ -48,6 +48,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
+	textureManager->Load("Floor", "Floor.png");
 	
 
 	GameCamera* gameCamera = new GameCamera();
@@ -97,6 +98,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw();
 
 	}
+
+#ifdef _DEBUG
+	debugScene.reset();
+#endif // _DEBUG
 
 
 	sceneManager->Finalize();

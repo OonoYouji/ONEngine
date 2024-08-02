@@ -140,6 +140,9 @@
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -228,6 +231,12 @@
     </Filter>
     <Filter Include="ONEngine\Input">
       <UniqueIdentifier>{33ea2c36-9823-4ff1-86d0-4030f2edee2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Floor">
+      <UniqueIdentifier>{cecdee0a-87dd-4e59-b255-45b7a2f97203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Floor">
+      <UniqueIdentifier>{9120d4b4-d367-4cf4-aaeb-78781e034a99}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +381,9 @@
     <ClInclude Include="Game\Scenes\Scene_Debug.h">
       <Filter>Game\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h">
+      <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -379,6 +391,9 @@
     </None>
     <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
       <Filter>Resources\Shaders\Sprite</Filter>
+    </None>
+    <None Include="Resources\Shaders\Floor\Floor.hlsli">
+      <Filter>Resources\Shaders\Floor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -393,6 +408,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl">
       <Filter>Resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
