@@ -45,9 +45,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	spriteManager->Initialize();
 	sceneManager->Initialize();
 
-
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
+	textureManager->Load("gameClear", "gameClear.png");
+	
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();

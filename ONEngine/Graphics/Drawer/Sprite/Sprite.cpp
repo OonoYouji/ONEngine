@@ -62,6 +62,8 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 	commandList->IASetIndexBuffer(&ibv_);
 
 	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
+	material_.BindMaterial(commandList, 2);
+	material_.BindTexture(commandList, 3);
 }
 
 

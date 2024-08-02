@@ -13,10 +13,13 @@ SamplerState gSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	output.color1 = gTexture.Sample(gSampler, input.texcoord);
-	output.color1 *= gMaterial.color;
+	output.color = gTexture.Sample(gSampler, input.texcoord);
+	output.color *= gMaterial.color;
+	
+	if (output.color.a == 0.0f) {
+		discard;
+	}
 
-	//output.color2 = output.color1;
 	return output;
 
 }
