@@ -47,7 +47,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(Transform* transform);
 
 
 	/// <summary>
@@ -80,23 +80,14 @@ public:
 	/// <param name="material"></param>
 	void AddMaterial(const Material& material);
 
-	
-	void SetRotate(const Vec3& rotate);
-	void SetPos(const Vec3& position);
-
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	Transform transform_;
-
 	FillMode fillMode_;
 
-	ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
-	TransformData* transformData_ = nullptr;
-	
 	std::vector<Mesh> meshes_;
 	std::vector<Material> materials_;
 

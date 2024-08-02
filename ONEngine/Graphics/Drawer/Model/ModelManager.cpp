@@ -306,14 +306,14 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	std::list<Model*> solid;
-	std::list<Model*> wire;
+	std::list<Element> solid;
+	std::list<Element> wire;
 
 	/// ---------------------------------------------------
 	/// SolidとWireFrameで仕分け
 	/// ---------------------------------------------------
 	for(const auto& model : activeModels_) {
-		if(model->GetFillMode() == FillMode::kSolid) {
+		if(model.first->GetFillMode() == FillMode::kSolid) {
 			solid.push_back(model);
 		} else {
 			wire.push_back(model);
@@ -336,7 +336,8 @@ void ModelManager::PostDraw() {
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
 	for(auto& model : solid) {
-		model->DrawCall(commandList);
+		model.second->BindTransform(commandList, 1);
+		model.first->DrawCall(commandList);
 	}
 
 
@@ -346,7 +347,7 @@ void ModelManager::PostDraw() {
 
 	pipelines_[kWireFrame]->SetPipelineState();
 	for(auto& model : wire) {
-		model->DrawCall(commandList);
+		model.first->DrawCall(commandList);
 	}
 
 
@@ -377,6 +378,6 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model) {
-	activeModels_.push_back(model);
+void ModelManager::AddActiveModel(Model* model, Transform* transform) {
+	activeModels_.push_back(std::make_pair(model, transform));
 }

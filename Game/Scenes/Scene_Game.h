@@ -7,6 +7,7 @@
 #include <Model.h>
 #include <Vector3.h>
 #include <Sprite.h>
+#include <Transform.h>
 
 /// ===================================================
 /// ゲームシーン
@@ -25,7 +26,7 @@ private:
 
 
 	Model* model_;
-	Vec3 rotate_{};
+	Transform transform_{};
 
 	std::unique_ptr<Sprite> sprite_;
 

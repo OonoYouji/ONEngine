@@ -79,7 +79,7 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model);
+	void AddActiveModel(Model* model, Transform* transform);
 
 private:
 
@@ -94,7 +94,9 @@ private:
 	PipelineState::Shader shader_{};
 
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
-	std::list<Model*> activeModels_;
+	using Element = std::pair<Model*, Transform*>;
+	std::list<Element> activeModels_;
+	//std::list<Transform*> activeModelTransforms_;
 
 private:
 	ModelManager(const ModelManager&) = delete;
