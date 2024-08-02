@@ -134,6 +134,9 @@
     <ClCompile Include="ONEngine\Input\Mouse.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -359,6 +362,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Input\Mouse.h">
       <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\DebugCamera.h">
+      <Filter>Game\Objects\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
