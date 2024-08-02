@@ -14,7 +14,7 @@
 class Scene_Game final : public BaseScene {
 public:
 
-	Scene_Game() = default;
+	Scene_Game();
 	~Scene_Game();
 
 	void Initialize() override;

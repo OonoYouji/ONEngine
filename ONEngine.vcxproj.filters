@@ -137,6 +137,9 @@
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp">
       <Filter>Game\Objects\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Debug.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -365,6 +368,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h">
       <Filter>Game\Objects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Debug.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

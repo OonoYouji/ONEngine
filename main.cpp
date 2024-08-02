@@ -14,8 +14,7 @@
 #include <CameraManager.h>
 
 #include <GameCamera.h>
-#include <DebugCamera.h>
-
+#include <Scene_Debug.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -55,8 +54,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	cameraManager->SetMainCamera("GameCamera");
 
 #ifdef _DEBUG
-	DebugCamera* debugCamera = new DebugCamera();
-	debugCamera->Initialize();
+	std::unique_ptr<Scene_Debug> debugScene(new Scene_Debug());
+	debugScene->Initialize();
 #endif // _DEBUG
 
 	///- 実行までにかかった時間
@@ -68,7 +67,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		imGuiManager->BeginFrame();
 		input->Begin();
-		cameraManager->SetMainCamera("GameCamera");
 
 
 		cameraManager->Update();
@@ -87,10 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		
 #ifdef _DEBUG
-		cameraManager->SetMainCamera("DebugCamera");
-		sceneManager->SetRenderTarget(kDebugScene);
-		modelManager->PostDraw();
-		spriteManager->PostDraw();
+		debugScene->Draw();
 #endif // _DEBUG
 
 		sceneManager->PostDraw();

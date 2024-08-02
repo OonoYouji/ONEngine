@@ -5,9 +5,9 @@
 #include <ImGuiManager.h>
 
 
-Scene_Game::~Scene_Game() {
-	sprite_.reset();
-}
+Scene_Game::Scene_Game() {}
+Scene_Game::~Scene_Game() {}
+
 
 /// ===================================================
 /// 初期化処理
