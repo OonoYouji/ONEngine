@@ -2,7 +2,7 @@
 
 #include <CameraManager.h>
 #include <Input.h>
-
+#include <ImGuiManager.h>
 
 DebugCamera::DebugCamera() {
 	name_ = "DebugCamera";
@@ -26,6 +26,14 @@ void DebugCamera::Initialize() {
 /// 描画
 /// ===================================================
 void DebugCamera::Update() {
+	ImGui::Begin("Debug");
+	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
+	ImGui::End();
+
+	if(!isActive) {
+		return;
+	}
+
 	velocity_ = { 0.0f,0.0f,0.0f };
 
 	if(Input::PressMouse(MouseCode::Center)) {
