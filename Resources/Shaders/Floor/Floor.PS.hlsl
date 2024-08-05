@@ -1,7 +1,7 @@
 #include "Floor.hlsli"
 
 /// texcoord transform matrix
-cbuffer cbuffer0 : register(b0) {
+cbuffer material : register(b0) {
 	float4x4 uvTransform;
 };
 

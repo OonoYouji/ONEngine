@@ -42,6 +42,10 @@ Matrix3x3::Matrix3x3(const Vector3& row1, const Vector3& row2, const Vector3& ro
 	this->m[2][2] = row3.z;
 }
 
+Matrix4x4 Matrix3x3::ToMat4() const {
+	return ToMat4(*this);
+}
+
 Matrix3x3 Matrix3x3::MakeScale(const Vector2& scale) {
 	return Matrix3x3(
 		scale.x, 0.0f, 0.0f,
@@ -73,7 +77,7 @@ Matrix3x3 Matrix3x3::MakeAffine(const Vector2& scale, float rotate, const Vector
 	return S * R * T;
 }
 
-Matrix4x4 Matrix3x3::CopyMatrix(const Matrix3x3& m) {
+Matrix4x4 Matrix3x3::ToMat4(const Matrix3x3& m) {
 	return Matrix4x4(
 		m.m[0][0],m.m[0][1],m.m[0][2],0.0f,
 		m.m[1][0],m.m[1][1],m.m[1][2],0.0f,

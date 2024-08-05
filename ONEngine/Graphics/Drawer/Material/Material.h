@@ -6,6 +6,8 @@
 #include <string>
 
 #include <Vector4.h>
+#include <Matrix3x3.h>
+#include <Matrix4x4.h>
 
 
 using namespace Microsoft::WRL;
@@ -18,6 +20,7 @@ public:
 
 	struct MaterialData final {
 		Vec4 color;
+		Mat4 uvTransform;
 	};
 
 public:

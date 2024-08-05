@@ -17,6 +17,7 @@ void Material::Create() {
 	materialBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Material));
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vec4(1, 1, 1, 1);
+	materialData_->uvTransform = Mat3::kIdentity.ToMat4();
 }
 
 

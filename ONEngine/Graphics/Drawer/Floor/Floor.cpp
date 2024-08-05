@@ -73,7 +73,7 @@ void Floor::Initialize() {
 
 	scale_ = Vec2(100, 100);
 	Matrix3x3 matrix = Matrix3x3::MakeAffine(scale_, rotate_, translate_);
-	*matUvTransform_ = Matrix3x3::CopyMatrix(matrix);
+	*matUvTransform_ = matrix.ToMat4();
 
 }
 

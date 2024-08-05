@@ -29,17 +29,28 @@ public:
 
 public:
 	/// ===================================================
+	/// public : static objects
+	/// ===================================================
+
+	static const Matrix3x3 kIdentity;
+
+	
+public:
+	/// ===================================================
 	/// public : objects
 	/// ===================================================
 
 	float m[3][3];
 
+
 public:
+
 	/// ===================================================
-	/// public : static objects
+	/// public : metods
 	/// ===================================================
 
-	static const Matrix3x3 kIdentity;
+	Matrix4x4 ToMat4() const;
+
 
 public:
 	/// ===================================================
@@ -52,7 +63,7 @@ public:
 
 	static Matrix3x3 MakeAffine(const Vector2& scale, float rotate, const Vector2& translate);
 	
-	static Matrix4x4 CopyMatrix(const Matrix3x3& m);
+	static Matrix4x4 ToMat4(const Matrix3x3& m);
 
 	static const Matrix3x3& Identity() { return kIdentity; }
 
@@ -99,3 +110,7 @@ inline Matrix3x3& Matrix3x3::operator*=(const Matrix3x3& other) {
 	*this = *this * other;
 	return *this;
 }
+
+
+
+using Mat3 = Matrix3x3;
