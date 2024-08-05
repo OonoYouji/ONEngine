@@ -7,82 +7,7 @@
 
 #include <CameraManager.h>
 
-namespace {
-
-	struct Matrix3x3 {
-		float m[3][3];
-		
-		Matrix3x3() = default;
-		Matrix3x3(float aa, float ab, float ac, float ba, float bb, float bc, float ca, float cb, float cc) {
-
-			this->m[0][0] = aa;
-			this->m[0][1] = ab;
-			this->m[0][2] = ac;
-
-			this->m[1][0] = ba;
-			this->m[1][1] = bb;
-			this->m[1][2] = bc;
-
-			this->m[2][0] = ca;
-			this->m[2][1] = cb;
-			this->m[2][2] = cc;
-
-		}
-
-		Matrix3x3 operator*(const Matrix3x3& other) const {
-			Matrix3x3 result{};
-			for(int r = 0; r < 3; ++r) {
-				for(int c = 0; c < 3; ++c) {
-					for(int i = 0; i < 3; ++i) {
-						result.m[r][c] += this->m[r][i] * other.m[i][c];
-					}
-				}
-			}
-
-			return result;
-		}
-	};
-
-	Matrix3x3 MakeScale(const Vec2& scale) {
-		return Matrix3x3(
-			scale.x, 0.0f, 0.0f,
-			0.0f, scale.y, 0.0f,
-			0.0f, 0.0f, 1.0f
-		);
-	}
-
-	Matrix3x3 MakeRotate(float rotate) {
-		return Matrix3x3(
-			std::cos(rotate), std::sin(rotate), 0.0f,
-			-std::sin(rotate), std::cos(rotate), 0.0f,
-			0.0f, 0.0f, 1.0f
-		);
-	}
-
-	Matrix3x3 MakeTranslate(const Vec2& translate) {
-		return Matrix3x3(
-			1.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			translate.x, translate.y, 1.0f
-		);
-	}
-
-	Matrix3x3 MakeAffine(const Vec2& scale, float rotate, const Vec2& translate) {
-		Matrix3x3 S = MakeScale(scale);
-		Matrix3x3 R = MakeRotate(rotate);
-		Matrix3x3 T = MakeTranslate(translate);
-		return S * R * T;
-	}
-
-	Matrix4x4 CopyMatrix(const Matrix3x3& m) {
-		return {
-			{m.m[0][0],m.m[0][1],m.m[0][2],0.0f},
-			{m.m[1][0],m.m[1][1],m.m[1][2],0.0f},
-			{m.m[2][0],m.m[2][1],m.m[2][2],0.0f},
-			{0.0f, 0.0f, 0.0f, 0.0f}
-		};
-	}
-}
+#include <Matrix3x3.h>
 
 
 Floor::Floor() {}
@@ -147,8 +72,8 @@ void Floor::Initialize() {
 	uvTransformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matUvTransform_));
 
 	scale_ = Vec2(100, 100);
-	Matrix3x3 matrix = MakeAffine(scale_, rotate_, translate_);
-	*matUvTransform_ = CopyMatrix(matrix);
+	Matrix3x3 matrix = Matrix3x3::MakeAffine(scale_, rotate_, translate_);
+	*matUvTransform_ = Matrix3x3::CopyMatrix(matrix);
 
 }
 

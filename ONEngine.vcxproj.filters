@@ -143,6 +143,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp">
       <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Math\Matrix3x3.cpp">
+      <Filter>ONEngine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h">
       <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Math\Matrix3x3.h">
+      <Filter>ONEngine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
