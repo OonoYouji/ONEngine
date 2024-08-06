@@ -146,6 +146,12 @@
     <ClCompile Include="ONEngine\Math\Matrix3x3.cpp">
       <Filter>ONEngine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Audio\Audio.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Audio\AudioManager.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -240,6 +246,9 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\Drawer\Floor">
       <UniqueIdentifier>{9120d4b4-d367-4cf4-aaeb-78781e034a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Audio">
+      <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -389,6 +398,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Math\Matrix3x3.h">
       <Filter>ONEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\Audio.h">
+      <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\AudioManager.h">
+      <Filter>ONEngine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

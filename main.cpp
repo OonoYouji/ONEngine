@@ -10,6 +10,7 @@
 #include <ModelManager.h>
 #include <SpriteManager.h>
 #include <TextureManager.h>
+#include <AudioManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 
@@ -32,6 +33,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ModelManager* modelManager = ModelManager::GetInstance();
 	SpriteManager* spriteManager = SpriteManager::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
+	AudioManager* audioManager = AudioManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
 
@@ -43,6 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
+	audioManager->Initialize();
 	sceneManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
@@ -50,6 +53,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
 	
+	audioManager->Load("Alarm01.wav");
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
