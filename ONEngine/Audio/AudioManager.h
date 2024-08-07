@@ -6,7 +6,8 @@
 #include <unordered_map>
 #include <string>
 
-#include <Audio.h>
+#include <AudioClip.h>
+#include <AudioSource.h>
 
 
 using namespace Microsoft::WRL;
@@ -22,13 +23,34 @@ class AudioManager final {
 	~AudioManager() = default;
 public:
 
+
+	/// <summary>
+	/// インスタンス確保
+	/// </summary>
 	static AudioManager* GetInstance();
 
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	void Finalize();
+
+
+	/// <summary>
+	/// 音声データの読み込み
+	/// </summary>
+	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
 	void Load(const std::string& filePath);
 
+	AudioClip* GetAudioClip(const std::string& filePath);
+
+	IXAudio2* GetxAudio2() const { return xAudio2_.Get(); }
 
 private:
 
@@ -36,11 +58,13 @@ private:
 
 private:
 
+	/// Audiosまでのファイルパス
 	const std::string kDirectoryPath_ = "./Resources/Audios/";
 
 	ComPtr<IXAudio2> xAudio2_ = nullptr;
 	IXAudio2MasteringVoice* masterVoice_ = nullptr;
 
+	/// 音源データのコンテナ
 	std::unordered_map<std::string, AudioClip> clips_;
 
 private:

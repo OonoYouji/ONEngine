@@ -9,6 +9,8 @@
 #include <Sprite.h>
 #include <Transform.h>
 
+#include <AudioManager.h>
+
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -29,5 +31,7 @@ private:
 	Transform transform_{};
 
 	std::unique_ptr<Sprite> sprite_;
+
+	std::unique_ptr<AudioSource> audioSource_;
 
 };

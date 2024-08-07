@@ -22,6 +22,11 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
+	audioSource_.reset(new AudioSource);
+	audioSource_->SetAudioClip("fanfare.wav");
+	audioSource_->PlayAudio();
+	//audioSource_->StopAudio();
+
 }
 
 
@@ -43,6 +48,16 @@ void Scene_Game::Update() {
 	if(isRotateX) { transform_.rotate.x += 1.0f / 60.0f; }
 	if(isRotateY) { transform_.rotate.y += 1.0f / 60.0f; }
 	if(isRotateZ) { transform_.rotate.z += 1.0f / 60.0f; }
+
+	if(ImGui::Button("audio start")) {
+		audioSource_->PlayAudio();
+	}
+	if(ImGui::Button("audio stop")) {
+		audioSource_->StopAudio();
+	}
+	if(ImGui::Button("audio pause")) {
+		audioSource_->PauseAudio();
+	}
 
 
 	ImGui::End();

@@ -46,14 +46,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	audioManager->Initialize();
-	sceneManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
 	
-	audioManager->Load("Alarm01.wav");
+	audioManager->Load("fanfare.wav");
+
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
@@ -63,6 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<Scene_Debug> debugScene(new Scene_Debug());
 	debugScene->Initialize();
 #endif // _DEBUG
+
+	sceneManager->Initialize();
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();

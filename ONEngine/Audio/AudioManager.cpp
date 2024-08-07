@@ -61,19 +61,43 @@ void AudioManager::Initialize() {
 
 }
 
-void AudioManager::Load(const std::string& filePath) {
-	if(clips_.find(filePath) != clips_.end()) { return; }
-	clips_[filePath] = LoadAudioClip(filePath);
+void AudioManager::Finalize() {
+	for(auto& audioClip : clips_) {
+		audioClip.second.Release();
+	}
+	xAudio2_.Reset();
 }
 
-AudioClip AudioManager::LoadAudioClip(const std::string& filePath) {
-	std::string path = kDirectoryPath_ + filePath;
+void AudioManager::Load(const std::string& filePath) {
 
+	/// mapに存在するか確認
+	if(clips_.find(filePath) != clips_.end()) {
+		assert(false);
+		return;
+	}
+
+	/// ファイルが存在するか確認
+	std::ifstream file(kDirectoryPath_ + filePath);
+	if(!file.good()) {
+		assert(false);
+		return;
+	}
+
+	clips_[filePath] = LoadAudioClip(kDirectoryPath_ + filePath);
+}
+
+
+AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
+	return &clips_.at(filePath);
+}
+
+
+AudioClip AudioManager::LoadAudioClip(const std::string& filePath) {
 	HRESULT hr = S_FALSE;
 
 	///- ファイルオープン
 	std::ifstream file;
-	file.open(path, std::ios_base::binary); //- .wavをバイナリモードで開く
+	file.open(filePath, std::ios_base::binary); //- .wavをバイナリモードで開く
 	assert(file.is_open());
 
 
@@ -120,9 +144,6 @@ AudioClip AudioManager::LoadAudioClip(const std::string& filePath) {
 	soundData.wfex = format.fmt;
 	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
 	soundData.bufferSize = data.size;
-	hr = xAudio2_->CreateSourceVoice(&soundData.pSourceVoice, &soundData.wfex);
-	assert(SUCCEEDED(hr));
 
-
-	return AudioClip();
+	return soundData;
 }

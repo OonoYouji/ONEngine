@@ -27,8 +27,9 @@
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ONEngine\Audio\Audio.cpp" />
+    <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
+    <ClCompile Include="ONEngine\Audio\AudioSource.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
@@ -80,8 +81,9 @@
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
-    <ClInclude Include="ONEngine\Audio\Audio.h" />
+    <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
+    <ClInclude Include="ONEngine\Audio\AudioSource.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />

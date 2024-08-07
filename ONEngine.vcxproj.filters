@@ -146,10 +146,13 @@
     <ClCompile Include="ONEngine\Math\Matrix3x3.cpp">
       <Filter>ONEngine\Math</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Audio\Audio.cpp">
+    <ClCompile Include="ONEngine\Audio\AudioManager.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Audio\AudioManager.cpp">
+    <ClCompile Include="ONEngine\Audio\AudioClip.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
   </ItemGroup>
@@ -399,10 +402,13 @@
     <ClInclude Include="ONEngine\Math\Matrix3x3.h">
       <Filter>ONEngine\Math</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Audio\Audio.h">
+    <ClInclude Include="ONEngine\Audio\AudioManager.h">
       <Filter>ONEngine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Audio\AudioManager.h">
+    <ClInclude Include="ONEngine\Audio\AudioClip.h">
+      <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\AudioSource.h">
       <Filter>ONEngine\Audio</Filter>
     </ClInclude>
   </ItemGroup>
