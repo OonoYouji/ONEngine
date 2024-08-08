@@ -32,8 +32,7 @@ enum class PadCode : WORD {
 	Y = XINPUT_GAMEPAD_Y
 };
 
-struct Pad
-{
+struct Pad {
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> device_;
 	int32_t deadZoneL_;
 	int32_t deadZoneR_;

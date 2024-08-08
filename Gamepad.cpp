@@ -2,7 +2,7 @@
 #include <WinApp.h>
 #include < stdexcept >
 
-Gamepad::Gamepad() : pad_({ nullptr,3000,3000,{},{} }) {}
+Gamepad::Gamepad() : pad_({ nullptr,8000,8000,{},{} }) {}
 
 Gamepad::~Gamepad() {}
 
@@ -42,8 +42,7 @@ void Gamepad::Begin() {
 	XInputGetState(0, &pad_.state_);
 }
 
-void Gamepad::SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR)
-{
+void Gamepad::SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR) {
 	pad_.deadZoneL_ = deadZoneL;
 	pad_.deadZoneR_ = deadZoneR;
 	pad = pad_;
@@ -68,7 +67,6 @@ bool Gamepad::GetPadState(Pad out) const {
 
 
 
-
 bool Gamepad::Press(PadCode code) const {
 	return (pad_.state_.Gamepad.wButtons & static_cast<WORD>(code)) != 0;
 }
@@ -85,7 +83,6 @@ bool Gamepad::Release(PadCode code) const {
 
 
 
-
 Vector2 Gamepad::GetLeftStick() const {
 	return ApplyDeadZone(pad_.state_.Gamepad.sThumbLX, pad_.state_.Gamepad.sThumbLY, pad_.deadZoneL_);
 }
@@ -94,18 +91,15 @@ Vector2 Gamepad::GetRightStick() const {
 	return ApplyDeadZone(pad_.state_.Gamepad.sThumbRX, pad_.state_.Gamepad.sThumbRY, pad_.deadZoneR_);
 }
 
-BYTE Gamepad::GetLeftTrigger() const
-{
+BYTE Gamepad::GetLeftTrigger() const {
 	return pad_.state_.Gamepad.bLeftTrigger;
 }
 
-BYTE Gamepad::GetRightTrigger() const
-{
+BYTE Gamepad::GetRightTrigger() const {
 	return pad_.state_.Gamepad.bRightTrigger;
 }
 
-Vector2 Gamepad::ApplyDeadZone(int32_t x, int32_t y, int32_t deadZone) const
-{
+Vector2 Gamepad::ApplyDeadZone(int32_t x, int32_t y, int32_t deadZone) const {
 	Vector2 stick;
 
 	float magnitude = sqrtf(static_cast<float>(x) * static_cast<float>(x) + static_cast<float>(y) * static_cast<float>(y));
