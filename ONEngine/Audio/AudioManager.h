@@ -67,6 +67,9 @@ private:
 	/// 音源データのコンテナ
 	std::unordered_map<std::string, AudioClip> clips_;
 
+	/// 音源の再生クラスコンテナ
+	std::list<std::unique_ptr<AudioSource>> sources_;
+
 private:
 	AudioManager(const AudioManager&) = delete;
 	AudioManager(AudioManager&&) = delete;

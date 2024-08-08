@@ -8,9 +8,17 @@
 #include <AudioManager.h>
 
 
+void AudioSource::Update() {
+	for(auto& source : sources_) {
+		source.pSourceVoice->SetVolume(volume_);
+		source.pSourceVoice->SetFrequencyRatio(pitch_);
+	}
+}
+
 void AudioSource::PlayAudio() {
 	HRESULT result = S_FALSE;
 
+	Element elem{};
 	elem.pSourceVoice = clip_->CreateSourceVoice();
 
 	///- 再生する波形データの設定
@@ -21,17 +29,28 @@ void AudioSource::PlayAudio() {
 
 	///- 波形データの再生
 	elem.pSourceVoice->SubmitSourceBuffer(&buffer);
+	elem.pSourceVoice->SetVolume(volume_);
 	elem.pSourceVoice->Start();
+
+	sources_.push_back(std::move(elem));
+
 }
 
 void AudioSource::StopAudio() {
+	Element& elem = sources_.back();
 	elem.pSourceVoice->Stop();
 	elem.pSourceVoice->FlushSourceBuffers();
+	elem.pSourceVoice->DestroyVoice();
 }
 
-void AudioSource::PauseAudio() {
-	elem.pSourceVoice->Stop();
+void AudioSource::StopAudioALL() {
+	for(auto& source : sources_) {
+		source.pSourceVoice->Stop();
+		source.pSourceVoice->FlushSourceBuffers();
+		source.pSourceVoice->DestroyVoice();
+	}
 }
+
 
 void AudioSource::SetAudioClip(const std::string& filePath) {
 	clip_ = AudioManager::GetInstance()->GetAudioClip(filePath);

@@ -55,9 +55,9 @@ void Scene_Game::Update() {
 	if(ImGui::Button("audio stop")) {
 		audioSource_->StopAudio();
 	}
-	if(ImGui::Button("audio pause")) {
-		audioSource_->PauseAudio();
-	}
+	//if(ImGui::Button("audio pause")) {
+	//	//audioSource_->PauseAudio();
+	//}
 
 
 	ImGui::End();
