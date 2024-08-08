@@ -42,7 +42,7 @@ void Gamepad::Begin() {
 	XInputGetState(0, &pad_.state_);
 }
 
-void Gamepad::SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR) {
+void Gamepad::SetPadDeadZone(Pad& pad, int32_t deadZoneL, int32_t deadZoneR) {
 	pad_.deadZoneL_ = deadZoneL;
 	pad_.deadZoneR_ = deadZoneR;
 	pad = pad_;
@@ -60,7 +60,7 @@ bool Gamepad::GetPadStatePrevious(XINPUT_STATE& out) const {
 	return true;
 }
 
-bool Gamepad::GetPadState(Pad out) const {
+bool Gamepad::GetPadState(Pad& out) const {
 	out = pad_;
 	return true;
 }

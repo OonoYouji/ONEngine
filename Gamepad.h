@@ -11,6 +11,9 @@
 
 namespace ONE { class WinApp; }
 
+/// ===================================================
+/// GamePadの入力ステート
+/// ===================================================
 enum class PadCode : WORD {
 	Up = XINPUT_GAMEPAD_DPAD_UP,
 	Down = XINPUT_GAMEPAD_DPAD_DOWN,
@@ -32,6 +35,11 @@ enum class PadCode : WORD {
 	Y = XINPUT_GAMEPAD_Y
 };
 
+
+
+/// ===================================================
+/// GamePad一個当たりの情報
+/// ===================================================
 struct Pad {
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> device_;
 	int32_t deadZoneL_;
@@ -40,38 +48,128 @@ struct Pad {
 	XINPUT_STATE statePre_;
 };
 
+
+
+/// ===================================================
+/// GamePadクラス
+/// ===================================================
 class Gamepad final {
 public:
+
 	Gamepad();
 	~Gamepad();
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize(IDirectInput8* devInput, ONE::WinApp* winApp);
 
+	/// <summary>
+	/// フレームの最初に行う
+	/// </summary>
 	void Begin();
 
-	void SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR);
 
+
+	/// <summary>
+	/// デッドゾーンの設定
+	/// </summary>
+	/// <param name="pad"></param>
+	/// <param name="deadZoneL"></param>
+	/// <param name="deadZoneR"></param>
+	void SetPadDeadZone(Pad& pad, int32_t deadZoneL, int32_t deadZoneR);
+
+
+	/// <summary>
+	/// 今フレームのpad stateを得る
+	/// </summary>
+	/// <param name="out"></param>
+	/// <returns></returns>
 	bool GetPadState(XINPUT_STATE& out)const;
+
+	/// <summary>
+	/// 前フレームのpad stateを得る
+	/// </summary>
+	/// <param name="out"></param>
+	/// <returns></returns>
 	bool GetPadStatePrevious(XINPUT_STATE& out)const;
 
-	bool GetPadState(Pad out)const;
 
+	/// <summary>
+	/// 今フレームのpad stateを得る
+	/// </summary>
+	/// <param name="out"></param>
+	/// <returns></returns>
+	bool GetPadState(Pad& out)const;
+	
+
+
+	/// <summary>
+	/// 押しているか
+	/// </summary>
+	/// <param name="code"></param>
+	/// <returns></returns>
 	bool Press(PadCode code) const;
+
+	/// <summary>
+	/// 押した瞬間か
+	/// </summary>
+	/// <param name="code"></param>
+	/// <returns></returns>
 	bool Trigger(PadCode code) const;
+
+	/// <summary>
+	/// 離した瞬間か
+	/// </summary>
+	/// <param name="code"></param>
+	/// <returns></returns>
 	bool Release(PadCode code) const;
 
+
+
+	/// <summary>
+	/// 左スティックの角度
+	/// </summary>
+	/// <returns></returns>
 	Vector2 GetLeftStick() const;
+
+	/// <summary>
+	/// 右スティックの角度
+	/// </summary>
+	/// <returns></returns>
 	Vector2 GetRightStick() const;
 
+
+
+	/// <summary>
+	/// LTの押し込み度
+	/// </summary>
+	/// <returns></returns>
 	BYTE GetLeftTrigger() const;
+
+	/// <summary>
+	/// RTの押し込み度
+	/// </summary>
+	/// <returns></returns>
 	BYTE GetRightTrigger() const;
 
 private:
 
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
 	Vector2 ApplyDeadZone(int32_t x, int32_t y, int32_t deadZone) const;
 
 private:
+
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
 	Pad pad_;
 
