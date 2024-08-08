@@ -69,7 +69,8 @@ public:
 
 private:
 
-	AudioClip LoadAudioClip(const std::string& filePath);
+	AudioClip LoadWave(const std::string& filePath);
+
 
 private:
 

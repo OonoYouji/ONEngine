@@ -87,7 +87,7 @@ void AudioManager::Load(const std::string& filePath) {
 		return;
 	}
 
-	clips_[filePath] = LoadAudioClip(kDirectoryPath_ + filePath);
+	clips_[filePath] = LoadWave(kDirectoryPath_ + filePath);
 }
 
 
@@ -111,7 +111,9 @@ void AudioManager::SubAudioSource(AudioSource* source) {
 }
 
 
-AudioClip AudioManager::LoadAudioClip(const std::string& filePath) {
+
+
+AudioClip AudioManager::LoadWave(const std::string& filePath) {
 	HRESULT hr = S_FALSE;
 
 	///- ファイルオープン
@@ -166,3 +168,4 @@ AudioClip AudioManager::LoadAudioClip(const std::string& filePath) {
 
 	return soundData;
 }
+
