@@ -59,6 +59,10 @@ public:
 
 	void AddAudioSource(AudioSource* source);
 
+	void SubAudioSource(AudioSource* source);
+
+
+
 	AudioClip* GetAudioClip(const std::string& filePath);
 
 	IXAudio2* GetxAudio2() const { return xAudio2_.Get(); }

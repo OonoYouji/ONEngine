@@ -14,9 +14,32 @@ AudioSource::AudioSource() {
 
 void AudioSource::Update() {
 	for(auto& source : sources_) {
-		source.pSourceVoice->SetVolume(volume_);
-		source.pSourceVoice->SetFrequencyRatio(pitch_);
+		source.pSourceVoice->SetVolume(volume);
+		source.pSourceVoice->SetFrequencyRatio(pitch);
 	}
+
+	if(!isLoop) {
+		for(auto& source : sources_) {
+			source.pSourceVoice->ExitLoop();
+		}
+	}
+
+	XAUDIO2_VOICE_STATE state{};
+	for(auto it = sources_.begin(); it != sources_.end();) {
+		auto& source = *it;
+		if(source.pSourceVoice) {
+			source.pSourceVoice->GetState(&state);
+			if(state.BuffersQueued == 0) {
+				source.pSourceVoice->DestroyVoice();
+				it = sources_.erase(it);
+			} else {
+				++it;
+			}
+		} else {
+			it = sources_.erase(it);
+		}
+	}
+	
 }
 
 void AudioSource::PlayAudio() {
@@ -30,10 +53,14 @@ void AudioSource::PlayAudio() {
 	buffer.pAudioData = clip_->pBuffer;
 	buffer.AudioBytes = clip_->bufferSize;
 	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	if(isLoop) {
+		buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
+	}
 
 	///- 波形データの再生
 	elem.pSourceVoice->SubmitSourceBuffer(&buffer);
-	elem.pSourceVoice->SetVolume(volume_);
+	elem.pSourceVoice->SetVolume(volume);
+	elem.pSourceVoice->SetFrequencyRatio(pitch);
 	elem.pSourceVoice->Start();
 
 	sources_.push_back(std::move(elem));
@@ -41,10 +68,12 @@ void AudioSource::PlayAudio() {
 }
 
 void AudioSource::StopAudio() {
+	if(sources_.empty()) { return; }
 	Element& elem = sources_.back();
 	elem.pSourceVoice->Stop();
 	elem.pSourceVoice->FlushSourceBuffers();
 	elem.pSourceVoice->DestroyVoice();
+	sources_.pop_back();
 }
 
 void AudioSource::StopAudioALL() {

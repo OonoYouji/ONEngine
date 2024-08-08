@@ -76,10 +76,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imGuiManager->BeginFrame();
 		input->Begin();
 
+		/// ↓ 更新処理に移る
 
 		cameraManager->Update();
 		sceneManager->Update();
 
+		audioManager->Update();
+
+		/// ↓ 描画処理に移る
 
 		dxCommon->PreDraw();
 		sceneManager->PreDraw();

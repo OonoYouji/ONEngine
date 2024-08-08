@@ -71,12 +71,14 @@ private:
 
 	struct Element {
 		IXAudio2SourceVoice* pSourceVoice = nullptr;
+		bool operator== (const Element&) const = default;
 	};
 
 	std::list<Element> sources_;
-	float volume_ = 0.5f;
-	float pitch_ = 1.0f;
 
-	bool isLoop_ = false;
+public:
+	float volume = 0.5f;
+	float pitch = 1.0f;
+	bool isLoop = false;
 
 };
