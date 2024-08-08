@@ -27,14 +27,16 @@ public:
 	/// <summary>
 	/// インスタンス確保
 	/// </summary>
-	static AudioManager* GetInstance();
+	static AudioManager* GetInstance() {
+		static AudioManager instance;
+		return &instance;
+	}
 
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize();
-
 
 	/// <summary>
 	/// 終了処理
@@ -43,10 +45,19 @@ public:
 
 
 	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+
+	/// <summary>
 	/// 音声データの読み込み
 	/// </summary>
 	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
 	void Load(const std::string& filePath);
+
+
+	void AddAudioSource(AudioSource* source);
 
 	AudioClip* GetAudioClip(const std::string& filePath);
 

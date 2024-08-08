@@ -37,15 +37,6 @@ namespace {
 
 
 /// ===================================================
-/// インスタンス確保
-/// ===================================================
-AudioManager* AudioManager::GetInstance() {
-	static AudioManager instance;
-	return &instance;
-}
-
-
-/// ===================================================
 /// 初期化
 /// ===================================================
 void AudioManager::Initialize() {
@@ -65,8 +56,17 @@ void AudioManager::Finalize() {
 	for(auto& audioClip : clips_) {
 		audioClip.second.Release();
 	}
+
+	for(auto& audioSource : sources_) {
+		audioSource.reset();
+	}
+
 	xAudio2_.Reset();
 }
+
+
+
+
 
 void AudioManager::Load(const std::string& filePath) {
 
@@ -89,6 +89,10 @@ void AudioManager::Load(const std::string& filePath) {
 
 AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
 	return &clips_.at(filePath);
+}
+
+void AudioManager::AddAudioSource(AudioSource* source) {
+	sources_.push_back(std::move(std::unique_ptr<AudioSource>(source)));
 }
 
 

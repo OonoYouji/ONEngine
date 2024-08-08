@@ -23,7 +23,7 @@ enum class AudioType : int8_t {
 class AudioSource final {
 public:
 
-	AudioSource() {};
+	AudioSource();
 	~AudioSource() {};
 
 

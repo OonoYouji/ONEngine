@@ -8,6 +8,10 @@
 #include <AudioManager.h>
 
 
+AudioSource::AudioSource() {
+	AudioManager::GetInstance()->AddAudioSource(this);
+}
+
 void AudioSource::Update() {
 	for(auto& source : sources_) {
 		source.pSourceVoice->SetVolume(volume_);

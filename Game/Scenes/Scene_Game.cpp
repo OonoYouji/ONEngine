@@ -22,7 +22,7 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	audioSource_.reset(new AudioSource);
+	audioSource_ = new AudioSource;
 	audioSource_->SetAudioClip("fanfare.wav");
 	audioSource_->PlayAudio();
 	//audioSource_->StopAudio();

@@ -111,11 +111,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	sceneManager->Finalize();
-	spriteManager->Finalize();
 	cameraManager->Finalize();
-	modelManager->Finalize();
-	textureManager->Finalize();
 
+	audioManager->Finalize();
+	spriteManager->Finalize();
+	modelManager->Finalize();
+
+	textureManager->Finalize();
 	imGuiManager->Finalize();
 	input->Finalize();
 	dxCommon->Finalize();
