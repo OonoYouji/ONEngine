@@ -77,11 +77,13 @@ void AudioSource::StopAudio() {
 }
 
 void AudioSource::StopAudioALL() {
+	if(sources_.empty()) { return; }
 	for(auto& source : sources_) {
 		source.pSourceVoice->Stop();
 		source.pSourceVoice->FlushSourceBuffers();
 		source.pSourceVoice->DestroyVoice();
 	}
+	sources_.clear();
 }
 
 
