@@ -152,6 +152,9 @@
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Gamepad.cpp">
+      <Filter>ONEngine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -404,6 +407,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Audio\AudioManager.h">
       <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Gamepad.h">
+      <Filter>ONEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ namespace {
 
 	// KeyCodeからキー名を取得
 	const char* GetKeyName(KeyCode key) {
-		switch(key) {
+		switch (key) {
 		case KeyCode::A: return "A";
 		case KeyCode::B: return "B";
 		case KeyCode::C: return "C";
@@ -118,7 +118,7 @@ namespace {
 
 	// MouseCodeからボタン名を取得
 	const char* GetMouseButtonName(MouseCode code) {
-		switch(code) {
+		switch (code) {
 		case MouseCode::Left: return "Left Button";
 		case MouseCode::Right: return "Right Button";
 		case MouseCode::Whell: return "Wheel Button";
@@ -130,12 +130,36 @@ namespace {
 		}
 	}
 
+
+	//PadCodeからボタン名取得
+	const char* GetPadButtonName(PadCode code) {
+		switch (code)
+		{
+		case PadCode::Up: return "Up";
+		case PadCode::Down: return "Down";
+		case PadCode::Left: return "Left";
+		case PadCode::Right: return "Right";
+		case PadCode::Start: return "Start";
+		case PadCode::Back: return "Back";
+		case PadCode::LeftStick: return "Left Stick";
+		case PadCode::RightStick: return "Right Stick";
+		case PadCode::LeftShoulder: return "Left Shoulder";
+		case PadCode::RightShoulder: return "Right Shoulder";
+		case PadCode::A: return "A";
+		case PadCode::B: return "B";
+		case PadCode::X: return "X";
+		case PadCode::Y: return "Y";
+		default: return "Unknoun";
+		}
+	}
+
 }
 
 
 
 std::unique_ptr<Keyboard> Input::keyboard_ = nullptr;
 std::unique_ptr<Mouse> Input::mouse_ = nullptr;
+std::unique_ptr<Gamepad> Input::pad_ = nullptr;
 
 
 /// ===================================================
@@ -170,6 +194,9 @@ void Input::Initialize(ONE::WinApp* winApp) {
 	mouse_.reset(new Mouse());
 	mouse_->Initialize(directInput_.Get(), winApp);
 
+	pad_.reset(new Gamepad());
+	pad_->Initialize(directInput_.Get(), winApp);
+
 }
 
 
@@ -189,7 +216,7 @@ void Input::Begin() {
 
 	keyboard_->Begin();
 	mouse_->Begin();
-
+	pad_->Begin();
 
 
 //#ifdef _DEBUG
@@ -198,10 +225,10 @@ void Input::Begin() {
 //	/// ---------------------------------------------------
 //	/// キーボードの入力チェック
 //	/// ---------------------------------------------------
-//	if(ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//	if (ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
 //
-//		for(uint32_t key = 0u; key < 256; ++key) {
-//			if(keyboard_->Press(KeyCode(key))) {
+//		for (uint32_t key = 0u; key < 256; ++key) {
+//			if (keyboard_->Press(KeyCode(key))) {
 //				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
 //			}
 //		}
@@ -213,10 +240,10 @@ void Input::Begin() {
 //	/// ---------------------------------------------------
 //	/// マウスの入力チェック
 //	/// ---------------------------------------------------
-//	if(ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//	if (ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
 //
-//		for(uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
-//			if(PressMouse(MouseCode(button))) {
+//		for (uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
+//			if (PressMouse(MouseCode(button))) {
 //				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
 //			}
 //		}
@@ -231,6 +258,41 @@ void Input::Begin() {
 //		ImGui::Separator();
 //
 //		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
+//
+//		ImGui::TreePop();
+//	}
+//
+//
+//	/// ---------------------------------------------------
+//	/// ゲームパッドの入力チェック
+//	/// ---------------------------------------------------
+//	if (ImGui::TreeNodeEx("gamepad press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		const std::array<PadCode, 14> padButtons = {
+//		PadCode::Up, PadCode::Down, PadCode::Left, PadCode::Right,
+//		PadCode::Start, PadCode::Back,
+//		PadCode::LeftStick, PadCode::RightStick,
+//		PadCode::LeftShoulder, PadCode::RightShoulder,
+//		PadCode::A, PadCode::B, PadCode::X, PadCode::Y
+//		};
+//
+//		for (const PadCode& padButton : padButtons) {
+//			if (PressPadButton(PadCode(padButton))) {
+//				ImGui::Text("%s is pressed", GetPadButtonName(PadCode(padButton)));
+//			}
+//		}
+//
+//		ImGui::Separator();
+//
+//		Vec2 leftStick = GetLeftStick();
+//		Vec2 rigthStick = GetRightStick();
+//		ImGui::Text("LStick : Vec2( %f, %f )", leftStick.x, leftStick.y);
+//		ImGui::Text("RStick : Vec2( %f, %f )", rigthStick.x, rigthStick.y);
+//
+//		uint8_t leftTrigger = GetLeftTrigger();
+//		uint8_t rightTrigger = GetRightTrigger();
+//		ImGui::Text("LTrigger : %d", static_cast<int>(leftTrigger));
+//		ImGui::Text("RTrigger : %d", static_cast<int>(rightTrigger));
 //
 //		ImGui::TreePop();
 //	}
@@ -281,4 +343,72 @@ Vec2 Input::MouseVelocity() {
 
 float Input::MouseScroll() {
 	return mouse_->GetScroll();
+}
+
+
+/// ===================================================
+/// ゲームパッド入力
+/// ===================================================
+bool Input::PressPadButton(PadCode padCode) {
+	return pad_->Press(padCode);
+}
+
+bool Input::TriggerPadButton(PadCode padCode) {
+	return pad_->Trigger(padCode);
+}
+
+bool Input::ReleasePadButton(PadCode padCode) {
+	return pad_->Release(padCode);
+}
+
+bool Input::PadState(XINPUT_STATE& out) {
+	return pad_->GetPadState(out);
+}
+
+bool Input::PadStatePrevious(XINPUT_STATE& out) {
+	return pad_->GetPadStatePrevious(out);
+}
+
+bool Input::PadState(Pad pad) {
+	return pad_->GetPadState(pad);
+}
+
+void Input::SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR) {
+	pad_->SetPadDeadZone(pad, deadZoneL, deadZoneR);
+}
+
+Vector2 Input::GetLeftStick() {
+	return pad_->GetLeftStick();
+}
+
+Vector2 Input::GetRightStick() {
+	return pad_->GetRightStick();
+}
+
+Vector2 Input::GetLStick() {
+	return pad_->GetLeftStick();
+}
+
+Vector2 Input::GetRStick() {
+	return pad_->GetRightStick();
+}
+
+uint8_t Input::GetLeftTrigger()
+{
+	return pad_->GetLeftTrigger();
+}
+
+uint8_t Input::GetRightTrigger()
+{
+	return pad_->GetRightTrigger();
+}
+
+uint8_t Input::GetLTrigger()
+{
+	return pad_->GetLeftTrigger();
+}
+
+uint8_t Input::GetRTrigger()
+{
+	return pad_->GetRightTrigger();
 }
