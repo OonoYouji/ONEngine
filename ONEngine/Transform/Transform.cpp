@@ -15,9 +15,11 @@ void Transform::Initialize() {
 /// ===================================================
 /// 行列の更新
 /// ===================================================
-void Transform::UpdateMatrix() {
+void Transform::UpdateMatrix(bool isTransfered) {
 	matTransform = Mat4::MakeAffine(scale, rotate, position);
-	*mapingData_ = matTransform;
+	if(isTransfered) {
+		*mapingData_ = matTransform;
+	}
 }
 
 void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex) {

@@ -25,7 +25,7 @@ public:
 	/// <summary>
 	/// 行列の更新
 	/// </summary>
-	void UpdateMatrix();
+	void UpdateMatrix(bool isTransfered = true);
 
 	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
 

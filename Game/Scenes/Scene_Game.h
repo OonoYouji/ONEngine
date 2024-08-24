@@ -11,6 +11,8 @@
 
 #include <AudioManager.h>
 
+class Particle;
+
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -33,5 +35,7 @@ private:
 	std::unique_ptr<Sprite> sprite_;
 
 	AudioSource* audioSource_;
+
+	std::unique_ptr<Particle> particle_;
 
 };

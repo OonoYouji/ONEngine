@@ -1,8 +1,8 @@
 #include "Scene_Game.h"
 
 #include <ModelManager.h>
-
 #include <ImGuiManager.h>
+#include <Particle.h>
 
 
 Scene_Game::Scene_Game() {}
@@ -22,10 +22,13 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	audioSource_ = new AudioSource;
+	/*audioSource_ = new AudioSource;
 	audioSource_->SetAudioClip("fanfare.wav");
-	audioSource_->PlayAudio();
+	audioSource_->PlayAudio();*/
 	//audioSource_->StopAudio();
+
+	particle_.reset(new Particle);
+	particle_->Initialize();
 
 }
 
@@ -51,19 +54,19 @@ void Scene_Game::Update() {
 
 	ImGui::Separator();
 
-	if(ImGui::Button("audio start")) {
-		audioSource_->PlayAudio();
-	}
-	if(ImGui::Button("audio stop")) {
-		audioSource_->StopAudio();
-	}
+	//if(ImGui::Button("audio start")) {
+	//	audioSource_->PlayAudio();
+	//}
+	//if(ImGui::Button("audio stop")) {
+	//	audioSource_->StopAudio();
+	//}
 
-	ImGui::Spacing();
+	//ImGui::Spacing();
 
-	ImGui::DragFloat("volume", &audioSource_->volume, 0.005f, 0.0f, 1.0f);
-	ImGui::DragFloat("pitch ", &audioSource_->pitch,  0.01f,  0.0f, 10.0f);
+	///*ImGui::DragFloat("volume", &audioSource_->volume, 0.005f, 0.0f, 1.0f);
+	//ImGui::DragFloat("pitch ", &audioSource_->pitch,  0.01f,  0.0f, 10.0f);
 
-	ImGui::Checkbox("isLoop ", &audioSource_->isLoop);
+	//ImGui::Checkbox("isLoop ", &audioSource_->isLoop);*/
 
 	ImGui::End();
 #endif // _DEBUG
@@ -77,8 +80,10 @@ void Scene_Game::Update() {
 /// ===================================================
 void Scene_Game::Draw() {
 
-	model_->Draw(&transform_);
+	//model_->Draw(&transform_);
 
 	sprite_->Draw();
+
+	particle_->Draw();
 
 }

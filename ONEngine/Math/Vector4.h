@@ -27,6 +27,7 @@ public:
 	static const Vector4 k0100;
 	static const Vector4 k0010;
 	static const Vector4 k0001;
+	static const Vector4 k1111;
 	
 
 public:
