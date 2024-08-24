@@ -13,6 +13,7 @@
 #include <AudioManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
+#include <Particle.h>
 
 #include <GameCamera.h>
 #include <Scene_Debug.h>
@@ -46,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	audioManager->Initialize();
+	Particle::StaticInitialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
@@ -117,6 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 
+	Particle::StaticFinalize();
 	audioManager->Finalize();
 	spriteManager->Finalize();
 	modelManager->Finalize();
