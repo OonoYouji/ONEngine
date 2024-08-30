@@ -21,6 +21,7 @@ struct ParticleElement {
 	Material material;
 
 	Vec3 velocity = { 0, 1, 0 };
+	float currentLifeTime;
 };
 
 
@@ -77,6 +78,9 @@ private:
 
 	void CreateVertexBuffer();
 
+
+	void ParticleElementUpdate(ParticleElement* elem);
+
 private:
 
 	/// =========================================================
@@ -107,6 +111,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vbv_{};
 
 	std::list<ParticleElement> elements_;
-
+	
+	float maxLifeTime_; /// particle currentTimeの初期化時間 : 単位は秒
 
 };

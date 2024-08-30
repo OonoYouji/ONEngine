@@ -75,6 +75,8 @@ void Particle::Initialize() {
 	CreateMaterialBuffer();
 	CreateVertexBuffer();
 
+	maxLifeTime_ = 10.0f;
+
 	for(int i = 0; i < 10; i++) {
 		CreateParticleElement();
 	}
@@ -90,8 +92,12 @@ void Particle::Update() {
 	const float deltaTime = 1.0f / 60.0f;
 
 	for(auto& elem : elements_) {
-		elem.transform.position += elem.velocity * deltaTime;
+		ParticleElementUpdate(&elem);
 	}
+
+	elements_.remove_if([](const ParticleElement& element) {
+		return element.currentLifeTime <= 0.0f;
+	});
 
 }
 
@@ -150,10 +156,12 @@ void Particle::CreateParticleElement() {
 	ParticleElement element;
 	element.material.Create();
 	element.transform.position = Random::Vec3(-Vec3::kOne, Vec3::kOne);
-	element.velocity = Random::Vec3(-Vec3::kOne, Vec3::kOne);
 	element.transform.UpdateMatrix(false);
 
 	element.material.SetColor(Vec4(Random::Vec3(-Vec3::kOne, Vec3::kOne), 1.0f));
+
+	element.velocity = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+	element.currentLifeTime = maxLifeTime_;
 
 	elements_.push_back(std::move(element));
 
@@ -258,5 +266,19 @@ void Particle::CreateVertexBuffer() {
 }
 
 
-#pragma endregion
+
+/// ===================================================
+/// 粒子の更新処理
+/// ===================================================
+void Particle::ParticleElementUpdate(ParticleElement* elem) {
+
+	/// TODO:   class Time::deltaTime のように他クラスから deltaTimeを得る構造にする
+	const float deltaTime = 1.0f / 60.0f;
+
+	elem->transform.position += elem->velocity * deltaTime;
+	elem->currentLifeTime -= deltaTime;
+}
+
+
+#pragma endregion // private methods
 
