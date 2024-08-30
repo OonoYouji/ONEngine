@@ -77,10 +77,10 @@ void Particle::Initialize() {
 	for(int i = 0; i < 10; i++) {
 		ParticleElement element;
 		element.material.Create();
-		element.transform.position.x = float(i) * 0.1f;
+		element.transform.position.x = float(i);
 		element.transform.UpdateMatrix(false);
 
-		elements_.push_back(element);
+		elements_.push_back(std::move(element));
 	}
 
 }
@@ -98,6 +98,7 @@ void Particle::Draw() {
 	int id = 0;
 	for(auto& elem : elements_) {
 
+		elem.transform.UpdateMatrix(false);
 		transformDatas_[id] = elem.transform.matTransform;
 		materialDatas_[id] = *elem.material.GetData();
 
@@ -140,7 +141,7 @@ void Particle::Draw() {
 /// ===================================================
 void Particle::CreateTransformBuffer() {
 
-	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Transform::matTransform) * kMaxInstanceCount_);
+	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxInstanceCount_);
 
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&transformDatas_));
 
@@ -217,9 +218,9 @@ void Particle::CreateVertexBuffer() {
 	Mesh::VertexData* vertexData;
 	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
 
-	vertexData[0] = { { 0.0f, 0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f} };
-	vertexData[1] = { { 0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f} };
-	vertexData[2] = { { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 0.0f, -1.0f} };
+	vertexData[0] = { { 0.0f, 0.5f, 0.0f, 1.0f }, { 0.5f, 0.0f }, { 0.0f, 0.0f, -1.0f} };
+	vertexData[1] = { { 0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 0.0f, -1.0f} };
+	vertexData[2] = { { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 0.0f, -1.0f} };
 
 
 	vbv_.BufferLocation = vertexBuffer_->GetGPUVirtualAddress();

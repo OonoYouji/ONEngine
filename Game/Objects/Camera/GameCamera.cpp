@@ -28,7 +28,8 @@ void GameCamera::Initialize() {
 /// ===================================================
 void GameCamera::Update() {
 
-	
+	transform_.UpdateMatrix();
+	matView_ = transform_.matTransform.Inverse();
 	Transfer();
 
 }

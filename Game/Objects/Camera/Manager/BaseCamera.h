@@ -33,6 +33,9 @@ public:
 
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
+
+	void ImGuiDebug();
+
 protected:
 
 	std::string name_ = "BaseCamera";

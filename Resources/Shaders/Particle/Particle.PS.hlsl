@@ -1,7 +1,7 @@
 #include "Particle.hlsli"
 
 struct Material {
-	float color;
+	float4 color;
 	float4x4 uvTransform;
 };
 

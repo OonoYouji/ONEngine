@@ -2,10 +2,13 @@
 
 #include <WinApp.h>
 #include <CameraManager.h>
+#include <ImGuiManager.h>
 
 #include <Vector4.h>
 
 #include <DxResourceCreator.h>
+
+
 
 namespace {
 
@@ -56,4 +59,25 @@ void BaseCamera::BaseInitialize() {
 void BaseCamera::Transfer() {
 	matVp_ = matView_ * matProjection_;
 	*matVpData_ = matVp_;
+}
+
+void BaseCamera::ImGuiDebug() {
+#ifdef _DEBUG
+
+	ImGui::Begin(name_.c_str());
+
+
+	if(ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat3("scale", &transform_.scale.x, 0.01f);
+		ImGui::DragFloat3("rotate", &transform_.rotate.x, 0.01f);
+		ImGui::DragFloat3("position", &transform_.position.x, 0.01f);
+
+		ImGui::TreePop();
+	}
+
+
+	ImGui::End();
+
+#endif // DEBUG
 }

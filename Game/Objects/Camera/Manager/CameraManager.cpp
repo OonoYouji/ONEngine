@@ -23,8 +23,10 @@ void CameraManager::Finalize() {
 /// ===================================================
 void CameraManager::Update() {
 
+
 	///- listにあるカメラを更新
 	for(auto& camera : cameras_) {
+		camera.second->ImGuiDebug();
 		if(camera.second->GetIsAcitve()) {
 			camera.second->Update();
 		}
