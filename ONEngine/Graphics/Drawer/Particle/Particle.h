@@ -90,7 +90,7 @@ private:
 	static std::unique_ptr<PipelineState> sPipeline_;
 	static PipelineState::Shader sShader_;
 
-	static constexpr int kMaxInstanceCount_ = 128;
+	static constexpr int kMaxInstanceCount_ = 10;
 	
 
 	

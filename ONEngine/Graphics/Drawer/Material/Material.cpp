@@ -59,3 +59,11 @@ void Material::BindMaterial(ID3D12GraphicsCommandList* commandList, uint32_t roo
 void Material::SetColor(const Vec4& color) {
 	materialData_->color = color;
 }
+
+
+/// ===================================================
+/// 透明度のセット
+/// ===================================================
+void Material::SetAlpha(float alpha) {
+	materialData_->color.w = alpha;
+}

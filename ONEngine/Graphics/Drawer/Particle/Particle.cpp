@@ -1,4 +1,6 @@
+#define NOMINMAX
 #include <Particle.h>
+
 
 #include <DxCommon.h>
 #include <DxCommand.h>
@@ -89,12 +91,12 @@ void Particle::Initialize() {
 /// ===================================================
 void Particle::Update() {
 
-	const float deltaTime = 1.0f / 60.0f;
-
+	/// 粒子の更新
 	for(auto& elem : elements_) {
 		ParticleElementUpdate(&elem);
 	}
 
+	/// 削除対象をコンテナから消す
 	elements_.remove_if([](const ParticleElement& element) {
 		return element.currentLifeTime <= 0.0f;
 	});
@@ -275,8 +277,15 @@ void Particle::ParticleElementUpdate(ParticleElement* elem) {
 	/// TODO:   class Time::deltaTime のように他クラスから deltaTimeを得る構造にする
 	const float deltaTime = 1.0f / 60.0f;
 
+
 	elem->transform.position += elem->velocity * deltaTime;
-	elem->currentLifeTime -= deltaTime;
+
+	elem->currentLifeTime = std::max(elem->currentLifeTime - deltaTime, 0.0f);
+
+	/// 透明度の変化
+	float alpha = (elem->currentLifeTime / maxLifeTime_);
+	elem->material.SetAlpha(alpha);
+
 }
 
 

@@ -64,9 +64,15 @@ public:
 
 
 	/// <summary>
-	/// 色の設定
+	/// 色のセット
 	/// </summary>
 	void SetColor(const Vec4& color);
+
+	/// <summary>
+	/// 透明度のセット
+	/// </summary>
+	/// <param name="alpha"></param>
+	void SetAlpha(float alpha);
 
 	/// <summary>
 	/// material data のゲット
