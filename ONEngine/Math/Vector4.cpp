@@ -25,3 +25,10 @@ Vector4::Vector4(float x, float y, float z, float w) {
 	this->z = z;
 	this->w = w;
 }
+
+Vector4::Vector4(const Vector3& v, float w) {
+	this->x = v.x;
+	this->y = v.y;
+	this->z = v.z;
+	this->w = w;
+}

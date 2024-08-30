@@ -8,6 +8,7 @@
 #include <CameraManager.h>
 #include <TextureManager.h>
 #include <Mesh.h>
+#include <Random.h>
 
 
 /// ===================================================
@@ -75,12 +76,21 @@ void Particle::Initialize() {
 	CreateVertexBuffer();
 
 	for(int i = 0; i < 10; i++) {
-		ParticleElement element;
-		element.material.Create();
-		element.transform.position.x = float(i);
-		element.transform.UpdateMatrix(false);
+		CreateParticleElement();
+	}
 
-		elements_.push_back(std::move(element));
+}
+
+
+/// ===================================================
+/// 更新処理
+/// ===================================================
+void Particle::Update() {
+
+	const float deltaTime = 1.0f / 60.0f;
+
+	for(auto& elem : elements_) {
+		elem.transform.position += elem.velocity * deltaTime;
 	}
 
 }
@@ -129,6 +139,24 @@ void Particle::Draw() {
 	commandList->SetGraphicsRootDescriptorTable(3, TextureManager::GetInstance()->GetTexture("uvChecker").GetGPUHandle());
 
 	commandList->DrawInstanced(3, static_cast<UINT>(elements_.size()), 0, 0);
+}
+
+
+/// ===================================================
+/// particle element を新しく作成する
+/// ===================================================
+void Particle::CreateParticleElement() {
+
+	ParticleElement element;
+	element.material.Create();
+	element.transform.position = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+	element.velocity = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+	element.transform.UpdateMatrix(false);
+
+	element.material.SetColor(Vec4(Random::Vec3(-Vec3::kOne, Vec3::kOne), 1.0f));
+
+	elements_.push_back(std::move(element));
+
 }
 
 

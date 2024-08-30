@@ -63,6 +63,15 @@ public:
 	void BindMaterial(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex);
 
 
+	/// <summary>
+	/// 色の設定
+	/// </summary>
+	void SetColor(const Vec4& color);
+
+	/// <summary>
+	/// material data のゲット
+	/// </summary>
+	/// <returns></returns>
 	MaterialData* GetData() const {
 		return materialData_;
 	}

@@ -71,6 +71,8 @@ void Scene_Game::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	particle_->Update();
+
 	transform_.UpdateMatrix();
 }
 

@@ -11,7 +11,7 @@ public:
 
 	Vector3();
 	Vector3(float x, float y, float z);
-	Vector3(const Vector2& v , float z);
+	Vector3(const Vector2& v, float z);
 	Vector3(const Vector3&) = default;
 	Vector3(Vector3&&) = default;
 
@@ -57,8 +57,8 @@ public:
 	inline Vector3& operator/= (float scaler);
 	inline Vector3& operator*= (float scaler);
 
-	inline Vector3 operator- ();
-	inline Vector3 operator+ ();
+	inline Vector3 operator- () const;
+	inline Vector3 operator+ () const;
 
 };
 
@@ -185,12 +185,12 @@ inline Vector3& Vector3::operator*= (float scaler) {
 }
 
 
-inline Vector3 Vector3::operator-() {
+inline Vector3 Vector3::operator-() const {
 	return (*this) * -1.0f;
 }
 
 
-inline Vector3 Vector3::operator+() {
+inline Vector3 Vector3::operator+() const {
 	return (*this);
 }
 

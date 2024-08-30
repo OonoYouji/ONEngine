@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <Vector3.h>
 
 /// ===================================================
 /// 4次元ベクトル
@@ -12,6 +12,7 @@ public:
 	Vector4(float x, float y, float z, float w);
 	Vector4(const Vector4&) = default;
 	Vector4(Vector4&&) = default;
+	Vector4(const Vector3& v, float w);
 
 public:
 

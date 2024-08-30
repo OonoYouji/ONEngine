@@ -51,3 +51,11 @@ void Material::BindTexture(ID3D12GraphicsCommandList* commandList, uint32_t root
 void Material::BindMaterial(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex) {
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, materialBuffer_->GetGPUVirtualAddress());
 }
+
+
+/// ===================================================
+/// カラーの設定
+/// ===================================================
+void Material::SetColor(const Vec4& color) {
+	materialData_->color = color;
+}

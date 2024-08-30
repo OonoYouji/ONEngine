@@ -19,6 +19,8 @@ using namespace Microsoft::WRL;
 struct ParticleElement {
 	Transform transform;
 	Material material;
+
+	Vec3 velocity = { 0, 1, 0 };
 };
 
 
@@ -55,9 +57,13 @@ public:
 
 	void Initialize();
 
+	void Update();
 
 	void Draw();
 	
+
+	void CreateParticleElement();
+
 
 private:
 

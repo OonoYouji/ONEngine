@@ -158,6 +158,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Particle\Particle.cpp">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Random\Random.cpp">
+      <Filter>ONEngine\Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -261,6 +264,9 @@
     </Filter>
     <Filter Include="Resources\Shaders\Particle">
       <UniqueIdentifier>{5a00cbe6-95b3-4caf-95c0-31891d87d7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Random">
+      <UniqueIdentifier>{7835b08c-bce1-4cef-b358-ec46dc759c22}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -422,6 +428,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Particle\Particle.h">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Random\Random.h">
+      <Filter>ONEngine\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
