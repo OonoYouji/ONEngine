@@ -146,14 +146,15 @@ void SceneManager::PreDraw() {
 		ONE::DxBarrierCreator::CreateBarrier(renderTargets_[index].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	}
 
-	commandList->OMSetRenderTargets(1, &rtvHandles_[0], FALSE, &dsvHandle);
+	/*commandList->OMSetRenderTargets(1, &rtvHandles_[0], FALSE, &dsvHandle);
 
 	const float color[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	for(uint8_t index = 0u; index < 2; ++index) {
 		commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 		commandList->ClearRenderTargetView(rtvHandles_[index], color, 0, nullptr);
-	}
+	}*/
 
+	SetRenderTarget(kCurrentScene);
 
 }
 
@@ -231,6 +232,7 @@ void SceneManager::ImGuiDraw(const std::string& name, RTVIndex index) {
 
 	ImTextureID id = ImTextureID(srvGPUHandles_[index].ptr);
 	ImGui::Image(id, texSize);
+
 	ImGui::End();
 	//ONE::DxBarrierCreator::CreateBarrier(renderTargets_[index].Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
@@ -240,6 +242,8 @@ void SceneManager::ImGuiDraw(const std::string& name, RTVIndex index) {
 void SceneManager::SetRenderTarget(RTVIndex index) {
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = ONE::DxCommon::GetInstance()->GetDxDescriptor()->GetDsvCpuHandle();
-	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	commandList->OMSetRenderTargets(1, &rtvHandles_[index], FALSE, &dsvHandle);
+	const float color[] = { 0.1f, 0.25f, 0.5f, 1.0f };
+	commandList->ClearRenderTargetView(rtvHandles_[index], color, 0, nullptr);
+	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }

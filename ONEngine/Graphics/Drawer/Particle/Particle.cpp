@@ -97,9 +97,9 @@ void Particle::Update() {
 	}
 
 	/// 削除対象をコンテナから消す
-	elements_.remove_if([](const ParticleElement& element) {
-		return element.currentLifeTime <= 0.0f;
-	});
+	//elements_.remove_if([](const ParticleElement& element) {
+	//	return element.currentLifeTime <= 0.0f;
+	//});
 
 }
 
@@ -278,7 +278,7 @@ void Particle::ParticleElementUpdate(ParticleElement* elem) {
 	const float deltaTime = 1.0f / 60.0f;
 
 
-	elem->transform.position += elem->velocity * deltaTime;
+	//elem->transform.position += elem->velocity * deltaTime;
 
 	elem->currentLifeTime = std::max(elem->currentLifeTime - deltaTime, 0.0f);
 

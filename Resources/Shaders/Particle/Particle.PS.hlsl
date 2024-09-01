@@ -20,7 +20,8 @@ PSOutput main(VSOutput input) {
 	float2 texcoord = mul(float3(input.texcoord, 1), (float3x3) gMaterial[input.instanceId].uvTransform).xy;
 
 	output.color = gTexture.Sample(gSampler, texcoord);
-	output.color *= gMaterial[input.instanceId].color;
+	output.color *= gMaterial[input.instanceId].color; 
+	output.color.a = gMaterial[input.instanceId].color.a; 
 	
 	if (output.color.a == 0.0f) {
 		discard;
