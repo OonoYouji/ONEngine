@@ -11,6 +11,55 @@
 #include <Model.h>
 
 
+/*
+#pragma once
+
+#include <GameObjectManager.h>
+
+class Player : public BaseGameObject {
+public:
+
+	/// コンストラクタ これは定形文なのでこれを基本使用する
+	Player() : BaseGameObject(this) {
+		/// 中身はすきに定義して ok
+	}
+
+	/// デストラクタ 中身はお好きに
+	~Player(){}
+
+
+
+	/// 初期化の関数 overrideしないとエラー吐くので注意
+	void Initialize() override;
+
+	/// 更新処理の関数 overrideしないとエラー吐くので注意
+	void Update() override;
+
+
+	/// すべての更新処理、当たり判定処理が終わったあとに呼び出される
+	void LastUpdate() override;
+
+
+	/// 描画系の override 
+	void Draw() override;			 /// 3dモデルの描画
+	void FrontSpriteDraw() override; /// 前景スプライト
+	void BackSpriteDraw() override;	 /// 背景スプライト
+
+
+	/// imguiのデバッグなどに使用して 
+	/// Begin, Endは使用禁止
+	void Debug() override {
+		if(ImGui::TreeNode() {
+			....
+		}
+	}
+
+private:
+
+};
+
+*/
+
 
 
 /// <summary>
