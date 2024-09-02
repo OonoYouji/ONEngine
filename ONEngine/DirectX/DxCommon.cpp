@@ -4,6 +4,7 @@
 
 #include <Logger.h>
 
+#include <WinApp.h>
 #include <DxDevice.h>
 #include <DxCommand.h>
 #include <DxDescriptor.h>
@@ -31,7 +32,7 @@ ONE::DxCommon* ONE::DxCommon::GetInstance() {
 /// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::DxCommon::Initialize() {
+void ONE::DxCommon::Initialize(WinApp* winApp) {
 
 	debug_.reset(new DxDebug());
 	debug_->SetDebugLayer();
@@ -48,7 +49,7 @@ void ONE::DxCommon::Initialize() {
 	descriptor_->Initialize(device_->GetDevice());
 
 	doubleBuffer_.reset(new DxDoubleBuffer());
-	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
+	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue(), winApp);
 
 	depthStencil.reset(new DxDepthStencil());
 	depthStencil->Initialize(device_->GetDevice());
@@ -94,13 +95,13 @@ void ONE::DxCommon::PreDraw() {
 /// 描画後処理
 /// ===================================================
 void ONE::DxCommon::PostDraw() {
-	
+
 #ifdef NDEBUG
 	doubleBuffer_->CopyToBB(command_->GetList(), SceneManager::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PRESENT);
 #endif // NDEBUG
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	
+
 	command_->Close();
 
 	command_->Execution();

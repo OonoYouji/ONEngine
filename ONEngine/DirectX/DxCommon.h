@@ -34,7 +34,9 @@ namespace ONE {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize();
+		void Initialize(
+			class WinApp* winApp
+		);
 
 		/// <summary>
 		/// 終了処理

@@ -11,22 +11,12 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 
 
 /// ===================================================
-/// インスタンス確保
-/// ===================================================
-ONE::WinApp* ONE::WinApp::GetInstance() {
-	static WinApp instance;
-	return &instance;
-}
-
-
-
-/// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::WinApp::Initialize() {
+void ONE::WinApp::Initialize(const std::wstring& windowName) {
 
 	CreateGameWindow(
-		L"DirectX12 Game",
+		windowName.c_str(),
 		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
 		kWindowSizeX, kWindowSizeY
 	);
@@ -92,22 +82,25 @@ LRESULT ONE::WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int sizeX, int sizeY) {
 
 	///- COM初期化
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	assert(SUCCEEDED(hr));
 
 	windowStyle_ = windowStyle;
 
 	///- windowの設定
 	wc_.lpfnWndProc = WindowProc;
-	wc_.lpszClassName = L"ONEngine";
+	wc_.lpszClassName = title;
 	wc_.hInstance = GetModuleHandle(nullptr);
 	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
-	RegisterClass(&wc_);
+	ATOM atom = RegisterClass(&wc_);
+	assert(atom != 0);
 
 
 	///- 
 	wrc_ = { 0, 0, sizeX, sizeY };
-	AdjustWindowRect(&wrc_, WS_OVERLAPPEDWINDOW, false);
+	BOOL result = AdjustWindowRect(&wrc_, WS_OVERLAPPEDWINDOW, false);
+	assert(result);
 
 	///- 
 	hwnd_ = CreateWindow(
@@ -124,6 +117,7 @@ void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int s
 		nullptr
 	);
 
+	assert(hwnd_ != nullptr);
 
 	///- window表示
 	ShowWindow(hwnd_, SW_SHOW);

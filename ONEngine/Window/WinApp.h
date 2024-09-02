@@ -1,17 +1,14 @@
 #pragma once
 
-
 #include <Windows.h>
+#include <string>
 
 namespace ONE {
-
 
 	/// ===================================================
 	/// window管理クラス
 	/// ===================================================
 	class WinApp final {
-		WinApp() = default;
-		~WinApp() = default;
 	public:
 		/// ===================================================
 		/// public : static objects
@@ -25,15 +22,14 @@ namespace ONE {
 		/// public : methods
 		/// ===================================================
 
-		static WinApp* GetInstance();
+		WinApp() {}
+		~WinApp() {}
 
-		void Initialize();
+		void Initialize(const std::wstring& windowName);
 
 		void Finalize();
 
 		UINT ProcessMessage();
-
-
 
 		const HWND& GetHWND() const { return hwnd_; }
 
@@ -63,11 +59,6 @@ namespace ONE {
 		MSG msg_;
 		UINT windowStyle_;
 
-	private:
-		WinApp(const WinApp&) = delete;
-		WinApp(WinApp&&) = delete;
-		WinApp& operator=(const WinApp&) = delete;
-		WinApp& operator=(WinApp&&) = delete;
 	};
 
 }

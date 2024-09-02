@@ -1,5 +1,7 @@
 #include <Windows.h>
 
+#include <memory>
+
 #include <WinApp.h>
 #include <Logger.h>
 #include <DxCommon.h>
@@ -26,7 +28,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
-	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
+	std::unique_ptr<ONE::WinApp> winApp;
+	winApp.reset(new ONE::WinApp);
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 	Input* input = Input::GetInsatnce();
 
@@ -38,12 +41,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
 
-	winApp->Initialize();
-	dxCommon->Initialize();
+	winApp->Initialize(L"GameWindow");
+	dxCommon->Initialize(winApp.get());
 
-	input->Initialize(winApp);
+	input->Initialize(winApp.get());
 
-	imGuiManager->Initialize(winApp, dxCommon);
+	imGuiManager->Initialize(winApp.get(), dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	audioManager->Initialize();
@@ -53,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
-	
+
 	audioManager->Load("fanfare.wav");
 
 
@@ -97,7 +100,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PostDraw();
 		spriteManager->PostDraw();
 
-		
+
 #ifdef _DEBUG
 		debugScene->Draw();
 #endif // _DEBUG

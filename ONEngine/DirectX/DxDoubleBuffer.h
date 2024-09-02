@@ -15,6 +15,7 @@ namespace ONE {
 	class DxDevice;
 	class DxDescriptor;
 	class DxCommand;
+	class WinApp;
 
 	/// ===================================================
 	/// DirectX12 ダブルバッファ
@@ -43,7 +44,8 @@ namespace ONE {
 		void Initialize(
 			DxDevice* dxDevice,
 			DxDescriptor* dxDescriptor, 
-			ID3D12CommandQueue* commandQueue
+			ID3D12CommandQueue* commandQueue,
+			WinApp* winApp
 		);
 
 		void ClearBB(ID3D12GraphicsCommandList* commandList);
@@ -84,6 +86,8 @@ namespace ONE {
 
 		D3D12_VIEWPORT viewprot_{};
 		D3D12_RECT sicssorRect_{};
+
+		WinApp* pWinApp_ = nullptr;
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;
