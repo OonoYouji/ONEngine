@@ -155,6 +155,12 @@
     <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -252,6 +258,9 @@
     </Filter>
     <Filter Include="ONEngine\Audio">
       <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GameObject">
+      <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -410,6 +419,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Audio\AudioSource.h">
       <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObject\BaseGameObject.h">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObject\GameObjectManager.h">
+      <Filter>ONEngine\GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
