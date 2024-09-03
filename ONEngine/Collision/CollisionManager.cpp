@@ -50,9 +50,9 @@ void CollisionManager::Update() {
 				continue;
 			}
 
-			if(objectA->GetTag() != objectB->GetTag()) {
+			//if(objectA->GetTag() != objectB->GetTag()) {
 				CheckCollision(objectA, objectB);
-			}
+			//}
 		}
 	}
 

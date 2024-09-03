@@ -86,6 +86,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
+
 		cameraManager->Update();
 
 		sceneManager->Update();
