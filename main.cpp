@@ -58,6 +58,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	audioManager->Load("fanfare.wav");
 
+	//modelManager->Load("Sphere");
+
 
 	gameObjectManager->Initialize();
 

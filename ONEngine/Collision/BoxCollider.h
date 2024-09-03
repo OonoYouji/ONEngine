@@ -23,6 +23,10 @@ public:
 		return orientatinos_;
 	}
 
+	const Vec3& GetSize() const {
+		return size_;
+	}
+
 private:
 	void UpdateOrientatinos();
 private:

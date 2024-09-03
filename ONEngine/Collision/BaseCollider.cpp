@@ -112,20 +112,23 @@ bool Collision::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
 	Vec3 obbLocalPosition = Mat4::Transform(sphere->GetPosition(), inverseObbWorldMatrix);
 
 	/////- OBBのLocal空間内のAABB
-	//AABB aabbObbLocal = {
-	//	.min = -obb.size,
-	//	.max = obb.size
-	//};
+	Vec3 min, max;
+	min = -box->GetSize();
+	max = box->GetSize();;
 
-	/////- OBBのLocal空間内のSphere
-	//Sphere sphereObbLocal = {
-	//	.rotate = sphere.rotate,
-	//	.center = obbLocalPosition,
-	//	.radius = sphere.radius,
-	//};
 
-	/////- Local空間に変換したAABBとSphere
-	//return IsCollided(aabbObbLocal, sphereObbLocal);
+	Vec3 spherePosition = sphere->GetPosition();
+	Vec3 closestPoint{
+		std::clamp(spherePosition.x, min.x, max.x),
+		std::clamp(spherePosition.y, min.y, max.y),
+		std::clamp(spherePosition.z, min.z, max.z)
+	};
+
+	float distance = Vec3::Length(closestPoint - obbLocalPosition);
+	if(distance <= sphere->GetRadius()) {
+		return true;
+	}
+
 	return false;
 }
 

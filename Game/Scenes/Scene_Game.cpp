@@ -6,6 +6,24 @@
 #include "Player/Player.h"
 
 
+class Tmp : public BaseGameObject {
+public:
+	Tmp() {}
+	~Tmp() {}
+	void Initialize() override {
+		CreateTag(this);
+		model_ = ModelManager::CreateCube();
+		CreateSphereCollider(model_);
+	}
+	void Update() override {}
+	void Draw() override {
+		model_->Draw(&transform_);
+	}
+private:
+	Model* model_ = nullptr;
+};
+
+
 Scene_Game::Scene_Game() {}
 Scene_Game::~Scene_Game() {}
 
@@ -23,7 +41,14 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	(new Player)->Initialize();
+	Player* player = new Player;
+	player->Initialize();
+	player->SetPositionX(-5.0f);
+
+
+
+	(new Tmp)->Initialize();
+
 }
 
 

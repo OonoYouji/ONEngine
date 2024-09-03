@@ -41,7 +41,7 @@ public:
 	/// <summary>
 	/// モデル読み込み
 	/// </summary>
-	Model* Load(const std::string& filePath);
+	static Model* Load(const std::string& filePath);
 
 	/// <summary>
 	/// モデルのゲッタ

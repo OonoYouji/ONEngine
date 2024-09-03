@@ -19,5 +19,6 @@ public:
 private:
 
 	float radius_ = 0.0f;
+	class Model* sphere_ = nullptr;
 
 };

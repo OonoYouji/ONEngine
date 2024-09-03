@@ -74,8 +74,15 @@ void ModelManager::Finalize() {
 /// ===================================================
 Model* ModelManager::Load(const std::string& filePath) {
 
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find(filePath);
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
+
 	Assimp::Importer importer;
-	std::string objPath = kDirectoryPath_ + filePath + "/" + filePath + ".obj";
+	std::string objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".obj";
 	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 	Model* model = new Model();
@@ -172,7 +179,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	AddModel(filePath, model);
+	instance->AddModel(filePath, model);
 	return GetModel(filePath);
 }
 

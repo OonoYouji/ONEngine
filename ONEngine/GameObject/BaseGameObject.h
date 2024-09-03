@@ -108,10 +108,10 @@ public:
 	void CreateTag(BaseGameObject* object);
 
 #pragma region Transform
-	void SetPosX(float x) { transform_.position.x = x; }
-	void SetPosY(float y) { transform_.position.y = y; }
-	void SetPosZ(float z) { transform_.position.z = z; }
-	void SetPos(const Vec3& v) { transform_.position = v; }
+	void SetPositionX(float x) { transform_.position.x = x; }
+	void SetPositionY(float y) { transform_.position.y = y; }
+	void SetPositionZ(float z) { transform_.position.z = z; }
+	void SetPosition(const Vec3& v) { transform_.position = v; }
 
 	void SetRotateX(float x) { transform_.rotate.x = x; }
 	void SetRotateY(float y) { transform_.rotate.y = y; }
