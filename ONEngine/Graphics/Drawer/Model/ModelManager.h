@@ -76,7 +76,7 @@ public:
 	/// モデルの追加
 	/// </summary>
 	/// <param name="model"></param>
-	void AddModel(const std::string& filePath,Model* model);
+	void AddModel(const std::string& filePath, Model* model);
 
 	/// <summary>
 	/// command list に pipeline state をセット
@@ -86,7 +86,7 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model, Transform* transform);
+	void AddActiveModel(Model* model, Transform* transform, FillMode fillMode);
 
 private:
 
@@ -101,9 +101,14 @@ private:
 	PipelineState::Shader shader_{};
 
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
-	using Element = std::pair<Model*, Transform*>;
+
+	struct Element final {
+		Model* model;
+		Transform* transform;
+		FillMode fillMode;
+	};
+
 	std::list<Element> activeModels_;
-	//std::list<Transform*> activeModelTransforms_;
 
 private:
 	ModelManager(const ModelManager&) = delete;

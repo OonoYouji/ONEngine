@@ -28,8 +28,8 @@ namespace {
 /// ===================================================
 /// コンストラクタ
 /// ===================================================
-BaseCamera::BaseCamera() : BaseGameObject(this) {
-
+BaseCamera::BaseCamera() {
+	CreateTag(this);
 }
 
 

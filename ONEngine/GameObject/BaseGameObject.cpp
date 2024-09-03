@@ -17,19 +17,16 @@
 /// ===================================================
 /// コンストラクタ
 /// ===================================================
-BaseGameObject::BaseGameObject(BaseGameObject* object) {
+BaseGameObject::BaseGameObject() {
 	GameObjectManager::GetInstance()->AddGameObject(this);
 	CollisionManager::GetInstance()->AddGameObject(this);
 
 	transform_.Initialize();
 	CreateWorldTransformGruop();
 
-	//collider_ = nullptr;
+	collider_ = nullptr;
 
-	std::string name = typeid(*object).name();
-	name = name.substr(std::string("class ").length());
-	SetTag(name);
-	SetName(name);
+	
 }
 
 
@@ -378,4 +375,11 @@ void BaseGameObject::ImGuiDebug() {
 	Debug();
 
 #endif // _DEBUG
+}
+
+void BaseGameObject::CreateTag(BaseGameObject* object) {
+	std::string name = typeid(*object).name();
+	name = name.substr(std::string("class ").length());
+	SetTag(name);
+	SetName(name);
 }

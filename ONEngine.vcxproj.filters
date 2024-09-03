@@ -170,6 +170,9 @@
     <ClCompile Include="ONEngine\Collision\CollisionManager.cpp">
       <Filter>ONEngine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -273,6 +276,9 @@
     </Filter>
     <Filter Include="ONEngine\Collision">
       <UniqueIdentifier>{535a4893-785e-441b-80ca-f77ea230bbff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -446,6 +452,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Collision\CollisionManager.h">
       <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

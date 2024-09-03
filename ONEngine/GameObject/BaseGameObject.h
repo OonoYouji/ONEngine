@@ -68,7 +68,7 @@ private:
 class BaseGameObject {
 public:
 
-	BaseGameObject(BaseGameObject* object);
+	BaseGameObject();
 	virtual ~BaseGameObject() = default;
 
 public:
@@ -105,6 +105,7 @@ public:
 	/// </summary>
 	void ImGuiDebug();
 
+	void CreateTag(BaseGameObject* object);
 
 #pragma region Transform
 	void SetPosX(float x) { transform_.position.x = x; }

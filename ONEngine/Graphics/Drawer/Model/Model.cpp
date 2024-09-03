@@ -14,8 +14,8 @@ Model::Model() {
 	//ModelManager::GetInstance()->AddModel(this);
 }
 Model::~Model() {
-	meshes_.clear();
-	materials_.clear();
+	/*meshes_.clear();
+	materials_.clear();*/
 }
 
 
@@ -30,8 +30,8 @@ void Model::Initialize() {
 /// ===================================================
 /// 描画
 /// ===================================================
-void Model::Draw(Transform* transform) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform);
+void Model::Draw(Transform* transform, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, fillMode);
 }
 
 

@@ -47,7 +47,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(Transform* transform);
+	void Draw(Transform* transform, FillMode fillMode = kSolid);
 
 
 	/// <summary>

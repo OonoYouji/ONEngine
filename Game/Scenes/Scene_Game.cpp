@@ -1,8 +1,9 @@
 #include "Scene_Game.h"
 
+#include <ImGuiManager.h> 
 #include <ModelManager.h>
 
-#include <ImGuiManager.h>
+#include "Player/Player.h"
 
 
 Scene_Game::Scene_Game() {}
@@ -22,6 +23,7 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
+	(new Player)->Initialize();
 }
 
 

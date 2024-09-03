@@ -114,6 +114,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		collisionManager->DrawHitBoxALL();
 #endif // _DEBUG
 
+		gameObjectManager->BackSpriteDraw();
+		gameObjectManager->Draw();
+		gameObjectManager->FrontSpriteDraw();
 
 		modelManager->PostDraw();
 		spriteManager->PostDraw();

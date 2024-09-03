@@ -9,5 +9,5 @@ void BaseCollider::Initialize(BaseGameObject* gameObject, [[maybe_unused]] Model
 
 void BaseCollider::UpdateMatrix() {
 	transform_.UpdateMatrix();
-	transform_.matTransform *= gameObject_->GetMatTransform();
+	//transform_.matTransform *= gameObject_->GetMatTransform();
 }

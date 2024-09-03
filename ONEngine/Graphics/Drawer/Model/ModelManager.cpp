@@ -226,6 +226,13 @@ Model* ModelManager::CreatePlane() {
 /// 立方体の生成
 /// ===================================================
 Model* ModelManager::CreateCube() {
+
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find("Cube");
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
 	Model* model = new Model();
 
 	Mesh mesh{};
@@ -288,8 +295,8 @@ Model* ModelManager::CreateCube() {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	GetInstance()->AddModel("Cube", model);
-	return GetInstance()->GetModel("Cube");
+	instance->AddModel("Cube", model);
+	return instance->GetModel("Cube");
 }
 
 
@@ -313,7 +320,7 @@ void ModelManager::PostDraw() {
 	/// SolidとWireFrameで仕分け
 	/// ---------------------------------------------------
 	for(const auto& model : activeModels_) {
-		if(model.first->GetFillMode() == FillMode::kSolid) {
+		if(model.fillMode == FillMode::kSolid) {
 			solid.push_back(model);
 		} else {
 			wire.push_back(model);
@@ -336,8 +343,8 @@ void ModelManager::PostDraw() {
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
 	for(auto& model : solid) {
-		model.second->BindTransform(commandList, 1);
-		model.first->DrawCall(commandList);
+		model.transform->BindTransform(commandList, 1);
+		model.model->DrawCall(commandList);
 	}
 
 
@@ -346,8 +353,10 @@ void ModelManager::PostDraw() {
 	/// ---------------------------------------------------
 
 	pipelines_[kWireFrame]->SetPipelineState();
+
 	for(auto& model : wire) {
-		model.first->DrawCall(commandList);
+		model.transform->BindTransform(commandList, 1);
+		model.model->DrawCall(commandList);
 	}
 
 
@@ -378,6 +387,11 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model, Transform* transform) {
-	activeModels_.push_back(std::make_pair(model, transform));
+void ModelManager::AddActiveModel(Model* model, Transform* transform, FillMode fillMode) {
+	Element element{};
+	element.model = model;
+	element.transform = transform;
+	element.fillMode = fillMode;
+
+	activeModels_.push_back(element);
 }

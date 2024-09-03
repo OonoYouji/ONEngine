@@ -41,7 +41,7 @@ void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
 	orientatinos_[2] = { 0, 0, 1 };
 
 
-	cube_ = ModelManager::GetModel("cube");
+	cube_ = ModelManager::CreateCube();
 
 	transform_.Initialize();
 	transform_.position = Vec3::Lerp(max, min, 0.5f);
@@ -56,7 +56,7 @@ void BoxCollider::Draw() {
 	UpdateMatrix();
 
 	if(cube_) {
-		cube_->Draw(&transform_);
+		cube_->Draw(&transform_, kWireFrame);
 	}
 }
 
