@@ -14,6 +14,7 @@
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 #include <GameObjectManager.h>
+#include "Collision/CollisionManager.h"
 
 #include <GameCamera.h>
 #include <Scene_Debug.h>
@@ -38,6 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
 	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -92,7 +94,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 更新1
 		gameObjectManager->Update();
 		/// 当たり判定処理
-
+		collisionManager->Update();
 		/// 更新2
 		gameObjectManager->LastUpdate();
 
@@ -108,6 +110,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		spriteManager->PreDraw();
 
 		sceneManager->Draw();
+#ifdef _DEBUG
+		collisionManager->DrawHitBoxALL();
+#endif // _DEBUG
+
 
 		modelManager->PostDraw();
 		spriteManager->PostDraw();

@@ -80,6 +80,10 @@ public:
 	/// <param name="material"></param>
 	void AddMaterial(const Material& material);
 
+
+	const std::vector<Mesh>& GetMeshes() const { return meshes_; }
+
+
 private:
 
 	/// ===================================================

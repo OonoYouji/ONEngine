@@ -161,6 +161,15 @@
     <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp">
       <Filter>ONEngine\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BaseCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BoxCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\CollisionManager.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -261,6 +270,9 @@
     </Filter>
     <Filter Include="ONEngine\GameObject">
       <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Collision">
+      <UniqueIdentifier>{535a4893-785e-441b-80ca-f77ea230bbff}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -425,6 +437,15 @@
     </ClInclude>
     <ClInclude Include="ONEngine\GameObject\GameObjectManager.h">
       <Filter>ONEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BaseCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BoxCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\CollisionManager.h">
+      <Filter>ONEngine\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

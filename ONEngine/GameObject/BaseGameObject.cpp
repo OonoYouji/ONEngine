@@ -10,8 +10,8 @@
 
 #include <GameObjectManager.h>
 #include <SceneManager.h>
-//#include <CollisionManager.h>
-//#include <BoxCollider.h>
+#include "Collision/CollisionManager.h"
+#include "Collision/BoxCollider.h"
 
 
 /// ===================================================
@@ -19,7 +19,7 @@
 /// ===================================================
 BaseGameObject::BaseGameObject(BaseGameObject* object) {
 	GameObjectManager::GetInstance()->AddGameObject(this);
-	//CollisionManager::GetInstance()->AddGameObject(this);
+	CollisionManager::GetInstance()->AddGameObject(this);
 
 	transform_.Initialize();
 	CreateWorldTransformGruop();
@@ -352,13 +352,9 @@ void BaseGameObject::CreateWorldTransformGruop() {
 
 
 void BaseGameObject::CreateBoxCollider(Model* model) {
-	/*collider_.reset(new BoxCollider);
-
+	collider_.reset(new BoxCollider);
 	BoxCollider* box = static_cast<BoxCollider*>(collider_.get());
-
-	box->Initialize(this, model);*/
-
-
+	box->Initialize(this, model);
 }
 
 /// ===================================================

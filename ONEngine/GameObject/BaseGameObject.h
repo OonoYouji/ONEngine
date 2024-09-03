@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include <Transform.h>
-//#include <BaseCollider.h>
+#include "Collision/BaseCollider.h"
 #include <Model.h>
 
 
@@ -207,7 +207,7 @@ public:
 
 	void CreateBoxCollider(Model* model);
 
-	//BaseCollider* GetCollider() const { return collider_.get(); }
+	BaseCollider* GetCollider() const { return collider_.get(); }
 #pragma endregion Collider
 
 
@@ -230,7 +230,7 @@ protected:
 	/// 変数のグループ
 	std::unordered_map<std::string, Group> groups_;
 
-	//std::unique_ptr<BaseCollider> collider_ = nullptr;
+	std::unique_ptr<BaseCollider> collider_ = nullptr;
 
 public:
 

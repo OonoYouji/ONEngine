@@ -354,7 +354,7 @@ void ModelManager::PostDraw() {
 }
 
 Model* ModelManager::GetModel(const std::string& filePath) {
-	return models_.at(filePath).get();
+	return GetInstance()->models_.at(filePath).get();
 }
 
 

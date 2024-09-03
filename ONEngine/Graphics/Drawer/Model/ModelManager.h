@@ -41,6 +41,14 @@ public:
 	Model* Load(const std::string& filePath);
 
 	/// <summary>
+	/// モデルのゲッタ
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <returns></returns>
+	static Model* GetModel(const std::string& filePath);
+
+
+	/// <summary>
 	/// 平面の生成
 	/// </summary>
 	/// <returns></returns>
@@ -63,7 +71,6 @@ public:
 	void PostDraw();
 
 
-	Model* GetModel(const std::string& filePath);
 
 	/// <summary>
 	/// モデルの追加

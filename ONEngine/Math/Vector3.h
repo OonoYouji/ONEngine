@@ -1,6 +1,8 @@
 #pragma once
 
 
+#include <vector>
+
 class Vector2;
 
 /// ===================================================
@@ -11,7 +13,7 @@ public:
 
 	Vector3();
 	Vector3(float x, float y, float z);
-	Vector3(const Vector2& v , float z);
+	Vector3(const Vector2& v, float z);
 	Vector3(const Vector3&) = default;
 	Vector3(Vector3&&) = default;
 
@@ -41,6 +43,21 @@ public:
 	/// ===================================================
 
 	float Len() const;
+
+	Vector3 Normalize() const;
+
+
+	/// ===================================================
+	/// public : static methods
+	/// ===================================================
+
+	static Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
+
+	static Vector3 Cross(const Vector3& v1, const Vector3& v2);
+	static float Dot(const Vector3& v1, const Vector3& v2);
+
+	static Vector3 MaxDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
+	static Vector3 MinDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
 
 public:
 

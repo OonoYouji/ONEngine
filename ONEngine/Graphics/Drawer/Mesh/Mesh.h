@@ -41,6 +41,12 @@ public:
 
 
 	/// <summary>
+	/// 頂点データのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	const std::vector<VertexData>& GetVertices() const { return vertices_; }
+
+	/// <summary>
 	/// 頂点データの追加
 	/// </summary>
 	/// <param name="vertex"> : Mesh::VertexData構造体</param>
