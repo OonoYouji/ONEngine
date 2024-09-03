@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "BaseCollider.h"
 #include <Model.h>
 #include <Vector3.h>
@@ -16,22 +18,18 @@ public:
 	void Update() override;
 	void Draw() override;
 
-
-	bool IsCollision(MAYBE_UNUSED BoxCollider* box) override;
-	bool IsCollision(MAYBE_UNUSED class AABBCollider* aabb) override;
-	bool IsCollision(MAYBE_UNUSED class OBBCollider* obb) override;
-	bool IsCollision(MAYBE_UNUSED class SphereCollider* sphere) override;
+	std::vector<Vec3> GetVertices() const;
+	const std::array<Vec3, 3>& GetOrientations() const {
+		return orientatinos_;
+	}
 
 private:
-
-	std::vector<Vec3> GetVertices() const;
-
 	void UpdateOrientatinos();
 
 private:
 
 	Vec3 size_;
-	Vec3 orientatinos_[3];
+	std::array<Vec3, 3> orientatinos_;
 
 	Model* cube_ = nullptr;
 

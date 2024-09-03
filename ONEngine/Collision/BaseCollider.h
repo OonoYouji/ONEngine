@@ -6,6 +6,9 @@
 
 class BaseGameObject;
 class Model;
+class BoxCollider;
+class SphereCollider;
+
 
 class BaseCollider {
 public:
@@ -25,12 +28,10 @@ public:
 	virtual void Draw() {}
 
 	bool IsCollision(MAYBE_UNUSED BaseCollider* other);
-	virtual bool IsCollision(MAYBE_UNUSED class BoxCollider* box) { return false; };
-	virtual bool IsCollision(MAYBE_UNUSED class AABBCollider* aabb) { return false; };
-	virtual bool IsCollision(MAYBE_UNUSED class OBBCollider* obb) { return false; };
-	virtual bool IsCollision(MAYBE_UNUSED class SphereCollider* sphere) { return false; };
 
 	void UpdateMatrix();
+
+	Vec3 GetPosition() const;
 
 public:
 
@@ -38,3 +39,11 @@ public:
 	Transform transform_;
 
 };
+
+namespace Collision {
+
+	bool BoxToBox(BoxCollider* a, BoxCollider* b);
+	bool BoxToSphere(BoxCollider* box, SphereCollider* sphere);
+	bool SphereToSphere(SphereCollider* a, SphereCollider* b);
+
+}

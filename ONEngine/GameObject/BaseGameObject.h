@@ -207,6 +207,7 @@ public:
 	virtual void OnCollisionExit([[maybe_unused]] BaseGameObject* const collision) {}
 
 	void CreateBoxCollider(Model* model);
+	void CreateSphereCollider(Model* model);
 
 	BaseCollider* GetCollider() const { return collider_.get(); }
 #pragma endregion Collider

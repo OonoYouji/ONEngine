@@ -51,6 +51,8 @@ public:
 	/// public : static methods
 	/// ===================================================
 
+	static float Length(const Vector3& v);
+
 	static Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
 
 	static Vector3 Cross(const Vector3& v1, const Vector3& v2);

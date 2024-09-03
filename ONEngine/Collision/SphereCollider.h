@@ -14,11 +14,10 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	bool IsCollision(MAYBE_UNUSED class BoxCollider* box) override;
-	bool IsCollision(MAYBE_UNUSED class AABBCollider* aabb) override;
-	bool IsCollision(MAYBE_UNUSED class OBBCollider* obb) override;
-	bool IsCollision(MAYBE_UNUSED SphereCollider* sphere) override;
+	float GetRadius() const { return radius_; }
 
 private:
+
+	float radius_ = 0.0f;
 
 };

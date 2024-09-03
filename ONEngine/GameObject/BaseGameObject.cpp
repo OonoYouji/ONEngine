@@ -12,6 +12,7 @@
 #include <SceneManager.h>
 #include "Collision/CollisionManager.h"
 #include "Collision/BoxCollider.h"
+#include "Collision/SphereCollider.h"
 
 
 /// ===================================================
@@ -350,9 +351,17 @@ void BaseGameObject::CreateWorldTransformGruop() {
 
 void BaseGameObject::CreateBoxCollider(Model* model) {
 	collider_.reset(new BoxCollider);
-	BoxCollider* box = static_cast<BoxCollider*>(collider_.get());
+	BoxCollider* box = dynamic_cast<BoxCollider*>(collider_.get());
 	box->Initialize(this, model);
 }
+
+void BaseGameObject::CreateSphereCollider(Model* model) {
+	collider_.reset(new SphereCollider);
+	SphereCollider* sphere = dynamic_cast<SphereCollider*>(collider_.get());
+	sphere->Initialize(this, model);
+}
+
+
 
 /// ===================================================
 /// ImGuiでデバッグ表示

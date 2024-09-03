@@ -8,8 +8,6 @@
 #include <BaseGameObject.h>
 
 #include "SphereCollider.h"
-#include "AABBCollider.h"
-#include "OBBCollider.h"
 
 
 void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
@@ -63,76 +61,6 @@ void BoxCollider::Draw() {
 		cube_->Draw(&transform_, kWireFrame);
 	}
 }
-
-
-bool BoxCollider::IsCollision(MAYBE_UNUSED BoxCollider* box) {
-
-	///- 分離軸を計算
-	std::vector<Vec3> axes{};
-
-	///- 面法線を分離軸に
-	for(uint32_t index = 0; index < 3; ++index) {
-		axes.push_back(orientatinos_[index]);
-		axes.push_back(box->orientatinos_[index]);
-	}
-
-	///- 面法線同士の外積を分離軸に
-	for(uint32_t row = 0; row < 3; ++row) {
-		for(uint32_t col = 0; col < 3; ++col) {
-			Vec3 cross = Vec3::Cross(orientatinos_[row], box->orientatinos_[col]);
-			if(cross.Len() > 1e-6f) {
-				axes.push_back(cross);
-			}
-		}
-	}
-
-	std::vector<Vec3> v1 = GetVertices();
-	std::vector<Vec3> v2 = box->GetVertices();
-
-	///- 分離軸から二つのオブジェクトが離れているか計算
-	for(auto& axis : axes) {
-
-		axis = axis.Normalize();
-
-		///- obb1の最小値と最大値
-		float min1 = Vec3::Dot(Vec3::MinDotVector(axis, v1), axis);
-		float max1 = Vec3::Dot(Vec3::MaxDotVector(axis, v1), axis);
-		float diff1 = max1 - min1;
-
-		///- obb2の最小値と最大値
-		float min2 = Vec3::Dot(Vec3::MinDotVector(axis, v2), axis);
-		float max2 = Vec3::Dot(Vec3::MaxDotVector(axis, v2), axis);
-		float diff2 = max2 - min2;
-
-		///- 差分の合計
-		float sumSpan = diff1 + diff2;
-		///- 二つのオブジェクトの最大値と最小値の差分
-		float longSpan = std::max(max1, max2) - std::min(min1, min2);
-
-		///- 離れている
-		if(sumSpan < longSpan) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
-bool BoxCollider::IsCollision(MAYBE_UNUSED AABBCollider* box) {
-	return false;
-}
-
-bool BoxCollider::IsCollision(MAYBE_UNUSED OBBCollider* box) {
-	return false;
-}
-
-bool BoxCollider::IsCollision(MAYBE_UNUSED SphereCollider* box) {
-	return false;
-}
-
-
-
-
 
 std::vector<Vec3> BoxCollider::GetVertices() const {
 	std::vector<Vec3> result = {
