@@ -21,7 +21,10 @@ public:
 	/// インスタンス確保
 	/// </summary>
 	/// <returns></returns>
-	static ModelManager* GetInstance();
+	static ModelManager* GetInstance() {
+		static ModelManager instance;
+		return &instance;
+	}
 
 	/// <summary>
 	/// 初期化

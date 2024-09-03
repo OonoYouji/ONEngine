@@ -17,7 +17,7 @@
 #include "Collision/CollisionManager.h"
 
 #include <GameCamera.h>
-#include <Scene_Debug.h>
+#include <DebugCamera.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -64,11 +64,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera(gameCamera);
-
-#ifdef _DEBUG
-	std::unique_ptr<Scene_Debug> debugScene(new Scene_Debug());
-	debugScene->Initialize();
-#endif // _DEBUG
+	
+	DebugCamera* debugCamera = new DebugCamera();
+	debugCamera->Initialize();
 
 	sceneManager->Initialize();
 
@@ -111,6 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		spriteManager->PreDraw();
 
 		sceneManager->Draw();
+
 #ifdef _DEBUG
 		collisionManager->DrawHitBoxALL();
 #endif // _DEBUG
@@ -129,11 +128,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw();
 
 	}
-
-#ifdef _DEBUG
-	debugScene.reset();
-#endif // _DEBUG
-
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();

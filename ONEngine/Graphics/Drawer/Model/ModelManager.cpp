@@ -18,14 +18,6 @@
 #include <CameraManager.h>
 
 
-/// ===================================================
-/// インスタンス確保
-/// ===================================================
-ModelManager* ModelManager::GetInstance() {
-	static ModelManager instance;
-	return &instance;
-}
-
 
 /// ===================================================
 /// 初期化
@@ -189,6 +181,13 @@ Model* ModelManager::Load(const std::string& filePath) {
 /// 平面の生成
 /// ===================================================
 Model* ModelManager::CreatePlane() {
+
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find("Plane");
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
 	Model* model = new Model();
 
 	Mesh mesh{};
@@ -217,8 +216,8 @@ Model* ModelManager::CreatePlane() {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	GetInstance()->AddModel("Plane", model);
-	return GetInstance()->GetModel("Plane");
+	instance->AddModel("Plane", model);
+	return instance->GetModel("Plane");
 }
 
 
