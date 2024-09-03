@@ -31,8 +31,9 @@ void CameraManager::Update() {
 		}
 		SetMainCamera(debugCamera);
 	} else {
-		SetMainCamera(beforeCamera_);
-		//beforeCamera_ = nullptr;
+		if(beforeCamera_) {
+			SetMainCamera(beforeCamera_);
+		}
 	}
 #endif // _DEBUG
 

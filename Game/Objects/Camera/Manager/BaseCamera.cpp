@@ -51,6 +51,7 @@ void BaseCamera::BaseInitialize() {
 	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matVpData_));
 	*matVpData_ = matVp_;
 
+	Transfer();
 }
 
 void BaseCamera::Transfer() {
