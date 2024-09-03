@@ -11,31 +11,16 @@ public:
 	BoxCollider() {}
 	~BoxCollider() {}
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	/// <param name="gameObejct"></param>
-	/// <param name="model"></param>
+
 	void Initialize(BaseGameObject* gameObejct, Model* model) override;
-
-
-	/// <summary>
-	/// 更新処理
-	/// </summary>
 	void Update() override;
-
-	/// <summary>
-	/// HitBoxの描画
-	/// </summary>
 	void Draw() override;
 
-	/// <summary>
-	/// Box to Box Collision
-	/// </summary>
-	/// <param name="box"></param>
-	/// <returns></returns>
-	bool IsCollision(BaseCollider* other) override;
-	bool IsCollision(BoxCollider* box) override;
+
+	bool IsCollision(MAYBE_UNUSED BoxCollider* box) override;
+	bool IsCollision(MAYBE_UNUSED class AABBCollider* aabb) override;
+	bool IsCollision(MAYBE_UNUSED class OBBCollider* obb) override;
+	bool IsCollision(MAYBE_UNUSED class SphereCollider* sphere) override;
 
 private:
 

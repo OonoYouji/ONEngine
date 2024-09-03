@@ -16,8 +16,6 @@ public:
 	void Initialize() override;
 	void Update() override;
 
-	void Debug() override;
-	
 private:
 
 	Vec3 velocity_{};

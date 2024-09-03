@@ -47,6 +47,7 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	void SetMainCamera(const std::string& name);
+	void SetMainCamera(BaseCamera* camera);
 
 	/// <summary>
 	/// メインカメラのゲッタ
@@ -62,6 +63,7 @@ private:
 
 	std::unordered_map<std::string, BaseCamera*> cameras_;
 	BaseCamera* mainCamera_ = nullptr;
+	BaseCamera* beforeCamera_ = nullptr;
 
 private:
 	CameraManager(const CameraManager&) = delete;

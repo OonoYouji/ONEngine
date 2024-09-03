@@ -31,9 +31,12 @@
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioSource.cpp" />
+    <ClCompile Include="ONEngine\Collision\AABBCollider.cpp" />
     <ClCompile Include="ONEngine\Collision\BaseCollider.cpp" />
     <ClCompile Include="ONEngine\Collision\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\Collision\CollisionManager.cpp" />
+    <ClCompile Include="ONEngine\Collision\OBBCollider.cpp" />
+    <ClCompile Include="ONEngine\Collision\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
@@ -91,9 +94,12 @@
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
     <ClInclude Include="ONEngine\Audio\AudioSource.h" />
+    <ClInclude Include="ONEngine\Collision\AABBCollider.h" />
     <ClInclude Include="ONEngine\Collision\BaseCollider.h" />
     <ClInclude Include="ONEngine\Collision\BoxCollider.h" />
     <ClInclude Include="ONEngine\Collision\CollisionManager.h" />
+    <ClInclude Include="ONEngine\Collision\OBBCollider.h" />
+    <ClInclude Include="ONEngine\Collision\SphereCollider.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />

@@ -173,6 +173,15 @@
     <ClCompile Include="Game\Objects\Player\Player.cpp">
       <Filter>Game\Objects\Player</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Collision\AABBCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\OBBCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -455,6 +464,15 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\Player.h">
       <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\AABBCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\OBBCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\SphereCollider.h">
+      <Filter>ONEngine\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

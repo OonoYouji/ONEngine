@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
-	cameraManager->SetMainCamera("GameCamera");
+	cameraManager->SetMainCamera(gameCamera);
 
 #ifdef _DEBUG
 	std::unique_ptr<Scene_Debug> debugScene(new Scene_Debug());
@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		gameObjectManager->ImGuiDebug();
+		cameraManager->Update();
 
 		sceneManager->Update();
 		

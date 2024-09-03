@@ -4,10 +4,12 @@
 #include <vector>
 #include <cassert>
 
-#include <BaseGameObject.h>
-//#include <Camera.h>
 #include <ModelManager.h>
-//#include <PrimitiveDrawer.h>
+#include <BaseGameObject.h>
+
+#include "SphereCollider.h"
+#include "AABBCollider.h"
+#include "OBBCollider.h"
 
 
 void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
@@ -63,18 +65,7 @@ void BoxCollider::Draw() {
 }
 
 
-bool BoxCollider::IsCollision(BaseCollider* other) {
-
-	BoxCollider* box = dynamic_cast<BoxCollider*>(other);
-	if(box && IsCollision(box)) {
-		return true;
-	}
-
-
-	return false;
-}
-
-bool BoxCollider::IsCollision(BoxCollider* box) {
+bool BoxCollider::IsCollision(MAYBE_UNUSED BoxCollider* box) {
 
 	///- 分離軸を計算
 	std::vector<Vec3> axes{};
@@ -126,6 +117,21 @@ bool BoxCollider::IsCollision(BoxCollider* box) {
 
 	return true;
 }
+
+bool BoxCollider::IsCollision(MAYBE_UNUSED AABBCollider* box) {
+	return false;
+}
+
+bool BoxCollider::IsCollision(MAYBE_UNUSED OBBCollider* box) {
+	return false;
+}
+
+bool BoxCollider::IsCollision(MAYBE_UNUSED SphereCollider* box) {
+	return false;
+}
+
+
+
 
 
 std::vector<Vec3> BoxCollider::GetVertices() const {

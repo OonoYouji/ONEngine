@@ -26,7 +26,7 @@ BaseGameObject::BaseGameObject() {
 
 	collider_ = nullptr;
 
-	
+	UpdateMatrix();
 }
 
 

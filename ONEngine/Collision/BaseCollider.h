@@ -1,9 +1,11 @@
 #pragma once
 
 #include <Transform.h>
+
+#define MAYBE_UNUSED [[maybe_unused]]
+
 class BaseGameObject;
 class Model;
-class BoxCollider;
 
 class BaseCollider {
 public:
@@ -11,7 +13,6 @@ public:
 	virtual ~BaseCollider() = default;
 
 	virtual void Initialize(BaseGameObject* gameObject, Model* model);
-
 
 	/// <summary>
 	/// 更新処理
@@ -23,8 +24,11 @@ public:
 	/// </summary>
 	virtual void Draw() {}
 
-	virtual bool IsCollision([[maybe_unused]] BaseCollider* other) = 0;
-	virtual bool IsCollision([[maybe_unused]] BoxCollider* box) = 0;
+	bool IsCollision(MAYBE_UNUSED BaseCollider* other);
+	virtual bool IsCollision(MAYBE_UNUSED class BoxCollider* box) { return false; };
+	virtual bool IsCollision(MAYBE_UNUSED class AABBCollider* aabb) { return false; };
+	virtual bool IsCollision(MAYBE_UNUSED class OBBCollider* obb) { return false; };
+	virtual bool IsCollision(MAYBE_UNUSED class SphereCollider* sphere) { return false; };
 
 	void UpdateMatrix();
 

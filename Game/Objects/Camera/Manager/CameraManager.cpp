@@ -23,12 +23,18 @@ void CameraManager::Finalize() {
 /// ===================================================
 void CameraManager::Update() {
 
-	///- listにあるカメラを更新
-	for(auto& camera : cameras_) {
-		if(camera.second->GetIsAcitve()) {
-			camera.second->Update();
+#ifdef _DEBUG
+	BaseCamera* debugCamera = cameras_.at("DebugCamera");
+	if(debugCamera->isActive) {
+		if(GetMainCamera() != debugCamera) {
+			beforeCamera_ = GetMainCamera();
 		}
+		SetMainCamera(debugCamera);
+	} else {
+		SetMainCamera(beforeCamera_);
+		//beforeCamera_ = nullptr;
 	}
+#endif // _DEBUG
 
 }
 
@@ -46,6 +52,10 @@ void CameraManager::AddCamera(const std::string& name, BaseCamera* camera) {
 /// ===================================================
 void CameraManager::SetMainCamera(const std::string& name) {
 	mainCamera_ = cameras_.at(name);
+}
+
+void CameraManager::SetMainCamera(BaseCamera* camera) {
+	mainCamera_ = camera;
 }
 
 

@@ -15,6 +15,7 @@ DebugCamera::~DebugCamera() {}
 /// 初期化
 /// ===================================================
 void DebugCamera::Initialize() {
+	isActive = false;
 
 	transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
 
@@ -55,5 +56,3 @@ void DebugCamera::Update() {
 	Transfer();
 }
 
-void DebugCamera::Debug() {
-}
