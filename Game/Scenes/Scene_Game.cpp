@@ -29,25 +29,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-#ifdef _DEBUG
-	ImGui::Begin("model setting");
-	ImGui::DragFloat3("rotate", &transform_.rotate.x, 0.005f);
 
-	static bool isRotateX = false;
-	static bool isRotateY = false;
-	static bool isRotateZ = false;
-	ImGui::Checkbox("isRotateX", &isRotateX);
-	ImGui::Checkbox("isRotateY", &isRotateY);
-	ImGui::Checkbox("isRotateZ", &isRotateZ);
 
-	if(isRotateX) { transform_.rotate.x += 1.0f / 60.0f; }
-	if(isRotateY) { transform_.rotate.y += 1.0f / 60.0f; }
-	if(isRotateZ) { transform_.rotate.z += 1.0f / 60.0f; }
-
-	ImGui::Separator();
-
-	ImGui::End();
-#endif // _DEBUG
 
 	transform_.UpdateMatrix();
 }

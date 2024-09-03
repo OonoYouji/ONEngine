@@ -377,6 +377,8 @@ void BaseGameObject::ImGuiDebug() {
 		ImGui::TreePop();
 	}
 
+	ImGui::Separator();
+
 	Debug();
 
 #endif // _DEBUG

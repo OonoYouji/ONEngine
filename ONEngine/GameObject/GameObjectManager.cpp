@@ -207,6 +207,10 @@ void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseG
 /// ===================================================
 void GameObjectManager::ImGuiSelectObjectDebug() {
 #ifdef _DEBUG
+	
+	ImGui::Checkbox("isActive", &selectObject_->isActive);
+	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
+
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 
 	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
@@ -215,6 +219,8 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 	}
 
 	ImGui::Unindent();
+
+	
 	selectObject_->ImGuiDebug();
 
 	ImGui::TreePop();

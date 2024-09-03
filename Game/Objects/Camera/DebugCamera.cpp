@@ -26,13 +26,7 @@ void DebugCamera::Initialize() {
 /// 描画
 /// ===================================================
 void DebugCamera::Update() {
-	ImGui::Begin("Debug");
-	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
-	ImGui::End();
-
-	if(!isActive) {
-		return;
-	}
+	if(!isActive) { return; }
 
 	velocity_ = { 0.0f,0.0f,0.0f };
 
@@ -59,4 +53,7 @@ void DebugCamera::Update() {
 	matVp_ = matView_ * matProjection_;
 
 	Transfer();
+}
+
+void DebugCamera::Debug() {
 }
