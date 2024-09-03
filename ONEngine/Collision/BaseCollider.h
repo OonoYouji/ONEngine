@@ -12,6 +12,12 @@ public:
 
 	virtual void Initialize(BaseGameObject* gameObject, Model* model);
 
+
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	virtual void Update() {}
+
 	/// <summary>
 	/// 当たり判定の可視化
 	/// </summary>

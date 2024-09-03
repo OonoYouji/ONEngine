@@ -51,10 +51,12 @@ void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
 
 }
 
-void BoxCollider::Draw() {
-
+void BoxCollider::Update() {
+	UpdateOrientatinos();
 	UpdateMatrix();
+}
 
+void BoxCollider::Draw() {
 	if(cube_) {
 		cube_->Draw(&transform_, kWireFrame);
 	}
@@ -62,9 +64,6 @@ void BoxCollider::Draw() {
 
 
 bool BoxCollider::IsCollision(BaseCollider* other) {
-
-	UpdateMatrix();
-	other->UpdateMatrix();
 
 	BoxCollider* box = dynamic_cast<BoxCollider*>(other);
 	if(box && IsCollision(box)) {
@@ -76,9 +75,6 @@ bool BoxCollider::IsCollision(BaseCollider* other) {
 }
 
 bool BoxCollider::IsCollision(BoxCollider* box) {
-
-	UpdateOrientatinos();
-	box->UpdateOrientatinos();
 
 	///- 分離軸を計算
 	std::vector<Vec3> axes{};
@@ -126,16 +122,13 @@ bool BoxCollider::IsCollision(BoxCollider* box) {
 		if(sumSpan < longSpan) {
 			return false;
 		}
-
 	}
 
-
 	return true;
-
 }
 
+
 std::vector<Vec3> BoxCollider::GetVertices() const {
-	/*Vec3 size = size_ / 2.0f;*/
 	std::vector<Vec3> result = {
 		{-1.0f, +1.0f, -1.0f},
 		{+1.0f, +1.0f, -1.0f},

@@ -20,6 +20,11 @@ public:
 
 
 	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Update() override;
+
+	/// <summary>
 	/// HitBoxの描画
 	/// </summary>
 	void Draw() override;

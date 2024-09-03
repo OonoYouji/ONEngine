@@ -43,7 +43,7 @@ void Scene_Game::Update() {
 /// ===================================================
 void Scene_Game::Draw() {
 
-	model_->Draw(&transform_);
+	//model_->Draw(&transform_);
 
 	sprite_->Draw();
 
