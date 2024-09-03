@@ -1,7 +1,7 @@
 #include "GameObjectManager.h"
 
 #include <ImGuiManager.h>
-//#include <CollisionManager.h>
+
 
 
 /// ===================================================
@@ -23,6 +23,9 @@ void GameObjectManager::Finalize() {
 /// 更新
 /// ===================================================
 void GameObjectManager::Update() {
+
+	ReName();
+
 	for(auto& obj : objects_) {
 		if(obj->isActive) {
 			obj->Update();
@@ -112,6 +115,20 @@ void GameObjectManager::Destory(BaseGameObject* object) {
 }
 
 
+
+void GameObjectManager::ReName() {
+	std::unordered_map<std::string, uint32_t> instanceCounts;
+	for(auto& object : objects_) {
+		std::string name = CreateName(object.get());
+		uint32_t count = instanceCounts[name];
+		if(count) {
+			object->SetName(name + std::to_string(count));
+		}
+		++instanceCounts[name];
+	}
+}
+
+
 /// ===================================================
 /// nameからGameObjectを探索、返す
 /// ===================================================
@@ -137,6 +154,12 @@ void GameObjectManager::DestoryAll() {
 	GameObjectManager* insntance = GetInstance();
 	insntance->objects_.clear();
 	insntance->selectObject_ = nullptr;
+}
+
+std::string GameObjectManager::CreateName(const BaseGameObject* const object) {
+	std::string name = typeid(*object).name();
+	name = name.substr(std::string("class ").length());
+	return name;
 }
 
 
@@ -207,7 +230,7 @@ void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseG
 /// ===================================================
 void GameObjectManager::ImGuiSelectObjectDebug() {
 #ifdef _DEBUG
-	
+
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
 	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
 
@@ -220,7 +243,7 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 
 	ImGui::Unindent();
 
-	
+
 	selectObject_->ImGuiDebug();
 
 	ImGui::TreePop();

@@ -35,7 +35,7 @@ public:
 	/// </summary>
 	static void DestoryAll();
 	
-
+	static std::string CreateName(const BaseGameObject* const object);
 
 
 	/// <summary>
@@ -100,6 +100,10 @@ public:
 	void Destory(BaseGameObject* object);
 
 
+	/// <summary>
+	/// オブジェクトのインスタンス数にあった名前を付ける
+	/// </summary>
+	void ReName();
 	
 
 

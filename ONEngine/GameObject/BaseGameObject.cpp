@@ -387,8 +387,7 @@ void BaseGameObject::ImGuiDebug() {
 }
 
 void BaseGameObject::CreateTag(BaseGameObject* object) {
-	std::string name = typeid(*object).name();
-	name = name.substr(std::string("class ").length());
+	std::string name = GameObjectManager::CreateName(object);
 	SetTag(name);
 	SetName(name);
 }

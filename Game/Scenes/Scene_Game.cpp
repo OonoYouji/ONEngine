@@ -24,6 +24,8 @@ void Scene_Game::Initialize() {
 	transform_.Initialize();
 
 	(new Player)->Initialize();
+	(new Player)->Initialize();
+	(new Player)->Initialize();
 }
 
 
