@@ -30,6 +30,12 @@ void CollisionManager::Update() {
 
 	currentCollidedPairs_.clear();
 
+	for(auto& object : gameObjects_) {
+		if(object->GetCollider()) {
+			object->GetCollider()->Update();
+		}
+	}
+
 	for(auto& objectA : gameObjects_) {
 		for(auto& objectB : gameObjects_) {
 

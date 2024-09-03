@@ -25,7 +25,6 @@ public:
 
 private:
 	void UpdateOrientatinos();
-
 private:
 
 	Vec3 size_;
