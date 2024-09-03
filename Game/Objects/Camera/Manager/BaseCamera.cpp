@@ -28,7 +28,7 @@ namespace {
 /// ===================================================
 /// コンストラクタ
 /// ===================================================
-BaseCamera::BaseCamera() {
+BaseCamera::BaseCamera() : BaseGameObject(this) {
 
 }
 

@@ -3,8 +3,8 @@
 
 
 GameCamera::GameCamera() {
-	name_ = "GameCamera";
-	CameraManager::GetInstance()->AddCamera(name_, this);
+	SetName("GameCamera");
+	CameraManager::GetInstance()->AddCamera(GetName(), this);
 }
 
 GameCamera::~GameCamera() {}

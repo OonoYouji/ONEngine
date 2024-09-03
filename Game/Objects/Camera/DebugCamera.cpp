@@ -5,8 +5,8 @@
 #include <ImGuiManager.h>
 
 DebugCamera::DebugCamera() {
-	name_ = "DebugCamera";
-	CameraManager::GetInstance()->AddCamera(name_, this);
+	SetName("DebugCamera");
+	CameraManager::GetInstance()->AddCamera(GetName(), this);
 }
 DebugCamera::~DebugCamera() {}
 

@@ -60,7 +60,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unordered_map<std::string, std::unique_ptr<BaseCamera>> cameras_;
+	std::unordered_map<std::string, BaseCamera*> cameras_;
 	BaseCamera* mainCamera_ = nullptr;
 
 private:

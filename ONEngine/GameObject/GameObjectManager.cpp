@@ -116,8 +116,9 @@ void GameObjectManager::Destory(BaseGameObject* object) {
 /// nameからGameObjectを探索、返す
 /// ===================================================
 BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
+	GameObjectManager* insntance = GetInstance();
 	BaseGameObject* result = nullptr;
-	auto itr = std::find_if(objects_.begin(), objects_.end(), [&name, &result](std::unique_ptr<BaseGameObject>& object) {
+	auto itr = std::find_if(insntance->objects_.begin(), insntance->objects_.end(), [&name, &result](std::unique_ptr<BaseGameObject>& object) {
 		if(object->GetName() == name) {
 			result = object.get();
 			return true;
@@ -129,9 +130,13 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 	return result;
 }
 
+/// ===================================================
+/// すべてのインスタンスを削除する
+/// ===================================================
 void GameObjectManager::DestoryAll() {
-	objects_.clear();
-	selectObject_ = nullptr;
+	GameObjectManager* insntance = GetInstance();
+	insntance->objects_.clear();
+	insntance->selectObject_ = nullptr;
 }
 
 

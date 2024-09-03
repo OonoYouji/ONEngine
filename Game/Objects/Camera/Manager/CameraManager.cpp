@@ -37,8 +37,7 @@ void CameraManager::Update() {
 /// カメラの追加
 /// ===================================================
 void CameraManager::AddCamera(const std::string& name, BaseCamera* camera) {
-	std::unique_ptr<BaseCamera> add(camera);
-	cameras_[name] = std::move(add);
+	cameras_[name] = camera;
 }
 
 
@@ -46,7 +45,7 @@ void CameraManager::AddCamera(const std::string& name, BaseCamera* camera) {
 /// メインカメラのセット
 /// ===================================================
 void CameraManager::SetMainCamera(const std::string& name) {
-	mainCamera_ = cameras_.at(name).get();
+	mainCamera_ = cameras_.at(name);
 }
 
 

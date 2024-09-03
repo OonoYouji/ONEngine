@@ -13,6 +13,7 @@
 #include <AudioManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
+#include <GameObjectManager.h>
 
 #include <GameCamera.h>
 #include <Scene_Debug.h>
@@ -36,6 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AudioManager* audioManager = AudioManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
+	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -54,6 +56,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	audioManager->Load("fanfare.wav");
 
+
+	gameObjectManager->Initialize();
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
@@ -76,14 +80,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imGuiManager->BeginFrame();
 		input->Begin();
 
-		/// ↓ 更新処理に移る
 
-		cameraManager->Update();
+		/// ====================================
+		/// ↓ 更新処理に移る
+		/// ====================================
+
+		gameObjectManager->ImGuiDebug();
+
 		sceneManager->Update();
+		
+		/// 更新1
+		gameObjectManager->Update();
+		/// 当たり判定処理
+
+		/// 更新2
+		gameObjectManager->LastUpdate();
 
 		audioManager->Update();
 
+		/// ====================================
 		/// ↓ 描画処理に移る
+		/// ====================================
 
 		dxCommon->PreDraw();
 		sceneManager->PreDraw();
@@ -95,16 +112,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PostDraw();
 		spriteManager->PostDraw();
 
-		
-#ifdef _DEBUG
-		debugScene->Draw();
-#endif // _DEBUG
 
-		sceneManager->PostDraw();
-		sceneManager->SceneDraw();
 
-		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
+		sceneManager->PostDraw();
 		dxCommon->PostDraw();
 
 	}
@@ -116,6 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();
+	gameObjectManager->Finalize();
 
 	audioManager->Finalize();
 	spriteManager->Finalize();

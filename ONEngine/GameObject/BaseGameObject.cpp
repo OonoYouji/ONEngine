@@ -40,8 +40,15 @@ void BaseGameObject::UpdateMatrix() {
 	transform_.UpdateMatrix();
 	if(parent_) {
 		transform_.matTransform *= parent_->GetMatTransform();
-		*transform_.mapingData_ = transform_.matTransform;
 	}
+}
+
+
+/// ===================================================
+/// 自身を削除
+/// ===================================================
+void BaseGameObject::Destory() {
+	GameObjectManager::GetInstance()->Destory(this);
 }
 
 
@@ -369,6 +376,8 @@ void BaseGameObject::ImGuiDebug() {
 		group.second.ImGuiDebug();
 		ImGui::TreePop();
 	}
+
+	Debug();
 
 #endif // _DEBUG
 }

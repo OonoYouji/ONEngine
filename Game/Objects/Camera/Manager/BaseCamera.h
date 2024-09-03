@@ -5,12 +5,13 @@
 
 #include <string>
 
-#include <Transform.h>
+#include <GameObjectManager.h>
+
 
 /// ===================================================
 /// カメラの基底クラス
 /// ===================================================
-class BaseCamera {
+class BaseCamera : public BaseGameObject {
 public:
 
 	BaseCamera();
@@ -35,10 +36,7 @@ public:
 
 protected:
 
-	std::string name_ = "BaseCamera";
 	bool isActive_ = true;
-
-	Transform transform_{};
 
 	float fovY_ = 0.45f;
 	float farZ_ = 1000.0f;

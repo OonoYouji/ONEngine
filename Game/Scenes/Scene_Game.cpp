@@ -22,11 +22,6 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	audioSource_ = new AudioSource;
-	audioSource_->SetAudioClip("fanfare.wav");
-	audioSource_->PlayAudio();
-	//audioSource_->StopAudio();
-
 }
 
 
@@ -50,20 +45,6 @@ void Scene_Game::Update() {
 	if(isRotateZ) { transform_.rotate.z += 1.0f / 60.0f; }
 
 	ImGui::Separator();
-
-	if(ImGui::Button("audio start")) {
-		audioSource_->PlayAudio();
-	}
-	if(ImGui::Button("audio stop")) {
-		audioSource_->StopAudio();
-	}
-
-	ImGui::Spacing();
-
-	ImGui::DragFloat("volume", &audioSource_->volume, 0.005f, 0.0f, 1.0f);
-	ImGui::DragFloat("pitch ", &audioSource_->pitch,  0.01f,  0.0f, 10.0f);
-
-	ImGui::Checkbox("isLoop ", &audioSource_->isLoop);
 
 	ImGui::End();
 #endif // _DEBUG

@@ -21,5 +21,6 @@ void Transform::UpdateMatrix() {
 }
 
 void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex) {
+	*mapingData_ = matTransform;
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, transformBuffer_->GetGPUVirtualAddress());
 }

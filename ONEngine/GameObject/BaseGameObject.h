@@ -73,6 +73,12 @@ public:
 
 public:
 
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	///	基本外部から使用することのない関数
+	/////////////////////////////////////////////////////////////////////////////////////////////
+
+
 	virtual void Initialize() = 0;
 
 	virtual void Update() = 0;
@@ -84,7 +90,20 @@ public:
 
 	virtual void Debug() {};
 
+	/// <summary>
+	/// 行列の更新
+	/// </summary>
 	void UpdateMatrix();
+
+	/// <summary>
+	/// 自身のインスタンスを削除する
+	/// </summary>
+	void Destory();
+
+	/// <summary>
+	/// Group内の変数をImGuiでデバッグする
+	/// </summary>
+	void ImGuiDebug();
 
 
 #pragma region Transform
@@ -192,18 +211,23 @@ public:
 #pragma endregion Collider
 
 
-	void ImGuiDebug();
 
 private:
 	std::string tag_;	//- グループごとの名前 : Enemyなど
 	std::string name_;	//- オブジェクトごとに違う名前 : Enemy1, Enemy2など
 protected:
 
+	/// SRTの移動
 	Transform transform_;
 
+	/// 親
 	BaseGameObject* parent_ = nullptr;
+
+	/// 子供
 	std::list<BaseGameObject*> childs_;
 
+
+	/// 変数のグループ
 	std::unordered_map<std::string, Group> groups_;
 
 	//std::unique_ptr<BaseCollider> collider_ = nullptr;

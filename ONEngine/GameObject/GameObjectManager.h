@@ -22,6 +22,22 @@ public:
 		return &instance;
 	}
 
+
+	/// <summary>
+	/// ゲームオブジェクトのゲット
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	static BaseGameObject* GetGameObject(const std::string& name);
+
+	/// <summary>
+	/// すべてのオブジェクトを消去する
+	/// </summary>
+	static void DestoryAll();
+	
+
+
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -31,6 +47,7 @@ public:
 	/// 終了処理
 	/// </summary>
 	void Finalize();
+
 
 
 
@@ -49,10 +66,20 @@ public:
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// オブジェクトの前景スプライトの描画の呼び出し
+	/// </summary>
 	void FrontSpriteDraw();
 
+	/// <summary>
+	/// オブジェクトの背景スプライトの描画の呼び出し
+	/// </summary>
 	void BackSpriteDraw();
 
+
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	///	基本外部から使用することのない関数
+	/////////////////////////////////////////////////////////////////////////////////////////////
 
 	/// <summary>
 	/// BaseGameObjectの追加
@@ -60,13 +87,11 @@ public:
 	/// <param name="object"></param>
 	void AddGameObject(BaseGameObject* object);
 
-private:
 	/// <summary>
 	/// BaseGameObjectの削除
 	/// </summary>
 	/// <param name="object"></param>
 	void SubGameObject(BaseGameObject* object);
-public:
 
 	/// <summary>
 	/// GameObejctの削除
@@ -74,12 +99,8 @@ public:
 	/// <param name="object"></param>
 	void Destory(BaseGameObject* object);
 
-	BaseGameObject* GetGameObject(const std::string& name);
 
-	/// <summary>
-	/// すべてのオブジェクトを消去する
-	/// </summary>
-	void DestoryAll();
+	
 
 
 #pragma region ImGui
