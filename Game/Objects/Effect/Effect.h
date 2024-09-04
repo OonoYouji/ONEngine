@@ -53,6 +53,10 @@ private:
 
 	bool isRotateRandom_ = false;
 	bool isSizeRandom = false;
+	float minRotateRandom_ = -3.0f;
+	float maxRotateRandom_ = 3.0f;
+	float minSizeRandom_ = 0.01f;
+	float maxSizeRandom_ = 2.0f;
 
 
 
@@ -86,6 +90,10 @@ private:
 	float xRandomLimite = 1.0f;
 	float yRamdomLimite = 1.0f;
 	float zRamdomLimite = 0.0f;
+
+	float cornLenght_ = 1.0f;
+	float boxSizeX = 0.4f;
+	float boxSizeZ = 0.4f;
 
 
 
