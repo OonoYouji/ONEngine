@@ -23,7 +23,7 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
-	frameTimer->Start();
+	frameTimer->Begin();
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
@@ -79,6 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		frameTimer->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
 
@@ -87,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理に移る
 		/// ====================================
 
+		frameTimer->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
 
