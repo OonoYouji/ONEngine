@@ -60,12 +60,12 @@ Matrix4x4::Matrix4x4(float aa, float ab, float ac, float ad, float ba, float bb,
 	this->m[1][1] = bb;
 	this->m[1][2] = bc;
 	this->m[1][3] = bd;
-	
+
 	this->m[2][0] = ca;
 	this->m[2][1] = cb;
 	this->m[2][2] = cc;
 	this->m[2][3] = cd;
-	
+
 	this->m[3][0] = da;
 	this->m[3][1] = db;
 	this->m[3][2] = dc;
@@ -141,6 +141,15 @@ Matrix4x4 Matrix4x4::MakeAffine(const Vector3& scale, const Vector3& rotate, con
 
 Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& m) {
 	return m.Inverse();
+}
+
+Matrix4x4 Matrix4x4::MakeViewport(float top, float left, float width, float height, float minD, float maxD) {
+	return Matrix4x4{
+		width / 2.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, -(height / 2.0f), 0.0f, 0.0f,
+		0.0f, 0.0f, maxD - minD, 0.0f,
+		left + (width / 2.0f), top + (height / 2.0f), minD, 1.0f
+	};
 }
 
 Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {

@@ -43,6 +43,9 @@ public:
 	static Vec2 MousePosition();
 	static Vec2 MouseVelocity();
 	static float MouseScroll();
+	static Vec3 MouseRay(float distance);
+	static Vec3 MouseNearPosition();
+	static Vec3 MouseFarPosition();
 
 private:
 

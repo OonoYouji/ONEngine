@@ -282,3 +282,15 @@ Vec2 Input::MouseVelocity() {
 float Input::MouseScroll() {
 	return mouse_->GetScroll();
 }
+
+Vec3 Input::MouseRay(float distance) {
+	return mouse_->MouseRay(distance);
+}
+
+Vec3 Input::MouseNearPosition() {
+	return mouse_->MouseNearPosition();
+}
+
+Vec3 Input::MouseFarPosition() {
+	return mouse_->MouseFarPosition();
+}

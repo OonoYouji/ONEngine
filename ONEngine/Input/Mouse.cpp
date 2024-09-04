@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include <WinApp.h>
+#include <CameraManager.h>
 
 
 Mouse::Mouse() {}
@@ -65,4 +66,32 @@ bool Mouse::Trigger(MouseCode code) const {
 
 bool Mouse::Release(MouseCode code) const {
 	return !Press(code) && preState_.rgbButtons[static_cast<uint32_t>(code)];
+}
+
+Vec3 Mouse::MouseRay(float distance) {
+	Mat4 matViewport = Mat4::MakeViewport(0, 0, ONE::WinApp::kWindowSizeX, ONE::WinApp::kWindowSizeY, 0.0f, 1.0f);
+	BaseCamera* camera = CameraManager::GetInstance()->GetMainCamera();
+	Mat4 matInverseVPV = Mat4::MakeInverse(camera->GetMatView() * camera->GetMatProjection() * matViewport);
+
+	Vec3 nearPos = Mat4::Transform(Vec3(position_.x, position_.y, 0.0f), matInverseVPV);
+	Vec3 farPos = Mat4::Transform(Vec3(position_.x, position_.y, 1.0f), matInverseVPV);
+	Vec3 direction = Vec3::Normalize(nearPos - farPos);
+
+	return nearPos + (direction * distance);
+}
+
+Vec3 Mouse::MouseNearPosition() {
+	Mat4 matViewport = Mat4::MakeViewport(0, 0, ONE::WinApp::kWindowSizeX, ONE::WinApp::kWindowSizeY, 0.0f, 1.0f);
+	BaseCamera* camera = CameraManager::GetInstance()->GetMainCamera();
+	Mat4 matInverseVPV = Mat4::MakeInverse(camera->GetMatView() * camera->GetMatProjection() * matViewport);
+
+	return Mat4::Transform(Vec3(position_.x, position_.y, 0.0f), matInverseVPV);
+}
+
+Vec3 Mouse::MouseFarPosition() {
+	Mat4 matViewport = Mat4::MakeViewport(0, 0, ONE::WinApp::kWindowSizeX, ONE::WinApp::kWindowSizeY, 0.0f, 1.0f);
+	BaseCamera* camera = CameraManager::GetInstance()->GetMainCamera();
+	Mat4 matInverseVPV = Mat4::MakeInverse(camera->GetMatView() * camera->GetMatProjection() * matViewport);
+
+	return  Mat4::Transform(Vec3(position_.x, position_.y, 1.0f), matInverseVPV);
 }

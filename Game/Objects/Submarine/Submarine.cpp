@@ -1,5 +1,6 @@
 #include "Submarine.h"
 
+#include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <Input.h>
 
@@ -25,6 +26,10 @@ void Submarine::Update() {
 
 	}
 
+	mouseRayPosition_ = Input::MouseRay(distance_);
+
+	
+
 }
 
 
@@ -33,4 +38,20 @@ void Submarine::Update() {
 /// </summary>
 void Submarine::Draw() {
 	model_->Draw(&transform_);
+}
+
+void Submarine::Debug() {
+	if(ImGui::TreeNodeEx("mouse ray")) {
+
+		ImGui::DragFloat("distance", &distance_, 0.1f);
+		ImGui::DragFloat3("ray position", &mouseRayPosition_.x, 0.1f);
+
+		Vec3 nearPos = Input::MouseNearPosition();
+		ImGui::DragFloat3("ray position", &nearPos.x, 0.1f);
+
+		Vec3 farPos = Input::MouseFarPosition();
+		ImGui::DragFloat3("ray position", &farPos.x, 0.1f);
+
+		ImGui::TreePop();
+	}
 }

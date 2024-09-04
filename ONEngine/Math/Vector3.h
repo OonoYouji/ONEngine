@@ -52,6 +52,7 @@ public:
 	/// ===================================================
 
 	static float Length(const Vector3& v);
+	static Vector3 Normalize(const Vector3& v);
 
 	static Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
 

@@ -5,6 +5,7 @@
 #include <dinput.h>
 
 #include <Vector2.h>
+#include <Vector3.h>
 
 namespace ONE { class WinApp; }
 
@@ -46,6 +47,10 @@ public:
 
 	inline const Vec2& GetPosition() const { return position_; }
 	inline const Vec2& GetVelocity() const { return velocity_; }
+
+	Vec3 MouseRay(float distance);
+	Vec3 MouseNearPosition();
+	Vec3 MouseFarPosition();
 
 private:
 	

@@ -55,6 +55,10 @@ float Vector3::Length(const Vector3& v) {
 	return v.Len();
 }
 
+Vector3 Vector3::Normalize(const Vector3& v) {
+	return v.Normalize();
+}
+
 Vector3 Vector3::Lerp(const Vector3& start, const Vector3& end, float t) {
 	return Vector3(
 		std::lerp(start.x, end.x, t),
