@@ -5,8 +5,8 @@
 #include <ImGuiManager.h>
 
 DebugCamera::DebugCamera() {
-	name_ = "DebugCamera";
-	CameraManager::GetInstance()->AddCamera(name_, this);
+	SetName("DebugCamera");
+	CameraManager::GetInstance()->AddCamera(GetName(), this);
 }
 DebugCamera::~DebugCamera() {}
 
@@ -15,6 +15,7 @@ DebugCamera::~DebugCamera() {}
 /// 初期化
 /// ===================================================
 void DebugCamera::Initialize() {
+	isActive = false;
 
 	transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
 
@@ -26,13 +27,7 @@ void DebugCamera::Initialize() {
 /// 描画
 /// ===================================================
 void DebugCamera::Update() {
-	ImGui::Begin("Debug");
-	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
-	ImGui::End();
-
-	if(!isActive) {
-		return;
-	}
+	if(!isActive) { return; }
 
 	velocity_ = { 0.0f,0.0f,0.0f };
 
@@ -60,3 +55,4 @@ void DebugCamera::Update() {
 
 	Transfer();
 }
+

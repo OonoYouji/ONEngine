@@ -21,7 +21,10 @@ public:
 	/// インスタンス確保
 	/// </summary>
 	/// <returns></returns>
-	static ModelManager* GetInstance();
+	static ModelManager* GetInstance() {
+		static ModelManager instance;
+		return &instance;
+	}
 
 	/// <summary>
 	/// 初期化
@@ -38,7 +41,15 @@ public:
 	/// <summary>
 	/// モデル読み込み
 	/// </summary>
-	Model* Load(const std::string& filePath);
+	static Model* Load(const std::string& filePath);
+
+	/// <summary>
+	/// モデルのゲッタ
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <returns></returns>
+	static Model* GetModel(const std::string& filePath);
+
 
 	/// <summary>
 	/// 平面の生成
@@ -63,13 +74,12 @@ public:
 	void PostDraw();
 
 
-	Model* GetModel(const std::string& filePath);
 
 	/// <summary>
 	/// モデルの追加
 	/// </summary>
 	/// <param name="model"></param>
-	void AddModel(const std::string& filePath,Model* model);
+	void AddModel(const std::string& filePath, Model* model);
 
 	/// <summary>
 	/// command list に pipeline state をセット
@@ -79,7 +89,7 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model, Transform* transform);
+	void AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode);
 
 private:
 
@@ -94,9 +104,15 @@ private:
 	PipelineState::Shader shader_{};
 
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
-	using Element = std::pair<Model*, Transform*>;
+
+	struct Element final {
+		Model* model = nullptr;
+		Material* material = nullptr;
+		Transform* transform = nullptr;
+		FillMode fillMode;
+	};
+
 	std::list<Element> activeModels_;
-	//std::list<Transform*> activeModelTransforms_;
 
 private:
 	ModelManager(const ModelManager&) = delete;

@@ -18,9 +18,16 @@ namespace ONE {
 
 		static FrameTimer* GetInstance();
 
-		void Start();
+		void Begin();
 		float End();
 
+		void Update();
+
+		void ImGuiDebug();
+
+		static float DeltaTime() {
+			return GetInstance()->deltaTime_;
+		}
 
 	private:
 		/// ===================================================
@@ -28,6 +35,9 @@ namespace ONE {
 		/// ===================================================
 
 		std::chrono::high_resolution_clock::time_point start_;
+		std::chrono::high_resolution_clock::time_point time_;
+
+		float deltaTime_ = 0.0f;
 
 	private:
 		FrameTimer(const FrameTimer&) = delete;

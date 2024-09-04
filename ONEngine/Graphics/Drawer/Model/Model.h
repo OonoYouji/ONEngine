@@ -47,13 +47,14 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(Transform* transform);
+	void Draw(Transform* transform, FillMode fillMode = kSolid);
+	void Draw(Transform* transform, Material* material, FillMode fillMode = kSolid);
 
 
 	/// <summary>
 	/// CommandListに必要な情報をセット
 	/// </summary>
-	void DrawCall(ID3D12GraphicsCommandList* commandList);
+	void DrawCall(ID3D12GraphicsCommandList* commandList, Material* material = nullptr);
 
 	/// <summary>
 	/// FillModeのセット
@@ -79,6 +80,10 @@ public:
 	/// </summary>
 	/// <param name="material"></param>
 	void AddMaterial(const Material& material);
+
+
+	const std::vector<Mesh>& GetMeshes() const { return meshes_; }
+
 
 private:
 

@@ -14,8 +14,8 @@ Model::Model() {
 	//ModelManager::GetInstance()->AddModel(this);
 }
 Model::~Model() {
-	meshes_.clear();
-	materials_.clear();
+	/*meshes_.clear();
+	materials_.clear();*/
 }
 
 
@@ -30,15 +30,24 @@ void Model::Initialize() {
 /// ===================================================
 /// 描画
 /// ===================================================
-void Model::Draw(Transform* transform) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform);
+void Model::Draw(Transform* transform, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, fillMode);
+}
+
+void Model::Draw(Transform* transform, Material* material, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, material, fillMode);
 }
 
 
 /// ===================================================
 /// DrawCallの呼び出し
 /// ===================================================
-void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
+void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material) {
+	if(material) {
+		for(uint32_t index = 0; index < meshes_.size(); ++index) {
+			materials_[index] = *material;
+		}
+	}
 
 	for(uint32_t index = 0; index < meshes_.size(); ++index) {
 		materials_[index].BindMaterial(commandList, 2);

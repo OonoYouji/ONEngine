@@ -33,6 +33,5 @@ private:
 
 	std::unique_ptr<Sprite> sprite_;
 
-	AudioSource* audioSource_;
 	Effect* effect_;
 };

@@ -13,15 +13,17 @@
 #include <AudioManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
+#include <GameObjectManager.h>
+#include "Collision/CollisionManager.h"
 
 #include <GameCamera.h>
-#include <Scene_Debug.h>
+#include <DebugCamera.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
-	frameTimer->Start();
+	frameTimer->Begin();
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
@@ -36,6 +38,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	AudioManager* audioManager = AudioManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
+	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -54,15 +58,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	audioManager->Load("fanfare.wav");
 
+	//modelManager->Load("Sphere");
+
+
+	gameObjectManager->Initialize();
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
-	cameraManager->SetMainCamera("GameCamera");
-
-#ifdef _DEBUG
-	std::unique_ptr<Scene_Debug> debugScene(new Scene_Debug());
-	debugScene->Initialize();
-#endif // _DEBUG
+	cameraManager->SetMainCamera(gameCamera);
+	
+	DebugCamera* debugCamera = new DebugCamera();
+	debugCamera->Initialize();
 
 	sceneManager->Initialize();
 
@@ -73,17 +79,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		frameTimer->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
 
+
+		/// ====================================
 		/// ↓ 更新処理に移る
+		/// ====================================
+
+		frameTimer->ImGuiDebug();
+		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
 
 		cameraManager->Update();
+
 		sceneManager->Update();
+		
+		/// 更新1
+		gameObjectManager->Update();
+		/// 当たり判定処理
+		collisionManager->Update();
+		/// 更新2
+		gameObjectManager->LastUpdate();
 
 		audioManager->Update();
 
+		/// ====================================
 		/// ↓ 描画処理に移る
+		/// ====================================
 
 		dxCommon->PreDraw();
 		sceneManager->PreDraw();
@@ -92,30 +116,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		sceneManager->Draw();
 
+#ifdef _DEBUG
+		collisionManager->DrawHitBoxALL();
+#endif // _DEBUG
+
+		gameObjectManager->BackSpriteDraw();
+		gameObjectManager->Draw();
+		gameObjectManager->FrontSpriteDraw();
+
 		modelManager->PostDraw();
 		spriteManager->PostDraw();
 
-		
-#ifdef _DEBUG
-		debugScene->Draw();
-#endif // _DEBUG
 
-		sceneManager->PostDraw();
-		sceneManager->SceneDraw();
 
-		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
+		sceneManager->PostDraw();
 		dxCommon->PostDraw();
 
 	}
 
-#ifdef _DEBUG
-	debugScene.reset();
-#endif // _DEBUG
-
-
 	sceneManager->Finalize();
 	cameraManager->Finalize();
+	gameObjectManager->Finalize();
 
 	audioManager->Finalize();
 	spriteManager->Finalize();

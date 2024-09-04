@@ -51,7 +51,7 @@ void Floor::Initialize() {
 
 	material_.SetFilePath("Floor.png");
 	material_.SetTextureName("Floor");
-	material_.Create();
+	material_.CreateBuffer();
 
 
 	mesh_.AddVertex({ { -0.5f, 0.0f, -0.5f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
@@ -66,7 +66,7 @@ void Floor::Initialize() {
 	mesh_.AddIndex(2);
 	mesh_.AddIndex(3);
 
-	mesh_.Create();
+	mesh_.CreateBuffer();
 
 	uvTransformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
 	uvTransformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matUvTransform_));

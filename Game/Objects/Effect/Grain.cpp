@@ -4,7 +4,7 @@ Grain::Grain() {}
 
 Grain::~Grain() {}
 
-void Grain::Initialze(Model* model, const Transform& trans, Vector3& gravity,
+void Grain::Initialze(Model* model, const Vector3& position,const Vector3& rotate, const Vector3& size, Vector3& gravity,
 	const Vector3& velocity, const int life, const ShiftSpeedType shiftType,
 	const float shiftSpeed, const bool colorShift, const Vector4& origin,
 	const Vector4& change, const bool sizeChange, SizeChangeType chageType) {
@@ -12,7 +12,9 @@ void Grain::Initialze(Model* model, const Transform& trans, Vector3& gravity,
 	transform_.Initialize();
 
 	model_ = model;
-	transform_ = trans;
+	transform_.position = position;
+	transform_.rotate = rotate;
+	transform_.scale = size;
 	gravity_ = gravity;
 	velocity_ = velocity;
 	lifeTime_ = life;

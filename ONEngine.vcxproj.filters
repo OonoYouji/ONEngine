@@ -155,9 +155,28 @@
     <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Random\Random.cpp">
-      <Filter>ONEngine\Random</Filter>
+    <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp">
+      <Filter>ONEngine\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BaseCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BoxCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\CollisionManager.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Random\Random.cpp" />
     <ClCompile Include="Game\Objects\Effect\Effect.cpp">
       <Filter>Game\Objects\Effect</Filter>
     </ClCompile>
@@ -262,11 +281,17 @@
     <Filter Include="ONEngine\Audio">
       <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\Random">
-      <UniqueIdentifier>{32e6050e-9014-44be-b97f-f0e78a7b4c99}</UniqueIdentifier>
+    <Filter Include="ONEngine\GameObject">
+      <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Collision">
+      <UniqueIdentifier>{535a4893-785e-441b-80ca-f77ea230bbff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects\Effect">
-      <UniqueIdentifier>{0d982371-4f74-4e95-b1f0-7c0eadecc9c3}</UniqueIdentifier>
+      <UniqueIdentifier>{d6f0a9ea-6aef-496d-be2b-f19bdfea82ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -426,9 +451,28 @@
     <ClInclude Include="ONEngine\Audio\AudioSource.h">
       <Filter>ONEngine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Random\Random.h">
-      <Filter>ONEngine\Random</Filter>
+    <ClInclude Include="ONEngine\GameObject\BaseGameObject.h">
+      <Filter>ONEngine\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\GameObject\GameObjectManager.h">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BaseCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BoxCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\CollisionManager.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\SphereCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Random\Random.h" />
     <ClInclude Include="Game\Objects\Effect\Effect.h">
       <Filter>Game\Objects\Effect</Filter>
     </ClInclude>

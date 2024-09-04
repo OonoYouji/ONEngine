@@ -1,5 +1,6 @@
 #include "Effect.h"
 #include <ImGuiManager.h>
+#include <Matrix4x4.h>
 
 Effect::Effect() {}
 
@@ -15,7 +16,6 @@ void Effect::Initialize(const std::string& name) {
 
 	emitterName_ = name;
 	model_ = ModelManager::CreateCube();
-	model_->Initialize();
 	transform_.Initialize();
 
 }
@@ -66,11 +66,15 @@ void Effect::Setting(){
 
 	if (ImGui::TreeNode("Base Variables")) {
 
-		ImGui::DragFloat3("Direction", &direction_.x, 0.01f);
+		ImGui::SeparatorText("Emitter Variable");
+		ImGui::DragFloat3("Emitter Position", &transform_.position.x, 0.01f);
+		ImGui::DragFloat3("Emitter Roate", &transform_.rotate.x, 0.01f);
+		ImGui::SeparatorText("Particle Variable");
+		ImGui::DragFloat("Speed", &speed_, 0.01f);
 		ImGui::DragFloat3("GravityModifier", &gravity_.x, 0.01f);
 		ImGui::DragFloat3("Rotation", &rotation_.x, 0.01f);
-		ImGui::DragFloat3("Particle Size", &size_.x, 0.01f);
-		ImGui::DragInt("LifeTime", &lifeTime_, 1.0f, 0, 180);
+		ImGui::DragFloat3("Particle Size", &size_.x, 0.01f, 0.01f, 10.0f);
+		ImGui::DragInt("LifeTime", &lifeTime_, 1.0f, 1, 180);
 
 		ImGui::TreePop();
 	}
@@ -85,7 +89,7 @@ void Effect::Setting(){
 			isOverTime_ = true;
 			isOverDistance_ = false;
 			ImGui::SliderInt("RateTime", &rateTime_, 0, 120);
-			ImGui::SliderInt("Appear Count", &appear_, 0, 40);
+			ImGui::SliderInt("Appear Count", &appear_, 1, 40);
 		}
 		if (provisional_ == 1) {
 			isOverTime_ = false;
@@ -102,29 +106,35 @@ void Effect::Setting(){
 		
 		ImGui::RadioButton("CirCle", &secondProvisional_, 0); ImGui::SameLine();
 		ImGui::RadioButton("Cone", &secondProvisional_, 1); ImGui::SameLine();
-		ImGui::RadioButton("Sphere", &secondProvisional_, 2);
+		ImGui::RadioButton("Box", &secondProvisional_, 2);
 		if (secondProvisional_ == 0) {
 			isCircle_ = true;
 			isCone_ = false;
-			isSphere_ = false;
+			isBox_ = false;
 
-			// エミッターの形のサイズを編集できるように
+			xRandomLimite = 1.0f;
+			yRamdomLimite = 1.0f;
+			zRamdomLimite = 0.0f;
 
 		}
 		if (secondProvisional_ == 1) {
 			isCircle_ = false;
 			isCone_ = true;
-			isSphere_ = false;
+			isBox_ = false;
 
-			// エミッターの形のサイズを編集できるように
+			xRandomLimite = 1.0f;
+			yRamdomLimite = 0.0f;
+			zRamdomLimite = 1.0f;
 
 		}
 		if (secondProvisional_ == 2) {
 			isCircle_ = false;
 			isCone_ = false;
-			isSphere_ = true;
+			isBox_ = true;
 
-			// エミッターの形のサイズを編集できるように
+			xRandomLimite = 0.0f;
+			yRamdomLimite = 1.0f;
+			zRamdomLimite = 0.0f;
 
 		}
 
@@ -211,17 +221,28 @@ void Effect::Setting(){
 
 void Effect::Create() {
 
-	Grain* newGrain = new Grain();
-	newGrain->Initialze(model_, transform_, gravity_, direction_, lifeTime_, ShiftSpeedType::kNormal,
-		shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
-	grains_.push_back(newGrain);
+	Matrix4x4 rotateEmitter = Matrix4x4::MakeRotate(transform_.rotate);
+
+	float particlesStep = static_cast<float>(appear_) / rateTime_;
+	int particlesEmit = static_cast<int>(particlesStep * (rateTime_ - currentRateTime));
+
+	if (currentRateTime > 0) {
+		currentRateTime--;
+	} else if (currentRateTime == 0) {
+		currentRateTime = rateTime_;
+	}
+	if (particlesEmit > 0) {
+		for (int i = 0; i < particlesEmit; ++i) {
+			Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+			newVelo = newVelo.Normalize() * speed_;
+			newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
+
+			Grain* newGrain = new Grain();
+			newGrain->Initialze(model_, transform_.position, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+				shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
+			grains_.push_back(newGrain);
+			currentRateTime = rateTime_;
+		}
+	}
 
 }
-
-//void Effect::Draw(const ViewProjection& viewProjection) {}
-//
-//void Effect::CreateWalk(const Vector3& postion) {}
-//
-//void Effect::CreateEnemyDeth(const Vector3& position) {}
-//
-//void Effect::CreateSnowBallDeth(const Vector3& position) {}

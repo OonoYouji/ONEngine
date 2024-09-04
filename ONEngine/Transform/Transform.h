@@ -39,8 +39,9 @@ public:
 
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
-	Mat4* mapingData_ = nullptr;
 
+private:
+	Mat4* mapingData_ = nullptr;
 public:
 	inline Transform& operator= (const Transform&) = default;
 };

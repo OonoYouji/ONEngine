@@ -26,7 +26,7 @@ void Mesh::AddIndex(uint32_t index) {
 /// ===================================================
 /// バッファの作成
 /// ===================================================
-void Mesh::Create() {
+void Mesh::CreateBuffer() {
 
 	vertexBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(VertexData) * vertices_.size());
 

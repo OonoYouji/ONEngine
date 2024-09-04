@@ -9,11 +9,20 @@
 Material::Material() {}
 Material::~Material() {}
 
+void Material::CreateMaterial(const std::string& textureName) {
+	CreateBuffer();
+	SetTextureName(textureName);
+}
+
+void Material::SetColor(const Vector4& color) {
+	materialData_->color = color;
+}
+
 
 /// ===================================================
 /// バッファの生成
 /// ===================================================
-void Material::Create() {
+void Material::CreateBuffer() {
 	materialBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Material));
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vec4(1, 1, 1, 1);

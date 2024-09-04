@@ -5,7 +5,8 @@
 
 
 #include <ModelManager.h>
-#include <Random.h>
+//#include <Random.h>
+#include "Random/Random.h"
 #include <Transform.h>
 #include "Game/Objects/Effect/Grain.h"
 
@@ -32,7 +33,7 @@ public:
 
 private:
 
-	std::string emitterName_ = "r";
+	std::string emitterName_ = "a";
 	Model* model_ = nullptr;
 
 	std::list<Grain*> grains_;
@@ -42,13 +43,13 @@ private:
 
 	Vector3 gravity_ = { 0.0f,0.0f,0.0f };
 
-	Vector3 direction_ = { 0.0f,0.1f,0.0f };
+	float speed_ = 0.05f;
 
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };// 後で、rotateSpeedも追加する
 
-	Vector3 size_ = { 1.0f,1.0f,1.0f };
+	Vector3 size_ = { 0.1f,0.1f,0.1f };
 
-	int lifeTime_ = 10;
+	int lifeTime_ = 20;
 
 	bool isRotateRandom_ = false;
 	bool isSizeRandom = false;
@@ -68,6 +69,7 @@ private:
 
 	// interval
 	int rateTime_ = 4;
+	int currentRateTime = rateTime_;
 	int appear_ = 3;
 	float rateDistance_ = 4.0f;
 
@@ -76,9 +78,14 @@ private:
 	/// <summary>
 	/// 形に沿った粒子の生成方向
 	/// </summary>
-	bool isCircle_ = true;
+	bool isCircle_ = false;
 	bool isCone_ = false;
-	bool isSphere_ = false;
+	bool isBox_ = true;
+
+	// 生成方向のrandom制限用
+	float xRandomLimite = 1.0f;
+	float yRamdomLimite = 1.0f;
+	float zRamdomLimite = 0.0f;
 
 
 
