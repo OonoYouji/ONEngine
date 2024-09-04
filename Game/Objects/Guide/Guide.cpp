@@ -1,4 +1,7 @@
+#define NOMINMAX
 #include "Guide.h"
+
+#include <algorithm>
 
 #include <CameraManager.h>
 #include <Input.h>
@@ -14,11 +17,19 @@ void Guide::Initialize() {
 
 void Guide::Update() {
 	if(submarine_) {
-		float distance = Vec3::Length(submarine_->GetPosition() - CameraManager::GetInstance()->GetMainCamera()->GetPosition());
-		Vec3 worldPos = Input::MouseRay(distance);
-		Vec2 screenPos = Vec2::ConvertScreen(worldPos);
+
+		/// ---------------------------------------- ///
+		///		スプライトのスクリーン座標を計算
+		/// ---------------------------------------- ///
+
+		submarine_->GetCollider();
+
+		/// スクリーン座標
+		Vec2 screenPos = Input::MousePosition();
 		SetPosition({ screenPos.x, screenPos.y, 1.0f });
+
 	}
+
 	sprite_->SetPos(GetPosition());
 }
 

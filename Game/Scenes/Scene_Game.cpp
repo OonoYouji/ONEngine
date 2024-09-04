@@ -28,9 +28,6 @@ void Scene_Game::Initialize() {
 	Submarine* submarine = new Submarine;
 	submarine->Initialize();
 
-	Guide* guide = new Guide;
-	guide->Initialize();
-	guide->SetSubmarine(submarine);
 
 }
 

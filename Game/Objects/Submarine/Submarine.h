@@ -22,6 +22,11 @@ public:
 
 	void Debug() override;
 
+
+	/// ---------------------------------------- ///
+	///		not override methods
+	/// ---------------------------------------- ///
+
 private:
 
 	Model* model_ = nullptr;
