@@ -32,5 +32,7 @@ private:
 	/// マウスのクリックし始め、終わりのフラグ
 	bool isEnter_, isExit_;
 
+	/// マウスの操作で作成するワイヤー
+	class Wire* newWire_ = nullptr;
 
 };

@@ -47,6 +47,9 @@ void Submarine::Update() {
 				startPos_ = Input::MouseRay(distance);
 				startPos_.z = GetPosition().z;
 
+				newWire_ = new Wire();
+				newWire_->Initialize();
+
 				isEnter_ = true;
 			}
 
@@ -72,19 +75,56 @@ void Submarine::Update() {
 			endPos_ = Input::MouseRay(distance);
 
 			/// 垂直に伸ばすのでx,zはstartと同じ
-			endPos_.x = startPos_.x; 
+			endPos_.x = startPos_.x;
 			endPos_.z = startPos_.z;
 
-			Wire* wire = new Wire;
-			wire->Initialize();
-			wire->SetPosition(Vec3::Lerp(startPos_, endPos_, 0.5f));
-			wire->UpdateMatrix();
-			wire->SetScaleY(std::abs(GetPosition().y - wire->GetPosition().y));
+			Vec3 startPos = {
+				startPos_.x,
+				GetPosition().y,
+				startPos_.z
+			};
 
+			newWire_->SetPosition(Vec3::Lerp(startPos, endPos_, 0.5f));
+			newWire_->UpdateMatrix();
+			newWire_->SetScaleY(std::abs(GetPosition().y - newWire_->GetPosition().y));
+
+			newWire_ = nullptr;
 
 			isExit_ = true;
 			isEnter_ = false;
 		}
+
+
+		/// ---------------------------------------- ///
+		///		ワイヤーの位置とサイズの調整
+		/// ---------------------------------------- ///
+
+		if(newWire_) {
+
+			Vec3 startPos = {
+				startPos_.x,
+				GetPosition().y,
+				startPos_.z
+			};
+
+			/// カメラとの距離をMouseRayのdistanceに使用する
+			float distance =
+				Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
+
+			Vec3 endPos = Input::MouseRay(distance);
+
+			/// 垂直に伸ばすのでx,zはstartと同じ
+			endPos.x = startPos_.x;
+			endPos.z = startPos_.z;
+
+			/// position scaleの計算
+			newWire_->SetPosition(Vec3::Lerp(startPos, endPos, 0.5f));
+			newWire_->UpdateMatrix();
+			newWire_->SetScaleY(std::abs(GetPosition().y - newWire_->GetPosition().y));
+		}
+
+
+
 	}
 
 
