@@ -223,26 +223,40 @@ void Effect::Create() {
 
 	Matrix4x4 rotateEmitter = Matrix4x4::MakeRotate(transform_.rotate);
 
-	float particlesStep = static_cast<float>(appear_) / rateTime_;
-	int particlesEmit = static_cast<int>(particlesStep * (rateTime_ - currentRateTime));
+
+	if (isOverTime_) {
+
+		float particlesStep = static_cast<float>(appear_) / rateTime_;
+		int particlesEmit = static_cast<int>(particlesStep * (rateTime_ - currentRateTime));
+
+		if (particlesEmit > 0) {
+			for (int i = 0; i < particlesEmit; ++i) {
+				Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+				if (isCone_ || isBox_) {
+					newVelo.y = 1.0f;
+				}
+				newVelo = newVelo.Normalize() * speed_;
+				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
+
+				Grain* newGrain = new Grain();
+				newGrain->Initialze(model_, transform_.position, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
+				grains_.push_back(newGrain);
+				currentRateTime = rateTime_;
+			}
+		}
+	}
+	else if (isOverDistance_) {
+
+	}
+
+
 
 	if (currentRateTime > 0) {
 		currentRateTime--;
-	} else if (currentRateTime == 0) {
-		currentRateTime = rateTime_;
 	}
-	if (particlesEmit > 0) {
-		for (int i = 0; i < particlesEmit; ++i) {
-			Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
-			newVelo = newVelo.Normalize() * speed_;
-			newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
-
-			Grain* newGrain = new Grain();
-			newGrain->Initialze(model_, transform_.position, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-				shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
-			grains_.push_back(newGrain);
-			currentRateTime = rateTime_;
-		}
+	else if (currentRateTime == 0) {
+		currentRateTime = rateTime_;
 	}
 
 }

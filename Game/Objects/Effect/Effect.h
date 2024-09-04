@@ -78,9 +78,9 @@ private:
 	/// <summary>
 	/// 形に沿った粒子の生成方向
 	/// </summary>
-	bool isCircle_ = false;
+	bool isCircle_ = true;
 	bool isCone_ = false;
-	bool isBox_ = true;
+	bool isBox_ = false;
 
 	// 生成方向のrandom制限用
 	float xRandomLimite = 1.0f;
