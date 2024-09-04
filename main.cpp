@@ -4,6 +4,7 @@
 #include <Logger.h>
 #include <DxCommon.h>
 #include <FrameTimer.h>
+#include <WorldTime.h>
 #include <Input.h>
 
 #include <SceneManager.h>
@@ -30,6 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 	Input* input = Input::GetInsatnce();
+	WorldTime* worldTime = WorldTime::GetInstance();
 
 	SceneManager* sceneManager = SceneManager::GetInstance();
 	ModelManager* modelManager = ModelManager::GetInstance();
@@ -79,7 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
-		frameTimer->Update();
+		worldTime->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
 
@@ -88,7 +90,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理に移る
 		/// ====================================
 
-		frameTimer->ImGuiDebug();
+		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
 

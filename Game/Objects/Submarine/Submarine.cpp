@@ -156,9 +156,13 @@ void Submarine::Update() {
 /// 描画
 /// </summary>
 void Submarine::Draw() {
-	model_->Draw(&transform_);
+	model_->Draw(&transform_, kWireFrame);
 }
 
+
+/// <summary>
+/// ImGuiでデバッグする
+/// </summary>
 void Submarine::Debug() {
 	if(ImGui::TreeNodeEx("mouse ray", ImGuiTreeNodeFlags_DefaultOpen)) {
 

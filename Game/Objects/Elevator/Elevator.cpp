@@ -1,7 +1,7 @@
 #include "Elevator.h"
 
 #include <ModelManager.h>
-#include <FrameTimer.h>
+#include <WorldTime.h>
 
 #include "Wire/Wire.h"
 
@@ -15,7 +15,7 @@ void Elevator::Initialize() {
 void Elevator::Update() {
 	if(wire_) {
 
-		transform_.position.y += -0.25f * ONE::FrameTimer::DeltaTime();
+		transform_.position.y += -0.25f * WorldTime::DeltaTime();
 
 	}
 }
