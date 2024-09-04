@@ -28,9 +28,11 @@ private:
 
 	/// エレベータの設置の始点、終点
 	Vec3 startPos_, endPos_;
-
 	/// マウスのクリックし始め、終わりのフラグ
 	bool isEnter_, isExit_;
+
+	/// カメラとの距離
+	float toCameraDistance_ = 0.0f;
 
 	/// マウスの操作で作成するワイヤー
 	class Wire* newWire_ = nullptr;

@@ -147,7 +147,7 @@ bool Collision::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& end) {
 
 	///- OBBの逆行列
-	Matrix4x4 inverseObbWorldMatrix = Mat4::MakeInverse(box->transform_.matTransform.Inverse());
+	Matrix4x4 inverseObbWorldMatrix = box->transform_.matTransform.Inverse();
 
 	///- OBBのLocal空間に変換したAABB
 	Vec3 localMin = -box->GetSize();
@@ -156,6 +156,8 @@ bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& en
 	///- OBBのLocal空間に変換したSegment
 	Vec3 origin = Mat4::Transform(start, inverseObbWorldMatrix);
 	Vec3 diff = Mat4::Transform(end - start, inverseObbWorldMatrix);
+
+
 
 	Vec3 aabbMin = (localMin - origin) / diff;
 	Vec3 aabbMax = (localMax - origin) / diff;

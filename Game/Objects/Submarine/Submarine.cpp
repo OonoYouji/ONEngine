@@ -15,7 +15,7 @@
 /// 初期化
 /// </summary>
 void Submarine::Initialize() {
-	model_ = ModelManager::CreateCube();
+	model_ = ModelManager::Load("Submarine");
 
 	CreateBoxCollider(model_);
 
@@ -28,10 +28,19 @@ void Submarine::Initialize() {
 void Submarine::Update() {
 
 	/// ---------------------------------------- ///
+	/// カメラとの距離を測る
+	/// ---------------------------------------- ///
+	toCameraDistance_ = Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
+
+
+
+	/// ---------------------------------------- ///
 	///		Modelにマウスが被っているか
 	/// ---------------------------------------- ///
-	if(dynamic_cast<BoxCollider*>(GetCollider())) {
-		bool isCollision = Collision::BoxToSegment(dynamic_cast<BoxCollider*>(GetCollider()), Input::MouseNearPosition(), Input::MouseFarPosition());
+	BoxCollider* boxCollider = dynamic_cast<BoxCollider*>(GetCollider());
+	if(boxCollider) {
+		boxCollider->Update();
+		bool isCollision = Collision::BoxToSegment(boxCollider, Input::MouseNearPosition(), Input::MouseFarPosition());
 		if(isCollision) {
 
 			/// ---------------------------------------- ///
@@ -39,12 +48,8 @@ void Submarine::Update() {
 			/// ---------------------------------------- ///
 			if(Input::TriggerMouse(MouseCode::Left)) {
 
-				/// カメラとの距離をMouseRayのdistanceに使用する
-				float distance =
-					Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
-
 				/// 始点の決定
-				startPos_ = Input::MouseRay(distance);
+				startPos_ = Input::MouseRay(toCameraDistance_);
 				startPos_.z = GetPosition().z;
 
 				newWire_ = new Wire();
@@ -67,12 +72,13 @@ void Submarine::Update() {
 		/// ---------------------------------------- ///
 		if(Input::ReleaseMouse(MouseCode::Left)) {
 
-			/// カメラとの距離をMouseRayのdistanceに使用する
-			float distance =
-				Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
+
+			/// ---------------------------------------- ///
+			///		ワイヤーの最終的な位置の計算
+			/// ---------------------------------------- ///
 
 			/// 終点の決定
-			endPos_ = Input::MouseRay(distance);
+			endPos_ = Input::MouseRay(toCameraDistance_);
 
 			/// 垂直に伸ばすのでx,zはstartと同じ
 			endPos_.x = startPos_.x;
@@ -90,8 +96,22 @@ void Submarine::Update() {
 
 			newWire_ = nullptr;
 
+
+
+			/// ---------------------------------------- ///
+			///		エレベータを作成
+			/// ---------------------------------------- ///
+
+
+
+
+			/// ---------------------------------------- ///
+			///		フラグを元に戻す
+			/// ---------------------------------------- ///
+
 			isExit_ = true;
 			isEnter_ = false;
+
 		}
 
 
@@ -107,11 +127,7 @@ void Submarine::Update() {
 				startPos_.z
 			};
 
-			/// カメラとの距離をMouseRayのdistanceに使用する
-			float distance =
-				Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
-
-			Vec3 endPos = Input::MouseRay(distance);
+			Vec3 endPos = Input::MouseRay(toCameraDistance_);
 
 			/// 垂直に伸ばすのでx,zはstartと同じ
 			endPos.x = startPos_.x;
@@ -141,7 +157,7 @@ void Submarine::Draw() {
 void Submarine::Debug() {
 	if(ImGui::TreeNodeEx("mouse ray", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		Vec3 mouseRay = Input::MouseRay(0.f);
+		Vec3 mouseRay = Input::MouseRay(toCameraDistance_);
 		ImGui::DragFloat3("mouse ray position", &mouseRay.x);
 
 		ImGui::DragFloat3("start position", &startPos_.x);
