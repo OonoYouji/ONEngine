@@ -2,6 +2,7 @@
 
 #include <ImGuiManager.h>
 #include <ModelManager.h>
+#include <CameraManager.h>
 #include <Input.h>
 
 #include "Collision/BaseCollider.h"
@@ -38,8 +39,12 @@ void Submarine::Update() {
 			/// ---------------------------------------- ///
 			if(Input::TriggerMouse(MouseCode::Left)) {
 
+				/// カメラとの距離をMouseRayのdistanceに使用する
+				float distance =
+					Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
+
 				/// 始点の決定
-				startPos_ = Input::MouseRay(0.0f);
+				startPos_ = Input::MouseRay(distance);
 				startPos_.z = GetPosition().z;
 
 				isEnter_ = true;
@@ -59,14 +64,23 @@ void Submarine::Update() {
 		/// ---------------------------------------- ///
 		if(Input::ReleaseMouse(MouseCode::Left)) {
 
-			/// 終点の決定
-			endPos_ = Input::MouseRay(0.0f);
+			/// カメラとの距離をMouseRayのdistanceに使用する
+			float distance =
+				Vec3::Length(CameraManager::GetInstance()->GetMainCamera()->GetPosition() - GetPosition());
 
-			/// 垂直に伸ばすのでy,zはstartと同じ
-			endPos_.y = startPos_.y; 
+			/// 終点の決定
+			endPos_ = Input::MouseRay(distance);
+
+			/// 垂直に伸ばすのでx,zはstartと同じ
+			endPos_.x = startPos_.x; 
 			endPos_.z = startPos_.z;
 
-			(new Wire)->Initialize();
+			Wire* wire = new Wire;
+			wire->Initialize();
+			wire->SetPosition(Vec3::Lerp(startPos_, endPos_, 0.5f));
+			wire->UpdateMatrix();
+			wire->SetScaleY(std::abs(GetPosition().y - wire->GetPosition().y));
+
 
 			isExit_ = true;
 			isEnter_ = false;
@@ -86,6 +100,9 @@ void Submarine::Draw() {
 
 void Submarine::Debug() {
 	if(ImGui::TreeNodeEx("mouse ray", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		Vec3 mouseRay = Input::MouseRay(0.f);
+		ImGui::DragFloat3("mouse ray position", &mouseRay.x);
 
 		ImGui::DragFloat3("start position", &startPos_.x);
 		ImGui::DragFloat3("end   position", &endPos_.x);

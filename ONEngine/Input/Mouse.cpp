@@ -75,7 +75,7 @@ Vec3 Mouse::MouseRay(float distance) {
 
 	Vec3 nearPos = Mat4::Transform(Vec3(position_.x, position_.y, 0.0f), matInverseVPV);
 	Vec3 farPos = Mat4::Transform(Vec3(position_.x, position_.y, 1.0f), matInverseVPV);
-	Vec3 direction = Vec3::Normalize(nearPos - farPos);
+	Vec3 direction = Vec3::Normalize(farPos - nearPos);
 
 	return nearPos + (direction * distance);
 }
