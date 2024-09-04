@@ -174,7 +174,11 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	}
 
-
+	if(model->GetMaterials().empty()) {
+		Material material;
+		material.CreateMaterial("uvChecker");
+		model->AddMaterial(material);
+	}
 
 
 	model->Initialize();

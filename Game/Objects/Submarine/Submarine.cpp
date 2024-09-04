@@ -7,6 +7,8 @@
 #include "Collision/BaseCollider.h"
 #include "Collision/BoxCollider.h"
 
+#include "Wire/Wire.h"
+
 
 /// <summary>
 /// 初期化
@@ -63,6 +65,8 @@ void Submarine::Update() {
 			/// 垂直に伸ばすのでy,zはstartと同じ
 			endPos_.y = startPos_.y; 
 			endPos_.z = startPos_.z;
+
+			(new Wire)->Initialize();
 
 			isExit_ = true;
 			isEnter_ = false;
