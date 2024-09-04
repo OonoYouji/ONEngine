@@ -179,6 +179,9 @@
     <ClCompile Include="Game\Objects\Submarine\Submarine.cpp">
       <Filter>Game\Objects\Submarine</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Wire\Wire.cpp">
+      <Filter>Game\Objects\Wire</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -288,6 +291,9 @@
     </Filter>
     <Filter Include="Game\Objects\Submarine">
       <UniqueIdentifier>{88d70d55-f638-4723-a78c-c65545045b16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Wire">
+      <UniqueIdentifier>{2c0a1e90-180b-46fa-a1ed-90965384e6f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -470,6 +476,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Submarine\Submarine.h">
       <Filter>Game\Objects\Submarine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Wire\Wire.h">
+      <Filter>Game\Objects\Wire</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,7 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Submarine\Submarine.cpp" />
+    <ClCompile Include="Game\Objects\Wire\Wire.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Submarine\Submarine.h" />
+    <ClInclude Include="Game\Objects\Wire\Wire.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />

@@ -29,5 +29,8 @@ private:
 	/// エレベータの設置の始点、終点
 	Vec3 startPos_, endPos_;
 
+	/// マウスのクリックし始め、終わりのフラグ
+	bool isEnter_, isExit_;
+
 
 };

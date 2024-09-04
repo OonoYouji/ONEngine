@@ -37,12 +37,38 @@ void Submarine::Update() {
 			if(Input::TriggerMouse(MouseCode::Left)) {
 
 				/// 始点の決定
+				startPos_ = Input::MouseRay(0.0f);
+				startPos_.z = GetPosition().z;
 
-
+				isEnter_ = true;
 			}
 
 		}
 	}
+
+
+	/// ---------------------------------------- ///
+	///		左クリックをした後の処理
+	/// ---------------------------------------- ///
+	if(isEnter_) {
+
+		/// ---------------------------------------- ///
+		///		マウスの左ボタンを離した後の処理
+		/// ---------------------------------------- ///
+		if(Input::ReleaseMouse(MouseCode::Left)) {
+
+			/// 終点の決定
+			endPos_ = Input::MouseRay(0.0f);
+
+			/// 垂直に伸ばすのでy,zはstartと同じ
+			endPos_.y = startPos_.y; 
+			endPos_.z = startPos_.z;
+
+			isExit_ = true;
+			isEnter_ = false;
+		}
+	}
+
 
 }
 
@@ -55,9 +81,16 @@ void Submarine::Draw() {
 }
 
 void Submarine::Debug() {
-	if(ImGui::TreeNodeEx("mouse ray")) {
+	if(ImGui::TreeNodeEx("mouse ray", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		
+		ImGui::DragFloat3("start position", &startPos_.x);
+		ImGui::DragFloat3("end   position", &endPos_.x);
+
+		ImGui::Spacing();
+
+		ImGui::Checkbox("isEnter", &isEnter_);
+		ImGui::Checkbox("isExit", &isExit_);
+
 
 		ImGui::TreePop();
 	}
