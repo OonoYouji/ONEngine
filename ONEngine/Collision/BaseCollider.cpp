@@ -113,8 +113,8 @@ bool Collision::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
 	Vec3 obbLocalPosition = Mat4::Transform(spherePosition, inverseObbWorldMatrix);
 	/// OBBのLocal空間内のAABB
 	Vec3 min, max;
-	min = /*box->GetPosition() */- box->GetSize();
-	max = /*box->GetPosition() */+ box->GetSize();
+	min = /*box->GetPosition() */-box->GetSize();
+	max = /*box->GetPosition() */+box->GetSize();
 
 
 	/// AABBの最近接点を求める
@@ -143,5 +143,49 @@ bool Collision::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 
 	return false;
 }
+
+bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& end) {
+
+	///- OBBの逆行列
+	Matrix4x4 inverseObbWorldMatrix = Mat4::MakeInverse(box->transform_.matTransform.Inverse());
+
+	///- OBBのLocal空間に変換したAABB
+	Vec3 localMin = -box->GetSize();
+	Vec3 localMax = +box->GetSize();
+
+	///- OBBのLocal空間に変換したSegment
+	Vec3 origin = Mat4::Transform(start, inverseObbWorldMatrix);
+	Vec3 diff = Mat4::Transform(end - start, inverseObbWorldMatrix);
+
+	Vec3 aabbMin = (localMin - origin) / diff;
+	Vec3 aabbMax = (localMax - origin) / diff;
+
+	Vec3 nearPoint = {
+		std::min(aabbMin.x, aabbMax.x),
+		std::min(aabbMin.y, aabbMax.y),
+		std::min(aabbMin.z, aabbMax.z)
+	};
+
+	Vec3 farPoint = {
+		std::max(aabbMin.x, aabbMax.x),
+		std::max(aabbMin.y, aabbMax.y),
+		std::max(aabbMin.z, aabbMax.z)
+	};
+
+	float tmin = std::max({ nearPoint.x, nearPoint.y, nearPoint.z });
+	float tmax = std::min({ farPoint.x, farPoint.y, farPoint.z });
+
+	///- Segment用の制限
+	if(1.0f < tmin || tmax < 0.0f) {
+		return false;
+	}
+
+	if(tmin <= tmax) {
+		return true;
+	}
+
+	return false;
+}
+
 
 #pragma endregion Collision

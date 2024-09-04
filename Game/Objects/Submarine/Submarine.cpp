@@ -4,6 +4,9 @@
 #include <ModelManager.h>
 #include <Input.h>
 
+#include "Collision/BaseCollider.h"
+#include "Collision/BoxCollider.h"
+
 
 /// <summary>
 /// 初期化
@@ -11,7 +14,7 @@
 void Submarine::Initialize() {
 	model_ = ModelManager::CreateCube();
 
-
+	CreateBoxCollider(model_);
 
 }
 
@@ -21,14 +24,25 @@ void Submarine::Initialize() {
 /// </summary>
 void Submarine::Update() {
 
-	/// オブジェクト上でマウスをクリックし始めたか
-	if(Input::TriggerMouse(MouseCode::Left)) {
+	/// ---------------------------------------- ///
+	///		Modelにマウスが被っているか
+	/// ---------------------------------------- ///
+	if(dynamic_cast<BoxCollider*>(GetCollider())) {
+		bool isCollision = Collision::BoxToSegment(dynamic_cast<BoxCollider*>(GetCollider()), Input::MouseNearPosition(), Input::MouseFarPosition());
+		if(isCollision) {
 
+			/// ---------------------------------------- ///
+			///		マウスの左ボタンをクリックしたら
+			/// ---------------------------------------- ///
+			if(Input::TriggerMouse(MouseCode::Left)) {
+
+				/// 始点の決定
+
+
+			}
+
+		}
 	}
-
-	mouseRayPosition_ = Input::MouseRay(distance_);
-
-	
 
 }
 
@@ -43,14 +57,7 @@ void Submarine::Draw() {
 void Submarine::Debug() {
 	if(ImGui::TreeNodeEx("mouse ray")) {
 
-		ImGui::DragFloat("distance", &distance_, 0.1f);
-		ImGui::DragFloat3("ray position", &mouseRayPosition_.x, 0.1f);
-
-		Vec3 nearPos = Input::MouseNearPosition();
-		ImGui::DragFloat3("ray position", &nearPos.x, 0.1f);
-
-		Vec3 farPos = Input::MouseFarPosition();
-		ImGui::DragFloat3("ray position", &farPos.x, 0.1f);
+		
 
 		ImGui::TreePop();
 	}

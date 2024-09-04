@@ -46,4 +46,6 @@ namespace Collision {
 	bool BoxToSphere(BoxCollider* box, SphereCollider* sphere);
 	bool SphereToSphere(SphereCollider* a, SphereCollider* b);
 
+	bool BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& end);
+
 }

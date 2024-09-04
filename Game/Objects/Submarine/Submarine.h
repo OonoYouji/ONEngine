@@ -26,8 +26,8 @@ private:
 
 	Model* model_ = nullptr;
 
-	float distance_ = 0.0f;
-	Vec3 mouseRayPosition_ = {};
+	/// エレベータの設置の始点、終点
+	Vec3 startPos_, endPos_;
 
 
 };
