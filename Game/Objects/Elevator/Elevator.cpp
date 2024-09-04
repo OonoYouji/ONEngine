@@ -9,15 +9,44 @@
 
 void Elevator::Initialize() {
 	model_ = ModelManager::Load("Elevator");
+	speed_ = -constantSpeed_;
 }
 
 
 void Elevator::Update() {
-	if(wire_) {
 
-		transform_.position.y += -0.25f * WorldTime::DeltaTime();
+	/// ---------------------------------------- ///
+	///		wireのポインタが有効時にしか更新しない
+	/// ---------------------------------------- ///
+	if(!wire_) { return; }
+
+
+
+	/// ---------------------------------------- ///
+	///		座標計算
+	/// ---------------------------------------- ///
+
+	transform_.position.y += speed_ * WorldTime::DeltaTime();
+	UpdateMatrix();
+
+
+	
+	/// ---------------------------------------- ///
+	///		折り返しの計算
+	/// ---------------------------------------- ///
+
+	/// 上に着いた
+	if(wire_->GetTop().y < GetPosition().y) {
+
+		speed_ = -constantSpeed_;
+
+		/// 下に着いた
+	} else if(wire_->GetBottom().y > GetPosition().y) {
+
+		speed_ = constantSpeed_;
 
 	}
+
 }
 
 

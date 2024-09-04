@@ -54,7 +54,11 @@ void BaseGameObject::Destory() {
 /// 座標のゲット
 /// ===================================================
 const Vec3 BaseGameObject::GetPosition() const {
-	return Mat4::Transform({}, transform_.matTransform);
+	return  {
+		transform_.matTransform.m[3][0],
+		transform_.matTransform.m[3][1],
+		transform_.matTransform.m[3][2]
+	};
 }
 
 

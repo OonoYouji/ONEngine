@@ -94,7 +94,13 @@ void Submarine::Update() {
 			newWire_->SetPosition(Vec3::Lerp(startPos, endPos_, 0.5f));
 			newWire_->UpdateMatrix();
 			newWire_->SetScaleY(std::abs(GetPosition().y - newWire_->GetPosition().y));
-
+			newWire_->SetTop(startPos);
+			Vec3 bottom = {
+				startPos.x,
+				startPos.y - newWire_->GetScale().y * 2.0f,
+				startPos.z
+			};
+			newWire_->SetBottom(bottom);
 
 
 
