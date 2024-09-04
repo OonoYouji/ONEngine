@@ -12,7 +12,7 @@ public:
 	~Tmp() {}
 	void Initialize() override {
 		CreateTag(this);
-		model_ = ModelManager::CreateCube();
+		model_ = ModelManager::CreatePlane();
 		CreateSphereCollider(model_);
 	}
 	void Update() override {}

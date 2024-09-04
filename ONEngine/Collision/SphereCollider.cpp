@@ -1,6 +1,7 @@
 #include "SphereCollider.h"
 
 #include <ModelManager.h>
+#include <BaseGameObject.h>
 
 
 void SphereCollider::Initialize(BaseGameObject* gameObject, Model* model) {
@@ -18,29 +19,26 @@ void SphereCollider::Initialize(BaseGameObject* gameObject, Model* model) {
 		vertices.push_back(position);
 	}
 
-	Vec3 min, max;
-	max.x = Vec3::MaxDotVector(Vec3(1, 0, 0), vertices).x;
-	max.y = Vec3::MaxDotVector(Vec3(0, 1, 0), vertices).y;
-	max.z = Vec3::MaxDotVector(Vec3(0, 0, 1), vertices).z;
-
-	min.x = Vec3::MinDotVector(Vec3(1, 0, 0), vertices).x;
-	min.y = Vec3::MinDotVector(Vec3(0, 1, 0), vertices).y;
-	min.z = Vec3::MinDotVector(Vec3(0, 0, 1), vertices).z;
-
-	Vec3 diff = max - min;
+	Vec3 max = {};
+	for(auto& vertex : vertices) {
+		if(max.Len() < vertex.Len()) {
+			max = vertex;
+		}
+	}
 
 	sphere_ = ModelManager::Load("Sphere");
-
+	radius_ = max.Len();
+	
 	transform_.Initialize();
-	transform_.position = Vec3::Lerp(max, min, 0.5f);
-	transform_.scale = diff - transform_.position;
-	radius_ = transform_.scale.x;
+	transform_.scale = { radius_,radius_,radius_ };
+	transform_.UpdateMatrix();
 
-	UpdateMatrix();
+
 }
 
 void SphereCollider::Update() {
-	UpdateMatrix();
+	transform_.position = gameObject_->GetPosition();
+	transform_.UpdateMatrix();
 }
 
 void SphereCollider::Draw() {
