@@ -9,6 +9,7 @@
 #include "Collision/BoxCollider.h"
 
 #include "Wire/Wire.h"
+#include "Elevator/Elevator.h"
 
 
 /// <summary>
@@ -94,7 +95,6 @@ void Submarine::Update() {
 			newWire_->UpdateMatrix();
 			newWire_->SetScaleY(std::abs(GetPosition().y - newWire_->GetPosition().y));
 
-			newWire_ = nullptr;
 
 
 
@@ -102,6 +102,10 @@ void Submarine::Update() {
 			///		エレベータを作成
 			/// ---------------------------------------- ///
 
+			Elevator* elevator = new Elevator;
+			elevator->Initialize();
+			elevator->SetPosition(startPos);
+			elevator->SetWire(newWire_);
 
 
 
@@ -111,6 +115,7 @@ void Submarine::Update() {
 
 			isExit_ = true;
 			isEnter_ = false;
+			newWire_ = nullptr;
 
 		}
 

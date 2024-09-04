@@ -182,6 +182,9 @@
     <ClCompile Include="Game\Objects\Wire\Wire.cpp">
       <Filter>Game\Objects\Wire</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Elevator\Elevator.cpp">
+      <Filter>Game\Objects\Elevator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -294,6 +297,9 @@
     </Filter>
     <Filter Include="Game\Objects\Wire">
       <UniqueIdentifier>{2c0a1e90-180b-46fa-a1ed-90965384e6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Elevator">
+      <UniqueIdentifier>{6d3973e9-4a30-432b-b5b7-aaea76d3def2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +485,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Wire\Wire.h">
       <Filter>Game\Objects\Wire</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Elevator\Elevator.h">
+      <Filter>Game\Objects\Elevator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
