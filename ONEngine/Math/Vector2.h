@@ -1,6 +1,8 @@
 #pragma once
 
 
+class Vector3;
+
 /// ===================================================
 /// 2次元ベクトル
 /// ===================================================
@@ -27,6 +29,15 @@ public:
 	static const Vector2 kLeft;		//- (-1,  0 )
 	static const Vector2 kRight;	//- ( 1,  0 )
 	static const Vector2 kOne;		//- ( 1,  1 )
+
+
+public:
+
+	/// ===================================================
+	/// public : static methos
+	/// ===================================================
+
+	static Vector2 ConvertScreen(const Vector3& world);
 
 public:
 

@@ -178,20 +178,6 @@ bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& en
 	float tmin = std::max({ nearPoint.x, nearPoint.y, nearPoint.z });
 	float tmax = std::min({ farPoint.x, farPoint.y, farPoint.z });
 
-	ImGui::Begin("box to segment");
-	ImGui::DragFloat3("origin", &origin.x);
-	ImGui::DragFloat3("diff  ", &diff.x);
-	ImGui::Spacing();
-	ImGui::DragFloat3("aabb min", &aabbMin.x);
-	ImGui::DragFloat3("aabb max", &aabbMax.x);
-	ImGui::Spacing();
-	ImGui::DragFloat3("near pos", &nearPoint.x);
-	ImGui::DragFloat3("far  pos", &farPoint.x);
-	ImGui::Spacing();
-	ImGui::DragFloat("tmin", &tmin);
-	ImGui::DragFloat("tmax", &tmax);
-	ImGui::End();
-
 	///- Segment用の制限
 	if(1.0f < tmin || tmax < 0.0f) {
 		return false;

@@ -2,6 +2,10 @@
 
 #include <GameObjectManager.h>
 
+
+/// <summary>
+/// 潜水艦から伸びるワイヤー
+/// </summary>
 class Wire final : public BaseGameObject {
 public:
 

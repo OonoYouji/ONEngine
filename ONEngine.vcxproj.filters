@@ -188,6 +188,9 @@
     <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp">
       <Filter>ONEngine\WorldTime</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Guide\Guide.cpp">
+      <Filter>Game\Objects\Guide</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -306,6 +309,9 @@
     </Filter>
     <Filter Include="ONEngine\WorldTime">
       <UniqueIdentifier>{1bf00ea2-cf3f-4f02-a609-cff5406dc235}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Guide">
+      <UniqueIdentifier>{1431920d-fbcb-429f-b75e-2c05aaaafff0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -497,6 +503,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\WorldTime\WorldTime.h">
       <Filter>ONEngine\WorldTime</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Guide\Guide.h">
+      <Filter>Game\Objects\Guide</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

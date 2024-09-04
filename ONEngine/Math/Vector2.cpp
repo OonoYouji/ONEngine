@@ -1,5 +1,11 @@
 #include <Vector2.h>
 
+#include <CameraManager.h>
+#include <WinApp.h>
+
+#include <Vector3.h>
+#include <Matrix4x4.h>
+
 /// ===================================================
 /// static objects initialize
 /// ===================================================
@@ -19,4 +25,16 @@ Vector2::Vector2() {
 Vector2::Vector2(float x, float y) {
 	this->x = x;
 	this->y = y;
+}
+
+
+Vector2 Vector2::ConvertScreen(const Vector3& world) {
+	/// view projection viewport 行列の計算
+	Mat4 matViewport = Mat4::MakeViewport(0, 0, ONE::WinApp::kWindowSizeX, ONE::WinApp::kWindowSizeY, 0.0f, 1.0f);
+	BaseCamera* camera = CameraManager::GetInstance()->GetMainCamera();
+	Matrix4x4 matVPV = camera->GetMatView() * camera->GetMatProjection() * matViewport;
+
+	/// world -> screen計算
+	Vec3 positionRaticle = Mat4::Transform(world, matVPV);
+	return Vec2(positionRaticle.x, positionRaticle.y);
 }

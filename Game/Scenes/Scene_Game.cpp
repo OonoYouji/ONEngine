@@ -5,7 +5,7 @@
 
 #include "Player/Player.h"
 #include "Submarine/Submarine.h"
-
+#include "Guide/Guide.h"
 
 
 Scene_Game::Scene_Game() {}
@@ -25,7 +25,12 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	(new Submarine)->Initialize();
+	Submarine* submarine = new Submarine;
+	submarine->Initialize();
+
+	Guide* guide = new Guide;
+	guide->Initialize();
+	guide->SetSubmarine(submarine);
 
 }
 
@@ -48,6 +53,6 @@ void Scene_Game::Draw() {
 
 	//model_->Draw(&transform_);
 
-	sprite_->Draw();
+	//sprite_->Draw();
 
 }

@@ -62,6 +62,8 @@ public:
 	static Vector3 MaxDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
 	static Vector3 MinDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
 
+	static Vector3 ConvertWorld(const Vector2& screen, float distance);
+
 public:
 
 	/// ===================================================

@@ -3,7 +3,12 @@
 #include <cmath>
 #include <algorithm>
 
+#include <CameraManager.h>
+#include <WinApp.h>
+
 #include <Vector2.h>
+#include <Matrix4x4.h>
+
 
 /// ===================================================
 /// static objects initialize
@@ -105,4 +110,16 @@ Vector3 Vector3::MinDotVector(const Vector3& direction, const std::vector<Vector
 	}
 
 	return minVertex;
+}
+
+Vector3 Vector3::ConvertWorld(const Vector2& screen, float distance) {
+	Mat4 matViewport = Mat4::MakeViewport(0, 0, ONE::WinApp::kWindowSizeX, ONE::WinApp::kWindowSizeY, 0.0f, 1.0f);
+	BaseCamera* camera = CameraManager::GetInstance()->GetMainCamera();
+	Mat4 matInverseVPV = Mat4::MakeInverse(camera->GetMatView() * camera->GetMatProjection() * matViewport);
+
+	Vec3 nearPosition = Mat4::Transform(Vec3(screen.x, screen.y, 0.0f), matInverseVPV);
+	Vec3 farPosition = Mat4::Transform(Vec3(screen.x, screen.y, 1.0f), matInverseVPV);
+	Vec3 mouseDirection = Normalize(farPosition - nearPosition);
+
+	return nearPosition + (mouseDirection * distance);
 }

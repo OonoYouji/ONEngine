@@ -4,6 +4,9 @@
 
 class Wire;
 
+/// <summary>
+/// ワイヤーを伝うエレベーター
+/// </summary>
 class Elevator final : public BaseGameObject {
 public:
 
