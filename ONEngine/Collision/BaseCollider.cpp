@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+#include <ImGuiManager.h>
 #include <GameObjectManager.h>
 #include <Model.h>
 
@@ -147,7 +148,7 @@ bool Collision::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& end) {
 
 	///- OBBの逆行列
-	Matrix4x4 inverseObbWorldMatrix = box->transform_.matTransform.Inverse();
+	Matrix4x4 inverseObbWorldMatrix = box->GetObbMatTransform().Inverse();
 
 	///- OBBのLocal空間に変換したAABB
 	Vec3 localMin = -box->GetSize();
@@ -176,6 +177,20 @@ bool Collision::BoxToSegment(BoxCollider* box, const Vec3& start, const Vec3& en
 
 	float tmin = std::max({ nearPoint.x, nearPoint.y, nearPoint.z });
 	float tmax = std::min({ farPoint.x, farPoint.y, farPoint.z });
+
+	ImGui::Begin("box to segment");
+	ImGui::DragFloat3("origin", &origin.x);
+	ImGui::DragFloat3("diff  ", &diff.x);
+	ImGui::Spacing();
+	ImGui::DragFloat3("aabb min", &aabbMin.x);
+	ImGui::DragFloat3("aabb max", &aabbMax.x);
+	ImGui::Spacing();
+	ImGui::DragFloat3("near pos", &nearPoint.x);
+	ImGui::DragFloat3("far  pos", &farPoint.x);
+	ImGui::Spacing();
+	ImGui::DragFloat("tmin", &tmin);
+	ImGui::DragFloat("tmax", &tmax);
+	ImGui::End();
 
 	///- Segment用の制限
 	if(1.0f < tmin || tmax < 0.0f) {

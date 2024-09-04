@@ -27,6 +27,10 @@ public:
 		return size_;
 	}
 
+	const Mat4& GetObbMatTransform() const {
+		return obbMatTransform_;
+	}
+
 private:
 	void UpdateOrientatinos();
 private:
@@ -35,5 +39,6 @@ private:
 	std::array<Vec3, 3> orientatinos_;
 
 	Model* cube_ = nullptr;
+	Mat4 obbMatTransform_;
 
 };

@@ -28,10 +28,11 @@ public:
 	const Mat4& GetMatProjection() const { return matProjection_; }
 	const Mat4& GetMatVp() const { return matVp_; }
 
-	bool GetIsAcitve() const { return isActive_; }
+	void UpdateMatView();
+	void UpdateMatProjection();
 
 	void Transfer();
-
+	
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
 protected:

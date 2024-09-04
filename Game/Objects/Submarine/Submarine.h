@@ -30,6 +30,7 @@ private:
 	Vec3 startPos_, endPos_;
 	/// マウスのクリックし始め、終わりのフラグ
 	bool isEnter_, isExit_;
+	bool isMouseToCollision_;
 
 	/// カメラとの距離
 	float toCameraDistance_ = 0.0f;

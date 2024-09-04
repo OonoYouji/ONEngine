@@ -54,6 +54,8 @@ void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
 void BoxCollider::Update() {
 	UpdateOrientatinos();
 	UpdateMatrix();
+	obbMatTransform_ = Mat4::MakeRotate(transform_.rotate) * Mat4::MakeTranslate(transform_.position);
+	obbMatTransform_ *= gameObject_->GetMatTransform();
 }
 
 void BoxCollider::Draw() {

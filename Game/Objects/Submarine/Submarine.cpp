@@ -41,8 +41,8 @@ void Submarine::Update() {
 	BoxCollider* boxCollider = dynamic_cast<BoxCollider*>(GetCollider());
 	if(boxCollider) {
 		boxCollider->Update();
-		bool isCollision = Collision::BoxToSegment(boxCollider, Input::MouseNearPosition(), Input::MouseFarPosition());
-		if(isCollision) {
+		isMouseToCollision_ = Collision::BoxToSegment(boxCollider, Input::MouseNearPosition(), Input::MouseFarPosition());
+		if(isMouseToCollision_) {
 
 			/// ---------------------------------------- ///
 			///		マウスの左ボタンをクリックしたら
@@ -51,7 +51,7 @@ void Submarine::Update() {
 
 				/// 始点の決定
 				startPos_ = Input::MouseRay(toCameraDistance_);
-				startPos_.z = GetPosition().z;
+				startPos_.z = GetPosition().z - 5.0f;
 
 				newWire_ = new Wire();
 				newWire_->Initialize();
@@ -182,6 +182,7 @@ void Submarine::Debug() {
 
 		ImGui::Checkbox("isEnter", &isEnter_);
 		ImGui::Checkbox("isExit", &isExit_);
+		ImGui::Checkbox("isMouseToCollision", &isMouseToCollision_);
 
 
 		ImGui::TreePop();

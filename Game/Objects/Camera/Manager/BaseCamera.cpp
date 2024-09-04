@@ -40,10 +40,8 @@ BaseCamera::BaseCamera() {
 void BaseCamera::BaseInitialize() {
 
 	transform_.Initialize();
-	matView_ = transform_.matTransform.Inverse();
-	matProjection_ = MakePerspectiveFovMatrix(
-		fovY_, static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY),
-		0.1f, farZ_);
+	UpdateMatView();
+	UpdateMatProjection();
 
 	matVp_ = matView_ * matProjection_;
 
@@ -52,6 +50,16 @@ void BaseCamera::BaseInitialize() {
 	*matVpData_ = matVp_;
 
 	Transfer();
+}
+
+void BaseCamera::UpdateMatView() {
+	matView_ = transform_.matTransform.Inverse();
+}
+
+void BaseCamera::UpdateMatProjection() {
+	matProjection_ = MakePerspectiveFovMatrix(
+		fovY_, static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY),
+		0.1f, farZ_);
 }
 
 void BaseCamera::Transfer() {
