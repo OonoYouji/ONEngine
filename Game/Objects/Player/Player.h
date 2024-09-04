@@ -16,4 +16,5 @@ public:
 
 private:
 	Model* model_ = nullptr;
+	Material material_;
 };

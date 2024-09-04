@@ -89,7 +89,7 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model, Transform* transform, FillMode fillMode);
+	void AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode);
 
 private:
 
@@ -106,8 +106,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 
 	struct Element final {
-		Model* model;
-		Transform* transform;
+		Model* model = nullptr;
+		Material* material = nullptr;
+		Transform* transform = nullptr;
 		FillMode fillMode;
 	};
 

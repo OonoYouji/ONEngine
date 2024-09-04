@@ -32,10 +32,16 @@ public:
 	/// public : methods
 	/// ===================================================
 
+
+	void CreateMaterial(const std::string& textureName);
+
+	void SetColor(const Vector4& color);
+
+
 	/// <summary>
 	/// バッファの生成
 	/// </summary>
-	void Create();
+	void CreateBuffer();
 
 
 

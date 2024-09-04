@@ -61,7 +61,7 @@ public:
 	/// <summary>
 	/// バッファの作成
 	/// </summary>
-	void Create();
+	void CreateBuffer();
 
 	/// <summary>
 	/// commandListにVBVとIBVを積む、描画フラグがtrueであればDrawCallを呼び出す

@@ -32,7 +32,7 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 	material_.SetFilePath(filePath);
 	material_.SetTextureName(textureName);
 
-	material_.Create();
+	material_.CreateBuffer();
 
 
 	/// ---------------------------------------------------

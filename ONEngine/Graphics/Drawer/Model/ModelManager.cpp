@@ -140,7 +140,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 		}
 
-		modelMesh.Create();
+		modelMesh.CreateBuffer();
 		model->AddMesh(modelMesh);
 
 	}
@@ -169,7 +169,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 		}
 		modelMaterial.SetTextureName(texPath);
 
-		modelMaterial.Create();
+		modelMaterial.CreateBuffer();
 		model->AddMaterial(modelMaterial);
 
 	}
@@ -215,8 +215,8 @@ Model* ModelManager::CreatePlane() {
 	material.SetTextureName("uvChecker");
 	material.SetFilePath("uvChecker.png");
 
-	mesh.Create();
-	material.Create();
+	mesh.CreateBuffer();
+	material.CreateBuffer();
 
 	model->AddMesh(mesh);
 	model->AddMaterial(material);
@@ -293,8 +293,8 @@ Model* ModelManager::CreateCube() {
 	material.SetTextureName("uvChecker");
 	material.SetFilePath("uvChecker.png");
 
-	mesh.Create();
-	material.Create();
+	mesh.CreateBuffer();
+	material.CreateBuffer();
 
 	model->AddMesh(mesh);
 	model->AddMaterial(material);
@@ -350,7 +350,7 @@ void ModelManager::PostDraw() {
 
 	for(auto& model : solid) {
 		model.transform->BindTransform(commandList, 1);
-		model.model->DrawCall(commandList);
+		model.model->DrawCall(commandList, model.material);
 	}
 
 
@@ -362,7 +362,7 @@ void ModelManager::PostDraw() {
 
 	for(auto& model : wire) {
 		model.transform->BindTransform(commandList, 1);
-		model.model->DrawCall(commandList);
+		model.model->DrawCall(commandList, model.material);
 	}
 
 
@@ -393,10 +393,11 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model, Transform* transform, FillMode fillMode) {
+void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode) {
 	Element element{};
 	element.model = model;
 	element.transform = transform;
+	element.material = material;
 	element.fillMode = fillMode;
 
 	activeModels_.push_back(element);
