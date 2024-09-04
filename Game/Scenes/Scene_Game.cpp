@@ -6,7 +6,11 @@
 
 
 Scene_Game::Scene_Game() {}
-Scene_Game::~Scene_Game() {}
+Scene_Game::~Scene_Game() {
+
+	delete effect_;
+
+}
 
 
 /// ===================================================
@@ -26,6 +30,9 @@ void Scene_Game::Initialize() {
 	audioSource_->SetAudioClip("fanfare.wav");
 	audioSource_->PlayAudio();
 	//audioSource_->StopAudio();
+
+	effect_ = new Effect;
+	effect_->Initialize("test");
 
 }
 
@@ -68,6 +75,8 @@ void Scene_Game::Update() {
 	ImGui::End();
 #endif // _DEBUG
 
+	effect_->Update();
+
 	transform_.UpdateMatrix();
 }
 
@@ -78,6 +87,8 @@ void Scene_Game::Update() {
 void Scene_Game::Draw() {
 
 	model_->Draw(&transform_);
+
+	effect_->Draw();
 
 	sprite_->Draw();
 

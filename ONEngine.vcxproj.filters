@@ -155,6 +155,15 @@
     <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Random\Random.cpp">
+      <Filter>ONEngine\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Effect\Effect.cpp">
+      <Filter>Game\Objects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Effect\Grain.cpp">
+      <Filter>Game\Objects\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -252,6 +261,12 @@
     </Filter>
     <Filter Include="ONEngine\Audio">
       <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Random">
+      <UniqueIdentifier>{32e6050e-9014-44be-b97f-f0e78a7b4c99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Effect">
+      <UniqueIdentifier>{0d982371-4f74-4e95-b1f0-7c0eadecc9c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -410,6 +425,15 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Audio\AudioSource.h">
       <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Random\Random.h">
+      <Filter>ONEngine\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Effect\Effect.h">
+      <Filter>Game\Objects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Effect\Grain.h">
+      <Filter>Game\Objects\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

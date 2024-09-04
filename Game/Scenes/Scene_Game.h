@@ -10,6 +10,7 @@
 #include <Transform.h>
 
 #include <AudioManager.h>
+#include "Game/Objects/Effect/Effect.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -33,5 +34,5 @@ private:
 	std::unique_ptr<Sprite> sprite_;
 
 	AudioSource* audioSource_;
-
+	Effect* effect_;
 };
