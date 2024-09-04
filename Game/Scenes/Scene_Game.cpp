@@ -43,7 +43,7 @@ void Scene_Game::Initialize() {
 
 	Player* player = new Player;
 	player->Initialize();
-	player->SetPositionX(-5.0f);
+	player->SetPositionX(-3.46f);
 
 
 

@@ -105,23 +105,23 @@ bool Collision::BoxToBox(BoxCollider* a, BoxCollider* b) {
 }
 
 bool Collision::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
-	///- OBBの逆行列
+	/// OBBの逆行列
 	Matrix4x4 inverseObbWorldMatrix = box->transform_.matTransform.Inverse();
-
-	///- Sphereの座標をOBBのLocal空間へ変換
-	Vec3 obbLocalPosition = Mat4::Transform(sphere->GetPosition(), inverseObbWorldMatrix);
-
-	/////- OBBのLocal空間内のAABB
-	Vec3 min, max;
-	min = -box->GetSize();
-	max = box->GetSize();;
-
-
+	/// Sphereの座標
 	Vec3 spherePosition = sphere->GetPosition();
+	/// Sphereの座標をOBBのLocal空間へ変換
+	Vec3 obbLocalPosition = Mat4::Transform(spherePosition, inverseObbWorldMatrix);
+	/// OBBのLocal空間内のAABB
+	Vec3 min, max;
+	min = /*box->GetPosition() */- box->GetSize();
+	max = /*box->GetPosition() */+ box->GetSize();
+
+
+	/// AABBの最近接点を求める
 	Vec3 closestPoint{
-		std::clamp(spherePosition.x, min.x, max.x),
-		std::clamp(spherePosition.y, min.y, max.y),
-		std::clamp(spherePosition.z, min.z, max.z)
+		std::clamp(obbLocalPosition.x, min.x, max.x),
+		std::clamp(obbLocalPosition.y, min.y, max.y),
+		std::clamp(obbLocalPosition.z, min.z, max.z)
 	};
 
 	float distance = Vec3::Length(closestPoint - obbLocalPosition);

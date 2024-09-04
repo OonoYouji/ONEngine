@@ -34,7 +34,7 @@ void SphereCollider::Initialize(BaseGameObject* gameObject, Model* model) {
 	transform_.Initialize();
 	transform_.position = Vec3::Lerp(max, min, 0.5f);
 	transform_.scale = diff - transform_.position;
-	radius_ = (diff / 2.0f).Len();
+	radius_ = transform_.scale.x;
 
 	UpdateMatrix();
 }

@@ -34,7 +34,7 @@ void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
 	min.y = Vec3::MinDotVector(Vec3(0, 1, 0), vertices).y;
 	min.z = Vec3::MinDotVector(Vec3(0, 0, 1), vertices).z;
 
-	size_ = max - min;
+	size_ = (max - min) / 2.0f;
 
 	orientatinos_[0] = { 1, 0, 0 };
 	orientatinos_[1] = { 0, 1, 0 };
@@ -45,7 +45,7 @@ void BoxCollider::Initialize(BaseGameObject* gameObejct, Model* model) {
 
 	transform_.Initialize();
 	transform_.position = Vec3::Lerp(max, min, 0.5f);
-	transform_.scale = size_ / 2;
+	transform_.scale = size_;
 
 	UpdateMatrix();
 
