@@ -4,24 +4,8 @@
 #include <ModelManager.h>
 
 #include "Player/Player.h"
+#include "Submarine/Submarine.h"
 
-
-class Tmp : public BaseGameObject {
-public:
-	Tmp() {}
-	~Tmp() {}
-	void Initialize() override {
-		CreateTag(this);
-		model_ = ModelManager::CreatePlane();
-		CreateSphereCollider(model_);
-	}
-	void Update() override {}
-	void Draw() override {
-		model_->Draw(&transform_);
-	}
-private:
-	Model* model_ = nullptr;
-};
 
 
 Scene_Game::Scene_Game() {}
@@ -41,13 +25,7 @@ void Scene_Game::Initialize() {
 	
 	transform_.Initialize();
 
-	Player* player = new Player;
-	player->Initialize();
-	player->SetPositionX(-3.46f);
-
-
-
-	(new Tmp)->Initialize();
+	(new Submarine)->Initialize();
 
 }
 

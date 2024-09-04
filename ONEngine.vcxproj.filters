@@ -176,6 +176,9 @@
     <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
       <Filter>ONEngine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Submarine\Submarine.cpp">
+      <Filter>Game\Objects\Submarine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -282,6 +285,9 @@
     </Filter>
     <Filter Include="Game\Objects\Player">
       <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Submarine">
+      <UniqueIdentifier>{88d70d55-f638-4723-a78c-c65545045b16}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -461,6 +467,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Collision\SphereCollider.h">
       <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Submarine\Submarine.h">
+      <Filter>Game\Objects\Submarine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
