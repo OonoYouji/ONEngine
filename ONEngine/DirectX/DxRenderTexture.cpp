@@ -85,6 +85,7 @@ void DxRenderTexture::StaticInitialize() {
 }
 
 void DxRenderTexture::StaticFinalize() {
+	sVertexBuffer_.Reset();
 	sViewProjectionBuffer_.Reset();
 	sPipeline_.reset();
 }
@@ -173,6 +174,9 @@ void DxRenderTexture::SetRenderTarget() {
 
 
 void DxRenderTexture::BlendRenderTexture(DxRenderTexture* frontRenderTex, DxRenderTexture* output) {
+	ONE::DxBarrierCreator::CreateBarrier(frontRenderTex->GetRenderTexResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	ONE::DxBarrierCreator::CreateBarrier(this->GetRenderTexResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	
 	output->SetRenderTarget();
 	sPipeline_->SetPipelineState();
 
@@ -187,4 +191,7 @@ void DxRenderTexture::BlendRenderTexture(DxRenderTexture* frontRenderTex, DxRend
 	pCommandList_->SetGraphicsRootDescriptorTable(2, frontRenderTex->srvHandle_.gpuHandle);
 
 	pCommandList_->DrawInstanced(3, 1, 0, 0);
+
+	ONE::DxBarrierCreator::CreateBarrier(frontRenderTex->GetRenderTexResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	ONE::DxBarrierCreator::CreateBarrier(this->GetRenderTexResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }

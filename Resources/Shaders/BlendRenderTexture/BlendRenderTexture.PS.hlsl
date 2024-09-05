@@ -10,10 +10,8 @@ PSOutput main(VSOutput input) {
 	float4 frontColor = gRtvTexFront.Sample(gSampler, input.texcoord);
 	float4 backColor = gRtvTexBack.Sample(gSampler, input.texcoord);
 	
-	output.color = frontColor * backColor;
-	if (output.color.a == 0.0f) {
-		discard;
-	}
+	float alpha = frontColor.a; // frontRenderTex のアルファチャンネルを使用
+	output.color = lerp(backColor, frontColor, alpha);
 
 	return output;
 }

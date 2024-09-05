@@ -78,13 +78,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	DxRenderTexture::StaticInitialize();
 	std::unique_ptr<DxRenderTexture> renderTex = std::make_unique<DxRenderTexture>();
-	renderTex->Initialize({ 1,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTex->Initialize({ 0,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	
 	std::unique_ptr<DxRenderTexture> renderTex2 = std::make_unique<DxRenderTexture>();
-	renderTex2->Initialize({ 1,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTex2->Initialize({ 0,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	
 	std::unique_ptr<DxRenderTexture> outputRenderTex = std::make_unique<DxRenderTexture>();
-	outputRenderTex->Initialize({ 1,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	outputRenderTex->Initialize({ 0,0,0,1 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -146,14 +146,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		renderTex->BlendRenderTexture(renderTex2.get(), outputRenderTex.get());
 
-		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
+
 		dxCommon->PostDraw(outputRenderTex->GetRenderTexResource());
 
 	}
 
 
 	renderTex.reset();
+	renderTex2.reset();
+	outputRenderTex.reset();
 	DxRenderTexture::StaticFinalize();
 	sceneManager->Finalize();
 	cameraManager->Finalize();

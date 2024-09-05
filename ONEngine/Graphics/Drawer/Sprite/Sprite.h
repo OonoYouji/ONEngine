@@ -56,7 +56,9 @@ public:
 
 	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
 
-
+	void SetColor(const Vec4& color) {
+		material_.SetColor(color);
+	}
 
 	void SetPos(const Vec3& pos);
 
