@@ -143,6 +143,15 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& m) {
 	return m.Inverse();
 }
 
+Matrix4x4 Matrix4x4::MakeOrthographicMatrix(float l, float t, float r, float b, float nearZ, float farZ) {
+	return Mat4(
+		{ 2.0f / (r - l), 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 2.0f / (t - b), 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f / (farZ - nearZ), 0.0f },
+		{ (l + r) / (l - r), (t + b) / (b - t), nearZ / (nearZ - farZ), 1.0f }
+	);
+}
+
 Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {
 	Vector3 result{};
 

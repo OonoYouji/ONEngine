@@ -286,6 +286,9 @@
     <Filter Include="Game\Objects\Player">
       <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\BlendRenderTexture">
+      <UniqueIdentifier>{86999703-20b2-4a4a-be73-6989da8eaaee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -479,6 +482,9 @@
     <None Include="Resources\Shaders\Floor\Floor.hlsli">
       <Filter>Resources\Shaders\Floor</Filter>
     </None>
+    <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
@@ -498,6 +504,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
       <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
