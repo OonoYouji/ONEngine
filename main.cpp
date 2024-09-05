@@ -22,6 +22,7 @@
 #include <DebugCamera.h>
 
 #include <RenderTextureManager.h>
+#include <Bloom/Bloom.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -65,6 +66,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//modelManager->Load("Sphere");
 
+	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTexManager->CreateRenderTarget("3dObject", 0);
+	renderTexManager->CreateRenderTarget("frontSprite", 1);
+	renderTexManager->CreateRenderTarget("ImGui", 2);
+
+	Bloom::StaticInitialize();
 
 	gameObjectManager->Initialize();
 
@@ -77,12 +84,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	sceneManager->Initialize();
 
-	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-	renderTexManager->CreateRenderTarget("3dObject", 0);
-	renderTexManager->CreateRenderTarget("frontSprite", 1);
-	renderTexManager->CreateRenderTarget("ImGui", 2);
-
-	renderTexManager->SetIsBlending("frontSprite", false);
+	
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -157,6 +159,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	renderTexManager->Finalize();
+	Bloom::StaticFinalize();
+
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();

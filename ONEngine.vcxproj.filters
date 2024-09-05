@@ -182,6 +182,9 @@
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.cpp">
       <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp">
+      <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -294,6 +297,15 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\RenderTexture">
       <UniqueIdentifier>{88a2e0c7-12d9-43ed-a766-f400cfb9cc26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\PostEffect">
+      <UniqueIdentifier>{d4448a0d-80dc-42f7-a8d2-e5a433eb4917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Bloom">
+      <UniqueIdentifier>{446d8125-b2fb-4e40-9bb1-de9fbb6dbdbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\PostEffect\Bloom">
+      <UniqueIdentifier>{518aaa63-c388-4cf8-b089-0fab17f62b3e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +492,9 @@
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.h">
       <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h">
+      <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -493,6 +508,9 @@
     </None>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
       <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <Filter>Resources\Shaders\Bloom</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -519,6 +537,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
       <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.PS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

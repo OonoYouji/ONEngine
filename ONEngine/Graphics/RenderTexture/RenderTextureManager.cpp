@@ -259,3 +259,8 @@ void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t 
 void RenderTextureManager::SetIsBlending(const std::string& name, bool isBlending) {
 	sInstance_.renderTexDatas_.at(name).isBlending = isBlending;
 }
+
+RenderTexture* RenderTextureManager::GetRenderTarget(const std::string& name) {
+	auto data = sInstance_.renderTexDatas_.at(name);
+	return sInstance_.renderTextures_[data.layerNum].get();
+}

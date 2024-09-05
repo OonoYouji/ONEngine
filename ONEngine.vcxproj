@@ -56,6 +56,7 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp" />
+    <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h" />
     <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h" />
+    <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h" />
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h" />
@@ -141,6 +143,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="Resources\Shaders\Floor\Floor.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -160,6 +166,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -246,7 +260,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -272,7 +286,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
