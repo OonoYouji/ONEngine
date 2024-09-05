@@ -10,18 +10,20 @@
 #include <ModelManager.h>
 #include <SpriteManager.h>
 #include <TextureManager.h>
+#include <AudioManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
+#include <GameObjectManager.h>
+#include "Collision/CollisionManager.h"
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
 
 
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
-	frameTimer->Start();
+	frameTimer->Begin();
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
@@ -33,8 +35,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ModelManager* modelManager = ModelManager::GetInstance();
 	SpriteManager* spriteManager = SpriteManager::GetInstance();
 	TextureManager* textureManager = TextureManager::GetInstance();
+	AudioManager* audioManager = AudioManager::GetInstance();
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	CameraManager* cameraManager = CameraManager::GetInstance();
+	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
+	CollisionManager* collisionManager = CollisionManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -44,20 +49,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
-	sceneManager->Initialize();
-
+	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
+	textureManager->Load("gameClear", "gameClear.png");
+	textureManager->Load("Floor", "Floor.png");
+	
+	audioManager->Load("fanfare.wav");
+
+	//modelManager->Load("Sphere");
+
+
+	gameObjectManager->Initialize();
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
-	cameraManager->SetMainCamera("GameCamera");
-
-#ifdef _DEBUG
+	cameraManager->SetMainCamera(gameCamera);
+	
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
-#endif // _DEBUG
+
+	sceneManager->Initialize();
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -66,14 +79,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		frameTimer->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
-		cameraManager->SetMainCamera("GameCamera");
 
+
+		/// ====================================
+		/// ↓ 更新処理に移る
+		/// ====================================
+
+		frameTimer->ImGuiDebug();
+		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
 
 		cameraManager->Update();
-		sceneManager->Update();
 
+		sceneManager->Update();
+		
+		/// 更新1
+		gameObjectManager->Update();
+		/// 当たり判定処理
+		collisionManager->Update();
+		/// 更新2
+		gameObjectManager->LastUpdate();
+
+		audioManager->Update();
+
+		/// ====================================
+		/// ↓ 描画処理に移る
+		/// ====================================
 
 		dxCommon->PreDraw();
 		sceneManager->PreDraw();
@@ -82,33 +116,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		sceneManager->Draw();
 
-		modelManager->PostDraw();
-		spriteManager->PostDraw();
-
-		
 #ifdef _DEBUG
-		cameraManager->SetMainCamera("DebugCamera");
-		sceneManager->SetRenderTarget(kDebugScene);
-		modelManager->PostDraw();
-		spriteManager->PostDraw();
+		collisionManager->DrawHitBoxALL();
 #endif // _DEBUG
 
-		sceneManager->PostDraw();
-		sceneManager->SceneDraw();
+		gameObjectManager->BackSpriteDraw();
+		gameObjectManager->Draw();
+		gameObjectManager->FrontSpriteDraw();
 
-		dxCommon->SetRenderTarget();
+		modelManager->PostDraw();
+		spriteManager->PostDraw();
+
+
+
 		imGuiManager->EndFrame();
+		sceneManager->PostDraw();
 		dxCommon->PostDraw();
 
 	}
 
-
 	sceneManager->Finalize();
-	spriteManager->Finalize();
 	cameraManager->Finalize();
-	modelManager->Finalize();
-	textureManager->Finalize();
+	gameObjectManager->Finalize();
 
+	audioManager->Finalize();
+	spriteManager->Finalize();
+	modelManager->Finalize();
+
+	textureManager->Finalize();
 	imGuiManager->Finalize();
 	input->Finalize();
 	dxCommon->Finalize();

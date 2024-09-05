@@ -18,14 +18,6 @@
 #include <CameraManager.h>
 
 
-/// ===================================================
-/// インスタンス確保
-/// ===================================================
-ModelManager* ModelManager::GetInstance() {
-	static ModelManager instance;
-	return &instance;
-}
-
 
 /// ===================================================
 /// 初期化
@@ -82,8 +74,15 @@ void ModelManager::Finalize() {
 /// ===================================================
 Model* ModelManager::Load(const std::string& filePath) {
 
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find(filePath);
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
+
 	Assimp::Importer importer;
-	std::string objPath = kDirectoryPath_ + filePath + "/" + filePath + ".obj";
+	std::string objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".obj";
 	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 
 	Model* model = new Model();
@@ -141,7 +140,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 		}
 
-		modelMesh.Create();
+		modelMesh.CreateBuffer();
 		model->AddMesh(modelMesh);
 
 	}
@@ -170,7 +169,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 		}
 		modelMaterial.SetTextureName(texPath);
 
-		modelMaterial.Create();
+		modelMaterial.CreateBuffer();
 		model->AddMaterial(modelMaterial);
 
 	}
@@ -180,7 +179,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	AddModel(filePath, model);
+	instance->AddModel(filePath, model);
 	return GetModel(filePath);
 }
 
@@ -189,15 +188,22 @@ Model* ModelManager::Load(const std::string& filePath) {
 /// 平面の生成
 /// ===================================================
 Model* ModelManager::CreatePlane() {
+
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find("Plane");
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
 	Model* model = new Model();
 
 	Mesh mesh{};
 	Material material{};
 
-	mesh.AddVertex({ { -0.5f, 0.0f, -0.5f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
-	mesh.AddVertex({ { -0.5f, 0.0f,  0.5f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.0f,  0.5f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
-	mesh.AddVertex({ {  0.5f, 0.0f, -0.5f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ { -1.0f, 0.0f, -1.0f, 1.0f }, { 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ { -1.0f, 0.0f,  1.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ {  1.0f, 0.0f,  1.0f, 1.0f }, { 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
+	mesh.AddVertex({ {  1.0f, 0.0f, -1.0f, 1.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } });
 
 	mesh.AddIndex(0);
 	mesh.AddIndex(1);
@@ -209,16 +215,16 @@ Model* ModelManager::CreatePlane() {
 	material.SetTextureName("uvChecker");
 	material.SetFilePath("uvChecker.png");
 
-	mesh.Create();
-	material.Create();
+	mesh.CreateBuffer();
+	material.CreateBuffer();
 
 	model->AddMesh(mesh);
 	model->AddMaterial(material);
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	GetInstance()->AddModel("Plane", model);
-	return GetInstance()->GetModel("Plane");
+	instance->AddModel("Plane", model);
+	return instance->GetModel("Plane");
 }
 
 
@@ -226,46 +232,53 @@ Model* ModelManager::CreatePlane() {
 /// 立方体の生成
 /// ===================================================
 Model* ModelManager::CreateCube() {
+
+	ModelManager* instance = GetInstance();
+	auto itr = instance->models_.find("Cube");
+	if(itr != instance->models_.end()) {
+		return (*itr).second.get();
+	}
+
 	Model* model = new Model();
 
 	Mesh mesh{};
 	Material material{};
 
 	///- 上面
-	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
-	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ { -1.0f,  1.0f, -1.0f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ { -1.0f,  1.0f,  1.0f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f,  1.0f,  1.0f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  1.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f,  1.0f, -1.0f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  1.0f,  0.0f} });
 
 	///- 下面
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
-	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f, -1.0f, -1.0f, 1.0f }, { 0.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f, -1.0f,  1.0f, 1.0f }, { 0.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ { -1.0f, -1.0f,  1.0f, 1.0f }, { 1.0f, 0.0f }, {  0.0f, -1.0f,  0.0f} });
+	mesh.AddVertex({ { -1.0f, -1.0f, -1.0f, 1.0f }, { 1.0f, 1.0f }, {  0.0f, -1.0f,  0.0f} });
 
 	///- 前面
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ { -1.0f, -1.0f, -1.0f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ { -1.0f,  1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ {  1.0f,  1.0f, -1.0f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f, -1.0f } });
+	mesh.AddVertex({ {  1.0f, -1.0f, -1.0f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f, -1.0f } });
 
 	///- 後面
-	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
-	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ {  1.0f, -1.0f,  1.0f, 1.0f }, { 0.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ {  1.0f,  1.0f,  1.0f, 1.0f }, { 0.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ { -1.0f,  1.0f,  1.0f, 1.0f }, { 1.0f, 0.0f }, {  0.0f,  0.0f,  1.0f } });
+	mesh.AddVertex({ { -1.0f, -1.0f,  1.0f, 1.0f }, { 1.0f, 1.0f }, {  0.0f,  0.0f,  1.0f } });
 
 	///- 左面
-	mesh.AddVertex({ { -0.5f, -0.5f,  0.5f, 1.0f }, { 0.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f,  0.5f, 1.0f }, { 0.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
-	mesh.AddVertex({ { -0.5f,  0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
-	mesh.AddVertex({ { -0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -1.0f, -1.0f,  1.0f, 1.0f }, { 0.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -1.0f,  1.0f,  1.0f, 1.0f }, { 0.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -1.0f,  1.0f, -1.0f, 1.0f }, { 1.0f, 0.0f }, {  1.0f,  0.0f,  0.0f } });
+	mesh.AddVertex({ { -1.0f, -1.0f, -1.0f, 1.0f }, { 1.0f, 1.0f }, {  1.0f,  0.0f,  0.0f } });
 
 	///- 右面
-	mesh.AddVertex({ {  0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f,  0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f,  0.5f,  0.5f, 1.0f }, { 1.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
-	mesh.AddVertex({ {  0.5f, -0.5f,  0.5f, 1.0f }, { 1.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f, -1.0f, -1.0f, 1.0f }, { 0.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f,  1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f,  1.0f,  1.0f, 1.0f }, { 1.0f, 0.0f }, { -1.0f,  0.0f,  0.0f} });
+	mesh.AddVertex({ {  1.0f, -1.0f,  1.0f, 1.0f }, { 1.0f, 1.0f }, { -1.0f,  0.0f,  0.0f} });
 
 
 	for(uint32_t i = 0u; i < 6; ++i) {
@@ -280,16 +293,16 @@ Model* ModelManager::CreateCube() {
 	material.SetTextureName("uvChecker");
 	material.SetFilePath("uvChecker.png");
 
-	mesh.Create();
-	material.Create();
+	mesh.CreateBuffer();
+	material.CreateBuffer();
 
 	model->AddMesh(mesh);
 	model->AddMaterial(material);
 
 	model->Initialize();
 	model->SetFillMode(kSolid);
-	GetInstance()->AddModel("Cube", model);
-	return GetInstance()->GetModel("Cube");
+	instance->AddModel("Cube", model);
+	return instance->GetModel("Cube");
 }
 
 
@@ -306,14 +319,14 @@ void ModelManager::PreDraw() {
 /// ===================================================
 void ModelManager::PostDraw() {
 
-	std::list<Model*> solid;
-	std::list<Model*> wire;
+	std::list<Element> solid;
+	std::list<Element> wire;
 
 	/// ---------------------------------------------------
 	/// SolidとWireFrameで仕分け
 	/// ---------------------------------------------------
 	for(const auto& model : activeModels_) {
-		if(model->GetFillMode() == FillMode::kSolid) {
+		if(model.fillMode == FillMode::kSolid) {
 			solid.push_back(model);
 		} else {
 			wire.push_back(model);
@@ -336,7 +349,8 @@ void ModelManager::PostDraw() {
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
 	for(auto& model : solid) {
-		model->DrawCall(commandList);
+		model.transform->BindTransform(commandList, 1);
+		model.model->DrawCall(commandList, model.material);
 	}
 
 
@@ -345,15 +359,17 @@ void ModelManager::PostDraw() {
 	/// ---------------------------------------------------
 
 	pipelines_[kWireFrame]->SetPipelineState();
+
 	for(auto& model : wire) {
-		model->DrawCall(commandList);
+		model.transform->BindTransform(commandList, 1);
+		model.model->DrawCall(commandList, model.material);
 	}
 
 
 }
 
 Model* ModelManager::GetModel(const std::string& filePath) {
-	return models_.at(filePath).get();
+	return GetInstance()->models_.at(filePath).get();
 }
 
 
@@ -377,6 +393,12 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model) {
-	activeModels_.push_back(model);
+void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode) {
+	Element element{};
+	element.model = model;
+	element.transform = transform;
+	element.material = material;
+	element.fillMode = fillMode;
+
+	activeModels_.push_back(element);
 }

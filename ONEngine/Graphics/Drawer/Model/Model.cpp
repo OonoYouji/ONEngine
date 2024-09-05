@@ -14,8 +14,8 @@ Model::Model() {
 	//ModelManager::GetInstance()->AddModel(this);
 }
 Model::~Model() {
-	meshes_.clear();
-	materials_.clear();
+	/*meshes_.clear();
+	materials_.clear();*/
 }
 
 
@@ -24,31 +24,30 @@ Model::~Model() {
 /// ===================================================
 void Model::Initialize() {
 
-	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(TransformData));
-	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&transformData_));
-	transformData_->matWorld = Mat4::kIdentity;
-
-	//transform_.position.z = 8.0f;
-	transform_.Initialize();
-
 }
 
 
 /// ===================================================
 /// 描画
 /// ===================================================
-void Model::Draw() {
-	ModelManager::GetInstance()->AddActiveModel(this);
+void Model::Draw(Transform* transform, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, fillMode);
+}
+
+void Model::Draw(Transform* transform, Material* material, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, material, fillMode);
 }
 
 
 /// ===================================================
 /// DrawCallの呼び出し
 /// ===================================================
-void Model::DrawCall(ID3D12GraphicsCommandList* commandList) {
-	transformData_->matWorld = transform_.matTransform;
-
-	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
+void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material) {
+	if(material) {
+		for(uint32_t index = 0; index < meshes_.size(); ++index) {
+			materials_[index] = *material;
+		}
+	}
 
 	for(uint32_t index = 0; index < meshes_.size(); ++index) {
 		materials_[index].BindMaterial(commandList, 2);
@@ -82,15 +81,3 @@ void Model::AddMaterial(const Material& material) {
 	materials_.push_back(material);
 }
 
-
-/// ===================================================
-/// 回転のセット
-/// ===================================================
-void Model::SetRotate(const Vec3& rotate) {
-	transform_.rotate = rotate;
-	transform_.UpdateMatrix();
-}
-
-void Model::SetPos(const Vec3& position) {
-	transform_.position = position;
-}

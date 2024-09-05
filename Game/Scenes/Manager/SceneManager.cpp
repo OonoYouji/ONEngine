@@ -146,7 +146,7 @@ void SceneManager::PreDraw() {
 		ONE::DxBarrierCreator::CreateBarrier(renderTargets_[index].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	}
 
-	commandList->OMSetRenderTargets(1, &rtvHandles_[0], FALSE, &dsvHandle);
+	commandList->OMSetRenderTargets(1, &rtvHandles_[kCurrentScene], FALSE, &dsvHandle);
 
 	const float color[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	for(uint8_t index = 0u; index < 2; ++index) {

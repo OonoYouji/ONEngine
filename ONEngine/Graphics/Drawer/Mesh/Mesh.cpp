@@ -26,7 +26,7 @@ void Mesh::AddIndex(uint32_t index) {
 /// ===================================================
 /// バッファの作成
 /// ===================================================
-void Mesh::Create() {
+void Mesh::CreateBuffer() {
 
 	vertexBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(VertexData) * vertices_.size());
 
@@ -55,16 +55,12 @@ void Mesh::Create() {
 
 
 void Mesh::Draw(ID3D12GraphicsCommandList* commandList, bool isDrawCall) {
-
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
 
 	if(!isDrawCall) { return; }
 
 	commandList->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
-	//commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
-
 }
 
 

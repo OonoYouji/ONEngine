@@ -137,6 +137,45 @@
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp">
       <Filter>Game\Objects\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Debug.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Math\Matrix3x3.cpp">
+      <Filter>ONEngine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Audio\AudioManager.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Audio\AudioClip.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
+      <Filter>ONEngine\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BaseCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\BoxCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\CollisionManager.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
+      <Filter>ONEngine\Collision</Filter>
+    </ClCompile>
     <ClCompile Include="ONEngine\DirectX\DxRenderTexture.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
@@ -228,6 +267,24 @@
     </Filter>
     <Filter Include="ONEngine\Input">
       <UniqueIdentifier>{33ea2c36-9823-4ff1-86d0-4030f2edee2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Floor">
+      <UniqueIdentifier>{cecdee0a-87dd-4e59-b255-45b7a2f97203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Floor">
+      <UniqueIdentifier>{9120d4b4-d367-4cf4-aaeb-78781e034a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Audio">
+      <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GameObject">
+      <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Collision">
+      <UniqueIdentifier>{535a4893-785e-441b-80ca-f77ea230bbff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +426,45 @@
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h">
       <Filter>Game\Objects\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Debug.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h">
+      <Filter>ONEngine\Graphics\Drawer\Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Math\Matrix3x3.h">
+      <Filter>ONEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\AudioManager.h">
+      <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\AudioClip.h">
+      <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Audio\AudioSource.h">
+      <Filter>ONEngine\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObject\BaseGameObject.h">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObject\GameObjectManager.h">
+      <Filter>ONEngine\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BaseCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\BoxCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\CollisionManager.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Collision\SphereCollider.h">
+      <Filter>ONEngine\Collision</Filter>
+    </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxRenderTexture.h">
       <Filter>ONEngine\DirectX</Filter>
     </ClInclude>
@@ -379,6 +475,9 @@
     </None>
     <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
       <Filter>Resources\Shaders\Sprite</Filter>
+    </None>
+    <None Include="Resources\Shaders\Floor\Floor.hlsli">
+      <Filter>Resources\Shaders\Floor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -393,6 +492,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl">
       <Filter>Resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

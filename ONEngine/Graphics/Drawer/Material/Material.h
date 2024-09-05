@@ -6,6 +6,8 @@
 #include <string>
 
 #include <Vector4.h>
+#include <Matrix3x3.h>
+#include <Matrix4x4.h>
 
 
 using namespace Microsoft::WRL;
@@ -18,6 +20,7 @@ public:
 
 	struct MaterialData final {
 		Vec4 color;
+		Mat4 uvTransform;
 	};
 
 public:
@@ -29,10 +32,16 @@ public:
 	/// public : methods
 	/// ===================================================
 
+
+	void CreateMaterial(const std::string& textureName);
+
+	void SetColor(const Vector4& color);
+
+
 	/// <summary>
 	/// バッファの生成
 	/// </summary>
-	void Create();
+	void CreateBuffer();
 
 
 

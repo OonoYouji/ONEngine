@@ -10,7 +10,6 @@ using namespace DirectX;
 class Vector3;
 class Vector4;
 
-
 /// ===================================================
 /// 4x4行列
 /// ===================================================
@@ -19,6 +18,12 @@ public:
 
 	Matrix4x4();
 	Matrix4x4(const Vector4& row1, const Vector4& row2, const Vector4& row3, const Vector4& row4);
+	Matrix4x4(
+		float aa, float ab, float ac, float ad,
+		float ba, float bb, float bc, float bd,
+		float ca, float cb, float cc, float cd,
+		float da, float db, float dc, float dd
+	);
 	Matrix4x4(const Matrix4x4&) = default;
 	Matrix4x4(Matrix4x4&&) = default;
 	Matrix4x4(const XMMATRIX& xm);

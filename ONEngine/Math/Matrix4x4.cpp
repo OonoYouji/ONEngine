@@ -50,6 +50,28 @@ Matrix4x4::Matrix4x4(const Vector4& row1, const Vector4& row2, const Vector4& ro
 
 }
 
+Matrix4x4::Matrix4x4(float aa, float ab, float ac, float ad, float ba, float bb, float bc, float bd, float ca, float cb, float cc, float cd, float da, float db, float dc, float dd) {
+	this->m[0][0] = aa;
+	this->m[0][1] = ab;
+	this->m[0][2] = ac;
+	this->m[0][3] = ad;
+
+	this->m[1][0] = ba;
+	this->m[1][1] = bb;
+	this->m[1][2] = bc;
+	this->m[1][3] = bd;
+	
+	this->m[2][0] = ca;
+	this->m[2][1] = cb;
+	this->m[2][2] = cc;
+	this->m[2][3] = cd;
+	
+	this->m[3][0] = da;
+	this->m[3][1] = db;
+	this->m[3][2] = dc;
+	this->m[3][3] = dd;
+}
+
 Matrix4x4::Matrix4x4(const XMMATRIX& xm) {
 	(*this) = ConvertToMatrix4x4(xm);
 }
@@ -101,7 +123,7 @@ Matrix4x4 Matrix4x4::MakeRotateZ(float theta) {
 }
 
 Matrix4x4 Matrix4x4::MakeRotate(const Vector3& v) {
-	return MakeRotateY(v.y) * MakeRotateX(v.x) * MakeRotateZ(v.z);
+	return MakeRotateX(v.x) * MakeRotateY(v.y) * MakeRotateZ(v.z);
 }
 
 Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& v) {
@@ -134,7 +156,7 @@ Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {
 }
 
 Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
-	return Vector3 {
+	return Vector3{
 		v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
 		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
 		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]

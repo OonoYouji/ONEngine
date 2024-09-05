@@ -32,7 +32,7 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 	material_.SetFilePath(filePath);
 	material_.SetTextureName(textureName);
 
-	material_.Create();
+	material_.CreateBuffer();
 
 
 	/// ---------------------------------------------------
@@ -62,6 +62,8 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 	commandList->IASetIndexBuffer(&ibv_);
 
 	commandList->SetGraphicsRootConstantBufferView(1, transformBuffer_->GetGPUVirtualAddress());
+	material_.BindMaterial(commandList, 2);
+	material_.BindTexture(commandList, 3);
 }
 
 

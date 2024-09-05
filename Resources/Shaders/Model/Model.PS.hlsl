@@ -1,11 +1,11 @@
 #include "Model.hlsli"
 
 
-struct Material {
+cbuffer material : register(b0) {
 	float4 color;
-};
+	float4x4 uvTransform;
+}
 
-ConstantBuffer<Material> gMaterial : register(b0);
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
@@ -13,10 +13,16 @@ SamplerState gSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	output.color1 = gTexture.Sample(gSampler, input.texcoord);
-	output.color1 *= gMaterial.color;
+	float2 texcoord = mul(float3(input.texcoord, 1), (float3x3)uvTransform).xy;
 
-	//output.color2 = output.color1;
+	output.color = gTexture.Sample(gSampler, texcoord);
+	output.color *= color;
+	
+	/// pixelの破棄
+	if (output.color.a == 0.0f) {
+		discard;
+	}
+
 	return output;
 
 }

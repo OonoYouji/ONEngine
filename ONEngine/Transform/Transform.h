@@ -1,5 +1,8 @@
 #pragma once
 
+#include <wrl/client.h>
+#include <d3d12.h>
+
 #include <Vector3.h>
 #include <Matrix4x4.h>
 
@@ -24,6 +27,8 @@ public:
 	/// </summary>
 	void UpdateMatrix();
 
+	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
+
 public:
 
 	Vec3 scale = Vec3::kOne;
@@ -32,6 +37,11 @@ public:
 
 	Mat4 matTransform = Mat4::kIdentity;
 
+	
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
+
+private:
+	Mat4* mapingData_ = nullptr;
 public:
 	inline Transform& operator= (const Transform&) = default;
 };

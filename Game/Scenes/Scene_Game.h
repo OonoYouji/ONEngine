@@ -7,6 +7,9 @@
 #include <Model.h>
 #include <Vector3.h>
 #include <Sprite.h>
+#include <Transform.h>
+
+#include <AudioManager.h>
 
 /// ===================================================
 /// ゲームシーン
@@ -14,7 +17,7 @@
 class Scene_Game final : public BaseScene {
 public:
 
-	Scene_Game() = default;
+	Scene_Game();
 	~Scene_Game();
 
 	void Initialize() override;
@@ -25,7 +28,7 @@ private:
 
 
 	Model* model_;
-	Vec3 rotate_{};
+	Transform transform_{};
 
 	std::unique_ptr<Sprite> sprite_;
 
