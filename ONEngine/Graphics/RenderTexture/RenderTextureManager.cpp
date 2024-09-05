@@ -115,7 +115,7 @@ void RenderTextureManager::EndFrame() {
 	}
 
 	std::vector<uint32_t> values;
-	for(const auto& pair : renderTexData_) {
+	for(const auto& pair : renderTexDatas_) {
 		if(pair.second.isBlending) {
 			values.push_back(pair.second.layerNum);
 		}
@@ -183,22 +183,6 @@ void RenderTextureManager::EndFrame() {
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_RENDER_TARGET
 	);
-
-
-	/*
-
-	rtv a,b,c,d
-
-		a ----- b
-			|
-		output1 ----- c
-				  |
-				output2 ----- d
-						  |
-						output1
-
-	*/
-
 }
 
 void RenderTextureManager::BindForCommandList() {
@@ -212,7 +196,8 @@ void RenderTextureManager::BindForCommandList() {
 
 void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 
-	auto renderTex = sInstance_.renderTextures_[sInstance_.renderTexData_.at(name).layerNum].get();
+	auto data = sInstance_.renderTexDatas_.at(name);
+	auto renderTex = sInstance_.renderTextures_[data.layerNum].get();
 
 	ONE::DxBarrierCreator::CreateBarrier(
 		renderTex->GetRenderTexResource(),
@@ -221,19 +206,35 @@ void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 	);
 
 	renderTex->SetRenderTarget();
-
+	data.isRenderTargetActive = true;
 }
 
 
 void RenderTextureManager::EndRenderTarget(const std::string& name) {
 
-	auto renderTex = sInstance_.renderTextures_[sInstance_.renderTexData_.at(name).layerNum].get();
+	auto data = sInstance_.renderTexDatas_.at(name);
+	auto renderTex = sInstance_.renderTextures_[data.layerNum].get();
 
 	ONE::DxBarrierCreator::CreateBarrier(
 		renderTex->GetRenderTexResource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 	);
+
+	data.isRenderTargetActive = false;
+
+	for(auto& texData : sInstance_.renderTexDatas_) {
+		if(texData.first == name) {
+			continue;
+		}
+
+		/// render targetとしてアクティブであれば
+		if(texData.second.isRenderTargetActive) {
+			sInstance_.renderTextures_[texData.second.layerNum]->SetRenderTarget();
+			return;
+		}
+	}
+
 }
 
 
@@ -248,7 +249,7 @@ void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t 
 	);
 
 	sInstance_.renderTextures_.push_back(std::move(newRenderTex));
-	sInstance_.renderTexData_[name] = {
+	sInstance_.renderTexDatas_[name] = {
 		.layerNum = layerNumber,
 		.isBlending = true
 	};
@@ -256,5 +257,5 @@ void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t 
 
 
 void RenderTextureManager::SetIsBlending(const std::string& name, bool isBlending) {
-	sInstance_.renderTexData_.at(name).isBlending = isBlending;
+	sInstance_.renderTexDatas_.at(name).isBlending = isBlending;
 }

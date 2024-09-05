@@ -60,8 +60,9 @@ private:
 	struct RenderTexData {
 		uint32_t layerNum;
 		bool isBlending;
+		bool isRenderTargetActive;
 	};
-	std::unordered_map<std::string, RenderTexData> renderTexData_;
+	std::unordered_map<std::string, RenderTexData> renderTexDatas_;
 
 	std::unique_ptr<RenderTexture> finalRenderTex_;
 	std::unique_ptr<RenderTexture> intermediateTextures_[2];
