@@ -19,6 +19,8 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void Debug() override;
+
 
 	/// ---------------------------------------- ///
 	///		not override methods
@@ -36,6 +38,6 @@ private:
 	/// 上下の移動速度 : 秒単位
 	float speed_ = 0.0f;
 	/// スピードの固定値
-	float constantSpeed_ = 0.25f;
+	static float sConstantSpeed_;
 
 };
