@@ -96,9 +96,7 @@ void RenderTexture::SetRenderTarget() {
 
 
 void RenderTexture::BlendRenderTexture(RenderTexture* frontRenderTex, RenderTexture* output) {
-	ONE::DxBarrierCreator::CreateBarrier(frontRenderTex->GetRenderTexResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	ONE::DxBarrierCreator::CreateBarrier(this->GetRenderTexResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	
+
 	output->SetRenderTarget();
 
 	RenderTextureManager::GetInstance()->BindForCommandList();
@@ -108,7 +106,4 @@ void RenderTexture::BlendRenderTexture(RenderTexture* frontRenderTex, RenderText
 	pCommandList_->SetGraphicsRootDescriptorTable(2, frontRenderTex->srvHandle_.gpuHandle);
 
 	pCommandList_->DrawInstanced(3, 1, 0, 0);
-
-	ONE::DxBarrierCreator::CreateBarrier(frontRenderTex->GetRenderTexResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	ONE::DxBarrierCreator::CreateBarrier(this->GetRenderTexResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }

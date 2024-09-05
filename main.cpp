@@ -80,6 +80,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("3dObject", 0);
 	renderTexManager->CreateRenderTarget("frontSprite", 1);
+	renderTexManager->CreateRenderTarget("ImGui", 2);
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -122,7 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PreDraw();
 		spriteManager->PreDraw();
 
-		renderTexManager->SetRenderTarget("3dObject");
+		renderTexManager->BeginRenderTarget("3dObject");
 
 		sceneManager->Draw();
 
@@ -135,15 +136,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameObjectManager->FrontSpriteDraw();
 
 		modelManager->PostDraw();
+		renderTexManager->EndRenderTarget("3dObject");
 
-		renderTexManager->SetRenderTarget("frontSprite");
+		
+		renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
+		renderTexManager->EndRenderTarget("frontSprite");
 
-		renderTexManager->End();
+		renderTexManager->EndFrame();
+
+		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
+		renderTexManager->EndRenderTarget("ImGui");
 
-		dxCommon->PostDraw(renderTexManager->GetLastOutputRenderTexture()->GetRenderTexResource());
-
+	
+		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture()->GetRenderTexResource());
 	}
 
 

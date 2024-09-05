@@ -18,7 +18,8 @@ public:
 	/// render targetの設定
 	/// </summary>
 	/// <param name="name"> : renderTextures_のkey</param>
-	static void SetRenderTarget(const std::string& name);
+	static void BeginRenderTarget(const std::string& name);
+	static void EndRenderTarget(const std::string& name);
 
 	static void CreateRenderTarget(const std::string& name, uint32_t layerNumber);
 
@@ -39,15 +40,15 @@ public:
 	/// <summary>
 	/// フレームの最後に行う
 	/// </summary>
-	void End();
+	void EndFrame();
 
 	/// <summary>
 	/// コマンドリストにバインド
 	/// </summary>
 	void BindForCommandList();
 
-	RenderTexture* GetLastOutputRenderTexture() const {
-		return outputs_[outputsIndex_].get();
+	RenderTexture* GetFinalRenderTexture() const {
+		return finalRenderTex_.get();
 	}
 
 private:
@@ -57,8 +58,10 @@ private:
 	std::vector<std::unique_ptr<RenderTexture>> renderTextures_;
 	std::unordered_map<std::string, uint32_t> layerNumbers_;
 
-	std::unique_ptr<RenderTexture> outputs_[2];
-	int outputsIndex_ = 0;
+	std::unique_ptr<RenderTexture> finalRenderTex_;
+	std::unique_ptr<RenderTexture> intermediateTextures_[2];
+	int intermediateIndex_ = 0;
+
 
 
 	std::unique_ptr<PipelineState> pipeline_;
