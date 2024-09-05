@@ -76,6 +76,8 @@ private:
 	int currentRateTime = rateTime_;
 	int appear_ = 3;
 	float rateDistance_ = 4.0f;
+	float accumulationDistance = 0.0f;
+	Vector3 previousPosition_;
 
 
 

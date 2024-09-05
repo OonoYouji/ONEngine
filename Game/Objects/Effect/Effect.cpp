@@ -40,6 +40,8 @@ void Effect::Update() {
 	return false;
 	});
 
+	previousPosition_ = transform_.position;
+
 	Setting();
 	transform_.UpdateMatrix();
 
@@ -113,7 +115,7 @@ void Effect::Setting(){
 		if (provisional_ == 1) {
 			isOverTime_ = false;
 			isOverDistance_ = true;
-			ImGui::SliderFloat("RateTime", &rateDistance_, 0, 40);
+			ImGui::SliderFloat("RateDistance", &rateDistance_, 0, 40);
 		}
 
 		ImGui::TreePop();
@@ -256,7 +258,8 @@ void Effect::Create() {
 		rotation_ = Random::Vec3({ minRotateRandom_,minRotateRandom_ ,minRotateRandom_ }, { maxRotateRandom_,maxRotateRandom_ ,maxRotateRandom_ });
 	}
 	if (isSizeRandom) {
-		size_ = Random::Vec3({ minSizeRandom_,minSizeRandom_ ,minSizeRandom_ }, { maxSizeRandom_,maxSizeRandom_ ,maxSizeRandom_ });
+		float randSize = Random::Float(minSizeRandom_, maxSizeRandom_);
+		size_ = { randSize,randSize,randSize };
 	}
 
 
@@ -293,6 +296,36 @@ void Effect::Create() {
 	}
 	else if (isOverDistance_) {
 
+		Vector3 currentPosition = transform_.position;
+		float particleDistanceRate = 1.0f / rateDistance_;
+		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
+		accumulationDistance += distanceMoved;
+		int particlesEmit = static_cast<int>(accumulationDistance / particleDistanceRate);
+
+		Vector3 newPos = transform_.position;
+
+		if (particlesEmit > 0) {
+			for (int i = 0; i < particlesEmit; ++i) {
+				if (isBox_) {
+					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX, boxSizeX), 0.0f, Random::Float(-boxSizeZ, boxSizeZ) }, rotateEmitter);
+				}
+				Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+				if (isCone_ || isBox_) {
+					newVelo.y = 1.0f;
+				}
+				newVelo = newVelo.Normalize() * speed_;
+				if (isCone_) {
+					newVelo.y = newVelo.y * cornLenght_;
+				}
+				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
+
+				Grain* newGrain = new Grain();
+				newGrain->Initialze(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
+				grains_.push_back(newGrain);
+				accumulationDistance = 0.0f;
+			}
+		}
 	}
 
 
