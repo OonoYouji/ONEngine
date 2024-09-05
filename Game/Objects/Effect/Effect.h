@@ -131,6 +131,5 @@ private:
 	// どう変えるのか
 	bool isReduction_ = true;
 	bool isExpand_ = false;
-
-
+	Vector3 endSize_ = { 0.1f,0.1f,0.1f };
 };

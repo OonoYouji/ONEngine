@@ -3,7 +3,7 @@
 #include <Transform.h>
 
 
-enum class ShiftSpeedType : uint32_t{
+enum class ShiftSpeedType : uint32_t {
 	kNormal,
 	kDeceleration,
 	kAccele,
@@ -23,7 +23,7 @@ public:
 
 	void Initialze(Model* model, const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
 		const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
-		const Vector4& change, const bool sizeChange, SizeChangeType chageType);
+		const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType);
 
 	void Update();
 
@@ -39,6 +39,7 @@ private:
 	Vector3 velocity_ = { 0.0f,1.0f,0.0f };
 	// rotateSpeedを入れる
 	int lifeTime_ = 10;
+	int startLifeTime_;
 	bool isDead_ = false;
 
 	/// <summary>
@@ -58,6 +59,8 @@ private:
 	/// 時間でサイズを変える
 	/// </summary>
 	bool isSizeChange_ = false;
+	Vector3 startScale_ = { 0.1f,0.1f,0.1f };
+	Vector3 endScale_ = { 0.1f,0.1f,0.1f };
 	SizeChangeType changeType_ = SizeChangeType::kReduction;
 
 };

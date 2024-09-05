@@ -33,12 +33,12 @@ void Effect::Reset() {
 void Effect::Update() {
 
 	grains_.remove_if([](Grain* grain) {
-	if (grain->IsDead()) {
-		delete grain;
-		return true;
-	}
-	return false;
-	});
+		if (grain->IsDead()) {
+			delete grain;
+			return true;
+		}
+		return false;
+		});
 
 	previousPosition_ = transform_.position;
 
@@ -61,7 +61,7 @@ void Effect::Draw() {
 
 }
 
-void Effect::Setting(){
+void Effect::Setting() {
 #ifdef _DEBUG
 
 	ImGui::Begin(emitterName_.c_str());
@@ -103,7 +103,7 @@ void Effect::Setting(){
 
 	ImGui::SeparatorText("Rate Setting");
 	if (ImGui::TreeNode("Rate Type")) {
-		
+
 		ImGui::RadioButton("RateOverTime", &provisional_, 0); ImGui::SameLine();
 		ImGui::RadioButton("RateOverDistance", &provisional_, 1);
 		if (provisional_ == 0) {
@@ -124,7 +124,7 @@ void Effect::Setting(){
 
 	ImGui::SeparatorText("Emitter Shape");
 	if (ImGui::TreeNode("Shape")) {
-		
+
 		ImGui::RadioButton("CirCle", &secondProvisional_, 0); ImGui::SameLine();
 		ImGui::RadioButton("Cone", &secondProvisional_, 1); ImGui::SameLine();
 		ImGui::RadioButton("Box", &secondProvisional_, 2);
@@ -231,6 +231,7 @@ void Effect::Setting(){
 		if (isSizeChange_) {
 			ImGui::RadioButton("Reduction", &forceProvisional_, 0);
 			ImGui::RadioButton("Expand", &forceProvisional_, 1);
+			ImGui::DragFloat3("EndSize", &endSize_.x, 0.01f, 0.01f, 10.0f);
 			if (forceProvisional_ == 0) {
 				isReduction_ = true;
 				isExpand_ = false;
@@ -280,7 +281,8 @@ void Effect::Create() {
 				Vector3 newVelo;
 				if (!isCone_) {
 					newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
-				} else {
+				}
+				else {
 					Vector3 randomAngle = { Random::Float(-coneAngle_, coneAngle_) ,0.0f,Random::Float(-coneAngle_, coneAngle_) };
 					Matrix4x4 randomRotate = Matrix4x4::MakeRotate(randomAngle);
 
@@ -295,7 +297,7 @@ void Effect::Create() {
 
 				Grain* newGrain = new Grain();
 				newGrain->Initialze(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 				grains_.push_back(newGrain);
 				currentRateTime = rateTime_;
 			}
@@ -325,7 +327,7 @@ void Effect::Create() {
 
 				Grain* newGrain = new Grain();
 				newGrain->Initialze(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, SizeChangeType::kReduction);
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 				grains_.push_back(newGrain);
 				accumulationDistance = 0.0f;
 			}
