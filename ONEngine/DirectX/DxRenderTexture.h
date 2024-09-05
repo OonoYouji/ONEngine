@@ -9,10 +9,15 @@
 
 using namespace Microsoft::WRL;
 
-
+namespace ONE {
+	class DxDescriptor;
+}
 
 class DxRenderTexture {
 public:
+
+	DxRenderTexture() {}
+	~DxRenderTexture() {}
 
 	static ComPtr<ID3D12Resource> CreateRenderTextureResource(
 		ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor
@@ -21,11 +26,22 @@ public:
 
 	void Initialize(const Vector4& clearColor);
 
+	void SetRenderTarget(
+		ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor
+	);
+
 private:
 
-	Vec4 clearColor_;
+	struct DescriptorHandle final {
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+	};
 
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle_;
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle_;
+
+	Vec4 clearColor_;
+	DescriptorHandle rtvHandle_;
+	DescriptorHandle srvHandle_;
+
+	ComPtr<ID3D12Resource> renderTextureResource_;
 
 };

@@ -3,6 +3,8 @@
 #include <WinApp.h>
 #include <Logger.h>
 #include <DxCommon.h>
+#include <DxCommand.h>
+#include <DxDescriptor.h>
 #include <FrameTimer.h>
 #include <Input.h>
 
@@ -18,6 +20,8 @@
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
+
+#include <DxRenderTexture.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -55,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
-	
+
 	audioManager->Load("fanfare.wav");
 
 	//modelManager->Load("Sphere");
@@ -66,11 +70,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera(gameCamera);
-	
+
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
 
 	sceneManager->Initialize();
+
+
+	std::unique_ptr<DxRenderTexture> renderTex = std::make_unique<DxRenderTexture>();
+	renderTex->Initialize({ 1,0,0,1 });
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -95,7 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		cameraManager->Update();
 
 		sceneManager->Update();
-		
+
 		/// 更新1
 		gameObjectManager->Update();
 		/// 当たり判定処理
@@ -108,6 +116,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 		/// ↓ 描画処理に移る
 		/// ====================================
+
+		renderTex->SetRenderTarget(
+			dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor()
+		);
 
 		dxCommon->PreDraw();
 		sceneManager->PreDraw();
@@ -129,12 +141,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
+		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
 		sceneManager->PostDraw();
 		dxCommon->PostDraw();
 
 	}
 
+
+	renderTex.reset();
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();

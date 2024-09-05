@@ -96,7 +96,7 @@ void ONE::DxCommon::PreDraw() {
 void ONE::DxCommon::PostDraw() {
 	
 //#ifdef NDEBUG
-	doubleBuffer_->CopyToBB(command_->GetList(), SceneManager::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PRESENT);
+	//doubleBuffer_->CopyToBB(command_->GetList(), SceneManager::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PRESENT);
 //#endif // NDEBUG
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
