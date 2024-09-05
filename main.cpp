@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	std::unique_ptr<DxRenderTexture> renderTex = std::make_unique<DxRenderTexture>();
-	renderTex->Initialize({ 1,0,0,1 });
+	renderTex->Initialize({ 1,0,0,0 });
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -117,14 +117,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理に移る
 		/// ====================================
 
+		dxCommon->PreDraw();
+		modelManager->PreDraw();
+		spriteManager->PreDraw();
+
 		renderTex->SetRenderTarget(
 			dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor()
 		);
-
-		dxCommon->PreDraw();
-		sceneManager->PreDraw();
-		modelManager->PreDraw();
-		spriteManager->PreDraw();
 
 		sceneManager->Draw();
 
@@ -143,8 +142,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		dxCommon->SetRenderTarget();
 		imGuiManager->EndFrame();
-		sceneManager->PostDraw();
-		dxCommon->PostDraw();
+		dxCommon->PostDraw(renderTex->GetRenderTexResource());
 
 	}
 

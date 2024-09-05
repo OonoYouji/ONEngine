@@ -48,16 +48,18 @@ void DxRenderTexture::Initialize(const Vector4& clearColor) {
 	ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
 	ONE::DxDescriptor* descriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
 	
+
+	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	clearColor_ = clearColor;
 	renderTextureResource_ =
-		CreateRenderTextureResource(device, 1280, 720, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, clearColor_);
+		CreateRenderTextureResource(device, 1280, 720, format, clearColor_);
 
 
 	rtvHandle_.cpuHandle = descriptor->GetRtvCpuHandle();
 	descriptor->AddRtvUsedCount();
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.Format = format;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	device->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc, rtvHandle_.cpuHandle);
@@ -68,7 +70,7 @@ void DxRenderTexture::Initialize(const Vector4& clearColor) {
 	descriptor->AddSrvUsedCount();
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
-	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	renderTextureSrvDesc.Format = format;
 	renderTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	renderTextureSrvDesc.Texture2D.MipLevels = 1;

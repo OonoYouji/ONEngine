@@ -93,10 +93,10 @@ void ONE::DxCommon::PreDraw() {
 /// ===================================================
 /// 描画後処理
 /// ===================================================
-void ONE::DxCommon::PostDraw() {
+void ONE::DxCommon::PostDraw(ID3D12Resource* rtvResource) {
 	
 //#ifdef NDEBUG
-	//doubleBuffer_->CopyToBB(command_->GetList(), SceneManager::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PRESENT);
+	doubleBuffer_->CopyToBB(command_->GetList(), rtvResource, D3D12_RESOURCE_STATE_RENDER_TARGET);
 //#endif // NDEBUG
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

@@ -49,7 +49,7 @@ namespace ONE {
 		/// <summary>
 		/// 描画後処理
 		/// </summary>
-		void PostDraw();
+		void PostDraw(ID3D12Resource* rtvResource);
 
 		/// <summary>
 		/// CommandList内にある命令を実行する

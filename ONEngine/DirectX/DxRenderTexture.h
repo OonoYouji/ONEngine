@@ -30,6 +30,10 @@ public:
 		ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor
 	);
 
+	ID3D12Resource* GetRenderTexResource() const {
+		return renderTextureResource_.Get();
+	}
+
 private:
 
 	struct DescriptorHandle final {
