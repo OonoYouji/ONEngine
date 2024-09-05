@@ -176,8 +176,11 @@
     <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
       <Filter>ONEngine\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\DirectX\DxRenderTexture.cpp">
-      <Filter>ONEngine\DirectX</Filter>
+    <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.cpp">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +291,9 @@
     </Filter>
     <Filter Include="Resources\Shaders\BlendRenderTexture">
       <UniqueIdentifier>{86999703-20b2-4a4a-be73-6989da8eaaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\RenderTexture">
+      <UniqueIdentifier>{88a2e0c7-12d9-43ed-a766-f400cfb9cc26}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -468,8 +474,11 @@
     <ClInclude Include="ONEngine\Collision\SphereCollider.h">
       <Filter>ONEngine\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\DirectX\DxRenderTexture.h">
-      <Filter>ONEngine\DirectX</Filter>
+    <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.h">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

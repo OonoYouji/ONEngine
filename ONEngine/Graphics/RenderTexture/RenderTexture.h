@@ -15,14 +15,11 @@ namespace ONE {
 	class DxDescriptor;
 }
 
-class DxRenderTexture {
+class RenderTexture {
 public:
 
-	DxRenderTexture() {}
-	~DxRenderTexture() {}
-
-	static void StaticInitialize();
-	static void StaticFinalize();
+	RenderTexture() {}
+	~RenderTexture() {}
 
 	static ComPtr<ID3D12Resource> CreateRenderTextureResource(
 		ID3D12Device* device, uint32_t width, uint32_t height, DXGI_FORMAT format, const Vector4& clearColor
@@ -37,18 +34,11 @@ public:
 
 	void SetRenderTarget();
 
-	void BlendRenderTexture(DxRenderTexture* frontRenderTex, DxRenderTexture* output);
+	void BlendRenderTexture(RenderTexture* frontRenderTex, RenderTexture* output);
 
 	ID3D12Resource* GetRenderTexResource() const {
 		return renderTextureResource_.Get();
 	}
-
-private:
-
-	static std::unique_ptr<PipelineState> sPipeline_;
-	static ComPtr<ID3D12Resource> sViewProjectionBuffer_;
-	static ComPtr<ID3D12Resource> sVertexBuffer_;
-	static D3D12_VERTEX_BUFFER_VIEW sVbv_;
 
 private:
 

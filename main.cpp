@@ -21,7 +21,7 @@
 #include <GameCamera.h>
 #include <DebugCamera.h>
 
-#include <DxRenderTexture.h>
+#include <RenderTextureManager.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -44,6 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	CameraManager* cameraManager = CameraManager::GetInstance();
 	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
 	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -76,15 +77,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	sceneManager->Initialize();
 
-	DxRenderTexture::StaticInitialize();
-	std::unique_ptr<DxRenderTexture> renderTex = std::make_unique<DxRenderTexture>();
-	renderTex->Initialize({ 0,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-	
-	std::unique_ptr<DxRenderTexture> renderTex2 = std::make_unique<DxRenderTexture>();
-	renderTex2->Initialize({ 0,0,0,0 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-	
-	std::unique_ptr<DxRenderTexture> outputRenderTex = std::make_unique<DxRenderTexture>();
-	outputRenderTex->Initialize({ 0,0,0,1 }, dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTexManager->CreateRenderTarget("3dObject", 0);
+	renderTexManager->CreateRenderTarget("frontSprite", 1);
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -127,7 +122,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PreDraw();
 		spriteManager->PreDraw();
 
-		renderTex->SetRenderTarget();
+		renderTexManager->SetRenderTarget("3dObject");
 
 		sceneManager->Draw();
 
@@ -141,22 +136,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		modelManager->PostDraw();
 
-		renderTex2->SetRenderTarget();
+		renderTexManager->SetRenderTarget("frontSprite");
 		spriteManager->PostDraw();
 
-		renderTex->BlendRenderTexture(renderTex2.get(), outputRenderTex.get());
-
+		renderTexManager->End();
 		imGuiManager->EndFrame();
 
-		dxCommon->PostDraw(outputRenderTex->GetRenderTexResource());
+		dxCommon->PostDraw(renderTexManager->GetLastOutputRenderTexture()->GetRenderTexResource());
 
 	}
 
 
-	renderTex.reset();
-	renderTex2.reset();
-	outputRenderTex.reset();
-	DxRenderTexture::StaticFinalize();
+	renderTexManager->Finalize();
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
