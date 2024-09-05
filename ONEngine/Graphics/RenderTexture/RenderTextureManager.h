@@ -22,7 +22,7 @@ public:
 	static void EndRenderTarget(const std::string& name);
 
 	static void CreateRenderTarget(const std::string& name, uint32_t layerNumber);
-
+	static void SetIsBlending(const std::string& name, bool isBlending);
 
 	/// <summary>
 	/// thisの初期化
@@ -56,7 +56,12 @@ private:
 	static RenderTextureManager sInstance_;
 
 	std::vector<std::unique_ptr<RenderTexture>> renderTextures_;
-	std::unordered_map<std::string, uint32_t> layerNumbers_;
+
+	struct RenderTexData {
+		uint32_t layerNum;
+		bool isBlending;
+	};
+	std::unordered_map<std::string, RenderTexData> renderTexData_;
 
 	std::unique_ptr<RenderTexture> finalRenderTex_;
 	std::unique_ptr<RenderTexture> intermediateTextures_[2];

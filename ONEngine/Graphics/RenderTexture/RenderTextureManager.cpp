@@ -115,8 +115,10 @@ void RenderTextureManager::EndFrame() {
 	}
 
 	std::vector<uint32_t> values;
-	for(const auto& pair : layerNumbers_) {
-		values.push_back(pair.second);
+	for(const auto& pair : renderTexData_) {
+		if(pair.second.isBlending) {
+			values.push_back(pair.second.layerNum);
+		}
 	}
 
 	std::sort(values.begin(), values.end());
@@ -184,7 +186,7 @@ void RenderTextureManager::EndFrame() {
 
 
 	/*
-	
+
 	rtv a,b,c,d
 
 		a ----- b
@@ -194,7 +196,7 @@ void RenderTextureManager::EndFrame() {
 				output2 ----- d
 						  |
 						output1
-	
+
 	*/
 
 }
@@ -210,7 +212,7 @@ void RenderTextureManager::BindForCommandList() {
 
 void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 
-	auto renderTex = sInstance_.renderTextures_[sInstance_.layerNumbers_.at(name)].get();
+	auto renderTex = sInstance_.renderTextures_[sInstance_.renderTexData_.at(name).layerNum].get();
 
 	ONE::DxBarrierCreator::CreateBarrier(
 		renderTex->GetRenderTexResource(),
@@ -225,7 +227,7 @@ void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 
 void RenderTextureManager::EndRenderTarget(const std::string& name) {
 
-	auto renderTex = sInstance_.renderTextures_[sInstance_.layerNumbers_.at(name)].get();
+	auto renderTex = sInstance_.renderTextures_[sInstance_.renderTexData_.at(name).layerNum].get();
 
 	ONE::DxBarrierCreator::CreateBarrier(
 		renderTex->GetRenderTexResource(),
@@ -246,5 +248,13 @@ void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t 
 	);
 
 	sInstance_.renderTextures_.push_back(std::move(newRenderTex));
-	sInstance_.layerNumbers_[name] = layerNumber;
+	sInstance_.renderTexData_[name] = {
+		.layerNum = layerNumber,
+		.isBlending = true
+	};
+}
+
+
+void RenderTextureManager::SetIsBlending(const std::string& name, bool isBlending) {
+	sInstance_.renderTexData_.at(name).isBlending = isBlending;
 }

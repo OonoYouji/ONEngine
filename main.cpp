@@ -82,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	renderTexManager->CreateRenderTarget("frontSprite", 1);
 	renderTexManager->CreateRenderTarget("ImGui", 2);
 
+	renderTexManager->SetIsBlending("frontSprite", false);
+
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
