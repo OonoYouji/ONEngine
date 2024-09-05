@@ -93,9 +93,10 @@ private:
 	float yRamdomLimite = 1.0f;
 	float zRamdomLimite = 0.0f;
 
-	float cornLenght_ = 1.0f;
-	float boxSizeX = 0.4f;
-	float boxSizeZ = 0.4f;
+	float coneLenght_ = 1.0f;
+	float coneAngle_ = 2.0f;
+	float boxSizeX_ = 0.4f;
+	float boxSizeZ_ = 0.4f;
 
 
 

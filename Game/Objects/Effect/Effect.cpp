@@ -137,7 +137,7 @@ void Effect::Setting(){
 			yRamdomLimite = 1.0f;
 			zRamdomLimite = 0.0f;
 
-			cornLenght_ = 1.0f;
+			coneLenght_ = 1.0f;
 
 		}
 		if (secondProvisional_ == 1) {
@@ -145,11 +145,12 @@ void Effect::Setting(){
 			isCone_ = true;
 			isBox_ = false;
 
-			ImGui::DragFloat("Corn Lenght", &cornLenght_, 0.01f, 0.0f, 3.0f);
+			//ImGui::DragFloat("Corn Lenght", &cornLenght_, 0.01f, 0.0f, 3.0f);
+			ImGui::DragFloat("Corn Angle", &coneAngle_, 0.001f, 0.0f, 3.141592f);
 
-			xRandomLimite = 1.0f;
+			xRandomLimite = 0.0f;
 			yRamdomLimite = 0.0f;
-			zRamdomLimite = 1.0f;
+			zRamdomLimite = 0.0f;
 
 		}
 		if (secondProvisional_ == 2) {
@@ -157,14 +158,14 @@ void Effect::Setting(){
 			isCone_ = false;
 			isBox_ = true;
 
-			ImGui::DragFloat("Box Size X", &boxSizeX, 0.01f, 0.0f, 2.0f);
-			ImGui::DragFloat("Box Size Z", &boxSizeZ, 0.01f, 0.0f, 2.0f);
+			ImGui::DragFloat("Box Size X", &boxSizeX_, 0.01f, 0.0f, 2.0f);
+			ImGui::DragFloat("Box Size Z", &boxSizeZ_, 0.01f, 0.0f, 2.0f);
 
 			xRandomLimite = 0.0f;
 			yRamdomLimite = 1.0f;
 			zRamdomLimite = 0.0f;
 
-			cornLenght_ = 1.0f;
+			coneLenght_ = 1.0f;
 
 		}
 
@@ -274,16 +275,22 @@ void Effect::Create() {
 		if (particlesEmit > 0) {
 			for (int i = 0; i < particlesEmit; ++i) {
 				if (isBox_) {
-					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX, boxSizeX), 0.0f, Random::Float(-boxSizeZ, boxSizeZ) }, rotateEmitter);
+					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX_, boxSizeX_), 0.0f, Random::Float(-boxSizeZ_, boxSizeZ_) }, rotateEmitter);
 				}
-				Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
-				if (isCone_ || isBox_) {
+				Vector3 newVelo;
+				if (!isCone_) {
+					newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+				} else {
+					Vector3 randomAngle = { Random::Float(-coneAngle_, coneAngle_) ,0.0f,Random::Float(-coneAngle_, coneAngle_) };
+					Matrix4x4 randomRotate = Matrix4x4::MakeRotate(randomAngle);
+
+					Vector3 randomDirection = Matrix4x4::TransformNormal({ 0.0f,1.0f,0.0f }, randomRotate);
+					newVelo = randomDirection;
+				}
+				if (isBox_) {
 					newVelo.y = 1.0f;
 				}
 				newVelo = newVelo.Normalize() * speed_;
-				if (isCone_) {
-					newVelo.y = newVelo.y * cornLenght_;
-				}
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
 				Grain* newGrain = new Grain();
@@ -307,16 +314,13 @@ void Effect::Create() {
 		if (particlesEmit > 0) {
 			for (int i = 0; i < particlesEmit; ++i) {
 				if (isBox_) {
-					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX, boxSizeX), 0.0f, Random::Float(-boxSizeZ, boxSizeZ) }, rotateEmitter);
+					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX_, boxSizeX_), 0.0f, Random::Float(-boxSizeZ_, boxSizeZ_) }, rotateEmitter);
 				}
 				Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
 				if (isCone_ || isBox_) {
 					newVelo.y = 1.0f;
 				}
 				newVelo = newVelo.Normalize() * speed_;
-				if (isCone_) {
-					newVelo.y = newVelo.y * cornLenght_;
-				}
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
 				Grain* newGrain = new Grain();
