@@ -99,11 +99,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
-	std::vector<std::unique_ptr<BaseLayer>> layers_;
-	layers_.push_back(std::make_unique<BaseLayer>());
-	layers_.push_back(std::make_unique<BaseLayer>());
+	std::vector<std::unique_ptr<BaseLayer>> layers;
+	layers.push_back(std::make_unique<BaseLayer>());
+	layers.push_back(std::make_unique<BaseLayer>());
 
-	for(auto& layer : layers_) {
+	for(auto& layer : layers) {
 		layer->BaseInitialize();
 	}
 
@@ -169,7 +169,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 //		renderTexManager->EndRenderTarget("3dObject");
 
 
-		for(auto& layer : layers_) {
+		for(auto& layer : layers) {
 			layer->Draw();
 		}
 
@@ -191,6 +191,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture());
 	}
 
+
+	layers.clear();
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();
