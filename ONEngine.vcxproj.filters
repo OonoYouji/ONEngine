@@ -194,6 +194,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
+    <ClCompile Include="Gamepad.cpp">
+      <Filter>ONEngine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -527,6 +530,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Gamepad.h">
+      <Filter>ONEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

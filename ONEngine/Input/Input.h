@@ -6,6 +6,7 @@
 
 #include <Keyboard.h>
 #include <Mouse.h>
+#include <Gamepad.h>
 
 namespace ONE { class WinApp; }
 
@@ -47,6 +48,24 @@ public:
 	static Vec3 MouseNearPosition();
 	static Vec3 MouseFarPosition();
 
+	static bool PressPadButton(PadCode padCode);
+	static bool TriggerPadButton(PadCode padCode);
+	static bool ReleasePadButton(PadCode padCode);
+
+	static bool PadState(XINPUT_STATE& out);
+	static bool PadStatePrevious(XINPUT_STATE& out);
+	static bool PadState(Pad pad);
+
+	static void SetPadDeadZone(Pad pad, int32_t deadZoneL, int32_t deadZoneR);
+	static Vector2 GetLeftStick();
+	static Vector2 GetRightStick();
+	static Vector2 GetLStick();
+	static Vector2 GetRStick();
+	static uint8_t GetLeftTrigger();
+	static uint8_t GetRightTrigger();
+	static uint8_t GetLTrigger();
+	static uint8_t GetRTrigger();
+
 private:
 
 	/// ===================================================
@@ -55,6 +74,7 @@ private:
 
 	static std::unique_ptr<Keyboard> keyboard_;
 	static std::unique_ptr<Mouse> mouse_;
+	static std::unique_ptr<Gamepad> pad_;
 
 private:
 

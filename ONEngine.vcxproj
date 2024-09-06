@@ -18,6 +18,7 @@
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Gamepad.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
+    <ClInclude Include="Gamepad.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
