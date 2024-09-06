@@ -20,14 +20,25 @@ private:
 
 	std::unique_ptr<Sprite> sprite_;
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
+	Vector3 beforPos = pos;
 
 	std::vector<float> waveHeights_;
 	float separateLenght_ = 1;
+	float addlambda = 0.0f;
+	float beforlambda = addlambda;
+
+
+	float xAccel = 0.1f;
+	bool isJump = false;
+	bool isfly = false;
+
+	Vector3 velo = { 0.02f,0.0f,0.0f };
+	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
 
 
 	int screenOfDivisions = 200;
 	float amplitude = 100.0f;
-	float frequency = 0.05f;
+	float frequency = 0.02f;
 	float offsetY = 360.0f;
 
 };

@@ -19,23 +19,41 @@ void SinWaveDrawer::Update() {
 	waveHeights_.clear();
 	int screeSize = ONE::WinApp::kWindowSizeX;
 
+	beforPos = pos;
+	beforlambda = addlambda;
+	isJump = true;
+
 #ifdef _DEBUG
 	ImGui::Begin("SinWave Setting");
 	ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f);
 	ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f);
 	ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f);
 	ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400);
+	ImGui::DragFloat("lambda", &addlambda, 1.0f);
+	if (ImGui::Button("acce"))
+	{
+		xAccel = 0.0f;
+	}
 	ImGui::DragFloat("Pos", &pos.x, 1.0f);
 	ImGui::End();
 #endif // _DEBUG
 
-	pos.x -= 1.0f;
+	pos.x -= (0.02f + xAccel);
+
+
+	if (beforlambda != addlambda)
+	{
+		isJump = false;
+	}
+
+
+
 
 	for (int i = 0; i <= screenOfDivisions; i++) {
 		float height = 0;
 		float x = (static_cast<float>(screeSize) / static_cast<float>(screenOfDivisions)) * i;
 
-		height = amplitude * sinf(frequency * x) + offsetY;
+		height = amplitude * sinf(frequency * (x + addlambda)) + offsetY;
 
 		waveHeights_.push_back(height);
 	}
@@ -44,8 +62,50 @@ void SinWaveDrawer::Update() {
 
 
 
-	pos.y = amplitude * sinf(frequency * pos.x) + offsetY;
+
+	if (!isfly)
+	{
+		pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+	}
+	else
+	{
+		flyspeed.y += 0.04f;
+		pos.y += flyspeed.y;
+		if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
+		{
+			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+			isfly = false;
+		}
+	}
+
 	sprite_->SetPos(pos);
+	if (amplitude >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
+	{
+		if (!isfly)
+		{
+			isfly = true;
+			flyspeed = pos - beforPos;
+		}
+	}
+
+	if (!isfly)
+	{
+		if (beforPos.y < pos.y)
+		{
+			if (beforlambda != addlambda)
+			{
+				if (beforlambda > addlambda)
+				{
+					xAccel += 0.02f;
+				}
+			}
+			else
+			{
+				xAccel += 0.02f;
+			}
+		}
+	}
+
 }
 
 void SinWaveDrawer::Draw() {
