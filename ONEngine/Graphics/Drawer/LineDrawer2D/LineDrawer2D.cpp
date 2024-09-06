@@ -13,8 +13,8 @@ void LineDrawer2D::Initialize() {
 
 	pipeline_.reset(new PipelineState());
 	shader_.ShaderCompile(
-		L"Line2D.VS.hlsl", L"vs_6_0",
-		L"Line2D.PS.hlsl", L"ps_6_0"
+		L"Line2D/Line2D.VS.hlsl", L"vs_6_0",
+		L"Line2D/Line2D.PS.hlsl", L"ps_6_0"
 	);
 
 	pipeline_->SetFillMode(kSolid);

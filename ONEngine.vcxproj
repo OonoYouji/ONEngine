@@ -31,7 +31,6 @@
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
-    <ClCompile Include="LineDrawer2D.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
@@ -54,6 +53,8 @@
     <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp" />
     <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Material\Material.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\Model.cpp" />
@@ -76,7 +77,6 @@
     <ClCompile Include="ONEngine\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
     <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
-    <ClCompile Include="SinWaveDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imconfig.h" />
@@ -100,7 +100,6 @@
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
-    <ClInclude Include="LineDrawer2D.h" />
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
     <ClInclude Include="ONEngine\Audio\AudioSource.h" />
@@ -122,6 +121,8 @@
     <ClInclude Include="ONEngine\GameObject\BaseGameObject.h" />
     <ClInclude Include="ONEngine\GameObject\GameObjectManager.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Material\Material.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\Model.h" />
@@ -144,14 +145,13 @@
     <ClInclude Include="ONEngine\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
     <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
-    <ClInclude Include="SinWaveDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Floor\Floor.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Resources\Shaders\Line2D.hlsli">
+    <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
@@ -173,11 +173,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Line2D.PS.hlsl">
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Line2D.VS.hlsl">
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
