@@ -56,6 +56,7 @@ void RenderTexture::Initialize(const Vector4& clearColor, ID3D12GraphicsCommandL
 	ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
 	pCommandList_ = commandList;
 	pDxDescriptor_ = descriptor;
+	currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	clearColor_ = clearColor;
@@ -93,11 +94,39 @@ void RenderTexture::SetRenderTarget() {
 	pCommandList_->ClearRenderTargetView(rtvHandle_.cpuHandle, &clearColor_.x, 0, nullptr);
 }
 
+void RenderTexture::BeginRenderTarget() {
+
+	ONE::DxBarrierCreator::CreateBarrier(
+		GetRenderTexResource(),
+		currentResourceState,
+		D3D12_RESOURCE_STATE_RENDER_TARGET
+	);
+	currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+	SetRenderTarget();
+}
+
+void RenderTexture::EndRenderTarget() {
+
+	ONE::DxBarrierCreator::CreateBarrier(
+		GetRenderTexResource(),
+		currentResourceState,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
+	currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+}
+
+void RenderTexture::ClearDepth() {
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDxDescriptor_->GetDsvCpuHandle();
+	pCommandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
 
 
 void RenderTexture::BlendRenderTexture(RenderTexture* frontRenderTex, RenderTexture* output) {
 
-	output->SetRenderTarget();
+	output->BeginRenderTarget();
 
 	RenderTextureManager::GetInstance()->BindForCommandList();
 
@@ -106,4 +135,5 @@ void RenderTexture::BlendRenderTexture(RenderTexture* frontRenderTex, RenderText
 	pCommandList_->SetGraphicsRootDescriptorTable(2, frontRenderTex->srvHandle_.gpuHandle);
 
 	pCommandList_->DrawInstanced(3, 1, 0, 0);
+	output->EndRenderTarget();
 }

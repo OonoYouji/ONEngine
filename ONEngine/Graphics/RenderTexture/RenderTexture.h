@@ -34,6 +34,11 @@ public:
 
 	void SetRenderTarget();
 
+	void BeginRenderTarget();
+	void EndRenderTarget();
+
+	void ClearDepth();
+
 	void BlendRenderTexture(RenderTexture* frontRenderTex, RenderTexture* output);
 
 	ID3D12Resource* GetRenderTexResource() const {
@@ -43,6 +48,9 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvGpuHandle() {
 		return srvHandle_.gpuHandle;
 	}
+
+	D3D12_RESOURCE_STATES currentResourceState;
+
 
 private:
 

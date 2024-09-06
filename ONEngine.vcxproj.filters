@@ -197,6 +197,12 @@
     <ClCompile Include="Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Layer\BaseLayer.cpp">
+      <Filter>ONEngine\Graphics\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Layer\GameLayer.cpp">
+      <Filter>ONEngine\Graphics\Layer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -333,6 +339,9 @@
     </Filter>
     <Filter Include="Resources\Shaders\Line2D">
       <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Layer">
+      <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -533,6 +542,12 @@
     </ClInclude>
     <ClInclude Include="Gamepad.h">
       <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Layer\BaseLayer.h">
+      <Filter>ONEngine\Graphics\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Layer\GameLayer.h">
+      <Filter>ONEngine\Graphics\Layer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
