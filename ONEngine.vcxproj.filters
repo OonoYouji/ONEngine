@@ -310,6 +310,9 @@
     <Filter Include="Resources\Shaders\LuminanceExtraction">
       <UniqueIdentifier>{525e09c4-611f-4ca1-9f28-f33125860867}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\Blur">
+      <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -518,6 +521,9 @@
     <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
       <Filter>Resources\Shaders\LuminanceExtraction</Filter>
     </None>
+    <None Include="Resources\Shaders\Blur\Blur.hlsli">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
@@ -555,6 +561,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
       <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

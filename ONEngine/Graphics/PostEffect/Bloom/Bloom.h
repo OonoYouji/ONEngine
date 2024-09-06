@@ -18,8 +18,15 @@ public:
 
 	struct BloomData final {
 		float intensity; /// 強度
-		float threshold; /// 閾値
 		Vec2 texSize; /// ピクセルの範囲
+	};
+	
+	struct BlurData final {
+		Vec2 texSize; /// ピクセルの範囲
+	};
+	
+	struct LuminanceData final {
+		float threshold; /// 閾値
 	};
 
 public:
@@ -38,7 +45,9 @@ public:
 
 private:
 
-	static std::unique_ptr<PipelineState> sPipeline_;
+	static std::unique_ptr<PipelineState> sBloom_;
+	static std::unique_ptr<PipelineState> sBluer_;
+	static std::unique_ptr<PipelineState> sLuminance_;
 
 	
 

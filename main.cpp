@@ -68,13 +68,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("frontSprite", 2, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("ImGui", 3, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("ImGui",5, { 0,0,0,0 });
 
 	renderTexManager->SetIsBlending("3dObject", false);
+	//renderTexManager->SetIsBlending("frontSprite", false);
 	//renderTexManager->SetIsBlending("ImGui", false);
 
-	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 1);
+	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
 
 	gameObjectManager->Initialize();
 
@@ -108,6 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		frameTimer->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
+		renderTexManager->ImGuiDebug();
 		Bloom::ImGuiDebug();
 
 		cameraManager->Update();
@@ -146,13 +148,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		modelManager->PostDraw();
 		renderTexManager->EndRenderTarget("3dObject");
 
-		Bloom::CreateBloomRenderTexture(
-			renderTexManager->GetRenderTarget("3dObject")
-		);
+		
 
 		renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
 		renderTexManager->EndRenderTarget("frontSprite");
+
+		Bloom::CreateBloomRenderTexture(
+			renderTexManager->GetRenderTarget("3dObject")
+		);
 
 		renderTexManager->EndFrame();
 

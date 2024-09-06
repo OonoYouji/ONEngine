@@ -38,6 +38,8 @@ public:
 	void Finalize();
 
 
+	void ImGuiDebug();
+
 	/// <summary>
 	/// フレームの最後に行う
 	/// </summary>

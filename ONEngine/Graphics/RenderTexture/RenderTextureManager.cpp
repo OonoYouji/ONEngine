@@ -5,6 +5,7 @@
 #include <WinApp.h>
 #include <DxResourceCreator.h>
 #include <DxBarrierCreator.h>
+#include <ImGuiManager.h>
 
 #include <Matrix4x4.h>
 #include <Vector2.h>
@@ -107,10 +108,32 @@ void RenderTextureManager::Finalize() {
 	pipeline_.reset();
 }
 
+void RenderTextureManager::ImGuiDebug() {
+#ifdef _DEBUG
+	if(!ImGui::Begin("RenderTextureMaanger")) {
+		ImGui::End();
+		return;
+	}
+
+	for(auto& tex : renderTexDatas_) {
+		ImGui::Checkbox((tex.first + std::string("  isBlending")).c_str(), &tex.second.isBlending);
+	}
+
+	ImGui::End();
+	
+#endif // _DEBUG
+}
+
 void RenderTextureManager::EndFrame() {
 
-	if(renderTextures_.size() < 2) {
+	int blendingNum = 0;
+	for(auto& tex : renderTexDatas_) {
+		if(tex.second.isBlending) {
+			blendingNum++;
+		}
+	}
 
+	if(blendingNum < 2) {
 		return;
 	}
 

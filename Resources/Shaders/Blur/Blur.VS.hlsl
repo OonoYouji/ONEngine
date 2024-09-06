@@ -1,4 +1,4 @@
-#include "LuminanceExtraction.hlsli"
+#include "Blur.hlsli"
 
 cbuffer ViewProjection : register(b0) {
 	float4x4 matVp;
