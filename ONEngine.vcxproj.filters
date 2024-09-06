@@ -191,6 +191,8 @@
     <ClCompile Include="Game\Objects\Guide\Guide.cpp">
       <Filter>Game\Objects\Guide</Filter>
     </ClCompile>
+    <ClCompile Include="LineDrawer2D.cpp" />
+    <ClCompile Include="SinWaveDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -507,6 +509,8 @@
     <ClInclude Include="Game\Objects\Guide\Guide.h">
       <Filter>Game\Objects\Guide</Filter>
     </ClInclude>
+    <ClInclude Include="LineDrawer2D.h" />
+    <ClInclude Include="SinWaveDrawer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -517,6 +521,9 @@
     </None>
     <None Include="Resources\Shaders\Floor\Floor.hlsli">
       <Filter>Resources\Shaders\Floor</Filter>
+    </None>
+    <None Include="Resources\Shaders\Line2D.hlsli">
+      <Filter>Resources\Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -537,6 +544,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
       <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D.PS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D.VS.hlsl">
+      <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

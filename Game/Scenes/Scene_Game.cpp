@@ -7,9 +7,13 @@
 #include "Submarine/Submarine.h"
 #include "Guide/Guide.h"
 
-
 Scene_Game::Scene_Game() {}
-Scene_Game::~Scene_Game() {}
+Scene_Game::~Scene_Game() {
+
+	delete sinWave_;
+	line2d_->Finalize();
+
+}
 
 
 /// ===================================================
@@ -19,15 +23,14 @@ void Scene_Game::Initialize() {
 
 	model_ = ModelManager::CreateCube();
 	model_->Initialize();
-
-	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
 	
 	transform_.Initialize();
 
-	Submarine* submarine = new Submarine;
-	submarine->Initialize();
+	line2d_ = LineDrawer2D::GetInstance();
+	line2d_->Initialize();
 
+	sinWave_ = new SinWaveDrawer();
+	sinWave_->Initialize();
 
 }
 
@@ -36,8 +39,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-
-
+	
+	sinWave_->Update();
 
 	transform_.UpdateMatrix();
 }
@@ -52,4 +55,11 @@ void Scene_Game::Draw() {
 
 	//sprite_->Draw();
 
+	line2d_->PreDraw();
+
+
+	sinWave_->Draw();
+
+
+	line2d_->PostDraw();
 }
