@@ -238,10 +238,10 @@ void RenderTextureManager::EndRenderTarget(const std::string& name) {
 }
 
 
-void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t layerNumber) {
+void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor) {
 	std::unique_ptr<RenderTexture> newRenderTex;
 	newRenderTex.reset(new RenderTexture());
-	newRenderTex->Initialize({ 0,0,0,0 }, sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
+	newRenderTex->Initialize(clearColor, sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
 	ONE::DxBarrierCreator::CreateBarrier(
 		newRenderTex->GetRenderTexResource(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET,

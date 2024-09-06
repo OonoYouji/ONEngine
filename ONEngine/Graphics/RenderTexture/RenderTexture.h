@@ -40,6 +40,10 @@ public:
 		return renderTextureResource_.Get();
 	}
 
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvGpuHandle() {
+		return srvHandle_.gpuHandle;
+	}
+
 private:
 
 	struct DescriptorHandle final {
