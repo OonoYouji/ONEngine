@@ -4,14 +4,12 @@
 #include <ModelManager.h>
 
 #include "Player/Player.h"
-#include "Submarine/Submarine.h"
-#include "Guide/Guide.h"
+
 
 Scene_Game::Scene_Game() {}
 Scene_Game::~Scene_Game() {
 
 	delete sinWave_;
-	line2d_->Finalize();
 
 }
 
@@ -30,8 +28,7 @@ void Scene_Game::Initialize() {
 
 	transform_.Initialize();
 
-	line2d_ = LineDrawer2D::GetInstance();
-	line2d_->Initialize();
+	
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
@@ -56,14 +53,8 @@ void Scene_Game::Update() {
 void Scene_Game::Draw() {
 
 	//model_->Draw(&transform_);
-
 	//sprite_->Draw();
-
-	line2d_->PreDraw();
-
 
 	sinWave_->Draw();
 
-
-	line2d_->PostDraw();
 }

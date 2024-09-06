@@ -9,11 +9,13 @@
 #include <WorldTime.h>
 #include <Input.h>
 
-#include <SceneManager.h>
 #include <ModelManager.h>
 #include <SpriteManager.h>
 #include <TextureManager.h>
 #include <AudioManager.h>
+#include <LineDrawer2D/LineDrawer2D.h>
+
+#include <SceneManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 #include <GameObjectManager.h>
@@ -48,6 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
 	CollisionManager* collisionManager = CollisionManager::GetInstance();
 	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
+	LineDrawer2D* lineDrawer2d = LineDrawer2D::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -66,12 +69,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	audioManager->Load("fanfare.wav");
 
-	//modelManager->Load("Sphere");
+	
+	lineDrawer2d->Initialize();
 
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
 	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("ImGui",5, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("ImGui", 5, { 0,0,0,0 });
 
 	renderTexManager->SetIsBlending("3dObject", false);
 	//renderTexManager->SetIsBlending("frontSprite", false);
@@ -134,6 +138,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PreDraw();
 		modelManager->PreDraw();
 		spriteManager->PreDraw();
+		lineDrawer2d->PreDraw();
 
 		renderTexManager->BeginRenderTarget("3dObject");
 
@@ -148,9 +153,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameObjectManager->FrontSpriteDraw();
 
 		modelManager->PostDraw();
+		lineDrawer2d->PostDraw();
 		renderTexManager->EndRenderTarget("3dObject");
 
-		
+
 
 		renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
@@ -178,6 +184,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
 
+	lineDrawer2d->Finalize();
 	audioManager->Finalize();
 	spriteManager->Finalize();
 	modelManager->Finalize();

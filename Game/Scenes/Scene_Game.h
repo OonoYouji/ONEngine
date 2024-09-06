@@ -10,8 +10,8 @@
 #include <Transform.h>
 
 #include <AudioManager.h>
-#include "LineDrawer2D.h"
-#include "SinWaveDrawer.h"
+#include "LineDrawer2D/LineDrawer2D.h"
+#include "LineDrawer2D/SinWaveDrawer.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -34,7 +34,6 @@ private:
 
 	std::unique_ptr<Sprite> sprite_;
 
-	LineDrawer2D* line2d_;
 	SinWaveDrawer* sinWave_;
 
 };

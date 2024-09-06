@@ -185,9 +185,15 @@
     <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp" />
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp" />
-    <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
+    <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp">
+      <Filter>ONEngine\WorldTime</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -315,6 +321,15 @@
     </Filter>
     <Filter Include="Resources\Shaders\Blur">
       <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\WorldTime">
+      <UniqueIdentifier>{31f4694b-ae51-4838-979d-51870a164f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\LineDrawer2D">
+      <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Line2D">
+      <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -504,9 +519,15 @@
     <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h" />
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h" />
-    <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
+    <ClInclude Include="ONEngine\WorldTime\WorldTime.h">
+      <Filter>ONEngine\WorldTime</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -529,6 +550,9 @@
     </None>
     <None Include="Resources\Shaders\Blur\Blur.hlsli">
       <Filter>Resources\Shaders\Blur</Filter>
+    </None>
+    <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
+      <Filter>Resources\Shaders\Line2D</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -573,6 +597,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
       <Filter>Resources\Shaders\Blur</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
