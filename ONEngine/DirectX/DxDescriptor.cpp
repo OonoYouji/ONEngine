@@ -19,7 +19,7 @@ ONE::DxDescriptor::~DxDescriptor() {
 /// ===================================================
 void ONE::DxDescriptor::Initialize(ID3D12Device* device) {
 
-	rtvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 4, false);
+	rtvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 12, false);
 	rtvHeapSize_ = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	srvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
@@ -27,7 +27,7 @@ void ONE::DxDescriptor::Initialize(ID3D12Device* device) {
 
 	dsvHeap_ = CreateHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	dsvHeapSize_ = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-
+	dsvStartCpuHandle_ = dsvHeap_->GetCPUDescriptorHandleForHeapStart();
 
 }
 
@@ -76,7 +76,7 @@ void ONE::DxDescriptor::AddSrvUsedCount() {
 /// DSVの先頭アドレス
 /// ===================================================
 D3D12_CPU_DESCRIPTOR_HANDLE ONE::DxDescriptor::GetDsvCpuHandle() {
-	return dsvHeap_->GetCPUDescriptorHandleForHeapStart();
+	return dsvHeap_->GetCPUDescriptorHandleForHeapStart();;
 }
 
 
@@ -84,7 +84,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE ONE::DxDescriptor::GetDsvCpuHandle() {
 /// SRVHeapをCommandListにセットする
 /// ===================================================
 void ONE::DxDescriptor::SetSRVHeap(ID3D12GraphicsCommandList* commandList) {
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvHeap_.Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvHeap_.Get() };
 	commandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 }
 

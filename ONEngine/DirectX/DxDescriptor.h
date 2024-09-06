@@ -116,7 +116,7 @@ namespace ONE {
 		ComPtr<ID3D12DescriptorHeap> dsvHeap_ = nullptr;
 		uint32_t dsvUsedCount_ = 0;
 		uint32_t dsvHeapSize_;
-
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvStartCpuHandle_;
 
 	private:
 		DxDescriptor(const DxDescriptor&) = delete;

@@ -73,7 +73,7 @@ void ImGuiManager::BeginFrame() {
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
+	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 }
 
@@ -83,7 +83,7 @@ void ImGuiManager::BeginFrame() {
 /// ===================================================
 void ImGuiManager::EndFrame() {
 
-	dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
+	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetDxCommand()->GetList());

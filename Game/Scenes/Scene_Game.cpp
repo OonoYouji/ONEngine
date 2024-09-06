@@ -23,7 +23,11 @@ void Scene_Game::Initialize() {
 
 	model_ = ModelManager::CreateCube();
 	model_->Initialize();
-	
+
+	sprite_.reset(new Sprite());
+	sprite_->Initialize("uvChecker", "uvChecker.png");
+	sprite_->SetColor({ 1,1,1,0.5f });
+
 	transform_.Initialize();
 
 	line2d_ = LineDrawer2D::GetInstance();

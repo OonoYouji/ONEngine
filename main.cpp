@@ -3,6 +3,8 @@
 #include <WinApp.h>
 #include <Logger.h>
 #include <DxCommon.h>
+#include <DxCommand.h>
+#include <DxDescriptor.h>
 #include <FrameTimer.h>
 #include <WorldTime.h>
 #include <Input.h>
@@ -19,6 +21,9 @@
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
+
+#include <RenderTextureManager.h>
+#include <Bloom/Bloom.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -42,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	CameraManager* cameraManager = CameraManager::GetInstance();
 	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
 	CollisionManager* collisionManager = CollisionManager::GetInstance();
+	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
 
 	winApp->Initialize();
 	dxCommon->Initialize();
@@ -57,22 +63,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
-	
+
 	audioManager->Load("fanfare.wav");
 
 	//modelManager->Load("Sphere");
 
+	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("ImGui",5, { 0,0,0,0 });
+
+	renderTexManager->SetIsBlending("3dObject", false);
+	//renderTexManager->SetIsBlending("frontSprite", false);
+	//renderTexManager->SetIsBlending("ImGui", false);
+
+	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
 
 	gameObjectManager->Initialize();
 
 	GameCamera* gameCamera = new GameCamera();
 	gameCamera->Initialize();
 	cameraManager->SetMainCamera(gameCamera);
-	
+
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
 
 	sceneManager->Initialize();
+
+
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -93,11 +111,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
+		renderTexManager->ImGuiDebug();
+		Bloom::ImGuiDebug();
 
 		cameraManager->Update();
 
 		sceneManager->Update();
-		
+
 		/// 更新1
 		gameObjectManager->Update();
 		/// 当たり判定処理
@@ -112,9 +132,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		dxCommon->PreDraw();
-		sceneManager->PreDraw();
 		modelManager->PreDraw();
 		spriteManager->PreDraw();
+
+		renderTexManager->BeginRenderTarget("3dObject");
 
 		sceneManager->Draw();
 
@@ -127,15 +148,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameObjectManager->FrontSpriteDraw();
 
 		modelManager->PostDraw();
+		renderTexManager->EndRenderTarget("3dObject");
+
+		
+
+		renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
+		renderTexManager->EndRenderTarget("frontSprite");
 
+		Bloom::CreateBloomRenderTexture(
+			renderTexManager->GetRenderTarget("3dObject")
+		);
 
+		renderTexManager->EndFrame();
 
+		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
-		sceneManager->PostDraw();
-		dxCommon->PostDraw();
+		renderTexManager->EndRenderTarget("ImGui");
 
+
+		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture()->GetRenderTexResource());
 	}
+
+
+	renderTexManager->Finalize();
+	Bloom::StaticFinalize();
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();

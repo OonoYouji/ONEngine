@@ -50,40 +50,9 @@ public:
 	/// </summary>
 	void Draw();
 
-
-
-	/// <summary>
-	/// 描画前の処理
-	/// </summary>
-	void PreDraw();
-
-	/// <summary>
-	/// 描画後の処理
-	/// </summary>
-	void PostDraw();
-
-
-	void SceneDraw();
-
-	void ImGuiDraw(const std::string& name, RTVIndex index);
-
-	void SetRenderTarget(RTVIndex index);
-
-
-	ID3D12Resource* GetResource() const { return renderTargets_[kCurrentScene].Get(); }
-
 private:
 
 	std::unique_ptr<BaseScene> scene_ = nullptr;
-
-
-
-	
-
-	ComPtr<ID3D12Resource> renderTargets_[2];
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
-	D3D12_CPU_DESCRIPTOR_HANDLE srvCPUHandles_[2];
-	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandles_[2];
 
 private:
 	SceneManager(const SceneManager&) = delete;

@@ -176,27 +176,18 @@
     <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
       <Filter>ONEngine\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Submarine\Submarine.cpp">
-      <Filter>Game\Objects\Submarine</Filter>
+    <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Wire\Wire.cpp">
-      <Filter>Game\Objects\Wire</Filter>
+    <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.cpp">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Elevator\Elevator.cpp">
-      <Filter>Game\Objects\Elevator</Filter>
+    <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp">
+      <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp">
-      <Filter>ONEngine\WorldTime</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Guide\Guide.cpp">
-      <Filter>Game\Objects\Guide</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp" />
+    <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -304,26 +295,26 @@
     <Filter Include="Game\Objects\Player">
       <UniqueIdentifier>{5f33e8bf-ce85-4667-bc6c-772c056f9127}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Submarine">
-      <UniqueIdentifier>{88d70d55-f638-4723-a78c-c65545045b16}</UniqueIdentifier>
+    <Filter Include="Resources\Shaders\BlendRenderTexture">
+      <UniqueIdentifier>{86999703-20b2-4a4a-be73-6989da8eaaee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Wire">
-      <UniqueIdentifier>{2c0a1e90-180b-46fa-a1ed-90965384e6f8}</UniqueIdentifier>
+    <Filter Include="ONEngine\Graphics\RenderTexture">
+      <UniqueIdentifier>{88a2e0c7-12d9-43ed-a766-f400cfb9cc26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Elevator">
-      <UniqueIdentifier>{6d3973e9-4a30-432b-b5b7-aaea76d3def2}</UniqueIdentifier>
+    <Filter Include="ONEngine\Graphics\PostEffect">
+      <UniqueIdentifier>{d4448a0d-80dc-42f7-a8d2-e5a433eb4917}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\WorldTime">
-      <UniqueIdentifier>{1bf00ea2-cf3f-4f02-a609-cff5406dc235}</UniqueIdentifier>
+    <Filter Include="Resources\Shaders\Bloom">
+      <UniqueIdentifier>{446d8125-b2fb-4e40-9bb1-de9fbb6dbdbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\Guide">
-      <UniqueIdentifier>{1431920d-fbcb-429f-b75e-2c05aaaafff0}</UniqueIdentifier>
+    <Filter Include="ONEngine\Graphics\PostEffect\Bloom">
+      <UniqueIdentifier>{518aaa63-c388-4cf8-b089-0fab17f62b3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\Graphics\Drawer\LineDrawer2D">
-      <UniqueIdentifier>{fc9bf758-a790-450b-9748-537bc0358cdc}</UniqueIdentifier>
+    <Filter Include="Resources\Shaders\LuminanceExtraction">
+      <UniqueIdentifier>{525e09c4-611f-4ca1-9f28-f33125860867}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resources\Shaders\Line2D">
-      <UniqueIdentifier>{b7333e0a-9d74-4490-9d0f-563eacb24159}</UniqueIdentifier>
+    <Filter Include="Resources\Shaders\Blur">
+      <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -504,27 +495,18 @@
     <ClInclude Include="ONEngine\Collision\SphereCollider.h">
       <Filter>ONEngine\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Submarine\Submarine.h">
-      <Filter>Game\Objects\Submarine</Filter>
+    <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Wire\Wire.h">
-      <Filter>Game\Objects\Wire</Filter>
+    <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.h">
+      <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\Elevator\Elevator.h">
-      <Filter>Game\Objects\Elevator</Filter>
+    <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h">
+      <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\WorldTime\WorldTime.h">
-      <Filter>ONEngine\WorldTime</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Guide\Guide.h">
-      <Filter>Game\Objects\Guide</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h" />
+    <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -536,8 +518,17 @@
     <None Include="Resources\Shaders\Floor\Floor.hlsli">
       <Filter>Resources\Shaders\Floor</Filter>
     </None>
-    <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
-      <Filter>Resources\Shaders\Line2D</Filter>
+    <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </None>
+    <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </None>
+    <None Include="Resources\Shaders\Blur\Blur.hlsli">
+      <Filter>Resources\Shaders\Blur</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -559,11 +550,29 @@
     <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
       <Filter>Resources\Shaders\Floor</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl">
-      <Filter>Resources\Shaders\Line2D</Filter>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
-      <Filter>Resources\Shaders\Line2D</Filter>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.PS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.PS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

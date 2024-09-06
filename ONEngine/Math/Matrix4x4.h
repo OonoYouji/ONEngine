@@ -76,6 +76,8 @@ public:
 
 	static Matrix4x4 MakeInverse(const Matrix4x4& m);
 
+	static Matrix4x4 MakeOrthographicMatrix(float l, float t, float r, float b, float nearZ, float farZ);
+
 	static Matrix4x4 MakeViewport(float top, float left, float width, float height, float minD, float maxD);
 
 	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);

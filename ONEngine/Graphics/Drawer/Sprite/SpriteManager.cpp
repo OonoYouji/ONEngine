@@ -6,26 +6,6 @@
 #include <DxResourceCreator.h>
 
 
-
-/// ===================================================
-/// 無記名namespace
-/// ===================================================
-namespace {
-
-	Mat4 MakeOrthographicMatrix(float l, float t, float r, float b, float nearZ, float farZ) {
-		return Mat4(
-			{ 2.0f / (r - l), 0.0f, 0.0f, 0.0f},
-			{ 0.0f, 2.0f / (t - b), 0.0f, 0.0f},
-			{ 0.0f, 0.0f, 1.0f / (farZ - nearZ), 0.0f},
-			{ (l + r) / (l - r), (t + b) / (b - t), nearZ / (nearZ - farZ), 1.0f}
-		);
-	}
-
-} /// namespace
-
-
-
-
 /// ===================================================
 /// インスタンス確保
 /// ===================================================
@@ -73,7 +53,7 @@ void SpriteManager::Initialize() {
 
 	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matViewProjectionData_));
 
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(ONE::WinApp::kWindowSizeY), 0.0f, 1000.0f);
+	Matrix4x4 projectionMatrix = Mat4::MakeOrthographicMatrix(0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(ONE::WinApp::kWindowSizeY), 0.0f, 1000.0f);
 	*matViewProjectionData_ = Mat4::kIdentity * projectionMatrix;
 
 
