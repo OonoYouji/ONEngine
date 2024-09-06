@@ -23,6 +23,9 @@ void WorldTime::ImGuiDebug() {
 
 	ImGui::DragFloat("delta time", &deltaTime_, 0.0f);
 
+	float fps = 1.0f / deltaTime_;
+	ImGui::DragFloat("fps", &fps, 0.0f);
+
 	ImGui::End();
 #endif // _DEBUG
 }

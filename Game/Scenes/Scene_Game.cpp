@@ -28,7 +28,7 @@ void Scene_Game::Initialize() {
 
 	transform_.Initialize();
 
-	
+	(new Player)->Initialize();
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
@@ -52,9 +52,9 @@ void Scene_Game::Update() {
 /// ===================================================
 void Scene_Game::Draw() {
 
-	//model_->Draw(&transform_);
-	//sprite_->Draw();
+	model_->Draw(&transform_);
+	sprite_->Draw();
 
-	sinWave_->Draw();
+	//sinWave_->Draw();
 
 }

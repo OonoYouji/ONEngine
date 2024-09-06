@@ -25,6 +25,7 @@
 #include <DebugCamera.h>
 
 #include <RenderTextureManager.h>
+#include <Layer/BaseLayer.h>
 #include <Bloom/Bloom.h>
 
 
@@ -52,6 +53,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
 	LineDrawer2D* lineDrawer2d = LineDrawer2D::GetInstance();
 
+
+
 	winApp->Initialize();
 	dxCommon->Initialize();
 
@@ -60,6 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
+	lineDrawer2d->Initialize();
 	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
@@ -68,9 +72,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("Floor", "Floor.png");
 
 	audioManager->Load("fanfare.wav");
-
-	
-	lineDrawer2d->Initialize();
 
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
@@ -83,6 +84,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
 
+
+
 	gameObjectManager->Initialize();
 
 	GameCamera* gameCamera = new GameCamera();
@@ -92,8 +95,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
 
+
 	sceneManager->Initialize();
 
+
+	std::vector<std::unique_ptr<BaseLayer>> layers_;
+	layers_.push_back(std::make_unique<BaseLayer>());
+	layers_.push_back(std::make_unique<BaseLayer>());
+
+	for(auto& layer : layers_) {
+		layer->BaseInitialize();
+	}
 
 
 	///- 実行までにかかった時間
@@ -136,36 +148,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		dxCommon->PreDraw();
-		modelManager->PreDraw();
-		spriteManager->PreDraw();
-		lineDrawer2d->PreDraw();
+//		modelManager->PreDraw();
+//		spriteManager->PreDraw();
+//		lineDrawer2d->PreDraw();
+//
+//		renderTexManager->BeginRenderTarget("3dObject");
+//
+//		sceneManager->Draw();
+//
+//#ifdef _DEBUG
+//		collisionManager->DrawHitBoxALL();
+//#endif // _DEBUG
+//
+//		gameObjectManager->BackSpriteDraw();
+//		gameObjectManager->Draw();
+//		gameObjectManager->FrontSpriteDraw();
+//
+//		modelManager->PostDraw();
+//		lineDrawer2d->PostDraw();
+//		renderTexManager->EndRenderTarget("3dObject");
 
-		renderTexManager->BeginRenderTarget("3dObject");
 
-		sceneManager->Draw();
+		for(auto& layer : layers_) {
+			layer->Draw();
+		}
 
-#ifdef _DEBUG
-		collisionManager->DrawHitBoxALL();
-#endif // _DEBUG
-
-		gameObjectManager->BackSpriteDraw();
-		gameObjectManager->Draw();
-		gameObjectManager->FrontSpriteDraw();
-
-		modelManager->PostDraw();
-		lineDrawer2d->PostDraw();
-		renderTexManager->EndRenderTarget("3dObject");
-
-
-
-		renderTexManager->BeginRenderTarget("frontSprite");
+		/*renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
 		renderTexManager->EndRenderTarget("frontSprite");
 
 		Bloom::CreateBloomRenderTexture(
 			renderTexManager->GetRenderTarget("3dObject")
 		);
-
+		*/
 		renderTexManager->EndFrame();
 
 		renderTexManager->BeginRenderTarget("ImGui");
@@ -173,7 +188,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderTexManager->EndRenderTarget("ImGui");
 
 
-		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture()->GetRenderTexResource());
+		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture());
 	}
 
 

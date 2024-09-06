@@ -6,7 +6,7 @@ Player::Player() {
 
 void Player::Initialize() {
 	model_ = ModelManager::CreateCube();
-	CreateBoxCollider(model_);
+	CreateSphereCollider(model_);
 	material_.CreateMaterial("monsterBall");
 }
 

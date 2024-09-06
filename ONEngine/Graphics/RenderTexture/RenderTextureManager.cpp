@@ -189,7 +189,7 @@ void RenderTextureManager::EndFrame() {
 		);
 
 		back->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		
+
 		ONE::DxBarrierCreator::CreateBarrier(
 			output->GetRenderTexResource(),
 			output->currentResourceState,
@@ -279,12 +279,18 @@ void RenderTextureManager::BindForCommandList() {
 	pCommandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
 }
 
-void RenderTextureManager::BeginRenderTarget(const std::string& name) {
+std::unique_ptr<RenderTexture> RenderTextureManager::CreateBlendRenderTexture(std::vector<RenderTexture*> renderTextures) {
+	std::unique_ptr<RenderTexture> result(new RenderTexture);
+	result->Initialize(Vec4(0, 0, 0, 0), pCommandList_, pDxDescriptor_);
 
+	
+
+	return std::move(result);
+}
+
+void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 	auto data = sInstance_.renderTexDatas_.at(name);
 	auto renderTex = sInstance_.renderTextures_[data.layerNum].get();
-
-
 
 	renderTex->BeginRenderTarget();
 	data.isRenderTargetActive = true;

@@ -77,6 +77,30 @@ void GameObjectManager::BackSpriteDraw() {
 	}
 }
 
+void GameObjectManager::BackSpriteDraw(int layerId) {
+	for(auto& obj : objects_) {
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->BackSpriteDraw();
+	}
+}
+
+void GameObjectManager::Object3dDraw(int layerId) {
+	for(auto& obj : objects_) {
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->Draw();
+	}
+}
+
+void GameObjectManager::FrontSpriteDraw(int layerId) {
+	for(auto& obj : objects_) {
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->BackSpriteDraw();
+	}
+}
+
 
 
 /// ===================================================
@@ -233,6 +257,7 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
 	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
+	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId);
 
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 
