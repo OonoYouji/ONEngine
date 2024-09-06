@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <PipelineState.h>
+#include <Vector2.h>
 
 class RenderTexture;
 
@@ -18,6 +19,7 @@ public:
 	struct BloomData final {
 		float intensity; /// 強度
 		float threshold; /// 閾値
+		Vec2 texSize; /// ピクセルの範囲
 	};
 
 public:

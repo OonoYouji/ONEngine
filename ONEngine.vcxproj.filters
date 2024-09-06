@@ -307,6 +307,9 @@
     <Filter Include="ONEngine\Graphics\PostEffect\Bloom">
       <UniqueIdentifier>{518aaa63-c388-4cf8-b089-0fab17f62b3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\LuminanceExtraction">
+      <UniqueIdentifier>{525e09c4-611f-4ca1-9f28-f33125860867}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -512,6 +515,9 @@
     <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
       <Filter>Resources\Shaders\Bloom</Filter>
     </None>
+    <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
@@ -543,6 +549,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
       <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.PS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,6 @@
 #include <RenderTextureManager.h>
 
 #include <Matrix4x4.h>
-#include <Vector2.h>
 
 
 std::unique_ptr<PipelineState> Bloom::sPipeline_ = nullptr;
@@ -36,6 +35,10 @@ namespace {
 			bloomDataBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomMappingData_));
 			bloomMappingData_->intensity = 0.7f;
 			bloomMappingData_->threshold = 1.0f;
+			bloomMappingData_->texSize = {
+				1.0f / 1280.0f,
+				1.0f / 720.0f
+			};
 
 			struct VertexPosUv {
 				Vector4 position;
@@ -67,6 +70,7 @@ namespace {
 		ComPtr<ID3D12Resource> viewProjectionBuffer_;
 		ComPtr<ID3D12Resource> bloomDataBuffer_;
 		Bloom::BloomData* bloomMappingData_ = nullptr;
+		Vec2 texSize = {1280, 720};
 
 		ComPtr<ID3D12Resource> vertexBuffer_;
 		D3D12_VERTEX_BUFFER_VIEW vbv_;
@@ -131,7 +135,14 @@ void Bloom::ImGuiDebug() {
 	}
 
 	ImGui::DragFloat("intensity", &gComponent->bloomMappingData_->intensity, 0.01f);
-	ImGui::DragFloat("threshold", &gComponent->bloomMappingData_->threshold, 0.01f);
+	ImGui::DragFloat("threshold", &gComponent->bloomMappingData_->threshold, 0.001f);
+	ImGui::DragFloat2("texSize", &gComponent->texSize.x, 0.01f);
+	if(ImGui::IsItemEdited()) {
+		gComponent->bloomMappingData_->texSize = {
+			1.0f / gComponent->texSize.x,
+			1.0f / gComponent->texSize.y
+		};
+	}
 
 	ImGui::End();
 #endif // _DEBUG

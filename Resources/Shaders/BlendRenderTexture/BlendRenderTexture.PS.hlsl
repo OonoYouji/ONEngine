@@ -13,5 +13,9 @@ PSOutput main(VSOutput input) {
 	float alpha = frontColor.a; // frontRenderTex のアルファチャンネルを使用
 	output.color = lerp(backColor, frontColor, alpha);
 
+	if (output.color.a == 0.0f) {
+		discard;
+	}
+
 	return output;
 }

@@ -4,8 +4,9 @@ Texture2D gSourceTexure : register(t0); // 元の画像
 SamplerState gSampler : register(s0);
 
 cbuffer bloomData : register(b0) {
-	float bloomIntensity = 0.7f; // ブルームの強度
-	float bloomThreshold = 1.0f; // 輝度閾値
+	float bloomIntensity; // ブルームの強度
+	float bloomThreshold; // 輝度閾値
+	float2 texelSize;
 }
 
 
@@ -23,15 +24,21 @@ float4 ExtractBrightParts(float4 color) {
 
 float4 BlurTexture(float2 texcoord) {
 	float4 result = float4(0, 0, 0, 0);
-	float offset = 1.0 / 512.0; // テクスチャのサンプル間隔
 
-    // 周辺のピクセルから色を平均化（簡易的なボックスフィルタ）
-	result += gSourceTexure.Sample(gSampler, texcoord + float2(-offset, -offset));
-	result += gSourceTexure.Sample(gSampler, texcoord + float2(offset, -offset));
-	result += gSourceTexure.Sample(gSampler, texcoord + float2(-offset, offset));
-	result += gSourceTexure.Sample(gSampler, texcoord + float2(offset, offset));
+    // ガウスカーネルの重み
+	float kernel[5] = {
+		1.0 / 256.0, 4.0 / 256.0, 6.0 / 256.0, 4.0 / 256.0, 1.0 / 256.0
+	};
 
-	result /= 4.0; // 平均化
+    // オフセットのサイズ（テクスチャのサイズに応じて調整）
+	float2 offset = texelSize;
+
+    // 5x5のガウシアンカーネルでサンプリング（ブラー処理）
+	for (int x = -2; x <= 2; ++x) {
+		for (int y = -2; y <= 2; ++y) {
+			result += gSourceTexure.Sample(gSampler, texcoord + float2(x, y) * offset) * kernel[abs(x) + abs(y) * 5];
+		}
+	}
 
 	return result;
 }
@@ -50,6 +57,7 @@ PSOutput main(VSOutput input) {
 	float4 bloomColor = brightParts + blurredBrightParts * bloomIntensity;
     // 合成結果を返す
 	output.color = originalColor + bloomColor;
+
 
 	return output;
 }

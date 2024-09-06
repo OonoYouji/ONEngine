@@ -72,6 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	renderTexManager->CreateRenderTarget("ImGui", 3, { 0,0,0,0 });
 
 	renderTexManager->SetIsBlending("3dObject", false);
+	//renderTexManager->SetIsBlending("ImGui", false);
 
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 1);
 
