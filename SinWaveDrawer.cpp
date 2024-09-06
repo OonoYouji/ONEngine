@@ -69,7 +69,7 @@ void SinWaveDrawer::Update() {
 	}
 	else
 	{
-		flyspeed.y += 0.04f;
+		flyspeed.y += 0.2f;
 		pos.y += flyspeed.y;
 		if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
 		{
@@ -104,6 +104,11 @@ void SinWaveDrawer::Update() {
 				xAccel += 0.02f;
 			}
 		}
+	}
+
+	if (pos.x < 0)
+	{
+		pos.x = 1280;
 	}
 
 }
