@@ -8,7 +8,12 @@ SinWaveDrawer::~SinWaveDrawer() {
 	waveHeights_.clear();
 }
 
-void SinWaveDrawer::Initialize() {}
+void SinWaveDrawer::Initialize() {
+
+	sprite_.reset(new Sprite());
+	sprite_->Initialize("uvChecker", "uvChecker.png");
+
+}
 
 void SinWaveDrawer::Update() {
 	waveHeights_.clear();
@@ -20,9 +25,11 @@ void SinWaveDrawer::Update() {
 	ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f);
 	ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f);
 	ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400);
+	ImGui::DragFloat("Pos", &pos.x, 1.0f);
 	ImGui::End();
 #endif // _DEBUG
 
+	pos.x -= 1.0f;
 
 	for (int i = 0; i <= screenOfDivisions; i++) {
 		float height = 0;
@@ -35,6 +42,10 @@ void SinWaveDrawer::Update() {
 
 	separateLenght_ = static_cast<float>(screeSize) / static_cast<float>(screenOfDivisions);
 
+
+
+	pos.y = amplitude * sinf(frequency * pos.x) + offsetY;
+	sprite_->SetPos(pos);
 }
 
 void SinWaveDrawer::Draw() {
@@ -42,4 +53,5 @@ void SinWaveDrawer::Draw() {
 	{
 		LineDrawer2D::GetInstance()->Draw({ float(i - 1) * separateLenght_,waveHeights_[i - 1] }, { float(i) * separateLenght_,waveHeights_[i] }, { 1.0f,0.0f,0.0f,1.0f });
 	}
+	sprite_->Draw();
 }

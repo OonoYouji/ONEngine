@@ -1,6 +1,8 @@
 #pragma once
 #include "LineDrawer2D.h"
 #include <vector>
+#include <Sprite.h>
+#include <Transform.h>
 
 class SinWaveDrawer
 {
@@ -15,6 +17,9 @@ public:
 	void Draw();
 
 private:
+
+	std::unique_ptr<Sprite> sprite_;
+	Vector3 pos{ 1280.0f,360.0f,0.0f };
 
 	std::vector<float> waveHeights_;
 	float separateLenght_ = 1;
