@@ -4,8 +4,10 @@ Texture2D gSourceTexture : register(t0);
 SamplerState gSampler : register(s0);
 
 // 定数バッファ
-cbuffer LuminanceExtractData : register(b0) {
+cbuffer BlurData : register(b0) {
 	float2 texSize;
+	int radius; // ブラー半径
+	float sigma; // ガウシアンシグマ
 };
 
 float Gaussian(float x, float sigma) {
@@ -14,27 +16,23 @@ float Gaussian(float x, float sigma) {
 
 PSOutput main(VSOutput input) {
 	PSOutput output;
-	output.color = float4(0, 0, 0, 0);
-
+	float4 color = float4(0, 0, 0, 0);
 	float totalWeight = 0.0;
-	int radius = 16; // Blur radius
-	float sigma = 4.0f;
     
     // Horizontal blur
 	for (int i = -radius; i <= radius; ++i) {
 		float weight = Gaussian(float(i), sigma);
-		output.color += gSourceTexture.Sample(gSampler, input.texcoord + float2(i * texSize.x, 0)) * weight;
+		color += gSourceTexture.Sample(gSampler, input.texcoord + float2(i * texSize.x, 0)) * weight;
 		totalWeight += weight;
 	}
-
 	for (int j = -radius; j <= radius; ++j) {
 		float weight = Gaussian(float(j), sigma);
-		output.color += gSourceTexture.Sample(gSampler, input.texcoord + float2(0.0f, j * texSize.y)) * weight;
+		color += gSourceTexture.Sample(gSampler, input.texcoord + float2(0, j * texSize.y)) * weight;
 		totalWeight += weight;
 	}
 
     // Normalize the color
-	output.color /= totalWeight;
+	output.color = color / totalWeight;
 
 	return output;
 }
