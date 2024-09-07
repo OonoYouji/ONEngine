@@ -339,7 +339,7 @@ void RenderTextureManager::SetIsBlending(const std::string& name, bool isBlendin
 	sInstance_.renderTexDatas_.at(name).isBlending = isBlending;
 }
 
-RenderTexture* RenderTextureManager::GetRenderTarget(const std::string& name) {
+RenderTexture* RenderTextureManager::GetRenderTexture(const std::string& name) {
 	auto data = sInstance_.renderTexDatas_.at(name);
 	return sInstance_.renderTextures_[data.layerNum].get();
 }

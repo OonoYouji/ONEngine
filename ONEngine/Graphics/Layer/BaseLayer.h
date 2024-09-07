@@ -30,12 +30,17 @@ public:
 		return renderTextures_[layerNumber].get();
 	}
 
+	RenderTexture* GetFinalRenderTexture() {
+		return finalRenderTex_.get();
+	}
+
 protected:
 	static int sInstanceCount_;
 
 	//class BaseCamera* camera_ = nullptr;
 	class BaseScene* currentScene_ = nullptr;
 	std::unique_ptr<RenderTexture> renderTextures_[LAYERNUM_COUNTER];
+	std::unique_ptr<RenderTexture> finalRenderTex_;
 	std::string className_;
 	int id_;
 };

@@ -244,7 +244,7 @@ void Bloom::CreateBloomRenderTexture(RenderTexture* sourceRenderTexture) {
 	RenderTextureManager::EndRenderTarget("luminance");
 
 
-	auto luminanceRenderTex = RenderTextureManager::GetRenderTarget("luminance");
+	auto luminanceRenderTex = RenderTextureManager::GetRenderTexture("luminance");
 	sBluer_->SetPipelineState();
 	RenderTextureManager::BeginRenderTarget("blur");
 	gComponent->BlurBindFarCommandList();
@@ -253,7 +253,7 @@ void Bloom::CreateBloomRenderTexture(RenderTexture* sourceRenderTexture) {
 	RenderTextureManager::EndRenderTarget("blur");
 
 
-	auto blurRenderTex = RenderTextureManager::GetRenderTarget("blur");
+	auto blurRenderTex = RenderTextureManager::GetRenderTexture("blur");
 	sBloom_->SetPipelineState();
 	RenderTextureManager::BeginRenderTarget("bloom");
 	gComponent->BloomBindFarCommandList();

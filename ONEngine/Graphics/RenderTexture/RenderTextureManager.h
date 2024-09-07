@@ -23,7 +23,7 @@ public:
 
 	static void CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor);
 	static void SetIsBlending(const std::string& name, bool isBlending);
-	static RenderTexture* GetRenderTarget(const std::string& name);
+	static RenderTexture* GetRenderTexture(const std::string& name);
 
 	/// <summary>
 	/// thisの初期化

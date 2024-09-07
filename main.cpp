@@ -100,13 +100,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
-	/*std::vector<std::unique_ptr<BaseLayer>> layers;
+	std::vector<std::unique_ptr<BaseLayer>> layers;
 	layers.push_back(std::make_unique<BaseLayer>());
 	layers.push_back(std::make_unique<BaseLayer>());
 
 	for(auto& layer : layers) {
 		layer->BaseInitialize();
-	}*/
+	}
+
+#ifdef _DEBUG
+	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
+	debugFinalRenderTexture->Initialize(
+		Vec4(0, 0, 0, 0),
+		dxCommon->GetDxCommand()->GetList(),
+		dxCommon->GetDxDescriptor()
+	);
+#endif // _DEBUG
 
 
 	///- 実行までにかかった時間
@@ -130,10 +139,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		Bloom::ImGuiDebug();
+
+
+#ifdef _DEBUG
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
 			renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 		}
+#endif // _DEBUG
 
 
 		cameraManager->Update();
@@ -154,51 +167,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		dxCommon->PreDraw();
-		modelManager->PreDraw();
-		spriteManager->PreDraw();
-		lineDrawer2d->PreDraw();
 
-		renderTexManager->BeginRenderTarget("3dObject");
-
-		sceneManager->Draw();
-
-#ifdef _DEBUG
-		collisionManager->DrawHitBoxALL();
-#endif // _DEBUG
-
-		gameObjectManager->BackSpriteDraw();
-		gameObjectManager->Draw();
-		gameObjectManager->FrontSpriteDraw();
-
-		modelManager->PostDraw();
-		lineDrawer2d->PostDraw();
-		renderTexManager->EndRenderTarget("3dObject");
-
-
-		/*for(auto& layer : layers) {
+		for(auto& layer : layers) {
 			layer->Draw();
-		}*/
-
-		renderTexManager->BeginRenderTarget("frontSprite");
-		spriteManager->PostDraw();
-		renderTexManager->EndRenderTarget("frontSprite");
-
-		Bloom::CreateBloomRenderTexture(
-			renderTexManager->GetRenderTarget("3dObject")
-		);
+		}
 		
 		renderTexManager->EndFrame();
 
+#ifdef _DEBUG
+		RenderTextureManager::CreateBlendRenderTexture(
+			{ layers.back()->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui")},
+			debugFinalRenderTexture.get()
+		);
+	
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
+		
+		dxCommon->PostDraw(debugFinalRenderTexture.get());
+#else
+		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
+#endif // _DEBUG
 
-
-		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture());
 	}
 
 
-	//layers.clear();
+#ifdef _DEBUG
+	debugFinalRenderTexture.reset();
+#endif // _DEBUG
+	layers.clear();
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();

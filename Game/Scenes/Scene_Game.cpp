@@ -28,7 +28,13 @@ void Scene_Game::Initialize() {
 
 	transform_.Initialize();
 
-	(new Player)->Initialize();
+	Player* player = new Player;
+	player->Initialize();
+	player->drawLayerId = 0;
+
+	player = new Player;
+	player->Initialize();
+	player->drawLayerId = 1;
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
