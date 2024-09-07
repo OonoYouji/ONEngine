@@ -40,6 +40,9 @@ void CollisionManager::Update() {
 		for(auto& objectB : gameObjects_) {
 
 			if(objectA == objectB) { continue; }
+			if(objectA->drawLayerId != objectB->drawLayerId) {
+				continue;
+			}
 
 			auto it = std::find_if(currentCollidedPairs_.begin(), currentCollidedPairs_.end(), [&objectA, &objectB](const CollidedPair& pair) {
 				return (pair.first == objectA && pair.second == objectB)
