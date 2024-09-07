@@ -9,9 +9,6 @@
 
 Scene_Game::Scene_Game() {}
 Scene_Game::~Scene_Game() {
-
-	delete sinWave_;
-
 }
 
 
@@ -33,6 +30,7 @@ void Scene_Game::Initialize() {
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
+	sinWave_->SetName("SinWave");
 
 	enemy_ = new Enemy();
 	enemy_->SetWave(sinWave_);
@@ -60,7 +58,5 @@ void Scene_Game::Draw() {
 
 	//model_->Draw(&transform_);
 	//sprite_->Draw();
-
-	sinWave_->Draw();
 
 }

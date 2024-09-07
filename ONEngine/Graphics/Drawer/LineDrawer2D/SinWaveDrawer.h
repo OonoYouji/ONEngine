@@ -3,18 +3,21 @@
 #include <vector>
 #include <Sprite.h>
 #include <Transform.h>
+#include <BaseGameObject.h>
 
-class SinWaveDrawer
+class SinWaveDrawer : public BaseGameObject
 {
 public:
 	SinWaveDrawer();
 	~SinWaveDrawer();
 
-	void Initialize();
+	void Initialize()override;
 	
-	void Update();
+	void Update()override;
 
-	void Draw();
+	void Draw()override;
+
+	void FrontSpriteDraw() override;
 
 	//enemyに渡す
 	float GetAmplitude();
