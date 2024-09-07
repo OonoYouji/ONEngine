@@ -26,7 +26,7 @@ ONE::WinApp* ONE::WinApp::GetInstance() {
 void ONE::WinApp::Initialize() {
 
 	CreateGameWindow(
-		L"DirectX12 Game",
+		L"2005_sin(ON);",
 		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
 		kWindowSizeX, kWindowSizeY
 	);
