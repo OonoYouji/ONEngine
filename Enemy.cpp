@@ -23,7 +23,7 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 
-	ImGui::Begin("Setting");
+	ImGui::Begin("Enemy");
 	
 	if (ImGui::Button("acce")) // 横の加速値をリセット
 	{
