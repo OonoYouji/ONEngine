@@ -101,12 +101,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	std::vector<std::unique_ptr<BaseLayer>> layers;
-	layers.push_back(std::make_unique<BaseLayer>());
-	layers.push_back(std::make_unique<BaseLayer>());
-
-	for(auto& layer : layers) {
-		layer->BaseInitialize();
+	layers.resize(2);
+	{
+		std::string names[2]{ "monitor", "game" };
+		for(uint8_t i = 0; i < layers.size(); ++i) {
+			layers[i].reset(new BaseLayer);
+			layers[i]->BaseInitialize(names[i]);
+		}
 	}
+
 
 #ifdef _DEBUG
 	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
@@ -171,19 +174,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		for(auto& layer : layers) {
 			layer->Draw();
 		}
-		
+
 		renderTexManager->EndFrame();
 
 #ifdef _DEBUG
 		RenderTextureManager::CreateBlendRenderTexture(
-			{ layers.back()->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui")},
+			{ layers.back()->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
 			debugFinalRenderTexture.get()
 		);
-	
+
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
-		
+
 		dxCommon->PostDraw(debugFinalRenderTexture.get());
 #else
 		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());

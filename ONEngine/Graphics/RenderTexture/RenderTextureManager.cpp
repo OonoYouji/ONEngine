@@ -177,7 +177,6 @@ void RenderTextureManager::CreateBlendRenderTexture(
 	}
 
 	/// output に render するための中間リソース
-	uint8_t frontTexIndex = 0;		/// frontのtexIndex
 	uint8_t outputSideIndex = 0;	/// output先のtexIndex
 	std::array<RenderTexture*, 2> intermediates;
 	intermediates[0] = sInstance_.intermediateTextures_[0].get();
@@ -198,8 +197,7 @@ void RenderTextureManager::CreateBlendRenderTexture(
 		renderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	}
 
-	renderTextures[1 - frontTexIndex]->BlendRenderTexture(
-		renderTextures[frontTexIndex], intermediates[outputSideIndex]);
+	renderTextures[0]->BlendRenderTexture(renderTextures[1], intermediates[outputSideIndex]);
 
 	ONE::DxBarrierCreator::CreateBarrier(
 		intermediates[outputSideIndex]->GetRenderTexResource(),

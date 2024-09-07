@@ -7,6 +7,7 @@
 #include <ModelManager.h>
 #include <SpriteManager.h>
 #include <RenderTextureManager.h>
+#include <TextureManager.h>
 
 namespace {
 
@@ -24,7 +25,7 @@ BaseLayer::BaseLayer() {
 	id_ = sInstanceCount_++;
 }
 
-void BaseLayer::BaseInitialize() {
+void BaseLayer::BaseInitialize(const std::string& name) {
 	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	auto dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
 
@@ -35,6 +36,14 @@ void BaseLayer::BaseInitialize() {
 
 	finalRenderTex_.reset(new RenderTexture);
 	finalRenderTex_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
+
+	className_ = name;
+
+	TextureManager::GetInstance()->AddTexture(
+		className_,
+		finalRenderTex_->GetSrvCpuHandle(),
+		finalRenderTex_->GetSrvGpuHandle()
+	);
 
 }
 

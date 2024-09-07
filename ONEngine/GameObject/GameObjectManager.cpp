@@ -257,7 +257,7 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
 	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
-	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId);
+	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId, 0);
 
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 

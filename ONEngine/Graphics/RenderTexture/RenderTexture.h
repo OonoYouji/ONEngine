@@ -45,9 +45,15 @@ public:
 		return renderTextureResource_.Get();
 	}
 
+	
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvGpuHandle() {
 		return srvHandle_.gpuHandle;
 	}
+	
+	D3D12_CPU_DESCRIPTOR_HANDLE GetSrvCpuHandle() {
+		return srvHandle_.cpuHandle;
+	}
+
 
 	D3D12_RESOURCE_STATES currentResourceState;
 

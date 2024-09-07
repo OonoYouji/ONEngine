@@ -6,6 +6,26 @@
 #include "Player/Player.h"
 
 
+class Tmp : BaseGameObject{
+public:
+	Tmp() { CreateTag(this); }
+	~Tmp(){}
+	void Initialize() override { 
+		drawLayerId = 1;
+		material.CreateMaterial("monitor");
+		model = ModelManager::Load("GameScreen");
+	}
+	void Update() override {}
+	void Draw() override { 
+		model->Draw(&transform_);
+		model->Draw(&transform_, &material);
+	}
+private:
+	Model* model;
+	Material material;
+};
+
+
 Scene_Game::Scene_Game() {}
 Scene_Game::~Scene_Game() {
 
@@ -35,6 +55,8 @@ void Scene_Game::Initialize() {
 	player = new Player;
 	player->Initialize();
 	player->drawLayerId = 1;
+
+	(new Tmp)->Initialize();
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();

@@ -13,6 +13,7 @@ class Texture final {
 public:
 
 	Texture() = default;
+	Texture(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle);
 	~Texture() = default;
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle() const { return gpuHandle_; }

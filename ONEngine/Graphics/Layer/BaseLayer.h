@@ -18,7 +18,7 @@ public:
 	BaseLayer();
 	virtual ~BaseLayer() = default;
 
-	void BaseInitialize();
+	void BaseInitialize(const std::string& name);
 
 	/*virtual void BackSpriteDraw() = 0;
 	virtual void Object3dDraw() = 0;
