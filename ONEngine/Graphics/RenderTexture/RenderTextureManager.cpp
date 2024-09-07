@@ -1,6 +1,7 @@
 #include "RenderTextureManager.h"
 
 #include <algorithm>
+#include <array>
 
 #include <WinApp.h>
 #include <DxResourceCreator.h>
@@ -279,14 +280,128 @@ void RenderTextureManager::BindForCommandList() {
 	pCommandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
 }
 
-std::unique_ptr<RenderTexture> RenderTextureManager::CreateBlendRenderTexture(std::vector<RenderTexture*> renderTextures) {
-	std::unique_ptr<RenderTexture> result(new RenderTexture);
-	result->Initialize(Vec4(0, 0, 0, 0), pCommandList_, pDxDescriptor_);
 
-	
 
-	return std::move(result);
+RenderTexture* RenderTextureManager::CreateBlendRenderTexture(std::vector<RenderTexture*> renderTextures) {
+
+	if(renderTextures.size() < 2) {
+		assert(false);
+	}
+
+	/// return する render target の初期化
+	RenderTexture* result = new RenderTexture;
+	result->Initialize(Vec4(0, 0, 0, 0), sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
+
+	/// output に render するための中間リソース
+	uint8_t frontTexIndex = 0;		/// frontのtexIndex
+	uint8_t outputSideIndex = 0;	/// output先のtexIndex
+	std::array<std::unique_ptr<RenderTexture>, 2> intermediates;
+	for(auto& intermediate : intermediates) {
+		intermediate.reset(new RenderTexture);
+		intermediate->Initialize(Vec4(0, 0, 0, 0), sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
+	}
+
+
+	/// ---------------------------------------------- /// 
+	///		intermediate を使って render textureを重ねる
+	/// ---------------------------------------------- /// 
+
+	/// barrier を変える
+	for(auto& renderTex : renderTextures) {
+		ONE::DxBarrierCreator::CreateBarrier(
+			renderTex->GetRenderTexResource(),
+			renderTex->currentResourceState,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+		);
+		renderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	}
+
+	renderTextures[1 - frontTexIndex]->BlendRenderTexture(
+		renderTextures[frontTexIndex], intermediates[outputSideIndex].get());
+
+	ONE::DxBarrierCreator::CreateBarrier(
+		intermediates[outputSideIndex]->GetRenderTexResource(),
+		intermediates[outputSideIndex]->currentResourceState,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
+	intermediates[outputSideIndex]->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+
+	for(auto frontTex = (renderTextures.begin() + 2); frontTex != renderTextures.end(); ++frontTex) {
+
+		/// back と outputへのポインタ
+		RenderTexture* backTex = intermediates[1 - outputSideIndex].get();
+		RenderTexture* outputTex = intermediates[outputSideIndex].get();
+
+		/// barrier の設定を変える
+		ONE::DxBarrierCreator::CreateBarrier(backTex->GetRenderTexResource(), backTex->currentResourceState, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		ONE::DxBarrierCreator::CreateBarrier(outputTex->GetRenderTexResource(), outputTex->currentResourceState, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		backTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		outputTex->currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+		/// blendする
+		backTex->BlendRenderTexture((*frontTex), outputTex);
+
+		/// output side index を変更する
+		outputSideIndex = outputSideIndex == 1 ? 0 : 1;
+	}
+
+
+	/// ---------------------------------------------- /// 
+	///		resultにコピーする
+	/// ---------------------------------------------- /// 
+
+	RenderTexture* intermediate = intermediates[frontTexIndex].get();
+
+	/// result : current -> copy に変更
+	ONE::DxBarrierCreator::CreateBarrier(
+		result->GetRenderTexResource(),
+		result->currentResourceState,
+		D3D12_RESOURCE_STATE_COPY_DEST
+	);
+	result->currentResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
+
+	/// itnermediate : current -> copy source に変更
+	ONE::DxBarrierCreator::CreateBarrier(
+		intermediate->GetRenderTexResource(),
+		intermediate->currentResourceState,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
+	);
+	intermediate->currentResourceState = D3D12_RESOURCE_STATE_COPY_SOURCE;
+
+
+
+	/// intermediate -> result へコピーする
+	sInstance_.pCommandList_->CopyResource(
+		result->GetRenderTexResource(),
+		intermediate->GetRenderTexResource()
+	);
+
+
+
+	/// result : current -> shader resource に変更
+	ONE::DxBarrierCreator::CreateBarrier(
+		result->GetRenderTexResource(),
+		result->currentResourceState,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
+	result->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+
+	/// itnermediate : current -> shader resource に変更
+	ONE::DxBarrierCreator::CreateBarrier(
+		intermediate->GetRenderTexResource(),
+		intermediate->currentResourceState,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
+	intermediate->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+
+
+	return result;
 }
+
+
 
 void RenderTextureManager::BeginRenderTarget(const std::string& name) {
 	auto data = sInstance_.renderTexDatas_.at(name);

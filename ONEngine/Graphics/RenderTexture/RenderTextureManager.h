@@ -54,7 +54,9 @@ public:
 		return finalRenderTex_.get();
 	}
 
-	std::unique_ptr<RenderTexture> CreateBlendRenderTexture(std::vector<RenderTexture*> renderTextures);
+	static RenderTexture* CreateBlendRenderTexture(
+		std::vector<RenderTexture*> renderTextures
+	);
 
 private:
 
