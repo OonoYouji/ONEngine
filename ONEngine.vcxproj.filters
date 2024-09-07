@@ -194,12 +194,6 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Layer\BaseLayer.cpp">
-      <Filter>ONEngine\Graphics\Layer</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Layer\GameLayer.cpp">
-      <Filter>ONEngine\Graphics\Layer</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp">
       <Filter>Game\GameMonitor</Filter>
     </ClCompile>
@@ -208,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="ONEngine\Graphics\Light\DirectionalLight.cpp">
       <Filter>ONEngine\Graphics\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\SceneLayer\SceneLayer.cpp">
+      <Filter>ONEngine\Graphics\SceneLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -346,14 +343,14 @@
     <Filter Include="Resources\Shaders\Line2D">
       <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\Graphics\Layer">
-      <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameMonitor">
       <UniqueIdentifier>{8c4bf55a-7516-4999-975c-a5b7be48d5f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="ONEngine\Graphics\Light">
       <UniqueIdentifier>{723e1a9d-a1a6-4da0-8269-7968f32263f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\SceneLayer">
+      <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -552,12 +549,6 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Layer\BaseLayer.h">
-      <Filter>ONEngine\Graphics\Layer</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Layer\GameLayer.h">
-      <Filter>ONEngine\Graphics\Layer</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h">
       <Filter>Game\GameMonitor</Filter>
     </ClInclude>
@@ -566,6 +557,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Light\DirectionalLight.h">
       <Filter>ONEngine\Graphics\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\SceneLayer\SceneLayer.h">
+      <Filter>ONEngine\Graphics\SceneLayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

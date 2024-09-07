@@ -26,7 +26,7 @@
 #include <Light/DirectionalLight.h>
 
 #include <RenderTextureManager.h>
-#include <Layer/BaseLayer.h>
+#include <SceneLayer/SceneLayer.h>
 #include <Bloom/Bloom.h>
 
 
@@ -106,13 +106,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
-	std::vector<std::unique_ptr<BaseLayer>> layers;
+	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
 		std::string names[2]{ "monitor", "game" };
+		BaseCamera* pCamera[2]{ gameCamera, debugCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
-			layers[i].reset(new BaseLayer);
-			layers[i]->BaseInitialize(names[i]);
+			layers[i].reset(new SceneLayer);
+			layers[i]->Initialize(names[i], pCamera[i]);
 		}
 	}
 

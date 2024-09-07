@@ -1,4 +1,4 @@
-#include "BaseLayer.h"
+#include "SceneLayer.h"
 
 #include <DxCommon.h>
 #include <DxCommand.h>
@@ -8,24 +8,28 @@
 #include <SpriteManager.h>
 #include <RenderTextureManager.h>
 #include <TextureManager.h>
+#include <CameraManager.h>
 
+/// ===================================================
+/// namespace
+/// ===================================================
 namespace {
-
 	ModelManager* gModelManager = ModelManager::GetInstance();
 	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-
 } /// namespace
 
 
+/// ===================================================
+/// static member object initialize
+/// ===================================================
+int SceneLayer::sInstanceCount_ = 0;
 
-int BaseLayer::sInstanceCount_ = 0;
-
-BaseLayer::BaseLayer() {
+SceneLayer::SceneLayer() {
 	id_ = sInstanceCount_++;
 }
 
-void BaseLayer::BaseInitialize(const std::string& name) {
+void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	auto dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
 
@@ -37,18 +41,22 @@ void BaseLayer::BaseInitialize(const std::string& name) {
 	finalRenderTex_.reset(new RenderTexture);
 	finalRenderTex_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
 
-	className_ = name;
+	camera_ = camera;
+	className_ = className;
 
 	TextureManager::GetInstance()->AddTexture(
 		className_,
 		finalRenderTex_->GetSrvCpuHandle(),
 		finalRenderTex_->GetSrvGpuHandle()
 	);
-
 }
 
-void BaseLayer::Draw() {
+
+void SceneLayer::Draw() {
 	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+
+	CameraManager::GetInstance()->SetMainCamera(camera_);
+
 	renderTextures_[BACK_SPRITE]->BeginRenderTarget();
 	gSpriteManager->PreDraw();
 	//// 背景スプライトの描画

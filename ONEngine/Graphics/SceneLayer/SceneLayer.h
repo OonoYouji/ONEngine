@@ -12,17 +12,13 @@ enum LAYER_NUMBER {
 };
 
 
-class BaseLayer {
+class SceneLayer final {
 public:
 
-	BaseLayer();
-	virtual ~BaseLayer() = default;
+	SceneLayer();
+	~SceneLayer() {}
 
-	void BaseInitialize(const std::string& name);
-
-	/*virtual void BackSpriteDraw() = 0;
-	virtual void Object3dDraw() = 0;
-	virtual void FrontSpriteDraw() = 0;*/
+	void Initialize(const std::string& className, class BaseCamera* camera);
 
 	void Draw();
 
@@ -37,7 +33,7 @@ public:
 protected:
 	static int sInstanceCount_;
 
-	//class BaseCamera* camera_ = nullptr;
+	class BaseCamera* camera_ = nullptr;
 	class BaseScene* currentScene_ = nullptr;
 	std::unique_ptr<RenderTexture> renderTextures_[LAYERNUM_COUNTER];
 	std::unique_ptr<RenderTexture> finalRenderTex_;
