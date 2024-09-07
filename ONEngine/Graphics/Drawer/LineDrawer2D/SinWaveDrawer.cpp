@@ -29,19 +29,18 @@ void SinWaveDrawer::Update() {
 
 #ifdef _DEBUG
 	ImGui::Begin("SinWave Setting");
-	ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f);
-	ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f);
-	ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f);
-	ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400);
-	ImGui::DragFloat("lambda", &addlambda, 1.0f);
-	if (ImGui::Button("acce"))
+	ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f); // 振幅
+	ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f); // 周波数
+	ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f); // 波の振幅セロの時の線の位置
+	ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400); // 分割数
+	ImGui::DragFloat("lambda", &addlambda, 1.0f); // 横にずらす値
+	if (ImGui::Button("acce")) // 横の加速値をリセット
 	{
 		xAccel = 0.0f;
 	}
-	ImGui::DragFloat("Pos", &pos.x, 1.0f);
-	ImGui::DragFloat("PadLStick Move", &addPadAmp, 0.01f, 0.0f, 10.0f);
-	ImGui::DragFloat("PadRStick Move", &addPadLam, 0.01f, 0.0f, 10.0f);
-	ImGui::DragFloat("NaturalAmp", &addNaturalAmp, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat("Pos", &pos.x, 1.0f); // イラストの位置
+	ImGui::DragFloat("PadLStick Move", &addPadAmp, 0.01f, 0.0f, 10.0f); // スティック倒した時に波の振幅の増える値
+	ImGui::DragFloat("PadRStick Move", &addPadLam, 0.01f, 0.0f, 10.0f); // スティックで横に動く量
 	ImGui::End();
 #endif // _DEBUG
 
