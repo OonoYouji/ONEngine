@@ -72,6 +72,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("TVUV", "../Models/TV/TVUV.png");
+	textureManager->Load("Heart", "../Models/Heart/Heart.png");
+	textureManager->Load("Hand", "../Models/Hand/Hand.png");
 
 	audioManager->Load("fanfare.wav");
 

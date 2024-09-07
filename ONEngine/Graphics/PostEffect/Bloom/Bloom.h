@@ -32,6 +32,8 @@ public:
 
 	struct BlurData final {
 		Vec2 texSize; /// ピクセルの範囲
+		int radius;
+		float sigma;
 	};
 
 	struct LuminanceData final {

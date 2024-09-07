@@ -206,6 +206,9 @@
     <ClCompile Include="ONEngine\Graphics\SceneLayer\SceneLayer.cpp">
       <Filter>ONEngine\Graphics\SceneLayer</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Heart\Heart.cpp">
+      <Filter>Game\Heart</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -351,6 +354,9 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\SceneLayer">
       <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Heart">
+      <UniqueIdentifier>{5fb8c2b5-7642-4d8d-9d4d-274112a3f18c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -560,6 +566,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\SceneLayer\SceneLayer.h">
       <Filter>ONEngine\Graphics\SceneLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Heart\Heart.h">
+      <Filter>Game\Heart</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -118,13 +118,21 @@ void SceneLayer::ImGuiDebug() {
 
 
 	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
-		if(blooms_[i]) {
+		if(blooms_[i] && isApplyBlooms_[i]) {
 			std::string treeNodeName = className_ + "_" + std::to_string(i);
 			blooms_[i]->ImGuiDebug(treeNodeName);
+			if(ImGui::Button(("is delete ???" + std::to_string(i)).c_str())) {
+				SetIsApplyBloom(false, LAYER_NUMBER(i));
+			}
 		} else {
 			std::string text = "non create_" + std::to_string(i);
 			ImGui::Text(text.c_str());
+			if(ImGui::Button(("is create ???" + std::to_string(i)).c_str())) {
+				SetIsApplyBloom(true, LAYER_NUMBER(i));
+			}
 		}
+
+		ImGui::Separator();
 	}
 
 	ImGui::End();
@@ -134,7 +142,7 @@ void SceneLayer::ImGuiDebug() {
 
 void SceneLayer::SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber) {
 	if(blooms_[layerNumber]) {
-		assert(false);
+		isApplyBlooms_[layerNumber] = isApplyBloom;
 		return;
 	}
 

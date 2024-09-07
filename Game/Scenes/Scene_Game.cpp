@@ -5,6 +5,7 @@
 
 #include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
+#include "Heart/Heart.h"
 
 
 class Tmp : BaseGameObject{
@@ -13,17 +14,20 @@ public:
 	~Tmp(){}
 	void Initialize() override { 
 		drawLayerId = 1;
-		material.CreateMaterial("monitor");
-		model = ModelManager::Load("GameScreen");
+		heart_[0] = ModelManager::Load("HeartAbove");
+		heart_[1] = ModelManager::Load("HeartBottom");
 	}
-	void Update() override {}
+	void Update() override {
+		//sprite_->SetPos(GetPosition());
+	}
 	void Draw() override { 
-		model->Draw(&transform_);
-		model->Draw(&transform_, &material);
+		//sprite_->Draw();
+		heart_[0]->Draw(&transform_);
+		heart_[1]->Draw(&transform_);
 	}
 private:
-	Model* model;
-	Material material;
+	//std::unique_ptr<Sprite> sprite_;
+	Model* heart_[2];
 };
 
 
@@ -53,11 +57,9 @@ void Scene_Game::Initialize() {
 	player->Initialize();
 	player->drawLayerId = 0;
 
-	player = new Player;
-	player->Initialize();
-	player->drawLayerId = 1;
 
 	//(new Tmp)->Initialize();
+	(new Heart)->Initialize();
 	(new GameMonitor)->Initialize();
 
 	sinWave_ = new SinWaveDrawer();

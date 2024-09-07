@@ -174,6 +174,8 @@ void Bloom::ImGuiDebug(const std::string& treeNodeName) {
 		ImGui::DragFloat("intensity", &bloomMappingData_->intensity, 0.01f);
 		ImGui::DragFloat("threshold", &luminanceMappingData_->threshold, 0.001f);
 		ImGui::DragFloat2("texSize", &blurMappingData_->texSize.x, 0.0001f);
+		ImGui::DragInt("radius", &blurMappingData_->radius, 1);
+		ImGui::DragFloat("sigma", &blurMappingData_->sigma, 0.0001f);
 
 		ImGui::TreePop();
 	}
@@ -182,12 +184,14 @@ void Bloom::ImGuiDebug(const std::string& treeNodeName) {
 void Bloom::Initialize() {
 	for(auto& renderTex : renderTextures_) {
 		renderTex.reset(new RenderTexture());
-		renderTex->Initialize(Vec4(0, 0, 0, 0), gComponent->pCommandList_, gComponent->pDxDescriptor_);
+		renderTex->Initialize(Vec4(0,0,0, 0), gComponent->pCommandList_, gComponent->pDxDescriptor_);
 	}
 
 	blurBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BlurData));
 	blurBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&blurMappingData_));
 	blurMappingData_->texSize = { 0.001f, 0.001f };
+	blurMappingData_->radius = 5;
+	blurMappingData_->sigma = 4.0f;
 
 	bloomBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BloomData));
 	bloomBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomMappingData_));

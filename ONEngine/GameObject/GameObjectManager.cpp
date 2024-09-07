@@ -97,7 +97,7 @@ void GameObjectManager::FrontSpriteDraw(int layerId) {
 	for(auto& obj : objects_) {
 		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
-		obj->BackSpriteDraw();
+		obj->FrontSpriteDraw();
 	}
 }
 
