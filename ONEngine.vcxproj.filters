@@ -194,9 +194,6 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
-    <ClCompile Include="Gamepad.cpp">
-      <Filter>ONEngine\Input</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Graphics\Layer\BaseLayer.cpp">
       <Filter>ONEngine\Graphics\Layer</Filter>
     </ClCompile>
@@ -205,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp">
       <Filter>Game\GameMonitor</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Input\Gamepad.cpp">
+      <Filter>ONEngine\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -546,9 +546,6 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClInclude>
-    <ClInclude Include="Gamepad.h">
-      <Filter>ONEngine\Input</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Layer\BaseLayer.h">
       <Filter>ONEngine\Graphics\Layer</Filter>
     </ClInclude>
@@ -557,6 +554,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h">
       <Filter>Game\GameMonitor</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Input\Gamepad.h">
+      <Filter>ONEngine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

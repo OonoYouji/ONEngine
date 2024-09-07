@@ -18,7 +18,6 @@
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Gamepad.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -68,6 +67,7 @@
     <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
+    <ClCompile Include="ONEngine\Input\Gamepad.cpp" />
     <ClCompile Include="ONEngine\Input\Input.cpp" />
     <ClCompile Include="ONEngine\Input\Keyboard.cpp" />
     <ClCompile Include="ONEngine\Input\Mouse.cpp" />
@@ -90,7 +90,6 @@
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Gamepad.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -139,6 +138,7 @@
     <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
+    <ClInclude Include="ONEngine\Input\Gamepad.h" />
     <ClInclude Include="ONEngine\Input\Input.h" />
     <ClInclude Include="ONEngine\Input\Keyboard.h" />
     <ClInclude Include="ONEngine\Input\Mouse.h" />
