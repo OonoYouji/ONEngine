@@ -78,9 +78,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
 	renderTexManager->CreateRenderTarget("ImGui", 5, { 0,0,0,0 });
 
+	bool imguiIsBlending = true;
+	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 	renderTexManager->SetIsBlending("3dObject", false);
 	//renderTexManager->SetIsBlending("frontSprite", false);
-	//renderTexManager->SetIsBlending("ImGui", false);
 
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
 
@@ -99,13 +100,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
-	std::vector<std::unique_ptr<BaseLayer>> layers;
+	/*std::vector<std::unique_ptr<BaseLayer>> layers;
 	layers.push_back(std::make_unique<BaseLayer>());
 	layers.push_back(std::make_unique<BaseLayer>());
 
 	for(auto& layer : layers) {
 		layer->BaseInitialize();
-	}
+	}*/
 
 
 	///- 実行までにかかった時間
@@ -129,6 +130,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		Bloom::ImGuiDebug();
+		if(Input::TriggerKey(KeyCode::F5)) {
+			imguiIsBlending = !imguiIsBlending;
+			renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
+		}
+
 
 		cameraManager->Update();
 
@@ -148,39 +154,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		dxCommon->PreDraw();
-//		modelManager->PreDraw();
-//		spriteManager->PreDraw();
-//		lineDrawer2d->PreDraw();
-//
-//		renderTexManager->BeginRenderTarget("3dObject");
-//
-//		sceneManager->Draw();
-//
-//#ifdef _DEBUG
-//		collisionManager->DrawHitBoxALL();
-//#endif // _DEBUG
-//
-//		gameObjectManager->BackSpriteDraw();
-//		gameObjectManager->Draw();
-//		gameObjectManager->FrontSpriteDraw();
-//
-//		modelManager->PostDraw();
-//		lineDrawer2d->PostDraw();
-//		renderTexManager->EndRenderTarget("3dObject");
+		modelManager->PreDraw();
+		spriteManager->PreDraw();
+		lineDrawer2d->PreDraw();
+
+		renderTexManager->BeginRenderTarget("3dObject");
+
+		sceneManager->Draw();
+
+#ifdef _DEBUG
+		collisionManager->DrawHitBoxALL();
+#endif // _DEBUG
+
+		gameObjectManager->BackSpriteDraw();
+		gameObjectManager->Draw();
+		gameObjectManager->FrontSpriteDraw();
+
+		modelManager->PostDraw();
+		lineDrawer2d->PostDraw();
+		renderTexManager->EndRenderTarget("3dObject");
 
 
-		for(auto& layer : layers) {
+		/*for(auto& layer : layers) {
 			layer->Draw();
-		}
+		}*/
 
-		/*renderTexManager->BeginRenderTarget("frontSprite");
+		renderTexManager->BeginRenderTarget("frontSprite");
 		spriteManager->PostDraw();
 		renderTexManager->EndRenderTarget("frontSprite");
 
 		Bloom::CreateBloomRenderTexture(
 			renderTexManager->GetRenderTarget("3dObject")
 		);
-		*/
+		
 		renderTexManager->EndFrame();
 
 		renderTexManager->BeginRenderTarget("ImGui");
@@ -192,7 +198,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
-	layers.clear();
+	//layers.clear();
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();

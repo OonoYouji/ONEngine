@@ -54,8 +54,9 @@ public:
 		return finalRenderTex_.get();
 	}
 
-	static RenderTexture* CreateBlendRenderTexture(
-		std::vector<RenderTexture*> renderTextures
+	static void CreateBlendRenderTexture(
+		std::vector<RenderTexture*> renderTextures,
+		RenderTexture* outputRenderTexture
 	);
 
 private:
