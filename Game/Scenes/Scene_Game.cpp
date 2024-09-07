@@ -4,6 +4,7 @@
 #include <ModelManager.h>
 
 #include "Player/Player.h"
+#include "Enemy.h"
 
 
 Scene_Game::Scene_Game() {}
@@ -32,6 +33,11 @@ void Scene_Game::Initialize() {
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
+
+	enemy_ = new Enemy();
+	enemy_->SetWave(sinWave_);
+	enemy_->Initialize();
+	enemy_->SetName("enemy");
 
 }
 

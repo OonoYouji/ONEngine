@@ -197,6 +197,7 @@
     <ClCompile Include="Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -534,6 +535,7 @@
     <ClInclude Include="Gamepad.h">
       <Filter>ONEngine\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

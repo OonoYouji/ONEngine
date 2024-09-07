@@ -16,9 +16,15 @@ public:
 
 	void Draw();
 
+	//enemyに渡す
+	float GetAmplitude();
+	float GetFrequency();
+	float GetOffset();
+	float GetAddLambda();
+
 private:
 
-	std::unique_ptr<Sprite> sprite_;
+
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
 	Vector3 beforPos = pos;
 
