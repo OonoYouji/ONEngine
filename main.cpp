@@ -76,16 +76,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	audioManager->Load("fanfare.wav");
 
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("ImGui", 5, { 0,0,0,0 });
 
 	bool imguiIsBlending = true;
+	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
-	renderTexManager->SetIsBlending("3dObject", false);
-	//renderTexManager->SetIsBlending("frontSprite", false);
 
-	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
+	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
 
 
 
@@ -116,6 +112,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			layers[i]->Initialize(names[i], pCamera[i]);
 		}
 	}
+
+	layers[0]->SetIsApplyBloom(true, OBJECT3D);
 
 
 #ifdef _DEBUG
@@ -148,8 +146,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
-		Bloom::ImGuiDebug();
-
+		for(auto& layer : layers) {
+			layer->ImGuiDebug();
+		}
 
 #ifdef _DEBUG
 		if(Input::TriggerKey(KeyCode::F5)) {

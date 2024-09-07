@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+
 #include <RenderTexture.h>
+#include <Bloom/Bloom.h>
 
 
 enum LAYER_NUMBER {
@@ -22,6 +24,12 @@ public:
 
 	void Draw();
 
+	void ImGuiDebug();
+
+
+	void SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber);
+
+
 	RenderTexture* GetRenderTexture(LAYER_NUMBER layerNumber) {
 		return renderTextures_[layerNumber].get();
 	}
@@ -39,4 +47,7 @@ protected:
 	std::unique_ptr<RenderTexture> finalRenderTex_;
 	std::string className_;
 	int id_;
+
+	bool isApplyBlooms_[LAYERNUM_COUNTER]{};
+	std::unique_ptr<Bloom> blooms_[LAYERNUM_COUNTER];
 };

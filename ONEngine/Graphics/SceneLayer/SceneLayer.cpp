@@ -2,7 +2,9 @@
 
 #include <DxCommon.h>
 #include <DxCommand.h>
+#include <DxBarrierCreator.h>
 
+#include <ImGuiManager.h>
 #include <GameObjectManager.h>
 #include <ModelManager.h>
 #include <SpriteManager.h>
@@ -78,8 +80,68 @@ void SceneLayer::Draw() {
 	gSpriteManager->PostDraw();
 	renderTextures_[FRONT_SPRITE]->EndRenderTarget();
 
+
+	/// use post effect 
+	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
+		if(isApplyBlooms_[i]) {
+
+			auto bloomRenderTex = blooms_[i]->GetBloomRenderTexture();
+			auto copyDestRenderTex = renderTextures_[i].get();
+
+			ONE::DxBarrierCreator::CreateBarrier(copyDestRenderTex->GetRenderTexResource(), copyDestRenderTex->currentResourceState, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			copyDestRenderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
+			blooms_[i]->ApplyBloom(copyDestRenderTex);
+
+			ONE::DxBarrierCreator::CreateBarrier(bloomRenderTex->GetRenderTexResource(), bloomRenderTex->currentResourceState, D3D12_RESOURCE_STATE_COPY_SOURCE);
+			bloomRenderTex->currentResourceState = D3D12_RESOURCE_STATE_COPY_SOURCE;
+			ONE::DxBarrierCreator::CreateBarrier(copyDestRenderTex->GetRenderTexResource(), copyDestRenderTex->currentResourceState, D3D12_RESOURCE_STATE_COPY_DEST);
+			copyDestRenderTex->currentResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
+
+			/// bloom -> render textures[i] にコピー
+			commandList->CopyResource(copyDestRenderTex->GetRenderTexResource(), bloomRenderTex->GetRenderTexResource());
+		}
+	}
+
 	RenderTextureManager::CreateBlendRenderTexture(
-		{ renderTextures_[BACK_SPRITE].get(),renderTextures_[OBJECT3D].get(),renderTextures_[FRONT_SPRITE].get()},
+		{ renderTextures_[BACK_SPRITE].get(),renderTextures_[OBJECT3D].get(),renderTextures_[FRONT_SPRITE].get() },
 		finalRenderTex_.get()
 	);
+}
+
+void SceneLayer::ImGuiDebug() {
+#ifdef _DEBUG
+	if(!ImGui::Begin(className_.c_str())) {
+		ImGui::End();
+		return;
+	}
+
+
+	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
+		if(blooms_[i]) {
+			std::string treeNodeName = className_ + "_" + std::to_string(i);
+			blooms_[i]->ImGuiDebug(treeNodeName);
+		} else {
+			std::string text = "non create_" + std::to_string(i);
+			ImGui::Text(text.c_str());
+		}
+	}
+
+	ImGui::End();
+#endif // _DEBUG
+}
+
+
+void SceneLayer::SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber) {
+	if(blooms_[layerNumber]) {
+		assert(false);
+		return;
+	}
+
+	isApplyBlooms_[layerNumber] = isApplyBloom;
+
+
+	blooms_[layerNumber].reset(new Bloom);
+	blooms_[layerNumber]->Initialize();
+
 }
