@@ -25,6 +25,7 @@ void Enemy::Update()
 
 	ImGui::Begin("Enemy");
 	
+	ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
 	if (ImGui::Button("acce")) // 横の加速値をリセット
 	{
 		xAccel = 0.0f;
@@ -55,12 +56,26 @@ void Enemy::Update()
 	}
 	else
 	{
+		if (-(amplitude) > (pos.y - offsetY))
+		{
+			isDamage = true;
+		}
 		flyspeed.y += 0.2f;
 		pos.y += flyspeed.y;
 		if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
 		{
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			isfly = false;
+
+
+			if (isDamage &&
+				amplitude * sinf(frequency * ((pos.x-4) + addlambda)) + offsetY < pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 5) + addlambda)) + offsetY > pos.y)
+			{
+				isDamage = false;
+				isDecele = true;
+			}
+			isDamage = false;
 		}
 	}
 
@@ -74,20 +89,25 @@ void Enemy::Update()
 		}
 	}
 
+	if (isDecele)
+	{
+		xAccel = std::lerp(xAccel, 0.0f, deceleRate);
+		if (xAccel < 0.05f)
+		{
+			isDecele = false;
+			xAccel = 0;
+		}
+	}
+
 	if (!isfly)
 	{
 		if (beforPos.y < pos.y)
 		{
-			if (beforlambda != addlambda)
+			if (beforlambda == addlambda)
 			{
-				if (beforlambda > addlambda)
-				{
+					isDecele = false;
 					xAccel += 0.02f;
-				}
-			}
-			else
-			{
-				xAccel += 0.02f;
+				
 			}
 		}
 	}
