@@ -40,5 +40,7 @@ private:
 	float amplitude = 100.0f;
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
-
+	float addPadAmp = 2.0f;
+	float addPadLam = 2.0f;
+	float addNaturalAmp = 2.0f;
 };

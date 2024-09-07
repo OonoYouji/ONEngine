@@ -1,6 +1,7 @@
 #include "SinWaveDrawer.h"
 #include <WinApp.h>
 #include <ImGuiManager.h>
+#include <Input.h>
 
 SinWaveDrawer::SinWaveDrawer() {}
 
@@ -23,6 +24,9 @@ void SinWaveDrawer::Update() {
 	beforlambda = addlambda;
 	isJump = true;
 
+	Vector2 padLstick = Input::GetInsatnce()->GetLStick();
+	Vector2 padRstick = Input::GetInsatnce()->GetRStick();
+
 #ifdef _DEBUG
 	ImGui::Begin("SinWave Setting");
 	ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f);
@@ -35,8 +39,49 @@ void SinWaveDrawer::Update() {
 		xAccel = 0.0f;
 	}
 	ImGui::DragFloat("Pos", &pos.x, 1.0f);
+	ImGui::DragFloat("PadLStick Move", &addPadAmp, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat("PadRStick Move", &addPadLam, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat("NaturalAmp", &addNaturalAmp, 0.01f, 0.0f, 10.0f);
 	ImGui::End();
 #endif // _DEBUG
+
+	if (padLstick.y > 0)
+	{
+		amplitude+=addPadAmp;
+		if (amplitude >= 300)
+		{
+			amplitude = 300;
+		}
+	}
+	else if (padLstick.y < 0)
+	{
+		amplitude-= addPadAmp;
+		if (amplitude <= 0)
+		{
+			amplitude = 0;
+		}
+	}
+	else if (padLstick.y == 0)
+	{
+		if (amplitude > 0.0f)
+		{
+			amplitude -= addNaturalAmp;
+			if (amplitude <= 0)
+			{
+				amplitude = 0;
+			}
+		}
+	}
+
+	if (padRstick.x > 0)
+	{
+		addlambda -= addPadLam;
+	}
+	else if (padRstick.x < 0)
+	{
+		addlambda += addPadLam;
+	}
+
 
 	pos.x -= (0.02f + xAccel);
 
