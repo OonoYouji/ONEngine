@@ -61,17 +61,7 @@ void SinWaveDrawer::Update() {
 			amplitude = 0;
 		}
 	}
-	else if (padLstick.y == 0)
-	{
-		if (amplitude > 0.0f)
-		{
-			amplitude -= addNaturalAmp;
-			if (amplitude <= 0)
-			{
-				amplitude = 0;
-			}
-		}
-	}
+
 
 	if (padRstick.x > 0)
 	{
