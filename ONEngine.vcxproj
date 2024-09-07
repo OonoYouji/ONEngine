@@ -60,6 +60,7 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Layer\BaseLayer.cpp" />
     <ClCompile Include="ONEngine\Graphics\Layer\GameLayer.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Light\DirectionalLight.cpp" />
     <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp" />
     <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h" />
     <ClInclude Include="ONEngine\Graphics\Layer\BaseLayer.h" />
     <ClInclude Include="ONEngine\Graphics\Layer\GameLayer.h" />
+    <ClInclude Include="ONEngine\Graphics\Light\DirectionalLight.h" />
     <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h" />
     <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h" />

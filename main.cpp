@@ -23,6 +23,7 @@
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
+#include <Light/DirectionalLight.h>
 
 #include <RenderTextureManager.h>
 #include <Layer/BaseLayer.h>
@@ -96,6 +97,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
+
+	DirectionalLight* directionalLight = new DirectionalLight();
+	directionalLight->Initialize();
+	modelManager->SetDirectionalLight(directionalLight);
 
 
 	sceneManager->Initialize();

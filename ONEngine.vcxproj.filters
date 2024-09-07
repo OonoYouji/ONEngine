@@ -206,6 +206,9 @@
     <ClCompile Include="ONEngine\Input\Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Light\DirectionalLight.cpp">
+      <Filter>ONEngine\Graphics\Light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -348,6 +351,9 @@
     </Filter>
     <Filter Include="Game\GameMonitor">
       <UniqueIdentifier>{8c4bf55a-7516-4999-975c-a5b7be48d5f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Light">
+      <UniqueIdentifier>{723e1a9d-a1a6-4da0-8269-7968f32263f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -557,6 +563,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Input\Gamepad.h">
       <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Light\DirectionalLight.h">
+      <Filter>ONEngine\Graphics\Light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

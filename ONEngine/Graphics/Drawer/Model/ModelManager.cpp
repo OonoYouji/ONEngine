@@ -16,6 +16,7 @@
 #include <DxDescriptor.h>
 
 #include <CameraManager.h>
+#include <Light/DirectionalLight.h>
 
 
 
@@ -48,6 +49,7 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
+		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
 
 		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -351,6 +353,7 @@ void ModelManager::PostDraw() {
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {
 		model.transform->BindTransform(commandList, 1);
@@ -405,4 +408,8 @@ void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* 
 	element.fillMode = fillMode;
 
 	activeModels_.push_back(element);
+}
+
+void ModelManager::SetDirectionalLight(DirectionalLight* directionalLight) {
+	pDirectionalLight_ = directionalLight;
 }

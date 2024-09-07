@@ -46,12 +46,12 @@ void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material)
 	if(material) {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {
 			material->BindMaterial(commandList, 2);
-			material->BindTexture(commandList, 3);
+			material->BindTexture(commandList, 4);
 		}
 	} else {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {
 			materials_[index].BindMaterial(commandList, 2);
-			materials_[index].BindTexture(commandList, 3);
+			materials_[index].BindTexture(commandList, 4);
 		}
 	}
 
