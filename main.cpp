@@ -70,6 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
+	textureManager->Load("TVUV", "../Models/TV/TVUV.png");
 
 	audioManager->Load("fanfare.wav");
 

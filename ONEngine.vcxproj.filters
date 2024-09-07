@@ -203,6 +203,9 @@
     <ClCompile Include="ONEngine\Graphics\Layer\GameLayer.cpp">
       <Filter>ONEngine\Graphics\Layer</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp">
+      <Filter>Game\GameMonitor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -342,6 +345,9 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\Layer">
       <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameMonitor">
+      <UniqueIdentifier>{8c4bf55a-7516-4999-975c-a5b7be48d5f8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -548,6 +554,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Layer\GameLayer.h">
       <Filter>ONEngine\Graphics\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h">
+      <Filter>Game\GameMonitor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

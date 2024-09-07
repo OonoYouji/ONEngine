@@ -4,6 +4,7 @@
 #include <ModelManager.h>
 
 #include "Player/Player.h"
+#include "GameMonitor/GameMonitor.h"
 
 
 class Tmp : BaseGameObject{
@@ -56,7 +57,8 @@ void Scene_Game::Initialize() {
 	player->Initialize();
 	player->drawLayerId = 1;
 
-	(new Tmp)->Initialize();
+	//(new Tmp)->Initialize();
+	(new GameMonitor)->Initialize();
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
