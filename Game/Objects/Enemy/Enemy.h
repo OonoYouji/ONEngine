@@ -34,6 +34,7 @@ public:
 private:
 
 	std::unique_ptr<Sprite> sprite_;
+	std::unique_ptr<Sprite> deadSprite_;
 	SinWaveDrawer* sinWave_;
 
 	float addlambda = 0.0f;
@@ -58,4 +59,5 @@ private:
 	float deceleRate = 0.15f;
 
 	bool isDead = false;
+	int deadTime = 30;
 };

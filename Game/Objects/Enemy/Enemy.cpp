@@ -8,6 +8,8 @@ void Enemy::Initialize()
 
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	deadSprite_.reset(new Sprite());
+	deadSprite_->Initialize("SINON_enemy_stanp", "SINON_enemy_stanp.png");
 
 	beforlambda = addlambda;
 
@@ -16,96 +18,98 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 
-	beforPos = pos;
-	beforlambda = addlambda;
-	isJump = true;
+	if (!isDead) {
+		beforPos = pos;
+		beforlambda = addlambda;
+		isJump = true;
 
-	amplitude = sinWave_->GetAmplitude();
-	frequency = sinWave_->GetFrequency();
-	offsetY = sinWave_->GetOffset();
-	addlambda = sinWave_->GetAddLambda();
+		amplitude = sinWave_->GetAmplitude();
+		frequency = sinWave_->GetFrequency();
+		offsetY = sinWave_->GetOffset();
+		addlambda = sinWave_->GetAddLambda();
 
 
-	if (beforlambda != addlambda)
-	{
-		isJump = false;
-	}
-
-	if (!isfly)
-	{
-
-		pos.x += speed - xAccel;
-
-		pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-	}
-	else
-	{
-		if (-(amplitude) >= (pos.y - offsetY))
+		if (beforlambda != addlambda)
 		{
-			isDamage = true;
+			isJump = false;
 		}
-		flyspeed.y += 0.2f;
-		pos += flyspeed;
-		if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
-		{
-			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			isfly = false;
 
-
-			if (isDamage &&
-				amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-			{
-				isDamage = false;
-				isDecele = true;
-			}
-			isDamage = false;
-			if (amplitude <= 20)
-			{
-				isDead = true;
-			}
-		}
-	}
-
-	sprite_->SetPos(pos);
-	if (-(amplitude)+10 >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
-	{
 		if (!isfly)
 		{
-			isfly = true;
-			flyspeed = pos - beforPos;
-		}
-	}
 
-	if (isDecele)
-	{
-		speed = std::lerp(speed, 0.0f, deceleRate);
-		xAccel = 0;
-		if (speed > -0.15f)
-		{
-			isDecele = false;
-			xAccel = 0;
-		}
-	}
+			pos.x += speed - xAccel;
 
-	if (!isfly)
-	{
-		if (beforPos.y < pos.y)
+			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+		}
+		else
 		{
-			if (beforlambda == addlambda)
+			if (-(amplitude) >= (pos.y - offsetY))
 			{
-				if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
+				isDamage = true;
+			}
+			flyspeed.y += 0.2f;
+			pos += flyspeed;
+			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
+			{
+				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+				isfly = false;
+
+
+				if (isDamage &&
+					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 				{
-					xAccel += 0.02f;
+					isDamage = false;
+					isDecele = true;
+				}
+				isDamage = false;
+				if (amplitude <= 20)
+				{
+					isDead = true;
 				}
 			}
 		}
-	}
 
-	if (pos.x < 0)
-	{
-		pos.x = 1280;
+		sprite_->SetPos(pos);
+		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
+		{
+			if (!isfly)
+			{
+				isfly = true;
+				flyspeed = pos - beforPos;
+			}
+		}
+
+		if (isDecele)
+		{
+			speed = std::lerp(speed, 0.0f, deceleRate);
+			xAccel = 0;
+			if (speed > -0.15f)
+			{
+				isDecele = false;
+				xAccel = 0;
+			}
+		}
+
+		if (!isfly)
+		{
+			if (beforPos.y < pos.y)
+			{
+				if (beforlambda == addlambda)
+				{
+					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
+					{
+						xAccel += 0.02f;
+					}
+				}
+			}
+		}
+
+		if (pos.x < 0)
+		{
+			pos.x = 1280;
+		}
 	}
 
 }
@@ -114,7 +118,20 @@ void Enemy::LastUpdate()
 {
 	if (isDead)
 	{
-		Destory();
+		if (deadTime <= 0)
+		{
+			Destory();
+		}
+		else
+		{
+			deadTime--;
+			amplitude = sinWave_->GetAmplitude();
+			frequency = sinWave_->GetFrequency();
+			offsetY = sinWave_->GetOffset();
+			addlambda = sinWave_->GetAddLambda();
+			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+			deadSprite_->SetPos(pos);
+		}
 	}
 }
 
@@ -124,7 +141,14 @@ void Enemy::Draw()
 
 void Enemy::FrontSpriteDraw()
 {
-	sprite_->Draw();
+	if (!isDead)
+	{
+		sprite_->Draw();
+	}
+	else
+	{
+		deadSprite_->Draw();
+	}
 }
 
 void Enemy::Debug()
