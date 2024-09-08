@@ -21,6 +21,7 @@ public:
 	struct MaterialData final {
 		Vec4 color;
 		Mat4 uvTransform;
+		int isLighting = true;
 	};
 
 public:
@@ -36,6 +37,7 @@ public:
 	void CreateMaterial(const std::string& textureName);
 
 	void SetColor(const Vector4& color);
+	void SetIsLighting(bool isLighting);
 
 
 	/// <summary>
