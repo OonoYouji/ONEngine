@@ -218,87 +218,87 @@ void Input::Begin() {
 	mouse_->Begin();
 	pad_->Begin();
 
-
-#ifdef _DEBUG
-	ImGui::Begin("Input");
-
-	/// ---------------------------------------------------
-	/// キーボードの入力チェック
-	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		for (uint32_t key = 0u; key < 256; ++key) {
-			if (keyboard_->Press(KeyCode(key))) {
-				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
-			}
-		}
-
-		ImGui::TreePop();
-	}
-
-
-	/// ---------------------------------------------------
-	/// マウスの入力チェック
-	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		for (uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
-			if (PressMouse(MouseCode(button))) {
-				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
-			}
-		}
-
-		ImGui::Separator();
-
-		Vec2 position = MousePosition();
-		Vec2 velocity = MouseVelocity();
-		ImGui::Text("position : Vec2( %0.2f, %0.2f )", position.x, position.y);
-		ImGui::Text("velocity : Vec2( %0.2f, %0.2f )", velocity.x, velocity.y);
-
-		ImGui::Separator();
-
-		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
-
-		ImGui::TreePop();
-	}
-
-
-	/// ---------------------------------------------------
-	/// ゲームパッドの入力チェック
-	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("gamepad press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		const std::array<PadCode, 14> padButtons = {
-		PadCode::Up, PadCode::Down, PadCode::Left, PadCode::Right,
-		PadCode::Start, PadCode::Back,
-		PadCode::LeftStick, PadCode::RightStick,
-		PadCode::LeftShoulder, PadCode::RightShoulder,
-		PadCode::A, PadCode::B, PadCode::X, PadCode::Y
-		};
-
-		for (const PadCode& padButton : padButtons) {
-			if (PressPadButton(PadCode(padButton))) {
-				ImGui::Text("%s is pressed", GetPadButtonName(PadCode(padButton)));
-			}
-		}
-
-		ImGui::Separator();
-
-		Vec2 leftStick = GetLeftStick();
-		Vec2 rigthStick = GetRightStick();
-		ImGui::Text("LStick : Vec2( %f, %f )", leftStick.x, leftStick.y);
-		ImGui::Text("RStick : Vec2( %f, %f )", rigthStick.x, rigthStick.y);
-
-		uint8_t leftTrigger = GetLeftTrigger();
-		uint8_t rightTrigger = GetRightTrigger();
-		ImGui::Text("LTrigger : %d", static_cast<int>(leftTrigger));
-		ImGui::Text("RTrigger : %d", static_cast<int>(rightTrigger));
-
-		ImGui::TreePop();
-	}
-
-	ImGui::End();
-#endif // _DEBUG
+//
+//#ifdef _DEBUG
+//	ImGui::Begin("Input");
+//
+//	/// ---------------------------------------------------
+//	/// キーボードの入力チェック
+//	/// ---------------------------------------------------
+//	if (ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		for (uint32_t key = 0u; key < 256; ++key) {
+//			if (keyboard_->Press(KeyCode(key))) {
+//				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
+//			}
+//		}
+//
+//		ImGui::TreePop();
+//	}
+//
+//
+//	/// ---------------------------------------------------
+//	/// マウスの入力チェック
+//	/// ---------------------------------------------------
+//	if (ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		for (uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
+//			if (PressMouse(MouseCode(button))) {
+//				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
+//			}
+//		}
+//
+//		ImGui::Separator();
+//
+//		Vec2 position = MousePosition();
+//		Vec2 velocity = MouseVelocity();
+//		ImGui::Text("position : Vec2( %0.2f, %0.2f )", position.x, position.y);
+//		ImGui::Text("velocity : Vec2( %0.2f, %0.2f )", velocity.x, velocity.y);
+//
+//		ImGui::Separator();
+//
+//		ImGui::Text("scroll : float( %0.2f )", MouseScroll());
+//
+//		ImGui::TreePop();
+//	}
+//
+//
+//	/// ---------------------------------------------------
+//	/// ゲームパッドの入力チェック
+//	/// ---------------------------------------------------
+//	if (ImGui::TreeNodeEx("gamepad press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+//
+//		const std::array<PadCode, 14> padButtons = {
+//		PadCode::Up, PadCode::Down, PadCode::Left, PadCode::Right,
+//		PadCode::Start, PadCode::Back,
+//		PadCode::LeftStick, PadCode::RightStick,
+//		PadCode::LeftShoulder, PadCode::RightShoulder,
+//		PadCode::A, PadCode::B, PadCode::X, PadCode::Y
+//		};
+//
+//		for (const PadCode& padButton : padButtons) {
+//			if (PressPadButton(PadCode(padButton))) {
+//				ImGui::Text("%s is pressed", GetPadButtonName(PadCode(padButton)));
+//			}
+//		}
+//
+//		ImGui::Separator();
+//
+//		Vec2 leftStick = GetLeftStick();
+//		Vec2 rigthStick = GetRightStick();
+//		ImGui::Text("LStick : Vec2( %f, %f )", leftStick.x, leftStick.y);
+//		ImGui::Text("RStick : Vec2( %f, %f )", rigthStick.x, rigthStick.y);
+//
+//		uint8_t leftTrigger = GetLeftTrigger();
+//		uint8_t rightTrigger = GetRightTrigger();
+//		ImGui::Text("LTrigger : %d", static_cast<int>(leftTrigger));
+//		ImGui::Text("RTrigger : %d", static_cast<int>(rightTrigger));
+//
+//		ImGui::TreePop();
+//	}
+//
+//	ImGui::End();
+//#endif // _DEBUG
 }
 
 
