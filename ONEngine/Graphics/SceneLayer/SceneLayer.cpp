@@ -11,6 +11,7 @@
 #include <RenderTextureManager.h>
 #include <TextureManager.h>
 #include <CameraManager.h>
+#include <LineDrawer2D/LineDrawer2D.h>
 
 /// ===================================================
 /// namespace
@@ -19,6 +20,7 @@ namespace {
 	ModelManager* gModelManager = ModelManager::GetInstance();
 	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
+	LineDrawer2D* gLineDrawer2d = LineDrawer2D::GetInstance();
 } /// namespace
 
 
@@ -60,6 +62,7 @@ void SceneLayer::Draw() {
 	CameraManager::GetInstance()->SetMainCamera(camera_);
 
 	renderTextures_[BACK_SPRITE]->BeginRenderTarget();
+	gLineDrawer2d->PreDraw();
 	gSpriteManager->PreDraw();
 	//// 背景スプライトの描画
 	gGameObjectManager->BackSpriteDraw(id_);
@@ -78,6 +81,7 @@ void SceneLayer::Draw() {
 	//// 前景スプライトの描画
 	gGameObjectManager->FrontSpriteDraw(id_);
 	gSpriteManager->PostDraw();
+	gLineDrawer2d->PostDraw();
 	renderTextures_[FRONT_SPRITE]->EndRenderTarget();
 
 

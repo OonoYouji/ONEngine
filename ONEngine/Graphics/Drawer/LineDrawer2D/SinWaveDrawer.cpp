@@ -3,7 +3,9 @@
 #include <ImGuiManager.h>
 #include <Input.h>
 
-SinWaveDrawer::SinWaveDrawer() {}
+SinWaveDrawer::SinWaveDrawer() {
+	CreateTag(this);
+}
 
 SinWaveDrawer::~SinWaveDrawer() {
 	waveHeights_.clear();

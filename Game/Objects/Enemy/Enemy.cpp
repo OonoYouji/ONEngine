@@ -2,13 +2,6 @@
 #include "Drawer/LineDrawer2D/SinWaveDrawer.h"
 #include <ImGuiManager.h>
 
-Enemy::Enemy()
-{
-}
-
-Enemy::~Enemy()
-{
-}
 
 void Enemy::Initialize()
 {

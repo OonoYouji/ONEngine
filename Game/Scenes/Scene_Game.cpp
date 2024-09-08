@@ -46,12 +46,10 @@ void Scene_Game::Initialize() {
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
-	sinWave_->SetName("SinWave");
 
 	enemy_ = new Enemy();
 	enemy_->SetWave(sinWave_);
 	enemy_->Initialize();
-	enemy_->SetName("enemy");
 
 }
 

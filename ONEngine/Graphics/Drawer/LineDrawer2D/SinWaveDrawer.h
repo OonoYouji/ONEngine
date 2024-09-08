@@ -12,11 +12,9 @@ public:
 	~SinWaveDrawer();
 
 	void Initialize()override;
-	
 	void Update()override;
 
 	void Draw()override;
-
 	void FrontSpriteDraw() override;
 
 	//enemyに渡す

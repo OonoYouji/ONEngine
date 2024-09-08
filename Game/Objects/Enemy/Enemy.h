@@ -5,24 +5,18 @@
 class SinWaveDrawer;
 
 
-class Enemy: public BaseGameObject
-{
+class Enemy : public BaseGameObject {
 public:
-	Enemy();
-	~Enemy();
-
-public:
+	Enemy() { CreateTag(this); }
+	~Enemy() {}
 
 	void Initialize() override;
-
 	void Update()override;
 
 	void Draw() override;
-
 	void FrontSpriteDraw()override;
 
 	void SetWave(SinWaveDrawer* wave);
-
 
 	float CalculateTangentAngle(float A, float B, float x);
 
