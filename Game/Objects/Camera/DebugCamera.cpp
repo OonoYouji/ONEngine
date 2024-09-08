@@ -4,6 +4,7 @@
 #include <Input.h>
 #include <ImGuiManager.h>
 
+
 DebugCamera::DebugCamera() {
 	SetName("DebugCamera");
 	CameraManager::GetInstance()->AddCamera(GetName(), this);

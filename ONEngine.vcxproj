@@ -26,6 +26,7 @@
     <ClCompile Include="Game\Objects\Hand\Hand.cpp" />
     <ClCompile Include="Game\Objects\Heart\Heart.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Shake\Shake.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
@@ -100,6 +101,7 @@
     <ClInclude Include="Game\Objects\Hand\Hand.h" />
     <ClInclude Include="Game\Objects\Heart\Heart.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Shake\Shake.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />

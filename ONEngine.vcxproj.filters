@@ -212,6 +212,9 @@
     <ClCompile Include="Game\Objects\Hand\Hand.cpp">
       <Filter>Game\Objects\Hand</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Shake\Shake.cpp">
+      <Filter>Game\Objects\Shake</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -363,6 +366,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameMonitor">
       <UniqueIdentifier>{8c4bf55a-7516-4999-975c-a5b7be48d5f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Shake">
+      <UniqueIdentifier>{66e2b31e-9c46-4d80-89ab-90cd5c9ce639}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -578,6 +584,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Hand\Hand.h">
       <Filter>Game\Objects\Hand</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Shake\Shake.h">
+      <Filter>Game\Objects\Shake</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

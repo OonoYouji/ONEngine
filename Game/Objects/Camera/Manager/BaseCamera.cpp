@@ -6,6 +6,8 @@
 #include <ImGuiManager.h>
 #include <WorldTime.h>
 
+#include "Shake/Shake.h"
+
 namespace {
 
 	float Cot(float t) {
@@ -71,38 +73,3 @@ void BaseCamera::Transfer() {
 }
 
 
-
-
-void Shake::Initialize() {
-	isDrawActive = false;
-	time_ = 0.0f;
-	speed_ = 1.0f;
-	amplitude_ = 1.0f;
-}
-
-void Shake::Update() {
-	if(time_ <= 0.0f) {
-		transform_.position = { 0,0,0 };
-		return;
-	}
-	time_ -= WorldTime::DeltaTime();
-	auto lRandom = []() -> float {return (rand() % 20 - 9) / 10.0f; };
-	Vec3 randomV = { lRandom(), lRandom(),lRandom() };
-	transform_.position = randomV * (amplitude_ * speed_);
-	transform_.position.z = 0.0f;
-}
-
-void Shake::Debug() {
-	if(ImGui::TreeNodeEx("shake", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::DragFloat("time", &time_, 0.01f);
-		ImGui::DragFloat("speed", &speed_, 0.01f);
-		ImGui::DragFloat("amplitude", &amplitude_, 0.01f);
-		ImGui::TreePop();
-	}
-}
-
-void Shake::Setting(float time, float speed, float amplitude) {
-	time_ = time;
-	speed_ = speed;
-	amplitude_ = amplitude;
-}

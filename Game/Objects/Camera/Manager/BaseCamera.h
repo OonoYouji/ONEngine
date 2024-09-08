@@ -47,6 +47,8 @@ public:
 
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
+	class Shake* GetShake() const { return shake_; }
+
 protected:
 
 	bool isActive_ = true;
@@ -67,18 +69,3 @@ public:
 	inline BaseCamera& operator=(const BaseCamera& other) = default;
 };
 
-
-
-class Shake : public BaseGameObject {
-public:
-	Shake() { CreateTag(this); }
-	~Shake() {}
-	void Initialize() override;
-	void Update() override;
-	void Debug() override;
-	void Setting(float time, float speed, float amplitude);
-private:
-	float time_;
-	float speed_;
-	float amplitude_;
-};

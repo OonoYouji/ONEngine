@@ -8,6 +8,7 @@
 #include "GameMonitor/GameMonitor.h"
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
+#include "Shake/Shake.h"
 
 #include <Input.h>
 
@@ -60,7 +61,7 @@ void Scene_Game::Update() {
 	if(Input::TriggerKey(KeyCode::Space)) {
 		BaseCamera* camera =
 			CameraManager::GetInstance()->GetCamera("GameCamera");
-
+		camera->GetShake()->Start();
 	}
 
 	sinWave_->Update();
