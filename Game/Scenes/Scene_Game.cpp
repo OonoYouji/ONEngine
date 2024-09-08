@@ -61,12 +61,6 @@ void Scene_Game::Initialize() {
 
 	transform_.Initialize();
 
-	/// 仮に作ったプレイヤー
-	Player* player = new Player;
-	player->Initialize();
-	player->drawLayerId = 0;
-
-
 	/// 波
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
