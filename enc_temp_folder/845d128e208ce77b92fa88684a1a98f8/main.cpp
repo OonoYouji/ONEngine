@@ -145,12 +145,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理に移る
 		/// ====================================
 
-		/// フルスクリーンの切り替え
-		if(Input::TriggerKey(KeyCode::F11)) {
-			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
-		}
-
-
 		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
@@ -169,10 +163,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(Input::TriggerKey(KeyCode::Alpha2)) {
 			drawLayerIndex = 1;
 		}
+
+		if(Input::TriggerKey(KeyCode::F11)) {
+			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
+		}
+
 #endif // _DEBUG
-
-		
-
 
 
 		cameraManager->Update();
