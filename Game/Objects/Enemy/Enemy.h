@@ -16,6 +16,8 @@ public:
 	void Draw() override;
 	void FrontSpriteDraw()override;
 
+	void Debug()override;
+
 	void SetWave(SinWaveDrawer* wave);
 
 	float CalculateTangentAngle(float A, float B, float x);

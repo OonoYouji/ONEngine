@@ -24,26 +24,6 @@ void SinWaveDrawer::Update() {
 	Vector2 padLstick = Input::GetInsatnce()->GetLStick();
 	Vector2 padRstick = Input::GetInsatnce()->GetRStick();
 
-#ifdef _DEBUG
-	ImGui::Begin("Game Pad Stick");
-	ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
-	ImGui::VSliderFloat("v", ImVec2(60, 160), &padLstick.y, -32767.0f, 32767.0f, "%.2f");
-	ImGui::PopStyleVar();
-	ImGui::End();
-#endif // _DEBUG
-
-#ifdef _DEBUG
-	ImGui::Begin("SinWave Setting");
-	ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f); // 振幅
-	ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f); // 周波数
-	ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f); // 波の振幅セロの時の線の位置
-	ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400); // 分割数
-	ImGui::DragFloat("lambda", &addlambda, 1.0f); // 横にずらす値
-	ImGui::DragFloat("PadLStick Move", &addPadAmp, 0.01f, 0.0f, 10.0f); // スティック倒した時に波の振幅の増える値
-	ImGui::DragFloat("PadRStick Move", &addPadLam, 0.01f, 0.0f, 10.0f); // スティックで横に動く量
-	ImGui::End();
-#endif // _DEBUG
-
 	if (padLstick.y > 0)
 	{
 		amplitude+=addPadAmp;
@@ -105,6 +85,27 @@ void SinWaveDrawer::FrontSpriteDraw()
 	{
 		LineDrawer2D::GetInstance()->Draw({ float(i - 1) * separateLenght_,waveHeights_[i - 1] }, { float(i) * separateLenght_,waveHeights_[i] }, Vector4(0.184f, 0.851f, 0.137f, 1.0f));
 	}
+}
+
+void SinWaveDrawer::Debug()
+{
+	if (ImGui::TreeNodeEx("SinWave", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::SeparatorText("GamePadLStick");
+		ImGui::PushStyleVar(ImGuiStyleVar_GrabMinSize, 40);
+		ImGui::VSliderFloat("v", ImVec2(60, 160), &padLstick.y, -32767.0f, 32767.0f, "%.2f");
+		ImGui::PopStyleVar();
+		ImGui::SeparatorText("SinWaveSetting");
+		ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f); // 振幅
+		ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f); // 周波数
+		ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f); // 波の振幅セロの時の線の位置
+		ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400); // 分割数
+		ImGui::DragFloat("lambda", &addlambda, 1.0f); // 横にずらす値
+		ImGui::DragFloat("PadLStick Move", &addPadAmp, 0.01f, 0.0f, 10.0f); // スティック倒した時に波の振幅の増える値
+		ImGui::DragFloat("PadRStick Move", &addPadLam, 0.01f, 0.0f, 10.0f); // スティックで横に動く量
+		ImGui::TreePop();
+	}
+
 }
 
 float SinWaveDrawer::GetAmplitude()

@@ -16,22 +16,6 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 
-	ImGui::Begin("Enemy");
-
-	ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
-	if (ImGui::Button("acce")) // 横の加速値をリセット
-	{
-		xAccel = 0.0f;
-	}
-	ImGui::DragFloat("Pos", &pos.x, 1.0f); // イラストの位置
-	ImGui::Text("%f", velo.x); ImGui::SameLine();
-	ImGui::Text("%f", velo.y);
-	ImGui::Text("%f", xAccel);
-	ImGui::Separator();
-	ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
-	ImGui::Text("%f", flyspeed.y);
-	ImGui::End();
-
 	beforPos = pos;
 	beforlambda = addlambda;
 	isJump = true;
@@ -129,6 +113,28 @@ void Enemy::Draw()
 void Enemy::FrontSpriteDraw()
 {
 	sprite_->Draw();
+}
+
+void Enemy::Debug()
+{
+	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
+		if (ImGui::Button("acce")) // 横の加速値をリセット
+		{
+			xAccel = 0.0f;
+		}
+		ImGui::DragFloat("Pos", &pos.x, 1.0f); // イラストの位置
+		ImGui::Text("%f", velo.x); ImGui::SameLine();
+		ImGui::Text("%f", velo.y);
+		ImGui::Text("%f", xAccel);
+		ImGui::Separator();
+		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
+		ImGui::Text("%f", flyspeed.y);
+
+		ImGui::TreePop();
+	}
+	
 }
 
 void Enemy::SetWave(SinWaveDrawer* wave)
