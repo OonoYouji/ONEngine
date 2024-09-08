@@ -104,6 +104,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
+	uint8_t drawLayerIndex = 1;
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
@@ -153,8 +154,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
-			renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 		}
+		if(Input::TriggerKey(KeyCode::Alpha1)) {
+			drawLayerIndex = 0;
+		}
+		if(Input::TriggerKey(KeyCode::Alpha2)) {
+			drawLayerIndex = 1;
+		}
+
 #endif // _DEBUG
 
 
@@ -184,16 +191,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderTexManager->EndFrame();
 
 #ifdef _DEBUG
-		RenderTextureManager::CreateBlendRenderTexture(
-			{ layers.back()->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
-			debugFinalRenderTexture.get()
-		);
+		if(imguiIsBlending) {
+			RenderTextureManager::CreateBlendRenderTexture(
+				{ layers[drawLayerIndex]->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				debugFinalRenderTexture.get()
+			);
+		}
 
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
-
-		dxCommon->PostDraw(debugFinalRenderTexture.get());
+		if(imguiIsBlending) {
+			dxCommon->PostDraw(debugFinalRenderTexture.get());
+		} else {
+			dxCommon->PostDraw(layers[drawLayerIndex]->GetFinalRenderTexture());
+		}
 #else
 		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
 #endif // _DEBUG

@@ -6,6 +6,8 @@
 #include <ModelManager.h>
 #include <WorldTime.h>
 
+#include "LineDrawer2D/SinWaveDrawer.h"
+
 void Hand::Initialize() {
 	drawLayerId = 1;
 
@@ -39,10 +41,13 @@ void HandFinger::Initialize() {
 	model_ = ModelManager::Load("HandFinger");
 	speed_ = -8.0f;
 	amplitude_ = 0.05f;
+
+	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
+	assert(pSinWaveDrawer_ != nullptr);
 }
 
 void HandFinger::Update() {
-	animationTime_ += WorldTime::DeltaTime();
+	animationTime_ += WorldTime::DeltaTime() * (pSinWaveDrawer_->GetAmplitude() / 100.0f);
 
 	float beat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);
 	transform_.rotate.x = -beat;
@@ -72,10 +77,13 @@ void HandThumb::Initialize() {
 	model_ = ModelManager::Load("HandThumb");
 	speed_ = -8.0f;
 	amplitude_ = -0.05f;
+
+	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
+	assert(pSinWaveDrawer_ != nullptr);
 }
 
 void HandThumb::Update() {
-	animationTime_ += WorldTime::DeltaTime();
+	animationTime_ += WorldTime::DeltaTime() * (pSinWaveDrawer_->GetAmplitude() / 100.0f);
 
 	float beat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);
 	transform_.rotate.y = beat;

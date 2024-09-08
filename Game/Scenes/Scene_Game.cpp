@@ -20,7 +20,8 @@ public:
 		sprite_.reset(new Sprite);
 		sprite_->Initialize("uvChecker", "uvChecker.png");
 		sprite_->SetPos({ 640, 360,0 });
-		sprite_->SetSize({1280, 720});
+		sprite_->SetSize({ 1280, 720 });
+		sprite_->SetColor({ 0,0,0,1 });
 	}
 	void Update() override {}
 	void FrontSpriteDraw() override {
@@ -48,24 +49,47 @@ void Scene_Game::Initialize() {
 
 	transform_.Initialize();
 
+	/// 仮に作ったプレイヤー
 	Player* player = new Player;
 	player->Initialize();
 	player->drawLayerId = 0;
 
 
-	(new Background)->Initialize();
-	(new Heart)->Initialize();
-	(new Hand)->Initialize();
+	/// 波
+	sinWave_ = new SinWaveDrawer();
+	sinWave_->Initialize();
+
+	/// 敵
+	enemy_ = new Enemy();
+	enemy_->SetWave(sinWave_);
+	enemy_->Initialize();
+
+
+	/// 心臓
+	Heart* heart = new Heart;
+	heart->Initialize();
+	heart->SetPosition({ -3.1f, 0.05f, -4.0f });
+	heart->SetRotate({ 0.0f, -1.0f, 0.45f });
+	heart->SetScale(Vec3::kOne * 0.7f);
+
+
+	/// 手
+	Hand* hand = new Hand;
+	hand->Initialize();
+	hand->SetPosition({ -3.4f, 0.1f, -3.9f });
+	hand->SetRotate({ 0.0f, -0.5f, 0.0f });
+	hand->SetScale(Vec3::kOne * 0.5f);
+
+
+	/// ゲームを映すモニター
 	GameMonitor* gameMonitor = new GameMonitor;
 	gameMonitor->Initialize();
 	gameMonitor->isDrawActive = true;
 
-	sinWave_ = new SinWaveDrawer();
-	sinWave_->Initialize();
 
-	enemy_ = new Enemy();
-	enemy_->SetWave(sinWave_);
-	enemy_->Initialize();
+	(new Background)->Initialize();
+
+
 
 }
 

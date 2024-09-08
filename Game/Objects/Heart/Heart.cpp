@@ -6,6 +6,8 @@
 #include <ModelManager.h>
 #include <WorldTime.h>
 
+#include "LineDrawer2D/SinWaveDrawer.h"
+
 void Heart::Initialize() {
 
 	drawLayerId = 1;
@@ -38,10 +40,13 @@ void Heart::Draw() {}
 void HeartBottom::Initialize() {
 	model_ = ModelManager::Load("HeartBottom");
 	animationTime_ = 0.0f;
+
+	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
+	assert(pSinWaveDrawer_ != nullptr);
 }
 
 void HeartBottom::Update() {
-	animationTime_ += WorldTime::DeltaTime();
+	animationTime_ += WorldTime::DeltaTime() * (pSinWaveDrawer_->GetAmplitude() / 100.0f);
 
 	float heartBeat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);
 	transform_.scale = Vec3::kOne + (Vec3::kOne * heartBeat);

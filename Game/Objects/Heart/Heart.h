@@ -33,6 +33,8 @@ private:
 	float speed_ = 8.0f;
 	float amplitude_ = 0.05f;
 	Model* model_ = nullptr;
+	/// other class pointer
+	class SinWaveDrawer* pSinWaveDrawer_ = nullptr;
 };
 
 
