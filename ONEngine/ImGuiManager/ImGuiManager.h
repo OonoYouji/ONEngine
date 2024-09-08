@@ -87,6 +87,7 @@ private:
 
 	ONE::DxCommon* dxCommon_ = nullptr;
 	ONE::DxDescriptor* dxDescriptor_ = nullptr;
+	ONE::WinApp* pWinApp_ = nullptr;
 
 private:
 	ImGuiManager(const ImGuiManager&) = delete;

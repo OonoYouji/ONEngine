@@ -77,17 +77,16 @@ void ONE::WinApp::SetIsFullScreen(bool isFullScreen) {
 			windowStyle_ &
 			~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME));
 
-		RECT fullscreenRect{ 0 };
 		HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
 		MONITORINFO info;
 		info.cbSize = sizeof(info);
 		GetMonitorInfo(monitor, &info);
-		fullscreenRect.right = info.rcMonitor.right - info.rcMonitor.left;
-		fullscreenRect.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
+		fullscreenRect_.right = info.rcMonitor.right - info.rcMonitor.left;
+		fullscreenRect_.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
 
 		SetWindowPos(
-			hwnd_, HWND_TOPMOST, fullscreenRect.left, fullscreenRect.top, fullscreenRect.right,
-			fullscreenRect.bottom, SWP_FRAMECHANGED | SWP_NOACTIVATE);
+			hwnd_, HWND_TOPMOST, fullscreenRect_.left, fullscreenRect_.top, fullscreenRect_.right,
+			fullscreenRect_.bottom, SWP_FRAMECHANGED | SWP_NOACTIVATE);
 		ShowWindow(hwnd_, SW_MAXIMIZE);
 
 	} else {

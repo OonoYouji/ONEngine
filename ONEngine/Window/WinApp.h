@@ -40,8 +40,11 @@ namespace ONE {
 
 		const WNDCLASS& GetWNDCLASS() const { return wc_; }
 
+		const RECT& GetFullScreenRect() const { return fullscreenRect_; }
+		const RECT& GetRect() const { return wrc_; }
+
 	private:
-		
+
 		/// ===================================================
 		/// private : methods
 		/// ===================================================
@@ -64,6 +67,7 @@ namespace ONE {
 		MSG msg_;
 		UINT windowStyle_;
 
+		RECT fullscreenRect_{  };
 		bool isFullScreen_ = false;
 
 	private:
