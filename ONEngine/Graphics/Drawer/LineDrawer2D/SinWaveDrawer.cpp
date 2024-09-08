@@ -21,8 +21,8 @@ void SinWaveDrawer::Update() {
 	int screeSize = ONE::WinApp::kWindowSizeX;
 
 
-	Vector2 padLstick = Input::GetInsatnce()->GetLStick();
-	Vector2 padRstick = Input::GetInsatnce()->GetRStick();
+	padLstick = Input::GetInsatnce()->GetLStick();
+	padRstick = Input::GetInsatnce()->GetRStick();
 
 	if (padLstick.y > 0)
 	{
