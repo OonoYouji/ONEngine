@@ -53,6 +53,8 @@ private:
 	Vector3 velo = { -0.1f,0.0f,0.0f };
 	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
 
+	float tangent = 0;
+
 	float amplitude = 100.0f;
 	float frequency = 0.02f;
 	float offsetY = 360.0f;

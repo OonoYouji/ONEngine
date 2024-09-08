@@ -27,7 +27,6 @@ public:
 
 private:
 
-
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
 	Vector3 beforPos = pos;
 

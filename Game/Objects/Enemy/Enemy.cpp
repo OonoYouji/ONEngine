@@ -29,23 +29,18 @@ void Enemy::Update()
 		frequency = sinWave_->GetFrequency();
 		offsetY = sinWave_->GetOffset();
 		addlambda = sinWave_->GetAddLambda();
-		offsetY -= 10.0f;
+		offsetY -= 20.0f;
 
 		if (beforlambda != addlambda)
 		{
 			isJump = false;
 		}
 
-		float tangent = 0;
+		
 		if (!isfly)
 		{
 
-			tangent = CalculateTangentAngle(amplitude, frequency, pos.x);
-#ifdef _DEBUG
-			ImGui::Begin("theta");
-			ImGui::Text("%f", tangent);
-			ImGui::End();
-#endif // _DEBUG
+			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
 			pos.x += speed - xAccel;
 
@@ -84,6 +79,8 @@ void Enemy::Update()
 			}
 		}
 
+		sprite_->SetAngle(tangent);
+		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
 		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
 		{
