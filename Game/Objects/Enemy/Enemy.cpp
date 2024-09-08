@@ -7,7 +7,7 @@ void Enemy::Initialize()
 {
 
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
+	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 
 	beforlambda = addlambda;
 
