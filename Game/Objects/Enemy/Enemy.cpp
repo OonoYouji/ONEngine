@@ -151,11 +151,11 @@ void Enemy::FrontSpriteDraw()
 {
 	if (!isDead)
 	{
-		sprite_->Draw();
+		sprite_->Draw(2);
 	}
 	else
 	{
-		deadSprite_->Draw();
+		deadSprite_->Draw(2);
 	}
 }
 

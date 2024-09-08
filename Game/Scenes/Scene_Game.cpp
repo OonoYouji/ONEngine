@@ -40,7 +40,7 @@ public:
 private:
 	std::unique_ptr<Sprite> sprite_;
 	float angle_ = 0.0f;
-	Vec4 color={};
+	Vec4 color = { 0,0,0,1 };
 };
 
 Scene_Game::Scene_Game() {}

@@ -49,8 +49,8 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 /// ===================================================
 /// 描画
 /// ===================================================
-void Sprite::Draw() {
-	SpriteManager::GetInstance()->AddActiveSprite(this);
+void Sprite::Draw(uint32_t zOrder) {
+	SpriteManager::GetInstance()->AddActiveSprite(this, zOrder);
 }
 
 

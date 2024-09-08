@@ -11,6 +11,7 @@
 
 #include <Vector4.h>
 #include <Matrix4x4.h>
+#include <cstdint>
 
 
 /// ===================================================
@@ -20,11 +21,11 @@ class SpriteManager final {
 	SpriteManager() = default;
 	~SpriteManager() = default;
 public:
-	
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	
+
 
 	/// <summary>
 	/// インスタンス確保
@@ -58,7 +59,7 @@ public:
 	/// アクティブなスプライトの追加
 	/// </summary>
 	/// <param name="sprite"></param>
-	void AddActiveSprite(Sprite* sprite);
+	void AddActiveSprite(Sprite* sprite, uint32_t zOrder);
 
 
 private:
@@ -73,7 +74,11 @@ private:
 	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
 	Mat4* matViewProjectionData_ = nullptr;
 
-	std::list<Sprite*> activeSprites_;
+	struct ActiveSprite {
+		Sprite* pSprite_ = nullptr;
+		uint32_t zOrder = 0;
+	};
+	std::list<ActiveSprite> activeSprites_;
 
 private:
 	SpriteManager(const SpriteManager&) = delete;
