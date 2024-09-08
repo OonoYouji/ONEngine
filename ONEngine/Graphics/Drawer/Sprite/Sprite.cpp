@@ -59,8 +59,11 @@ void Sprite::Draw() {
 /// commandListに情報を設定
 /// ===================================================
 void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
-
-	*matTransformData_ = Mat4::MakeScale(Vec3(size_.x, size_.y, 1.0f)) * Mat4::MakeTranslate(position_);
+	
+	*matTransformData_ =
+		Mat4::MakeScale(Vec3(size_.x, size_.x, 1.0f)) *
+		Mat4::MakeRotateZ(angle_) *
+		Mat4::MakeTranslate(position_);
 
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
@@ -141,6 +144,7 @@ void Sprite::CreateConstantBuffer() {
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matTransformData_));
 	*matTransformData_ =
 		Mat4::MakeScale(Vec3(size_.x, size_.x, 1.0f)) *
+		Mat4::MakeRotateZ(angle_) *
 		Mat4::MakeTranslate(position_);
 
 }

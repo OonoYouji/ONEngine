@@ -23,12 +23,24 @@ public:
 		sprite_->SetSize({ 1280, 720 });
 		sprite_->SetColor({ 0,0,0,1 });
 	}
-	void Update() override {}
+	void Update() override {
+		sprite_->SetColor(color);
+		sprite_->SetAngle(angle_);
+	}
 	void FrontSpriteDraw() override {
 		sprite_->Draw();
 	}
+	void Debug() override {
+		if(ImGui::TreeNodeEx("", ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::DragFloat("angle", &angle_);
+			ImGui::ColorEdit4("color", &color.x);
+			ImGui::TreePop();
+		}
+	}
 private:
 	std::unique_ptr<Sprite> sprite_;
+	float angle_ = 0.0f;
+	Vec4 color={};
 };
 
 Scene_Game::Scene_Game() {}

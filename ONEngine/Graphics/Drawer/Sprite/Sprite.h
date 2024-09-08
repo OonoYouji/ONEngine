@@ -64,6 +64,8 @@ public:
 
 	void SetSize(const Vec2& textureSize);
 
+	void SetAngle(float angle) { angle_ = angle; }
+
 private:
 
 
