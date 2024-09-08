@@ -26,12 +26,8 @@ void LineDrawer2D::Initialize() {
 
 	pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-	};
-	pipeline_->AddInputElement(inputLayout[0]);
-	pipeline_->AddInputElement(inputLayout[1]);
+	pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 
 	pipeline_->Initialize();
 
@@ -49,7 +45,7 @@ void LineDrawer2D::PreDraw() {
 
 void LineDrawer2D::PostDraw() {
 
-	if (vertices_.empty()) { return; }
+	if(vertices_.empty()) { return; }
 	ID3D12GraphicsCommandList* cList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	pipeline_->SetPipelineState();
 
@@ -63,8 +59,8 @@ void LineDrawer2D::PostDraw() {
 
 void LineDrawer2D::Draw(const Vector2& v1, const Vector2& v2, const Vector4& color) {
 
-	vertices_.push_back({ { v1.x, v1.y, 0.0f, 1.0f },color});
-	vertices_.push_back({ { v2.x, v2.y, 0.0f, 1.0f },color});
+	vertices_.push_back(LineVertexDate(Vector4(v1.x, v1.y, 0.0f, 1.0f), color));
+	vertices_.push_back(LineVertexDate(Vector4(v2.x, v2.y, 0.0f, 1.0f), color));
 
 }
 
