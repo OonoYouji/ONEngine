@@ -1,6 +1,7 @@
 #include "Enemy.h"
-#include "Drawer/LineDrawer2D/SinWaveDrawer.h"
+
 #include <ImGuiManager.h>
+#include "Drawer/LineDrawer2D/SinWaveDrawer.h"
 
 
 void Enemy::Initialize()
@@ -10,7 +11,7 @@ void Enemy::Initialize()
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 	sprite_->SetSize({ 20,20 });
 	deadSprite_.reset(new Sprite());
-	deadSprite_->Initialize("SINON_enemy_stanp", "SINON_enemy_stanp.png");
+	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
 	deadSprite_->SetSize({ 20,20 });
 
 	beforlambda = addlambda;

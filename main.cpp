@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("SINON_enemy", "SINON_enemy.png");
-	textureManager->Load("SINON_enemy_stanp", "SINON_enemy_stanp.png");
+	textureManager->Load("enemy_stamp", "enemy_stamp.png");
 	textureManager->Load("TVUV", "../Models/TV/TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	//textureManager->Load("Hand", "../Models/Hand/Hand.png");
