@@ -1,7 +1,7 @@
 #include "GameObjectManager.h"
 
 #include <ImGuiManager.h>
-
+#include <Collision/CollisionManager.h>
 
 
 /// ===================================================
@@ -125,7 +125,7 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 		if(object == selectObject_) {
 			selectObject_ = nullptr;
 		}
-		//CollisionManager::GetInstance()->SubGameObject(object);
+		CollisionManager::GetInstance()->SubGameObject(object);
 		objects_.erase(it);
 	}
 

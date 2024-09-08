@@ -17,6 +17,8 @@ public:
 	void Draw()override;
 	void FrontSpriteDraw() override;
 
+	void Debug()override;
+
 	//enemyに渡す
 	float GetAmplitude();
 	float GetFrequency();
@@ -50,4 +52,7 @@ private:
 	float addPadAmp = 2.0f;
 	float addPadLam = 2.0f;
 	float addNaturalAmp = 2.0f;
+
+	Vector2 padLstick{};
+	Vector2 padRstick{};
 };

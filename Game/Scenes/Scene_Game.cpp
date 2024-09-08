@@ -105,6 +105,7 @@ void Scene_Game::Update() {
 		camera->GetShake()->Start();
 	}
 
+
 	sinWave_->Update();
 
 

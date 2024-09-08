@@ -12,11 +12,16 @@ public:
 
 	void Initialize() override;
 	void Update()override;
+	void LastUpdate()override;
 
 	void Draw() override;
 	void FrontSpriteDraw()override;
 
+	void Debug()override;
+
 	void SetWave(SinWaveDrawer* wave);
+
+	bool IsDead() { return isDead; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -29,6 +34,7 @@ public:
 private:
 
 	std::unique_ptr<Sprite> sprite_;
+	std::unique_ptr<Sprite> deadSprite_;
 	SinWaveDrawer* sinWave_;
 
 	float addlambda = 0.0f;
@@ -51,4 +57,8 @@ private:
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
+
+	bool isMaybeDead = false;
+	bool isDead = false;
+	int deadTime = 30;
 };

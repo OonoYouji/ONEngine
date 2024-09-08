@@ -7,7 +7,9 @@ void Enemy::Initialize()
 {
 
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
+	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	deadSprite_.reset(new Sprite());
+	deadSprite_->Initialize("SINON_enemy_stanp", "SINON_enemy_stanp.png");
 
 	beforlambda = addlambda;
 
@@ -16,110 +18,129 @@ void Enemy::Initialize()
 void Enemy::Update()
 {
 
-	ImGui::Begin("Enemy");
+	if (!isDead) {
+		beforPos = pos;
+		beforlambda = addlambda;
+		isJump = true;
 
-	ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
-	if (ImGui::Button("acce")) // 横の加速値をリセット
-	{
-		xAccel = 0.0f;
-	}
-	ImGui::DragFloat("Pos", &pos.x, 1.0f); // イラストの位置
-	ImGui::Text("%f", velo.x); ImGui::SameLine();
-	ImGui::Text("%f", velo.y);
-	ImGui::Text("%f", xAccel);
-	ImGui::Separator();
-	ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
-	ImGui::Text("%f", flyspeed.y);
-	ImGui::End();
-
-	beforPos = pos;
-	beforlambda = addlambda;
-	isJump = true;
-
-	amplitude = sinWave_->GetAmplitude();
-	frequency = sinWave_->GetFrequency();
-	offsetY = sinWave_->GetOffset();
-	addlambda = sinWave_->GetAddLambda();
+		amplitude = sinWave_->GetAmplitude();
+		frequency = sinWave_->GetFrequency();
+		offsetY = sinWave_->GetOffset();
+		addlambda = sinWave_->GetAddLambda();
 
 
-	if (beforlambda != addlambda)
-	{
-		isJump = false;
-	}
-
-	if (!isfly)
-	{
-
-		pos.x += speed - xAccel;
-
-		pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-	}
-	else
-	{
-		if (-(amplitude) >= (pos.y - offsetY))
+		if (beforlambda != addlambda)
 		{
-			isDamage = true;
+			isJump = false;
 		}
-		flyspeed.y += 0.2f;
-		pos += flyspeed;
-		if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
-		{
-			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			isfly = false;
 
-
-			if (isDamage &&
-				amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-			{
-				isDamage = false;
-				isDecele = true;
-			}
-			isDamage = false;
-		}
-	}
-
-	sprite_->SetPos(pos);
-	if (-(amplitude)+10 >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
-	{
 		if (!isfly)
 		{
-			isfly = true;
-			flyspeed = pos - beforPos;
-		}
-	}
 
-	if (isDecele)
-	{
-		speed = std::lerp(speed, 0.0f, deceleRate);
-		xAccel = 0;
-		if (speed > -0.15f)
-		{
-			isDecele = false;
-			xAccel = 0;
-		}
-	}
+			pos.x += speed - xAccel;
 
-	if (!isfly)
-	{
-		if (beforPos.y < pos.y)
+			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+		}
+		else
 		{
-			if (beforlambda == addlambda)
+			if (-(amplitude) >= (pos.y - offsetY))
 			{
-				if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
+				isDamage = true;
+			}
+			flyspeed.y += 0.2f;
+			pos += flyspeed;
+			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
+			{
+				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+				isfly = false;
+
+
+				if (isDamage &&
+					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 				{
-					xAccel += 0.02f;
+					isDamage = false;
+					isDecele = true;
+				}
+				isDamage = false;
+				if (amplitude <= 20)
+				{
+					if (isMaybeDead)
+					{
+						isDead = true;
+					}
+				}
+				isMaybeDead = false;
+			}
+		}
+
+		sprite_->SetPos(pos);
+		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
+		{
+			if (!isfly)
+			{
+				isfly = true;
+				flyspeed = pos - beforPos;
+				if (amplitude >= 60)
+				{
+					isMaybeDead = true;
 				}
 			}
 		}
+
+		if (isDecele)
+		{
+			speed = std::lerp(speed, 0.0f, deceleRate);
+			xAccel = 0;
+			if (speed > -0.15f)
+			{
+				isDecele = false;
+				xAccel = 0;
+			}
+		}
+
+		if (!isfly)
+		{
+			if (beforPos.y < pos.y)
+			{
+				if (beforlambda == addlambda)
+				{
+					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
+					{
+						xAccel += 0.02f;
+					}
+				}
+			}
+		}
+
+		if (pos.x < 0)
+		{
+			pos.x = 1280;
+		}
 	}
 
-	if (pos.x < 0)
+}
+
+void Enemy::LastUpdate()
+{
+	if (isDead)
 	{
-		pos.x = 1280;
+		if (deadTime <= 0)
+		{
+			Destory();
+		}
+		else
+		{
+			deadTime--;
+			amplitude = sinWave_->GetAmplitude();
+			frequency = sinWave_->GetFrequency();
+			offsetY = sinWave_->GetOffset();
+			addlambda = sinWave_->GetAddLambda();
+			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+			deadSprite_->SetPos(pos);
+		}
 	}
-
 }
 
 void Enemy::Draw()
@@ -128,7 +149,36 @@ void Enemy::Draw()
 
 void Enemy::FrontSpriteDraw()
 {
-	sprite_->Draw();
+	if (!isDead)
+	{
+		sprite_->Draw();
+	}
+	else
+	{
+		deadSprite_->Draw();
+	}
+}
+
+void Enemy::Debug()
+{
+	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
+		if (ImGui::Button("acce")) // 横の加速値をリセット
+		{
+			xAccel = 0.0f;
+		}
+		ImGui::DragFloat("Pos", &pos.x, 1.0f); // イラストの位置
+		ImGui::Text("%f", velo.x); ImGui::SameLine();
+		ImGui::Text("%f", velo.y);
+		ImGui::Text("%f", xAccel);
+		ImGui::Separator();
+		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
+		ImGui::Text("%f", flyspeed.y);
+
+		ImGui::TreePop();
+	}
+	
 }
 
 void Enemy::SetWave(SinWaveDrawer* wave)
