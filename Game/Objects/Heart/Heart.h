@@ -27,7 +27,11 @@ public:
 	void Initialize() override;
 	void Update() override;
 	void Draw() override;
+	void Debug() override;
 private:
+	float animationTime_ = 0.0f;
+	float speed_ = 8.0f;
+	float amplitude_ = 0.05f;
 	Model* model_ = nullptr;
 };
 

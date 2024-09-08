@@ -1,7 +1,10 @@
 #include "Heart.h"
 
-#include <ModelManager.h>
+#include <algorithm>
 
+#include <ImGuiManager.h>
+#include <ModelManager.h>
+#include <WorldTime.h>
 
 void Heart::Initialize() {
 
@@ -21,8 +24,7 @@ void Heart::Initialize() {
 
 void Heart::Update() {}
 
-void Heart::Draw() {
-}
+void Heart::Draw() {}
 
 
 
@@ -34,10 +36,26 @@ void HeartBottom::Initialize() {
 	model_ = ModelManager::Load("HeartBottom");
 }
 
-void HeartBottom::Update() {}
+void HeartBottom::Update() {
+	animationTime_ += WorldTime::DeltaTime();
+
+	float heartBeat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);
+	transform_.scale = Vec3::kOne + (Vec3::kOne * heartBeat);
+}
 
 void HeartBottom::Draw() {
 	model_->Draw(&transform_);
+}
+
+void HeartBottom::Debug() {
+	if(ImGui::TreeNodeEx("animation", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("time", &animationTime_, 0.0f);
+		ImGui::DragFloat("speed", &speed_, 0.001f);
+		ImGui::DragFloat("amplitude", &amplitude_, 0.001f);
+
+		ImGui::TreePop();
+	}
 }
 
 
