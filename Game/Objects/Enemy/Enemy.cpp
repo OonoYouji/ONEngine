@@ -42,12 +42,6 @@ void Enemy::Update()
 
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
-#ifdef _DEBUG
-			ImGui::Begin("theta");
-			ImGui::Text("%f", tangent);
-			ImGui::End();
-#endif // _DEBUG
-
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
