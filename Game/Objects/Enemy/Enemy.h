@@ -58,6 +58,7 @@ private:
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
 
+	bool isMaybeDead = false;
 	bool isDead = false;
 	int deadTime = 30;
 };
