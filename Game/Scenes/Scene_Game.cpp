@@ -44,8 +44,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
-	sinWave_->Update();
 
 	transform_.UpdateMatrix();
 }

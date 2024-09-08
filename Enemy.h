@@ -23,6 +23,15 @@ public:
 
 	void SetWave(SinWaveDrawer* wave);
 
+
+	float CalculateTangentAngle(float A, float B, float x);
+
+	// 速度ベクトルを回転
+	Vector3 RotateVelocity(Vector3 velocity, float angle);
+
+	// 波の傾きに合わせて速度を回転
+	Vector3 AdjustVelocityToWave(Vector3 velocity, float A, float B, float x);
+
 private:
 
 	std::unique_ptr<Sprite> sprite_;
@@ -40,7 +49,8 @@ private:
 	bool isDamage = false;
 	bool isDecele = false;
 
-	Vector3 velo = { 0.02f,0.0f,0.0f };
+	float speed = -0.1f;
+	Vector3 velo = { -0.1f,0.0f,0.0f };
 	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
 
 	float amplitude = 100.0f;
