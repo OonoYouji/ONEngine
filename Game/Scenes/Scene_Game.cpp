@@ -1,34 +1,16 @@
 #include "Scene_Game.h"
 
-#include <ImGuiManager.h> 
+#include <ImGuiManager.h>
 #include <ModelManager.h>
+#include <CameraManager.h>
 
 #include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
 #include "Heart/Heart.h"
+#include "Hand/Hand.h"
 
+#include <Input.h>
 
-class Tmp : BaseGameObject{
-public:
-	Tmp() { CreateTag(this); }
-	~Tmp(){}
-	void Initialize() override { 
-		drawLayerId = 1;
-		heart_[0] = ModelManager::Load("HeartAbove");
-		heart_[1] = ModelManager::Load("HeartBottom");
-	}
-	void Update() override {
-		//sprite_->SetPos(GetPosition());
-	}
-	void Draw() override { 
-		//sprite_->Draw();
-		heart_[0]->Draw(&transform_);
-		heart_[1]->Draw(&transform_);
-	}
-private:
-	//std::unique_ptr<Sprite> sprite_;
-	Model* heart_[2];
-};
 
 
 Scene_Game::Scene_Game() {}
@@ -58,9 +40,11 @@ void Scene_Game::Initialize() {
 	player->drawLayerId = 0;
 
 
-	//(new Tmp)->Initialize();
 	(new Heart)->Initialize();
-	(new GameMonitor)->Initialize();
+	(new Hand)->Initialize();
+	GameMonitor* gameMonitor = new GameMonitor;
+	gameMonitor->Initialize();
+	gameMonitor->isDrawActive = true;
 
 	sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
@@ -72,7 +56,13 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
+
+	if(Input::TriggerKey(KeyCode::Space)) {
+		BaseCamera* camera =
+			CameraManager::GetInstance()->GetCamera("GameCamera");
+
+	}
+
 	sinWave_->Update();
 
 	transform_.UpdateMatrix();

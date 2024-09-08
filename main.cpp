@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("TVUV", "../Models/TV/TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
-	textureManager->Load("Hand", "../Models/Hand/Hand.png");
+	//textureManager->Load("Hand", "../Models/Hand/Hand.png");
 
 	audioManager->Load("fanfare.wav");
 
@@ -108,14 +108,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	layers.resize(2);
 	{
 		std::string names[2]{ "monitor", "game" };
-		BaseCamera* pCamera[2]{ gameCamera, debugCamera };
+		BaseCamera* pCameras[2]{ gameCamera, debugCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
-			layers[i]->Initialize(names[i], pCamera[i]);
+			layers[i]->Initialize(names[i], pCameras[i]);
 		}
 	}
-
-	layers[0]->SetIsApplyBloom(true, OBJECT3D);
 
 
 #ifdef _DEBUG

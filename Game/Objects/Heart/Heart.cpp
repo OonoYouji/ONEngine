@@ -9,6 +9,9 @@
 void Heart::Initialize() {
 
 	drawLayerId = 1;
+	transform_.scale = Vec3::kOne * 1.2f;
+	transform_.position = Vec3(0.5f, -0.3f, -1.2f);
+	transform_.rotate.z = 0.3f;
 
 	bottom_ = new HeartBottom;
 	bottom_->Initialize();
@@ -34,6 +37,7 @@ void Heart::Draw() {}
 
 void HeartBottom::Initialize() {
 	model_ = ModelManager::Load("HeartBottom");
+	animationTime_ = 0.0f;
 }
 
 void HeartBottom::Update() {

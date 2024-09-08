@@ -3,7 +3,7 @@
 
 
 GameCamera::GameCamera() {
-	SetName("GameCamera");
+	CreateTag(this);
 	CameraManager::GetInstance()->AddCamera(GetName(), this);
 }
 
