@@ -6,6 +6,7 @@
 #include <DxResourceCreator.h>
 
 #include <SpriteManager.h>
+#include <TextureManager.h>
 
 #include <Vector3.h>
 
@@ -58,6 +59,9 @@ void Sprite::Draw() {
 /// commandListに情報を設定
 /// ===================================================
 void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
+
+	*matTransformData_ = Mat4::MakeScale(Vec3(size_.x, size_.y, 1.0f)) * Mat4::MakeTranslate(position_);
+
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
 
@@ -68,7 +72,11 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 
 
 void Sprite::SetPos(const Vec3& pos) {
-	*matTransformData_ = Mat4::MakeScale(Vec3(100, 100, 1.0f)) * Mat4::MakeTranslate(pos);
+	position_ = pos;
+}
+
+void Sprite::SetSize(const Vec2& textureSize) {
+	size_ = textureSize;
 }
 
 
@@ -131,7 +139,9 @@ void Sprite::CreateConstantBuffer() {
 	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
 
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matTransformData_));
-	*matTransformData_ = Mat4::MakeScale(Vec3(100, 100, 1.0f)) * Mat4::MakeTranslate(Vec3(200, 200, 0));
+	*matTransformData_ =
+		Mat4::MakeScale(Vec3(size_.x, size_.x, 1.0f)) *
+		Mat4::MakeTranslate(position_);
 
 }
 

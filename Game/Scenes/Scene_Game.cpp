@@ -12,11 +12,26 @@
 
 #include <Input.h>
 
-
+class Background : BaseGameObject {
+public:
+	Background() { CreateTag(this); }
+	~Background() {}
+	void Initialize() override {
+		sprite_.reset(new Sprite);
+		sprite_->Initialize("uvChecker", "uvChecker.png");
+		sprite_->SetPos({ 640, 360,0 });
+		sprite_->SetSize({1280, 720});
+	}
+	void Update() override {}
+	void FrontSpriteDraw() override {
+		sprite_->Draw();
+	}
+private:
+	std::unique_ptr<Sprite> sprite_;
+};
 
 Scene_Game::Scene_Game() {}
-Scene_Game::~Scene_Game() {
-}
+Scene_Game::~Scene_Game() {}
 
 
 /// ===================================================
@@ -38,6 +53,7 @@ void Scene_Game::Initialize() {
 	player->drawLayerId = 0;
 
 
+	(new Background)->Initialize();
 	(new Heart)->Initialize();
 	(new Hand)->Initialize();
 	GameMonitor* gameMonitor = new GameMonitor;

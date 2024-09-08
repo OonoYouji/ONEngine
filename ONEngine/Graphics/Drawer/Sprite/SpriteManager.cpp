@@ -4,6 +4,7 @@
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxResourceCreator.h>
+#include <DxDescriptor.h>
 
 
 /// ===================================================
@@ -91,6 +92,8 @@ void SpriteManager::PostDraw() {
 	
 	pipelineState_->SetPipelineState();
 
+	ONE::DxDescriptor* dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
+	dxDescriptor->SetSRVHeap(commandList);
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
 

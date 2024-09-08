@@ -54,6 +54,11 @@ void PipelineState::AddInputElement(const std::string& semanticName, uint32_t se
 	inputElements_.push_back(desc);
 }
 
+void PipelineState::AddInputElement(const D3D12_INPUT_ELEMENT_DESC& inputElement) {
+	semanticNames_.push_back(inputElement.SemanticName);
+	inputElements_.push_back(inputElement);
+}
+
 
 /// ===================================================
 /// ConstantBufferViewを設定
@@ -207,7 +212,6 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 	/// ---------------------------------------------------
 	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
 
-
 	/// ---------------------------------------------------
 	/// blend state
 	/// ---------------------------------------------------
@@ -238,6 +242,13 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 		shader_->ps->GetBufferPointer(),
 		shader_->ps->GetBufferSize()
 	};
+
+	if(shader_->gs) {
+		desc.GS = {
+			shader_->gs->GetBufferPointer(),
+			shader_->gs->GetBufferSize()
+		};
+	}
 
 
 	desc.BlendState = blendDesc;				//- BlendState
@@ -271,4 +282,9 @@ void PipelineState::Shader::ShaderCompile(const std::wstring& vsFilePath, const 
 	ps = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
 
 
+}
+
+void PipelineState::Shader::GeometryShaderCompile(const std::wstring& filePath, const wchar_t* profile) {
+	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
+	gs = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + filePath, profile);
 }

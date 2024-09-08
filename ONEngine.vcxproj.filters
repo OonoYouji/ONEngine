@@ -673,6 +673,9 @@
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
       <Filter>Resources\Shaders\Line2D</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Externals\imgui\LICENSE.txt">

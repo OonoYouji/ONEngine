@@ -16,6 +16,9 @@ void LineDrawer2D::Initialize() {
 		L"Line2D/Line2D.VS.hlsl", L"vs_6_0",
 		L"Line2D/Line2D.PS.hlsl", L"ps_6_0"
 	);
+	shader_.GeometryShaderCompile(
+		L"Line2D/Line2D.GS.hlsl", L"gs_6_0"
+	);
 
 	pipeline_->SetFillMode(kSolid);
 
@@ -23,9 +26,12 @@ void LineDrawer2D::Initialize() {
 
 	pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 
-	pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-	pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-	pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	pipeline_->AddInputElement(inputLayout[0]);
+	pipeline_->AddInputElement(inputLayout[1]);
 
 	pipeline_->Initialize();
 
@@ -57,8 +63,8 @@ void LineDrawer2D::PostDraw() {
 
 void LineDrawer2D::Draw(const Vector2& v1, const Vector2& v2, const Vector4& color) {
 
-	vertices_.push_back({ { v1.x, v1.y, 0.0f, 1.0f },color,{ONE::WinApp::kWindowSizeX,ONE::WinApp::kWindowSizeY,0.0f,0.0f} });
-	vertices_.push_back({ { v2.x, v2.y, 0.0f, 1.0f },color,{ONE::WinApp::kWindowSizeX,ONE::WinApp::kWindowSizeY,0.0f,0.0f} });
+	vertices_.push_back({ { v1.x, v1.y, 0.0f, 1.0f },color});
+	vertices_.push_back({ { v2.x, v2.y, 0.0f, 1.0f },color});
 
 }
 

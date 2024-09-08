@@ -19,7 +19,6 @@ public:
 	struct LineVertexDate {
 		Vector4 postion;
 		Vector4 color;
-		Vector4 screenSize;
 	};
 
 public:
