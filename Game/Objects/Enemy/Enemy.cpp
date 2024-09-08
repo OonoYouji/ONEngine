@@ -89,6 +89,7 @@ void Enemy::Update()
 			{
 				isfly = true;
 				flyspeed = pos - beforPos;
+				flyspeed.y = flyspeed.y * 2;
 				if (amplitude >= 60)
 				{
 					isMaybeDead = true;
