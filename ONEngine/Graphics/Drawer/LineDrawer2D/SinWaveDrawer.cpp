@@ -63,10 +63,18 @@ void SinWaveDrawer::Update() {
 	if (padRstick.x > 0)
 	{
 		addlambda -= addPadLam;
+		if (addlambda <= -1256.6f)
+		{
+			addlambda = 0;
+		}
 	}
 	else if (padRstick.x < 0)
 	{
 		addlambda += addPadLam;
+		if (addlambda >= 1256.6f)
+		{
+			addlambda = 0;
+		}
 	}
 
 

@@ -56,10 +56,8 @@ void Enemy::Update()
 
 	if (!isfly)
 	{
-		Vector3 newVelo = { speed-xAccel,0.0f,0.0f };
-		velo = AdjustVelocityToWave(newVelo, amplitude, frequency, pos.x);
 
-		pos.x += velo.x;
+		pos.x += speed - xAccel;
 
 		pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 	}
