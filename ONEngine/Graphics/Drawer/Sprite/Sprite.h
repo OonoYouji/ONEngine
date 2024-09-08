@@ -51,7 +51,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(uint32_t zOrder = 0u);
 
 
 	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
