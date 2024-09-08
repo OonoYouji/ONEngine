@@ -12,6 +12,7 @@
 #include <AudioManager.h>
 #include "LineDrawer2D/LineDrawer2D.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
+#include "Enemy/Enemy.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -35,5 +36,5 @@ private:
 	std::unique_ptr<Sprite> sprite_;
 
 	SinWaveDrawer* sinWave_;
-
+	Enemy* enemy_;
 };

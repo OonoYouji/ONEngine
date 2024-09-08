@@ -3,22 +3,31 @@
 #include <vector>
 #include <Sprite.h>
 #include <Transform.h>
+#include <BaseGameObject.h>
 
-class SinWaveDrawer
+class SinWaveDrawer : public BaseGameObject
 {
 public:
 	SinWaveDrawer();
 	~SinWaveDrawer();
 
-	void Initialize();
+	void Initialize()override;
 	
-	void Update();
+	void Update()override;
 
-	void Draw();
+	void Draw()override;
+
+	void FrontSpriteDraw() override;
+
+	//enemyに渡す
+	float GetAmplitude();
+	float GetFrequency();
+	float GetOffset();
+	float GetAddLambda();
 
 private:
 
-	std::unique_ptr<Sprite> sprite_;
+
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
 	Vector3 beforPos = pos;
 
@@ -40,5 +49,7 @@ private:
 	float amplitude = 100.0f;
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
-
+	float addPadAmp = 2.0f;
+	float addPadLam = 2.0f;
+	float addNaturalAmp = 2.0f;
 };

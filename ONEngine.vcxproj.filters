@@ -215,6 +215,9 @@
     <ClCompile Include="Game\Objects\Shake\Shake.cpp">
       <Filter>Game\Objects\Shake</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -369,6 +372,9 @@
     </Filter>
     <Filter Include="Game\Objects\Shake">
       <UniqueIdentifier>{66e2b31e-9c46-4d80-89ab-90cd5c9ce639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Enemy">
+      <UniqueIdentifier>{b877fb12-26da-4650-b844-7492429c3222}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +593,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Shake\Shake.h">
       <Filter>Game\Objects\Shake</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
