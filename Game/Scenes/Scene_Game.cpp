@@ -9,6 +9,7 @@
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
 #include "Shake/Shake.h"
+#include "Player/PlayerHP.h"
 
 #include <Input.h>
 
@@ -70,6 +71,9 @@ void Scene_Game::Initialize() {
 	enemy_->SetWave(sinWave_);
 	enemy_->Initialize();
 
+	/// プレイヤーのHP
+	PlayerHP* playerHP = new PlayerHP();
+	playerHP->Initialize();
 
 	/// 心臓
 	Heart* heart = new Heart;

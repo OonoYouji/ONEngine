@@ -20,6 +20,8 @@ Sprite::~Sprite() {}
 /// ===================================================
 void Sprite::Initialize(const std::string& textureName, const std::string& filePath) {
 
+	TextureManager::GetInstance()->Load(
+		textureName, filePath);
 
 	/// ---------------------------------------------------
 	/// メッシュの初期化

@@ -218,6 +218,9 @@
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerHP.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -596,6 +599,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\Enemy.h">
       <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerHP.h">
+      <Filter>Game\Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
