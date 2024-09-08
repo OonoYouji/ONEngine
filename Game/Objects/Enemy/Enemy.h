@@ -12,6 +12,7 @@ public:
 
 	void Initialize() override;
 	void Update()override;
+	void LastUpdate()override;
 
 	void Draw() override;
 	void FrontSpriteDraw()override;
@@ -19,6 +20,8 @@ public:
 	void Debug()override;
 
 	void SetWave(SinWaveDrawer* wave);
+
+	bool IsDead() { return isDead; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -53,4 +56,6 @@ private:
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
+
+	bool isDead = false;
 };

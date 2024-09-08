@@ -50,7 +50,6 @@ void Scene_Game::Initialize() {
 	enemy_ = new Enemy();
 	enemy_->SetWave(sinWave_);
 	enemy_->Initialize();
-
 }
 
 
@@ -64,6 +63,7 @@ void Scene_Game::Update() {
 			CameraManager::GetInstance()->GetCamera("GameCamera");
 		camera->GetShake()->Start();
 	}
+
 
 	sinWave_->Update();
 

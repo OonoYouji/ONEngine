@@ -60,6 +60,10 @@ void Enemy::Update()
 				isDecele = true;
 			}
 			isDamage = false;
+			if (amplitude <= 20)
+			{
+				isDead = true;
+			}
 		}
 	}
 
@@ -104,6 +108,14 @@ void Enemy::Update()
 		pos.x = 1280;
 	}
 
+}
+
+void Enemy::LastUpdate()
+{
+	if (isDead)
+	{
+		Destory();
+	}
 }
 
 void Enemy::Draw()
