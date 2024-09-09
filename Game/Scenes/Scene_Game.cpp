@@ -117,22 +117,6 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 	
-	
-
-
-	/*sinWave_->Update();*/
-
-
-	transform_.UpdateMatrix();
 }
 
 
-/// ===================================================
-/// 描画処理
-/// ===================================================
-void Scene_Game::Draw() {
-
-	model_->Draw(&transform_);
-	sprite_->Draw();
-
-}
