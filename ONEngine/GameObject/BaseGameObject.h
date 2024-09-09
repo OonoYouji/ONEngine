@@ -240,4 +240,8 @@ public:
 	bool isDrawActive = true;
 	int drawLayerId = 0;
 
+	/// どのシーンで更新処理するのか
+	std::vector<bool> isSceneActives_;
+	/// title, game, result 
+
 };

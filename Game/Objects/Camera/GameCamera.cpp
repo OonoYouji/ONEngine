@@ -2,8 +2,9 @@
 
 
 
-GameCamera::GameCamera() {
+GameCamera::GameCamera(const std::string& name) {
 	CreateTag(this);
+	SetName(name);
 	CameraManager::GetInstance()->AddCamera(GetName(), this);
 }
 
@@ -30,6 +31,8 @@ void GameCamera::Initialize() {
 /// 更新処理
 /// ===================================================
 void GameCamera::Update() {
+
+	Move();
 
 	UpdateMatrix();
 	UpdateMatView();

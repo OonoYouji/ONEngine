@@ -14,6 +14,11 @@ enum CAMEAR_SHAKE_TYPE : uint32_t {
 };
 
 
+struct MoveData {
+	Vec3 position;
+	Vec3 rotate;
+};
+
 /// ===================================================
 /// カメラの基底クラス
 /// ===================================================
@@ -23,6 +28,8 @@ public:
 	/// ===================================================
 	/// public : sub class
 	/// ===================================================
+
+	
 
 public:
 
@@ -39,6 +46,8 @@ public:
 	void UpdateMatView();
 	void UpdateMatProjection();
 
+	void Move();
+
 	void Transfer();
 
 	const Mat4& GetMatView() const { return matView_; }
@@ -48,6 +57,8 @@ public:
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
 	class Shake* GetShake() const { return shake_; }
+
+	void SetMove(const MoveData& start, const MoveData& end, float time);
 
 protected:
 
@@ -61,6 +72,11 @@ protected:
 	Mat4 matVp_;
 
 	class Shake* shake_ = nullptr;
+
+	MoveData startMoveData_;
+	MoveData endMoveData_;
+	float moveTime_;
+	float maxMoveTime_;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;

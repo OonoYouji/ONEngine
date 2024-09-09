@@ -3,6 +3,7 @@
 #include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <CameraManager.h>
+#include <SceneManager.h>
 
 #include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
@@ -10,6 +11,7 @@
 #include "Hand/Hand.h"
 #include "Shake/Shake.h"
 #include "Player/PlayerHP.h"
+#include "GameCameraState/GameCameraState.h"
 
 #include <Input.h>
 
@@ -81,7 +83,7 @@ void Scene_Game::Initialize() {
 	heart->SetPosition({ -3.1f, 0.05f, -4.0f });
 	heart->SetRotate({ 0.0f, -1.0f, 0.45f });
 	heart->SetScale(Vec3::kOne * 0.7f);
-
+	heart->UpdateMatrix();
 
 	/// 手
 	Hand* hand = new Hand;
@@ -89,6 +91,7 @@ void Scene_Game::Initialize() {
 	hand->SetPosition({ -3.4f, 0.1f, -3.9f });
 	hand->SetRotate({ 0.0f, -0.5f, 0.0f });
 	hand->SetScale(Vec3::kOne * 0.5f);
+	hand->UpdateMatrix();
 
 
 	/// ゲームを映すモニター
@@ -98,9 +101,9 @@ void Scene_Game::Initialize() {
 
 
 	(new Background)->Initialize();
+	(new GameCameraState)->Initialize();
 
-
-
+	
 }
 
 
@@ -108,12 +111,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-
-	if(Input::TriggerKey(KeyCode::Space)) {
-		BaseCamera* camera =
-			CameraManager::GetInstance()->GetCamera("GameCamera");
-		camera->GetShake()->Start();
-	}
+	
+	
 
 
 	sinWave_->Update();

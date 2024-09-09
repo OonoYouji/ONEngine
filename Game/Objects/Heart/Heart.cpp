@@ -40,6 +40,7 @@ void Heart::Draw() {}
 void HeartBottom::Initialize() {
 	model_ = ModelManager::Load("HeartBottom");
 	animationTime_ = 0.0f;
+	amplitude_ = 0.6f;
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 	assert(pSinWaveDrawer_ != nullptr);

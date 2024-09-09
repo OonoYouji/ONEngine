@@ -1,4 +1,3 @@
-#define NOMINMAX
 #include <SceneManager.h>
 
 #include <d3dx12.h>
@@ -11,6 +10,8 @@
 #include <DxBarrierCreator.h>
 
 #include <ImGuiManager.h>
+#include <GameObjectManager.h>
+#include <Collision/CollisionManager.h>
 
 #include <BaseScene.h>
 #include <Scene_Game.h>
@@ -29,9 +30,13 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 /// 初期化処理
 /// ===================================================
-void SceneManager::Initialize() {
+void SceneManager::Initialize(SCENE_ID sceneId) {
+	currentId_ = sceneId;
 	scene_.reset(new Scene_Game());
 	scene_->Initialize();
+
+	pGameObjectManager_ = GameObjectManager::GetInstance();
+	pCollisionManager_ = CollisionManager::GetInstance();
 }
 
 
@@ -48,6 +53,13 @@ void SceneManager::Finalize() {
 /// ===================================================
 void SceneManager::Update() {
 	scene_->Update();
+
+	/// 更新1
+	pGameObjectManager_->Update(currentId_);
+	/// 当たり判定処理
+	pCollisionManager_->Update(currentId_);
+	/// 更新2
+	pGameObjectManager_->LastUpdate(currentId_);
 }
 
 
@@ -56,6 +68,10 @@ void SceneManager::Update() {
 /// ===================================================
 void SceneManager::Draw() {
 	scene_->Draw();
+}
+
+void SceneManager::SetNextScene(SCENE_ID nextId) {
+	currentId_ = nextId;
 }
 
 

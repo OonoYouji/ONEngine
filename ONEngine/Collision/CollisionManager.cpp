@@ -26,7 +26,7 @@ void CollisionManager::SubGameObject(BaseGameObject* collider) {
 }
 
 
-void CollisionManager::Update() {
+void CollisionManager::Update(int currentSceneId) {
 
 	currentCollidedPairs_.clear();
 
@@ -37,7 +37,16 @@ void CollisionManager::Update() {
 	}
 
 	for(auto& objectA : gameObjects_) {
+
+		if(!objectA->isSceneActives_[currentSceneId]) {
+			continue;
+		}
+
 		for(auto& objectB : gameObjects_) {
+
+			if(!objectB->isSceneActives_[currentSceneId]) {
+				continue;
+			}
 
 			if(objectA == objectB) { continue; }
 			if(objectA->drawLayerId != objectB->drawLayerId) {
@@ -54,7 +63,7 @@ void CollisionManager::Update() {
 			}
 
 			//if(objectA->GetTag() != objectB->GetTag()) {
-				CheckCollision(objectA, objectB);
+			CheckCollision(objectA, objectB);
 			//}
 		}
 	}

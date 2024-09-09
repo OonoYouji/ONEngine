@@ -54,28 +54,12 @@ public:
 	/// <summary>
 	///  オブジェクトのUpdate呼び出し
 	/// </summary>
-	void Update();
+	void Update(int currentSceneId);
 
 	/// <summary>
 	/// オブジェクトのLastUpdate呼び出し
 	/// </summary>
-	void LastUpdate();
-
-	/// <summary>
-	/// オブジェクトのDraw呼び出し
-	/// </summary>
-	void Draw();
-
-	/// <summary>
-	/// オブジェクトの前景スプライトの描画の呼び出し
-	/// </summary>
-	void FrontSpriteDraw();
-
-	/// <summary>
-	/// オブジェクトの背景スプライトの描画の呼び出し
-	/// </summary>
-	void BackSpriteDraw();
-
+	void LastUpdate(int currentSceneId);
 
 	void BackSpriteDraw(int layerId);
 	void Object3dDraw(int layerId);

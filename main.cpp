@@ -68,6 +68,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	lineDrawer2d->Initialize();
 	audioManager->Initialize();
 
+	/// texture読み込み
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
@@ -78,41 +79,50 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	textureManager->Load("Hand", "Hand.png");
 
+	/// audio読み込み
 	audioManager->Load("fanfare.wav");
 
+	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-
-	bool imguiIsBlending = false;
 	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
-	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
+	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
 
-
-
+	/// game object manager の初期化
 	gameObjectManager->Initialize();
 
-	GameCamera* gameCamera = new GameCamera();
+	/// camera の初期化
+	GameCamera* monitorCamera = new GameCamera("MonitorCamera");
+	monitorCamera->Initialize();
+	monitorCamera->SetPosition({ -2.221f, 3.245f, -27.257f });
+	monitorCamera->SetRotate({ 0.0f, 0.215f, 0.0f });
+	monitorCamera->UpdateMatrix();
+	
+	GameCamera* gameCamera = new GameCamera("GameCamera");
 	gameCamera->Initialize();
+	gameCamera->SetPosition({ 1.8f, 0.87f, -12.7f });
+	gameCamera->SetRotate({ 0.066f, -0.258f, 0.0f });
 	cameraManager->SetMainCamera(gameCamera);
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
 
+	/// light の初期化
 	DirectionalLight* directionalLight = new DirectionalLight();
 	directionalLight->Initialize();
 	modelManager->SetDirectionalLight(directionalLight);
 
+	/// scene manager の初期化
+	sceneManager->Initialize(SCENE_ID::GAME);
 
-	sceneManager->Initialize();
-
-
-	uint8_t drawLayerIndex = 0;
+	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
 		std::string names[2]{ "monitor", "game" };
-		BaseCamera* pCameras[2]{ gameCamera, debugCamera };
+		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
+		BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);
@@ -121,6 +131,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 #ifdef _DEBUG
+	/// debug 用 render texture の初期化
 	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
 	debugFinalRenderTexture->Initialize(
 		Vec4(0, 0, 0, 0),
@@ -129,7 +140,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	);
 #endif // _DEBUG
 
-	winApp->SetIsFullScreen(true);
+	/// window mode や imgui の表示設定の初期化
+	winApp->SetIsFullScreen(false); /// ? full screen : window mode
+	uint8_t drawLayerIndex = 1;	/// game || monitor
+	bool imguiIsBlending = true;
+	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
@@ -175,18 +190,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		
 
-
-
 		cameraManager->Update();
 
+		/// game object の更新をしている
 		sceneManager->Update();
-
-		/// 更新1
-		gameObjectManager->Update();
-		/// 当たり判定処理
-		collisionManager->Update();
-		/// 更新2
-		gameObjectManager->LastUpdate();
 
 		audioManager->Update();
 
