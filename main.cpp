@@ -57,6 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	winApp->Initialize();
+
 	dxCommon->Initialize();
 
 	input->Initialize(winApp);
@@ -81,7 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 
-	bool imguiIsBlending = true;
+	bool imguiIsBlending = false;
 	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
@@ -106,7 +107,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize();
 
 
-	uint8_t drawLayerIndex = 1;
+	uint8_t drawLayerIndex = 0;
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
@@ -128,6 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	);
 #endif // _DEBUG
 
+	winApp->SetIsFullScreen(true);
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();

@@ -10,12 +10,12 @@ void DirectionalLight::Initialize() {
 	constantBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bufferData_));
 
 	bufferData_->color = Vec4(1, 1, 1, 1);
-	bufferData_->direction = Vec3(-1, -1, 1).Normalize();
+	bufferData_->direction = Vec3(-0.98f, 0.0f, 0.195f).Normalize();
 	bufferData_->intencity = 1.0f;
 }
 
 void DirectionalLight::Update() {
-
+	bufferData_->direction = bufferData_->direction.Normalize();
 }
 
 void DirectionalLight::Debug() {
