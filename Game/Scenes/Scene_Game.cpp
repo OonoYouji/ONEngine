@@ -120,7 +120,7 @@ void Scene_Game::Update() {
 	
 
 
-	sinWave_->Update();
+	/*sinWave_->Update();*/
 
 
 	transform_.UpdateMatrix();

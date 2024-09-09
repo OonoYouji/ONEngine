@@ -35,8 +35,11 @@ void PlayerHP::Update() {
 	{
 		if (enemy->IsHeartBreak())
 		{
-			hpSprites_.pop_back();
-			enemy->SetHeartBreak(false);
+			if (static_cast<uint32_t>(hpSprites_.size()) > 0)
+			{
+				hpSprites_.pop_back();
+				enemy->SetHeartBreak(false);
+			}
 		}
 	}
 

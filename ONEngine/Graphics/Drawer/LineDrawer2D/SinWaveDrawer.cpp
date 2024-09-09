@@ -129,3 +129,8 @@ float SinWaveDrawer::GetAddLambda()
 {
 	return addlambda;
 }
+
+float SinWaveDrawer::GetAddLabdaCount()
+{
+	return addPadLam;
+}

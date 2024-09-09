@@ -24,6 +24,7 @@ public:
 	float GetFrequency();
 	float GetOffset();
 	float GetAddLambda();
+	float GetAddLabdaCount();
 
 private:
 

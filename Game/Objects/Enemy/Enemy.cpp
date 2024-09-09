@@ -6,16 +6,19 @@
 
 void Enemy::Initialize()
 {
+	SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
 
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 	sprite_->SetSize({ 20,20 });
+	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
 	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
 	deadSprite_->SetSize({ 20,20 });
+	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
 	beforlambda = addlambda;
-
+	addLambdaCount = sinWave_->GetAddLabdaCount();
 }
 
 void Enemy::Update()
@@ -154,6 +157,8 @@ void Enemy::Update()
 			{
 				pos.x = 1280;
 				roopCount++;
+				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
+				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
 			else if (roopCount == 1)
 			{
