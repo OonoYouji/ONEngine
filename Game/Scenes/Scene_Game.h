@@ -13,6 +13,7 @@
 #include "LineDrawer2D/LineDrawer2D.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
+#include "EnemyManager.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -37,4 +38,5 @@ private:
 
 	SinWaveDrawer* sinWave_;
 	Enemy* enemy_;
+	EnemyManager* enemyManager_;
 };

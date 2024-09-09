@@ -151,6 +151,28 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 	return result;
 }
 
+uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
+	GameObjectManager* instance = GetInstance();
+	uint32_t count = 0U;
+	for (const auto& object : instance->objects_) {
+		if (object->GetTag() == tag) {
+			count++;
+		}
+	}
+	return count;
+}
+
+std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag) {
+	GameObjectManager* instance = GetInstance();
+	std::list<BaseGameObject*> result;
+	for (const auto& object : instance->objects_) {
+		if (object->GetTag() == tag) {
+			result.push_back(object.get());
+		}
+	}
+	return result;
+}
+
 /// ===================================================
 /// すべてのインスタンスを削除する
 /// ===================================================

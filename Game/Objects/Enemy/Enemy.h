@@ -21,7 +21,11 @@ public:
 
 	void SetWave(SinWaveDrawer* wave);
 
+	void SetHeartBreak(bool is) { isHeartBreak = is; }
+
 	bool IsDead() { return isDead; }
+
+	bool IsHeartBreak() { return isHeartBreak; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -44,6 +48,9 @@ private:
 	Vector3 beforPos = pos;
 
 	float xAccel = 0.0f;
+	float addAccel = 0.02f;
+	float addDecel = 0.005f;
+
 	bool isJump = false;
 	bool isfly = false;
 	bool isDamage = false;
@@ -59,8 +66,14 @@ private:
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
+	float maxAcceleAmp = 400.0f;
+
 
 	bool isMaybeDead = false;
 	bool isDead = false;
 	int deadTime = 30;
+
+
+	int roopCount = 0;
+	bool isHeartBreak = false;
 };

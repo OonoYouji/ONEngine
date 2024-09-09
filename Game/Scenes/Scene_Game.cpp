@@ -73,6 +73,9 @@ void Scene_Game::Initialize() {
 	enemy_->SetWave(sinWave_);
 	enemy_->Initialize();
 
+	/// 敵pop
+	enemyManager_ = new EnemyManager();
+
 	/// プレイヤーのHP
 	PlayerHP* playerHP = new PlayerHP();
 	playerHP->Initialize();

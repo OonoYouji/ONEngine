@@ -1,6 +1,7 @@
 #include "Enemy.h"
-#include "Drawer/LineDrawer2D/SinWaveDrawer.h"
+
 #include <ImGuiManager.h>
+#include "Drawer/LineDrawer2D/SinWaveDrawer.h"
 
 
 void Enemy::Initialize()
@@ -10,7 +11,7 @@ void Enemy::Initialize()
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 	sprite_->SetSize({ 20,20 });
 	deadSprite_.reset(new Sprite());
-	deadSprite_->Initialize("SINON_enemy_stanp", "SINON_enemy_stanp.png");
+	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
 	deadSprite_->SetSize({ 20,20 });
 
 	beforlambda = addlambda;
@@ -52,6 +53,10 @@ void Enemy::Update()
 			{
 				isDamage = true;
 			}
+			if (pos.y <= 40)
+			{
+				isMaybeDead = true;
+			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
@@ -88,7 +93,8 @@ void Enemy::Update()
 			{
 				isfly = true;
 				flyspeed = pos - beforPos;
-				if (amplitude >= 60)
+				flyspeed.y = flyspeed.y * 2;
+				if (amplitude >= 40)
 				{
 					isMaybeDead = true;
 				}
@@ -108,14 +114,35 @@ void Enemy::Update()
 
 		if (!isfly)
 		{
-			if (beforPos.y < pos.y)
+			if (true)
 			{
 				if (beforlambda == addlambda)
 				{
 					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 					{
-						xAccel += 0.02f;
+						float t = amplitude / maxAcceleAmp;
+						if (t >= 1.0f)
+						{
+							t = 1.0f;
+						}
+						xAccel += addAccel * t;
+					}
+				}
+			}
+			if (true)
+			{
+				if (beforlambda == addlambda)
+				{
+					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
+					{
+						float t = amplitude / maxAcceleAmp;
+						if (t >= 1.0f)
+						{
+							t = 1.0f;
+						}
+						xAccel -= addDecel * t;
 					}
 				}
 			}
@@ -123,7 +150,17 @@ void Enemy::Update()
 
 		if (pos.x < 0)
 		{
-			pos.x = 1280;
+			if (roopCount == 0)
+			{
+				pos.x = 1280;
+				roopCount++;
+			}
+			else if (roopCount == 1)
+			{
+				isHeartBreak = true;
+				isDead = true;
+				roopCount = 99;
+			}
 		}
 	}
 
@@ -171,6 +208,8 @@ void Enemy::Debug()
 	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
+		ImGui::DragFloat("AddAccel", &addAccel, 0.001f, 0.0f, 0.5f);
+		ImGui::DragFloat("AddDecel", &addDecel, 0.001f, 0.0f, 0.5f);
 		if (ImGui::Button("acce")) // 横の加速値をリセット
 		{
 			xAccel = 0.0f;
@@ -179,13 +218,13 @@ void Enemy::Debug()
 		ImGui::Text("%f", velo.x); ImGui::SameLine();
 		ImGui::Text("%f", velo.y);
 		ImGui::Text("%f", xAccel);
+		ImGui::DragFloat("MaxAcceleAmp", &maxAcceleAmp, 0.1f, 1.0f, 400.0f);
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
 
 		ImGui::TreePop();
 	}
-	
 }
 
 void Enemy::SetWave(SinWaveDrawer* wave)

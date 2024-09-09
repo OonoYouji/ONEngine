@@ -1,6 +1,8 @@
 #include "PlayerHP.h"
 
 #include <ImGuiManager.h>
+#include "Enemy/Enemy.h"
+
 
 void PlayerHP::Initialize() {
 	maxHP_ = 3;
@@ -19,6 +21,28 @@ void PlayerHP::Initialize() {
 }
 
 void PlayerHP::Update() {
+	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
+	std::list<Enemy*> enemies;
+	
+	for (auto& gameObject : objects)
+	{
+		if (Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
+			enemies.push_back(enemy);
+		}
+	}
+
+	for (auto& enemy : enemies)
+	{
+		if (enemy->IsHeartBreak())
+		{
+			hpSprites_.pop_back();
+			enemy->SetHeartBreak(false);
+		}
+	}
+
+	objects.clear();
+	enemies.clear();
+
 	/// 座標初期化
 	for(uint32_t i = 0U; i < static_cast<uint32_t>(hpSprites_.size()); ++i) {
 		Vec3 position = {
