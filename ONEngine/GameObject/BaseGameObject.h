@@ -242,6 +242,8 @@ public:
 
 	/// どのシーンで更新処理するのか
 	std::vector<bool> isSceneActives_;
-	/// title, game, result 
+
+	/// thisの初期化をするシーン
+	int initialSceneId_;
 
 };

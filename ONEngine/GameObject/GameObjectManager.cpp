@@ -18,6 +18,13 @@ void GameObjectManager::Finalize() {
 	objects_.clear();
 }
 
+void GameObjectManager::GameObjectInitialize(int sceneId) {
+	for(auto& obj : objects_) {
+		if(obj->initialSceneId_ != sceneId) { continue; }
+		obj->Initialize();
+	}
+}
+
 
 /// ===================================================
 /// 更新

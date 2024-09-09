@@ -49,7 +49,7 @@ public:
 	void Finalize();
 
 
-
+	void GameObjectInitialize(int sceneId);
 
 	/// <summary>
 	///  オブジェクトのUpdate呼び出し

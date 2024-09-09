@@ -33,6 +33,8 @@ BaseGameObject::BaseGameObject() {
 		id = true;
 	}
 
+	initialSceneId_ = SCENE_ID::TITLE;
+
 }
 
 

@@ -15,6 +15,12 @@ void Heart::Initialize() {
 	transform_.position = Vec3(0.5f, -0.3f, -1.2f);
 	transform_.rotate.z = 0.3f;
 
+	/// trueの時のシーンのみ更新処理をされる
+	isSceneActives_[0] = false;	/// TITLE
+	isSceneActives_[1] = true;	/// GAME
+	isSceneActives_[2] = false;	/// RESULT
+
+
 	bottom_ = new HeartBottom;
 	bottom_->Initialize();
 	bottom_->drawLayerId = drawLayerId;
@@ -25,6 +31,13 @@ void Heart::Initialize() {
 
 	bottom_->SetParent(this);
 	above_->SetParent(this);
+
+
+	for(uint8_t i = 0u; i < 3u; ++i) {
+		bottom_->isSceneActives_[i] = isSceneActives_[i];
+		above_->isSceneActives_[i] = isSceneActives_[i];
+	}
+
 }
 
 void Heart::Update() {}
