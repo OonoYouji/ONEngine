@@ -13,8 +13,10 @@
 #include "Player/PlayerHP.h"
 #include "GameCameraState/GameCameraState.h"
 #include "GameResult/GameResult.h"
+#include "LineDrawer2D/SinWaveDrawer.h"
+#include "Enemy/Enemy.h"
+#include "Enemy/EnemyManager.h"
 
-#include <Input.h>
 
 class Background : BaseGameObject {
 public:
