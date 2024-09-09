@@ -30,6 +30,9 @@ public:
 	/// <returns></returns>
 	static BaseGameObject* GetGameObject(const std::string& name);
 
+	static uint32_t GetInstanceCount(const std::string& tag);
+	static std::list<BaseGameObject*> GetGameObjectList(const std::string& tag);
+
 	/// <summary>
 	/// すべてのオブジェクトを消去する
 	/// </summary>

@@ -21,7 +21,11 @@ public:
 
 	void SetWave(SinWaveDrawer* wave);
 
+	void SetHeartBreak(bool is) { isHeartBreak = is; }
+
 	bool IsDead() { return isDead; }
+
+	bool IsHeartBreak() { return isHeartBreak; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -71,4 +75,5 @@ private:
 
 
 	int roopCount = 0;
+	bool isHeartBreak = false;
 };

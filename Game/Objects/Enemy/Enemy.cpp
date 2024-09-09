@@ -157,7 +157,9 @@ void Enemy::Update()
 			}
 			else if (roopCount == 1)
 			{
+				isHeartBreak = true;
 				isDead = true;
+				roopCount = 99;
 			}
 		}
 	}
