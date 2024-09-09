@@ -24,17 +24,19 @@ void SinWaveDrawer::Update() {
 	padLstick = Input::GetInsatnce()->GetLStick();
 	padRstick = Input::GetInsatnce()->GetRStick();
 
-	if (padLstick.y > 0)
+	if (padLstick.y > 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
 	{
-		amplitude+=addPadAmp;
+		float stickSlope = padLstick.y / 32768.0f;
+		amplitude += addPadAmp * stickSlope;
 		if (amplitude >= 300)
 		{
 			amplitude = 300;
 		}
 	}
-	else if (padLstick.y < 0)
+	else if (padLstick.y < 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
 	{
-		amplitude-= addPadAmp;
+		float stickSlope = -(padLstick.y) / 32768.0f;
+		amplitude -= addPadAmp * stickSlope;
 		if (amplitude <= 0)
 		{
 			amplitude = 0;
@@ -42,18 +44,18 @@ void SinWaveDrawer::Update() {
 	}
 
 
-	if (padRstick.x > 0)
+	if (padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
 	{
 		addlambda -= addPadLam;
-		if (addlambda <= -1256.6f)
+		if (addlambda <= -1393.0f)
 		{
 			addlambda = 0;
 		}
 	}
-	else if (padRstick.x < 0)
+	else if (padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
 	{
 		addlambda += addPadLam;
-		if (addlambda >= 1256.6f)
+		if (addlambda >= 1393.0f)
 		{
 			addlambda = 0;
 		}

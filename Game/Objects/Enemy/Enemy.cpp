@@ -53,6 +53,10 @@ void Enemy::Update()
 			{
 				isDamage = true;
 			}
+			if (pos.y <= 40)
+			{
+				isMaybeDead = true;
+			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
@@ -90,7 +94,7 @@ void Enemy::Update()
 				isfly = true;
 				flyspeed = pos - beforPos;
 				flyspeed.y = flyspeed.y * 2;
-				if (amplitude >= 60)
+				if (amplitude >= 40)
 				{
 					isMaybeDead = true;
 				}
@@ -110,14 +114,35 @@ void Enemy::Update()
 
 		if (!isfly)
 		{
-			if (beforPos.y < pos.y)
+			if (true)
 			{
 				if (beforlambda == addlambda)
 				{
 					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 					{
-						xAccel += 0.02f;
+						float t = amplitude / maxAcceleAmp;
+						if (t >= 1.0f)
+						{
+							t = 1.0f;
+						}
+						xAccel += addAccel * t;
+					}
+				}
+			}
+			if (true)
+			{
+				if (beforlambda == addlambda)
+				{
+					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
+					{
+						float t = amplitude / maxAcceleAmp;
+						if (t >= 1.0f)
+						{
+							t = 1.0f;
+						}
+						xAccel -= addDecel * t;
 					}
 				}
 			}
@@ -173,6 +198,8 @@ void Enemy::Debug()
 	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
+		ImGui::DragFloat("AddAccel", &addAccel, 0.001f, 0.0f, 0.5f);
+		ImGui::DragFloat("AddDecel", &addDecel, 0.001f, 0.0f, 0.5f);
 		if (ImGui::Button("acce")) // 横の加速値をリセット
 		{
 			xAccel = 0.0f;
@@ -181,13 +208,13 @@ void Enemy::Debug()
 		ImGui::Text("%f", velo.x); ImGui::SameLine();
 		ImGui::Text("%f", velo.y);
 		ImGui::Text("%f", xAccel);
+		ImGui::DragFloat("MaxAcceleAmp", &maxAcceleAmp, 0.1f, 1.0f, 400.0f);
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
 
 		ImGui::TreePop();
 	}
-	
 }
 
 void Enemy::SetWave(SinWaveDrawer* wave)

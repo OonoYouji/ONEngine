@@ -44,6 +44,9 @@ private:
 	Vector3 beforPos = pos;
 
 	float xAccel = 0.0f;
+	float addAccel = 0.02f;
+	float addDecel = 0.005f;
+
 	bool isJump = false;
 	bool isfly = false;
 	bool isDamage = false;
@@ -59,6 +62,8 @@ private:
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
+	float maxAcceleAmp = 400.0f;
+
 
 	bool isMaybeDead = false;
 	bool isDead = false;
