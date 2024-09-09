@@ -75,9 +75,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("SINON_enemy", "SINON_enemy.png");
 	textureManager->Load("enemy_stamp", "enemy_stamp.png");
-	textureManager->Load("TVUV", "../Models/TV/TVUV.png");
+	textureManager->Load("TVUV", "TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	textureManager->Load("Hand", "Hand.png");
+	textureManager->Load("paper", "paper.png");
+	textureManager->Load("binder", "binder.png");
 
 	/// audio読み込み
 	audioManager->Load("fanfare.wav");

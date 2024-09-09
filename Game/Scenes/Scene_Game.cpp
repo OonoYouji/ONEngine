@@ -12,6 +12,7 @@
 #include "Shake/Shake.h"
 #include "Player/PlayerHP.h"
 #include "GameCameraState/GameCameraState.h"
+#include "GameResult/GameResult.h"
 
 #include <Input.h>
 
@@ -105,6 +106,7 @@ void Scene_Game::Initialize() {
 
 	(new Background)->Initialize();
 	(new GameCameraState)->Initialize();
+	(new GameResult)->Initialize();
 
 	
 }

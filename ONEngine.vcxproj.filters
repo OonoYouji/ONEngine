@@ -224,6 +224,10 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
+      <Filter>Game\Objects\GameResult</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -384,6 +388,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{49e57276-de06-4e58-b068-f5b8330cb912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameResult">
+      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -611,6 +618,10 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="Game\Objects\GameResult\GameResult.h">
+      <Filter>Game\Objects\GameResult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
