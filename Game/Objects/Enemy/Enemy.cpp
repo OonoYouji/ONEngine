@@ -150,7 +150,15 @@ void Enemy::Update()
 
 		if (pos.x < 0)
 		{
-			pos.x = 1280;
+			if (roopCount == 0)
+			{
+				pos.x = 1280;
+				roopCount++;
+			}
+			else if (roopCount == 1)
+			{
+				isDead = true;
+			}
 		}
 	}
 

@@ -68,4 +68,7 @@ private:
 	bool isMaybeDead = false;
 	bool isDead = false;
 	int deadTime = 30;
+
+
+	int roopCount = 0;
 };

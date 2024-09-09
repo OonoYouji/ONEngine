@@ -37,9 +37,9 @@ void SinWaveDrawer::Update() {
 	{
 		float stickSlope = -(padLstick.y) / 32768.0f;
 		amplitude -= addPadAmp * stickSlope;
-		if (amplitude <= 0)
+		if (amplitude <= 4.0f)
 		{
-			amplitude = 0;
+			amplitude = 4.0f;
 		}
 	}
 
@@ -98,7 +98,7 @@ void SinWaveDrawer::Debug()
 		ImGui::VSliderFloat("v", ImVec2(60, 160), &padLstick.y, -32767.0f, 32767.0f, "%.2f");
 		ImGui::PopStyleVar();
 		ImGui::SeparatorText("SinWaveSetting");
-		ImGui::DragFloat("Amplitude", &amplitude, 0.1f, -300.0f, 300.0f); // 振幅
+		ImGui::DragFloat("Amplitude", &amplitude, 0.1f, 4.0f, 300.0f); // 振幅
 		ImGui::DragFloat("Frequency", &frequency, 0.0001f, 0.0f, 0.25f); // 周波数
 		ImGui::DragFloat("Offset", &offsetY, 0.01f, 0.0f, 720.0f); // 波の振幅セロの時の線の位置
 		ImGui::DragInt("Division", &screenOfDivisions, 0.1f, 150, 400); // 分割数
