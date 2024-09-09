@@ -1,4 +1,5 @@
 #pragma once
+#include <GameObjectManager.h>
 #include <BaseGameObject.h>
 #include <Sprite.h>
 
@@ -67,6 +68,7 @@ private:
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
+	float addLambdaCount = 0;
 
 
 	bool isMaybeDead = false;
