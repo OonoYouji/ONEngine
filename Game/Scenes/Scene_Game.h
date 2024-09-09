@@ -20,23 +20,12 @@
 /// ===================================================
 class Scene_Game final : public BaseScene {
 public:
-
-	Scene_Game();
-	~Scene_Game();
+	Scene_Game() {}
+	~Scene_Game() {}
 
 	void Initialize() override;
 	void Update() override;
 	void Draw() override {};
-
 private:
 
-
-	Model* model_;
-	Transform transform_{};
-
-	std::unique_ptr<Sprite> sprite_;
-
-	SinWaveDrawer* sinWave_;
-	Enemy* enemy_;
-	EnemyManager* enemyManager_;
 };

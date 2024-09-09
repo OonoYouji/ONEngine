@@ -47,35 +47,22 @@ private:
 	Vec4 color = { 0,0,0,1 };
 };
 
-Scene_Game::Scene_Game() {}
-Scene_Game::~Scene_Game() {}
-
-
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
-
-	model_ = ModelManager::CreateCube();
-	model_->Initialize();
-
-	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
-	sprite_->SetColor({ 1,1,1,0.5f });
-
-	transform_.Initialize();
-
 	/// 波
-	sinWave_ = new SinWaveDrawer();
+	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
 
 	/// 敵
-	enemy_ = new Enemy();
+	Enemy* enemy_ = new Enemy();
 	enemy_->SetWave(sinWave_);
 	enemy_->Initialize();
 
 	/// 敵pop
-	enemyManager_ = new EnemyManager();
+	EnemyManager* enemyManager_ = new EnemyManager();
+	enemyManager_->Initialize();
 
 	/// プレイヤーのHP
 	PlayerHP* playerHP = new PlayerHP();
@@ -108,7 +95,6 @@ void Scene_Game::Initialize() {
 	(new GameCameraState)->Initialize();
 	(new GameResult)->Initialize();
 
-	
 }
 
 
