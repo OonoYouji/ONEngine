@@ -57,12 +57,12 @@ public:
 	/// <summary>
 	///  オブジェクトのUpdate呼び出し
 	/// </summary>
-	void Update(int currentSceneId);
+	void Update();
 
 	/// <summary>
 	/// オブジェクトのLastUpdate呼び出し
 	/// </summary>
-	void LastUpdate(int currentSceneId);
+	void LastUpdate();
 
 	void BackSpriteDraw(int layerId);
 	void Object3dDraw(int layerId);

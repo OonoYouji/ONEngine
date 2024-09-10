@@ -33,18 +33,8 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 void SceneManager::Initialize(SCENE_ID sceneId) {
 	currentId_ = sceneId;
-	switch(currentId_) {
-	case TITLE:
-		scene_.reset(new Scene_Title());
-		break;
-	case GAME:
-		scene_.reset(new Scene_Game());
-		break;
-	case RESULT:
-		scene_.reset(new Scene_Result());
-		break;
-	}
-	scene_->Initialize();
+	nextSceneId_ = currentId_;
+	Load(currentId_);
 
 	pGameObjectManager_ = GameObjectManager::GetInstance();
 	pCollisionManager_ = CollisionManager::GetInstance();
@@ -66,11 +56,17 @@ void SceneManager::Update() {
 	scene_->Update();
 
 	/// 更新1
-	pGameObjectManager_->Update(currentId_);
+	pGameObjectManager_->Update();
 	/// 当たり判定処理
-	pCollisionManager_->Update(currentId_);
+	pCollisionManager_->Update();
 	/// 更新2
-	pGameObjectManager_->LastUpdate(currentId_);
+	pGameObjectManager_->LastUpdate();
+
+	if(currentId_ != nextSceneId_) {
+		Load(nextSceneId_);
+		currentId_ = nextSceneId_;
+	}
+
 }
 
 
@@ -82,7 +78,24 @@ void SceneManager::Draw() {
 }
 
 void SceneManager::SetNextScene(SCENE_ID nextId) {
-	currentId_ = nextId;
+	nextSceneId_ = nextId;
+}
+
+void SceneManager::Load(SCENE_ID id) {
+	switch(id) {
+	case TITLE:
+		scene_.reset(new Scene_Title());
+		break;
+	case GAME:
+		scene_.reset(new Scene_Game());
+		break;
+	case RESULT:
+		scene_.reset(new Scene_Result());
+		break;
+	}
+
+	GameObjectManager::DestoryAll();
+	scene_->Initialize();
 }
 
 

@@ -120,15 +120,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::GAME);
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
 		std::string names[2]{ "monitor", "game" };
-		BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		//BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
+		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
+		BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);

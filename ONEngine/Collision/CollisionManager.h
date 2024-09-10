@@ -22,7 +22,7 @@ public:
 	void AddGameObject(BaseGameObject* collider);
 	void SubGameObject(BaseGameObject* collider);
 
-	void Update(int currentSceneId);
+	void Update();
 
 	void DrawHitBoxALL();
 	

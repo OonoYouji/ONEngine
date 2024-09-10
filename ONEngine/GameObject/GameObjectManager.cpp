@@ -3,6 +3,9 @@
 #include <ImGuiManager.h>
 #include <Collision/CollisionManager.h>
 
+#include <BaseCamera.h>
+#include <Light/DirectionalLight.h>
+
 
 /// ===================================================
 /// 初期化
@@ -28,7 +31,7 @@ void GameObjectManager::GameObjectInitialize(int sceneId) {
 /// ===================================================
 /// 更新
 /// ===================================================
-void GameObjectManager::Update(int currentSceneId) {
+void GameObjectManager::Update() {
 
 	ReName();
 
@@ -39,7 +42,7 @@ void GameObjectManager::Update(int currentSceneId) {
 	}
 }
 
-void GameObjectManager::LastUpdate(int currentSceneId) {
+void GameObjectManager::LastUpdate() {
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
 		obj->LastUpdate();
@@ -151,8 +154,8 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
 	GameObjectManager* instance = GetInstance();
 	uint32_t count = 0U;
-	for (const auto& object : instance->objects_) {
-		if (object->GetTag() == tag) {
+	for(const auto& object : instance->objects_) {
+		if(object->GetTag() == tag) {
 			count++;
 		}
 	}
@@ -162,8 +165,8 @@ uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
 std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag) {
 	GameObjectManager* instance = GetInstance();
 	std::list<BaseGameObject*> result;
-	for (const auto& object : instance->objects_) {
-		if (object->GetTag() == tag) {
+	for(const auto& object : instance->objects_) {
+		if(object->GetTag() == tag) {
 			result.push_back(object.get());
 		}
 	}
@@ -175,7 +178,34 @@ std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::strin
 /// ===================================================
 void GameObjectManager::DestoryAll() {
 	GameObjectManager* insntance = GetInstance();
-	insntance->objects_.clear();
+
+
+
+	insntance->objects_.remove_if([](const std::unique_ptr<BaseGameObject>& obj) {
+		auto IsDelete = [](BaseGameObject* obj) -> bool {
+			if(dynamic_cast<DirectionalLight*>(obj) != nullptr) {
+				return false;
+			}
+			if(dynamic_cast<BaseCamera*>(obj) != nullptr) {
+				return false;
+			}
+			return true;
+		};
+
+		bool isDelete = true;
+		isDelete &= IsDelete(obj.get());
+		isDelete &= IsDelete(obj->GetParent());
+		for(auto& child : obj->GetChilds()) {
+			isDelete &= IsDelete(child);
+		}
+
+		if(isDelete) {
+			CollisionManager::GetInstance()->SubGameObject(obj.get());
+		}
+
+		return isDelete;
+	});
+
 	insntance->selectObject_ = nullptr;
 }
 

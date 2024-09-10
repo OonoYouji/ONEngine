@@ -4,7 +4,7 @@
 #include <ModelManager.h>
 #include <CameraManager.h>
 #include <SceneManager.h>
-#include <Audio/AudioManager.h>
+#include <Input.h>
 
 #include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
@@ -93,7 +93,9 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-
+	/*if(Input::TriggerKey(KeyCode::Space)) {
+		SceneManager::GetInstance()->SetNextScene(TITLE);
+	}*/
 }
 
 

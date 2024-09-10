@@ -60,7 +60,12 @@ public:
 
 private:
 
+	void Load(SCENE_ID id);
+
+private:
+
 	std::unique_ptr<BaseScene> scene_ = nullptr;
+	SCENE_ID nextSceneId_;
 	SCENE_ID currentId_;
 
 	class GameObjectManager* pGameObjectManager_ = nullptr;
