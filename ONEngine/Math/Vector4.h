@@ -28,6 +28,12 @@ public:
 	static const Vector4 k0010;
 	static const Vector4 k0001;
 	
+	
+	static Vector4 Lerp(
+		const Vector4& start,
+		const Vector4& end,
+		float t
+	);
 
 public:
 
@@ -144,6 +150,8 @@ inline bool operator==(const Vector4& v1, const Vector4& v2) {
 //	this->w = other.w;
 //	return *this;
 //}
+
+
 
 
 inline Vector4& Vector4::operator+= (const Vector4& other) {
