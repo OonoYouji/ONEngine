@@ -254,6 +254,9 @@
     <ClCompile Include="Game\Scenes\Scene_Result.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameStartUI\GameStartUI.cpp">
+      <Filter>Game\Objects\GameStartUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -432,6 +435,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameTitle">
       <UniqueIdentifier>{425ff8b4-47e6-498e-aaae-54176815e7ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameStartUI">
+      <UniqueIdentifier>{4f1991a1-1ac6-4258-a6ae-6aa17f64f547}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -689,6 +695,9 @@
     </ClInclude>
     <ClInclude Include="Game\Scenes\Scene_Result.h">
       <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameStartUI\GameStartUI.h">
+      <Filter>Game\Objects\GameStartUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,13 +19,16 @@ public:
 	/// non overriding methods
 	
 	void SettingCameraAnimation();
-
+	
+	void CreateStartUI();
 
 private:
 
 	float animationTime_ = 0.0f;
 	float animationSpeed_ = 1.0f;
 	bool isAnimationStarted_ = false;
+
+	bool isCreatedStartUI_ = false;
 
 	std::unique_ptr<Sprite> title_;
 	Vec3 titlePosition_;

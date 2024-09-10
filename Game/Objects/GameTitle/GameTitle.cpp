@@ -6,12 +6,14 @@
 #include <WorldTime.h>
 #include <Input.h>
 
+#include <GameStartUI/GameStartUI.h>
+
 
 void GameTitle::Initialize() {
 	title_.reset(new Sprite);
 	title_->Initialize("title", "title.png");
 
-	titlePosition_ = { 640, 320, 0 };
+	titlePosition_ = { 640, 250, 0 };
 	titleSize_ = { 640, 360 };
 	titleColor_ = { 0,0,0,1 };
 
@@ -25,7 +27,7 @@ void GameTitle::Initialize() {
 		CameraManager::GetInstance()->GetCamera("GameCamera");
 	camera->SetMove(
 		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
-		{ {0.0f, 0.2f, -7.6f}, { 0.0f, 0.0f, 0.0f } },
+		{ {0.0f, 0.3f, -7.6f}, { 0.0f, 0.0f, 0.0f } },
 		0.0f
 	);
 
@@ -36,6 +38,7 @@ void GameTitle::Update() {
 	/// せっかち用のショートカット
 	if(Input::TriggerKey(KeyCode::Space)) {
 		SettingCameraAnimation();
+		CreateStartUI();
 	}
 
 
@@ -50,6 +53,8 @@ void GameTitle::Update() {
 		titleColor_ = { 1,1,1,1 };
 		//titleColor_ = Vec4(1, 1, 1, 1) * (std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
 		//titleColor_.w = 1.0f; /// 固定
+
+		CreateStartUI();
 	}
 
 	title_->SetPos(titlePosition_);
@@ -90,5 +95,12 @@ void GameTitle::SettingCameraAnimation() {
 			{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
 			0.5f
 		);
+	}
+}
+
+void GameTitle::CreateStartUI() {
+	if(!isCreatedStartUI_) {
+		isCreatedStartUI_ = true;
+		(new GameStartUI)->Initialize();
 	}
 }
