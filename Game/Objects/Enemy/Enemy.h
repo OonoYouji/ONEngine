@@ -10,7 +10,7 @@ class SinWaveDrawer;
 class Enemy : public BaseGameObject {
 public:
 	Enemy() { CreateTag(this); }
-	~Enemy() {}
+	~Enemy();
 
 	void Initialize() override;
 	void Update() override;
@@ -74,7 +74,7 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
-	float canJumpAccele = 2.0f;
+	float canJumpAccele = 1.6f;
 
 
 	bool isMaybeDead = false;

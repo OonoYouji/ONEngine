@@ -4,6 +4,11 @@
 #include "Drawer/LineDrawer2D/SinWaveDrawer.h"
 
 
+Enemy::~Enemy()
+{
+	deathEffect_->Destory();
+}
+
 void Enemy::Initialize()
 {
 	SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
