@@ -1,9 +1,9 @@
-#include "GameResult.h"
+#include "GameOperationUI.h"
 
 #include <ModelManager.h>
 #include <Input.h>
 
-void GameResult::Initialize() {
+void GameOperationUI::Initialize() {
 	drawLayerId = 1;
 	paper_ = ModelManager::Load("paper");
 	binder_ = ModelManager::Load("binder");
@@ -17,7 +17,7 @@ void GameResult::Initialize() {
  	audioSource_->SetAudioClip("EnemyDeath.wav");
 }
 
-void GameResult::Update() {
+void GameOperationUI::Update() {
 	if(Input::TriggerKey(KeyCode::Space)) {
 		audioSource_->StopAudioAll();
 	}
@@ -31,7 +31,7 @@ void GameResult::Update() {
 	}
 }
 
-void GameResult::Draw() {
+void GameOperationUI::Draw() {
 	paper_->Draw(&transform_);
 	binder_->Draw(&transform_);
 }

@@ -224,9 +224,6 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
-      <Filter>Game\Objects\GameResult</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp">
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
@@ -259,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Particle\Grain2D.cpp">
       <Filter>Game\Objects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameOperationUI\GameOperationUI.cpp">
+      <Filter>Game\Objects\GameOperationUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -421,9 +421,6 @@
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{49e57276-de06-4e58-b068-f5b8330cb912}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\GameResult">
-      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Objects\Particle">
       <UniqueIdentifier>{1b25c62a-c384-4da8-b499-aa4c80065b2d}</UniqueIdentifier>
     </Filter>
@@ -441,6 +438,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameStartUI">
       <UniqueIdentifier>{4f1991a1-1ac6-4258-a6ae-6aa17f64f547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameOperationUI">
+      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -669,9 +669,6 @@
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameResult\GameResult.h">
-      <Filter>Game\Objects\GameResult</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h">
       <Filter>Game\Objects\Enemy</Filter>
     </ClInclude>
@@ -704,6 +701,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Particle\Grain2D.h">
       <Filter>Game\Objects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameOperationUI\GameOperationUI.h">
+      <Filter>Game\Objects\GameOperationUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

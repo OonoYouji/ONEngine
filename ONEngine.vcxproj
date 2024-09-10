@@ -27,7 +27,7 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp" />
     <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp" />
-    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp" />
+    <ClCompile Include="Game\Objects\GameOperationUI\GameOperationUI.cpp" />
     <ClCompile Include="Game\Objects\GameStartUI\GameStartUI.cpp" />
     <ClCompile Include="Game\Objects\GameTitle\GameTitle.cpp" />
     <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp" />
@@ -117,7 +117,7 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h" />
     <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h" />
-    <ClInclude Include="Game\Objects\GameResult\GameResult.h" />
+    <ClInclude Include="Game\Objects\GameOperationUI\GameOperationUI.h" />
     <ClInclude Include="Game\Objects\GameStartUI\GameStartUI.h" />
     <ClInclude Include="Game\Objects\GameTitle\GameTitle.h" />
     <ClInclude Include="Game\Objects\GamTimer\GameTimer.h" />

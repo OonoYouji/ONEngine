@@ -33,6 +33,14 @@ void GameObjectManager::GameObjectInitialize(int sceneId) {
 /// ===================================================
 void GameObjectManager::Update() {
 
+	if(!addObjectList_.empty()) {
+		for(auto& object : addObjectList_) {
+			std::unique_ptr<BaseGameObject> newObject(object);
+			objects_.push_back(std::move(newObject));
+		}
+		addObjectList_.clear();
+	}
+
 	ReName();
 
 	for(auto& obj : objects_) {
@@ -87,8 +95,8 @@ void GameObjectManager::FrontSpriteDraw(int layerId) {
 /// ゲームオブジェクトの追加
 /// ===================================================
 void GameObjectManager::AddGameObject(BaseGameObject* object) {
-	std::unique_ptr<BaseGameObject> newObject(object);
-	objects_.push_back(std::move(newObject));
+	addObjectList_.push_back(object);
+
 }
 
 
@@ -147,6 +155,16 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 
 		return false;
 	});
+
+	if(!result) {
+		auto addObjectListItr = std::find_if(insntance->addObjectList_.begin(), insntance->addObjectList_.end(), [&name](BaseGameObject* object) {
+			if(object->GetName() == name) {
+				return true;
+			}
+			return false;
+		});
+		result = (*addObjectListItr);
+	}
 
 	return result;
 }

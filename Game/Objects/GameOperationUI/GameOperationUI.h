@@ -5,11 +5,11 @@
 #include <GameObjectManager.h>
 #include <AudioManager.h>
 
-class GameResult final : public BaseGameObject {
+class GameOperationUI final : public BaseGameObject {
 public:
 
-	GameResult() { CreateTag(this); }
-	~GameResult() {}
+	GameOperationUI() { CreateTag(this); }
+	~GameOperationUI() {}
 
 	void Initialize() override;
 	void Update() override;

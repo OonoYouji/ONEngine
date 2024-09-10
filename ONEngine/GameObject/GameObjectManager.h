@@ -123,6 +123,7 @@ private:
 	BaseGameObject* selectObject_ = nullptr;
 
 	std::list<BaseGameObject*> destoryList_;
+	std::list<BaseGameObject*> addObjectList_;
 
 private:
 	GameObjectManager(const GameObjectManager&) = delete;

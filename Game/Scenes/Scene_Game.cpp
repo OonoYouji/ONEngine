@@ -13,7 +13,7 @@
 #include "Shake/Shake.h"
 #include "Player/PlayerHP.h"
 #include "GameCameraState/GameCameraState.h"
-#include "GameResult/GameResult.h"
+#include "GameOperationUI/GameOperationUI.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyManager.h"
@@ -79,7 +79,7 @@ void Scene_Game::Initialize() {
 	monitorBG->SetColor({ 0, 0, 0, 1 });
 
 	//(new GameCameraState)->Initialize();
-	(new GameResult)->Initialize();
+	(new GameOperationUI)->Initialize();
 
 	GameTimer* gameTimer = new GameTimer;
 	gameTimer->Initialize();
