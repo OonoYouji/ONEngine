@@ -121,7 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::TITLE);
+	sceneManager->Initialize(SCENE_ID::GAME);
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;

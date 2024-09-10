@@ -29,6 +29,17 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
+
+	/// カメラの座標を計算
+	BaseCamera* camera =
+		CameraManager::GetInstance()->GetCamera("GameCamera");
+	camera->SetMove(
+		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
+		{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
+		0.5f
+	);
+
+
 	/// 波
 	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();

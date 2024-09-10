@@ -1,7 +1,10 @@
+#define NOMINMAX
 #include "GameOperationUI.h"
 
+#include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <Input.h>
+#include <WorldTime.h>
 
 void GameOperationUI::Initialize() {
 	drawLayerId = 1;
@@ -10,17 +13,55 @@ void GameOperationUI::Initialize() {
 
 	binder_ = ModelManager::Load("binder");
 
-	SetPosition({ -5.3f, 0.6f, 1.0f });
+	SetPosition({ -6.0f, 0.6f, 1.0f });
 	SetRotate({ -1.15f, -0.4f, 0.0f });
 	SetScale(Vec3::kOne * 0.7f);
 	UpdateMatrix();
 
+	/// {-3.6f, 0.15f, -4.7f}
+	maxLerpTime_ = 0.2f;
+
 }
 
 void GameOperationUI::Update() {
+	if(Input::PressKey(KeyCode::Enter)) {
+		lerpTime_ = std::min(lerpTime_ + WorldTime::DeltaTime(), maxLerpTime_);
+	} else {
+		lerpTime_ = std::max(lerpTime_ - WorldTime::DeltaTime(), 0.0f);
+	}
+
+	float lerpT = lerpTime_ / (maxLerpTime_ / 2.0f);
+	if(lerpT <= 1.0f) {
+
+		transform_.position = Vec3::Lerp(
+			{ -6.0f, 0.6f, 1.0f },
+			{ -4.2f, 2.0f, -2.35f },
+			lerpT
+		);
+
+	} else {
+		float t = lerpT - 1.0f;
+
+		transform_.position = Vec3::Lerp(
+			{ -4.2f, 2.0f, -2.35f },
+			{ -3.6f, 0.6f, -4.7f },
+			t
+		);
+	}
+
 }
 
 void GameOperationUI::Draw() {
 	paper_->Draw(&transform_, &paperMaterial_);
 	binder_->Draw(&transform_);
+}
+
+void GameOperationUI::Debug() {
+	if(ImGui::TreeNodeEx("lerp", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("time", &lerpTime_);
+		ImGui::DragFloat("maxTime", &maxLerpTime_, 0.1f);
+
+		ImGui::TreePop();
+	}
 }

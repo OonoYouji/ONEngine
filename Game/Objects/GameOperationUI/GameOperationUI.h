@@ -15,8 +15,12 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void Debug() override;
 private:
 	Model* paper_ = nullptr;
 	Model* binder_ = nullptr;
 	Material paperMaterial_;
+
+	float lerpTime_ = 0.0f;
+	float maxLerpTime_ = 0.0f;
 };
