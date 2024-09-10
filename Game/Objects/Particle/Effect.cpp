@@ -456,6 +456,9 @@ void Effect::Create2D() {
 		Vector3 currentPosition = position2D_;
 		float particleDistanceRate = 10.0f / rateDistance_;
 		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
+		if (distanceMoved > 200.0f) {
+			distanceMoved = 200.0f;
+		}
 		accumulationDistance += distanceMoved;
 		int particlesEmit = static_cast<int>(accumulationDistance / particleDistanceRate);
 
