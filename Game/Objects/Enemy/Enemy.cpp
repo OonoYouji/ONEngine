@@ -107,13 +107,17 @@ void Enemy::Update()
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
+		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
 		{
 			if (!isfly)
 			{
 				isfly = true;
 				flyspeed = pos - beforPos;
-				flyspeed.y = flyspeed.y * 2;
+				flyspeed = flyspeed.Normalize() * xAccel;
+				if (flyspeed.x > -0.1f) {
+					flyspeed.x = speed;
+				}
+				flyspeed.y = flyspeed.y * 4;
 				if (amplitude >= 40)
 				{
 					isMaybeDead = true;
@@ -241,6 +245,7 @@ void Enemy::Debug()
 		ImGui::Text("%f", velo.y);
 		ImGui::Text("%f", xAccel);
 		ImGui::DragFloat("MaxAcceleAmp", &maxAcceleAmp, 0.1f, 1.0f, 400.0f);
+		ImGui::DragFloat("Can Jump Accel", &canJumpAccele, 0.01f, 0.01f, 4.0f);
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);

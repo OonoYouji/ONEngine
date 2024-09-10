@@ -26,8 +26,8 @@ void SinWaveDrawer::Update() {
 
 	if (padLstick.y > 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
 	{
-		float stickSlope = padLstick.y / 32768.0f;
-		amplitude += addPadAmp * stickSlope;
+		float stickSlope = padLstick.y / 16384.0f;
+		amplitude += addPadAmp * (stickSlope * stickSlope);
 		if (amplitude >= 300)
 		{
 			amplitude = 300;
@@ -35,8 +35,8 @@ void SinWaveDrawer::Update() {
 	}
 	else if (padLstick.y < 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
 	{
-		float stickSlope = -(padLstick.y) / 32768.0f;
-		amplitude -= addPadAmp * stickSlope;
+		float stickSlope = -(padLstick.y) / 16384.0f;
+		amplitude -= addPadAmp * (stickSlope * stickSlope);
 		if (amplitude <= 4.0f)
 		{
 			amplitude = 4.0f;
