@@ -77,6 +77,22 @@ void SceneManager::Draw() {
 	scene_->Draw();
 }
 
+void SceneManager::ImGuiDebug() {
+	if(!ImGui::Begin("scene manager")) {
+		ImGui::End();
+		return;
+	}
+
+	const char* labels[3]{ "Title", "Game", "Result" };
+	int currentItem = static_cast<int>(nextSceneId_);
+	if(ImGui::Combo("next scene", &currentItem, labels, 3)) {
+		nextSceneId_ = SCENE_ID(currentItem);
+		Load(nextSceneId_);
+	}
+
+	ImGui::End();
+}
+
 void SceneManager::SetNextScene(SCENE_ID nextId) {
 	nextSceneId_ = nextId;
 }

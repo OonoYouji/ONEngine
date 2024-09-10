@@ -24,7 +24,11 @@ void GameOperationUI::Initialize() {
 }
 
 void GameOperationUI::Update() {
-	if(Input::PressKey(KeyCode::Enter)) {
+
+	/// enter を押すか　game pad RB を押す
+	if(Input::PressKey(KeyCode::Enter) 
+	   || Input::PressPadButton(PadCode::RightShoulder)) {
+
 		lerpTime_ = std::min(lerpTime_ + WorldTime::DeltaTime(), maxLerpTime_);
 	} else {
 		lerpTime_ = std::max(lerpTime_ - WorldTime::DeltaTime(), 0.0f);
@@ -40,12 +44,11 @@ void GameOperationUI::Update() {
 		);
 
 	} else {
-		float t = lerpT - 1.0f;
 
 		transform_.position = Vec3::Lerp(
 			{ -4.2f, 2.0f, -2.35f },
 			{ -3.6f, 0.6f, -4.7f },
-			t
+			lerpT - 1.0f
 		);
 	}
 

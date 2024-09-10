@@ -121,7 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::GAME);
+	sceneManager->Initialize(SCENE_ID::RESULT);
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
@@ -176,16 +176,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
 		}
 
-
-		worldTime->ImGuiDebug();
-		gameObjectManager->ImGuiDebug();
-		collisionManager->ImGuiDebug();
-		renderTexManager->ImGuiDebug();
-		for(auto& layer : layers) {
-			layer->ImGuiDebug();
-		}
-
 #ifdef _DEBUG
+
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
 		}
@@ -195,9 +187,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(Input::TriggerKey(KeyCode::Alpha2)) {
 			drawLayerIndex = 1;
 		}
-#endif // _DEBUG
-
 		
+		/// ImGuiの表示
+		worldTime->ImGuiDebug();
+		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
+		renderTexManager->ImGuiDebug();
+		sceneManager->ImGuiDebug();
+		for(auto& layer : layers) {
+			layer->ImGuiDebug();
+		}
+		
+#endif // _DEBUG
 
 		cameraManager->Update();
 

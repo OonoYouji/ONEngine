@@ -53,6 +53,8 @@ public:
 	/// </summary>
 	void Draw();
 
+	void ImGuiDebug();
+
 
 	void SetNextScene(SCENE_ID nextId);
 
