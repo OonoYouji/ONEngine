@@ -14,10 +14,15 @@ public:
 
 	void Debug() override;
 
+	void SettingSprites();
+
+	void RecalculateArrowPosition();
+
 private:
 
 	std::unique_ptr<Sprite> start_;
 	std::unique_ptr<Sprite> end_;
+	std::unique_ptr<Sprite> arrows_[2];
 
 	Vec3 offset_ = { 640.0f, 360.0f, 0.0f };
 	Vec3 distance_ = {};
@@ -27,5 +32,11 @@ private:
 
 	float animationTime_ = 0.0f;
 	float animationSpeed_ = 1.0f;
+
+	float arrowOffset_ = 10.0f;
+	Vec2 arrowSpriteSize_;
+
+	/// ゲームを始めるか、終わるかのモード
+	uint8_t currentSelectMode_ = 0;
 
 };
