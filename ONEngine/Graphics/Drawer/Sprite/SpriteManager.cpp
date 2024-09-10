@@ -1,9 +1,11 @@
 #include <SpriteManager.h>
 
+
 #include <WinApp.h>
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxResourceCreator.h>
+#include <DxDescriptor.h>
 
 
 /// ===================================================
@@ -20,7 +22,7 @@ SpriteManager* SpriteManager::GetInstance() {
 /// 初期化
 /// ===================================================
 void SpriteManager::Initialize() {
-	
+
 	pipelineState_.reset(new PipelineState());
 
 	shader_.ShaderCompile(
@@ -88,24 +90,30 @@ void SpriteManager::PostDraw() {
 	if(activeSprites_.empty()) { return; }
 
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
-	
+
 	pipelineState_->SetPipelineState();
 
+	ONE::DxDescriptor* dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
+	dxDescriptor->SetSRVHeap(commandList);
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
 
+	auto lCompartion = [](const ActiveSprite& a, const ActiveSprite& b) {
+		return a.zOrder < b.zOrder;
+	};
+	activeSprites_.sort(lCompartion);
+
 	for(auto& sprite : activeSprites_) {
-		sprite->BindCBuffer(commandList);
+		sprite.pSprite_->BindCBuffer(commandList);
 		commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 	}
 
 }
 
 
-
 /// ===================================================
 /// アクティブなスプライトの追加
 /// ===================================================
-void SpriteManager::AddActiveSprite(Sprite* sprite) {
-	activeSprites_.push_back(sprite);
+void SpriteManager::AddActiveSprite(Sprite* sprite, uint32_t zOrder) {
+	activeSprites_.push_back(ActiveSprite(sprite, zOrder));
 }

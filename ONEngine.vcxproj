@@ -18,16 +18,33 @@
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Gamepad.cpp" />
+    <ClCompile Include="Game\Objects\background\Background.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp" />
+    <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp" />
+    <ClCompile Include="Game\Objects\GameStartUI\GameStartUI.cpp" />
+    <ClCompile Include="Game\Objects\GameTitle\GameTitle.cpp" />
+    <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp" />
+    <ClCompile Include="Game\Objects\Hand\Hand.cpp" />
+    <ClCompile Include="Game\Objects\Heart\Heart.cpp" />
+    <ClCompile Include="Game\Objects\Particle\Effect.cpp" />
+    <ClCompile Include="Game\Objects\Particle\Grain.cpp" />
+    <ClCompile Include="Game\Objects\Particle\Grain2D.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerHP.cpp" />
+    <ClCompile Include="Game\Objects\Shake\Shake.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
@@ -58,13 +75,16 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\ModelManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Light\DirectionalLight.cpp" />
     <ClCompile Include="ONEngine\Graphics\PipelineState\PipelineState.cpp" />
     <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.cpp" />
+    <ClCompile Include="ONEngine\Graphics\SceneLayer\SceneLayer.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\Texture.cpp" />
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
+    <ClCompile Include="ONEngine\Input\Gamepad.cpp" />
     <ClCompile Include="ONEngine\Input\Input.cpp" />
     <ClCompile Include="ONEngine\Input\Keyboard.cpp" />
     <ClCompile Include="ONEngine\Input\Mouse.cpp" />
@@ -74,6 +94,7 @@
     <ClCompile Include="ONEngine\Math\Vector2.cpp" />
     <ClCompile Include="ONEngine\Math\Vector3.cpp" />
     <ClCompile Include="ONEngine\Math\Vector4.cpp" />
+    <ClCompile Include="ONEngine\Random\Random.cpp" />
     <ClCompile Include="ONEngine\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
     <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
@@ -87,16 +108,33 @@
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Gamepad.h" />
+    <ClInclude Include="Game\Objects\background\Background.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h" />
+    <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h" />
+    <ClInclude Include="Game\Objects\GameResult\GameResult.h" />
+    <ClInclude Include="Game\Objects\GameStartUI\GameStartUI.h" />
+    <ClInclude Include="Game\Objects\GameTitle\GameTitle.h" />
+    <ClInclude Include="Game\Objects\GamTimer\GameTimer.h" />
+    <ClInclude Include="Game\Objects\Hand\Hand.h" />
+    <ClInclude Include="Game\Objects\Heart\Heart.h" />
+    <ClInclude Include="Game\Objects\Particle\Effect.h" />
+    <ClInclude Include="Game\Objects\Particle\Grain.h" />
+    <ClInclude Include="Game\Objects\Particle\Grain2D.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerHP.h" />
+    <ClInclude Include="Game\Objects\Shake\Shake.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
+    <ClInclude Include="Game\Scenes\Scene_Result.h" />
+    <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
     <ClInclude Include="ONEngine\Audio\AudioSource.h" />
@@ -126,13 +164,16 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\ModelManager.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Sprite\SpriteManager.h" />
+    <ClInclude Include="ONEngine\Graphics\Light\DirectionalLight.h" />
     <ClInclude Include="ONEngine\Graphics\PipelineState\PipelineState.h" />
     <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h" />
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTextureManager.h" />
+    <ClInclude Include="ONEngine\Graphics\SceneLayer\SceneLayer.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\Texture.h" />
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
+    <ClInclude Include="ONEngine\Input\Gamepad.h" />
     <ClInclude Include="ONEngine\Input\Input.h" />
     <ClInclude Include="ONEngine\Input\Keyboard.h" />
     <ClInclude Include="ONEngine\Input\Mouse.h" />
@@ -142,6 +183,7 @@
     <ClInclude Include="ONEngine\Math\Vector2.h" />
     <ClInclude Include="ONEngine\Math\Vector3.h" />
     <ClInclude Include="ONEngine\Math\Vector4.h" />
+    <ClInclude Include="ONEngine\Random\Random.h" />
     <ClInclude Include="ONEngine\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
     <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
@@ -210,6 +252,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

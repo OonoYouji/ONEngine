@@ -32,19 +32,6 @@ namespace {
 			*viewProjectionMappingData = Mat4::MakeOrthographicMatrix(
 				0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(ONE::WinApp::kWindowSizeY), 0.0f, 1000.0f);
 
-			blurBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Bloom::BlurData));
-			blurBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&blurMappingData_));
-			blurMappingData_->texSize = { 0.001f, 0.001f };
-
-			bloomDataBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Bloom::BloomData));
-			bloomDataBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomMappingData_));
-			bloomMappingData_->intensity = 0.7f;
-			bloomMappingData_->texSize = {};
-
-			luminanceBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Bloom::LuminanceData));
-			luminanceBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceMappingData_));
-			luminanceMappingData_->threshold = 0.1f;
-
 			struct VertexPosUv {
 				Vector4 position;
 				Vector2 texcoord;
@@ -63,42 +50,19 @@ namespace {
 
 		}
 
-		void BloomBindFarCommandList() {
-			pCommandList->IASetVertexBuffers(0, 1, &vbv_);
-			pCommandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
-			pCommandList->SetGraphicsRootConstantBufferView(1, bloomDataBuffer_->GetGPUVirtualAddress());
+		void BindToCommandList() {
+			pCommandList_->IASetVertexBuffers(0, 1, &vbv_);
+			pCommandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
 		}
-
-		void BlurBindFarCommandList() {
-			pCommandList->IASetVertexBuffers(0, 1, &vbv_);
-			pCommandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
-			pCommandList->SetGraphicsRootConstantBufferView(1, blurBuffer_->GetGPUVirtualAddress());
-		}
-
-		void LuminanceBindFarCommandList() {
-			pCommandList->IASetVertexBuffers(0, 1, &vbv_);
-			pCommandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
-			pCommandList->SetGraphicsRootConstantBufferView(1, luminanceBuffer_->GetGPUVirtualAddress());
-		}
-
 
 	private:
-
-		ComPtr<ID3D12Resource> bloomDataBuffer_;
-		Bloom::BloomData* bloomMappingData_ = nullptr;
-
-		ComPtr<ID3D12Resource> blurBuffer_;
-		Bloom::BlurData* blurMappingData_ = nullptr;
-
-		ComPtr<ID3D12Resource> luminanceBuffer_;
-		Bloom::LuminanceData* luminanceMappingData_ = nullptr;
-
 
 		ComPtr<ID3D12Resource> viewProjectionBuffer_;
 		ComPtr<ID3D12Resource> vertexBuffer_;
 		D3D12_VERTEX_BUFFER_VIEW vbv_;
 
-		ID3D12GraphicsCommandList* pCommandList = nullptr;
+		ID3D12GraphicsCommandList* pCommandList_ = nullptr;
+		ONE::DxDescriptor* pDxDescriptor_ = nullptr;
 
 	};
 
@@ -108,7 +72,7 @@ namespace {
 
 
 
-void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, uint32_t renderTargetLayerNumber) {
+void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor, uint32_t renderTargetLayerNumber) {
 	PipelineState::Shader bloomShader{};
 	bloomShader.ShaderCompile(
 		L"Bloom/Bloom.VS.hlsl", L"vs_6_0",
@@ -189,21 +153,11 @@ void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, uint32_t re
 	sLuminance_->Initialize();
 
 
-
-
-	/// cbuffer initialize
 	gComponent.reset(new BloomComponent);
 	gComponent->Initialize();
-	gComponent->pCommandList = commandList;
+	gComponent->pCommandList_ = commandList;
+	gComponent->pDxDescriptor_ = dxDescriptor;
 
-	/// render texture 作成
-	RenderTextureManager::CreateRenderTarget("bloom", renderTargetLayerNumber - 1, { 0,0,0,0 });
-	RenderTextureManager::CreateRenderTarget("blur", renderTargetLayerNumber, { 0,0,0,0 });
-	RenderTextureManager::CreateRenderTarget("luminance", renderTargetLayerNumber + 1, { 0,0,0,0 });
-
-	RenderTextureManager::SetIsBlending("bloom", true);
-	RenderTextureManager::SetIsBlending("blur", false);
-	RenderTextureManager::SetIsBlending("luminance", false);
 
 }
 
@@ -214,53 +168,75 @@ void Bloom::StaticFinalize() {
 	gComponent.reset();
 }
 
-void Bloom::ImGuiDebug() {
-#ifdef _DEBUG
-	if(!ImGui::Begin("Bloom")) {
-		ImGui::End();
-		return;
+void Bloom::ImGuiDebug(const std::string& treeNodeName) {
+	if(ImGui::TreeNodeEx(treeNodeName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("intensity", &bloomMappingData_->intensity, 0.01f);
+		ImGui::DragFloat("threshold", &luminanceMappingData_->threshold, 0.001f);
+		ImGui::DragFloat2("texSize", &blurMappingData_->texSize.x, 0.0001f);
+		ImGui::DragInt("radius", &blurMappingData_->radius, 1);
+		ImGui::DragFloat("sigma", &blurMappingData_->sigma, 0.0001f);
+
+		ImGui::TreePop();
+	}
+}
+
+void Bloom::Initialize() {
+	for(auto& renderTex : renderTextures_) {
+		renderTex.reset(new RenderTexture());
+		renderTex->Initialize(Vec4(0,0,0, 0), gComponent->pCommandList_, gComponent->pDxDescriptor_);
 	}
 
-	ImGui::DragFloat("intensity", &gComponent->bloomMappingData_->intensity, 0.01f);
-	ImGui::DragFloat("threshold", &gComponent->luminanceMappingData_->threshold, 0.001f);
-	ImGui::DragFloat2("texSize", &gComponent->blurMappingData_->texSize.x, 0.0001f);
+	blurBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BlurData));
+	blurBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&blurMappingData_));
+	blurMappingData_->texSize = { 0.001f, 0.001f };
+	blurMappingData_->radius = 5;
+	blurMappingData_->sigma = 4.0f;
 
-	ImGui::End();
-#endif // _DEBUG
+	bloomBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BloomData));
+	bloomBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&bloomMappingData_));
+	bloomMappingData_->intensity = 0.7f;
+	bloomMappingData_->texSize = {};
+
+	luminanceBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(LuminanceData));
+	luminanceBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&luminanceMappingData_));
+	luminanceMappingData_->threshold = 0.1f;
 }
 
 
 
-void Bloom::CreateBloomRenderTexture(RenderTexture* sourceRenderTexture) {
+void Bloom::ApplyBloom(RenderTexture* sourceRenderTexture) {
+	auto commandList = gComponent->pCommandList_;
 
-	auto commandList = gComponent->pCommandList;
 
+	/// 輝度を抽出する
 	sLuminance_->SetPipelineState();
-	RenderTextureManager::BeginRenderTarget("luminance");
+	renderTextures_[LUMINANCE_EXTRACTION]->BeginRenderTarget();
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	gComponent->LuminanceBindFarCommandList();
+	gComponent->BindToCommandList();
+	commandList->SetGraphicsRootConstantBufferView(1, luminanceBuffer_->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootDescriptorTable(2, sourceRenderTexture->GetSrvGpuHandle());
 	commandList->DrawInstanced(3, 1, 0, 0);
-	RenderTextureManager::EndRenderTarget("luminance");
+	renderTextures_[LUMINANCE_EXTRACTION]->EndRenderTarget();
 
 
-	auto luminanceRenderTex = RenderTextureManager::GetRenderTarget("luminance");
+	/// blur をかける
 	sBluer_->SetPipelineState();
-	RenderTextureManager::BeginRenderTarget("blur");
-	gComponent->BlurBindFarCommandList();
-	commandList->SetGraphicsRootDescriptorTable(2, luminanceRenderTex->GetSrvGpuHandle());
+	renderTextures_[BLUR]->BeginRenderTarget();
+	gComponent->BindToCommandList();
+	commandList->SetGraphicsRootConstantBufferView(1, blurBuffer_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootDescriptorTable(2, renderTextures_[LUMINANCE_EXTRACTION]->GetSrvGpuHandle());
 	commandList->DrawInstanced(3, 1, 0, 0);
-	RenderTextureManager::EndRenderTarget("blur");
+	renderTextures_[BLUR]->EndRenderTarget();
 
 
-	auto blurRenderTex = RenderTextureManager::GetRenderTarget("blur");
+	/// bloom エフェクトをかける
 	sBloom_->SetPipelineState();
-	RenderTextureManager::BeginRenderTarget("bloom");
-	gComponent->BloomBindFarCommandList();
+	renderTextures_[BLOOM]->BeginRenderTarget();
+	gComponent->BindToCommandList();
+	commandList->SetGraphicsRootConstantBufferView(1, bloomBuffer_->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootDescriptorTable(2, sourceRenderTexture->GetSrvGpuHandle());
-	commandList->SetGraphicsRootDescriptorTable(3, blurRenderTex->GetSrvGpuHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, renderTextures_[BLUR]->GetSrvGpuHandle());
 	commandList->DrawInstanced(3, 1, 0, 0);
-	RenderTextureManager::EndRenderTarget("bloom");
-
-
+	renderTextures_[BLOOM]->EndRenderTarget();
 }

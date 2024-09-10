@@ -11,10 +11,13 @@ class BaseScene;
 using namespace Microsoft::WRL;
 
 
-enum RTVIndex {
-	kCurrentScene,
-	kDebugScene
+enum SCENE_ID {
+	TITLE,	/// タイトルシーン
+	GAME,	/// ゲームシーン
+	RESULT,	/// リザルトシーン
+	SCENE_ID_COUNT
 };
+
 
 /// ===================================================
 /// シーンの管理クラス
@@ -32,7 +35,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize();
+	void Initialize(SCENE_ID sceneId);
 
 	/// <summary>
 	/// 終了処理
@@ -50,9 +53,18 @@ public:
 	/// </summary>
 	void Draw();
 
+
+	void SetNextScene(SCENE_ID nextId);
+
+	SCENE_ID GetCurrentScene() const { return currentId_; }
+
 private:
 
 	std::unique_ptr<BaseScene> scene_ = nullptr;
+	SCENE_ID currentId_;
+
+	class GameObjectManager* pGameObjectManager_ = nullptr;
+	class CollisionManager* pCollisionManager_ = nullptr;
 
 private:
 	SceneManager(const SceneManager&) = delete;

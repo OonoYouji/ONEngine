@@ -19,7 +19,6 @@ public:
 	struct LineVertexDate {
 		Vector4 postion;
 		Vector4 color;
-		Vector4 screenSize;
 	};
 
 public:
@@ -40,6 +39,8 @@ private:
 	void CreateVertexBuffer(size_t vertexCount);
 
 private:
+
+	static const int kMaxInstanceCount_;
 
 	ComPtr<ID3D12Resource> vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;

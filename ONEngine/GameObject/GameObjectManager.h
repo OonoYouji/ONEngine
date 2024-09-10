@@ -30,6 +30,9 @@ public:
 	/// <returns></returns>
 	static BaseGameObject* GetGameObject(const std::string& name);
 
+	static uint32_t GetInstanceCount(const std::string& tag);
+	static std::list<BaseGameObject*> GetGameObjectList(const std::string& tag);
+
 	/// <summary>
 	/// すべてのオブジェクトを消去する
 	/// </summary>
@@ -49,32 +52,21 @@ public:
 	void Finalize();
 
 
-
+	void GameObjectInitialize(int sceneId);
 
 	/// <summary>
 	///  オブジェクトのUpdate呼び出し
 	/// </summary>
-	void Update();
+	void Update(int currentSceneId);
 
 	/// <summary>
 	/// オブジェクトのLastUpdate呼び出し
 	/// </summary>
-	void LastUpdate();
+	void LastUpdate(int currentSceneId);
 
-	/// <summary>
-	/// オブジェクトのDraw呼び出し
-	/// </summary>
-	void Draw();
-
-	/// <summary>
-	/// オブジェクトの前景スプライトの描画の呼び出し
-	/// </summary>
-	void FrontSpriteDraw();
-
-	/// <summary>
-	/// オブジェクトの背景スプライトの描画の呼び出し
-	/// </summary>
-	void BackSpriteDraw();
+	void BackSpriteDraw(int layerId);
+	void Object3dDraw(int layerId);
+	void FrontSpriteDraw(int layerId);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////

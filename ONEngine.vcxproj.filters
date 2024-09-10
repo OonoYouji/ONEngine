@@ -194,8 +194,71 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
-    <ClCompile Include="Gamepad.cpp">
+    <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp">
+      <Filter>Game\Objects\GameMonitor</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Input\Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Light\DirectionalLight.cpp">
+      <Filter>ONEngine\Graphics\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\SceneLayer\SceneLayer.cpp">
+      <Filter>ONEngine\Graphics\SceneLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Heart\Heart.cpp">
+      <Filter>Game\Objects\Heart</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Hand\Hand.cpp">
+      <Filter>Game\Objects\Hand</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Shake\Shake.cpp">
+      <Filter>Game\Objects\Shake</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\PlayerHP.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
+      <Filter>Game\Objects\GameResult</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Particle\Effect.cpp">
+      <Filter>Game\Objects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Particle\Grain.cpp">
+      <Filter>Game\Objects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Random\Random.cpp">
+      <Filter>ONEngine\Random</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp">
+      <Filter>Game\Objects\GameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\background\Background.cpp">
+      <Filter>Game\Objects\Background</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameTitle\GameTitle.cpp">
+      <Filter>Game\Objects\GameTitle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameStartUI\GameStartUI.cpp">
+      <Filter>Game\Objects\GameStartUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Particle\Grain2D.cpp">
+      <Filter>Game\Objects\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +396,51 @@
     </Filter>
     <Filter Include="Resources\Shaders\Line2D">
       <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Light">
+      <UniqueIdentifier>{723e1a9d-a1a6-4da0-8269-7968f32263f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\SceneLayer">
+      <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Hand">
+      <UniqueIdentifier>{ac4d9a4a-d01d-4d49-91fd-bca2858e486b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Heart">
+      <UniqueIdentifier>{5fb8c2b5-7642-4d8d-9d4d-274112a3f18c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameMonitor">
+      <UniqueIdentifier>{8c4bf55a-7516-4999-975c-a5b7be48d5f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Shake">
+      <UniqueIdentifier>{66e2b31e-9c46-4d80-89ab-90cd5c9ce639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Enemy">
+      <UniqueIdentifier>{b877fb12-26da-4650-b844-7492429c3222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameCameraState">
+      <UniqueIdentifier>{49e57276-de06-4e58-b068-f5b8330cb912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameResult">
+      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Particle">
+      <UniqueIdentifier>{1b25c62a-c384-4da8-b499-aa4c80065b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Random">
+      <UniqueIdentifier>{7f6a09a9-adf2-4e49-9f82-c55703bb9ef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameTimer">
+      <UniqueIdentifier>{14be41d2-f7f5-44d5-899d-334826331be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Background">
+      <UniqueIdentifier>{bf7b1434-7a5b-4ef5-bcc1-ec898d66c858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameTitle">
+      <UniqueIdentifier>{425ff8b4-47e6-498e-aaae-54176815e7ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameStartUI">
+      <UniqueIdentifier>{4f1991a1-1ac6-4258-a6ae-6aa17f64f547}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -531,8 +639,71 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClInclude>
-    <ClInclude Include="Gamepad.h">
+    <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h">
+      <Filter>Game\Objects\GameMonitor</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Input\Gamepad.h">
       <Filter>ONEngine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Light\DirectionalLight.h">
+      <Filter>ONEngine\Graphics\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\SceneLayer\SceneLayer.h">
+      <Filter>ONEngine\Graphics\SceneLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Heart\Heart.h">
+      <Filter>Game\Objects\Heart</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Hand\Hand.h">
+      <Filter>Game\Objects\Hand</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Shake\Shake.h">
+      <Filter>Game\Objects\Shake</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\PlayerHP.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameResult\GameResult.h">
+      <Filter>Game\Objects\GameResult</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Particle\Effect.h">
+      <Filter>Game\Objects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Particle\Grain.h">
+      <Filter>Game\Objects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Random\Random.h">
+      <Filter>ONEngine\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GamTimer\GameTimer.h">
+      <Filter>Game\Objects\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\background\Background.h">
+      <Filter>Game\Objects\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameTitle\GameTitle.h">
+      <Filter>Game\Objects\GameTitle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Title.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Result.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameStartUI\GameStartUI.h">
+      <Filter>Game\Objects\GameStartUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Particle\Grain2D.h">
+      <Filter>Game\Objects\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -608,6 +779,9 @@
       <Filter>Resources\Shaders\Line2D</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
       <Filter>Resources\Shaders\Line2D</Filter>
     </FxCompile>
   </ItemGroup>

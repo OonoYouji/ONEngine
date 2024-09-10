@@ -1,12 +1,10 @@
 #include "BaseGameObject.h"
 
-//#include <json.hpp>
 #include <filesystem>
 #include <fstream>
 
 #include <ImGuiManager.h>
-//#include <CreateName.h>
-//#include <Mat4Math.h>
+#include <SceneManager.h>
 
 #include <GameObjectManager.h>
 #include <SceneManager.h>
@@ -28,6 +26,7 @@ BaseGameObject::BaseGameObject() {
 	collider_ = nullptr;
 
 	UpdateMatrix();
+
 }
 
 

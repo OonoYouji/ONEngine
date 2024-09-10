@@ -83,7 +83,7 @@ private:
 	/// ===================================================
 	
 	Microsoft::WRL::ComPtr<IDirectInput8> directInput_;
-
+	ONE::WinApp* pWinApp_ = nullptr;
 
 private:
 	Input(const Input&) = delete;

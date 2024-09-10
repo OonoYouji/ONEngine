@@ -11,6 +11,7 @@
 #include <DxDepthStencil.h>
 #include <DxDebug.h>
 #include <DxShaderCompiler.h>
+#include <RenderTexture.h>
 
 #include <SceneManager.h>
 
@@ -93,10 +94,10 @@ void ONE::DxCommon::PreDraw() {
 /// ===================================================
 /// 描画後処理
 /// ===================================================
-void ONE::DxCommon::PostDraw(ID3D12Resource* rtvResource) {
+void ONE::DxCommon::PostDraw(RenderTexture* renderTex) {
 	
 //#ifdef NDEBUG
-	doubleBuffer_->CopyToBB(command_->GetList(), rtvResource, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	doubleBuffer_->CopyToBB(command_->GetList(), renderTex->GetRenderTexResource(), renderTex->currentResourceState);
 //#endif // NDEBUG
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

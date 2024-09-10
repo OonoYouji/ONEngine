@@ -18,6 +18,10 @@ void Material::SetColor(const Vector4& color) {
 	materialData_->color = color;
 }
 
+void Material::SetIsLighting(bool isLighting) {
+	materialData_->isLighting = isLighting;
+}
+
 
 /// ===================================================
 /// バッファの生成
@@ -27,6 +31,7 @@ void Material::CreateBuffer() {
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vec4(1, 1, 1, 1);
 	materialData_->uvTransform = Mat3::kIdentity.ToMat4();
+	materialData_->isLighting = true;
 }
 
 

@@ -91,6 +91,8 @@ public:
 	/// </summary>
 	void AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode);
 
+	void SetDirectionalLight(class DirectionalLight* directionalLight);
+
 private:
 
 	/// ===================================================
@@ -113,6 +115,8 @@ private:
 	};
 
 	std::list<Element> activeModels_;
+
+	class DirectionalLight* pDirectionalLight_ = nullptr;
 
 private:
 	ModelManager(const ModelManager&) = delete;

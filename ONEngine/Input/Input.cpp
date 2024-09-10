@@ -177,6 +177,8 @@ Input* Input::GetInsatnce() {
 /// ===================================================
 void Input::Initialize(ONE::WinApp* winApp) {
 
+	pWinApp_= winApp;
+
 	HRESULT hr = DirectInput8Create(
 		winApp->GetWNDCLASS().hInstance,
 		DIRECTINPUT_VERSION,

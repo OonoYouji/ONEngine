@@ -49,6 +49,8 @@ public:
 	void SetMainCamera(const std::string& name);
 	void SetMainCamera(BaseCamera* camera);
 
+	BaseCamera* GetCamera(const std::string& name);
+
 	/// <summary>
 	/// メインカメラのゲッタ
 	/// </summary>

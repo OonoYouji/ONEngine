@@ -166,6 +166,10 @@ const Texture& TextureManager::GetTexture(const std::string& name) const {
 /// ===================================================
 void TextureManager::Load(const std::string& texName, const std::string& filePath) {
 
+	if(textures_.find(texName) != textures_.end()) {
+		return; /// すでに存在している
+	}
+
 	Texture newTexture{};
 	DirectX::ScratchImage mipImages = LoadTexture(kDirectoryPath_ + filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
@@ -195,4 +199,15 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 
 	textures_[texName] = newTexture;
 
+}
+
+void TextureManager::AddTexture(const std::string& name, D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle) {
+
+	if(textures_.find(name) != textures_.end()) {
+		assert(false);
+		return;
+	}
+
+	Texture newTexture(cpuHandle, gpuHandle);
+	textures_[name] = newTexture;
 }

@@ -33,14 +33,18 @@ namespace ONE {
 
 		UINT ProcessMessage();
 
-
+		void SetIsFullScreen(bool isFullScreen);
+		bool GetIsFullScreen() const { return isFullScreen_; }
 
 		const HWND& GetHWND() const { return hwnd_; }
 
 		const WNDCLASS& GetWNDCLASS() const { return wc_; }
 
+		const RECT& GetFullScreenRect() const { return fullscreenRect_; }
+		const RECT& GetRect() const { return wrc_; }
+
 	private:
-		
+
 		/// ===================================================
 		/// private : methods
 		/// ===================================================
@@ -62,6 +66,9 @@ namespace ONE {
 		HWND hwnd_;
 		MSG msg_;
 		UINT windowStyle_;
+
+		RECT fullscreenRect_{  };
+		bool isFullScreen_ = false;
 
 	private:
 		WinApp(const WinApp&) = delete;

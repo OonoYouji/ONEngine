@@ -1,7 +1,7 @@
 #include "GameObjectManager.h"
 
 #include <ImGuiManager.h>
-
+#include <Collision/CollisionManager.h>
 
 
 /// ===================================================
@@ -18,27 +18,31 @@ void GameObjectManager::Finalize() {
 	objects_.clear();
 }
 
+void GameObjectManager::GameObjectInitialize(int sceneId) {
+	for(auto& obj : objects_) {
+		obj->Initialize();
+	}
+}
+
 
 /// ===================================================
 /// 更新
 /// ===================================================
-void GameObjectManager::Update() {
+void GameObjectManager::Update(int currentSceneId) {
 
 	ReName();
 
 	for(auto& obj : objects_) {
-		if(obj->isActive) {
-			obj->Update();
-			obj->UpdateMatrix();
-		}
+		if(!obj->isActive) { continue; }
+		obj->Update();
+		obj->UpdateMatrix();
 	}
 }
 
-void GameObjectManager::LastUpdate() {
+void GameObjectManager::LastUpdate(int currentSceneId) {
 	for(auto& obj : objects_) {
-		if(obj->isActive) {
-			obj->LastUpdate();
-		}
+		if(!obj->isActive) { continue; }
+		obj->LastUpdate();
 	}
 
 	/// 消去命令の出たオブジェクトを削除
@@ -50,30 +54,27 @@ void GameObjectManager::LastUpdate() {
 }
 
 
-/// ===================================================
-/// 描画
-/// ===================================================
-void GameObjectManager::Draw() {
+void GameObjectManager::BackSpriteDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(obj->isDrawActive) {
-			obj->Draw();
-		}
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->BackSpriteDraw();
 	}
 }
 
-void GameObjectManager::FrontSpriteDraw() {
+void GameObjectManager::Object3dDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(obj->isDrawActive) {
-			obj->FrontSpriteDraw();
-		}
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->Draw();
 	}
 }
 
-void GameObjectManager::BackSpriteDraw() {
+void GameObjectManager::FrontSpriteDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(obj->isDrawActive) {
-			obj->BackSpriteDraw();
-		}
+		if(!obj->isDrawActive) { continue; }
+		if(obj->drawLayerId != layerId) { continue; }
+		obj->FrontSpriteDraw();
 	}
 }
 
@@ -101,7 +102,7 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 		if(object == selectObject_) {
 			selectObject_ = nullptr;
 		}
-		//CollisionManager::GetInstance()->SubGameObject(object);
+		CollisionManager::GetInstance()->SubGameObject(object);
 		objects_.erase(it);
 	}
 
@@ -144,6 +145,28 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 		return false;
 	});
 
+	return result;
+}
+
+uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
+	GameObjectManager* instance = GetInstance();
+	uint32_t count = 0U;
+	for (const auto& object : instance->objects_) {
+		if (object->GetTag() == tag) {
+			count++;
+		}
+	}
+	return count;
+}
+
+std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag) {
+	GameObjectManager* instance = GetInstance();
+	std::list<BaseGameObject*> result;
+	for (const auto& object : instance->objects_) {
+		if (object->GetTag() == tag) {
+			result.push_back(object.get());
+		}
+	}
 	return result;
 }
 
@@ -231,8 +254,29 @@ void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseG
 void GameObjectManager::ImGuiSelectObjectDebug() {
 #ifdef _DEBUG
 
+	/// activeのフラグをデバッグ
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
+	if(ImGui::IsItemEdited()) {
+		for(auto& child : selectObject_->GetChilds()) {
+			child->isActive = selectObject_->isActive;
+		}
+	}
+
+	/// draw activeのフラグをデバッグ
 	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
+	if(ImGui::IsItemEdited()) {
+		for(auto& child : selectObject_->GetChilds()) {
+			child->isDrawActive = selectObject_->isDrawActive;
+		}
+	}
+
+	/// drawLayerIdのフラグをデバッグ
+	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId, 0);
+	if(ImGui::IsItemEdited()) {
+		for(auto& child : selectObject_->GetChilds()) {
+			child->drawLayerId = selectObject_->drawLayerId;
+		}
+	}
 
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 

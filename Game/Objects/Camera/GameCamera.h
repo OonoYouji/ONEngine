@@ -9,7 +9,7 @@
 class GameCamera final : public BaseCamera {
 public:
 
-	GameCamera();
+	GameCamera(const std::string& name);
 	~GameCamera();
 
 	void Initialize() override;

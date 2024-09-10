@@ -23,6 +23,7 @@ ImGuiManager* ImGuiManager::GetInstance() {
 /// ===================================================
 void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
+	pWinApp_ = winApp;
 	dxCommon_ = dxCommon;
 	dxDescriptor_ = dxCommon->GetDxDescriptor();
 
@@ -35,7 +36,7 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
 	ImGui::StyleColorsDark();
 	StyleSetting();
-	ImGui_ImplWin32_Init(winApp->GetHWND());
+	ImGui_ImplWin32_Init(pWinApp_->GetHWND());
 	ImGui_ImplDX12_Init(
 		dxCommon->GetDevice(),
 		ONE::DxDoubleBuffer::kBufferCount,

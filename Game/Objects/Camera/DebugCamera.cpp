@@ -4,6 +4,7 @@
 #include <Input.h>
 #include <ImGuiManager.h>
 
+
 DebugCamera::DebugCamera() {
 	SetName("DebugCamera");
 	CameraManager::GetInstance()->AddCamera(GetName(), this);
@@ -17,7 +18,9 @@ DebugCamera::~DebugCamera() {}
 void DebugCamera::Initialize() {
 	isActive = false;
 
-	transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
+	//transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
+	/*transform_.position = { 1.8f,0.87f, -12.7f };
+	transform_.rotate = { 0.066f, -0.258f, 0.0f };*/
 
 	BaseCamera::BaseInitialize();
 }

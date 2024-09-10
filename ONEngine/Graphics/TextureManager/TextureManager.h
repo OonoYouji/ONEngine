@@ -5,8 +5,6 @@
 
 #include <Texture.h>
 
-
-
 /// ===================================================
 /// テクスチャの管理クラス
 /// ===================================================
@@ -45,6 +43,12 @@ public:
 	/// <param name="name"></param>
 	/// <param name="filePath"></param>
 	void Load(const std::string& texName, const std::string& filePath);
+
+	void AddTexture(
+		const std::string& name, 
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, 
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle
+	);
 
 private:
 

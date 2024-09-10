@@ -25,7 +25,7 @@ private:
 
 	static WorldTime sInstance_;
 
-	std::chrono::high_resolution_clock::time_point time_;
+	std::chrono::high_resolution_clock::time_point time_{};
 	float deltaTime_ = 0.0f;
 
 };

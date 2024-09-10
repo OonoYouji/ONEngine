@@ -26,7 +26,7 @@ void CollisionManager::SubGameObject(BaseGameObject* collider) {
 }
 
 
-void CollisionManager::Update() {
+void CollisionManager::Update(int currentSceneId) {
 
 	currentCollidedPairs_.clear();
 
@@ -37,9 +37,13 @@ void CollisionManager::Update() {
 	}
 
 	for(auto& objectA : gameObjects_) {
+
 		for(auto& objectB : gameObjects_) {
 
 			if(objectA == objectB) { continue; }
+			if(objectA->drawLayerId != objectB->drawLayerId) {
+				continue;
+			}
 
 			auto it = std::find_if(currentCollidedPairs_.begin(), currentCollidedPairs_.end(), [&objectA, &objectB](const CollidedPair& pair) {
 				return (pair.first == objectA && pair.second == objectB)
@@ -51,7 +55,7 @@ void CollisionManager::Update() {
 			}
 
 			//if(objectA->GetTag() != objectB->GetTag()) {
-				CheckCollision(objectA, objectB);
+			CheckCollision(objectA, objectB);
 			//}
 		}
 	}

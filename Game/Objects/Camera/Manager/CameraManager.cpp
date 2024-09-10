@@ -59,4 +59,8 @@ void CameraManager::SetMainCamera(BaseCamera* camera) {
 	mainCamera_ = camera;
 }
 
+BaseCamera* CameraManager::GetCamera(const std::string& name) {
+	return cameras_.at(name);
+}
+
 

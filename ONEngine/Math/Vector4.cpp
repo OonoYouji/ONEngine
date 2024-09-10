@@ -1,5 +1,7 @@
 #include <Vector4.h>
 
+#include <cmath>
+
 
 /// ===================================================
 /// static objects initialize
@@ -23,4 +25,14 @@ Vector4::Vector4(float x, float y, float z, float w) {
 	this->y = y;
 	this->z = z;
 	this->w = w;
+}
+
+
+Vector4 Vector4::Lerp(const Vector4& start, const Vector4& end, float t) {
+	return Vector4(
+		std::lerp(start.x, end.x, t),
+		std::lerp(start.y, end.y, t),
+		std::lerp(start.z, end.z, t),
+		std::lerp(start.w, end.w, t)
+	);
 }

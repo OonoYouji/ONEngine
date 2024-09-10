@@ -1,5 +1,7 @@
 #include "Line2D.hlsli"
 
-float4 main(VSOutput input) : SV_TARGET {
-    return input.color;
+PSOutput main(GSOutput input) {
+	PSOutput output;
+	output.color = input.color;
+	return output;
 }

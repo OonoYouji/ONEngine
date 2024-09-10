@@ -10,14 +10,6 @@ class AudioClip;
 
 
 /// ===================================================
-/// 音のタイプ
-/// ===================================================
-enum class AudioType : int8_t {
-	SE,		/// sound effect
-	BGM		/// background music
-};
-
-/// ===================================================
 /// 音源の再生クラス
 /// ===================================================
 class AudioSource final {
@@ -49,7 +41,7 @@ public:
 	void StopAudio();
 
 
-	void StopAudioALL();
+	void StopAudioAll();
 
 
 	/// <summary>
@@ -80,5 +72,4 @@ public:
 	float volume = 0.5f;
 	float pitch = 1.0f;
 	bool isLoop = false;
-
 };

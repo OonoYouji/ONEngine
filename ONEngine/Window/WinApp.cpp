@@ -26,7 +26,7 @@ ONE::WinApp* ONE::WinApp::GetInstance() {
 void ONE::WinApp::Initialize() {
 
 	CreateGameWindow(
-		L"DirectX12 Game",
+		L"2005_sin(ON);",
 		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
 		kWindowSizeX, kWindowSizeY
 	);
@@ -62,6 +62,46 @@ UINT ONE::WinApp::ProcessMessage() {
 	}
 
 	return false;
+}
+
+void ONE::WinApp::SetIsFullScreen(bool isFullScreen) {
+	if(isFullScreen_ == isFullScreen) { return; }
+
+	if(isFullScreen) {
+		// 元の状態を覚えておく
+		GetWindowRect(hwnd_, &wrc_);
+
+		// 仮想フルスクリーン化
+		SetWindowLong(
+			hwnd_, GWL_STYLE,
+			windowStyle_ &
+			~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME));
+
+		HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO info;
+		info.cbSize = sizeof(info);
+		GetMonitorInfo(monitor, &info);
+		fullscreenRect_.right = info.rcMonitor.right - info.rcMonitor.left;
+		fullscreenRect_.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
+
+		SetWindowPos(
+			hwnd_, HWND_TOPMOST, fullscreenRect_.left, fullscreenRect_.top, fullscreenRect_.right,
+			fullscreenRect_.bottom, SWP_FRAMECHANGED | SWP_NOACTIVATE);
+		ShowWindow(hwnd_, SW_MAXIMIZE);
+
+	} else {
+		// 通常ウィンドウに戻す
+		SetWindowLong(hwnd_, GWL_STYLE, windowStyle_);
+
+		SetWindowPos(
+			hwnd_, HWND_NOTOPMOST, wrc_.left, wrc_.top,
+			wrc_.right - wrc_.left, wrc_.bottom - wrc_.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+
+		ShowWindow(hwnd_, SW_NORMAL);
+	}
+
+	isFullScreen_ = isFullScreen;
 }
 
 

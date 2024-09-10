@@ -31,6 +31,7 @@ public:
 	struct Shader final {
 		ComPtr<IDxcBlob> vs = nullptr;
 		ComPtr<IDxcBlob> ps = nullptr;
+		ComPtr<IDxcBlob> gs = nullptr;
 
 		/// <summary>
 		/// shaderのコンパイル
@@ -42,6 +43,10 @@ public:
 		void ShaderCompile(
 			const std::wstring& vsFilePath, const wchar_t* vsProfile,
 			const std::wstring& psFilePath, const wchar_t* psProfile
+		);
+
+		void GeometryShaderCompile(
+			const std::wstring& filePath, const wchar_t* profile
 		);
 
 	};
@@ -76,6 +81,7 @@ public:
 	/// input layout elementの追加
 	/// </summary>
 	void AddInputElement(const std::string& semanticName, uint32_t semanticIndex, DXGI_FORMAT format);
+	void AddInputElement(const D3D12_INPUT_ELEMENT_DESC& inputElement);
 
 	/// <summary>
 	/// 定数バッファのパラメータを追加

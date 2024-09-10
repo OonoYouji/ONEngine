@@ -238,5 +238,6 @@ public:
 
 	bool isActive = true;
 	bool isDrawActive = true;
+	int drawLayerId = 0;
 
 };

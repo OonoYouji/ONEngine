@@ -39,8 +39,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	
-	
+
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -51,7 +51,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(uint32_t zOrder = 0u);
 
 
 	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
@@ -61,6 +61,10 @@ public:
 	}
 
 	void SetPos(const Vec3& pos);
+
+	void SetSize(const Vec2& textureSize);
+
+	void SetAngle(float angle) { angle_ = angle; }
 
 private:
 
@@ -92,8 +96,12 @@ private:
 
 	ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
 	Mat4* matTransformData_ = nullptr;
-	
+
 
 	Material material_;
+
+	Vec3 position_ = { 0,0,0 };
+	Vec2 size_ = { 100,100 };
+	float angle_ = 0.0f;
 
 };

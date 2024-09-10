@@ -5,6 +5,7 @@
 
 
 void ONE::DxBarrierCreator::CreateBarrier(ID3D12Resource* resourec, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after) {
+	if(before == after) { return; }
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;

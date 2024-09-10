@@ -4,6 +4,8 @@
 
 #include <memory>
 
+class RenderTexture;
+
 namespace ONE {
 
 	class DxDevice;
@@ -49,7 +51,7 @@ namespace ONE {
 		/// <summary>
 		/// 描画後処理
 		/// </summary>
-		void PostDraw(ID3D12Resource* rtvResource);
+		void PostDraw(RenderTexture* renderTex);
 
 		/// <summary>
 		/// CommandList内にある命令を実行する

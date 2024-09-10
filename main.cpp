@@ -23,8 +23,10 @@
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
+#include <Light/DirectionalLight.h>
 
 #include <RenderTextureManager.h>
+#include <SceneLayer/SceneLayer.h>
 #include <Bloom/Bloom.h>
 
 
@@ -52,7 +54,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
 	LineDrawer2D* lineDrawer2d = LineDrawer2D::GetInstance();
 
+
+
 	winApp->Initialize();
+
 	dxCommon->Initialize();
 
 	input->Initialize(winApp);
@@ -60,45 +65,98 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp, dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
+	lineDrawer2d->Initialize();
 	audioManager->Initialize();
 
+	/// texture読み込み
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
+	textureManager->Load("SINON_enemy", "SINON_enemy.png");
+	textureManager->Load("enemy_stamp", "enemy_stamp.png");
+	textureManager->Load("TVUV", "TVUV.png");
+	textureManager->Load("Heart", "../Models/Heart/Heart.png");
+	textureManager->Load("Hand", "Hand.png");
+	textureManager->Load("paper", "paper.png");
+	textureManager->Load("binder", "binder.png");
+	textureManager->Load("white2x2", "white2x2.png");
 
-	audioManager->Load("fanfare.wav");
-
-	
-	lineDrawer2d->Initialize();
-
+	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
-	renderTexManager->CreateRenderTarget("3dObject", 0, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("frontSprite", 4, { 0,0,0,0 });
-	renderTexManager->CreateRenderTarget("ImGui", 5, { 0,0,0,0 });
+	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
 
-	renderTexManager->SetIsBlending("3dObject", false);
-	//renderTexManager->SetIsBlending("frontSprite", false);
-	//renderTexManager->SetIsBlending("ImGui", false);
+	/// bloomエフェクトの初期化
+	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
 
-	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), 2);
-
+	/// game object manager の初期化
 	gameObjectManager->Initialize();
 
-	GameCamera* gameCamera = new GameCamera();
+	/// camera の初期化
+	GameCamera* monitorCamera = new GameCamera("MonitorCamera");
+	monitorCamera->Initialize();
+	monitorCamera->SetPosition({ -2.221f, 3.245f, -27.257f });
+	monitorCamera->SetRotate({ 0.0f, 0.215f, 0.0f });
+	monitorCamera->BaseUpdate();
+	
+	GameCamera* gameCamera = new GameCamera("GameCamera");
 	gameCamera->Initialize();
+	gameCamera->SetPosition({ -1.48f, 0.9f, -14.16f });
+	gameCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	gameCamera->BaseUpdate();
 	cameraManager->SetMainCamera(gameCamera);
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
+	debugCamera->SetPosition({ -1.48f, 0.9f, -14.16f });
+	debugCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	debugCamera->BaseUpdate();
 
-	sceneManager->Initialize();
+	/// light の初期化
+	DirectionalLight* directionalLight = new DirectionalLight();
+	directionalLight->Initialize();
+	modelManager->SetDirectionalLight(directionalLight);
+
+	///////////////////////////////////////////////////////////////////////
+	/// scene manager の初期化	: 初期化時のシーンをここで決定
+	///////////////////////////////////////////////////////////////////////
+	sceneManager->Initialize(SCENE_ID::GAME);
+
+	/// layer の初期化
+	std::vector<std::unique_ptr<SceneLayer>> layers;
+	layers.resize(2);
+	{
+		std::string names[2]{ "monitor", "game" };
+		BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
+		//BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
+		for(uint8_t i = 0; i < layers.size(); ++i) {
+			layers[i].reset(new SceneLayer);
+			layers[i]->Initialize(names[i], pCameras[i]);
+		}
+	}
 
 
+#ifdef _DEBUG
+	/// debug 用 render texture の初期化
+	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
+	debugFinalRenderTexture->Initialize(
+		Vec4(0, 0, 0, 0),
+		dxCommon->GetDxCommand()->GetList(),
+		dxCommon->GetDxDescriptor()
+	);
+#endif // _DEBUG
+
+	/// window mode や imgui の表示設定の初期化
+	winApp->SetIsFullScreen(false); /// ? full screen : window mode
+	uint8_t drawLayerIndex = 1;	/// game || monitor
+	bool imguiIsBlending = true;
+	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
 	///- 実行までにかかった時間
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
+
+	worldTime->Update();
 
 
 	while(!winApp->ProcessMessage()) {
@@ -112,22 +170,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理に移る
 		/// ====================================
 
+		/// フルスクリーンの切り替え
+		if(Input::TriggerKey(KeyCode::F11)) {
+			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
+		}
+
+
 		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
-		Bloom::ImGuiDebug();
+		for(auto& layer : layers) {
+			layer->ImGuiDebug();
+		}
+
+#ifdef _DEBUG
+		if(Input::TriggerKey(KeyCode::F5)) {
+			imguiIsBlending = !imguiIsBlending;
+		}
+		if(Input::TriggerKey(KeyCode::Alpha1)) {
+			drawLayerIndex = 0;
+		}
+		if(Input::TriggerKey(KeyCode::Alpha2)) {
+			drawLayerIndex = 1;
+		}
+#endif // _DEBUG
+
+		
 
 		cameraManager->Update();
 
+		/// game object の更新をしている
 		sceneManager->Update();
-
-		/// 更新1
-		gameObjectManager->Update();
-		/// 当たり判定処理
-		collisionManager->Update();
-		/// 更新2
-		gameObjectManager->LastUpdate();
 
 		audioManager->Update();
 
@@ -136,46 +210,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		dxCommon->PreDraw();
-		modelManager->PreDraw();
-		spriteManager->PreDraw();
-		lineDrawer2d->PreDraw();
 
-		renderTexManager->BeginRenderTarget("3dObject");
-
-		sceneManager->Draw();
-
-#ifdef _DEBUG
-		collisionManager->DrawHitBoxALL();
-#endif // _DEBUG
-
-		gameObjectManager->BackSpriteDraw();
-		gameObjectManager->Draw();
-		gameObjectManager->FrontSpriteDraw();
-
-		modelManager->PostDraw();
-		lineDrawer2d->PostDraw();
-		renderTexManager->EndRenderTarget("3dObject");
-
-
-
-		renderTexManager->BeginRenderTarget("frontSprite");
-		spriteManager->PostDraw();
-		renderTexManager->EndRenderTarget("frontSprite");
-
-		Bloom::CreateBloomRenderTexture(
-			renderTexManager->GetRenderTarget("3dObject")
-		);
+		for(auto& layer : layers) {
+			layer->Draw();
+		}
 
 		renderTexManager->EndFrame();
+
+#ifdef _DEBUG
+		if(imguiIsBlending) {
+			RenderTextureManager::CreateBlendRenderTexture(
+				{ layers[drawLayerIndex]->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				debugFinalRenderTexture.get()
+			);
+		}
 
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
+		if(imguiIsBlending) {
+			dxCommon->PostDraw(debugFinalRenderTexture.get());
+		} else {
+			dxCommon->PostDraw(layers[drawLayerIndex]->GetFinalRenderTexture());
+		}
+#else
+		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
+#endif // _DEBUG
 
-
-		dxCommon->PostDraw(renderTexManager->GetFinalRenderTexture()->GetRenderTexResource());
 	}
 
+
+#ifdef _DEBUG
+	debugFinalRenderTexture.reset();
+#endif // _DEBUG
+	layers.clear();
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();
