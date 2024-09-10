@@ -1,5 +1,6 @@
 #include "PlayerHP.h"
 
+#include <SceneManager.h>
 #include <ImGuiManager.h>
 #include "Enemy/Enemy.h"
 
@@ -55,6 +56,11 @@ void PlayerHP::Update() {
 		};
 		position += offset_;
 		hpSprites_[i]->SetPos(position);
+	}
+
+	if (hpSprites_.size() == 0)
+	{
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
 }
 
