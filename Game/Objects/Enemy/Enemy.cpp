@@ -10,11 +10,11 @@ void Enemy::Initialize()
 
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
-	sprite_->SetSize({ 20,20 });
+	sprite_->SetSize({ 20,40 });
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
 	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
-	deadSprite_->SetSize({ 20,20 });
+	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
 	beforlambda = addlambda;
@@ -37,12 +37,12 @@ void Enemy::Update()
 		frequency = sinWave_->GetFrequency();
 		offsetY = sinWave_->GetOffset();
 		addlambda = sinWave_->GetAddLambda();
-		offsetY -= 20.0f;
 
-		if (beforlambda != addlambda)
-		{
-			isJump = false;
-		}
+
+		//if (beforlambda != addlambda)
+		//{
+		//	isJump = false;
+		//}
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
@@ -140,7 +140,7 @@ void Enemy::Update()
 		{
 			if (true)
 			{
-				if (beforlambda == addlambda)
+				if (true)
 				{
 					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
@@ -156,7 +156,7 @@ void Enemy::Update()
 			}
 			if (true)
 			{
-				if (beforlambda == addlambda)
+				if (true)
 				{
 					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
 						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
@@ -171,6 +171,7 @@ void Enemy::Update()
 				}
 			}
 		}
+
 
 		if (pos.x < 0)
 		{
