@@ -33,6 +33,7 @@ void GameStartUI::Initialize() {
 
 	spriteColor_ = { 0,0,0,0 };
 
+	currentSelectMode_ = 1; /// start で初期化
 }
 
 void GameStartUI::Update() {
