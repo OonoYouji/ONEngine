@@ -55,13 +55,15 @@ void Effect::Update() {
 	
 	transform_.UpdateMatrix();
 
-	if (is3DMode_) {
-		Create();
-		previousPosition_ = transform_.position;
-	}
-	if (is2DMode_) {
-		Create2D();
-		previousPosition_ = position2D_;
+	if (isStart_) {
+		if (is3DMode_) {
+			Create();
+			previousPosition_ = transform_.position;
+		}
+		if (is2DMode_) {
+			Create2D();
+			previousPosition_ = position2D_;
+		}
 	}
 
 }
@@ -493,6 +495,16 @@ void Effect::Create2D() {
 
 }
 
+void Effect::EffectStart()
+{
+	isStart_ = true;
+}
+
+void Effect::EffectStop()
+{
+	isStart_ = false;
+}
+
 void Effect::SetGrainMode(int type)
 {
 
@@ -510,7 +522,7 @@ void Effect::SetGrainMode(int type)
 }
 
 
-void Effect::SetPosition(const Vector2& pos)
+void Effect::SetPos(const Vector2& pos)
 {
 	position2D_ = { pos,0.0f };
 }

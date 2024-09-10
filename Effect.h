@@ -33,14 +33,19 @@ public:
 	void Create();
 	void Create2D();
 
+	void EffectStart();
+	void EffectStop();
+
 	void SetGrainMode(int type);
 
-	void SetPosition(const Vector2& pos);
+	void SetPos(const Vector2& pos);
 
 private:
 
 	bool is3DMode_ = false;
 	bool is2DMode_ = true;
+
+	bool isStart_ = false;
 
 	std::unique_ptr<Sprite> sprite_;
 	std::string emitterName_ = "a";
@@ -59,7 +64,7 @@ private:
 	Vector3 position2D_ = { 0.0f,0.0f,0.0f };
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };// 後で、rotateSpeedも追加する
 
-	Vector3 size_ = { 0.1f,0.1f,0.1f };
+	Vector3 size_ = { 5.0f,5.0f,1.0f };
 
 	int lifeTime_ = 20;
 
@@ -67,8 +72,8 @@ private:
 	bool isSizeRandom = false;
 	float minRotateRandom_ = -3.0f;
 	float maxRotateRandom_ = 3.0f;
-	float minSizeRandom_ = 0.01f;
-	float maxSizeRandom_ = 2.0f;
+	float minSizeRandom_ = 4.0f;
+	float maxSizeRandom_ = 6.0f;
 
 
 

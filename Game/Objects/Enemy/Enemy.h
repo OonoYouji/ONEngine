@@ -2,6 +2,7 @@
 #include <GameObjectManager.h>
 #include <BaseGameObject.h>
 #include <Sprite.h>
+#include "Effect.h"
 
 class SinWaveDrawer;
 
@@ -51,7 +52,7 @@ private:
 	Vector3 beforPos = pos;
 
 	float xAccel = 0.0f;
-	float addAccel = 0.04f;
+	float addAccel = 0.02f;
 	float addDecel = 0.005f;
 	float acceleTime = 0.1f;
 
@@ -73,7 +74,7 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
-	float canJumpAccele = 1.0f;
+	float canJumpAccele = 2.0f;
 
 
 	bool isMaybeDead = false;
@@ -83,4 +84,7 @@ private:
 
 	int roopCount = 0;
 	bool isHeartBreak = false;
+
+
+	Effect* deathEffect_;
 };

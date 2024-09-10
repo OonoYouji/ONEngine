@@ -19,6 +19,11 @@ void Enemy::Initialize()
 
 	beforlambda = addlambda;
 	addLambdaCount = sinWave_->GetAddLabdaCount();
+
+	deathEffect_ = new Effect();
+	deathEffect_->Initialize();
+	deathEffect_->SetGrainMode(1);
+
 }
 
 void Enemy::Update()
@@ -39,10 +44,10 @@ void Enemy::Update()
 		addlambda = sinWave_->GetAddLambda();
 
 
-		//if (beforlambda != addlambda)
-		//{
-		//	isJump = false;
-		//}
+		if (beforlambda < addlambda)
+		{
+			isJump = false;
+		}
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
@@ -142,7 +147,7 @@ void Enemy::Update()
 			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 			{
-				acceleTime += 0.02f;
+				acceleTime += 0.01f;
 				float t = amplitude / maxAcceleAmp;
 				if (t >= 1.0f)
 				{
@@ -185,6 +190,8 @@ void Enemy::Update()
 			}
 		}
 	}
+
+	/*deathEffect_->SetPos({ pos.x,pos.y });*/
 
 }
 
@@ -245,7 +252,14 @@ void Enemy::Debug()
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
-
+		if (ImGui::Button("EffectStart"))
+		{
+			deathEffect_->EffectStart();
+		}
+		if (ImGui::Button("EffectStop"))
+		{
+			deathEffect_->EffectStop();
+		}
 		ImGui::TreePop();
 	}
 }

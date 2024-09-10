@@ -38,8 +38,6 @@ private:
 
 	std::unique_ptr<Sprite> sprite_;
 
-	Effect* effect_;
-
 	SinWaveDrawer* sinWave_;
 	Enemy* enemy_;
 	EnemyManager* enemyManager_;

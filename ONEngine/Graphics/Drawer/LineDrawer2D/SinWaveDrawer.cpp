@@ -47,7 +47,7 @@ void SinWaveDrawer::Update() {
 	if (padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
 	{
 		float stickSlope = padRstick.x / 16384.0f;
-		addlambda -= addPadLam * (stickSlope * stickSlope);
+		addlambda -= addPadLam * (stickSlope);
 		if (addlambda <= -1393.0f)
 		{
 			addlambda = 0;
@@ -55,8 +55,8 @@ void SinWaveDrawer::Update() {
 	}
 	else if (padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
 	{
-		float stickSlope = padRstick.x / 16384.0f;
-		addlambda += addPadLam * (stickSlope * stickSlope);
+		float stickSlope = -(padRstick.x) / 16384.0f;
+		addlambda += addPadLam * (stickSlope);
 		if (addlambda >= 1393.0f)
 		{
 			addlambda = 0;
