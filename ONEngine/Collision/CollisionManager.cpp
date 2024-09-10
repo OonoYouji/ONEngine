@@ -38,15 +38,7 @@ void CollisionManager::Update(int currentSceneId) {
 
 	for(auto& objectA : gameObjects_) {
 
-		if(!objectA->isSceneActives_[currentSceneId]) {
-			continue;
-		}
-
 		for(auto& objectB : gameObjects_) {
-
-			if(!objectB->isSceneActives_[currentSceneId]) {
-				continue;
-			}
 
 			if(objectA == objectB) { continue; }
 			if(objectA->drawLayerId != objectB->drawLayerId) {

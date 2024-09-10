@@ -12,11 +12,6 @@ void GameTimer::Initialize() {
 
 	currentTime_ = 0.0f;
 
-	initialSceneId_ = 1; /// game scene で初期化
-	isSceneActives_[0] = false; /// title
-	isSceneActives_[1] = true;	/// game
-	isSceneActives_[2] = false; /// result
-	
 }
 
 void GameTimer::Update() {

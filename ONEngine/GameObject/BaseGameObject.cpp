@@ -27,14 +27,6 @@ BaseGameObject::BaseGameObject() {
 
 	UpdateMatrix();
 
-
-	isSceneActives_.resize(SCENE_ID_COUNT);
-	for(auto id : isSceneActives_) {
-		id = true;
-	}
-
-	initialSceneId_ = SCENE_ID::TITLE;
-
 }
 
 

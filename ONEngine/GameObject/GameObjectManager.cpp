@@ -20,7 +20,6 @@ void GameObjectManager::Finalize() {
 
 void GameObjectManager::GameObjectInitialize(int sceneId) {
 	for(auto& obj : objects_) {
-		if(obj->initialSceneId_ != sceneId) { continue; }
 		obj->Initialize();
 	}
 }
@@ -35,7 +34,6 @@ void GameObjectManager::Update(int currentSceneId) {
 
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
-		if(!obj->isSceneActives_[currentSceneId]) { continue; }
 		obj->Update();
 		obj->UpdateMatrix();
 	}
@@ -44,7 +42,6 @@ void GameObjectManager::Update(int currentSceneId) {
 void GameObjectManager::LastUpdate(int currentSceneId) {
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
-		if(!obj->isSceneActives_[currentSceneId]) { continue; }
 		obj->LastUpdate();
 	}
 
@@ -278,19 +275,6 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 	if(ImGui::IsItemEdited()) {
 		for(auto& child : selectObject_->GetChilds()) {
 			child->drawLayerId = selectObject_->drawLayerId;
-		}
-	}
-
-	/// 更新処理をするシーンのフラグのデバッグ表示
-	const char* sceneEnumStr[3] = { "TITLE", "GAME", "RESULT" };
-	for(int i = 0; i < selectObject_->isSceneActives_.size(); ++i) {
-		bool isAcitive = selectObject_->isSceneActives_[i];
-		ImGui::Checkbox(sceneEnumStr[i], &isAcitive);
-		if(ImGui::IsItemEdited()) {
-			selectObject_->isSceneActives_[i] = isAcitive;
-			for(auto& child : selectObject_->GetChilds()) {
-				child->isSceneActives_[i] = isAcitive;
-			}
 		}
 	}
 
