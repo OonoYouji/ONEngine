@@ -12,8 +12,8 @@ public:
 	~Enemy() {}
 
 	void Initialize() override;
-	void Update()override;
-	void LastUpdate()override;
+	void Update() override;
+	void LastUpdate() override;
 
 	void Draw() override;
 	void FrontSpriteDraw()override;
@@ -35,6 +35,8 @@ public:
 
 	// 波の傾きに合わせて速度を回転
 	Vector3 AdjustVelocityToWave(Vector3 velocity, float A, float B, float x);
+
+	void EffectOccurrence(int effectNum);
 
 private:
 

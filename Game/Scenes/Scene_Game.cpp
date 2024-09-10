@@ -108,7 +108,10 @@ void Scene_Game::Initialize() {
 	(new GameCameraState)->Initialize();
 	(new GameResult)->Initialize();
 
-	
+	effect_ = new Effect();
+	effect_->Initialize();
+	effect_->SetGrainMode(1);
+
 }
 
 

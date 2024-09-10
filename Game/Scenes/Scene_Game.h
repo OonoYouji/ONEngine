@@ -14,6 +14,8 @@
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
 #include "EnemyManager.h"
+#include "Effect.h"
+
 
 /// ===================================================
 /// ゲームシーン
@@ -35,6 +37,8 @@ private:
 	Transform transform_{};
 
 	std::unique_ptr<Sprite> sprite_;
+
+	Effect* effect_;
 
 	SinWaveDrawer* sinWave_;
 	Enemy* enemy_;

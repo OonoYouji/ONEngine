@@ -228,6 +228,10 @@
     <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
       <Filter>Game\Objects\GameResult</Filter>
     </ClCompile>
+    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Grain.cpp" />
+    <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Grain2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -623,6 +627,10 @@
     <ClInclude Include="Game\Objects\GameResult\GameResult.h">
       <Filter>Game\Objects\GameResult</Filter>
     </ClInclude>
+    <ClInclude Include="Effect.h" />
+    <ClInclude Include="Grain.h" />
+    <ClInclude Include="Random.h" />
+    <ClInclude Include="Grain2D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

@@ -2,31 +2,36 @@
 #include <ImGuiManager.h>
 #include <Matrix4x4.h>
 
-Effect::Effect() {}
-
 Effect::~Effect() {
 
-	for (Grain* grain : grains_) {
-		delete grain;
+	for (auto& i : grains_)
+	{
+		i->Destory();
+	}
+	for (auto& i : grain2Ds_)
+	{
+		i->Destory();
 	}
 
+	grains_.clear();
+	grain2Ds_.clear();
 }
 
-void Effect::Initialize(const std::string& name) {
+void Effect::Initialize() {
 
-	emitterName_ = name;
+	emitterName_ = "name";
 	model_ = ModelManager::CreateCube();
 	transform_.Initialize();
-
+	drawLayerId = 1;
+	sprite_.reset(new Sprite());
+	sprite_->Initialize("uvChecker", "uvChecker.png");
+	sprite_->SetSize({ 20.0f,20.0f });
 }
 
 void Effect::Reset() {
 
-	for (Grain* grain : grains_) {
-		delete grain;
-	}
-
 	grains_.clear();
+	grain2Ds_.clear();
 
 }
 
@@ -34,50 +39,67 @@ void Effect::Update() {
 
 	grains_.remove_if([](Grain* grain) {
 		if (grain->IsDead()) {
-			delete grain;
+			grain->Destory();
+			return true;
+		}
+		return false;
+		});
+	grain2Ds_.remove_if([](Grain2D* grain) {
+		if (grain->IsDead()) {
+			grain->Destory();
 			return true;
 		}
 		return false;
 		});
 
-	previousPosition_ = transform_.position;
-
-	Setting();
+	
 	transform_.UpdateMatrix();
 
-	Create();
-
-	for (Grain* grain : grains_) {
-		grain->Update();
+	if (is3DMode_) {
+		Create();
+		previousPosition_ = transform_.position;
+	}
+	if (is2DMode_) {
+		Create2D();
+		previousPosition_ = position2D_;
 	}
 
 }
 
-void Effect::Draw() {
+void Effect::Draw() {}
 
-	for (Grain* grain : grains_) {
-		grain->Draw();
-	}
-
+void Effect::FrontSpriteDraw() {
 }
 
-void Effect::Setting() {
-#ifdef _DEBUG
-
-	ImGui::Begin(emitterName_.c_str());
+void Effect::Debug() {
 
 	if (ImGui::TreeNode("Base Variables")) {
 
 		ImGui::SeparatorText("Emitter Variable");
-		ImGui::DragFloat3("Emitter Position", &transform_.position.x, 0.01f);
-		ImGui::DragFloat3("Emitter Roate", &transform_.rotate.x, 0.01f);
+		if (is3DMode_)
+		{
+			ImGui::DragFloat3("Emitter Position", &transform_.position.x, 0.01f);
+			ImGui::DragFloat3("Emitter Roate", &transform_.rotate.x, 0.01f);
+		}
+		else if (is2DMode_)
+		{
+			ImGui::DragFloat3("Emitter Position", &position2D_.x, 0.5f);
+			ImGui::DragFloat3("Emitter Roate", &transform_.rotate.x, 0.01f);
+		}
 
 		ImGui::SeparatorText("Particle Variable");
 		ImGui::DragInt("LifeTime", &lifeTime_, 1.0f, 1, 180);
 		ImGui::DragFloat("Speed", &speed_, 0.01f);
 		ImGui::DragFloat3("GravityModifier", &gravity_.x, 0.01f);
 		ImGui::DragFloat3("Rotation", &rotation_.x, 0.01f);
-		ImGui::DragFloat3("Particle Size", &size_.x, 0.01f, 0.01f, 10.0f);
+		if (is3DMode_)
+		{
+			ImGui::DragFloat3("Particle Size", &size_.x, 0.1f, 2.0f, 20.0f);
+		}
+		else if (is2DMode_)
+		{
+			ImGui::DragFloat3("Particle Size", &size_.x, 0.1f, 2.0f, 20.0f);
+		}
 
 		ImGui::SeparatorText("RandomSet Variable");
 		ImGui::Checkbox("Random Particle Rotate", &isRotateRandom_); ImGui::SameLine();
@@ -90,10 +112,21 @@ void Effect::Setting() {
 			}
 		}
 		if (isSizeRandom) {
-			ImGui::DragFloat("Min Random Size", &minSizeRandom_, 0.01f, 0.01f, 2.0f);
-			ImGui::DragFloat("Max Random Size", &maxSizeRandom_, 0.01f, 0.01f, 2.0f);
-			if (minSizeRandom_ > maxSizeRandom_) {
-				minSizeRandom_ = maxSizeRandom_;
+			if (is3DMode_)
+			{
+				ImGui::DragFloat("Min Random Size", &minSizeRandom_, 0.01f, 0.01f, 2.0f);
+				ImGui::DragFloat("Max Random Size", &maxSizeRandom_, 0.01f, 0.01f, 2.0f);
+				if (minSizeRandom_ > maxSizeRandom_) {
+					minSizeRandom_ = maxSizeRandom_;
+				}
+			}
+			else if (is2DMode_)
+			{
+				ImGui::DragFloat("Min Random Size", &minSizeRandom_, 0.1f, 1.0f, 10.0f);
+				ImGui::DragFloat("Max Random Size", &maxSizeRandom_, 0.1f, 1.0f, 10.0f);
+				if (minSizeRandom_ > maxSizeRandom_) {
+					minSizeRandom_ = maxSizeRandom_;
+				}
 			}
 		}
 
@@ -158,8 +191,18 @@ void Effect::Setting() {
 			isCone_ = false;
 			isBox_ = true;
 
-			ImGui::DragFloat("Box Size X", &boxSizeX_, 0.01f, 0.0f, 2.0f);
-			ImGui::DragFloat("Box Size Z", &boxSizeZ_, 0.01f, 0.0f, 2.0f);
+
+			if (is3DMode_)
+			{
+				ImGui::DragFloat("Box Size X", &boxSizeX_, 0.01f, 0.0f, 2.0f);
+				ImGui::DragFloat("Box Size Z", &boxSizeZ_, 0.01f, 0.0f, 2.0f);
+			}
+			else if (is2DMode_)
+			{
+				ImGui::DragFloat("Box Size X", &boxSizeX_, 0.1f, 0.0f, 100.0f);
+				ImGui::DragFloat("Box Size Z", &boxSizeZ_, 0.1f, 0.0f, 100.0f);
+			}
+
 
 			xRandomLimite = 0.0f;
 			yRamdomLimite = 1.0f;
@@ -231,7 +274,16 @@ void Effect::Setting() {
 		if (isSizeChange_) {
 			ImGui::RadioButton("Reduction", &forceProvisional_, 0);
 			ImGui::RadioButton("Expand", &forceProvisional_, 1);
-			ImGui::DragFloat3("EndSize", &endSize_.x, 0.01f, 0.01f, 10.0f);
+
+			if (is3DMode_)
+			{
+				ImGui::DragFloat3("EndSize", &endSize_.x, 0.01f, 0.01f, 10.0f);
+			}
+			else if (is2DMode_)
+			{
+				ImGui::DragFloat3("EndSize", &endSize_.x, 0.1f, 1.0f, 100.0f);
+			}
+
 			if (forceProvisional_ == 0) {
 				isReduction_ = true;
 				isExpand_ = false;
@@ -244,12 +296,8 @@ void Effect::Setting() {
 
 		ImGui::TreePop();
 	}
-
-
-	ImGui::End();
-
-#endif // _DEBUG
 }
+
 
 void Effect::Create() {
 
@@ -296,7 +344,8 @@ void Effect::Create() {
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
 				Grain* newGrain = new Grain();
-				newGrain->Initialze(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+				newGrain->Initialize();
+				newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 				grains_.push_back(newGrain);
 				currentRateTime = rateTime_;
@@ -326,7 +375,8 @@ void Effect::Create() {
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
 				Grain* newGrain = new Grain();
-				newGrain->Initialze(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+				newGrain->Initialize();
+				newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 				grains_.push_back(newGrain);
 				accumulationDistance = 0.0f;
@@ -343,4 +393,124 @@ void Effect::Create() {
 		currentRateTime = rateTime_;
 	}
 
+}
+
+void Effect::Create2D() {
+
+	Vector3 newEmitterRotate = { 0.0f,0.0f,transform_.rotate.z };
+	Matrix4x4 rotateEmitter = Matrix4x4::MakeRotate(newEmitterRotate);
+
+
+	if (isRotateRandom_) {
+		rotation_ = Random::Vec3({ minRotateRandom_,minRotateRandom_ ,minRotateRandom_ }, { maxRotateRandom_,maxRotateRandom_ ,maxRotateRandom_ });
+	}
+	if (isSizeRandom) {
+		float randSize = Random::Float(minSizeRandom_, maxSizeRandom_);
+		size_ = { randSize,randSize,randSize };
+	}
+
+
+
+	if (isOverTime_) {
+
+		float particlesStep = static_cast<float>(appear_) / rateTime_;
+		int particlesEmit = static_cast<int>(particlesStep * (rateTime_ - currentRateTime));
+
+		Vector3 newPos = position2D_;
+
+		if (particlesEmit > 0) {
+			for (int i = 0; i < particlesEmit; ++i) {
+				if (isBox_) {
+					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX_, boxSizeX_), 0.0f, Random::Float(-boxSizeZ_, boxSizeZ_) }, rotateEmitter);
+				}
+				Vector3 newVelo;
+				if (!isCone_) {
+					newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+				}
+				else {
+					Vector3 randomAngle = { Random::Float(-coneAngle_, coneAngle_) ,0.0f,Random::Float(-coneAngle_, coneAngle_) };
+					Matrix4x4 randomRotate = Matrix4x4::MakeRotate(randomAngle);
+
+					Vector3 randomDirection = Matrix4x4::TransformNormal({ 0.0f,1.0f,0.0f }, randomRotate);
+					newVelo = randomDirection;
+				}
+				if (isBox_) {
+					newVelo.y = 1.0f;
+				}
+				newVelo = newVelo.Normalize() * speed_;
+				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
+
+				Grain2D* newGrain = new Grain2D();
+				newGrain->Initialize();
+				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+				grain2Ds_.push_back(newGrain);
+				currentRateTime = rateTime_;
+			}
+		}
+	}
+	else if (isOverDistance_) {
+
+		Vector3 currentPosition = position2D_;
+		float particleDistanceRate = 10.0f / rateDistance_;
+		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
+		accumulationDistance += distanceMoved;
+		int particlesEmit = static_cast<int>(accumulationDistance / particleDistanceRate);
+
+		Vector3 newPos = position2D_;
+
+		if (particlesEmit > 0) {
+			for (int i = 0; i < particlesEmit; ++i) {
+				if (isBox_) {
+					newPos += Matrix4x4::TransformNormal({ Random::Float(-boxSizeX_, boxSizeX_), 0.0f, Random::Float(-boxSizeZ_, boxSizeZ_) }, rotateEmitter);
+				}
+				Vector3 newVelo = { Random::Float(-xRandomLimite,xRandomLimite),Random::Float(-yRamdomLimite,yRamdomLimite),Random::Float(-zRamdomLimite,zRamdomLimite) };
+				if (isCone_ || isBox_) {
+					newVelo.y = 1.0f;
+				}
+				newVelo = newVelo.Normalize() * speed_;
+				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
+
+				Grain2D* newGrain = new Grain2D();
+				newGrain->Initialize();
+				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+				grain2Ds_.push_back(newGrain);
+				currentRateTime = rateTime_;
+				accumulationDistance = 0.0f;
+			}
+		}
+	}
+
+
+
+	if (currentRateTime > 0) {
+		currentRateTime--;
+	}
+	else if (currentRateTime == 0) {
+		currentRateTime = rateTime_;
+	}
+
+}
+
+void Effect::SetGrainMode(int type)
+{
+
+	if (type == 0)
+	{
+		is3DMode_ = true;
+		is2DMode_ = false;
+	}
+	else if (type == 1)
+	{
+		is3DMode_ = false;
+		is2DMode_ = true;
+	}
+
+}
+
+
+void Effect::SetPosition(const Vector2& pos)
+{
+	position2D_ = { pos,0.0f };
 }

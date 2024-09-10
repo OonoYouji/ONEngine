@@ -3,40 +3,51 @@
 #include <list>
 #include <string>
 
-
+#include <GameObjectManager.h>
 #include <ModelManager.h>
+#include <Sprite.h>
 //#include <Random.h>
-#include "Random/Random.h"
+#include "Random.h"
 #include <Transform.h>
-#include "Game/Objects/Effect/Grain.h"
+#include "Grain.h"
+#include "Grain2D.h"
 
 
 
-class Effect {
+class Effect : public BaseGameObject{
 public:
-	Effect();
+	Effect() { CreateTag(this); }
 	~Effect();
 
-	void Initialize(const std::string& name);
+	void Initialize()override;
 
 	void Reset();
 
-	void Update();
+	void Update()override;
 
-	void Draw();
+	void Draw()override;
+	void FrontSpriteDraw()override;
 
-	void Setting();
+	void Debug()override;
 
 	void Create();
+	void Create2D();
 
+	void SetGrainMode(int type);
 
+	void SetPosition(const Vector2& pos);
 
 private:
 
+	bool is3DMode_ = false;
+	bool is2DMode_ = true;
+
+	std::unique_ptr<Sprite> sprite_;
 	std::string emitterName_ = "a";
 	Model* model_ = nullptr;
 
 	std::list<Grain*> grains_;
+	std::list<Grain2D*> grain2Ds_;
 
 
 	Transform transform_{};
@@ -45,6 +56,7 @@ private:
 
 	float speed_ = 0.05f;
 
+	Vector3 position2D_ = { 0.0f,0.0f,0.0f };
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };// 後で、rotateSpeedも追加する
 
 	Vector3 size_ = { 0.1f,0.1f,0.1f };

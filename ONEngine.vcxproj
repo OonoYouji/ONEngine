@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
     <ClCompile Include="Externals\imgui\imgui_demo.cpp" />
@@ -36,6 +37,8 @@
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
+    <ClCompile Include="Grain.cpp" />
+    <ClCompile Include="Grain2D.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
@@ -88,8 +91,10 @@
     <ClCompile Include="ONEngine\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
     <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
+    <ClCompile Include="Random.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Externals\imgui\imconfig.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />
@@ -116,6 +121,8 @@
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
+    <ClInclude Include="Grain.h" />
+    <ClInclude Include="Grain2D.h" />
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
     <ClInclude Include="ONEngine\Audio\AudioSource.h" />
@@ -167,6 +174,7 @@
     <ClInclude Include="ONEngine\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
     <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
+    <ClInclude Include="Random.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">

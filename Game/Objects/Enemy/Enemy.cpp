@@ -265,3 +265,9 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 	// 速度を回転して波の接線方向に合わせる
 	return RotateVelocity(velocity, tangentAngle);
 }
+
+void Enemy::EffectOccurrence(int effectNum)
+{
+
+
+}
