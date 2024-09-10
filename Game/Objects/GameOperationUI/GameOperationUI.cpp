@@ -6,6 +6,8 @@
 void GameOperationUI::Initialize() {
 	drawLayerId = 1;
 	paper_ = ModelManager::Load("paper");
+	paperMaterial_.CreateMaterial("sousa");
+
 	binder_ = ModelManager::Load("binder");
 
 	SetPosition({ -5.3f, 0.6f, 1.0f });
@@ -13,25 +15,12 @@ void GameOperationUI::Initialize() {
 	SetScale(Vec3::kOne * 0.7f);
 	UpdateMatrix();
 
-	audioSource_ = new AudioSource();
- 	audioSource_->SetAudioClip("EnemyDeath.wav");
 }
 
 void GameOperationUI::Update() {
-	if(Input::TriggerKey(KeyCode::Space)) {
-		audioSource_->StopAudioAll();
-	}
-
-	if(Input::TriggerKey(KeyCode::P)) {
-		audioSource_->PlayAudio();
-	}
-
-	if(Input::TriggerKey(KeyCode::L)) {
-		audioSource_->isLoop = true;
-	}
 }
 
 void GameOperationUI::Draw() {
-	paper_->Draw(&transform_);
+	paper_->Draw(&transform_, &paperMaterial_);
 	binder_->Draw(&transform_);
 }

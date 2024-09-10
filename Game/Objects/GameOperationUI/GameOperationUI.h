@@ -18,7 +18,5 @@ public:
 private:
 	Model* paper_ = nullptr;
 	Model* binder_ = nullptr;
-
-	AudioSource* audioSource_;
-	
+	Material paperMaterial_;
 };
