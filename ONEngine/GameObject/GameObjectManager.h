@@ -40,6 +40,8 @@ public:
 	
 	static std::string CreateName(const BaseGameObject* const object);
 
+	static bool IsAliveObject(BaseGameObject* object);
+
 
 	/// <summary>
 	/// 初期化

@@ -6,20 +6,17 @@
 #include <SceneManager.h>
 #include <Input.h>
 
-#include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
-#include "Shake/Shake.h"
 #include "Player/PlayerHP.h"
-#include "GameCameraState/GameCameraState.h"
 #include "GameOperationUI/GameOperationUI.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyManager.h"
-#include "GamTimer/GameTimer.h"
+#include "GameTimer/GameTimer.h"
 #include "Background/Background.h"
-#include "GameTitle/GameTitle.h"
+#include "GameManager/GameManager.h"
 
 
 
@@ -96,6 +93,9 @@ void Scene_Game::Initialize() {
 	gameTimer->Initialize();
 	gameTimer->SetMaxTime(10.0f);
 
+	GameManager* gameManager = new GameManager;
+	gameManager->Initialize();
+	enemyManager_->SetGameManager(gameManager);
 
 }
 

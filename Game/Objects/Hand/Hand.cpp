@@ -40,7 +40,7 @@ void HandFinger::Initialize() {
 	drawLayerId = 1;
 	model_ = ModelManager::Load("HandFinger");
 	speed_ = -8.0f;
-	amplitude_ = 0.05f;
+	amplitude_ = 0.5f;
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 	assert(pSinWaveDrawer_ != nullptr);
@@ -76,7 +76,7 @@ void HandThumb::Initialize() {
 	drawLayerId = 1;
 	model_ = ModelManager::Load("HandThumb");
 	speed_ = -8.0f;
-	amplitude_ = -0.05f;
+	amplitude_ = -0.5f;
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 	assert(pSinWaveDrawer_ != nullptr);

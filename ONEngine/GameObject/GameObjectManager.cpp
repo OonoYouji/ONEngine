@@ -188,6 +188,14 @@ std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::strin
 			result.push_back(object.get());
 		}
 	}
+
+	for(const auto& object : instance->addObjectList_) {
+		if(object->GetTag() == tag) {
+			result.push_back(object);
+		}
+	}
+
+
 	return result;
 }
 
@@ -231,6 +239,25 @@ std::string GameObjectManager::CreateName(const BaseGameObject* const object) {
 	std::string name = typeid(*object).name();
 	name = name.substr(std::string("class ").length());
 	return name;
+}
+
+bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
+	GameObjectManager* instance = GetInstance();
+
+	auto CheckAlive = [&object](const std::unique_ptr<BaseGameObject>& obj) { return obj.get() == object; };
+	auto itr = std::find_if(instance->objects_.begin(), instance->objects_.end(), CheckAlive);
+
+	if(itr != instance->objects_.end()) {
+		return true;
+	} 
+	
+	auto CheckAlivePtr = [&object](const BaseGameObject* obj) { return obj == object; };
+	auto addObjItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), CheckAlivePtr);
+	if(addObjItr != instance->addObjectList_.end()) {
+		return true;
+	} 
+
+	return false;
 }
 
 
