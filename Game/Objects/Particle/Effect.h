@@ -54,6 +54,9 @@ public:
 
 private:
 
+	int maxGrainCount = 30;
+	int currentGrainCount = 0;
+
 	bool is3DMode_ = false;
 	bool is2DMode_ = true;
 
