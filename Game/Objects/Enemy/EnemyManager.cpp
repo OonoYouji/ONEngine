@@ -12,17 +12,7 @@ void EnemyManager::Initialize()
 {
 }
 
-void EnemyManager::Update()
-{
-
-	if (Input::GetInsatnce()->TriggerPadButton(PadCode::RightShoulder))
-	{
-		Enemy* newEnemy = new Enemy();
-		newEnemy->SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
-		newEnemy->Initialize();
-	}
-
-}
+void EnemyManager::Update() {}
 
 void EnemyManager::Debug()
 {
