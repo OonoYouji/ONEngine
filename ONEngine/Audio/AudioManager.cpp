@@ -73,25 +73,31 @@ void AudioManager::Update() {
 
 
 void AudioManager::Load(const std::string& filePath) {
-
+	AudioManager* instance = GetInstance();
+	
 	/// mapに存在するか確認
-	if(clips_.find(filePath) != clips_.end()) {
+	if(instance->clips_.find(filePath) != instance->clips_.end()) {
 		assert(false);
 		return;
 	}
 
 	/// ファイルが存在するか確認
-	std::ifstream file(kDirectoryPath_ + filePath);
+	std::ifstream file(instance->kDirectoryPath_ + filePath);
 	if(!file.good()) {
 		assert(false);
 		return;
 	}
 
-	clips_[filePath] = LoadWave(kDirectoryPath_ + filePath);
+	instance->clips_[filePath] = 
+		instance->LoadWave(instance->kDirectoryPath_ + filePath);
 }
 
 
 AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
+	if(clips_.find(filePath) == clips_.end()) {
+		Load(filePath);
+	}
+
 	return &clips_.at(filePath);
 }
 

@@ -54,7 +54,7 @@ public:
 	/// 音声データの読み込み
 	/// </summary>
 	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
-	void Load(const std::string& filePath);
+	static void Load(const std::string& filePath);
 
 
 	void AddAudioSource(AudioSource* source);

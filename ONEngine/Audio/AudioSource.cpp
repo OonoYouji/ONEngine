@@ -69,14 +69,14 @@ void AudioSource::PlayAudio() {
 
 void AudioSource::StopAudio() {
 	if(sources_.empty()) { return; }
-	Element& elem = sources_.back();
-	elem.pSourceVoice->Stop();
-	elem.pSourceVoice->FlushSourceBuffers();
-	elem.pSourceVoice->DestroyVoice();
+	Element* elem = &sources_.back();
+	elem->pSourceVoice->Stop();
+	elem->pSourceVoice->FlushSourceBuffers();
+	elem->pSourceVoice->DestroyVoice();
 	sources_.pop_back();
 }
 
-void AudioSource::StopAudioALL() {
+void AudioSource::StopAudioAll() {
 	if(sources_.empty()) { return; }
 	for(auto& source : sources_) {
 		source.pSourceVoice->Stop();
@@ -90,3 +90,4 @@ void AudioSource::StopAudioALL() {
 void AudioSource::SetAudioClip(const std::string& filePath) {
 	clip_ = AudioManager::GetInstance()->GetAudioClip(filePath);
 }
+

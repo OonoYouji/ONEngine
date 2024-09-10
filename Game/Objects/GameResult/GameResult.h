@@ -1,6 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #include <GameObjectManager.h>
+#include <AudioManager.h>
 
 class GameResult final : public BaseGameObject {
 public:
@@ -15,4 +18,7 @@ public:
 private:
 	Model* paper_ = nullptr;
 	Model* binder_ = nullptr;
+
+	AudioSource* audioSource_;
+	
 };

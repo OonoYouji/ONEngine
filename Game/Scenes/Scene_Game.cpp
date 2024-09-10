@@ -4,6 +4,7 @@
 #include <ModelManager.h>
 #include <CameraManager.h>
 #include <SceneManager.h>
+#include <Audio/AudioManager.h>
 
 #include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
@@ -96,6 +97,8 @@ void Scene_Game::Initialize() {
 	(new Background)->Initialize();
 	(new GameCameraState)->Initialize();
 	(new GameResult)->Initialize();
+
+	
 
 }
 
