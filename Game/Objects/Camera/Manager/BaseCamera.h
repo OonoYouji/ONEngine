@@ -42,6 +42,7 @@ public:
 public:
 
 	void BaseInitialize();
+	void BaseUpdate();
 
 	void UpdateMatView();
 	void UpdateMatProjection();

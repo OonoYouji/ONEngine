@@ -58,6 +58,13 @@ void BaseCamera::BaseInitialize() {
 	SetParent(shake_);
 }
 
+void BaseCamera::BaseUpdate() {
+	UpdateMatrix();
+	UpdateMatView();
+	UpdateMatProjection();
+	Transfer();
+}
+
 void BaseCamera::UpdateMatView() {
 	matView_ = transform_.matTransform.Inverse();
 }

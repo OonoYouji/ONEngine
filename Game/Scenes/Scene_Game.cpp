@@ -74,7 +74,7 @@ void Scene_Game::Initialize() {
 	/// 心臓
 	Heart* heart = new Heart;
 	heart->Initialize();
-	heart->SetPosition({ -3.1f, 0.05f, -4.0f });
+	heart->SetPosition({ -4.45f, -1.0f, -4.1f });
 	heart->SetRotate({ 0.0f, -1.0f, 0.45f });
 	heart->SetScale(Vec3::kOne * 0.7f);
 	heart->UpdateMatrix();
@@ -82,7 +82,7 @@ void Scene_Game::Initialize() {
 	/// 手
 	Hand* hand = new Hand;
 	hand->Initialize();
-	hand->SetPosition({ -3.4f, 0.1f, -3.9f });
+	hand->SetPosition({ -4.75f, -1.1f, -3.9f });
 	hand->SetRotate({ 0.0f, -0.5f, 0.0f });
 	hand->SetScale(Vec3::kOne * 0.5f);
 	hand->UpdateMatrix();

@@ -96,16 +96,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	monitorCamera->Initialize();
 	monitorCamera->SetPosition({ -2.221f, 3.245f, -27.257f });
 	monitorCamera->SetRotate({ 0.0f, 0.215f, 0.0f });
-	monitorCamera->UpdateMatrix();
+	monitorCamera->BaseUpdate();
 	
 	GameCamera* gameCamera = new GameCamera("GameCamera");
 	gameCamera->Initialize();
-	gameCamera->SetPosition({ 1.8f, 0.87f, -12.7f });
-	gameCamera->SetRotate({ 0.066f, -0.258f, 0.0f });
+	gameCamera->SetPosition({ -2.15f, 1.535f, -16.0f });
+	gameCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	gameCamera->BaseUpdate();
 	cameraManager->SetMainCamera(gameCamera);
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
+	debugCamera->SetPosition({ -2.15f, 1.535f, -16.0f });
+	debugCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	debugCamera->BaseUpdate();
 
 	/// light の初期化
 	DirectionalLight* directionalLight = new DirectionalLight();
