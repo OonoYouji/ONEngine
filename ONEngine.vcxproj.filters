@@ -242,6 +242,9 @@
     <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp">
       <Filter>Game\Objects\GameTimer</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\background\Background.cpp">
+      <Filter>Game\Objects\Background</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -414,6 +417,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameTimer">
       <UniqueIdentifier>{14be41d2-f7f5-44d5-899d-334826331be7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Background">
+      <UniqueIdentifier>{bf7b1434-7a5b-4ef5-bcc1-ec898d66c858}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -659,6 +665,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GamTimer\GameTimer.h">
       <Filter>Game\Objects\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\background\Background.h">
+      <Filter>Game\Objects\Background</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
