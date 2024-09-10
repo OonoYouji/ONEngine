@@ -52,7 +52,7 @@ void Effect::Update() {
 		return false;
 		});
 
-	
+
 	transform_.UpdateMatrix();
 
 	if (isStart_) {
@@ -411,6 +411,15 @@ void Effect::Create2D() {
 		size_ = { randSize,randSize,randSize };
 	}
 
+	if (isNormal_) {
+		speedType = ShiftSpeedType::kNormal;
+	}
+	if (isDeceleration_) {
+		speedType = ShiftSpeedType::kDeceleration;
+	}
+	if (isAccele_) {
+		speedType = ShiftSpeedType::kAccele;
+	}
 
 
 	if (isOverTime_) {
@@ -444,7 +453,7 @@ void Effect::Create2D() {
 
 				Grain2D* newGrain = new Grain2D();
 				newGrain->Initialize();
-				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, speedType,
 					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 				grain2Ds_.push_back(newGrain);
 				currentRateTime = rateTime_;
