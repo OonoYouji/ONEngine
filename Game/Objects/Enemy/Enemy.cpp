@@ -138,38 +138,33 @@ void Enemy::Update()
 
 		if (!isfly)
 		{
-			if (true)
+
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 			{
-				if (true)
+				acceleTime += 0.02f;
+				float t = amplitude / maxAcceleAmp;
+				if (t >= 1.0f)
 				{
-					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
-					{
-						float t = amplitude / maxAcceleAmp;
-						if (t >= 1.0f)
-						{
-							t = 1.0f;
-						}
-						xAccel += addAccel * t;
-					}
+					t = 1.0f;
 				}
+				xAccel += (addAccel*(acceleTime*acceleTime))*t;
 			}
-			if (true)
+
+
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 			{
-				if (true)
+				acceleTime = 0.3f;
+				float t = amplitude / maxAcceleAmp;
+				if (t >= 1.0f)
 				{
-					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-					{
-						float t = amplitude / maxAcceleAmp;
-						if (t >= 1.0f)
-						{
-							t = 1.0f;
-						}
-						xAccel -= addDecel * t;
-					}
+					t = 1.0f;
 				}
+				xAccel -= addDecel * t;
 			}
+
+
 		}
 
 

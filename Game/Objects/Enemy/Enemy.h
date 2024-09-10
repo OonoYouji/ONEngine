@@ -51,8 +51,9 @@ private:
 	Vector3 beforPos = pos;
 
 	float xAccel = 0.0f;
-	float addAccel = 0.02f;
+	float addAccel = 0.04f;
 	float addDecel = 0.005f;
+	float acceleTime = 0.1f;
 
 	bool isMaybeJump = true;
 	bool isJump = false;
