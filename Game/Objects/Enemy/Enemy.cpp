@@ -180,14 +180,14 @@ void Enemy::Update()
 
 		if (pos.x < 0)
 		{
-			if (roopCount >= 0)
+			if (roopCount == 0)
 			{
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
-			else if (roopCount == 100)
+			else if (roopCount == 1)
 			{
 				isHeartBreak = true;
 				isDead = true;
