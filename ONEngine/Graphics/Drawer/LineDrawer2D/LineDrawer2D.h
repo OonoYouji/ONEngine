@@ -40,6 +40,8 @@ private:
 
 private:
 
+	static const int kMaxInstanceCount_;
+
 	ComPtr<ID3D12Resource> vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
 

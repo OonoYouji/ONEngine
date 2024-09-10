@@ -19,22 +19,27 @@
 #include "Enemy/EnemyManager.h"
 
 
-class Background : BaseGameObject {
+class Background : public BaseGameObject {
 public:
 	Background() { CreateTag(this); }
 	~Background() {}
 	void Initialize() override {
 		sprite_.reset(new Sprite);
-		sprite_->Initialize("uvChecker", "uvChecker.png");
-		sprite_->SetPos({ 640, 360,0 });
-		sprite_->SetSize({ 1280, 720 });
+		sprite_->Initialize("white2x2", "white2x2s.png");
+		transform_.position = Vec3(640, 360, 0);
+		transform_.scale = Vec3(1280, 720, 1);
+		sprite_->SetPos(GetPosition());
+		sprite_->SetSize({ transform_.scale.x, transform_.scale.y });
 		sprite_->SetColor({ 0,0,0,1 });
 	}
 	void Update() override {
+		UpdateMatrix();
+		sprite_->SetPos(GetPosition());
+		sprite_->SetSize({ transform_.scale.x, transform_.scale.y });
 		sprite_->SetColor(color);
 		sprite_->SetAngle(angle_);
 	}
-	void FrontSpriteDraw() override {
+	void BackSpriteDraw() override {
 		sprite_->Draw();
 	}
 	void Debug() override {
@@ -74,7 +79,7 @@ void Scene_Game::Initialize() {
 	/// 心臓
 	Heart* heart = new Heart;
 	heart->Initialize();
-	heart->SetPosition({ -4.45f, -1.0f, -4.1f });
+	heart->SetPosition({ -3.8f, -0.8f, -4.1f });
 	heart->SetRotate({ 0.0f, -1.0f, 0.45f });
 	heart->SetScale(Vec3::kOne * 0.7f);
 	heart->UpdateMatrix();
@@ -82,7 +87,7 @@ void Scene_Game::Initialize() {
 	/// 手
 	Hand* hand = new Hand;
 	hand->Initialize();
-	hand->SetPosition({ -4.75f, -1.1f, -3.9f });
+	hand->SetPosition({ -4.05f, -0.95f, -3.9f });
 	hand->SetRotate({ 0.0f, -0.5f, 0.0f });
 	hand->SetScale(Vec3::kOne * 0.5f);
 	hand->UpdateMatrix();
@@ -94,11 +99,15 @@ void Scene_Game::Initialize() {
 	gameMonitor->isDrawActive = true;
 
 
+	Background* gameBG = new Background();
+	gameBG->Initialize();
+	gameBG->drawLayerId = 1;
+
 	(new Background)->Initialize();
 	(new GameCameraState)->Initialize();
 	(new GameResult)->Initialize();
 
-	
+
 
 }
 
@@ -107,7 +116,7 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
+
 }
 
 

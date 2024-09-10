@@ -8,8 +8,9 @@ void GameResult::Initialize() {
 	paper_ = ModelManager::Load("paper");
 	binder_ = ModelManager::Load("binder");
 
-	SetPosition({ -5.3f, 1.45f, 1.0f });
+	SetPosition({ -5.3f, 0.6f, 1.0f });
 	SetRotate({ -1.15f, -0.4f, 0.0f });
+	SetScale(Vec3::kOne * 0.7f);
 	UpdateMatrix();
 
 	audioSource_ = new AudioSource();

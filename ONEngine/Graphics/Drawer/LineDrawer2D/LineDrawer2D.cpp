@@ -2,7 +2,9 @@
 #include <DxCommand.h>
 #include <DxResourceCreator.h>
 #include <WinApp.h>
+#include <cassert>
 
+const int LineDrawer2D::kMaxInstanceCount_ = 1024;
 
 LineDrawer2D* LineDrawer2D::GetInstance() {
 	static LineDrawer2D instance;
@@ -31,6 +33,7 @@ void LineDrawer2D::Initialize() {
 
 	pipeline_->Initialize();
 
+	CreateVertexBuffer(kMaxInstanceCount_);
 }
 
 void LineDrawer2D::Finalize() {
@@ -45,11 +48,17 @@ void LineDrawer2D::PreDraw() {
 
 void LineDrawer2D::PostDraw() {
 
+	assert(vertices_.size() < kMaxInstanceCount_);
+	
 	if(vertices_.empty()) { return; }
+
+	LineVertexDate* vertexDate = nullptr;
+	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDate));
+	std::memcpy(vertexDate, vertices_.data(), sizeof(LineVertexDate) * vertices_.size());
+
+
 	ID3D12GraphicsCommandList* cList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	pipeline_->SetPipelineState();
-
-	CreateVertexBuffer(vertices_.size());
 
 	cList->IASetVertexBuffers(0, 1, &vbv_);
 	cList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
@@ -72,8 +81,5 @@ void LineDrawer2D::CreateVertexBuffer(size_t vertexCount) {
 	vbv_.SizeInBytes = static_cast<UINT>(sizeof(LineVertexDate) * vertexCount);
 	vbv_.StrideInBytes = static_cast<UINT>(sizeof(LineVertexDate));
 
-	LineVertexDate* vertexDate = nullptr;
-	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexDate));
-	std::memcpy(vertexDate, vertices_.data(), sizeof(LineVertexDate) * vertexCount);
-
+	
 }
