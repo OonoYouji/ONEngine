@@ -19,7 +19,7 @@
 #include "Enemy/EnemyManager.h"
 #include "GamTimer/GameTimer.h"
 #include "Background/Background.h"
-
+#include "GameTitle/GameTitle.h"
 
 
 
@@ -28,6 +28,19 @@
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
+
+
+	/// ===================================================
+	/// タイトルシーンのオブジェクトを初期化
+	/// ===================================================
+	
+	(new GameTitle)->Initialize();
+	
+	/// ===================================================
+	/// ゲームシーンのオブジェクトを初期化
+	/// ===================================================
+
+
 	/// 波
 	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
@@ -83,7 +96,6 @@ void Scene_Game::Initialize() {
 	GameTimer* gameTimer = new GameTimer;
 	gameTimer->Initialize();
 	gameTimer->SetMaxTime(10.0f);
-
 
 
 }

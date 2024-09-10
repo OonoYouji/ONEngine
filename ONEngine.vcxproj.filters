@@ -245,6 +245,9 @@
     <ClCompile Include="Game\Objects\background\Background.cpp">
       <Filter>Game\Objects\Background</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameTitle\GameTitle.cpp">
+      <Filter>Game\Objects\GameTitle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -420,6 +423,9 @@
     </Filter>
     <Filter Include="Game\Objects\Background">
       <UniqueIdentifier>{bf7b1434-7a5b-4ef5-bcc1-ec898d66c858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameTitle">
+      <UniqueIdentifier>{425ff8b4-47e6-498e-aaae-54176815e7ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -668,6 +674,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\background\Background.h">
       <Filter>Game\Objects\Background</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameTitle\GameTitle.h">
+      <Filter>Game\Objects\GameTitle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

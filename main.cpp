@@ -117,8 +117,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLight->Initialize();
 	modelManager->SetDirectionalLight(directionalLight);
 
-	/// scene manager の初期化
-	sceneManager->Initialize(SCENE_ID::GAME);
+	///////////////////////////////////////////////////////////////////////
+	/// scene manager の初期化	: 初期化時のシーンをここで決定
+	///////////////////////////////////////////////////////////////////////
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
