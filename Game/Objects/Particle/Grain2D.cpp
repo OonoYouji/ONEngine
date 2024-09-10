@@ -13,7 +13,7 @@ void Grain2D::Init(const Vector3& position, const Vector3& rotate, const Vector3
 	const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType) {
 
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
+	sprite_->Initialize("particle", "particle.png");
 	sprite_->SetSize({ 20.0f,20.0f });
 
 	position_ = position;

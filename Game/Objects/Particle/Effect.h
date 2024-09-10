@@ -38,7 +38,19 @@ public:
 
 	void SetGrainMode(int type);
 
+	void SetOverType(int type);
+	void OverTimeSetting(int rateTime, int appear);
+	void OverDistanceSetting(float rateDistance);
+
+	void ShapeType(int type);
+
+	void ShiftingSpeedType(int type);
+	void ShiftSpeedSetting(float shiftSpeed);
+
+	void SizeChangeSetting(bool sizeChange, bool isReduction, bool isExpand, Vector3 endSize);
+
 	void SetPos(const Vector2& pos);
+	void SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 
 private:
 
@@ -92,7 +104,7 @@ private:
 	int rateTime_ = 4;
 	int currentRateTime = rateTime_;
 	int appear_ = 3;
-	float rateDistance_ = 4.0f;
+	float rateDistance_ = 1.0f;
 	float accumulationDistance = 0.0f;
 	Vector3 previousPosition_;
 
@@ -111,7 +123,7 @@ private:
 	float zRamdomLimite = 0.0f;
 
 	float coneLenght_ = 1.0f;
-	float coneAngle_ = 2.0f;
+	float coneAngle_ = 1.5f;
 	float boxSizeX_ = 0.4f;
 	float boxSizeZ_ = 0.4f;
 

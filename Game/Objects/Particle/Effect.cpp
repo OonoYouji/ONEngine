@@ -521,8 +521,107 @@ void Effect::SetGrainMode(int type)
 
 }
 
+void Effect::SetOverType(int type)
+{
+	if (type == 0)
+	{
+		isOverTime_ = true;
+		isOverDistance_ = false;
+		provisional_ = 0;
+	}
+	else if (type == 1) {
+		isOverDistance_ = true;
+		isOverTime_ = false;
+		provisional_ = 1;
+	}
+}
+
+void Effect::OverTimeSetting(int rateTime, int appear)
+{
+	rateTime_ = rateTime;
+	appear_ = appear;
+}
+
+void Effect::OverDistanceSetting(float rateDistance)
+{
+	rateDistance_ = rateDistance;
+}
+
+void Effect::ShapeType(int type)
+{
+	if (type == 0)
+	{
+		isCircle_ = true;
+		isCone_ = false;
+		isBox_ = false;
+		secondProvisional_ = 0;
+	}
+	else if (type == 1) {
+		isCircle_ = false;
+		isCone_ = true;
+		isBox_ = false;
+		secondProvisional_ = 1;
+	}
+	else if (type == 2) {
+		isCircle_ = false;
+		isCone_ = false;
+		isBox_ = true;
+		secondProvisional_ = 2;
+	}
+}
+
+void Effect::ShiftingSpeedType(int type)
+{
+	if (type == 0)
+	{
+		isNormal_ = true;
+		isDeceleration_ = false;
+		isAccele_ = false;
+		thirdProvisional_ = 0;
+	}
+	else if (type == 1)
+	{
+		isNormal_ = false;
+		isDeceleration_ = true;
+		isAccele_ = false;
+		thirdProvisional_ = 1;
+	}
+	else if (type == 2)
+	{
+		isNormal_ = false;
+		isDeceleration_ = false;
+		isAccele_ = true;
+		thirdProvisional_ = 2;
+	}
+}
+
+void Effect::ShiftSpeedSetting(float shiftSpeed)
+{
+	shiftingSpeed_ = shiftSpeed;
+}
+
+void Effect::SizeChangeSetting(bool sizeChange, bool isReduction, bool isExpand, Vector3 endSize)
+{
+	isSizeChange_ = sizeChange;
+	isReduction_ = isReduction;
+	isExpand_ = isExpand;
+	endSize_ = endSize;
+}
+
 
 void Effect::SetPos(const Vector2& pos)
 {
 	position2D_ = { pos,0.0f };
+}
+
+void Effect::SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
+{
+	gravity_ = gravity;
+	speed_ = speed;
+	size_ = size;
+	lifeTime_ = lifeTime;
+	isSizeRandom = sizeRandom;
+	minSizeRandom_ = minSizeRandom_;
+	maxSizeRandom_ = maxSizeRandom;
+
 }

@@ -81,6 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("paper", "paper.png");
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
+	textureManager->Load("particle", "particle.png");
 
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());

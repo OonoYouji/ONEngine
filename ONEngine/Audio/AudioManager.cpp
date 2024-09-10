@@ -144,7 +144,8 @@ AudioClip AudioManager::LoadWave(const std::string& filePath) {
 	if(strncmp(format.chunk.id, "fmt ", 4) != 0) { assert(false); }
 
 	///- チャンク本体の読み込み
-	assert(format.chunk.size <= sizeof(format.fmt));
+	size_t formatSize = sizeof(format.fmt);
+	assert(format.chunk.size <= formatSize);
 	file.read((char*)&format.fmt, format.chunk.size);
 
 	ChunkHeader data;
