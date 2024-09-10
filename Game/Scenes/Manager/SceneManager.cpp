@@ -15,7 +15,8 @@
 
 #include <BaseScene.h>
 #include <Scene_Game.h>
-
+#include <Scene_Title.h>
+#include <Scene_Result.h>
 
 
 /// ===================================================
@@ -32,7 +33,17 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 void SceneManager::Initialize(SCENE_ID sceneId) {
 	currentId_ = sceneId;
-	scene_.reset(new Scene_Game());
+	switch(currentId_) {
+	case TITLE:
+		scene_.reset(new Scene_Title());
+		break;
+	case GAME:
+		scene_.reset(new Scene_Game());
+		break;
+	case RESULT:
+		scene_.reset(new Scene_Result());
+		break;
+	}
 	scene_->Initialize();
 
 	pGameObjectManager_ = GameObjectManager::GetInstance();

@@ -63,7 +63,7 @@ void Sprite::Draw(uint32_t zOrder) {
 void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 	
 	*matTransformData_ =
-		Mat4::MakeScale(Vec3(size_.x, size_.x, 1.0f)) *
+		Mat4::MakeScale(Vec3(size_.x, size_.y, 1.0f)) *
 		Mat4::MakeRotateZ(angle_) *
 		Mat4::MakeTranslate(position_);
 
