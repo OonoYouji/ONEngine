@@ -248,6 +248,12 @@
     <ClCompile Include="Game\Objects\GameTitle\GameTitle.cpp">
       <Filter>Game\Objects\GameTitle</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -677,6 +683,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameTitle\GameTitle.h">
       <Filter>Game\Objects\GameTitle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Title.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Result.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

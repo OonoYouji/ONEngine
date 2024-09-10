@@ -41,6 +41,8 @@
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
@@ -127,6 +129,8 @@
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
+    <ClInclude Include="Game\Scenes\Scene_Result.h" />
+    <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
     <ClInclude Include="ONEngine\Audio\AudioSource.h" />
