@@ -239,6 +239,9 @@
     <ClCompile Include="ONEngine\Random\Random.cpp">
       <Filter>ONEngine\Random</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp">
+      <Filter>Game\Objects\GameTimer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -408,6 +411,9 @@
     </Filter>
     <Filter Include="ONEngine\Random">
       <UniqueIdentifier>{7f6a09a9-adf2-4e49-9f82-c55703bb9ef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameTimer">
+      <UniqueIdentifier>{14be41d2-f7f5-44d5-899d-334826331be7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -650,6 +656,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Random\Random.h">
       <Filter>ONEngine\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GamTimer\GameTimer.h">
+      <Filter>Game\Objects\GameTimer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -154,6 +154,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float executionTime = frameTimer->End();
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
 
+	worldTime->Update();
+
 
 	while(!winApp->ProcessMessage()) {
 

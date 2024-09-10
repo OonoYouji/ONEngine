@@ -17,6 +17,7 @@
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyManager.h"
+#include "GamTimer/GameTimer.h"
 
 
 class Background : public BaseGameObject {
@@ -40,7 +41,7 @@ public:
 		sprite_->SetAngle(angle_);
 	}
 	void BackSpriteDraw() override {
-		sprite_->Draw();
+		sprite_->Draw(0);
 	}
 	void Debug() override {
 		if(ImGui::TreeNodeEx("", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -49,11 +50,19 @@ public:
 			ImGui::TreePop();
 		}
 	}
+	void SetColor(const Vector4& _color) { color = _color; }
 private:
 	std::unique_ptr<Sprite> sprite_;
 	float angle_ = 0.0f;
 	Vec4 color = { 0,0,0,1 };
 };
+
+
+
+
+
+
+
 
 /// ===================================================
 /// 初期化処理
@@ -99,13 +108,21 @@ void Scene_Game::Initialize() {
 	gameMonitor->isDrawActive = true;
 
 
-	Background* gameBG = new Background();
+	Background* gameBG = new Background;
 	gameBG->Initialize();
 	gameBG->drawLayerId = 1;
 
-	(new Background)->Initialize();
+
+	Background* monitorBG = new Background;
+	monitorBG->Initialize();
+	monitorBG->SetColor({ 0, 0, 0, 1 });
+
 	(new GameCameraState)->Initialize();
 	(new GameResult)->Initialize();
+
+	GameTimer* gameTimer = new GameTimer;
+	gameTimer->Initialize();
+	gameTimer->SetMaxTime(10.0f);
 
 
 
