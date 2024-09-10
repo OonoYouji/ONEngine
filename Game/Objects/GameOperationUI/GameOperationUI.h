@@ -20,6 +20,7 @@ private:
 	Model* paper_ = nullptr;
 	Model* binder_ = nullptr;
 	Material paperMaterial_;
+	Vec4 paperColor_;
 
 	float lerpTime_ = 0.0f;
 	float maxLerpTime_ = 0.0f;

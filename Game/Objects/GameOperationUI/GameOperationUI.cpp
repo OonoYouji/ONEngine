@@ -10,6 +10,9 @@ void GameOperationUI::Initialize() {
 	drawLayerId = 1;
 	paper_ = ModelManager::Load("paper");
 	paperMaterial_.CreateMaterial("sousa");
+	paperMaterial_.SetIsLighting(false);
+	paperColor_ = { 0.5f, 0.5f, 0.5f, 1.0f };
+	paperMaterial_.SetColor(paperColor_);
 
 	binder_ = ModelManager::Load("binder");
 
@@ -26,7 +29,7 @@ void GameOperationUI::Initialize() {
 void GameOperationUI::Update() {
 
 	/// enter を押すか　game pad RB を押す
-	if(Input::PressKey(KeyCode::Enter) 
+	if(Input::PressKey(KeyCode::Enter)
 	   || Input::PressPadButton(PadCode::RightShoulder)) {
 
 		lerpTime_ = std::min(lerpTime_ + WorldTime::DeltaTime(), maxLerpTime_);
@@ -64,6 +67,16 @@ void GameOperationUI::Debug() {
 
 		ImGui::DragFloat("time", &lerpTime_);
 		ImGui::DragFloat("maxTime", &maxLerpTime_, 0.1f);
+
+		ImGui::TreePop();
+	}
+
+	if(ImGui::TreeNodeEx("paper", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::ColorEdit4("color", &paperColor_.x);
+		if(ImGui::IsItemEdited()) {
+			paperMaterial_.SetColor(paperColor_);
+		}
 
 		ImGui::TreePop();
 	}
