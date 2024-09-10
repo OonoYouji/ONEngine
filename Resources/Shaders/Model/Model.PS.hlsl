@@ -25,7 +25,7 @@ PSOutput main(VSOutput input) {
 	
 	///- Half Lambert
 	if (isLighting) {
-		float NdotL = dot(normalize(input.normal), -lightDirection);
+		float NdotL = dot(normalize(input.normal), lightDirection);
 		float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
 		output.color = materialColor * texColor * lightColor * cos * intensity;
 		output.color.a = materialColor.a * texColor.a;
