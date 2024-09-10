@@ -13,20 +13,7 @@ void EnemyManager::Initialize() {
 
 }
 
-void EnemyManager::Update() {
-
-	if(Input::GetInsatnce()->TriggerPadButton(PadCode::RightShoulder)) {
-		Enemy* newEnemy = new Enemy();
-		newEnemy->SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
-		newEnemy->Initialize();
-
-		/// 操作方法を書いてあるバインダーが前に出たときに
-		/// 動きを止めるリストに追加
-		pGameManager_->AddPausedObject(newEnemy);
-
-	}
-
-}
+void EnemyManager::Update() {}
 
 void EnemyManager::Debug() {
 	if(ImGui::TreeNodeEx("EnemyManager", ImGuiTreeNodeFlags_DefaultOpen)) {

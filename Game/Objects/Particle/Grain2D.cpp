@@ -12,9 +12,12 @@ void Grain2D::Init(const Vector3& position, const Vector3& rotate, const Vector3
 	const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
 	const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType) {
 
-	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
-	sprite_->SetSize({ 20.0f,20.0f });
+	if (!sprite_)
+	{
+		sprite_.reset(new Sprite());
+		sprite_->Initialize("particle", "particle.png");
+		sprite_->SetSize({ 20.0f,20.0f });
+	}
 
 	position_ = position;
 	theta_ = rotate;
@@ -84,5 +87,8 @@ void Grain2D::Draw() {}
 
 void Grain2D::FrontSpriteDraw()
 {
-	sprite_->Draw();
+	if (!isDead_)
+	{
+		sprite_->Draw();
+	}
 }

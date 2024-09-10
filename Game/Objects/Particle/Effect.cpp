@@ -37,7 +37,7 @@ void Effect::Reset() {
 
 void Effect::Update() {
 
-	grains_.remove_if([](Grain* grain) {
+	/*grains_.remove_if([](Grain* grain) {
 		if (grain->IsDead()) {
 			grain->Destory();
 			return true;
@@ -50,7 +50,7 @@ void Effect::Update() {
 			return true;
 		}
 		return false;
-		});
+		});*/
 
 	
 	transform_.UpdateMatrix();
@@ -58,10 +58,12 @@ void Effect::Update() {
 	if (isStart_) {
 		if (is3DMode_) {
 			Create();
+			currentGrainCount++;
 			previousPosition_ = transform_.position;
 		}
 		if (is2DMode_) {
 			Create2D();
+			currentGrainCount++;
 			previousPosition_ = position2D_;
 		}
 	}
@@ -345,12 +347,26 @@ void Effect::Create() {
 				newVelo = newVelo.Normalize() * speed_;
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
-				Grain* newGrain = new Grain();
-				newGrain->Initialize();
-				newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
-				grains_.push_back(newGrain);
-				currentRateTime = rateTime_;
+				if (currentGrainCount <= maxGrainCount)
+				{
+					Grain* newGrain = new Grain();
+					newGrain->Initialize();
+					newGrain->InitTrans();
+					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					grains_.push_back(newGrain);
+					currentRateTime = rateTime_;
+				}
+				else
+				{
+					Grain* newGrain = grains_.front();
+					grains_.pop_front();
+					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					grains_.push_back(newGrain);
+					currentRateTime = rateTime_;
+				}
+
 			}
 		}
 	}
@@ -376,12 +392,27 @@ void Effect::Create() {
 				newVelo = newVelo.Normalize() * speed_;
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
-				Grain* newGrain = new Grain();
-				newGrain->Initialize();
-				newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
-				grains_.push_back(newGrain);
-				accumulationDistance = 0.0f;
+				if (currentGrainCount <= maxGrainCount)
+				{
+					Grain* newGrain = new Grain();
+					newGrain->Initialize();
+					newGrain->InitTrans();
+					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grains_.push_back(newGrain);
+					accumulationDistance = 0.0f;
+				}
+				else
+				{
+					Grain* newGrain = grains_.front();
+					grains_.pop_front();
+					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grains_.push_back(newGrain);
+					accumulationDistance = 0.0f;
+				}
 			}
 		}
 	}
@@ -442,12 +473,26 @@ void Effect::Create2D() {
 				newVelo = newVelo.Normalize() * speed_;
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
-				Grain2D* newGrain = new Grain2D();
-				newGrain->Initialize();
-				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
-				grain2Ds_.push_back(newGrain);
-				currentRateTime = rateTime_;
+				if (currentGrainCount <= maxGrainCount)
+				{
+					Grain2D* newGrain = new Grain2D();
+					newGrain->Initialize();
+					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grain2Ds_.push_back(newGrain);
+					currentRateTime = rateTime_;
+				}
+				else
+				{
+					Grain2D* newGrain = grain2Ds_.front();
+					grain2Ds_.pop_front();
+					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grain2Ds_.push_back(newGrain);
+					currentRateTime = rateTime_;
+				}
 			}
 		}
 	}
@@ -456,6 +501,9 @@ void Effect::Create2D() {
 		Vector3 currentPosition = position2D_;
 		float particleDistanceRate = 10.0f / rateDistance_;
 		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
+		if (distanceMoved > 200.0f) {
+			distanceMoved = 200.0f;
+		}
 		accumulationDistance += distanceMoved;
 		int particlesEmit = static_cast<int>(accumulationDistance / particleDistanceRate);
 
@@ -473,13 +521,28 @@ void Effect::Create2D() {
 				newVelo = newVelo.Normalize() * speed_;
 				newVelo = Matrix4x4::TransformNormal(newVelo, rotateEmitter);
 
-				Grain2D* newGrain = new Grain2D();
-				newGrain->Initialize();
-				newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
-					shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
-				grain2Ds_.push_back(newGrain);
-				currentRateTime = rateTime_;
-				accumulationDistance = 0.0f;
+				if (currentGrainCount <= maxGrainCount)
+				{
+					Grain2D* newGrain = new Grain2D();
+					newGrain->Initialize();
+					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grain2Ds_.push_back(newGrain);
+					currentRateTime = rateTime_;
+					accumulationDistance = 0.0f;
+				}
+				else
+				{
+					Grain2D* newGrain = grain2Ds_.front();
+					grain2Ds_.pop_front();
+					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
+					newGrain->SetIsDead(false);
+					grain2Ds_.push_back(newGrain);
+					currentRateTime = rateTime_;
+					accumulationDistance = 0.0f;
+				}
 			}
 		}
 	}
@@ -521,8 +584,107 @@ void Effect::SetGrainMode(int type)
 
 }
 
+void Effect::SetOverType(int type)
+{
+	if (type == 0)
+	{
+		isOverTime_ = true;
+		isOverDistance_ = false;
+		provisional_ = 0;
+	}
+	else if (type == 1) {
+		isOverDistance_ = true;
+		isOverTime_ = false;
+		provisional_ = 1;
+	}
+}
+
+void Effect::OverTimeSetting(int rateTime, int appear)
+{
+	rateTime_ = rateTime;
+	appear_ = appear;
+}
+
+void Effect::OverDistanceSetting(float rateDistance)
+{
+	rateDistance_ = rateDistance;
+}
+
+void Effect::ShapeType(int type)
+{
+	if (type == 0)
+	{
+		isCircle_ = true;
+		isCone_ = false;
+		isBox_ = false;
+		secondProvisional_ = 0;
+	}
+	else if (type == 1) {
+		isCircle_ = false;
+		isCone_ = true;
+		isBox_ = false;
+		secondProvisional_ = 1;
+	}
+	else if (type == 2) {
+		isCircle_ = false;
+		isCone_ = false;
+		isBox_ = true;
+		secondProvisional_ = 2;
+	}
+}
+
+void Effect::ShiftingSpeedType(int type)
+{
+	if (type == 0)
+	{
+		isNormal_ = true;
+		isDeceleration_ = false;
+		isAccele_ = false;
+		thirdProvisional_ = 0;
+	}
+	else if (type == 1)
+	{
+		isNormal_ = false;
+		isDeceleration_ = true;
+		isAccele_ = false;
+		thirdProvisional_ = 1;
+	}
+	else if (type == 2)
+	{
+		isNormal_ = false;
+		isDeceleration_ = false;
+		isAccele_ = true;
+		thirdProvisional_ = 2;
+	}
+}
+
+void Effect::ShiftSpeedSetting(float shiftSpeed)
+{
+	shiftingSpeed_ = shiftSpeed;
+}
+
+void Effect::SizeChangeSetting(bool sizeChange, bool isReduction, bool isExpand, Vector3 endSize)
+{
+	isSizeChange_ = sizeChange;
+	isReduction_ = isReduction;
+	isExpand_ = isExpand;
+	endSize_ = endSize;
+}
+
 
 void Effect::SetPos(const Vector2& pos)
 {
 	position2D_ = { pos,0.0f };
+}
+
+void Effect::SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
+{
+	gravity_ = gravity;
+	speed_ = speed;
+	size_ = size;
+	lifeTime_ = lifeTime;
+	isSizeRandom = sizeRandom;
+	minSizeRandom_ = minSizeRandom_;
+	maxSizeRandom_ = maxSizeRandom;
+
 }

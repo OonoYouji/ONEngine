@@ -23,7 +23,7 @@ public:
 	~Grain();
 
 	void Initialize()override;
-
+	void InitTrans();
 	void Init(Model* model, const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
 		const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
 		const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType);
@@ -32,6 +32,7 @@ public:
 
 	void Draw()override;
 
+	void SetIsDead(bool is) { isDead_ = is; }
 	bool IsDead()const { return isDead_; }
 
 private:
