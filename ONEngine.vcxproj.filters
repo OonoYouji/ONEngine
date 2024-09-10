@@ -257,6 +257,9 @@
     <ClCompile Include="Game\Objects\GameStartUI\GameStartUI.cpp">
       <Filter>Game\Objects\GameStartUI</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Particle\Grain2D.cpp">
+      <Filter>Game\Objects\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -698,6 +701,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameStartUI\GameStartUI.h">
       <Filter>Game\Objects\GameStartUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Particle\Grain2D.h">
+      <Filter>Game\Objects\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

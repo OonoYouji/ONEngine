@@ -2,6 +2,7 @@
 #include <GameObjectManager.h>
 #include <BaseGameObject.h>
 #include <Sprite.h>
+#include "Particle/Effect.h"
 
 class SinWaveDrawer;
 
@@ -12,8 +13,8 @@ public:
 	~Enemy() {}
 
 	void Initialize() override;
-	void Update()override;
-	void LastUpdate()override;
+	void Update() override;
+	void LastUpdate() override;
 
 	void Draw() override;
 	void FrontSpriteDraw()override;
@@ -36,6 +37,8 @@ public:
 	// 波の傾きに合わせて速度を回転
 	Vector3 AdjustVelocityToWave(Vector3 velocity, float A, float B, float x);
 
+	void EffectOccurrence(int effectNum);
+
 private:
 
 	std::unique_ptr<Sprite> sprite_;
@@ -51,7 +54,9 @@ private:
 	float xAccel = 0.0f;
 	float addAccel = 0.02f;
 	float addDecel = 0.005f;
+	float acceleTime = 0.1f;
 
+	bool isMaybeJump = true;
 	bool isJump = false;
 	bool isfly = false;
 	bool isDamage = false;
@@ -69,6 +74,7 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
+	float canJumpAccele = 2.0f;
 
 
 	bool isMaybeDead = false;
@@ -78,4 +84,7 @@ private:
 
 	int roopCount = 0;
 	bool isHeartBreak = false;
+
+
+	Effect* deathEffect_;
 };

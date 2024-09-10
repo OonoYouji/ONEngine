@@ -1,43 +1,37 @@
 #pragma once
+#pragma once
 #include <GameObjectManager.h>
 #include <ModelManager.h>
 #include <Transform.h>
+#include <Sprite.h>
+#include "Grain.h"
 
 
-enum class ShiftSpeedType : uint32_t {
-	kNormal,
-	kDeceleration,
-	kAccele,
-};
-
-enum class SizeChangeType :uint32_t {
-	kReduction,
-	kExpand,
-};
-
-
-class Grain : public BaseGameObject
+class Grain2D : public BaseGameObject
 {
 public:
-	Grain() { CreateTag(this); }
-	~Grain();
+	Grain2D() { CreateTag(this); }
+	~Grain2D();
 
 	void Initialize()override;
 
-	void Init(Model* model, const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
+	void Init(const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
 		const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
 		const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType);
 
 	void Update()override;
 
 	void Draw()override;
+	void FrontSpriteDraw()override;
 
 	bool IsDead()const { return isDead_; }
 
 private:
 
-	Model* model_;
-	Transform transform_{};
+	std::unique_ptr<Sprite> sprite_;
+	Vector3 position_ = { 0.0f,0.0f,0.0f };
+	Vector3 theta_{};
+	Vector2 size_ = { 20.0f,20.0f };
 	Vector3 gravity_ = { 0.0f,0.0f,0.0f };
 	Vector3 velocity_ = { 0.0f,1.0f,0.0f };
 	// rotateSpeedを入れる
@@ -62,8 +56,8 @@ private:
 	/// 時間でサイズを変える
 	/// </summary>
 	bool isSizeChange_ = false;
-	Vector3 startScale_ = { 0.1f,0.1f,0.1f };
-	Vector3 endScale_ = { 0.1f,0.1f,0.1f };
+	Vector3 startScale_ = { 20.0f,20.0f,1.0f};
+	Vector3 endScale_ = { 10.0f,10.0f,1.0f };
 	SizeChangeType changeType_ = SizeChangeType::kReduction;
 
 };

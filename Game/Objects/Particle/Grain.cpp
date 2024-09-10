@@ -1,10 +1,14 @@
 #include "Grain.h"
 
-Grain::Grain() {}
 
 Grain::~Grain() {}
 
-void Grain::Initialze(Model* model, const Vector3& position, const Vector3& rotate, const Vector3& size,
+void Grain::Initialize()
+{
+	drawLayerId = 1;
+}
+
+void Grain::Init(Model* model, const Vector3& position, const Vector3& rotate, const Vector3& size,
 	Vector3& gravity, const Vector3& velocity, const int life, const ShiftSpeedType shiftType,
 	const float shiftSpeed, const bool colorShift, const Vector4& origin,
 	const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType) {

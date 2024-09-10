@@ -10,15 +10,20 @@ void Enemy::Initialize()
 
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
-	sprite_->SetSize({ 20,20 });
+	sprite_->SetSize({ 20,40 });
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
 	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
-	deadSprite_->SetSize({ 20,20 });
+	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
 	beforlambda = addlambda;
 	addLambdaCount = sinWave_->GetAddLabdaCount();
+
+	deathEffect_ = new Effect();
+	deathEffect_->Initialize();
+	deathEffect_->SetGrainMode(1);
+
 }
 
 void Enemy::Update()
@@ -27,20 +32,25 @@ void Enemy::Update()
 	if (!isDead) {
 		beforPos = pos;
 		beforlambda = addlambda;
-		isJump = true;
+		if (isMaybeJump)
+		{
+			isJump = true;
+		}
 
+		// sinwaveから変数の値をとる
 		amplitude = sinWave_->GetAmplitude();
 		frequency = sinWave_->GetFrequency();
 		offsetY = sinWave_->GetOffset();
 		addlambda = sinWave_->GetAddLambda();
-		offsetY -= 20.0f;
 
-		if (beforlambda != addlambda)
+
+		if (beforlambda < addlambda)
 		{
 			isJump = false;
 		}
 
-		
+
+		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly)
 		{
 
@@ -49,6 +59,10 @@ void Enemy::Update()
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+			if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
+			{
+				isMaybeJump = true;
+			}
 		}
 		else
 		{
@@ -72,8 +86,16 @@ void Enemy::Update()
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
 					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 				{
-					isDamage = false;
-					isDecele = true;
+					if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
+					{
+						isDamage = false;
+						isDecele = true;
+					}
+					else
+					{
+						isJump = false;
+						isMaybeJump = false;
+					}
 				}
 				isDamage = false;
 				if (amplitude <= 20)
@@ -90,13 +112,17 @@ void Enemy::Update()
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > 2.0f && isJump)
+		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
 		{
 			if (!isfly)
 			{
 				isfly = true;
 				flyspeed = pos - beforPos;
-				flyspeed.y = flyspeed.y * 2;
+				flyspeed = flyspeed.Normalize() * xAccel;
+				if (flyspeed.x > -0.1f) {
+					flyspeed.x = speed;
+				}
+				flyspeed.y = flyspeed.y * 4;
 				if (amplitude >= 40)
 				{
 					isMaybeDead = true;
@@ -117,50 +143,46 @@ void Enemy::Update()
 
 		if (!isfly)
 		{
-			if (true)
+
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 			{
-				if (beforlambda == addlambda)
+				acceleTime += 0.01f;
+				float t = amplitude / maxAcceleAmp;
+				if (t >= 1.0f)
 				{
-					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
-					{
-						float t = amplitude / maxAcceleAmp;
-						if (t >= 1.0f)
-						{
-							t = 1.0f;
-						}
-						xAccel += addAccel * t;
-					}
+					t = 1.0f;
 				}
+				xAccel += (addAccel*(acceleTime*acceleTime))*t;
 			}
-			if (true)
+
+
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 			{
-				if (beforlambda == addlambda)
+				acceleTime = 0.3f;
+				float t = amplitude / maxAcceleAmp;
+				if (t >= 1.0f)
 				{
-					if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-						amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-					{
-						float t = amplitude / maxAcceleAmp;
-						if (t >= 1.0f)
-						{
-							t = 1.0f;
-						}
-						xAccel -= addDecel * t;
-					}
+					t = 1.0f;
 				}
+				xAccel -= addDecel * t;
 			}
+
+
 		}
+
 
 		if (pos.x < 0)
 		{
-			if (roopCount == 0)
+			if (roopCount >= 0)
 			{
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
-			else if (roopCount == 1)
+			else if (roopCount == 100)
 			{
 				isHeartBreak = true;
 				isDead = true;
@@ -168,6 +190,8 @@ void Enemy::Update()
 			}
 		}
 	}
+
+	/*deathEffect_->SetPos({ pos.x,pos.y });*/
 
 }
 
@@ -224,10 +248,18 @@ void Enemy::Debug()
 		ImGui::Text("%f", velo.y);
 		ImGui::Text("%f", xAccel);
 		ImGui::DragFloat("MaxAcceleAmp", &maxAcceleAmp, 0.1f, 1.0f, 400.0f);
+		ImGui::DragFloat("Can Jump Accel", &canJumpAccele, 0.01f, 0.01f, 4.0f);
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
-
+		if (ImGui::Button("EffectStart"))
+		{
+			deathEffect_->EffectStart();
+		}
+		if (ImGui::Button("EffectStop"))
+		{
+			deathEffect_->EffectStop();
+		}
 		ImGui::TreePop();
 	}
 }
@@ -264,4 +296,10 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 
 	// 速度を回転して波の接線方向に合わせる
 	return RotateVelocity(velocity, tangentAngle);
+}
+
+void Enemy::EffectOccurrence(int effectNum)
+{
+
+
 }

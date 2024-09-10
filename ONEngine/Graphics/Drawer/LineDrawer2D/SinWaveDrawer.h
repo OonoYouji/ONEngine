@@ -48,7 +48,7 @@ private:
 	int screenOfDivisions = 200;
 	float amplitude = 100.0f;
 	float frequency = 0.027f;
-	float offsetY = 360.0f;
+	float offsetY = 520.0f;
 	float addPadAmp = 2.5f;
 	float addPadLam = 3.0f;
 	float addNaturalAmp = 2.0f;

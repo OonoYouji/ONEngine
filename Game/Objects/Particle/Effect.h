@@ -3,40 +3,56 @@
 #include <list>
 #include <string>
 
-
+#include <GameObjectManager.h>
 #include <ModelManager.h>
+#include <Sprite.h>
 //#include <Random.h>
 #include "Random/Random.h"
 #include <Transform.h>
 #include "Particle/Grain.h"
+#include "Particle/Grain2D.h"
 
 
 
-class Effect {
+class Effect : public BaseGameObject{
 public:
-	Effect();
+	Effect() { CreateTag(this); }
 	~Effect();
 
-	void Initialize(const std::string& name);
+	void Initialize()override;
 
 	void Reset();
 
-	void Update();
+	void Update()override;
 
-	void Draw();
+	void Draw()override;
+	void FrontSpriteDraw()override;
 
-	void Setting();
+	void Debug()override;
 
 	void Create();
+	void Create2D();
 
+	void EffectStart();
+	void EffectStop();
 
+	void SetGrainMode(int type);
+
+	void SetPos(const Vector2& pos);
 
 private:
 
+	bool is3DMode_ = false;
+	bool is2DMode_ = true;
+
+	bool isStart_ = false;
+
+	std::unique_ptr<Sprite> sprite_;
 	std::string emitterName_ = "a";
 	Model* model_ = nullptr;
 
 	std::list<Grain*> grains_;
+	std::list<Grain2D*> grain2Ds_;
 
 
 	Transform transform_{};
@@ -45,9 +61,10 @@ private:
 
 	float speed_ = 0.05f;
 
+	Vector3 position2D_ = { 0.0f,0.0f,0.0f };
 	Vector3 rotation_ = { 0.0f,0.0f,0.0f };// 後で、rotateSpeedも追加する
 
-	Vector3 size_ = { 0.1f,0.1f,0.1f };
+	Vector3 size_ = { 5.0f,5.0f,1.0f };
 
 	int lifeTime_ = 20;
 
@@ -55,8 +72,8 @@ private:
 	bool isSizeRandom = false;
 	float minRotateRandom_ = -3.0f;
 	float maxRotateRandom_ = 3.0f;
-	float minSizeRandom_ = 0.01f;
-	float maxSizeRandom_ = 2.0f;
+	float minSizeRandom_ = 4.0f;
+	float maxSizeRandom_ = 6.0f;
 
 
 
