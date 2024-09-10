@@ -27,8 +27,12 @@ void Enemy::Update()
 	if (!isDead) {
 		beforPos = pos;
 		beforlambda = addlambda;
-		isJump = true;
+		if (isMaybeJump)
+		{
+			isJump = true;
+		}
 
+		// sinwaveから変数の値をとる
 		amplitude = sinWave_->GetAmplitude();
 		frequency = sinWave_->GetFrequency();
 		offsetY = sinWave_->GetOffset();
@@ -40,7 +44,8 @@ void Enemy::Update()
 			isJump = false;
 		}
 
-		
+
+		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly)
 		{
 
@@ -49,6 +54,10 @@ void Enemy::Update()
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+			if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
+			{
+				isMaybeJump = true;
+			}
 		}
 		else
 		{
@@ -72,8 +81,16 @@ void Enemy::Update()
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
 					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 				{
-					isDamage = false;
-					isDecele = true;
+					if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
+					{
+						isDamage = false;
+						isDecele = true;
+					}
+					else
+					{
+						isJump = false;
+						isMaybeJump = false;
+					}
 				}
 				isDamage = false;
 				if (amplitude <= 20)
@@ -153,14 +170,14 @@ void Enemy::Update()
 
 		if (pos.x < 0)
 		{
-			if (roopCount == 0)
+			if (roopCount >= 0)
 			{
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
-			else if (roopCount == 1)
+			else if (roopCount == 100)
 			{
 				isHeartBreak = true;
 				isDead = true;

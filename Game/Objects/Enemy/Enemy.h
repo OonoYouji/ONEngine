@@ -54,6 +54,7 @@ private:
 	float addAccel = 0.02f;
 	float addDecel = 0.005f;
 
+	bool isMaybeJump = true;
 	bool isJump = false;
 	bool isfly = false;
 	bool isDamage = false;
