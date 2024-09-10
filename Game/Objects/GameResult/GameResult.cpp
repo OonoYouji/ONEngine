@@ -14,7 +14,7 @@ void GameResult::Initialize() {
 	UpdateMatrix();
 
 	audioSource_ = new AudioSource();
-	audioSource_->SetAudioClip("fanfare.wav");
+ 	audioSource_->SetAudioClip("EnemyDeath.wav");
 }
 
 void GameResult::Update() {

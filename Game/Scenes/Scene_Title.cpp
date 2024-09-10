@@ -29,9 +29,6 @@ void Scene_Title::Initialize() {
 	monitorBG->Initialize();
 	monitorBG->SetColor({ 0, 0, 0, 1 });
 
-
-	
-
 }
 
 void Scene_Title::Update() {}

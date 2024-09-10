@@ -82,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
 
+	audioManager->Load("EnemyDeath.wav");
+
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
