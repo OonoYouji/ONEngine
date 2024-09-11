@@ -44,7 +44,6 @@ void EnemyManager::PopCommands()
 		popCount_ = commands_.front().first;
 		popInterval_ = commands_.front().second;
 		commands_.pop_front();
-		currentInterval_ = popInterval_;
 	}
 
 	if (popCount_ > 0) {

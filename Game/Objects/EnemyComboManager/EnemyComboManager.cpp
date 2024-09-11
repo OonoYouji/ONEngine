@@ -9,8 +9,25 @@ EnemyComboManager::~EnemyComboManager()
 
 void EnemyComboManager::Initialize()
 {
-	numberSprite_.reset(new Sprite());
-	numberSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+
+	oneSprite_.reset(new Sprite());
+	oneSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	twoSprite_.reset(new Sprite());
+	twoSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	threeSprite_.reset(new Sprite());
+	threeSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	fourSprite_.reset(new Sprite());
+	fourSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	fiveSprite_.reset(new Sprite());
+	fiveSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	sixSprite_.reset(new Sprite());
+	sixSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	sevenSprite_.reset(new Sprite());
+	sevenSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	eightSprite_.reset(new Sprite());
+	eightSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	nineSprite_.reset(new Sprite());
+	nineSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 
 	comboSprite_.reset(new Sprite());
 	comboSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
