@@ -42,6 +42,7 @@ public:
 
 	static bool IsAliveObject(BaseGameObject* object);
 
+	static void AddObjectsToObjectsCopy();
 
 	/// <summary>
 	/// 初期化

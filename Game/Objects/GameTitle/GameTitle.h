@@ -42,7 +42,7 @@ private:
 	/// sin(ON); の文字がつぶれる動作のため
 	class GameStartUI* pGameStartUI_ = nullptr;
 	float startEffectAnimationTime_ = 0.0f;
-	float startEffectMaxAnimationTime_ = 0.5f;
+	float startEffectMaxAnimationTime_ = 0.6f;
 	bool isCreartedWave_ = false;
 
 };

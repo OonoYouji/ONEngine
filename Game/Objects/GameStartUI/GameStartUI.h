@@ -22,6 +22,10 @@ public:
 		return isGameStart_;
 	}
 
+	void EffectStartInitialize();
+
+	void EffectStartedUpdate();
+
 private:
 
 	std::unique_ptr<Sprite> start_;
@@ -44,10 +48,12 @@ private:
 	uint8_t currentSelectMode_ = 0;
 
 	bool isGameStart_ = false;
+	bool isCameraMoving_ = false;
 	float startAnimationTime_ = 0.0f;
 
 	/// 横から出てくる心臓と手
 	class Heart* pHeart_ = nullptr;
 	class Hand* pHand_ = nullptr;
+	class GameOperationUI* pGameOperationUI_ = nullptr;
 
 };

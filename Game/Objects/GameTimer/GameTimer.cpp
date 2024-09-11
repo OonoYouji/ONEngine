@@ -8,7 +8,7 @@ void GameTimer::Initialize() {
 	sprite_.reset(new Sprite);
 	sprite_->Initialize("white2x2", "white2x2.png");
 	transform_.position = Vec3(640, 360, 0);
-	transform_.scale = Vec3(1280, 720, 1) / 2.0f;
+	transform_.scale = Vec3(640.0f, 360.0f, 1.0f);
 
 	currentTime_ = 0.0f;
 
@@ -18,7 +18,7 @@ void GameTimer::Update() {
 
 	currentTime_ += WorldTime::DeltaTime();
 	float t = currentTime_ / maxTime_;
-	transform_.position.y = std::lerp(720.0f, 1440.0f, t);
+	transform_.position.y = std::lerp(360.0f, 720.0f + 360.0f, t);
 
 	UpdateMatrix();
 	sprite_->SetPos(GetPosition());

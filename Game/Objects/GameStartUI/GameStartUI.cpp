@@ -13,7 +13,7 @@
 
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
-
+#include "GameOperationUI/GameOperationUI.h"
 
 
 
@@ -54,38 +54,17 @@ void GameStartUI::Update() {
 	/// ////////////////////////////////////////////////////////////////////////
 	/// ゲームシーンに遷移する || ゲームを終わる
 	/// ////////////////////////////////////////////////////////////////////////
-	if(Input::TriggerKey(KeyCode::Space)) {
-		/*if(currentSelectMode_) {
-			SceneManager::GetInstance()->SetNextScene(GAME);
-			isGameStart_ = true;
+	if(Input::TriggerKey(KeyCode::Enter) || Input::TriggerPadButton(PadCode::A)) {
+
+		/// ゲームスタートを選択した
+		if(currentSelectMode_) {
+
+			EffectStartInitialize();
+
+			/// ゲーム終了を選択した
 		} else {
+
 			SceneManager::GetInstance()->SetIsRunning(false);
-		}*/
-		if(!isGameStart_) {
-			isGameStart_ = true;
-
-			pHeart_ = new Heart();
-			pHeart_->Initialize();
-			pHeart_->SetPosition({ -7.8f, -0.8f, -4.1f });
-			pHeart_->SetRotate({ 0.0f, -1.0f, 0.45f });
-			pHeart_->SetScale(Vec3::kOne * 0.7f);
-			pHeart_->UpdateMatrix();
-
-			pHand_ = new Hand();
-			pHand_->Initialize();
-			pHand_->SetPosition({ -8.05f, -0.95f, -3.9f });
-			pHand_->SetRotate({ 0.0f, -0.5f, 0.0f });
-			pHand_->SetScale(Vec3::kOne * 0.5f);
-			pHand_->UpdateMatrix();
-
-			/// カメラの座標を計算
-			BaseCamera* camera =
-				CameraManager::GetInstance()->GetCamera("GameCamera");
-			camera->SetMove(
-				{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
-				{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
-				0.5f
-			);
 
 		}
 	}
@@ -99,36 +78,8 @@ void GameStartUI::Update() {
 	}
 	spriteColor_.w = 1.0f;
 
-	/// スタート後の演出
-	if(isGameStart_) {
-		startAnimationTime_ += WorldTime::DeltaTime();
-
-		/// uiの色を変える
-		spriteColor_.w = std::lerp(
-			1.0f, 0.0f,
-			std::min(startAnimationTime_, 1.0f)
-		);
-
-		if(startAnimationTime_ - 1.0f >= 0.0f) {
-
-			float lerpT = Ease::Out::Back(std::min((startAnimationTime_ - 1.0f) / 0.5f, 1.0f));
-
-			if(pHeart_) {
-				pHeart_->SetPosition(Vec3::Lerp(
-					{ -7.8f, -0.8f, -4.1f }, { -3.8f, -0.8f, -4.1f },
-					lerpT
-				));
-			}
-
-			if(pHand_) {
-				pHand_->SetPosition(Vec3::Lerp(
-					{ -8.05f, -0.8f, -4.1f }, { -4.05f, -0.95f, -3.9f },
-					lerpT
-				));
-			}
-		}
-
-	}
+	/// ゲームスタート後の更新処理
+	EffectStartedUpdate();
 
 	SettingSprites();
 	RecalculateArrowPosition();
@@ -204,4 +155,96 @@ void GameStartUI::RecalculateArrowPosition() {
 	arrows_[0]->SetPos(position);
 	position.x -= arrowOffset_ * 2.0f;
 	arrows_[1]->SetPos(position);
+}
+
+void GameStartUI::EffectStartInitialize() {
+	if(!isGameStart_) {
+		isGameStart_ = true;
+
+		pHeart_ = new Heart();
+		pHeart_->Initialize();
+		pHeart_->SetPosition({ -7.8f, -0.8f, -4.1f });
+		pHeart_->SetRotate({ 0.0f, -1.0f, 0.45f });
+		pHeart_->SetScale(Vec3::kOne * 0.7f);
+		pHeart_->UpdateMatrix();
+
+		pHand_ = new Hand();
+		pHand_->Initialize();
+		pHand_->SetPosition({ -8.05f, -0.95f, -3.9f });
+		pHand_->SetRotate({ 0.0f, -0.5f, 0.0f });
+		pHand_->SetScale(Vec3::kOne * 0.5f);
+		pHand_->UpdateMatrix();
+
+		pGameOperationUI_ = new GameOperationUI();
+		pGameOperationUI_->Initialize();
+		pGameOperationUI_->SetPosition({ -12.0f, 0.6f, 1.0f });
+		pGameOperationUI_->UpdateMatrix();
+		pGameOperationUI_->isActive = false;
+
+
+
+	}
+}
+
+void GameStartUI::EffectStartedUpdate() {
+
+	/// スタート後の演出
+	if(!isGameStart_) { return; }
+
+
+	startAnimationTime_ += WorldTime::DeltaTime();
+
+	/// uiの色を変える
+	spriteColor_.w = std::lerp(
+		1.0f, 0.0f,
+		std::min(startAnimationTime_, 1.0f)
+	);
+
+
+	if(startAnimationTime_ - 1.0f >= 0.0f) {
+
+		/// カメラを遷移する
+		if(!isCameraMoving_) {
+			isCameraMoving_ = true;
+			/// カメラの座標を計算
+			BaseCamera* camera =
+				CameraManager::GetInstance()->GetCamera("GameCamera");
+			camera->SetMove(
+				{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
+				{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
+				0.5f
+			);
+		}
+
+		/// 心臓と手を左から定位置に移動させる
+		float lerpT = Ease::Out::Expo(std::min((startAnimationTime_ - 1.0f) / 1.0f, 1.0f));
+
+		if(pHeart_) {
+			pHeart_->SetPosition(Vec3::Lerp(
+				{ -7.8f, -0.8f, -4.1f }, { -3.8f, -0.8f, -4.1f },
+				lerpT
+			));
+		}
+
+		if(pHand_) {
+			pHand_->SetPosition(Vec3::Lerp(
+				{ -8.05f, -0.8f, -4.1f }, { -4.05f, -0.95f, -3.9f },
+				lerpT
+			));
+		}
+
+		if(pGameOperationUI_) {
+			pGameOperationUI_->SetPosition(Vec3::Lerp(
+				{ -12.0f, 0.6f, 1.0f }, { -6.0f, 0.6f, 1.0f },
+				lerpT
+			));
+			pGameOperationUI_->UpdateMatrix();
+		}
+
+		if(lerpT == 1.0f) {
+			SceneManager::GetInstance()->SetNextScene(GAME);
+		}
+
+	}
+
 }

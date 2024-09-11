@@ -53,6 +53,11 @@ void SceneManager::Finalize() {
 /// 更新処理
 /// ===================================================
 void SceneManager::Update() {
+	if(currentId_ != nextSceneId_) {
+		Load(nextSceneId_);
+		currentId_ = nextSceneId_;
+	}
+
 	scene_->Update();
 
 	/// 更新1
@@ -62,10 +67,7 @@ void SceneManager::Update() {
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
 
-	if(currentId_ != nextSceneId_) {
-		Load(nextSceneId_);
-		currentId_ = nextSceneId_;
-	}
+	
 
 }
 
@@ -112,6 +114,7 @@ void SceneManager::Load(SCENE_ID id) {
 
 	GameObjectManager::DestoryAll();
 	scene_->Initialize();
+	GameObjectManager::AddObjectsToObjectsCopy();
 }
 
 

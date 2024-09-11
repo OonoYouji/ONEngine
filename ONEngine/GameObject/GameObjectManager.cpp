@@ -264,6 +264,17 @@ bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
 	return false;
 }
 
+void GameObjectManager::AddObjectsToObjectsCopy() {
+	GameObjectManager* instance = GetInstance();
+	if(!instance->addObjectList_.empty()) {
+		for(auto& object : instance->addObjectList_) {
+			std::unique_ptr<BaseGameObject> newObject(object);
+			instance->objects_.push_back(std::move(newObject));
+		}
+		instance->addObjectList_.clear();
+	}
+}
+
 
 /// ===================================================
 /// imguiでデバッグ表示

@@ -91,7 +91,7 @@ void Scene_Game::Initialize() {
 
 	GameTimer* gameTimer = new GameTimer;
 	gameTimer->Initialize();
-	gameTimer->SetMaxTime(10.0f);
+	gameTimer->SetMaxTime(60.0f);
 
 	GameManager* gameManager = new GameManager;
 	gameManager->Initialize();

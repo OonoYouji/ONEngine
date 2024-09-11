@@ -6,7 +6,6 @@
 #include "GameMonitor/GameMonitor.h"
 #include "Background/Background.h"
 #include "GameTitle/GameTitle.h"
-#include "Wave/Wave.h"
 
 void Scene_Title::Initialize() {
 
