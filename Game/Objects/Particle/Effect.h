@@ -51,7 +51,7 @@ public:
 
 	void SetPos(const Vector3& pos);
 	void SetPos(const Vector2& pos);
-	void SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
+	void SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 	void SetVariavles(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 
 private:
@@ -89,6 +89,8 @@ private:
 	bool isSizeRandom = false;
 	float minRotateRandom_ = -3.0f;
 	float maxRotateRandom_ = 3.0f;
+	float minRotateSpeed_ = -0.1f;
+	float maxRotateSpeed_ = 1.0f;
 	float minSizeRandom_ = 4.0f;
 	float maxSizeRandom_ = 6.0f;
 

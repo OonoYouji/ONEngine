@@ -34,7 +34,7 @@ void Enemy::Initialize()
 	deathEffect_->SetGrainMode(1);
 	deathEffect_->SetOverType(0);
 	deathEffect_->OverTimeSetting(8, 4);
-	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30, true, 8.0f, 10.0f);
+	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30,true, true, 8.0f, 10.0f);
 	deathEffect_->ShapeType(1);
 
 
@@ -42,7 +42,7 @@ void Enemy::Initialize()
 	AcceleEffect_->Initialize();
 	AcceleEffect_->SetGrainMode(1);
 	AcceleEffect_->SetOverType(1);
-	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -1.6f, { 5.0f,5.0f,0.0f }, 20, true, 10.0f, 14.0f);
+	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20,true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
 

@@ -8,7 +8,7 @@ void Grain2D::Initialize()
 	drawLayerId = 0;
 }
 
-void Grain2D::Init(const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
+void Grain2D::Init(const Vector3& position, const Vector3& rotate, const Vector3& rotateSpeed, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
 	const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
 	const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType) {
 
@@ -21,6 +21,7 @@ void Grain2D::Init(const Vector3& position, const Vector3& rotate, const Vector3
 
 	position_ = position;
 	theta_ = rotate;
+	rotateSpeed_ = rotateSpeed;
 	size_ = { size.x,size.y };
 	gravity_ = gravity;
 	velocity_ = velocity;
@@ -72,7 +73,8 @@ void Grain2D::Update() {
 			}
 		}
 
-
+		theta_.z += rotateSpeed_.z;
+		sprite_->SetAngle(theta_.z);
 		velocity_ += gravity_;
 		position_ += velocity_;
 		sprite_->SetPos(position_);
