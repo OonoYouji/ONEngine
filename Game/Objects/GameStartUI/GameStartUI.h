@@ -18,6 +18,10 @@ public:
 
 	void RecalculateArrowPosition();
 
+	bool GetIsGameStart() const {
+		return isGameStart_;
+	}
+
 private:
 
 	std::unique_ptr<Sprite> start_;
@@ -38,5 +42,8 @@ private:
 
 	/// ゲームを始めるか、終わるかのモード
 	uint8_t currentSelectMode_ = 0;
+
+	bool isGameStart_ = false;
+	float startAnimationTime_ = 0.0f;
 
 };

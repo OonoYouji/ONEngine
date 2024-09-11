@@ -269,6 +269,9 @@
     <ClCompile Include="ONEngine\Math\Easing.cpp">
       <Filter>ONEngine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Wave\Wave.cpp">
+      <Filter>Game\Objects\Wave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -456,6 +459,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameManager">
       <UniqueIdentifier>{bbcf32fa-2fcd-4b7a-95d5-230c8515f64f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Wave">
+      <UniqueIdentifier>{8e8cf01b-8455-47f2-8487-cd8c5693b72c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -728,6 +734,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Math\Easing.h">
       <Filter>ONEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Wave\Wave.h">
+      <Filter>Game\Objects\Wave</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

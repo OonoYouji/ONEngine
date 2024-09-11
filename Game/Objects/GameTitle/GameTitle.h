@@ -22,6 +22,8 @@ public:
 	
 	void CreateStartUI();
 
+	void GameStart();
+
 private:
 
 	float animationTime_ = 0.0f;
@@ -29,9 +31,18 @@ private:
 	bool isAnimationStarted_ = false;
 
 	bool isCreatedStartUI_ = false;
+	bool isGameStart_ = false;
+
 
 	std::unique_ptr<Sprite> title_;
 	Vec3 titlePosition_;
 	Vec2 titleSize_;
 	Vec4 titleColor_;
+
+	/// sin(ON); の文字がつぶれる動作のため
+	class GameStartUI* pGameStartUI_ = nullptr;
+	float startEffectAnimationTime_ = 0.0f;
+	float startEffectMaxAnimationTime_ = 0.5f;
+	bool isCreartedWave_ = false;
+
 };

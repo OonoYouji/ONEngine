@@ -67,20 +67,25 @@ void SceneLayer::Draw() {
 	//// 背景スプライトの描画
 	gGameObjectManager->BackSpriteDraw(id_);
 	gSpriteManager->PostDraw();
+	gLineDrawer2d->PostDraw();
 	renderTextures_[BACK_SPRITE]->EndRenderTarget();
 
 	renderTextures_[OBJECT3D]->BeginRenderTarget();
+	gLineDrawer2d->PreDraw();
 	gModelManager->PreDraw();
 	//// 3dオブジェクトの描画
 	gGameObjectManager->Object3dDraw(id_);
 	gModelManager->PostDraw();
+	gLineDrawer2d->PostDraw();
 	renderTextures_[OBJECT3D]->EndRenderTarget();
 
 	renderTextures_[FRONT_SPRITE]->BeginRenderTarget();
+	gLineDrawer2d->PreDraw();
 	gSpriteManager->PreDraw();
 	//// 前景スプライトの描画
 	gGameObjectManager->FrontSpriteDraw(id_);
 	gSpriteManager->PostDraw();
+	gLineDrawer2d->PostDraw();
 	gLineDrawer2d->PostDraw();
 	renderTextures_[FRONT_SPRITE]->EndRenderTarget();
 

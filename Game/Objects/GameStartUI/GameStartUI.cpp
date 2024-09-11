@@ -49,11 +49,13 @@ void GameStartUI::Update() {
 	/// ゲームシーンに遷移する || ゲームを終わる
 	/// ////////////////////////////////////////////////////////////////////////
 	if(Input::TriggerKey(KeyCode::Space)) {
-		if(currentSelectMode_) {
+		/*if(currentSelectMode_) {
 			SceneManager::GetInstance()->SetNextScene(GAME);
+			isGameStart_ = true;
 		} else {
 			SceneManager::GetInstance()->SetIsRunning(false);
-		}
+		}*/
+		isGameStart_ = true;
 	}
 
 	/// 文字の色をイージングする
@@ -65,6 +67,11 @@ void GameStartUI::Update() {
 	}
 	spriteColor_.w = 1.0f;
 
+	/// ゲームスタートしていたらspriteの透明度を下げる
+	if(isGameStart_) {
+		startAnimationTime_ = std::min(startAnimationTime_ + WorldTime::DeltaTime(), 1.0f);
+		spriteColor_.w = std::lerp(1.0f, 0.0f, startAnimationTime_);
+	}
 
 	SettingSprites();
 	RecalculateArrowPosition();

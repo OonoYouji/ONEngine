@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "GameTitle.h"
 
 #include <ImGuiManager.h>
@@ -5,9 +6,10 @@
 
 #include <WorldTime.h>
 #include <Input.h>
+#include <Easing.h>
 
 #include <GameStartUI/GameStartUI.h>
-#include <Easing.h>
+#include <Wave/Wave.h>
 
 
 void GameTitle::Initialize() {
@@ -22,19 +24,12 @@ void GameTitle::Initialize() {
 	title_->SetSize(titleSize_);
 	title_->SetColor(titleColor_);
 
-
-	/// カメラの座標を設定
-	BaseCamera* camera =
-		CameraManager::GetInstance()->GetCamera("GameCamera");
-	camera->SetMove(
-		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
-		{ {0.0f, 0.3f, -7.6f}, { 0.0f, 0.0f, 0.0f } },
-		0.0f
-	);
-
 }
 
 void GameTitle::Update() {
+
+
+	GameStart();
 
 	/// せっかち用のショートカット
 	if(Input::TriggerKey(KeyCode::Space)) {
@@ -52,7 +47,7 @@ void GameTitle::Update() {
 	if(animationTime_ <= kMaxTime) {
 		titleColor_ = Vec4::Lerp(
 			{ 0, 0, 0, 1 },
-			{ 0.5f, 0.5f, 0.5f, 1 }, 
+			{ 0.5f, 0.5f, 0.5f, 1 },
 			Ease::InOut::Expo(animationTime_ / kMaxTime)
 		);
 
@@ -62,9 +57,8 @@ void GameTitle::Update() {
 		CreateStartUI();
 	}
 
-	title_->SetPos(titlePosition_);
-	title_->SetSize(titleSize_);
 	title_->SetColor(titleColor_);
+
 }
 
 void GameTitle::FrontSpriteDraw() {
@@ -84,6 +78,17 @@ void GameTitle::Debug() {
 		ImGui::ColorEdit4("color", &titleColor_.x);
 		ImGui::TreePop();
 	}
+
+	if(ImGui::TreeNodeEx("startEffect", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("currentTime", &startEffectAnimationTime_, 0.1f);
+		ImGui::DragFloat("maxTiem", &startEffectMaxAnimationTime_, 0.1f);
+
+		ImGui::TreePop();
+	}
+
+
+	
 
 }
 
@@ -106,6 +111,43 @@ void GameTitle::SettingCameraAnimation() {
 void GameTitle::CreateStartUI() {
 	if(!isCreatedStartUI_) {
 		isCreatedStartUI_ = true;
-		(new GameStartUI)->Initialize();
+
+		pGameStartUI_ = new GameStartUI();
+		pGameStartUI_->Initialize();
+
+	}
+}
+
+void GameTitle::GameStart() {
+	/// game start ui を生成していたら
+	if(!pGameStartUI_) { return; }
+
+
+	if(pGameStartUI_->GetIsGameStart()) {
+		isGameStart_ = true;
+	}
+
+	if(isGameStart_) {
+
+		startEffectAnimationTime_ += WorldTime::DeltaTime();
+		float lerpT = std::min(startEffectAnimationTime_ / startEffectMaxAnimationTime_, 1.0f);
+
+		Vec2 size = {
+			titleSize_.x,
+			std::lerp(titleSize_.y, 0.0f, Ease::InOut::Expo(lerpT))
+		};
+
+		title_->SetSize(size);
+
+
+		if(lerpT == 1.0f) {
+			if(!isCreartedWave_) {
+				isCreartedWave_ = true;
+				/// waveの生成
+				(new Wave)->Initialize();
+			}
+		}
+
+
 	}
 }

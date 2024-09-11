@@ -24,4 +24,8 @@ private:
 
 	float lerpTime_ = 0.0f;
 	float maxLerpTime_ = 0.0f;
+
+
+	bool isFrontBinder_ = false;
+
 };

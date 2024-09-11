@@ -2,6 +2,7 @@
 #include "GameOperationUI.h"
 
 #include <ImGuiManager.h>
+#include <SceneManager.h>
 #include <ModelManager.h>
 #include <Input.h>
 #include <WorldTime.h>
@@ -28,6 +29,10 @@ void GameOperationUI::Initialize() {
 
 void GameOperationUI::Update() {
 
+	/// 値を初期化
+	isFrontBinder_ = false;
+
+
 	/// enter を押すか　game pad RB を押す
 	if(Input::PressKey(KeyCode::Enter)
 	   || Input::PressPadButton(PadCode::RightShoulder)) {
@@ -53,6 +58,23 @@ void GameOperationUI::Update() {
 			{ -3.6f, 0.6f, -4.7f },
 			lerpT - 1.0f
 		);
+
+		isFrontBinder_ = true;
+
+	}
+
+
+
+	/// タイトルに戻る動作
+	if(isFrontBinder_) {
+		bool isTriggerKey = false;
+		isTriggerKey |= Input::TriggerKey(KeyCode::Escape);
+		isTriggerKey |= Input::TriggerPadButton(PadCode::LeftShoulder);
+		
+		if(isTriggerKey) {
+			SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
+		}
+
 	}
 
 }

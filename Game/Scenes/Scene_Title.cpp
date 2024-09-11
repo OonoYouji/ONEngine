@@ -6,9 +6,19 @@
 #include "GameMonitor/GameMonitor.h"
 #include "Background/Background.h"
 #include "GameTitle/GameTitle.h"
-
+#include "Wave/Wave.h"
 
 void Scene_Title::Initialize() {
+
+	/// カメラの座標を設定
+	BaseCamera* camera =
+		CameraManager::GetInstance()->GetCamera("GameCamera");
+	camera->SetMove(
+		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
+		{ {0.0f, 0.3f, -7.6f}, { 0.0f, 0.0f, 0.0f } },
+		0.0f
+	);
+
 
 	/// ===================================================
 	/// タイトルシーンのオブジェクトを初期化
@@ -19,7 +29,6 @@ void Scene_Title::Initialize() {
 	/// ゲームを映すモニター
 	GameMonitor* gameMonitor = new GameMonitor;
 	gameMonitor->Initialize();
-	gameMonitor->isDrawActive = true;
 
 	Background* gameBG = new Background;
 	gameBG->Initialize();
@@ -28,6 +37,8 @@ void Scene_Title::Initialize() {
 	Background* monitorBG = new Background;
 	monitorBG->Initialize();
 	monitorBG->SetColor({ 0, 0, 0, 1 });
+
+	//(new Wave)->Initialize();
 
 }
 
