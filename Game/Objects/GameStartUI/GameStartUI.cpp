@@ -1,12 +1,18 @@
 #define NOMINMAX
 #include "GameStartUI.h"
 
+#include <numbers>
+
+#include <CameraManager.h>
 #include <SceneManager.h>
 #include <ImGuiManager.h>
+
 #include <WorldTime.h>
 #include <Input.h>
+#include <Easing.h>
 
-#include <numbers>
+#include "Heart/Heart.h"
+#include "Hand/Hand.h"
 
 
 
@@ -55,7 +61,33 @@ void GameStartUI::Update() {
 		} else {
 			SceneManager::GetInstance()->SetIsRunning(false);
 		}*/
-		isGameStart_ = true;
+		if(!isGameStart_) {
+			isGameStart_ = true;
+
+			pHeart_ = new Heart();
+			pHeart_->Initialize();
+			pHeart_->SetPosition({ -7.8f, -0.8f, -4.1f });
+			pHeart_->SetRotate({ 0.0f, -1.0f, 0.45f });
+			pHeart_->SetScale(Vec3::kOne * 0.7f);
+			pHeart_->UpdateMatrix();
+
+			pHand_ = new Hand();
+			pHand_->Initialize();
+			pHand_->SetPosition({ -8.05f, -0.95f, -3.9f });
+			pHand_->SetRotate({ 0.0f, -0.5f, 0.0f });
+			pHand_->SetScale(Vec3::kOne * 0.5f);
+			pHand_->UpdateMatrix();
+
+			/// カメラの座標を計算
+			BaseCamera* camera =
+				CameraManager::GetInstance()->GetCamera("GameCamera");
+			camera->SetMove(
+				{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
+				{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
+				0.5f
+			);
+
+		}
 	}
 
 	/// 文字の色をイージングする
@@ -67,10 +99,35 @@ void GameStartUI::Update() {
 	}
 	spriteColor_.w = 1.0f;
 
-	/// ゲームスタートしていたらspriteの透明度を下げる
+	/// スタート後の演出
 	if(isGameStart_) {
-		startAnimationTime_ = std::min(startAnimationTime_ + WorldTime::DeltaTime(), 1.0f);
-		spriteColor_.w = std::lerp(1.0f, 0.0f, startAnimationTime_);
+		startAnimationTime_ += WorldTime::DeltaTime();
+
+		/// uiの色を変える
+		spriteColor_.w = std::lerp(
+			1.0f, 0.0f,
+			std::min(startAnimationTime_, 1.0f)
+		);
+
+		if(startAnimationTime_ - 1.0f >= 0.0f) {
+
+			float lerpT = Ease::Out::Back(std::min((startAnimationTime_ - 1.0f) / 0.5f, 1.0f));
+
+			if(pHeart_) {
+				pHeart_->SetPosition(Vec3::Lerp(
+					{ -7.8f, -0.8f, -4.1f }, { -3.8f, -0.8f, -4.1f },
+					lerpT
+				));
+			}
+
+			if(pHand_) {
+				pHand_->SetPosition(Vec3::Lerp(
+					{ -8.05f, -0.8f, -4.1f }, { -4.05f, -0.95f, -3.9f },
+					lerpT
+				));
+			}
+		}
+
 	}
 
 	SettingSprites();

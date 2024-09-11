@@ -46,4 +46,8 @@ private:
 	bool isGameStart_ = false;
 	float startAnimationTime_ = 0.0f;
 
+	/// 横から出てくる心臓と手
+	class Heart* pHeart_ = nullptr;
+	class Hand* pHand_ = nullptr;
+
 };

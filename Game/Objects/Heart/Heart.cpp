@@ -44,10 +44,12 @@ void HeartBottom::Initialize() {
 	amplitude_ = 0.6f;
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
-	assert(pSinWaveDrawer_ != nullptr);
+	//assert(pSinWaveDrawer_ != nullptr);
 }
 
 void HeartBottom::Update() {
+	if(!pSinWaveDrawer_) { return; }
+
 	animationTime_ += WorldTime::DeltaTime() * (pSinWaveDrawer_->GetAmplitude() / 100.0f);
 
 	float heartBeat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);

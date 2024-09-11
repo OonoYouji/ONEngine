@@ -145,9 +145,9 @@ void GameObjectManager::ReName() {
 /// nameからGameObjectを探索、返す
 /// ===================================================
 BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
-	GameObjectManager* insntance = GetInstance();
+	GameObjectManager* instance = GetInstance();
 	BaseGameObject* result = nullptr;
-	auto itr = std::find_if(insntance->objects_.begin(), insntance->objects_.end(), [&name, &result](std::unique_ptr<BaseGameObject>& object) {
+	auto itr = std::find_if(instance->objects_.begin(), instance->objects_.end(), [&name, &result](std::unique_ptr<BaseGameObject>& object) {
 		if(object->GetName() == name) {
 			result = object.get();
 			return true;
@@ -157,13 +157,17 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 	});
 
 	if(!result) {
-		auto addObjectListItr = std::find_if(insntance->addObjectList_.begin(), insntance->addObjectList_.end(), [&name](BaseGameObject* object) {
-			if(object->GetName() == name) {
-				return true;
+		if(!instance->addObjectList_.empty()) {
+			auto addObjectListItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), [&name](BaseGameObject* object) {
+				if(object->GetName() == name) {
+					return true;
+				}
+				return false;
+			});
+			if(addObjectListItr != instance->addObjectList_.end()) {
+				result = (*addObjectListItr);
 			}
-			return false;
-		});
-		result = (*addObjectListItr);
+		}
 	}
 
 	return result;
@@ -249,13 +253,13 @@ bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
 
 	if(itr != instance->objects_.end()) {
 		return true;
-	} 
-	
+	}
+
 	auto CheckAlivePtr = [&object](const BaseGameObject* obj) { return obj == object; };
 	auto addObjItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), CheckAlivePtr);
 	if(addObjItr != instance->addObjectList_.end()) {
 		return true;
-	} 
+	}
 
 	return false;
 }
