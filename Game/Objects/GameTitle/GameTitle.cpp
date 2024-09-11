@@ -11,7 +11,6 @@
 #include <GameStartUI/GameStartUI.h>
 #include <Wave/Wave.h>
 
-#include <AudioSource.h>
 
 
 void GameTitle::Initialize() {
@@ -26,11 +25,11 @@ void GameTitle::Initialize() {
 	title_->SetSize(titleSize_);
 	title_->SetColor(titleColor_);
 
-	startSE_ = new AudioSource();
-	startSE_->SetAudioClip("sosei_begin.wav");
+	startBegin_ = new AudioSource();
+	startBegin_->SetAudioClip("sosei_begin.wav");
 
-	startBGM_ = new AudioSource();
-	startBGM_->SetAudioClip("sosei_constant.wav");
+	startConstant_ = new AudioSource();
+	startConstant_->SetAudioClip("sosei_constant.wav");
 
 }
 
@@ -59,7 +58,7 @@ void GameTitle::Update() {
 		////////////////////////////////////////
 		if(!isPlayingAudio_) {
 			isPlayingAudio_ = true;
-			startSE_->PlayAudio();
+			startBegin_->PlayAudio();
 			//startBGM_->PlayAudio();
 		}
 
@@ -77,10 +76,10 @@ void GameTitle::Update() {
 
 	title_->SetColor(titleColor_);
 
-	if(isPlayingAudio_) {
-		if(!startSE_->IsPlayingAudio() && !startBGM_->IsPlayingAudio()) {
-			startBGM_->isLoop = true;
-			startBGM_->PlayAudio();
+	if(isPlayingAudio_ && !isGameStart_) {
+		if(!startBegin_->IsPlayingAudio() && !startConstant_->IsPlayingAudio()) {
+			startConstant_->isLoop = true;
+			startConstant_->PlayAudio();
 		}
 	}
 
@@ -151,6 +150,13 @@ void GameTitle::GameStart() {
 
 	if(pGameStartUI_->GetIsGameStart()) {
 		isGameStart_ = true;
+
+		/// 再生中の音を止める
+		startBegin_->StopAudioAll();
+		startConstant_->StopAudioAll();
+
+
+
 	}
 
 	if(isGameStart_) {

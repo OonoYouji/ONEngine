@@ -27,6 +27,18 @@ Vector2::Vector2(float x, float y) {
 	this->y = y;
 }
 
+float Vector2::Lenght() const {
+	return std::sqrt(x * x + y + y);
+}
+
+Vector2 Vector2::Normalize() const {
+	float len = this->Lenght();
+	if(len != 0.0f) {
+		return (*this) / len;
+	}
+	return *this;
+}
+
 
 Vector2 Vector2::ConvertScreen(const Vector3& world) {
 	/// view projection viewport 行列の計算
@@ -37,4 +49,8 @@ Vector2 Vector2::ConvertScreen(const Vector3& world) {
 	/// world -> screen計算
 	Vec3 positionRaticle = Mat4::Transform(world, matVPV);
 	return Vec2(positionRaticle.x, positionRaticle.y);
+}
+
+float Vector2::Dot(const Vector2& v1, const Vector2& v2) {
+	return (v1.x * v2.x) + (v1.y * v2.y);
 }

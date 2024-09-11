@@ -40,21 +40,50 @@ void GameStartUI::Initialize() {
 	spriteColor_ = { 0,0,0,0 };
 
 	currentSelectMode_ = 1; /// start で初期化
+
+
+	/// 効果音 読み込み
+	sentaku_ = new AudioSource();
+	sentaku_->SetAudioClip("sentaku.wav");
+
+	kettei_ = new AudioSource();
+	kettei_->SetAudioClip("kettei.wav");
+
+
+
 }
 
 void GameStartUI::Update() {
 
-	/// 選択しているモードを変える  //// TODO : コントローラーに対応させる
-	if(Input::TriggerKey(KeyCode::DownArrow)) {
+	bool isUp = false;
+	isUp |= Input::TriggerKey(KeyCode::UpArrow);
+	isUp |= Input::TriggerPadButton(PadCode::Up);
+	isUp |= Input::IsLStickStartMoving() && Vec2::Dot(Input::GetLStick(), Vec2::kUp) > 0.0f;
+
+	bool isDown = false;
+	isDown |= Input::TriggerKey(KeyCode::DownArrow);
+	isDown |= Input::TriggerPadButton(PadCode::Down);
+	isDown |= Input::IsLStickStartMoving() && Vec2::Dot(Input::GetLStick(), Vec2::kDown) > 0.0f;
+	
+
+	/// 選択しているモードを変える
+	if(isDown) {
 		currentSelectMode_ = std::max(currentSelectMode_ - 1, 0);
-	} else if(Input::TriggerKey(KeyCode::UpArrow)) {
+		sentaku_->PlayAudio();
+	} else if(isUp) {
 		currentSelectMode_ = std::min(currentSelectMode_ + 1, 1);
+		sentaku_->PlayAudio();
 	}
+
 
 	/// ////////////////////////////////////////////////////////////////////////
 	/// ゲームシーンに遷移する || ゲームを終わる
 	/// ////////////////////////////////////////////////////////////////////////
-	if(Input::TriggerKey(KeyCode::Enter) || Input::TriggerPadButton(PadCode::A)) {
+	if(Input::TriggerKey(KeyCode::Enter)
+	   || Input::TriggerKey(KeyCode::Space)
+	   || Input::TriggerPadButton(PadCode::A)) {
+
+		kettei_->PlayAudio();
 
 		/// ゲームスタートを選択した
 		if(currentSelectMode_) {
@@ -64,7 +93,9 @@ void GameStartUI::Update() {
 			/// ゲーム終了を選択した
 		} else {
 
-			SceneManager::GetInstance()->SetIsRunning(false);
+			/// 画面を閉じる演出をしてから ↓ をする
+			//SceneManager::GetInstance()->SetIsRunning(false);
+
 
 		}
 	}

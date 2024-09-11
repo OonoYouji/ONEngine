@@ -2,6 +2,8 @@
 
 #include <GameObjectManager.h>
 #include <Sprite.h>
+#include <AudioSource.h>
+
 
 class GameTitle final : public BaseGameObject {
 public:
@@ -45,8 +47,8 @@ private:
 	float startEffectMaxAnimationTime_ = 0.6f;
 	bool isCreartedWave_ = false;
 
-	class AudioSource* startSE_ = nullptr;
-	class AudioSource* startBGM_ = nullptr;
+	AudioSource* startBegin_ = nullptr;
+	AudioSource* startConstant_ = nullptr;
 	bool isPlayingAudio_ = false;
 
 };

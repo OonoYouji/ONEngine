@@ -2,6 +2,8 @@
 
 #include <GameObjectManager.h>
 #include <Sprite.h>
+#include <AudioSource.h>
+
 
 class GameStartUI final : public BaseGameObject {
 public:
@@ -55,5 +57,8 @@ private:
 	class Heart* pHeart_ = nullptr;
 	class Hand* pHand_ = nullptr;
 	class GameOperationUI* pGameOperationUI_ = nullptr;
+
+	AudioSource* sentaku_ = nullptr;
+	AudioSource* kettei_ = nullptr;
 
 };

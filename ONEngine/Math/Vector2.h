@@ -18,6 +18,12 @@ public:
 
 	float x, y;
 
+
+public:
+
+	float Lenght() const;
+	Vector2 Normalize() const;
+
 public:
 
 	/// ===================================================
@@ -38,6 +44,8 @@ public:
 	/// ===================================================
 
 	static Vector2 ConvertScreen(const Vector3& world);
+
+	static float Dot(const Vector2& v1, const Vector2& v2);
 
 public:
 

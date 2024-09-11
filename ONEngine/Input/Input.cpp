@@ -12,7 +12,7 @@ namespace {
 
 	// KeyCodeからキー名を取得
 	const char* GetKeyName(KeyCode key) {
-		switch (key) {
+		switch(key) {
 		case KeyCode::A: return "A";
 		case KeyCode::B: return "B";
 		case KeyCode::C: return "C";
@@ -118,7 +118,7 @@ namespace {
 
 	// MouseCodeからボタン名を取得
 	const char* GetMouseButtonName(MouseCode code) {
-		switch (code) {
+		switch(code) {
 		case MouseCode::Left: return "Left Button";
 		case MouseCode::Right: return "Right Button";
 		case MouseCode::Whell: return "Wheel Button";
@@ -133,8 +133,7 @@ namespace {
 
 	//PadCodeからボタン名取得
 	const char* GetPadButtonName(PadCode code) {
-		switch (code)
-		{
+		switch(code) {
 		case PadCode::Up: return "Up";
 		case PadCode::Down: return "Down";
 		case PadCode::Left: return "Left";
@@ -177,7 +176,7 @@ Input* Input::GetInsatnce() {
 /// ===================================================
 void Input::Initialize(ONE::WinApp* winApp) {
 
-	pWinApp_= winApp;
+	pWinApp_ = winApp;
 
 	HRESULT hr = DirectInput8Create(
 		winApp->GetWNDCLASS().hInstance,
@@ -227,10 +226,10 @@ void Input::Begin() {
 	/// ---------------------------------------------------
 	/// キーボードの入力チェック
 	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("keyboard press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		for (uint32_t key = 0u; key < 256; ++key) {
-			if (keyboard_->Press(KeyCode(key))) {
+		for(uint32_t key = 0u; key < 256; ++key) {
+			if(keyboard_->Press(KeyCode(key))) {
 				ImGui::Text("%s is pressed", GetKeyName(KeyCode(key)));
 			}
 		}
@@ -242,10 +241,10 @@ void Input::Begin() {
 	/// ---------------------------------------------------
 	/// マウスの入力チェック
 	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("mouse press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		for (uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
-			if (PressMouse(MouseCode(button))) {
+		for(uint32_t button = 0u; button < uint32_t(MouseCode::Count); ++button) {
+			if(PressMouse(MouseCode(button))) {
 				ImGui::Text("%s is pressed", GetMouseButtonName(MouseCode(button)));
 			}
 		}
@@ -268,7 +267,7 @@ void Input::Begin() {
 	/// ---------------------------------------------------
 	/// ゲームパッドの入力チェック
 	/// ---------------------------------------------------
-	if (ImGui::TreeNodeEx("gamepad press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("gamepad press checker", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		const std::array<PadCode, 14> padButtons = {
 		PadCode::Up, PadCode::Down, PadCode::Left, PadCode::Right,
@@ -278,8 +277,8 @@ void Input::Begin() {
 		PadCode::A, PadCode::B, PadCode::X, PadCode::Y
 		};
 
-		for (const PadCode& padButton : padButtons) {
-			if (PressPadButton(PadCode(padButton))) {
+		for(const PadCode& padButton : padButtons) {
+			if(PressPadButton(PadCode(padButton))) {
 				ImGui::Text("%s is pressed", GetPadButtonName(PadCode(padButton)));
 			}
 		}
@@ -409,6 +408,14 @@ uint8_t Input::GetLTrigger() {
 
 uint8_t Input::GetRTrigger() {
 	return pad_->GetRightTrigger();
+}
+
+bool Input::IsLStickStartMoving() {
+	return pad_->IsLStickStartMoving();
+}
+
+bool Input::IsRStickStartMoving() {
+	return pad_->IsRStickStartMoving();
 }
 
 Vec3 Input::MouseRay(float distance) {

@@ -40,6 +40,14 @@ void Gamepad::Begin() {
 	// 現在の状態を取得
 	ZeroMemory(&pad_.state_, sizeof(XINPUT_STATE));
 	XInputGetState(0, &pad_.state_);
+
+	isLStickMoving_ = ApplyDeadZone(pad_.state_.Gamepad.sThumbLX, pad_.state_.Gamepad.sThumbLY,pad_.deadZoneL_).Lenght() != 0.0f;
+	isPrevLStickMoving_ = ApplyDeadZone(pad_.statePre_.Gamepad.sThumbLX, pad_.statePre_.Gamepad.sThumbLY,pad_.deadZoneL_).Lenght() != 0.0f;
+
+	isRStickMoving_ = ApplyDeadZone(pad_.state_.Gamepad.sThumbRX, pad_.state_.Gamepad.sThumbRY,pad_.deadZoneL_).Lenght() != 0.0f;
+	isPrevRStickMoving_ = ApplyDeadZone(pad_.statePre_.Gamepad.sThumbRX, pad_.statePre_.Gamepad.sThumbRY,pad_.deadZoneL_).Lenght() != 0.0f;
+
+
 }
 
 void Gamepad::SetPadDeadZone(Pad& pad, int32_t deadZoneL, int32_t deadZoneR) {
@@ -73,12 +81,12 @@ bool Gamepad::Press(PadCode code) const {
 
 bool Gamepad::Trigger(PadCode code) const {
 	return (!(pad_.statePre_.Gamepad.wButtons & static_cast<WORD>(code)) &&
-		(pad_.state_.Gamepad.wButtons & static_cast<WORD>(code)));
+			(pad_.state_.Gamepad.wButtons & static_cast<WORD>(code)));
 }
 
 bool Gamepad::Release(PadCode code) const {
 	return ((pad_.statePre_.Gamepad.wButtons & static_cast<WORD>(code)) &&
-		!(pad_.state_.Gamepad.wButtons & static_cast<WORD>(code)));
+			!(pad_.state_.Gamepad.wButtons & static_cast<WORD>(code)));
 }
 
 
@@ -103,11 +111,10 @@ Vector2 Gamepad::ApplyDeadZone(int32_t x, int32_t y, int32_t deadZone) const {
 	Vector2 stick;
 
 	float magnitude = sqrtf(static_cast<float>(x) * static_cast<float>(x) + static_cast<float>(y) * static_cast<float>(y));
-	if (magnitude < deadZone) {
+	if(magnitude < deadZone) {
 		stick.x = 0.0f;
 		stick.y = 0.0f;
-	}
-	else {
+	} else {
 		stick.x = static_cast<float>(x);
 		stick.y = static_cast<float>(y);
 	}

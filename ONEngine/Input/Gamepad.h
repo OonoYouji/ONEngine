@@ -156,6 +156,10 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	BYTE GetRightTrigger() const;
+	
+
+	bool IsLStickStartMoving() const { return isLStickMoving_ && !isPrevLStickMoving_; }
+	bool IsRStickStartMoving() const { return isRStickMoving_ && !isPrevRStickMoving_; }
 
 private:
 
@@ -172,6 +176,14 @@ private:
 	/// ===================================================
 
 	Pad pad_;
+	bool isLStickMoving_ = false;
+	bool isPrevLStickMoving_ = false;
+
+	bool isRStickMoving_ = false;
+	bool isPrevRStickMoving_ = false;
+
+
+
 
 private:
 	Gamepad(const Gamepad&) = delete;

@@ -66,6 +66,9 @@ public:
 	static uint8_t GetLTrigger();
 	static uint8_t GetRTrigger();
 
+	static bool IsLStickStartMoving();
+	static bool IsRStickStartMoving();
+
 private:
 
 	/// ===================================================
@@ -81,7 +84,7 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-	
+
 	Microsoft::WRL::ComPtr<IDirectInput8> directInput_;
 	ONE::WinApp* pWinApp_ = nullptr;
 
