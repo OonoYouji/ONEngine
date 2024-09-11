@@ -24,6 +24,10 @@ public:
 		return isGameStart_;
 	}
 
+	bool GetIsGameEnd() const {
+		return isGameEnded_;
+	}
+
 
 	void EffectStartInitialize();
 	void EffectStartedUpdate();

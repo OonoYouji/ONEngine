@@ -26,6 +26,8 @@ public:
 
 	void GameStart();
 
+	void GameEnd();
+
 private:
 
 	float animationTime_ = 0.0f;
@@ -50,5 +52,8 @@ private:
 	AudioSource* startBegin_ = nullptr;
 	AudioSource* startConstant_ = nullptr;
 	bool isPlayingAudio_ = false;
+
+	float endedAnimationTime_ = 0.0f;
+	float endedMaxAnimationTime_ = 0.2f;
 
 };

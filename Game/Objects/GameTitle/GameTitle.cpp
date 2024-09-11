@@ -3,6 +3,7 @@
 
 #include <ImGuiManager.h>
 #include <CameraManager.h>
+#include <SceneManager.h>
 
 #include <WorldTime.h>
 #include <Input.h>
@@ -37,6 +38,8 @@ void GameTitle::Update() {
 
 
 	GameStart();
+	GameEnd();
+
 
 	/// せっかち用のショートカット
 	if(Input::TriggerKey(KeyCode::Enter)
@@ -114,9 +117,6 @@ void GameTitle::Debug() {
 		ImGui::TreePop();
 	}
 
-
-
-
 }
 
 
@@ -148,7 +148,7 @@ void GameTitle::CreateStartUI() {
 void GameTitle::GameStart() {
 	/// game start ui を生成していたら
 	if(!pGameStartUI_) { return; }
-
+	if(!pGameStartUI_->GetIsGameStart()) { return; }
 
 	if(pGameStartUI_->GetIsGameStart()) {
 		isGameStart_ = true;
@@ -185,3 +185,27 @@ void GameTitle::GameStart() {
 
 	}
 }
+
+void GameTitle::GameEnd() {
+	if(!pGameStartUI_) { return; }
+	if(!pGameStartUI_->GetIsGameEnd()) {
+		return;
+	}
+
+	endedAnimationTime_ += WorldTime::DeltaTime();
+	float lerpT = std::min(endedAnimationTime_ / (endedMaxAnimationTime_ / 2.0f), 2.0f);
+	
+	if(lerpT <= 1.0f) {
+		titleSize_.x = std::lerp(640.0f, 0.0f, (lerpT));
+	} else {
+		titleSize_.x = std::lerp(0.0f, 640.0f, (lerpT - 1.0f));
+		titleSize_.y = std::lerp(360.0f, 0.0f, (lerpT - 1.0f));
+	}
+
+	title_->SetSize(titleSize_);
+
+	if(lerpT == 2.0f) {
+		SceneManager::GetInstance()->SetIsRunning(false);
+	}
+
+ }
