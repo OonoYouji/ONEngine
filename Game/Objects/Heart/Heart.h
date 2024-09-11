@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GameObjectManager.h>
+#include "Particle//Effect.h"
 
 
 class Heart final : public BaseGameObject {
@@ -16,6 +17,9 @@ public:
 private:
 	class HeartBottom* bottom_ = nullptr;
 	class HeartAbove* above_ = nullptr;
+	Effect* damageEffect_;
+	int appearCount_ = 0;
+	class PlayerHP* pPlayerHP_ = nullptr;
 };
 
 

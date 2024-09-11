@@ -6,7 +6,6 @@
 #include <GameObjectManager.h>
 #include <Sprite.h>
 
-
 class PlayerHP final : public BaseGameObject {
 public:
 
@@ -18,10 +17,13 @@ public:
 	void FrontSpriteDraw() override;
 	void Debug() override;
 
+	bool GetHPFluctuation();
+
 private:
 	std::vector<std::unique_ptr<Sprite>> hpSprites_;
 	uint32_t currentHP_;
 	uint32_t maxHP_;
 	Vec3 offset_{};
 	float distance_;
+	bool fluctuationHP_ = false;
 };
