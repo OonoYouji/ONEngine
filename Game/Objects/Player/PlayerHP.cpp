@@ -18,13 +18,12 @@ void PlayerHP::Initialize() {
 		sprite->Initialize("Heart1", "Heart1.png");
 		sprite->SetSize({ 64,64 });
 	}
-
 }
 
 void PlayerHP::Update() {
 	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
-	
+	fluctuationHP_ = false;
 	for (auto& gameObject : objects)
 	{
 		if (Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
@@ -40,6 +39,7 @@ void PlayerHP::Update() {
 			{
 				hpSprites_.pop_back();
 				enemy->SetHeartBreak(false);
+				fluctuationHP_ = true;
 			}
 		}
 	}
@@ -80,4 +80,9 @@ void PlayerHP::Debug() {
 
 		ImGui::TreePop();
 	}
+}
+
+bool PlayerHP::GetHPFluctuation()
+{
+	return fluctuationHP_;
 }

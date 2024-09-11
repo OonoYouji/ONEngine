@@ -58,12 +58,10 @@ void Effect::Update() {
 	if (isStart_) {
 		if (is3DMode_) {
 			Create();
-			currentGrainCount++;
 			previousPosition_ = transform_.position;
 		}
 		if (is2DMode_) {
 			Create2D();
-			currentGrainCount++;
 			previousPosition_ = position2D_;
 		}
 	}
@@ -356,6 +354,7 @@ void Effect::Create() {
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					grains_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -365,6 +364,7 @@ void Effect::Create() {
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					grains_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 
 			}
@@ -402,6 +402,7 @@ void Effect::Create() {
 					newGrain->SetIsDead(false);
 					grains_.push_back(newGrain);
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -412,6 +413,7 @@ void Effect::Create() {
 					newGrain->SetIsDead(false);
 					grains_.push_back(newGrain);
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -491,6 +493,7 @@ void Effect::Create2D() {
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -501,6 +504,7 @@ void Effect::Create2D() {
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -540,6 +544,7 @@ void Effect::Create2D() {
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -551,6 +556,7 @@ void Effect::Create2D() {
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -681,6 +687,11 @@ void Effect::SizeChangeSetting(bool sizeChange, bool isReduction, bool isExpand,
 }
 
 
+void Effect::SetPos(const Vector3& pos)
+{
+	transform_.position = pos;
+}
+
 void Effect::SetPos(const Vector2& pos)
 {
 	position2D_ = { pos,0.0f };
@@ -693,7 +704,22 @@ void Effect::SetVariavles2D(const Vector3& gravity, float speed, const Vector3& 
 	size_ = size;
 	lifeTime_ = lifeTime;
 	isSizeRandom = sizeRandom;
-	minSizeRandom_ = minSizeRandom_;
+	minSizeRandom_ = minSizeRandom;
 	maxSizeRandom_ = maxSizeRandom;
+
+}
+
+void Effect::SetVariavles(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
+{
+
+	gravity_ = gravity;
+	speed_ = speed;
+	size_ = size;
+	lifeTime_ = lifeTime;
+	isRotateRandom_ = rotateRandom;
+	isSizeRandom = sizeRandom;
+	minSizeRandom_ = minSizeRandom;
+	maxSizeRandom_ = maxSizeRandom;
+
 
 }
