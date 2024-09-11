@@ -79,6 +79,19 @@ void ONE::DxCommand::Reset() {
 	assert(SUCCEEDED(hr));
 }
 
+bool ONE::DxCommand::IsExeCommandEnded() {
+	++fenceValue_;
+	queue_->Signal(fence_.Get(), fenceValue_);
+
+	if(fence_->GetCompletedValue() < fenceValue_) {
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		fence_->SetEventOnCompletion(fenceValue_, event);
+		WaitForSingleObject(event, INFINITE);
+		CloseHandle(event);
+	}
+	return true;
+}
+
 void ONE::DxCommand::InitializeFence(ID3D12Device* device) {
 
 	fenceValue_ = 0;

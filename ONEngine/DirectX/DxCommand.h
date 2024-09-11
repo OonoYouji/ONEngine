@@ -52,6 +52,8 @@ namespace ONE {
 		/// </summary>
 		void Reset();
 
+		bool IsExeCommandEnded();
+
 	private:
 
 		/// ===================================================

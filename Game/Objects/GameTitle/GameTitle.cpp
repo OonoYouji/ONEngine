@@ -7,6 +7,7 @@
 #include <Input.h>
 
 #include <GameStartUI/GameStartUI.h>
+#include <Easing.h>
 
 
 void GameTitle::Initialize() {
@@ -41,18 +42,22 @@ void GameTitle::Update() {
 		CreateStartUI();
 	}
 
+	const float kMaxTime = 2.0f;
 
 	animationTime_ += WorldTime::DeltaTime();
-	if(animationTime_ > 5.0f) {
+	if(animationTime_ > kMaxTime) {
 		SettingCameraAnimation();
 	}
 
-	if(animationTime_ <= 5.0f) {
-		titleColor_ = Vec4::Lerp({ 0,0,0,1 }, { 1,1,1,1 }, animationTime_ / 5.0f);
+	if(animationTime_ <= kMaxTime) {
+		titleColor_ = Vec4::Lerp(
+			{ 0, 0, 0, 1 },
+			{ 0.5f, 0.5f, 0.5f, 1 }, 
+			Ease::InOut::Expo(animationTime_ / kMaxTime)
+		);
+
 	} else {
-		titleColor_ = { 1,1,1,1 };
-		//titleColor_ = Vec4(1, 1, 1, 1) * (std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
-		//titleColor_.w = 1.0f; /// 固定
+		titleColor_ = { 0.5f, 0.5f, 0.5f, 1.0f };
 
 		CreateStartUI();
 	}

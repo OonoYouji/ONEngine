@@ -266,6 +266,9 @@
     <ClCompile Include="Game\Objects\GameTimer\GameTimer.cpp">
       <Filter>Game\Objects\GameTimer</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Math\Easing.cpp">
+      <Filter>ONEngine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -722,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameTimer\GameTimer.h">
       <Filter>Game\Objects\GameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Math\Easing.h">
+      <Filter>ONEngine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

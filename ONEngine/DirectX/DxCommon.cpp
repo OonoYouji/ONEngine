@@ -134,4 +134,8 @@ ID3D12Device* ONE::DxCommon::GetDevice() const {
 	return device_->GetDevice();
 }
 
+bool ONE::DxCommon::IsGpuExeEnded() {
+	return command_->IsExeCommandEnded();;
+}
+
 

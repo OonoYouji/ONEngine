@@ -60,6 +60,10 @@ public:
 
 	SCENE_ID GetCurrentScene() const { return currentId_; }
 
+
+	bool GetIsRunning() const { return isRunning_; }
+	void SetIsRunning(bool isRunning) { isRunning_ = isRunning; }
+
 private:
 
 	void Load(SCENE_ID id);
@@ -72,6 +76,8 @@ private:
 
 	class GameObjectManager* pGameObjectManager_ = nullptr;
 	class CollisionManager* pCollisionManager_ = nullptr;
+
+	bool isRunning_ = true;
 
 private:
 	SceneManager(const SceneManager&) = delete;

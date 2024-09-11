@@ -78,6 +78,8 @@ namespace ONE {
 
 		DxDepthStencil* GetDxDepthStencil() const { return depthStencil.get(); }
 
+		bool IsGpuExeEnded();
+
 	private:
 
 		/// ===================================================

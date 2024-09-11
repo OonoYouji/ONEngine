@@ -91,6 +91,7 @@
     <ClCompile Include="ONEngine\Input\Keyboard.cpp" />
     <ClCompile Include="ONEngine\Input\Mouse.cpp" />
     <ClCompile Include="ONEngine\Logger\Logger.cpp" />
+    <ClCompile Include="ONEngine\Math\Easing.cpp" />
     <ClCompile Include="ONEngine\Math\Matrix3x3.cpp" />
     <ClCompile Include="ONEngine\Math\Matrix4x4.cpp" />
     <ClCompile Include="ONEngine\Math\Vector2.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="ONEngine\Input\Keyboard.h" />
     <ClInclude Include="ONEngine\Input\Mouse.h" />
     <ClInclude Include="ONEngine\Logger\Logger.h" />
+    <ClInclude Include="ONEngine\Math\Easing.h" />
     <ClInclude Include="ONEngine\Math\Matrix3x3.h" />
     <ClInclude Include="ONEngine\Math\Matrix4x4.h" />
     <ClInclude Include="ONEngine\Math\Vector2.h" />

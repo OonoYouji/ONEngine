@@ -51,6 +51,8 @@ void GameStartUI::Update() {
 	if(Input::TriggerKey(KeyCode::Space)) {
 		if(currentSelectMode_) {
 			SceneManager::GetInstance()->SetNextScene(GAME);
+		} else {
+			SceneManager::GetInstance()->SetIsRunning(false);
 		}
 	}
 

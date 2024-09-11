@@ -163,6 +163,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	while(!winApp->ProcessMessage()) {
 
+		/// 終了命令がでたのでループを抜ける
+		if(!sceneManager->GetIsRunning()) {
+			break;
+		}
+
+
 		worldTime->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
@@ -240,6 +246,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
 #endif // _DEBUG
 
+	}
+
+
+	if(!dxCommon->IsGpuExeEnded()) {
+		assert(false);
 	}
 
 
