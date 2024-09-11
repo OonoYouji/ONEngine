@@ -91,7 +91,7 @@ void EnemyManager::PopCommands()
 			int count = (int)std::atof(word.c_str());
 			// インターバル
 			std::getline(line_stream, word, ',');
-			int interval = (int)std::atof(word.c_str());
+			int interval = (int)(std::atof(word.c_str()) * 60.0f);
 
 			commands_.push_back(std::make_pair(count, interval));
 
@@ -101,7 +101,7 @@ void EnemyManager::PopCommands()
 			std::getline(line_stream, word, ',');
 
 			//待ち時間
-			int32_t waitTime = atoi(word.c_str());
+			int32_t waitTime = (int32_t)(atoi(word.c_str()) * 60.0f);
 
 			isWait_ = true;
 			waitTimer_ = waitTime;
