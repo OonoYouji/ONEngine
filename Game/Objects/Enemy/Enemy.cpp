@@ -7,6 +7,8 @@
 Enemy::~Enemy()
 {
 	deathEffect_->Destory();
+	deathEffect_->Destory();
+	AcceleEffect_->Destory();
 }
 
 void Enemy::Initialize()
@@ -30,8 +32,8 @@ void Enemy::Initialize()
 	addLambdaCount = sinWave_->GetAddLabdaCount();
 
 	deathEffect_ = new Effect();
-	deathEffect_->Initialize();
 	deathEffect_->SetGrainMode(1);
+	deathEffect_->Initialize();
 	deathEffect_->SetOverType(0);
 	deathEffect_->OverTimeSetting(8, 4);
 	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30,true, true, 8.0f, 10.0f);
@@ -39,8 +41,8 @@ void Enemy::Initialize()
 
 
 	AcceleEffect_ = new Effect();
-	AcceleEffect_->Initialize();
 	AcceleEffect_->SetGrainMode(1);
+	AcceleEffect_->Initialize();
 	AcceleEffect_->SetOverType(1);
 	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20,true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
@@ -125,7 +127,7 @@ void Enemy::Update()
 					}
 				}
 				isDamage = false;
-				if (amplitude <= 20)
+				if (amplitude <= 4)
 				{
 					if (isMaybeDead)
 					{

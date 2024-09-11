@@ -22,7 +22,6 @@ void EnemyManager::Update() {
 void EnemyManager::EnemyPop()
 {
 	Enemy* newEnemy = new Enemy();
-	newEnemy->SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
 	newEnemy->Initialize();
 }
 

@@ -20,12 +20,18 @@ Effect::~Effect() {
 void Effect::Initialize() {
 
 	emitterName_ = "name";
-	model_ = ModelManager::CreateCube();
+	if (is3DMode_)
+	{
+		model_ = ModelManager::CreateCube();
+	}
 	transform_.Initialize();
 	drawLayerId = 1;
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
-	sprite_->SetSize({ 20.0f,20.0f });
+	if (is2DMode_)
+	{
+		sprite_->Initialize("uvChecker", "uvChecker.png");
+		sprite_->SetSize({ 20.0f,20.0f });
+	}
 }
 
 void Effect::Reset() {

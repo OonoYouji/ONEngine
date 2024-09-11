@@ -56,7 +56,7 @@ private:
 	Vector3 currentSize_{};
 
 	float xAccel = 0.0f;
-	float addAccel = 0.02f;
+	float addAccel = 0.2f;
 	float addDecel = 0.005f;
 	float acceleTime = 0.1f;
 
@@ -78,7 +78,7 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
-	float canJumpAccele = 0.2f;
+	float canJumpAccele = 0.05f;
 
 
 	bool isMaybeDead = false;
