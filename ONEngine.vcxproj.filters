@@ -266,6 +266,7 @@
     <ClCompile Include="Game\Objects\GameTimer\GameTimer.cpp">
       <Filter>Game\Objects\GameTimer</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyComboManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -723,6 +724,7 @@
     <ClInclude Include="Game\Objects\GameTimer\GameTimer.h">
       <Filter>Game\Objects\GameTimer</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyComboManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

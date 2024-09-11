@@ -130,6 +130,7 @@ void Enemy::Update()
 					if (isMaybeDead)
 					{
 						isDead = true;
+						isCombo = true;
 						/*deathSound_->PlayAudio();*/
 					}
 				}

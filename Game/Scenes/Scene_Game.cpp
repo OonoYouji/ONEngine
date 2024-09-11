@@ -17,6 +17,7 @@
 #include "GameTimer/GameTimer.h"
 #include "Background/Background.h"
 #include "GameManager/GameManager.h"
+#include "EnemyComboManager.h"
 
 
 
@@ -49,6 +50,10 @@ void Scene_Game::Initialize() {
 	/// 敵pop
 	EnemyManager* enemyManager_ = new EnemyManager();
 	enemyManager_->Initialize();
+
+	/// コンボの管理
+	EnemyComboManager* enemyComboManager_ = new EnemyComboManager();
+	enemyComboManager_->Initialize();
 
 	/// プレイヤーのHP
 	PlayerHP* playerHP = new PlayerHP();

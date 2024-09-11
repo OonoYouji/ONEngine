@@ -27,8 +27,10 @@ public:
 	void SetHeartBreak(bool is) { isHeartBreak = is; }
 
 	bool IsDead() { return isDead; }
-
+	bool IsCombo() { return isCombo; }
 	bool IsHeartBreak() { return isHeartBreak; }
+
+	void SetIsCombo(bool is) { isCombo = is; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -81,6 +83,7 @@ private:
 
 	bool isMaybeDead = false;
 	bool isDead = false;
+	bool isCombo = false;
 	int deadTime = 30;
 
 
