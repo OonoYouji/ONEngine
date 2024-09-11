@@ -23,6 +23,8 @@ void EnemyManager::EnemyPop()
 {
 	Enemy* newEnemy = new Enemy();
 	newEnemy->Initialize();
+	GameManager* gameManager = dynamic_cast<GameManager*>(GameObjectManager::GetGameObject("GameManager"));
+	gameManager->AddPausedObject(newEnemy);
 }
 
 void EnemyManager::LoadPopDate(const std::string& fileName)
