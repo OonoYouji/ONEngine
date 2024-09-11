@@ -50,7 +50,7 @@ void Grain2D::Update() {
 
 		}
 		if (speedType_ == ShiftSpeedType::kDeceleration) {
-
+			velocity_ *= shiftingSpeed_;
 		}
 		if (speedType_ == ShiftSpeedType::kAccele) {
 

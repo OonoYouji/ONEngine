@@ -45,6 +45,9 @@ private:
 	/// 発射後に速度が変わるのか
 	/// </summary>
 	ShiftSpeedType speedType_ = ShiftSpeedType::kNormal;
+	bool isNormal_ = true;
+	bool isDeceleration_ = false;
+	bool isAccele_ = false;
 	float shiftingSpeed_ = 0.0f;
 
 	/// <summary>

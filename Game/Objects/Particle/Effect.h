@@ -142,6 +142,7 @@ private:
 	bool isNormal_ = true;
 	bool isDeceleration_ = false;
 	bool isAccele_ = false;
+	ShiftSpeedType speedType = ShiftSpeedType::kNormal;
 
 	// どのくらい速度が変わるのか
 	float shiftingSpeed_ = 0.0f;//0だったら止まらない、1だとすぐに止まる

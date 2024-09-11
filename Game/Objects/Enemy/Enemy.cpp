@@ -141,7 +141,7 @@ void Enemy::Update()
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 25.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
+		if (amplitude > 15.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
 		{
 			if (!isfly)
 			{
@@ -183,7 +183,7 @@ void Enemy::Update()
 				{
 					t = 1.0f;
 				}
-				xAccel += (addAccel*(acceleTime*acceleTime))*t;
+				xAccel += (addAccel * (acceleTime * acceleTime)) * t;
 			}
 
 

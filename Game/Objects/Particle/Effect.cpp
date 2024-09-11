@@ -52,7 +52,7 @@ void Effect::Update() {
 		return false;
 		});*/
 
-	
+
 	transform_.UpdateMatrix();
 
 	if (isStart_) {
@@ -445,6 +445,15 @@ void Effect::Create2D() {
 		size_ = { randSize,randSize,randSize };
 	}
 
+	if (isNormal_) {
+		speedType = ShiftSpeedType::kNormal;
+	}
+	if (isDeceleration_) {
+		speedType = ShiftSpeedType::kDeceleration;
+	}
+	if (isAccele_) {
+		speedType = ShiftSpeedType::kAccele;
+	}
 
 
 	if (isOverTime_) {
