@@ -224,9 +224,6 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
-      <Filter>Game\Objects\GameResult</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp">
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
@@ -238,9 +235,6 @@
     </ClCompile>
     <ClCompile Include="ONEngine\Random\Random.cpp">
       <Filter>ONEngine\Random</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\GamTimer\GameTimer.cpp">
-      <Filter>Game\Objects\GameTimer</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\background\Background.cpp">
       <Filter>Game\Objects\Background</Filter>
@@ -259,6 +253,18 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Particle\Grain2D.cpp">
       <Filter>Game\Objects\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameOperationUI\GameOperationUI.cpp">
+      <Filter>Game\Objects\GameOperationUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp">
+      <Filter>Game\Objects\GameResult</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameManager\GameManager.cpp">
+      <Filter>Game\Objects\GameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameTimer\GameTimer.cpp">
+      <Filter>Game\Objects\GameTimer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -421,9 +427,6 @@
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{49e57276-de06-4e58-b068-f5b8330cb912}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\GameResult">
-      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Objects\Particle">
       <UniqueIdentifier>{1b25c62a-c384-4da8-b499-aa4c80065b2d}</UniqueIdentifier>
     </Filter>
@@ -441,6 +444,15 @@
     </Filter>
     <Filter Include="Game\Objects\GameStartUI">
       <UniqueIdentifier>{4f1991a1-1ac6-4258-a6ae-6aa17f64f547}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameOperationUI">
+      <UniqueIdentifier>{b89496ff-d763-4fa5-9aed-636d67835b0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameResult">
+      <UniqueIdentifier>{d467a66b-5ac1-40fa-bb27-1792e207a02c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameManager">
+      <UniqueIdentifier>{bbcf32fa-2fcd-4b7a-95d5-230c8515f64f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -669,9 +681,6 @@
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameResult\GameResult.h">
-      <Filter>Game\Objects\GameResult</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h">
       <Filter>Game\Objects\Enemy</Filter>
     </ClInclude>
@@ -683,9 +692,6 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Random\Random.h">
       <Filter>ONEngine\Random</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\GamTimer\GameTimer.h">
-      <Filter>Game\Objects\GameTimer</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\background\Background.h">
       <Filter>Game\Objects\Background</Filter>
@@ -704,6 +710,18 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Particle\Grain2D.h">
       <Filter>Game\Objects\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameOperationUI\GameOperationUI.h">
+      <Filter>Game\Objects\GameOperationUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameResult\GameResult.h">
+      <Filter>Game\Objects\GameResult</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameManager\GameManager.h">
+      <Filter>Game\Objects\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameTimer\GameTimer.h">
+      <Filter>Game\Objects\GameTimer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

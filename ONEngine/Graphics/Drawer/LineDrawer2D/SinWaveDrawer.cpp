@@ -24,19 +24,33 @@ void SinWaveDrawer::Update() {
 	padLstick = Input::GetInsatnce()->GetLStick();
 	padRstick = Input::GetInsatnce()->GetRStick();
 
-	if (padLstick.y > 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
+	if ((padLstick.y > 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191))) || Input::GetInsatnce()->PressKey(KeyCode::W))
 	{
-		float stickSlope = padLstick.y / 16384.0f;
-		amplitude += addPadAmp * (stickSlope * stickSlope);
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::W)))
+		{
+			float stickSlope = padLstick.y / 16384.0f;
+			amplitude += addPadAmp * (stickSlope * stickSlope);
+		}
+		else
+		{
+			amplitude += addPadAmp * 1.75f;
+		}
 		if (amplitude >= 170)
 		{
 			amplitude = 170;
 		}
 	}
-	else if (padLstick.y < 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191)))
+	else if ((padLstick.y < 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191))) || Input::GetInsatnce()->PressKey(KeyCode::S))
 	{
-		float stickSlope = -(padLstick.y) / 16384.0f;
-		amplitude -= addPadAmp * (stickSlope * stickSlope);
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::S)))
+		{
+			float stickSlope = -(padLstick.y) / 16384.0f;
+			amplitude -= addPadAmp * (stickSlope * stickSlope);
+		}
+		else
+		{
+			amplitude -= addPadAmp * 1.75f;
+		}
 		if (amplitude <= 4.0f)
 		{
 			amplitude = 4.0f;
@@ -44,19 +58,33 @@ void SinWaveDrawer::Update() {
 	}
 
 
-	if (padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
+	if ((padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::L))
 	{
-		float stickSlope = padRstick.x / 16384.0f;
-		addlambda -= addPadLam * (stickSlope);
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::L)))
+		{
+			float stickSlope = padRstick.x / 16384.0f;
+			addlambda -= addPadLam * (stickSlope);
+		}
+		else
+		{
+			addlambda -= addPadLam * 1.4f;
+		}
 		if (addlambda <= -1393.0f)
 		{
 			addlambda = 0;
 		}
 	}
-	else if (padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191)))
+	else if ((padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::J))
 	{
-		float stickSlope = -(padRstick.x) / 16384.0f;
-		addlambda += addPadLam * (stickSlope);
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::J)))
+		{
+			float stickSlope = -(padRstick.x) / 16384.0f;
+			addlambda += addPadLam * (stickSlope);
+		}
+		else
+		{
+			addlambda += addPadLam * 1.4f;
+		}
 		if (addlambda >= 1393.0f)
 		{
 			addlambda = 0;

@@ -24,6 +24,7 @@ public:
 	void Draw()override;
 	void FrontSpriteDraw()override;
 
+	void SetIsDead(bool is) { isDead_ = is; }
 	bool IsDead()const { return isDead_; }
 
 private:

@@ -40,6 +40,8 @@ public:
 	
 	static std::string CreateName(const BaseGameObject* const object);
 
+	static bool IsAliveObject(BaseGameObject* object);
+
 
 	/// <summary>
 	/// 初期化
@@ -57,12 +59,12 @@ public:
 	/// <summary>
 	///  オブジェクトのUpdate呼び出し
 	/// </summary>
-	void Update(int currentSceneId);
+	void Update();
 
 	/// <summary>
 	/// オブジェクトのLastUpdate呼び出し
 	/// </summary>
-	void LastUpdate(int currentSceneId);
+	void LastUpdate();
 
 	void BackSpriteDraw(int layerId);
 	void Object3dDraw(int layerId);
@@ -123,6 +125,7 @@ private:
 	BaseGameObject* selectObject_ = nullptr;
 
 	std::list<BaseGameObject*> destoryList_;
+	std::list<BaseGameObject*> addObjectList_;
 
 private:
 	GameObjectManager(const GameObjectManager&) = delete;

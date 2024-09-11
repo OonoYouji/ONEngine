@@ -22,12 +22,28 @@ void Enemy::Initialize()
 	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
+	//deathSound_ = new AudioSource();
+	//deathSound_->SetAudioClip("enemyDeath.wav");
+
 	beforlambda = addlambda;
 	addLambdaCount = sinWave_->GetAddLabdaCount();
 
 	deathEffect_ = new Effect();
 	deathEffect_->Initialize();
 	deathEffect_->SetGrainMode(1);
+	deathEffect_->SetOverType(0);
+	deathEffect_->OverTimeSetting(8, 4);
+	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30, true, 8.0f, 10.0f);
+	deathEffect_->ShapeType(1);
+
+
+	AcceleEffect_ = new Effect();
+	AcceleEffect_->Initialize();
+	AcceleEffect_->SetGrainMode(1);
+	AcceleEffect_->SetOverType(1);
+	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -1.0f, { 5.0f,5.0f,0.0f }, 20, true, 10.0f, 14.0f);
+	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
+	AcceleEffect_->ShapeType(1);
 
 }
 
@@ -108,6 +124,7 @@ void Enemy::Update()
 					if (isMaybeDead)
 					{
 						isDead = true;
+						/*deathSound_->PlayAudio();*/
 					}
 				}
 				isMaybeDead = false;
@@ -117,7 +134,7 @@ void Enemy::Update()
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 25.0f && -(amplitude)+10.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
+		if (amplitude > 25.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
 		{
 			if (!isfly)
 			{
@@ -152,6 +169,7 @@ void Enemy::Update()
 			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
 			{
+				AcceleEffect_->EffectStart();
 				acceleTime += 0.01f;
 				float t = amplitude / maxAcceleAmp;
 				if (t >= 1.0f)
@@ -165,6 +183,7 @@ void Enemy::Update()
 			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
 				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 			{
+				AcceleEffect_->EffectStop();
 				acceleTime = 0.3f;
 				float t = amplitude / maxAcceleAmp;
 				if (t >= 1.0f)
@@ -180,14 +199,14 @@ void Enemy::Update()
 
 		if (pos.x < 0)
 		{
-			if (roopCount >= 0)
+			if (roopCount == 0)
 			{
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
-			else if (roopCount == 100)
+			else if (roopCount == 1)
 			{
 				isHeartBreak = true;
 				isDead = true;
@@ -196,8 +215,8 @@ void Enemy::Update()
 		}
 	}
 
-	/*deathEffect_->SetPos({ pos.x,pos.y });*/
-
+	deathEffect_->SetPos({ pos.x,pos.y });
+	AcceleEffect_->SetPos({ pos.x,pos.y });
 }
 
 void Enemy::LastUpdate()
@@ -217,6 +236,10 @@ void Enemy::LastUpdate()
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
+			if (deadTime == 25)
+			{
+				deathEffect_->EffectStart();
+			}
 		}
 	}
 }

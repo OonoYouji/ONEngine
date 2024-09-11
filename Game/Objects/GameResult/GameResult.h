@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
-
 #include <GameObjectManager.h>
-#include <AudioManager.h>
+#include <Sprite.h>
 
 class GameResult final : public BaseGameObject {
 public:
@@ -13,12 +11,9 @@ public:
 
 	void Initialize() override;
 	void Update() override;
-	void Draw() override;
+
+	void BackSpriteDraw() override;
 
 private:
-	Model* paper_ = nullptr;
-	Model* binder_ = nullptr;
-
-	AudioSource* audioSource_;
-	
+	std::unique_ptr<Sprite> sprite_;
 };

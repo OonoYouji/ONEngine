@@ -26,7 +26,7 @@ void CollisionManager::SubGameObject(BaseGameObject* collider) {
 }
 
 
-void CollisionManager::Update(int currentSceneId) {
+void CollisionManager::Update() {
 
 	currentCollidedPairs_.clear();
 

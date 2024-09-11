@@ -3,6 +3,9 @@
 #include <ImGuiManager.h>
 #include <Collision/CollisionManager.h>
 
+#include <BaseCamera.h>
+#include <Light/DirectionalLight.h>
+
 
 /// ===================================================
 /// 初期化
@@ -28,7 +31,15 @@ void GameObjectManager::GameObjectInitialize(int sceneId) {
 /// ===================================================
 /// 更新
 /// ===================================================
-void GameObjectManager::Update(int currentSceneId) {
+void GameObjectManager::Update() {
+
+	if(!addObjectList_.empty()) {
+		for(auto& object : addObjectList_) {
+			std::unique_ptr<BaseGameObject> newObject(object);
+			objects_.push_back(std::move(newObject));
+		}
+		addObjectList_.clear();
+	}
 
 	ReName();
 
@@ -39,7 +50,7 @@ void GameObjectManager::Update(int currentSceneId) {
 	}
 }
 
-void GameObjectManager::LastUpdate(int currentSceneId) {
+void GameObjectManager::LastUpdate() {
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
 		obj->LastUpdate();
@@ -84,8 +95,8 @@ void GameObjectManager::FrontSpriteDraw(int layerId) {
 /// ゲームオブジェクトの追加
 /// ===================================================
 void GameObjectManager::AddGameObject(BaseGameObject* object) {
-	std::unique_ptr<BaseGameObject> newObject(object);
-	objects_.push_back(std::move(newObject));
+	addObjectList_.push_back(object);
+
 }
 
 
@@ -145,14 +156,24 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 		return false;
 	});
 
+	if(!result) {
+		auto addObjectListItr = std::find_if(insntance->addObjectList_.begin(), insntance->addObjectList_.end(), [&name](BaseGameObject* object) {
+			if(object->GetName() == name) {
+				return true;
+			}
+			return false;
+		});
+		result = (*addObjectListItr);
+	}
+
 	return result;
 }
 
 uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
 	GameObjectManager* instance = GetInstance();
 	uint32_t count = 0U;
-	for (const auto& object : instance->objects_) {
-		if (object->GetTag() == tag) {
+	for(const auto& object : instance->objects_) {
+		if(object->GetTag() == tag) {
 			count++;
 		}
 	}
@@ -162,11 +183,19 @@ uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
 std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag) {
 	GameObjectManager* instance = GetInstance();
 	std::list<BaseGameObject*> result;
-	for (const auto& object : instance->objects_) {
-		if (object->GetTag() == tag) {
+	for(const auto& object : instance->objects_) {
+		if(object->GetTag() == tag) {
 			result.push_back(object.get());
 		}
 	}
+
+	for(const auto& object : instance->addObjectList_) {
+		if(object->GetTag() == tag) {
+			result.push_back(object);
+		}
+	}
+
+
 	return result;
 }
 
@@ -175,7 +204,34 @@ std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::strin
 /// ===================================================
 void GameObjectManager::DestoryAll() {
 	GameObjectManager* insntance = GetInstance();
-	insntance->objects_.clear();
+
+
+
+	insntance->objects_.remove_if([](const std::unique_ptr<BaseGameObject>& obj) {
+		auto IsDelete = [](BaseGameObject* obj) -> bool {
+			if(dynamic_cast<DirectionalLight*>(obj) != nullptr) {
+				return false;
+			}
+			if(dynamic_cast<BaseCamera*>(obj) != nullptr) {
+				return false;
+			}
+			return true;
+		};
+
+		bool isDelete = true;
+		isDelete &= IsDelete(obj.get());
+		isDelete &= IsDelete(obj->GetParent());
+		for(auto& child : obj->GetChilds()) {
+			isDelete &= IsDelete(child);
+		}
+
+		if(isDelete) {
+			CollisionManager::GetInstance()->SubGameObject(obj.get());
+		}
+
+		return isDelete;
+	});
+
 	insntance->selectObject_ = nullptr;
 }
 
@@ -183,6 +239,25 @@ std::string GameObjectManager::CreateName(const BaseGameObject* const object) {
 	std::string name = typeid(*object).name();
 	name = name.substr(std::string("class ").length());
 	return name;
+}
+
+bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
+	GameObjectManager* instance = GetInstance();
+
+	auto CheckAlive = [&object](const std::unique_ptr<BaseGameObject>& obj) { return obj.get() == object; };
+	auto itr = std::find_if(instance->objects_.begin(), instance->objects_.end(), CheckAlive);
+
+	if(itr != instance->objects_.end()) {
+		return true;
+	} 
+	
+	auto CheckAlivePtr = [&object](const BaseGameObject* obj) { return obj == object; };
+	auto addObjItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), CheckAlivePtr);
+	if(addObjItr != instance->addObjectList_.end()) {
+		return true;
+	} 
+
+	return false;
 }
 
 

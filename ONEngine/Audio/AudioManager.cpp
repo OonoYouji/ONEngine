@@ -74,7 +74,7 @@ void AudioManager::Update() {
 
 void AudioManager::Load(const std::string& filePath) {
 	AudioManager* instance = GetInstance();
-	
+
 	/// mapに存在するか確認
 	if(instance->clips_.find(filePath) != instance->clips_.end()) {
 		assert(false);
@@ -88,7 +88,7 @@ void AudioManager::Load(const std::string& filePath) {
 		return;
 	}
 
-	instance->clips_[filePath] = 
+	instance->clips_[filePath] =
 		instance->LoadWave(instance->kDirectoryPath_ + filePath);
 }
 
@@ -120,58 +120,79 @@ void AudioManager::SubAudioSource(AudioSource* source) {
 
 
 AudioClip AudioManager::LoadWave(const std::string& filePath) {
-	HRESULT hr = S_FALSE;
+	AudioClip audioClip{};
 
-	///- ファイルオープン
-	std::ifstream file;
-	file.open(filePath, std::ios_base::binary); //- .wavをバイナリモードで開く
-	assert(file.is_open());
-
-
-	///- .wavデータの読み込み
-	RiffHeader riff;
-	file.read((char*)&riff, sizeof(riff));
-
-	///- ファイルがRIFFかどうか確認する
-	if(strncmp(riff.chunk.id, "RIFF", 4) != 0) { assert(false); }
-	///- ファイルがWAVEかチェック
-	if(strncmp(riff.type, "WAVE", 4) != 0) { assert(false); }
-
-	FormatChunk format{};
-	file.read((char*)&format, sizeof(ChunkHeader));
-
-	///- チャンクヘッダの確認
-	if(strncmp(format.chunk.id, "fmt ", 4) != 0) { assert(false); }
-
-	///- チャンク本体の読み込み
-	assert(format.chunk.size <= sizeof(format.fmt));
-	file.read((char*)&format.fmt, format.chunk.size);
-
-	ChunkHeader data;
-	file.read((char*)&data, sizeof(data));
-
-	///- JUNKチャンクを検出した場合
-	if(strncmp(data.id, "JUNK", 4) == 0) {
-
-		file.seekg(data.size, std::ios_base::cur);
-		file.read((char*)&data, sizeof(data));
+	std::ifstream file(filePath, std::ios::binary);
+	if(!file) {
+		assert(false);
 	}
 
-	if(strncmp(data.id, "data", 4) != 0) { assert(false); }
+	// WAVヘッダの読み込み
+	char chunkId[4];
+	file.read(chunkId, 4);
+	if(std::strncmp(chunkId, "RIFF", 4) != 0) {
+		assert(false);
+	}
 
-	///- Dataチャンクのデータ部(波形データ)の読み込み
-	char* pBuffer = new char[data.size];
-	file.read(pBuffer, data.size);
+	file.ignore(4); // ChunkSizeをスキップ
 
-	///- ファイルクローズ
+	file.read(chunkId, 4);
+	if(std::strncmp(chunkId, "WAVE", 4) != 0) {
+		assert(false);
+	}
+
+	// fmtチャンクを探す
+	bool fmtFound = false;
+	while(file.read(chunkId, 4)) {
+		uint32_t chunkSize;
+		file.read(reinterpret_cast<char*>(&chunkSize), sizeof(chunkSize));
+
+		if(std::strncmp(chunkId, "fmt ", 4) == 0) {
+			fmtFound = true;
+			if(chunkSize >= sizeof(WAVEFORMATEX)) {
+				file.read(reinterpret_cast<char*>(&audioClip.wfex), sizeof(WAVEFORMATEX));
+
+				// fmtChunkSize が WAVEFORMATEX よりも大きい場合は、余分なデータをスキップ
+				if(chunkSize > sizeof(WAVEFORMATEX)) {
+					file.ignore(chunkSize - sizeof(WAVEFORMATEX));
+				}
+			} else if(chunkSize == 40) {
+				file.read(reinterpret_cast<char*>(&audioClip.wfex), sizeof(WAVEFORMATEX));
+
+				// 追加の16バイト（WAVEFORMATEXを超える部分）をスキップ
+				file.ignore(chunkSize - sizeof(WAVEFORMATEX));
+			} else {
+				assert(false);
+			}
+			break;
+		} else {
+			// チャンクをスキップ
+			file.ignore(chunkSize);
+		}
+	}
+
+	if(!fmtFound) {
+		assert(false);
+	}
+
+	// dataチャンクまでスキップ
+	file.read(chunkId, 4);
+	while(std::strncmp(chunkId, "data", 4) != 0) {
+		uint32_t chunkSize;
+		file.read(reinterpret_cast<char*>(&chunkSize), sizeof(chunkSize));
+		file.ignore(chunkSize);
+		file.read(chunkId, 4);
+	}
+
+	uint32_t dataSize;
+	file.read(reinterpret_cast<char*>(&dataSize), sizeof(dataSize));
+
+	audioClip.pBuffer = new BYTE[dataSize];
+	file.read(reinterpret_cast<char*>(audioClip.pBuffer), dataSize);
+
+	audioClip.bufferSize = dataSize;
+
 	file.close();
-
-	///- 読み込んだ音声データをreturn
-	AudioClip soundData{};
-	soundData.wfex = format.fmt;
-	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
-	soundData.bufferSize = data.size;
-
-	return soundData;
+	return audioClip;
 }
 

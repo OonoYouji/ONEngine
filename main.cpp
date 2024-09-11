@@ -79,8 +79,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	textureManager->Load("Hand", "Hand.png");
 	textureManager->Load("paper", "paper.png");
+	textureManager->Load("sousa", "sousa.png");
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
+	textureManager->Load("particle", "particle.png");
 
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
@@ -120,15 +122,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::GAME);
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
 	{
 		std::string names[2]{ "monitor", "game" };
-		BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		//BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
+		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
+		BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);
@@ -175,16 +177,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
 		}
 
-
-		worldTime->ImGuiDebug();
-		gameObjectManager->ImGuiDebug();
-		collisionManager->ImGuiDebug();
-		renderTexManager->ImGuiDebug();
-		for(auto& layer : layers) {
-			layer->ImGuiDebug();
-		}
-
 #ifdef _DEBUG
+
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
 		}
@@ -194,9 +188,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(Input::TriggerKey(KeyCode::Alpha2)) {
 			drawLayerIndex = 1;
 		}
-#endif // _DEBUG
-
 		
+		/// ImGuiの表示
+		worldTime->ImGuiDebug();
+		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
+		renderTexManager->ImGuiDebug();
+		sceneManager->ImGuiDebug();
+		for(auto& layer : layers) {
+			layer->ImGuiDebug();
+		}
+		
+#endif // _DEBUG
 
 		cameraManager->Update();
 

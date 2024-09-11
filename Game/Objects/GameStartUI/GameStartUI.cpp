@@ -1,11 +1,13 @@
 #define NOMINMAX
 #include "GameStartUI.h"
 
+#include <SceneManager.h>
 #include <ImGuiManager.h>
 #include <WorldTime.h>
 #include <Input.h>
 
 #include <numbers>
+
 
 
 
@@ -18,7 +20,7 @@ void GameStartUI::Initialize() {
 
 	for(auto& arrow : arrows_) {
 		arrow.reset(new Sprite);
-		arrow->Initialize("uvChecker", "uvChecker.png");
+		arrow->Initialize("arrow", "arrow.png");
 	}
 
 	offset_ = { 640.0f, 500.0f, 0.0f };
@@ -31,6 +33,7 @@ void GameStartUI::Initialize() {
 
 	spriteColor_ = { 0,0,0,0 };
 
+	currentSelectMode_ = 1; /// start で初期化
 }
 
 void GameStartUI::Update() {
@@ -42,6 +45,14 @@ void GameStartUI::Update() {
 		currentSelectMode_ = std::min(currentSelectMode_ + 1, 1);
 	}
 
+	/// ////////////////////////////////////////////////////////////////////////
+	/// ゲームシーンに遷移する || ゲームを終わる
+	/// ////////////////////////////////////////////////////////////////////////
+	if(Input::TriggerKey(KeyCode::Space)) {
+		if(currentSelectMode_) {
+			SceneManager::GetInstance()->SetNextScene(GAME);
+		}
+	}
 
 	/// 文字の色をイージングする
 	animationTime_ += WorldTime::DeltaTime();

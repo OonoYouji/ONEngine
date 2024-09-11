@@ -14,6 +14,8 @@ public:
 
 	void Debug()override;
 
-private:
+	void SetGameManager(class GameManager* gameManager);
 
+private:
+	class GameManager* pGameManager_ = nullptr;
 };

@@ -5,30 +5,19 @@
 #include <Input.h>
 #include "Enemy/Enemy.h"
 #include "Drawer/LineDrawer2D/SinWaveDrawer.h"
+#include "GameManager/GameManager.h"
 
 
+void EnemyManager::Initialize() {
 
-void EnemyManager::Initialize()
-{
-}
-
-void EnemyManager::Update()
-{
-
-	if (Input::GetInsatnce()->TriggerPadButton(PadCode::RightShoulder))
-	{
-		Enemy* newEnemy = new Enemy();
-		newEnemy->SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
-		newEnemy->Initialize();
-	}
 
 }
 
-void EnemyManager::Debug()
-{
-	if (ImGui::TreeNodeEx("EnemyManager", ImGuiTreeNodeFlags_DefaultOpen)) {
-		if (ImGui::Button("Enemy Pop"))
-		{
+void EnemyManager::Update() {}
+
+void EnemyManager::Debug() {
+	if(ImGui::TreeNodeEx("EnemyManager", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if(ImGui::Button("Enemy Pop")) {
 			Enemy* newEnemy = new Enemy();
 			newEnemy->SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
 			newEnemy->Initialize();
@@ -36,4 +25,8 @@ void EnemyManager::Debug()
 
 		ImGui::TreePop();
 	}
+}
+
+void EnemyManager::SetGameManager(GameManager* gameManager) {
+	pGameManager_ = gameManager;
 }

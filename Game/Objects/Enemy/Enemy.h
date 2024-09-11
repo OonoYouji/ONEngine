@@ -1,6 +1,7 @@
 #pragma once
 #include <GameObjectManager.h>
 #include <BaseGameObject.h>
+#include <AudioManager.h>
 #include <Sprite.h>
 #include "Particle/Effect.h"
 
@@ -86,5 +87,8 @@ private:
 	bool isHeartBreak = false;
 
 
+	Effect* AcceleEffect_;
 	Effect* deathEffect_;
+	//AudioSource* deathSound_;
+
 };

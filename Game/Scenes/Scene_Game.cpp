@@ -4,22 +4,19 @@
 #include <ModelManager.h>
 #include <CameraManager.h>
 #include <SceneManager.h>
-#include <Audio/AudioManager.h>
+#include <Input.h>
 
-#include "Player/Player.h"
 #include "GameMonitor/GameMonitor.h"
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
-#include "Shake/Shake.h"
 #include "Player/PlayerHP.h"
-#include "GameCameraState/GameCameraState.h"
-#include "GameResult/GameResult.h"
+#include "GameOperationUI/GameOperationUI.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyManager.h"
-#include "GamTimer/GameTimer.h"
+#include "GameTimer/GameTimer.h"
 #include "Background/Background.h"
-#include "GameTitle/GameTitle.h"
+#include "GameManager/GameManager.h"
 
 
 
@@ -28,6 +25,17 @@
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
+
+
+	/// カメラの座標を計算
+	BaseCamera* camera =
+		CameraManager::GetInstance()->GetCamera("GameCamera");
+	camera->SetMove(
+		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
+		{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
+		0.5f
+	);
+
 
 	/// 波
 	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
@@ -79,12 +87,15 @@ void Scene_Game::Initialize() {
 	monitorBG->SetColor({ 0, 0, 0, 1 });
 
 	//(new GameCameraState)->Initialize();
-	(new GameResult)->Initialize();
+	(new GameOperationUI)->Initialize();
 
 	GameTimer* gameTimer = new GameTimer;
 	gameTimer->Initialize();
 	gameTimer->SetMaxTime(10.0f);
 
+	GameManager* gameManager = new GameManager;
+	gameManager->Initialize();
+	enemyManager_->SetGameManager(gameManager);
 
 }
 
@@ -93,7 +104,9 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-
+	/*if(Input::TriggerKey(KeyCode::Space)) {
+		SceneManager::GetInstance()->SetNextScene(TITLE);
+	}*/
 }
 
 
