@@ -83,20 +83,15 @@ void GameStartUI::Update() {
 	   || Input::TriggerKey(KeyCode::Space)
 	   || Input::TriggerPadButton(PadCode::A)) {
 
-		kettei_->PlayAudio();
+		/// どちらも選択されていなければ
+		if(!isGameEnded_ && !isGameStart_) {
+			kettei_->PlayAudio();
 
-		/// ゲームスタートを選択した
-		if(currentSelectMode_) {
-
-			EffectStartInitialize();
-
-			/// ゲーム終了を選択した
-		} else {
-
-			/// 画面を閉じる演出をしてから ↓ をする
-			//SceneManager::GetInstance()->SetIsRunning(false);
-
-
+			if(currentSelectMode_) { /// ゲームスタートを選択した
+				EffectStartInitialize();
+			} else { /// ゲーム終了を選択した
+				GameEndedEffectInitialize();
+			}
 		}
 	}
 
@@ -109,8 +104,10 @@ void GameStartUI::Update() {
 	}
 	spriteColor_.w = 1.0f;
 
-	/// ゲームスタート後の更新処理
-	EffectStartedUpdate();
+	
+	EffectStartedUpdate();		/// ゲームスタート後の更新処理
+	GameEndedEffectUpdate();	/// ゲーム終了後の更新処理
+
 
 	SettingSprites();
 	RecalculateArrowPosition();
@@ -212,10 +209,6 @@ void GameStartUI::EffectStartInitialize() {
 		pGameOperationUI_->UpdateMatrix();
 		pGameOperationUI_->isActive = false;
 
-		pBackGround_ = new Background();
-		pBackGround_->Initialize();
-
-		/// ブルームエフェクトを適用する
 		auto monitorLayer = SceneManager::GetInstance()->GetSceneLayer(0);
 		monitorLayer->SetIsApplyBloom(false, FRONT_SPRITE);
 
@@ -280,17 +273,30 @@ void GameStartUI::EffectStartedUpdate() {
 			pGameOperationUI_->UpdateMatrix();
 		}
 
-		if(pBackGround_) {
-			pBackGround_->SetColor(Vec4::Lerp(
-				{ 0, 0, 0, 1 }, { 0, 20.0f / 255.0f, 0, 1 },
-				lerpT
-			));
-		}
-
 		if(lerpT == 1.0f) {
 			SceneManager::GetInstance()->SetNextScene(GAME);
 		}
 
 	}
+
+}
+
+
+
+void GameStartUI::GameEndedEffectInitialize() {
+	if(!isGameEnded_) {
+		isGameEnded_ = true;
+
+
+	}
+
+}
+
+void GameStartUI::GameEndedEffectUpdate() {
+	if(!isGameEnded_) {
+		return;
+	}
+
+
 
 }

@@ -24,4 +24,7 @@ private:
 	Vec4 color_{ 0,20.0f / 255.0f,0,1 };
 	float maxTime_ = 0.0f;
 	float currentTime_ = 0.0f;
+
+	std::vector<std::unique_ptr<Sprite>> numbers_;
+
 };

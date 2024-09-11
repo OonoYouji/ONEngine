@@ -28,4 +28,6 @@ private:
 
 	bool isFrontBinder_ = false;
 
+	class AudioSource* sousa_ = nullptr;
+
 };

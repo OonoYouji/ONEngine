@@ -22,21 +22,14 @@
 
 
 
+Scene_Game::~Scene_Game() {
+	bgm_->StopAudioAll();
+}
+
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
-
-
-	/*/// カメラの座標を計算
-	BaseCamera* camera =
-		CameraManager::GetInstance()->GetCamera("GameCamera");
-	camera->SetMove(
-		{ {0.0f, 0.2f, -15.0f}, { 0.0f, 0.0f, 0.0f } },
-		{ {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f } },
-		0.5f
-	);*/
-
 
 	/// 波
 	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
@@ -104,7 +97,10 @@ void Scene_Game::Initialize() {
 
 
 
-	
+	bgm_ = new AudioSource;
+	bgm_->SetAudioClip("BGM.wav");
+	bgm_->isLoop = true;
+	//bgm_->PlayAudio();
 
 }
 
@@ -113,9 +109,9 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	/*if(Input::TriggerKey(KeyCode::Space)) {
-		SceneManager::GetInstance()->SetNextScene(TITLE);
-	}*/
+	
+
+
 }
 
 

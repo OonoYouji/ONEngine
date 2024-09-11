@@ -39,6 +39,8 @@ private:
 	Model* model_ = nullptr;
 	/// other class pointer
 	class SinWaveDrawer* pSinWaveDrawer_ = nullptr;
+	class AudioSource* sinon_ = nullptr;
+	bool isPlaying_ = false;
 };
 
 

@@ -6,19 +6,27 @@
 
 void GameTimer::Initialize() {
 	sprite_.reset(new Sprite);
-	sprite_->Initialize("white2x2", "white2x2.png");
+	sprite_->Initialize("60", "60.png");
 	transform_.position = Vec3(640, 360, 0);
 	transform_.scale = Vec3(640.0f, 360.0f, 1.0f);
 
 	currentTime_ = 0.0f;
 
+	/*numbers_.push_back(std::make_unique<Sprite>());
+	numbers_.push_back(std::make_unique<Sprite>());
+
+	for(uint32_t i = 0u; i < uint32_t(numbers_.size()); ++i) {
+		numbers_[i]->Initialize("6", "6.png");
+		numbers_[i]->;
+	}*/
+
 }
 
 void GameTimer::Update() {
 
-	currentTime_ += WorldTime::DeltaTime();
+	/*currentTime_ += WorldTime::DeltaTime();
 	float t = currentTime_ / maxTime_;
-	transform_.position.y = std::lerp(360.0f, 720.0f + 360.0f, t);
+	transform_.position.y = std::lerp(360.0f, 720.0f + 360.0f, t);*/
 
 	UpdateMatrix();
 	sprite_->SetPos(GetPosition());
@@ -35,7 +43,7 @@ void GameTimer::Debug() {
 		ImGui::ColorEdit4("color", &color_.x);
 		ImGui::TreePop();
 	}
-	
+
 	if(ImGui::TreeNodeEx("time", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::DragFloat("max time", &maxTime_, 0.1f);
 		ImGui::DragFloat("current time", &currentTime_, 0.1f);

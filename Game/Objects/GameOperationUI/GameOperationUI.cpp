@@ -6,6 +6,7 @@
 #include <ModelManager.h>
 #include <Input.h>
 #include <WorldTime.h>
+#include <AudioSource.h>
 
 void GameOperationUI::Initialize() {
 	drawLayerId = 1;
@@ -25,6 +26,9 @@ void GameOperationUI::Initialize() {
 	/// {-3.6f, 0.15f, -4.7f}
 	maxLerpTime_ = 0.2f;
 
+	sousa_ = new AudioSource();
+	sousa_->SetAudioClip("sousa.wav");
+
 }
 
 void GameOperationUI::Update() {
@@ -32,6 +36,12 @@ void GameOperationUI::Update() {
 	/// 値を初期化
 	isFrontBinder_ = false;
 
+
+	/// enter を押すか　game pad RB を押す
+	if(Input::TriggerKey(KeyCode::Enter)
+	   || Input::TriggerPadButton(PadCode::RightShoulder)) {
+		sousa_->PlayAudio();
+	}
 
 	/// enter を押すか　game pad RB を押す
 	if(Input::PressKey(KeyCode::Enter)
@@ -70,7 +80,7 @@ void GameOperationUI::Update() {
 		bool isTriggerKey = false;
 		isTriggerKey |= Input::TriggerKey(KeyCode::Escape);
 		isTriggerKey |= Input::TriggerPadButton(PadCode::LeftShoulder);
-		
+
 		if(isTriggerKey) {
 			SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
 		}

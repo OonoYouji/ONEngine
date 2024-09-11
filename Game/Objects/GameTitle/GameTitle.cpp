@@ -39,7 +39,9 @@ void GameTitle::Update() {
 	GameStart();
 
 	/// せっかち用のショートカット
-	if(Input::TriggerKey(KeyCode::Enter) || Input::TriggerPadButton(PadCode::A)) {
+	if(Input::TriggerKey(KeyCode::Enter)
+	   || Input::TriggerKey(KeyCode::Space)
+	   || Input::TriggerPadButton(PadCode::A)) {
 		SettingCameraAnimation();
 		CreateStartUI();
 	}

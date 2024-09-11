@@ -5,8 +5,11 @@
 #include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <WorldTime.h>
+#include <AudioSource.h>
+
 #include "Player/PlayerHP.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
+
 
 void Heart::Initialize() {
 
@@ -66,7 +69,10 @@ void HeartBottom::Initialize() {
 	amplitude_ = 0.6f;
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
-	//assert(pSinWaveDrawer_ != nullptr);
+
+	sinon_ = new AudioSource();
+	sinon_->SetAudioClip("kettei.wav");
+
 }
 
 void HeartBottom::Update() {
@@ -74,8 +80,23 @@ void HeartBottom::Update() {
 
 	animationTime_ += WorldTime::DeltaTime() * (pSinWaveDrawer_->GetAmplitude() / 100.0f);
 
-	float heartBeat = amplitude_ * (std::sin(speed_ * animationTime_) * 0.5f + 0.5f);
+	float sinValue = std::sin(speed_ * animationTime_) * 0.5f + 0.5f;
+	float heartBeat = amplitude_ * sinValue;
 	transform_.scale = Vec3::kOne + (Vec3::kOne * heartBeat);
+
+
+	/// 再生していたら
+	if(isPlaying_) {
+		if(sinValue <= 0.02f) {
+			isPlaying_ = false;
+		}
+	} else { /// 再生していなければ
+		if(sinValue >= 0.98f) {
+			sinon_->PlayAudio();
+			isPlaying_ = true;
+		}
+	}
+
 }
 
 void HeartBottom::Draw() {

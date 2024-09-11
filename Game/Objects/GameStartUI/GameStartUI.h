@@ -24,9 +24,13 @@ public:
 		return isGameStart_;
 	}
 
-	void EffectStartInitialize();
 
+	void EffectStartInitialize();
 	void EffectStartedUpdate();
+
+
+	void GameEndedEffectInitialize();
+	void GameEndedEffectUpdate();
 
 private:
 
@@ -50,6 +54,7 @@ private:
 	uint8_t currentSelectMode_ = 0;
 
 	bool isGameStart_ = false;
+	bool isGameEnded_ = false;
 	bool isCameraMoving_ = false;
 	float startAnimationTime_ = 0.0f;
 
@@ -57,7 +62,6 @@ private:
 	class Heart* pHeart_ = nullptr;
 	class Hand* pHand_ = nullptr;
 	class GameOperationUI* pGameOperationUI_ = nullptr;
-	class Background* pBackGround_ = nullptr;
 
 	AudioSource* sentaku_ = nullptr;
 	AudioSource* kettei_ = nullptr;

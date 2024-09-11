@@ -71,14 +71,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// texture読み込み
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
-	textureManager->Load("gameClear", "gameClear.png");
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("SINON_enemy", "SINON_enemy.png");
 	textureManager->Load("enemy_stamp", "enemy_stamp.png");
 	textureManager->Load("TVUV", "TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	textureManager->Load("Hand", "Hand.png");
-	textureManager->Load("paper", "paper.png");
 	textureManager->Load("sousa", "sousa.png");
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
