@@ -78,7 +78,7 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
-	float canJumpAccele = 1.6f;
+	float canJumpAccele = 0.2f;
 
 
 	bool isMaybeDead = false;

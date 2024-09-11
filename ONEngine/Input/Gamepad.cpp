@@ -2,7 +2,7 @@
 #include <WinApp.h>
 #include < stdexcept >
 
-Gamepad::Gamepad() : pad_({ nullptr,8000,8000,{},{} }) {}
+Gamepad::Gamepad() : pad_({ nullptr,3000,3000,{},{} }) {}
 
 Gamepad::~Gamepad() {}
 
