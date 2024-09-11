@@ -43,13 +43,11 @@ public:
 
 	void StopAudioAll();
 
-
 	/// <summary>
-	/// 一時停止
+	/// 一個でも再生していたらtrueをカ返す
 	/// </summary>
-	/*void PauseAudio();
-
-	void UnPouseAudio();*/
+	/// <returns></returns>
+	bool IsPlayingAudio();
 
 	/// <summary>
 	/// 音源の設定

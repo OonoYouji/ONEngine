@@ -11,6 +11,8 @@
 #include <GameStartUI/GameStartUI.h>
 #include <Wave/Wave.h>
 
+#include <AudioSource.h>
+
 
 void GameTitle::Initialize() {
 	title_.reset(new Sprite);
@@ -23,6 +25,12 @@ void GameTitle::Initialize() {
 	title_->SetPos(titlePosition_);
 	title_->SetSize(titleSize_);
 	title_->SetColor(titleColor_);
+
+	startSE_ = new AudioSource();
+	startSE_->SetAudioClip("sosei_begin.wav");
+
+	startBGM_ = new AudioSource();
+	startBGM_->SetAudioClip("sosei_constant.wav");
 
 }
 
@@ -45,6 +53,16 @@ void GameTitle::Update() {
 	}
 
 	if(animationTime_ <= kMaxTime) {
+
+		////////////////////////////////////////
+		///		開始時の効果音再生 
+		////////////////////////////////////////
+		if(!isPlayingAudio_) {
+			isPlayingAudio_ = true;
+			startSE_->PlayAudio();
+			//startBGM_->PlayAudio();
+		}
+
 		titleColor_ = Vec4::Lerp(
 			{ 0, 0, 0, 1 },
 			{ 0.5f, 0.5f, 0.5f, 1 },
@@ -58,6 +76,14 @@ void GameTitle::Update() {
 	}
 
 	title_->SetColor(titleColor_);
+
+	if(isPlayingAudio_) {
+		if(!startSE_->IsPlayingAudio() && !startBGM_->IsPlayingAudio()) {
+			startBGM_->isLoop = true;
+			startBGM_->PlayAudio();
+		}
+	}
+
 
 }
 
@@ -88,7 +114,7 @@ void GameTitle::Debug() {
 	}
 
 
-	
+
 
 }
 

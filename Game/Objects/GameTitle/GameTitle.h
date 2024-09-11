@@ -45,4 +45,8 @@ private:
 	float startEffectMaxAnimationTime_ = 0.6f;
 	bool isCreartedWave_ = false;
 
+	class AudioSource* startSE_ = nullptr;
+	class AudioSource* startBGM_ = nullptr;
+	bool isPlayingAudio_ = false;
+
 };

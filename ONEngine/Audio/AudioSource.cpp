@@ -86,6 +86,18 @@ void AudioSource::StopAudioAll() {
 	sources_.clear();
 }
 
+bool AudioSource::IsPlayingAudio() {
+	if(sources_.empty()) { return false; }
+	XAUDIO2_VOICE_STATE state;
+	for(auto& source : sources_) {
+		source.pSourceVoice->GetState(&state);
+		if(state.BuffersQueued > 0 && state.SamplesPlayed > 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void AudioSource::SetAudioClip(const std::string& filePath) {
 	clip_ = AudioManager::GetInstance()->GetAudioClip(filePath);

@@ -158,11 +158,11 @@ AudioClip AudioManager::LoadWave(const std::string& filePath) {
 				}
 			} else if(chunkSize == 40) {
 				file.read(reinterpret_cast<char*>(&audioClip.wfex), sizeof(WAVEFORMATEX));
-
 				// 追加の16バイト（WAVEFORMATEXを超える部分）をスキップ
 				file.ignore(chunkSize - sizeof(WAVEFORMATEX));
-			} else {
-				assert(false);
+			} else if (chunkSize == 16) {
+				// 16バイトのfmtチャンクの場合
+				file.read(reinterpret_cast<char*>(&audioClip.wfex), 16);
 			}
 			break;
 		} else {
