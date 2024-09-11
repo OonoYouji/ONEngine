@@ -215,6 +215,13 @@ void GameStartUI::EffectStartInitialize() {
 		pBackGround_ = new Background();
 		pBackGround_->Initialize();
 
+		/// ブルームエフェクトを適用する
+		auto monitorLayer = SceneManager::GetInstance()->GetSceneLayer(0);
+		monitorLayer->SetIsApplyBloom(false, FRONT_SPRITE);
+
+		auto gameLayer = SceneManager::GetInstance()->GetSceneLayer(1);
+		gameLayer->SetIsApplyBloom(false, OBJECT3D);
+
 	}
 }
 

@@ -102,6 +102,10 @@ void Scene_Game::Initialize() {
 	gameManager->Initialize();
 	enemyManager_->SetGameManager(gameManager);
 
+
+
+	
+
 }
 
 
