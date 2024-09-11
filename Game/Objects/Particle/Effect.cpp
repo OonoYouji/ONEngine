@@ -20,12 +20,18 @@ Effect::~Effect() {
 void Effect::Initialize() {
 
 	emitterName_ = "name";
-	model_ = ModelManager::CreateCube();
+	if (is3DMode_)
+	{
+		model_ = ModelManager::CreateCube();
+	}
 	transform_.Initialize();
 	drawLayerId = 1;
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("uvChecker", "uvChecker.png");
-	sprite_->SetSize({ 20.0f,20.0f });
+	if (is2DMode_)
+	{
+		sprite_->Initialize("uvChecker", "uvChecker.png");
+		sprite_->SetSize({ 20.0f,20.0f });
+	}
 }
 
 void Effect::Reset() {
@@ -52,18 +58,16 @@ void Effect::Update() {
 		return false;
 		});*/
 
-	
+
 	transform_.UpdateMatrix();
 
 	if (isStart_) {
 		if (is3DMode_) {
 			Create();
-			currentGrainCount++;
 			previousPosition_ = transform_.position;
 		}
 		if (is2DMode_) {
 			Create2D();
-			currentGrainCount++;
 			previousPosition_ = position2D_;
 		}
 	}
@@ -356,6 +360,7 @@ void Effect::Create() {
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					grains_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -365,6 +370,7 @@ void Effect::Create() {
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					grains_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 
 			}
@@ -402,6 +408,7 @@ void Effect::Create() {
 					newGrain->SetIsDead(false);
 					grains_.push_back(newGrain);
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 				else
 				{
@@ -412,6 +419,7 @@ void Effect::Create() {
 					newGrain->SetIsDead(false);
 					grains_.push_back(newGrain);
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -432,16 +440,26 @@ void Effect::Create2D() {
 
 	Vector3 newEmitterRotate = { 0.0f,0.0f,transform_.rotate.z };
 	Matrix4x4 rotateEmitter = Matrix4x4::MakeRotate(newEmitterRotate);
-
+	Vector3 newRotateSpeed{};
 
 	if (isRotateRandom_) {
 		rotation_ = Random::Vec3({ minRotateRandom_,minRotateRandom_ ,minRotateRandom_ }, { maxRotateRandom_,maxRotateRandom_ ,maxRotateRandom_ });
+		newRotateSpeed = Random::Vec3({ minRotateSpeed_,minRotateSpeed_ ,minRotateSpeed_ }, { maxRotateSpeed_,maxRotateSpeed_ ,maxRotateSpeed_ });
 	}
 	if (isSizeRandom) {
 		float randSize = Random::Float(minSizeRandom_, maxSizeRandom_);
 		size_ = { randSize,randSize,randSize };
 	}
 
+	if (isNormal_) {
+		speedType = ShiftSpeedType::kNormal;
+	}
+	if (isDeceleration_) {
+		speedType = ShiftSpeedType::kDeceleration;
+	}
+	if (isAccele_) {
+		speedType = ShiftSpeedType::kAccele;
+	}
 
 
 	if (isOverTime_) {
@@ -477,21 +495,23 @@ void Effect::Create2D() {
 				{
 					Grain2D* newGrain = new Grain2D();
 					newGrain->Initialize();
-					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 				else
 				{
 					Grain2D* newGrain = grain2Ds_.front();
 					grain2Ds_.pop_front();
-					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					newGrain->Init(newPos, rotation_, newRotateSpeed,size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -525,23 +545,25 @@ void Effect::Create2D() {
 				{
 					Grain2D* newGrain = new Grain2D();
 					newGrain->Initialize();
-					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 				else
 				{
 					Grain2D* newGrain = grain2Ds_.front();
 					grain2Ds_.pop_front();
-					newGrain->Init(newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
+					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;
+					currentGrainCount++;
 				}
 			}
 		}
@@ -672,19 +694,40 @@ void Effect::SizeChangeSetting(bool sizeChange, bool isReduction, bool isExpand,
 }
 
 
+void Effect::SetPos(const Vector3& pos)
+{
+	transform_.position = pos;
+}
+
 void Effect::SetPos(const Vector2& pos)
 {
 	position2D_ = { pos,0.0f };
 }
 
-void Effect::SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
+void Effect::SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
 {
 	gravity_ = gravity;
 	speed_ = speed;
 	size_ = size;
 	lifeTime_ = lifeTime;
+	isRotateRandom_ = rotateRandom;
 	isSizeRandom = sizeRandom;
-	minSizeRandom_ = minSizeRandom_;
+	minSizeRandom_ = minSizeRandom;
 	maxSizeRandom_ = maxSizeRandom;
+
+}
+
+void Effect::SetVariavles(const Vector3& gravity, float speed, const Vector3& size, int lifeTime, bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom)
+{
+
+	gravity_ = gravity;
+	speed_ = speed;
+	size_ = size;
+	lifeTime_ = lifeTime;
+	isRotateRandom_ = rotateRandom;
+	isSizeRandom = sizeRandom;
+	minSizeRandom_ = minSizeRandom;
+	maxSizeRandom_ = maxSizeRandom;
+
 
 }

@@ -27,8 +27,10 @@ public:
 	void SetHeartBreak(bool is) { isHeartBreak = is; }
 
 	bool IsDead() { return isDead; }
-
+	bool IsCombo() { return isCombo; }
 	bool IsHeartBreak() { return isHeartBreak; }
+
+	void SetIsCombo(bool is) { isCombo = is; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -51,9 +53,10 @@ private:
 
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
 	Vector3 beforPos = pos;
+	Vector3 currentSize_{};
 
 	float xAccel = 0.0f;
-	float addAccel = 0.02f;
+	float addAccel = 0.2f;
 	float addDecel = 0.005f;
 	float acceleTime = 0.1f;
 
@@ -75,11 +78,12 @@ private:
 	float deceleRate = 0.15f;
 	float maxAcceleAmp = 400.0f;
 	float addLambdaCount = 0;
-	float canJumpAccele = 1.6f;
+	float canJumpAccele = 0.05f;
 
 
 	bool isMaybeDead = false;
 	bool isDead = false;
+	bool isCombo = false;
 	int deadTime = 30;
 
 

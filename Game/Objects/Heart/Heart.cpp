@@ -5,7 +5,7 @@
 #include <ImGuiManager.h>
 #include <ModelManager.h>
 #include <WorldTime.h>
-
+#include "Player/PlayerHP.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
 
 void Heart::Initialize() {
@@ -26,9 +26,31 @@ void Heart::Initialize() {
 	bottom_->SetParent(this);
 	above_->SetParent(this);
 
+	pPlayerHP_ = dynamic_cast<PlayerHP*>(GameObjectManager::GetGameObject("PlayerHP"));
+
+	// エフェクト
+	damageEffect_ = new Effect();
+	damageEffect_->Initialize();
+	damageEffect_->SetGrainMode(0);
+	damageEffect_->SetOverType(0);
+	damageEffect_->OverTimeSetting(8, 0);
+	damageEffect_->SetVariavles({ 0.0f,-0.025f,0.0f }, 0.2f, { 0.4f,0.4f,0.4f }, 30, true, true, 0.2f, 0.3f);
+	damageEffect_->ShapeType(2);
+	damageEffect_->EffectStart();
+	damageEffect_->SetPos(transform_.position);
+
 }
 
-void Heart::Update() {}
+void Heart::Update() {
+	if(pPlayerHP_) {
+
+		damageEffect_->SetPos(transform_.position);
+		if(pPlayerHP_->GetHPFluctuation()) {
+			appearCount_ += 2;
+			damageEffect_->OverTimeSetting(12, appearCount_);
+		}
+	}
+}
 
 void Heart::Draw() {}
 

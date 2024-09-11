@@ -15,7 +15,7 @@ public:
 
 	void Initialize()override;
 
-	void Init(const Vector3& position, const Vector3& rotate, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
+	void Init(const Vector3& position, const Vector3& rotate,const Vector3& rotateSpeed, const Vector3& size, Vector3& gravity, const Vector3& velocity, const int life,
 		const ShiftSpeedType shiftType, const float shiftSpeed, const bool colorShift, const Vector4& origin,
 		const Vector4& change, const bool sizeChange, const Vector3& endSize, SizeChangeType chageType);
 
@@ -32,6 +32,7 @@ private:
 	std::unique_ptr<Sprite> sprite_;
 	Vector3 position_ = { 0.0f,0.0f,0.0f };
 	Vector3 theta_{};
+	Vector3 rotateSpeed_{};
 	Vector2 size_ = { 20.0f,20.0f };
 	Vector3 gravity_ = { 0.0f,0.0f,0.0f };
 	Vector3 velocity_ = { 0.0f,1.0f,0.0f };
@@ -44,6 +45,9 @@ private:
 	/// 発射後に速度が変わるのか
 	/// </summary>
 	ShiftSpeedType speedType_ = ShiftSpeedType::kNormal;
+	bool isNormal_ = true;
+	bool isDeceleration_ = false;
+	bool isAccele_ = false;
 	float shiftingSpeed_ = 0.0f;
 
 	/// <summary>

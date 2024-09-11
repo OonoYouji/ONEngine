@@ -272,6 +272,9 @@
     <ClCompile Include="Game\Objects\Wave\Wave.cpp">
       <Filter>Game\Objects\Wave</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\EnemyComboManager\EnemyComboManager.cpp">
+      <Filter>Game\Objects\EnemyComboManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -462,6 +465,9 @@
     </Filter>
     <Filter Include="Game\Objects\Wave">
       <UniqueIdentifier>{8e8cf01b-8455-47f2-8487-cd8c5693b72c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\EnemyComboManager">
+      <UniqueIdentifier>{b4903aaf-8231-473b-b731-23336e8cbcfc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -737,6 +743,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Wave\Wave.h">
       <Filter>Game\Objects\Wave</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\EnemyComboManager\EnemyComboManager.h">
+      <Filter>Game\Objects\EnemyComboManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
