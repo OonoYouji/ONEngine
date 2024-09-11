@@ -16,6 +16,7 @@ void Enemy::Initialize()
 	sprite_.reset(new Sprite());
 	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
 	sprite_->SetSize({ 20,40 });
+	currentSize_ = { 20,40,0 };
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
 	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
@@ -44,6 +45,7 @@ void Enemy::Initialize()
 	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -1.6f, { 5.0f,5.0f,0.0f }, 20, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
+
 
 }
 
@@ -74,7 +76,8 @@ void Enemy::Update()
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly)
 		{
-
+			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
+			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
 			pos.x += speed - xAccel;
@@ -87,6 +90,8 @@ void Enemy::Update()
 		}
 		else
 		{
+			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
+			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			if (-(amplitude) >= (pos.y - offsetY))
 			{
 				isDamage = true;
@@ -107,6 +112,7 @@ void Enemy::Update()
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
 					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
 				{
+					currentSize_ = { 25.0f,35.0f,0 };
 					if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
 					{
 						isDamage = false;

@@ -51,6 +51,7 @@ private:
 
 	Vector3 pos{ 1280.0f,360.0f,0.0f };
 	Vector3 beforPos = pos;
+	Vector3 currentSize_{};
 
 	float xAccel = 0.0f;
 	float addAccel = 0.02f;
