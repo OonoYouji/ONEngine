@@ -205,6 +205,19 @@ void Bloom::Initialize() {
 
 
 
+void Bloom::SetTexSize(const Vec2& texSize) {
+	blurMappingData_->texSize = texSize;
+}
+
+void Bloom::SetIntensity(float intensity) {
+	bloomMappingData_->intensity = intensity;
+}
+
+void Bloom::SetRadius(int radius) {
+	blurMappingData_->radius = radius;
+}
+
+
 void Bloom::ApplyBloom(RenderTexture* sourceRenderTexture) {
 	auto commandList = gComponent->pCommandList_;
 

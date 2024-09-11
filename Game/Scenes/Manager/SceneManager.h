@@ -5,6 +5,8 @@
 
 #include <memory>
 #include <string>
+#include <vector>
+#include "../../../ONEngine/Graphics/SceneLayer/SceneLayer.h"
 
 class BaseScene;
 
@@ -64,6 +66,12 @@ public:
 	bool GetIsRunning() const { return isRunning_; }
 	void SetIsRunning(bool isRunning) { isRunning_ = isRunning; }
 
+	void SetSceneLayers(const std::vector<class SceneLayer*>& sceneLayers);
+
+	SceneLayer* GetSceneLayer(uint32_t layerId) const {
+		return sceneLayers_.at(layerId);
+	}
+
 private:
 
 	void Load(SCENE_ID id);
@@ -76,6 +84,8 @@ private:
 
 	class GameObjectManager* pGameObjectManager_ = nullptr;
 	class CollisionManager* pCollisionManager_ = nullptr;
+
+	std::vector<class SceneLayer*> sceneLayers_;
 
 	bool isRunning_ = true;
 

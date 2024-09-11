@@ -100,7 +100,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	monitorCamera->SetPosition({ -2.221f, 3.245f, -27.257f });
 	monitorCamera->SetRotate({ 0.0f, 0.215f, 0.0f });
 	monitorCamera->BaseUpdate();
-	
+
 	GameCamera* gameCamera = new GameCamera("GameCamera");
 	gameCamera->Initialize();
 	gameCamera->SetPosition({ -1.48f, 0.9f, -14.16f });
@@ -119,11 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLight->Initialize();
 	modelManager->SetDirectionalLight(directionalLight);
 
-	///////////////////////////////////////////////////////////////////////
-	/// scene manager の初期化	: 初期化時のシーンをここで決定
-	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::TITLE);
-
+	
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
@@ -136,6 +132,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			layers[i]->Initialize(names[i], pCameras[i]);
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////
+	/// scene manager の初期化	: 初期化時のシーンをここで決定
+	///////////////////////////////////////////////////////////////////////
+
+	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 
 #ifdef _DEBUG
@@ -194,7 +197,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(Input::TriggerKey(KeyCode::Alpha2)) {
 			drawLayerIndex = 1;
 		}
-		
+
 		/// ImGuiの表示
 		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
@@ -204,7 +207,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		for(auto& layer : layers) {
 			layer->ImGuiDebug();
 		}
-		
+
 #endif // _DEBUG
 
 		cameraManager->Update();
@@ -246,7 +249,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
 #endif // _DEBUG
 
-	}
+		}
 
 
 	if(!dxCommon->IsGpuExeEnded()) {
@@ -278,4 +281,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	winApp->Finalize();
 
 	return 0;
-}
+	}

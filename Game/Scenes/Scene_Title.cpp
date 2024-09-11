@@ -1,7 +1,7 @@
 #include "Scene_Title.h"
 
 #include <CameraManager.h>
-#include <Input.h>
+#include <SceneManager.h>
 
 #include "GameMonitor/GameMonitor.h"
 #include "Background/Background.h"
@@ -37,7 +37,20 @@ void Scene_Title::Initialize() {
 	monitorBG->Initialize();
 	monitorBG->SetColor({ 0, 0, 0, 1 });
 
-	//(new Wave)->Initialize();
+
+
+	/// ブルームエフェクトを適用する
+	auto monitorLayer = SceneManager::GetInstance()->GetSceneLayer(0);
+	monitorLayer->SetIsApplyBloom(true, FRONT_SPRITE);
+	monitorLayer->SetIntensity(2.0f, FRONT_SPRITE);
+	monitorLayer->SetTexSize({ 0.002f, 0.002f }, FRONT_SPRITE);
+	monitorLayer->SetRadius(16, FRONT_SPRITE);
+	
+	auto gameLayer = SceneManager::GetInstance()->GetSceneLayer(1);
+	gameLayer->SetIsApplyBloom(true, OBJECT3D);
+	gameLayer->SetIntensity(2.0f, OBJECT3D);
+	gameLayer->SetTexSize({0.002f, 0.002f }, OBJECT3D);
+	gameLayer->SetRadius(16, OBJECT3D);
 
 }
 

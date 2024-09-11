@@ -14,7 +14,7 @@
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
 #include "GameOperationUI/GameOperationUI.h"
-
+#include "Background/Background.h"
 
 
 void GameStartUI::Initialize() {
@@ -64,7 +64,7 @@ void GameStartUI::Update() {
 	isDown |= Input::TriggerKey(KeyCode::DownArrow);
 	isDown |= Input::TriggerPadButton(PadCode::Down);
 	isDown |= Input::IsLStickStartMoving() && Vec2::Dot(Input::GetLStick(), Vec2::kDown) > 0.0f;
-	
+
 
 	/// 選択しているモードを変える
 	if(isDown) {
@@ -212,7 +212,8 @@ void GameStartUI::EffectStartInitialize() {
 		pGameOperationUI_->UpdateMatrix();
 		pGameOperationUI_->isActive = false;
 
-
+		pBackGround_ = new Background();
+		pBackGround_->Initialize();
 
 	}
 }
@@ -270,6 +271,13 @@ void GameStartUI::EffectStartedUpdate() {
 				lerpT
 			));
 			pGameOperationUI_->UpdateMatrix();
+		}
+
+		if(pBackGround_) {
+			pBackGround_->SetColor(Vec4::Lerp(
+				{ 0, 0, 0, 1 }, { 0, 20.0f / 255.0f, 0, 1 },
+				lerpT
+			));
 		}
 
 		if(lerpT == 1.0f) {

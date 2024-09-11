@@ -4,6 +4,7 @@
 
 #include <RenderTexture.h>
 #include <Bloom/Bloom.h>
+#include <Vector2.h>
 
 
 enum LAYER_NUMBER {
@@ -28,6 +29,10 @@ public:
 
 
 	void SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber);
+
+	void SetTexSize(const Vec2& texSize, LAYER_NUMBER layerNumber);
+	void SetIntensity(float intensity, LAYER_NUMBER layerNumber);
+	void SetRadius(int radius, LAYER_NUMBER layerNumber);
 
 
 	RenderTexture* GetRenderTexture(LAYER_NUMBER layerNumber) {

@@ -53,6 +53,10 @@ public:
 
 	void Initialize();
 
+	void SetTexSize(const Vec2& texSize);
+	void SetIntensity(float intensity);
+	void SetRadius(int radius);
+
 	void ApplyBloom(
 		RenderTexture* sourceRenderTexture
 	);

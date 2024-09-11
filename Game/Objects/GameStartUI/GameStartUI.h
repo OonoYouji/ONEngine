@@ -57,6 +57,7 @@ private:
 	class Heart* pHeart_ = nullptr;
 	class Hand* pHand_ = nullptr;
 	class GameOperationUI* pGameOperationUI_ = nullptr;
+	class Background* pBackGround_ = nullptr;
 
 	AudioSource* sentaku_ = nullptr;
 	AudioSource* kettei_ = nullptr;

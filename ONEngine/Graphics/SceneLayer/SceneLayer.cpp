@@ -162,3 +162,15 @@ void SceneLayer::SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber) {
 	blooms_[layerNumber]->Initialize();
 
 }
+
+void SceneLayer::SetTexSize(const Vec2& texSize, LAYER_NUMBER layerNumber) {
+	blooms_[layerNumber]->SetTexSize(texSize);
+}
+
+void SceneLayer::SetIntensity(float intensity, LAYER_NUMBER layerNumber) {
+	blooms_[layerNumber]->SetIntensity(intensity);
+}
+
+void SceneLayer::SetRadius(int radius, LAYER_NUMBER layerNumber) {
+	blooms_[layerNumber]->SetRadius(radius);
+}

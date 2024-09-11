@@ -18,6 +18,8 @@
 #include <Scene_Title.h>
 #include <Scene_Result.h>
 
+#include <SceneLayer/SceneLayer.h>
+	
 
 /// ===================================================
 /// インスタンス確保
@@ -97,6 +99,10 @@ void SceneManager::ImGuiDebug() {
 
 void SceneManager::SetNextScene(SCENE_ID nextId) {
 	nextSceneId_ = nextId;
+}
+
+void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLayers) {
+	sceneLayers_ = sceneLayers;
 }
 
 void SceneManager::Load(SCENE_ID id) {
