@@ -3,6 +3,8 @@
 #include <ImGuiManager.h>
 #include <Input.h>
 
+bool GameManager::initializeIsPause = true;
+
 
 void GameManager::Initialize() {
 
@@ -19,7 +21,8 @@ void GameManager::Initialize() {
 	}
 
 
-	isPouse_ = true;
+	isPouse_ = initializeIsPause;
+	initializeIsPause = false;
 
 	sprite_.reset(new Sprite);
 	sprite_->Initialize("pause", "pause.png");

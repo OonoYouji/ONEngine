@@ -8,6 +8,8 @@
 #include <WorldTime.h>
 #include <AudioSource.h>
 
+#include "GameManager/GameManager.h"
+
 void GameOperationUI::Initialize() {
 	drawLayerId = 1;
 	paper_ = ModelManager::Load("paper");
@@ -29,7 +31,7 @@ void GameOperationUI::Initialize() {
 	sousa_ = new AudioSource();
 	sousa_->SetAudioClip("sousa.wav");
 
-	isFrontBinder_ = true;
+	isFrontBinder_ = GameManager::initializeIsPause;
 
 }
 
@@ -44,7 +46,6 @@ void GameOperationUI::Update() {
 
 	/// enter を押すか　game pad RB を押す
 	if(isFrontBinder_) {
-
 		lerpTime_ = std::min(lerpTime_ + WorldTime::DeltaTime(), maxLerpTime_);
 	} else {
 		lerpTime_ = std::max(lerpTime_ - WorldTime::DeltaTime(), 0.0f);

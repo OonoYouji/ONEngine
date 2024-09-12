@@ -17,6 +17,7 @@ public:
 
 	void AddPausedObject(BaseGameObject* object);
 
+	static bool initializeIsPause;
 private:
 
 	bool isPouse_ = true;

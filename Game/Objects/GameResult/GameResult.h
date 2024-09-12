@@ -24,6 +24,18 @@ private:
 	float waveAnimationTime_ = 0.0f;
 	float waveMaxAnimationTime_ = 1.0f;
 	float waveAnimationSpeed_ = 20.0f;
-	
+
+
+	/// 1, sosei_beginを流す
+	class AudioSource* sosei_begin_ = nullptr;
+
+	/// 2, 心臓が膨張 → 破裂(パーティクルを出す)
+
+
+	/// 3, カメラをタイトルのスタート地点に移動させる
+
+	/// 4, 倒した分の敵が落ちてくる
+
+	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
 };
