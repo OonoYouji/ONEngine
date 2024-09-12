@@ -26,4 +26,8 @@ private:
 	Vec3 offset_{};
 	float distance_;
 	bool fluctuationHP_ = false;
+
+	class SinWaveDrawer* pWave_ = nullptr;
+	float animationTime_ = 0.0f;
+
 };

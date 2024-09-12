@@ -3,8 +3,10 @@
 #include <SceneManager.h>
 #include <ImGuiManager.h>
 #include <Input.h>
+#include <WorldTime.h>
 
 #include "Enemy/Enemy.h"
+#include "LineDrawer2D/SinWaveDrawer.h"
 
 
 void PlayerHP::Initialize() {
@@ -20,6 +22,10 @@ void PlayerHP::Initialize() {
 		sprite->Initialize("Heart1", "Heart1.png");
 		sprite->SetSize({ 64,64 });
 	}
+
+	pWave_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
+
+
 }
 
 void PlayerHP::Update() {
@@ -32,7 +38,7 @@ void PlayerHP::Update() {
 		}
 	}
 
-	
+
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
 			if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
@@ -57,10 +63,22 @@ void PlayerHP::Update() {
 		hpSprites_[i]->SetPos(position);
 	}
 
+	/// 心臓に合わせてドクドク動かす
+	if(pWave_) {
+
+		animationTime_ += WorldTime::DeltaTime() * (pWave_->GetAmplitude() / 100.0f);
+		for(auto& sprite : hpSprites_) {
+
+			float sinValue = std::sin(8.0f * animationTime_) * 0.5f + 0.5f;
+			sprite->SetSize(
+				Vec2::kOne * 64.0f + 
+				Vec2::kOne * (32.0f * 0.6f * sinValue) /// ここの30を変えて大きさを調整する
+			);
+		}
+	}
+
+
 	if(hpSprites_.size() == 0) {
-		///
-		/// ここでresultに遷移
-		///
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
 }

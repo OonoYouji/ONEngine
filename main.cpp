@@ -159,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 
 	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
-	sceneManager->Initialize(SCENE_ID::RESULT);
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 
 #ifdef _DEBUG
