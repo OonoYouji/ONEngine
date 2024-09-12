@@ -9,34 +9,43 @@ EnemyComboManager::~EnemyComboManager()
 
 void EnemyComboManager::Initialize()
 {
+	float sizex = 40;
 
 	oneSprite_.reset(new Sprite());
-	oneSprite_->Initialize("1", "1.png");
-	oneSprite_->SetSize({ 20,20 });
+	oneSprite_->Initialize("x1", "x1.png");
+	oneSprite_->SetSize({ sizex,20 });
+
 	twoSprite_.reset(new Sprite());
-	twoSprite_->Initialize("2", "2.png");
-	twoSprite_->SetSize({ 20,20 });
+	twoSprite_->Initialize("x2", "x2.png");
+	twoSprite_->SetSize({ sizex,20 });
+
 	threeSprite_.reset(new Sprite());
-	threeSprite_->Initialize("3", "3.png");
-	threeSprite_->SetSize({ 20,20 });
+	threeSprite_->Initialize("x3", "x3.png");
+	threeSprite_->SetSize({ sizex,20 });
+
 	fourSprite_.reset(new Sprite());
-	fourSprite_->Initialize("4", "4.png");
-	fourSprite_->SetSize({ 20,20 });
+	fourSprite_->Initialize("x4", "x4.png");
+	fourSprite_->SetSize({ sizex,20 });
+
 	fiveSprite_.reset(new Sprite());
-	fiveSprite_->Initialize("5", "5.png");
-	fiveSprite_->SetSize({ 20,20 });
+	fiveSprite_->Initialize("x5", "x5.png");
+	fiveSprite_->SetSize({ sizex,20 });
+
 	sixSprite_.reset(new Sprite());
-	sixSprite_->Initialize("6", "6.png");
-	sixSprite_->SetSize({ 20,20 });
+	sixSprite_->Initialize("x6", "x6.png");
+	sixSprite_->SetSize({ sizex,20 });
+
 	sevenSprite_.reset(new Sprite());
-	sevenSprite_->Initialize("7", "7.png");
-	sevenSprite_->SetSize({ 20,20 });
+	sevenSprite_->Initialize("x7", "x7.png");
+	sevenSprite_->SetSize({ sizex,20 });
+
 	eightSprite_.reset(new Sprite());
-	eightSprite_->Initialize("8", "8.png");
-	eightSprite_->SetSize({ 20,20 });
+	eightSprite_->Initialize("x8", "x8.png");
+	eightSprite_->SetSize({ sizex,20 });
+
 	nineSprite_.reset(new Sprite());
-	nineSprite_->Initialize("9", "9.png");
-	nineSprite_->SetSize({ 20,20 });
+	nineSprite_->Initialize("x9", "x9.png");
+	nineSprite_->SetSize({ sizex,20 });
 
 
 	comboSprite_.reset(new Sprite());
@@ -66,37 +75,86 @@ void EnemyComboManager::Update()
 			comboReceptionTime_ = interruptTime_;
 			spritePos_ = enemy->GetPos();
 			spritePos_.y -= 60.0f;
+			spriteSize_ = { 120,60,0 };
 			switch (comboCount_)
 			{
 			case 1:
 				oneSprite_->SetPos(spritePos_);
+				oneSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 2:
 				twoSprite_->SetPos(spritePos_);
+				twoSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 3:
 				threeSprite_->SetPos(spritePos_);
+				threeSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 4:
 				fourSprite_->SetPos(spritePos_);
+				fourSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 5:
 				fiveSprite_->SetPos(spritePos_);
+				fiveSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 6:
 				sixSprite_->SetPos(spritePos_);
+				sixSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 7:
 				sevenSprite_->SetPos(spritePos_);
+				sevenSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 8:
 				eightSprite_->SetPos(spritePos_);
+				eightSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			case 9:
 				nineSprite_->SetPos(spritePos_);
+				nineSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
 				break;
 			}
 		}
+	}
+
+	switch (comboCount_) {
+	case 1:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		oneSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 2:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		twoSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 3:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		threeSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 4:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		fourSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 5:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		fiveSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 6:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		sixSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 7:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		sevenSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 8:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		eightSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
+	case 9:
+		spriteSize_ = Vector3::Lerp(spriteSize_, { 40,20,0 }, 0.2f);
+		nineSprite_->SetSize({ spriteSize_.x,spriteSize_.y });
+		break;
 	}
 
 	if (comboReceptionTime_ > 0)
