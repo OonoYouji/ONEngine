@@ -118,7 +118,7 @@ void GameResult::Initialize() {
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
 	totalScore_ = ScoreManager::GetScoreCount();
-	totalScore_ = 123;
+	totalScore_ = 205;
 
 	uint32_t digit = static_cast<uint32_t>(std::log10(totalScore_)) + 1u;
 
@@ -135,8 +135,9 @@ void GameResult::Initialize() {
 		number.reset(new Sprite);
 		number->Initialize(texDatas_[i].texName, texDatas_[i].filePath);
 		number->SetSize({ 50.0f, 60.0f });
+
 		number->SetPos(Vec3(
-			640.0f + ((float(digit) * 0.5f - i) * 100.0f),
+			640.0f + ((float(digit) * 0.5f - i) * 100.0f) - 50.0f,
 			320.0f,
 			0.0f
 		));
@@ -291,7 +292,6 @@ void GameResult::KilledEnemiesLeave() {
 
 	}
 
-
 	///	次の計算に行くための条件
 	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
 		WaitTime(KILLED_ENEMIES_DROPING, 1.0f);
@@ -356,7 +356,7 @@ void GameResult::KilledEnemiesDropping() {
 			}
 		}
 
-		std::reverse(digits.begin(), digits.end());
+		//std::reverse(digits.begin(), digits.end());
 
 		for(uint32_t i = 0u; i < digitNumbers_.size(); ++i) {
 			digitNumbers_[i]->SetTexture(
