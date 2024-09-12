@@ -30,6 +30,8 @@ void EnemyManager::Initialize() {
 
 void EnemyManager::Update() {
 
+	uint32_t enemyCount = GameObjectManager::GetInstanceCount("Enemy");
+
 	PopCommands();
 	WarningUpdate();
 }
@@ -62,11 +64,18 @@ void EnemyManager::LoadPopDate(const std::string& fileName)
 
 void EnemyManager::PopCommands()
 {
+	uint32_t enemyCount = GameObjectManager::GetInstanceCount("Enemy");
+
+
 	if (popCount_ == 0 && popInterval_ == 0 && commands_.size() != 0) {
 		popCount_ = commands_.front().first;
 		popInterval_ = commands_.front().second;
 		commands_.pop_front();
+		if (enemyCount+popCount_ >= maxPopCount_) {
+			isStop_ = true;
+		}
 	}
+
 
 	if (popCount_ > 0) {
 		if (currentInterval_ == 0)
@@ -97,6 +106,13 @@ void EnemyManager::PopCommands()
 		if (waitTimer_ <= 0) {
 			isWait_ = false;
 			isWarning_ = false;
+		}
+		return;
+	}
+
+	if (isStop_) {
+		if (enemyCount <= 4) {
+			isStop_ = false;
 		}
 		return;
 	}
@@ -132,7 +148,7 @@ void EnemyManager::PopCommands()
 			std::getline(line_stream, word, ',');
 
 			//待ち時間
-			int32_t waitTime = (int32_t)(atoi(word.c_str()) * 60.0f);
+			uint32_t waitTime = (uint32_t)(atoi(word.c_str()) * 60.0f);
 
 			isWait_ = true;
 			waitTimer_ = waitTime;

@@ -36,11 +36,14 @@ private:
 	std::stringstream popCommand_;
 	std::list<std::pair<int, int>> commands_;
 
-	int32_t popCount_ = 0;
+	uint32_t popCount_ = 0;
 	uint32_t popInterval_ = 0;
 	uint32_t currentInterval_ = 0;
 	bool isWait_ = false;
-	int32_t waitTimer_ = 0;
+	uint32_t waitTimer_ = 0;
+
+	uint32_t maxPopCount_ = 5;
+	bool isStop_ = false;
 
 	AudioSource* alarm_ = nullptr;
 };
