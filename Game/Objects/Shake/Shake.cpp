@@ -6,7 +6,7 @@
 void Shake::Initialize() {
 	isDrawActive = false;
 	time_ = 0.0f;
-	speed_ = 1.0f;
+	speed_ = 0.1f;
 	startTime_ = 1.0f;
 }
 
@@ -20,6 +20,7 @@ void Shake::Update() {
 	Vec3 randomV = { lRandom(), lRandom(),lRandom() };
 	transform_.position = randomV * speed_;
 	transform_.position.z = 0.0f;
+	UpdateMatrix();
 }
 
 void Shake::Debug() {
@@ -33,4 +34,8 @@ void Shake::Debug() {
 
 void Shake::Start() {
 	time_ = startTime_;
+}
+
+void Shake::SetStartTime(float time) {
+	startTime_ = time;
 }

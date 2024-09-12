@@ -96,5 +96,4 @@ private:
 	Effect* AcceleEffect_;
 	Effect* deathEffect_;
 	//AudioSource* deathSound_;
-
 };

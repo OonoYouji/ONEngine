@@ -2,7 +2,8 @@
 
 #include <ImGuiManager.h>
 #include "Drawer/LineDrawer2D/SinWaveDrawer.h"
-
+#include "Camera/GameCamera.h"
+#include "Shake/Shake.h"
 
 Enemy::~Enemy()
 {
@@ -47,7 +48,6 @@ void Enemy::Initialize()
 	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
-
 
 }
 
@@ -111,6 +111,9 @@ void Enemy::Update()
 							isCombo = true;
 							isDamage = false;
 							/*deathSound_->PlayAudio();*/
+							BaseCamera* nowCamera = CameraManager::GetInstance()->GetCamera("GameCamera");
+							nowCamera->GetShake()->SetStartTime(0.2f);
+							nowCamera->GetShake()->Start();
 						}
 					}
 				}
