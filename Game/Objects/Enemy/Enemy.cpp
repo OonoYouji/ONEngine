@@ -36,8 +36,10 @@ void Enemy::Initialize() {
 	deathEffect_->Initialize();
 	deathEffect_->SetOverType(0);
 	deathEffect_->OverTimeSetting(8, 4);
-	deathEffect_->SetVariavles2D({ 0.0f,0.05f,0.0f }, -6.0f, { 5.0f,5.0f,0.0f }, 30, true, true, 8.0f, 10.0f);
+	deathEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -6.0f, { 5.0f,5.0f,0.0f }, 30, true, true, 8.0f, 10.0f);
 	deathEffect_->ShapeType(1);
+	deathEffect_->ShiftingSpeedType(1);
+	deathEffect_->ShiftSpeedSetting(0.9f);
 
 
 	AcceleEffect_ = new Effect();
@@ -82,7 +84,7 @@ void Enemy::Update() {
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly) {
-			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,30.0f,0 }, 0.15f);
+			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
@@ -114,6 +116,7 @@ void Enemy::Update() {
 					if (amplitude <= 4) {
 						if (isMaybeDead || isDamage)
 						{
+							AcceleEffect_->EffectStop();
 							isDead = true;
 							isCombo = true;
 							isDamage = false;
@@ -255,7 +258,7 @@ void Enemy::LastUpdate() {
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
-			if (deadTime == 25) {
+			if (deadTime == 55) {
 				///
 				/// つぶれた時はここ
 				/// 

@@ -81,6 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
 	textureManager->Load("particle", "particle.png");
+	textureManager->Load("warning", "warning.png");
 
 	textureManager->Load("0", "0.png");
 	textureManager->Load("1", "1.png");
@@ -92,7 +93,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("7", "7.png");
 	textureManager->Load("8", "8.png");
 	textureManager->Load("9", "9.png");
-
+	textureManager->Load("x", "x.png");
 
 
 

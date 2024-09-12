@@ -17,11 +17,28 @@ EnemyManager::~EnemyManager()
 void EnemyManager::Initialize() {
 
 	LoadPopDate("EnemyPop.csv");
+
+	warningSprite_.reset(new Sprite());
+	warningSprite_->Initialize("warning", "warning.png");
+	warningSprite_->SetSize({ 40.0f,40.0f });
+	warningSprite_->SetPos({ 1260,200,0 });
+
+	alarm_ = new AudioSource();
+	alarm_->SetAudioClip("warning.wav");
+
 }
 
 void EnemyManager::Update() {
 
 	PopCommands();
+	WarningUpdate();
+}
+
+void EnemyManager::FrontSpriteDraw()
+{
+
+	warningSprite_->Draw();
+
 }
 
 void EnemyManager::EnemyPop()
@@ -69,8 +86,17 @@ void EnemyManager::PopCommands()
 
 	if (isWait_) {
 		waitTimer_--;
+		if (waitTimer_ == 120)
+		{
+			isWarning_ = true;
+			warningPosition_ = { 1320.0f,200.0f,0.0f };
+			warningSize_ = { 40.0f,40.0f,0.0f };
+			warningSprite_->SetSize({ warningSize_.x,warningSize_.y });
+			alarm_->PlayAudio();
+		}
 		if (waitTimer_ <= 0) {
 			isWait_ = false;
+			isWarning_ = false;
 		}
 		return;
 	}
@@ -116,6 +142,19 @@ void EnemyManager::PopCommands()
 
 	}
 
+}
+
+void EnemyManager::WarningUpdate() {
+	if (isWarning_)
+	{
+		warningPosition_ = Vector3::Lerp(warningPosition_, { 1190.0f,200.0f,0.0f }, 0.15f);
+		warningSprite_->SetPos(warningPosition_);
+	}
+	else
+	{
+		warningSize_ = Vector3::Lerp(warningSize_, { 0,0,0 }, 0.2f);
+		warningSprite_->SetSize({ warningSize_.x,warningSize_.y });
+	}
 }
 
 void EnemyManager::Debug() {
