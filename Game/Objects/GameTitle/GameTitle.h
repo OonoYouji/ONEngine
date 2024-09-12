@@ -59,4 +59,8 @@ private:
 	/// 終了処理が終わってからの待機時間
 	float gameEndedWaitTime_ = 0.0f;
 
+	class Wave* pWave_ = nullptr;
+	float waveAnimationTime_ = 0.0f;
+	float waveMaxAnimationTime_ = 1.0f;
+
 };

@@ -48,7 +48,8 @@ void Heart::Update() {
 	if(pPlayerHP_) {
 
 		damageEffect_->SetPos(transform_.position);
-		if(pPlayerHP_->GetHPFluctuation()) {
+		fluctuationHP_ = pPlayerHP_->GetHPFluctuation();
+		if(fluctuationHP_) {
 			appearCount_ += 2;
 			damageEffect_->OverTimeSetting(12, appearCount_);
 		}
@@ -70,8 +71,10 @@ void HeartBottom::Initialize() {
 
 	pSinWaveDrawer_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 
+	flashingMaterial_.CreateMaterial("white2x2");
+
 	sinon_ = new AudioSource();
-	sinon_->SetAudioClip("kettei.wav");
+	sinon_->SetAudioClip("sinon.wav");
 
 }
 
@@ -97,10 +100,34 @@ void HeartBottom::Update() {
 		}
 	}
 
+	if(useFlashingMaterial_) {
+		flashingTime_ -= WorldTime::DeltaTime();
+		if(flashingTime_ <= 0.0f) {
+			useFlashingMaterial_ = false;
+		}
+	} else {
+		useFlashingMaterial_ = dynamic_cast<Heart*>(GetParent())->GetFluctuationHP();
+		flashingTime_ = 0.1f;
+		if(useFlashingMaterial_) {
+			///
+			/// ここでGameCameraをシェイクさせる
+			///
+			/*
+			GameCamera* camera = 
+					dynamic_cast<GameCamera*>(CameraManager::GetInstance()->GetCamera("GameCamera));
+
+			*/
+		}
+	}
+
 }
 
 void HeartBottom::Draw() {
-	model_->Draw(&transform_);
+	if(useFlashingMaterial_) {
+		model_->Draw(&transform_, &flashingMaterial_);
+	} else {
+		model_->Draw(&transform_);
+	}
 }
 
 void HeartBottom::Debug() {
@@ -122,10 +149,29 @@ void HeartBottom::Debug() {
 
 void HeartAbove::Initialize() {
 	model_ = ModelManager::Load("HeartAbove");
+	flashingMaterial_.CreateMaterial("white2x2");
 }
 
-void HeartAbove::Update() {}
+void HeartAbove::Update() {
+
+	if(useFlashingMaterial_) {
+		flashingTime_ -= WorldTime::DeltaTime();
+		if(flashingTime_ <= 0.0f) {
+			useFlashingMaterial_ = false;
+		}
+	} else {
+		useFlashingMaterial_ = dynamic_cast<Heart*>(GetParent())->GetFluctuationHP();
+		flashingTime_ = 0.1f;
+		if(useFlashingMaterial_) {
+
+		}
+	}
+}
 
 void HeartAbove::Draw() {
-	model_->Draw(&transform_);
+	if(useFlashingMaterial_) {
+		model_->Draw(&transform_, &flashingMaterial_);
+	} else {
+		model_->Draw(&transform_);
+	}
 }

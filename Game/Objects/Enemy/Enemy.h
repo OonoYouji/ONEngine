@@ -86,7 +86,7 @@ private:
 	bool isMaybeDead = false;
 	bool isDead = false;
 	bool isCombo = false;
-	int deadTime = 30;
+	int deadTime = 60;
 
 
 	int roopCount = 0;
@@ -96,4 +96,10 @@ private:
 	Effect* AcceleEffect_;
 	Effect* deathEffect_;
 	//AudioSource* deathSound_;
+
+	/// 効果音
+	AudioSource* stampSE_ = nullptr;
+	AudioSource* deathSE_ = nullptr;
+	AudioSource* catchSE_ = nullptr;
+
 };

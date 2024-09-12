@@ -13,6 +13,9 @@ public:
 
 	void Debug() override;
 
+	void SetAmplitude(float x) { amplitude_ = x; }
+	void SetOffsetY(float x) { offsetY_ = x; }
+
 private:
 	std::vector<float> waveHeights_;
 
