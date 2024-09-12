@@ -6,6 +6,7 @@
 
 #include <ImGuiManager.h>
 #include <WorldTime.h>
+#include <Easing.h>
 
 #include "Shake/Shake.h"
 
@@ -80,7 +81,7 @@ void BaseCamera::Move() {
 
 	moveTime_ += WorldTime::DeltaTime();
 
-	float t = std::min(moveTime_ / maxMoveTime_, 1.0f);
+	float t = Ease::Out::Quart(std::min(moveTime_ / maxMoveTime_, 1.0f));
 	Vec3 position = Vec3::Lerp(startMoveData_.position, endMoveData_.position, t);
 	Vec3 rotate = Vec3::Lerp(startMoveData_.rotate, endMoveData_.rotate, t);
 	SetPosition(position);
