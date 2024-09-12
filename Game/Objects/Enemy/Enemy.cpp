@@ -267,12 +267,17 @@ void Enemy::LastUpdate() {
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
+			if (deadTime == 58) {
+				AcceleEffect_->EffectStop();
+			}
 			if (deadTime == 55) {
 				///
 				/// つぶれた時はここ
 				/// 
-				deathEffect_->EffectStart();
 				stampSE_->PlayAudio();
+			}
+			if (deadTime == 10) {
+				deathEffect_->EffectStart();
 			}
 		}
 	}

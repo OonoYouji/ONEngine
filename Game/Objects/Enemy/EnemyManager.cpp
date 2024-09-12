@@ -21,7 +21,7 @@ void EnemyManager::Initialize() {
 	warningSprite_.reset(new Sprite());
 	warningSprite_->Initialize("warning", "warning.png");
 	warningSprite_->SetSize({ 40.0f,40.0f });
-	warningSprite_->SetPos({ 1260,200,0 });
+	warningSprite_->SetPos({ 1220,200,0 });
 
 	alarm_ = new AudioSource();
 	alarm_->SetAudioClip("warning.wav");

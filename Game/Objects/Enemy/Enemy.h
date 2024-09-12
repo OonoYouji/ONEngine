@@ -56,7 +56,7 @@ private:
 	float addlambda = 0.0f;
 	float beforlambda = addlambda;
 
-	Vector3 pos{ 1280.0f,300.0f,0.0f };
+	Vector3 pos{ 1200.0f,0.0f,0.0f };
 	Vector3 beforPos = pos;
 	Vector3 currentSize_{};
 
@@ -73,7 +73,7 @@ private:
 
 	float speed = -0.15f;
 	Vector3 velo = { -0.1f,0.0f,0.0f };
-	Vector3 flyspeed = { -4.0f,-3.0f,0.0f };
+	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
 
 	float tangent = 0;
 

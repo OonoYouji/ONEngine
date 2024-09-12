@@ -10,7 +10,7 @@ Effect::~Effect() {
 	}
 	for (auto& i : grain2Ds_)
 	{
-		i->Destory();
+		i->SetHaveParent(false);
 	}
 
 	grains_.clear();
@@ -498,6 +498,7 @@ void Effect::Create2D() {
 					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
+					newGrain->SetHaveParent(true);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					currentGrainCount++;
@@ -509,6 +510,7 @@ void Effect::Create2D() {
 					newGrain->Init(newPos, rotation_, newRotateSpeed,size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
+					newGrain->SetHaveParent(true);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					currentGrainCount++;
@@ -548,6 +550,7 @@ void Effect::Create2D() {
 					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
+					newGrain->SetHaveParent(true);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;
@@ -560,6 +563,7 @@ void Effect::Create2D() {
 					newGrain->Init(newPos, rotation_, newRotateSpeed, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);
+					newGrain->SetHaveParent(true);
 					grain2Ds_.push_back(newGrain);
 					currentRateTime = rateTime_;
 					accumulationDistance = 0.0f;

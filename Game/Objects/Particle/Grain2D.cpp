@@ -81,6 +81,9 @@ void Grain2D::Update() {
 	}
 	else if (lifeTime_ == 0) {
 		isDead_ = true;
+		if (!haveParent_) {
+			Destory();
+		}
 	}
 
 }
