@@ -20,6 +20,7 @@
 #include "EnemyComboManager/EnemyComboManager.h"
 #include "Tile/Tile.h"
 #include "Wall/Wall.h"
+#include "ScoreManager/ScoreManager.h"
 
 
 
@@ -46,6 +47,10 @@ void Scene_Game::Initialize() {
 	/// コンボの管理
 	EnemyComboManager* enemyComboManager_ = new EnemyComboManager();
 	enemyComboManager_->Initialize();
+
+	/// スコア
+	ScoreManager* scoreManager = new ScoreManager();
+	scoreManager->Initialize();
 
 	/// プレイヤーのHP
 	PlayerHP* playerHP = new PlayerHP();

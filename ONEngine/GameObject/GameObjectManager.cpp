@@ -18,6 +18,13 @@ void GameObjectManager::Initialize() {
 /// 終了処理
 /// ===================================================
 void GameObjectManager::Finalize() {
+	if (!addObjectList_.empty()) {
+		for (auto& object : addObjectList_) {
+			std::unique_ptr<BaseGameObject> newObject(object);
+			objects_.push_back(std::move(newObject));
+		}
+		addObjectList_.clear();
+	}
 	objects_.clear();
 }
 

@@ -29,8 +29,10 @@ public:
 	bool IsDead() { return isDead; }
 	bool IsCombo() { return isCombo; }
 	bool IsHeartBreak() { return isHeartBreak; }
+	bool IsScore() { return isScore; }
 
 	void SetIsCombo(bool is) { isCombo = is; }
+	void SetIsScore(bool is) { isScore = is; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -40,8 +42,10 @@ public:
 	// 波の傾きに合わせて速度を回転
 	Vector3 AdjustVelocityToWave(Vector3 velocity, float A, float B, float x);
 
-	void EffectOccurrence(int effectNum);
+	/*void EffectOccurrence(int effectNum);*/
 	Vector3 GetPos() { return pos; }
+	float GetHighPoint() { return highPoint; }
+	void CalHighPoint();
 
 private:
 
@@ -67,7 +71,7 @@ private:
 	bool isDamage = false;
 	bool isDecele = false;
 
-	float speed = -0.1f;
+	float speed = -0.15f;
 	Vector3 velo = { -0.1f,0.0f,0.0f };
 	Vector3 flyspeed = { -4.0f,-3.0f,0.0f };
 
@@ -86,11 +90,14 @@ private:
 	bool isMaybeDead = false;
 	bool isDead = false;
 	bool isCombo = false;
-	int deadTime = 30;
+	int deadTime = 60;
 
 
 	int roopCount = 0;
 	bool isHeartBreak = false;
+
+	bool isScore = false;
+	float highPoint = 1000;
 
 
 	Effect* AcceleEffect_;

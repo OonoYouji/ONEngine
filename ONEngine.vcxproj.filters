@@ -281,6 +281,9 @@
     <ClCompile Include="Game\Objects\Wall\Wall.cpp">
       <Filter>Game\Objects\Wall</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\ScoreManager\ScoreManager.cpp">
+      <Filter>Game\Objects\ScoreManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -480,6 +483,9 @@
     </Filter>
     <Filter Include="Game\Objects\Wall">
       <UniqueIdentifier>{b34381eb-b7f3-452e-83d1-9134c05ec894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\ScoreManager">
+      <UniqueIdentifier>{f5bcac54-0b5d-4244-8919-1817d68110c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -764,6 +770,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Wall\Wall.h">
       <Filter>Game\Objects\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\ScoreManager\ScoreManager.h">
+      <Filter>Game\Objects\ScoreManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

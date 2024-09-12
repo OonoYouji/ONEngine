@@ -85,6 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("tile", "tile.png");
 	textureManager->Load("wall", "wall.png");
 	textureManager->Load("HeartBreak", "HeartBreak.png");
+	textureManager->Load("warning", "warning.png");
 
 	textureManager->Load("0", "0.png");
 	textureManager->Load("1", "1.png");
@@ -96,7 +97,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("7", "7.png");
 	textureManager->Load("8", "8.png");
 	textureManager->Load("9", "9.png");
-
+	textureManager->Load("x", "x.png");
 
 
 
@@ -158,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 
 	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
-	sceneManager->Initialize(SCENE_ID::RESULT);
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 
 #ifdef _DEBUG

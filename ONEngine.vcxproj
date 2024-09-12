@@ -41,6 +41,7 @@
     <ClCompile Include="Game\Objects\Particle\Grain2D.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerHP.cpp" />
+    <ClCompile Include="Game\Objects\ScoreManager\ScoreManager.cpp" />
     <ClCompile Include="Game\Objects\Shake\Shake.cpp" />
     <ClCompile Include="Game\Objects\Tile\Tile.cpp" />
     <ClCompile Include="Game\Objects\Wall\Wall.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Game\Objects\Particle\Grain2D.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerHP.h" />
+    <ClInclude Include="Game\Objects\ScoreManager\ScoreManager.h" />
     <ClInclude Include="Game\Objects\Shake\Shake.h" />
     <ClInclude Include="Game\Objects\Tile\Tile.h" />
     <ClInclude Include="Game\Objects\Wall\Wall.h" />

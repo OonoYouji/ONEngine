@@ -5,9 +5,9 @@
 #include "Camera/GameCamera.h"
 #include "Shake/Shake.h"
 
+Enemy::~Enemy()
+{
 
-Enemy::~Enemy() {
-	deathEffect_->Destory();
 	deathEffect_->Destory();
 	AcceleEffect_->Destory();
 }
@@ -36,8 +36,10 @@ void Enemy::Initialize() {
 	deathEffect_->Initialize();
 	deathEffect_->SetOverType(0);
 	deathEffect_->OverTimeSetting(8, 4);
-	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30, true, true, 8.0f, 10.0f);
+	deathEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -6.0f, { 5.0f,5.0f,0.0f }, 30, true, true, 8.0f, 10.0f);
 	deathEffect_->ShapeType(1);
+	deathEffect_->ShiftingSpeedType(1);
+	deathEffect_->ShiftSpeedSetting(0.9f);
 
 
 	AcceleEffect_ = new Effect();
@@ -61,10 +63,10 @@ void Enemy::Initialize() {
 
 void Enemy::Update() {
 
-	if(!isDead) {
+	if (!isDead) {
 		beforPos = pos;
 		beforlambda = addlambda;
-		if(isMaybeJump) {
+		if (isMaybeJump) {
 			isJump = true;
 		}
 
@@ -75,13 +77,13 @@ void Enemy::Update() {
 		addlambda = sinWave_->GetAddLambda();
 
 
-		if(beforlambda < addlambda) {
+		if (beforlambda < addlambda) {
 			isJump = false;
 		}
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
-		if(!isfly) {
+		if (!isfly) {
 			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
@@ -89,20 +91,22 @@ void Enemy::Update() {
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			if(!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
+			if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 				isMaybeJump = true;
 			}
-		} else {
+		}
+		else {
 			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
-			if (-(amplitude) - 5.0f >= (pos.y - offsetY)) {
+			if (-(amplitude)-5.0f >= (pos.y - offsetY)) {
 				isDamage = true;
 			}
-			if(pos.y <= 40) {
+			if (pos.y <= 40) {
 				isMaybeDead = true;
 			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
+			CalHighPoint();
 
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
@@ -113,8 +117,10 @@ void Enemy::Update() {
 					if (amplitude <= 4) {
 						if (isMaybeDead || isDamage)
 						{
+							AcceleEffect_->EffectStop();
 							isDead = true;
 							isCombo = true;
+							isScore = true;
 							isDamage = false;
 							/*deathSound_->PlayAudio();*/
 							BaseCamera* nowCamera = CameraManager::GetInstance()->GetCamera("GameCamera");
@@ -137,21 +143,24 @@ void Enemy::Update() {
 					currentSize_ = { 25.0f,35.0f,0 };
 					if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 						isDecele = true;
-					} else {
+					}
+					else {
 						isJump = false;
 						isMaybeJump = false;
 					}
-				} else if(isDamage &&
-						  amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-						  amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
+				}
+				else if (isDamage &&
+					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
 
 					///
 					/// キャッチしたときはここ
 					///
-					if(-(amplitude)+10.0f >= (pos.y - offsetY)) {
+					catchSE_->PlayAudio();
+
+					if (-(amplitude)+10.0f >= (pos.y - offsetY)) {
 						isJump = false;
 						isMaybeJump = false;
-						catchSE_->PlayAudio();
 					}
 
 				}
@@ -162,50 +171,57 @@ void Enemy::Update() {
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if(amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump) {
-			if(!isfly) {
+		if (amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump) {
+			if (!isfly) {
 				isfly = true;
 				flyspeed = pos - beforPos;
 				flyspeed = flyspeed.Normalize() * xAccel;
-				if(flyspeed.x > -0.1f) {
+				if (flyspeed.x > -0.1f) {
 					flyspeed.x = speed;
 				}
+				if (flyspeed.x < -5.0f)
+				{
+					flyspeed.x = -5.0f;
+				}if (flyspeed.y < -2.5f)
+				{
+					flyspeed.y = -2.5f;
+				}
 				flyspeed.y = flyspeed.y * 4;
-				if(amplitude >= 40) {
+				if (amplitude >= 40) {
 					isMaybeDead = true;
 				}
 			}
 		}
 
-		if(isDecele) {
+		if (isDecele) {
 			speed = std::lerp(speed, 0.0f, deceleRate);
 			xAccel = 0;
-			if(speed > -0.15f) {
+			if (speed > -0.15f) {
 				isDecele = false;
 				xAccel = 0;
 			}
 		}
 
-		if(!isfly) {
+		if (!isfly) {
 
-			if(amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-			   amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
 				AcceleEffect_->EffectStart();
 				acceleTime += 0.01f;
 				float t = amplitude / maxAcceleAmp;
-				if(t >= 1.0f) {
+				if (t >= 1.0f) {
 					t = 1.0f;
 				}
 				xAccel += (addAccel * (acceleTime * acceleTime)) * t;
 			}
 
 
-			if(amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-			   amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y) {
+			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y) {
 				AcceleEffect_->EffectStop();
 				acceleTime = 0.3f;
 				float t = amplitude / maxAcceleAmp;
-				if(t >= 1.0f) {
+				if (t >= 1.0f) {
 					t = 1.0f;
 				}
 				xAccel -= addDecel * t;
@@ -215,13 +231,14 @@ void Enemy::Update() {
 		}
 
 
-		if(pos.x < 0) {
-			if(roopCount == 0) {
+		if (pos.x < 0) {
+			if (roopCount == 0) {
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
-			} else if(roopCount == 1) {
+			}
+			else if (roopCount == 1) {
 				isHeartBreak = true;
 				isDead = true;
 				roopCount = 99;
@@ -234,14 +251,15 @@ void Enemy::Update() {
 }
 
 void Enemy::LastUpdate() {
-	if(isDead) {
-		if(deadTime <= 0) {
+	if (isDead) {
+		if (deadTime <= 0) {
 			///
 			/// 死んだときはここ
 			/// 
 			Destory();
 			deathSE_->PlayAudio();
-		} else {
+		}
+		else {
 			deadTime--;
 			amplitude = sinWave_->GetAmplitude();
 			frequency = sinWave_->GetFrequency();
@@ -249,7 +267,7 @@ void Enemy::LastUpdate() {
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
-			if(deadTime == 25) {
+			if (deadTime == 55) {
 				///
 				/// つぶれた時はここ
 				/// 
@@ -263,19 +281,20 @@ void Enemy::LastUpdate() {
 void Enemy::Draw() {}
 
 void Enemy::FrontSpriteDraw() {
-	if(!isDead) {
+	if (!isDead) {
 		sprite_->Draw(2);
-	} else {
+	}
+	else {
 		deadSprite_->Draw(2);
 	}
 }
 
 void Enemy::Debug() {
-	if(ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
 		ImGui::DragFloat("AddAccel", &addAccel, 0.001f, 0.0f, 0.5f);
 		ImGui::DragFloat("AddDecel", &addDecel, 0.001f, 0.0f, 0.5f);
-		if(ImGui::Button("acce")) // 横の加速値をリセット
+		if (ImGui::Button("acce")) // 横の加速値をリセット
 		{
 			xAccel = 0.0f;
 		}
@@ -288,10 +307,10 @@ void Enemy::Debug() {
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
-		if(ImGui::Button("EffectStart")) {
+		if (ImGui::Button("EffectStart")) {
 			deathEffect_->EffectStart();
 		}
-		if(ImGui::Button("EffectStop")) {
+		if (ImGui::Button("EffectStop")) {
 			deathEffect_->EffectStop();
 		}
 		ImGui::TreePop();
@@ -328,7 +347,17 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 	return RotateVelocity(velocity, tangentAngle);
 }
 
-void Enemy::EffectOccurrence(int effectNum) {
+//void Enemy::EffectOccurrence(int effectNum) {
+//
+//
+//}
 
+void Enemy::CalHighPoint() {
+
+	float newHighPoint = pos.y;
+
+	if (highPoint > newHighPoint) {
+		highPoint = pos.y;
+	}
 
 }
