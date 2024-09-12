@@ -275,6 +275,7 @@
     <ClCompile Include="Game\Objects\EnemyComboManager\EnemyComboManager.cpp">
       <Filter>Game\Objects\EnemyComboManager</Filter>
     </ClCompile>
+    <ClCompile Include="ScoreManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -747,6 +748,7 @@
     <ClInclude Include="Game\Objects\EnemyComboManager\EnemyComboManager.h">
       <Filter>Game\Objects\EnemyComboManager</Filter>
     </ClInclude>
+    <ClInclude Include="ScoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

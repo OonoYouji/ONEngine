@@ -106,6 +106,7 @@ void Enemy::Update() {
 			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
+			CalHighPoint();
 
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
@@ -119,6 +120,7 @@ void Enemy::Update() {
 							AcceleEffect_->EffectStop();
 							isDead = true;
 							isCombo = true;
+							isScore = true;
 							isDamage = false;
 							/*deathSound_->PlayAudio();*/
 							BaseCamera* nowCamera = CameraManager::GetInstance()->GetCamera("GameCamera");
@@ -345,7 +347,17 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 	return RotateVelocity(velocity, tangentAngle);
 }
 
-void Enemy::EffectOccurrence(int effectNum) {
+//void Enemy::EffectOccurrence(int effectNum) {
+//
+//
+//}
 
+void Enemy::CalHighPoint() {
+
+	float newHighPoint = pos.y;
+
+	if (highPoint > newHighPoint) {
+		highPoint = pos.y;
+	}
 
 }
