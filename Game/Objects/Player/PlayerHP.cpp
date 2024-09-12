@@ -32,14 +32,7 @@ void PlayerHP::Update() {
 		}
 	}
 
-	if(Input::TriggerKey(KeyCode::F12)) {
-		if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
-			hpSprites_.pop_back();
-			//enemy->SetHeartBreak(false);
-			fluctuationHP_ = true;
-		}
-	}
-
+	
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
 			if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
@@ -79,6 +72,18 @@ void PlayerHP::FrontSpriteDraw() {
 }
 
 void PlayerHP::Debug() {
+
+
+	/// デバッグ用 : ダメージを食らう
+	if(Input::TriggerKey(KeyCode::F12)) {
+		if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
+			hpSprites_.pop_back();
+			//enemy->SetHeartBreak(false);
+			fluctuationHP_ = true;
+		}
+	}
+
+
 	if(ImGui::TreeNodeEx("status", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::DragFloat2("offset", &offset_.x);
