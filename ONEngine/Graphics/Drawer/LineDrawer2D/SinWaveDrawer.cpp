@@ -11,12 +11,7 @@ SinWaveDrawer::~SinWaveDrawer() {
 	waveHeights_.clear();
 }
 
-void SinWaveDrawer::Initialize() {
-	scoreLine_.reset(new Sprite());
-	scoreLine_->Initialize("500Line", "500Line.png");
-	scoreLine_->SetPos({ 640,350,0 });
-	scoreLine_->SetSize({ 700,54.7f });
-}
+void SinWaveDrawer::Initialize() {}
 
 void SinWaveDrawer::Update() {
 	waveHeights_.clear();
