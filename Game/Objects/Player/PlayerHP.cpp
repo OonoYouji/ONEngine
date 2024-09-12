@@ -2,6 +2,8 @@
 
 #include <SceneManager.h>
 #include <ImGuiManager.h>
+#include <Input.h>
+
 #include "Enemy/Enemy.h"
 
 
@@ -24,19 +26,23 @@ void PlayerHP::Update() {
 	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
 	fluctuationHP_ = false;
-	for (auto& gameObject : objects)
-	{
-		if (Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
+	for(auto& gameObject : objects) {
+		if(Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
 			enemies.push_back(enemy);
 		}
 	}
 
-	for (auto& enemy : enemies)
-	{
-		if (enemy->IsHeartBreak())
-		{
-			if (static_cast<uint32_t>(hpSprites_.size()) > 0)
-			{
+	if(Input::TriggerKey(KeyCode::F12)) {
+		if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
+			hpSprites_.pop_back();
+			//enemy->SetHeartBreak(false);
+			fluctuationHP_ = true;
+		}
+	}
+
+	for(auto& enemy : enemies) {
+		if(enemy->IsHeartBreak()) {
+			if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
 				hpSprites_.pop_back();
 				enemy->SetHeartBreak(false);
 				fluctuationHP_ = true;
@@ -58,8 +64,10 @@ void PlayerHP::Update() {
 		hpSprites_[i]->SetPos(position);
 	}
 
-	if (hpSprites_.size() == 0)
-	{
+	if(hpSprites_.size() == 0) {
+		///
+		/// ここでresultに遷移
+		///
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
 }
@@ -82,7 +90,6 @@ void PlayerHP::Debug() {
 	}
 }
 
-bool PlayerHP::GetHPFluctuation()
-{
+bool PlayerHP::GetHPFluctuation() {
 	return fluctuationHP_;
 }

@@ -12,8 +12,7 @@ Enemy::~Enemy()
 	AcceleEffect_->Destory();
 }
 
-void Enemy::Initialize()
-{
+void Enemy::Initialize() {
 	SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
 
 	sprite_.reset(new Sprite());
@@ -49,15 +48,23 @@ void Enemy::Initialize()
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
 
+	stampSE_ = new AudioSource;
+	stampSE_->SetAudioClip("EnemyStamp.wav");
+
+	deathSE_ = new AudioSource;
+	deathSE_->SetAudioClip("EnemyDeath.wav");
+
+	catchSE_ = new AudioSource;
+	catchSE_->SetAudioClip("kasoku.wav");
+
 }
 
-void Enemy::Update()
-{
+void Enemy::Update() {
 
-	if (!isDead) {
+	if(!isDead) {
 		beforPos = pos;
 		beforlambda = addlambda;
-		if (isMaybeJump) {
+		if(isMaybeJump) {
 			isJump = true;
 		}
 
@@ -68,13 +75,13 @@ void Enemy::Update()
 		addlambda = sinWave_->GetAddLambda();
 
 
-		if (beforlambda < addlambda) {
+		if(beforlambda < addlambda) {
 			isJump = false;
 		}
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
-		if (!isfly) {
+		if(!isfly) {
 			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
@@ -82,17 +89,16 @@ void Enemy::Update()
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
+			if(!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 				isMaybeJump = true;
 			}
-		}
-		else {
+		} else {
 			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			if (-(amplitude) - 5.0f >= (pos.y - offsetY)) {
 				isDamage = true;
 			}
-			if (pos.y <= 40) {
+			if(pos.y <= 40) {
 				isMaybeDead = true;
 			}
 			flyspeed.y += 0.2f;
@@ -131,22 +137,21 @@ void Enemy::Update()
 					currentSize_ = { 25.0f,35.0f,0 };
 					if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 						isDecele = true;
-					}
-					else {
+					} else {
 						isJump = false;
 						isMaybeJump = false;
 					}
-				}
-				else if (isDamage &&
-					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
+				} else if(isDamage &&
+						  amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+						  amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
 
 					///
 					/// キャッチしたときはここ
 					///
-					if (-(amplitude)+10.0f >= (pos.y - offsetY)) {
+					if(-(amplitude)+10.0f >= (pos.y - offsetY)) {
 						isJump = false;
 						isMaybeJump = false;
+						catchSE_->PlayAudio();
 					}
 
 				}
@@ -157,60 +162,50 @@ void Enemy::Update()
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump)
-		{
-			if (!isfly)
-			{
+		if(amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump) {
+			if(!isfly) {
 				isfly = true;
 				flyspeed = pos - beforPos;
 				flyspeed = flyspeed.Normalize() * xAccel;
-				if (flyspeed.x > -0.1f) {
+				if(flyspeed.x > -0.1f) {
 					flyspeed.x = speed;
 				}
 				flyspeed.y = flyspeed.y * 4;
-				if (amplitude >= 40)
-				{
+				if(amplitude >= 40) {
 					isMaybeDead = true;
 				}
 			}
 		}
 
-		if (isDecele)
-		{
+		if(isDecele) {
 			speed = std::lerp(speed, 0.0f, deceleRate);
 			xAccel = 0;
-			if (speed > -0.15f)
-			{
+			if(speed > -0.15f) {
 				isDecele = false;
 				xAccel = 0;
 			}
 		}
 
-		if (!isfly)
-		{
+		if(!isfly) {
 
-			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
-				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y)
-			{
+			if(amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+			   amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
 				AcceleEffect_->EffectStart();
 				acceleTime += 0.01f;
 				float t = amplitude / maxAcceleAmp;
-				if (t >= 1.0f)
-				{
+				if(t >= 1.0f) {
 					t = 1.0f;
 				}
 				xAccel += (addAccel * (acceleTime * acceleTime)) * t;
 			}
 
 
-			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-			{
+			if(amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
+			   amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y) {
 				AcceleEffect_->EffectStop();
 				acceleTime = 0.3f;
 				float t = amplitude / maxAcceleAmp;
-				if (t >= 1.0f)
-				{
+				if(t >= 1.0f) {
 					t = 1.0f;
 				}
 				xAccel -= addDecel * t;
@@ -220,17 +215,13 @@ void Enemy::Update()
 		}
 
 
-		if (pos.x < 0)
-		{
-			if (roopCount == 0)
-			{
+		if(pos.x < 0) {
+			if(roopCount == 0) {
 				pos.x = 1280;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
-			}
-			else if (roopCount == 1)
-			{
+			} else if(roopCount == 1) {
 				isHeartBreak = true;
 				isDead = true;
 				roopCount = 99;
@@ -242,19 +233,15 @@ void Enemy::Update()
 	AcceleEffect_->SetPos({ pos.x,pos.y });
 }
 
-void Enemy::LastUpdate()
-{
-	if (isDead)
-	{
-		if (deadTime <= 0)
-		{
+void Enemy::LastUpdate() {
+	if(isDead) {
+		if(deadTime <= 0) {
 			///
 			/// 死んだときはここ
 			/// 
 			Destory();
-		}
-		else
-		{
+			deathSE_->PlayAudio();
+		} else {
 			deadTime--;
 			amplitude = sinWave_->GetAmplitude();
 			frequency = sinWave_->GetFrequency();
@@ -262,41 +249,33 @@ void Enemy::LastUpdate()
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
-			if (deadTime == 25)
-			{
+			if(deadTime == 25) {
 				///
 				/// つぶれた時はここ
 				/// 
 				deathEffect_->EffectStart();
+				stampSE_->PlayAudio();
 			}
 		}
 	}
 }
 
-void Enemy::Draw()
-{
-}
+void Enemy::Draw() {}
 
-void Enemy::FrontSpriteDraw()
-{
-	if (!isDead)
-	{
+void Enemy::FrontSpriteDraw() {
+	if(!isDead) {
 		sprite_->Draw(2);
-	}
-	else
-	{
+	} else {
 		deadSprite_->Draw(2);
 	}
 }
 
-void Enemy::Debug()
-{
-	if (ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen))
-	{
+void Enemy::Debug() {
+	if(ImGui::TreeNodeEx("Enemy", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::DragFloat("DeceleRate", &deceleRate, 0.001f, 0.0f, 1.0f);
 		ImGui::DragFloat("AddAccel", &addAccel, 0.001f, 0.0f, 0.5f);
 		ImGui::DragFloat("AddDecel", &addDecel, 0.001f, 0.0f, 0.5f);
-		if (ImGui::Button("acce")) // 横の加速値をリセット
+		if(ImGui::Button("acce")) // 横の加速値をリセット
 		{
 			xAccel = 0.0f;
 		}
@@ -309,31 +288,26 @@ void Enemy::Debug()
 		ImGui::Separator();
 		ImGui::Text("%f", flyspeed.x); ImGui::SameLine();
 		ImGui::Text("%f", flyspeed.y);
-		if (ImGui::Button("EffectStart"))
-		{
+		if(ImGui::Button("EffectStart")) {
 			deathEffect_->EffectStart();
 		}
-		if (ImGui::Button("EffectStop"))
-		{
+		if(ImGui::Button("EffectStop")) {
 			deathEffect_->EffectStop();
 		}
 		ImGui::TreePop();
 	}
 }
 
-void Enemy::SetWave(SinWaveDrawer* wave)
-{
+void Enemy::SetWave(SinWaveDrawer* wave) {
 	sinWave_ = wave;
 }
 
-float Enemy::CalculateTangentAngle(float A, float B, float x)
-{
+float Enemy::CalculateTangentAngle(float A, float B, float x) {
 	float dy_dx = A * B * cosf(B * x);  // 勾配
 	return atan2f(dy_dx, 1.0f);
 }
 
-Vector3 Enemy::RotateVelocity(Vector3 velocity, float angle)
-{
+Vector3 Enemy::RotateVelocity(Vector3 velocity, float angle) {
 	float cosTheta = cosf(angle);
 	float sinTheta = sinf(angle);
 
@@ -346,8 +320,7 @@ Vector3 Enemy::RotateVelocity(Vector3 velocity, float angle)
 	return rotatedVelocity;
 }
 
-Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
-{
+Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x) {
 	// 現在のx座標に基づいて波の接線角度を計算
 	float tangentAngle = CalculateTangentAngle(A, B, x);
 
@@ -355,8 +328,7 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 	return RotateVelocity(velocity, tangentAngle);
 }
 
-void Enemy::EffectOccurrence(int effectNum)
-{
+void Enemy::EffectOccurrence(int effectNum) {
 
 
 }

@@ -14,12 +14,14 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	bool GetFluctuationHP() const { return fluctuationHP_; }
 private:
 	class HeartBottom* bottom_ = nullptr;
 	class HeartAbove* above_ = nullptr;
 	Effect* damageEffect_;
 	int appearCount_ = 0;
 	class PlayerHP* pPlayerHP_ = nullptr;
+	bool fluctuationHP_ = false;
 };
 
 
@@ -37,6 +39,9 @@ private:
 	float speed_ = 8.0f;
 	float amplitude_ = 0.05f;
 	Model* model_ = nullptr;
+	Material flashingMaterial_{};
+	bool useFlashingMaterial_ = false;
+	float flashingTime_ = 0.2f;
 	/// other class pointer
 	class SinWaveDrawer* pSinWaveDrawer_ = nullptr;
 	class AudioSource* sinon_ = nullptr;
@@ -54,4 +59,7 @@ public:
 	void Draw() override;
 private:
 	Model* model_ = nullptr;
+	Material flashingMaterial_{};
+	bool useFlashingMaterial_ = false;
+	float flashingTime_ = 0.2f;
 };

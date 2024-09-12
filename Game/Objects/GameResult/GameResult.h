@@ -14,6 +14,16 @@ public:
 
 	void BackSpriteDraw() override;
 
+	//void Debug() override;
+
+	void WaveUpdate();
+
 private:
-	std::unique_ptr<Sprite> sprite_;
+
+	class Wave* pWave_ = nullptr;
+	float waveAnimationTime_ = 0.0f;
+	float waveMaxAnimationTime_ = 1.0f;
+	float waveAnimationSpeed_ = 20.0f;
+	
+
 };

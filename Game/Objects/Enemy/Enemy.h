@@ -96,4 +96,10 @@ private:
 	Effect* AcceleEffect_;
 	Effect* deathEffect_;
 	//AudioSource* deathSound_;
+
+	/// 効果音
+	AudioSource* stampSE_ = nullptr;
+	AudioSource* deathSE_ = nullptr;
+	AudioSource* catchSE_ = nullptr;
+
 };
