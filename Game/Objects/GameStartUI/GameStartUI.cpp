@@ -208,6 +208,7 @@ void GameStartUI::EffectStartInitialize() {
 		pGameOperationUI_->SetPosition({ -12.0f, 0.6f, 1.0f });
 		pGameOperationUI_->UpdateMatrix();
 		pGameOperationUI_->isActive = false;
+		pGameOperationUI_->SetIsFrontBinder(false);
 
 		auto monitorLayer = SceneManager::GetInstance()->GetSceneLayer(0);
 		monitorLayer->SetIsApplyBloom(false, FRONT_SPRITE);

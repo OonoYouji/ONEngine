@@ -275,6 +275,12 @@
     <ClCompile Include="Game\Objects\EnemyComboManager\EnemyComboManager.cpp">
       <Filter>Game\Objects\EnemyComboManager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Tile\Tile.cpp">
+      <Filter>Game\Objects\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Wall\Wall.cpp">
+      <Filter>Game\Objects\Wall</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -468,6 +474,12 @@
     </Filter>
     <Filter Include="Game\Objects\EnemyComboManager">
       <UniqueIdentifier>{b4903aaf-8231-473b-b731-23336e8cbcfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Tile">
+      <UniqueIdentifier>{9b31c916-cc21-4fce-ba9d-e95d6ade34eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Wall">
+      <UniqueIdentifier>{b34381eb-b7f3-452e-83d1-9134c05ec894}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -746,6 +758,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\EnemyComboManager\EnemyComboManager.h">
       <Filter>Game\Objects\EnemyComboManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Tile\Tile.h">
+      <Filter>Game\Objects\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Wall\Wall.h">
+      <Filter>Game\Objects\Wall</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

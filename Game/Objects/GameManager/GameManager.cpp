@@ -19,7 +19,7 @@ void GameManager::Initialize() {
 	}
 
 
-	isPouse_ = false;
+	isPouse_ = true;
 
 	sprite_.reset(new Sprite);
 	sprite_->Initialize("pause", "pause.png");
@@ -42,9 +42,15 @@ void GameManager::Initialize() {
 void GameManager::Update() {
 
 	prevIsPause_ = isPouse_;
-	isPouse_ = false;
-	isPouse_ |= Input::PressKey(KeyCode::Enter);
-	isPouse_ |= Input::PressPadButton(PadCode::RightShoulder);
+
+	bool inputTriggered = false;
+	inputTriggered |= Input::TriggerKey(KeyCode::Enter);
+	inputTriggered |= Input::TriggerPadButton(PadCode::RightShoulder);
+
+	if(inputTriggered) {
+		isPouse_ = !isPouse_;
+	}
+
 
 	/// 無効なポインタの削除
 	for(auto itr = pausedObjects_.begin(); itr != pausedObjects_.end();) {

@@ -16,6 +16,9 @@ public:
 	void Draw() override;
 
 	void Debug() override;
+
+	void SetIsFrontBinder(bool isFrontBinder);
+
 private:
 	Model* paper_ = nullptr;
 	Model* binder_ = nullptr;

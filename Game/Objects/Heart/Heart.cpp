@@ -49,12 +49,25 @@ void Heart::Initialize() {
 void Heart::Update() {
 	if(pPlayerHP_) {
 
-		damageEffect_->SetPos(transform_.position);
-		fluctuationHP_ = pPlayerHP_->GetHPFluctuation();
-		if(fluctuationHP_) {
-			appearCount_ += 2;
-			damageEffect_->OverTimeSetting(12, appearCount_);
+		if(isDameged_) {
+			damegedTime_ -= WorldTime::DeltaTime();
+			if(damegedTime_ <= 0.0f) {
+				damageEffect_->EffectStop();
+				isDameged_ = false;
+			}
+		} else {
+			
+			damageEffect_->SetPos(transform_.position);
+			fluctuationHP_ = pPlayerHP_->GetHPFluctuation();
+			if(fluctuationHP_) {
+				appearCount_ += 2;
+				damageEffect_->OverTimeSetting(12, appearCount_);
+				damageEffect_->EffectStart();
+				isDameged_ = true;
+				damegedTime_ = 0.5f;
+			}
 		}
+
 	}
 }
 
@@ -114,7 +127,7 @@ void HeartBottom::Update() {
 			///
 			/// ここでGameCameraをシェイクさせる
 			///
-			
+
 			BaseCamera* nowCamera = CameraManager::GetInstance()->GetCamera("GameCamera");
 			nowCamera->GetShake()->SetStartTime(0.2f);
 			nowCamera->GetShake()->Start();;

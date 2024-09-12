@@ -18,7 +18,8 @@
 #include "Background/Background.h"
 #include "GameManager/GameManager.h"
 #include "EnemyComboManager/EnemyComboManager.h"
-
+#include "Tile/Tile.h"
+#include "Wall/Wall.h"
 
 
 
@@ -31,14 +32,12 @@ Scene_Game::~Scene_Game() {
 /// ===================================================
 void Scene_Game::Initialize() {
 
+	(new Tile)->Initialize();
+	(new Wall)->Initialize();
+
 	/// 波
 	SinWaveDrawer* sinWave_ = new SinWaveDrawer();
 	sinWave_->Initialize();
-
-	/// 敵
-	/*Enemy* enemy_ = new Enemy();
-	enemy_->SetWave(sinWave_);
-	enemy_->Initialize();*/
 
 	/// 敵pop
 	EnemyManager* enemyManager_ = new EnemyManager();
@@ -84,7 +83,6 @@ void Scene_Game::Initialize() {
 	monitorBG->Initialize();
 	monitorBG->SetColor({ 0, 0, 0, 1 });
 
-	//(new GameCameraState)->Initialize();
 	(new GameOperationUI)->Initialize();
 
 	GameTimer* gameTimer = new GameTimer;
@@ -100,7 +98,7 @@ void Scene_Game::Initialize() {
 	bgm_ = new AudioSource;
 	bgm_->SetAudioClip("BGM.wav");
 	bgm_->isLoop = true;
-	//bgm_->PlayAudio();
+	bgm_->PlayAudio();
 
 }
 

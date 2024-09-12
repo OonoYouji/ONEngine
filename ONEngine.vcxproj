@@ -42,6 +42,8 @@
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerHP.cpp" />
     <ClCompile Include="Game\Objects\Shake\Shake.cpp" />
+    <ClCompile Include="Game\Objects\Tile\Tile.cpp" />
+    <ClCompile Include="Game\Objects\Wall\Wall.cpp" />
     <ClCompile Include="Game\Objects\Wave\Wave.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
@@ -137,6 +139,8 @@
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerHP.h" />
     <ClInclude Include="Game\Objects\Shake\Shake.h" />
+    <ClInclude Include="Game\Objects\Tile\Tile.h" />
+    <ClInclude Include="Game\Objects\Wall\Wall.h" />
     <ClInclude Include="Game\Objects\Wave\Wave.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />

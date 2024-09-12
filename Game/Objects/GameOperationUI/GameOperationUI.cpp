@@ -29,23 +29,21 @@ void GameOperationUI::Initialize() {
 	sousa_ = new AudioSource();
 	sousa_->SetAudioClip("sousa.wav");
 
+	isFrontBinder_ = true;
+
 }
 
 void GameOperationUI::Update() {
-
-	/// 値を初期化
-	isFrontBinder_ = false;
-
 
 	/// enter を押すか　game pad RB を押す
 	if(Input::TriggerKey(KeyCode::Enter)
 	   || Input::TriggerPadButton(PadCode::RightShoulder)) {
 		sousa_->PlayAudio();
+		isFrontBinder_ = !isFrontBinder_;
 	}
 
 	/// enter を押すか　game pad RB を押す
-	if(Input::PressKey(KeyCode::Enter)
-	   || Input::PressPadButton(PadCode::RightShoulder)) {
+	if(isFrontBinder_) {
 
 		lerpTime_ = std::min(lerpTime_ + WorldTime::DeltaTime(), maxLerpTime_);
 	} else {
@@ -68,8 +66,6 @@ void GameOperationUI::Update() {
 			{ -3.6f, 0.6f, -4.7f },
 			lerpT - 1.0f
 		);
-
-		isFrontBinder_ = true;
 
 	}
 
@@ -112,4 +108,8 @@ void GameOperationUI::Debug() {
 
 		ImGui::TreePop();
 	}
+}
+
+void GameOperationUI::SetIsFrontBinder(bool isFrontBinder) {
+	isFrontBinder_ = isFrontBinder;
 }

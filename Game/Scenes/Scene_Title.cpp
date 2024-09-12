@@ -6,6 +6,9 @@
 #include "GameMonitor/GameMonitor.h"
 #include "Background/Background.h"
 #include "GameTitle/GameTitle.h"
+#include "Tile/Tile.h"
+#include "Wall/Wall.h"
+
 
 void Scene_Title::Initialize() {
 
@@ -24,6 +27,8 @@ void Scene_Title::Initialize() {
 	/// ===================================================
 
 	(new GameTitle)->Initialize();
+	(new Tile)->Initialize();
+	(new Wall)->Initialize();
 
 	/// ゲームを映すモニター
 	GameMonitor* gameMonitor = new GameMonitor;

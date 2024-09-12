@@ -18,7 +18,12 @@ public:
 private:
 	class HeartBottom* bottom_ = nullptr;
 	class HeartAbove* above_ = nullptr;
+
+	/// ダメージ演出
 	Effect* damageEffect_;
+	float damegedTime_ = 1.0f;
+	bool isDameged_ = false;
+
 	int appearCount_ = 0;
 	class PlayerHP* pPlayerHP_ = nullptr;
 	bool fluctuationHP_ = false;

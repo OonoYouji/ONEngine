@@ -19,7 +19,7 @@ public:
 
 private:
 
-	bool isPouse_ = false;
+	bool isPouse_ = true;
 	bool prevIsPause_ = false;
 
 	std::list<BaseGameObject*> pausedObjects_;

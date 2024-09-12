@@ -30,6 +30,7 @@
 #include <Bloom/Bloom.h>
 
 
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
@@ -81,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("binder", "binder.png");
 	textureManager->Load("white2x2", "white2x2.png");
 	textureManager->Load("particle", "particle.png");
+	textureManager->Load("tile", "tile.png");
+	textureManager->Load("wall", "wall.png");
 
 	textureManager->Load("0", "0.png");
 	textureManager->Load("1", "1.png");
