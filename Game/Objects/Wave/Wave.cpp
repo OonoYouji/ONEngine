@@ -34,7 +34,7 @@ void Wave::FrontSpriteDraw() {
 		LineDrawer2D::GetInstance()->Draw(
 			{ float(i - 1) * separateLenght_,waveHeights_[i - 1] },
 			{ float(i) * separateLenght_,waveHeights_[i] },
-			Vector4(0.184f, 0.851f, 0.137f, 1.0f)
+			Vector4(0.184f, 0.851f, 0.137f, alpha_)
 		);
 	}
 }

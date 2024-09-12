@@ -16,6 +16,8 @@ public:
 	void SetAmplitude(float x) { amplitude_ = x; }
 	void SetOffsetY(float x) { offsetY_ = x; }
 
+	void SetAlpha(float alpha) { alpha_ = alpha; }
+
 private:
 	std::vector<float> waveHeights_;
 
@@ -26,5 +28,7 @@ private:
 
 	float animationTime_ = 0.0f;
 	float maxAnimationTime_ = 1.0f;
+
+	float alpha_ = 1.0f;
 
 };

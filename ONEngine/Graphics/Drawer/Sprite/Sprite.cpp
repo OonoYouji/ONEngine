@@ -20,9 +20,6 @@ Sprite::~Sprite() {}
 /// ===================================================
 void Sprite::Initialize(const std::string& textureName, const std::string& filePath) {
 
-	TextureManager::GetInstance()->Load(
-		textureName, filePath);
-
 	/// ---------------------------------------------------
 	/// メッシュの初期化
 	/// ---------------------------------------------------
@@ -32,8 +29,7 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 	/// ---------------------------------------------------
 	/// マテリアルの初期化
 	/// ---------------------------------------------------
-	material_.SetFilePath(filePath);
-	material_.SetTextureName(textureName);
+	SetTexture(textureName, filePath);
 
 	material_.CreateBuffer();
 
@@ -82,6 +78,13 @@ void Sprite::SetPos(const Vec3& pos) {
 
 void Sprite::SetSize(const Vec2& textureSize) {
 	size_ = textureSize;
+}
+
+void Sprite::SetTexture(const std::string& textureName, const std::string& filePath) {
+	TextureManager::GetInstance()->Load(textureName, filePath);
+
+	material_.SetTextureName(textureName);
+	material_.SetFilePath(filePath);
 }
 
 

@@ -22,7 +22,7 @@ void Effect::Initialize() {
 	emitterName_ = "name";
 	if (is3DMode_)
 	{
-		model_ = ModelManager::CreateCube();
+		model_ = ModelManager::Load("HeartBreak");
 	}
 	transform_.Initialize();
 	drawLayerId = 1;

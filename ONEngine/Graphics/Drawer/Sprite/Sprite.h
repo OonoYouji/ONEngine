@@ -66,6 +66,8 @@ public:
 
 	void SetAngle(float angle) { angle_ = angle; }
 
+	void SetTexture(const std::string& textureName, const std::string& filePath);
+
 private:
 
 

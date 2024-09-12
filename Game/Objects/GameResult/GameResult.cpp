@@ -3,10 +3,10 @@
 
 #include <CameraManager.h>
 
+#include <AudioSource.h>
 #include <WorldTime.h>
 #include <Easing.h>
-#include <AudioSource.h>
-
+#include <Random/Random.h>
 
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
@@ -78,6 +78,39 @@ void GameResult::Initialize() {
 
 	/// 4, 倒した分の敵が落ちてくる
 	killedEnemiesCount_ = EnemyComboManager::GetKilledEnemiesCount();
+	killedEnemiesCount_ = 100u;
+	largeEnemySpriteNum_ = killedEnemiesCount_ / 20u + 1u;
+
+	dropDatas_.resize(std::min(largeEnemySpriteNum_, 22u));
+	if(largeEnemySpriteNum_ != dropDatas_.size()) {
+		largeEnemySpriteNum_ = static_cast<uint32_t>(dropDatas_.size());
+	}
+
+	for(uint32_t i = 0u; i < largeEnemySpriteNum_; ++i) {
+		auto& dropData = dropDatas_[i];
+		dropData.sprite.reset(new Sprite);
+		dropData.sprite->Initialize("largeEnemy", "largeEnemy.png");
+		dropData.sprite->SetPos({ 640.0f, -20.0f, 0.0f });
+		dropData.sprite->SetSize({ 640.0f, 45.0f });
+
+		dropData.isStart = false;
+		dropData.time = 0.0f;
+
+		dropData.endPosition = Vec3(
+			640.0f + Random::Float(-50.0f, 50.0f),
+			520.0f - (i * 45.f * 0.5f),
+			0.0f
+		);
+
+		dropData.startPosition = Vec3(
+			dropData.endPosition.x,
+			-20.0f,
+			0.0f
+		);
+
+	}
+
+	dropDatas_.front().isStart = true;
 
 
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
@@ -96,9 +129,13 @@ void GameResult::Update() {
 
 		CameraMoving();
 		break;
+	case KILLED_ENEMIES_LEAVE:	/// 4, 倒した分の敵が落ちてくる
+
+		KilledEnemiesLeave();
+		break;
 	case KILLED_ENEMIES_DROPING:	/// 4, 倒した分の敵が落ちてくる
 
-
+		KilledEnemiesDropping();
 		break;
 	case SCORE_CALCULATION:			/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
@@ -116,6 +153,17 @@ void GameResult::Update() {
 }
 
 void GameResult::BackSpriteDraw() {}
+
+void GameResult::FrontSpriteDraw() {
+	if(effectPhase_ == KILLED_ENEMIES_LEAVE
+	   || effectPhase_ == KILLED_ENEMIES_DROPING
+	   || effectPhase_ == PAHSE_WAIT) {
+
+		for(auto& dropData : dropDatas_) {
+			dropData.sprite->Draw();
+		}
+	}
+}
 
 void GameResult::HeartBreak() {
 
@@ -139,8 +187,6 @@ void GameResult::HeartBreak() {
 		isBreaked_ = true;
 
 		if(heart_) {
-			//heart_->Destory();
-			//heart_ = nullptr;
 			heart_->isDrawActive = false;
 			for(auto& child : heart_->GetChilds()) {
 				child->isDrawActive = false;
@@ -174,11 +220,86 @@ void GameResult::CameraMoving() {
 	cameraMovingTime_ += WorldTime::DeltaTime();
 
 	/// 移動の終了
-	if(cameraMovingTime_ / cameraMovingMaxTime_ == 1.0f) {
-		WaitTime(KILLED_ENEMIES_DROPING, 0.2F);
+	if(cameraMovingTime_ / cameraMovingMaxTime_ >= 1.0f) {
+		WaitTime(KILLED_ENEMIES_LEAVE, 0.2F);
 	}
 
 }
+
+void GameResult::KilledEnemiesLeave() {
+
+	for(auto itr = dropDatas_.begin(); itr != dropDatas_.end(); ++itr) {
+
+		auto& dropData = (*itr);
+
+		if(!dropData.isStart) {
+			continue;
+		}
+
+		dropData.time += WorldTime::DeltaTime();
+		float lerpT = std::min(dropData.time / droppingMaxAnimationTime_, 1.0f);
+
+		dropData.sprite->SetPos(Vec3::Lerp(
+			dropData.startPosition, dropData.endPosition,
+			lerpT
+		));
+
+		if(lerpT >= 0.2f) {
+			auto next = std::next(itr);
+			if(next != dropDatas_.end()) {
+				next->isStart = true;
+			}
+		}
+
+		if(lerpT == 1.0f) {
+			dropData.sprite->SetTexture("largeEnemyStamp", "largeEnemyStamp.png");
+		}
+
+	}
+
+
+	///	次の計算に行くための条件
+	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
+		WaitTime(KILLED_ENEMIES_DROPING, 1.0f);
+
+		for(auto& dropData : dropDatas_) {
+			dropData.startPosition = dropData.endPosition;
+			dropData.endPosition.y += 720.0f;
+			dropData.time = 0.0f;
+		}
+	}
+}
+
+
+
+void GameResult::KilledEnemiesDropping() {
+
+	float alpha = std::max(waveAlphaLerpTime_ / 0.5f, 0.0f);
+	waveAlphaLerpTime_ -= WorldTime::DeltaTime();
+
+	pWave_->SetAlpha(alpha);
+
+	if(alpha == 0.0f) {
+
+		for(auto& dropData : dropDatas_) {
+
+			dropData.time += WorldTime::DeltaTime();
+			float lerpT = std::min(dropData.time / droppingMaxAnimationTime_, 1.0f);
+
+			dropData.sprite->SetPos(Vec3::Lerp(
+				dropData.startPosition, dropData.endPosition,
+				lerpT
+			));
+		}
+	}
+
+	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
+		WaitTime(SCORE_CALCULATION, 1.0f);
+	}
+
+}
+
+
 
 void GameResult::WaitTime(EFFECT_PAHSE nextPahse, float waitTime) {
 	effectPhase_ = PAHSE_WAIT;

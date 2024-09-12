@@ -84,6 +84,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("particle", "particle.png");
 	textureManager->Load("tile", "tile.png");
 	textureManager->Load("wall", "wall.png");
+	textureManager->Load("HeartBreak", "HeartBreak.png");
 
 	textureManager->Load("0", "0.png");
 	textureManager->Load("1", "1.png");
