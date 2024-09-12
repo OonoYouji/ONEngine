@@ -9,6 +9,11 @@
 #include "GameManager/GameManager.h"
 
 
+EnemyManager::~EnemyManager()
+{
+	commands_.clear();
+}
+
 void EnemyManager::Initialize() {
 
 	LoadPopDate("EnemyPop.csv");

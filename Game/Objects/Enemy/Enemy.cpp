@@ -7,7 +7,7 @@
 
 Enemy::~Enemy()
 {
-	deathEffect_->Destory();
+
 	deathEffect_->Destory();
 	AcceleEffect_->Destory();
 }

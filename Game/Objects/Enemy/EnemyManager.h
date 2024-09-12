@@ -6,7 +6,7 @@ class EnemyManager : public BaseGameObject
 {
 public:
 	EnemyManager(){ CreateTag(this); }
-	~EnemyManager(){}
+	~EnemyManager();
 
 public:
 
