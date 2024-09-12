@@ -12,8 +12,10 @@ SinWaveDrawer::~SinWaveDrawer() {
 }
 
 void SinWaveDrawer::Initialize() {
-
-
+	scoreLine_.reset(new Sprite());
+	scoreLine_->Initialize("500Line", "500Line.png");
+	scoreLine_->SetPos({ 640,350,0 });
+	scoreLine_->SetSize({ 700,54.7f });
 }
 
 void SinWaveDrawer::Update() {
@@ -119,6 +121,7 @@ void SinWaveDrawer::Draw() {
 
 void SinWaveDrawer::FrontSpriteDraw()
 {
+	scoreLine_->Draw();
 	/*for (int i = 1; i < waveHeights_.size(); i++)
 	{
 		LineDrawer2D::GetInstance()->Draw({ float(i - 1) * separateLenght_,waveHeights_[i - 1] }, { float(i) * separateLenght_,waveHeights_[i] }, Vector4(0.184f, 0.851f, 0.137f, 1.0f));
