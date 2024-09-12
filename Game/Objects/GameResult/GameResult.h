@@ -11,7 +11,7 @@ class GameResult final : public BaseGameObject {
 		CAMERA_MOVING,			/// 3, カメラをタイトルのスタート地点に移動させる
 		KILLED_ENEMIES_LEAVE,	/// 4.1, 倒した分の敵が落ちてくる (溜める)
 		KILLED_ENEMIES_DROPING,	/// 4.2, 倒した分の敵が落ちてくる (落とす)
-		SCORE_CALCULATION,		/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
+		EFFECT_END,
 		PAHSE_WAIT,
 		EFFECT_PAHSE_COUNTER
 	};
@@ -49,6 +49,8 @@ public:
 
 	void KilledEnemiesLeave();
 	void KilledEnemiesDropping();
+
+	void EffectEndUpdate();
 
 	void WaitTime(EFFECT_PAHSE nextPahse, float waitTime);
 

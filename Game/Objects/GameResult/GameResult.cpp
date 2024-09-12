@@ -3,11 +3,13 @@
 
 #include <cmath>
 
+#include <SceneManager.h>
 #include <CameraManager.h>
 #include <AudioSource.h>
 #include <WorldTime.h>
 #include <Easing.h>
 #include <Random/Random.h>
+#include <Input.h>
 
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
@@ -118,7 +120,7 @@ void GameResult::Initialize() {
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
 	totalScore_ = ScoreManager::GetScoreCount();
-	totalScore_ = 205;
+	totalScore_ = 999999;
 
 	uint32_t digit = static_cast<uint32_t>(std::log10(totalScore_)) + 1u;
 
@@ -164,9 +166,9 @@ void GameResult::Update() {
 
 		KilledEnemiesDropping();
 		break;
-	case SCORE_CALCULATION:			/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
+	case EFFECT_END:		
 
-
+		EffectEndUpdate();
 		break;
 	case PAHSE_WAIT:
 		waitTime_ -= WorldTime::DeltaTime();
@@ -340,7 +342,7 @@ void GameResult::KilledEnemiesDropping() {
 
 
 	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
-		WaitTime(SCORE_CALCULATION, 1.0f);
+		WaitTime(EFFECT_END, 0.1f);
 
 
 		/// 表示する値をしっかり計算する
@@ -367,6 +369,18 @@ void GameResult::KilledEnemiesDropping() {
 
 	}
 
+}
+
+void GameResult::EffectEndUpdate() {
+
+	bool inputTriggered = false;
+	inputTriggered |= Input::TriggerKey(KeyCode::Enter);
+	inputTriggered |= Input::TriggerKey(KeyCode::Space);
+	inputTriggered |= Input::TriggerPadButton(PadCode::A);
+
+	if(inputTriggered) {
+		SceneManager::GetInstance()->SetNextScene(TITLE);
+	}
 }
 
 
