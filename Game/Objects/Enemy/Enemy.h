@@ -86,7 +86,7 @@ private:
 	bool isMaybeDead = false;
 	bool isDead = false;
 	bool isCombo = false;
-	int deadTime = 30;
+	int deadTime = 60;
 
 
 	int roopCount = 0;
