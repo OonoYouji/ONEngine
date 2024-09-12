@@ -31,5 +31,5 @@ private:
 	uint32_t comboCount_ = 0;
 	uint32_t comboReceptionTime_ = 0;
 	uint32_t interruptTime_ = 30;
-
+	Vector3 spritePos_{};
 };

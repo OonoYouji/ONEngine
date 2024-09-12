@@ -10,6 +10,7 @@ public:
 	void Update() override;
 	void Debug() override;
 	void Start();
+	void SetStartTime(float time);
 private:
 	float startTime_;
 	float time_;

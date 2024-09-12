@@ -41,6 +41,7 @@ public:
 	Vector3 AdjustVelocityToWave(Vector3 velocity, float A, float B, float x);
 
 	void EffectOccurrence(int effectNum);
+	Vector3 GetPos() { return pos; }
 
 private:
 
@@ -95,5 +96,4 @@ private:
 	Effect* AcceleEffect_;
 	Effect* deathEffect_;
 	//AudioSource* deathSound_;
-
 };
