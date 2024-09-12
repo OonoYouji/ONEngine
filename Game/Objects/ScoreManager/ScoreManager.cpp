@@ -3,11 +3,13 @@
 #include "Enemy/Enemy.h"
 
 
+uint32_t ScoreManager::scoreCount_ = 0u;
+
+
 ScoreManager::~ScoreManager() {
 }
 
 void ScoreManager::Initialize() {
-
 
 	for (int i = 0; i < 10; i++) {
 		std::unique_ptr<Sprite> digitOne;

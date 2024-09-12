@@ -1,8 +1,9 @@
 #define NOMINMAX
 #include "GameResult.h"
 
-#include <CameraManager.h>
+#include <cmath>
 
+#include <CameraManager.h>
 #include <AudioSource.h>
 #include <WorldTime.h>
 #include <Easing.h>
@@ -12,6 +13,7 @@
 #include "Hand/Hand.h"
 #include "Wave/Wave.h"
 #include "EnemyComboManager/EnemyComboManager.h"
+#include "ScoreManager/ScoreManager.h"
 
 
 void GameResult::Initialize() {
@@ -115,6 +117,30 @@ void GameResult::Initialize() {
 
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
+	totalScore_ = ScoreManager::GetScoreCount();
+	totalScore_ = 123;
+
+	uint32_t digit = static_cast<uint32_t>(std::log10(totalScore_)) + 1u;
+
+	texDatas_.resize(10);
+	for(uint8_t i = 0u; i < 10u; ++i) {
+		auto& texData = texDatas_[i];
+		texData.texName = std::to_string(i);
+		texData.filePath = texData.texName + std::string(".png");
+	}
+
+	digitNumbers_.resize(digit);
+	for(uint32_t i = 0u; i < digit; ++i) {
+		auto& number = digitNumbers_[i];
+		number.reset(new Sprite);
+		number->Initialize(texDatas_[i].texName, texDatas_[i].filePath);
+		number->SetSize({ 50.0f, 60.0f });
+		number->SetPos(Vec3(
+			640.0f + ((float(digit) * 0.5f - i) * 100.0f),
+			320.0f,
+			0.0f
+		));
+	}
 
 }
 
@@ -155,6 +181,14 @@ void GameResult::Update() {
 void GameResult::BackSpriteDraw() {}
 
 void GameResult::FrontSpriteDraw() {
+
+	if(isDrawScore_) {
+		for(auto& number : digitNumbers_) {
+			number->Draw();
+		}
+	}
+
+
 	if(effectPhase_ == KILLED_ENEMIES_LEAVE
 	   || effectPhase_ == KILLED_ENEMIES_DROPING
 	   || effectPhase_ == PAHSE_WAIT) {
@@ -274,6 +308,8 @@ void GameResult::KilledEnemiesLeave() {
 
 void GameResult::KilledEnemiesDropping() {
 
+	isDrawScore_ = true;
+
 	float alpha = std::max(waveAlphaLerpTime_ / 0.5f, 0.0f);
 	waveAlphaLerpTime_ -= WorldTime::DeltaTime();
 
@@ -293,8 +329,42 @@ void GameResult::KilledEnemiesDropping() {
 		}
 	}
 
+	/// 落下中にスコアを計算している風にする
+	for(auto& number : digitNumbers_) {
+		int index = Random::Int(0, 9);
+		number->SetTexture(
+			texDatas_[index].texName,
+			texDatas_[index].filePath
+		);
+	}
+
+
 	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
 		WaitTime(SCORE_CALCULATION, 1.0f);
+
+
+		/// 表示する値をしっかり計算する
+		std::vector<int> digits;
+		int num = totalScore_;
+
+		if(num == 0) {
+			digits.push_back(0);
+		} else {
+			while(num > 0) {
+				digits.push_back(num % 10);
+				num /= 10;
+			}
+		}
+
+		std::reverse(digits.begin(), digits.end());
+
+		for(uint32_t i = 0u; i < digitNumbers_.size(); ++i) {
+			digitNumbers_[i]->SetTexture(
+				texDatas_[digits[i]].texName,
+				texDatas_[digits[i]].filePath
+			);
+		}
+
 	}
 
 }

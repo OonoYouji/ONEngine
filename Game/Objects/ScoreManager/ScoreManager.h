@@ -17,6 +17,8 @@ public:
 
 	void CalScoreSprite();
 
+	static uint32_t GetScoreCount() { return scoreCount_; }
+
 private:
 
 	std::vector<std::unique_ptr<Sprite>> digitOneSprites_;
@@ -26,7 +28,7 @@ private:
 	std::vector<std::unique_ptr<Sprite>> digitFiveSprites_;
 	std::vector<std::unique_ptr<Sprite>> digitSixSprites_;
 
-	uint32_t scoreCount_ = 0;
+	static uint32_t scoreCount_;
 	float highPoint_ = 0.0f;
 	uint32_t baseScore_ = 100;
 

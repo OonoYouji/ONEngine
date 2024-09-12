@@ -16,6 +16,18 @@ class GameResult final : public BaseGameObject {
 		EFFECT_PAHSE_COUNTER
 	};
 
+	struct DropData {
+		std::unique_ptr<Sprite> sprite;
+		Vec3 endPosition;
+		Vec3 startPosition;
+		float time;
+		bool isStart;
+	};
+
+	struct TexData {
+		std::string texName, filePath;
+	};
+
 
 public:
 
@@ -75,18 +87,17 @@ private:
 	/// 4, 倒した分の敵が落ちてくる
 	uint32_t killedEnemiesCount_ = 0u;
 	uint32_t largeEnemySpriteNum_ = 0u;
-	struct DropData {
-		std::unique_ptr<Sprite> sprite;
-		Vec3 endPosition;
-		Vec3 startPosition;
-		float time;
-		bool isStart;
-	};
+	
 	std::vector<DropData> dropDatas_;
 
 	float droppingMaxAnimationTime_ = 1.0f;
 	float waveAlphaLerpTime_ = 0.5f;
 
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
+	bool isDrawScore_ = false;
+	uint32_t totalScore_ = 0u;
+	std::vector<std::unique_ptr<Sprite>> digitNumbers_;
+	
+	std::vector<TexData> texDatas_;
 
 };
