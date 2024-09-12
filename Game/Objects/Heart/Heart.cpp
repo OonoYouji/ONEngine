@@ -4,11 +4,13 @@
 
 #include <ImGuiManager.h>
 #include <ModelManager.h>
+#include <CameraManager.h>
 #include <WorldTime.h>
 #include <AudioSource.h>
 
 #include "Player/PlayerHP.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
+#include "Shake/Shake.h"
 
 
 void Heart::Initialize() {
@@ -112,11 +114,10 @@ void HeartBottom::Update() {
 			///
 			/// ここでGameCameraをシェイクさせる
 			///
-			/*
-			GameCamera* camera = 
-					dynamic_cast<GameCamera*>(CameraManager::GetInstance()->GetCamera("GameCamera));
-
-			*/
+			
+			BaseCamera* nowCamera = CameraManager::GetInstance()->GetCamera("GameCamera");
+			nowCamera->GetShake()->SetStartTime(0.2f);
+			nowCamera->GetShake()->Start();;
 		}
 	}
 
