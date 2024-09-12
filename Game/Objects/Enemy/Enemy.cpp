@@ -36,7 +36,7 @@ void Enemy::Initialize()
 	deathEffect_->Initialize();
 	deathEffect_->SetOverType(0);
 	deathEffect_->OverTimeSetting(8, 4);
-	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30,true, true, 8.0f, 10.0f);
+	deathEffect_->SetVariavles2D({ 0.0f,0.045f,0.0f }, -2.6f, { 5.0f,5.0f,0.0f }, 30, true, true, 8.0f, 10.0f);
 	deathEffect_->ShapeType(1);
 
 
@@ -44,7 +44,7 @@ void Enemy::Initialize()
 	AcceleEffect_->SetGrainMode(1);
 	AcceleEffect_->Initialize();
 	AcceleEffect_->SetOverType(1);
-	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20,true, true, 10.0f, 14.0f);
+	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
 
@@ -57,8 +57,7 @@ void Enemy::Update()
 	if (!isDead) {
 		beforPos = pos;
 		beforlambda = addlambda;
-		if (isMaybeJump)
-		{
+		if (isMaybeJump) {
 			isJump = true;
 		}
 
@@ -69,15 +68,13 @@ void Enemy::Update()
 		addlambda = sinWave_->GetAddLambda();
 
 
-		if (beforlambda < addlambda)
-		{
+		if (beforlambda < addlambda) {
 			isJump = false;
 		}
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
-		if (!isfly)
-		{
+		if (!isfly) {
 			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
@@ -85,56 +82,65 @@ void Enemy::Update()
 			pos.x += speed - xAccel;
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
-			{
+			if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 				isMaybeJump = true;
 			}
 		}
-		else
-		{
+		else {
 			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
-			if (-(amplitude) >= (pos.y - offsetY))
-			{
+			if (-(amplitude) >= (pos.y - offsetY)) {
 				isDamage = true;
 			}
-			if (pos.y <= 40)
-			{
+			if (pos.y <= 40) {
 				isMaybeDead = true;
 			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
-			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY)
-			{
+			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 				isfly = false;
 
-
 				if (isDamage &&
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
-					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y)
-				{
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y) {
+
 					currentSize_ = { 25.0f,35.0f,0 };
-					if (!(-(amplitude)+10.0f >= (pos.y - offsetY)))
-					{
+					if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
 						isDamage = false;
 						isDecele = true;
 					}
-					else
-					{
+					else {
 						isJump = false;
 						isMaybeJump = false;
 					}
 				}
-				isDamage = false;
-				if (amplitude <= 4)
-				{
-					if (isMaybeDead)
-					{
-						isDead = true;
-						isCombo = true;
-						/*deathSound_->PlayAudio();*/
+				else if (isDamage &&
+					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
+
+					///
+					/// キャッチしたときはここ
+					///
+					if (-(amplitude)+10.0f >= (pos.y - offsetY)) {
+						isJump = false;
+						isMaybeJump = false;
 					}
+
+				}
+				isDamage = false;
+				if (!isBorn) {
+					if (amplitude <= 4) {
+						if (isMaybeDead)
+						{
+							isDead = true;
+							isCombo = true;
+							/*deathSound_->PlayAudio();*/
+						}
+					}
+				}
+				else {
+					isBorn = false;
 				}
 				isMaybeDead = false;
 			}
@@ -234,6 +240,9 @@ void Enemy::LastUpdate()
 	{
 		if (deadTime <= 0)
 		{
+			///
+			/// 死んだときはここ
+			/// 
 			Destory();
 		}
 		else
@@ -247,6 +256,9 @@ void Enemy::LastUpdate()
 			deadSprite_->SetPos(pos);
 			if (deadTime == 25)
 			{
+				///
+				/// つぶれた時はここ
+				/// 
 				deathEffect_->EffectStart();
 			}
 		}

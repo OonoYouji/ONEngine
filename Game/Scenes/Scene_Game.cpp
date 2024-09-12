@@ -36,9 +36,9 @@ void Scene_Game::Initialize() {
 	sinWave_->Initialize();
 
 	/// 敵
-	Enemy* enemy_ = new Enemy();
+	/*Enemy* enemy_ = new Enemy();
 	enemy_->SetWave(sinWave_);
-	enemy_->Initialize();
+	enemy_->Initialize();*/
 
 	/// 敵pop
 	EnemyManager* enemyManager_ = new EnemyManager();

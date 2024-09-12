@@ -23,6 +23,8 @@ void EnemyManager::EnemyPop()
 {
 	Enemy* newEnemy = new Enemy();
 	newEnemy->Initialize();
+	GameManager* gameManager = dynamic_cast<GameManager*>(GameObjectManager::GetGameObject("GameManager"));
+	gameManager->AddPausedObject(newEnemy);
 }
 
 void EnemyManager::LoadPopDate(const std::string& fileName)
@@ -42,7 +44,6 @@ void EnemyManager::PopCommands()
 		popCount_ = commands_.front().first;
 		popInterval_ = commands_.front().second;
 		commands_.pop_front();
-		currentInterval_ = popInterval_;
 	}
 
 	if (popCount_ > 0) {

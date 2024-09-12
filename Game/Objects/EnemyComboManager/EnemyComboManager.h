@@ -18,7 +18,15 @@ public:
 
 private:
 
-	std::unique_ptr<Sprite> numberSprite_;
+	std::unique_ptr<Sprite> oneSprite_;
+	std::unique_ptr<Sprite> twoSprite_;
+	std::unique_ptr<Sprite> threeSprite_;
+	std::unique_ptr<Sprite> fourSprite_;
+	std::unique_ptr<Sprite> fiveSprite_;
+	std::unique_ptr<Sprite> sixSprite_;
+	std::unique_ptr<Sprite> sevenSprite_;
+	std::unique_ptr<Sprite> eightSprite_;
+	std::unique_ptr<Sprite> nineSprite_;
 	std::unique_ptr<Sprite> comboSprite_;
 	uint32_t comboCount_ = 0;
 	uint32_t comboReceptionTime_ = 0;

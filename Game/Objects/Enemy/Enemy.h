@@ -51,7 +51,7 @@ private:
 	float addlambda = 0.0f;
 	float beforlambda = addlambda;
 
-	Vector3 pos{ 1280.0f,360.0f,0.0f };
+	Vector3 pos{ 1280.0f,300.0f,0.0f };
 	Vector3 beforPos = pos;
 	Vector3 currentSize_{};
 
@@ -62,13 +62,13 @@ private:
 
 	bool isMaybeJump = true;
 	bool isJump = false;
-	bool isfly = false;
+	bool isfly = true;
 	bool isDamage = false;
 	bool isDecele = false;
 
 	float speed = -0.1f;
 	Vector3 velo = { -0.1f,0.0f,0.0f };
-	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
+	Vector3 flyspeed = { -4.0f,-3.0f,0.0f };
 
 	float tangent = 0;
 
@@ -81,6 +81,7 @@ private:
 	float canJumpAccele = 0.05f;
 
 
+	bool isBorn = true;
 	bool isMaybeDead = false;
 	bool isDead = false;
 	bool isCombo = false;

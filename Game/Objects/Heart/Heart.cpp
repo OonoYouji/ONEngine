@@ -33,8 +33,8 @@ void Heart::Initialize() {
 
 	// エフェクト
 	damageEffect_ = new Effect();
-	damageEffect_->Initialize();
 	damageEffect_->SetGrainMode(0);
+	damageEffect_->Initialize();
 	damageEffect_->SetOverType(0);
 	damageEffect_->OverTimeSetting(8, 0);
 	damageEffect_->SetVariavles({ 0.0f,-0.025f,0.0f }, 0.2f, { 0.4f,0.4f,0.4f }, 30, true, true, 0.2f, 0.3f);
