@@ -67,7 +67,7 @@ private:
 	bool isDamage = false;
 	bool isDecele = false;
 
-	float speed = -0.1f;
+	float speed = -0.15f;
 	Vector3 velo = { -0.1f,0.0f,0.0f };
 	Vector3 flyspeed = { -4.0f,-3.0f,0.0f };
 
