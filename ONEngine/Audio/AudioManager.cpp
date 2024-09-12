@@ -92,6 +92,11 @@ void AudioManager::Load(const std::string& filePath) {
 		instance->LoadWave(instance->kDirectoryPath_ + filePath);
 }
 
+void AudioManager::ResetAudioSources() {
+	AudioManager* instance = GetInstance();
+	instance->sources_.clear();
+}
+
 
 AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
 	if(clips_.find(filePath) == clips_.end()) {

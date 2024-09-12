@@ -56,6 +56,9 @@ public:
 	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
 	static void Load(const std::string& filePath);
 
+	static void ResetAudioSources();
+
+
 
 	void AddAudioSource(AudioSource* source);
 

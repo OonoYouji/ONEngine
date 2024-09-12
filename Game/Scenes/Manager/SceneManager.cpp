@@ -12,6 +12,7 @@
 #include <ImGuiManager.h>
 #include <GameObjectManager.h>
 #include <Collision/CollisionManager.h>
+#include <AudioManager.h>
 
 #include <BaseScene.h>
 #include <Scene_Game.h>
@@ -118,6 +119,7 @@ void SceneManager::Load(SCENE_ID id) {
 		break;
 	}
 
+	AudioManager::ResetAudioSources();
 	GameObjectManager::DestoryAll();
 	scene_->Initialize();
 	GameObjectManager::AddObjectsToObjectsCopy();
