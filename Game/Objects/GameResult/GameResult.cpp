@@ -1,16 +1,34 @@
+#define NOMINMAX
 #include "GameResult.h"
 
+#include <WorldTime.h>
+#include <Easing.h>
+
+#include "Wave/Wave.h"
+
 void GameResult::Initialize() {
-	sprite_.reset(new Sprite);
-	sprite_->Initialize("uvChecker", "uvChecker.png");
-	sprite_->SetPos({640.0f, 360.0f, 0.0f});
-	sprite_->SetSize({100.0f, 100.0f});
+
+	pWave_ = new Wave;
+	pWave_->Initialize();
+	pWave_->SetAmplitude(1.0f);
+	pWave_->SetOffsetY(520.0f);
 }
 
 void GameResult::Update() {
 
+	WaveUpdate();
+
 }
 
 void GameResult::BackSpriteDraw() {
-	sprite_->Draw();
+}
+
+void GameResult::WaveUpdate() {
+	waveAnimationTime_ += WorldTime::DeltaTime();
+
+	waveAnimationSpeed_ = std::sin(waveAnimationTime_) * 10.0f;
+	float sinValue = std::sin(waveAnimationSpeed_ * waveAnimationTime_);
+	float lerpT = 1.0f - std::min(waveAnimationTime_ / waveMaxAnimationTime_, 1.0f);
+	//pWave_->SetAmplitude(Ease::InOut::Bounce(sinValue * lerpT) * 300.0f);
+
 }

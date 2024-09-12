@@ -156,9 +156,6 @@ void GameTitle::GameStart() {
 		/// 再生中の音を止める
 		startBegin_->StopAudioAll();
 		startConstant_->StopAudioAll();
-
-
-
 	}
 
 	if(isGameStart_) {
@@ -178,12 +175,32 @@ void GameTitle::GameStart() {
 			if(!isCreartedWave_) {
 				isCreartedWave_ = true;
 				/// waveの生成
-				(new Wave)->Initialize();
+				pWave_ = new Wave;
+				pWave_->Initialize();
+				pWave_->SetOffsetY(250.0f);
+
 			}
 		}
-
-
 	}
+
+	if(pWave_) {
+
+		waveAnimationTime_ += WorldTime::DeltaTime();
+		float lerpT = std::min(waveAnimationTime_ / (waveMaxAnimationTime_ / 2.0f), 2.0f);
+
+		if(lerpT <= 1.0f) {
+			
+			pWave_->SetAmplitude(
+				std::lerp(0.0f, 100.0f, Ease::In::Expo(lerpT))
+			);
+		} else {
+			
+			pWave_->SetOffsetY(
+				std::lerp(250.0f, 520.0f, Ease::In::Back(lerpT - 1.0f))
+			);
+		}
+	}
+
 }
 
 void GameTitle::GameEnd() {

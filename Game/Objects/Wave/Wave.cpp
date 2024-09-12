@@ -8,26 +8,12 @@
 
 
 void Wave::Initialize() {
-
 	amplitude_ = 100.0f;
 	frequency_ = 0.027f;
-	//offsetY_ = 520.0f;
-	offsetY_ = 250.0f;
-
+	offsetY_ = 360.0f;
 }
 
 void Wave::Update() {
-
-	animationTime_ += WorldTime::DeltaTime();
-	float lerpT = std::min(animationTime_ / (maxAnimationTime_ / 2.0f), 2.0f);
-
-	if(lerpT <= 1.0f) {
-		amplitude_ = std::lerp(0.0f, 100.0f, Ease::In::Expo(lerpT));
-	} else {
-		offsetY_ = std::lerp(250.0f, 520.0f, Ease::In::Back(lerpT - 1.0f));
-	}
-
-
 
 	waveHeights_.clear();
 	for(int i = 0; i <= 200; i++) {
