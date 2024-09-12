@@ -82,6 +82,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("white2x2", "white2x2.png");
 	textureManager->Load("particle", "particle.png");
 
+	textureManager->Load("0", "0.png");
+	textureManager->Load("1", "1.png");
+	textureManager->Load("2", "2.png");
+	textureManager->Load("3", "3.png");
+	textureManager->Load("4", "4.png");
+	textureManager->Load("5", "5.png");
+	textureManager->Load("6", "6.png");
+	textureManager->Load("7", "7.png");
+	textureManager->Load("8", "8.png");
+	textureManager->Load("9", "9.png");
+
+
+
+
+
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
