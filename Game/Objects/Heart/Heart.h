@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GameObjectManager.h>
-#include "Particle//Effect.h"
+#include "Particle/Effect.h"
 
 
 class Heart final : public BaseGameObject {

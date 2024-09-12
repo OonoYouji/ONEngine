@@ -124,6 +124,10 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 /// ===================================================
 void GameObjectManager::Destory(BaseGameObject* object) {
 	destoryList_.push_back(object);
+	for(auto& child : object->GetChilds()) {
+		destoryList_.push_back(object);
+	}
+
 }
 
 

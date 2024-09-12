@@ -119,10 +119,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GameCamera* gameCamera = new GameCamera("GameCamera");
 	gameCamera->Initialize();
-	gameCamera->SetPosition({ -1.48f, 0.9f, -14.16f });
-	gameCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	gameCamera->SetPosition({ 0.0f, 0.2f, -15.0f });
+	gameCamera->SetRotate({ 0.0f, -0.12f, 0.0f });
 	gameCamera->BaseUpdate();
 	cameraManager->SetMainCamera(gameCamera);
+
+	/// {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f }
+
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
@@ -154,7 +157,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 
 	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
-	sceneManager->Initialize(SCENE_ID::TITLE);
+	sceneManager->Initialize(SCENE_ID::RESULT);
 
 
 #ifdef _DEBUG

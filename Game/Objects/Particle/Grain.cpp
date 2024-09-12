@@ -42,6 +42,7 @@ void Grain::Init(Model* model, const Vector3& position, const Vector3& rotate, c
 void Grain::Update() {
 
 	if (lifeTime_ > 0) {
+		isDrawActive = true;
 		lifeTime_--;
 
 		if (speedType_ == ShiftSpeedType::kNormal) {
@@ -75,6 +76,7 @@ void Grain::Update() {
 	}
 	else if (lifeTime_ == 0) {
 		isDead_ = true;
+		isDrawActive = false;
 	}
 
 }

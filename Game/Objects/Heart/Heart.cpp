@@ -56,7 +56,7 @@ void Heart::Update() {
 				isDameged_ = false;
 			}
 		} else {
-			
+
 			damageEffect_->SetPos(transform_.position);
 			fluctuationHP_ = pPlayerHP_->GetHPFluctuation();
 			if(fluctuationHP_) {
@@ -168,13 +168,18 @@ void HeartAbove::Initialize() {
 
 void HeartAbove::Update() {
 
+	Heart* parent = dynamic_cast<Heart*>(GetParent());
+	if(!parent) {
+		return;
+	}
+
 	if(useFlashingMaterial_) {
 		flashingTime_ -= WorldTime::DeltaTime();
 		if(flashingTime_ <= 0.0f) {
 			useFlashingMaterial_ = false;
 		}
 	} else {
-		useFlashingMaterial_ = dynamic_cast<Heart*>(GetParent())->GetFluctuationHP();
+		useFlashingMaterial_ = parent->GetFluctuationHP();
 		flashingTime_ = 0.1f;
 		if(useFlashingMaterial_) {
 
