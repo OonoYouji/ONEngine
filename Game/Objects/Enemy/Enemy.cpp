@@ -100,9 +100,6 @@ void Enemy::Update()
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 				isfly = false;
-				///
-				/// キャッチしたときはここ
-				/// 
 
 				if (isDamage &&
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
@@ -117,6 +114,19 @@ void Enemy::Update()
 						isJump = false;
 						isMaybeJump = false;
 					}
+				}
+				else if (isDamage &&
+					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
+					amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
+
+					///
+					/// キャッチしたときはここ
+					///
+					if (-(amplitude)+10.0f >= (pos.y - offsetY)) {
+						isJump = false;
+						isMaybeJump = false;
+					}
+
 				}
 				isDamage = false;
 				if (!isBorn) {
