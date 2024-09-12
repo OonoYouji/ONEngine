@@ -59,4 +59,7 @@ public:
 	void Draw() override;
 private:
 	Model* model_ = nullptr;
+	Material flashingMaterial_{};
+	bool useFlashingMaterial_ = false;
+	float flashingTime_ = 0.2f;
 };

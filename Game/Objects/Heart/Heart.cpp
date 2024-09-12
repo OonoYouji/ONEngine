@@ -74,7 +74,7 @@ void HeartBottom::Initialize() {
 	flashingMaterial_.CreateMaterial("white2x2");
 
 	sinon_ = new AudioSource();
-	sinon_->SetAudioClip("kettei.wav");
+	sinon_->SetAudioClip("sinon.wav");
 
 }
 
@@ -149,10 +149,29 @@ void HeartBottom::Debug() {
 
 void HeartAbove::Initialize() {
 	model_ = ModelManager::Load("HeartAbove");
+	flashingMaterial_.CreateMaterial("white2x2");
 }
 
-void HeartAbove::Update() {}
+void HeartAbove::Update() {
+
+	if(useFlashingMaterial_) {
+		flashingTime_ -= WorldTime::DeltaTime();
+		if(flashingTime_ <= 0.0f) {
+			useFlashingMaterial_ = false;
+		}
+	} else {
+		useFlashingMaterial_ = dynamic_cast<Heart*>(GetParent())->GetFluctuationHP();
+		flashingTime_ = 0.1f;
+		if(useFlashingMaterial_) {
+
+		}
+	}
+}
 
 void HeartAbove::Draw() {
-	model_->Draw(&transform_);
+	if(useFlashingMaterial_) {
+		model_->Draw(&transform_, &flashingMaterial_);
+	} else {
+		model_->Draw(&transform_);
+	}
 }
