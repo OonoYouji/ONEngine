@@ -11,23 +11,23 @@ void EnemyComboManager::Initialize()
 {
 
 	oneSprite_.reset(new Sprite());
-	oneSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	oneSprite_->Initialize("1", "1.png");
 	twoSprite_.reset(new Sprite());
-	twoSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	twoSprite_->Initialize("2", "2.png");
 	threeSprite_.reset(new Sprite());
-	threeSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	threeSprite_->Initialize("3", "3.png");
 	fourSprite_.reset(new Sprite());
-	fourSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	fourSprite_->Initialize("4", "4.png");
 	fiveSprite_.reset(new Sprite());
-	fiveSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	fiveSprite_->Initialize("5", "5.png");
 	sixSprite_.reset(new Sprite());
-	sixSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	sixSprite_->Initialize("6", "6.png");
 	sevenSprite_.reset(new Sprite());
-	sevenSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	sevenSprite_->Initialize("7", "7.png");
 	eightSprite_.reset(new Sprite());
-	eightSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	eightSprite_->Initialize("8", "8.png");
 	nineSprite_.reset(new Sprite());
-	nineSprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	nineSprite_->Initialize("9", "9.png");
 
 	comboSprite_.reset(new Sprite());
 	comboSprite_->Initialize("SINON_enemy", "SINON_enemy.png");

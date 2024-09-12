@@ -89,7 +89,7 @@ void Enemy::Update()
 		else {
 			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
-			if (-(amplitude) >= (pos.y - offsetY)) {
+			if (-(amplitude) - 5.0f >= (pos.y - offsetY)) {
 				isDamage = true;
 			}
 			if (pos.y <= 40) {
@@ -97,9 +97,29 @@ void Enemy::Update()
 			}
 			flyspeed.y += 0.2f;
 			pos += flyspeed;
+
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 				isfly = false;
+
+
+				if (!isBorn) {
+					if (amplitude <= 4) {
+						if (isMaybeDead || isDamage)
+						{
+							isDead = true;
+							isCombo = true;
+							isDamage = false;
+							/*deathSound_->PlayAudio();*/
+						}
+					}
+				}
+				else {
+					isBorn = false;
+					isDamage = false;
+				}
+				isMaybeDead = false;
+
 
 				if (isDamage &&
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY < pos.y &&
@@ -107,7 +127,6 @@ void Enemy::Update()
 
 					currentSize_ = { 25.0f,35.0f,0 };
 					if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
-						isDamage = false;
 						isDecele = true;
 					}
 					else {
@@ -129,20 +148,6 @@ void Enemy::Update()
 
 				}
 				isDamage = false;
-				if (!isBorn) {
-					if (amplitude <= 4) {
-						if (isMaybeDead)
-						{
-							isDead = true;
-							isCombo = true;
-							/*deathSound_->PlayAudio();*/
-						}
-					}
-				}
-				else {
-					isBorn = false;
-				}
-				isMaybeDead = false;
 			}
 		}
 
