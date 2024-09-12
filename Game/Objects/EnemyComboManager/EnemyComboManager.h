@@ -15,8 +15,11 @@ public:
 
 	void Debug()override;
 
+	static uint32_t GetKilledEnemiesCount() { return killedEnemiesCount_; }
 
 private:
+
+	static uint32_t killedEnemiesCount_;
 
 	std::unique_ptr<Sprite> oneSprite_;
 	std::unique_ptr<Sprite> twoSprite_;

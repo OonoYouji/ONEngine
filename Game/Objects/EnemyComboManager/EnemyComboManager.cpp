@@ -3,12 +3,16 @@
 #include <ImGuiManager.h>
 #include "Enemy/Enemy.h"
 
+uint32_t EnemyComboManager::killedEnemiesCount_ = 0u;
+
 EnemyComboManager::~EnemyComboManager()
 {
 }
 
 void EnemyComboManager::Initialize()
 {
+
+	killedEnemiesCount_ = 0u;
 
 	oneSprite_.reset(new Sprite());
 	oneSprite_->Initialize("1", "1.png");
@@ -61,6 +65,9 @@ void EnemyComboManager::Update()
 	{
 		if (enemy->IsCombo())
 		{
+			/// 倒した敵の増加
+			killedEnemiesCount_++;
+
 			enemy->SetIsCombo(false);
 			comboCount_++;
 			comboReceptionTime_ = interruptTime_;

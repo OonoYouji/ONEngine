@@ -11,6 +11,7 @@
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
 #include "Wave/Wave.h"
+#include "EnemyComboManager/EnemyComboManager.h"
 
 
 void GameResult::Initialize() {
@@ -76,6 +77,8 @@ void GameResult::Initialize() {
 
 
 	/// 4, 倒した分の敵が落ちてくる
+	killedEnemiesCount_ = EnemyComboManager::GetKilledEnemiesCount();
+
 
 	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
 
