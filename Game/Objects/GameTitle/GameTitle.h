@@ -56,4 +56,7 @@ private:
 	float endedAnimationTime_ = 0.0f;
 	float endedMaxAnimationTime_ = 0.2f;
 
+	/// 終了処理が終わってからの待機時間
+	float gameEndedWaitTime_ = 0.0f;
+
 };

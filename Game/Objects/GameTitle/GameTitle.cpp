@@ -194,7 +194,7 @@ void GameTitle::GameEnd() {
 
 	endedAnimationTime_ += WorldTime::DeltaTime();
 	float lerpT = std::min(endedAnimationTime_ / (endedMaxAnimationTime_ / 2.0f), 2.0f);
-	
+
 	if(lerpT <= 1.0f) {
 		titleSize_.x = std::lerp(640.0f, 0.0f, (lerpT));
 	} else {
@@ -205,7 +205,15 @@ void GameTitle::GameEnd() {
 	title_->SetSize(titleSize_);
 
 	if(lerpT == 2.0f) {
-		SceneManager::GetInstance()->SetIsRunning(false);
+
+		/// ================================================
+		/// 終了までの待機時間 単位は秒
+		/// ================================================
+		if(gameEndedWaitTime_ >= 1.0f) {
+			SceneManager::GetInstance()->SetIsRunning(false);
+		}
+
+		gameEndedWaitTime_ += WorldTime::DeltaTime();
 	}
 
- }
+}
