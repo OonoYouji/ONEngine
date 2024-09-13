@@ -98,6 +98,9 @@ void Enemy::Update() {
 			}
 		}
 		else {
+			if (AcceleEffect_->GetStart()) {
+				AcceleEffect_->EffectStop();
+			}
 			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			if (-(amplitude)-5.0f >= (pos.y - offsetY)) {
@@ -212,6 +215,9 @@ void Enemy::Update() {
 					t = 1.0f;
 				}
 				xAccel += ((addAccel * (acceleTime * acceleTime)) * t) * (WorldTime::DeltaTime() * 60.0f);
+				if (beforPos.y > pos.y) {
+					AcceleEffect_->EffectStop();
+				}
 			}
 
 
