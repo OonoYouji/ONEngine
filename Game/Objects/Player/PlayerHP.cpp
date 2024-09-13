@@ -81,7 +81,7 @@ void PlayerHP::Update() {
 
 	if(currentDamegeIndex_ == 4) {
 		/// ここでResult (Game Over)に行く
-		//SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
 
 

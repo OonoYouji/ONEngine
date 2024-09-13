@@ -9,8 +9,7 @@ class GameResult final : public BaseGameObject {
 		SOSEI_BEGIN_PLAYAUDIO,	/// 1, sosei_beginをながす
 		HEART_BERAK,			/// 2, 心臓が膨張→破裂(パーティクルを出す) 
 		CAMERA_MOVING,			/// 3, カメラをタイトルのスタート地点に移動させる
-		KILLED_ENEMIES_LEAVE,	/// 4.1, 倒した分の敵が落ちてくる (溜める)
-		KILLED_ENEMIES_DROPING,	/// 4.2, 倒した分の敵が落ちてくる (落とす)
+		RIP_DRAW,
 		EFFECT_END,
 		PAHSE_WAIT,
 		EFFECT_PAHSE_COUNTER
@@ -40,6 +39,8 @@ public:
 	void BackSpriteDraw() override;
 	void FrontSpriteDraw() override;
 
+	void Debug() override;
+
 
 	/// non overriding methods
 
@@ -47,8 +48,7 @@ public:
 
 	void CameraMoving();
 
-	void KilledEnemiesLeave();
-	void KilledEnemiesDropping();
+	void RIP();
 
 	void EffectEndUpdate();
 
@@ -85,21 +85,14 @@ private:
 	float cameraMovingTime_ = 0.0f;
 	float cameraMovingMaxTime_ = 0.0f;
 
+	/// 4, RIPを表示する
+	std::unique_ptr<Sprite> rip_;
 
-	/// 4, 倒した分の敵が落ちてくる
-	uint32_t killedEnemiesCount_ = 0u;
-	uint32_t largeEnemySpriteNum_ = 0u;
-	
-	std::vector<DropData> dropDatas_;
+	float ripAnimationTime_ = 0.0f;
+	float ripMaxAnimationTime_ = 0.0f;
 
-	float droppingMaxAnimationTime_ = 1.0f;
-	float waveAlphaLerpTime_ = 0.5f;
-
-	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
-	bool isDrawScore_ = false;
-	uint32_t totalScore_ = 0u;
-	std::vector<std::unique_ptr<Sprite>> digitNumbers_;
-	
-	std::vector<TexData> texDatas_;
+	Vec3 ripPosition_{};
+	Vec4 ripColor_;
+	bool ripIsDraw_ = false;
 
 };

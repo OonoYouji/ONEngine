@@ -3,8 +3,10 @@
 
 #include <cmath>
 
+#include <ImGuiManager.h>
 #include <SceneManager.h>
 #include <CameraManager.h>
+
 #include <AudioSource.h>
 #include <WorldTime.h>
 #include <Easing.h>
@@ -80,70 +82,17 @@ void GameResult::Initialize() {
 	cameraMovingMaxTime_ = 1.0f;
 
 
-	/// 4, 倒した分の敵が落ちてくる
-	killedEnemiesCount_ = EnemyComboManager::GetKilledEnemiesCount();
-	killedEnemiesCount_ = 100u;
-	largeEnemySpriteNum_ = killedEnemiesCount_ / 20u + 1u;
+	/// 4, RIPと今日の日付を表示
 
-	dropDatas_.resize(std::min(largeEnemySpriteNum_, 22u));
-	if(largeEnemySpriteNum_ != dropDatas_.size()) {
-		largeEnemySpriteNum_ = static_cast<uint32_t>(dropDatas_.size());
-	}
+	rip_.reset(new Sprite);
+	rip_->Initialize("white2x2", "white2x2.png");
 
-	for(uint32_t i = 0u; i < largeEnemySpriteNum_; ++i) {
-		auto& dropData = dropDatas_[i];
-		dropData.sprite.reset(new Sprite);
-		dropData.sprite->Initialize("largeEnemy", "largeEnemy.png");
-		dropData.sprite->SetPos({ 640.0f, -20.0f, 0.0f });
-		dropData.sprite->SetSize({ 640.0f, 45.0f });
+	ripPosition_ = { 640.0f, 300.0f, 0.0f };
+	rip_->SetPos(ripPosition_);
+	rip_->SetSize({ 128, 72 });
 
-		dropData.isStart = false;
-		dropData.time = 0.0f;
-
-		dropData.endPosition = Vec3(
-			640.0f + Random::Float(-50.0f, 50.0f),
-			520.0f - (i * 45.f * 0.5f),
-			0.0f
-		);
-
-		dropData.startPosition = Vec3(
-			dropData.endPosition.x,
-			-20.0f,
-			0.0f
-		);
-
-	}
-
-	dropDatas_.front().isStart = true;
-
-
-	/// 5, スコアが増えていく(数字)、モニター全体が埋まっていい
-
-	totalScore_ = ScoreManager::GetScoreCount();
-	totalScore_ = 999999;
-
-	uint32_t digit = static_cast<uint32_t>(std::log10(totalScore_)) + 1u;
-
-	texDatas_.resize(10);
-	for(uint8_t i = 0u; i < 10u; ++i) {
-		auto& texData = texDatas_[i];
-		texData.texName = std::to_string(i);
-		texData.filePath = texData.texName + std::string(".png");
-	}
-
-	digitNumbers_.resize(digit);
-	for(uint32_t i = 0u; i < digit; ++i) {
-		auto& number = digitNumbers_[i];
-		number.reset(new Sprite);
-		number->Initialize(texDatas_[i].texName, texDatas_[i].filePath);
-		number->SetSize({ 50.0f, 60.0f });
-
-		number->SetPos(Vec3(
-			640.0f + ((float(digit) * 0.5f - i) * 100.0f) - 50.0f,
-			320.0f,
-			0.0f
-		));
-	}
+	ripAnimationTime_ = 0.0f;
+	ripMaxAnimationTime_ = 1.0f;
 
 }
 
@@ -158,15 +107,11 @@ void GameResult::Update() {
 
 		CameraMoving();
 		break;
-	case KILLED_ENEMIES_LEAVE:	/// 4, 倒した分の敵が落ちてくる
+	case RIP_DRAW:
 
-		KilledEnemiesLeave();
+		RIP();
 		break;
-	case KILLED_ENEMIES_DROPING:	/// 4, 倒した分の敵が落ちてくる
-
-		KilledEnemiesDropping();
-		break;
-	case EFFECT_END:		
+	case EFFECT_END:
 
 		EffectEndUpdate();
 		break;
@@ -185,20 +130,24 @@ void GameResult::BackSpriteDraw() {}
 
 void GameResult::FrontSpriteDraw() {
 
-	if(isDrawScore_) {
-		for(auto& number : digitNumbers_) {
-			number->Draw();
-		}
+	if(ripIsDraw_) {
+		rip_->Draw();
 	}
 
 
-	if(effectPhase_ == KILLED_ENEMIES_LEAVE
-	   || effectPhase_ == KILLED_ENEMIES_DROPING
-	   || effectPhase_ == PAHSE_WAIT) {
+}
 
-		for(auto& dropData : dropDatas_) {
-			dropData.sprite->Draw();
-		}
+void GameResult::Debug() {
+	if(ImGui::TreeNodeEx("rip", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat2("position", &ripPosition_.x, 1.0f);
+		ImGui::ColorEdit4("color", &ripColor_.x);
+
+		ImGui::DragFloat("current time", &ripAnimationTime_, 0.1f);
+		ImGui::DragFloat("max time", &ripMaxAnimationTime_, 0.1f);
+
+
+		ImGui::TreePop();
 	}
 }
 
@@ -258,118 +207,39 @@ void GameResult::CameraMoving() {
 
 	/// 移動の終了
 	if(cameraMovingTime_ / cameraMovingMaxTime_ >= 1.0f) {
-		WaitTime(KILLED_ENEMIES_LEAVE, 0.2F);
+		WaitTime(RIP_DRAW, 0.2F);
 	}
 
 }
 
-void GameResult::KilledEnemiesLeave() {
+void GameResult::RIP() {
 
-	for(auto itr = dropDatas_.begin(); itr != dropDatas_.end(); ++itr) {
+	ripIsDraw_ = true;
 
-		auto& dropData = (*itr);
+	ripAnimationTime_ += WorldTime::DeltaTime();
+	float lerpT = std::min(ripAnimationTime_ / ripMaxAnimationTime_, 1.0f);
 
-		if(!dropData.isStart) {
-			continue;
-		}
+	/// 上から下に落とす
+	ripPosition_.y = std::lerp(
+		-100.0f, 300.0f,
+		lerpT
+	);
 
-		dropData.time += WorldTime::DeltaTime();
-		float lerpT = std::min(dropData.time / droppingMaxAnimationTime_, 1.0f);
+	ripColor_ = Vec4::Lerp(
+		{ 0,0,0,0 }, { 1,1,1,1 },
+		lerpT
+	);
 
-		dropData.sprite->SetPos(Vec3::Lerp(
-			dropData.startPosition, dropData.endPosition,
-			lerpT
-		));
+	rip_->SetColor(ripColor_);
+	rip_->SetPos(ripPosition_);
 
-		if(lerpT >= 0.2f) {
-			auto next = std::next(itr);
-			if(next != dropDatas_.end()) {
-				next->isStart = true;
-			}
-		}
-
-		if(lerpT == 1.0f) {
-			dropData.sprite->SetTexture("largeEnemyStamp", "largeEnemyStamp.png");
-		}
-
-	}
-
-	///	次の計算に行くための条件
-	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
-		WaitTime(KILLED_ENEMIES_DROPING, 1.0f);
-
-		for(auto& dropData : dropDatas_) {
-			dropData.startPosition = dropData.endPosition;
-			dropData.endPosition.y += 720.0f;
-			dropData.time = 0.0f;
-		}
-	}
-}
-
-
-
-void GameResult::KilledEnemiesDropping() {
-
-	isDrawScore_ = true;
-
-	float alpha = std::max(waveAlphaLerpTime_ / 0.5f, 0.0f);
-	waveAlphaLerpTime_ -= WorldTime::DeltaTime();
-
-	pWave_->SetAlpha(alpha);
-
-	if(alpha == 0.0f) {
-
-		for(auto& dropData : dropDatas_) {
-
-			dropData.time += WorldTime::DeltaTime();
-			float lerpT = std::min(dropData.time / droppingMaxAnimationTime_, 1.0f);
-
-			dropData.sprite->SetPos(Vec3::Lerp(
-				dropData.startPosition, dropData.endPosition,
-				lerpT
-			));
-		}
-	}
-
-	/// 落下中にスコアを計算している風にする
-	for(auto& number : digitNumbers_) {
-		int index = Random::Int(0, 9);
-		number->SetTexture(
-			texDatas_[index].texName,
-			texDatas_[index].filePath
-		);
-	}
-
-
-	if(dropDatas_.back().time / droppingMaxAnimationTime_ >= 1.0f) {
+	/// 次のフェーズに行く
+	if(lerpT == 1.0f) {
 		WaitTime(EFFECT_END, 0.1f);
-
-
-		/// 表示する値をしっかり計算する
-		std::vector<int> digits;
-		int num = totalScore_;
-
-		if(num == 0) {
-			digits.push_back(0);
-		} else {
-			while(num > 0) {
-				digits.push_back(num % 10);
-				num /= 10;
-			}
-		}
-
-		//std::reverse(digits.begin(), digits.end());
-
-		for(uint32_t i = 0u; i < digitNumbers_.size(); ++i) {
-			digitNumbers_[i]->SetTexture(
-				texDatas_[digits[i]].texName,
-				texDatas_[digits[i]].filePath
-			);
-		}
-
 	}
 
 }
+
 
 void GameResult::EffectEndUpdate() {
 
