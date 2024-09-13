@@ -41,6 +41,8 @@ private:
 	std::unique_ptr<Sprite> start_;
 	std::unique_ptr<Sprite> end_;
 	std::unique_ptr<Sprite> arrows_[2];
+	std::unique_ptr<Sprite> padUI_;
+	std::unique_ptr<Sprite> padButton_;
 
 	Vec3 offset_ = { 640.0f, 360.0f, 0.0f };
 	Vec3 distance_ = {};
@@ -53,6 +55,11 @@ private:
 
 	float arrowOffset_ = 10.0f;
 	Vec2 arrowSpriteSize_;
+
+	Vec3 padUIOffset_ = { 280.0f,520.0f,0.0f };
+	Vec2 padUISize_ = { 64.0f,64.0f };
+
+	Vec3 padButtonOffset_ = { 1000.0f,520.0f,0.0f };
 
 	/// ゲームを始めるか、終わるかのモード
 	uint8_t currentSelectMode_ = 0;

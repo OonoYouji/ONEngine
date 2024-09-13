@@ -15,7 +15,7 @@ ScoreManager::~ScoreManager() {}
 
 void ScoreManager::Initialize() {
 
-	for(int i = 0; i < 10; i++) {
+	/*for(int i = 0; i < 10; i++) {
 		std::unique_ptr<Sprite> digitOne;
 		digitOne.reset(new Sprite());
 		digitOne->Initialize(std::to_string(i), std::to_string(i) + ".png");
@@ -68,17 +68,15 @@ void ScoreManager::Initialize() {
 		digitSix->SetSize({ 30,36 });
 		digitSix->SetPos({ 1180 + (addPosx * count),100,0 });
 		digitSixSprites_.push_back(std::move(digitSix));
-	}
+	}*/
 
 	scoreCount_ = 0;
-
-	pWave_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 
 }
 
 void ScoreManager::Update() {
 
-	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
+	/*std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
 
 	for(auto& gameObject : objects) {
@@ -100,34 +98,39 @@ void ScoreManager::Update() {
 
 	CalScoreSprite();
 
-	EasingSprites();
-
 	objects.clear();
-	enemies.clear();
+	enemies.clear();*/
+
+	/*CalScoreGauge();
+
+	if (maxScoreGauge_ == currentScoreGauge) {
+	
+	}*/
+
 }
 
 void ScoreManager::FrontSpriteDraw() {
 
-	digitOneSprites_[oneCount_]->Draw();
+	/*digitOneSprites_[oneCount_]->Draw();
 	digitTwoSprites_[twoCount_]->Draw();
 	digitThreeSprites_[threeCount_]->Draw();
 	digitFourSprites_[fourCount_]->Draw();
 	digitFiveSprites_[fiveCount_]->Draw();
-	digitSixSprites_[sixCount_]->Draw();
+	digitSixSprites_[sixCount_]->Draw();*/
 
 }
 
 void ScoreManager::Debug() {
-	if(ImGui::TreeNodeEx("Score", ImGuiTreeNodeFlags_DefaultOpen)) {
+	/*if(ImGui::TreeNodeEx("Score", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::Text("%d", scoreCount_);
 		ImGui::TreePop();
-	}
+	}*/
 }
 
 void ScoreManager::CalScoreSprite() {
 
-	if(scoreCount_ >= 1000000) {
+	/*if(scoreCount_ >= 1000000) {
 		oneCount_ = 9;
 		twoCount_ = 9;
 		threeCount_ = 9;
@@ -153,33 +156,42 @@ void ScoreManager::CalScoreSprite() {
 	fiveCount_ = point % 10;
 	point = point / 10;
 
-	sixCount_ = point;
+	sixCount_ = point;*/
 
-}
-
-void ScoreManager::EasingSprites() {
-
-	if(!pWave_) { return; }
-
-	animationTime_ += WorldTime::DeltaTime() * (pWave_->GetAmplitude() / 100.0f);
-
-	float lerpT = std::sin(8.0f * animationTime_) * 0.5f + 0.5f;
-
-	const Vec2 kSize = { 30,36 };
-	Vec2 easingSize = kSize + (Vec2::kOne * (12.0f * 0.6f * Ease::Out::Elastic(lerpT)));
-
-
-	digitOneSprites_[oneCount_]->SetSize(easingSize);
-	digitTwoSprites_[twoCount_]->SetSize(easingSize);
-	digitThreeSprites_[threeCount_]->SetSize(easingSize);
-	digitFourSprites_[fourCount_]->SetSize(easingSize);
-	digitFiveSprites_[fiveCount_]->SetSize(easingSize);
-	digitSixSprites_[sixCount_]->SetSize(easingSize);
 }
 
 void ScoreManager::CalScore() {
 
-	float highPoint = highPoint_;
+	/*float highPoint = highPoint_;*/
 
+
+}
+
+void ScoreManager::CalScoreGauge() {
+
+	/*std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
+	std::list<Enemy*> enemies;
+
+	for (auto& gameObject : objects) {
+		if (Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
+			enemies.push_back(enemy);
+		}
+	}
+
+	for (auto& enemy : enemies) {
+		if (enemy->IsScore()) {
+			enemy->SetIsScore(false);
+			int medicSize = enemy->GetMedicSize();
+			int addScoreGauge = basePoint_ * medicSize;
+			currentScoreGauge += addScoreGauge;
+			if (currentScoreGauge >= maxScoreGauge_) {
+				currentScoreGauge = maxScoreGauge_;
+			}
+		}
+	}
+
+
+	objects.clear();
+	enemies.clear();*/
 
 }

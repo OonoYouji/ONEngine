@@ -17,6 +17,7 @@ enum SCENE_ID {
 	TITLE,	/// タイトルシーン
 	GAME,	/// ゲームシーン
 	RESULT,	/// リザルトシーン
+	CLEAR,  /// ゲームクリア
 	SCENE_ID_COUNT
 };
 

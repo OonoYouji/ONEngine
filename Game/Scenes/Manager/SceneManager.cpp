@@ -18,9 +18,10 @@
 #include <Scene_Game.h>
 #include <Scene_Title.h>
 #include <Scene_Result.h>
+#include <Scene_Clear.h>
 
 #include <SceneLayer/SceneLayer.h>
-	
+
 
 /// ===================================================
 /// インスタンス確保
@@ -70,7 +71,7 @@ void SceneManager::Update() {
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
 
-	
+
 
 }
 
@@ -117,6 +118,10 @@ void SceneManager::Load(SCENE_ID id) {
 	case RESULT:
 		scene_.reset(new Scene_Result());
 		break;
+	case CLEAR:
+		scene_.reset(new Scene_Clear());
+		break;
+
 	}
 
 	AudioManager::ResetAudioSources();

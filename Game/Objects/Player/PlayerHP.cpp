@@ -1,3 +1,4 @@
+#define	NOMINMAX
 #include "PlayerHP.h"
 
 #include <SceneManager.h>
@@ -17,15 +18,43 @@ void PlayerHP::Initialize() {
 	offset_ = Vec3(150.0f, 100.0f, 0.0f);
 	distance_ = 140.0f;
 
-	hpSprites_.resize(maxHP_);
-	for(auto& sprite : hpSprites_) {
+
+	frameColor_ = Vec4(100, 100, 100, 255) / 255.0f;
+	gaugeColor_ = Vec4(0.184f, 0.851f, 0.137f, 1.0f);
+
+	frameSprite_.resize(5);
+	for(auto& sprite : frameSprite_) {
 		sprite.reset(new Sprite);
-		sprite->Initialize("Heart1", "Heart1.png");
-		sprite->SetSize({ 64,64 });
+		sprite->Initialize("gauge", "gauge.png");
+		sprite->SetPos({ 640.0f, 100.0f, 0.0f });
+		sprite->SetSize(Vec2(1280.0f, 200.0f) / 2.5f);
+		sprite->SetColor(frameColor_);
 	}
 
-	pWave_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 
+	std::vector<std::string> texNames{
+		"gauge", "gauge_break_low",
+		"gauge_break_middle", "gauge_break_high",
+		"gauge_break"
+	};
+
+	std::vector<std::string> filePaths{
+		"gauge.png", "gauge_break_low.png",
+		"gauge_break_middle.png", "gauge_break_high.png",
+		"gauge_break.png"
+	};
+
+	for(uint32_t i = 0u; i < 5u; ++i) {
+		frameSprite_[i]->SetTexture(texNames[i], filePaths[i]);
+	}
+
+	gaugeSprite_.reset(new Sprite);
+	gaugeSprite_->Initialize("white2x2", "white2x2.png");
+
+
+	maxGauge_ = 120.0f;
+	currentGauge_ = 0.0f;
+	baseGauge_ = 1.0f;
 
 }
 
@@ -42,78 +71,107 @@ void PlayerHP::Update() {
 
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
-			if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
-				hpSprites_.pop_back();
-				enemy->SetHeartBreak(false);
-				fluctuationHP_ = true;
+
+			/// TODO: 同じ敵で何回かダメージを食らうことがある
+			currentDamegeIndex_++;
+			currentDamegeIndex_ = std::min(currentDamegeIndex_, 4);
+			enemy->SetHeartBreak(false);
+
+		}
+
+		if (enemy->IsScore()) {
+			enemy->SetIsScore(false);
+			int medicSize = enemy->GetMedicSize();
+			float addScoreGauge = baseGauge_ * (float)medicSize;
+			currentGauge_ += addScoreGauge;
+			if (currentGauge_ >= maxGauge_) {
+				currentGauge_ = maxGauge_;
 			}
 		}
+
 	}
 
 	objects.clear();
 	enemies.clear();
 
-	/// 座標初期化
-	for(uint32_t i = 0U; i < static_cast<uint32_t>(hpSprites_.size()); ++i) {
-		Vec3 position = {
-			distance_ * i,
-			0.0f,
-			0.0f
-		};
-		position += offset_;
-		hpSprites_[i]->SetPos(position);
-	}
-
-	/// 心臓に合わせてドクドク動かす
-	if(pWave_) {
-
-		animationTime_ += WorldTime::DeltaTime() * (pWave_->GetAmplitude() / 100.0f);
-		for(auto& sprite : hpSprites_) {
-
-			float sinValue = std::sin(8.0f * animationTime_) * 0.5f + 0.5f;
-			sprite->SetSize(
-				Vec2::kOne * 64.0f + 
-				Vec2::kOne * (32.0f * 0.6f * Ease::Out::Elastic(sinValue)) /// ここの30を変えて大きさを調整する
-			);
-		}
-	}
-
-
-	if(hpSprites_.size() == 0) {
+	if(currentDamegeIndex_ == 4) {
+		/// ここでResult (Game Over)に行く
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
+
+
+	CalculationGage();
+
+	if (maxGauge_ == currentGauge_) {
+
+		///
+		/// この部分でclearへ
+		///
+
+	}
+
 }
 
 void PlayerHP::FrontSpriteDraw() {
-	for(auto& sprite : hpSprites_) {
-		sprite->Draw(2);
-	}
+
+	gaugeSprite_->Draw();
+
+	frameSprite_[currentDamegeIndex_]->Draw();
+
 }
 
 void PlayerHP::Debug() {
 
 
-	/// デバッグ用 : ダメージを食らう
-	if(Input::TriggerKey(KeyCode::F12)) {
-		if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
-			hpSprites_.pop_back();
-			//enemy->SetHeartBreak(false);
-			fluctuationHP_ = true;
-		}
-	}
+	if(ImGui::TreeNodeEx("frame", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-
-	if(ImGui::TreeNodeEx("status", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat2("offset", &offset_.x);
-		ImGui::DragFloat("distance", &distance_);
-		ImGui::DragInt("currentHP", reinterpret_cast<int*>(&currentHP_), 0);
-		ImGui::DragInt("maxHP", reinterpret_cast<int*>(&maxHP_), 0);
+		ImGui::ColorEdit4("color", &frameColor_.x);
+		ImGui::DragInt("index", &currentDamegeIndex_, 1, 0, 4);
 
 		ImGui::TreePop();
 	}
+
+
+	if(ImGui::TreeNodeEx("gauge", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("currentGauge", &currentGauge_, 0.1f);
+		ImGui::DragFloat("maxGauge", &maxGauge_, 0.1f);
+
+		ImGui::ColorEdit4("color", &gaugeColor_.x);
+
+		ImGui::TreePop();
+	}
+
 }
 
 bool PlayerHP::GetHPFluctuation() {
 	return fluctuationHP_;
+}
+
+void PlayerHP::CalculationGage() {
+
+	/// フレームの色をセット
+	for(auto& sprite : frameSprite_) {
+		sprite->SetColor(frameColor_);
+	}
+
+	float lerpT = std::min(currentGauge_ / maxGauge_, 1.0f);
+
+	gaugeSprite_->SetPos(Vec3(
+		std::lerp(640.0f - (952.0f / 2.0f), 640.0f, lerpT),
+		100.0f, 0.0f
+	));
+
+	gaugeSprite_->SetSize(Vec2(
+		std::lerp(0.0f, 952.0f / 2.0f, lerpT),
+		60.0f / 2.0f
+	));
+
+	gaugeSprite_->SetColor(gaugeColor_);
+
+
+	currentDamegeIndex_ = std::clamp(currentDamegeIndex_, 0, int(frameSprite_.size() - 1));
+
+
+
 }

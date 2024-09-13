@@ -33,8 +33,6 @@ void Scene_Result::Initialize() {
 }
 
 void Scene_Result::Update() {
-	/// 仮
-	if(Input::TriggerKey(KeyCode::Enter)) {
-		SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
-	}
+
+
 }
