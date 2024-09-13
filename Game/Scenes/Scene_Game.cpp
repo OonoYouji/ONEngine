@@ -108,10 +108,11 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
+#ifdef _DEBUG
 	if(Input::TriggerKey(KeyCode::C)) {
 		SceneManager::GetInstance()->SetNextScene(CLEAR);
 	}
+#endif // _DEBUG
 
 }
 
