@@ -85,11 +85,13 @@ void GameResult::Initialize() {
 	/// 4, RIPと今日の日付を表示
 
 	rip_.reset(new Sprite);
-	rip_->Initialize("white2x2", "white2x2.png");
+	rip_->Initialize("RIP", "RIP.png");
 
 	ripPosition_ = { 640.0f, 300.0f, 0.0f };
 	rip_->SetPos(ripPosition_);
-	rip_->SetSize({ 128, 72 });
+
+	ripSize_ = Vec2(270.0f, 220.0f);
+	rip_->SetSize(ripSize_);
 
 	ripAnimationTime_ = 0.0f;
 	ripMaxAnimationTime_ = 1.0f;
@@ -142,6 +144,7 @@ void GameResult::Debug() {
 
 		ImGui::DragFloat2("position", &ripPosition_.x, 1.0f);
 		ImGui::ColorEdit4("color", &ripColor_.x);
+		ImGui::DragFloat2("size", &ripSize_.x);
 
 		ImGui::DragFloat("current time", &ripAnimationTime_, 0.1f);
 		ImGui::DragFloat("max time", &ripMaxAnimationTime_, 0.1f);
@@ -232,10 +235,11 @@ void GameResult::RIP() {
 
 	rip_->SetColor(ripColor_);
 	rip_->SetPos(ripPosition_);
+	rip_->SetSize(ripSize_);
 
 	/// 次のフェーズに行く
 	if(lerpT == 1.0f) {
-		WaitTime(EFFECT_END, 0.1f);
+		//WaitTime(EFFECT_END, 0.1f);
 	}
 
 }

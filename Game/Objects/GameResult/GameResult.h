@@ -92,6 +92,7 @@ private:
 	float ripMaxAnimationTime_ = 0.0f;
 
 	Vec3 ripPosition_{};
+	Vec2 ripSize_{};
 	Vec4 ripColor_;
 	bool ripIsDraw_ = false;
 
