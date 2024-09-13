@@ -48,6 +48,8 @@ public:
 	float GetHighPoint() { return highPoint; }
 	void CalHighPoint();
 
+	int GetMedicSize() { return medicSize_; }
+
 private:
 
 	std::unique_ptr<Sprite> sprite_;
@@ -105,7 +107,10 @@ private:
 
 
 	int jumpCount_ = 0;
-
+	int medicSize_ = 1;
+	bool isSizeChangeOne = true;
+	bool isSizeChangeTwo = true;
+	bool isSizeChangeThree = true;
 
 
 	Effect* AcceleEffect_;

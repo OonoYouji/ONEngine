@@ -195,7 +195,7 @@ void Enemy::Update() {
 					sprite_->SetSize({ 25,50 });*/
 					break;
 				case 1:
-					jumpMulti = 2.5f;
+					jumpMulti = 1.5f;
 					jumpCount_++;
 					/*defaultSize = { 30,60,0 };
 					sprite_->SetSize({ 30,60 });*/
@@ -269,6 +269,7 @@ void Enemy::Update() {
 		if (pos.x < 0) {
 			if (roopCount == 0) {
 				isDead = true;
+				pos.x = -30.0f;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
@@ -292,7 +293,7 @@ void Enemy::LastUpdate() {
 			/// 死んだときはここ
 			/// 
 			Destory();
-			deathSE_->PlayAudio();
+			
 		}
 		else {
 			deadTime -= (WorldTime::DeltaTime() * 60.0f);
@@ -309,10 +310,10 @@ void Enemy::LastUpdate() {
 				///
 				/// つぶれた時はここ
 				/// 
-				stampSE_->PlayAudio();
+				
 			}
 			if (deadTime <= 10 && deadTime >= 9) {
-				deathEffect_->EffectStart();
+				
 			}
 		}
 	}
@@ -402,16 +403,28 @@ void Enemy::CalHighPoint() {
 		}
 
 		if (highPoint < 250) {
-			defaultSize = { 40,80,0 };
-			sprite_->SetSize({ 40,80 });
+			if (isSizeChangeThree) {
+				defaultSize = { 40,80,0 };
+				sprite_->SetSize({ 40,80 });
+				medicSize_++;
+				isSizeChangeThree = false;
+			}
 		}
 		else if (highPoint < 300) {
-			defaultSize = { 30,60,0 };
-			sprite_->SetSize({ 30,60 });
+			if (isSizeChangeTwo) {
+				defaultSize = { 30,60,0 };
+				sprite_->SetSize({ 30,60 });
+				medicSize_++;
+				isSizeChangeTwo = false;
+			}
 		}
 		else if (highPoint < 350) {
-			defaultSize = { 25,50,0 };
-			sprite_->SetSize({ 20,50 });
+			if (isSizeChangeOne) {
+				defaultSize = { 25,50,0 };
+				sprite_->SetSize({ 20,50 });
+				medicSize_++;
+				isSizeChangeOne = false;
+			}
 		}
 	}
 
