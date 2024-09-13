@@ -72,8 +72,6 @@ void ScoreManager::Initialize() {
 
 	scoreCount_ = 0;
 
-	pWave_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
-
 }
 
 void ScoreManager::Update() {
@@ -100,20 +98,18 @@ void ScoreManager::Update() {
 
 	CalScoreSprite();
 
-	EasingSprites();
-
 	objects.clear();
 	enemies.clear();
 }
 
 void ScoreManager::FrontSpriteDraw() {
 
-	digitOneSprites_[oneCount_]->Draw();
+	/*digitOneSprites_[oneCount_]->Draw();
 	digitTwoSprites_[twoCount_]->Draw();
 	digitThreeSprites_[threeCount_]->Draw();
 	digitFourSprites_[fourCount_]->Draw();
 	digitFiveSprites_[fiveCount_]->Draw();
-	digitSixSprites_[sixCount_]->Draw();
+	digitSixSprites_[sixCount_]->Draw();*/
 
 }
 
@@ -155,26 +151,6 @@ void ScoreManager::CalScoreSprite() {
 
 	sixCount_ = point;
 
-}
-
-void ScoreManager::EasingSprites() {
-
-	if(!pWave_) { return; }
-
-	animationTime_ += WorldTime::DeltaTime() * (pWave_->GetAmplitude() / 100.0f);
-
-	float lerpT = std::sin(8.0f * animationTime_) * 0.5f + 0.5f;
-
-	const Vec2 kSize = { 30,36 };
-	Vec2 easingSize = kSize + (Vec2::kOne * (12.0f * 0.6f * Ease::Out::Elastic(lerpT)));
-
-
-	digitOneSprites_[oneCount_]->SetSize(easingSize);
-	digitTwoSprites_[twoCount_]->SetSize(easingSize);
-	digitThreeSprites_[threeCount_]->SetSize(easingSize);
-	digitFourSprites_[fourCount_]->SetSize(easingSize);
-	digitFiveSprites_[fiveCount_]->SetSize(easingSize);
-	digitSixSprites_[sixCount_]->SetSize(easingSize);
 }
 
 void ScoreManager::CalScore() {

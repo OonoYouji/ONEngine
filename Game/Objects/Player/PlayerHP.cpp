@@ -18,14 +18,6 @@ void PlayerHP::Initialize() {
 	offset_ = Vec3(150.0f, 100.0f, 0.0f);
 	distance_ = 140.0f;
 
-	hpSprites_.resize(maxHP_);
-	for(auto& sprite : hpSprites_) {
-		sprite.reset(new Sprite);
-		sprite->Initialize("Heart1", "Heart1.png");
-		sprite->SetSize({ 64,64 });
-	}
-
-	pWave_ = dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer"));
 
 	frameColor_ = Vec4(100, 100, 100, 255) / 255.0f;
 	gaugeColor_ = Vec4(0.184f, 0.851f, 0.137f, 1.0f);
@@ -59,28 +51,16 @@ void PlayerHP::Update() {
 
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
-			if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
+			/*if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
 				hpSprites_.pop_back();
 				enemy->SetHeartBreak(false);
 				fluctuationHP_ = true;
-			}
+			}*/
 		}
 	}
 
 	objects.clear();
 	enemies.clear();
-
-	/// 座標初期化
-	for(uint32_t i = 0U; i < static_cast<uint32_t>(hpSprites_.size()); ++i) {
-		Vec3 position = {
-			distance_ * i,
-			0.0f,
-			0.0f
-		};
-		position += offset_;
-		hpSprites_[i]->SetPos(position);
-	}
-
 
 	//if(hpSprites_.size() == 0) {
 	//	SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
@@ -92,31 +72,16 @@ void PlayerHP::Update() {
 }
 
 void PlayerHP::FrontSpriteDraw() {
-	/*for(auto& sprite : hpSprites_) {
-		sprite->Draw(2);
-	}*/
-
 
 	gaugeSprite_->Draw();
 	for(auto& sprite : frameSprite_) {
 		sprite->Draw();
 	}
 
-
-
 }
 
 void PlayerHP::Debug() {
 
-
-	/// デバッグ用 : ダメージを食らう
-	if(Input::TriggerKey(KeyCode::F12)) {
-		if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
-			hpSprites_.pop_back();
-			//enemy->SetHeartBreak(false);
-			fluctuationHP_ = true;
-		}
-	}
 
 	if(ImGui::TreeNodeEx("frame", ImGuiTreeNodeFlags_DefaultOpen)) {
 

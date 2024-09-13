@@ -18,8 +18,6 @@ public:
 	void CalScoreSprite();
 	void CalScore();
 
-	void EasingSprites();
-
 	static uint32_t GetScoreCount() { return scoreCount_; }
 
 private:
@@ -41,8 +39,5 @@ private:
 	int fourCount_ = 0;
 	int fiveCount_ = 0;
 	int sixCount_ = 0;
-
-	class SinWaveDrawer* pWave_ = nullptr;
-	float animationTime_ = 0.0f;
 
 };
