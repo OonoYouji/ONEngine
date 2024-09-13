@@ -58,6 +58,7 @@ void PlayerHP::Initialize() {
 
 
 
+
 	texNames_ = { "dekai", "chodekai" };
 	filePaths_ = { "dekai.png", "chodekai.png" };
 	texSizes_ = {
@@ -78,6 +79,12 @@ void PlayerHP::Initialize() {
 	for(uint32_t i = 0u; i < 6u; ++i) {
 		posYs_[i] = 400.0f - i * 60.0f;
 	}
+
+	evalSEs_[BIG] = new AudioSource;
+	evalSEs_[SUPER_BIG] = new AudioSource;
+
+	evalSEs_[BIG]->SetAudioClip("dekai.wav");
+	evalSEs_[SUPER_BIG]->SetAudioClip("chodekai.wav");
 
 }
 
@@ -127,6 +134,9 @@ void PlayerHP::Update() {
 							filePaths_[medicSize - 3]
 						);
 						eval.sprite->SetSize(texSizes_[medicSize - 3]);
+
+						evalSEs_[medicSize - 3]->volume = 5.0f;
+						evalSEs_[medicSize - 3]->PlayAudio();
 						break;
 					}
 				}

@@ -52,7 +52,7 @@ private:
 
 	/// デカい、チョーデカいを出すやつ
 	enum SIZE_TYPE {
-		BIG, SPUER_BIG
+		BIG, SUPER_BIG
 	};
 	std::vector<std::string> texNames_;
 	std::vector<std::string> filePaths_;
@@ -69,6 +69,7 @@ private:
 	};
 	std::list<Eval> evals_;
 
-
+	AudioSource* evalSEs_[2];
+ 
 	AudioSource* deathSE_ = nullptr;
 };

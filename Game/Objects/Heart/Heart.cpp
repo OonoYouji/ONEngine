@@ -97,6 +97,7 @@ void Heart::Update() {
 			healEffect_->SetPos({ transform_.position.x,transform_.position.y - 0.3f,transform_.position.z });
 			startHeal_ = pPlayerHP_->GetHPHeal();
 			if (startHeal_) {
+				healSE_->volume = 0.2f;
 				healSE_->PlayAudio();
 				appearCount_ = 8;
 				healEffect_->OverTimeSetting(12, appearCount_);
