@@ -27,15 +27,17 @@ void SinWaveDrawer::Update() {
 		if (!(Input::GetInsatnce()->PressKey(KeyCode::W)))
 		{
 			float stickSlope = padLstick.y / 49150.5f;
-			amplitude = 4.0f + (166.0f) * stickSlope;
+			amplitude = 50.0f + (70.0f) * stickSlope;
 		}
 		else
 		{
 			amplitude += (addPadAmp * 1.75f) * (WorldTime::DeltaTime()*60.0f);
 		}
-		if (amplitude >= 170)
+
+
+		if (amplitude >= 120)
 		{
-			amplitude = 170;
+			amplitude = 120;
 		}
 	}
 	else if ((padLstick.y < 0 && (!(padLstick.x > 15191) && !(padLstick.x < -15191))) || Input::GetInsatnce()->PressKey(KeyCode::S))
@@ -49,9 +51,11 @@ void SinWaveDrawer::Update() {
 		{
 			amplitude -= (addPadAmp * 1.75f) * (WorldTime::DeltaTime() * 60.0f);
 		}
-		if (amplitude <= 4.0f)
+
+
+		if (amplitude <= 50.0f)
 		{
-			amplitude = 4.0f;
+			amplitude = 50.0f;
 		}
 	}
 

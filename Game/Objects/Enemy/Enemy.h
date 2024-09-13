@@ -33,6 +33,7 @@ public:
 
 	void SetIsCombo(bool is) { isCombo = is; }
 	void SetIsScore(bool is) { isScore = is; }
+	void SetBreakType(bool is) { isBreakType_ = is; }
 
 	float CalculateTangentAngle(float A, float B, float x);
 
@@ -53,6 +54,7 @@ private:
 	std::unique_ptr<Sprite> deadSprite_;
 	SinWaveDrawer* sinWave_;
 
+	bool isBreakType_ = false;
 	float addlambda = 0.0f;
 	float beforlambda = addlambda;
 
@@ -73,7 +75,7 @@ private:
 	bool isDecele = false;
 
 	float speed = -0.15f;
-	Vector3 velo = { -0.1f,0.0f,0.0f };
+	Vector3 velo = { -0.9f,0.0f,0.0f };
 	Vector3 flyspeed = { 0.0f,0.0f,0.0f };
 
 	float tangent = 0;
@@ -82,7 +84,7 @@ private:
 	float frequency = 0.02f;
 	float offsetY = 360.0f;
 	float deceleRate = 0.15f;
-	float maxAcceleAmp = 400.0f;
+	float maxAcceleAmp = 120.0f;
 	float addLambdaCount = 0;
 	float canJumpAccele = 0.05f;
 
@@ -99,6 +101,10 @@ private:
 
 	bool isScore = false;
 	float highPoint = 1000;
+
+
+	int jumpCount_ = 0;
+
 
 
 	Effect* AcceleEffect_;

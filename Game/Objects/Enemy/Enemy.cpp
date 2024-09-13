@@ -59,6 +59,9 @@ void Enemy::Initialize() {
 	catchSE_ = new AudioSource;
 	catchSE_->SetAudioClip("kasoku.wav");
 
+	if (isBreakType_) {
+		sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
+	}
 }
 
 void Enemy::Update() {
@@ -90,7 +93,7 @@ void Enemy::Update() {
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
-			pos.x += (speed - xAccel) * (WorldTime::DeltaTime() * 60.0f);
+			pos.x += (velo.x - xAccel) * (WorldTime::DeltaTime() * 60.0f);
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
@@ -122,7 +125,7 @@ void Enemy::Update() {
 					if (amplitude <= 4) {
 						if (isMaybeDead || isDamage) {
 							AcceleEffect_->EffectStop();
-							isDead = true;
+							//isDead = true;
 							isCombo = true;
 							isScore = true;
 							isDamage = false;
@@ -152,6 +155,9 @@ void Enemy::Update() {
 						isJump = false;
 						isMaybeJump = false;
 					}
+					if (isBreakType_) {
+						isDead = true;
+					}
 				}
 				else if (isDamage &&
 					amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
@@ -175,20 +181,32 @@ void Enemy::Update() {
 		sprite_->SetAngle(tangent);
 		deadSprite_->SetAngle(tangent);
 		sprite_->SetPos(pos);
-		if (amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump) {
+		if (amplitude > 4.0f && -(amplitude)+4.0f >= (pos.y - offsetY) && xAccel > canJumpAccele && isJump && amplitude != 50) {
 			if (!isfly) {
 				isfly = true;
+				float jumpMulti = 1.0f;
+				switch (jumpCount_) {
+				case 0:
+					jumpMulti = 1.0f;
+					jumpCount_++;
+					break;
+				case 1:
+					jumpMulti = 2.5f;
+					jumpCount_++;
+					break;
+				case 2:
+					jumpMulti = 3.25f;
+					break;
+				}
 				flyspeed = pos - beforPos;
-				flyspeed = flyspeed.Normalize() * xAccel;
-				if (flyspeed.x > -0.1f) {
-					flyspeed.x = speed;
+				flyspeed = flyspeed.Normalize() * (xAccel + -velo.x);
+				if (flyspeed.x < -2.0f) {
+					flyspeed.x = -2.0f;
 				}
-				if (flyspeed.x < -5.0f) {
-					flyspeed.x = -5.0f;
-				}if (flyspeed.y < -2.5f) {
-					flyspeed.y = -2.5f;
+				if (flyspeed.y < -2.8f) {
+					flyspeed.y = -2.8f;
 				}
-				flyspeed.y = flyspeed.y * 4;
+				flyspeed.y = flyspeed.y * jumpMulti;
 				if (amplitude >= 40) {
 					isMaybeDead = true;
 				}
@@ -196,9 +214,8 @@ void Enemy::Update() {
 		}
 
 		if (isDecele) {
-			speed = std::lerp(speed, 0.0f, deceleRate);
-			xAccel = 0;
-			if (speed > -0.15f) {
+			xAccel = std::lerp(xAccel, 0.0f, deceleRate);
+			if (xAccel < 0.2f) {
 				isDecele = false;
 				xAccel = 0;
 			}
@@ -214,7 +231,11 @@ void Enemy::Update() {
 				if (t >= 1.0f) {
 					t = 1.0f;
 				}
-				xAccel += ((addAccel * (acceleTime * acceleTime)) * t) * (WorldTime::DeltaTime() * 60.0f);
+				if (!isBreakType_) {
+					xAccel += ((addAccel * (acceleTime * acceleTime)) * t) * (WorldTime::DeltaTime() * 60.0f);
+				} else {
+					xAccel += (((addAccel * (acceleTime * acceleTime)) * t) * 0.5f) * (WorldTime::DeltaTime() * 60.0f);
+				}
 				if (beforPos.y > pos.y) {
 					AcceleEffect_->EffectStop();
 				}
@@ -225,11 +246,11 @@ void Enemy::Update() {
 				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY > pos.y) {
 				AcceleEffect_->EffectStop();
 				acceleTime = 0.3f;
-				float t = amplitude / maxAcceleAmp;
+				/*float t = amplitude / maxAcceleAmp;
 				if (t >= 1.0f) {
 					t = 1.0f;
 				}
-				xAccel -= (addDecel * t) * (WorldTime::DeltaTime() * 60.0f);
+				xAccel -= (addDecel * t) * (WorldTime::DeltaTime() * 60.0f);*/
 			}
 
 
@@ -238,16 +259,16 @@ void Enemy::Update() {
 
 		if (pos.x < 0) {
 			if (roopCount == 0) {
-				pos.x = 1280;
+				isDead = true;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 			}
-			else if (roopCount == 1) {
+			/*else if (roopCount == 1) {
 				isHeartBreak = true;
 				isDead = true;
 				roopCount = 99;
-			}
+			}*/
 		}
 	}
 
@@ -364,10 +385,12 @@ Vector3 Enemy::AdjustVelocityToWave(Vector3 velocity, float A, float B, float x)
 
 void Enemy::CalHighPoint() {
 
-	float newHighPoint = pos.y;
+	if (!isBorn) {
+		float newHighPoint = pos.y;
 
-	if (highPoint > newHighPoint) {
-		highPoint = pos.y;
+		if (highPoint > newHighPoint) {
+			highPoint = pos.y;
+		}
 	}
 
 }

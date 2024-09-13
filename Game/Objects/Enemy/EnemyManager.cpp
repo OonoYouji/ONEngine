@@ -47,6 +47,7 @@ void EnemyManager::FrontSpriteDraw()
 void EnemyManager::EnemyPop()
 {
 	Enemy* newEnemy = new Enemy();
+	newEnemy->SetBreakType(isBreak_);
 	newEnemy->Initialize();
 	GameManager* gameManager = dynamic_cast<GameManager*>(GameObjectManager::GetGameObject("GameManager"));
 	gameManager->AddPausedObject(newEnemy);
@@ -69,23 +70,24 @@ void EnemyManager::PopCommands()
 
 
 	if (popCount_ == 0 && popInterval_ <= 0 && commands_.size() != 0) {
-		popCount_ = commands_.front().first;
-		popInterval_ = commands_.front().second;
+		popCount_ = std::get<0>(commands_.front());
+		popInterval_ = std::get<1>(commands_.front());
+		isBreak_ = std::get<2>(commands_.front());
 		commands_.pop_front();
-		if (enemyCount+popCount_ >= maxPopCount_) {
+		/*if (enemyCount+popCount_ >= maxPopCount_) {
 			isStop_ = true;
-		}
+		}*/
 	}
 
 
 	if (popCount_ > 0) {
-		if (currentInterval_ == 0)
+		if (currentInterval_ <= 0)
 		{
 			EnemyPop();
 			popCount_--;
 			currentInterval_ = popInterval_;
 		}
-	} else if (popCount_ == 0 && currentInterval_ == 0) {
+	} else if (popCount_ == 0 && currentInterval_ <= 0) {
 		popInterval_ = 0;
 	}
 
@@ -111,12 +113,12 @@ void EnemyManager::PopCommands()
 		return;
 	}
 
-	if (isStop_) {
+	/*if (isStop_) {
 		if (enemyCount <= 4) {
 			isStop_ = false;
 		}
 		return;
-	}
+	}*/
 
 	std::string line;
 	while (std::getline(popCommand_, line)) {
@@ -136,12 +138,15 @@ void EnemyManager::PopCommands()
 
 			// 出す数
 			std::getline(line_stream, word, ',');
-			int count = (int)std::atof(word.c_str());
+			int count = (int)std::atoi(word.c_str());
 			// インターバル
 			std::getline(line_stream, word, ',');
 			float interval = (float)(std::atof(word.c_str()) * 60.0f);
+			// 敵が割れるかどうか
+			std::getline(line_stream, word, ',');
+			int isbreak = (int)std::atoi(word.c_str());
 
-			commands_.push_back(std::make_pair(count, interval));
+			commands_.push_back(std::make_tuple(count, interval, isbreak));
 
 		}
 		//WAIT
