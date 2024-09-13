@@ -284,6 +284,9 @@
     <ClCompile Include="Game\Objects\ScoreManager\ScoreManager.cpp">
       <Filter>Game\Objects\ScoreManager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Clear.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -773,6 +776,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\ScoreManager\ScoreManager.h">
       <Filter>Game\Objects\ScoreManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Clear.h">
+      <Filter>Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
