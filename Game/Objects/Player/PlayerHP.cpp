@@ -22,7 +22,7 @@ void PlayerHP::Initialize() {
 	frameColor_ = Vec4(100, 100, 100, 255) / 255.0f;
 	gaugeColor_ = Vec4(0.184f, 0.851f, 0.137f, 1.0f);
 
-	frameSprite_.resize(4);
+	frameSprite_.resize(5);
 	for(auto& sprite : frameSprite_) {
 		sprite.reset(new Sprite);
 		sprite->Initialize("gauge", "gauge.png");
@@ -34,15 +34,17 @@ void PlayerHP::Initialize() {
 
 	std::vector<std::string> texNames{
 		"gauge", "gauge_break_low",
-		"gauge_break_middle", "gauge_break_high"
+		"gauge_break_middle", "gauge_break_high",
+		"gauge_break"
 	};
 
 	std::vector<std::string> filePaths{
 		"gauge.png", "gauge_break_low.png",
-		"gauge_break_middle.png", "gauge_break_high.png"
+		"gauge_break_middle.png", "gauge_break_high.png",
+		"gauge_break.png"
 	};
 
-	for(uint32_t i = 0u; i < 4u; ++i) {
+	for(uint32_t i = 0u; i < 5u; ++i) {
 		frameSprite_[i]->SetTexture(texNames[i], filePaths[i]);
 	}
 
@@ -66,20 +68,21 @@ void PlayerHP::Update() {
 
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
-			/*if(static_cast<uint32_t>(hpSprites_.size()) > 0) {
-				hpSprites_.pop_back();
-				enemy->SetHeartBreak(false);
-				fluctuationHP_ = true;
-			}*/
+
+			/// TODO: 同じ敵で何回かダメージを食らうことがある
+			currentDamegeIndex_++;
+			currentDamegeIndex_ = std::min(currentDamegeIndex_, 4);
+
 		}
 	}
 
 	objects.clear();
 	enemies.clear();
 
-	//if(hpSprites_.size() == 0) {
-	//	SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
-	//}
+	if(currentDamegeIndex_ == 4) {
+		/// ここでResult (Game Over)に行く
+		//SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
+	}
 
 
 	CalculationGage();
@@ -100,7 +103,7 @@ void PlayerHP::Debug() {
 	if(ImGui::TreeNodeEx("frame", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::ColorEdit4("color", &frameColor_.x);
-		ImGui::DragInt("index", &currentDamegeIndex_, 1, 0, 3);
+		ImGui::DragInt("index", &currentDamegeIndex_, 1, 0, 4);
 
 		ImGui::TreePop();
 	}
@@ -144,7 +147,7 @@ void PlayerHP::CalculationGage() {
 	gaugeSprite_->SetColor(gaugeColor_);
 
 
-	currentDamegeIndex_ = std::clamp(currentDamegeIndex_, 0, 3);
+	currentDamegeIndex_ = std::clamp(currentDamegeIndex_, 0, int(frameSprite_.size() - 1));
 
 
 
