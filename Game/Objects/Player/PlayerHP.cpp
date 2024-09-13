@@ -72,6 +72,7 @@ void PlayerHP::Update() {
 			/// TODO: 同じ敵で何回かダメージを食らうことがある
 			currentDamegeIndex_++;
 			currentDamegeIndex_ = std::min(currentDamegeIndex_, 4);
+			enemy->SetHeartBreak(false);
 
 		}
 	}
