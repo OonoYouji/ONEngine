@@ -16,8 +16,7 @@
 #include "Heart/Heart.h"
 #include "Hand/Hand.h"
 #include "Wave/Wave.h"
-#include "EnemyComboManager/EnemyComboManager.h"
-#include "ScoreManager/ScoreManager.h"
+#include "Shake/Shake.h"
 
 
 void GameResult::Initialize() {
@@ -94,7 +93,7 @@ void GameResult::Initialize() {
 	rip_->SetSize(ripSize_);
 
 	ripAnimationTime_ = 0.0f;
-	ripMaxAnimationTime_ = 1.0f;
+	ripMaxAnimationTime_ = 0.5f;
 
 }
 
@@ -224,14 +223,16 @@ void GameResult::RIP() {
 
 	/// 上から下に落とす
 	ripPosition_.y = std::lerp(
-		-100.0f, 300.0f,
-		lerpT
+		-300.0f, 300.0f,
+		Ease::In::Quint(lerpT)
 	);
 
-	ripColor_ = Vec4::Lerp(
+	/*ripColor_ = Vec4::Lerp(
 		{ 0,0,0,0 }, { 1,1,1,1 },
 		lerpT
-	);
+	);*/
+	ripColor_ = { 1,1,1,1 };
+
 
 	rip_->SetColor(ripColor_);
 	rip_->SetPos(ripPosition_);
@@ -239,7 +240,12 @@ void GameResult::RIP() {
 
 	/// 次のフェーズに行く
 	if(lerpT == 1.0f) {
-		//WaitTime(EFFECT_END, 0.1f);
+		WaitTime(EFFECT_END, 0.1f);
+
+		BaseCamera* camera =
+			CameraManager::GetInstance()->GetCamera("GameCamera");
+		camera->GetShake()->SetStartTime(0.1f);
+		camera->GetShake()->Start();
 	}
 
 }
