@@ -22,7 +22,7 @@ void Enemy::Initialize() {
 	currentSize_ = { 20,40,0 };
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
-	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
+	deadSprite_->Initialize("medicine_stamp", "medicine_stamp.png");
 	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
@@ -47,7 +47,7 @@ void Enemy::Initialize() {
 	AcceleEffect_->SetGrainMode(1);
 	AcceleEffect_->Initialize();
 	AcceleEffect_->SetOverType(1);
-	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
+	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -2.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
 
@@ -157,8 +157,10 @@ void Enemy::Update() {
 						isMaybeJump = false;
 					}
 					if (isBreakType_) {
-						isDead = true;
-						isHeartBreak = true;
+						if (!(-(amplitude)+4.0f >= (pos.y - offsetY))) {
+							isDead = true;
+							isHeartBreak = true;
+						}
 					}
 				}
 				else if (isDamage &&
@@ -189,13 +191,13 @@ void Enemy::Update() {
 				float jumpMulti = 1.0f;
 				switch (jumpCount_) {
 				case 0:
-					jumpMulti = 1.0f;
+					jumpMulti = 1.75f;
 					jumpCount_++;
 					/*defaultSize = { 25,50,0 };
 					sprite_->SetSize({ 25,50 });*/
 					break;
 				case 1:
-					jumpMulti = 2.5f;
+					jumpMulti = 2.0f;
 					jumpCount_++;
 					/*defaultSize = { 30,60,0 };
 					sprite_->SetSize({ 30,60 });*/
@@ -269,6 +271,8 @@ void Enemy::Update() {
 		if (pos.x < 0) {
 			if (roopCount == 0) {
 				isDead = true;
+				isScore = true;
+				pos.x = -30.0f;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
@@ -402,16 +406,28 @@ void Enemy::CalHighPoint() {
 		}
 
 		if (highPoint < 250) {
-			defaultSize = { 40,80,0 };
-			sprite_->SetSize({ 40,80 });
+			if (isSizeChangeThree) {
+				defaultSize = { 40,80,0 };
+				sprite_->SetSize({ 40,80 });
+				medicSize_++;
+				isSizeChangeThree = false;
+			}
 		}
 		else if (highPoint < 300) {
-			defaultSize = { 30,60,0 };
-			sprite_->SetSize({ 30,60 });
+			if (isSizeChangeTwo) {
+				defaultSize = { 30,60,0 };
+				sprite_->SetSize({ 30,60 });
+				medicSize_++;
+				isSizeChangeTwo = false;
+			}
 		}
 		else if (highPoint < 350) {
-			defaultSize = { 25,50,0 };
-			sprite_->SetSize({ 20,50 });
+			if (isSizeChangeOne) {
+				defaultSize = { 25,50,0 };
+				sprite_->SetSize({ 20,50 });
+				medicSize_++;
+				isSizeChangeOne = false;
+			}
 		}
 	}
 

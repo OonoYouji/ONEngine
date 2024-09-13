@@ -29,6 +29,12 @@ void GameStartUI::Initialize() {
 		arrow->Initialize("arrow", "arrow.png");
 	}
 
+	padUI_.reset(new Sprite());
+	padUI_->Initialize("juuji", "juuji.png");
+
+	padButton_.reset(new Sprite());
+	padButton_->Initialize("title_sousa", "title_sousa.png");
+
 	offset_ = { 640.0f, 500.0f, 0.0f };
 	distance_ = { 0.0f, 40.0f, 0.0f };
 	spriteSize_ = { 128.0f, 32.0f };
@@ -120,6 +126,8 @@ void GameStartUI::FrontSpriteDraw() {
 	for(auto& arrow : arrows_) {
 		arrow->Draw();
 	}
+	padUI_->Draw();
+	padButton_->Draw();
 }
 
 void GameStartUI::Debug() {
@@ -156,12 +164,18 @@ void GameStartUI::SettingSprites() {
 	/// 値のセッティング
 	start_->SetPos(offset_ - distance_);
 	end_->SetPos(offset_ + distance_);
+	padUI_->SetPos(padUIOffset_);
+	padButton_->SetPos(padButtonOffset_);
 
 	start_->SetSize(spriteSize_);
 	end_->SetSize(spriteSize_);
+	padUI_->SetSize(padUISize_);
+	padButton_->SetSize(padUISize_);
 
 	start_->SetColor(spriteColor_);
 	end_->SetColor(spriteColor_);
+	padUI_->SetColor(spriteColor_);
+	padButton_->SetColor(spriteColor_);
 
 	for(auto& arrow : arrows_) {
 		arrow->SetSize(arrowSpriteSize_);

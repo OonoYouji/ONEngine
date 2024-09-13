@@ -15,6 +15,7 @@ public:
 	void Draw() override;
 
 	bool GetFluctuationHP() const { return fluctuationHP_; }
+	void StartHealEffect() {}
 private:
 	class HeartBottom* bottom_ = nullptr;
 	class HeartAbove* above_ = nullptr;
@@ -27,6 +28,12 @@ private:
 	int appearCount_ = 0;
 	class PlayerHP* pPlayerHP_ = nullptr;
 	bool fluctuationHP_ = false;
+
+	/// 回復Effect
+	Effect* healEffect_;
+	float healTime_ = 1.0f;
+	bool isHeal_ = true;
+	bool startHeal_ = false;
 };
 
 

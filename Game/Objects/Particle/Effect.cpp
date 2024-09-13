@@ -522,7 +522,7 @@ void Effect::Create2D() {
 	else if (isOverDistance_) {
 
 		Vector3 currentPosition = position2D_;
-		float particleDistanceRate = 10.0f / rateDistance_;
+		float particleDistanceRate = 20.0f / rateDistance_;
 		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
 		if (distanceMoved > 200.0f) {
 			distanceMoved = 200.0f;
@@ -658,6 +658,11 @@ void Effect::ShapeType(int type)
 		isBox_ = true;
 		secondProvisional_ = 2;
 	}
+}
+
+void Effect::SetBoxSize(float xSize, float zSize) {
+	boxSizeX_ = xSize;
+	boxSizeZ_ = zSize;
 }
 
 void Effect::ShiftingSpeedType(int type)

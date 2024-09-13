@@ -52,6 +52,9 @@ void PlayerHP::Initialize() {
 	gaugeSprite_->Initialize("white2x2", "white2x2.png");
 
 
+	maxGauge_ = 120.0f;
+	currentGauge_ = 0.0f;
+	baseGauge_ = 1.0f;
 
 }
 
@@ -59,6 +62,7 @@ void PlayerHP::Update() {
 	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
 	fluctuationHP_ = false;
+	healHP_ = false;
 	for(auto& gameObject : objects) {
 		if(Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
 			enemies.push_back(enemy);
@@ -72,8 +76,21 @@ void PlayerHP::Update() {
 			/// TODO: 同じ敵で何回かダメージを食らうことがある
 			currentDamegeIndex_++;
 			currentDamegeIndex_ = std::min(currentDamegeIndex_, 4);
+			enemy->SetHeartBreak(false);
 
 		}
+
+		if (enemy->IsScore()) {
+			enemy->SetIsScore(false);
+			int medicSize = enemy->GetMedicSize();
+			float addScoreGauge = baseGauge_ * (float)medicSize;
+			currentGauge_ += addScoreGauge;
+			healHP_ = true;
+			if (currentGauge_ >= maxGauge_) {
+				currentGauge_ = maxGauge_;
+			}
+		}
+
 	}
 
 	objects.clear();
@@ -86,6 +103,14 @@ void PlayerHP::Update() {
 
 
 	CalculationGage();
+
+	if (maxGauge_ == currentGauge_) {
+
+		///
+		/// この部分でclearへ
+		///
+
+	}
 
 }
 
@@ -123,6 +148,10 @@ void PlayerHP::Debug() {
 
 bool PlayerHP::GetHPFluctuation() {
 	return fluctuationHP_;
+}
+
+bool PlayerHP::GetHPHeal() {
+	return healHP_;
 }
 
 void PlayerHP::CalculationGage() {

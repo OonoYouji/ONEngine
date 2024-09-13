@@ -18,6 +18,7 @@ public:
 	void Debug() override;
 
 	bool GetHPFluctuation();
+	bool GetHPHeal();
 
 	void CalculationGage();
 
@@ -27,6 +28,7 @@ private:
 	Vec3 offset_{};
 	float distance_;
 	bool fluctuationHP_ = false;
+	bool healHP_ = false;
 
 	/// =======================================
 	/// ゲージ版の HP 表示
@@ -37,6 +39,7 @@ private:
 
 	float maxGauge_;
 	float currentGauge_;
+	float baseGauge_;
 
 	int currentDamegeIndex_;
 

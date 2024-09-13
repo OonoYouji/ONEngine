@@ -74,7 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("Floor", "Floor.png");
 	textureManager->Load("medicine", "medicine.png");
-	textureManager->Load("enemy_stamp", "enemy_stamp.png");
+	textureManager->Load("medicine_stamp", "medicine_stamp.png");
 	textureManager->Load("TVUV", "TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
 	textureManager->Load("Hand", "Hand.png");
@@ -86,6 +86,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("wall", "wall.png");
 	textureManager->Load("HeartBreak", "HeartBreak.png");
 	textureManager->Load("warning", "warning.png");
+	textureManager->Load("juuji", "juuji.png");
+	textureManager->Load("title_sousa", "title_sousa.png");
+
 
 	textureManager->Load("0", "0.png");
 	textureManager->Load("1", "1.png");
