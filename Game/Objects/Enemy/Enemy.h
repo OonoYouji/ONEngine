@@ -90,7 +90,7 @@ private:
 	bool isMaybeDead = false;
 	bool isDead = false;
 	bool isCombo = false;
-	int deadTime = 60;
+	float deadTime = 60;
 
 
 	int roopCount = 0;
