@@ -16,6 +16,7 @@ public:
 	void Debug()override;
 
 	void CalScoreSprite();
+	void CalScore();
 
 	void EasingSprites();
 

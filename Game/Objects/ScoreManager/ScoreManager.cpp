@@ -176,3 +176,10 @@ void ScoreManager::EasingSprites() {
 	digitFiveSprites_[fiveCount_]->SetSize(easingSize);
 	digitSixSprites_[sixCount_]->SetSize(easingSize);
 }
+
+void ScoreManager::CalScore() {
+
+	float highPoint = highPoint_;
+
+
+}
