@@ -56,7 +56,8 @@ void PlayerHP::Initialize() {
 	currentGauge_ = 0.0f;
 	baseGauge_ = 1.0f;
 
-
+	deathSE_ = new AudioSource;
+	deathSE_->SetAudioClip("glass_parin.wav");
 
 	texNames_ = { "dekai", "chodekai" };
 	filePaths_ = { "dekai.png", "chodekai.png" };
