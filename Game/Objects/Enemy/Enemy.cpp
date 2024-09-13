@@ -1,12 +1,12 @@
 #include "Enemy.h"
 
 #include <ImGuiManager.h>
+#include <WorldTime.h>
 #include "Drawer/LineDrawer2D/SinWaveDrawer.h"
 #include "Camera/GameCamera.h"
 #include "Shake/Shake.h"
 
-Enemy::~Enemy()
-{
+Enemy::~Enemy() {
 
 	deathEffect_->Destory();
 	AcceleEffect_->Destory();
@@ -77,9 +77,9 @@ void Enemy::Update() {
 		addlambda = sinWave_->GetAddLambda();
 
 
-		if (beforlambda < addlambda) {
+		/*if (beforlambda < addlambda) {
 			isJump = false;
-		}
+		}*/
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
@@ -88,7 +88,7 @@ void Enemy::Update() {
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
-			pos.x += speed - xAccel;
+			pos.x += (speed - xAccel) * (WorldTime::DeltaTime() * 60.0f);
 
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			if (!(-(amplitude)+10.0f >= (pos.y - offsetY))) {
@@ -104,8 +104,8 @@ void Enemy::Update() {
 			if (pos.y <= 40) {
 				isMaybeDead = true;
 			}
-			flyspeed.y += 0.2f;
-			pos += flyspeed;
+			flyspeed.y += (0.2f) * (WorldTime::DeltaTime() * 60.0f);
+			pos += (flyspeed)* (WorldTime::DeltaTime() * 60.0f);
 			CalHighPoint();
 
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
@@ -115,8 +115,7 @@ void Enemy::Update() {
 
 				if (!isBorn) {
 					if (amplitude <= 4) {
-						if (isMaybeDead || isDamage)
-						{
+						if (isMaybeDead || isDamage) {
 							AcceleEffect_->EffectStop();
 							isDead = true;
 							isCombo = true;
@@ -179,11 +178,9 @@ void Enemy::Update() {
 				if (flyspeed.x > -0.1f) {
 					flyspeed.x = speed;
 				}
-				if (flyspeed.x < -5.0f)
-				{
+				if (flyspeed.x < -5.0f) {
 					flyspeed.x = -5.0f;
-				}if (flyspeed.y < -2.5f)
-				{
+				}if (flyspeed.y < -2.5f) {
 					flyspeed.y = -2.5f;
 				}
 				flyspeed.y = flyspeed.y * 4;
@@ -207,12 +204,12 @@ void Enemy::Update() {
 			if (amplitude * sinf(frequency * ((pos.x - 4) + addlambda)) + offsetY > pos.y &&
 				amplitude * sinf(frequency * ((pos.x + 4) + addlambda)) + offsetY < pos.y) {
 				AcceleEffect_->EffectStart();
-				acceleTime += 0.01f;
+				acceleTime += (0.01f) * (WorldTime::DeltaTime() * 60.0f);
 				float t = amplitude / maxAcceleAmp;
 				if (t >= 1.0f) {
 					t = 1.0f;
 				}
-				xAccel += (addAccel * (acceleTime * acceleTime)) * t;
+				xAccel += ((addAccel * (acceleTime * acceleTime)) * t) * (WorldTime::DeltaTime() * 60.0f);
 			}
 
 
@@ -224,7 +221,7 @@ void Enemy::Update() {
 				if (t >= 1.0f) {
 					t = 1.0f;
 				}
-				xAccel -= addDecel * t;
+				xAccel -= (addDecel * t) * (WorldTime::DeltaTime() * 60.0f);
 			}
 
 
@@ -260,23 +257,23 @@ void Enemy::LastUpdate() {
 			deathSE_->PlayAudio();
 		}
 		else {
-			deadTime--;
+			deadTime -= (WorldTime::DeltaTime() * 60.0f);
 			amplitude = sinWave_->GetAmplitude();
 			frequency = sinWave_->GetFrequency();
 			offsetY = sinWave_->GetOffset();
 			addlambda = sinWave_->GetAddLambda();
 			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
 			deadSprite_->SetPos(pos);
-			if (deadTime == 58) {
+			if (deadTime <= 58 && deadTime >= 57) {
 				AcceleEffect_->EffectStop();
 			}
-			if (deadTime == 55) {
+			if (deadTime <= 55 && deadTime >= 54) {
 				///
 				/// つぶれた時はここ
 				/// 
 				stampSE_->PlayAudio();
 			}
-			if (deadTime == 10) {
+			if (deadTime <= 10 && deadTime >= 9) {
 				deathEffect_->EffectStart();
 			}
 		}

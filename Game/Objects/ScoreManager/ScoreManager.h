@@ -16,6 +16,7 @@ public:
 	void Debug()override;
 
 	void CalScoreSprite();
+	void CalScore();
 
 	static uint32_t GetScoreCount() { return scoreCount_; }
 

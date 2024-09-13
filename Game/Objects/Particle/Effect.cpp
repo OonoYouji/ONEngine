@@ -1,5 +1,6 @@
 #include "Effect.h"
 #include <ImGuiManager.h>
+#include <WorldTime.h>
 #include <Matrix4x4.h>
 
 Effect::~Effect() {
@@ -381,7 +382,7 @@ void Effect::Create() {
 		Vector3 currentPosition = transform_.position;
 		float particleDistanceRate = 1.0f / rateDistance_;
 		float distanceMoved = Vector3::Length((currentPosition - previousPosition_));
-		accumulationDistance += distanceMoved;
+		accumulationDistance += (distanceMoved);
 		int particlesEmit = static_cast<int>(accumulationDistance / particleDistanceRate);
 
 		Vector3 newPos = transform_.position;

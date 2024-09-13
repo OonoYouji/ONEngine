@@ -1,6 +1,7 @@
 #include "EnemyComboManager.h"
 
 #include <ImGuiManager.h>
+#include <WorldTime.h>
 #include "Enemy/Enemy.h"
 
 uint32_t EnemyComboManager::killedEnemiesCount_ = 0u;
@@ -166,9 +167,9 @@ void EnemyComboManager::Update()
 
 	if (comboReceptionTime_ > 0)
 	{
-		comboReceptionTime_--;
+		comboReceptionTime_ -= (WorldTime::DeltaTime() * 60.0f);
 	}
-	else if (comboReceptionTime_ == 0)
+	else if (comboReceptionTime_ <= 0)
 	{
 		comboCount_ = 0;
 		comboReceptionTime_ = 0;

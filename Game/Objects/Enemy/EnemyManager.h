@@ -34,13 +34,13 @@ private:
 	const std::string kDirectoryPath_ = "./Resources/Texts/";
 	class GameManager* pGameManager_ = nullptr;
 	std::stringstream popCommand_;
-	std::list<std::pair<int, int>> commands_;
+	std::list<std::pair<int, float>> commands_;
 
 	uint32_t popCount_ = 0;
-	uint32_t popInterval_ = 0;
-	uint32_t currentInterval_ = 0;
+	float popInterval_ = 0;
+	float currentInterval_ = 0;
 	bool isWait_ = false;
-	uint32_t waitTimer_ = 0;
+	float waitTimer_ = 0;
 
 	uint32_t maxPopCount_ = 5;
 	bool isStop_ = false;
