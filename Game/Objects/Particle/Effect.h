@@ -55,6 +55,7 @@ public:
 	void SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 	void SetVariavles(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 	bool GetStart() { return isStart_; }
+	void SetHeal(bool is) { isHeal = is; }
 
 private:
 
@@ -73,6 +74,7 @@ private:
 	std::list<Grain*> grains_;
 	std::list<Grain2D*> grain2Ds_;
 
+	bool isHeal = false;
 
 	Transform transform_{};
 

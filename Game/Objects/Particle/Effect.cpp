@@ -357,6 +357,9 @@ void Effect::Create() {
 					Grain* newGrain = new Grain();
 					newGrain->Initialize();
 					newGrain->InitTrans();
+					if (isHeal) {
+						newGrain->SetIsHeal(true);
+					}
 					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					grains_.push_back(newGrain);
@@ -404,6 +407,9 @@ void Effect::Create() {
 					Grain* newGrain = new Grain();
 					newGrain->Initialize();
 					newGrain->InitTrans();
+					if (isHeal) {
+						newGrain->SetIsHeal(true);
+					}
 					newGrain->Init(model_, newPos, rotation_, size_, gravity_, newVelo, lifeTime_, ShiftSpeedType::kNormal,
 						shiftingSpeed_, isColorShift_, originalColor_, changeColor_, isSizeChange_, endSize_, SizeChangeType::kReduction);
 					newGrain->SetIsDead(false);

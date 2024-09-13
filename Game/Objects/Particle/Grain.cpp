@@ -10,6 +10,7 @@ void Grain::Initialize()
 
 void Grain::InitTrans()
 {
+	healMat.CreateMaterial("healMate");
 	transform_.Initialize();
 }
 
@@ -82,5 +83,11 @@ void Grain::Update() {
 }
 
 void Grain::Draw() {
-	model_->Draw(&transform_);
+	if (isheal_) {
+		model_->Draw(&transform_, &healMat);
+	}
+	else {
+		model_->Draw(&transform_);
+	}
+
 }

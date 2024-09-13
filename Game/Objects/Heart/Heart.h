@@ -34,6 +34,7 @@ private:
 	float healTime_ = 1.0f;
 	bool isHeal_ = true;
 	bool startHeal_ = false;
+	
 };
 
 
