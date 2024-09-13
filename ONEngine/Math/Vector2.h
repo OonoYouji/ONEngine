@@ -47,6 +47,8 @@ public:
 
 	static float Dot(const Vector2& v1, const Vector2& v2);
 
+	static Vector2 Lerp(const Vector2& v1, const Vector2& v2, float t);
+
 public:
 
 	/// ===================================================

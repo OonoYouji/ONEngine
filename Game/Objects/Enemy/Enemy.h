@@ -62,6 +62,7 @@ private:
 
 	float xAccel = 0.0f;
 	float addAccel = 0.2f;
+	float baseAccele = 0.2f;
 	float addDecel = 0.005f;
 	float acceleTime = 0.1f;
 

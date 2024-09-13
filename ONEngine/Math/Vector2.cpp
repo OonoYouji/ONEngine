@@ -54,3 +54,10 @@ Vector2 Vector2::ConvertScreen(const Vector3& world) {
 float Vector2::Dot(const Vector2& v1, const Vector2& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y);
 }
+
+Vector2 Vector2::Lerp(const Vector2& v1, const Vector2& v2, float t) {
+	return Vector2(
+		std::lerp(v1.x, v2.x, t),
+		std::lerp(v1.y, v2.y, t)
+	);
+}

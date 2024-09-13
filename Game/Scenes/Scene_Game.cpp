@@ -90,10 +90,6 @@ void Scene_Game::Initialize() {
 
 	(new GameOperationUI)->Initialize();
 
-	/*GameTimer* gameTimer = new GameTimer;
-	gameTimer->Initialize();
-	gameTimer->SetMaxTime(60.0f);*/
-
 	GameManager* gameManager = new GameManager;
 	gameManager->Initialize();
 	enemyManager_->SetGameManager(gameManager);
