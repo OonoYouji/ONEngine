@@ -22,6 +22,8 @@ public:
 
 	void CalculationGage();
 
+	void EvalsUpdate();
+
 private:
 	uint32_t currentHP_;
 	uint32_t maxHP_;
@@ -45,5 +47,26 @@ private:
 
 	Vec4 frameColor_{ 1,1,1,1 };
 	Vec4 gaugeColor_{ 1,1,1,1 };
+
+
+	/// デカい、チョーデカいを出すやつ
+	enum SIZE_TYPE {
+		BIG, SPUER_BIG
+	};
+	std::vector<std::string> texNames_;
+	std::vector<std::string> filePaths_;
+	std::vector<Vec2> texSizes_;
+	std::vector<float> posYs_;
+
+	float evalLifeTime_ = 1.0f; /// Eval::lifeTimeの初期化用
+
+	struct Eval {
+		std::unique_ptr<Sprite> sprite;
+		float lifeTime = 0.2f; // 描画する残り時間
+		float posY = 0.0f;
+		int positionYsIndex = 0;
+	};
+	std::list<Eval> evals_;
+
 
 };

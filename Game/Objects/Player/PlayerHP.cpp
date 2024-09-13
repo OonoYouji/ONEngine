@@ -56,6 +56,29 @@ void PlayerHP::Initialize() {
 	currentGauge_ = 0.0f;
 	baseGauge_ = 1.0f;
 
+
+
+	texNames_ = { "dekai", "chodekai" };
+	filePaths_ = { "dekai.png", "chodekai.png" };
+	texSizes_ = {
+		Vec2(400, 120) / 3.0f,
+		Vec2(500, 120) / 3.0f
+	};
+
+	evalLifeTime_ = 1.0f;
+
+	evals_.resize(6);
+	for(auto& eval : evals_) {
+		eval.sprite.reset(new Sprite);
+		eval.sprite->Initialize(texNames_[0], filePaths_[0]);
+		eval.lifeTime = 0.0f;
+	}
+
+	posYs_.resize(6);
+	for(uint32_t i = 0u; i < 6u; ++i) {
+		posYs_[i] = 400.0f - i * 60.0f;
+	}
+
 }
 
 void PlayerHP::Update() {
@@ -80,14 +103,33 @@ void PlayerHP::Update() {
 
 		}
 
-		if (enemy->IsScore()) {
+		if(enemy->IsScore()) {
 			enemy->SetIsScore(false);
 			int medicSize = enemy->GetMedicSize();
 			float addScoreGauge = baseGauge_ * (float)medicSize;
 			currentGauge_ += addScoreGauge;
 			healHP_ = true;
-			if (currentGauge_ >= maxGauge_) {
+			if(currentGauge_ >= maxGauge_) {
 				currentGauge_ = maxGauge_;
+			}
+
+			/// デカい、ちょーでかいの評価を出す
+			if(medicSize >= 3) {
+
+				for(auto& eval : evals_) {
+					if(eval.lifeTime <= 0.0f) {
+						eval.lifeTime = evalLifeTime_;
+						eval.posY = enemy->GetPos().y;
+						eval.posY = posYs_[Random::Int(0, 5)];;
+						eval.sprite->SetTexture(
+							texNames_[medicSize - 3],
+							filePaths_[medicSize - 3]
+						);
+						eval.sprite->SetSize(texSizes_[medicSize - 3]);
+						break;
+					}
+				}
+
 			}
 		}
 
@@ -103,12 +145,16 @@ void PlayerHP::Update() {
 
 
 	CalculationGage();
+	EvalsUpdate();
 
-	if (maxGauge_ == currentGauge_) {
+
+
+	if(maxGauge_ == currentGauge_) {
 
 		///
 		/// この部分でclearへ
 		///
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::CLEAR);
 
 	}
 
@@ -119,6 +165,12 @@ void PlayerHP::FrontSpriteDraw() {
 	gaugeSprite_->Draw();
 
 	frameSprite_[currentDamegeIndex_]->Draw();
+
+	for(auto& eval : evals_) {
+		if(eval.lifeTime > 0.0f) {
+			eval.sprite->Draw();
+		}
+	}
 
 }
 
@@ -180,4 +232,29 @@ void PlayerHP::CalculationGage() {
 
 
 
+}
+
+void PlayerHP::EvalsUpdate() {
+	for(auto& eval : evals_) {
+
+		if(eval.lifeTime == 0.0f) {
+			continue;
+		}
+
+		eval.lifeTime -= WorldTime::DeltaTime();
+		float lerpT = 2.0f - std::max(eval.lifeTime / (evalLifeTime_ / 2.0f), 0.0f);
+
+		if(lerpT <= 1.0f) {
+			float posX = std::lerp(-200.0f, 200.0f, Ease::Out::Back(lerpT));
+			eval.sprite->SetPos({ posX, eval.posY, 0.0f });
+		} else {
+			float posX = std::lerp(200.0f, -200.0f, Ease::In::Back(lerpT - 1.0f));
+			eval.sprite->SetPos({ posX, eval.posY, 0.0f });
+		}
+
+		if(lerpT == 2.0f) {
+			eval.lifeTime = 0.0f;
+		}
+
+	}
 }
