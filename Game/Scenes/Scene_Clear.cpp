@@ -12,6 +12,10 @@
 
 
 
+Scene_Clear::~Scene_Clear() {
+	bgm_->StopAudioAll();
+}
+
 void Scene_Clear::Initialize() {
 
 	/// 心臓
@@ -34,6 +38,11 @@ void Scene_Clear::Initialize() {
 	(new Wall)->Initialize();
 	(new GameClearEffect)->Initialize();
 
+
+	bgm_ = new AudioSource;
+	bgm_->SetAudioClip("Clear.wav");
+	bgm_->isLoop = true;
+	bgm_->PlayAudio();
 }
 
 

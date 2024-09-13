@@ -319,7 +319,7 @@ void Enemy::LastUpdate() {
 				offsetY = sinWave_->GetOffset();
 				addlambda = sinWave_->GetAddLambda();
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-				deadSprite_->SetPos({ -80.0f,30.0f,0.0f });
+				deadSprite_->SetPos(pos);
 				if (deadTime <= 58 && deadTime >= 57) {
 					AcceleEffect_->EffectStop();
 				}

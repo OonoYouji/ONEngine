@@ -12,6 +12,10 @@
 #include "GameResult/GameResult.h"
 
 
+Scene_Result::~Scene_Result() {
+	bgm_->StopAudioAll();
+}
+
 void Scene_Result::Initialize() {
 
 	/// カメラの座標を計算
@@ -30,6 +34,11 @@ void Scene_Result::Initialize() {
 	(new Background)->Initialize();
 	(new GameResult)->Initialize();
 
+
+	bgm_ = new AudioSource;
+	bgm_->SetAudioClip("GameOver.wav");
+	bgm_->isLoop = true;
+	bgm_->PlayAudio();
 }
 
 void Scene_Result::Update() {
