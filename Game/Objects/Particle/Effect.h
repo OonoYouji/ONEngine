@@ -53,6 +53,7 @@ public:
 	void SetPos(const Vector2& pos);
 	void SetVariavles2D(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
 	void SetVariavles(const Vector3& gravity, float speed, const Vector3& size, int lifeTime,bool rotateRandom, bool sizeRandom, float minSizeRandom, float maxSizeRandom);
+	bool GetStart() { return isStart_; }
 
 private:
 
