@@ -4,6 +4,7 @@
 #include <ImGuiManager.h>
 #include <Input.h>
 #include <WorldTime.h>
+#include <Easing.h>
 
 #include "Enemy/Enemy.h"
 #include "LineDrawer2D/SinWaveDrawer.h"
@@ -72,7 +73,7 @@ void PlayerHP::Update() {
 			float sinValue = std::sin(8.0f * animationTime_) * 0.5f + 0.5f;
 			sprite->SetSize(
 				Vec2::kOne * 64.0f + 
-				Vec2::kOne * (32.0f * 0.6f * sinValue) /// ここの30を変えて大きさを調整する
+				Vec2::kOne * (32.0f * 0.6f * Ease::Out::Elastic(sinValue)) /// ここの30を変えて大きさを調整する
 			);
 		}
 	}
