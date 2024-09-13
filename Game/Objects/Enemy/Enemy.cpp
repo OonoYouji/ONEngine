@@ -122,7 +122,7 @@ void Enemy::Update() {
 					if (amplitude <= 4) {
 						if (isMaybeDead || isDamage) {
 							AcceleEffect_->EffectStop();
-							isDead = true;
+							//isDead = true;
 							isCombo = true;
 							isScore = true;
 							isDamage = false;
@@ -229,7 +229,7 @@ void Enemy::Update() {
 				if (t >= 1.0f) {
 					t = 1.0f;
 				}
-				xAccel -= (addDecel * t) * (WorldTime::DeltaTime() * 60.0f);
+				//xAccel -= (addDecel * t) * (WorldTime::DeltaTime() * 60.0f);
 			}
 
 
