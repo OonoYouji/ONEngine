@@ -25,7 +25,7 @@ void Enemy::Initialize() {
 	deadSprite_->Initialize("medicine_stamp", "medicine_stamp.png");
 	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
-	deadSprite_->SetPos({ -20.0f,40.0f,0.0f });
+	deadSprite_->SetPos({ -80.0f,40.0f,0.0f });
 
 	//deathSound_ = new AudioSource();
 	//deathSound_->SetAudioClip("enemyDeath.wav");
@@ -319,7 +319,7 @@ void Enemy::LastUpdate() {
 				offsetY = sinWave_->GetOffset();
 				addlambda = sinWave_->GetAddLambda();
 				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-				deadSprite_->SetPos(pos);
+				deadSprite_->SetPos({ -80.0f,30.0f,0.0f });
 				if (deadTime <= 58 && deadTime >= 57) {
 					AcceleEffect_->EffectStop();
 				}

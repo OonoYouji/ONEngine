@@ -57,6 +57,13 @@ void Heart::Initialize() {
 	healEffect_->EffectStart();
 	healEffect_->SetPos(transform_.position);
 
+
+	damageSE_ = new AudioSource;
+	damageSE_->SetAudioClip("glass_hibi.wav");
+
+	healSE_ = new AudioSource;
+	healSE_->SetAudioClip("heal.wav");
+
 }
 
 void Heart::Update() {
@@ -65,7 +72,6 @@ void Heart::Update() {
 		if(isDameged_) {
 			damegedTime_ -= WorldTime::DeltaTime();
 			if(damegedTime_ <= 0.0f) {
-				damageEffect_->EffectStop();
 				isDameged_ = false;
 			}
 		} else {
@@ -73,9 +79,7 @@ void Heart::Update() {
 			damageEffect_->SetPos(transform_.position);
 			fluctuationHP_ = pPlayerHP_->GetHPFluctuation();
 			if(fluctuationHP_) {
-				appearCount_ += 2;
-				damageEffect_->OverTimeSetting(12, appearCount_);
-				damageEffect_->EffectStart();
+				damageSE_->PlayAudio();
 				isDameged_ = true;
 				damegedTime_ = 0.5f;
 			}
@@ -93,6 +97,7 @@ void Heart::Update() {
 			healEffect_->SetPos({ transform_.position.x,transform_.position.y - 0.3f,transform_.position.z });
 			startHeal_ = pPlayerHP_->GetHPHeal();
 			if (startHeal_) {
+				healSE_->PlayAudio();
 				appearCount_ = 8;
 				healEffect_->OverTimeSetting(12, appearCount_);
 				healEffect_->EffectStart();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <GameObjectManager.h>
+#include <AudioManager.h>
 #include "Particle/Effect.h"
 
 
@@ -35,6 +36,8 @@ private:
 	bool isHeal_ = true;
 	bool startHeal_ = false;
 	
+	AudioSource* damageSE_ = nullptr;
+	AudioSource* healSE_ = nullptr;
 };
 
 

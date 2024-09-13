@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <GameObjectManager.h>
+#include <AudioManager.h>
 #include <Sprite.h>
 
 class PlayerHP final : public BaseGameObject {
@@ -46,4 +47,5 @@ private:
 	Vec4 frameColor_{ 1,1,1,1 };
 	Vec4 gaugeColor_{ 1,1,1,1 };
 
+	AudioSource* deathSE_ = nullptr;
 };
