@@ -35,9 +35,11 @@ public:
 	void SetIsDead(bool is) { isDead_ = is; }
 	bool IsDead()const { return isDead_; }
 
+	void SetIsHeal(bool is) { isheal_ = is; }
 private:
 
 	Model* model_;
+	Material healMat;
 	Transform transform_{};
 	Vector3 gravity_ = { 0.0f,0.0f,0.0f };
 	Vector3 velocity_ = { 0.0f,1.0f,0.0f };
@@ -45,6 +47,8 @@ private:
 	int lifeTime_ = 10;
 	int startLifeTime_;
 	bool isDead_ = false;
+
+	bool isheal_ = false;
 
 	/// <summary>
 	/// 発射後に速度が変わるのか

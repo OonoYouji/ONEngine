@@ -25,6 +25,7 @@ void Enemy::Initialize() {
 	deadSprite_->Initialize("medicine_stamp", "medicine_stamp.png");
 	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
+	deadSprite_->SetPos({ -80.0f,40.0f,0.0f });
 
 	//deathSound_ = new AudioSource();
 	//deathSound_->SetAudioClip("enemyDeath.wav");
@@ -271,8 +272,9 @@ void Enemy::Update() {
 		if (pos.x < 0) {
 			if (roopCount == 0) {
 				isDead = true;
+				isSoonDeath = true;
 				isScore = true;
-				pos.x = -30.0f;
+				pos.x = -50.0f;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
 				deadSprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
@@ -291,32 +293,45 @@ void Enemy::Update() {
 
 void Enemy::LastUpdate() {
 	if (isDead) {
-		if (deadTime <= 0) {
-			///
-			/// 死んだときはここ
-			/// 
-			Destory();
-			deathSE_->PlayAudio();
+		if (isSoonDeath) {
+			if (deadTime <= 0) {
+				///
+				/// 死んだときはここ
+				/// 
+				Destory();
+			}
+			else {
+				deadTime -= (WorldTime::DeltaTime() * 60.0f);
+			}
 		}
 		else {
-			deadTime -= (WorldTime::DeltaTime() * 60.0f);
-			amplitude = sinWave_->GetAmplitude();
-			frequency = sinWave_->GetFrequency();
-			offsetY = sinWave_->GetOffset();
-			addlambda = sinWave_->GetAddLambda();
-			pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
-			deadSprite_->SetPos(pos);
-			if (deadTime <= 58 && deadTime >= 57) {
-				AcceleEffect_->EffectStop();
-			}
-			if (deadTime <= 55 && deadTime >= 54) {
+			if (deadTime <= 0) {
 				///
-				/// つぶれた時はここ
+				/// 死んだときはここ
 				/// 
-				stampSE_->PlayAudio();
+				Destory();
+				deathSE_->PlayAudio();
 			}
-			if (deadTime <= 10 && deadTime >= 9) {
-				deathEffect_->EffectStart();
+			else {
+				deadTime -= (WorldTime::DeltaTime() * 60.0f);
+				amplitude = sinWave_->GetAmplitude();
+				frequency = sinWave_->GetFrequency();
+				offsetY = sinWave_->GetOffset();
+				addlambda = sinWave_->GetAddLambda();
+				pos.y = amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY;
+				deadSprite_->SetPos({ -80.0f,30.0f,0.0f });
+				if (deadTime <= 58 && deadTime >= 57) {
+					AcceleEffect_->EffectStop();
+				}
+				if (deadTime <= 55 && deadTime >= 54) {
+					///
+					/// つぶれた時はここ
+					/// 
+					stampSE_->PlayAudio();
+				}
+				if (deadTime <= 10 && deadTime >= 9) {
+					deathEffect_->EffectStart();
+				}
 			}
 		}
 	}

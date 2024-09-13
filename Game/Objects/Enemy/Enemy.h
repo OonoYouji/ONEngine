@@ -94,6 +94,7 @@ private:
 	bool isBorn = true;
 	bool isMaybeDead = false;
 	bool isDead = false;
+	bool isSoonDeath = false;
 	bool isCombo = false;
 	float deadTime = 60;
 

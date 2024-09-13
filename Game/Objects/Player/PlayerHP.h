@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <GameObjectManager.h>
+#include <AudioManager.h>
 #include <Sprite.h>
 
 class PlayerHP final : public BaseGameObject {
@@ -69,4 +70,5 @@ private:
 	std::list<Eval> evals_;
 
 
+	AudioSource* deathSE_ = nullptr;
 };

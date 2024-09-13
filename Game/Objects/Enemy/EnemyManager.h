@@ -17,8 +17,9 @@ public:
 	void FrontSpriteDraw()override;
 
 	void EnemyPop();
-	void LoadPopDate(const std::string& fileName);
+	void LoadPopDate(const std::string& fileName, std::stringstream& command);
 	void PopCommands();
+	void PopInfinite();
 	void WarningUpdate();
 
 	void Debug()override;
@@ -34,6 +35,7 @@ private:
 	const std::string kDirectoryPath_ = "./Resources/Texts/";
 	class GameManager* pGameManager_ = nullptr;
 	std::stringstream popCommand_;
+	std::stringstream infiniteCommand_;
 	std::list<std::tuple<int, float,int>> commands_;
 
 	uint32_t popCount_ = 0;
@@ -45,6 +47,8 @@ private:
 
 	uint32_t maxPopCount_ = 5;
 	bool isStop_ = false;
+
+	bool isInfinteMode_ = false;
 
 	AudioSource* alarm_ = nullptr;
 };

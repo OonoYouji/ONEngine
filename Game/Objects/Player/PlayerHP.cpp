@@ -98,6 +98,7 @@ void PlayerHP::Update() {
 
 			/// TODO: 同じ敵で何回かダメージを食らうことがある
 			currentDamegeIndex_++;
+			fluctuationHP_ = true;
 			currentDamegeIndex_ = std::min(currentDamegeIndex_, 4);
 			enemy->SetHeartBreak(false);
 
@@ -140,6 +141,7 @@ void PlayerHP::Update() {
 
 	if(currentDamegeIndex_ == 4) {
 		/// ここでResult (Game Over)に行く
+		deathSE_->PlayAudio();
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
 	}
 

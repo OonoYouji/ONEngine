@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("warning", "warning.png");
 	textureManager->Load("juuji", "juuji.png");
 	textureManager->Load("title_sousa", "title_sousa.png");
+	textureManager->Load("healMate", "healMate.png");
 
 
 	textureManager->Load("0", "0.png");
