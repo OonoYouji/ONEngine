@@ -16,7 +16,8 @@ void Enemy::Initialize() {
 	SetWave(dynamic_cast<SinWaveDrawer*>(GameObjectManager::GetGameObject("SinWaveDrawer")));
 
 	sprite_.reset(new Sprite());
-	sprite_->Initialize("SINON_enemy", "SINON_enemy.png");
+	sprite_->Initialize("medicine", "medicine.png");
+	defaultSize = { 20,40,0 };
 	sprite_->SetSize({ 20,40 });
 	currentSize_ = { 20,40,0 };
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
@@ -89,7 +90,7 @@ void Enemy::Update() {
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly) {
-			currentSize_ = Vector3::Lerp(currentSize_, { 20.0f,40.0f,0 }, 0.15f);
+			currentSize_ = Vector3::Lerp(currentSize_, defaultSize, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			tangent = CalculateTangentAngle(amplitude, frequency, (pos.x + addlambda));
 
@@ -104,7 +105,7 @@ void Enemy::Update() {
 			if (AcceleEffect_->GetStart()) {
 				AcceleEffect_->EffectStop();
 			}
-			currentSize_ = Vector3::Lerp(currentSize_, { 15.0f,45.0f,0 }, 0.15f);
+			currentSize_ = Vector3::Lerp(currentSize_, { defaultSize.x - 5.0f,defaultSize.y + 5.0f,0 }, 0.15f);
 			sprite_->SetSize({ currentSize_.x,currentSize_.y });
 			if (-(amplitude)-5.0f >= (pos.y - offsetY)) {
 				isDamage = true;
@@ -113,7 +114,7 @@ void Enemy::Update() {
 				isMaybeDead = true;
 			}
 			flyspeed.y += (0.2f) * (WorldTime::DeltaTime() * 60.0f);
-			pos += (flyspeed)* (WorldTime::DeltaTime() * 60.0f);
+			pos += (flyspeed) * (WorldTime::DeltaTime() * 60.0f);
 			CalHighPoint();
 
 			if (pos.y >= amplitude * sinf(frequency * (pos.x + addlambda)) + offsetY) {
@@ -190,13 +191,19 @@ void Enemy::Update() {
 				case 0:
 					jumpMulti = 1.0f;
 					jumpCount_++;
+					/*defaultSize = { 25,50,0 };
+					sprite_->SetSize({ 25,50 });*/
 					break;
 				case 1:
 					jumpMulti = 2.5f;
 					jumpCount_++;
+					/*defaultSize = { 30,60,0 };
+					sprite_->SetSize({ 30,60 });*/
 					break;
 				case 2:
 					jumpMulti = 3.25f;
+					/*defaultSize = { 35,70,0 };
+					sprite_->SetSize({ 35,70 });*/
 					break;
 				}
 				flyspeed = pos - beforPos;
@@ -234,7 +241,8 @@ void Enemy::Update() {
 				}
 				if (!isBreakType_) {
 					xAccel += ((addAccel * (acceleTime * acceleTime)) * t) * (WorldTime::DeltaTime() * 60.0f);
-				} else {
+				}
+				else {
 					xAccel += (((addAccel * (acceleTime * acceleTime)) * t) * 0.5f) * (WorldTime::DeltaTime() * 60.0f);
 				}
 				if (beforPos.y > pos.y) {
@@ -391,6 +399,19 @@ void Enemy::CalHighPoint() {
 
 		if (highPoint > newHighPoint) {
 			highPoint = pos.y;
+		}
+
+		if (highPoint < 250) {
+			defaultSize = { 40,80,0 };
+			sprite_->SetSize({ 40,80 });
+		}
+		else if (highPoint < 300) {
+			defaultSize = { 30,60,0 };
+			sprite_->SetSize({ 30,60 });
+		}
+		else if (highPoint < 350) {
+			defaultSize = { 25,50,0 };
+			sprite_->SetSize({ 20,50 });
 		}
 	}
 

@@ -98,6 +98,7 @@ private:
 
 	int roopCount = 0;
 	bool isHeartBreak = false;
+	Vector3 defaultSize = { 20,40,0 };
 
 	bool isScore = false;
 	float highPoint = 1000;

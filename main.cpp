@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("monsterBall", "monsterBall.png");
 	textureManager->Load("Floor", "Floor.png");
-	textureManager->Load("SINON_enemy", "SINON_enemy.png");
+	textureManager->Load("medicine", "medicine.png");
 	textureManager->Load("enemy_stamp", "enemy_stamp.png");
 	textureManager->Load("TVUV", "TVUV.png");
 	textureManager->Load("Heart", "../Models/Heart/Heart.png");
