@@ -61,7 +61,7 @@ void Enemy::Initialize() {
 	catchSE_->SetAudioClip("kasoku.wav");
 
 	if (isBreakType_) {
-		sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });
+		sprite_->SetColor({ 0.988f, 0.784f, 0.0f, 1.0f });
 	}
 }
 
