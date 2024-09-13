@@ -1,5 +1,6 @@
 #include "SinWaveDrawer.h"
 #include <WinApp.h>
+#include <WorldTime.h>
 #include <ImGuiManager.h>
 #include <Input.h>
 
@@ -30,7 +31,7 @@ void SinWaveDrawer::Update() {
 		}
 		else
 		{
-			amplitude += addPadAmp * 1.75f;
+			amplitude += (addPadAmp * 1.75f) * (WorldTime::DeltaTime()*60.0f);
 		}
 		if (amplitude >= 170)
 		{
@@ -42,11 +43,11 @@ void SinWaveDrawer::Update() {
 		if (!(Input::GetInsatnce()->PressKey(KeyCode::S)))
 		{
 			float stickSlope = -(padLstick.y) / 16384.0f;
-			amplitude -= addPadAmp * (stickSlope * stickSlope) * 2.0f;
+			amplitude -= (addPadAmp * (stickSlope * stickSlope) * 2.0f) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		else
 		{
-			amplitude -= addPadAmp * 1.75f;
+			amplitude -= (addPadAmp * 1.75f) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		if (amplitude <= 4.0f)
 		{
@@ -60,11 +61,11 @@ void SinWaveDrawer::Update() {
 		if (!(Input::GetInsatnce()->PressKey(KeyCode::D)))
 		{
 			float stickSlope = padRstick.x / 16384.0f;
-			addlambda -= addPadLam * (stickSlope);
+			addlambda -= (addPadLam * (stickSlope)) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		else
 		{
-			addlambda -= addPadLam * 1.4f;
+			addlambda -= (addPadLam * 1.4f) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		if (addlambda <= -1393.0f)
 		{
@@ -76,11 +77,11 @@ void SinWaveDrawer::Update() {
 		if (!(Input::GetInsatnce()->PressKey(KeyCode::A)))
 		{
 			float stickSlope = -(padRstick.x) / 16384.0f;
-			addlambda += addPadLam * (stickSlope);
+			addlambda += (addPadLam * (stickSlope)) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		else
 		{
-			addlambda += addPadLam * 1.4f;
+			addlambda += (addPadLam * 1.4f) * (WorldTime::DeltaTime() * 60.0f);
 		}
 		if (addlambda >= 1393.0f)
 		{

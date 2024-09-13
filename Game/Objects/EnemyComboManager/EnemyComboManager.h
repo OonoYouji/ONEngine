@@ -32,8 +32,8 @@ private:
 	std::unique_ptr<Sprite> nineSprite_;
 	std::unique_ptr<Sprite> comboSprite_;
 	uint32_t comboCount_ = 0;
-	uint32_t comboReceptionTime_ = 0;
-	uint32_t interruptTime_ = 30;
+	float comboReceptionTime_ = 0;
+	float interruptTime_ = 30;
 	Vector3 spritePos_{};
 	Vector3 spriteSize_{};
 };

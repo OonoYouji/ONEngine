@@ -2,6 +2,7 @@
 
 #include <GameObjectManager.h>
 #include <ImGuiManager.h>
+#include <WorldTime.h>
 #include <Input.h>
 #include <fstream>
 #include "Enemy/Enemy.h"
@@ -67,7 +68,7 @@ void EnemyManager::PopCommands()
 	uint32_t enemyCount = GameObjectManager::GetInstanceCount("Enemy");
 
 
-	if (popCount_ == 0 && popInterval_ == 0 && commands_.size() != 0) {
+	if (popCount_ == 0 && popInterval_ <= 0 && commands_.size() != 0) {
 		popCount_ = commands_.front().first;
 		popInterval_ = commands_.front().second;
 		commands_.pop_front();
@@ -89,13 +90,13 @@ void EnemyManager::PopCommands()
 	}
 
 	if (currentInterval_ > 0) {
-		currentInterval_--;
+		currentInterval_ -= (WorldTime::DeltaTime() * 60.0f);
 	}
 
 
 	if (isWait_) {
-		waitTimer_--;
-		if (waitTimer_ == 120)
+		waitTimer_-= (WorldTime::DeltaTime() * 60.0f);
+		if (waitTimer_ <= 120 && waitTimer_ >= 119)
 		{
 			isWarning_ = true;
 			warningPosition_ = { 1320.0f,200.0f,0.0f };
@@ -138,7 +139,7 @@ void EnemyManager::PopCommands()
 			int count = (int)std::atof(word.c_str());
 			// インターバル
 			std::getline(line_stream, word, ',');
-			int interval = (int)(std::atof(word.c_str()) * 60.0f);
+			float interval = (float)(std::atof(word.c_str()) * 60.0f);
 
 			commands_.push_back(std::make_pair(count, interval));
 
@@ -148,7 +149,7 @@ void EnemyManager::PopCommands()
 			std::getline(line_stream, word, ',');
 
 			//待ち時間
-			uint32_t waitTime = (uint32_t)(atoi(word.c_str()) * 60.0f);
+			float waitTime = (float)(atoi(word.c_str()) * 60.0f);
 
 			isWait_ = true;
 			waitTimer_ = waitTime;
