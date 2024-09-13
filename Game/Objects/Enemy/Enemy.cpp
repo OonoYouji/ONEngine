@@ -157,6 +157,7 @@ void Enemy::Update() {
 					}
 					if (isBreakType_) {
 						isDead = true;
+						isHeartBreak = true;
 					}
 				}
 				else if (isDamage &&
