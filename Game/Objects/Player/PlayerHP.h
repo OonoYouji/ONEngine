@@ -37,6 +37,7 @@ private:
 
 	float maxGauge_;
 	float currentGauge_;
+	float baseGauge_;
 
 	int currentDamegeIndex_;
 

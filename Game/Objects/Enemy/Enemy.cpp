@@ -22,7 +22,7 @@ void Enemy::Initialize() {
 	currentSize_ = { 20,40,0 };
 	sprite_->SetColor({ 0.184f, 0.851f, 0.137f, 1.0f });
 	deadSprite_.reset(new Sprite());
-	deadSprite_->Initialize("enemy_stamp", "enemy_stamp.png");
+	deadSprite_->Initialize("medicine_stamp", "medicine_stamp.png");
 	deadSprite_->SetSize({ 20,40 });
 	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
 
@@ -189,13 +189,13 @@ void Enemy::Update() {
 				float jumpMulti = 1.0f;
 				switch (jumpCount_) {
 				case 0:
-					jumpMulti = 1.0f;
+					jumpMulti = 1.75f;
 					jumpCount_++;
 					/*defaultSize = { 25,50,0 };
 					sprite_->SetSize({ 25,50 });*/
 					break;
 				case 1:
-					jumpMulti = 1.5f;
+					jumpMulti = 2.0f;
 					jumpCount_++;
 					/*defaultSize = { 30,60,0 };
 					sprite_->SetSize({ 30,60 });*/
@@ -269,6 +269,7 @@ void Enemy::Update() {
 		if (pos.x < 0) {
 			if (roopCount == 0) {
 				isDead = true;
+				isScore = true;
 				pos.x = -30.0f;
 				roopCount++;
 				sprite_->SetColor({ 0.8667f, 0.1020f, 0.1294f, 1.0f });

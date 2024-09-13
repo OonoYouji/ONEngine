@@ -15,7 +15,7 @@ ScoreManager::~ScoreManager() {}
 
 void ScoreManager::Initialize() {
 
-	for(int i = 0; i < 10; i++) {
+	/*for(int i = 0; i < 10; i++) {
 		std::unique_ptr<Sprite> digitOne;
 		digitOne.reset(new Sprite());
 		digitOne->Initialize(std::to_string(i), std::to_string(i) + ".png");
@@ -68,7 +68,7 @@ void ScoreManager::Initialize() {
 		digitSix->SetSize({ 30,36 });
 		digitSix->SetPos({ 1180 + (addPosx * count),100,0 });
 		digitSixSprites_.push_back(std::move(digitSix));
-	}
+	}*/
 
 	scoreCount_ = 0;
 
@@ -76,7 +76,7 @@ void ScoreManager::Initialize() {
 
 void ScoreManager::Update() {
 
-	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
+	/*std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
 
 	for(auto& gameObject : objects) {
@@ -99,7 +99,14 @@ void ScoreManager::Update() {
 	CalScoreSprite();
 
 	objects.clear();
-	enemies.clear();
+	enemies.clear();*/
+
+	/*CalScoreGauge();
+
+	if (maxScoreGauge_ == currentScoreGauge) {
+	
+	}*/
+
 }
 
 void ScoreManager::FrontSpriteDraw() {
@@ -114,16 +121,16 @@ void ScoreManager::FrontSpriteDraw() {
 }
 
 void ScoreManager::Debug() {
-	if(ImGui::TreeNodeEx("Score", ImGuiTreeNodeFlags_DefaultOpen)) {
+	/*if(ImGui::TreeNodeEx("Score", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::Text("%d", scoreCount_);
 		ImGui::TreePop();
-	}
+	}*/
 }
 
 void ScoreManager::CalScoreSprite() {
 
-	if(scoreCount_ >= 1000000) {
+	/*if(scoreCount_ >= 1000000) {
 		oneCount_ = 9;
 		twoCount_ = 9;
 		threeCount_ = 9;
@@ -149,13 +156,42 @@ void ScoreManager::CalScoreSprite() {
 	fiveCount_ = point % 10;
 	point = point / 10;
 
-	sixCount_ = point;
+	sixCount_ = point;*/
 
 }
 
 void ScoreManager::CalScore() {
 
-	float highPoint = highPoint_;
+	/*float highPoint = highPoint_;*/
 
+
+}
+
+void ScoreManager::CalScoreGauge() {
+
+	/*std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
+	std::list<Enemy*> enemies;
+
+	for (auto& gameObject : objects) {
+		if (Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
+			enemies.push_back(enemy);
+		}
+	}
+
+	for (auto& enemy : enemies) {
+		if (enemy->IsScore()) {
+			enemy->SetIsScore(false);
+			int medicSize = enemy->GetMedicSize();
+			int addScoreGauge = basePoint_ * medicSize;
+			currentScoreGauge += addScoreGauge;
+			if (currentScoreGauge >= maxScoreGauge_) {
+				currentScoreGauge = maxScoreGauge_;
+			}
+		}
+	}
+
+
+	objects.clear();
+	enemies.clear();*/
 
 }

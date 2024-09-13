@@ -18,19 +18,21 @@ public:
 	void CalScoreSprite();
 	void CalScore();
 
+	void CalScoreGauge();
+
 	static uint32_t GetScoreCount() { return scoreCount_; }
 
 private:
 
-	std::vector<std::unique_ptr<Sprite>> digitOneSprites_;
+	/*std::vector<std::unique_ptr<Sprite>> digitOneSprites_;
 	std::vector<std::unique_ptr<Sprite>> digitTwoSprites_;
 	std::vector<std::unique_ptr<Sprite>> digitThreeSprites_;
 	std::vector<std::unique_ptr<Sprite>> digitFourSprites_;
 	std::vector<std::unique_ptr<Sprite>> digitFiveSprites_;
-	std::vector<std::unique_ptr<Sprite>> digitSixSprites_;
+	std::vector<std::unique_ptr<Sprite>> digitSixSprites_;*/
 
 	static uint32_t scoreCount_;
-	float highPoint_ = 0.0f;
+	/*float highPoint_ = 0.0f;
 	uint32_t baseScore_ = 100;
 
 	int oneCount_ = 0;
@@ -38,6 +40,11 @@ private:
 	int threeCount_ = 0;
 	int fourCount_ = 0;
 	int fiveCount_ = 0;
-	int sixCount_ = 0;
+	int sixCount_ = 0;*/
+
+
+	/*int maxScoreGauge_ = 120;
+	int currentScoreGauge = 0;
+	int basePoint_ = 1;*/
 
 };

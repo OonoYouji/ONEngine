@@ -52,6 +52,9 @@ void PlayerHP::Initialize() {
 	gaugeSprite_->Initialize("white2x2", "white2x2.png");
 
 
+	maxGauge_ = 120.0f;
+	currentGauge_ = 0.0f;
+	baseGauge_ = 1.0f;
 
 }
 
@@ -75,6 +78,17 @@ void PlayerHP::Update() {
 			enemy->SetHeartBreak(false);
 
 		}
+
+		if (enemy->IsScore()) {
+			enemy->SetIsScore(false);
+			int medicSize = enemy->GetMedicSize();
+			float addScoreGauge = baseGauge_ * (float)medicSize;
+			currentGauge_ += addScoreGauge;
+			if (currentGauge_ >= maxGauge_) {
+				currentGauge_ = maxGauge_;
+			}
+		}
+
 	}
 
 	objects.clear();
@@ -87,6 +101,14 @@ void PlayerHP::Update() {
 
 
 	CalculationGage();
+
+	if (maxGauge_ == currentGauge_) {
+
+		///
+		/// この部分でclearへ
+		///
+
+	}
 
 }
 
