@@ -11,10 +11,7 @@ SinWaveDrawer::~SinWaveDrawer() {
 	waveHeights_.clear();
 }
 
-void SinWaveDrawer::Initialize() {
-
-
-}
+void SinWaveDrawer::Initialize() {}
 
 void SinWaveDrawer::Update() {
 	waveHeights_.clear();
@@ -58,9 +55,9 @@ void SinWaveDrawer::Update() {
 	}
 
 
-	if ((padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::L))
+	if ((padRstick.x > 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::D))
 	{
-		if (!(Input::GetInsatnce()->PressKey(KeyCode::L)))
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::D)))
 		{
 			float stickSlope = padRstick.x / 16384.0f;
 			addlambda -= addPadLam * (stickSlope);
@@ -74,9 +71,9 @@ void SinWaveDrawer::Update() {
 			addlambda = 0;
 		}
 	}
-	else if ((padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::J))
+	else if ((padRstick.x < 0 && (!(padRstick.y > 17191) && !(padRstick.y < -17191))) || Input::GetInsatnce()->PressKey(KeyCode::A))
 	{
-		if (!(Input::GetInsatnce()->PressKey(KeyCode::J)))
+		if (!(Input::GetInsatnce()->PressKey(KeyCode::A)))
 		{
 			float stickSlope = -(padRstick.x) / 16384.0f;
 			addlambda += addPadLam * (stickSlope);

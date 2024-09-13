@@ -27,6 +27,8 @@ public:
 	void SetIsDead(bool is) { isDead_ = is; }
 	bool IsDead()const { return isDead_; }
 
+	void SetHaveParent(bool is) { haveParent_ = is; }
+
 private:
 
 	std::unique_ptr<Sprite> sprite_;
@@ -65,4 +67,5 @@ private:
 	Vector3 endScale_ = { 10.0f,10.0f,1.0f };
 	SizeChangeType changeType_ = SizeChangeType::kReduction;
 
+	bool haveParent_ = false;
 };
