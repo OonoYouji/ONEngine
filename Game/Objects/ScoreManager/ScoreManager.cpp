@@ -149,3 +149,10 @@ void ScoreManager::CalScoreSprite() {
 	sixCount_ = point;
 
 }
+
+void ScoreManager::CalScore() {
+
+	float highPoint = highPoint_;
+
+
+}

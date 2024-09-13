@@ -77,9 +77,9 @@ void Enemy::Update() {
 		addlambda = sinWave_->GetAddLambda();
 
 
-		if (beforlambda < addlambda) {
+		/*if (beforlambda < addlambda) {
 			isJump = false;
-		}
+		}*/
 
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
