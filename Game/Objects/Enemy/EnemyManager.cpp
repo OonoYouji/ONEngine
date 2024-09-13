@@ -17,7 +17,8 @@ EnemyManager::~EnemyManager()
 
 void EnemyManager::Initialize() {
 
-	LoadPopDate("EnemyPop.csv");
+	LoadPopDate("EnemyPop.csv",popCommand_);
+	LoadPopDate("Infinite.csv",infiniteCommand_);
 
 	warningSprite_.reset(new Sprite());
 	warningSprite_->Initialize("warning", "warning.png");
@@ -33,7 +34,13 @@ void EnemyManager::Update() {
 
 	uint32_t enemyCount = GameObjectManager::GetInstanceCount("Enemy");
 
-	PopCommands();
+	if (!isInfinteMode_) {
+		PopCommands();
+	}
+	else {
+		PopInfinite();
+	}
+
 	WarningUpdate();
 }
 
@@ -53,13 +60,13 @@ void EnemyManager::EnemyPop()
 	gameManager->AddPausedObject(newEnemy);
 }
 
-void EnemyManager::LoadPopDate(const std::string& fileName)
+void EnemyManager::LoadPopDate(const std::string& fileName, std::stringstream& command)
 {
 	std::ifstream file;
 	file.open(kDirectoryPath_ + fileName);
 	assert(file.is_open());
 
-	popCommand_ << file.rdbuf();
+	command << file.rdbuf();
 
 	file.close();
 }
@@ -106,9 +113,12 @@ void EnemyManager::PopCommands()
 			warningSprite_->SetSize({ warningSize_.x,warningSize_.y });
 			alarm_->PlayAudio();
 		}
+		if (waitTimer_ <= 20 && waitTimer_ >= 19) {
+			isWarning_ = false;
+		}
+
 		if (waitTimer_ <= 0) {
 			isWait_ = false;
-			isWarning_ = false;
 		}
 		return;
 	}
@@ -162,6 +172,117 @@ void EnemyManager::PopCommands()
 			break;
 		}
 
+	}
+
+	if (popCommand_.eof()) {
+		isInfinteMode_ = true;
+	}
+}
+
+void EnemyManager::PopInfinite() {
+
+	uint32_t enemyCount = GameObjectManager::GetInstanceCount("Enemy");
+
+
+	if (popCount_ == 0 && popInterval_ <= 0 && commands_.size() != 0) {
+		popCount_ = std::get<0>(commands_.front());
+		popInterval_ = std::get<1>(commands_.front());
+		isBreak_ = std::get<2>(commands_.front());
+		commands_.pop_front();
+		/*if (enemyCount+popCount_ >= maxPopCount_) {
+			isStop_ = true;
+		}*/
+	}
+
+
+	if (popCount_ > 0) {
+		if (currentInterval_ <= 0) {
+			EnemyPop();
+			popCount_--;
+			currentInterval_ = popInterval_;
+		}
+	}
+	else if (popCount_ == 0 && currentInterval_ <= 0) {
+		popInterval_ = 0;
+	}
+
+	if (currentInterval_ > 0) {
+		currentInterval_ -= (WorldTime::DeltaTime() * 60.0f);
+	}
+
+
+	if (isWait_) {
+		waitTimer_ -= (WorldTime::DeltaTime() * 60.0f);
+		if (waitTimer_ <= 120 && waitTimer_ >= 119) {
+			isWarning_ = true;
+			warningPosition_ = { 1320.0f,200.0f,0.0f };
+			warningSize_ = { 40.0f,40.0f,0.0f };
+			warningSprite_->SetSize({ warningSize_.x,warningSize_.y });
+			alarm_->PlayAudio();
+		}
+		if (waitTimer_ <= 20 && waitTimer_ >= 19) {
+			isWarning_ = false;
+		}
+
+		if (waitTimer_ <= 0) {
+			isWait_ = false;
+		}
+		return;
+	}
+
+	/*if (isStop_) {
+		if (enemyCount <= 4) {
+			isStop_ = false;
+		}
+		return;
+	}*/
+
+	std::string line;
+	while (std::getline(infiniteCommand_, line)) {
+
+		std::istringstream line_stream(line);
+		std::string word;
+
+		//,区切りで行の先頭文字列取得
+		std::getline(line_stream, word, ',');
+
+		if (word.find("//") == 0) {
+			continue;//コメント行飛ばす
+		}
+		//POP
+		if (word.find("POP") == 0) {
+
+			// 出す数
+			std::getline(line_stream, word, ',');
+			int count = (int)std::atoi(word.c_str());
+			// インターバル
+			std::getline(line_stream, word, ',');
+			float interval = (float)(std::atof(word.c_str()) * 60.0f);
+			// 敵が割れるかどうか
+			std::getline(line_stream, word, ',');
+			int isbreak = (int)std::atoi(word.c_str());
+
+			commands_.push_back(std::make_tuple(count, interval, isbreak));
+
+		}
+		//WAIT
+		else if (word.find("WAIT") == 0) {
+			std::getline(line_stream, word, ',');
+
+			//待ち時間
+			float waitTime = (float)(atoi(word.c_str()) * 60.0f);
+
+			isWait_ = true;
+			waitTimer_ = waitTime;
+
+			break;
+		}
+
+	}
+
+	if (infiniteCommand_.eof()) {
+		infiniteCommand_.clear();  // ファイルの状態をリセット
+		infiniteCommand_.seekg(0, std::ios::beg); // ファイルの先頭に戻る
 	}
 
 }
