@@ -31,6 +31,21 @@ void PlayerHP::Initialize() {
 		sprite->SetColor(frameColor_);
 	}
 
+
+	std::vector<std::string> texNames{
+		"gauge", "gauge_break_low",
+		"gauge_break_middle", "gauge_break_high"
+	};
+
+	std::vector<std::string> filePaths{
+		"gauge.png", "gauge_break_low.png",
+		"gauge_break_middle.png", "gauge_break_high.png"
+	};
+
+	for(uint32_t i = 0u; i < 4u; ++i) {
+		frameSprite_[i]->SetTexture(texNames[i], filePaths[i]);
+	}
+
 	gaugeSprite_.reset(new Sprite);
 	gaugeSprite_->Initialize("white2x2", "white2x2.png");
 
@@ -74,9 +89,8 @@ void PlayerHP::Update() {
 void PlayerHP::FrontSpriteDraw() {
 
 	gaugeSprite_->Draw();
-	for(auto& sprite : frameSprite_) {
-		sprite->Draw();
-	}
+
+	frameSprite_[currentDamegeIndex_]->Draw();
 
 }
 
@@ -86,6 +100,7 @@ void PlayerHP::Debug() {
 	if(ImGui::TreeNodeEx("frame", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::ColorEdit4("color", &frameColor_.x);
+		ImGui::DragInt("index", &currentDamegeIndex_, 1, 0, 3);
 
 		ImGui::TreePop();
 	}
@@ -127,6 +142,10 @@ void PlayerHP::CalculationGage() {
 	));
 
 	gaugeSprite_->SetColor(gaugeColor_);
+
+
+	currentDamegeIndex_ = std::clamp(currentDamegeIndex_, 0, 3);
+
 
 
 }

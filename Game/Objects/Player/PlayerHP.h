@@ -38,7 +38,7 @@ private:
 	float maxGauge_;
 	float currentGauge_;
 
-	Vec3 gaugeOffset_{};
+	int currentDamegeIndex_;
 
 	Vec4 frameColor_{ 1,1,1,1 };
 	Vec4 gaugeColor_{ 1,1,1,1 };
