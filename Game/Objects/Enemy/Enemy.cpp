@@ -76,11 +76,13 @@ void Enemy::Update() {
 		offsetY = sinWave_->GetOffset();
 		addlambda = sinWave_->GetAddLambda();
 
-
+		addAccel = baseAccele;
 		/*if (beforlambda < addlambda) {
 			isJump = false;
 		}*/
-
+		if (beforlambda > addlambda) {
+			addAccel = 1.0f;
+		}
 
 		// 敵の移動(波に乗ってる時と、そらを飛ぶ)
 		if (!isfly) {
