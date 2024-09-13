@@ -1,6 +1,8 @@
 #define NOMINMAX
 #include "GameOperationUI.h"
 
+#include <algorithm>
+
 #include <ImGuiManager.h>
 #include <SceneManager.h>
 #include <ModelManager.h>
@@ -27,11 +29,15 @@ void GameOperationUI::Initialize() {
 
 	/// {-3.6f, 0.15f, -4.7f}
 	maxLerpTime_ = 0.2f;
+	lerpTime_ = 0.0f;
 
 	sousa_ = new AudioSource();
 	sousa_->SetAudioClip("sousa.wav");
 
 	isFrontBinder_ = GameManager::initializeIsPause;
+	if(isFrontBinder_) {
+		maxLerpTime_ = 1.0f;
+	}
 
 }
 
@@ -42,6 +48,8 @@ void GameOperationUI::Update() {
 	   || Input::TriggerPadButton(PadCode::RightShoulder)) {
 		sousa_->PlayAudio();
 		isFrontBinder_ = !isFrontBinder_;
+		maxLerpTime_ = 0.2f;
+		lerpTime_ = std::clamp(lerpTime_, 0.0f, maxLerpTime_);
 	}
 
 	/// enter を押すか　game pad RB を押す
