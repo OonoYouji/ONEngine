@@ -27,6 +27,7 @@
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp" />
+    <ClCompile Include="Game\Objects\GameClearEffect\GameClearEffect.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
     <ClCompile Include="Game\Objects\GameMonitor\GameMonitor.cpp" />
     <ClCompile Include="Game\Objects\GameOperationUI\GameOperationUI.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h" />
+    <ClInclude Include="Game\Objects\GameClearEffect\GameClearEffect.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
     <ClInclude Include="Game\Objects\GameMonitor\GameMonitor.h" />
     <ClInclude Include="Game\Objects\GameOperationUI\GameOperationUI.h" />

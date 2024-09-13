@@ -8,6 +8,8 @@
 #include "Tile/Tile.h"
 #include "Wall/Wall.h"
 
+#include "GameClearEffect/GameClearEffect.h"
+
 
 
 void Scene_Clear::Initialize() {
@@ -20,13 +22,6 @@ void Scene_Clear::Initialize() {
 	heart->SetScale(Vec3::kOne * 0.7f);
 	heart->UpdateMatrix();
 
-	/// 手
-	Hand* hand = new Hand;
-	hand->Initialize();
-	hand->SetPosition({ -4.05f, -0.95f, -3.9f });
-	hand->SetRotate({ 0.0f, -0.5f, 0.0f });
-	hand->SetScale(Vec3::kOne * 0.5f);
-	hand->UpdateMatrix();
 
 
 	/// ゲームを映すモニター
@@ -37,6 +32,7 @@ void Scene_Clear::Initialize() {
 	(new Background)->Initialize();
 	(new Tile)->Initialize();
 	(new Wall)->Initialize();
+	(new GameClearEffect)->Initialize();
 
 }
 

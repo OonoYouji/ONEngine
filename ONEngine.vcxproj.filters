@@ -287,6 +287,9 @@
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameClearEffect\GameClearEffect.cpp">
+      <Filter>Game\Objects\GameClearEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -489,6 +492,9 @@
     </Filter>
     <Filter Include="Game\Objects\ScoreManager">
       <UniqueIdentifier>{f5bcac54-0b5d-4244-8919-1817d68110c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameClearEffect">
+      <UniqueIdentifier>{c5981dcc-f3a5-4429-b019-cc13e446e261}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -779,6 +785,9 @@
     </ClInclude>
     <ClInclude Include="Game\Scenes\Scene_Clear.h">
       <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameClearEffect\GameClearEffect.h">
+      <Filter>Game\Objects\GameClearEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
