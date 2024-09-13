@@ -660,6 +660,11 @@ void Effect::ShapeType(int type)
 	}
 }
 
+void Effect::SetBoxSize(float xSize, float zSize) {
+	boxSizeX_ = xSize;
+	boxSizeZ_ = zSize;
+}
+
 void Effect::ShiftingSpeedType(int type)
 {
 	if (type == 0)

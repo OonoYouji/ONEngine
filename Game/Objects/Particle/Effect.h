@@ -43,6 +43,7 @@ public:
 	void OverDistanceSetting(float rateDistance);
 
 	void ShapeType(int type);
+	void SetBoxSize(float xSize, float zSize);
 
 	void ShiftingSpeedType(int type);
 	void ShiftSpeedSetting(float shiftSpeed);

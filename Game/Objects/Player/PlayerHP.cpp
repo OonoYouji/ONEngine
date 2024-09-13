@@ -62,6 +62,7 @@ void PlayerHP::Update() {
 	std::list<BaseGameObject*> objects = (GameObjectManager::GetGameObjectList("Enemy"));
 	std::list<Enemy*> enemies;
 	fluctuationHP_ = false;
+	healHP_ = false;
 	for(auto& gameObject : objects) {
 		if(Enemy* enemy = dynamic_cast<Enemy*>(gameObject)) {
 			enemies.push_back(enemy);
@@ -84,6 +85,7 @@ void PlayerHP::Update() {
 			int medicSize = enemy->GetMedicSize();
 			float addScoreGauge = baseGauge_ * (float)medicSize;
 			currentGauge_ += addScoreGauge;
+			healHP_ = true;
 			if (currentGauge_ >= maxGauge_) {
 				currentGauge_ = maxGauge_;
 			}
@@ -146,6 +148,10 @@ void PlayerHP::Debug() {
 
 bool PlayerHP::GetHPFluctuation() {
 	return fluctuationHP_;
+}
+
+bool PlayerHP::GetHPHeal() {
+	return healHP_;
 }
 
 void PlayerHP::CalculationGage() {

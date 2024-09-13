@@ -157,8 +157,10 @@ void Enemy::Update() {
 						isMaybeJump = false;
 					}
 					if (isBreakType_) {
-						isDead = true;
-						isHeartBreak = true;
+						if (!(-(amplitude)+4.0f >= (pos.y - offsetY))) {
+							isDead = true;
+							isHeartBreak = true;
+						}
 					}
 				}
 				else if (isDamage &&
@@ -294,7 +296,7 @@ void Enemy::LastUpdate() {
 			/// 死んだときはここ
 			/// 
 			Destory();
-			
+			deathSE_->PlayAudio();
 		}
 		else {
 			deadTime -= (WorldTime::DeltaTime() * 60.0f);
@@ -311,10 +313,10 @@ void Enemy::LastUpdate() {
 				///
 				/// つぶれた時はここ
 				/// 
-				
+				stampSE_->PlayAudio();
 			}
 			if (deadTime <= 10 && deadTime >= 9) {
-				
+				deathEffect_->EffectStart();
 			}
 		}
 	}
