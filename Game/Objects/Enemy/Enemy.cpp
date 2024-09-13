@@ -47,7 +47,7 @@ void Enemy::Initialize() {
 	AcceleEffect_->SetGrainMode(1);
 	AcceleEffect_->Initialize();
 	AcceleEffect_->SetOverType(1);
-	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -3.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
+	AcceleEffect_->SetVariavles2D({ 0.0f,0.0f,0.0f }, -2.0f, { 5.0f,5.0f,0.0f }, 20, true, true, 10.0f, 14.0f);
 	AcceleEffect_->SizeChangeSetting(true, true, false, { 1.0f,1.0f,1.0f });
 	AcceleEffect_->ShapeType(0);
 
