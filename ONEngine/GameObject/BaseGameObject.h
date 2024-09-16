@@ -28,10 +28,6 @@ public:
 	virtual void Update() = 0;
 	virtual void LastUpdate() {}
 
-	virtual void Draw() {};
-	virtual void FrontSpriteDraw() {};
-	virtual void BackSpriteDraw() {};
-
 	virtual void Debug() {};
 
 	/// <summary>
@@ -50,6 +46,8 @@ public:
 	void ImGuiDebug();
 
 	void CreateTag(BaseGameObject* object);
+
+	void RenameComponents();
 
 #pragma region Transform
 	void SetPositionX(float x) { pTranform_->position.x = x; }
@@ -112,6 +110,7 @@ public:
 		addComponent->Initialize();
 		T* componentPtr = addComponent.get();
 		components_.push_back(std::move(addComponent));
+		RenameComponents();
 		return componentPtr;
 	}
 
@@ -156,7 +155,6 @@ protected:
 public:
 
 	bool isActive = true;
-	bool isDrawActive = true;
 	int drawLayerId = 0;
 
 };

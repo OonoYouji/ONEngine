@@ -38,8 +38,6 @@ public:
 	/// </summary>
 	static void DestoryAll();
 	
-	static std::string CreateName(const BaseGameObject* const object);
-
 	static bool IsAliveObject(BaseGameObject* object);
 
 	static void AddObjectsToObjectsCopy();

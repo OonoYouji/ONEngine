@@ -1,16 +1,15 @@
 #include "BaseGameObject.h"
 
-#include <filesystem>
-#include <fstream>
-
 #include <ImGuiManager.h>
 #include <SceneManager.h>
-
 #include <GameObjectManager.h>
 #include <SceneManager.h>
+
 #include "Collision/CollisionManager.h"
 #include "Collision/BoxCollider.h"
 #include "Collision/SphereCollider.h"
+
+#include <CreateName.h>
 
 
 /// ===================================================
@@ -153,6 +152,8 @@ void BaseGameObject::ImGuiDebug() {
 #ifdef _DEBUG
 
 	for(auto& component : components_) {
+		std::string label = "isActive_" + component->GetName();
+		ImGui::Checkbox(label.c_str(), &component->isActive);
 		component->Debug();
 		ImGui::Separator();
 	}
@@ -163,7 +164,22 @@ void BaseGameObject::ImGuiDebug() {
 }
 
 void BaseGameObject::CreateTag(BaseGameObject* object) {
-	std::string name = GameObjectManager::CreateName(object);
+	std::string name = CreateName(object);
 	SetTag(name);
 	SetName(name);
+}
+
+void BaseGameObject::RenameComponents() {
+	std::unordered_map<std::string, uint32_t> instanceCounts;
+	for(auto& component : components_) {
+		std::string name = CreateName(component.get());
+		uint32_t count = instanceCounts[name];
+		if(count) {
+			component->SetName(name + std::to_string(count));
+		} else {
+			component->SetName(name);
+		}
+		++instanceCounts[name];
+	}
+
 }

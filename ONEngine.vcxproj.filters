@@ -606,6 +606,9 @@
     <ClInclude Include="Game\Objects\Player\Player.h">
       <Filter>Game\Objects\Player</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Math\CreateName.h">
+      <Filter>ONEngine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

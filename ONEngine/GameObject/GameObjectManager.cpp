@@ -6,6 +6,8 @@
 #include <BaseCamera.h>
 #include <Light/DirectionalLight.h>
 
+#include <CreateName.h>
+
 
 /// ===================================================
 /// 初期化
@@ -81,9 +83,7 @@ void GameObjectManager::LastUpdate() {
 
 void GameObjectManager::BackSpriteDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
-		obj->BackSpriteDraw();
 
 		for(auto& component : obj->GetComponents()) {
 			if(!component->isActive) { continue; }
@@ -94,9 +94,7 @@ void GameObjectManager::BackSpriteDraw(int layerId) {
 
 void GameObjectManager::Object3dDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
-		obj->Draw();
 
 		for(auto& component : obj->GetComponents()) {
 			if(!component->isActive) { continue; }
@@ -108,9 +106,7 @@ void GameObjectManager::Object3dDraw(int layerId) {
 
 void GameObjectManager::FrontSpriteDraw(int layerId) {
 	for(auto& obj : objects_) {
-		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
-		obj->FrontSpriteDraw();
 
 		for(auto& component : obj->GetComponents()) {
 			if(!component->isActive) { continue; }
@@ -273,11 +269,6 @@ void GameObjectManager::DestoryAll() {
 	insntance->selectObject_ = nullptr;
 }
 
-std::string GameObjectManager::CreateName(const BaseGameObject* const object) {
-	std::string name = typeid(*object).name();
-	name = name.substr(std::string("class ").length());
-	return name;
-}
 
 bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
 	GameObjectManager* instance = GetInstance();
@@ -383,14 +374,6 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 	if(ImGui::IsItemEdited()) {
 		for(auto& child : selectObject_->GetChilds()) {
 			child->isActive = selectObject_->isActive;
-		}
-	}
-
-	/// draw activeのフラグをデバッグ
-	ImGui::Checkbox("isDrawActive", &selectObject_->isDrawActive);
-	if(ImGui::IsItemEdited()) {
-		for(auto& child : selectObject_->GetChilds()) {
-			child->isDrawActive = selectObject_->isDrawActive;
 		}
 	}
 

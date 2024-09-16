@@ -154,6 +154,7 @@
     <ClInclude Include="ONEngine\Input\Keyboard.h" />
     <ClInclude Include="ONEngine\Input\Mouse.h" />
     <ClInclude Include="ONEngine\Logger\Logger.h" />
+    <ClInclude Include="ONEngine\Math\CreateName.h" />
     <ClInclude Include="ONEngine\Math\Easing.h" />
     <ClInclude Include="ONEngine\Math\Matrix3x3.h" />
     <ClInclude Include="ONEngine\Math\Matrix4x4.h" />
