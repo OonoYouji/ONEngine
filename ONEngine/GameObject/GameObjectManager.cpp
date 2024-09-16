@@ -53,7 +53,10 @@ void GameObjectManager::Update() {
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
 		obj->Update();
-		obj->UpdateMatrix();
+		for(auto& component : obj->GetComponents()) {
+			if(!component->isActive) { continue; }
+			component->Update();
+		}
 	}
 }
 
@@ -61,6 +64,10 @@ void GameObjectManager::LastUpdate() {
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
 		obj->LastUpdate();
+		for(auto& component : obj->GetComponents()) {
+			if(!component->isActive) { continue; }
+			component->LastUpdate();
+		}
 	}
 
 	/// 消去命令の出たオブジェクトを削除
@@ -77,6 +84,11 @@ void GameObjectManager::BackSpriteDraw(int layerId) {
 		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
 		obj->BackSpriteDraw();
+
+		for(auto& component : obj->GetComponents()) {
+			if(!component->isActive) { continue; }
+			component->BackSpriteDraw();
+		}
 	}
 }
 
@@ -85,6 +97,12 @@ void GameObjectManager::Object3dDraw(int layerId) {
 		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
 		obj->Draw();
+
+		for(auto& component : obj->GetComponents()) {
+			if(!component->isActive) { continue; }
+			component->Draw();
+		}
+
 	}
 }
 
@@ -93,6 +111,11 @@ void GameObjectManager::FrontSpriteDraw(int layerId) {
 		if(!obj->isDrawActive) { continue; }
 		if(obj->drawLayerId != layerId) { continue; }
 		obj->FrontSpriteDraw();
+
+		for(auto& component : obj->GetComponents()) {
+			if(!component->isActive) { continue; }
+			component->FrontSpriteDraw();
+		}
 	}
 }
 

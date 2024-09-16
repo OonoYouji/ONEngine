@@ -108,8 +108,8 @@ public:
 	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
 	T* AddComponent() {
 		auto addComponent = std::make_unique<T>();
-		addComponent->Initialize();
 		addComponent->SetParent(this);
+		addComponent->Initialize();
 		T* componentPtr = addComponent.get();
 		components_.push_back(std::move(addComponent));
 		return componentPtr;
@@ -131,6 +131,10 @@ public:
 		return nullptr;
 	}
 
+
+	const std::list<std::unique_ptr<BaseComponent>>& GetComponents() const {
+		return components_;
+	}
 
 private:
 	std::string tag_;	//- グループごとの名前 : Enemyなど

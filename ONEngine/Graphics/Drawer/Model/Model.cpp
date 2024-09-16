@@ -10,13 +10,8 @@
 
 
 
-Model::Model() {
-	//ModelManager::GetInstance()->AddModel(this);
-}
-Model::~Model() {
-	/*meshes_.clear();
-	materials_.clear();*/
-}
+Model::Model() {}
+Model::~Model() {}
 
 
 /// ===================================================

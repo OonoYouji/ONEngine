@@ -22,6 +22,7 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="ONEngine\Collision\CollisionManager.cpp" />
     <ClCompile Include="ONEngine\Collision\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp" />
+    <ClCompile Include="ONEngine\Component\MeshRenderer\MeshRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
@@ -98,6 +100,7 @@
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
@@ -113,6 +116,7 @@
     <ClInclude Include="ONEngine\Collision\CollisionManager.h" />
     <ClInclude Include="ONEngine\Collision\SphereCollider.h" />
     <ClInclude Include="ONEngine\Component\Base\BaseComponent.h" />
+    <ClInclude Include="ONEngine\Component\MeshRenderer\MeshRenderer.h" />
     <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />

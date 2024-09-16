@@ -70,6 +70,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	lineDrawer2d->Initialize();
 	audioManager->Initialize();
 
+	textureManager->Load("uvChecker", "uvChecker.png");
+
 
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
@@ -112,11 +114,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
-	layers.resize(2);
+	layers.resize(1);
 	{
 		std::string names[2]{ "monitor", "game" };
 		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		BaseCamera* pCameras[2]{ monitorCamera, gameCamera };
+		BaseCamera* pCameras[2]{ debugCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);
@@ -127,7 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
 
-	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
+	sceneManager->SetSceneLayers({ layers[0].get() });
 	sceneManager->Initialize(SCENE_ID::GAME);
 
 
@@ -143,7 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// window mode や imgui の表示設定の初期化
 	winApp->SetIsFullScreen(false); /// ? full screen : window mode
-	uint8_t drawLayerIndex = 1;	/// game || monitor
+	uint8_t drawLayerIndex = 0;	/// game || monitor
 	bool imguiIsBlending = true;
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 

@@ -27,6 +27,7 @@ void Material::SetIsLighting(bool isLighting) {
 /// バッファの生成
 /// ===================================================
 void Material::CreateBuffer() {
+	if(materialBuffer_) { return; }
 	materialBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Material));
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vec4(1, 1, 1, 1);

@@ -218,6 +218,12 @@
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp">
       <Filter>ONEngine\Component\Transform</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Component\MeshRenderer\MeshRenderer.cpp">
+      <Filter>ONEngine\Component\MeshRederer</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -366,6 +372,12 @@
     </Filter>
     <Filter Include="ONEngine\Component\Transform">
       <UniqueIdentifier>{e6b75b98-7297-4591-b588-9c2cab66e066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\MeshRederer">
+      <UniqueIdentifier>{1059a4f0-0978-4b95-bdac-07ebe80dfae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{2aa1eb55-263f-4765-9e05-a0803a8cf8b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -587,6 +599,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Component\Transform\Transform.h">
       <Filter>ONEngine\Component\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\MeshRenderer\MeshRenderer.h">
+      <Filter>ONEngine\Component\MeshRederer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

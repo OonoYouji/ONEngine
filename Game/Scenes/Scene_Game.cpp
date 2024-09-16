@@ -1,10 +1,14 @@
 #include "Scene_Game.h"
 
+#include "Player/Player.h"
+
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
+	
+	(new Player)->Initialize();
 
 }
 
