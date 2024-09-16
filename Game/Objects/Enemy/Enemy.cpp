@@ -24,7 +24,7 @@ void Enemy::Initialize() {
 	deadSprite_.reset(new Sprite());
 	deadSprite_->Initialize("medicine_stamp", "medicine_stamp.png");
 	deadSprite_->SetSize({ 20,40 });
-	deadSprite_->SetColor({ 0.184f, 0.851f, 0.137f ,1.0f });
+	deadSprite_->SetColor({ 0.851f, 0.137f, 0.133f, 1.0f });
 	deadSprite_->SetPos({ -80.0f,40.0f,0.0f });
 
 	//deathSound_ = new AudioSource();
@@ -62,7 +62,7 @@ void Enemy::Initialize() {
 	catchSE_->SetAudioClip("kasoku.wav");
 
 	if (isBreakType_) {
-		sprite_->SetColor({ 0.988f, 0.784f, 0.0f, 1.0f });
+		sprite_->SetColor({ 0.851f, 0.137f, 0.133f, 1.0f });
 	}
 }
 
