@@ -57,8 +57,6 @@ public:
 
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
-	class Shake* GetShake() const { return shake_; }
-
 	void SetMove(const MoveData& start, const MoveData& end, float time);
 
 protected:
@@ -71,8 +69,6 @@ protected:
 	Mat4 matView_;
 	Mat4 matProjection_;
 	Mat4 matVp_;
-
-	class Shake* shake_ = nullptr;
 
 	MoveData startMoveData_;
 	MoveData endMoveData_;

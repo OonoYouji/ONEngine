@@ -186,7 +186,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #endif // _DEBUG
 
 	/// window mode や imgui の表示設定の初期化
-	winApp->SetIsFullScreen(true); /// ? full screen : window mode
+	winApp->SetIsFullScreen(false); /// ? full screen : window mode
 	uint8_t drawLayerIndex = 1;	/// game || monitor
 	bool imguiIsBlending = true;
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);

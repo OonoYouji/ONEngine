@@ -8,8 +8,6 @@
 #include <WorldTime.h>
 #include <Easing.h>
 
-#include "Shake/Shake.h"
-
 namespace {
 
 	float Cot(float t) {
@@ -53,10 +51,6 @@ void BaseCamera::BaseInitialize() {
 	*matVpData_ = matVp_;
 
 	Transfer();
-
-	shake_ = new Shake();
-	shake_->Initialize();
-	SetParent(shake_);
 }
 
 void BaseCamera::BaseUpdate() {
