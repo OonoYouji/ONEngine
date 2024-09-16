@@ -40,7 +40,6 @@ BaseCamera::BaseCamera() {
 /// ===================================================
 void BaseCamera::BaseInitialize() {
 
-	transform_.Initialize();
 	UpdateMatView();
 	UpdateMatProjection();
 
@@ -61,7 +60,7 @@ void BaseCamera::BaseUpdate() {
 }
 
 void BaseCamera::UpdateMatView() {
-	matView_ = transform_.matTransform.Inverse();
+	matView_ = pTranform_->matTransform.Inverse();
 }
 
 void BaseCamera::UpdateMatProjection() {

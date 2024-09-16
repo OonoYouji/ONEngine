@@ -6,10 +6,11 @@
 #include <memory>
 #include <unordered_map>
 
-#include <Transform.h>
+#include <Component/Transform/Transform.h>
+#include "Component/Base/BaseComponent.h"
+
 #include "Collision/BaseCollider.h"
 #include <Model.h>
-
 
 
 /// <summary>
@@ -20,13 +21,6 @@ public:
 
 	BaseGameObject();
 	virtual ~BaseGameObject() = default;
-
-public:
-
-
-	/////////////////////////////////////////////////////////////////////////////////////////////
-	///	基本外部から使用することのない関数
-	/////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	virtual void Initialize() = 0;
@@ -58,27 +52,27 @@ public:
 	void CreateTag(BaseGameObject* object);
 
 #pragma region Transform
-	void SetPositionX(float x) { transform_.position.x = x; }
-	void SetPositionY(float y) { transform_.position.y = y; }
-	void SetPositionZ(float z) { transform_.position.z = z; }
-	void SetPosition(const Vec3& v) { transform_.position = v; }
+	void SetPositionX(float x) { pTranform_->position.x = x; }
+	void SetPositionY(float y) { pTranform_->position.y = y; }
+	void SetPositionZ(float z) { pTranform_->position.z = z; }
+	void SetPosition(const Vec3& v) { pTranform_->position = v; }
 
-	void SetRotateX(float x) { transform_.rotate.x = x; }
-	void SetRotateY(float y) { transform_.rotate.y = y; }
-	void SetRotateZ(float z) { transform_.rotate.z = z; }
-	void SetRotate(const Vec3& v) { transform_.rotate = v; }
+	void SetRotateX(float x) { pTranform_->rotate.x = x; }
+	void SetRotateY(float y) { pTranform_->rotate.y = y; }
+	void SetRotateZ(float z) { pTranform_->rotate.z = z; }
+	void SetRotate(const Vec3& v) { pTranform_->rotate = v; }
 
-	void SetScaleX(float x) { transform_.scale.x = x; }
-	void SetScaleY(float y) { transform_.scale.y = y; }
-	void SetScaleZ(float z) { transform_.scale.z = z; }
-	void SetScale(const Vec3& v) { transform_.scale = v; }
+	void SetScaleX(float x) { pTranform_->scale.x = x; }
+	void SetScaleY(float y) { pTranform_->scale.y = y; }
+	void SetScaleZ(float z) { pTranform_->scale.z = z; }
+	void SetScale(const Vec3& v) { pTranform_->scale = v; }
 
 	const Vec3 GetPosition() const;
-	const Vec3 GetRotate() const { return transform_.rotate; }
-	const Vec3 GetScale() const { return transform_.scale; }
-	
-	const Mat4& GetMatTransform() const { return transform_.matTransform; };
-	const Transform& GetTransform() const { return transform_; }
+	const Vec3 GetRotate() const { return pTranform_->rotate; }
+	const Vec3 GetScale() const { return pTranform_->scale; }
+
+	const Mat4& GetMatTransform() const { return pTranform_->matTransform; };
+	const Transform& GetTransform() const { return *pTranform_; }
 #pragma endregion
 
 #pragma region Parent Child
@@ -106,21 +100,54 @@ public:
 	BaseCollider* GetCollider() const { return collider_.get(); }
 #pragma endregion Collider
 
+
+
+	/// ===================================================
+	/// コンポーネントの追加
+	/// ===================================================
+	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
+	T* AddComponent() {
+		auto addComponent = std::make_unique<T>();
+		addComponent->Initialize();
+		addComponent->SetParent(this);
+		T* componentPtr = addComponent.get();
+		components_.push_back(std::move(addComponent));
+		return componentPtr;
+	}
+
+
+	/// ===================================================
+	/// コンポーネントのゲッタ
+	/// ===================================================
+	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
+	T* GetComponent() {
+		for(auto& component : components_) {
+			T* result = dynamic_cast<T*>(component.get());
+			/// キャスト可能なら返す
+			if(result) {
+				return result;
+			}
+		}
+		return nullptr;
+	}
+
+
 private:
 	std::string tag_;	//- グループごとの名前 : Enemyなど
 	std::string name_;	//- オブジェクトごとに違う名前 : Enemy1, Enemy2など
 protected:
 
-	/// SRTの移動
-	Transform transform_;
+	/// components内のtransformへのポインタ
+	Transform* pTranform_;
 
 	/// 親
 	BaseGameObject* parent_ = nullptr;
-
-	/// 子供
 	std::list<BaseGameObject*> childs_;
 
+
 	std::unique_ptr<BaseCollider> collider_ = nullptr;
+
+	std::list<std::unique_ptr<BaseComponent>> components_;
 
 public:
 
@@ -129,3 +156,4 @@ public:
 	int drawLayerId = 0;
 
 };
+

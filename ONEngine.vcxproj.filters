@@ -65,9 +65,6 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp">
       <Filter>Game\Objects\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Transform\Transform.cpp">
-      <Filter>ONEngine\Transform</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Graphics\TextureManager\TextureManager.cpp">
       <Filter>ONEngine\Graphics\TextureManager</Filter>
     </ClCompile>
@@ -215,6 +212,12 @@
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp">
       <Filter>Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp">
+      <Filter>ONEngine\Component\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\Transform\Transform.cpp">
+      <Filter>ONEngine\Component\Transform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -264,9 +267,6 @@
     </Filter>
     <Filter Include="Game\Objects\Camera\Manager">
       <UniqueIdentifier>{9e289f59-85c1-4105-abb6-fdddd87b8b04}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ONEngine\Transform">
-      <UniqueIdentifier>{e6b75b98-7297-4591-b588-9c2cab66e066}</UniqueIdentifier>
     </Filter>
     <Filter Include="ONEngine\Graphics\TextureManager">
       <UniqueIdentifier>{a47df584-6006-4bbe-ada9-266ca3eeb47e}</UniqueIdentifier>
@@ -358,6 +358,15 @@
     <Filter Include="ONEngine\Random">
       <UniqueIdentifier>{7f6a09a9-adf2-4e49-9f82-c55703bb9ef9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ONEngine\Component">
+      <UniqueIdentifier>{8fbfc7cd-10cf-4965-8922-fe5d7b743c41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\Base">
+      <UniqueIdentifier>{fb13959e-1008-45b0-aa21-d6862cb5e67b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\Transform">
+      <UniqueIdentifier>{e6b75b98-7297-4591-b588-9c2cab66e066}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -422,9 +431,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Camera\GameCamera.h">
       <Filter>Game\Objects\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Transform\Transform.h">
-      <Filter>ONEngine\Transform</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\TextureManager\TextureManager.h">
       <Filter>ONEngine\Graphics\TextureManager</Filter>
@@ -575,6 +581,12 @@
     </ClInclude>
     <ClInclude Include="Game\Scenes\Scene_Clear.h">
       <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\Base\BaseComponent.h">
+      <Filter>ONEngine\Component\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\Transform\Transform.h">
+      <Filter>ONEngine\Component\Transform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

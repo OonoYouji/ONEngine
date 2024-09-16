@@ -37,6 +37,8 @@
     <ClCompile Include="ONEngine\Collision\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\Collision\CollisionManager.cpp" />
     <ClCompile Include="ONEngine\Collision\SphereCollider.cpp" />
+    <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp" />
+    <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
@@ -80,7 +82,6 @@
     <ClCompile Include="ONEngine\Math\Vector3.cpp" />
     <ClCompile Include="ONEngine\Math\Vector4.cpp" />
     <ClCompile Include="ONEngine\Random\Random.cpp" />
-    <ClCompile Include="ONEngine\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
     <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp" />
   </ItemGroup>
@@ -111,6 +112,8 @@
     <ClInclude Include="ONEngine\Collision\BoxCollider.h" />
     <ClInclude Include="ONEngine\Collision\CollisionManager.h" />
     <ClInclude Include="ONEngine\Collision\SphereCollider.h" />
+    <ClInclude Include="ONEngine\Component\Base\BaseComponent.h" />
+    <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />
@@ -154,7 +157,6 @@
     <ClInclude Include="ONEngine\Math\Vector3.h" />
     <ClInclude Include="ONEngine\Math\Vector4.h" />
     <ClInclude Include="ONEngine\Random\Random.h" />
-    <ClInclude Include="ONEngine\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
     <ClInclude Include="ONEngine\WorldTime\WorldTime.h" />
   </ItemGroup>
@@ -320,7 +322,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/WorldTime;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/WorldTime;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -346,7 +348,7 @@ xcopy /Y /I /E "$(ProjectDir)Resources" "$(OutDir)Resources"</Command>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Transform;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/WorldTime;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game/Scenes/Manager;$(ProjectDir)Game/Scenes;$(ProjectDir)Game/Objects/Camera/Manager;$(ProjectDir)Game/Objects/Camera;$(ProjectDir)Game/Objects;$(ProjectDir)Game;$(ProjectDir)ONEngine/GameObject;$(ProjectDir)ONEngine/Audio;$(ProjectDir)ONEngine/Input;$(ProjectDir)ONEngine/ImGuiManager;$(ProjectDir)ONEngine/Graphics/PostEffect;$(ProjectDir)ONEngine/Graphics/RenderTexture;$(ProjectDir)ONEngine/Graphics/Drawer/Floor;$(ProjectDir)ONEngine/Graphics/Drawer/Sprite;$(ProjectDir)ONEngine/Graphics/Drawer/Material;$(ProjectDir)ONEngine/Graphics/Drawer/Mesh;$(ProjectDir)ONEngine/Graphics/Drawer/Model;$(ProjectDir)ONEngine/Graphics/Drawer;$(ProjectDir)ONEngine/Graphics/PipelineState;$(ProjectDir)ONEngine/Graphics/TextureManager;$(ProjectDir)ONEngine/Graphics;$(ProjectDir)ONEngine/Math;$(ProjectDir)ONEngine/WorldTime;$(ProjectDir)ONEngine/FrameTimer;$(ProjectDir)ONEngine/DirectX;$(ProjectDir)ONEngine/Logger;$(ProjectDir)ONEngine/Window;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>

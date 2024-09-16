@@ -6,21 +6,27 @@
 #include <Vector3.h>
 #include <Matrix4x4.h>
 
+#include <Component/Base/BaseComponent.h>
+	
 
 
 /// ===================================================
 /// オブジェクトのSRTを持つ
 /// ===================================================
-class Transform final {
+class Transform final : public BaseComponent {
 public:
 
-	Transform() = default;
+	Transform() { Initialize(); }
 	~Transform() = default;
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize() override;
+
+	void Update() override;
+
+	void Debug() override;
 
 	/// <summary>
 	/// 行列の更新

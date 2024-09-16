@@ -9,7 +9,7 @@
 #include <Vector4.h>
 #include <Matrix4x4.h>
 
-#include <Transform.h>
+#include <Component/Transform/Transform.h>
 
 #include <Mesh.h>
 #include <Material.h>
@@ -96,6 +96,5 @@ private:
 
 	std::vector<Mesh> meshes_;
 	std::vector<Material> materials_;
-
 
 };

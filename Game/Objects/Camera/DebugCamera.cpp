@@ -18,9 +18,9 @@ DebugCamera::~DebugCamera() {}
 void DebugCamera::Initialize() {
 	isActive = false;
 
-	//transform_.position = { 0.0f, 0.0f, -6.49f * 2 };
-	/*transform_.position = { 1.8f,0.87f, -12.7f };
-	transform_.rotate = { 0.066f, -0.258f, 0.0f };*/
+	//pTranform_->position = { 0.0f, 0.0f, -6.49f * 2 };
+	/*pTranform_->position = { 1.8f,0.87f, -12.7f };
+	pTranform_->rotate = { 0.066f, -0.258f, 0.0f };*/
 
 	BaseCamera::BaseInitialize();
 }
@@ -41,19 +41,19 @@ void DebugCamera::Update() {
 	}
 
 	velocity_.z = Input::MouseScroll() / 256.0f;
-	velocity_.x *= 1.0f + transform_.position.Len() / 32.0f;
-	velocity_.y *= 1.0f + transform_.position.Len() / 32.0f;
+	velocity_.x *= 1.0f + pTranform_->position.Len() / 32.0f;
+	velocity_.y *= 1.0f + pTranform_->position.Len() / 32.0f;
 
 	if(Input::PressMouse(MouseCode::Right)) {
-		transform_.rotate.x += Input::MouseVelocity().y / 256.0f;
-		transform_.rotate.y += Input::MouseVelocity().x / 256.0f;
+		pTranform_->rotate.x += Input::MouseVelocity().y / 256.0f;
+		pTranform_->rotate.y += Input::MouseVelocity().x / 256.0f;
 	}
 
-	velocity_ = Mat4::Transform(velocity_, Mat4::MakeRotate(transform_.rotate));
-	transform_.position += velocity_;
+	velocity_ = Mat4::Transform(velocity_, Mat4::MakeRotate(pTranform_->rotate));
+	pTranform_->position += velocity_;
 
-	transform_.UpdateMatrix();
-	matView_ = transform_.matTransform.Inverse();
+	pTranform_->UpdateMatrix();
+	matView_ = pTranform_->matTransform.Inverse();
 	matVp_ = matView_ * matProjection_;
 
 	Transfer();

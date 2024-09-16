@@ -20,11 +20,12 @@ BaseGameObject::BaseGameObject() {
 	GameObjectManager::GetInstance()->AddGameObject(this);
 	CollisionManager::GetInstance()->AddGameObject(this);
 
-	transform_.Initialize();
 
 	collider_ = nullptr;
 
+	pTranform_ = AddComponent<Transform>();
 	UpdateMatrix();
+
 
 }
 
@@ -33,9 +34,9 @@ BaseGameObject::BaseGameObject() {
 /// 行列の更新
 /// ===================================================
 void BaseGameObject::UpdateMatrix() {
-	transform_.UpdateMatrix();
+	pTranform_->UpdateMatrix();
 	if(parent_) {
-		transform_.matTransform *= parent_->GetMatTransform();
+		pTranform_->matTransform *= parent_->GetMatTransform();
 	}
 }
 
@@ -53,9 +54,9 @@ void BaseGameObject::Destory() {
 /// ===================================================
 const Vec3 BaseGameObject::GetPosition() const {
 	return  {
-		transform_.matTransform.m[3][0],
-		transform_.matTransform.m[3][1],
-		transform_.matTransform.m[3][2]
+		pTranform_->matTransform.m[3][0],
+		pTranform_->matTransform.m[3][1],
+		pTranform_->matTransform.m[3][2]
 	};
 }
 
@@ -151,16 +152,10 @@ void BaseGameObject::CreateSphereCollider(Model* model) {
 void BaseGameObject::ImGuiDebug() {
 #ifdef _DEBUG
 
-	if(ImGui::TreeNodeEx("Tranform", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat3("position", &transform_.position.x, 0.1f);
-		ImGui::DragFloat3("rotate",   &transform_.rotate.x,   0.05f);
-		ImGui::DragFloat3("scale",    &transform_.scale.x,    0.1f);
-
-		ImGui::TreePop();
+	for(auto& component : components_) {
+		component->Debug();
+		ImGui::Separator();
 	}
-
-	ImGui::Separator();
 
 	Debug();
 

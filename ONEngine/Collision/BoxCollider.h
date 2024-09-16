@@ -5,7 +5,6 @@
 #include "BaseCollider.h"
 #include <Model.h>
 #include <Vector3.h>
-#include <Transform.h>
 
 class BoxCollider : public BaseCollider {
 public:
