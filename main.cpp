@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLight->Initialize();
 	modelManager->SetDirectionalLight(directionalLight);
 
-	
+
 	/// layer の初期化
 	std::vector<std::unique_ptr<SceneLayer>> layers;
 	layers.resize(2);
@@ -128,7 +128,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 
 	sceneManager->SetSceneLayers({ layers[0].get(), layers[1].get() });
-	sceneManager->Initialize(SCENE_ID::TITLE);
+	sceneManager->Initialize(SCENE_ID::GAME);
 
 
 #ifdef _DEBUG
@@ -239,7 +239,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
 #endif // _DEBUG
 
-		}
+	}
 
 
 	if(!dxCommon->IsGpuExeEnded()) {
@@ -271,4 +271,4 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	winApp->Finalize();
 
 	return 0;
-	}
+}
