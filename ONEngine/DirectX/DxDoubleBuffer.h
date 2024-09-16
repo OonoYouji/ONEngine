@@ -12,6 +12,7 @@ using namespace Microsoft::WRL;
 
 namespace ONE {
 
+	class WinApp;
 	class DxDevice;
 	class DxDescriptor;
 	class DxCommand;
@@ -41,6 +42,7 @@ namespace ONE {
 		/// このクラスの初期化
 		/// </summary>
 		void Initialize(
+			WinApp* winApp,
 			DxDevice* dxDevice,
 			DxDescriptor* dxDescriptor, 
 			ID3D12CommandQueue* commandQueue
@@ -84,6 +86,8 @@ namespace ONE {
 
 		D3D12_VIEWPORT viewprot_{};
 		D3D12_RECT sicssorRect_{};
+
+		WinApp* pWinApp_ = nullptr;
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;

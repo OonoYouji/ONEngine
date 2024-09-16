@@ -10,23 +10,14 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-/// ===================================================
-/// インスタンス確保
-/// ===================================================
-ONE::WinApp* ONE::WinApp::GetInstance() {
-	static WinApp instance;
-	return &instance;
-}
-
-
 
 /// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::WinApp::Initialize() {
+void ONE::WinApp::Initialize(const wchar_t* windowName) {
 
 	CreateGameWindow(
-		L"2005_sin(ON);",
+		windowName,
 		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
 		kWindowSizeX, kWindowSizeY
 	);

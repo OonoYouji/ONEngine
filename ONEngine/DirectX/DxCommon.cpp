@@ -32,7 +32,7 @@ ONE::DxCommon* ONE::DxCommon::GetInstance() {
 /// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::DxCommon::Initialize() {
+void ONE::DxCommon::Initialize(WinApp* winApp) {
 
 	debug_.reset(new DxDebug());
 	debug_->SetDebugLayer();
@@ -49,7 +49,7 @@ void ONE::DxCommon::Initialize() {
 	descriptor_->Initialize(device_->GetDevice());
 
 	doubleBuffer_.reset(new DxDoubleBuffer());
-	doubleBuffer_->Initialize(device_.get(), descriptor_.get(), command_->GetQueue());
+	doubleBuffer_->Initialize(winApp, device_.get(), descriptor_.get(), command_->GetQueue());
 
 	depthStencil.reset(new DxDepthStencil());
 	depthStencil->Initialize(device_->GetDevice());

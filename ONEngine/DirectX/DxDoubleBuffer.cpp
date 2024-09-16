@@ -20,7 +20,10 @@ ONE::DxDoubleBuffer::~DxDoubleBuffer() {
 /// ===================================================
 /// thisの初期化
 /// ===================================================
-void ONE::DxDoubleBuffer::Initialize(DxDevice* dxDevice, DxDescriptor* dxDescriptor, ID3D12CommandQueue* commandQueue) {
+void ONE::DxDoubleBuffer::Initialize(WinApp* winApp, DxDevice* dxDevice, DxDescriptor* dxDescriptor, ID3D12CommandQueue* commandQueue) {
+
+	pWinApp_ = winApp;
+
 	InitializeSwapChain(dxDevice->GetFactory(), commandQueue);
 	InitializeBuffers(dxDevice->GetDevice(), dxDescriptor);
 
@@ -125,7 +128,7 @@ void ONE::DxDoubleBuffer::InitializeSwapChain(IDXGIFactory7* factory, ID3D12Comm
 	///- SwapChain1で仮に生成
 	ComPtr<IDXGISwapChain1> swapChain1;
 	result = factory->CreateSwapChainForHwnd(
-		commandQueue, WinApp::GetInstance()->GetHWND(), &desc, nullptr, nullptr, &swapChain1
+		commandQueue, pWinApp_->GetHWND(), &desc, nullptr, nullptr, &swapChain1
 	);
 	assert(SUCCEEDED(result));
 

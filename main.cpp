@@ -38,7 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
-	ONE::WinApp* winApp = ONE::WinApp::GetInstance();
+	std::unique_ptr<ONE::WinApp> winApp = nullptr;
 	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
 	Input* input = Input::GetInsatnce();
 	WorldTime* worldTime = WorldTime::GetInstance();
@@ -57,62 +57,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 
-	winApp->Initialize();
+	winApp.reset(new ONE::WinApp);
+	winApp->Initialize(L"DirectXGame");
 
-	dxCommon->Initialize();
+	dxCommon->Initialize(winApp.get());
 
-	input->Initialize(winApp);
+	input->Initialize(winApp.get());
 
-	imGuiManager->Initialize(winApp, dxCommon);
+	imGuiManager->Initialize(winApp.get(), dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	lineDrawer2d->Initialize();
 	audioManager->Initialize();
-
-	/// texture読み込み
-	textureManager->Load("uvChecker", "uvChecker.png");
-	textureManager->Load("monsterBall", "monsterBall.png");
-	textureManager->Load("Floor", "Floor.png");
-	textureManager->Load("medicine", "medicine.png");
-	textureManager->Load("medicine_stamp", "medicine_stamp.png");
-	textureManager->Load("TVUV", "TVUV.png");
-	textureManager->Load("Heart", "../Models/Heart/Heart.png");
-	textureManager->Load("Hand", "Hand.png");
-	textureManager->Load("sousa", "sousa.png");
-	textureManager->Load("binder", "binder.png");
-	textureManager->Load("white2x2", "white2x2.png");
-	textureManager->Load("particle", "particle.png");
-	textureManager->Load("tile", "tile.png");
-	textureManager->Load("wall", "wall.png");
-	textureManager->Load("HeartBreak", "HeartBreak.png");
-	textureManager->Load("warning", "warning.png");
-	textureManager->Load("juuji", "juuji.png");
-	textureManager->Load("title_sousa", "title_sousa.png");
-	textureManager->Load("healMate", "healMate.png");
-
-
-	textureManager->Load("0", "0.png");
-	textureManager->Load("1", "1.png");
-	textureManager->Load("2", "2.png");
-	textureManager->Load("3", "3.png");
-	textureManager->Load("4", "4.png");
-	textureManager->Load("5", "5.png");
-	textureManager->Load("6", "6.png");
-	textureManager->Load("7", "7.png");
-	textureManager->Load("8", "8.png");
-	textureManager->Load("9", "9.png");
-
-	textureManager->Load("x1", "x1.png");
-	textureManager->Load("x2", "x2.png");
-	textureManager->Load("x3", "x3.png");
-	textureManager->Load("x4", "x4.png");
-	textureManager->Load("x5", "x5.png");
-	textureManager->Load("x6", "x6.png");
-	textureManager->Load("x7", "x7.png");
-	textureManager->Load("x8", "x8.png");
-	textureManager->Load("x9", "x9.png");
-
-
 
 
 	/// render texture imgui用を作成

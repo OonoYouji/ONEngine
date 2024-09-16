@@ -10,9 +10,8 @@ namespace ONE {
 	/// window管理クラス
 	/// ===================================================
 	class WinApp final {
-		WinApp() = default;
-		~WinApp() = default;
 	public:
+
 		/// ===================================================
 		/// public : static objects
 		/// ===================================================
@@ -20,14 +19,14 @@ namespace ONE {
 		static const int kWindowSizeX = 1280;
 		static const int kWindowSizeY = 720;
 
-	public:
 		/// ===================================================
 		/// public : methods
 		/// ===================================================
 
-		static WinApp* GetInstance();
+		WinApp() = default;
+		~WinApp() = default;
 
-		void Initialize();
+		void Initialize(const wchar_t* windowName);
 
 		void Finalize();
 

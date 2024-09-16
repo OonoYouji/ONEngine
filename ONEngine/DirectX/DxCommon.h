@@ -8,6 +8,7 @@ class RenderTexture;
 
 namespace ONE {
 
+	class WinApp;
 	class DxDevice;
 	class DxCommand;
 	class DxDoubleBuffer;
@@ -36,7 +37,7 @@ namespace ONE {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize();
+		void Initialize(WinApp* winApp);
 
 		/// <summary>
 		/// 終了処理
