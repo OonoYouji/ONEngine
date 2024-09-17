@@ -56,7 +56,6 @@
     <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp" />
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Material\Material.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\Model.cpp" />
@@ -133,7 +132,6 @@
     <ClInclude Include="ONEngine\GameObject\GameObjectManager.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h" />
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Material\Material.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\Model.h" />

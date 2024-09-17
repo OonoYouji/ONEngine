@@ -6,28 +6,30 @@
 #include <memory>
 #include <cmath>
 
+#include <Component/Base/BaseComponent.h>	
+
 class AudioClip;
 
 
 /// ===================================================
 /// 音源の再生クラス
 /// ===================================================
-class AudioSource final {
+class AudioSource final : public BaseComponent {
 public:
 
-	AudioSource();
-	~AudioSource() {};
+	AudioSource() {}
+	~AudioSource() {}
+	
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
+	/// <summary>
+	/// 更新処理
+	/// </summary>
+	void Update() override;
 
-	static inline std::unique_ptr<AudioSource> MakeInstance() {
-		std::unique_ptr<AudioSource> newInstance(new AudioSource);
-		return std::move(newInstance);
-	}
-
-	void Update();
-
-	void FadeIn();
-	void FadeOut();
+	void Debug() override;
 
 
 	/// <summary>
@@ -40,7 +42,9 @@ public:
 	/// </summary>
 	void StopAudio();
 
-
+	/// <summary>
+	/// 再生中のすべての音を止める
+	/// </summary>
 	void StopAudioAll();
 
 	/// <summary>
@@ -56,6 +60,9 @@ public:
 	void SetAudioClip(const std::string& filePath);
 
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
 	AudioClip* clip_ = nullptr;
 
@@ -67,6 +74,10 @@ private:
 	std::list<Element> sources_;
 
 public:
+	/// ===================================================
+	/// public : objects
+	/// ===================================================
+
 	float volume = 0.5f;
 	float pitch = 1.0f;
 	bool isLoop = false;

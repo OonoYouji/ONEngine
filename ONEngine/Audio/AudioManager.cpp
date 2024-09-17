@@ -57,18 +57,12 @@ void AudioManager::Finalize() {
 		audioClip.second.Release();
 	}
 
-	for(auto& audioSource : sources_) {
-		audioSource.reset();
-	}
-
 	xAudio2_.Reset();
 }
 
 
 void AudioManager::Update() {
-	for(auto& source : sources_) {
-		source->Update();
-	}
+	
 }
 
 
@@ -92,11 +86,6 @@ void AudioManager::Load(const std::string& filePath) {
 		instance->LoadWave(instance->kDirectoryPath_ + filePath);
 }
 
-void AudioManager::ResetAudioSources() {
-	AudioManager* instance = GetInstance();
-	instance->sources_.clear();
-}
-
 
 AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
 	if(clips_.find(filePath) == clips_.end()) {
@@ -104,21 +93,6 @@ AudioClip* AudioManager::GetAudioClip(const std::string& filePath) {
 	}
 
 	return &clips_.at(filePath);
-}
-
-void AudioManager::AddAudioSource(AudioSource* source) {
-	sources_.push_back(std::move(std::unique_ptr<AudioSource>(source)));
-}
-
-void AudioManager::SubAudioSource(AudioSource* source) {
-	auto it = std::find_if(sources_.begin(), sources_.end(),
-						   [source](const std::unique_ptr<AudioSource>& obj) {
-		return obj.get() == source;
-	});
-
-	if(it != sources_.end()) {
-		sources_.erase(it);
-	}
 }
 
 

@@ -124,7 +124,6 @@ void SceneManager::Load(SCENE_ID id) {
 
 	}
 
-	AudioManager::ResetAudioSources();
 	GameObjectManager::DestoryAll();
 	scene_->Initialize();
 	GameObjectManager::AddObjectsToObjectsCopy();

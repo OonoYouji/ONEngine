@@ -5,12 +5,9 @@
 
 #include <cassert>
 
+#include <ImGuiManager.h>
 #include <AudioManager.h>
 
-
-AudioSource::AudioSource() {
-	AudioManager::GetInstance()->AddAudioSource(this);
-}
 
 void AudioSource::Update() {
 	for(auto& source : sources_) {
@@ -41,6 +38,19 @@ void AudioSource::Update() {
 	}
 	
 }
+
+void AudioSource::Debug() {
+	if(ImGui::TreeNodeEx("AudioSource", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::Checkbox("isLoop", &isLoop);
+
+		ImGui::DragFloat("volume", &volume, 0.0025f);
+		ImGui::DragFloat("pitch",  &pitch,  0.0025f);
+
+		ImGui::TreePop();
+	}
+}
+
 
 void AudioSource::PlayAudio() {
 	HRESULT result = S_FALSE;

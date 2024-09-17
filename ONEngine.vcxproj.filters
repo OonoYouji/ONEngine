@@ -185,9 +185,6 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.cpp">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Input\Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
@@ -565,9 +562,6 @@
       <Filter>ONEngine\WorldTime</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\SinWaveDrawer.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Input\Gamepad.h">

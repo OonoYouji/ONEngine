@@ -2,6 +2,8 @@
 
 #include <GameObjectManager.h>
 
+#include <AudioSource.h>
+
 class Player : public BaseGameObject {
 public:
 
@@ -9,8 +11,10 @@ public:
 	~Player() {}
 
 	void Initialize() override;
-	void Update() override {}
+	void Update() override;
 
 private:
+
+	AudioSource* audioSource_ = nullptr;
 
 };

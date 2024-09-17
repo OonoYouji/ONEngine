@@ -32,6 +32,12 @@ public:
 		return &instance;
 	}
 
+	/// <summary>
+	/// 音声データの読み込み
+	/// </summary>
+	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
+	static void Load(const std::string& filePath);
+
 
 	/// <summary>
 	/// 初期化
@@ -43,27 +49,10 @@ public:
 	/// </summary>
 	void Finalize();
 
-
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
-
-
-	/// <summary>
-	/// 音声データの読み込み
-	/// </summary>
-	/// <param name="filePath"> : "./Resources/Audios/" + filePath </param>
-	static void Load(const std::string& filePath);
-
-	static void ResetAudioSources();
-
-
-
-	void AddAudioSource(AudioSource* source);
-
-	void SubAudioSource(AudioSource* source);
-
 
 
 	AudioClip* GetAudioClip(const std::string& filePath);
@@ -85,9 +74,6 @@ private:
 
 	/// 音源データのコンテナ
 	std::unordered_map<std::string, AudioClip> clips_;
-
-	/// 音源の再生クラスコンテナ
-	std::list<std::unique_ptr<AudioSource>> sources_;
 
 private:
 	AudioManager(const AudioManager&) = delete;

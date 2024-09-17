@@ -207,7 +207,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// game object の更新をしている
 		sceneManager->Update();
 
-		audioManager->Update();
 
 		/// ====================================
 		/// ↓ 描画処理に移る
