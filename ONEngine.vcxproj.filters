@@ -218,6 +218,9 @@
     <ClCompile Include="ONEngine\Component\Collider\BoxCollider.cpp">
       <Filter>ONEngine\Component\Collider</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Component\Collider\SphereCollider.cpp">
+      <Filter>ONEngine\Component\Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -601,6 +604,9 @@
       <Filter>ONEngine\Component\Collider</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Component\Collider\BoxCollider.h">
+      <Filter>ONEngine\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\Collider\SphereCollider.h">
       <Filter>ONEngine\Component\Collider</Filter>
     </ClInclude>
   </ItemGroup>

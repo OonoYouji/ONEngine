@@ -37,6 +37,7 @@
     <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\BaseCollider.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\BoxCollider.cpp" />
+    <ClCompile Include="ONEngine\Component\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\Component\MeshRenderer\MeshRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="ONEngine\Component\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\Component\Collider\BaseCollider.h" />
     <ClInclude Include="ONEngine\Component\Collider\BoxCollider.h" />
+    <ClInclude Include="ONEngine\Component\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\Component\MeshRenderer\MeshRenderer.h" />
     <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
