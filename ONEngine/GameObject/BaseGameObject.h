@@ -9,7 +9,6 @@
 #include <Component/Transform/Transform.h>
 #include "Component/Base/BaseComponent.h"
 
-#include "Collision/BaseCollider.h"
 #include <Model.h>
 
 
@@ -89,13 +88,8 @@ public:
 
 #pragma region Collider 
 	virtual void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {}
-	virtual void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {}
-	virtual void OnCollisionExit([[maybe_unused]] BaseGameObject* const collision) {}
-
-	void CreateBoxCollider(Model* model);
-	void CreateSphereCollider(Model* model);
-
-	BaseCollider* GetCollider() const { return collider_.get(); }
+	virtual void OnCollisionStay( [[maybe_unused]] BaseGameObject* const collision) {}
+	virtual void OnCollisionExit( [[maybe_unused]] BaseGameObject* const collision) {}
 #pragma endregion Collider
 
 
@@ -146,9 +140,6 @@ protected:
 	/// 親
 	BaseGameObject* parent_ = nullptr;
 	std::list<BaseGameObject*> childs_;
-
-
-	std::unique_ptr<BaseCollider> collider_ = nullptr;
 
 	std::list<std::unique_ptr<BaseComponent>> components_;
 

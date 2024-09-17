@@ -155,18 +155,6 @@
     <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp">
       <Filter>ONEngine\GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Collision\BaseCollider.cpp">
-      <Filter>ONEngine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Collision\BoxCollider.cpp">
-      <Filter>ONEngine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Collision\CollisionManager.cpp">
-      <Filter>ONEngine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="ONEngine\Collision\SphereCollider.cpp">
-      <Filter>ONEngine\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Graphics\RenderTexture\RenderTexture.cpp">
       <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClCompile>
@@ -223,6 +211,12 @@
     </ClCompile>
     <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp">
       <Filter>ONEngine\Component\SpriteRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\Collider\BaseCollider.cpp">
+      <Filter>ONEngine\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\Collider\BoxCollider.cpp">
+      <Filter>ONEngine\Component\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,9 +316,6 @@
     <Filter Include="ONEngine\GameObject">
       <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\Collision">
-      <UniqueIdentifier>{535a4893-785e-441b-80ca-f77ea230bbff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\BlendRenderTexture">
       <UniqueIdentifier>{86999703-20b2-4a4a-be73-6989da8eaaee}</UniqueIdentifier>
     </Filter>
@@ -384,6 +375,9 @@
     </Filter>
     <Filter Include="ONEngine\Component\SpriteRenderer">
       <UniqueIdentifier>{3bbd9350-424c-437b-b2fc-f6f204de4f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\Collider">
+      <UniqueIdentifier>{209ba477-f1da-410b-8280-87f45b63f7b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -543,18 +537,6 @@
     <ClInclude Include="ONEngine\GameObject\GameObjectManager.h">
       <Filter>ONEngine\GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Collision\BaseCollider.h">
-      <Filter>ONEngine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Collision\BoxCollider.h">
-      <Filter>ONEngine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Collision\CollisionManager.h">
-      <Filter>ONEngine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\Collision\SphereCollider.h">
-      <Filter>ONEngine\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\Graphics\RenderTexture\RenderTexture.h">
       <Filter>ONEngine\Graphics\RenderTexture</Filter>
     </ClInclude>
@@ -614,6 +596,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h">
       <Filter>ONEngine\Component\SpriteRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\Collider\BaseCollider.h">
+      <Filter>ONEngine\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\Collider\BoxCollider.h">
+      <Filter>ONEngine\Component\Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

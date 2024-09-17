@@ -22,7 +22,7 @@ void Transform::Debug() {
 	if(ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::DragFloat3("position",	&position.x,	0.1f);
-		ImGui::DragFloat3("rotate",	&rotate.x,	0.05f);
+		ImGui::DragFloat3("rotate",		&rotate.x,	0.05f);
 		ImGui::DragFloat3("scale",		&scale.x,	0.1f);
 
 		ImGui::TreePop();

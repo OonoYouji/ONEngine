@@ -16,6 +16,6 @@ public:
 
 private:
 
-	AudioSource*	audioSource_ = nullptr;
-	SpriteRenderer* sprite_		 = nullptr;
+	AudioSource* fanfare_     = nullptr;
+	AudioSource* audioSource_ = nullptr;
 };
