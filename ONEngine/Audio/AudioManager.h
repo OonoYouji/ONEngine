@@ -7,7 +7,6 @@
 #include <string>
 
 #include <AudioClip.h>
-#include <AudioSource.h>
 
 
 using namespace Microsoft::WRL;

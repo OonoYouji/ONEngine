@@ -2,7 +2,8 @@
 
 #include <GameObjectManager.h>
 
-#include <AudioSource.h>
+#include <Component/AudioSource/AudioSource.h>
+#include <Component/SpriteRenderer/SpriteRenderer.h>
 
 class Player : public BaseGameObject {
 public:
@@ -15,6 +16,6 @@ public:
 
 private:
 
-	AudioSource* audioSource_ = nullptr;
-
+	AudioSource*	audioSource_ = nullptr;
+	SpriteRenderer* sprite_		 = nullptr;
 };

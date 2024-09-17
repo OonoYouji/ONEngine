@@ -6,8 +6,14 @@
 #include <Model.h>
 
 
+/// ===================================================
+/// モデルの描画を行うクラス
+/// ===================================================
 class MeshRenderer final : public BaseComponent {
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	MeshRenderer() {}
 	~MeshRenderer() {}
@@ -29,6 +35,10 @@ public:
 	void SetMaterial(const std::string& texName);
 
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+	
 	Model*						model_		= nullptr;
 	Transform*					pTransform_	= nullptr;
 	FillMode					fillMode_	= kSolid;

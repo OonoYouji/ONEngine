@@ -149,9 +149,6 @@
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp">
       <Filter>ONEngine\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Audio\AudioSource.cpp">
-      <Filter>ONEngine\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp">
       <Filter>ONEngine\GameObject</Filter>
     </ClCompile>
@@ -220,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\Player\Player.cpp">
       <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\AudioSource\AudioSource.cpp">
+      <Filter>ONEngine\Component\AudioSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp">
+      <Filter>ONEngine\Component\SpriteRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +379,12 @@
     <Filter Include="Game\Objects\Player">
       <UniqueIdentifier>{2aa1eb55-263f-4765-9e05-a0803a8cf8b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ONEngine\Component\AudioSource">
+      <UniqueIdentifier>{aa4ef7bc-4271-415a-a8e2-dde4fbd361e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\SpriteRenderer">
+      <UniqueIdentifier>{3bbd9350-424c-437b-b2fc-f6f204de4f59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -528,9 +537,6 @@
     <ClInclude Include="ONEngine\Audio\AudioClip.h">
       <Filter>ONEngine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Audio\AudioSource.h">
-      <Filter>ONEngine\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\GameObject\BaseGameObject.h">
       <Filter>ONEngine\GameObject</Filter>
     </ClInclude>
@@ -602,6 +608,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Math\CreateName.h">
       <Filter>ONEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\AudioSource\AudioSource.h">
+      <Filter>ONEngine\Component\AudioSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h">
+      <Filter>ONEngine\Component\SpriteRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

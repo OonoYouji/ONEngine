@@ -95,10 +95,10 @@ void Sprite::SetTexture(const std::string& textureName, const std::string& fileP
 /// ===================================================
 void Sprite::CreateVertexBuffer() {
 
-	vertices_.push_back({ { -1.0f,  1.0f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
-	vertices_.push_back({ { -1.0f, -1.0f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
-	vertices_.push_back({ {  1.0f, -1.0f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
-	vertices_.push_back({ {  1.0f,  1.0f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
+	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
+	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
+	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
+	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
 
 	indices_.push_back(0);
 	indices_.push_back(1);

@@ -71,6 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
+	textureManager->Load("white2x2", "white2x2.png");
 
 
 	/// render texture imgui用を作成
@@ -182,12 +183,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
-		}
-		if(Input::TriggerKey(KeyCode::Alpha1)) {
-			drawLayerIndex = 0;
-		}
-		if(Input::TriggerKey(KeyCode::Alpha2)) {
-			drawLayerIndex = 1;
 		}
 
 		/// ImGuiの表示
