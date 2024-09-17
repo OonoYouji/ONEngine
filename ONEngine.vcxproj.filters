@@ -221,6 +221,12 @@
     <ClCompile Include="ONEngine\Component\Collider\SphereCollider.cpp">
       <Filter>ONEngine\Component\Collider</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\CollisionManager\CollisionManager.cpp">
+      <Filter>ONEngine\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CollisionManager\CollisionChecker.cpp">
+      <Filter>ONEngine\CollisionManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -381,6 +387,9 @@
     </Filter>
     <Filter Include="ONEngine\Component\Collider">
       <UniqueIdentifier>{209ba477-f1da-410b-8280-87f45b63f7b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CollisionManager">
+      <UniqueIdentifier>{6a642462-45d9-4b3e-b9b2-1def41e69e89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -608,6 +617,12 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Component\Collider\SphereCollider.h">
       <Filter>ONEngine\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CollisionManager\CollisionManager.h">
+      <Filter>ONEngine\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CollisionManager\CollisionChecker.h">
+      <Filter>ONEngine\CollisionManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

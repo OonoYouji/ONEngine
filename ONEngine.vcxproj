@@ -33,6 +33,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioClip.cpp" />
     <ClCompile Include="ONEngine\Audio\AudioManager.cpp" />
+    <ClCompile Include="ONEngine\CollisionManager\CollisionChecker.cpp" />
+    <ClCompile Include="ONEngine\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="ONEngine\Component\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\BaseCollider.cpp" />
@@ -109,6 +111,8 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="ONEngine\Audio\AudioClip.h" />
     <ClInclude Include="ONEngine\Audio\AudioManager.h" />
+    <ClInclude Include="ONEngine\CollisionManager\CollisionChecker.h" />
+    <ClInclude Include="ONEngine\CollisionManager\CollisionManager.h" />
     <ClInclude Include="ONEngine\Component\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\Component\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\Component\Collider\BaseCollider.h" />
