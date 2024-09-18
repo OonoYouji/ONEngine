@@ -1,5 +1,7 @@
 #include "BaseGameObject.h"
 
+#include <format>
+
 #include <ImGuiManager.h>
 #include <SceneManager.h>
 #include <GameObjectManager.h>
@@ -147,16 +149,8 @@ void BaseGameObject::CreateTag(BaseGameObject* object) {
 }
 
 void BaseGameObject::RenameComponents() {
-	std::unordered_map<std::string, uint32_t> instanceCounts;
 	for(auto& component : components_) {
-		std::string name = CreateName(component.get());
-		uint32_t count = instanceCounts[name];
-		if(count) {
-			component->SetName(name + std::to_string(count));
-		} else {
-			component->SetName(name);
-		}
-		++instanceCounts[name];
+		std::string name = CreateName(component.get()) + std::format("##{:p}", reinterpret_cast<void*>(component.get()));
+		component->SetName(name);
 	}
-
 }

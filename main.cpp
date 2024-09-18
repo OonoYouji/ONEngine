@@ -19,7 +19,7 @@
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 #include <GameObjectManager.h>
-#include "Collision/CollisionManager.h"
+//#include "Collision/CollisionManager.h"
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
@@ -33,27 +33,29 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	ONE::FrameTimer* frameTimer = ONE::FrameTimer::GetInstance();
-	frameTimer->Begin();
+
+	/// 起動速度を計算するため
+	auto currentTime = std::chrono::high_resolution_clock::now();;
+
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
 	std::unique_ptr<ONE::WinApp> winApp = nullptr;
-	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
-	Input* input = Input::GetInsatnce();
-	WorldTime* worldTime = WorldTime::GetInstance();
+	ONE::DxCommon*	dxCommon	= ONE::DxCommon::GetInstance();
+	Input*			input		= Input::GetInsatnce();
+	WorldTime*		worldTime	= WorldTime::GetInstance();
 
-	SceneManager* sceneManager = SceneManager::GetInstance();
-	ModelManager* modelManager = ModelManager::GetInstance();
-	SpriteManager* spriteManager = SpriteManager::GetInstance();
-	TextureManager* textureManager = TextureManager::GetInstance();
-	AudioManager* audioManager = AudioManager::GetInstance();
-	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
-	CameraManager* cameraManager = CameraManager::GetInstance();
-	GameObjectManager* gameObjectManager = GameObjectManager::GetInstance();
-	CollisionManager* collisionManager = CollisionManager::GetInstance();
-	RenderTextureManager* renderTexManager = RenderTextureManager::GetInstance();
-	LineDrawer2D* lineDrawer2d = LineDrawer2D::GetInstance();
+	SceneManager*			sceneManager		= SceneManager::GetInstance();
+	ModelManager*			modelManager		= ModelManager::GetInstance();
+	SpriteManager*			spriteManager		= SpriteManager::GetInstance();
+	TextureManager*			textureManager		= TextureManager::GetInstance();
+	AudioManager*			audioManager		= AudioManager::GetInstance();
+	ImGuiManager*			imGuiManager		= ImGuiManager::GetInstance();
+	CameraManager*			cameraManager		= CameraManager::GetInstance();
+	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
+	//CollisionManager* collisionManager = CollisionManager::GetInstance();
+	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
+	LineDrawer2D*			lineDrawer2d		= LineDrawer2D::GetInstance();
 
 
 
@@ -151,8 +153,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
 	///- 実行までにかかった時間
-	float executionTime = frameTimer->End();
-	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", executionTime));
+	auto end = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<float, std::milli> duration = end - currentTime;
+	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", duration.count() / 1000.0f));
 
 	worldTime->Update();
 
@@ -188,7 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ImGuiの表示
 		worldTime->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
-		collisionManager->ImGuiDebug();
+		//collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		sceneManager->ImGuiDebug();
 		for(auto& layer : layers) {

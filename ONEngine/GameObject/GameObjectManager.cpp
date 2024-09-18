@@ -1,7 +1,7 @@
 #include "GameObjectManager.h"
 
 #include <ImGuiManager.h>
-#include <Collision/CollisionManager.h>
+//#include <Collision/CollisionManager.h>
 
 #include <BaseCamera.h>
 #include <Light/DirectionalLight.h>
@@ -139,7 +139,7 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 		if(object == selectObject_) {
 			selectObject_ = nullptr;
 		}
-		CollisionManager::GetInstance()->SubGameObject(object);
+		//CollisionManager::GetInstance()->SubGameObject(object);
 		objects_.erase(it);
 	}
 
@@ -260,7 +260,7 @@ void GameObjectManager::DestoryAll() {
 		}
 
 		if(isDelete) {
-			CollisionManager::GetInstance()->SubGameObject(obj.get());
+			//CollisionManager::GetInstance()->SubGameObject(obj.get());
 		}
 
 		return isDelete;

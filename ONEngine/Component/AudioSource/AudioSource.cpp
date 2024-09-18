@@ -40,7 +40,7 @@ void AudioSource::Update() {
 }
 
 void AudioSource::Debug() {
-	if(ImGui::TreeNodeEx("AudioSource", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::Checkbox("isLoop", &isLoop);
 

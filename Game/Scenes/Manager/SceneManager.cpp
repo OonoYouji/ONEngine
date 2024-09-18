@@ -11,7 +11,7 @@
 
 #include <ImGuiManager.h>
 #include <GameObjectManager.h>
-#include <Collision/CollisionManager.h>
+//#include <Collision/CollisionManager.h>
 #include <AudioManager.h>
 
 #include <BaseScene.h>
@@ -41,7 +41,7 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 	Load(currentId_);
 
 	pGameObjectManager_ = GameObjectManager::GetInstance();
-	pCollisionManager_ = CollisionManager::GetInstance();
+	//pCollisionManager_ = CollisionManager::GetInstance();
 }
 
 
@@ -67,7 +67,7 @@ void SceneManager::Update() {
 	/// 更新1
 	pGameObjectManager_->Update();
 	/// 当たり判定処理
-	pCollisionManager_->Update();
+	//pCollisionManager_->Update();
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
 
