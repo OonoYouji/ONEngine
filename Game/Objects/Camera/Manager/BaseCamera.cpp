@@ -5,7 +5,7 @@
 #include <DxResourceCreator.h>
 
 #include <ImGuiManager.h>
-#include <WorldTime.h>
+#include <Time/Time.h>
 #include <Easing.h>
 
 namespace {
@@ -72,7 +72,7 @@ void BaseCamera::UpdateMatProjection() {
 void BaseCamera::Move() {
 	if(moveTime_ > maxMoveTime_) { return; }
 
-	moveTime_ += WorldTime::DeltaTime();
+	moveTime_ += Time::DeltaTime();
 
 	float t = Ease::Out::Quart(std::min(moveTime_ / maxMoveTime_, 1.0f));
 	Vec3 position = Vec3::Lerp(startMoveData_.position, endMoveData_.position, t);

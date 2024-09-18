@@ -11,9 +11,6 @@
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\FrameTimer\FrameTimer.cpp">
-      <Filter>ONEngine\FrameTimer</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\DirectX\DxDevice.cpp">
       <Filter>ONEngine\DirectX</Filter>
     </ClCompile>
@@ -164,9 +161,6 @@
     <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\WorldTime\WorldTime.cpp">
-      <Filter>ONEngine\WorldTime</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClCompile>
@@ -226,6 +220,9 @@
     </ClCompile>
     <ClCompile Include="ONEngine\CollisionManager\CollisionChecker.cpp">
       <Filter>ONEngine\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Time\Time.cpp">
+      <Filter>ONEngine\Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -307,9 +304,6 @@
     <Filter Include="Resources\Shaders\Sprite">
       <UniqueIdentifier>{9cb97157-f504-499e-97ba-f35a64f5082f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\FrameTimer">
-      <UniqueIdentifier>{d6093c69-a674-4b94-8898-228b1db0f71c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ONEngine\Input">
       <UniqueIdentifier>{33ea2c36-9823-4ff1-86d0-4030f2edee2d}</UniqueIdentifier>
     </Filter>
@@ -345,9 +339,6 @@
     </Filter>
     <Filter Include="Resources\Shaders\Blur">
       <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ONEngine\WorldTime">
-      <UniqueIdentifier>{31f4694b-ae51-4838-979d-51870a164f22}</UniqueIdentifier>
     </Filter>
     <Filter Include="ONEngine\Graphics\Drawer\LineDrawer2D">
       <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
@@ -391,6 +382,9 @@
     <Filter Include="ONEngine\CollisionManager">
       <UniqueIdentifier>{6a642462-45d9-4b3e-b9b2-1def41e69e89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ONEngine\Time">
+      <UniqueIdentifier>{31f4694b-ae51-4838-979d-51870a164f22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\Window\WinApp.h">
@@ -401,9 +395,6 @@
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxCommon.h">
       <Filter>ONEngine\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="ONEngine\FrameTimer\FrameTimer.h">
-      <Filter>ONEngine\FrameTimer</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\DirectX\DxDevice.h">
       <Filter>ONEngine\DirectX</Filter>
@@ -558,9 +549,6 @@
     <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\WorldTime\WorldTime.h">
-      <Filter>ONEngine\WorldTime</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
     </ClInclude>
@@ -623,6 +611,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\CollisionManager\CollisionChecker.h">
       <Filter>ONEngine\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Time\Time.h">
+      <Filter>ONEngine\Time</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

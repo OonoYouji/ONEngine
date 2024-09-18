@@ -5,8 +5,7 @@
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxDescriptor.h>
-#include <FrameTimer.h>
-#include <WorldTime.h>
+#include <Time/Time.h>
 #include <Input.h>
 
 #include <ModelManager.h>
@@ -43,7 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<ONE::WinApp> winApp = nullptr;
 	ONE::DxCommon*	dxCommon	= ONE::DxCommon::GetInstance();
 	Input*			input		= Input::GetInsatnce();
-	WorldTime*		worldTime	= WorldTime::GetInstance();
+	Time*			time		= Time::GetInstance();
 
 	SceneManager*			sceneManager		= SceneManager::GetInstance();
 	ModelManager*			modelManager		= ModelManager::GetInstance();
@@ -157,7 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::chrono::duration<float, std::milli> duration = end - currentTime;
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", duration.count() / 1000.0f));
 
-	worldTime->Update();
+	time->Update();
 
 
 	while(!winApp->ProcessMessage()) {
@@ -168,7 +167,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 
-		worldTime->Update();
+		time->Update();
 		imGuiManager->BeginFrame();
 		input->Begin();
 
@@ -189,7 +188,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		/// ImGuiの表示
-		worldTime->ImGuiDebug();
+		time->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		//collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();

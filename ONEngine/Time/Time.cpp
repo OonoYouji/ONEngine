@@ -1,12 +1,13 @@
-#include "WorldTime.h"
+#include "Time.h"
 
 #include <ImGuiManager.h>
 
 
-WorldTime WorldTime::sInstance_;
+Time Time::sInstance_;
 
 
-void WorldTime::Update() {
+
+void Time::Update() {
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - time_;
 	time_ = std::chrono::high_resolution_clock::now();
@@ -14,7 +15,8 @@ void WorldTime::Update() {
 	deltaTime_ = duration.count() / 1000.0f;
 }
 
-void WorldTime::ImGuiDebug() {
+
+void Time::ImGuiDebug() {
 #ifdef _DEBUG
 	if(!ImGui::Begin("Time")) {
 		ImGui::End();
