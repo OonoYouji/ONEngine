@@ -55,6 +55,7 @@ void PlayerHP::Initialize() {
 	maxGauge_ = 120.0f;
 	currentGauge_ = 0.0f;
 	baseGauge_ = 1.0f;
+	decreaseTime_ = 3.0f;
 
 	deathSE_ = new AudioSource;
 	deathSE_->SetAudioClip("glass_parin.wav");
@@ -100,6 +101,16 @@ void PlayerHP::Update() {
 		}
 	}
 
+	if (decreaseTime_ > 0) {
+		decreaseTime_ -= WorldTime::DeltaTime();
+	}
+	else if (decreaseTime_ <= 0) {
+		decreaseTime_ = 3.0f;
+		currentGauge_--;
+		if (currentGauge_ <= 0) {
+			currentGauge_ = 0;
+		}
+	}
 
 	for(auto& enemy : enemies) {
 		if(enemy->IsHeartBreak()) {
@@ -115,7 +126,8 @@ void PlayerHP::Update() {
 		if(enemy->IsScore()) {
 			enemy->SetIsScore(false);
 			int medicSize = enemy->GetMedicSize();
-			float addScoreGauge = baseGauge_ * (float)medicSize;
+			int magnification = enemy->GetMagnification();
+			float addScoreGauge = baseGauge_ * (float)magnification;
 			currentGauge_ += addScoreGauge;
 			healHP_ = true;
 			if(currentGauge_ >= maxGauge_) {

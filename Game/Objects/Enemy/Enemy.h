@@ -49,6 +49,8 @@ public:
 	void CalHighPoint();
 
 	int GetMedicSize() { return medicSize_; }
+	int GetMagnification();
+
 
 private:
 
@@ -109,6 +111,7 @@ private:
 
 	int jumpCount_ = 0;
 	int medicSize_ = 1;
+	int magnification_ = 1;
 	bool isSizeChangeOne = true;
 	bool isSizeChangeTwo = true;
 	bool isSizeChangeThree = true;

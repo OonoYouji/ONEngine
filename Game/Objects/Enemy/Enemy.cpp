@@ -447,3 +447,12 @@ void Enemy::CalHighPoint() {
 	}
 
 }
+
+int Enemy::GetMagnification() {
+	if (isBreakType_) {
+		return medicSize_ * 3;
+	}
+	else {
+		return (medicSize_ != 1) ? medicSize_ * 2 : medicSize_;
+	}
+}

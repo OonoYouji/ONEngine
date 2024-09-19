@@ -43,6 +43,7 @@ private:
 	float maxGauge_;
 	float currentGauge_;
 	float baseGauge_;
+	float decreaseTime_;
 
 	int currentDamegeIndex_;
 
