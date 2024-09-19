@@ -55,7 +55,7 @@ void PlayerHP::Initialize() {
 	maxGauge_ = 120.0f;
 	currentGauge_ = 0.0f;
 	baseGauge_ = 1.0f;
-	decreaseTime_ = 3.0f;
+	decreaseTime_ = 1.0f;
 
 	deathSE_ = new AudioSource;
 	deathSE_->SetAudioClip("glass_parin.wav");
@@ -105,7 +105,7 @@ void PlayerHP::Update() {
 		decreaseTime_ -= WorldTime::DeltaTime();
 	}
 	else if (decreaseTime_ <= 0) {
-		decreaseTime_ = 3.0f;
+		decreaseTime_ = 1.0f;
 		currentGauge_--;
 		if (currentGauge_ <= 0) {
 			currentGauge_ = 0;
