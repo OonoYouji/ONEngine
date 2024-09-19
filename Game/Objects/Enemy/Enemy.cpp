@@ -63,6 +63,8 @@ void Enemy::Initialize() {
 
 	if (isBreakType_) {
 		sprite_->SetColor({ 0.851f, 0.137f, 0.133f, 1.0f });
+		defaultSize = { 25,50,0 };
+		sprite_->SetSize({ 20,50 });
 	}
 }
 
@@ -422,24 +424,45 @@ void Enemy::CalHighPoint() {
 
 		if (highPoint < 250) {
 			if (isSizeChangeThree) {
-				defaultSize = { 40,80,0 };
-				sprite_->SetSize({ 40,80 });
+				if (!isBreakType_) {
+					defaultSize = { 40,80,0 };
+					sprite_->SetSize({ 40,80 });
+				}
+				else {
+					defaultSize = { 55,110,0 };
+					sprite_->SetSize({ 55,110 });
+				}
+
 				medicSize_++;
 				isSizeChangeThree = false;
 			}
 		}
 		else if (highPoint < 300) {
 			if (isSizeChangeTwo) {
-				defaultSize = { 30,60,0 };
-				sprite_->SetSize({ 30,60 });
+				if (!isBreakType_) {
+					defaultSize = { 30,60,0 };
+					sprite_->SetSize({ 30,60 });
+				}
+				else {
+					defaultSize = { 40,80,0 };
+					sprite_->SetSize({ 40,80 });
+				}
+
 				medicSize_++;
 				isSizeChangeTwo = false;
 			}
 		}
 		else if (highPoint < 350) {
 			if (isSizeChangeOne) {
-				defaultSize = { 25,50,0 };
-				sprite_->SetSize({ 20,50 });
+				if (!isBreakType_) {
+					defaultSize = { 25,50,0 };
+					sprite_->SetSize({ 20,50 });
+				}
+				else {
+					defaultSize = { 30,60,0 };
+					sprite_->SetSize({ 30,60 });
+				}
+
 				medicSize_++;
 				isSizeChangeOne = false;
 			}
