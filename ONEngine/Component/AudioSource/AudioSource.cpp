@@ -36,7 +36,7 @@ void AudioSource::Update() {
 			it = sources_.erase(it);
 		}
 	}
-	
+
 }
 
 void AudioSource::Debug() {
@@ -45,7 +45,7 @@ void AudioSource::Debug() {
 		ImGui::Checkbox("isLoop", &isLoop);
 
 		ImGui::DragFloat("volume", &volume, 0.0025f);
-		ImGui::DragFloat("pitch",  &pitch,  0.0025f);
+		ImGui::DragFloat("pitch", &pitch, 0.0025f);
 
 		ImGui::TreePop();
 	}
@@ -111,5 +111,30 @@ bool AudioSource::IsPlayingAudio() {
 
 void AudioSource::SetAudioClip(const std::string& filePath) {
 	clip_ = AudioManager::GetInstance()->GetAudioClip(filePath);
+}
+
+
+
+void AudioSource::PlayOneShot(const std::string& filePath, float volume) {
+	AudioClip* clip = AudioManager::GetInstance()->GetAudioClip(filePath);
+
+	HRESULT result = S_FALSE;
+	Element elem{};
+	elem.pSourceVoice = clip->CreateSourceVoice();
+
+	///- 再生する波形データの設定
+	XAUDIO2_BUFFER buffer{};
+	buffer.pAudioData = clip->pBuffer;
+	buffer.AudioBytes = clip->bufferSize;
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	buffer.LoopCount = XAUDIO2_LOOP_INFINITE;
+
+	///- 波形データの再生
+	elem.pSourceVoice->SubmitSourceBuffer(&buffer);
+	elem.pSourceVoice->SetVolume(volume);
+	elem.pSourceVoice->SetFrequencyRatio(1.0f);
+	elem.pSourceVoice->Start();
+
+	sources_.push_back(std::move(elem));
 }
 

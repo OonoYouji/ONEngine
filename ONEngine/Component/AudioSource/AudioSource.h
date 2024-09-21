@@ -59,6 +59,14 @@ public:
 	/// <param name="filePath"></param>
 	void SetAudioClip(const std::string& filePath);
 
+
+	/// <summary>
+	/// 一回きりの効果音再生
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <param name="volume"></param>
+	void PlayOneShot(const std::string& filePath, float volume);
+
 private:
 	/// ===================================================
 	/// private : objects
