@@ -27,11 +27,11 @@ void Player::Initialize() {
 void Player::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space)) {
-		audioSource_->PlayAudio();
+		audioSource_->PlayOneShot("sentaku.wav", 1.0f);
 	}
 	
 	if(Input::TriggerKey(KeyCode::Return)) {
-		fanfare_->PlayAudio();
+		audioSource_->PlayOneShot("fanfare.wav", 1.0f);
 	}
 	
 }
