@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <deque>
 
 /// ===================================================
 /// 時間
@@ -44,4 +45,6 @@ private:
 
 	std::chrono::high_resolution_clock::time_point time_{};
 	float deltaTime_ = 0.0f;
+
+	std::deque<float> exeTimes_;
 };
