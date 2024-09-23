@@ -10,9 +10,9 @@ void Scene_Game::Initialize() {
 	
 	(new Player)->Initialize();
 
-	for(uint32_t i = 0u; i < 120u; ++i) {
+	/*for(uint32_t i = 0u; i < 120u; ++i) {
 		(new Player)->Initialize();
-	}
+	}*/
 
 }
 

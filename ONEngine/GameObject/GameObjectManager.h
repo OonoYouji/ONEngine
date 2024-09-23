@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include <memory>
 
 #include <BaseGameObject.h>
@@ -120,7 +121,8 @@ public:
 
 private:
 
-	std::list<std::unique_ptr<BaseGameObject>> objects_;
+	const uint32_t kMaxInstanceCount_ = 128u;
+	std::vector<std::unique_ptr<BaseGameObject>> objects_;
 	BaseGameObject* selectObject_ = nullptr;
 
 	std::list<BaseGameObject*> destoryList_;

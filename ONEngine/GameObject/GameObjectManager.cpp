@@ -1,5 +1,6 @@
 #include "GameObjectManager.h"
 
+#include <Logger.h>
 #include <ImGuiManager.h>
 //#include <Collision/CollisionManager.h>
 
@@ -13,15 +14,15 @@
 /// 初期化
 /// ===================================================
 void GameObjectManager::Initialize() {
-
+	objects_.reserve(kMaxInstanceCount_);
 }
 
 /// ===================================================
 /// 終了処理
 /// ===================================================
 void GameObjectManager::Finalize() {
-	if (!addObjectList_.empty()) {
-		for (auto& object : addObjectList_) {
+	if(!addObjectList_.empty()) {
+		for(auto& object : addObjectList_) {
 			std::unique_ptr<BaseGameObject> newObject(object);
 			objects_.push_back(std::move(newObject));
 		}
@@ -48,9 +49,9 @@ void GameObjectManager::Update() {
 			objects_.push_back(std::move(newObject));
 		}
 		addObjectList_.clear();
+		ReName();
 	}
 
-	ReName();
 
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }
@@ -72,11 +73,13 @@ void GameObjectManager::LastUpdate() {
 		}
 	}
 
-	/// 消去命令の出たオブジェクトを削除
-	for(auto& obj : destoryList_) {
-		SubGameObject(obj);
+	if(!destoryList_.empty()) {
+		/// 消去命令の出たオブジェクトを削除
+		for(auto& obj : destoryList_) {
+			SubGameObject(obj);
+		}
+		destoryList_.clear();
 	}
-	destoryList_.clear();
 
 }
 
@@ -121,8 +124,12 @@ void GameObjectManager::FrontSpriteDraw(int layerId) {
 /// ゲームオブジェクトの追加
 /// ===================================================
 void GameObjectManager::AddGameObject(BaseGameObject* object) {
+	uint32_t currentInstanceCount = static_cast<uint32_t>(addObjectList_.size() + objects_.size());
+	if(currentInstanceCount >= kMaxInstanceCount_) {
+		ONE::Logger::ConsolePrint("GameObjectManager::AddGameObject() -> if(currentInstanceCount >= kMaxInstanceCount) == true; overflow");
+		assert(false);
+	}
 	addObjectList_.push_back(object);
-
 }
 
 
@@ -237,36 +244,37 @@ std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::strin
 /// すべてのインスタンスを削除する
 /// ===================================================
 void GameObjectManager::DestoryAll() {
-	GameObjectManager* insntance = GetInstance();
+	GameObjectManager* instance = GetInstance();
 
 
 
-	insntance->objects_.remove_if([](const std::unique_ptr<BaseGameObject>& obj) {
-		auto IsDelete = [](BaseGameObject* obj) -> bool {
-			if(dynamic_cast<DirectionalLight*>(obj) != nullptr) {
-				return false;
-			}
-			if(dynamic_cast<BaseCamera*>(obj) != nullptr) {
-				return false;
-			}
-			return true;
-		};
+	//insntance->objects_.remove_if([](const std::unique_ptr<BaseGameObject>& obj) {
+	//	auto IsDelete = [](BaseGameObject* obj) -> bool {
+	//		if(dynamic_cast<DirectionalLight*>(obj) != nullptr) {
+	//			return false;
+	//		}
+	//		if(dynamic_cast<BaseCamera*>(obj) != nullptr) {
+	//			return false;
+	//		}
+	//		return true;
+	//	};
 
-		bool isDelete = true;
-		isDelete &= IsDelete(obj.get());
-		isDelete &= IsDelete(obj->GetParent());
-		for(auto& child : obj->GetChilds()) {
-			isDelete &= IsDelete(child);
-		}
+	//	bool isDelete = true;
+	//	isDelete &= IsDelete(obj.get());
+	//	isDelete &= IsDelete(obj->GetParent());
+	//	for(auto& child : obj->GetChilds()) {
+	//		isDelete &= IsDelete(child);
+	//	}
 
-		if(isDelete) {
-			//CollisionManager::GetInstance()->SubGameObject(obj.get());
-		}
+	//	if(isDelete) {
+	//		//CollisionManager::GetInstance()->SubGameObject(obj.get());
+	//	}
 
-		return isDelete;
-	});
+	//	return isDelete;
+	//});
 
-	insntance->selectObject_ = nullptr;
+	instance->objects_.clear();
+	instance->selectObject_ = nullptr;
 }
 
 
