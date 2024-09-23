@@ -120,7 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	{
 		std::string names[2]{ "monitor", "game" };
 		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		BaseCamera* pCameras[2]{ gameCamera, gameCamera };
+		BaseCamera* pCameras[2]{ debugCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);

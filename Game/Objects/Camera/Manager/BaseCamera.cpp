@@ -62,7 +62,6 @@ void BaseCamera::Debug() {
 	if(projectionType_ == ORTHOGRAPHIC) {
 		if(ImGui::TreeNodeEx("Orthographic", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-			ImGui::DragFloat("distance", &distance_, 0.05f);
 
 			ImGui::TreePop();
 		}
@@ -111,8 +110,13 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
+	float distance    = -pTranform_->position.z;
+	if(distance <= 0.0f) {
+		return;
+	}
+
 	float aspectRatio = static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY);
-	float height      = 2.0f * distance_ * std::tan(fovY_ / 2.0f);
+	float height      = 2.0f * distance * std::tan(fovY_ / 2.0f);
 	float width       = height * aspectRatio;
 
 	matOrtho_ = Mat4::MakeOrthographicMatrix(

@@ -68,7 +68,6 @@ protected:
 
 	float nearZ_ = 0.1f;
 	float farZ_  = 1000.0f;
-	float distance_ = 10.0f;
 
 	Mat4 matView_;
 	Mat4 matProjection_;	/// 透視投影
