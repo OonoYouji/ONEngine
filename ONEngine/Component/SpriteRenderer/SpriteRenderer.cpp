@@ -1,5 +1,6 @@
 #include "SpriteRenderer.h"
 
+#include <ImGuiManager.h>
 #include <GameObjectManager.h>
 
 void SpriteRenderer::Initialize() {
@@ -28,6 +29,19 @@ void SpriteRenderer::FrontSpriteDraw() {
 	}
 }
 
+void SpriteRenderer::Debug() {
+	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		Vec2 anchor = sprite_->GetAnchor();
+		ImGui::DragFloat2("anchor point", &anchor.x, 0.005f);
+		if(ImGui::IsItemEdited()) {
+			SetAnchor(anchor);
+		}
+
+		ImGui::TreePop();
+	}
+}
+
 
 
 
@@ -40,4 +54,8 @@ void SpriteRenderer::SetTexture(const std::string& filePath) {
 	}
 
 	sprite_->SetTexture(name, filePath);
+}
+
+void SpriteRenderer::SetAnchor(const Vec2& anchor) {
+	sprite_->SetAnchor(anchor);
 }

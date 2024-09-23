@@ -33,11 +33,20 @@ public:
 	void BackSpriteDraw() override;
 	void FrontSpriteDraw() override;
 
+	void Debug() override;
+
+
 	/// <summary>
 	/// テクスチャのセット
 	/// </summary>
 	/// <param name="filePath"></param>
 	void SetTexture(const std::string& filePath);
+
+	/// <summary>
+	/// アンカーポイントのセット
+	/// </summary>
+	/// <param name="anchor"></param>
+	void SetAnchor(const Vec2& anchor);
 
 private:
 	/// ===================================================

@@ -17,7 +17,5 @@ public:
 	void Debug() override;
 
 private:
-
-	AudioSource* fanfare_     = nullptr;
 	AudioSource* audioSource_ = nullptr;
 };

@@ -1,5 +1,7 @@
 #include <Sprite.h>
 
+#include <algorithm>
+
 #include <WinApp.h>
 #include <DxCommon.h>
 #include <DxCommand.h>
@@ -57,7 +59,7 @@ void Sprite::Draw(uint32_t zOrder) {
 /// commandListに情報を設定
 /// ===================================================
 void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
-	
+
 	*matTransformData_ =
 		Mat4::MakeScale(Vec3(size_.x, size_.y, 1.0f)) *
 		Mat4::MakeRotateZ(angle_) *
@@ -85,6 +87,45 @@ void Sprite::SetTexture(const std::string& textureName, const std::string& fileP
 
 	material_.SetTextureName(textureName);
 	material_.SetFilePath(filePath);
+}
+
+void Sprite::SetAnchor(const Vec2& anchor) {
+	anchor_ = anchor;
+
+	std::vector<VertexPosUv> vertices = vertices_;
+
+	/// 左下
+	vertices_[0].position = {
+		std::lerp(0.0f, -1.0f, anchor_.x),
+		std::lerp(1.0f,  0.0f, anchor_.y),
+		0.0f, 1.0f
+	};
+
+	/// 左上
+	vertices_[1].position = {
+		std::lerp(0.0f, -1.0f, anchor_.x),
+		std::lerp(0.0f, -1.0f, anchor_.y),
+		0.0f, 1.0f
+	};
+
+	/// 右上
+	vertices_[2].position = {
+		std::lerp(1.0f,  0.0f, anchor_.x),
+		std::lerp(0.0f, -1.0f, anchor_.y),
+		0.0f, 1.0f
+	};
+
+	/// 右下
+	vertices_[3].position = {
+		std::lerp(1.0f, 0.0f, anchor_.x),
+		std::lerp(1.0f, 0.0f, anchor_.y),
+		0.0f, 1.0f
+	};
+
+	VertexPosUv* vertexData = nullptr;
+	vertexBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+	std::memcpy(vertexData, vertices_.data(), sizeof(VertexPosUv) * vertices_.size());
+
 }
 
 

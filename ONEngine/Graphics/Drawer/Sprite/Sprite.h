@@ -68,6 +68,9 @@ public:
 
 	void SetTexture(const std::string& textureName, const std::string& filePath);
 
+	void SetAnchor(const Vec2& anchor);
+	const Vec2& GetAnchor() const { return anchor_; }
+
 private:
 
 
@@ -102,8 +105,9 @@ private:
 
 	Material material_;
 
-	Vec3 position_ = { 0,0,0 };
-	Vec2 size_ = { 100,100 };
+	Vec3 position_ = { 0, 0, 0 };
+	Vec2 size_ = { 100, 100 };
 	float angle_ = 0.0f;
+	Vec2 anchor_ = { 0.5f, 0.5f };
 
 };
