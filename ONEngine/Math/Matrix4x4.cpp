@@ -12,6 +12,10 @@ namespace {
 		return inverseMatrix;
 	}
 
+	inline XMMATRIX CreateOrthographicMatrix(float width, float height, float nearZ, float farZ) {
+		return XMMatrixOrthographicOffCenterLH(-width / 2.0f, width / 2.0f, -height / 2.0f, height / 2.0f, nearZ, farZ);
+	}
+
 }
 
 
@@ -154,11 +158,17 @@ Matrix4x4 Matrix4x4::MakeViewport(float top, float left, float width, float heig
 
 Matrix4x4 Matrix4x4::MakeOrthographicMatrix(float l, float t, float r, float b, float nearZ, float farZ) {
 	return Mat4(
-		{ 2.0f / (r - l), 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 2.0f / (t - b), 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 1.0f / (farZ - nearZ), 0.0f },
-		{ (l + r) / (l - r), (t + b) / (b - t), nearZ / (nearZ - farZ), 1.0f }
+		{ 2.0f / (r - l),    0.0f,              0.0f,                             0.0f },
+		{ 0.0f,              2.0f / (t - b),    0.0f,                             0.0f },
+		{ 0.0f,              0.0f,              -2.0f / (farZ - nearZ),           0.0f },
+		{ -(l + r) / (r - l), -(t + b) / (t - b), -(farZ + nearZ) / (farZ - nearZ), 1.0f }
 	);
+
+
+}
+
+Matrix4x4 Matrix4x4::MakeOrthographicMatrix(float width, float height, float nearZ, float farZ) {
+	return ConvertToMatrix4x4(CreateOrthographicMatrix(width, height, nearZ, farZ));
 }
 
 Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {
@@ -167,7 +177,7 @@ Vector3 Matrix4x4::Transform(const Vector3& v, const Matrix4x4& m) {
 	result.x = v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0] + 1.0f * m.m[3][0];
 	result.y = v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1] + 1.0f * m.m[3][1];
 	result.z = v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2] + 1.0f * m.m[3][2];
-	float w = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + 1.0f * m.m[3][3];
+	float w  = v.x * m.m[0][3] + v.y * m.m[1][3] + v.z * m.m[2][3] + 1.0f * m.m[3][3];
 
 	assert(w != 0.0f);
 	return result / w;

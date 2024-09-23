@@ -8,15 +8,15 @@
 
 
 void Player::Initialize() {
-	/*auto meshRenderer = AddComponent<MeshRenderer>();
+	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("GameScreen");
 	meshRenderer->SetMaterial("uvChecker");
-	*/
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("uvChecker.png");
+	
+	//auto sprite = AddComponent<SpriteRenderer>();
+	//sprite->SetTexture("uvChecker.png");
 
-	SetPosition({ 640, 360, 0 });
-	SetScale({ 200, 200, 0 });
+	/*SetPosition({ 640, 360, 0 });
+	SetScale({ 200, 200, 0 });*/
 
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");

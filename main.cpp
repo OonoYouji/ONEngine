@@ -120,7 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	{
 		std::string names[2]{ "monitor", "game" };
 		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		BaseCamera* pCameras[2]{ debugCamera, gameCamera };
+		BaseCamera* pCameras[2]{ gameCamera, gameCamera };
 		for(uint8_t i = 0; i < layers.size(); ++i) {
 			layers[i].reset(new SceneLayer);
 			layers[i]->Initialize(names[i], pCameras[i]);
@@ -186,7 +186,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(Input::TriggerKey(KeyCode::F5)) {
 			imguiIsBlending = !imguiIsBlending;
 		}
-
+		
 		/// ImGuiの表示
 		time->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();

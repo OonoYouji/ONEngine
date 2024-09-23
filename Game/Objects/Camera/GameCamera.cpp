@@ -34,9 +34,6 @@ void GameCamera::Update() {
 
 	Move();
 
-	UpdateMatrix();
-	UpdateMatView();
-	UpdateMatProjection();
-	Transfer();
+	BaseUpdate();
 
 }

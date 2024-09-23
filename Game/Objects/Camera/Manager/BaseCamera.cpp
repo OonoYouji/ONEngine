@@ -1,6 +1,8 @@
 #define NOMINMAX
 #include <BaseCamera.h>
 
+#include <format>
+
 #include <WinApp.h>
 #include <DxResourceCreator.h>
 
@@ -16,10 +18,10 @@ namespace {
 
 	Mat4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
 		return Mat4(
-			{ (1 / aspectRatio) * Cot(fovY / 2.0f), 0.0f, 0.0f, 0.0f },
-			{ 0.0f, Cot(fovY / 2.0f), 0.0f, 0.0f },
-			{ 0.0f, 0.0f, farClip / (farClip - nearClip), 1.0f },
-			{ 0.0f, 0.0f, (-nearClip * farClip) / (farClip - nearClip), 0.0f }
+			{ (1 / aspectRatio) * Cot(fovY / 2.0f), 0.0f,             0.0f,                                         0.0f },
+			{ 0.0f,                                 Cot(fovY / 2.0f), 0.0f,                                         0.0f },
+			{ 0.0f,                                 0.0f,             farClip / (farClip - nearClip),               1.0f },
+			{ 0.0f,                                 0.0f,             (-nearClip * farClip) / (farClip - nearClip), 0.0f }
 		);
 	}
 
@@ -35,13 +37,47 @@ BaseCamera::BaseCamera() {
 
 
 
+void BaseCamera::Debug() {
+	if(ImGui::TreeNodeEx("camera", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		const char* labels[]{ "Perspective", "Orthographic" };
+		ImGui::Combo("projection type", reinterpret_cast<int*>(&projectionType_), labels, 2);
+
+
+		ImGui::TreePop();
+	}
+
+
+	/// 透視投影のデバッグ
+	if(projectionType_ == PERSPECTIVE) {
+		if(ImGui::TreeNodeEx("Perspective", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+			ImGui::DragFloat("fovY", &fovY_, 0.005f);
+
+			ImGui::TreePop();
+		}
+	}
+
+	/// 平行投影のデバッグ
+	if(projectionType_ == ORTHOGRAPHIC) {
+		if(ImGui::TreeNodeEx("Orthographic", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+			ImGui::DragFloat("distance", &distance_, 0.05f);
+
+			ImGui::TreePop();
+		}
+	}
+
+
+}
+
 /// ===================================================
 /// 初期化
 /// ===================================================
 void BaseCamera::BaseInitialize() {
 
 	UpdateMatView();
-	UpdateMatProjection();
+	UpdateMatPerspective();
 
 	matVp_ = matView_ * matProjection_;
 
@@ -55,19 +91,37 @@ void BaseCamera::BaseInitialize() {
 void BaseCamera::BaseUpdate() {
 	UpdateMatrix();
 	UpdateMatView();
-	UpdateMatProjection();
+	UpdateMatPerspective();
+	UpdateMatOrthographic();
 	Transfer();
 }
+
+
 
 void BaseCamera::UpdateMatView() {
 	matView_ = pTranform_->matTransform.Inverse();
 }
 
-void BaseCamera::UpdateMatProjection() {
+
+void BaseCamera::UpdateMatPerspective() {
 	matProjection_ = MakePerspectiveFovMatrix(
 		fovY_, static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY),
-		0.1f, farZ_);
+		nearZ_, farZ_);
 }
+
+void BaseCamera::UpdateMatOrthographic() {
+
+	float aspectRatio = static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY);
+	float height      = 2.0f * distance_ * std::tan(fovY_ / 2.0f);
+	float width       = height * aspectRatio;
+
+	matOrtho_ = Mat4::MakeOrthographicMatrix(
+		width, height, nearZ_, farZ_
+	);
+
+}
+
+
 
 void BaseCamera::Move() {
 	if(moveTime_ > maxMoveTime_) { return; }
@@ -84,7 +138,14 @@ void BaseCamera::Move() {
 
 
 void BaseCamera::Transfer() {
-	matVp_ = matView_ * matProjection_;
+
+	/// 透視投影か平行投影で matVp_ の計算を変更する
+	if(projectionType_ == PERSPECTIVE) {
+		matVp_ = matView_ * matProjection_;
+	} else {
+		matVp_ = matView_ * matOrtho_;
+	}
+
 	*matVpData_ = matVp_;
 }
 
@@ -94,5 +155,9 @@ void BaseCamera::SetMove(const MoveData& start, const MoveData& end, float time)
 
 	startMoveData_ = start;
 	endMoveData_ = end;
+}
+
+void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
+	projectionType_ = projectionType_;
 }
 

@@ -5,19 +5,25 @@
 
 #include <GameObjectManager.h>
 
-enum CAMEAR_SHAKE_TYPE : uint32_t {
-	LOCAL_AXIS_X,		/// ローカルのx軸でシェイク
-	LOCAL_AXIS_Y,		/// ローカルのy軸でシェイク
-	LOCAL_AXIS_Z,		/// ローカルのz軸でシェイク
-	GLOBAL_AXIS_Y,		/// グローバルのy軸でシェイク
-	CAMERA_SHAKE_TYPE_COUNT,
+
+/// ---------------------------------------------------
+/// 投影方法
+/// ---------------------------------------------------
+enum PROJECTION_TYPE : uint8_t {
+	PERSPECTIVE,	/// 透視投影
+	ORTHOGRAPHIC,	/// 平行投影
 };
 
 
+/// ---------------------------------------------------
+/// 特定の地点から地点に移動するためのデータ
+/// ---------------------------------------------------
 struct MoveData {
 	Vec3 position;
 	Vec3 rotate;
 };
+
+
 
 /// ===================================================
 /// カメラの基底クラス
@@ -25,19 +31,13 @@ struct MoveData {
 class BaseCamera : public BaseGameObject {
 public:
 
-	/// ===================================================
-	/// public : sub class
-	/// ===================================================
-
-	
-
-public:
-
 	BaseCamera();
 	virtual ~BaseCamera() = default;
 
 	virtual void Initialize() = 0;
-	virtual void Update() = 0;
+	virtual void Update()     = 0;
+
+	void Debug() override;
 
 public:
 
@@ -45,7 +45,8 @@ public:
 	void BaseUpdate();
 
 	void UpdateMatView();
-	void UpdateMatProjection();
+	void UpdateMatPerspective();
+	void UpdateMatOrthographic();
 
 	void Move();
 
@@ -59,16 +60,23 @@ public:
 
 	void SetMove(const MoveData& start, const MoveData& end, float time);
 
+	void SetProjectionType(PROJECTION_TYPE projectionType);
+
 protected:
 
-	bool isActive_ = true;
-
 	float fovY_ = 0.45f;
-	float farZ_ = 1000.0f;
+
+	float nearZ_ = 0.1f;
+	float farZ_  = 1000.0f;
+	float distance_ = 10.0f;
 
 	Mat4 matView_;
-	Mat4 matProjection_;
+	Mat4 matProjection_;	/// 透視投影
+	Mat4 matOrtho_;			/// 平行投影
+
 	Mat4 matVp_;
+
+	uint8_t projectionType_ = PROJECTION_TYPE::PERSPECTIVE;
 
 	MoveData startMoveData_;
 	MoveData endMoveData_;

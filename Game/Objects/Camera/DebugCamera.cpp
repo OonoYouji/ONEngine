@@ -52,10 +52,8 @@ void DebugCamera::Update() {
 	velocity_ = Mat4::Transform(velocity_, Mat4::MakeRotate(pTranform_->rotate));
 	pTranform_->position += velocity_;
 
-	pTranform_->UpdateMatrix();
 	matView_ = pTranform_->matTransform.Inverse();
-	matVp_ = matView_ * matProjection_;
 
-	Transfer();
+	BaseUpdate();
 }
 
