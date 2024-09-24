@@ -9,13 +9,10 @@ void SpriteRenderer::Initialize() {
 
 	sprite_.reset(new Sprite);
 	sprite_->Initialize("white2x2", "white2x2.png");
+	sprite_->SetTransformToPointer(pTransform_);
 }
 
-void SpriteRenderer::Update() {
-	sprite_->SetPos(pTransform_->position);
-	sprite_->SetSize({ pTransform_->scale.x, pTransform_->scale.y });
-	sprite_->SetAngle(pTransform_->rotate.z);
-}
+void SpriteRenderer::Update() {}
 
 void SpriteRenderer::BackSpriteDraw() {
 	if(type_ == SpriteRenderType::Back) {
