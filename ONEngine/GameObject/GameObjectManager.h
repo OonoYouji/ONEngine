@@ -121,7 +121,7 @@ public:
 
 private:
 
-	const uint32_t kMaxInstanceCount_ = 128u;
+	const uint32_t kMaxInstanceCount_ = 1280u;
 	std::vector<std::unique_ptr<BaseGameObject>> objects_;
 	BaseGameObject* selectObject_ = nullptr;
 

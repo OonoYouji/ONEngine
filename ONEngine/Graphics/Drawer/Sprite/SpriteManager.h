@@ -71,9 +71,6 @@ private:
 	std::unique_ptr<PipelineState> pipelineState_;
 	PipelineState::Shader shader_;
 
-	ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
-	Mat4* matViewProjectionData_ = nullptr;
-
 	struct ActiveSprite {
 		Sprite* pSprite_ = nullptr;
 		uint32_t zOrder = 0;

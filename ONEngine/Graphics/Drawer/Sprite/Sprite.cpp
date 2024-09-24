@@ -96,29 +96,29 @@ void Sprite::SetAnchor(const Vec2& anchor) {
 
 	/// 左下
 	vertices_[0].position = {
-		std::lerp(0.0f, -1.0f, anchor_.x),
-		std::lerp(1.0f,  0.0f, anchor_.y),
+		std::lerp( 0.0f, -1.0f, anchor_.x),
+		std::lerp(-1.0f,  0.0f, anchor_.y),
 		0.0f, 1.0f
 	};
 
 	/// 左上
 	vertices_[1].position = {
-		std::lerp(0.0f, -1.0f, anchor_.x),
-		std::lerp(0.0f, -1.0f, anchor_.y),
+		std::lerp( 0.0f, -1.0f, anchor_.x),
+		std::lerp( 0.0f,  1.0f, anchor_.y),
 		0.0f, 1.0f
 	};
 
 	/// 右上
 	vertices_[2].position = {
-		std::lerp(1.0f,  0.0f, anchor_.x),
-		std::lerp(0.0f, -1.0f, anchor_.y),
+		std::lerp( 1.0f,  0.0f, anchor_.x),
+		std::lerp( 0.0f,  1.0f, anchor_.y),
 		0.0f, 1.0f
 	};
 
 	/// 右下
 	vertices_[3].position = {
-		std::lerp(1.0f, 0.0f, anchor_.x),
-		std::lerp(1.0f, 0.0f, anchor_.y),
+		std::lerp( 1.0f,  0.0f, anchor_.x),
+		std::lerp(-1.0f,  0.0f, anchor_.y),
 		0.0f, 1.0f
 	};
 
@@ -136,10 +136,10 @@ void Sprite::SetAnchor(const Vec2& anchor) {
 /// ===================================================
 void Sprite::CreateVertexBuffer() {
 
-	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
-	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
-	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
-	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
+	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
+	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
+	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
+	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
 
 	indices_.push_back(0);
 	indices_.push_back(1);

@@ -7,6 +7,8 @@
 #include <DxResourceCreator.h>
 #include <DxDescriptor.h>
 
+#include <CameraManager.h>
+
 
 /// ===================================================
 /// インスタンス確保
@@ -50,15 +52,6 @@ void SpriteManager::Initialize() {
 	pipelineState_->Initialize();
 
 
-
-	viewProjectionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
-
-	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matViewProjectionData_));
-
-	Matrix4x4 projectionMatrix = Mat4::MakeOrthographicMatrix(0.0f, 0.0f, float(ONE::WinApp::kWindowSizeX), float(ONE::WinApp::kWindowSizeY), 0.0f, 1000.0f);
-	*matViewProjectionData_ = Mat4::kIdentity * projectionMatrix;
-
-
 }
 
 
@@ -67,7 +60,6 @@ void SpriteManager::Initialize() {
 /// ===================================================
 void SpriteManager::Finalize() {
 	pipelineState_.reset();
-	viewProjectionBuffer_.Reset();
 }
 
 
@@ -90,13 +82,14 @@ void SpriteManager::PostDraw() {
 	if(activeSprites_.empty()) { return; }
 
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	pipelineState_->SetPipelineState();
 
 	ONE::DxDescriptor* dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
 	dxDescriptor->SetSRVHeap(commandList);
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
 	auto lCompartion = [](const ActiveSprite& a, const ActiveSprite& b) {
 		return a.zOrder < b.zOrder;

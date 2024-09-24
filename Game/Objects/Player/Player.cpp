@@ -8,9 +8,12 @@
 
 
 void Player::Initialize() {
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("TV");
-	meshRenderer->SetMaterial("uvChecker");
+	//auto meshRenderer = AddComponent<MeshRenderer>();
+	//meshRenderer->SetModel("TV");
+	//meshRenderer->SetMaterial("uvChecker");
+
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("uvChecker.png");
 	
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");
@@ -30,12 +33,6 @@ void Player::Update() {
 }
 
 void Player::Debug() {
-	if(ImGui::TreeNodeEx("test", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		Vec4 color;
-		ImGui::ColorEdit4("color", &color.x);
-
-		ImGui::TreePop();
-	}
+	
 }
 
