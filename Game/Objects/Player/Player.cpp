@@ -9,7 +9,7 @@
 
 void Player::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("GameScreen");
+	meshRenderer->SetModel("TV");
 	meshRenderer->SetMaterial("uvChecker");
 	
 	audioSource_ = AddComponent<AudioSource>();

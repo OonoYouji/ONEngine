@@ -49,9 +49,9 @@ void GameObjectManager::Update() {
 			objects_.push_back(std::move(newObject));
 		}
 		addObjectList_.clear();
-		ReName();
 	}
 
+	ReName();
 
 	for(auto& obj : objects_) {
 		if(!obj->isActive) { continue; }

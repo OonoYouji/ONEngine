@@ -110,7 +110,7 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
-	float distance    = -pTranform_->position.z;
+	float distance    = pTranform_->position.Len();
 	if(distance <= 0.0f) {
 		return;
 	}
