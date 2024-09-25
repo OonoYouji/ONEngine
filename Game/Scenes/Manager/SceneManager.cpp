@@ -76,13 +76,6 @@ void SceneManager::Update() {
 }
 
 
-/// ===================================================
-/// 描画処理
-/// ===================================================
-void SceneManager::Draw() {
-	scene_->Draw();
-}
-
 void SceneManager::ImGuiDebug() {
 	if(!ImGui::Begin("scene manager")) {
 		ImGui::End();

@@ -33,11 +33,3 @@ void Scene_Debug::Update() {
 
 }
 
-void Scene_Debug::Draw() {
-	/*cameraManager_->SetMainCamera("DebugCamera");
-	sceneManager_->SetRenderTarget(kDebugScene);
-	modelManager_->PostDraw();
-	spriteManager_->PostDraw();
-	floor_->Draw();
-	cameraManager_->SetMainCamera("GameCamera");*/
-}
