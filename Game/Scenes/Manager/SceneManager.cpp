@@ -13,6 +13,7 @@
 #include <GameObjectManager.h>
 //#include <Collision/CollisionManager.h>
 #include <AudioManager.h>
+#include <ModelManager.h>
 
 #include <BaseScene.h>
 #include <Scene_Game.h>
@@ -76,6 +77,12 @@ void SceneManager::Update() {
 }
 
 
+void SceneManager::Draw() {
+	for(auto& layer : sceneLayers_) {
+		layer->Draw();
+	}
+}
+
 void SceneManager::ImGuiDebug() {
 	if(!ImGui::Begin("scene manager")) {
 		ImGui::End();
@@ -90,6 +97,12 @@ void SceneManager::ImGuiDebug() {
 	}
 
 	ImGui::End();
+
+
+	for(auto& layer : sceneLayers_) {
+		layer->ImGuiDebug();
+	}
+
 }
 
 void SceneManager::SetNextScene(SCENE_ID nextId) {
@@ -118,8 +131,12 @@ void SceneManager::Load(SCENE_ID id) {
 	}
 
 	GameObjectManager::DestoryAll();
+
 	scene_->Initialize();
-	GameObjectManager::AddObjectsToObjectsCopy();
+	ModelManager::GetInstance()->SetDirectionalLight(scene_->directionalLight_);
+	SetSceneLayers(scene_->GetSceneLayers());
+
+	GameObjectManager::AddObjectsToObjectsCopy();;
 }
 
 

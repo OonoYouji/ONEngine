@@ -85,22 +85,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
 
-	/// camera の初期化
-	GameCamera* monitorCamera = new GameCamera("MonitorCamera");
-	monitorCamera->Initialize();
-	monitorCamera->SetPosition({ -2.221f, 3.245f, -27.257f });
-	monitorCamera->SetRotate({ 0.0f, 0.215f, 0.0f });
-	monitorCamera->BaseUpdate();
-
-	GameCamera* gameCamera = new GameCamera("GameCamera");
-	gameCamera->Initialize();
-	gameCamera->SetPosition({ 0.0f, 0.2f, -15.0f });
-	gameCamera->SetRotate({ 0.0f, -0.12f, 0.0f });
-	gameCamera->BaseUpdate();
-	cameraManager->SetMainCamera(gameCamera);
-
-	/// {0.0f, 0.2f, -15.0f}, { 0.0f, -0.12f, 0.0f }
-
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
@@ -108,30 +92,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	debugCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
 	debugCamera->BaseUpdate();
 
-	/// light の初期化
-	DirectionalLight* directionalLight = new DirectionalLight();
-	directionalLight->Initialize();
-	modelManager->SetDirectionalLight(directionalLight);
-
-
-	/// layer の初期化
-	std::vector<std::unique_ptr<SceneLayer>> layers;
-	layers.resize(1);
-	{
-		std::string names[2]{ "monitor", "game" };
-		//BaseCamera* pCameras[2]{ monitorCamera, debugCamera };
-		BaseCamera* pCameras[2]{ debugCamera, gameCamera };
-		for(uint8_t i = 0; i < layers.size(); ++i) {
-			layers[i].reset(new SceneLayer);
-			layers[i]->Initialize(names[i], pCameras[i]);
-		}
-	}
 
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-
-	sceneManager->SetSceneLayers({ layers[0].get() });
 	sceneManager->Initialize(SCENE_ID::GAME);
 
 
@@ -193,9 +157,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		sceneManager->ImGuiDebug();
-		for(auto& layer : layers) {
-			layer->ImGuiDebug();
-		}
+		
 
 #endif // _DEBUG
 
@@ -211,16 +173,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		dxCommon->PreDraw();
 
-		for(auto& layer : layers) {
-			layer->Draw();
-		}
+		sceneManager->Draw();
 
 		renderTexManager->EndFrame();
 
 #ifdef _DEBUG
 		if(imguiIsBlending) {
 			RenderTextureManager::CreateBlendRenderTexture(
-				{ layers[drawLayerIndex]->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
 				debugFinalRenderTexture.get()
 			);
 		}
@@ -231,10 +191,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(imguiIsBlending) {
 			dxCommon->PostDraw(debugFinalRenderTexture.get());
 		} else {
-			dxCommon->PostDraw(layers[drawLayerIndex]->GetFinalRenderTexture());
+			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
 		}
 #else
-		dxCommon->PostDraw(layers.back()->GetFinalRenderTexture());
+		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
 #endif // _DEBUG
 
 	}
@@ -248,7 +208,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 	debugFinalRenderTexture.reset();
 #endif // _DEBUG
-	layers.clear();
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();

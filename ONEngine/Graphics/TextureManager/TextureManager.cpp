@@ -204,7 +204,7 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 void TextureManager::AddTexture(const std::string& name, D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle) {
 
 	if(textures_.find(name) != textures_.end()) {
-		assert(false);
+		//assert(false);
 		return;
 	}
 

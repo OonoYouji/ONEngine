@@ -35,22 +35,12 @@ public:
 	/// </summary>
 	static SceneManager* GetInstance();
 
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
 	void Initialize(SCENE_ID sceneId);
-
-	/// <summary>
-	/// 終了処理
-	/// </summary>
 	void Finalize();
 
 
-	/// <summary>
-	/// 更新処理
-	/// </summary>
 	void Update();
-
+	void Draw();
 	
 
 	void ImGuiDebug();
