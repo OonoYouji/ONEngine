@@ -133,7 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		time->Update();
 		imGuiManager->BeginFrame();
-		input->Begin();
+		input->Update();
 
 
 		/// ====================================
@@ -152,6 +152,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		
 		/// ImGuiの表示
+		input->ImGuiDebug();
 		time->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		//collisionManager->ImGuiDebug();

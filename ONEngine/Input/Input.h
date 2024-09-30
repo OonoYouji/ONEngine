@@ -29,8 +29,9 @@ public:
 
 	void Finalize();
 
-	void Begin();
+	void Update();
 
+	void ImGuiDebug();
 
 
 	static bool PressKey(KeyCode keycode);		/// 入力中か

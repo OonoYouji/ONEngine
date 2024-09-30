@@ -213,14 +213,17 @@ void Input::Finalize() {
 /// ===================================================
 /// フレームの最初に行う処理
 /// ===================================================
-void Input::Begin() {
+void Input::Update() {
 
 	keyboard_->Begin();
 	mouse_->Begin();
 	pad_->Begin();
 
 
-#ifdef _DEBUG
+}
+
+
+void Input::ImGuiDebug() {
 	ImGui::Begin("Input");
 
 	/// ---------------------------------------------------
@@ -299,7 +302,6 @@ void Input::Begin() {
 	}
 
 	ImGui::End();
-#endif // _DEBUG
 }
 
 
