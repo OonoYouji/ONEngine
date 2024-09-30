@@ -26,7 +26,7 @@ private:
 	std::vector<SceneLayer*> GetSceneLayers();
 
 protected:
-	class BaseCamera*       mainCamera_       = nullptr;
+	class GameCamera*       mainCamera_       = nullptr;
 	class DirectionalLight* directionalLight_ = nullptr;
 
 	std::vector<std::unique_ptr<SceneLayer>> layers_;

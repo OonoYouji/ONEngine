@@ -79,8 +79,8 @@ protected:
 
 	MoveData startMoveData_;
 	MoveData endMoveData_;
-	float moveTime_;
-	float maxMoveTime_;
+	float moveTime_    = 0.0f;
+	float maxMoveTime_ = 0.0f;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;

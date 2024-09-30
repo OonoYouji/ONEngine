@@ -8,9 +8,9 @@
 
 
 void Player::Initialize() {
-	//auto meshRenderer = AddComponent<MeshRenderer>();
-	//meshRenderer->SetModel("TV");
-	//meshRenderer->SetMaterial("uvChecker");
+	/*auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel("Sphere");
+	meshRenderer->SetMaterial("uvChecker");*/
 
 	auto sprite = AddComponent<SpriteRenderer>();
 	sprite->SetTexture("uvChecker.png");
@@ -18,17 +18,19 @@ void Player::Initialize() {
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");
 
+	SetPositionZ(10.0f);
+	UpdateMatrix();
 }
 
 void Player::Update() {
 
-	if(Input::TriggerKey(KeyCode::Space)) {
-		audioSource_->PlayOneShot("sentaku.wav", 1.0f);
-	}
+	Vec3 velocity{
+		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
+		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
+		0.0f
+	};
 
-	if(Input::TriggerKey(KeyCode::Return)) {
-		audioSource_->PlayOneShot("fanfare.wav", 1.0f);
-	}
+	SetPosition(GetPosition() + velocity * 0.25f);
 
 }
 

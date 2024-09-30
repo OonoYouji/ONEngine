@@ -39,9 +39,9 @@ SceneManager* SceneManager::GetInstance() {
 void SceneManager::Initialize(SCENE_ID sceneId) {
 	currentId_ = sceneId;
 	nextSceneId_ = currentId_;
+	pGameObjectManager_ = GameObjectManager::GetInstance();
 	Load(currentId_);
 
-	pGameObjectManager_ = GameObjectManager::GetInstance();
 	//pCollisionManager_ = CollisionManager::GetInstance();
 }
 

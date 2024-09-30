@@ -25,6 +25,7 @@ void Transform::Debug() {
 		ImGui::DragFloat3("rotate",		&rotate.x,	0.05f);
 		ImGui::DragFloat3("scale",		&scale.x,	0.1f);
 
+		UpdateMatrix();
 		ImGui::TreePop();
 	}
 }
