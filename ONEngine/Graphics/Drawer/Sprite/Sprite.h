@@ -40,8 +40,6 @@ public:
 	/// public : methods
 	/// ===================================================
 
-
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -52,15 +50,17 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(uint32_t zOrder = 0u);
+	void Draw();
 
 
 	void BindCBuffer(ID3D12GraphicsCommandList* commandList);
 
-	void SetColor(const Vec4& color) {
-		material_.SetColor(color);
-	}
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	void SetColor(const Vec4& color);
 
 	void SetTexture(const std::string& textureName, const std::string& filePath);
 
@@ -68,6 +68,10 @@ public:
 	const Vec2& GetAnchor() const { return anchor_; }
 
 	void SetTransformToPointer(Transform* transform);
+
+	void SetUVSize(const Vec2& size);
+	void SetUVRotate(float rotate);
+	void SetUVPosition(const Vec2& position);
 
 private:
 

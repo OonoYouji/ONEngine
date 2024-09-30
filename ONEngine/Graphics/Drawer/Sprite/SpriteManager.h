@@ -59,7 +59,7 @@ public:
 	/// アクティブなスプライトの追加
 	/// </summary>
 	/// <param name="sprite"></param>
-	void AddActiveSprite(Sprite* sprite, uint32_t zOrder);
+	void AddActiveSprite(Sprite* sprite);
 
 
 private:
@@ -73,7 +73,6 @@ private:
 
 	struct ActiveSprite {
 		Sprite* pSprite_ = nullptr;
-		uint32_t zOrder = 0;
 	};
 	std::list<ActiveSprite> activeSprites_;
 

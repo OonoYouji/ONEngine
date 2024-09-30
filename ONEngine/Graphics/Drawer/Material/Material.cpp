@@ -5,7 +5,6 @@
 #include <TextureManager.h>
 
 
-
 Material::Material() {}
 Material::~Material() {}
 
@@ -21,6 +20,27 @@ void Material::SetColor(const Vector4& color) {
 void Material::SetIsLighting(bool isLighting) {
 	materialData_->isLighting = isLighting;
 }
+
+
+
+void Material::SetPosition(const Vec2& position) {
+	position_ = position;
+
+	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
+}
+
+void Material::SetRotate(float rotate) {
+	rotate_ = rotate;
+
+	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
+}
+
+void Material::SetScale(const Vec2& scale) {
+	scale_ = scale;
+
+	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
+}
+
 
 
 /// ===================================================

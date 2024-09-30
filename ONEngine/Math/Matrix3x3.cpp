@@ -64,9 +64,9 @@ Matrix3x3 Matrix3x3::MakeRotate(float rotate) {
 
 Matrix3x3 Matrix3x3::MakeTranslate(const Vector2& translate) {
 	return Matrix3x3(
-		1, 0, 0,
-		0, 1, 0,
-		translate.x, translate.y, 1
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		translate.x, translate.y, 1.0f
 	);
 }
 

@@ -80,8 +80,6 @@ public:
 };
 
 
-
-
 inline Matrix3x3& Matrix3x3::operator=(const Matrix3x3& other) {
 	for(int r = 0; r < 3; ++r) {
 		for(int c = 0; c < 3; ++c) {
@@ -95,11 +93,20 @@ inline Matrix3x3& Matrix3x3::operator=(const Matrix3x3& other) {
 
 inline Matrix3x3 Matrix3x3::operator*(const Matrix3x3& other) const {
 	Matrix3x3 result{};
-	for(int r = 0; r < 3; ++r) {
+	/*for(int r = 0; r < 3; ++r) {
 		for(int c = 0; c < 3; ++c) {
 			for(int i = 0; i < 3; ++i) {
 				result.m[r][c] += this->m[r][i] * other.m[i][c];
 			}
+		}
+	}*/
+
+	for(int row = 0; row < 3; row++) {
+		for(int col = 0; col < 3; col++) {
+			result.m[row][col] =
+				this->m[row][0] * other.m[0][col]
+				+ this->m[row][1] * other.m[1][col]
+				+ this->m[row][2] * other.m[2][col];
 		}
 	}
 

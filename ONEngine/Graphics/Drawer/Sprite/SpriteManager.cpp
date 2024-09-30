@@ -91,11 +91,6 @@ void SpriteManager::PostDraw() {
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 
-	auto lCompartion = [](const ActiveSprite& a, const ActiveSprite& b) {
-		return a.zOrder < b.zOrder;
-	};
-	activeSprites_.sort(lCompartion);
-
 	for(auto& sprite : activeSprites_) {
 		sprite.pSprite_->BindCBuffer(commandList);
 		commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
@@ -107,6 +102,6 @@ void SpriteManager::PostDraw() {
 /// ===================================================
 /// アクティブなスプライトの追加
 /// ===================================================
-void SpriteManager::AddActiveSprite(Sprite* sprite, uint32_t zOrder) {
-	activeSprites_.push_back(ActiveSprite(sprite, zOrder));
+void SpriteManager::AddActiveSprite(Sprite* sprite) {
+	activeSprites_.push_back(ActiveSprite(sprite));
 }

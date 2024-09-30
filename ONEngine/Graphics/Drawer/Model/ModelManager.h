@@ -108,10 +108,10 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 
 	struct Element final {
-		Model* model = nullptr;
-		Material* material = nullptr;
+		Model*     model = nullptr;
+		Material*  material = nullptr;
 		Transform* transform = nullptr;
-		FillMode fillMode;
+		FillMode   fillMode;
 	};
 
 	std::list<Element> activeModels_;

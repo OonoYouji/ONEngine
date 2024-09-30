@@ -402,10 +402,10 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode) {
 	Element element{};
-	element.model = model;
+	element.model     = model;
 	element.transform = transform;
-	element.material = material;
-	element.fillMode = fillMode;
+	element.material  = material;
+	element.fillMode  = fillMode;
 
 	activeModels_.push_back(element);
 }

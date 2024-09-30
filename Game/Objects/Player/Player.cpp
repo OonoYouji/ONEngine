@@ -8,12 +8,12 @@
 
 
 void Player::Initialize() {
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("Sphere");
-	meshRenderer->SetMaterial("uvChecker");
+	//auto meshRenderer = AddComponent<MeshRenderer>();
+	//meshRenderer->SetModel("Sphere");
+	//meshRenderer->SetMaterial("uvChecker");
 
-	/*auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("uvChecker.png");*/
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("uvChecker.png");
 	
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");

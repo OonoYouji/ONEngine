@@ -35,6 +35,18 @@ void SpriteRenderer::Debug() {
 			SetAnchor(anchor);
 		}
 
+
+		ImGui::DragFloat2("uvSize",     &uvSize_.x,     0.01f);
+		if(ImGui::IsItemEdited()) {
+			SetUVSize(uvSize_);
+		}
+
+		ImGui::DragFloat2("uvPosition", &uvPosition_.x, 0.01f);
+		if(ImGui::IsItemEdited()) {
+			SetUVPosition(uvPosition_);
+		}
+
+
 		ImGui::TreePop();
 	}
 }
@@ -55,4 +67,12 @@ void SpriteRenderer::SetTexture(const std::string& filePath) {
 
 void SpriteRenderer::SetAnchor(const Vec2& anchor) {
 	sprite_->SetAnchor(anchor);
+}
+
+void SpriteRenderer::SetUVPosition(const Vec2& position) {
+	sprite_->SetUVPosition(position);
+}
+
+void SpriteRenderer::SetUVSize(const Vec2& size) {
+	sprite_->SetUVSize(size);
 }

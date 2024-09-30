@@ -5,6 +5,7 @@
 
 #include <string>
 
+#include <Vector2.h>
 #include <Vector4.h>
 #include <Matrix3x3.h>
 #include <Matrix4x4.h>
@@ -39,6 +40,9 @@ public:
 	void SetColor(const Vector4& color);
 	void SetIsLighting(bool isLighting);
 
+	void SetPosition(const Vec2& position);
+	void SetRotate(float rotate);
+	void SetScale(const Vec2& scale);
 
 	/// <summary>
 	/// バッファの生成
@@ -82,4 +86,7 @@ private:
 	ComPtr<ID3D12Resource> materialBuffer_;
 	MaterialData* materialData_ = nullptr;
 
+	Vec2  scale_    = { 1.0f, 1.0f };
+	float rotate_   = 0.0f;
+	Vec2  position_ = { 0.0f, 0.0f };
 };

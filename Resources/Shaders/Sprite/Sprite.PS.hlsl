@@ -13,7 +13,8 @@ SamplerState gSampler : register(s0);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	output.color = gTexture.Sample(gSampler, input.texcoord);
+	float2 texcoord = mul(float3(input.texcoord, 1), (float3x3) uvTransform).xy;
+	output.color = gTexture.Sample(gSampler, texcoord);
 	output.color *= materialColor;
 
 	if (output.color.a == 0.0f) {

@@ -42,8 +42,8 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 /// ===================================================
 /// 描画
 /// ===================================================
-void Sprite::Draw(uint32_t zOrder) {
-	SpriteManager::GetInstance()->AddActiveSprite(this, zOrder);
+void Sprite::Draw() {
+	SpriteManager::GetInstance()->AddActiveSprite(this);
 }
 
 
@@ -59,6 +59,13 @@ void Sprite::BindCBuffer(ID3D12GraphicsCommandList* commandList) {
 	pTransform_->BindTransform(commandList, 1);
 	material_.BindMaterial(commandList, 2);
 	material_.BindTexture(commandList, 3);
+}
+
+
+
+
+void Sprite::SetColor(const Vec4& color) {
+	material_.SetColor(color);
 }
 
 void Sprite::SetTexture(const std::string& textureName, const std::string& filePath) {
@@ -109,6 +116,20 @@ void Sprite::SetAnchor(const Vec2& anchor) {
 
 void Sprite::SetTransformToPointer(Transform* transform) {
 	pTransform_ = transform;
+}
+
+
+
+void Sprite::SetUVSize(const Vec2& size) {
+	material_.SetScale(size);
+}
+
+void Sprite::SetUVRotate(float rotate) {
+	material_.SetRotate(rotate);
+}
+
+void Sprite::SetUVPosition(const Vec2& position) {
+	material_.SetPosition(position);
 }
 
 
