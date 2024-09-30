@@ -224,6 +224,9 @@
     <ClCompile Include="ONEngine\Time\Time.cpp">
       <Filter>ONEngine\Time</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\FrameFixation\FrameFixation.cpp">
+      <Filter>ONEngine\FrameFixation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -384,6 +387,9 @@
     </Filter>
     <Filter Include="ONEngine\Time">
       <UniqueIdentifier>{31f4694b-ae51-4838-979d-51870a164f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\FrameFixation">
+      <UniqueIdentifier>{fc53e316-1098-4147-9df5-77949d7d303a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -614,6 +620,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Time\Time.h">
       <Filter>ONEngine\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\FrameFixation\FrameFixation.h">
+      <Filter>ONEngine\FrameFixation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

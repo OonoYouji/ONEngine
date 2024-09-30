@@ -6,6 +6,7 @@
 #include <DxCommand.h>
 #include <DxDescriptor.h>
 #include <Time/Time.h>
+#include <FrameFixation/FrameFixation.h>
 #include <Input.h>
 
 #include <ModelManager.h>
@@ -43,6 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ONE::DxCommon*	dxCommon	= ONE::DxCommon::GetInstance();
 	Input*			input		= Input::GetInsatnce();
 	Time*			time		= Time::GetInstance();
+	std::unique_ptr<FrameFixation> frameFixation = nullptr;
 
 	SceneManager*			sceneManager		= SceneManager::GetInstance();
 	ModelManager*			modelManager		= ModelManager::GetInstance();
@@ -64,6 +66,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize(winApp.get());
 
 	input->Initialize(winApp.get());
+
+	frameFixation.reset(new FrameFixation);
+	frameFixation->Initialize(true);
+
 
 	imGuiManager->Initialize(winApp.get(), dxCommon);
 	modelManager->Initialize();
@@ -154,6 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ImGuiの表示
 		input->ImGuiDebug();
 		time->ImGuiDebug();
+		frameFixation->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
 		//collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
@@ -189,12 +196,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
+
+		frameFixation->Fixation();
 		if(imguiIsBlending) {
 			dxCommon->PostDraw(debugFinalRenderTexture.get());
 		} else {
 			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
 		}
 #else
+		frameFixation->Fixation();
 		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
 #endif // _DEBUG
 

@@ -6,6 +6,8 @@
 #include "Externals/imgui/imgui_impl_dx12.h"
 #include "Externals/imgui/imgui_impl_win32.h"
 
+#pragma comment(lib, "winmm.lib")
+
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -121,6 +123,8 @@ LRESULT ONE::WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 /// GameWindowの生成
 /// ===================================================
 void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int sizeX, int sizeY) {
+
+	timeBeginPeriod(1);
 
 	///- COM初期化
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
