@@ -33,6 +33,10 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 	/// ---------------------------------------------------
 	SetTexture(textureName, filePath);
 
+	TextureManager::GetInstance()->GetTexture(textureName);
+
+	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName).GetTextureSize();
+
 	material_.CreateBuffer();
 
 }
@@ -68,17 +72,21 @@ void Sprite::SetColor(const Vec4& color) {
 	material_.SetColor(color);
 }
 
-void Sprite::SetTexture(const std::string& textureName, const std::string& filePath) {
+void Sprite::SetTexture(const std::string& textureName, const std::string& filePath, bool isDefaultScaling) {
 	TextureManager::GetInstance()->Load(textureName, filePath);
 
 	material_.SetTextureName(textureName);
 	material_.SetFilePath(filePath);
+
+	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName).GetTextureSize();
+
+	if(isDefaultScaling) {
+		SetUVSize(textureSize_);
+	}
 }
 
 void Sprite::SetAnchor(const Vec2& anchor) {
 	anchor_ = anchor;
-
-	std::vector<VertexPosUv> vertices = vertices_;
 
 	/// 左下
 	vertices_[0].position = {
@@ -121,15 +129,22 @@ void Sprite::SetTransformToPointer(Transform* transform) {
 
 
 void Sprite::SetUVSize(const Vec2& size) {
-	material_.SetScale(size);
+	uvSize_ = size;
+	material_.SetScale(uvSize_ / textureSize_);
 }
 
 void Sprite::SetUVRotate(float rotate) {
-	material_.SetRotate(rotate);
+	rotate_ = rotate;
+	material_.SetRotate(rotate_);
 }
 
 void Sprite::SetUVPosition(const Vec2& position) {
-	material_.SetPosition(position);
+	uvPosition_ = position;
+	material_.SetPosition(uvPosition_ / textureSize_);
+}
+
+void Sprite::UpdateMatrix() {
+	material_.UpdateMatrix();
 }
 
 

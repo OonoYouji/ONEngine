@@ -49,7 +49,7 @@ public:
 	void SetAnchor(const Vec2& anchor);
 
 	/// <summary>
-	/// 表示する画像の左上座標を決定する
+	/// 表示する画像の左上座標をセットする
 	/// </summary>
 	/// <param name="position"></param>
 	void SetUVPosition(const Vec2& position);
@@ -61,6 +61,12 @@ public:
 	/// <param name="size"></param>
 	void SetUVSize(const Vec2& size);
 
+	/// <summary>
+	/// 表示する画像の回転をセットする
+	/// </summary>
+	/// <param name="rotate"></param>
+	void SetUVRotate(float rotate);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -69,8 +75,5 @@ private:
 	Transform*				pTransform_ = nullptr;
 	std::unique_ptr<Sprite> sprite_		= nullptr;
 	SpriteRenderType		type_		= SpriteRenderType::Front;
-
-	Vec2 uvSize_     = {};
-	Vec2 uvPosition_ = {};
 
 };

@@ -3,6 +3,8 @@
 #include <d3d12.h>
 #include <wrl/client.h>
 
+#include <Vector2.h>
+
 using namespace Microsoft::WRL;
 
 /// ===================================================
@@ -17,6 +19,8 @@ public:
 	~Texture() = default;
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle() const { return gpuHandle_; }
+
+	Vec2 GetTextureSize() const;
 
 private:
 

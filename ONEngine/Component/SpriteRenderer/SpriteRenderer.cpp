@@ -12,7 +12,9 @@ void SpriteRenderer::Initialize() {
 	sprite_->SetTransformToPointer(pTransform_);
 }
 
-void SpriteRenderer::Update() {}
+void SpriteRenderer::Update() {
+	sprite_->UpdateMatrix();
+}
 
 void SpriteRenderer::BackSpriteDraw() {
 	if(type_ == SpriteRenderType::Back) {
@@ -35,16 +37,29 @@ void SpriteRenderer::Debug() {
 			SetAnchor(anchor);
 		}
 
+		if(ImGui::TreeNodeEx("uvTransform", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat2("uvSize",     &uvSize_.x,     0.01f);
-		if(ImGui::IsItemEdited()) {
-			SetUVSize(uvSize_);
+			Vec2 uvSize = sprite_->GetUVSize();
+			ImGui::DragFloat2("size", &uvSize.x, 0.01f);
+			if(ImGui::IsItemEdited()) {
+				SetUVSize(uvSize);
+			}
+
+			float rotate = sprite_->GetUVRotate();
+			ImGui::DragFloat("rotate", &rotate, 0.01f);
+			if(ImGui::IsItemEdited()) {
+				SetUVRotate(rotate);
+			}
+
+			Vec2 uvPosition = sprite_->GetUVPosition();
+			ImGui::DragFloat2("position", &uvPosition.x, 0.01f);
+			if(ImGui::IsItemEdited()) {
+				SetUVPosition(uvPosition);
+			}
+
+			ImGui::TreePop();
 		}
 
-		ImGui::DragFloat2("uvPosition", &uvPosition_.x, 0.01f);
-		if(ImGui::IsItemEdited()) {
-			SetUVPosition(uvPosition_);
-		}
 
 
 		ImGui::TreePop();
@@ -75,4 +90,8 @@ void SpriteRenderer::SetUVPosition(const Vec2& position) {
 
 void SpriteRenderer::SetUVSize(const Vec2& size) {
 	sprite_->SetUVSize(size);
+}
+
+void SpriteRenderer::SetUVRotate(float rotate) {
+	sprite_->SetUVRotate(rotate);
 }

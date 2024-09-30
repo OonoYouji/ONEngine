@@ -25,19 +25,17 @@ void Material::SetIsLighting(bool isLighting) {
 
 void Material::SetPosition(const Vec2& position) {
 	position_ = position;
-
-	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
 }
 
 void Material::SetRotate(float rotate) {
 	rotate_ = rotate;
-
-	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
 }
 
 void Material::SetScale(const Vec2& scale) {
 	scale_ = scale;
+}
 
+void Material::UpdateMatrix() {
 	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
 }
 

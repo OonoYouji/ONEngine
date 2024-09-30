@@ -62,16 +62,26 @@ public:
 
 	void SetColor(const Vec4& color);
 
-	void SetTexture(const std::string& textureName, const std::string& filePath);
+	void SetTexture(const std::string& textureName, const std::string& filePath, bool isDefaultScaling = true);
 
 	void SetAnchor(const Vec2& anchor);
 	const Vec2& GetAnchor() const { return anchor_; }
 
 	void SetTransformToPointer(Transform* transform);
 
+	/// accessor : uv size
 	void SetUVSize(const Vec2& size);
+	const Vec2& GetUVSize() const { return uvSize_; }
+
+	/// accessor : uv rotate
 	void SetUVRotate(float rotate);
+	float GetUVRotate() const { return rotate_; }
+
+	/// accessor : uv position
 	void SetUVPosition(const Vec2& position);
+	const Vec2& GetUVPosition() const { return uvPosition_; }
+
+	void UpdateMatrix();
 
 private:
 
@@ -101,6 +111,12 @@ private:
 	class Transform* pTransform_ = nullptr;
 	Material material_;
 
-	Vec2 anchor_ = { 0.5f, 0.5f };
+	Vec2 anchor_     = { 0.5f, 0.5f };
+
+	Vec2  uvSize_     = { 1.0f, 1.0f };
+	float rotate_     = 0.0f;
+	Vec2  uvPosition_ = { 0.0f, 0.0f };
+
+	Vec2 textureSize_ = {};
 
 };

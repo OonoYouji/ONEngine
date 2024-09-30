@@ -44,6 +44,8 @@ public:
 	void SetRotate(float rotate);
 	void SetScale(const Vec2& scale);
 
+	void UpdateMatrix();
+
 	/// <summary>
 	/// バッファの生成
 	/// </summary>
