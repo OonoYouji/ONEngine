@@ -6,7 +6,7 @@
 #include <Component/MeshRenderer/MeshRenderer.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
 #include <Particle/ParticleSystem.h>
-#include <Component/Collider/BoxCollider.h>
+#include <Component/Collider/SphereCollider.h>
 	
 #include <ImGuiManager.h>
 
@@ -19,12 +19,12 @@ void Player::Initialize() {
 	//auto sprite = AddComponent<SpriteRenderer>();
 	//sprite->SetTexture("uvChecker.png");
 	
-	audioSource_ = AddComponent<AudioSource>();
-	audioSource_->SetAudioClip("sentaku.wav");
+	//audioSource_ = AddComponent<AudioSource>();
+	//audioSource_->SetAudioClip("sentaku.wav");
 
-	auto particle = AddComponent<ParticleSystem>(12, "Sphere");
+	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
 
-	AddComponent<BoxCollider>(ModelManager::GetModel("Sphere"));
+	AddComponent<SphereCollider>(ModelManager::GetModel("Sphere"));
 
 	SetPositionZ(10.0f);
 	UpdateMatrix();

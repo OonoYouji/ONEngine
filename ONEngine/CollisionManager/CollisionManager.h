@@ -3,6 +3,7 @@
 #include <list>
 
 #include <GameObjectManager.h>
+#include <Component/Collider/BaseCollider.h>
 
 
 /// ===================================================
@@ -33,13 +34,32 @@ public:
 
 	void ImGuiDebug();
 
+	void AddGameObject(BaseGameObject* obj);
+	void SubGameObject(BaseGameObject* obj);
+
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
 
-	void CheckCollision(BaseGameObject* objA, BaseGameObject* objB);
+	void CheckCollision(
+		BaseGameObject* objA, BaseCollider* colliderA,
+		BaseGameObject* objB, BaseCollider* colliderB
+	);
 
+	/// <summary>
+	/// どのコールバック関数を呼び出すか確認
+	/// </summary>
+	/// <param name="objA"></param>
+	/// <param name="objB"></param>
+	void CheckCallbackMethod(BaseGameObject* objA, BaseGameObject* objB);
+
+	/// <summary>
+	/// 当たったリストからこのpairを削除する
+	/// </summary>
+	/// <param name="objA"></param>
+	/// <param name="objB"></param>
+	void ErasePair(BaseGameObject* objA, BaseGameObject* objB);
 
 private:
 	/// ===================================================

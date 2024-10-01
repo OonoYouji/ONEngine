@@ -14,7 +14,9 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SphereCollider() {}
+	SphereCollider(Model* model) {
+		CreateCollider(model);
+	}
 	~SphereCollider() {}
 
 	void Initialize()	override;
@@ -26,6 +28,14 @@ public:
 	/// </summary>
 	/// <param name="model">: sphereを生成するためのmodel</param>
 	void CreateCollider(const Model* model) override;
+
+	/// <summary>
+	/// 半径のゲッタ
+	/// </summary>
+	/// <returns>半径</returns>
+	float GetRadius() const {
+		return radius_;
+	}
 
 private:
 	/// ===================================================

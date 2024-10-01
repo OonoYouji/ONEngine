@@ -26,6 +26,8 @@ public:
 
 	void UpdateMatrix();
 
+	Vec3 GetPosition() const;
+
 protected:
 	/// ===================================================
 	/// protected : objects

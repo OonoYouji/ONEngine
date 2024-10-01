@@ -6,6 +6,7 @@ class SphereCollider;
 
 namespace CollisionChecker {
 
-	bool BoxToBox();
-
+	bool BoxToBox(BoxCollider* a, BoxCollider* b);
+	bool SphereToSphere(SphereCollider* a, SphereCollider* b);
+	bool BoxToSphere(BoxCollider* box, SphereCollider* sphere);
 }
