@@ -230,6 +230,15 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.cpp">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Panel\Panel.cpp">
+      <Filter>Game\Objects\Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BasePanel\BasePanel.cpp">
+      <Filter>Game\Objects\BasePanel</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PanelManager\PanelManager.cpp">
+      <Filter>Game\Objects\PanelManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -399,6 +408,15 @@
     </Filter>
     <Filter Include="Resources\Shaders\Particle">
       <UniqueIdentifier>{8d19174c-3157-4edb-a865-9cc019fdc838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Panel">
+      <UniqueIdentifier>{e418d204-dbb1-46d7-af94-8fa2f9e08904}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\BasePanel">
+      <UniqueIdentifier>{c0d81767-60d6-481b-be15-94d4d17e57f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\PanelManager">
+      <UniqueIdentifier>{780160fe-aafa-4a1e-ac22-60eb4576a1f7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -635,6 +653,15 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.h">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Panel\Panel.h">
+      <Filter>Game\Objects\Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BasePanel\BasePanel.h">
+      <Filter>Game\Objects\BasePanel</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PanelManager\PanelManager.h">
+      <Filter>Game\Objects\PanelManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

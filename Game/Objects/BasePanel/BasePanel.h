@@ -5,16 +5,16 @@
 #include <Component/AudioSource/AudioSource.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
 
-class Player : public BaseGameObject {
+class BasePanel : public BaseGameObject {
 public:
 
-	Player() { CreateTag(this); }
-	~Player() {}
+	BasePanel() { CreateTag(this); }
+	~BasePanel() {}
 
-	void Initialize() override;
-	void Update() override;
+	virtual	void Initialize(Vector3 pos);
+	virtual	void Update() override;
 
-	void Debug() override;
+	virtual void Debug() override;
 
 private:
 	

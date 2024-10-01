@@ -5,11 +5,12 @@
 #include <Component/AudioSource/AudioSource.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
 
-class Player : public BaseGameObject {
+#include"Panel/Panel.h"
+class PanelManager : public BaseGameObject {
 public:
 
-	Player() { CreateTag(this); }
-	~Player() {}
+	PanelManager() { CreateTag(this); }
+	~PanelManager() {}
 
 	void Initialize() override;
 	void Update() override;
@@ -17,6 +18,6 @@ public:
 	void Debug() override;
 
 private:
-	
+	std::list<Panel>panels_;
 	AudioSource* audioSource_ = nullptr;
 };
