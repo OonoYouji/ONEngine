@@ -119,12 +119,9 @@ void SceneLayer::Draw() {
 }
 
 void SceneLayer::ImGuiDebug() {
-#ifdef _DEBUG
-	if(!ImGui::Begin(className_.c_str())) {
-		ImGui::End();
+	if(!ImGui::TreeNodeEx(className_.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 		return;
 	}
-
 
 	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
 		if(blooms_[i] && isApplyBlooms_[i]) {
@@ -144,8 +141,7 @@ void SceneLayer::ImGuiDebug() {
 		ImGui::Separator();
 	}
 
-	ImGui::End();
-#endif // _DEBUG
+	ImGui::TreePop();
 }
 
 

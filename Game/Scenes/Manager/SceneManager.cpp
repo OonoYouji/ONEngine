@@ -96,13 +96,14 @@ void SceneManager::ImGuiDebug() {
 		Load(nextSceneId_);
 	}
 
-	ImGui::End();
-
-
-	for(auto& layer : sceneLayers_) {
-		layer->ImGuiDebug();
+	if(ImGui::TreeNodeEx("Layer")) {
+		for(auto& layer : sceneLayers_) {
+			layer->ImGuiDebug();
+		}
+		ImGui::TreePop();
 	}
 
+	ImGui::End();
 }
 
 void SceneManager::SetNextScene(SCENE_ID nextId) {

@@ -6,7 +6,7 @@
 
 #include <PipelineState/PipelineState.h>
 #include <Component/Base/BaseComponent.h>
-
+#include <Component/Transform/Transform.h>
 
 
 /// ===================================================
@@ -27,7 +27,7 @@ public:
 	/// public : static methods
 	/// ===================================================
 
-	static void SInitialize();
+	static void SInitialize(ID3D12GraphicsCommandList* commandList);
 	static void SFinalize();
 
 
@@ -37,14 +37,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
-
-
-
-	/// ===================================================
-	/// public : non overriding methods
-	/// ===================================================
-
-	void Draw();
+	void Draw()       override;
 
 
 
@@ -89,8 +82,10 @@ public:
 	ParticlePipeline() {}
 	~ParticlePipeline() {}
 
-	void Initialize();
+	void Initialize(ID3D12GraphicsCommandList* commandList);
 	void Update();
+
+	void Draw(const std::vector<std::unique_ptr<class Particle>>& particleArray, uint32_t instanceCount);
 
 private:
 
@@ -100,6 +95,7 @@ private:
 
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
+	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
 	
 };
 
@@ -121,6 +117,8 @@ public:
 	void Initialize(); 
 	void Update();
 
+	bool GetIsAlive() const { return isAlive_; }
+
 private:
 
 	/// ===================================================
@@ -128,5 +126,7 @@ private:
 	/// ===================================================
 
 	bool isAlive_ = true;
+
+	Transform transform_{};
 
 };
