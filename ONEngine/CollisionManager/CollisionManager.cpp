@@ -90,6 +90,13 @@ void CollisionManager::SubGameObject(BaseGameObject* obj) {
 }
 
 
+void CollisionManager::Reset() {
+	gameObjects_.clear();
+	currentCollisionPair_.clear();
+	collisionPair_.clear();
+}
+
+
 
 void CollisionManager::CheckCollision(BaseGameObject* objA, BaseCollider* colliderA, BaseGameObject* objB, BaseCollider* colliderB) {
 

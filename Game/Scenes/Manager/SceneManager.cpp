@@ -89,9 +89,9 @@ void SceneManager::ImGuiDebug() {
 		return;
 	}
 
-	const char* labels[3]{ "Title", "Game", "Result" };
+	const char* labels[4]{ "Title", "Game", "Result", "Clear"};
 	int currentItem = static_cast<int>(nextSceneId_);
-	if(ImGui::Combo("next scene", &currentItem, labels, 3)) {
+	if(ImGui::Combo("next scene", &currentItem, labels, 4)) {
 		nextSceneId_ = SCENE_ID(currentItem);
 		Load(nextSceneId_);
 	}
@@ -136,6 +136,7 @@ void SceneManager::Load(SCENE_ID id) {
 	}
 
 	GameObjectManager::DestoryAll();
+	CollisionManager::GetInstance()->Reset();
 
 	scene_->Initialize();
 	ModelManager::GetInstance()->SetDirectionalLight(scene_->directionalLight_);

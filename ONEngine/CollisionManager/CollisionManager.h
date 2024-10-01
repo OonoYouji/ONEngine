@@ -37,6 +37,8 @@ public:
 	void AddGameObject(BaseGameObject* obj);
 	void SubGameObject(BaseGameObject* obj);
 
+	void Reset();
+
 private:
 	/// ===================================================
 	/// private : methods
