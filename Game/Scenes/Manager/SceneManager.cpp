@@ -114,6 +114,10 @@ void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLay
 	sceneLayers_ = sceneLayers;
 }
 
+DirectionalLight* SceneManager::GetDirectionalLight() {
+	return scene_->directionalLight_;
+}
+
 void SceneManager::Load(SCENE_ID id) {
 	switch(id) {
 	case TITLE:

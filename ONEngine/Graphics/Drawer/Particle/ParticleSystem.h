@@ -3,10 +3,15 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <string>
+
+#include <DxDescriptor.h>
 
 #include <PipelineState/PipelineState.h>
 #include <Component/Base/BaseComponent.h>
 #include <Component/Transform/Transform.h>
+
+#include <Model/Model.h>
 
 
 /// ===================================================
@@ -19,7 +24,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ParticleSystem(uint32_t maxParticleNum);
+	ParticleSystem(uint32_t maxParticleNum, const std::string& filePath);
 	~ParticleSystem() {}
 
 
@@ -27,7 +32,7 @@ public:
 	/// public : static methods
 	/// ===================================================
 
-	static void SInitialize(ID3D12GraphicsCommandList* commandList);
+	static void SInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor);
 	static void SFinalize();
 
 
@@ -65,6 +70,9 @@ private:
 
 	std::vector<std::unique_ptr<class Particle>> particleArray_;
 
+	Model* pModel_ = nullptr;
+
+
 };
 
 
@@ -82,10 +90,14 @@ public:
 	ParticlePipeline() {}
 	~ParticlePipeline() {}
 
-	void Initialize(ID3D12GraphicsCommandList* commandList);
+	void Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor);
 	void Update();
 
-	void Draw(const std::vector<std::unique_ptr<class Particle>>& particleArray, uint32_t instanceCount);
+	void Draw(
+		const std::vector<std::unique_ptr<class Particle>>& particleArray, 
+		Model* useModel,
+		uint32_t instanceCount
+	);
 
 private:
 
@@ -96,6 +108,7 @@ private:
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
 	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
+	ONE::DxDescriptor*             pDxDescriptor_ = nullptr;
 	
 };
 
@@ -105,6 +118,7 @@ private:
 /// パーティクルの一粒子のクラス、byteが少なければ少ないほどいい
 /// ===================================================
 class Particle final {
+	friend class ParticlePipeline;
 public:
 
 	/// ===================================================

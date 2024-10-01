@@ -3,6 +3,12 @@
 #include <cassert>
 #include <algorithm>
 
+#include <CameraManager.h>
+#include <SceneManager.h>
+#include <ModelManager.h>
+
+#include <Light/DirectionalLight.h>
+
 
 std::unique_ptr<ParticlePipeline> ParticleSystem::sPipeline_ = nullptr;
 
@@ -13,15 +19,15 @@ std::unique_ptr<ParticlePipeline> ParticleSystem::sPipeline_ = nullptr;
 /// ParticleSystem 
 /// ===================================================
 
-ParticleSystem::ParticleSystem(uint32_t maxParticleNum) : kMaxParticleNum_(maxParticleNum) {
-
+ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& filePath) : kMaxParticleNum_(maxParticleNum) {
+	pModel_ = ModelManager::Load(filePath);
 }
 
 
-void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* commandList) {
+void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_, ONE::DxDescriptor* dxDescriptor) {
 	if(!sPipeline_) {
 		sPipeline_.reset(new ParticlePipeline);
-		sPipeline_->Initialize(commandList);
+		sPipeline_->Initialize(pCommandList_, dxDescriptor);
 	}
 }
 
@@ -34,13 +40,19 @@ void ParticleSystem::Initialize() {
 	particleArray_.reserve(kMaxParticleNum_);
 	for(uint32_t i = 0u; i < 2; ++i) {
 		particleArray_.push_back(std::make_unique<Particle>());
+		particleArray_.back()->Initialize();
 	}
 
 }
 
 
 
-void ParticleSystem::Update() {}
+void ParticleSystem::Update() {
+	for(auto& particle : particleArray_) {
+		particle->Update();
+	}
+
+}
 
 void ParticleSystem::Draw() {
 
@@ -55,7 +67,7 @@ void ParticleSystem::Draw() {
 	});
 
 	if(instnanceNum > 0) {
-		sPipeline_->Draw(particleArray_, instnanceNum);
+		sPipeline_->Draw(particleArray_, pModel_, instnanceNum);
 	}
 }
 
@@ -66,11 +78,14 @@ void ParticleSystem::Draw() {
 /// ParticlePipeline 
 /// ===================================================
 
-void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList) {
+void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_, ONE::DxDescriptor* dxDescriptor) {
 
 	/// pointer set
-	pCommandList_ = commandList;
+	pCommandList_ = commandList_;
 	assert(pCommandList_);
+
+	pDxDescriptor_ = dxDescriptor;
+	assert(pDxDescriptor_);
 
 
 	shader_.ShaderCompile(
@@ -110,7 +125,57 @@ void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList) {
 
 
 
-void ParticlePipeline::Draw(const std::vector<std::unique_ptr<class Particle>>& particleArray, uint32_t instanceCount) {
+void ParticlePipeline::Draw(const std::vector<std::unique_ptr<class Particle>>& particleArray, Model* useModel, uint32_t instanceCount) {
 
-	//pCommandList_->DrawIndexedInstanced(4, instanceCount, 0, 0, 0);
+	/// other pointer get
+	ID3D12Resource*   viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+	DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
+
+	/// default setting
+	pDxDescriptor_->SetSRVHeap(pCommandList_);
+	pipelineState_->SetPipelineState();
+
+	/// command setting
+	pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+	pLight->BindToCommandList(3, pCommandList_);
+
+
+	for(auto& particle : particleArray) {
+		particle->transform_.BindTransform(pCommandList_, 1);
+	}
+
+	for(auto& material : useModel->GetMaterials()) {
+		material.BindMaterial(pCommandList_, 2);
+		material.BindTexture(pCommandList_, 4);
+	}
+
+	/// 描画コールの呼び出し
+	for(auto& mesh : useModel->GetMeshes()) {
+
+		mesh.Draw(pCommandList_, false);
+
+		UINT indexCountPerInstance = static_cast<UINT>(mesh.GetIndices().size());
+		pCommandList_->DrawIndexedInstanced(indexCountPerInstance, 1, 0, 0, 0);
+	}
 }
+
+
+
+
+/// ===================================================
+/// Particle
+/// ===================================================
+
+void Particle::Initialize() {
+	transform_.Initialize();
+}
+
+
+void Particle::Update() {
+
+	transform_.position.z += 0.02f;
+
+	transform_.Update();
+}
+

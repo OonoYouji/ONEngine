@@ -13,13 +13,13 @@ void Player::Initialize() {
 	//meshRenderer->SetModel("Sphere");
 	//meshRenderer->SetMaterial("uvChecker");
 
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("uvChecker.png");
+	//auto sprite = AddComponent<SpriteRenderer>();
+	//sprite->SetTexture("uvChecker.png");
 	
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");
 
-	auto particle = AddComponent<ParticleSystem>(12);
+	auto particle = AddComponent<ParticleSystem>(12, "Sphere");
 
 	SetPositionZ(10.0f);
 	UpdateMatrix();

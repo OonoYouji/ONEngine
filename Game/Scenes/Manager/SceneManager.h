@@ -60,6 +60,8 @@ public:
 		return sceneLayers_.at(layerId);
 	}
 
+	class DirectionalLight* GetDirectionalLight();
+
 private:
 
 	void Load(SCENE_ID id);

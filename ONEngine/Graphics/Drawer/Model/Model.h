@@ -82,7 +82,10 @@ public:
 
 
 	const std::vector<Mesh>& GetMeshes() const { return meshes_; }
+	std::vector<Mesh>& GetMeshes() { return meshes_; }
+
 	const std::vector<Material>& GetMaterials() const { return materials_; }
+	std::vector<Material>& GetMaterials() { return materials_; }
 
 
 private:

@@ -87,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
-	ParticleSystem::SInitialize(dxCommon->GetDxCommand()->GetList());
+	ParticleSystem::SInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();

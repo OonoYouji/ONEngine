@@ -45,6 +45,7 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	const std::vector<VertexData>& GetVertices() const { return vertices_; }
+	const std::vector<uint32_t>&   GetIndices()  const { return indices_; }
 
 	/// <summary>
 	/// 頂点データの追加
@@ -78,13 +79,13 @@ public:
 
 private:
 
-	std::vector<VertexData> vertices_;
-	std::vector<uint32_t> indices_;
+	std::vector<VertexData>  vertices_;
+	std::vector<uint32_t>    indices_;
 
-	ComPtr<ID3D12Resource> vertexBuffer_;
+	ComPtr<ID3D12Resource>   vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
 
-	ComPtr<ID3D12Resource> indexBuffer_;
-	D3D12_INDEX_BUFFER_VIEW ibv_;
+	ComPtr<ID3D12Resource>   indexBuffer_;
+	D3D12_INDEX_BUFFER_VIEW  ibv_;
 
 };
