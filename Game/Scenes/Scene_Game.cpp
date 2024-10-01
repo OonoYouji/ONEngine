@@ -2,6 +2,7 @@
 
 #include "GameCamera.h"
 #include "Player/Player.h"
+#include "Particle/ParticleSystem.h"
 
 
 /// ===================================================
@@ -19,6 +20,7 @@ void Scene_Game::Initialize() {
 
 	//mainCamera_->SetPosition({0.0f, 0.0f, -10.0f});
 	//mainCamera_->UpdateMatrix();
+
 }
 
 

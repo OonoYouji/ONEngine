@@ -3,7 +3,8 @@
 #include <Input.h>
 #include <Component/MeshRenderer/MeshRenderer.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
-
+#include <Particle/ParticleSystem.h>
+	
 #include <ImGuiManager.h>
 
 
@@ -17,6 +18,8 @@ void Player::Initialize() {
 	
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");
+
+	auto particle = AddComponent<ParticleSystem>(12);
 
 	SetPositionZ(10.0f);
 	UpdateMatrix();

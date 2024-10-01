@@ -69,9 +69,9 @@ public:
 	/// ---------------------------------------------------
 	/// コンポーネントの追加
 	/// ---------------------------------------------------
-	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
-	T* AddComponent() {
-		auto addComponent = std::make_unique<T>();
+	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr, typename... Args>
+	T* AddComponent(Args&&... args) {
+		auto addComponent = std::make_unique<T>(std::forward<Args>(args)...);
 		addComponent->SetParent(this);
 		addComponent->Initialize();
 		T* componentPtr = addComponent.get();

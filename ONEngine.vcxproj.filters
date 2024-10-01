@@ -227,6 +227,9 @@
     <ClCompile Include="ONEngine\FrameFixation\FrameFixation.cpp">
       <Filter>ONEngine\FrameFixation</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.cpp">
+      <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -390,6 +393,12 @@
     </Filter>
     <Filter Include="ONEngine\FrameFixation">
       <UniqueIdentifier>{fc53e316-1098-4147-9df5-77949d7d303a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\Particle">
+      <UniqueIdentifier>{706d644e-6dd0-4ec7-af46-89a90cd556d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Particle">
+      <UniqueIdentifier>{8d19174c-3157-4edb-a865-9cc019fdc838}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -624,6 +633,9 @@
     <ClInclude Include="ONEngine\FrameFixation\FrameFixation.h">
       <Filter>ONEngine\FrameFixation</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.h">
+      <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -649,6 +661,9 @@
     </None>
     <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
       <Filter>Resources\Shaders\Line2D</Filter>
+    </None>
+    <None Include="Resources\Shaders\Particle\Particle.hlsli">
+      <Filter>Resources\Shaders\Particle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -702,6 +717,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
       <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.VS.hlsl">
+      <Filter>Resources\Shaders\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.PS.hlsl">
+      <Filter>Resources\Shaders\Particle</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

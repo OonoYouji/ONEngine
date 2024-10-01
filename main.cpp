@@ -28,7 +28,7 @@
 #include <RenderTextureManager.h>
 #include <SceneLayer/SceneLayer.h>
 #include <Bloom/Bloom.h>
-
+#include <Particle/ParticleSystem.h>
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -87,6 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
+	ParticleSystem::SInitialize();
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
@@ -117,7 +118,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// window mode や imgui の表示設定の初期化
 	winApp->SetIsFullScreen(false); /// ? full screen : window mode
-	uint8_t drawLayerIndex = 0;	/// game || monitor
+	uint8_t drawLayerIndex = 0u;
 	bool imguiIsBlending = true;
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
 
@@ -222,6 +223,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();
+	ParticleSystem::SFinalize();
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();
