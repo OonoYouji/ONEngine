@@ -13,7 +13,9 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	BoxCollider() {}
+	BoxCollider(const Model* model) {
+		CreateCollider(model);
+	}
 	~BoxCollider() {}
 
 	void Initialize()	override;

@@ -1,17 +1,20 @@
 #include "Player.h"
 
+#include <ModelManager.h>
+
 #include <Input.h>
 #include <Component/MeshRenderer/MeshRenderer.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
 #include <Particle/ParticleSystem.h>
+#include <Component/Collider/BoxCollider.h>
 	
 #include <ImGuiManager.h>
 
 
 void Player::Initialize() {
-	//auto meshRenderer = AddComponent<MeshRenderer>();
-	//meshRenderer->SetModel("Sphere");
-	//meshRenderer->SetMaterial("uvChecker");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel("Sphere");
+	meshRenderer->SetMaterial("uvChecker");
 
 	//auto sprite = AddComponent<SpriteRenderer>();
 	//sprite->SetTexture("uvChecker.png");
@@ -20,6 +23,8 @@ void Player::Initialize() {
 	audioSource_->SetAudioClip("sentaku.wav");
 
 	auto particle = AddComponent<ParticleSystem>(12, "Sphere");
+
+	AddComponent<BoxCollider>(ModelManager::GetModel("Sphere"));
 
 	SetPositionZ(10.0f);
 	UpdateMatrix();

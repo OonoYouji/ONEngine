@@ -31,6 +31,15 @@ public:
 
 	void Update();
 
+	void ImGuiDebug();
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void CheckCollision(BaseGameObject* objA, BaseGameObject* objB);
+
 
 private:
 	/// ===================================================
@@ -47,8 +56,10 @@ private:
 	std::list<BaseGameObject*> gameObjects_;
 
 	using CollisionPair = std::pair<BaseGameObject*, BaseGameObject*>;
-	std::list<CollisionPair> pair_;
+	std::list<CollisionPair> collisionPair_;
 
-	Vec3 division_;
+	/// このフレーム内で当たったオブジェクト
+	std::list<CollisionPair> currentCollisionPair_;
+
 
 };

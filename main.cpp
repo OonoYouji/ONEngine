@@ -19,7 +19,7 @@
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 #include <GameObjectManager.h>
-//#include "Collision/CollisionManager.h"
+#include "CollisionManager/CollisionManager.h"
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
@@ -54,7 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager*			imGuiManager		= ImGuiManager::GetInstance();
 	CameraManager*			cameraManager		= CameraManager::GetInstance();
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
-	//CollisionManager* collisionManager = CollisionManager::GetInstance();
+	CollisionManager*       collisionManager    = CollisionManager::GetInstance();
 	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
 	LineDrawer2D*			lineDrawer2d		= LineDrawer2D::GetInstance();
 
@@ -163,7 +163,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		time->ImGuiDebug();
 		frameFixation->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
-		//collisionManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		sceneManager->ImGuiDebug();
 		
