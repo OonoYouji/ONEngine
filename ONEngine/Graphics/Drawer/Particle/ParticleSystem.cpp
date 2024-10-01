@@ -156,7 +156,7 @@ void ParticlePipeline::Draw(const std::vector<std::unique_ptr<class Particle>>& 
 		mesh.Draw(pCommandList_, false);
 
 		UINT indexCountPerInstance = static_cast<UINT>(mesh.GetIndices().size());
-		pCommandList_->DrawIndexedInstanced(indexCountPerInstance, 1, 0, 0, 0);
+		pCommandList_->DrawIndexedInstanced(indexCountPerInstance, instanceCount, 0, 0, 0);
 	}
 }
 
