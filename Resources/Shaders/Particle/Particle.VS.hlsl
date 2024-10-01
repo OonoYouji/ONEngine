@@ -15,7 +15,7 @@ ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 /// constant buffer -> structured buffer
 ConstantBuffer<Transform> gTransform : register(b1);
 
-StructuredBuffer<Transform> gTransformArray : register(s1);
+//StructuredBuffer<Transform> gTransformArray : register(s1);
 
 VSOutput main(VSInput input) {
 	VSOutput output;
