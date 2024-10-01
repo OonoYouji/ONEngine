@@ -8,7 +8,7 @@
 #include <ImGuiManager.h>
 
 
-void BasePanel::Initialize(Vector3 pos) {
+void BasePanel::Initialize() {
 	
 	audioSource_ = AddComponent<AudioSource>();
 	audioSource_->SetAudioClip("sentaku.wav");
@@ -17,7 +17,7 @@ void BasePanel::Initialize(Vector3 pos) {
 
 	//SetPositionZ(10.0f);
 	auto mesh= AddComponent<MeshRenderer>();
-	mesh->SetModel()
+	mesh->SetModel("TestObject");
 	UpdateMatrix();
 }
 

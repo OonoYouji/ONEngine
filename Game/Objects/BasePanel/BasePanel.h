@@ -11,7 +11,7 @@ public:
 	BasePanel() { CreateTag(this); }
 	~BasePanel() {}
 
-	virtual	void Initialize(Vector3 pos);
+	virtual	void Initialize()override;
 	virtual	void Update() override;
 
 	virtual void Debug() override;
