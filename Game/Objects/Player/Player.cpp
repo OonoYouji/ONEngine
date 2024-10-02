@@ -13,9 +13,9 @@
 
 
 void Player::Initialize() {
-	/*auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("Sphere");
-	meshRenderer->SetMaterial("uvChecker");*/
+	//auto meshRenderer = AddComponent<MeshRenderer>();
+	//meshRenderer->SetModel("Sphere");
+	//meshRenderer->SetMaterial("uvChecker");
 
 	//auto sprite = AddComponent<SpriteRenderer>();
 	//sprite->SetTexture("uvChecker.png");
