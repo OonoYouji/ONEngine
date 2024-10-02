@@ -13,13 +13,14 @@
 #include <SpriteManager.h>
 #include <TextureManager.h>
 #include <AudioManager.h>
-#include <LineDrawer2D/LineDrawer2D.h>
+#include <LineDrawer/Line2D.h>
+#include <LineDrawer/Line3D.h>
 
 #include <SceneManager.h>
 #include <ImGuiManager.h>
 #include <CameraManager.h>
 #include <GameObjectManager.h>
-//#include "Collision/CollisionManager.h"
+#include "CollisionManager/CollisionManager.h"
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
@@ -54,9 +55,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager*			imGuiManager		= ImGuiManager::GetInstance();
 	CameraManager*			cameraManager		= CameraManager::GetInstance();
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
-	//CollisionManager* collisionManager = CollisionManager::GetInstance();
+	CollisionManager*       collisionManager    = CollisionManager::GetInstance();
 	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
-	LineDrawer2D*			lineDrawer2d		= LineDrawer2D::GetInstance();
+	Line2D*					line2d				= Line2D::GetInstance();
 
 
 
@@ -74,7 +75,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp.get(), dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
-	lineDrawer2d->Initialize();
+	line2d->Initialize();
+	Line3D::SInitialize(dxCommon->GetDxCommand()->GetList());
 	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
@@ -163,7 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		time->ImGuiDebug();
 		frameFixation->ImGuiDebug();
 		gameObjectManager->ImGuiDebug();
-		//collisionManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		sceneManager->ImGuiDebug();
 		
@@ -189,7 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 		if(imguiIsBlending) {
 			RenderTextureManager::CreateBlendRenderTexture(
-				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
 				debugFinalRenderTexture.get()
 			);
 		}
@@ -202,11 +204,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(imguiIsBlending) {
 			dxCommon->PostDraw(debugFinalRenderTexture.get());
 		} else {
-			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
+			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 		}
 #else
 		frameFixation->Fixation();
-		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
+		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 #endif // _DEBUG
 
 	}
@@ -229,7 +231,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
 
-	lineDrawer2d->Finalize();
+	Line3D::SFinalize();
+	line2d->Finalize();
 	audioManager->Finalize();
 	spriteManager->Finalize();
 	modelManager->Finalize();

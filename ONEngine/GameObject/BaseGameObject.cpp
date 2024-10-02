@@ -5,6 +5,7 @@
 #include <ImGuiManager.h>
 #include <SceneManager.h>
 #include <GameObjectManager.h>
+#include <CollisionManager/CollisionManager.h>
 #include <SceneManager.h>
 
 
@@ -16,6 +17,7 @@
 /// ===================================================
 BaseGameObject::BaseGameObject() {
 	GameObjectManager::GetInstance()->AddGameObject(this);
+	CollisionManager::GetInstance()->AddGameObject(this);
 
 	pTranform_ = AddComponent<Transform>();
 	UpdateMatrix();

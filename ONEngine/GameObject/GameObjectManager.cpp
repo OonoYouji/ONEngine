@@ -84,16 +84,6 @@ void GameObjectManager::LastUpdate() {
 }
 
 
-void GameObjectManager::BackSpriteDraw(int layerId) {
-	for(auto& obj : objects_) {
-		if(obj->drawLayerId != layerId) { continue; }
-
-		for(auto& component : obj->GetComponents()) {
-			if(!component->isActive) { continue; }
-			component->BackSpriteDraw();
-		}
-	}
-}
 
 void GameObjectManager::Object3dDraw(int layerId) {
 	for(auto& obj : objects_) {
@@ -104,17 +94,6 @@ void GameObjectManager::Object3dDraw(int layerId) {
 			component->Draw();
 		}
 
-	}
-}
-
-void GameObjectManager::FrontSpriteDraw(int layerId) {
-	for(auto& obj : objects_) {
-		if(obj->drawLayerId != layerId) { continue; }
-
-		for(auto& component : obj->GetComponents()) {
-			if(!component->isActive) { continue; }
-			component->FrontSpriteDraw();
-		}
 	}
 }
 

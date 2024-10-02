@@ -3,6 +3,7 @@
 #include <list>
 
 #include <GameObjectManager.h>
+#include <Component/Collider/BaseCollider.h>
 
 
 /// ===================================================
@@ -31,6 +32,36 @@ public:
 
 	void Update();
 
+	void ImGuiDebug();
+
+	void AddGameObject(BaseGameObject* obj);
+	void SubGameObject(BaseGameObject* obj);
+
+	void Reset();
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void CheckCollision(
+		BaseGameObject* objA, BaseCollider* colliderA,
+		BaseGameObject* objB, BaseCollider* colliderB
+	);
+
+	/// <summary>
+	/// どのコールバック関数を呼び出すか確認
+	/// </summary>
+	/// <param name="objA"></param>
+	/// <param name="objB"></param>
+	void CheckCallbackMethod(BaseGameObject* objA, BaseGameObject* objB);
+
+	/// <summary>
+	/// 当たったリストからこのpairを削除する
+	/// </summary>
+	/// <param name="objA"></param>
+	/// <param name="objB"></param>
+	void ErasePair(BaseGameObject* objA, BaseGameObject* objB);
 
 private:
 	/// ===================================================
@@ -47,8 +78,10 @@ private:
 	std::list<BaseGameObject*> gameObjects_;
 
 	using CollisionPair = std::pair<BaseGameObject*, BaseGameObject*>;
-	std::list<CollisionPair> pair_;
+	std::list<CollisionPair> collisionPair_;
 
-	Vec3 division_;
+	/// このフレーム内で当たったオブジェクト
+	std::list<CollisionPair> currentCollisionPair_;
+
 
 };

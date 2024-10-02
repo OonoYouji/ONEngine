@@ -68,6 +68,25 @@ void BoxCollider::CreateCollider(const Model* model) {
 	transform_->UpdateMatrix();
 }
 
+std::vector<Vec3> BoxCollider::GetVertices() const {
+	std::vector<Vec3> result = {
+		{-1.0f, +1.0f, -1.0f},
+		{+1.0f, +1.0f, -1.0f},
+		{-1.0f, -1.0f, -1.0f},
+		{+1.0f, -1.0f, -1.0f},
+		{-1.0f, +1.0f, +1.0f},
+		{+1.0f, +1.0f, +1.0f},
+		{-1.0f, -1.0f, +1.0f},
+		{+1.0f, -1.0f, +1.0f}
+	};
+
+	for(auto& v : result) {
+		v = Mat4::Transform(v, transform_->matTransform);
+	}
+
+	return result;
+}
+
 void BoxCollider::CalculationOrientations() {
 	orientatinos_[0] = Mat4::TransformNormal({ 1.0f, 0.0f, 0.0f }, transform_->matTransform);
 	orientatinos_[1] = Mat4::TransformNormal({ 0.0f, 1.0f, 0.0f }, transform_->matTransform);

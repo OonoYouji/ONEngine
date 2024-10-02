@@ -42,6 +42,7 @@
     <ClCompile Include="ONEngine\Component\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\Component\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
@@ -58,7 +59,8 @@
     <ClCompile Include="ONEngine\GameObject\BaseGameObject.cpp" />
     <ClCompile Include="ONEngine\GameObject\GameObjectManager.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Floor\Floor.cpp" />
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.cpp" />
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Material\Material.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\Graphics\Drawer\Model\Model.cpp" />
@@ -122,6 +124,7 @@
     <ClInclude Include="ONEngine\Component\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\Component\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\Component\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
@@ -138,7 +141,8 @@
     <ClInclude Include="ONEngine\GameObject\BaseGameObject.h" />
     <ClInclude Include="ONEngine\GameObject\GameObjectManager.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Floor\Floor.h" />
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.h" />
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Material\Material.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\Graphics\Drawer\Model\Model.h" />
@@ -189,6 +193,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
@@ -251,6 +259,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

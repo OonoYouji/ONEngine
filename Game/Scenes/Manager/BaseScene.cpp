@@ -2,16 +2,11 @@
 
 #include <GameCamera.h>
 #include <Graphics/Light/DirectionalLight.h>
+#include <CameraManager.h>
 
 BaseScene::BaseScene() {
 
-	/// camera initialize
-	mainCamera_ = new GameCamera("MainCamera");
-	mainCamera_->Initialize();
-
-	/// light  initialize
-	directionalLight_ = new DirectionalLight();
-	directionalLight_->Initialize();
+	CreateObject();
 
 	/// layer  initialize
 	layers_.push_back(std::make_unique<SceneLayer>());
@@ -25,4 +20,16 @@ std::vector<SceneLayer*> BaseScene::GetSceneLayers() {
 		result.push_back(sceneLayer.get());
 	}
 	return result;
+}
+
+void BaseScene::CreateObject() {
+	/// camera initialize
+	mainCamera_ = new GameCamera("MainCamera");
+	mainCamera_->Initialize();
+
+	CameraManager::GetInstance()->SetMainCamera(mainCamera_);
+
+	/// light  initialize
+	directionalLight_ = new DirectionalLight();
+	directionalLight_->Initialize();
 }

@@ -13,7 +13,9 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	BoxCollider() {}
+	BoxCollider(const Model* model) {
+		CreateCollider(model);
+	}
 	~BoxCollider() {}
 
 	void Initialize()	override;
@@ -25,6 +27,21 @@ public:
 	/// </summary>
 	/// <param name="model">: modelを基にOBBを作成する</param>
 	void CreateCollider(const Model* model) override;
+
+
+	std::vector<Vec3> GetVertices() const;
+	const std::array<Vec3, 3>& GetOrientations() const {
+		return orientatinos_;
+	}
+
+	const Vec3& GetSize() const {
+		return size_;
+	}
+
+	const Mat4& GetObbMatTransform() const {
+		return obbMatTransform_;
+	}
+
 
 private:
 	/// ===================================================

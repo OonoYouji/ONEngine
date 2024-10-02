@@ -341,6 +341,7 @@ void ModelManager::PostDraw() {
 
 
 	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	CameraManager* ins = CameraManager::GetInstance();
 	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	ONE::DxCommon::GetInstance()->GetDxDescriptor()->SetSRVHeap(commandList);

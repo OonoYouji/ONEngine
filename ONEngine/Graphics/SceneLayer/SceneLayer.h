@@ -35,21 +35,16 @@ public:
 	void SetRadius(int radius, LAYER_NUMBER layerNumber);
 
 
-	RenderTexture* GetRenderTexture(LAYER_NUMBER layerNumber) {
-		return renderTextures_[layerNumber].get();
-	}
-
-	RenderTexture* GetFinalRenderTexture() {
-		return finalRenderTex_.get();
+	RenderTexture* GetRenderTexture() {
+		return renderTexture_.get();
 	}
 
 protected:
 	static int sInstanceCount_;
 
 	class BaseCamera* camera_ = nullptr;
-	class BaseScene* currentScene_ = nullptr;
-	std::unique_ptr<RenderTexture> renderTextures_[LAYERNUM_COUNTER];
-	std::unique_ptr<RenderTexture> finalRenderTex_;
+	class BaseScene*  currentScene_ = nullptr;
+	std::unique_ptr<RenderTexture> renderTexture_;
 	std::string className_;
 	int id_;
 

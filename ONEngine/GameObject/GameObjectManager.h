@@ -66,9 +66,7 @@ public:
 	/// </summary>
 	void LastUpdate();
 
-	void BackSpriteDraw(int layerId);
 	void Object3dDraw(int layerId);
-	void FrontSpriteDraw(int layerId);
 
 
 	/////////////////////////////////////////////////////////////////////////////////////////////

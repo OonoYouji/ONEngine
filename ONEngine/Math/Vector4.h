@@ -27,6 +27,11 @@ public:
 	static const Vector4 k0100;
 	static const Vector4 k0010;
 	static const Vector4 k0001;
+
+	static const Vector4 kWhite;
+	static const Vector4 kRed;
+	static const Vector4 kGreen;
+	static const Vector4 kBlue;
 	
 	
 	static Vector4 Lerp(
@@ -34,6 +39,9 @@ public:
 		const Vector4& end,
 		float t
 	);
+
+	static float Lenght(const Vector4& v);
+	static Vector4 Normalize(const Vector4& v);
 
 public:
 

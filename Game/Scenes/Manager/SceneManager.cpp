@@ -11,7 +11,7 @@
 
 #include <ImGuiManager.h>
 #include <GameObjectManager.h>
-//#include <Collision/CollisionManager.h>
+#include <CollisionManager/CollisionManager.h>
 #include <AudioManager.h>
 #include <ModelManager.h>
 
@@ -42,7 +42,7 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 	pGameObjectManager_ = GameObjectManager::GetInstance();
 	Load(currentId_);
 
-	//pCollisionManager_ = CollisionManager::GetInstance();
+	pCollisionManager_ = CollisionManager::GetInstance();
 }
 
 
@@ -50,7 +50,10 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 /// 終了処理
 /// ===================================================
 void SceneManager::Finalize() {
-	scene_.reset();
+	//scenes_.clear();
+	for(auto& scene : scenes_) {
+		scene.reset();
+	}
 }
 
 
@@ -60,15 +63,14 @@ void SceneManager::Finalize() {
 void SceneManager::Update() {
 	if(currentId_ != nextSceneId_) {
 		Load(nextSceneId_);
-		currentId_ = nextSceneId_;
 	}
 
-	scene_->Update();
+	scenes_[currentId_]->Update();
 
 	/// 更新1
 	pGameObjectManager_->Update();
 	/// 当たり判定処理
-	//pCollisionManager_->Update();
+	pCollisionManager_->Update();
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
 
@@ -89,9 +91,9 @@ void SceneManager::ImGuiDebug() {
 		return;
 	}
 
-	const char* labels[3]{ "Title", "Game", "Result" };
+	const char* labels[4]{ "Title", "Game", "Result", "Clear"};
 	int currentItem = static_cast<int>(nextSceneId_);
-	if(ImGui::Combo("next scene", &currentItem, labels, 3)) {
+	if(ImGui::Combo("next scene", &currentItem, labels, 4)) {
 		nextSceneId_ = SCENE_ID(currentItem);
 		Load(nextSceneId_);
 	}
@@ -115,31 +117,41 @@ void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLay
 }
 
 DirectionalLight* SceneManager::GetDirectionalLight() {
-	return scene_->directionalLight_;
+	return scenes_[currentId_]->directionalLight_;
 }
 
 void SceneManager::Load(SCENE_ID id) {
-	switch(id) {
-	case TITLE:
-		scene_.reset(new Scene_Title());
-		break;
-	case GAME:
-		scene_.reset(new Scene_Game());
-		break;
-	case RESULT:
-		scene_.reset(new Scene_Result());
-		break;
-	case CLEAR:
-		scene_.reset(new Scene_Clear());
-		break;
 
+	currentId_ = id;
+	auto SceneCreate = [&]() -> BaseScene* {
+		switch(id) {
+		case TITLE:
+			return new Scene_Title;
+		case GAME:
+			return new Scene_Game;
+		case RESULT:
+			return new Scene_Result;
+		case CLEAR:
+			return new Scene_Clear;
+		}
+		return nullptr;
+	};
+
+	/// idに沿ったシーンの作成
+	if(!scenes_[currentId_]) {
+		scenes_[currentId_].reset(SceneCreate());
+	} else {
+		scenes_[currentId_]->CreateObject();
 	}
+	
 
 	GameObjectManager::DestoryAll();
+	CollisionManager::GetInstance()->Reset();
 
-	scene_->Initialize();
-	ModelManager::GetInstance()->SetDirectionalLight(scene_->directionalLight_);
-	SetSceneLayers(scene_->GetSceneLayers());
+	scenes_[currentId_]->Initialize();
+
+	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
+	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;
 }

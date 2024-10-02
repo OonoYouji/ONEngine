@@ -25,6 +25,8 @@ private:
 	/// <returns></returns>
 	std::vector<SceneLayer*> GetSceneLayers();
 
+	void CreateObject();
+
 protected:
 	class GameCamera*       mainCamera_       = nullptr;
 	class DirectionalLight* directionalLight_ = nullptr;

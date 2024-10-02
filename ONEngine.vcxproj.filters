@@ -161,9 +161,6 @@
     <ClCompile Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.cpp">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.cpp">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Input\Gamepad.cpp">
       <Filter>ONEngine\Input</Filter>
     </ClCompile>
@@ -229,6 +226,15 @@
     </ClCompile>
     <ClCompile Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.cpp">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.cpp">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.cpp">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp">
+      <Filter>ONEngine\Component\SplinePathRenderer</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\BasePanel\BasePanel.cpp">
       <Filter>Game\Objects\BasePanel</Filter>
@@ -349,9 +355,6 @@
     <Filter Include="Resources\Shaders\Blur">
       <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\Graphics\Drawer\LineDrawer2D">
-      <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\Line2D">
       <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
     </Filter>
@@ -402,6 +405,15 @@
     </Filter>
     <Filter Include="Resources\Shaders\Particle">
       <UniqueIdentifier>{8d19174c-3157-4edb-a865-9cc019fdc838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Component\SplinePathRenderer">
+      <UniqueIdentifier>{9bf857d6-955d-47eb-b428-bd9e1720c870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Line3D">
+      <UniqueIdentifier>{c9403f2f-1bfa-4bf2-858b-c24abc4a8864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Graphics\Drawer\LineDrawer">
+      <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects\BasePanel">
       <UniqueIdentifier>{c0d81767-60d6-481b-be15-94d4d17e57f5}</UniqueIdentifier>
@@ -570,9 +582,6 @@
     <ClInclude Include="ONEngine\Graphics\PostEffect\Bloom\Bloom.h">
       <Filter>ONEngine\Graphics\PostEffect\Bloom</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer2D\LineDrawer2D.h">
-      <Filter>ONEngine\Graphics\Drawer\LineDrawer2D</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\Input\Gamepad.h">
       <Filter>ONEngine\Input</Filter>
     </ClInclude>
@@ -642,6 +651,15 @@
     <ClInclude Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.h">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.h">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.h">
+      <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h">
+      <Filter>ONEngine\Component\SplinePathRenderer</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Objects\BasePanel\BasePanel.h">
       <Filter>Game\Objects\BasePanel</Filter>
     </ClInclude>
@@ -673,6 +691,9 @@
     </None>
     <None Include="Resources\Shaders\Particle\Particle.hlsli">
       <Filter>Resources\Shaders\Particle</Filter>
+    </None>
+    <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
+      <Filter>Resources\Shaders\Line3D</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -732,6 +753,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Particle\Particle.PS.hlsl">
       <Filter>Resources\Shaders\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.PS.hlsl">
+      <Filter>Resources\Shaders\Line3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
+      <Filter>Resources\Shaders\Line3D</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

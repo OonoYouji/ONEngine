@@ -4,10 +4,21 @@
 #include <d3d12.h>
 
 #include <Vector3.h>
+#include <Vector4.h>
 #include <Matrix4x4.h>
 
 #include <Component/Base/BaseComponent.h>
-	
+
+
+/// ===================================================
+/// 行列の計算方式のenum
+/// ===================================================
+enum ROTATE_ORDER : uint32_t {
+	XZY, XYZ,
+	YXZ, YZX,
+	ZYX, ZXY,
+	QUATERNION
+};
 
 
 /// ===================================================
@@ -35,14 +46,20 @@ public:
 
 	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
 
+private:
+
+	Mat4 MakeRotate(uint32_t order);
+
 public:
 
-	Vec3 scale = Vec3::kOne;
-	Vec3 rotate = {};
-	Vec3 position = {};
+	Vec3 scale      = Vec3::kOne;
+	Vec3 rotate     = {};
+	Vec4 quaternion = {};
+	Vec3 position   = {};
 
 	Mat4 matTransform = Mat4::kIdentity;
 
+	uint32_t rotateOrder = 0u;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
 

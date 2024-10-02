@@ -130,6 +130,40 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& v) {
 	return MakeRotateX(v.x) * MakeRotateY(v.y) * MakeRotateZ(v.z);
 }
 
+Matrix4x4 Matrix4x4::MakeRotateQuaternion(const Vector4& v) {
+	if(Vec4::Lenght(v) == 0.0f) {
+		return kIdentity;
+	}
+	Mat4 result{};
+
+	float ww = v.w * v.w;
+	float xx = v.x * v.x;
+	float yy = v.y * v.y;
+	float zz = v.z * v.z;
+	float wx = v.w * v.x;
+	float wy = v.w * v.y;
+	float wz = v.w * v.z;
+	float xy = v.x * v.y;
+	float xz = v.x * v.z;
+	float yz = v.y * v.z;
+
+	result.m[0][0] = ww + xx - yy - zz;
+	result.m[0][1] = 2 * (xy + wz);
+	result.m[0][2] = 2 * (xz - wy);
+
+	result.m[1][0] = 2 * (xy - wz);
+	result.m[1][1] = ww - xx + yy - zz;
+	result.m[1][2] = 2 * (yz + wx);
+
+	result.m[2][0] = 2 * (xz + wy);
+	result.m[2][1] = 2 * (yz - wx);
+	result.m[2][2] = ww - xx - yy + zz;
+
+	result.m[3][3] = 1.0f;
+
+	return result;
+}
+
 Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& v) {
 	return Matrix4x4(
 		{ 1.0f, 0.0f, 0.0f, 0.0f },
