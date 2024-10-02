@@ -29,9 +29,7 @@ public:
 	void Initialize() override;
 
 	void Update() override;
-
-	void BackSpriteDraw() override;
-	void FrontSpriteDraw() override;
+	void Draw()   override;
 
 	void Debug() override;
 

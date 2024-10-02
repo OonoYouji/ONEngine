@@ -54,19 +54,15 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 
 void SceneLayer::Draw() {
-	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
-
-	//CameraManager::GetInstance()->SetMainCamera(camera_);
 
 	renderTexture_->BeginRenderTarget();
+
 	gLine2D->PreDraw();
 	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
 	gModelManager->PreDraw();
 
-	gGameObjectManager->BackSpriteDraw(id_);
 	gGameObjectManager->Object3dDraw(id_);
-	gGameObjectManager->FrontSpriteDraw(id_);
 
 	gLine2D->PostDraw();
 	gLine3D->PostDraw();

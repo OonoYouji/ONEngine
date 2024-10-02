@@ -20,9 +20,7 @@ public:
 	virtual void Update() {}
 	virtual void LastUpdate() {}
 
-	virtual void BackSpriteDraw() {}
 	virtual void Draw() {}
-	virtual void FrontSpriteDraw() {}
 
 	virtual void Debug() {}
 
