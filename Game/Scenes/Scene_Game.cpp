@@ -11,16 +11,6 @@
 void Scene_Game::Initialize() {
 	
 	(new Player)->Initialize();
-	(new Player)->Initialize();
-	//(new Player)->Initialize();
-
-	/*for(uint32_t i = 0u; i < 1000u; ++i) {
-		(new Player)->Initialize();
-	}*/
-
-
-	//mainCamera_->SetPosition({0.0f, 0.0f, -10.0f});
-	//mainCamera_->UpdateMatrix();
 
 }
 

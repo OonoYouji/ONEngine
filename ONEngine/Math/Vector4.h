@@ -27,6 +27,11 @@ public:
 	static const Vector4 k0100;
 	static const Vector4 k0010;
 	static const Vector4 k0001;
+
+	static const Vector4 kWhite;
+	static const Vector4 kRed;
+	static const Vector4 kGreen;
+	static const Vector4 kBlue;
 	
 	
 	static Vector4 Lerp(

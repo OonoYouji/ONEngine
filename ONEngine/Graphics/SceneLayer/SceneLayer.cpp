@@ -11,7 +11,7 @@
 #include <RenderTextureManager.h>
 #include <TextureManager.h>
 #include <CameraManager.h>
-#include <LineDrawer2D/LineDrawer2D.h>
+#include <LineDrawer/Line2D.h>
 
 /// ===================================================
 /// namespace
@@ -20,7 +20,7 @@ namespace {
 	ModelManager* gModelManager = ModelManager::GetInstance();
 	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-	LineDrawer2D* gLineDrawer2d = LineDrawer2D::GetInstance();
+	Line2D* gLineDrawer2d = Line2D::GetInstance();
 } /// namespace
 
 

@@ -22,7 +22,7 @@ void Player::Initialize() {
 	//audioSource_ = AddComponent<AudioSource>();
 	//audioSource_->SetAudioClip("sentaku.wav");
 
-	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
+	auto particle = AddComponent<ParticleSystem>(12, "Sphere");
 
 	AddComponent<SphereCollider>(ModelManager::GetModel("Sphere"));
 

@@ -1,17 +1,17 @@
-#include "LineDrawer2D.h"
+#include "Line2D.h"
 #include <DxCommand.h>
 #include <DxResourceCreator.h>
 #include <WinApp.h>
 #include <cassert>
 
-const int LineDrawer2D::kMaxInstanceCount_ = 1024;
+const int Line2D::kMaxInstanceCount_ = 1024;
 
-LineDrawer2D* LineDrawer2D::GetInstance() {
-	static LineDrawer2D instance;
+Line2D* Line2D::GetInstance() {
+	static Line2D instance;
 	return &instance;
 }
 
-void LineDrawer2D::Initialize() {
+void Line2D::Initialize() {
 
 	pipeline_.reset(new PipelineState());
 	shader_.ShaderCompile(
@@ -36,17 +36,17 @@ void LineDrawer2D::Initialize() {
 	CreateVertexBuffer(kMaxInstanceCount_);
 }
 
-void LineDrawer2D::Finalize() {
+void Line2D::Finalize() {
 	vertices_.clear();
 	pipeline_.reset();
 	vertexBuffer_.Reset();
 }
 
-void LineDrawer2D::PreDraw() {
+void Line2D::PreDraw() {
 	vertices_.clear();
 }
 
-void LineDrawer2D::PostDraw() {
+void Line2D::PostDraw() {
 
 	assert(vertices_.size() < kMaxInstanceCount_);
 	
@@ -66,14 +66,14 @@ void LineDrawer2D::PostDraw() {
 	cList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 }
 
-void LineDrawer2D::Draw(const Vector2& v1, const Vector2& v2, const Vector4& color) {
+void Line2D::Draw(const Vector2& v1, const Vector2& v2, const Vector4& color) {
 
 	vertices_.push_back(LineVertexDate(Vector4(v1.x, v1.y, 0.0f, 1.0f), color));
 	vertices_.push_back(LineVertexDate(Vector4(v2.x, v2.y, 0.0f, 1.0f), color));
 
 }
 
-void LineDrawer2D::CreateVertexBuffer(size_t vertexCount) {
+void Line2D::CreateVertexBuffer(size_t vertexCount) {
 
 	vertexBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(LineVertexDate) * vertexCount);
 

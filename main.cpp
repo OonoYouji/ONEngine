@@ -13,7 +13,8 @@
 #include <SpriteManager.h>
 #include <TextureManager.h>
 #include <AudioManager.h>
-#include <LineDrawer2D/LineDrawer2D.h>
+#include <LineDrawer/Line2D.h>
+#include <LineDrawer/Line3D.h>
 
 #include <SceneManager.h>
 #include <ImGuiManager.h>
@@ -56,7 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*       collisionManager    = CollisionManager::GetInstance();
 	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
-	LineDrawer2D*			lineDrawer2d		= LineDrawer2D::GetInstance();
+	Line2D*					line2d				= Line2D::GetInstance();
 
 
 
@@ -74,7 +75,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	imGuiManager->Initialize(winApp.get(), dxCommon);
 	modelManager->Initialize();
 	spriteManager->Initialize();
-	lineDrawer2d->Initialize();
+	line2d->Initialize();
+	Line3D::SInitialize(dxCommon->GetDxCommand()->GetList());
 	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
@@ -229,7 +231,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
 
-	lineDrawer2d->Finalize();
+	line2d->Finalize();
 	audioManager->Finalize();
 	spriteManager->Finalize();
 	modelManager->Finalize();

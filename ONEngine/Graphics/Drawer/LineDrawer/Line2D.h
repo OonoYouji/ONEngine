@@ -10,10 +10,10 @@
 using namespace Microsoft::WRL;
 
 
-class LineDrawer2D final {
+class Line2D final {
 public:
-	LineDrawer2D() = default;
-	~LineDrawer2D() = default;
+	Line2D() = default;
+	~Line2D() = default;
 public:
 
 	struct LineVertexDate {
@@ -22,7 +22,7 @@ public:
 	};
 
 public:
-	static LineDrawer2D* GetInstance();
+	static Line2D* GetInstance();
 
 	void Initialize();
 
@@ -50,7 +50,7 @@ private:
 	PipelineState::Shader shader_;
 
 private:
-	LineDrawer2D(const LineDrawer2D&) = delete;
-	LineDrawer2D& operator= (const LineDrawer2D&) = delete;
-	LineDrawer2D& operator= (LineDrawer2D&&) = delete;
+	Line2D(const Line2D&) = delete;
+	Line2D& operator= (const Line2D&) = delete;
+	Line2D& operator= (Line2D&&) = delete;
 };
