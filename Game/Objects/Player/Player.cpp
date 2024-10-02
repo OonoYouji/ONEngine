@@ -17,21 +17,7 @@ void Player::Initialize() {
 	meshRenderer->SetModel("Sphere");
 	meshRenderer->SetMaterial("uvChecker");
 
-	//auto sprite = AddComponent<SpriteRenderer>();
-	//sprite->SetTexture("uvChecker.png");
-
-	//audioSource_ = AddComponent<AudioSource>();
-	//audioSource_->SetAudioClip("sentaku.wav");
-
 	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
-
-	auto renderer = AddComponent<SplinePathRenderer>(4);
-	renderer->AddAnchorPoint({ 0.0f, 0.0f, 0.0f });
-	renderer->AddAnchorPoint({ 0.0f, 0.0f, 1.0f });
-	renderer->AddAnchorPoint({ 1.0f, 0.0f, 1.0f });
-	renderer->AddAnchorPoint({ 1.0f, 1.0f, 1.0f });
-
-
 	//AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	SetPositionZ(10.0f);
@@ -46,7 +32,7 @@ void Player::Update() {
 		0.0f
 	};
 
-	SetPosition(GetPosition() + velocity * 0.25f);
+	//SetPosition(GetPosition() + velocity * 0.25f);
 
 }
 

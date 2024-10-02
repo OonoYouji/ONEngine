@@ -40,6 +40,9 @@ public:
 		float t
 	);
 
+	static float Lenght(const Vector4& v);
+	static Vector4 Normalize(const Vector4& v);
+
 public:
 
 	/// ===================================================

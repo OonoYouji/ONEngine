@@ -41,3 +41,20 @@ Vector4 Vector4::Lerp(const Vector4& start, const Vector4& end, float t) {
 		std::lerp(start.w, end.w, t)
 	);
 }
+
+float Vector4::Lenght(const Vector4& v) {
+	return std::sqrt(
+		v.x * v.x +
+		v.y * v.y +
+		v.z * v.z +
+		v.w * v.w
+	);
+}
+
+Vector4 Vector4::Normalize(const Vector4& v) {
+	float len = Lenght(v);
+	if(len != 0.0f) {
+		return v / len;
+	}
+	return v;
+}
