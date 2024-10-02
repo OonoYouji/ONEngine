@@ -24,7 +24,7 @@ void CameraManager::Finalize() {
 void CameraManager::Update() {
 
 #ifdef _DEBUG
-	BaseCamera* debugCamera = cameras_.at("DebugCamera");
+	/*BaseCamera* debugCamera = cameras_.at("DebugCamera");
 	if(debugCamera->isActive) {
 		if(GetMainCamera() != debugCamera) {
 			beforeCamera_ = GetMainCamera();
@@ -34,7 +34,7 @@ void CameraManager::Update() {
 		if(beforeCamera_) {
 			SetMainCamera(beforeCamera_);
 		}
-	}
+	}*/
 #endif // _DEBUG
 
 }

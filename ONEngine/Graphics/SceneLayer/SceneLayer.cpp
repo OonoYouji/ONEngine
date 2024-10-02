@@ -39,21 +39,16 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 	auto dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
 
-	for(auto& renderTex : renderTextures_) {
-		renderTex.reset(new RenderTexture);
-		renderTex->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
-	}
+	renderTexture_.reset(new RenderTexture);
+	renderTexture_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
 
-	finalRenderTex_.reset(new RenderTexture);
-	finalRenderTex_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
-
-	camera_ = camera;
+	camera_    = camera;
 	className_ = className;
 
 	TextureManager::GetInstance()->AddTexture(
 		className_,
-		finalRenderTex_->GetSrvCpuHandle(),
-		finalRenderTex_->GetSrvGpuHandle()
+		renderTexture_->GetSrvCpuHandle(),
+		renderTexture_->GetSrvGpuHandle()
 	);
 }
 
@@ -61,44 +56,27 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 void SceneLayer::Draw() {
 	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
 
-	CameraManager::GetInstance()->SetMainCamera(camera_);
+	//CameraManager::GetInstance()->SetMainCamera(camera_);
 
-	renderTextures_[BACK_SPRITE]->BeginRenderTarget();
+	renderTexture_->BeginRenderTarget();
 	gLine2D->PreDraw();
 	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
-	//// 背景スプライトの描画
-	gGameObjectManager->BackSpriteDraw(id_);
-	gSpriteManager->PostDraw();
-	gLine2D->PostDraw();
-	gLine3D->PostDraw();
-	renderTextures_[BACK_SPRITE]->EndRenderTarget();
-
-	renderTextures_[OBJECT3D]->BeginRenderTarget();
-	gLine2D->PreDraw();
-	gLine3D->PreDraw();
 	gModelManager->PreDraw();
-	//// 3dオブジェクトの描画
+
+	gGameObjectManager->BackSpriteDraw(id_);
 	gGameObjectManager->Object3dDraw(id_);
-	gModelManager->PostDraw();
-	gLine2D->PostDraw();
-	gLine3D->PostDraw();
-	renderTextures_[OBJECT3D]->EndRenderTarget();
-
-	renderTextures_[FRONT_SPRITE]->BeginRenderTarget();
-	gLine2D->PreDraw();
-	gLine3D->PreDraw();
-	gSpriteManager->PreDraw();
-	//// 前景スプライトの描画
 	gGameObjectManager->FrontSpriteDraw(id_);
-	gSpriteManager->PostDraw();
+
 	gLine2D->PostDraw();
 	gLine3D->PostDraw();
-	renderTextures_[FRONT_SPRITE]->EndRenderTarget();
+	gSpriteManager->PostDraw();
+	gModelManager->PostDraw();
 
+	renderTexture_->EndRenderTarget();
 
 	/// use post effect 
-	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
+	/*for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
 		if(isApplyBlooms_[i]) {
 
 			auto bloomRenderTex = blooms_[i]->GetBloomRenderTexture();
@@ -117,12 +95,8 @@ void SceneLayer::Draw() {
 			/// bloom -> render textures[i] にコピー
 			commandList->CopyResource(copyDestRenderTex->GetRenderTexResource(), bloomRenderTex->GetRenderTexResource());
 		}
-	}
+	}*/
 
-	RenderTextureManager::CreateBlendRenderTexture(
-		{ renderTextures_[BACK_SPRITE].get(),renderTextures_[OBJECT3D].get(),renderTextures_[FRONT_SPRITE].get() },
-		finalRenderTex_.get()
-	);
 }
 
 void SceneLayer::ImGuiDebug() {

@@ -68,12 +68,12 @@ private:
 
 private:
 
-	std::unique_ptr<BaseScene> scene_ = nullptr;
+	std::array<std::unique_ptr<BaseScene>, SCENE_ID_COUNT> scenes_;
 	SCENE_ID nextSceneId_;
 	SCENE_ID currentId_;
 
 	class GameObjectManager* pGameObjectManager_ = nullptr;
-	class CollisionManager* pCollisionManager_ = nullptr;
+	class CollisionManager*  pCollisionManager_ = nullptr;
 
 	std::vector<class SceneLayer*> sceneLayers_;
 

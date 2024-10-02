@@ -191,7 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 		if(imguiIsBlending) {
 			RenderTextureManager::CreateBlendRenderTexture(
-				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
 				debugFinalRenderTexture.get()
 			);
 		}
@@ -204,11 +204,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if(imguiIsBlending) {
 			dxCommon->PostDraw(debugFinalRenderTexture.get());
 		} else {
-			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
+			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 		}
 #else
 		frameFixation->Fixation();
-		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetFinalRenderTexture());
+		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 #endif // _DEBUG
 
 	}
