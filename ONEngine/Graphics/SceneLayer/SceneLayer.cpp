@@ -12,6 +12,7 @@
 #include <TextureManager.h>
 #include <CameraManager.h>
 #include <LineDrawer/Line2D.h>
+#include <LineDrawer/Line3D.h>
 
 /// ===================================================
 /// namespace
@@ -20,7 +21,8 @@ namespace {
 	ModelManager* gModelManager = ModelManager::GetInstance();
 	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-	Line2D* gLineDrawer2d = Line2D::GetInstance();
+	Line2D* gLine2D = Line2D::GetInstance();
+	Line3D* gLine3D = Line3D::GetInstance();
 } /// namespace
 
 
@@ -62,31 +64,36 @@ void SceneLayer::Draw() {
 	CameraManager::GetInstance()->SetMainCamera(camera_);
 
 	renderTextures_[BACK_SPRITE]->BeginRenderTarget();
-	gLineDrawer2d->PreDraw();
+	gLine2D->PreDraw();
+	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
 	//// 背景スプライトの描画
 	gGameObjectManager->BackSpriteDraw(id_);
 	gSpriteManager->PostDraw();
-	gLineDrawer2d->PostDraw();
+	gLine2D->PostDraw();
+	gLine3D->PostDraw();
 	renderTextures_[BACK_SPRITE]->EndRenderTarget();
 
 	renderTextures_[OBJECT3D]->BeginRenderTarget();
-	gLineDrawer2d->PreDraw();
+	gLine2D->PreDraw();
+	gLine3D->PreDraw();
 	gModelManager->PreDraw();
 	//// 3dオブジェクトの描画
 	gGameObjectManager->Object3dDraw(id_);
 	gModelManager->PostDraw();
-	gLineDrawer2d->PostDraw();
+	gLine2D->PostDraw();
+	gLine3D->PostDraw();
 	renderTextures_[OBJECT3D]->EndRenderTarget();
 
 	renderTextures_[FRONT_SPRITE]->BeginRenderTarget();
-	gLineDrawer2d->PreDraw();
+	gLine2D->PreDraw();
+	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
 	//// 前景スプライトの描画
 	gGameObjectManager->FrontSpriteDraw(id_);
 	gSpriteManager->PostDraw();
-	gLineDrawer2d->PostDraw();
-	gLineDrawer2d->PostDraw();
+	gLine2D->PostDraw();
+	gLine3D->PostDraw();
 	renderTextures_[FRONT_SPRITE]->EndRenderTarget();
 
 

@@ -231,6 +231,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
 
+	Line3D::SFinalize();
 	line2d->Finalize();
 	audioManager->Finalize();
 	spriteManager->Finalize();

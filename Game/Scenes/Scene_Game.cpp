@@ -10,7 +10,7 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 	
-	(new Player)->Initialize();
+	//(new Player)->Initialize();
 
 }
 
