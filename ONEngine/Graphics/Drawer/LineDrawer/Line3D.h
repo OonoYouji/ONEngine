@@ -85,7 +85,7 @@ private:
 	/// private : const objects
 	/// ===================================================
 
-	const uint32_t kMaxLineNum_ = 1024u;
+	const uint32_t kMaxLineNum_ = 1028u;
 
 
 	/// ===================================================
