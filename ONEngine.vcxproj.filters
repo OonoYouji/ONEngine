@@ -236,6 +236,9 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp">
+      <Filter>ONEngine\Component\SplinePathRenderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -656,6 +659,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line3D.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h">
+      <Filter>ONEngine\Component\SplinePathRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -42,6 +42,7 @@
     <ClCompile Include="ONEngine\Component\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\Component\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
@@ -123,6 +124,7 @@
     <ClInclude Include="ONEngine\Component\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\Component\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\Component\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
