@@ -227,9 +227,6 @@
     <ClCompile Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.cpp">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp">
-      <Filter>Game\Objects\ShootingCourse</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.cpp">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
     </ClCompile>
@@ -405,9 +402,6 @@
     </Filter>
     <Filter Include="Resources\Shaders\Particle">
       <UniqueIdentifier>{8d19174c-3157-4edb-a865-9cc019fdc838}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\ShootingCourse">
-      <UniqueIdentifier>{d2313bea-628c-4dfe-b103-1bd81af6df12}</UniqueIdentifier>
     </Filter>
     <Filter Include="ONEngine\Component\SplinePathRenderer">
       <UniqueIdentifier>{9bf857d6-955d-47eb-b428-bd9e1720c870}</UniqueIdentifier>
@@ -650,9 +644,6 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\Particle\ParticleSystem.h">
       <Filter>ONEngine\Graphics\Drawer\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h">
-      <Filter>Game\Objects\ShootingCourse</Filter>
     </ClInclude>
     <ClInclude Include="ONEngine\Graphics\Drawer\LineDrawer\Line2D.h">
       <Filter>ONEngine\Graphics\Drawer\LineDrawer</Filter>
