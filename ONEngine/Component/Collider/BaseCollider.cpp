@@ -4,9 +4,9 @@
 
 void BaseCollider::UpdateMatrix() {
 	transform_->UpdateMatrix();
-	transform_->matTransform *= GetParent()->GetMatTransform();
+	transform_->matTransform *= GetOwner()->GetMatTransform();
 }
 
 Vec3 BaseCollider::GetPosition() const {
-	return GetParent()->GetPosition();
+	return GetOwner()->GetPosition();
 }

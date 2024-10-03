@@ -72,7 +72,7 @@ public:
 	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr, typename... Args>
 	T* AddComponent(Args&&... args) {
 		auto addComponent = std::make_unique<T>(std::forward<Args>(args)...);
-		addComponent->SetParent(this);
+		addComponent->SetOwner(this);
 		addComponent->Initialize();
 		T* componentPtr = addComponent.get();
 		components_.push_back(std::move(addComponent));
@@ -132,7 +132,7 @@ public:
 	const Vec3 GetScale()           const { return pTranform_->scale; }
 
 	const Mat4& GetMatTransform()   const { return pTranform_->matTransform; };
-	const Transform& GetTransform() const { return *pTranform_; }
+	Transform* GetTransform() { return pTranform_; }
 
 
 
@@ -140,11 +140,10 @@ public:
 	/// public : parent accessor
 	/// ---------------------------------------------------
 
-	void SetParent(BaseGameObject* parent);
-	BaseGameObject* GetParent() const;
+	void SetParent(Transform* parent);
+	Transform* GetParent() const;
 
-	void AddChild(BaseGameObject* child);
-	const std::list<BaseGameObject*>& GetChilds() const;
+	std::list<BaseGameObject*> GetChilds() const;
 
 
 
@@ -172,14 +171,8 @@ protected:
 	/// protected : objects
 	/// ===================================================
 
-	/// components内のtransformへのポインタ
-	Transform*                 pTranform_ = nullptr;
-
-	BaseGameObject*            parent_    = nullptr;
-	std::list<BaseGameObject*> childs_;
-
+	Transform*                                pTranform_ = nullptr;
 	std::list<std::unique_ptr<BaseComponent>> components_;
-
 
 public:
 	/// ===================================================

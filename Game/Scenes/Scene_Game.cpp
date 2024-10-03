@@ -17,6 +17,7 @@ class Demo : public BaseGameObject {
 	Quaternion rotateY;
 	float rotateXAngle;
 	float rotateYAngle;
+	Transform centerTransform;
 public:
 	Demo() { CreateTag(this); }
 	~Demo() {}
@@ -26,6 +27,9 @@ public:
 		auto mr = AddComponent<MeshRenderer>();
 		mr->SetModel("TestObject");
 		mr->SetMaterial("uvChecker");
+		centerTransform.Initialize();
+		centerTransform.rotateOrder = QUATERNION;
+		SetParent(&centerTransform);
 	}
 	void Update() override {
 		velocity = {
@@ -39,7 +43,8 @@ public:
 
 		rotateX = MakeAxisRotate({ 1.0f, 0.0f, 0.0f }, velocity.y * 0.5f);
 		rotateY = MakeAxisRotate({ 0.0f, 1.0f, 0.0f }, velocity.x * 0.5f);
-		pTranform_->quaternion *= rotateX * rotateY;
+		centerTransform.quaternion *= rotateX * rotateY;
+		centerTransform.Update();
 	}
 
 	void Debug() override {
@@ -51,7 +56,8 @@ public:
 
 			ImGui::Separator();
 
-			ImGui::DragFloat4("quaternion", &pTranform_->quaternion.x, 0.0f);
+			ImGui::DragFloat4("parent quaternion", &centerTransform.quaternion.x, 0.0f);
+			ImGui::DragFloat4("this   quaternion", &pTranform_->quaternion.x, 0.0f);
 
 			ImGui::TreePop();
 		}
@@ -78,14 +84,14 @@ public:
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Player* p1 = new Player;
-	p1->Initialize();
+	//Player* p1 = new Player;
+	//p1->Initialize();
 
 	Demo* demo = new Demo;
 	demo->Initialize();
 
-	p1->SetParent(demo);
-
+	//p1->SetParent(demo->GetTransform());
+	
 	mainCamera_->SetPosition({ 0.0f, 0.0f, -6.49f * 4 });
 	mainCamera_->SetRotate({ 0.066f, -0.258f, 0.0f });
 	mainCamera_->UpdateMatrix();

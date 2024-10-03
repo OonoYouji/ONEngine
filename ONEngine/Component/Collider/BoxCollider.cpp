@@ -14,7 +14,7 @@ void BoxCollider::Update() {
 	CalculationOrientations();
 
 	obbMatTransform_ = Mat4::MakeRotate(transform_->rotate) * Mat4::MakeTranslate(transform_->position);
-	obbMatTransform_ *= GetParent()->GetMatTransform();
+	obbMatTransform_ *= GetOwner()->GetMatTransform();
 }
 
 void BoxCollider::Draw() {

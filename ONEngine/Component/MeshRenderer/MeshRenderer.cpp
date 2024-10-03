@@ -5,7 +5,7 @@
 
 
 void MeshRenderer::Initialize() {
-	pTransform_ = GetParent()->GetComponent<Transform>();
+	pTransform_ = GetOwner()->GetComponent<Transform>();
 }
 
 void MeshRenderer::Draw() {

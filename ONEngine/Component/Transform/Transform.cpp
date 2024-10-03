@@ -64,9 +64,9 @@ void Transform::UpdateMatrix() {
 		MakeRotate(rotateOrder) *
 		Mat4::MakeTranslate(position);
 
-	BaseGameObject* parent = GetParent()->GetParent();
+	Transform* parent = GetParent();
 	if(parent) {
-		matTransform *= parent->GetMatTransform();
+		matTransform *= parent->matTransform;
 	}
 
 	*mapingData_ = matTransform;
@@ -75,6 +75,15 @@ void Transform::UpdateMatrix() {
 void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex) {
 	*mapingData_ = matTransform;
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, transformBuffer_->GetGPUVirtualAddress());
+}
+
+void Transform::SetParent(Transform* parent) {
+	parent_ = parent;
+	parent->AddChild(this);
+}
+
+void Transform::AddChild(Transform* child) {
+	childs_.push_back(child);
 }
 
 Mat4 Transform::MakeRotate(uint32_t order) {
