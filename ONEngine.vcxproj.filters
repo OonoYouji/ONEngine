@@ -236,6 +236,9 @@
     <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp">
       <Filter>ONEngine\Component\SplinePathRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Math\Quaternion.cpp">
+      <Filter>ONEngine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -653,6 +656,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h">
       <Filter>ONEngine\Component\SplinePathRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Math\Quaternion.h">
+      <Filter>ONEngine\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
