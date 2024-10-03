@@ -9,8 +9,7 @@
 #include "Particle/ParticleSystem.h"
 //class
 #include"GameCamera.h"
-#include "Player/Player.h"
-#include"Ground/Ground.h"
+#include "DemoObject/DemoObject.h"
 
 
 /// ===================================================
@@ -18,17 +17,11 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Player* p1 = new Player;
+	///
+	(new DemoObject)->Initialize();
 	
-	Ground* ground = new Ground;
-	p1->Initialize();
-	ground->Initialize();
-	mainCamera_->Initialize();
-	//ペアレント
-	mainCamera_->SetParent(p1->GetPivot());
-	
-	mainCamera_->SetPosition({ 0.0f, -15, -30 });
-	mainCamera_->SetRotate({ 45, 0, 0.0f });
+	mainCamera_->SetPosition({ -1.4f, 0.0f, -14.0f });
+	mainCamera_->SetRotate({ 0.0f, 0.0f, 0.0f });
 	mainCamera_->UpdateMatrix();
 	
 }
