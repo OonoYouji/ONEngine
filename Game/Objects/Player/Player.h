@@ -16,7 +16,7 @@ public:
 
 	void Debug() override;
 
-	Vec4 MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
+	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 private:
 	Transform baseTransform_;
 	float moveSpeed = 0.05f;  // 移動速度

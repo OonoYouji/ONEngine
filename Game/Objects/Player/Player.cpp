@@ -53,12 +53,13 @@ void Player::Update() {
 	float moveSpeed = 1.0f;
 	
 		// AまたはDが押されたときの回転
-	Vec4 quaternionY = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, keyboardDir.x * moveSpeed);
+	Quaternion quaternionY = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, keyboardDir.x * moveSpeed);
 	
 		// WまたはSが押されたときの回転
-	Vec4 quaternionX = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, keyboardDir.y * moveSpeed);
+	Quaternion quaternionX = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, keyboardDir.y * moveSpeed);
 	
 	pTranform_->quaternion *= quaternionX*quaternionY;
+	pTranform_->quaternion.Normalize(pTranform_->quaternion);  // 正規化
 	/*pTranform_->matTransform = Matrix4x4::MakeRotateQuaternion(pTranform_->quaternion.Normalize(pTranform_->quaternion));
 	*/
 	//SetPosition(GetPosition() + velocity * 0.25f);
@@ -71,7 +72,7 @@ void Player::Debug() {
 
 
 
-Vec4 Player::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
+Quaternion Player::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 	// ラジアンに変換
 	float halfAngle = angle * 0.5f;
 	float sinHalfAngle = sin(halfAngle);
@@ -86,5 +87,5 @@ Vec4 Player::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 	float z = normalizedAxis.z * sinHalfAngle;
 
 	// Vector4 として返す
-	return Vector4(x, y, z, w);
+	return Quaternion(x, y, z, w);
 }
