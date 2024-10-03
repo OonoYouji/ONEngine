@@ -4,20 +4,12 @@
 #include <ImGuiManager/ImGuiManager.h>
 
 #include "GameCamera.h"
-#include "Player/Player.h"
 #include "Particle/ParticleSystem.h"
+
+#include"Player/PlayerPivot.h"
+#include "Player/Player.h"
 #include"Ground/Ground.h"
 
-		Vector3 normalizedAxis = axis.Normalize();
-
-		float w = cos(halfAngle);
-		float x = normalizedAxis.x * sinHalfAngle;
-		float y = normalizedAxis.y * sinHalfAngle;
-		float z = normalizedAxis.z * sinHalfAngle;
-
-		return Quaternion(x, y, z, w);
-	}
-};
 
 
 /// ===================================================
@@ -26,12 +18,14 @@
 void Scene_Game::Initialize() {
 
 	Player* p1 = new Player;
+	PlayerPivot* playerPivot = new PlayerPivot;
 	Ground* ground = new Ground;
+	playerPivot->Initialize();
 	p1->Initialize();
 	ground->Initialize();
 	
 
-	p1->SetParent(ground);
+	p1->SetParent(playerPivot);
 
 	mainCamera_->SetPosition({ 0.0f, 0.0f, -6.49f * 4 });
 	mainCamera_->SetRotate({ 0.066f, -0.258f, 0.0f });

@@ -18,11 +18,9 @@ public:
 
 	void Debug() override;
 
-	void PositionPlayerOnSphere(Player* player);
 
-	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 
+	
 private:
 	
-	AudioSource* audioSource_ = nullptr;
 };
