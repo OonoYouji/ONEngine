@@ -9,6 +9,7 @@ using namespace DirectX;
 
 class Vector3;
 class Vector4;
+class Quaternion;
 
 /// ===================================================
 /// 4x4行列
@@ -71,7 +72,7 @@ public:
 	static Matrix4x4 MakeRotateY(float theta);
 	static Matrix4x4 MakeRotateZ(float theta);
 	static Matrix4x4 MakeRotate(const Vector3& v);
-	static Matrix4x4 MakeRotateQuaternion(const Vector4& v);
+	static Matrix4x4 MakeRotateQuaternion(const Quaternion& v);
 	static Matrix4x4 MakeTranslate(const Vector3& v);
 	static Matrix4x4 MakeAffine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 

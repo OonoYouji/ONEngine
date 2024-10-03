@@ -5,6 +5,7 @@
 
 #include <Vector3.h>
 #include <Vector4.h>
+#include <Quaternion.h>
 #include <Matrix4x4.h>
 
 #include <Component/Base/BaseComponent.h>
@@ -54,7 +55,7 @@ public:
 
 	Vec3 scale      = Vec3::kOne;
 	Vec3 rotate     = {};
-	Vec4 quaternion = {};
+	Quaternion quaternion = {};
 	Vec3 position   = {};
 
 	Mat4 matTransform = Mat4::kIdentity;
