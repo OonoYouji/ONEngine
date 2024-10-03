@@ -3,6 +3,8 @@
 #include <wrl/client.h>
 #include <d3d12.h>
 
+#include <list>
+
 #include <Vector3.h>
 #include <Vector4.h>
 #include <Quaternion.h>
@@ -47,22 +49,34 @@ public:
 
 	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
 
+	void SetParent(Transform* parent);
+	Transform* GetParent() const { return parent_; };
+
+	void AddChild(Transform* child);
+	std::list<Transform*> GetChilds() const {
+		return childs_;
+	}
+
+
 private:
 
 	Mat4 MakeRotate(uint32_t order);
 
 public:
 
-	Vec3 scale      = Vec3::kOne;
-	Vec3 rotate     = {};
-	Quaternion quaternion = {};
-	Vec3 position   = {};
+	Vec3 scale            = Vec3::kOne;
+	Vec3 rotate           = {};
+	Quaternion quaternion = {1, 0, 0, 0};
+	Vec3 position         = {};
 
 	Mat4 matTransform = Mat4::kIdentity;
 
 	uint32_t rotateOrder = 0u;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
+
+	Transform*            parent_ = nullptr;
+	std::list<Transform*> childs_;
 
 private:
 	Mat4* mapingData_ = nullptr;

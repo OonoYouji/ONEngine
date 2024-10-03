@@ -5,7 +5,7 @@
 
 void SpriteRenderer::Initialize() {
 
-	pTransform_ = GetParent()->GetComponent<Transform>();
+	pTransform_ = GetOwner()->GetComponent<Transform>();
 
 	sprite_.reset(new Sprite);
 	sprite_->Initialize("white2x2", "white2x2.png");

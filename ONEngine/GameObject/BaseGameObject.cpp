@@ -29,8 +29,8 @@ BaseGameObject::BaseGameObject() {
 /// ===================================================
 void BaseGameObject::UpdateMatrix() {
 	pTranform_->UpdateMatrix();
-	if(parent_) {
-		pTranform_->matTransform *= parent_->GetMatTransform();
+	if(GetParent()) {
+		pTranform_->matTransform *= pTranform_->GetParent()->matTransform;
 	}
 }
 
@@ -60,33 +60,29 @@ const Vec3 BaseGameObject::GetPosition() const {
 /// ===================================================
 /// 親のセット
 /// ===================================================
-void BaseGameObject::SetParent(BaseGameObject* parent) {
-	parent_ = parent;
-	parent->AddChild(this); //- 相手の子供に自身を追加
+void BaseGameObject::SetParent(Transform* parent) {
+	pTranform_->SetParent(parent);
+	//pTranform_->AddChild(this); //- 相手の子供に自身を追加
 }
 
 
 /// ===================================================
 /// 親のゲット
 /// ===================================================
-BaseGameObject* BaseGameObject::GetParent() const {
-	return parent_;
-}
-
-
-/// ===================================================
-/// 子供の追加
-/// ===================================================
-void BaseGameObject::AddChild(BaseGameObject* child) {
-	childs_.push_back(child);
+Transform* BaseGameObject::GetParent() const {
+	return pTranform_->GetParent();
 }
 
 
 /// ===================================================
 /// 子供のゲット
 /// ===================================================
-const std::list<BaseGameObject*>& BaseGameObject::GetChilds() const {
-	return childs_;
+std::list<BaseGameObject*> BaseGameObject::GetChilds() const {
+	std::list<BaseGameObject*> childs{};
+	for(auto& child : pTranform_->GetChilds()) {
+		childs.push_back(child->GetOwner());
+	}
+	return childs;
 }
 #pragma endregion
 
