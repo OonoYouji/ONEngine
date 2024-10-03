@@ -26,11 +26,11 @@ void Player::Initialize() {
 
 void Player::Update() {
 
-	Vec3 velocity{
+	/*Vec3 velocity{
 		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
 		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
 		0.0f
-	};
+	};*/
 
 	//SetPosition(GetPosition() + velocity * 0.25f);
 
