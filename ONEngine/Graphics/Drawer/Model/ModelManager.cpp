@@ -109,11 +109,10 @@ Model* ModelManager::Load(const std::string& filePath) {
 			aiVector3D& texcoord = mesh->mTextureCoords[0][i];
 
 			Mesh::VertexData vertex;
-			vertex.position = { position.x, position.y, position.z, 1.0f };
+			vertex.position = { -position.x, position.y, position.z, 1.0f };
 			vertex.texcoord = { texcoord.x, texcoord.y };
-			vertex.normal = { normal.x, normal.y, normal.z };
+			vertex.normal = { -normal.x, normal.y, normal.z };
 
-			vertex.position.x *= -1.0f;
 
 			modelMesh.AddVertex(vertex);
 		}
@@ -127,18 +126,9 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 			for(uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
 				uint32_t& index = face.mIndices[element];
 
-				Mesh::VertexData vertex;
-				vertex.position = { position.x, position.y, position.z, 1.0f };
-				vertex.texcoord = { texcoord.x, texcoord.y };
-				vertex.position.x *= -1.0f;
-
 				modelMesh.AddIndex(index);
-
 			}
 
 		}
