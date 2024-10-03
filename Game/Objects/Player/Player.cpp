@@ -29,7 +29,7 @@ void Player::Initialize() {
 
 void Player::Update() {
 
-	Vec3 velocity{
+	/*Vec3 velocity{
 		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
 		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
 		0.0f
@@ -73,19 +73,19 @@ void Player::Debug() {
 
 
 Quaternion Player::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
-	// ラジアンに変換
+	// ���W�A���ɕϊ�
 	float halfAngle = angle * 0.5f;
 	float sinHalfAngle = sin(halfAngle);
 
-	// 正規化された軸ベクトル
+	// ���K�����ꂽ���x�N�g��
 	Vector3 normalizedAxis = axis.Normalize();
 
-	// クォータニオンの成分を計算
+	// �N�H�[�^�j�I���̐�����v�Z
 	float w = cos(halfAngle);
 	float x = normalizedAxis.x * sinHalfAngle;
 	float y = normalizedAxis.y * sinHalfAngle;
 	float z = normalizedAxis.z * sinHalfAngle;
 
-	// Vector4 として返す
+	// Vector4 �Ƃ��ĕԂ�
 	return Quaternion(x, y, z, w);
 }
