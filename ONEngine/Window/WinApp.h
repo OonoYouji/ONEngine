@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include <RenderTexture.h>
 #include <DxDoubleBuffer.h>
 
 
@@ -37,7 +38,7 @@ namespace ONE {
 		UINT ProcessMessage();
 
 		void PreDraw();
-		void PostDraw();
+		void PostDraw(RenderTexture* renderTexture);
 
 		void Present();
 

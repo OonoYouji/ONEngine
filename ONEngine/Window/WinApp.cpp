@@ -76,8 +76,10 @@ void ONE::WinApp::PreDraw() {
 	doubleBuffer_->ClearBB(dxCommand->GetList());
 }
 
-void ONE::WinApp::PostDraw() {
+void ONE::WinApp::PostDraw(RenderTexture* renderTexture) {
 	auto dxCommand = ONEngine::GetDxCommon()->GetDxCommand();
+
+	doubleBuffer_->CopyToBB(dxCommand->GetList(), renderTexture->GetRenderTexResource(), renderTexture->currentResourceState);
 	doubleBuffer_->CreateBarrier(dxCommand->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 

@@ -208,12 +208,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		frameFixation->Fixation();
 		if(imguiIsBlending) {
-			ONEngine::GetWinApp()->PostDraw();
+			ONEngine::GetWinApp()->PostDraw(debugFinalRenderTexture.get());
 			ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
 			ONEngine::GetWinApp()->Present();
 			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
 		} else {
-			ONEngine::GetWinApp()->PostDraw();
+			ONEngine::GetWinApp()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 			ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 			ONEngine::GetWinApp()->Present();
 			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
