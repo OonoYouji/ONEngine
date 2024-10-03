@@ -245,9 +245,6 @@
     <ClCompile Include="Game\Objects\Ground\Ground.cpp">
       <Filter>Game\Objects\Ground</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\PlayerPivot.cpp">
-      <Filter>Game\Objects\Player</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -680,9 +677,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Ground\Ground.h">
       <Filter>Game\Objects\Ground</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Player\PlayerPivot.h">
-      <Filter>Game\Objects\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

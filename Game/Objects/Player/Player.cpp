@@ -17,39 +17,46 @@ void Player::Initialize() {
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("TestObject");
-	
-	//初期化
+	//pivot_=AddComponent<Transform>();
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  初期化
+	////////////////////////////////////////////////////////////////////////////////////////////
 	pTranform_->Initialize();
 	pivot_.Initialize();
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// 値セット
+	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 1,0,0,0 };
-	pivot_.scale = { 11,11,11 };
-	pivot_.position.z = 10.0f;
-	//回転モード
+	pTranform_->position.z = -12;
+
+	pTranform_->quaternion = { 1,0,0,0 };
+	/*SetPositionZ(-1.0f);*/
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// 回転モード
+	////////////////////////////////////////////////////////////////////////////////////////////
 	pTranform_->rotateOrder = QUATERNION;
 	pivot_.rotateOrder = QUATERNION;
-	
-	pTranform_->scale = { 0.1f,0.1f,0.1f };
-	pTranform_->quaternion = { 1,0,0,0 };
 
-	//ペアレント
+	////ペアレント
 	pTranform_->SetParent(&pivot_);
-	
-	SetPositionZ(-1.0f);
+
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 }
 
 void Player::Update() {
-
+	//入力
 	velocity_ = {
 			static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
 			static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
 			0.0f
 	};
+	////
+	//rotateXAngle_ += velocity_.y * 0.01f;
+	//rotateYAngle_ += velocity_.x * 0.01f;
 
-	rotateXAngle_ += velocity_.y * 0.01f;
-	rotateYAngle_ += velocity_.x * 0.01f;
-
+	//回転を適応
 	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, -velocity_.y * 0.1f);
 	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, velocity_.x * 0.1f);
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
@@ -59,10 +66,14 @@ void Player::Update() {
 }
 
 void Player::Debug() {
-
+	if(ImGui::TreeNode("pivot")) {
+		pivot_.Debug();
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
+		ImGui::DragFloat3("velocity",&velocity_.x,0);
+		ImGui::TreePop();
+	}
 }
-
-
 
 Quaternion Player::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 	// ���W�A���ɕϊ�

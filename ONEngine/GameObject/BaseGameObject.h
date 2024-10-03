@@ -121,6 +121,7 @@ public:
 	void SetRotateY(float y)   { pTranform_->rotate.y = y; }
 	void SetRotateZ(float z)   { pTranform_->rotate.z = z; }
 	void SetRotate(const Vec3& v) { pTranform_->rotate = v; }
+	void SetQuaternion(const Quaternion& q) { pTranform_->quaternion = q; }
 
 	void SetScaleX(float x)    { pTranform_->scale.x = x; }
 	void SetScaleY(float y)    { pTranform_->scale.y = y; }
