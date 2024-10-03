@@ -32,7 +32,7 @@ namespace ONE {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize(WinApp* winApp);
+		void Initialize();
 
 		/// <summary>
 		/// 終了処理
@@ -68,7 +68,8 @@ namespace ONE {
 
 		DxCommand* GetDxCommand() const { return command_.get(); }
 
-		ID3D12Device* GetDevice() const;
+		DxDevice*     GetDxDevice() const { return device_.get(); }
+		ID3D12Device* GetDevice()   const;
 
 		DxDescriptor* GetDxDescriptor() const { return descriptor_.get(); }
 
@@ -82,11 +83,10 @@ namespace ONE {
 		/// private : objects
 		/// ===================================================
 
-		std::unique_ptr<DxDevice> device_ = nullptr;
-		std::unique_ptr<DxCommand> command_ = nullptr;
-		std::unique_ptr<DxDescriptor> descriptor_ = nullptr;
-		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
-		std::unique_ptr<DxDepthStencil> depthStencil = nullptr;
+		std::unique_ptr<DxDevice>       device_       = nullptr;
+		std::unique_ptr<DxCommand>      command_      = nullptr;
+		std::unique_ptr<DxDescriptor>   descriptor_   = nullptr;
+		std::unique_ptr<DxDepthStencil> depthStencil  = nullptr;
 
 		std::unique_ptr<DxDebug> debug_ = nullptr;
 

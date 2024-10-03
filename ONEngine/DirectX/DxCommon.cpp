@@ -23,7 +23,7 @@
 /// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::DxCommon::Initialize(WinApp* winApp) {
+void ONE::DxCommon::Initialize() {
 
 	debug_.reset(new DxDebug());
 	debug_->SetDebugLayer();
@@ -39,8 +39,8 @@ void ONE::DxCommon::Initialize(WinApp* winApp) {
 	descriptor_.reset(new DxDescriptor());
 	descriptor_->Initialize(device_->GetDevice());
 
-	doubleBuffer_.reset(new DxDoubleBuffer());
-	doubleBuffer_->Initialize(winApp, device_.get(), descriptor_.get(), command_->GetQueue());
+	//doubleBuffer_.reset(new DxDoubleBuffer());
+	//doubleBuffer_->Initialize(winApp, device_.get(), descriptor_.get(), command_->GetQueue());
 
 	depthStencil.reset(new DxDepthStencil());
 	depthStencil->Initialize(device_->GetDevice());
@@ -59,7 +59,7 @@ void ONE::DxCommon::Finalize() {
 
 	shaderCompiler_.reset();
 	depthStencil.reset();
-	doubleBuffer_.reset();
+	//doubleBuffer_.reset();
 	descriptor_.reset();
 	command_.reset();
 	device_.reset();
@@ -74,11 +74,11 @@ void ONE::DxCommon::Finalize() {
 /// ===================================================
 void ONE::DxCommon::PreDraw() {
 
-	doubleBuffer_->SetViewport(command_->GetList());
+	/*doubleBuffer_->SetViewport(command_->GetList());
 	doubleBuffer_->SetSiccorRect(command_->GetList());
 
 	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	doubleBuffer_->ClearBB(command_->GetList());
+	doubleBuffer_->ClearBB(command_->GetList());*/
 }
 
 
@@ -88,16 +88,16 @@ void ONE::DxCommon::PreDraw() {
 void ONE::DxCommon::PostDraw(RenderTexture* renderTex) {
 	
 //#ifdef NDEBUG
-	doubleBuffer_->CopyToBB(command_->GetList(), renderTex->GetRenderTexResource(), renderTex->currentResourceState);
+	//doubleBuffer_->CopyToBB(command_->GetList(), renderTex->GetRenderTexResource(), renderTex->currentResourceState);
 //#endif // NDEBUG
 
-	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+	//doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	
 	command_->Close();
 
 	command_->Execution();
-	doubleBuffer_->Present();
-	command_->Reset();
+	//doubleBuffer_->Present();
+	//command_->Reset();
 
 }
 
@@ -114,7 +114,7 @@ void ONE::DxCommon::ExecuteCommands() {
 }
 
 void ONE::DxCommon::SetRenderTarget() {
-	doubleBuffer_->SetRanderTarget(command_.get(), descriptor_.get());
+	//doubleBuffer_->SetRanderTarget(command_.get(), descriptor_.get());
 }
 
 

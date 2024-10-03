@@ -37,14 +37,15 @@ ONE::WinApp* ONEngine::GetWinApp() {
 
 void System::Initialize() {
 
+	dxCommon_.reset(new ONE::DxCommon());
+	dxCommon_->Initialize();
+	
 	winApp_.reset(new ONE::WinApp());
 	winApp_->Initialize(L"DirectXGame ver.2.0");
 
-	dxCommon_.reset(new ONE::DxCommon());
-	dxCommon_->Initialize(winApp_.get());
 }
 
 void System::Finalize() {
-	dxCommon_->Finalize();
 	winApp_->Finalize();
+	dxCommon_->Finalize();
 }

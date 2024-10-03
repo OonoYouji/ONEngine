@@ -188,6 +188,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		ONEngine::GetDxCommon()->PreDraw();
+		ONEngine::GetWinApp()->PreDraw();
 
 		sceneManager->Draw();
 
@@ -207,9 +208,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		frameFixation->Fixation();
 		if(imguiIsBlending) {
+			ONEngine::GetWinApp()->PostDraw();
 			ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
+			ONEngine::GetWinApp()->Present();
+			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
 		} else {
+			ONEngine::GetWinApp()->PostDraw();
 			ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+			ONEngine::GetWinApp()->Present();
+			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
 		}
 #else
 		frameFixation->Fixation();

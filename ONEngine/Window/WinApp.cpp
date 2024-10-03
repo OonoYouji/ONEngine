@@ -6,6 +6,8 @@
 #include "Externals/imgui/imgui_impl_dx12.h"
 #include "Externals/imgui/imgui_impl_win32.h"
 
+#include <Core/ONEngine.h>
+
 #pragma comment(lib, "winmm.lib")
 
 
@@ -24,6 +26,14 @@ void ONE::WinApp::Initialize(const wchar_t* windowName) {
 		kWindowSizeX, kWindowSizeY
 	);
 
+	doubleBuffer_.reset(new DxDoubleBuffer);
+	doubleBuffer_->Initialize(
+		this, 
+		ONEngine::GetDxCommon()->GetDxDevice(), 
+		ONEngine::GetDxCommon()->GetDxDescriptor(), 
+		ONEngine::GetDxCommon()->GetDxCommand()->GetQueue()
+	);
+
 }
 
 
@@ -32,9 +42,8 @@ void ONE::WinApp::Initialize(const wchar_t* windowName) {
 /// 終了処理
 /// ===================================================
 void ONE::WinApp::Finalize() {
-
+	doubleBuffer_.reset();
 	TerminateGameWindow();
-
 }
 
 
@@ -56,6 +65,27 @@ UINT ONE::WinApp::ProcessMessage() {
 
 	return false;
 }
+
+
+void ONE::WinApp::PreDraw() {
+	auto dxCommand = ONEngine::GetDxCommon()->GetDxCommand();
+	doubleBuffer_->SetViewport(dxCommand->GetList());
+	doubleBuffer_->SetSiccorRect(dxCommand->GetList());
+
+	doubleBuffer_->CreateBarrier(dxCommand->GetList(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	doubleBuffer_->ClearBB(dxCommand->GetList());
+}
+
+void ONE::WinApp::PostDraw() {
+	auto dxCommand = ONEngine::GetDxCommon()->GetDxCommand();
+	doubleBuffer_->CreateBarrier(dxCommand->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+}
+
+void ONE::WinApp::Present() {
+	doubleBuffer_->Present();
+}
+
+
 
 void ONE::WinApp::SetIsFullScreen(bool isFullScreen) {
 	if(isFullScreen_ == isFullScreen) { return; }

@@ -3,8 +3,12 @@
 
 #include <Windows.h>
 
-namespace ONE {
+#include <memory>
 
+#include <DxDoubleBuffer.h>
+
+
+namespace ONE {
 
 	/// ===================================================
 	/// window管理クラス
@@ -31,6 +35,13 @@ namespace ONE {
 		void Finalize();
 
 		UINT ProcessMessage();
+
+		void PreDraw();
+		void PostDraw();
+
+		void Present();
+
+
 
 		void SetIsFullScreen(bool isFullScreen);
 		bool GetIsFullScreen() const { return isFullScreen_; }
@@ -68,6 +79,8 @@ namespace ONE {
 
 		RECT fullscreenRect_{  };
 		bool isFullScreen_ = false;
+
+		std::unique_ptr<DxDoubleBuffer> doubleBuffer_ = nullptr;
 
 	private:
 		WinApp(const WinApp&) = delete;
