@@ -18,7 +18,12 @@ public:
 
 	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 private:
-	Transform baseTransform_;
+	Vec3 velocity_;
+	Quaternion rotateX_;
+	Quaternion rotateY_;
+	float rotateXAngle_;
+	float rotateYAngle_;
+	Transform pivot_;
 	float moveSpeed = 0.05f;  // 移動速度
 	float rotationSpeed = 0.01f;  // 回転速度
 	AudioSource* audioSource_ = nullptr;

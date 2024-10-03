@@ -17,7 +17,6 @@ void PlayerPivot::Initialize() {
 	pTranform_->rotateOrder = QUATERNION;
 	pTranform_->quaternion = { 1,0,0,0 };
 	
-
 	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
 	//AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	pTranform_->scale = { 11,11,11 };

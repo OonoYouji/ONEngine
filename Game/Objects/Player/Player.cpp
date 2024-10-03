@@ -14,56 +14,47 @@
 
 
 void Player::Initialize() {
+	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("TestObject");
+	
+	//初期化
+	pTranform_->Initialize();
+	pivot_.Initialize();
+	pivot_.quaternion = { 1,0,0,0 };
+	pivot_.scale = { 11,11,11 };
+	pivot_.position.z = 10.0f;
+	//回転モード
 	pTranform_->rotateOrder = QUATERNION;
-	//meshRenderer->SetMaterial("uvChecker");
-
-	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
-	//AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
-
+	pivot_.rotateOrder = QUATERNION;
+	
 	pTranform_->scale = { 0.1f,0.1f,0.1f };
 	pTranform_->quaternion = { 1,0,0,0 };
-	baseTransform_.Initialize();
+
+	//ペアレント
+	pTranform_->SetParent(&pivot_);
+	
 	SetPositionZ(-1.0f);
+	pivot_.UpdateMatrix();
 	UpdateMatrix();
 }
 
 void Player::Update() {
 
-	//Vec3 velocity{
-	//	static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
-	//	static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
-	//	0.0f
-	//};
-	//Vec2 keyboardDir = { 0.0f, 0.0f };
+	velocity_ = {
+			static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
+			static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
+			0.0f
+	};
 
-	//// キー入力に基づいて方向を取得
-	//if (Input::PressKey(KeyCode::A)) {
-	//	keyboardDir.x -= 1.0f; // 左
-	//}
-	//if (Input::PressKey(KeyCode::W)) {
-	//	keyboardDir.y -= 1.0f; // 前
-	//}
-	//if (Input::PressKey(KeyCode::D)) {
-	//	keyboardDir.x += 1.0f; // 右
-	//}
-	//if (Input::PressKey(KeyCode::S)) {
-	//	keyboardDir.y += 1.0f; // 下
-	//}
+	rotateXAngle_ += velocity_.y * 0.01f;
+	rotateYAngle_ += velocity_.x * 0.01f;
 
-	//float moveSpeed = 0.01f;
-	//
-	//	// AまたはDが押されたときの回転
-	//Quaternion quaternionY = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, keyboardDir.x * moveSpeed);
-	//
-	//	// WまたはSが押されたときの回転
-	//Quaternion quaternionX = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, keyboardDir.y * moveSpeed);
-	//
-	//pTranform_->quaternion *= quaternionX*quaternionY;
-	//pTranform_->quaternion.Normalize(pTranform_->quaternion);  // 正規化
-	
-	/*SetPosition(GetPosition() + velocity * 0.25f);*/
+	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, -velocity_.y * 0.1f);
+	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, velocity_.x * 0.1f);
+	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+
+	pivot_.UpdateMatrix();
 
 }
 
