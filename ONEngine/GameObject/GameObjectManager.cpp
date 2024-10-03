@@ -305,7 +305,9 @@ void GameObjectManager::ImGuiDebug() {
 	/// ------------------------------------------------
 	for(auto& gameObject : objects_) {
 
-		if(gameObject->GetParent()) { continue; }
+		Transform* parent = gameObject->GetParent();
+		if(parent && parent->GetOwner()) { continue; }
+		//if(gameObject->GetParent()->GetOwner()) { continue; }
 		if(ImGui::Selectable(gameObject->GetName().c_str(), selectObject_ == gameObject.get())) {
 			selectObject_ = gameObject.get();
 		}

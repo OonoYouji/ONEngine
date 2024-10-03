@@ -7,7 +7,7 @@
 void SphereCollider::Initialize() {}
 
 void SphereCollider::Update() {
-	transform_->position = GetParent()->GetPosition();
+	transform_->position = GetOwner()->GetPosition();
 	transform_->UpdateMatrix();
 }
 

@@ -28,8 +28,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	BaseGameObject* GetParent() const { return parent_; }
-	void SetParent(BaseGameObject* parent);
+	BaseGameObject* GetOwner() const { return owner_; }
+	void SetOwner(BaseGameObject* owner);
 
 	const std::string& GetName() const { return name_; }
 	void SetName(const std::string& name);
@@ -46,6 +46,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	BaseGameObject* parent_;
-	std::string name_;
+	BaseGameObject* owner_ = nullptr;
+	std::string     name_;
 };
