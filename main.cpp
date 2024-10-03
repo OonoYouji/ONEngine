@@ -188,7 +188,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 
 		ONEngine::GetDxCommon()->PreDraw();
-		ONEngine::GetWinApp()->PreDraw();
+
+		auto& winApps = ONEngine::GetWinApps();
+		for(auto& win : winApps) {
+			win.second->PreDraw();
+		}
 
 		sceneManager->Draw();
 
@@ -197,7 +201,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 		if(imguiIsBlending) {
 			RenderTextureManager::CreateBlendRenderTexture(
-				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture() , renderTexManager->GetRenderTexture("ImGui") },
+				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture(), renderTexManager->GetRenderTexture("ImGui") },
 				debugFinalRenderTexture.get()
 			);
 		}
@@ -207,17 +211,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderTexManager->EndRenderTarget("ImGui");
 
 		frameFixation->Fixation();
-		if(imguiIsBlending) {
-			ONEngine::GetWinApp()->PostDraw(debugFinalRenderTexture.get());
-			ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
-			ONEngine::GetWinApp()->Present();
-			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
-		} else {
-			ONEngine::GetWinApp()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-			ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-			ONEngine::GetWinApp()->Present();
-			ONEngine::GetDxCommon()->GetDxCommand()->Reset();
+
+		winApps.at("Debug")->PostDraw(renderTexManager->GetRenderTexture("ImGui"));
+		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+
+		ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
+
+		for(auto& win : winApps) {
+			win.second->Present();
 		}
+
+		ONEngine::GetDxCommon()->GetDxCommand()->Reset();
+		
 #else
 		frameFixation->Fixation();
 		ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());

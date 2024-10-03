@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 
 #include <DxCommon.h>
 
@@ -28,6 +29,7 @@ public:
 
 	static ONE::DxCommon* GetDxCommon();
 	static ONE::WinApp*   GetWinApp();
+	static const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& GetWinApps();
 
 private:
 	ONEngine(const ONEngine&)            = delete;
@@ -58,7 +60,9 @@ namespace {
 		/// ===================================================
 
 		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr;
-		std::unique_ptr<ONE::WinApp>   winApp_   = nullptr;
+
+		std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>> winApps_;
+		ONE::WinApp* mainWindow_ = nullptr;
 
 	};
 }

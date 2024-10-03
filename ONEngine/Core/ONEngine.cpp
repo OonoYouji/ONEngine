@@ -26,7 +26,11 @@ ONE::DxCommon* ONEngine::GetDxCommon() {
 }
 
 ONE::WinApp* ONEngine::GetWinApp() {
-	return gSystem->winApp_.get();
+	return gSystem->mainWindow_;
+}
+
+const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& ONEngine::GetWinApps() {
+	return gSystem->winApps_;
 }
 
 
@@ -40,12 +44,23 @@ void System::Initialize() {
 	dxCommon_.reset(new ONE::DxCommon());
 	dxCommon_->Initialize();
 	
-	winApp_.reset(new ONE::WinApp());
-	winApp_->Initialize(L"DirectXGame ver.2.0");
+
+	auto& gameWin = winApps_["Game"];
+	gameWin.reset(new ONE::WinApp());
+	gameWin->Initialize(L"Game");
+	
+	auto& debugWin = winApps_["Debug"];
+	debugWin.reset(new ONE::WinApp());
+	debugWin->Initialize(L"Debug");
+
+	/// main window のポインタ
+	mainWindow_ = debugWin.get();
 
 }
 
 void System::Finalize() {
-	winApp_->Finalize();
-	dxCommon_->Finalize();
+	for(auto& win : winApps_) {
+		win.second->Finalize();
+	}
+	dxCommon_->Finalize(); 
 }
