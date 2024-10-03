@@ -242,6 +242,12 @@
     <ClCompile Include="Game\Objects\Tornado\Tornado.cpp">
       <Filter>Game\Objects\Tornado</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BasePanel\BasePanel.cpp">
+      <Filter>Game\Objects\BasePanel</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Ground\Ground.cpp">
+      <Filter>Game\Objects\Ground</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -420,6 +426,12 @@
     </Filter>
     <Filter Include="Game\Objects\Tornado">
       <UniqueIdentifier>{6961cd74-28a0-4e2e-8641-c8ebf19eb978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\BasePanel">
+      <UniqueIdentifier>{c0d81767-60d6-481b-be15-94d4d17e57f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Ground">
+      <UniqueIdentifier>{e610d203-557a-4ef2-b608-36cc85f63613}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -668,6 +680,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Tornado\Tornado.h">
       <Filter>Game\Objects\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BasePanel\BasePanel.h">
+      <Filter>Game\Objects\BasePanel</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Ground\Ground.h">
+      <Filter>Game\Objects\Ground</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
