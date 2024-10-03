@@ -66,12 +66,12 @@ public:
 
 	Vec3 scale            = Vec3::kOne;
 	Vec3 rotate           = {};
-	Quaternion quaternion = {1, 0, 0, 0};
+	Quaternion quaternion = {0, 0, 0, 1};
 	Vec3 position         = {};
 
 	Mat4 matTransform = Mat4::kIdentity;
 
-	uint32_t rotateOrder = 0u;
+	uint32_t rotateOrder = 1u;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformBuffer_ = nullptr;
 

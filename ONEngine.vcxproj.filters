@@ -239,6 +239,9 @@
     <ClCompile Include="ONEngine\Math\Quaternion.cpp">
       <Filter>ONEngine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Tornado\Tornado.cpp">
+      <Filter>Game\Objects\Tornado</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -414,6 +417,9 @@
     </Filter>
     <Filter Include="ONEngine\Graphics\Drawer\LineDrawer">
       <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Tornado">
+      <UniqueIdentifier>{6961cd74-28a0-4e2e-8641-c8ebf19eb978}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -659,6 +665,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Math\Quaternion.h">
       <Filter>ONEngine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Tornado\Tornado.h">
+      <Filter>Game\Objects\Tornado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

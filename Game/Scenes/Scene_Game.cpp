@@ -1,14 +1,16 @@
 #include "Scene_Game.h"
 
 
+#include <Input.h>
 #include <ImGuiManager/ImGuiManager.h>
+
+#include <Component/MeshRenderer/MeshRenderer.h>
+#include "Particle/ParticleSystem.h"
 
 #include "GameCamera.h"
 #include "Player/Player.h"
-#include "Particle/ParticleSystem.h"
-#include <Component/MeshRenderer/MeshRenderer.h>
+#include "Tornado/Tornado.h"
 
-#include <Input.h>
 
 
 class Demo : public BaseGameObject {
@@ -87,8 +89,10 @@ void Scene_Game::Initialize() {
 	//Player* p1 = new Player;
 	//p1->Initialize();
 
-	Demo* demo = new Demo;
-	demo->Initialize();
+	//Demo* demo = new Demo;
+	//demo->Initialize();
+
+	(new Tornado)->Initialize();
 
 	//p1->SetParent(demo->GetTransform());
 	
