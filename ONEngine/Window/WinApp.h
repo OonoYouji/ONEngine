@@ -31,7 +31,10 @@ namespace ONE {
 		WinApp() = default;
 		~WinApp() = default;
 
-		void Initialize(const wchar_t* windowName);
+		void Initialize(
+			const wchar_t* windowName,
+			WinApp* parent
+		);
 
 		void Finalize();
 
@@ -62,7 +65,10 @@ namespace ONE {
 
 		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
-		void CreateGameWindow(const wchar_t* title, UINT windowStyle, int sizeX, int sizeY);
+		void CreateGameWindow(
+			WinApp* parent,
+			const wchar_t* title, UINT windowStyle, int sizeX, int sizeY
+		);
 
 		void TerminateGameWindow();
 

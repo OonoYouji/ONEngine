@@ -61,13 +61,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	ONEngine::Initialize();
-	input->Initialize(ONEngine::GetWinApp());
+	input->Initialize(ONEngine::GetMainWinApp());
 
 	frameFixation.reset(new FrameFixation);
 	frameFixation->Initialize(true);
 
 
-	imGuiManager->Initialize(ONEngine::GetWinApp(), ONEngine::GetDxCommon());
+	imGuiManager->Initialize(ONEngine::GetMainWinApp(), ONEngine::GetDxCommon());
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	line2d->Initialize();
@@ -124,10 +124,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #endif // _DEBUG
 
 	/// window mode や imgui の表示設定の初期化
-	ONEngine::GetWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
+	ONEngine::GetMainWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
 	uint8_t drawLayerIndex = 0u;
-	bool imguiIsBlending = true;
-	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
+	renderTexManager->SetIsBlending("ImGui", true);
 
 	///- 実行までにかかった時間
 	auto end = std::chrono::high_resolution_clock::now();
@@ -137,7 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	time->Update();
 
 
-	while(!ONEngine::GetWinApp()->ProcessMessage()) {
+	while(!ONEngine::GetMainWinApp()->ProcessMessage()) {
 
 		/// 終了命令がでたのでループを抜ける
 		if(!sceneManager->GetIsRunning()) {
@@ -146,8 +145,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		time->Update();
-		imGuiManager->BeginFrame();
 		input->Update();
+		imGuiManager->BeginFrame();
+		ONEngine::Update();
+
 
 
 		/// ====================================
@@ -156,24 +157,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		/// フルスクリーンの切り替え
 		if(Input::TriggerKey(KeyCode::F11)) {
-			ONEngine::GetWinApp()->SetIsFullScreen(!ONEngine::GetWinApp()->GetIsFullScreen());
+			ONEngine::GetMainWinApp()->SetIsFullScreen(!ONEngine::GetMainWinApp()->GetIsFullScreen());
 		}
 
 #ifdef _DEBUG
-
-		if(Input::TriggerKey(KeyCode::F5)) {
-			imguiIsBlending = !imguiIsBlending;
+		
+		if(imGuiManager->GetIsAcitive()) {
+			input->ImGuiDebug();
+			time->ImGuiDebug();
+			frameFixation->ImGuiDebug();
+			gameObjectManager->ImGuiDebug();
+			collisionManager->ImGuiDebug();
+			renderTexManager->ImGuiDebug();
+			sceneManager->ImGuiDebug();
 		}
-		
-		/// ImGuiの表示
-		input->ImGuiDebug();
-		time->ImGuiDebug();
-		frameFixation->ImGuiDebug();
-		gameObjectManager->ImGuiDebug();
-		collisionManager->ImGuiDebug();
-		renderTexManager->ImGuiDebug();
-		sceneManager->ImGuiDebug();
-		
 
 #endif // _DEBUG
 
@@ -187,8 +184,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理に移る
 		/// ====================================
 
-		ONEngine::GetDxCommon()->PreDraw();
-
 		auto& winApps = ONEngine::GetWinApps();
 		for(auto& win : winApps) {
 			win.second->PreDraw();
@@ -199,12 +194,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		renderTexManager->EndFrame();
 
 #ifdef _DEBUG
-		if(imguiIsBlending) {
-			RenderTextureManager::CreateBlendRenderTexture(
-				{ sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture(), renderTexManager->GetRenderTexture("ImGui") },
-				debugFinalRenderTexture.get()
-			);
-		}
 
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
@@ -215,14 +204,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		winApps.at("Debug")->PostDraw(renderTexManager->GetRenderTexture("ImGui"));
 		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 
-		ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
+		ONEngine::GetDxCommon()->CommandExecution();
 
 		for(auto& win : winApps) {
 			win.second->Present();
 		}
 
 		ONEngine::GetDxCommon()->GetDxCommand()->Reset();
-		
 #else
 		frameFixation->Fixation();
 		ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());

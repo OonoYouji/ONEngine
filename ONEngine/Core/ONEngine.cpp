@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <Input.h>
 
 namespace {
 	std::unique_ptr<System> gSystem;
@@ -21,11 +22,15 @@ void ONEngine::Finalize() {
 	gSystem->Finalize();
 }
 
+void ONEngine::Update() {
+	gSystem->Update();
+}
+
 ONE::DxCommon* ONEngine::GetDxCommon() {
 	return gSystem->dxCommon_.get();
 }
 
-ONE::WinApp* ONEngine::GetWinApp() {
+ONE::WinApp* ONEngine::GetMainWinApp() {
 	return gSystem->mainWindow_;
 }
 
@@ -47,14 +52,14 @@ void System::Initialize() {
 
 	auto& gameWin = winApps_["Game"];
 	gameWin.reset(new ONE::WinApp());
-	gameWin->Initialize(L"Game");
+	gameWin->Initialize(L"Game", nullptr);
 	
 	auto& debugWin = winApps_["Debug"];
 	debugWin.reset(new ONE::WinApp());
-	debugWin->Initialize(L"Debug");
+	debugWin->Initialize(L"Debug", nullptr);
 
 	/// main window のポインタ
-	mainWindow_ = debugWin.get();
+	mainWindow_ = gameWin.get();
 
 }
 
@@ -63,4 +68,25 @@ void System::Finalize() {
 		win.second->Finalize();
 	}
 	dxCommon_->Finalize(); 
+}
+
+void System::Update() {
+	/*HWND activeWindow = GetForegroundWindow();
+	for(auto& win : winApps_) {
+		if(activeWindow == win.second->GetHWND()) {
+			mainWindow_ = win.second.get();
+			return;
+		}
+	}*/
+
+	if(Input::TriggerKey(KeyCode::Space)) {
+		auto& debugWin = winApps_["Debug"];
+		// 子ウィンドウのスタイルを変更
+		SetWindowLongPtr(debugWin->GetHWND(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+		SetParent(debugWin->GetHWND(), nullptr); // 親ウィンドウから切り離す
+		SetWindowPos(debugWin->GetHWND(), nullptr, 100, 100, 640, 480, SWP_SHOWWINDOW);
+	}
+
+
+
 }

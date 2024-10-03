@@ -27,8 +27,10 @@ public:
 	static void Initialize();
 	static void Finalize();
 
+	static void Update();
+
 	static ONE::DxCommon* GetDxCommon();
-	static ONE::WinApp*   GetWinApp();
+	static ONE::WinApp*   GetMainWinApp();
 	static const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& GetWinApps();
 
 private:
@@ -53,6 +55,7 @@ namespace {
 		void Initialize();
 		void Finalize();
 
+		void Update();
 
 	private:
 		/// ===================================================

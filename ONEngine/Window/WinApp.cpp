@@ -18,11 +18,17 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 /// ===================================================
 /// 初期化
 /// ===================================================
-void ONE::WinApp::Initialize(const wchar_t* windowName) {
+void ONE::WinApp::Initialize(const wchar_t* windowName, WinApp* parent) {
+
+	UINT winSty = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
+	if(parent) {
+		winSty = WS_CHILD | WS_VISIBLE;
+	}
 
 	CreateGameWindow(
+		parent,
 		windowName,
-		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
+		winSty,
 		kWindowSizeX, kWindowSizeY
 	);
 
@@ -154,7 +160,7 @@ LRESULT ONE::WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 /// ===================================================
 /// GameWindowの生成
 /// ===================================================
-void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int sizeX, int sizeY) {
+void ONE::WinApp::CreateGameWindow(WinApp* parent, const wchar_t* title, UINT windowStyle, int sizeX, int sizeY) {
 
 	timeBeginPeriod(1);
 
@@ -177,7 +183,8 @@ void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int s
 	AdjustWindowRect(&wrc_, WS_OVERLAPPEDWINDOW, false);
 
 	///- 
-	hwnd_ = CreateWindow(
+	hwnd_ = CreateWindowEx(
+		0,
 		wc_.lpszClassName,
 		title,
 		windowStyle_,
@@ -185,7 +192,7 @@ void ONE::WinApp::CreateGameWindow(const wchar_t* title, UINT windowStyle, int s
 		CW_USEDEFAULT,
 		wrc_.right - wrc_.left,
 		wrc_.bottom - wrc_.top,
-		nullptr,
+		parent ? parent->GetHWND() : nullptr,
 		nullptr,
 		wc_.hInstance,
 		nullptr

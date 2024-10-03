@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cmath>
 
+#include <Core/ONEngine.h>
 #include <WinApp.h>
 #include <CameraManager.h>
 
@@ -36,6 +37,8 @@ void Mouse::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 
 
 void Mouse::Begin() {
+
+	pWinApp_ = ONEngine::GetMainWinApp();
 
 	preState_ = state_;
 

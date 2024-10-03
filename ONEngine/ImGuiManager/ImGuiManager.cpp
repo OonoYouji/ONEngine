@@ -1,11 +1,23 @@
 #include <ImGuiManager.h>
 
+#include <Core/ONEngine.h>
 #include <DxCommon.h>
 #include <DxDescriptor.h>
 #include <DxCommand.h>
 #include <DxDoubleBuffer.h>
 
 #include <WinApp.h>
+
+
+bool IsMouseInWindow(HWND hwnd) {
+	POINT pt;
+	GetCursorPos(&pt);
+	ScreenToClient(hwnd, &pt);
+
+	RECT rect;
+	GetClientRect(hwnd, &rect);
+	return (pt.x >= 0 && pt.x < rect.right && pt.y >= 0 && pt.y < rect.bottom);
+}
 
 
 
@@ -47,7 +59,8 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 	);
 
 	dxDescriptor_->AddSrvUsedCount();
-
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
 }
 
 
@@ -70,9 +83,15 @@ void ImGuiManager::Finalize() {
 /// ===================================================
 void ImGuiManager::BeginFrame() {
 
-	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
+	HWND activeWindow = GetForegroundWindow();
 	ImGui::NewFrame();
+
+		isActive_ = true;
+	if(!IsMouseInWindow(ONEngine::GetWinApps().at("Debug")->GetHWND())) {
+		ImGui::BeginDisabled();
+	}
+
+	
 
 	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
@@ -83,7 +102,9 @@ void ImGuiManager::BeginFrame() {
 /// 毎フレーム最後に行う
 /// ===================================================
 void ImGuiManager::EndFrame() {
-
+	if(!IsMouseInWindow(ONEngine::GetWinApps().at("Debug")->GetHWND())) {
+		ImGui::EndDisabled();
+	}
 	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 	ImGui::Render();

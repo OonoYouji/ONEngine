@@ -62,6 +62,9 @@ public:
 	/// </summary>
 	void EndFrame();
 
+
+	bool GetIsAcitive() const { return isActive_; }
+
 private:
 
 	/// ===================================================
@@ -88,6 +91,8 @@ private:
 	ONE::DxCommon* dxCommon_ = nullptr;
 	ONE::DxDescriptor* dxDescriptor_ = nullptr;
 	ONE::WinApp* pWinApp_ = nullptr;
+
+	bool isActive_ = true;
 
 private:
 	ImGuiManager(const ImGuiManager&) = delete;

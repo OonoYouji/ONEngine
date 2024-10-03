@@ -69,36 +69,9 @@ void ONE::DxCommon::Finalize() {
 }
 
 
-/// ===================================================
-/// 描画前処理
-/// ===================================================
-void ONE::DxCommon::PreDraw() {
-
-	/*doubleBuffer_->SetViewport(command_->GetList());
-	doubleBuffer_->SetSiccorRect(command_->GetList());
-
-	doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	doubleBuffer_->ClearBB(command_->GetList());*/
-}
-
-
-/// ===================================================
-/// 描画後処理
-/// ===================================================
-void ONE::DxCommon::PostDraw(RenderTexture* renderTex) {
-	
-//#ifdef NDEBUG
-	//doubleBuffer_->CopyToBB(command_->GetList(), renderTex->GetRenderTexResource(), renderTex->currentResourceState);
-//#endif // NDEBUG
-
-	//doubleBuffer_->CreateBarrier(command_->GetList(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	
+void ONE::DxCommon::CommandExecution() {
 	command_->Close();
-
 	command_->Execution();
-	//doubleBuffer_->Present();
-	//command_->Reset();
-
 }
 
 

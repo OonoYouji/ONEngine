@@ -39,15 +39,7 @@ namespace ONE {
 		/// </summary>
 		void Finalize();
 
-		/// <summary>
-		/// 描画前処理
-		/// </summary>
-		void PreDraw();
-
-		/// <summary>
-		/// 描画後処理
-		/// </summary>
-		void PostDraw(RenderTexture* renderTex);
+		void CommandExecution();
 
 		/// <summary>
 		/// CommandList内にある命令を実行する
