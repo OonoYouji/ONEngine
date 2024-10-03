@@ -17,7 +17,7 @@ void Tornado::Initialize() {
 
 	/// mesh renderer 初期化
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("Tornado");
+	meshRenderer->SetModel("Sphere");
 
 }
 

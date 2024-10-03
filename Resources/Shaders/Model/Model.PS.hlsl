@@ -29,6 +29,7 @@ PSOutput main(VSOutput input) {
 		float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
 		output.color = materialColor * texColor * lightColor * cos * intensity;
 		output.color.a = materialColor.a * texColor.a;
+
 	} else {
 		output.color = materialColor * texColor;
 	}
