@@ -16,6 +16,7 @@
 #include <DxDescriptor.h>
 
 #include <CameraManager.h>
+#include <TextureManager.h>
 #include <Light/DirectionalLight.h>
 
 
@@ -170,6 +171,11 @@ Model* ModelManager::Load(const std::string& filePath) {
 			texPath = texPath.substr(0, dotIndex);
 		}
 		modelMaterial.SetTextureName(texPath);
+
+		TextureManager::GetInstance()->Load(
+			texPath, 
+			path.filename().string()
+		);
 
 		modelMaterial.CreateBuffer();
 		model->AddMaterial(modelMaterial);

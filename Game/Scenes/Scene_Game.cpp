@@ -2,6 +2,9 @@
 
 #include <ImGuiManager/ImGuiManager.h>
 
+#include <Component/MeshRenderer/MeshRenderer.h>
+#include "Particle/ParticleSystem.h"
+
 #include "GameCamera.h"
 #include "Particle/ParticleSystem.h"
 //class
