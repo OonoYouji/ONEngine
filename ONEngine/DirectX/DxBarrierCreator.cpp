@@ -1,5 +1,7 @@
 #include <DxBarrierCreator.h>
 
+#include <Core/ONEngine.h>
+
 #include <DxCommand.h>
 #include <DxCommon.h>
 
@@ -14,5 +16,5 @@ void ONE::DxBarrierCreator::CreateBarrier(ID3D12Resource* resourec, D3D12_RESOUR
 	barrier.Transition.StateBefore = before;
 	barrier.Transition.StateAfter = after;
 
-	ONE::DxCommon::GetInstance()->GetDxCommand()->GetList()->ResourceBarrier(1, &barrier);
+	ONEngine::GetDxCommon()->GetDxCommand()->GetList()->ResourceBarrier(1, &barrier);
 }

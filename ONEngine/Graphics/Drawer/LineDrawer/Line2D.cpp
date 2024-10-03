@@ -1,8 +1,14 @@
 #include "Line2D.h"
+
+#include <cassert>
+
+#include <Core/ONEngine.h>
+
 #include <DxCommand.h>
 #include <DxResourceCreator.h>
 #include <WinApp.h>
-#include <cassert>
+
+
 
 const int Line2D::kMaxInstanceCount_ = 1024;
 
@@ -57,7 +63,7 @@ void Line2D::PostDraw() {
 	std::memcpy(vertexDate, vertices_.data(), sizeof(LineVertexDate) * vertices_.size());
 
 
-	ID3D12GraphicsCommandList* cList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* cList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	pipeline_->SetPipelineState();
 
 	cList->IASetVertexBuffers(0, 1, &vbv_);

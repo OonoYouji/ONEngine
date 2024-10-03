@@ -5,6 +5,7 @@
 
 #include <string>
 
+#include <DxShaderCompiler.h>
 using namespace Microsoft::WRL;
 
 
@@ -47,11 +48,7 @@ namespace ONE {
 		ComPtr<IDxcCompiler3> dxcCompiler_;
 		ComPtr<IDxcIncludeHandler> includeHandler_;
 
-	private:
-		DxShaderCompiler(const DxShaderCompiler&) = delete;
-		DxShaderCompiler(DxShaderCompiler&&) = delete;
-		DxShaderCompiler& operator=(const DxShaderCompiler&) = delete;
-		DxShaderCompiler& operator=(DxShaderCompiler&&) = delete;
+		
 	};
 
 }

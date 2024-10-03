@@ -1,5 +1,7 @@
 #include <Windows.h>
 
+#include <Core/ONEngine.h>
+
 #include <WinApp.h>
 #include <Logger.h>
 #include <DxCommon.h>
@@ -41,8 +43,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	ONE::Logger::ConsolePrint("execution!!!");
 
-	std::unique_ptr<ONE::WinApp> winApp = nullptr;
-	ONE::DxCommon*	dxCommon	= ONE::DxCommon::GetInstance();
 	Input*			input		= Input::GetInsatnce();
 	Time*			time		= Time::GetInstance();
 	std::unique_ptr<FrameFixation> frameFixation = nullptr;
@@ -60,23 +60,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Line2D*					line2d				= Line2D::GetInstance();
 
 
-
-	winApp.reset(new ONE::WinApp);
-	winApp->Initialize(L"DirectXGame");
-
-	dxCommon->Initialize(winApp.get());
-
-	input->Initialize(winApp.get());
+	ONEngine::Initialize();
+	input->Initialize(ONEngine::GetWinApp());
 
 	frameFixation.reset(new FrameFixation);
 	frameFixation->Initialize(true);
 
 
-	imGuiManager->Initialize(winApp.get(), dxCommon);
+	imGuiManager->Initialize(ONEngine::GetWinApp(), ONEngine::GetDxCommon());
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	line2d->Initialize();
-	Line3D::SInitialize(dxCommon->GetDxCommand()->GetList());
+	Line3D::SInitialize(ONEngine::GetDxCommon()->GetDxCommand()->GetList());
 	audioManager->Initialize();
 
 	textureManager->Load("uvChecker", "uvChecker.png");
@@ -84,12 +79,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	/// render texture imgui用を作成
-	renderTexManager->Initialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	renderTexManager->Initialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
 	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
 
 	/// bloomエフェクトの初期化
-	Bloom::StaticInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor(), 2);
-	ParticleSystem::SInitialize(dxCommon->GetDxCommand()->GetList(), dxCommon->GetDxDescriptor());
+	Bloom::StaticInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor(), 2
+	);
+
+	ParticleSystem::SInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
@@ -113,13 +118,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
 	debugFinalRenderTexture->Initialize(
 		Vec4(0, 0, 0, 0),
-		dxCommon->GetDxCommand()->GetList(),
-		dxCommon->GetDxDescriptor()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
 #endif // _DEBUG
 
 	/// window mode や imgui の表示設定の初期化
-	winApp->SetIsFullScreen(false); /// ? full screen : window mode
+	ONEngine::GetWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
 	uint8_t drawLayerIndex = 0u;
 	bool imguiIsBlending = true;
 	renderTexManager->SetIsBlending("ImGui", imguiIsBlending);
@@ -132,7 +137,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	time->Update();
 
 
-	while(!winApp->ProcessMessage()) {
+	while(!ONEngine::GetWinApp()->ProcessMessage()) {
 
 		/// 終了命令がでたのでループを抜ける
 		if(!sceneManager->GetIsRunning()) {
@@ -151,7 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		/// フルスクリーンの切り替え
 		if(Input::TriggerKey(KeyCode::F11)) {
-			winApp->SetIsFullScreen(!winApp->GetIsFullScreen());
+			ONEngine::GetWinApp()->SetIsFullScreen(!ONEngine::GetWinApp()->GetIsFullScreen());
 		}
 
 #ifdef _DEBUG
@@ -182,7 +187,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理に移る
 		/// ====================================
 
-		dxCommon->PreDraw();
+		ONEngine::GetDxCommon()->PreDraw();
 
 		sceneManager->Draw();
 
@@ -202,19 +207,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		frameFixation->Fixation();
 		if(imguiIsBlending) {
-			dxCommon->PostDraw(debugFinalRenderTexture.get());
+			ONEngine::GetDxCommon()->PostDraw(debugFinalRenderTexture.get());
 		} else {
-			dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+			ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 		}
 #else
 		frameFixation->Fixation();
-		dxCommon->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+		ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 #endif // _DEBUG
 
 	}
 
 
-	if(!dxCommon->IsGpuExeEnded()) {
+	if(!ONEngine::GetDxCommon()->IsGpuExeEnded()) {
 		assert(false);
 	}
 
@@ -240,8 +245,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Finalize();
 	imGuiManager->Finalize();
 	input->Finalize();
-	dxCommon->Finalize();
-	winApp->Finalize();
+	ONEngine::Finalize();
 
 	return 0;
 }

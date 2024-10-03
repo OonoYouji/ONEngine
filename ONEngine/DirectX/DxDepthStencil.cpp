@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <Core/ONEngine.h>
+
 #include <WinApp.h>
 
 #include <DxCommon.h>
@@ -56,7 +58,7 @@ void ONE::DxDepthStencil::CreateView(ID3D12Device* device) {
 
 	device->CreateDepthStencilView(
 		depthStencilResource_.Get(), &desc, 
-		ONE::DxCommon::GetInstance()->GetDxDescriptor()->GetDsvCpuHandle()
+		ONEngine::GetDxCommon()->GetDxDescriptor()->GetDsvCpuHandle()
 	);
 
 }

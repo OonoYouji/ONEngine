@@ -4,6 +4,8 @@
 
 #include <d3dx12.h>
 
+#include <Core/ONEngine.h>
+
 #include <DxCommon.h>
 #include <DxDevice.h>
 #include <DxCommand.h>
@@ -105,8 +107,8 @@ namespace {
 	[[nodiscard]]
 	ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages) {
 
-		ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
-		ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+		ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
+		ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 
 		std::vector<D3D12_SUBRESOURCE_DATA> subresources;
 		DirectX::PrepareUpload(device, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
@@ -173,11 +175,11 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 	Texture newTexture{};
 	DirectX::ScratchImage mipImages = LoadTexture(kDirectoryPath_ + filePath);
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	newTexture.resource_ = CreataTextureResouece(ONE::DxCommon::GetInstance()->GetDevice(), metadata);
+	newTexture.resource_ = CreataTextureResouece(ONEngine::GetDxCommon()->GetDevice(), metadata);
 	ComPtr<ID3D12Resource> intermediateResource = UploadTextureData(newTexture.resource_.Get(), mipImages);
 
 
-	ONE::DxCommon::GetInstance()->ExecuteCommands();
+	ONEngine::GetDxCommon()->ExecuteCommands();
 	intermediateResource.Reset();
 
 	///- metadataを基にSRVの設定
@@ -188,13 +190,13 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
 	///- srvHandleの取得
-	ONE::DxDescriptor* descriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
+	ONE::DxDescriptor* descriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
 	newTexture.cpuHandle_ = descriptor->GetSrvCpuHandle();
 	newTexture.gpuHandle_ = descriptor->GetSrvGpuHandle();
 	descriptor->AddSrvUsedCount();
 
 	///- srvの生成
-	ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
+	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
 	device->CreateShaderResourceView(newTexture.resource_.Get(), &srvDesc, newTexture.cpuHandle_);
 
 	textures_[texName] = newTexture;

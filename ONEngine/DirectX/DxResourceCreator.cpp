@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <Core/ONEngine.h>
+
 #include <DxDevice.h>
 #include <DxCommon.h>
 
@@ -33,7 +35,7 @@ ComPtr<ID3D12Resource> ONE::DxResourceCreator::CreateResource(size_t sizeInByte)
 	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	///- 実際に頂点リソースを生成
-	result = DxCommon::GetInstance()->GetDevice()->CreateCommittedResource(
+	result = ONEngine::GetDxCommon()->GetDevice()->CreateCommittedResource(
 		&uploadHeapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,

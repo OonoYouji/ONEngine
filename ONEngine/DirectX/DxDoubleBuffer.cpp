@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <Core/ONEngine.h>
+
 #include <WinApp.h>
 
 #include <DxCommon.h>
@@ -50,7 +52,7 @@ void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = ONE::DxCommon::GetInstance()->GetDxDescriptor()->GetDsvCpuHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = ONEngine::GetDxCommon()->GetDxDescriptor()->GetDsvCpuHandle();
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };

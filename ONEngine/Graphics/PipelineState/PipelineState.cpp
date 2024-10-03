@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include <Core/ONEngine.h>
+
 #include <Logger.h>
 #include <DxCommon.h>
 #include <DxCommand.h>
@@ -25,8 +27,8 @@ PipelineState::~PipelineState() {}
 /// ===================================================
 void PipelineState::Initialize() {
 
-	CreateRootSignature(ONE::DxCommon::GetInstance()->GetDevice());
-	CreatePipelineState(ONE::DxCommon::GetInstance()->GetDevice());
+	CreateRootSignature(ONEngine::GetDxCommon()->GetDevice());
+	CreatePipelineState(ONEngine::GetDxCommon()->GetDevice());
 
 }
 
@@ -140,7 +142,7 @@ void PipelineState::SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE type) {
 /// PipelineStateをCommandListにセット
 /// ===================================================
 void PipelineState::SetPipelineState() {
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	commandList->SetGraphicsRootSignature(rootSignature_.Get());
 	commandList->SetPipelineState(pipelineState_.Get());
 }
@@ -276,7 +278,7 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 /// Shaderの初期化
 /// ===================================================
 void PipelineState::Shader::ShaderCompile(const std::wstring& vsFilePath, const wchar_t* vsProfile, const std::wstring& psFilePath, const wchar_t* psProfile) {
-	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
+	ONE::DxCommon* dxCommon = ONEngine::GetDxCommon();
 
 	vs = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + vsFilePath, vsProfile);
 	ps = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + psFilePath, psProfile);
@@ -285,6 +287,6 @@ void PipelineState::Shader::ShaderCompile(const std::wstring& vsFilePath, const 
 }
 
 void PipelineState::Shader::GeometryShaderCompile(const std::wstring& filePath, const wchar_t* profile) {
-	ONE::DxCommon* dxCommon = ONE::DxCommon::GetInstance();
+	ONE::DxCommon* dxCommon = ONEngine::GetDxCommon();
 	gs = dxCommon->GetDxShaderCompiler()->CompileShader(kDirectoryPath_ + filePath, profile);
 }

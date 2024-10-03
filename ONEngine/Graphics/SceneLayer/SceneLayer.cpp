@@ -1,5 +1,7 @@
 #include "SceneLayer.h"
 
+#include <Core/ONEngine.h>
+
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxBarrierCreator.h>
@@ -36,8 +38,8 @@ SceneLayer::SceneLayer() {
 }
 
 void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
-	auto commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
-	auto dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
+	auto commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
 
 	renderTexture_.reset(new RenderTexture);
 	renderTexture_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);

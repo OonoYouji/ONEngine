@@ -2,6 +2,8 @@
 
 #include <d3dx12.h>
 
+#include <Core/ONEngine.h>
+
 #include <WinApp.h>
 #include <DxCommon.h>
 #include <DxDescriptor.h>
@@ -53,7 +55,7 @@ ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(
 
 void RenderTexture::Initialize(const Vector4& clearColor, ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* descriptor) {
 
-	ID3D12Device* device = ONE::DxCommon::GetInstance()->GetDevice();
+	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
 	pCommandList_ = commandList;
 	pDxDescriptor_ = descriptor;
 	currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;

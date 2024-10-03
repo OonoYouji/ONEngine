@@ -1,5 +1,7 @@
 #include <Floor.h>
 
+#include <Core/ONEngine.h>
+
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxDescriptor.h>
@@ -82,12 +84,12 @@ void Floor::Initialize() {
 /// 描画
 /// ===================================================
 void Floor::Draw() {
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	pipeline_->SetPipelineState();
 
-	ONE::DxCommon::GetInstance()->GetDxDescriptor()->SetSRVHeap(commandList);
+	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

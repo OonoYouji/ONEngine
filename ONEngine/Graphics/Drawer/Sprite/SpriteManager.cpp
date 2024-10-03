@@ -1,6 +1,8 @@
 #include <SpriteManager.h>
 
 
+#include <Core/ONEngine.h>
+
 #include <WinApp.h>
 #include <DxCommon.h>
 #include <DxCommand.h>
@@ -81,12 +83,12 @@ void SpriteManager::PreDraw() {
 void SpriteManager::PostDraw() {
 	if(activeSprites_.empty()) { return; }
 
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	pipelineState_->SetPipelineState();
 
-	ONE::DxDescriptor* dxDescriptor = ONE::DxCommon::GetInstance()->GetDxDescriptor();
+	ONE::DxDescriptor* dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
 	dxDescriptor->SetSRVHeap(commandList);
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());

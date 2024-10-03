@@ -9,6 +9,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <Core/ONEngine.h>
+
 #include <DxCommon.h>
 #include <DxCommand.h>
 #include <DxShaderCompiler.h>
@@ -336,11 +338,11 @@ void ModelManager::PostDraw() {
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = ONE::DxCommon::GetInstance()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	CameraManager* ins = CameraManager::GetInstance();
 	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
-	ONE::DxCommon::GetInstance()->GetDxDescriptor()->SetSRVHeap(commandList);
+	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	/// ---------------------------------------------------
 	/// Solidの描画

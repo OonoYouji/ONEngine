@@ -21,18 +21,13 @@ namespace ONE {
 	/// DirectX12汎用クラス
 	/// ===================================================
 	class DxCommon final {
+	public:
 		DxCommon() = default;
 		~DxCommon() = default;
-	public:
 
 		/// ===================================================
 		/// public : methods
 		/// ===================================================
-
-		/// <summary>
-		/// インスタンス確保
-		/// </summary>
-		static DxCommon* GetInstance();
 
 		/// <summary>
 		/// 初期化
@@ -97,11 +92,6 @@ namespace ONE {
 
 		std::unique_ptr<DxShaderCompiler> shaderCompiler_ = nullptr;
 
-	private:
-		DxCommon(const DxCommon&) = delete;
-		DxCommon(DxCommon&&) = delete;
-		DxCommon& operator=(const DxCommon&) = delete;
-		DxCommon& operator=(DxCommon&&) = delete;
 	};
 
 }

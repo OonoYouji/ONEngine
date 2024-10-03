@@ -242,6 +242,9 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp">
       <Filter>Game\Objects\DemoObject</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Core\ONEngine.cpp">
+      <Filter>ONEngine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -420,6 +423,9 @@
     </Filter>
     <Filter Include="Game\Objects\DemoObject">
       <UniqueIdentifier>{ec9f3147-1404-4ab4-b4e9-57171c6a0e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Core">
+      <UniqueIdentifier>{3243d5bd-777a-4fd5-a6a2-973e0318d266}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -668,6 +674,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h">
       <Filter>Game\Objects\DemoObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Core\ONEngine.h">
+      <Filter>ONEngine\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

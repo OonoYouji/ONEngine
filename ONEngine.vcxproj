@@ -45,6 +45,7 @@
     <ClCompile Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\Component\Transform\Transform.cpp" />
+    <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommand.cpp" />
     <ClCompile Include="ONEngine\DirectX\DxCommon.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="ONEngine\Component\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\Component\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\Component\Transform\Transform.h" />
+    <ClInclude Include="ONEngine\Core\ONEngine.h" />
     <ClInclude Include="ONEngine\DirectX\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommand.h" />
     <ClInclude Include="ONEngine\DirectX\DxCommon.h" />
