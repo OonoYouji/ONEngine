@@ -2,6 +2,7 @@
 
 #include <Vector3.h>
 #include <Vector4.h>
+#include <Quaternion.h>
 
 
 namespace {
@@ -130,8 +131,8 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& v) {
 	return MakeRotateX(v.x) * MakeRotateY(v.y) * MakeRotateZ(v.z);
 }
 
-Matrix4x4 Matrix4x4::MakeRotateQuaternion(const Vector4& v) {
-	if (Vec4::Lenght(v) == 0.0f) {
+Matrix4x4 Matrix4x4::MakeRotateQuaternion(const Quaternion& v) {
+	if(Quaternion::Lenght(v) == 0.0f) {
 		return kIdentity;
 	}
 	Mat4 result{};

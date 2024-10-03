@@ -92,7 +92,7 @@ Mat4 Transform::MakeRotate(uint32_t order) {
 	case ROTATE_ORDER::ZYX:
 		return Mat4::MakeRotateZ(rotate.z) * Mat4::MakeRotateY(rotate.y) * Mat4::MakeRotateX(rotate.x);
 	case ROTATE_ORDER::QUATERNION:
-		//quaternion = Vec4::Normalize(quaternion);
+		quaternion = Quaternion::Normalize(quaternion);
 		return Mat4::MakeRotateQuaternion(quaternion);
 	}
 	return Mat4::MakeRotate(rotate);

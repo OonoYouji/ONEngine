@@ -86,6 +86,7 @@
     <ClCompile Include="ONEngine\Math\Easing.cpp" />
     <ClCompile Include="ONEngine\Math\Matrix3x3.cpp" />
     <ClCompile Include="ONEngine\Math\Matrix4x4.cpp" />
+    <ClCompile Include="ONEngine\Math\Quaternion.cpp" />
     <ClCompile Include="ONEngine\Math\Vector2.cpp" />
     <ClCompile Include="ONEngine\Math\Vector3.cpp" />
     <ClCompile Include="ONEngine\Math\Vector4.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="ONEngine\Math\Easing.h" />
     <ClInclude Include="ONEngine\Math\Matrix3x3.h" />
     <ClInclude Include="ONEngine\Math\Matrix4x4.h" />
+    <ClInclude Include="ONEngine\Math\Quaternion.h" />
     <ClInclude Include="ONEngine\Math\Vector2.h" />
     <ClInclude Include="ONEngine\Math\Vector3.h" />
     <ClInclude Include="ONEngine\Math\Vector4.h" />
