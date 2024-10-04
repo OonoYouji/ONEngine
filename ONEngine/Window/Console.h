@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ImGuiManager.h>
+#include <SceneManager.h>
 
 
 class Console final {
@@ -30,6 +31,8 @@ private:
 	ImGuiWindowFlags parentWinFlags_;
 	ImGuiWindowFlags imguiWinFlags_;
 	bool             imguiWinIsOpen_ = true;
+
+	SceneManager* pSceneManager_ = nullptr;
 
 private:
 	Console(const Console&)            = delete;
