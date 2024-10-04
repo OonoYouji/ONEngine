@@ -2,6 +2,7 @@
 
 #include <ImGuiManager.h>
 #include <SceneManager.h>
+#include <GameObjectManager.h>
 
 
 class Console final {
@@ -26,14 +27,16 @@ private:
 
 	void Assets();
 
+	void PlayControl();
+
 private:
 
 	ImGuiWindowFlags parentWinFlags_;
 	ImGuiWindowFlags imguiWinFlags_;
 	bool             imguiWinIsOpen_ = true;
 
-	SceneManager* pSceneManager_ = nullptr;
-
+	SceneManager*      pSceneManager_      = nullptr;
+	GameObjectManager* pGameObjectManager_ = nullptr;
 private:
 	Console(const Console&)            = delete;
 	Console(Console&&)                 = delete;

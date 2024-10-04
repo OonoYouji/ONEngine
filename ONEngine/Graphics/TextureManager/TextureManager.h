@@ -37,6 +37,10 @@ public:
 	/// <returns></returns>
 	const Texture& GetTexture(const std::string& name) const;
 
+	const std::unordered_map<std::string, Texture>& GetTextureAll() const {
+		return textures_;
+	}
+
 	/// <summary>
 	/// テクスチャの読み込み
 	/// </summary>

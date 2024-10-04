@@ -20,6 +20,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg
 /// ===================================================
 void ONE::WinApp::Initialize(const wchar_t* windowName, WinApp* parent) {
 
+	windowName_ = windowName;
+
 	UINT winSty = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
 	if(parent) {
 		winSty = WS_CHILD | WS_VISIBLE;
@@ -27,7 +29,7 @@ void ONE::WinApp::Initialize(const wchar_t* windowName, WinApp* parent) {
 
 	CreateGameWindow(
 		parent,
-		windowName,
+		windowName_,
 		winSty,
 		kWindowSizeX, kWindowSizeY
 	);
@@ -91,6 +93,28 @@ void ONE::WinApp::PostDraw(RenderTexture* renderTexture) {
 
 void ONE::WinApp::Present() {
 	doubleBuffer_->Present();
+}
+
+void ONE::WinApp::ShowGameWindow() {
+	CreateGameWindow(
+		nullptr,
+		windowName_,
+		WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME),
+		kWindowSizeX, kWindowSizeY
+	);
+
+	doubleBuffer_.reset(new DxDoubleBuffer);
+	doubleBuffer_->Initialize(
+		this,
+		ONEngine::GetDxCommon()->GetDxDevice(),
+		ONEngine::GetDxCommon()->GetDxDescriptor(),
+		ONEngine::GetDxCommon()->GetDxCommand()->GetQueue()
+	);
+
+}
+
+void ONE::WinApp::DestoryGameWindow() {
+	DestroyWindow(hwnd_);
 }
 
 

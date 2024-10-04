@@ -45,6 +45,8 @@ namespace ONE {
 
 		void Present();
 
+		void ShowGameWindow();
+		void DestoryGameWindow();
 
 
 		void SetIsFullScreen(bool isFullScreen);
@@ -83,6 +85,8 @@ namespace ONE {
 		HWND hwnd_;
 		MSG msg_;
 		UINT windowStyle_;
+
+		const wchar_t* windowName_;
 
 		RECT fullscreenRect_{  };
 		bool isFullScreen_ = false;

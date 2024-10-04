@@ -33,6 +33,7 @@ public:
 
 	static uint32_t GetInstanceCount(const std::string& tag);
 	static std::list<BaseGameObject*> GetGameObjectList(const std::string& tag);
+	
 
 	/// <summary>
 	/// すべてのオブジェクトを消去する
@@ -100,6 +101,10 @@ public:
 
 
 #pragma region ImGui
+
+	void Hierarchy();
+	void Inspector();
+
 	/// <summary>
 	/// imguiでデバッグ表示
 	/// </summary>

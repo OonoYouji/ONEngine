@@ -288,6 +288,55 @@ void GameObjectManager::AddObjectsToObjectsCopy() {
 }
 
 
+void GameObjectManager::Hierarchy() {
+
+	for(auto& gameObject : objects_) {
+
+		Transform* parent = gameObject->GetParent();
+		if(parent && parent->GetOwner()) { continue; }
+		if(ImGui::Selectable(gameObject->GetName().c_str(), selectObject_ == gameObject.get())) {
+			selectObject_ = gameObject.get();
+		}
+
+		ImGuiSelectChilds(gameObject->GetChilds());
+	}
+
+}
+
+void GameObjectManager::Inspector() {
+	if(!selectObject_) { return; }
+
+	/// activeのフラグをデバッグ
+	ImGui::Checkbox("isActive", &selectObject_->isActive);
+	if(ImGui::IsItemEdited()) {
+		for(auto& child : selectObject_->GetChilds()) {
+			child->isActive = selectObject_->isActive;
+		}
+	}
+
+	/// drawLayerIdのフラグをデバッグ
+	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId, 0);
+	if(ImGui::IsItemEdited()) {
+		for(auto& child : selectObject_->GetChilds()) {
+			child->drawLayerId = selectObject_->drawLayerId;
+		}
+	}
+
+	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+
+	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
+	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
+		return;
+	}
+
+	ImGui::Unindent();
+
+
+	selectObject_->ImGuiDebug();
+
+	ImGui::TreePop();
+}
+
 /// ===================================================
 /// imguiでデバッグ表示
 /// ===================================================

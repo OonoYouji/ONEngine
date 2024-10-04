@@ -88,7 +88,7 @@ void ImGuiManager::BeginFrame() {
 	isActive_ = true;
 	if(!IsMouseInWindow(ONEngine::GetWinApps().at("Debug")->GetHWND())) {
 		isActive_ = false;
-		//ImGui::BeginDisabled();
+		ImGui::BeginDisabled();
 	}
 
 	
@@ -103,7 +103,7 @@ void ImGuiManager::BeginFrame() {
 /// ===================================================
 void ImGuiManager::EndFrame() {
 	if(!isActive_) {
-		//ImGui::EndDisabled();
+		ImGui::EndDisabled();
 	}
 
 	ImGui::Render();

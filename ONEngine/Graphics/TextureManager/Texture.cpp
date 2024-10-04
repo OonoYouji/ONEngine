@@ -6,6 +6,9 @@ Texture::Texture(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HAN
 }
 
 Vec2 Texture::GetTextureSize() const {
+	if(!resource_) {
+		return Vec2(128, 128);
+	}
 	D3D12_RESOURCE_DESC desc = resource_->GetDesc();
 
 	return Vec2(

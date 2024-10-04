@@ -2,8 +2,7 @@
 #include "Console.h"
 
 
-#include <GameObjectManager.h>
-#include <SceneManager.h>
+#include <Core/ONEngine.h>
 #include <TextureManager.h>
 
 
@@ -23,8 +22,8 @@ void Console::Initialize() {
 
 
 	/// other class pointer 
-	pSceneManager_ = SceneManager::GetInstance();
-
+	pSceneManager_      = SceneManager::GetInstance();
+	pGameObjectManager_ = GameObjectManager::GetInstance();
 
 }
 
@@ -130,7 +129,7 @@ void Console::Inspector() {
 		return;
 	}
 
-
+	pGameObjectManager_->Inspector();
 
 
 	ImGui::End();
@@ -143,6 +142,7 @@ void Console::Herarchy() {
 		return;
 	}
 
+	pGameObjectManager_->Hierarchy();
 
 	ImGui::End();
 }
@@ -154,13 +154,15 @@ void Console::Scene() {
 		return;
 	}
 
+	PlayControl();
+
+
 	ImVec2 max = ImGui::GetWindowContentRegionMax();
 	ImVec2 min = ImGui::GetWindowContentRegionMin();
 	ImVec2 winSize = {
 		max.x - min.x,
 		max.y - min.y
 	};
-
 
 	///- 大きさの調整
 	ImVec2 texSize = winSize;
@@ -186,7 +188,7 @@ void Console::Scene() {
 	texPos.x -= texSize.x / 2.0f;
 
 	texPos.x = std::max(texPos.x, min.x);
-	texPos.y = std::max(texPos.y, min.y);
+	texPos.y = std::max(texPos.y, min.y + 64.0f);
 
 	/// scene gpu handle ptr
 	auto renderTex = pSceneManager_->GetSceneLayer(0)->GetRenderTexture();
@@ -209,6 +211,7 @@ void Console::Debug() {
 		return;
 	}
 
+	PlayControl();
 
 	ImGui::End();
 }
@@ -220,6 +223,40 @@ void Console::Assets() {
 		return;
 	}
 
+	ImVec2 texSize = ImVec2(128, 128);
+	auto texAll = TextureManager::GetInstance()->GetTextureAll();
+
+	for(auto& tex : texAll) {
+		ImGui::Image(
+			ImTextureID(tex.second.GetGPUHandle().ptr), 
+			texSize
+		);
+	}
+
 
 	ImGui::End();
 }
+
+void Console::PlayControl() {
+
+	ONE::WinApp* winApp = ONEngine::GetWinApps().at("Game").get();
+	HWND hwnd           = winApp->GetHWND();
+
+	if(ImGui::Button("Play")) {
+		/// game window create
+		if(!IsWindowVisible(hwnd)) {
+			winApp->ShowGameWindow();
+		}
+
+	}
+
+	if(ImGui::Button("Stop")) {
+		/// game window desctory
+		if(IsWindowVisible(hwnd)) {
+			winApp->DestoryGameWindow();
+		}
+
+	}
+	
+}
+

@@ -2,6 +2,9 @@
 
 #include <Core/ONEngine.h>
 
+#include <iostream>
+#include <thread>
+
 #include <WinApp.h>
 #include <Logger.h>
 #include <DxCommon.h>
@@ -34,8 +37,9 @@
 #include <Particle/ParticleSystem.h>
 
 
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
+
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// 起動速度を計算するため
 	auto currentTime = std::chrono::high_resolution_clock::now();;
@@ -128,6 +132,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	uint8_t drawLayerIndex = 0u;
 	renderTexManager->SetIsBlending("ImGui", true);
 
+
 	///- 実行までにかかった時間
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - currentTime;
@@ -154,16 +159,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ====================================
 		/// ↓ 更新処理に移る
 		/// ====================================
-
-#ifdef _DEBUG
-		/*input->ImGuiDebug();
-		time->ImGuiDebug();
-		frameFixation->ImGuiDebug();
-		gameObjectManager->ImGuiDebug();
-		collisionManager->ImGuiDebug();
-		renderTexManager->ImGuiDebug();
-		sceneManager->ImGuiDebug();*/
-#endif // _DEBUG
 
 
 		cameraManager->Update();
