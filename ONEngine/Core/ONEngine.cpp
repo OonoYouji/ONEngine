@@ -34,6 +34,10 @@ ONE::WinApp* ONEngine::GetMainWinApp() {
 	return gSystem->mainWindow_;
 }
 
+ONE::WinApp* ONEngine::GetActiveWinApp() {
+	return gSystem->activeWindow_;
+}
+
 const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& ONEngine::GetWinApps() {
 	return gSystem->winApps_;
 }
@@ -59,7 +63,13 @@ void System::Initialize() {
 	debugWin->Initialize(L"Debug", nullptr);
 
 	/// main window のポインタ
-	mainWindow_ = gameWin.get();
+	mainWindow_   = debugWin.get();
+	activeWindow_ = debugWin.get();
+
+
+	/// console initialize
+	console_.reset(new Console());
+	console_->Initialize();
 
 }
 
@@ -71,22 +81,23 @@ void System::Finalize() {
 }
 
 void System::Update() {
-	/*HWND activeWindow = GetForegroundWindow();
+	HWND activeWindow = GetForegroundWindow();
 	for(auto& win : winApps_) {
 		if(activeWindow == win.second->GetHWND()) {
-			mainWindow_ = win.second.get();
-			return;
+			activeWindow_ = win.second.get();
+			break;
 		}
-	}*/
+	}
 
 	if(Input::TriggerKey(KeyCode::Space)) {
 		auto& debugWin = winApps_["Debug"];
 		// 子ウィンドウのスタイルを変更
 		SetWindowLongPtr(debugWin->GetHWND(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
 		SetParent(debugWin->GetHWND(), nullptr); // 親ウィンドウから切り離す
-		SetWindowPos(debugWin->GetHWND(), nullptr, 100, 100, 640, 480, SWP_SHOWWINDOW);
+		SetWindowPos(debugWin->GetHWND(), nullptr, 100, 100, 1280, 720, SWP_SHOWWINDOW);
 	}
 
+	console_->Update();
 
 
 }

@@ -67,7 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	frameFixation->Initialize(true);
 
 
-	imGuiManager->Initialize(ONEngine::GetMainWinApp(), ONEngine::GetDxCommon());
+	imGuiManager->Initialize(ONEngine::GetWinApps().at("Debug").get(), ONEngine::GetDxCommon());
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	line2d->Initialize();
@@ -155,30 +155,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 更新処理に移る
 		/// ====================================
 
-		/// フルスクリーンの切り替え
-		if(Input::TriggerKey(KeyCode::F11)) {
-			ONEngine::GetMainWinApp()->SetIsFullScreen(!ONEngine::GetMainWinApp()->GetIsFullScreen());
-		}
-
 #ifdef _DEBUG
-		
-		if(imGuiManager->GetIsAcitive()) {
-			input->ImGuiDebug();
-			time->ImGuiDebug();
-			frameFixation->ImGuiDebug();
-			gameObjectManager->ImGuiDebug();
-			collisionManager->ImGuiDebug();
-			renderTexManager->ImGuiDebug();
-			sceneManager->ImGuiDebug();
-		}
-
+		/*input->ImGuiDebug();
+		time->ImGuiDebug();
+		frameFixation->ImGuiDebug();
+		gameObjectManager->ImGuiDebug();
+		collisionManager->ImGuiDebug();
+		renderTexManager->ImGuiDebug();
+		sceneManager->ImGuiDebug();*/
 #endif // _DEBUG
 
+
 		cameraManager->Update();
-
-		/// game object の更新をしている
 		sceneManager->Update();
-
 
 		/// ====================================
 		/// ↓ 描画処理に移る
@@ -191,30 +180,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		sceneManager->Draw();
 
-		renderTexManager->EndFrame();
-
 #ifdef _DEBUG
-
 		renderTexManager->BeginRenderTarget("ImGui");
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
 
-		frameFixation->Fixation();
 
 		winApps.at("Debug")->PostDraw(renderTexManager->GetRenderTexture("ImGui"));
 		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+		
+#else
+		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
+
+#endif // _DEBUG
 
 		ONEngine::GetDxCommon()->CommandExecution();
-
 		for(auto& win : winApps) {
 			win.second->Present();
 		}
-
 		ONEngine::GetDxCommon()->GetDxCommand()->Reset();
-#else
+
 		frameFixation->Fixation();
-		ONEngine::GetDxCommon()->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-#endif // _DEBUG
 
 	}
 

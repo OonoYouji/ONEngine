@@ -14,6 +14,7 @@
 #include <DxDevice.h>
 
 #include <WinApp.h>
+#include <Console.h>
 
 
 /// ===================================================
@@ -31,6 +32,7 @@ public:
 
 	static ONE::DxCommon* GetDxCommon();
 	static ONE::WinApp*   GetMainWinApp();
+	static ONE::WinApp*   GetActiveWinApp();
 	static const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& GetWinApps();
 
 private:
@@ -62,10 +64,16 @@ namespace {
 		/// private : objects
 		/// ===================================================
 
+		/// direct x 
 		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr;
 
+		/// window 
 		std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>> winApps_;
-		ONE::WinApp* mainWindow_ = nullptr;
+		ONE::WinApp* mainWindow_   = nullptr;
+		ONE::WinApp* activeWindow_ = nullptr;
+
+		/// imgui console
+		std::unique_ptr<Console> console_;
 
 	};
 }

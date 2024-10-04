@@ -38,7 +38,7 @@ void Mouse::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 
 void Mouse::Begin() {
 
-	pWinApp_ = ONEngine::GetMainWinApp();
+	pWinApp_ = ONEngine::GetActiveWinApp();
 
 	preState_ = state_;
 

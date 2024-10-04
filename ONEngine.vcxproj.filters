@@ -245,6 +245,9 @@
     <ClCompile Include="ONEngine\Core\ONEngine.cpp">
       <Filter>ONEngine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\Window\Console.cpp">
+      <Filter>ONEngine\Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -677,6 +680,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Core\ONEngine.h">
       <Filter>ONEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Window\Console.h">
+      <Filter>ONEngine\Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -147,8 +147,14 @@ LRESULT ONE::WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 	}
 
 	switch(msg) {
+	case WM_CLOSE:
+		if(hwnd == ONEngine::GetMainWinApp()->GetHWND()) {
+			PostQuitMessage(0); 
+		} else {
+			DestroyWindow(hwnd); 
+		}
+		return 0;
 	case WM_DESTROY: ///- window破棄
-		PostQuitMessage(0);
 		return 0;
 	}
 
@@ -171,7 +177,7 @@ void ONE::WinApp::CreateGameWindow(WinApp* parent, const wchar_t* title, UINT wi
 
 	///- windowの設定
 	wc_.lpfnWndProc = WindowProc;
-	wc_.lpszClassName = L"ONEngine";
+	wc_.lpszClassName = title;
 	wc_.hInstance = GetModuleHandle(nullptr);
 	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 

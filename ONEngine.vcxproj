@@ -92,6 +92,7 @@
     <ClCompile Include="ONEngine\Math\Vector4.cpp" />
     <ClCompile Include="ONEngine\Random\Random.cpp" />
     <ClCompile Include="ONEngine\Time\Time.cpp" />
+    <ClCompile Include="ONEngine\Window\Console.cpp" />
     <ClCompile Include="ONEngine\Window\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="ONEngine\Math\Vector4.h" />
     <ClInclude Include="ONEngine\Random\Random.h" />
     <ClInclude Include="ONEngine\Time\Time.h" />
+    <ClInclude Include="ONEngine\Window\Console.h" />
     <ClInclude Include="ONEngine\Window\WinApp.h" />
   </ItemGroup>
   <ItemGroup>

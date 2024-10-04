@@ -8,7 +8,6 @@
 
 #include <WinApp.h>
 
-
 bool IsMouseInWindow(HWND hwnd) {
 	POINT pt;
 	GetCursorPos(&pt);
@@ -86,8 +85,9 @@ void ImGuiManager::BeginFrame() {
 	HWND activeWindow = GetForegroundWindow();
 	ImGui::NewFrame();
 
-		isActive_ = true;
+	isActive_ = true;
 	if(!IsMouseInWindow(ONEngine::GetWinApps().at("Debug")->GetHWND())) {
+		isActive_ = false;
 		ImGui::BeginDisabled();
 	}
 
@@ -102,10 +102,9 @@ void ImGuiManager::BeginFrame() {
 /// 毎フレーム最後に行う
 /// ===================================================
 void ImGuiManager::EndFrame() {
-	if(!IsMouseInWindow(ONEngine::GetWinApps().at("Debug")->GetHWND())) {
+	if(!isActive_) {
 		ImGui::EndDisabled();
 	}
-	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
 
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetDxCommand()->GetList());
