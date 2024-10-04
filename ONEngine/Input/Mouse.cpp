@@ -39,6 +39,8 @@ void Mouse::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 void Mouse::Begin() {
 
 	pWinApp_ = ONEngine::GetActiveWinApp();
+	mouse_->SetCooperativeLevel(
+		pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 
 	preState_ = state_;
 
