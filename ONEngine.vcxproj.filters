@@ -251,6 +251,15 @@
     <ClCompile Include="ONEngine\CommandLineInterface\CommandLineInterface.cpp">
       <Filter>ONEngine\CommandLineInterface</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.cpp">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\BaseCommand.cpp">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.cpp">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -435,6 +444,9 @@
     </Filter>
     <Filter Include="ONEngine\CommandLineInterface">
       <UniqueIdentifier>{de887281-f452-44dd-8b96-a34c6cc75812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandLineInterface\Commands">
+      <UniqueIdentifier>{b9abdd27-d1c1-41ac-a82e-2aa2441a4e7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -692,6 +704,15 @@
     </ClInclude>
     <ClInclude Include="ONEngine\CommandLineInterface\CommandLineInterface.h">
       <Filter>ONEngine\CommandLineInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\BaseCommand.h">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.h">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.h">
+      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

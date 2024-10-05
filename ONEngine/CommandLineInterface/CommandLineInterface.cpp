@@ -35,6 +35,9 @@ void CommandLineInterface::CommandLoop() {
 		SetConsoleFont(L"Consolas", 16); 
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 		freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+
+		std::cout << "Command Line Interface  Execution..."           << std::endl;
+		std::cout << "If you have any questions, please type 'help'." << std::endl;
 	}
 
 	std::string command;

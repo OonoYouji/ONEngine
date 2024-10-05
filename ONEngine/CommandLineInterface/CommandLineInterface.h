@@ -4,15 +4,27 @@
 #include <list>
 #include <thread>
 
+
+/// ===================================================
+/// コマンドラインインターフェイスのクラス
+/// ===================================================
 class CommandLineInterface final {
 	CommandLineInterface() {}
 	~CommandLineInterface() {}
 public:
+	/// ===================================================
+	/// public : static methods
+	/// ===================================================
 
 	static CommandLineInterface* GetInstance() {
 		static CommandLineInterface instance;
 		return &instance;
 	}
+
+
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	void Initialize();
 	void Finalize();
@@ -29,8 +41,10 @@ public:
 	void SetConsoleFont(const wchar_t* fontName, int fontSize);
 
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
-	std::string            commandInput_{};
 	std::list<std::string> commandLog_{};
 	std::thread            commandLoop_;
 	bool                   isRenderConsole_;
