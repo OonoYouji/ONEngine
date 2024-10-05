@@ -26,6 +26,8 @@ public:
 	void InitializeConsole();
 	void FinalizeConsole();
 
+	void SetConsoleFont(const wchar_t* fontName, int fontSize);
+
 private:
 
 	std::string            commandInput_{};

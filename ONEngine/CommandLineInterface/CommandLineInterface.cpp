@@ -5,44 +5,23 @@
 
 #include <ImGuiManager.h>
 
-void SetConsoleFont(const wchar_t* fontName, int fontSize) {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
-	GetCurrentConsoleFontEx(hConsole, FALSE, &cfi);
-
-	// フォント名とサイズを設定
-	wcscpy_s(cfi.FaceName, fontName);
-	cfi.dwFontSize.Y = fontSize;  // 高さを設定
-	cfi.FontWeight = FW_NORMAL;
-
-	SetCurrentConsoleFontEx(hConsole, FALSE, &cfi);
-}
 
 void CommandLineInterface::Initialize() {
 	commandLog_.push_back("command line interface");
 
-	//SetConsoleFont(L"Terminal", 16);
-	//InitializeConsole();
-	//
+	InitializeConsole();
+
 }
 
 void CommandLineInterface::Finalize() {
-	//FinalizeConsole();
+	FinalizeConsole();
 }
 
 void CommandLineInterface::RenderCLI() {
-	/*for(auto log : commandLog_) {
+	for(auto log : commandLog_) {
 		ImGui::TextUnformatted(log.c_str());
 	}
 
-	size_t bufferSize = sizeof(char) * 256;
-	if(ImGui::InputText("##CommandInput", commandInput_.data(), bufferSize, ImGuiInputTextFlags_EnterReturnsTrue)) {
-		if(!commandInput_.empty()) {
-			ExecuteCommand(commandInput_);
-			commandInput_.clear();
-		}
-	}*/
 }
 
 void CommandLineInterface::ExecuteCommand(const std::string& commandInput) {
@@ -53,15 +32,17 @@ void CommandLineInterface::CommandLoop() {
 
 	if(!GetConsoleWindow()) {
 		AllocConsole();
+		SetConsoleFont(L"Consolas", 16); 
 		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 		freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
-		std::cout << "Console initialized.\n";
 	}
 
 	std::string command;
 	while(isRenderConsole_) {
 		std::cout << "> ";
 		std::getline(std::cin, command);
+
+		commandLog_.push_back(command);
 		if(command == "exit") {
 			std::cout << "Exiting...\n";
 			isRenderConsole_ = false;
@@ -83,11 +64,31 @@ void CommandLineInterface::InitializeConsole() {
 
 	isRenderConsole_ = true;
 
-	std::thread func(&CommandLineInterface::CommandLoop, this);
-	commandLoop_.swap(func);
+	commandLoop_ = std::thread(&CommandLineInterface::CommandLoop, this);
 }
 
 
 void CommandLineInterface::FinalizeConsole() {
 	commandLoop_.join();
+}
+
+
+void CommandLineInterface::SetConsoleFont(const wchar_t* fontName, int fontSize) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(CONSOLE_FONT_INFOEX);
+
+	// 現在のフォント情報を取得
+	if(GetCurrentConsoleFontEx(hConsole, FALSE, &cfi)) {
+		// フォント名を設定
+		wcscpy_s(cfi.FaceName, fontName);
+		cfi.dwFontSize.Y = fontSize;  // 高さを設定
+		cfi.FontWeight = FW_NORMAL;
+
+		// 新しいフォントを設定
+		SetCurrentConsoleFontEx(hConsole, FALSE, &cfi);
+	} else {
+		std::cerr << "Failed to get console font info." << std::endl;
+		commandLog_.push_back("Failed to get console font info.");
+	}
 }
