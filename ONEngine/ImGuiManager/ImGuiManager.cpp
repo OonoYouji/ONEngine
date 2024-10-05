@@ -43,7 +43,10 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	imGuiIO.Fonts->AddFontFromFileTTF("./Resources/Fonts/FiraMono-Regular_0.ttf", 16.0f); // フォントをロード (サイズ 18.0f)
 
+	ImGui_ImplDX12_InvalidateDeviceObjects();
+	ImGui_ImplDX12_CreateDeviceObjects();
 
 	ImGui::StyleColorsDark();
 	StyleSetting();

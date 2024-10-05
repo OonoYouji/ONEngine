@@ -37,6 +37,8 @@ public:
 	static bool PressKey(KeyCode keycode);		/// 入力中か
 	static bool TriggerKey(KeyCode keycode);	/// 押した瞬間か
 	static bool ReleaseKey(KeyCode keycode);	/// 離した瞬間か
+	static bool AnyKeyPress();
+
 
 	static bool PressMouse(MouseCode mouseCode);
 	static bool TriggerMouse(MouseCode mouseCode);

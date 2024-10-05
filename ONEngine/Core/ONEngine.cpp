@@ -3,6 +3,7 @@
 #include <memory>
 
 #include <Input.h>
+#include <CommandLineInterface/CommandLineInterface.h>
 
 namespace {
 	std::unique_ptr<System> gSystem;
@@ -74,9 +75,16 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	console_.reset(new Console());
 	console_->Initialize();
 
+	/// cli initialize
+	CommandLineInterface* cli = CommandLineInterface::GetInstance();
+	cli->Initialize();
+
 }
 
 void System::Finalize() {
+	CommandLineInterface* cli = CommandLineInterface::GetInstance();
+	cli->Finalize();
+
 	for(auto& win : winApps_) {
 		win.second->Finalize();
 	}

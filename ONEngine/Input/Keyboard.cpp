@@ -71,3 +71,12 @@ bool Keyboard::Trigger(KeyCode keycode) const {
 bool Keyboard::Release(KeyCode keycode) const {
 	return !Press(keycode) && preKeys_[static_cast<uint8_t>(keycode)];
 }
+
+bool Keyboard::AnyKeyPress() const {
+	for(size_t i = 0; i < 256; ++i) {
+		if(Press(KeyCode(i))) {
+			return true;
+		}
+	}
+	return false;
+}

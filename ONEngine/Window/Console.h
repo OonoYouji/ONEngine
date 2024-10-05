@@ -3,6 +3,7 @@
 #include <ImGuiManager.h>
 #include <SceneManager.h>
 #include <GameObjectManager.h>
+#include <CommandLineInterface/CommandLineInterface.h>
 
 
 class Console final {
@@ -29,14 +30,17 @@ private:
 
 	void PlayControl();
 
+	void CLI();
+
 private:
 
 	ImGuiWindowFlags parentWinFlags_;
 	ImGuiWindowFlags imguiWinFlags_;
 	bool             imguiWinIsOpen_ = true;
 
-	SceneManager*      pSceneManager_      = nullptr;
-	GameObjectManager* pGameObjectManager_ = nullptr;
+	SceneManager*         pSceneManager_      = nullptr;
+	GameObjectManager*    pGameObjectManager_ = nullptr;
+	CommandLineInterface* pCLI_               = nullptr;
 private:
 	Console(const Console&)            = delete;
 	Console(Console&&)                 = delete;

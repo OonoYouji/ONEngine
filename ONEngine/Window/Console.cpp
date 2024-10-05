@@ -24,7 +24,7 @@ void Console::Initialize() {
 	/// other class pointer 
 	pSceneManager_      = SceneManager::GetInstance();
 	pGameObjectManager_ = GameObjectManager::GetInstance();
-
+	pCLI_               = CommandLineInterface::GetInstance();
 }
 
 void Console::Update() {
@@ -38,6 +38,8 @@ void Console::Update() {
 	Debug();
 
 	Assets();
+
+	CLI();
 #endif // _DEBUG
 }
 
@@ -258,5 +260,18 @@ void Console::PlayControl() {
 
 	}
 	
+}
+
+void Console::CLI() {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	if(!ImGui::Begin("Command Line Interface", nullptr, imguiWinFlags_)) {
+		ImGui::End();
+		return;
+	}
+
+	pCLI_->RenderCLI();
+
+
+	ImGui::End();
 }
 

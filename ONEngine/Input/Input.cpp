@@ -320,6 +320,10 @@ bool Input::ReleaseKey(KeyCode keycode) {
 	return keyboard_->Release(keycode);
 }
 
+bool Input::AnyKeyPress() {
+	return keyboard_->AnyKeyPress();
+}
+
 
 /// ===================================================
 /// マウス入力

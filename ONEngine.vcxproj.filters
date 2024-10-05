@@ -248,6 +248,9 @@
     <ClCompile Include="ONEngine\Window\Console.cpp">
       <Filter>ONEngine\Window</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\CommandLineInterface\CommandLineInterface.cpp">
+      <Filter>ONEngine\CommandLineInterface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -429,6 +432,9 @@
     </Filter>
     <Filter Include="ONEngine\Core">
       <UniqueIdentifier>{3243d5bd-777a-4fd5-a6a2-973e0318d266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandLineInterface">
+      <UniqueIdentifier>{de887281-f452-44dd-8b96-a34c6cc75812}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -683,6 +689,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\Window\Console.h">
       <Filter>ONEngine\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandLineInterface\CommandLineInterface.h">
+      <Filter>ONEngine\CommandLineInterface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

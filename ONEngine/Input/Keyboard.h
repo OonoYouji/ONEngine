@@ -160,6 +160,8 @@ public:
 	bool Trigger(KeyCode keycode) const;
 	bool Release(KeyCode keycode) const;
 
+	bool AnyKeyPress() const;
+
 	const std::array<BYTE, 256>& GetKeys()    const { return keys_; }
 	const std::array<BYTE, 256>& GetPreKeys() const { return preKeys_; }
 

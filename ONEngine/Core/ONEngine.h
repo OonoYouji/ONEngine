@@ -77,6 +77,6 @@ namespace {
 
 		/// imgui console
 		std::unique_ptr<Console> console_;
-
+		
 	};
 }
