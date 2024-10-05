@@ -13,9 +13,9 @@ namespace {
 /// ↓ ONEngine
 /// ===================================================
 
-void ONEngine::Initialize() {
+void ONEngine::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	gSystem.reset(new System);
-	gSystem->Initialize();
+	gSystem->Initialize(windowName, isCreateGameWindow);
 }
 
 void ONEngine::Finalize() {
@@ -48,7 +48,7 @@ const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& ONEngine::G
 /// ↓ System
 /// ===================================================
 
-void System::Initialize() {
+void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 
 	dxCommon_.reset(new ONE::DxCommon());
 	dxCommon_->Initialize();
@@ -56,7 +56,10 @@ void System::Initialize() {
 
 	auto& gameWin = winApps_["Game"];
 	gameWin.reset(new ONE::WinApp());
-	gameWin->Initialize(L"Game", nullptr);
+	gameWin->Initialize(windowName, nullptr);
+	if(!isCreateGameWindow) {
+		gameWin->DestoryGameWindow();
+	}
 	
 	auto& debugWin = winApps_["Debug"];
 	debugWin.reset(new ONE::WinApp());

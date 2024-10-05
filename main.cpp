@@ -64,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Line2D*					line2d				= Line2D::GetInstance();
 
 
-	ONEngine::Initialize();
+	ONEngine::Initialize(L"DirectXGame", false);
 	input->Initialize(ONEngine::GetMainWinApp());
 
 	frameFixation.reset(new FrameFixation);

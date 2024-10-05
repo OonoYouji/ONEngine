@@ -25,7 +25,10 @@ class ONEngine final {
 	~ONEngine() = default;
 public:
 
-	static void Initialize();
+	static void Initialize(
+		const wchar_t* windowName = L"game window",
+		bool isCreateGameWindow = true
+	);
 	static void Finalize();
 
 	static void Update();
@@ -54,7 +57,7 @@ namespace {
 		/// public : methods
 		/// ===================================================
 
-		void Initialize();
+		void Initialize(const wchar_t* windowName, bool isCreateGameWindow);
 		void Finalize();
 
 		void Update();
