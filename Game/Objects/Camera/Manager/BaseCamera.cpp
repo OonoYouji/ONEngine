@@ -98,7 +98,7 @@ void BaseCamera::BaseUpdate() {
 
 
 void BaseCamera::UpdateMatView() {
-	matView_ = pTranform_->matTransform.Inverse();
+	matView_ = pTransform_->matTransform.Inverse();
 }
 
 
@@ -110,7 +110,7 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
-	float distance    = pTranform_->position.Len();
+	float distance    = pTransform_->position.Len();
 	if(distance <= 0.0f) {
 		return;
 	}

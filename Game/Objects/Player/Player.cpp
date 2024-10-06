@@ -22,24 +22,24 @@ void Player::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTranform_->Initialize();
+	pTransform_->Initialize();
 	pivot_.Initialize();
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };
-	pTranform_->position.z = -12;
+	pTransform_->position.z = -12;
 
-	pTranform_->quaternion = { 0,0,0,1 };
+	pTransform_->quaternion = { 0,0,0,1 };
 	/*SetPositionZ(-1.0f);*/
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTranform_->rotateOrder = QUATERNION;
+	pTransform_->rotateOrder = QUATERNION;
 	pivot_.rotateOrder = QUATERNION;
 
 	////ペアレント
-	pTranform_->SetParent(&pivot_);
+	pTransform_->SetParent(&pivot_);
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
@@ -62,7 +62,7 @@ void Player::Update() {
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
 
 	// プレイヤーの向きの決定
-	pTranform_->quaternion = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
+	pTransform_->quaternion = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
 
 
 	pivot_.UpdateMatrix();

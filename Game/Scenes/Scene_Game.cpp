@@ -8,17 +8,17 @@
 #include "GameCamera.h"
 #include "Particle/ParticleSystem.h"
 //class
-#include"GameCamera.h"
-#include"Ground/Ground.h"
-//#include"Matrix4x4.h"
+#include "GameCamera.h"
+#include "Ground/Ground.h"
+#include "Building/Building.h"
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	 p1 = new Player;
-	
+	p1 = new Player;
+
 	Ground* ground = new Ground;
 	p1->Initialize();
 	ground->Initialize();
@@ -28,6 +28,12 @@ void Scene_Game::Initialize() {
 	mainCamera_->SetPosition({ 0.0f, 0, -30 });
 	mainCamera_->SetRotate({ 0, 0, 0.0f });
 	mainCamera_->UpdateMatrix();
+
+
+	/// 建物を仮に初期化 TODO:~~~
+	(new Building)->Initialize();
+
+
 }
 
 /// ===================================================

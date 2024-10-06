@@ -1,11 +1,14 @@
 #pragma once
-#include<cmath>
+
+#include <cmath>
+
+#include <Vector3.h>
+
 /// ===================================================
 /// 三次元での回転を表すクラス
 /// ===================================================
 class Quaternion final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -13,13 +16,6 @@ public:
 	Quaternion();
 	Quaternion(float _x, float _y, float _z, float _w);
 
-
-	/// ===================================================
-	/// public : static methods
-	/// ===================================================
-
-	static float Lenght(const Quaternion& q);
-	static Quaternion Normalize(const Quaternion& q);
 
 
 	/// ===================================================
@@ -29,11 +25,26 @@ public:
 	float x, y, z, w;
 
 
+
 	/// ===================================================
-	/// public : operator
+	/// public : static methods
 	/// ===================================================
 
-	inline Quaternion& operator*= (const Quaternion& other);
+	static float Lenght(const Quaternion& q);
+	static Quaternion Normalize(const Quaternion& q);
+	
+	/// <summary>
+	/// ある軸を基にquaternionを計算する
+	/// </summary>
+	/// <param name="axis">   : 回転の軸となるベクトル						 </param>
+	/// <param name="theta">  : 回転率									 </param>
+	/// <returns>             return: axisを基にtheta分回転させたquaternion </returns>
+	static Quaternion MakeFromAxis(const Vec3& axis, float theta);
+
+
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	// クォータニオンの共役を計算する関数
 	Quaternion Conjugate() const {
@@ -46,16 +57,16 @@ public:
 	}
 
 	// 逆クォータニオンを計算する関数
-	Quaternion Inverse() const {
-		Quaternion conjugate = Conjugate(); // 共役を計算
-		float norm = Norm();                // ノルムを計算
-		if (norm == 0.0f) {
-			// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
-		}
+	Quaternion Inverse() const;
 
-		float normSquared = norm * norm;    // ノルムの二乗
-		return { conjugate.w / normSquared, conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared };
-	}
+
+
+	/// ===================================================
+	/// public : operator
+	/// ===================================================
+
+	inline Quaternion& operator*= (const Quaternion& other);
+
 
 
 };
@@ -76,15 +87,6 @@ inline Quaternion operator* (const Quaternion& q1, const Quaternion& q2) {
 }
 
 inline Quaternion operator/ (const Quaternion& q, float value) {
-	Quaternion result;
-	result.w = q.w / value;
-	result.x = q.x / value;
-	result.y = q.y / value;
-	result.z = q.z / value;
-	return result;
-}
-
-inline Quaternion operator/ (float value, const Quaternion& q) {
 	Quaternion result;
 	result.w = q.w / value;
 	result.x = q.x / value;

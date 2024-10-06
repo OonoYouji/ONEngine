@@ -33,3 +33,31 @@ Quaternion Quaternion::Normalize(const Quaternion& q) {
 	}
 	return q;
 }
+
+Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
+	float halfAngle = theta * 0.5f;
+	float sinHalfAngle = std::sin(halfAngle);
+
+	Vector3 normalizedAxis = axis.Normalize();
+
+	float w = std::cos(halfAngle);
+	float x = normalizedAxis.x * sinHalfAngle;
+	float y = normalizedAxis.y * sinHalfAngle;
+	float z = normalizedAxis.z * sinHalfAngle;
+
+	return Quaternion(x, y, z, w);
+}
+
+
+
+Quaternion Quaternion::Inverse() const {
+	Quaternion conjugate = Conjugate(); // 共役を計算
+	float norm = Norm();                // ノルムを計算
+	if(norm == 0.0f) {
+		// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
+	}
+
+	float normSquared = norm * norm;    // ノルムの二乗
+	return conjugate / normSquared;
+	//return { conjugate.w / normSquared, conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared };
+}
