@@ -57,10 +57,10 @@ void Player::Update() {
 	//rotateYAngle_ += velocity_.x * 0.01f;
 
 	//回転を適応
-	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, -velocity_.y * 0.1f);
-	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, velocity_.x * 0.1f);
+	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, velocity_.y * 0.1f);
+	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, -velocity_.x * 0.1f);
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-
+	
 	// プレイヤーの向きの決定
 	pTranform_->quaternion = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
 

@@ -36,6 +36,6 @@ void Scene_Game::Initialize() {
 void Scene_Game::Update() {
 	/*mainCamera_->SetPosition({ p1->GetPivot()->position.x, p1->GetPivot()->position.y, -30 });
 	mainCamera_->SetRotate(p1->GetPivot()->rotate);*/
-	//mainCamera_->SetQuaternion(p1->GetPivot()->quaternion.Inverse() * mainCamera_->GetTransform()->quaternion);
+	/*mainCamera_->SetQuaternion(p1->GetPivot()->quaternion.Inverse());*/
 	mainCamera_->UpdateMatrix();
 }
