@@ -30,7 +30,7 @@ BaseGameObject::BaseGameObject() {
 void BaseGameObject::UpdateMatrix() {
 	pTranform_->UpdateMatrix();
 	if(pTranform_->GetParent()) {
-		pTranform_->matTransform = pTranform_->GetParent()->matTransform* pTranform_->matTransform;
+		pTranform_->matTransform = pTranform_->GetParent()->matTransform * pTranform_->matTransform;
 	}
 }
 
