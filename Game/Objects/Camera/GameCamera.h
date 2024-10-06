@@ -15,9 +15,11 @@ public:
 	void Initialize() override;
 	void Update() override;
 
+	/*void Look(const Vector3& pos);*/
+
 	void Debug() override;
 
 private:
 
-
+	
 };
