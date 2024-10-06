@@ -36,9 +36,9 @@ void ONE::WinApp::Initialize(const wchar_t* windowName, WinApp* parent) {
 
 	doubleBuffer_.reset(new DxDoubleBuffer);
 	doubleBuffer_->Initialize(
-		this, 
-		ONEngine::GetDxCommon()->GetDxDevice(), 
-		ONEngine::GetDxCommon()->GetDxDescriptor(), 
+		this,
+		ONEngine::GetDxCommon()->GetDxDevice(),
+		ONEngine::GetDxCommon()->GetDxDescriptor(),
 		ONEngine::GetDxCommon()->GetDxCommand()->GetQueue()
 	);
 
@@ -69,7 +69,8 @@ UINT ONE::WinApp::ProcessMessage() {
 	///- 終了メッセージ
 	if(msg_.message == WM_QUIT) {
 		//if(hwnd_ == ONEngine::GetMainWinApp()->GetHWND()) {
-			return true;
+		assert(false);
+		return true;
 		//}
 	}
 
@@ -175,9 +176,9 @@ LRESULT ONE::WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 	switch(msg) {
 	case WM_CLOSE:
 		if(hwnd == ONEngine::GetMainWinApp()->GetHWND()) {
-			PostQuitMessage(0); 
+			PostQuitMessage(0);
 		} else {
-			DestroyWindow(hwnd); 
+			DestroyWindow(hwnd);
 		}
 		return 0;
 	case WM_DESTROY: ///- window破棄

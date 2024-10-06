@@ -5,24 +5,24 @@
 
 #include <Input.h>
 #include <ImGuiManager.h>
+#include <WinApp.h>
 
 #include "Commands/CreateNewCommandCMD/CreateNewCommandCMD.h"
 #include "Commands/CreateNewGameObjectCMD/CreateNewGameObjectCMD.h"
 
 
+// コントロールハンドラ
 BOOL WINAPI ConsoleHandler(DWORD signal) {
 	switch(signal) {
 	case CTRL_C_EVENT:
 	case CTRL_CLOSE_EVENT:
-		// コンソールウィンドウが閉じられたときの処理
-		std::cout << "Console window closed. Game will continue running." << std::endl;
-		// コンソールウィンドウを自由に閉じる
-		FreeConsole();
+		// コンソールのクローズを無視する
 		return TRUE;
 	default:
 		return FALSE;
 	}
 }
+
 
 
 void CommandLineInterface::Initialize() {
@@ -56,7 +56,7 @@ void CommandLineInterface::ExecuteCommand(const std::string& commandInput) {
 void CommandLineInterface::CommandLoop() {
 
 	
-
+	HWND consoleHWND = nullptr;
 	std::string commandName;
 	std::string commandArgs;
 	while(isRenderConsole_) {
@@ -64,13 +64,17 @@ void CommandLineInterface::CommandLoop() {
 		/// 開く条件
 		if(!GetConsoleWindow()) {
 			if(Input::PressKey(KeyCode::LeftControl) && Input::TriggerKey(KeyCode::Space)) {
-				SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 				AllocConsole();
+				SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 				freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 				freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
 
 				std::cout << "Command Line Interface  Execution..." << std::endl;
 				std::cout << "If you have any questions, please type 'help'." << std::endl;
+
+				consoleHWND = GetConsoleWindow();
+				SetParent(consoleHWND, nullptr);
+				//ShowWindow(consoleHWND, SW_HIDE);
 			}
 		} else {
 
@@ -118,12 +122,7 @@ void CommandLineInterface::CommandLoop() {
 
 
 void CommandLineInterface::InitializeConsole() {
-	if(isRenderConsole_) {
-		return;
-	}
-
 	isRenderConsole_ = true;
-
 	commandLoop_ = std::thread(&CommandLineInterface::CommandLoop, this);
 }
 

@@ -45,6 +45,10 @@ public:
 
 	void AddCommand(const std::string& name, BaseCommand* addCommand);
 
+	bool GetIsRenderConsole() const {
+		return isRenderConsole_;
+	}
+
 private:
 	/// ===================================================
 	/// private : objects
