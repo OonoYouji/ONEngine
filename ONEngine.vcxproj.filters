@@ -251,14 +251,14 @@
     <ClCompile Include="ONEngine\CommandLineInterface\CommandLineInterface.cpp">
       <Filter>ONEngine\CommandLineInterface</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.cpp">
-      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\CommandLineInterface\Commands\BaseCommand.cpp">
       <Filter>ONEngine\CommandLineInterface\Commands</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.cpp">
-      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp">
+      <Filter>ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp">
+      <Filter>ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,6 +447,12 @@
     </Filter>
     <Filter Include="ONEngine\CommandLineInterface\Commands">
       <UniqueIdentifier>{b9abdd27-d1c1-41ac-a82e-2aa2441a4e7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD">
+      <UniqueIdentifier>{071b9e09-ee97-4d62-b0fe-69c168ca35d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD">
+      <UniqueIdentifier>{a15fa529-ea17-440b-9dea-f8246fdade05}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -708,11 +714,11 @@
     <ClInclude Include="ONEngine\CommandLineInterface\Commands\BaseCommand.h">
       <Filter>ONEngine\CommandLineInterface\Commands</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.h">
-      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h">
+      <Filter>ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.h">
-      <Filter>ONEngine\CommandLineInterface\Commands</Filter>
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h">
+      <Filter>ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

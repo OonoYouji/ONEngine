@@ -38,6 +38,10 @@ public:
 	static ONE::WinApp*   GetActiveWinApp();
 	static const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& GetWinApps();
 
+
+	static bool IsRunning();
+
+
 private:
 	ONEngine(const ONEngine&)            = delete;
 	ONEngine(ONEngine&&)                 = delete;
@@ -66,6 +70,9 @@ namespace {
 		/// ===================================================
 		/// private : objects
 		/// ===================================================
+
+		/// main loop
+		bool isRunning_ = true;
 
 		/// direct x 
 		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr;

@@ -38,8 +38,8 @@
     <ClCompile Include="ONEngine\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="ONEngine\CommandLineInterface\CommandLineInterface.cpp" />
     <ClCompile Include="ONEngine\CommandLineInterface\Commands\BaseCommand.cpp" />
-    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.cpp" />
-    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.cpp" />
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
+    <ClCompile Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
     <ClCompile Include="ONEngine\Component\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\Component\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\Component\Collider\BaseCollider.cpp" />
@@ -127,8 +127,8 @@
     <ClInclude Include="ONEngine\CollisionManager\CollisionManager.h" />
     <ClInclude Include="ONEngine\CommandLineInterface\CommandLineInterface.h" />
     <ClInclude Include="ONEngine\CommandLineInterface\Commands\BaseCommand.h" />
-    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD.h" />
-    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD.h" />
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
+    <ClInclude Include="ONEngine\CommandLineInterface\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
     <ClInclude Include="ONEngine\Component\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\Component\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\Component\Collider\BaseCollider.h" />

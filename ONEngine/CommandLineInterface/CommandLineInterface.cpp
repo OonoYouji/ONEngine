@@ -3,12 +3,37 @@
 #include <iostream>
 #include <thread>
 
+#include <Input.h>
 #include <ImGuiManager.h>
+
+#include "Commands/CreateNewCommandCMD/CreateNewCommandCMD.h"
+#include "Commands/CreateNewGameObjectCMD/CreateNewGameObjectCMD.h"
+
+
+BOOL WINAPI ConsoleHandler(DWORD signal) {
+	switch(signal) {
+	case CTRL_C_EVENT:
+	case CTRL_CLOSE_EVENT:
+		// コンソールウィンドウが閉じられたときの処理
+		std::cout << "Console window closed. Game will continue running." << std::endl;
+		// コンソールウィンドウを自由に閉じる
+		FreeConsole();
+		return TRUE;
+	default:
+		return FALSE;
+	}
+}
 
 
 void CommandLineInterface::Initialize() {
 	commandLog_.push_back("command line interface");
 
+	/// コマンドの追加
+	AddCommand("CreateGameObject", new CreateNewGameObjectCMD());
+	AddCommand("CreateCommand",    new CreateNewCommandCMD());
+
+
+	/// コンソールの初期化
 	InitializeConsole();
 
 }
@@ -30,33 +55,65 @@ void CommandLineInterface::ExecuteCommand(const std::string& commandInput) {
 
 void CommandLineInterface::CommandLoop() {
 
-	if(!GetConsoleWindow()) {
-		AllocConsole();
-		SetConsoleFont(L"Consolas", 16); 
-		freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-		freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+	
 
-		std::cout << "Command Line Interface  Execution..."           << std::endl;
-		std::cout << "If you have any questions, please type 'help'." << std::endl;
-	}
-
-	std::string command;
+	std::string commandName;
+	std::string commandArgs;
 	while(isRenderConsole_) {
-		std::cout << "> ";
-		std::getline(std::cin, command);
 
-		commandLog_.push_back(command);
-		if(command == "exit") {
-			std::cout << "Exiting...\n";
-			isRenderConsole_ = false;
-			break;
-		} else if(!command.empty()) {
-			std::cout << "Command entered: " << command << std::endl;
+		/// 開く条件
+		if(!GetConsoleWindow()) {
+			if(Input::PressKey(KeyCode::LeftControl) && Input::TriggerKey(KeyCode::Space)) {
+				SetConsoleCtrlHandler(ConsoleHandler, TRUE);
+				AllocConsole();
+				freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+				freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+
+				std::cout << "Command Line Interface  Execution..." << std::endl;
+				std::cout << "If you have any questions, please type 'help'." << std::endl;
+			}
+		} else {
+
+			/// commandの名前を入力
+			std::cout << "Name > ";
+			std::getline(std::cin, commandName);
+
+
+			auto itr = commands_.find(commandName);
+			if(itr != commands_.end()) {
+
+				/// 引数の入力
+				std::cout << "    Args >> ";
+				std::getline(std::cin, commandArgs);
+
+				if(!commandArgs.empty()) {
+					/// 実行
+					itr->second->Execution(commandArgs);
+					/// logに追加
+					commandLog_.push_back(std::string(">> ") + commandName + std::string(" : ") + commandArgs);
+				} else {
+					std::cout << "         >> Args empty..." << std::endl;
+				}
+
+			} else {
+				std::cout << "    >> This command is not available -> " << commandName << std::endl;
+			}
+
+
+			if(commandName == "Exit") {
+				std::cout << "Exiting console..." << std::endl;
+				FreeConsole();
+				break;
+ 			}
+
 		}
+
 	}
 
-	FreeConsole();
 
+	if(GetConsoleWindow()) {
+		FreeConsole();
+	}
 }
 
 
@@ -73,6 +130,7 @@ void CommandLineInterface::InitializeConsole() {
 
 void CommandLineInterface::FinalizeConsole() {
 	commandLoop_.join();
+	isRenderConsole_ = false;
 }
 
 
@@ -94,4 +152,26 @@ void CommandLineInterface::SetConsoleFont(const wchar_t* fontName, int fontSize)
 		std::cerr << "Failed to get console font info." << std::endl;
 		commandLog_.push_back("Failed to get console font info.");
 	}
+}
+
+//void CommandLineInterface::AddCommand(const std::string& name, std::unique_ptr<BaseCommand> addCommand) {
+//	auto itr = commands_.find(name);
+//	if(itr != commands_.end()) {
+//		std::cout << "Already created ->" << name << std::endl;
+//		return;
+//	}
+//
+//	commands_[name] = std::move(addCommand);
+//
+//}
+
+void CommandLineInterface::AddCommand(const std::string& name, BaseCommand* addCommand) {
+	auto itr = commands_.find(name);
+	if(itr != commands_.end()) {
+		std::cout << "Already created ->" << name << std::endl;
+		return;
+	}
+
+	std::unique_ptr<BaseCommand> command(addCommand);
+	commands_[name] = std::move(command);
 }

@@ -43,6 +43,10 @@ const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& ONEngine::G
 	return gSystem->winApps_;
 }
 
+bool ONEngine::IsRunning() {
+	return gSystem->isRunning_;
+}
+
 
 
 /// ===================================================
@@ -69,6 +73,8 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	/// main window のポインタ
 	mainWindow_   = debugWin.get();
 	activeWindow_ = debugWin.get();
+
+	Input::GetInsatnce()->Initialize(ONEngine::GetMainWinApp());
 
 
 	/// console initialize
@@ -100,15 +106,13 @@ void System::Update() {
 		}
 	}
 
-	if(Input::TriggerKey(KeyCode::Space)) {
-		auto& debugWin = winApps_["Debug"];
-		// 子ウィンドウのスタイルを変更
-		SetWindowLongPtr(debugWin->GetHWND(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-		SetParent(debugWin->GetHWND(), nullptr); // 親ウィンドウから切り離す
-		SetWindowPos(debugWin->GetHWND(), nullptr, 100, 100, 1280, 720, SWP_SHOWWINDOW);
-	}
 
 	console_->Update();
 
+	isRunning_ = !mainWindow_->ProcessMessage();
+	if(!isRunning_) {
+		assert(false);
+	}
 
 }
+

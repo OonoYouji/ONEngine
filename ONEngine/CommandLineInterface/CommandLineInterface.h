@@ -1,9 +1,12 @@
 #pragma once
 
 #include <string>
-#include <list>
 #include <thread>
+#include <list>
+#include <memory>
+#include <unordered_map>
 
+#include "Commands/BaseCommand.h"
 
 /// ===================================================
 /// コマンドラインインターフェイスのクラス
@@ -40,6 +43,8 @@ public:
 
 	void SetConsoleFont(const wchar_t* fontName, int fontSize);
 
+	void AddCommand(const std::string& name, BaseCommand* addCommand);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -48,6 +53,9 @@ private:
 	std::list<std::string> commandLog_{};
 	std::thread            commandLoop_;
 	bool                   isRenderConsole_;
+
+	/// commands
+	std::unordered_map<std::string, std::unique_ptr<BaseCommand>> commands_;
 
 private:
 	CommandLineInterface(const CommandLineInterface&)             = delete;

@@ -3,16 +3,16 @@
 #include "CommandLineInterface/Commands/BaseCommand.h"
 
 /// ===================================================
-/// 新しいコマンドのクラスを作成する用のクラス
+/// 新しいゲームオブジェクトを作成する用のクラス
 /// ===================================================
-class CreateNewCommandCMD final : BaseCommand {
+class CreateNewGameObjectCMD final : public BaseCommand {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	CreateNewCommandCMD() {}
-	~CreateNewCommandCMD() {}
+	CreateNewGameObjectCMD() {}
+	~CreateNewGameObjectCMD() {}
 
 	void Execution(const std::string& args) override;
 
@@ -20,5 +20,8 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	/// ゲームオブジェクトの作成先
+	const std::string directoryPath_ = "./Game/Objects/";
 
 };

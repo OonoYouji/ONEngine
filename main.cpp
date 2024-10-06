@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	ONEngine::Initialize(L"DirectXGame", false);
-	input->Initialize(ONEngine::GetMainWinApp());
+	//input->Initialize(ONEngine::GetMainWinApp());
 
 	frameFixation.reset(new FrameFixation);
 	frameFixation->Initialize(true);
@@ -141,7 +141,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	time->Update();
 
 
-	while(!ONEngine::GetMainWinApp()->ProcessMessage()) {
+	while(ONEngine::IsRunning()) {
 
 		/// 終了命令がでたのでループを抜ける
 		if(!sceneManager->GetIsRunning()) {
