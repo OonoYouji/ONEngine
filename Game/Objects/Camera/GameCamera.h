@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CameraManager.h>
+#include <Vector3.h>
 
 
 /// ===================================================
@@ -20,6 +21,9 @@ public:
 	void Debug() override;
 
 private:
+
+	Vec3 LockAt(const Vec3& direction) const;
+	Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up) const;
 
 	
 };
