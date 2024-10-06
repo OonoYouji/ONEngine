@@ -126,7 +126,6 @@ void BaseCamera::UpdateMatOrthographic() {
 }
 
 
-
 void BaseCamera::Move() {
 	if(moveTime_ > maxMoveTime_) { return; }
 
@@ -138,7 +137,6 @@ void BaseCamera::Move() {
 	SetPosition(position);
 	SetRotate(rotate);
 }
-
 
 
 void BaseCamera::Transfer() {
