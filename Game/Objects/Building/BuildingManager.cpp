@@ -8,10 +8,6 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 
 	std::unique_ptr<Building> building = std::make_unique<Building>();
 	building->Initialize();
-	// 球面座標から位置を計算
-	float x = 12 * sin(theta) * cos(phi);
-	float y = 12 * sin(theta) * sin(phi);
-	float z = 12 * cos(theta);
 
 	// 回転を適用
 	Quaternion rotateX = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f },phi );
@@ -23,8 +19,8 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 
 void 	BuildingManager::Update(Player* player){
 	for (const std::unique_ptr<BaseBuilding>& building : buildings_) {
-		building->BehaviorManagement(player);
 		building->Update();		
+		building->BehaviorManagement(player);
 	}
 
 	buildings_.remove_if([](const std::unique_ptr<BaseBuilding>& building) {

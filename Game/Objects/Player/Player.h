@@ -28,6 +28,7 @@ private:
 	Quaternion rotateY_;
 	//ピボット
 	Transform pivot_;
+
 	
 	AudioSource* audioSource_ = nullptr;
 

@@ -48,7 +48,11 @@ private:
 	bool isDeath_;
 	//竜巻と衝突したか
 	bool isCollisionTyphoon_=true;
-	//ピボット
+	//
+	float theta_;
+	//
+	float phi_;
+	// //ピボット
 	Transform pivot_;
 	AudioSource* audioSource_ = nullptr;
 };

@@ -28,6 +28,7 @@ void BaseBuilding::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };
 	pTranform_->position = { 0,0,-14 };
 	pTranform_->rotate = { -1.5f,0,0 };
+	behaviorRequest_ = Behavior::kRoot;
 	////////////////////////////////////////////////////////////////////////////////////////////
     //  ペアレント
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,10 +65,18 @@ void BaseBuilding::RootUpdate() {
 
 }
 void BaseBuilding::ParentInit(Player* player) {
-	pTranform_->SetParent(player->GetPivot());
+	pTranform_->SetParent(player->GetTransform());
+	
 }
 void BaseBuilding::ParentUpdate() {
-	pTranform_->rotate.x += 0.01f;
+	// 球面座標から位置を計算
+	float radius = 8.0f;
+	theta_ += 0.04f;
+	phi_ += 0.04f;
+	float x = radius * sin(theta_) * cos(phi_);
+	float y = -2+radius * sin(theta_) * sin(phi_);
+	/*float z = radius * cos(theta_);*/
+	pTranform_->position = { x,y,-10 };
 }
 
 //振る舞い管理
@@ -81,9 +90,10 @@ void BaseBuilding::BehaviorManagement(Player* player) {
 		default:
 			RootInit();
 			break;
-		case Behavior::kParent: 
+		case Behavior::kParent:
 			ParentInit(player);
 			break;
+		}
 			// 振る舞いリクエストをリセット
 			behaviorRequest_ = std::nullopt;
 		}
@@ -98,7 +108,7 @@ void BaseBuilding::BehaviorManagement(Player* player) {
 			break;
 
 		}
-	}
+	
 }
 
 Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {

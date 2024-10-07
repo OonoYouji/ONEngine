@@ -53,6 +53,7 @@ void Player::Update() {
 			0.0f
 	};
 
+
 	//回転を適応
 	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, velocity_.y * 0.1f);
 	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, -velocity_.x * 0.1f);
