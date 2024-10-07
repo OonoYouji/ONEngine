@@ -35,14 +35,14 @@ void Scene_Game::Initialize() {
 	ground->Initialize();
 	gameCameraState_->Initialize();
 
-	mainCamera_->SetPosition({ 0.0f, 0.0f, -50.0f });
+	//mainCamera_->SetPosition({ 0.0f, 0.0f, -50.0f });
 
 	
 	/// ===================================================
 	/// その他 セットするべきものをここに
 	/// ===================================================
 
-	mainCamera_->SetParent(player_->GetPivot());
+	//mainCamera_->SetParent(player_->GetPivot());
 
 	gameCameraState_->SetGameCamera(mainCamera_);
 	gameCameraState_->SetPlayer(player_);

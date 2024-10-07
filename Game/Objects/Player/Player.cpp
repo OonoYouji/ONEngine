@@ -48,18 +48,24 @@ void Player::Initialize() {
 void Player::Update() {
 	//入力
 	velocity_ = {
-			static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
-			static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
-			0.0f
+		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
+		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
+		0.0f
 	};
-	////
-	//rotateXAngle_ += velocity_.y * 0.01f;
-	//rotateYAngle_ += velocity_.x * 0.01f;
+
+	velocity_ = velocity_.Normalize();
+
+	/// 仮にvelocityをマイナスにして移動の違和感を消す
+	velocity_ = -velocity_;
+
+	rotateXAngle_ += velocity_.y * 0.1f;
+	rotateYAngle_ += velocity_.x * 0.1f;
+
 
 	//回転を適応
-	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, -velocity_.y * 0.1f);
-	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, velocity_.x * 0.1f);
-	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+	pivot_.quaternion = rotateX_ * rotateY_;// 正規化
 
 	// プレイヤーの向きの決定
 	pTransform_->quaternion = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
@@ -75,6 +81,10 @@ void Player::Debug() {
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
 		ImGui::DragFloat3("velocity",&velocity_.x,0);
+
+		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
+		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
+
 		ImGui::TreePop();
 	}
 }

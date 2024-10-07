@@ -41,6 +41,11 @@ private:
 	Player*     pPlayer_     = nullptr;
 	GameCamera* pGameCamera_ = nullptr;
 
+	/// player...
 	Vec3 playerForward_{};
+
+	/// camera...
+	Vec3  cameraUp_{};
+	float cameraRotateZ_ = 0.0f;
 
 };

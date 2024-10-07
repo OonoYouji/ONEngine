@@ -37,6 +37,18 @@ Quaternion Quaternion::Normalize(const Quaternion& q) {
 	return q;
 }
 
+Vector3 Quaternion::Transform(const Vector3& v, const Quaternion& q) {
+	// ベクトルをクォータニオンに変換 (w = 0)
+	Quaternion qVec = { v.x, v.y, v.z, 0.0f };
+
+	// 回転: q * v * q^(-1)
+	Quaternion qConjugate = q.Conjugate();
+	Quaternion result = q * qVec * qConjugate;
+
+	// 結果をベクトルとして返す
+	return { result.x, result.y, result.z };
+}
+
 Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
 	float halfAngle = theta * 0.5f;
 	float sinHalfAngle = std::sin(halfAngle);

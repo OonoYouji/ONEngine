@@ -1,5 +1,8 @@
 #include "GameCameraState.h"
 
+#include <algorithm>
+#include <numbers>
+
 #include "ImGuiManager.h"
 #include "Player/Player.h"
 
@@ -15,42 +18,66 @@ void GameCameraState::Initialize() {
 
 void GameCameraState::Update() {
 
-	Transform* parent = pGameCamera_->GetParent();
+	Transform* parent = GetParent();
 	if(parent) {
 
-		playerForward_ = Mat4::TransformNormal(Vec3::kFront, pPlayer_->GetMatTransform());
-		Vec3 playerRightDir = Vec3::Cross(playerForward_, parent->position - pGameCamera_->GetPosition());
-		playerRightDir      = playerRightDir.Normalize();
-		float cameraRotateZ = Vec3::Dot(playerForward_, Vec3::Normalize(pGameCamera_->GetPosition()));
+		/// playerの前方ベクトル計算
+		playerForward_ = Mat4::TransformNormal(Vec3::kUp, pPlayer_->GetMatTransform());
 
+		/// cameraのquaternion計算 その1
 		pGameCamera_->UpdateMatrix();
 		Quaternion quaternionXY = Quaternion::LockAt(pGameCamera_->GetPosition(), parent->position, Vec3::kUp);
-		Quaternion quaternionZ  = Quaternion::MakeFromAxis(Vec3::Normalize(pGameCamera_->GetPosition()), playerRightDir.x / playerRightDir.y);
 
+		/// カメラの上方向のベクトル計算
+		cameraUp_ = Quaternion::Transform(Vec3::kUp, quaternionXY);
 
-		pGameCamera_->SetQuaternion(quaternionXY * quaternionZ);
+		/// カメラのzRotateを計算
+		cameraRotateZ_ = Vec3::Dot(playerForward_.Normalize(), cameraUp_.Normalize());
+		cameraRotateZ_ = std::clamp(cameraRotateZ_ * std::numbers::pi_v<float>, -1.0f, 1.0f);
+		cameraRotateZ_ = std::acos(cameraRotateZ_);
+
+		/// cameraのquaternion計算 その2
+		const Vec3& playerVelocity = pPlayer_->GetVelocity();
+		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis(
+			{ 0.0f, 0.0f, 1.0f },
+			std::atan2(-playerVelocity.x, playerVelocity.y)
+		);
+
+		/// cameraにセット
+		pGameCamera_->SetQuaternion(quaternionXY);
+		//pTransform_->quaternion = quaternionLocalZ;
 	}
 }
 
 void GameCameraState::LastUpdate() {
-	//pGameCamera_->SetPosition(pTransform_->position);
-	//pGameCamera_->SetQuaternion(pTransform_->quaternion);
+
 }
 
 void GameCameraState::Debug() {
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("player var", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat3("player forward", &playerForward_.x, 0.0f);
+		ImGui::DragFloat3("forward", &playerForward_.x, 0.0f);
 
 		ImGui::TreePop();
 	}
+
+	if(ImGui::TreeNodeEx("camera var", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat3("up", &cameraUp_.x, 0.0f);
+		ImGui::DragFloat("rotateZ", &cameraRotateZ_, 0.01f);
+
+		ImGui::TreePop();
+	}
+
 }
 
 
 void GameCameraState::SetGameCamera(GameCamera* _gameCamera) {
 	pGameCamera_ = _gameCamera;
+	pGameCamera_->SetParent(pTransform_);
 }
 
 void GameCameraState::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
+	SetParent(pPlayer_->GetPivot());
 }

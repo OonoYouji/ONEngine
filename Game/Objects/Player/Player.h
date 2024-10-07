@@ -20,6 +20,9 @@ public:
 
 	//getter
 	Transform* GetPivot() { return &pivot_; }
+
+	const Vec3& GetVelocity() const { return velocity_; }
+
 private:
 	//速度
 	Vec3 velocity_;
@@ -31,9 +34,9 @@ private:
 	
 	AudioSource* audioSource_ = nullptr;
 
-	//float rotateXAngle_;
+	float rotateXAngle_;
+	float rotateYAngle_;
 	//float rotationSpeed = 0.01f;  // 回転速度
-	//float rotateYAngle_;
 	//float moveSpeed = 0.05f;  // 移動速度
 
 

@@ -32,6 +32,7 @@ public:
 
 	static float Lenght(const Quaternion& q);
 	static Quaternion Normalize(const Quaternion& q);
+	static Vector3 Transform(const Vector3& v, const Quaternion& q);
 	
 	/// <summary>
 	/// ある軸を基にquaternionを計算する
