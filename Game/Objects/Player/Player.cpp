@@ -52,9 +52,6 @@ void Player::Update() {
 			static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
 			0.0f
 	};
-	////
-	//rotateXAngle_ += velocity_.y * 0.01f;
-	//rotateYAngle_ += velocity_.x * 0.01f;
 
 	//回転を適応
 	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, velocity_.y * 0.1f);
