@@ -41,6 +41,16 @@ public:
 	/// <returns>             return: axisを基にtheta分回転させたquaternion </returns>
 	static Quaternion MakeFromAxis(const Vec3& axis, float theta);
 
+	/// <summary>
+	/// 特定の方向を見る関数
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="target"></param>
+	/// <param name="up"></param>
+	/// <returns></returns>
+	static Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up);
+
+
 
 	/// ===================================================
 	/// public : methods

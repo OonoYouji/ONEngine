@@ -14,16 +14,10 @@ public:
 	~GameCamera();
 
 	void Initialize() override;
-	void Update() override;
-
-	/*void Look(const Vector3& pos);*/
-
-	void Debug() override;
+	void Update()     override;
+	void Debug()      override;
 
 private:
-
-	Vec3 LockAt(const Vec3& direction) const;
-	Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up) const;
 
 	
 };

@@ -129,9 +129,10 @@ public:
 	void SetScaleZ(float z)    { pTransform_->scale.z = z; }
 	void SetScale(const Vec3& v) { pTransform_->scale = v; }
 
-	const Vec3 GetPosition()        const;
-	const Vec3 GetRotate()          const { return pTransform_->rotate; }
-	const Vec3 GetScale()           const { return pTransform_->scale; }
+	const Vec3  GetPosition()         const;
+	const Vec3& GetRotate()           const { return pTransform_->rotate; }
+	const Vec3& GetScale()            const { return pTransform_->scale; }
+	const Quaternion& GetQuaternion() const { return pTransform_->quaternion; }
 
 	const Mat4& GetMatTransform()   const { return pTransform_->matTransform; };
 	Transform* GetTransform() { return pTransform_; }
