@@ -69,13 +69,17 @@ void CommandLineInterface::CommandLoop() {
 				freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 				freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
 
-				std::cout << "Command Line Interface  Execution..." << std::endl;
+				std::cout << "Command Line Interface  Execution..."           << std::endl;
 				std::cout << "If you have any questions, please type 'help'." << std::endl;
 
 				consoleHWND = GetConsoleWindow();
-				SetParent(consoleHWND, nullptr);
-				//ShowWindow(consoleHWND, SW_HIDE);
+				HMENU hMenu = GetSystemMenu(consoleHWND, false);
+
+				if(hMenu) {
+					EnableMenuItem(hMenu, SC_CLOSE, MF_BYCOMMAND | MF_GRAYED);
+				}
 			}
+
 		} else {
 
 			/// commandの名前を入力

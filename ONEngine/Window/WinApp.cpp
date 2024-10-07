@@ -68,10 +68,7 @@ UINT ONE::WinApp::ProcessMessage() {
 
 	///- 終了メッセージ
 	if(msg_.message == WM_QUIT) {
-		//if(hwnd_ == ONEngine::GetMainWinApp()->GetHWND()) {
-		assert(false);
 		return true;
-		//}
 	}
 
 	return false;
