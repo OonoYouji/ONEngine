@@ -110,9 +110,6 @@ void System::Update() {
 	console_->Update();
 
 	isRunning_ = !mainWindow_->ProcessMessage();
-	if(!isRunning_) {
-		assert(false);
-	}
 
 }
 

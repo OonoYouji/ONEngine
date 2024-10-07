@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 
+#include <Core/ONEngine.h>
 #include <Input.h>
 #include <ImGuiManager.h>
 #include <WinApp.h>
@@ -69,7 +70,7 @@ void CommandLineInterface::CommandLoop() {
 				freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 				freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
 
-				std::cout << "Command Line Interface  Execution..."           << std::endl;
+				std::cout << "Command Line Interface  Execution..." << std::endl;
 				std::cout << "If you have any questions, please type 'help'." << std::endl;
 
 				consoleHWND = GetConsoleWindow();
@@ -112,8 +113,12 @@ void CommandLineInterface::CommandLoop() {
 				std::cout << "Exiting console..." << std::endl;
 				FreeConsole();
 				break;
- 			}
+			}
 
+		}
+
+		if(!ONEngine::IsRunning()) {
+			break;
 		}
 
 	}
@@ -126,6 +131,9 @@ void CommandLineInterface::CommandLoop() {
 
 
 void CommandLineInterface::InitializeConsole() {
+
+	std::system("start wsl.exe");
+
 	isRenderConsole_ = true;
 	commandLoop_ = std::thread(&CommandLineInterface::CommandLoop, this);
 }
