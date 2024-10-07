@@ -21,9 +21,10 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 	buildings_.push_back(std::move(building));
 }
 
-void 	BuildingManager::Update() {
+void 	BuildingManager::Update(Player* player){
 	for (const std::unique_ptr<BaseBuilding>& building : buildings_) {
-		building->Update();
+		building->BehaviorManagement(player);
+		building->Update();		
 	}
 
 	buildings_.remove_if([](const std::unique_ptr<BaseBuilding>& building) {

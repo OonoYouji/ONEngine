@@ -34,7 +34,7 @@ void Scene_Game::Initialize() {
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float>/8.0f, std::numbers::pi_v<float> / 2.0f);
-	buildingManager_->SpownBuilding(0.9f,6.5f);
+	buildingManager_->SpownBuilding(0,0);
 }
 
 /// ===================================================
@@ -44,7 +44,7 @@ void Scene_Game::Update() {
 	
 
 
-	buildingManager_->Update();
+	buildingManager_->Update(p1);
 
 	mainCamera_->UpdateMatrix();
 }

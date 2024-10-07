@@ -21,8 +21,7 @@ GameCamera::~GameCamera() {}
 void GameCamera::Initialize() {
 	//auto meshRenderer = AddComponent<MeshRenderer>();
 	//meshRenderer->SetModel("TestObject");
-	//transform_.position = { 0.0f, 3.8f, -6.49f * 2 };
-	//transform_.rotate.x = 0.26f;
+	
 	pTranform_->quaternion = { 0,0,0,1 };
 	pTranform_->rotateOrder = QUATERNION;
 	BaseCamera::BaseInitialize();

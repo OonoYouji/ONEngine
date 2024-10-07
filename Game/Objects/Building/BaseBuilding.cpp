@@ -43,7 +43,11 @@ void BaseBuilding::Initialize() {
 
 void BaseBuilding::Update() {
 
-	
+	//タイフーンと合体
+	if (isCollisionTyphoon_&&behavior_!=Behavior::kParent) {
+		behaviorRequest_ = Behavior::kParent;
+	}
+	//ピボット更新
 	pivot_.UpdateMatrix();
 
 }
@@ -52,6 +56,50 @@ void BaseBuilding::Debug() {
 
 }
 
+//振る舞い関数
+void BaseBuilding::RootInit() {
+
+}
+void BaseBuilding::RootUpdate() {
+
+}
+void BaseBuilding::ParentInit(Player* player) {
+	pTranform_->SetParent(player->GetPivot());
+}
+void BaseBuilding::ParentUpdate() {
+	pTranform_->rotate.x += 0.01f;
+}
+
+//振る舞い管理
+void BaseBuilding::BehaviorManagement(Player* player) {
+	if (behaviorRequest_) {
+		// 振る舞いを変更する
+		behavior_ = behaviorRequest_.value();
+		// 各振る舞いごとの初期化を実行
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			RootInit();
+			break;
+		case Behavior::kParent: 
+			ParentInit(player);
+			break;
+			// 振る舞いリクエストをリセット
+			behaviorRequest_ = std::nullopt;
+		}
+		// 振る舞い更新
+		switch (behavior_) {
+		case Behavior::kRoot: 
+		default:
+			RootUpdate();
+			break;
+		case Behavior::kParent: 
+			ParentUpdate();
+			break;
+
+		}
+	}
+}
 
 Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
 	//    W A   ɕϊ 

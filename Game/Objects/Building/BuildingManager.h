@@ -2,6 +2,7 @@
 #include<list>
 
 #include"Building.h"
+#include"Player/Player.h"
 #include <Component/Transform/Transform.h>
 
 class BuildingManager {
@@ -18,6 +19,6 @@ public:
 
 	void SpownBuilding(float theta, float phi);
 	void 	Init();
-	void 	Update();
+	void 	Update(Player*player);
 	void 	Draw();
 };
