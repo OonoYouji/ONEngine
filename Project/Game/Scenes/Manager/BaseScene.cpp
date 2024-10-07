@@ -1,8 +1,9 @@
-#include <BaseScene.h>
+#include "Scenes/Manager/BaseScene.h"
 
-#include <GameCamera.h>
-#include <Graphics/Light/DirectionalLight.h>
-#include <CameraManager.h>
+#include "Objects/Camera/GameCamera.h"
+
+#include "GraphicManager/Light/DirectionalLight.h"
+#include "Objects/Camera/Manager/CameraManager.h"
 
 BaseScene::BaseScene() {
 

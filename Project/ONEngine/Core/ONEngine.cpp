@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Input.h>
-#include <CommandLineInterface/CommandLineInterface.h>
+#include "Input/Input.h"
+#include "CommandManager/CommandLineInterface.h"
 
 namespace {
 	std::unique_ptr<System> gSystem;

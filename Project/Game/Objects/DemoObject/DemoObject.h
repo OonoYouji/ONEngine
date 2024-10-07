@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GameObjectManager.h>
+#include "GameObjectManager/GameObjectManager.h"
 
 
 class DemoObject final : public BaseGameObject {

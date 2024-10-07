@@ -1,12 +1,12 @@
-#include <Scene_Debug.h>
+#include "Scene_Debug.h"
 
-#include <CameraManager.h>
-#include <SceneManager.h>
-#include <ModelManager.h>
-#include <SpriteManager.h>
+#include "Objects/Camera/Manager/CameraManager.h"
+#include "Manager/SceneManager.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/Drawer/Sprite/SpriteManager.h"
 
-#include <DebugCamera.h>
-#include <Floor.h>
+#include "Objects/Camera/DebugCamera.h"
+#include "GraphicManager/Drawer/Floor/Floor.h"
 
 
 Scene_Debug::Scene_Debug() {}

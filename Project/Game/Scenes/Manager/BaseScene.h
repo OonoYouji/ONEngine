@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <Graphics/SceneLayer/SceneLayer.h>
+#include <GraphicManager/SceneLayer/SceneLayer.h>
 
 /// ===================================================
 /// 各シーンの基底クラス

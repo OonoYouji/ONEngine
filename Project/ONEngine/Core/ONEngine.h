@@ -3,18 +3,17 @@
 #include <memory>
 #include <unordered_map>
 
-#include <DxCommon.h>
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
-#include <DxShaderCompiler.h>
-#include <DxDebug.h>
-#include <DxDepthStencil.h>
-#include <DxDoubleBuffer.h>
-#include <DxDescriptor.h>
-#include <DxCommand.h>
-#include <DxDevice.h>
-
-#include <WinApp.h>
-#include <Console.h>
+#include "WindowManager/WinApp.h"
+#include "WindowManager/Console.h"
 
 
 /// ===================================================

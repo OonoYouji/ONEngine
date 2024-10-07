@@ -5,36 +5,36 @@
 #include <iostream>
 #include <thread>
 
-#include <WinApp.h>
-#include <Logger.h>
-#include <DxCommon.h>
-#include <DxCommand.h>
-#include <DxDescriptor.h>
-#include <Time/Time.h>
-#include <FrameFixation/FrameFixation.h>
-#include <Input.h>
+#include <WindowManager/WinApp.h>
+#include <LoggingManager/Logger.h>
+#include <GraphicManager/GraphicsEngine/DirectX12/DxCommon.h>
+#include <GraphicManager/GraphicsEngine/DirectX12/DxCommand.h>
+#include <GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h>
+#include <FrameManager/Time.h>
+#include <FrameManager/FrameFixation.h>
+#include <Library/Input/Input.h>
 
-#include <ModelManager.h>
-#include <SpriteManager.h>
-#include <TextureManager.h>
-#include <AudioManager.h>
-#include <LineDrawer/Line2D.h>
-#include <LineDrawer/Line3D.h>
+#include <GraphicManager/ModelManager/ModelManager.h>
+#include <GraphicManager/TextureManager/TextureManager.h>
+#include <GraphicManager/Drawer/Sprite/SpriteManager.h>
+#include <GraphicManager/Drawer/LineDrawer/Line2D.h>
+#include <GraphicManager/Drawer/LineDrawer/Line3D.h>
+#include <AudioManager/AudioManager.h>
 
-#include <SceneManager.h>
-#include <ImGuiManager.h>
-#include <CameraManager.h>
-#include <GameObjectManager.h>
-#include "CollisionManager/CollisionManager.h"
+#include <Scenes/Manager/SceneManager.h>
+#include <ImGuiManager/ImGuiManager.h>
+#include <Objects/Camera/Manager/CameraManager.h>
+#include <GameObjectManager/GameObjectManager.h>
+#include <Library/CollisionManager/CollisionManager.h>
 
-#include <GameCamera.h>
-#include <DebugCamera.h>
-#include <Light/DirectionalLight.h>
+#include <Objects/Camera/GameCamera.h>
+#include <Objects/Camera/DebugCamera.h>
+#include <GraphicManager/Light/DirectionalLight.h>
 
-#include <RenderTextureManager.h>
-#include <SceneLayer/SceneLayer.h>
-#include <Bloom/Bloom.h>
-#include <Particle/ParticleSystem.h>
+#include <GraphicManager/RenderTextureManager/RenderTextureManager.h>
+#include <GraphicManager/SceneLayer/SceneLayer.h>
+#include <GraphicManager/PostEffect/Bloom/Bloom.h>
+#include <GraphicManager/Drawer/Particle/ParticleSystem.h>
 
 
 

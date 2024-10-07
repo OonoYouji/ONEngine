@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "../../../ONEngine/Graphics/SceneLayer/SceneLayer.h"
+
+#include "GraphicManager/SceneLayer/SceneLayer.h"
 
 class BaseScene;
 

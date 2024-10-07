@@ -1,16 +1,18 @@
 #include "Player.h"
 
 
-#include <ModelManager.h>
+#include "GraphicManager/ModelManager/ModelManager.h"
 
-#include <Input.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
-#include <Component/Collider/SphereCollider.h>
-#include <Component/SplinePathRenderer/SplinePathRenderer.h>
+#include "Input/Input.h"
 
-#include <ImGuiManager.h>
+#include "GraphicManager/Drawer/Particle/ParticleSystem.h"
+
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
+#include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/SplinePathRenderer/SplinePathRenderer.h"
+
+#include "ImGuiManager/ImGuiManager.h"
 
 
 void Player::Initialize() {

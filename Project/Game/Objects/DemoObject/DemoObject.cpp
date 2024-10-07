@@ -1,7 +1,9 @@
 #include "DemoObject.h"
 
-#include <ImGuiManager.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
+#include "ImGuiManager/ImGuiManager.h"
+
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
+
 
 void DemoObject::Initialize() {
 	auto mr = AddComponent<MeshRenderer>();

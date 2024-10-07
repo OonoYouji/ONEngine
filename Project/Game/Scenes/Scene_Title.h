@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BaseScene.h>
+#include "Scenes/Manager/BaseScene.h"
 
 class Scene_Title final : public BaseScene {
 public:

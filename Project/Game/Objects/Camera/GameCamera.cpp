@@ -1,6 +1,6 @@
 #include "GameCamera.h"
 
-#include "ImGuiManager.h"
+#include "ImGuiManager/ImGuiManager.h"
 
 
 GameCamera::GameCamera(const std::string& name) {

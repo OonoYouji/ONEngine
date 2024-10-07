@@ -1,6 +1,6 @@
 #pragma once
 
-#include <BaseScene.h>
+#include "Manager/BaseScene.h"
 
 class Scene_Clear final : public BaseScene {
 public:
