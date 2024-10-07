@@ -42,8 +42,6 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 	
-
-
 	buildingManager_->Update(p1);
 
 	mainCamera_->UpdateMatrix();

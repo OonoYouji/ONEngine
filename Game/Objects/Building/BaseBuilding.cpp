@@ -10,6 +10,7 @@
 #include <Component/SplinePathRenderer/SplinePathRenderer.h>
 
 #include <ImGuiManager.h>
+#include"random/random.h"
 
 
 void BaseBuilding::Initialize() {
@@ -65,6 +66,8 @@ void BaseBuilding::RootUpdate() {
 
 }
 void BaseBuilding::ParentInit(Player* player) {
+	theta_ = distTheta(gen);
+	phi_ = distPhi(gen);
 	pTranform_->SetParent(player->GetTransform());
 	
 }
@@ -73,7 +76,7 @@ void BaseBuilding::ParentUpdate() {
 	float radius = 8.0f;
 	theta_ += 0.04f;
 	phi_ += 0.04f;
-	float x = radius * sin(theta_) * cos(phi_);
+	float x = radius * sin( theta_) * cos(phi_);
 	float y = -2+radius * sin(theta_) * sin(phi_);
 	/*float z = radius * cos(theta_);*/
 	pTranform_->position = { x,y,-10 };
