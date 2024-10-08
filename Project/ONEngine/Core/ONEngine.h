@@ -12,6 +12,7 @@
 class Time;
 class Input;
 class ImGuiManager;
+class SceneManager;
 
 namespace ONE {
 	class DxCommon;
@@ -40,8 +41,10 @@ public:
 	);
 	static void Finalize();
 
-	static void BeginFrame();
-	static void EndFrame();
+	static void Update();
+
+	static void PreDraw();
+	static void PostDraw();
 
 	static ONE::DxCommon* GetDxCommon();
 	static ONE::WinApp*   GetMainWinApp();
@@ -74,8 +77,10 @@ namespace {
 		void Initialize(const wchar_t* windowName, bool isCreateGameWindow);
 		void Finalize();
 
-		void BeginFrame();
-		void EndFrame();
+		void Update();
+
+		void PreDraw();
+		void PostDraw();
 
 	private:
 		/// ===================================================
@@ -95,6 +100,10 @@ namespace {
 		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr; /// graphics engine
 		Input* input_ = nullptr;                            /// input... keyboard, mouse,
 		Time*  time_  = nullptr;
+
+
+		/// gane...
+		SceneManager* sceneManager_ = nullptr;
 
 		
 #ifdef _DEBUG /// release not building objects

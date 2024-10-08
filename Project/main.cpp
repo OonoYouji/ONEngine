@@ -55,7 +55,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	CameraManager*			cameraManager		= CameraManager::GetInstance();
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
-	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
 	Line2D*					line2d				= Line2D::GetInstance();
 
 
@@ -73,12 +72,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("white2x2", "white2x2.png");
 
-
-	/// render texture imgui用を作成
-	renderTexManager->Initialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
-		ONEngine::GetDxCommon()->GetDxDescriptor()
-	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
@@ -126,7 +119,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		ONEngine::BeginFrame();
+		ONEngine::Update();
 
 
 
@@ -142,26 +135,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓ 描画処理に移る
 		/// ====================================
 
-		auto& winApps = ONEngine::GetWinApps();
-		for(auto& win : winApps) {
-			win.second->PreDraw();
-		}
+		
+		ONEngine::PreDraw();
 
 		sceneManager->Draw();
 
-#ifdef _DEBUG
-		ONEngine::EndFrame();
-
-		winApps.at("Debug")->PostDraw(ImGuiManager::GetInstance()->GetRenderTexture());
-#endif // _DEBUG
-
-		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-
-		ONEngine::GetDxCommon()->CommandExecution();
-		for(auto& win : winApps) {
-			win.second->Present();
-		}
-		ONEngine::GetDxCommon()->GetDxCommand()->Reset();
+		ONEngine::PostDraw();
 
 		frameFixation->Fixation();
 
@@ -173,7 +152,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
-	renderTexManager->Finalize();
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
 

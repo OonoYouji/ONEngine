@@ -20,6 +20,9 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
+/// game
+#include"Scenes/Manager/SceneManager.h" 
+
 
 namespace {
 	std::unique_ptr<System> gSystem;
@@ -39,12 +42,16 @@ void ONEngine::Finalize() {
 	gSystem->Finalize();
 }
 
-void ONEngine::BeginFrame() {
-	gSystem->BeginFrame();
+void ONEngine::Update() {
+	gSystem->Update();
 }
 
-void ONEngine::EndFrame() {
-	gSystem->EndFrame();
+void ONEngine::PreDraw() {
+	gSystem->PreDraw();
+}
+
+void ONEngine::PostDraw() {
+	gSystem->PostDraw();
 }
 
 ONE::DxCommon* ONEngine::GetDxCommon() {
@@ -118,6 +125,8 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 
 	time_  = Time::GetInstance();
 
+	sceneManager_ = SceneManager::GetInstance();
+
 
 #ifdef _DEBUG /// release not building  initializing
 	/// console initialize
@@ -142,6 +151,8 @@ void System::Finalize() {
 	/// object finalizing...
 	/// ===================================================
 
+	sceneManager_ = nullptr;
+
 	input_->Finalize();
 	input_ = nullptr;
 
@@ -164,7 +175,7 @@ void System::Finalize() {
 
 
 
-void System::BeginFrame() {
+void System::Update() {
 #ifdef _DEBUG  /// release時にはwindowは一個しかないので初期化時のものをずっと使う
 	HWND activeWindow = GetForegroundWindow();
 	for(auto& win : winApps_) {
@@ -195,13 +206,26 @@ void System::BeginFrame() {
 
 }
 
-void System::EndFrame() {
+void System::PreDraw() {
+	for(auto& win : winApps_) {
+		win.second->PreDraw();
+	}
+}
+
+void System::PostDraw() {
 
 #ifdef _DEBUG
-
 	imguiManager_->EndFrame();
-
+	winApps_.at("Debug")->PostDraw(ImGuiManager::GetInstance()->GetRenderTexture());
 #endif // _DEBUG
+	winApps_.at("Game")->PostDraw(sceneManager_->GetSceneLayer(0)->GetRenderTexture());
+
+	ONEngine::GetDxCommon()->CommandExecution();
+	for(auto& win : winApps_) {
+		win.second->Present();
+	}
+	ONEngine::GetDxCommon()->GetDxCommand()->Reset();
+
 
 }
 
