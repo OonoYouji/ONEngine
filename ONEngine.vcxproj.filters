@@ -248,9 +248,6 @@
     <ClCompile Include="Game\Objects\Ground\Ground.cpp">
       <Filter>Game\Objects\Ground</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Building\Building.cpp">
-      <Filter>Game\Objects\Building</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
@@ -438,9 +435,6 @@
     </Filter>
     <Filter Include="Game\Objects\Ground">
       <UniqueIdentifier>{e610d203-557a-4ef2-b608-36cc85f63613}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\Building">
-      <UniqueIdentifier>{c4eba417-28be-4a1c-8b25-6b68b70d9d03}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{b4be0c47-7c62-4b5c-a0d8-65fbedb6774d}</UniqueIdentifier>
@@ -698,9 +692,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Ground\Ground.h">
       <Filter>Game\Objects\Ground</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\Building\Building.h">
-      <Filter>Game\Objects\Building</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
