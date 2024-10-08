@@ -5,20 +5,27 @@
 #include"Player/Player.h"
 #include <Component/Transform/Transform.h>
 
-class BuildingManager {
+class BuildingManager:public BaseGameObject {
 private:
 
 	//パーティクルリスト
-	std::list<std::unique_ptr<BaseBuilding>> buildings_;
+	std::list<BaseBuilding*> buildings_;
 	Vec3 spownPos_;
 	Vec3 basePos_;
 
 public:
-	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
-	Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up) const;
+	
+	BuildingManager() { CreateTag(this); }
+	~BuildingManager() {}
+
+	void Initialize()override;
+	void Update() override;
+
+	void Debug() override;
 
 	void SpownBuilding(float theta, float phi);
-	void 	Init();
-	void 	Update(Player*player);
-	void 	Draw();
+	//void 	Init();
+	void 	RemoveBuilding();
+	void 	ParentPlayer(Player*player);
+	/*void 	Draw();*/
 };

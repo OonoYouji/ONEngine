@@ -36,6 +36,7 @@ void Scene_Game::Initialize() {
 	player_->Initialize();
 	ground->Initialize();
 	gameCameraState_->Initialize();
+	buildingManager_->Initialize();
 
 	//mainCamera_->SetPosition({ 0.0f, 0.0f, -50.0f });
 
@@ -51,7 +52,7 @@ void Scene_Game::Initialize() {
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
-	buildingManager_->SpownBuilding(0, 0);
+	buildingManager_->SpownBuilding(9, 9);
 
 
 }
@@ -60,6 +61,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	buildingManager_->Update(player_);
+	
+	buildingManager_->ParentPlayer(player_);
+	
 
 }

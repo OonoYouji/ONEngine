@@ -8,16 +8,19 @@
 #include <Component/SpriteRenderer/SpriteRenderer.h>
 #include <Particle/ParticleSystem.h>
 #include <Component/Collider/SphereCollider.h>
+#include <Component/Collider/BoxCollider.h>
 #include <Component/SplinePathRenderer/SplinePathRenderer.h>
 
 #include <ImGuiManager.h>
 
 
 void Player::Initialize() {
+	Model* model = ModelManager::Load("axis");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("axis");
-	//pivot_=AddComponent<Transform>();
+	meshRenderer->SetModel(model);
+	auto collider = AddComponent<BoxCollider>(model);
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化

@@ -26,6 +26,8 @@ public:
 	void ParentUpdate();
 	void BehaviorManagement(Player* player);
 
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
 	bool GetIsCollisionTyphoon()const { return isCollisionTyphoon_; }
@@ -47,7 +49,7 @@ private:
 	//死んだか
 	bool isDeath_;
 	//竜巻と衝突したか
-	bool isCollisionTyphoon_=true;
+	bool isCollisionTyphoon_;
 	//
 	float theta_;
 	//

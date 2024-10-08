@@ -8,15 +8,24 @@
 #include <Particle/ParticleSystem.h>
 #include <Component/Collider/SphereCollider.h>
 #include <Component/SplinePathRenderer/SplinePathRenderer.h>
+#include <Component/Collider/BoxCollider.h>
 
 #include <ImGuiManager.h>
 #include"random/random.h"
 
+//object
+#include"Player/Player.h"
+
 
 void BaseBuilding::Initialize() {
 
+	Model* model=ModelManager::Load("TestObject");
+
+
 	auto mesh = AddComponent<MeshRenderer>();
-	mesh->SetModel("TestObject");
+	mesh->SetModel(model);
+
+	auto collider = AddComponent<BoxCollider>(model);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -33,14 +42,13 @@ void BaseBuilding::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
     //  ペアレント
     ////////////////////////////////////////////////////////////////////////////////////////////
-	/*pTranform_->rotateOrder = QUATERNION;*/
 	pivot_.rotateOrder = QUATERNION;
 
 	////ペアレント
 	pTransform_->SetParent(&pivot_);
-
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+	/*isActive = false;*/
 }
 
 void BaseBuilding::Update() {
@@ -65,6 +73,7 @@ void BaseBuilding::RootInit() {
 void BaseBuilding::RootUpdate() {
 
 }
+
 void BaseBuilding::ParentInit(Player* player) {
 	theta_ = distTheta(gen);
 	phi_ = distPhi(gen);
@@ -130,4 +139,13 @@ Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, floa
 
 	// Vector4  Ƃ  ĕԂ 
 	return Quaternion(x, y, z, w);
+}
+
+void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+	
+	if (dynamic_cast<Player*>(collision)&&!isCollisionTyphoon_) {
+		isCollisionTyphoon_ = true;
+		behaviorRequest_ = Behavior::kParent;
+	}
+
 }
