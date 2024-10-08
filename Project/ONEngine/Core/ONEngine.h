@@ -2,15 +2,6 @@
 
 #include <memory>
 #include <unordered_map>
-//
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
-//#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
 #include "WindowManager/WinApp.h"
 #include "WindowManager/Console.h"
@@ -20,6 +11,7 @@
 /// ===================================================
 class Time;
 class Input;
+class ImGuiManager;
 
 namespace ONE {
 	class DxCommon;
@@ -48,7 +40,8 @@ public:
 	);
 	static void Finalize();
 
-	static void Update();
+	static void BeginFrame();
+	static void EndFrame();
 
 	static ONE::DxCommon* GetDxCommon();
 	static ONE::WinApp*   GetMainWinApp();
@@ -81,7 +74,8 @@ namespace {
 		void Initialize(const wchar_t* windowName, bool isCreateGameWindow);
 		void Finalize();
 
-		void Update();
+		void BeginFrame();
+		void EndFrame();
 
 	private:
 		/// ===================================================
@@ -104,8 +98,8 @@ namespace {
 
 		
 #ifdef _DEBUG /// release not building objects
-		std::unique_ptr<Console>       console_  = nullptr; /// console window
-
+		std::unique_ptr<Console> console_  = nullptr; /// console window
+		ImGuiManager*            imguiManager_ = nullptr;
 #endif // _DEBUG
 
 

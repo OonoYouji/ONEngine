@@ -9,14 +9,19 @@
 
 #include "WindowManager/WinApp.h"
 
-bool IsMouseInWindow(HWND hwnd) {
-	POINT pt;
-	GetCursorPos(&pt);
-	ScreenToClient(hwnd, &pt);
 
-	RECT rect;
-	GetClientRect(hwnd, &rect);
-	return (pt.x >= 0 && pt.x < rect.right && pt.y >= 0 && pt.y < rect.bottom);
+namespace {
+
+	bool IsMouseInWindow(HWND hwnd) {
+		POINT pt;
+		GetCursorPos(&pt);
+		ScreenToClient(hwnd, &pt);
+	
+		RECT rect;
+		GetClientRect(hwnd, &rect);
+		return (pt.x >= 0 && pt.x < rect.right && pt.y >= 0 && pt.y < rect.bottom);
+	}
+	
 }
 
 
@@ -36,8 +41,8 @@ ImGuiManager* ImGuiManager::GetInstance() {
 void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
 	pWinApp_ = winApp;
-	dxCommon_ = dxCommon;
-	dxDescriptor_ = dxCommon->GetDxDescriptor();
+	pDxCommon_ = dxCommon;
+	pDxDescriptor_ = dxCommon->GetDxDescriptor();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -56,14 +61,24 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 		dxCommon->GetDevice(),
 		ONE::DxDoubleBuffer::kBufferCount,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		dxDescriptor_->GetSRV(),
-		dxDescriptor_->GetSrvCpuHandle(),
-		dxDescriptor_->GetSrvGpuHandle()
+		pDxDescriptor_->GetSRV(),
+		pDxDescriptor_->GetSrvCpuHandle(),
+		pDxDescriptor_->GetSrvGpuHandle()
 	);
 
-	dxDescriptor_->AddSrvUsedCount();
+	pDxDescriptor_->AddSrvUsedCount();
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
+
+
+	/// imguiのrtv
+	renderTexture_.reset(new RenderTexture);
+	renderTexture_->Initialize(
+		Vec4(0.0f, 0.0f, 0.0f, 0.0f),
+		pDxCommon_->GetDxCommand()->GetList(),
+		pDxDescriptor_
+	);
+
 }
 
 
@@ -72,7 +87,9 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 /// ===================================================
 void ImGuiManager::Finalize() {
 
-	dxDescriptor_ = nullptr;
+	renderTexture_.reset();
+	pDxCommon_     = nullptr;
+	pDxDescriptor_ = nullptr;
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
@@ -106,13 +123,17 @@ void ImGuiManager::BeginFrame() {
 /// 毎フレーム最後に行う
 /// ===================================================
 void ImGuiManager::EndFrame() {
+	renderTexture_->BeginRenderTarget();
+
 	if(!isActive_) {
 		ImGui::EndDisabled();
 	}
 
 	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxCommon_->GetDxCommand()->GetList());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), pDxCommon_->GetDxCommand()->GetList());
 
+
+	renderTexture_->EndRenderTarget();
 }
 
 

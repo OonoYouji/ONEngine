@@ -8,7 +8,9 @@
 #include "Externals/imgui/imgui_impl_win32.h"
 
 #include <cmath>
+#include <memory>
 
+#include "GraphicManager/RenderTextureManager/RenderTexture.h"
 
 
 namespace ONE {
@@ -65,6 +67,10 @@ public:
 
 	bool GetIsAcitive() const { return isActive_; }
 
+	RenderTexture* GetRenderTexture() const {
+		return renderTexture_.get();
+	}
+
 private:
 
 	/// ===================================================
@@ -88,11 +94,13 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	ONE::DxCommon* dxCommon_ = nullptr;
-	ONE::DxDescriptor* dxDescriptor_ = nullptr;
-	ONE::WinApp* pWinApp_ = nullptr;
+	ONE::DxCommon*     pDxCommon_ = nullptr;
+	ONE::DxDescriptor* pDxDescriptor_ = nullptr;
+	ONE::WinApp*       pWinApp_ = nullptr;
 
 	bool isActive_ = true;
+
+	std::unique_ptr<RenderTexture> renderTexture_ = nullptr;
 
 private:
 	ImGuiManager(const ImGuiManager&) = delete;

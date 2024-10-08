@@ -2,9 +2,15 @@
 
 #include <memory>
 
+/// engine
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
+#include "ImGuiManager/ImGuiManager.h"
+
+/// command line interface
 #include "CommandManager/CommandLineInterface.h"
+
+/// graphics engine
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
@@ -33,8 +39,12 @@ void ONEngine::Finalize() {
 	gSystem->Finalize();
 }
 
-void ONEngine::Update() {
-	gSystem->Update();
+void ONEngine::BeginFrame() {
+	gSystem->BeginFrame();
+}
+
+void ONEngine::EndFrame() {
+	gSystem->EndFrame();
 }
 
 ONE::DxCommon* ONEngine::GetDxCommon() {
@@ -103,18 +113,19 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	/// ↓ engine app initializing
 	/// ===================================================
 
-	/// instance get...
 	input_ = Input::GetInsatnce();
-	time_  = Time::GetInstance();
-
-	/// initializing...
 	input_->Initialize(ONEngine::GetMainWinApp());
+
+	time_  = Time::GetInstance();
 
 
 #ifdef _DEBUG /// release not building  initializing
 	/// console initialize
 	console_.reset(new Console());
 	console_->Initialize();
+
+	imguiManager_ = ImGuiManager::GetInstance();
+	imguiManager_->Initialize(mainWindow_, dxCommon_.get());
 
 	/// cli initialize
 	//CommandLineInterface* cli = CommandLineInterface::GetInstance();
@@ -132,12 +143,14 @@ void System::Finalize() {
 	/// ===================================================
 
 	input_->Finalize();
-
-
 	input_ = nullptr;
+
 	time_  = nullptr;
 
 #ifdef _DEBUG /// release not building objects
+	imguiManager_->Finalize();
+	imguiManager_ = nullptr;
+
 	console_.reset();
 #endif // _DEBUG /// release not building objects
 
@@ -149,7 +162,9 @@ void System::Finalize() {
 	dxCommon_->Finalize(); 
 }
 
-void System::Update() {
+
+
+void System::BeginFrame() {
 #ifdef _DEBUG  /// release時にはwindowは一個しかないので初期化時のものをずっと使う
 	HWND activeWindow = GetForegroundWindow();
 	for(auto& win : winApps_) {
@@ -163,9 +178,6 @@ void System::Update() {
 
 	/// 終了処理に移行するか ? return
 	isRunning_ = !mainWindow_->ProcessMessage();
-	if(!isRunning_) {
-		return;
-	}
 
 	/// ===================================================
 	/// ↓ engine update...
@@ -176,10 +188,20 @@ void System::Update() {
 
 #ifdef _DEBUG /// release not building objects...
 
+	imguiManager_->BeginFrame();
 	console_->Update();
 
 #endif // _DEBUG /// release not building objects...
 
+}
+
+void System::EndFrame() {
+
+#ifdef _DEBUG
+
+	imguiManager_->EndFrame();
+
+#endif // _DEBUG
 
 }
 

@@ -52,7 +52,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	SpriteManager*			spriteManager		= SpriteManager::GetInstance();
 	TextureManager*			textureManager		= TextureManager::GetInstance();
 	AudioManager*			audioManager		= AudioManager::GetInstance();
-	ImGuiManager*			imGuiManager		= ImGuiManager::GetInstance();
 	CameraManager*			cameraManager		= CameraManager::GetInstance();
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
@@ -64,10 +63,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	frameFixation.reset(new FrameFixation);
 	frameFixation->Initialize(false);
-
-#ifdef _DEBUG
-	imGuiManager->Initialize(ONEngine::GetWinApps().at("Debug").get(), ONEngine::GetDxCommon());
-#endif // _DEBUG
 
 	modelManager->Initialize();
 	spriteManager->Initialize();
@@ -84,7 +79,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
 		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
-	renderTexManager->CreateRenderTarget("ImGui", 0, { 0,0,0,0 });
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
@@ -114,20 +108,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize(SCENE_ID::GAME);
 
 
-#ifdef _DEBUG
-	/// debug 用 render texture の初期化
-	std::unique_ptr<RenderTexture> debugFinalRenderTexture(new RenderTexture);
-	debugFinalRenderTexture->Initialize(
-		Vec4(0, 0, 0, 0),
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor()
-	);
-#endif // _DEBUG
-
 	/// window mode や imgui の表示設定の初期化
 	ONEngine::GetMainWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
 	uint8_t drawLayerIndex = 0u;
-	renderTexManager->SetIsBlending("ImGui", true);
 
 
 	///- 実行までにかかった時間
@@ -143,11 +126,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-
-#ifdef _DEBUG
-		imGuiManager->BeginFrame();
-#endif // _DEBUG
-		ONEngine::Update();
+		ONEngine::BeginFrame();
 
 
 
@@ -171,11 +150,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sceneManager->Draw();
 
 #ifdef _DEBUG
-		renderTexManager->BeginRenderTarget("ImGui");
-		imGuiManager->EndFrame();
-		renderTexManager->EndRenderTarget("ImGui");
+		ONEngine::EndFrame();
 
-		winApps.at("Debug")->PostDraw(renderTexManager->GetRenderTexture("ImGui"));
+		winApps.at("Debug")->PostDraw(ImGuiManager::GetInstance()->GetRenderTexture());
 #endif // _DEBUG
 
 		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
@@ -196,10 +173,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
-#ifdef _DEBUG
-	debugFinalRenderTexture.reset();
-#endif // _DEBUG
-
 	renderTexManager->Finalize();
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
@@ -215,9 +188,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Finalize();
 
 	textureManager->Finalize();
-#ifdef _DEBUG
-	imGuiManager->Finalize();
-#endif // _DEBUG
 	ONEngine::Finalize();
 
 	return 0;
