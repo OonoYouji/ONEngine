@@ -257,6 +257,9 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\VarIOManager\VariableIO.cpp">
+      <Filter>ONEngine\VarIOManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -444,6 +447,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{f7d3ef64-a516-481c-b5ba-ef9fa13e6e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\VarIOManager">
+      <UniqueIdentifier>{2c21c67d-b196-468f-bdcf-f05fdc1b6d94}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -710,6 +716,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\VarIOManager\VariableIO.h">
+      <Filter>ONEngine\VarIOManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
