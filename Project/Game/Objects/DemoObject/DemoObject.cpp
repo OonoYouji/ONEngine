@@ -9,7 +9,7 @@ void DemoObject::Initialize() {
 	//auto mr = AddComponent<MeshRenderer>();
 	//mr->SetModel("Sphere");
 
-	auto ps = AddComponent<ParticleSystem>(12, "Sphere");
+	auto ps = AddComponent<ParticleSystem>(12, "Board");
 
 
 }

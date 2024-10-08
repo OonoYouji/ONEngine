@@ -69,6 +69,13 @@ public:
 	void SetParticleLifeTime(float _particleLifeTime);
 
 	/// <summary>
+	/// ビルボードを使用するかセット
+	/// </summary>
+	/// <param name="_useBillboard">: ビルボードを使用するか</param>
+	void SetBillboard(bool _useBillboard);
+
+
+	/// <summary>
 	/// パーティクルを発生させる
 	/// </summary>
 	void EmitParticles();
@@ -104,12 +111,19 @@ private:
 	float    particleRespawnTime_;        /// パーティクルが発生するまでの時間
 	float    currentParticleRespawnTime_; /// 現在のリスポーンタイム
 	float    particleLifeTime_;           /// パーティクルの寿命
+	bool     useBillboard_;               /// ビルボードを使用するか
+
 
 	/// particles trasform buffers
 	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
 	Mat4*                                  mappingData_         = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
+
+
+	/// billboard
+	Mat4 matBackToFront_;
+	Mat4 matBillboard_;
 
 };
 

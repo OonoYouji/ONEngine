@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <numbers>
 
 /// engine include
 #include "Core/ONEngine.h"
@@ -76,17 +77,43 @@ void ParticleSystem::Initialize() {
 	/// particle system setting
 	particleArray_.reserve(kMaxParticleNum_);
 
+	/// particle setting
 	SetParticleRespawnTime(0.5f);
 	SetEmittedParticleCount(1u);
 	SetParticleLifeTime(5.0f);
+
+	/// billboard setting
+	matBackToFront_ = Mat4::MakeRotateY(std::numbers::pi_v<float>);
 
 }
 
 
 
 void ParticleSystem::Update() {
+
+	/// ビルボード用行列の作成
+	if(useBillboard_) {
+		auto mainCamera = CameraManager::GetInstance()->GetCamera("MainCamera");
+		matBillboard_   = matBackToFront_ * mainCamera->GetMatTransform();
+		matBillboard_.m[3][0] = 0.0f;
+		matBillboard_.m[3][1] = 0.0f;
+		matBillboard_.m[3][2] = 0.0f;
+	}
+
+
 	for(auto& particle : particleArray_) {
 		particle->Update();
+
+		if(useBillboard_) {
+
+			Mat4 matScale     = Mat4::MakeScale(particle->transform_.scale);
+			Mat4 matTranslate = Mat4::MakeTranslate(particle->transform_.position);
+
+			particle->transform_.matTransform = matScale * matBillboard_ * matTranslate;
+
+		} else {
+			particle->transform_.Update();
+		}
 	}
 
 	/// 時間を減らす
@@ -99,29 +126,31 @@ void ParticleSystem::Update() {
 
 		/// 発生
 		EmitParticles();
-
 	}
 
 }
 
 void ParticleSystem::Draw() {
 
-	/// 生きているParticleの数を確認
-	uint32_t instnanceNum = 0u;
+	particleInstanceCount_ = 0u;
 	std::vector<Mat4> matTransformArray;
+
+	/// 生きているParticleの数を確認
 	std::partition(particleArray_.begin(), particleArray_.end(), [&](const std::unique_ptr<Particle>& particle) {
 		if(particle->GetIsAlive()) {
-			instnanceNum++;
+			particleInstanceCount_++;
 			matTransformArray.push_back(particle->GetTransform()->matTransform);
 			return true;
 		}
 		return false;
 	});
 
-	if(instnanceNum > 0) {
+
+	/// 描画処理に移行する
+	if(particleInstanceCount_ > 0) {
 		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
 
-		sPipeline_->Draw(gpuHandle_, pModel_, instnanceNum);
+		sPipeline_->Draw(gpuHandle_, pModel_, particleInstanceCount_);
 	}
 }
 
@@ -133,7 +162,12 @@ void ParticleSystem::Debug() {
 
 		ImGui::Separator();
 
-		ImGui::DragInt("emit particle count", reinterpret_cast<int*>(&emittedParticleCount_));
+		ImGui::DragInt("emit particle count",     reinterpret_cast<int*>(&emittedParticleCount_),  1, 0, kMaxParticleNum_);
+		ImGui::DragInt("particle instance count", reinterpret_cast<int*>(&particleInstanceCount_), 0);
+
+		ImGui::Separator();
+
+		ImGui::Checkbox("use billboard", &useBillboard_);
 
 		ImGui::TreePop();
 	}
@@ -153,6 +187,10 @@ void ParticleSystem::SetEmittedParticleCount(uint32_t _emittedParticleCount) {
 
 void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 	particleLifeTime_ = _particleLifeTime;
+}
+
+void ParticleSystem::SetBillboard(bool _useBillboard) {
+	useBillboard_ = _useBillboard;
 }
 
 
@@ -314,6 +352,6 @@ void Particle::Update() {
 		isAlive_ = false;
 	}
 
-	transform_.Update();
+	//transform_.Update();
 }
 
