@@ -10,7 +10,7 @@
 /// ===================================================
 
 class Player;
-
+class DirectionalLight;
 
 
 /// ===================================================
@@ -32,20 +32,16 @@ public:
 
 	void SetGameCamera(GameCamera* _gameCamera);
 	void SetPlayer(Player* _player);
+	void SetDirectionalLight(DirectionalLight* _directionalLight);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	Player*     pPlayer_     = nullptr;
-	GameCamera* pGameCamera_ = nullptr;
-
-	/// player...
-	Vec3 playerForward_{};
-
-	/// camera...
-	Vec3  cameraUp_{};
-	float cameraRotateZ_ = 0.0f;
+	/// other class pointer
+	Player*           pPlayer_     = nullptr;
+	GameCamera*       pGameCamera_ = nullptr;
+	DirectionalLight* pLight_      = nullptr;
 
 };

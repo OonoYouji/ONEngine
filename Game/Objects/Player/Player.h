@@ -12,9 +12,8 @@ public:
 	~Player() {}
 
 	void Initialize() override;
-	void Update() override;
-
-	void Debug() override;
+	void Update()     override;
+	void Debug()      override;
 
 	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 

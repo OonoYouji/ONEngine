@@ -31,6 +31,8 @@ public:
 		ID3D12GraphicsCommandList* commandList
 	);
 
+	void SetDirection(const Vec3& direction);
+
 private:
 
 	struct BufferData final {

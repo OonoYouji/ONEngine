@@ -50,6 +50,7 @@ void Scene_Game::Initialize() {
 
 	gameCameraState->SetGameCamera(mainCamera_);
 	gameCameraState->SetPlayer(player_);
+	gameCameraState->SetDirectionalLight(directionalLight_);
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
