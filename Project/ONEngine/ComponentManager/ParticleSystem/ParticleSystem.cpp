@@ -8,6 +8,9 @@
 /// engine include
 #include "Core/ONEngine.h"
 #include "ImGuiManager/ImGuiManager.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"

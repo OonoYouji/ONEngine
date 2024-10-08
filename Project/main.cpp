@@ -45,8 +45,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	auto currentTime = std::chrono::high_resolution_clock::now();;
 	ONE::Logger::ConsolePrint("execution!!!");
 
-	Input*			input		= Input::GetInsatnce();
-	Time*			time		= Time::GetInstance();
 	std::unique_ptr<FrameFixation> frameFixation = nullptr;
 
 	SceneManager*			sceneManager		= SceneManager::GetInstance();
@@ -137,8 +135,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::chrono::duration<float, std::milli> duration = end - currentTime;
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", duration.count() / 1000.0f));
 
-	time->Update();
-
 
 	while(ONEngine::IsRunning()) {
 
@@ -148,8 +144,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 
-		time->Update();
-		input->Update();
 #ifdef _DEBUG
 		imGuiManager->BeginFrame();
 #endif // _DEBUG
@@ -224,7 +218,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 #ifdef _DEBUG
 	imGuiManager->Finalize();
 #endif // _DEBUG
-	input->Finalize();
 	ONEngine::Finalize();
 
 	return 0;

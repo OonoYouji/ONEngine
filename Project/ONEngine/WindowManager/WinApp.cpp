@@ -5,7 +5,9 @@
 #include "Externals/imgui/imgui_impl_dx12.h"
 #include "Externals/imgui/imgui_impl_win32.h"
 
-#include <Core/ONEngine.h>
+#include "Core/ONEngine.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 
 #pragma comment(lib, "winmm.lib")
 

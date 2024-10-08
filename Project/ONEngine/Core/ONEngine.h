@@ -2,18 +2,36 @@
 
 #include <memory>
 #include <unordered_map>
-
-#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
+//
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
+//#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
 #include "WindowManager/WinApp.h"
 #include "WindowManager/Console.h"
+
+/// ===================================================
+/// 前方宣言
+/// ===================================================
+class Time;
+class Input;
+
+namespace ONE {
+	class DxCommon;
+	class DxShaderCompiler;
+	class DxDebug;
+	class DxDepthStencil;
+	class DxDoubleBuffer;
+	class DxDescriptor;
+	class DxCommand;
+	class DxDevice;
+	class DxDevice;
+}
 
 
 /// ===================================================
@@ -73,16 +91,24 @@ namespace {
 		/// main loop
 		bool isRunning_ = true;
 
-		/// direct x 
-		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr;
-
 		/// window 
 		std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>> winApps_;
 		ONE::WinApp* mainWindow_   = nullptr;
 		ONE::WinApp* activeWindow_ = nullptr;
 
-		/// imgui console
-		std::unique_ptr<Console> console_;
+
+		/// engine...
+		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr; /// graphics engine
+		Input* input_ = nullptr;                            /// input... keyboard, mouse,
+		Time*  time_  = nullptr;
+
+		
+#ifdef _DEBUG /// release not building objects
+		std::unique_ptr<Console>       console_  = nullptr; /// console window
+
+#endif // _DEBUG
+
+
 		
 	};
 }
