@@ -13,6 +13,62 @@ void VariableIO::Update() {}
 
 void VariableIO::ImGuiDebug() {}
 
+void VariableIO::CreateGroup(const std::string& groupName) {
+	datas_[groupName];
+}
+
+
+
+template<typename T>
+inline void VariableIO::SetValue(const std::string& groupName, const std::string& key, const T& value) {
+
+}
+
+template void VariableIO::SetValue<bool> (const std::string& groupName, const std::string& key, const bool&  value);
+template void VariableIO::SetValue<int>  (const std::string& groupName, const std::string& key, const int&   value);
+template void VariableIO::SetValue<float>(const std::string& groupName, const std::string& key, const float& value);
+template void VariableIO::SetValue<Vec2> (const std::string& groupName, const std::string& key, const Vec2&  value);
+template void VariableIO::SetValue<Vec3> (const std::string& groupName, const std::string& key, const Vec3&  value);
+template void VariableIO::SetValue<Vec4> (const std::string& groupName, const std::string& key, const Vec4&  value);
+
+
+
+template<typename T>
+void VariableIO::AddItem(const std::string& groupName, const std::string& key, const T& value) {
+	if(datas_.find(groupName) == datas_.end()) {
+		CreateGroup(groupName);
+	}
+
+	const Group& group = datas_.at(groupName);
+
+	if(group.find(key) == group.end()) {
+		SetValue(groupName, key, value);
+	}
+
+}
+
+template void VariableIO::AddItem<bool> (const std::string& groupName, const std::string& key, const bool& value);
+template void VariableIO::AddItem<int>  (const std::string& groupName, const std::string& key, const int& value);
+template void VariableIO::AddItem<float>(const std::string& groupName, const std::string& key, const float& value);
+template void VariableIO::AddItem<Vec2> (const std::string& groupName, const std::string& key, const Vec2& value);
+template void VariableIO::AddItem<Vec3> (const std::string& groupName, const std::string& key, const Vec3& value);
+template void VariableIO::AddItem<Vec4> (const std::string& groupName, const std::string& key, const Vec4& value);
+
+
+
+
+template<typename T>
+const T& VariableIO::GetValue(const std::string& groupName, const std::string& key) const {
+	return std::get<T>(datas_.at(groupName).at(key));
+}
+
+template const bool&  VariableIO::GetValue<bool>(const std::string& groupName, const std::string& key) const;
+template const int&   VariableIO::GetValue<int>(const std::string& groupName, const std::string& key) const;
+template const float& VariableIO::GetValue<float>(const std::string& groupName, const std::string& key) const;
+template const Vec2&  VariableIO::GetValue<Vec2>(const std::string& groupName, const std::string& key) const;
+template const Vec3&  VariableIO::GetValue<Vec3>(const std::string& groupName, const std::string& key) const;
+template const Vec4&  VariableIO::GetValue<Vec4>(const std::string& groupName, const std::string& key) const;
+
 
 
 
@@ -152,7 +208,7 @@ void VariableIO::LoadFile(const std::string& groupName) {
 
 		} else if(itItem->is_array() && itItem->size() == 3) {
 			///- Vector3型の値を登録
-			Vec3f value = { itItem->at(0), itItem->at(1), itItem->at(2) };
+			Vec3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
 			SetValue(groupName, itemName, value);
 
 		} else if(itItem->is_boolean()) {

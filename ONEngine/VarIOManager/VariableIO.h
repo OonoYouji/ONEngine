@@ -38,11 +38,26 @@ public:
 
 	void ImGuiDebug();
 
+	void CreateGroup(const std::string& groupName);
+
 	/// <summary>
 	/// 値のセット
 	/// </summary>
 	template<typename T>
 	void SetValue(const std::string& groupName, const std::string& key, const T& value);
+
+	/// <summary>
+	/// 値の追加
+	/// </summary>
+	template<typename T>
+	void AddItem(const std::string& groupName, const std::string& key, const T& value);
+
+
+	/// <summary>
+	/// int32_t型の値を取得
+	/// </summary>
+	template<typename T>
+	const T& GetValue(const std::string& groupName, const std::string& key) const;
 
 
 	/// <summary>
@@ -74,8 +89,3 @@ private:
 	VariableIO& operator= (const VariableIO&) = delete;
 	VariableIO& operator= (VariableIO&&)      = delete;
 };
-
-template<typename T>
-inline void VariableIO::SetValue(const std::string& groupName, const std::string& key, const T& value) {
-
-}
