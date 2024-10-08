@@ -12,6 +12,7 @@
 #include "Ground/Ground.h"
 #include "GameCameraState/GameCameraState.h"
 
+#include<numbers>
 /// ===================================================
 /// 初期化処理
 /// ===================================================
@@ -22,6 +23,7 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_                           = new Player;
+	buildingManager_                  = new BuildingManager();
 	Ground* ground                    = new Ground;
 	GameCameraState* gameCameraState_ = new GameCameraState();
 
@@ -47,6 +49,10 @@ void Scene_Game::Initialize() {
 	gameCameraState_->SetGameCamera(mainCamera_);
 	gameCameraState_->SetPlayer(player_);
 
+	//ビル生成
+	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
+	buildingManager_->SpownBuilding(0, 0);
+
 
 }
 
@@ -54,6 +60,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-
+	buildingManager_->Update(player_);
 
 }

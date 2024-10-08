@@ -47,14 +47,15 @@ void Player::Initialize() {
 
 void Player::Update() {
 	//入力
-	velocity_ = {
+	input_ = {
 		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
 		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
 		0.0f
 	};
 
 	/// 移動の正規化
-	velocity_ = velocity_.Normalize() * 0.1f;
+	input_    = input_.Normalize() * 0.1f;
+	velocity_ = Vec3::Lerp(velocity_, input_, 0.1f);
 
 	rotateXAngle_ = +velocity_.y;
 	rotateYAngle_ = -velocity_.x;
