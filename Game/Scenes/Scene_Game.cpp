@@ -1,18 +1,23 @@
 #include "Scene_Game.h"
 
+/// std
+#include <numbers>
+
+/// engine
 #include <ImGuiManager/ImGuiManager.h>
 
+/// components
 #include <Component/MeshRenderer/MeshRenderer.h>
 #include "Particle/ParticleSystem.h"
 
+/// objects
 #include "GameCamera.h"
-#include "Particle/ParticleSystem.h"
-//class
 #include "GameCamera.h"
 #include "Ground/Ground.h"
 #include "GameCameraState/GameCameraState.h"
+#include "Tornado/Tornado.h"	
 
-#include<numbers>
+
 /// ===================================================
 /// 初期化処理
 /// ===================================================
@@ -25,8 +30,8 @@ void Scene_Game::Initialize() {
 	player_                           = new Player;
 	buildingManager_                  = new BuildingManager();
 	Ground* ground                    = new Ground;
-	GameCameraState* gameCameraState_ = new GameCameraState();
-
+	GameCameraState* gameCameraState  = new GameCameraState();
+	Tornado* tornado                  = new Tornado();
 
 
 	/// ===================================================
@@ -35,24 +40,22 @@ void Scene_Game::Initialize() {
 
 	player_->Initialize();
 	ground->Initialize();
-	gameCameraState_->Initialize();
-
-	//mainCamera_->SetPosition({ 0.0f, 0.0f, -50.0f });
+	gameCameraState->Initialize();
+	tornado->Initialize();
 
 	
 	/// ===================================================
 	/// その他 セットするべきものをここに
 	/// ===================================================
 
-	//mainCamera_->SetParent(player_->GetPivot());
-
-	gameCameraState_->SetGameCamera(mainCamera_);
-	gameCameraState_->SetPlayer(player_);
+	gameCameraState->SetGameCamera(mainCamera_);
+	gameCameraState->SetPlayer(player_);
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
 	buildingManager_->SpownBuilding(0, 0);
 
+	tornado->SetPlayer(player_);
 
 }
 
