@@ -59,7 +59,7 @@ public:
 
 	// クォータニオンの共役を計算する関数
 	Quaternion Conjugate() const {
-		return { w, -x, -y, -z };
+		return { -x, -y, -z, w };
 	}
 
 	// クォータニオンのノルムを計算する関数
