@@ -14,6 +14,7 @@
 #include <CollisionManager/CollisionManager.h>
 #include <AudioManager.h>
 #include <ModelManager.h>
+#include <VarIOManager/VariableIO.h>
 
 #include <BaseScene.h>
 #include <Scene_Game.h>
@@ -148,6 +149,7 @@ void SceneManager::Load(SCENE_ID id) {
 	GameObjectManager::DestoryAll();
 	CollisionManager::GetInstance()->Reset();
 
+	VariableIO::GetInstance()->LoadFiles();
 	scenes_[currentId_]->Initialize();
 
 	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);

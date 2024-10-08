@@ -8,6 +8,7 @@
 #include <ImGuiManager.h>
 #include <Time/Time.h>
 #include <Input/Input.h>
+#include <VarIOManager/VariableIO.h>
 
 /// components
 #include <Component/MeshRenderer/MeshRenderer.h>
@@ -35,7 +36,17 @@ void Tornado::Initialize() {
 	minScale_    = 1.0f;
 	maxScale_    = 3.0f;
 
+	auto vio = VariableIO::GetInstance();
+	const std::string& name = GetName();
+	vio->AddItem(name, "eacSpeed",    eacSpeed_);
+	vio->AddItem(name, "scaleScaler", scaleScaler_);
+	vio->AddItem(name, "minScale",    minScale_);
+	vio->AddItem(name, "maxScale",    maxScale_);
 
+	eacSpeed_    = vio->GetValue<float>(name, "eacSpeed");
+	scaleScaler_ = vio->GetValue<float>(name, "scaleScaler");
+	minScale_    = vio->GetValue<float>(name, "minScale");
+	maxScale_    = vio->GetValue<float>(name, "maxScale");
 
 }
 
@@ -60,6 +71,16 @@ void Tornado::Update() {
 
 
 void Tornado::Debug() {
+
+	if(ImGui::Button("var save")) {
+		auto vio = VariableIO::GetInstance();
+		const std::string& name = GetName();
+		vio->SetValue(name, "eacSpeed",    eacSpeed_);
+		vio->SetValue(name, "scaleScaler", scaleScaler_);
+		vio->SetValue(name, "minScale",    minScale_);
+		vio->SetValue(name, "maxScale",    maxScale_);
+		vio->SaveFile(name);
+	}
 
 	/// this debug
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {

@@ -1,16 +1,19 @@
 #include "Player.h"
 
 
-#include <ModelManager.h>
-
+/// engine
 #include <Input.h>
+#include <ModelManager.h>
+#include <ImGuiManager.h>
+#include <VarIOManager/VariableIO.h>
+
+/// components
 #include <Component/MeshRenderer/MeshRenderer.h>
 #include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
 #include <Component/Collider/SphereCollider.h>
 #include <Component/SplinePathRenderer/SplinePathRenderer.h>
+#include <Particle/ParticleSystem.h>
 
-#include <ImGuiManager.h>
 
 
 void Player::Initialize() {
@@ -43,6 +46,15 @@ void Player::Initialize() {
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+	auto vio = VariableIO::GetInstance();
+	std::string name = GetName();
+	vio->AddItem(name, "rotateXAngle", rotateXAngle_);
+	vio->AddItem(name, "rotateYAngle", rotateYAngle_);
+
+	rotateXAngle_ = vio->GetValue<float>(name, "rotateXAngle");
+	rotateYAngle_ = vio->GetValue<float>(name, "rotateYAngle");
+
 }
 
 void Player::Update() {

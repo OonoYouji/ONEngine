@@ -38,7 +38,14 @@ public:
 
 	void ImGuiDebug();
 
+
+
+	/// <summary>
+	/// 新しいグループの作成
+	/// </summary>
+	/// <param name="groupName"></param>
 	void CreateGroup(const std::string& groupName);
+
 
 	/// <summary>
 	/// 値のセット

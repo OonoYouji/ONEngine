@@ -11,7 +11,70 @@
 
 void VariableIO::Update() {}
 
-void VariableIO::ImGuiDebug() {}
+void VariableIO::ImGuiDebug() {
+	if(!ImGui::Begin("VariableIO", nullptr, ImGuiWindowFlags_MenuBar)) {
+		ImGui::End();
+		return;
+	}
+
+	ImGui::BeginMenuBar();
+
+
+	for(auto& itrGroup : datas_) {
+
+		const std::string& groupName = itrGroup.first;
+		Group& group = itrGroup.second;
+
+		///- menuが開けなければ continue;
+		if(!ImGui::BeginMenu(groupName.c_str())) { continue; }
+
+		for(auto& itrItem : group) {
+
+			const std::string& itemName = itrItem.first;
+			Item& item = itrItem.second;
+
+			///- int32_t型を持っていたら行う処理
+			if(std::holds_alternative<int32_t>(item)) {
+				int32_t* ptr = std::get_if<int32_t>(&item);
+				ImGui::DragInt(itemName.c_str(), ptr, 1);
+
+				///- float型の処理
+			} else if(std::holds_alternative<float>(item)) {
+				float* ptr = std::get_if<float>(&item);
+				ImGui::DragFloat(itemName.c_str(), ptr, 0.1f);
+
+				///- Vector3型の処理
+			} else if(std::holds_alternative<Vec3>(item)) {
+				Vec3* ptr = std::get_if<Vec3>(&item);
+				ImGui::DragFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), 0.1f);
+
+				///- bool
+			} else if(std::holds_alternative<bool>(item)) {
+				bool* ptr = std::get_if<bool>(&item);
+				ImGui::Checkbox(itemName.c_str(), ptr);
+			}
+
+
+
+		}
+
+		ImGui::Text("\n");
+
+		if(ImGui::Button("Save")) {
+			SaveFile(groupName);
+			std::string message = std::format("{}.json saved", groupName);
+			MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+		}
+
+		ImGui::EndMenu();
+	}
+
+	ImGui::EndMenuBar();
+
+	ImGui::End();
+}
+
+
 
 void VariableIO::CreateGroup(const std::string& groupName) {
 	datas_[groupName];
@@ -20,8 +83,8 @@ void VariableIO::CreateGroup(const std::string& groupName) {
 
 
 template<typename T>
-inline void VariableIO::SetValue(const std::string& groupName, const std::string& key, const T& value) {
-
+void VariableIO::SetValue(const std::string& groupName, const std::string& key, const T& value) {
+	datas_[groupName][key] = value;
 }
 
 template void VariableIO::SetValue<bool> (const std::string& groupName, const std::string& key, const bool&  value);
@@ -44,7 +107,6 @@ void VariableIO::AddItem(const std::string& groupName, const std::string& key, c
 	if(group.find(key) == group.end()) {
 		SetValue(groupName, key, value);
 	}
-
 }
 
 template void VariableIO::AddItem<bool> (const std::string& groupName, const std::string& key, const bool& value);

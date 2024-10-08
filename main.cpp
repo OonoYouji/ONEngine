@@ -21,6 +21,7 @@
 #include <CameraManager.h>
 #include <GameObjectManager.h>
 #include "CollisionManager/CollisionManager.h"
+#include <VarIOManager/VariableIO.h>
 
 #include <GameCamera.h>
 #include <DebugCamera.h>
@@ -168,7 +169,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		collisionManager->ImGuiDebug();
 		renderTexManager->ImGuiDebug();
 		sceneManager->ImGuiDebug();
-		
+		VariableIO::GetInstance()->ImGuiDebug();
 
 #endif // _DEBUG
 
