@@ -63,7 +63,7 @@ public:
 	}
 
 	// クォータニオンのノルムを計算する関数
-	float Norm() const {
+	float Lenght() const {
 		return std::sqrt(w * w + x * x + y * y + z * z);
 	}
 

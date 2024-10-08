@@ -94,13 +94,12 @@ Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target, const Ve
 
 
 Quaternion Quaternion::Inverse() const {
-	Quaternion conjugate = Conjugate(); // 共役を計算
-	float norm = Norm();                // ノルムを計算
+	Quaternion conjugate = this->Conjugate(); // 共役を計算
+	float norm = this->Lenght();                // ノルムを計算
 	if(norm == 0.0f) {
 		// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
 	}
 
 	float normSquared = norm * norm;    // ノルムの二乗
 	return conjugate / normSquared;
-	//return { conjugate.w / normSquared, conjugate.x / normSquared, conjugate.y / normSquared, conjugate.z / normSquared };
 }

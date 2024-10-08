@@ -18,8 +18,6 @@ void GameCameraState::Initialize() {
 
 void GameCameraState::Update() {
 
-	/// playerのquaternionを使う
-	//pTransform_->quaternion = pPlayer_->GetQuaternion();
 
 }
 
