@@ -21,27 +21,29 @@ void Player::Initialize() {
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 
-
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTransform_->Initialize();
+	transoform_.Initialize();
 	pivot_.Initialize();
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };
-	pTransform_->position.z = -12;
-
+	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->position.z = -12;
+	transoform_.position.z=-12;
 	/*SetPositionZ(-1.0f);*/
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
+	transoform_.rotateOrder = QUATERNION;
 	pTransform_->rotateOrder = QUATERNION;
 	pivot_.rotateOrder = QUATERNION;
 
 	////ペアレント
+	transoform_.SetParent(&pivot_);
 	pTransform_->SetParent(&pivot_);
 
 	pivot_.UpdateMatrix();
@@ -76,6 +78,7 @@ void Player::Update() {
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
 
 		pivot_.Update();
+		transoform_.Update();
 	}
 
 

@@ -38,10 +38,14 @@ public:
 private:
 	enum class Behavior {
 		kRoot,
-		kParent,	
+		kParent,
 	};
 
 private:
+	float ofsetX;
+	float ofsetY;
+	float speed_;
+	float radius_;
 	//// ふるまい
 	Behavior behavior_;
 	//振る舞いリクエスト

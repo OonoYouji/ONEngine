@@ -53,6 +53,9 @@ void Scene_Game::Initialize() {
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
 	buildingManager_->SpownBuilding(9, 9);
+	buildingManager_->SpownBuilding(2, 9);
+	buildingManager_->SpownBuilding(9, 4);
+	buildingManager_->SpownBuilding(9, 0);
 
 
 }

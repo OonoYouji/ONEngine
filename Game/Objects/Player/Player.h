@@ -20,6 +20,7 @@ public:
 
 	//getter
 	Transform* GetPivot() { return &pivot_; }
+	Transform* GetbaseTransform() { return &transoform_; }
 
 	const Vec3& GetVelocity() const { return velocity_; }
 
@@ -32,14 +33,11 @@ private:
 	Quaternion rotateY_;
 	//ピボット
 	Transform pivot_;
+	Transform transoform_;
 
-	
 	AudioSource* audioSource_ = nullptr;
 
 	float rotateXAngle_;
 	float rotateYAngle_;
-	//float rotationSpeed = 0.01f;  // 回転速度
-	//float moveSpeed = 0.05f;  // 移動速度
-
-
+	
 };

@@ -35,20 +35,21 @@ void BaseBuilding::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pivot_.quaternion = { 0,0,0,1 };
-	pTransform_->position = { 0,0,-14 };
-	pTransform_->rotate = { -1.5f,0,0 };
+	pivot_.quaternion = { 0,0,0,1 };//ピボット
+	pTransform_->position = { 0,0,-14 };//ポジション
+	pTransform_->rotate = { -1.5f,0,0 };//回転
+	ofsetX = 0.67f;
+	ofsetY = -1.26f;
 	behaviorRequest_ = Behavior::kRoot;
 	////////////////////////////////////////////////////////////////////////////////////////////
     //  ペアレント
     ////////////////////////////////////////////////////////////////////////////////////////////
-	pivot_.rotateOrder = QUATERNION;
-
-	////ペアレント
 	pTransform_->SetParent(&pivot_);
 	pivot_.UpdateMatrix();
+
+	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
-	/*isActive = false;*/
+	
 }
 
 void BaseBuilding::Update() {
@@ -63,7 +64,11 @@ void BaseBuilding::Update() {
 }
 
 void BaseBuilding::Debug() {
-
+	if (ImGui::TreeNode("pivot")) {	
+		ImGui::DragFloat("rotateXAngle", &ofsetX, 0.01f);
+		ImGui::DragFloat("rotateYAngle", &ofsetY, 0.01f);
+		ImGui::TreePop();
+	}
 }
 
 //振る舞い関数
@@ -75,18 +80,21 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Player* player) {
-	theta_ = distTheta(gen);
-	phi_ = distPhi(gen);
-	pTransform_->SetParent(player->GetTransform());
+	/*theta_ = distTheta(gen);
+	phi_ = distPhi(gen);*/
+	speed_ = distSpeed(gen);
+	radius_ = distRadius(gen);
+	pTransform_->SetParent(player->GetbaseTransform());
+	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	
 }
 void BaseBuilding::ParentUpdate() {
 	// 球面座標から位置を計算
-	float radius = 8.0f;
-	theta_ += 0.04f;
-	phi_ += 0.04f;
-	float x = radius * sin( theta_) * cos(phi_);
-	float y = -2+radius * sin(theta_) * sin(phi_);
+	
+	theta_ += speed_;
+	phi_ += speed_;
+	float x = ofsetX+ radius_ * sin( theta_) * cos(phi_);
+	float y = ofsetY+ radius_ * sin(theta_) * sin(phi_);
 	/*float z = radius * cos(theta_);*/
 	pTransform_->position = { x,y,-10 };
 }
