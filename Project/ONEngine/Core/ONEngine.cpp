@@ -62,10 +62,14 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	auto& gameWin = winApps_["Game"];
 	gameWin.reset(new ONE::WinApp());
 	gameWin->Initialize(windowName, nullptr);
+	
+#ifdef _DEBUG
+
+	/// releaseの時は無効
 	if(!isCreateGameWindow) {
 		gameWin->DestoryGameWindow();
 	}
-	
+
 	auto& debugWin = winApps_["Debug"];
 	debugWin.reset(new ONE::WinApp());
 	debugWin->Initialize(L"Debug", nullptr);
@@ -73,6 +77,11 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	/// main window のポインタ
 	mainWindow_   = debugWin.get();
 	activeWindow_ = debugWin.get();
+#else
+	/// main window のポインタ
+	mainWindow_   = gameWin.get();
+	activeWindow_ = gameWin.get();
+#endif // DEBUG
 
 	Input::GetInsatnce()->Initialize(ONEngine::GetMainWinApp());
 
@@ -98,6 +107,7 @@ void System::Finalize() {
 }
 
 void System::Update() {
+#ifdef _DEBUG  /// release時にはwindowは一個しかないので初期化時のものをずっと使う
 	HWND activeWindow = GetForegroundWindow();
 	for(auto& win : winApps_) {
 		if(activeWindow == win.second->GetHWND()) {
@@ -105,6 +115,7 @@ void System::Update() {
 			break;
 		}
 	}
+#endif // _DEBUG
 
 
 	console_->Update();

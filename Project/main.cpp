@@ -67,8 +67,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	frameFixation.reset(new FrameFixation);
 	frameFixation->Initialize(false);
 
-
+#ifdef _DEBUG
 	imGuiManager->Initialize(ONEngine::GetWinApps().at("Debug").get(), ONEngine::GetDxCommon());
+#endif // _DEBUG
+
 	modelManager->Initialize();
 	spriteManager->Initialize();
 	line2d->Initialize();
@@ -148,7 +150,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		time->Update();
 		input->Update();
+#ifdef _DEBUG
 		imGuiManager->BeginFrame();
+#endif // _DEBUG
 		ONEngine::Update();
 
 
@@ -177,14 +181,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imGuiManager->EndFrame();
 		renderTexManager->EndRenderTarget("ImGui");
 
-
 		winApps.at("Debug")->PostDraw(renderTexManager->GetRenderTexture("ImGui"));
-		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-		
-#else
-		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
-
 #endif // _DEBUG
+
+		winApps.at("Game")->PostDraw(sceneManager->GetSceneLayer(drawLayerIndex)->GetRenderTexture());
 
 		ONEngine::GetDxCommon()->CommandExecution();
 		for(auto& win : winApps) {
@@ -221,7 +221,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	modelManager->Finalize();
 
 	textureManager->Finalize();
+#ifdef _DEBUG
 	imGuiManager->Finalize();
+#endif // _DEBUG
 	input->Finalize();
 	ONEngine::Finalize();
 
