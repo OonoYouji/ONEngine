@@ -2,6 +2,11 @@
 
 #include <GameObjectManager.h>
 
+/// ===================================================
+/// 前方宣言
+/// ===================================================
+class Player;
+
 
 /// ===================================================
 /// 竜巻を表現するクラス
@@ -19,11 +24,14 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+
+	void SetPlayer(Player* _player);
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	Transform pivot_;
+	Player* pPlayer_ = nullptr;
 
 };
