@@ -254,6 +254,9 @@
     <ClCompile Include="Game\Objects\Building\BuildingManager.cpp">
       <Filter>Game\Objects\Building</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -438,6 +441,9 @@
     </Filter>
     <Filter Include="Game\Objects\Building">
       <UniqueIdentifier>{c0d81767-60d6-481b-be15-94d4d17e57f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameCameraState">
+      <UniqueIdentifier>{f7d3ef64-a516-481c-b5ba-ef9fa13e6e82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -701,6 +707,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\random\random.h">
       <Filter>Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,14 +21,14 @@ void BaseBuilding::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTranform_->Initialize();
+	pTransform_->Initialize();
 	pivot_.Initialize();
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };
-	pTranform_->position = { 0,0,-14 };
-	pTranform_->rotate = { -1.5f,0,0 };
+	pTransform_->position = { 0,0,-14 };
+	pTransform_->rotate = { -1.5f,0,0 };
 	behaviorRequest_ = Behavior::kRoot;
 	////////////////////////////////////////////////////////////////////////////////////////////
     //  ペアレント
@@ -37,7 +37,7 @@ void BaseBuilding::Initialize() {
 	pivot_.rotateOrder = QUATERNION;
 
 	////ペアレント
-	pTranform_->SetParent(&pivot_);
+	pTransform_->SetParent(&pivot_);
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
@@ -68,7 +68,7 @@ void BaseBuilding::RootUpdate() {
 void BaseBuilding::ParentInit(Player* player) {
 	theta_ = distTheta(gen);
 	phi_ = distPhi(gen);
-	pTranform_->SetParent(player->GetTransform());
+	pTransform_->SetParent(player->GetTransform());
 	
 }
 void BaseBuilding::ParentUpdate() {
@@ -79,7 +79,7 @@ void BaseBuilding::ParentUpdate() {
 	float x = radius * sin( theta_) * cos(phi_);
 	float y = -2+radius * sin(theta_) * sin(phi_);
 	/*float z = radius * cos(theta_);*/
-	pTranform_->position = { x,y,-10 };
+	pTransform_->position = { x,y,-10 };
 }
 
 //振る舞い管理

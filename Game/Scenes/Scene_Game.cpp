@@ -23,6 +23,7 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_                           = new Player;
+	buildingManager_                  = new BuildingManager();
 	Ground* ground                    = new Ground;
 	GameCameraState* gameCameraState_ = new GameCameraState();
 
@@ -59,6 +60,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	buildingManager_->Update(p1);
+	buildingManager_->Update(player_);
 
 }
