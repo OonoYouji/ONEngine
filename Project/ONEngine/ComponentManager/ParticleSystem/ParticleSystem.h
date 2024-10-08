@@ -24,7 +24,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ParticleSystem(uint32_t maxParticleNum, const std::string& filePath);
+	ParticleSystem(uint32_t maxParticleNum, const std::string& modelFilePath);
 	~ParticleSystem() {}
 
 
@@ -43,8 +43,35 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Draw()       override;
+	void Debug()      override;
 
-	
+
+	/// ===================================================
+	/// public : non overriding methods
+	/// ===================================================
+
+	/// <summary>
+	/// パーティクルの出現までの時間のセット
+	/// </summary>
+	/// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
+	void SetParticleRespawnTime(float _particleRespawnTime);
+
+	/// <summary>
+	/// パーティクルの一回当たりの発生量のセット
+	/// </summary>
+	/// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
+	void SetEmittedParticleCount(uint32_t _emittedParticleCount);
+
+	/// <summary>
+	/// パーティクルの寿命のセット
+	/// </summary>
+	/// <param name="_particleLifeTime">: パーティクルの寿命</param>
+	void SetParticleLifeTime(float _particleLifeTime);
+
+	/// <summary>
+	/// パーティクルを発生させる
+	/// </summary>
+	void EmitParticles();
 
 private:
 
@@ -53,7 +80,6 @@ private:
 	/// ===================================================
 
 	static std::unique_ptr<class ParticlePipeline> sPipeline_;
-
 
 
 	/// ===================================================
@@ -72,9 +98,18 @@ private:
 
 	Model* pModel_ = nullptr;
 
-	uint32_t emittedParticleCount_; /// 一回の発生で出現するパーティクルの数
-	float    particleRespawnTime_;  /// パーティクルが発生するまでの時間
-	float    currentTime_;
+	/// particle setting
+	uint32_t particleInstanceCount_;      /// 現在のパーティクル発生数
+	uint32_t emittedParticleCount_;       /// 一回の発生で出現するパーティクルの数
+	float    particleRespawnTime_;        /// パーティクルが発生するまでの時間
+	float    currentParticleRespawnTime_; /// 現在のリスポーンタイム
+	float    particleLifeTime_;           /// パーティクルの寿命
+
+	/// particles trasform buffers
+	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
+	Mat4*                                  mappingData_         = nullptr;
+	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
+	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
 
 };
 
@@ -97,7 +132,7 @@ public:
 	void Update();
 
 	void Draw(
-		const std::vector<std::unique_ptr<class Particle>>& particleArray, 
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
 		Model* useModel,
 		uint32_t instanceCount
 	);
@@ -122,6 +157,7 @@ private:
 /// ===================================================
 class Particle final {
 	friend class ParticlePipeline;
+	friend class ParticleSystem;
 public:
 
 	/// ===================================================
@@ -136,14 +172,19 @@ public:
 
 	bool GetIsAlive() const { return isAlive_; }
 
+	const Transform& GetTransform() const { return transform_; }
+	Transform* GetTransform() { return &transform_; }
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	bool isAlive_ = true;
+	bool isAlive_   = true;
+	float lifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
+
 
 };
