@@ -13,7 +13,7 @@
 class Scene_Game final : public BaseScene {
 public:
 
-	Scene_Game() {}
+	 Scene_Game() {}
 	~Scene_Game() {}
 
 	void Initialize() override;

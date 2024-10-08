@@ -11,4 +11,5 @@ void Building::Update() {
 //デバッグ
 void Building::Debug() {
 	BaseBuilding::Debug();
+	//
 }
