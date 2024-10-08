@@ -18,36 +18,9 @@ void GameCameraState::Initialize() {
 
 void GameCameraState::Update() {
 
-	Transform* parent = GetParent();
-	if(parent) {
+	/// playerのquaternionを使う
+	//pTransform_->quaternion = pPlayer_->GetQuaternion();
 
-		/// playerの前方ベクトル計算
-		playerForward_ = Mat4::TransformNormal(Vec3::kUp, pPlayer_->GetMatTransform());
-
-		/// cameraのquaternion計算 その1
-		pGameCamera_->UpdateMatrix();
-		Quaternion quaternionXY = Quaternion::LockAt(pGameCamera_->GetPosition(), parent->position, Vec3::kUp);
-
-		/// カメラの上方向のベクトル計算
-		cameraUp_ = Quaternion::Transform(Vec3::kUp, quaternionXY);
-
-		const Vec3& playerVelocity = pPlayer_->GetVelocity();
-		/// カメラのzRotateを計算
-		/*cameraRotateZ_ = Vec3::Dot(playerForward_.Normalize(), cameraUp_.Normalize());
-		cameraRotateZ_ = std::clamp(cameraRotateZ_ * std::numbers::pi_v<float>, -1.0f, 1.0f);
-		cameraRotateZ_ = std::acos(cameraRotateZ_);
-		cameraRotateZ_ = std::atan2(-playerVelocity.x, playerVelocity.y);*/
-
-		/// cameraのquaternion計算 その2
-		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis(
-			{ 0.0f, 0.0f, 1.0f },
-			cameraRotateZ_
-		);
-
-		/// cameraにセット
-		pGameCamera_->SetQuaternion(quaternionXY);
-		pTransform_->quaternion = quaternionLocalZ;
-	}
 }
 
 void GameCameraState::LastUpdate() {

@@ -53,28 +53,27 @@ void Player::Update() {
 		0.0f
 	};
 
-	velocity_ = velocity_.Normalize();
+	/// 移動の正規化
+	velocity_ = velocity_.Normalize() * 0.1f;
 
-	/// 仮にvelocityをマイナスにして移動の違和感を消す
-	velocity_ = -velocity_;
-
-	rotateXAngle_ += velocity_.y * 0.1f;
-	rotateYAngle_ += velocity_.x * 0.1f;
+	rotateXAngle_ = +velocity_.y;
+	rotateYAngle_ = -velocity_.x;
 
 	if(velocity_ != Vec3(0.0f, 0.0f, 0.0f)) {
 
 		//回転を適応
-		rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
-		rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+		rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+		rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
 
 		// プレイヤーの向きの決定
-		Quaternion quaternionLocalZ = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
+		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
 
-		pivot_.quaternion = rotateX_ * rotateY_;// 正規化
+		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
+
+		pivot_.Update();
 	}
 
-	pivot_.UpdateMatrix();
 
 }
 

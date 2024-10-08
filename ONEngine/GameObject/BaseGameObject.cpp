@@ -28,10 +28,7 @@ BaseGameObject::BaseGameObject() {
 /// 行列の更新
 /// ===================================================
 void BaseGameObject::UpdateMatrix() {
-	pTransform_->UpdateMatrix();
-	if(pTransform_->GetParent()) {
-		pTransform_->matTransform = pTransform_->GetParent()->matTransform * pTransform_->matTransform;
-	}
+	pTransform_->Update();
 }
 
 
