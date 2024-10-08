@@ -25,6 +25,7 @@ public:
 
 private:
 	//速度
+	Vec3 input_;
 	Vec3 velocity_;
 	//クォータニオンRotate
 	Quaternion rotateX_;
