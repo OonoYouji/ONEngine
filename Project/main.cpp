@@ -43,8 +43,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// 起動速度を計算するため
 	auto currentTime = std::chrono::high_resolution_clock::now();;
-
-
 	ONE::Logger::ConsolePrint("execution!!!");
 
 	Input*			input		= Input::GetInsatnce();
@@ -59,16 +57,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager*			imGuiManager		= ImGuiManager::GetInstance();
 	CameraManager*			cameraManager		= CameraManager::GetInstance();
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
-	CollisionManager*       collisionManager    = CollisionManager::GetInstance();
+	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
 	RenderTextureManager*	renderTexManager	= RenderTextureManager::GetInstance();
 	Line2D*					line2d				= Line2D::GetInstance();
 
 
 	ONEngine::Initialize(L"DirectXGame", false);
-	//input->Initialize(ONEngine::GetMainWinApp());
 
 	frameFixation.reset(new FrameFixation);
-	frameFixation->Initialize(true);
+	frameFixation->Initialize(false);
 
 
 	imGuiManager->Initialize(ONEngine::GetWinApps().at("Debug").get(), ONEngine::GetDxCommon());

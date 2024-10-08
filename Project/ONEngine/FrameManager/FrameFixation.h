@@ -31,7 +31,7 @@ private:
 	/// private : const objects
 	/// ===================================================
 
-	const uint32_t  kFrameNumber_   = 30u;	/// 最大FPS
+	const uint32_t  kFrameNumber_   = 60u;	/// 最大FPS
 	const long long kMinEspsetTime_ = 1000000ll / static_cast<long long>(kFrameNumber_);
 
 
