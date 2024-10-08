@@ -81,6 +81,7 @@ void ParticleSystem::Initialize() {
 	SetParticleRespawnTime(0.5f);
 	SetEmittedParticleCount(1u);
 	SetParticleLifeTime(5.0f);
+	SetUseBillboard(true);
 
 	/// billboard setting
 	matBackToFront_ = Mat4::MakeRotateY(std::numbers::pi_v<float>);
@@ -162,8 +163,9 @@ void ParticleSystem::Debug() {
 
 		ImGui::Separator();
 
-		ImGui::DragInt("emit particle count",     reinterpret_cast<int*>(&emittedParticleCount_),  1, 0, kMaxParticleNum_);
-		ImGui::DragInt("particle instance count", reinterpret_cast<int*>(&particleInstanceCount_), 0);
+		ImGui::DragInt("emit particle count",             reinterpret_cast<int*>(&emittedParticleCount_),  1, 0, kMaxParticleNum_);
+		ImGui::DragInt("current particle instance count", reinterpret_cast<int*>(&particleInstanceCount_), 0);
+		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
 
 		ImGui::Separator();
 
@@ -189,7 +191,7 @@ void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 	particleLifeTime_ = _particleLifeTime;
 }
 
-void ParticleSystem::SetBillboard(bool _useBillboard) {
+void ParticleSystem::SetUseBillboard(bool _useBillboard) {
 	useBillboard_ = _useBillboard;
 }
 

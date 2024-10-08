@@ -72,7 +72,7 @@ public:
 	/// ビルボードを使用するかセット
 	/// </summary>
 	/// <param name="_useBillboard">: ビルボードを使用するか</param>
-	void SetBillboard(bool _useBillboard);
+	void SetUseBillboard(bool _useBillboard);
 
 
 	/// <summary>
