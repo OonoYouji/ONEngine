@@ -191,9 +191,6 @@
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp">
       <Filter>ONEngine\GraphicManager\Drawer\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="ONEngine\GraphicManager\Drawer\Particle\ParticleSystem.cpp">
-      <Filter>ONEngine\GraphicManager\Drawer\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp">
       <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
     </ClCompile>
@@ -259,6 +256,9 @@
     </ClCompile>
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.cpp">
       <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp">
+      <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -409,9 +409,6 @@
     <Filter Include="ONEngine\GraphicManager\Drawer\Floor">
       <UniqueIdentifier>{9120d4b4-d367-4cf4-aaeb-78781e034a99}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ONEngine\GraphicManager\Drawer\Particle">
-      <UniqueIdentifier>{706d644e-6dd0-4ec7-af46-89a90cd556d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ONEngine\GraphicManager\Drawer\LineDrawer">
       <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
     </Filter>
@@ -453,6 +450,9 @@
     </Filter>
     <Filter Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12">
       <UniqueIdentifier>{3ab34915-d6b9-4ef8-be4a-7c877b0c6c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\ParticleSystem">
+      <UniqueIdentifier>{8f5e1b53-bbfb-4a36-80f5-d4c951997927}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -651,9 +651,6 @@
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h">
       <Filter>ONEngine\GraphicManager\Drawer\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="ONEngine\GraphicManager\Drawer\Particle\ParticleSystem.h">
-      <Filter>ONEngine\GraphicManager\Drawer\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h">
       <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
     </ClInclude>
@@ -719,6 +716,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.h">
       <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h">
+      <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

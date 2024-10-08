@@ -5,8 +5,8 @@
 
 #include "Input/Input.h"
 
-#include "GraphicManager/Drawer/Particle/ParticleSystem.h"
 
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"

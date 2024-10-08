@@ -31,10 +31,10 @@
 #include <Objects/Camera/DebugCamera.h>
 #include <GraphicManager/Light/DirectionalLight.h>
 
-#include <GraphicManager/RenderTextureManager/RenderTextureManager.h>
-#include <GraphicManager/SceneLayer/SceneLayer.h>
-#include <GraphicManager/PostEffect/Bloom/Bloom.h>
-#include <GraphicManager/Drawer/Particle/ParticleSystem.h>
+#include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
+#include "GraphicManager/SceneLayer/SceneLayer.h"
+#include "GraphicManager/PostEffect/Bloom/Bloom.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 
 

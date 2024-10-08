@@ -3,11 +3,14 @@
 #include "ImGuiManager/ImGuiManager.h"
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-
+//#include "ComponentManager/"
 
 void DemoObject::Initialize() {
-	auto mr = AddComponent<MeshRenderer>();
-	mr->SetModel("Sphere");
+	//auto mr = AddComponent<MeshRenderer>();
+	//mr->SetModel("Sphere");
+
+
+
 }
 
 void DemoObject::Update() {}

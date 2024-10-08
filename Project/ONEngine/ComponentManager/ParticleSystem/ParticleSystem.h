@@ -44,7 +44,7 @@ public:
 	void Update()     override;
 	void Draw()       override;
 
-
+	
 
 private:
 
@@ -72,6 +72,9 @@ private:
 
 	Model* pModel_ = nullptr;
 
+	uint32_t emittedParticleCount_; /// 一回の発生で出現するパーティクルの数
+	float    particleRespawnTime_;  /// パーティクルが発生するまでの時間
+	float    currentTime_;
 
 };
 

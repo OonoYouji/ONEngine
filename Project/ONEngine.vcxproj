@@ -58,6 +58,7 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
@@ -71,7 +72,6 @@
     <ClCompile Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Material\Material.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\Drawer\Particle\ParticleSystem.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp" />
@@ -148,6 +148,7 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
@@ -161,7 +162,6 @@
     <ClInclude Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Material\Material.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h" />
-    <ClInclude Include="ONEngine\GraphicManager\Drawer\Particle\ParticleSystem.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h" />
