@@ -16,30 +16,30 @@
 void Player::Initialize() {
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("TestObject");
+	meshRenderer->SetModel("axis");
 	//pivot_=AddComponent<Transform>();
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTranform_->Initialize();
+	pTransform_->Initialize();
 	pivot_.Initialize();
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };
-	pTranform_->position.z = -12;
+	pTransform_->position.z = -12;
 
-	pTranform_->quaternion = { 0,0,0,1 };
+	pTransform_->quaternion = { 0,0,0,1 };
 	/*SetPositionZ(-1.0f);*/
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTranform_->rotateOrder = QUATERNION;
+	pTransform_->rotateOrder = QUATERNION;
 	pivot_.rotateOrder = QUATERNION;
 
 	////ペアレント
-	pTranform_->SetParent(&pivot_);
+	pTransform_->SetParent(&pivot_);
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
@@ -48,22 +48,32 @@ void Player::Initialize() {
 void Player::Update() {
 	//入力
 	velocity_ = {
-			static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
-			static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
-			0.0f
+		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
+		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
+		0.0f
 	};
 
+	/// 移動の正規化
+	velocity_ = velocity_.Normalize() * 0.1f;
 
-	//回転を適応
-	rotateX_ = MakeRotateAxisAngleQuaternion({ 1.0f, 0.0f, 0.0f }, velocity_.y * 0.1f);
-	rotateY_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, -velocity_.x * 0.1f);
-	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-	
-	// プレイヤーの向きの決定
-	pTranform_->quaternion = MakeRotateAxisAngleQuaternion({ 0.0f, 0.0f, 1.0f }, std::atan2(-velocity_.x, velocity_.y));
+	rotateXAngle_ = +velocity_.y;
+	rotateYAngle_ = -velocity_.x;
 
+	if(velocity_ != Vec3(0.0f, 0.0f, 0.0f)) {
 
-	pivot_.UpdateMatrix();
+		//回転を適応
+		rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+		rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+
+		// プレイヤーの向きの決定
+		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
+
+		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+		pTransform_->quaternion = quaternionLocalZ.Conjugate();
+
+		pivot_.Update();
+	}
+
 
 }
 
@@ -72,7 +82,11 @@ void Player::Debug() {
 		pivot_.Debug();
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
-		ImGui::DragFloat3("velocity",&velocity_.x,0);
+		ImGui::DragFloat3("velocity", &velocity_.x, 0);
+
+		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
+		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
+
 		ImGui::TreePop();
 	}
 }

@@ -8,9 +8,9 @@
 #include "GameCamera.h"
 #include "Particle/ParticleSystem.h"
 //class
-#include"GameCamera.h"
-#include"Ground/Ground.h"
-//#include"Matrix4x4.h"
+#include "GameCamera.h"
+#include "Ground/Ground.h"
+#include "GameCameraState/GameCameraState.h"
 
 #include<numbers>
 /// ===================================================
@@ -18,31 +18,47 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	//プレイヤー
-	 p1 = new Player;
-	 buildingManager_ = new BuildingManager;
-	
-	Ground* ground = new Ground;
-	p1->Initialize();
+	/// ===================================================
+	/// ゲームオブジェクトの宣言
+	/// ===================================================
+
+	player_                           = new Player;
+	Ground* ground                    = new Ground;
+	GameCameraState* gameCameraState_ = new GameCameraState();
+
+
+
+	/// ===================================================
+	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
+	/// ===================================================
+
+	player_->Initialize();
 	ground->Initialize();
-	mainCamera_->Initialize();
-	//ペアレント
-	mainCamera_->SetParent(p1->GetPivot());
-	mainCamera_->SetPosition({ 0.0f, 0, -50.0f });
-	mainCamera_->SetRotate({ 45, 0, 0.0f });
-	mainCamera_->UpdateMatrix();
+	gameCameraState_->Initialize();
+
+	//mainCamera_->SetPosition({ 0.0f, 0.0f, -50.0f });
+
+	
+	/// ===================================================
+	/// その他 セットするべきものをここに
+	/// ===================================================
+
+	//mainCamera_->SetParent(player_->GetPivot());
+
+	gameCameraState_->SetGameCamera(mainCamera_);
+	gameCameraState_->SetPlayer(player_);
 
 	//ビル生成
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float>/8.0f, std::numbers::pi_v<float> / 2.0f);
-	buildingManager_->SpownBuilding(0,0);
+	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
+	buildingManager_->SpownBuilding(0, 0);
+
+
 }
 
 /// ===================================================
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
 	buildingManager_->Update(p1);
 
-	mainCamera_->UpdateMatrix();
 }

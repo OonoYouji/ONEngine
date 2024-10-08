@@ -12,11 +12,14 @@
 /// ===================================================
 class Scene_Game final : public BaseScene {
 public:
+
 	Scene_Game() {}
 	~Scene_Game() {}
 
-	Player* p1;
-	BuildingManager* buildingManager_;
 	void Initialize() override;
-	void Update() override;
+	void Update()     override;
+
+private:
+	BuildingManager* buildingManager_;
+	Player* player_ = nullptr;
 };
