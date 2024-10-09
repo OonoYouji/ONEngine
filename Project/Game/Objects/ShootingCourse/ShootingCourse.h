@@ -7,15 +7,18 @@
 
 
 /// ===================================================
+/// シューティングコースのアンカーポイント
+/// ===================================================
+struct AnchorPoint {
+	Vec3 position;
+	float twist;
+};
+
+
+/// ===================================================
 /// シューティングコースのエディター含めたクラス
 /// ===================================================
 class ShootingCourse : BaseGameObject {
-
-	struct AnchorPoint {
-		Vec3 poision;
-		float twist;
-	};
-
 public:
 	/// ===================================================
 	/// public : methods
@@ -29,10 +32,21 @@ public:
 	void Debug()      override;
 
 
+	const std::vector<AnchorPoint>& GetAnchorPointArray() const {
+		return anchorPointArray_;
+	}
+
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
 	void SaveFile(const std::string& filePath);
 	void LoadFile(const std::string& filePath);
 
 	void AddAnchorPoint(const Vec3& point);
+
 
 private:
 	/// ===================================================

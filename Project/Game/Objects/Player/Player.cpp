@@ -1,9 +1,14 @@
+#define NOMINMAX
 #include "Player.h"
 
+/// std
+#include <algorithm>
+#include <cassert>
 
 /// engine
 #include "Input/Input.h"
 #include "ImGuiManager/ImGuiManager.h"
+#include "FrameManager/Time.h"
 
 /// graphics
 #include "GraphicManager/ModelManager/ModelManager.h"
@@ -11,26 +16,132 @@
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
+/// objects
+#include "Objects/ShootingCourse/ShootingCourse.h"
 
 
 void Player::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("Sphere");
+	meshRenderer->SetModel("axis");
 
+
+	moveT_ = 0.0f;
 }
 
 void Player::Update() {
 
+	/// shooting courseからanchor point arrayをもらう
+	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
+	const size_t kSegmentCount = anchorPointArray.size();
+
+	/// 移動
+	moveT_ += Time::DeltaTime();
+	moveT_ = std::clamp(moveT_, 0.0f, kSegmentCount + 1.0f);
+	float t_ = 1.0f / kSegmentCount * moveT_;
+
+	nextAnchor_ = SplinePosition(anchorPointArray, t_);
+	pTranform_->position = nextAnchor_.position;
+
 }
 
 void Player::Debug() {
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("move parameters", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+		ImGui::DragFloat("moveT", &moveT_, 0.05f);
 
 		ImGui::TreePop();
 	}
 }
 
+
+
+
 void Player::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
+}
+
+AnchorPoint Player::SplinePosition(const std::vector<AnchorPoint>& anchorPointArray, float t) {
+	assert(anchorPointArray.size() >= 4 && "制御点は4点以上必要です");
+
+	size_t division = anchorPointArray.size() - 1;
+	float areaWidth = 1.0f / static_cast<float>(division);
+
+	///- 区間内の始点を0.0f, 終点を1.0f としたときの現在位置
+	float t_2 = std::fmod(t, areaWidth) * division;
+	t_2 = std::clamp(t_2, 0.0f, 1.0f);
+
+	///- 区画番号
+	size_t index = static_cast<size_t>(t / areaWidth);
+	index = std::min(index, anchorPointArray.size() - 1);
+
+	size_t indices[4]{
+		index - 1,
+		index,
+		index + 1,
+		index + 2
+	};
+
+	if(index == 0) {
+		indices[0] = indices[1];
+	}
+
+	if(indices[2] >= anchorPointArray.size()) {
+		indices[2] = indices[1];
+		indices[3] = indices[1];
+	}
+
+	if(indices[3] >= anchorPointArray.size()) {
+		indices[3] = indices[2];
+	}
+
+	const AnchorPoint& p0 = anchorPointArray[indices[0]];
+	const AnchorPoint& p1 = anchorPointArray[indices[1]];
+	const AnchorPoint& p2 = anchorPointArray[indices[2]];
+	const AnchorPoint& p3 = anchorPointArray[indices[3]];
+
+	return SplineInterpolation({ p0, p1, p2, p3 }, t_2);
+}
+
+AnchorPoint Player::SplineInterpolation(const std::array<AnchorPoint, 4>& anchorPointArray, float t) {
+
+	const float s = 0.5f;
+
+	float t2 = t * t;  // t^2
+	float t3 = t2 * t; // t^3
+
+	/// positionの補完
+	std::array<Vec3, 4> p{
+		anchorPointArray[0].position,
+		anchorPointArray[1].position,
+		anchorPointArray[2].position,
+		anchorPointArray[3].position
+	};
+
+	/// position element-> pe
+	Vec3 pe3 = -p[0] + (p[1] * 3.0f) - (p[2] * 3.0f) + p[3];
+	Vec3 pe2 = (p[0] * 2.0f) - (p[1] * 5.0f) + (p[2] * 4.0f) - p[3];
+	Vec3 pe1 = -p[0] + p[2];
+	Vec3 pe0 = p[1] * 2.0f;
+
+
+
+	/// twistsの補完
+	std::array<float, 4> twists{
+		anchorPointArray[0].twist,
+		anchorPointArray[1].twist,
+		anchorPointArray[2].twist,
+		anchorPointArray[3].twist
+	};
+
+	/// twist element-> te
+	float te3= -twists[0] + (twists[1] * 3.0f) - (twists[2] * 3.0f) + twists[3];
+	float te2= (twists[0] * 2.0f) - (twists[1] * 5.0f) + (twists[2] * 4.0f) - twists[3];
+	float te1= -twists[0] + twists[2];
+	float te0= twists[1] * 2.0f;
+
+	/// result
+	return {
+		((pe3 * t3) + (pe2 * t2) + (pe1 * t) + pe0) * s,
+		((te3 * t3) + (te2 * t2) + (te1 * t) + te0) * s
+	};
 }
