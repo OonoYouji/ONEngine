@@ -260,6 +260,9 @@
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp">
+      <Filter>Game\Objects\ShootingCourse</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -453,6 +456,9 @@
     </Filter>
     <Filter Include="ONEngine\ComponentManager\ParticleSystem">
       <UniqueIdentifier>{8f5e1b53-bbfb-4a36-80f5-d4c951997927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\ShootingCourse">
+      <UniqueIdentifier>{ef0bf4a7-461c-4d78-a04e-b185f0d8753f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -719,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h">
+      <Filter>Game\Objects\ShootingCourse</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
