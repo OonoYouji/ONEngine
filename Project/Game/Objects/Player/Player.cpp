@@ -50,6 +50,7 @@ void Player::Update() {
 	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
 
 	/// anchor pointの更新
+	
 	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
 	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
 
@@ -57,20 +58,16 @@ void Player::Update() {
 	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTranform_->position);
 	pTranform_->position = nextAnchor_.position;
 	
-	rightDirection_= Vec3::Cross(upDirection_, moveDirection_).Normalize();
-	upDirection_   = Vec3::Cross(moveDirection_, rightDirection_).Normalize();
+	upDirection_    = nextAnchor_.up.Normalize();
+	rightDirection_ = Vec3::Cross(upDirection_, moveDirection_).Normalize();
 
-	Mat4 matRotate{
-		rightDirection_.x, rightDirection_.y, rightDirection_.z, 0.0f,
-		upDirection_.x,    upDirection_.y,    upDirection_.z,    0.0f,
-		moveDirection_.x,  moveDirection_.y,  moveDirection_.z,  0.0f,
-		0.0f, 0.0f, 0.0f, 1.0f
+	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
+	pTranform_->rotate = {
+		std::asin(-moveDirection_.y),                  // Y軸周りの回転（ピッチ）
+		std::atan2(moveDirection_.x, moveDirection_.z),// Z軸周りの回転（ヨー）
+		std::atan2(rightDirection_.y, upDirection_.y), // X軸周りの回転（ロール）
 	};
 
-	Mat4 matTranslate = Mat4::MakeTranslate(pTranform_->position);
-
-	pTranform_->matTransform = matRotate * matTranslate;
-	pTranform_->isActive = false;
 
 }
 
@@ -104,6 +101,23 @@ void Player::Debug() {
 
 		ImGui::TreePop();
 	}
+
+	
+	if(ImGui::TreeNodeEx("player param", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		for(size_t r = 0; r < 4; ++r) {
+			for(size_t c = 0; c < 4; ++c) {
+				if(c != 0) { ImGui::SameLine(); }
+				ImGui::Text("%0.2f, ", pTranform_->matTransform.m[r][c]);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+
+
+
 }
 
 
