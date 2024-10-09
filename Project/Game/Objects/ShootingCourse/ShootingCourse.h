@@ -10,6 +10,12 @@
 /// シューティングコースのエディター含めたクラス
 /// ===================================================
 class ShootingCourse : BaseGameObject {
+
+	struct AnchorPoint {
+		Vec3 poision;
+		Vec3 up;
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
