@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Math/Vector3.h"
+
 /// ===================================================
 /// 三次元での回転を表すクラス
 /// ===================================================
@@ -20,6 +22,26 @@ public:
 
 	static float Lenght(const Quaternion& q);
 	static Quaternion Normalize(const Quaternion& q);
+
+
+	/// <summary>
+	/// ある軸を基にquaternionを計算する
+	/// </summary>
+	/// <param name="axis">   : 回転の軸となるベクトル						 </param>
+	/// <param name="theta">  : 回転率									 </param>
+	/// <returns>             return: axisを基にtheta分回転させたquaternion </returns>
+	static Quaternion MakeFromAxis(const Vec3& axis, float theta);
+
+	/// <summary>
+	/// 特定の方向を見る関数
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="target"></param>
+	/// <param name="up"></param>
+	/// <returns></returns>
+	static Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up);
+
+
 
 
 	/// ===================================================

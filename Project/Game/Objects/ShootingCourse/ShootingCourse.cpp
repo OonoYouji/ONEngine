@@ -81,6 +81,9 @@ void ShootingCourse::Debug() {
 
 			ImGui::SliderInt("subtractIndex", &subtractIndex_, 0, static_cast<int>(anchorPointArray_.size() - 1));
 			if(ImGui::Button("subtract")) {
+				if(subtractIndex_ >= anchorPointArray_.size()) {
+					subtractIndex_ = static_cast<int>(anchorPointArray_.size() - 1);
+				}
 				if(anchorPointArray_.size() > 4) {
 					anchorPointArray_.erase(anchorPointArray_.begin() + subtractIndex_);
 				}

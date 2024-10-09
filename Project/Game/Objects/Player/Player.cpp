@@ -19,13 +19,22 @@
 /// objects
 #include "Objects/ShootingCourse/ShootingCourse.h"
 
+/// math
+#include "Math/Quaternion.h"
+
+
 
 void Player::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("axis");
 
+	/// transform
+	pTranform_->rotateOrder = XYZ;
 
-	moveT_ = 0.0f;
+
+	/// move param setting...
+	Reset();
+
 }
 
 void Player::Update() {
@@ -34,20 +43,64 @@ void Player::Update() {
 	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
 	const size_t kSegmentCount = anchorPointArray.size();
 
-	/// 移動
-	moveT_ += Time::DeltaTime();
-	moveT_ = std::clamp(moveT_, 0.0f, kSegmentCount + 1.0f);
-	float t_ = 1.0f / kSegmentCount * moveT_;
+	/// 移動 and 回転
+	movingTime_ += Time::DeltaTime();
+	movingTime_  = std::clamp(movingTime_, 0.0f, kSegmentCount + 1.0f);
+	nextMoveT_   = 1.0f / kSegmentCount * movingTime_;
+	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
 
-	nextAnchor_ = SplinePosition(anchorPointArray, t_);
+	/// anchor pointの更新
+	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
+	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
+
+	/// 座標更新
+	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTranform_->position);
 	pTranform_->position = nextAnchor_.position;
+	
+	rightDirection_= Vec3::Cross(upDirection_, moveDirection_).Normalize();
+	upDirection_   = Vec3::Cross(moveDirection_, rightDirection_).Normalize();
+
+	Mat4 matRotate{
+		rightDirection_.x, rightDirection_.y, rightDirection_.z, 0.0f,
+		upDirection_.x,    upDirection_.y,    upDirection_.z,    0.0f,
+		moveDirection_.x,  moveDirection_.y,  moveDirection_.z,  0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	};
+
+	Mat4 matTranslate = Mat4::MakeTranslate(pTranform_->position);
+
+	pTranform_->matTransform = matRotate * matTranslate;
+	pTranform_->isActive = false;
 
 }
 
 void Player::Debug() {
+	if(ImGui::TreeNodeEx("player", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if(ImGui::Button("reset")) {
+			Reset();
+		}
+		ImGui::TreePop();
+	}
+
+
 	if(ImGui::TreeNodeEx("move parameters", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat("moveT", &moveT_, 0.05f);
+		ImGui::DragFloat("moving time", &movingTime_, 0.05f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("next moveT",   &nextMoveT_,   0.05f);
+		ImGui::DragFloat("future moveT", &futureMoveT_, 0.05f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("future time",  &futureTime_, 0.05f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat3("up diretion",   &upDirection_.x,   0.01f);
+		ImGui::DragFloat3("move diretion", &moveDirection_.x, 0.01f);
+		ImGui::DragFloat3("right diretion", &rightDirection_.x, 0.01f);
 
 		ImGui::TreePop();
 	}
@@ -60,7 +113,20 @@ void Player::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
 }
 
-AnchorPoint Player::SplinePosition(const std::vector<AnchorPoint>& anchorPointArray, float t) {
+
+void Player::Reset() {
+	/// move param setting...
+	moveDirection_ = {};
+	upDirection_ = Vec3::kUp;
+	movingTime_ = 0.0f;
+	nextMoveT_ = 0.0f;
+	futureMoveT_ = 0.0f;
+	futureTime_ = 1.0f;
+}
+
+
+
+AnchorPoint Player::SplinePosition(const std::vector<AnchorPoint>& anchorPointArray, float t) const {
 	assert(anchorPointArray.size() >= 4 && "制御点は4点以上必要です");
 
 	size_t division = anchorPointArray.size() - 1;
@@ -102,7 +168,7 @@ AnchorPoint Player::SplinePosition(const std::vector<AnchorPoint>& anchorPointAr
 	return SplineInterpolation({ p0, p1, p2, p3 }, t_2);
 }
 
-AnchorPoint Player::SplineInterpolation(const std::array<AnchorPoint, 4>& anchorPointArray, float t) {
+AnchorPoint Player::SplineInterpolation(const std::array<AnchorPoint, 4>& anchorPointArray, float t) const {
 
 	const float s = 0.5f;
 
