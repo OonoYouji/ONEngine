@@ -257,6 +257,9 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Easing\EasingFunction.cpp">
+      <Filter>Game\Easing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -444,6 +447,9 @@
     </Filter>
     <Filter Include="Game\Objects\GameCameraState">
       <UniqueIdentifier>{f7d3ef64-a516-481c-b5ba-ef9fa13e6e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Easing">
+      <UniqueIdentifier>{e7dd9af8-0185-412a-ab4a-3e8fe21fe81a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -710,6 +716,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Easing\EasingFunction.h">
+      <Filter>Game\Easing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

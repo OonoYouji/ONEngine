@@ -8,7 +8,6 @@
 class BuildingManager:public BaseGameObject {
 private:
 
-	//パーティクルリスト
 	std::list<BaseBuilding*> buildings_;
 	Vec3 spownPos_;
 	Vec3 basePos_;
@@ -26,6 +25,6 @@ public:
 	void SpownBuilding(float theta, float phi);
 	//void 	Init();
 	void 	RemoveBuilding();
-	void 	ParentPlayer(Player*player);
+	void 	BehaviorManagement(Player*player);
 	/*void 	Draw();*/
 };

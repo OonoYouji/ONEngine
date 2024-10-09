@@ -64,12 +64,19 @@ void Scene_Game::Initialize() {
 
 }
 
+
 /// ===================================================
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
 	
-	buildingManager_->ParentPlayer(player_);
-	
+	buildingManager_->BehaviorManagement(player_);
+	//プレイヤーのゲージMaxでカメラズームアウト
+	if (player_->GetisPowerUp()) {
+		mainCamera_->SetBehaviorZoomOut();
+	}
+	else if (!player_->GetisPowerUp()) {
+		mainCamera_->SetBehaviorZoomIn();
+	}
 
 }

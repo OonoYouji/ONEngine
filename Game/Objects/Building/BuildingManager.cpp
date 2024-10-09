@@ -27,7 +27,7 @@ void 	BuildingManager::Update() {
 			return true;
 		}
 		return false;
-		});
+	});
 }
 
 void BuildingManager::Debug() {
@@ -35,7 +35,7 @@ void BuildingManager::Debug() {
 }
 
 //プレイヤーとペアレント
-void  BuildingManager::ParentPlayer(Player* player) {
+void  BuildingManager::BehaviorManagement(Player* player) {
 	for (BaseBuilding* building : buildings_) {
 
 		building->BehaviorManagement(player);

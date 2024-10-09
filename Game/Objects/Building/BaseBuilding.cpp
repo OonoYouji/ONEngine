@@ -80,11 +80,10 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Player* player) {
-	/*theta_ = distTheta(gen);
-	phi_ = distPhi(gen);*/
-	speed_ = distSpeed(gen);
-	radius_ = distRadius(gen);
-	pTransform_->SetParent(player->GetbaseTransform());
+	speed_ = distSpeed(gen);//回転スピード
+	radius_ = distRadius(gen);//半径
+	pTransform_->SetParent(player->GetbaseTransform());//プレイヤーとペアレント
+	player->PowerUpGaugeUp(0.3f);
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	
 }
