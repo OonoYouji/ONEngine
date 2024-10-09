@@ -11,7 +11,7 @@
 /// ===================================================
 struct AnchorPoint {
 	Vec3 position;
-	float twist;
+	Vec3 up = Vec3::kUp;
 };
 
 

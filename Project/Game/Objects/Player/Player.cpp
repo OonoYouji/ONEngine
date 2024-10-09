@@ -192,18 +192,18 @@ AnchorPoint Player::SplineInterpolation(const std::array<AnchorPoint, 4>& anchor
 
 
 	/// twistsの補完
-	std::array<float, 4> twists{
-		anchorPointArray[0].twist,
-		anchorPointArray[1].twist,
-		anchorPointArray[2].twist,
-		anchorPointArray[3].twist
+	std::array<Vec3, 4> twists{
+		anchorPointArray[0].up,
+		anchorPointArray[1].up,
+		anchorPointArray[2].up,
+		anchorPointArray[3].up
 	};
 
 	/// twist element-> te
-	float te3= -twists[0] + (twists[1] * 3.0f) - (twists[2] * 3.0f) + twists[3];
-	float te2= (twists[0] * 2.0f) - (twists[1] * 5.0f) + (twists[2] * 4.0f) - twists[3];
-	float te1= -twists[0] + twists[2];
-	float te0= twists[1] * 2.0f;
+	Vec3 te3= -twists[0] + (twists[1] * 3.0f) - (twists[2] * 3.0f) + twists[3];
+	Vec3 te2= (twists[0] * 2.0f) - (twists[1] * 5.0f) + (twists[2] * 4.0f) - twists[3];
+	Vec3 te1= -twists[0] + twists[2];
+	Vec3 te0= twists[1] * 2.0f;
 
 	/// result
 	return {

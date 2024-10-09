@@ -96,16 +96,20 @@ void ShootingCourse::Debug() {
 		ImGui::TreePop();
 	}
 
+
+	ImGui::BeginChild("anchor point array scroll bar", ImVec2(0, 360.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 	if(ImGui::TreeNodeEx("anchor points", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		uint32_t index = 0u;
 		for(auto& anchorPoint : anchorPointArray_) {
 
 			std::string positionLabel = std::string("position_") + std::to_string(index);
-			std::string twistLabel = std::string("twist_") + std::to_string(index);
+			std::string upLabel       = std::string("up_") + std::to_string(index);
 
 			ImGui::DragFloat3(positionLabel.c_str(), &anchorPoint.position.x, 0.05f);
-			ImGui::DragFloat(twistLabel.c_str(),     &anchorPoint.twist,     0.05f);
+			ImGui::DragFloat3(upLabel.c_str(),       &anchorPoint.up.x,       0.05f);
 
 			ImGui::Spacing();
 			index++;
@@ -114,6 +118,7 @@ void ShootingCourse::Debug() {
 		ImGui::TreePop();
 	}
 
+	ImGui::EndChild();
 
 
 }
@@ -127,7 +132,7 @@ void ShootingCourse::SaveFile(const std::string& filePath) {
 
 		AnchorPoint& point = anchorPointArray_[i];
 		item["position"] = json::array({ point.position.x, point.position.y, point.position.z });
-		item["twist"] = point.twist;
+		item["up"]       = json::array({ point.up.x,       point.up.y,       point.up.z });
 	}
 
 	///- ディレクトリがなければ作成する
@@ -178,9 +183,10 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 	for(auto& item : root.items()) {
 
 		auto jsonPos = item.value()["position"];
+		auto jsonUp  = item.value()["up"];
 		AnchorPoint anchorPoint{
 			.position = {jsonPos.at(0), jsonPos.at(1), jsonPos.at(2)},
-			.twist   = item.value()["twist"]
+			.up       = {jsonUp.at(0),  jsonUp.at(1),  jsonUp.at(2)}
 		};
 
 		anchorPointArray_.push_back(anchorPoint);
