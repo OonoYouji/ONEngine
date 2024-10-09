@@ -38,4 +38,7 @@ private:
 	std::vector<Vec3>    anchorPointArray_;
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;
 
+	int subtractIndex_ = 0;
+	int addIndex_ = 0;
+
 };

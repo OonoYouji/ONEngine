@@ -59,9 +59,20 @@ void ShootingCourse::Debug() {
 			ImGui::Separator();
 
 
+			ImGui::SliderInt("addIndex", &addIndex_, 0, static_cast<int>(anchorPointArray_.size() - 1));
 			if(ImGui::Button("add")) {
-				Vec3& back = anchorPointArray_.back();
-				anchorPointArray_.emplace_back(back);
+				auto itr = anchorPointArray_.begin() + addIndex_;
+				anchorPointArray_.insert(itr, (*itr));
+			}
+
+			ImGui::Separator();
+
+
+			ImGui::SliderInt("subtractIndex", &subtractIndex_, 0, static_cast<int>(anchorPointArray_.size() - 1));
+			if(ImGui::Button("subtract")) {
+				if(anchorPointArray_.size() > 4) {
+					anchorPointArray_.erase(anchorPointArray_.begin() + subtractIndex_);
+				}
 			}
 
 
@@ -75,7 +86,7 @@ void ShootingCourse::Debug() {
 
 		uint32_t index = 0u;
 		for(auto& anchorPoint : anchorPointArray_) {
-			
+
 			std::string label = std::string("position_") + std::to_string(index);
 			ImGui::DragFloat3(label.c_str(), &anchorPoint.x, 0.05f);
 
@@ -92,7 +103,7 @@ void ShootingCourse::SaveFile(const std::string& filePath) {
 	json root = json::object();
 	for(size_t i = 0; i < anchorPointArray_.size(); ++i) {
 		Vec3& point = anchorPointArray_[i];
-		root[std::to_string(i)] = json::array({ point.x, point.y, point.z});
+		root[std::to_string(i)] = json::array({ point.x, point.y, point.z });
 	}
 
 	///- ディレクトリがなければ作成する
@@ -139,6 +150,14 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 	ifs >> root;
 	ifs.close();
 
+	for(json::iterator itr = root.begin(); itr != root.end(); ++itr) {
+
+		/// positionで確定
+		if(itr->is_array() && itr->size() == 3) {
+			Vec3 position = { itr->at(0), itr->at(1), itr->at(2) };
+			AddAnchorPoint(position);
+		}
+	}
 
 
 }
