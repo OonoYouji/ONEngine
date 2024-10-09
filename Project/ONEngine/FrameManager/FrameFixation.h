@@ -17,7 +17,7 @@ public:
 	FrameFixation() {}
 	~FrameFixation() {}
 
-	void Initialize(bool isFixation);
+	void Initialize(bool isFixation, uint32_t maxFrameRate);
 
 	void ImGuiDebug();
 
@@ -31,8 +31,8 @@ private:
 	/// private : const objects
 	/// ===================================================
 
-	const uint32_t  kFrameNumber_   = 60u;	/// 最大FPS
-	const long long kMinEspsetTime_ = 1000000ll / static_cast<long long>(kFrameNumber_);
+	uint32_t  maxFrameRate_;	/// 最大FPS
+	long long minEspsetTime_;
 
 
 	/// ===================================================

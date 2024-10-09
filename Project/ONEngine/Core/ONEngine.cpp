@@ -5,6 +5,7 @@
 /// engine
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
+#include "FrameManager/FrameFixation.h"
 #include "ImGuiManager/ImGuiManager.h"
 
 /// command line interface
@@ -33,9 +34,11 @@ namespace {
 /// ↓ ONEngine
 /// ===================================================
 
-void ONEngine::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
+void ONEngine::Initialize(
+	const wchar_t* windowName, bool isCreateGameWindow, bool isFrameFixation, uint32_t maxFrame) {
+
 	gSystem.reset(new System);
-	gSystem->Initialize(windowName, isCreateGameWindow);
+	gSystem->Initialize(windowName, isCreateGameWindow, isFrameFixation, maxFrame);
 }
 
 void ONEngine::Finalize() {
@@ -80,7 +83,8 @@ bool ONEngine::IsRunning() {
 /// ↓ System
 /// ===================================================
 
-void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
+void System::Initialize(
+	const wchar_t* windowName, bool isCreateGameWindow, bool isFrameFixation, uint32_t maxFrameRate) {
 
 
 	/// ===================================================
@@ -124,6 +128,8 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 	input_->Initialize(ONEngine::GetMainWinApp());
 
 	time_  = Time::GetInstance();
+	frameFixation_.reset(new  FrameFixation);
+	frameFixation_->Initialize(isFrameFixation, maxFrameRate);
 
 	sceneManager_ = SceneManager::GetInstance();
 
@@ -135,17 +141,11 @@ void System::Initialize(const wchar_t* windowName, bool isCreateGameWindow) {
 
 	imguiManager_ = ImGuiManager::GetInstance();
 	imguiManager_->Initialize(mainWindow_, dxCommon_.get());
-
-	/// cli initialize
-	//CommandLineInterface* cli = CommandLineInterface::GetInstance();
-	//cli->Initialize();
 #endif // _DEBUG
 
 }
 
 void System::Finalize() {
-	//CommandLineInterface* cli = CommandLineInterface::GetInstance();
-	//cli->Finalize();
 
 	/// ===================================================
 	/// object finalizing...
@@ -156,6 +156,7 @@ void System::Finalize() {
 	input_->Finalize();
 	input_ = nullptr;
 
+	frameFixation_.reset();
 	time_  = nullptr;
 
 #ifdef _DEBUG /// release not building objects
@@ -164,7 +165,6 @@ void System::Finalize() {
 
 	console_.reset();
 #endif // _DEBUG /// release not building objects
-
 
 
 	for(auto& win : winApps_) {
@@ -226,6 +226,7 @@ void System::PostDraw() {
 	}
 	ONEngine::GetDxCommon()->GetDxCommand()->Reset();
 
+	frameFixation_->Fixation();
 
 }
 
