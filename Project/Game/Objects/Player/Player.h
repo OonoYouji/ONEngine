@@ -1,41 +1,47 @@
 #pragma once
 
+/// base
 #include "GameObjectManager/GameObjectManager.h"
 
-#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
-#include "ComponentManager/AudioSource/AudioSource.h"
+
+/// ===================================================
+/// 前方宣言
+/// ===================================================
+class ShootingCourse;
 
 
+
+/// ===================================================
+/// プレイヤーが操作するエンティティのクラス
+/// ===================================================
 class Player : public BaseGameObject {
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	Player() { CreateTag(this); }
 	~Player() {}
 
 	void Initialize() override;
-	void Update() override;
+	void Update()     override;
+	void Debug()      override;
 
-	void Debug() override;
 
-	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
+	void SetShootingCourse(ShootingCourse* _shootingCourse);
 
-	//getter
-	Transform* GetPivot() { return &pivot_; }
 private:
-	//速度
-	Vec3 velocity_;
-	//クォータニオンRotate
-	Quaternion rotateX_;
-	Quaternion rotateY_;
-	//ピボット
-	Transform pivot_;
-	
-	AudioSource* audioSource_ = nullptr;
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
-	//float rotateXAngle_;
-	//float rotationSpeed = 0.01f;  // 回転速度
-	//float rotateYAngle_;
-	//float moveSpeed = 0.05f;  // 移動速度
+	/// move setting
+	Vec3  moveDirection_;
+	float moveT_;
+
+	/// other class pointer
+	ShootingCourse* pShootingCourse_ = nullptr;
+
 
 
 };
