@@ -7,6 +7,7 @@
 #include <Math/Vector3.h>
 
 #include <ComponentManager/Base/BaseComponent.h>
+#include <vector>
 
 
 /// ===================================================
@@ -32,6 +33,12 @@ public:
 	/// </summary>
 	/// <param name="anchorPoint">スプライン曲線の制御点</param>
 	void AddAnchorPoint(const Vec3& anchorPoint);
+
+	/// <summary>
+	/// アンカーポイントの配列をセットする
+	/// </summary>
+	/// <param name="anchorPointArray"></param>
+	void SetAnchorPointArray(const std::vector<Vec3>& anchorPointArray);
 
 	/// <summary>
 	/// スプライン曲線の点を計算する

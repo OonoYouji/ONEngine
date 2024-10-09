@@ -48,6 +48,10 @@ void SplinePathRenderer::AddAnchorPoint(const Vec3& anchorPoint) {
 	anchorPointArray_.push_back(anchorPoint);
 }
 
+void SplinePathRenderer::SetAnchorPointArray(const std::vector<Vec3>& anchorPointArray) {
+	anchorPointArray_ = anchorPointArray;
+}
+
 Vec3 SplinePathRenderer::CaclationSpline(const std::vector<Vec3>& vertices, float t) {
 	assert(vertices.size() >= 4 && "制御点は4点以上必要です");
 

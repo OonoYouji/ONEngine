@@ -9,11 +9,9 @@
 void Scene_Game::Initialize() {
 
 	/// instance create...
-	DemoObject* demoObj = new DemoObject;
 	ShootingCourse* shootingCourse = new ShootingCourse();
 
 	/// instance initializing...
-	demoObj->Initialize();
 	shootingCourse->Initialize();
 	
 }
