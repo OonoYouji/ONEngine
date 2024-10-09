@@ -29,7 +29,7 @@ void ShootingCourse::Initialize() {
 	splinePathRenderer_ = AddComponent<SplinePathRenderer>(6);
 
 	LoadFile(filePath_);
-	splinePathRenderer_->SetAnchorPointArray(anchorPointArray_);
+	splinePathRenderer_->SetAnchorPointArray(vertices_);
 
 	/// 読み込んだポイントが4個以下であれば
 	if(anchorPointArray_.size() < 4) {
@@ -43,7 +43,18 @@ void ShootingCourse::Initialize() {
 }
 
 void ShootingCourse::Update() {
-	splinePathRenderer_->SetAnchorPointArray(anchorPointArray_);
+
+#ifdef _DEBUG	/// copy, 重そう、 debugのときだけにする
+	std::vector<Vec3> tmpVertices;
+	for(auto& anchorPoint : anchorPointArray_) {
+		tmpVertices.push_back(anchorPoint.poision);
+	}
+	vertices_ = tmpVertices;
+#endif // _DEBUG
+
+
+	splinePathRenderer_->isActive = (vertices_.size() >= 4);
+	splinePathRenderer_->SetAnchorPointArray(vertices_);
 }
 
 
@@ -87,14 +98,21 @@ void ShootingCourse::Debug() {
 		uint32_t index = 0u;
 		for(auto& anchorPoint : anchorPointArray_) {
 
-			std::string label = std::string("position_") + std::to_string(index);
-			ImGui::DragFloat3(label.c_str(), &anchorPoint.x, 0.05f);
+			std::string positionLabel = std::string("position_") + std::to_string(index);
+			std::string twistLabel = std::string("twist_") + std::to_string(index);
 
+			ImGui::DragFloat3(positionLabel.c_str(), &anchorPoint.poision.x, 0.05f);
+			ImGui::DragFloat(twistLabel.c_str(),     &anchorPoint.twist,     0.05f);
+
+			ImGui::Spacing();
 			index++;
 		}
 
 		ImGui::TreePop();
 	}
+
+
+
 }
 
 
@@ -102,8 +120,11 @@ void ShootingCourse::Debug() {
 void ShootingCourse::SaveFile(const std::string& filePath) {
 	json root = json::object();
 	for(size_t i = 0; i < anchorPointArray_.size(); ++i) {
-		Vec3& point = anchorPointArray_[i];
-		root[std::to_string(i)] = json::array({ point.x, point.y, point.z });
+		auto& item = root[std::to_string(i)];
+
+		AnchorPoint& point = anchorPointArray_[i];
+		item["position"] = json::array({ point.poision.x, point.poision.y, point.poision.z });
+		item["twist"] = point.twist;
 	}
 
 	///- ディレクトリがなければ作成する
@@ -150,13 +171,16 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 	ifs >> root;
 	ifs.close();
 
-	for(json::iterator itr = root.begin(); itr != root.end(); ++itr) {
 
-		/// positionで確定
-		if(itr->is_array() && itr->size() == 3) {
-			Vec3 position = { itr->at(0), itr->at(1), itr->at(2) };
-			AddAnchorPoint(position);
-		}
+	for(auto& item : root.items()) {
+
+		auto jsonPos = item.value()["position"];
+		AnchorPoint anchorPoint{
+			.poision = {jsonPos.at(0), jsonPos.at(1), jsonPos.at(2)},
+			.twist   = item.value()["twist"]
+		};
+
+		anchorPointArray_.push_back(anchorPoint);
 	}
 
 
@@ -164,5 +188,4 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 
 void ShootingCourse::AddAnchorPoint(const Vec3& point) {
 	anchorPointArray_.emplace_back(point);
-	splinePathRenderer_->SetAnchorPointArray(anchorPointArray_);
 }

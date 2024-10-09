@@ -263,9 +263,6 @@
     <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp">
       <Filter>Game\Objects\ShootingCourse</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\AnchorPointObject\AnchorPointObject.cpp">
-      <Filter>Game\Objects\AnchorPointObject</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -462,9 +459,6 @@
     </Filter>
     <Filter Include="Game\Objects\ShootingCourse">
       <UniqueIdentifier>{ef0bf4a7-461c-4d78-a04e-b185f0d8753f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Objects\AnchorPointObject">
-      <UniqueIdentifier>{5c42140e-94ad-4526-84ce-ec75b755f96a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -734,9 +728,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h">
       <Filter>Game\Objects\ShootingCourse</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Objects\AnchorPointObject\AnchorPointObject.h">
-      <Filter>Game\Objects\AnchorPointObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

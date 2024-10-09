@@ -13,7 +13,7 @@ class ShootingCourse : BaseGameObject {
 
 	struct AnchorPoint {
 		Vec3 poision;
-		Vec3 up;
+		float twist;
 	};
 
 public:
@@ -41,7 +41,9 @@ private:
 
 	const std::string& filePath_ = "./Resources/Parameters/ShootingCourse/";
 
-	std::vector<Vec3>    anchorPointArray_;
+	std::vector<AnchorPoint> anchorPointArray_;
+
+	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;
 
 	int subtractIndex_ = 0;
