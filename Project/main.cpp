@@ -58,10 +58,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Line2D*					line2d				= Line2D::GetInstance();
 
 
-	ONEngine::Initialize(L"DirectXGame", false);
-
-	frameFixation.reset(new FrameFixation);
-	frameFixation->Initialize(false);
+	ONEngine::Initialize(L"DirectXGame", false, false, 60u);
 
 	modelManager->Initialize();
 	spriteManager->Initialize();
@@ -141,8 +138,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sceneManager->Draw();
 
 		ONEngine::PostDraw();
-
-		frameFixation->Fixation();
 
 	}
 

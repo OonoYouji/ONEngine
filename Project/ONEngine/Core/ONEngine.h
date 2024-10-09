@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <memory>
 #include <unordered_map>
 
@@ -13,6 +14,7 @@ class Time;
 class Input;
 class ImGuiManager;
 class SceneManager;
+class FrameFixation;
 
 namespace ONE {
 	class DxCommon;
@@ -36,8 +38,10 @@ class ONEngine final {
 public:
 
 	static void Initialize(
-		const wchar_t* windowName = L"game window",
-		bool isCreateGameWindow = true
+		const wchar_t* windowName,
+		bool isCreateGameWindow,
+		bool isFrameFixation,
+		uint32_t maxFrameRate
 	);
 	static void Finalize();
 
@@ -74,7 +78,12 @@ namespace {
 		/// public : methods
 		/// ===================================================
 
-		void Initialize(const wchar_t* windowName, bool isCreateGameWindow);
+		void Initialize(
+			const wchar_t* windowName,
+			bool isCreateGameWindow,
+			bool isFrameFixation,
+			uint32_t maxFrame
+		);
 		void Finalize();
 
 		void Update();
@@ -97,10 +106,10 @@ namespace {
 
 
 		/// engine...
-		std::unique_ptr<ONE::DxCommon> dxCommon_ = nullptr; /// graphics engine
-		Input* input_ = nullptr;                            /// input... keyboard, mouse,
+		std::unique_ptr<ONE::DxCommon> dxCommon_      = nullptr; /// graphics engine
+		std::unique_ptr<FrameFixation> frameFixation_ = nullptr; /// frame固定
+		Input* input_ = nullptr;                                 /// input... keyboard, mouse,
 		Time*  time_  = nullptr;
-
 
 		/// gane...
 		SceneManager* sceneManager_ = nullptr;
