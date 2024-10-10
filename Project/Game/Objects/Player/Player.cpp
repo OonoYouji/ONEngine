@@ -57,7 +57,6 @@ void Player::Initialize() {
 void Player::Update() {
   
 	behavior_->Update();
-	BehaviorManagement();//振る舞い管理
 
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
