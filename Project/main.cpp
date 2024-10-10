@@ -37,6 +37,9 @@
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 
+/// custom class
+#include "CustomComponents/EarthRenderer/EarthRenderer.h"
+
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -81,6 +84,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
 
+
+	/// custom class initializing
+	EarthRenderer::SInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		128u		/// 128体エンティティを出せる
+	);
+
+
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
 
@@ -98,9 +109,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize(SCENE_ID::GAME);
 
 
-	/// window mode や imgui の表示設定の初期化
-	ONEngine::GetMainWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
-	uint8_t drawLayerIndex = 0u;
 
 
 	///- 実行までにかかった時間
