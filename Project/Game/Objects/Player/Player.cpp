@@ -26,6 +26,7 @@ void Player::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	transoform_.Initialize();
 	pivot_.Initialize();
+	ChangeState(std::make_unique<PlayerRoot>(this));
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
-	BehaviorManagement();//振る舞い管理
+	behavior_->Update();
 	Move();//移動
 
 	pivot_.Update();
@@ -96,18 +97,14 @@ void Player::RootInit() {
 	isPowerUp_ = false;
 	powerUpGauge_ = 0;
 }
-void Player::RootUpdate() {
-	
-}
+
 void Player::PowerUpInit() {
 	isPowerUp_ = true;
 	powerUpTime_ = powerUpTimeMax_;
 }
+
 void Player::PowerUpUpdate() {
-	powerUpTime_-=Time::DeltaTime();//デルタタイムに直す
-	if (powerUpTime_ <= 0) {
-		behaviorRequest_ = Behavior::kRoot;
-	}
+	powerUpTime_-=Time::DeltaTime();//デルタタイムに直す	
 }
 
 void Player::PowerUpGaugeUp(float par) {
@@ -119,7 +116,7 @@ void Player::PowerUpGaugeUp(float par) {
 
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
-		behaviorRequest_ = Behavior::kPowerUp;
+		ChangeState(std::make_unique<PlayerPowerUp>(this));
 		
 	}
 }
@@ -144,38 +141,11 @@ void Player::Debug() {
 	}
 }
 
-//振る舞い管理
-void Player::BehaviorManagement() {
-	if (behaviorRequest_) {
-		// 振る舞いを変更する
-		behavior_ = behaviorRequest_.value();
-		// 各振る舞いごとの初期化を実行
-		switch (behavior_) {
-		case Behavior::kRoot:
-		default:
-			RootInit();
-			break;
-		case Behavior::kPowerUp:
-			PowerUpInit();
-			break;
-		
-		}
-		// 振る舞いリクエストをリセット
-		behaviorRequest_ = std::nullopt;
-	}
-	// 振る舞い更新
-	switch (behavior_) {
-	case Behavior::kRoot:
-	default:
-		RootUpdate();
-		break;
-	case Behavior::kPowerUp:
-		PowerUpUpdate();
-		break;
-	
-	}
-
+void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
+	//引数で受け取った状態を次の状態としてセット
+	behavior_ = std::move(behavior);
 }
+
 
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
