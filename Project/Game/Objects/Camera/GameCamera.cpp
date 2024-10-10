@@ -1,13 +1,13 @@
 #include "GameCamera.h"
 
-#include "ImGuiManager.h"
-#include"Matrix4x4.h"
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/Transform/Transform.h>
+#include"ImGuiManager/ImGuiManager.h"
+#include"Math/Matrix4x4.h"
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <ComponentManager/Transform/Transform.h>
 
 //function
 #include"Easing/EasingFunction.h"
-#include<Time/Time.h>
+#include"FrameManager/Time.h"
 
 GameCamera::GameCamera(const std::string& name) {
 	CreateTag(this);

@@ -1,18 +1,18 @@
 #include "Player.h"
-#include"Building/BaseBuilding.h"
+#include"Objects/Building/BaseBuilding.h"
 
-#include <ModelManager.h>
+#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
-#include <Input.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
-#include <Component/Collider/SphereCollider.h>
-#include <Component/Collider/BoxCollider.h>
-#include <Component/SplinePathRenderer/SplinePathRenderer.h>
+#include "Input/Input.h"
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
+#include <ComponentManager/Collider/SphereCollider.h>
+#include <ComponentManager/Collider/BoxCollider.h>
+#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 
-#include <ImGuiManager.h>
-#include<Time/Time.h>
+#include "ImGuiManager/ImGuiManager.h"
+
+#include"FrameManager/time.h"
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("axis");

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <BaseCamera.h>
+#include "Objects/Camera/Manager/BaseCamera.h"
 
-#include <Vector3.h>
+#include "Math/Vector2.h"
 
 /// ===================================================
 /// デバッグ用カメラ

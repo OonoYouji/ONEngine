@@ -1,17 +1,16 @@
 #include "BaseBuilding.h"
 
-#include <ModelManager.h>
+#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
-#include <Input.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
-#include <Component/Collider/SphereCollider.h>
-#include <Component/SplinePathRenderer/SplinePathRenderer.h>
-#include <Component/Collider/BoxCollider.h>
+#include "Input/Input.h"
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
+#include <ComponentManager/Collider/SphereCollider.h>
+#include <ComponentManager/Collider/BoxCollider.h>
+#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 
-#include <ImGuiManager.h>
-#include"random/random.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include"Math/Random.h"
 
 //object
 
@@ -80,8 +79,8 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Tornado* tornade) {
-	speed_ = distSpeed(gen);//回転スピード
-	radius_ = distRadius(gen);//半径
+	speed_ = Random::Float(1.0f,0.25f);//回転スピード
+	radius_ = Random::Float(2.0f,5.0f);//半径
 	pTransform_->SetParent(tornade->GetTransform());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	

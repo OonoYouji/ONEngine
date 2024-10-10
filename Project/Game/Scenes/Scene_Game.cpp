@@ -7,8 +7,8 @@
 #include <ImGuiManager/ImGuiManager.h>
 
 /// components
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include "Particle/ParticleSystem.h"
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+
 
 /// objects
 #include "Objects/Camera/GameCamera.h"

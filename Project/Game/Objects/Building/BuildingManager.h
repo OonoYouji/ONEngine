@@ -2,8 +2,8 @@
 #include<list>
 
 #include"Building.h"
-#include"Tornado/Tornado.h"
-#include <Component/Transform/Transform.h>
+#include"Objects/Tornado/Tornado.h"
+#include <ComponentManager/Transform/Transform.h>
 
 class BuildingManager:public BaseGameObject {
 private:

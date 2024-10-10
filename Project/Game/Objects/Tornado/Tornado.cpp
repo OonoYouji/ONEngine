@@ -5,15 +5,15 @@
 #include <numbers>
 
 /// engine
-#include <ImGuiManager.h>
-#include <Time/Time.h>
+#include "ImGuiManager/ImGuiManager.h"
+#include "FrameManager/Time.h"
 #include <Input/Input.h>
 
 /// components
-#include <Component/MeshRenderer/MeshRenderer.h>
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
 
 /// objects
-#include "Player/Player.h"
+#include "Objects/Player/Player.h"
 
 
 void Tornado::Initialize() {
