@@ -5,15 +5,15 @@
 #include <numbers>
 
 /// engine
-#include "ImGuiManager/ImGuiManager.h"
-#include "FrameManager/Time.h"
-#include "Input/Input.h"
+#include <ImGuiManager.h>
+#include <Time/Time.h>
+#include <Input/Input.h>
 
 /// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <Component/MeshRenderer/MeshRenderer.h>
 
 /// objects
-#include "Objects/Player/Player.h"
+#include "Player/Player.h"
 
 
 void Tornado::Initialize() {
@@ -91,10 +91,8 @@ void Tornado::Debug() {
 
 }
 
-
-
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
 
-	SetParent(pPlayer_->GetTransform());
+	SetParent(pPlayer_->GetbaseTransform());
 }

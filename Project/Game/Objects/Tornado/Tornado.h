@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObjectManager/BaseGameObject.h"
+#include <GameObjectManager.h>
 
 /// ===================================================
 /// 前方宣言

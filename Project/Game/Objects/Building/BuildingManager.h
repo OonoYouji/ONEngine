@@ -1,21 +1,13 @@
 #pragma once 
+#include<list>
 
-/// std
-#include <list>
-
-/// objects
-#include "Objects/Building/Building.h"
-#include "Objects/Player/Player.h"
-
-/// components
-#include <ComponentManager/Transform/Transform.h>
-
-
+#include"Building.h"
+#include"Tornado/Tornado.h"
+#include <Component/Transform/Transform.h>
 
 class BuildingManager:public BaseGameObject {
 private:
 
-	//パーティクルリスト
 	std::list<BaseBuilding*> buildings_;
 	Vec3 spownPos_;
 	Vec3 basePos_;
@@ -33,6 +25,6 @@ public:
 	void SpownBuilding(float theta, float phi);
 	//void 	Init();
 	void 	RemoveBuilding();
-	void 	ParentPlayer(Player*player);
+	void 	BehaviorManagement(Tornado*player);
 	/*void 	Draw();*/
 };

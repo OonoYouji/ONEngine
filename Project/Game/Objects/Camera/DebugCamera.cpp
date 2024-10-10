@@ -1,9 +1,8 @@
-#include "DebugCamera.h"
+#include <DebugCamera.h>
 
-#include "Objects/Camera/Manager/CameraManager.h"
-#include "Input/Input.h"
-
-#include "ImGuiManager/ImGuiManager.h"
+#include <CameraManager.h>
+#include <Input.h>
+#include <ImGuiManager.h>
 
 
 DebugCamera::DebugCamera() {
