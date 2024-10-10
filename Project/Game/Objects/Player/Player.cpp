@@ -128,6 +128,7 @@ void Player::PowerUpGaugeUp(float par) {
 }
 
 void Player::Debug() {
+
 	if(ImGui::TreeNode("pivot")) {
 		pivot_.Debug();
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
@@ -137,6 +138,7 @@ void Player::Debug() {
 		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
 			ImGui::TreePop();
 	}
+
 	if (ImGui::TreeNode("Parameter")) {
 		ImGui::DragFloat("PowerUpGauge", &powerUpGauge_, 0.01f);
 		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
