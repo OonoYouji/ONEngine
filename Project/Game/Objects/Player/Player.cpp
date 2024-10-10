@@ -87,7 +87,6 @@ void Player::Move() {
 
 		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
-
 	}
 }
 
@@ -152,5 +151,4 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 	if (dynamic_cast<BaseBuilding*>(collision)) {
 		PowerUpGaugeUp(0.3f);
 	}
-
 }

@@ -48,9 +48,6 @@ public:
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
-
-
-private:
 	
 private:
 	
@@ -69,15 +66,12 @@ private:
 	//パワーアップタイム
 	float powerUpTimeMax_;
 	float powerUpTime_;
+	//移動スピード
+	float moveSpeed_;
 	//パワーアップフラグ
 	bool isPowerUp_;
-	////// ふるまい
-	//Behavior behavior_;
-	////振る舞いリクエスト
-	//std::optional<Behavior> behaviorRequest_ = std::nullopt;
-
+	
 	AudioSource* audioSource_ = nullptr;
-
 	//状態
 	std::unique_ptr<BasePlayerBehavior>behavior_;
 
