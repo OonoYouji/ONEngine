@@ -284,6 +284,17 @@
     <ClCompile Include="Game\Easing\EasingFunction.cpp">
       <Filter>Game\Easing</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BaseBossBehavior.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerBehavior\PlayerRoot.cpp">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
     <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp">
       <Filter>Game\CustomComponents\EarthRenderer</Filter>
     </ClCompile>
@@ -499,6 +510,11 @@
     <Filter Include="Game\Easing">
       <UniqueIdentifier>{877719b0-5eeb-4c79-bc6c-e320129e4e89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\BossBehavior">
+      <UniqueIdentifier>{ed184c66-aab1-4fae-8ea0-aad22f9704b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\PlayerBehavior">
+      <UniqueIdentifier>{f20f7262-2e45-4d03-b175-e5685c16833f}</UniqueIdentifier>
     <Filter Include="Game\CustomComponents">
       <UniqueIdentifier>{bdea856e-764a-4801-88dc-b2884d6a5cee}</UniqueIdentifier>
     </Filter>
@@ -801,6 +817,17 @@
     <ClInclude Include="Game\Easing\EasingFunction.h">
       <Filter>Game\Easing</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BaseBossBehavior.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerBehavior\PlayerRoot.h">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h">
+      <Filter>Game\Objects\PlayerBehavior</Filter>
     <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h">
       <Filter>Game\CustomComponents\EarthRenderer</Filter>
     </ClInclude>

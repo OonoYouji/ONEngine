@@ -20,6 +20,7 @@
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp" />
     <ClCompile Include="Game\Easing\EasingFunction.cpp" />
+    <ClCompile Include="Game\Objects\BossBehavior\BaseBossBehavior.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\Building\BaseBuilding.cpp" />
     <ClCompile Include="Game\Objects\Building\Building.cpp" />
@@ -31,6 +32,9 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBehavior\PlayerRoot.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Tornado\Tornado.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
@@ -119,6 +123,7 @@
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h" />
     <ClInclude Include="Game\Easing\EasingFunction.h" />
+    <ClInclude Include="Game\Objects\BossBehavior\BaseBossBehavior.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\Building\BaseBuilding.h" />
     <ClInclude Include="Game\Objects\Building\Building.h" />
@@ -130,6 +135,9 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
+    <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />
+    <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />
+    <ClInclude Include="Game\Objects\PlayerBehavior\PlayerRoot.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Tornado\Tornado.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
