@@ -57,7 +57,7 @@ PSOutput main(VSOutput input) {
 
 	/// elements
 	for (int i = 0; i < gElementSize.size; ++i) {
-		float3 diff = input.position.xyz - gElements[i].position.xyz;
+		float3 diff = input.wPosition.xyz - gElements[i].position.xyz;
 		float len = length(diff);
 		if (len < gElements[i].radius) {
 			output.color = float4(1, 0, 0, 1);

@@ -314,31 +314,8 @@ void EarthRenderer::Initialize() {
 
 void EarthRenderer::Update() {
 
-	/// スクリーン座標系に変換
-	const Mat4& matVp = CameraManager::GetInstance()->GetMainCamera()->GetMatVp();
-
 	const Vec3& ownerPosition = GetOwner()->GetPosition();
-	// ワールド座標をクリップ空間に変換
-	Vec4 clipSpacePos = Vec4(Mat4::Transform(ownerPosition, matVp), 1.0f);
-
-
-	// 透視除算を行い、NDCに変換
-	if(clipSpacePos.w != 0.0f) { // w成分がゼロでないことを確認
-		Vec3 ndcPos = Vec3(
-			clipSpacePos.x / clipSpacePos.w,
-			clipSpacePos.y / clipSpacePos.w,
-			clipSpacePos.z / clipSpacePos.w
-		);
-
-		// NDCをスクリーン座標系に変換
-		Vec3 screenPos = Vec3(
-			(ndcPos.x * 0.5f + 0.5f) * 1280.0f,
-			(1.0f - (ndcPos.y * 0.5f + 0.5f)) * 720.0f,
-			ndcPos.z
-		);
-
-		position_ = Vec4(screenPos.x, screenPos.y, screenPos.z, 1.0f);
-	}
+	position_ = Vec4(ownerPosition.x, ownerPosition.y, ownerPosition.z, 1.0f);
 }
 
 void EarthRenderer::Draw() {
