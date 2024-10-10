@@ -4,14 +4,15 @@
 #include <memory>
 
 /// engine
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
 
 /// math
 #include "Math/Vector4.h"
 
-/// base
+/// components
 #include "ComponentManager/Base/BaseComponent.h"
-
+#include "ComponentManager/Transform/Transform.h"
 
 
 
@@ -33,11 +34,17 @@ public:
 	/// public : static methods
 	/// ===================================================
 
-	static void SInitialize(ID3D12GraphicsCommandList* commandList, uint32_t maxEntityNum);
+	static void SInitialize(
+		ID3D12GraphicsCommandList* commandList,
+		ONE::DxDescriptor* dxDescriptor,
+		uint32_t maxEntityNum
+	);
 	static void SFinalize();
 	
 	static void PreDraw();
 	static void PostDraw();
+
+	static void SetEarthTransform(Transform* _transform);
 
 	
 	/// ===================================================

@@ -88,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// custom class initializing
 	EarthRenderer::SInitialize(
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor(),
 		128u		/// 128体エンティティを出せる
 	);
 
@@ -155,6 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
+	EarthRenderer::SFinalize();;
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
 

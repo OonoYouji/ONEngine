@@ -1,8 +1,12 @@
 #include "EarthRenderer.h"
 
-/// objects
-#include "GameObjectManager/BaseGameObject.h"
+/// engine
+#include "Core/ONEngine.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
 
+/// objects
+#include "Objects/Camera/Manager/CameraManager.h"
+#include "GameObjectManager/BaseGameObject.h"
 
 
 
@@ -24,6 +28,7 @@ namespace {
 	/// 地球を描画するためのパイプライン
 	/// ===================================================
 	class EarthPipeline {
+		friend class EarthRenderer;
 	public:
 		/// ===================================================
 		/// public : methods
@@ -32,7 +37,7 @@ namespace {
 		EarthPipeline();
 		~EarthPipeline();
 
-		void Initialize(ID3D12GraphicsCommandList* commandList, uint32_t maxEntityNum);
+		void Initialize(ID3D12GraphicsCommandList* pCommandList_, ONE::DxDescriptor* dxDescriptor, uint32_t maxEntityNum);
 
 		void PreDraw();
 		void PostDraw();
@@ -49,11 +54,14 @@ namespace {
 		PipelineState::Shader          shader_{};
 
 		/// draw data
-		uint32_t maxEntityNum_;
+		uint32_t             maxEntityNum_;
 		std::vector<Element> elementArray_;
+		Model*               model_      = nullptr;
+		Transform*           pTransform_ = nullptr;
 
 		/// other class pointer
-		ID3D12GraphicsCommandList* pCommandList_ = nullptr;
+		ID3D12GraphicsCommandList* pCommandList_  = nullptr;
+		ONE::DxDescriptor*         pDxDescriptor_ = nullptr;
 
 	};
 
@@ -65,14 +73,18 @@ namespace {
 	EarthPipeline::EarthPipeline() {}
 	EarthPipeline::~EarthPipeline() {}
 
-	void EarthPipeline::Initialize(ID3D12GraphicsCommandList* commandList, uint32_t maxEntityNum) {
+	void EarthPipeline::Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor, uint32_t maxEntityNum) {
 
 		/// other class pointer setting
 		pCommandList_ = commandList;
 		assert(pCommandList_);
 
+		pDxDescriptor_ = dxDescriptor;
+		assert(pDxDescriptor_);
+
 		/// param setting
 		maxEntityNum_ = maxEntityNum;
+		model_        = ModelManager::Load("Sphere"); /// 地球用モデルが別にあるならそっちを読み込む
 
 
 		/// pipeline create
@@ -94,10 +106,10 @@ namespace {
 		pipelineState_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		/// Constant Buffer
-		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- tranform
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
+		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- tranform
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
-		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
+		//pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
 
 		/// Descriptor
 		pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
@@ -119,11 +131,21 @@ namespace {
 
 	void EarthPipeline::PostDraw() {
 		/// 描画する
-
 		pipelineState_->SetPipelineState();
 
 
+		CameraManager* cameraManager = CameraManager::GetInstance();
+		ID3D12Resource* viewBuffer = cameraManager->GetMainCamera()->GetViewBuffer();
 
+		pDxDescriptor_->SetSRVHeap(pCommandList_);
+		pipelineState_->SetPipelineState();
+
+		pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+		//pDirectionalLight_->BindToCommandList(3, pCommandList_);
+
+		pTransform_->BindTransform(pCommandList_, 1);
+		model_->DrawCall(pCommandList_, nullptr,2u,3u);
 
 	}
 
@@ -163,9 +185,9 @@ EarthRenderer::~EarthRenderer() {}
 /// public : static methods
 /// ===================================================
 
-void EarthRenderer::SInitialize(ID3D12GraphicsCommandList* commandList, uint32_t maxEntityNum) {
+void EarthRenderer::SInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor, uint32_t maxEntityNum) {
 	gPipeline.reset(new EarthPipeline);
-	gPipeline->Initialize(commandList, maxEntityNum);
+	gPipeline->Initialize(commandList, dxDescriptor, maxEntityNum);
 }
 
 void EarthRenderer::SFinalize() {
@@ -179,6 +201,10 @@ void EarthRenderer::PreDraw() {
 
 void EarthRenderer::PostDraw() {
 	gPipeline->PostDraw();
+}
+
+void EarthRenderer::SetEarthTransform(Transform* _transform) {
+	gPipeline->pTransform_ = _transform;
 }
 
 
