@@ -1,9 +1,16 @@
 #pragma once 
-#include<list>
 
-#include"Building.h"
-#include"Player/Player.h"
-#include <Component/Transform/Transform.h>
+/// std
+#include <list>
+
+/// objects
+#include "Objects/Building/Building.h"
+#include "Objects/Player/Player.h"
+
+/// components
+#include <ComponentManager/Transform/Transform.h>
+
+
 
 class BuildingManager:public BaseGameObject {
 private:

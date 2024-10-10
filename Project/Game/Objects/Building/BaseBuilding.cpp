@@ -1,20 +1,23 @@
 #include "BaseBuilding.h"
 
-#include <ModelManager.h>
+/// engine
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include "Input/Input.h"
 
-#include <Input.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
-#include <Component/Collider/SphereCollider.h>
-#include <Component/SplinePathRenderer/SplinePathRenderer.h>
-#include <Component/Collider/BoxCollider.h>
+/// components
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
+#include <ComponentManager/ParticleSystem/ParticleSystem.h>
+#include <ComponentManager/Collider/SphereCollider.h>
+#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
+#include <ComponentManager/Collider/BoxCollider.h>
 
-#include <ImGuiManager.h>
-#include"random/random.h"
+/// math
+#include "Math/Random.h"
 
 //object
-#include"Player/Player.h"
+#include "Objects/Player/Player.h"
 
 
 void BaseBuilding::Initialize() {
@@ -82,8 +85,8 @@ void BaseBuilding::RootUpdate() {
 void BaseBuilding::ParentInit(Player* player) {
 	/*theta_ = distTheta(gen);
 	phi_ = distPhi(gen);*/
-	speed_ = distSpeed(gen);
-	radius_ = distRadius(gen);
+	speed_  = Random::Float(0.1f, 0.25f);
+	radius_ = Random::Float(5.0f, 9.0f);
 	pTransform_->SetParent(player->GetbaseTransform());
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	

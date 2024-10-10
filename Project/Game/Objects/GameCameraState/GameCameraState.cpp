@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <numbers>
 
-#include "ImGuiManager.h"
-#include "Player/Player.h"
-#include "Graphics/Light/DirectionalLight.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include "Objects/Player/Player.h"
+#include "GraphicManager/Light/DirectionalLight.h"
 
 
 void GameCameraState::Initialize() {

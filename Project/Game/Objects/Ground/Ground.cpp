@@ -1,15 +1,13 @@
 #include "Ground.h"
 
-#include <ModelManager.h>
+/// engine
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include "Input/Input.h"
 
-#include <Input.h>
-#include <Component/MeshRenderer/MeshRenderer.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include <Particle/ParticleSystem.h>
-#include <Component/Collider/SphereCollider.h>
-#include <Component/SplinePathRenderer/SplinePathRenderer.h>
+/// components
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
 
-#include <ImGuiManager.h>
 
 
 void Ground::Initialize() {

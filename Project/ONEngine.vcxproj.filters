@@ -260,6 +260,24 @@
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Building\BaseBuilding.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\Building.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\BuildingManager.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Ground\Ground.cpp">
+      <Filter>Game\Objects\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Tornado\Tornado.cpp">
+      <Filter>Game\Objects\Tornado</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -453,6 +471,18 @@
     </Filter>
     <Filter Include="ONEngine\ComponentManager\ParticleSystem">
       <UniqueIdentifier>{8f5e1b53-bbfb-4a36-80f5-d4c951997927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Building">
+      <UniqueIdentifier>{ce0a28e1-20a2-472c-aca6-7a28bcf3880a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameCameraState">
+      <UniqueIdentifier>{6b87d0a9-a51c-4018-ba0a-21f943d602e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Ground">
+      <UniqueIdentifier>{7e02e7f7-98fb-4262-b771-5c5d46c49100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Tornado">
+      <UniqueIdentifier>{97dcb689-b407-48e4-8969-76a01cb26a9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -719,6 +749,24 @@
     </ClInclude>
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\BaseBuilding.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\Building.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\BuildingManager.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Ground\Ground.h">
+      <Filter>Game\Objects\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Tornado\Tornado.h">
+      <Filter>Game\Objects\Tornado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

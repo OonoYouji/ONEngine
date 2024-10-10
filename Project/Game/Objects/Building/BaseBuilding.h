@@ -1,12 +1,14 @@
 #pragma once
 
-#include <GameObjectManager.h>
-#include <Component/Transform/Transform.h>
-#include <Component/AudioSource/AudioSource.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
-#include<optional>
+/// std
+#include <optional>
+#include <ComponentManager/Transform/Transform.h>
+#include <ComponentManager/AudioSource/AudioSource.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 
-#include"Player/Player.h"
+/// objects
+#include "GameObjectManager/BaseGameObject.h"
+#include "Objects/Player/Player.h"
 
 class BaseBuilding : public BaseGameObject {
 public:
