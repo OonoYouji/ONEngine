@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include <Vector3.h>
+#include "Math/Vector3.h"
 
 /// ===================================================
 /// 三次元での回転を表すクラス

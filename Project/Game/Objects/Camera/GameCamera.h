@@ -1,7 +1,7 @@
 #pragma once
 
-#include <CameraManager.h>
-#include <Vector3.h>
+#include "Objects/Camera/Manager/CameraManager.h"
+#include "Math/Vector3.h"
 
 
 /// ===================================================

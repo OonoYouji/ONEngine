@@ -2,8 +2,9 @@
 
 #include "Scenes/Manager/BaseScene.h"
 
-#include "Player/Player.h"
-#include"Building/BuildingManager.h"
+#include "Objects/Player/Player.h"
+#include "Objects/Building/BuildingManager.h"
+
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
