@@ -1,0 +1,874 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\GameCamera.cpp">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_demo.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp">
+      <Filter>ONEngine\ImGuiManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Game.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Debug.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scenes\Scene_Clear.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Player.cpp">
+      <Filter>Game\Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp">
+      <Filter>Game\Objects\DemoObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\Core\ONEngine.cpp">
+      <Filter>ONEngine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\AudioManager\AudioClip.cpp">
+      <Filter>ONEngine\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\AudioManager\AudioManager.cpp">
+      <Filter>ONEngine\AudioManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\LoggingManager\Logger.cpp">
+      <Filter>ONEngine\LoggingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp">
+      <Filter>ONEngine\FrameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\FrameManager\Time.cpp">
+      <Filter>ONEngine\FrameManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\WindowManager\Console.cpp">
+      <Filter>ONEngine\WindowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\WindowManager\WinApp.cpp">
+      <Filter>ONEngine\WindowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp">
+      <Filter>Library\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\CollisionManager\CollisionManager.cpp">
+      <Filter>Library\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Easing.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Matrix3x3.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Matrix4x4.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Quaternion.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Random.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Vector2.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Vector3.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Math\Vector4.cpp">
+      <Filter>Library\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Input\Mouse.cpp">
+      <Filter>Library\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Input\Gamepad.cpp">
+      <Filter>Library\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Input\Input.cpp">
+      <Filter>Library\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\Input\Keyboard.cpp">
+      <Filter>Library\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandManager\CommandLineInterface.cpp">
+      <Filter>ONEngine\CommandManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandManager\Commands\BaseCommand.cpp">
+      <Filter>ONEngine\CommandManager\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp">
+      <Filter>ONEngine\CommandManager\Commands\CreateNewGameObjectCMD</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp">
+      <Filter>ONEngine\CommandManager\Commands\CreateNewCommandCMD</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp">
+      <Filter>ONEngine\ComponentManager\AudioSource</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp">
+      <Filter>ONEngine\ComponentManager\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp">
+      <Filter>ONEngine\ComponentManager\MeshRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp">
+      <Filter>ONEngine\ComponentManager\SplinePathRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp">
+      <Filter>ONEngine\ComponentManager\SpriteRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp">
+      <Filter>ONEngine\ComponentManager\Transform</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GameObjectManager\BaseGameObject.cpp">
+      <Filter>ONEngine\GameObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GameObjectManager\GameObjectManager.cpp">
+      <Filter>ONEngine\GameObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Floor\Floor.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line2D.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\LineDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\LineDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Material\Material.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp">
+      <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\Light\DirectionalLight.cpp">
+      <Filter>ONEngine\GraphicManager\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\PipelineState\PipelineState.cpp">
+      <Filter>ONEngine\GraphicManager\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.cpp">
+      <Filter>ONEngine\GraphicManager\PostEffect\Bloom</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.cpp">
+      <Filter>ONEngine\GraphicManager\RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.cpp">
+      <Filter>ONEngine\GraphicManager\RenderTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\SceneLayer\SceneLayer.cpp">
+      <Filter>ONEngine\GraphicManager\SceneLayer</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\TextureManager\Texture.cpp">
+      <Filter>ONEngine\GraphicManager\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp">
+      <Filter>ONEngine\GraphicManager\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\ModelManager\Model.cpp">
+      <Filter>ONEngine\GraphicManager\ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp">
+      <Filter>ONEngine\GraphicManager\ModelManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptor.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.cpp">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp">
+      <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\BaseBuilding.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\Building.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\BuildingManager.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Ground\Ground.cpp">
+      <Filter>Game\Objects\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Tornado\Tornado.cpp">
+      <Filter>Game\Objects\Tornado</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ONEngine">
+      <UniqueIdentifier>{614b6c8f-8302-4e3c-9c7c-2e93cdb2150a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{c9dc5f27-2b20-4d24-9883-7bad61004c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{8af808c5-eca5-4334-b83b-c7d7353036ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Model">
+      <UniqueIdentifier>{5ba0affc-c19d-4e47-bd0f-8ab6e6318811}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{16ef1da1-321e-44d1-8482-d88bd256d33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects">
+      <UniqueIdentifier>{3abca373-2425-49ed-adb3-129d0cae7142}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Camera">
+      <UniqueIdentifier>{cfd5df0c-e660-40ca-8bad-8127c86151bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Camera\Manager">
+      <UniqueIdentifier>{9e289f59-85c1-4105-abb6-fdddd87b8b04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals">
+      <UniqueIdentifier>{dda628e9-efba-4166-95bf-477032782464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals\imgui">
+      <UniqueIdentifier>{f607e672-bd36-4eb2-85b0-4691b97fb9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ImGuiManager">
+      <UniqueIdentifier>{fc0c0eb1-897c-4cee-b2e7-1b0b1f2f4202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes">
+      <UniqueIdentifier>{26b6aa1b-3b4a-4214-b77d-5edd7024a2a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scenes\Manager">
+      <UniqueIdentifier>{52971ea5-3cfa-4686-8b35-14d708cda332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Sprite">
+      <UniqueIdentifier>{9cb97157-f504-499e-97ba-f35a64f5082f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Floor">
+      <UniqueIdentifier>{cecdee0a-87dd-4e59-b255-45b7a2f97203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\BlendRenderTexture">
+      <UniqueIdentifier>{86999703-20b2-4a4a-be73-6989da8eaaee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Bloom">
+      <UniqueIdentifier>{446d8125-b2fb-4e40-9bb1-de9fbb6dbdbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\LuminanceExtraction">
+      <UniqueIdentifier>{525e09c4-611f-4ca1-9f28-f33125860867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Blur">
+      <UniqueIdentifier>{0851d2c1-686c-483b-9e71-f799821f7320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Line2D">
+      <UniqueIdentifier>{6c8223e7-cfe0-4272-bec0-1b8eb0aa8171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Player">
+      <UniqueIdentifier>{2aa1eb55-263f-4765-9e05-a0803a8cf8b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Particle">
+      <UniqueIdentifier>{8d19174c-3157-4edb-a865-9cc019fdc838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Line3D">
+      <UniqueIdentifier>{c9403f2f-1bfa-4bf2-858b-c24abc4a8864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\DemoObject">
+      <UniqueIdentifier>{ec9f3147-1404-4ab4-b4e9-57171c6a0e99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\Core">
+      <UniqueIdentifier>{3243d5bd-777a-4fd5-a6a2-973e0318d266}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\AudioManager">
+      <UniqueIdentifier>{7d0fc280-ddad-4c3b-bd1a-a1b72ad954ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager">
+      <UniqueIdentifier>{2cebce40-ad10-4d61-9b26-91e879ef13ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\LoggingManager">
+      <UniqueIdentifier>{8a6708dd-c149-4e8c-b62f-7afae548c7aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\FrameManager">
+      <UniqueIdentifier>{31f4694b-ae51-4838-979d-51870a164f22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\WindowManager">
+      <UniqueIdentifier>{b04566a3-be33-46ba-90dd-754a028bf064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{00a6786a-d36b-4d2b-ae92-f0740d48f4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\CollisionManager">
+      <UniqueIdentifier>{8fee3610-9de1-4716-9e4c-815252229365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Math">
+      <UniqueIdentifier>{b04932f2-0b5d-4c1e-b304-687a5ca2c0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\Input">
+      <UniqueIdentifier>{98592b42-b418-4c74-bd63-9fd27cc4ce2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\AudioSource">
+      <UniqueIdentifier>{8652ab31-c0af-425b-9735-de4864669e31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\Base">
+      <UniqueIdentifier>{d73cc795-a87c-4f3d-97c5-f188fe95f439}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\Collider">
+      <UniqueIdentifier>{484bc8aa-7d59-4258-b76b-cdf5cccfd4d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\MeshRenderer">
+      <UniqueIdentifier>{b12056b5-6bc6-44f3-949f-6e9c7c6776c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\SplinePathRenderer">
+      <UniqueIdentifier>{78180900-ca37-4841-a35f-3a854e5b0c2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\SpriteRenderer">
+      <UniqueIdentifier>{14abcb86-7d42-4f17-893a-2b24cf18c96c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\Transform">
+      <UniqueIdentifier>{18a59506-d551-4313-bbab-cd5476cfbe7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GameObjectManager">
+      <UniqueIdentifier>{d3a7313a-eb6a-4aec-b010-d445d0d06461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager">
+      <UniqueIdentifier>{d3d35a13-36cf-42a7-869d-99427924ea25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\PipelineState">
+      <UniqueIdentifier>{4a0b1795-325b-41ea-81da-f08e24fd4738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer">
+      <UniqueIdentifier>{23b41f41-b579-4c94-a15f-649d3f1cdc0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer\Mesh">
+      <UniqueIdentifier>{96560b34-24be-4b34-b602-2bf3e66bec39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer\Material">
+      <UniqueIdentifier>{e1a0e41f-2518-407e-97d5-292e059cf814}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer\Sprite">
+      <UniqueIdentifier>{de779581-725a-4994-b6f2-ab35b70adf9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer\Floor">
+      <UniqueIdentifier>{9120d4b4-d367-4cf4-aaeb-78781e034a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Drawer\LineDrawer">
+      <UniqueIdentifier>{aebf624c-4dfa-4d0b-8919-46aa9bc96cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\TextureManager">
+      <UniqueIdentifier>{a47df584-6006-4bbe-ada9-266ca3eeb47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\RenderTexture">
+      <UniqueIdentifier>{88a2e0c7-12d9-43ed-a766-f400cfb9cc26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\PostEffect">
+      <UniqueIdentifier>{d4448a0d-80dc-42f7-a8d2-e5a433eb4917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\PostEffect\Bloom">
+      <UniqueIdentifier>{518aaa63-c388-4cf8-b089-0fab17f62b3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\Light">
+      <UniqueIdentifier>{723e1a9d-a1a6-4da0-8269-7968f32263f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\SceneLayer">
+      <UniqueIdentifier>{7f028107-05cf-4636-9dd8-0119558e077c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\ModelManager">
+      <UniqueIdentifier>{f830665f-9da4-4f72-8237-bf549503d593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandManager">
+      <UniqueIdentifier>{de887281-f452-44dd-8b96-a34c6cc75812}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandManager\Commands">
+      <UniqueIdentifier>{b9abdd27-d1c1-41ac-a82e-2aa2441a4e7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD">
+      <UniqueIdentifier>{071b9e09-ee97-4d62-b0fe-69c168ca35d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD">
+      <UniqueIdentifier>{a15fa529-ea17-440b-9dea-f8246fdade05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\GraphicsEngine">
+      <UniqueIdentifier>{23adda66-b416-49d3-b474-cdb42cf2fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12">
+      <UniqueIdentifier>{3ab34915-d6b9-4ef8-be4a-7c877b0c6c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ONEngine\ComponentManager\ParticleSystem">
+      <UniqueIdentifier>{8f5e1b53-bbfb-4a36-80f5-d4c951997927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Building">
+      <UniqueIdentifier>{ce0a28e1-20a2-472c-aca6-7a28bcf3880a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\GameCameraState">
+      <UniqueIdentifier>{6b87d0a9-a51c-4018-ba0a-21f943d602e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Ground">
+      <UniqueIdentifier>{7e02e7f7-98fb-4262-b771-5c5d46c49100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Tornado">
+      <UniqueIdentifier>{97dcb689-b407-48e4-8969-76a01cb26a9f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h">
+      <Filter>Game\Objects\Camera\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\GameCamera.h">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imconfig.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_win32.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_internal.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_textedit.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h">
+      <Filter>ONEngine\ImGuiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Manager\BaseScene.h">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Manager\SceneManager.h">
+      <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Game.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Camera\DebugCamera.h">
+      <Filter>Game\Objects\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Debug.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Title.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Result.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scenes\Scene_Clear.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Player.h">
+      <Filter>Game\Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\DemoObject\DemoObject.h">
+      <Filter>Game\Objects\DemoObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\Core\ONEngine.h">
+      <Filter>ONEngine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
+      <Filter>ONEngine\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\AudioManager\AudioManager.h">
+      <Filter>ONEngine\AudioManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\LoggingManager\Logger.h">
+      <Filter>ONEngine\LoggingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\FrameManager\FrameFixation.h">
+      <Filter>ONEngine\FrameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\FrameManager\Time.h">
+      <Filter>ONEngine\FrameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\WindowManager\Console.h">
+      <Filter>ONEngine\WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\WindowManager\WinApp.h">
+      <Filter>ONEngine\WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\CollisionManager\CollisionChecker.h">
+      <Filter>Library\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\CollisionManager\CollisionManager.h">
+      <Filter>Library\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\CreateName.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Easing.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Matrix3x3.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Matrix4x4.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Quaternion.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Random.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Vector2.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Vector3.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Math\Vector4.h">
+      <Filter>Library\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Input\Mouse.h">
+      <Filter>Library\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Input\Gamepad.h">
+      <Filter>Library\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Input\Input.h">
+      <Filter>Library\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Input\Keyboard.h">
+      <Filter>Library\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandManager\CommandLineInterface.h">
+      <Filter>ONEngine\CommandManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandManager\Commands\BaseCommand.h">
+      <Filter>ONEngine\CommandManager\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h">
+      <Filter>ONEngine\CommandManager\Commands\CreateNewGameObjectCMD</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h">
+      <Filter>ONEngine\CommandManager\Commands\CreateNewCommandCMD</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h">
+      <Filter>ONEngine\ComponentManager\AudioSource</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h">
+      <Filter>ONEngine\ComponentManager\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h">
+      <Filter>ONEngine\ComponentManager\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h">
+      <Filter>ONEngine\ComponentManager\MeshRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h">
+      <Filter>ONEngine\ComponentManager\SplinePathRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h">
+      <Filter>ONEngine\ComponentManager\SpriteRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h">
+      <Filter>ONEngine\ComponentManager\Transform</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObjectManager\BaseGameObject.h">
+      <Filter>ONEngine\GameObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GameObjectManager\GameObjectManager.h">
+      <Filter>ONEngine\GameObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Floor\Floor.h">
+      <Filter>ONEngine\GraphicManager\Drawer\Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line2D.h">
+      <Filter>ONEngine\GraphicManager\Drawer\LineDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.h">
+      <Filter>ONEngine\GraphicManager\Drawer\LineDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Material\Material.h">
+      <Filter>ONEngine\GraphicManager\Drawer\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h">
+      <Filter>ONEngine\GraphicManager\Drawer\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h">
+      <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h">
+      <Filter>ONEngine\GraphicManager\Drawer\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\Light\DirectionalLight.h">
+      <Filter>ONEngine\GraphicManager\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\PipelineState\PipelineState.h">
+      <Filter>ONEngine\GraphicManager\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.h">
+      <Filter>ONEngine\GraphicManager\PostEffect\Bloom</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.h">
+      <Filter>ONEngine\GraphicManager\RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.h">
+      <Filter>ONEngine\GraphicManager\RenderTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\SceneLayer\SceneLayer.h">
+      <Filter>ONEngine\GraphicManager\SceneLayer</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\TextureManager\Texture.h">
+      <Filter>ONEngine\GraphicManager\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h">
+      <Filter>ONEngine\GraphicManager\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\ModelManager\Model.h">
+      <Filter>ONEngine\GraphicManager\ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h">
+      <Filter>ONEngine\GraphicManager\ModelManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptor.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.h">
+      <Filter>ONEngine\GraphicManager\GraphicsEngine\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h">
+      <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\BaseBuilding.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\Building.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\BuildingManager.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Ground\Ground.h">
+      <Filter>Game\Objects\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Tornado\Tornado.h">
+      <Filter>Game\Objects\Tornado</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\Model\Model.hlsli">
+      <Filter>Resources\Shaders\Model</Filter>
+    </None>
+    <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
+      <Filter>Resources\Shaders\Sprite</Filter>
+    </None>
+    <None Include="Resources\Shaders\Floor\Floor.hlsli">
+      <Filter>Resources\Shaders\Floor</Filter>
+    </None>
+    <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </None>
+    <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </None>
+    <None Include="Resources\Shaders\Blur\Blur.hlsli">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </None>
+    <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </None>
+    <None Include="Resources\Shaders\Particle\Particle.hlsli">
+      <Filter>Resources\Shaders\Particle</Filter>
+    </None>
+    <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
+      <Filter>Resources\Shaders\Line3D</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
+      <Filter>Resources\Shaders\Model</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
+      <Filter>Resources\Shaders\Model</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.PS.hlsl">
+      <Filter>Resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl">
+      <Filter>Resources\Shaders\Sprite</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
+      <Filter>Resources\Shaders\Floor</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
+      <Filter>Resources\Shaders\BlendRenderTexture</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.PS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
+      <Filter>Resources\Shaders\Bloom</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.PS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
+      <Filter>Resources\Shaders\LuminanceExtraction</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
+      <Filter>Resources\Shaders\Blur</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
+      <Filter>Resources\Shaders\Line2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.VS.hlsl">
+      <Filter>Resources\Shaders\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.PS.hlsl">
+      <Filter>Resources\Shaders\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.PS.hlsl">
+      <Filter>Resources\Shaders\Line3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
+      <Filter>Resources\Shaders\Line3D</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Externals\imgui\LICENSE.txt">
+      <Filter>Externals\imgui</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
