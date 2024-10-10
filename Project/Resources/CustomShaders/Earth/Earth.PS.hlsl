@@ -1,5 +1,21 @@
 #include "Earth.hlsli"
 
+/// ===================================================
+/// variable definition
+/// ===================================================
+struct Element {
+	float4 position;
+	float  radius;
+};
+
+struct ElementSize {
+	int size;
+};
+
+
+/// ===================================================
+/// variable declaration
+/// ===================================================
 cbuffer material : register(b0) {
 	float4 materialColor;
 	float4x4 uvTransform;
@@ -12,10 +28,15 @@ cbuffer directionalLight : register(b1) {
 	float intensity;
 }
 
-Texture2D<float4> gTexture : register(t0);
-SamplerState gSampler : register(s0);
+ConstantBuffer<ElementSize> gElementSize : register(b2);
+Texture2D<float4>           gTexture     : register(t0);
+SamplerState                gSampler     : register(s0);
+StructuredBuffer<Element>   gElements    : register(t1);
 
 
+/// ===================================================
+/// main()
+/// ===================================================
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
@@ -33,6 +54,17 @@ PSOutput main(VSOutput input) {
 		output.color = materialColor * texColor;
 	}
 	
+
+	/// elements
+	for (int i = 0; i < gElementSize.size; ++i) {
+		float3 diff = input.position.xyz - gElements[i].position.xyz;
+		float len = length(diff);
+		if (len < gElements[i].radius) {
+			output.color = float4(1, 0, 0, 1);
+		}
+
+	}
+
 	/// pixelの破棄
 	if (output.color.a == 0.0f) {
 		discard;

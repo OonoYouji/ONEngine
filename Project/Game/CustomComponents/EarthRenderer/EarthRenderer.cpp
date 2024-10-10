@@ -3,8 +3,12 @@
 /// engine
 #include "Core/ONEngine.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 /// objects
+#include "Objects/Camera/Manager/BaseCamera.h"
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/BaseGameObject.h"
 #include "GraphicManager/Light/DirectionalLight.h"
@@ -53,16 +57,38 @@ namespace {
 		std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 		PipelineState::Shader          shader_{};
 
-		/// draw data
-		uint32_t             maxEntityNum_;
-		std::vector<Element> elementArray_;
-		Model*               model_      = nullptr;
-
 		/// other class pointer
 		ID3D12GraphicsCommandList* pCommandList_      = nullptr;
 		ONE::DxDescriptor*         pDxDescriptor_     = nullptr;
 		Transform*                 pTransform_        = nullptr;
 		DirectionalLight*          pDirectionalLight_ = nullptr;
+
+		/// buffer dest data
+		uint32_t             maxEntityNum_;
+		uint32_t             currentEntityNum_;
+		std::vector<Element> elementArray_;
+		Model*               model_      = nullptr;
+
+		/// buffer resources
+		ComPtr<ID3D12Resource>      elementArrayBuffer_ = nullptr;
+		D3D12_CPU_DESCRIPTOR_HANDLE elementArrayCpuHandle_;
+		D3D12_GPU_DESCRIPTOR_HANDLE elementArrayGpuHandle_;
+
+		ComPtr<ID3D12Resource>      elementSizeBuffer_   = nullptr;
+
+		/// buffer mapping data
+		int*     elementSizeMappingData_  = nullptr;
+		Element* elementArrayMappingData_ = nullptr;
+
+		/// varable...
+		Mat4 matViewport_{
+			640.0f,   0.0f,    0.0f,  640.5f,
+			0.0f,   -360.0f,   0.0f,  360.5f,
+			0.0f,     0.0f,    1.0f,    0.0f,
+			0.0f,     0.0f,    0.0f,    1.0f
+		};
+
+
 
 	};
 
@@ -76,6 +102,10 @@ namespace {
 
 	void EarthPipeline::Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor, uint32_t maxEntityNum) {
 
+		/// ---------------------------------------------------
+		/// variable setting
+		/// ---------------------------------------------------
+
 		/// other class pointer setting
 		pCommandList_ = commandList;
 		assert(pCommandList_);
@@ -88,7 +118,10 @@ namespace {
 		model_        = ModelManager::Load("Sphere"); /// 地球用モデルが別にあるならそっちを読み込む
 
 
+		/// ---------------------------------------------------
 		/// pipeline create
+		/// ---------------------------------------------------
+
 		shader_.ShaderCompile(
 			L"../CustomShaders/Earth/Earth.VS.hlsl", L"vs_6_0",
 			L"../CustomShaders/Earth/Earth.PS.hlsl", L"ps_6_0"
@@ -111,17 +144,63 @@ namespace {
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- tranform
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
+		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2);	///- element size
 
 		/// Descriptor
 		pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 		/// SRV - Texture
 		pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 		pipelineState_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
+		/// SRV - Element
+		pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);
+
+
 		/// Pipeline Create
 		pipelineState_->Initialize();
 
+
+		/// ---------------------------------------------------
+		/// buffer create
+		/// ---------------------------------------------------
+
+		/// array - structured buffer
+		elementArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Element) * maxEntityNum_);
+
+		/// desc setting
+		D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
+		desc.Format                     = DXGI_FORMAT_UNKNOWN;
+		desc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		desc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
+		desc.Buffer.FirstElement        = 0;
+		desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
+		desc.Buffer.NumElements         = static_cast<UINT>(maxEntityNum_);
+		desc.Buffer.StructureByteStride = sizeof(Element);
+
+		/// cpu, gpu handle initialize
+		elementArrayCpuHandle_ = pDxDescriptor_->GetSrvCpuHandle();
+		elementArrayGpuHandle_ = pDxDescriptor_->GetSrvGpuHandle();
+		pDxDescriptor_->AddSrvUsedCount();
+
+		/// resource create
+		auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
+		dxDevice->GetDevice()->CreateShaderResourceView(elementArrayBuffer_.Get(), &desc, elementArrayCpuHandle_);
+
+
+		/// size - constant buffer
+		elementSizeBuffer_  = ONE::DxResourceCreator::CreateResource(sizeof(int));
+
+
+		/// ---------------------------------------------------
+		/// buffer mapping
+		/// ---------------------------------------------------
+
+		elementSizeBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&elementSizeMappingData_ ));
+		elementArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&elementArrayMappingData_));
+
+		*elementSizeMappingData_ = 0;
 
 	}
 
@@ -134,19 +213,28 @@ namespace {
 		/// 描画する
 		pipelineState_->SetPipelineState();
 
+		/// memcpy
+		std::memcpy(elementArrayMappingData_, elementArray_.data(), sizeof(Mat4) * elementArray_.size());
+		*elementSizeMappingData_ = static_cast<uint32_t>(elementArray_.size());
 
+		/// get other class pointer
 		CameraManager* cameraManager = CameraManager::GetInstance();
 		ID3D12Resource* viewBuffer = cameraManager->GetMainCamera()->GetViewBuffer();
 
+		/// default setting
 		pDxDescriptor_->SetSRVHeap(pCommandList_);
 		pipelineState_->SetPipelineState();
-
 		pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-		pDirectionalLight_->BindToCommandList(3, pCommandList_);
 
+		/// buffer setting
+		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 		pTransform_->BindTransform(pCommandList_, 1);
-		model_->DrawCall(pCommandList_, nullptr, 2u, 4u);
+		pDirectionalLight_->BindToCommandList(3, pCommandList_);
+		pCommandList_->SetGraphicsRootConstantBufferView(4, elementSizeBuffer_->GetGPUVirtualAddress());
+		pCommandList_->SetGraphicsRootDescriptorTable(6, elementArrayGpuHandle_);
+
+		/// buffer setting  and  draw call
+		model_->DrawCall(pCommandList_, nullptr, 2u, 5u);
 
 	}
 
@@ -154,7 +242,9 @@ namespace {
 	void EarthPipeline::AddElement(const Vec4& position, float radius) {
 
 		/// 上限に達していないかチェック
-		if(maxEntityNum_ >= elementArray_.size()) { return; }
+		if(maxEntityNum_ <= elementArray_.size()) { 
+			return;
+		}
 
 		/// 要素を追加
 		Element add{ .position = position, .radius = radius };
@@ -224,9 +314,31 @@ void EarthRenderer::Initialize() {
 
 void EarthRenderer::Update() {
 
-	const Vec3& ownerPosition = GetOwner()->GetTransform()->position;
-	position_ = Vec4(ownerPosition.x, ownerPosition.y, ownerPosition.z, 1.0f);
+	/// スクリーン座標系に変換
+	const Mat4& matVp = CameraManager::GetInstance()->GetMainCamera()->GetMatVp();
 
+	const Vec3& ownerPosition = GetOwner()->GetPosition();
+	// ワールド座標をクリップ空間に変換
+	Vec4 clipSpacePos = Vec4(Mat4::Transform(ownerPosition, matVp), 1.0f);
+
+
+	// 透視除算を行い、NDCに変換
+	if(clipSpacePos.w != 0.0f) { // w成分がゼロでないことを確認
+		Vec3 ndcPos = Vec3(
+			clipSpacePos.x / clipSpacePos.w,
+			clipSpacePos.y / clipSpacePos.w,
+			clipSpacePos.z / clipSpacePos.w
+		);
+
+		// NDCをスクリーン座標系に変換
+		Vec3 screenPos = Vec3(
+			(ndcPos.x * 0.5f + 0.5f) * 1280.0f,
+			(1.0f - (ndcPos.y * 0.5f + 0.5f)) * 720.0f,
+			ndcPos.z
+		);
+
+		position_ = Vec4(screenPos.x, screenPos.y, screenPos.z, 1.0f);
+	}
 }
 
 void EarthRenderer::Draw() {

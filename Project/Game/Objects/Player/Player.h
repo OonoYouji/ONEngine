@@ -72,5 +72,8 @@ private:
 
 	float rotateXAngle_;
 	float rotateYAngle_;
+
+	class EarthRenderer* er_ = nullptr; 
+	float radius_ = 1.0f;
 	
 };
