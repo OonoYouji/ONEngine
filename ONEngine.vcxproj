@@ -19,6 +19,7 @@
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Game\Easing\EasingFunction.cpp" />
+    <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\Building\BaseBuilding.cpp" />
     <ClCompile Include="Game\Objects\Building\Building.cpp" />
     <ClCompile Include="Game\Objects\Building\BuildingManager.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Game\Easing\EasingFunction.h" />
+    <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\Building\BaseBuilding.h" />
     <ClInclude Include="Game\Objects\Building\Building.h" />
     <ClInclude Include="Game\Objects\Building\BuildingManager.h" />

@@ -260,6 +260,9 @@
     <ClCompile Include="Game\Easing\EasingFunction.cpp">
       <Filter>Game\Easing</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Boss\Boss.cpp">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -450,6 +453,9 @@
     </Filter>
     <Filter Include="Game\Easing">
       <UniqueIdentifier>{e7dd9af8-0185-412a-ab4a-3e8fe21fe81a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\Boss">
+      <UniqueIdentifier>{3f553004-c2fe-45e6-8e32-cfe7d2f427bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -719,6 +725,9 @@
     </ClInclude>
     <ClInclude Include="Game\Easing\EasingFunction.h">
       <Filter>Game\Easing</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Boss\Boss.h">
+      <Filter>Game\Objects\Boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
