@@ -79,7 +79,7 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Tornado* tornade) {
-	speed_ = Random::Float(1.0f,0.25f);//回転スピード
+	speed_ = Random::Float(0.1f,0.25);//回転スピード
 	radius_ = Random::Float(2.0f,5.0f);//半径
 	pTransform_->SetParent(tornade->GetTransform());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
