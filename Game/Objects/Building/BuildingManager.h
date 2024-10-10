@@ -2,7 +2,7 @@
 #include<list>
 
 #include"Building.h"
-#include"Player/Player.h"
+#include"Tornado/Tornado.h"
 #include <Component/Transform/Transform.h>
 
 class BuildingManager:public BaseGameObject {
@@ -25,6 +25,6 @@ public:
 	void SpownBuilding(float theta, float phi);
 	//void 	Init();
 	void 	RemoveBuilding();
-	void 	BehaviorManagement(Player*player);
+	void 	BehaviorManagement(Tornado*player);
 	/*void 	Draw();*/
 };

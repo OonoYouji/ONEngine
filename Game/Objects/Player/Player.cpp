@@ -1,5 +1,5 @@
 #include "Player.h"
-
+#include"Building/BaseBuilding.h"
 
 #include <ModelManager.h>
 
@@ -173,6 +173,14 @@ void Player::BehaviorManagement() {
 		PowerUpUpdate();
 		break;
 	
+	}
+
+}
+
+void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<BaseBuilding*>(collision)) {
+		PowerUpGaugeUp(0.3f);
 	}
 
 }

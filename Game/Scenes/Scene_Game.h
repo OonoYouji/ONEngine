@@ -22,4 +22,5 @@ public:
 private:
 	BuildingManager* buildingManager_;
 	Player* player_ = nullptr;
+	Tornado* tornado_ = nullptr;
 };

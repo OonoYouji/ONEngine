@@ -14,7 +14,7 @@
 #include"random/random.h"
 
 //object
-#include"Player/Player.h"
+
 
 
 void BaseBuilding::Initialize() {
@@ -79,11 +79,10 @@ void BaseBuilding::RootUpdate() {
 
 }
 
-void BaseBuilding::ParentInit(Player* player) {
+void BaseBuilding::ParentInit(Tornado* tornade) {
 	speed_ = distSpeed(gen);//回転スピード
 	radius_ = distRadius(gen);//半径
-	pTransform_->SetParent(player->GetbaseTransform());//プレイヤーとペアレント
-	player->PowerUpGaugeUp(0.3f);
+	pTransform_->SetParent(tornade->GetTransform());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	
 }
@@ -99,7 +98,7 @@ void BaseBuilding::ParentUpdate() {
 }
 
 //振る舞い管理
-void BaseBuilding::BehaviorManagement(Player* player) {
+void BaseBuilding::BehaviorManagement(Tornado* tornado) {
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -110,7 +109,7 @@ void BaseBuilding::BehaviorManagement(Player* player) {
 			RootInit();
 			break;
 		case Behavior::kParent:
-			ParentInit(player);
+			ParentInit(tornado);
 			break;
 		}
 			// 振る舞いリクエストをリセット
@@ -154,5 +153,4 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 		isCollisionTyphoon_ = true;
 		behaviorRequest_ = Behavior::kParent;
 	}
-
 }

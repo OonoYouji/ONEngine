@@ -35,10 +35,10 @@ void BuildingManager::Debug() {
 }
 
 //プレイヤーとペアレント
-void  BuildingManager::BehaviorManagement(Player* player) {
+void  BuildingManager::BehaviorManagement(Tornado* tornado) {
 	for (BaseBuilding* building : buildings_) {
 
-		building->BehaviorManagement(player);
+		building->BehaviorManagement(tornado);
 	}
 }
 //リストから外す

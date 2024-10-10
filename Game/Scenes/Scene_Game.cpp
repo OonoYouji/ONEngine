@@ -31,7 +31,7 @@ void Scene_Game::Initialize() {
 	buildingManager_                  = new BuildingManager();
 	Ground* ground                    = new Ground;
 	GameCameraState* gameCameraState  = new GameCameraState();
-	Tornado* tornado                  = new Tornado();
+	tornado_                          = new Tornado();
 
 
 	/// ===================================================
@@ -41,7 +41,7 @@ void Scene_Game::Initialize() {
 	player_->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
-	tornado->Initialize();
+	tornado_->Initialize();
 	buildingManager_->Initialize();
 
 	
@@ -60,7 +60,7 @@ void Scene_Game::Initialize() {
 	buildingManager_->SpownBuilding(9, 4);
 	buildingManager_->SpownBuilding(9, 0);
 
-	tornado->SetPlayer(player_);
+	tornado_->SetPlayer(player_);
 
 }
 
@@ -69,12 +69,13 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
-	buildingManager_->BehaviorManagement(player_);
+	//ビルの振る舞い管理
+	buildingManager_->BehaviorManagement(tornado_);
 	//プレイヤーのゲージMaxでカメラズームアウト
 	if (player_->GetisPowerUp()) {
 		mainCamera_->SetBehaviorZoomOut();
 	}
+	//ズームイン
 	else if (!player_->GetisPowerUp()) {
 		mainCamera_->SetBehaviorZoomIn();
 	}

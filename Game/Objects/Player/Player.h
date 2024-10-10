@@ -20,6 +20,9 @@ public:
 	void Move();//移動
 	void BehaviorManagement();//振る舞い管理
 
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+
+
 	//振る舞い関数
 	void RootInit();
 	void RootUpdate();

@@ -91,10 +91,8 @@ void Tornado::Debug() {
 
 }
 
-
-
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
 
-	SetParent(pPlayer_->GetTransform());
+	SetParent(pPlayer_->GetbaseTransform());
 }
