@@ -9,6 +9,7 @@
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 
+
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Ground/Ground.h"
@@ -25,11 +26,11 @@ void Scene_Game::Initialize() {
 	/// ゲームオブジェクトの宣言
 	/// ===================================================
 
-	player_                           = new Player;
-	buildingManager_                  = new BuildingManager();
-	Ground* ground                    = new Ground;
-	GameCameraState* gameCameraState  = new GameCameraState();
-	Tornado* tornado                  = new Tornado();
+	player_ = new Player;
+	buildingManager_ = new BuildingManager();
+	Ground* ground = new Ground;
+	GameCameraState* gameCameraState = new GameCameraState();
+	tornado_ = new Tornado();
 
 
 	/// ===================================================
@@ -39,10 +40,10 @@ void Scene_Game::Initialize() {
 	player_->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
-	tornado->Initialize();
+	tornado_->Initialize();
 	buildingManager_->Initialize();
 
-	
+
 	/// ===================================================
 	/// その他 セットするべきものをここに
 	/// ===================================================
@@ -58,16 +59,24 @@ void Scene_Game::Initialize() {
 	buildingManager_->SpownBuilding(9, 4);
 	buildingManager_->SpownBuilding(9, 0);
 
-	tornado->SetPlayer(player_);
+	tornado_->SetPlayer(player_);
 
 }
+
 
 /// ===================================================
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
-	buildingManager_->ParentPlayer(player_);
-	
+	//ビルの振る舞い管理
+	buildingManager_->BehaviorManagement(tornado_);
+	//プレイヤーのゲージMaxでカメラズームアウト
+	if (player_->GetisPowerUp()) {
+		mainCamera_->SetBehaviorZoomOut();
+	}
+	//ズームイン
+	else if (!player_->GetisPowerUp()) {
+		mainCamera_->SetBehaviorZoomIn();
+	}
 
 }

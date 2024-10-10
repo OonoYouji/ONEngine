@@ -7,7 +7,7 @@
 /// engine
 #include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
-#include "Input/Input.h"
+#include <Input/Input.h>
 
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
@@ -91,10 +91,8 @@ void Tornado::Debug() {
 
 }
 
-
-
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
 
-	SetParent(pPlayer_->GetTransform());
+	SetParent(pPlayer_->GetbaseTransform());
 }

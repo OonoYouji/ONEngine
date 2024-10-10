@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Scenes/Manager/BaseScene.h"
+#include"Game/Scenes/Manager/BaseScene.h"
+
 
 #include "Objects/Player/Player.h"
-#include "Objects/Building/BuildingManager.h"
-
+#include"Objects/Building/BuildingManager.h"
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -20,4 +20,5 @@ public:
 private:
 	BuildingManager* buildingManager_;
 	Player* player_ = nullptr;
+	Tornado* tornado_ = nullptr;
 };

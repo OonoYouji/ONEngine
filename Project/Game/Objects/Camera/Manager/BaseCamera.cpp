@@ -4,7 +4,6 @@
 #include <format>
 
 #include "WindowManager/WinApp.h"
-
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 #include "ImGuiManager/ImGuiManager.h"

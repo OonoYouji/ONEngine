@@ -1,14 +1,13 @@
 #pragma once
 
-/// std
-#include <optional>
+#include "GameObjectManager/GameObjectManager.h"
 #include <ComponentManager/Transform/Transform.h>
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-
-/// objects
-#include "GameObjectManager/BaseGameObject.h"
-#include "Objects/Player/Player.h"
+#include<optional>
+//obj
+#include"Objects/Tornado/Tornado.h"
+#include"Objects/Player/Player.h"
 
 class BaseBuilding : public BaseGameObject {
 public:
@@ -24,9 +23,9 @@ public:
 	//振る舞い関数
 	void RootInit();
 	void RootUpdate();
-	void ParentInit(Player* player);
+	void ParentInit(Tornado* tornade);
 	void ParentUpdate();
-	void BehaviorManagement(Player* player);
+	void BehaviorManagement(Tornado* tornade);
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 

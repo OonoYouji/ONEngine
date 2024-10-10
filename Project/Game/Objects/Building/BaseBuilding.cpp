@@ -1,23 +1,19 @@
 #include "BaseBuilding.h"
 
-/// engine
-#include "GraphicManager/ModelManager/ModelManager.h"
-#include "ImGuiManager/ImGuiManager.h"
-#include "Input/Input.h"
+#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
-/// components
+#include "Input/Input.h"
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include <ComponentManager/ParticleSystem/ParticleSystem.h>
 #include <ComponentManager/Collider/SphereCollider.h>
-#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 #include <ComponentManager/Collider/BoxCollider.h>
+#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 
-/// math
-#include "Math/Random.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include"Math/Random.h"
 
 //object
-#include "Objects/Player/Player.h"
+
 
 
 void BaseBuilding::Initialize() {
@@ -82,12 +78,10 @@ void BaseBuilding::RootUpdate() {
 
 }
 
-void BaseBuilding::ParentInit(Player* player) {
-	/*theta_ = distTheta(gen);
-	phi_ = distPhi(gen);*/
-	speed_  = Random::Float(0.1f, 0.25f);
-	radius_ = Random::Float(5.0f, 9.0f);
-	pTransform_->SetParent(player->GetbaseTransform());
+void BaseBuilding::ParentInit(Tornado* tornade) {
+	speed_ = Random::Float(0.1f,0.25);//回転スピード
+	radius_ = Random::Float(2.0f,5.0f);//半径
+	pTransform_->SetParent(tornade->GetTransform());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	
 }
@@ -103,7 +97,7 @@ void BaseBuilding::ParentUpdate() {
 }
 
 //振る舞い管理
-void BaseBuilding::BehaviorManagement(Player* player) {
+void BaseBuilding::BehaviorManagement(Tornado* tornado) {
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -114,7 +108,7 @@ void BaseBuilding::BehaviorManagement(Player* player) {
 			RootInit();
 			break;
 		case Behavior::kParent:
-			ParentInit(player);
+			ParentInit(tornado);
 			break;
 		}
 			// 振る舞いリクエストをリセット
@@ -158,5 +152,4 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 		isCollisionTyphoon_ = true;
 		behaviorRequest_ = Behavior::kParent;
 	}
-
 }
