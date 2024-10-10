@@ -24,7 +24,6 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-
 	void SetPlayer(Player* _player);
 
 private:

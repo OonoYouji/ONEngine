@@ -27,7 +27,6 @@ void Tornado::Initialize() {
 
 	quaternionLocalX_ = Quaternion::MakeFromAxis(Vec3::kRight, -std::numbers::pi_v<float> / 2.0f);
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
-
 	/// action param initialize
 	eacSpeed_    = 0.7f;
 
@@ -54,7 +53,6 @@ void Tornado::Update() {
 	quaternionLocalY_       = Quaternion::MakeFromAxis(Vec3::kUp, localYAngle_);
 	pTransform_->quaternion = quaternionLocalX_ * quaternionLocalY_;
 	pTransform_->scale      = Vec3::kOne * scaleScaler_;
-
 }
 
 
@@ -88,11 +86,11 @@ void Tornado::Debug() {
 
 		ImGui::TreePop();
 	}
-
 }
 
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
 
 	SetParent(pPlayer_->GetbaseTransform());
+	
 }

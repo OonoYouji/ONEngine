@@ -41,7 +41,4 @@ void  BuildingManager::BehaviorManagement(Tornado* tornado) {
 		building->BehaviorManagement(tornado);
 	}
 }
-//リストから外す
-void BuildingManager::RemoveBuilding() {
 
-}

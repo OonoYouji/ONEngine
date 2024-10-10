@@ -13,19 +13,17 @@
 #include"Math/Random.h"
 
 //object
-
+#include"FrameManager/Time.h"
 
 
 void BaseBuilding::Initialize() {
 
-	Model* model=ModelManager::Load("TestObject");
+	Model* model = ModelManager::Load("TestObject");
 
 
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->SetModel(model);
-
 	auto collider = AddComponent<BoxCollider>(model);
-
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,24 +35,24 @@ void BaseBuilding::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
 	pTransform_->position = { 0,0,-14 };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
-	ofsetX = 0.67f;
-	ofsetY = -1.26f;
+	ofsetX = -0.14f;
+	ofsetY = -1.10f;
 	behaviorRequest_ = Behavior::kRoot;
 	////////////////////////////////////////////////////////////////////////////////////////////
-    //  ペアレント
-    ////////////////////////////////////////////////////////////////////////////////////////////
+	//  ペアレント
+	////////////////////////////////////////////////////////////////////////////////////////////
 	pTransform_->SetParent(&pivot_);
 	pivot_.UpdateMatrix();
 
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
-	
+
 }
 
 void BaseBuilding::Update() {
 
 	//タイフーンと合体
-	if (isCollisionTyphoon_&&behavior_!=Behavior::kParent) {
+	if (isCollisionTyphoon_ && behavior_ != Behavior::kParent) {
 		behaviorRequest_ = Behavior::kParent;
 	}
 	//ピボット更新
@@ -63,7 +61,7 @@ void BaseBuilding::Update() {
 }
 
 void BaseBuilding::Debug() {
-	if (ImGui::TreeNode("pivot")) {	
+	if (ImGui::TreeNode("pivot")) {
 		ImGui::DragFloat("rotateXAngle", &ofsetX, 0.01f);
 		ImGui::DragFloat("rotateYAngle", &ofsetY, 0.01f);
 		ImGui::TreePop();
@@ -79,19 +77,19 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Tornado* tornade) {
-	speed_ = Random::Float(0.1f,0.25);//回転スピード
-	radius_ = Random::Float(2.0f,5.0f);//半径
-	pTransform_->SetParent(tornade->GetTransform());//取るね――ドペアレント
+	speed_ = Random::Float(3.0f, 5.0f);//回転スピード
+	radius_ = Random::Float(-1.0f, 1.0f);//半径
+	pTransform_->SetParent(tornade->GetParent());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
-	
+
 }
-void BaseBuilding::ParentUpdate() {
+void BaseBuilding::ParentUpdate(Tornado* tornade) {
 	// 球面座標から位置を計算
-	
-	theta_ += speed_;
-	phi_ += speed_;
-	float x = ofsetX+ radius_ * sin( theta_) * cos(phi_);
-	float y = ofsetY+ radius_ * sin(theta_) * sin(phi_);
+
+	theta_ += speed_ * Time::DeltaTime();
+	phi_ += speed_ * Time::DeltaTime();
+	float x = ofsetX + (tornade->GetTransform()->scale.x + radius_) * sin(theta_) * cos(phi_);
+	float y = ofsetY + (tornade->GetTransform()->scale.y + radius_) * sin(theta_) * sin(phi_);
 	/*float z = radius * cos(theta_);*/
 	pTransform_->position = { x,y,-10 };
 }
@@ -111,21 +109,19 @@ void BaseBuilding::BehaviorManagement(Tornado* tornado) {
 			ParentInit(tornado);
 			break;
 		}
-			// 振る舞いリクエストをリセット
-			behaviorRequest_ = std::nullopt;
-		}
-		// 振る舞い更新
-		switch (behavior_) {
-		case Behavior::kRoot: 
-		default:
-			RootUpdate();
-			break;
-		case Behavior::kParent: 
-			ParentUpdate();
-			break;
-
-		}
-	
+		// 振る舞いリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+	// 振る舞い更新
+	switch (behavior_) {
+	case Behavior::kRoot:
+	default:
+		RootUpdate();
+		break;
+	case Behavior::kParent:
+		ParentUpdate(tornado);
+		break;
+	}
 }
 
 Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
@@ -147,9 +143,14 @@ Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, floa
 }
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	
-	if (dynamic_cast<Player*>(collision)&&!isCollisionTyphoon_) {
+
+	if (dynamic_cast<Player*>(collision) && !isCollisionTyphoon_) {
 		isCollisionTyphoon_ = true;
 		behaviorRequest_ = Behavior::kParent;
 	}
 }
+
+////トルネードセット
+//void BaseBuilding::SetTornado(Tornado* tornado) {
+//	pTornado_ = tornado;
+//}

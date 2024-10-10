@@ -11,6 +11,8 @@ private:
 	std::list<BaseBuilding*> buildings_;
 	Vec3 spownPos_;
 	Vec3 basePos_;
+	////トルネード
+	//Tornado* pTornado_;
 
 public:
 	

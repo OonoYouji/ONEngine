@@ -17,14 +17,15 @@ public:
 
 	virtual	void Initialize()override;
 	virtual	void Update() override;
-
 	virtual void Debug() override;
+	//セットトルネード
+	/*void SetTornado(Tornado* tornado);*/
 
 	//振る舞い関数
 	void RootInit();
 	void RootUpdate();
 	void ParentInit(Tornado* tornade);
-	void ParentUpdate();
+	void ParentUpdate(Tornado* tornade);
 	void BehaviorManagement(Tornado* tornade);
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
@@ -62,4 +63,6 @@ private:
 	// //ピボット
 	Transform pivot_;
 	AudioSource* audioSource_ = nullptr;
+	//トルネード
+	/*Tornado* pTornado_;*/
 };
