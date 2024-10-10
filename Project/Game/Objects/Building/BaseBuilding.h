@@ -1,13 +1,13 @@
 #pragma once
 
-#include <GameObjectManager.h>
-#include <Component/Transform/Transform.h>
-#include <Component/AudioSource/AudioSource.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
+#include "GameObjectManager/GameObjectManager.h"
+#include <ComponentManager/Transform/Transform.h>
+#include <ComponentManager/AudioSource/AudioSource.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include<optional>
 //obj
-#include"Tornado/Tornado.h"
-#include"Player/Player.h"
+#include"Objects/Tornado/Tornado.h"
+#include"Objects/Player/Player.h"
 
 class BaseBuilding : public BaseGameObject {
 public:

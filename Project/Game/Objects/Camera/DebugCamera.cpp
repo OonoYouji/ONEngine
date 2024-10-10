@@ -1,6 +1,6 @@
-#include <DebugCamera.h>
+#include"DebugCamera.h"
 
-#include <CameraManager.h>
+#include"Objects/Camera/Manager/CameraManager.h"
 #include <Input.h>
 #include <ImGuiManager.h>
 

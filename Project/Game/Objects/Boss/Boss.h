@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GameObjectManager.h>
+#include "GameObjectManager/GameObjectManager.h"
 
-#include <Component/AudioSource/AudioSource.h>
-#include <Component/SpriteRenderer/SpriteRenderer.h>
+#include <ComponentManager/AudioSource/AudioSource.h>
+#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 //std
 #include<optional>
 

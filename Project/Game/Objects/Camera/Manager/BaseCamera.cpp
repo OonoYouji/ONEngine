@@ -1,14 +1,14 @@
 #define NOMINMAX
-#include <BaseCamera.h>
+#include "BaseCamera.h"
 
 #include <format>
 
-#include <WinApp.h>
-#include <DxResourceCreator.h>
+#include "WindowManager/WinApp.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
-#include <ImGuiManager.h>
-#include <Time/Time.h>
-#include <Easing.h>
+#include "ImGuiManager/ImGuiManager.h"
+#include "FrameManager/Time.h"
+#include "Math/Easing.h"
 
 namespace {
 
