@@ -86,7 +86,7 @@ private:
 	/// private : static objects
 	/// ===================================================
 
-	static std::unique_ptr<class ParticlePipeline> sPipeline_;
+	static std::unique_ptr<class ParticlePipeline> gPipeline;
 
 
 	/// ===================================================

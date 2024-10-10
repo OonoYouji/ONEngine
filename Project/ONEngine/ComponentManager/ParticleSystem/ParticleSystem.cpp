@@ -22,7 +22,7 @@
 
 
 /// static object intialize
-std::unique_ptr<ParticlePipeline> ParticleSystem::sPipeline_ = nullptr;
+std::unique_ptr<ParticlePipeline> ParticleSystem::gPipeline = nullptr;
 
 
 
@@ -37,14 +37,14 @@ ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& fileP
 
 
 void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_, ONE::DxDescriptor* dxDescriptor) {
-	if(!sPipeline_) {
-		sPipeline_.reset(new ParticlePipeline);
-		sPipeline_->Initialize(pCommandList_, dxDescriptor);
+	if(!gPipeline) {
+		gPipeline.reset(new ParticlePipeline);
+		gPipeline->Initialize(pCommandList_, dxDescriptor);
 	}
 }
 
 void ParticleSystem::SFinalize() {
-	sPipeline_.reset();
+	gPipeline.reset();
 }
 
 
@@ -154,7 +154,7 @@ void ParticleSystem::Draw() {
 	if(particleInstanceCount_ > 0) {
 		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
 
-		sPipeline_->Draw(gpuHandle_, pModel_, particleInstanceCount_);
+		gPipeline->Draw(gpuHandle_, pModel_, particleInstanceCount_);
 	}
 }
 
