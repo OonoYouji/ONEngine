@@ -7,6 +7,7 @@
 
 //function
 #include"Easing/EasingFunction.h"
+#include<Time/Time.h>
 
 GameCamera::GameCamera(const std::string& name) {
 	CreateTag(this);
@@ -26,7 +27,7 @@ void GameCamera::Initialize() {
 	//transform_.position = { 0.0f, 3.8f, -6.49f * 2 };
 	//transform_.rotate.x = 0.26f;
 	//パラメータセット
-	easeTMax_ = 0.5f;
+	easeTMax_ = 0.7f;
 	zoomOutMax_ = -30.0f;
 	zoomInMax_ = 0.0f;
 
@@ -60,7 +61,7 @@ void GameCamera::ZoomInInit() {
 	easeT_ = 0.0f;
 }
 void GameCamera::ZoomInUpdate() {
-	easeT_ += 0.01f;//デルタタイムにしたい
+	easeT_ +=Time::DeltaTime();//デルタタイムにしたい
 	if (easeT_ >= easeTMax_) {
 		easeT_ = easeTMax_;
 	}
@@ -75,7 +76,7 @@ void GameCamera::ZoomOutInit() {
 }
 
 void GameCamera::ZoomOutUpdate() {
-	easeT_ += 0.01f;//デルタタイムにしたい
+	easeT_ += Time::DeltaTime();//デルタタイムにしたい
 	if (easeT_ >= easeTMax_) {
 		easeT_ = easeTMax_;
 	}

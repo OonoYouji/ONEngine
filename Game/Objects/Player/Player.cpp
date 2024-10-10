@@ -12,7 +12,7 @@
 #include <Component/SplinePathRenderer/SplinePathRenderer.h>
 
 #include <ImGuiManager.h>
-
+#include<Time/Time.h>
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("axis");
@@ -35,7 +35,7 @@ void Player::Initialize() {
 	pTransform_->position.z = -12;
 	transoform_.position.z=-12;
 	powerUpGaugeMax_ = 100;
-	powerUpTimeMax_ = 120.0f;//デルタタイムにする場合直す
+	powerUpTimeMax_ = 5.0f;//秒
 	/*SetPositionZ(-1.0f);*/
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -104,7 +104,7 @@ void Player::PowerUpInit() {
 	powerUpTime_ = powerUpTimeMax_;
 }
 void Player::PowerUpUpdate() {
-	powerUpTime_--;//デルタタイムに直す
+	powerUpTime_-=Time::DeltaTime();//デルタタイムに直す
 	if (powerUpTime_ <= 0) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
