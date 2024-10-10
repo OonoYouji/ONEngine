@@ -5,10 +5,8 @@
 
 #include "Input/Input.h"
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
-#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
-#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
 #include "ImGuiManager/ImGuiManager.h"
 
@@ -20,6 +18,9 @@ void Player::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
+
+	er_ = AddComponent<EarthRenderer>();
+	er_->SetRadius(radius_);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -54,7 +55,13 @@ void Player::Initialize() {
 }
 
 void Player::Update() {
+  
 	behavior_->Update();
+	BehaviorManagement();//振る舞い管理
+
+	er_->SetRadius(radius_);
+	er_->SetColor(paintOutColor_);
+ 
 	Move();//移動
 
 	pivot_.Update();
@@ -135,6 +142,11 @@ void Player::Debug() {
 		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
 		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
 		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 
 		ImGui::TreePop();
 	}

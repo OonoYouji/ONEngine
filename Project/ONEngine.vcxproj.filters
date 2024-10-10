@@ -295,6 +295,8 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp">
       <Filter>Game\Objects\PlayerBehavior</Filter>
+    <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp">
+      <Filter>Game\CustomComponents\EarthRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -513,6 +515,17 @@
     </Filter>
     <Filter Include="Game\Objects\PlayerBehavior">
       <UniqueIdentifier>{f20f7262-2e45-4d03-b175-e5685c16833f}</UniqueIdentifier>
+    <Filter Include="Game\CustomComponents">
+      <UniqueIdentifier>{bdea856e-764a-4801-88dc-b2884d6a5cee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CustomComponents\EarthRenderer">
+      <UniqueIdentifier>{f7e5cd01-88ca-4727-9d96-24a9fd31b23a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\CustomShaders">
+      <UniqueIdentifier>{4aec4207-94b0-4e56-aedd-10d69762b1cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\CustomShaders\Earth">
+      <UniqueIdentifier>{8e3f678e-21c3-4bac-aeb6-3ddb9016571c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -815,6 +828,8 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h">
       <Filter>Game\Objects\PlayerBehavior</Filter>
+    <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h">
+      <Filter>Game\CustomComponents\EarthRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -847,6 +862,9 @@
     </None>
     <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
       <Filter>Resources\Shaders\Line3D</Filter>
+    </None>
+    <None Include="Resources\CustomShaders\Earth\Earth.hlsli">
+      <Filter>Resources\CustomShaders\Earth</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -912,6 +930,12 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
       <Filter>Resources\Shaders\Line3D</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\CustomShaders\Earth\Earth.PS.hlsl">
+      <Filter>Resources\CustomShaders\Earth</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\CustomShaders\Earth\Earth.VS.hlsl">
+      <Filter>Resources\CustomShaders\Earth</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

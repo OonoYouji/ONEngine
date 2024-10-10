@@ -18,6 +18,7 @@
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp" />
     <ClCompile Include="Game\Easing\EasingFunction.cpp" />
     <ClCompile Include="Game\Objects\BossBehavior\BaseBossBehavior.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
+    <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h" />
     <ClInclude Include="Game\Easing\EasingFunction.h" />
     <ClInclude Include="Game\Objects\BossBehavior\BaseBossBehavior.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
@@ -214,6 +216,10 @@
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\CustomShaders\Earth\Earth.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -256,6 +262,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\CustomShaders\Earth\Earth.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\CustomShaders\Earth\Earth.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

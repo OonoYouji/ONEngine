@@ -7,21 +7,23 @@
 
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
-
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
 
 void Ground::Initialize() {
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	pTransform_->rotateOrder = QUATERNION;
-	pTransform_->quaternion = { 0,0,0,1 };
-	meshRenderer->SetModel("Sphere");
-	meshRenderer->SetMaterial("uvChecker");
+	//auto meshRenderer = AddComponent<MeshRenderer>();
+	//meshRenderer->SetModel("Sphere");
+	//meshRenderer->SetMaterial("uvChecker");
 
-	//auto particle = AddComponent<ParticleSystem>(12, "Sphere");
-	//AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	auto er = AddComponent<EarthRenderer>();
+	er->SetEarthTransform(pTransform_);
+
+	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->rotateOrder = QUATERNION;
+
 	pTransform_->scale = { 11,11,11 };
-	/*SetPositionZ(10.0f);*/
 	UpdateMatrix();
+
 }
 
 void Ground::Update() {
