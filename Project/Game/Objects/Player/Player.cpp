@@ -56,6 +56,7 @@ void Player::Initialize() {
 void Player::Update() {
 
 	er_->SetRadius(radius_);
+	er_->SetColor(paintOutColor_);
 
 
 	BehaviorManagement();//振る舞い管理
@@ -147,7 +148,8 @@ void Player::Debug() {
 
 		ImGui::Spacing();
 
-		ImGui::DragFloat("radius", &radius_, 0.5f);
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 
 		ImGui::TreePop();
 	}

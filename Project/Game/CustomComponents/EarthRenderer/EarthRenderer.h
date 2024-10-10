@@ -65,6 +65,12 @@ public:
 	/// <param name="_radius"></param>
 	void SetRadius(float _radius);
 
+	/// <summary>
+	/// 色の設定
+	/// </summary>
+	/// <param name="color">: 塗りつぶす色 </param>
+	void SetColor(const Vec4& _color);
+
 private:
 
 	/// ===================================================
@@ -72,6 +78,6 @@ private:
 	/// ===================================================
 
 	Vec4  position_;
+	Vec4  color_;
 	float radius_;
-
 };

@@ -5,6 +5,7 @@
 /// ===================================================
 struct Element {
 	float4 position;
+	float4 color;
 	float  radius;
 };
 
@@ -60,7 +61,7 @@ PSOutput main(VSOutput input) {
 		float3 diff = input.wPosition.xyz - gElements[i].position.xyz;
 		float len = length(diff);
 		if (len < gElements[i].radius) {
-			output.color = float4(1, 0, 0, 1);
+			output.color = gElements[i].color;
 		}
 
 	}

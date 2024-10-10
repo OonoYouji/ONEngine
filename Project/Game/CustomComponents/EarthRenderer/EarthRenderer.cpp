@@ -24,6 +24,7 @@ namespace {
 	/// ===================================================
 	struct Element {
 		Vec4  position;
+		Vec4  color;
 		float radius;
 	};
 
@@ -46,7 +47,7 @@ namespace {
 		void PreDraw();
 		void PostDraw();
 
-		void AddElement(const Vec4& position, float radius);
+		void AddElement(const Vec4& position, const Vec4& color, float radius);
 
 	private:
 		/// ===================================================
@@ -239,7 +240,7 @@ namespace {
 	}
 
 
-	void EarthPipeline::AddElement(const Vec4& position, float radius) {
+	void EarthPipeline::AddElement(const Vec4& position, const Vec4& color, float radius) {
 
 		/// 上限に達していないかチェック
 		if(maxEntityNum_ <= elementArray_.size()) { 
@@ -247,7 +248,7 @@ namespace {
 		}
 
 		/// 要素を追加
-		Element add{ .position = position, .radius = radius };
+		Element add{ .position = position, .color = color, .radius = radius };
 		elementArray_.push_back(add);
 	}
 
@@ -309,7 +310,8 @@ void EarthRenderer::SetDirectionalLight(DirectionalLight* _directionalLight) {
 
 void EarthRenderer::Initialize() {
 	position_ = { 0, 0, 0, 1 };
-	radius_ = 10.0f;
+	color_    = Vec4::kRed;
+	radius_   = 10.0f;
 }
 
 void EarthRenderer::Update() {
@@ -319,9 +321,14 @@ void EarthRenderer::Update() {
 }
 
 void EarthRenderer::Draw() {
-	gPipeline->AddElement(position_, radius_);
+	gPipeline->AddElement(position_, color_, radius_);
 }
+
 
 void EarthRenderer::SetRadius(float _radius) {
 	radius_ = _radius;
+}
+
+void EarthRenderer::SetColor(const Vec4& _color) {
+	color_ = _color;
 }

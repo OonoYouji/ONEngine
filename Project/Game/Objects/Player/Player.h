@@ -75,5 +75,6 @@ private:
 
 	class EarthRenderer* er_ = nullptr; 
 	float radius_ = 1.0f;
+	Vec4  paintOutColor_ = {1,1,1,1};
 	
 };
