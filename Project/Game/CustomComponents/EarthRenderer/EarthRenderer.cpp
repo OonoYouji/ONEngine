@@ -7,7 +7,7 @@
 /// objects
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/BaseGameObject.h"
-
+#include "GraphicManager/Light/DirectionalLight.h"
 
 
 /// ===================================================
@@ -57,11 +57,12 @@ namespace {
 		uint32_t             maxEntityNum_;
 		std::vector<Element> elementArray_;
 		Model*               model_      = nullptr;
-		Transform*           pTransform_ = nullptr;
 
 		/// other class pointer
-		ID3D12GraphicsCommandList* pCommandList_  = nullptr;
-		ONE::DxDescriptor*         pDxDescriptor_ = nullptr;
+		ID3D12GraphicsCommandList* pCommandList_      = nullptr;
+		ONE::DxDescriptor*         pDxDescriptor_     = nullptr;
+		Transform*                 pTransform_        = nullptr;
+		DirectionalLight*          pDirectionalLight_ = nullptr;
 
 	};
 
@@ -109,7 +110,7 @@ namespace {
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- tranform
 		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
-		//pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
+		pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
 
 		/// Descriptor
 		pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
@@ -142,10 +143,10 @@ namespace {
 
 		pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-		//pDirectionalLight_->BindToCommandList(3, pCommandList_);
+		pDirectionalLight_->BindToCommandList(3, pCommandList_);
 
 		pTransform_->BindTransform(pCommandList_, 1);
-		model_->DrawCall(pCommandList_, nullptr,2u,3u);
+		model_->DrawCall(pCommandList_, nullptr, 2u, 4u);
 
 	}
 
@@ -205,6 +206,10 @@ void EarthRenderer::PostDraw() {
 
 void EarthRenderer::SetEarthTransform(Transform* _transform) {
 	gPipeline->pTransform_ = _transform;
+}
+
+void EarthRenderer::SetDirectionalLight(DirectionalLight* _directionalLight) {
+	gPipeline->pDirectionalLight_ = _directionalLight;
 }
 
 

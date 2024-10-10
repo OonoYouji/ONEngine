@@ -23,6 +23,7 @@
 #include "../Scene_Clear.h"
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
 
 /// ===================================================
@@ -152,6 +153,7 @@ void SceneManager::Load(SCENE_ID id) {
 	scenes_[currentId_]->Initialize();
 
 	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
+	EarthRenderer::SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;

@@ -15,6 +15,8 @@
 #include "ComponentManager/Transform/Transform.h"
 
 
+/// 前方宣言
+class DirectionalLight;
 
 
 /// ===================================================
@@ -45,6 +47,7 @@ public:
 	static void PostDraw();
 
 	static void SetEarthTransform(Transform* _transform);
+	static void SetDirectionalLight(DirectionalLight* _directionalLight);
 
 	
 	/// ===================================================
