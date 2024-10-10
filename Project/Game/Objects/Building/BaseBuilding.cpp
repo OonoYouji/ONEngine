@@ -77,21 +77,21 @@ void BaseBuilding::RootUpdate() {
 }
 
 void BaseBuilding::ParentInit(Tornado* tornade) {
-	speed_ = Random::Float(3.0f, 5.0f);//回転スピード
-	radius_ = Random::Float(-1.0f, 1.0f);//半径
+	speed_ = Random::Float(4.0f, 5.0f);//回転スピード
+	radius_ = Random::Float(-0.5f, 0.5f);//半径
 	pTransform_->SetParent(tornade->GetParent());//取るね――ドペアレント
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 
 }
 void BaseBuilding::ParentUpdate(Tornado* tornade) {
-	// 球面座標から位置を計算
-
-	theta_ += speed_ * Time::DeltaTime();
-	phi_ += speed_ * Time::DeltaTime();
-	float x = ofsetX + (tornade->GetTransform()->scale.x + radius_) * sin(theta_) * cos(phi_);
-	float y = ofsetY + (tornade->GetTransform()->scale.y + radius_) * sin(theta_) * sin(phi_);
+	//回転速度を加算
+	theta_ += (speed_/ tornade->GetTransform()->scale.x) * Time::DeltaTime();
+	phi_ += (speed_/ tornade->GetTransform()->scale.x) * Time::DeltaTime();
+	//球面座標を計算
+	float x = (tornade->GetTransform()->scale.x + radius_) * sin(theta_) ;
+	float y = (tornade->GetTransform()->scale.y + radius_) * cos(theta_) ;
 	/*float z = radius * cos(theta_);*/
-	pTransform_->position = { x,y,-10 };
+	pTransform_->position = { x,y,-2 };
 }
 
 //振る舞い管理

@@ -33,9 +33,6 @@ void Tornado::Initialize() {
 	scaleScaler_ = 1.0f;
 	minScale_    = 1.0f;
 	maxScale_    = 3.0f;
-
-
-
 }
 
 void Tornado::Update() {
