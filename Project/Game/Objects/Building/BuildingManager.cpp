@@ -73,6 +73,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 			(*buildingIter)->Destory();
 			// リストから削除	
 			buildingIter = buildings_.erase(buildingIter); 
+
 		}
 		else {
 			++buildingIter;
