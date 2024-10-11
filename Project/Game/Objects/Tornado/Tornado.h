@@ -1,12 +1,15 @@
 #pragma once
 
+/// std
+#include <vector>
+
 #include "GameObjectManager/GameObjectManager.h"
 
 /// ===================================================
 /// 前方宣言
 /// ===================================================
 class Player;
-
+class Ring;
 
 /// ===================================================
 /// 竜巻を表現するクラス
@@ -46,5 +49,32 @@ private:
 
 	float maxScale_;
 	float minScale_;
+
+	float zRotateSpeed_ = 1.0f;
+
+	std::vector<Ring*> ringArray_;
+
+};
+
+
+/// ===================================================
+/// わっか
+/// ===================================================
+class Ring : public BaseGameObject {
+public:
+
+	Ring();
+	~Ring() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+private:
+
+	static int sInstanceCount_;
+	int id_;
+
+	float rotateSpeed_ = 0.0f;
 
 };
