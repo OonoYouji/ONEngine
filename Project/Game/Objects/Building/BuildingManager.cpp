@@ -79,20 +79,20 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 		}
 	}
 
-	//// 巻きこまれてるビル達の更新
-	//for (auto buildingIter = inTornadoBuildings_.begin(); buildingIter != inTornadoBuildings_.end(); ) {
+	// 巻きこまれてるビル達の更新
+	for (auto buildingIter = inTornadoBuildings_.begin(); buildingIter != inTornadoBuildings_.end(); ) {
 
-	//	(*buildingIter)->Update();
-	//	//
-	//	if ((*buildingIter)->GetIsDeath()) {
-	//		(*buildingIter)->Destory();
+		(*buildingIter)->Update();
+		//
+		if ((*buildingIter)->GetIsDeath()) {
+			(*buildingIter)->Destory();
 
-	//		buildingIter = inTornadoBuildings_.erase(buildingIter); // リストから削除	
-	//	}
-	//	else {
-	//		++buildingIter;
-	//	}
-	//}
+			buildingIter = inTornadoBuildings_.erase(buildingIter); // リストから削除	
+		}
+		else {
+			++buildingIter;
+		}
+	}
 }
 
 void BuildingManager::Debug() {
