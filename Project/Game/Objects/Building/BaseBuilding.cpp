@@ -33,10 +33,12 @@ void BaseBuilding::Initialize() {
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
-	pTransform_->position = { 0,0,-14 };//ポジション
+	pTransform_->position = { 0,0,-10.8f };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
+	pTransform_->scale = { 1.0f,0.1f,1.0f };//スケール
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
+	scaleMax_ = 1.0f;
 	behaviorRequest_ = Behavior::kRoot;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
@@ -57,7 +59,6 @@ void BaseBuilding::Update() {
 	}
 	//ピボット更新
 	pivot_.UpdateMatrix();
-
 }
 
 void BaseBuilding::Debug() {
@@ -70,10 +71,11 @@ void BaseBuilding::Debug() {
 
 //振る舞い関数
 void BaseBuilding::RootInit() {
-
+	
 }
 void BaseBuilding::RootUpdate() {
-
+	growTime_ += Time::DeltaTime();
+	GrowForTime(0.2f, 2.0f);
 }
 
 void BaseBuilding::ParentInit(Tornado* tornade) {
@@ -92,6 +94,22 @@ void BaseBuilding::ParentUpdate(Tornado* tornade) {
 	float y = (tornade->GetTransform()->scale.y + radius_) * cos(theta_) ;
 	/*float z = radius * cos(theta_);*/
 	pTransform_->position = { x,y,-2 };
+}
+
+void BaseBuilding::GrowForTime(const float& par,const float&second ) {
+
+	//割合によるインクる面とする値を決める
+	float incrementSize = scaleMax_ * par;
+
+	if (growTime_ >= second) {//毎秒
+		// 現在のスケール値に増加分を追加s
+		pTransform_->scale.y += incrementSize;
+	// スケールが最大値を超えないように制限
+		if (pTransform_->scale.y > scaleMax_) {
+			pTransform_->scale.y =scaleMax_;
+		}
+		growTime_ = 0.0f;
+	}
 }
 
 //振る舞い管理
@@ -122,24 +140,6 @@ void BaseBuilding::BehaviorManagement(Tornado* tornado) {
 		ParentUpdate(tornado);
 		break;
 	}
-}
-
-Quaternion BaseBuilding::MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle) {
-	//    W A   ɕϊ 
-	float halfAngle = angle * 0.5f;
-	float sinHalfAngle = sin(halfAngle);
-
-	//    K     ꂽ   x N g  
-	Vector3 normalizedAxis = axis.Normalize();
-
-	//  N H [ ^ j I   ̐     v Z
-	float w = cos(halfAngle);
-	float x = normalizedAxis.x * sinHalfAngle;
-	float y = normalizedAxis.y * sinHalfAngle;
-	float z = normalizedAxis.z * sinHalfAngle;
-
-	// Vector4  Ƃ  ĕԂ 
-	return Quaternion(x, y, z, w);
 }
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {

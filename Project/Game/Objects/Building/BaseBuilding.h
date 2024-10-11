@@ -29,14 +29,13 @@ public:
 	void BehaviorManagement(Tornado* tornade);
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
-
+	void GrowForTime(const float& par, const float& second);
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
 	bool GetIsCollisionTyphoon()const { return isCollisionTyphoon_; }
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
-	Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 private:
 	enum class Behavior {
 		kRoot,
@@ -60,6 +59,12 @@ private:
 	float theta_;
 	//
 	float phi_;
+	//スケールMAX
+	float scaleMax_;
+	//スケール上昇割合
+	float scalePar_;
+	//成長タイム
+	float growTime_;
 	// //ピボット
 	Transform pivot_;
 	AudioSource* audioSource_ = nullptr;
