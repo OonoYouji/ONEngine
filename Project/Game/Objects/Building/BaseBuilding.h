@@ -27,10 +27,14 @@ public:
 	void GrowForTime(const float& par, const float& second);
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	float GetPhi() const{ return phi_; }
+	float GetTheta() const{ return theta_; }
 	bool GetIsCollisionTyphoon()const { return isCollisionTyphoon_; }
 	Model* GetModel()const { return model_; }
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }
+	void SetPhi(float phi) { phi_ = phi; }
+	void SetTheta(float theta) { theta_ = theta; }
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
 
 private:
@@ -49,6 +53,10 @@ private:
 	// //ピボット
 	Transform pivot_;
 	AudioSource* audioSource_ = nullptr;
+	//死亡情報用のパラメータ
+	float theta_;
+	float phi_;
+	
 	//トルネード
 	/*Tornado* pTornado_;*/
 };

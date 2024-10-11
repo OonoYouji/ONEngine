@@ -30,7 +30,6 @@ void InTornadoBuilding::Update() {
 	//球面座標を計算
 	float x = (pTornado_->GetTransform()->scale.x + radius_) * sin(theta_);
 	float y = (pTornado_->GetTransform()->scale.y + radius_) * cos(theta_);
-	/*float z = radius * cos(theta_);*/
 	pTransform_->position = { x,y,-2 };
 }
 //デバッグ

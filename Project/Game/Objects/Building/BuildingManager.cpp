@@ -1,4 +1,5 @@
 #include"BuildingManager.h"
+#include"FrameManager/Time.h"
 
 void BuildingManager::Initialize() {
 
@@ -9,6 +10,9 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 
 	Building* building = new Building();
 	building->Initialize();
+	//死亡パラメータ取得
+	building->SetPhi(theta);
+	building->SetPhi(phi);
 	// 回転を適用
 	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, phi);
 	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, theta);
@@ -31,6 +35,20 @@ void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model) {
 //更新
 void 	BuildingManager::Update() {
 
+	// 建ってるビル達の更新
+	for (std::list<DeathParamater>::iterator deathListiter = deathlist_.begin(); deathListiter != deathlist_.end(); ) {
+
+		//更新
+		(*deathListiter).coolTime -= Time::DeltaTime();
+		//クールタイムが終わったら再スポーン
+		if ((*deathListiter).coolTime<=0) {
+			SpownBuilding((*deathListiter).theta, (*deathListiter).phi);
+			deathListiter = deathlist_.erase(deathListiter);
+		}
+		else {
+			++deathListiter;
+		}
+	}
 }
 
 //更新
@@ -41,10 +59,16 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 		//更新
 		(*buildingIter)->Update();
 
-		//削除する
+		//死亡
 		if ((*buildingIter)->GetIsDeath()) {
 			//巻きこまれるビルを追加
 			AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+			//死亡パラメータを取得してリストに追加
+			DeathParamater deathParamager;
+			deathParamager.phi = (*buildingIter)->GetPhi();
+			deathParamager.theta = (*buildingIter)->GetTheta();
+			deathParamager.coolTime = deathCoolTime_;
+			deathlist_.push_back(deathParamager);
 			//デストロイ
 			(*buildingIter)->Destory();
 			// リストから削除	

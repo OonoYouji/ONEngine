@@ -8,9 +8,18 @@
 
 class BuildingManager:public BaseGameObject {
 private:
+	struct DeathParamater {
+		float phi;
+		float theta;
+		float coolTime;
+	};
+private:
 
 	std::list<BaseBuilding*> buildings_;
 	std::list<InTornadoBuilding*> inTornadoBuildings_;
+	//死亡リスト
+	std::list<DeathParamater>deathlist_;
+	const float deathCoolTime_=4.0f;
 	
 public:
 	
