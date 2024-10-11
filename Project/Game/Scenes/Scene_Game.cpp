@@ -69,7 +69,7 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 	//ビルの振る舞い管理
-	buildingManager_->BehaviorManagement(tornado_);
+	buildingManager_->AllUpdate(tornado_);
 	//プレイヤーのゲージMaxでカメラズームアウト
 	if (player_->GetisPowerUp()) {
 		mainCamera_->SetBehaviorZoomOut();

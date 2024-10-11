@@ -608,6 +608,9 @@
       <Filter>Game\Scenes\Manager</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Game\Objects\Building\InTornadoBuilding.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -888,6 +891,9 @@
     </ClInclude>
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h">
       <Filter>Game\Scenes\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\InTornadoBuilding.h">
+      <Filter>Game\Objects\Building</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

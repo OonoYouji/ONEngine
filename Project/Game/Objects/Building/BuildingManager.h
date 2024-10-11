@@ -3,17 +3,24 @@
 
 #include"Building.h"
 #include"Objects/Tornado/Tornado.h"
+#include"Objects/Building/InTornadoBuilding.h"
 #include <ComponentManager/Transform/Transform.h>
 
 class BuildingManager:public BaseGameObject {
 private:
+	struct DeathParamater {
+		float phi;
+		float theta;
+		float coolTime;
+	};
+private:
 
 	std::list<BaseBuilding*> buildings_;
-	Vec3 spownPos_;
-	Vec3 basePos_;
-	////トルネード
-	//Tornado* pTornado_;
-
+	std::list<InTornadoBuilding*> inTornadoBuildings_;
+	//死亡リスト
+	std::list<DeathParamater>deathlist_;
+	const float deathCoolTime_=4.0f;
+	
 public:
 	
 	BuildingManager() { CreateTag(this); }
@@ -21,12 +28,13 @@ public:
 
 	void Initialize()override;
 	void Update() override;
-
 	void Debug() override;
 
+	void AllUpdate(Tornado* tornado);
+
 	void SpownBuilding(float theta, float phi);
-	//void 	Init();
-	void 	RemoveBuilding();
-	void 	BehaviorManagement(Tornado*player);
+	void AddInTornadoBuilding(Tornado* tornado, Model* model);
+	
+
 	/*void 	Draw();*/
 };
