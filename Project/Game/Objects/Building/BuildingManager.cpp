@@ -75,6 +75,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 			buildingIter = buildings_.erase(buildingIter); 
 
 		}
+
 		else {
 			++buildingIter;
 		}
