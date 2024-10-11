@@ -54,7 +54,7 @@ void 	BuildingManager::Update() {
 //更新
 void 	BuildingManager::AllUpdate(Tornado* tornado) {
 	// 建ってるビル達の更新
-	for (auto buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
+	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
 	
 		//更新
 		(*buildingIter)->Update();
