@@ -1,11 +1,12 @@
 #define NOMINMAX
 #include "ParticleSystem.h"
 
+/// std
 #include <cassert>
 #include <algorithm>
 #include <numbers>
 
-/// engine include
+/// engine
 #include "Core/ONEngine.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
@@ -16,9 +17,12 @@
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "FrameManager/Time.h"
 
-/// game include
+/// game
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "Scenes/Manager/SceneManager.h"
+
+/// math
+#include "Math/Random.h"
 
 
 /// static object intialize
@@ -89,6 +93,14 @@ void ParticleSystem::Initialize() {
 	/// billboard setting
 	matBackToFront_ = Mat4::MakeRotateY(std::numbers::pi_v<float>);
 
+	/// particle update function
+	particleUpdateFunc_ = [&](Particle* particle) {
+		Transform* tf = particle->GetTransform();
+
+		Vec3 randomDir = Random::Vec3(-Vec3::kOne, Vec3::kOne).Normalize();
+		tf->position += randomDir * Time::DeltaTime();
+	};
+
 }
 
 
@@ -106,7 +118,8 @@ void ParticleSystem::Update() {
 
 
 	for(auto& particle : particleArray_) {
-		particle->Update();
+		particleUpdateFunc_(particle.get());
+		particle->LifeTimeUpdate();
 
 		if(useBillboard_) {
 
@@ -196,6 +209,11 @@ void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 
 void ParticleSystem::SetUseBillboard(bool _useBillboard) {
 	useBillboard_ = _useBillboard;
+}
+
+
+void ParticleSystem::SetPartilceUpdateFunction(const std::function<void(Particle*)>& _function) {
+	particleUpdateFunc_ = _function;
 }
 
 
@@ -348,15 +366,10 @@ void Particle::Initialize() {
 }
 
 
-void Particle::Update() {
-
-	transform_.position.y += 0.02f;
-
+void Particle::LifeTimeUpdate() {
 	lifeTime_ -= Time::DeltaTime();
 	if(lifeTime_ < 0.0f) {
 		isAlive_ = false;
 	}
-
-	//transform_.Update();
 }
 
