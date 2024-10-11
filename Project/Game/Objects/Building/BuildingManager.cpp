@@ -16,29 +16,63 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 
 	buildings_.push_back(building);
 }
+//巻きこまれてるビルの追加
+void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model) {
+	InTornadoBuilding* inTornadoBuilding = new InTornadoBuilding();
+	inTornadoBuilding->Initialize();
+	//モデルセット
+	inTornadoBuilding->SetModel(model);
+	//トルネードをセット
+	inTornadoBuilding->SetTornado(tornado);
+	//リストに追加
+	inTornadoBuildings_.push_back(inTornadoBuilding);
+}
 
 //更新
 void 	BuildingManager::Update() {
-	for (BaseBuilding* building : buildings_) {
-		building->Update();
-	}
-	buildings_.remove_if([](BaseBuilding* building) {
-		if (building->GetIsDeath()) {
-			return true;
+
+}
+
+//更新
+void 	BuildingManager::AllUpdate(Tornado* tornado) {
+	// 建ってるビル達の更新
+	for (auto buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
+	
+		//更新
+		(*buildingIter)->Update();
+
+		//削除する
+		if ((*buildingIter)->GetIsDeath()) {
+			//巻きこまれるビルを追加
+			AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+			//デストロイ
+			(*buildingIter)->Destory();
+			// リストから削除	
+			buildingIter = buildings_.erase(buildingIter); 
 		}
-		return false;
-	});
+		else {
+			++buildingIter;
+		}
+	}
+
+	//// 巻きこまれてるビル達の更新
+	//for (auto buildingIter = inTornadoBuildings_.begin(); buildingIter != inTornadoBuildings_.end(); ) {
+
+	//	(*buildingIter)->Update();
+	//	//
+	//	if ((*buildingIter)->GetIsDeath()) {
+	//		(*buildingIter)->Destory();
+
+	//		buildingIter = inTornadoBuildings_.erase(buildingIter); // リストから削除	
+	//	}
+	//	else {
+	//		++buildingIter;
+	//	}
+	//}
 }
 
 void BuildingManager::Debug() {
 
 }
 
-//プレイヤーとペアレント
-void  BuildingManager::BehaviorManagement(Tornado* tornado) {
-	for (BaseBuilding* building : buildings_) {
-
-		building->BehaviorManagement(tornado);
-	}
-}
 
