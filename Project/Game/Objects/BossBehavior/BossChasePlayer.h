@@ -8,4 +8,9 @@ public:
 	BossChasePlayer(Boss* boss);
 	~BossChasePlayer();
 	void Update()override;
+private:
+	//ストーカースピード(速い)
+	float chaseSpeedMax_;
+	//ストーカースピード(遅い)
+	float chaseSpeedNormal_;
 };

@@ -70,15 +70,28 @@ public:
 	// 逆クォータニオンを計算する関数
 	Quaternion Inverse() const;
 
+	//勝手に追加（クリハラ）
 
+ // ドット積の計算
+	static float Dot(const Quaternion& q1, const Quaternion& q2) {
+		return q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+	}
+
+
+	// クロス積の計算
+	static Vector3 Cross(const Quaternion& q1, const Quaternion& q2) {
+		Vector3 result;
+		result.x = q1.w * q2.x + q2.w * q1.x + q1.y * q2.z - q1.z * q2.y;
+		result.y = q1.w * q2.y + q2.w * q1.y + q1.z * q2.x - q1.x * q2.z;
+		result.z = q1.w * q2.z + q2.w * q1.z + q1.x * q2.y - q1.y * q2.x;
+		return result; // Vector3 を返す
+	}
 
 	/// ===================================================
 	/// public : operator
 	/// ===================================================
 
 	inline Quaternion& operator*= (const Quaternion& other);
-
-
 
 };
 
@@ -110,4 +123,35 @@ inline Quaternion operator/ (const Quaternion& q, float value) {
 inline Quaternion& Quaternion::operator*=(const Quaternion& other) {
 	*this = *this * other;
 	return *this;
+}
+
+
+//勝手に追加（クリハラ）
+
+
+inline Quaternion operator- (const Quaternion& q1, const Quaternion& q2) {
+	return {
+		q1.x - q2.x,
+		q1.y - q2.y,
+		q1.z - q2.z,
+		q1.w - q2.w
+	};
+}
+
+//勝手に追加（クリハラ）
+inline Quaternion operator+ (const Quaternion& q1, const Quaternion& q2) {
+	return {
+		q1.x + q2.x,
+		q1.y + q2.y,
+		q1.z + q2.z,
+		q1.w + q2.w
+	};
+}
+inline Quaternion operator* (const Quaternion& q, float scalar) {
+	return {
+		q.x * scalar,
+		q.y * scalar,
+		q.z * scalar,
+		q.w * scalar
+	};
 }

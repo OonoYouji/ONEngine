@@ -28,13 +28,20 @@ public:
 	void RootUpdate();
 	//ストーカー
 	void ChaseInit();
-	void ChaseUpdate();
+	void ChaseUpdate(const float& speed);
+	
+
+	Vec3 QuaternionToEulerAngles(const Quaternion& q);
+	Quaternion ToQuaternion(const Vec3& eulerAngles);
+	/*Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);*/
 
 	//プレイヤーセット
 	void SetPlayer(Player*player);
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
+	//getter
+	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	
 private:
 	
@@ -45,8 +52,6 @@ private:
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
-	//ストーカースピード(速い)
-	float chaseSpeedMax_;
-	//ストーカースピード(遅い)
-	float chaseSpeedNormal_;
+	//パラメータ調節用追従すピーⅮ
+	float SpeedParamater_;
 };
