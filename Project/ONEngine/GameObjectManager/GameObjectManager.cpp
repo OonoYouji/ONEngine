@@ -391,6 +391,7 @@ void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseG
 #ifdef _DEBUG
 	ImGui::Indent();
 	for(auto& child : childs) {
+		if(!child) { continue; }
 		if(ImGui::Selectable(child->GetName().c_str(), selectObject_ == child)) {
 			selectObject_ = child;
 		}
