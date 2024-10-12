@@ -4,9 +4,21 @@
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
 
+/// objects
+#include "Objects/DemoObject/DemoObject.h"
+
 
 void Scene_Title::Initialize() {
 
+	/// intance create
+	DemoObject* demoObject = new DemoObject();
+
+
+	/// initializing
+	demoObject->Initialize();
+
+
+	/// setting...
 
 }
 
