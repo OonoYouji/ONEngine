@@ -8,6 +8,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 
+#include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Drawer/Sprite/SpriteManager.h"
@@ -24,11 +25,12 @@
 /// namespace
 /// ===================================================
 namespace {
-	ModelManager* gModelManager = ModelManager::GetInstance();
-	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
+	CameraManager*     gCameraManager     = CameraManager::GetInstance();
+	ModelManager*      gModelManager      = ModelManager::GetInstance();
+	SpriteManager*     gSpriteManager     = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-	Line2D* gLine2D = Line2D::GetInstance();
-	Line3D* gLine3D = Line3D::GetInstance();
+	Line2D*            gLine2D            = Line2D::GetInstance();
+	Line3D*            gLine3D            = Line3D::GetInstance();
 } /// namespace
 
 
@@ -60,6 +62,11 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 
 void SceneLayer::Draw() {
+
+	auto debugCamera = gCameraManager->GetCamera("DebugCamera");
+	if(!debugCamera->isActive) {
+		gCameraManager->SetMainCamera(camera_);
+	}
 
 	renderTexture_->BeginRenderTarget();
 

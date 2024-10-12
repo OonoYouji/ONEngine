@@ -128,13 +128,13 @@ void SceneManager::Load(SCENE_ID id) {
 	auto SceneCreate = [&]() -> BaseScene* {
 		switch(id) {
 		case TITLE:
-			return new Scene_Title;
+			return new Scene_Title();
 		case GAME:
-			return new Scene_Game;
+			return new Scene_Game();
 		case RESULT:
-			return new Scene_Result;
+			return new Scene_Result();
 		case CLEAR:
-			return new Scene_Clear;
+			return new Scene_Clear();
 		}
 		return nullptr;
 	};
