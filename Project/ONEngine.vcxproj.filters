@@ -611,6 +611,12 @@
     <ClCompile Include="Game\Objects\Building\InTornadoBuilding.cpp">
       <Filter>Game\Objects\Building</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossRoot.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossChasePlayer.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -894,6 +900,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Building\InTornadoBuilding.h">
       <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossRoot.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossChasePlayer.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

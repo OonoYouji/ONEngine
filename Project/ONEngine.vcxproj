@@ -162,6 +162,8 @@
     <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp" />
     <ClCompile Include="Game\Easing\EasingFunction.cpp" />
     <ClCompile Include="Game\Objects\BossBehavior\BaseBossBehavior.cpp" />
+    <ClCompile Include="Game\Objects\BossBehavior\BossRoot.cpp" />
+    <ClCompile Include="Game\Objects\BossBehavior\BossChasePlayer.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\Building\BaseBuilding.cpp" />
     <ClCompile Include="Game\Objects\Building\Building.cpp" />
@@ -258,6 +260,8 @@
     <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h" />
     <ClInclude Include="Game\Easing\EasingFunction.h" />
     <ClInclude Include="Game\Objects\BossBehavior\BaseBossBehavior.h" />
+    <ClInclude Include="Game\Objects\BossBehavior\BossRoot.h" />
+    <ClInclude Include="Game\Objects\BossBehavior\BossChasePlayer.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\Building\BaseBuilding.h" />
     <ClInclude Include="Game\Objects\Building\Building.h" />

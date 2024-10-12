@@ -13,6 +13,7 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Ground/Ground.h"
+#include "Objects/Boss/Boss.h"
 #include "Objects/GameCameraState/GameCameraState.h"
 #include "Objects/Tornado/Tornado.h"	
 
@@ -28,6 +29,7 @@ void Scene_Game::Initialize() {
 
 	player_ = new Player;
 	buildingManager_ = new BuildingManager();
+	Boss* boss = new Boss();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	tornado_ = new Tornado();
@@ -38,6 +40,7 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_->Initialize();
+	boss->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
 	tornado_->Initialize();
@@ -59,8 +62,9 @@ void Scene_Game::Initialize() {
 	buildingManager_->SpownBuilding(9, 4);
 	buildingManager_->SpownBuilding(9, 0);
 
+	//セット
+	boss->SetPlayer(player_);
 	tornado_->SetPlayer(player_);
-
 }
 
 
