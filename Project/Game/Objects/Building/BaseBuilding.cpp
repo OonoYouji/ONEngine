@@ -50,8 +50,14 @@ void BaseBuilding::Initialize() {
 }
 
 void BaseBuilding::Update() {
+	//成長
 	growTime_ += Time::DeltaTime();
 	GrowForTime(0.2f, 2.0f);
+
+	//吸われる処理
+	if (isSlurp_) {
+
+	}
 	
 	//ピボット更新
 	pivot_.UpdateMatrix();

@@ -27,15 +27,18 @@ public:
 	void GrowForTime(const float& par, const float& second);
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	bool GetIsSlurped()const { return isSlurp_; }
 	float GetPhi() const{ return phi_; }
 	float GetTheta() const{ return theta_; }
 	bool GetIsCollisionTyphoon()const { return isCollisionTyphoon_; }
 	Model* GetModel()const { return model_; }
 	//setter
-	void SetPivot(Transform pivot) { pivot_ = pivot; }
-	void SetPhi(float phi) { phi_ = phi; }
-	void SetTheta(float theta) { theta_ = theta; }
+	void SetPivot(Transform pivot) { pivot_ = pivot; }//ピボット
+	void SetPhi(float phi) { phi_ = phi; }//経度
+	void SetTheta(float theta) { theta_ = theta; }//緯度
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
+	void SetIsSlurped(bool is) { isSlurp_ = is; }//吸われるか
+	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
 
 private:
 	Model* model_=nullptr;
@@ -56,6 +59,10 @@ private:
 	//死亡情報用のパラメータ
 	float theta_;
 	float phi_;
+
+	//吸われるか
+	bool isSlurp_;
+	Vector3 slurpPos_;
 	
 	//トルネード
 	/*Tornado* pTornado_;*/

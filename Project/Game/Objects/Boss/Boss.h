@@ -13,6 +13,8 @@
 #include"Objects/BossBehavior/BossChasePlayer.h"
 
 class Player;
+class BuildingManager;
+class BaseBuilding;
 class Boss : public BaseGameObject {
 public:
 
@@ -39,6 +41,8 @@ public:
 	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
+	void SetBuildingaManager(BuildingManager* player);
+	BaseBuilding* FindClosestBuilding();
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
@@ -55,6 +59,7 @@ private:
 private:
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
+	BuildingManager* pBuildingManager_ = nullptr;
 	////状態
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット

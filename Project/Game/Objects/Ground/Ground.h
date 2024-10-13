@@ -20,7 +20,7 @@ public:
 	void Debug() override;
 
 
-
+	static	float groundScale_;
 	
 private:
 	

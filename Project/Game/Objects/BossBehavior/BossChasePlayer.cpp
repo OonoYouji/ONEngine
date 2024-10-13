@@ -1,5 +1,7 @@
 #include"BossChasePlayer.h"
 #include"Objects/BossBehavior/BossRoot.h"
+//obj
+#include"Objects/Ground/Ground.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Player/Player.h"
 //初期化
@@ -10,6 +12,7 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
+	chaseMinPos_ = 4.0f;
 }
 
 BossChasePlayer::~BossChasePlayer() {
@@ -19,18 +22,32 @@ BossChasePlayer::~BossChasePlayer() {
 //更新
 void BossChasePlayer::Update() {
 
-	// プレイヤーの位置を取得
-	Vec3 playerPosition = pBoss_->GetPlayer()->GetPosition();
+	
+	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
+	if (distanceAndDirection.first <= chaseMinPos_) {
+		return;
+	}
+	// 現在の回転をオイラー角に変換
+	Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
 
-	// ボスの現在の位置を取得
-	Vec3 bossPosition = pBoss_->GetPosition();
+	// プレイヤーの方向を向くための回転を計算
+	Quaternion inter = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 
-	// ボスとプレイヤーの3次元座標を使って球面座標に変換
+	// ホーミング移動のスピードを設定
+	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater(), 0, 0 });
+
+	// 回転を更新
+	pBoss_->SetPivotQuaternion(inter);
+	pBoss_->SetPivotSubtraction(move);
+}
+
+std::pair<float, float> BossChasePlayer::CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius) {
+	// ボスとプレイヤーの位置を3次元座標から球面座標に変換
 	float latitude1 = std::asin(bossPosition.y / Vector3::Length(bossPosition)); // ボスの緯度
 	float longitude1 = std::atan2(bossPosition.z, bossPosition.x); // ボスの経度
 
-	float latitude2 = std::asin(playerPosition.y / Vector3::Length(playerPosition)); // プレイヤーの緯度
-	float longitude2 = std::atan2(playerPosition.z, playerPosition.x); // プレイヤーの経度
+	float latitude2 = std::asin(targetPos.y / Vector3::Length(targetPos)); // プレイヤーの緯度
+	float longitude2 = std::atan2(targetPos.z, targetPos.x); // プレイヤーの経度
 
 	// 中心角を計算
 	float deltaSigma = std::acos(
@@ -39,7 +56,7 @@ void BossChasePlayer::Update() {
 	);
 
 	// 球面上の距離を計算
-	float sphereRadius = 12.0f; // 半径
+	float sphereRadius = Ground::groundScale_ + 1; // 半径
 	float distance = sphereRadius * deltaSigma;
 
 	// 方位角を計算
@@ -48,22 +65,10 @@ void BossChasePlayer::Update() {
 	float x = std::cos(latitude1) * std::sin(latitude2) - std::sin(latitude1) * std::cos(latitude2) * std::cos(deltaLon);
 	float direction = std::atan2(y, x);
 
-	// 現在の回転をオイラー角に変換
-	Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
+	return { distance, direction }; // 距離と方位角を返す
 
-	// プレイヤーの方向を向くための回転を計算
-	Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
-
-	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater(), 0, 0 });
-
-	// 回転を更新
-	pBoss_->SetPivotQuaternion(inter);
-	pBoss_->SetPivotSubtraction(move);
-	
 
 }
-
 
 
 Vec3 BossChasePlayer::QuaternionToEulerAngles(const Quaternion& q) {

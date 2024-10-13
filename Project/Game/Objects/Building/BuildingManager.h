@@ -35,6 +35,7 @@ public:
 	void SpownBuilding(float theta, float phi);
 	void AddInTornadoBuilding(Tornado* tornado, Model* model);
 	
-
+	//getter
+	std::list<BaseBuilding*> GetBuildings()const { return buildings_; }
 	/*void 	Draw();*/
 };

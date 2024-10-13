@@ -64,6 +64,7 @@ void Scene_Game::Initialize() {
 
 	//セット
 	boss->SetPlayer(player_);
+	boss->SetBuildingaManager(buildingManager_);
 	tornado_->SetPlayer(player_);
 }
 

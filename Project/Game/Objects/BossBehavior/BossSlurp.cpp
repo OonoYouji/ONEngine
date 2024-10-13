@@ -4,7 +4,7 @@
 
 //初期化
 BossSlurp::BossSlurp(Boss* boss)
-	: BaseBossBehavior("ChasePlayer", boss) {
+	: BaseBossBehavior("BossSlurp", boss) {
 
 	
 }

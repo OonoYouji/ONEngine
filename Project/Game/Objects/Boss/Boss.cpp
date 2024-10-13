@@ -13,10 +13,12 @@
 //std
 #include <algorithm>
 #include<numbers>
+#include <limits>
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/Time.h"
 //obj
 #include"Objects/Player/Player.h"
+#include"Objects/Building/BuildingManager.h"
 
 
 void Boss::Initialize() {
@@ -79,7 +81,12 @@ void Boss::SlurpInit() {
 
 }
 void Boss::SlurpUpdate() {
-
+	// 一番近いビルを取得
+	BaseBuilding* closestBuilding = FindClosestBuilding();
+	if (closestBuilding && !closestBuilding->GetIsSlurped()) {  // すでに吸い込まれていないか確認
+		// フラグを立てる
+		closestBuilding->SetIsSlurped(true);
+	}
 }
 
 void Boss::Debug() {
@@ -98,4 +105,28 @@ void Boss::SetPlayer(Player*player) {
 	pPlayer_ = player;
 }
 
+void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
+	pBuildingManager_ = buildingmanager;
+}
 
+
+BaseBuilding* Boss::FindClosestBuilding() {
+	if (!pBuildingManager_) return nullptr; // BuildingManagerがセットされていない場合
+
+	const std::list<BaseBuilding*>& buildings = pBuildingManager_->GetBuildings();
+	BaseBuilding* closestBuilding = nullptr;
+	float minDistance = std::numeric_limits<float>::max_digits10;
+
+	Vector3 bossPosition = GetPosition();
+
+	for (BaseBuilding* building : buildings) {
+		Vector3 buildingPosition = building->GetTransform()->position;
+		float distance = Vector3::Length(buildingPosition - bossPosition);  // 距離を計算
+
+		if (distance < minDistance) {
+			minDistance = distance;
+			closestBuilding = building;
+		}
+	}
+	return closestBuilding;
+}
