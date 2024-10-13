@@ -128,6 +128,11 @@ void ParticleSystem::Update() {
 
 			particle->transform_.matTransform = matScale * matBillboard_ * matTranslate;
 
+			Transform* parent = particle->transform_.GetParent();
+			if(parent) {
+				particle->transform_.matTransform *= parent->matTransform;
+			}
+
 		} else {
 			particle->transform_.Update();
 		}
@@ -249,7 +254,9 @@ void ParticleSystem::EmitParticles() {
 
 			(*itr)->GetTransform()->position = GetOwner()->GetPosition();
 			(*itr)->lifeTime_                = particleLifeTime_;
+			(*itr)->maxLifeTime_             = particleLifeTime_;
 			(*itr)->isAlive_                 = true;
+			(*itr)->GetTransform()->UpdateMatrix();
 
 		}
 

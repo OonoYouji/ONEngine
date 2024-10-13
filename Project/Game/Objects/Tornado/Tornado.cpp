@@ -10,7 +10,8 @@
 #include <Input/Input.h>
 
 /// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 /// objects
 #include "Objects/Player/Player.h"
@@ -19,16 +20,20 @@
 void Tornado::Initialize() {
 
 
-	/*/// mesh renderer 初期化
-	MeshRenderer* mrArray[]{
-		AddComponent<MeshRenderer>(),
-		AddComponent<MeshRenderer>(),
-		AddComponent<MeshRenderer>()
-	};
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(32, "Sphere");
+	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		//transform->SetParent(pPlayer_ ? pPlayer_->GetTransform() : nullptr);
+		transform->SetParent(pTransform_);
 
-	mrArray[0]->SetModel("TornadoRing1");
-	mrArray[1]->SetModel("TornadoRing2");
-	mrArray[2]->SetModel("TornadoRing3");*/
+		float speed = 10.0f;
+		float radius = (1.0f - particle->GetNormLifeTime()) * 3.0f;
+		transform->position = {
+			std::cos(particle->GetNormLifeTime() * speed)* radius,
+			0.0f,
+			std::sin(particle->GetNormLifeTime() * speed) * radius
+		};
+	});
 
 
 	/// transform initialize
