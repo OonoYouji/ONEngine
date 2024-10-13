@@ -35,10 +35,7 @@ public:
 	void SlurpInit();
 	void SlurpUpdate();
 	
-
-	Vec3 QuaternionToEulerAngles(const Quaternion& q);
-	Quaternion ToQuaternion(const Vec3& eulerAngles);
-	
+	std::pair<float, float> CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius);
 	//プレイヤーセット
 	void SetPlayer(Player*player);
 	void SetBuildingaManager(BuildingManager* player);

@@ -19,8 +19,10 @@ public:
 	virtual	void Initialize()override;
 	virtual	void Update() override;
 	virtual void Debug() override;
-	//セットトルネード
-	/*void SetTornado(Tornado* tornado);*/
+	//ホーミング
+	Vec3 QuaternionToEulerAngles(const Quaternion& q);
+	Quaternion ToQuaternion(const Vec3& eulerAngles);
+
 
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
@@ -37,6 +39,8 @@ public:
 	void SetPhi(float phi) { phi_ = phi; }//経度
 	void SetTheta(float theta) { theta_ = theta; }//緯度
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
+	//吸い込み系
+	void SetDirection(float drection) { slurpDirection_ = drection; }//向き
 	void SetIsSlurped(bool is) { isSlurp_ = is; }//吸われるか
 	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
 
@@ -62,6 +66,7 @@ private:
 
 	//吸われるか
 	bool isSlurp_;
+	float slurpDirection_;
 	Vector3 slurpPos_;
 	
 	//トルネード
