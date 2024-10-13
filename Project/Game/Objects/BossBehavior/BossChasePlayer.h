@@ -7,6 +7,8 @@ public:
 	//コンストラクタ
 	BossChasePlayer(Boss* boss);
 	~BossChasePlayer();
+	Vec3 QuaternionToEulerAngles(const Quaternion& q);
+	Quaternion ToQuaternion(const Vec3& eulerAngles);
 	void Update()override;
 private:
 	//ストーカースピード(速い)

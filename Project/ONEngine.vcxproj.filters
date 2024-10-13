@@ -617,6 +617,9 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossChasePlayer.cpp">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -905,6 +908,9 @@
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\BossBehavior\BossChasePlayer.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
   </ItemGroup>

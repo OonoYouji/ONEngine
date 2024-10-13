@@ -28,20 +28,27 @@ public:
 	void RootUpdate();
 	//ストーカー
 	void ChaseInit();
-	void ChaseUpdate(const float& speed);
+	void ChaseUpdate();
+	//建物吸引
+	void SlurpInit();
+	void SlurpUpdate();
 	
 
 	Vec3 QuaternionToEulerAngles(const Quaternion& q);
 	Quaternion ToQuaternion(const Vec3& eulerAngles);
-	/*Quaternion Slerp(const Quaternion& q1, const Quaternion& q2, float t);*/
-
+	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
-
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
+	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
+	Player* GetPlayer() { return pPlayer_; }
+
+	//setter
+	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
+	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
 	
 private:
 	
