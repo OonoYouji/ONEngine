@@ -11,6 +11,10 @@ void DemoObject::Initialize() {
 
 	auto ps = AddComponent<ParticleSystem>(12, "Board");
 
+	ps->SetPartilceUpdateFunction([](Particle* par) {
+
+	});
+
 
 }
 
