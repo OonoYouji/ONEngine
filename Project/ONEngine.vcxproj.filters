@@ -623,6 +623,9 @@
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraZoomInOut.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Building\InBossBuilding.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -918,6 +921,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraZoomInOut.h">
       <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\InBossBuilding.h">
+      <Filter>Game\Objects\Building</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -32,6 +32,18 @@ void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model) {
 	inTornadoBuildings_.push_back(inTornadoBuilding);
 }
 
+//ボスが持つするビルの追加
+void  BuildingManager::AddBossBuilding(Boss* boss,Model* model) {
+	InBossBuilding* inbossBuilding = new InBossBuilding();
+	inbossBuilding->Initialize();
+	//モデルセット
+	inbossBuilding->SetModel(model);
+	//ボスセット
+	inbossBuilding->SetBoss(boss);
+	//リストに追加
+	inBossBuildings_.push_back(inbossBuilding);
+}
+
 //更新
 void 	BuildingManager::Update() {
 
@@ -66,6 +78,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 				AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
 			}
 			else if ((*buildingIter)->GetIsTaken()) {//ボスによる場合
+				AddBossBuilding(boss,(*buildingIter)->GetModel());//ボス用建物追加
 				boss->SetIsSlurping(false);
 				boss->SetSlurpingCoolTimer();
 			}
@@ -94,6 +107,21 @@ void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 			(*buildingIter)->Destory();
 
 			buildingIter = inTornadoBuildings_.erase(buildingIter); // リストから削除	
+		}
+		else {
+			++buildingIter;
+		}
+	}
+
+	// ボスのビル達の更新
+	for (auto buildingIter = inBossBuildings_.begin(); buildingIter != inBossBuildings_.end(); ) {
+
+		(*buildingIter)->Update();
+		//
+		if ((*buildingIter)->GetIsDeath()) {
+			(*buildingIter)->Destory();
+
+			buildingIter = inBossBuildings_.erase(buildingIter); // リストから削除	
 		}
 		else {
 			++buildingIter;
