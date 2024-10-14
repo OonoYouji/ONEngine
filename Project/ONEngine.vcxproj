@@ -176,6 +176,7 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp" />
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraZoomInOut.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h" />
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraZoomInOut.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />

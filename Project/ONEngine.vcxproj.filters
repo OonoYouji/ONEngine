@@ -620,6 +620,9 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraZoomInOut.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -912,6 +915,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h">
       <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraZoomInOut.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@ void GameCameraState::Initialize() {
 	pTransform_->quaternion  = { 0.0f, 0.0f, 0.0f, 1.0f };
 	pTransform_->rotateOrder = QUATERNION;
 	pTransform_->Update();
+
 }
 
 void GameCameraState::Update() {
@@ -27,7 +28,11 @@ void GameCameraState::LastUpdate() {
 
 }
 
+
+
 void GameCameraState::Debug() {
+
+
 	if(ImGui::TreeNodeEx("player var", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 
