@@ -13,7 +13,7 @@
 #include"FrameManager/time.h"
 
 void Player::Initialize() {
-	Model* model = ModelManager::Load("axis");
+	Model* model = ModelManager::Load("Player");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -36,6 +36,7 @@ void Player::Initialize() {
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
 	transoform_.position.z=-12;
+	pTransform_->rotate.x = 45;
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
 	/*SetPositionZ(-1.0f);*/
@@ -77,7 +78,7 @@ void Player::Move() {
 
 	/// 移動の正規化
 	input_ = input_.Normalize() * 0.1f;
-	velocity_ = Vec3::Lerp(velocity_, input_, 0.1f);
+	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
 
 	rotateXAngle_ = +velocity_.y;
 	rotateYAngle_ = -velocity_.x;

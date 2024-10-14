@@ -9,5 +9,7 @@ public:
 	~BossSlurp();
 	void Update()override;
 private:
-
+	float easingTime_;
+	float easingTimeMax_;
+	float easeDirection_;
 };

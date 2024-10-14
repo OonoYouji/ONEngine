@@ -11,12 +11,15 @@
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 
 #include "ImGuiManager/ImGuiManager.h"
+//math
 #include"Math/Random.h"
+#include"FrameManager/Time.h"
 //std
 #include<numbers>
 //object
-#include"FrameManager/Time.h"
-
+#include"Objects/Ground/Ground.h"
+//function
+#include"Easing/EasingFunction.h"
 
 void BaseBuilding::Initialize() {
 
@@ -34,7 +37,7 @@ void BaseBuilding::Initialize() {
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
-	pTransform_->position = { 0,0,-10.8f };//ポジション
+	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	pTransform_->scale = { 1.0f,0.1f,1.0f };//スケール
 	scaleMax_ = 1.0f;
@@ -51,23 +54,42 @@ void BaseBuilding::Initialize() {
 }
 
 void BaseBuilding::Update() {
-	//成長
-	growTime_ += Time::DeltaTime();
-	GrowForTime(0.2f, 2.0f);
 
 	//吸われる処理
 	if (isSlurp_) {
+		//建物を浮かせるイージング
+		floatBuildingEaseTime_ += Time::DeltaTime();
+		if (floatBuildingEaseTime_ >= floatBuildingEaseTimeMax_) {
+			floatBuildingEaseTime_ = floatBuildingEaseTimeMax_;
+		}
+		pTransform_->rotate.x = EaseOutQuint(-1.5f, 0.4f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
+		pTransform_->position.z = EaseInSine(buildingSartZ, -14.5f, floatBuildingEaseTime_,floatBuildingEaseTimeMax_);
+
+		// 球面距離を計算
+		auto [distance, direction] = CalculateDistanceAndDirection(slurpPos_, GetPosition(), Ground::groundScale_ + 1);
+
 		Vec3 euler = QuaternionToEulerAngles(pivot_.quaternion);
 
 		// プレイヤーの方向を向くための回転を計算
-		Quaternion inter = ToQuaternion({ euler.x, euler.y, -slurpDirection_ });
+		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
 		Quaternion move = ToQuaternion({ 0.01f, 0, 0 });
 
 		// 回転を更新
     	pivot_.quaternion=inter;
-		pivot_.quaternion*=move*Time::DeltaTime();
+		pivot_.quaternion*=move;
+	
+
+		//ある程度近づいたら
+		if (distance <= 2.0f) {
+			isTaken_ = true;
+		}
+	}
+	else {
+		//成長
+		growTime_ += Time::DeltaTime();
+		GrowForTime(0.2f, 2.0f);
 
 	}
 	
@@ -78,6 +100,35 @@ void BaseBuilding::Update() {
 void BaseBuilding::Debug() {
 	
 }
+
+std::pair<float, float> BaseBuilding::CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius) {
+	// ボスとプレイヤーの位置を3次元座標から球面座標に変換
+	float latitude1 = std::asin(bossPosition.y / Vector3::Length(bossPosition)); // ボスの緯度
+	float longitude1 = std::atan2(bossPosition.z, bossPosition.x); // ボスの経度
+
+	float latitude2 = std::asin(targetPos.y / Vector3::Length(targetPos)); // プレイヤーの緯度
+	float longitude2 = std::atan2(targetPos.z, targetPos.x); // プレイヤーの経度
+
+	// 中心角を計算
+	float deltaSigma = std::acos(
+		std::sin(latitude1) * std::sin(latitude2) +
+		std::cos(latitude1) * std::cos(latitude2) * std::cos(longitude2 - longitude1)
+	);
+
+	// 球面上の距離を計算
+	float sphereRadius = radius; // 半径
+	float distance = sphereRadius * deltaSigma;
+
+	// 方位角を計算
+	float deltaLon = longitude2 - longitude1;
+	float y = std::sin(deltaLon) * std::cos(latitude2);
+	float x = std::cos(latitude1) * std::sin(latitude2) - std::sin(latitude1) * std::cos(latitude2) * std::cos(deltaLon);
+	float direction = std::atan2(y, x);
+
+	return { distance, direction }; // 距離と方位角を返す
+
+}
+
 
 void BaseBuilding::GrowForTime(const float& par,const float&second ) {
 
@@ -97,15 +148,13 @@ void BaseBuilding::GrowForTime(const float& par,const float&second ) {
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	//当たったら用済み
-	if (dynamic_cast<Player*>(collision)) {
-		isDeath_ = true;
-		
+	if (dynamic_cast<Player*>(collision)&&!isSlurp_) {
+		isInTornado_ = true;		
 	}
 
 	//当たったら用済み
 	if (dynamic_cast<Boss*>(collision)&&isSlurp_) {
-		isDeath_ = true;
-
+		isTaken_ = true;
 	}
 }
 

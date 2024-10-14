@@ -24,6 +24,7 @@
 
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("axis");
+	/*Model* cModel = ModelManager::Load("bossMainBodyCollisionBox");*/
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -86,6 +87,7 @@ void Boss::SlurpUpdate() {
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !closestBuilding->GetIsSlurped()) {  // すでに吸い込まれていないか確認
 		// フラグを立てる
+		closestBuilding->SetSlurpPos(GetPosition());
 		closestBuilding->SetIsSlurped(true);
 	}
 }
@@ -126,11 +128,10 @@ BaseBuilding* Boss::FindClosestBuilding() {
 		Vector3 buildingPosition = building->GetPosition();
 
 		// 球面距離を計算
-		auto [distance, direction] = CalculateDistanceAndDirection(bossPosition,buildingPosition, sphereRadius);
+		auto [distance,direction] = CalculateDistanceAndDirection(bossPosition,buildingPosition, sphereRadius);
 
 		if (distance < minDistance) {
 			minDistance = distance;
-			building->SetDirection(direction);
 			closestBuilding = building;
 		}
 	}

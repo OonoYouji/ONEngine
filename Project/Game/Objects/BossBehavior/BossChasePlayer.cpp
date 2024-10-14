@@ -6,6 +6,8 @@
 #include"Objects/Ground/Ground.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Player/Player.h"
+//std
+#include<numbers>
 //初期化
 BossChasePlayer::BossChasePlayer(Boss* boss)
 	: BaseBossBehavior("ChasePlayer", boss) {
@@ -14,8 +16,8 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
-	chaseMinPos_ = 4.0f;
-	chaseMaxPos_ = 28.0f;
+	chaseMinPos_ = 2.0f;
+	chaseMaxPos_ = 20.0f;
 }
 
 BossChasePlayer::~BossChasePlayer() {
@@ -49,7 +51,6 @@ void BossChasePlayer::Update() {
 }
 
 
-
 Vec3 BossChasePlayer::QuaternionToEulerAngles(const Quaternion& q) {
 	Vec3 euler;
 
@@ -65,6 +66,12 @@ Vec3 BossChasePlayer::QuaternionToEulerAngles(const Quaternion& q) {
 
 	euler.x = std::asin(-sinX);  // Roll角度（X軸回転）
 
+	// X軸の回転が90度付近の場合はジンバルロック状態になっている
+	if (std::isnan(euler.x) || std::abs(std::abs(euler.x) - std::numbers::pi_v<float> / 2.0f) < epsilon) {
+		euler.x = std::copysign(std::numbers::pi_v<float> / 2.0f, -sinX);
+		return DealtWithZimbalLock(euler.x, q);
+	}
+
 	// X軸のcosを計算
 	float cosX = std::cos(euler.x);
 
@@ -79,6 +86,18 @@ Vec3 BossChasePlayer::QuaternionToEulerAngles(const Quaternion& q) {
 	euler.z = std::atan2(sinZ, cosZ);  // Yaw角度（Z軸回転）
 
 	return euler;
+}
+
+Vec3 BossChasePlayer::DealtWithZimbalLock(float x, const Quaternion& q) {
+	// X軸が90度近くになっているため、ジンバルロックが発生している
+	// Y軸とZ軸の回転を調整する
+	float y = std::atan2(2.0f * (q.x * q.z + q.y * q.w), 1.0f - 2.0f * (q.y * q.y + q.z * q.z));
+
+	// Z軸回転はジンバルロック時に曖昧になるため、Y軸だけで方向を決める
+	// X軸が±90度のとき、Z軸の影響を無視するような回転
+	float z = 0.0f;
+
+	return { x, y, z };
 }
 
 //Vector3からQuaternion変換

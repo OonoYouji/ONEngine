@@ -60,9 +60,11 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 		(*buildingIter)->Update();
 
 		//死亡
-		if ((*buildingIter)->GetIsDeath()) {
-			//巻きこまれるビルを追加
-			AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken()) {
+			if ((*buildingIter)->GetIsInTornado()) {
+				//巻きこまれるビルを追加
+				AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+			}
 			//死亡パラメータを取得してリストに追加
 			DeathParamater deathParamager;
 			deathParamager.phi = (*buildingIter)->GetPhi();
@@ -73,9 +75,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 			(*buildingIter)->Destory();
 			// リストから削除	
 			buildingIter = buildings_.erase(buildingIter); 
-
 		}
-
 		else {
 			++buildingIter;
 		}
