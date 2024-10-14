@@ -23,10 +23,10 @@ void Scene_Title::Initialize() {
 
 
 	/// camera setting
-	mainCamera_->SetPosition({ 0.274f, 1.245f, -1.237f});
-	mainCamera_->SetRotate({ 0.125f, -0.398f, 0.0f });
-	mainCamera_->isActive = false;
-	mainCamera_->UpdateMatrix();
+	Transform* cameraTransform   = mainCamera_->GetTransform();
+	cameraTransform->position    = { 2.914f, 15.186f, -11.229f};
+	cameraTransform->rotate      = { 0.238f, -0.445f, 0.0f };
+	cameraTransform->rotateOrder = XYZ;
 
 }
 

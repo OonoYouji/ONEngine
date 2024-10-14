@@ -7,7 +7,7 @@
 void TitlePlayerAnimator::Initialize() {
 
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("Sphere");
+	meshRenderer->SetModel("axis");
 
 
 
