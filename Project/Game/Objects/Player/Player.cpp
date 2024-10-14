@@ -122,6 +122,7 @@ void Player::PowerUpGaugeUp(float par) {
 
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
+		powerUpGauge_ = powerUpGaugeMax_;
 		ChangeState(std::make_unique<PlayerPowerUp>(this));
 		
 	}
