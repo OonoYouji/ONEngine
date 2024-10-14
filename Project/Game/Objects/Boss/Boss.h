@@ -43,11 +43,14 @@ public:
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
+	bool GetIsSlurping()const { return isSlurping_; }
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	Player* GetPlayer() { return pPlayer_; }
 
 	//setter
+	void SetIsSlurping(bool is) { isSlurping_ = is; }
+	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
 	
@@ -63,4 +66,8 @@ private:
 	Transform pivot_;
 	//パラメータ調節用追従すピーⅮ
 	float SpeedParamater_;
+	//吸い込み関連
+	bool isSlurping_ = false;  // 吸い込み中かどうか
+	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
+	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
 };

@@ -2,10 +2,11 @@
 #include<list>
 
 #include"Building.h"
-#include"Objects/Tornado/Tornado.h"
 #include"Objects/Building/InTornadoBuilding.h"
 #include <ComponentManager/Transform/Transform.h>
 
+#include"Objects/Tornado/Tornado.h"
+#include"Objects/Boss/Boss.h"
 class BuildingManager:public BaseGameObject {
 private:
 	struct DeathParamater {
@@ -30,7 +31,7 @@ public:
 	void Update() override;
 	void Debug() override;
 
-	void AllUpdate(Tornado* tornado);
+	void AllUpdate(Tornado* tornado,Boss*boss);
 
 	void SpownBuilding(float theta, float phi);
 	void AddInTornadoBuilding(Tornado* tornado, Model* model);

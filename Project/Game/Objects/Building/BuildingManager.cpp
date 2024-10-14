@@ -52,7 +52,7 @@ void 	BuildingManager::Update() {
 }
 
 //更新
-void 	BuildingManager::AllUpdate(Tornado* tornado) {
+void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 	// 建ってるビル達の更新
 	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
 	
@@ -61,9 +61,13 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 
 		//死亡
 		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken()) {
-			if ((*buildingIter)->GetIsInTornado()) {
+			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合
 				//巻きこまれるビルを追加
 				AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+			}
+			else if ((*buildingIter)->GetIsTaken()) {//ボスによる場合
+				boss->SetIsSlurping(false);
+				boss->SetSlurpingCoolTimer();
 			}
 			//死亡パラメータを取得してリストに追加
 			DeathParamater deathParamager;

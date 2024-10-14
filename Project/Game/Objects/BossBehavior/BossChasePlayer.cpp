@@ -13,6 +13,7 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	: BaseBossBehavior("ChasePlayer", boss) {
 
 	pBoss_->ChaseInit();
+	pBoss_->SetScale({ 1.0f,1.0f,1.0f });
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
@@ -27,7 +28,6 @@ BossChasePlayer::~BossChasePlayer() {
 //更新
 void BossChasePlayer::Update() {
 
-	
 	std::pair<float, float> distanceAndDirection =pBoss_->CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 	if (distanceAndDirection.first <= chaseMinPos_) {
 		return;

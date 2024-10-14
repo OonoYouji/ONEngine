@@ -80,9 +80,8 @@ void BaseBuilding::Update() {
     	pivot_.quaternion=inter;
 		pivot_.quaternion*=move;
 	
-
 		//ある程度近づいたら
-		if (distance <= 2.0f) {
+		if (distance <= 2.0f) {//パラメータ化するかも
 			isTaken_ = true;
 		}
 	}
@@ -90,7 +89,6 @@ void BaseBuilding::Update() {
 		//成長
 		growTime_ += Time::DeltaTime();
 		GrowForTime(0.2f, 2.0f);
-
 	}
 	
 	//ピボット更新

@@ -4,6 +4,7 @@
 
 
 #include "Objects/Player/Player.h"
+#include "Objects/Boss/Boss.h"
 #include"Objects/Building/BuildingManager.h"
 /// ===================================================
 /// ゲームシーン
@@ -19,6 +20,7 @@ public:
 
 private:
 	BuildingManager* buildingManager_;
+	Boss* boss_ = nullptr;
 	Player* player_ = nullptr;
 	Tornado* tornado_ = nullptr;
 };

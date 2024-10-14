@@ -41,7 +41,7 @@ void Boss::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
 	SpeedParamater_ = 0.01f;
-	pTransform_->position.z = -(Ground::groundScale_+1);
+	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////	
@@ -75,20 +75,29 @@ void Boss::ChaseInit() {
 
 }
 void Boss::ChaseUpdate() {
-	
+
 }
 
 //建物吸引
 void Boss::SlurpInit() {
-
+	isSlurping_ = false;
+	slurpCooldownTimer_ = kSlurpCollTime_;
 }
 void Boss::SlurpUpdate() {
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
-	if (closestBuilding && !closestBuilding->GetIsSlurped()) {  // すでに吸い込まれていないか確認
+	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
 		// フラグを立てる
 		closestBuilding->SetSlurpPos(GetPosition());
 		closestBuilding->SetIsSlurped(true);
+		isSlurping_ = true;
+	}
+	//吸い込みしてないとき
+	if (!isSlurping_) {
+		slurpCooldownTimer_ -= Time::DeltaTime();
+		if (slurpCooldownTimer_ <= 0.0f) {//minを使うべき
+			slurpCooldownTimer_ = 0.0f;
+		}
 	}
 }
 
@@ -104,7 +113,7 @@ void Boss::ChangeState(std::unique_ptr<BaseBossBehavior>behavior) {
 	behavior_ = std::move(behavior);
 }
 
-void Boss::SetPlayer(Player*player) {
+void Boss::SetPlayer(Player* player) {
 	pPlayer_ = player;
 }
 
@@ -115,6 +124,7 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 // 一番近いビルを探す
 BaseBuilding* Boss::FindClosestBuilding() {
+
 	if (!pBuildingManager_) return nullptr; // BuildingManagerがセットされていない場合
 
 	const std::list<BaseBuilding*>& buildings = pBuildingManager_->GetBuildings();
@@ -128,7 +138,7 @@ BaseBuilding* Boss::FindClosestBuilding() {
 		Vector3 buildingPosition = building->GetPosition();
 
 		// 球面距離を計算
-		auto [distance,direction] = CalculateDistanceAndDirection(bossPosition,buildingPosition, sphereRadius);
+		auto [distance, direction] = CalculateDistanceAndDirection(bossPosition, buildingPosition, sphereRadius);
 
 		if (distance < minDistance) {
 			minDistance = distance;
@@ -136,6 +146,8 @@ BaseBuilding* Boss::FindClosestBuilding() {
 		}
 	}
 	return closestBuilding;
+
+
 }
 std::pair<float, float> Boss::CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius) {
 	// ボスとプレイヤーの位置を3次元座標から球面座標に変換
@@ -152,7 +164,7 @@ std::pair<float, float> Boss::CalculateDistanceAndDirection(const Vec3& targetPo
 	);
 
 	// 球面上の距離を計算
-	float sphereRadius =radius; // 半径
+	float sphereRadius = radius; // 半径
 	float distance = sphereRadius * deltaSigma;
 
 	// 方位角を計算
