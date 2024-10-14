@@ -64,8 +64,8 @@ void Player::Update() {
  
 	Move();//移動
 
-	pivot_.Update();
-	transoform_.Update();
+	pivot_.UpdateMatrix();
+	transoform_.UpdateMatrix();
 }
 
 void Player::Move() {
@@ -162,7 +162,7 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision)) {
+	if (dynamic_cast<BaseBuilding*>(collision)&& !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
 		PowerUpGaugeUp(0.3f);
 	}
 }
