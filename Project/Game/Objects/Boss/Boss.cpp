@@ -5,6 +5,7 @@
 
 #include "Input/Input.h"
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include <GraphicManager/Drawer/Material/Material.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
@@ -23,9 +24,7 @@
 #undef max
 
 void Boss::Initialize() {
-	Model* model = ModelManager::Load("axis");
-	/*Model* cModel = ModelManager::Load("bossMainBodyCollisionBox");*/
-	//mesh
+	Model* model = ModelManager::Load("bossMainBody");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
@@ -40,6 +39,7 @@ void Boss::Initialize() {
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->scale = { 2,2,2 };
 	SpeedParamater_ = 0.01f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	///////////////////////////////////////////////////////////////////////////////////////////

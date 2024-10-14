@@ -25,5 +25,14 @@ public:
 
 private:
 	bool isDeath_;
+	float ofsetX;
+	float ofsetY;
+	float speed_;
+	float radius_;
+	//
+	float theta_;
+	//
+	float phi_;
+
 	Boss* pBoss_;
 };

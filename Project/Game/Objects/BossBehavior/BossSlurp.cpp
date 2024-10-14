@@ -40,7 +40,7 @@ void BossSlurp::Update() {
 		easeDirection_ = 1.0f; // 進む方向に切り替え
 	}
 	//ボスのスケール切り替え
-	pBoss_->SetScale(EaseInCubic<Vec3>(Vec3(1.0f,1.0f,1.0f), Vec3(1.4f, 1.4f, 1.4f),easingTime_,easingTimeMax_));
+	pBoss_->SetScale(EaseInCubic<Vec3>(Vec3(2.0f,2.0f,2.0f), Vec3(2.4f, 2.4f, 2.4f),easingTime_,easingTimeMax_));
 
 	//一定距離で追従に戻す
 	std::pair<float, float> distanceAndDirection = pBoss_->CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);

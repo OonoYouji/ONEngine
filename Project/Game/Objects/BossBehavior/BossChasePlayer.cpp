@@ -13,7 +13,7 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	: BaseBossBehavior("ChasePlayer", boss) {
 
 	pBoss_->ChaseInit();
-	pBoss_->SetScale({ 1.0f,1.0f,1.0f });
+	pBoss_->SetScale({ 2.0f,2.0f,2.0f });
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
