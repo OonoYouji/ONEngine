@@ -178,3 +178,7 @@ void Ring::Debug() {
 		ImGui::TreePop();
 	}
 }
+
+void Ring::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}

@@ -211,6 +211,11 @@ namespace {
 	}
 
 	void EarthPipeline::PostDraw() {
+
+		if(elementArray_.empty()) {
+			return;
+		}
+
 		/// 描画する
 		pipelineState_->SetPipelineState();
 

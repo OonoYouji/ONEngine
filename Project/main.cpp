@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
 	Line2D*					line2d				= Line2D::GetInstance();
-
+	RenderTextureManager*   renderTexManager    = RenderTextureManager::GetInstance();
 
 	ONEngine::Initialize(L"DirectXGame", false, false, 60u);
 
@@ -72,6 +72,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("white2x2", "white2x2.png");
 
+	/// render texture imgui用を作成
+	renderTexManager->Initialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
@@ -107,7 +112,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::GAME);
+	sceneManager->Initialize(SCENE_ID::TITLE);
 
 
 
@@ -117,6 +122,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::chrono::duration<float, std::milli> duration = end - currentTime;
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", duration.count() / 1000.0f));
 
+	Time::GetInstance()->Update();
 
 	while(ONEngine::IsRunning()) {
 
@@ -159,6 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	EarthRenderer::SFinalize();;
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
+	renderTexManager->Finalize();
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();

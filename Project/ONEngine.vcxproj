@@ -178,6 +178,9 @@
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerRoot.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\Tornado\Tornado.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
@@ -274,6 +277,9 @@
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerRoot.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\Tornado\Tornado.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />

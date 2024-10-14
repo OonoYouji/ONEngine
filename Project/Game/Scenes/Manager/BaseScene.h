@@ -28,6 +28,10 @@ private:
 	void CreateObject();
 
 protected:
+
+	void AddLayer(const std::string& layerName, class GameCamera* layerCamera);
+
+protected:
 	class GameCamera*       mainCamera_       = nullptr;
 	class DirectionalLight* directionalLight_ = nullptr;
 

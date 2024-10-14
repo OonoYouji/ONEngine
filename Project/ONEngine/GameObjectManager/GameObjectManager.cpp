@@ -226,33 +226,16 @@ void GameObjectManager::DestoryAll() {
 	GameObjectManager* instance = GetInstance();
 
 
+	for(auto itr = instance->objects_.begin(); itr != instance->objects_.end();) {
 
-	//insntance->objects_.remove_if([](const std::unique_ptr<BaseGameObject>& obj) {
-	//	auto IsDelete = [](BaseGameObject* obj) -> bool {
-	//		if(dynamic_cast<DirectionalLight*>(obj) != nullptr) {
-	//			return false;
-	//		}
-	//		if(dynamic_cast<BaseCamera*>(obj) != nullptr) {
-	//			return false;
-	//		}
-	//		return true;
-	//	};
+		if((*itr)->GetName() == "DebugCamera") {
+			++itr;
+		} else {
+			(*itr).reset();
+			itr = instance->objects_.erase(itr);
+		}
+	}
 
-	//	bool isDelete = true;
-	//	isDelete &= IsDelete(obj.get());
-	//	isDelete &= IsDelete(obj->GetParent());
-	//	for(auto& child : obj->GetChilds()) {
-	//		isDelete &= IsDelete(child);
-	//	}
-
-	//	if(isDelete) {
-	//		//CollisionManager::GetInstance()->SubGameObject(obj.get());
-	//	}
-
-	//	return isDelete;
-	//});
-
-	instance->objects_.clear();
 	instance->selectObject_ = nullptr;
 }
 

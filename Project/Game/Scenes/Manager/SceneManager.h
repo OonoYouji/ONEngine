@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
+#include "GraphicManager/RenderTextureManager/RenderTexture.h"
 
 class BaseScene;
 
@@ -61,6 +62,10 @@ public:
 		return sceneLayers_.at(layerId);
 	}
 
+	RenderTexture* GetFinalRenderTex() const {
+		return finalRenderTex_.get();
+	}
+
 	class DirectionalLight* GetDirectionalLight();
 
 private:
@@ -77,6 +82,7 @@ private:
 	class CollisionManager*  pCollisionManager_ = nullptr;
 
 	std::vector<class SceneLayer*> sceneLayers_;
+	std::unique_ptr<RenderTexture> finalRenderTex_;
 
 	bool isRunning_ = true;
 

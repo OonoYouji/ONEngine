@@ -1,13 +1,16 @@
 #include "SceneManager.h"
 
+/// directX
 #include <d3dx12.h>
 
+#include "Core/ONEngine.h"
 
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
+#include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
 
 #include "WindowManager/WinApp.h"
 #include "ImGuiManager/ImGuiManager.h"
@@ -45,6 +48,16 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 	Load(currentId_);
 
 	pCollisionManager_ = CollisionManager::GetInstance();
+
+	auto dxCommon = ONEngine::GetDxCommon();
+
+	finalRenderTex_.reset(new RenderTexture);
+	finalRenderTex_->Initialize(
+		{0.0f, 0.0f, 0.0f, 0.0f},
+		dxCommon->GetDxCommand()->GetList(), 
+		dxCommon->GetDxDescriptor()
+	);
+
 }
 
 
@@ -52,7 +65,7 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 /// 終了処理
 /// ===================================================
 void SceneManager::Finalize() {
-	//scenes_.clear();
+	finalRenderTex_.reset();
 	for(auto& scene : scenes_) {
 		scene.reset();
 	}
@@ -82,9 +95,22 @@ void SceneManager::Update() {
 
 
 void SceneManager::Draw() {
+
+	std::vector<RenderTexture*> renderTextures; 
 	for(auto& layer : sceneLayers_) {
+		
+		/// 描画
 		layer->Draw();
+
+		/// render textureを追加
+		renderTextures.push_back(layer->GetRenderTexture());
 	}
+	
+
+	/// 最終的なrender textureを作る
+	RenderTextureManager::CreateBlendRenderTexture(
+		renderTextures, finalRenderTex_.get()
+	);
 }
 
 void SceneManager::ImGuiDebug() {
@@ -124,17 +150,20 @@ DirectionalLight* SceneManager::GetDirectionalLight() {
 
 void SceneManager::Load(SCENE_ID id) {
 
+	/// 必要な変数のリセットをかける
+	SceneLayer::ResetInstanceCount();
+
 	currentId_ = id;
 	auto SceneCreate = [&]() -> BaseScene* {
 		switch(id) {
 		case TITLE:
-			return new Scene_Title;
+			return new Scene_Title();
 		case GAME:
-			return new Scene_Game;
+			return new Scene_Game();
 		case RESULT:
-			return new Scene_Result;
+			return new Scene_Result();
 		case CLEAR:
-			return new Scene_Clear;
+			return new Scene_Clear();
 		}
 		return nullptr;
 	};

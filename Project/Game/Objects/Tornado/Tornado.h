@@ -78,6 +78,8 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	static void ResetInstanceCount();
+
 private:
 
 	static int sInstanceCount_;
