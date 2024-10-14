@@ -43,6 +43,11 @@ SceneLayer::SceneLayer() {
 	id_ = sInstanceCount_++;
 }
 
+void SceneLayer::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}
+
+
 void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 	auto commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
 	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();

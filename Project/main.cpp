@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
 	Line2D*					line2d				= Line2D::GetInstance();
-
+	RenderTextureManager*   renderTexManager    = RenderTextureManager::GetInstance();
 
 	ONEngine::Initialize(L"DirectXGame", false, false, 60u);
 
@@ -72,6 +72,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("white2x2", "white2x2.png");
 
+	/// render texture imgui用を作成
+	renderTexManager->Initialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
@@ -160,6 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	EarthRenderer::SFinalize();;
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
+	renderTexManager->Finalize();
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();

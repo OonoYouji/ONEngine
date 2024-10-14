@@ -613,6 +613,7 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -899,5 +900,6 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
   </ItemGroup>
 </Project>
