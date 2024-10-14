@@ -1,6 +1,6 @@
 # Blender 4.1.1
 # www.blender.org
-mtllib bossHead.mtl
+mtllib bossHeadCollisionBox.mtl
 o 立方体
 v 1.000000 0.672275 -0.037138
 v 1.000000 0.672275 0.586159

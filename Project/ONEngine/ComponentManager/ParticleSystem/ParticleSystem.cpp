@@ -1,11 +1,12 @@
 #define NOMINMAX
 #include "ParticleSystem.h"
 
+/// std
 #include <cassert>
 #include <algorithm>
 #include <numbers>
 
-/// engine include
+/// engine
 #include "Core/ONEngine.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
@@ -16,9 +17,12 @@
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "FrameManager/Time.h"
 
-/// game include
+/// game
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "Scenes/Manager/SceneManager.h"
+
+/// math
+#include "Math/Random.h"
 
 
 /// static object intialize
@@ -89,6 +93,14 @@ void ParticleSystem::Initialize() {
 	/// billboard setting
 	matBackToFront_ = Mat4::MakeRotateY(std::numbers::pi_v<float>);
 
+	/// particle update function
+	particleUpdateFunc_ = [&](Particle* particle) {
+		Transform* tf = particle->GetTransform();
+
+		Vec3 randomDir = Random::Vec3(-Vec3::kOne, Vec3::kOne).Normalize();
+		tf->position += randomDir * Time::DeltaTime();
+	};
+
 }
 
 
@@ -104,16 +116,24 @@ void ParticleSystem::Update() {
 		matBillboard_.m[3][2] = 0.0f;
 	}
 
+	for(size_t i = 0; i < particleArray_.size(); ++i) {
+		Particle* particle = particleArray_[i].get();
 
-	for(auto& particle : particleArray_) {
-		particle->Update();
+		particleUpdateFunc_(particle);
+		particle->LifeTimeUpdate();
+		particle->id_ = static_cast<uint32_t>(i);
 
 		if(useBillboard_) {
 
-			Mat4 matScale     = Mat4::MakeScale(particle->transform_.scale);
+			Mat4 matScale = Mat4::MakeScale(particle->transform_.scale);
 			Mat4 matTranslate = Mat4::MakeTranslate(particle->transform_.position);
 
 			particle->transform_.matTransform = matScale * matBillboard_ * matTranslate;
+
+			Transform* parent = particle->transform_.GetParent();
+			if(parent) {
+				particle->transform_.matTransform *= parent->matTransform;
+			}
 
 		} else {
 			particle->transform_.Update();
@@ -199,6 +219,11 @@ void ParticleSystem::SetUseBillboard(bool _useBillboard) {
 }
 
 
+void ParticleSystem::SetPartilceUpdateFunction(const std::function<void(Particle*)>& _function) {
+	particleUpdateFunc_ = _function;
+}
+
+
 void ParticleSystem::EmitParticles() {
 	for(size_t i = 0; i < static_cast<size_t>(emittedParticleCount_); ++i) {
 
@@ -231,7 +256,9 @@ void ParticleSystem::EmitParticles() {
 
 			(*itr)->GetTransform()->position = GetOwner()->GetPosition();
 			(*itr)->lifeTime_                = particleLifeTime_;
+			(*itr)->maxLifeTime_             = particleLifeTime_;
 			(*itr)->isAlive_                 = true;
+			(*itr)->GetTransform()->UpdateMatrix();
 
 		}
 
@@ -348,15 +375,10 @@ void Particle::Initialize() {
 }
 
 
-void Particle::Update() {
-
-	transform_.position.y += 0.02f;
-
+void Particle::LifeTimeUpdate() {
 	lifeTime_ -= Time::DeltaTime();
 	if(lifeTime_ < 0.0f) {
 		isAlive_ = false;
 	}
-
-	//transform_.Update();
 }
 

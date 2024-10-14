@@ -1,17 +1,21 @@
 #pragma once
 
+/// std
 #include <cmath>
 #include <memory>
 #include <vector>
 #include <string>
+#include <functional>
 
+/// engine
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
-
 #include "GraphicManager/PipelineState/PipelineState.h"
+#include "GraphicManager/ModelManager/Model.h"
+
+/// components
 #include "ComponentManager/Base/BaseComponent.h"
 #include "ComponentManager/Transform/Transform.h"
 
-#include "GraphicManager/ModelManager/Model.h"
 
 
 /// ===================================================
@@ -74,6 +78,12 @@ public:
 	/// <param name="_useBillboard">: ビルボードを使用するか</param>
 	void SetUseBillboard(bool _useBillboard);
 
+	/// <summary>
+	/// パーティクルの更新処理関数をセット
+	/// </summary>
+	/// <param name="_function">: 更新処理関数 </param>
+	void SetPartilceUpdateFunction(const std::function<void(class Particle*)>& _function);
+
 
 	/// <summary>
 	/// パーティクルを発生させる
@@ -125,6 +135,9 @@ private:
 	Mat4 matBackToFront_;
 	Mat4 matBillboard_;
 
+	/// particle function
+	std::function<void(Particle*)> particleUpdateFunc_;
+
 };
 
 
@@ -169,7 +182,7 @@ private:
 /// ===================================================
 /// パーティクルの一粒子のクラス、byteが少なければ少ないほどいい
 /// ===================================================
-class Particle final {
+class Particle {
 	friend class ParticlePipeline;
 	friend class ParticleSystem;
 public:
@@ -182,12 +195,16 @@ public:
 	~Particle() {}
 
 	void Initialize(); 
-	void Update();
+	void LifeTimeUpdate();
 
 	bool GetIsAlive() const { return isAlive_; }
 
 	const Transform& GetTransform() const { return transform_; }
 	Transform* GetTransform() { return &transform_; }
+
+	float GetNormLifeTime() { return lifeTime_ / maxLifeTime_; }
+
+	uint32_t GetID() { return id_; }
 
 private:
 
@@ -195,8 +212,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	bool isAlive_   = true;
-	float lifeTime_ = 10.0f; // seconds
+	uint32_t id_;
+
+	bool isAlive_      = true;
+	float lifeTime_    = 10.0f; // seconds
+	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
 
