@@ -8,8 +8,12 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/TitleObjects/TitleEarth.h"
 #include "Objects/TitleObjects/TitlePlayerAnimator.h"
+#include "Objects/Tornado/Tornado.h"
+
 
 void Scene_Title::Initialize() {
+
+	Ring::ResetInstanceCount();
 
 	/// intance create
 	TitleEarth* earth                   = new TitleEarth();
@@ -20,7 +24,6 @@ void Scene_Title::Initialize() {
 	playerAnimator->Initialize();
 
 	/// setting...
-
 
 	/// camera setting
 	Transform* cameraTransform   = mainCamera_->GetTransform();

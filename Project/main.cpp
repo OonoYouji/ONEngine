@@ -117,6 +117,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	std::chrono::duration<float, std::milli> duration = end - currentTime;
 	ONE::Logger::ConsolePrint(std::format("ExecutionTime: {}s", duration.count() / 1000.0f));
 
+	Time::GetInstance()->Update();
 
 	while(ONEngine::IsRunning()) {
 

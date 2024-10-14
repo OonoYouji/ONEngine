@@ -14,4 +14,10 @@ public:
 
 private:
 
+	Vec3 basePosition_;
+
+	float animationTime_;
+	float animationSpeed_;
+	float animationAmplitude_;
+
 };
