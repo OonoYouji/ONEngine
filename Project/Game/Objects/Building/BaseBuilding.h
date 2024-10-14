@@ -22,7 +22,7 @@ public:
 	//ホーミング
 	Vec3 QuaternionToEulerAngles(const Quaternion& q);
 	Quaternion ToQuaternion(const Vec3& eulerAngles);
-
+	Vec3 DealtWithZimbalLock(float x, const Quaternion& q);
 
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;

@@ -12,7 +12,8 @@
 
 #include "ImGuiManager/ImGuiManager.h"
 #include"Math/Random.h"
-
+//std
+#include<numbers>
 //object
 #include"FrameManager/Time.h"
 
@@ -116,12 +117,18 @@ Vec3 BaseBuilding::QuaternionToEulerAngles(const Quaternion& q) {
 	float absSinX = std::abs(sinX);
 	const float epsilon = 0.001f;
 
-	// 特定の範囲内でsinXをゼロにする（計算の安定性のため）
+	// 特定の範囲内でsinXをゼロにする
 	if (absSinX < epsilon) {
 		sinX = 0.0f;
 	}
 
 	euler.x = std::asin(-sinX);  // Roll角度（X軸回転）
+
+	// X軸の回転が90度付近の場合はジンバルロック状態になっている
+	if (std::isnan(euler.x) || std::abs(std::abs(euler.x) - std::numbers::pi_v<float> / 2.0f) < epsilon) {
+		euler.x = std::copysign(std::numbers::pi_v<float> / 2.0f, -sinX);
+		return DealtWithZimbalLock(euler.x, q);
+	}
 
 	// X軸のcosを計算
 	float cosX = std::cos(euler.x);
@@ -137,6 +144,18 @@ Vec3 BaseBuilding::QuaternionToEulerAngles(const Quaternion& q) {
 	euler.z = std::atan2(sinZ, cosZ);  // Yaw角度（Z軸回転）
 
 	return euler;
+}
+
+Vec3 BaseBuilding::DealtWithZimbalLock(float x, const Quaternion& q) {
+	// X軸が90度近くになっているため、ジンバルロックが発生している
+	// Y軸とZ軸の回転を調整する
+	float y = std::atan2(2.0f * (q.x * q.z + q.y * q.w), 1.0f - 2.0f * (q.y * q.y + q.z * q.z));
+
+	// Z軸回転はジンバルロック時に曖昧になるため、Y軸だけで方向を決める
+	// X軸が±90度のとき、Z軸の影響を無視するような回転
+	float z = 0.0f;
+
+	return { x, y, z };
 }
 
 //Vector3からQuaternion変換

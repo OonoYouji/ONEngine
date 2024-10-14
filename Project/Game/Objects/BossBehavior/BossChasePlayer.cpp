@@ -58,7 +58,7 @@ Vec3 BossChasePlayer::QuaternionToEulerAngles(const Quaternion& q) {
 	float absSinX = std::abs(sinX);
 	const float epsilon = 0.001f;
 
-	// 特定の範囲内でsinXをゼロにする（計算の安定性のため）
+	// 特定の範囲内でsinXをゼロにする
 	if (absSinX < epsilon) {
 		sinX = 0.0f;
 	}
@@ -101,6 +101,6 @@ Quaternion BossChasePlayer::ToQuaternion(const Vec3& eulerAngles) {
 	q.z = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw; // z
 	q.w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw; // w
 
-	return Quaternion::Normalize(q); // 正規化して返す
+	return Quaternion::Normalize(q); 
 }
 
