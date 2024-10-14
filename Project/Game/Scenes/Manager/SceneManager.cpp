@@ -96,16 +96,16 @@ void SceneManager::Update() {
 
 void SceneManager::Draw() {
 
-	std::vector<RenderTexture*> renderTextures; 
+	std::vector<RenderTexture*> renderTextures;
 	for(auto& layer : sceneLayers_) {
-		
+
 		/// 描画
 		layer->Draw();
 
 		/// render textureを追加
 		renderTextures.push_back(layer->GetRenderTexture());
 	}
-	
+
 
 	/// 最終的なrender textureを作る
 	RenderTextureManager::CreateBlendRenderTexture(
