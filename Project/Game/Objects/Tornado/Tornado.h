@@ -15,6 +15,13 @@ class Ring;
 /// 竜巻を表現するクラス
 /// ===================================================
 class Tornado final : public BaseGameObject {
+
+	struct ParticleData {
+		float value;
+		float radius;
+		float speed;
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -52,7 +59,8 @@ private:
 
 	float zRotateSpeed_ = 1.0f;
 
-	std::vector<Ring*> ringArray_;
+	std::vector<Ring*>        ringArray_;
+	std::vector<ParticleData> particleDataArray_;
 
 };
 

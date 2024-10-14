@@ -204,11 +204,15 @@ public:
 
 	float GetNormLifeTime() { return lifeTime_ / maxLifeTime_; }
 
+	uint32_t GetID() { return id_; }
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	uint32_t id_;
 
 	bool isAlive_      = true;
 	float lifeTime_    = 10.0f; // seconds

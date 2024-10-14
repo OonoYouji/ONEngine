@@ -13,25 +13,40 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
+/// math
+#include "Math/Random.h"
+
 /// objects
 #include "Objects/Player/Player.h"
 
 
 void Tornado::Initialize() {
 
+	const uint32_t kParticleMaxNum = 32u;
 
-	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(32, "Sphere");
+	particleDataArray_.resize(kParticleMaxNum);
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "Sphere");
+
+	/// particle data arrayの初期化
+	for(auto& data : particleDataArray_) {
+		data.value = 0.0f;
+		data.radius = Random::Float(1.0f, 3.0f);
+		data.speed = Random::Float(32.0f, 64.0f);
+	}
+
+	/// 関数のセット
 	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
-		//transform->SetParent(pPlayer_ ? pPlayer_->GetTransform() : nullptr);
 		transform->SetParent(pTransform_);
 
-		float speed = 10.0f;
-		float radius = (1.0f - particle->GetNormLifeTime()) * 3.0f;
+		ParticleData& data = particleDataArray_[particle->GetID()];
+		float radius = (1.0f - particle->GetNormLifeTime()) * data.radius;
+		data.value = particle->GetNormLifeTime() * data.speed;
+
 		transform->position = {
-			std::cos(particle->GetNormLifeTime() * speed)* radius,
+			std::cos(data.value) * radius,
 			0.0f,
-			std::sin(particle->GetNormLifeTime() * speed) * radius
+			std::sin(data.value) * radius
 		};
 	});
 

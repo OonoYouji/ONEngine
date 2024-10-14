@@ -116,14 +116,16 @@ void ParticleSystem::Update() {
 		matBillboard_.m[3][2] = 0.0f;
 	}
 
+	for(size_t i = 0; i < particleArray_.size(); ++i) {
+		Particle* particle = particleArray_[i].get();
 
-	for(auto& particle : particleArray_) {
-		particleUpdateFunc_(particle.get());
+		particleUpdateFunc_(particle);
 		particle->LifeTimeUpdate();
+		particle->id_ = static_cast<uint32_t>(i);
 
 		if(useBillboard_) {
 
-			Mat4 matScale     = Mat4::MakeScale(particle->transform_.scale);
+			Mat4 matScale = Mat4::MakeScale(particle->transform_.scale);
 			Mat4 matTranslate = Mat4::MakeTranslate(particle->transform_.position);
 
 			particle->transform_.matTransform = matScale * matBillboard_ * matTranslate;
