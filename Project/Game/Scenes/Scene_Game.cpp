@@ -1,6 +1,6 @@
 #include "Scene_Game.h"
 
-#include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Player/Player.h"
 #include "Objects/ShootingCourse/ShootingCourse.h"
 
 /// ===================================================
@@ -9,11 +9,17 @@
 void Scene_Game::Initialize() {
 
 	/// instance create...
+	Player*         player         = new Player();
 	ShootingCourse* shootingCourse = new ShootingCourse();
 
+
 	/// instance initializing...
+	player->Initialize();
 	shootingCourse->Initialize();
 	
+	/// その他ポインタ設定など...
+	player->SetShootingCourse(shootingCourse);
+
 }
 
 
