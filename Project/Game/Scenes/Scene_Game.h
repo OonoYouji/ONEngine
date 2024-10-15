@@ -5,6 +5,7 @@
 
 #include "Objects/Player/Player.h"
 #include "Objects/Boss/Boss.h"
+#include "Objects/Boss/BossBulletLump.h"
 #include"Objects/Building/BuildingManager.h"
 
 
@@ -25,5 +26,5 @@ private:
 	Boss* boss_ = nullptr;
 	Player* player_ = nullptr;
 	Tornado* tornado_ = nullptr;
-	
+	BossBulletLump* bossBulletLump_;
 };

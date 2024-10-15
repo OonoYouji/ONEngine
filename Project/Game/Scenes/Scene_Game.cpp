@@ -30,7 +30,8 @@ void Scene_Game::Initialize() {
 
 	player_ = new Player;
 	buildingManager_ = new BuildingManager();
-	 boss_ = new Boss();
+	boss_ = new Boss();
+	/*bossBulletLump_ = new BossBulletLump();*/
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();
@@ -48,6 +49,7 @@ void Scene_Game::Initialize() {
 	gameCameraZoomInOut->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
+	/*bossBulletLump_->Initialize();*/
 
 
 	/// ===================================================
@@ -63,8 +65,11 @@ void Scene_Game::Initialize() {
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
+	/*boss_->SetBulletLump(bossBulletLump_);*/
 
 	tornado_->SetPlayer(player_);
+	/*bossBulletLump_->SetBoss(boss_);*/
+
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
 	buildingManager_->SpownBuilding(9, 9);
@@ -81,6 +86,6 @@ void Scene_Game::Initialize() {
 void Scene_Game::Update() {
 	//ビルの振る舞い管理
 	buildingManager_->AllUpdate(tornado_, boss_);
-	
+
 
 }

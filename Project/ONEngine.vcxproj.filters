@@ -223,6 +223,9 @@
     <Filter Include="Game\Scenes\Manager">
       <UniqueIdentifier>{4a1d3369-4a1f-4571-bcac-289b883143ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\HormingFunction">
+      <UniqueIdentifier>{b3fae37c-870a-48b6-937b-b2329ad5c64b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CustomShaders\Earth\Earth.hlsli">
@@ -626,6 +629,15 @@
     <ClCompile Include="Game\Objects\Building\InBossBuilding.cpp">
       <Filter>Game\Objects\Building</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossBulletShot.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Boss\BossBulletLump.cpp">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\HormingFunction\Horming.cpp">
+      <Filter>Game\HormingFunction</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -924,6 +936,15 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Building\InBossBuilding.h">
       <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossBulletShot.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Boss\BossBulletLump.h">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\HormingFunction\Horming.h">
+      <Filter>Game\HormingFunction</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

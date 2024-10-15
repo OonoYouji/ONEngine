@@ -18,10 +18,13 @@ public:
 	void Update() override;
 	void Debug() override;
 	//getter
+	
 	bool GetIsDeath()const { return isDeath_; }
 	//setter
 	void SetModel(Model* model);
+	//void SetBossBulletLump(BossBulletLump*inBossBuilding);
 	void SetBoss(Boss* tornade);
+
 
 private:
 	bool isDeath_;
@@ -34,5 +37,5 @@ private:
 	//
 	float phi_;
 
-	Boss* pBoss_;
+	Boss* boss_;
 };

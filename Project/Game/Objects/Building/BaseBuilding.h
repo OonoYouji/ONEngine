@@ -19,12 +19,7 @@ public:
 	virtual	void Initialize()override;
 	virtual	void Update() override;
 	virtual void Debug() override;
-	//ホーミング
-	Vec3 QuaternionToEulerAngles(const Quaternion& q);
-	Quaternion ToQuaternion(const Vec3& eulerAngles);
-	Vec3 DealtWithZimbalLock(float x, const Quaternion& q);
-	std::pair<float, float> CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius);
-
+	
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 	void GrowForTime(const float& par, const float& second);

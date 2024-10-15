@@ -22,4 +22,5 @@ protected:
 	std::string name_;
 	//ボス
 	Boss*pBoss_ = nullptr;
+	
 };

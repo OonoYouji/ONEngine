@@ -9,10 +9,7 @@ public:
 	//コンストラクタ
 	BossChasePlayer(Boss* boss);
 	~BossChasePlayer();
-	//関数
-	Vec3 QuaternionToEulerAngles(const Quaternion& q);
-	Vec3 DealtWithZimbalLock(float x, const Quaternion& q);
-	Quaternion ToQuaternion(const Vec3& eulerAngles);
+	
 	void Update()override;
 private:
 	//ストーカースピード(速い)

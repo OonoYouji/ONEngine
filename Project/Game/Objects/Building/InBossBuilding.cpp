@@ -44,7 +44,6 @@ void InBossBuilding::SetModel(Model* model) {
 }
 
 void InBossBuilding::SetBoss(Boss* boss) {
-	pBoss_ = boss;
-	pTransform_->SetParent(pBoss_->GetTransform());//取るね――ドペアレント
-
+	boss_ = boss;
+	pTransform_->SetParent(boss->GetTransform());//取るね――ドペアレント
 }

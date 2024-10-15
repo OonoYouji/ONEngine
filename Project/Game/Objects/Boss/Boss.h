@@ -11,6 +11,7 @@
 #include"Objects/BossBehavior/BaseBossBehavior.h"
 #include"Objects/BossBehavior/BossRoot.h"
 #include"Objects/BossBehavior/BossChasePlayer.h"
+#include"Objects/BossBehavior/BossBulletShot.h"
 
 class Player;
 class BuildingManager;
@@ -34,12 +35,15 @@ public:
 	//建物吸引
 	void SlurpInit();
 	void SlurpUpdate();
+	//弾発射
+	void BulletShotInit();
+	void BulletShotUpdate();
 	
-	std::pair<float, float> CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius);
 	//プレイヤーセット
 	void SetPlayer(Player*player);
 	void SetBuildingaManager(BuildingManager* player);
 	BaseBuilding* FindClosestBuilding();
+
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
@@ -47,13 +51,14 @@ public:
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	Player* GetPlayer() { return pPlayer_; }
-
+	
 	//setter
 	void SetIsSlurping(bool is) { isSlurping_ = is; }
 	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
 	
+
 private:
 	
 private:
@@ -64,10 +69,17 @@ private:
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  パラメータ
+	////////////////////////////////////////////////////////////////////////////////////////////
 	//パラメータ調節用追従すピーⅮ
 	float SpeedParamater_;
 	//吸い込み関連
 	bool isSlurping_ = false;  // 吸い込み中かどうか
 	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
 	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
+
+	//ボス弾発射関連
+	const uint32_t kBuildingNum_=1;
+
 };

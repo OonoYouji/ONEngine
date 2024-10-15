@@ -10,7 +10,6 @@
 #include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
-
 //std
 #include <algorithm>
 #include<numbers>
@@ -21,6 +20,8 @@
 #include"Objects/Player/Player.h"
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Ground/Ground.h"
+//function
+#include"HormingFunction/Horming.h"
 #undef max
 
 void Boss::Initialize() {
@@ -59,6 +60,10 @@ void Boss::Initialize() {
 void Boss::Update() {
 	//振る舞い更新
 	behavior_->Update();
+	//敵のビルが一定数溜まったら
+	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
+		ChangeState(std::make_unique<BossBulletShot>(this));
+	}
 
 	pivot_.UpdateMatrix();
 }
@@ -75,7 +80,6 @@ void Boss::ChaseInit() {
 
 }
 void Boss::ChaseUpdate() {
-
 }
 
 //建物吸引
@@ -83,6 +87,7 @@ void Boss::SlurpInit() {
 	isSlurping_ = false;
 	slurpCooldownTimer_ = kSlurpCollTime_;
 }
+
 void Boss::SlurpUpdate() {
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
@@ -99,6 +104,13 @@ void Boss::SlurpUpdate() {
 			slurpCooldownTimer_ = 0.0f;
 		}
 	}
+}
+
+void Boss::BulletShotInit() {
+
+}
+void Boss::BulletShotUpdate() {
+
 }
 
 void Boss::Debug() {
@@ -121,6 +133,9 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
 
+//void Boss::SetBulletLump(BossBulletLump* bossbullet) {
+//	pBulletLump_ = bossbullet;
+//}
 
 // 一番近いビルを探す
 BaseBuilding* Boss::FindClosestBuilding() {
@@ -146,33 +161,5 @@ BaseBuilding* Boss::FindClosestBuilding() {
 		}
 	}
 	return closestBuilding;
-
-
 }
-std::pair<float, float> Boss::CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius) {
-	// ボスとプレイヤーの位置を3次元座標から球面座標に変換
-	float latitude1 = std::asin(bossPosition.y / Vector3::Length(bossPosition)); // ボスの緯度
-	float longitude1 = std::atan2(bossPosition.z, bossPosition.x); // ボスの経度
 
-	float latitude2 = std::asin(targetPos.y / Vector3::Length(targetPos)); // プレイヤーの緯度
-	float longitude2 = std::atan2(targetPos.z, targetPos.x); // プレイヤーの経度
-
-	// 中心角を計算
-	float deltaSigma = std::acos(
-		std::sin(latitude1) * std::sin(latitude2) +
-		std::cos(latitude1) * std::cos(latitude2) * std::cos(longitude2 - longitude1)
-	);
-
-	// 球面上の距離を計算
-	float sphereRadius = radius; // 半径
-	float distance = sphereRadius * deltaSigma;
-
-	// 方位角を計算
-	float deltaLon = longitude2 - longitude1;
-	float y = std::sin(deltaLon) * std::cos(latitude2);
-	float x = std::cos(latitude1) * std::sin(latitude2) - std::sin(latitude1) * std::cos(latitude2) * std::cos(deltaLon);
-	float direction = std::atan2(y, x);
-
-	return { distance, direction }; // 距離と方位角を返す
-
-}

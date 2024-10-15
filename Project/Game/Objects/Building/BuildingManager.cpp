@@ -67,10 +67,8 @@ void 	BuildingManager::Update() {
 void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 	// 建ってるビル達の更新
 	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
-	
 		//更新
 		(*buildingIter)->Update();
-
 		//死亡
 		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken()) {
 			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合

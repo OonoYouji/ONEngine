@@ -7,7 +7,7 @@
 #include <ComponentManager/Transform/Transform.h>
 
 #include"Objects/Tornado/Tornado.h"
-#include"Objects/Boss/Boss.h"
+#include"Objects/Boss/BossBulletLump.h"
 class BuildingManager:public BaseGameObject {
 private:
 	struct DeathParamater {
@@ -38,7 +38,9 @@ public:
 	void SpownBuilding(float theta, float phi);
 	void AddInTornadoBuilding(Tornado* tornado, Model* model);
 	void AddBossBuilding(Boss* boss, Model* model);
+
 	//getter
 	std::list<BaseBuilding*> GetBuildings()const { return buildings_; }
+	std::list<InBossBuilding*> GetInBossBuilding()const { return inBossBuildings_; }
 	/*void 	Draw();*/
 };
