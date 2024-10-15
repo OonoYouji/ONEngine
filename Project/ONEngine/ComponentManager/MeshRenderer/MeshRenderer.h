@@ -35,6 +35,19 @@ public:
 	/// <param name="texName">: "./Resources/Textures/" からのfilePath</param>
 	void SetMaterial(const std::string& texName);
 
+
+	/// <summary>
+	/// マテリアルの色のセット
+	/// </summary>
+	/// <param name="color"></param>
+	void SetColor(const Vec4& color);
+
+	/// <summary>
+	/// マテリアルの色のゲット
+	/// </summary>
+	/// <returns></returns>
+	const Vec4& GetColor() const { return material_->GetColor(); }
+
 private:
 	/// ===================================================
 	/// private : objects

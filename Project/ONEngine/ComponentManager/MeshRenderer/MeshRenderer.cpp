@@ -29,3 +29,7 @@ void MeshRenderer::SetMaterial(const std::string& texName) {
 
 	material_->CreateMaterial(texName);
 }
+
+void MeshRenderer::SetColor(const Vec4& color) {
+	material_->SetColor(color);
+}
