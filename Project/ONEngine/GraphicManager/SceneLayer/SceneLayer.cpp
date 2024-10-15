@@ -8,6 +8,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 
+#include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Drawer/Sprite/SpriteManager.h"
@@ -23,11 +24,12 @@
 /// namespace
 /// ===================================================
 namespace {
-	ModelManager* gModelManager = ModelManager::GetInstance();
-	SpriteManager* gSpriteManager = SpriteManager::GetInstance();
+	CameraManager*     gCameraManager     = CameraManager::GetInstance();
+	ModelManager*      gModelManager      = ModelManager::GetInstance();
+	SpriteManager*     gSpriteManager     = SpriteManager::GetInstance();
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-	Line2D* gLine2D = Line2D::GetInstance();
-	Line3D* gLine3D = Line3D::GetInstance();
+	Line2D*            gLine2D            = Line2D::GetInstance();
+	Line3D*            gLine3D            = Line3D::GetInstance();
 } /// namespace
 
 
@@ -39,6 +41,11 @@ int SceneLayer::sInstanceCount_ = 0;
 SceneLayer::SceneLayer() {
 	id_ = sInstanceCount_++;
 }
+
+void SceneLayer::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}
+
 
 void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 	auto commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
@@ -60,6 +67,11 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 void SceneLayer::Draw() {
 
+	auto debugCamera = gCameraManager->GetCamera("DebugCamera");
+	if(!debugCamera->isActive) {
+		gCameraManager->SetMainCamera(camera_);
+	}
+
 	renderTexture_->BeginRenderTarget();
 
 	gLine2D->PreDraw();
@@ -76,27 +88,7 @@ void SceneLayer::Draw() {
 
 	renderTexture_->EndRenderTarget();
 
-	/// use post effect 
-	/*for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
-		if(isApplyBlooms_[i]) {
-
-			auto bloomRenderTex = blooms_[i]->GetBloomRenderTexture();
-			auto copyDestRenderTex = renderTextures_[i].get();
-
-			ONE::DxBarrierCreator::CreateBarrier(copyDestRenderTex->GetRenderTexResource(), copyDestRenderTex->currentResourceState, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-			copyDestRenderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-			blooms_[i]->ApplyBloom(copyDestRenderTex);
-
-			ONE::DxBarrierCreator::CreateBarrier(bloomRenderTex->GetRenderTexResource(), bloomRenderTex->currentResourceState, D3D12_RESOURCE_STATE_COPY_SOURCE);
-			bloomRenderTex->currentResourceState = D3D12_RESOURCE_STATE_COPY_SOURCE;
-			ONE::DxBarrierCreator::CreateBarrier(copyDestRenderTex->GetRenderTexResource(), copyDestRenderTex->currentResourceState, D3D12_RESOURCE_STATE_COPY_DEST);
-			copyDestRenderTex->currentResourceState = D3D12_RESOURCE_STATE_COPY_DEST;
-
-			/// bloom -> render textures[i] にコピー
-			commandList->CopyResource(copyDestRenderTex->GetRenderTexResource(), bloomRenderTex->GetRenderTexResource());
-		}
-	}*/
+	
 
 }
 
