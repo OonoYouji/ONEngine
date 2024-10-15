@@ -26,7 +26,7 @@ void Tornado::Initialize() {
 	const uint32_t kParticleMaxNum = 32u;
 
 	particleDataArray_.resize(kParticleMaxNum);
-	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "Sphere");
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "rubble");
 
 	/// particle data arrayの初期化
 	for(auto& data : particleDataArray_) {
@@ -39,7 +39,7 @@ void Tornado::Initialize() {
 	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		transform->SetParent(pTransform_);
-		transform->scale = Vec3::kOne * 0.25f;
+		transform->scale = Vec3::kOne * 0.5f;
 
 		ParticleData& data = particleDataArray_[particle->GetID()];
 		float radius = (1.0f - particle->GetNormLifeTime()) * data.radius;
@@ -79,6 +79,7 @@ void Tornado::Initialize() {
 		wind = new Wind;
 		wind->Initialize();
 		wind->SetParent(pTransform_);
+		wind->SetScale(Vec3::kOne * 0.5f);
 	}
 
 }
@@ -172,6 +173,22 @@ void Tornado::Debug() {
 		ImGui::EndChild();
 		ImGui::TreePop();
 	}
+
+
+	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		Vec3 scale = windArray_.front()->GetTransform()->scale;
+		ImGui::DragFloat3("scale", &scale.x, 0.01f);
+
+		if(ImGui::IsItemEdited()) {
+			for(auto& wind : windArray_) {
+				wind->GetTransform()->scale = scale;
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
 
 }
 
