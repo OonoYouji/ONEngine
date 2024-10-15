@@ -37,6 +37,7 @@ public:
 
 	void CreateMaterial(const std::string& textureName);
 
+	const Vec4& GetColor() const { return materialData_->color; };
 	void SetColor(const Vector4& color);
 	void SetIsLighting(bool isLighting);
 
