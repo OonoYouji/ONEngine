@@ -123,6 +123,9 @@ void ParticleSystem::Update() {
 
 	for(size_t i = 0; i < particleArray_.size(); ++i) {
 		Particle* particle = particleArray_[i].get();
+		if(!particle->isAlive_) {
+			continue;
+		}
 
 		particleUpdateFunc_(particle);
 		particle->LifeTimeUpdate();

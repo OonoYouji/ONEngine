@@ -38,6 +38,7 @@ void Tornado::Initialize() {
 	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		transform->SetParent(pTransform_);
+		transform->scale = Vec3::kOne * 0.25f;
 
 		ParticleData& data = particleDataArray_[particle->GetID()];
 		float radius = (1.0f - particle->GetNormLifeTime()) * data.radius;
