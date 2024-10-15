@@ -3,6 +3,7 @@
 
 /// std
 #include <numbers>
+#include <string>
 
 /// engine
 #include "ImGuiManager/ImGuiManager.h"
@@ -58,11 +59,11 @@ void Tornado::Initialize() {
 	quaternionLocalX_ = Quaternion::MakeFromAxis(Vec3::kRight, -std::numbers::pi_v<float> / 2.0f);
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
-	eacSpeed_    = 0.7f;
+	eacSpeed_ = 0.7f;
 
 	scaleScaler_ = 1.0f;
-	minScale_    = 1.0f;
-	maxScale_    = 3.0f;
+	minScale_ = 1.0f;
+	maxScale_ = 3.0f;
 
 
 	/// ring array initializing
@@ -71,6 +72,13 @@ void Tornado::Initialize() {
 		ring = new Ring;
 		ring->Initialize();
 		ring->SetParent(pTransform_);
+	}
+
+	windArray_.resize(10);
+	for(auto& wind : windArray_) {
+		wind = new Wind;
+		wind->Initialize();
+		wind->SetParent(pTransform_);
 	}
 
 }
@@ -207,3 +215,28 @@ void Ring::Debug() {
 void Ring::ResetInstanceCount() {
 	sInstanceCount_ = 0;
 }
+
+
+/// ===================================================
+/// wind
+/// ===================================================
+
+int Wind::sInstanceCount_ = 0;
+
+Wind::Wind() {
+	id_ = sInstanceCount_++;
+	CreateTag(this); 
+}
+
+void Wind::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}
+
+void Wind::Initialize() {
+	MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
+
+	std::string modelFilePath = std::string("tornade") + std::to_string(id_ + 1);
+	meshRenderer->SetModel(modelFilePath);
+}
+
+void Wind::Update() {}

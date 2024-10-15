@@ -10,6 +10,7 @@
 /// ===================================================
 class Player;
 class Ring;
+class Wind;
 
 /// ===================================================
 /// 竜巻を表現するクラス
@@ -60,6 +61,7 @@ private:
 	float zRotateSpeed_ = 1.0f;
 
 	std::vector<Ring*>        ringArray_;
+	std::vector<Wind*>        windArray_;
 	std::vector<ParticleData> particleDataArray_;
 
 };
@@ -86,5 +88,27 @@ private:
 	int id_;
 
 	float rotateSpeed_ = 0.0f;
+
+};
+
+
+/// ===================================================
+/// 風
+/// ===================================================
+class Wind : public BaseGameObject {
+public:
+
+	Wind();
+	~Wind() {}
+
+	static void ResetInstanceCount();
+
+	void Initialize() override;
+	void Update()     override;
+
+private:
+
+	static int sInstanceCount_;
+	int id_;
 
 };
