@@ -30,7 +30,7 @@ void Tornado::Initialize() {
 	/// particle data arrayの初期化
 	for(auto& data : particleDataArray_) {
 		data.value = 0.0f;
-		data.radius = Random::Float(1.0f, 3.0f);
+		data.radius = Random::Float(3.0f, 5.0f);
 		data.speed = Random::Float(32.0f, 64.0f);
 	}
 
@@ -141,6 +141,30 @@ void Tornado::Debug() {
 
 		ImGui::TreePop();
 	}
+
+
+	if(ImGui::TreeNodeEx("particle data", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		for(size_t i = 0; i < particleDataArray_.size(); ++i) {
+
+			ParticleData& data = particleDataArray_[i];
+
+			std::string label = std::string("data") + std::to_string(i);
+			if(!ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+				continue;
+			}
+
+			ImGui::DragFloat("value",  &data.value,  0.05f);
+			ImGui::DragFloat("radius", &data.radius, 0.05f);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::EndChild();
+		ImGui::TreePop();
+	}
+
 }
 
 void Tornado::SetPlayer(Player* _player) {
