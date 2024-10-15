@@ -118,6 +118,17 @@ void ParticleEmitter::Debug() {
 		}
 
 
+
+		/// ---------------------------------------------------
+		/// particle instance
+		/// ---------------------------------------------------
+
+		ImGui::SeparatorText("particle emission count");
+
+		ImGui::DragInt("emission count",        reinterpret_cast<int*>(&emissionCount_), 1, 0, maxParticleCount_);
+		ImGui::DragInt("curent particle count", reinterpret_cast<int*>(&currentParticleCount_), 0);
+		ImGui::DragInt("max particle count",    reinterpret_cast<int*>(&maxParticleCount_),     0);
+
 		ImGui::TreePop();
 	}
 }
