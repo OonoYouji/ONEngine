@@ -260,6 +260,8 @@
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClCompile>
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -720,6 +722,8 @@
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h">
       <Filter>ONEngine\ComponentManager\ParticleSystem</Filter>
     </ClInclude>
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">

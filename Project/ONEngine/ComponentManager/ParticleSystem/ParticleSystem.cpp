@@ -85,8 +85,8 @@ void ParticleSystem::Initialize() {
 	particleArray_.reserve(kMaxParticleNum_);
 
 	/// particle setting
-	SetParticleRespawnTime(0.5f);
-	SetEmittedParticleCount(1u);
+	//SetParticleRespawnTime(0.5f);
+	//SetEmittedParticleCount(1u);
 	SetParticleLifeTime(5.0f);
 	SetUseBillboard(true);
 
@@ -100,6 +100,11 @@ void ParticleSystem::Initialize() {
 		Vec3 randomDir = Random::Vec3(-Vec3::kOne, Vec3::kOne).Normalize();
 		tf->position += randomDir * Time::DeltaTime();
 	};
+
+
+	/// emitter
+	emitter_.reset(new ParticleEmitter);
+	emitter_->Initialize(&particleArray_, this);
 
 }
 
@@ -133,29 +138,18 @@ void ParticleSystem::Update() {
 		}
 	}
 
-	/// 時間を減らす
-	currentParticleRespawnTime_ -= Time::DeltaTime();
-
-	/// パーティクルを発生させる
-	if(currentParticleRespawnTime_ < 0.0f) {
-		/// 値のリセット
-		currentParticleRespawnTime_ = particleRespawnTime_;
-
-		/// 発生
-		EmitParticles();
-	}
-
+	emitter_->Update();
 }
 
 void ParticleSystem::Draw() {
 
-	particleInstanceCount_ = 0u;
+	emitter_->currentParticleCount_ = 0u;
 	std::vector<Mat4> matTransformArray;
 
 	/// 生きているParticleの数を確認
 	std::partition(particleArray_.begin(), particleArray_.end(), [&](const std::unique_ptr<Particle>& particle) {
 		if(particle->GetIsAlive()) {
-			particleInstanceCount_++;
+			emitter_->currentParticleCount_++;
 			matTransformArray.push_back(particle->GetTransform()->matTransform);
 			return true;
 		}
@@ -164,44 +158,27 @@ void ParticleSystem::Draw() {
 
 
 	/// 描画処理に移行する
-	if(particleInstanceCount_ > 0) {
+	if(emitter_->currentParticleCount_ > 0) {
 		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
 
-		sPipeline_->Draw(gpuHandle_, pModel_, particleInstanceCount_);
+		sPipeline_->Draw(gpuHandle_, pModel_, emitter_->currentParticleCount_);
 	}
 }
 
 void ParticleSystem::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat("particle respawn time",         &particleRespawnTime_,        0.1f);
-		ImGui::DragFloat("current particle respawn time", &currentParticleRespawnTime_, 0.1f);
-
-		ImGui::Separator();
-
-		ImGui::DragInt("emit particle count",             reinterpret_cast<int*>(&emittedParticleCount_),  1, 0, kMaxParticleNum_);
-		ImGui::DragInt("current particle instance count", reinterpret_cast<int*>(&particleInstanceCount_), 0);
 		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
-
-		ImGui::Separator();
-
 		ImGui::Checkbox("use billboard", &useBillboard_);
+
+		ImGui::Spacing();
+
+		emitter_->Debug();
 
 		ImGui::TreePop();
 	}
 }
 
-
-void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
-	particleRespawnTime_ = _particleRespawnTime;
-
-	/// 現在のリスポーンタイムが最大値を超えていたら最大値に値を調整するため
-	currentParticleRespawnTime_ = std::min(currentParticleRespawnTime_, particleRespawnTime_);
-}
-
-void ParticleSystem::SetEmittedParticleCount(uint32_t _emittedParticleCount) {
-	emittedParticleCount_ = _emittedParticleCount;
-}
 
 void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 	particleLifeTime_ = _particleLifeTime;
@@ -217,44 +194,6 @@ void ParticleSystem::SetPartilceUpdateFunction(const std::function<void(Particle
 }
 
 
-void ParticleSystem::EmitParticles() {
-	for(size_t i = 0; i < static_cast<size_t>(emittedParticleCount_); ++i) {
-
-		/// 現在のparticle配列の大きさと最大値を比べる
-		size_t particleArraySize = particleArray_.size();
-		if(particleArraySize < static_cast<size_t>(kMaxParticleNum_)) {
-
-			particleArray_.push_back(std::make_unique<Particle>());
-			particleArray_.back()->Initialize();
-			particleArray_.back()->lifeTime_ = particleLifeTime_;
-
-		} else {
-			/// ここに入るときはすでに最大値分配列を作成している
-
-			/// 1, isAliveがfalseになっているオブジェクトを探す
-			/// 2, 見つかったオブジェクトを使用してパーティクルを発生させる
-
-			auto itr = std::find_if(particleArray_.begin(), particleArray_.end(), 
-						 [](const std::unique_ptr<Particle>& particle) {
-				if(!particle->GetIsAlive()) {
-					return true;
-				}
-				return false;
-			});
-
-			/// 見つからなかったらこれ以降もないので終了する
-			if(itr == particleArray_.end()) {
-				break;
-			}
-
-			(*itr)->GetTransform()->position = GetOwner()->GetPosition();
-			(*itr)->lifeTime_                = particleLifeTime_;
-			(*itr)->isAlive_                 = true;
-
-		}
-
-	}
-}
 
 
 
