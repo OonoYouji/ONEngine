@@ -216,6 +216,8 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
@@ -315,6 +317,8 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />

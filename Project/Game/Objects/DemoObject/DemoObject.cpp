@@ -1,9 +1,13 @@
 #include "DemoObject.h"
 
+/// engine
 #include "ImGuiManager/ImGuiManager.h"
+#include "FrameManager/Time.h"
 
+/// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
+
 
 void DemoObject::Initialize() {
 	//auto mr = AddComponent<MeshRenderer>();
@@ -12,7 +16,8 @@ void DemoObject::Initialize() {
 	auto ps = AddComponent<ParticleSystem>(12, "Board");
 
 	ps->SetPartilceUpdateFunction([](Particle* par) {
-
+		Transform* transform = par->GetTransform();
+		transform->position.y += Time::DeltaTime();
 	});
 
 
