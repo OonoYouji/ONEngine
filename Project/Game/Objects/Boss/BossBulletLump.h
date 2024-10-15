@@ -24,36 +24,25 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+	//getter
+	bool GetIsDeath()const { return isDeath_; }
 
 	//setter^d
 	void SetDirection(Quaternion direction);
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetQuaternionSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
-
 	void SetBoss(Boss* boss);
 
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-
-	/// other class pointer
-	Boss* pBoss_ = nullptr;
-
-	/// tarnsform setting
-	Quaternion quaternionLocalX_ = { 0.0f, 0.0f, 0.0f, 1.0f };
-	Quaternion quaternionLocalY_ = { 0.0f, 0.0f, 0.0f, 1.0f };
-
 	Transform pivot_;
-	
-	float localYAngle_ = 0.0f;
+	bool isDeath_;
+	//弾を発射した瞬間に当たらないように一応無敵時間
+	float invincibleTime_;
+	const float kInvincibleTime_=1.0f;
 
-	/// action param setting
-	float scaleScaler_ = 1.0f;
-	float eacSpeed_; /// "eac == expansion and contraction"
 
-	float maxScale_;
-	float minScale_;
-
-	float zRotateSpeed_ = 1.0f;
 };

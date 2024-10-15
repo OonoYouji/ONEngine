@@ -29,6 +29,14 @@ void InBossBuilding::Update() {
 	float x = radius_ * sin(theta_);
 	float y = radius_ * cos(theta_);
 	pTransform_->position = { x,y,-5 };
+
+	if (!isDeath_) {
+		if (pBoss_->GetIsBuildingKill()) {
+			isDeath_ = true;
+			pTransform_->parent_ = nullptr;
+			
+		}
+	}
 }
 //デバッグ
 void InBossBuilding::Debug() {
@@ -44,6 +52,6 @@ void InBossBuilding::SetModel(Model* model) {
 }
 
 void InBossBuilding::SetBoss(Boss* boss) {
-	boss_ = boss;
+	pBoss_ = boss;
 	pTransform_->SetParent(boss->GetTransform());//取るね――ドペアレント
 }

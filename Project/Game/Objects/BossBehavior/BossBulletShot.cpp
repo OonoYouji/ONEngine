@@ -1,14 +1,17 @@
 #include"BossBulletShot.h"
+//behavior
 #include"Objects/BossBehavior/BossRoot.h"
-#include"Objects/boss/boss.h"
+#include"Objects/BossBehavior/BossChasePlayer.h"
+//emgine
 #include"FrameManager/Time.h"
 //obj
 #include"Objects/Ground/Ground.h"
 #include"Objects/Player/Player.h"
+#include"Objects/boss/boss.h"
 #include"Objects/Boss/BossBulletLump.h"
 
-#include"Easing/EasingFunction.h"
 //function
+#include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
 //初期化
 
@@ -21,6 +24,7 @@ BossBulletShot::BossBulletShot(Boss* boss)
 
 	anticipationTime_ = 0.0f;
 	isAnticipationed_ = false;
+	isStop_ = false;
 }
 
 BossBulletShot ::~BossBulletShot() {
@@ -59,11 +63,11 @@ void BossBulletShot::Update() {
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(inter_);
 		
-		//クールタイム終わったら
+		//クールタイム終わったら弾発射
 		if (anticipationTime_ >= kAnticipationTime_) {
+			pBoss_->SetIsBuildingKill(true);//建物たち殺す
 			isAnticipationed_ = true;
-			Quaternion direction = pBoss_->GetPivotQuaternion() * pBoss_->GetQuaternion();
-			
+			Quaternion direction = pBoss_->GetPivotQuaternion() * pBoss_->GetQuaternion();			
 			// 弾の生成
 			pBossbulletLump_ = new BossBulletLump();
 			pBossbulletLump_->Initialize();
@@ -73,9 +77,26 @@ void BossBulletShot::Update() {
 	//弾発射
 	if (isAnticipationed_) {
 
-		pBossbulletLump_->Update();
-		/*pBossbulletLump_->SetQuaternionSubtraction(move_);*/
-
+		//弾更新
+		if (pBossbulletLump_) {
+			pBossbulletLump_->Update();
+			//弾死んだらスタン
+			if (pBossbulletLump_->GetIsDeath()) {
+				pBossbulletLump_->Destory();//デストロイ
+				pBossbulletLump_ = nullptr;
+				isStop_ = true;
+			}
+		}
+	
+		if(isStop_){
+			stopTime_ += Time::DeltaTime();
+			//振る舞い切り替え
+			if (stopTime_ >= kStopTime_) {
+				pBoss_->SetIsBuildingKill(false);
+				pBoss_->ChangeState(std::make_unique<BossChasePlayer>(pBoss_));
+			}
+		}
+		
 
 	}
 }

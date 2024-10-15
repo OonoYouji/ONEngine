@@ -18,6 +18,10 @@ private:
 	bool isAnticipationed_;
 	float anticipationTime_;
 	const float kAnticipationTime_=2.0f;//秒
+	//スタン時間
+	float stopTime_;
+	const float kStopTime_ = 1.0f;
+	bool isStop_;
 	
 	// プレイヤーの方向を向くための回転を計算
 	Quaternion inter_;

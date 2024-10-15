@@ -37,5 +37,5 @@ private:
 	//
 	float phi_;
 
-	Boss* boss_;
+	Boss* pBoss_;
 };

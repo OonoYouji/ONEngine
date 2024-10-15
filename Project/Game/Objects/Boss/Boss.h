@@ -50,6 +50,7 @@ public:
 	bool GetIsSlurping()const { return isSlurping_; }
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
+	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
 	
 	//setter
@@ -57,6 +58,7 @@ public:
 	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
+	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
 	
 
 private:
@@ -69,6 +71,8 @@ private:
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
+	//吸ってる弾を殺すフラグ
+	bool isBuildingKill_;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  パラメータ
 	////////////////////////////////////////////////////////////////////////////////////////////

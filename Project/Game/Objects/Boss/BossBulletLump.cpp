@@ -15,7 +15,7 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
 /// objects
-#include "Objects/Player/Player.h"
+#include "Objects/Boss/Boss.h"
 
 
 void BossBulletLump::Initialize() {
@@ -39,16 +39,17 @@ void BossBulletLump::Initialize() {
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
 	pTransform_->scale = { 2,2,2 };
-	eacSpeed_ = 0.7f;
-	scaleScaler_ = 1.0f;
-	minScale_ = 1.0f;
-	maxScale_ = 3.0f;
+	isDeath_ = false;
 }
 
 void BossBulletLump::Update() {
+	//移動
 	Quaternion moveQuaternion = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 0.02f);
-	pivot_.quaternion*= moveQuaternion;
+	pivot_.quaternion *= moveQuaternion;
 	pivot_.UpdateMatrix();
+
+	//無敵時間
+	invincibleTime_ += Time::DeltaTime();
 }
 
 void BossBulletLump::Debug() {
@@ -65,6 +66,16 @@ void BossBulletLump::SetDirection(Quaternion direction) {
 }
 
 void BossBulletLump::SetBoss(Boss* boss) {
-	pBoss_ = boss;
+	/*pBoss_ = boss;*/
 	/*pivot_.SetParent(pBoss_->GetTransform());*/
+}
+
+
+void BossBulletLump::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<Boss*>(collision)&&!isDeath_) {
+		if (invincibleTime_ >= kInvincibleTime_) {
+			isDeath_ = true;
+		}
+	}
 }
