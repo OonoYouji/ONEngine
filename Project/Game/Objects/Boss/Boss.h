@@ -20,6 +20,7 @@ class Player;
 class BuildingManager;
 class BaseBuilding;
 class BossTubu;
+class BossHead;
 //class BossHead;
 class Boss : public BaseGameObject {
 public:
@@ -49,7 +50,7 @@ public:
 	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
-	/*void SetHead(BossHead* bossHead);*/
+	void SetHead(BossHead* bossHead);
 	void SetTubu(BossTubu* bosstube);
 	void SetBuildingaManager(BuildingManager* player);
 	BaseBuilding* FindClosestBuilding();
@@ -83,7 +84,7 @@ private:
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
 	BossTubu* pBossTubu_;
-	/*BossHead* pBossHead_;*/
+	BossHead* pBossHead_;
 	//ライト
 	class EarthRenderer* er_ = nullptr;
 	 float radius_ = 1.0f;

@@ -108,7 +108,7 @@ void Boss::SlurpUpdate() {
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
 		// フラグを立てる
-		closestBuilding->SetSlurpPos(GetPosition());
+		closestBuilding->SetSlurpPos(pBossHead_->GetPosition());
 		closestBuilding->SetIsSlurped(true);
 		isSlurping_ = true;
 	}
@@ -150,6 +150,7 @@ void Boss::AttackUpdate() {//超汚い
 	else if (isAttackBack_) {
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.0f) {
+			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
 		}
@@ -189,7 +190,7 @@ BaseBuilding* Boss::FindClosestBuilding() {
 	BaseBuilding* closestBuilding = nullptr;
 	float minDistance = std::numeric_limits<float>::max(); //初期値を最大に
 
-	Vector3 bossPosition = GetPosition();
+	Vector3 bossPosition = pBossHead_->GetPosition();
 	float sphereRadius = Ground::groundScale_ + 1; // 地面の半径＋α
 
 	for (BaseBuilding* building : buildings) {
@@ -206,9 +207,9 @@ BaseBuilding* Boss::FindClosestBuilding() {
 	return closestBuilding;
 }
 
-//void Boss::SetHead(BossHead* bossHead) {
-//	pBossHead_ = bossHead;
-//}
+void Boss::SetHead(BossHead* bossHead) {
+	pBossHead_ = bossHead;
+}
 
 void Boss::SetTubu(BossTubu* bossHead) {
 	pBossTubu_ = bossHead;
