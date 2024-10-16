@@ -27,8 +27,8 @@ enum BOSS_ANIMATION_ORDER {
 /// ===================================================
 enum BOSS_PARTS_NAME {
 	BOSS_PARTS_BODY,
-	BOSS_PARTS_HEAD,
 	BOSS_PARTS_TUBU,
+	BOSS_PARTS_HEAD,
 	BOSS_PARTS_COUNT /// 計測用
 };
 
@@ -37,6 +37,13 @@ enum BOSS_PARTS_NAME {
 /// ボスのアニメーション
 /// ===================================================
 class BossAnimation : public BaseGameObject {
+
+	struct AnimationData {
+		float time;
+		float speed;
+		float apmlitude;
+	};
+
 public:
 
 	BossAnimation();
@@ -44,12 +51,14 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
 
 private:
 
 	std::vector<BossParts*>                bossPartsArray_;
 	std::vector<std::string>               modelNameArray_;
-	std::vector<std::function<void(void)>> animationUpdateFunction_;
+	std::vector<std::function<void(AnimationData&)>> animationUpdateFunction_;
+	std::vector<AnimationData>             animationDataArray_;
 
 	int currentAnimationIndex_ = 0;
 
