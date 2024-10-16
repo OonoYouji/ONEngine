@@ -4,7 +4,6 @@
 #include <format>
 
 #include "WindowManager/WinApp.h"
-
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 #include "ImGuiManager/ImGuiManager.h"
@@ -99,7 +98,7 @@ void BaseCamera::BaseUpdate() {
 
 
 void BaseCamera::UpdateMatView() {
-	matView_ = pTranform_->matTransform.Inverse();
+	matView_ = pTransform_->matTransform.Inverse();
 }
 
 
@@ -111,7 +110,7 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
-	float distance    = pTranform_->position.Len();
+	float distance    = pTransform_->position.Len();
 	if(distance <= 0.0f) {
 		return;
 	}
@@ -127,7 +126,6 @@ void BaseCamera::UpdateMatOrthographic() {
 }
 
 
-
 void BaseCamera::Move() {
 	if(moveTime_ > maxMoveTime_) { return; }
 
@@ -139,7 +137,6 @@ void BaseCamera::Move() {
 	SetPosition(position);
 	SetRotate(rotate);
 }
-
 
 
 void BaseCamera::Transfer() {

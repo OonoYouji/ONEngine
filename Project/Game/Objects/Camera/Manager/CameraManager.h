@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "BaseCamera.h"
+#include "Objects/Camera/Manager/BaseCamera.h"
 
 
 /// ===================================================
@@ -55,7 +55,9 @@ public:
 	/// メインカメラのゲッタ
 	/// </summary>
 	/// <returns></returns>
-	BaseCamera* GetMainCamera() const { return mainCamera_; }
+	BaseCamera* GetMainCamera() const { 
+		return mainCamera_; 
+	}
 
 private:
 

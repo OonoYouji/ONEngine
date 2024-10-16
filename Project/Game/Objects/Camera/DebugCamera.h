@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Manager/BaseCamera.h"
+#include "Objects/Camera/Manager/BaseCamera.h"
 
-#include <Library/Math/Vector3.h>
+#include "Math/Vector2.h"
 
 /// ===================================================
 /// デバッグ用カメラ
@@ -14,7 +14,7 @@ public:
 	~DebugCamera();
 
 	void Initialize() override;
-	void Update()     override;
+	void Update() override;
 
 private:
 

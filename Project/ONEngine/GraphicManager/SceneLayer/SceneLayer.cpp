@@ -17,6 +17,7 @@
 #include "GraphicManager/Drawer/LineDrawer/Line2D.h"
 #include "GraphicManager/Drawer/LineDrawer/Line3D.h"
 
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 #include "Objects/Camera/Manager/CameraManager.h"
 
 
@@ -74,6 +75,7 @@ void SceneLayer::Draw() {
 
 	renderTexture_->BeginRenderTarget();
 
+	EarthRenderer::PreDraw();
 	gLine2D->PreDraw();
 	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
@@ -81,6 +83,7 @@ void SceneLayer::Draw() {
 
 	gGameObjectManager->Object3dDraw(id_);
 
+	EarthRenderer::PostDraw();
 	gLine2D->PostDraw();
 	gLine3D->PostDraw();
 	gSpriteManager->PostDraw();

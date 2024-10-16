@@ -33,3 +33,7 @@ void DirectionalLight::Debug() {
 void DirectionalLight::BindToCommandList(UINT rootParamIndex, ID3D12GraphicsCommandList* commandList) {
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, constantBuffer_->GetGPUVirtualAddress());
 }
+
+void DirectionalLight::SetDirection(const Vec3& direction) {
+	bufferData_->direction = direction;
+}

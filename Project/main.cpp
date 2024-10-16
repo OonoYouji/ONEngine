@@ -37,6 +37,11 @@
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 
+/// custom class
+#include "CustomComponents/EarthRenderer/EarthRenderer.h"
+
+
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// 起動速度を計算するため
@@ -83,6 +88,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
 		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
+
+
+	/// custom class initializing
+	EarthRenderer::SInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor(),
+		128u		/// 128体エンティティを出せる
+	);
+
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
@@ -148,6 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 
 
+	EarthRenderer::SFinalize();;
 	Bloom::StaticFinalize();
 	ParticleSystem::SFinalize();
 	renderTexManager->Finalize();

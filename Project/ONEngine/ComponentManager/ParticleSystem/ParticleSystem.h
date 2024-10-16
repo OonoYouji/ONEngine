@@ -219,14 +219,21 @@ public:
 	const Transform& GetTransform() const { return transform_; }
 	Transform* GetTransform() { return &transform_; }
 
+	float GetNormLifeTime() { return lifeTime_ / maxLifeTime_; }
+
+	uint32_t GetID() { return id_; }
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	bool isAlive_   = true;
-	float lifeTime_ = 10.0f; // seconds
+	uint32_t id_;
+
+	bool isAlive_      = true;
+	float lifeTime_    = 10.0f; // seconds
+	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
 
