@@ -57,6 +57,7 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
@@ -221,6 +223,9 @@
     <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Resources\Shaders\Model\Model.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -295,6 +300,12 @@
     <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

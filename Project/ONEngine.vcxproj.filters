@@ -262,6 +262,7 @@
     </ClCompile>
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -724,6 +725,7 @@
     </ClInclude>
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
+    <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
@@ -756,6 +758,7 @@
     <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
       <Filter>Resources\Shaders\Line3D</Filter>
     </None>
+    <None Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
@@ -821,6 +824,8 @@
     <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
       <Filter>Resources\Shaders\Line3D</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\MeshInstancingRenderer\MeshInstancingRenderer.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Externals\imgui\LICENSE.txt">
