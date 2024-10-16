@@ -28,6 +28,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void ParamaterInit();
+	//getter
+	Boss* GetBoss()const { return pBoss_; }
+	//setter
 	void SetBoss(Boss* boss);
 
 private:
@@ -35,7 +39,6 @@ private:
 	float floatingAmplitude_;
 	float floatingParameter_;
 	const float easeTimeMax_ = 0.5f;
-
 
 private:
 	Boss* pBoss_;
@@ -54,6 +57,11 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+	//パラメータ
+
+
+	//パラメータ初期化
+	void ParamaterInit();
 
 	void SetBossTube(BossTubu* bossTube);
 
@@ -61,4 +69,9 @@ private:
 
 private:
 	BossTubu* pBossTube_;
+	float floatingCycle_;
+	float floatingAmplitude_;
+	float floatingParameter_;
+	const float easeTimeMax_ = 0.5f;
+	bool isInit_;
 };

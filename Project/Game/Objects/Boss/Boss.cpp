@@ -10,6 +10,7 @@
 #include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 //std
 #include <algorithm>
 #include<numbers>
@@ -30,6 +31,9 @@ void Boss::Initialize() {
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 
+	er_ = AddComponent<EarthRenderer>();
+	er_->SetRadius(radius_);
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +47,8 @@ void Boss::Initialize() {
 	pTransform_->scale = { 2,2,2 };
 	SpeedParamater_ = 0.01f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
+
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////	
@@ -64,6 +70,14 @@ void Boss::Update() {
 	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
 		ChangeState(std::make_unique<BossBulletShot>(this));
 	}
+	////アタックフラグを立てる
+	//if (dynamic_cast<BossAttack*>(behavior_.get())) {
+	//	isAttack_ = true;
+	//}
+	//else {
+	//	isAttack_ = false;
+	//}
+
 
 	pivot_.UpdateMatrix();
 }
@@ -113,9 +127,20 @@ void Boss::BulletShotUpdate() {
 
 }
 
+void Boss::AttackInit() {
+	
+	pBossHead_->ParamaterInit();
+}
+
+void Boss::AttackUpdate() {
+
+}
+
 void Boss::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
 		ImGui::DragFloat("ChaseSpeedMax", &SpeedParamater_, 0.001f);
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 		ImGui::TreePop();
 	}
 }
@@ -133,9 +158,6 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
 
-//void Boss::SetBulletLump(BossBulletLump* bossbullet) {
-//	pBulletLump_ = bossbullet;
-//}
 
 // 一番近いビルを探す
 BaseBuilding* Boss::FindClosestBuilding() {

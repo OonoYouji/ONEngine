@@ -51,6 +51,14 @@ void Player::Initialize() {
 	transoform_.SetParent(&pivot_);
 	pTransform_->SetParent(&pivot_);
 
+	//回転を適応
+	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 2);
+	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.01f);
+
+	
+	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+	
+
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 }

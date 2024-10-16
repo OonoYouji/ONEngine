@@ -20,8 +20,8 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
-	chaseMinPos_ = 8.0f;
-	chaseMaxPos_ = 20.0f;
+	chaseMinPos_ = 10.0f;
+	chaseMaxPos_ = 25.0f;
 }
 
 BossChasePlayer::~BossChasePlayer() {
@@ -34,7 +34,7 @@ void BossChasePlayer::Update() {
 	std::pair<float, float> distanceAndDirection =CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 	//一定距離で攻撃
 	if (distanceAndDirection.first <= chaseMinPos_) {
-	/*	pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));*/
+		pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
 		return;
 	}
 	// 現在の回転をオイラー角に変換
