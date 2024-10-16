@@ -16,7 +16,6 @@
 #include "Objects/Boss/Boss.h"
 #include "Objects/Boss/BossVacuum.h"
 #include "Objects/GameCameraState/GameCameraState.h"
-#include"Objects/GameCameraState/GameCameraZoomInOut.h"
 #include "Objects/Tornado/Tornado.h"	
 
 
@@ -39,7 +38,7 @@ void Scene_Game::Initialize() {
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
-	GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();
+	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	tornado_ = new Tornado();
 
 
@@ -53,7 +52,7 @@ void Scene_Game::Initialize() {
 	bossHead->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
-	gameCameraZoomInOut->Initialize();
+	//gameCameraZoomInOut->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 	/*bossBulletLump_->Initialize();*/
@@ -66,8 +65,8 @@ void Scene_Game::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
-	gameCameraZoomInOut->SetGameCamera(mainCamera_);
-	gameCameraZoomInOut->SetPlayer(player_);
+	/*gameCameraZoomInOut->SetGameCamera(mainCamera_);
+	gameCameraZoomInOut->SetPlayer(player_);*/
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);

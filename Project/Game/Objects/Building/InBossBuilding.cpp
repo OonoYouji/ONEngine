@@ -33,7 +33,7 @@ void InBossBuilding::Update() {
 	if (!isDeath_) {
 		if (pBoss_->GetIsBuildingKill()) {
 			isDeath_ = true;
-			
+			ParentCancel(true);
 		}
 	}
 }

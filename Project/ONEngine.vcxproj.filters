@@ -568,9 +568,6 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp">
       <Filter>Game\Objects\DemoObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Ground\Ground.cpp">
       <Filter>Game\Objects\Ground</Filter>
     </ClCompile>
@@ -623,7 +620,7 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameCameraState\GameCameraZoomInOut.cpp">
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Building\InBossBuilding.cpp">
@@ -647,6 +644,8 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -886,9 +885,6 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h">
       <Filter>Game\Objects\DemoObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Ground\Ground.h">
       <Filter>Game\Objects\Ground</Filter>
     </ClInclude>
@@ -940,7 +936,7 @@
     <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameCameraState\GameCameraZoomInOut.h">
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
       <Filter>Game\Objects\GameCameraState</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\Building\InBossBuilding.h">
@@ -964,5 +960,7 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
     <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
   </ItemGroup>
 </Project>
