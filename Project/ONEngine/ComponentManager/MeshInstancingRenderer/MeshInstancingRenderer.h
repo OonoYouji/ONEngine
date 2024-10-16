@@ -11,10 +11,6 @@
 #include <GraphicManager/Light/DirectionalLight.h>
 
 
-struct RenderElement {
-	Transform* pTransform = nullptr;
-};
-
 
 /// ===================================================
 /// メッシュの描画をインスタンシング描画で行うクラス
@@ -44,15 +40,37 @@ public:
 	void Draw()       override;
 	void Debug()      override;
 
+
+	/// ===================================================
+	/// public : not overriding methods
+	/// ===================================================
+
+	/// <summary>
+	/// transformの追加
+	/// </summary>
+	/// <param name="transform"> : model を描画したい座標 </param>
+	void AddTransform(Transform* transform);
+
+	/// <summary>
+	/// transform arrayの設定
+	/// </summary>
+	/// <param name="transformArray"> : model を描画したいすべての座標 </param>
+	void SetTransformArray(const std::vector<Transform*>& transformArray);
+
+	/// <summary>
+	/// transform arrayのリセット
+	/// </summary>
+	void ResetTransformArray();
+
 private:
 
 	const uint32_t kMaxInstanceCount_ = 0u;
-	std::vector<RenderElement> renderElementArray_;
+	std::vector<Transform*> transformArray_;
 	Model* model_ = nullptr;
 
 	/// buffer, 
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingRenderElement_ = nullptr;
+	Mat4*                                  mappingData_ = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
 

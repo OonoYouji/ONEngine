@@ -7,19 +7,21 @@
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
-
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 void DemoObject::Initialize() {
 	//auto mr = AddComponent<MeshRenderer>();
 	//mr->SetModel("Sphere");
 
-	auto ps = AddComponent<ParticleSystem>(12, "Board");
+	//auto ps = AddComponent<ParticleSystem>(12, "Board");
 
-	ps->SetPartilceUpdateFunction([](Particle* par) {
-		Transform* transform = par->GetTransform();
-		transform->position.y += Time::DeltaTime();
-	});
+	//ps->SetPartilceUpdateFunction([](Particle* par) {
+	//	Transform* transform = par->GetTransform();
+	//	transform->position.y += Time::DeltaTime();
+	//});
 
+	auto mir = AddComponent<MeshInstancingRenderer>(12);
+	mir->AddTransform(pTranform_);
 
 }
 

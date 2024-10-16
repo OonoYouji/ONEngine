@@ -19,6 +19,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
 
 
 /// using namespace
@@ -170,21 +171,52 @@ void MeshInstancingRenderer::Initialize() {
 	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(transformArrayBuffer_.Get(), &desc, cpuHandle_);
 
+	/// mapping data bind
+	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
+
+
+	/// model setting
+	model_ = ModelManager::Load("Sphere");
+
 }
 
 void MeshInstancingRenderer::Update() {}
 
 void MeshInstancingRenderer::Draw() {
 
-}
-
-void MeshInstancingRenderer::Debug() {
-
 	/// 描画するインスタンスが0なら描画しない
-	if(renderElementArray_.empty()) {
+	if(transformArray_.empty()) {
 		return;
 	}
 
 	gPipeline->Draw();
+}
 
+void MeshInstancingRenderer::Debug() {
+	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::BeginChild("space", ImVec2(0.0f, 360.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+		ImGui::SeparatorText("transform debug draw");
+
+		for(size_t i = 0; i < transformArray_.size(); ++i) {
+			transformArray_[i]->Debug();
+		}
+
+		ImGui::EndChild();
+
+		ImGui::TreePop();
+	}
+
+}
+
+void MeshInstancingRenderer::AddTransform(Transform* transform) {
+	transformArray_.push_back(transform);
+}
+
+void MeshInstancingRenderer::SetTransformArray(const std::vector<Transform*>& transformArray) {
+	transformArray_ = transformArray;
+}
+
+void MeshInstancingRenderer::ResetTransformArray() {
+	transformArray_.clear();
 }
