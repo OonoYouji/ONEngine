@@ -263,6 +263,8 @@
     <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp">
       <Filter>Game\Objects\ShootingCourse</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
+    <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -729,6 +731,8 @@
     <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h">
       <Filter>Game\Objects\ShootingCourse</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
+    <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
