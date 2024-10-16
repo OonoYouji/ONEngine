@@ -104,7 +104,7 @@ void RailCamera::Debug() {
 	}
 
 
-	if(ImGui::TreeNodeEx("player param", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("this param", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		for(size_t r = 0; r < 4; ++r) {
 			for(size_t c = 0; c < 4; ++c) {
@@ -115,6 +115,20 @@ void RailCamera::Debug() {
 
 		ImGui::TreePop();
 	}
+
+	
+	if(ImGui::TreeNodeEx("camera param", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		for(size_t r = 0; r < 4; ++r) {
+			for(size_t c = 0; c < 4; ++c) {
+				if(c != 0) { ImGui::SameLine(); }
+				ImGui::Text("%0.2f, ", pGameCamera_->GetMatTransform().m[r][c]);
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
 
 
 
