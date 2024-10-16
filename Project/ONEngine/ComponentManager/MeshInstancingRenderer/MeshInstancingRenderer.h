@@ -8,6 +8,7 @@
 
 /// base class
 #include "ComponentManager/Base/BaseComponent.h"
+#include <GraphicManager/Light/DirectionalLight.h>
 
 /// ===================================================
 /// メッシュの描画をインスタンシング描画で行うクラス
@@ -25,8 +26,7 @@ public:
 	static void SInitialize(ID3D12GraphicsCommandList* _commandList);
 	static void SFinalize();
 
-	static void PreDraw();
-	static void PostDraw();
+	static void SetDirectionalLight(class DirectionalLight* _directionalLight);
 
 
 	/// ===================================================

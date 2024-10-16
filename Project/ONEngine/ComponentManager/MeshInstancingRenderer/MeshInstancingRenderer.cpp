@@ -2,6 +2,7 @@
 
 /// std
 #include <memory>
+#include <vector>
 
 /// direct x
 #include <d3d12.h>
@@ -10,7 +11,7 @@
 /// engine
 #include <imgui.h>
 #include "GraphicManager/PipelineState/PipelineState.h"
-
+#include "GraphicManager/Light/DirectionalLight.h"
 
 /// using namespace
 using namespace Microsoft::WRL;
@@ -36,15 +37,20 @@ namespace {
 			ID3D12GraphicsCommandList* _commandList
 		);
 
-		void PreDraw();
-		void PostDraw();
+		void Draw();
 
 	private:
 
+		/// data
+		std::vector<RenderElement> renderElementArray_;
+
+		/// pso
 		std::unique_ptr<PipelineState> pipeline_ = nullptr;
 		PipelineState::Shader shader_;
 
-		ID3D12GraphicsCommandList* pCommnadList_ = nullptr;
+		/// other pointer
+		DirectionalLight*          pDirectionalLight_ = nullptr;
+		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
 
 	};
 
@@ -89,17 +95,11 @@ namespace {
 		pipeline_->Initialize();
 	}
 
-
-
-	void RenderingPipeline::PreDraw() {
-
-	}
-
-	void RenderingPipeline::PostDraw() {
-
+	void RenderingPipeline::Draw() {
 		/// default setting
 		pipeline_->SetPipelineState();
 		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pDirectionalLight_->BindToCommandList(3, pCommnadList_);
 	}
 
 
@@ -131,12 +131,9 @@ void MeshInstancingRenderer::SFinalize() {
 	gPipeline.reset();
 }
 
-void MeshInstancingRenderer::PreDraw() {
-	gPipeline->PreDraw();
-}
 
-void MeshInstancingRenderer::PostDraw() {
-	gPipeline->PostDraw();
+void MeshInstancingRenderer::SetDirectionalLight(DirectionalLight* _directionalLight) {
+	gPipeline->pDirectionalLight_ = _directionalLight;
 }
 
 
