@@ -19,7 +19,8 @@ class GameCamera;
 /// ボスの動きの種類
 /// ===================================================
 enum BOSS_ANIMATION_ORDER {
-	BOSS_ANIMATION_NONE,  /// 何もしない
+	BOSS_ANIMATION_NONE,              /// 何もしない
+	BOSS_ANIMATION_STANDBY,           /// 待機モーション
 	BOSS_ANIMATION_ENTRY_CAMERA_MOVE, /// 出現 NO.1  カメラ移動
 	BOSS_ANIMATION_ENTRY_RAISE_TUBE,  /// 出現 NO.2  チューブの振り上げ
 	BOSS_ANIMATION_ENTRY_TUBE_DOWN,   /// 出現 NO.3  チューブの振り下ろし

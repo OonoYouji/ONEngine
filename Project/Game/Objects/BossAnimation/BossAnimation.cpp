@@ -78,6 +78,23 @@ void BossAnimation::Initialize() {
 		tubu->SetPosition({ 0, 0, -2.7f });
 		head->SetPosition({ 0, 0, -2.0f });
 	};
+	
+	/// ---------------------------------------------------
+	/// 待機モーション
+	/// ---------------------------------------------------
+	animationUpdateFunction_[BOSS_ANIMATION_STANDBY] = [&](AnimationData& data) {
+		BossParts* head = bossPartsArray_[BOSS_PARTS_HEAD];
+		BossParts* tubu = bossPartsArray_[BOSS_PARTS_TUBU];
+
+		Vec3 tubePosition = {
+			0.0f,
+			std::sin(data.time) * 0.1f,
+			-2.7f
+		};
+
+		tubu->SetPosition(tubePosition);
+		head->SetPosition({ 0, 0, -2.0f });
+	};
 
 
 	/// ---------------------------------------------------
@@ -120,6 +137,8 @@ void BossAnimation::Initialize() {
 		if(lerpT == 1.0f) {
 			currentAnimationIndex_ = BOSS_ANIMATION_ENTRY_RAISE_TUBE;
 		}
+
+		animationUpdateFunction_[BOSS_ANIMATION_STANDBY](data);
 	};
 	
 
@@ -210,7 +229,9 @@ void BossAnimation::Initialize() {
 
 			pGameCamera_->SetPosition(cameraPosition + shake);
 
-			//currentAnimationIndex_ = BOSS_ANIMATION_ENTRY_TUB;
+			if(cameraLerpT == 1.0f) {
+				currentAnimationIndex_ = BOSS_ANIMATION_STANDBY;
+			}
 		}
 
 	};
