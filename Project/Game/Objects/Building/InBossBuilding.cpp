@@ -33,7 +33,6 @@ void InBossBuilding::Update() {
 	if (!isDeath_) {
 		if (pBoss_->GetIsBuildingKill()) {
 			isDeath_ = true;
-			pTransform_->parent_ = nullptr;
 			
 		}
 	}
@@ -55,3 +54,4 @@ void InBossBuilding::SetBoss(Boss* boss) {
 	pBoss_ = boss;
 	pTransform_->SetParent(boss->GetTransform());//取るね――ドペアレント
 }
+

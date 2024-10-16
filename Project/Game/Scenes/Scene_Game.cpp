@@ -14,6 +14,7 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/Boss.h"
+#include "Objects/Boss/BossVacuum.h"
 #include "Objects/GameCameraState/GameCameraState.h"
 #include"Objects/GameCameraState/GameCameraZoomInOut.h"
 #include "Objects/Tornado/Tornado.h"	
@@ -31,7 +32,8 @@ void Scene_Game::Initialize() {
 	player_ = new Player;
 	buildingManager_ = new BuildingManager();
 	boss_ = new Boss();
-	/*bossBulletLump_ = new BossBulletLump();*/
+	BossTubu* bossTube = new BossTubu();
+	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();
@@ -44,13 +46,14 @@ void Scene_Game::Initialize() {
 
 	player_->Initialize();
 	boss_->Initialize();
+	bossTube->Initialize();
+	bossHead->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
 	gameCameraZoomInOut->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 	/*bossBulletLump_->Initialize();*/
-
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -65,7 +68,9 @@ void Scene_Game::Initialize() {
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
-	/*boss_->SetBulletLump(bossBulletLump_);*/
+
+	bossTube->SetBoss(boss_);
+	bossHead->SetBossTube(bossTube);
 
 	tornado_->SetPlayer(player_);
 	/*bossBulletLump_->SetBoss(boss_);*/
