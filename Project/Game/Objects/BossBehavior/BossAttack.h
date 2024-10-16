@@ -10,9 +10,8 @@ public:
 	void Update()override;
 
 private:
-	float easingTime_;
-	float easingTimeMax_;
-	float easeDirection_;
-	float MinDistance_;
 
+	float attackWaitTime_;
+	const float kAttackWaitTime_ = 1.0f;
+	bool isSwingDown_;
 };

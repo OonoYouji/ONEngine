@@ -57,11 +57,14 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
-	//パラメータ
-
 
 	//パラメータ初期化
 	void ParamaterInit();
+	void ParentBoss();
+	void ParentTubu();
+
+	void RootInit();
+	void AttackInit();
 
 	void SetBossTube(BossTubu* bossTube);
 
@@ -73,5 +76,6 @@ private:
 	float floatingAmplitude_;
 	float floatingParameter_;
 	const float easeTimeMax_ = 0.5f;
-	bool isInit_;
+	bool isRootinit_;
+	bool isAttackInit_;
 };
