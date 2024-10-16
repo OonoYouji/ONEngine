@@ -14,7 +14,6 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
-#include "Objects/Player/Player.h"
 
 
 RailCamera::RailCamera() {
@@ -241,16 +240,6 @@ AnchorPoint RailCamera::SplineInterpolation(const std::array<AnchorPoint, 4>& an
 
 void RailCamera::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
-}
-
-
-void RailCamera::SetPlayer(Player* _player) {
-	pPlayer_ = _player;
-	assert(pPlayer_);
-
-	/// this の親にする
-	SetParent(pPlayer_->GetTransform());
-
 }
 
 void RailCamera::SetGameCamera(GameCamera* _gameCamera) {

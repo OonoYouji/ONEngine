@@ -13,7 +13,6 @@
 
 /// 前方宣言
 class GameCamera;
-class Player;
 
 
 
@@ -48,7 +47,6 @@ public:
 
 
 
-	void SetPlayer(Player* _player);
 	void SetGameCamera(GameCamera* _gameCamera);
 	void SetShootingCourse(ShootingCourse* _shootingCourse);
 
@@ -73,6 +71,5 @@ private:
 	/// other class pointer
 	ShootingCourse* pShootingCourse_ = nullptr;
     GameCamera*     pGameCamera_ = nullptr;
-    Player*         pPlayer_     = nullptr;
 
 };
