@@ -1,17 +1,26 @@
 #pragma once
 
+/// std
 #include <cmath>
 #include <memory>
 #include <vector>
 #include <string>
+#include <functional>
 
+/// engine
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
-
 #include "GraphicManager/PipelineState/PipelineState.h"
+#include "GraphicManager/ModelManager/Model.h"
+
+/// components
 #include "ComponentManager/Base/BaseComponent.h"
 #include "ComponentManager/Transform/Transform.h"
 
-#include "GraphicManager/ModelManager/Model.h"
+
+/// emitter, field
+#include "ParticleEmitter.h"
+#include "ParticleField.h"
+
 
 
 /// ===================================================
@@ -50,17 +59,17 @@ public:
 	/// public : non overriding methods
 	/// ===================================================
 
-	/// <summary>
-	/// パーティクルの出現までの時間のセット
-	/// </summary>
-	/// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
-	void SetParticleRespawnTime(float _particleRespawnTime);
+	///// <summary>
+	///// パーティクルの出現までの時間のセット
+	///// </summary>
+	///// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
+	//void SetParticleRespawnTime(float _particleRespawnTime);
 
-	/// <summary>
-	/// パーティクルの一回当たりの発生量のセット
-	/// </summary>
-	/// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
-	void SetEmittedParticleCount(uint32_t _emittedParticleCount);
+	///// <summary>
+	///// パーティクルの一回当たりの発生量のセット
+	///// </summary>
+	///// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
+	//void SetEmittedParticleCount(uint32_t _emittedParticleCount);
 
 	/// <summary>
 	/// パーティクルの寿命のセット
@@ -74,11 +83,29 @@ public:
 	/// <param name="_useBillboard">: ビルボードを使用するか</param>
 	void SetUseBillboard(bool _useBillboard);
 
+	/// <summary>
+	/// パーティクルの更新処理関数をセット
+	/// </summary>
+	/// <param name="_function">: 更新処理関数 </param>
+	void SetPartilceUpdateFunction(const std::function<void(class Particle*)>& _function);
+
+
 
 	/// <summary>
-	/// パーティクルを発生させる
+	/// const パーティクルの最大数のゲッタ
 	/// </summary>
-	void EmitParticles();
+	/// <returns> return : パーティクルの最大数 </returns>
+	uint32_t GetKMaxParticleNum() const {
+		return kMaxParticleNum_;
+	}
+
+	/// <summary>
+	/// パーティクル一個当たりの寿命のゲッタ
+	/// </summary>
+	/// <returns> return : パーティクルの寿命 </returns>
+	float GetParticleLifeTime() const {
+		return particleLifeTime_;
+	}
 
 private:
 
@@ -86,7 +113,7 @@ private:
 	/// private : static objects
 	/// ===================================================
 
-	static std::unique_ptr<class ParticlePipeline> gPipeline;
+	static std::unique_ptr<class ParticlePipeline> sPipeline_;
 
 
 	/// ===================================================
@@ -106,12 +133,8 @@ private:
 	Model* pModel_ = nullptr;
 
 	/// particle setting
-	uint32_t particleInstanceCount_;      /// 現在のパーティクル発生数
-	uint32_t emittedParticleCount_;       /// 一回の発生で出現するパーティクルの数
-	float    particleRespawnTime_;        /// パーティクルが発生するまでの時間
-	float    currentParticleRespawnTime_; /// 現在のリスポーンタイム
-	float    particleLifeTime_;           /// パーティクルの寿命
-	bool     useBillboard_;               /// ビルボードを使用するか
+	float particleLifeTime_; /// パーティクルの寿命
+	bool  useBillboard_;     /// ビルボードを使用するか
 
 
 	/// particles trasform buffers
@@ -124,6 +147,12 @@ private:
 	/// billboard
 	Mat4 matBackToFront_;
 	Mat4 matBillboard_;
+
+	/// particle function
+	std::function<void(Particle*)> particleUpdateFunc_;
+
+	/// emitter
+	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
 
 };
 
@@ -169,9 +198,10 @@ private:
 /// ===================================================
 /// パーティクルの一粒子のクラス、byteが少なければ少ないほどいい
 /// ===================================================
-class Particle final {
+class Particle {
 	friend class ParticlePipeline;
 	friend class ParticleSystem;
+	friend class ParticleEmitter;
 public:
 
 	/// ===================================================
@@ -182,12 +212,16 @@ public:
 	~Particle() {}
 
 	void Initialize(); 
-	void Update();
+	void LifeTimeUpdate();
 
 	bool GetIsAlive() const { return isAlive_; }
 
 	const Transform& GetTransform() const { return transform_; }
 	Transform* GetTransform() { return &transform_; }
+
+	float GetNormLifeTime() { return lifeTime_ / maxLifeTime_; }
+
+	uint32_t GetID() { return id_; }
 
 private:
 
@@ -195,8 +229,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	bool isAlive_   = true;
-	float lifeTime_ = 10.0f; // seconds
+	uint32_t id_;
+
+	bool isAlive_      = true;
+	float lifeTime_    = 10.0f; // seconds
+	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
 

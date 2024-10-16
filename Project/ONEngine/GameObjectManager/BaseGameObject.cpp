@@ -56,8 +56,8 @@ const Vec3 BaseGameObject::GetPosition() const {
 /// 親のセット
 /// ===================================================
 void BaseGameObject::SetParent(Transform* parent) {
-	pTransform_->SetParent(parent);
-	//pTransform_->AddChild(this); //- 相手の子供に自身を追加
+	pTranform_->SetParent(parent);
+	pTranform_->AddChild(GetTransform()); //- 相手の子供に自身を追加
 }
 
 
@@ -66,6 +66,19 @@ void BaseGameObject::SetParent(Transform* parent) {
 /// ===================================================
 Transform* BaseGameObject::GetParent() const {
 	return pTransform_->GetParent();
+}
+
+void BaseGameObject::ParentCancel(bool isLocalToWorld) {
+	Transform* parent = GetParent();
+	if(!parent) { return; }
+
+	if(isLocalToWorld) {
+		pTranform_->Update();
+		pTranform_->position = GetPosition();
+	}
+
+	pTranform_->parent_ = nullptr;	
+
 }
 
 
@@ -141,9 +154,7 @@ void BaseGameObject::CreateTag(BaseGameObject* object) {
 	SetName(name);
 }
 
-void BaseGameObject::RenameComponents() {
-	for(auto& component : components_) {
-		std::string name = CreateName(component.get()) + std::format("##{:p}", reinterpret_cast<void*>(component.get()));
-		component->SetName(name);
-	}
+void BaseGameObject::RenameComponent(BaseComponent* component) {
+	std::string name = CreateName(component) + std::format("##{:p}", reinterpret_cast<void*>(component));
+	component->SetName(name);
 }

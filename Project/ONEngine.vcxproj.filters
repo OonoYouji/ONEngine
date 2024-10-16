@@ -644,6 +644,9 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossAttack.cpp">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -958,5 +961,8 @@
     <ClInclude Include="Game\Objects\BossBehavior\BossAttack.h">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
   </ItemGroup>
 </Project>

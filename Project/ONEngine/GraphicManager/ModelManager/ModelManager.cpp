@@ -338,9 +338,9 @@ void ModelManager::PostDraw() {
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
-	CameraManager* ins = CameraManager::GetInstance();
-	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+	ID3D12GraphicsCommandList* commandList    = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	CameraManager*             pCameraManager = CameraManager::GetInstance();
+	BaseCamera*                pCamera        = pCameraManager->GetMainCamera();
 
 	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
@@ -351,7 +351,7 @@ void ModelManager::PostDraw() {
 	pipelines_[kSolid]->SetPipelineState();
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
 	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {

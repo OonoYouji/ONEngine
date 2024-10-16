@@ -55,7 +55,9 @@ public:
 	/// メインカメラのゲッタ
 	/// </summary>
 	/// <returns></returns>
-	BaseCamera* GetMainCamera() const { return mainCamera_; }
+	BaseCamera* GetMainCamera() const { 
+		return mainCamera_; 
+	}
 
 private:
 

@@ -188,6 +188,9 @@
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerRoot.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\Tornado\Tornado.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
@@ -223,6 +226,8 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
@@ -294,6 +299,9 @@
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerRoot.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\Tornado\Tornado.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
@@ -329,6 +337,8 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />

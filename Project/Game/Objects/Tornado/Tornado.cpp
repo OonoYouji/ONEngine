@@ -3,6 +3,7 @@
 
 /// std
 #include <numbers>
+#include <string>
 
 /// engine
 #include "ImGuiManager/ImGuiManager.h"
@@ -10,7 +11,11 @@
 #include <Input/Input.h>
 
 /// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
+
+/// math
+#include "Math/Random.h"
 
 /// objects
 #include "Objects/Player/Player.h"
@@ -18,17 +23,34 @@
 
 void Tornado::Initialize() {
 
+	const uint32_t kParticleMaxNum = 32u;
 
-	/*/// mesh renderer 初期化
-	MeshRenderer* mrArray[]{
-		AddComponent<MeshRenderer>(),
-		AddComponent<MeshRenderer>(),
-		AddComponent<MeshRenderer>()
-	};
+	particleDataArray_.resize(kParticleMaxNum);
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "Sphere");
 
-	mrArray[0]->SetModel("TornadoRing1");
-	mrArray[1]->SetModel("TornadoRing2");
-	mrArray[2]->SetModel("TornadoRing3");*/
+	/// particle data arrayの初期化
+	for(auto& data : particleDataArray_) {
+		data.value = 0.0f;
+		data.radius = Random::Float(3.0f, 5.0f);
+		data.speed = Random::Float(32.0f, 64.0f);
+	}
+
+	/// 関数のセット
+	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		transform->SetParent(pTransform_);
+		transform->scale = Vec3::kOne * 0.25f;
+
+		ParticleData& data = particleDataArray_[particle->GetID()];
+		float radius = (1.0f - particle->GetNormLifeTime()) * data.radius;
+		data.value = particle->GetNormLifeTime() * data.speed;
+
+		transform->position = {
+			std::cos(data.value) * radius,
+			0.0f,
+			std::sin(data.value) * radius
+		};
+	});
 
 
 	/// transform initialize
@@ -37,11 +59,11 @@ void Tornado::Initialize() {
 	quaternionLocalX_ = Quaternion::MakeFromAxis(Vec3::kRight, -std::numbers::pi_v<float> / 2.0f);
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
-	eacSpeed_    = 0.7f;
+	eacSpeed_ = 0.7f;
 
 	scaleScaler_ = 1.0f;
-	minScale_    = 1.0f;
-	maxScale_    = 3.0f;
+	minScale_ = 1.0f;
+	maxScale_ = 3.0f;
 
 
 	/// ring array initializing
@@ -50,6 +72,13 @@ void Tornado::Initialize() {
 		ring = new Ring;
 		ring->Initialize();
 		ring->SetParent(pTransform_);
+	}
+
+	windArray_.resize(10);
+	for(auto& wind : windArray_) {
+		wind = new Wind;
+		wind->Initialize();
+		wind->SetParent(pTransform_);
 	}
 
 }
@@ -120,6 +149,30 @@ void Tornado::Debug() {
 
 		ImGui::TreePop();
 	}
+
+
+	if(ImGui::TreeNodeEx("particle data", ImGuiTreeNodeFlags_DefaultOpen)) {
+		ImGui::BeginChild("ScrollingRegion", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		for(size_t i = 0; i < particleDataArray_.size(); ++i) {
+
+			ParticleData& data = particleDataArray_[i];
+
+			std::string label = std::string("data") + std::to_string(i);
+			if(!ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+				continue;
+			}
+
+			ImGui::DragFloat("value",  &data.value,  0.05f);
+			ImGui::DragFloat("radius", &data.radius, 0.05f);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::EndChild();
+		ImGui::TreePop();
+	}
+
 }
 
 void Tornado::SetPlayer(Player* _player) {
@@ -158,3 +211,32 @@ void Ring::Debug() {
 		ImGui::TreePop();
 	}
 }
+
+void Ring::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}
+
+
+/// ===================================================
+/// wind
+/// ===================================================
+
+int Wind::sInstanceCount_ = 0;
+
+Wind::Wind() {
+	id_ = sInstanceCount_++;
+	CreateTag(this); 
+}
+
+void Wind::ResetInstanceCount() {
+	sInstanceCount_ = 0;
+}
+
+void Wind::Initialize() {
+	MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
+
+	std::string modelFilePath = std::string("tornade") + std::to_string(id_ + 1);
+	meshRenderer->SetModel(modelFilePath);
+}
+
+void Wind::Update() {}

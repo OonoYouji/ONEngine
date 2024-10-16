@@ -57,6 +57,7 @@ public:
 		return childs_;
 	}
 
+	void SubChild(Transform* transfom);
 
 private:
 

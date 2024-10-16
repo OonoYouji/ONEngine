@@ -193,7 +193,7 @@ void Console::Scene() {
 	texPos.y = std::max(texPos.y, min.y + 64.0f);
 
 	/// scene gpu handle ptr
-	auto renderTex = pSceneManager_->GetSceneLayer(0)->GetRenderTexture();
+	auto renderTex = pSceneManager_->GetFinalRenderTex();
 	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);
 	ImTextureID bgId    = ImTextureID(TextureManager::GetInstance()->GetTexture("white2x2").GetGPUHandle().ptr);
 
