@@ -55,6 +55,7 @@ void BossAnimation::Initialize() {
 	/// アニメーションの時間の設定
 	/// ===================================================
 
+	animationDataArray_[BOSS_ANIMATION_ENTRY_CAMERA_MOVE] = { 0.0f, 3.0f, 1.0f };
 	animationDataArray_[BOSS_ANIMATION_ENTRY_RAISE_TUBE] = { 0.0f, 1.5f, 1.0f };
 	animationDataArray_[BOSS_ANIMATION_ENTRY_TUBE_DOWN]  = { 0.0f, 0.75f, 1.0f };
 
@@ -74,8 +75,8 @@ void BossAnimation::Initialize() {
 		BossParts* head = bossPartsArray_[BOSS_PARTS_HEAD];
 		BossParts* tubu = bossPartsArray_[BOSS_PARTS_TUBU];
 
-		tubu->SetPosition({ 0, 0, -2.5f });
-		head->SetPosition({ 0, 0, -1.5f });
+		tubu->SetPosition({ 0, 0, -2.7f });
+		head->SetPosition({ 0, 0, -2.0f });
 	};
 
 
@@ -85,20 +86,35 @@ void BossAnimation::Initialize() {
 	animationUpdateFunction_[BOSS_ANIMATION_ENTRY_CAMERA_MOVE] = [&](AnimationData& data) {
 		BossParts* head = bossPartsArray_[BOSS_PARTS_HEAD];
 		BossParts* tubu = bossPartsArray_[BOSS_PARTS_TUBU];
-		tubu->SetPosition({ 0, 0, -2.5f });
-		head->SetPosition({ 0, 0, -1.5f });
+		tubu->SetPosition({ 0, 0, -2.7f });
+		head->SetPosition({ 0, 0, -2.0f });
 
 
 		/// time / seconds
 		float lerpT = std::min(data.time / data.maxTime, 1.0f);
 
 		Vec3 cameraPosition = Vec3::Lerp(
-			{ 0.0f, 5.0f, -10.0f },       /// スタート位置 
-			{ 0.0f, 1.0f, -10.0f },       /// 終了位置
+			{ -4.2f, 9.0f, -9.15f },       /// スタート位置 
+			{ -4.2f, 3.0f, -9.15f },       /// 終了位置
 			Ease::InOut::Elastic(lerpT)
 		);
 
-		pGameCamera_->SetPosition(cameraPosition);
+		Vec3 cameraRotate = Vec3::Lerp(
+			{ 0.3f, 0.566f, 0.0f },       /// スタート位置 
+			{ 0.3f, 0.566f, 0.0f },       /// 終了位置
+			Ease::InOut::Elastic(lerpT)
+		);
+
+
+		Vec3 shake = {
+			std::sin(data.time * 50.0f) * 0.1f * (1.0f - lerpT),
+			0.0f, 0.0f
+		};
+
+		shake = Mat4::Transform(shake, Mat4::MakeRotate(cameraRotate));
+
+		pGameCamera_->SetPosition(cameraPosition + shake);
+		pGameCamera_->SetRotate(cameraRotate);
 
 		
 		if(lerpT == 1.0f) {
@@ -121,8 +137,8 @@ void BossAnimation::Initialize() {
 		float rotateX = 0.35f * lerpT;
 
 		Vec3 tubuPosition = Vec3::Lerp(
-			{ 0.0f, 0.0f, -2.5 }, /// スタート位置
-			{ 0.0f, 0.8f, -2.5 }, /// 終了位置
+			{ 0.0f, 0.0f, -2.7f }, /// スタート位置
+			{ 0.0f, 0.8f, -2.7f }, /// 終了位置
 			Ease::InOut::Elastic(lerpT)
 		);
 		
@@ -135,7 +151,7 @@ void BossAnimation::Initialize() {
 		tubu->SetPosition(tubuPosition);
 		tubu->SetRotate(tubuRotate);
 
-		head->SetPosition({ 0, 0, -1.5f }); /// ここでは固定
+		head->SetPosition({ 0, 0, -2.0f }); /// ここでは固定
 
 		/// 次の動き
 		if(lerpT == 1.0f) {
@@ -159,8 +175,8 @@ void BossAnimation::Initialize() {
 		float rotateX = 0.35f * lerpT;
 
 		Vec3 tubuPosition = Vec3::Lerp(
-			{ 0.0f, 0.8f, -2.5 }, /// スタート位置
-			{ 0.0f, 0.0f, -2.5 }, /// 終了位置
+			{ 0.0f, 0.8f, -2.7f }, /// スタート位置
+			{ 0.0f, 0.0f, -2.7f }, /// 終了位置
 			Ease::InOut::Elastic(lerpT)
 		);
 		
@@ -173,10 +189,27 @@ void BossAnimation::Initialize() {
 		tubu->SetPosition(tubuPosition);
 		tubu->SetRotate(tubuRotate);
 
-		head->SetPosition({ 0, 0, -1.5f }); /// ここでは固定
+		head->SetPosition({ 0, 0, -2.0f }); /// ここでは固定
 
 		/// 次の動き
-		if(lerpT == 1.0f) {
+		if(lerpT >= 0.6f) {
+
+			/// カメラをシェイクさせる
+			float cameraLerpT = std::min((data.time - data.maxTime) / 0.5f, 1.0f);
+
+			Vec3 shake = {
+				0.0f,
+				std::sin(data.time * 50.0f) * 0.1f * (1.0f - cameraLerpT),
+				0.0f
+			};
+
+			Vec3 cameraRotate   = { 0.3f, 0.566f, 0.0f };
+			Vec3 cameraPosition = { -4.2f, 3.0f, -9.15f };
+
+			shake = Mat4::Transform(shake, Mat4::MakeRotate(cameraRotate));
+
+			pGameCamera_->SetPosition(cameraPosition + shake);
+
 			//currentAnimationIndex_ = BOSS_ANIMATION_ENTRY_TUB;
 		}
 
@@ -207,6 +240,12 @@ void BossAnimation::Debug() {
 
 		if(ImGui::Button("reset")) {
 			data.time = 0.0f;
+		}
+
+		if(ImGui::Button("reset all")) {
+			for(auto& animationData : animationDataArray_) {
+				animationData.time = 0.0f;
+			}
 		}
 
 		ImGui::TreePop();

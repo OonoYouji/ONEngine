@@ -9,8 +9,8 @@ void Scene_Clear::Initialize() {
 	bossAnimation->SetGameCamera(mainCamera_);
 
 	/*mainCamera_->SetPosition({ 8.0f, 3.7f, -8.8f });
-	mainCamera_->SetRotate({ 0.26f, -0.8f, 0.0f });
-	mainCamera_->GetTransform()->rotateOrder = XYZ;*/
+	mainCamera_->SetRotate({ 0.26f, -0.8f, 0.0f });*/
+	mainCamera_->GetTransform()->rotateOrder = XYZ;
 }
 
 
