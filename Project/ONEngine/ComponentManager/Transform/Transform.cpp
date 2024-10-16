@@ -79,9 +79,7 @@ void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootP
 
 void Transform::SetParent(Transform* parent) {
 	parent_ = parent;
-	if (parent) {
-		parent->AddChild(this);
-	}
+	//parent->AddChild(this);
 }
 
 void Transform::AddChild(Transform* child) {
