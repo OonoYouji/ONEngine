@@ -614,6 +614,10 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
+    <ClCompile Include="Game\Objects\BossAnimation\BossAnimation.cpp" />
+    <ClCompile Include="Game\Objects\BossAnimation\BossParts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -901,5 +905,9 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
     <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
+    <ClInclude Include="Game\Objects\BossAnimation\BossAnimation.h" />
+    <ClInclude Include="Game\Objects\BossAnimation\BossParts.h" />
   </ItemGroup>
 </Project>
