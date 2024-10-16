@@ -55,7 +55,7 @@ void BossAnimation::Initialize() {
 	/// アニメーションの時間の設定
 	/// ===================================================
 
-	animationDataArray_[BOSS_ANIMATION_ENTRY_CAMERA_MOVE] = { 0.0f, 3.0f, 1.0f };
+	animationDataArray_[BOSS_ANIMATION_ENTRY_CAMERA_MOVE] = { 0.0f, 5.0f, 1.0f };
 	animationDataArray_[BOSS_ANIMATION_ENTRY_RAISE_TUBE] = { 0.0f, 1.5f, 1.0f };
 	animationDataArray_[BOSS_ANIMATION_ENTRY_TUBE_DOWN]  = { 0.0f, 0.75f, 1.0f };
 
@@ -94,15 +94,15 @@ void BossAnimation::Initialize() {
 		float lerpT = std::min(data.time / data.maxTime, 1.0f);
 
 		Vec3 cameraPosition = Vec3::Lerp(
-			{ -4.2f, 9.0f, -9.15f },       /// スタート位置 
+			{ -4.2f, 4.5f, -9.15f },       /// スタート位置 
 			{ -4.2f, 3.0f, -9.15f },       /// 終了位置
-			Ease::InOut::Elastic(lerpT)
+			/*Ease::In::Circ*/(lerpT)
 		);
 
 		Vec3 cameraRotate = Vec3::Lerp(
-			{ 0.3f, 0.566f, 0.0f },       /// スタート位置 
+			{ 0.0f, 0.566f, 0.0f },       /// スタート位置 
 			{ 0.3f, 0.566f, 0.0f },       /// 終了位置
-			Ease::InOut::Elastic(lerpT)
+			/*Ease::In::Circ*/(lerpT)
 		);
 
 
