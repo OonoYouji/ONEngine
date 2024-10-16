@@ -22,7 +22,7 @@ public:
 	/// public : static methods
 	/// ===================================================
 	
-	static void SInitialize();
+	static void SInitialize(ID3D12GraphicsCommandList* _commandList);
 	static void SFinalize();
 
 	static void PreDraw();

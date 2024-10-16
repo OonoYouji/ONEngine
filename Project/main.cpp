@@ -35,6 +35,7 @@
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "GraphicManager/PostEffect/Bloom/Bloom.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -82,6 +83,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ParticleSystem::SInitialize(
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
 		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
+
+	MeshInstancingRenderer::SInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
 	);
 
 	/// game object manager の初期化
@@ -149,6 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	Bloom::StaticFinalize();
+	MeshInstancingRenderer::SFinalize();
 	ParticleSystem::SFinalize();
 	renderTexManager->Finalize();
 
