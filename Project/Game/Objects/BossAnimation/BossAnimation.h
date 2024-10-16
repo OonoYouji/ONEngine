@@ -11,13 +11,18 @@
 /// base class
 #include "GameObjectManager/GameObjectManager.h"
 
+/// 前方宣言
+class GameCamera;
+
 
 /// ===================================================
 /// ボスの動きの種類
 /// ===================================================
 enum BOSS_ANIMATION_ORDER {
 	BOSS_ANIMATION_NONE,  /// 何もしない
-	BOSS_ANIMATION_ENTRY, /// 出現
+	BOSS_ANIMATION_ENTRY_CAMERA_MOVE, /// 出現 NO.1  カメラ移動
+	BOSS_ANIMATION_ENTRY_RAISE_TUBE,  /// 出現 NO.2  チューブの振り上げ
+	BOSS_ANIMATION_ENTRY_TUBE_DOWN,   /// 出現 NO.3  チューブの振り下ろし
 	BOSS_ANIMATION_COUNT  /// 計測用
 };
 
@@ -42,6 +47,7 @@ class BossAnimation : public BaseGameObject {
 		float time;
 		float speed;
 		float apmlitude;
+		bool isReset;
 	};
 
 public:
@@ -53,14 +59,19 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void SetGameCamera(GameCamera* _gameCamera);
+
 private:
 
-	std::vector<BossParts*>                bossPartsArray_;
-	std::vector<std::string>               modelNameArray_;
+	std::vector<BossParts*>                          bossPartsArray_;
+	std::vector<std::string>                         modelNameArray_;
 	std::vector<std::function<void(AnimationData&)>> animationUpdateFunction_;
-	std::vector<AnimationData>             animationDataArray_;
+	std::vector<AnimationData>                       animationDataArray_;
 
 	int currentAnimationIndex_ = 0;
+
+	/// other pointer
+	GameCamera* pGameCamera_ = nullptr;
 
 };
 

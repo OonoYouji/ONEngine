@@ -4,11 +4,13 @@
 #include "Objects/BossAnimation/BossAnimation.h"
 
 void Scene_Clear::Initialize() {
-	(new BossAnimation)->Initialize();
+	BossAnimation* bossAnimation = new BossAnimation;
+	bossAnimation->Initialize();
+	bossAnimation->SetGameCamera(mainCamera_);
 
-	mainCamera_->SetPosition({ 8.0f, 3.7f, -8.8f });
+	/*mainCamera_->SetPosition({ 8.0f, 3.7f, -8.8f });
 	mainCamera_->SetRotate({ 0.26f, -0.8f, 0.0f });
-	mainCamera_->GetTransform()->rotateOrder = XYZ;
+	mainCamera_->GetTransform()->rotateOrder = XYZ;*/
 }
 
 
