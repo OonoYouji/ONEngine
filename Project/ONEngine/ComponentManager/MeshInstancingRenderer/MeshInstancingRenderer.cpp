@@ -8,10 +8,18 @@
 #include <d3d12.h>
 #include <wrl/client.h>
 
-/// engine
+/// externals
 #include <imgui.h>
+
+/// engine
+#include "Core/ONEngine.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/Light/DirectionalLight.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
+
 
 /// using namespace
 using namespace Microsoft::WRL;
@@ -19,10 +27,6 @@ using namespace Microsoft::WRL;
 
 
 namespace {
-
-	struct RenderElement {
-		Transform* pTransform = nullptr;
-	};
 
 	/// ===================================================
 	/// ↓ レンダリングパイプライン
@@ -40,9 +44,6 @@ namespace {
 		void Draw();
 
 	private:
-
-		/// data
-		std::vector<RenderElement> renderElementArray_;
 
 		/// pso
 		std::unique_ptr<PipelineState> pipeline_ = nullptr;
@@ -141,7 +142,35 @@ void MeshInstancingRenderer::SetDirectionalLight(DirectionalLight* _directionalL
 /// normal methods
 /// ===================================================
 
-void MeshInstancingRenderer::Initialize() {}
+void MeshInstancingRenderer::Initialize() {
+	assert(kMaxInstanceCount_ > 0); /// max instanceが0以下で assertion...
+	
+
+	/// buffer create
+	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(
+		sizeof(Mat4) * kMaxInstanceCount_);
+
+	/// desc setting
+	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
+	desc.Format                     = DXGI_FORMAT_UNKNOWN;
+	desc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	desc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
+	desc.Buffer.FirstElement        = 0;
+	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
+	desc.Buffer.NumElements         = static_cast<UINT>(kMaxInstanceCount_);
+	desc.Buffer.StructureByteStride = sizeof(Mat4);
+
+	/// cpu, gpu handle initialize
+	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
+	cpuHandle_ = dxDescriptor->GetSrvCpuHandle();
+	gpuHandle_ = dxDescriptor->GetSrvGpuHandle();
+	dxDescriptor->AddSrvUsedCount();
+
+	/// resource create
+	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(transformArrayBuffer_.Get(), &desc, cpuHandle_);
+
+}
 
 void MeshInstancingRenderer::Update() {}
 
@@ -150,5 +179,12 @@ void MeshInstancingRenderer::Draw() {
 }
 
 void MeshInstancingRenderer::Debug() {
+
+	/// 描画するインスタンスが0なら描画しない
+	if(renderElementArray_.empty()) {
+		return;
+	}
+
+	gPipeline->Draw();
 
 }
