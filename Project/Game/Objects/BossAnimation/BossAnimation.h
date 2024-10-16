@@ -45,9 +45,8 @@ class BossAnimation : public BaseGameObject {
 
 	struct AnimationData {
 		float time;
-		float speed;
+		float maxTime;
 		float apmlitude;
-		bool isReset;
 	};
 
 public:
