@@ -56,8 +56,8 @@ const Vec3 BaseGameObject::GetPosition() const {
 /// 親のセット
 /// ===================================================
 void BaseGameObject::SetParent(Transform* parent) {
-	pTranform_->SetParent(parent);
-	pTranform_->AddChild(GetTransform()); //- 相手の子供に自身を追加
+	pTransform_->SetParent(parent);
+	parent->AddChild(pTransform_); //- 相手の子供に自身を追加
 }
 
 
@@ -73,11 +73,11 @@ void BaseGameObject::ParentCancel(bool isLocalToWorld) {
 	if(!parent) { return; }
 
 	if(isLocalToWorld) {
-		pTranform_->Update();
-		pTranform_->position = GetPosition();
+		pTransform_->Update();
+		pTransform_->position = GetPosition();
 	}
 
-	pTranform_->parent_ = nullptr;	
+	pTransform_->parent_ = nullptr;	
 
 }
 
