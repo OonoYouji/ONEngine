@@ -86,7 +86,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	);
 
 	MeshInstancingRenderer::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
 
 	/// game object manager の初期化

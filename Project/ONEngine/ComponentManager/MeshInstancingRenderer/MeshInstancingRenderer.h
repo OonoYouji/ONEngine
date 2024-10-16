@@ -5,6 +5,7 @@
 
 /// graphic
 #include "GraphicManager/ModelManager/Model.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 
 /// base class
 #include "ComponentManager/Base/BaseComponent.h"
@@ -25,7 +26,7 @@ public:
 	/// public : static methods
 	/// ===================================================
 	
-	static void SInitialize(ID3D12GraphicsCommandList* _commandList);
+	static void SInitialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor);
 	static void SFinalize();
 
 	static void SetDirectionalLight(class DirectionalLight* _directionalLight);

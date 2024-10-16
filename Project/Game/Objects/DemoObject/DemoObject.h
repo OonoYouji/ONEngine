@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <memory>
+
 #include "GameObjectManager/GameObjectManager.h"
 
 
@@ -14,5 +17,7 @@ public:
 	void Debug()      override;
 
 private:
+
+	std::vector<std::unique_ptr<Transform>> transformArray_;
 
 };

@@ -17,10 +17,10 @@
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 
+#include "Objects/Camera/Manager/CameraManager.h"
 
 /// using namespace
 using namespace Microsoft::WRL;
@@ -39,10 +39,11 @@ namespace {
 		~RenderingPipeline() {}
 
 		void Initialize(
-			ID3D12GraphicsCommandList* _commandList
+			ID3D12GraphicsCommandList* _commandList,
+			ONE::DxDescriptor* _dxDescriptor
 		);
 
-		void Draw();
+		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount);
 
 	private:
 
@@ -53,6 +54,7 @@ namespace {
 		/// other pointer
 		DirectionalLight*          pDirectionalLight_ = nullptr;
 		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
+		ONE::DxDescriptor*         pDxDescriptor_     = nullptr;
 
 	};
 
@@ -61,12 +63,15 @@ namespace {
 	/// ↓ methods
 	/// ===================================================
 
-	void RenderingPipeline::Initialize(ID3D12GraphicsCommandList* _commandList) {
+	void RenderingPipeline::Initialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor) {
 
 
 		/// set pointer
 		pCommnadList_ = _commandList;
 		assert(pCommnadList_);
+
+		pDxDescriptor_ = _dxDescriptor;
+		assert(pDxDescriptor_);
 
 
 		/// shader compile
@@ -86,22 +91,47 @@ namespace {
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// transform
+
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// texture
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->Initialize();
 	}
 
-	void RenderingPipeline::Draw() {
+	void RenderingPipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
+
+		/// other pointer
+		ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+
 		/// default setting
 		pipeline_->SetPipelineState();
 		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		pDirectionalLight_->BindToCommandList(3, pCommnadList_);
+		pDxDescriptor_->SetSRVHeap(pCommnadList_);
+
+		/// buffer setting
+		pDirectionalLight_->BindToCommandList(2, pCommnadList_);
+		pCommnadList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+		pCommnadList_->SetGraphicsRootDescriptorTable(3, gpuHandle);
+
+		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
+
+			Mesh&     mesh     = useModel->GetMeshes()[i];
+			Material& material = useModel->GetMaterials()[i];
+
+			material.BindMaterial(pCommnadList_, 1);
+			material.BindTexture(pCommnadList_, 4);
+			mesh.Draw(pCommnadList_, false);
+
+			UINT meshIndex = static_cast<UINT>(mesh.GetIndices().size());
+			pCommnadList_->DrawIndexedInstanced(meshIndex, instanceCount, 0, 0, 0);
+		}
 	}
 
 
@@ -124,9 +154,9 @@ MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) : kMax
 /// static methods
 /// ===================================================
 
-void MeshInstancingRenderer::SInitialize(ID3D12GraphicsCommandList* _commandList) {
+void MeshInstancingRenderer::SInitialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor) {
 	gPipeline.reset(new RenderingPipeline);
-	gPipeline->Initialize(_commandList);
+	gPipeline->Initialize(_commandList, _dxDescriptor);
 }
 
 void MeshInstancingRenderer::SFinalize() {
@@ -162,7 +192,7 @@ void MeshInstancingRenderer::Initialize() {
 	desc.Buffer.StructureByteStride = sizeof(Mat4);
 
 	/// cpu, gpu handle initialize
-	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
+	ONE::DxDescriptor* dxDescriptor = gPipeline->pDxDescriptor_;
 	cpuHandle_ = dxDescriptor->GetSrvCpuHandle();
 	gpuHandle_ = dxDescriptor->GetSrvGpuHandle();
 	dxDescriptor->AddSrvUsedCount();
@@ -189,7 +219,14 @@ void MeshInstancingRenderer::Draw() {
 		return;
 	}
 
-	gPipeline->Draw();
+	std::vector<Mat4> matTransformArray{};
+	for(auto& transform : transformArray_) {
+		matTransformArray.push_back(transform->matTransform);
+	}
+
+	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Mat4));
+
+	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
 }
 
 void MeshInstancingRenderer::Debug() {
