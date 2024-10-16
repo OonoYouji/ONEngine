@@ -35,6 +35,8 @@ void GameCameraState::Update() {
 	}
 	//振る舞い管理
 	BehaviorManagement();
+
+	pLight_->SetDirection(-pGameCamera_->GetPosition().Normalize());
 }
 
 void GameCameraState::LastUpdate() {

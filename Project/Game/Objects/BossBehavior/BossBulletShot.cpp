@@ -96,8 +96,6 @@ void BossBulletShot::Update() {
 				pBoss_->ChangeState(std::make_unique<BossChasePlayer>(pBoss_));
 			}
 		}
-		
-
 	}
 }
 

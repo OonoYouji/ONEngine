@@ -31,6 +31,11 @@ public:
 	void SetBoss(Boss* boss);
 
 private:
+	float floatingCycle_;
+	float floatingAmplitude_;
+	float floatingParameter_;
+	const float easeTimeMax_ = 0.5f;
+
 
 private:
 	Boss* pBoss_;
@@ -55,5 +60,5 @@ public:
 private:
 
 private:
-	 BossTubu* pBossTube_;
+	BossTubu* pBossTube_;
 };

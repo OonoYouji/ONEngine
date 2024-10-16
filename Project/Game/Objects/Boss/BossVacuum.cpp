@@ -9,17 +9,35 @@
 #include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
+#include"FrameManager/Time.h"
 //obj
 #include "Objects/Boss/Boss.h"
+#include"Easing/EasingFunction.h"
+//std
+#include<numbers>
 
 void BossTubu::Initialize() {
 	Model* model = ModelManager::Load("bossTubu");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
+	//浮遊サイクル
+	floatingCycle_ = 80.0f;
+	floatingAmplitude_ = 0.5f;
+	pTransform_->position.z = -1.5f;
+	pTransform_->position.y = 2.6f;
 }
 void BossTubu::Update() {
 
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * std::numbers::pi_v<float> / floatingCycle_;
+	// パラメータを1ステップ分加算
+	floatingParameter_ += step/**Time::DeltaTime()*/;
+	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * std::numbers::pi_v<float>);
+	// 浮遊の振幅＜m＞
+	/*floatingAmplitude_ = 0.2f;*/
+	// 浮遊を座標に反映
+	pTransform_->position.z = std::sin(floatingParameter_) * floatingAmplitude_;
 }
 void BossTubu::Debug() {
 
@@ -38,6 +56,10 @@ void BossHead::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
+
+	pTransform_->position.x = 0.1f;
+	pTransform_->position.y = 2.4f;
+	pTransform_->position.z = 0.2f;
 }
 void BossHead::Update() {
 
