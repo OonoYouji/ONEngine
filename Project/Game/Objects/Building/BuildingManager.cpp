@@ -32,6 +32,18 @@ void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model) {
 	inTornadoBuildings_.push_back(inTornadoBuilding);
 }
 
+//ボスが持つするビルの追加
+void  BuildingManager::AddBossBuilding(Boss* boss,Model* model) {
+	InBossBuilding* inbossBuilding = new InBossBuilding();
+	inbossBuilding->Initialize();
+	//モデルセット
+	inbossBuilding->SetModel(model);
+	//ボスセット
+	inbossBuilding->SetBoss(boss);
+	//リストに追加
+	inBossBuildings_.push_back(inbossBuilding);
+}
+
 //更新
 void 	BuildingManager::Update() {
 
@@ -52,17 +64,22 @@ void 	BuildingManager::Update() {
 }
 
 //更新
-void 	BuildingManager::AllUpdate(Tornado* tornado) {
+void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 	// 建ってるビル達の更新
 	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
-	
 		//更新
 		(*buildingIter)->Update();
-
 		//死亡
-		if ((*buildingIter)->GetIsDeath()) {
-			//巻きこまれるビルを追加
-			AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken()) {
+			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合
+				//巻きこまれるビルを追加
+				AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());
+			}
+			else if ((*buildingIter)->GetIsTaken()) {//ボスによる場合
+				AddBossBuilding(boss,(*buildingIter)->GetModel());//ボス用建物追加
+				boss->SetIsSlurping(false);
+				boss->SetSlurpingCoolTimer();
+			}
 			//死亡パラメータを取得してリストに追加
 			DeathParamater deathParamager;
 			deathParamager.phi = (*buildingIter)->GetPhi();
@@ -73,9 +90,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 			(*buildingIter)->Destory();
 			// リストから削除	
 			buildingIter = buildings_.erase(buildingIter); 
-
 		}
-
 		else {
 			++buildingIter;
 		}
@@ -90,6 +105,21 @@ void 	BuildingManager::AllUpdate(Tornado* tornado) {
 			(*buildingIter)->Destory();
 
 			buildingIter = inTornadoBuildings_.erase(buildingIter); // リストから削除	
+		}
+		else {
+			++buildingIter;
+		}
+	}
+
+	// ボスのビル達の更新
+	for (auto buildingIter = inBossBuildings_.begin(); buildingIter != inBossBuildings_.end(); ) {
+
+		(*buildingIter)->Update();
+		//
+		if ((*buildingIter)->GetIsDeath()) {
+			(*buildingIter)->Destory();
+
+			buildingIter = inBossBuildings_.erase(buildingIter); // リストから削除	
 		}
 		else {
 			++buildingIter;

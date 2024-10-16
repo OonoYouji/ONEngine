@@ -4,10 +4,22 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-//std
-#include<optional>
-#include"Objects/BossBehavior/BaseBossBehavior.h"
 
+//std
+#include<memory>
+//behavior
+#include"Objects/BossBehavior/BaseBossBehavior.h"
+#include"Objects/BossBehavior/BossRoot.h"
+#include"Objects/BossBehavior/BossChasePlayer.h"
+#include"Objects/BossBehavior/BossBulletShot.h"
+#include"Objects/BossBehavior/BossAttack.h"
+
+#include"Objects/Boss/BossVacuum.h"
+
+class Player;
+class BuildingManager;
+class BaseBuilding;
+class BossHead;
 class Boss : public BaseGameObject {
 public:
 
@@ -18,15 +30,80 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-	////状態変更
-	//void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
+	//通常更新
+	void RootInit();
+	void RootUpdate();
+	//ストーカー
+	void ChaseInit();
+	void ChaseUpdate();
+	//建物吸引
+	void SlurpInit();
+	void SlurpUpdate();
+	//弾発射
+	void BulletShotInit();
+	void BulletShotUpdate();
+	//攻撃
+	void AttackInit();
+	void AttackUpdate();
 	
+	//プレイヤーセット
+	void SetPlayer(Player*player);
+	void SetHead(BossHead* bossHead);
+	void SetBuildingaManager(BuildingManager* player);
+	BaseBuilding* FindClosestBuilding();
+
+	//状態変更
+	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
+	//getter
+	bool GetIsSlurping()const { return isSlurping_; }
+	float GetChaseSpeedParamater()const {return SpeedParamater_; }
+	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
+	bool GetIsBuildingKill()const { return isBuildingKill_; }
+	Player* GetPlayer() { return pPlayer_; }
+	BossHead* GetHead() { return pBossHead_; }
+
+	bool GetIsAttack()const { return isAttack_; }
+
+	
+	//setter
+	void SetIsSlurping(bool is) { isSlurping_ = is; }
+	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
+	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
+	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
+	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
+	
+	void SetIsAttack(bool is) { isAttack_ = is; }
+
 private:
 	
 private:
+	//プレイヤーポインタ
+	Player* pPlayer_=nullptr;
+	BuildingManager* pBuildingManager_ = nullptr;
+	BossHead* pBossHead_;
+	class EarthRenderer* er_ = nullptr;
+
+	 float radius_ = 1.0f;
+	 Vec4  paintOutColor_ = { 1,1,1,1 };
 	////状態
-	//std::unique_ptr<BaseBossBehavior>behavior_;
+	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
-	
+	//吸ってる弾を殺すフラグ
+	bool isBuildingKill_;
+	//
+	bool isAttack_;
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  パラメータ
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//パラメータ調節用追従すピーⅮ
+	float SpeedParamater_;
+	//吸い込み関連
+	bool isSlurping_ = false;  // 吸い込み中かどうか
+	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
+	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
+
+	//ボス弾発射関連
+	const uint32_t kBuildingNum_=10;
+
 };

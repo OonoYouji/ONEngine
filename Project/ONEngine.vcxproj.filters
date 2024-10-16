@@ -223,6 +223,9 @@
     <Filter Include="Game\Scenes\Manager">
       <UniqueIdentifier>{4a1d3369-4a1f-4571-bcac-289b883143ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\HormingFunction">
+      <UniqueIdentifier>{b3fae37c-870a-48b6-937b-b2329ad5c64b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CustomShaders\Earth\Earth.hlsli">
@@ -565,9 +568,6 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp">
       <Filter>Game\Objects\DemoObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Ground\Ground.cpp">
       <Filter>Game\Objects\Ground</Filter>
     </ClCompile>
@@ -611,9 +611,41 @@
     <ClCompile Include="Game\Objects\Building\InTornadoBuilding.cpp">
       <Filter>Game\Objects\Building</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossRoot.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossChasePlayer.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Building\InBossBuilding.cpp">
+      <Filter>Game\Objects\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossBulletShot.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Boss\BossBulletLump.cpp">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\HormingFunction\Horming.cpp">
+      <Filter>Game\HormingFunction</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Boss\BossVacuum.cpp">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\BossBehavior\BossAttack.cpp">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClCompile>
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -853,9 +885,6 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h">
       <Filter>Game\Objects\DemoObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Ground\Ground.h">
       <Filter>Game\Objects\Ground</Filter>
     </ClInclude>
@@ -898,8 +927,40 @@
     <ClInclude Include="Game\Objects\Building\InTornadoBuilding.h">
       <Filter>Game\Objects\Building</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossRoot.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossChasePlayer.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
+      <Filter>Game\Objects\GameCameraState</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Building\InBossBuilding.h">
+      <Filter>Game\Objects\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossBulletShot.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Boss\BossBulletLump.h">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\HormingFunction\Horming.h">
+      <Filter>Game\HormingFunction</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Boss\BossVacuum.h">
+      <Filter>Game\Objects\Boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\BossBehavior\BossAttack.h">
+      <Filter>Game\Objects\BossBehavior</Filter>
+    </ClInclude>
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
     <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
   </ItemGroup>
 </Project>

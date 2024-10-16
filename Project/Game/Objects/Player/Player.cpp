@@ -13,7 +13,7 @@
 #include"FrameManager/time.h"
 
 void Player::Initialize() {
-	Model* model = ModelManager::Load("axis");
+	Model* model = ModelManager::Load("Player");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -36,6 +36,7 @@ void Player::Initialize() {
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
 	transoform_.position.z=-12;
+	pTransform_->rotate.x = 45;
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
 	/*SetPositionZ(-1.0f);*/
@@ -50,6 +51,14 @@ void Player::Initialize() {
 	transoform_.SetParent(&pivot_);
 	pTransform_->SetParent(&pivot_);
 
+	//回転を適応
+	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 2);
+	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.01f);
+
+	
+	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+	
+
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 }
@@ -63,8 +72,8 @@ void Player::Update() {
  
 	Move();//移動
 
-	pivot_.Update();
-	transoform_.Update();
+	pivot_.UpdateMatrix();
+	transoform_.UpdateMatrix();
 }
 
 void Player::Move() {
@@ -77,7 +86,7 @@ void Player::Move() {
 
 	/// 移動の正規化
 	input_ = input_.Normalize() * 0.1f;
-	velocity_ = Vec3::Lerp(velocity_, input_, 0.1f);
+	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
 
 	rotateXAngle_ = +velocity_.y;
 	rotateYAngle_ = -velocity_.x;
@@ -121,6 +130,7 @@ void Player::PowerUpGaugeUp(float par) {
 
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
+		powerUpGauge_ = powerUpGaugeMax_;
 		ChangeState(std::make_unique<PlayerPowerUp>(this));
 		
 	}
@@ -161,7 +171,7 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision)) {
+	if (dynamic_cast<BaseBuilding*>(collision)&& !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
 		PowerUpGaugeUp(0.3f);
 	}
 }
