@@ -51,7 +51,6 @@ void BaseBuilding::Initialize() {
 
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
-
 }
 
 void BaseBuilding::Update() {

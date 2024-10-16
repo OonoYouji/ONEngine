@@ -163,3 +163,6 @@ BaseBuilding* Boss::FindClosestBuilding() {
 	return closestBuilding;
 }
 
+void Boss::SetHead(BossHead* bossHead) {
+	pBossHead_ = bossHead;
+}

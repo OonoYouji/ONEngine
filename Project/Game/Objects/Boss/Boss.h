@@ -13,9 +13,12 @@
 #include"Objects/BossBehavior/BossChasePlayer.h"
 #include"Objects/BossBehavior/BossBulletShot.h"
 
+#include"Objects/Boss/BossVacuum.h"
+
 class Player;
 class BuildingManager;
 class BaseBuilding;
+class BossHead;
 class Boss : public BaseGameObject {
 public:
 
@@ -41,6 +44,7 @@ public:
 	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
+	void SetHead(BossHead* bossHead);
 	void SetBuildingaManager(BuildingManager* player);
 	BaseBuilding* FindClosestBuilding();
 
@@ -52,6 +56,7 @@ public:
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
+	BossHead* GetHead() { return pBossHead_; }
 	
 	//setter
 	void SetIsSlurping(bool is) { isSlurping_ = is; }
@@ -67,6 +72,7 @@ private:
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
+	BossHead* pBossHead_;
 	////状態
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット

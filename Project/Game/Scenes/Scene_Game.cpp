@@ -68,12 +68,13 @@ void Scene_Game::Initialize() {
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
+	boss_->SetHead(bossHead);
 
 	bossTube->SetBoss(boss_);
 	bossHead->SetBossTube(bossTube);
 
 	tornado_->SetPlayer(player_);
-	/*bossBulletLump_->SetBoss(boss_);*/
+	
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);

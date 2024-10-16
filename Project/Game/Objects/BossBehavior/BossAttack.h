@@ -2,7 +2,6 @@
 
 #include"Objects/BossBehavior/BaseBossBehavior.h"
 
-
 class BossAttack : public BaseBossBehavior {
 public:
 	//コンストラクタ
@@ -15,4 +14,5 @@ private:
 	float easingTimeMax_;
 	float easeDirection_;
 	float MinDistance_;
+
 };
