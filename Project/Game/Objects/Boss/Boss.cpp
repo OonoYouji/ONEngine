@@ -22,6 +22,7 @@
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Ground/Ground.h"
 //function
+#include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
 #undef max
 
@@ -128,12 +129,32 @@ void Boss::BulletShotUpdate() {
 }
 
 void Boss::AttackInit() {
-	
-	pBossHead_->ParamaterInit();
+	attackEaseT_ = 0.0f;
+	attackCoolTime_ = 0.0f;
+	pBossTubu_->ParamaterInit();
+	isAttackBack_ = false;
+	isAttack_ = true;
 }
 
-void Boss::AttackUpdate() {
-
+void Boss::AttackUpdate() {//超汚い
+	if (!isAttackBack_) {
+		attackEaseT_ += Time::DeltaTime();
+		if (attackEaseT_ >= kAttackEaseT_) {
+			attackEaseT_ = kAttackEaseT_;
+			attackCoolTime_ += Time::DeltaTime();
+			if (attackCoolTime_ >= kAttackCoolTime_) {
+				isAttackBack_ = true;
+			}
+		}
+	}//戻る
+	else if (isAttackBack_) {
+		attackEaseT_ -= Time::DeltaTime();
+		if (attackEaseT_ <= 0.0f) {
+			ChangeState(std::make_unique<BossChasePlayer>(this));
+			isAttack_ = false;
+		}
+	}
+	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.4f, attackEaseT_, kAttackEaseT_));
 }
 
 void Boss::Debug() {
@@ -185,6 +206,10 @@ BaseBuilding* Boss::FindClosestBuilding() {
 	return closestBuilding;
 }
 
-void Boss::SetHead(BossHead* bossHead) {
-	pBossHead_ = bossHead;
+//void Boss::SetHead(BossHead* bossHead) {
+//	pBossHead_ = bossHead;
+//}
+
+void Boss::SetTubu(BossTubu* bossHead) {
+	pBossTubu_ = bossHead;
 }

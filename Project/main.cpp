@@ -112,7 +112,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///////////////////////////////////////////////////////////////////////
 	/// scene manager の初期化	: 初期化時のシーンをここで決定
 	///////////////////////////////////////////////////////////////////////
-	sceneManager->Initialize(SCENE_ID::CLEAR);
+	sceneManager->Initialize(SCENE_ID::GAME);
 
 
 

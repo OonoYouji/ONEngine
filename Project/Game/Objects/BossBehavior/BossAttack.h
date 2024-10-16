@@ -14,4 +14,5 @@ private:
 	float attackWaitTime_;
 	const float kAttackWaitTime_ = 1.0f;
 	bool isSwingDown_;
+	Quaternion inter_;
 };

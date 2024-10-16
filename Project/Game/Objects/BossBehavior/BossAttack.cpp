@@ -35,16 +35,17 @@ void BossAttack::Update() {
 		Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
 
 		// プレイヤーの方向を向くための回転を計算
-		Quaternion inter = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+		 inter_ = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 
 		// 回転を更新
-		pBoss_->SetPivotQuaternion(inter);
+		pBoss_->SetPivotQuaternion(inter_);
 		if (attackWaitTime_ >= kAttackWaitTime_) {
 			isSwingDown_ = true;
 		}
 
 	}//振り下ろし
 	else if (isSwingDown_) {
-
+		pBoss_->SetPivotQuaternion(inter_);
+		pBoss_->AttackUpdate();
 	}
 }

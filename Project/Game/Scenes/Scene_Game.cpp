@@ -70,7 +70,7 @@ void Scene_Game::Initialize() {
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
-	boss_->SetHead(bossHead);
+	boss_->SetTubu(bossTube);
 
 	bossTube->SetBoss(boss_);
 	bossHead->SetBossTube(bossTube);
