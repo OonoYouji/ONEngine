@@ -57,7 +57,7 @@ const Vec3 BaseGameObject::GetPosition() const {
 /// ===================================================
 void BaseGameObject::SetParent(Transform* parent) {
 	pTransform_->SetParent(parent);
-	parent->AddChild(GetTransform()); //- 相手の子供に自身を追加
+	parent->AddChild(pTransform_); //- 相手の子供に自身を追加
 }
 
 
