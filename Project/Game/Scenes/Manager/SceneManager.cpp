@@ -24,6 +24,7 @@
 #include "../Scene_Title.h"
 #include "../Scene_Result.h"
 #include "../Scene_Clear.h"
+#include "../BossEntryScene.h"
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
@@ -114,9 +115,9 @@ void SceneManager::Draw() {
 }
 
 void SceneManager::ImGuiDebug() {
-	const char* labels[4]{ "Title", "Game", "Result", "Clear"};
+	const char* labels[]{ "Title", "Game", "Result", "Clear", "Boss Entery"};
 	int currentItem = static_cast<int>(nextSceneId_);
-	if(ImGui::Combo("next scene", &currentItem, labels, 4)) {
+	if(ImGui::Combo("next scene", &currentItem, labels, 5)) {
 		nextSceneId_ = SCENE_ID(currentItem);
 	}
 
@@ -157,6 +158,8 @@ void SceneManager::Load(SCENE_ID id) {
 			return new Scene_Result();
 		case CLEAR:
 			return new Scene_Clear();
+		case BOSS_ENTRY:
+			return new BossEntryScene();
 		}
 		return nullptr;
 	};
