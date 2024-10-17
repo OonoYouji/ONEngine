@@ -27,6 +27,8 @@ public:
 
 	void SetBasePosition(const Vec3& _basePosition);
 
+	void SetIsSpinUpdate(bool isSpinUpdate);
+
 private:
 
 	Vec3 basePosition_;
@@ -35,9 +37,11 @@ private:
 	float animationSpeed_;
 	float animationAmplitude_;
 
-	bool isSpin_     = false;
-	float spinTime_  = 0.0f;
-	float spinSpeed_ = 1.0f;
+
+	bool isSpinUpdate_ = true;
+	bool isSpin_       = false;
+	float spinTime_    = 0.0f;
+	float spinSpeed_   = 1.0f;
 
 	std::vector<class Wind*>       windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;

@@ -50,6 +50,7 @@ void BossEntryScene::Initialize() {
 
 	playerAnimation->SetBasePosition({ 0.0f,0.0f, -12.0f });
 	playerAnimation->SetRotateX(-std::numbers::pi_v<float> / 2.0f);
+	playerAnimation->SetIsSpinUpdate(false);
 }
 
 void BossEntryScene::Update() {

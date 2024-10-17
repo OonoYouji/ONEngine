@@ -78,18 +78,20 @@ void TitlePlayerAnimator::Update() {
 
 	
 	/// thisが回転する挙動
-	if(isSpin_) {
-		spinTime_ += Time::DeltaTime();
-		pTransform_->rotate.y = (std::numbers::pi_v<float> * 2.0f) * 
-			Ease::InOut::Elastic(spinTime_ / 2.0f);
-
-		if(spinTime_ >= 2.0f) {
-			isSpin_ = false;
-			spinTime_ = 0.0f;
-		}
-	} else {
-		if(animationTime_ > 1.0f && static_cast<int>(animationTime_) % 4 == 0) {
-			isSpin_ = true;
+	if(isSpinUpdate_) {
+		if(isSpin_) {
+			spinTime_ += Time::DeltaTime();
+			pTransform_->rotate.y = (std::numbers::pi_v<float> * 2.0f) * 
+				Ease::InOut::Elastic(spinTime_ / 2.0f);
+	
+			if(spinTime_ >= 2.0f) {
+				isSpin_ = false;
+				spinTime_ = 0.0f;
+			}
+		} else {
+			if(animationTime_ > 1.0f && static_cast<int>(animationTime_) % 4 == 0) {
+				isSpin_ = true;
+			}
 		}
 	}
 
@@ -139,4 +141,8 @@ void TitlePlayerAnimator::Debug() {
 
 void TitlePlayerAnimator::SetBasePosition(const Vec3& _basePosition) {
 	basePosition_ = _basePosition;
+}
+
+void TitlePlayerAnimator::SetIsSpinUpdate(bool isSpinUpdate) {
+	isSpinUpdate_ = isSpinUpdate;
 }

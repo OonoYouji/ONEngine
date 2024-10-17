@@ -17,6 +17,7 @@ void Scene_Title::Initialize() {
 
 	/// reset...
 	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 	
 	/// camera setting
 	Transform* cameraTransform   = mainCamera_->GetTransform();
