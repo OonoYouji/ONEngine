@@ -9,29 +9,51 @@
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Player/Player.h"
 
+/// ===================================================
+/// 建物の大きさを表す enum
+/// ===================================================
+enum BUILDING_SCALE {
+	BIG,
+	NORMAL,
+	SMALL
+};
 
+
+/// ===================================================
+/// 建物の基底クラス
+/// ===================================================
 class BaseBuilding : public BaseGameObject {
 public:
 
 	BaseBuilding() { CreateTag(this); }
 	~BaseBuilding() {}
 
+	/// ===================================================
+	/// public : methods 
+	/// ===================================================
+
 	virtual	void Initialize()override;
 	virtual	void Update() override;
 	virtual void Debug() override;
 	
-
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+
 	void GrowForTime(const float& par, const float& second);
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
 	//getter
-	bool GetIsInTornado()const { return isInTornado_; }
-	bool GetIsTaken()const { return isTaken_; }
-	bool GetIsBreak()const { return isBreak_; }
-	bool GetIsSlurped()const { return isSlurp_; }
+	bool GetIsInTornado() const { return isInTornado_; }
+	bool GetIsTaken() const { return isTaken_; }
+	bool GetIsBreak() const { return isBreak_; }
+	bool GetIsSlurped() const { return isSlurp_; }
 	float GetPhi() const{ return phi_; }
 	float GetTheta() const{ return theta_; }
-	bool GetIsCollisionTyphoon()const { return isCollisionTyphoon_; }
-	Model* GetModel()const { return model_; }
+	bool GetIsCollisionTyphoon() const { return isCollisionTyphoon_; }
+	Model* GetModel() const { return modelArray_[currentScaleIndex_]; }
+
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }//ピボット
 	void SetPhi(float phi) { phi_ = phi; }//経度
@@ -42,7 +64,7 @@ public:
 	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
 
 private:
-	Model* model_=nullptr;
+
 	//死んだか
 	bool isInTornado_;
 	//竜巻と衝突したか
@@ -73,9 +95,29 @@ private:
 	const float buildingSartZ = -10.8f;
 
 
+	/// ---------------------------------------------------
 	/// earth shadow
+	/// ---------------------------------------------------
+
 	class EarthRenderer* earthRenderer_ = nullptr;
 	Vec4 shadowColor_   = Vec4::kWhite;
 	float shadowRaidus_ = 2.0f;
+
+
+
+	/// ---------------------------------------------------
+	/// animation
+	/// ---------------------------------------------------
+
+	float animationTime_  = 0.0f;
+	float animationSpeed_ = 4.0f;
+
+
+	/// ---------------------------------------------------
+	/// model
+	/// ---------------------------------------------------
+
+	std::vector<Model*> modelArray_; /// 大中小のモデル配列
+	int currentScaleIndex_ = 0;
 
 };

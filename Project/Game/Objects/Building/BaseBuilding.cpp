@@ -9,24 +9,29 @@
 
 #include "ImGuiManager/ImGuiManager.h"
 //math
-#include"Math/Random.h"
-#include"FrameManager/Time.h"
+#include "Math/Random.h"
+#include "Math/Easing.h"
+#include "FrameManager/Time.h"
 //std
-#include<numbers>
+#include <numbers>
 //object
-#include"Objects/Ground/Ground.h"
-#include"Objects/Boss/BossVacuum.h"
+#include "Objects/Ground/Ground.h"
+#include "Objects/Boss/BossVacuum.h"
 //function
-#include"Easing/EasingFunction.h"
-#include"HormingFunction/Horming.h"
+#include "Easing/EasingFunction.h"
+#include "HormingFunction/Horming.h"
 
 void BaseBuilding::Initialize() {
 
-	model_ = ModelManager::Load("TestObject");
+	modelArray_ = {
+		ModelManager::Load("TestObject"),
+		ModelManager::Load("TestObject"),
+		ModelManager::Load("TestObject")
+	};
 
 	auto mesh = AddComponent<MeshRenderer>();
-	mesh->SetModel(model_);
-	auto collider = AddComponent<BoxCollider>(model_);
+	mesh->SetModel(modelArray_[0]);
+	auto collider = AddComponent<BoxCollider>(modelArray_[0]);
 
 	earthRenderer_ = AddComponent<EarthRenderer>();
 	earthRenderer_->SetRadius(shadowRaidus_);
@@ -43,7 +48,6 @@ void BaseBuilding::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
 	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
-	pTransform_->scale = { 1.0f,0.1f,1.0f };//スケール
 	scaleMax_ = 1.0f;
 
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +62,7 @@ void BaseBuilding::Initialize() {
 
 void BaseBuilding::Update() {
 
+	/// 影の色と大きさを設定
 	earthRenderer_->SetRadius(shadowRaidus_);
 	earthRenderer_->SetColor(shadowColor_);
 
@@ -92,9 +97,21 @@ void BaseBuilding::Update() {
 			isTaken_ = true;
 		}
 	} else {
+
+		/// 吸われない場合の処理を以下に記載
+		
+		animationTime_ += Time::DeltaTime();
+
+		float scaleXZ = 1.0f + 0.25f * (-std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
+
+		pTransform_->scale.x = scaleXZ;
+		pTransform_->scale.z = scaleXZ;
+		pTransform_->scale.y = 1.0f + 0.25f * (std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
+
+
 		//成長
 		growTime_ += Time::DeltaTime();
-		GrowForTime(0.2f, 2.0f);
+		//GrowForTime(0.2f, 2.0f);
 	}
 
 	//ピボット更新
@@ -106,6 +123,12 @@ void BaseBuilding::Debug() {
 
 		ImGui::ColorEdit4("color", &shadowColor_.x);
 		ImGui::DragFloat("radius", &shadowRaidus_, 0.1f);
+
+		if(ImGui::TreeNodeEx("animation", ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::DragFloat("time",  &animationTime_,  0.01f);
+			ImGui::DragFloat("speed", &animationSpeed_, 0.01f);
+			ImGui::TreePop();
+		}
 
 		ImGui::TreePop();
 	}
