@@ -11,7 +11,7 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 	Building* building = new Building();
 	building->Initialize();
 	//死亡パラメータ取得
-	building->SetPhi(theta);
+	building->SetTheta(theta);
 	building->SetPhi(phi);
 	// 回転を適用
 	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, phi);
