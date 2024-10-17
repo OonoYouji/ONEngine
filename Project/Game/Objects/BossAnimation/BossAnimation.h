@@ -61,6 +61,8 @@ public:
 
 	void SetGameCamera(GameCamera* _gameCamera);
 
+	void SetAnimationIndex(BOSS_ANIMATION_ORDER _bossAnimationOrder);
+
 private:
 
 	std::vector<BossParts*>                          bossPartsArray_;

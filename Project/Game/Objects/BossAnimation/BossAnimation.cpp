@@ -21,7 +21,7 @@ BossAnimation::~BossAnimation() {}
 void BossAnimation::Initialize() {
 
 	/// 最初のアニメーションを設定
-	currentAnimationIndex_ = BOSS_ANIMATION_ENTRY_CAMERA_MOVE;
+	currentAnimationIndex_ = BOSS_ANIMATION_STANDBY;
 
 
 	modelNameArray_ = {
@@ -275,4 +275,8 @@ void BossAnimation::Debug() {
 
 void BossAnimation::SetGameCamera(GameCamera* _gameCamera) {
 	pGameCamera_ = _gameCamera;
+}
+
+void BossAnimation::SetAnimationIndex(BOSS_ANIMATION_ORDER _bossAnimationOrder) {
+	currentAnimationIndex_ = _bossAnimationOrder;
 }
