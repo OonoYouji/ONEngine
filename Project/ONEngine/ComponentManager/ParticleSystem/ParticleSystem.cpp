@@ -189,6 +189,14 @@ void ParticleSystem::Debug() {
 	}
 }
 
+void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
+	emitter_->rateOverTime_ = _particleRespawnTime;
+}
+
+void ParticleSystem::SetEmittedParticleCount(uint32_t _emittedParticleCount) {
+	emitter_->emissionCount_ = _emittedParticleCount;
+}
+
 
 void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 	particleLifeTime_ = _particleLifeTime;

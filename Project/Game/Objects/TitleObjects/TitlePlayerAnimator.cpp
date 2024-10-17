@@ -30,7 +30,8 @@ void TitlePlayerAnimator::Initialize() {
 	earthRenderer->SetRadius(1.5f);
 	earthRenderer->SetColor({0,0,0, 0.75f});
 
-	//ParticleSystem* particleSystem = AddComponent<ParticleSystem>();
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(32u, "rubble");
+	particleDataArray_.resize(32);
 
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
@@ -56,11 +57,39 @@ void TitlePlayerAnimator::Initialize() {
 	animationAmplitude_ = 0.4f;
 
 
+
+	/// パーティクルデータの初期化
+	for(auto& data : particleDataArray_) {
+		data.maxPosY = Random::Float(1.0f, 10.0f);
+		data.radius  = Random::Float(1.0f, 2.0f);
+		data.speed   = Random::Float(5.0f, 10.0f);
+		data.time    = Random::Float(0.0f, 1.0f);
+		data.rotate  = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+		data.scale = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
+	}
+
 	/// パーティクルの挙動
+	particleSystem->SetParticleLifeTime(3.0f);
+	particleSystem->SetEmittedParticleCount(2);
+	particleSystem->SetParticleRespawnTime(0.3f);
+	particleSystem->SetUseBillboard(false);
+	
+	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		ParticleData& data = particleDataArray_[particle->GetID()];
 
-	/*particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+		data.time += Time::DeltaTime();
+		transform->rotate = data.rotate;
+		transform->scale = data.scale;
 
-	});*/
+		transform->position = {
+			std::cos(data.time * data.speed) * data.radius,
+			(1.0f - particle->GetNormLifeTime()) * data.maxPosY,
+			std::sin(data.time * data.speed) * data.radius
+		};
+
+		transform->position += GetPosition();
+	});
 
 
 }

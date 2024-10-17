@@ -9,10 +9,13 @@ class TitlePlayerAnimator final : public BaseGameObject {
 		float speed = 1.0f;
 	};
 
-	struct FlyingObjectData {
-		float time;
-		float spped;
-		float radius;
+	struct ParticleData {
+		float time    = 0.0f;
+		float speed   = 1.0f;
+		float radius  = 1.0f;
+		float maxPosY = 0.0f;
+		Vec3 rotate{};
+		Vec3 scale{};
 	};
 
 public:
@@ -45,5 +48,5 @@ private:
 
 	std::vector<class Wind*>       windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
-	std::vector<FlyingObjectData> flyingObejctDataArray_;
+	std::vector<ParticleData>      particleDataArray_;
 };
