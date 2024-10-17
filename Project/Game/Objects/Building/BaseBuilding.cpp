@@ -45,7 +45,7 @@ void BaseBuilding::Initialize() {
 	earthRenderer_ = AddComponent<EarthRenderer>();
 	earthRenderer_->SetRadius(shadowRaidus_);
 
-	particleSystem_ = AddComponent<ParticleSystem>(64, "Sphere");
+	particleSystem_ = AddComponent<ParticleSystem>(128, "Sphere");
 	particleSystem_->SetUseBillboard(false);
 	particleSystem_->SetEmittedParticleCount(5);
 	particleSystem_->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
@@ -53,10 +53,10 @@ void BaseBuilding::Initialize() {
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 
-		Vec3 scale       = Vec3::kOne * (particle->GetNormLifeTime());
+		Vec3 scale       = Vec3::kOne * (particle->GetNormLifeTime() + 0.5f);
 		transform->scale = scale;
 
-		Vec3 velocity = GetPosition().Normalize() * 2.0f;
+		Vec3 velocity = GetPosition().Normalize() * 5.0f;
 		transform->position += velocity * Time::DeltaTime();
 	});
 
@@ -159,7 +159,7 @@ void BaseBuilding::Update() {
 		if(currentScaleIndex_ < BUILDING_SCALE_BIG) {
 			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
-				particleSystem_->SetBurst(true, 0.5f, 0.05f);
+				particleSystem_->SetBurst(true, 0.75f, 0.05f);
 				currentScaleIndex_++;
 			}
 		}

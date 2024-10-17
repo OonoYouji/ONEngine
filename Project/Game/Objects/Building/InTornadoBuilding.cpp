@@ -14,6 +14,13 @@
 //object
 #include"FrameManager/Time.h"
 
+std::array<Vec3, 3> InTornadoBuilding::buildingScaleArray_{
+	Vec3(0.2f, 0.2f, 0.2f),   /// small
+	Vec3(1.0f, 1.0f, 1.0f),   /// normal
+	Vec3(1.0f, 1.0f, 1.0f)    /// big
+};
+
+
 //初期化
 void InTornadoBuilding::Initialize() {
 	speed_ = Random::Float(4.0f, 5.0f);//回転スピード

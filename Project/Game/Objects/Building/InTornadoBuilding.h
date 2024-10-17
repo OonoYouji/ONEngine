@@ -5,6 +5,7 @@
 #include <ComponentManager/AudioSource/AudioSource.h>
 //std
 #include<memory>
+#include <array>
 //obj 
 #include"Objects/Tornado/Tornado.h"
 
@@ -34,6 +35,8 @@ private:
 	//
 	float phi_;
 
-	Tornado* pTornado_=nullptr;
-	
+	Tornado* pTornado_ = nullptr;
+
+	static std::array<Vec3, 3> buildingScaleArray_;
+
 };
