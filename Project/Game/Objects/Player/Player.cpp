@@ -15,7 +15,7 @@
 #include"Objects/Ground/Ground.h"
 
 void Player::Initialize() {
-	Model* model = ModelManager::Load("Player");
+	Model* model = ModelManager::Load("playerInGame");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
