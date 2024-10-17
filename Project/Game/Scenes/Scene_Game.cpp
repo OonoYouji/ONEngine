@@ -39,7 +39,6 @@ void Scene_Game::Initialize() {
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
-	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	tornado_ = new Tornado();
 
 
@@ -53,10 +52,8 @@ void Scene_Game::Initialize() {
 	bossHead->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
-	//gameCameraZoomInOut->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
-	/*bossBulletLump_->Initialize();*/
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
