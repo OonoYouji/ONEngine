@@ -24,7 +24,10 @@ void Scene_Tutorial::Initialize() {
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	tornado_ = new Tornado();
-
+	GameCamera* uiCamera = new GameCamera("UICamera");
+	//チュートリアル
+	tutorialScaleUpUI_ = new TutorialScaleUpUI();
+	
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
@@ -34,6 +37,9 @@ void Scene_Tutorial::Initialize() {
 	gameCameraState->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
+	uiCamera->Initialize();
+	//チュートリアル
+	tutorialScaleUpUI_->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -44,14 +50,14 @@ void Scene_Tutorial::Initialize() {
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
 	tornado_->SetPlayer(player_);
-
+	AddLayer("ui", uiCamera);
+	tutorialScaleUpUI_->drawLayerId=uiCamera->drawLayerId;
 	//更新して、移動させない為にアクティブを切る
 	player_->Update();
 	buildingManager_->SetTornado(tornado_);
 
 	player_->isActive = false;
 	buildingManager_->isActive = false;
-
 }
 /// ===================================================
 /// 更新処理
@@ -60,10 +66,13 @@ void Scene_Tutorial::Update() {
 	buildingManager_->UpdateForTutorial();
 	switch (tutorialState_) {
 	case SCACLEUP: //竜巻のスケールアップ
-
+		tutorialScaleUpUI_->isActive = true;
 		// スケールダウンへ移行する条件
 		if (tornado_->GetScaleScale() >= tornado_->GetMaxScale()) {
-			tutorialState_ = SCALEDOWN;  // 次の状態へ移行
+			tutorialScaleUpUI_->SetIsClose(true);
+			if (tutorialScaleUpUI_->GetIsDeath()) {//UIが死んだら
+				tutorialState_ = SCALEDOWN;  // 次の状態へ移行
+			}
 		}
 		break;
 
@@ -121,3 +130,12 @@ void Scene_Tutorial::Update() {
 		break;
 	}
 }
+
+////
+//void Scene_Tutorial::CreateUI() {
+//	if (!isCreateUI_) {
+//		tutorialScaleUpUI_ = new TutorialScaleUpUI();
+//		tutorialScaleUpUI_->Initialize();
+//		isCreateUI_ = true;
+//	}
+//}
