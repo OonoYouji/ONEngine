@@ -1,18 +1,26 @@
 #include "BossEntryScene.h"
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Scenes/Manager/SceneManager.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "GraphicManager/Light/DirectionalLight.h"
+#include "Objects/TitleObjects/TitlePlayerAnimator.h"
 
 #include "Objects/BossAnimation/BossAnimation.h"
 #include "Objects/TitleObjects/TitleEarth.h"
 #include "Objects/CameraState/CameraStateBossEntryToGame.h"
+#include "Objects/Tornado/Tornado.h"
 
 
 void BossEntryScene::Initialize() {
+
+	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 
 
 	/// main camera setting
@@ -24,10 +32,14 @@ void BossEntryScene::Initialize() {
 	bossAnimation_ = new BossAnimation();
 	cameraState_   = new CameraStateBossEntryToGame();
 	TitleEarth* earth = new TitleEarth();
+	TitlePlayerAnimator* playerAnimation = new TitlePlayerAnimator();
+
 
 	bossAnimation_->Initialize();
 	cameraState_->Initialize();
 	earth->Initialize();
+	playerAnimation->Initialize();
+
 
 	bossAnimation_->SetPosition({ 0.0f, 11.0f, 0.0f });
 	bossAnimation_->SetGameCamera(mainCamera_);
@@ -36,6 +48,9 @@ void BossEntryScene::Initialize() {
 	cameraState_->SetGameCamera(mainCamera_);
 	cameraState_->isActive = false;
 
+	playerAnimation->SetBasePosition({ 0.0f,0.0f, -12.0f });
+	playerAnimation->SetRotateX(-std::numbers::pi_v<float> / 2.0f);
+	playerAnimation->SetIsSpinUpdate(false);
 }
 
 void BossEntryScene::Update() {

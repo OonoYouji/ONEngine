@@ -71,4 +71,11 @@ private:
 	float floatBuildingEaseTime_;
 	const float floatBuildingEaseTimeMax_=1.0f;
 	const float buildingSartZ = -10.8f;
+
+
+	/// earth shadow
+	class EarthRenderer* earthRenderer_ = nullptr;
+	Vec4 shadowColor_   = Vec4::kWhite;
+	float shadowRaidus_ = 2.0f;
+
 };
