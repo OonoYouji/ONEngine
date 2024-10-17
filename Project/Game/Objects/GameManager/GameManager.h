@@ -22,9 +22,11 @@ public:
 private:
 
 	/// ゲームが開始しているかのフラグ
-	bool isGameStarted_    = false;
-	bool preIsGameStarted_ = false;
+	bool isGameStarted_        = false;
+	bool gameStartInitialized_ = false;
 
 	std::vector<BaseGameObject*> inGameObjectArray_;
+
+	class CameraStateBossEntryToGame* pCameraState_ = nullptr;
 
 };

@@ -44,8 +44,10 @@ void BossEntryScene::Update() {
 
 	/// 振り下ろしが終了したので遷移する
 	if(data.time / data.maxTime >= 1.0f) {
-		//SceneManager::GetInstance()->SetNextScene(GAME);
 		cameraState_->isActive = true;
+		if(cameraState_->IsFinishedMoving()) {
+			SceneManager::GetInstance()->SetNextScene(GAME);
+		}
 	}
 
 }

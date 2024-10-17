@@ -62,8 +62,8 @@ void Tornado::Initialize() {
 	eacSpeed_ = 0.7f;
 
 	scaleScaler_ = 1.0f;
-	minScale_ = 1.0f;
-	maxScale_ = 3.0f;
+	minScale_ = 0.5f;
+	maxScale_ = 0.75f;
 
 
 	/// ring array initializing

@@ -12,11 +12,14 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
+
+#include "Objects/GameManager/GameManager.h"
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/Boss.h"
 #include "Objects/Boss/BossVacuum.h"
 #include "Objects/CameraState/GameCameraState.h"
-#include "Objects/Tornado/Tornado.h"	
+#include "Objects/CameraState/CameraStateBossEntryToGame.h"
+#include "Objects/Tornado/Tornado.h"
 
 
 /// ===================================================
@@ -32,15 +35,14 @@ void Scene_Game::Initialize() {
 	/// ゲームオブジェクトの宣言
 	/// ===================================================
 
-	player_ = new Player;
-	buildingManager_ = new BuildingManager();
-	boss_ = new Boss();
+	player_            = new Player;
+	buildingManager_   = new BuildingManager();
+	boss_              = new Boss();
+	tornado_           = new Tornado();
 	BossTubu* bossTube = new BossTubu();
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
-	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
-	tornado_ = new Tornado();
 
 
 	/// ===================================================
@@ -53,10 +55,8 @@ void Scene_Game::Initialize() {
 	bossHead->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
-	//gameCameraZoomInOut->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
-	/*bossBulletLump_->Initialize();*/
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -66,8 +66,6 @@ void Scene_Game::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
-	/*gameCameraZoomInOut->SetGameCamera(mainCamera_);
-	gameCameraZoomInOut->SetPlayer(player_);*/
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
@@ -85,6 +83,7 @@ void Scene_Game::Initialize() {
 	buildingManager_->SpownBuilding(2, 9);
 	buildingManager_->SpownBuilding(9, 4);
 	buildingManager_->SpownBuilding(9, 0);
+
 
 }
 
