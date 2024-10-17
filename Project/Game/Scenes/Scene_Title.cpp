@@ -24,8 +24,6 @@ void Scene_Title::Initialize() {
 	cameraTransform->rotate      = { 0.238f, -0.445f, 0.0f };
 	cameraTransform->rotateOrder = XYZ;
 
-
-
 	/// intance create
 	GameCamera*          uiCamera          = new GameCamera("UICamera");
 	TitleEarth*          earth             = new TitleEarth();
@@ -39,7 +37,6 @@ void Scene_Title::Initialize() {
 	gameTitleRenderer->Initialize();
 
 	/// setting...
-
 	uiCamera->SetPositionZ(-10.0f);
 	AddLayer("ui", uiCamera);
 

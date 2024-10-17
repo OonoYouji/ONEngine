@@ -3,6 +3,7 @@
 #include "Scenes/Manager/BaseScene.h"
 
 #include"Objects/Building/BuildingManager.h"
+#include"Objects/Dumy/Dumy.h"
 
 enum TutorialState {
 	SCACLEUP,
@@ -25,9 +26,10 @@ public:
 private:
 	TutorialState tutorialState_;
 	Player* player_ = nullptr;
+	Dumy* dumy_ = nullptr;
 	BuildingManager* buildingManager_ = nullptr;
 	Tornado* tornado_ = nullptr;
-	//パラメータ
-	const float kTornadoScaleMax = 2.4f;
-	const float kTornadoScaleMin = 1.4f;
+	////パラメータ
+	//const float kTornadoScaleMax = 0.758f;
+	//const float kTornadoScaleMin = 0.5f;
 };

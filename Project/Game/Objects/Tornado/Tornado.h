@@ -35,6 +35,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	float GetScaleScale()const { return scaleScaler_; }
+	float GetMaxScale()const { return maxScale_; }
+	float GetMinScale()const { return minScale_; }
+
 	void SetPlayer(Player* _player);
 
 private:

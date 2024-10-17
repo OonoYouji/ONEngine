@@ -21,6 +21,8 @@ void InTornadoBuilding::Initialize() {
 	pTransform_->scale = { 0.2f,0.2f,0.2f };
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
+	auto model = ModelManager::Load("TestObject");
+	auto collider = AddComponent<BoxCollider>(model);
 }
 //更新
 void InTornadoBuilding::Update() {
@@ -30,7 +32,7 @@ void InTornadoBuilding::Update() {
 	//球面座標を計算
 	float x = (pTornado_->GetTransform()->scale.x + radius_) * sin(theta_);
 	float y = (pTornado_->GetTransform()->scale.y + radius_) * cos(theta_);
-	pTransform_->position = { x,y,-2 };
+	pTransform_->position = { x,y,-1 };
 }
 //デバッグ
 void InTornadoBuilding::Debug() {

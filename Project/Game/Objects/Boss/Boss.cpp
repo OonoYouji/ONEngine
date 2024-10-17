@@ -73,13 +73,6 @@ void Boss::Update() {
 	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
 		ChangeState(std::make_unique<BossBulletShot>(this));
 	}
-	////アタックフラグを立てる
-	//if (dynamic_cast<BossAttack*>(behavior_.get())) {
-	//	isAttack_ = true;
-	//}
-	//else {
-	//	isAttack_ = false;
-	//}
 
 
 	pivot_.UpdateMatrix();
@@ -97,6 +90,7 @@ void Boss::ChaseInit() {
 
 }
 void Boss::ChaseUpdate() {
+
 }
 
 //建物吸引

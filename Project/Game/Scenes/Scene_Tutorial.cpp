@@ -2,7 +2,7 @@
 
 //std
 #include<numbers>
-
+#include "Scenes/Manager/SceneManager.h"
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Ground/Ground.h"
@@ -23,7 +23,6 @@ void Scene_Tutorial::Initialize() {
 	buildingManager_ = new BuildingManager();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
-	//Boss* boss = new Boss();
 	tornado_ = new Tornado();
 
 	/// ===================================================
@@ -34,7 +33,6 @@ void Scene_Tutorial::Initialize() {
 	ground->Initialize();
 	gameCameraState->Initialize();
 	tornado_->Initialize();
-	/*boss->Initialize();*/
 	buildingManager_->Initialize();
 
 	/// ===================================================
@@ -64,21 +62,21 @@ void Scene_Tutorial::Update() {
 	case SCACLEUP: //竜巻のスケールアップ
 
 		// スケールダウンへ移行する条件
-		if (tornado_->GetScale().x >= kTornadoScaleMax) {
+		if (tornado_->GetScaleScale() >= tornado_->GetMaxScale()) {
 			tutorialState_ = SCALEDOWN;  // 次の状態へ移行
 		}
 		break;
 
 	case SCALEDOWN:// スケールダウンモード	
 		// 建物吸い込みへ移行する条件
-		if (tornado_->GetScale().x <= kTornadoScaleMin) {
+		if (tornado_->GetScaleScale() <= tornado_->GetMinScale()) {
 			tutorialState_ = BUILDINGSPOWN;  // 次の状態へ移行
 		}
 		break;
 
 	case BUILDINGSPOWN:	// 建物生成の処理
 		player_->isActive = true;
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 1.2f);
+		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 0.4f);
 		tutorialState_ = BUINDINGENTRAINMENT;  // 次の状態へ移行
 		break;
 
@@ -105,13 +103,17 @@ void Scene_Tutorial::Update() {
 
 		//建物がなくなったら
 		if (buildingManager_->GetSize() <= 0) {
+			dumy_ = new Dumy();
+			dumy_->Initialize();
 			tutorialState_ = DANYATTACK;  // 次の状態へ移行
 		}
 		break;
 
 
 	case DANYATTACK:
-		// 弾攻撃の処理を書くところ
+		if (dumy_->GetIsBreak()) {
+			SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+		}
 		break;
 
 	default:
