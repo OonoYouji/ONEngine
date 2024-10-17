@@ -88,6 +88,7 @@ void TitlePlayerAnimator::Initialize() {
 			std::sin(data.time * data.speed) * data.radius
 		};
 
+		transform->position = Mat4::Transform(transform->position, matRotate_);
 		transform->position += GetPosition();
 	});
 
@@ -136,7 +137,7 @@ void TitlePlayerAnimator::Update() {
 	offset *= animationAmplitude_;
 
 	pTransform_->position = basePosition_ + offset;
-
+	matRotate_ = Mat4::MakeRotate(pTransform_->rotate);
 }
 
 void TitlePlayerAnimator::Debug() {
