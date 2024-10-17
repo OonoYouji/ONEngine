@@ -47,6 +47,11 @@ public:
 
 	void GrowForTime(const float& par, const float& second);
 
+	/// <summary>
+	/// ぴょこぴょこするアニメーション
+	/// </summary>
+	void Animation();
+
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -129,5 +134,6 @@ private:
 	int currentScaleIndex_ = 0;
 
 	std::array<float, BUILDING_SCALE_COUNT> buildingScaleArray_;
+	std::array<float, BUILDING_SCALE_COUNT> nextScalingTimeArray_;
 
 };

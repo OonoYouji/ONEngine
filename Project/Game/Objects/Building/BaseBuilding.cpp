@@ -1,28 +1,37 @@
 #include "BaseBuilding.h"
 
-#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
+/// std
+#include <numbers>
 
+/// engine
 #include "Input/Input.h"
+#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
+#include "ImGuiManager/ImGuiManager.h"
+#include "FrameManager/Time.h"
+
+/// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 #include <ComponentManager/Collider/BoxCollider.h>
+#include "ComponentManager/ParticleSystem/ParticleEmitter.h"
 #include "CustomComponents/EarthRenderer/EarthRenderer.h"
 
-#include "ImGuiManager/ImGuiManager.h"
-//math
+/// math
 #include "Math/Random.h"
 #include "Math/Easing.h"
-#include "FrameManager/Time.h"
-//std
-#include <numbers>
-//object
+
+/// objects
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/BossVacuum.h"
-//function
+
+/// custom function
 #include "Easing/EasingFunction.h"
 #include "HormingFunction/Horming.h"
 
+
+
 void BaseBuilding::Initialize() {
 
+	/// 大きさごとのモデルを設定
 	modelArray_ = {
 		ModelManager::Load("TestObject"),
 		ModelManager::Load("TestObject"),
@@ -70,12 +79,19 @@ void BaseBuilding::Initialize() {
 
 	/// 影の色の配列
 	shadowColorArray_ = {
-		Vec4::kRed, Vec4::kGreen, Vec4::kBlue
+		Vec4::kRed, 
+		Vec4::kGreen, 
+		Vec4::kBlue
 	};
 
 	/// 各大きさのスケール
 	buildingScaleArray_ = {
 		0.5f, 1.0f, 1.5f
+	};
+
+	/// 次の大きさに行くための時間
+	nextScalingTimeArray_ = {
+		5.0f, 5.0f, 5.0f
 	};
 
 }
@@ -117,19 +133,20 @@ void BaseBuilding::Update() {
 
 		/// 吸われない場合の処理を以下に記載
 		
-		animationTime_ += Time::DeltaTime();
+		Animation(); /// ぴょこぴょこ
 
-		float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
-		float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;
-		float scaleY  = buildingScaleArray_[currentScaleIndex_] + 0.25f * +sinValue;
-
-		pTransform_->scale.x = scaleXZ;
-		pTransform_->scale.y = scaleY;
-		pTransform_->scale.z = scaleXZ;
-
-
-		//成長
+		/// 成長
 		growTime_ += Time::DeltaTime();
+
+		/// 次の大きさに変わるための処理
+
+		if(currentScaleIndex_ < BUILDING_SCALE_BIG) {
+			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
+			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
+				currentScaleIndex_++;
+			}
+		}
+
 		//GrowForTime(0.2f, 2.0f);
 	}
 
@@ -200,6 +217,18 @@ void BaseBuilding::GrowForTime(const float& par, const float& second) {
 		}
 		growTime_ = 0.0f;
 	}
+}
+
+void BaseBuilding::Animation() {
+	animationTime_ += Time::DeltaTime();
+
+	float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
+	float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;
+	float scaleY = buildingScaleArray_[currentScaleIndex_] + 0.25f * +sinValue;
+
+	pTransform_->scale.x = scaleXZ;
+	pTransform_->scale.y = scaleY;
+	pTransform_->scale.z = scaleXZ;
 }
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
