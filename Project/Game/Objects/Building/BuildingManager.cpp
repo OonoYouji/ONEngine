@@ -10,6 +10,7 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 
 	Building* building = new Building();
 	building->Initialize();
+	building->SetBoss(pBoss_);
 	//死亡パラメータ取得
 	building->SetTheta(theta);
 	building->SetPhi(phi);

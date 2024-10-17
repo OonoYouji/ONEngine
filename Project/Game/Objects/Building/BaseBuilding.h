@@ -9,7 +9,7 @@
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Player/Player.h"
 
-
+class Boss;
 class BaseBuilding : public BaseGameObject {
 public:
 
@@ -34,6 +34,7 @@ public:
 	Model* GetModel()const { return model_; }
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }//ピボット
+	void SetBoss(Boss* boss);
 	void SetPhi(float phi) { phi_ = phi; }//経度
 	void SetTheta(float theta) { theta_ = theta; }//緯度
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
@@ -43,6 +44,7 @@ public:
 
 private:
 	Model* model_=nullptr;
+	Boss* pBoss_ = nullptr;
 	//死んだか
 	bool isInTornado_;
 	//竜巻と衝突したか
@@ -71,7 +73,6 @@ private:
 	float floatBuildingEaseTime_;
 	const float floatBuildingEaseTimeMax_=1.0f;
 	const float buildingSartZ = -10.8f;
-
 
 	/// earth shadow
 	class EarthRenderer* earthRenderer_ = nullptr;

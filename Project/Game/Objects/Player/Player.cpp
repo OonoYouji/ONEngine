@@ -9,8 +9,9 @@
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
 #include "ImGuiManager/ImGuiManager.h"
-
 #include"FrameManager/time.h"
+//obj
+#include"Objects/Boss/BossVacuum.h"
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("Player");
@@ -32,16 +33,16 @@ void Player::Initialize() {
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	speed_ = 1.0f;
-
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
 	transoform_.position.z=-12;
 	pTransform_->rotate.x = 45;
+	//パラメータ
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
-	/*SetPositionZ(-1.0f);*/
+	HP_ = HPMax_;
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,9 +72,17 @@ void Player::Update() {
 
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
- 
-	Move();//移動
+	//ストップしてない限り動ける
+	if (!isStop_) {
+		Move();//移動
+	}
 
+	stopCollTime_ -= Time::DeltaTime();
+	if (stopCollTime_ <= 0.0f){
+		stopCollTime_ = 0.0f;
+		isStop_ = false;
+	}
+	
 	pivot_.UpdateMatrix();
 	transoform_.UpdateMatrix();
 }
@@ -163,6 +172,7 @@ void Player::Debug() {
 		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
 		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
 		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
+		ImGui::DragFloat("HP", &HP_, 0.01f);
 
 		ImGui::Spacing();
 
@@ -184,7 +194,14 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 	if (dynamic_cast<BaseBuilding*>(collision)&& !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
 		PowerUpGaugeUp(0.05f);
 	}
+	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
+		if (!isStop_) {
+			isStop_ = true;
+			stopCollTime_ = kStopCollTime_;
+		}
+	}
 }
+
 
 //チュートリアルの挙動
 void Player::TutorialMove() {
