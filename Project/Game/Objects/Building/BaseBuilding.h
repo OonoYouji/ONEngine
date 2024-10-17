@@ -26,6 +26,7 @@ public:
 	//getter
 	bool GetIsInTornado()const { return isInTornado_; }
 	bool GetIsTaken()const { return isTaken_; }
+	bool GetIsBreak()const { return isBreak_; }
 	bool GetIsSlurped()const { return isSlurp_; }
 	float GetPhi() const{ return phi_; }
 	float GetTheta() const{ return theta_; }
@@ -63,6 +64,7 @@ private:
 	//吸われるか
 	bool isSlurp_;
 	bool isTaken_;
+	bool isBreak_;
 	Vector3 slurpPos_;
 	
 	//建物を浮かせるイージング

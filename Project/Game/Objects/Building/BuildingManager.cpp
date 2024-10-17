@@ -70,7 +70,7 @@ void 	BuildingManager::AllUpdate(Tornado* tornado, Boss* boss) {
 		//更新
 		(*buildingIter)->Update();
 		//死亡
-		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken()) {
+		if ((*buildingIter)->GetIsInTornado()|| (*buildingIter)->GetIsTaken() || (*buildingIter)->GetIsBreak()) {
 			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合
 				//巻きこまれるビルを追加
 				AddInTornadoBuilding(tornado, (*buildingIter)->GetModel());

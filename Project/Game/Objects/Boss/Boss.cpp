@@ -129,6 +129,7 @@ void Boss::BulletShotUpdate() {
 }
 
 void Boss::AttackInit() {
+	
 	attackEaseT_ = 0.0f;
 	attackCoolTime_ = 0.0f;
 	pBossTubu_->ParamaterInit();
