@@ -47,13 +47,15 @@ void BaseBuilding::Initialize() {
 
 	particleSystem_ = AddComponent<ParticleSystem>(128, "Sphere");
 	particleSystem_->SetUseBillboard(false);
-	particleSystem_->SetEmittedParticleCount(5);
+	particleSystem_->SetEmittedParticleCount(2);
 	particleSystem_->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
 	particleSystem_->SetBoxEmitterMinMax(-Vec3::kOne * 2.0f, Vec3::kOne * 2.0f);
+	particleSystem_->SetParticleLifeTime(1.0f);
+
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 
-		Vec3 scale       = Vec3::kOne * (particle->GetNormLifeTime() + 0.5f);
+		Vec3 scale = Vec3::kOne * 10.0f * particle->GetNormLifeTime();
 		transform->scale = scale;
 
 		Vec3 velocity = GetPosition().Normalize() * 5.0f;
