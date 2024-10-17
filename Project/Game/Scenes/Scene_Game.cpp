@@ -12,9 +12,14 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
+
+#include "Objects/GameManager/GameManager.h"
 #include "Objects/Ground/Ground.h"
-#include "Objects/GameCameraState/GameCameraState.h"
-#include "Objects/Tornado/Tornado.h"	
+#include "Objects/Boss/Boss.h"
+#include "Objects/Boss/BossVacuum.h"
+#include "Objects/CameraState/GameCameraState.h"
+#include "Objects/CameraState/CameraStateBossEntryToGame.h"
+#include "Objects/Tornado/Tornado.h"
 
 
 /// ===================================================
@@ -23,16 +28,22 @@
 void Scene_Game::Initialize() {
 
 	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 
 
 	/// ===================================================
 	/// ゲームオブジェクトの宣言
 	/// ===================================================
 
-	player_ = new Player;
-	buildingManager_ = new BuildingManager();
+	player_            = new Player;
+	buildingManager_   = new BuildingManager();
+	boss_              = new Boss();
+	tornado_           = new Tornado();
+	BossTubu* bossTube = new BossTubu();
+	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
+	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	tornado_ = new Tornado();
 
 
@@ -41,11 +52,13 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_->Initialize();
+	boss_->Initialize();
+	bossTube->Initialize();
+	bossHead->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
-
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -55,6 +68,20 @@ void Scene_Game::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
+
+	boss_->SetPlayer(player_);
+	boss_->SetBuildingaManager(buildingManager_);
+	boss_->SetHead(bossHead);
+	boss_->SetTubu(bossTube);
+
+	bossTube->SetBoss(boss_);
+	bossHead->SetBossTube(bossTube);
+
+	tornado_->SetPlayer(player_);
+	
+	buildingManager_->SetBoss(boss_);
+	buildingManager_->SetTornado(tornado_);
+
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
 	buildingManager_->SpownBuilding(9, 9);
@@ -62,7 +89,6 @@ void Scene_Game::Initialize() {
 	buildingManager_->SpownBuilding(9, 4);
 	buildingManager_->SpownBuilding(9, 0);
 
-	tornado_->SetPlayer(player_);
 
 }
 
@@ -71,15 +97,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	//ビルの振る舞い管理
-	buildingManager_->AllUpdate(tornado_);
-	//プレイヤーのゲージMaxでカメラズームアウト
-	if (player_->GetisPowerUp()) {
-		mainCamera_->SetBehaviorZoomOut();
-	}
-	//ズームイン
-	else if (!player_->GetisPowerUp()) {
-		mainCamera_->SetBehaviorZoomIn();
-	}
+	////ビルの振る舞い管理
+	//buildingManager_->AllUpdate(tornado_, boss_);
+
 
 }

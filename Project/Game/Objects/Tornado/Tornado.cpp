@@ -61,9 +61,9 @@ void Tornado::Initialize() {
 	/// action param initialize
 	eacSpeed_ = 0.7f;
 
-	scaleScaler_ = 1.0f;
-	minScale_ = 1.0f;
-	maxScale_ = 3.0f;
+	minScale_ = 0.5f;
+	maxScale_ = 0.75f;
+	scaleScaler_ = minScale_;
 
 
 	/// ring array initializing
@@ -86,7 +86,7 @@ void Tornado::Initialize() {
 
 void Tornado::Update() {
 
-	if(Input::PressKey(KeyCode::Space)) {
+	if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
 
 		scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
 	} else {
@@ -194,8 +194,8 @@ void Tornado::Debug() {
 
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
-
 	SetParent(pPlayer_->GetbaseTransform());
+	UpdateMatrix();
 	
 }
 

@@ -63,13 +63,13 @@ public:
 	///// パーティクルの出現までの時間のセット
 	///// </summary>
 	///// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
-	//void SetParticleRespawnTime(float _particleRespawnTime);
+	void SetParticleRespawnTime(float _particleRespawnTime);
 
 	///// <summary>
 	///// パーティクルの一回当たりの発生量のセット
 	///// </summary>
 	///// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
-	//void SetEmittedParticleCount(uint32_t _emittedParticleCount);
+	void SetEmittedParticleCount(uint32_t _emittedParticleCount);
 
 	/// <summary>
 	/// パーティクルの寿命のセット

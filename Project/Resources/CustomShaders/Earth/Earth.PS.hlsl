@@ -61,7 +61,8 @@ PSOutput main(VSOutput input) {
 		float3 diff = input.wPosition.xyz - gElements[i].position.xyz;
 		float len = length(diff);
 		if (len < gElements[i].radius) {
-			output.color = gElements[i].color;
+			float3 rgb = lerp(output.color.rgb, gElements[i].color.rgb, gElements[i].color.a);
+			output.color = float4(rgb, 1.0f);
 		}
 
 	}

@@ -19,6 +19,5 @@ void PlayerPowerUp::Update() {
 	if (pPlayer_->GetPowerUpTime() <= 0) {
 		pPlayer_->ChangeState(std::make_unique<PlayerRoot>(pPlayer_));
 	}
-
 }
 

@@ -30,6 +30,8 @@ private:
 
 	void PlayControl();
 
+	void SceneManagement();
+
 	void CLI();
 
 private:

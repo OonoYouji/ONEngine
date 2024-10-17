@@ -7,6 +7,7 @@
 #include"Objects/PlayerBehavior/BasePlayerBehavior.h"
 #include"Objects/PlayerBehavior/PlayerRoot.h"
 #include"Objects/PlayerBehavior/PlayerPowerUp.h"
+
 //std
 #include<optional>
 #include<memory>
@@ -31,6 +32,7 @@ public:
 	void RootInit();
 	void PowerUpInit();
 	void PowerUpUpdate();
+	void TutorialMove();
 	
 	//getter
 	Transform* GetPivot() { return &pivot_; }
@@ -54,6 +56,7 @@ private:
 	//速度
 	Vec3 input_;
 	Vec3 velocity_;
+	float speed_;
 	//クォータニオンRotate
 	Quaternion rotateX_;
 	Quaternion rotateY_;

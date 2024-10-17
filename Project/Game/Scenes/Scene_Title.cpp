@@ -17,6 +17,7 @@ void Scene_Title::Initialize() {
 
 	/// reset...
 	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 	
 	/// camera setting
 	Transform* cameraTransform   = mainCamera_->GetTransform();
@@ -47,8 +48,8 @@ void Scene_Title::Initialize() {
 
 void Scene_Title::Update() {
 
-	if(Input::TriggerKey(KeyCode::Space)) {
-		SceneManager::GetInstance()->SetNextScene(SCENE_ID::GAME);
+	if(Input::TriggerKey(KeyCode::Space) || Input::TriggerPadButton(PadCode::A)) {
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
 	}
 
 }

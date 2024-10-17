@@ -4,10 +4,9 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-//obj
-#include"Objects/Boss/Boss.h"
+
 //std
-#include<optional>
+
 #include<string>
 class Boss;
 class BaseBossBehavior{
@@ -23,4 +22,5 @@ protected:
 	std::string name_;
 	//ボス
 	Boss*pBoss_ = nullptr;
+	
 };

@@ -38,6 +38,7 @@ void Console::Update() {
 	Debug();
 
 	Assets();
+	SceneManagement();
 
 	CLI();
 #endif // _DEBUG
@@ -260,6 +261,19 @@ void Console::PlayControl() {
 
 	}
 	
+}
+
+void Console::SceneManagement() {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+	if(!ImGui::Begin("scene management", nullptr, imguiWinFlags_)) {
+		ImGui::End();
+		return;
+	}
+
+	SceneManager::GetInstance()->ImGuiDebug();
+
+	ImGui::End();
 }
 
 void Console::CLI() {
