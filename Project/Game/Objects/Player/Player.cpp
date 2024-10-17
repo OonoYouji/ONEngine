@@ -202,7 +202,6 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 	}
 }
 
-
 //チュートリアルの挙動
 void Player::TutorialMove() {
 	pivot_.UpdateMatrix();

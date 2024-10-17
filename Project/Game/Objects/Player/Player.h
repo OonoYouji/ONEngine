@@ -12,6 +12,7 @@
 #include<optional>
 #include<memory>
 
+class BuildingManager;
 class Player : public BaseGameObject {
 public:
 
@@ -52,7 +53,7 @@ public:
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
 
 private:
-
+	BuildingManager* pBuindingManager_;
 	//速度
 	Vec3 input_;
 	Vec3 velocity_;
@@ -63,7 +64,6 @@ private:
 	//ピボット
 	Transform pivot_;
 	Transform transoform_;
-
 
 	AudioSource* audioSource_ = nullptr;
 	//状態
@@ -90,6 +90,7 @@ private:
 	//パワーアップフラグ
 	bool isPowerUp_;
 
+	//HP
 	float HP_;
 	const	float HPMax_ = 100.0f;
 
