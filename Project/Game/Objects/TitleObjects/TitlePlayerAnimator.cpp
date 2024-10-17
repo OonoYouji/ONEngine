@@ -24,7 +24,7 @@
 void TitlePlayerAnimator::Initialize() {
 
 	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("axis");
+	meshRenderer->SetModel("player");
 
 	EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
 	earthRenderer->SetRadius(1.5f);
