@@ -35,37 +35,54 @@ void BaseBuilding::Initialize() {
 
 	earthRenderer_ = AddComponent<EarthRenderer>();
 	earthRenderer_->SetRadius(shadowRaidus_);
-	earthRenderer_->SetColor(shadowColor_);
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pTransform_->Initialize();
+
 	pivot_.Initialize();
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
+
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
 	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	scaleMax_ = 1.0f;
 
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
 	////////////////////////////////////////////////////////////////////////////////////////////
+
 	pTransform_->SetParent(&pivot_);
 	pivot_.UpdateMatrix();
 
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
+
+	
+	/// 現在の状態
+	currentScaleIndex_ = BUILDING_SCALE_SMALL;
+
+	/// 影の色の配列
+	shadowColorArray_ = {
+		Vec4::kRed, Vec4::kGreen, Vec4::kBlue
+	};
+
+	/// 各大きさのスケール
+	buildingScaleArray_ = {
+		0.5f, 1.0f, 1.5f
+	};
+
 }
 
 void BaseBuilding::Update() {
 
-	/// 影の色と大きさを設定
-	earthRenderer_->SetRadius(shadowRaidus_);
-	earthRenderer_->SetColor(shadowColor_);
-
+	
 
 	//吸われる処理
 	if(isSlurp_) {
@@ -102,11 +119,13 @@ void BaseBuilding::Update() {
 		
 		animationTime_ += Time::DeltaTime();
 
-		float scaleXZ = 1.0f + 0.25f * (-std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
+		float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
+		float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;
+		float scaleY  = buildingScaleArray_[currentScaleIndex_] + 0.25f * +sinValue;
 
 		pTransform_->scale.x = scaleXZ;
+		pTransform_->scale.y = scaleY;
 		pTransform_->scale.z = scaleXZ;
-		pTransform_->scale.y = 1.0f + 0.25f * (std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f);
 
 
 		//成長
@@ -114,19 +133,50 @@ void BaseBuilding::Update() {
 		//GrowForTime(0.2f, 2.0f);
 	}
 
-	//ピボット更新
+	
+	/// 影の色と大きさを設定
+	earthRenderer_->SetRadius(shadowRaidus_);
+	earthRenderer_->SetColor(shadowColorArray_[currentScaleIndex_]);
+
+
+	/// ピボット更新
 	pivot_.UpdateMatrix();
 }
 
 void BaseBuilding::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::ColorEdit4("color", &shadowColor_.x);
-		ImGui::DragFloat("radius", &shadowRaidus_, 0.1f);
+		/// ---------------------------------------------------
+		/// 今の状態
+		/// ---------------------------------------------------
+		ImGui::SeparatorText("parameter");
+		ImGui::SliderInt("current building scale index", &currentScaleIndex_, 0, BUILDING_SCALE_COUNT - 1);
 
+
+		/// ---------------------------------------------------
+		/// shadowのデバッグ
+		/// ---------------------------------------------------
+		if(ImGui::TreeNodeEx("shadow", ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::DragFloat("radius", &shadowRaidus_, 0.1f);
+		
+			ImGui::Spacing();
+
+			for(size_t i = 0; i < BUILDING_SCALE_COUNT; ++i) {
+				std::string label = std::string("color_") + std::to_string(i);
+				ImGui::ColorEdit4(label.c_str(), &shadowColorArray_[i].x, ImGuiColorEditFlags_AlphaBar);
+			}
+
+			ImGui::TreePop();
+		}
+
+		/// ---------------------------------------------------
+		/// animationのデバッグ
+		/// ---------------------------------------------------
 		if(ImGui::TreeNodeEx("animation", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::DragFloat("time",  &animationTime_,  0.01f);
 			ImGui::DragFloat("speed", &animationSpeed_, 0.01f);
+
+
 			ImGui::TreePop();
 		}
 

@@ -1,21 +1,28 @@
 #pragma once
 
+/// std
+#include <optional>
+#include <array>
+
+/// engine
 #include "GameObjectManager/GameObjectManager.h"
 #include <ComponentManager/Transform/Transform.h>
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include<optional>
-//obj
-#include"Objects/Tornado/Tornado.h"
-#include"Objects/Player/Player.h"
+
+/// objects
+#include "Objects/Tornado/Tornado.h"
+#include "Objects/Player/Player.h"
+
 
 /// ===================================================
 /// 建物の大きさを表す enum
 /// ===================================================
 enum BUILDING_SCALE {
-	BIG,
-	NORMAL,
-	SMALL
+	BUILDING_SCALE_SMALL,
+	BUILDING_SCALE_NORMAL,
+	BUILDING_SCALE_BIG,
+	BUILDING_SCALE_COUNT /// 要素の数を数える用
 };
 
 
@@ -100,8 +107,9 @@ private:
 	/// ---------------------------------------------------
 
 	class EarthRenderer* earthRenderer_ = nullptr;
-	Vec4 shadowColor_   = Vec4::kWhite;
 	float shadowRaidus_ = 2.0f;
+
+	std::array<Vec4, BUILDING_SCALE_COUNT>  shadowColorArray_;
 
 
 
@@ -119,5 +127,7 @@ private:
 
 	std::vector<Model*> modelArray_; /// 大中小のモデル配列
 	int currentScaleIndex_ = 0;
+
+	std::array<float, BUILDING_SCALE_COUNT> buildingScaleArray_;
 
 };
