@@ -3,6 +3,12 @@
 #include "GameObjectManager/BaseGameObject.h"
 
 class TitlePlayerAnimator final : public BaseGameObject {
+
+	struct WindAnimationData {
+		float time  = 0.0f;
+		float speed = 1.0f;
+	};
+
 public:
 
 	TitlePlayerAnimator() { CreateTag(this); }
@@ -23,4 +29,10 @@ private:
 	float animationSpeed_;
 	float animationAmplitude_;
 
+	bool isSpin_     = false;
+	float spinTime_  = 0.0f;
+	float spinSpeed_ = 1.0f;
+
+	std::vector<class Wind*>       windArray_;
+	std::vector<WindAnimationData> windAnimationDataArray;
 };
