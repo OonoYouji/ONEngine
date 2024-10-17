@@ -31,6 +31,8 @@ void Player::Initialize() {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
+	speed_ = 1.0f;
+
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
@@ -52,8 +54,8 @@ void Player::Initialize() {
 	pTransform_->SetParent(&pivot_);
 
 	//回転を適応
-	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 2);
-	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.01f);
+	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 0.0f);
+	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.0f);
 
 	
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
@@ -85,7 +87,7 @@ void Player::Move() {
 	};
 
 	/// 移動の正規化
-	input_ = input_.Normalize() * 0.1f;
+	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
 
 	rotateXAngle_ = +velocity_.y;
@@ -143,9 +145,10 @@ void Player::Debug() {
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
 		ImGui::DragFloat3("velocity", &velocity_.x, 0);
+		ImGui::DragFloat("speed", &speed_, 0.05f);
 		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
 		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
-			ImGui::TreePop();
+		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNode("Parameter")) {

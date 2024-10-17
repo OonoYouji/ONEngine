@@ -202,9 +202,6 @@
     <Filter Include="Game\Objects\DemoObject">
       <UniqueIdentifier>{c2376594-5dcd-4144-8b1a-304f323db7f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Objects\GameCameraState">
-      <UniqueIdentifier>{0ea18d25-0dd1-48de-a0a2-2d5b6bb6cb4e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Objects\Ground">
       <UniqueIdentifier>{f6121976-2a2b-45fc-97a4-89f8c90d3274}</UniqueIdentifier>
     </Filter>
@@ -620,9 +617,6 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameCameraState\GameCameraState.cpp">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Building\InBossBuilding.cpp">
       <Filter>Game\Objects\Building</Filter>
     </ClCompile>
@@ -649,9 +643,9 @@
     <ClCompile Include="Game\Objects\BossAnimation\BossAnimation.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossParts.cpp" />
     <ClCompile Include="Game\Scenes\BossEntryScene.cpp" />
-    <ClCompile Include="Game\Scenes\Scene_Tutorial.cpp">
-      <Filter>Game\Scenes</Filter>
-    </ClCompile>
+    <ClCompile Include="Game\Objects\CameraState\CameraStateBossEntryToGame.cpp" />
+    <ClCompile Include="Game\Objects\CameraState\GameCameraState.cpp" />
+    <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -942,9 +936,6 @@
     <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h">
       <Filter>Game\Objects\BossBehavior</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameCameraState\GameCameraState.h">
-      <Filter>Game\Objects\GameCameraState</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Objects\Building\InBossBuilding.h">
       <Filter>Game\Objects\Building</Filter>
     </ClInclude>
@@ -971,8 +962,8 @@
     <ClInclude Include="Game\Objects\BossAnimation\BossAnimation.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossParts.h" />
     <ClInclude Include="Game\Scenes\BossEntryScene.h" />
-    <ClInclude Include="Game\Scenes\Scene_Tutorial.h">
-      <Filter>Game\Scenes</Filter>
-    </ClInclude>
+    <ClInclude Include="Game\Objects\CameraState\CameraStateBossEntryToGame.h" />
+    <ClInclude Include="Game\Objects\CameraState\GameCameraState.h" />
+    <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
   </ItemGroup>
 </Project>

@@ -43,7 +43,9 @@ void Boss::Initialize() {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
-	pivot_.quaternion = { 0,0,0,1 };
+
+	Quaternion initQuater = Quaternion::MakeFromAxis(Vec3::kRight, 2.0f);
+	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->scale = { 2,2,2 };
 	SpeedParamater_ = 0.01f;

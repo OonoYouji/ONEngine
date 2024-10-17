@@ -14,7 +14,7 @@
 void GameCameraState::Initialize() {
 
 	/// transform initialize
-	pTransform_->position    = { 0.0f, 0.0f, -50.0f };
+	pTransform_->position    = { 0.0f, 0.0f, -40.0f };
 	pTransform_->quaternion  = { 0.0f, 0.0f, 0.0f, 1.0f };
 	pTransform_->rotateOrder = QUATERNION;
 	pTransform_->Update();
