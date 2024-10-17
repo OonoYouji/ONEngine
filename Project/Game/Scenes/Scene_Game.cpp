@@ -25,6 +25,7 @@
 void Scene_Game::Initialize() {
 
 	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 
 
 	/// ===================================================
