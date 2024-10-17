@@ -13,7 +13,7 @@
 void CameraStateBossEntryToGame::Initialize() {
 
 	moveTime_    = 0.0f;
-	maxMoveTime_ = 4.0f;
+	maxMoveTime_ = 1.5f;
 
 	startData_ = { { -4.2f, 3.0f + 11.0f, -9.15f }, { 0.3f, 0.566f, 0.0f } };
 	endData_   = { { 0.0f, 0.0f, -14.0f }, { 0.0f, 0.0f, 0.0f } };
@@ -64,4 +64,11 @@ void CameraStateBossEntryToGame::Debug() {
 
 void CameraStateBossEntryToGame::SetGameCamera(GameCamera* _gameCamera) {
 	pGameCamera_ = _gameCamera;
+}
+
+bool CameraStateBossEntryToGame::IsFinishedMoving() {
+	if(moveTime_ / maxMoveTime_ >= 1.0f) {
+		return true;
+	}
+	return false;
 }

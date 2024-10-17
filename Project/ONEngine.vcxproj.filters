@@ -645,6 +645,7 @@
     <ClCompile Include="Game\Scenes\BossEntryScene.cpp" />
     <ClCompile Include="Game\Objects\CameraState\CameraStateBossEntryToGame.cpp" />
     <ClCompile Include="Game\Objects\CameraState\GameCameraState.cpp" />
+    <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -963,5 +964,6 @@
     <ClInclude Include="Game\Scenes\BossEntryScene.h" />
     <ClInclude Include="Game\Objects\CameraState\CameraStateBossEntryToGame.h" />
     <ClInclude Include="Game\Objects\CameraState\GameCameraState.h" />
+    <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
   </ItemGroup>
 </Project>

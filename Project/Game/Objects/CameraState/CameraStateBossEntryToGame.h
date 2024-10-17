@@ -23,6 +23,8 @@ public:
 
 	void SetGameCamera(GameCamera* _gameCamera);
 
+	bool IsFinishedMoving();
+
 private:
 	
 	GameCamera* pGameCamera_ = nullptr;
