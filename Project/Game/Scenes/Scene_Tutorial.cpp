@@ -6,7 +6,7 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Ground/Ground.h"
-#include "Objects/GameCameraState/GameCameraState.h"
+#include "Objects/CameraState/GameCameraState.h"
 #include "Objects/Tornado/Tornado.h"	
 #include "Objects/Boss/Boss.h"	
 
