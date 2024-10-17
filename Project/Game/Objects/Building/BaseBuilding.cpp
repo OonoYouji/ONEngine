@@ -161,8 +161,17 @@ void BaseBuilding::Update() {
 		if(currentScaleIndex_ < BUILDING_SCALE_BIG) {
 			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
-				particleSystem_->SetBurst(true, 0.75f, 0.05f);
 				currentScaleIndex_++;
+
+				/// 中から大に変わるときの設定
+				if(currentScaleIndex_ == BUILDING_SCALE_BIG) {
+					particleSystem_->SetEmittedParticleCount(3); /// 一回のemitで出現するパーティクルの数
+				}
+
+				/// SetBurst(bool, float 1, float 2);
+				/// float 1 -> バーストの全体時間           0.75秒かけてバーストする
+				/// float 2 -> 一回バーストするのにかかる時間 0.05秒に一回バーストする
+				particleSystem_->SetBurst(true, 0.75f, 0.05f);
 			}
 		}
 
