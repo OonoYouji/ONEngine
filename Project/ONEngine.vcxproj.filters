@@ -649,6 +649,9 @@
     <ClCompile Include="Game\Objects\BossAnimation\BossAnimation.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossParts.cpp" />
     <ClCompile Include="Game\Scenes\BossEntryScene.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Tutorial.cpp">
+      <Filter>Game\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -968,5 +971,8 @@
     <ClInclude Include="Game\Objects\BossAnimation\BossAnimation.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossParts.h" />
     <ClInclude Include="Game\Scenes\BossEntryScene.h" />
+    <ClInclude Include="Game\Scenes\Scene_Tutorial.h">
+      <Filter>Game\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
