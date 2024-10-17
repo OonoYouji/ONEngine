@@ -20,6 +20,7 @@
 /// emitter, field
 #include "ParticleEmitter.h"
 #include "ParticleField.h"
+#include <Math/Vector3.h>
 
 
 
@@ -63,13 +64,13 @@ public:
 	///// パーティクルの出現までの時間のセット
 	///// </summary>
 	///// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
-	//void SetParticleRespawnTime(float _particleRespawnTime);
+	void SetParticleRespawnTime(float _particleRespawnTime);
 
 	///// <summary>
 	///// パーティクルの一回当たりの発生量のセット
 	///// </summary>
 	///// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
-	//void SetEmittedParticleCount(uint32_t _emittedParticleCount);
+	void SetEmittedParticleCount(uint32_t _emittedParticleCount);
 
 	/// <summary>
 	/// パーティクルの寿命のセット
@@ -89,6 +90,24 @@ public:
 	/// <param name="_function">: 更新処理関数 </param>
 	void SetPartilceUpdateFunction(const std::function<void(class Particle*)>& _function);
 
+	/// <summary>
+	/// パーティクルのエミッターのフラグを設定
+	/// </summary>
+	/// <param name="particleEmitterFlags"></param>
+	void SetParticleEmitterFlags(int particleEmitterFlags);
+
+	/// <summary>
+	/// バーストする瞬間にtrueを入れる
+	/// </summary>
+	/// <param name="_isBurst"></param>
+	void SetBurst(bool _isBurst, float _burstTime, float _rateOverTime);
+
+	/// <summary>
+	/// エミッターの形状がボックスの min, maxを決める
+	/// </summary>
+	/// <param name="_min"></param>
+	/// <param name="_max"></param>
+	void SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max);
 
 
 	/// <summary>
@@ -105,6 +124,14 @@ public:
 	/// <returns> return : パーティクルの寿命 </returns>
 	float GetParticleLifeTime() const {
 		return particleLifeTime_;
+	}
+
+	/// <summary>
+	/// バースト中かどうかのフラグのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsBurst() const {
+		return emitter_->isBurst_;
 	}
 
 private:
