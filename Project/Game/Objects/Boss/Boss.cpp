@@ -156,7 +156,7 @@ void Boss::AttackUpdate() {//超汚い
 			isAttack_ = false;
 		}
 	}
-	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.4f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 3.4f, attackEaseT_, kAttackEaseT_));
 }
 
 void Boss::Debug() {
