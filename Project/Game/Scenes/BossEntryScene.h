@@ -12,6 +12,7 @@ public:
 
 private:
 
-	class BossAnimation* bossAnimation_ = nullptr;
+	class BossAnimation*              bossAnimation_ = nullptr;
+	class CameraStateBossEntryToGame* cameraState_ = nullptr;
 
 };

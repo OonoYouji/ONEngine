@@ -15,7 +15,7 @@
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/Boss.h"
 #include "Objects/Boss/BossVacuum.h"
-#include "Objects/GameCameraState/GameCameraState.h"
+#include "Objects/CameraState/GameCameraState.h"
 #include "Objects/Tornado/Tornado.h"	
 
 
