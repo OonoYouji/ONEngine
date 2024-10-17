@@ -80,11 +80,19 @@ void Player::Update() {
 
 void Player::Move() {
 	//入力
-	input_ = {
-		static_cast<float>(Input::PressKey(KeyCode::d) - Input::PressKey(KeyCode::a)),
-		static_cast<float>(Input::PressKey(KeyCode::w) - Input::PressKey(KeyCode::s)),
-		0.0f
-	};
+
+	input_ = {};
+	Vec2 gamePadInput = Input::GetLeftStick();
+
+	/// game pad入力
+	if(gamePadInput != Vec2(0.0f, 0.0f)) {
+		input_ = { gamePadInput.x, gamePadInput.y, 0.0f };
+	}
+
+	if(Input::PressKey(KeyCode::W)) { input_.y = +1.0f; }
+	if(Input::PressKey(KeyCode::A)) { input_.x = -1.0f; }
+	if(Input::PressKey(KeyCode::S)) { input_.y = -1.0f; }
+	if(Input::PressKey(KeyCode::D)) { input_.x = +1.0f; }
 
 	/// 移動の正規化
 	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());

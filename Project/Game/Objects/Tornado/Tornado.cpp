@@ -85,7 +85,7 @@ void Tornado::Initialize() {
 
 void Tornado::Update() {
 
-	if(Input::PressKey(KeyCode::Space)) {
+	if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
 
 		scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
 	} else {
