@@ -25,6 +25,7 @@
 #include "../Scene_Result.h"
 #include "../Scene_Clear.h"
 #include "../BossEntryScene.h"
+#include"../Scene_Tutorial.h"
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
@@ -54,8 +55,8 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 
 	finalRenderTex_.reset(new RenderTexture);
 	finalRenderTex_->Initialize(
-		{0.0f, 0.0f, 0.0f, 0.0f},
-		dxCommon->GetDxCommand()->GetList(), 
+		{ 0.0f, 0.0f, 0.0f, 0.0f },
+		dxCommon->GetDxCommand()->GetList(),
 		dxCommon->GetDxDescriptor()
 	);
 
@@ -67,7 +68,7 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 /// ===================================================
 void SceneManager::Finalize() {
 	finalRenderTex_.reset();
-	for(auto& scene : scenes_) {
+	for (auto& scene : scenes_) {
 		scene.reset();
 	}
 }
@@ -77,7 +78,7 @@ void SceneManager::Finalize() {
 /// 更新処理
 /// ===================================================
 void SceneManager::Update() {
-	if(currentId_ != nextSceneId_) {
+	if (currentId_ != nextSceneId_) {
 		Load(nextSceneId_);
 	}
 
@@ -89,16 +90,13 @@ void SceneManager::Update() {
 	pCollisionManager_->Update();
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
-
-
-
 }
 
 
 void SceneManager::Draw() {
 
 	std::vector<RenderTexture*> renderTextures;
-	for(auto& layer : sceneLayers_) {
+	for (auto& layer : sceneLayers_) {
 
 		/// 描画
 		layer->Draw();
@@ -115,14 +113,14 @@ void SceneManager::Draw() {
 }
 
 void SceneManager::ImGuiDebug() {
-	const char* labels[]{ "Title", "Game", "Result", "Clear", "Boss Entery"};
+	const char* labels[]{ "Title", "Game", "Result", "Clear", "Boss Entery","Tutorial" };
 	int currentItem = static_cast<int>(nextSceneId_);
-	if(ImGui::Combo("next scene", &currentItem, labels, 5)) {
+	if (ImGui::Combo("next scene", &currentItem, labels, 6)) {
 		nextSceneId_ = SCENE_ID(currentItem);
 	}
 
-	if(ImGui::TreeNodeEx("Layer")) {
-		for(auto& layer : sceneLayers_) {
+	if (ImGui::TreeNodeEx("Layer")) {
+		for (auto& layer : sceneLayers_) {
 			layer->ImGuiDebug();
 		}
 		ImGui::TreePop();
@@ -149,7 +147,7 @@ void SceneManager::Load(SCENE_ID id) {
 
 	currentId_ = id;
 	auto SceneCreate = [&]() -> BaseScene* {
-		switch(id) {
+		switch (id) {
 		case TITLE:
 			return new Scene_Title();
 		case GAME:
@@ -160,17 +158,20 @@ void SceneManager::Load(SCENE_ID id) {
 			return new Scene_Clear();
 		case BOSS_ENTRY:
 			return new BossEntryScene();
+		case TUTORIAL:
+			return new Scene_Tutorial();
 		}
 		return nullptr;
-	};
+		};
 
 	/// idに沿ったシーンの作成
-	if(!scenes_[currentId_]) {
+	if (!scenes_[currentId_]) {
 		scenes_[currentId_].reset(SceneCreate());
-	} else {
+	}
+	else {
 		scenes_[currentId_]->CreateObject();
 	}
-	
+
 
 	GameObjectManager::DestoryAll();
 	CollisionManager::GetInstance()->Reset();

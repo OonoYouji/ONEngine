@@ -18,6 +18,7 @@
 #include<numbers>
 //object
 #include"Objects/Ground/Ground.h"
+#include"Objects/Boss/BossVacuum.h"
 //function
 #include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
@@ -126,6 +127,11 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 	//当たったら用済み
 	if (dynamic_cast<Boss*>(collision)&&isSlurp_) {
 		isTaken_ = true;
+	}
+
+	//当たったら用済み
+	if (dynamic_cast<BossHead*>(collision) && !isSlurp_) {
+		isBreak_ = true;
 	}
 }
 

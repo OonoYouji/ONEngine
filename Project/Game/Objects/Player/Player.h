@@ -32,6 +32,7 @@ public:
 	void RootInit();
 	void PowerUpInit();
 	void PowerUpUpdate();
+	void TutorialMove();
 	
 	//getter
 	Transform* GetPivot() { return &pivot_; }

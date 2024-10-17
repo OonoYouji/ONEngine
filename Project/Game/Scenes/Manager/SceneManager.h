@@ -21,6 +21,7 @@ enum SCENE_ID {
 	RESULT,	/// リザルトシーン
 	CLEAR,  /// ゲームクリア
 	BOSS_ENTRY, /// ボスの出現演出シーン
+	TUTORIAL,
 	SCENE_ID_COUNT
 };
 

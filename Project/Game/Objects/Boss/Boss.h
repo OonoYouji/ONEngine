@@ -19,7 +19,9 @@
 class Player;
 class BuildingManager;
 class BaseBuilding;
+class BossTubu;
 class BossHead;
+//class BossHead;
 class Boss : public BaseGameObject {
 public:
 
@@ -49,6 +51,7 @@ public:
 	//プレイヤーセット
 	void SetPlayer(Player*player);
 	void SetHead(BossHead* bossHead);
+	void SetTubu(BossTubu* bosstube);
 	void SetBuildingaManager(BuildingManager* player);
 	BaseBuilding* FindClosestBuilding();
 
@@ -60,7 +63,7 @@ public:
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
-	BossHead* GetHead() { return pBossHead_; }
+	/*BossHead* GetHead() { return pBossHead_; }*/
 
 	bool GetIsAttack()const { return isAttack_; }
 
@@ -80,9 +83,10 @@ private:
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
+	BossTubu* pBossTubu_;
 	BossHead* pBossHead_;
+	//ライト
 	class EarthRenderer* er_ = nullptr;
-
 	 float radius_ = 1.0f;
 	 Vec4  paintOutColor_ = { 1,1,1,1 };
 	////状態
@@ -91,7 +95,7 @@ private:
 	Transform pivot_;
 	//吸ってる弾を殺すフラグ
 	bool isBuildingKill_;
-	//
+	//攻撃フラグ
 	bool isAttack_;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  パラメータ
@@ -105,5 +109,12 @@ private:
 
 	//ボス弾発射関連
 	const uint32_t kBuildingNum_=10;
+
+	//ひどい変数群(攻撃イージング)
+	bool isAttackBack_;
+	float attackEaseT_;
+	float attackCoolTime_;
+	const float kAttackCoolTime_ = 0.5f;
+	const float kAttackEaseT_=0.5f;
 
 };

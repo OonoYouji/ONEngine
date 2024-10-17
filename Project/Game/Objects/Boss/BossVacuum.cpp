@@ -10,6 +10,7 @@
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 #include"FrameManager/Time.h"
+#include "ImGuiManager/ImGuiManager.h"
 //obj
 #include "Objects/Boss/Boss.h"
 #include"Easing/EasingFunction.h"
@@ -38,7 +39,7 @@ void BossTubu::Update() {
 	}
 }
 void BossTubu::Debug() {
-
+	
 }
 
 void BossTubu::SetBoss(Boss* boss) {
@@ -49,8 +50,9 @@ void BossTubu::SetBoss(Boss* boss) {
 void BossTubu::ParamaterInit() {
 	floatingCycle_ = 80.0f;
 	floatingAmplitude_ = 0.5f;
-	pTransform_->position.z = -1.5f;
-	pTransform_->position.y = 2.6f;
+	pTransform_->position.z = -1.0f;
+	pTransform_->position.y = 4.8f;
+	pTransform_->rotate.x = -0.9f;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Bosshead
@@ -66,6 +68,7 @@ void BossHead::Initialize() {
 }
 void BossHead::Update() {
 	if (!pBossTube_->GetBoss()->GetIsAttack()) {
+		RootInit();
 		// 1フレームでのパラメータ加算値
 		const float step = 2.0f * std::numbers::pi_v<float> / floatingCycle_;
 		// パラメータを1ステップ分加算
@@ -76,30 +79,55 @@ void BossHead::Update() {
 		pTransform_->position.z = std::sin(floatingParameter_) * floatingAmplitude_;
 	}
 	else {
-		if (!isInit_) {
-			//浮遊サイクル
-			floatingCycle_ = 65.0f;
-			floatingAmplitude_ = 0.3f;
-			pTransform_->position.z = -1.2f;
-			pTransform_->position.x = 0.1f;
-			pTransform_->position.y = 4.5f;
-			isInit_ = true;
-		}
+		AttackInit();
 	}
 }
 void BossHead::Debug() {
 
 }
 
+void BossHead::RootInit() {
+	if (!isRootinit_) {
+		floatingCycle_ = 65.0f;
+		floatingAmplitude_ = 0.3f;
+		pTransform_->position.z = 0.0f;
+		pTransform_->position.x = 0.1f;
+		pTransform_->position.y = 4.5f;
+		isAttackInit_ = false;
+		isRootinit_ = true;
+		pTransform_->SetParent(pBossTube_->GetParent());
+	}
+}
+void BossHead::AttackInit() {
+	if (!isAttackInit_) {
+
+		pTransform_->position.z = 0.0f;
+		pTransform_->position.x = 0.0f;
+		pTransform_->position.y = 0.16f;
+		pTransform_->SetParent(pBossTube_->GetTransform());
+		isAttackInit_ = true;
+		isRootinit_ = false;
+	}
+}
+
+
 void BossHead::SetBossTube(BossTubu* bossTube) {
 	pBossTube_ = bossTube;
 	pTransform_->SetParent(pBossTube_->GetParent());
 }
+
+void BossHead::ParentBoss() {
+	pTransform_->SetParent(pBossTube_->GetParent());
+}
+void BossHead::ParentTubu() {
+	pTransform_->SetParent(pBossTube_->GetTransform());
+}
+
 void BossHead::ParamaterInit() {
 	//浮遊サイクル
 	floatingCycle_ = 65.0f;
 	floatingAmplitude_ = 0.3f;
-	pTransform_->position.z = -1.2f;
+	pTransform_->position.z = 0.0f;
 	pTransform_->position.x = 0.1f;
 	pTransform_->position.y = 4.5f;
 }

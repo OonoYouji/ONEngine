@@ -22,6 +22,7 @@
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Ground/Ground.h"
 //function
+#include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
 #undef max
 
@@ -109,7 +110,7 @@ void Boss::SlurpUpdate() {
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
 		// フラグを立てる
-		closestBuilding->SetSlurpPos(GetPosition());
+		closestBuilding->SetSlurpPos(pBossHead_->GetPosition());
 		closestBuilding->SetIsSlurped(true);
 		isSlurping_ = true;
 	}
@@ -131,11 +132,33 @@ void Boss::BulletShotUpdate() {
 
 void Boss::AttackInit() {
 	
-	pBossHead_->ParamaterInit();
+	attackEaseT_ = 0.0f;
+	attackCoolTime_ = 0.0f;
+	pBossTubu_->ParamaterInit();
+	isAttackBack_ = false;
+	isAttack_ = true;
 }
 
-void Boss::AttackUpdate() {
-
+void Boss::AttackUpdate() {//超汚い
+	if (!isAttackBack_) {
+		attackEaseT_ += Time::DeltaTime();
+		if (attackEaseT_ >= kAttackEaseT_) {
+			attackEaseT_ = kAttackEaseT_;
+			attackCoolTime_ += Time::DeltaTime();
+			if (attackCoolTime_ >= kAttackCoolTime_) {
+				isAttackBack_ = true;
+			}
+		}
+	}//戻る
+	else if (isAttackBack_) {
+		attackEaseT_ -= Time::DeltaTime();
+		if (attackEaseT_ <= 0.0f) {
+			attackEaseT_ = 0.0f;
+			ChangeState(std::make_unique<BossChasePlayer>(this));
+			isAttack_ = false;
+		}
+	}
+	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 3.4f, attackEaseT_, kAttackEaseT_));
 }
 
 void Boss::Debug() {
@@ -170,7 +193,7 @@ BaseBuilding* Boss::FindClosestBuilding() {
 	BaseBuilding* closestBuilding = nullptr;
 	float minDistance = std::numeric_limits<float>::max(); //初期値を最大に
 
-	Vector3 bossPosition = GetPosition();
+	Vector3 bossPosition = pBossHead_->GetPosition();
 	float sphereRadius = Ground::groundScale_ + 1; // 地面の半径＋α
 
 	for (BaseBuilding* building : buildings) {
@@ -189,4 +212,8 @@ BaseBuilding* Boss::FindClosestBuilding() {
 
 void Boss::SetHead(BossHead* bossHead) {
 	pBossHead_ = bossHead;
+}
+
+void Boss::SetTubu(BossTubu* bossHead) {
+	pBossTubu_ = bossHead;
 }
