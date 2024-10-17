@@ -12,6 +12,7 @@
 #include"FrameManager/time.h"
 //obj
 #include"Objects/Boss/BossVacuum.h"
+#include"Objects/Ground/Ground.h"
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("Player");
@@ -36,9 +37,9 @@ void Player::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
-	pTransform_->position.z = -12;
-	transoform_.position.z=-12;
-	pTransform_->rotate.x = 45;
+	pTransform_->position.z = -(Ground::groundScale_+3);
+	transoform_.position.z=-(Ground::groundScale_ + 3);
+	/*pTransform_->rotate.x = 45;*/
 	//パラメータ
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒

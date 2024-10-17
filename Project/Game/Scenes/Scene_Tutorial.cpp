@@ -105,7 +105,7 @@ void Scene_Tutorial::Update() {
 
 	case BUILDINGSPOWN:	// 建物生成の処理
 		player_->isActive = true;
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 4.0f);
+		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 6.4f);
 		tutorialState_ = BUINDINGENTRAINMENT;  // 次の状態へ移行
 		break;
 
@@ -124,11 +124,11 @@ void Scene_Tutorial::Update() {
 
 	case AFEWBUILDINGSPOWN:	// 複数建物生成の処理
 
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 1.5f);
-		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.2f, std::numbers::pi_v<float> / 1.2f);
-		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.4f, std::numbers::pi_v<float> / 1.2f);
-		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.2f, std::numbers::pi_v<float> / 1.8f);
-		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.3f, std::numbers::pi_v<float> / 1.3f);
+		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 5.0f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 5.0f, std::numbers::pi_v<float> / 5.0f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 3.3f, std::numbers::pi_v<float> / 4.7f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 7.3f, std::numbers::pi_v<float> / 7.0f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 2.4f, std::numbers::pi_v<float> / 10.4f);
 
 		tutorialState_ = BUINDINGSENTRAINMENT;  // 次の状態へ移行
 		break;
