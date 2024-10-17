@@ -66,6 +66,8 @@ public:
 	bool GetIsCollisionTyphoon() const { return isCollisionTyphoon_; }
 	Model* GetModel() const { return modelArray_[currentScaleIndex_]; }
 
+	int GetCurrentScaleIndex() const { return currentScaleIndex_; }
+
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }//ピボット
 	void SetPhi(float phi) { phi_ = phi; }//経度

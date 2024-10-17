@@ -24,7 +24,13 @@ public:
 	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
 
+	void SetScaleArrayIndex(int index);
+
 private:
+	
+	static std::array<Vec3, 3> buildingScaleArray_;
+
+
 	bool isDeath_;
 	float ofsetX;
 	float ofsetY;
@@ -37,6 +43,6 @@ private:
 
 	Tornado* pTornado_ = nullptr;
 
-	static std::array<Vec3, 3> buildingScaleArray_;
+	int scaleArrayIndex_ = 0;
 
 };

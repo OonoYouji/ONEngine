@@ -21,8 +21,9 @@ void BuildingManager::SpownBuilding(float theta, float phi) {
 	buildings_.push_back(building);
 }
 //巻きこまれてるビルの追加
-void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model) {
+void  BuildingManager::AddInTornadoBuilding(Tornado* tornado, Model* model, BaseBuilding* destBuilding) {
 	InTornadoBuilding* inTornadoBuilding = new InTornadoBuilding();
+	inTornadoBuilding->SetScaleArrayIndex(destBuilding->GetCurrentScaleIndex());
 	inTornadoBuilding->Initialize();
 	//モデルセット
 	inTornadoBuilding->SetModel(model);
@@ -55,7 +56,7 @@ void 	BuildingManager::Update() {
 		if ((*buildingIter)->GetIsInTornado() || (*buildingIter)->GetIsTaken() || (*buildingIter)->GetIsBreak()) {
 			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合
 				//巻きこまれるビルを追加
-				AddInTornadoBuilding(pTornado_, (*buildingIter)->GetModel());
+				AddInTornadoBuilding(pTornado_, (*buildingIter)->GetModel(), (*buildingIter));
 			}
 			else if ((*buildingIter)->GetIsTaken()) {//ボスによる場合
 				AddBossBuilding(pBoss_, (*buildingIter)->GetModel());//ボス用建物追加
@@ -147,7 +148,7 @@ void BuildingManager::UpdateForTutorial() {
 		if ((*buildingIter)->GetIsInTornado()) {
 			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合
 				//巻きこまれるビルを追加
-				AddInTornadoBuilding(pTornado_, (*buildingIter)->GetModel());
+				AddInTornadoBuilding(pTornado_, (*buildingIter)->GetModel(), (*buildingIter));
 				//デストロイ
 				(*buildingIter)->Destory();
 				// リストから削除	
