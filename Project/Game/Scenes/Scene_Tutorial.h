@@ -33,5 +33,9 @@ private:
 	Tornado* tornado_ = nullptr;
 	//UI
 	TutorialScaleUpUI* tutorialScaleUpUI_ = nullptr;
+	TutorialScaleDownUI* tutorialScaleDownUI_ = nullptr;
+	TutorialEntrainment* tutorialEntrainment_=nullptr;
+	TutorialEntrainmentAll* tutorialEntrainmentAll_ = nullptr;
+	TutorialBodyBlow* tutorialBodyBlow_ = nullptr;
 	bool isCreateUI_;
 };

@@ -16,12 +16,17 @@
 /// 基底チュートリアルUIクラス
 /// ===================================================
 void BaseTutorialUI::Initialize() {
+	drawLayerId = 1;
 	isClose_ = false;
 	isActive = false;
-	pTransform_->position.x = -0.3f;
-	pTransform_->position.y = -3.8f;
-	pTransform_->position.z = -16.5f;
-	pTransform_->rotate.x = 3.8f;
+	canClose_ = false;
+	pTransform_->position.x = 0.2f;
+	pTransform_->position.y = -3.7f;
+	pTransform_->position.z = 25.6f;
+	pTransform_->rotate.x = 3.25f;
+
+	
+	//BaseTutorialUI::Initialize();
 };
 
 void BaseTutorialUI::Update() {
@@ -48,6 +53,12 @@ void BaseTutorialUI::Update() {
 	}
 };
 
+void  BaseTutorialUI::SetUIModel(const std::string& filePath) {
+	Model* model = ModelManager::Load(filePath);
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+}
+
 void BaseTutorialUI::Debug() {
 
 };
@@ -71,3 +82,86 @@ void TutorialScaleUpUI::Update() {
 void TutorialScaleUpUI::Debug() {
 
 };
+
+ //===================================================
+ //竜巻縮小UIクラス
+ //===================================================
+ 
+void TutorialScaleDownUI::Initialize() {
+
+	Model* model = ModelManager::Load("Board");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+	BaseTutorialUI::Initialize();
+};
+
+void TutorialScaleDownUI::Update() {
+	BaseTutorialUI::Update();
+};
+
+void TutorialScaleDownUI::Debug() {
+
+};
+
+
+//===================================================
+//巻きこめUIクラス
+//===================================================
+void TutorialEntrainment::Initialize() {
+
+	Model* model = ModelManager::Load("Board");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+	BaseTutorialUI::Initialize();
+};
+
+void TutorialEntrainment::Update() {
+	BaseTutorialUI::Update();
+};
+
+void TutorialEntrainment::Debug() {
+
+};
+
+
+
+
+//===================================================
+//全部巻きこめクラス
+//===================================================
+void TutorialEntrainmentAll::Initialize() {
+
+	Model* model = ModelManager::Load("Board");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+	BaseTutorialUI::Initialize();
+};
+
+void TutorialEntrainmentAll::Update() {
+	BaseTutorialUI::Update();
+};
+
+void TutorialEntrainmentAll::Debug() {
+
+};
+
+//===================================================
+//体当たりしろクラス
+//===================================================
+
+void TutorialBodyBlow::Initialize() {
+
+	Model* model = ModelManager::Load("Board");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+	BaseTutorialUI::Initialize();
+};
+
+void TutorialBodyBlow::Update() {
+	BaseTutorialUI::Update();
+};
+
+void TutorialBodyBlow::Debug() {
+
+};
+

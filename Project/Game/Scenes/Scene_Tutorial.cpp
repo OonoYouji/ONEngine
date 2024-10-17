@@ -24,10 +24,14 @@ void Scene_Tutorial::Initialize() {
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	tornado_ = new Tornado();
-	GameCamera* uiCamera = new GameCamera("UICamera");
+	GameCamera* uiCamera = new GameCamera("TutorialUICamera");
 	//チュートリアル
 	tutorialScaleUpUI_ = new TutorialScaleUpUI();
-	
+	tutorialScaleDownUI_ = new TutorialScaleDownUI();
+	tutorialEntrainment_ = new TutorialEntrainment();
+	tutorialEntrainmentAll_ = new TutorialEntrainmentAll();
+	tutorialBodyBlow_ = new TutorialBodyBlow();
+
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
@@ -40,6 +44,10 @@ void Scene_Tutorial::Initialize() {
 	uiCamera->Initialize();
 	//チュートリアル
 	tutorialScaleUpUI_->Initialize();
+	tutorialScaleDownUI_->Initialize();
+	tutorialEntrainment_->Initialize();
+	tutorialEntrainmentAll_->Initialize();
+	tutorialBodyBlow_->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -51,13 +59,19 @@ void Scene_Tutorial::Initialize() {
 
 	tornado_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
-	tutorialScaleUpUI_->drawLayerId=uiCamera->drawLayerId;
+	/*tutorialScaleUpUI_->drawLayerId = uiCamera->drawLayerId;*/
 	//更新して、移動させない為にアクティブを切る
 	player_->Update();
 	buildingManager_->SetTornado(tornado_);
 
 	player_->isActive = false;
 	buildingManager_->isActive = false;
+	//アクティブ切るUI
+	tutorialScaleUpUI_->isActive = false;
+	tutorialScaleDownUI_->isActive = false;
+	tutorialEntrainment_->isActive = false;
+	tutorialEntrainmentAll_->isActive = false;
+	tutorialBodyBlow_->isActive = false;
 }
 /// ===================================================
 /// 更新処理
@@ -77,9 +91,13 @@ void Scene_Tutorial::Update() {
 		break;
 
 	case SCALEDOWN:// スケールダウンモード	
+		tutorialScaleDownUI_->isActive = true;
 		// 建物吸い込みへ移行する条件
 		if (tornado_->GetScaleScale() <= tornado_->GetMinScale()) {
-			tutorialState_ = BUILDINGSPOWN;  // 次の状態へ移行
+			tutorialScaleDownUI_->SetIsClose(true);
+			if (tutorialScaleDownUI_->GetIsDeath()) {//UIが死んだら
+				tutorialState_ = BUILDINGSPOWN;  // 次の状態へ移行
+			}
 		}
 		break;
 
@@ -90,15 +108,20 @@ void Scene_Tutorial::Update() {
 		break;
 
 	case BUINDINGENTRAINMENT://建物吸い込み
+		
+		tutorialEntrainment_->isActive = true;
 		//建物がなくなったら
 		if (buildingManager_->GetSize() <= 0) {
-			tutorialState_ = AFEWBUILDINGSPOWN;  // 次の状態へ移行
+			tutorialEntrainment_->SetIsClose(true);
+			if (tutorialEntrainment_->GetIsDeath()) {//UIが死んだら
+				tutorialState_ = AFEWBUILDINGSPOWN;  // 次の状態へ移行
+			}		
 		}
 
 		break;
 
 	case AFEWBUILDINGSPOWN:	// 複数建物生成の処理
-	
+
 		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 1.5f);
 		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.2f, std::numbers::pi_v<float> / 1.2f);
 		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 1.4f, std::numbers::pi_v<float> / 1.2f);
@@ -108,20 +131,29 @@ void Scene_Tutorial::Update() {
 		tutorialState_ = BUINDINGSENTRAINMENT;  // 次の状態へ移行
 		break;
 
-	case BUINDINGSENTRAINMENT:	// 複数建物生成の処理
-
+	case BUINDINGSENTRAINMENT:	// 複数建物巻きこめ
+		
+		tutorialEntrainmentAll_->isActive = true;
 		//建物がなくなったら
 		if (buildingManager_->GetSize() <= 0) {
-			dumy_ = new Dumy();
-			dumy_->Initialize();
-			tutorialState_ = DANYATTACK;  // 次の状態へ移行
+			tutorialEntrainmentAll_->SetIsClose(true);
+			if (tutorialEntrainmentAll_->GetIsDeath()) {//UIが死んだら
+				tutorialState_ = DANYATTACK;  // 次の状態へ移行
+				dumy_ = new Dumy();
+				dumy_->Initialize();
+			}
 		}
 		break;
 
 
 	case DANYATTACK:
+		tutorialBodyBlow_->isActive = true;
 		if (dumy_->GetIsBreak()) {
-			SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+			tutorialBodyBlow_->SetIsClose(true);
+			if (tutorialBodyBlow_->GetIsDeath()) {//UIが死んだら
+				SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+			}
+		
 		}
 		break;
 

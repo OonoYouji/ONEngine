@@ -28,6 +28,7 @@ public:
 	bool GetIsDeath()const { return isDeath_; }
 	//setter
 	void SetIsClose(bool is){isClose_=is; }
+	void SetUIModel(const std::string& filePath);
 private:
 	bool isClose_;
 	bool canClose_;
@@ -37,6 +38,9 @@ private:
 	bool isDeath_;
 };
 
+//===================================================
+//竜巻拡大UIクラス
+//===================================================
 class TutorialScaleUpUI  : public BaseTutorialUI {
 public:
 
@@ -52,3 +56,78 @@ private:
 
 
 };
+
+//===================================================
+//竜巻縮小UIクラス
+//===================================================
+class TutorialScaleDownUI : public BaseTutorialUI {
+public:
+
+	TutorialScaleDownUI() { CreateTag(this); }
+	~TutorialScaleDownUI() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+private:
+
+
+
+};
+//===================================================
+//巻きこめUIクラス
+//===================================================
+class TutorialEntrainment : public BaseTutorialUI {
+public:
+
+	TutorialEntrainment() { CreateTag(this); }
+	~TutorialEntrainment() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+private:
+
+
+};
+
+//===================================================
+//全部巻きこめクラス
+//===================================================
+class TutorialEntrainmentAll : public BaseTutorialUI {
+public:
+
+	TutorialEntrainmentAll() { CreateTag(this); }
+	~TutorialEntrainmentAll() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+private:
+
+
+};
+
+//===================================================
+//体当たりしろクラス
+//===================================================
+class TutorialBodyBlow : public BaseTutorialUI {
+public:
+
+	TutorialBodyBlow() { CreateTag(this); }
+	~TutorialBodyBlow() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+private:
+
+
+};
+
+
+
