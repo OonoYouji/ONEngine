@@ -53,6 +53,9 @@ void BaseBuilding::Initialize() {
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 
+		Vec3 scale       = Vec3::kOne * (particle->GetNormLifeTime());
+		transform->scale = scale;
+
 		Vec3 velocity = GetPosition().Normalize() * 2.0f;
 		transform->position += velocity * Time::DeltaTime();
 	});
