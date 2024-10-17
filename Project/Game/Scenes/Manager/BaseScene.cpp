@@ -7,11 +7,8 @@
 
 BaseScene::BaseScene() {
 
-	CreateObject();
-
-	/// layer  initialize
 	layers_.push_back(std::make_unique<SceneLayer>());
-	layers_[0]->Initialize("default", mainCamera_);
+	CreateObject();
 
 }
 
@@ -28,11 +25,12 @@ void BaseScene::CreateObject() {
 	mainCamera_ = new GameCamera("MainCamera");
 	mainCamera_->Initialize();
 
-	//CameraManager::GetInstance()->SetMainCamera(mainCamera_);
-
 	/// light  initialize
 	directionalLight_ = new DirectionalLight();
 	directionalLight_->Initialize();
+
+	/// layerにcameraをセット
+	layers_[0]->Initialize("default", mainCamera_);
 }
 
 

@@ -114,16 +114,10 @@ void SceneManager::Draw() {
 }
 
 void SceneManager::ImGuiDebug() {
-	if(!ImGui::Begin("scene manager")) {
-		ImGui::End();
-		return;
-	}
-
 	const char* labels[4]{ "Title", "Game", "Result", "Clear"};
 	int currentItem = static_cast<int>(nextSceneId_);
 	if(ImGui::Combo("next scene", &currentItem, labels, 4)) {
 		nextSceneId_ = SCENE_ID(currentItem);
-		Load(nextSceneId_);
 	}
 
 	if(ImGui::TreeNodeEx("Layer")) {
@@ -133,7 +127,6 @@ void SceneManager::ImGuiDebug() {
 		ImGui::TreePop();
 	}
 
-	ImGui::End();
 }
 
 void SceneManager::SetNextScene(SCENE_ID nextId) {
