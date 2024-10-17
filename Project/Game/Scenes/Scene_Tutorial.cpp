@@ -83,6 +83,7 @@ void Scene_Tutorial::Update() {
 		tutorialScaleUpUI_->isActive = true;
 		// スケールダウンへ移行する条件
 		if (tornado_->GetScaleScale() >= tornado_->GetMaxScale()) {
+			tornado_->isActive = false;
 			tutorialScaleUpUI_->SetIsClose(true);
 			if (tutorialScaleUpUI_->GetIsDeath()) {//UIが死んだら
 				tutorialState_ = SCALEDOWN;  // 次の状態へ移行
@@ -92,6 +93,7 @@ void Scene_Tutorial::Update() {
 
 	case SCALEDOWN:// スケールダウンモード	
 		tutorialScaleDownUI_->isActive = true;
+		tornado_->isActive = true;
 		// 建物吸い込みへ移行する条件
 		if (tornado_->GetScaleScale() <= tornado_->GetMinScale()) {
 			tutorialScaleDownUI_->SetIsClose(true);
@@ -103,7 +105,7 @@ void Scene_Tutorial::Update() {
 
 	case BUILDINGSPOWN:	// 建物生成の処理
 		player_->isActive = true;
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 0.4f);
+		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 4.0f);
 		tutorialState_ = BUINDINGENTRAINMENT;  // 次の状態へ移行
 		break;
 
@@ -152,8 +154,7 @@ void Scene_Tutorial::Update() {
 			tutorialBodyBlow_->SetIsClose(true);
 			if (tutorialBodyBlow_->GetIsDeath()) {//UIが死んだら
 				SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
-			}
-		
+			}	
 		}
 		break;
 
