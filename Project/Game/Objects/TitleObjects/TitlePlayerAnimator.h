@@ -9,6 +9,12 @@ class TitlePlayerAnimator final : public BaseGameObject {
 		float speed = 1.0f;
 	};
 
+	struct FlyingObjectData {
+		float time;
+		float spped;
+		float radius;
+	};
+
 public:
 
 	TitlePlayerAnimator() { CreateTag(this); }
@@ -34,5 +40,6 @@ private:
 	float spinSpeed_ = 1.0f;
 
 	std::vector<class Wind*>       windArray_;
-	std::vector<WindAnimationData> windAnimationDataArray;
+	std::vector<WindAnimationData> windAnimationDataArray_;
+	std::vector<FlyingObjectData> flyingObejctDataArray_;
 };

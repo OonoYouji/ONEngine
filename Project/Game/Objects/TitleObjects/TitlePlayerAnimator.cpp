@@ -9,6 +9,7 @@
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "CustomComponents/EarthRenderer/EarthRenderer.h"
 
 /// objects
@@ -16,6 +17,7 @@
 
 /// math
 #include "Math/Random.h"
+#include "Math/Easing.h"
 
 
 
@@ -28,6 +30,8 @@ void TitlePlayerAnimator::Initialize() {
 	earthRenderer->SetRadius(1.5f);
 	earthRenderer->SetColor({0,0,0, 0.75f});
 
+	//ParticleSystem* particleSystem = AddComponent<ParticleSystem>();
+
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
 		wind = new Wind;
@@ -35,8 +39,8 @@ void TitlePlayerAnimator::Initialize() {
 		wind->SetParent(pTransform_);
 	}
 
-	windAnimationDataArray.resize(10);
-	for(auto& data : windAnimationDataArray) {
+	windAnimationDataArray_.resize(10);
+	for(auto& data : windAnimationDataArray_) {
 		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
 	}
 
@@ -51,12 +55,21 @@ void TitlePlayerAnimator::Initialize() {
 	animationSpeed_     = 4.0f;
 	animationAmplitude_ = 0.4f;
 
+
+	/// パーティクルの挙動
+
+	/*particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+
+	});*/
+
+
 }
 
 void TitlePlayerAnimator::Update() {
 
+	/// 周りの風を回転させる
 	for(size_t i = 0; i < 10; ++i) {
-		WindAnimationData& data = windAnimationDataArray[i];
+		WindAnimationData& data = windAnimationDataArray_[i];
 		Wind* wind = windArray_[i];
 
 		data.time += Time::DeltaTime();
@@ -64,24 +77,24 @@ void TitlePlayerAnimator::Update() {
 	}
 
 	
+	/// thisが回転する挙動
 	if(isSpin_) {
 		spinTime_ += Time::DeltaTime();
-		pTransform_->rotate.y += (std::numbers::pi_v<float> * 2.0f) * (Time::DeltaTime());
+		pTransform_->rotate.y = (std::numbers::pi_v<float> * 2.0f) * 
+			Ease::InOut::Elastic(spinTime_ / 2.0f);
 
-		if(spinTime_ >= 0.5f) {
+		if(spinTime_ >= 2.0f) {
 			isSpin_ = false;
 			spinTime_ = 0.0f;
 		}
 	} else {
-		if(animationTime_ > 1.0f && static_cast<int>(animationTime_) % 10 == 0) {
+		if(animationTime_ > 1.0f && static_cast<int>(animationTime_) % 4 == 0) {
 			isSpin_ = true;
 		}
 	}
 
-
+	/// 上下に動く挙動
 	animationTime_ += Time::DeltaTime();
-
-	/// sin, cosの計算結果を0~1に修正する
 	Vec3 offset = {
 		0.0f,
 		std::sin(animationSpeed_ * animationTime_) * 0.5f + 0.5f,
@@ -91,7 +104,6 @@ void TitlePlayerAnimator::Update() {
 	offset = Mat4::Transform(offset, Mat4::MakeRotate(pTransform_->rotate));
 	offset *= animationAmplitude_;
 
-	/// 
 	pTransform_->position = basePosition_ + offset;
 
 }
