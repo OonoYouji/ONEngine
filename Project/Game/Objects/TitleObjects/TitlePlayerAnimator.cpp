@@ -45,6 +45,7 @@ void TitlePlayerAnimator::Update() {
 		0.0f
 	};
 
+	offset = Mat4::Transform(offset, Mat4::MakeRotate(pTransform_->rotate));
 	offset *= animationAmplitude_;
 
 	/// 
@@ -79,4 +80,8 @@ void TitlePlayerAnimator::Debug() {
 
 		ImGui::TreePop();
 	}
+}
+
+void TitlePlayerAnimator::SetBasePosition(const Vec3& _basePosition) {
+	basePosition_ = _basePosition;
 }
