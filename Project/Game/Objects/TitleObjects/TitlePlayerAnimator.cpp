@@ -9,6 +9,7 @@
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "CustomComponents/EarthRenderer/EarthRenderer.h"
 
 /// objects
 #include "Objects/Tornado/Tornado.h"
@@ -23,6 +24,9 @@ void TitlePlayerAnimator::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("axis");
 
+	EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
+	earthRenderer->SetRadius(1.5f);
+	earthRenderer->SetColor({0,0,0, 0.75f});
 
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
