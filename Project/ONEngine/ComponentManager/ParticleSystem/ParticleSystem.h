@@ -20,6 +20,7 @@
 /// emitter, field
 #include "ParticleEmitter.h"
 #include "ParticleField.h"
+#include <Math/Vector3.h>
 
 
 
@@ -101,6 +102,12 @@ public:
 	/// <param name="_isBurst"></param>
 	void SetBurst(bool _isBurst, float _burstTime, float _rateOverTime);
 
+	/// <summary>
+	/// エミッターの形状がボックスの min, maxを決める
+	/// </summary>
+	/// <param name="_min"></param>
+	/// <param name="_max"></param>
+	void SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max);
 
 
 	/// <summary>

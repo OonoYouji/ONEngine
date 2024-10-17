@@ -213,6 +213,11 @@ void ParticleSystem::SetBurst(bool _isBurst, float _burstTime, float _rateOverTi
 	emitter_->SetBurst(_isBurst, _burstTime, _rateOverTime);
 }
 
+void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
+	emitter_->min_ = _min;
+	emitter_->max_ = _max;
+}
+
 
 
 

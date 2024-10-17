@@ -8,6 +8,8 @@
 /// components
 #include "ParticleSystem.h"
 
+/// math
+#include "Math/Random.h"
 
 
 void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _particleArray, ParticleSystem* _particleSystem) {
@@ -163,6 +165,13 @@ void ParticleEmitter::Emit() {
 			pParticleArray_->back()->Initialize();
 			pParticleArray_->back()->lifeTime_ = pParticleSystem_->GetParticleLifeTime();
 
+			Vec3 offset{};
+			if(emissionShape_ == static_cast<int32_t>(EMISSION_SHAPE::BOX)) {
+				offset = Random::Vec3(min_, max_);
+			}
+
+			pParticleArray_->back()->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
+
 		} else {
 			/// ここに入るときはすでに最大値分配列を作成している
 
@@ -182,7 +191,12 @@ void ParticleEmitter::Emit() {
 				break;
 			}
 
-			(*itr)->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition();
+			Vec3 offset{};
+			if(emissionShape_ == static_cast<int32_t>(EMISSION_SHAPE::BOX)) {
+				offset = Random::Vec3(min_, max_);
+			}
+
+			(*itr)->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
 			(*itr)->lifeTime_ = pParticleSystem_->GetParticleLifeTime();
 			(*itr)->isAlive_ = true;
 

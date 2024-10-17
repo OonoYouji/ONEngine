@@ -21,6 +21,7 @@ void DemoObject::Initialize() {
 	});
 
 	ps->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
+	ps->SetBoxEmitterMinMax(-Vec3::kOne, Vec3::kOne);
 
 }
 
@@ -28,7 +29,6 @@ void DemoObject::Update() {}
 
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
 
 
 		ImGui::TreePop();
