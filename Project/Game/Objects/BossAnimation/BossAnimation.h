@@ -40,16 +40,19 @@ enum BOSS_PARTS_NAME {
 
 
 /// ===================================================
+//// アニメーション用データ
+/// ===================================================
+struct AnimationData {
+	float time;
+	float maxTime;
+	float apmlitude;
+};
+
+
+/// ===================================================
 /// ボスのアニメーション
 /// ===================================================
 class BossAnimation : public BaseGameObject {
-
-	struct AnimationData {
-		float time;
-		float maxTime;
-		float apmlitude;
-	};
-
 public:
 
 	BossAnimation();
@@ -60,6 +63,10 @@ public:
 	void Debug()      override;
 
 	void SetGameCamera(GameCamera* _gameCamera);
+
+	void SetAnimationIndex(BOSS_ANIMATION_ORDER _bossAnimationOrder);
+
+	const AnimationData& GetAnimatinData(BOSS_ANIMATION_ORDER bossAnimatinOrder);
 
 private:
 

@@ -48,7 +48,7 @@ void Scene_Title::Initialize() {
 void Scene_Title::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space)) {
-		SceneManager::GetInstance()->SetNextScene(SCENE_ID::GAME);
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
 	}
 
 }

@@ -193,6 +193,7 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
     <ClCompile Include="Game\Objects\Tornado\Tornado.cpp" />
+    <ClCompile Include="Game\Scenes\BossEntryScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />
     <ClInclude Include="Game\Objects\Tornado\Tornado.h" />
+    <ClInclude Include="Game\Scenes\BossEntryScene.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />

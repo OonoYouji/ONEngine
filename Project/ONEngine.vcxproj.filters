@@ -648,6 +648,7 @@
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossAnimation.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossParts.cpp" />
+    <ClCompile Include="Game\Scenes\BossEntryScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -966,5 +967,6 @@
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossAnimation.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossParts.h" />
+    <ClInclude Include="Game\Scenes\BossEntryScene.h" />
   </ItemGroup>
 </Project>
