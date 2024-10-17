@@ -12,7 +12,7 @@
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 #include <ComponentManager/Collider/BoxCollider.h>
-#include "ComponentManager/ParticleSystem/ParticleEmitter.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "CustomComponents/EarthRenderer/EarthRenderer.h"
 
 /// math
@@ -44,6 +44,19 @@ void BaseBuilding::Initialize() {
 
 	earthRenderer_ = AddComponent<EarthRenderer>();
 	earthRenderer_->SetRadius(shadowRaidus_);
+
+	particleSystem_ = AddComponent<ParticleSystem>(64, "Sphere");
+	particleSystem_->SetUseBillboard(false);
+	particleSystem_->SetEmittedParticleCount(5);
+	particleSystem_->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
+	particleSystem_->SetBoxEmitterMinMax(-Vec3::kOne * 2.0f, Vec3::kOne * 2.0f);
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+
+		Vec3 velocity = GetPosition().Normalize() * 2.0f;
+		transform->position += velocity * Time::DeltaTime();
+	});
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -143,6 +156,7 @@ void BaseBuilding::Update() {
 		if(currentScaleIndex_ < BUILDING_SCALE_BIG) {
 			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
+				particleSystem_->SetBurst(true, 0.5f, 0.05f);
 				currentScaleIndex_++;
 			}
 		}

@@ -126,6 +126,7 @@ private:
 	float animationSpeed_ = 4.0f;
 
 
+
 	/// ---------------------------------------------------
 	/// model
 	/// ---------------------------------------------------
@@ -135,5 +136,13 @@ private:
 
 	std::array<float, BUILDING_SCALE_COUNT> buildingScaleArray_;
 	std::array<float, BUILDING_SCALE_COUNT> nextScalingTimeArray_;
+
+
+
+	/// ---------------------------------------------------
+	/// effect
+	/// ---------------------------------------------------
+
+	class ParticleSystem* particleSystem_ = nullptr;
 
 };
