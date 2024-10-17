@@ -20,6 +20,7 @@ void DemoObject::Initialize() {
 		transform->position.y += Time::DeltaTime();
 	});
 
+	ps->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
 
 }
 

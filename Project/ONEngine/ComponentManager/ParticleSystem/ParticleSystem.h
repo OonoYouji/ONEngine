@@ -63,13 +63,13 @@ public:
 	///// パーティクルの出現までの時間のセット
 	///// </summary>
 	///// <param name="_particleRespawnTime">: パーティクルの発生頻度</param>
-	//void SetParticleRespawnTime(float _particleRespawnTime);
+	void SetParticleRespawnTime(float _particleRespawnTime);
 
 	///// <summary>
 	///// パーティクルの一回当たりの発生量のセット
 	///// </summary>
 	///// <param name="_emittedParticleCount">: 一回で何個パーティクルが出るか</param>
-	//void SetEmittedParticleCount(uint32_t _emittedParticleCount);
+	void SetEmittedParticleCount(uint32_t _emittedParticleCount);
 
 	/// <summary>
 	/// パーティクルの寿命のセット
@@ -89,6 +89,18 @@ public:
 	/// <param name="_function">: 更新処理関数 </param>
 	void SetPartilceUpdateFunction(const std::function<void(class Particle*)>& _function);
 
+	/// <summary>
+	/// パーティクルのエミッターのフラグを設定
+	/// </summary>
+	/// <param name="particleEmitterFlags"></param>
+	void SetParticleEmitterFlags(int particleEmitterFlags);
+
+	/// <summary>
+	/// バーストする瞬間にtrueを入れる
+	/// </summary>
+	/// <param name="_isBurst"></param>
+	void SetBurst(bool _isBurst, float _burstTime, float _rateOverTime);
+
 
 
 	/// <summary>
@@ -105,6 +117,14 @@ public:
 	/// <returns> return : パーティクルの寿命 </returns>
 	float GetParticleLifeTime() const {
 		return particleLifeTime_;
+	}
+
+	/// <summary>
+	/// バースト中かどうかのフラグのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	bool GetIsBurst() const {
+		return emitter_->isBurst_;
 	}
 
 private:

@@ -21,6 +21,8 @@ void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _
 	emissionShape_ = static_cast<int32_t>(EMISSION_SHAPE::BOX);
 	emissionType_  = static_cast<int32_t>(EMISSION_TYEP::TIME);
 
+	SetParticleEmitterFlags(PARTICLE_EMITTER_NONE);
+
 	/// particle emission time
 	rateOverTime_     = 1.0f;
 	rateOverDistance_ = 1.0f;
@@ -41,16 +43,33 @@ void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _
 
 void ParticleEmitter::Update() {
 
-	/// 時間を減らす
-	currentTime_ -= Time::DeltaTime();
+	if((particleEmitterFlags_ & PARTICLE_EMITTER_NOTIME) == 0) {
+		/// 時間を減らす
+		currentTime_ -= Time::DeltaTime();
+		/// パーティクルを発生させる
+		if(currentTime_ < 0.0f) {
+			/// 値のリセット
+			currentTime_ = rateOverTime_;
 
-	/// パーティクルを発生させる
-	if(currentTime_ < 0.0f) {
-		/// 値のリセット
-		currentTime_ = rateOverTime_;
+			/// 発生
+			Emit();
+		}
+	}
 
-		/// 発生
-		Emit();
+	/// バーストの処理
+	if(isBurst_) {
+
+		burstTime_         -= Time::DeltaTime();
+		burstRateOverTime_ -= Time::DeltaTime();
+
+		if(burstRateOverTime_ <= 0.0f) {
+			burstRateOverTime_ = maxBurstRateOverTime_;
+			Emit();
+		}
+
+		if(burstTime_ <= 0.0f) {
+			isBurst_ = false;
+		}
 	}
 
 }
@@ -170,4 +189,15 @@ void ParticleEmitter::Emit() {
 		}
 
 	}
+}
+
+void ParticleEmitter::SetBurst(bool _isBurst, float _burstTime, float _rateOverTime) {
+	isBurst_              = _isBurst;
+	burstTime_            = _burstTime;
+	burstRateOverTime_    = _rateOverTime;
+	maxBurstRateOverTime_ = _rateOverTime;
+}
+
+void ParticleEmitter::SetParticleEmitterFlags(int _particleEmitterFlags) {
+	particleEmitterFlags_ = _particleEmitterFlags;
 }
