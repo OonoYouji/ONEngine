@@ -16,7 +16,7 @@ void CameraStateBossEntryToGame::Initialize() {
 	maxMoveTime_ = 1.5f;
 
 	startData_ = { { -4.2f, 3.0f + 11.0f, -9.15f }, { 0.3f, 0.566f, 0.0f } };
-	endData_   = { { 0.0f, 0.0f, -14.0f }, { 0.0f, 0.0f, 0.0f } };
+	endData_   = { { 0.0f, 0.0f, -40.0f }, { 0.0f, 0.0f, 0.0f } };
 
 }
 
