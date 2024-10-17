@@ -8,5 +8,10 @@ public:
 	~BossEntryScene() {}
 
 	void Initialize() override;
-	void Update() override;
+	void Update()     override;
+
+private:
+
+	class BossAnimation* bossAnimation_ = nullptr;
+
 };

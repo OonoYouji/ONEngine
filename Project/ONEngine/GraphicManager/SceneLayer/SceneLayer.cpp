@@ -147,3 +147,7 @@ void SceneLayer::SetIntensity(float intensity, LAYER_NUMBER layerNumber) {
 void SceneLayer::SetRadius(int radius, LAYER_NUMBER layerNumber) {
 	blooms_[layerNumber]->SetRadius(radius);
 }
+
+void SceneLayer::SetMainCamera(BaseCamera* _camera) {
+	camera_ = _camera;
+}

@@ -111,8 +111,8 @@ void BossAnimation::Initialize() {
 		float lerpT = std::min(data.time / data.maxTime, 1.0f);
 
 		Vec3 cameraPosition = Vec3::Lerp(
-			{ -4.2f, 4.5f, -9.15f },       /// スタート位置 
-			{ -4.2f, 3.0f, -9.15f },       /// 終了位置
+			{ -4.2f, 4.5f + 11.0f, -9.15f },       /// スタート位置 
+			{ -4.2f, 3.0f + 11.0f, -9.15f },       /// 終了位置
 			/*Ease::In::Circ*/(lerpT)
 		);
 
@@ -223,7 +223,7 @@ void BossAnimation::Initialize() {
 			};
 
 			Vec3 cameraRotate   = { 0.3f, 0.566f, 0.0f };
-			Vec3 cameraPosition = { -4.2f, 3.0f, -9.15f };
+			Vec3 cameraPosition = { -4.2f, 3.0f + 11.0f, -9.15f };
 
 			shake = Mat4::Transform(shake, Mat4::MakeRotate(cameraRotate));
 
@@ -279,4 +279,8 @@ void BossAnimation::SetGameCamera(GameCamera* _gameCamera) {
 
 void BossAnimation::SetAnimationIndex(BOSS_ANIMATION_ORDER _bossAnimationOrder) {
 	currentAnimationIndex_ = _bossAnimationOrder;
+}
+
+const AnimationData& BossAnimation::GetAnimatinData(BOSS_ANIMATION_ORDER bossAnimatinOrder) {
+	return animationDataArray_[bossAnimatinOrder];
 }
