@@ -172,6 +172,12 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
 	if (dynamic_cast<BaseBuilding*>(collision)&& !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		PowerUpGaugeUp(0.3f);
+		PowerUpGaugeUp(0.05f);
 	}
+}
+
+//チュートリアルの挙動
+void Player::TutorialMove() {
+	pivot_.UpdateMatrix();
+	transoform_.UpdateMatrix();
 }

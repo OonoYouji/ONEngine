@@ -177,8 +177,8 @@ void Tornado::Debug() {
 
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
-
 	SetParent(pPlayer_->GetbaseTransform());
+	UpdateMatrix();
 	
 }
 

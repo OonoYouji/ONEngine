@@ -76,6 +76,8 @@ void Scene_Game::Initialize() {
 
 	tornado_->SetPlayer(player_);
 	
+	buildingManager_->SetBoss(boss_);
+	buildingManager_->SetTornado(tornado_);
 
 	//ビル生成
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
@@ -91,8 +93,8 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	//ビルの振る舞い管理
-	buildingManager_->AllUpdate(tornado_, boss_);
+	////ビルの振る舞い管理
+	//buildingManager_->AllUpdate(tornado_, boss_);
 
 
 }
