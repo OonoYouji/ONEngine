@@ -49,4 +49,6 @@ private:
 	std::vector<class Wind*>       windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
+
+	Mat4 matRotate_;
 };

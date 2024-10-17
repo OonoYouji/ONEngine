@@ -1,4 +1,8 @@
 #include "Player.h"
+
+/// std
+#include <numbers>
+
 #include"Objects/Building/BaseBuilding.h"
 
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
@@ -13,7 +17,7 @@
 #include"FrameManager/time.h"
 
 void Player::Initialize() {
-	Model* model = ModelManager::Load("Player");
+	Model* model = ModelManager::Load("player");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -35,10 +39,14 @@ void Player::Initialize() {
 
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
-	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
 	transoform_.position.z=-12;
-	pTransform_->rotate.x = 45;
+
+	Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, 0.0f);
+	Quaternion quaternion = Quaternion::MakeFromAxis(Vec3::kRight, -std::numbers::pi_v<float> / 2.0f);;
+	pTransform_->quaternion = quaternionLocalZ * quaternion;
+	pTransform_->scale = Vec3::kOne * 0.5f;
+
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
 	/*SetPositionZ(-1.0f);*/
@@ -109,9 +117,11 @@ void Player::Move() {
 
 		// プレイヤーの向きの決定
 		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
+		Quaternion quaternionX = Quaternion::MakeFromAxis(Vec3::kRight, -std::numbers::pi_v<float> / 2.0f);;
+		Quaternion quaternionY = Quaternion::MakeFromAxis(Vec3::kUp, std::numbers::pi_v<float>);;
 
 		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-		pTransform_->quaternion = quaternionLocalZ.Conjugate();
+		pTransform_->quaternion = quaternionLocalZ.Conjugate() * quaternionX * quaternionY;
 	}
 }
 
