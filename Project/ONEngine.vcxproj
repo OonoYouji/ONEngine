@@ -186,6 +186,7 @@
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
+    <ClCompile Include="Game\Objects\Dumy\Dumy.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Tutorial.cpp" />
+    <ClCompile Include="Game\UI\TutorialUI.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Library\Input\Gamepad.cpp" />
@@ -303,6 +305,7 @@
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
+    <ClInclude Include="Game\Objects\Dumy\Dumy.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />
@@ -322,6 +325,7 @@
     <ClInclude Include="Game\Scenes\Scene_Result.h" />
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Game\Scenes\Scene_Tutorial.h" />
+    <ClInclude Include="Game\UI\TutorialUI.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />

@@ -61,24 +61,24 @@ public:
 	bool GetIsTaken() const { return isTaken_; }
 	bool GetIsBreak() const { return isBreak_; }
 	bool GetIsSlurped() const { return isSlurp_; }
-	float GetPhi() const{ return phi_; }
-	float GetTheta() const{ return theta_; }
 	bool GetIsCollisionTyphoon() const { return isCollisionTyphoon_; }
 	Model* GetModel() const { return modelArray_[currentScaleIndex_]; }
 
 	int GetCurrentScaleIndex() const { return currentScaleIndex_; }
 
+	const std::pair<float, float>& GetPos() const { return pos_; }
 	//setter
 	void SetPivot(Transform pivot) { pivot_ = pivot; }//ピボット
-	void SetPhi(float phi) { phi_ = phi; }//経度
-	void SetTheta(float theta) { theta_ = theta; }//緯度
+	void SetBoss(Boss* boss);
+	//void SetPhi(float phi) { phi_ = phi; }//経度
+	void SetPos(const std::pair<float,float>& pos) { pos_ = pos; }//緯度
 	void SetPivotQuaternion(Quaternion q) { pivot_.quaternion *= q; }
 	//吸い込み系
 	void SetIsSlurped(bool is) { isSlurp_ = is; }//吸われるか
 	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
 
 private:
-
+	Boss* pBoss_ = nullptr;
 	//死んだか
 	bool isInTornado_;
 	//竜巻と衝突したか
@@ -94,8 +94,7 @@ private:
 	Transform pivot_;
 	AudioSource* audioSource_ = nullptr;
 	//死亡情報用のパラメータ
-	float theta_;
-	float phi_;
+	std::pair<float, float> pos_;
 
 	//吸われるか
 	bool isSlurp_;

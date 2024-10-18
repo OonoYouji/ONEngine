@@ -10,3 +10,9 @@ Vec3 DealtWithZimbalLock(float x, const Quaternion& q);
 Quaternion ToQuaternion(const Vec3& eulerAngles);
 
 std::pair<float, float> CalculateDistanceAndDirection(const Vec3& targetPos, const Vec3& bossPosition, const float& radius);
+
+// QuaternionのLerp関数
+Quaternion Lerp(const Quaternion& start, const Quaternion& end, float t);
+
+// Slerp関数（最短距離で補間）
+Quaternion Slerp(const Quaternion& start, Quaternion end, float t);

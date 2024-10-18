@@ -223,6 +223,12 @@
     <Filter Include="Game\HormingFunction">
       <UniqueIdentifier>{b3fae37c-870a-48b6-937b-b2329ad5c64b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Duny">
+      <UniqueIdentifier>{5021b653-196e-46d0-8205-38fd9d7c7fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI">
+      <UniqueIdentifier>{c0fb0935-8f6d-4ace-b28b-c8dcb7775218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CustomShaders\Earth\Earth.hlsli">

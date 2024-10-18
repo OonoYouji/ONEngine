@@ -15,11 +15,17 @@
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "CustomComponents/EarthRenderer/EarthRenderer.h"
 
+#include "ImGuiManager/ImGuiManager.h"
 /// math
-#include "Math/Random.h"
-#include "Math/Easing.h"
+#include"Math/Random.h"
+#include"FrameManager/Time.h"
+/// std
+#include<numbers>
+
 
 /// objects
+#include "Objects/Boss/Boss.h"
+#include "Objects/Boss/BossVacuum.h"
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/BossVacuum.h"
 
@@ -180,7 +186,10 @@ void BaseBuilding::Update() {
 			}
 		}
 
-		//GrowForTime(0.2f, 2.0f);
+		// 回転を適用
+		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.first);
+		Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.second);
+		pivot_.quaternion = (rotateX * rotateY);
 	}
 
 	
@@ -202,6 +211,8 @@ void BaseBuilding::Debug() {
 		ImGui::SeparatorText("parameter");
 		ImGui::SliderInt("current building scale index", &currentScaleIndex_, 0, BUILDING_SCALE_COUNT - 1);
 
+		ImGui::DragFloat("phi", &pos_.first, 0.01f);
+		ImGui::DragFloat("theta", &pos_.second, 0.01f);
 
 		/// ---------------------------------------------------
 		/// shadowのデバッグ
@@ -232,11 +243,11 @@ void BaseBuilding::Debug() {
 			ImGui::TreePop();
 		}
 
+		
+
 		ImGui::TreePop();
 	}
 }
-
-
 
 void BaseBuilding::GrowForTime(const float& par, const float& second) {
 
@@ -278,8 +289,11 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 	}
 
 	//当たったら用済み
-	if(dynamic_cast<BossHead*>(collision) && !isSlurp_) {
+	if(dynamic_cast<BossHead*>(collision) &&pBoss_->GetIsAttack()) {
 		isBreak_ = true;
 	}
 }
 
+void BaseBuilding::SetBoss(Boss*boss) {
+	pBoss_ = boss;
+}
