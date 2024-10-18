@@ -61,11 +61,12 @@ void BossEntryScene::Initialize() {
 	playerAnimation->SetIsSpinUpdate(false);
 
 	beatBossSpriteUp->SetRotateZ(std::numbers::pi_v<float>);
-	beatBossSpriteUp->SetPositionY(0.875f);
+	beatBossSpriteUp->SetPositionY(0.55f);
 
 	/// scene setting
 	AddLayer("sprite", spriteCamera);
 	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
+	spriteCamera->SetDistance(3.0f);
 
 }
 
@@ -77,7 +78,7 @@ void BossEntryScene::Update() {
 	if(data.time / data.maxTime >= 1.0f) {
 		cameraState_->isActive = true;
 		if(cameraState_->IsFinishedMoving()) {
-			SceneManager::GetInstance()->SetNextScene(GAME);
+			//SceneManager::GetInstance()->SetNextScene(GAME);
 		}
 	}
 
