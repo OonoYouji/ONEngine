@@ -61,7 +61,7 @@ void BossEntryScene::Initialize() {
 	playerAnimation->SetIsSpinUpdate(false);
 
 	beatBossSpriteUp->SetRotateZ(std::numbers::pi_v<float>);
-
+	beatBossSpriteUp->SetPositionY(0.875f);
 
 	/// scene setting
 	AddLayer("sprite", spriteCamera);

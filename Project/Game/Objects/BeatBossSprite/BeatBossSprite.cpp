@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "BeatBossSprite.h"
 
 /// engine
@@ -18,12 +19,33 @@ void BeatBossSprite::Initialize() {
 	drawLayerId = 1;
 
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
-	spriteRenderer_->SetTexture("uvChecker");
+	spriteRenderer_->SetTexture("telop.png");
+	spriteRenderer_->SetUVSize({ 2048.0f, 128.0f });
 
+	pTransform_->position = { 0.0f, -0.875f, 0.0f };
+	pTransform_->scale    = { 2.4f, 0.25f, 1.0f };
+
+	spritePosition_ = {};
+	spriteColor_ = Vec4::kWhite;
+
+	time_ = 0.0f;
 }
 
 void BeatBossSprite::Update() {
+
+	time_ += Time::DeltaTime();
+
 	spritePosition_.x += 120.0f * Time::DeltaTime();
+
+	float rgbScalerValue = std::sin(time_ * 2.0f) * 0.25f + 0.75f;
+
+	spriteColor_ = {
+		1.0f * rgbScalerValue,
+		1.0f * rgbScalerValue,
+		1.0f * rgbScalerValue,
+		1.0f * rgbScalerValue
+	};
+
 	spriteRenderer_->SetUVPosition(spritePosition_);
-	//spriteRenderer_->;
+	spriteRenderer_->SetColor(spriteColor_);
 }
