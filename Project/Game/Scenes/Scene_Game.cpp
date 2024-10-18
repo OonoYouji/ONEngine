@@ -83,12 +83,14 @@ void Scene_Game::Initialize() {
 	buildingManager_->SetBoss(boss_);
 	buildingManager_->SetTornado(tornado_);
 
+	//jsonからデータ読む
+	buildingManager_->LoadControlSpots("resources/BuildingParamater/BuildingPos.json");
 	//ビル生成
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 9.0f, std::numbers::pi_v<float> / 9.0f);
+	/*buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
+	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 5.0f, std::numbers::pi_v<float> / 9.0f);
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 2, std::numbers::pi_v<float> / 9);
 	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 9, std::numbers::pi_v<float> / 4);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 4, std::numbers::pi_v<float> / 3);
+	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 4, std::numbers::pi_v<float> / 3);*/
 }
 
 

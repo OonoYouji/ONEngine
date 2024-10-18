@@ -58,10 +58,13 @@ void BaseBuilding::Initialize() {
 }
 
 void BaseBuilding::Update() {
+	// 回転を適用
+	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.second);
+	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.first);
+	pivot_.quaternion=(rotateX * rotateY);
 
 	earthRenderer_->SetRadius(shadowRaidus_);
 	earthRenderer_->SetColor(shadowColor_);
-
 
 	//吸われる処理
 	if(isSlurp_) {
@@ -107,12 +110,12 @@ void BaseBuilding::Debug() {
 
 		ImGui::ColorEdit4("color", &shadowColor_.x);
 		ImGui::DragFloat("radius", &shadowRaidus_, 0.1f);
+		ImGui::DragFloat("phi", &pos_.first, 0.01f);
+		ImGui::DragFloat("theta", &pos_.second, 0.01f);
 
 		ImGui::TreePop();
 	}
 }
-
-
 
 void BaseBuilding::GrowForTime(const float& par, const float& second) {
 
