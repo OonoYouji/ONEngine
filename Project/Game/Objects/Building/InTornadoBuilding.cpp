@@ -17,7 +17,7 @@
 std::array<Vec3, 3> InTornadoBuilding::buildingScaleArray_{
 	Vec3(0.2f, 0.2f, 0.2f),   /// small
 	Vec3(0.5f, 0.5f, 0.5f),   /// normal
-	Vec3::kOne * 0.75f        /// big
+	Vec3(0.7f, 0.7f, 0.7f),   /// big
 };
 
 
@@ -28,6 +28,7 @@ void InTornadoBuilding::Initialize() {
 	pTransform_->scale = buildingScaleArray_[scaleArrayIndex_];
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
+	pTransform_->rotate = { -1.5f,0,0 };//回転
 	auto model = ModelManager::Load("TestObject");
 	auto collider = AddComponent<BoxCollider>(model);
 }
