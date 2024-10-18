@@ -188,6 +188,10 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Dumy\Dumy.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\BackTitleUI\BackTitleUI.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\GameResult.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\RetryUI\RetryUI.cpp" />
+    <ClCompile Include="Game\Objects\GameResult\SelectedFrame\SelectedFrame.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
@@ -307,6 +311,10 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Dumy\Dumy.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
+    <ClInclude Include="Game\Objects\GameResult\BackTitleUI\BackTitleUI.h" />
+    <ClInclude Include="Game\Objects\GameResult\GameResult.h" />
+    <ClInclude Include="Game\Objects\GameResult\RetryUI\RetryUI.h" />
+    <ClInclude Include="Game\Objects\GameResult\SelectedFrame\SelectedFrame.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />
