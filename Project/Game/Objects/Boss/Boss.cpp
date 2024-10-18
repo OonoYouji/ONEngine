@@ -220,8 +220,14 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 
 void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	if (dynamic_cast<InTornadoBuilding*>(collision)) {
-		DamageForPar(0.05f);
+	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {
+		int scaleIndex = tornadoBuilding->GetScaleArrayIndex();
+
+		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
+
+		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
+			DamageForPar(damageValues[scaleIndex]);
+		}
 	}
 }
 

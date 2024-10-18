@@ -20,6 +20,7 @@ public:
 	void Debug() override;
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	const int GetScaleArrayIndex()const { return scaleArrayIndex_; }
 	//setter
 	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
