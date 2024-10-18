@@ -58,7 +58,7 @@ void Transform::Debug() {
 /// ===================================================
 /// 行列の更新
 /// ===================================================
-void Transform::UpdateMatrix() {
+void Transform::UpdateMatrix(bool isMapping) {
 	matTransform =
 		Mat4::MakeScale(scale) *
 		MakeRotate(rotateOrder) *
@@ -69,7 +69,9 @@ void Transform::UpdateMatrix() {
 		matTransform *= parent->matTransform;
 	}
 
-	*mapingData_ = matTransform;
+	if(isMapping) {
+		*mapingData_ = matTransform;
+	}
 }
 
 void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex) {

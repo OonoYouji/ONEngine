@@ -31,6 +31,7 @@ void DemoObject::Initialize() {
 			i * 1.0f
 		};
 
+		transform->UpdateMatrix(false);
 		mir->AddTransform(transform);
 	}
 
