@@ -52,6 +52,8 @@ public:
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
 
+	void SetBuildingManager(BuildingManager* buildingManager);
+
 private:
 	BuildingManager* pBuindingManager_;
 	//速度

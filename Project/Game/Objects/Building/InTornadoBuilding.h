@@ -22,6 +22,8 @@ public:
 	//setter
 	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
+	void SetIsDeath(bool is);
+		
 
 private:
 	bool isDeath_;

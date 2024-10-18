@@ -53,3 +53,8 @@ void InTornadoBuilding::SetTornado(Tornado* tornade) {
 	pTransform_->SetParent(pTornado_->GetParent());//取るね――ドペアレント
 
 }
+
+void InTornadoBuilding::SetIsDeath(bool is) {
+	isDeath_ = is;
+	ParentCancel(true);
+}

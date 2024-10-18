@@ -124,7 +124,21 @@ void 	BuildingManager::Update() {
 		}
 	}
 }
+//指定の数分死亡フラグを立てる処理
+void BuildingManager::SetDeathFlagInBuildings(size_t count) {
+	size_t currentCount = 0;
 
+	// 建物リストをループしてデスフラグを立てる
+	for (auto& building : inTornadoBuildings_) {
+		if (currentCount >= count) {
+			break; // 指定数に達したらループを終了
+		}
+
+		// デスフラグを立てる処理
+		building->SetIsDeath(true); 
+		currentCount++;
+	}
+}
 
 void BuildingManager::Debug() {
 

@@ -11,6 +11,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/time.h"
 //obj
+#include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Ground/Ground.h"
 
@@ -197,8 +198,11 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 	}
 	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
 		if (!isStop_) {
+		
 			isStop_ = true;
 			stopCollTime_ = kStopCollTime_;
+			//指定の数分ビル破壊
+			pBuindingManager_->SetDeathFlagInBuildings(5);
 		}
 	}
 }
@@ -207,4 +211,8 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 void Player::TutorialMove() {
 	pivot_.UpdateMatrix();
 	transoform_.UpdateMatrix();
+}
+
+void  Player::SetBuildingManager(BuildingManager* buildingManager) {
+	pBuindingManager_ = buildingManager;
 }

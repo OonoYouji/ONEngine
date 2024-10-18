@@ -48,6 +48,8 @@ public:
 	void SpownBuilding(float theta, float phi);
 	void AddInTornadoBuilding(Tornado* tornado, Model* model);
 	void AddBossBuilding(Boss* boss, Model* model);
+	//指定の数分ですフラグを立てる
+	void SetDeathFlagInBuildings(size_t count);
 
 	//getter
 	std::list<BaseBuilding*> GetBuildings()const { return buildings_; }

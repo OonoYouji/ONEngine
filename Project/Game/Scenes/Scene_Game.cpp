@@ -68,6 +68,7 @@ void Scene_Game::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
+	player_->SetBuildingManager(buildingManager_);
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
