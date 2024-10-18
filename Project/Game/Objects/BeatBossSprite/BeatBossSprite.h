@@ -13,4 +13,6 @@ public:
 
 private:
 
+	class SpriteRenderer* spriteRenderer_ = nullptr;
+	Vec2 spritePosition_;
 };
