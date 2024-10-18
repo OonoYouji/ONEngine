@@ -18,13 +18,6 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-	
-
-	//setter
-	void SetBehaviorZoomOut();//ズームアウト
-	void SetBehaviorZoomIn();//ズームイン
-private:
-	
 private:
 
 };

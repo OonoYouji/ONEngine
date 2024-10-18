@@ -646,6 +646,8 @@
     <ClCompile Include="Game\Objects\CameraState\CameraStateBossEntryToGame.cpp" />
     <ClCompile Include="Game\Objects\CameraState\GameCameraState.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Tutorial.cpp" />
+    <ClCompile Include="Game\Objects\BeatBossSprite\BeatBossSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -965,5 +967,7 @@
     <ClInclude Include="Game\Objects\CameraState\CameraStateBossEntryToGame.h" />
     <ClInclude Include="Game\Objects\CameraState\GameCameraState.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
+    <ClInclude Include="Game\Scenes\Scene_Tutorial.h" />
+    <ClInclude Include="Game\Objects\BeatBossSprite\BeatBossSprite.h" />
   </ItemGroup>
 </Project>

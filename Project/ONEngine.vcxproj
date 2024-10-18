@@ -162,6 +162,7 @@
     <ClCompile Include="Game\CustomComponents\EarthRenderer\EarthRenderer.cpp" />
     <ClCompile Include="Game\Easing\EasingFunction.cpp" />
     <ClCompile Include="Game\HormingFunction\Horming.cpp" />
+    <ClCompile Include="Game\Objects\BeatBossSprite\BeatBossSprite.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossAnimation.cpp" />
     <ClCompile Include="Game\Objects\BossAnimation\BossParts.cpp" />
     <ClCompile Include="Game\Objects\BossBehavior\BaseBossBehavior.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="Game\CustomComponents\EarthRenderer\EarthRenderer.h" />
     <ClInclude Include="Game\Easing\EasingFunction.h" />
     <ClInclude Include="Game\HormingFunction\Horming.h" />
+    <ClInclude Include="Game\Objects\BeatBossSprite\BeatBossSprite.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossAnimation.h" />
     <ClInclude Include="Game\Objects\BossAnimation\BossParts.h" />
     <ClInclude Include="Game\Objects\BossBehavior\BaseBossBehavior.h" />

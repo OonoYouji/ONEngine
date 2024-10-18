@@ -33,13 +33,13 @@ void BossEntryScene::Initialize() {
 	cameraState_   = new CameraStateBossEntryToGame();
 	TitleEarth* earth = new TitleEarth();
 	TitlePlayerAnimator* playerAnimation = new TitlePlayerAnimator();
-
+	GameCamera* spriteCamera = new GameCamera("spriteCamera");
 
 	bossAnimation_->Initialize();
 	cameraState_->Initialize();
 	earth->Initialize();
 	playerAnimation->Initialize();
-
+	spriteCamera->Initialize();
 
 	bossAnimation_->SetPosition({ 0.0f, 11.0f, 0.0f });
 	bossAnimation_->SetGameCamera(mainCamera_);
@@ -51,6 +51,12 @@ void BossEntryScene::Initialize() {
 	playerAnimation->SetBasePosition({ 0.0f,0.0f, -12.0f });
 	playerAnimation->SetRotateX(-std::numbers::pi_v<float> / 2.0f);
 	playerAnimation->SetIsSpinUpdate(false);
+
+
+	/// scene setting
+	AddLayer("sprite", spriteCamera);
+	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
+
 }
 
 void BossEntryScene::Update() {
