@@ -24,7 +24,7 @@
 
 void Dumy::Initialize() {
 
-	auto model = ModelManager::Load("TestObject");
+	auto model = ModelManager::Load("PlayerInGame");
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
@@ -37,24 +37,31 @@ void Dumy::Initialize() {
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
-	pTransform_->position = { 0,0,Ground::groundScale_+1 };//ポジション
-	pTransform_->rotate = { -1.5f,0,0 };//回転
-	pTransform_->scale = { 1.0f,0.1f,1.0f };//スケール
+	pTransform_->position = { 0,0,Ground::groundScale_+0.4f };//ポジション
+	pTransform_->rotate = { 0,0,0 };//回転
+	pTransform_->scale = { 1.0f,1.0f,1.0f };//スケール
 	hp_ = hpMax_;
+	kEaseTime_ = 0.37f;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pTransform_->SetParent(&pivot_);
 	pivot_.UpdateMatrix();
-	pTransform_->rotateOrder = QUATERNION;
+	pTransform_->rotateOrder = XYZ;
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
 }
 
 void Dumy::Update() {
 	//ダミーの死亡
-	if (hp_ <= 0) {
-		isBreak_ = true;
+	if (isFall_) {
+		easeTime_ += Time::DeltaTime();
+		if (easeTime_ >= kEaseTime_) {
+			easeTime_ = kEaseTime_;
+			isDeath_ = true;
+		}
+		pTransform_->rotate.y = EaseOutSine<float>(0, 1.550f, easeTime_, kEaseTime_);
+		
 	}
 
 	//ピボット更新
@@ -71,6 +78,9 @@ void Dumy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	//当たったら用済み
 	if (dynamic_cast<InTornadoBuilding*>(collision)) {
 		hp_--;
+		if (hp_ <= 0) {
+			isFall_ = true;
+		}
 	}
 }
 

@@ -105,7 +105,7 @@ void Scene_Tutorial::Update() {
 
 	case BUILDINGSPOWN:	// 建物生成の処理
 		player_->isActive = true;
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 6.4f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 6.4f,0);
 		tutorialState_ = BUINDINGENTRAINMENT;  // 次の状態へ移行
 		break;
 
