@@ -21,8 +21,9 @@ public:
 
 private:
 
-	class RetryUI*     retryUI_     = nullptr;
-	class BackTitleUI* backTitleUI_ = nullptr;
+	class RetryUI*       retryUI_       = nullptr;
+	class BackTitleUI*   backTitleUI_   = nullptr;
+	class SelectedFrame* selectedFrame_ = nullptr;
 
 	int selectedNextMode_ = 0;
 };

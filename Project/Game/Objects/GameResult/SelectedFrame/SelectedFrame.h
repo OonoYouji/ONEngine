@@ -5,12 +5,12 @@
 class SelectedFrame : public BaseGameObject {
 public:
 
-    SelectedFrame();
-    ~SelectedFrame();
+	SelectedFrame();
+	~SelectedFrame();
 
-    void Initialize() override;
-    void Update()     override;
+	void Initialize() override;
+	void Update()     override;
 
 private:
-
+	class SpriteRenderer* spriteRenderer_ = nullptr;
 };
