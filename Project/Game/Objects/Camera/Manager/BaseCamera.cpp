@@ -160,6 +160,6 @@ void BaseCamera::SetMove(const MoveData& start, const MoveData& end, float time)
 }
 
 void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
-	projectionType_ = projectionType_;
+	projectionType_ = projectionType;
 }
 

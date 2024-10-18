@@ -53,7 +53,7 @@ public:
 	void SetTornado(Tornado*tornado);
 	//生成関数
 	void SpownBuilding(float theta, float phi);
-	void AddInTornadoBuilding(Tornado* tornado, Model* model);
+	void AddInTornadoBuilding(Tornado* tornado, Model* model, BaseBuilding* destBuilding);
 	void AddBossBuilding(Boss* boss, Model* model);
 	//指定の数分ですフラグを立てる
 	void SetDeathFlagInBuildings(size_t count);

@@ -1,4 +1,8 @@
 #include "Player.h"
+
+/// std
+#include <numbers>
+
 #include"Objects/Building/BaseBuilding.h"
 
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
@@ -43,8 +47,9 @@ void Player::Initialize() {
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -(Ground::groundScale_ + 3);
 	transoform_.position.z = -(Ground::groundScale_ + 3);
-	/*pTransform_->rotate.x = 45;*/
-	//パラメータ
+
+	pTransform_->scale = Vec3::kOne * 0.5f;
+
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
 	HP_ = HPMax_;
