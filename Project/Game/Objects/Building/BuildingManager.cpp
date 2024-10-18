@@ -1,5 +1,6 @@
 #include"BuildingManager.h"
 #include"FrameManager/Time.h"
+#include"Math/Random.h"
 //std
 #include<numbers>
 #include<string>
@@ -76,8 +77,8 @@ void 	BuildingManager::Update() {
 			}
 			//死亡パラメータを取得してリストに追加
 			DeathParamater deathParamager;
-			deathParamager.phi = (*buildingIter)->GetPos().first;
-			deathParamager.theta = (*buildingIter)->GetPos().second;
+			deathParamager.phi = (*buildingIter)->GetPos().first+Random::Float(-0.5f,0.5f);
+			deathParamager.theta = (*buildingIter)->GetPos().second + Random::Float(-0.5f, 0.5f);
 			deathParamager.coolTime = reSpownCoolTime_;
 			deathlist_.push_back(deathParamager);
 			//デストロイ
@@ -194,7 +195,6 @@ void BuildingManager::UpdateForTutorial() {
 		}
 	}
 }
-
 
 // レールの制御点をJSON形式で保存する
 void BuildingManager::SaveBuildingPos(const std::string& filename) {
