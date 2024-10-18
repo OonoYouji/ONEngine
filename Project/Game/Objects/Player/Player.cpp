@@ -10,6 +10,7 @@
 
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/time.h"
+#include"Easing/EasingFunction.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Building/BuildingManager.h"
@@ -79,12 +80,21 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+	float maxSpeed = 1.0f;
+	float minSpeed = 0.5f;
+
+	float t = (pTornado_->GetScaleScaler() - pTornado_->GetMinScale()) / (pTornado_->GetMaxScale() - pTornado_->GetMinScale());
+	t = std::clamp(t, 0.0f, 1.0f);  // tを0.0～1.0に制限
+
+	// speed_を計算
+	speed_ = LerpE(maxSpeed, minSpeed, t);
+	//振る舞い更新
 	behavior_->Update();
 
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
-	if (!damageForBossHead_.isStop&& !damageForBossBullet_.isStop) {
+	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop) {
 		Move();//移動
 	}
 
@@ -108,7 +118,6 @@ void Player::Update() {
 
 void Player::Move() {
 	//入力
-
 	input_ = {};
 	Vec2 gamePadInput = Input::GetLeftStick();
 
@@ -136,6 +145,7 @@ void Player::Move() {
 		rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
 
 		// プレイヤーの向きの決定
+
 		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
 
 		pivot_.quaternion *= (rotateX_ * rotateY_);// 正規化

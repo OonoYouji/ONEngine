@@ -69,6 +69,7 @@ void Scene_Game::Initialize() {
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
 	player_->SetBuildingManager(buildingManager_);
+	player_->SetTornado(tornado_);
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
@@ -98,8 +99,7 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	////ビルの振る舞い管理
-	//buildingManager_->AllUpdate(tornado_, boss_);
+	
 
 
 }

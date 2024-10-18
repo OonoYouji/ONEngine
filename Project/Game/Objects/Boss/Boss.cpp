@@ -68,6 +68,7 @@ void Boss::Initialize() {
 }
 
 void Boss::Update() {
+	
 	//振る舞い更新
 	behavior_->Update();
 	//敵のビルが一定数溜まったら

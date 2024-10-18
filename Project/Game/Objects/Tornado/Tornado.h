@@ -35,7 +35,7 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-	float GetScaleScale()const { return scaleScaler_; }
+	float GetScaleScaler()const { return scaleScaler_; }
 	float GetMaxScale()const { return maxScale_; }
 	float GetMinScale()const { return minScale_; }
 

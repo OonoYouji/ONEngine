@@ -57,6 +57,7 @@ void Scene_Tutorial::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
+	player_->SetTornado(tornado_);
 	tornado_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
 	
@@ -82,7 +83,7 @@ void Scene_Tutorial::Update() {
 	case SCACLEUP: //竜巻のスケールアップ
 		tutorialScaleUpUI_->isActive = true;
 		// スケールダウンへ移行する条件
-		if (tornado_->GetScaleScale() >= tornado_->GetMaxScale()) {
+		if (tornado_->GetScaleScaler() >= tornado_->GetMaxScale()) {
 			tornado_->isActive = false;
 			tutorialScaleUpUI_->SetIsClose(true);
 			if (tutorialScaleUpUI_->GetIsDeath()) {//UIが死んだら
@@ -95,7 +96,7 @@ void Scene_Tutorial::Update() {
 		tutorialScaleDownUI_->isActive = true;
 		tornado_->isActive = true;
 		// 建物吸い込みへ移行する条件
-		if (tornado_->GetScaleScale() <= tornado_->GetMinScale()) {
+		if (tornado_->GetScaleScaler() <= tornado_->GetMinScale()) {
 			tutorialScaleDownUI_->SetIsClose(true);
 			if (tutorialScaleDownUI_->GetIsDeath()) {//UIが死んだら
 				tutorialState_ = BUILDINGSPOWN;  // 次の状態へ移行
