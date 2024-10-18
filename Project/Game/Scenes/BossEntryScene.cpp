@@ -77,7 +77,7 @@ void BossEntryScene::Update() {
 	if(data.time / data.maxTime >= 1.0f) {
 		cameraState_->isActive = true;
 		if(cameraState_->IsFinishedMoving()) {
-			//SceneManager::GetInstance()->SetNextScene(GAME);
+			SceneManager::GetInstance()->SetNextScene(GAME);
 		}
 	}
 
