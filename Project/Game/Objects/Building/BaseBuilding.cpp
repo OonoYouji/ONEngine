@@ -97,8 +97,8 @@ void BaseBuilding::Update() {
 		growTime_ += Time::DeltaTime();
 		GrowForTime(0.2f, 2.0f);
 		// 回転を適用
-		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.second);
-		Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.first);
+		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.first);
+		Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.second);
 		pivot_.quaternion = (rotateX * rotateY);
 	}
 

@@ -19,8 +19,8 @@ void BuildingManager::SpownBuilding(float phi, float theta) {
 	//死亡パラメータ取得
 	building->SetPos(std::pair<float,float>(phi, theta));
 	// 回転を適用
-	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f },  theta);
-	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f },  phi);
+	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f },  phi);
+	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f },  theta);
 	buildingPositions_.push_back(std::pair<float, float>(phi, theta));
 	building->SetPivotQuaternion(rotateX * rotateY);
 
