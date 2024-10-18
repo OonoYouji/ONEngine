@@ -59,7 +59,7 @@ void Scene_Tutorial::Initialize() {
 
 	tornado_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
-	/*tutorialScaleUpUI_->drawLayerId = uiCamera->drawLayerId;*/
+	
 	//更新して、移動させない為にアクティブを切る
 	player_->Update();
 	buildingManager_->SetTornado(tornado_);
@@ -163,12 +163,3 @@ void Scene_Tutorial::Update() {
 		break;
 	}
 }
-
-////
-//void Scene_Tutorial::CreateUI() {
-//	if (!isCreateUI_) {
-//		tutorialScaleUpUI_ = new TutorialScaleUpUI();
-//		tutorialScaleUpUI_->Initialize();
-//		isCreateUI_ = true;
-//	}
-//}
