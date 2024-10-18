@@ -47,6 +47,8 @@ public:
 	//攻撃
 	void AttackInit();
 	void AttackUpdate();
+
+	void DamageForPar(const float& par);
 	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
@@ -63,7 +65,8 @@ public:
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
-	/*BossHead* GetHead() { return pBossHead_; }*/
+	
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 
 	bool GetIsAttack()const { return isAttack_; }
 
@@ -117,4 +120,7 @@ private:
 	const float kAttackCoolTime_ = 0.5f;
 	const float kAttackEaseT_=0.5f;
 
+	//HP
+	float HP_;
+	float HPMax_;
 };

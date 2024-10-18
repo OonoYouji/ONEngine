@@ -50,7 +50,8 @@ void Boss::Initialize() {
 	pTransform_->scale = { 2,2,2 };
 	SpeedParamater_ = 0.01f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
-
+	HPMax_ = 100.0f;
+	HP_ = HPMax_;
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -159,6 +160,8 @@ void Boss::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
 		ImGui::DragFloat("ChaseSpeedMax", &SpeedParamater_, 0.001f);
 		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::DragFloat("HP", &HP_, 0.05f);
+		ImGui::DragFloat("HPMax", &HPMax_, 0.05f);
 		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 		ImGui::TreePop();
 	}
@@ -167,14 +170,6 @@ void Boss::Debug() {
 void Boss::ChangeState(std::unique_ptr<BaseBossBehavior>behavior) {
 	//引数で受け取った状態を次の状態としてセット
 	behavior_ = std::move(behavior);
-}
-
-void Boss::SetPlayer(Player* player) {
-	pPlayer_ = player;
-}
-
-void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
-	pBuildingManager_ = buildingmanager;
 }
 
 
@@ -210,4 +205,33 @@ void Boss::SetHead(BossHead* bossHead) {
 
 void Boss::SetTubu(BossTubu* bossHead) {
 	pBossTubu_ = bossHead;
+}
+
+
+void Boss::SetPlayer(Player* player) {
+	pPlayer_ = player;
+}
+
+void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
+	pBuildingManager_ = buildingmanager;
+}
+
+
+void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+	if (dynamic_cast<InTornadoBuilding*>(collision)) {
+		DamageForPar(0.05f);
+	}
+}
+
+//割合によるダメージ
+void Boss::DamageForPar(const float& par) {
+
+	//割合によるインクる面とする値を決める
+	float decrementSize = HPMax_ * par;
+	// HP減少
+	HP_ -= decrementSize;
+	//HPが0以下にならないように
+	if (HP_ <= 0) {
+		HP_ = 0.0f;
+	}
 }

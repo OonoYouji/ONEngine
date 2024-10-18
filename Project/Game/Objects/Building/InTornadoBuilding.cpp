@@ -42,18 +42,18 @@ void InTornadoBuilding::Debug() {
 		ImGui::TreePop();
 	}
 }
-
+//モデルセット
 void InTornadoBuilding::SetModel(Model* model) {
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->SetModel(model);
 }
-
+//トルネードセット
 void InTornadoBuilding::SetTornado(Tornado* tornade) {
 	pTornado_ = tornade;
 	pTransform_->SetParent(pTornado_->GetParent());//取るね――ドペアレント
 
 }
-
+//死亡フラグ
 void InTornadoBuilding::SetIsDeath(bool is) {
 	isDeath_ = is;
 	ParentCancel(true);
