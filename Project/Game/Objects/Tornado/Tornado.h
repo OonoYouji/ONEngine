@@ -17,6 +17,11 @@ class Wind;
 /// ===================================================
 class Tornado final : public BaseGameObject {
 
+	struct WindAnimationData {
+		float time = 0.0f;
+		float speed = 1.0f;
+	};
+
 	struct ParticleData {
 		float time = 0.0f;
 		float speed = 1.0f;
@@ -67,8 +72,9 @@ private:
 
 	float zRotateSpeed_ = 1.0f;
 
-	std::vector<Wind*>        windArray_;
-	std::vector<ParticleData> particleDataArray_;
+	std::vector<Wind*>             windArray_;
+	std::vector<WindAnimationData> windAnimationDataArray_;
+	std::vector<ParticleData>      particleDataArray_;
 
 	Mat4 matRotate_;
 

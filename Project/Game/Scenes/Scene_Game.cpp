@@ -43,8 +43,6 @@ void Scene_Game::Initialize() {
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
-	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
-	tornado_ = new Tornado();
 
 
 	/// ===================================================
