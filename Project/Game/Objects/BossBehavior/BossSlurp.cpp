@@ -16,7 +16,7 @@ BossSlurp::BossSlurp(Boss* boss)
 	pBoss_->SlurpInit();
 	//値初期化
 	easingTimeMax_ = 0.4f;
-	MinDistance_ = 10.0f;
+	MinDistance_ = 15.0f;
 }
 
 BossSlurp ::~BossSlurp() {
@@ -41,6 +41,7 @@ void BossSlurp::Update() {
 		easingTime_ = 0.0f;
 		easeDirection_ = 1.0f; // 進む方向に切り替え
 	}
+
 	//ボスのスケール切り替え
 	pBoss_->SetScale(EaseInCubic<Vec3>(Vec3(2.0f,2.0f,2.0f), Vec3(2.4f, 2.4f, 2.4f),easingTime_,easingTimeMax_));
 

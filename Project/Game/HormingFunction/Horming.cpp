@@ -102,3 +102,40 @@ std::pair<float, float> CalculateDistanceAndDirection(const Vec3& targetPos, con
 	return { distance, direction }; // 距離と方位角を返す
 
 }
+
+// QuaternionのLerp関数
+Quaternion Lerp(const Quaternion& start, const Quaternion& end, float t) {
+	// 線形補間を実行
+	Quaternion result = (start * (1.0f - t)) + (end * t);
+
+	// 結果を正規化して返す（回転なので正規化は重要）
+	return Quaternion::Normalize(result);
+}
+
+// Slerp関数（最短距離で補間）
+Quaternion Slerp(const Quaternion& start, Quaternion end, float t) {
+
+	float dot = Quaternion::Dot(start, end);
+
+	// 内積が負の場合、最短経路を取るためにendを反転
+	if (dot < 0.0f) {
+		end = end * -1.0f;
+		dot = -dot;
+	}
+
+	const float DOT_THRESHOLD = 0.9995f;
+	if (dot > DOT_THRESHOLD) {
+		return Lerp(start, end, t);  // 線形補間にフォールバック
+	}
+
+	float theta_0 = std::acos(dot);
+	float theta = theta_0 * t;
+
+	float sin_theta = std::sin(theta);
+	float sin_theta_0 = std::sin(theta_0);
+
+	float s0 = std::cos(theta) - dot * sin_theta / sin_theta_0;
+	float s1 = sin_theta / sin_theta_0;
+
+	return (start * s0) + (end * s1);
+}

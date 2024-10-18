@@ -10,10 +10,6 @@ public:
 	BossChasePlayer(Boss* boss);
 	~BossChasePlayer();
 
-	Quaternion Lerp(const Quaternion& start, const Quaternion& end, float t);
-	Quaternion Slerp(const Quaternion& start, Quaternion end, float t);
-
-
 
 	void Update()override;
 private:
