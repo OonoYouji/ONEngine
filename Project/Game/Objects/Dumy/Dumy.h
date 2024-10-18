@@ -6,7 +6,6 @@
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include<optional>
 //obj
-#include"Objects/Tornado/Tornado.h"
 #include"Objects/Player/Player.h"
 
 

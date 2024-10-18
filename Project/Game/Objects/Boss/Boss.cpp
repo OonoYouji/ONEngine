@@ -48,7 +48,7 @@ void Boss::Initialize() {
 	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->scale = { 2,2,2 };
-	SpeedParamater_ = 0.01f;
+	SpeedParamater_ = 0.5f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;

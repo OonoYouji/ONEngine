@@ -14,6 +14,7 @@
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
+#include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
 
 void Player::Initialize() {
@@ -137,7 +138,7 @@ void Player::Move() {
 		// プレイヤーの向きの決定
 		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
 
-		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+		pivot_.quaternion *= (rotateX_ * rotateY_);// 正規化
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
 	}
 }
@@ -257,4 +258,8 @@ void Player::TutorialMove() {
 
 void  Player::SetBuildingManager(BuildingManager* buildingManager) {
 	pBuindingManager_ = buildingManager;
+}
+
+void Player::SetTornado(Tornado* tornado) {
+	pTornado_ = tornado;
 }

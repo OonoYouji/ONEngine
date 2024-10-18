@@ -56,11 +56,11 @@ void BossChasePlayer::Update() {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater(), 0, 0 });
+	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::DeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pBoss_->SetPivotQuaternion(interpolatedRotation);
-	pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
+	pBoss_->SetPivotSubtraction(move ); // 移動もスムーズに
 
 	// 一定距離で吸い込み状態に遷移
 	if (distanceAndDirection.first >= chaseMaxPos_) {

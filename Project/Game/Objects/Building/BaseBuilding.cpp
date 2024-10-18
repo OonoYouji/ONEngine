@@ -82,7 +82,7 @@ void BaseBuilding::Update() {
 		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ 0.01f, 0, 0 });
+		Quaternion move = ToQuaternion({ 0.5f*Time::DeltaTime(), 0, 0});
 
 		// 回転を更新
 		pivot_.quaternion = inter;

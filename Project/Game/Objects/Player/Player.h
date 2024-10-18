@@ -13,6 +13,7 @@
 #include<memory>
 
 class BuildingManager;
+class Tornado;
 class Player : public BaseGameObject {
 public:
 
@@ -50,6 +51,7 @@ public:
 	void DamageForPar(const float& par);
 	//setter
 	void PowerUpGaugeUp(float par);
+	void SetTornado(Tornado* tornado);
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
@@ -107,12 +109,6 @@ private:
 	DamageParamater damageForBossHead_;
 	DamageParamater damageForBossBullet_;
 
-	////スタン
-	//bool isStop_;
-	//float stopCollTime_;
-	//const float kStopCollTime_=0.5f;
-
-	////ダメージパラメータ
-	//float DamageForBossHead_ = 0.05f;
-	//float DamageForBossBullet_ = 0.2f;
+	//トルネード
+	Tornado* pTornado_;
 };
