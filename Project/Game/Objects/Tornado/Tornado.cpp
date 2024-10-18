@@ -86,6 +86,11 @@ void Tornado::Initialize() {
 		wind->SetScale(Vec3::kOne * 0.5f);
 	}
 
+	windAnimationDataArray_.resize(10);
+	for(auto& data : windAnimationDataArray_) {
+		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
+	}
+
 }
 
 void Tornado::Update() {
@@ -113,6 +118,14 @@ void Tornado::Update() {
 		matRotate_.m[3][2] = 0.0f;
 	}
 
+	/// 周りの風を回転させる
+	for(size_t i = 0; i < 10; ++i) {
+		WindAnimationData& data = windAnimationDataArray_[i];
+		Wind* wind = windArray_[i];
+
+		data.time += Time::DeltaTime();
+		wind->SetRotateY(data.time * data.speed);
+	}
 }
 
 
