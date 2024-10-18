@@ -12,6 +12,7 @@
 #include"FrameManager/time.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
+#include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Ground/Ground.h"
 
@@ -38,13 +39,20 @@ void Player::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
-	pTransform_->position.z = -(Ground::groundScale_+3);
-	transoform_.position.z=-(Ground::groundScale_ + 3);
+	pTransform_->position.z = -(Ground::groundScale_ + 3);
+	transoform_.position.z = -(Ground::groundScale_ + 3);
 	/*pTransform_->rotate.x = 45;*/
 	//パラメータ
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 5.0f;//秒
 	HP_ = HPMax_;
+
+	//ダメージ
+	damageForBossHead_.kStopCollTime = 0.5f;
+	damageForBossHead_.DamagePar = 0.05f;
+
+	damageForBossBullet_.kStopCollTime = 0.5f;
+	damageForBossBullet_.DamagePar = 0.2f;
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,31 +68,39 @@ void Player::Initialize() {
 	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 0.0f);
 	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.0f);
 
-	
+
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-	
+
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 }
 
 void Player::Update() {
-  
+
 	behavior_->Update();
 
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
-	if (!isStop_) {
+	if (!damageForBossHead_.isStop&& !damageForBossBullet_.isStop) {
 		Move();//移動
 	}
 
-	stopCollTime_ -= Time::DeltaTime();
-	if (stopCollTime_ <= 0.0f){
-		stopCollTime_ = 0.0f;
-		isStop_ = false;
+	//直接攻撃によるスタン
+	damageForBossHead_.stopCollTime -= Time::DeltaTime();
+	if (damageForBossHead_.stopCollTime <= 0.0f) {
+		damageForBossHead_.stopCollTime = 0.0f;
+		damageForBossHead_.isStop = false;
 	}
-	
+
+	//弾によるスタン
+	damageForBossBullet_.stopCollTime -= Time::DeltaTime();
+	if (damageForBossBullet_.stopCollTime <= 0.0f) {
+		damageForBossBullet_.stopCollTime = 0.0f;
+		damageForBossBullet_.isStop = false;
+	}
+
 	pivot_.UpdateMatrix();
 	transoform_.UpdateMatrix();
 }
@@ -96,14 +112,14 @@ void Player::Move() {
 	Vec2 gamePadInput = Input::GetLeftStick();
 
 	/// game pad入力
-	if(gamePadInput != Vec2(0.0f, 0.0f)) {
+	if (gamePadInput != Vec2(0.0f, 0.0f)) {
 		input_ = { gamePadInput.x, gamePadInput.y, 0.0f };
 	}
 
-	if(Input::PressKey(KeyCode::W)) { input_.y = +1.0f; }
-	if(Input::PressKey(KeyCode::A)) { input_.x = -1.0f; }
-	if(Input::PressKey(KeyCode::S)) { input_.y = -1.0f; }
-	if(Input::PressKey(KeyCode::D)) { input_.x = +1.0f; }
+	if (Input::PressKey(KeyCode::W)) { input_.y = +1.0f; }
+	if (Input::PressKey(KeyCode::A)) { input_.x = -1.0f; }
+	if (Input::PressKey(KeyCode::S)) { input_.y = -1.0f; }
+	if (Input::PressKey(KeyCode::D)) { input_.x = +1.0f; }
 
 	/// 移動の正規化
 	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
@@ -139,7 +155,7 @@ void Player::PowerUpInit() {
 }
 
 void Player::PowerUpUpdate() {
-	powerUpTime_-=Time::DeltaTime();//デルタタイムに直す	
+	powerUpTime_ -= Time::DeltaTime();//デルタタイムに直す	
 }
 
 void Player::PowerUpGaugeUp(float par) {
@@ -152,13 +168,13 @@ void Player::PowerUpGaugeUp(float par) {
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
 		powerUpGauge_ = powerUpGaugeMax_;
-		ChangeState(std::make_unique<PlayerPowerUp>(this));	
+		ChangeState(std::make_unique<PlayerPowerUp>(this));
 	}
 }
 
 void Player::Debug() {
 
-	if(ImGui::TreeNode("pivot")) {
+	if (ImGui::TreeNode("pivot")) {
 		pivot_.Debug();
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
 		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
@@ -175,6 +191,8 @@ void Player::Debug() {
 		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
 		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
 		ImGui::DragFloat("HP", &HP_, 0.01f);
+		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
+		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
 
 		ImGui::Spacing();
 
@@ -193,17 +211,41 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision)&& !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
+	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
 		PowerUpGaugeUp(0.05f);
 	}
+	//ボスの直接攻撃によるダメージ
 	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		if (!isStop_) {
-		
-			isStop_ = true;
-			stopCollTime_ = kStopCollTime_;
+		if (!damageForBossHead_.isStop) {
+			DamageForPar(damageForBossHead_.DamagePar);
+			damageForBossHead_.isStop = true;
+			damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
 			//指定の数分ビル破壊
 			pBuindingManager_->SetDeathFlagInBuildings(5);
 		}
+	}
+
+	//ボスの弾によるダメージ
+	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
+		if (!damageForBossBullet_.isStop) {
+			DamageForPar(damageForBossBullet_.DamagePar);
+			damageForBossBullet_.isStop = true;
+			damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
+			//指定の数分ビル破壊
+			pBuindingManager_->SetDeathFlagInBuildings(10);
+		}
+	}
+}
+//割合によるダメージ
+void Player::DamageForPar(const float& par) {
+
+	//割合によるインクる面とする値を決める
+	float decrementSize = HPMax_ * par;
+	// HP減少
+	HP_ -= decrementSize;
+	//HPが0以下にならないように
+	if (HP_ <= 0) {
+		HP_ = 0.0f;
 	}
 }
 

@@ -46,6 +46,8 @@ public:
 	bool GetisPowerUp()const { return isPowerUp_; }
 	//パワーアップタイム
 	float GetPowerUpTime()const { return powerUpTime_; }
+	//ダメージ
+	void DamageForPar(const float& par);
 	//setter
 	void PowerUpGaugeUp(float par);
 
@@ -53,7 +55,13 @@ public:
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
 
 	void SetBuildingManager(BuildingManager* buildingManager);
-
+private:
+	struct DamageParamater {
+		bool isStop;
+		float stopCollTime;
+	    float kStopCollTime;
+		float DamagePar;
+	};
 private:
 	BuildingManager* pBuindingManager_;
 	//速度
@@ -96,8 +104,15 @@ private:
 	float HP_;
 	const	float HPMax_ = 100.0f;
 
-	//スタン
-	bool isStop_;
-	float stopCollTime_;
-	const float kStopCollTime_=0.5f;
+	DamageParamater damageForBossHead_;
+	DamageParamater damageForBossBullet_;
+
+	////スタン
+	//bool isStop_;
+	//float stopCollTime_;
+	//const float kStopCollTime_=0.5f;
+
+	////ダメージパラメータ
+	//float DamageForBossHead_ = 0.05f;
+	//float DamageForBossBullet_ = 0.2f;
 };
