@@ -15,6 +15,7 @@
 #include "Objects/TitleObjects/TitleEarth.h"
 #include "Objects/CameraState/CameraStateBossEntryToGame.h"
 #include "Objects/Tornado/Tornado.h"
+#include "Objects/BeatBossSprite/BeatBossSprite.h"
 
 
 void BossEntryScene::Initialize() {
@@ -33,14 +34,21 @@ void BossEntryScene::Initialize() {
 	cameraState_   = new CameraStateBossEntryToGame();
 	TitleEarth* earth = new TitleEarth();
 	TitlePlayerAnimator* playerAnimation = new TitlePlayerAnimator();
+	BeatBossSprite* beatBossSpriteUp = new BeatBossSprite();
+	BeatBossSprite* beatBossSpriteDown = new BeatBossSprite();
+	GameCamera* spriteCamera = new GameCamera("spriteCamera");
 
 
 	bossAnimation_->Initialize();
 	cameraState_->Initialize();
 	earth->Initialize();
 	playerAnimation->Initialize();
+	spriteCamera->Initialize();
+	beatBossSpriteUp->Initialize();
+	beatBossSpriteDown->Initialize();
 
 
+	/// other setting
 	bossAnimation_->SetPosition({ 0.0f, 11.0f, 0.0f });
 	bossAnimation_->SetGameCamera(mainCamera_);
 	bossAnimation_->SetAnimationIndex(BOSS_ANIMATION_ENTRY_CAMERA_MOVE);
@@ -51,6 +59,14 @@ void BossEntryScene::Initialize() {
 	playerAnimation->SetBasePosition({ 0.0f,0.0f, -12.0f });
 	playerAnimation->SetRotateX(-std::numbers::pi_v<float> / 2.0f);
 	playerAnimation->SetIsSpinUpdate(false);
+
+	beatBossSpriteUp->SetRotateZ(std::numbers::pi_v<float>);
+	beatBossSpriteUp->SetPositionY(0.875f);
+
+	/// scene setting
+	AddLayer("sprite", spriteCamera);
+	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
+
 }
 
 void BossEntryScene::Update() {
