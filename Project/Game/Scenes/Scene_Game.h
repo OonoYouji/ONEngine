@@ -3,8 +3,6 @@
 #include"Game/Scenes/Manager/BaseScene.h"
 
 
-#include "Objects/Player/Player.h"
-#include"Objects/Building/BuildingManager.h"
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -18,7 +16,4 @@ public:
 	void Update()     override;
 
 private:
-	BuildingManager* buildingManager_;
-	Player* player_ = nullptr;
-	Tornado* tornado_ = nullptr;
 };

@@ -26,7 +26,7 @@ void DemoObject::Initialize() {
 
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
 	spriteRenderer->SetTexture("uvChecker");
-	spriteRenderer->SetColor(Vec4(0, 0, 0, 1));
+	spriteRenderer->SetColor(Vec4(0, 0.25f, 0, 1));
 
 }
 
