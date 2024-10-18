@@ -58,10 +58,7 @@ void BaseBuilding::Initialize() {
 }
 
 void BaseBuilding::Update() {
-	// 回転を適用
-	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.second);
-	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.first);
-	pivot_.quaternion=(rotateX * rotateY);
+	
 
 	earthRenderer_->SetRadius(shadowRaidus_);
 	earthRenderer_->SetColor(shadowColor_);
@@ -99,6 +96,10 @@ void BaseBuilding::Update() {
 		//成長
 		growTime_ += Time::DeltaTime();
 		GrowForTime(0.2f, 2.0f);
+		// 回転を適用
+		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.second);
+		Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.first);
+		pivot_.quaternion = (rotateX * rotateY);
 	}
 
 	//ピボット更新
