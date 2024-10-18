@@ -24,7 +24,8 @@ std::array<Vec3, 3> InTornadoBuilding::buildingScaleArray_{
 //初期化
 void InTornadoBuilding::Initialize() {
 	speed_ = Random::Float(4.0f, 5.0f);//回転スピード
-	radius_ = Random::Float(-0.5f, 0.5f);//半径
+	radius_.x = Random::Float(-0.5f, 0.5f);//半径
+	radius_.y = Random::Float(-0.5f, 0.5f);//半径
 	pTransform_->scale = buildingScaleArray_[scaleArrayIndex_];
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
@@ -34,12 +35,17 @@ void InTornadoBuilding::Initialize() {
 }
 //更新
 void InTornadoBuilding::Update() {
-	//回転速度を加算
+	// 回転速度を加算
 	theta_ += (speed_ / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
-	phi_ += (speed_ / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
-	//球面座標を計算
-	float x = (pTornado_->GetTransform()->scale.x + radius_) * sin(theta_);
-	float y = (pTornado_->GetTransform()->scale.y + radius_) * cos(theta_);
+	phi_ += (speed_ / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
+
+	// 楕円の長軸と短軸
+	float longAxis = pTornado_->GetTransform()->scale.x + radius_.x;  // 長軸 (x方向の半径)
+	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.y; // 短軸 (y方向の半径)
+
+	// 楕円座標を計算
+	float x = longAxis * sin(theta_);
+	float y = shortAxis * cos(phi_); 
 	pTransform_->position = { x,y,2 };
 }
 //デバッグ

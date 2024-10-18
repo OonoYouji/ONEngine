@@ -38,7 +38,7 @@ private:
 	float ofsetX;
 	float ofsetY;
 	float speed_;
-	float radius_;
+	Vec2 radius_;
 	//
 	float theta_;
 	//
