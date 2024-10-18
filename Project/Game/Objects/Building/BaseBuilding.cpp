@@ -101,6 +101,11 @@ void BaseBuilding::Initialize() {
 		Vec4::kGreen, 
 		Vec4::kBlue
 	};
+	
+	/// 影の色の半径
+	shadowRadiusArray_ = {
+		0.75f, 1.3f, 2.2f
+	};
 
 	/// 各大きさのスケール
 	buildingScaleArray_ = {
@@ -180,7 +185,7 @@ void BaseBuilding::Update() {
 
 	
 	/// 影の色と大きさを設定
-	earthRenderer_->SetRadius(shadowRaidus_);
+	earthRenderer_->SetRadius(shadowRadiusArray_[currentScaleIndex_]);
 	earthRenderer_->SetColor(shadowColorArray_[currentScaleIndex_]);
 
 
@@ -207,8 +212,10 @@ void BaseBuilding::Debug() {
 			ImGui::Spacing();
 
 			for(size_t i = 0; i < BUILDING_SCALE_COUNT; ++i) {
-				std::string label = std::string("color_") + std::to_string(i);
-				ImGui::ColorEdit4(label.c_str(), &shadowColorArray_[i].x, ImGuiColorEditFlags_AlphaBar);
+				std::string colorLabel  = std::string("color_") + std::to_string(i);
+				std::string radiusLabel = std::string("radius") + std::to_string(i);
+				ImGui::ColorEdit4(colorLabel.c_str(), &shadowColorArray_[i].x, ImGuiColorEditFlags_AlphaBar);
+				ImGui::DragFloat(radiusLabel.c_str(), &shadowRadiusArray_[i], 0.05f);
 			}
 
 			ImGui::TreePop();

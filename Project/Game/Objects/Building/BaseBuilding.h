@@ -116,6 +116,7 @@ private:
 	class EarthRenderer* earthRenderer_ = nullptr;
 	float shadowRaidus_ = 2.0f;
 
+	std::array<float, BUILDING_SCALE_COUNT> shadowRadiusArray_;
 	std::array<Vec4, BUILDING_SCALE_COUNT>  shadowColorArray_;
 
 
