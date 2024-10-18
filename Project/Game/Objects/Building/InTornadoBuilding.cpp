@@ -14,11 +14,18 @@
 //object
 #include"FrameManager/Time.h"
 
+std::array<Vec3, 3> InTornadoBuilding::buildingScaleArray_{
+	Vec3(0.2f, 0.2f, 0.2f),   /// small
+	Vec3(0.5f, 0.5f, 0.5f),   /// normal
+	Vec3::kOne * 0.75f        /// big
+};
+
+
 //初期化
 void InTornadoBuilding::Initialize() {
 	speed_ = Random::Float(4.0f, 5.0f);//回転スピード
 	radius_ = Random::Float(-0.5f, 0.5f);//半径
-	pTransform_->scale = { 0.2f,0.2f,0.2f };
+	pTransform_->scale = buildingScaleArray_[scaleArrayIndex_];
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
 }
@@ -50,4 +57,8 @@ void InTornadoBuilding::SetTornado(Tornado* tornade) {
 	pTornado_ = tornade;
 	pTransform_->SetParent(pTornado_->GetParent());//取るね――ドペアレント
 
+}
+
+void InTornadoBuilding::SetScaleArrayIndex(int index) {
+	scaleArrayIndex_ = index;
 }

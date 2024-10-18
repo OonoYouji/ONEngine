@@ -21,7 +21,7 @@ void GameCameraState::Initialize() {
 
 	easeTMax_ = 0.7f;
 	zoomOutMax_ = -70.0f;
-	zoomInMax_ = -50.0f;
+	zoomInMax_ = -40.0f;
 }
 
 void GameCameraState::Update() {

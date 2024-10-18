@@ -5,6 +5,7 @@
 #include <ComponentManager/AudioSource/AudioSource.h>
 //std
 #include<memory>
+#include <array>
 //obj 
 #include"Objects/Tornado/Tornado.h"
 
@@ -23,7 +24,13 @@ public:
 	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
 
+	void SetScaleArrayIndex(int index);
+
 private:
+	
+	static std::array<Vec3, 3> buildingScaleArray_;
+
+
 	bool isDeath_;
 	float ofsetX;
 	float ofsetY;
@@ -34,6 +41,8 @@ private:
 	//
 	float phi_;
 
-	Tornado* pTornado_=nullptr;
-	
+	Tornado* pTornado_ = nullptr;
+
+	int scaleArrayIndex_ = 0;
+
 };

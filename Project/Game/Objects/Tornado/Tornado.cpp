@@ -189,14 +189,14 @@ void Tornado::Debug() {
 
 	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		Vec3 scale = windArray_.front()->GetTransform()->scale;
-		ImGui::DragFloat3("scale", &scale.x, 0.01f);
+		//Vec3 scale = windArray_.front()->GetTransform()->scale;
+		//ImGui::DragFloat3("scale", &scale.x, 0.01f);
 
-		if(ImGui::IsItemEdited()) {
-			for(auto& wind : windArray_) {
-				wind->GetTransform()->scale = scale;
-			}
-		}
+		//if(ImGui::IsItemEdited()) {
+		//	for(auto& wind : windArray_) {
+		//		wind->GetTransform()->scale = scale;
+		//	}
+		//}
 
 		ImGui::TreePop();
 	}
