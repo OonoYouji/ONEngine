@@ -11,13 +11,9 @@
 #include"Objects/EnemyBehavior/EnemyRoot.h"
 #include"Objects/EnemyBehavior/EnemyChasePlayer.h"
 
-#include"Objects/Boss/BossVacuum.h"
 
 class Player;
 class BuildingManager;
-class BaseBuilding;
-class BossTubu;
-class BossHead;
 //class BossHead;
 class Enemy : public BaseGameObject {
 public:
@@ -45,25 +41,18 @@ public:
 	//状態変更
 	void ChangeState(std::unique_ptr<BaseEnemyBehavior>behavior);
 	//getter
-	bool GetIsSlurping()const { return isSlurping_; }
-	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
-	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
+	const std::pair<float, float>& GetPos() const { return pos_; }
+	bool GetIsInTornado()const { return isInTornado_; }
+	float GetSpeedParamater()const { return speedParamager_; }
 	
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 
-	bool GetIsAttack()const { return isAttack_; }
-
-	
 	//setter
-	void SetIsSlurping(bool is) { isSlurping_ = is; }
-	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
+	void SetPos(const std::pair<float, float>& pos) { pos_ = pos; }//緯度
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
-	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
-	
-	void SetIsAttack(bool is) { isAttack_ = is; }
 
 private:
 	
@@ -78,19 +67,15 @@ private:
 	 Vec4  paintOutColor_ = { 1,1,1,1 };
 	////状態
 	std::unique_ptr<BaseEnemyBehavior>behavior_=nullptr;
+	//座標
+	std::pair<float, float> pos_;
 	//ピボット
 	Transform pivot_;
-	//吸ってる弾を殺すフラグ
-	bool isBuildingKill_;
-	//攻撃フラグ
-	bool isAttack_;
+	
+	bool isInTornado_;
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  パラメータ
 	////////////////////////////////////////////////////////////////////////////////////////////
-	//パラメータ調節用追従すピーⅮ
-	float SpeedParamater_;
-	//吸い込み関連
-	bool isSlurping_ = false;  // 吸い込み中かどうか
-	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
-	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
+	float speedParamager_;
 };

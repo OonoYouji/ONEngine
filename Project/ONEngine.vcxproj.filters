@@ -676,6 +676,12 @@
     <ClCompile Include="Game\Objects\EnemyBehavior\EnemyRoot.cpp">
       <Filter>Game\Objects\EnemyBehavior</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\InTornadoEnemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1012,6 +1018,12 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\EnemyBehavior\EnemyRoot.h">
       <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\InTornadoEnemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,6 +20,7 @@
 #include "Objects/CameraState/GameCameraState.h"
 #include "Objects/CameraState/CameraStateBossEntryToGame.h"
 #include "Objects/Tornado/Tornado.h"
+#include"Objects/Enemy/EnemyManager.h"
 
 
 /// ===================================================
@@ -39,6 +40,7 @@ void Scene_Game::Initialize() {
 	buildingManager_   = new BuildingManager();
 	boss_              = new Boss();
 	tornado_           = new Tornado();
+	EnemyManager* enemyManager = new EnemyManager();
 	BossTubu* bossTube = new BossTubu();
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
@@ -53,6 +55,7 @@ void Scene_Game::Initialize() {
 
 	player_->Initialize();
 	boss_->Initialize();
+	enemyManager->Initialize();
 	bossTube->Initialize();
 	bossHead->Initialize();
 	ground->Initialize();
@@ -84,14 +87,12 @@ void Scene_Game::Initialize() {
 	buildingManager_->SetBoss(boss_);
 	buildingManager_->SetTornado(tornado_);
 
+	enemyManager->SetPlayer(player_);
+	enemyManager->SetTornado(tornado_);
+
 	//jsonからデータ読む
 	buildingManager_->LoadControlSpots("resources/BuildingParamater/BuildingPos.json");
-	//ビル生成
-	/*buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 8.0f, std::numbers::pi_v<float> / 2.0f);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 5.0f, std::numbers::pi_v<float> / 9.0f);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 2, std::numbers::pi_v<float> / 9);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 9, std::numbers::pi_v<float> / 4);
-	buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 4, std::numbers::pi_v<float> / 3);*/
+	
 }
 
 

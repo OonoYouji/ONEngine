@@ -7,7 +7,7 @@
 class EnemyChasePlayer : public BaseEnemyBehavior {
 public:
 	//コンストラクタ
-	EnemyChasePlayer(Enemy* boss);
+	EnemyChasePlayer(Enemy* enemy);
 	~EnemyChasePlayer();
 
 

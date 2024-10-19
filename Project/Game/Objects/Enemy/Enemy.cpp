@@ -48,7 +48,7 @@ void Enemy::Initialize() {
 	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->scale = { 2,2,2 };
-	SpeedParamater_ = 0.5f;
+	speedParamager_ = 0.5f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -93,11 +93,9 @@ void Enemy::ChaseUpdate() {
 
 }
 
-
-
 void Enemy::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
-		ImGui::DragFloat("ChaseSpeedMax", &SpeedParamater_, 0.001f);
+		ImGui::DragFloat("ChaseSpeedMax", &speedParamager_, 0.001f);
 		ImGui::DragFloat("radius", &radius_, 0.05f);
 		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 		ImGui::TreePop();

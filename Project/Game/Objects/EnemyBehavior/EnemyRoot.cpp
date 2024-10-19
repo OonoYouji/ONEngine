@@ -2,6 +2,7 @@
 //behavior
 #include"objects/EnemyBehavior/EnemyChasePlayer.h"
 //obj
+#include"Objects/Enemy/Enemy.h"
 #include"Objects/Ground/Ground.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Player/Player.h"
@@ -14,7 +15,7 @@
 
 EnemyRoot::EnemyRoot(Enemy* boss)
 	: BaseEnemyBehavior("Root", boss) {
-
+	
 }
 
 EnemyRoot::~EnemyRoot() {

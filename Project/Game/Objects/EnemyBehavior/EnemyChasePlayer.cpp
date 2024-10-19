@@ -1,9 +1,8 @@
 #include"EnemyChasePlayer.h"
 //behavior
-#include"Objects/BossBehavior/BossRoot.h"
-#include"Objects/BossBehavior/BossSlurp.h"
-#include"Objects/BossBehavior/BossAttack.h"
+#include"Objects/EnemyBehavior/EnemyRoot.h"
 //obj
+#include"Objects/Enemy/Enemy.h"
 #include"Objects/Ground/Ground.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Player/Player.h"
@@ -13,11 +12,11 @@
 #include"HormingFunction/Horming.h"
 #include"FrameManager/Time.h"
 //初期化
-EnemyChasePlayer::EnemyChasePlayer(Enemy* boss)
-	: BaseEnemyBehavior("ChasePlayer", boss) {
+EnemyChasePlayer::EnemyChasePlayer(Enemy* enemy)
+	: BaseEnemyBehavior("ChasePlayer", enemy) {
 
-	pBoss_->ChaseInit();
-	pBoss_->SetScale({ 2.0f,2.0f,2.0f });
+	pEnemy_->ChaseInit();
+	pEnemy_->SetScale({ 2.0f,2.0f,2.0f });
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
@@ -34,37 +33,31 @@ void EnemyChasePlayer::Update() {
 
 	// 距離と方向を計算
 	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
-		pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
-
-	// 一定距離で攻撃に遷移
-	if (distanceAndDirection.first <= chaseMinPos_) {
-		pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
-		return;
-	}
+		pEnemy_->GetPlayer()->GetPosition(), pEnemy_->GetPosition(), Ground::groundScale_ + 1.0f);
 
 	// 現在の回転をオイラー角に変換
-	Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
+	Vec3 euler = QuaternionToEulerAngles(pEnemy_->GetPivotQuaternion());
 
 	// プレイヤーの方向を向くための回転を計算
 	Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 
 	// 現在の回転
-	Quaternion currentRotation = pBoss_->GetPivotQuaternion();
+	Quaternion currentRotation = pEnemy_->GetPivotQuaternion();
 
 	// 回転をスムーズに補間 (Slerpを使用)
 	float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::DeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ pEnemy_->GetSpeedParamater() * Time::DeltaTime(), 0, 0 });
 
 	// 回転を更新
-	pBoss_->SetPivotQuaternion(interpolatedRotation);
-	pBoss_->SetPivotSubtraction(move ); // 移動もスムーズに
+	pEnemy_->SetPivotQuaternion(interpolatedRotation);
+	pEnemy_->SetPivotSubtraction(move ); // 移動もスムーズに
 
-	// 一定距離で吸い込み状態に遷移
+	// 一定距離で通常状態に遷移
 	if (distanceAndDirection.first >= chaseMaxPos_) {
-		pBoss_->ChangeState(std::make_unique<BossSlurp>(pBoss_));
+		pEnemy_->ChangeState(std::make_unique<EnemyRoot>(pEnemy_));
 	}
 }
 
