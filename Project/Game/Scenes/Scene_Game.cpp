@@ -21,7 +21,7 @@
 #include "Objects/CameraState/CameraStateBossEntryToGame.h"
 #include "Objects/Tornado/Tornado.h"
 #include"Objects/Enemy/EnemyManager.h"
-
+#include"UI/GuidanceArrow.h"
 
 /// ===================================================
 /// 初期化処理
@@ -47,7 +47,7 @@ void Scene_Game::Initialize() {
 	GameCameraState* gameCameraState = new GameCameraState();
 	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	tornado_ = new Tornado();
-
+	GuidanceArrow* guideArrow = new GuidanceArrow();
 
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
@@ -62,6 +62,7 @@ void Scene_Game::Initialize() {
 	gameCameraState->Initialize();
 	tornado_->Initialize();
 	buildingManager_->Initialize();
+	guideArrow->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -90,10 +91,12 @@ void Scene_Game::Initialize() {
 	enemyManager->SetPlayer(player_);
 	enemyManager->SetTornado(tornado_);
 
+	guideArrow->SetBoss(boss_);
+	guideArrow->SetPlayer(player_);
+
 	//jsonからデータ読む
 	enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");
 	buildingManager_->LoadBuildingPos("resources/BuildingParamater/BuildingPos.json");
-	
 }
 
 

@@ -72,13 +72,12 @@ void Enemy::Update() {
 	
 	//振る舞い更新
 	behavior_->Update();
-
-
 	pivot_.UpdateMatrix();
 }
 
 //通常更新
 void Enemy::RootInit() {
+
 	easeT_ = 0.0f;
 	easeTimeMax_ =0.7f;
 	amplitude_ = 0.5f;

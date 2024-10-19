@@ -682,6 +682,9 @@
     <ClCompile Include="Game\Objects\Enemy\InTornadoEnemy.cpp">
       <Filter>Game\Objects\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Game\UI\GuidanceArrow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1024,6 +1027,9 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\InTornadoEnemy.h">
       <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\GuidanceArrow.h">
+      <Filter>Game\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
