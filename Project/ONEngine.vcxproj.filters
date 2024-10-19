@@ -654,6 +654,10 @@
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Tutorial.cpp" />
     <ClCompile Include="Game\Objects\BeatBossSprite\BeatBossSprite.cpp" />
+    <ClCompile Include="Game\UI\TutorialUI.cpp" />
+    <ClCompile Include="Game\Objects\Dumy\Dumy.cpp">
+      <Filter>Game\Duny</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -975,5 +979,9 @@
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Tutorial.h" />
     <ClInclude Include="Game\Objects\BeatBossSprite\BeatBossSprite.h" />
+    <ClInclude Include="Game\UI\TutorialUI.h" />
+    <ClInclude Include="Game\Objects\Dumy\Dumy.h">
+      <Filter>Game\Duny</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

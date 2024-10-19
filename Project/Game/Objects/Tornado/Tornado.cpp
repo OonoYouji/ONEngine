@@ -63,8 +63,6 @@ void Tornado::Initialize() {
 	});
 
 
-
-
 	/// transform initialize
 	pTransform_->rotateOrder = QUATERNION;
 
@@ -74,7 +72,7 @@ void Tornado::Initialize() {
 	eacSpeed_ = 0.7f;
 	pTransform_->position.z = 4.2f;
 	minScale_ = 0.5f;
-	maxScale_ = 0.75f;
+	maxScale_ = 1.75f;
 	scaleScaler_ = minScale_;
 
 
@@ -148,8 +146,6 @@ void Tornado::Debug() {
 
 		ImGui::DragFloat("local y angle", &localYAngle_, 0.1f);
 		
-		
-
 		ImGui::TreePop();
 	}
 

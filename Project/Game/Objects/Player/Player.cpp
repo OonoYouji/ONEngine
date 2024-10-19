@@ -41,7 +41,7 @@ void Player::Initialize() {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
-	speed_ = 1.0f;
+	speed_ = 0.5f;
 	pivot_.quaternion = { 0,0,0,1 };
 	transoform_.quaternion = { 0,0,0,1 };
 	pTransform_->quaternion = { 0,0,0,1 };
@@ -51,7 +51,7 @@ void Player::Initialize() {
 	pTransform_->scale = Vec3::kOne * 0.5f;
 
 	powerUpGaugeMax_ = 100;
-	powerUpTimeMax_ = 5.0f;//秒
+	powerUpTimeMax_ = 0.6f;//秒
 	HP_ = HPMax_;
 
 	//ダメージ
@@ -85,7 +85,7 @@ void Player::Initialize() {
 
 void Player::Update() {
 
-	float maxSpeed = 1.0f;
+	float maxSpeed = 0.6f;
 	float minSpeed = 0.5f;
 
 	float t = (pTornado_->GetScaleScaler() - pTornado_->GetMinScale()) / (pTornado_->GetMaxScale() - pTornado_->GetMinScale());

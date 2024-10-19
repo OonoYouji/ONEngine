@@ -4,6 +4,9 @@
 #include <ComponentManager/Transform/Transform.h>
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
+
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+
 #include<optional>
 //obj
 #include"Objects/Player/Player.h"
@@ -32,6 +35,7 @@ private:
 	//イージングパラメータ
 	float easeTime_;
 	float kEaseTime_;
+	MeshRenderer* mesh_;
 
 	Transform pivot_;
 };

@@ -3,7 +3,6 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
 #include "Input/Input.h"
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/Collider/SphereCollider.h>
@@ -25,8 +24,10 @@
 void Dumy::Initialize() {
 
 	auto model = ModelManager::Load("PlayerInGame");
-	auto mesh = AddComponent<MeshRenderer>();
-	mesh->SetModel(model);
+	mesh_ = AddComponent<MeshRenderer>();
+
+	mesh_->SetModel(model);
+	/*mesh_->SetMaterial();*/
 	auto collider = AddComponent<BoxCollider>(model);
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -41,7 +42,7 @@ void Dumy::Initialize() {
 	pTransform_->rotate = { 0,0,0 };//回転
 	pTransform_->scale = { 1.0f,1.0f,1.0f };//スケール
 	hp_ = hpMax_;
-	kEaseTime_ = 0.37f;
+	kEaseTime_ = 1.0f;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,7 @@ void Dumy::Initialize() {
 void Dumy::Update() {
 	//ダミーの死亡
 	if (isFall_) {
+	/*	mesh_->SetColor(Vec4::kRed);*/
 		easeTime_ += Time::DeltaTime();
 		if (easeTime_ >= kEaseTime_) {
 			easeTime_ = kEaseTime_;
@@ -63,7 +65,6 @@ void Dumy::Update() {
 		pTransform_->rotate.y = EaseOutSine<float>(0, 1.550f, easeTime_, kEaseTime_);
 		
 	}
-
 	//ピボット更新
 	pivot_.UpdateMatrix();
 }
