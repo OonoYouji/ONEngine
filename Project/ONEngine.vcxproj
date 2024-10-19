@@ -187,6 +187,10 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Dumy\Dumy.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBehavior\EnemyChasePlayer.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBehavior\EnemyRoot.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
@@ -306,6 +310,10 @@
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Dumy\Dumy.h" />
+    <ClInclude Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.h" />
+    <ClInclude Include="Game\Objects\EnemyBehavior\EnemyChasePlayer.h" />
+    <ClInclude Include="Game\Objects\EnemyBehavior\EnemyRoot.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />

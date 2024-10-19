@@ -229,6 +229,12 @@
     <Filter Include="Game\UI">
       <UniqueIdentifier>{c0fb0935-8f6d-4ace-b28b-c8dcb7775218}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Objects\Enemy">
+      <UniqueIdentifier>{cb02517f-6d47-437a-b4ec-967eaff68faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Objects\EnemyBehavior">
+      <UniqueIdentifier>{bc2d90f9-6103-45f9-a5e3-da3b0bebf209}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CustomShaders\Earth\Earth.hlsli">
@@ -658,6 +664,18 @@
     <ClCompile Include="Game\Objects\Dumy\Dumy.cpp">
       <Filter>Game\Duny</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.cpp">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\EnemyBehavior\EnemyChasePlayer.cpp">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\EnemyBehavior\EnemyRoot.cpp">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -982,6 +1000,18 @@
     <ClInclude Include="Game\UI\TutorialUI.h" />
     <ClInclude Include="Game\Objects\Dumy\Dumy.h">
       <Filter>Game\Duny</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h">
+      <Filter>Game\Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.h">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\EnemyBehavior\EnemyChasePlayer.h">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\EnemyBehavior\EnemyRoot.h">
+      <Filter>Game\Objects\EnemyBehavior</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
