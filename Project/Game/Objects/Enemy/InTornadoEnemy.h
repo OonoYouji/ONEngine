@@ -22,9 +22,13 @@ public:
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
+	void SetOriginalPos(const std::pair<float, float>& pos) { originalPos = pos; }
+
 	//setter
 	void SetTornado(Tornado* tornade);
 	void SetIsDeath(bool is);
+	const std::pair<float, float>& GetOriginalPos() const { return originalPos; }
+
 
 private:
 
@@ -40,6 +44,7 @@ private:
 
 	float maxDebuf_;
 	const float maxSpeed_ = 4.5f;
+	std::pair<float, float> originalPos;
 
 	Tornado* pTornado_ = nullptr;
 };

@@ -44,7 +44,7 @@ public:
 	void Debug() override;
 	//チュートリアル用更新
 	void UpdateForTutorial();
-	void  AddInTornadoBuilding(Tornado* tornado);
+	void  AddInTornadoEnemy(Tornado* tornado, Enemy* enemy);
 	//json
 	void SaveEnemyPos(const std::string& filename);
 	void LoadEnemyPos(const std::string& filename);

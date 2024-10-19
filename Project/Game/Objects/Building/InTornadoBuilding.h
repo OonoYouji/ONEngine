@@ -21,11 +21,11 @@ public:
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
 	const int GetScaleArrayIndex()const { return scaleArrayIndex_; }
+
 	//setter
 	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
 	void SetIsDeath(bool is);
-		
 
 	void SetScaleArrayIndex(int index);
 
@@ -48,6 +48,7 @@ private:
 
 	float maxDebuf_;
 	const float maxSpeed_ = 4.5f;
+	
 
 	int scaleArrayIndex_ = 0;
 

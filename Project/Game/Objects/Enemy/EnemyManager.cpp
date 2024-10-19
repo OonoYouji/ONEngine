@@ -27,11 +27,14 @@ void EnemyManager::SpownEnemy(float phi, float theta) {
 	enemies_.push_back(enemy);
 }
 //巻きこまれてるビルの追加
-void  EnemyManager::AddInTornadoBuilding(Tornado* tornado) {
+void  EnemyManager::AddInTornadoEnemy(Tornado* tornado, Enemy* enemy) {
 	InTornadoEnemy* inTornadoEnemy = new InTornadoEnemy();
 	inTornadoEnemy->Initialize();
 	//トルネードをセット
 	inTornadoEnemy->SetTornado(tornado);
+	// 元の位置情報
+	inTornadoEnemy->SetOriginalPos(enemy->GetPos());
+
 	//リストに追加
 	inTornadoEnemies_.push_back(inTornadoEnemy);
 
@@ -53,14 +56,8 @@ void EnemyManager::Update() {
 		if ((*enemyIter)->GetIsInTornado()) {
 
 			//巻きこまれるビルを追加
-			AddInTornadoBuilding(pTornado_);
+			AddInTornadoEnemy(pTornado_, (*enemyIter));
 
-			//死亡パラメータを取得してリストに追加
-			DeathParamater deathParamager;
-			deathParamager.phi = (*enemyIter)->GetPos().first + Random::Float(-0.5f, 0.5f);
-			deathParamager.theta = (*enemyIter)->GetPos().second + Random::Float(-0.5f, 0.5f);
-			deathParamager.coolTime = reSpownCoolTime_;
-			deathlist_.push_back(deathParamager);
 			//デストロイ
 			(*enemyIter)->Destory();
 			// リストから削除	
@@ -73,10 +70,15 @@ void EnemyManager::Update() {
 
 	// 巻きこまれてるビル達の更新
 	for (auto enemyIner = inTornadoEnemies_.begin(); enemyIner != inTornadoEnemies_.end(); ) {
-
 		
-		//
 		if ((*enemyIner)->GetIsDeath()) {
+			//死亡パラメータを取得してリストに追加
+			  // 元の位置を取得して死亡パラメータに利用
+			DeathParamater deathParamager;
+			deathParamager.phi = (*enemyIner)->GetOriginalPos().first + Random::Float(-0.5f, 0.5f);
+			deathParamager.theta = (*enemyIner)->GetOriginalPos().second + Random::Float(-0.5f, 0.5f);
+			deathParamager.coolTime = reSpownCoolTime_;
+			deathlist_.push_back(deathParamager);
 			(*enemyIner)->Destory();
 
 			enemyIner = inTornadoEnemies_.erase(enemyIner); // リストから削除	
