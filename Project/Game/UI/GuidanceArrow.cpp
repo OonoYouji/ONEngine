@@ -65,10 +65,10 @@ void GuidanceArrow::Update() {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 	// ホーミング移動のスピードを設定
-	/*Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::DeltaTime(), 0, 0 });*/
+	Quaternion move = ToQuaternion({ 2.0f * Time::DeltaTime(), 0, 0 });
 
 	// 回転を更新
-	pivot_.quaternion=(interpolatedRotation);
+	pivot_.quaternion=(interpolatedRotation*move);
 	//pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
 
 	pivot_.UpdateMatrix();
