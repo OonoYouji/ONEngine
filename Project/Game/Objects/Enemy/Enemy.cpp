@@ -69,9 +69,10 @@ void Enemy::Initialize() {
 }
 
 void Enemy::Update() {
-	
-	//振る舞い更新
-	behavior_->Update();
+	// 回転を適用
+	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.first);
+	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.second);
+	pivot_.quaternion = (rotateX * rotateY);
 
 
 	pivot_.UpdateMatrix();
@@ -132,9 +133,11 @@ void Enemy::ChaseUpdate() {
 
 void Enemy::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
-		ImGui::DragFloat("ChaseSpeedMax", &speedParamager_, 0.001f);
+		ImGui::DragFloat("phi", &pos_.first, 0.01f);
+		ImGui::DragFloat("theta", &pos_.second, 0.01f);
+		/*ImGui::DragFloat("ChaseSpeedMax", &speedParamager_, 0.001f);
 		ImGui::DragFloat("radius", &radius_, 0.05f);
-		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);*/
 		ImGui::TreePop();
 	}
 }
