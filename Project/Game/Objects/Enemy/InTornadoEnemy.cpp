@@ -38,7 +38,7 @@ void InTornadoEnemy::Update() {
 
 	// 楕円の長軸と短軸
 	float longAxis = pTornado_->GetTransform()->scale.x + radius_.x;  // 長軸 (x方向の半径)
-	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.y; // 短軸 (y方向の半径)
+	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.x; // 短軸 (y方向の半径)
 
 	// 楕円座標を計算
 	float x = longAxis * sin(theta_);
