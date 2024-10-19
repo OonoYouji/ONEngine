@@ -23,7 +23,7 @@ void BeatBossSprite::Initialize() {
 	spriteRenderer_->SetUVSize({ 2048.0f, 128.0f });
 
 	pTransform_->position = { 0.0f, -0.55f, 0.0f };
-	pTransform_->scale    = { 2.5f, 0.25f, 1.0f };
+	pTransform_->scale    = { 2.5f, 0.15f, 1.0f };
 
 	spritePosition_ = {};
 	spriteColor_ = Vec4::kWhite;

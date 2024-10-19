@@ -41,6 +41,9 @@ void Scene_Title::Initialize() {
 	uiCamera->SetPositionZ(-10.0f);
 	AddLayer("ui", uiCamera);
 
+	playerAnimator->SetParticleUseRotate(false);
+	playerAnimator->GetParticleSystem()->SetEmittedParticleCount(4u);
+
 }
 
 void Scene_Title::Update() {
