@@ -279,7 +279,7 @@ void BaseBuilding::Animation() {
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	//当たったら用済み
-	if(dynamic_cast<Player*>(collision) && !isSlurp_) {
+	if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
 		isInTornado_ = true;
 	}
 

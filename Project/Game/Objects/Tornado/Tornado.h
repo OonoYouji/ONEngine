@@ -33,6 +33,7 @@ public:
 
 	Tornado() { CreateTag(this); }
 	~Tornado() {}
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 
 	void Initialize() override;
 	void Update()     override;

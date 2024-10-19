@@ -17,7 +17,6 @@
 #include"Easing/EasingFunction.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
-#include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
@@ -225,33 +224,6 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 }
 
 
-void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-
-	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		PowerUpGaugeUp(0.05f);
-	}
-	//ボスの直接攻撃によるダメージ
-	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		if (!damageForBossHead_.isStop) {
-			DamageForPar(damageForBossHead_.DamagePar);
-			damageForBossHead_.isStop = true;
-			damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
-			//指定の数分ビル破壊
-			pBuindingManager_->SetDeathFlagInBuildings(5);
-		}
-	}
-
-	//ボスの弾によるダメージ
-	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		if (!damageForBossBullet_.isStop) {
-			DamageForPar(damageForBossBullet_.DamagePar);
-			damageForBossBullet_.isStop = true;
-			damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
-			//指定の数分ビル破壊
-			pBuindingManager_->SetDeathFlagInBuildings(10);
-		}
-	}
-}
 //割合によるダメージ
 void Player::DamageForPar(const float& par) {
 
@@ -277,4 +249,23 @@ void  Player::SetBuildingManager(BuildingManager* buildingManager) {
 
 void Player::SetTornado(Tornado* tornado) {
 	pTornado_ = tornado;
+}
+
+void Player::DamageForBossHead() {
+	if (!damageForBossHead_.isStop) {
+		DamageForPar(damageForBossHead_.DamagePar);
+		damageForBossHead_.isStop = true;
+		damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
+		//指定の数分ビル破壊
+		pBuindingManager_->SetDeathFlagInBuildings(5);
+	}
+}
+void Player::DamageForBossBullet() {
+	if (!damageForBossBullet_.isStop) {
+		DamageForPar(damageForBossBullet_.DamagePar);
+		damageForBossBullet_.isStop = true;
+		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
+		//指定の数分ビル破壊
+		pBuindingManager_->SetDeathFlagInBuildings(10);
+	}
 }

@@ -12,13 +12,19 @@
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
+#include <ComponentManager/Collider/BoxCollider.h>
 
 /// math
 #include "Math/Random.h"
 
 /// objects
 #include "Objects/Player/Player.h"
+#include"Objects/Building/BuildingManager.h"
+#include"Objects/Boss/BossVacuum.h"
+#include"Objects/Tornado/Tornado.h"
+#include"Objects/Ground/Ground.h"
 
 
 void Tornado::Initialize() {
@@ -83,6 +89,8 @@ void Tornado::Initialize() {
 		wind->SetParent(pTransform_);
 		wind->SetScale(Vec3::kOne * 0.5f);
 	}
+	Model* model = ModelManager::Load("Tornado");
+	auto collider = AddComponent<BoxCollider>(model);
 
 }
 
@@ -205,6 +213,23 @@ void Tornado::SetPlayer(Player* _player) {
 	SetParent(pPlayer_->GetbaseTransform());
 	UpdateMatrix();
 	
+}
+
+void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+		pPlayer_->PowerUpGaugeUp(0.05f);
+	}
+
+	//ボスの直接攻撃によるダメージ
+	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+		pPlayer_->DamageForBossHead();
+	}
+
+	//ボスの弾によるダメージ
+	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+		pPlayer_->DamageForBossBullet();
+	}
 }
 
 

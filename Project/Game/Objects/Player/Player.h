@@ -26,15 +26,15 @@ public:
 
 	void Move();//移動
 
-
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
-
-
 	//振る舞い関数
 	void RootInit();
 	void PowerUpInit();
 	void PowerUpUpdate();
 	void TutorialMove();
+
+	//ダメージ
+	void DamageForBossHead();
+	void DamageForBossBullet();
 
 	//getter
 	Transform* GetPivot() { return &pivot_; }
@@ -52,6 +52,7 @@ public:
 	//setter
 	void PowerUpGaugeUp(float par);
 	void SetTornado(Tornado* tornado);
+	 BasePlayerBehavior* GetBehavior()const { return behavior_.get(); }
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
