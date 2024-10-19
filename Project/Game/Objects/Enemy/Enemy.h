@@ -8,11 +8,8 @@
 //std
 #include<memory>
 //behavior
-#include"Objects/BossBehavior/BaseBossBehavior.h"
-#include"Objects/BossBehavior/BossRoot.h"
-#include"Objects/BossBehavior/BossChasePlayer.h"
-#include"Objects/BossBehavior/BossBulletShot.h"
-#include"Objects/BossBehavior/BossAttack.h"
+#include"Objects/EnemyBehavior/EnemyRoot.h"
+#include"Objects/EnemyBehavior/EnemyChasePlayer.h"
 
 #include"Objects/Boss/BossVacuum.h"
 
@@ -22,11 +19,11 @@ class BaseBuilding;
 class BossTubu;
 class BossHead;
 //class BossHead;
-class Boss : public BaseGameObject {
+class Enemy : public BaseGameObject {
 public:
 
-	Boss() { CreateTag(this); }
-	~Boss() {}
+	Enemy() { CreateTag(this); }
+	~Enemy() {}
 
 	void Initialize() override;
 	void Update()     override;
@@ -38,27 +35,15 @@ public:
 	//ストーカー
 	void ChaseInit();
 	void ChaseUpdate();
-	//建物吸引
-	void SlurpInit();
-	void SlurpUpdate();
-	//弾発射
-	void BulletShotInit();
-	void BulletShotUpdate();
-	//攻撃
-	void AttackInit();
-	void AttackUpdate();
 
-	void DamageForPar(const float& par);
 	
 	//プレイヤーセット
 	void SetPlayer(Player*player);
-	void SetHead(BossHead* bossHead);
-	void SetTubu(BossTubu* bosstube);
 	void SetBuildingaManager(BuildingManager* player);
-	BaseBuilding* FindClosestBuilding();
+	
 
 	//状態変更
-	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
+	void ChangeState(std::unique_ptr<BaseEnemyBehavior>behavior);
 	//getter
 	bool GetIsSlurping()const { return isSlurping_; }
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
@@ -86,14 +71,13 @@ private:
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
-	BossTubu* pBossTubu_;
-	BossHead* pBossHead_;
+	
 	//ライト
 	class EarthRenderer* er_ = nullptr;
 	 float radius_ = 1.0f;
 	 Vec4  paintOutColor_ = { 1,1,1,1 };
 	////状態
-	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
+	std::unique_ptr<BaseEnemyBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
 	//吸ってる弾を殺すフラグ
@@ -109,18 +93,4 @@ private:
 	bool isSlurping_ = false;  // 吸い込み中かどうか
 	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
 	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
-
-	//ボス弾発射関連
-	const uint32_t kBuildingNum_=10;
-
-	//ひどい変数群(攻撃イージング)
-	bool isAttackBack_;
-	float attackEaseT_;
-	float attackCoolTime_;
-	const float kAttackCoolTime_ = 0.5f;
-	const float kAttackEaseT_=0.5f;
-
-	//HP
-	float HP_;
-	float HPMax_;
 };
