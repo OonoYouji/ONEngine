@@ -22,6 +22,7 @@ public:
 	virtual	void Update() override;
 	virtual void Debug() override;
 	
+	 Vec3 GetPos()const { return GetPosition(); }
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 	//getter

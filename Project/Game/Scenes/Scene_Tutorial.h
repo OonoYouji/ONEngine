@@ -6,6 +6,7 @@
 #include"Objects/Dumy/Dumy.h"
 //UI
 #include"UI/TutorialUI.h"
+#include"UI/GuidanceArrow.h"
 
 enum TutorialState {
 	SCACLEUP,
@@ -31,6 +32,7 @@ private:
 	Dumy* dumy_ = nullptr;
 	BuildingManager* buildingManager_ = nullptr;
 	Tornado* tornado_ = nullptr;
+	GuidanceArrow* guidanceArrow_ = nullptr;
 	//UI
 	TutorialScaleUpUI* tutorialScaleUpUI_ = nullptr;
 	TutorialScaleDownUI* tutorialScaleDownUI_ = nullptr;

@@ -75,6 +75,8 @@ void GuidanceArrow::Update() {
 
 }
 
+
+
 void GuidanceArrow::Debug() {
 
 
@@ -86,4 +88,34 @@ void GuidanceArrow::SetBoss(Boss* boss) {
 }
 void GuidanceArrow::SetPlayer(Player* player) {
 	pPlayer_ = player;
+}
+
+void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
+
+	// 距離と方向を計算
+	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+		Position, pPlayer_->GetPosition(), Ground::groundScale_ + 1.0f);
+
+	// 現在の回転をオイラー角に変換
+	Vec3 euler = QuaternionToEulerAngles(pPlayer_->GetPivot()->quaternion);
+
+	// プレイヤーの方向を向くための回転を計算
+	Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+
+	// 現在の回転
+	Quaternion currentRotation = pivot_.quaternion;
+
+	// 回転をスムーズに補間 (Slerpを使用)
+	float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
+	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+
+	// ホーミング移動のスピードを設定
+	Quaternion move = ToQuaternion({ 2.0f * Time::DeltaTime(), 0, 0 });
+
+	// 回転を更新
+	pivot_.quaternion = (interpolatedRotation * move);
+	//pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
+
+	pivot_.UpdateMatrix();
+	UpdateMatrix();
 }

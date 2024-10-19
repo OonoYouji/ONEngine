@@ -51,6 +51,7 @@ void Dumy::Initialize() {
 	pTransform_->rotateOrder = XYZ;
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
+
 }
 
 void Dumy::Update() {

@@ -4,6 +4,7 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 
+#include"Objects/Dumy/Dumy.h"
 
 //std
 #include<optional>
@@ -21,6 +22,8 @@ public:
 	void Update()     override;
 	void Debug()      override;
 	
+	void UpdateForTutorial(const Vec3& Position);
+
 	//setter
 	void SetBoss(Boss* boss);
 	void SetPlayer(Player* player);

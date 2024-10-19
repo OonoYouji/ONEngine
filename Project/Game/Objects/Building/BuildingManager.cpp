@@ -178,7 +178,7 @@ void BuildingManager::UpdateForTutorial() {
 	// 建ってるビル達の更新
 	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
 		//更新
-		(*buildingIter)->Update();
+	
 		//死亡
 		if ((*buildingIter)->GetIsInTornado()) {
 			if ((*buildingIter)->GetIsInTornado()) {//竜巻による場合

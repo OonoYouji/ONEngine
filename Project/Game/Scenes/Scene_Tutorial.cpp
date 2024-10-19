@@ -10,6 +10,7 @@
 #include "Objects/Tornado/Tornado.h"	
 #include "Objects/Boss/Boss.h"	
 
+
 void Scene_Tutorial::Initialize() {
 
 	Ring::ResetInstanceCount();
@@ -25,13 +26,14 @@ void Scene_Tutorial::Initialize() {
 	GameCameraState* gameCameraState = new GameCameraState();
 	tornado_ = new Tornado();
 	GameCamera* uiCamera = new GameCamera("TutorialUICamera");
+	guidanceArrow_ = new GuidanceArrow();
 	//チュートリアル
 	tutorialScaleUpUI_ = new TutorialScaleUpUI();
 	tutorialScaleDownUI_ = new TutorialScaleDownUI();
 	tutorialEntrainment_ = new TutorialEntrainment();
 	tutorialEntrainmentAll_ = new TutorialEntrainmentAll();
 	tutorialBodyBlow_ = new TutorialBodyBlow();
-
+	
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
@@ -42,6 +44,7 @@ void Scene_Tutorial::Initialize() {
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 	uiCamera->Initialize();
+	guidanceArrow_->Initialize();
 	//チュートリアル
 	tutorialScaleUpUI_->Initialize();
 	tutorialScaleDownUI_->Initialize();
@@ -59,6 +62,7 @@ void Scene_Tutorial::Initialize() {
 
 	player_->SetTornado(tornado_);
 	tornado_->SetPlayer(player_);
+	guidanceArrow_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
 	
 	//更新して、移動させない為にアクティブを切る
@@ -73,6 +77,7 @@ void Scene_Tutorial::Initialize() {
 	tutorialEntrainment_->isActive = false;
 	tutorialEntrainmentAll_->isActive = false;
 	tutorialBodyBlow_->isActive = false;
+	guidanceArrow_->isActive = false;
 }
 /// ===================================================
 /// 更新処理
@@ -151,6 +156,7 @@ void Scene_Tutorial::Update() {
 
 	case DANYATTACK:
 		tutorialBodyBlow_->isActive = true;
+		guidanceArrow_->UpdateForTutorial(dumy_->GetPos());
 		if (dumy_->GetIsBreak()) {
 			tutorialBodyBlow_->SetIsClose(true);
 			if (tutorialBodyBlow_->GetIsDeath()) {//UIが死んだら
