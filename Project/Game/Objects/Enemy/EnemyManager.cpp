@@ -34,10 +34,11 @@ void  EnemyManager::AddInTornadoBuilding(Tornado* tornado) {
 	inTornadoEnemy->SetTornado(tornado);
 	//リストに追加
 	inTornadoEnemies_.push_back(inTornadoEnemy);
+
 }
 
 //更新
-void 	EnemyManager::Update() {
+void EnemyManager::Update() {
 
 	auto posIte = enemyPositions_.begin();
 	// 建ってるビル達の更新
@@ -73,7 +74,7 @@ void 	EnemyManager::Update() {
 	// 巻きこまれてるビル達の更新
 	for (auto enemyIner = inTornadoEnemies_.begin(); enemyIner != inTornadoEnemies_.end(); ) {
 
-		(*enemyIner)->Update();
+		
 		//
 		if ((*enemyIner)->GetIsDeath()) {
 			(*enemyIner)->Destory();
@@ -99,6 +100,9 @@ void 	EnemyManager::Update() {
 			++deathListiter;
 		}
 	}
+
+	//デバフ追加
+	pTornado_->SetDebufParm(float(inTornadoEnemies_.size()));
 }
 
 void EnemyManager::Debug() {

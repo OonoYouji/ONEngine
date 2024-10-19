@@ -9,6 +9,7 @@
 /// 前方宣言
 /// ===================================================
 class Player;
+class BuildingManager;
 class Ring;
 class Wind;
 
@@ -43,6 +44,10 @@ public:
 	float GetMaxScale()const { return maxScale_; }
 	float GetMinScale()const { return minScale_; }
 
+	float GetDebufParm()const { return debufParm_; }
+
+	void SetDebufParm(float parm) { debufParm_ = parm; }
+
 	void SetPlayer(Player* _player);
 
 private:
@@ -67,6 +72,8 @@ private:
 	float minScale_;
 
 	float zRotateSpeed_ = 1.0f;
+
+	float debufParm_;
 
 	std::vector<Wind*>        windArray_;
 	std::vector<ParticleData> particleDataArray_;

@@ -144,7 +144,6 @@ void Enemy::ChangeState(std::unique_ptr<BaseEnemyBehavior>behavior) {
 	behavior_ = std::move(behavior);
 }
 
-
 void Enemy::SetPlayer(Player* player) {
 	pPlayer_ = player;
 }
@@ -152,7 +151,6 @@ void Enemy::SetPlayer(Player* player) {
 void Enemy::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
-
 
 void Enemy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	if ( dynamic_cast<Tornado*>(collision)) {

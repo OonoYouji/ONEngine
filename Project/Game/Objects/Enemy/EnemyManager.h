@@ -18,7 +18,7 @@ private:
 		float coolTime;
 	};
 private:
-	
+
 	using json = nlohmann::json;
 	Tornado* pTornado_;
 	Player* pPlayer_;
@@ -27,12 +27,15 @@ private:
 	std::list<InTornadoEnemy*> inTornadoEnemies_;
 	//死亡リスト
 	std::list<DeathParamater>deathlist_;
-	const float reSpownCoolTime_=4.0f;
+	const float reSpownCoolTime_ = 4.0f;
 	//jSon保存用
 	std::vector<std::pair<float, float>>enemyPositions_;
-	
+
+	//デバフ割合
+	const float debufPar_ = 1.5f;
+
 public:
-	
+
 	EnemyManager() { CreateTag(this); }
 	~EnemyManager() {}
 
@@ -48,14 +51,16 @@ public:
 
 	//セット
 	void SetPlayer(Player* player);
-	void SetTornado(Tornado*tornado);
+	void SetTornado(Tornado* tornado);
 	//生成関数
 	void SpownEnemy(float theta, float phi);
-	
+
+	float GetDebufParamater();
+
 	//指定の数分ですフラグを立てる
 	void SetDeathFlagInBuildings(size_t count);
 
 	//getter
 	size_t GetSize()const { return enemies_.size(); }
-	
+
 };

@@ -38,5 +38,8 @@ private:
 	//
 	float phi_;
 
+	float maxDebuf_;
+	const float maxSpeed_ = 4.5f;
+
 	Tornado* pTornado_ = nullptr;
 };

@@ -23,10 +23,11 @@ std::array<Vec3, 3> InTornadoBuilding::buildingScaleArray_{
 
 //初期化
 void InTornadoBuilding::Initialize() {
-	speed_ = Random::Float(4.0f, 5.0f);//回転スピード
-	radius_.x = Random::Float(-0.5f, 0.5f);//半径
-	radius_.y = Random::Float(-0.5f, 0.5f);//半径
+	speed_ = Random::Float(4.0f, 4.5f);//回転スピード
+	radius_.x = Random::Float(0.3f, 0.5f);//半径
+	radius_.y = Random::Float(0.3f, 0.5f);//半径
 	pTransform_->scale = buildingScaleArray_[scaleArrayIndex_];
+	maxDebuf_ = 3.0f;
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
 	pTransform_->rotate = { -1.5f,0,0 };//回転
@@ -36,16 +37,18 @@ void InTornadoBuilding::Initialize() {
 //更新
 void InTornadoBuilding::Update() {
 	// 回転速度を加算
-	theta_ += (speed_ / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
-	phi_ += (speed_ / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
+	float debuffRatio = 1.0f - (pTornado_->GetDebufParm() / maxDebuf_);  // 最大デバフ値で割って割合を計算
+	debuffRatio = max(0.0f, debuffRatio);
 
+	theta_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
+	phi_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
 	// 楕円の長軸と短軸
 	float longAxis = pTornado_->GetTransform()->scale.x + radius_.x;  // 長軸 (x方向の半径)
 	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.x; // 短軸 (y方向の半径)
 
 	// 楕円座標を計算
 	float x = longAxis * sin(theta_);
-	float y = shortAxis * cos(phi_); 
+	float y = shortAxis * cos(phi_);
 	pTransform_->position = { x,y,2 };
 }
 //デバッグ

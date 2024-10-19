@@ -11,20 +11,22 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include"Math/Random.h"
 
+#include<algorithm>
+
 //object
 #include"FrameManager/Time.h"
 #include"Objects/Boss/Boss.h"
 
 //初期化
 void InTornadoEnemy::Initialize() {
-	speed_ = Random::Float(4.0f, 5.0f);//回転スピード
-	radius_.x = Random::Float(-0.5f, 0.5f);//半径
-	radius_.y = Random::Float(-0.5f, 0.5f);//半径
+	speed_ = Random::Float(4.0f, 4.5f);//回転スピード
+	radius_.x = Random::Float(0.3f, 0.5f);//半径
+	radius_.y = Random::Float(0.3f, 0.5f);//半径
 
-	ofsetX = -0.14f;
-	ofsetY = -1.10f;
+
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	pTransform_->scale = { 0.7f,0.7f,0.7f };
+	maxDebuf_ = 3.0f;
 	auto model = ModelManager::Load("Enemy");
 	auto mesh_ = AddComponent<MeshRenderer>();
 	mesh_->SetModel(model);
@@ -33,9 +35,11 @@ void InTornadoEnemy::Initialize() {
 //更新
 void InTornadoEnemy::Update() {
 	// 回転速度を加算
-	theta_ += (speed_ / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
-	phi_ += (speed_ / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
+	float debuffRatio = 1.0f - (pTornado_->GetDebufParm() / maxDebuf_);  // 最大デバフ値で割って割合を計算
+	debuffRatio = max(0.0f, debuffRatio);  
 
+	theta_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
+	phi_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
 	// 楕円の長軸と短軸
 	float longAxis = pTornado_->GetTransform()->scale.x + radius_.x;  // 長軸 (x方向の半径)
 	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.x; // 短軸 (y方向の半径)

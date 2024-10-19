@@ -46,6 +46,9 @@ private:
 
 	Tornado* pTornado_ = nullptr;
 
+	float maxDebuf_;
+	const float maxSpeed_ = 4.5f;
+
 	int scaleArrayIndex_ = 0;
 
 };
