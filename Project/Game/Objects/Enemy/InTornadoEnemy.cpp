@@ -13,6 +13,7 @@
 
 //object
 #include"FrameManager/Time.h"
+#include"Objects/Boss/Boss.h"
 
 //初期化
 void InTornadoEnemy::Initialize() {
@@ -23,7 +24,10 @@ void InTornadoEnemy::Initialize() {
 	ofsetX = -0.14f;
 	ofsetY = -1.10f;
 	pTransform_->rotate = { -1.5f,0,0 };//回転
-	auto model = ModelManager::Load("TestObject");
+	pTransform_->scale = { 0.7f,0.7f,0.7f };
+	auto model = ModelManager::Load("Enemy");
+	auto mesh_ = AddComponent<MeshRenderer>();
+	mesh_->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 }
 //更新
@@ -60,4 +64,12 @@ void InTornadoEnemy::SetTornado(Tornado* tornade) {
 void InTornadoEnemy::SetIsDeath(bool is) {
 	isDeath_ = is;
 	ParentCancel(true);
+}
+
+
+void InTornadoEnemy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<Boss*>(collision) && !isDeath_) {
+		SetIsDeath(true);
+	}
 }

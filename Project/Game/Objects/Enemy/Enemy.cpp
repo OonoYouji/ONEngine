@@ -80,9 +80,9 @@ void Enemy::Update() {
 //通常更新
 void Enemy::RootInit() {
 	easeT_ = 0.0f;
-	easeTimeMax_ = 1.0f;
-	amplitude_ = 0.2f;
-	period_ = 0.1f;
+	easeTimeMax_ =0.7f;
+	amplitude_ = 0.5f;
+	period_ = 0.2f;
 	perceptionDistance_ = 6.0f;
 	isChase_ = false;
 

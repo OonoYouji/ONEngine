@@ -21,6 +21,7 @@ public:
 	void Debug() override;
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 	//setter
 	void SetTornado(Tornado* tornade);
 	void SetIsDeath(bool is);

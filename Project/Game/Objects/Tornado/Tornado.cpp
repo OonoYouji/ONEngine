@@ -76,7 +76,7 @@ void Tornado::Initialize() {
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
 	eacSpeed_ = 0.7f;
-	pTransform_->position.z = 4.2f;
+	pTransform_->position.z = 2.2f;
 	minScale_ = 0.5f;
 	maxScale_ = 1.75f;
 	scaleScaler_ = minScale_;
