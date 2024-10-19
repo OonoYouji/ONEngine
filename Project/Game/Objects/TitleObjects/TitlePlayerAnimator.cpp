@@ -30,8 +30,8 @@ void TitlePlayerAnimator::Initialize() {
 	earthRenderer->SetRadius(1.5f);
 	earthRenderer->SetColor({0,0,0, 0.75f});
 
-	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(32u, "rubble");
-	particleDataArray_.resize(32);
+	particleSystem_ = AddComponent<ParticleSystem>(64u, "rubble");
+	particleDataArray_.resize(64u);
 
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
@@ -69,12 +69,13 @@ void TitlePlayerAnimator::Initialize() {
 	}
 
 	/// パーティクルの挙動
-	particleSystem->SetParticleLifeTime(3.0f);
-	particleSystem->SetEmittedParticleCount(2);
-	particleSystem->SetParticleRespawnTime(0.3f);
-	particleSystem->SetUseBillboard(false);
+	particleSystem_->SetParticleLifeTime(3.0f);
+	particleSystem_->SetEmittedParticleCount(2);
+	particleSystem_->SetParticleRespawnTime(0.3f);
+	particleSystem_->SetUseBillboard(false);
+	useRotate_ = true;
 	
-	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
@@ -83,12 +84,15 @@ void TitlePlayerAnimator::Initialize() {
 		transform->scale = data.scale;
 
 		transform->position = {
-			std::cos(data.time * data.speed) * data.radius,
+			std::cos(-data.time * data.speed) * data.radius,
 			(1.0f - particle->GetNormLifeTime()) * data.maxPosY,
-			std::sin(data.time * data.speed) * data.radius
+			std::sin(-data.time * data.speed) * data.radius
 		};
 
-		transform->position = Mat4::Transform(transform->position, matRotate_);
+		if(useRotate_) {
+			transform->position = Mat4::Transform(transform->position, matRotate_);
+		}
+
 		transform->position += GetPosition();
 	});
 
@@ -175,4 +179,8 @@ void TitlePlayerAnimator::SetBasePosition(const Vec3& _basePosition) {
 
 void TitlePlayerAnimator::SetIsSpinUpdate(bool isSpinUpdate) {
 	isSpinUpdate_ = isSpinUpdate;
+}
+
+void TitlePlayerAnimator::SetParticleUseRotate(bool _useRotate) {
+	useRotate_ = _useRotate;
 }

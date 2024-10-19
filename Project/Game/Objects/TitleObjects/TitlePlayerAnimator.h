@@ -1,5 +1,9 @@
 #pragma once
 
+/// components
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
+
+/// base class
 #include "GameObjectManager/BaseGameObject.h"
 
 class TitlePlayerAnimator final : public BaseGameObject {
@@ -32,6 +36,10 @@ public:
 
 	void SetIsSpinUpdate(bool isSpinUpdate);
 
+	ParticleSystem* GetParticleSystem() const { return particleSystem_; }
+
+	void SetParticleUseRotate(bool _useRotate);
+
 private:
 
 	Vec3 basePosition_;
@@ -49,6 +57,8 @@ private:
 	std::vector<class Wind*>       windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
+	ParticleSystem*                particleSystem_ = nullptr;
 
 	Mat4 matRotate_;
+	bool useRotate_;
 };
