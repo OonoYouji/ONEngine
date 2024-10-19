@@ -21,6 +21,7 @@
 #include"Objects/Player/Player.h"
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Ground/Ground.h"
+#include"Objects/Tornado/Tornado.h"
 //function
 #include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
@@ -39,7 +40,7 @@ void Enemy::Initialize() {
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.Initialize();
-	ChangeState(std::make_unique<EnemyRoot>(this));
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,8 +48,8 @@ void Enemy::Initialize() {
 	Quaternion initQuater = Quaternion::MakeFromAxis(Vec3::kRight, 2.0f);
 	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
-	pTransform_->scale = { 2,2,2 };
-	speedParamager_ = 0.5f;
+	pTransform_->scale = { 1,1,1 };
+	speedParamager_ = 0.2f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -63,16 +64,14 @@ void Enemy::Initialize() {
 	//行列更新
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+	ChangeState(std::make_unique<EnemyRoot>(this));
 }
 
 void Enemy::Update() {
 	
 	//振る舞い更新
 	behavior_->Update();
-	////敵のビルが一定数溜まったら
-	//if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
-	//	ChangeState(std::make_unique<EnemyRoot>(this));
-	//}
 
 
 	pivot_.UpdateMatrix();
@@ -80,10 +79,48 @@ void Enemy::Update() {
 
 //通常更新
 void Enemy::RootInit() {
+	easeT_ = 0.0f;
+	easeTimeMax_ = 1.0f;
+	amplitude_ = 0.2f;
+	period_ = 0.1f;
+	perceptionDistance_ = 6.0f;
+	isChase_ = false;
 
 }
 void Enemy::RootUpdate() {
+	// 距離と方向を計算
+	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+	GetPlayer()->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
 
+	if (distanceAndDirection.first <= perceptionDistance_ && !isChase_) {
+		isChase_ = true;
+	}
+	if (isChase_) {//チェイスモードに以降
+
+		// 現在の回転をオイラー角に変換
+		Vec3 euler = QuaternionToEulerAngles(GetPivotQuaternion());
+
+		// プレイヤーの方向を向くための回転を計算
+		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+
+		// 現在の回転
+		Quaternion currentRotation = GetPivotQuaternion();
+
+		// 回転をスムーズに補間 (Slerpを使用)
+		float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+
+		// 回転を更新
+	SetPivotQuaternion(interpolatedRotation);
+
+		easeT_ += Time::DeltaTime();
+		if (easeT_ >= easeTimeMax_) {
+			easeT_ = easeTimeMax_;
+			ChangeState(std::make_unique<EnemyChasePlayer>(this));
+		}
+		SetScale(EaseAmplitudeScale(Vec3(1.0f, 1.0f, 1.0f), easeT_, easeTimeMax_, amplitude_, period_));
+
+	}
 }
 //ストーカー
 void Enemy::ChaseInit() {
@@ -118,13 +155,7 @@ void Enemy::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 
 void Enemy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {
-		int scaleIndex = tornadoBuilding->GetScaleArrayIndex();
-
-		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
-
-		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
-		
-		}
+	if ( dynamic_cast<Tornado*>(collision)) {
+		isInTornado_ = true;
 	}
 }

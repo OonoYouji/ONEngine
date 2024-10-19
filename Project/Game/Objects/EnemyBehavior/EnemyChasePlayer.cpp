@@ -16,12 +16,12 @@ EnemyChasePlayer::EnemyChasePlayer(Enemy* enemy)
 	: BaseEnemyBehavior("ChasePlayer", enemy) {
 
 	pEnemy_->ChaseInit();
-	pEnemy_->SetScale({ 2.0f,2.0f,2.0f });
+	pEnemy_->SetScale({ 1.0f,1.0f,1.0f });
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
 	chaseMinPos_ = 10.0f;
-	chaseMaxPos_ = 25.0f;
+	chaseMaxPos_ = 15.0f;
 }
 
 EnemyChasePlayer::~EnemyChasePlayer() {
@@ -53,7 +53,7 @@ void EnemyChasePlayer::Update() {
 
 	// 回転を更新
 	pEnemy_->SetPivotQuaternion(interpolatedRotation);
-	pEnemy_->SetPivotSubtraction(move ); // 移動もスムーズに
+	pEnemy_->SetPivotSubtraction(move); // 移動もスムーズに
 
 	// 一定距離で通常状態に遷移
 	if (distanceAndDirection.first >= chaseMaxPos_) {

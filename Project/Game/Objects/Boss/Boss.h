@@ -65,12 +65,11 @@ public:
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
+	BuildingManager* GetBuildingManager()const { return pBuildingManager_; }
 	
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
-
 	bool GetIsAttack()const { return isAttack_; }
 
-	
 	//setter
 	void SetIsSlurping(bool is) { isSlurping_ = is; }
 	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }

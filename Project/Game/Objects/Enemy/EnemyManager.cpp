@@ -22,9 +22,8 @@ void EnemyManager::SpownEnemy(float phi, float theta) {
 	// 回転を適用
 	Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, phi);
 	Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, theta);
-	enemyPositions_.push_back(std::pair<float, float>(phi, theta));
 	enemy->SetPivotQuaternion(rotateX * rotateY);
-
+	enemyPositions_.push_back(std::pair<float, float>(phi, theta));
 	enemies_.push_back(enemy);
 }
 //巻きこまれてるビルの追加
@@ -44,7 +43,7 @@ void 	EnemyManager::Update() {
 	// 建ってるビル達の更新
 	for (std::list<Enemy*>::iterator enemyIter = enemies_.begin(); enemyIter != enemies_.end(); ) {
 		//更新
-		(*enemyIter)->Update();
+		
 		if (posIte != enemyPositions_.end()) {
 			*posIte = (*enemyIter)->GetPos(); // 更新された座標を入れる
 			++posIte; // 次の要素へ進める
@@ -104,7 +103,7 @@ void 	EnemyManager::Update() {
 
 void EnemyManager::Debug() {
 	if (ImGui::Button("Save")) {
-		SaveBuildingPos("resources/EnemyParamater/EnemyPos.json");
+		SaveEnemyPos("resources/EnemyParamater/EnemyPos.json");
 		std::string message = std::format("{}.json saved.", "Enemy");
 		MessageBoxA(nullptr, message.c_str(), "EnemyParamater", 0);
 	}
@@ -123,7 +122,7 @@ void EnemyManager::SetTornado(Tornado* tornado) {
 }
 
 // レールの制御点をJSON形式で保存する
-void EnemyManager::SaveBuildingPos(const std::string& filename) {
+void EnemyManager::SaveEnemyPos(const std::string& filename) {
 	json j;
 	for (const auto& pos : enemyPositions_) {
 		j.push_back({ pos.first,pos.second });
@@ -137,7 +136,7 @@ void EnemyManager::SaveBuildingPos(const std::string& filename) {
 }
 
 // JSONファイルから制御点を読み込む
-void EnemyManager::LoadControlSpots(const std::string& filename) {
+void EnemyManager::LoadEnemyPos(const std::string& filename) {
 	std::ifstream file(filename);
 	if (file.is_open()) {
 		json j;

@@ -59,7 +59,7 @@ void 	BuildingManager::Update() {
 	// 建ってるビル達の更新
 	for (std::list<BaseBuilding*>::iterator buildingIter = buildings_.begin(); buildingIter != buildings_.end(); ) {
 		//更新
-		(*buildingIter)->Update();
+		/*(*buildingIter)->Update();*/
 		if (posIte != buildingPositions_.end()) {
 			*posIte = (*buildingIter)->GetPos(); // 更新された座標を入れる
 			++posIte; // 次の要素へ進める
@@ -95,7 +95,7 @@ void 	BuildingManager::Update() {
 	// 巻きこまれてるビル達の更新
 	for (auto buildingIter = inTornadoBuildings_.begin(); buildingIter != inTornadoBuildings_.end(); ) {
 
-		(*buildingIter)->Update();
+	/*	(*buildingIter)->Update();*/
 		//
 		if ((*buildingIter)->GetIsDeath()) {
 			(*buildingIter)->Destory();
@@ -110,7 +110,7 @@ void 	BuildingManager::Update() {
 	// ボスのビル達の更新
 	for (auto buildingIter = inBossBuildings_.begin(); buildingIter != inBossBuildings_.end(); ) {
 
-		(*buildingIter)->Update();
+		/*(*buildingIter)->Update();*/
 		//
 		if ((*buildingIter)->GetIsDeath()) {
 			(*buildingIter)->Destory();
@@ -188,8 +188,7 @@ void BuildingManager::UpdateForTutorial() {
 				(*buildingIter)->Destory();
 				// リストから削除	
 				buildingIter = buildings_.erase(buildingIter);
-			}
-			
+			}	
 		}
 		else {
 			++buildingIter;
@@ -212,7 +211,7 @@ void BuildingManager::SaveBuildingPos(const std::string& filename) {
 }
 
 // JSONファイルから制御点を読み込む
-void BuildingManager::LoadControlSpots(const std::string& filename) {
+void BuildingManager::LoadBuildingPos(const std::string& filename) {
 	std::ifstream file(filename);
 	if (file.is_open()) {
 		json j;

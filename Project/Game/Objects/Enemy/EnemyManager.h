@@ -43,8 +43,8 @@ public:
 	void UpdateForTutorial();
 	void  AddInTornadoBuilding(Tornado* tornado);
 	//json
-	void SaveBuildingPos(const std::string& filename);
-	void LoadControlSpots(const std::string& filename);
+	void SaveEnemyPos(const std::string& filename);
+	void LoadEnemyPos(const std::string& filename);
 
 	//セット
 	void SetPlayer(Player* player);

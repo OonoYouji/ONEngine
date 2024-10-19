@@ -78,4 +78,13 @@ private:
 	//  パラメータ
 	////////////////////////////////////////////////////////////////////////////////////////////
 	float speedParamager_;
+
+	//イージング
+	float easeT_;
+	float easeTimeMax_;
+	float amplitude_;
+	float period_;
+	//距離
+	float perceptionDistance_;
+	bool isChase_;
 };

@@ -46,7 +46,7 @@ public:
 	void UpdateForTutorial();
 	//json
 	void SaveBuildingPos(const std::string& filename);
-	void LoadControlSpots(const std::string& filename);
+	void LoadBuildingPos(const std::string& filename);
 
 	//セット
 	void SetBoss(Boss*boss);

@@ -69,25 +69,24 @@ void BossBulletShot::Update() {
 			isAnticipationed_ = true;
 			Quaternion direction = pBoss_->GetPivotQuaternion() * pBoss_->GetQuaternion();			
 			// 弾の生成
-			pBossbulletLump_ = new BossBulletLump();
-			pBossbulletLump_->Initialize();
-			pBossbulletLump_->SetDirection(direction);
+			BossbulletLump_ = new BossBulletLump();
+			BossbulletLump_->Initialize();
+			BossbulletLump_->SetDirection(direction);
 		}
 	}
 	//弾発射
 	if (isAnticipationed_) {
 
 		//弾更新
-		if (pBossbulletLump_) {
-			pBossbulletLump_->Update();
+		if (BossbulletLump_) {
+			BossbulletLump_->Update();
 			//弾死んだらスタン
-			if (pBossbulletLump_->GetIsDeath()) {
-				pBossbulletLump_->Destory();//デストロイ
-				pBossbulletLump_ = nullptr;
+			if (BossbulletLump_->GetIsDeath()) {
+				BossbulletLump_->Destory();//デストロイ
+				BossbulletLump_ = nullptr;
 				isStop_ = true;
 			}
 		}
-	
 		if(isStop_){
 			stopTime_ += Time::DeltaTime();
 			//振る舞い切り替え

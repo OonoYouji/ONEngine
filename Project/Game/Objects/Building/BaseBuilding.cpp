@@ -266,7 +266,7 @@ void BaseBuilding::GrowForTime(const float& par, const float& second) {
 }
 
 void BaseBuilding::Animation() {
-	animationTime_ += Time::DeltaTime();
+	animationTime_ += Time::DeltaTime()*2;
 
 	float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
 	float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;

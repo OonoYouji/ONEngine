@@ -91,7 +91,8 @@ void Scene_Game::Initialize() {
 	enemyManager->SetTornado(tornado_);
 
 	//jsonからデータ読む
-	buildingManager_->LoadControlSpots("resources/BuildingParamater/BuildingPos.json");
+	enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");
+	buildingManager_->LoadBuildingPos("resources/BuildingParamater/BuildingPos.json");
 	
 }
 
