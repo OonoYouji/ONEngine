@@ -113,7 +113,7 @@ void TitlePlayerAnimator::Initialize() {
 	for(size_t i = 0; i < kWindSize; ++i) {
 		WindData& wind = windDataArray_[i];
 		wind.time   = Random::Float(1.0f, 3.0f);
-		wind.speed  = Random::Float(5.0f, 7.5f);
+		wind.speed  = Random::Float(5.0f, 7.5f) * 1.5f;
 		wind.radius = Random::Float(1.0f, 3.0f);
 		wind.height = Random::Float(1.0f, 5.0f);
 	}
@@ -130,20 +130,37 @@ void TitlePlayerAnimator::Initialize() {
 
 		wind.time += Time::DeltaTime();
 
-		transform->position = {
-			std::cos(-wind.time * wind.speed),
-			wind.height - 1.0f,
-			std::sin(-wind.time * wind.speed)
-		};
+		if(useRotate_) {
 
-		transform->rotate.y = std::atan2(transform->position.x, transform->position.z);
-		transform->rotate.y += std::numbers::pi_v<float> * 0.5f;
-		
-		transform->scale = Vec3::kOne * wind.height;
-		transform->scale.y = 2.0f;
+			transform->position = {
+				std::cos(-wind.time * wind.speed) * wind.height * 0.25f,
+				std::sin(-wind.time * wind.speed) * wind.height * 0.25f,
+				-wind.height - 1.0f
+			};
+
+			transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+			transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
+
+			transform->scale = Vec3::kOne * wind.height * 0.25f;
+			transform->scale.y = 2.0f;
+		} else {
+
+			transform->position = {
+				std::cos(-wind.time * wind.speed),
+				wind.height - 1.0f,
+				std::sin(-wind.time * wind.speed)
+			};
+
+			transform->rotate.y = std::atan2(transform->position.x, transform->position.z);
+			transform->rotate.y += std::numbers::pi_v<float> * 0.5f;
+
+			transform->scale = Vec3::kOne * wind.height * 0.25f;
+			transform->scale.y = 2.0f;
+		}
 
 		transform->position += basePosition_;
 
+		/// reset ...
 		if(particle->GetNormLifeTime() <= 0.0f) {
 			wind.height = Random::Float(1.0f, 5.0f);
 		}

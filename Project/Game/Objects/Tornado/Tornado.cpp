@@ -55,7 +55,7 @@ void Tornado::Initialize() {
 		transform->position = {
 			std::cos(data.time * data.speed) * data.radius,
 			std::sin(data.time * data.speed) * data.radius,
-			particle->GetNormLifeTime() * data.maxPosY
+			-particle->GetNormLifeTime() * data.maxPosY
 		};
 
 		transform->position = Mat4::Transform(transform->position, matRotate_);
@@ -73,8 +73,8 @@ void Tornado::Initialize() {
 	/// action param initialize
 	eacSpeed_ = 0.7f;
 	pTransform_->position.z = 4.2f;
-	minScale_ = 0.5f;
-	maxScale_ = 0.75f;
+	minScale_ = 1.0f;
+	maxScale_ = 1.5f;
 	scaleScaler_ = minScale_;
 
 
@@ -104,12 +104,12 @@ void Tornado::Initialize() {
 		wind.time = Random::Float(1.0f, 3.0f);
 		wind.speed = Random::Float(5.0f, 7.5f);
 		wind.radius = Random::Float(1.0f, 3.0f);
-		wind.height = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 2.0f);
 	}
 
 	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
-	windParticle->SetParticleLifeTime(3.0f);
-	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetParticleLifeTime(1.0f);
+	windParticle->SetParticleRespawnTime(0.2f);
 	windParticle->SetEmittedParticleCount(1);
 	windParticle->SetUseBillboard(false);
 
@@ -123,15 +123,20 @@ void Tornado::Initialize() {
 		wind.time += Time::DeltaTime();
 
 		transform->position = {
-			std::cos(-wind.time * wind.speed),
-			std::sin(-wind.time * wind.speed),
+			std::cos(-wind.time * wind.speed) * wind.height * 0.25f,
+			std::sin(-wind.time * wind.speed) * wind.height * 0.25f,
 			wind.height - 1.0f
 		};
 
-		transform->rotate.z = std::atan2(-transform->position.x, transform->position.y);
+		transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+		transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
 
-		//transform->scale   = Vec3::kOne * wind.height;
-		//transform->scale.y = 2.0f;
+		transform->scale = Vec3::kOne * wind.height * 0.5f;
+
+		if(particle->GetNormLifeTime() <= 0.0f) {
+			wind.time = 0.0f;
+			wind.height = Random::Float(1.0f, 2.0f);
+		}
 
 	});
 
