@@ -104,12 +104,12 @@ void Tornado::Initialize() {
 		wind.time = Random::Float(1.0f, 3.0f);
 		wind.speed = Random::Float(5.0f, 7.5f);
 		wind.radius = Random::Float(1.0f, 3.0f);
-		wind.height = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 2.0f);
 	}
 
 	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
-	windParticle->SetParticleLifeTime(3.0f);
-	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetParticleLifeTime(1.0f);
+	windParticle->SetParticleRespawnTime(0.2f);
 	windParticle->SetEmittedParticleCount(1);
 	windParticle->SetUseBillboard(false);
 
@@ -123,15 +123,20 @@ void Tornado::Initialize() {
 		wind.time += Time::DeltaTime();
 
 		transform->position = {
-			std::cos(-wind.time * wind.speed),
-			std::sin(-wind.time * wind.speed),
+			std::cos(-wind.time * wind.speed) * wind.height * 0.25f,
+			std::sin(-wind.time * wind.speed) * wind.height * 0.25f,
 			wind.height - 1.0f
 		};
 
-		transform->rotate.z = std::atan2(-transform->position.x, transform->position.y);
+		transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+		transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
 
-		//transform->scale   = Vec3::kOne * wind.height;
-		//transform->scale.y = 2.0f;
+		transform->scale = Vec3::kOne * wind.height * 0.5f;
+
+		if(particle->GetNormLifeTime() <= 0.0f) {
+			wind.time = 0.0f;
+			wind.height = Random::Float(1.0f, 2.0f);
+		}
 
 	});
 

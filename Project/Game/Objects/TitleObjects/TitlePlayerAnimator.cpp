@@ -142,6 +142,10 @@ void TitlePlayerAnimator::Initialize() {
 		transform->scale = Vec3::kOne * wind.height;
 		transform->scale.y = 2.0f;
 
+		if(useRotate_) {
+			transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+			transform->position = Mat4::Transform(transform->position, Mat4::MakeRotate(transform->rotate));
+		}
 		transform->position += basePosition_;
 
 		if(particle->GetNormLifeTime() <= 0.0f) {
