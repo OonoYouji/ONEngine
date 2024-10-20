@@ -91,6 +91,50 @@ void Tornado::Initialize() {
 		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
 	}
 
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time = Random::Float(1.0f, 3.0f);
+		wind.speed = Random::Float(5.0f, 7.5f);
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 3.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(3.0f);
+	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		Transform* parent    = GetParent();
+		transform->SetParent(parent);
+
+		WindData&  wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		transform->position = {
+			std::cos(-wind.time * wind.speed),
+			std::sin(-wind.time * wind.speed),
+			wind.height - 1.0f
+		};
+
+		transform->rotate.z = std::atan2(-transform->position.x, transform->position.y);
+
+		//transform->scale   = Vec3::kOne * wind.height;
+		//transform->scale.y = 2.0f;
+
+	});
+
 }
 
 void Tornado::Update() {
@@ -202,15 +246,6 @@ void Tornado::Debug() {
 
 	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		//Vec3 scale = windArray_.front()->GetTransform()->scale;
-		//ImGui::DragFloat3("scale", &scale.x, 0.01f);
-
-		//if(ImGui::IsItemEdited()) {
-		//	for(auto& wind : windArray_) {
-		//		wind->GetTransform()->scale = scale;
-		//	}
-		//}
-
 		ImGui::TreePop();
 	}
 
@@ -223,41 +258,6 @@ void Tornado::SetPlayer(Player* _player) {
 	UpdateMatrix();
 	
 }
-
-
-/// ===================================================
-/// ring
-/// ===================================================
-
-int Ring::sInstanceCount_ = 0;
-
-Ring::Ring() {
-	CreateTag(this); 
-	id_ = sInstanceCount_++;
-}
-
-void Ring::Initialize() {
-	auto mr = AddComponent<MeshRenderer>();
-	mr->SetModel(std::string("TornadoRing") + std::to_string(id_ + 1));
-}
-
-void Ring::Update() {
-	pTransform_->rotate.y += Time::DeltaTime() * rotateSpeed_;
-}
-
-void Ring::Debug() {
-	if (ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat("rotate speed", &rotateSpeed_, 0.5f);
-
-		ImGui::TreePop();
-	}
-}
-
-void Ring::ResetInstanceCount() {
-	sInstanceCount_ = 0;
-}
-
 
 /// ===================================================
 /// wind

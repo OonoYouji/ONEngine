@@ -9,7 +9,6 @@
 /// 前方宣言
 /// ===================================================
 class Player;
-class Ring;
 class Wind;
 
 /// ===================================================
@@ -29,6 +28,13 @@ class Tornado final : public BaseGameObject {
 		float maxPosY = 0.0f;
 		Vec3 rotate{};
 		Vec3 scale{};
+	};
+
+	struct WindData {
+		float time;
+		float speed;
+		float radius;
+		float height;
 	};
 
 public:
@@ -75,33 +81,9 @@ private:
 	std::vector<Wind*>             windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
+	std::vector<WindData>          windDataArray_;
 
 	Mat4 matRotate_;
-
-};
-
-
-/// ===================================================
-/// わっか
-/// ===================================================
-class Ring : public BaseGameObject {
-public:
-
-	Ring();
-	~Ring() {}
-
-	void Initialize() override;
-	void Update()     override;
-	void Debug()      override;
-
-	static void ResetInstanceCount();
-
-private:
-
-	static int sInstanceCount_;
-	int id_;
-
-	float rotateSpeed_ = 0.0f;
 
 };
 

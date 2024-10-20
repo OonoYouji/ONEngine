@@ -60,6 +60,10 @@ void TitlePlayerAnimator::Initialize() {
 
 
 
+	/// ---------------------------------------------------
+	/// 飛散物 
+	/// ---------------------------------------------------
+
 	/// パーティクルデータの初期化
 	for(auto& data : particleDataArray_) {
 		data.maxPosY = Random::Float(1.0f, 10.0f);
@@ -98,6 +102,49 @@ void TitlePlayerAnimator::Initialize() {
 		transform->position += GetPosition();
 	});
 
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time   = Random::Float(1.0f, 3.0f);
+		wind.speed  = Random::Float(5.0f, 7.5f);
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 3.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "windBoard");
+	windParticle->SetParticleLifeTime(3.0f);
+	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		WindData& wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		transform->position = {
+			std::cos(-wind.time * wind.speed),
+			wind.height - 1.0f,
+			std::sin(-wind.time * wind.speed)
+		};
+
+		transform->rotate.y = std::atan2(transform->position.x, transform->position.z);
+		transform->rotate.y += std::numbers::pi_v<float> * 0.5f;
+		
+		transform->scale = Vec3::kOne * wind.height;
+		transform->scale.y = 2.0f;
+
+		transform->position += basePosition_;
+
+	});
 
 }
 
