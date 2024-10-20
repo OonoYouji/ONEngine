@@ -98,7 +98,7 @@ void Boss::Update() {
 		Vec3 hitBackDirection = Vector3::Normalize(GetPosition() - pPlayer_->GetPosition());
 
 		// ヒットバックのスピードを設定
-		float hitBackSpeed = 0.5f * Time::DeltaTime(); // ヒットバックのスピードを調整
+		float hitBackSpeed = 0.8f * Time::DeltaTime(); // ヒットバックのスピードを調整
 
 		// 現在の回転を取得
 		Quaternion currentRotation = GetPivotQuaternion();
