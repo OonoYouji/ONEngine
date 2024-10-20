@@ -63,14 +63,20 @@ public:
 	void ParentBoss();
 	void ParentTubu();
 
+	bool GetIsAttackCollision()const { return isAttackCollision_; }
+
 	void RootInit();
 	void AttackInit();
 
+	void SetIsAttackCollision(bool is) { isAttackCollision_ = is; }
 	void SetBossTube(BossTubu* bossTube);
 
 private:
 
 private:
+
+	bool isAttackCollision_;
+
 	BossTubu* pBossTube_;
 	float floatingCycle_;
 	float floatingAmplitude_;

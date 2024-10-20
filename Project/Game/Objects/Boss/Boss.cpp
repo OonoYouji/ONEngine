@@ -86,36 +86,20 @@ void Boss::Update() {
 
 		// 現在の回転をオイラー角に変換
 		Vec3 euler = QuaternionToEulerAngles(GetPivotQuaternion());
-
+		// 現在の回転
+		Quaternion currentRotation = GetPivotQuaternion();
 		// プレイヤーの方向を向くための回転を計算
 		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
-
-		Quaternion interpolatedRotation = (targetRotation);
+		// 回転をスムーズに補間 (Slerpを使用)
+		float rotationSpeed = 20.0f; // 回転速度、必要に応じて調整
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ -1.0f * Time::DeltaTime(), 0, 0 });
+		Quaternion move = ToQuaternion({ -0.6f * Time::DeltaTime(), 0, 0 });
 
 		pivot_.quaternion = interpolatedRotation;
 		pivot_.quaternion *= (move); // 移動もスムーズに
-
-		//// プレイヤーとボスの間の方向ベクトルを計算
-		//Vec3 directionToPlayer = Vector3::Normalize(pPlayer_->GetPosition() -GetPosition());
-
-		//// ヒットバックの方向（プレイヤーの逆方向）
-		//Vec3 hitBackDirection = -directionToPlayer;
-
-		//// ヒットバック速度を設定
-		//float hitBackSpeed = 1.5f * Time::DeltaTime();
-
-		//// ヒットバック移動を回転に基づいて計算
-		//Quaternion hitBackRotation = ToQuaternion(hitBackDirection * hitBackSpeed);
-
-		//// 現在の回転（ピボットのクォータニオン）
-		//Quaternion currentRotation = pivot_.quaternion;
-
-		//// 現在の回転にヒットバック移動を適用（向きは変えずに移動だけ反映）
-		//pivot_.quaternion = currentRotation * hitBackRotation;
-
+	
 		// クールダウン処理
 		if (damageCoolTime_ <= 0) {
 			meshRenderer_->SetColor(Vec4::kWhite);
@@ -179,11 +163,15 @@ void Boss::AttackInit() {
 	pBossTubu_->ParamaterInit();
 	isAttackBack_ = false;
 	isAttack_ = true;
+	pBossHead_->SetIsAttackCollision(false);
 }
 
 void Boss::AttackUpdate() {//超汚い
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::DeltaTime();
+		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
+			pBossHead_->SetIsAttackCollision(true);
+		}
 		if (attackEaseT_ >= kAttackEaseT_) {
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();
@@ -194,10 +182,14 @@ void Boss::AttackUpdate() {//超汚い
 	}//戻る
 	else if (isAttackBack_) {
 		attackEaseT_ -= Time::DeltaTime();
+		if (attackEaseT_ <= 0.3f) {
+			pBossHead_->SetIsAttackCollision(false);
+		}
 		if (attackEaseT_ <= 0.0f) {
 			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
+			pBossHead_->SetIsAttackCollision(false);
 		}
 	}
 	pBossTubu_->SetPositionY(EaseInBack(4.8f, 4.0f, attackEaseT_, kAttackEaseT_));
