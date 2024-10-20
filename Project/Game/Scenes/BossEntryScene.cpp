@@ -20,7 +20,6 @@
 
 void BossEntryScene::Initialize() {
 
-	Ring::ResetInstanceCount();
 	Wind::ResetInstanceCount();
 
 

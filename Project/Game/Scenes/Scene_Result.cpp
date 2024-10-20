@@ -9,7 +9,6 @@
 void Scene_Result::Initialize() {
 
 	/// reset
-	Ring::ResetInstanceCount();
 	Wind::ResetInstanceCount();
 
 

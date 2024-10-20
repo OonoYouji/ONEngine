@@ -202,15 +202,6 @@ void Tornado::Debug() {
 
 	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		//Vec3 scale = windArray_.front()->GetTransform()->scale;
-		//ImGui::DragFloat3("scale", &scale.x, 0.01f);
-
-		//if(ImGui::IsItemEdited()) {
-		//	for(auto& wind : windArray_) {
-		//		wind->GetTransform()->scale = scale;
-		//	}
-		//}
-
 		ImGui::TreePop();
 	}
 
@@ -223,41 +214,6 @@ void Tornado::SetPlayer(Player* _player) {
 	UpdateMatrix();
 	
 }
-
-
-/// ===================================================
-/// ring
-/// ===================================================
-
-int Ring::sInstanceCount_ = 0;
-
-Ring::Ring() {
-	CreateTag(this); 
-	id_ = sInstanceCount_++;
-}
-
-void Ring::Initialize() {
-	auto mr = AddComponent<MeshRenderer>();
-	mr->SetModel(std::string("TornadoRing") + std::to_string(id_ + 1));
-}
-
-void Ring::Update() {
-	pTransform_->rotate.y += Time::DeltaTime() * rotateSpeed_;
-}
-
-void Ring::Debug() {
-	if (ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat("rotate speed", &rotateSpeed_, 0.5f);
-
-		ImGui::TreePop();
-	}
-}
-
-void Ring::ResetInstanceCount() {
-	sInstanceCount_ = 0;
-}
-
 
 /// ===================================================
 /// wind

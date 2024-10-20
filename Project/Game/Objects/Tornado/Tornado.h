@@ -9,7 +9,6 @@
 /// 前方宣言
 /// ===================================================
 class Player;
-class Ring;
 class Wind;
 
 /// ===================================================
@@ -77,31 +76,6 @@ private:
 	std::vector<ParticleData>      particleDataArray_;
 
 	Mat4 matRotate_;
-
-};
-
-
-/// ===================================================
-/// わっか
-/// ===================================================
-class Ring : public BaseGameObject {
-public:
-
-	Ring();
-	~Ring() {}
-
-	void Initialize() override;
-	void Update()     override;
-	void Debug()      override;
-
-	static void ResetInstanceCount();
-
-private:
-
-	static int sInstanceCount_;
-	int id_;
-
-	float rotateSpeed_ = 0.0f;
 
 };
 
