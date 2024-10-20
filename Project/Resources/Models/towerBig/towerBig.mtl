@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# Blender 4.1.1 MTL File: 'boss1.blend'
-=======
-# Blender 4.1.1 MTL File: 'boss.blend'
->>>>>>> Develop
+# Blender 4.1.1 MTL File: 'tower.blend'
 # www.blender.org
 
 newmtl マテリアル.002
@@ -13,4 +9,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd head.png
+map_Kd tower.png
