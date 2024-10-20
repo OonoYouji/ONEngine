@@ -4,7 +4,7 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
 //std
 #include<memory>
 //behavior
@@ -61,16 +61,16 @@ public:
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
 	bool GetIsSlurping()const { return isSlurping_; }
+	bool GetIsHitBack()const { return isHitBack_; }
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
+	BuildingManager* GetBuildingManager()const { return pBuildingManager_; }
 	
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
-
 	bool GetIsAttack()const { return isAttack_; }
 
-	
 	//setter
 	void SetIsSlurping(bool is) { isSlurping_ = is; }
 	void SetSlurpingCoolTimer() { slurpCooldownTimer_ = kSlurpCollTime_; }
@@ -83,6 +83,7 @@ public:
 private:
 	
 private:
+	MeshRenderer* meshRenderer_=nullptr;
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
@@ -96,6 +97,8 @@ private:
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
+	//
+	
 	//吸ってる弾を殺すフラグ
 	bool isBuildingKill_;
 	//攻撃フラグ
@@ -123,4 +126,10 @@ private:
 	//HP
 	float HP_;
 	float HPMax_;
+
+	//ダメージ受けたー
+	bool isHitBack_;
+	float damageCoolTime_;
+const	float kDamageCoolTime_=0.1f;
+
 };

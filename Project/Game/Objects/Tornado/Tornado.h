@@ -9,6 +9,7 @@
 /// 前方宣言
 /// ===================================================
 class Player;
+class BuildingManager;
 class Wind;
 
 /// ===================================================
@@ -44,14 +45,19 @@ public:
 
 	Tornado() { CreateTag(this); }
 	~Tornado() {}
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
 
-	float GetScaleScale()const { return scaleScaler_; }
+	float GetScaleScaler()const { return scaleScaler_; }
 	float GetMaxScale()const { return maxScale_; }
 	float GetMinScale()const { return minScale_; }
+
+	float GetDebufParm()const { return debufParm_; }
+
+	void SetDebufParm(float parm) { debufParm_ = parm; }
 
 	void SetPlayer(Player* _player);
 
@@ -82,6 +88,8 @@ private:
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
 	std::vector<WindData>          windDataArray_;
+	float debufParm_;
+
 
 	Mat4 matRotate_;
 

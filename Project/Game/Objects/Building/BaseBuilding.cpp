@@ -148,7 +148,7 @@ void BaseBuilding::Update() {
 		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ 0.01f, 0, 0 });
+		Quaternion move = ToQuaternion({ 0.5f*Time::DeltaTime(), 0, 0});
 
 		// 回転を更新
 		pivot_.quaternion = inter;
@@ -266,7 +266,7 @@ void BaseBuilding::GrowForTime(const float& par, const float& second) {
 }
 
 void BaseBuilding::Animation() {
-	animationTime_ += Time::DeltaTime();
+	animationTime_ += Time::DeltaTime()*2;
 
 	float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
 	float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;
@@ -279,7 +279,7 @@ void BaseBuilding::Animation() {
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	//当たったら用済み
-	if(dynamic_cast<Player*>(collision) && !isSlurp_) {
+	if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
 		isInTornado_ = true;
 	}
 

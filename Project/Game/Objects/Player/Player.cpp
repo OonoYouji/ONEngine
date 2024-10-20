@@ -14,10 +14,11 @@
 
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/time.h"
+#include"Easing/EasingFunction.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
-#include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
+#include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
 
 void Player::Initialize() {
@@ -49,7 +50,7 @@ void Player::Initialize() {
 	pTransform_->scale = Vec3::kOne * 0.5f;
 
 	powerUpGaugeMax_ = 100;
-	powerUpTimeMax_ = 5.0f;//秒
+	powerUpTimeMax_ = 0.6f;//秒
 	HP_ = HPMax_;
 
 	//ダメージ
@@ -83,12 +84,21 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+	float maxSpeed = 0.6f;
+	float minSpeed = 0.5f;
+
+	float t = (pTornado_->GetScaleScaler() - pTornado_->GetMinScale()) / (pTornado_->GetMaxScale() - pTornado_->GetMinScale());
+	t = std::clamp(t, 0.0f, 1.0f);  // tを0.0～1.0に制限
+
+	// speed_を計算
+	speed_ = LerpE(maxSpeed, minSpeed, t);
+	//振る舞い更新
 	behavior_->Update();
 
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
-	if (!damageForBossHead_.isStop&& !damageForBossBullet_.isStop) {
+	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop) {
 		Move();//移動
 	}
 
@@ -112,7 +122,6 @@ void Player::Update() {
 
 void Player::Move() {
 	//入力
-
 	input_ = {};
 	Vec2 gamePadInput = Input::GetLeftStick();
 
@@ -140,9 +149,10 @@ void Player::Move() {
 		rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
 
 		// プレイヤーの向きの決定
+
 		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
 
-		pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
+		pivot_.quaternion *= (rotateX_ * rotateY_);// 正規化
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
 	}
 }
@@ -214,33 +224,6 @@ void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 }
 
 
-void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-
-	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		PowerUpGaugeUp(0.05f);
-	}
-	//ボスの直接攻撃によるダメージ
-	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		if (!damageForBossHead_.isStop) {
-			DamageForPar(damageForBossHead_.DamagePar);
-			damageForBossHead_.isStop = true;
-			damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
-			//指定の数分ビル破壊
-			pBuindingManager_->SetDeathFlagInBuildings(5);
-		}
-	}
-
-	//ボスの弾によるダメージ
-	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(behavior_.get())) {
-		if (!damageForBossBullet_.isStop) {
-			DamageForPar(damageForBossBullet_.DamagePar);
-			damageForBossBullet_.isStop = true;
-			damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
-			//指定の数分ビル破壊
-			pBuindingManager_->SetDeathFlagInBuildings(10);
-		}
-	}
-}
 //割合によるダメージ
 void Player::DamageForPar(const float& par) {
 
@@ -262,4 +245,27 @@ void Player::TutorialMove() {
 
 void  Player::SetBuildingManager(BuildingManager* buildingManager) {
 	pBuindingManager_ = buildingManager;
+}
+
+void Player::SetTornado(Tornado* tornado) {
+	pTornado_ = tornado;
+}
+
+void Player::DamageForBossHead() {
+	if (!damageForBossHead_.isStop) {
+		DamageForPar(damageForBossHead_.DamagePar);
+		damageForBossHead_.isStop = true;
+		damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
+		//指定の数分ビル破壊
+		pBuindingManager_->SetDeathFlagInBuildings(5);
+	}
+}
+void Player::DamageForBossBullet() {
+	if (!damageForBossBullet_.isStop) {
+		DamageForPar(damageForBossBullet_.DamagePar);
+		damageForBossBullet_.isStop = true;
+		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
+		//指定の数分ビル破壊
+		pBuindingManager_->SetDeathFlagInBuildings(10);
+	}
 }

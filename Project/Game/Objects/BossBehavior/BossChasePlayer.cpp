@@ -31,40 +31,41 @@ BossChasePlayer::~BossChasePlayer() {
 
 //更新
 void BossChasePlayer::Update() {
+	if (!pBoss_->GetIsHitBack()) {
+		// 距離と方向を計算
+		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+			pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 
-	// 距離と方向を計算
-	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
-		pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
+		// 一定距離で攻撃に遷移
+		if (distanceAndDirection.first <= chaseMinPos_) {
+			pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
+			return;
+		}
 
-	// 一定距離で攻撃に遷移
-	if (distanceAndDirection.first <= chaseMinPos_) {
-		pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
-		return;
-	}
+		// 現在の回転をオイラー角に変換
+		Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
 
-	// 現在の回転をオイラー角に変換
-	Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
+		// プレイヤーの方向を向くための回転を計算
+		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 
-	// プレイヤーの方向を向くための回転を計算
-	Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+		// 現在の回転
+		Quaternion currentRotation = pBoss_->GetPivotQuaternion();
 
-	// 現在の回転
-	Quaternion currentRotation = pBoss_->GetPivotQuaternion();
+		// 回転をスムーズに補間 (Slerpを使用)
+		float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
-	// 回転をスムーズに補間 (Slerpを使用)
-	float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
-	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+		// ホーミング移動のスピードを設定
+		Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::DeltaTime(), 0, 0 });
 
-	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater(), 0, 0 });
+		// 回転を更新
+		pBoss_->SetPivotQuaternion(interpolatedRotation);
+		pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
 
-	// 回転を更新
-	pBoss_->SetPivotQuaternion(interpolatedRotation);
-	pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
-
-	// 一定距離で吸い込み状態に遷移
-	if (distanceAndDirection.first >= chaseMaxPos_) {
-		pBoss_->ChangeState(std::make_unique<BossSlurp>(pBoss_));
+		// 一定距離で吸い込み状態に遷移
+		if (distanceAndDirection.first >= chaseMaxPos_) {
+			pBoss_->ChangeState(std::make_unique<BossSlurp>(pBoss_));
+		}
 	}
 }
 

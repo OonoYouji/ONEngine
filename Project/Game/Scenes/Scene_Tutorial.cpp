@@ -10,6 +10,7 @@
 #include "Objects/Tornado/Tornado.h"	
 #include "Objects/Boss/Boss.h"	
 
+
 void Scene_Tutorial::Initialize() {
 
 	Wind::ResetInstanceCount();
@@ -24,16 +25,16 @@ void Scene_Tutorial::Initialize() {
 	GameCameraState* gameCameraState = new GameCameraState();
 	tornado_ = new Tornado();
 	GameCamera* uiCamera = new GameCamera("TutorialUICamera");
+	guidanceArrow_ = new GuidanceArrow();
 	//チュートリアル
 	tutorialScaleUpUI_ = new TutorialScaleUpUI();
-	tutorialScaleDownUI_ = new TutorialScaleDownUI();
-	tutorialEntrainment_ = new TutorialEntrainment();
-	tutorialEntrainmentAll_ = new TutorialEntrainmentAll();
-	tutorialBodyBlow_ = new TutorialBodyBlow();
-
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
+
+	//チュートリアル
+	tutorialScaleUpUI_->Initialize();
+	
 
 	player_->Initialize();
 	ground->Initialize();
@@ -41,12 +42,8 @@ void Scene_Tutorial::Initialize() {
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 	uiCamera->Initialize();
-	//チュートリアル
-	tutorialScaleUpUI_->Initialize();
-	tutorialScaleDownUI_->Initialize();
-	tutorialEntrainment_->Initialize();
-	tutorialEntrainmentAll_->Initialize();
-	tutorialBodyBlow_->Initialize();
+	guidanceArrow_->Initialize();
+	
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -56,21 +53,20 @@ void Scene_Tutorial::Initialize() {
 	gameCameraState->SetPlayer(player_);
 	gameCameraState->SetDirectionalLight(directionalLight_);
 
+	player_->SetTornado(tornado_);
 	tornado_->SetPlayer(player_);
+	guidanceArrow_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
-	/*tutorialScaleUpUI_->drawLayerId = uiCamera->drawLayerId;*/
+	uiCamera->SetPositionZ(-10.0f);
 	//更新して、移動させない為にアクティブを切る
 	player_->Update();
 	buildingManager_->SetTornado(tornado_);
-
 	player_->isActive = false;
 	buildingManager_->isActive = false;
 	//アクティブ切るUI
-	tutorialScaleUpUI_->isActive = false;
-	tutorialScaleDownUI_->isActive = false;
-	tutorialEntrainment_->isActive = false;
-	tutorialEntrainmentAll_->isActive = false;
-	tutorialBodyBlow_->isActive = false;
+
+	guidanceArrow_->isActive = false;
+	
 }
 /// ===================================================
 /// 更新処理
@@ -81,22 +77,26 @@ void Scene_Tutorial::Update() {
 	case SCACLEUP: //竜巻のスケールアップ
 		tutorialScaleUpUI_->isActive = true;
 		// スケールダウンへ移行する条件
-		if (tornado_->GetScaleScale() >= tornado_->GetMaxScale()) {
+		if (tornado_->GetScaleScaler() >= tornado_->GetMaxScale()) {
 			tornado_->isActive = false;
 			tutorialScaleUpUI_->SetIsClose(true);
 			if (tutorialScaleUpUI_->GetIsDeath()) {//UIが死んだら
+				tutorialScaleDownUI_ = new TutorialScaleDownUI();
+				tutorialScaleDownUI_->Initialize();
 				tutorialState_ = SCALEDOWN;  // 次の状態へ移行
 			}
 		}
 		break;
 
 	case SCALEDOWN:// スケールダウンモード	
-		tutorialScaleDownUI_->isActive = true;
+   		tutorialScaleDownUI_->isActive = true;
 		tornado_->isActive = true;
 		// 建物吸い込みへ移行する条件
-		if (tornado_->GetScaleScale() <= tornado_->GetMinScale()) {
+		if (tornado_->GetScaleScaler() <= tornado_->GetMinScale()) {
 			tutorialScaleDownUI_->SetIsClose(true);
 			if (tutorialScaleDownUI_->GetIsDeath()) {//UIが死んだら
+				tutorialEntrainment_ = new TutorialEntrainment();
+				tutorialEntrainment_->Initialize();
 				tutorialState_ = BUILDINGSPOWN;  // 次の状態へ移行
 			}
 		}
@@ -104,7 +104,7 @@ void Scene_Tutorial::Update() {
 
 	case BUILDINGSPOWN:	// 建物生成の処理
 		player_->isActive = true;
-		buildingManager_->SpownBuilding(0, std::numbers::pi_v<float> / 6.4f);
+		buildingManager_->SpownBuilding(std::numbers::pi_v<float> / 6.4f,0);
 		tutorialState_ = BUINDINGENTRAINMENT;  // 次の状態へ移行
 		break;
 
@@ -115,6 +115,8 @@ void Scene_Tutorial::Update() {
 		if (buildingManager_->GetSize() <= 0) {
 			tutorialEntrainment_->SetIsClose(true);
 			if (tutorialEntrainment_->GetIsDeath()) {//UIが死んだら
+				tutorialEntrainmentAll_ = new TutorialEntrainmentAll();
+				tutorialEntrainmentAll_->Initialize();
 				tutorialState_ = AFEWBUILDINGSPOWN;  // 次の状態へ移行
 			}		
 		}
@@ -140,6 +142,8 @@ void Scene_Tutorial::Update() {
 			tutorialEntrainmentAll_->SetIsClose(true);
 			if (tutorialEntrainmentAll_->GetIsDeath()) {//UIが死んだら
 				tutorialState_ = DANYATTACK;  // 次の状態へ移行
+				tutorialBodyBlow_ = new TutorialBodyBlow();
+				tutorialBodyBlow_->Initialize();
 				dumy_ = new Dumy();
 				dumy_->Initialize();
 			}
@@ -149,6 +153,7 @@ void Scene_Tutorial::Update() {
 
 	case DANYATTACK:
 		tutorialBodyBlow_->isActive = true;
+		guidanceArrow_->UpdateForTutorial(dumy_->GetPos());
 		if (dumy_->GetIsBreak()) {
 			tutorialBodyBlow_->SetIsClose(true);
 			if (tutorialBodyBlow_->GetIsDeath()) {//UIが死んだら
@@ -162,12 +167,3 @@ void Scene_Tutorial::Update() {
 		break;
 	}
 }
-
-////
-//void Scene_Tutorial::CreateUI() {
-//	if (!isCreateUI_) {
-//		tutorialScaleUpUI_ = new TutorialScaleUpUI();
-//		tutorialScaleUpUI_->Initialize();
-//		isCreateUI_ = true;
-//	}
-//}

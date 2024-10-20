@@ -26,6 +26,7 @@ BossAttack ::~BossAttack() {
 
 //更新
 void BossAttack::Update() {
+
 	if (!isSwingDown_) {
 		attackWaitTime_ += Time::DeltaTime();
 
@@ -35,15 +36,14 @@ void BossAttack::Update() {
 		Vec3 euler = QuaternionToEulerAngles(pBoss_->GetPivotQuaternion());
 
 		// プレイヤーの方向を向くための回転を計算
-		 Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 
-		 // 現在の回転
-		 Quaternion currentRotation = pBoss_->GetPivotQuaternion();
+		// 現在の回転
+		Quaternion currentRotation = pBoss_->GetPivotQuaternion();
 
-		 // 回転をスムーズに補間 (Slerpを使用)
-		 float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
-		 inter_ = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
-
+		// 回転をスムーズに補間 (Slerpを使用)
+		float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
+		inter_ = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(inter_);
@@ -53,7 +53,7 @@ void BossAttack::Update() {
 
 	}//振り下ろし
 	else if (isSwingDown_) {
-		pBoss_->SetPivotQuaternion(inter_);
+
 		pBoss_->AttackUpdate();
 	}
 }

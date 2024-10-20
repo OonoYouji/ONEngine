@@ -9,30 +9,28 @@
 //obj 
 #include"Objects/Tornado/Tornado.h"
 
-class InTornadoBuilding : public BaseGameObject {
+
+class InTornadoEnemy : public BaseGameObject {
 public:
 
-	InTornadoBuilding() { CreateTag(this); }
-	~InTornadoBuilding() {}
+	InTornadoEnemy() { CreateTag(this); }
+	~InTornadoEnemy() {}
 
 	void Initialize()override;
 	void Update() override;
 	void Debug() override;
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
-	const int GetScaleArrayIndex()const { return scaleArrayIndex_; }
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
+	void SetOriginalPos(const std::pair<float, float>& pos) { originalPos = pos; }
 
 	//setter
-	void SetModel(Model* model);
 	void SetTornado(Tornado* tornade);
 	void SetIsDeath(bool is);
+	const std::pair<float, float>& GetOriginalPos() const { return originalPos; }
 
-	void SetScaleArrayIndex(int index);
 
 private:
-	
-	static std::array<Vec3, 3> buildingScaleArray_;
-
 
 	bool isDeath_;
 	float ofsetX;
@@ -44,12 +42,9 @@ private:
 	//
 	float phi_;
 
-	Tornado* pTornado_ = nullptr;
-
 	float maxDebuf_;
 	const float maxSpeed_ = 4.5f;
-	
+	std::pair<float, float> originalPos;
 
-	int scaleArrayIndex_ = 0;
-
+	Tornado* pTornado_ = nullptr;
 };

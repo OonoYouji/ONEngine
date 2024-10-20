@@ -4,7 +4,7 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
 #include "Input/Input.h"
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+
 #include <GraphicManager/Drawer/Material/Material.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include <ComponentManager/Collider/SphereCollider.h>
@@ -26,10 +26,20 @@
 #include"HormingFunction/Horming.h"
 #undef max
 
+Vec3 RotateVectorByQuaternion(const Vec3& vector, const Quaternion& rotation) {
+	// クォータニオンによる回転を適用する
+	Quaternion vectorAsQuaternion(0, vector.x, vector.y, vector.z); // ベクトルをクォータニオンに変換
+	Quaternion rotatedVector = rotation * vectorAsQuaternion * rotation.Conjugate(); // クォータニオンの回転計算
+
+	// 回転されたベクトルを返す
+	return Vec3(rotatedVector.x, rotatedVector.y, rotatedVector.z);
+}
+
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel(model);
+	meshRenderer_->SetMaterial("uvChecker");
 	auto collider = AddComponent<BoxCollider>(model);
 
 	er_ = AddComponent<EarthRenderer>();
@@ -48,7 +58,7 @@ void Boss::Initialize() {
 	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->scale = { 2,2,2 };
-	SpeedParamater_ = 0.01f;
+	SpeedParamater_ = 0.5f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
@@ -68,13 +78,48 @@ void Boss::Initialize() {
 }
 
 void Boss::Update() {
+	
 	//振る舞い更新
 	behavior_->Update();
 	//敵のビルが一定数溜まったら
 	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
 		ChangeState(std::make_unique<BossBulletShot>(this));
 	}
+	//ダメージ処理
+	if (isHitBack_) {
 
+		damageCoolTime_ -= Time::DeltaTime();
+
+		// プレイヤーとボスの間の距離と方向を計算
+		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+			pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+
+		// ヒットバックの方向ベクトルを計算（プレイヤーからボスへの逆方向）
+		Vec3 hitBackDirection = Vector3::Normalize(GetPosition() - pPlayer_->GetPosition());
+
+		// ヒットバックのスピードを設定
+		float hitBackSpeed = 0.5f * Time::DeltaTime(); // ヒットバックのスピードを調整
+
+		// 現在の回転を取得
+		Quaternion currentRotation = GetPivotQuaternion();
+
+		// ヒットバック方向をローカル空間で計算（クォータニオンを使って方向を回転させる）
+		Vec3 localHitBackDirection = RotateVectorByQuaternion(hitBackDirection, currentRotation);
+
+		// ヒットバックの移動量を計算
+		Vec3 moveAmount = localHitBackDirection * hitBackSpeed;
+
+		// 移動量を基に新しいクォータニオンを生成（ここで回転を生成）
+		Quaternion moveRotation = Quaternion::MakeFromAxis(Vector3::Normalize(localHitBackDirection), Vector3::Length(moveAmount));
+
+		// ボスのクォータニオンを更新（移動量を反映）
+		pivot_.quaternion *= moveRotation; // 回転の適用
+
+		if (damageCoolTime_ <= 0) {
+			meshRenderer_->SetColor(Vec4::kWhite);
+			isHitBack_ = false;
+		}
+	}
 
 	pivot_.UpdateMatrix();
 }
@@ -153,7 +198,8 @@ void Boss::AttackUpdate() {//超汚い
 			isAttack_ = false;
 		}
 	}
-	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 3.4f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionY(EaseInBack(4.8f, 4.0f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.7f, attackEaseT_, kAttackEaseT_));
 }
 
 void Boss::Debug() {
@@ -218,8 +264,17 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 
 void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	if (dynamic_cast<InTornadoBuilding*>(collision)) {
-		DamageForPar(0.05f);
+	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {
+		int scaleIndex = tornadoBuilding->GetScaleArrayIndex();
+
+		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
+
+		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
+			isHitBack_ = true;
+			damageCoolTime_ = kDamageCoolTime_;
+			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
+			DamageForPar(damageValues[scaleIndex]);
+		}
 	}
 }
 

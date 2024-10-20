@@ -13,6 +13,7 @@
 #include<memory>
 
 class BuildingManager;
+class Tornado;
 class Player : public BaseGameObject {
 public:
 
@@ -25,15 +26,15 @@ public:
 
 	void Move();//移動
 
-
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
-
-
 	//振る舞い関数
 	void RootInit();
 	void PowerUpInit();
 	void PowerUpUpdate();
 	void TutorialMove();
+
+	//ダメージ
+	void DamageForBossHead();
+	void DamageForBossBullet();
 
 	//getter
 	Transform* GetPivot() { return &pivot_; }
@@ -50,6 +51,8 @@ public:
 	void DamageForPar(const float& par);
 	//setter
 	void PowerUpGaugeUp(float par);
+	void SetTornado(Tornado* tornado);
+	 BasePlayerBehavior* GetBehavior()const { return behavior_.get(); }
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
@@ -107,12 +110,6 @@ private:
 	DamageParamater damageForBossHead_;
 	DamageParamater damageForBossBullet_;
 
-	////スタン
-	//bool isStop_;
-	//float stopCollTime_;
-	//const float kStopCollTime_=0.5f;
-
-	////ダメージパラメータ
-	//float DamageForBossHead_ = 0.05f;
-	//float DamageForBossBullet_ = 0.2f;
+	//トルネード
+	Tornado* pTornado_;
 };

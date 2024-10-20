@@ -26,5 +26,5 @@ private:
 	// プレイヤーの方向を向くための回転を計算
 	Quaternion inter_;
 	Quaternion move_;
-	class BossBulletLump* pBossbulletLump_ = nullptr;
+	class BossBulletLump* BossbulletLump_ = nullptr;
 };

@@ -74,7 +74,6 @@ void BossHead::Update() {
 		// パラメータを1ステップ分加算
 		floatingParameter_ += step * Time::DeltaTime() * 60;
 		floatingParameter_ = std::fmod(floatingParameter_, 2.0f * std::numbers::pi_v<float>);
-
 		// 浮遊を座標に反映
 		pTransform_->position.z = std::sin(floatingParameter_) * floatingAmplitude_;
 	}
