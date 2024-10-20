@@ -32,13 +32,16 @@ public:
 	void Debug()      override;
 
 
+	ParticleSystem* GetParticleSystem() const { return particleSystem_; }
+
+
 	void SetBasePosition(const Vec3& _basePosition);
 
 	void SetIsSpinUpdate(bool isSpinUpdate);
 
-	ParticleSystem* GetParticleSystem() const { return particleSystem_; }
-
 	void SetParticleUseRotate(bool _useRotate);
+
+	void SetUseShadow(bool _useShadow);
 
 private:
 
@@ -61,4 +64,6 @@ private:
 
 	Mat4 matRotate_;
 	bool useRotate_;
+
+	bool useShadow_ = true; /// initializeの前にセットしないと意味なし
 };

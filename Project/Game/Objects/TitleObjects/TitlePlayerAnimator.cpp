@@ -26,9 +26,11 @@ void TitlePlayerAnimator::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("player");
 
-	EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
-	earthRenderer->SetRadius(1.5f);
-	earthRenderer->SetColor({0,0,0, 0.75f});
+	if(useShadow_) {
+		EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
+		earthRenderer->SetRadius(1.5f);
+		earthRenderer->SetColor({0,0,0, 0.75f});
+	}
 
 	particleSystem_ = AddComponent<ParticleSystem>(64u, "rubble");
 	particleDataArray_.resize(64u);
@@ -183,4 +185,8 @@ void TitlePlayerAnimator::SetIsSpinUpdate(bool isSpinUpdate) {
 
 void TitlePlayerAnimator::SetParticleUseRotate(bool _useRotate) {
 	useRotate_ = _useRotate;
+}
+
+void TitlePlayerAnimator::SetUseShadow(bool _useShadow) {
+	useShadow_ = _useShadow;
 }
