@@ -4,7 +4,7 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-
+#include <ComponentManager/MeshRenderer/MeshRenderer.h>
 //std
 #include<memory>
 //behavior
@@ -82,6 +82,7 @@ public:
 private:
 	
 private:
+	MeshRenderer* meshRenderer_=nullptr;
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
@@ -122,4 +123,10 @@ private:
 	//HP
 	float HP_;
 	float HPMax_;
+
+	//ダメージ受けたー
+	bool isHitBack_;
+	float damageCoolTime_;
+const	float kDamageCoolTime_=0.1f;
+
 };

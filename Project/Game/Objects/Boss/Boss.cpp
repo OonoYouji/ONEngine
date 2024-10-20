@@ -4,7 +4,7 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 
 #include "Input/Input.h"
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
+
 #include <GraphicManager/Drawer/Material/Material.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
 #include <ComponentManager/Collider/SphereCollider.h>
@@ -28,8 +28,9 @@
 
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel(model);
+	meshRenderer_->SetMaterial("uvChecker");
 	auto collider = AddComponent<BoxCollider>(model);
 
 	er_ = AddComponent<EarthRenderer>();
@@ -75,7 +76,14 @@ void Boss::Update() {
 	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
 		ChangeState(std::make_unique<BossBulletShot>(this));
 	}
+	//ダメージ処理
+	if (isHitBack_) {
 
+	}
+	damageCoolTime_ -= Time::DeltaTime();
+	if (damageCoolTime_ <= 0) {
+		meshRenderer_->SetColor(Vec4::kWhite);
+	}
 
 	pivot_.UpdateMatrix();
 }
@@ -226,6 +234,9 @@ void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
 
 		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
+			isHitBack_ = true;
+			damageCoolTime_ = kDamageCoolTime_;
+			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
 			DamageForPar(damageValues[scaleIndex]);
 		}
 	}
