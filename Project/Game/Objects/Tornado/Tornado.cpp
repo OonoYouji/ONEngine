@@ -55,7 +55,7 @@ void Tornado::Initialize() {
 		transform->position = {
 			std::cos(data.time * data.speed) * data.radius,
 			std::sin(data.time * data.speed) * data.radius,
-			particle->GetNormLifeTime() * data.maxPosY
+			-particle->GetNormLifeTime() * data.maxPosY
 		};
 
 		transform->position = Mat4::Transform(transform->position, matRotate_);
@@ -73,8 +73,8 @@ void Tornado::Initialize() {
 	/// action param initialize
 	eacSpeed_ = 0.7f;
 	pTransform_->position.z = 4.2f;
-	minScale_ = 0.5f;
-	maxScale_ = 0.75f;
+	minScale_ = 1.0f;
+	maxScale_ = 1.5f;
 	scaleScaler_ = minScale_;
 
 
