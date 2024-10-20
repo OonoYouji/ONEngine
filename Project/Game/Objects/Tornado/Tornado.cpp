@@ -72,7 +72,6 @@ void Tornado::Initialize() {
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
 	eacSpeed_ = 0.7f;
-	pTransform_->position.z = 4.2f;
 	minScale_ = 0.75f;
 	maxScale_ = 1.25f;
 	scaleScaler_ = minScale_;
@@ -101,15 +100,15 @@ void Tornado::Initialize() {
 	windDataArray_.resize(kWindSize);
 	for(size_t i = 0; i < kWindSize; ++i) {
 		WindData& wind = windDataArray_[i];
-		wind.time = Random::Float(1.0f, 3.0f);
-		wind.speed = Random::Float(5.0f, 7.5f);
+		wind.time   = Random::Float(1.0f, 3.0f);
+		wind.speed  = Random::Float(25.0f, 30.0f);
 		wind.radius = Random::Float(1.0f, 3.0f);
 		wind.height = Random::Float(1.0f, 2.0f);
 	}
 
 	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
-	windParticle->SetParticleLifeTime(1.0f);
-	windParticle->SetParticleRespawnTime(0.2f);
+	windParticle->SetParticleLifeTime(0.25f);
+	windParticle->SetParticleRespawnTime(0.05f);
 	windParticle->SetEmittedParticleCount(1);
 	windParticle->SetUseBillboard(false);
 
@@ -123,15 +122,15 @@ void Tornado::Initialize() {
 		wind.time += Time::DeltaTime();
 
 		transform->position = {
-			std::cos(-wind.time * wind.speed) * wind.height * 0.25f,
-			std::sin(-wind.time * wind.speed) * wind.height * 0.25f,
-			wind.height - 1.0f
+			std::cos(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
+			std::sin(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
+			-wind.height + 1.0f
 		};
 
 		transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
 		transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
 
-		transform->scale = Vec3::kOne * wind.height * 0.5f;
+		transform->scale = Vec3::kOne * wind.height * scaleScaler_;
 
 		if(particle->GetNormLifeTime() <= 0.0f) {
 			wind.time = 0.0f;

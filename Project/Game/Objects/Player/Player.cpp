@@ -43,8 +43,8 @@ void Player::Initialize() {
 	pivot_.quaternion       = { 0, 0, 0, 1 };
 	transoform_.quaternion  = { 0, 0, 0, 1 };
 	pTransform_->quaternion = { 0, 0, 0, 1 };
-	pTransform_->position.z = -(Ground::groundScale_ + 5.0f);
-	transoform_.position.z  = -(Ground::groundScale_ + 5.0f);
+	pTransform_->position.z = -(Ground::groundScale_);
+	transoform_.position.z  = -(Ground::groundScale_);
 
 	pTransform_->scale = Vec3::kOne * 0.5f;
 

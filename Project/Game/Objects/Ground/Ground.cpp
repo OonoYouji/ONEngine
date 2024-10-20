@@ -9,8 +9,9 @@
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
-float Ground::groundScale_ = 11.0f
-; void Ground::Initialize() {
+float Ground::groundScale_ = 11.0f; 
+
+void Ground::Initialize() {
 	//auto meshRenderer = AddComponent<MeshRenderer>();
 	//meshRenderer->SetModel("Sphere");
 	//meshRenderer->SetMaterial("uvChecker");
