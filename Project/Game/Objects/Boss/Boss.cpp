@@ -26,6 +26,15 @@
 #include"HormingFunction/Horming.h"
 #undef max
 
+Vec3 RotateVectorByQuaternion(const Vec3& vector, const Quaternion& rotation) {
+	// クォータニオンによる回転を適用する
+	Quaternion vectorAsQuaternion(0, vector.x, vector.y, vector.z); // ベクトルをクォータニオンに変換
+	Quaternion rotatedVector = rotation * vectorAsQuaternion * rotation.Conjugate(); // クォータニオンの回転計算
+
+	// 回転されたベクトルを返す
+	return Vec3(rotatedVector.x, rotatedVector.y, rotatedVector.z);
+}
+
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
 	meshRenderer_ = AddComponent<MeshRenderer>();
@@ -79,10 +88,37 @@ void Boss::Update() {
 	//ダメージ処理
 	if (isHitBack_) {
 
-	}
-	damageCoolTime_ -= Time::DeltaTime();
-	if (damageCoolTime_ <= 0) {
-		meshRenderer_->SetColor(Vec4::kWhite);
+		damageCoolTime_ -= Time::DeltaTime();
+
+		// プレイヤーとボスの間の距離と方向を計算
+		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+			pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+
+		// ヒットバックの方向ベクトルを計算（プレイヤーからボスへの逆方向）
+		Vec3 hitBackDirection = Vector3::Normalize(GetPosition() - pPlayer_->GetPosition());
+
+		// ヒットバックのスピードを設定
+		float hitBackSpeed = 0.5f * Time::DeltaTime(); // ヒットバックのスピードを調整
+
+		// 現在の回転を取得
+		Quaternion currentRotation = GetPivotQuaternion();
+
+		// ヒットバック方向をローカル空間で計算（クォータニオンを使って方向を回転させる）
+		Vec3 localHitBackDirection = RotateVectorByQuaternion(hitBackDirection, currentRotation);
+
+		// ヒットバックの移動量を計算
+		Vec3 moveAmount = localHitBackDirection * hitBackSpeed;
+
+		// 移動量を基に新しいクォータニオンを生成（ここで回転を生成）
+		Quaternion moveRotation = Quaternion::MakeFromAxis(Vector3::Normalize(localHitBackDirection), Vector3::Length(moveAmount));
+
+		// ボスのクォータニオンを更新（移動量を反映）
+		pivot_.quaternion *= moveRotation; // 回転の適用
+
+		if (damageCoolTime_ <= 0) {
+			meshRenderer_->SetColor(Vec4::kWhite);
+			isHitBack_ = false;
+		}
 	}
 
 	pivot_.UpdateMatrix();

@@ -61,6 +61,7 @@ public:
 	void ChangeState(std::unique_ptr<BaseBossBehavior>behavior);
 	//getter
 	bool GetIsSlurping()const { return isSlurping_; }
+	bool GetIsHitBack()const { return isHitBack_; }
 	float GetChaseSpeedParamater()const {return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
@@ -96,6 +97,8 @@ private:
 	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
 	//ピボット
 	Transform pivot_;
+	//
+	
 	//吸ってる弾を殺すフラグ
 	bool isBuildingKill_;
 	//攻撃フラグ
