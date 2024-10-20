@@ -18,6 +18,7 @@
 
 /// objects
 #include "Objects/ShootingCourse/ShootingCourse.h"
+#include "Objects/PlayerBullet/PlayerBullet.h"
 
 /// math
 #include "Math/Quaternion.h"
@@ -39,6 +40,15 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+	if(Input::TriggerKey(KeyCode::Space)) {
+		PlayerBullet* bullet = new PlayerBullet();
+		bullet->Initialize();
+		bullet->SetPosition(GetPosition());
+		bullet->SetVelocity(moveDirection_.Normalize() * 50.0f * Time::DeltaTime());
+	}
+
+
+
 	/// shooting courseからanchor point arrayをもらう
 	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
 	const size_t kSegmentCount = anchorPointArray.size();
@@ -50,7 +60,6 @@ void Player::Update() {
 	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
 
 	/// anchor pointの更新
-	
 	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
 	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
 

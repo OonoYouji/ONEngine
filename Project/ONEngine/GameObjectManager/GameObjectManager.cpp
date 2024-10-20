@@ -2,6 +2,7 @@
 
 #include "LoggingManager/Logger.h"
 #include "ImGuiManager/ImGuiManager.h"
+#include "CollisionManager/CollisionManager.h"
 
 #include "Objects/Camera/Manager/BaseCamera.h"
 #include "GraphicManager/Light/DirectionalLight.h"
@@ -124,7 +125,7 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 		if(object == selectObject_) {
 			selectObject_ = nullptr;
 		}
-		//CollisionManager::GetInstance()->SubGameObject(object);
+		CollisionManager::GetInstance()->SubGameObject(object);
 		objects_.erase(it);
 	}
 
