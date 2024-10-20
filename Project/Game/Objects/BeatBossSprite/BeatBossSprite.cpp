@@ -28,7 +28,8 @@ void BeatBossSprite::Initialize() {
 	spritePosition_ = {};
 	spriteColor_ = Vec4::kWhite;
 
-	time_ = 0.0f;
+	time_      = 0.0f;
+	isFadeOut_ = false;
 }
 
 void BeatBossSprite::Update() {
@@ -37,15 +38,25 @@ void BeatBossSprite::Update() {
 
 	spritePosition_.x += 120.0f * Time::DeltaTime();
 
-	float rgbScalerValue = std::sin(time_ * 2.0f) * 0.25f + 0.75f;
+	if(isFadeOut_) {
 
-	spriteColor_ = {
-		1.0f * rgbScalerValue,
-		1.0f * rgbScalerValue,
-		1.0f * rgbScalerValue,
-		1.0f * rgbScalerValue
-	};
+		spriteColor_.w = std::max(spriteColor_.w - (Time::DeltaTime()), 0.0f);
+
+	} else {
+
+		float rgbScalerValue = std::sin(time_ * 2.0f) * 0.25f + 0.75f;
+		spriteColor_ = {
+			1.0f * rgbScalerValue,
+			1.0f * rgbScalerValue,
+			1.0f * rgbScalerValue,
+			1.0f * rgbScalerValue
+		};
+	}
 
 	spriteRenderer_->SetUVPosition(spritePosition_);
 	spriteRenderer_->SetColor(spriteColor_);
+}
+
+void BeatBossSprite::SetIsFadeOut(bool _isFadeOut) {
+	isFadeOut_ = _isFadeOut;
 }
