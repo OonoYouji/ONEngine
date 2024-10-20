@@ -115,12 +115,12 @@ void TitlePlayerAnimator::Initialize() {
 		wind.time   = Random::Float(1.0f, 3.0f);
 		wind.speed  = Random::Float(5.0f, 7.5f);
 		wind.radius = Random::Float(1.0f, 3.0f);
-		wind.height = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 5.0f);
 	}
 
-	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "windBoard");
-	windParticle->SetParticleLifeTime(3.0f);
-	windParticle->SetParticleRespawnTime(1.0f);
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(1.0f);
+	windParticle->SetParticleRespawnTime(0.2f);
 	windParticle->SetEmittedParticleCount(1);
 	windParticle->SetUseBillboard(false);
 
@@ -144,6 +144,9 @@ void TitlePlayerAnimator::Initialize() {
 
 		transform->position += basePosition_;
 
+		if(particle->GetNormLifeTime() <= 0.0f) {
+			wind.height = Random::Float(1.0f, 5.0f);
+		}
 	});
 
 }
