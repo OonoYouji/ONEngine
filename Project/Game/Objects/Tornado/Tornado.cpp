@@ -143,13 +143,20 @@ void Tornado::Initialize() {
 
 void Tornado::Update() {
 
-	if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+	
+	if(pPlayer_->GetisPowerUp()) {
 
-		scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+		scaleScaler_ = 3.0f;
 	} else {
 
-		scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+		/// キー入力で大きさを変える
+		if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+		} else {
+			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+		}
 	}
+
 
 	localYAngle_  += Time::DeltaTime() * zRotateSpeed_;
 
