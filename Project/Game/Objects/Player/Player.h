@@ -7,10 +7,12 @@
 #include"Objects/PlayerBehavior/BasePlayerBehavior.h"
 #include"Objects/PlayerBehavior/PlayerRoot.h"
 #include"Objects/PlayerBehavior/PlayerPowerUp.h"
+
 //std
 #include<optional>
 #include<memory>
 
+class BuildingManager;
 class Player : public BaseGameObject {
 public:
 
@@ -22,7 +24,7 @@ public:
 	void Debug()      override;
 
 	void Move();//移動
-	
+
 
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
 
@@ -31,7 +33,8 @@ public:
 	void RootInit();
 	void PowerUpInit();
 	void PowerUpUpdate();
-	
+	void TutorialMove();
+
 	//getter
 	Transform* GetPivot() { return &pivot_; }
 	Transform* GetbaseTransform() { return &transoform_; }
@@ -43,23 +46,49 @@ public:
 	bool GetisPowerUp()const { return isPowerUp_; }
 	//パワーアップタイム
 	float GetPowerUpTime()const { return powerUpTime_; }
+	//ダメージ
+	void DamageForPar(const float& par);
 	//setter
 	void PowerUpGaugeUp(float par);
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
-	
+
+	void SetBuildingManager(BuildingManager* buildingManager);
 private:
-	
+	struct DamageParamater {
+		bool isStop;
+		float stopCollTime;
+	    float kStopCollTime;
+		float DamagePar;
+	};
+private:
+	BuildingManager* pBuindingManager_;
 	//速度
 	Vec3 input_;
 	Vec3 velocity_;
+	float speed_;
 	//クォータニオンRotate
 	Quaternion rotateX_;
 	Quaternion rotateY_;
 	//ピボット
 	Transform pivot_;
 	Transform transoform_;
+
+	AudioSource* audioSource_ = nullptr;
+	//状態
+	std::unique_ptr<BasePlayerBehavior>behavior_;
+
+	float rotateXAngle_;
+	float rotateYAngle_;
+
+	class EarthRenderer* er_ = nullptr;
+	float radius_ = 1.0f;
+	Vec4  paintOutColor_ = { 1,1,1,1 };
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  パラメータ
+	////////////////////////////////////////////////////////////////////////////////////////////
 	//パワーアップゲージ
 	float powerUpGaugeMax_;
 	float powerUpGauge_;
@@ -70,16 +99,20 @@ private:
 	float moveSpeed_;
 	//パワーアップフラグ
 	bool isPowerUp_;
-	
-	AudioSource* audioSource_ = nullptr;
-	//状態
-	std::unique_ptr<BasePlayerBehavior>behavior_;
 
-	float rotateXAngle_;
-	float rotateYAngle_;
+	//HP
+	float HP_;
+	const	float HPMax_ = 100.0f;
 
-	class EarthRenderer* er_ = nullptr; 
-	float radius_ = 1.0f;
-	Vec4  paintOutColor_ = {1,1,1,1};
-	
+	DamageParamater damageForBossHead_;
+	DamageParamater damageForBossBullet_;
+
+	////スタン
+	//bool isStop_;
+	//float stopCollTime_;
+	//const float kStopCollTime_=0.5f;
+
+	////ダメージパラメータ
+	//float DamageForBossHead_ = 0.05f;
+	//float DamageForBossBullet_ = 0.2f;
 };

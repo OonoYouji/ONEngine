@@ -79,11 +79,20 @@ void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootP
 
 void Transform::SetParent(Transform* parent) {
 	parent_ = parent;
-	parent->AddChild(this);
+	//parent->AddChild(this);
 }
 
 void Transform::AddChild(Transform* child) {
 	childs_.push_back(child);
+}
+
+void Transform::SubChild(Transform* transfom) {
+	auto itr = std::find(childs_.begin(), childs_.end(), transfom);
+	if(itr == childs_.end()) {
+		return;
+	}
+
+	childs_.erase(itr);
 }
 
 Mat4 Transform::MakeRotate(uint32_t order) {

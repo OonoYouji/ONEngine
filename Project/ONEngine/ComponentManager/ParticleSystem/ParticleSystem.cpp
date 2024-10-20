@@ -181,6 +181,10 @@ void ParticleSystem::Debug() {
 		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
 		ImGui::Checkbox("use billboard", &useBillboard_);
 
+		if(ImGui::Button("burst particle")) {
+			SetBurst(true, 1.0f, 0.1f);
+		}
+
 		ImGui::Spacing();
 
 		emitter_->Debug();
@@ -189,6 +193,13 @@ void ParticleSystem::Debug() {
 	}
 }
 
+void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
+	emitter_->rateOverTime_ = _particleRespawnTime;
+}
+
+void ParticleSystem::SetEmittedParticleCount(uint32_t _emittedParticleCount) {
+	emitter_->emissionCount_ = _emittedParticleCount;
+}
 
 void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
 	particleLifeTime_ = _particleLifeTime;
@@ -201,6 +212,19 @@ void ParticleSystem::SetUseBillboard(bool _useBillboard) {
 
 void ParticleSystem::SetPartilceUpdateFunction(const std::function<void(Particle*)>& _function) {
 	particleUpdateFunc_ = _function;
+}
+
+void ParticleSystem::SetParticleEmitterFlags(int particleEmitterFlags) {
+	emitter_->SetParticleEmitterFlags(particleEmitterFlags);
+}
+
+void ParticleSystem::SetBurst(bool _isBurst, float _burstTime, float _rateOverTime) {
+	emitter_->SetBurst(_isBurst, _burstTime, _rateOverTime);
+}
+
+void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
+	emitter_->min_ = _min;
+	emitter_->max_ = _max;
 }
 
 

@@ -16,15 +16,13 @@
 void Scene_Title::Initialize() {
 
 	/// reset...
-	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
 	
 	/// camera setting
 	Transform* cameraTransform   = mainCamera_->GetTransform();
 	cameraTransform->position    = { 2.914f, 15.186f, -11.229f};
 	cameraTransform->rotate      = { 0.238f, -0.445f, 0.0f };
 	cameraTransform->rotateOrder = XYZ;
-
-
 
 	/// intance create
 	GameCamera*          uiCamera          = new GameCamera("UICamera");
@@ -39,16 +37,17 @@ void Scene_Title::Initialize() {
 	gameTitleRenderer->Initialize();
 
 	/// setting...
-
 	uiCamera->SetPositionZ(-10.0f);
 	AddLayer("ui", uiCamera);
+
+	playerAnimator->SetParticleUseRotate(false);
+	playerAnimator->GetParticleSystem()->SetEmittedParticleCount(4u);
 
 }
 
 void Scene_Title::Update() {
 
-	if(Input::TriggerKey(KeyCode::Space)) {
-		SceneManager::GetInstance()->SetNextScene(SCENE_ID::GAME);
+	if(Input::TriggerKey(KeyCode::Space) || Input::TriggerPadButton(PadCode::A)) {
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
 	}
-
 }

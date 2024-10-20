@@ -62,8 +62,7 @@ public:
 
 	void CreateTag(BaseGameObject* object);
 
-	void RenameComponents();
-
+	void RenameComponent(BaseComponent* component);
 
 
 	/// ---------------------------------------------------
@@ -75,8 +74,8 @@ public:
 		addComponent->SetOwner(this);
 		addComponent->Initialize();
 		T* componentPtr = addComponent.get();
+		RenameComponent(componentPtr);
 		components_.push_back(std::move(addComponent));
-		RenameComponents();
 		return componentPtr;
 	}
 
@@ -145,6 +144,8 @@ public:
 
 	void SetParent(Transform* parent);
 	Transform* GetParent() const;
+
+	void ParentCancel(bool isLocalToWorld);
 
 	std::list<BaseGameObject*> GetChilds() const;
 

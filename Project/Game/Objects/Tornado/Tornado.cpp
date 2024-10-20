@@ -26,31 +26,43 @@ void Tornado::Initialize() {
 	const uint32_t kParticleMaxNum = 32u;
 
 	particleDataArray_.resize(kParticleMaxNum);
-	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "Sphere");
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "rubble");
 
-	/// particle data arrayの初期化
+	/// パーティクルデータの初期化
 	for(auto& data : particleDataArray_) {
-		data.value = 0.0f;
-		data.radius = Random::Float(3.0f, 5.0f);
-		data.speed = Random::Float(32.0f, 64.0f);
+		data.maxPosY = Random::Float(1.0f, 10.0f);
+		data.radius = Random::Float(1.0f, 2.0f);
+		data.speed = Random::Float(5.0f, 10.0f);
+		data.time = Random::Float(0.0f, 1.0f);
+		data.rotate = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+		data.scale = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
 	}
 
-	/// 関数のセット
+	/// パーティクルの挙動
+	particleSystem->SetParticleLifeTime(3.0f);
+	particleSystem->SetEmittedParticleCount(2);
+	particleSystem->SetParticleRespawnTime(0.6f);
+	particleSystem->SetUseBillboard(false);
+
 	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
-		transform->SetParent(pTransform_);
-		transform->scale = Vec3::kOne * 0.25f;
-
 		ParticleData& data = particleDataArray_[particle->GetID()];
-		float radius = (1.0f - particle->GetNormLifeTime()) * data.radius;
-		data.value = particle->GetNormLifeTime() * data.speed;
+
+		data.time += Time::DeltaTime();
+		transform->rotate = data.rotate;
+		transform->scale = data.scale;
 
 		transform->position = {
-			std::cos(data.value) * radius,
-			0.0f,
-			std::sin(data.value) * radius
+			std::cos(data.time * data.speed) * data.radius,
+			std::sin(data.time * data.speed) * data.radius,
+			particle->GetNormLifeTime() * data.maxPosY
 		};
+
+		transform->position = Mat4::Transform(transform->position, matRotate_);
+		transform->position += GetPosition();
 	});
+
+
 
 
 	/// transform initialize
@@ -60,32 +72,74 @@ void Tornado::Initialize() {
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
 	eacSpeed_ = 0.7f;
+	pTransform_->position.z = 4.2f;
+	minScale_ = 0.5f;
+	maxScale_ = 0.75f;
+	scaleScaler_ = minScale_;
 
-	scaleScaler_ = 1.0f;
-	minScale_ = 1.0f;
-	maxScale_ = 3.0f;
-
-
-	/// ring array initializing
-	ringArray_.resize(3);
-	for(auto& ring : ringArray_) {
-		ring = new Ring;
-		ring->Initialize();
-		ring->SetParent(pTransform_);
-	}
 
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
 		wind = new Wind;
 		wind->Initialize();
 		wind->SetParent(pTransform_);
+		wind->SetScale(Vec3::kOne * 0.5f);
 	}
+
+	windAnimationDataArray_.resize(10);
+	for(auto& data : windAnimationDataArray_) {
+		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
+	}
+
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time = Random::Float(1.0f, 3.0f);
+		wind.speed = Random::Float(5.0f, 7.5f);
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 3.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(3.0f);
+	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		Transform* parent    = GetParent();
+		transform->SetParent(parent);
+
+		WindData&  wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		transform->position = {
+			std::cos(-wind.time * wind.speed),
+			std::sin(-wind.time * wind.speed),
+			wind.height - 1.0f
+		};
+
+		transform->rotate.z = std::atan2(-transform->position.x, transform->position.y);
+
+		//transform->scale   = Vec3::kOne * wind.height;
+		//transform->scale.y = 2.0f;
+
+	});
 
 }
 
 void Tornado::Update() {
 
-	if(Input::PressKey(KeyCode::Space)) {
+	if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
 
 		scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
 	} else {
@@ -100,6 +154,22 @@ void Tornado::Update() {
 	pTransform_->quaternion = quaternionLocalX_;
 	pTransform_->scale      = Vec3::kOne * scaleScaler_;
 
+	Transform* parent = GetParent();
+	if(parent) {
+		matRotate_ = parent->matTransform;
+		matRotate_.m[3][0] = 0.0f;
+		matRotate_.m[3][1] = 0.0f;
+		matRotate_.m[3][2] = 0.0f;
+	}
+
+	/// 周りの風を回転させる
+	for(size_t i = 0; i < 10; ++i) {
+		WindAnimationData& data = windAnimationDataArray_[i];
+		Wind* wind = windArray_[i];
+
+		data.time += Time::DeltaTime();
+		wind->SetRotateY(data.time * data.speed);
+	}
 }
 
 
@@ -163,7 +233,7 @@ void Tornado::Debug() {
 				continue;
 			}
 
-			ImGui::DragFloat("value",  &data.value,  0.05f);
+			//ImGui::DragFloat("value",  &data.value,  0.05f);
 			ImGui::DragFloat("radius", &data.radius, 0.05f);
 
 			ImGui::TreePop();
@@ -173,49 +243,21 @@ void Tornado::Debug() {
 		ImGui::TreePop();
 	}
 
+
+	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::TreePop();
+	}
+
+
 }
 
 void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
-
 	SetParent(pPlayer_->GetbaseTransform());
+	UpdateMatrix();
 	
 }
-
-
-/// ===================================================
-/// ring
-/// ===================================================
-
-int Ring::sInstanceCount_ = 0;
-
-Ring::Ring() {
-	CreateTag(this); 
-	id_ = sInstanceCount_++;
-}
-
-void Ring::Initialize() {
-	auto mr = AddComponent<MeshRenderer>();
-	mr->SetModel(std::string("TornadoRing") + std::to_string(id_ + 1));
-}
-
-void Ring::Update() {
-	pTransform_->rotate.y += Time::DeltaTime() * rotateSpeed_;
-}
-
-void Ring::Debug() {
-	if (ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat("rotate speed", &rotateSpeed_, 0.5f);
-
-		ImGui::TreePop();
-	}
-}
-
-void Ring::ResetInstanceCount() {
-	sInstanceCount_ = 0;
-}
-
 
 /// ===================================================
 /// wind

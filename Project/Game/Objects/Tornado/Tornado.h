@@ -9,7 +9,6 @@
 /// 前方宣言
 /// ===================================================
 class Player;
-class Ring;
 class Wind;
 
 /// ===================================================
@@ -17,10 +16,25 @@ class Wind;
 /// ===================================================
 class Tornado final : public BaseGameObject {
 
+	struct WindAnimationData {
+		float time = 0.0f;
+		float speed = 1.0f;
+	};
+
 	struct ParticleData {
-		float value;
-		float radius;
+		float time = 0.0f;
+		float speed = 1.0f;
+		float radius = 1.0f;
+		float maxPosY = 0.0f;
+		Vec3 rotate{};
+		Vec3 scale{};
+	};
+
+	struct WindData {
+		float time;
 		float speed;
+		float radius;
+		float height;
 	};
 
 public:
@@ -34,6 +48,10 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+
+	float GetScaleScale()const { return scaleScaler_; }
+	float GetMaxScale()const { return maxScale_; }
+	float GetMinScale()const { return minScale_; }
 
 	void SetPlayer(Player* _player);
 
@@ -60,34 +78,12 @@ private:
 
 	float zRotateSpeed_ = 1.0f;
 
-	std::vector<Ring*>        ringArray_;
-	std::vector<Wind*>        windArray_;
-	std::vector<ParticleData> particleDataArray_;
+	std::vector<Wind*>             windArray_;
+	std::vector<WindAnimationData> windAnimationDataArray_;
+	std::vector<ParticleData>      particleDataArray_;
+	std::vector<WindData>          windDataArray_;
 
-};
-
-
-/// ===================================================
-/// わっか
-/// ===================================================
-class Ring : public BaseGameObject {
-public:
-
-	Ring();
-	~Ring() {}
-
-	void Initialize() override;
-	void Update()     override;
-	void Debug()      override;
-
-	static void ResetInstanceCount();
-
-private:
-
-	static int sInstanceCount_;
-	int id_;
-
-	float rotateSpeed_ = 0.0f;
+	Mat4 matRotate_;
 
 };
 
