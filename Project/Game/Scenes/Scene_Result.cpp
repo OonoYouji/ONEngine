@@ -4,8 +4,15 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/GameResult/GameResult.h"
 
+#include "Objects/Tornado/Tornado.h"
 
 void Scene_Result::Initialize() {
+
+	/// reset
+	Ring::ResetInstanceCount();
+	Wind::ResetInstanceCount();
+
+
 	/// instance create
 	GameCamera* spriteCamera = new GameCamera("spriteCamera");
 	GameResult* gameResult   = new GameResult();
