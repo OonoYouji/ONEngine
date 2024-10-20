@@ -36,7 +36,7 @@ private:
 	//イージングパラメータ
 	float easeTime_;
 	float kEaseTime_;
-	MeshRenderer* mesh_;
+	MeshRenderer* mesh_=nullptr;
 
 	Transform pivot_;
 };

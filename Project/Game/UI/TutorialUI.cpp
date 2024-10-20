@@ -18,12 +18,10 @@
 void BaseTutorialUI::Initialize() {
 	drawLayerId = 1;
 	isClose_ = false;
-	isActive = false;
 	canClose_ = false;
-	pTransform_->position.x = 0.2f;
-	pTransform_->position.y = -3.7f;
-	pTransform_->position.z = 25.6f;
-	pTransform_->rotate.x = 3.25f;
+	pTransform_->scale = {0,1,1};
+	pTransform_->position.y = -1.4f;
+	pTransform_->rotate.x = 0.0f;
 
 	
 	//BaseTutorialUI::Initialize();
@@ -68,10 +66,11 @@ void BaseTutorialUI::Debug() {
 /// ===================================================
 /// 
 void TutorialScaleUpUI::Initialize() {
-
-	Model* model = ModelManager::Load("Board");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	
+	/// add components
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("uvChecker");
+	
 	BaseTutorialUI::Initialize();
 };
 
@@ -89,9 +88,9 @@ void TutorialScaleUpUI::Debug() {
  
 void TutorialScaleDownUI::Initialize() {
 
-	Model* model = ModelManager::Load("Board");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	/// add components
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("uvChecker");
 	BaseTutorialUI::Initialize();
 };
 
@@ -109,9 +108,8 @@ void TutorialScaleDownUI::Debug() {
 //===================================================
 void TutorialEntrainment::Initialize() {
 
-	Model* model = ModelManager::Load("Board");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("uvChecker");
 	BaseTutorialUI::Initialize();
 };
 
@@ -131,9 +129,8 @@ void TutorialEntrainment::Debug() {
 //===================================================
 void TutorialEntrainmentAll::Initialize() {
 
-	Model* model = ModelManager::Load("Board");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("uvChecker");
 	BaseTutorialUI::Initialize();
 };
 
@@ -151,9 +148,8 @@ void TutorialEntrainmentAll::Debug() {
 
 void TutorialBodyBlow::Initialize() {
 
-	Model* model = ModelManager::Load("Board");
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel(model);
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("uvChecker");
 	BaseTutorialUI::Initialize();
 };
 

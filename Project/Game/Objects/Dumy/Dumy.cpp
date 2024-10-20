@@ -27,8 +27,10 @@ void Dumy::Initialize() {
 	mesh_ = AddComponent<MeshRenderer>();
 
 	mesh_->SetModel(model);
-	/*mesh_->SetMaterial();*/
+	mesh_->SetMaterial("white2x2");
 	auto collider = AddComponent<BoxCollider>(model);
+	
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,14 +59,13 @@ void Dumy::Initialize() {
 void Dumy::Update() {
 	//ダミーの死亡
 	if (isFall_) {
-	/*	mesh_->SetColor(Vec4::kRed);*/
+
 		easeTime_ += Time::DeltaTime();
 		if (easeTime_ >= kEaseTime_) {
 			easeTime_ = kEaseTime_;
 			isDeath_ = true;
 		}
-		pTransform_->rotate.y = EaseOutSine<float>(0, 1.550f, easeTime_, kEaseTime_);
-		
+		pTransform_->rotate.y = EaseOutSine<float>(0, 1.550f, easeTime_, kEaseTime_);	
 	}
 	//ピボット更新
 	pivot_.UpdateMatrix();
@@ -82,6 +83,7 @@ void Dumy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 		hp_--;
 		if (hp_ <= 0) {
 			isFall_ = true;
+			mesh_->SetColor(Vec4::kRed);
 		}
 	}
 }
