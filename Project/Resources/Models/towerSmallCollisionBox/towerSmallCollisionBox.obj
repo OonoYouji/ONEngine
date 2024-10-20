@@ -1,6 +1,6 @@
 # Blender 4.1.1
 # www.blender.org
-mtllib towerCollisionBox.mtl
+mtllib towerSmallCollisionBox.mtl
 o 立方体.001
 v 0.821307 0.089974 -0.821307
 v 0.821307 7.269727 -0.821307
