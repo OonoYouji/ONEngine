@@ -91,6 +91,50 @@ void Tornado::Initialize() {
 		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
 	}
 
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time = Random::Float(1.0f, 3.0f);
+		wind.speed = Random::Float(5.0f, 7.5f);
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 3.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(3.0f);
+	windParticle->SetParticleRespawnTime(1.0f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		Transform* parent    = GetParent();
+		transform->SetParent(parent);
+
+		WindData&  wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		transform->position = {
+			std::cos(-wind.time * wind.speed),
+			std::sin(-wind.time * wind.speed),
+			wind.height - 1.0f
+		};
+
+		transform->rotate.z = std::atan2(-transform->position.x, transform->position.y);
+
+		//transform->scale   = Vec3::kOne * wind.height;
+		//transform->scale.y = 2.0f;
+
+	});
+
 }
 
 void Tornado::Update() {

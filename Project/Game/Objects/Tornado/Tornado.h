@@ -30,6 +30,13 @@ class Tornado final : public BaseGameObject {
 		Vec3 scale{};
 	};
 
+	struct WindData {
+		float time;
+		float speed;
+		float radius;
+		float height;
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -74,6 +81,7 @@ private:
 	std::vector<Wind*>             windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
+	std::vector<WindData>          windDataArray_;
 
 	Mat4 matRotate_;
 
