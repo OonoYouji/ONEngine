@@ -31,11 +31,11 @@ void Tornado::Initialize() {
 	/// パーティクルデータの初期化
 	for(auto& data : particleDataArray_) {
 		data.maxPosY = Random::Float(1.0f, 10.0f);
-		data.radius = Random::Float(1.0f, 2.0f);
-		data.speed = Random::Float(5.0f, 10.0f);
-		data.time = Random::Float(0.0f, 1.0f);
-		data.rotate = Random::Vec3(-Vec3::kOne, Vec3::kOne);
-		data.scale = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
+		data.radius  = Random::Float(1.0f, 2.0f);
+		data.speed   = Random::Float(5.0f, 10.0f);
+		data.time    = Random::Float(0.0f, 1.0f);
+		data.rotate  = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+		data.scale   = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
 	}
 
 	/// パーティクルの挙動
@@ -73,8 +73,8 @@ void Tornado::Initialize() {
 	/// action param initialize
 	eacSpeed_ = 0.7f;
 	pTransform_->position.z = 4.2f;
-	minScale_ = 1.0f;
-	maxScale_ = 1.5f;
+	minScale_ = 0.75f;
+	maxScale_ = 1.25f;
 	scaleScaler_ = minScale_;
 
 

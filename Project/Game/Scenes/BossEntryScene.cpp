@@ -31,11 +31,11 @@ void BossEntryScene::Initialize() {
 	/// objects instance create
 	bossAnimation_ = new BossAnimation();
 	cameraState_   = new CameraStateBossEntryToGame();
-	TitleEarth* earth = new TitleEarth();
+	TitleEarth*          earth           = new TitleEarth();
 	TitlePlayerAnimator* playerAnimation = new TitlePlayerAnimator();
-	BeatBossSprite* beatBossSpriteUp = new BeatBossSprite();
-	BeatBossSprite* beatBossSpriteDown = new BeatBossSprite();
-	GameCamera* spriteCamera = new GameCamera("spriteCamera");
+	beatBossSpriteArray_[0]              = new BeatBossSprite();
+	beatBossSpriteArray_[1]              = new BeatBossSprite();
+	GameCamera*          spriteCamera    = new GameCamera("spriteCamera");
 
 
 	bossAnimation_->Initialize();
@@ -43,8 +43,8 @@ void BossEntryScene::Initialize() {
 	earth->Initialize();
 	playerAnimation->Initialize();
 	spriteCamera->Initialize();
-	beatBossSpriteUp->Initialize();
-	beatBossSpriteDown->Initialize();
+	beatBossSpriteArray_[0]->Initialize();
+	beatBossSpriteArray_[1]->Initialize();
 
 
 	/// other setting
@@ -59,8 +59,8 @@ void BossEntryScene::Initialize() {
 	playerAnimation->SetRotateX(-std::numbers::pi_v<float> / 2.0f);
 	playerAnimation->SetIsSpinUpdate(false);
 
-	beatBossSpriteUp->SetRotateZ(std::numbers::pi_v<float>);
-	beatBossSpriteUp->SetPositionY(0.55f);
+	beatBossSpriteArray_[1]->SetRotateZ(std::numbers::pi_v<float>);
+	beatBossSpriteArray_[1]->SetPositionY(0.55f);
 
 	/// scene setting
 	AddLayer("sprite", spriteCamera);
@@ -76,6 +76,10 @@ void BossEntryScene::Update() {
 	/// 振り下ろしが終了したので遷移する
 	if(data.time / data.maxTime >= 1.0f) {
 		cameraState_->isActive = true;
+		for(size_t i = 0; i < 2; ++i) {
+			beatBossSpriteArray_[i]->SetIsFadeOut(true);
+		}
+
 		if(cameraState_->IsFinishedMoving()) {
 			SceneManager::GetInstance()->SetNextScene(GAME);
 		}

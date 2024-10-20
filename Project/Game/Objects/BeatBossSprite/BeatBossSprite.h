@@ -11,6 +11,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void SetIsFadeOut(bool _isFadeOut);
+
 private:
 
 	class SpriteRenderer* spriteRenderer_ = nullptr;
@@ -18,4 +20,5 @@ private:
 	Vec4 spriteColor_;
 
 	float time_;
+	bool  isFadeOut_;
 };

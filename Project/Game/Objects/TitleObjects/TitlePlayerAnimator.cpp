@@ -40,6 +40,7 @@ void TitlePlayerAnimator::Initialize() {
 		wind = new Wind;
 		wind->Initialize();
 		wind->SetParent(pTransform_);
+		wind->SetScale(Vec3::kOne * 0.75f);
 	}
 
 	windAnimationDataArray_.resize(10);
