@@ -289,15 +289,13 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 
 	//ボスの直接攻撃によるダメージ
 	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
-		pPlayer_->DamageForBossHead();
-		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
+		pPlayer_->DamageForBossHead();		
 	}
 
 
 	//ボスの弾によるダメージ
 	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->DamageForBossBullet();
-		audioSource_->PlayOneShot("playerToBossBullet.wav", 0.5f);
 	}
 }
 

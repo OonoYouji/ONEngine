@@ -43,7 +43,7 @@ void BossBulletLump::Initialize() {
 
 	audioSource_ = AddComponent<AudioSource>();
 
-	audioSource_->PlayOneShot("fanfare", 0.5f);//ダメージ受けた時の効果音
+	audioSource_->PlayOneShot("BossBulletShot", 0.5f);//弾が出る時
 }
 
 void BossBulletLump::Update() {

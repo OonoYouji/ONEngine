@@ -285,7 +285,7 @@ void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
 		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
 			isHitBack_ = true;
-			audioSource_->PlayOneShot("fanfare.wav", 0.5f);//ダメージ受けた時の効果音
+			audioSource_->PlayOneShot("BossDamage.wav", 0.5f);//ダメージ受けた時の効果音
 			damageCoolTime_ = kDamageCoolTime_;
 			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
 			DamageForPar(damageValues[scaleIndex]);

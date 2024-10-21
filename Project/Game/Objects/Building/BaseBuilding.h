@@ -140,8 +140,6 @@ private:
 	std::array<float, BUILDING_SCALE_COUNT> buildingScaleArray_;
 	std::array<float, BUILDING_SCALE_COUNT> nextScalingTimeArray_;
 
-
-
 	/// ---------------------------------------------------
 	/// effect
 	/// ---------------------------------------------------
