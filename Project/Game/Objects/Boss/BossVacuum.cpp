@@ -9,6 +9,7 @@
 #include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
 #include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 #include"FrameManager/Time.h"
 #include "ImGuiManager/ImGuiManager.h"
 //obj
@@ -64,9 +65,12 @@ void BossHead::Initialize() {
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 
+	bossHeadEr_ = new BossHeadEr();
+	bossHeadEr_->Initialize();
 	ParamaterInit();
 }
 void BossHead::Update() {
+
 	if (!pBossTube_->GetBoss()->GetIsAttack()) {
 		RootInit();
 		// 1フレームでのパラメータ加算値
@@ -87,6 +91,7 @@ void BossHead::Debug() {
 
 void BossHead::RootInit() {
 	if (!isRootinit_) {
+		bossHeadEr_->RootInit();
 		floatingCycle_ = 65.0f;
 		floatingAmplitude_ = 0.3f;
 		pTransform_->position.z = 0.0f;
@@ -99,7 +104,7 @@ void BossHead::RootInit() {
 }
 void BossHead::AttackInit() {
 	if (!isAttackInit_) {
-
+		bossHeadEr_->AttackInit();
 		pTransform_->position.z = 0.0f;
 		pTransform_->position.x = 0.0f;
 		pTransform_->position.y = 0.16f;
@@ -108,15 +113,19 @@ void BossHead::AttackInit() {
 		isRootinit_ = false;
 	}
 }
-
+void BossHead::AttackUpdate() {
+	bossHeadEr_->Update();
+}
 
 void BossHead::SetBossTube(BossTubu* bossTube) {
 	pBossTube_ = bossTube;
 	pTransform_->SetParent(pBossTube_->GetParent());
+	bossHeadEr_->SetParent(pBossTube_->GetParent());
 }
 
 void BossHead::ParentBoss() {
 	pTransform_->SetParent(pBossTube_->GetParent());
+	
 }
 void BossHead::ParentTubu() {
 	pTransform_->SetParent(pBossTube_->GetTransform());
@@ -130,3 +139,37 @@ void BossHead::ParamaterInit() {
 	pTransform_->position.x = 0.1f;
 	pTransform_->position.y = 4.5f;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// BossER
+////////////////////////////////////////////////////////////////////////////////////////////
+
+void  BossHeadEr::Initialize() {
+	Model* model = ModelManager::Load("bossHead");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	er_ = AddComponent<EarthRenderer>();
+	meshRenderer->SetModel(model);
+	er_->SetRadius(0.0f);
+	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->rotateOrder = QUATERNION;
+}
+void  BossHeadEr::Update() {
+
+
+}
+void  BossHeadEr::Debug() {
+
+}
+
+void BossHeadEr::RootInit() {
+	er_->SetRadius(0.0f);
+}
+void BossHeadEr::AttackInit() {
+	er_->SetRadius(7.0f);
+}
+
+
+//void BossHeadEr::SetBoss(Boss* boss) {
+//	pBoss_ = boss;
+//	pTransform_->SetParent(pBoss_->GetTransform());
+//}

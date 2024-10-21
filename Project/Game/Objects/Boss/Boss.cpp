@@ -33,6 +33,8 @@ void Boss::Initialize() {
 	meshRenderer_->SetMaterial("uvChecker");
 	auto collider = AddComponent<BoxCollider>(model);
 
+
+	audio_ = AddComponent<AudioSource>();
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
@@ -69,7 +71,9 @@ void Boss::Initialize() {
 }
 
 void Boss::Update() {
-	
+
+	er_->SetRadius(radius_);
+	er_->SetColor(paintOutColor_);
 	//振る舞い更新
 	behavior_->Update();
 	//敵のビルが一定数溜まったら
@@ -82,7 +86,7 @@ void Boss::Update() {
 
 		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
-			pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+		pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
 
 		// 現在の回転をオイラー角に変換
 		Vec3 euler = QuaternionToEulerAngles(GetPivotQuaternion());
@@ -102,6 +106,7 @@ void Boss::Update() {
 	
 		// クールダウン処理
 		if (damageCoolTime_ <= 0) {
+		
 			meshRenderer_->SetColor(Vec4::kWhite);
 			isHitBack_ = false;
 		}
@@ -167,6 +172,9 @@ void Boss::AttackInit() {
 }
 
 void Boss::AttackUpdate() {//超汚い
+
+	pBossHead_->AttackUpdate();
+
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::DeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
@@ -255,7 +263,6 @@ void Boss::SetPlayer(Player* player) {
 void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
-
 
 void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {

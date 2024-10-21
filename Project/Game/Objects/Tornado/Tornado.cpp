@@ -118,10 +118,7 @@ void Tornado::Update() {
 		matRotate_.m[3][1] = 0.0f;
 		matRotate_.m[3][2] = 0.0f;
 	}
-
 }
-
-
 
 void Tornado::Debug() {
 
