@@ -130,6 +130,9 @@ private:
 	//ダメージ受けたー
 	bool isHitBack_;
 	float damageCoolTime_;
-const	float kDamageCoolTime_=0.1f;
+	const float kDamageCoolTime_=0.1f;
+
+	/// audio source
+	class AudioSource* audioSource_ = nullptr;
 
 };

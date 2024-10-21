@@ -6,17 +6,16 @@
 #include "Input/Input.h"
 
 #include <GraphicManager/Drawer/Material/Material.h>
-#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
-#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
+
 //std
 #include <algorithm>
-#include<numbers>
+#include <numbers>
 #include <limits>
 #include "ImGuiManager/ImGuiManager.h"
-#include"FrameManager/Time.h"
+#include "FrameManager/Time.h"
 //obj
 #include"Objects/Player/Player.h"
 #include"Objects/Building/BuildingManager.h"
@@ -44,6 +43,9 @@ void Boss::Initialize() {
 
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
+
+	audioSource_ = AddComponent<AudioSource>();
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -181,16 +183,27 @@ void Boss::AttackInit() {
 
 void Boss::AttackUpdate() {//超汚い
 	if (!isAttackBack_) {
+
 		attackEaseT_ += Time::DeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_) {
-			attackEaseT_ = kAttackEaseT_;
+
+			if(attackCoolTime_ == 0.0f) {
+				/// 振り下ろしたときの効果音再生
+				audioSource_->PlayOneShot("bossAttackTubeDown.wav", 0.5f);
+			}
+
+			/// easeTをマックスに合わせる
+			attackEaseT_     = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();
+
+			/// 振り下ろし → TubeHeadを上げる動作に遷移
 			if (attackCoolTime_ >= kAttackCoolTime_) {
 				isAttackBack_ = true;
 			}
 		}
 	}//戻る
 	else if (isAttackBack_) {
+
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.0f) {
 			attackEaseT_ = 0.0f;
