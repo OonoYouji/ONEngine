@@ -83,6 +83,7 @@ public:
 private:
 	
 private:
+
 	MeshRenderer* meshRenderer_=nullptr;
 	//プレイヤーポインタ
 	Player* pPlayer_=nullptr;

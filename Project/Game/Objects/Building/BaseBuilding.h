@@ -107,6 +107,7 @@ private:
 	const float floatBuildingEaseTimeMax_=1.0f;
 	const float buildingSartZ = -10.8f;
 
+	
 
 	/// ---------------------------------------------------
 	/// earth shadow

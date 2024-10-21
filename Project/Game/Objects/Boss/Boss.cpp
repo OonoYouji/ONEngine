@@ -45,8 +45,6 @@ void Boss::Initialize() {
 	er_->SetRadius(radius_);
 
 	audioSource_ = AddComponent<AudioSource>();
-
-
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +146,9 @@ void Boss::SlurpInit() {
 }
 
 void Boss::SlurpUpdate() {
+	//if (!audioSource_->IsPlayingAudio()) {
+	//	audioSource_->PlayOneShot("fanfare", 0.5f);//吸い込んだ時
+	//}
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
@@ -284,6 +285,7 @@ void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
 		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
 			isHitBack_ = true;
+			audioSource_->PlayOneShot("fanfare.wav", 0.5f);//ダメージ受けた時の効果音
 			damageCoolTime_ = kDamageCoolTime_;
 			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
 			DamageForPar(damageValues[scaleIndex]);

@@ -40,6 +40,10 @@ void BossBulletLump::Initialize() {
 	pTransform_->position.z = -12;
 	pTransform_->scale = { 2,2,2 };
 	isDeath_ = false;
+
+	audioSource_ = AddComponent<AudioSource>();
+
+	audioSource_->PlayOneShot("fanfare", 0.5f);//ダメージ受けた時の効果音
 }
 
 void BossBulletLump::Update() {
