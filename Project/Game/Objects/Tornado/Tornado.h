@@ -45,11 +45,14 @@ public:
 
 	Tornado() { CreateTag(this); }
 	~Tornado() {}
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision);
+
 
 	float GetScaleScaler()const { return scaleScaler_; }
 	float GetMaxScale()const { return maxScale_; }
