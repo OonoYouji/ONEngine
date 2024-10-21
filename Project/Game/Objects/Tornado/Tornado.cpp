@@ -15,6 +15,7 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include <ComponentManager/Collider/BoxCollider.h>
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// math
 #include "Math/Random.h"
@@ -144,6 +145,11 @@ void Tornado::Initialize() {
 		}
 
 	});
+
+
+
+	/// audio init
+	audioSource_ = AddComponent<AudioSource>();
 
 }
 
@@ -278,16 +284,20 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 
 	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->PowerUpGaugeUp(0.05f);
+		audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);
 	}
 
 	//ボスの直接攻撃によるダメージ
 	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->DamageForBossHead();
+		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
 	}
+
 
 	//ボスの弾によるダメージ
 	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->DamageForBossBullet();
+		audioSource_->PlayOneShot("playerToBossBullet.wav", 0.5f);
 	}
 }
 

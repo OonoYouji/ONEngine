@@ -93,6 +93,9 @@ private:
 
 	Mat4 matRotate_;
 
+	/// audio
+	class AudioSource* audioSource_ = nullptr;
+
 };
 
 
