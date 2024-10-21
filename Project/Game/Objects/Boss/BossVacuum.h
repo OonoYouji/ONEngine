@@ -74,6 +74,7 @@ public:
 	void SetBossTube(BossTubu* bossTube);
 	
 	void SetERRadius(float radius);
+	void LightFlashing();
 
 private:
 
@@ -104,18 +105,17 @@ public:
 
 	void RootInit();
 	void AttackInit();
+	void LightFlashing();
 
 	void SetERRadius(float radius);
 
-	//void SetBoss(Boss* bossTube);
 
 private:
 	Boss* pBoss_;
-
-
 	
 	//ライト
 	class EarthRenderer* er_ = nullptr;
 	float radius_ = 1.0f;
 	Vec4  paintOutColor_ = { 1,1,1,1 };
+	float lightTime_;
 };

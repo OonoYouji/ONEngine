@@ -104,6 +104,7 @@ void BossHead::RootInit() {
 }
 void BossHead::AttackInit() {
 	if (!isAttackInit_) {
+		
 		bossHeadEr_->AttackInit();
 		pTransform_->position.z = 0.0f;
 		pTransform_->position.x = 0.0f;
@@ -144,6 +145,10 @@ void BossHead::SetERRadius(float radius) {
 	bossHeadEr_->SetERRadius(radius);
 }
 
+void  BossHead::LightFlashing() {
+	bossHeadEr_->LightFlashing();
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // BossER
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,9 +168,8 @@ void  BossHeadEr::Update() {
 }
 void  BossHeadEr::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
-
 		ImGui::DragFloat("radius", &radius_, 0.05f);
-		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+		/*ImGui::ColorEdit3("paint out color", &paintOutColor_.x);*/
 		ImGui::TreePop();
 	}
 }
@@ -174,13 +178,28 @@ void BossHeadEr::RootInit() {
 	er_->SetRadius(0.0f);
 }
 void BossHeadEr::AttackInit() {
+	lightTime_ = 0.0f;
 	er_->SetRadius(3.2f);
+	paintOutColor_ = Vec4::kRed; 
+	er_->SetColor(paintOutColor_);  // 赤に切り替え
 }
 
+void BossHeadEr::LightFlashing() {
+	lightTime_ += Time::DeltaTime();
+	er_->SetColor(paintOutColor_);  // 赤に切り替え
 
-//void BossHeadEr::SetBoss(Boss* boss) {
-//	pBoss_ = boss;
-//	pTransform_->SetParent(pBoss_->GetTransform());
-//}
+	if (lightTime_ >= 0.5f) {  // 0.5秒ごとに色を変える
+
+		// 色の切り替え処理
+		if (paintOutColor_==Vector4::kRed) {
+			paintOutColor_=Vec4::kWhite;  // 白に切り替え
+		}
+		else {
+			paintOutColor_ = Vec4::kRed; // 赤に切り替え
+		}
+		lightTime_ = 0.0f;  // 時間をリセット
+	}
+
+}
 
 void BossHeadEr::SetERRadius(float radius) { er_->SetRadius(radius); }

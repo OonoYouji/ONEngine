@@ -210,6 +210,10 @@ void Boss::AttackUpdate() {//超汚い
 	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.0f, attackEaseT_, kAttackEaseT_));
 }
 
+void  Boss::AttackChaseUpdate() {
+	pBossHead_->LightFlashing();
+}
+
 void Boss::Debug() {
 	if (ImGui::TreeNode("Paramater")) {
 		ImGui::DragFloat("ChaseSpeedMax", &SpeedParamater_, 0.001f);
