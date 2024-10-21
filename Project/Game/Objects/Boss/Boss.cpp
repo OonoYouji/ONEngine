@@ -55,6 +55,7 @@ void Boss::Initialize() {
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
+	nextDamageCollTime_ = 1.0f;
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -106,11 +107,15 @@ void Boss::Update() {
 	
 		// クールダウン処理
 		if (damageCoolTime_ <= 0) {
-		
+			nextDamageTime_ = nextDamageCollTime_;//次にダメージを受けるまでのクールタイムを設定
 			meshRenderer_->SetColor(Vec4::kWhite);
 			isHitBack_ = false;
 		}
 	}
+	//0より大きかったらnextDamageTimeの減算をする
+	if ( nextDamageTime_ >= 0) {
+		nextDamageTime_ -= Time::DeltaTime();
+	}	
 
 	pivot_.UpdateMatrix();
 }
@@ -264,17 +269,29 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
 
-void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {
-		int scaleIndex = tornadoBuilding->GetScaleArrayIndex();
+//ボスコリジョン(トルネード)
+void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
+	if (dynamic_cast<Tornado*>(collision)&& nextDamageTime_ <=0&& !isHitBack_) {
+		if (pBuildingManager_) {
+			
+			float totalDamage = 0.0f;
+			const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f };//各ダメージパラメータ
 
-		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
-
-		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
-			isHitBack_ = true;
-			damageCoolTime_ = kDamageCoolTime_;
-			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
-			DamageForPar(damageValues[scaleIndex]);
+			//巻きこまれてるビルから、ダメージ計算
+			for (auto& inTornadoBuilding : pBuildingManager_->GetInTornadoBuildingss()) {
+				int scaleIndex = inTornadoBuilding->GetScaleArrayIndex();
+				if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
+					totalDamage += damageValues[scaleIndex];//合計値を足していく
+				}
+			}
+			//ダメージが0以上
+			if (totalDamage>0) {
+				// 合計ダメージを適用
+				isHitBack_ = true;
+				damageCoolTime_ = kDamageCoolTime_;
+				meshRenderer_->SetColor(Vec4(0.7f, 0, 0, 1));
+				DamageForPar(totalDamage);  // 合計ダメージを適用
+			}
 		}
 	}
 }

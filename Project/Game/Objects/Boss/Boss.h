@@ -68,7 +68,7 @@ public:
 	Player* GetPlayer() { return pPlayer_; }
 	BuildingManager* GetBuildingManager()const { return pBuildingManager_; }
 
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision)override;
 	bool GetIsAttack()const { return isAttack_; }
 
 	//setter
@@ -131,4 +131,6 @@ private:
 	bool isHitBack_;
 	float damageCoolTime_;
 	const	float kDamageCoolTime_ = 0.1f;
+	float nextDamageCollTime_;//次にダメージ受けるまでのクールタイム
+	float nextDamageTime_;//次にダメージ受けるまでのクールタイム
 };
