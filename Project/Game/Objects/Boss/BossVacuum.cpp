@@ -140,6 +140,10 @@ void BossHead::ParamaterInit() {
 	pTransform_->position.y = 4.5f;
 }
 
+void BossHead::SetERRadius(float radius) {
+	bossHeadEr_->SetERRadius(radius);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 // BossER
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,3 +182,5 @@ void BossHeadEr::AttackInit() {
 //	pBoss_ = boss;
 //	pTransform_->SetParent(pBoss_->GetTransform());
 //}
+
+void BossHeadEr::SetERRadius(float radius) { er_->SetRadius(radius); }

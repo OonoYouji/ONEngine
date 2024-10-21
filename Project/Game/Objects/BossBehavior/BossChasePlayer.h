@@ -21,5 +21,7 @@ private:
 	float chaseMinPos_;
 	//追っかける限界距離
 	float chaseMaxPos_;
+	//攻撃クールタイム
+	float attackCoolTime_;
 
 };

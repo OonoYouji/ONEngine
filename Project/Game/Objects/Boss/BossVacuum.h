@@ -72,6 +72,8 @@ public:
 
 	void SetIsAttackCollision(bool is) { isAttackCollision_ = is; }
 	void SetBossTube(BossTubu* bossTube);
+	
+	void SetERRadius(float radius);
 
 private:
 
@@ -102,6 +104,8 @@ public:
 
 	void RootInit();
 	void AttackInit();
+
+	void SetERRadius(float radius);
 
 	//void SetBoss(Boss* bossTube);
 

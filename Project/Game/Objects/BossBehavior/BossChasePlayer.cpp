@@ -23,6 +23,8 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	chaseSpeedNormal_ = 0.01f;
 	chaseMinPos_ = 10.0f;
 	chaseMaxPos_ = 25.0f;
+	
+	attackCoolTime_ = 1.0f;
 }
 
 BossChasePlayer::~BossChasePlayer() {
@@ -32,12 +34,13 @@ BossChasePlayer::~BossChasePlayer() {
 //更新
 void BossChasePlayer::Update() {
 	if (!pBoss_->GetIsHitBack()) {
+		attackCoolTime_ -= Time::DeltaTime();//	攻撃クールタイムを減算
 		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
 			pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 
 		// 一定距離で攻撃に遷移
-		if (distanceAndDirection.first <= chaseMinPos_) {
+		if (distanceAndDirection.first <= chaseMinPos_&&attackCoolTime_<=0) {
 			pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
 			return;
 		}

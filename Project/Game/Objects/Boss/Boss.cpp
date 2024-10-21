@@ -186,6 +186,7 @@ void Boss::AttackUpdate() {//超汚い
 			pBossHead_->SetIsAttackCollision(true);
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
+			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();
 			if (attackCoolTime_ >= kAttackCoolTime_) {
