@@ -145,11 +145,11 @@ void BossHead::ParamaterInit() {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 void  BossHeadEr::Initialize() {
-	Model* model = ModelManager::Load("bossHead");
-	auto meshRenderer = AddComponent<MeshRenderer>();
+
 	er_ = AddComponent<EarthRenderer>();
-	meshRenderer->SetModel(model);
 	er_->SetRadius(0.0f);
+	pTransform_->position.y = 2.6f;
+	pTransform_->position.z = 2.6f;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->rotateOrder = QUATERNION;
 }
@@ -158,14 +158,19 @@ void  BossHeadEr::Update() {
 
 }
 void  BossHeadEr::Debug() {
+	if (ImGui::TreeNode("Paramater")) {
 
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+		ImGui::TreePop();
+	}
 }
 
 void BossHeadEr::RootInit() {
 	er_->SetRadius(0.0f);
 }
 void BossHeadEr::AttackInit() {
-	er_->SetRadius(7.0f);
+	er_->SetRadius(3.2f);
 }
 
 
