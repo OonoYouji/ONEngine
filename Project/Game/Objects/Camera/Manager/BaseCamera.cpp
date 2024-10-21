@@ -91,8 +91,13 @@ void BaseCamera::BaseInitialize() {
 void BaseCamera::BaseUpdate() {
 	UpdateMatrix();
 	UpdateMatView();
-	UpdateMatPerspective();
-	UpdateMatOrthographic();
+
+	if(projectionType_ == PROJECTION_TYPE::PERSPECTIVE) {
+		UpdateMatPerspective();
+	} else {
+		UpdateMatOrthographic();
+	}
+
 	Transfer();
 }
 

@@ -50,7 +50,7 @@ void Player::Initialize() {
 	pTransform_->scale = Vec3::kOne * 0.5f;
 
 	powerUpGaugeMax_ = 100;
-	powerUpTimeMax_ = 0.6f;//秒
+	powerUpTimeMax_ = 10.0f;//秒
 	HP_ = HPMax_;
 
 	//ダメージ
@@ -138,11 +138,16 @@ void Player::Move() {
 	/// 移動の正規化
 	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
+	
+	Vec3 velocity = velocity_;
+	if(isPowerUp_) {
+		velocity *= 2.0f;
+	}
 
-	rotateXAngle_ = +velocity_.y;
-	rotateYAngle_ = -velocity_.x;
+	rotateXAngle_ = +velocity.y;
+	rotateYAngle_ = -velocity.x;
 
-	if (velocity_ != Vec3(0.0f, 0.0f, 0.0f)) {
+	if (velocity != Vec3(0.0f, 0.0f, 0.0f)) {
 
 		//回転を適応
 		rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
@@ -150,7 +155,7 @@ void Player::Move() {
 
 		// プレイヤーの向きの決定
 
-		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity_.x, velocity_.y));
+		Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(velocity.x, velocity.y));
 
 		pivot_.quaternion *= (rotateX_ * rotateY_);// 正規化
 		pTransform_->quaternion = quaternionLocalZ.Conjugate();
