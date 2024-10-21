@@ -291,6 +291,15 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 	}
 }
 
+void Tornado::OnCollisionStay(BaseGameObject* const collision) {
+	if(collision->GetTag() == "Building") {
+		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
+
+		building->SubHP(Time::DeltaTime());
+		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+	}
+}
+
 /// ===================================================
 /// wind
 /// ===================================================
