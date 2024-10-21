@@ -98,7 +98,7 @@ private:
 	//ピボット
 	Transform pivot_;
 	//
-	AudioSource* audio_;
+
 	//吸ってる弾を殺すフラグ
 	bool isBuildingKill_;
 	//攻撃フラグ

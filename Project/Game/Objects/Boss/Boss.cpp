@@ -34,7 +34,7 @@ void Boss::Initialize() {
 	auto collider = AddComponent<BoxCollider>(model);
 
 
-	audio_ = AddComponent<AudioSource>();
+	
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
