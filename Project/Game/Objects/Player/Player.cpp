@@ -20,6 +20,7 @@
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
+#include"Objects/Boss/Boss.h"
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("playerInGame");
@@ -59,6 +60,9 @@ void Player::Initialize() {
 
 	damageForBossBullet_.kStopCollTime = 0.5f;
 	damageForBossBullet_.DamagePar = 0.2f;
+
+	damageForBossBody_.kStopCollTime = 0.3f;
+	damageForBossBody_.DamagePar = 0.0f;
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +102,7 @@ void Player::Update() {
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
-	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop) {
+	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop&&!damageForBossBody_.isStop) {
 		Move();//移動
 	}
 
@@ -114,6 +118,22 @@ void Player::Update() {
 	if (damageForBossBullet_.stopCollTime <= 0.0f) {
 		damageForBossBullet_.stopCollTime = 0.0f;
 		damageForBossBullet_.isStop = false;
+	}
+
+	//体によるスタン
+	damageForBossBody_.stopCollTime -= Time::DeltaTime();
+	if (damageForBossBody_.stopCollTime <= 0.0f) {
+		damageForBossBody_.stopCollTime = 0.0f;
+		damageForBossBody_.isStop = false;
+	}
+
+	if (damageForBossBody_.isStop) {
+		//回転を適応
+		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, -0.01f);
+		Quaternion rotateY= Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, -0.01f);
+	
+		pivot_.quaternion *= (rotateX * rotateY);// 正規化
+		
 	}
 
 	pivot_.UpdateMatrix();
@@ -267,5 +287,15 @@ void Player::DamageForBossBullet() {
 		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(10);
+	}
+}
+
+//ボスと当たった時のダメ―じ
+void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<Boss*>(collision) && !damageForBossBody_.isStop) {
+		DamageForPar(damageForBossBullet_.DamagePar);
+		damageForBossBody_.isStop = true;
+		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
 	}
 }

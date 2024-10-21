@@ -23,6 +23,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+
 
 	void Move();//移動
 
@@ -107,8 +109,10 @@ private:
 	float HP_;
 	const	float HPMax_ = 100.0f;
 
+
 	DamageParamater damageForBossHead_;
 	DamageParamater damageForBossBullet_;
+	DamageParamater damageForBossBody_;
 
 	//トルネード
 	Tornado* pTornado_;
