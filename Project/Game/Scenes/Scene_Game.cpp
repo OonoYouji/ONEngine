@@ -9,6 +9,7 @@
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/RailCamera/RailCamera.h"
 #include "Objects/Reticle/Reticle.h"
+#include "Objects/PlayerBullet/PlayerBullet.h"
 
 
 /// ===================================================
@@ -25,16 +26,19 @@ void Scene_Game::Initialize() {
 	ShootingCourse* shootingCourse = new ShootingCourse();
 	RailCamera*     railCamera     = new RailCamera();
 	Reticle*        reticle        = new Reticle();
+	Player*         player         = new Player();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
 	railCamera->Initialize();
 	reticle->Initialize();
+	player->Initialize();
 	
 	/// その他ポインタ設定など...
 
 	railCamera->SetGameCamera(mainCamera_);
 	railCamera->SetShootingCourse(shootingCourse);
+	player->SetShootingCourse(shootingCourse);
 
 	reticle->SetGameCamera(mainCamera_);
 

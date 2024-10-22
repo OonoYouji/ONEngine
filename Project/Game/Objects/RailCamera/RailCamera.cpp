@@ -25,12 +25,8 @@ RailCamera::~RailCamera() {}
 
 
 void RailCamera::Initialize() {
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("axis");
-
 	/// transform
 	pTranform_->rotateOrder = XYZ;
-
 
 	/// move param setting...
 	Reset();

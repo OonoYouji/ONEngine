@@ -265,6 +265,7 @@
     </ClCompile>
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ONEngine">
@@ -733,6 +734,7 @@
     </ClInclude>
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
     <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
+    <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Model\Model.hlsli">
