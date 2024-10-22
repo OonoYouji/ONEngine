@@ -70,14 +70,14 @@ void Boss::Initialize() {
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 
-	const uint32_t kParticleMaxNum = 12u;
+	const uint32_t kParticleMaxNum = 15u;
 
 	//パーティクルAddComponent
 	particleDataArray_.resize(kParticleMaxNum);
 	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
 
 	/// パーティクルの挙動
-	particleSystem_->SetEmittedParticleCount(0);
+	particleSystem_->SetEmittedParticleCount(10);
 	particleSystem_->SetEmitterFlags(PARTICLE_EMITTER_NOTIME);
 	
 
@@ -133,8 +133,6 @@ void Boss::Update() {
 	if ( nextDamageTime_ >= 0) {
 		nextDamageTime_ -= Time::DeltaTime();
 	}	
-
-	
 	
 	pivot_.UpdateMatrix();
 }
@@ -179,6 +177,7 @@ void Boss::SlurpUpdate() {
 }
 
 void Boss::BulletShotInit() {}
+
 void Boss::BulletShotUpdate() {
 }
 
@@ -190,11 +189,14 @@ void Boss::ParticleInit() {
 		data.transform.Initialize();	/// Transform初期化
 		data.pivot.Initialize();//pivot初期化
 		data.pivot = pivot_;//pivot代入
-		data.transform.position = { 0,Random::Float(6,7) ,-1};
-		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),-1 };/// 速度
+		data.transform.position = { 0,Random::Float(6,7) ,-(Ground::groundScale_-2)};
+		data.velocity = { Random::Float(-1.0f,1.0f),Random::Float(-1.0f,1.0f),-15 };/// 速度
 	}
 }
 
+/// <summary>
+///  パーティクル更新
+/// </summary>
 void Boss::ParticleUpdate() {
 
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
@@ -211,8 +213,8 @@ void Boss::ParticleUpdate() {
 		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
 
 		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_ )) {
-			data.transform.position.z = -(Ground::groundScale_+2);
+		if (data.transform.position.z > -(Ground::groundScale_ -2)) {
+			data.transform.position.z = -(Ground::groundScale_-2);
 			// 反発係数により反発する
 			data.velocity.z *= reboundFactor_;
 			data.rotateSpeed *= reboundFactor_;
@@ -227,8 +229,10 @@ void Boss::ParticleUpdate() {
 		if (data.reflectionCount >= reflectionCountMax_) {
 			data.velocity.y = 0;
 		}
+		/// transform
 		transform->position = data.transform.position;
 		transform->rotate = data.rotate;
+		transform->scale = { 0.2f ,0.2f,0.2f};
 		transform->quaternion = data.transform.quaternion;
 		});
 }
@@ -239,26 +243,30 @@ void Boss::AttackInit() {
 	pBossTubu_->ParamaterInit();
 	isAttackBack_ = false;
 	isAttack_ = true;
+	isParticle_ = false;
 	pBossHead_->SetIsAttackCollision(false);
 }
 
-void Boss::AttackUpdate() {//超汚い
+void Boss::AttackUpdate() {/// 超汚い
 
 	pBossHead_->AttackUpdate();
 
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::DeltaTime();
-		if (attackEaseT_ >= kAttackEaseT_-0.1f&& attackEaseT_ <= kAttackEaseT_+0.1f) {
+		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
 			//emetter
-			ParticleInit();
-			particleSystem_->SetEmittedParticleCount(10);
-			particleSystem_->SetBurst(true,0,0);
+			if (!isParticle_) {
+				ParticleInit();
+				particleSystem_->SetBurst(true, 0, 0);
+				isParticle_ = true;
+			}
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
 			
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
+			
 			attackCoolTime_ += Time::DeltaTime();
 			if (attackCoolTime_ >= kAttackCoolTime_) {
 				isAttackBack_ = true;
