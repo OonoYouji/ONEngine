@@ -4,7 +4,7 @@
 
 #include <ComponentManager/AudioSource/AudioSource.h>
 #include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-
+#include <ComponentManager/ParticleSystem/ParticleSystem.h>
 //std
 #include<memory>
 //behavior
@@ -64,11 +64,20 @@ public:
 	void ParentBoss();
 	void ParentTubu();
 
+	/// <summary>
+	/// particle
+	/// </summary>
+	void AttackParticle();
+	void AttackEmitter();
+	void SetEmitter();
+	void CutParticle();
+
 	bool GetIsAttackCollision()const { return isAttackCollision_; }
 
 	void RootInit();
 	void AttackInit();
 	void AttackUpdate();
+
 
 	void SetIsAttackCollision(bool is) { isAttackCollision_ = is; }
 	void SetBossTube(BossTubu* bossTube);
@@ -78,6 +87,17 @@ public:
 
 private:
 
+	// パーティクル
+	struct ParticleData {
+		float derection_;
+		float rotateSpeed;
+		int reflectionCount;
+		float alphaEaseTime_;
+		Transform transform;
+		Transform pivot;
+		Vec3 rotate{};
+		Vec3 velocity{};
+	};
 private:
 
 	bool isAttackCollision_;
@@ -91,6 +111,18 @@ private:
 	bool isAttackInit_;
 
 	BossHeadEr* bossHeadEr_=nullptr;
+
+	/// 反発係数
+	const float reboundFactor_ = -0.6f;
+	///　重力
+	const float kGravity_ = 5.8f;
+	/// パーティクルデータ
+	std::vector<ParticleData> particleDataArray_;
+	//反射カウント最大
+	const int reflectionCountMax_ = 4;
+	//透明度イージングタイム
+
+	ParticleSystem* particleSystem_;
 };
 
 class BossHeadEr : public BaseGameObject {

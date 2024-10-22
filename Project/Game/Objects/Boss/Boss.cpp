@@ -29,10 +29,11 @@
 
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
+	Model* collisionModel = ModelManager::Load("bossMainBodyCollisionBox");
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
 	meshRenderer_->SetMaterial("mainbody");
-	auto collider = AddComponent<BoxCollider>(model);
+	auto collider = AddComponent<BoxCollider>(collisionModel);
 
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
@@ -54,7 +55,7 @@ void Boss::Initialize() {
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
-	nextDamageCollTime_ = 1.0f;
+	nextDamageCollTime_ = 0.3f;
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -74,21 +75,12 @@ void Boss::Initialize() {
 	particleDataArray_.resize(kParticleMaxNum);
 	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
 
-	
-	/// パーティクルデータの初期化
-	for (auto& data : particleDataArray_) {
-		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
-		data.transform.Initialize();	/// Transform初期化
-		data.transform.SetParent(&pivot_);
-		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),5 };/// 速度
-	}
+
 
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(0);
 	particleSystem_->SetEmitterFlags(false);
 	
-
-
 }
 
 void Boss::Update() {
@@ -116,7 +108,7 @@ void Boss::Update() {
 		// プレイヤーの方向を向くための回転を計算
 		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 		// 回転をスムーズに補間 (Slerpを使用)
-		float rotationSpeed = 20.0f; // 回転速度、必要に応じて調整
+		float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
 		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 		// ホーミング移動のスピードを設定
@@ -140,6 +132,9 @@ void Boss::Update() {
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
+
+
+		transform->SetParent(&data.pivot);
 
 		// 回転処理
 		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
@@ -212,15 +207,27 @@ void Boss::SlurpUpdate() {
 	}
 }
 
-void Boss::BulletShotInit() {
-
-}
+void Boss::BulletShotInit() {}
 void Boss::BulletShotUpdate() {
+}
+void Boss::ParticleInit() {
 
 }
-
 void Boss::AttackInit() {
-	
+	/// パーティクルデータの初期化
+	for (auto& data : particleDataArray_) {
+		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
+		data.transform.Initialize();	/// Transform初期化
+		data.pivot.Initialize();
+		data.pivot = pivot_;
+		data.pivot.quaternion = { 0,0,0,1 };
+		data.transform.quaternion = { 0,0,0,1 };
+		/*data.pivot.rotateOrder = QUATERNION;
+		data.transform.rotateOrder = QUATERNION;*/
+		data.transform.position = { 0,7,1 };
+		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),7 };/// 速度
+	}
+
 	attackEaseT_ = 0.0f;
 	attackCoolTime_ = 0.0f;
 	pBossTubu_->ParamaterInit();
@@ -256,6 +263,7 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
+			particleSystem_->SetEmittedParticleCount(0);
 			particleSystem_->SetEmitterFlags(false);
 		}
 		if (attackEaseT_ <= 0.0f) {

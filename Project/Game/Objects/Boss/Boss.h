@@ -82,6 +82,11 @@ public:
 
 	void SetIsAttack(bool is) { isAttack_ = is; }
 
+/// <summary>
+/// Particle
+/// </summary>
+	void ParticleInit();
+
 private:
 	
 private:
@@ -153,7 +158,7 @@ private:
 	/// 反発係数
 	const float reboundFactor_ = -0.6f;
 	///　重力
-	const float kGravity_ = 5.8f;
+	const float kGravity_ = 9.8f;
 	/// パーティクルデータ
 	std::vector<ParticleData> particleDataArray_;
 	//反射カウント最大
