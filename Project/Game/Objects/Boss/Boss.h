@@ -141,7 +141,8 @@ private:
 	struct ParticleData {
 		float derection_;
 		float rotateSpeed;
-		float reflectionCount;
+		int reflectionCount;
+		float alphaEaseTime_;
 		Transform transform;
 		Transform pivot;
 		Vec3 rotate{};
@@ -152,7 +153,13 @@ private:
 	/// 反発係数
 	const float reboundFactor_ = -0.6f;
 	///　重力
-	const float kGravity_ = 4.8f;
+	const float kGravity_ = 5.8f;
 	/// パーティクルデータ
 	std::vector<ParticleData> particleDataArray_;
+	//反射カウント最大
+	const int reflectionCountMax_ = 4;
+	//透明度イージングタイム
+
+	ParticleSystem* particleSystem_;
+	
 };
