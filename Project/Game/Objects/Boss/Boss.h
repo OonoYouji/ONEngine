@@ -48,7 +48,7 @@ public:
 	//攻撃
 	void AttackInit();
 	void AttackUpdate();
-	void AttackChaseUpdate();
+	void AttackFixationUpdate();
 
 	void DamageForPar(const float& par);
 

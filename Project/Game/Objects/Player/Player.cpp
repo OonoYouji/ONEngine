@@ -54,7 +54,7 @@ void Player::Initialize() {
 	powerUpTimeMax_ = 10.0f;//秒
 	HP_ = HPMax_;
 	//ヒットバック力
-	hitBackPower_ = -0.5f;
+	hitBackPower_ = -0.05f;
 
 	//ダメージ
 	damageForBossHead_.kStopCollTime = 0.5f;

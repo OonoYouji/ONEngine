@@ -264,7 +264,7 @@ void Boss::AttackUpdate() {//超汚い
 	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.0f, attackEaseT_, kAttackEaseT_));
 }
 
-void  Boss::AttackChaseUpdate() {
+void  Boss::AttackFixationUpdate() {
 	pBossHead_->LightFlashing();
 }
 
