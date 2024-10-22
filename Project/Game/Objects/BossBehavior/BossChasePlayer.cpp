@@ -40,8 +40,10 @@ void BossChasePlayer::Update() {
 			pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 
 		// 一定距離で攻撃に遷移
-		if (distanceAndDirection.first <= chaseMinPos_&&attackCoolTime_<=0) {
-			pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
+		if (distanceAndDirection.first <= chaseMinPos_) {
+			if (attackCoolTime_ <= 0) {
+				pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
+			}
 			return;
 		}
 
