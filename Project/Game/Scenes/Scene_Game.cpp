@@ -63,6 +63,8 @@ void Scene_Game::Initialize() {
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 
+	boss_->isActive = false;
+
 	/// ===================================================
 	/// その他 セットするべきものをここに
 	/// ===================================================
