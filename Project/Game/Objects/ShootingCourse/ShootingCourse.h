@@ -5,6 +5,8 @@
 
 #include "GameObjectManager/GameObjectManager.h"
 
+#include "ComponentManager/Transform/Transform.h"
+
 
 /// ===================================================
 /// シューティングコースのアンカーポイント
@@ -55,7 +57,11 @@ private:
 
 	const std::string& filePath_ = "./Resources/Parameters/ShootingCourse/";
 
+
+	class MeshInstancingRenderer* meshInstancedRenderer_ = nullptr;
+
 	std::vector<AnchorPoint> anchorPointArray_;
+	std::vector<Transform>   transformArray_;
 
 	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;

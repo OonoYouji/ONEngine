@@ -13,7 +13,7 @@
 
 /// components
 #include "ComponentManager/SplinePathRenderer/SplinePathRenderer.h"
-
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 /// using namespace
 using namespace nlohmann;
@@ -26,7 +26,8 @@ ShootingCourse::ShootingCourse() {
 ShootingCourse::~ShootingCourse() {}
 
 void ShootingCourse::Initialize() {
-	splinePathRenderer_ = AddComponent<SplinePathRenderer>(6);
+	splinePathRenderer_    = AddComponent<SplinePathRenderer>(6);
+	meshInstancedRenderer_ = AddComponent<MeshInstancingRenderer>(128);
 
 	LoadFile(filePath_);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
@@ -40,6 +41,23 @@ void ShootingCourse::Initialize() {
 	}
 
 
+	std::vector<Vec3> tmpVertices;
+	for(auto& anchorPoint : anchorPointArray_) {
+		tmpVertices.push_back(anchorPoint.position);
+	}
+	vertices_ = tmpVertices;
+
+	for(auto& vertex : vertices_) {
+		transformArray_.push_back(Transform());
+		Transform& transform = transformArray_.back();
+		transform.position = vertex;
+		transform.rotate   = { 0,0,0 };
+		transform.scale    = { 1,1,1};
+		transform.UpdateMatrix(false);
+
+		meshInstancedRenderer_->AddTransform(&transform);
+	}
+
 }
 
 void ShootingCourse::Update() {
@@ -52,6 +70,12 @@ void ShootingCourse::Update() {
 	vertices_ = tmpVertices;
 #endif // _DEBUG
 
+	std::vector<Transform*> transformPtrArray{};
+	for(auto& transform : transformArray_) {
+		transformPtrArray.push_back(&transform);
+	}
+
+	meshInstancedRenderer_->SetTransformArray(transformPtrArray);
 
 	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
