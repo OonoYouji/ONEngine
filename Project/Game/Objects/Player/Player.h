@@ -29,10 +29,16 @@ public:
 	void Debug()      override;
 
 
+	/// <summary>
+	/// シューティングコースタークラスのセット
+	/// </summary>
+	/// <param name="_shootingCourse"></param>
 	void SetShootingCourse(ShootingCourse* _shootingCourse);
 
+	/// <summary>
+	/// スタート地点に戻る
+	/// </summary>
 	void Reset();
-
 
 
 	/// <summary>
@@ -69,6 +75,11 @@ private:
 	ShootingCourse* pShootingCourse_ = nullptr;
 
 	Vec3 rightDirection_;
+
+
+	/// bullet param
+
+	float bulletSpeed_;
 
 
 };

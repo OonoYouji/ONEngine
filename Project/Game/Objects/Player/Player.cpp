@@ -26,8 +26,8 @@
 
 
 void Player::Initialize() {
-	auto meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("axis");
+	//auto meshRenderer = AddComponent<MeshRenderer>();
+	//meshRenderer->SetModel("axis");
 
 	/// transform
 	pTranform_->rotateOrder = XYZ;
@@ -36,15 +36,23 @@ void Player::Initialize() {
 	/// move param setting...
 	Reset();
 
+	bulletSpeed_ = 100.0f;
+
 }
 
 void Player::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space)) {
-		PlayerBullet* bullet = new PlayerBullet();
-		bullet->Initialize();
-		bullet->SetPosition(GetPosition());
-		bullet->SetVelocity(moveDirection_.Normalize() * 50.0f * Time::DeltaTime());
+
+		/// 移動している時しか発射できない
+		if(moveDirection_.Len() != 0.0f) {
+			PlayerBullet* bullet = new PlayerBullet();
+			bullet->Initialize();
+			bullet->SetPosition(GetPosition());
+
+			Vec3 velocity = moveDirection_.Normalize() * (bulletSpeed_ * Time::DeltaTime());
+			bullet->SetVelocity(velocity);
+		}
 	}
 
 
@@ -55,12 +63,12 @@ void Player::Update() {
 
 	/// 移動 and 回転
 	movingTime_ += Time::DeltaTime();
-	movingTime_  = std::clamp(movingTime_, 0.0f, kSegmentCount + 1.0f);
+	movingTime_  = std::clamp(movingTime_, 0.0f, static_cast<float>(kSegmentCount));
 	nextMoveT_   = 1.0f / kSegmentCount * movingTime_;
 	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
 
 	/// anchor pointの更新
-	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
+	nextAnchor_   = SplinePosition(anchorPointArray, nextMoveT_);
 	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
 
 	/// 座標更新
@@ -120,6 +128,14 @@ void Player::Debug() {
 				ImGui::Text("%0.2f, ", pTranform_->matTransform.m[r][c]);
 			}
 		}
+
+		ImGui::TreePop();
+	}
+
+	
+	if(ImGui::TreeNodeEx("bullet param", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("speed", &bulletSpeed_, 0.05f);
 
 		ImGui::TreePop();
 	}
