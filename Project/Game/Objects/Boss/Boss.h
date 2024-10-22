@@ -12,6 +12,7 @@
 #include"Objects/BossBehavior/BossRoot.h"
 #include"Objects/BossBehavior/BossChasePlayer.h"
 #include"Objects/BossBehavior/BossBulletShot.h"
+#include <ComponentManager/ParticleSystem/ParticleSystem.h>
 #include"Objects/BossBehavior/BossAttack.h"
 
 #include"Objects/Boss/BossVacuum.h"
@@ -82,8 +83,9 @@ public:
 	void SetIsAttack(bool is) { isAttack_ = is; }
 
 private:
-
+	
 private:
+	
 	MeshRenderer* meshRenderer_ = nullptr;
 	//プレイヤーポインタ
 	Player* pPlayer_ = nullptr;
@@ -134,4 +136,23 @@ private:
 	const	float kDamageCoolTime_ = 0.1f;
 	float nextDamageCollTime_;//次にダメージ受けるまでのクールタイム
 	float nextDamageTime_;//次にダメージ受けるまでのクールタイム
+
+	// パーティクル
+	struct ParticleData {
+		float derection_;
+		float rotateSpeed;
+		float reflectionCount;
+		Transform transform;
+		Transform pivot;
+		Vec3 rotate{};
+		Vec3 velocity{};
+	};
+
+
+	/// 反発係数
+	const float reboundFactor_ = -0.6f;
+	///　重力
+	const float kGravity_ = 4.8f;
+	/// パーティクルデータ
+	std::vector<ParticleData> particleDataArray_;
 };

@@ -24,13 +24,14 @@
 //function
 #include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
+#include"Math/Random.h"
 #undef max
 
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
-	meshRenderer_->SetMaterial("uvChecker");
+	meshRenderer_->SetMaterial("mainbody");
 	auto collider = AddComponent<BoxCollider>(model);
 
 
@@ -69,6 +70,61 @@ void Boss::Initialize() {
 	//行列更新
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+	const uint32_t kParticleMaxNum = 12u;
+
+	particleDataArray_.resize(kParticleMaxNum);
+	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
+
+
+	/// パーティクルデータの初期化
+	for (auto& data : particleDataArray_) {
+		/*	data.pivot.Initialize();*/
+		data.rotateSpeed = Random::Float(5.0f, 10.0f);
+		data.transform.Initialize();
+		data.transform.position = { 0,0,-12 };
+	}
+
+	/// パーティクルの挙動
+	particleSystem->SetParticleLifeTime(3.0f);
+	particleSystem->SetEmittedParticleCount(10);
+	particleSystem->SetParticleRespawnTime(0.6f);
+	particleSystem->SetUseBillboard(false);
+
+	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		ParticleData& data = particleDataArray_[particle->GetID()];
+
+		// 回転処理
+		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+		data.velocity.z += (kGravity_ * Time::DeltaTime());
+
+		//変位
+		data.transform.position += (data.velocity / 0.0166f) * Time::DeltaTime();/// 0.0166f
+
+		// 反発する
+		if (data.transform.position.z > -(Ground::groundScale_-1)) {
+			data.transform.position.z = -(Ground::groundScale_-1);
+			// 反発係数により反発する
+			data.velocity.z *= reboundFactor_;
+			data.rotateSpeed *= reboundFactor_;
+		}
+
+		transform = &data.transform;
+
+		/*	data.time += Time::DeltaTime();
+			transform->rotate = data.rotate;
+			transform->scale = data.scale;
+
+			transform->position = {
+				std::cos(data.time * data.speed) * data.radius,
+				std::sin(data.time * data.speed) * data.radius,
+				particle->GetNormLifeTime() * data.maxPosY
+			};
+
+			transform->position = Mat4::Transform(transform->position, matRotate_);
+			transform->position += GetPosition();*/
+		});
 }
 
 void Boss::Update() {
@@ -313,3 +369,4 @@ void Boss::DamageForPar(const float& par) {
 		HP_ = 0.0f;
 	}
 }
+

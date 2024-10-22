@@ -171,6 +171,7 @@
     <ClCompile Include="Game\Objects\BossBehavior\BossRoot.cpp" />
     <ClCompile Include="Game\Objects\BossBehavior\BossChasePlayer.cpp" />
     <ClCompile Include="Game\Objects\BossBehavior\BossSlurp.cpp" />
+    <ClCompile Include="Game\Objects\BossRendition\BossAttackParticle.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\Boss\BossBulletLump.cpp" />
     <ClCompile Include="Game\Objects\Boss\BossVacuum.cpp" />
@@ -302,6 +303,7 @@
     <ClInclude Include="Game\Objects\BossBehavior\BossRoot.h" />
     <ClInclude Include="Game\Objects\BossBehavior\BossChasePlayer.h" />
     <ClInclude Include="Game\Objects\BossBehavior\BossSlurp.h" />
+    <ClInclude Include="Game\Objects\BossRendition\BossAttackParticle.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\Boss\BossBulletLump.h" />
     <ClInclude Include="Game\Objects\Boss\BossVacuum.h" />

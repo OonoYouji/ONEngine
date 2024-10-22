@@ -228,9 +228,9 @@ void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
 }
 
 
-
-
-
+void ParticleSystem::SetEmitterFlags(int _emitterFlags) {
+	emitter_->SetParticleEmitterFlags(_emitterFlags);
+}
 
 /// ===================================================
 /// ParticlePipeline 
