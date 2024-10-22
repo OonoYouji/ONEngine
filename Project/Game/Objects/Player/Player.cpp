@@ -53,6 +53,8 @@ void Player::Initialize() {
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 0.6f;//秒
 	HP_ = HPMax_;
+	//ヒットバック力
+	hitBackPower_ = -0.5f;
 
 	//ダメージ
 	damageForBossHead_.kStopCollTime = 0.5f;
@@ -78,9 +80,7 @@ void Player::Initialize() {
 	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 0.0f);
 	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.0f);
 
-
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
@@ -128,12 +128,20 @@ void Player::Update() {
 	}
 
 	if (damageForBossBody_.isStop) {
-		//回転を適応
-		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, -0.01f);
-		Quaternion rotateY= Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, -0.01f);
-	
-		pivot_.quaternion *= (rotateX * rotateY);// 正規化
-		
+		// ヒットバックの方向と強さを適用する
+		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::DeltaTime());
+
+		// 回転を逆方向に適応させる
+		float rotateXAngle_ = +velocity_.y;
+		float rotateYAngle_ = -velocity_.x;
+
+		Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+		Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+
+		// 回転を更新する
+		pivot_.quaternion *= rotateX_ * rotateY_;
+		pivot_.UpdateMatrix();
+		transoform_.UpdateMatrix();
 	}
 
 	pivot_.UpdateMatrix();
@@ -154,7 +162,9 @@ void Player::Move() {
 	if (Input::PressKey(KeyCode::A)) { input_.x = -1.0f; }
 	if (Input::PressKey(KeyCode::S)) { input_.y = -1.0f; }
 	if (Input::PressKey(KeyCode::D)) { input_.x = +1.0f; }
-
+	if (input_ != Vec3(0.0f, 0.0f, 0.0f)) {
+		preInput_ = input_;
+	}
 	/// 移動の正規化
 	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);

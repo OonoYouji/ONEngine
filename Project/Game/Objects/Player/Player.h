@@ -109,6 +109,9 @@ private:
 	float HP_;
 	const	float HPMax_ = 100.0f;
 
+	//ヒットバックパワー
+	float hitBackPower_;
+	Vec3 preInput_;
 
 	DamageParamater damageForBossHead_;
 	DamageParamater damageForBossBullet_;
