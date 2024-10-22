@@ -12,6 +12,7 @@
 #include"Objects/BossBehavior/BossRoot.h"
 #include"Objects/BossBehavior/BossChasePlayer.h"
 #include"Objects/BossBehavior/BossBulletShot.h"
+#include <ComponentManager/ParticleSystem/ParticleSystem.h>
 #include"Objects/BossBehavior/BossAttack.h"
 
 #include"Objects/Boss/BossVacuum.h"
@@ -47,7 +48,7 @@ public:
 	//攻撃
 	void AttackInit();
 	void AttackUpdate();
-	void AttackChaseUpdate();
+	void AttackFixationUpdate();
 
 	void DamageForPar(const float& par);
 
@@ -81,9 +82,16 @@ public:
 
 	void SetIsAttack(bool is) { isAttack_ = is; }
 
-private:
+/// <summary>
+/// Particle
+/// </summary>
+	void ParticleInit();
+	void ParticleUpdate();
 
 private:
+	
+private:
+	
 	MeshRenderer* meshRenderer_ = nullptr;
 	//プレイヤーポインタ
 	Player* pPlayer_ = nullptr;
@@ -134,4 +142,30 @@ private:
 	const	float kDamageCoolTime_ = 0.1f;
 	float nextDamageCollTime_;//次にダメージ受けるまでのクールタイム
 	float nextDamageTime_;//次にダメージ受けるまでのクールタイム
+
+	// パーティクル
+	struct ParticleData {
+		float derection_;
+		float rotateSpeed;
+		int reflectionCount;
+		float alphaEaseTime_;
+		Transform transform;
+		Transform pivot;
+		Vec3 rotate{};
+		Vec3 velocity{};
+	};
+
+
+	/// 反発係数
+	const float reboundFactor_ = -0.6f;
+	///　重力
+	const float kGravity_ = 7.8f;
+	/// パーティクルデータ
+	std::vector<ParticleData> particleDataArray_;
+	//反射カウント最大
+	const int reflectionCountMax_ = 4;
+	//透明度イージングタイム
+
+	ParticleSystem* particleSystem_;
+	
 };

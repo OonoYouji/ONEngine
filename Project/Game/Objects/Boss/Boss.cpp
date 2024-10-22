@@ -24,17 +24,17 @@
 //function
 #include"Easing/EasingFunction.h"
 #include"HormingFunction/Horming.h"
+#include"Math/Random.h"
 #undef max
 
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
+	Model* collisionModel = ModelManager::Load("bossMainBodyCollisionBox");
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
-	meshRenderer_->SetMaterial("uvChecker");
-	auto collider = AddComponent<BoxCollider>(model);
+	meshRenderer_->SetMaterial("mainbody");
+	auto collider = AddComponent<BoxCollider>(collisionModel);
 
-
-	
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
@@ -55,7 +55,7 @@ void Boss::Initialize() {
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
-	nextDamageCollTime_ = 1.0f;
+	nextDamageCollTime_ = 0.3f;
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -69,6 +69,23 @@ void Boss::Initialize() {
 	//行列更新
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+	const uint32_t kParticleMaxNum = 12u;
+
+	//パーティクルAddComponent
+	particleDataArray_.resize(kParticleMaxNum);
+	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
+
+	/// パーティクルの挙動
+	particleSystem_->SetEmittedParticleCount(0);
+	particleSystem_->SetEmitterFlags(PARTICLE_EMITTER_NOTIME);
+	
+
+	/// パーティクル初期化
+
+	ParticleInit();
+	/// パーティクル更新
+	ParticleUpdate();
 }
 
 void Boss::Update() {
@@ -96,7 +113,7 @@ void Boss::Update() {
 		// プレイヤーの方向を向くための回転を計算
 		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 		// 回転をスムーズに補間 (Slerpを使用)
-		float rotationSpeed = 20.0f; // 回転速度、必要に応じて調整
+		float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
 		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 		// ホーミング移動のスピードを設定
@@ -117,6 +134,8 @@ void Boss::Update() {
 		nextDamageTime_ -= Time::TimeRateDeltaTime();
 	}	
 
+	
+	
 	pivot_.UpdateMatrix();
 }
 
@@ -159,13 +178,60 @@ void Boss::SlurpUpdate() {
 	}
 }
 
-void Boss::BulletShotInit() {
-
-}
+void Boss::BulletShotInit() {}
 void Boss::BulletShotUpdate() {
-
 }
 
+/// パーティクル初期化
+void Boss::ParticleInit() {
+	/// パーティクルデータの初期化
+	for (auto& data : particleDataArray_) {
+		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
+		data.transform.Initialize();	/// Transform初期化
+		data.pivot.Initialize();//pivot初期化
+		data.pivot = pivot_;//pivot代入
+		data.transform.position = { 0,Random::Float(6,7) ,-1};
+		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),-1 };/// 速度
+	}
+}
+
+void Boss::ParticleUpdate() {
+
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		ParticleData& data = particleDataArray_[particle->GetID()];
+
+		transform->SetParent(&data.pivot);
+
+		// 回転処理
+		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+		data.velocity.z += (kGravity_ * Time::DeltaTime());
+
+		//変位
+		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
+
+		// 反発する
+		if (data.transform.position.z > -(Ground::groundScale_ )) {
+			data.transform.position.z = -(Ground::groundScale_+2);
+			// 反発係数により反発する
+			data.velocity.z *= reboundFactor_;
+			data.rotateSpeed *= reboundFactor_;
+			data.reflectionCount++;/// 反発カウントインクリメント
+		}	//カウント2
+		if (data.reflectionCount >= 2) {
+			data.velocity.x = 0.0f;
+			data.velocity.z = 0.0f;
+		}
+
+		//カウント5
+		if (data.reflectionCount >= reflectionCountMax_) {
+			data.velocity.y = 0;
+		}
+		transform->position = data.transform.position;
+		transform->rotate = data.rotate;
+		transform->quaternion = data.transform.quaternion;
+		});
+}
 void Boss::AttackInit() {
 	
 	attackEaseT_ = 0.0f;
@@ -182,10 +248,15 @@ void Boss::AttackUpdate() {//超汚い
 
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::TimeRateDeltaTime();
-		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
+		if (attackEaseT_ >= kAttackEaseT_-0.1f&& attackEaseT_ <= kAttackEaseT_+0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
+			//emetter
+			ParticleInit();
+			particleSystem_->SetEmittedParticleCount(10);
+			particleSystem_->SetBurst(true,0,0);
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
+			
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::TimeRateDeltaTime();
@@ -198,8 +269,10 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ -= Time::TimeRateDeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
+			
 		}
 		if (attackEaseT_ <= 0.0f) {
+			
 			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
@@ -210,7 +283,7 @@ void Boss::AttackUpdate() {//超汚い
 	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.0f, attackEaseT_, kAttackEaseT_));
 }
 
-void  Boss::AttackChaseUpdate() {
+void  Boss::AttackFixationUpdate() {
 	pBossHead_->LightFlashing();
 }
 
@@ -313,3 +386,4 @@ void Boss::DamageForPar(const float& par) {
 		HP_ = 0.0f;
 	}
 }
+

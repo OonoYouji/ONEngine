@@ -35,7 +35,6 @@ void Scene_Tutorial::Initialize() {
 	//チュートリアル
 	tutorialScaleUpUI_->Initialize();
 	
-
 	player_->Initialize();
 	ground->Initialize();
 	gameCameraState->Initialize();
@@ -78,9 +77,10 @@ void Scene_Tutorial::Update() {
 		tutorialScaleUpUI_->isActive = true;
 		// スケールダウンへ移行する条件
 		if (tornado_->GetScaleScaler() >= tornado_->GetMaxScale()) {
-			tornado_->isActive = false;
+			tornado_->SetIsInputreception(true);///　入力のみを受け付けなくする
 			tutorialScaleUpUI_->SetIsClose(true);
 			if (tutorialScaleUpUI_->GetIsDeath()) {//UIが死んだら
+				tornado_->SetIsInputreception(false);
 				tutorialScaleDownUI_ = new TutorialScaleDownUI();
 				tutorialScaleDownUI_->Initialize();
 				tutorialState_ = SCALEDOWN;  // 次の状態へ移行

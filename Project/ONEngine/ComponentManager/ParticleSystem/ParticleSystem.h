@@ -109,6 +109,11 @@ public:
 	/// <param name="_max"></param>
 	void SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max);
 
+	/// <summary>
+/// エミッターのフラグのセット
+/// </summary>
+/// <param name="_emitterFlags"></param>
+	void SetEmitterFlags(int _emitterFlags);
 
 	/// <summary>
 	/// const パーティクルの最大数のゲッタ
@@ -166,7 +171,7 @@ private:
 
 	/// particles trasform buffers
 	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingData_         = nullptr;
+	Mat4* mappingData_ = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
 
@@ -215,9 +220,9 @@ private:
 
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
-	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
-	ONE::DxDescriptor*             pDxDescriptor_ = nullptr;
-	
+	ID3D12GraphicsCommandList* pCommandList_ = nullptr;
+	ONE::DxDescriptor* pDxDescriptor_ = nullptr;
+
 };
 
 
@@ -238,7 +243,7 @@ public:
 	Particle() {}
 	~Particle() {}
 
-	void Initialize(); 
+	void Initialize();
 	void LifeTimeUpdate();
 
 	bool GetIsAlive() const { return isAlive_; }
@@ -258,8 +263,8 @@ private:
 
 	uint32_t id_;
 
-	bool isAlive_      = true;
-	float lifeTime_    = 10.0f; // seconds
+	bool isAlive_ = true;
+	float lifeTime_ = 10.0f; // seconds
 	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};

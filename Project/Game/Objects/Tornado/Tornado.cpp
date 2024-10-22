@@ -157,11 +157,14 @@ void Tornado::Update() {
 
 	} else {
 
-		/// キー入力で大きさを変える
-		if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
-			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::TimeRateDeltaTime()), maxScale_);
-		} else {
-			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::TimeRateDeltaTime()), minScale_);
+		if (!isNotInputReception_) {/// 入力を受け付けなくするフラグ（チュートリアル用）すみません
+			/// キー入力で大きさを変える
+			if (Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+				scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+			}
+			else {
+				scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+			}
 		}
 	}
 
@@ -295,6 +298,11 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 	if(collision->GetTag() == "Building") {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
+
+    if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
+			building->SubHP(Time::DeltaTime());
+			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+		}
 
 		building->SubHP(Time::TimeRateDeltaTime());
 		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));

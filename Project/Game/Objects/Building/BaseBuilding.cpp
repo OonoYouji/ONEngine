@@ -139,7 +139,7 @@ void BaseBuilding::Update() {
 			floatBuildingEaseTime_ = floatBuildingEaseTimeMax_;
 		}
 		pTransform_->rotate.x = EaseOutQuint(-1.5f, 0.4f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
-		offsetPosition_.z = EaseInSine(buildingSartZ, -14.5f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
+		offsetPosition_.z = EaseInSine(buildingSartZ, -17.5f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
 
 
 		// 球面距離を計算
@@ -151,7 +151,7 @@ void BaseBuilding::Update() {
 		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ 0.5f*Time::TimeRateDeltaTime(), 0, 0});
+		Quaternion move = ToQuaternion({ 1.0f * Time::TimeRateDeltaTime(), 0, 0});
 
 		// 回転を更新
 		pivot_.quaternion = inter;
@@ -300,10 +300,10 @@ float BaseBuilding::GetHP() const {
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	//当たったら用済み
-	//if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
-	//	isInTornado_ = true;
-	//}
+	/*///当たったら用済み
+	if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
+		isInTornado_ = true;
+	}*/
 
 	//当たったら用済み
 	if(dynamic_cast<Boss*>(collision) && isSlurp_) {

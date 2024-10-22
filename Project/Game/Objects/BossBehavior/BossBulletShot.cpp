@@ -76,7 +76,6 @@ void BossBulletShot::Update() {
 	}
 	//弾発射
 	if (isAnticipationed_) {
-
 		//弾更新
 		if (BossbulletLump_) {
 			BossbulletLump_->Update();

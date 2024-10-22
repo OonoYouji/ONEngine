@@ -17,7 +17,9 @@ BossAttack::BossAttack(Boss* boss)
 	//値初期化
 	pBoss_->SetIsAttack(true);
 	attackWaitTime_ = 0.0f;
+	attackFixationTime_ = 0.0f;
 	isSwingDown_ = false;
+	isFixation_ = false;
 }
 
 BossAttack ::~BossAttack() {
@@ -27,8 +29,8 @@ BossAttack ::~BossAttack() {
 //更新
 void BossAttack::Update() {
 
-	if (!isSwingDown_) {
-	pBoss_->AttackChaseUpdate();
+	if (!isFixation_) {
+
 		attackWaitTime_ += Time::TimeRateDeltaTime();
 
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
@@ -49,12 +51,18 @@ void BossAttack::Update() {
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(inter_);
 		if (attackWaitTime_ >= kAttackWaitTime_) {
-			isSwingDown_ = true;
+			isFixation_ = true;
 		}
 
-	}//振り下ろし
-	else if (isSwingDown_) {
-
+	}/// 振り下ろし位置固定
+	else if (isFixation_) {
+		pBoss_->AttackFixationUpdate();
+		attackFixationTime_ += Time::DeltaTime();
+		if (attackFixationTime_ >= kAttackFixationTime_) {
+			isSwingDown_ = true;
+		}
+	}/// 振り下ろし
+	if (isSwingDown_) {
 		pBoss_->AttackUpdate();
 	}
 }

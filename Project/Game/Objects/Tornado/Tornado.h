@@ -53,7 +53,6 @@ public:
 	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision);
 
-
 	float GetScaleScaler()const { return scaleScaler_; }
 	float GetMaxScale()const { return maxScale_; }
 	float GetMinScale()const { return minScale_; }
@@ -63,6 +62,8 @@ public:
 	void SetDebufParm(float parm) { debufParm_ = parm; }
 
 	void SetPlayer(Player* _player);
+
+	void SetIsInputreception(bool is) { isNotInputReception_ = is; }
 
 private:
 	/// ===================================================
@@ -93,6 +94,7 @@ private:
 	std::vector<WindData>          windDataArray_;
 	float debufParm_;
 
+	bool isNotInputReception_;//入力を受け付けないか
 
 	Mat4 matRotate_;
 
