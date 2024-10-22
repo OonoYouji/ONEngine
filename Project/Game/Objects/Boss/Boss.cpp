@@ -72,12 +72,20 @@ void Boss::Initialize() {
 
 	const uint32_t kParticleMaxNum = 12u;
 
+	//パーティクルAddComponent
 	particleDataArray_.resize(kParticleMaxNum);
 	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
 
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(0);
-	particleSystem_->SetEmitterFlags(false);	
+	particleSystem_->SetEmitterFlags(PARTICLE_EMITTER_NOTIME);
+	
+
+	/// パーティクル初期化
+
+	ParticleInit();
+	/// パーティクル更新
+	ParticleUpdate();
 }
 
 void Boss::Update() {
@@ -127,7 +135,7 @@ void Boss::Update() {
 	}	
 
 	
-	ParticleUpdate();
+	
 	pivot_.UpdateMatrix();
 }
 
@@ -173,29 +181,25 @@ void Boss::SlurpUpdate() {
 void Boss::BulletShotInit() {}
 void Boss::BulletShotUpdate() {
 }
+
+/// パーティクル初期化
 void Boss::ParticleInit() {
 	/// パーティクルデータの初期化
 	for (auto& data : particleDataArray_) {
 		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
 		data.transform.Initialize();	/// Transform初期化
-		data.pivot.Initialize();
-		data.pivot = pivot_;
-		data.pivot.quaternion = { 0,0,0,1 };
-		data.transform.quaternion = { 0,0,0,1 };
-		/*data.pivot.rotateOrder = QUATERNION;
-		data.transform.rotateOrder = QUATERNION;*/
-		data.transform.position = { 0,Random::Float(6,7) ,1};
-		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),7 };/// 速度
+		data.pivot.Initialize();//pivot初期化
+		data.pivot = pivot_;//pivot代入
+		data.transform.position = { 0,Random::Float(6,7) ,-1};
+		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),-1 };/// 速度
 	}
 }
 
 void Boss::ParticleUpdate() {
 
-
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
-
 
 		transform->SetParent(&data.pivot);
 
@@ -207,8 +211,8 @@ void Boss::ParticleUpdate() {
 		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
 
 		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_ + 1)) {
-			data.transform.position.z = -(Ground::groundScale_ + 1);
+		if (data.transform.position.z > -(Ground::groundScale_ )) {
+			data.transform.position.z = -(Ground::groundScale_+2);
 			// 反発係数により反発する
 			data.velocity.z *= reboundFactor_;
 			data.rotateSpeed *= reboundFactor_;
@@ -244,13 +248,12 @@ void Boss::AttackUpdate() {//超汚い
 
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::DeltaTime();
-		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
+		if (attackEaseT_ >= kAttackEaseT_-0.1f&& attackEaseT_ <= kAttackEaseT_+0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
 			//emetter
 			ParticleInit();
-			particleSystem_->SetParticleLifeTime(1.0f);
 			particleSystem_->SetEmittedParticleCount(10);
-			particleSystem_->SetEmitterFlags(true);
+			particleSystem_->SetBurst(true,0,0);
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
 			
@@ -266,8 +269,7 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
-			particleSystem_->SetEmittedParticleCount(0);
-			particleSystem_->SetEmitterFlags(false);
+			
 		}
 		if (attackEaseT_ <= 0.0f) {
 			

@@ -159,7 +159,7 @@ private:
 	/// 反発係数
 	const float reboundFactor_ = -0.6f;
 	///　重力
-	const float kGravity_ = 9.8f;
+	const float kGravity_ = 7.8f;
 	/// パーティクルデータ
 	std::vector<ParticleData> particleDataArray_;
 	//反射カウント最大
