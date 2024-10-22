@@ -3,6 +3,13 @@
 #include "GameObjectManager/GameObjectManager.h"
 
 class DeadEffect : public BaseGameObject {
+
+	struct ParticleData {
+		Vec3 moveDirection;
+		float speed;
+	};
+
+
 public:
 
 	DeadEffect();
@@ -12,5 +19,5 @@ public:
 	void Update()     override;
 
 private:
-
+	class ParticleSystem* particleSyste_;
 };
