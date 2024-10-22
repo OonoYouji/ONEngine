@@ -10,7 +10,7 @@
 #include "Objects/TitleObjects/TitleEarth.h"
 #include "Objects/TitleObjects/TitlePlayerAnimator.h"
 #include "Objects/TitleObjects/GameTilteRendere.h"
-
+#include "Objects/SceneTransition/SceneTransition.h"
 
 
 void Scene_Title::Initialize() {
@@ -29,25 +29,33 @@ void Scene_Title::Initialize() {
 	TitleEarth*          earth             = new TitleEarth();
 	TitlePlayerAnimator* playerAnimator    = new TitlePlayerAnimator();
 	GameTitleRenderer*   gameTitleRenderer = new GameTitleRenderer();
+	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
 
 	/// initializing
 	uiCamera->Initialize();
 	earth->Initialize();
 	playerAnimator->Initialize();
 	gameTitleRenderer->Initialize();
+	sceneTransition_->Initialize();
 
 	/// setting...
 	uiCamera->SetPositionZ(-10.0f);
 	AddLayer("ui", uiCamera);
+	AddLayer("scene transition", uiCamera);
 
 	playerAnimator->SetParticleUseRotate(false);
 	playerAnimator->GetParticleSystem()->SetEmittedParticleCount(4u);
 
+	sceneTransition_->drawLayerId = 2;
 }
 
 void Scene_Title::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space) || Input::TriggerPadButton(PadCode::A)) {
+		sceneTransition_->SetIsStarted(true);
+	}
+
+	if(sceneTransition_->GetIsFinished()) {
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
 	}
 }

@@ -21,21 +21,26 @@ SceneTransition::~SceneTransition() {}
 
 void SceneTransition::Initialize() {
 
-	drawLayerId = 1; /// ui layer
-
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
-	spriteRenderer_->SetTexture("uvChecker.png");
+	spriteRenderer_->SetTexture("white2x2.png");
+
+	pTransform_->scale = { 8.6f, 7.7f, 1.0f };
 
 	/// transition orderに合わせた初期化
 	if(transitionOrder_ == TRANSTION_FADE_IN) {
-		pTransform_->scale = {};
+		color_ = { 0, 0, 0, 0 };
 	} else {
-		pTransform_->scale = Vec3::kOne * 10.0f;
+		color_ = { 0, 0, 0, 1 };
 	}
 	
+	spriteRenderer_->SetColor(color_);
 }
 
 void SceneTransition::Update() {
+
+	if(!isStarted_) {
+		return;
+	}
 
 	/// timeの更新
 	animationTime_ += Time::DeltaTime();
@@ -45,6 +50,9 @@ void SceneTransition::Update() {
 	} else {
 		UpdateFadeOut();
 	}
+
+	spriteRenderer_->SetColor(color_);
+
 }
 
 void SceneTransition::SetTransitionOrder(int _transitionOrder) {
@@ -55,15 +63,19 @@ bool SceneTransition::GetIsFinished() const {
 	return (animationTime_ / maxAnimationTime_) >= 1.0f;
 }
 
+void SceneTransition::SetIsStarted(bool _isStart) {
+	isStarted_ = _isStart;
+}
+
 void SceneTransition::UpdateFadeIn() {
 	float easeT = std::min(animationTime_ / maxAnimationTime_, 1.0f);
 
-	float scaleScaler = std::lerp(
-		0.0f, 10.0f,
-		Ease::In::Back(easeT)
+	float alpha = std::lerp(
+		0.0f, 1.0f,
+		(easeT)
 	);
 
-	pTransform_->scale = Vec3::kOne * scaleScaler;
+	color_.w = alpha;
 
 }
 

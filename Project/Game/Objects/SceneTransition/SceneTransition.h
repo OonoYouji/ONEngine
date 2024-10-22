@@ -22,6 +22,8 @@ public:
 
 	bool GetIsFinished() const;
 
+	void SetIsStarted(bool _isStart);
+
 private:
 
 	void UpdateFadeIn();
@@ -35,5 +37,9 @@ private:
 	/// animation params
 	float animationTime_    = 0.0f;
 	float maxAnimationTime_ = 1.0f;
+
+	bool isStarted_ = false;
+
+	Vec4 color_;
 
 };

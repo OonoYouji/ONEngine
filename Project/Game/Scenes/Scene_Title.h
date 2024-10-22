@@ -9,5 +9,7 @@ public:
 	~Scene_Title() {}
 
 	void Initialize() override;
-	void Update() override;
+	void Update()     override;
+private:
+	class SceneTransition* sceneTransition_ = nullptr;
 };
