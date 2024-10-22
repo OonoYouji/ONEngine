@@ -34,8 +34,6 @@ void Boss::Initialize() {
 	meshRenderer_->SetMaterial("mainbody");
 	auto collider = AddComponent<BoxCollider>(model);
 
-
-	
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
@@ -97,7 +95,7 @@ void Boss::Initialize() {
 
 		// 回転処理
 		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-		data.velocity.z += (kGravity_ * Time::DeltaTime());
+		data.velocity.z += (-kGravity_ * Time::DeltaTime());
 
 		//変位
 		data.transform.position += (data.velocity / 0.0166f) * Time::DeltaTime();/// 0.0166f
@@ -110,7 +108,7 @@ void Boss::Initialize() {
 			data.rotateSpeed *= reboundFactor_;
 		}
 
-		transform = &data.transform;
+		transform->position += GetPosition();
 
 		/*	data.time += Time::DeltaTime();
 			transform->rotate = data.rotate;
