@@ -62,6 +62,26 @@ public:
 	/// <returns></returns>
 	float GetTimeRate() const { return timeRate_; }
 
+	
+	/// <summary>
+	/// カメラの振る舞いが変化した瞬間を取得
+	/// </summary>
+	/// <returns> return: true 振る舞いが変化した、 false 振る舞いは変化してない </returns>
+	bool GetIsCameraBehaviorChange() const { return cameraBehavior_ != preCameraBehavior_; }
+
+	/// <summary>
+	/// カメラの現在の振る舞いを得る
+	/// </summary>
+	/// <returns></returns>
+	int  GetCameraBehavior() const { return cameraBehavior_; }
+
+	/// <summary>
+	/// カメラの振る舞いをセットする
+	/// </summary>
+	/// <param name="behavior"></param>
+	void SetCameraBehavior(int behavior);
+
+
 	//ダメージ
 	void DamageForPar(const float& par);
 	//setter
@@ -73,6 +93,7 @@ public:
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
 
 	void SetBuildingManager(BuildingManager* buildingManager);
+
 private:
 	struct DamageParamater {
 		bool isStop;
@@ -120,6 +141,10 @@ private:
 	float hitStopTime_; /// ヒットストップする時間
 
 	float moveSpeed_; /// 移動スピード
+
+	/// camera param
+	int cameraBehavior_;
+	int preCameraBehavior_;
 
 	//HP
 	float HP_;

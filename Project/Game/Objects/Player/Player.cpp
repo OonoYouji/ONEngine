@@ -23,6 +23,8 @@
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
 #include"Objects/Boss/Boss.h"
+#include "Objects/CameraState/GameCameraState.h"
+
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("playerInGame");
@@ -96,6 +98,10 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+	/// 前フレームのデータをコピー
+	preCameraBehavior_ = cameraBehavior_; /// カメラの振る舞い
+
+
 	float maxSpeed = 0.6f;
 	float minSpeed = 0.5f;
 
@@ -156,6 +162,10 @@ void Player::Update() {
 	transoform_.UpdateMatrix();
 }
 
+
+/// <summary>
+/// プレイヤーの移動
+/// </summary>
 void Player::Move() {
 
 	//入力
@@ -201,7 +211,13 @@ void Player::Move() {
 	}
 }
 
-//振る舞い関数
+
+
+/// ==============================================================================================================
+///			behavior
+/// ==============================================================================================================
+
+/// 振る舞い関数
 void Player::RootInit() {
 	//パワーアップパラメータ初期化
 	isPowerUp_ = false;
@@ -212,11 +228,17 @@ void Player::PowerUpInit() {
 	isPowerUp_   = true;
 	powerUpTime_ = powerUpTimeMax_;
 	timeRate_    = 0.005f;
-	hitStopTime_ = 1.0f;
+	hitStopTime_ = 0.5f;
 }
 
+/// <summary>
+/// パワーアップしているときに呼び出される
+/// </summary>
 void Player::PowerUpUpdate() {
-	powerUpTime_ -= Time::TimeRateDeltaTime();//デルタタイムに直す	
+
+	/// 残り時間の減少
+	powerUpTime_ -= Time::TimeRateDeltaTime();
+
 }
 
 void Player::PowerUpGaugeUp(float par) {
@@ -229,55 +251,25 @@ void Player::PowerUpGaugeUp(float par) {
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
 		powerUpGauge_ = powerUpGaugeMax_;
+
+		/// カメラの振る舞いを変化させる
+		cameraBehavior_ = static_cast<int>(CameraBehavior::kZoomIn);
+
 		ChangeState(std::make_unique<PlayerPowerUp>(this));
 	}
 }
 
-void Player::Debug() {
 
-	if (ImGui::TreeNode("pivot")) {
-		pivot_.Debug();
-		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
-		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
-		ImGui::DragFloat3("velocity", &velocity_.x, 0);
-		ImGui::DragFloat("speed", &speed_, 0.05f);
-		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
-		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Parameter")) {
-
-		ImGui::SeparatorText("power up");
-
-		ImGui::DragFloat("PowerUpGauge",    &powerUpGauge_);
-		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
-		ImGui::DragFloat("PowerUpTime",     &powerUpTime_, 0.01f);
-		ImGui::DragFloat("PowerUpTimeMax",  &powerUpTimeMax_, 0.01f);
-
-		ImGui::DragFloat("hit stop time rate", &timeRate_);
-
-
-		ImGui::SeparatorText("status");
-
-		ImGui::DragFloat("HP",              &HP_, 0.01f);
-		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
-		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
-
-		ImGui::Spacing();
-
-		ImGui::DragFloat("radius", &radius_, 0.05f);
-		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
-
-		ImGui::TreePop();
-	}
-}
 
 void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 	//引数で受け取った状態を次の状態としてセット
 	behavior_ = std::move(behavior);
 }
 
+
+void Player::SetCameraBehavior(int behavior) {
+	cameraBehavior_ = behavior;
+}
 
 //割合によるダメージ
 void Player::DamageForPar(const float& par) {
@@ -302,9 +294,9 @@ void Player::TimeRateUpdate() {
 
 	hitStopTime_ -= Time::DeltaTime();
 	if(hitStopTime_ > 0.0f) {
-		timeRate_ = Random::Int(0, 1) + 1 * 0.1f;
+		//timeRate_ = Random::Int(0, 1) + 1 * 0.1f;
 	} else {
-		timeRate_ += (1.0f / 3.0f) * Time::DeltaTime();
+		timeRate_ += Time::DeltaTime();
 		timeRate_ = std::min(timeRate_, 1.0f);
 	}
 
@@ -345,5 +337,52 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 		DamageForPar(damageForBossBullet_.DamagePar);
 		damageForBossBody_.isStop = true;
 		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
+	}
+}
+
+
+
+/// ==============================================================================================================
+///			debug
+/// ==============================================================================================================
+
+
+void Player::Debug() {
+
+	if(ImGui::TreeNode("pivot")) {
+		pivot_.Debug();
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
+		ImGui::DragFloat3("velocity", &velocity_.x, 0);
+		ImGui::DragFloat("speed", &speed_, 0.05f);
+		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
+		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
+		ImGui::TreePop();
+	}
+
+	if(ImGui::TreeNode("Parameter")) {
+
+		ImGui::SeparatorText("power up");
+
+		ImGui::DragFloat("PowerUpGauge", &powerUpGauge_);
+		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
+		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
+		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
+
+		ImGui::DragFloat("hit stop time rate", &timeRate_);
+
+
+		ImGui::SeparatorText("status");
+
+		ImGui::DragFloat("HP", &HP_, 0.01f);
+		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
+		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+
+		ImGui::TreePop();
 	}
 }

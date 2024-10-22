@@ -7,4 +7,7 @@ public:
 	PlayerPowerUp(Player* player);
 	~PlayerPowerUp();
 	void Update()override;
+
+private:
+	bool isCameraZoomOut_ = false;
 };
