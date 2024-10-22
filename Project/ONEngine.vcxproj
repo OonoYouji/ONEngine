@@ -186,6 +186,7 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\DeadEffect\DeadEffect.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Dumy\Dumy.cpp" />
     <ClCompile Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.cpp" />
@@ -318,6 +319,7 @@
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\DeadEffect\DeadEffect.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Dumy\Dumy.h" />
     <ClInclude Include="Game\Objects\EnemyBehavior\BaseEnemyBehavior.h" />
