@@ -70,6 +70,7 @@ public:
 	bool GetIsSlurped() const { return isSlurp_; }
 	bool GetIsCollisionTyphoon() const { return isCollisionTyphoon_; }
 	Model* GetModel() const { return modelArray_[currentScaleIndex_]; }
+	
 
 	int GetCurrentScaleIndex() const { return currentScaleIndex_; }
 

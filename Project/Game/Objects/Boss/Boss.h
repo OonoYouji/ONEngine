@@ -86,6 +86,7 @@ public:
 /// Particle
 /// </summary>
 	void ParticleInit();
+	void ParticleUpdate();
 
 private:
 	

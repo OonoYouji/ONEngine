@@ -75,12 +75,9 @@ void Boss::Initialize() {
 	particleDataArray_.resize(kParticleMaxNum);
 	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
 
-
-
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(0);
-	particleSystem_->SetEmitterFlags(false);
-	
+	particleSystem_->SetEmitterFlags(false);	
 }
 
 void Boss::Update() {
@@ -129,42 +126,8 @@ void Boss::Update() {
 		nextDamageTime_ -= Time::DeltaTime();
 	}	
 
-	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
-		Transform* transform = particle->GetTransform();
-		ParticleData& data = particleDataArray_[particle->GetID()];
-
-
-		transform->SetParent(&data.pivot);
-
-		// 回転処理
-		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-		data.velocity.z += (kGravity_ * Time::DeltaTime());
-
-		//変位
-		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
-
-		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_ + 1)) {
-			data.transform.position.z = -(Ground::groundScale_ + 1);
-			// 反発係数により反発する
-			data.velocity.z *= reboundFactor_;
-			data.rotateSpeed *= reboundFactor_;
-			data.reflectionCount++;/// 反発カウントインクリメント
-		}	//カウント2
-		if (data.reflectionCount >= 2) {
-			data.velocity.x = 0.0f;
-			data.velocity.z = 0.0f;
-		}
-
-		//カウント5
-		if (data.reflectionCount >= reflectionCountMax_) {
-			data.velocity.y = 0;
-		}
-		transform->position = data.transform.position;
-		transform->rotate = data.rotate;
-		transform->quaternion = data.transform.quaternion;
-		});
-
+	
+	ParticleUpdate();
 	pivot_.UpdateMatrix();
 }
 
@@ -211,9 +174,6 @@ void Boss::BulletShotInit() {}
 void Boss::BulletShotUpdate() {
 }
 void Boss::ParticleInit() {
-
-}
-void Boss::AttackInit() {
 	/// パーティクルデータの初期化
 	for (auto& data : particleDataArray_) {
 		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
@@ -224,10 +184,52 @@ void Boss::AttackInit() {
 		data.transform.quaternion = { 0,0,0,1 };
 		/*data.pivot.rotateOrder = QUATERNION;
 		data.transform.rotateOrder = QUATERNION;*/
-		data.transform.position = { 0,7,1 };
-		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),7 };/// 速度
+		data.transform.position = { 0,Random::Float(6,7) ,1};
+		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),7 };/// 速度
 	}
+}
 
+void Boss::ParticleUpdate() {
+
+
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		ParticleData& data = particleDataArray_[particle->GetID()];
+
+
+		transform->SetParent(&data.pivot);
+
+		// 回転処理
+		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+		data.velocity.z += (kGravity_ * Time::DeltaTime());
+
+		//変位
+		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
+
+		// 反発する
+		if (data.transform.position.z > -(Ground::groundScale_ + 1)) {
+			data.transform.position.z = -(Ground::groundScale_ + 1);
+			// 反発係数により反発する
+			data.velocity.z *= reboundFactor_;
+			data.rotateSpeed *= reboundFactor_;
+			data.reflectionCount++;/// 反発カウントインクリメント
+		}	//カウント2
+		if (data.reflectionCount >= 2) {
+			data.velocity.x = 0.0f;
+			data.velocity.z = 0.0f;
+		}
+
+		//カウント5
+		if (data.reflectionCount >= reflectionCountMax_) {
+			data.velocity.y = 0;
+		}
+		transform->position = data.transform.position;
+		transform->rotate = data.rotate;
+		transform->quaternion = data.transform.quaternion;
+		});
+}
+void Boss::AttackInit() {
+	
 	attackEaseT_ = 0.0f;
 	attackCoolTime_ = 0.0f;
 	pBossTubu_->ParamaterInit();
@@ -244,13 +246,14 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ += Time::DeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
-		}
-		if (attackEaseT_ >= kAttackEaseT_) {
 			//emetter
-			particleSystem_->SetParticleLifeTime(3.0f);
+			ParticleInit();
+			particleSystem_->SetParticleLifeTime(1.0f);
 			particleSystem_->SetEmittedParticleCount(10);
 			particleSystem_->SetEmitterFlags(true);
-
+		}
+		if (attackEaseT_ >= kAttackEaseT_) {
+			
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();

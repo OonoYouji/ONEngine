@@ -278,9 +278,9 @@ void Tornado::SetPlayer(Player* _player) {
 
 void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+	/*if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->PowerUpGaugeUp(0.05f);
-	}
+	}*/
 
 	//ボスの直接攻撃によるダメージ
 	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
@@ -300,9 +300,10 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 	if(collision->GetTag() == "Building") {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
-
-		building->SubHP(Time::DeltaTime());
-		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+		if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
+			building->SubHP(Time::DeltaTime());
+			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+		}
 	}
 }
 
