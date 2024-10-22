@@ -79,8 +79,8 @@ void Boss::Initialize() {
 	for (auto& data : particleDataArray_) {
 		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
 		data.transform.Initialize();	/// Transform初期化
+		data.transform.SetParent(&pivot_);
 		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),5 };/// 速度
-		data.transform.quaternion =pivot_.quaternion;/// 座標
 	}
 
 	/// パーティクルの挙動
@@ -88,38 +88,7 @@ void Boss::Initialize() {
 	particleSystem_->SetEmitterFlags(false);
 	
 
-	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
-		Transform* transform = particle->GetTransform();
-		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		// 回転処理
-		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-		data.velocity.z += (kGravity_ * Time::DeltaTime());
-
-		//変位
-		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
-
-		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_+1)) {
-			data.transform.position.z = -(Ground::groundScale_+1);
-			// 反発係数により反発する
-			data.velocity.z *= reboundFactor_;
-			data.rotateSpeed *= reboundFactor_;
-			data.reflectionCount++;/// 反発カウントインクリメント
-		}	//カウント2
-		if (data.reflectionCount >= 2) {
-			data.velocity.x = 0.0f;
-			data.velocity.z = 0.0f;
-		}
-		
-		//カウント5
-		if (data.reflectionCount >= reflectionCountMax_) {
-			data.velocity.y = 0;		
-		}
-		transform->position = data.transform.position;
-		transform->rotate = data.rotate;
-		transform->quaternion = data.transform.quaternion;
-		});
 }
 
 void Boss::Update() {
@@ -167,6 +136,39 @@ void Boss::Update() {
 	if ( nextDamageTime_ >= 0) {
 		nextDamageTime_ -= Time::DeltaTime();
 	}	
+
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		ParticleData& data = particleDataArray_[particle->GetID()];
+
+		// 回転処理
+		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+		data.velocity.z += (kGravity_ * Time::DeltaTime());
+
+		//変位
+		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
+
+		// 反発する
+		if (data.transform.position.z > -(Ground::groundScale_ + 1)) {
+			data.transform.position.z = -(Ground::groundScale_ + 1);
+			// 反発係数により反発する
+			data.velocity.z *= reboundFactor_;
+			data.rotateSpeed *= reboundFactor_;
+			data.reflectionCount++;/// 反発カウントインクリメント
+		}	//カウント2
+		if (data.reflectionCount >= 2) {
+			data.velocity.x = 0.0f;
+			data.velocity.z = 0.0f;
+		}
+
+		//カウント5
+		if (data.reflectionCount >= reflectionCountMax_) {
+			data.velocity.y = 0;
+		}
+		transform->position = data.transform.position;
+		transform->rotate = data.rotate;
+		transform->quaternion = data.transform.quaternion;
+		});
 
 	pivot_.UpdateMatrix();
 }
@@ -235,12 +237,13 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ += Time::DeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
-			particleSystem_->SetParticleLifeTime(3.0f);
-			particleSystem_->SetEmittedParticleCount(10);
-			particleSystem_->SetEmitterFlags(false);
-			particleSystem_->SetEmitterFlags(true);
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
+			//emetter
+			particleSystem_->SetParticleLifeTime(3.0f);
+			particleSystem_->SetEmittedParticleCount(10);
+			particleSystem_->SetEmitterFlags(true);
+
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();
@@ -253,8 +256,10 @@ void Boss::AttackUpdate() {//超汚い
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
+			particleSystem_->SetEmitterFlags(false);
 		}
 		if (attackEaseT_ <= 0.0f) {
+			
 			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
