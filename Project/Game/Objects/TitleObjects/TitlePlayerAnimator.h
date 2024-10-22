@@ -1,5 +1,9 @@
 #pragma once
 
+/// components
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
+
+/// base class
 #include "GameObjectManager/BaseGameObject.h"
 
 class TitlePlayerAnimator final : public BaseGameObject {
@@ -18,6 +22,13 @@ class TitlePlayerAnimator final : public BaseGameObject {
 		Vec3 scale{};
 	};
 
+	struct WindData {
+		float time;
+		float speed;
+		float radius;
+		float height;
+	};
+
 public:
 
 	TitlePlayerAnimator() { CreateTag(this); }
@@ -28,9 +39,16 @@ public:
 	void Debug()      override;
 
 
+	ParticleSystem* GetParticleSystem() const { return particleSystem_; }
+
+
 	void SetBasePosition(const Vec3& _basePosition);
 
 	void SetIsSpinUpdate(bool isSpinUpdate);
+
+	void SetParticleUseRotate(bool _useRotate);
+
+	void SetUseShadow(bool _useShadow);
 
 private:
 
@@ -49,6 +67,11 @@ private:
 	std::vector<class Wind*>       windArray_;
 	std::vector<WindAnimationData> windAnimationDataArray_;
 	std::vector<ParticleData>      particleDataArray_;
+	std::vector<WindData>          windDataArray_;
+	ParticleSystem*                particleSystem_ = nullptr;
 
 	Mat4 matRotate_;
+	bool useRotate_;
+
+	bool useShadow_ = true; /// initializeの前にセットしないと意味なし
 };

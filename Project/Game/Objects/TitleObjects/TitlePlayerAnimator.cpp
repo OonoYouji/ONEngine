@@ -26,18 +26,21 @@ void TitlePlayerAnimator::Initialize() {
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel("player");
 
-	EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
-	earthRenderer->SetRadius(1.5f);
-	earthRenderer->SetColor({0,0,0, 0.75f});
+	if(useShadow_) {
+		EarthRenderer* earthRenderer = AddComponent<EarthRenderer>();
+		earthRenderer->SetRadius(1.5f);
+		earthRenderer->SetColor({0,0,0, 0.75f});
+	}
 
-	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(32u, "rubble");
-	particleDataArray_.resize(32);
+	particleSystem_ = AddComponent<ParticleSystem>(64u, "rubble");
+	particleDataArray_.resize(64u);
 
 	windArray_.resize(10);
 	for(auto& wind : windArray_) {
 		wind = new Wind;
 		wind->Initialize();
 		wind->SetParent(pTransform_);
+		wind->SetScale(Vec3::kOne * 0.75f);
 	}
 
 	windAnimationDataArray_.resize(10);
@@ -58,6 +61,10 @@ void TitlePlayerAnimator::Initialize() {
 
 
 
+	/// ---------------------------------------------------
+	/// 飛散物 
+	/// ---------------------------------------------------
+
 	/// パーティクルデータの初期化
 	for(auto& data : particleDataArray_) {
 		data.maxPosY = Random::Float(1.0f, 10.0f);
@@ -69,12 +76,13 @@ void TitlePlayerAnimator::Initialize() {
 	}
 
 	/// パーティクルの挙動
-	particleSystem->SetParticleLifeTime(3.0f);
-	particleSystem->SetEmittedParticleCount(2);
-	particleSystem->SetParticleRespawnTime(0.3f);
-	particleSystem->SetUseBillboard(false);
+	particleSystem_->SetParticleLifeTime(3.0f);
+	particleSystem_->SetEmittedParticleCount(2);
+	particleSystem_->SetParticleRespawnTime(0.3f);
+	particleSystem_->SetUseBillboard(false);
+	useRotate_ = true;
 	
-	particleSystem->SetPartilceUpdateFunction([&](Particle* particle) {
+	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
@@ -83,15 +91,81 @@ void TitlePlayerAnimator::Initialize() {
 		transform->scale = data.scale;
 
 		transform->position = {
-			std::cos(data.time * data.speed) * data.radius,
+			std::cos(-data.time * data.speed) * data.radius,
 			(1.0f - particle->GetNormLifeTime()) * data.maxPosY,
-			std::sin(data.time * data.speed) * data.radius
+			std::sin(-data.time * data.speed) * data.radius
 		};
 
-		transform->position = Mat4::Transform(transform->position, matRotate_);
+		if(useRotate_) {
+			transform->position = Mat4::Transform(transform->position, matRotate_);
+		}
+
 		transform->position += GetPosition();
 	});
 
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time   = Random::Float(1.0f, 3.0f);
+		wind.speed  = Random::Float(5.0f, 7.5f) * 1.5f;
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 5.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(1.0f);
+	windParticle->SetParticleRespawnTime(0.2f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		WindData& wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		if(useRotate_) {
+
+			transform->position = {
+				std::cos(-wind.time * wind.speed) * wind.height * 0.25f,
+				std::sin(-wind.time * wind.speed) * wind.height * 0.25f,
+				-wind.height - 1.0f
+			};
+
+			transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+			transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
+
+			transform->scale = Vec3::kOne * wind.height * 0.25f;
+			transform->scale.y = 2.0f;
+		} else {
+
+			transform->position = {
+				std::cos(-wind.time * wind.speed),
+				wind.height - 1.0f,
+				std::sin(-wind.time * wind.speed)
+			};
+
+			transform->rotate.y = std::atan2(transform->position.x, transform->position.z);
+			transform->rotate.y += std::numbers::pi_v<float> * 0.5f;
+
+			transform->scale = Vec3::kOne * wind.height * 0.25f;
+			transform->scale.y = 2.0f;
+		}
+
+		transform->position += basePosition_;
+
+		/// reset ...
+		if(particle->GetNormLifeTime() <= 0.0f) {
+			wind.height = Random::Float(1.0f, 5.0f);
+		}
+	});
 
 }
 
@@ -175,4 +249,12 @@ void TitlePlayerAnimator::SetBasePosition(const Vec3& _basePosition) {
 
 void TitlePlayerAnimator::SetIsSpinUpdate(bool isSpinUpdate) {
 	isSpinUpdate_ = isSpinUpdate;
+}
+
+void TitlePlayerAnimator::SetParticleUseRotate(bool _useRotate) {
+	useRotate_ = _useRotate;
+}
+
+void TitlePlayerAnimator::SetUseShadow(bool _useShadow) {
+	useShadow_ = _useShadow;
 }

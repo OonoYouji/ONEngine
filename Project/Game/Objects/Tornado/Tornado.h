@@ -10,13 +10,17 @@
 /// ===================================================
 class Player;
 class BuildingManager;
-class Ring;
 class Wind;
 
 /// ===================================================
 /// 竜巻を表現するクラス
 /// ===================================================
 class Tornado final : public BaseGameObject {
+
+	struct WindAnimationData {
+		float time = 0.0f;
+		float speed = 1.0f;
+	};
 
 	struct ParticleData {
 		float time = 0.0f;
@@ -27,6 +31,13 @@ class Tornado final : public BaseGameObject {
 		Vec3 scale{};
 	};
 
+	struct WindData {
+		float time;
+		float speed;
+		float radius;
+		float height;
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -34,11 +45,14 @@ public:
 
 	Tornado() { CreateTag(this); }
 	~Tornado() {}
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
 
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision);
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision);
+
 
 	float GetScaleScaler()const { return scaleScaler_; }
 	float GetMaxScale()const { return maxScale_; }
@@ -73,37 +87,14 @@ private:
 
 	float zRotateSpeed_ = 1.0f;
 
+	std::vector<Wind*>             windArray_;
+	std::vector<WindAnimationData> windAnimationDataArray_;
+	std::vector<ParticleData>      particleDataArray_;
+	std::vector<WindData>          windDataArray_;
 	float debufParm_;
 
-	std::vector<Wind*>        windArray_;
-	std::vector<ParticleData> particleDataArray_;
 
 	Mat4 matRotate_;
-
-};
-
-
-/// ===================================================
-/// わっか
-/// ===================================================
-class Ring : public BaseGameObject {
-public:
-
-	Ring();
-	~Ring() {}
-
-	void Initialize() override;
-	void Update()     override;
-	void Debug()      override;
-
-	static void ResetInstanceCount();
-
-private:
-
-	static int sInstanceCount_;
-	int id_;
-
-	float rotateSpeed_ = 0.0f;
 
 };
 

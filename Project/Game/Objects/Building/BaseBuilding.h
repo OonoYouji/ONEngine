@@ -52,6 +52,13 @@ public:
 	/// </summary>
 	void Animation();
 
+
+	/// <summary>
+	/// hit pointの減少、衝突時間による減少量
+	/// </summary>
+	void SubHP(float _subValue);
+
+
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -76,6 +83,8 @@ public:
 	//吸い込み系
 	void SetIsSlurped(bool is) { isSlurp_ = is; }//吸われるか
 	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
+
+	void SetShake(const Vec3& _shaleValue);
 
 private:
 	Boss* pBoss_ = nullptr;
@@ -107,6 +116,14 @@ private:
 	const float floatBuildingEaseTimeMax_=1.0f;
 	const float buildingSartZ = -10.8f;
 
+
+	/// ---------------------------------------------------
+	/// state parameter
+	/// ---------------------------------------------------
+
+	float hp_ = 0.1f; /// 最小時に一瞬で回収できるくらいhp
+
+	
 
 	/// ---------------------------------------------------
 	/// earth shadow
@@ -146,5 +163,8 @@ private:
 	/// ---------------------------------------------------
 
 	class ParticleSystem* particleSystem_ = nullptr;
+
+	Vec3 shake_;
+	Vec3 offsetPosition_;
 
 };

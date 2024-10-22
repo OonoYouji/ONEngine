@@ -13,7 +13,6 @@
 
 void Scene_Tutorial::Initialize() {
 
-	Ring::ResetInstanceCount();
 	Wind::ResetInstanceCount();
 
 	/// ===================================================

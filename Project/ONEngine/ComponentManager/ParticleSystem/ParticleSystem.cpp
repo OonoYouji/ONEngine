@@ -127,8 +127,8 @@ void ParticleSystem::Update() {
 			continue;
 		}
 
-		particleUpdateFunc_(particle);
 		particle->LifeTimeUpdate();
+		particleUpdateFunc_(particle);
 		particle->id_ = static_cast<uint32_t>(i);
 
 		if(useBillboard_) {

@@ -37,11 +37,11 @@ void Tornado::Initialize() {
 	/// パーティクルデータの初期化
 	for(auto& data : particleDataArray_) {
 		data.maxPosY = Random::Float(1.0f, 10.0f);
-		data.radius = Random::Float(1.0f, 2.0f);
-		data.speed = Random::Float(5.0f, 10.0f);
-		data.time = Random::Float(0.0f, 1.0f);
-		data.rotate = Random::Vec3(-Vec3::kOne, Vec3::kOne);
-		data.scale = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
+		data.radius  = Random::Float(1.0f, 2.0f);
+		data.speed   = Random::Float(5.0f, 10.0f);
+		data.time    = Random::Float(0.0f, 1.0f);
+		data.rotate  = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+		data.scale   = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
 	}
 
 	/// パーティクルの挙動
@@ -61,7 +61,7 @@ void Tornado::Initialize() {
 		transform->position = {
 			std::cos(data.time * data.speed) * data.radius,
 			std::sin(data.time * data.speed) * data.radius,
-			particle->GetNormLifeTime() * data.maxPosY
+			-particle->GetNormLifeTime() * data.maxPosY
 		};
 
 		transform->position = Mat4::Transform(transform->position, matRotate_);
@@ -76,9 +76,8 @@ void Tornado::Initialize() {
 	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.0f);
 	/// action param initialize
 	eacSpeed_ = 0.7f;
-	pTransform_->position.z = 2.2f;
-	minScale_ = 0.5f;
-	maxScale_ = 1.75f;
+	minScale_ = 0.75f;
+	maxScale_ = 1.25f;
 	scaleScaler_ = minScale_;
 
 
@@ -92,17 +91,78 @@ void Tornado::Initialize() {
 	Model* model = ModelManager::Load("Tornado");
 	auto collider = AddComponent<BoxCollider>(model);
 
+	windAnimationDataArray_.resize(10);
+	for(auto& data : windAnimationDataArray_) {
+		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
+	}
+
+
+	/// ---------------------------------------------------
+	/// 風のエフェクト 
+	/// ---------------------------------------------------
+
+	const uint32_t kWindSize = 6u;
+
+	windDataArray_.resize(kWindSize);
+	for(size_t i = 0; i < kWindSize; ++i) {
+		WindData& wind = windDataArray_[i];
+		wind.time   = Random::Float(1.0f, 3.0f);
+		wind.speed  = Random::Float(25.0f, 30.0f);
+		wind.radius = Random::Float(1.0f, 3.0f);
+		wind.height = Random::Float(1.0f, 2.0f);
+	}
+
+	ParticleSystem* windParticle = AddComponent<ParticleSystem>(kWindSize, "wind");
+	windParticle->SetParticleLifeTime(0.25f);
+	windParticle->SetParticleRespawnTime(0.05f);
+	windParticle->SetEmittedParticleCount(1);
+	windParticle->SetUseBillboard(false);
+
+	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		Transform* parent    = GetParent();
+		transform->SetParent(parent);
+
+		WindData&  wind = windDataArray_[particle->GetID()];
+
+		wind.time += Time::DeltaTime();
+
+		transform->position = {
+			std::cos(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
+			std::sin(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
+			-wind.height + 1.0f
+		};
+
+		transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+		transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
+
+		transform->scale = Vec3::kOne * wind.height * scaleScaler_;
+
+		if(particle->GetNormLifeTime() <= 0.0f) {
+			wind.time = 0.0f;
+			wind.height = Random::Float(1.0f, 2.0f);
+		}
+
+	});
+
 }
 
 void Tornado::Update() {
 
-	if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+	
+	if(pPlayer_->GetisPowerUp()) {
 
-		scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+		scaleScaler_ = 3.0f;
 	} else {
 
-		scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+		/// キー入力で大きさを変える
+		if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+		} else {
+			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+		}
 	}
+
 
 	localYAngle_  += Time::DeltaTime() * zRotateSpeed_;
 
@@ -118,6 +178,16 @@ void Tornado::Update() {
 		matRotate_.m[3][1] = 0.0f;
 		matRotate_.m[3][2] = 0.0f;
 	}
+
+	/// 周りの風を回転させる
+	for(size_t i = 0; i < 10; ++i) {
+		WindAnimationData& data = windAnimationDataArray_[i];
+		Wind* wind = windArray_[i];
+
+		data.time += Time::DeltaTime();
+		wind->SetRotateY(data.time * data.speed);
+	}
+  
 }
 
 void Tornado::Debug() {
@@ -190,15 +260,6 @@ void Tornado::Debug() {
 
 	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		//Vec3 scale = windArray_.front()->GetTransform()->scale;
-		//ImGui::DragFloat3("scale", &scale.x, 0.01f);
-
-		//if(ImGui::IsItemEdited()) {
-		//	for(auto& wind : windArray_) {
-		//		wind->GetTransform()->scale = scale;
-		//	}
-		//}
-
 		ImGui::TreePop();
 	}
 
@@ -233,40 +294,14 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 	}
 }
 
+void Tornado::OnCollisionStay(BaseGameObject* const collision) {
+	if(collision->GetTag() == "Building") {
+		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
 
-/// ===================================================
-/// ring
-/// ===================================================
-
-int Ring::sInstanceCount_ = 0;
-
-Ring::Ring() {
-	CreateTag(this); 
-	id_ = sInstanceCount_++;
-}
-
-void Ring::Initialize() {
-	auto mr = AddComponent<MeshRenderer>();
-	mr->SetModel(std::string("TornadoRing") + std::to_string(id_ + 1));
-}
-
-void Ring::Update() {
-	pTransform_->rotate.y += Time::DeltaTime() * rotateSpeed_;
-}
-
-void Ring::Debug() {
-	if (ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat("rotate speed", &rotateSpeed_, 0.5f);
-
-		ImGui::TreePop();
+		building->SubHP(Time::DeltaTime());
+		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
 	}
 }
-
-void Ring::ResetInstanceCount() {
-	sInstanceCount_ = 0;
-}
-
 
 /// ===================================================
 /// wind

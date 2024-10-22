@@ -28,7 +28,6 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Ring::ResetInstanceCount();
 	Wind::ResetInstanceCount();
 
 
@@ -46,7 +45,6 @@ void Scene_Game::Initialize() {
 	Ground* ground = new Ground;
 	GameCameraState* gameCameraState = new GameCameraState();
 	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
-	tornado_ = new Tornado();
 	GuidanceArrow* guideArrow = new GuidanceArrow();
 
 	/// ===================================================

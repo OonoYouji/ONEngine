@@ -84,8 +84,8 @@ void BaseBuilding::Initialize() {
 	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	scaleMax_ = 1.0f;
-
-
+	
+	offsetPosition_ = pTransform_->position;
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
@@ -127,9 +127,7 @@ void BaseBuilding::Initialize() {
 
 void BaseBuilding::Update() {
 
-	
-
-	//吸われる処理
+	// 吸われる処理
 	if(isSlurp_) {
 		//建物を浮かせるイージング
 		floatBuildingEaseTime_ += Time::DeltaTime();
@@ -137,7 +135,8 @@ void BaseBuilding::Update() {
 			floatBuildingEaseTime_ = floatBuildingEaseTimeMax_;
 		}
 		pTransform_->rotate.x = EaseOutQuint(-1.5f, 0.4f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
-		pTransform_->position.z = EaseInSine(buildingSartZ, -14.5f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
+		offsetPosition_.z = EaseInSine(buildingSartZ, -14.5f, floatBuildingEaseTime_, floatBuildingEaseTimeMax_);
+
 
 		// 球面距離を計算
 		auto [distance, direction] = CalculateDistanceAndDirection(slurpPos_, GetPosition(), Ground::groundScale_ + 1);
@@ -173,6 +172,7 @@ void BaseBuilding::Update() {
 			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
 				currentScaleIndex_++;
+				hp_ = hp_ + 1.0f;
 
 				/// 中から大に変わるときの設定
 				if(currentScaleIndex_ == BUILDING_SCALE_BIG) {
@@ -190,6 +190,10 @@ void BaseBuilding::Update() {
 		Quaternion rotateX = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, pos_.first);
 		Quaternion rotateY = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, pos_.second);
 		pivot_.quaternion = (rotateX * rotateY);
+
+		shake_ = shake_ * 0.1f;
+		pTransform_->position = offsetPosition_ + shake_;
+
 	}
 
 	
@@ -277,11 +281,21 @@ void BaseBuilding::Animation() {
 	pTransform_->scale.z = scaleXZ;
 }
 
-void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	//当たったら用済み
-	if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
+void BaseBuilding::SubHP(float _subValue) {
+	hp_ -= _subValue;
+
+	/// トルネードに吸い込まれる
+	if(hp_ <= 0.0f) {
 		isInTornado_ = true;
 	}
+}
+
+void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	//当たったら用済み
+	//if(dynamic_cast<Tornado*>(collision) && !isSlurp_) {
+	//	isInTornado_ = true;
+	//}
 
 	//当たったら用済み
 	if(dynamic_cast<Boss*>(collision) && isSlurp_) {
@@ -296,4 +310,8 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 
 void BaseBuilding::SetBoss(Boss*boss) {
 	pBoss_ = boss;
+}
+
+void BaseBuilding::SetShake(const Vec3& _shaleValue) {
+	shake_ = _shaleValue;
 }

@@ -62,6 +62,7 @@ void BaseCamera::Debug() {
 	if(projectionType_ == ORTHOGRAPHIC) {
 		if(ImGui::TreeNodeEx("Orthographic", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+			ImGui::DragFloat("distance", &distacene_, 0.005f);
 
 			ImGui::TreePop();
 		}
@@ -90,8 +91,13 @@ void BaseCamera::BaseInitialize() {
 void BaseCamera::BaseUpdate() {
 	UpdateMatrix();
 	UpdateMatView();
-	UpdateMatPerspective();
-	UpdateMatOrthographic();
+
+	if(projectionType_ == PROJECTION_TYPE::PERSPECTIVE) {
+		UpdateMatPerspective();
+	} else {
+		UpdateMatOrthographic();
+	}
+
 	Transfer();
 }
 
@@ -110,32 +116,18 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
-	float distance    = pTransform_->position.Len();
-	if(distance <= 0.0f) {
+	if(distacene_ <= 0.0f) {
 		return;
 	}
 
 	float aspectRatio = static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY);
-	float height      = 2.0f * distance * std::tan(fovY_ / 2.0f);
+	float height      = 2.0f * distacene_ * std::tan(fovY_ / 2.0f);
 	float width       = height * aspectRatio;
 
 	matOrtho_ = Mat4::MakeOrthographicMatrix(
 		width, height, nearZ_, farZ_
 	);
 
-}
-
-
-void BaseCamera::Move() {
-	if(moveTime_ > maxMoveTime_) { return; }
-
-	moveTime_ += Time::DeltaTime();
-
-	float t = Ease::Out::Quart(std::min(moveTime_ / maxMoveTime_, 1.0f));
-	Vec3 position = Vec3::Lerp(startMoveData_.position, endMoveData_.position, t);
-	Vec3 rotate = Vec3::Lerp(startMoveData_.rotate, endMoveData_.rotate, t);
-	SetPosition(position);
-	SetRotate(rotate);
 }
 
 
@@ -151,15 +143,13 @@ void BaseCamera::Transfer() {
 	*matVpData_ = matVp_;
 }
 
-void BaseCamera::SetMove(const MoveData& start, const MoveData& end, float time) {
-	moveTime_ = 0.0f;
-	maxMoveTime_ = time;
 
-	startMoveData_ = start;
-	endMoveData_ = end;
-}
 
 void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
 	projectionType_ = projectionType;
+}
+
+void BaseCamera::SetDistance(float _distance) {
+	distacene_ = _distance;
 }
 
