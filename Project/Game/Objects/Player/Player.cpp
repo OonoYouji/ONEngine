@@ -107,21 +107,21 @@ void Player::Update() {
 	}
 
 	//直接攻撃によるスタン
-	damageForBossHead_.stopCollTime -= Time::DeltaTime();
+	damageForBossHead_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossHead_.stopCollTime <= 0.0f) {
 		damageForBossHead_.stopCollTime = 0.0f;
 		damageForBossHead_.isStop = false;
 	}
 
 	//弾によるスタン
-	damageForBossBullet_.stopCollTime -= Time::DeltaTime();
+	damageForBossBullet_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossBullet_.stopCollTime <= 0.0f) {
 		damageForBossBullet_.stopCollTime = 0.0f;
 		damageForBossBullet_.isStop = false;
 	}
 
 	//体によるスタン
-	damageForBossBody_.stopCollTime -= Time::DeltaTime();
+	damageForBossBody_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossBody_.stopCollTime <= 0.0f) {
 		damageForBossBody_.stopCollTime = 0.0f;
 		damageForBossBody_.isStop = false;
@@ -129,7 +129,7 @@ void Player::Update() {
 
 	if (damageForBossBody_.isStop) {
 		// ヒットバックの方向と強さを適用する
-		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::DeltaTime());
+		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::TimeRateDeltaTime());
 
 		// 回転を逆方向に適応させる
 		float rotateXAngle_ = +velocity_.y;
@@ -166,7 +166,7 @@ void Player::Move() {
 		preInput_ = input_;
 	}
 	/// 移動の正規化
-	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
+	input_ = input_.Normalize() * (speed_ * Time::TimeRateDeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
 	
 	Vec3 velocity = velocity_;
@@ -205,7 +205,7 @@ void Player::PowerUpInit() {
 }
 
 void Player::PowerUpUpdate() {
-	powerUpTime_ -= Time::DeltaTime();//デルタタイムに直す	
+	powerUpTime_ -= Time::TimeRateDeltaTime();//デルタタイムに直す	
 }
 
 void Player::PowerUpGaugeUp(float par) {

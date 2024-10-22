@@ -60,7 +60,7 @@ void Dumy::Update() {
 	//ダミーの死亡
 	if (isFall_) {
 
-		easeTime_ += Time::DeltaTime();
+		easeTime_ += Time::TimeRateDeltaTime();
 		if (easeTime_ >= kEaseTime_) {
 			easeTime_ = kEaseTime_;
 			isDeath_ = true;

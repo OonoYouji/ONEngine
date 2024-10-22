@@ -62,10 +62,10 @@ void GuidanceArrow::Update() {
 
 	// 回転をスムーズに補間 (Slerpを使用)
 	float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
-	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 2.0f * Time::DeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion=(interpolatedRotation*move);
@@ -107,10 +107,10 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 
 	// 回転をスムーズに補間 (Slerpを使用)
 	float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
-	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 2.0f * Time::DeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion = (interpolatedRotation * move);

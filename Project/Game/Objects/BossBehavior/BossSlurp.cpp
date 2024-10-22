@@ -30,7 +30,7 @@ void BossSlurp::Update() {
 	pBoss_->SlurpUpdate();
 
 	// イージングタイムを更新
-	easingTime_ += Time::DeltaTime() * easeDirection_; // 方向に応じて時間を増減
+	easingTime_ += Time::TimeRateDeltaTime() * easeDirection_; // 方向に応じて時間を増減
 
 	// タイムが1を超えたら逆方向に、0未満になったら進む方向に変更
 	if (easingTime_ >= easingTimeMax_) {

@@ -22,7 +22,7 @@ public:
 		return sInstance_.deltaTime_;
 	}
 
-	static float TimeRateDelataTime() {
+	static float TimeRateDeltaTime() {
 		return sInstance_.deltaTime_ * sInstance_.timeRate_;
 	}
 

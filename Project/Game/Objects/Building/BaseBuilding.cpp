@@ -65,7 +65,7 @@ void BaseBuilding::Initialize() {
 		transform->scale = scale;
 
 		Vec3 velocity = GetPosition().Normalize() * 5.0f;
-		transform->position += velocity * Time::DeltaTime();
+		transform->position += velocity * Time::TimeRateDeltaTime();
 	});
 
 
@@ -130,7 +130,7 @@ void BaseBuilding::Update() {
 	// 吸われる処理
 	if(isSlurp_) {
 		//建物を浮かせるイージング
-		floatBuildingEaseTime_ += Time::DeltaTime();
+		floatBuildingEaseTime_ += Time::TimeRateDeltaTime();
 		if(floatBuildingEaseTime_ >= floatBuildingEaseTimeMax_) {
 			floatBuildingEaseTime_ = floatBuildingEaseTimeMax_;
 		}
@@ -147,7 +147,7 @@ void BaseBuilding::Update() {
 		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ 0.5f*Time::DeltaTime(), 0, 0});
+		Quaternion move = ToQuaternion({ 0.5f*Time::TimeRateDeltaTime(), 0, 0});
 
 		// 回転を更新
 		pivot_.quaternion = inter;
@@ -164,12 +164,12 @@ void BaseBuilding::Update() {
 		Animation(); /// ぴょこぴょこ
 
 		/// 成長
-		growTime_ += Time::DeltaTime();
+		growTime_ += Time::TimeRateDeltaTime();
 
 		/// 次の大きさに変わるための処理
 
 		if(currentScaleIndex_ < BUILDING_SCALE_BIG) {
-			nextScalingTimeArray_[currentScaleIndex_] -= Time::DeltaTime();
+			nextScalingTimeArray_[currentScaleIndex_] -= Time::TimeRateDeltaTime();
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
 				currentScaleIndex_++;
 				hp_ = hp_ + 1.0f;
@@ -270,7 +270,7 @@ void BaseBuilding::GrowForTime(const float& par, const float& second) {
 }
 
 void BaseBuilding::Animation() {
-	animationTime_ += Time::DeltaTime()*2;
+	animationTime_ += Time::TimeRateDeltaTime()*2;
 
 	float sinValue = std::sin(animationTime_ * animationSpeed_) * 0.5f + 0.5f;
 	float scaleXZ = buildingScaleArray_[currentScaleIndex_] + 0.25f * -sinValue;

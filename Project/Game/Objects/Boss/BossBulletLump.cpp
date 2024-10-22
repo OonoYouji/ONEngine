@@ -49,7 +49,7 @@ void BossBulletLump::Update() {
 	pivot_.UpdateMatrix();
 
 	//無敵時間
-	invincibleTime_ += Time::DeltaTime();
+	invincibleTime_ += Time::TimeRateDeltaTime();
 }
 
 void BossBulletLump::Debug() {
