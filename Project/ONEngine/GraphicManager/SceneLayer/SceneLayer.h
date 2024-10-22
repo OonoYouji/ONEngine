@@ -20,6 +20,10 @@ public:
 	SceneLayer();
 	~SceneLayer() {}
 
+	static void ResetInstanceCount();
+
+
+
 	void Initialize(const std::string& className, class BaseCamera* camera);
 
 	void Draw();

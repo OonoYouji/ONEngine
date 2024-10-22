@@ -37,7 +37,7 @@ void Model::Draw(Transform* transform, Material* material, FillMode fillMode) {
 /// ===================================================
 /// DrawCallの呼び出し
 /// ===================================================
-void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material) {
+void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material, uint32_t materialRootParamIndex, uint32_t textureRootParamIndex) {
 	if(material) {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {
 			material->BindMaterial(commandList, 2);
@@ -45,8 +45,8 @@ void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material)
 		}
 	} else {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {
-			materials_[index].BindMaterial(commandList, 2);
-			materials_[index].BindTexture(commandList, 4);
+			materials_[index].BindMaterial(commandList, materialRootParamIndex);
+			materials_[index].BindTexture(commandList, textureRootParamIndex);
 		}
 	}
 

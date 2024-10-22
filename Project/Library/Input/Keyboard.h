@@ -172,6 +172,8 @@ private:
 	std::array<BYTE, 256> keys_;	//- 今フレームの入力
 	std::array<BYTE, 256> preKeys_; //- 前フレームの入力
 
+	ONE::WinApp* pWinApp_ = nullptr;
+
 private:
 	Keyboard(const Keyboard&) = delete;
 	Keyboard(Keyboard&&) = delete;

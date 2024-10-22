@@ -62,8 +62,7 @@ public:
 
 	void CreateTag(BaseGameObject* object);
 
-	void RenameComponents();
-
+	void RenameComponent(BaseComponent* component);
 
 
 	/// ---------------------------------------------------
@@ -75,8 +74,8 @@ public:
 		addComponent->SetOwner(this);
 		addComponent->Initialize();
 		T* componentPtr = addComponent.get();
+		RenameComponent(componentPtr);
 		components_.push_back(std::move(addComponent));
-		RenameComponents();
 		return componentPtr;
 	}
 
@@ -112,28 +111,30 @@ public:
 	/// public : tarnsform accessor
 	/// ---------------------------------------------------
 
-	void SetPositionX(float x) { pTranform_->position.x = x; }
-	void SetPositionY(float y) { pTranform_->position.y = y; }
-	void SetPositionZ(float z) { pTranform_->position.z = z; }
-	void SetPosition(const Vec3& v) { pTranform_->position = v; }
+	void SetPositionX(float x) { pTransform_->position.x = x; }
+	void SetPositionY(float y) { pTransform_->position.y = y; }
+	void SetPositionZ(float z) { pTransform_->position.z = z; }
+	void SetPosition(const Vec3& v) { pTransform_->position = v; }
 
-	void SetRotateX(float x)   { pTranform_->rotate.x = x; }
-	void SetRotateY(float y)   { pTranform_->rotate.y = y; }
-	void SetRotateZ(float z)   { pTranform_->rotate.z = z; }
-	void SetRotate(const Vec3& v) { pTranform_->rotate = v; }
-	void SetQuaternion(const Quaternion& q) { pTranform_->quaternion = q; }
+	void SetRotateX(float x)   { pTransform_->rotate.x = x; }
+	void SetRotateY(float y)   { pTransform_->rotate.y = y; }
+	void SetRotateZ(float z)   { pTransform_->rotate.z = z; }
+	void SetRotate(const Vec3& v) { pTransform_->rotate = v; }
+	void SetQuaternion(const Quaternion& q) { pTransform_->quaternion = q; }
+	
 
-	void SetScaleX(float x)    { pTranform_->scale.x = x; }
-	void SetScaleY(float y)    { pTranform_->scale.y = y; }
-	void SetScaleZ(float z)    { pTranform_->scale.z = z; }
-	void SetScale(const Vec3& v) { pTranform_->scale = v; }
+	void SetScaleX(float x)    { pTransform_->scale.x = x; }
+	void SetScaleY(float y)    { pTransform_->scale.y = y; }
+	void SetScaleZ(float z)    { pTransform_->scale.z = z; }
+	void SetScale(const Vec3& v) { pTransform_->scale = v; }
 
-	const Vec3 GetPosition()        const;
-	const Vec3 GetRotate()          const { return pTranform_->rotate; }
-	const Vec3 GetScale()           const { return pTranform_->scale; }
+	const Vec3  GetPosition()         const;
+	const Vec3& GetRotate()           const { return pTransform_->rotate; }
+	const Vec3& GetScale()            const { return pTransform_->scale; }
+	const Quaternion& GetQuaternion() const { return pTransform_->quaternion; }
 
-	const Mat4& GetMatTransform()   const { return pTranform_->matTransform; };
-	Transform* GetTransform() { return pTranform_; }
+	const Mat4& GetMatTransform()   const { return pTransform_->matTransform; };
+	Transform* GetTransform() { return pTransform_; }
 
 
 
@@ -143,6 +144,8 @@ public:
 
 	void SetParent(Transform* parent);
 	Transform* GetParent() const;
+
+	void ParentCancel(bool isLocalToWorld);
 
 	std::list<BaseGameObject*> GetChilds() const;
 
@@ -172,7 +175,7 @@ protected:
 	/// protected : objects
 	/// ===================================================
 
-	Transform*                                pTranform_ = nullptr;
+	Transform*                                pTransform_ = nullptr;
 	std::list<std::unique_ptr<BaseComponent>> components_;
 
 public:

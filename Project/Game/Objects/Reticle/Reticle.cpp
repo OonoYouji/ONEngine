@@ -23,8 +23,8 @@ void Reticle::Initialize() {
 	meshRenderer->SetModel("axis");
 
 	/// transform
-	pTranform_->position = { 0, 0, 10.0f };
-	pTranform_->scale *= 0.5f;
+	pTransform_->position = { 0, 0, 10.0f };
+	pTransform_->scale *= 0.5f;
 }
 
 void Reticle::Update() {

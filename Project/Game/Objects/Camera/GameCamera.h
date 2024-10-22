@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Manager/CameraManager.h"
-
+#include "Objects/Camera/Manager/CameraManager.h"
+#include"Math/Vector2.h"
+//std
+#include<optional>
 
 /// ===================================================
 /// ゲームシーン用カメラ
@@ -13,11 +15,6 @@ public:
 	~GameCamera();
 
 	void Initialize() override;
-	void Update() override;
-
-	void Debug() override;
-
-private:
-
+	void Update()     override;
 
 };

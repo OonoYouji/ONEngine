@@ -65,6 +65,12 @@ public:
 	/// <param name="rotate"></param>
 	void SetUVRotate(float rotate);
 
+	/// <summary>
+	/// テクスチャの色をセットする
+	/// </summary>
+	/// <param name="_color">: テクスチャの色 </param>
+	void SetColor(const Vec4& _color);
+
 private:
 	/// ===================================================
 	/// private : objects

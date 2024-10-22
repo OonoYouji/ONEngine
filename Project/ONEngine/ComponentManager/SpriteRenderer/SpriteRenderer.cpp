@@ -99,3 +99,7 @@ void SpriteRenderer::SetUVSize(const Vec2& size) {
 void SpriteRenderer::SetUVRotate(float rotate) {
 	sprite_->SetUVRotate(rotate);
 }
+
+void SpriteRenderer::SetColor(const Vec4& _color) {
+	sprite_->SetColor(_color);
+}

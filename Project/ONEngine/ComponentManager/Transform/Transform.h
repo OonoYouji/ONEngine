@@ -45,7 +45,7 @@ public:
 	/// <summary>
 	/// 行列の更新
 	/// </summary>
-	void UpdateMatrix();
+	void UpdateMatrix(bool isMapping = true);
 
 	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
 
@@ -57,6 +57,7 @@ public:
 		return childs_;
 	}
 
+	void SubChild(Transform* transfom);
 
 private:
 

@@ -14,14 +14,14 @@
 /// static objects initialize
 /// ===================================================
 
-const Vector3 Vector3::kUp = Vector3(0, 1, 0);		//- ( 0,  1,  0 )
-const Vector3 Vector3::kDown = Vector3(0, -1, 0);	//- ( 0, -1,  0 )
-const Vector3 Vector3::kLeft = Vector3(-1, 0, 0);	//- (-1,  0,  0 )
-const Vector3 Vector3::kRight = Vector3(1, 0, 0);	//- ( 1,  0,  0 )
-const Vector3 Vector3::kFront = Vector3(0, 0, -1);	//- ( 0,  0, -1 )
-const Vector3 Vector3::kBack = Vector3(0, 0, 1);	//- ( 0,  0,  1 )
+const Vector3 Vector3::kUp    = Vector3( 0,  1,  0);	//- ( 0,  1,  0 )
+const Vector3 Vector3::kDown  = Vector3( 0, -1,  0);	//- ( 0, -1,  0 )
+const Vector3 Vector3::kLeft  = Vector3(-1,  0,  0);	//- (-1,  0,  0 )
+const Vector3 Vector3::kRight = Vector3( 1,  0,  0);	//- ( 1,  0,  0 )
+const Vector3 Vector3::kFront = Vector3( 0,  0,  1);	//- ( 0,  0,  1 )
+const Vector3 Vector3::kBack  = Vector3( 0,  0, -1);	//- ( 0,  0, -1 )
 
-const Vector3 Vector3::kOne = Vector3(1, 1, 1);		//- ( 1,  1,  1 )
+const Vector3 Vector3::kOne   = Vector3(1, 1, 1);	//- ( 1,  1,  1 )
 
 
 Vector3::Vector3() {
@@ -70,6 +70,32 @@ Vector3 Vector3::Lerp(const Vector3& start, const Vector3& end, float t) {
 		std::lerp(start.y, end.y, t),
 		std::lerp(start.z, end.z, t)
 	);
+}
+
+Vector3 Vector3::Slerp(const Vector3& start, const Vector3& end, float t) {
+	Vec3 nv1 = Normalize(start);
+	Vec3 nv2 = Normalize(end);
+
+	float dot = Dot(nv1, nv2);
+
+	float theta = std::acos(dot);
+
+	float sinTheta = std::sin(theta);
+	float sinThetaFrom = std::sin((1.0f - t) * theta);
+	float sinThetaTo = std::sin(t * theta);
+
+	Vec3 nLerpVector = nv1 * (sinThetaFrom / sinTheta) + nv2 * (sinThetaTo / sinTheta);
+	if(sinTheta < 1.0e-5) {
+		nLerpVector = nv1;
+	} else {
+		nLerpVector = (nv1 * sinThetaFrom + nv2 * sinThetaTo) / sinTheta;
+	}
+
+	float length1 = Length(start);
+	float length2 = Length(end);
+	float length = std::lerp(length1, length2, t);
+
+	return nLerpVector * length;
 }
 
 Vector3 Vector3::Cross(const Vector3& v1, const Vector3& v2) {

@@ -1,16 +1,14 @@
 #include "Keyboard.h"
 
-
+/// std
 #include <cassert>
 
+// engine
+#include "Core/ONEngine.h"
 #include "WindowManager/WinApp.h"
 
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")
-
-
-
-
 
 
 Keyboard::Keyboard() {}
@@ -47,6 +45,11 @@ void Keyboard::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 /// 入力を得る
 /// ===================================================
 void Keyboard::Begin() {
+
+	pWinApp_ = ONEngine::GetActiveWinApp();
+	keyboard_->SetCooperativeLevel(
+		pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+
 	///- キーボード情報の取得開始
 	keyboard_->Acquire();
 

@@ -26,7 +26,7 @@ RailCamera::~RailCamera() {}
 
 void RailCamera::Initialize() {
 	/// transform
-	pTranform_->rotateOrder = XYZ;
+	pTransform_->rotateOrder = XYZ;
 
 	/// move param setting...
 	Reset();
@@ -51,14 +51,14 @@ void RailCamera::Update() {
 	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
 
 	/// 座標更新
-	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTranform_->position);
-	pTranform_->position = nextAnchor_.position;
+	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTransform_->position);
+	pTransform_->position = nextAnchor_.position;
 
 	upDirection_ = nextAnchor_.up.Normalize();
 	rightDirection_ = Vec3::Cross(upDirection_, moveDirection_).Normalize();
 
 	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
-	pTranform_->rotate = {
+	pTransform_->rotate = {
 		std::asin(-moveDirection_.y),                  // Y軸周りの回転（ピッチ）
 		std::atan2(moveDirection_.x, moveDirection_.z),// Z軸周りの回転（ヨー）
 		std::atan2(rightDirection_.y, upDirection_.y), // X軸周りの回転（ロール）
@@ -104,7 +104,7 @@ void RailCamera::Debug() {
 		for(size_t r = 0; r < 4; ++r) {
 			for(size_t c = 0; c < 4; ++c) {
 				if(c != 0) { ImGui::SameLine(); }
-				ImGui::Text("%0.2f, ", pTranform_->matTransform.m[r][c]);
+				ImGui::Text("%0.2f, ", pTransform_->matTransform.m[r][c]);
 			}
 		}
 
@@ -243,6 +243,6 @@ void RailCamera::SetGameCamera(GameCamera* _gameCamera) {
 	assert(pGameCamera_);
 
 	/// thisがgame cameraの親
-	pGameCamera_->SetParent(pTranform_);
+	pGameCamera_->SetParent(pTransform_);
 
 }

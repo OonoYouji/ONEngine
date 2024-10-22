@@ -17,7 +17,7 @@ BaseGameObject::BaseGameObject() {
 	GameObjectManager::GetInstance()->AddGameObject(this);
 	CollisionManager::GetInstance()->AddGameObject(this);
 
-	pTranform_ = AddComponent<Transform>();
+	pTransform_ = AddComponent<Transform>();
 	UpdateMatrix();
 }
 
@@ -26,7 +26,7 @@ BaseGameObject::BaseGameObject() {
 /// 行列の更新
 /// ===================================================
 void BaseGameObject::UpdateMatrix() {
-	pTranform_->Update();
+	pTransform_->Update();
 }
 
 
@@ -43,9 +43,9 @@ void BaseGameObject::Destory() {
 /// ===================================================
 const Vec3 BaseGameObject::GetPosition() const {
 	return  {
-		pTranform_->matTransform.m[3][0],
-		pTranform_->matTransform.m[3][1],
-		pTranform_->matTransform.m[3][2]
+		pTransform_->matTransform.m[3][0],
+		pTransform_->matTransform.m[3][1],
+		pTransform_->matTransform.m[3][2]
 	};
 }
 
@@ -56,8 +56,7 @@ const Vec3 BaseGameObject::GetPosition() const {
 /// 親のセット
 /// ===================================================
 void BaseGameObject::SetParent(Transform* parent) {
-	pTranform_->SetParent(parent);
-	//pTranform_->AddChild(this); //- 相手の子供に自身を追加
+	pTransform_->SetParent(parent);
 }
 
 
@@ -65,7 +64,21 @@ void BaseGameObject::SetParent(Transform* parent) {
 /// 親のゲット
 /// ===================================================
 Transform* BaseGameObject::GetParent() const {
-	return pTranform_->GetParent();
+	return pTransform_->GetParent();
+}
+
+void BaseGameObject::ParentCancel(bool isLocalToWorld) {
+	Transform* parent = GetParent();
+	if(!parent) { return; }
+
+	if(isLocalToWorld) {
+		pTransform_->Update();
+		pTransform_->position = GetPosition();
+	}
+
+	pTransform_->parent_ = nullptr;	
+	parent->SubChild(pTransform_);
+
 }
 
 
@@ -74,7 +87,7 @@ Transform* BaseGameObject::GetParent() const {
 /// ===================================================
 std::list<BaseGameObject*> BaseGameObject::GetChilds() const {
 	std::list<BaseGameObject*> childs{};
-	for(auto& child : pTranform_->GetChilds()) {
+	for(auto& child : pTransform_->GetChilds()) {
 		childs.push_back(child->GetOwner());
 	}
 	return childs;
@@ -141,9 +154,7 @@ void BaseGameObject::CreateTag(BaseGameObject* object) {
 	SetName(name);
 }
 
-void BaseGameObject::RenameComponents() {
-	for(auto& component : components_) {
-		std::string name = CreateName(component.get()) + std::format("##{:p}", reinterpret_cast<void*>(component.get()));
-		component->SetName(name);
-	}
+void BaseGameObject::RenameComponent(BaseComponent* component) {
+	std::string name = CreateName(component) + std::format("##{:p}", reinterpret_cast<void*>(component));
+	component->SetName(name);
 }

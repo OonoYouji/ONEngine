@@ -4,7 +4,6 @@
 #include <format>
 
 #include "WindowManager/WinApp.h"
-
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 #include "ImGuiManager/ImGuiManager.h"
@@ -99,7 +98,7 @@ void BaseCamera::BaseUpdate() {
 
 
 void BaseCamera::UpdateMatView() {
-	matView_ = pTranform_->matTransform.Inverse();
+	matView_ = pTransform_->matTransform.Inverse();
 }
 
 
@@ -111,13 +110,12 @@ void BaseCamera::UpdateMatPerspective() {
 
 void BaseCamera::UpdateMatOrthographic() {
 
-	float distance    = pTranform_->position.Len();
-	if(distance <= 0.0f) {
+	if(distacene_ <= 0.0f) {
 		return;
 	}
 
 	float aspectRatio = static_cast<float>(ONE::WinApp::kWindowSizeX) / static_cast<float>(ONE::WinApp::kWindowSizeY);
-	float height      = 2.0f * distance * std::tan(fovY_ / 2.0f);
+	float height      = 2.0f * distacene_ * std::tan(fovY_ / 2.0f);
 	float width       = height * aspectRatio;
 
 	matOrtho_ = Mat4::MakeOrthographicMatrix(
@@ -125,21 +123,6 @@ void BaseCamera::UpdateMatOrthographic() {
 	);
 
 }
-
-
-
-void BaseCamera::Move() {
-	if(moveTime_ > maxMoveTime_) { return; }
-
-	moveTime_ += Time::DeltaTime();
-
-	float t = Ease::Out::Quart(std::min(moveTime_ / maxMoveTime_, 1.0f));
-	Vec3 position = Vec3::Lerp(startMoveData_.position, endMoveData_.position, t);
-	Vec3 rotate = Vec3::Lerp(startMoveData_.rotate, endMoveData_.rotate, t);
-	SetPosition(position);
-	SetRotate(rotate);
-}
-
 
 
 void BaseCamera::Transfer() {
@@ -154,15 +137,13 @@ void BaseCamera::Transfer() {
 	*matVpData_ = matVp_;
 }
 
-void BaseCamera::SetMove(const MoveData& start, const MoveData& end, float time) {
-	moveTime_ = 0.0f;
-	maxMoveTime_ = time;
 
-	startMoveData_ = start;
-	endMoveData_ = end;
-}
 
 void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
 	projectionType_ = projectionType_;
+}
+
+void BaseCamera::SetDistance(float _distance) {
+	distacene_ = _distance;
 }
 

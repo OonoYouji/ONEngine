@@ -31,8 +31,8 @@ public:
 	static const Vector3 kDown;		// ( 0, -1,  0 )
 	static const Vector3 kLeft;		// (-1,  0,  0 )
 	static const Vector3 kRight;	// ( 1,  0,  0 )
-	static const Vector3 kFront;	// ( 0,  0, -1 )
-	static const Vector3 kBack;		// ( 0,  0,  1 )
+	static const Vector3 kFront;	// ( 0,  0,  1 )
+	static const Vector3 kBack;		// ( 0,  0, -1 )
 
 	static const Vector3 kOne;		// ( 1,  1,  1 )
 
@@ -55,6 +55,7 @@ public:
 	static Vector3 Normalize(const Vector3& v);
 
 	static Vector3 Lerp(const Vector3& start, const Vector3& end, float t);
+	static Vector3 Slerp(const Vector3& start, const Vector3& end, float t);
 
 	static Vector3 Cross(const Vector3& v1, const Vector3& v2);
 	static float Dot(const Vector3& v1, const Vector3& v2);

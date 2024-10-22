@@ -3,7 +3,7 @@
 #include <wrl/client.h>
 #include <d3d12.h>
 
-#include <GameObjectManager/GameObjectManager.h>
+#include "GameObjectManager/GameObjectManager.h"
 
 
 /// ---------------------------------------------------
@@ -58,9 +58,9 @@ public:
 
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
 
-	void SetMove(const MoveData& start, const MoveData& end, float time);
-
 	void SetProjectionType(PROJECTION_TYPE projectionType);
+
+	void SetDistance(float _distance);
 
 protected:
 
@@ -76,11 +76,8 @@ protected:
 	Mat4 matVp_;
 
 	uint8_t projectionType_ = PROJECTION_TYPE::PERSPECTIVE;
+	float distacene_ = 1.0f;
 
-	MoveData startMoveData_;
-	MoveData endMoveData_;
-	float moveTime_    = 0.0f;
-	float maxMoveTime_ = 0.0f;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;

@@ -20,7 +20,7 @@ void PlayerBullet::Initialize() {
 }
 
 void PlayerBullet::Update() {
-	pTranform_->position += velocity_;
+	pTransform_->position += velocity_;
 
 	lifeTime_ -= Time::DeltaTime();
 	if(lifeTime_ < 0.0f) {

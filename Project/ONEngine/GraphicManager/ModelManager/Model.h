@@ -53,7 +53,9 @@ public:
 	/// <summary>
 	/// CommandListに必要な情報をセット
 	/// </summary>
-	void DrawCall(ID3D12GraphicsCommandList* commandList, Material* material = nullptr);
+	void DrawCall(
+		ID3D12GraphicsCommandList* commandList, Material* material = nullptr,
+		uint32_t materialRootParamIndex = 2, uint32_t textureRootParamIndex = 4);
 
 	/// <summary>
 	/// FillModeのセット

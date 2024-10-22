@@ -1,12 +1,10 @@
 #include "Quaternion.h"
 
-/// directX
 #include <DirectXMath.h>
 
-/// std
-#include <cmath>
-
 /// using namespace
+using namespace DirectX;
+
 using namespace DirectX;
 
 
@@ -41,6 +39,18 @@ Quaternion Quaternion::Normalize(const Quaternion& q) {
 	return q;
 }
 
+Vector3 Quaternion::Transform(const Vector3& v, const Quaternion& q) {
+	// ベクトルをクォータニオンに変換 (w = 0)
+	Quaternion qVec = { v.x, v.y, v.z, 0.0f };
+
+	// 回転: q * v * q^(-1)
+	Quaternion qConjugate = q.Conjugate();
+	Quaternion result = q * qVec * qConjugate;
+
+	// 結果をベクトルとして返す
+	return { result.x, result.y, result.z };
+}
+
 Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
 	float halfAngle = theta * 0.5f;
 	float sinHalfAngle = std::sin(halfAngle);
@@ -54,7 +64,6 @@ Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
 
 	return Quaternion(x, y, z, w);
 }
-
 
 Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target, const Vec3& up) {
 	XMFLOAT3 xmPosition, xmTarget, xmUp;
@@ -84,3 +93,15 @@ Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target, const Ve
 	return { result.x, result.y, result.z, result.w };
 }
 
+
+
+Quaternion Quaternion::Inverse() const {
+	Quaternion conjugate = this->Conjugate(); // 共役を計算
+	float norm = this->Lenght();                // ノルムを計算
+	if(norm == 0.0f) {
+		// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
+	}
+
+	float normSquared = norm * norm;    // ノルムの二乗
+	return conjugate / normSquared;
+}

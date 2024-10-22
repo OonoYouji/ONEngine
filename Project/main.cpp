@@ -35,8 +35,7 @@
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "GraphicManager/PostEffect/Bloom/Bloom.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
-
-
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -56,7 +55,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameObjectManager*		gameObjectManager	= GameObjectManager::GetInstance();
 	CollisionManager*		collisionManager	= CollisionManager::GetInstance();
 	Line2D*					line2d				= Line2D::GetInstance();
-
+	RenderTextureManager*   renderTexManager    = RenderTextureManager::GetInstance();
 
 	ONEngine::Initialize(L"DirectXGame", false, false, 60u);
 
@@ -69,6 +68,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	textureManager->Load("uvChecker", "uvChecker.png");
 	textureManager->Load("white2x2", "white2x2.png");
 
+	/// render texture imgui用を作成
+	renderTexManager->Initialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
@@ -77,6 +81,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	);
 
 	ParticleSystem::SInitialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()->GetDxDescriptor()
+	);
+
+	MeshInstancingRenderer::SInitialize(
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
 		ONEngine::GetDxCommon()->GetDxDescriptor()
 	);
@@ -98,9 +107,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Initialize(SCENE_ID::GAME);
 
 
-	/// window mode や imgui の表示設定の初期化
-	ONEngine::GetMainWinApp()->SetIsFullScreen(false); /// ? full screen : window mode
-	uint8_t drawLayerIndex = 0u;
 
 
 	///- 実行までにかかった時間
@@ -148,9 +154,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		assert(false);
 	}
 
-
 	Bloom::StaticFinalize();
+	MeshInstancingRenderer::SFinalize();
 	ParticleSystem::SFinalize();
+	renderTexManager->Finalize();
 
 	sceneManager->Finalize();
 	cameraManager->Finalize();

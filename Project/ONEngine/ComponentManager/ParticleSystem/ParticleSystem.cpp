@@ -1,11 +1,12 @@
 #define NOMINMAX
 #include "ParticleSystem.h"
 
+/// std
 #include <cassert>
 #include <algorithm>
 #include <numbers>
 
-/// engine include
+/// engine
 #include "Core/ONEngine.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
@@ -16,9 +17,12 @@
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "FrameManager/Time.h"
 
-/// game include
+/// game
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "Scenes/Manager/SceneManager.h"
+
+/// math
+#include "Math/Random.h"
 
 
 /// static object intialize
@@ -81,13 +85,26 @@ void ParticleSystem::Initialize() {
 	particleArray_.reserve(kMaxParticleNum_);
 
 	/// particle setting
-	SetParticleRespawnTime(0.5f);
-	SetEmittedParticleCount(1u);
+	//SetParticleRespawnTime(0.5f);
+	//SetEmittedParticleCount(1u);
 	SetParticleLifeTime(5.0f);
 	SetUseBillboard(true);
 
 	/// billboard setting
 	matBackToFront_ = Mat4::MakeRotateY(std::numbers::pi_v<float>);
+
+	/// particle update function
+	particleUpdateFunc_ = [&](Particle* particle) {
+		Transform* tf = particle->GetTransform();
+
+		Vec3 randomDir = Random::Vec3(-Vec3::kOne, Vec3::kOne).Normalize();
+		tf->position += randomDir * Time::DeltaTime();
+	};
+
+
+	/// emitter
+	emitter_.reset(new ParticleEmitter);
+	emitter_->Initialize(&particleArray_, this);
 
 }
 
@@ -104,45 +121,45 @@ void ParticleSystem::Update() {
 		matBillboard_.m[3][2] = 0.0f;
 	}
 
+	for(size_t i = 0; i < particleArray_.size(); ++i) {
+		Particle* particle = particleArray_[i].get();
+		if(!particle->isAlive_) {
+			continue;
+		}
 
-	for(auto& particle : particleArray_) {
-		particle->Update();
+		particleUpdateFunc_(particle);
+		particle->LifeTimeUpdate();
+		particle->id_ = static_cast<uint32_t>(i);
 
 		if(useBillboard_) {
 
-			Mat4 matScale     = Mat4::MakeScale(particle->transform_.scale);
+			Mat4 matScale = Mat4::MakeScale(particle->transform_.scale);
 			Mat4 matTranslate = Mat4::MakeTranslate(particle->transform_.position);
 
 			particle->transform_.matTransform = matScale * matBillboard_ * matTranslate;
+
+			Transform* parent = particle->transform_.GetParent();
+			if(parent) {
+				particle->transform_.matTransform *= parent->matTransform;
+			}
 
 		} else {
 			particle->transform_.Update();
 		}
 	}
 
-	/// 時間を減らす
-	currentParticleRespawnTime_ -= Time::DeltaTime();
-
-	/// パーティクルを発生させる
-	if(currentParticleRespawnTime_ < 0.0f) {
-		/// 値のリセット
-		currentParticleRespawnTime_ = particleRespawnTime_;
-
-		/// 発生
-		EmitParticles();
-	}
-
+	emitter_->Update();
 }
 
 void ParticleSystem::Draw() {
 
-	particleInstanceCount_ = 0u;
+	emitter_->currentParticleCount_ = 0u;
 	std::vector<Mat4> matTransformArray;
 
 	/// 生きているParticleの数を確認
 	std::partition(particleArray_.begin(), particleArray_.end(), [&](const std::unique_ptr<Particle>& particle) {
 		if(particle->GetIsAlive()) {
-			particleInstanceCount_++;
+			emitter_->currentParticleCount_++;
 			matTransformArray.push_back(particle->GetTransform()->matTransform);
 			return true;
 		}
@@ -151,28 +168,26 @@ void ParticleSystem::Draw() {
 
 
 	/// 描画処理に移行する
-	if(particleInstanceCount_ > 0) {
+	if(emitter_->currentParticleCount_ > 0) {
 		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
 
-		sPipeline_->Draw(gpuHandle_, pModel_, particleInstanceCount_);
+		sPipeline_->Draw(gpuHandle_, pModel_, emitter_->currentParticleCount_);
 	}
 }
 
 void ParticleSystem::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat("particle respawn time",         &particleRespawnTime_,        0.1f);
-		ImGui::DragFloat("current particle respawn time", &currentParticleRespawnTime_, 0.1f);
-
-		ImGui::Separator();
-
-		ImGui::DragInt("emit particle count",             reinterpret_cast<int*>(&emittedParticleCount_),  1, 0, kMaxParticleNum_);
-		ImGui::DragInt("current particle instance count", reinterpret_cast<int*>(&particleInstanceCount_), 0);
 		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
-
-		ImGui::Separator();
-
 		ImGui::Checkbox("use billboard", &useBillboard_);
+
+		if(ImGui::Button("burst particle")) {
+			SetBurst(true, 1.0f, 0.1f);
+		}
+
+		ImGui::Spacing();
+
+		emitter_->Debug();
 
 		ImGui::TreePop();
 	}
@@ -180,14 +195,11 @@ void ParticleSystem::Debug() {
 
 
 void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
-	particleRespawnTime_ = _particleRespawnTime;
-
-	/// 現在のリスポーンタイムが最大値を超えていたら最大値に値を調整するため
-	currentParticleRespawnTime_ = std::min(currentParticleRespawnTime_, particleRespawnTime_);
+	emitter_->rateOverTime_ = _particleRespawnTime;
 }
 
 void ParticleSystem::SetEmittedParticleCount(uint32_t _emittedParticleCount) {
-	emittedParticleCount_ = _emittedParticleCount;
+	emitter_->emissionCount_ = _emittedParticleCount;
 }
 
 void ParticleSystem::SetParticleLifeTime(float _particleLifeTime) {
@@ -199,44 +211,24 @@ void ParticleSystem::SetUseBillboard(bool _useBillboard) {
 }
 
 
-void ParticleSystem::EmitParticles() {
-	for(size_t i = 0; i < static_cast<size_t>(emittedParticleCount_); ++i) {
-
-		/// 現在のparticle配列の大きさと最大値を比べる
-		size_t particleArraySize = particleArray_.size();
-		if(particleArraySize < static_cast<size_t>(kMaxParticleNum_)) {
-
-			particleArray_.push_back(std::make_unique<Particle>());
-			particleArray_.back()->Initialize();
-			particleArray_.back()->lifeTime_ = particleLifeTime_;
-
-		} else {
-			/// ここに入るときはすでに最大値分配列を作成している
-
-			/// 1, isAliveがfalseになっているオブジェクトを探す
-			/// 2, 見つかったオブジェクトを使用してパーティクルを発生させる
-
-			auto itr = std::find_if(particleArray_.begin(), particleArray_.end(), 
-						 [](const std::unique_ptr<Particle>& particle) {
-				if(!particle->GetIsAlive()) {
-					return true;
-				}
-				return false;
-			});
-
-			/// 見つからなかったらこれ以降もないので終了する
-			if(itr == particleArray_.end()) {
-				break;
-			}
-
-			(*itr)->GetTransform()->position = GetOwner()->GetPosition();
-			(*itr)->lifeTime_                = particleLifeTime_;
-			(*itr)->isAlive_                 = true;
-
-		}
-
-	}
+void ParticleSystem::SetPartilceUpdateFunction(const std::function<void(Particle*)>& _function) {
+	particleUpdateFunc_ = _function;
 }
+
+void ParticleSystem::SetParticleEmitterFlags(int particleEmitterFlags) {
+	emitter_->SetParticleEmitterFlags(particleEmitterFlags);
+}
+
+void ParticleSystem::SetBurst(bool _isBurst, float _burstTime, float _rateOverTime) {
+	emitter_->SetBurst(_isBurst, _burstTime, _rateOverTime);
+}
+
+void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
+	emitter_->min_ = _min;
+	emitter_->max_ = _max;
+}
+
+
 
 
 
@@ -348,15 +340,10 @@ void Particle::Initialize() {
 }
 
 
-void Particle::Update() {
-
-	transform_.position.y += 0.02f;
-
+void Particle::LifeTimeUpdate() {
 	lifeTime_ -= Time::DeltaTime();
 	if(lifeTime_ < 0.0f) {
 		isAlive_ = false;
 	}
-
-	//transform_.Update();
 }
 

@@ -28,9 +28,16 @@ void BaseScene::CreateObject() {
 	mainCamera_ = new GameCamera("MainCamera");
 	mainCamera_->Initialize();
 
-	CameraManager::GetInstance()->SetMainCamera(mainCamera_);
+	//CameraManager::GetInstance()->SetMainCamera(mainCamera_);
 
 	/// light  initialize
 	directionalLight_ = new DirectionalLight();
 	directionalLight_->Initialize();
+}
+
+
+
+void BaseScene::AddLayer(const std::string& layerName, GameCamera* layerCamera) {
+	layers_.push_back(std::make_unique<SceneLayer>());
+	layers_.back()->Initialize(layerName, layerCamera);
 }

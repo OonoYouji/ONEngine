@@ -218,7 +218,7 @@ void System::PostDraw() {
 	imguiManager_->EndFrame();
 	winApps_.at("Debug")->PostDraw(ImGuiManager::GetInstance()->GetRenderTexture());
 #endif // _DEBUG
-	winApps_.at("Game")->PostDraw(sceneManager_->GetSceneLayer(0)->GetRenderTexture());
+	winApps_.at("Game")->PostDraw(sceneManager_->GetFinalRenderTex());
 
 	ONEngine::GetDxCommon()->CommandExecution();
 	for(auto& win : winApps_) {
