@@ -77,17 +77,13 @@ void Boss::Initialize() {
 	
 	/// パーティクルデータの初期化
 	for (auto& data : particleDataArray_) {
-		/*	data.pivot.Initialize();*/
-		data.rotateSpeed = Random::Float(5.0f, 10.0f);
-		/*data.pivot.Initialize();*/
-		data.transform.Initialize();
-		/*data.transform.SetParent(&data.pivot);*/
-		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),5 };
-		data.transform.position =GetPosition();
+		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
+		data.transform.Initialize();	/// Transform初期化
+		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),5 };/// 速度
+		data.transform.quaternion =pivot_.quaternion;/// 座標
 	}
 
 	/// パーティクルの挙動
-	particleSystem_->SetParticleLifeTime(3.0f);
 	particleSystem_->SetEmittedParticleCount(0);
 	particleSystem_->SetEmitterFlags(false);
 	
@@ -122,6 +118,7 @@ void Boss::Initialize() {
 		}
 		transform->position = data.transform.position;
 		transform->rotate = data.rotate;
+		transform->quaternion = data.transform.quaternion;
 		});
 }
 
