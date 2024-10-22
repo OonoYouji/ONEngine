@@ -252,10 +252,14 @@ void Player::PowerUpGaugeUp(float par) {
 	if (powerUpGauge_ > powerUpGaugeMax_) {
 		powerUpGauge_ = powerUpGaugeMax_;
 
-		/// カメラの振る舞いを変化させる
-		cameraBehavior_ = static_cast<int>(CameraBehavior::kZoomIn);
+		/// 現在のステートがpower up state出なければ
+		PlayerPowerUp* powerUpBehavior = dynamic_cast<PlayerPowerUp*>(behavior_.get());
+		if(!powerUpBehavior) {
+			/// カメラの振る舞いを変化させる
+			cameraBehavior_ = static_cast<int>(CameraBehavior::kZoomIn);
 
-		ChangeState(std::make_unique<PlayerPowerUp>(this));
+			ChangeState(std::make_unique<PlayerPowerUp>(this));
+		}
 	}
 }
 

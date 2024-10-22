@@ -300,9 +300,14 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
 
 		/// 建物を引っこ抜いたらゲージを増やす
-		if(building->GetHP() <= 0.0f) {
-			float value = 1.0f * (building->GetCurrentScaleIndex() + 1.0f);
-			pPlayer_->PowerUpGaugeUp(value);
+		if(!building->GetIsInTornado()) {
+			if(building->GetHP() <= 0.0f) {
+
+				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.01f;
+				pPlayer_->PowerUpGaugeUp(value);
+
+				building->SetIsInTornado(true);
+			}
 		}
 
 	}

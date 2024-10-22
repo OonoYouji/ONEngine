@@ -40,7 +40,7 @@ void BaseBuilding::Initialize() {
 	/// 大きさごとのモデルを設定
 	modelArray_ = {
 		ModelManager::Load("billMiddle"),
-		ModelManager::Load("towerMidlle"),
+		ModelManager::Load("towerSmall"),
 		ModelManager::Load("toriiMidlle")
 	};
 
@@ -122,6 +122,10 @@ void BaseBuilding::Initialize() {
 	nextScalingTimeArray_ = {
 		5.0f, 5.0f, 5.0f
 	};
+
+
+	/// 出現演出
+	particleSystem_->SetBurst(true, 0.75f, 0.05f);
 
 }
 
@@ -284,10 +288,10 @@ void BaseBuilding::Animation() {
 void BaseBuilding::SubHP(float _subValue) {
 	hp_ -= _subValue;
 
-	/// トルネードに吸い込まれる
-	if(hp_ <= 0.0f) {
-		isInTornado_ = true;
-	}
+	///// トルネードに吸い込まれる
+	//if(hp_ <= 0.0f) {
+	//	isInTornado_ = true;
+	//}
 }
 
 float BaseBuilding::GetHP() const {
@@ -318,4 +322,8 @@ void BaseBuilding::SetBoss(Boss*boss) {
 
 void BaseBuilding::SetShake(const Vec3& _shaleValue) {
 	shake_ = _shaleValue;
+}
+
+void BaseBuilding::SetIsInTornado(bool _isInTornado) {
+	isInTornado_ = _isInTornado;
 }
