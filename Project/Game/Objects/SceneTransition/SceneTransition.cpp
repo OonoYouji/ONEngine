@@ -43,7 +43,7 @@ void SceneTransition::Update() {
 	}
 
 	/// timeの更新
-	animationTime_ += Time::DeltaTime();
+	animationTime_ += Time::TimeRateDeltaTime();
 
 	if(transitionOrder_ == TRANSTION_FADE_IN) {
 		UpdateFadeIn();

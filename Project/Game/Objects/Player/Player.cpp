@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Player.h"
 
 /// std
@@ -15,12 +16,15 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/time.h"
 #include"Easing/EasingFunction.h"
+#include "Math/Random.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
 #include"Objects/Boss/Boss.h"
+#include "Objects/CameraState/GameCameraState.h"
+
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("playerInGame");
@@ -65,12 +69,13 @@ void Player::Initialize() {
 
 	damageForBossBody_.kStopCollTime = 0.3f;
 	damageForBossBody_.DamagePar = 0.0f;
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
-	transoform_.rotateOrder = QUATERNION;
+	transoform_.rotateOrder  = QUATERNION;
 	pTransform_->rotateOrder = QUATERNION;
-	pivot_.rotateOrder = QUATERNION;
+	pivot_.rotateOrder       = QUATERNION;
 
 	////ペアレント
 	transoform_.SetParent(&pivot_);
@@ -84,9 +89,18 @@ void Player::Initialize() {
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+
+	/// grow size parameter
+	timeRate_ = 1.0f; /// hit stopのtime rateの初期化
+
 }
 
 void Player::Update() {
+
+	/// 前フレームのデータをコピー
+	preCameraBehavior_ = cameraBehavior_; /// カメラの振る舞い
+
 
 	float maxSpeed = 0.6f;
 	float minSpeed = 0.5f;
@@ -107,21 +121,21 @@ void Player::Update() {
 	}
 
 	//直接攻撃によるスタン
-	damageForBossHead_.stopCollTime -= Time::DeltaTime();
+	damageForBossHead_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossHead_.stopCollTime <= 0.0f) {
 		damageForBossHead_.stopCollTime = 0.0f;
 		damageForBossHead_.isStop = false;
 	}
 
 	//弾によるスタン
-	damageForBossBullet_.stopCollTime -= Time::DeltaTime();
+	damageForBossBullet_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossBullet_.stopCollTime <= 0.0f) {
 		damageForBossBullet_.stopCollTime = 0.0f;
 		damageForBossBullet_.isStop = false;
 	}
 
 	//体によるスタン
-	damageForBossBody_.stopCollTime -= Time::DeltaTime();
+	damageForBossBody_.stopCollTime -= Time::TimeRateDeltaTime();
 	if (damageForBossBody_.stopCollTime <= 0.0f) {
 		damageForBossBody_.stopCollTime = 0.0f;
 		damageForBossBody_.isStop = false;
@@ -129,7 +143,7 @@ void Player::Update() {
 
 	if (damageForBossBody_.isStop) {
 		// ヒットバックの方向と強さを適用する
-		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::DeltaTime());
+		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::TimeRateDeltaTime());
 
 		// 回転を逆方向に適応させる
 		float rotateXAngle_ = +velocity_.y;
@@ -148,7 +162,12 @@ void Player::Update() {
 	transoform_.UpdateMatrix();
 }
 
+
+/// <summary>
+/// プレイヤーの移動
+/// </summary>
 void Player::Move() {
+
 	//入力
 	input_ = {};
 	Vec2 gamePadInput = Input::GetLeftStick();
@@ -166,7 +185,7 @@ void Player::Move() {
 		preInput_ = input_;
 	}
 	/// 移動の正規化
-	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
+	input_ = input_.Normalize() * (speed_ * Time::TimeRateDeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
 	
 	Vec3 velocity = velocity_;
@@ -192,7 +211,13 @@ void Player::Move() {
 	}
 }
 
-//振る舞い関数
+
+
+/// ==============================================================================================================
+///			behavior
+/// ==============================================================================================================
+
+/// 振る舞い関数
 void Player::RootInit() {
 	//パワーアップパラメータ初期化
 	isPowerUp_ = false;
@@ -200,12 +225,20 @@ void Player::RootInit() {
 }
 
 void Player::PowerUpInit() {
-	isPowerUp_ = true;
+	isPowerUp_   = true;
 	powerUpTime_ = powerUpTimeMax_;
+	timeRate_    = 0.005f;
+	hitStopTime_ = 0.5f;
 }
 
+/// <summary>
+/// パワーアップしているときに呼び出される
+/// </summary>
 void Player::PowerUpUpdate() {
-	powerUpTime_ -= Time::DeltaTime();//デルタタイムに直す	
+
+	/// 残り時間の減少
+	powerUpTime_ -= Time::TimeRateDeltaTime();
+
 }
 
 void Player::PowerUpGaugeUp(float par) {
@@ -218,46 +251,25 @@ void Player::PowerUpGaugeUp(float par) {
 	// ゲージが最大値を超えないように制限
 	if (powerUpGauge_ > powerUpGaugeMax_) {
 		powerUpGauge_ = powerUpGaugeMax_;
+
+		/// カメラの振る舞いを変化させる
+		cameraBehavior_ = static_cast<int>(CameraBehavior::kZoomIn);
+
 		ChangeState(std::make_unique<PlayerPowerUp>(this));
 	}
 }
 
-void Player::Debug() {
 
-	if (ImGui::TreeNode("pivot")) {
-		pivot_.Debug();
-		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
-		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
-		ImGui::DragFloat3("velocity", &velocity_.x, 0);
-		ImGui::DragFloat("speed", &speed_, 0.05f);
-		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
-		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
-		ImGui::TreePop();
-	}
-
-	if (ImGui::TreeNode("Parameter")) {
-		ImGui::DragFloat("PowerUpGauge", &powerUpGauge_, 0.01f);
-		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
-		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
-		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
-		ImGui::DragFloat("HP", &HP_, 0.01f);
-		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
-		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
-
-		ImGui::Spacing();
-
-		ImGui::DragFloat("radius", &radius_, 0.05f);
-		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
-
-		ImGui::TreePop();
-	}
-}
 
 void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 	//引数で受け取った状態を次の状態としてセット
 	behavior_ = std::move(behavior);
 }
 
+
+void Player::SetCameraBehavior(int behavior) {
+	cameraBehavior_ = behavior;
+}
 
 //割合によるダメージ
 void Player::DamageForPar(const float& par) {
@@ -276,6 +288,19 @@ void Player::DamageForPar(const float& par) {
 void Player::TutorialMove() {
 	pivot_.UpdateMatrix();
 	transoform_.UpdateMatrix();
+}
+
+void Player::TimeRateUpdate() {
+
+	hitStopTime_ -= Time::DeltaTime();
+	if(hitStopTime_ > 0.0f) {
+		//timeRate_ = Random::Int(0, 1) + 1 * 0.1f;
+	} else {
+		timeRate_ += Time::DeltaTime();
+		timeRate_ = std::min(timeRate_, 1.0f);
+	}
+
+	Time::SetTimeRate(timeRate_);
 }
 
 void  Player::SetBuildingManager(BuildingManager* buildingManager) {
@@ -312,5 +337,52 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 		DamageForPar(damageForBossBullet_.DamagePar);
 		damageForBossBody_.isStop = true;
 		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
+	}
+}
+
+
+
+/// ==============================================================================================================
+///			debug
+/// ==============================================================================================================
+
+
+void Player::Debug() {
+
+	if(ImGui::TreeNode("pivot")) {
+		pivot_.Debug();
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateX_.x, rotateX_.y, rotateX_.z, rotateX_.w);
+		ImGui::Text("X:%f Y:%f Z:%f W:%f", rotateY_.x, rotateY_.y, rotateY_.z, rotateY_.w);
+		ImGui::DragFloat3("velocity", &velocity_.x, 0);
+		ImGui::DragFloat("speed", &speed_, 0.05f);
+		ImGui::DragFloat("rotateXAngle", &rotateXAngle_, 0.01f);
+		ImGui::DragFloat("rotateYAngle", &rotateYAngle_, 0.01f);
+		ImGui::TreePop();
+	}
+
+	if(ImGui::TreeNode("Parameter")) {
+
+		ImGui::SeparatorText("power up");
+
+		ImGui::DragFloat("PowerUpGauge", &powerUpGauge_);
+		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
+		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
+		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
+
+		ImGui::DragFloat("hit stop time rate", &timeRate_);
+
+
+		ImGui::SeparatorText("status");
+
+		ImGui::DragFloat("HP", &HP_, 0.01f);
+		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
+		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+
+		ImGui::TreePop();
 	}
 }

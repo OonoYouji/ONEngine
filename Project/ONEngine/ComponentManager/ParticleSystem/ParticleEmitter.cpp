@@ -47,7 +47,7 @@ void ParticleEmitter::Update() {
 
 	if((particleEmitterFlags_ & PARTICLE_EMITTER_NOTIME) == 0) {
 		/// 時間を減らす
-		currentTime_ -= Time::DeltaTime();
+		currentTime_ -= Time::TimeRateDeltaTime();
 		/// パーティクルを発生させる
 		if(currentTime_ < 0.0f) {
 			/// 値のリセット
@@ -61,8 +61,8 @@ void ParticleEmitter::Update() {
 	/// バーストの処理
 	if(isBurst_) {
 
-		burstTime_         -= Time::DeltaTime();
-		burstRateOverTime_ -= Time::DeltaTime();
+		burstTime_         -= Time::TimeRateDeltaTime();
+		burstRateOverTime_ -= Time::TimeRateDeltaTime();
 
 		if(burstRateOverTime_ <= 0.0f) {
 			burstRateOverTime_ = maxBurstRateOverTime_;

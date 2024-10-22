@@ -17,7 +17,7 @@ void DemoObject::Initialize() {
 
 	ps->SetPartilceUpdateFunction([](Particle* par) {
 		Transform* transform = par->GetTransform();
-		transform->position.y += Time::DeltaTime();
+		transform->position.y += Time::TimeRateDeltaTime();
 	});
 
 	ps->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);

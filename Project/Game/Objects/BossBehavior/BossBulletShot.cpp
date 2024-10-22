@@ -36,8 +36,8 @@ void BossBulletShot::Update() {
 	if (!isAnticipationed_) {
 		//予備動作
 		// イージングタイムを更新
-		anticipationTime_ += Time::DeltaTime();
-		easingTime_ += Time::DeltaTime() * easeDirection_; // 方向に応じて時間を増減
+		anticipationTime_ += Time::TimeRateDeltaTime();
+		easingTime_ += Time::TimeRateDeltaTime() * easeDirection_; // 方向に応じて時間を増減
 
 		// タイムが1を超えたら逆方向に、0未満になったら進む方向に変更
 		if (easingTime_ >= easingTimeMax_) {
@@ -88,7 +88,7 @@ void BossBulletShot::Update() {
 			}
 		}
 		if(isStop_){
-			stopTime_ += Time::DeltaTime();
+			stopTime_ += Time::TimeRateDeltaTime();
 			//振る舞い切り替え
 			if (stopTime_ >= kStopTime_) {
 				pBoss_->SetIsBuildingKill(false);

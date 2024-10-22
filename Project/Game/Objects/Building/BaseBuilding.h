@@ -58,6 +58,8 @@ public:
 	/// </summary>
 	void SubHP(float _subValue);
 
+	float GetHP() const;
+
 
 	/// ===================================================
 	/// public : accessor

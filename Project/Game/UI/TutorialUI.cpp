@@ -29,7 +29,7 @@ void BaseTutorialUI::Initialize() {
 
 void BaseTutorialUI::Update() {
 	if (!canClose_) {
-		easeT_ += Time::DeltaTime();
+		easeT_ += Time::TimeRateDeltaTime();
 
 		if (easeT_ >= kEaseTime_) {
 			easeT_ = kEaseTime_;
@@ -41,7 +41,7 @@ void BaseTutorialUI::Update() {
 	if (canClose_) {
 		//閉じる
 		if (isClose_) {
-			easeT_ -= Time::DeltaTime();
+			easeT_ -= Time::TimeRateDeltaTime();
 			if (easeT_ <= 0) {
 				easeT_ = 0;
 				isDeath_ = true;

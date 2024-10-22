@@ -52,12 +52,12 @@ void EnemyRoot::Update() {
 
 	//	// 回転をスムーズに補間 (Slerpを使用)
 	//	float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
-	//	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+	//	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	//	// 回転を更新
 	//	pEnemy_->SetPivotQuaternion(interpolatedRotation);
 
-	//	easeT_ += Time::DeltaTime();
+	//	easeT_ += Time::TimeRateDeltaTime();
 	//	if (easeT_ >= easeTimeMax_) {
 	//	easeT_=	easeTimeMax_;
 	//	pEnemy_->ChangeState(std::make_unique<EnemyChasePlayer>(pEnemy_));

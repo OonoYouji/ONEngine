@@ -23,8 +23,8 @@ void InBossBuilding::Initialize() {
 //更新
 void InBossBuilding::Update() {
 	//回転速度を加算
-	theta_ += speed_ * Time::DeltaTime();
-	phi_ += speed_ * Time::DeltaTime();
+	theta_ += speed_ * Time::TimeRateDeltaTime();
+	phi_ += speed_ * Time::TimeRateDeltaTime();
 	//球面座標を計算
 	float x = radius_ * sin(theta_);
 	float y = radius_ * cos(theta_);

@@ -92,7 +92,7 @@ void EnemyManager::Update() {
 	for (std::list<DeathParamater>::iterator deathListiter = deathlist_.begin(); deathListiter != deathlist_.end(); ) {
 
 		//更新
-		(*deathListiter).coolTime -= Time::DeltaTime();
+		(*deathListiter).coolTime -= Time::TimeRateDeltaTime();
 		//クールタイムが終わったら再スポーン
 		if ((*deathListiter).coolTime <= 0) {
 			SpownEnemy((*deathListiter).phi, (*deathListiter).theta);

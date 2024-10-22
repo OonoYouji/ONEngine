@@ -34,6 +34,12 @@ public:
 	void PowerUpUpdate();
 	void TutorialMove();
 
+	/// <summary>
+	/// time rateの更新処理
+	/// パワーアップ時の演出でヒットストップを演出するための物
+	/// </summary>
+	void TimeRateUpdate();
+
 	//ダメージ
 	void DamageForBossHead();
 	void DamageForBossBullet();
@@ -49,17 +55,45 @@ public:
 	bool GetisPowerUp()const { return isPowerUp_; }
 	//パワーアップタイム
 	float GetPowerUpTime()const { return powerUpTime_; }
+
+	/// <summary>
+	/// ヒットストップの time rateを返す
+	/// </summary>
+	/// <returns></returns>
+	float GetTimeRate() const { return timeRate_; }
+
+	
+	/// <summary>
+	/// カメラの振る舞いが変化した瞬間を取得
+	/// </summary>
+	/// <returns> return: true 振る舞いが変化した、 false 振る舞いは変化してない </returns>
+	bool GetIsCameraBehaviorChange() const { return cameraBehavior_ != preCameraBehavior_; }
+
+	/// <summary>
+	/// カメラの現在の振る舞いを得る
+	/// </summary>
+	/// <returns></returns>
+	int  GetCameraBehavior() const { return cameraBehavior_; }
+
+	/// <summary>
+	/// カメラの振る舞いをセットする
+	/// </summary>
+	/// <param name="behavior"></param>
+	void SetCameraBehavior(int behavior);
+
+
 	//ダメージ
 	void DamageForPar(const float& par);
 	//setter
 	void PowerUpGaugeUp(float par);
 	void SetTornado(Tornado* tornado);
-	 BasePlayerBehavior* GetBehavior()const { return behavior_.get(); }
+	BasePlayerBehavior* GetBehavior()const { return behavior_.get(); }
 
 	//状態変更
 	void ChangeState(std::unique_ptr<BasePlayerBehavior>behavior);
 
 	void SetBuildingManager(BuildingManager* buildingManager);
+
 private:
 	struct DamageParamater {
 		bool isStop;
@@ -94,16 +128,23 @@ private:
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  パラメータ
 	////////////////////////////////////////////////////////////////////////////////////////////
-	//パワーアップゲージ
-	float powerUpGaugeMax_;
-	float powerUpGauge_;
-	//パワーアップタイム
-	float powerUpTimeMax_;
-	float powerUpTime_;
-	//移動スピード
-	float moveSpeed_;
-	//パワーアップフラグ
-	bool isPowerUp_;
+
+	/// grow size parameters
+
+	bool  isPowerUp_;       /// パワーアップしているか
+	float powerUpGaugeMax_;	/// パワーアップまでのゲージの最大
+	float powerUpGauge_;	/// パワーアップまでのゲージの今
+	float powerUpTimeMax_;	/// パワーアップ終了までの最大時間
+	float powerUpTime_;		/// パワーアップ終了までのcurrent time
+
+	float timeRate_;    /// ヒットストップのための time rate
+	float hitStopTime_; /// ヒットストップする時間
+
+	float moveSpeed_; /// 移動スピード
+
+	/// camera param
+	int cameraBehavior_;
+	int preCameraBehavior_;
 
 	//HP
 	float HP_;

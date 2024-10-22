@@ -54,7 +54,7 @@ void Tornado::Initialize() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		transform->rotate = data.rotate;
 		transform->scale = data.scale;
 
@@ -125,7 +125,7 @@ void Tornado::Initialize() {
 
 		WindData&  wind = windDataArray_[particle->GetID()];
 
-		wind.time += Time::DeltaTime();
+		wind.time += Time::TimeRateDeltaTime();
 
 		transform->position = {
 			std::cos(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
@@ -152,19 +152,21 @@ void Tornado::Update() {
 	
 	if(pPlayer_->GetisPowerUp()) {
 
-		scaleScaler_ = 3.0f;
+		scaleScaler_ += 3.0f * Time::TimeRateDeltaTime();
+		scaleScaler_ = std::min(scaleScaler_, 3.0f);
+
 	} else {
 
 		/// キー入力で大きさを変える
 		if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
-			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::TimeRateDeltaTime()), maxScale_);
 		} else {
-			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::TimeRateDeltaTime()), minScale_);
 		}
 	}
 
 
-	localYAngle_  += Time::DeltaTime() * zRotateSpeed_;
+	localYAngle_  += Time::TimeRateDeltaTime() * zRotateSpeed_;
 
 	quaternionLocalY_       = Quaternion::MakeFromAxis(Vec3::kUp,    localYAngle_);
 
@@ -184,7 +186,7 @@ void Tornado::Update() {
 		WindAnimationData& data = windAnimationDataArray_[i];
 		Wind* wind = windArray_[i];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		wind->SetRotateY(data.time * data.speed);
 	}
   
@@ -275,10 +277,6 @@ void Tornado::SetPlayer(Player* _player) {
 
 void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
-		pPlayer_->PowerUpGaugeUp(0.05f);
-	}
-
 	//ボスの直接攻撃によるダメージ
 	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
@@ -298,8 +296,15 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 	if(collision->GetTag() == "Building") {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
 
-		building->SubHP(Time::DeltaTime());
+		building->SubHP(Time::TimeRateDeltaTime());
 		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+
+		/// 建物を引っこ抜いたらゲージを増やす
+		if(building->GetHP() <= 0.0f) {
+			float value = 1.0f * (building->GetCurrentScaleIndex() + 1.0f);
+			pPlayer_->PowerUpGaugeUp(value);
+		}
+
 	}
 }
 
