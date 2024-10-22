@@ -155,11 +155,14 @@ void Tornado::Update() {
 		scaleScaler_ = 3.0f;
 	} else {
 
-		/// キー入力で大きさを変える
-		if(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
-			scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
-		} else {
-			scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+		if (!isNotInputReception_) {/// 入力を受け付けなくするフラグ（チュートリアル用）すみません
+			/// キー入力で大きさを変える
+			if (Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+				scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
+			}
+			else {
+				scaleScaler_ = std::max(scaleScaler_ - (eacSpeed_ * Time::DeltaTime()), minScale_);
+			}
 		}
 	}
 
