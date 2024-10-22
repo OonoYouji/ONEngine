@@ -54,7 +54,7 @@ void Tornado::Initialize() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		transform->rotate = data.rotate;
 		transform->scale = data.scale;
 
@@ -125,7 +125,7 @@ void Tornado::Initialize() {
 
 		WindData&  wind = windDataArray_[particle->GetID()];
 
-		wind.time += Time::DeltaTime();
+		wind.time += Time::TimeRateDeltaTime();
 
 		transform->position = {
 			std::cos(-wind.time * wind.speed) * wind.height * 0.5f * scaleScaler_,
@@ -152,7 +152,9 @@ void Tornado::Update() {
 	
 	if(pPlayer_->GetisPowerUp()) {
 
-		scaleScaler_ = 3.0f;
+		scaleScaler_ += 3.0f * Time::TimeRateDeltaTime();
+		scaleScaler_ = std::min(scaleScaler_, 3.0f);
+
 	} else {
 
 		if (!isNotInputReception_) {/// 入力を受け付けなくするフラグ（チュートリアル用）すみません
@@ -167,7 +169,7 @@ void Tornado::Update() {
 	}
 
 
-	localYAngle_  += Time::DeltaTime() * zRotateSpeed_;
+	localYAngle_  += Time::TimeRateDeltaTime() * zRotateSpeed_;
 
 	quaternionLocalY_       = Quaternion::MakeFromAxis(Vec3::kUp,    localYAngle_);
 
@@ -187,7 +189,7 @@ void Tornado::Update() {
 		WindAnimationData& data = windAnimationDataArray_[i];
 		Wind* wind = windArray_[i];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		wind->SetRotateY(data.time * data.speed);
 	}
   
@@ -278,10 +280,6 @@ void Tornado::SetPlayer(Player* _player) {
 
 void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	/*if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
-		pPlayer_->PowerUpGaugeUp(0.05f);
-	}*/
-
 	//ボスの直接攻撃によるダメージ
 	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
@@ -300,10 +298,26 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 	if(collision->GetTag() == "Building") {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
-		if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
+
+    if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
 			building->SubHP(Time::DeltaTime());
 			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
 		}
+
+		building->SubHP(Time::TimeRateDeltaTime());
+		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+
+		/// 建物を引っこ抜いたらゲージを増やす
+		if(!building->GetIsInTornado()) {
+			if(building->GetHP() <= 0.0f) {
+
+				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.01f;
+				pPlayer_->PowerUpGaugeUp(value);
+
+				building->SetIsInTornado(true);
+			}
+		}
+
 	}
 }
 

@@ -98,7 +98,7 @@ void ParticleSystem::Initialize() {
 		Transform* tf = particle->GetTransform();
 
 		Vec3 randomDir = Random::Vec3(-Vec3::kOne, Vec3::kOne).Normalize();
-		tf->position += randomDir * Time::DeltaTime();
+		tf->position += randomDir * Time::TimeRateDeltaTime();
 	};
 
 
@@ -340,7 +340,7 @@ void Particle::Initialize() {
 
 
 void Particle::LifeTimeUpdate() {
-	lifeTime_ -= Time::DeltaTime();
+	lifeTime_ -= Time::TimeRateDeltaTime();
 	if(lifeTime_ < 0.0f) {
 		isAlive_ = false;
 	}

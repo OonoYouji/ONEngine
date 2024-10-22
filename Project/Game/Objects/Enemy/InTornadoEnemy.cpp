@@ -38,8 +38,8 @@ void InTornadoEnemy::Update() {
 	float debuffRatio = 1.0f - (pTornado_->GetDebufParm() / maxDebuf_);  // 最大デバフ値で割って割合を計算
 	debuffRatio = max(0.0f, debuffRatio);  
 
-	theta_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.x) * Time::DeltaTime();
-	phi_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.y) * Time::DeltaTime();
+	theta_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.x) * Time::TimeRateDeltaTime();
+	phi_ += ((speed_ * debuffRatio) / pTornado_->GetTransform()->scale.y) * Time::TimeRateDeltaTime();
 	// 楕円の長軸と短軸
 	float longAxis = pTornado_->GetTransform()->scale.x + radius_.x;  // 長軸 (x方向の半径)
 	float shortAxis = pTornado_->GetTransform()->scale.y + radius_.x; // 短軸 (y方向の半径)

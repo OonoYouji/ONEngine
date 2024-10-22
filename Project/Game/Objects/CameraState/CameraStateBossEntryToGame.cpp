@@ -23,7 +23,7 @@ void CameraStateBossEntryToGame::Initialize() {
 void CameraStateBossEntryToGame::Update() {
 	assert(pGameCamera_);
 
-	moveTime_ += Time::DeltaTime();
+	moveTime_ += Time::TimeRateDeltaTime();
 	float lerpT = std::min(moveTime_ / maxMoveTime_, 1.0f);
 
 	Vec3 position = Vec3::Lerp(

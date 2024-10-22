@@ -34,13 +34,13 @@ void BeatBossSprite::Initialize() {
 
 void BeatBossSprite::Update() {
 
-	time_ += Time::DeltaTime();
+	time_ += Time::TimeRateDeltaTime();
 
-	spritePosition_.x += 120.0f * Time::DeltaTime();
+	spritePosition_.x += 120.0f * Time::TimeRateDeltaTime();
 
 	if(isFadeOut_) {
 
-		spriteColor_.w = std::max(spriteColor_.w - (Time::DeltaTime()), 0.0f);
+		spriteColor_.w = std::max(spriteColor_.w - (Time::TimeRateDeltaTime()), 0.0f);
 
 	} else {
 

@@ -33,7 +33,7 @@ void BossTubu::Update() {
 		// 1フレームでのパラメータ加算値
 		const float step = 2.0f * std::numbers::pi_v<float> / floatingCycle_;
 		// パラメータを1ステップ分加算
-		floatingParameter_ += step * Time::DeltaTime() * 60;
+		floatingParameter_ += step * Time::TimeRateDeltaTime() * 60;
 		floatingParameter_ = std::fmod(floatingParameter_, 2.0f * std::numbers::pi_v<float>);
 		// 浮遊の振幅＜m＞
 		/*floatingAmplitude_ = 0.2f;*/
@@ -81,7 +81,7 @@ void BossHead::Update() {
 		// 1フレームでのパラメータ加算値
 		const float step = 2.0f * std::numbers::pi_v<float> / floatingCycle_;
 		// パラメータを1ステップ分加算
-		floatingParameter_ += step * Time::DeltaTime() * 60;
+		floatingParameter_ += step * Time::TimeRateDeltaTime() * 60;
 		floatingParameter_ = std::fmod(floatingParameter_, 2.0f * std::numbers::pi_v<float>);
 		// 浮遊を座標に反映
 		pTransform_->position.z = std::sin(floatingParameter_) * floatingAmplitude_;
@@ -259,7 +259,7 @@ void BossHeadEr::AttackInit() {
 }
 
 void BossHeadEr::LightFlashing() {
-	lightTime_ += Time::DeltaTime();
+	lightTime_ += Time::TimeRateDeltaTime();
 	er_->SetColor(paintOutColor_);  // 赤に切り替え
 
 	if (lightTime_ >= 0.5f) {  // 0.5秒ごとに色を変える

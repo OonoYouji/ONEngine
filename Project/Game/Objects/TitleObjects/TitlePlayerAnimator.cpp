@@ -86,7 +86,7 @@ void TitlePlayerAnimator::Initialize() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		transform->rotate = data.rotate;
 		transform->scale = data.scale;
 
@@ -129,7 +129,7 @@ void TitlePlayerAnimator::Initialize() {
 		Transform* transform = particle->GetTransform();
 		WindData& wind = windDataArray_[particle->GetID()];
 
-		wind.time += Time::DeltaTime();
+		wind.time += Time::TimeRateDeltaTime();
 
 		if(useRotate_) {
 
@@ -176,7 +176,7 @@ void TitlePlayerAnimator::Update() {
 		WindAnimationData& data = windAnimationDataArray_[i];
 		Wind* wind = windArray_[i];
 
-		data.time += Time::DeltaTime();
+		data.time += Time::TimeRateDeltaTime();
 		wind->SetRotateY(data.time * data.speed);
 	}
 
@@ -184,7 +184,7 @@ void TitlePlayerAnimator::Update() {
 	/// thisが回転する挙動
 	if(isSpinUpdate_) {
 		if(isSpin_) {
-			spinTime_ += Time::DeltaTime();
+			spinTime_ += Time::TimeRateDeltaTime();
 			pTransform_->rotate.y = (std::numbers::pi_v<float> * 2.0f) * 
 				Ease::InOut::Elastic(spinTime_ / 2.0f);
 	
@@ -200,7 +200,7 @@ void TitlePlayerAnimator::Update() {
 	}
 
 	/// 上下に動く挙動
-	animationTime_ += Time::DeltaTime();
+	animationTime_ += Time::TimeRateDeltaTime();
 	Vec3 offset = {
 		0.0f,
 		std::sin(animationSpeed_ * animationTime_) * 0.5f + 0.5f,

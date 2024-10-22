@@ -9,6 +9,10 @@ Time Time::sInstance_;
 
 
 
+void Time::SetTimeRate(float _timeRate) {
+	sInstance_.timeRate_ = _timeRate;
+}
+
 void Time::Update() {
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - time_;
@@ -32,6 +36,7 @@ void Time::ImGuiDebug() {
 	}
 
 	ImGui::DragFloat("delta time", &deltaTime_, 0.0f);
+	ImGui::DragFloat("time rate",  &timeRate_,  0.1f);
 
 	float fps = 1.0f / deltaTime_;
 	ImGui::DragFloat("fps", &fps, 0.0f);

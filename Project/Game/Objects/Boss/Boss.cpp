@@ -100,7 +100,7 @@ void Boss::Update() {
 	}
 	//ダメージ処理
 	if (isHitBack_) {
-		damageCoolTime_ -= Time::DeltaTime();
+		damageCoolTime_ -= Time::TimeRateDeltaTime();
 
 		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
@@ -114,10 +114,10 @@ void Boss::Update() {
 		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
 		// 回転をスムーズに補間 (Slerpを使用)
 		float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
-		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ -0.6f * Time::DeltaTime(), 0, 0 });
+		Quaternion move = ToQuaternion({ -0.6f * Time::TimeRateDeltaTime(), 0, 0 });
 
 		pivot_.quaternion = interpolatedRotation;
 		pivot_.quaternion *= (move); // 移動もスムーズに
@@ -131,7 +131,7 @@ void Boss::Update() {
 	}
 	//0より大きかったらnextDamageTimeの減算をする
 	if ( nextDamageTime_ >= 0) {
-		nextDamageTime_ -= Time::DeltaTime();
+		nextDamageTime_ -= Time::TimeRateDeltaTime();
 	}	
 
 	
@@ -171,7 +171,7 @@ void Boss::SlurpUpdate() {
 	}
 	//吸い込みしてないとき
 	if (!isSlurping_) {
-		slurpCooldownTimer_ -= Time::DeltaTime();
+		slurpCooldownTimer_ -= Time::TimeRateDeltaTime();
 		if (slurpCooldownTimer_ <= 0.0f) {//minを使うべき
 			slurpCooldownTimer_ = 0.0f;
 		}
@@ -247,7 +247,7 @@ void Boss::AttackUpdate() {//超汚い
 	pBossHead_->AttackUpdate();
 
 	if (!isAttackBack_) {
-		attackEaseT_ += Time::DeltaTime();
+		attackEaseT_ += Time::TimeRateDeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_-0.1f&& attackEaseT_ <= kAttackEaseT_+0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
 			//emetter
@@ -259,14 +259,14 @@ void Boss::AttackUpdate() {//超汚い
 			
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
-			attackCoolTime_ += Time::DeltaTime();
+			attackCoolTime_ += Time::TimeRateDeltaTime();
 			if (attackCoolTime_ >= kAttackCoolTime_) {
 				isAttackBack_ = true;
 			}
 		}
 	}//戻る
 	else if (isAttackBack_) {
-		attackEaseT_ -= Time::DeltaTime();
+		attackEaseT_ -= Time::TimeRateDeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
 			

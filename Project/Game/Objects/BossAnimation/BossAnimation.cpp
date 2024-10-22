@@ -242,7 +242,7 @@ void BossAnimation::Initialize() {
 void BossAnimation::Update() {
 
 	AnimationData& data = animationDataArray_[currentAnimationIndex_];
-	data.time += Time::DeltaTime();
+	data.time += Time::TimeRateDeltaTime();
 
 	animationUpdateFunction_[currentAnimationIndex_](data);
 }

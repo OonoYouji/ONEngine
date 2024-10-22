@@ -34,7 +34,7 @@ BossChasePlayer::~BossChasePlayer() {
 //更新
 void BossChasePlayer::Update() {
 	if (!pBoss_->GetIsHitBack()) {
-		attackCoolTime_ -= Time::DeltaTime();//	攻撃クールタイムを減算
+		attackCoolTime_ -= Time::TimeRateDeltaTime();//	攻撃クールタイムを減算
 		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
 			pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
@@ -58,10 +58,10 @@ void BossChasePlayer::Update() {
 
 		// 回転をスムーズに補間 (Slerpを使用)
 		float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
-		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::DeltaTime(), 0, 0 });
+		Quaternion move = ToQuaternion({ pBoss_->GetChaseSpeedParamater() * Time::TimeRateDeltaTime(), 0, 0 });
 
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(interpolatedRotation);

@@ -58,6 +58,8 @@ public:
 	/// </summary>
 	void SubHP(float _subValue);
 
+	float GetHP() const;
+
 
 	/// ===================================================
 	/// public : accessor
@@ -86,6 +88,12 @@ public:
 	void SetSlurpPos(Vector3 pos) { slurpPos_ = pos; }//吸われる場所
 
 	void SetShake(const Vec3& _shaleValue);
+
+	/// <summary>
+	/// 竜巻に吸い込まれたかどうかのフラグ
+	/// </summary>
+	/// <param name="_isInTornado"> : 竜巻に巻き込まれたかのフラグ : true, false </param>
+	void SetIsInTornado(bool _isInTornado);
 
 private:
 	Boss* pBoss_ = nullptr;
