@@ -57,7 +57,7 @@ void  GameCameraState::ZoomInInit() {
 	easeT_ = 0.0f;
 }
 void  GameCameraState::ZoomInUpdate() {
-	easeT_ += Time::TimeRateDeltaTime();//デルタタイムにしたい
+	easeT_ += Time::DeltaTime();//デルタタイムにしたい
 	if (easeT_ >= easeTMax_) {
 		easeT_ = easeTMax_;
 	}

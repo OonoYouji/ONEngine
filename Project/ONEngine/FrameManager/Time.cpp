@@ -36,6 +36,7 @@ void Time::ImGuiDebug() {
 	}
 
 	ImGui::DragFloat("delta time", &deltaTime_, 0.0f);
+	ImGui::DragFloat("time rate",  &timeRate_,  0.1f);
 
 	float fps = 1.0f / deltaTime_;
 	ImGui::DragFloat("fps", &fps, 0.0f);

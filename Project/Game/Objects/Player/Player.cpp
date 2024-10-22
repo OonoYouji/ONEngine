@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Player.h"
 
 /// std
@@ -15,6 +16,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include"FrameManager/time.h"
 #include"Easing/EasingFunction.h"
+#include "Math/Random.h"
 //obj
 #include"Objects/Building/BuildingManager.h"
 #include"Objects/Boss/BossVacuum.h"
@@ -65,12 +67,13 @@ void Player::Initialize() {
 
 	damageForBossBody_.kStopCollTime = 0.3f;
 	damageForBossBody_.DamagePar = 0.0f;
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
-	transoform_.rotateOrder = QUATERNION;
+	transoform_.rotateOrder  = QUATERNION;
 	pTransform_->rotateOrder = QUATERNION;
-	pivot_.rotateOrder = QUATERNION;
+	pivot_.rotateOrder       = QUATERNION;
 
 	////ペアレント
 	transoform_.SetParent(&pivot_);
@@ -84,6 +87,11 @@ void Player::Initialize() {
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+
+	/// grow size parameter
+	timeRate_ = 1.0f; /// hit stopのtime rateの初期化
+
 }
 
 void Player::Update() {
@@ -149,6 +157,7 @@ void Player::Update() {
 }
 
 void Player::Move() {
+
 	//入力
 	input_ = {};
 	Vec2 gamePadInput = Input::GetLeftStick();
@@ -200,8 +209,10 @@ void Player::RootInit() {
 }
 
 void Player::PowerUpInit() {
-	isPowerUp_ = true;
+	isPowerUp_   = true;
 	powerUpTime_ = powerUpTimeMax_;
+	timeRate_    = 0.005f;
+	hitStopTime_ = 1.0f;
 }
 
 void Player::PowerUpUpdate() {
@@ -236,11 +247,20 @@ void Player::Debug() {
 	}
 
 	if (ImGui::TreeNode("Parameter")) {
-		ImGui::DragFloat("PowerUpGauge", &powerUpGauge_, 0.01f);
+
+		ImGui::SeparatorText("power up");
+
+		ImGui::DragFloat("PowerUpGauge",    &powerUpGauge_);
 		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
-		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
-		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
-		ImGui::DragFloat("HP", &HP_, 0.01f);
+		ImGui::DragFloat("PowerUpTime",     &powerUpTime_, 0.01f);
+		ImGui::DragFloat("PowerUpTimeMax",  &powerUpTimeMax_, 0.01f);
+
+		ImGui::DragFloat("hit stop time rate", &timeRate_);
+
+
+		ImGui::SeparatorText("status");
+
+		ImGui::DragFloat("HP",              &HP_, 0.01f);
 		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
 		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
 
@@ -276,6 +296,19 @@ void Player::DamageForPar(const float& par) {
 void Player::TutorialMove() {
 	pivot_.UpdateMatrix();
 	transoform_.UpdateMatrix();
+}
+
+void Player::TimeRateUpdate() {
+
+	hitStopTime_ -= Time::DeltaTime();
+	if(hitStopTime_ > 0.0f) {
+		timeRate_ = Random::Int(0, 1) + 1 * 0.1f;
+	} else {
+		timeRate_ += (1.0f / 3.0f) * Time::DeltaTime();
+		timeRate_ = std::min(timeRate_, 1.0f);
+	}
+
+	Time::SetTimeRate(timeRate_);
 }
 
 void  Player::SetBuildingManager(BuildingManager* buildingManager) {

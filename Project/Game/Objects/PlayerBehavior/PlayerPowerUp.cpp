@@ -15,7 +15,17 @@ PlayerPowerUp::~PlayerPowerUp() {
 
 //更新
 void PlayerPowerUp::Update() {
+
+	/// time rateの更新
+	pPlayer_->TimeRateUpdate();
+	if(pPlayer_) {
+
+	}
+
+	/// behaviorの更新
 	pPlayer_->PowerUpUpdate();
+
+	/// 終了したら元の振る舞いに戻る
 	if (pPlayer_->GetPowerUpTime() <= 0) {
 		pPlayer_->ChangeState(std::make_unique<PlayerRoot>(pPlayer_));
 	}

@@ -152,7 +152,9 @@ void Tornado::Update() {
 	
 	if(pPlayer_->GetisPowerUp()) {
 
-		scaleScaler_ = 3.0f;
+		scaleScaler_ += 3.0f * Time::TimeRateDeltaTime();
+		scaleScaler_ = std::min(scaleScaler_, 3.0f);
+
 	} else {
 
 		/// キー入力で大きさを変える
