@@ -39,13 +39,13 @@ void BaseBuilding::Initialize() {
 
 	/// 大きさごとのモデルを設定
 	modelArray_ = {
-		ModelManager::Load("TestObject"),
-		ModelManager::Load("TestObject"),
-		ModelManager::Load("TestObject")
+		ModelManager::Load("billMiddle"),
+		ModelManager::Load("towerMidlle"),
+		ModelManager::Load("toriiMidlle")
 	};
 
 	auto mesh = AddComponent<MeshRenderer>();
-	mesh->SetModel(modelArray_[0]);
+	mesh->SetModel(modelArray_[Random::Int(0,2)]);
 	auto collider = AddComponent<BoxCollider>(modelArray_[0]);
 
 	earthRenderer_ = AddComponent<EarthRenderer>();
@@ -288,6 +288,10 @@ void BaseBuilding::SubHP(float _subValue) {
 	if(hp_ <= 0.0f) {
 		isInTornado_ = true;
 	}
+}
+
+float BaseBuilding::GetHP() const {
+	return hp_;
 }
 
 void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {

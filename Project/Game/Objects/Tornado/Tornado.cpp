@@ -277,10 +277,6 @@ void Tornado::SetPlayer(Player* _player) {
 
 void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<BaseBuilding*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
-		pPlayer_->PowerUpGaugeUp(0.05f);
-	}
-
 	//ボスの直接攻撃によるダメージ
 	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
@@ -302,6 +298,13 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 
 		building->SubHP(Time::TimeRateDeltaTime());
 		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+
+		/// 建物を引っこ抜いたらゲージを増やす
+		if(building->GetHP() <= 0.0f) {
+			float value = 1.0f * (building->GetCurrentScaleIndex() + 1.0f);
+			pPlayer_->PowerUpGaugeUp(value);
+		}
+
 	}
 }
 
