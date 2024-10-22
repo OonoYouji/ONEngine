@@ -16,7 +16,7 @@
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/Drawer/LineDrawer/Line2D.h"
 #include "GraphicManager/Drawer/LineDrawer/Line3D.h"
-
+	
 #include "Objects/Camera/Manager/CameraManager.h"
 
 

@@ -18,6 +18,9 @@
 #include "CollisionManager/CollisionManager.h"
 #include "AudioManager/AudioManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/SceneLayer/SceneLayer.h"
+
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 #include "BaseScene.h"
 #include "../Scene_Game.h"
@@ -25,7 +28,6 @@
 #include "../Scene_Result.h"
 #include "../Scene_Clear.h"
 
-#include "GraphicManager/SceneLayer/SceneLayer.h"
 
 
 /// ===================================================
@@ -180,6 +182,7 @@ void SceneManager::Load(SCENE_ID id) {
 
 	scenes_[currentId_]->Initialize();
 
+	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());
 

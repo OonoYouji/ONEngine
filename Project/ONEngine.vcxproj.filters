@@ -800,5 +800,6 @@
     </ClInclude>
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
+    <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
   </ItemGroup>
 </Project>

@@ -7,8 +7,7 @@
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
-#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
-
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 void DemoObject::Initialize() {
 	//auto mr = AddComponent<MeshRenderer>();
@@ -21,12 +20,20 @@ void DemoObject::Initialize() {
 	//	transform->position.y += Time::DeltaTime();
 	//});
 
-	//ps->SetParticleEmitterFlags(PARTICLE_EMITTER_NOTIME);
-	//ps->SetBoxEmitterMinMax(-Vec3::kOne, Vec3::kOne);
+	auto mir = AddComponent<MeshInstancingRenderer>(12);
+	mir->AddTransform(pTransform_);
 
-	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
-	spriteRenderer->SetColor(Vec4(0, 0.25f, 0, 1));
+	for(size_t i = 0; i < 12; ++i) {
+		transformArray_.push_back(std::make_unique<Transform>());
+		Transform* transform = transformArray_.back().get();
+		transform->position = {
+			0.0f, 0.0f,
+			i * 1.0f
+		};
+
+		transform->UpdateMatrix(false);
+		mir->AddTransform(transform);
+	}
 
 }
 
