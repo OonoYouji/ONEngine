@@ -20,6 +20,7 @@
 #include"Objects/Boss/BossVacuum.h"
 #include"Objects/Tornado/Tornado.h"
 #include"Objects/Ground/Ground.h"
+#include"Objects/Boss/Boss.h"
 
 void Player::Initialize() {
 	Model* model = ModelManager::Load("playerInGame");
@@ -52,6 +53,8 @@ void Player::Initialize() {
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 10.0f;//秒
 	HP_ = HPMax_;
+	//ヒットバック力
+	hitBackPower_ = -0.5f;
 
 	//ダメージ
 	damageForBossHead_.kStopCollTime = 0.5f;
@@ -59,6 +62,9 @@ void Player::Initialize() {
 
 	damageForBossBullet_.kStopCollTime = 0.5f;
 	damageForBossBullet_.DamagePar = 0.2f;
+
+	damageForBossBody_.kStopCollTime = 0.3f;
+	damageForBossBody_.DamagePar = 0.0f;
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,9 +80,7 @@ void Player::Initialize() {
 	rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, 0.0f);
 	rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, 0.0f);
 
-
 	pivot_.quaternion *= rotateX_ * rotateY_;// 正規化
-
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
@@ -98,7 +102,7 @@ void Player::Update() {
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
-	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop) {
+	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop&&!damageForBossBody_.isStop) {
 		Move();//移動
 	}
 
@@ -114,6 +118,30 @@ void Player::Update() {
 	if (damageForBossBullet_.stopCollTime <= 0.0f) {
 		damageForBossBullet_.stopCollTime = 0.0f;
 		damageForBossBullet_.isStop = false;
+	}
+
+	//体によるスタン
+	damageForBossBody_.stopCollTime -= Time::DeltaTime();
+	if (damageForBossBody_.stopCollTime <= 0.0f) {
+		damageForBossBody_.stopCollTime = 0.0f;
+		damageForBossBody_.isStop = false;
+	}
+
+	if (damageForBossBody_.isStop) {
+		// ヒットバックの方向と強さを適用する
+		velocity_ = preInput_.Normalize() * (hitBackPower_ * Time::DeltaTime());
+
+		// 回転を逆方向に適応させる
+		float rotateXAngle_ = +velocity_.y;
+		float rotateYAngle_ = -velocity_.x;
+
+		Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+		Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+
+		// 回転を更新する
+		pivot_.quaternion *= rotateX_ * rotateY_;
+		pivot_.UpdateMatrix();
+		transoform_.UpdateMatrix();
 	}
 
 	pivot_.UpdateMatrix();
@@ -134,7 +162,9 @@ void Player::Move() {
 	if (Input::PressKey(KeyCode::A)) { input_.x = -1.0f; }
 	if (Input::PressKey(KeyCode::S)) { input_.y = -1.0f; }
 	if (Input::PressKey(KeyCode::D)) { input_.x = +1.0f; }
-
+	if (input_ != Vec3(0.0f, 0.0f, 0.0f)) {
+		preInput_ = input_;
+	}
 	/// 移動の正規化
 	input_ = input_.Normalize() * (speed_ * Time::DeltaTime());
 	velocity_ = Vec3::Lerp(velocity_, input_, 0.05f);
@@ -272,5 +302,15 @@ void Player::DamageForBossBullet() {
 		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(10);
+	}
+}
+
+//ボスと当たった時のダメ―じ
+void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+
+	if (dynamic_cast<Boss*>(collision) && !damageForBossBody_.isStop) {
+		DamageForPar(damageForBossBullet_.DamagePar);
+		damageForBossBody_.isStop = true;
+		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
 	}
 }

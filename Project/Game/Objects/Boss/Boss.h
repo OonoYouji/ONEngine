@@ -47,11 +47,12 @@ public:
 	//攻撃
 	void AttackInit();
 	void AttackUpdate();
+	void AttackChaseUpdate();
 
 	void DamageForPar(const float& par);
-	
+
 	//プレイヤーセット
-	void SetPlayer(Player*player);
+	void SetPlayer(Player* player);
 	void SetHead(BossHead* bossHead);
 	void SetTubu(BossTubu* bosstube);
 	void SetBuildingaManager(BuildingManager* player);
@@ -62,13 +63,13 @@ public:
 	//getter
 	bool GetIsSlurping()const { return isSlurping_; }
 	bool GetIsHitBack()const { return isHitBack_; }
-	float GetChaseSpeedParamater()const {return SpeedParamater_; }
+	float GetChaseSpeedParamater()const { return SpeedParamater_; }
 	Quaternion GetPivotQuaternion()const { return pivot_.quaternion; }
 	bool GetIsBuildingKill()const { return isBuildingKill_; }
 	Player* GetPlayer() { return pPlayer_; }
 	BuildingManager* GetBuildingManager()const { return pBuildingManager_; }
-	
-	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)override;
+
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision)override;
 	bool GetIsAttack()const { return isAttack_; }
 
 	//setter
@@ -77,28 +78,28 @@ public:
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
 	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
-	
+
 	void SetIsAttack(bool is) { isAttack_ = is; }
 
 private:
-	
+
 private:
-	MeshRenderer* meshRenderer_=nullptr;
+	MeshRenderer* meshRenderer_ = nullptr;
 	//プレイヤーポインタ
-	Player* pPlayer_=nullptr;
+	Player* pPlayer_ = nullptr;
 	BuildingManager* pBuildingManager_ = nullptr;
 	BossTubu* pBossTubu_;
 	BossHead* pBossHead_;
 	//ライト
 	class EarthRenderer* er_ = nullptr;
-	 float radius_ = 1.0f;
-	 Vec4  paintOutColor_ = { 1,1,1,1 };
+	float radius_ = 1.0f;
+	Vec4  paintOutColor_ = { 1,1,1,1 };
 	////状態
-	std::unique_ptr<BaseBossBehavior>behavior_=nullptr;
+	std::unique_ptr<BaseBossBehavior>behavior_ = nullptr;
 	//ピボット
 	Transform pivot_;
 	//
-	
+
 	//吸ってる弾を殺すフラグ
 	bool isBuildingKill_;
 	//攻撃フラグ
@@ -111,17 +112,17 @@ private:
 	//吸い込み関連
 	bool isSlurping_ = false;  // 吸い込み中かどうか
 	float slurpCooldownTimer_ = 0.0f;  // クールダウン用のタイマー
-	const float kSlurpCollTime_= 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
+	const float kSlurpCollTime_ = 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
 
 	//ボス弾発射関連
-	const uint32_t kBuildingNum_=10;
+	const uint32_t kBuildingNum_ = 10;
 
 	//ひどい変数群(攻撃イージング)
 	bool isAttackBack_;
 	float attackEaseT_;
 	float attackCoolTime_;
 	const float kAttackCoolTime_ = 0.5f;
-	const float kAttackEaseT_=0.5f;
+	const float kAttackEaseT_ = 0.5f;
 
 	//HP
 	float HP_;
@@ -130,6 +131,7 @@ private:
 	//ダメージ受けたー
 	bool isHitBack_;
 	float damageCoolTime_;
-const	float kDamageCoolTime_=0.1f;
-
+	const	float kDamageCoolTime_ = 0.1f;
+	float nextDamageCollTime_;//次にダメージ受けるまでのクールタイム
+	float nextDamageTime_;//次にダメージ受けるまでのクールタイム
 };

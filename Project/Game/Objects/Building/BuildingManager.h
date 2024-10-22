@@ -61,6 +61,8 @@ public:
 	//getter
 	std::list<BaseBuilding*> GetBuildings()const { return buildings_; }
 	std::list<InBossBuilding*> GetInBossBuilding()const { return inBossBuildings_; }
+	std::list<InTornadoBuilding*> GetInTornadoBuildingss()const { return inTornadoBuildings_; }
+
 	size_t GetSize()const { return buildings_.size(); }
 	
 };

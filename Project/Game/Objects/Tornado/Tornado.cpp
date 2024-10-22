@@ -187,9 +187,8 @@ void Tornado::Update() {
 		data.time += Time::DeltaTime();
 		wind->SetRotateY(data.time * data.speed);
 	}
+  
 }
-
-
 
 void Tornado::Debug() {
 
@@ -281,8 +280,12 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 	}
 
 	//ボスの直接攻撃によるダメージ
-	if (dynamic_cast<BossHead*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
-		pPlayer_->DamageForBossHead();
+	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
+			if (bosshead->GetIsAttackCollision()) {
+				pPlayer_->DamageForBossHead();
+			}
+		}
 	}
 
 	//ボスの弾によるダメージ

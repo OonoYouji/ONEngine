@@ -94,9 +94,7 @@ void 	BuildingManager::Update() {
 
 	// 巻きこまれてるビル達の更新
 	for (auto buildingIter = inTornadoBuildings_.begin(); buildingIter != inTornadoBuildings_.end(); ) {
-
-	/*	(*buildingIter)->Update();*/
-		//
+		
 		if ((*buildingIter)->GetIsDeath()) {
 			(*buildingIter)->Destory();
 
@@ -110,8 +108,6 @@ void 	BuildingManager::Update() {
 	// ボスのビル達の更新
 	for (auto buildingIter = inBossBuildings_.begin(); buildingIter != inBossBuildings_.end(); ) {
 
-		/*(*buildingIter)->Update();*/
-		//
 		if ((*buildingIter)->GetIsDeath()) {
 			(*buildingIter)->Destory();
 
@@ -136,6 +132,7 @@ void 	BuildingManager::Update() {
 			++deathListiter;
 		}
 	}
+
 }
 //指定の数分死亡フラグを立てる処理
 void BuildingManager::SetDeathFlagInBuildings(size_t count) {

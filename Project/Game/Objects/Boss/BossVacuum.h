@@ -48,6 +48,7 @@ private:
 // Bosshead
 ////////////////////////////////////////////////////////////////////////////////////////////
 class BossTubu;
+class BossHeadEr;
 class BossHead : public BaseGameObject {
 public:
 
@@ -63,14 +64,24 @@ public:
 	void ParentBoss();
 	void ParentTubu();
 
+	bool GetIsAttackCollision()const { return isAttackCollision_; }
+
 	void RootInit();
 	void AttackInit();
+	void AttackUpdate();
 
+	void SetIsAttackCollision(bool is) { isAttackCollision_ = is; }
 	void SetBossTube(BossTubu* bossTube);
+	
+	void SetERRadius(float radius);
+	void LightFlashing();
 
 private:
 
 private:
+
+	bool isAttackCollision_;
+
 	BossTubu* pBossTube_;
 	float floatingCycle_;
 	float floatingAmplitude_;
@@ -78,4 +89,33 @@ private:
 	const float easeTimeMax_ = 0.5f;
 	bool isRootinit_;
 	bool isAttackInit_;
+
+	BossHeadEr* bossHeadEr_=nullptr;
+};
+
+class BossHeadEr : public BaseGameObject {
+public:
+
+	BossHeadEr() { CreateTag(this); }
+	~BossHeadEr() {}
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
+	void RootInit();
+	void AttackInit();
+	void LightFlashing();
+
+	void SetERRadius(float radius);
+
+
+private:
+	Boss* pBoss_;
+	
+	//ライト
+	class EarthRenderer* er_ = nullptr;
+	float radius_ = 1.0f;
+	Vec4  paintOutColor_ = { 1,1,1,1 };
+	float lightTime_;
 };

@@ -26,15 +26,6 @@
 #include"HormingFunction/Horming.h"
 #undef max
 
-Vec3 RotateVectorByQuaternion(const Vec3& vector, const Quaternion& rotation) {
-	// クォータニオンによる回転を適用する
-	Quaternion vectorAsQuaternion(0, vector.x, vector.y, vector.z); // ベクトルをクォータニオンに変換
-	Quaternion rotatedVector = rotation * vectorAsQuaternion * rotation.Conjugate(); // クォータニオンの回転計算
-
-	// 回転されたベクトルを返す
-	return Vec3(rotatedVector.x, rotatedVector.y, rotatedVector.z);
-}
-
 void Boss::Initialize() {
 	Model* model = ModelManager::Load("bossMainBody");
 	meshRenderer_ = AddComponent<MeshRenderer>();
@@ -42,6 +33,8 @@ void Boss::Initialize() {
 	meshRenderer_->SetMaterial("uvChecker");
 	auto collider = AddComponent<BoxCollider>(model);
 
+
+	
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
@@ -62,6 +55,7 @@ void Boss::Initialize() {
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
+	nextDamageCollTime_ = 1.0f;
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// 回転モード
@@ -78,7 +72,9 @@ void Boss::Initialize() {
 }
 
 void Boss::Update() {
-	
+
+	er_->SetRadius(radius_);
+	er_->SetColor(paintOutColor_);
 	//振る舞い更新
 	behavior_->Update();
 	//敵のビルが一定数溜まったら
@@ -87,39 +83,39 @@ void Boss::Update() {
 	}
 	//ダメージ処理
 	if (isHitBack_) {
-
 		damageCoolTime_ -= Time::DeltaTime();
 
-		// プレイヤーとボスの間の距離と方向を計算
+		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
-			pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+		pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
 
-		// ヒットバックの方向ベクトルを計算（プレイヤーからボスへの逆方向）
-		Vec3 hitBackDirection = Vector3::Normalize(GetPosition() - pPlayer_->GetPosition());
-
-		// ヒットバックのスピードを設定
-		float hitBackSpeed = 0.5f * Time::DeltaTime(); // ヒットバックのスピードを調整
-
-		// 現在の回転を取得
+		// 現在の回転をオイラー角に変換
+		Vec3 euler = QuaternionToEulerAngles(GetPivotQuaternion());
+		// 現在の回転
 		Quaternion currentRotation = GetPivotQuaternion();
+		// プレイヤーの方向を向くための回転を計算
+		Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+		// 回転をスムーズに補間 (Slerpを使用)
+		float rotationSpeed = 20.0f; // 回転速度、必要に応じて調整
+		Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
-		// ヒットバック方向をローカル空間で計算（クォータニオンを使って方向を回転させる）
-		Vec3 localHitBackDirection = RotateVectorByQuaternion(hitBackDirection, currentRotation);
+		// ホーミング移動のスピードを設定
+		Quaternion move = ToQuaternion({ -0.6f * Time::DeltaTime(), 0, 0 });
 
-		// ヒットバックの移動量を計算
-		Vec3 moveAmount = localHitBackDirection * hitBackSpeed;
-
-		// 移動量を基に新しいクォータニオンを生成（ここで回転を生成）
-		Quaternion moveRotation = Quaternion::MakeFromAxis(Vector3::Normalize(localHitBackDirection), Vector3::Length(moveAmount));
-
-		// ボスのクォータニオンを更新（移動量を反映）
-		pivot_.quaternion *= moveRotation; // 回転の適用
-
+		pivot_.quaternion = interpolatedRotation;
+		pivot_.quaternion *= (move); // 移動もスムーズに
+	
+		// クールダウン処理
 		if (damageCoolTime_ <= 0) {
+			nextDamageTime_ = nextDamageCollTime_;//次にダメージを受けるまでのクールタイムを設定
 			meshRenderer_->SetColor(Vec4::kWhite);
 			isHitBack_ = false;
 		}
 	}
+	//0より大きかったらnextDamageTimeの減算をする
+	if ( nextDamageTime_ >= 0) {
+		nextDamageTime_ -= Time::DeltaTime();
+	}	
 
 	pivot_.UpdateMatrix();
 }
@@ -177,12 +173,20 @@ void Boss::AttackInit() {
 	pBossTubu_->ParamaterInit();
 	isAttackBack_ = false;
 	isAttack_ = true;
+	pBossHead_->SetIsAttackCollision(false);
 }
 
 void Boss::AttackUpdate() {//超汚い
+
+	pBossHead_->AttackUpdate();
+
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::DeltaTime();
+		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
+			pBossHead_->SetIsAttackCollision(true);
+		}
 		if (attackEaseT_ >= kAttackEaseT_) {
+			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::DeltaTime();
 			if (attackCoolTime_ >= kAttackCoolTime_) {
@@ -192,14 +196,22 @@ void Boss::AttackUpdate() {//超汚い
 	}//戻る
 	else if (isAttackBack_) {
 		attackEaseT_ -= Time::DeltaTime();
+		if (attackEaseT_ <= 0.3f) {
+			pBossHead_->SetIsAttackCollision(false);
+		}
 		if (attackEaseT_ <= 0.0f) {
 			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
+			pBossHead_->SetIsAttackCollision(false);
 		}
 	}
-	pBossTubu_->SetPositionY(EaseInBack(4.8f, 4.0f, attackEaseT_, kAttackEaseT_));
-	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.7f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionY(EaseInBack(4.8f, 3.2f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.0f, attackEaseT_, kAttackEaseT_));
+}
+
+void  Boss::AttackChaseUpdate() {
+	pBossHead_->LightFlashing();
 }
 
 void Boss::Debug() {
@@ -262,18 +274,29 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 	pBuildingManager_ = buildingmanager;
 }
 
+//ボスコリジョン(トルネード)
+void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
+	if (dynamic_cast<Tornado*>(collision)&& nextDamageTime_ <=0&& !isHitBack_) {
+		if (pBuildingManager_) {
+			
+			float totalDamage = 0.0f;
+			const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f };//各ダメージパラメータ
 
-void Boss::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
-	if (InTornadoBuilding* tornadoBuilding = dynamic_cast<InTornadoBuilding*>(collision)) {
-		int scaleIndex = tornadoBuilding->GetScaleArrayIndex();
-
-		const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f }; 
-
-		if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
-			isHitBack_ = true;
-			damageCoolTime_ = kDamageCoolTime_;
-			meshRenderer_->SetColor(Vec4(0.7f,0,0,1));
-			DamageForPar(damageValues[scaleIndex]);
+			//巻きこまれてるビルから、ダメージ計算
+			for (auto& inTornadoBuilding : pBuildingManager_->GetInTornadoBuildingss()) {
+				int scaleIndex = inTornadoBuilding->GetScaleArrayIndex();
+				if (scaleIndex >= 0 && scaleIndex < damageValues.size()) {
+					totalDamage += damageValues[scaleIndex];//合計値を足していく
+				}
+			}
+			//ダメージが0以上
+			if (totalDamage>0) {
+				// 合計ダメージを適用
+				isHitBack_ = true;
+				damageCoolTime_ = kDamageCoolTime_;
+				meshRenderer_->SetColor(Vec4(0.7f, 0, 0, 1));
+				DamageForPar(totalDamage);  // 合計ダメージを適用
+			}
 		}
 	}
 }

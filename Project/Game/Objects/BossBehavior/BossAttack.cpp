@@ -28,6 +28,7 @@ BossAttack ::~BossAttack() {
 void BossAttack::Update() {
 
 	if (!isSwingDown_) {
+	pBoss_->AttackChaseUpdate();
 		attackWaitTime_ += Time::DeltaTime();
 
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
@@ -42,7 +43,7 @@ void BossAttack::Update() {
 		Quaternion currentRotation = pBoss_->GetPivotQuaternion();
 
 		// 回転をスムーズに補間 (Slerpを使用)
-		float rotationSpeed = 6.0f; // 回転速度、必要に応じて調整
+		float rotationSpeed = 5.0f; // 回転速度、必要に応じて調整
 		inter_ = Slerp(currentRotation, targetRotation, rotationSpeed * Time::DeltaTime());
 
 		// 回転を更新
@@ -57,3 +58,5 @@ void BossAttack::Update() {
 		pBoss_->AttackUpdate();
 	}
 }
+
+
