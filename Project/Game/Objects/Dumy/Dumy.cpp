@@ -47,7 +47,7 @@ void Dumy::Initialize() {
 	pTransform_->scale = { 1.0f,1.0f,1.0f };//スケール
 	hp_ = hpMax_;
 	kEaseTime_ = 1.0f;
-
+	easeDirection_ = 1.0f;
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,24 @@ void Dumy::Update() {
 		if (nextDamageTime_ >= 0) {
 			nextDamageTime_ -= Time::TimeRateDeltaTime();
 		}
+
+
+
+		// イージングタイムを更新
+		anticipationTime_ += Time::TimeRateDeltaTime();
+		easingTime_ += Time::TimeRateDeltaTime() * easeDirection_; // 方向に応じて時間を増減
+
+		// タイムが1を超えたら逆方向に、0未満になったら進む方向に変更
+		if (easingTime_ >= easingTimeMax_) {
+			easingTime_ = easingTimeMax_;
+			easeDirection_ = -1.0f; // 逆方向に切り替え
+		}
+		else if (easingTime_ <= 0.0f) {
+			easingTime_ = 0.0f;
+			easeDirection_ = 1.0f; // 進む方向に切り替え
+		}
+		//ボスのスケール切り替え
+		SetScale(EaseInCubic<Vec3>(Vec3(1.0f, 1.0f, 1.0f), Vec3(1.4f, 1.4f, 1.4f), easingTime_, easingTimeMax_));
 
 	}
 	//ピボット更新
