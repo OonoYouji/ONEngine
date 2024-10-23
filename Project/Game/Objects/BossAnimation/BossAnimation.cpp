@@ -5,6 +5,9 @@
 #include <imgui.h>
 #include "FrameManager/Time.h"
 
+/// components
+#include "ComponentManager/AudioSource/AudioSource.h"
+
 /// objects
 #include "Objects/Camera/GameCamera.h"
 
@@ -19,6 +22,8 @@ BossAnimation::BossAnimation() {
 BossAnimation::~BossAnimation() {}
 
 void BossAnimation::Initialize() {
+
+	audioSource_ = AddComponent<AudioSource>();
 
 	/// 最初のアニメーションを設定
 	currentAnimationIndex_ = BOSS_ANIMATION_STANDBY;
@@ -172,6 +177,12 @@ void BossAnimation::Initialize() {
 
 		head->SetPosition({ 0, 0, -2.0f }); /// ここでは固定
 
+
+		if(!data.isPlayAudio) {
+			audioSource_->PlayOneShot("bossRaiseTube.wav", 0.5f);
+			data.isPlayAudio = true;
+		}
+
 		/// 次の動き
 		if(lerpT == 1.0f) {
 			currentAnimationIndex_ = BOSS_ANIMATION_ENTRY_TUBE_DOWN;
@@ -212,6 +223,12 @@ void BossAnimation::Initialize() {
 
 		/// 次の動き
 		if(lerpT >= 0.6f) {
+			
+			if(!data.isPlayAudio) {
+				/// 一回だけ鳴らす
+				audioSource_->PlayOneShot("bossRaiseTube.wav", 0.5f);
+				data.isPlayAudio = true;
+			}
 
 			/// カメラをシェイクさせる
 			float cameraLerpT = std::min((data.time - data.maxTime) / 0.5f, 1.0f);

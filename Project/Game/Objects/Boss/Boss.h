@@ -171,5 +171,8 @@ private:
 	bool isParticle_;
 
 	const float positionOfset_=2;
+
+	class AudioSource* audioSource_ = nullptr;
+
 	
 };

@@ -44,6 +44,6 @@ private:
 	//弾を発射した瞬間に当たらないように一応無敵時間
 	float invincibleTime_;
 	const float kInvincibleTime_=1.0f;
-
-
+	/// audio source
+	class AudioSource* audioSource_ = nullptr;
 };

@@ -6,17 +6,16 @@
 #include "Input/Input.h"
 
 #include <GraphicManager/Drawer/Material/Material.h>
-#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
-#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
+
 //std
 #include <algorithm>
-#include<numbers>
+#include <numbers>
 #include <limits>
 #include "ImGuiManager/ImGuiManager.h"
-#include"FrameManager/Time.h"
+#include "FrameManager/Time.h"
 //obj
 #include"Objects/Player/Player.h"
 #include"Objects/Building/BuildingManager.h"
@@ -38,6 +37,7 @@ void Boss::Initialize() {
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
+	audioSource_ = AddComponent<AudioSource>();
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,6 +159,9 @@ void Boss::SlurpInit() {
 }
 
 void Boss::SlurpUpdate() {
+	//if (!audioSource_->IsPlayingAudio()) {
+	//	audioSource_->PlayOneShot("fanfare", 0.5f);//吸い込んだ時
+	//}
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
@@ -280,6 +283,7 @@ void Boss::AttackUpdate() {/// 超汚い
 	pBossHead_->AttackUpdate();
 
 	if (!isAttackBack_) {
+
 		attackEaseT_ += Time::DeltaTime();
 		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
@@ -291,17 +295,23 @@ void Boss::AttackUpdate() {/// 超汚い
 			}
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
-			
+			if (attackCoolTime_ == 0.0f) {
+				/// 振り下ろしたときの効果音再生
+				audioSource_->PlayOneShot("bossAttackTubeDown.wav", 0.5f);
+			}
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			
 			attackCoolTime_ += Time::DeltaTime();
+
+			/// 振り下ろし → TubeHeadを上げる動作に遷移
 			if (attackCoolTime_ >= kAttackCoolTime_) {
 				isAttackBack_ = true;
 			}
 		}
 	}//戻る
 	else if (isAttackBack_) {
+
 		attackEaseT_ -= Time::DeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
@@ -400,6 +410,7 @@ void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
 			}
 			//ダメージが0以上
 			if (totalDamage>0) {
+				audioSource_->PlayOneShot("BossDamage.wav", 0.5f);//ダメージ受けた時の効果音
 				// 合計ダメージを適用
 				isHitBack_ = true;
 				damageCoolTime_ = kDamageCoolTime_;

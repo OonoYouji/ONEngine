@@ -1,5 +1,12 @@
 #pragma once
 
+/// std
+#include <memory>
+
+/// components
+#include "ComponentManager/AudioSource/AudioSource.h"
+
+/// base class
 #include "Scenes/Manager/BaseScene.h"
 
 
@@ -12,4 +19,9 @@ public:
 	void Update()     override;
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
+	void Update() override;
+
+private:
+
+	std::unique_ptr<AudioSource> audioSource_ = nullptr;
 };

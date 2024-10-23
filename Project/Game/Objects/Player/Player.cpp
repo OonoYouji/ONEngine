@@ -32,6 +32,8 @@ void Player::Initialize() {
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
+	audioSource_ = AddComponent<AudioSource>();
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +295,7 @@ void Player::DamageForBossHead() {
 		damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(5);
+		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
 	}
 }
 void Player::DamageForBossBullet() {
@@ -302,6 +305,7 @@ void Player::DamageForBossBullet() {
 		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(10);
+		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
 	}
 }
 

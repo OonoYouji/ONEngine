@@ -117,6 +117,7 @@ private:
 	const float floatBuildingEaseTimeMax_=1.0f;
 	const float buildingSartZ = -10.8f;
 
+	
 
 	/// ---------------------------------------------------
 	/// state parameter
@@ -156,8 +157,6 @@ private:
 
 	std::array<float, BUILDING_SCALE_COUNT> buildingScaleArray_;
 	std::array<float, BUILDING_SCALE_COUNT> nextScalingTimeArray_;
-
-
 
 	/// ---------------------------------------------------
 	/// effect

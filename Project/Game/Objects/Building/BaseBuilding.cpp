@@ -44,6 +44,8 @@ void BaseBuilding::Initialize() {
 		ModelManager::Load("TestObject")
 	};
 
+	audioSource_ = AddComponent<AudioSource>();
+
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->SetModel(modelArray_[0]);
 	auto collider = AddComponent<BoxCollider>(modelArray_[0]);
@@ -287,6 +289,7 @@ void BaseBuilding::SubHP(float _subValue) {
 	/// トルネードに吸い込まれる
 	if(hp_ <= 0.0f) {
 		isInTornado_ = true;
+		
 	}
 }
 
@@ -300,11 +303,13 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 	//当たったら用済み
 	if(dynamic_cast<Boss*>(collision) && isSlurp_) {
 		isTaken_ = true;
+		audioSource_->PlayOneShot("BuindingSlurped.wav", 0.5f);
 	}
 
 	//当たったら用済み
 	if(dynamic_cast<BossHead*>(collision) &&pBoss_->GetIsAttack()) {
 		isBreak_ = true;
+		audioSource_->PlayOneShot("BuindingBreaked.wav", 0.5f);
 	}
 }
 
