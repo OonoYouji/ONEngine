@@ -64,7 +64,11 @@ void RailCamera::Update() {
 		std::atan2(rightDirection_.y, upDirection_.y),
 	};
 
-
+	//pTransform_->rotate = {
+	//	std::atan2(-moveDirection_.y, Vec3::Length({ moveDirection_.x, 0.0f, moveDirection_.z })),
+	//	std::atan2(moveDirection_.x, moveDirection_.z),
+	//	0.0f,
+	//};
 }
 
 void RailCamera::Debug() {

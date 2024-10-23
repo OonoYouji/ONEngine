@@ -244,7 +244,7 @@ void ShootingCourse::CalcuationRailTransform() {
 
 		Vec3 diff = (*nextItr) - (*itr);
 		transform.rotate = {
-			std::asin(-diff.y),
+			std::atan2(-diff.y, Vec3::Length({ diff.x, 0.0f, diff.z })),
 			std::atan2(diff.x, diff.z),
 			0.0f,
 		};
