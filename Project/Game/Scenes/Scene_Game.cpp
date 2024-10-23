@@ -42,6 +42,7 @@ void Scene_Game::Initialize() {
 
 	reticle->SetGameCamera(mainCamera_);
 
+	mainCamera_->SetPosition({ 0.0f, 0.9f, 0.0f }); /// レールに被らないように少し上に設定
 
 }
 

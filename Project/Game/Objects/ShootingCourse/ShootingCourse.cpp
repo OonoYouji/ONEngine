@@ -61,32 +61,14 @@ void ShootingCourse::Update() {
 	vertices_ = tmpVertices;
 #endif // _DEBUG
 
-	/// スプライン曲線の補完された点をゲット
-	const std::vector<Vec3>& segmentPointArray = splinePathRenderer_->GetSegmentPointArray();
-
-	/// mesh instanced rendererのtransformをリセット
-	meshInstancedRenderer_->ResetTransformArray();
-	transformList_.clear();
-
-	/// transforに変換 → mesh instanced rendererに渡す
-	for(auto& point : segmentPointArray) {
-		Transform transform{};
-		transform.position = point;
-		transform.rotate   = { 0,0,0 };
-		transform.scale    = { 1,1,1 };
-		transform.UpdateMatrix(false);
-
-		transformList_.push_back(std::move(transform));
-	}
-
-	for(auto& transform : transformList_) {
-		meshInstancedRenderer_->AddTransform(&transform);
-	}
-
+	/// tranformの再計算
+	CalcuationRailTransform();
 
 	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 }
+
+#pragma region debug
 
 
 void ShootingCourse::Debug() {
@@ -153,9 +135,10 @@ void ShootingCourse::Debug() {
 
 
 }
+#pragma endregion
 
 
-
+#pragma region file input output
 void ShootingCourse::SaveFile(const std::string& filePath) {
 	json root = json::object();
 	for(size_t i = 0; i < anchorPointArray_.size(); ++i) {
@@ -225,7 +208,47 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 
 
 }
+#pragma endregion file input output
+
+
 
 void ShootingCourse::AddAnchorPoint(const Vec3& point) {
 	anchorPointArray_.emplace_back(point);
+}
+
+void ShootingCourse::CalcuationRailTransform() {
+	/// スプライン曲線の補完された点をゲット
+	const std::vector<Vec3>& segmentPointArray = splinePathRenderer_->GetSegmentPointArray();
+
+	/// mesh instanced rendererのtransformをリセット
+	meshInstancedRenderer_->ResetTransformArray();
+	transformList_.clear();
+
+	/// transforに変換 → mesh instanced rendererに渡す
+	for(auto itr = segmentPointArray.begin(); itr != segmentPointArray.end(); ++itr) {
+		auto nextItr = std::next(itr);
+
+		/// next itrがlistの最後なら終了
+		if(nextItr == segmentPointArray.end()) {
+			break;
+		}
+
+		Transform transform{};
+		transform.position = *itr;
+		transform.scale    = { 1,1,1 };
+
+		Vec3 diff = (*nextItr) - (*itr);
+		transform.rotate = {
+			std::asin(-diff.y),
+			std::atan2(diff.x, diff.z),
+			std::atan2(diff.y, diff.y),
+		};
+
+		transform.UpdateMatrix(false);
+		transformList_.push_back(std::move(transform));
+	}
+
+	for(auto& transform : transformList_) {
+		meshInstancedRenderer_->AddTransform(&transform);
+	}
 }

@@ -59,9 +59,9 @@ void RailCamera::Update() {
 
 	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
 	pTransform_->rotate = {
-		std::asin(-moveDirection_.y),                  // Y軸周りの回転（ピッチ）
-		std::atan2(moveDirection_.x, moveDirection_.z),// Z軸周りの回転（ヨー）
-		std::atan2(rightDirection_.y, upDirection_.y), // X軸周りの回転（ロール）
+		std::asin(-moveDirection_.y),
+		std::atan2(moveDirection_.x, moveDirection_.z),
+		std::atan2(rightDirection_.y, upDirection_.y),
 	};
 
 

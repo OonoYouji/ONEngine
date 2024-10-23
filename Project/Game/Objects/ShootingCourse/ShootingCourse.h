@@ -52,6 +52,9 @@ private:
 	void AddAnchorPoint(const Vec3& point);
 
 
+	void CalcuationRailTransform();
+
+
 private:
 	/// ===================================================
 	/// private : objects
