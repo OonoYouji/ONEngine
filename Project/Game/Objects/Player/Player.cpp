@@ -24,6 +24,7 @@
 #include"Objects/Ground/Ground.h"
 #include"Objects/Boss/Boss.h"
 #include "Objects/CameraState/GameCameraState.h"
+#include "Objects/PlayerHP/PlayerHP.h"
 
 
 void Player::Initialize() {
@@ -58,7 +59,6 @@ void Player::Initialize() {
 
 	powerUpGaugeMax_ = 100;
 	powerUpTimeMax_ = 10.0f;//秒
-	HP_ = HPMax_;
 	//ヒットバック力
 	hitBackPower_ = -0.05f;
 
@@ -302,14 +302,16 @@ void Player::SetCameraBehavior(int behavior) {
 //割合によるダメージ
 void Player::DamageForPar(const float& par) {
 
-	//割合によるインクる面とする値を決める
-	float decrementSize = HPMax_ * par;
-	// HP減少
-	HP_ -= decrementSize;
-	//HPが0以下にならないように
-	if (HP_ <= 0) {
-		HP_ = 0.0f;
+	hp_--;
+	if(hp_ >= 0) {
+		/// hpの区切り
+		pPlayerHP_->SetHP(5 - hp_);
 	}
+
+	if(hp_ < 0) {
+		hp_ = 0;
+	}
+
 }
 
 //チュートリアルの挙動
@@ -333,6 +335,10 @@ void Player::TimeRateUpdate() {
 
 void  Player::SetBuildingManager(BuildingManager* buildingManager) {
 	pBuindingManager_ = buildingManager;
+}
+
+void Player::SetPlayerHP(PlayerHP* _playerHP) {
+	pPlayerHP_ = _playerHP;
 }
 
 void Player::SetTornado(Tornado* tornado) {
@@ -405,7 +411,7 @@ void Player::Debug() {
 
 		ImGui::SeparatorText("status");
 
-		ImGui::DragFloat("HP", &HP_, 0.01f);
+		ImGui::DragInt("HP", &hp_, 0.01f);
 		ImGui::DragFloat("DmageForBossHead", &damageForBossHead_.DamagePar, 0.01f);
 		ImGui::DragFloat("DamageForBossBullet", &damageForBossBullet_.DamagePar, 0.01f);
 

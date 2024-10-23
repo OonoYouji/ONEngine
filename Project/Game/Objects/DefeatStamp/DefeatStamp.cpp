@@ -11,6 +11,12 @@
 /// math
 #include "Math/Easing.h"
 
+/// objects
+#include "Objects/GameResult/GameResult.h"
+
+/// scene 
+#include "Scenes/Scene_Game.h"
+
 
 DefeatStamp::DefeatStamp() {
 	CreateTag(this);
@@ -60,7 +66,11 @@ void Stamp::Initialize() {
 		ゲームクリア、ゲームオーバーで初期化する値を変える
 	##########################################################*/
 
-	spriteRenderer_->SetTexture("resultSubjugationClear.png");
+	if(Scene_Game::sGameResult_ == GAME_RESULT_GAME_OVER) {
+		spriteRenderer_->SetTexture("resultSubjugationGameOver.png");
+	} else {
+		spriteRenderer_->SetTexture("resultSubjugationClear.png");
+	}
 	
 	
 	/// transform

@@ -10,6 +10,9 @@
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
+/// objects
+#include "Objects/Player/Player.h"
+
 
 PlayerHP::PlayerHP() {
 	CreateTag(this);
@@ -31,7 +34,7 @@ void PlayerHP::Initialize() {
 
 	std::vector<Material>& materials = model_->GetMaterials();
 	materials.front().SetPosition(gaugeUVPosition_);
-
+	materials.front().SetIsLighting(false);
 
 	numberUVPosition_ = { 0.12f, 0.03f };
 	numberUVScale_ = { 3.0f, 0.6f };
@@ -45,6 +48,10 @@ void PlayerHP::Initialize() {
 	animationTime_    = 0.0f;
 	maxAnimationTime_ = 0.6f;
 
+	pTransform_->position = {
+		-1.7f, -0.7f, 5.5f
+	};
+
 }
 
 void PlayerHP::Update() {
@@ -54,7 +61,7 @@ void PlayerHP::Update() {
 
 	/// number uv position y 
 	numberUVPosition_.y = std::lerp(
-		uvPosYArray_[cuurentHp_], uvPosYArray_[nextHp_],
+		uvPosYArray_[currentHp_], uvPosYArray_[nextHp_],
 		lerpT
 	);
 
@@ -62,8 +69,14 @@ void PlayerHP::Update() {
 	/// 0.5 ~ 0.25
 	gaugeUVPosition_.y = std::lerp(
 		0.5f, 0.25f,
-		lerpT * gaugeLerpT
+		(nextHp_ / 5.0f) * gaugeLerpT
 	);
+
+	if(lerpT == 1.0f) {
+		isStart_ = false;
+	}
+
+
 
 	/// マテリアルのセット
 
@@ -74,6 +87,7 @@ void PlayerHP::Update() {
 	Material* material = numberRenderer_->GetMaterial();
 	material->SetPosition(numberUVPosition_);
 	material->SetScale(numberUVScale_);
+	material->SetIsLighting(false);
 	material->UpdateMatrix();
 
 }
@@ -90,7 +104,7 @@ void PlayerHP::Debug() {
 
 		ImGui::Spacing();
 
-		ImGui::SliderInt("current hp", &cuurentHp_, 0, 5);
+		ImGui::SliderInt("current hp", &currentHp_, 0, 5);
 		ImGui::SliderInt("next hp", &nextHp_, 0, 5);
 		
 		ImGui::SeparatorText("animation");
@@ -107,4 +121,13 @@ void PlayerHP::Debug() {
 
 void PlayerHP::ResetAnimationTime() {
 	animationTime_ = 0.0f;
+}
+
+void PlayerHP::SetHP(int hp) {
+	if(hp != currentHp_) {
+		ResetAnimationTime();
+
+		currentHp_ = nextHp_;
+		nextHp_ = hp;
+	}
 }

@@ -21,10 +21,15 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	static int sGameResult_;
 private:
 	BuildingManager* buildingManager_=nullptr;
 	Boss* boss_ = nullptr;
 	Player* player_ = nullptr;
 	Tornado* tornado_ = nullptr;
 	BossBulletLump* bossBulletLump_;
+
+	class SceneTransition* sceneTransition_ = nullptr;
+	class DeadEffect* deadEffect_ = nullptr;
+
 };
