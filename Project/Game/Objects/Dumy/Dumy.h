@@ -51,4 +51,10 @@ private:
 
 	Player* pPlayer_;
 	class AudioSource* audioSource_ = nullptr;
+
+
+	float anticipationTime_;
+	float easingTime_;
+	float easeDirection_;
+	const float easingTimeMax_ = 0.4f;
 };

@@ -172,7 +172,7 @@ private:
 
 	//トルネード
 	Tornado* pTornado_;
-
+	bool isexp_;
 	class PlayerHP* pPlayerHP_ = nullptr;
 
 };

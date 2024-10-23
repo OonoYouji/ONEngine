@@ -69,12 +69,12 @@ void Boss::Initialize() {
 	//行列更新
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
-
+	isexp_ = false;
 	const uint32_t kParticleMaxNum = 15u;
 
 	//パーティクルAddComponent
 	particleDataArray_.resize(kParticleMaxNum);
-	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
+	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "bossAtackEffect");
 
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(10);
@@ -85,6 +85,7 @@ void Boss::Initialize() {
 	/// パーティクル更新
 	ParticleUpdate();
 }
+
 
 void Boss::Update() {
 
@@ -142,6 +143,10 @@ void Boss::RootInit() {
 void Boss::RootUpdate() {
 
 }
+
+void Boss::StopSound() {
+	audioSource_->PlayOneShot("BossStop.wav", 0.5f);
+}
 //ストーカー
 void Boss::ChaseInit() {
 
@@ -150,8 +155,24 @@ void Boss::ChaseUpdate() {
 
 }
 
+void Boss::KoteiSound() {
+	audioSource_->PlayOneShot("bossAtack1Kotei.wav", 0.5f);
+}
+
+
+void Boss::ShotSound() {
+	audioSource_->PlayOneShot("BossBulletShot.wav", 0.5f);
+}
+
+//void Boss::SlurpInit() {
+//	audioSource_->PlayOneShot("bossAtack2kouho1.wav", 0.5f);
+//}
+
+
+
 //建物吸引
 void Boss::SlurpInit() {
+	audioSource_->PlayOneShot("bossAtack2kouho1.wav", 0.5f);
 	isSlurping_ = false;
 	slurpCooldownTimer_ = kSlurpCollTime_;
 }
@@ -180,6 +201,8 @@ void Boss::SlurpUpdate() {
 void Boss::BulletShotInit() {}
 
 void Boss::BulletShotUpdate() {
+	
+
 }
 
 /// パーティクル初期化
@@ -422,6 +445,10 @@ void Boss::DamageForPar(const float& par) {
 	HP_ -= decrementSize;
 	//HPが0以下にならないように
 	if (HP_ <= 0) {
+		if (!isexp_) {
+			audioSource_->PlayOneShot("exp.wav", 0.5f);
+			isexp_ = true;
+		}
 		HP_ = 0.0f;
 	}
 }

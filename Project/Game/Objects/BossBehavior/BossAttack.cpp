@@ -20,6 +20,8 @@ BossAttack::BossAttack(Boss* boss)
 	attackFixationTime_ = 0.0f;
 	isSwingDown_ = false;
 	isFixation_ = false;
+
+	
 }
 
 BossAttack ::~BossAttack() {
@@ -51,6 +53,7 @@ void BossAttack::Update() {
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(inter_);
 		if (attackWaitTime_ >= kAttackWaitTime_) {
+			pBoss_->KoteiSound();
 			isFixation_ = true;
 		}
 

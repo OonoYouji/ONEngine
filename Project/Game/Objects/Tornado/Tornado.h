@@ -101,6 +101,8 @@ private:
 
 	/// audio
 	class AudioSource* audioSource_ = nullptr;
+	class AudioSource* audioSource2_ = nullptr;
+
 
 	class EarthRenderer* er_ = nullptr;
 	float radius_ = 1.0f;

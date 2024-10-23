@@ -85,12 +85,16 @@ public:
 
 	void ColorChange(Vec4 color) { meshRenderer_->SetColor(color);}
 
+	//se
+	void KoteiSound();
+	void ShotSound();
+	void StopSound();
+	void SlurpSound();
 /// <summary>
 /// Particle
 /// </summary>
 	void ParticleInit();
 	void ParticleUpdate();
-
 
 	bool GetIsAlive() const { return HP_ > 0.0f; }
 
@@ -181,5 +185,6 @@ private:
 
 	class AudioSource* audioSource_ = nullptr;
 
+	bool isexp_;
 	
 };

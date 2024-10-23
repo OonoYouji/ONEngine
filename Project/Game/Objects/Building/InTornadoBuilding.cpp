@@ -49,7 +49,7 @@ void InTornadoBuilding::Update() {
 	// 楕円座標を計算
 	float x = longAxis * sin(theta_);
 	float y = shortAxis * cos(phi_);
-	pTransform_->position = { x,y,2 };
+	pTransform_->position = { x,y,-2 };
 }
 //デバッグ
 void InTornadoBuilding::Debug() {

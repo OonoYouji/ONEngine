@@ -18,4 +18,7 @@ private:
 	bool isSwingDown_;
 	bool isFixation_;
 	Quaternion inter_;
+
+
+
 };

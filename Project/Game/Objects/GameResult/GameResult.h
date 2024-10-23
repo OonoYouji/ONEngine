@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObjectManager/GameObjectManager.h"
-
+#include <ComponentManager/AudioSource/AudioSource.h>
 
 enum SELECTED_NEXT_MOVE {
 	NEXT_MODE_RETRY,      /// リトライを選択している
@@ -37,4 +37,6 @@ private:
 	int gameResult_       = 0;
 
 	bool isNextSceneTransitioned_;
+
+	class AudioSource* audioSource_ = nullptr;
 };

@@ -36,6 +36,8 @@ private:
 	float easeCollTime_;
 	const float kEaseTime_ = 0.5f;
 	bool isDeath_;
+	class AudioSource* audioSource_ = nullptr;
+
 };
 
 //===================================================
