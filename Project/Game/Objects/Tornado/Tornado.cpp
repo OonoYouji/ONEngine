@@ -83,7 +83,6 @@ void Tornado::Initialize() {
 	maxScale_ = 1.25f;
 	scaleScaler_ = minScale_;
 
-
 	windArray_.resize(10);
 	for (auto& wind : windArray_) {
 		wind = new Wind;

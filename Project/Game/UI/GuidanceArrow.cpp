@@ -48,7 +48,7 @@ void GuidanceArrow::Initialize() {
 void GuidanceArrow::Update() {
 
 	// 距離と方向を計算
-	std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+	std::pair<float,float> distanceAndDirection = CalculateDistanceAndDirection(
 	 pBoss_->GetPosition(),pPlayer_->GetPosition(), Ground::groundScale_ + 1.0f);
 
 	// 現在の回転をオイラー角に変換
