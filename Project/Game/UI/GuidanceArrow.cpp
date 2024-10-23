@@ -18,7 +18,7 @@
 #include"Easing/EasingFunction.h"
 
 void GuidanceArrow::Initialize() {
-	Model* model = ModelManager::Load("playerInGame");
+	Model* model = ModelManager::Load("arrow");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -73,7 +73,7 @@ void GuidanceArrow::Update() {
 
 	pivot_.UpdateMatrix();
 
-	if (distanceAndDirection.first<=7.0f) {
+	if (distanceAndDirection.first<=10.0f) {
 		pTransform_->scale = { 0,0,0 };
 	}
 	else {
@@ -122,7 +122,7 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 
-	if (distanceAndDirection.first <= 7.0f) {
+	if (distanceAndDirection.first <= 10.0f) {
 		pTransform_->scale = { 0,0,0 };
 	}
 	else {
