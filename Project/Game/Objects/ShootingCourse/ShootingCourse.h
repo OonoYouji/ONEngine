@@ -1,9 +1,13 @@
 #pragma once
 
+/// std
 #include <string>
 #include <vector>
+#include <list>
 
 #include "GameObjectManager/GameObjectManager.h"
+
+#include "ComponentManager/Transform/Transform.h"
 
 
 /// ===================================================
@@ -48,6 +52,12 @@ private:
 	void AddAnchorPoint(const Vec3& point);
 
 
+	void CalcuationRailTransform();
+
+	void CalcuationAnchorPointArray();
+
+	void CalcuationUpDirctionArray();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -55,10 +65,18 @@ private:
 
 	const std::string& filePath_ = "./Resources/Parameters/ShootingCourse/";
 
+
+	class MeshInstancingRenderer* meshInstancedRenderer_ = nullptr;
+	class MeshInstancingRenderer* anchorPointRenderer_      = nullptr;
+
 	std::vector<AnchorPoint> anchorPointArray_;
+	std::list<Transform>     transformList_;
+	std::list<Transform>     anchorPointTransformList_;
 
 	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
+	std::vector<Vec3> upDirArray_; /// 上方向ベクトルを補間するため
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;
+	class SplinePathRenderer* upDirInterpolationRenderer_ = nullptr;
 
 	int subtractIndex_ = 0;
 	int addIndex_ = 0;

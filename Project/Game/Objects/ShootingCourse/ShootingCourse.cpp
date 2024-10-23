@@ -4,6 +4,7 @@
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <numbers>
 
 /// externals
 #include <json.hpp>
@@ -13,7 +14,7 @@
 
 /// components
 #include "ComponentManager/SplinePathRenderer/SplinePathRenderer.h"
-
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 /// using namespace
 using namespace nlohmann;
@@ -26,8 +27,18 @@ ShootingCourse::ShootingCourse() {
 ShootingCourse::~ShootingCourse() {}
 
 void ShootingCourse::Initialize() {
-	splinePathRenderer_ = AddComponent<SplinePathRenderer>(6);
+	splinePathRenderer_         = AddComponent<SplinePathRenderer>(6);
+	upDirInterpolationRenderer_ = AddComponent<SplinePathRenderer>(6);
+	meshInstancedRenderer_      = AddComponent<MeshInstancingRenderer>(128);
+	anchorPointRenderer_        = AddComponent<MeshInstancingRenderer>(32);
 
+	upDirInterpolationRenderer_->isActive = false;
+
+	/// レールのモデルをセット
+	meshInstancedRenderer_->SetModel("Rail");
+	anchorPointRenderer_->SetModel("AnchorPoint");
+
+	/// file input
 	LoadFile(filePath_);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 
@@ -40,6 +51,16 @@ void ShootingCourse::Initialize() {
 	}
 
 
+	upDirArray_.clear();
+
+	std::vector<Vec3> tmpVertices;
+	for(auto& anchorPoint : anchorPointArray_) {
+		vertices_.push_back(anchorPoint.position);
+		upDirArray_.push_back(anchorPoint.up);
+	}
+	vertices_ = tmpVertices;
+
+	
 }
 
 void ShootingCourse::Update() {
@@ -52,12 +73,18 @@ void ShootingCourse::Update() {
 	vertices_ = tmpVertices;
 #endif // _DEBUG
 
+	
+	CalcuationUpDirctionArray();
+
+	/// tranformの再計算
+	CalcuationRailTransform();
+	CalcuationAnchorPointArray();
 
 	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 }
 
-
+#pragma region debug
 void ShootingCourse::Debug() {
 	if(ImGui::TreeNodeEx("course editor", ImGuiTreeNodeFlags_DefaultOpen)) {
 
@@ -122,9 +149,10 @@ void ShootingCourse::Debug() {
 
 
 }
+#pragma endregion
 
 
-
+#pragma region file input output
 void ShootingCourse::SaveFile(const std::string& filePath) {
 	json root = json::object();
 	for(size_t i = 0; i < anchorPointArray_.size(); ++i) {
@@ -194,7 +222,109 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 
 
 }
+#pragma endregion file input output
+
+
 
 void ShootingCourse::AddAnchorPoint(const Vec3& point) {
 	anchorPointArray_.emplace_back(point);
+}
+
+void ShootingCourse::CalcuationRailTransform() {
+	/// スプライン曲線の補完された点をゲット
+	const std::vector<Vec3>& segmentPointArray = splinePathRenderer_->GetSegmentPointArray();
+	const std::vector<Vec3>& upDirArray        = upDirInterpolationRenderer_->GetSegmentPointArray();
+
+	/// 上でゲットした配列のどちらかが空だと早期リターン
+	if(segmentPointArray.empty() || upDirArray.empty()) {
+		return;
+	}
+
+	/// mesh instanced rendererのtransformをリセット
+	meshInstancedRenderer_->ResetTransformArray();
+	transformList_.clear();
+
+
+
+	
+	/// レールのtransformを計算
+
+	for(size_t i = 0; i < segmentPointArray.size() - 1; ++i) {
+		const Vec3& up = upDirArray[i];
+
+		/// 現在の座標と次の座標を得る
+		const Vec3& currentPoint = segmentPointArray[i];
+		const Vec3& nextPoint    = segmentPointArray[i + 1];
+
+		/// 進行方向、ローカル上方向、ローカル左方向のベクトル計算
+		Vec3 moveDir  = Vec3(nextPoint - currentPoint).Normalize();
+		Vec3 upDir    = upDirArray[i];
+		Vec3 rightDir = Vec3::Cross(moveDir, upDir);
+
+
+		/// transformを計算する
+		Transform transform;
+		transform.rotateOrder = YXZ;
+		transform.position = currentPoint;
+
+		transform.rotate = {
+			std::asin(-moveDir.y),
+			std::atan2(moveDir.x, moveDir.z),
+			-std::atan2(rightDir.y, upDir.y)
+		};
+
+		transform.UpdateMatrix(false);
+		transformList_.push_back(std::move(transform));
+
+	}
+
+
+	for(auto& transform : transformList_) {
+		meshInstancedRenderer_->AddTransform(&transform);
+	}
+}
+
+void ShootingCourse::CalcuationAnchorPointArray() {
+
+
+
+	anchorPointRenderer_->ResetTransformArray();
+	anchorPointTransformList_.clear();
+	for(auto& anchorPoint : anchorPointArray_) {
+		Transform transform;
+		transform.position = anchorPoint.position;
+		transform.rotate = {
+			std::atan2(-anchorPoint.up.y, Vec3::Length({ anchorPoint.up.x, 0.0f, anchorPoint.up.z })),
+			std::atan2(anchorPoint.up.x, anchorPoint.up.z),
+			0.0f,
+		};
+
+		transform.rotate.x += std::numbers::pi_v<float> * 0.5f;
+
+		transform.UpdateMatrix(false);
+
+		anchorPointTransformList_.push_back(std::move(transform));
+	}
+
+
+	for(auto& transform : anchorPointTransformList_) {
+		anchorPointRenderer_->AddTransform(&transform);
+	}
+}
+
+void ShootingCourse::CalcuationUpDirctionArray() {
+	/// 上方向ベクトルの正規化
+	upDirArray_.clear();
+	for(auto& anchorPoint : anchorPointArray_) {
+		anchorPoint.up = anchorPoint.up.Normalize();
+		upDirArray_.push_back(anchorPoint.up);
+	}
+
+	upDirInterpolationRenderer_->SetAnchorPointArray(upDirArray_);
+
+	if(upDirArray_.size() < 4) {
+		upDirInterpolationRenderer_->isActive = false;
+	} else {
+		upDirInterpolationRenderer_->isActive = true;
+	}
 }
