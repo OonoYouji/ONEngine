@@ -9,6 +9,7 @@
 #include"Objects/Player/Player.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Boss/BossBulletLump.h"
+#include"Objects/BossRendition/BossBulletParticle.h"
 
 //function
 #include"Easing/EasingFunction.h"
@@ -81,18 +82,26 @@ void BossBulletShot::Update() {
 			BossbulletLump_->Update();
 			//弾死んだらスタン
 			if (BossbulletLump_->GetIsDeath()) {
+				bossBulletParticle_ = new BossBulletParticle();
+				bossBulletParticle_->SetPivot(BossbulletLump_->GetPivot());
+				bossBulletParticle_->Initialize();
+				bossBulletParticle_->ParticleInit();
 				BossbulletLump_->Destory();//デストロイ
 				BossbulletLump_ = nullptr;
 				isStop_ = true;
 			}
+			
 		}
 		if(isStop_){
 			stopTime_ += Time::DeltaTime();
 			//振る舞い切り替え
 			if (stopTime_ >= kStopTime_) {
+				delete bossBulletParticle_;
+				bossBulletParticle_ = nullptr;
 				pBoss_->SetIsBuildingKill(false);
 				pBoss_->ChangeState(std::make_unique<BossChasePlayer>(pBoss_));
 			}
+
 		}
 	}
 }

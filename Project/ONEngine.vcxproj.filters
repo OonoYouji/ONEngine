@@ -671,7 +671,7 @@
     <ClCompile Include="Game\UI\GuidanceArrow.cpp" />
     <ClCompile Include="Game\UI\TutorialUI.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
-    <ClCompile Include="Game\Objects\BossRendition\BossAttackParticle.cpp">
+    <ClCompile Include="Game\Objects\BossRendition\BossBulletParticle.cpp">
       <Filter>Game\Objects\BossRendition</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1009,7 +1009,7 @@
     <ClInclude Include="Game\UI\GuidanceArrow.h" />
     <ClInclude Include="Game\UI\TutorialUI.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
-    <ClInclude Include="Game\Objects\BossRendition\BossAttackParticle.h">
+    <ClInclude Include="Game\Objects\BossRendition\BossBulletParticle.h">
       <Filter>Game\Objects\BossRendition</Filter>
     </ClInclude>
   </ItemGroup>

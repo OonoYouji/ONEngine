@@ -26,6 +26,7 @@ public:
 	void Debug()      override;
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	Transform GetPivot()const { return pivot_; }
 
 	//setter^d
 	void SetDirection(Quaternion direction);

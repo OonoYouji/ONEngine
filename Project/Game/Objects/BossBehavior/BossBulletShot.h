@@ -1,6 +1,8 @@
 #pragma once
 #include"Objects/BossBehavior/BaseBossBehavior.h"
 
+class BossBulletParticle;
+class BossBulletLump;
 class BossBulletShot : public BaseBossBehavior {
 public:
 	//コンストラクタ
@@ -22,9 +24,13 @@ private:
 	float stopTime_;
 	const float kStopTime_ = 1.0f;
 	bool isStop_;
+
+
 	
 	// プレイヤーの方向を向くための回転を計算
 	Quaternion inter_;
 	Quaternion move_;
-	class BossBulletLump* BossbulletLump_ = nullptr;
+
+	BossBulletParticle* bossBulletParticle_ = nullptr;
+	 BossBulletLump* BossbulletLump_ = nullptr;
 };

@@ -170,6 +170,6 @@ private:
 
 	bool isParticle_;
 
-	const float positionOfset_=4;
+	const float positionOfset_=2;
 	
 };
