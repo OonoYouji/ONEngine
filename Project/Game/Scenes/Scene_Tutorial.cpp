@@ -71,6 +71,14 @@ void Scene_Tutorial::Initialize() {
 	guidanceArrow_->isActive = false;
 
 	tutorialState_ = SCACLEUP;
+
+
+	bgm_.reset(new AudioSource);
+	bgm_->Initialize();
+	bgm_->SetAudioClip("tutorialBgm.wav");
+	bgm_->isLoop = true;
+	bgm_->volume = 0.1f;
+	bgm_->PlayAudio();
 	
 }
 /// ===================================================
@@ -165,6 +173,7 @@ void Scene_Tutorial::Update() {
 			tutorialBodyBlow_->SetIsClose(true);
 			if (tutorialBodyBlow_->GetIsDeath()) {//UIが死んだら
 				SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+				bgm_->StopAudioAll();
 			}	
 		}
 		break;
