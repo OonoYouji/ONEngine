@@ -67,6 +67,14 @@ void BossEntryScene::Initialize() {
 	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
 	spriteCamera->SetDistance(3.0f);
 
+
+	bgm_.reset(new AudioSource);
+	bgm_->Initialize();
+	bgm_->SetAudioClip("bossEntryArart.wav");
+	bgm_->isLoop = true;
+	bgm_->volume = 0.1f;
+	bgm_->PlayAudio();
+
 }
 
 void BossEntryScene::Update() {
@@ -82,6 +90,7 @@ void BossEntryScene::Update() {
 
 		if(cameraState_->IsFinishedMoving()) {
 			SceneManager::GetInstance()->SetNextScene(GAME);
+			bgm_->StopAudioAll();
 		}
 	}
 

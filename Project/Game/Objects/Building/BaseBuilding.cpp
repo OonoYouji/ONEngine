@@ -311,13 +311,13 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 	//当たったら用済み
 	if(dynamic_cast<Boss*>(collision) && isSlurp_) {
 		isTaken_ = true;
-		audioSource_->PlayOneShot("BuindingSlurped.wav", 0.5f);
+		audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);
 	}
 
 	//当たったら用済み
 	if(dynamic_cast<BossHead*>(collision) &&pBoss_->GetIsAttack()) {
 		isBreak_ = true;
-		audioSource_->PlayOneShot("BuindingBreaked.wav", 0.5f);
+		//audioSource_->PlayOneShot("BuindingBreaked.wav", 0.5f);
 	}
 }
 

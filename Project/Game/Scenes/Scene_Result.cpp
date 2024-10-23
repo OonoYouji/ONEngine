@@ -16,12 +16,12 @@ void Scene_Result::Initialize() {
 
 	/// instance create
 	GameCamera* spriteCamera = new GameCamera("spriteCamera");
-	GameResult* gameResult   = new GameResult();
+	gameResult_ = new GameResult();
 	DefeatStamp* defeatStamp = new DefeatStamp();
 
 	/// initializing
 	spriteCamera->Initialize();
-	gameResult->Initialize();
+	gameResult_->Initialize();
 	defeatStamp->Initialize();
 
 	/// other setting
@@ -36,9 +36,19 @@ void Scene_Result::Initialize() {
 	mainCamera_->SetRotate({ 0.308f, 0.8f, 0.0f });
 
 
+	bgm_.reset(new AudioSource);
+	bgm_->Initialize();
+	bgm_->SetAudioClip("resultBgm.wav");
+	bgm_->isLoop = true;
+	bgm_->volume = 0.1f;
+	bgm_->PlayAudio();
+
 }
 
 void Scene_Result::Update() {
 
+	if(gameResult_->IsNextSceneTransitioned()) {
+		bgm_->StopAudioAll();
+	}
 
 }

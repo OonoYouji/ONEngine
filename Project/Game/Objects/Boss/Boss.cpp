@@ -302,7 +302,7 @@ void Boss::AttackUpdate() {/// 超汚い
 		if (attackEaseT_ >= kAttackEaseT_) {
 			if (attackCoolTime_ == 0.0f) {
 				/// 振り下ろしたときの効果音再生
-				audioSource_->PlayOneShot("bossAttackTubeDown.wav", 0.5f);
+				audioSource_->PlayOneShot("bossTubeDown.wav", 0.5f);
 			}
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;

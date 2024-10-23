@@ -50,9 +50,16 @@ void Scene_Title::Initialize() {
 	playerAnimator->GetParticleSystem()->SetEmittedParticleCount(4u);
 
 	/// 
+	bgm_.reset(new AudioSource);
+	bgm_->Initialize();
+	bgm_->SetAudioClip("titleBgm.wav");
+	bgm_->isLoop = true;
+	bgm_->volume = 0.1f;
+	bgm_->PlayAudio();
+
 	audioSource_.reset(new AudioSource);
 	audioSource_->Initialize();
-	audioSource_->SetAudioClip("gameStart.wav");
+	audioSource_->SetAudioClip("startGame.wav");
 
 
 	/// draw layer setting
@@ -67,6 +74,9 @@ void Scene_Title::Initialize() {
 	/// push space sprite
 	spaceSpriteRenderer->SetPosition({ -1.5f, -0.7f, 0.0f });
 	spaceSpriteRenderer->SetScale({ 3.1f, 1.7f, 0.0f });
+	
+	
+	
 
 }
 
@@ -74,10 +84,11 @@ void Scene_Title::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space) || Input::TriggerPadButton(PadCode::A)) {
 		sceneTransition_->SetIsStarted(true);
+		audioSource_->PlayAudio();
 	}
 
 	if(sceneTransition_->GetIsFinished()) {
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::TUTORIAL);
-		audioSource_->PlayAudio();
+		bgm_->StopAudioAll();
 	}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Scenes/Manager/BaseScene.h"
 
 #include"Objects/Building/BuildingManager.h"
@@ -7,6 +9,9 @@
 //UI
 #include"UI/TutorialUI.h"
 #include"UI/GuidanceArrow.h"
+
+#include "ComponentManager/AudioSource/AudioSource.h"
+
 
 enum TutorialState {
 	SCACLEUP,
@@ -40,4 +45,7 @@ private:
 	TutorialEntrainmentAll* tutorialEntrainmentAll_ = nullptr;
 	TutorialBodyBlow* tutorialBodyBlow_ = nullptr;
 	bool isCreateUI_;
+
+
+	std::unique_ptr<AudioSource> bgm_ = nullptr;
 };
