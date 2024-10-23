@@ -19,7 +19,7 @@ public:
 	void Update()     override;
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
-	void Update() override;
+	
 
 private:
 

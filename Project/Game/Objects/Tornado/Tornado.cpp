@@ -310,6 +310,7 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 		if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
 			building->SubHP(Time::DeltaTime());
 			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+		/*	audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);*/
 		}
 	}
 }
