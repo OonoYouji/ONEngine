@@ -317,8 +317,9 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 
 		/// 建物を引っこ抜いたらゲージを増やす
 		if(!building->GetIsInTornado()) {
+		
 			if(building->GetHP() <= 0.0f) {
-
+				audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);
 				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.01f;
 				pPlayer_->PowerUpGaugeUp(value);
 
