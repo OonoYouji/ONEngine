@@ -63,6 +63,11 @@ public:
 	/// </summary>
 	void ResetTransformArray();
 
+
+
+	void SetModel(const std::string& filePath);
+	void SetModel(Model* model);
+
 private:
 
 	const uint32_t kMaxInstanceCount_ = 0u;
