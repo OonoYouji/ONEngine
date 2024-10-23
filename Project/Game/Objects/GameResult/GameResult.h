@@ -28,6 +28,7 @@ private:
 	class RetryUI*       retryUI_       = nullptr;
 	class BackTitleUI*   backTitleUI_   = nullptr;
 	class SelectedFrame* selectedFrame_ = nullptr;
+	class SceneTransition* sceneTransition_ = nullptr;
 
 	/// enum variables
 	int selectedNextMode_ = 0;

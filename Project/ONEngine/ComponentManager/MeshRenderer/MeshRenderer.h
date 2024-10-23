@@ -35,6 +35,7 @@ public:
 	/// <param name="texName">: "./Resources/Textures/" からのfilePath</param>
 	void SetMaterial(const std::string& texName);
 
+	Material* GetMaterial() const { return material_.get(); }
 
 	/// <summary>
 	/// マテリアルの色のセット

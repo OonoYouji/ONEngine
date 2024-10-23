@@ -677,6 +677,7 @@
     <ClCompile Include="Game\Objects\DeadEffect\DeadEffect.cpp" />
     <ClCompile Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.cpp" />
     <ClCompile Include="Game\Objects\DefeatStamp\DefeatStamp.cpp" />
+    <ClCompile Include="Game\Objects\PlayerHP\PlayerHP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1018,5 +1019,6 @@
     <ClInclude Include="Game\Objects\DeadEffect\DeadEffect.h" />
     <ClInclude Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.h" />
     <ClInclude Include="Game\Objects\DefeatStamp\DefeatStamp.h" />
+    <ClInclude Include="Game\Objects\PlayerHP\PlayerHP.h" />
   </ItemGroup>
 </Project>
