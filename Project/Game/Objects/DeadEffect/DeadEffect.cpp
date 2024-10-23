@@ -23,7 +23,7 @@ void DeadEffect::Initialize() {
 	
 	const size_t kMaxParticleCount= 12;
 
-	particleSyste_ = AddComponent<ParticleSystem>(static_cast<uint32_t>(kMaxParticleCount), "Sphere");
+	particleSyste_ = AddComponent<ParticleSystem>(static_cast<uint32_t>(kMaxParticleCount), "Bom");
 	particleSyste_->SetEmittedParticleCount(2);
 	particleSyste_->SetParticleLifeTime(1.0f);
 	particleSyste_->SetParticleRespawnTime(0.3f);
@@ -44,13 +44,12 @@ void DeadEffect::Initialize() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data   = particleDataArray_[particle->GetID()];
 
-		data.scaleScaler = (1.0f - particle->GetNormLifeTime()) * 2.0f;
+		data.scaleScaler = (1.0f - particle->GetNormLifeTime()) * 0.5f;
 		transform->position = data.position;
 		transform->scale    = Vec3::kOne * data.scaleScaler;
 
 		if(!particle->GetIsAlive() || particle->GetLifeTime() <= 0.0f) {
-			data.position    = Random::Vec3(-Vec3::kOne, Vec3::kOne) * 5.0f;
-			data.position.z  = 0.0f;
+			data.position    = Random::Vec3(-Vec3::kOne, Vec3::kOne);
 			data.scaleScaler = 0.0f;
 			transform->scale    = Vec3::kOne * data.scaleScaler;
 			transform->position = data.position;
