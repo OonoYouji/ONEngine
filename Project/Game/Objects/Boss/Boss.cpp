@@ -27,7 +27,7 @@
 #undef max
 
 void Boss::Initialize() {
-	Model* model = ModelManager::Load("bossMainBody");
+	Model* model = ModelManager::Load("bossMainBodyGame");
 	Model* collisionModel = ModelManager::Load("bossMainBodyCollisionBox");
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
