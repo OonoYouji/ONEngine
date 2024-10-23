@@ -257,3 +257,11 @@ void MeshInstancingRenderer::SetTransformArray(const std::vector<Transform*>& tr
 void MeshInstancingRenderer::ResetTransformArray() {
 	transformArray_.clear();
 }
+
+void MeshInstancingRenderer::SetModel(const std::string& filePath) {
+	model_ = ModelManager::Load(filePath);
+}
+
+void MeshInstancingRenderer::SetModel(Model* model) {
+	model_ = model;
+}
