@@ -43,7 +43,7 @@ void BossBulletLump::Initialize() {
 
 	audioSource_ = AddComponent<AudioSource>();
 
-	audioSource_->PlayOneShot("BossBulletShot", 0.5f);//弾が出る時
+	audioSource_->PlayOneShot("BossBulletShot.wav", 0.5f);//弾が出る時
 }
 
 void BossBulletLump::Update() {
