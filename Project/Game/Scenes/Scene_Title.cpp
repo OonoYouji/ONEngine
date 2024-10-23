@@ -52,7 +52,7 @@ void Scene_Title::Initialize() {
 	/// 
 	audioSource_.reset(new AudioSource);
 	audioSource_->Initialize();
-	audioSource_->SetAudioClip("gameStart.wav");
+	audioSource_->SetAudioClip("startGame.wav");
 
 
 	/// draw layer setting

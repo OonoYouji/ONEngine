@@ -226,7 +226,7 @@ void BossAnimation::Initialize() {
 			
 			if(!data.isPlayAudio) {
 				/// 一回だけ鳴らす
-				audioSource_->PlayOneShot("bossRaiseTube.wav", 0.5f);
+				audioSource_->PlayOneShot("bossTubeDown.wav", 0.5f);
 				data.isPlayAudio = true;
 			}
 
