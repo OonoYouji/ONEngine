@@ -14,7 +14,7 @@ void GameTitleRenderer::Initialize() {
 
 	/// add components
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("title.png");
 
 
 

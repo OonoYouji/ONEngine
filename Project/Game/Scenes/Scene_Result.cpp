@@ -5,6 +5,8 @@
 #include "Objects/GameResult/GameResult.h"
 
 #include "Objects/Tornado/Tornado.h"
+#include "Objects/DefeatStamp/DefeatStamp.h"
+
 
 void Scene_Result::Initialize() {
 
@@ -15,10 +17,12 @@ void Scene_Result::Initialize() {
 	/// instance create
 	GameCamera* spriteCamera = new GameCamera("spriteCamera");
 	GameResult* gameResult   = new GameResult();
+	DefeatStamp* defeatStamp = new DefeatStamp();
 
 	/// initializing
 	spriteCamera->Initialize();
 	gameResult->Initialize();
+	defeatStamp->Initialize();
 
 	/// other setting
 	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
