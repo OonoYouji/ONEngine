@@ -56,6 +56,8 @@ private:
 
 	void CalcuationAnchorPointArray();
 
+	void CalcuationUpDirctionArray();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -72,7 +74,9 @@ private:
 	std::list<Transform>     anchorPointTransformList_;
 
 	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
+	std::vector<Vec3> upDirArray_; /// 上方向ベクトルを補間するため
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;
+	class SplinePathRenderer* upDirInterpolationRenderer_ = nullptr;
 
 	int subtractIndex_ = 0;
 	int addIndex_ = 0;

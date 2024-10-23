@@ -27,9 +27,12 @@ ShootingCourse::ShootingCourse() {
 ShootingCourse::~ShootingCourse() {}
 
 void ShootingCourse::Initialize() {
-	splinePathRenderer_    = AddComponent<SplinePathRenderer>(6);
-	meshInstancedRenderer_ = AddComponent<MeshInstancingRenderer>(128);
-	anchorPointRenderer_   = AddComponent<MeshInstancingRenderer>(32);
+	splinePathRenderer_         = AddComponent<SplinePathRenderer>(6);
+	upDirInterpolationRenderer_ = AddComponent<SplinePathRenderer>(6);
+	meshInstancedRenderer_      = AddComponent<MeshInstancingRenderer>(128);
+	anchorPointRenderer_        = AddComponent<MeshInstancingRenderer>(32);
+
+	upDirInterpolationRenderer_->isActive = false;
 
 	/// レールのモデルをセット
 	meshInstancedRenderer_->SetModel("Rail");
@@ -48,9 +51,12 @@ void ShootingCourse::Initialize() {
 	}
 
 
+	upDirArray_.clear();
+
 	std::vector<Vec3> tmpVertices;
 	for(auto& anchorPoint : anchorPointArray_) {
-		tmpVertices.push_back(anchorPoint.position);
+		vertices_.push_back(anchorPoint.position);
+		upDirArray_.push_back(anchorPoint.up);
 	}
 	vertices_ = tmpVertices;
 
@@ -66,6 +72,9 @@ void ShootingCourse::Update() {
 	}
 	vertices_ = tmpVertices;
 #endif // _DEBUG
+
+	
+	CalcuationUpDirctionArray();
 
 	/// tranformの再計算
 	CalcuationRailTransform();
@@ -224,34 +233,51 @@ void ShootingCourse::AddAnchorPoint(const Vec3& point) {
 void ShootingCourse::CalcuationRailTransform() {
 	/// スプライン曲線の補完された点をゲット
 	const std::vector<Vec3>& segmentPointArray = splinePathRenderer_->GetSegmentPointArray();
+	const std::vector<Vec3>& upDirArray        = upDirInterpolationRenderer_->GetSegmentPointArray();
+
+	/// 上でゲットした配列のどちらかが空だと早期リターン
+	if(segmentPointArray.empty() || upDirArray.empty()) {
+		return;
+	}
 
 	/// mesh instanced rendererのtransformをリセット
 	meshInstancedRenderer_->ResetTransformArray();
 	transformList_.clear();
 
-	/// transforに変換 → mesh instanced rendererに渡す
-	for(auto itr = segmentPointArray.begin(); itr != segmentPointArray.end(); ++itr) {
-		auto nextItr = std::next(itr);
 
-		/// next itrがlistの最後なら終了
-		if(nextItr == segmentPointArray.end()) {
-			break;
-		}
 
-		Transform transform{};
-		transform.position = *itr;
-		transform.scale    = { 1,1,1 };
+	
+	/// レールのtransformを計算
 
-		Vec3 diff = (*nextItr) - (*itr);
+	for(size_t i = 0; i < segmentPointArray.size() - 1; ++i) {
+		const Vec3& up = upDirArray[i];
+
+		/// 現在の座標と次の座標を得る
+		const Vec3& currentPoint = segmentPointArray[i];
+		const Vec3& nextPoint    = segmentPointArray[i + 1];
+
+		/// 進行方向、ローカル上方向、ローカル左方向のベクトル計算
+		Vec3 moveDir  = Vec3(nextPoint - currentPoint).Normalize();
+		Vec3 upDir    = upDirArray[i];
+		Vec3 rightDir = Vec3::Cross(moveDir, upDir);
+
+
+		/// transformを計算する
+		Transform transform;
+		transform.rotateOrder = YXZ;
+		transform.position = currentPoint;
+
 		transform.rotate = {
-			std::atan2(-diff.y, Vec3::Length({ diff.x, 0.0f, diff.z })),
-			std::atan2(diff.x, diff.z),
-			0.0f,
+			std::asin(-moveDir.y),
+			std::atan2(moveDir.x, moveDir.z),
+			-std::atan2(rightDir.y, upDir.y)
 		};
 
 		transform.UpdateMatrix(false);
 		transformList_.push_back(std::move(transform));
+
 	}
+
 
 	for(auto& transform : transformList_) {
 		meshInstancedRenderer_->AddTransform(&transform);
@@ -259,6 +285,8 @@ void ShootingCourse::CalcuationRailTransform() {
 }
 
 void ShootingCourse::CalcuationAnchorPointArray() {
+
+
 
 	anchorPointRenderer_->ResetTransformArray();
 	anchorPointTransformList_.clear();
@@ -281,5 +309,22 @@ void ShootingCourse::CalcuationAnchorPointArray() {
 
 	for(auto& transform : anchorPointTransformList_) {
 		anchorPointRenderer_->AddTransform(&transform);
+	}
+}
+
+void ShootingCourse::CalcuationUpDirctionArray() {
+	/// 上方向ベクトルの正規化
+	upDirArray_.clear();
+	for(auto& anchorPoint : anchorPointArray_) {
+		anchorPoint.up = anchorPoint.up.Normalize();
+		upDirArray_.push_back(anchorPoint.up);
+	}
+
+	upDirInterpolationRenderer_->SetAnchorPointArray(upDirArray_);
+
+	if(upDirArray_.size() < 4) {
+		upDirInterpolationRenderer_->isActive = false;
+	} else {
+		upDirInterpolationRenderer_->isActive = true;
 	}
 }
