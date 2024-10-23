@@ -69,7 +69,7 @@ void BossBulletShot::Update() {
 
 		//予測線の向きを計算
 		Quaternion predictionDirection = pBoss_->GetPivotQuaternion() * pBoss_->GetQuaternion();
-		bossBulletPrediction_->SetPivotQuaternion(inter_);
+		bossBulletPrediction_->SetDirection(predictionDirection);
 		
 		//クールタイム終わったら弾発射
 		if (anticipationTime_ >= kAnticipationTime_) {

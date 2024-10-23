@@ -90,7 +90,7 @@ void BossBulletPrediction::Initialize() {
 	meshRenderer->SetModel(model);
 
 	/// transform initialize
-	//pTransform_->rotateOrder = X;
+	pTransform_->rotateOrder = QUATERNION;;
 	pivot_.rotateOrder = QUATERNION;
 	/// action param initialize
 	////////////////////////////////////////////////////////////////////////////////////////////
