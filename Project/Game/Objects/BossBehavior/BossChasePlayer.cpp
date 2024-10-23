@@ -21,10 +21,10 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
-	AttackPos_ = 10.0f;/// ボス
-	SlurpPos_ = 25.0f;
+	AttackPos_ = 8.0f;/// ボス
+	SlurpPos_ = 23.0f;
 	
-	attackCoolTime_ = 1.0f;
+	attackCoolTime_ = 1.3f;
 }
 
 BossChasePlayer::~BossChasePlayer() {

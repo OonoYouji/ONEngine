@@ -86,7 +86,7 @@ void BaseBuilding::Initialize() {
 	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	scaleMax_ = 1.0f;
-	slurpSpeed_ = 1.0f;
+	slurpSpeed_ = 0.7f;
 	offsetPosition_ = pTransform_->position;
 
 	////////////////////////////////////////////////////////////////////////////////////////////

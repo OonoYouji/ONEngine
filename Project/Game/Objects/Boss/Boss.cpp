@@ -51,7 +51,7 @@ void Boss::Initialize() {
 	pivot_.quaternion = initQuater;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->scale = { 2,2,2 };
-	SpeedParamater_ = 0.5f;
+	SpeedParamater_ = 0.3f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
 	HPMax_ = 100.0f;
 	HP_ = HPMax_;
@@ -391,7 +391,7 @@ void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
 		if (pBuildingManager_) {
 
 			float totalDamage = 0.0f;
-			const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f };//各ダメージパラメータ
+			const std::vector<float> damageValues = { 0.01f, 0.05f, 0.1f };//各ダメージパラメータ
 
 			//巻きこまれてるビルから、ダメージ計算
 			for (auto& inTornadoBuilding : pBuildingManager_->GetInTornadoBuildingss()) {

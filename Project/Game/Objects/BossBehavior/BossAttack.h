@@ -12,9 +12,9 @@ public:
 private:
 
 	float attackWaitTime_;
-	const float kAttackWaitTime_ = 1.0f;
+	const float kAttackWaitTime_ = 1.2f;
 	float attackFixationTime_;
-	const float kAttackFixationTime_ = 2.0f;
+	const float kAttackFixationTime_ = 1.8f;
 	bool isSwingDown_;
 	bool isFixation_;
 	Quaternion inter_;

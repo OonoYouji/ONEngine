@@ -130,7 +130,7 @@ private:
 	const float kSlurpCollTime_ = 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
 
 	//ボス弾発射関連
-	const uint32_t kBuildingNum_ = 1;
+	const uint32_t kBuildingNum_ = 20;
 
 	//ひどい変数群(攻撃イージング)
 	bool isAttackBack_;
