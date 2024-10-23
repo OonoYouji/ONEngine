@@ -50,7 +50,6 @@ public:
 	void AttackUpdate();
 	void AttackFixationUpdate();
 
-	void DamageParticleInit();
 
 	void DamageForPar(const float& par);
 
@@ -81,8 +80,10 @@ public:
 	void SetPivotQuaternion(Quaternion pivot) { pivot_.quaternion = pivot; }
 	void SetPivotSubtraction(Quaternion pivot) { pivot_.quaternion *= pivot; }
 	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
-
+	void BulletHitBack();
 	void SetIsAttack(bool is) { isAttack_ = is; }
+
+	void ColorChange(Vec4 color) { meshRenderer_->SetColor(color);}
 
 /// <summary>
 /// Particle
@@ -125,7 +126,7 @@ private:
 	const float kSlurpCollTime_ = 1.0f;  // 吸い込み完了後のクールダウン時間（秒）
 
 	//ボス弾発射関連
-	const uint32_t kBuildingNum_ = 10;
+	const uint32_t kBuildingNum_ = 1;
 
 	//ひどい変数群(攻撃イージング)
 	bool isAttackBack_;

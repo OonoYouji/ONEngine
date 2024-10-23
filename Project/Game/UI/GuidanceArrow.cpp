@@ -18,7 +18,7 @@
 #include"Easing/EasingFunction.h"
 
 void GuidanceArrow::Initialize() {
-	Model* model = ModelManager::Load("playerInGame");
+	Model* model = ModelManager::Load("arrow");
 	//mesh
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
@@ -73,7 +73,7 @@ void GuidanceArrow::Update() {
 
 	pivot_.UpdateMatrix();
 
-	if (distanceAndDirection.first<=7.0f) {
+	if (distanceAndDirection.first<=10.0f) {
 		pTransform_->scale = { 0,0,0 };
 	}
 	else {
@@ -113,7 +113,7 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 1.5f * Time::TimeRateDeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion = (interpolatedRotation * move);
@@ -122,7 +122,7 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 
-	if (distanceAndDirection.first <= 7.0f) {
+	if (distanceAndDirection.first <= 10.0f) {
 		pTransform_->scale = { 0,0,0 };
 	}
 	else {

@@ -19,12 +19,12 @@
 
 
 void BossBulletLump::Initialize() {
-	Model* model = ModelManager::Load("bossMainBody");
+	Model* model = ModelManager::Load("bossBullet");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 	/// transform initialize
-	pTransform_->rotateOrder = QUATERNION;
+	//pTransform_->rotateOrder = X;
 	pivot_.rotateOrder = QUATERNION;
 	/// action param initialize
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ void BossBulletLump::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
-	pTransform_->scale = { 2,2,2 };
+	pTransform_->scale = { 3,3,3 };
 	isDeath_ = false;
 
 	audioSource_ = AddComponent<AudioSource>();
@@ -52,34 +52,79 @@ void BossBulletLump::Update() {
 	pivot_.quaternion *= moveQuaternion;
 	pivot_.UpdateMatrix();
 
+	pTransform_->rotate.x += 8.0f * Time::TimeRateDeltaTime();
 	//無敵時間
 	invincibleTime_ += Time::TimeRateDeltaTime();
 }
 
 void BossBulletLump::Debug() {
 
-	if(ImGui::TreeNode("this param")) {
+	if (ImGui::TreeNode("this param")) {
 		ImGui::DragFloat4("pivot", &pivot_.quaternion.x);
 		ImGui::TreePop();
 	}
 }
 
 void BossBulletLump::SetDirection(Quaternion direction) {
-	pivot_.quaternion = direction; 
+	pivot_.quaternion = direction;
 	pivot_.UpdateMatrix();
-}
-
-void BossBulletLump::SetBoss(Boss* boss) {
-	/*pBoss_ = boss;*/
-	/*pivot_.SetParent(pBoss_->GetTransform());*/
 }
 
 
 void BossBulletLump::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
-	if (dynamic_cast<Boss*>(collision)&&!isDeath_) {
+	if (dynamic_cast<Boss*>(collision) && !isDeath_) {
 		if (invincibleTime_ >= kInvincibleTime_) {
+			//audioSource_->PlayOneShot("bossStop", 0.5f);//ボスがボスの弾と当たった時
 			isDeath_ = true;
 		}
 	}
 }
+
+/// ===================================================
+/// ボスの弾可視化クラス
+/// ===================================================
+void BossBulletPrediction::Initialize() {
+	Model* model = ModelManager::Load("bossBulletPrediction");
+	auto meshRenderer = AddComponent<MeshRenderer>();
+	meshRenderer->SetModel(model);
+
+	/// transform initialize
+	pTransform_->rotateOrder = QUATERNION;;
+	pivot_.rotateOrder = QUATERNION;
+	/// action param initialize
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  初期化
+	////////////////////////////////////////////////////////////////////////////////////////////
+	pivot_.Initialize();
+	pTransform_->SetParent(&pivot_);
+	////////////////////////////////////////////////////////////////////////////////////////////
+	//  値セット
+	////////////////////////////////////////////////////////////////////////////////////////////
+	pivot_.quaternion = { 0,0,0,1 };//ピボット
+	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->position.z = 0;
+	pTransform_->scale = { 1,1,1 };
+	isDeath_ = false;
+
+	audioSource_ = AddComponent<AudioSource>();
+
+}
+
+void BossBulletPrediction::Update() {
+
+}
+
+void BossBulletPrediction::Debug() {
+
+	if (ImGui::TreeNode("this param")) {
+		ImGui::DragFloat4("pivot", &pivot_.quaternion.x);
+		ImGui::TreePop();
+	}
+}
+
+void BossBulletPrediction::SetDirection(Quaternion direction) {
+	pivot_.quaternion = direction;
+	pivot_.UpdateMatrix();
+}
+

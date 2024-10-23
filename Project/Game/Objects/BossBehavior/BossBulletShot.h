@@ -1,8 +1,8 @@
 #pragma once
 #include"Objects/BossBehavior/BaseBossBehavior.h"
 
-class BossBulletParticle;
 class BossBulletLump;
+class BossBulletPrediction;
 class BossBulletShot : public BaseBossBehavior {
 public:
 	//コンストラクタ
@@ -31,6 +31,8 @@ private:
 	Quaternion inter_;
 	Quaternion move_;
 
-	BossBulletParticle* bossBulletParticle_ = nullptr;
+	///
+	/// ather 
+	BossBulletPrediction* bossBulletPrediction_=nullptr;
 	 BossBulletLump* BossbulletLump_ = nullptr;
 };

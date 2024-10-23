@@ -19,8 +19,8 @@ void BaseTutorialUI::Initialize() {
 	drawLayerId = 1;
 	isClose_ = false;
 	canClose_ = false;
-	pTransform_->scale = {0,1,1};
-	pTransform_->position.y = -1.4f;
+	pTransform_->scale = {0,0.2f,1};
+	pTransform_->position.y = -0.2f;
 	pTransform_->rotate.x = 0.0f;
 
 	
@@ -35,7 +35,7 @@ void BaseTutorialUI::Update() {
 			easeT_ = kEaseTime_;
 			canClose_ = true;
 		}
-		pTransform_->scale.x = EaseInCirc<float>(0.0f, 1.0f, easeT_, kEaseTime_);
+		pTransform_->scale.x = EaseInCirc<float>(0.0f, 2.0f, easeT_, kEaseTime_);
 	}
 
 	if (canClose_) {
@@ -69,7 +69,7 @@ void TutorialScaleUpUI::Initialize() {
 	
 	/// add components
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("tutorial1.png");
 	
 	BaseTutorialUI::Initialize();
 };
@@ -90,7 +90,7 @@ void TutorialScaleDownUI::Initialize() {
 
 	/// add components
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("tutorial2.png");
 	BaseTutorialUI::Initialize();
 };
 
@@ -109,7 +109,7 @@ void TutorialScaleDownUI::Debug() {
 void TutorialEntrainment::Initialize() {
 
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("tutorial3.png");
 	BaseTutorialUI::Initialize();
 };
 
@@ -130,7 +130,7 @@ void TutorialEntrainment::Debug() {
 void TutorialEntrainmentAll::Initialize() {
 
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("tutorial4.png");
 	BaseTutorialUI::Initialize();
 };
 
@@ -149,7 +149,7 @@ void TutorialEntrainmentAll::Debug() {
 void TutorialBodyBlow::Initialize() {
 
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
-	spriteRenderer->SetTexture("uvChecker");
+	spriteRenderer->SetTexture("tutorial5.png");
 	BaseTutorialUI::Initialize();
 };
 

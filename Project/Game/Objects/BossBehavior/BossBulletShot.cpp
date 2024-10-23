@@ -9,7 +9,6 @@
 #include"Objects/Player/Player.h"
 #include"Objects/boss/boss.h"
 #include"Objects/Boss/BossBulletLump.h"
-#include"Objects/BossRendition/BossBulletParticle.h"
 
 //function
 #include"Easing/EasingFunction.h"
@@ -26,6 +25,10 @@ BossBulletShot::BossBulletShot(Boss* boss)
 	anticipationTime_ = 0.0f;
 	isAnticipationed_ = false;
 	isStop_ = false;
+
+	//予測線の生成
+	bossBulletPrediction_ = new BossBulletPrediction();
+	bossBulletPrediction_->Initialize();
 }
 
 BossBulletShot ::~BossBulletShot() {
@@ -63,6 +66,10 @@ void BossBulletShot::Update() {
 
 		// 回転を更新
 		pBoss_->SetPivotQuaternion(inter_);
+
+		//予測線の向きを計算
+		Quaternion predictionDirection = pBoss_->GetPivotQuaternion() * pBoss_->GetQuaternion();
+		bossBulletPrediction_->SetDirection(predictionDirection);
 		
 		//クールタイム終わったら弾発射
 		if (anticipationTime_ >= kAnticipationTime_) {
@@ -82,18 +89,32 @@ void BossBulletShot::Update() {
 			BossbulletLump_->Update();
 			//弾死んだらスタン
 			if (BossbulletLump_->GetIsDeath()) {
-				BossbulletLump_->Destory();//デストロイ
+				/// ボスの塊デストロイ
+				BossbulletLump_->Destory();
 				BossbulletLump_ = nullptr;
+				/// 予測線デストロイ
+				bossBulletPrediction_->Destory();
+				bossBulletPrediction_ = nullptr;
 				isStop_ = true;
 			}
-			
 		}
+
 		if(isStop_){
+
 			stopTime_ += Time::TimeRateDeltaTime();
 			//振る舞い切り替え
 			if (stopTime_ >= kStopTime_) {
 				pBoss_->SetIsBuildingKill(false);
 				pBoss_->ChangeState(std::make_unique<BossChasePlayer>(pBoss_));
+			}
+			else	if (stopTime_ <= kStopTime_ - 0.9f) {
+				pBoss_->ColorChange(Vec4::kRed);
+				// ホーミング移動のスピードを設定
+				Quaternion move = ToQuaternion({2.0f* Time::TimeRateDeltaTime(), 0, 0 });
+				pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
+			}
+			else {
+				pBoss_->ColorChange(Vec4::kWhite);
 			}
 
 		}

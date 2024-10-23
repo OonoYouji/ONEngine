@@ -9,7 +9,7 @@
 #include "Objects/CameraState/GameCameraState.h"
 #include "Objects/Tornado/Tornado.h"	
 #include "Objects/Boss/Boss.h"	
-
+#include <GraphicManager/TextureManager/TextureManager.h>
 
 void Scene_Tutorial::Initialize() {
 
@@ -31,7 +31,7 @@ void Scene_Tutorial::Initialize() {
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
-
+	/*TextureManager::Load("Tutorial1.png"); textureManager->Load("uvChecker", "uvChecker.png");*/
 	//チュートリアル
 	tutorialScaleUpUI_->Initialize();
 	
@@ -43,6 +43,10 @@ void Scene_Tutorial::Initialize() {
 	uiCamera->Initialize();
 	guidanceArrow_->Initialize();
 	
+	/*TextureManager::GetInstance()->Load("tutorial1", "tutorial1.png");
+	TextureManager::GetInstance()->Load("tutorial2", "tutorial2.png");
+	TextureManager::GetInstance()->Load("tutorial3", "tutorial3.png");
+	TextureManager::GetInstance()->Load("tutorial4", "tutorial4.png");*/
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -56,7 +60,7 @@ void Scene_Tutorial::Initialize() {
 	tornado_->SetPlayer(player_);
 	guidanceArrow_->SetPlayer(player_);
 	AddLayer("ui", uiCamera);
-	uiCamera->SetPositionZ(-10.0f);
+	uiCamera->SetPositionZ(-1.4f);
 	//更新して、移動させない為にアクティブを切る
 	player_->Update();
 	buildingManager_->SetTornado(tornado_);
@@ -146,6 +150,7 @@ void Scene_Tutorial::Update() {
 				tutorialBodyBlow_->Initialize();
 				dumy_ = new Dumy();
 				dumy_->Initialize();
+				dumy_->SetPlyer(player_);
 			}
 		}
 		break;
