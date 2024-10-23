@@ -1,9 +1,11 @@
+#define NOMINMAX
 #include "PlayerHP.h"
 
 /// engine
 #include <imgui.h>
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
+#include "FrameManager/Time.h"
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -31,11 +33,39 @@ void PlayerHP::Initialize() {
 	materials.front().SetPosition(gaugeUVPosition_);
 
 
-	numberUVPosition_ = { 0.0f, 0.0f };
-	numberUVScale_ = { 1, 1 };
+	numberUVPosition_ = { 0.12f, 0.03f };
+	numberUVScale_ = { 3.0f, 0.6f };
+
+	uvPosYArray_ = {
+		0.03f,  0.185f, 0.345f,
+		0.505f, 0.665f, 0.825f
+	};
+
+
+	animationTime_    = 0.0f;
+	maxAnimationTime_ = 0.6f;
+
 }
 
 void PlayerHP::Update() {
+
+	animationTime_ += Time::DeltaTime();
+	float lerpT = std::min(animationTime_ / maxAnimationTime_, 1.0f);
+
+	/// number uv position y 
+	numberUVPosition_.y = std::lerp(
+		uvPosYArray_[cuurentHp_], uvPosYArray_[nextHp_],
+		lerpT
+	);
+
+	float gaugeLerpT = static_cast<float>(nextHp_) / 5.0f;
+	/// 0.5 ~ 0.25
+	gaugeUVPosition_.y = std::lerp(
+		0.5f, 0.25f,
+		lerpT * gaugeLerpT
+	);
+
+	/// マテリアルのセット
 
 	std::vector<Material>& materials = model_->GetMaterials();
 	materials.front().SetPosition(gaugeUVPosition_);
@@ -52,9 +82,29 @@ void PlayerHP::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::DragFloat2("gauge uv position",  &gaugeUVPosition_.x,  0.01f);
-		ImGui::DragFloat2("number uv position", &numberUVPosition_.x, 0.01f);
+
+		ImGui::Spacing();
+
+		ImGui::DragFloat2("number uv position", &numberUVPosition_.x, 0.005f);
 		ImGui::DragFloat2("number uv scale",    &numberUVScale_.x,    0.01f);
 
+		ImGui::Spacing();
+
+		ImGui::SliderInt("current hp", &cuurentHp_, 0, 5);
+		ImGui::SliderInt("next hp", &nextHp_, 0, 5);
+		
+		ImGui::SeparatorText("animation");
+		ImGui::DragFloat("time",     &animationTime_,    0.2f);
+		ImGui::DragFloat("max time", &maxAnimationTime_, 0.2f);
+
+		if(ImGui::Button("reset animation")) {
+			ResetAnimationTime();
+		}
+		
 		ImGui::TreePop();
 	}
+}
+
+void PlayerHP::ResetAnimationTime() {
+	animationTime_ = 0.0f;
 }

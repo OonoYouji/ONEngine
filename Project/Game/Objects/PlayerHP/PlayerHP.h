@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <vector>
+
+/// base class
 #include "GameObjectManager/GameObjectManager.h"
 
 class PlayerHP : public BaseGameObject {
@@ -12,12 +16,25 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void ResetAnimationTime();
+
 private:
 	Model* model_ = nullptr;
 	Vec2   gaugeUVPosition_;
 
 	Vec2   numberUVPosition_;
 	Vec2   numberUVScale_;
+
+	/// pos yを格納
+	std::vector<float> uvPosYArray_;
+
+	/// hp
+	int cuurentHp_;
+	int nextHp_;
+
+	/// time
+	float animationTime_    = 0.0f;
+	float maxAnimationTime_ = 0.0f;
 
 	class MeshRenderer* numberRenderer_ = nullptr;
 	
