@@ -23,6 +23,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
 
 private:
 	class ParticleSystem*     particleSyste_;
