@@ -53,7 +53,7 @@ void Boss::Initialize() {
 	pTransform_->scale = { 2,2,2 };
 	SpeedParamater_ = 0.3f;
 	pTransform_->position.z = -(Ground::groundScale_ + 1);
-	HPMax_ = 100.0f;
+	HPMax_ = 150.0f;
 	HP_ = HPMax_;
 	nextDamageCollTime_ = 0.3f;
 
