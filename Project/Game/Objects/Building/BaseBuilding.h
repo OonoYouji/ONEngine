@@ -101,6 +101,8 @@ private:
 	bool isInTornado_;
 	//竜巻と衝突したか
 	bool isCollisionTyphoon_;
+
+	float slurpSpeed_;
 	
 	//スケールMAX
 	float scaleMax_;

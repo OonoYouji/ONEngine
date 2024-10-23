@@ -62,6 +62,11 @@ void Player::Initialize() {
 	//ヒットバック力
 	hitBackPower_ = -0.05f;
 
+	/// PowerDown
+	powerDownPar_ = 0.1f;
+	powerDownInterval_ = 2.0f;
+	powerDownTime_ = 1.0f;
+
 	//ダメージ
 	damageForBossHead_.kStopCollTime = 0.5f;
 	damageForBossHead_.DamagePar = 0.05f;
@@ -100,9 +105,12 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+	/// パワーアップゲージを減らす
+	powerDownTime_ += Time::TimeRateDeltaTime();
+	GaugeDownForPar(powerDownPar_, powerDownInterval_);
+
 	/// 前フレームのデータをコピー
 	preCameraBehavior_ = cameraBehavior_; /// カメラの振る舞い
-
 
 	float maxSpeed = 0.6f;
 	float minSpeed = 0.5f;
@@ -265,7 +273,21 @@ void Player::PowerUpGaugeUp(float par) {
 	}
 }
 
+void Player::GaugeDownForPar(const float& par, const float& second) {
 
+	//割合によるデクリメントとする値を決める
+	float incrementSize = powerUpGaugeMax_ * par;
+
+	if (powerDownTime_ >= second) {//毎秒
+		// 現在のスケール値に増加分を追加s
+		powerUpGauge_-= incrementSize;
+		// 0未満にならないように
+		if (powerUpGauge_ < 0.0f) {
+			powerUpGauge_ = 0.0f;
+		}
+		powerDownTime_ = 0.0f;
+	}
+}
 
 void Player::ChangeState(std::unique_ptr<BasePlayerBehavior>behavior) {
 	//引数で受け取った状態を次の状態としてセット
@@ -374,6 +396,9 @@ void Player::Debug() {
 		ImGui::DragFloat("PowerUpGaugeMax", &powerUpGaugeMax_, 0.01f);
 		ImGui::DragFloat("PowerUpTime", &powerUpTime_, 0.01f);
 		ImGui::DragFloat("PowerUpTimeMax", &powerUpTimeMax_, 0.01f);
+		ImGui::SeparatorText("power down");
+		ImGui::DragFloat("PowerDownPar", &powerDownPar_, 0.01f);
+		ImGui::DragFloat("PowerDownTime", &powerDownTime_, 0.01f);
 
 		ImGui::DragFloat("hit stop time rate", &timeRate_);
 

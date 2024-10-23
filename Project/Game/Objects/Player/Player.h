@@ -81,7 +81,7 @@ public:
 	/// <param name="behavior"></param>
 	void SetCameraBehavior(int behavior);
 
-
+	void GaugeDownForPar(const float& par, const float& second);
 	//ダメージ
 	void DamageForPar(const float& par);
 	//setter
@@ -157,6 +157,11 @@ private:
 	DamageParamater damageForBossHead_;
 	DamageParamater damageForBossBullet_;
 	DamageParamater damageForBossBody_;
+
+	/// パワーダウン
+	float powerDownTime_;
+	float powerDownInterval_;
+	float powerDownPar_;
 
 	//トルネード
 	Tornado* pTornado_;
