@@ -14,6 +14,11 @@ public:
 
 private:
 	Model* model_ = nullptr;
-	Vec2   uvPosition_;
+	Vec2   gaugeUVPosition_;
+
+	Vec2   numberUVPosition_;
+	Vec2   numberUVScale_;
+
+	class MeshRenderer* numberRenderer_ = nullptr;
 	
 };
