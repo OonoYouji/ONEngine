@@ -77,7 +77,7 @@ void Scene_Title::Update() {
 	}
 
 	if(sceneTransition_->GetIsFinished()) {
-		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::TUTORIAL);
 		audioSource_->PlayAudio();
 	}
 }
