@@ -5,6 +5,7 @@
 
 /// engine
 #include "Input/Input.h"
+#include "Scenes/Manager/SceneManager.h"
 
 /// objects
 #include "BackTitleUI/BackTitleUI.h"
@@ -69,11 +70,11 @@ void GameResult::Initialize() {
 }
 
 void GameResult::Update() {
-	bool isLeftInput  = false;
+	bool isLeftInput = false;
 	bool isRightInput = false;
 
 	/*##########################################################
-	    TODO : COMMENT
+		TODO : COMMENT
 		コントローラー操作を追加する
 	##########################################################*/
 
@@ -92,7 +93,7 @@ void GameResult::Update() {
 		/// セレクトモードを変える
 		selectedNextMode_ = selectedNextMode_ + (isRightInput - isLeftInput);
 		selectedNextMode_ = std::clamp(
-			selectedNextMode_, 
+			selectedNextMode_,
 			static_cast<int>(NEXT_MODE_RETRY),
 			static_cast<int>(NEXT_MODE_BACK_TITLE)
 		);
@@ -103,6 +104,23 @@ void GameResult::Update() {
 			-1.0f + (selectedNextMode_ * 2.0f)
 		);
 
+	}
+
+
+	/// シーンの遷移
+	bool isSceneLoad = false;
+	isSceneLoad |= Input::TriggerKey(KeyCode::Space);
+	isSceneLoad |= Input::TriggerPadButton(PadCode::A);
+
+	if(isSceneLoad) {
+
+		if(selectedNextMode_ == NEXT_MODE_RETRY) {
+
+			SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+		} else {
+
+			SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
+		}
 	}
 
 
