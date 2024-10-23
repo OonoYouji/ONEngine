@@ -49,6 +49,15 @@ public:
 	/// <returns></returns>
 	Vec3 SplineInterpolation(const std::array<Vec3, 4>& vertices, float t);
 
+
+
+	/// <summary>
+	/// スプライン曲線の補完をしたすべての点をゲット
+	/// </summary>
+	/// <returns></returns>
+	const std::vector<Vec3>& GetSegmentPointArray() const { return segmentPoints_; }
+
+
 private:
 	/// ===================================================
 	/// private : objects
