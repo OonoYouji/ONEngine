@@ -12,6 +12,7 @@ void BossName::Initialize() {
     auto mr = AddComponent<MeshRenderer>();
     mr->SetModel("gageName");
     mr->SetMaterial("bossHpGageName");
+    mr->GetMaterial()->SetIsLighting(false);
 
     pTransform_->position.x = 1.0f;
 

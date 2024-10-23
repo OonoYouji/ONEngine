@@ -23,6 +23,7 @@ void PowerUpGauge::Initialize() {
 	mr_ = AddComponent<MeshRenderer>();
 	mr_->SetModel("gage");
 	mr_->SetMaterial("gage");
+	mr_->GetMaterial()->SetIsLighting(false);
 
 	pTransform_->position = { -1.0f, 0.0f, 0.0f };
 	pTransform_->Update();

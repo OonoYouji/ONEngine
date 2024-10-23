@@ -22,6 +22,7 @@ void BossHP::Initialize() {
 	mr_ = AddComponent<MeshRenderer>();
 	mr_->SetModel("gage");
 	mr_->SetMaterial("bossHpGage");
+	mr_->GetMaterial()->SetIsLighting(false);
 
 	pTransform_->rotate.z = std::numbers::pi_v<float>;
 	pTransform_->position = { 1.0f, 0.0f, 0.0f };
