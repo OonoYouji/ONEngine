@@ -206,6 +206,7 @@
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerRoot.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
+    <ClCompile Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\GameTilteRendere.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleEarth.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitlePlayerAnimator.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerRoot.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
+    <ClInclude Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.h" />
     <ClInclude Include="Game\Objects\TitleObjects\GameTilteRendere.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleEarth.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitlePlayerAnimator.h" />

@@ -675,6 +675,7 @@
       <Filter>Game\Objects\BossRendition</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\DeadEffect\DeadEffect.cpp" />
+    <ClCompile Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1014,5 +1015,6 @@
       <Filter>Game\Objects\BossRendition</Filter>
     </ClInclude>
     <ClInclude Include="Game\Objects\DeadEffect\DeadEffect.h" />
+    <ClInclude Include="Game\Objects\SpaceSpriteRenderer\SpaceSpriteRenderer.h" />
   </ItemGroup>
 </Project>

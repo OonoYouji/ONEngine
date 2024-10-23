@@ -11,6 +11,7 @@
 #include "Objects/TitleObjects/TitlePlayerAnimator.h"
 #include "Objects/TitleObjects/GameTilteRendere.h"
 #include "Objects/SceneTransition/SceneTransition.h"
+#include "Objects/SpaceSpriteRenderer/SpaceSpriteRenderer.h"
 
 
 void Scene_Title::Initialize() {
@@ -30,6 +31,7 @@ void Scene_Title::Initialize() {
 	TitlePlayerAnimator* playerAnimator    = new TitlePlayerAnimator();
 	GameTitleRenderer*   gameTitleRenderer = new GameTitleRenderer();
 	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
+	SpaceSpriteRenderer* spaceSpriteRenderer = new SpaceSpriteRenderer();
 
 	/// initializing
 	uiCamera->Initialize();
@@ -37,6 +39,7 @@ void Scene_Title::Initialize() {
 	playerAnimator->Initialize();
 	gameTitleRenderer->Initialize();
 	sceneTransition_->Initialize();
+	spaceSpriteRenderer->Initialize();
 
 	/// setting...
 	uiCamera->SetPositionZ(-10.0f);
@@ -50,7 +53,21 @@ void Scene_Title::Initialize() {
 	audioSource_.reset(new AudioSource);
 	audioSource_->Initialize();
 	audioSource_->SetAudioClip("gameStart.wav");
+
+
+	/// draw layer setting
 	sceneTransition_->drawLayerId = 2;
+	spaceSpriteRenderer->drawLayerId = 1;
+
+
+	/// game title sprite
+	gameTitleRenderer->SetPosition({ -1.4f, 0.9f, 0.0f });
+	gameTitleRenderer->SetScale({ 4.8f, 3.0f, 0.0f });
+
+	/// push space sprite
+	spaceSpriteRenderer->SetPosition({ -1.5f, -0.7f, 0.0f });
+	spaceSpriteRenderer->SetScale({ 3.1f, 1.7f, 0.0f });
+
 }
 
 void Scene_Title::Update() {
