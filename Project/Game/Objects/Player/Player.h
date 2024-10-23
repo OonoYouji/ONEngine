@@ -94,6 +94,10 @@ public:
 
 	void SetBuildingManager(BuildingManager* buildingManager);
 
+
+	void SetPlayerHP(class PlayerHP* _playerHP);
+
+
 private:
 	struct DamageParamater {
 		bool isStop;
@@ -147,8 +151,7 @@ private:
 	int preCameraBehavior_;
 
 	//HP
-	float HP_;
-	const	float HPMax_ = 100.0f;
+	int hp_; /// int型のhp
 
 	//ヒットバックパワー
 	float hitBackPower_;
@@ -165,4 +168,7 @@ private:
 
 	//トルネード
 	Tornado* pTornado_;
+
+	class PlayerHP* pPlayerHP_ = nullptr;
+
 };

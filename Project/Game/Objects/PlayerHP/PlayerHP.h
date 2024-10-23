@@ -18,6 +18,8 @@ public:
 
 	void ResetAnimationTime();
 
+	void SetHP(int hp);
+
 private:
 	Model* model_ = nullptr;
 	Vec2   gaugeUVPosition_;
@@ -29,13 +31,14 @@ private:
 	std::vector<float> uvPosYArray_;
 
 	/// hp
-	int cuurentHp_;
+	int currentHp_;
 	int nextHp_;
 
 	/// time
 	float animationTime_    = 0.0f;
 	float maxAnimationTime_ = 0.0f;
 
+	bool isStart_ = false;
+
 	class MeshRenderer* numberRenderer_ = nullptr;
-	
 };

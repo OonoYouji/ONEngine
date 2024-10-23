@@ -12,7 +12,6 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
-
 #include "Objects/GameManager/GameManager.h"
 #include "Objects/Ground/Ground.h"
 #include "Objects/Boss/Boss.h"
@@ -20,8 +19,12 @@
 #include "Objects/CameraState/GameCameraState.h"
 #include "Objects/CameraState/CameraStateBossEntryToGame.h"
 #include "Objects/Tornado/Tornado.h"
-#include"Objects/Enemy/EnemyManager.h"
-#include"UI/GuidanceArrow.h"
+#include "Objects/Enemy/EnemyManager.h"
+#include "Objects/PlayerHP/PlayerHP.h"
+
+/// ui
+#include "UI/GuidanceArrow.h"
+
 
 /// ===================================================
 /// 初期化処理
@@ -36,6 +39,7 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_            = new Player;
+	PlayerHP* playerHP = new PlayerHP;
 	buildingManager_   = new BuildingManager();
 	boss_              = new Boss();
 	tornado_           = new Tornado();
@@ -52,6 +56,7 @@ void Scene_Game::Initialize() {
 	/// ===================================================
 
 	player_->Initialize();
+	playerHP->Initialize();
 	boss_->Initialize();
 	//enemyManager->Initialize();
 	bossTube->Initialize();
@@ -72,6 +77,7 @@ void Scene_Game::Initialize() {
 
 	player_->SetBuildingManager(buildingManager_);
 	player_->SetTornado(tornado_);
+	player_->SetPlayerHP(playerHP);
 
 	boss_->SetPlayer(player_);
 	boss_->SetBuildingaManager(buildingManager_);
@@ -92,6 +98,17 @@ void Scene_Game::Initialize() {
 	//jsonからデータ読む
 	/*enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");*/
 	buildingManager_->LoadBuildingPos("resources/BuildingParamater/BuildingPos.json");
+
+
+
+	/// layer
+
+	GameCamera* uiCamera = new GameCamera("uiCamera");
+	uiCamera->Initialize();
+
+	AddLayer("ui", uiCamera);
+	playerHP->drawLayerId = 1;
+
 }
 
 
