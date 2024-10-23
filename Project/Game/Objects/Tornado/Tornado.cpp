@@ -318,7 +318,7 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 
 			if (building->GetHP() <= 0.0f) {
 				audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);
-				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.01f;
+				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.1f;
 				pPlayer_->PowerUpGaugeUp(value);
 
 				building->SetIsInTornado(true);

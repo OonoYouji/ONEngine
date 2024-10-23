@@ -391,7 +391,7 @@ void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
 		if (pBuildingManager_) {
 
 			float totalDamage = 0.0f;
-			const std::vector<float> damageValues = { 0.01f, 0.05f, 0.1f };//各ダメージパラメータ
+			const std::vector<float> damageValues = { 0.001f, 0.005f, 0.01f };//各ダメージパラメータ
 
 			//巻きこまれてるビルから、ダメージ計算
 			for (auto& inTornadoBuilding : pBuildingManager_->GetInTornadoBuildingss()) {
