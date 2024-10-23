@@ -376,8 +376,8 @@ void Player::DamageForBossBullet() {
 void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
 	if (dynamic_cast<Boss*>(collision) && !damageForBossBody_.isStop) {
-		DamageForPar(damageForBossBullet_.DamagePar);
-		audioSource_->PlayOneShot("Damage.wav", 0.5f);
+		//DamageForPar(damageForBossBullet_.DamagePar);
+		//audioSource_->PlayOneShot("Damage.wav", 0.5f);
 		damageForBossBody_.isStop = true;
 		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
 	}
