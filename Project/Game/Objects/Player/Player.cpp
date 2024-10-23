@@ -33,8 +33,8 @@ void Player::Initialize() {
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 
-	er_ = AddComponent<EarthRenderer>();
-	er_->SetRadius(radius_);
+	/*er_ = AddComponent<EarthRenderer>();
+	er_->SetRadius(radius_);*/
 
 	audioSource_ = AddComponent<AudioSource>();
 
@@ -115,8 +115,8 @@ void Player::Update() {
 	//振る舞い更新
 	behavior_->Update();
 
-	er_->SetRadius(radius_);
-	er_->SetColor(paintOutColor_);
+	//er_->SetRadius(radius_);
+	//er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
 	if (!damageForBossHead_.isStop && !damageForBossBullet_.isStop&&!damageForBossBody_.isStop) {
 		Move();//移動
@@ -386,8 +386,8 @@ void Player::Debug() {
 
 		ImGui::Spacing();
 
-		ImGui::DragFloat("radius", &radius_, 0.05f);
-		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
+		/*ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);*/
 
 		ImGui::TreePop();
 	}

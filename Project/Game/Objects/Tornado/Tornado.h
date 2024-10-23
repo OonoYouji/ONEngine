@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "GameObjectManager/GameObjectManager.h"
+#include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
 
 /// ===================================================
 /// 前方宣言
@@ -101,6 +102,9 @@ private:
 	/// audio
 	class AudioSource* audioSource_ = nullptr;
 
+	class EarthRenderer* er_ = nullptr;
+	float radius_ = 1.0f;
+	Vec4  paintOutColor_ = { 1,1,1,1 };
 };
 
 

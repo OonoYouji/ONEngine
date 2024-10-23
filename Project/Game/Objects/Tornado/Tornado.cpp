@@ -69,6 +69,8 @@ void Tornado::Initialize() {
 		transform->position += GetPosition();
 	});
 
+	er_ = AddComponent<EarthRenderer>();
+	er_->SetRadius(radius_);
 
 	/// transform initialize
 	pTransform_->rotateOrder = QUATERNION;
@@ -96,8 +98,6 @@ void Tornado::Initialize() {
 	for(auto& data : windAnimationDataArray_) {
 		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
 	}
-
-
 	/// ---------------------------------------------------
 	/// 風のエフェクト 
 	/// ---------------------------------------------------
@@ -145,17 +145,15 @@ void Tornado::Initialize() {
 		}
 
 	});
-
-
-
 	/// audio init
 	audioSource_ = AddComponent<AudioSource>();
 
 }
 
 void Tornado::Update() {
-
-	
+	er_->SetRadius(radius_);
+	er_->SetColor(paintOutColor_);
+	radius_ = scaleScaler_;
 	if(pPlayer_->GetisPowerUp()) {
 
 		scaleScaler_ += 3.0f * Time::TimeRateDeltaTime();
@@ -173,7 +171,6 @@ void Tornado::Update() {
 			}
 		}
 	}
-
 
 	localYAngle_  += Time::TimeRateDeltaTime() * zRotateSpeed_;
 
@@ -231,7 +228,10 @@ void Tornado::Debug() {
 		ImGui::Separator();
 
 		ImGui::DragFloat("local y angle", &localYAngle_, 0.1f);
-		
+
+		ImGui::Separator();
+		ImGui::DragFloat("radius", &radius_, 0.05f);
+		ImGui::ColorEdit3("paint out color", &paintOutColor_.x);
 		ImGui::TreePop();
 	}
 
@@ -326,7 +326,6 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 				building->SetIsInTornado(true);
 			}
 		}
-
 	}
 }
 
