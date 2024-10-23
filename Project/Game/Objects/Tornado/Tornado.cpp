@@ -118,6 +118,11 @@ void Tornado::Initialize() {
 	windParticle->SetEmittedParticleCount(1);
 	windParticle->SetUseBillboard(false);
 
+	/// audio init
+	audioSource_ = AddComponent<AudioSource>();
+
+	audioSource2_ = AddComponent<AudioSource>();
+
 	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		Transform* parent = GetParent();
@@ -144,8 +149,8 @@ void Tornado::Initialize() {
 		}
 
 		});
-	/// audio init
-	audioSource_ = AddComponent<AudioSource>();
+
+
 
 }
 
@@ -164,6 +169,9 @@ void Tornado::Update() {
 		if (!isNotInputReception_) {/// 入力を受け付けなくするフラグ（チュートリアル用）すみません
 			/// キー入力で大きさを変える
 			if (Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A)) {
+				if (!audioSource_->IsPlayingAudio()) {
+					audioSource_->PlayOneShot("scaleUp.wav", 0.5f);
+				}
 				scaleScaler_ = std::min(scaleScaler_ + (eacSpeed_ * Time::DeltaTime()), maxScale_);
 			}
 			else {
@@ -307,6 +315,9 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
 
 		if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
+			if (!audioSource_->IsPlayingAudio()) {
+				audioSource_->PlayOneShot("billInvolving.wav", 0.5f);
+			}
 			building->SubHP(Time::DeltaTime());
 			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
 			/*	audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);*/

@@ -69,7 +69,7 @@ void Boss::Initialize() {
 	//行列更新
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
-
+	isexp_ = false;
 	const uint32_t kParticleMaxNum = 15u;
 
 	//パーティクルAddComponent
@@ -445,7 +445,10 @@ void Boss::DamageForPar(const float& par) {
 	HP_ -= decrementSize;
 	//HPが0以下にならないように
 	if (HP_ <= 0) {
-		audioSource_->PlayOneShot("exp.wav", 0.5f);
+		if (!isexp_) {
+			audioSource_->PlayOneShot("exp.wav", 0.5f);
+			isexp_ = true;
+		}
 		HP_ = 0.0f;
 	}
 }

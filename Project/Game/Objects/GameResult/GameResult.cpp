@@ -37,6 +37,7 @@ void GameResult::Initialize() {
 	selectedFrame_->Initialize();
 	sceneTransition_->Initialize();
 	sceneTransition_->drawLayerId = 2;
+	audioSource_ = AddComponent<AudioSource>();
 
 	gameResult_ = Scene_Game::sGameResult_;
 
@@ -89,7 +90,7 @@ void GameResult::Update() {
 
 	/// 両方のボタンが入力されていたら無視
 	if(!(isLeftInput && isRightInput)) {
-
+		
 		/// セレクトモードを変える
 		selectedNextMode_ = selectedNextMode_ + (isRightInput - isLeftInput);
 		selectedNextMode_ = std::clamp(

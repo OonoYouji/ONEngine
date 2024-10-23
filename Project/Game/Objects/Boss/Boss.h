@@ -96,7 +96,6 @@ public:
 	void ParticleInit();
 	void ParticleUpdate();
 
-
 	bool GetIsAlive() const { return HP_ > 0.0f; }
 
 private:
@@ -183,5 +182,6 @@ private:
 
 	class AudioSource* audioSource_ = nullptr;
 
+	bool isexp_;
 	
 };
