@@ -1,12 +1,18 @@
 #pragma once
 
+/// std
+#include <vector>
+
+/// base class
 #include "GameObjectManager/GameObjectManager.h"
+
+
 
 class DeadEffect : public BaseGameObject {
 
 	struct ParticleData {
-		Vec3 moveDirection;
-		float speed;
+		Vec3 position;
+		float scaleScaler;
 	};
 
 
@@ -19,5 +25,6 @@ public:
 	void Update()     override;
 
 private:
-	class ParticleSystem* particleSyste_;
+	class ParticleSystem*     particleSyste_;
+	std::vector<ParticleData> particleDataArray_;
 };
