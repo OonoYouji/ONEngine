@@ -163,7 +163,8 @@ void ParticleEmitter::Emit() {
 
 			pParticleArray_->push_back(std::make_unique<Particle>());
 			pParticleArray_->back()->Initialize();
-			pParticleArray_->back()->lifeTime_ = pParticleSystem_->GetParticleLifeTime();
+			pParticleArray_->back()->lifeTime_    = pParticleSystem_->GetParticleLifeTime();
+			pParticleArray_->back()->maxLifeTime_ = pParticleSystem_->GetParticleLifeTime();
 
 			Vec3 offset{};
 			if(emissionShape_ == static_cast<int32_t>(EMISSION_SHAPE::BOX)) {
@@ -198,6 +199,7 @@ void ParticleEmitter::Emit() {
 
 			(*itr)->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
 			(*itr)->lifeTime_ = pParticleSystem_->GetParticleLifeTime();
+			(*itr)->maxLifeTime_ = pParticleSystem_->GetParticleLifeTime();
 			(*itr)->isAlive_ = true;
 
 		}

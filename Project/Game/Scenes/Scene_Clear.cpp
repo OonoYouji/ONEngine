@@ -1,16 +1,25 @@
 #include "Scene_Clear.h"
 
 #include "Objects/Camera/GameCamera.h"
+#include "Objects/DeadEffect/DeadEffect.h"
 #include "Objects/BossAnimation/BossAnimation.h"
 
 void Scene_Clear::Initialize() {
-	BossAnimation* bossAnimation = new BossAnimation;
-	bossAnimation->Initialize();
-	bossAnimation->SetGameCamera(mainCamera_);
+	(new BossAnimation)->Initialize();
+	
+	DeadEffect* deadEffect = (new DeadEffect);
+	deadEffect->Initialize();
+	deadEffect->drawLayerId = 1;
 
-	/*mainCamera_->SetPosition({ 8.0f, 3.7f, -8.8f });
-	mainCamera_->SetRotate({ 0.26f, -0.8f, 0.0f });*/
-	mainCamera_->GetTransform()->rotateOrder = XYZ;
+	GameCamera* particleCamera = new GameCamera("particle camera");
+	particleCamera->Initialize();
+	particleCamera->SetPosition({0,0,-6.6f});
+
+	mainCamera_->SetPositionZ(-50.0f);
+
+
+	AddLayer("particle", particleCamera);
+
 }
 
 

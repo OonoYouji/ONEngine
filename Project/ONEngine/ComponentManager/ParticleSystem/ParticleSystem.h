@@ -253,6 +253,8 @@ public:
 
 	float GetNormLifeTime() { return lifeTime_ / maxLifeTime_; }
 
+	float GetLifeTime() const { return lifeTime_; }
+
 	uint32_t GetID() { return id_; }
 
 private:
@@ -264,7 +266,7 @@ private:
 	uint32_t id_;
 
 	bool isAlive_ = true;
-	float lifeTime_ = 10.0f; // seconds
+	float lifeTime_    = 0.0f; // seconds
 	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
