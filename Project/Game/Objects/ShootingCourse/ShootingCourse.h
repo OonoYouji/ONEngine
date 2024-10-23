@@ -54,6 +54,7 @@ private:
 
 	void CalcuationRailTransform();
 
+	void CalcuationAnchorPointArray();
 
 private:
 	/// ===================================================
@@ -64,9 +65,11 @@ private:
 
 
 	class MeshInstancingRenderer* meshInstancedRenderer_ = nullptr;
+	class MeshInstancingRenderer* anchorPointRenderer_      = nullptr;
 
 	std::vector<AnchorPoint> anchorPointArray_;
 	std::list<Transform>     transformList_;
+	std::list<Transform>     anchorPointTransformList_;
 
 	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;

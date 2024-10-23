@@ -4,6 +4,7 @@
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <numbers>
 
 /// externals
 #include <json.hpp>
@@ -28,7 +29,13 @@ ShootingCourse::~ShootingCourse() {}
 void ShootingCourse::Initialize() {
 	splinePathRenderer_    = AddComponent<SplinePathRenderer>(6);
 	meshInstancedRenderer_ = AddComponent<MeshInstancingRenderer>(128);
+	anchorPointRenderer_   = AddComponent<MeshInstancingRenderer>(32);
 
+	/// レールのモデルをセット
+	meshInstancedRenderer_->SetModel("Rail");
+	anchorPointRenderer_->SetModel("AnchorPoint");
+
+	/// file input
 	LoadFile(filePath_);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 
@@ -47,8 +54,7 @@ void ShootingCourse::Initialize() {
 	}
 	vertices_ = tmpVertices;
 
-	/// レールのモデルをセット
-	meshInstancedRenderer_->SetModel("Rail");
+	
 }
 
 void ShootingCourse::Update() {
@@ -63,14 +69,13 @@ void ShootingCourse::Update() {
 
 	/// tranformの再計算
 	CalcuationRailTransform();
+	CalcuationAnchorPointArray();
 
 	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 }
 
 #pragma region debug
-
-
 void ShootingCourse::Debug() {
 	if(ImGui::TreeNodeEx("course editor", ImGuiTreeNodeFlags_DefaultOpen)) {
 
@@ -250,5 +255,31 @@ void ShootingCourse::CalcuationRailTransform() {
 
 	for(auto& transform : transformList_) {
 		meshInstancedRenderer_->AddTransform(&transform);
+	}
+}
+
+void ShootingCourse::CalcuationAnchorPointArray() {
+
+	anchorPointRenderer_->ResetTransformArray();
+	anchorPointTransformList_.clear();
+	for(auto& anchorPoint : anchorPointArray_) {
+		Transform transform;
+		transform.position = anchorPoint.position;
+		transform.rotate = {
+			std::atan2(-anchorPoint.up.y, Vec3::Length({ anchorPoint.up.x, 0.0f, anchorPoint.up.z })),
+			std::atan2(anchorPoint.up.x, anchorPoint.up.z),
+			0.0f,
+		};
+
+		transform.rotate.x += std::numbers::pi_v<float> * 0.5f;
+
+		transform.UpdateMatrix(false);
+
+		anchorPointTransformList_.push_back(std::move(transform));
+	}
+
+
+	for(auto& transform : anchorPointTransformList_) {
+		anchorPointRenderer_->AddTransform(&transform);
 	}
 }
