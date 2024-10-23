@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <cmath>
 
 /// ====================================================
 ///	Ease In
@@ -216,10 +217,9 @@ float Ease::InOut::Back(float t) {
 	const float c2 = c1 * 1.525f;
 
 	if(t < 0.5f) {
-		return (powf(2.0f * t, 2.0f) * ((c2 + 1.0f) * 2.0f * t - c2)) / 2.0f;
+		return static_cast<float>((std::pow(2.0f * t, 2) * ((c2 + 1) * 2.0f * t - c2)) / 2.0f);
 	} else {
-		t -= 1.0f;
-		return (powf(2.0f * t, 2.0f) * ((c2 + 1.0f) * (t * 2.0f - 2.0f) + c2) + 2.0f) / 2.0f;
+		return static_cast<float>((std::pow(2.0f * t - 2.0f, 2) * ((c2 + 1) * (2.0f * t - 2.0f) + c2) + 2.0f) / 2.0f);
 	}
 }
 
