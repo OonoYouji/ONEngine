@@ -19,12 +19,12 @@
 
 
 void BossBulletLump::Initialize() {
-	Model* model = ModelManager::Load("bossMainBody");
+	Model* model = ModelManager::Load("bossBullet");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
 	/// transform initialize
-	pTransform_->rotateOrder = QUATERNION;
+	//pTransform_->rotateOrder = X;
 	pivot_.rotateOrder = QUATERNION;
 	/// action param initialize
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ void BossBulletLump::Initialize() {
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->position.z = -12;
-	pTransform_->scale = { 2,2,2 };
+	pTransform_->scale = { 3,3,3 };
 	isDeath_ = false;
 
 	audioSource_ = AddComponent<AudioSource>();
@@ -52,6 +52,7 @@ void BossBulletLump::Update() {
 	pivot_.quaternion *= moveQuaternion;
 	pivot_.UpdateMatrix();
 
+	pTransform_->rotate.x += 8.0f*Time::TimeRateDeltaTime();
 	//無敵時間
 	invincibleTime_ += Time::TimeRateDeltaTime();
 }
