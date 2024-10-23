@@ -63,8 +63,8 @@ void Player::Initialize() {
 	hitBackPower_ = -0.05f;
 
 	/// PowerDown
-	powerDownPar_ = 0.1f;
-	powerDownInterval_ = 2.0f;
+	powerDownPar_ = 0.05f;
+	powerDownInterval_ = 5.0f;
 	powerDownTime_ = 1.0f;
 
 	//ダメージ
