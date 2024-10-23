@@ -352,7 +352,7 @@ void Player::DamageForBossHead() {
 		damageForBossHead_.stopCollTime = damageForBossHead_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(5);
-		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
+		audioSource_->PlayOneShot("Damage.wav", 0.5f);
 	}
 }
 void Player::DamageForBossBullet() {
@@ -362,7 +362,7 @@ void Player::DamageForBossBullet() {
 		damageForBossBullet_.stopCollTime = damageForBossBullet_.kStopCollTime;
 		//指定の数分ビル破壊
 		pBuindingManager_->SetDeathFlagInBuildings(10);
-		audioSource_->PlayOneShot("playerToBossAttack.wav", 0.5f);
+		audioSource_->PlayOneShot("Damage.wav", 0.5f);
 	}
 }
 
@@ -371,6 +371,7 @@ void Player::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) 
 
 	if (dynamic_cast<Boss*>(collision) && !damageForBossBody_.isStop) {
 		DamageForPar(damageForBossBullet_.DamagePar);
+		audioSource_->PlayOneShot("Damage.wav", 0.5f);
 		damageForBossBody_.isStop = true;
 		damageForBossBody_.stopCollTime = damageForBossBody_.kStopCollTime;
 	}

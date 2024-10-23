@@ -291,6 +291,7 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
 			if (bosshead->GetIsAttackCollision()) {
 				pPlayer_->DamageForBossHead();
+
 			}
 		}
 	}

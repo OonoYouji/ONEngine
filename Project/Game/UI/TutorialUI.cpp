@@ -23,6 +23,8 @@ void BaseTutorialUI::Initialize() {
 	pTransform_->position.y = -0.2f;
 	pTransform_->rotate.x = 0.0f;
 
+	audioSource_ = AddComponent<AudioSource>();
+	audioSource_->PlayOneShot("tutorialPop.wav", 0.5f);//弾が出る時
 	
 	//BaseTutorialUI::Initialize();
 };

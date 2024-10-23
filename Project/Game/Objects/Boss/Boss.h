@@ -85,6 +85,10 @@ public:
 
 	void ColorChange(Vec4 color) { meshRenderer_->SetColor(color);}
 
+	//se
+	void KoteiSound();
+	void ShotSound();
+	void StopSound();
 /// <summary>
 /// Particle
 /// </summary>

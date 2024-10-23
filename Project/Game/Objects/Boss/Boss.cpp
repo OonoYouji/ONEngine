@@ -74,7 +74,7 @@ void Boss::Initialize() {
 
 	//パーティクルAddComponent
 	particleDataArray_.resize(kParticleMaxNum);
-	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
+	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "bossAtackEffect");
 
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(10);
@@ -85,6 +85,7 @@ void Boss::Initialize() {
 	/// パーティクル更新
 	ParticleUpdate();
 }
+
 
 void Boss::Update() {
 
@@ -142,6 +143,10 @@ void Boss::RootInit() {
 void Boss::RootUpdate() {
 
 }
+
+void Boss::StopSound() {
+	audioSource_->PlayOneShot("BossStop.wav", 0.5f);
+}
 //ストーカー
 void Boss::ChaseInit() {
 
@@ -149,6 +154,16 @@ void Boss::ChaseInit() {
 void Boss::ChaseUpdate() {
 
 }
+
+void Boss::KoteiSound() {
+	audioSource_->PlayOneShot("bossAtack1Kotei.wav", 0.5f);
+}
+
+
+void Boss::ShotSound() {
+	audioSource_->PlayOneShot("BossBulletShot.wav", 0.5f);
+}
+
 
 //建物吸引
 void Boss::SlurpInit() {
@@ -180,6 +195,8 @@ void Boss::SlurpUpdate() {
 void Boss::BulletShotInit() {}
 
 void Boss::BulletShotUpdate() {
+	
+
 }
 
 /// パーティクル初期化

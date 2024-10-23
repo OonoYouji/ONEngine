@@ -29,6 +29,8 @@ BossBulletShot::BossBulletShot(Boss* boss)
 	//予測線の生成
 	bossBulletPrediction_ = new BossBulletPrediction();
 	bossBulletPrediction_->Initialize();
+
+	pBoss_->KoteiSound();
 }
 
 BossBulletShot ::~BossBulletShot() {
@@ -80,6 +82,7 @@ void BossBulletShot::Update() {
 			BossbulletLump_ = new BossBulletLump();
 			BossbulletLump_->Initialize();
 			BossbulletLump_->SetDirection(direction);
+			pBoss_->ShotSound();
 		}
 	}
 	//弾発射
@@ -95,6 +98,7 @@ void BossBulletShot::Update() {
 				/// 予測線デストロイ
 				bossBulletPrediction_->Destory();
 				bossBulletPrediction_ = nullptr;
+				pBoss_->StopSound();
 				isStop_ = true;
 			}
 		}

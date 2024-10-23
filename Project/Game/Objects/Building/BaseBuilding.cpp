@@ -179,9 +179,10 @@ void BaseBuilding::Update() {
 			if(nextScalingTimeArray_[currentScaleIndex_] < 0.0f) {
 				currentScaleIndex_++;
 				hp_ = hp_ + 1.0f;
-
+				audioSource_->PlayOneShot("billPowerUp.wav", 0.5f);
 				/// 中から大に変わるときの設定
 				if(currentScaleIndex_ == BUILDING_SCALE_BIG) {
+				/*	audioSource_->PlayOneShot("billPowerUp.wav", 0.5f);*/
 					particleSystem_->SetEmittedParticleCount(3); /// 一回のemitで出現するパーティクルの数
 				}
 
