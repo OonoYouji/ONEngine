@@ -25,6 +25,7 @@
 #include "Objects/SceneTransition/SceneTransition.h"
 #include "Objects/DeadEffect/DeadEffect.h"
 #include "Objects/GameResult/GameResult.h"
+#include "Objects/PowerUpGauge/PowerUpGauge.h"
 
 /// ui
 #include "UI/GuidanceArrow.h"
@@ -58,6 +59,7 @@ void Scene_Game::Initialize() {
 	GameCameraState* gameCameraState = new GameCameraState();
 	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	GuidanceArrow* guideArrow = new GuidanceArrow();
+	PowerUpGauge* powerUpGauge = new PowerUpGauge();
 
 	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
 	deadEffect_ = new DeadEffect();
@@ -79,6 +81,7 @@ void Scene_Game::Initialize() {
 	guideArrow->Initialize();
 	sceneTransition_->Initialize();
 	deadEffect_->Initialize();
+	powerUpGauge->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに

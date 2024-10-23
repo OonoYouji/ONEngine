@@ -34,7 +34,7 @@ void PlayerHP::Initialize() {
 
 	std::vector<Material>& materials = model_->GetMaterials();
 	materials.front().SetPosition(gaugeUVPosition_);
-
+	materials.front().SetIsLighting(false);
 
 	numberUVPosition_ = { 0.12f, 0.03f };
 	numberUVScale_ = { 3.0f, 0.6f };
@@ -87,6 +87,7 @@ void PlayerHP::Update() {
 	Material* material = numberRenderer_->GetMaterial();
 	material->SetPosition(numberUVPosition_);
 	material->SetScale(numberUVScale_);
+	material->SetIsLighting(false);
 	material->UpdateMatrix();
 
 }
