@@ -82,11 +82,7 @@ void GuidanceArrow::Update() {
 
 }
 
-
-
 void GuidanceArrow::Debug() {
-
-
 
 }
 
