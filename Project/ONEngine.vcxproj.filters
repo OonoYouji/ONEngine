@@ -565,6 +565,7 @@
     <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -812,5 +813,6 @@
     <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
     <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
   </ItemGroup>
 </Project>
