@@ -50,6 +50,8 @@ public:
 	void AttackUpdate();
 	void AttackFixationUpdate();
 
+	void DamageParticleInit();
+
 	void DamageForPar(const float& par);
 
 	//プレイヤーセット

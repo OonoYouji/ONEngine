@@ -86,7 +86,7 @@ void BaseBuilding::Initialize() {
 	pTransform_->position = { 0,0,buildingSartZ };//ポジション
 	pTransform_->rotate = { -1.5f,0,0 };//回転
 	scaleMax_ = 1.0f;
-	
+	slurpSpeed_ = 1.0f;
 	offsetPosition_ = pTransform_->position;
 
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,7 @@ void BaseBuilding::Update() {
 		Quaternion inter = ToQuaternion({ euler.x, euler.y, -direction });
 
 		// ホーミング移動のスピードを設定
-		Quaternion move = ToQuaternion({ 1.0f * Time::TimeRateDeltaTime(), 0, 0});
+		Quaternion move = ToQuaternion({ slurpSpeed_ * Time::TimeRateDeltaTime(), 0, 0});
 
 		// 回転を更新
 		pivot_.quaternion = inter;

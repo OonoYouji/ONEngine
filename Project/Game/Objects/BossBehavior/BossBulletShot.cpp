@@ -82,10 +82,6 @@ void BossBulletShot::Update() {
 			BossbulletLump_->Update();
 			//弾死んだらスタン
 			if (BossbulletLump_->GetIsDeath()) {
-				bossBulletParticle_ = new BossBulletParticle();
-				bossBulletParticle_->SetPivot(BossbulletLump_->GetPivot());
-				bossBulletParticle_->Initialize();
-				bossBulletParticle_->ParticleInit();
 				BossbulletLump_->Destory();//デストロイ
 				BossbulletLump_ = nullptr;
 				isStop_ = true;
@@ -96,8 +92,6 @@ void BossBulletShot::Update() {
 			stopTime_ += Time::TimeRateDeltaTime();
 			//振る舞い切り替え
 			if (stopTime_ >= kStopTime_) {
-				delete bossBulletParticle_;
-				bossBulletParticle_ = nullptr;
 				pBoss_->SetIsBuildingKill(false);
 				pBoss_->ChangeState(std::make_unique<BossChasePlayer>(pBoss_));
 			}

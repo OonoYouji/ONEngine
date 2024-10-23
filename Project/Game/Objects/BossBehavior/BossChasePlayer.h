@@ -18,9 +18,9 @@ private:
 	//ストーカースピード(遅い)
 	float chaseSpeedNormal_;
 	//追っかける最小距離
-	float chaseMinPos_;
+	float AttackPos_;
 	//追っかける限界距離
-	float chaseMaxPos_;
+	float SlurpPos_;
 	//攻撃クールタイム
 	float attackCoolTime_;
 

@@ -21,8 +21,8 @@ BossChasePlayer::BossChasePlayer(Boss* boss)
 	//パラメータ初期化
 	chaseSpeedMax_ = 5.0f;
 	chaseSpeedNormal_ = 0.01f;
-	chaseMinPos_ = 10.0f;
-	chaseMaxPos_ = 25.0f;
+	AttackPos_ = 10.0f;/// ボス
+	SlurpPos_ = 25.0f;
 	
 	attackCoolTime_ = 1.0f;
 }
@@ -40,7 +40,7 @@ void BossChasePlayer::Update() {
 			pBoss_->GetPlayer()->GetPosition(), pBoss_->GetPosition(), Ground::groundScale_ + 1.0f);
 
 		// 一定距離で攻撃に遷移
-		if (distanceAndDirection.first <= chaseMinPos_) {
+		if (distanceAndDirection.first <= AttackPos_) {
 			if (attackCoolTime_ <= 0) {
 				pBoss_->ChangeState(std::make_unique<BossAttack>(pBoss_));
 			}
@@ -68,7 +68,7 @@ void BossChasePlayer::Update() {
 		pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
 
 		// 一定距離で吸い込み状態に遷移
-		if (distanceAndDirection.first >= chaseMaxPos_) {
+		if (distanceAndDirection.first >= SlurpPos_) {
 			pBoss_->ChangeState(std::make_unique<BossSlurp>(pBoss_));
 		}
 	}
