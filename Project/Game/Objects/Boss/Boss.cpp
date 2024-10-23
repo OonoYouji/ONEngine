@@ -164,9 +164,15 @@ void Boss::ShotSound() {
 	audioSource_->PlayOneShot("BossBulletShot.wav", 0.5f);
 }
 
+//void Boss::SlurpInit() {
+//	audioSource_->PlayOneShot("bossAtack2kouho1.wav", 0.5f);
+//}
+
+
 
 //建物吸引
 void Boss::SlurpInit() {
+	audioSource_->PlayOneShot("bossAtack2kouho1.wav", 0.5f);
 	isSlurping_ = false;
 	slurpCooldownTimer_ = kSlurpCollTime_;
 }
@@ -439,6 +445,7 @@ void Boss::DamageForPar(const float& par) {
 	HP_ -= decrementSize;
 	//HPが0以下にならないように
 	if (HP_ <= 0) {
+		audioSource_->PlayOneShot("exp.wav", 0.5f);
 		HP_ = 0.0f;
 	}
 }

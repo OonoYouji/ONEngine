@@ -100,10 +100,14 @@ void Player::Initialize() {
 
 	/// grow size parameter
 	timeRate_ = 1.0f; /// hit stopのtime rateの初期化
-
+	isexp_ = false;
 }
 
 void Player::Update() {
+	if (!isexp_&&hp_<=0) {
+		audioSource_->PlayOneShot("exp.wav", 0.5f);
+		isexp_ = true;
+	}
 
 	/// パワーアップゲージを減らす
 	powerDownTime_ += Time::TimeRateDeltaTime();
@@ -122,7 +126,7 @@ void Player::Update() {
 	speed_ = LerpE(maxSpeed, minSpeed, t);
 	//振る舞い更新
 	behavior_->Update();
-
+	
 	//er_->SetRadius(radius_);
 	//er_->SetColor(paintOutColor_);
 	//ストップしてない限り動ける
@@ -284,6 +288,7 @@ void Player::GaugeDownForPar(const float& par, const float& second) {
 		// 0未満にならないように
 		if (powerUpGauge_ < 0.0f) {
 			powerUpGauge_ = 0.0f;
+			
 		}
 		powerDownTime_ = 0.0f;
 	}
@@ -309,6 +314,7 @@ void Player::DamageForPar(const float& par) {
 	}
 
 	if(hp_ < 0) {
+		
 		hp_ = 0;
 	}
 

@@ -89,6 +89,7 @@ public:
 	void KoteiSound();
 	void ShotSound();
 	void StopSound();
+	void SlurpSound();
 /// <summary>
 /// Particle
 /// </summary>
