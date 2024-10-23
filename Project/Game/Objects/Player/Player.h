@@ -97,6 +97,7 @@ public:
 
 	void SetPlayerHP(class PlayerHP* _playerHP);
 
+	bool GetIsAlive() const { return hp_ > 0; }
 
 private:
 	struct DamageParamater {
@@ -151,7 +152,7 @@ private:
 	int preCameraBehavior_;
 
 	//HP
-	int hp_; /// int型のhp
+	int hp_ = 5; /// int型のhp
 
 	//ヒットバックパワー
 	float hitBackPower_;

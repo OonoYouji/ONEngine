@@ -5,6 +5,7 @@
 
 /// engine
 #include <ImGuiManager/ImGuiManager.h>
+#include "Scenes/Manager/SceneManager.h"
 
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
@@ -21,6 +22,8 @@
 #include "Objects/Tornado/Tornado.h"
 #include "Objects/Enemy/EnemyManager.h"
 #include "Objects/PlayerHP/PlayerHP.h"
+#include "Objects/SceneTransition/SceneTransition.h"
+#include "Objects/DeadEffect/DeadEffect.h"
 
 /// ui
 #include "UI/GuidanceArrow.h"
@@ -51,6 +54,9 @@ void Scene_Game::Initialize() {
 	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	GuidanceArrow* guideArrow = new GuidanceArrow();
 
+	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
+	deadEffect_ = new DeadEffect();
+
 	/// ===================================================
 	/// 初期化 : 順不同が最高だが、順番に関係があるなら要注意
 	/// ===================================================
@@ -66,6 +72,8 @@ void Scene_Game::Initialize() {
 	tornado_->Initialize();
 	buildingManager_->Initialize();
 	guideArrow->Initialize();
+	sceneTransition_->Initialize();
+	deadEffect_->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -108,6 +116,9 @@ void Scene_Game::Initialize() {
 
 	AddLayer("ui", uiCamera);
 	playerHP->drawLayerId = 1;
+	
+	AddLayer("transition", uiCamera);
+	sceneTransition_->drawLayerId = 2;
 
 }
 
@@ -117,6 +128,19 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 	
+	if(!player_->GetIsAlive()) {
+		deadEffect_->SetIsStart(true);
+		if(!deadEffect_->GetParent()) {
+			deadEffect_->SetParent(player_->GetTransform());
+		}
+	}
 
+	if(deadEffect_->IsFinished()) {
+		sceneTransition_->SetIsStarted(true);
+	}
+
+	if(sceneTransition_->GetIsFinished()) {
+		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
+	}
 
 }

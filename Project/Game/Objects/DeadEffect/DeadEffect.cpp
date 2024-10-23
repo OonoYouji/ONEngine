@@ -24,6 +24,8 @@ void DeadEffect::Initialize() {
 	const size_t kMaxParticleCount= 12;
 
 	particleSyste_ = AddComponent<ParticleSystem>(static_cast<uint32_t>(kMaxParticleCount), "Bom");
+	
+
 	particleSyste_->SetEmittedParticleCount(2);
 	particleSyste_->SetParticleLifeTime(1.0f);
 	particleSyste_->SetParticleRespawnTime(0.3f);
@@ -37,34 +39,37 @@ void DeadEffect::Initialize() {
 		data.scaleScaler = 0.0f;
 	}
 
-
 	/// 更新処理の関数をセットする
 	particleSyste_->SetPartilceUpdateFunction([&](Particle* particle) {
 
 		Transform* transform = particle->GetTransform();
-		ParticleData& data   = particleDataArray_[particle->GetID()];
+		ParticleData& data = particleDataArray_[particle->GetID()];
+		transform->SetParent(pTransform_);
 
 		data.scaleScaler = (1.0f - particle->GetNormLifeTime()) * 0.5f;
 		transform->position = data.position;
-		transform->scale    = Vec3::kOne * data.scaleScaler;
+		transform->scale = Vec3::kOne * data.scaleScaler;
 
 		if(!particle->GetIsAlive() || particle->GetLifeTime() <= 0.0f) {
-			data.position    = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+			data.position = Random::Vec3(-Vec3::kOne, Vec3::kOne);
 			data.scaleScaler = 0.0f;
-			transform->scale    = Vec3::kOne * data.scaleScaler;
+			transform->scale = Vec3::kOne * data.scaleScaler;
 			transform->position = data.position;
 		}
 
 	});
-	
-	
 
 
+	particleSyste_->isActive = false;
 }
 
 void DeadEffect::Update() {
 
+	if(isStart_) {
 
+		endTime_ -= Time::DeltaTime();
+
+	}
 }
 
 void DeadEffect::Debug() {
@@ -89,4 +94,9 @@ void DeadEffect::Debug() {
 
 		ImGui::TreePop();
 	}
+}
+
+void DeadEffect::SetIsStart(bool _isStart) {
+	isStart_ = _isStart;
+	particleSyste_->isActive = isStart_;
 }

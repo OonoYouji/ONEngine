@@ -69,7 +69,7 @@ void PlayerHP::Update() {
 	/// 0.5 ~ 0.25
 	gaugeUVPosition_.y = std::lerp(
 		0.5f, 0.25f,
-		nextHp_ * gaugeLerpT
+		(nextHp_ / 5.0f) * gaugeLerpT
 	);
 
 	if(lerpT == 1.0f) {

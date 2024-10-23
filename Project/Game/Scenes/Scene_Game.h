@@ -27,4 +27,7 @@ private:
 	Player* player_ = nullptr;
 	Tornado* tornado_ = nullptr;
 	BossBulletLump* bossBulletLump_;
+
+	class SceneTransition* sceneTransition_ = nullptr;
+	class DeadEffect* deadEffect_ = nullptr;
 };
