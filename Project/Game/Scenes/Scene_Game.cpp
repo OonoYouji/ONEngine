@@ -39,7 +39,7 @@ void Scene_Game::Initialize() {
 	buildingManager_   = new BuildingManager();
 	boss_              = new Boss();
 	tornado_           = new Tornado();
-	EnemyManager* enemyManager = new EnemyManager();
+	/*EnemyManager* enemyManager = new EnemyManager();*/
 	BossTubu* bossTube = new BossTubu();
 	BossHead* bossHead = new BossHead();
 	Ground* ground = new Ground;
@@ -53,7 +53,7 @@ void Scene_Game::Initialize() {
 
 	player_->Initialize();
 	boss_->Initialize();
-	enemyManager->Initialize();
+	//enemyManager->Initialize();
 	bossTube->Initialize();
 	bossHead->Initialize();
 	ground->Initialize();
@@ -86,14 +86,13 @@ void Scene_Game::Initialize() {
 	buildingManager_->SetBoss(boss_);
 	buildingManager_->SetTornado(tornado_);
 
-	enemyManager->SetPlayer(player_);
-	enemyManager->SetTornado(tornado_);
+
 
 	guideArrow->SetBoss(boss_);
 	guideArrow->SetPlayer(player_);
 
 	//jsonからデータ読む
-	enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");
+	/*enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");*/
 	buildingManager_->LoadBuildingPos("resources/BuildingParamater/BuildingPos.json");
 }
 

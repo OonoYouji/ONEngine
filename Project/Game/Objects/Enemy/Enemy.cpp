@@ -28,10 +28,10 @@
 #undef max
 
 void Enemy::Initialize() {
-	Model* model = ModelManager::Load("Enemy");
+	/*Model* model = ModelManager::Load("Enemy");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
-	auto collider = AddComponent<BoxCollider>(model);
+	auto collider = AddComponent<BoxCollider>(model);*/
 
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
