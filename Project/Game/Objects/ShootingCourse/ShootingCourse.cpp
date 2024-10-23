@@ -47,17 +47,8 @@ void ShootingCourse::Initialize() {
 	}
 	vertices_ = tmpVertices;
 
-	for(auto& vertex : vertices_) {
-		transformList_.push_back(Transform());
-		Transform& transform = transformList_.back();
-		transform.position = vertex;
-		transform.rotate   = { 0,0,0 };
-		transform.scale    = { 1,1,1};
-		transform.UpdateMatrix(false);
-
-		meshInstancedRenderer_->AddTransform(&transform);
-	}
-
+	/// レールのモデルをセット
+	meshInstancedRenderer_->SetModel("Rail");
 }
 
 void ShootingCourse::Update() {
