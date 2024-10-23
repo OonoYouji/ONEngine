@@ -2,6 +2,7 @@
 #include"Objects/BossBehavior/BaseBossBehavior.h"
 
 class BossBulletLump;
+class BossBulletPrediction;
 class BossBulletShot : public BaseBossBehavior {
 public:
 	//コンストラクタ
@@ -30,5 +31,8 @@ private:
 	Quaternion inter_;
 	Quaternion move_;
 
+	///
+	/// ather 
+	BossBulletPrediction* bossBulletPrediction_=nullptr;
 	 BossBulletLump* BossbulletLump_ = nullptr;
 };
