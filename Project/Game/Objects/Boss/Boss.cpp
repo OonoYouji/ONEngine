@@ -188,12 +188,13 @@ void Boss::BulletShotUpdate() {
 void Boss::ParticleInit() {
 	/// パーティクルデータの初期化
 	for (auto& data : particleDataArray_) {
+		data.reflectionCount = 0;
 		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
 		data.transform.Initialize();	/// Transform初期化
 		data.pivot.Initialize();//pivot初期化
 		data.pivot = pivot_;//pivot代入
 		data.transform.position = { 0,Random::Float(6,7) ,-(Ground::groundScale_+1)};
-		data.velocity = { Random::Float(-1.0f,1.0f),Random::Float(-1.0f,1.0f),-15 };/// 速度
+		data.velocity = { Random::Float(-1.0f,1.0f),Random::Float(-1.0f,1.0f),-5 };/// 速度
 	}
 }
 
@@ -206,13 +207,7 @@ void Boss::ParticleUpdate() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		if (!isParticle_) {
-			data.pivot.Initialize();
-			data.transform.Initialize();	/// Transform初期化
-			transform->position.z = -(Ground::groundScale_ + 1);
-			data.transform.position.z = -(Ground::groundScale_ + 1);
-		}
-		else {
+		
 			transform->SetParent(&data.pivot);
 			// 回転処理
 			data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
@@ -262,7 +257,7 @@ void Boss::ParticleUpdate() {
 			transform->position = data.transform.position;
 			transform->rotate = data.rotate;
 			transform->scale = { 0.2f, 0.2f, 0.2f };
-		}
+		
 		}); 
 }
 void Boss::AttackInit() {
