@@ -16,6 +16,9 @@
 #include "Objects/TitleObjects/TitlePlayerAnimator.h"
 #include "Objects/SceneTransition/SceneTransition.h"
 
+/// scene
+#include "Scenes/Scene_Game.h"
+
 
 GameResult::GameResult() {
 	CreateTag(this);
@@ -41,7 +44,7 @@ void GameResult::Initialize() {
 		結果をここか、リザルトシーンで受け取る
 	##########################################################*/
 
-	gameResult_ = GAME_RESULT_CLEAR;
+	gameResult_ = Scene_Game::sGameResult_;
 	Transform* createObjectTransform = nullptr;
 	TitlePlayerAnimator* playerAnimation = nullptr;
 	BossAnimation*       bossAnimation   = nullptr;

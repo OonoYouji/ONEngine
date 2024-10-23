@@ -24,15 +24,20 @@
 #include "Objects/PlayerHP/PlayerHP.h"
 #include "Objects/SceneTransition/SceneTransition.h"
 #include "Objects/DeadEffect/DeadEffect.h"
+#include "Objects/GameResult/GameResult.h"
 
 /// ui
 #include "UI/GuidanceArrow.h"
+
+int Scene_Game::sGameResult_ = false;
 
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
+
+	sGameResult_ = false;
 
 	Wind::ResetInstanceCount();
 
@@ -132,6 +137,7 @@ void Scene_Game::Update() {
 		deadEffect_->SetIsStart(true);
 		if(!deadEffect_->GetParent()) {
 			deadEffect_->SetParent(player_->GetTransform());
+			sGameResult_ = GAME_RESULT_GAME_OVER;
 		}
 	}
 
@@ -139,6 +145,7 @@ void Scene_Game::Update() {
 		deadEffect_->SetIsStart(true);
 		if(!deadEffect_->GetParent()) {
 			deadEffect_->SetParent(boss_->GetTransform());
+			sGameResult_ = GAME_RESULT_CLEAR;
 		}
 	}
 
