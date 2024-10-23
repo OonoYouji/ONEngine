@@ -26,6 +26,7 @@ public:
 	void Debug()      override;
 	//getter
 	bool GetIsDeath()const { return isDeath_; }
+	Transform GetPivot()const { return pivot_; }
 
 	//setter^d
 	void SetDirection(Quaternion direction);
@@ -43,6 +44,6 @@ private:
 	//弾を発射した瞬間に当たらないように一応無敵時間
 	float invincibleTime_;
 	const float kInvincibleTime_=1.0f;
-
-
+	/// audio source
+	class AudioSource* audioSource_ = nullptr;
 };

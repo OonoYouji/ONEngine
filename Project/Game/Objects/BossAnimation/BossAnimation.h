@@ -46,6 +46,7 @@ struct AnimationData {
 	float time;
 	float maxTime;
 	float apmlitude;
+	bool  isPlayAudio = false;
 };
 
 
@@ -80,5 +81,6 @@ private:
 	/// other pointer
 	GameCamera* pGameCamera_ = nullptr;
 
+	class AudioSource* audioSource_ = nullptr;
 };
 

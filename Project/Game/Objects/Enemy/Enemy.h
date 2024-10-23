@@ -87,4 +87,7 @@ private:
 	//距離
 	float perceptionDistance_;
 	bool isChase_;
+
+	/// audio source
+	class AudioSource* audioSource_ = nullptr;
 };

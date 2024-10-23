@@ -46,6 +46,10 @@ void Scene_Title::Initialize() {
 	playerAnimator->SetParticleUseRotate(false);
 	playerAnimator->GetParticleSystem()->SetEmittedParticleCount(4u);
 
+	/// 
+	audioSource_.reset(new AudioSource);
+	audioSource_->Initialize();
+	audioSource_->SetAudioClip("gameStart.wav");
 	sceneTransition_->drawLayerId = 2;
 }
 
@@ -57,5 +61,6 @@ void Scene_Title::Update() {
 
 	if(sceneTransition_->GetIsFinished()) {
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
+		audioSource_->PlayAudio();
 	}
 }

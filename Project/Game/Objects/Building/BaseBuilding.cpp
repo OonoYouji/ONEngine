@@ -44,6 +44,8 @@ void BaseBuilding::Initialize() {
 		ModelManager::Load("toriiMidlle")
 	};
 
+	audioSource_ = AddComponent<AudioSource>();
+
 	auto mesh = AddComponent<MeshRenderer>();
 	mesh->SetModel(modelArray_[Random::Int(0,2)]);
 	auto collider = AddComponent<BoxCollider>(modelArray_[0]);
@@ -308,11 +310,13 @@ void BaseBuilding::OnCollisionEnter([[maybe_unused]] BaseGameObject* const colli
 	//当たったら用済み
 	if(dynamic_cast<Boss*>(collision) && isSlurp_) {
 		isTaken_ = true;
+		audioSource_->PlayOneShot("BuindingSlurped.wav", 0.5f);
 	}
 
 	//当たったら用済み
 	if(dynamic_cast<BossHead*>(collision) &&pBoss_->GetIsAttack()) {
 		isBreak_ = true;
+		audioSource_->PlayOneShot("BuindingBreaked.wav", 0.5f);
 	}
 }
 

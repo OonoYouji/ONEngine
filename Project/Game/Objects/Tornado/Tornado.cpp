@@ -15,6 +15,7 @@
 #include "ONEngine/GraphicManager/ModelManager/ModelManager.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include <ComponentManager/Collider/BoxCollider.h>
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// math
 #include "Math/Random.h"
@@ -144,6 +145,11 @@ void Tornado::Initialize() {
 		}
 
 	});
+
+
+
+	/// audio init
+	audioSource_ = AddComponent<AudioSource>();
 
 }
 
@@ -289,6 +295,7 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 		}
 	}
 
+
 	//ボスの弾によるダメージ
 	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		pPlayer_->DamageForBossBullet();
@@ -302,6 +309,7 @@ void Tornado::OnCollisionStay(BaseGameObject* const collision) {
     if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
 			building->SubHP(Time::DeltaTime());
 			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
+		/*	audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);*/
 		}
 
 		building->SubHP(Time::TimeRateDeltaTime());

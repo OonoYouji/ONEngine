@@ -157,9 +157,9 @@ private:
 
 
 	/// 反発係数
-	const float reboundFactor_ = -0.6f;
+	const float reboundFactor_ = -0.5f;
 	///　重力
-	const float kGravity_ = 7.8f;
+	const float kGravity_ = 20.8f;
 	/// パーティクルデータ
 	std::vector<ParticleData> particleDataArray_;
 	//反射カウント最大
@@ -167,5 +167,12 @@ private:
 	//透明度イージングタイム
 
 	ParticleSystem* particleSystem_;
+
+	bool isParticle_;
+
+	const float positionOfset_=2;
+
+	class AudioSource* audioSource_ = nullptr;
+
 	
 };

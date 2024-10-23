@@ -40,6 +40,10 @@ void BossBulletLump::Initialize() {
 	pTransform_->position.z = -12;
 	pTransform_->scale = { 2,2,2 };
 	isDeath_ = false;
+
+	audioSource_ = AddComponent<AudioSource>();
+
+	audioSource_->PlayOneShot("BossBulletShot", 0.5f);//弾が出る時
 }
 
 void BossBulletLump::Update() {

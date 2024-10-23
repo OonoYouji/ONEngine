@@ -36,6 +36,8 @@ void Enemy::Initialize() {
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
+	audioSource_ = AddComponent<AudioSource>();
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +155,7 @@ void Enemy::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 void Enemy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 	if ( dynamic_cast<Tornado*>(collision)) {
+		audioSource_->PlayOneShot("EnemyGet.wav", 0.5f);
 		isInTornado_ = true;
 	}
 }

@@ -6,17 +6,16 @@
 #include "Input/Input.h"
 
 #include <GraphicManager/Drawer/Material/Material.h>
-#include <ComponentManager/SpriteRenderer/SpriteRenderer.h>
-#include <ComponentManager/Collider/SphereCollider.h>
 #include <ComponentManager/Collider/BoxCollider.h>
-#include <ComponentManager/SplinePathRenderer/SplinePathRenderer.h>
 #include "Game/CustomComponents/EarthRenderer/EarthRenderer.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
+
 //std
 #include <algorithm>
-#include<numbers>
+#include <numbers>
 #include <limits>
 #include "ImGuiManager/ImGuiManager.h"
-#include"FrameManager/Time.h"
+#include "FrameManager/Time.h"
 //obj
 #include"Objects/Player/Player.h"
 #include"Objects/Building/BuildingManager.h"
@@ -38,6 +37,7 @@ void Boss::Initialize() {
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
 
+	audioSource_ = AddComponent<AudioSource>();
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,14 +70,14 @@ void Boss::Initialize() {
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
 
-	const uint32_t kParticleMaxNum = 12u;
+	const uint32_t kParticleMaxNum = 15u;
 
 	//パーティクルAddComponent
 	particleDataArray_.resize(kParticleMaxNum);
 	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
 
 	/// パーティクルの挙動
-	particleSystem_->SetEmittedParticleCount(0);
+	particleSystem_->SetEmittedParticleCount(10);
 	particleSystem_->SetEmitterFlags(PARTICLE_EMITTER_NOTIME);
 	
 
@@ -133,8 +133,6 @@ void Boss::Update() {
 	if ( nextDamageTime_ >= 0) {
 		nextDamageTime_ -= Time::TimeRateDeltaTime();
 	}	
-
-	
 	
 	pivot_.UpdateMatrix();
 }
@@ -161,6 +159,9 @@ void Boss::SlurpInit() {
 }
 
 void Boss::SlurpUpdate() {
+	//if (!audioSource_->IsPlayingAudio()) {
+	//	audioSource_->PlayOneShot("fanfare", 0.5f);//吸い込んだ時
+	//}
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
 	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
@@ -179,6 +180,7 @@ void Boss::SlurpUpdate() {
 }
 
 void Boss::BulletShotInit() {}
+
 void Boss::BulletShotUpdate() {
 }
 
@@ -190,47 +192,78 @@ void Boss::ParticleInit() {
 		data.transform.Initialize();	/// Transform初期化
 		data.pivot.Initialize();//pivot初期化
 		data.pivot = pivot_;//pivot代入
-		data.transform.position = { 0,Random::Float(6,7) ,-1};
-		data.velocity = { Random::Float(-2,2),Random::Float(-2,2),-1 };/// 速度
+		data.transform.position = { 0,Random::Float(6,7) ,-(Ground::groundScale_+1)};
+		data.velocity = { Random::Float(-1.0f,1.0f),Random::Float(-1.0f,1.0f),-15 };/// 速度
 	}
 }
 
+/// <summary>
+///  パーティクル更新
+/// </summary>
 void Boss::ParticleUpdate() {
 
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		transform->SetParent(&data.pivot);
-
-		// 回転処理
-		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-		data.velocity.z += (kGravity_ * Time::DeltaTime());
-
-		//変位
-		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
-
-		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_ )) {
-			data.transform.position.z = -(Ground::groundScale_+2);
-			// 反発係数により反発する
-			data.velocity.z *= reboundFactor_;
-			data.rotateSpeed *= reboundFactor_;
-			data.reflectionCount++;/// 反発カウントインクリメント
-		}	//カウント2
-		if (data.reflectionCount >= 2) {
-			data.velocity.x = 0.0f;
-			data.velocity.z = 0.0f;
+		if (!isParticle_) {
+			data.pivot.Initialize();
+			data.transform.Initialize();	/// Transform初期化
+			transform->position.z = -(Ground::groundScale_ + 1);
+			data.transform.position.z = -(Ground::groundScale_ + 1);
 		}
+		else {
+			transform->SetParent(&data.pivot);
+			// 回転処理
+			data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+			data.velocity.z += (kGravity_ * Time::DeltaTime());
 
-		//カウント5
-		if (data.reflectionCount >= reflectionCountMax_) {
-			data.velocity.y = 0;
+			// 変位
+			data.transform.position += (data.velocity) * Time::DeltaTime();
+
+			// 反発する
+			if (data.transform.position.z > -(Ground::groundScale_ - positionOfset_)) {
+				data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
+				// 反発係数により反発する
+				data.velocity.z *= reboundFactor_;
+				data.rotateSpeed *= reboundFactor_;
+				data.reflectionCount++;  // 反発カウントインクリメント
+			}
+
+			// 反発カウントが2回以上になったら止める
+			if (data.reflectionCount >= 2) {
+				data.velocity.x = 0.0f;
+				data.velocity.z = 0.0f;
+			}
+
+			// 反発カウントが最大に達したらy軸の速度を止める
+			if (data.reflectionCount >= reflectionCountMax_) {
+				data.velocity.y = 0;
+				data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
+			}
+
+			// 回転の適用
+			float rotateXAngle_ = +data.velocity.y;
+			float rotateYAngle_ = -data.velocity.x;
+
+			if (data.velocity != Vec3(0.0f, 0.0f, 0.0f)) {
+				// 回転を適応
+				Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+				Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+
+				// パーティクルの向きの決定
+				/*Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(data.velocity.x, data.velocity.y));*/
+
+				data.pivot.quaternion *= (rotateX_ * rotateY_);  // 回転の適用と正規化
+				//transform->quaternion = quaternionLocalZ.Conjugate();  // ローカルZ軸のクォータニオンの適用
+			}
+
+			// transformの更新
+			transform->position = data.transform.position;
+			transform->rotate = data.rotate;
+			transform->scale = { 0.2f, 0.2f, 0.2f };
 		}
-		transform->position = data.transform.position;
-		transform->rotate = data.rotate;
-		transform->quaternion = data.transform.quaternion;
-		});
+		}); 
 }
 void Boss::AttackInit() {
 	
@@ -239,27 +272,37 @@ void Boss::AttackInit() {
 	pBossTubu_->ParamaterInit();
 	isAttackBack_ = false;
 	isAttack_ = true;
+	isParticle_ = false;
+	particleSystem_->SetBurst(false, 0, 0);
 	pBossHead_->SetIsAttackCollision(false);
+
 }
 
-void Boss::AttackUpdate() {//超汚い
+void Boss::AttackUpdate() {/// 超汚い
 
 	pBossHead_->AttackUpdate();
 
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::TimeRateDeltaTime();
-		if (attackEaseT_ >= kAttackEaseT_-0.1f&& attackEaseT_ <= kAttackEaseT_+0.1f) {
+		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
 			//emetter
-			ParticleInit();
-			particleSystem_->SetEmittedParticleCount(10);
-			particleSystem_->SetBurst(true,0,0);
+			if (!isParticle_) {
+				ParticleInit();
+				particleSystem_->SetBurst(true, 0, 0);
+				isParticle_ = true;
+			}
 		}
 		if (attackEaseT_ >= kAttackEaseT_) {
-			
+			if (attackCoolTime_ == 0.0f) {
+				/// 振り下ろしたときの効果音再生
+				audioSource_->PlayOneShot("bossAttackTubeDown.wav", 0.5f);
+			}
 			pBossHead_->SetERRadius(0.0f);
 			attackEaseT_ = kAttackEaseT_;
 			attackCoolTime_ += Time::TimeRateDeltaTime();
+
+			/// 振り下ろし → TubeHeadを上げる動作に遷移
 			if (attackCoolTime_ >= kAttackCoolTime_) {
 				isAttackBack_ = true;
 			}
@@ -364,6 +407,7 @@ void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
 			}
 			//ダメージが0以上
 			if (totalDamage>0) {
+				audioSource_->PlayOneShot("BossDamage.wav", 0.5f);//ダメージ受けた時の効果音
 				// 合計ダメージを適用
 				isHitBack_ = true;
 				damageCoolTime_ = kDamageCoolTime_;
