@@ -47,6 +47,11 @@ void CollisionManager::Update() {
 				continue;
 			}
 
+			/// 同じtagなら除外
+			if(objA->GetTag() == objB->GetTag()) {
+				continue;
+			}
+
 			/// このフレーム内ですでに当たっているかチェック
 			auto itr = std::find_if(currentCollisionPair_.begin(), currentCollisionPair_.end(), [&](const CollisionPair& pair) {
 				return (pair.first == objA && pair.second == objB)
