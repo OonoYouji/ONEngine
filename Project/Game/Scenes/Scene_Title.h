@@ -24,4 +24,5 @@ private:
 private:
 
 	std::unique_ptr<AudioSource> audioSource_ = nullptr;
+	std::unique_ptr<AudioSource> bgm_ = nullptr;
 };
