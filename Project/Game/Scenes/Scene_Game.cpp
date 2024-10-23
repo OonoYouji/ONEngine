@@ -135,6 +135,13 @@ void Scene_Game::Update() {
 		}
 	}
 
+	if(!boss_->GetIsAlive()) {
+		deadEffect_->SetIsStart(true);
+		if(!deadEffect_->GetParent()) {
+			deadEffect_->SetParent(boss_->GetTransform());
+		}
+	}
+
 	if(deadEffect_->IsFinished()) {
 		sceneTransition_->SetIsStarted(true);
 	}

@@ -90,8 +90,9 @@ public:
 	void ParticleInit();
 	void ParticleUpdate();
 
-private:
-	
+
+	bool GetIsAlive() const { return HP_ > 0.0f; }
+
 private:
 	
 	MeshRenderer* meshRenderer_ = nullptr;
