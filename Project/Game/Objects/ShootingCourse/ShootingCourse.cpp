@@ -241,7 +241,7 @@ void ShootingCourse::CalcuationRailTransform() {
 		transform.rotate = {
 			std::asin(-diff.y),
 			std::atan2(diff.x, diff.z),
-			std::atan2(diff.y, diff.y),
+			0.0f,
 		};
 
 		transform.UpdateMatrix(false);
