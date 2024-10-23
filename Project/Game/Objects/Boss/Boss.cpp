@@ -79,7 +79,7 @@ void Boss::Initialize() {
 	/// パーティクルの挙動
 	particleSystem_->SetEmittedParticleCount(10);
 	particleSystem_->SetEmitterFlags(PARTICLE_EMITTER_NOTIME);
-	
+
 	/// パーティクル初期化
 	ParticleInit();
 	/// パーティクル更新
@@ -93,7 +93,7 @@ void Boss::Update() {
 	//振る舞い更新
 	behavior_->Update();
 	//敵のビルが一定数溜まったら
-	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_)&& !dynamic_cast<BossBulletShot*>(behavior_.get())) {
+	if (pBuildingManager_->GetInBossBuilding().size() >= size_t(kBuildingNum_) && !dynamic_cast<BossBulletShot*>(behavior_.get())) {
 		ChangeState(std::make_unique<BossBulletShot>(this));
 	}
 	//ダメージ処理
@@ -102,7 +102,7 @@ void Boss::Update() {
 
 		// 距離と方向を計算
 		std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
-		pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+			pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
 
 		// 現在の回転をオイラー角に変換
 		Vec3 euler = QuaternionToEulerAngles(GetPivotQuaternion());
@@ -119,7 +119,7 @@ void Boss::Update() {
 
 		pivot_.quaternion = interpolatedRotation;
 		pivot_.quaternion *= (move); // 移動もスムーズに
-	
+
 		// クールダウン処理
 		if (damageCoolTime_ <= 0) {
 			nextDamageTime_ = nextDamageCollTime_;//次にダメージを受けるまでのクールタイムを設定
@@ -128,10 +128,10 @@ void Boss::Update() {
 		}
 	}
 	//0より大きかったらnextDamageTimeの減算をする
-	if ( nextDamageTime_ >= 0) {
+	if (nextDamageTime_ >= 0) {
 		nextDamageTime_ -= Time::TimeRateDeltaTime();
-	}	
-	
+	}
+
 	pivot_.UpdateMatrix();
 }
 
@@ -162,7 +162,7 @@ void Boss::SlurpUpdate() {
 	//}
 	// 一番近いビルを取得
 	BaseBuilding* closestBuilding = FindClosestBuilding();
-	if (closestBuilding && !isSlurping_&&slurpCooldownTimer_<=0.0f) {  // すでに吸い込まれていないか確認
+	if (closestBuilding && !isSlurping_ && slurpCooldownTimer_ <= 0.0f) {  // すでに吸い込まれていないか確認
 		// フラグを立てる
 		closestBuilding->SetSlurpPos(pBossHead_->GetPosition());
 		closestBuilding->SetIsSlurped(true);
@@ -191,7 +191,7 @@ void Boss::ParticleInit() {
 		data.transform.Initialize();	/// Transform初期化
 		data.pivot.Initialize();//pivot初期化
 		data.pivot = pivot_;//pivot代入
-		data.transform.position = { 0,Random::Float(6,7) ,-(Ground::groundScale_+1)};
+		data.transform.position = { 0,Random::Float(6,7) ,-(Ground::groundScale_ + 1) };
 		data.velocity = { Random::Float(-1.0f,1.0f),Random::Float(-1.0f,1.0f),-5 };/// 速度
 	}
 }
@@ -205,61 +205,57 @@ void Boss::ParticleUpdate() {
 		Transform* transform = particle->GetTransform();
 		ParticleData& data = particleDataArray_[particle->GetID()];
 
-		
-			transform->SetParent(&data.pivot);
-			// 回転処理
-			data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-			data.velocity.z += (kGravity_ * Time::DeltaTime());
 
-			// 変位
-			data.transform.position += (data.velocity) * Time::DeltaTime();
+		transform->SetParent(&data.pivot);
+		// 回転処理
+		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
+		data.velocity.z += (kGravity_ * Time::DeltaTime());
 
-			// 反発する
-			if (data.transform.position.z > -(Ground::groundScale_ - positionOfset_)) {
-				data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
-				// 反発係数により反発する
-				data.velocity.z *= reboundFactor_;
-				data.rotateSpeed *= reboundFactor_;
-				data.reflectionCount++;  // 反発カウントインクリメント
-			}
+		// 変位
+		data.transform.position += (data.velocity) * Time::DeltaTime();
 
-			// 反発カウントが2回以上になったら止める
-			if (data.reflectionCount >= 2) {
-				data.velocity.x = 0.0f;
-				data.velocity.z = 0.0f;
-			}
+		// 反発する
+		if (data.transform.position.z > -(Ground::groundScale_ - positionOfset_)) {
+			data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
+			// 反発係数により反発する
+			data.velocity.z *= reboundFactor_;
+			data.rotateSpeed *= reboundFactor_;
+			data.reflectionCount++;  // 反発カウントインクリメント
+		}
 
-			// 反発カウントが最大に達したらy軸の速度を止める
-			if (data.reflectionCount >= reflectionCountMax_) {
-				data.velocity.y = 0;
-				data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
-			}
+		// 反発カウントが2回以上になったら止める
+		if (data.reflectionCount >= 2) {
+			data.velocity.x = 0.0f;
+			data.velocity.z = 0.0f;
+		}
 
-			// 回転の適用
-			float rotateXAngle_ = +data.velocity.y;
-			float rotateYAngle_ = -data.velocity.x;
+		// 反発カウントが最大に達したらy軸の速度を止める
+		if (data.reflectionCount >= reflectionCountMax_) {
+			data.velocity.y = 0;
+			data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
+		}
 
-			if (data.velocity != Vec3(0.0f, 0.0f, 0.0f)) {
-				// 回転を適応
-				Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
-				Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
+		// 回転の適用
+		float rotateXAngle_ = +data.velocity.y;
+		float rotateYAngle_ = -data.velocity.x;
 
-				// パーティクルの向きの決定
-				/*Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(data.velocity.x, data.velocity.y));*/
+		if (data.velocity != Vec3(0.0f, 0.0f, 0.0f)) {
+			// 回転を適応
+			Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
+			Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
 
-				data.pivot.quaternion *= (rotateX_ * rotateY_);  // 回転の適用と正規化
-				//transform->quaternion = quaternionLocalZ.Conjugate();  // ローカルZ軸のクォータニオンの適用
-			}
+			data.pivot.quaternion *= (rotateX_ * rotateY_);  // 回転の適用と正規化
+		}
 
-			// transformの更新
-			transform->position = data.transform.position;
-			transform->rotate = data.rotate;
-			transform->scale = { 0.2f, 0.2f, 0.2f };
-		
-		}); 
+		// transformの更新
+		transform->position = data.transform.position;
+		transform->rotate = data.rotate;
+		transform->scale = { 0.2f, 0.2f, 0.2f };
+
+		});
 }
 void Boss::AttackInit() {
-	
+
 	attackEaseT_ = 0.0f;
 	attackCoolTime_ = 0.0f;
 	pBossTubu_->ParamaterInit();
@@ -277,7 +273,7 @@ void Boss::AttackUpdate() {/// 超汚い
 
 	if (!isAttackBack_) {
 		attackEaseT_ += Time::TimeRateDeltaTime();
-		if (attackEaseT_ >= kAttackEaseT_-0.1f) {
+		if (attackEaseT_ >= kAttackEaseT_ - 0.1f) {
 			pBossHead_->SetIsAttackCollision(true);
 			//emetter
 			if (!isParticle_) {
@@ -305,10 +301,10 @@ void Boss::AttackUpdate() {/// 超汚い
 		attackEaseT_ -= Time::TimeRateDeltaTime();
 		if (attackEaseT_ <= 0.3f) {
 			pBossHead_->SetIsAttackCollision(false);
-			
+
 		}
 		if (attackEaseT_ <= 0.0f) {
-			
+
 			attackEaseT_ = 0.0f;
 			ChangeState(std::make_unique<BossChasePlayer>(this));
 			isAttack_ = false;
@@ -321,6 +317,12 @@ void Boss::AttackUpdate() {/// 超汚い
 
 void  Boss::AttackFixationUpdate() {
 	pBossHead_->LightFlashing();
+}
+
+void Boss::BulletHitBack() {
+	// ホーミング移動のスピードを設定
+	Quaternion move = ToQuaternion({ 6.0f * Time::TimeRateDeltaTime(), 0, 0 });
+	pivot_.quaternion*=(move); // 移動もスムーズに
 }
 
 void Boss::Debug() {
@@ -385,9 +387,9 @@ void Boss::SetBuildingaManager(BuildingManager* buildingmanager) {
 
 //ボスコリジョン(トルネード)
 void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
-	if (dynamic_cast<Tornado*>(collision)&& nextDamageTime_ <=0&& !isHitBack_) {
+	if (dynamic_cast<Tornado*>(collision) && nextDamageTime_ <= 0 && !isHitBack_) {
 		if (pBuildingManager_) {
-			
+
 			float totalDamage = 0.0f;
 			const std::vector<float> damageValues = { 0.05f, 0.1f, 0.2f };//各ダメージパラメータ
 
@@ -399,7 +401,7 @@ void Boss::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
 				}
 			}
 			//ダメージが0以上
-			if (totalDamage>0) {
+			if (totalDamage > 0) {
 				audioSource_->PlayOneShot("BossDamage.wav", 0.5f);//ダメージ受けた時の効果音
 				// 合計ダメージを適用
 				isHitBack_ = true;

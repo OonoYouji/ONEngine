@@ -43,7 +43,7 @@ void BossBulletLump::Initialize() {
 
 	audioSource_ = AddComponent<AudioSource>();
 
-	audioSource_->PlayOneShot("BossBulletShot", 0.5f);//弾が出る時
+	audioSource_->PlayOneShot("BossBulletShot.wav", 0.5f);//弾が出る時
 }
 
 void BossBulletLump::Update() {
@@ -78,7 +78,7 @@ void BossBulletLump::OnCollisionEnter([[maybe_unused]] BaseGameObject* const col
 
 	if (dynamic_cast<Boss*>(collision)&&!isDeath_) {
 		if (invincibleTime_ >= kInvincibleTime_) {
-			audioSource_->PlayOneShot("bossStop", 0.5f);//ボスがボスの弾と当たった時
+			//audioSource_->PlayOneShot("bossStop", 0.5f);//ボスがボスの弾と当たった時
 			isDeath_ = true;
 		}
 	}
