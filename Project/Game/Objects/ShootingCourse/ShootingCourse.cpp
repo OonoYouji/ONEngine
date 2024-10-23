@@ -48,8 +48,8 @@ void ShootingCourse::Initialize() {
 	vertices_ = tmpVertices;
 
 	for(auto& vertex : vertices_) {
-		transformArray_.push_back(Transform());
-		Transform& transform = transformArray_.back();
+		transformList_.push_back(Transform());
+		Transform& transform = transformList_.back();
 		transform.position = vertex;
 		transform.rotate   = { 0,0,0 };
 		transform.scale    = { 1,1,1};
@@ -70,12 +70,28 @@ void ShootingCourse::Update() {
 	vertices_ = tmpVertices;
 #endif // _DEBUG
 
-	std::vector<Transform*> transformPtrArray{};
-	for(auto& transform : transformArray_) {
-		transformPtrArray.push_back(&transform);
+	/// スプライン曲線の補完された点をゲット
+	const std::vector<Vec3>& segmentPointArray = splinePathRenderer_->GetSegmentPointArray();
+
+	/// mesh instanced rendererのtransformをリセット
+	meshInstancedRenderer_->ResetTransformArray();
+	transformList_.clear();
+
+	/// transforに変換 → mesh instanced rendererに渡す
+	for(auto& point : segmentPointArray) {
+		Transform transform{};
+		transform.position = point;
+		transform.rotate   = { 0,0,0 };
+		transform.scale    = { 1,1,1 };
+		transform.UpdateMatrix(false);
+
+		transformList_.push_back(std::move(transform));
 	}
 
-	meshInstancedRenderer_->SetTransformArray(transformPtrArray);
+	for(auto& transform : transformList_) {
+		meshInstancedRenderer_->AddTransform(&transform);
+	}
+
 
 	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);

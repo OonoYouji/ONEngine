@@ -1,7 +1,9 @@
 #pragma once
 
+/// std
 #include <string>
 #include <vector>
+#include <list>
 
 #include "GameObjectManager/GameObjectManager.h"
 
@@ -61,7 +63,7 @@ private:
 	class MeshInstancingRenderer* meshInstancedRenderer_ = nullptr;
 
 	std::vector<AnchorPoint> anchorPointArray_;
-	std::vector<Transform>   transformArray_;
+	std::list<Transform>     transformList_;
 
 	std::vector<Vec3> vertices_; /// spline path rendererに渡す用
 	class SplinePathRenderer* splinePathRenderer_ = nullptr;
