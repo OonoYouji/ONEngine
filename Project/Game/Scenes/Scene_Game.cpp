@@ -128,6 +128,14 @@ void Scene_Game::Initialize() {
 	AddLayer("transition", uiCamera);
 	sceneTransition_->drawLayerId = 2;
 
+
+
+	bgm_.reset(new AudioSource);
+	bgm_->Initialize();
+	bgm_->SetAudioClip("gameBgm.wav");
+	bgm_->isLoop = true;
+	bgm_->volume = 0.1f;
+	bgm_->PlayAudio();
 }
 
 
@@ -158,6 +166,7 @@ void Scene_Game::Update() {
 
 	if(sceneTransition_->GetIsFinished()) {
 		SceneManager::GetInstance()->SetNextScene(SCENE_ID::RESULT);
+		bgm_->StopAudioAll();
 	}
 
 }

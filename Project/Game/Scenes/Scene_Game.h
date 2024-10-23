@@ -1,13 +1,16 @@
 #pragma once
 
-#include"Game/Scenes/Manager/BaseScene.h"
+/// std
+#include <memory>
 
+#include"Game/Scenes/Manager/BaseScene.h"
 
 #include "Objects/Player/Player.h"
 #include "Objects/Boss/Boss.h"
 #include "Objects/Boss/BossBulletLump.h"
-#include"Objects/Building/BuildingManager.h"
+#include "Objects/Building/BuildingManager.h"
 
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -31,5 +34,7 @@ private:
 
 	class SceneTransition* sceneTransition_ = nullptr;
 	class DeadEffect* deadEffect_ = nullptr;
+
+	std::unique_ptr<AudioSource> bgm_;
 
 };

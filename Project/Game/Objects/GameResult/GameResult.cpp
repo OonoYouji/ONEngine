@@ -38,17 +38,11 @@ void GameResult::Initialize() {
 	sceneTransition_->Initialize();
 	sceneTransition_->drawLayerId = 2;
 
-	/*##########################################################
-		TODO : COMMENT
-		ゲームのリザルトをstatic変数で宣言、取得する
-		結果をここか、リザルトシーンで受け取る
-	##########################################################*/
-
 	gameResult_ = Scene_Game::sGameResult_;
-	Transform* createObjectTransform = nullptr;
-	TitlePlayerAnimator* playerAnimation = nullptr;
-	BossAnimation*       bossAnimation   = nullptr;
 
+	Transform*           createObjectTransform = nullptr;
+	TitlePlayerAnimator* playerAnimation       = nullptr;
+	BossAnimation*       bossAnimation         = nullptr;
 
 	/// 結果によって生成する物を変更する
 	switch(gameResult_) {
@@ -130,6 +124,12 @@ void GameResult::Update() {
 		} else {
 			SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
 		}
+
+		isNextSceneTransitioned_ = true;
 	}
 
+}
+
+bool GameResult::IsNextSceneTransitioned() const {
+	return isNextSceneTransitioned_;
 }

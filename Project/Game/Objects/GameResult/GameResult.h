@@ -23,6 +23,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	bool IsNextSceneTransitioned() const;
+
 private:
 
 	class RetryUI*       retryUI_       = nullptr;
@@ -33,4 +35,6 @@ private:
 	/// enum variables
 	int selectedNextMode_ = 0;
 	int gameResult_       = 0;
+
+	bool isNextSceneTransitioned_;
 };
