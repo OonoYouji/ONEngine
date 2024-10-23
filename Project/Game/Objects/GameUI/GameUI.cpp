@@ -5,6 +5,8 @@
 /// objects
 #include "Objects/PowerUpGauge/PowerUpGauge.h"
 #include "BossHP/BossHP.h"
+#include "BossName/BossName.h"
+#include "GaugeName/GaugeName.h"
 #include "Objects/Boss/Boss.h"
 #include "Objects/Player/Player.h"
 
@@ -16,6 +18,16 @@ GameUI::GameUI() {
 GameUI::~GameUI() {}
 
 void GameUI::Initialize() {
+
+	GaugeName* gaugeName = (new GaugeName);
+	gaugeName->Initialize();
+	gaugeName->SetParent(pTransform_);
+	gaugeName->drawLayerId = 1;
+
+	/*BossName* bossName = (new BossName);
+	bossName->Initialize();
+	bossName->SetParent(pTransform_);
+	bossName->drawLayerId = 1;*/
 
 	powerUpGauge_ = new PowerUpGauge();
 	powerUpGauge_->Initialize();

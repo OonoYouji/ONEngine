@@ -202,7 +202,9 @@
     <ClCompile Include="Game\Objects\GameResult\RetryUI\RetryUI.cpp" />
     <ClCompile Include="Game\Objects\GameResult\SelectedFrame\SelectedFrame.cpp" />
     <ClCompile Include="Game\Objects\GameUI\BossHP\BossHP.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\BossName\BossName.cpp" />
     <ClCompile Include="Game\Objects\GameUI\GameUI.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\GaugeName\GaugeName.cpp" />
     <ClCompile Include="Game\Objects\Ground\Ground.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.cpp" />
     <ClCompile Include="Game\Objects\PlayerBehavior\PlayerPowerUp.cpp" />
@@ -341,7 +343,9 @@
     <ClInclude Include="Game\Objects\GameResult\RetryUI\RetryUI.h" />
     <ClInclude Include="Game\Objects\GameResult\SelectedFrame\SelectedFrame.h" />
     <ClInclude Include="Game\Objects\GameUI\BossHP\BossHP.h" />
+    <ClInclude Include="Game\Objects\GameUI\BossName\BossName.h" />
     <ClInclude Include="Game\Objects\GameUI\GameUI.h" />
+    <ClInclude Include="Game\Objects\GameUI\GaugeName\GaugeName.h" />
     <ClInclude Include="Game\Objects\Ground\Ground.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\BasePlayerBehavior.h" />
     <ClInclude Include="Game\Objects\PlayerBehavior\PlayerPowerUp.h" />

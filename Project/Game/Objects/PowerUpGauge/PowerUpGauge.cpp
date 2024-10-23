@@ -18,6 +18,7 @@ void PowerUpGauge::Initialize() {
 	drawLayerId = 1;
 
 	TextureManager::GetInstance()->Load("bossHpGage", "bossHpGage.png");
+	TextureManager::GetInstance()->Load("bossHpGageName", "bossHpGageName.png");
 
 	mr_ = AddComponent<MeshRenderer>();
 	mr_->SetModel("gage");

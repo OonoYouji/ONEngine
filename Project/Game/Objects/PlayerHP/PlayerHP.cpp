@@ -49,7 +49,7 @@ void PlayerHP::Initialize() {
 	maxAnimationTime_ = 0.6f;
 
 	pTransform_->position = {
-		-1.7f, -0.7f, 5.5f
+		-1.9f, -0.9f, 5.5f
 	};
 
 }

@@ -681,6 +681,8 @@
     <ClCompile Include="Game\Objects\PowerUpGauge\PowerUpGauge.cpp" />
     <ClCompile Include="Game\Objects\GameUI\GameUI.cpp" />
     <ClCompile Include="Game\Objects\GameUI\BossHP\BossHP.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\BossName\BossName.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\GaugeName\GaugeName.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1026,5 +1028,7 @@
     <ClInclude Include="Game\Objects\PowerUpGauge\PowerUpGauge.h" />
     <ClInclude Include="Game\Objects\GameUI\GameUI.h" />
     <ClInclude Include="Game\Objects\GameUI\BossHP\BossHP.h" />
+    <ClInclude Include="Game\Objects\GameUI\BossName\BossName.h" />
+    <ClInclude Include="Game\Objects\GameUI\GaugeName\GaugeName.h" />
   </ItemGroup>
 </Project>
