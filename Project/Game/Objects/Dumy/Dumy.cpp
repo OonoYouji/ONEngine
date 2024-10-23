@@ -20,16 +20,17 @@
 #include<numbers>
 //function
 #include"Easing/EasingFunction.h"
+#include"HormingFunction/Horming.h"
 
 void Dumy::Initialize() {
 
-	auto model = ModelManager::Load("PlayerInGame");
+	auto model = ModelManager::Load("bossMainBodyGame");
 	mesh_ = AddComponent<MeshRenderer>();
 
 	mesh_->SetModel(model);
-	mesh_->SetMaterial("white2x2");
+	mesh_->SetMaterial("mainbody");
 	auto collider = AddComponent<BoxCollider>(model);
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  初期化
@@ -40,11 +41,13 @@ void Dumy::Initialize() {
 	//  値セット
 	////////////////////////////////////////////////////////////////////////////////////////////
 	pivot_.quaternion = { 0,0,0,1 };//ピボット
-	pTransform_->position = { 0,0,Ground::groundScale_+0.4f };//ポジション
-	pTransform_->rotate = { 0,0,0 };//回転
+	pTransform_->quaternion = { 0,0,0,1 };
+	pTransform_->position = { 0,0,Ground::groundScale_ + 0.4f };//ポジション
+	pTransform_->rotate = { 0,03.3f,0 };//回転
 	pTransform_->scale = { 1.0f,1.0f,1.0f };//スケール
 	hp_ = hpMax_;
 	kEaseTime_ = 1.0f;
+
 	////////////////////////////////////////////////////////////////////////////////////////////
 	//  ペアレント
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +57,8 @@ void Dumy::Initialize() {
 	pivot_.rotateOrder = QUATERNION;
 	UpdateMatrix();
 
+	audioSource_ = AddComponent<AudioSource>();
+	nextDamageCollTime_ = 0.3f;
 }
 
 void Dumy::Update() {
@@ -65,7 +70,45 @@ void Dumy::Update() {
 			easeTime_ = kEaseTime_;
 			isDeath_ = true;
 		}
-		pTransform_->rotate.y = EaseOutSine<float>(0, 1.550f, easeTime_, kEaseTime_);	
+		pTransform_->rotate.y = EaseOutSine<float>(3.3f, 1.550f, easeTime_, kEaseTime_);
+	}
+	else {
+		//ダメージ処理
+		if (isHitBack_) {
+			damageCoolTime_ -= Time::TimeRateDeltaTime();
+
+			// 距離と方向を計算
+			std::pair<float, float> distanceAndDirection = CalculateDistanceAndDirection(
+				pPlayer_->GetPosition(), GetPosition(), Ground::groundScale_ + 1.0f);
+
+			// 現在の回転をオイラー角に変換
+			Vec3 euler = QuaternionToEulerAngles(pivot_.quaternion);
+			// 現在の回転
+			Quaternion currentRotation = pivot_.quaternion;
+			// プレイヤーの方向を向くための回転を計算
+			Quaternion targetRotation = ToQuaternion({ euler.x, euler.y, -distanceAndDirection.second });
+			// 回転をスムーズに補間 (Slerpを使用)
+			float rotationSpeed = 10.0f; // 回転速度、必要に応じて調整
+			Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
+
+			// ホーミング移動のスピードを設定
+			Quaternion move = ToQuaternion({ -0.6f * Time::TimeRateDeltaTime(), 0, 0 });
+
+			pivot_.quaternion = interpolatedRotation;
+			pivot_.quaternion *= (move); // 移動もスムーズに
+
+			// クールダウン処理
+			if (damageCoolTime_ <= 0) {
+				nextDamageTime_ = nextDamageCollTime_;//次にダメージを受けるまでのクールタイムを設定
+				mesh_->SetColor(Vec4::kWhite);
+				isHitBack_ = false;
+			}
+		}
+		//0より大きかったらnextDamageTimeの減算をする
+		if (nextDamageTime_ >= 0) {
+			nextDamageTime_ -= Time::TimeRateDeltaTime();
+		}
+
 	}
 	//ピボット更新
 	pivot_.UpdateMatrix();
@@ -76,15 +119,38 @@ void Dumy::Debug() {
 }
 
 
-void Dumy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+//ボスコリジョン(トルネード)
+void Dumy::OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) {
+	if (dynamic_cast<Tornado*>(collision) && nextDamageTime_ <= 0 && !isHitBack_&&!isFall_) {
 
-	//当たったら用済み
-	if (dynamic_cast<InTornadoBuilding*>(collision)) {
+
+		audioSource_->PlayOneShot("BossDamage.wav", 0.5f);//ダメージ受けた時の効果音
+		// 合計ダメージを適用
+		isHitBack_ = true;
+		damageCoolTime_ = kDamageCoolTime_;
+		mesh_->SetColor(Vec4(0.7f, 0, 0, 1));
 		hp_--;
 		if (hp_ <= 0) {
 			isFall_ = true;
 			mesh_->SetColor(Vec4::kRed);
 		}
+
 	}
 }
+
+void Dumy::SetPlyer(Player* player) {
+	pPlayer_ = player;
+}
+
+//void Dumy::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
+//
+//	//当たったら用済み
+//	if (dynamic_cast<Tornado*>(collision)) {
+//		hp_--;
+//		if (hp_ <= 0) {
+//			isFall_ = true;
+//			mesh_->SetColor(Vec4::kRed);
+//		}
+//	}
+//}
 

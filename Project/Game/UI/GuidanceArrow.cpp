@@ -113,7 +113,7 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 1.5f * Time::TimeRateDeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion = (interpolatedRotation * move);
