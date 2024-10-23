@@ -14,6 +14,7 @@
 
 #include "Objects/BossAnimation/BossAnimation.h"
 #include "Objects/TitleObjects/TitlePlayerAnimator.h"
+#include "Objects/SceneTransition/SceneTransition.h"
 
 
 GameResult::GameResult() {
@@ -26,11 +27,13 @@ void GameResult::Initialize() {
 	retryUI_       = new RetryUI();
 	backTitleUI_   = new BackTitleUI();
 	selectedFrame_ = new SelectedFrame();
+	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
 
 	retryUI_->Initialize();
 	backTitleUI_->Initialize();
 	selectedFrame_->Initialize();
-
+	sceneTransition_->Initialize();
+	sceneTransition_->drawLayerId = 2;
 
 	/*##########################################################
 		TODO : COMMENT
@@ -113,15 +116,17 @@ void GameResult::Update() {
 	isSceneLoad |= Input::TriggerPadButton(PadCode::A);
 
 	if(isSceneLoad) {
+		sceneTransition_->SetIsStarted(true);
+	}
+
+	/// 演出が終わったので遷移する
+	if(sceneTransition_->GetIsFinished()) {
 
 		if(selectedNextMode_ == NEXT_MODE_RETRY) {
-
 			SceneManager::GetInstance()->SetNextScene(SCENE_ID::BOSS_ENTRY);
 		} else {
-
 			SceneManager::GetInstance()->SetNextScene(SCENE_ID::TITLE);
 		}
 	}
-
 
 }

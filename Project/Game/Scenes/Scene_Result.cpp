@@ -28,6 +28,7 @@ void Scene_Result::Initialize() {
 	spriteCamera->SetProjectionType(ORTHOGRAPHIC);
 	spriteCamera->SetDistance(6.0f);
 	AddLayer("sprite", spriteCamera);
+	AddLayer("transition", spriteCamera);
 
 
 	mainCamera_->GetTransform()->rotateOrder = XYZ;
