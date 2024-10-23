@@ -86,8 +86,6 @@ void Scene_Game::Initialize() {
 	buildingManager_->SetBoss(boss_);
 	buildingManager_->SetTornado(tornado_);
 
-
-
 	guideArrow->SetBoss(boss_);
 	guideArrow->SetPlayer(player_);
 

@@ -36,13 +36,13 @@ void Tornado::Initialize() {
 	ParticleSystem* particleSystem = AddComponent<ParticleSystem>(kParticleMaxNum, "rubble");
 
 	/// パーティクルデータの初期化
-	for(auto& data : particleDataArray_) {
+	for (auto& data : particleDataArray_) {
 		data.maxPosY = Random::Float(1.0f, 10.0f);
-		data.radius  = Random::Float(1.0f, 2.0f);
-		data.speed   = Random::Float(5.0f, 10.0f);
-		data.time    = Random::Float(0.0f, 1.0f);
-		data.rotate  = Random::Vec3(-Vec3::kOne, Vec3::kOne);
-		data.scale   = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
+		data.radius = Random::Float(1.0f, 2.0f);
+		data.speed = Random::Float(5.0f, 10.0f);
+		data.time = Random::Float(0.0f, 1.0f);
+		data.rotate = Random::Vec3(-Vec3::kOne, Vec3::kOne);
+		data.scale = Random::Vec3(Vec3::kOne * 0.1f, Vec3::kOne * 0.5f);
 	}
 
 	/// パーティクルの挙動
@@ -67,7 +67,7 @@ void Tornado::Initialize() {
 
 		transform->position = Mat4::Transform(transform->position, matRotate_);
 		transform->position += GetPosition();
-	});
+		});
 
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(radius_);
@@ -83,9 +83,8 @@ void Tornado::Initialize() {
 	maxScale_ = 1.25f;
 	scaleScaler_ = minScale_;
 
-
 	windArray_.resize(10);
-	for(auto& wind : windArray_) {
+	for (auto& wind : windArray_) {
 		wind = new Wind;
 		wind->Initialize();
 		wind->SetParent(pTransform_);
@@ -95,7 +94,7 @@ void Tornado::Initialize() {
 	auto collider = AddComponent<BoxCollider>(model);
 
 	windAnimationDataArray_.resize(10);
-	for(auto& data : windAnimationDataArray_) {
+	for (auto& data : windAnimationDataArray_) {
 		data.speed = Random::Float(1.0f, 4.0f) * 4.0f;
 	}
 	/// ---------------------------------------------------
@@ -105,10 +104,10 @@ void Tornado::Initialize() {
 	const uint32_t kWindSize = 6u;
 
 	windDataArray_.resize(kWindSize);
-	for(size_t i = 0; i < kWindSize; ++i) {
+	for (size_t i = 0; i < kWindSize; ++i) {
 		WindData& wind = windDataArray_[i];
-		wind.time   = Random::Float(1.0f, 3.0f);
-		wind.speed  = Random::Float(25.0f, 30.0f);
+		wind.time = Random::Float(1.0f, 3.0f);
+		wind.speed = Random::Float(25.0f, 30.0f);
 		wind.radius = Random::Float(1.0f, 3.0f);
 		wind.height = Random::Float(1.0f, 2.0f);
 	}
@@ -121,10 +120,10 @@ void Tornado::Initialize() {
 
 	windParticle->SetPartilceUpdateFunction([&](Particle* particle) {
 		Transform* transform = particle->GetTransform();
-		Transform* parent    = GetParent();
+		Transform* parent = GetParent();
 		transform->SetParent(parent);
 
-		WindData&  wind = windDataArray_[particle->GetID()];
+		WindData& wind = windDataArray_[particle->GetID()];
 
 		wind.time += Time::TimeRateDeltaTime();
 
@@ -134,17 +133,17 @@ void Tornado::Initialize() {
 			-wind.height + 1.0f
 		};
 
-		transform->rotate.x = std::numbers::pi_v<float> * 0.5f;
+		transform->rotate.x = std::numbers::pi_v<float> *0.5f;
 		transform->rotate.z = std::atan2(-transform->position.y, -transform->position.x);
 
 		transform->scale = Vec3::kOne * wind.height * scaleScaler_;
 
-		if(particle->GetNormLifeTime() <= 0.0f) {
+		if (particle->GetNormLifeTime() <= 0.0f) {
 			wind.time = 0.0f;
 			wind.height = Random::Float(1.0f, 2.0f);
 		}
 
-	});
+		});
 	/// audio init
 	audioSource_ = AddComponent<AudioSource>();
 
@@ -154,12 +153,13 @@ void Tornado::Update() {
 	er_->SetRadius(radius_);
 	er_->SetColor(paintOutColor_);
 	radius_ = scaleScaler_;
-	if(pPlayer_->GetisPowerUp()) {
+	if (pPlayer_->GetisPowerUp()) {
 
 		scaleScaler_ += 3.0f * Time::TimeRateDeltaTime();
 		scaleScaler_ = std::min(scaleScaler_, 3.0f);
 
-	} else {
+	}
+	else {
 
 		if (!isNotInputReception_) {/// 入力を受け付けなくするフラグ（チュートリアル用）すみません
 			/// キー入力で大きさを変える
@@ -172,15 +172,15 @@ void Tornado::Update() {
 		}
 	}
 
-	localYAngle_  += Time::TimeRateDeltaTime() * zRotateSpeed_;
+	localYAngle_ += Time::TimeRateDeltaTime() * zRotateSpeed_;
 
-	quaternionLocalY_       = Quaternion::MakeFromAxis(Vec3::kUp,    localYAngle_);
+	quaternionLocalY_ = Quaternion::MakeFromAxis(Vec3::kUp, localYAngle_);
 
 	pTransform_->quaternion = quaternionLocalX_;
-	pTransform_->scale      = Vec3::kOne * scaleScaler_;
+	pTransform_->scale = Vec3::kOne * scaleScaler_;
 
 	Transform* parent = GetParent();
-	if(parent) {
+	if (parent) {
 		matRotate_ = parent->matTransform;
 		matRotate_.m[3][0] = 0.0f;
 		matRotate_.m[3][1] = 0.0f;
@@ -188,19 +188,19 @@ void Tornado::Update() {
 	}
 
 	/// 周りの風を回転させる
-	for(size_t i = 0; i < 10; ++i) {
+	for (size_t i = 0; i < 10; ++i) {
 		WindAnimationData& data = windAnimationDataArray_[i];
 		Wind* wind = windArray_[i];
 
 		data.time += Time::TimeRateDeltaTime();
 		wind->SetRotateY(data.time * data.speed);
 	}
-  
+
 }
 
 void Tornado::Debug() {
 
-	if(ImGui::TreeNodeEx("this param", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::TreeNodeEx("this param", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		Vec3 wPos = GetPosition();
 		ImGui::DragFloat3("world position", &wPos.x, 0.0f);
@@ -214,8 +214,8 @@ void Tornado::Debug() {
 	}
 
 	/// this debug
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-		
+	if (ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
 		ImGui::DragFloat("eac speed", &eacSpeed_, 0.01f);
 		ImGui::DragFloat("z rotate speed", &zRotateSpeed_, 0.5f);
 
@@ -224,7 +224,7 @@ void Tornado::Debug() {
 		ImGui::DragFloat("scale scaler", &scaleScaler_, 0.01f);
 		ImGui::DragFloat("min scale", &minScale_, 0.01f);
 		ImGui::DragFloat("max scale", &maxScale_, 0.01f);
-		
+
 		ImGui::Separator();
 
 		ImGui::DragFloat("local y angle", &localYAngle_, 0.1f);
@@ -237,7 +237,7 @@ void Tornado::Debug() {
 
 
 	/// player debug
-	if(ImGui::TreeNodeEx("player", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::TreeNodeEx("player", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		void* pointer = reinterpret_cast<void*>(pPlayer_);
 		ImGui::DragInt("address", reinterpret_cast<int*>(&pointer));
@@ -246,15 +246,15 @@ void Tornado::Debug() {
 	}
 
 
-	if(ImGui::TreeNodeEx("particle data", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::TreeNodeEx("particle data", ImGuiTreeNodeFlags_DefaultOpen)) {
 		ImGui::BeginChild("ScrollingRegion", ImVec2(0, 300), true, ImGuiWindowFlags_HorizontalScrollbar);
 
-		for(size_t i = 0; i < particleDataArray_.size(); ++i) {
+		for (size_t i = 0; i < particleDataArray_.size(); ++i) {
 
 			ParticleData& data = particleDataArray_[i];
 
 			std::string label = std::string("data") + std::to_string(i);
-			if(!ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+			if (!ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 				continue;
 			}
 
@@ -269,7 +269,7 @@ void Tornado::Debug() {
 	}
 
 
-	if(ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::TreeNodeEx("wind debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::TreePop();
 	}
@@ -281,20 +281,19 @@ void Tornado::SetPlayer(Player* _player) {
 	pPlayer_ = _player;
 	SetParent(pPlayer_->GetbaseTransform());
 	UpdateMatrix();
-	
+
 }
 
 void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) {
 
 	//ボスの直接攻撃によるダメージ
-	if ( !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
+	if (!dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
 		if (BossHead* bosshead = dynamic_cast<BossHead*>(collision)) {
 			if (bosshead->GetIsAttackCollision()) {
 				pPlayer_->DamageForBossHead();
 			}
 		}
 	}
-
 
 	//ボスの弾によるダメージ
 	if (dynamic_cast<BossBulletLump*>(collision) && !dynamic_cast<PlayerPowerUp*>(pPlayer_->GetBehavior())) {
@@ -303,22 +302,21 @@ void Tornado::OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision)
 }
 
 void Tornado::OnCollisionStay(BaseGameObject* const collision) {
-	if(collision->GetTag() == "Building") {
+	if (collision->GetTag() == "Building") {
 		BaseBuilding* building = static_cast<BaseBuilding*>(collision);
 
-    if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
+		if (!building->GetIsSlurped()) {/// 吸い込みしてるビルは通さない
 			building->SubHP(Time::DeltaTime());
 			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
-		/*	audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);*/
+			/*	audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);*/
+			building->SubHP(Time::TimeRateDeltaTime());
+			building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
 		}
 
-		building->SubHP(Time::TimeRateDeltaTime());
-		building->SetShake(Random::Vec3(-Vec3::kOne, Vec3::kOne));
-
 		/// 建物を引っこ抜いたらゲージを増やす
-		if(!building->GetIsInTornado()) {
-		
-			if(building->GetHP() <= 0.0f) {
+		if (!building->GetIsInTornado()) {
+
+			if (building->GetHP() <= 0.0f) {
 				audioSource_->PlayOneShot("playerToBuildingHit.wav", 0.5f);
 				float value = (building->GetCurrentScaleIndex() + 1.0f) * 0.01f;
 				pPlayer_->PowerUpGaugeUp(value);
@@ -337,7 +335,7 @@ int Wind::sInstanceCount_ = 0;
 
 Wind::Wind() {
 	id_ = sInstanceCount_++;
-	CreateTag(this); 
+	CreateTag(this);
 }
 
 void Wind::ResetInstanceCount() {
