@@ -65,13 +65,20 @@ void GuidanceArrow::Update() {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 1.5f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion=(interpolatedRotation*move);
 	//pBoss_->SetPivotSubtraction(move); // 移動もスムーズに
 
 	pivot_.UpdateMatrix();
+
+	if (distanceAndDirection.first<=7.0f) {
+		pTransform_->scale = { 0,0,0 };
+	}
+	else {
+		pTransform_->scale = { 1,1,1 };
+	}
 
 }
 
@@ -110,7 +117,7 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 	Quaternion interpolatedRotation = Slerp(currentRotation, targetRotation, rotationSpeed * Time::TimeRateDeltaTime());
 
 	// ホーミング移動のスピードを設定
-	Quaternion move = ToQuaternion({ 2.0f * Time::TimeRateDeltaTime(), 0, 0 });
+	Quaternion move = ToQuaternion({ 1.5f * Time::TimeRateDeltaTime(), 0, 0 });
 
 	// 回転を更新
 	pivot_.quaternion = (interpolatedRotation * move);
@@ -118,4 +125,11 @@ void GuidanceArrow::UpdateForTutorial(const Vec3&Position ) {
 
 	pivot_.UpdateMatrix();
 	UpdateMatrix();
+
+	if (distanceAndDirection.first <= 7.0f) {
+		pTransform_->scale = { 0,0,0 };
+	}
+	else {
+		pTransform_->scale = { 1,1,1 };
+	}
 }
