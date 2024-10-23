@@ -110,6 +110,7 @@ private:
 	bool isRootinit_;
 	bool isAttackInit_;
 
+
 	BossHeadEr* bossHeadEr_=nullptr;
 
 	/// 反発係数

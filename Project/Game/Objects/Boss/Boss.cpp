@@ -315,8 +315,8 @@ void Boss::AttackUpdate() {/// 超汚い
 			pBossHead_->SetIsAttackCollision(false);
 		}
 	}
-	pBossTubu_->SetPositionY(EaseInBack(4.8f, 3.2f, attackEaseT_, kAttackEaseT_));
-	pBossTubu_->SetPositionZ(EaseInBack(-1.0f, 2.0f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionY(EaseInBack(1.5f, 1.5f, attackEaseT_, kAttackEaseT_));
+	pBossTubu_->SetPositionZ(EaseInBack(-0.5f, 0.5f, attackEaseT_, kAttackEaseT_));
 }
 
 void  Boss::AttackFixationUpdate() {
@@ -424,86 +424,3 @@ void Boss::DamageForPar(const float& par) {
 	}
 }
 
-
-
-
-//
-//
-///// パーティクル初期化
-//void Boss::ParticleInit() {
-//	/// パーティクルデータの初期化
-//	for (auto& data : particleDataArray_) {
-//		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
-//		data.transform.Initialize();	/// Transform初期化
-//		data.pivot.Initialize();//pivot初期化
-//		data.pivot = pivot_;//pivot代入
-//		data.transform.position = { 0,Random::Float(0,1) ,-(Ground::groundScale_ - positionOfset_) };
-//		data.velocity = { Random::Float(-2.0f,2.0f),Random::Float(-2.0f,2.0f),-15 };/// 速度
-//	}
-//
-//}
-//
-///// <summary>
-/////  パーティクル更新
-///// </summary>
-//void Boss::ParticleUpdate() {
-//
-//	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
-//		Transform* transform = particle->GetTransform();
-//		ParticleData& data = particleDataArray_[particle->GetID()];
-//
-//		transform->SetParent(&data.pivot);
-//
-//		// 回転処理
-//		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-//		data.velocity.z += (kGravity_ * Time::DeltaTime());
-//
-//		// 変位
-//		data.transform.position += (data.velocity) * Time::DeltaTime();
-//
-//		// 反発する
-//		if (data.transform.position.z > -(Ground::groundScale_ - positionOfset_)) {
-//			data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
-//			// 反発係数により反発する
-//			data.velocity.z *= reboundFactor_;
-//			data.rotateSpeed *= reboundFactor_;
-//			data.reflectionCount++;  // 反発カウントインクリメント
-//		}
-//
-//		// 反発カウントが2回以上になったら止める
-//		if (data.reflectionCount >= 2) {
-//			data.velocity.x = 0.0f;
-//			data.velocity.z = 0.0f;
-//		}
-//
-//		// 反発カウントが最大に達したらy軸の速度を止める
-//		if (data.reflectionCount >= reflectionCountMax_) {
-//			data.velocity.y = 0;
-//			data.transform.position.z = -(Ground::groundScale_ - positionOfset_);
-//		}
-//
-//		// 回転の適用
-//		float rotateXAngle_ = +data.velocity.y;
-//		float rotateYAngle_ = -data.velocity.x;
-//
-//		if (data.velocity != Vec3(0.0f, 0.0f, 0.0f)) {
-//			// 回転を適応
-//			Quaternion rotateX_ = Quaternion::MakeFromAxis({ 1.0f, 0.0f, 0.0f }, rotateXAngle_);
-//			Quaternion rotateY_ = Quaternion::MakeFromAxis({ 0.0f, 1.0f, 0.0f }, rotateYAngle_);
-//
-//			// パーティクルの向きの決定
-//			/*Quaternion quaternionLocalZ = Quaternion::MakeFromAxis({ 0.0f, 0.0f, 1.0f }, std::atan2(data.velocity.x, data.velocity.y));*/
-//
-//			data.pivot.quaternion *= (rotateX_ * rotateY_);  // 回転の適用と正規化
-//			//transform->quaternion = quaternionLocalZ.Conjugate();  // ローカルZ軸のクォータニオンの適用
-//		}
-//
-//		// transformの更新
-//		transform->position = data.transform.position;
-//		transform->rotate = data.rotate;
-//		transform->scale = { 1.2f, 1.2f, 1.2f };
-//
-//		});
-//}
-//
-//

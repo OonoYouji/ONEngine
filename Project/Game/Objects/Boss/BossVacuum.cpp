@@ -21,7 +21,7 @@
 #include<numbers>
 
 void BossTubu::Initialize() {
-	Model* model = ModelManager::Load("bossTubu");
+	Model* model = ModelManager::Load("bossTubeGame");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
@@ -53,16 +53,17 @@ void BossTubu::SetBoss(Boss* boss) {
 void BossTubu::ParamaterInit() {
 	floatingCycle_ = 80.0f;
 	floatingAmplitude_ = 0.5f;
-	pTransform_->position.z = -1.0f;
-	pTransform_->position.y = 4.8f;
-	pTransform_->rotate.x = -0.9f;
+	pTransform_->position.z =-0.5f;
+	pTransform_->position.y = 1.5f;
+	pTransform_->position.x = -0.0f;
+	/*pTransform_->rotate.x =;*/
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Bosshead
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 void BossHead::Initialize() {
-	Model* model = ModelManager::Load("bossHead");
+	Model* model = ModelManager::Load("bossHeadGame");
 	auto meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetModel(model);
 	auto collider = AddComponent<BoxCollider>(model);
@@ -91,7 +92,11 @@ void BossHead::Update() {
 	}
 }
 void BossHead::Debug() {
-
+	if (ImGui::TreeNode("Paramater")) {
+		ImGui::DragFloat("radius",&pTransform_->rotate.y,0.05f);
+		/*ImGui::ColorEdit3("paint out color", &paintOutColor_.x);*/
+		ImGui::TreePop();
+	}
 }
 
 void BossHead::RootInit() {
@@ -100,8 +105,8 @@ void BossHead::RootInit() {
 		floatingCycle_ = 65.0f;
 		floatingAmplitude_ = 0.3f;
 		pTransform_->position.z = 0.0f;
-		pTransform_->position.x = 0.1f;
-		pTransform_->position.y = 4.5f;
+		pTransform_->position.x = 0.0f;
+		pTransform_->position.y = 2.6f;
 		isAttackInit_ = false;
 		isRootinit_ = true;
 		pTransform_->SetParent(pBossTube_->GetParent());
@@ -113,7 +118,8 @@ void BossHead::AttackInit() {
 		bossHeadEr_->AttackInit();
 		pTransform_->position.z = 0.0f;
 		pTransform_->position.x = 0.0f;
-		pTransform_->position.y = 0.16f;
+		pTransform_->position.y = 1.0f;
+	
 		pTransform_->SetParent(pBossTube_->GetTransform());
 		isAttackInit_ = true;
 		isRootinit_ = false;
@@ -155,59 +161,11 @@ void  BossHead::LightFlashing() {
 }
 
 void BossHead::AttackEmitter() {
-	const uint32_t kParticleMaxNum = 12u;
-
-	particleDataArray_.resize(kParticleMaxNum);
-	particleSystem_ = AddComponent<ParticleSystem>(kParticleMaxNum, "axis");
-
-	/// パーティクルデータの初期化
-	for (auto& data : particleDataArray_) {
-		data.rotateSpeed = Random::Float(5.0f, 10.0f);/// 回転スピード
-		data.transform.Initialize();	/// Transform初期化
-		data.transform.SetParent(pTransform_);
-		data.velocity = { Random::Float(-1,1),Random::Float(-1,1),5 };/// 速度
-	}
-
-	/// パーティクルの挙動
-	particleSystem_->SetEmittedParticleCount(0);
-	particleSystem_->SetEmitterFlags(false);
+	
 }
 
 void  BossHead::AttackParticle() {
-	particleSystem_->SetPartilceUpdateFunction([&](Particle* particle) {
-		Transform* transform = particle->GetTransform();
-		ParticleData& data = particleDataArray_[particle->GetID()];
-
-		transform->SetParent(pBossTube_->GetParent());
-
-		// 回転処理
-		data.transform.rotate.z += data.rotateSpeed * Time::DeltaTime();
-		data.velocity.z += (kGravity_ * Time::DeltaTime());
-
-		//変位
-		data.transform.position += (data.velocity) * Time::DeltaTime();/// 0.0166f
-
-		// 反発する
-		if (data.transform.position.z > -(Ground::groundScale_ + 1)) {
-			data.transform.position.z = -(Ground::groundScale_ + 1);
-			// 反発係数により反発する
-			data.velocity.z *= reboundFactor_;
-			data.rotateSpeed *= reboundFactor_;
-			data.reflectionCount++;/// 反発カウントインクリメント
-		}	//カウント2
-		if (data.reflectionCount >= 2) {
-			data.velocity.x = 0.0f;
-			data.velocity.z = 0.0f;
-		}
-
-		//カウント5
-		if (data.reflectionCount >= reflectionCountMax_) {
-			data.velocity.y = 0;
-		}
-		transform->position = data.transform.position;
-		transform->rotate = data.rotate;
-		transform->quaternion = data.transform.quaternion;
-		});
+	
 
 }
 
@@ -231,8 +189,8 @@ void  BossHeadEr::Initialize() {
 
 	er_ = AddComponent<EarthRenderer>();
 	er_->SetRadius(0.0f);
-	pTransform_->position.y = 2.6f;
-	pTransform_->position.z = 2.6f;
+	pTransform_->position.y = 1.8f;
+	pTransform_->position.z = 2.2f;
 	pTransform_->quaternion = { 0,0,0,1 };
 	pTransform_->rotateOrder = QUATERNION;
 }
@@ -255,7 +213,7 @@ void BossHeadEr::AttackInit() {
 	lightTime_ = 0.0f;
 	er_->SetRadius(3.2f);
 	paintOutColor_ = Vec4::kRed; 
-	er_->SetColor(paintOutColor_);  // 赤に切り替え
+	er_->SetColor(paintOutColor_);  /// 赤に切り替え
 }
 
 void BossHeadEr::LightFlashing() {
@@ -271,9 +229,8 @@ void BossHeadEr::LightFlashing() {
 		else {
 			paintOutColor_ = Vec4::kRed; // 赤に切り替え
 		}
-		lightTime_ = 0.0f;  // 時間をリセット
+		lightTime_ = 0.0f;  /// 時間をリセット
 	}
-
 }
 
 void BossHeadEr::SetERRadius(float radius) { er_->SetRadius(radius); }

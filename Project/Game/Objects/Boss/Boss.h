@@ -50,7 +50,6 @@ public:
 	void AttackUpdate();
 	void AttackFixationUpdate();
 
-	void DamageParticleInit();
 
 	void DamageForPar(const float& par);
 
@@ -83,6 +82,8 @@ public:
 	void SetIsBuildingKill(bool is) { isBuildingKill_ = is; }
 
 	void SetIsAttack(bool is) { isAttack_ = is; }
+
+	void ColorChange(Vec4 color) { meshRenderer_->SetColor(color);}
 
 /// <summary>
 /// Particle
