@@ -26,6 +26,7 @@
 #include "Objects/DeadEffect/DeadEffect.h"
 #include "Objects/GameResult/GameResult.h"
 #include "Objects/PowerUpGauge/PowerUpGauge.h"
+#include "Objects/GameUI/GameUI.h"
 
 /// ui
 #include "UI/GuidanceArrow.h"
@@ -59,7 +60,7 @@ void Scene_Game::Initialize() {
 	GameCameraState* gameCameraState = new GameCameraState();
 	/*GameCameraZoomInOut* gameCameraZoomInOut = new GameCameraZoomInOut();*/
 	GuidanceArrow* guideArrow = new GuidanceArrow();
-	PowerUpGauge* powerUpGauge = new PowerUpGauge();
+	GameUI* gameUI = new GameUI();
 
 	sceneTransition_ = new SceneTransition(TRANSTION_FADE_IN);
 	deadEffect_ = new DeadEffect();
@@ -81,7 +82,7 @@ void Scene_Game::Initialize() {
 	guideArrow->Initialize();
 	sceneTransition_->Initialize();
 	deadEffect_->Initialize();
-	powerUpGauge->Initialize();
+	gameUI->Initialize();
 
 	/// ===================================================
 	/// その他 セットするべきものをここに
@@ -115,7 +116,8 @@ void Scene_Game::Initialize() {
 	/*enemyManager->LoadEnemyPos("resources/EnemyParamater/EnemyPos.json");*/
 	buildingManager_->LoadBuildingPos("resources/BuildingParamater/BuildingPos.json");
 
-
+	gameUI->SetPlayer(player_);
+	gameUI->SetBoss(boss_);
 
 	/// layer
 

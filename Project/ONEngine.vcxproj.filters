@@ -679,6 +679,8 @@
     <ClCompile Include="Game\Objects\DefeatStamp\DefeatStamp.cpp" />
     <ClCompile Include="Game\Objects\PlayerHP\PlayerHP.cpp" />
     <ClCompile Include="Game\Objects\PowerUpGauge\PowerUpGauge.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\GameUI.cpp" />
+    <ClCompile Include="Game\Objects\GameUI\BossHP\BossHP.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -1022,5 +1024,7 @@
     <ClInclude Include="Game\Objects\DefeatStamp\DefeatStamp.h" />
     <ClInclude Include="Game\Objects\PlayerHP\PlayerHP.h" />
     <ClInclude Include="Game\Objects\PowerUpGauge\PowerUpGauge.h" />
+    <ClInclude Include="Game\Objects\GameUI\GameUI.h" />
+    <ClInclude Include="Game\Objects\GameUI\BossHP\BossHP.h" />
   </ItemGroup>
 </Project>

@@ -94,6 +94,9 @@ public:
 
 	bool GetIsAlive() const { return HP_ > 0.0f; }
 
+	float GetHP()    const { return HP_; }
+	float GetMaxHP() const { return HPMax_; }
+
 private:
 	
 	MeshRenderer* meshRenderer_ = nullptr;

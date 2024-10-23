@@ -99,6 +99,9 @@ public:
 
 	bool GetIsAlive() const { return hp_ > 0; }
 
+	float GetPowerUpGauge() const { return powerUpGauge_;  }
+	float GetPowerUpGaugeMax() const { return powerUpGaugeMax_;  }
+
 private:
 	struct DamageParamater {
 		bool isStop;

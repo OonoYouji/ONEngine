@@ -2,27 +2,24 @@
 
 #include "GameObjectManager/GameObjectManager.h"
 
+class Boss;
 
-class Player;
-
-
-
-class PowerUpGauge : public BaseGameObject {
+class BossHP : public BaseGameObject {
 public:
 
-    PowerUpGauge();
-    ~PowerUpGauge();
+    BossHP();
+    ~BossHP();
 
     void Initialize() override;
     void Update()     override;
     void Debug()      override;
 
-    void SetPlayer(Player* _player);
+
+    void SetBoss(Boss* _boss);
 
 private:
-
     class MeshRenderer* mr_ = nullptr;
-    Player* pPlayer_ = nullptr;
+    class Boss* pBoss_ = nullptr;
 
     Vec2 uvPosition_;
     Vec2 uvScale_;
