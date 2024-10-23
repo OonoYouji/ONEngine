@@ -9,7 +9,7 @@
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/RailCamera/RailCamera.h"
 #include "Objects/Reticle/Reticle.h"
-#include "Objects/PlayerBullet/PlayerBullet.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 /// ===================================================
@@ -27,18 +27,21 @@ void Scene_Game::Initialize() {
 	RailCamera*     railCamera     = new RailCamera();
 	Reticle*        reticle        = new Reticle();
 	Player*         player         = new Player();
+	Enemy*          enemy          = new Enemy();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
 	railCamera->Initialize();
 	reticle->Initialize();
 	player->Initialize();
+	enemy->Initialize();
 	
 	/// その他ポインタ設定など...
 
 	railCamera->SetGameCamera(mainCamera_);
 	railCamera->SetShootingCourse(shootingCourse);
 	player->SetParent(railCamera->GetTransform());
+	player->SetReticle(reticle);
 
 	reticle->SetGameCamera(mainCamera_);
 

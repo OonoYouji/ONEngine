@@ -19,6 +19,7 @@
 /// objects
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/PlayerBullet/PlayerBullet.h"
+#include "Objects/Reticle/Reticle.h"
 
 /// math
 #include "Math/Quaternion.h"
@@ -44,8 +45,8 @@ void Player::Update() {
 		bullet->Initialize();
 		bullet->SetPosition(GetPosition());
 
-		Vec3 direction = Mat4::TransformNormal(Vec3::kFront, pTransform_->matTransform);
-		Vec3 velocity = direction.Normalize() * (bulletSpeed_ * Time::DeltaTime());
+		Vec3 diff = pReticle_->GetPosition() - GetPosition();
+		Vec3 velocity = diff.Normalize() * (bulletSpeed_ * Time::DeltaTime());
 		bullet->SetVelocity(velocity);
 	}
 
@@ -76,6 +77,10 @@ void Player::Debug() {
 
 
 
+}
+
+void Player::SetReticle(Reticle* _reticle) {
+	pReticle_ = _reticle;
 }
 
 

@@ -11,6 +11,9 @@
 #include "Objects/ShootingCourse/ShootingCourse.h"
 
 
+/// 前方宣言
+class Reticle;
+
 
 /// ===================================================
 /// プレイヤーが操作するエンティティのクラス
@@ -28,24 +31,14 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-
-	/// <summary>
-	/// シューティングコースタークラスのセット
-	/// </summary>
-	/// <param name="_shootingCourse"></param>
-	void SetShootingCourse(ShootingCourse* _shootingCourse);
-
-	/// <summary>
-	/// スタート地点に戻る
-	/// </summary>
-	void Reset();
-
-
+	void SetReticle(Reticle* _reticle);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	Reticle* pReticle_ = nullptr;
 
 	/// bullet param
 	float bulletSpeed_;
