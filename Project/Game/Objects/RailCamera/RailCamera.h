@@ -16,7 +16,7 @@ class GameCamera;
 
 
 
-class RailCamera : BaseGameObject {
+class RailCamera : public BaseGameObject {
 public:
 
     RailCamera();

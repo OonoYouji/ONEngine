@@ -38,7 +38,7 @@ void Scene_Game::Initialize() {
 
 	railCamera->SetGameCamera(mainCamera_);
 	railCamera->SetShootingCourse(shootingCourse);
-	player->SetShootingCourse(shootingCourse);
+	player->SetParent(railCamera->GetTransform());
 
 	reticle->SetGameCamera(mainCamera_);
 
