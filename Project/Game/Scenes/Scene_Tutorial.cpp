@@ -69,6 +69,8 @@ void Scene_Tutorial::Initialize() {
 	//アクティブ切るUI
 
 	guidanceArrow_->isActive = false;
+
+	tutorialState_ = SCACLEUP;
 	
 }
 /// ===================================================
