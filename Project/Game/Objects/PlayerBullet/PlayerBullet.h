@@ -12,6 +12,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+
+	void OnCollisionEnter(BaseGameObject* const collision) override;
+
+
 	void SetVelocity(const Vec3& _velocity);
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
