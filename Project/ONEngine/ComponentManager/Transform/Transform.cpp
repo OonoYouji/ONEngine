@@ -49,7 +49,6 @@ void Transform::Debug() {
 		}
 
 
-		UpdateMatrix();
 		ImGui::TreePop();
 	}
 }
