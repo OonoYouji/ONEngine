@@ -20,8 +20,7 @@
 void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
-	mainCamera_->SetProjectionType(ORTHOGRAPHIC);
-	mainCamera_->SetDistance(10.0f);
+	
 }
 
 
