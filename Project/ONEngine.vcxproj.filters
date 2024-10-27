@@ -559,6 +559,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Base\ComponentArray.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Base\ComponentManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -801,5 +804,7 @@
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Base\ComponentArray.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Base\ComponentManager.h" />
   </ItemGroup>
 </Project>
