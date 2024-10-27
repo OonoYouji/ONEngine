@@ -89,6 +89,10 @@ Model* ModelManager::Load(const std::string& filePath) {
 	Assimp::Importer importer;
 	std::string objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".obj";
 	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	if(scene == nullptr) {
+		objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".gltf";
+		scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	}
 
 	Model* model = new Model();
 
