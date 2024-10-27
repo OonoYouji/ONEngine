@@ -14,6 +14,9 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 
+/// lib
+#include "Debug/Assert.h"
+
 /// ===================================================
 /// 初期化処理
 /// ===================================================

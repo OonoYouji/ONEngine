@@ -12,7 +12,7 @@
 
 void DemoObject::Initialize() {
 
-	auto mr = AddComponent<MeshRenderer>();
+	MeshRenderer* mr = AddComponent<MeshRenderer>();
 	mr->SetModel("AnimatedCube");
 
 }

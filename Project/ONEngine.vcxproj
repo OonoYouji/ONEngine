@@ -245,6 +245,7 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Library\Debug\Assert.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />
     <ClInclude Include="Library\Input\Input.h" />
     <ClInclude Include="Library\Input\Keyboard.h" />
