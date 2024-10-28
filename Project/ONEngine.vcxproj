@@ -180,6 +180,7 @@
     <ClCompile Include="ONEngine\CommandManager\Commands\BaseCommand.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Library\Debug\Assert.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />
     <ClInclude Include="Library\Input\Input.h" />
     <ClInclude Include="Library\Input\Keyboard.h" />
@@ -265,6 +267,7 @@
     <ClInclude Include="ONEngine\CommandManager\Commands\BaseCommand.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
