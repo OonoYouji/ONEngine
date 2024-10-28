@@ -23,21 +23,21 @@ namespace ONE {
 	enum class HeapType {
 		RTV,
 		CBV_SRV_UAV,
-		CBV
+		DSV
 	};
 
 	/// ===================================================
 	/// Descriptorの管理をするtemplateクラス
 	/// ===================================================
 	template <HeapType type>
-	class DescriptorHeap {
+	class DxDescriptorHeap {
 	public:
 		/// ===================================================
 		/// public : methods
 		/// ===================================================
 
-		DescriptorHeap(uint32_t _maxHeapSize) : kMaxHeapSize_(_maxHeapSize) {}
-		~DescriptorHeap() {}
+		DxDescriptorHeap(uint32_t _maxHeapSize) : kMaxHeapSize_(_maxHeapSize) {}
+		~DxDescriptorHeap() {}
 
 		/// <summary>
 		/// 初期化関数
@@ -47,8 +47,11 @@ namespace ONE {
 
 
 
-		uint32_t Allocate();
-
+		uint32_t Allocate() {
+			int result = useIndex_;
+			useIndex_++;
+			return result;
+		}
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandel(uint32_t _index) {
 			D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();

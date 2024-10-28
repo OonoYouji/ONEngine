@@ -107,7 +107,7 @@
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\DescriptorHeap.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -193,7 +193,7 @@
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\DescriptorHeap.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
     <ClInclude Include="Library\Debug\Assert.h" />
   </ItemGroup>
   <ItemGroup>

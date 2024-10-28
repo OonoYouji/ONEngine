@@ -49,6 +49,15 @@ void ONE::DxCommon::Initialize() {
 	shaderCompiler_.reset(new DxShaderCompiler());
 	shaderCompiler_->Initialize();
 
+	/// srv, rtv, dsvの生成、初期化
+	srvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::CBV_SRV_UAV>(128));
+	rtvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::RTV>(32));
+	dsvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::DSV>(1));
+
+	srvDescriptorHeap_->Initialize(this);
+	rtvDescriptorHeap_->Initialize(this);
+	dsvDescriptorHeap_->Initialize(this);
+
 
 }
 
@@ -57,6 +66,10 @@ void ONE::DxCommon::Initialize() {
 /// 終了処理
 /// ===================================================
 void ONE::DxCommon::Finalize() {
+
+	srvDescriptorHeap_.reset();
+	rtvDescriptorHeap_.reset();
+	dsvDescriptorHeap_.reset();
 
 	shaderCompiler_.reset();
 	depthStencil.reset();

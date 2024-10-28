@@ -1,8 +1,13 @@
 #pragma once
 
+/// directX12
 #include <d3d12.h>
 
+/// std
 #include <memory>
+
+/// engine
+#include "DxDescriptorHeap.h"
 
 class RenderTexture;
 
@@ -16,6 +21,7 @@ namespace ONE {
 	class DxDebug;
 	class DxShaderCompiler;
 	class DxDepthStencil;
+
 
 	/// ===================================================
 	/// DirectX12汎用クラス
@@ -63,7 +69,11 @@ namespace ONE {
 		DxDevice*     GetDxDevice() const { return device_.get(); }
 		ID3D12Device* GetDevice()   const;
 
-		DxDescriptor* GetDxDescriptor() const { return descriptor_.get(); }
+		//DxDescriptor* GetDxDescriptor() const { return descriptor_.get(); }
+
+		DxDescriptorHeap<HeapType::CBV_SRV_UAV>* GetSRVDescriptorHeap() const { return srvDescriptorHeap_.get(); }
+		DxDescriptorHeap<HeapType::RTV>*         GetRTVDescriptorHeap() const { return rtvDescriptorHeap_.get(); }
+		DxDescriptorHeap<HeapType::DSV>*         GetDSVDescriptorHeap() const { return dsvDescriptorHeap_.get(); }
 
 		DxDepthStencil* GetDxDepthStencil() const { return depthStencil.get(); }
 
@@ -79,6 +89,11 @@ namespace ONE {
 		std::unique_ptr<DxCommand>      command_      = nullptr;
 		std::unique_ptr<DxDescriptor>   descriptor_   = nullptr;
 		std::unique_ptr<DxDepthStencil> depthStencil  = nullptr;
+
+
+		std::unique_ptr<DxDescriptorHeap<HeapType::CBV_SRV_UAV>> srvDescriptorHeap_ = nullptr;
+		std::unique_ptr<DxDescriptorHeap<HeapType::RTV>>         rtvDescriptorHeap_ = nullptr;
+		std::unique_ptr<DxDescriptorHeap<HeapType::DSV>>         dsvDescriptorHeap_ = nullptr;
 
 		std::unique_ptr<DxDebug> debug_ = nullptr;
 

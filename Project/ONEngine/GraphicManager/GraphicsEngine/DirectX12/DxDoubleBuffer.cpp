@@ -22,12 +22,19 @@ ONE::DxDoubleBuffer::~DxDoubleBuffer() {
 /// ===================================================
 /// thisの初期化
 /// ===================================================
-void ONE::DxDoubleBuffer::Initialize(WinApp* winApp, DxDevice* dxDevice, DxDescriptor* dxDescriptor, ID3D12CommandQueue* commandQueue) {
+void ONE::DxDoubleBuffer::Initialize(
+	WinApp* winApp, DxDevice* dxDevice,
+	DxDescriptorHeap<HeapType::RTV>* _rtvDescriptorHeap,
+	DxDescriptorHeap<HeapType::DSV>* _dsvDescriptorHeap, 
+	ID3D12CommandQueue* commandQueue) {
 
 	pWinApp_ = winApp;
+	pDSVDescriptorHeap_ = _dsvDescriptorHeap;
+
+	dsvDescriptorIndex_ = pDSVDescriptorHeap_->Allocate();
 
 	InitializeSwapChain(dxDevice->GetFactory(), commandQueue);
-	InitializeBuffers(dxDevice->GetDevice(), dxDescriptor);
+	InitializeBuffers(dxDevice->GetDevice(), _rtvDescriptorHeap);
 
 	viewprot_.Width = ONE::WinApp::kWindowSizeX;
 	viewprot_.Height = ONE::WinApp::kWindowSizeY;
@@ -51,13 +58,12 @@ void ONE::DxDoubleBuffer::Initialize(WinApp* winApp, DxDevice* dxDevice, DxDescr
 void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(dsvDescriptorIndex_);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = ONEngine::GetDxCommon()->GetDxDescriptor()->GetDsvCpuHandle();
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList->ClearRenderTargetView(rtvHandle_[bbIndex], clearColor, 0, nullptr);
-
 }
 
 
@@ -91,10 +97,10 @@ void ONE::DxDoubleBuffer::SetSiccorRect(ID3D12GraphicsCommandList* commandList) 
 	commandList->RSSetScissorRects(1, &sicssorRect_);
 }
 
-void ONE::DxDoubleBuffer::SetRanderTarget(DxCommand* command, DxDescriptor* descriptor) {
+void ONE::DxDoubleBuffer::SetRanderTarget(DxCommand* command) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 	ID3D12GraphicsCommandList* commandList = command->GetList();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = descriptor->GetDsvCpuHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(dsvDescriptorIndex_);
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
 }
 
@@ -143,7 +149,7 @@ void ONE::DxDoubleBuffer::InitializeSwapChain(IDXGIFactory7* factory, ID3D12Comm
 /// ===================================================
 /// Bufferの初期化
 /// ===================================================
-void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptor* dxDescriptor) {
+void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptorHeap<HeapType::RTV>* _rtvDescriptorHeap) {
 
 	D3D12_RENDER_TARGET_VIEW_DESC desc{};
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -156,8 +162,9 @@ void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptor* 
 		HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
 		assert(SUCCEEDED(hr));
 
-		rtvHandle_[i] = dxDescriptor->GetRtvCpuHandle();
-		dxDescriptor->AddRtvUsedCount();
+		uint32_t index = _rtvDescriptorHeap->Allocate();
+		rtvHandle_[i] = _rtvDescriptorHeap->GetCPUDescriptorHandel(index);
+
 		device->CreateRenderTargetView(buffers_[i].Get(), &desc, rtvHandle_[i]);
 	}
 

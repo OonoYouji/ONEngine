@@ -89,8 +89,6 @@ void Floor::Draw() {
 
 	pipeline_->SetPipelineState();
 
-	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
-
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
