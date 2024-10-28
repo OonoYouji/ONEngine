@@ -7,6 +7,8 @@
 /// std
 #include <cstdint>
 
+/// lib
+#include "Debug/Assert.h"
 
 /// using
 using namespace Microsoft::WRL;
@@ -48,6 +50,7 @@ namespace ONE {
 
 
 		uint32_t Allocate() {
+			Assert(useIndex_ < kMaxHeapSize_, "useIndex >= kMaxHeapSize_;  over!!!");
 			int result = useIndex_;
 			useIndex_++;
 			return result;
@@ -74,6 +77,13 @@ namespace ONE {
 			ID3D12DescriptorHeap* heaps[] = { descriptorHeap_.Get() };
 			_commandList->SetDescriptorHeaps(1, heaps);
 		}
+
+
+		/// <summary>
+		/// DescriptorHeapのゲッター
+		/// </summary>
+		/// <returns></returns>
+		ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
 
 	private:
 

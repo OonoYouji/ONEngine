@@ -37,18 +37,6 @@ void ONE::DxCommon::Initialize() {
 	command_.reset(new DxCommand());
 	command_->Initialize(device_->GetDevice());
 
-	descriptor_.reset(new DxDescriptor());
-	descriptor_->Initialize(device_->GetDevice());
-
-	//doubleBuffer_.reset(new DxDoubleBuffer());
-	//doubleBuffer_->Initialize(winApp, device_.get(), descriptor_.get(), command_->GetQueue());
-
-	depthStencil.reset(new DxDepthStencil());
-	depthStencil->Initialize(device_->GetDevice());
-
-	shaderCompiler_.reset(new DxShaderCompiler());
-	shaderCompiler_->Initialize();
-
 	/// srv, rtv, dsvの生成、初期化
 	srvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::CBV_SRV_UAV>(128));
 	rtvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::RTV>(32));
@@ -57,6 +45,13 @@ void ONE::DxCommon::Initialize() {
 	srvDescriptorHeap_->Initialize(this);
 	rtvDescriptorHeap_->Initialize(this);
 	dsvDescriptorHeap_->Initialize(this);
+
+	depthStencil.reset(new DxDepthStencil());
+	depthStencil->Initialize(device_->GetDevice());
+
+	shaderCompiler_.reset(new DxShaderCompiler());
+	shaderCompiler_->Initialize();
+
 
 
 }
@@ -73,8 +68,6 @@ void ONE::DxCommon::Finalize() {
 
 	shaderCompiler_.reset();
 	depthStencil.reset();
-	//doubleBuffer_.reset();
-	descriptor_.reset();
 	command_.reset();
 	device_.reset();
 

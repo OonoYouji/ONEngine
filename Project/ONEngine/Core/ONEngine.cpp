@@ -210,6 +210,9 @@ void System::PreDraw() {
 	for(auto& win : winApps_) {
 		win.second->PreDraw();
 	}
+
+	ID3D12GraphicsCommandList* pCommandList = dxCommon_->GetDxCommand()->GetList();
+	dxCommon_->GetSRVDescriptorHeap()->BindToCommandList(pCommandList);
 }
 
 void System::PostDraw() {

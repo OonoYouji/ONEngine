@@ -71,23 +71,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()
 	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor(), 2
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 2
 	);
 
 	ParticleSystem::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
 	);
 
 	MeshInstancingRenderer::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
 	);
 
 	/// game object manager の初期化

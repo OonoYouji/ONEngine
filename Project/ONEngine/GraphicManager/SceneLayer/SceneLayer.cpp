@@ -48,11 +48,16 @@ void SceneLayer::ResetInstanceCount() {
 
 
 void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
-	auto commandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
-	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
+	auto pDxCommon = ONEngine::GetDxCommon();
+	auto commandList = pDxCommon->GetDxCommand()->GetList();
 
 	renderTexture_.reset(new RenderTexture);
-	renderTexture_->Initialize(Vec4(0, 0, 0, 0), commandList, dxDescriptor);
+	renderTexture_->Initialize(
+		Vec4(0, 0, 0, 0), commandList, 
+		pDxCommon->GetSRVDescriptorHeap(),
+		pDxCommon->GetRTVDescriptorHeap(),
+		pDxCommon->GetDSVDescriptorHeap()
+	);
 
 	camera_    = camera;
 	className_ = className;

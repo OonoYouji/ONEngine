@@ -35,12 +35,15 @@ void ONE::WinApp::Initialize(const wchar_t* windowName, WinApp* parent) {
 		kWindowSizeX, kWindowSizeY
 	);
 
+	auto pDxCommon = ONEngine::GetDxCommon();
+
 	doubleBuffer_.reset(new DxDoubleBuffer);
 	doubleBuffer_->Initialize(
 		this,
-		ONEngine::GetDxCommon()->GetDxDevice(),
-		ONEngine::GetDxCommon()->GetDxDescriptor(),
-		ONEngine::GetDxCommon()->GetDxCommand()->GetQueue()
+		pDxCommon->GetDxDevice(),
+		pDxCommon->GetRTVDescriptorHeap(),
+		pDxCommon->GetDSVDescriptorHeap(),
+		pDxCommon->GetDxCommand()->GetQueue()
 	);
 
 }
@@ -104,12 +107,15 @@ void ONE::WinApp::ShowGameWindow() {
 		kWindowSizeX, kWindowSizeY
 	);
 
+	auto pDxCommon = ONEngine::GetDxCommon();
+
 	doubleBuffer_.reset(new DxDoubleBuffer);
 	doubleBuffer_->Initialize(
 		this,
-		ONEngine::GetDxCommon()->GetDxDevice(),
-		ONEngine::GetDxCommon()->GetDxDescriptor(),
-		ONEngine::GetDxCommon()->GetDxCommand()->GetQueue()
+		pDxCommon->GetDxDevice(),
+		pDxCommon->GetRTVDescriptorHeap(),
+		pDxCommon->GetDSVDescriptorHeap(),
+		pDxCommon->GetDxCommand()->GetQueue()
 	);
 
 }

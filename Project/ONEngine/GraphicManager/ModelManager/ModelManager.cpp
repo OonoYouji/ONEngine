@@ -346,7 +346,6 @@ void ModelManager::PostDraw() {
 	CameraManager*             pCameraManager = CameraManager::GetInstance();
 	BaseCamera*                pCamera        = pCameraManager->GetMainCamera();
 
-	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	/// ---------------------------------------------------
 	/// Solidの描画

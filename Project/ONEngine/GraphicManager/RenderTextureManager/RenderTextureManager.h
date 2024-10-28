@@ -21,7 +21,7 @@ public:
 	static void BeginRenderTarget(const std::string& name);
 	static void EndRenderTarget(const std::string& name);
 
-	static void CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor);
+	//static void CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor);
 	static void SetIsBlending(const std::string& name, bool isBlending);
 	static RenderTexture* GetRenderTexture(const std::string& name);
 
@@ -30,7 +30,7 @@ public:
 	/// </summary>
 	/// <param name="commandList"></param>
 	/// <param name="descriptor"></param>
-	void Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* descriptor);
+	void Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxCommon* _dxCommon);
 
 	/// <summary>
 	/// 終了処理
@@ -85,7 +85,6 @@ private:
 
 	/// other class pointer
 	ID3D12GraphicsCommandList* pCommandList_;
-	ONE::DxDescriptor* pDxDescriptor_;
 
 private:
 	RenderTextureManager(const RenderTextureManager&) = delete;

@@ -26,7 +26,7 @@ public:
 	/// public : static methods
 	/// ===================================================
 	
-	static void SInitialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor);
+	static void SInitialize(ID3D12GraphicsCommandList* _commandList);
 	static void SFinalize();
 
 	static void SetDirectionalLight(class DirectionalLight* _directionalLight);

@@ -44,7 +44,6 @@ public:
 
 	static void StaticInitialize(
 		ID3D12GraphicsCommandList* commandList,
-		ONE::DxDescriptor* dxDescriptor,
 		uint32_t renderTargetLayerNumber
 	);
 	static void StaticFinalize();

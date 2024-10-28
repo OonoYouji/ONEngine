@@ -10,6 +10,9 @@
 #include "WindowManager/WinApp.h"
 
 
+using namespace ONE;
+
+
 namespace {
 
 	bool IsMouseInWindow(HWND hwnd) {
@@ -42,7 +45,11 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 
 	pWinApp_ = winApp;
 	pDxCommon_ = dxCommon;
-	pDxDescriptor_ = dxCommon->GetDxDescriptor();
+
+
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = pDxCommon_->GetSRVDescriptorHeap();
+	uint32_t srvDescriptorIndex = pSRVDescriptorHeap->Allocate();
+
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -61,12 +68,11 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 		dxCommon->GetDevice(),
 		ONE::DxDoubleBuffer::kBufferCount,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		pDxDescriptor_->GetSRV(),
-		pDxDescriptor_->GetSrvCpuHandle(),
-		pDxDescriptor_->GetSrvGpuHandle()
+		pSRVDescriptorHeap->GetHeap(),
+		pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex),
+		pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex)
 	);
 
-	pDxDescriptor_->AddSrvUsedCount();
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
@@ -76,7 +82,9 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 	renderTexture_->Initialize(
 		Vec4(0.0f, 0.0f, 0.0f, 0.0f),
 		pDxCommon_->GetDxCommand()->GetList(),
-		pDxDescriptor_
+		pSRVDescriptorHeap,
+		pDxCommon_->GetRTVDescriptorHeap(),
+		pDxCommon_->GetDSVDescriptorHeap()
 	);
 
 }
@@ -88,8 +96,7 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 void ImGuiManager::Finalize() {
 
 	renderTexture_.reset();
-	pDxCommon_     = nullptr;
-	pDxDescriptor_ = nullptr;
+	pDxCommon_ = nullptr;
 
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();

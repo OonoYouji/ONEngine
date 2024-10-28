@@ -9,10 +9,12 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
 
+
+using namespace ONE;
 
 /// ===================================================
 /// 無記名名前空間 : 関数の定義
@@ -190,10 +192,12 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
 
 	///- srvHandleの取得
-	ONE::DxDescriptor* descriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
-	newTexture.cpuHandle_ = descriptor->GetSrvCpuHandle();
-	newTexture.gpuHandle_ = descriptor->GetSrvGpuHandle();
-	descriptor->AddSrvUsedCount();
+
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+
+	uint32_t srvDescriptorIndex = pSRVDescriptorHeap->Allocate();
+	newTexture.cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex);
+	newTexture.gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex);
 
 	///- srvの生成
 	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();

@@ -91,7 +91,6 @@ namespace ONE {
 
 		WinApp* pWinApp_ = nullptr;
 		DxDescriptorHeap<HeapType::DSV>* pDSVDescriptorHeap_ = nullptr;
-		uint32_t dsvDescriptorIndex_;
 
 	private:
 		DxDoubleBuffer(const DxDoubleBuffer&) = delete;

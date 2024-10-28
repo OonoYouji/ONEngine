@@ -17,7 +17,6 @@ namespace ONE {
 	class DxDevice;
 	class DxCommand;
 	class DxDoubleBuffer;
-	class DxDescriptor;
 	class DxDebug;
 	class DxShaderCompiler;
 	class DxDepthStencil;
@@ -87,9 +86,7 @@ namespace ONE {
 
 		std::unique_ptr<DxDevice>       device_       = nullptr;
 		std::unique_ptr<DxCommand>      command_      = nullptr;
-		std::unique_ptr<DxDescriptor>   descriptor_   = nullptr;
 		std::unique_ptr<DxDepthStencil> depthStencil  = nullptr;
-
 
 		std::unique_ptr<DxDescriptorHeap<HeapType::CBV_SRV_UAV>> srvDescriptorHeap_ = nullptr;
 		std::unique_ptr<DxDescriptorHeap<HeapType::RTV>>         rtvDescriptorHeap_ = nullptr;

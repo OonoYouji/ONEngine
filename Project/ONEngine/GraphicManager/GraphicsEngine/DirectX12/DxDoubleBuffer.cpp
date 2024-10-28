@@ -31,8 +31,6 @@ void ONE::DxDoubleBuffer::Initialize(
 	pWinApp_ = winApp;
 	pDSVDescriptorHeap_ = _dsvDescriptorHeap;
 
-	dsvDescriptorIndex_ = pDSVDescriptorHeap_->Allocate();
-
 	InitializeSwapChain(dxDevice->GetFactory(), commandQueue);
 	InitializeBuffers(dxDevice->GetDevice(), _rtvDescriptorHeap);
 
@@ -58,7 +56,7 @@ void ONE::DxDoubleBuffer::Initialize(
 void ONE::DxDoubleBuffer::ClearBB(ID3D12GraphicsCommandList* commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(dsvDescriptorIndex_);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(0);
 
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
 	commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -100,7 +98,7 @@ void ONE::DxDoubleBuffer::SetSiccorRect(ID3D12GraphicsCommandList* commandList) 
 void ONE::DxDoubleBuffer::SetRanderTarget(DxCommand* command) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 	ID3D12GraphicsCommandList* commandList = command->GetList();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(dsvDescriptorIndex_);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(0);
 	commandList->OMSetRenderTargets(1, &rtvHandle_[bbIndex], false, &dsvHandle);
 }
 

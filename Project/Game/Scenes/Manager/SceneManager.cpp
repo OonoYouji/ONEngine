@@ -56,7 +56,9 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 	finalRenderTex_->Initialize(
 		{0.0f, 0.0f, 0.0f, 0.0f},
 		dxCommon->GetDxCommand()->GetList(), 
-		dxCommon->GetDxDescriptor()
+		dxCommon->GetSRVDescriptorHeap(),
+		dxCommon->GetRTVDescriptorHeap(),
+		dxCommon->GetDSVDescriptorHeap()
 	);
 
 }

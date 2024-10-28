@@ -2,7 +2,6 @@
 
 #include "DxCommon.h"
 
-#include "Debug/Assert.h"
 
 
 using namespace ONE;
@@ -20,6 +19,7 @@ void DxDescriptorHeap<HeapType::CBV_SRV_UAV>::Initialize(DxCommon* _dxCommon) {
 	descriptorHeap_ = CreateHeap(pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxHeapSize_, true);
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
+	useIndex_ = 0;
 }
 
 /// ===================================================
