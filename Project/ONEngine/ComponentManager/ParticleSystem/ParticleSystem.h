@@ -34,7 +34,7 @@ public:
 	/// ===================================================
 
 	ParticleSystem(uint32_t maxParticleNum, const std::string& modelFilePath);
-	~ParticleSystem() {}
+	~ParticleSystem();
 
 
 	/// ===================================================
@@ -168,7 +168,7 @@ private:
 	Mat4*                                  mappingData_         = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
-
+	uint32_t srvDescriptorIndex_;
 
 	/// billboard
 	Mat4 matBackToFront_;

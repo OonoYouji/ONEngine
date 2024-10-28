@@ -54,7 +54,10 @@ namespace ONE {
 		/// </summary>
 		/// <param name="_index"> : Allocate()でゲットしたindex </param>
 		void Free(uint32_t _index) {
-			spaceIndex_.push_back(_index);
+			auto itr = std::find(spaceIndex_.begin(), spaceIndex_.end(), _index);
+			if(itr == spaceIndex_.end()) {
+				spaceIndex_.push_back(_index);
+			}
 		}
 
 

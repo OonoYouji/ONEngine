@@ -39,6 +39,11 @@ ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& fileP
 	pModel_ = ModelManager::Load(filePath);
 }
 
+ParticleSystem::~ParticleSystem() {
+	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	pSRVDescriptorHeap->Free(srvDescriptorIndex_);
+}
+
 
 void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_) {
 	if(!sPipeline_) {
@@ -69,9 +74,9 @@ void ParticleSystem::Initialize() {
 
 	/// cpu, gpu handle initialize
 	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	uint32_t index = pSRVDescriptorHeap->Allocate();
-	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(index);
-	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(index);
+	srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
+	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex_);
+	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex_);
 
 	/// resource create
 	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
