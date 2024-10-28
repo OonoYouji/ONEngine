@@ -11,6 +11,9 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	AnimationRenderer();
+	~AnimationRenderer();
+
 	void Initialize() override;
 	void Update()     override;
 	void Draw()       override;
@@ -20,6 +23,18 @@ private:
 	/// private : objects
 	/// ===================================================
 
+
+
+};
+
+
+class AnimationRendererCommon final {
+public:
+
+	void PreDraw();
+	void PostDraw();
+
+private:
 
 
 };

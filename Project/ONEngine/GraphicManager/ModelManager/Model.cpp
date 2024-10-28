@@ -26,11 +26,15 @@ void Model::Initialize() {
 /// 描画
 /// ===================================================
 void Model::Draw(Transform* transform, FillMode fillMode) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, fillMode);
+	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, nullptr, fillMode);
 }
 
 void Model::Draw(Transform* transform, Material* material, FillMode fillMode) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform, material, fillMode);
+	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, material, fillMode);
+}
+
+void Model::Draw(Transform* transform, Node* rootNode, Material* material, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, rootNode, material, fillMode);
 }
 
 
@@ -78,5 +82,9 @@ void Model::AddMesh(const Mesh& mesh) {
 /// ===================================================
 void Model::AddMaterial(const Material& material) {
 	materials_.push_back(material);
+}
+
+void Model::SetRootNode(const Node& _root) {
+	root_ = _root;
 }
 

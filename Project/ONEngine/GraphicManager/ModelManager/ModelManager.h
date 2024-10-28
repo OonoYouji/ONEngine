@@ -1,9 +1,13 @@
 #pragma once
 
+/// std
 #include <memory>
 #include <unordered_map>
 #include <vector>
 #include <list>
+
+/// external
+#include <assimp/scene.h>
 
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "Model.h"
@@ -42,6 +46,8 @@ public:
 	/// モデル読み込み
 	/// </summary>
 	static Model* Load(const std::string& filePath);
+
+	Node ReadNode(aiNode* node);
 
 	/// <summary>
 	/// モデルのゲッタ
@@ -89,7 +95,7 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode);
+	void AddActiveModel(Model* model, Transform* transform, Node* root, Material* material, FillMode fillMode);
 
 	void SetDirectionalLight(class DirectionalLight* directionalLight);
 
@@ -108,8 +114,9 @@ private:
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 
 	struct Element final {
-		Model*     model = nullptr;
-		Material*  material = nullptr;
+		Model*     model     = nullptr;
+		Node*      rootNode  = nullptr;
+		Material*  material  = nullptr;
 		Transform* transform = nullptr;
 		FillMode   fillMode;
 	};

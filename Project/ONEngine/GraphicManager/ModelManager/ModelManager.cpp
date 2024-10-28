@@ -6,7 +6,6 @@
 #include <unordered_map>
 
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #include <Core/ONEngine.h>
@@ -20,7 +19,6 @@
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
-
 
 
 /// ===================================================
@@ -178,6 +176,9 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	}
 
+	Node rootNode = instance->ReadNode(scene->mRootNode);
+	model->SetRootNode(rootNode);
+
 	if(model->GetMaterials().empty()) {
 		Material material;
 		material.CreateMaterial("uvChecker");
@@ -189,6 +190,31 @@ Model* ModelManager::Load(const std::string& filePath) {
 	model->SetFillMode(kSolid);
 	instance->AddModel(filePath, model);
 	return GetModel(filePath);
+}
+
+
+Node ModelManager::ReadNode(aiNode* node) {
+	Node result;
+	aiMatrix4x4 matAILocal = node->mTransformation;
+
+	matAILocal.Transpose();
+
+	for(uint32_t r = 0; r < 4; ++r) {
+		for(uint32_t c = 0; c < 4; ++c) {
+			result.matLocal.m[r][c] = matAILocal[r][c];
+		}
+	}
+
+	/// nodeから必要な値をゲット
+	result.name = node->mName.C_Str();
+	result.children.resize(node->mNumChildren);
+
+	/// childrenの解析
+	for(size_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
 }
 
 
@@ -358,7 +384,7 @@ void ModelManager::PostDraw() {
 	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {
-		model.transform->BindTransform(commandList, 1);
+		model.transform->BindTransform(commandList, 1, model.rootNode);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -370,7 +396,7 @@ void ModelManager::PostDraw() {
 	pipelines_[kWireFrame]->SetPipelineState();
 
 	for(auto& model : wire) {
-		model.transform->BindTransform(commandList, 1);
+		model.transform->BindTransform(commandList, 1, model.rootNode);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -402,12 +428,13 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode) {
+void ModelManager::AddActiveModel(Model* model, Transform* transform, Node* root, Material* material, FillMode fillMode) {
 	Element element{};
 	element.model     = model;
 	element.transform = transform;
 	element.material  = material;
 	element.fillMode  = fillMode;
+	element.rootNode  = root;
 
 	activeModels_.push_back(element);
 }

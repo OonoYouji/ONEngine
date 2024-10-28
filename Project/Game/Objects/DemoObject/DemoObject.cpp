@@ -12,10 +12,10 @@
 
 void DemoObject::Initialize() {
 
-	//MeshRenderer* mr = AddComponent<MeshRenderer>();
-	//mr->SetModel("AnimatedCube");
+	MeshRenderer* mr = AddComponent<MeshRenderer>();
+	mr->SetModel("AnimatedCube");
 
-	ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
+	//ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
 
 }
 

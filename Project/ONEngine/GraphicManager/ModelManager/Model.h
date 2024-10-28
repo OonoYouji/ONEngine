@@ -24,6 +24,13 @@ struct ViewProjectionData {
 };
 
 
+struct Node {
+	Mat4 matLocal;
+	std::string name;
+	std::vector<Node> children;
+};
+
+
 /// ===================================================
 /// モデル
 /// ===================================================
@@ -48,6 +55,7 @@ public:
 	/// </summary>
 	void Draw(Transform* transform, FillMode fillMode = kSolid);
 	void Draw(Transform* transform, Material* material, FillMode fillMode = kSolid);
+	void Draw(Transform* transform, Node* rootNode, Material* material, FillMode fillMode = kSolid);
 
 
 	/// <summary>
@@ -89,6 +97,7 @@ public:
 	const std::vector<Material>& GetMaterials() const { return materials_; }
 	std::vector<Material>& GetMaterials() { return materials_; }
 
+	void SetRootNode(const Node& _root);
 
 private:
 
@@ -98,7 +107,9 @@ private:
 
 	FillMode fillMode_;
 
-	std::vector<Mesh> meshes_;
+	std::vector<Mesh>     meshes_;
 	std::vector<Material> materials_;
+
+	Node root_;
 
 };

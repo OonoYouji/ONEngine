@@ -9,7 +9,6 @@
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
 
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
