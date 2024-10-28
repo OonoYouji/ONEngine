@@ -1,9 +1,18 @@
 #define NOMINMAX
 #include "Console.h"
 
+/// std
+#include <format>
 
+/// engine
 #include <Core/ONEngine.h>
 #include "GraphicManager/TextureManager/TextureManager.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
+
+
+using namespace ONE;
+
 
 
 void Console::Initialize() {
@@ -60,51 +69,8 @@ void Console::ParentWindow() {
 	/// ===================================================
 	if(ImGui::BeginMenuBar()) {
 
-		if(ImGui::BeginMenu("setting")) {
-
-			/// ===================================================
-			/// child window 
-			/// ===================================================
-			if(ImGui::BeginMenu("child window setting")) {
-
-				bool noMove = imguiWinFlags_ & ImGuiWindowFlags_NoMove;
-				if(ImGui::Checkbox("NoMove", &noMove)) {
-					if(noMove) {
-						imguiWinFlags_ |= ImGuiWindowFlags_NoMove;
-					} else {
-						imguiWinFlags_ &= ~ImGuiWindowFlags_NoMove;
-					}
-				}
-				ImGui::EndMenu();
-			}
-			
-			/// ===================================================
-			/// parent window 
-			/// ===================================================
-			if(ImGui::BeginMenu("parent window setting")) {
-
-				bool noResize = parentWinFlags_ & ImGuiWindowFlags_NoResize;
-				if(ImGui::Checkbox("NoResize", &noResize)) {
-					if(noResize) {
-						parentWinFlags_ |= ImGuiWindowFlags_NoResize;
-					} else {
-						parentWinFlags_ &= ~ImGuiWindowFlags_NoResize;
-					}
-				}
-
-				bool noMove = parentWinFlags_ & ImGuiWindowFlags_NoMove;
-				if(ImGui::Checkbox("NoMove", &noMove)) {
-					if(noMove) {
-						parentWinFlags_ |= ImGuiWindowFlags_NoMove;
-					} else {
-						parentWinFlags_ &= ~ImGuiWindowFlags_NoMove;
-					}
-				}
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenu();
-		}
+		WindowSettingMenuBar();
+		DescriptorHeapsMunuBar();
 
 		ImGui::EndMenuBar();
 	}
@@ -275,3 +241,65 @@ void Console::CLI() {
 	ImGui::End();
 }
 
+void Console::DescriptorHeapsMunuBar() {
+	if(ImGui::BeginMenu("descriptor heap")) {
+
+		DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+		DxDescriptorHeap<HeapType::RTV>*         pRTVHeap = ONEngine::GetDxCommon()->GetRTVDescriptorHeap();
+		DxDescriptorHeap<HeapType::DSV>*         pDSVHeap = ONEngine::GetDxCommon()->GetDSVDescriptorHeap();
+
+		ImGui::Text(std::format("srv heap count : {}/{}", pSRVHeap->GetUsedIndexCount(), pSRVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("rtv heap count : {}/{}", pRTVHeap->GetUsedIndexCount(), pRTVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("dsv heap count : {}/{}", pDSVHeap->GetUsedIndexCount(), pDSVHeap->GetMaxHeapSize()).c_str());
+
+		ImGui::EndMenu();
+	}
+}
+
+void Console::WindowSettingMenuBar() {
+	if(ImGui::BeginMenu("setting")) {
+
+		/// ===================================================
+		/// child window 
+		/// ===================================================
+		if(ImGui::BeginMenu("child window setting")) {
+
+			bool noMove = imguiWinFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					imguiWinFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					imguiWinFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		/// ===================================================
+		/// parent window 
+		/// ===================================================
+		if(ImGui::BeginMenu("parent window setting")) {
+
+			bool noResize = parentWinFlags_ & ImGuiWindowFlags_NoResize;
+			if(ImGui::Checkbox("NoResize", &noResize)) {
+				if(noResize) {
+					parentWinFlags_ |= ImGuiWindowFlags_NoResize;
+				} else {
+					parentWinFlags_ &= ~ImGuiWindowFlags_NoResize;
+				}
+			}
+
+			bool noMove = parentWinFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					parentWinFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					parentWinFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+}

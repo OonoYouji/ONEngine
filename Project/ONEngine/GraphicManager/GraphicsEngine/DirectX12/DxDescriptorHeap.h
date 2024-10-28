@@ -49,13 +49,20 @@ namespace ONE {
 		void Initialize(DxCommon* _dxCommon);
 
 
+		/// <summary>
+		/// 特定のDescriptorを解放する
+		/// </summary>
+		/// <param name="_index"> : Allocate()でゲットしたindex </param>
 		void Free(uint32_t _index) {
 			spaceIndex_.push_back(_index);
 		}
 
 
+		/// <summary>
+		/// DescriptorHeapのindexをゲットする
+		/// </summary>
+		/// <returns> return : DescriptorHeapのindex </returns>
 		uint32_t Allocate() {
-
 			/// 削除されたindexがあれば再利用する
 			if(!spaceIndex_.empty()) {
 				uint32_t index = spaceIndex_.front();
@@ -104,6 +111,19 @@ namespace ONE {
 		/// </summary>
 		/// <returns></returns>
 		ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
+
+
+		/// <summary>
+		/// DescriptorHeapの最大数をゲットする
+		/// </summary>
+		/// <returns> return : ヒープのマックスのサイズを得る </returns>
+		uint32_t GetMaxHeapSize() const { return kMaxHeapSize_; }
+
+		/// <summary>
+		/// DescriptorHeapの使用済みの
+		/// </summary>
+		/// <returns></returns>
+		uint32_t GetUsedIndexCount() const { return useIndex_ - static_cast<uint32_t>(spaceIndex_.size()); }
 
 	private:
 

@@ -32,6 +32,9 @@ private:
 
 	void CLI();
 
+	void DescriptorHeapsMunuBar();
+	void WindowSettingMenuBar();
+
 private:
 
 	ImGuiWindowFlags parentWinFlags_;
