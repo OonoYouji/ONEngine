@@ -26,6 +26,7 @@
 #include <Objects/Camera/Manager/CameraManager.h>
 #include <GameObjectManager/GameObjectManager.h>
 #include <Library/CollisionManager/CollisionManager.h>
+#include "ComponentManager/Base/ComponentManager.h"
 
 #include <Objects/Camera/GameCamera.h>
 #include <Objects/Camera/DebugCamera.h>
@@ -161,6 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
+	ComponentManager::GetInstance()->Finalize();
 
 	Line3D::SFinalize();
 	line2d->Finalize();

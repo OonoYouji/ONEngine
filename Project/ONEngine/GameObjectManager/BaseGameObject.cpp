@@ -136,7 +136,7 @@ const std::string& BaseGameObject::GetName() const {
 void BaseGameObject::ImGuiDebug() {
 #ifdef _DEBUG
 
-	for(auto& component : components_) {
+	for(auto& component : pComponentArray_) {
 		std::string label = "isActive_" + component->GetName();
 		ImGui::Checkbox(label.c_str(), &component->isActive);
 		component->Debug();

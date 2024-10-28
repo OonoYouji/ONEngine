@@ -30,7 +30,7 @@ enum ROTATE_ORDER : uint32_t {
 class Transform final : public BaseComponent {
 public:
 
-	Transform() { Initialize(); }
+	Transform() {}
 	~Transform() = default;
 
 	/// <summary>

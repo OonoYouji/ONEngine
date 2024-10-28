@@ -21,6 +21,11 @@ public:
 		return &instance;
 	}
 
+	/// <summary>
+	/// 終了処理
+	/// </summary>
+	void Finalize();
+
 
 	/// <summary>
 	/// すべてのコンポーネントの更新処理

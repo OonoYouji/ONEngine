@@ -23,7 +23,8 @@ public:
 		components_.reserve(128);
 	}
 
-	~ComponentArray() {}
+	~ComponentArray() {
+	}
 
 
 	/// <summary>
@@ -31,7 +32,7 @@ public:
 	/// </summary>
 	void Update() override {
 		for(auto&& comp : components_) {
-			comp->Update();
+			comp.Update();
 		}
 	}
 

@@ -10,8 +10,8 @@
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 void DemoObject::Initialize() {
-	//auto mr = AddComponent<MeshRenderer>();
-	//mr->SetModel("Sphere");
+	auto mr = AddComponent<MeshRenderer>();
+	mr->SetModel("Sphere");
 
 	//auto ps = AddComponent<ParticleSystem>(12, "Board");
 
@@ -20,20 +20,20 @@ void DemoObject::Initialize() {
 	//	transform->position.y += Time::DeltaTime();
 	//});
 
-	auto mir = AddComponent<MeshInstancingRenderer>(12);
-	mir->AddTransform(pTransform_);
+	//auto mir = AddComponent<MeshInstancingRenderer>(12);
+	//mir->AddTransform(pTransform_);
 
-	for(size_t i = 0; i < 12; ++i) {
-		transformArray_.push_back(std::make_unique<Transform>());
-		Transform* transform = transformArray_.back().get();
-		transform->position = {
-			0.0f, 0.0f,
-			i * 1.0f
-		};
+	//for(size_t i = 0; i < 12; ++i) {
+	//	transformArray_.push_back(std::make_unique<Transform>());
+	//	Transform* transform = transformArray_.back().get();
+	//	transform->position = {
+	//		0.0f, 0.0f,
+	//		i * 1.0f
+	//	};
 
-		transform->UpdateMatrix(false);
-		mir->AddTransform(transform);
-	}
+	//	transform->UpdateMatrix(false);
+	//	mir->AddTransform(transform);
+	//}
 
 }
 

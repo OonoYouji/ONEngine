@@ -18,6 +18,10 @@ public:
 
 	MeshRenderer() {}
 	~MeshRenderer() {}
+	MeshRenderer(const MeshRenderer&) = delete;
+	MeshRenderer(MeshRenderer&&) noexcept = default;
+	MeshRenderer& operator= (const MeshRenderer&) = delete;
+	MeshRenderer& operator= (MeshRenderer&&) noexcept = delete;
 
 	void Initialize() override;
 	void Draw() override;

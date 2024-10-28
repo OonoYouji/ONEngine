@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "ComponentManager/Transform/Transform.h"
-#include "ComponentManager/Base/BaseComponent.h"
+#include "ComponentManager/Base/ComponentManager.h"
 
 #include "GraphicManager/ModelManager/Model.h"
 
@@ -68,15 +68,19 @@ public:
 	/// ---------------------------------------------------
 	/// コンポーネントの追加
 	/// ---------------------------------------------------
-	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr, typename... Args>
-	T* AddComponent(Args&&... args) {
-		auto addComponent = std::make_unique<T>(std::forward<Args>(args)...);
-		addComponent->SetOwner(this);
-		addComponent->Initialize();
-		T* componentPtr = addComponent.get();
-		RenameComponent(componentPtr);
-		components_.push_back(std::move(addComponent));
-		return componentPtr;
+	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
+	T* AddComponent() {
+		size_t id = ComponentArray<T>::GetId();
+		T* pComponent = ComponentManager::GetInstance()->AddComponent<T>();
+		if(idToComponent_.size() <= id) {
+			idToComponent_.resize(id + 1, nullptr);
+		}
+		idToComponent_[id] = static_cast<void*>(pComponent);
+		pComponent->SetOwner(this);
+		pComponent->Initialize();
+
+		pComponentArray_.push_back(pComponent);
+		return pComponent;
 	}
 
 
@@ -85,19 +89,13 @@ public:
 	/// ---------------------------------------------------
 	template<typename T, typename std::enable_if<std::is_base_of<BaseComponent, T>::value>::type* = nullptr>
 	T* GetComponent() {
-		for(auto& component : components_) {
-			T* result = dynamic_cast<T*>(component.get());
-			/// キャスト可能なら返す
-			if(result) {
-				return result;
-			}
-		}
-		return nullptr;
+		size_t id = ComponentArray<T>::GetId();
+		return static_cast<T*>(idToComponent_[id]);
 	}
 
 
-	const std::list<std::unique_ptr<BaseComponent>>& GetComponents() const {
-		return components_;
+	const std::vector<BaseComponent*>& GetComponents() const {
+		return pComponentArray_;
 	}
 
 
@@ -176,7 +174,9 @@ protected:
 	/// ===================================================
 
 	Transform*                                pTransform_ = nullptr;
-	std::list<std::unique_ptr<BaseComponent>> components_;
+	//std::list<std::unique_ptr<BaseComponent>> components_;
+	std::vector<void*> idToComponent_;
+	std::vector<BaseComponent*> pComponentArray_;
 
 public:
 	/// ===================================================
