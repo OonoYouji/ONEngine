@@ -559,6 +559,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\BaseDescriptorHeap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\AudioManager\AudioClip.h">
@@ -801,5 +803,6 @@
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\BaseDescriptorHeap.h" />
   </ItemGroup>
 </Project>

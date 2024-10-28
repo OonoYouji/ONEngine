@@ -205,6 +205,7 @@
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\BaseDescriptorHeap.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DescriptorHeap\BaseDescriptorHeap.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.h" />
