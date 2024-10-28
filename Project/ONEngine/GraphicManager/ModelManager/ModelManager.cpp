@@ -15,7 +15,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"

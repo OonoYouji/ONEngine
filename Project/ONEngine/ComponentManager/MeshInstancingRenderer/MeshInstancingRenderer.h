@@ -5,7 +5,7 @@
 
 /// graphic
 #include "GraphicManager/ModelManager/Model.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 
 /// base class
 #include "ComponentManager/Base/BaseComponent.h"

@@ -17,7 +17,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 

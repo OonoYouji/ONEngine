@@ -7,7 +7,7 @@
 #include "WindowManager/WinApp.h"
 
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 
