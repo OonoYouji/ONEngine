@@ -6,6 +6,7 @@
 
 /// std
 #include <cstdint>
+#include <deque>
 
 /// lib
 #include "Debug/Assert.h"
@@ -48,14 +49,33 @@ namespace ONE {
 		void Initialize(DxCommon* _dxCommon);
 
 
+		void Free(uint32_t _index) {
+			spaceIndex_.push_back(_index);
+		}
+
 
 		uint32_t Allocate() {
+
+			/// 削除されたindexがあれば再利用する
+			if(!spaceIndex_.empty()) {
+				uint32_t index = spaceIndex_.front();
+				spaceIndex_.pop_front();
+				return index;
+			}
+
+			/// 上限を超えていないかチェック
 			Assert(useIndex_ < kMaxHeapSize_, "useIndex >= kMaxHeapSize_;  over!!!");
-			int result = useIndex_;
+			uint32_t result = useIndex_;
 			useIndex_++;
 			return result;
 		}
 
+
+		/// <summary>
+		/// cpuHandleのゲッタ
+		/// </summary>
+		/// <param name="_index"> : </param>
+		/// <returns></returns>
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandel(uint32_t _index) {
 			D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 			cpuHandle.ptr += (descriptorSize_ * _index);
@@ -94,7 +114,7 @@ namespace ONE {
 		uint32_t       descriptorSize_;
 
 		uint32_t useIndex_;
-
+		std::deque<uint32_t> spaceIndex_; /// 解放された後の空きindex
 
 		/// other class pointer
 		DxCommon* pDxCommon_ = nullptr;

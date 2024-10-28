@@ -8,7 +8,7 @@
 
 #include "DxCommon.h"
 #include "DxCommand.h"
-#include "DxDescriptor.h"
+
 #include "DxBarrierCreator.h"
 #include "DxDevice.h"
 

@@ -9,7 +9,6 @@
 #include <LoggingManager/Logger.h>
 #include <GraphicManager/GraphicsEngine/DirectX12/DxCommon.h>
 #include <GraphicManager/GraphicsEngine/DirectX12/DxCommand.h>
-#include <GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h>
 #include <FrameManager/Time.h>
 #include <FrameManager/FrameFixation.h>
 #include <Library/Input/Input.h>

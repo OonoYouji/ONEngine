@@ -6,7 +6,7 @@
 
 #include "DxDevice.h"
 #include "DxCommand.h"
-#include "DxDescriptor.h"
+
 #include "DxDoubleBuffer.h"
 #include "DxDepthStencil.h"
 #include "DxDebug.h"
