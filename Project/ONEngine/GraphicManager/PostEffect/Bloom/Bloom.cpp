@@ -4,6 +4,8 @@
 
 #include "WindowManager/WinApp.h"
 
+#include "Core/ONEngine.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
 
@@ -63,7 +65,6 @@ namespace {
 		D3D12_VERTEX_BUFFER_VIEW vbv_;
 
 		ID3D12GraphicsCommandList* pCommandList_ = nullptr;
-		ONE::DxDescriptor* pDxDescriptor_ = nullptr;
 
 	};
 
@@ -73,7 +74,7 @@ namespace {
 
 
 
-void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor, uint32_t renderTargetLayerNumber) {
+void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, uint32_t renderTargetLayerNumber) {
 	PipelineState::Shader bloomShader{};
 	bloomShader.ShaderCompile(
 		L"Bloom/Bloom.VS.hlsl", L"vs_6_0",
@@ -157,7 +158,6 @@ void Bloom::StaticInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDesc
 	gComponent.reset(new BloomComponent);
 	gComponent->Initialize();
 	gComponent->pCommandList_ = commandList;
-	gComponent->pDxDescriptor_ = dxDescriptor;
 
 
 }
@@ -183,9 +183,17 @@ void Bloom::ImGuiDebug(const std::string& treeNodeName) {
 }
 
 void Bloom::Initialize() {
+
+	auto pDxCommon = ONEngine::GetDxCommon();
+
 	for(auto& renderTex : renderTextures_) {
 		renderTex.reset(new RenderTexture());
-		renderTex->Initialize(Vec4(0,0,0, 0), gComponent->pCommandList_, gComponent->pDxDescriptor_);
+		renderTex->Initialize(
+			Vec4(0, 0, 0, 0), gComponent->pCommandList_,
+			pDxCommon->GetSRVDescriptorHeap(),
+			pDxCommon->GetRTVDescriptorHeap(),
+			pDxCommon->GetDSVDescriptorHeap()
+		);
 	}
 
 	blurBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BlurData));

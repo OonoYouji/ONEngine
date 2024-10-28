@@ -12,8 +12,10 @@
 
 void DemoObject::Initialize() {
 
-	MeshRenderer* mr = AddComponent<MeshRenderer>();
-	mr->SetModel("AnimatedCube");
+	//MeshRenderer* mr = AddComponent<MeshRenderer>();
+	//mr->SetModel("AnimatedCube");
+
+	ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
 
 }
 
@@ -22,6 +24,9 @@ void DemoObject::Update() {}
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+		if(ImGui::Button("delete")) {
+			Destory();
+		}
 
 		ImGui::TreePop();
 	}

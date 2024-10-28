@@ -17,7 +17,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDebug.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDepthStencil.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDoubleBuffer.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
@@ -210,6 +210,9 @@ void System::PreDraw() {
 	for(auto& win : winApps_) {
 		win.second->PreDraw();
 	}
+
+	ID3D12GraphicsCommandList* pCommandList = dxCommon_->GetDxCommand()->GetList();
+	dxCommon_->GetSRVDescriptorHeap()->BindToCommandList(pCommandList);
 }
 
 void System::PostDraw() {

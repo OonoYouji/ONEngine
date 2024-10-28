@@ -15,16 +15,19 @@
 #include "Core/ONEngine.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/Light/DirectionalLight.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
-#include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
 
+/// objects
 #include "Objects/Camera/Manager/CameraManager.h"
 
 /// using namespace
 using namespace Microsoft::WRL;
-
+using namespace ONE;
 
 
 namespace {
@@ -39,8 +42,7 @@ namespace {
 		~RenderingPipeline() {}
 
 		void Initialize(
-			ID3D12GraphicsCommandList* _commandList,
-			ONE::DxDescriptor* _dxDescriptor
+			ID3D12GraphicsCommandList* _commandList
 		);
 
 		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount);
@@ -54,7 +56,6 @@ namespace {
 		/// other pointer
 		DirectionalLight*          pDirectionalLight_ = nullptr;
 		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
-		ONE::DxDescriptor*         pDxDescriptor_     = nullptr;
 
 	};
 
@@ -63,16 +64,12 @@ namespace {
 	/// ↓ methods
 	/// ===================================================
 
-	void RenderingPipeline::Initialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor) {
+	void RenderingPipeline::Initialize(ID3D12GraphicsCommandList* _commandList) {
 
 
 		/// set pointer
 		pCommnadList_ = _commandList;
 		assert(pCommnadList_);
-
-		pDxDescriptor_ = _dxDescriptor;
-		assert(pDxDescriptor_);
-
 
 		/// shader compile
 		shader_.ShaderCompile(
@@ -113,7 +110,6 @@ namespace {
 		/// default setting
 		pipeline_->SetPipelineState();
 		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		pDxDescriptor_->SetSRVHeap(pCommnadList_);
 
 		/// buffer setting
 		pDirectionalLight_->BindToCommandList(2, pCommnadList_);
@@ -154,9 +150,9 @@ MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) : kMax
 /// static methods
 /// ===================================================
 
-void MeshInstancingRenderer::SInitialize(ID3D12GraphicsCommandList* _commandList, ONE::DxDescriptor* _dxDescriptor) {
+void MeshInstancingRenderer::SInitialize(ID3D12GraphicsCommandList* _commandList) {
 	gPipeline.reset(new RenderingPipeline);
-	gPipeline->Initialize(_commandList, _dxDescriptor);
+	gPipeline->Initialize(_commandList);
 }
 
 void MeshInstancingRenderer::SFinalize() {
@@ -192,10 +188,13 @@ void MeshInstancingRenderer::Initialize() {
 	desc.Buffer.StructureByteStride = sizeof(Mat4);
 
 	/// cpu, gpu handle initialize
-	ONE::DxDescriptor* dxDescriptor = gPipeline->pDxDescriptor_;
-	cpuHandle_ = dxDescriptor->GetSrvCpuHandle();
-	gpuHandle_ = dxDescriptor->GetSrvGpuHandle();
-	dxDescriptor->AddSrvUsedCount();
+
+
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+
+	uint32_t srvDescriptorIndex = pSRVDescriptorHeap->Allocate();
+	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex);
+	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex);
 
 	/// resource create
 	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();

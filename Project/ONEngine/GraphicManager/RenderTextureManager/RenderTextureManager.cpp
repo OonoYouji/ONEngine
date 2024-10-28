@@ -6,6 +6,7 @@
 #include "WindowManager/WinApp.h"
 #include "ImGuiManager/ImGuiManager.h"
 
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 
@@ -16,9 +17,8 @@
 RenderTextureManager RenderTextureManager::sInstance_;
 
 
-void RenderTextureManager::Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* descriptor) {
+void RenderTextureManager::Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxCommon* _dxCommon) {
 	pCommandList_ = commandList;
-	pDxDescriptor_ = descriptor;
 
 	/// ===================================================
 	/// pipeline state initialize
@@ -86,11 +86,21 @@ void RenderTextureManager::Initialize(ID3D12GraphicsCommandList* commandList, ON
 
 
 	finalRenderTex_.reset(new RenderTexture);
-	finalRenderTex_->Initialize({ 0,0,0,0 }, pCommandList_, pDxDescriptor_);
+	finalRenderTex_->Initialize(
+		{ 0,0,0,0 }, pCommandList_, 
+		_dxCommon->GetSRVDescriptorHeap(),
+		_dxCommon->GetRTVDescriptorHeap(),
+		_dxCommon->GetDSVDescriptorHeap()
+	);
 
 	for(auto& output : intermediateTextures_) {
 		output.reset(new RenderTexture);
-		output->Initialize({ 0,0,0,0 }, pCommandList_, pDxDescriptor_);
+		output->Initialize(
+			{ 0,0,0,0 }, pCommandList_,
+			_dxCommon->GetSRVDescriptorHeap(),
+			_dxCommon->GetRTVDescriptorHeap(),
+			_dxCommon->GetDSVDescriptorHeap()
+		);
 	}
 
 }
@@ -360,24 +370,24 @@ void RenderTextureManager::EndRenderTarget(const std::string& name) {
 
 }
 
-
-void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor) {
-	std::unique_ptr<RenderTexture> newRenderTex;
-	newRenderTex.reset(new RenderTexture());
-	newRenderTex->Initialize(clearColor, sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
-	ONE::DxBarrierCreator::CreateBarrier(
-		newRenderTex->GetRenderTexResource(),
-		newRenderTex->currentResourceState,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-	);
-	newRenderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-	sInstance_.renderTextures_.push_back(std::move(newRenderTex));
-	sInstance_.renderTexDatas_[name] = {
-		.layerNum = layerNumber,
-		.isBlending = true
-	};
-}
+//
+//void RenderTextureManager::CreateRenderTarget(const std::string& name, uint32_t layerNumber, const Vector4& clearColor) {
+//	std::unique_ptr<RenderTexture> newRenderTex;
+//	newRenderTex.reset(new RenderTexture());
+//	newRenderTex->Initialize(clearColor, sInstance_.pCommandList_, sInstance_.pDxDescriptor_);
+//	ONE::DxBarrierCreator::CreateBarrier(
+//		newRenderTex->GetRenderTexResource(),
+//		newRenderTex->currentResourceState,
+//		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+//	);
+//	newRenderTex->currentResourceState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+//
+//	sInstance_.renderTextures_.push_back(std::move(newRenderTex));
+//	sInstance_.renderTexDatas_[name] = {
+//		.layerNum = layerNumber,
+//		.isBlending = true
+//	};
+//}
 
 
 void RenderTextureManager::SetIsBlending(const std::string& name, bool isBlending) {

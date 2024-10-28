@@ -7,7 +7,8 @@
 #include "WindowManager/WinApp.h"
 
 #include "DxCommon.h"
-#include "DxDescriptor.h"
+#include "DxDescriptorHeap.h"
+
 
 
 ONE::DxDepthStencil::DxDepthStencil() {}
@@ -56,9 +57,12 @@ void ONE::DxDepthStencil::CreateView(ID3D12Device* device) {
 	desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	desc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
+	DxDescriptorHeap<HeapType::DSV>* pDSVDescriptorHeap = ONEngine::GetDxCommon()->GetDSVDescriptorHeap();
+	uint32_t descriptorIndex = pDSVDescriptorHeap->Allocate();
+
 	device->CreateDepthStencilView(
 		depthStencilResource_.Get(), &desc, 
-		ONEngine::GetDxCommon()->GetDxDescriptor()->GetDsvCpuHandle()
+		pDSVDescriptorHeap->GetCPUDescriptorHandel(descriptorIndex)
 	);
 
 }
