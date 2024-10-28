@@ -71,11 +71,11 @@ void Transform::UpdateMatrix() {
 
 }
 
-void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex, Node* modelRootNode) {
+void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex, Mat4* matLocal) {
 	*mappingData_ = matTransform;
 
-	if(modelRootNode) {
-		*mappingData_ *= modelRootNode->matLocal;
+	if(matLocal) {
+		*mappingData_ *= (*matLocal);
 	}
 
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, transformBuffer_->GetGPUVirtualAddress());

@@ -50,7 +50,7 @@ public:
 	void BindTransform(
 		ID3D12GraphicsCommandList* commandList, 
 		UINT rootParamIndex,
-		struct Node* modelRootNode = nullptr
+		Mat4* matLocal = nullptr
 	);
 
 	void SetParent(Transform* parent);

@@ -95,9 +95,15 @@ public:
 	/// <summary>
 	/// アクティブなモデルの追加
 	/// </summary>
-	void AddActiveModel(Model* model, Transform* transform, Node* root, Material* material, FillMode fillMode);
+	void AddActiveModel(Model* model, Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode);
 
 	void SetDirectionalLight(class DirectionalLight* directionalLight);
+
+	/// <summary>
+	/// ディレクトリパスのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	const std::string& GetDirectoryPath() const { return kDirectoryPath_; }
 
 private:
 
@@ -115,7 +121,7 @@ private:
 
 	struct Element final {
 		Model*     model     = nullptr;
-		Node*      rootNode  = nullptr;
+		Mat4*      matLocal  = nullptr;
 		Material*  material  = nullptr;
 		Transform* transform = nullptr;
 		FillMode   fillMode;

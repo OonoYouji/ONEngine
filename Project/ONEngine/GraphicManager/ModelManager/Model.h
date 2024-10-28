@@ -54,8 +54,7 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw(Transform* transform, FillMode fillMode = kSolid);
-	void Draw(Transform* transform, Material* material, FillMode fillMode = kSolid);
-	void Draw(Transform* transform, Node* rootNode, Material* material, FillMode fillMode = kSolid);
+	void Draw(Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode = kSolid);
 
 
 	/// <summary>
@@ -98,6 +97,7 @@ public:
 	std::vector<Material>& GetMaterials() { return materials_; }
 
 	void SetRootNode(const Node& _root);
+	const Node& GetRootNode() const { return root_; }
 
 private:
 

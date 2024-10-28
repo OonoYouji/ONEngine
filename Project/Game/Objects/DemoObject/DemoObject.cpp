@@ -7,13 +7,15 @@
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 void DemoObject::Initialize() {
 
-	MeshRenderer* mr = AddComponent<MeshRenderer>();
-	mr->SetModel("AnimatedCube");
+	AnimationRenderer* ar = AddComponent<AnimationRenderer>();
+	ar->SetModel("AnimatedCube");
+	ar->LoadAnimation("AnimatedCube");
 
 	//ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
 

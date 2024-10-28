@@ -49,6 +49,15 @@ Vector3 Quaternion::Transform(const Vector3& v, const Quaternion& q) {
 	return { result.x, result.y, result.z };
 }
 
+Quaternion Quaternion::Lerp(const Quaternion& start, const Quaternion& end, float t) {
+	return Quaternion(
+		std::lerp(start.x, end.x, t),
+		std::lerp(start.y, end.y, t),
+		std::lerp(start.z, end.z, t),
+		std::lerp(start.w, end.w, t)
+	);
+}
+
 Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
 	float halfAngle = theta * 0.5f;
 	float sinHalfAngle = std::sin(halfAngle);

@@ -29,12 +29,8 @@ void Model::Draw(Transform* transform, FillMode fillMode) {
 	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, nullptr, fillMode);
 }
 
-void Model::Draw(Transform* transform, Material* material, FillMode fillMode) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform, nullptr, material, fillMode);
-}
-
-void Model::Draw(Transform* transform, Node* rootNode, Material* material, FillMode fillMode) {
-	ModelManager::GetInstance()->AddActiveModel(this, transform, rootNode, material, fillMode);
+void Model::Draw(Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode) {
+	ModelManager::GetInstance()->AddActiveModel(this, transform, matLocal, material, fillMode);
 }
 
 

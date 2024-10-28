@@ -34,6 +34,8 @@ public:
 	static Quaternion Normalize(const Quaternion& q);
 	static Vector3 Transform(const Vector3& v, const Quaternion& q);
 	
+	static Quaternion Lerp(const Quaternion& start, const Quaternion& end, float t);
+
 	/// <summary>
 	/// ある軸を基にquaternionを計算する
 	/// </summary>

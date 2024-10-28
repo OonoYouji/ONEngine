@@ -1,10 +1,12 @@
 #include "ModelManager.h"
 
+/// std
 #include <iostream>
 #include <string>
 #include <filesystem>
 #include <unordered_map>
 
+/// externals
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 
@@ -15,10 +17,11 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
-
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
+
+#include "Debug/Assert.h"
 
 
 /// ===================================================
@@ -384,7 +387,7 @@ void ModelManager::PostDraw() {
 	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {
-		model.transform->BindTransform(commandList, 1, model.rootNode);
+		model.transform->BindTransform(commandList, 1, model.matLocal);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -396,7 +399,7 @@ void ModelManager::PostDraw() {
 	pipelines_[kWireFrame]->SetPipelineState();
 
 	for(auto& model : wire) {
-		model.transform->BindTransform(commandList, 1, model.rootNode);
+		model.transform->BindTransform(commandList, 1, model.matLocal);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -428,13 +431,13 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model, Transform* transform, Node* root, Material* material, FillMode fillMode) {
+void ModelManager::AddActiveModel(Model* model, Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode) {
 	Element element{};
 	element.model     = model;
 	element.transform = transform;
 	element.material  = material;
 	element.fillMode  = fillMode;
-	element.rootNode  = root;
+	element.matLocal  = matLocal;
 
 	activeModels_.push_back(element);
 }
