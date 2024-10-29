@@ -10,6 +10,7 @@
 #include "Objects/RailCamera/RailCamera.h"
 #include "Objects/Reticle/Reticle.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/Enemy/EnemyManager.h"
 
 
 /// ===================================================
@@ -28,6 +29,7 @@ void Scene_Game::Initialize() {
 	Reticle*        reticle        = new Reticle();
 	Player*         player         = new Player();
 	Enemy*          enemy          = new Enemy();
+	EnemyManager*   enemyManager   = new EnemyManager();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
@@ -35,6 +37,7 @@ void Scene_Game::Initialize() {
 	reticle->Initialize();
 	player->Initialize();
 	enemy->Initialize();
+	enemyManager->Initialize();
 	
 	/// その他ポインタ設定など...
 

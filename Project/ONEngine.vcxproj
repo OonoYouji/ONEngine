@@ -153,6 +153,7 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />

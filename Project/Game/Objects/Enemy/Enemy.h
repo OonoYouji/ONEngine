@@ -3,6 +3,7 @@
 #include "GameObjectManager/GameObjectManager.h"
 
 class Enemy : public BaseGameObject {
+	friend class EnemyManager;
 public:
 
 	Enemy();
@@ -13,4 +14,8 @@ public:
 
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
+
+	float hp_;
+
+	float moveStartPoint_;
 };

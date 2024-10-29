@@ -29,6 +29,9 @@ void Enemy::Initialize() {
 	/// collider
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
 
+	/// parameter
+	hp_ = 10.0f;
+
 }
 
 void Enemy::Update() {
