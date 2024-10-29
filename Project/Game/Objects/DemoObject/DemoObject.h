@@ -3,9 +3,6 @@
 #include <vector>
 #include <memory>
 
-/// component
-#include "ComponentManager/ParticleSystem/ParticleSystem.h"
-
 /// base class
 #include "GameObjectManager/GameObjectManager.h"
 
@@ -22,6 +19,5 @@ public:
 
 private:
 
-	std::unique_ptr<ParticleField> particleField_;
 
 };
