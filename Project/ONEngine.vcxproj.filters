@@ -107,6 +107,8 @@
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -193,6 +195,8 @@
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
     <ClInclude Include="Library\Debug\Assert.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -23,7 +23,7 @@ AnimationRenderer::~AnimationRenderer() {}
 
 
 void AnimationRenderer::Initialize() {
-
+	transform_.rotateOrder = QUATERNION;
 }
 
 void AnimationRenderer::Update() {
@@ -32,24 +32,23 @@ void AnimationRenderer::Update() {
 
 	NodeAnimation& rootAnimation = nodeAnimationArray_[pModel_->GetRootNode().name];
 
-	position_ = CalculateValue(rootAnimation.translate, animationTime_);
-	rotate_   = CalculateValue(rootAnimation.rotate,    animationTime_);
-	scale_    = CalculateValue(rootAnimation.scale,     animationTime_);
-
-	matLocal_ = Mat4::MakeScale(scale_) * Mat4::MakeRotateQuaternion(Quaternion::Normalize(rotate_)) * Mat4::MakeTranslate(position_);
+	transform_.position   = CalculateValue(rootAnimation.translate, animationTime_);
+	transform_.quaternion = CalculateValue(rootAnimation.rotate,    animationTime_);
+	transform_.scale      = CalculateValue(rootAnimation.scale,     animationTime_);
+	transform_.Update();
 
 }
 
 void AnimationRenderer::Draw() {
-	pModel_->Draw(GetOwner()->GetTransform(), &matLocal_, nullptr, kSolid);
+	pModel_->Draw(GetOwner()->GetTransform(), &transform_.matTransform, nullptr, kSolid);
 }
 
 void AnimationRenderer::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::Text(std::format("position : {:.2f}, {:.2f}, {:.2f}",         position_.x, position_.y, position_.z).c_str());
-		ImGui::Text(std::format("rotate   : {:.2f}, {:.2f}, {:.2f}, {:.2f}", rotate_.x, rotate_.y, rotate_.z, rotate_.w).c_str());
-		ImGui::Text(std::format("scale    : {:.2f}, {:.2f}, {:.2f}",         scale_.x, scale_.y, scale_.z).c_str());
+		ImGui::Text(std::format("position : {:.2f}, {:.2f}, {:.2f}",         transform_.position.x,   transform_.position.y,   transform_.position.z).c_str());
+		ImGui::Text(std::format("rotate   : {:.2f}, {:.2f}, {:.2f}, {:.2f}", transform_.quaternion.x, transform_.quaternion.y, transform_.quaternion.z, transform_.quaternion.w).c_str());
+		ImGui::Text(std::format("scale    : {:.2f}, {:.2f}, {:.2f}",         transform_.scale.x,      transform_.scale.y,      transform_.scale.z).c_str());
 
 
 		ImGui::SeparatorText("local matrix");
@@ -60,7 +59,7 @@ void AnimationRenderer::Debug() {
 					ImGui::SameLine();
 				}
 
-				ImGui::Text("%0.2f, ", matLocal_.m[r][c]);
+				ImGui::Text("%0.2f, ", transform_.matTransform.m[r][c]);
 			}
 		}
 
@@ -192,4 +191,18 @@ Quaternion AnimationRenderer::CalculateValue(const std::vector<KeyframeQuaternio
 	}
 
 	return keyframeArray.back().value;
+}
+
+void AnimationRenderer::ApplyAnimation(Skeleton& skeleton) {
+	for(Joint& joint : skeleton.joints) {
+
+		auto itr = nodeAnimationArray_.find(joint.name);
+		if(itr != nodeAnimationArray_.end()) {
+			const NodeAnimation& rootNodeAnimation = (*itr).second;
+
+			joint.transform.position   = CalculateValue(rootNodeAnimation.translate, animationTime_);
+			joint.transform.quaternion = CalculateValue(rootNodeAnimation.rotate,    animationTime_);
+			joint.transform.scale      = CalculateValue(rootNodeAnimation.scale,     animationTime_);
+		}
+	}
 }

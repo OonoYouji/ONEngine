@@ -13,7 +13,7 @@
 void DemoObject::Initialize() {
 
 	AnimationRenderer* ar = AddComponent<AnimationRenderer>();
-	ar->SetModel("Sphere");
+	ar->SetModel("AnimatedCube");
 	ar->LoadAnimation("AnimatedCube");
 
 }

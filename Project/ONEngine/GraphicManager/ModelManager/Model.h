@@ -25,8 +25,12 @@ struct ViewProjectionData {
 
 
 struct Node {
-	Mat4 matLocal;
-	std::string name;
+	Node() {
+		transform.rotateOrder = QUATERNION;
+	}
+
+	Transform         transform;
+	std::string       name;
 	std::vector<Node> children;
 };
 

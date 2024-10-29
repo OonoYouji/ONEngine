@@ -9,8 +9,13 @@
 #include "Math/Quaternion.h"
 #include "Math/Matrix4x4.h"
 
-/// base class
+/// base class & component
 #include "../Base/BaseComponent.h"
+#include "../Transform/Transform.h"
+
+/// 
+#include "Skeleton.h"
+
 
 /// ===================================================
 /// アニメーションの
@@ -53,6 +58,8 @@ public:
 	Vec3       CalculateValue(const std::vector<KeyframeVec3>& keyframe, float time);
 	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframe, float time);
 
+	void ApplyAnimation(Skeleton& skeleton);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -61,10 +68,7 @@ private:
 	float duration_;
 	float animationTime_;
 
-	Vec3 position_;
-	Quaternion rotate_;
-	Vec3 scale_;
-	Mat4 matLocal_;
+	Transform transform_;
 
 	std::unordered_map<std::string, NodeAnimation> nodeAnimationArray_;
 

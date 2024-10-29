@@ -198,15 +198,17 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 Node ModelManager::ReadNode(aiNode* node) {
 	Node result;
-	aiMatrix4x4 matAILocal = node->mTransformation;
 
-	matAILocal.Transpose();
+	aiVector3D   position;
+	aiQuaternion rotate;
+	aiVector3D   scale;
 
-	for(uint32_t r = 0; r < 4; ++r) {
-		for(uint32_t c = 0; c < 4; ++c) {
-			result.matLocal.m[r][c] = matAILocal[r][c];
-		}
-	}
+	node->mTransformation.Decompose(position, rotate, scale);
+
+	result.transform.scale      = { scale.x, scale.y, scale.z };
+	result.transform.quaternion = { rotate.x, -rotate.y, -rotate.z, rotate.w };
+	result.transform.position   = { -position.x, position.y, position.z };
+	result.transform.Update();
 
 	/// nodeから必要な値をゲット
 	result.name = node->mName.C_Str();
