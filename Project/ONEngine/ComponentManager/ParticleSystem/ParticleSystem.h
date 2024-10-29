@@ -108,6 +108,10 @@ public:
 	/// <param name="_max"></param>
 	void SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max);
 
+	void SetFieldArray(const std::list<ParticleField*>& _filedArray);
+
+	void AddField(ParticleField* _field);
+
 
 	/// <summary>
 	/// const パーティクルの最大数のゲッタ
@@ -179,6 +183,9 @@ private:
 
 	/// emitter
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+
+	/// field
+	std::list<ParticleField*> pFieldArray_;
 
 };
 
