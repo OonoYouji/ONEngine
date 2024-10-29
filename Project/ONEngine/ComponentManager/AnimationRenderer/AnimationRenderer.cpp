@@ -47,9 +47,10 @@ void AnimationRenderer::Draw() {
 void AnimationRenderer::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::Text(std::format("position : {}, {}, {}",     position_.x, position_.y, position_.z).c_str());
-		ImGui::Text(std::format("rotate   : {}, {}, {}, {}", rotate_.x, rotate_.y, rotate_.z, rotate_.w).c_str());
-		ImGui::Text(std::format("scale    : {}, {}, {}",     scale_.x, scale_.y, scale_.z).c_str());
+		ImGui::Text(std::format("position : {:.2f}, {:.2f}, {:.2f}",         position_.x, position_.y, position_.z).c_str());
+		ImGui::Text(std::format("rotate   : {:.2f}, {:.2f}, {:.2f}, {:.2f}", rotate_.x, rotate_.y, rotate_.z, rotate_.w).c_str());
+		ImGui::Text(std::format("scale    : {:.2f}, {:.2f}, {:.2f}",         scale_.x, scale_.y, scale_.z).c_str());
+
 
 		ImGui::SeparatorText("local matrix");
 
@@ -62,6 +63,12 @@ void AnimationRenderer::Debug() {
 				ImGui::Text("%0.2f, ", matLocal_.m[r][c]);
 			}
 		}
+
+
+		ImGui::SeparatorText("parameters");
+
+		ImGui::Text(std::format("animation time : {:.2f}", animationTime_).c_str());
+		ImGui::Text(std::format("duration       : {:.2f}", duration_).c_str());
 
 		ImGui::TreePop();
 	}
