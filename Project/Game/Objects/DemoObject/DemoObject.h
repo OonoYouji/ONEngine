@@ -6,6 +6,7 @@
 /// base class
 #include "GameObjectManager/GameObjectManager.h"
 
+#include "ComponentManager/AnimationRenderer/Skeleton.h"
 
 class DemoObject final : public BaseGameObject {
 public:
@@ -18,6 +19,6 @@ public:
 	void Debug()      override;
 
 private:
-
+	Skeleton skeleton_;
 
 };

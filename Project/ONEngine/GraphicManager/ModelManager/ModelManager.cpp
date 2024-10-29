@@ -203,7 +203,7 @@ Node ModelManager::ReadNode(aiNode* node) {
 	aiQuaternion rotate;
 	aiVector3D   scale;
 
-	node->mTransformation.Decompose(position, rotate, scale);
+	node->mTransformation.Decompose(scale, rotate, position);
 
 	result.transform.scale      = { scale.x, scale.y, scale.z };
 	result.transform.quaternion = { rotate.x, -rotate.y, -rotate.z, rotate.w };
