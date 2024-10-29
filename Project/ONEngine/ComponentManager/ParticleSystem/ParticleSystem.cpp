@@ -128,9 +128,34 @@ void ParticleSystem::Update() {
 
 	for(size_t i = 0; i < particleArray_.size(); ++i) {
 		Particle* particle = particleArray_[i].get();
+		Transform* transform = particle->GetTransform();
+
 		if(!particle->isAlive_) {
 			continue;
 		}
+
+		/// filedに当たっていれば処理を行う
+		for(auto itr = pFieldArray_.begin(); itr != pFieldArray_.end(); ++itr) {
+			ParticleField* field = (*itr);
+
+			/// min以下にある場合はcontinue
+			if(field->GetMin().x > transform->position.x
+				|| field->GetMin().y > transform->position.y
+				|| field->GetMin().z > transform->position.z) {
+				continue;
+			}
+
+			/// max以上にある場合はcontinue
+			if(transform->position.x > field->GetMax().x
+			   || transform->position.y > field->GetMax().y
+			   || transform->position.z > field->GetMax().z) {
+				continue;
+			}
+
+			field->Update(particle);
+			
+		}
+
 
 		particleUpdateFunc_(particle);
 		particle->LifeTimeUpdate();
@@ -231,6 +256,14 @@ void ParticleSystem::SetBurst(bool _isBurst, float _burstTime, float _rateOverTi
 void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
 	emitter_->min_ = _min;
 	emitter_->max_ = _max;
+}
+
+void ParticleSystem::SetFieldArray(const std::list<ParticleField*>& _filedArray) {
+	pFieldArray_ = _filedArray;
+}
+
+void ParticleSystem::AddField(ParticleField* _field) {
+	pFieldArray_.push_back(_field);
 }
 
 

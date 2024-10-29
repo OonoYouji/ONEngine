@@ -8,16 +8,32 @@
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
-#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 
 void DemoObject::Initialize() {
 
-	AnimationRenderer* ar = AddComponent<AnimationRenderer>();
-	ar->SetModel("AnimatedCube");
-	ar->LoadAnimation("AnimatedCube");
+	//AnimationRenderer* ar = AddComponent<AnimationRenderer>();
+	//ar->SetModel("AnimatedCube");
+	//ar->LoadAnimation("AnimatedCube");
 
-	//ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
+	particleField_.reset(new ParticleField);
+	particleField_->Initialize();
+	particleField_->SetUpdateFunction([](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+		transform->position.y += 0.025f;
+	});
+
+	particleField_->SetMin({ -1, -1, -1 });
+	particleField_->SetMax({  1,  1, 20 });
+
+	ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
+	ps->AddField(particleField_.get());
+
+	ps->SetPartilceUpdateFunction([](Particle* particle) {
+		Transform* transform = particle->GetTransform();
+
+		transform->position.z += 0.025f;
+	});
 
 }
 
