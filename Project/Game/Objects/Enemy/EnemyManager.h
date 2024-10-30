@@ -27,6 +27,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+
+	void SetShootingCourse(class ShootingCourse* _shootingCourse);
+
+
 	void CreateEnemy(
 		const Vec3& _scale,
 		const Vec3& _rotate, 
@@ -40,6 +44,12 @@ public:
 
 private:
 
+	class MeshInstancingRenderer* meshInstancingRenderer_ = nullptr; /// enemyが更新されるタイミングのポイント描画
+
+
 	std::vector<IOData> ioDataArray_;
+	std::vector<Transform> startedTTransforms_;
+
+	class ShootingCourse* pShootingCourse_ = nullptr;
 
 };

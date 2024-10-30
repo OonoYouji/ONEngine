@@ -11,8 +11,12 @@
 /// engine
 #include <imgui.h>
 
+/// component
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+
 /// objects
 #include "Enemy.h"
+#include "../ShootingCourse/ShootingCourse.h"
 
 
 using namespace nlohmann;
@@ -25,11 +29,43 @@ EnemyManager::EnemyManager() {
 EnemyManager::~EnemyManager() {}
 
 void EnemyManager::Initialize() {
+	meshInstancingRenderer_ = AddComponent<MeshInstancingRenderer>(128);
+	meshInstancingRenderer_->SetModel("EnemyStartedAnchor");
+
 	LoadFile("./Resources/Parameters/EnemyManager/");
+
 
 }
 
 void EnemyManager::Update() {
+
+	const std::vector<AnchorPoint>& anchorPoints =  pShootingCourse_->GetAnchorPointArray();
+
+	AnchorPoint ap{};
+	for(size_t i = 0; i < ioDataArray_.size(); ++i) {
+		ap = SplinePosition(anchorPoints, 1.0f / static_cast<float>(anchorPoints.size()) * ioDataArray_[i].startedT);
+		
+		if(i >= startedTTransforms_.size()) {
+
+			Transform transform;
+			transform.position = ap.position;
+			transform.UpdateMatrix(false);
+			startedTTransforms_.push_back(transform);
+
+		} else {
+
+			startedTTransforms_[i].position = ap.position;
+			startedTTransforms_[i].UpdateMatrix(false);
+
+		}
+	}
+
+
+	/// mesh instancing rendererに渡す
+	meshInstancingRenderer_->ResetTransformArray();
+	for(auto& transform : startedTTransforms_) {
+		meshInstancingRenderer_->AddTransform(&transform);
+	}
 
 }
 
@@ -70,6 +106,10 @@ void EnemyManager::Debug() {
 	}
 
 
+}
+
+void EnemyManager::SetShootingCourse(ShootingCourse* _shootingCourse) {
+	pShootingCourse_ = _shootingCourse;
 }
 
 void EnemyManager::CreateEnemy(

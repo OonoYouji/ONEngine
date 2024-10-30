@@ -82,3 +82,21 @@ private:
 	int addIndex_ = 0;
 
 };
+
+
+
+
+/// <summary>
+/// アンカーポイントの配列と現在の位置を表す媒介変数で現在地のワールド座標を計算する
+/// </summary>
+/// <param name="anchorPointArray">: アンカーポイントの配列 </param>
+/// <param name="t">               : 現在地を表す媒介変数   </param>
+/// <returns>return                : 現在地のワールド座標   </returns>
+AnchorPoint SplinePosition(const std::vector<AnchorPoint>& anchorPointArray, float t);
+
+/// <summary>
+/// スプライン曲線の座標を補完する
+/// </summary>
+/// <param name=""></param>
+/// <returns></returns>
+AnchorPoint SplineInterpolation(const std::array<AnchorPoint, 4>& anchorPointArray, float t);
