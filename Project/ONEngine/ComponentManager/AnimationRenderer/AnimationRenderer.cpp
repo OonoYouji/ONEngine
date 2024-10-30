@@ -18,12 +18,17 @@
 #include "Debug/Assert.h"
 
 
-AnimationRenderer::AnimationRenderer() {}
+AnimationRenderer::AnimationRenderer(const std::string& modelFilePath) {
+	pModel_ = ModelManager::Load(modelFilePath);
+}
 AnimationRenderer::~AnimationRenderer() {}
 
 
 void AnimationRenderer::Initialize() {
 	transform_.rotateOrder = QUATERNION;
+
+	skeleton_    = CreateSkeleton(pModel_->GetRootNode());
+	skinCluster_ = CreateSkinCluster(skeleton_, pModel_);
 }
 
 void AnimationRenderer::Update() {
@@ -36,6 +41,9 @@ void AnimationRenderer::Update() {
 	transform_.quaternion = CalculateValue(rootAnimation.rotate,    animationTime_);
 	transform_.scale      = CalculateValue(rootAnimation.scale,     animationTime_);
 	transform_.Update();
+
+	skeleton_.Update();
+	SkinClusterUpdate(skinCluster_, skeleton_);
 
 }
 
@@ -204,5 +212,19 @@ void AnimationRenderer::ApplyAnimation(Skeleton& skeleton) {
 			joint.transform.quaternion = CalculateValue(rootNodeAnimation.rotate,    animationTime_);
 			joint.transform.scale      = CalculateValue(rootNodeAnimation.scale,     animationTime_);
 		}
+	}
+}
+
+void AnimationRenderer::SkinClusterUpdate(SkinCluster& _skinCluster, const Skeleton& _skeleton) const {
+	for(size_t jointIndex = 0; jointIndex < _skeleton.joints.size(); ++jointIndex) {
+
+		Assert(jointIndex < _skinCluster.matBindPoseInverseArray.size(), "out of range");
+
+		_skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
+			_skinCluster.matBindPoseInverseArray[jointIndex] * _skeleton.joints[jointIndex].matSkeletonSpace;
+
+		_skinCluster.mappedPalette[jointIndex].matSkeletonSpaceInverseTranspose =
+			Mat4::MakeTranspose(Mat4::MakeInverse(_skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
+
 	}
 }

@@ -76,6 +76,7 @@ public:
 	static Matrix4x4 MakeTranslate(const Vector3& v);
 	static Matrix4x4 MakeAffine(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
+	static Matrix4x4 MakeTranspose(const Matrix4x4& m);
 	static Matrix4x4 MakeInverse(const Matrix4x4& m);
 
 	static Matrix4x4 MakeOrthographicMatrix(float l, float t, float r, float b, float nearZ, float farZ);

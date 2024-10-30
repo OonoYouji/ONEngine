@@ -178,6 +178,16 @@ Matrix4x4 Matrix4x4::MakeAffine(const Vector3& scale, const Vector3& rotate, con
 	return MakeScale(scale) * MakeRotate(rotate) * MakeTranslate(translate);
 }
 
+Matrix4x4 Matrix4x4::MakeTranspose(const Matrix4x4& m) {
+	Matrix4x4 result;
+	for(uint8_t r = 0; r < 4; r++) {
+		for(uint8_t c = 0; c < 4; c++) {
+			result.m[r][c] = m.m[c][r];
+		}
+	}
+	return result;
+}
+
 Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& m) {
 	return m.Inverse();
 }

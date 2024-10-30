@@ -184,6 +184,7 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />

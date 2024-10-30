@@ -15,7 +15,7 @@
 
 /// 
 #include "Skeleton.h"
-
+#include "Skinning.h"
 
 /// ===================================================
 /// アニメーションの
@@ -43,7 +43,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	AnimationRenderer();
+	AnimationRenderer(const std::string& modelFilePath);
 	~AnimationRenderer();
 
 	void Initialize() override;
@@ -60,6 +60,8 @@ public:
 
 	void ApplyAnimation(Skeleton& skeleton);
 
+	void SkinClusterUpdate(SkinCluster& _skinCluster, const Skeleton& _skeleton) const;
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -73,6 +75,9 @@ private:
 	std::unordered_map<std::string, NodeAnimation> nodeAnimationArray_;
 
 	class Model* pModel_;
+
+	SkinCluster skinCluster_;
+	Skeleton    skeleton_;
 
 };
 

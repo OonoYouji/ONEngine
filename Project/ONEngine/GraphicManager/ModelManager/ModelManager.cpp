@@ -102,8 +102,8 @@ Model* ModelManager::Load(const std::string& filePath) {
 	/// ---------------------------------------------------
 	for(uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
-		assert(mesh->HasNormals());
-		assert(mesh->HasTextureCoords(0));
+		Assert(mesh->HasNormals(), "not has normals");
+		Assert(mesh->HasTextureCoords(0), "not has texcoord");
 
 		Mesh modelMesh;
 
@@ -129,13 +129,47 @@ Model* ModelManager::Load(const std::string& filePath) {
 		/// ---------------------------------------------------
 		for(uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);
+			Assert(face.mNumIndices == 3, "not triangles");
 
 			for(uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
 				uint32_t& index = face.mIndices[element];
 
 				modelMesh.AddIndex(index);
+			}
+
+		}
+
+		/// ---------------------------------------------------
+		/// joint解析
+		/// ---------------------------------------------------
+		for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+
+			/// 格納領域の作成
+			aiBone*          bone            = mesh->mBones[boneIndex];
+			std::string      jointName       = bone->mName.C_Str();
+			JointWeightData& jointWeightData = model->skinClusterData_[jointName];
+
+			/// mat bind pose inverseの計算
+			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
+			aiVector3D   position;
+			aiQuaternion rotate;
+			aiVector3D   scale;
+
+			matBindPoseAssimp.Decompose(scale, rotate, position);
+			Mat4 matBindPose = 
+				Mat4::MakeScale({ scale.x, scale.y, scale.z })
+				* Mat4::MakeRotateQuaternion(Quaternion::Normalize({ rotate.x, -rotate.y, -rotate.z, rotate.w }))
+				* Mat4::MakeTranslate({ -position.x, position.y, position.z });
+
+			jointWeightData.matBindPoseInverse = matBindPose.Inverse();
+
+
+			/// weight情報を取り出す
+			for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+				jointWeightData.vertexWeights.push_back(
+					{ bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId }
+				);
 			}
 
 		}
