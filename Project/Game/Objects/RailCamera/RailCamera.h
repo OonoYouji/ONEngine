@@ -33,6 +33,10 @@ public:
 	void SetShootingCourse(ShootingCourse* _shootingCourse);
 
 
+	float GetMovingTime()    const { return movingTime_; }
+	float GetPreMovingTime() const { return preMovingTime_; }
+
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -42,6 +46,7 @@ private:
 	Vec3  moveDirection_{};      /// 移動している方向ベクトル
 	Vec3  upDirection_{};
 	float movingTime_;           /// 移動の総合時間
+	float preMovingTime_;        /// 移動の総合時間
 	float nextMoveT_;            /// アンカーポイント間の移動に使うt
 	float futureMoveT_;          /// アンカーポイント間の移動に使うt
 	float futureTime_;           /// どれくらい先かを表す

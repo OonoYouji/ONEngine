@@ -45,6 +45,7 @@ void RailCamera::Update() {
 	const size_t kSegmentCount = anchorPointArray.size();
 
 	/// 移動 and 回転
+	preMovingTime_ = movingTime_;
 	movingTime_ += Time::DeltaTime();
 	movingTime_ = std::clamp(movingTime_, 0.0f, kSegmentCount + 1.0f);
 	nextMoveT_ = 1.0f / kSegmentCount * movingTime_;

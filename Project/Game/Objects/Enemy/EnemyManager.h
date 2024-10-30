@@ -27,10 +27,6 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-
-	void SetShootingCourse(class ShootingCourse* _shootingCourse);
-
-
 	void CreateEnemy(
 		const Vec3& _scale,
 		const Vec3& _rotate, 
@@ -42,6 +38,17 @@ public:
 	void SaveFile(const std::string& filePath);
 	void LoadFile(const std::string& filePath);
 
+
+
+	void CalcuationEnemyStartedAnchorPoint();
+
+
+
+	void SetShootingCourse(class ShootingCourse* _shootingCourse);
+	void SetRailCamera(class RailCamera* _railCamera);
+
+
+
 private:
 
 	class MeshInstancingRenderer* meshInstancingRenderer_ = nullptr; /// enemyが更新されるタイミングのポイント描画
@@ -51,5 +58,6 @@ private:
 	std::vector<Transform> startedTTransforms_;
 
 	class ShootingCourse* pShootingCourse_ = nullptr;
+	class RailCamera*     pRailCamera_     = nullptr;
 
 };

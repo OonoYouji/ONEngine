@@ -17,6 +17,7 @@
 /// objects
 #include "Enemy.h"
 #include "../ShootingCourse/ShootingCourse.h"
+#include "../RailCamera/RailCamera.h"
 
 
 using namespace nlohmann;
@@ -38,33 +39,25 @@ void EnemyManager::Initialize() {
 }
 
 void EnemyManager::Update() {
+	CalcuationEnemyStartedAnchorPoint();
 
-	const std::vector<AnchorPoint>& anchorPoints =  pShootingCourse_->GetAnchorPointArray();
-
+	const std::vector<AnchorPoint>& aps = pShootingCourse_->GetAnchorPointArray();
 	AnchorPoint ap{};
-	for(size_t i = 0; i < ioDataArray_.size(); ++i) {
-		ap = SplinePosition(anchorPoints, 1.0f / static_cast<float>(anchorPoints.size()) * ioDataArray_[i].startedT);
-		
-		if(i >= startedTTransforms_.size()) {
 
-			Transform transform;
-			transform.position = ap.position;
-			transform.UpdateMatrix(false);
-			startedTTransforms_.push_back(transform);
+	float movingTime    = pRailCamera_->GetMovingTime();
+	float preMovingTime = pRailCamera_->GetPreMovingTime();
 
-		} else {
+	for(auto& ioData : ioDataArray_) {
+		if(movingTime > ioData.startedT && ioData.startedT > preMovingTime) {
+			float t = 1.0f / static_cast<float>(aps.size()) * ioData.startedT;
+			ap = SplinePosition(aps, t);
 
-			startedTTransforms_[i].position = ap.position;
-			startedTTransforms_[i].UpdateMatrix(false);
+			CreateEnemy(
+				Vec3::kOne, {}, ap.position + ioData.startOffset,
+				ioData.hp, ioData.startedT
+			);
 
 		}
-	}
-
-
-	/// mesh instancing rendererに渡す
-	meshInstancingRenderer_->ResetTransformArray();
-	for(auto& transform : startedTTransforms_) {
-		meshInstancingRenderer_->AddTransform(&transform);
 	}
 
 }
@@ -110,6 +103,10 @@ void EnemyManager::Debug() {
 
 void EnemyManager::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
+}
+
+void EnemyManager::SetRailCamera(RailCamera* _railCamera) {
+	pRailCamera_ = _railCamera;
 }
 
 void EnemyManager::CreateEnemy(
@@ -199,5 +196,37 @@ void EnemyManager::LoadFile(const std::string& filePath) {
 
 		ioDataArray_.push_back(ioData);
 	}
+}
+
+void EnemyManager::CalcuationEnemyStartedAnchorPoint() {
+
+	const std::vector<AnchorPoint>& anchorPoints = pShootingCourse_->GetAnchorPointArray();
+
+	AnchorPoint ap{};
+	for(size_t i = 0; i < ioDataArray_.size(); ++i) {
+		ap = SplinePosition(anchorPoints, 1.0f / static_cast<float>(anchorPoints.size()) * ioDataArray_[i].startedT);
+
+		if(i >= startedTTransforms_.size()) {
+
+			Transform transform;
+			transform.position = ap.position;
+			transform.UpdateMatrix(false);
+			startedTTransforms_.push_back(transform);
+
+		} else {
+
+			startedTTransforms_[i].position = ap.position;
+			startedTTransforms_[i].UpdateMatrix(false);
+
+		}
+	}
+
+
+	/// mesh instancing rendererに渡す
+	meshInstancingRenderer_->ResetTransformArray();
+	for(auto& transform : startedTTransforms_) {
+		meshInstancingRenderer_->AddTransform(&transform);
+	}
+
 }
 
