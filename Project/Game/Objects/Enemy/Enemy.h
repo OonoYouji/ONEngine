@@ -15,7 +15,6 @@ public:
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
-	float hp_;
-
-	float moveStartPoint_;
+	float hp_;           /// ただのHP
+	float updateStartT_; /// プレイヤーのmoveTを参照する、プレイヤーがこれを超えたら更新処理を始める
 };

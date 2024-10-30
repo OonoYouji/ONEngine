@@ -1,6 +1,9 @@
 #pragma once
 
 
+/// std
+#include <vector>
+
 /// objects
 #include "Enemy.h"
 
@@ -10,7 +13,9 @@
 class EnemyManager : public BaseGameObject {
 
 	struct IOData {
-
+		Vec3  startOffset;
+		float startedT;
+		float hp;
 	};
 
 public:
@@ -23,12 +28,18 @@ public:
 	void Debug()      override;
 
 	void CreateEnemy(
-		Enemy* _prefab,
 		const Vec3& _scale,
 		const Vec3& _rotate, 
-		const Vec3& _position
+		const Vec3& _position,
+		float _updateStartT,
+		float _hp
 	) const;
 
+	void SaveFile(const std::string& filePath);
+	void LoadFile(const std::string& filePath);
+
 private:
-	Enemy* prefabEnemy_ = nullptr;
+
+	std::vector<IOData> ioDataArray_;
+
 };

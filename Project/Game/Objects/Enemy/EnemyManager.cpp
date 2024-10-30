@@ -1,10 +1,22 @@
 #include "EnemyManager.h"
 
+/// std
+#include <iostream>
+#include <fstream>
+#include <string>
+
+/// externals
+#include <json.hpp>
+
 /// engine
 #include <imgui.h>
 
 /// objects
 #include "Enemy.h"
+
+
+using namespace nlohmann;
+
 
 EnemyManager::EnemyManager() {
 	CreateTag(this);
@@ -13,9 +25,8 @@ EnemyManager::EnemyManager() {
 EnemyManager::~EnemyManager() {}
 
 void EnemyManager::Initialize() {
-	prefabEnemy_ = new Enemy();
-	prefabEnemy_->Initialize();
-	prefabEnemy_->SetName("enemyPrefab");
+	LoadFile("./Resources/Parameters/EnemyManager/");
+
 }
 
 void EnemyManager::Update() {
@@ -25,23 +36,49 @@ void EnemyManager::Update() {
 void EnemyManager::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::SeparatorText("prefab enemy");
+		ImGui::SeparatorText("com");
 
-		ImGui::DragFloat("HP", &prefabEnemy_->hp_);
-
-
-		ImGui::SeparatorText("tmp");
-		
-		if(ImGui::Button("create new enemy")) {
-			CreateEnemy(prefabEnemy_, Vec3::kOne, {}, {});
+		if(ImGui::Button("save")) {
+			SaveFile("./Resources/Parameters/EnemyManager/");
 		}
+
+
+		ImGui::SeparatorText("io data");
+
+		if(ImGui::Button("add")) {
+			ioDataArray_.push_back(IOData(
+				{ 0, 0, 0 },
+				10.0f, 1.0f
+			));
+		}
+
+
+		ImGui::BeginChild("io data array", ImVec2(0, 360.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
+		size_t index = 0;
+		for(auto& ioData : ioDataArray_) {
+			ImGui::DragFloat3((std::string("start offset") + std::to_string(index)).c_str(), &ioData.startOffset.x, 0.25f);;
+			ImGui::DragFloat((std::string("hp") + std::to_string(index)).c_str(),        &ioData.hp,         0.25f);;
+			ImGui::DragFloat((std::string("startedT") + std::to_string(index)).c_str(),  &ioData.startedT,   0.25f);;
+
+			ImGui::Spacing();
+			++index;
+		}
+		ImGui::EndChild();
 
 
 		ImGui::TreePop();
 	}
+
+
 }
 
-void EnemyManager::CreateEnemy(Enemy* _prefab, const Vec3& _scale, const Vec3& _rotate, const Vec3& _position) const {
+void EnemyManager::CreateEnemy(
+	const Vec3& _scale,
+	const Vec3& _rotate,
+	const Vec3& _position,
+	float _updateStartT,
+	float _hp) const {
+
 	Enemy* enemy = new Enemy();
 	enemy->Initialize();
 
@@ -49,6 +86,78 @@ void EnemyManager::CreateEnemy(Enemy* _prefab, const Vec3& _scale, const Vec3& _
 	enemy->SetPosition(_position);
 	enemy->SetRotate(_rotate);
 
-	enemy->hp_ = _prefab->hp_;
+	enemy->hp_           = _hp;
+	enemy->updateStartT_ = _updateStartT;
+}
+
+
+void EnemyManager::SaveFile(const std::string& filePath) {
+	json root = json::object();
+	for(size_t i = 0; i < ioDataArray_.size(); ++i) {
+		auto& item = root[std::to_string(i)];
+
+		IOData& data = ioDataArray_[i];
+		item["startOffset"] = json::array({ data.startOffset.x, data.startOffset.y, data.startOffset.z });
+		item["startedT"]    = data.startedT;
+		item["hp"]          = data.hp;
+	}
+
+	///- ディレクトリがなければ作成する
+	std::filesystem::path dir(filePath);
+	if(!std::filesystem::exists(dir)) {
+		std::filesystem::create_directories(dir);
+	}
+
+	///- File open
+	std::string path = filePath + "EnemyManager.json";
+	std::ofstream ofs;
+	ofs.open(path);
+
+	if(ofs.fail()) {
+		std::string message = "Failed open data file for write.";
+		MessageBoxA(nullptr, message.c_str(), "EnemyManager", 0);
+		assert(false);
+		return;
+	}
+
+	///- ファイルにjson文字列を書き込む(インデント幅4)
+	ofs << std::setw(4) << root << std::endl;
+	ofs.close();
+}
+
+void EnemyManager::LoadFile(const std::string& filePath) {
+	///- ファイルを開く
+	std::string path = filePath + "EnemyManager.json";
+	std::ifstream ifs;
+	ifs.open(path);
+
+	///- 開けなければメッセージを出す
+	if(!ifs.is_open()) {
+		std::string message = "File could not be opened.";
+		MessageBoxA(nullptr, message.c_str(), "EnemyManager", 0);
+		assert(false);
+		return;
+	}
+
+	///- json文字列からjsonのデータ構造に展開
+	json root;
+	ifs >> root;
+	ifs.close();
+
+
+	for(auto& item : root.items()) {
+
+		auto jsonPos      = item.value()["startOffset"];
+		auto jsonStartedT = item.value()["startedT"];
+		auto jsonHP       = item.value()["hp"];
+
+		IOData ioData {
+			.startOffset = {jsonPos.at(0), jsonPos.at(1), jsonPos.at(2)},
+			.startedT = jsonStartedT,
+			.hp = jsonHP
+		};
+
+		ioDataArray_.push_back(ioData);
+	}
 }
 
