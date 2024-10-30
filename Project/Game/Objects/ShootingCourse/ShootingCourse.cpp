@@ -251,28 +251,38 @@ void ShootingCourse::CalcuationRailTransform() {
 	/// レールのtransformを計算
 
 	for(size_t i = 0; i < segmentPointArray.size() - 1; ++i) {
-		const Vec3& up = upDirArray[i];
+
+		float t = static_cast<float>(i) / static_cast<float>(segmentPointArray.size());
+		float next = static_cast<float>(i + 1) / static_cast<float>(segmentPointArray.size());
+
+		AnchorPoint currentAP = SplinePosition(anchorPointArray_, t);
+		AnchorPoint nextAP    = SplinePosition(anchorPointArray_, next);
 
 		/// 現在の座標と次の座標を得る
 		const Vec3& currentPoint = segmentPointArray[i];
 		const Vec3& nextPoint    = segmentPointArray[i + 1];
 
 		/// 進行方向、ローカル上方向、ローカル左方向のベクトル計算
-		Vec3 moveDir  = Vec3(nextPoint - currentPoint).Normalize();
-		Vec3 upDir    = upDirArray[i];
+		Vec3 moveDir  = Vec3(nextAP.position - currentAP.position).Normalize();
+		Vec3 upDir    = Vec3::Lerp(nextAP.up, currentAP.up, 0.5f);
+		//Vec3 upDir    = upDirArray[i];
 		Vec3 rightDir = Vec3::Cross(moveDir, upDir);
 
 
 		/// transformを計算する
 		Transform transform;
-		transform.rotateOrder = YXZ;
+		transform.rotateOrder = QUATERNION;
 		transform.position = currentPoint;
 
 		transform.rotate = {
 			std::asin(-moveDir.y),
 			std::atan2(moveDir.x, moveDir.z),
-			-std::atan2(rightDir.y, upDir.y)
+			std::atan2(rightDir.x, upDir.x)
 		};
+
+		transform.quaternion = Quaternion::MakeFromAxis(Vec3::kUp,              std::atan2(moveDir.x, moveDir.z));
+		transform.quaternion *= Quaternion::MakeFromAxis(rightDir.Normalize() , std::asin(moveDir.y));
+		//transform.quaternion *= Quaternion::MakeFromAxis(moveDir.Normalize(), std::atan2(rightDir.x, upDir.x));
 
 		transform.UpdateMatrix(false);
 		transformList_.push_back(std::move(transform));

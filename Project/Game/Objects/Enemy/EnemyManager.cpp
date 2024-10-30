@@ -34,7 +34,7 @@ void EnemyManager::Initialize() {
 	meshInstancingRenderer_->SetModel("EnemyStartedAnchor");
 
 	LoadFile("./Resources/Parameters/EnemyManager/");
-
+	enemyCreateDataArray_ = ioDataArray_;
 
 }
 
@@ -47,16 +47,21 @@ void EnemyManager::Update() {
 	float movingTime    = pRailCamera_->GetMovingTime();
 	float preMovingTime = pRailCamera_->GetPreMovingTime();
 
-	for(auto& ioData : ioDataArray_) {
-		if(movingTime > ioData.startedT && ioData.startedT > preMovingTime) {
-			float t = 1.0f / static_cast<float>(aps.size()) * ioData.startedT;
+	for(auto itr = enemyCreateDataArray_.begin(); itr != enemyCreateDataArray_.end();) {
+		IOData& data = (*itr);
+
+		if(movingTime > data.startedT && data.startedT > preMovingTime) {
+			float t = 1.0f / static_cast<float>(aps.size()) * data.startedT;
 			ap = SplinePosition(aps, t);
 
 			CreateEnemy(
-				Vec3::kOne, {}, ap.position + ioData.startOffset,
-				ioData.hp, ioData.startedT
+				Vec3::kOne, {}, ap.position + data.startOffset,
+				data.hp, data.startedT
 			);
 
+			itr = enemyCreateDataArray_.erase(itr);
+		} else {
+			itr++;
 		}
 	}
 

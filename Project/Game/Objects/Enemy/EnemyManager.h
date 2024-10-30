@@ -55,8 +55,11 @@ private:
 
 
 	std::vector<IOData> ioDataArray_;
+	std::vector<IOData> enemyCreateDataArray_;
 	std::vector<Transform> startedTTransforms_;
 
+
+	/// other class pointer
 	class ShootingCourse* pShootingCourse_ = nullptr;
 	class RailCamera*     pRailCamera_     = nullptr;
 
