@@ -12,6 +12,12 @@ struct VSInput {
 	int4   index    : INDEX0;
 };
 
+struct VSOutout {
+	float4 position : SV_Position;
+	float2 texcoord : TEXCOORD0;
+	float3 normal   : NORMAL0;
+};
+
 struct Skinned {
 	float4 position;
 	float3 normal;
