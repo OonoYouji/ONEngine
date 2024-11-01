@@ -13,20 +13,13 @@
 
 void DemoObject::Initialize() {
 
-	Model* model = ModelManager::Load("sneakWalk");
+	AnimationRenderer* ar = AddComponent<AnimationRenderer>("sneakWalk");
 
-	skeleton_ = CreateSkeleton(model->GetRootNode());
-
-	//AnimationRenderer* ar = AddComponent<AnimationRenderer>();
-	//ar->SetModel("sneakWalk");
-	//ar->LoadAnimation("sneakWalk");
-
-	SkeletonRenderer* sr = AddComponent<SkeletonRenderer>();
-	sr->SetSkeleton(&skeleton_);
+	//SkeletonRenderer* sr = AddComponent<SkeletonRenderer>();
+	//sr->SetSkeleton(&skeleton_);
 }
 
 void DemoObject::Update() {
-	skeleton_.Update();
 }
 
 void DemoObject::Debug() {

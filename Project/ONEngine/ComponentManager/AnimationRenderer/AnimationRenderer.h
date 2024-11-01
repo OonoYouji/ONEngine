@@ -3,12 +3,17 @@
 /// std
 #include <unordered_map>
 #include <string>
+#include <memory>
+#include <list>
 
 /// math
 #include "Math/Vector3.h"
 #include "Math/Quaternion.h"
 #include "Math/Matrix4x4.h"
 
+/// engine
+#include "GraphicManager/PipelineState/PipelineState.h"
+	
 /// base class & component
 #include "../Base/BaseComponent.h"
 #include "../Transform/Transform.h"
@@ -51,6 +56,8 @@ public:
 	void Draw()       override;
 	void Debug()      override;
 
+	void DrawCall();
+
 	void SetModel(const std::string& filePath);
 
 	void LoadAnimation(const std::string& filePath);
@@ -83,12 +90,31 @@ private:
 
 
 class AnimationRendererCommon final {
+
+
+
 public:
+
+	static AnimationRendererCommon* GetInstance() {
+		static AnimationRendererCommon instance;
+		return &instance;
+	}
+
+	void Initialize();
+	void Finalize();
 
 	void PreDraw();
 	void PostDraw();
 
+	void AddAnimationRenderer(AnimationRenderer* _animationRenderer);
+
 private:
 
+	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
+	PipelineState::Shader          shader_        = {};
+
+	D3D12_VERTEX_BUFFER_VIEW vbv_;
+
+	std::list<AnimationRenderer*> actives_;
 
 };

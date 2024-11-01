@@ -9,9 +9,18 @@
 
 /// engine
 #include <imgui.h>
+#include "Core/ONEngine.h"
 #include "FrameManager/Time.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/ModelManager/Model.h"
+#include "GameObjectManager/BaseGameObject.h"
+
+/// grahics
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
+
+/// objects
+#include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/BaseGameObject.h"
 
 /// lib
@@ -20,6 +29,7 @@
 
 AnimationRenderer::AnimationRenderer(const std::string& modelFilePath) {
 	pModel_ = ModelManager::Load(modelFilePath);
+	LoadAnimation(modelFilePath);
 }
 AnimationRenderer::~AnimationRenderer() {}
 
@@ -48,7 +58,8 @@ void AnimationRenderer::Update() {
 }
 
 void AnimationRenderer::Draw() {
-	pModel_->Draw(GetOwner()->GetTransform(), &transform_.matTransform, nullptr, kSolid);
+	AnimationRendererCommon* instance =	AnimationRendererCommon::GetInstance();
+	instance->AddAnimationRenderer(this);
 }
 
 void AnimationRenderer::Debug() {
@@ -80,6 +91,36 @@ void AnimationRenderer::Debug() {
 		ImGui::TreePop();
 	}
 }
+
+void AnimationRenderer::DrawCall() {
+	ID3D12GraphicsCommandList* pCommandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	ID3D12Resource* pViewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+	std::vector<Mesh>& meshArray = pModel_->GetMeshes();
+
+	/// default setting
+	pCommandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	/// buffer setting
+	pCommandList->SetGraphicsRootConstantBufferView(0, pViewBuffer->GetGPUVirtualAddress());
+
+
+	for(auto& mesh : meshArray) {
+
+		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+			mesh.GetVBV(), skinCluster_.vbv
+		};
+
+		pCommandList->IASetVertexBuffers(0, 2, vbvs);
+		pCommandList->IASetIndexBuffer(&mesh.GetIBV());
+		GetOwner()->GetTransform()->BindTransform(pCommandList, 1);
+
+		pCommandList->DrawIndexedInstanced(
+			static_cast<UINT>(mesh.GetIndices().size()),
+			1, 0, 0, 0
+		);
+	}
+}
+
 
 
 
@@ -227,4 +268,87 @@ void AnimationRenderer::SkinClusterUpdate(SkinCluster& _skinCluster, const Skele
 			Mat4::MakeTranspose(Mat4::MakeInverse(_skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
 
 	}
+}
+
+
+
+
+void AnimationRendererCommon::Initialize() {
+
+	shader_.ShaderCompile(
+		L"Skinning/Skinning.VS.hlsl", L"vs_6_0",
+		L"Skinning/Skinning.PS.hlsl", L"ps_6_0"
+	);
+
+
+	pipelineState_.reset(new PipelineState);
+
+	pipelineState_->SetShader(&shader_);
+	pipelineState_->SetFillMode(kSolid);
+	pipelineState_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+
+	///	struct VSInput {
+	///		float4 position : POSITON0;
+	///		float2 texcoord : TEXCOORD0;
+	///		float3 normal : NORMAL0;
+	///		float4 weight : WEIGHT0;
+	///		int4   index : INDEX0;
+	///	};
+
+	/// ---------------------------------------------------
+	/// input layout setting
+	/// ---------------------------------------------------
+
+	pipelineState_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+	pipelineState_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+	pipelineState_->AddInputElement("NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT);
+
+	std::array<D3D12_INPUT_ELEMENT_DESC, 2> inputElementDescs{};
+	inputElementDescs[0].SemanticName      = "WEIGHT";
+	inputElementDescs[0].SemanticIndex     = 0;
+	inputElementDescs[0].Format            = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescs[0].InputSlot         = 1;
+	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputElementDescs[1].SemanticName      = "INDEX";
+	inputElementDescs[1].SemanticIndex     = 0;
+	inputElementDescs[1].Format            = DXGI_FORMAT_R32G32B32A32_SINT;
+	inputElementDescs[1].InputSlot         = 1;
+	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	pipelineState_->AddInputElement(inputElementDescs[0]);
+	pipelineState_->AddInputElement(inputElementDescs[1]);
+
+
+	/// ---------------------------------------------------
+	/// buffer setting
+	/// ---------------------------------------------------
+
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// gViewProjection
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// gTransform
+
+	/// gMatrixPalette
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);
+
+	pipelineState_->Initialize();
+}
+
+void AnimationRendererCommon::Finalize() {
+	pipelineState_.reset();
+}
+
+void AnimationRendererCommon::PreDraw() {
+	actives_.clear();
+}
+
+void AnimationRendererCommon::PostDraw() {
+	pipelineState_->SetPipelineState();
+	for(auto& animationRenderer : actives_) {
+		animationRenderer->DrawCall();
+	}
+}
+
+void AnimationRendererCommon::AddAnimationRenderer(AnimationRenderer* _animationRenderer) {
+	actives_.push_back(_animationRenderer);
 }

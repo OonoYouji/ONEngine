@@ -16,6 +16,7 @@
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/Drawer/LineDrawer/Line2D.h"
 #include "GraphicManager/Drawer/LineDrawer/Line3D.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 	
 #include "Objects/Camera/Manager/CameraManager.h"
 
@@ -30,6 +31,8 @@ namespace {
 	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
 	Line2D*            gLine2D            = Line2D::GetInstance();
 	Line3D*            gLine3D            = Line3D::GetInstance();
+
+	AnimationRendererCommon* gAnimationRendererCommon = AnimationRendererCommon::GetInstance();
 } /// namespace
 
 
@@ -83,6 +86,7 @@ void SceneLayer::Draw() {
 	gLine3D->PreDraw();
 	gSpriteManager->PreDraw();
 	gModelManager->PreDraw();
+	gAnimationRendererCommon->PreDraw();
 
 	gGameObjectManager->Object3dDraw(id_);
 
@@ -90,6 +94,7 @@ void SceneLayer::Draw() {
 	gLine3D->PostDraw();
 	gSpriteManager->PostDraw();
 	gModelManager->PostDraw();
+	gAnimationRendererCommon->PostDraw();
 
 	renderTexture_->EndRenderTarget();
 

@@ -19,6 +19,5 @@ public:
 	void Debug()      override;
 
 private:
-	Skeleton skeleton_;
 
 };

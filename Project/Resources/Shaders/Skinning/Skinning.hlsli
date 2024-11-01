@@ -5,7 +5,7 @@ struct Well {
 
 
 struct VSInput {
-	float4 position : POSITON0;
+	float4 position : POSITION0;
 	float2 texcoord : TEXCOORD0;
 	float3 normal   : NORMAL0;
 	float4 weight   : WEIGHT0;
@@ -16,6 +16,10 @@ struct VSOutout {
 	float4 position : SV_Position;
 	float2 texcoord : TEXCOORD0;
 	float3 normal   : NORMAL0;
+};
+
+struct PSOutput {
+	float4 color : SV_TARGET0;
 };
 
 struct Skinned {
