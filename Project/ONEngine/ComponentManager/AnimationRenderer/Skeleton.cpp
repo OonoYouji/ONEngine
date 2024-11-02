@@ -63,7 +63,7 @@ Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframeArray, 
 
 		if(keyframeArray[index].time <= time && time <= keyframeArray[nextIndex].time) {
 			float t = (time - keyframeArray[index].time) / (keyframeArray[nextIndex].time - keyframeArray[index].time);
-			return Quaternion::Lerp(keyframeArray[index].value, keyframeArray[nextIndex].value, t);
+			return Quaternion::Slerp(keyframeArray[index].value, keyframeArray[nextIndex].value, t);
 		}
 	}
 
