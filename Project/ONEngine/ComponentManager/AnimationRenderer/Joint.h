@@ -22,6 +22,7 @@ struct Joint {
 	int32_t                index;
 	std::optional<int32_t> parent;
 
+	float animationTime;
 };
 
 

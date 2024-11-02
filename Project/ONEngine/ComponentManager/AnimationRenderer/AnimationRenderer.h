@@ -27,21 +27,6 @@
 /// ===================================================
 class AnimationRenderer final : public BaseComponent {
 
-	template <typename T>
-	struct Keyframe {
-		float time;
-		T value;
-	};
-
-	using KeyframeVec3       = Keyframe<Vec3>;
-	using KeyframeQuaternion = Keyframe<Quaternion>;
-
-
-	struct NodeAnimation {
-		std::vector<KeyframeVec3>       translate;
-		std::vector<KeyframeQuaternion> rotate;
-		std::vector<KeyframeVec3>       scale;
-	};
 
 public:
 	/// ===================================================

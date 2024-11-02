@@ -17,7 +17,6 @@ using namespace ONE;
 
 
 SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model) {
-
 	SkinCluster result{};
 
 	/// matrix paletteの作成
@@ -30,16 +29,16 @@ SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model) {
 
 	/// cpu,gpu handle get
 	result.srvDescriptorIndex = pSRVHeap->Allocate();
-	result.paletteSRVHandle.first = pSRVHeap->GetCPUDescriptorHandel(result.srvDescriptorIndex);
+	result.paletteSRVHandle.first  = pSRVHeap->GetCPUDescriptorHandel(result.srvDescriptorIndex);
 	result.paletteSRVHandle.second = pSRVHeap->GetGPUDescriptorHandel(result.srvDescriptorIndex);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSRVDesc{};
-	paletteSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-	paletteSRVDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	paletteSRVDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	paletteSRVDesc.Buffer.FirstElement = 0;
-	paletteSRVDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	paletteSRVDesc.Buffer.NumElements = static_cast<UINT>(_skeleton.joints.size());
+	paletteSRVDesc.Format                     = DXGI_FORMAT_UNKNOWN;
+	paletteSRVDesc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	paletteSRVDesc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
+	paletteSRVDesc.Buffer.FirstElement        = 0;
+	paletteSRVDesc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
+	paletteSRVDesc.Buffer.NumElements         = static_cast<UINT>(_skeleton.joints.size());
 	paletteSRVDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
 
 	ID3D12Device* pDevice = ONEngine::GetDxCommon()->GetDevice();
@@ -107,4 +106,9 @@ SkinCluster CreateSkinCluster(const Skeleton& _skeleton, Model* _model) {
 	}
 
 	return result;
+}
+
+void SkinCluster::FreeDescriptor() {
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	pSRVHeap->Free(srvDescriptorIndex);
 }

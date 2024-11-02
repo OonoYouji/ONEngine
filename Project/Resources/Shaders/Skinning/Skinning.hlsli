@@ -1,9 +1,3 @@
-struct Well {
-	float4x4 matSkeletonSpace;
-	float4x4 matSkeletonSpaceInverseTranspose;
-};
-
-
 struct VSInput {
 	float4 position : POSITION0;
 	float2 texcoord : TEXCOORD0;
@@ -26,3 +20,9 @@ struct Skinned {
 	float4 position;
 	float3 normal;
 };
+
+struct Well {
+	float4x4 matSkeletonSpace;
+	float4x4 matSkeletonSpaceInverseTranspose;
+};
+

@@ -31,7 +31,9 @@ AnimationRenderer::AnimationRenderer(const std::string& modelFilePath) {
 	pModel_ = ModelManager::Load(modelFilePath);
 	LoadAnimation(modelFilePath);
 }
-AnimationRenderer::~AnimationRenderer() {}
+AnimationRenderer::~AnimationRenderer() {
+	skinCluster_.FreeDescriptor();
+}
 
 
 void AnimationRenderer::Initialize() {
@@ -47,12 +49,12 @@ void AnimationRenderer::Update() {
 
 	NodeAnimation& rootAnimation = nodeAnimationArray_[pModel_->GetRootNode().name];
 
-	transform_.position   = CalculateValue(rootAnimation.translate, animationTime_);
-	transform_.quaternion = CalculateValue(rootAnimation.rotate,    animationTime_);
-	transform_.scale      = CalculateValue(rootAnimation.scale,     animationTime_);
-	transform_.Update();
+	//transform_.position   = CalculateValue(rootAnimation.translate, animationTime_);
+	//transform_.quaternion = CalculateValue(rootAnimation.rotate,    animationTime_);
+	//transform_.scale      = CalculateValue(rootAnimation.scale,     animationTime_);
+	//transform_.Update();
 
-	skeleton_.Update();
+	skeleton_.Update(duration_, nodeAnimationArray_);
 	SkinClusterUpdate(skinCluster_, skeleton_);
 
 }
@@ -94,15 +96,15 @@ void AnimationRenderer::Debug() {
 
 void AnimationRenderer::DrawCall() {
 	ID3D12GraphicsCommandList* pCommandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
-	ID3D12Resource* pViewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
-	std::vector<Mesh>& meshArray = pModel_->GetMeshes();
+	ID3D12Resource*            pViewBuffer  = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+	std::vector<Mesh>&         meshArray    = pModel_->GetMeshes();
 
 	/// default setting
 	pCommandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	/// buffer setting
 	pCommandList->SetGraphicsRootConstantBufferView(0, pViewBuffer->GetGPUVirtualAddress());
-
+	pCommandList->SetGraphicsRootDescriptorTable(2, skinCluster_.paletteSRVHandle.second);
 
 	for(auto& mesh : meshArray) {
 

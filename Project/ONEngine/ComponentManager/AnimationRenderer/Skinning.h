@@ -38,6 +38,9 @@ struct WellForGPU {
 
 
 struct SkinCluster {
+
+	void FreeDescriptor();
+
 	std::vector<Mat4> matBindPoseInverseArray;
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> influenceResource;
