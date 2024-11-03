@@ -19,8 +19,6 @@ private:
 
 	MeshRenderer* meshRenderer_ = nullptr;
 
-	Vector2 direction_;
 	float speed_;
-public:
-
+	Vector3 velocity_;
 };
