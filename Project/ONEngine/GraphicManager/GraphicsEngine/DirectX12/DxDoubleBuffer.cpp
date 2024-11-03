@@ -150,7 +150,7 @@ void ONE::DxDoubleBuffer::InitializeSwapChain(IDXGIFactory7* factory, ID3D12Comm
 void ONE::DxDoubleBuffer::InitializeBuffers(ID3D12Device* device, DxDescriptorHeap<HeapType::RTV>* _rtvDescriptorHeap) {
 
 	D3D12_RENDER_TARGET_VIEW_DESC desc{};
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	buffers_.resize(kBufferCount);
