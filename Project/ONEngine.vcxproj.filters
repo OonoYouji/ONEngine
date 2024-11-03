@@ -196,11 +196,11 @@
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
-    <ClInclude Include="Library\Debug\Assert.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

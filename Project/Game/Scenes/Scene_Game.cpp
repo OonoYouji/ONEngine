@@ -14,7 +14,7 @@
 #include "Objects/DemoObject/DemoObject.h"
 
 /// lib
-#include "Debug/Assert.h"
+#include "Debugger/Assertion.h"
 
 /// ===================================================
 /// 初期化処理
