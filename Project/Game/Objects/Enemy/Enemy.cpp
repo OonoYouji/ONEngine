@@ -1,5 +1,6 @@
 #include "Enemy.h"
 
+#include "../Enemy/Ai/EnemyAI.h"
 #include "../Player/Player.h"
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"

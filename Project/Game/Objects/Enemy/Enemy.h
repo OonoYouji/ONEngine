@@ -5,8 +5,8 @@
 #include "GameObjectManager/BaseGameObject.h"
 
 class Player;
-namespace EnemyBehaviorTree{ class Node; }
 class MeshRenderer;
+class EnemyAI;
 
 class Enemy :
 	public BaseGameObject{
@@ -20,6 +20,8 @@ public:
 
 private:
 	Player* player_;
+
+	std::unique_ptr<EnemyAI> ai_;
 
 	MeshRenderer* meshRenderer_ = nullptr;
 

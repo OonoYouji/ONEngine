@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-namespace EnemyBehaviorTree{ class Node; }
+
+#include "../Game/Objects/Enemy/BehaviorTree/Node.h"
 
 class Enemy;
 class EnemyAI{
@@ -10,7 +11,6 @@ public:
 
 	void Setup();
 	void Update();
-
 private:
 	Enemy* enemy_ = nullptr;
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_;
