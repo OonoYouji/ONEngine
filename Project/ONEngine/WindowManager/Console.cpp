@@ -3,15 +3,55 @@
 
 /// std
 #include <format>
+#include <windows.h>
+#include <commdlg.h>
+#include <iostream>
+#include <locale>
+#include <shlwapi.h>
 
 /// engine
 #include <Core/ONEngine.h>
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
+#include "LoggingManager/Logger.h"
 
+#pragma comment(lib, "shlwapi.lib") // Shlwapi.libをリンク
 
 using namespace ONE;
+
+
+
+namespace {
+	std::wstring ShowSaveFileDialog() {
+		// ファイルダイアログの構造体
+		OPENFILENAME ofn;
+		wchar_t szFile[260];   // ファイル名を格納するバッファ
+
+		// 構造体の初期化
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(ofn);
+		ofn.hwndOwner = NULL;
+		ofn.lpstrFile = szFile;
+		ofn.lpstrFile[0] = L'\0';  // ワイド文字の初期化
+		ofn.nMaxFile = sizeof(szFile) / sizeof(szFile[0]); // 配列のサイズをワイド文字数で計算
+		ofn.lpstrFilter = L"All Files\0*.*\0Text Documents\0*.TXT\0"; // フィルタ設定
+		ofn.nFilterIndex = 1;
+		ofn.lpstrFileTitle = NULL;
+		ofn.nMaxFileTitle = 0;
+		ofn.lpstrInitialDir = NULL;
+		ofn.lpstrTitle = L"Save As"; // ダイアログのタイトル
+		ofn.Flags = OFN_OVERWRITEPROMPT; // 上書き確認
+
+		// 保存ダイアログを表示
+		if(GetSaveFileName(&ofn)) {
+			// フルパスからファイル名を取得して返す
+			return PathFindFileName(ofn.lpstrFile); // ファイル名のみを返す
+		} else {
+			return L""; // キャンセルされた場合は空の文字列を返す
+		}
+	}
+}
 
 
 
@@ -72,6 +112,7 @@ void Console::ParentWindow() {
 
 		WindowSettingMenuBar();
 		DescriptorHeapsMunuBar();
+		CreateGameObjectMenuBar();
 
 		ImGui::EndMenuBar();
 	}
@@ -315,4 +356,20 @@ void Console::VariableGroupArray() {
 	pVariableManager_->DebuggingGroupArray();
 
 	ImGui::End();
+}
+
+void Console::CreateGameObjectMenuBar() {
+	if(ImGui::BeginMenu("command")) {
+
+		if(ImGui::Button("create game object")) {
+			std::locale::global(std::locale(""));
+
+			std::string inputText = ONE::ConvertString(ShowSaveFileDialog());
+			if(!inputText.empty()) {
+				pCLI_->ExecuteCommand("CreateGameObject", inputText);
+			}
+		}
+
+		ImGui::EndMenu();
+	}
 }

@@ -37,6 +37,8 @@ private:
 
 	void VariableGroupArray();
 
+	void CreateGameObjectMenuBar();
+
 private:
 
 	ImGuiWindowFlags parentWinFlags_;
