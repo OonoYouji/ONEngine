@@ -1,6 +1,7 @@
 #include "Enemy.h"
 
 #include "../Player/Player.h"
+
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 Enemy::Enemy(Player* _palyer):BaseGameObject(){

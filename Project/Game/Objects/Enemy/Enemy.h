@@ -1,11 +1,15 @@
 #pragma once
 
+#include <memory>
+
 #include "GameObjectManager/BaseGameObject.h"
 
 class Player;
+namespace EnemyBehaviorTree{ class Node; }
 class MeshRenderer;
+
 class Enemy :
-    public BaseGameObject{
+	public BaseGameObject{
 public:
 	Enemy(Player* _palyer);
 	~Enemy();
