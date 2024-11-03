@@ -36,8 +36,8 @@ Skinned Skinning(VSInput input) {
 }
 
 
-VSOutout main(VSInput input) {
-	VSOutout output;
+VSOutput main(VSInput input) {
+	VSOutput output;
 	Skinned skinned = Skinning(input);
 
 	float4x4 matWVP = mul(gTransform.matWorld, gViewProjection.matVp);
