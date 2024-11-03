@@ -19,5 +19,10 @@ public:
 	void Debug()      override;
 
 private:
-
+	int id_;
+	float speed_;
+	bool isAlive_;
+	Vec2 size_;
+	Vec3 position_;
+	Vec4 color_;
 };

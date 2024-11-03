@@ -1,12 +1,17 @@
 #include "GameObjectManager.h"
 
+/// externals
+#include <imgui.h>
+
+/// engine
 #include "LoggingManager/Logger.h"
-#include "ImGuiManager/ImGuiManager.h"
 #include "CollisionManager/CollisionManager.h"
 
+/// objects
 #include "Objects/Camera/Manager/BaseCamera.h"
 #include "GraphicManager/Light/DirectionalLight.h"
 
+/// lib
 #include <Math/CreateName.h>
 
 
@@ -415,7 +420,6 @@ void GameObjectManager::ImGuiSelectObjectDebug() {
 	}
 
 	ImGui::Unindent();
-
 
 	selectObject_->ImGuiDebug();
 

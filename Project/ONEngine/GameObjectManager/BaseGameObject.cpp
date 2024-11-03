@@ -6,6 +6,7 @@
 #include "Scenes/Manager/SceneManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include <CollisionManager/CollisionManager.h>
+#include "VariableManager/VariableManager.h"
 
 #include <Math/CreateName.h>
 
@@ -143,6 +144,21 @@ void BaseGameObject::ImGuiDebug() {
 		ImGui::Separator();
 	}
 
+
+	if(ImGui::TreeNodeEx("variabel manager", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		if(ImGui::Button("save file")) {
+			/// json に output
+		}
+
+		ImGui::Spacing();
+		VariableManager::GetInstance()->DebuggingSpecificGroup(GetTag());
+
+		ImGui::TreePop();
+	}
+
+
+	ImGui::SeparatorText("original debug");
 	Debug();
 
 #endif // _DEBUG
