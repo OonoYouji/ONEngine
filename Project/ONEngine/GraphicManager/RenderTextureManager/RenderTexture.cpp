@@ -69,7 +69,7 @@ void RenderTexture::Initialize(
 	currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	/// textureの作成
-	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	clearColor_ = clearColor;
 	renderTextureResource_ =
 		CreateRenderTextureResource(device, 1280, 720, format, clearColor_);
