@@ -1,5 +1,9 @@
 #include "VariableManager.h"
 
+#include <nlohmann/json.hpp>
+
+using namespace nlohmann;
+
 
 void VariableManager::Initialize() {
 

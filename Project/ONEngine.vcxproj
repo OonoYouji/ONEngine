@@ -363,10 +363,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
