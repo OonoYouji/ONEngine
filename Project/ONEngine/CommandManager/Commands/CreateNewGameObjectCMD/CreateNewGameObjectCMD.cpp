@@ -16,14 +16,20 @@ void CreateNewGameObjectCMD::Execution(const std::string& args) {
 		std::ofstream headerFile(headerFilePath);
 		if(headerFile.is_open()) {
 			headerFile << "#pragma once\n\n";
-			headerFile << "#include \"GameObjectManager/GameObjectManager.h\"\n\n";
-			headerFile << "class " << args << " : BaseGameObject {\n";
+			headerFile << "#include \"GameObjectManager/BaseGameObject.h\"\n\n";
+			headerFile << "class " << args << " : public BaseGameObject {\n";
 			headerFile << "public:\n\n";
+			headerFile << "    /// ===================================================\n";
+			headerFile << "    /// public : methods\n";
+			headerFile << "    /// ===================================================\n\n";
 			headerFile << "    " << args << "();\n";
 			headerFile << "    ~" << args << "();\n\n";
 			headerFile << "    void Initialize() override;\n";
 			headerFile << "    void Update()     override;\n\n";
 			headerFile << "private:\n\n";
+			headerFile << "    /// ===================================================\n";
+			headerFile << "    /// private : objects\n";
+			headerFile << "    /// ===================================================\n\n";
 			headerFile << "};\n";
 			headerFile.close();
 			std::cout << "	Created: " << headerFilePath << std::endl;
