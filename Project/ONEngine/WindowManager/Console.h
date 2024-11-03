@@ -4,7 +4,7 @@
 #include "Scenes/Manager/SceneManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include "CommandManager/CommandLineInterface.h"
-
+#include "VariableManager/VariableManager.h"
 
 class Console final {
 public:
@@ -35,6 +35,8 @@ private:
 	void DescriptorHeapsMunuBar();
 	void WindowSettingMenuBar();
 
+	void VariableGroupArray();
+
 private:
 
 	ImGuiWindowFlags parentWinFlags_;
@@ -44,6 +46,7 @@ private:
 	SceneManager*         pSceneManager_      = nullptr;
 	GameObjectManager*    pGameObjectManager_ = nullptr;
 	CommandLineInterface* pCLI_               = nullptr;
+	VariableManager*      pVariableManager_   = nullptr;
 private:
 	Console(const Console&)            = delete;
 	Console(Console&&)                 = delete;

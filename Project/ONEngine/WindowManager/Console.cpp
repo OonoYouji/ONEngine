@@ -34,6 +34,7 @@ void Console::Initialize() {
 	pSceneManager_      = SceneManager::GetInstance();
 	pGameObjectManager_ = GameObjectManager::GetInstance();
 	pCLI_               = CommandLineInterface::GetInstance();
+	pVariableManager_   = VariableManager::GetInstance();
 }
 
 void Console::Update() {
@@ -48,7 +49,7 @@ void Console::Update() {
 
 	Assets();
 
-	CLI();
+	VariableGroupArray();
 #endif // _DEBUG
 }
 
@@ -302,4 +303,16 @@ void Console::WindowSettingMenuBar() {
 
 		ImGui::EndMenu();
 	}
+}
+
+void Console::VariableGroupArray() {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	if(!ImGui::Begin("variable manager", nullptr, imguiWinFlags_)) {
+		ImGui::End();
+		return;
+	}
+
+	pVariableManager_->DebuggingGroupArray();
+
+	ImGui::End();
 }
