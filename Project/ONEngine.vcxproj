@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
+      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
+    </ProjectReference>
+    <ProjectReference Include="Externals\imgui\imgui.vcxproj">
+      <Project>{db0adf70-3c7f-46ef-8e74-e6a0dca08dfe}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Bloom\Bloom.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Blur\Blur.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Floor\Floor.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Line3D\Line3D.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Model\Model.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Particle\Particle.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Resources\Shaders\Sprite\Sprite.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Line3D\Line3D.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Model\Model.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Model\Model.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Particle\Particle.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
+    <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
+    <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
+    <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
+    <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
+    <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
+    <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
+    <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
+    <ClCompile Include="Library\Input\Gamepad.cpp" />
+    <ClCompile Include="Library\Input\Input.cpp" />
+    <ClCompile Include="Library\Input\Keyboard.cpp" />
+    <ClCompile Include="Library\Input\Mouse.cpp" />
+    <ClCompile Include="Library\Math\Easing.cpp" />
+    <ClCompile Include="Library\Math\Matrix3x3.cpp" />
+    <ClCompile Include="Library\Math\Matrix4x4.cpp" />
+    <ClCompile Include="Library\Math\Quaternion.cpp" />
+    <ClCompile Include="Library\Math\Random.cpp" />
+    <ClCompile Include="Library\Math\Vector2.cpp" />
+    <ClCompile Include="Library\Math\Vector3.cpp" />
+    <ClCompile Include="Library\Math\Vector4.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ONEngine\AudioManager\AudioClip.cpp" />
+    <ClCompile Include="ONEngine\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="ONEngine\CommandManager\CommandLineInterface.cpp" />
+    <ClCompile Include="ONEngine\CommandManager\Commands\BaseCommand.cpp" />
+    <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
+    <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
+    <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
+    <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp" />
+    <ClCompile Include="ONEngine\FrameManager\Time.cpp" />
+    <ClCompile Include="ONEngine\GameObjectManager\BaseGameObject.cpp" />
+    <ClCompile Include="ONEngine\GameObjectManager\GameObjectManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Floor\Floor.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line2D.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Material\Material.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\DirectionalLight.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\ModelManager\Model.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PipelineState\PipelineState.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\SceneLayer\SceneLayer.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\TextureManager\Texture.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
+    <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
+    <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
+    <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
+    <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
+    <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
+    <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
+    <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
+    <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Scenes\Scene_Clear.h" />
+    <ClInclude Include="Game\Scenes\Scene_Debug.h" />
+    <ClInclude Include="Game\Scenes\Scene_Game.h" />
+    <ClInclude Include="Game\Scenes\Scene_Result.h" />
+    <ClInclude Include="Game\Scenes\Scene_Title.h" />
+    <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
+    <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
+    <ClInclude Include="Library\Input\Gamepad.h" />
+    <ClInclude Include="Library\Input\Input.h" />
+    <ClInclude Include="Library\Input\Keyboard.h" />
+    <ClInclude Include="Library\Input\Mouse.h" />
+    <ClInclude Include="Library\Math\CreateName.h" />
+    <ClInclude Include="Library\Math\Easing.h" />
+    <ClInclude Include="Library\Math\Matrix3x3.h" />
+    <ClInclude Include="Library\Math\Matrix4x4.h" />
+    <ClInclude Include="Library\Math\Quaternion.h" />
+    <ClInclude Include="Library\Math\Random.h" />
+    <ClInclude Include="Library\Math\Vector2.h" />
+    <ClInclude Include="Library\Math\Vector3.h" />
+    <ClInclude Include="Library\Math\Vector4.h" />
+    <ClInclude Include="ONEngine\AudioManager\AudioClip.h" />
+    <ClInclude Include="ONEngine\AudioManager\AudioManager.h" />
+    <ClInclude Include="ONEngine\CommandManager\CommandLineInterface.h" />
+    <ClInclude Include="ONEngine\CommandManager\Commands\BaseCommand.h" />
+    <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
+    <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
+    <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
+    <ClInclude Include="ONEngine\Core\ONEngine.h" />
+    <ClInclude Include="ONEngine\FrameManager\FrameFixation.h" />
+    <ClInclude Include="ONEngine\FrameManager\Time.h" />
+    <ClInclude Include="ONEngine\GameObjectManager\BaseGameObject.h" />
+    <ClInclude Include="ONEngine\GameObjectManager\GameObjectManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Floor\Floor.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line2D.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\LineDrawer\Line3D.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Material\Material.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\DirectionalLight.h" />
+    <ClInclude Include="ONEngine\GraphicManager\ModelManager\Model.h" />
+    <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PipelineState\PipelineState.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.h" />
+    <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.h" />
+    <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\SceneLayer\SceneLayer.h" />
+    <ClInclude Include="ONEngine\GraphicManager\TextureManager\Texture.h" />
+    <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h" />
+    <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
+    <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
+    <ClInclude Include="ONEngine\WindowManager\Console.h" />
+    <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{8102603d-8792-4a35-94fc-33f9832443c2}</ProjectGuid>
+    <RootNamespace>ONEngine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Library;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Library;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <Optimization>MinSpace</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /Y /I /E "$(ProjectDir)Resources" "$(OutDir)Resources"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
