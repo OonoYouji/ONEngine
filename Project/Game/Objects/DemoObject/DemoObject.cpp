@@ -36,9 +36,11 @@ void DemoObject::Update() {
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		if(ImGui::Button("delete")) {
-			Destory();
+		if(ImGui::Button("load")) {
+			VariableManager* vm = VariableManager::GetInstance();
+			vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 		}
+
 
 		ImGui::TreePop();
 	}

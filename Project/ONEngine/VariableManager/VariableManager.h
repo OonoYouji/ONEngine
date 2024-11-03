@@ -105,6 +105,12 @@ public:
 	}
 
 
+	/// <summary>
+	/// 変数のデバッグ
+	/// </summary>
+	/// <typeparam name="T">  : 変数の型         </typeparam>
+	/// <param name="_label"> : imguiに使うラベル </param>
+	/// <param name="_value"> : 編集する値        </param>
 	template <typename T>
 	void DebuggingVariable(const std::string& _label, T& _value);
 
@@ -114,11 +120,35 @@ public:
 	/// <param name="groupName"></param>
 	void DebuggingSpecificGroup(const std::string& _groupName);
 
+	/// <summary>
+	/// jsonに値を登録する関数
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="_root"></param>
+	/// <param name="key"></param>
+	/// <param name="value"></param>
 	template <typename T>
 	void RegisterToJson(json& _root, const std::string& key, const T& value);
 
+	/// <summary>
+	/// データをjson形式で値を保存
+	/// </summary>
+	/// <param name="_filePath">  : 保存先のファイルパス   </param>
+	/// <param name="_groupName"> : 保存するグループの名前 </param>
 	void SaveSpecificGroupsToJson(const std::string& _filePath, const std::string& _groupName);
 
+	/// <summary>
+	/// 特定のグループのjsonを読み込む
+	/// </summary>
+	/// <param name="_filePath"></param>
+	/// <param name="_groupName"></param>
+	void LoadSpecificGroupsToJson(const std::string& _filePath, const std::string& _groupName);
+
+
+	/// <summary>
+	/// group arrayのデバッグ
+	/// </summary>
+	void DebuggingGroupArray();
 
 private:
 

@@ -164,3 +164,69 @@ void VariableManager::SaveSpecificGroupsToJson(const std::string& _filePath, con
 	ofs.close();
 }
 
+void VariableManager::LoadSpecificGroupsToJson(const std::string& _filePath, const std::string& _groupName) {
+
+	/// ---------------------------------------------------
+	/// ファイルを開く
+	/// ---------------------------------------------------
+
+	std::string filePath = _filePath + "/" + _groupName + ".json";
+	std::ifstream ifs;
+	ifs.open(filePath);
+
+	if(!ifs.is_open()) {
+		Assert(false, "File could not be opened.");
+		return;
+	}
+
+	/// json文字列からjsonのデータ構造に展開
+	json root;
+	ifs >> root;
+	ifs.close();
+
+	/// グループ検索
+	json::iterator itrGroup = root.find(_groupName);
+
+	/// 未登録チェック
+	Assert(itrGroup != root.end(), "The group was unregistered.");
+
+	///- 各アイテム
+	for(json::iterator itrItem = itrGroup->begin(); itrItem != itrGroup->end(); ++itrItem) {
+
+		///- アイテム名を取得
+		const std::string& itemName = itrItem.key();
+
+		/// int32_t型の値があれば
+		if(itrItem->is_number_integer()) {
+			int value = itrItem->get<int>();
+			SetValue(_groupName, itemName, value);
+
+		} else if(itrItem->is_number_float()) {
+			double value = itrItem->get<double>();
+			SetValue(_groupName, itemName, static_cast<float>(value));
+
+		} else if(itrItem->is_boolean()) {
+			bool value = itrItem->get<bool>();
+			SetValue(_groupName, itemName, value);
+
+		} else if(itrItem->is_array() && itrItem->size() == 2) {
+			Vec2 value = { itrItem->at(0), itrItem->at(1) };
+			SetValue(_groupName, itemName, value);
+
+		} else if(itrItem->is_array() && itrItem->size() == 3) {
+			Vec3 value = { itrItem->at(0), itrItem->at(1), itrItem->at(2) };
+			SetValue(_groupName, itemName, value);
+
+		} else if(itrItem->is_array() && itrItem->size() == 4) {
+			Vec4 value = { itrItem->at(0), itrItem->at(1), itrItem->at(2), itrItem->at(3) };
+			SetValue(_groupName, itemName, value);
+
+		}
+
+	}
+}
+
+void VariableManager::DebuggingGroupArray() {
+
+}
+

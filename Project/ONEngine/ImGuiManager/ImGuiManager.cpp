@@ -119,12 +119,6 @@ void ImGuiManager::BeginFrame() {
 		ImGui::BeginDisabled();
 	}
 
-
-	ImGui::ShowMetricsWindow();
-	
-
-	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
-
 }
 
 

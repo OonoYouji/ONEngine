@@ -150,7 +150,7 @@ void BaseGameObject::ImGuiDebug() {
 
 		if(ImGui::Button("save file")) {
 			/// json に output
-			vm->SaveSpecificGroupsToJson("./Resources/Pramaters/Objects", GetTag());
+			vm->SaveSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 		}
 
 		ImGui::Spacing();
