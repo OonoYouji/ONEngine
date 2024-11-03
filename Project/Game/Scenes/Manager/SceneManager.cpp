@@ -21,6 +21,7 @@
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
 #include "BaseScene.h"
 #include "../Scene_Game.h"
@@ -184,6 +185,7 @@ void SceneManager::Load(SCENE_ID id) {
 
 	scenes_[currentId_]->Initialize();
 
+	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());

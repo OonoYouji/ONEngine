@@ -21,6 +21,7 @@
 /// 
 #include "Skeleton.h"
 #include "Skinning.h"
+#include <minwindef.h>
 
 /// ===================================================
 /// アニメーションの
@@ -93,6 +94,10 @@ public:
 
 	void AddAnimationRenderer(AnimationRenderer* _animationRenderer);
 
+	void BindDirectionalLightToCommandList(UINT _rootParameter, ID3D12GraphicsCommandList* _commandList);
+
+	void SetDirectionalLight(class DirectionalLight* _directionalLight);
+
 private:
 
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
@@ -101,5 +106,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
 
 	std::list<AnimationRenderer*> actives_;
+
+	class DirectionalLight* pDirectionalLight_ = nullptr;
 
 };
