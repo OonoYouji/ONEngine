@@ -21,8 +21,8 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new DemoObject)->Initialize();
 	(new DemoObject2)->Initialize();
+	(new DemoObject)->Initialize();
 	
 }
 

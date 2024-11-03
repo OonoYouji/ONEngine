@@ -11,18 +11,11 @@
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/SkeletonRenderer.h"
-
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
 void DemoObject::Initialize() {
-
-	VariableManager* vm = VariableManager::GetInstance();
-	const std::string& groupName = GetTag();
-	vm->AddValue(groupName, "isAlive", isAlive_);
-	vm->AddValue(groupName, "speed", speed_);
-	vm->AddValue(groupName, "id", id_);
-	vm->AddValue(groupName, "size", size_);
-	vm->AddValue(groupName, "position", position_);
-	vm->AddValue(groupName, "color", color_);
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("light.png");
 }
 
 void DemoObject::Update() {
@@ -31,26 +24,14 @@ void DemoObject::Update() {
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		if(ImGui::Button("load")) {
-			VariableManager* vm = VariableManager::GetInstance();
-			vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
-		}
-
 
 		ImGui::TreePop();
 	}
 }
 
 void DemoObject2::Initialize() {
-
-	VariableManager* vm = VariableManager::GetInstance();
-	const std::string& groupName = GetTag();
-	vm->AddValue(groupName, "isAlive", isAlive_);
-	vm->AddValue(groupName, "speed", speed_);
-	vm->AddValue(groupName, "id", id_);
-	vm->AddValue(groupName, "size", size_);
-	vm->AddValue(groupName, "position", position_);
-	vm->AddValue(groupName, "color", color_);
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("uvChecker.png");
 }
 
 void DemoObject2::Update() {
@@ -59,10 +40,6 @@ void DemoObject2::Update() {
 void DemoObject2::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		if(ImGui::Button("load")) {
-			VariableManager* vm = VariableManager::GetInstance();
-			vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
-		}
 
 
 		ImGui::TreePop();
