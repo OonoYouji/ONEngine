@@ -244,6 +244,7 @@
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />

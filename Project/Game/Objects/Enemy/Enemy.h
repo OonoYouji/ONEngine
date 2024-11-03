@@ -4,6 +4,7 @@
 
 class Player;
 class MeshRenderer;
+
 class Enemy :
     public BaseGameObject{
 public:
