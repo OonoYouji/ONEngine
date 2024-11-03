@@ -118,10 +118,10 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 	const float THRESHOLD = 0.9995f;
 	if(dot > THRESHOLD) {
 		Quaternion result = {
-			start.w + t * (q2Copy.w - start.w),
 			start.x + t * (q2Copy.x - start.x),
 			start.y + t * (q2Copy.y - start.y),
-			start.z + t * (q2Copy.z - start.z)
+			start.z + t * (q2Copy.z - start.z),
+			start.w + t * (q2Copy.w - start.w)
 		};
 		return Normalize(result);
 	}
@@ -139,10 +139,10 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 
 	// 補間したクォータニオンを計算
 	Quaternion result = {
-		(s1 * start.w) + (s2 * q2Copy.w),
 		(s1 * start.x) + (s2 * q2Copy.x),
 		(s1 * start.y) + (s2 * q2Copy.y),
-		(s1 * start.z) + (s2 * q2Copy.z)
+		(s1 * start.z) + (s2 * q2Copy.z),
+		(s1 * start.w) + (s2 * q2Copy.w)
 	};
 	return result;
 }

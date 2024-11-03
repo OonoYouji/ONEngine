@@ -67,7 +67,7 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 	ImGui_ImplDX12_Init(
 		dxCommon->GetDevice(),
 		ONE::DxDoubleBuffer::kBufferCount,
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 		pSRVDescriptorHeap->GetHeap(),
 		pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex),
 		pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex)
