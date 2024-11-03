@@ -5,11 +5,16 @@
 
 class Enemy;
 namespace EnemyBehaviorTree{
+	enum class Status{
+		SUCCESS,
+		FAILURE,
+		RUNNING
+	};
+
 	class Node{
 	public:
-		enum class Status{ SUCCESS,FAILURE,RUNNING };
 		Node(Enemy* enemy):enemy_(enemy){}
-			virtual ~Node() = default;
+		virtual ~Node() = default;
 		virtual Status tick() = 0;
 	protected:
 		Enemy* enemy_;
@@ -17,23 +22,19 @@ namespace EnemyBehaviorTree{
 
 	class Action : public Node{
 	public:
+		Action(Enemy* enemy):Node(enemy){}
 		virtual Status tick() = 0;
 	};
 
 	class Condition : public Node{
 	public:
+		Condition(Enemy* enemy):Node(enemy){}
 		virtual Status tick() = 0;
 	};
 
 	class Sequence : public Node{
-	private:
-		std::vector<std::unique_ptr<Node>> children;
-		size_t currentChild = 0;
-
 	public:
-		void addChild(std::unique_ptr<Node> child){
-			children.push_back(std::move(child));
-		}
+		Sequence(Enemy* enemy):Node(enemy){}
 
 		Status tick() override{
 			while(currentChild < children.size()){
@@ -50,9 +51,6 @@ namespace EnemyBehaviorTree{
 			currentChild = 0;
 			return Status::SUCCESS;
 		}
-	};
-
-	class Selector : public Node{
 	private:
 		std::vector<std::unique_ptr<Node>> children;
 		size_t currentChild = 0;
@@ -61,6 +59,11 @@ namespace EnemyBehaviorTree{
 		void addChild(std::unique_ptr<Node> child){
 			children.push_back(std::move(child));
 		}
+	};
+
+	class Selector : public Node{
+	public:
+		Selector(Enemy* enemy):Node(enemy){}
 
 		Status tick() override{
 			while(currentChild < children.size()){
@@ -76,6 +79,14 @@ namespace EnemyBehaviorTree{
 			}
 			currentChild = 0;
 			return Status::FAILURE;
+		}
+	private:
+
+		std::vector<std::unique_ptr<Node>> children;
+		size_t currentChild = 0;
+	public:
+		void addChild(std::unique_ptr<Node> child){
+			children.push_back(std::move(child));
 		}
 	};
 }

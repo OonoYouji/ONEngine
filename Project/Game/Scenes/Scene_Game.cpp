@@ -12,6 +12,7 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 
 /// lib
@@ -24,6 +25,8 @@ void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
 	(new Player)->Initialize();
+	(new Enemy)->Initialize();
+
 }
 
 
