@@ -159,6 +159,8 @@ void VariableManager::SaveSpecificGroupsToJson(const std::string& _filePath, con
 		return;
 	}
 
+	MessageBoxA(nullptr, "Preservation succeeded!", "VariableManager", MB_OK | MB_ICONINFORMATION);
+
 	///- ファイルにjson文字列を書き込む(インデント幅4)
 	ofs << std::setw(4) << root << std::endl;
 	ofs.close();
@@ -228,5 +230,19 @@ void VariableManager::LoadSpecificGroupsToJson(const std::string& _filePath, con
 
 void VariableManager::DebuggingGroupArray() {
 
+	/// group
+	ImGui::SeparatorText("Name of the group that manages variable");
+	ImGui::BeginChild("groupArray", ImVec2(0.0f, 128.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+	for(auto itr = groupArray_.begin(); itr != groupArray_.end();) {
+		ImGui::Text((*itr).first.c_str());
+
+		++itr;
+	}
+
+	ImGui::EndChild();
+
 }
+
+
 
