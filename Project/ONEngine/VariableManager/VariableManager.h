@@ -5,6 +5,9 @@
 #include <variant>
 #include <unordered_map>
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// lib
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
@@ -12,6 +15,8 @@
 
 #include "Debugger/Assertion.h"
 
+
+using namespace nlohmann;
 
 /// ===================================================
 /// 変数をjsonで管理するクラス
@@ -109,7 +114,10 @@ public:
 	/// <param name="groupName"></param>
 	void DebuggingSpecificGroup(const std::string& _groupName);
 
-	void SaveJson(const std::string& filePath, const std::string& groupName);
+	template <typename T>
+	void RegisterToJson(json& _root, const std::string& key, const T& value);
+
+	void SaveSpecificGroupsToJson(const std::string& _filePath, const std::string& _groupName);
 
 
 private:

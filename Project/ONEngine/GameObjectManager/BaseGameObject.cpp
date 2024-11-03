@@ -146,13 +146,15 @@ void BaseGameObject::ImGuiDebug() {
 
 
 	if(ImGui::TreeNodeEx("variabel manager", ImGuiTreeNodeFlags_DefaultOpen)) {
+		VariableManager* vm = VariableManager::GetInstance();
 
 		if(ImGui::Button("save file")) {
 			/// json に output
+			vm->SaveSpecificGroupsToJson("./Resources/Pramaters/Objects", GetTag());
 		}
 
 		ImGui::Spacing();
-		VariableManager::GetInstance()->DebuggingSpecificGroup(GetTag());
+		vm->DebuggingSpecificGroup(GetTag());
 
 		ImGui::TreePop();
 	}
