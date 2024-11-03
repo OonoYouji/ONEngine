@@ -12,9 +12,10 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Player/Player.h"
 
 /// lib
-#include "Debug/Assert.h"
+//#include "Debug/Assert.h"
 
 /// ===================================================
 /// 初期化処理
@@ -22,7 +23,7 @@
 void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
-	
+	(new Player)->Initialize();
 }
 
 
