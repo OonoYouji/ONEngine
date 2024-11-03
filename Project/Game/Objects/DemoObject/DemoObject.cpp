@@ -13,7 +13,7 @@
 
 void DemoObject::Initialize() {
 
-	AnimationRenderer* ar = AddComponent<AnimationRenderer>("walk");
+	AnimationRenderer* ar = AddComponent<AnimationRenderer>("Bird");
 
 	//SkeletonRenderer* sr = AddComponent<SkeletonRenderer>();
 	//sr->SetSkeleton(&skeleton_);
