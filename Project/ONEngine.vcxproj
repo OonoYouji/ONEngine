@@ -182,6 +182,10 @@
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
@@ -249,7 +253,7 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
-    <ClInclude Include="Library\Debug\Assert.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />
     <ClInclude Include="Library\Input\Input.h" />
     <ClInclude Include="Library\Input\Keyboard.h" />
@@ -270,6 +274,10 @@
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />

@@ -1,6 +1,9 @@
 #pragma once
 
+/// std
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 #include "GraphicManager/PipelineState/PipelineState.h"
 
@@ -14,6 +17,7 @@
 #include "GraphicManager/Drawer/Mesh/Mesh.h"
 #include "GraphicManager/Drawer/Material/Material.h"
 
+#include "ComponentManager/AnimationRenderer/Skinning.h"
 
 struct TransformData {
 	Mat4 matWorld;
@@ -25,8 +29,12 @@ struct ViewProjectionData {
 
 
 struct Node {
-	Mat4 matLocal;
-	std::string name;
+	Node() {
+		transform.rotateOrder = QUATERNION;
+	}
+
+	Transform         transform;
+	std::string       name;
 	std::vector<Node> children;
 };
 
@@ -35,6 +43,7 @@ struct Node {
 /// モデル
 /// ===================================================
 class Model final {
+	friend class ModelManager;
 public:
 
 	Model();
@@ -99,6 +108,10 @@ public:
 	void SetRootNode(const Node& _root);
 	const Node& GetRootNode() const { return root_; }
 
+	const std::unordered_map<std::string, JointWeightData>& GetSkinClusterData() {
+		return skinClusterData_;
+	}
+
 private:
 
 	/// ===================================================
@@ -111,5 +124,7 @@ private:
 	std::vector<Material> materials_;
 
 	Node root_;
+
+	std::unordered_map<std::string, JointWeightData> skinClusterData_;
 
 };

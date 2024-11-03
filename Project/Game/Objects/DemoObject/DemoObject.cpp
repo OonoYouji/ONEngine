@@ -9,35 +9,18 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/AnimationRenderer/SkeletonRenderer.h"
 
 void DemoObject::Initialize() {
 
-	//AnimationRenderer* ar = AddComponent<AnimationRenderer>();
-	//ar->SetModel("AnimatedCube");
-	//ar->LoadAnimation("AnimatedCube");
+	AnimationRenderer* ar = AddComponent<AnimationRenderer>("walk");
 
-	particleField_.reset(new ParticleField);
-	particleField_->Initialize();
-	particleField_->SetUpdateFunction([](Particle* particle) {
-		Transform* transform = particle->GetTransform();
-		transform->position.y += 0.025f;
-	});
-
-	particleField_->SetMin({ -1, -1, -1 });
-	particleField_->SetMax({  1,  1, 20 });
-
-	ParticleSystem* ps = AddComponent<ParticleSystem>(12, "Sphere");
-	ps->AddField(particleField_.get());
-
-	ps->SetPartilceUpdateFunction([](Particle* particle) {
-		Transform* transform = particle->GetTransform();
-
-		transform->position.z += 0.025f;
-	});
-
+	//SkeletonRenderer* sr = AddComponent<SkeletonRenderer>();
+	//sr->SetSkeleton(&skeleton_);
 }
 
-void DemoObject::Update() {}
+void DemoObject::Update() {
+}
 
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
