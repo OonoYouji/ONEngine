@@ -232,6 +232,7 @@
     <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
@@ -322,6 +323,7 @@
     <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
