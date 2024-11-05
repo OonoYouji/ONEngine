@@ -34,6 +34,7 @@ void Scene_Game::Initialize() {
 	GameCamera* uiCamera = new GameCamera("uiCamera");
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);
+	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 	AddLayer("ui", uiCamera);
 
 }
