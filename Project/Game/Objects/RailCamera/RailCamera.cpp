@@ -89,6 +89,7 @@ void RailCamera::Debug() {
 	if(ImGui::TreeNodeEx("move parameters", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::DragFloat("moving time", &movingTime_, 0.05f);
+		ImGui::DragFloat("move speed", &moveSpeed_, 0.001f);
 
 		ImGui::Spacing();
 

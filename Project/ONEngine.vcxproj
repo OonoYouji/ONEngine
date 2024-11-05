@@ -159,6 +159,7 @@
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp" />
+    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
     <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
     <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h" />
+    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />

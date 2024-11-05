@@ -11,6 +11,7 @@
 #include "Objects/Reticle/Reticle.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyManager.h"
+#include "Objects/SkyDome/SkyDome.h"
 
 
 /// lib
@@ -33,6 +34,7 @@ void Scene_Game::Initialize() {
 	Player*         player         = new Player();
 	Enemy*          enemy          = new Enemy();
 	EnemyManager*   enemyManager   = new EnemyManager();
+	SkyDome*        skyDome        = new SkyDome();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
@@ -41,6 +43,7 @@ void Scene_Game::Initialize() {
 	player->Initialize();
 	enemy->Initialize();
 	enemyManager->Initialize();
+	skyDome->Initialize();
 	
 	/// その他ポインタ設定など...
 
@@ -53,6 +56,8 @@ void Scene_Game::Initialize() {
 
 	enemyManager->SetShootingCourse(shootingCourse);
 	enemyManager->SetRailCamera(railCamera);
+
+	skyDome->SetOffsetObject(railCamera);
 
 	mainCamera_->SetPosition({ 0.0f, 0.9f, 0.0f }); /// レールに被らないように少し上に設定
 
