@@ -15,6 +15,7 @@
 #include "Objects/Player/Player.h"
 #include "Objects/Stage/Stage.h"
 #include "Objects/SkyDome/SkyDome.h"
+#include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -27,6 +28,13 @@ void Scene_Game::Initialize() {
 	(new Player)->Initialize();
 	(new Stage)->Initialize();
 	(new SkyDome)->Initialize();
+	(new PlayerHPRenderer)->Initialize();
+
+	/// ui layer  index=1
+	GameCamera* uiCamera = new GameCamera("uiCamera");
+	uiCamera->Initialize();
+	uiCamera->SetDistance(10.0f);
+	AddLayer("ui", uiCamera);
 
 }
 
