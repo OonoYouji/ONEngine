@@ -13,6 +13,8 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Player/Player.h"
+#include "Objects/Stage/Stage.h"
+#include "Objects/SkyDome/SkyDome.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -22,9 +24,10 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new DemoObject2)->Initialize();
-	(new DemoObject)->Initialize();
 	(new Player)->Initialize();
+	(new Stage)->Initialize();
+	(new SkyDome)->Initialize();
+
 }
 
 

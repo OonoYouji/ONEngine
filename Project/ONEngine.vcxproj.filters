@@ -118,6 +118,13 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Ai\EnemyAI.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -217,6 +224,14 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
+    <ClInclude Include="Game\Objects\Enemy\Ai\EnemyAI.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />
+    <ClInclude Include="Game\Objects\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
