@@ -45,9 +45,13 @@ public:
 	/// <summary>
 	/// 行列の更新
 	/// </summary>
-	void UpdateMatrix(bool isMapping = true);
+	void UpdateMatrix();
 
-	void BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex);
+	void BindTransform(
+		ID3D12GraphicsCommandList* commandList, 
+		UINT rootParamIndex,
+		Mat4* matLocal = nullptr
+	);
 
 	void SetParent(Transform* parent);
 	Transform* GetParent() const { return parent_; };
@@ -67,7 +71,7 @@ public:
 
 	Vec3 scale            = Vec3::kOne;
 	Vec3 rotate           = {};
-	Quaternion quaternion = {0, 0, 0, 1};
+	Quaternion quaternion = { 0, 0, 0, 1 };
 	Vec3 position         = {};
 
 	Mat4 matTransform = Mat4::kIdentity;
@@ -80,7 +84,7 @@ public:
 	std::list<Transform*> childs_;
 
 private:
-	Mat4* mapingData_ = nullptr;
+	Mat4* mappingData_ = nullptr;
 public:
 	inline Transform& operator= (const Transform&) = default;
 };

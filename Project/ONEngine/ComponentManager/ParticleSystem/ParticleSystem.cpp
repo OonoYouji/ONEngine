@@ -11,7 +11,7 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
@@ -39,11 +39,16 @@ ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& fileP
 	pModel_ = ModelManager::Load(filePath);
 }
 
+ParticleSystem::~ParticleSystem() {
+	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	pSRVDescriptorHeap->Free(srvDescriptorIndex_);
+}
 
-void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_, ONE::DxDescriptor* dxDescriptor) {
+
+void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_) {
 	if(!sPipeline_) {
 		sPipeline_.reset(new ParticlePipeline);
-		sPipeline_->Initialize(pCommandList_, dxDescriptor);
+		sPipeline_->Initialize(pCommandList_);
 	}
 }
 
@@ -68,10 +73,10 @@ void ParticleSystem::Initialize() {
 	desc.Buffer.StructureByteStride = sizeof(Mat4);
 
 	/// cpu, gpu handle initialize
-	auto dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
-	cpuHandle_ = dxDescriptor->GetSrvCpuHandle();
-	gpuHandle_ = dxDescriptor->GetSrvGpuHandle();
-	dxDescriptor->AddSrvUsedCount();
+	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
+	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex_);
+	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex_);
 
 	/// resource create
 	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
@@ -123,9 +128,34 @@ void ParticleSystem::Update() {
 
 	for(size_t i = 0; i < particleArray_.size(); ++i) {
 		Particle* particle = particleArray_[i].get();
+		Transform* transform = particle->GetTransform();
+
 		if(!particle->isAlive_) {
 			continue;
 		}
+
+		/// filedに当たっていれば処理を行う
+		for(auto itr = pFieldArray_.begin(); itr != pFieldArray_.end(); ++itr) {
+			ParticleField* field = (*itr);
+
+			/// min以下にある場合はcontinue
+			if(field->GetMin().x > transform->position.x
+				|| field->GetMin().y > transform->position.y
+				|| field->GetMin().z > transform->position.z) {
+				continue;
+			}
+
+			/// max以上にある場合はcontinue
+			if(transform->position.x > field->GetMax().x
+			   || transform->position.y > field->GetMax().y
+			   || transform->position.z > field->GetMax().z) {
+				continue;
+			}
+
+			field->Update(particle);
+			
+		}
+
 
 		particleUpdateFunc_(particle);
 		particle->LifeTimeUpdate();
@@ -228,6 +258,14 @@ void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
 	emitter_->max_ = _max;
 }
 
+void ParticleSystem::SetFieldArray(const std::list<ParticleField*>& _filedArray) {
+	pFieldArray_ = _filedArray;
+}
+
+void ParticleSystem::AddField(ParticleField* _field) {
+	pFieldArray_.push_back(_field);
+}
+
 
 
 
@@ -237,15 +275,11 @@ void ParticleSystem::SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max) {
 /// ParticlePipeline 
 /// ===================================================
 
-void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_, ONE::DxDescriptor* dxDescriptor) {
+void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_) {
 
 	/// pointer set
 	pCommandList_ = commandList_;
 	assert(pCommandList_);
-
-	pDxDescriptor_ = dxDescriptor;
-	assert(pDxDescriptor_);
-
 
 	shader_.ShaderCompile(
 		L"Particle/Particle.VS.hlsl", L"vs_6_0",
@@ -300,7 +334,6 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 	DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
 
 	/// default setting
-	pDxDescriptor_->SetSRVHeap(pCommandList_);
 	pipelineState_->SetPipelineState();
 
 	/// command setting

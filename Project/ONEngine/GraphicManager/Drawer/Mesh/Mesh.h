@@ -47,6 +47,9 @@ public:
 	const std::vector<VertexData>& GetVertices() const { return vertices_; }
 	const std::vector<uint32_t>&   GetIndices()  const { return indices_; }
 
+	const D3D12_VERTEX_BUFFER_VIEW& GetVBV() const { return vbv_; }
+	const D3D12_INDEX_BUFFER_VIEW& GetIBV() const { return ibv_; }
+
 	/// <summary>
 	/// 頂点データの追加
 	/// </summary>

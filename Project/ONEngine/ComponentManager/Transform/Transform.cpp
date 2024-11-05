@@ -5,13 +5,14 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 #include "GameObjectManager/BaseGameObject.h"
+#include "GraphicManager/ModelManager/Model.h"
 
 /// ===================================================
 /// 初期化
 /// ===================================================
 void Transform::Initialize() {
 	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
-	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mapingData_));
+	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 	//UpdateMatrix();
 }
 
@@ -57,7 +58,7 @@ void Transform::Debug() {
 /// ===================================================
 /// 行列の更新
 /// ===================================================
-void Transform::UpdateMatrix(bool isMapping) {
+void Transform::UpdateMatrix() {
 	matTransform =
 		Mat4::MakeScale(scale) *
 		MakeRotate(rotateOrder) *
@@ -68,13 +69,15 @@ void Transform::UpdateMatrix(bool isMapping) {
 		matTransform *= parent->matTransform;
 	}
 
-	if(isMapping) {
-		*mapingData_ = matTransform;
-	}
 }
 
-void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex) {
-	*mapingData_ = matTransform;
+void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex, Mat4* matLocal) {
+	*mappingData_ = matTransform;
+
+	if(matLocal) {
+		*mappingData_ *= (*matLocal);
+	}
+
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, transformBuffer_->GetGPUVirtualAddress());
 }
 

@@ -8,7 +8,7 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 #include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
 
@@ -21,6 +21,7 @@
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
 #include "BaseScene.h"
 #include "../Scene_Game.h"
@@ -54,9 +55,11 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 
 	finalRenderTex_.reset(new RenderTexture);
 	finalRenderTex_->Initialize(
-		{0.0f, 0.0f, 0.0f, 0.0f},
+		{0,0,0, 0.0f},
 		dxCommon->GetDxCommand()->GetList(), 
-		dxCommon->GetDxDescriptor()
+		dxCommon->GetSRVDescriptorHeap(),
+		dxCommon->GetRTVDescriptorHeap(),
+		dxCommon->GetDSVDescriptorHeap()
 	);
 
 }
@@ -182,6 +185,7 @@ void SceneManager::Load(SCENE_ID id) {
 
 	scenes_[currentId_]->Initialize();
 
+	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
 	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());

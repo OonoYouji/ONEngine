@@ -284,7 +284,7 @@ void ShootingCourse::CalcuationRailTransform() {
 		transform.quaternion *= Quaternion::MakeFromAxis(rightDir.Normalize() , std::asin(moveDir.y));
 		//transform.quaternion *= Quaternion::MakeFromAxis(moveDir.Normalize(), std::atan2(rightDir.x, upDir.x));
 
-		transform.UpdateMatrix(false);
+		transform.UpdateMatrix();
 		transformList_.push_back(std::move(transform));
 
 	}
@@ -312,7 +312,7 @@ void ShootingCourse::CalcuationAnchorPointArray() {
 
 		transform.rotate.x += std::numbers::pi_v<float> * 0.5f;
 
-		transform.UpdateMatrix(false);
+		transform.UpdateMatrix();
 
 		anchorPointTransformList_.push_back(std::move(transform));
 	}

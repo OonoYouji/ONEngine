@@ -9,7 +9,6 @@
 #include <LoggingManager/Logger.h>
 #include <GraphicManager/GraphicsEngine/DirectX12/DxCommon.h>
 #include <GraphicManager/GraphicsEngine/DirectX12/DxCommand.h>
-#include <GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h>
 #include <FrameManager/Time.h>
 #include <FrameManager/FrameFixation.h>
 #include <Library/Input/Input.h>
@@ -36,7 +35,9 @@
 #include "GraphicManager/PostEffect/Bloom/Bloom.h"
 #include "ComponentManager/ParticleSystem/ParticleSystem.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
+#include "CommandManager/CommandLineInterface.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -71,28 +72,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// render texture imgui用を作成
 	renderTexManager->Initialize(
 		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()
 	);
 
 	/// bloomエフェクトの初期化
 	Bloom::StaticInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor(), 2
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 2
 	);
 
 	ParticleSystem::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
 	);
 
 	MeshInstancingRenderer::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
-		ONEngine::GetDxCommon()->GetDxDescriptor()
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
 	);
+
+	AnimationRendererCommon::GetInstance()->Initialize();
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
-
+	CommandLineInterface::GetInstance()->Initialize();
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
@@ -154,6 +154,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		assert(false);
 	}
 
+	CommandLineInterface::GetInstance()->Finalize();
+	AnimationRendererCommon::GetInstance()->Finalize();
 	Bloom::StaticFinalize();
 	MeshInstancingRenderer::SFinalize();
 	ParticleSystem::SFinalize();

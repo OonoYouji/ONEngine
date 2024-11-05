@@ -9,7 +9,7 @@ void MeshRenderer::Initialize() {
 }
 
 void MeshRenderer::Draw() {
-	model_->Draw(pTransform_, material_.get(), fillMode_);
+	model_->Draw(pTransform_, nullptr, material_.get(), fillMode_);
 }
 
 

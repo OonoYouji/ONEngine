@@ -8,10 +8,13 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
 
 #include "Objects/Camera/Manager/CameraManager.h"
 
+
+using namespace ONE;
 
 /// ===================================================
 /// インスタンス確保
@@ -89,8 +92,9 @@ void SpriteManager::PostDraw() {
 
 	pipelineState_->SetPipelineState();
 
-	ONE::DxDescriptor* dxDescriptor = ONEngine::GetDxCommon()->GetDxDescriptor();
-	dxDescriptor->SetSRVHeap(commandList);
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	pSRVDescriptorHeap->BindToCommandList(commandList);
+
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 

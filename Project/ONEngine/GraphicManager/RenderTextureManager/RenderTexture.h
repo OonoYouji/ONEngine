@@ -3,17 +3,19 @@
 #include <d3d12.h>
 #include <wrl/client.h>
 
+/// std
 #include <cmath>
 #include <memory>
 
+/// engine
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
+
+/// math
 #include "Math/Vector4.h"
 
 using namespace Microsoft::WRL;
 
-namespace ONE {
-	class DxDescriptor;
-}
 
 class RenderTexture {
 public:
@@ -29,7 +31,9 @@ public:
 	void Initialize(
 		const Vector4& clearColor,
 		ID3D12GraphicsCommandList* commandList,
-		ONE::DxDescriptor* descriptor
+		ONE::DxDescriptorHeap<ONE::HeapType::CBV_SRV_UAV>* _srvDescriptorHeap,
+		ONE::DxDescriptorHeap<ONE::HeapType::RTV>*         _rtvDescriptorHeap,
+		ONE::DxDescriptorHeap<ONE::HeapType::DSV>*         _dsvDescriptorHeap
 	);
 
 	void SetRenderTarget();
@@ -73,5 +77,6 @@ private:
 
 	/// other class pointer
 	ID3D12GraphicsCommandList* pCommandList_;
-	ONE::DxDescriptor* pDxDescriptor_;
+	ONE::DxDescriptorHeap<ONE::HeapType::DSV>* pDSVDescriptorHeap_ = nullptr;
+
 };

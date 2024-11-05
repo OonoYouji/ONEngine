@@ -1,12 +1,13 @@
 #include "ModelManager.h"
 
+/// std
 #include <iostream>
 #include <string>
 #include <filesystem>
 #include <unordered_map>
 
+/// externals
 #include <assimp/Importer.hpp>
-#include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #include <Core/ONEngine.h>
@@ -15,12 +16,12 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxShaderCompiler.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
 
+#include "Debugger/Assertion.h"
 
 
 /// ===================================================
@@ -89,6 +90,10 @@ Model* ModelManager::Load(const std::string& filePath) {
 	Assimp::Importer importer;
 	std::string objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".obj";
 	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	if(scene == nullptr) {
+		objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".gltf";
+		scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	}
 
 	Model* model = new Model();
 
@@ -97,8 +102,8 @@ Model* ModelManager::Load(const std::string& filePath) {
 	/// ---------------------------------------------------
 	for(uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
-		assert(mesh->HasNormals());
-		assert(mesh->HasTextureCoords(0));
+		Assert(mesh->HasNormals(), "not has normals");
+		Assert(mesh->HasTextureCoords(0), "not has texcoord");
 
 		Mesh modelMesh;
 
@@ -124,13 +129,47 @@ Model* ModelManager::Load(const std::string& filePath) {
 		/// ---------------------------------------------------
 		for(uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);
+			Assert(face.mNumIndices == 3, "not triangles");
 
 			for(uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
 				uint32_t& index = face.mIndices[element];
 
 				modelMesh.AddIndex(index);
+			}
+
+		}
+
+		/// ---------------------------------------------------
+		/// joint解析
+		/// ---------------------------------------------------
+		for(uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+
+			/// 格納領域の作成
+			aiBone*          bone            = mesh->mBones[boneIndex];
+			std::string      jointName       = bone->mName.C_Str();
+			JointWeightData& jointWeightData = model->skinClusterData_[jointName];
+
+			/// mat bind pose inverseの計算
+			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
+			aiVector3D   position;
+			aiQuaternion rotate;
+			aiVector3D   scale;
+
+			matBindPoseAssimp.Decompose(scale, rotate, position);
+			Mat4 matBindPose = 
+				Mat4::MakeScale({ scale.x, scale.y, scale.z })
+				* Mat4::MakeRotateQuaternion(Quaternion::Normalize({ rotate.x, -rotate.y, -rotate.z, rotate.w }))
+				* Mat4::MakeTranslate({ -position.x, position.y, position.z });
+
+			jointWeightData.matBindPoseInverse = matBindPose.Inverse();
+
+
+			/// weight情報を取り出す
+			for(uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+				jointWeightData.vertexWeights.push_back(
+					{ bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId }
+				);
 			}
 
 		}
@@ -174,6 +213,9 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	}
 
+	Node rootNode = instance->ReadNode(scene->mRootNode);
+	model->SetRootNode(rootNode);
+
 	if(model->GetMaterials().empty()) {
 		Material material;
 		material.CreateMaterial("uvChecker");
@@ -185,6 +227,33 @@ Model* ModelManager::Load(const std::string& filePath) {
 	model->SetFillMode(kSolid);
 	instance->AddModel(filePath, model);
 	return GetModel(filePath);
+}
+
+
+Node ModelManager::ReadNode(aiNode* node) {
+	Node result;
+
+	aiVector3D   position;
+	aiQuaternion rotate;
+	aiVector3D   scale;
+
+	node->mTransformation.Decompose(scale, rotate, position);
+
+	result.transform.scale      = { scale.x, scale.y, scale.z };
+	result.transform.quaternion = { rotate.x, -rotate.y, -rotate.z, rotate.w };
+	result.transform.position   = { -position.x, position.y, position.z };
+	result.transform.Update();
+
+	/// nodeから必要な値をゲット
+	result.name = node->mName.C_Str();
+	result.children.resize(node->mNumChildren);
+
+	/// childrenの解析
+	for(size_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
 }
 
 
@@ -342,7 +411,6 @@ void ModelManager::PostDraw() {
 	CameraManager*             pCameraManager = CameraManager::GetInstance();
 	BaseCamera*                pCamera        = pCameraManager->GetMainCamera();
 
-	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	/// ---------------------------------------------------
 	/// Solidの描画
@@ -355,7 +423,7 @@ void ModelManager::PostDraw() {
 	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {
-		model.transform->BindTransform(commandList, 1);
+		model.transform->BindTransform(commandList, 1, model.matLocal);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -367,7 +435,7 @@ void ModelManager::PostDraw() {
 	pipelines_[kWireFrame]->SetPipelineState();
 
 	for(auto& model : wire) {
-		model.transform->BindTransform(commandList, 1);
+		model.transform->BindTransform(commandList, 1, model.matLocal);
 		model.model->DrawCall(commandList, model.material);
 	}
 
@@ -399,12 +467,13 @@ void ModelManager::SetPipelineState(FillMode fillMode) {
 /// ===================================================
 /// アクティブなモデルの追加
 /// ===================================================
-void ModelManager::AddActiveModel(Model* model, Transform* transform, Material* material, FillMode fillMode) {
+void ModelManager::AddActiveModel(Model* model, Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode) {
 	Element element{};
 	element.model     = model;
 	element.transform = transform;
 	element.material  = material;
 	element.fillMode  = fillMode;
+	element.matLocal  = matLocal;
 
 	activeModels_.push_back(element);
 }

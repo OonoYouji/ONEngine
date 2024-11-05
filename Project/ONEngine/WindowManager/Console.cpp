@@ -1,9 +1,58 @@
 #define NOMINMAX
 #include "Console.h"
 
+/// std
+#include <format>
+#include <windows.h>
+#include <commdlg.h>
+#include <iostream>
+#include <locale>
+#include <shlwapi.h>
 
+/// engine
 #include <Core/ONEngine.h>
 #include "GraphicManager/TextureManager/TextureManager.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
+#include "LoggingManager/Logger.h"
+
+#pragma comment(lib, "shlwapi.lib") // Shlwapi.libをリンク
+
+using namespace ONE;
+
+
+
+namespace {
+	std::wstring ShowSaveFileDialog() {
+		// ファイルダイアログの構造体
+		OPENFILENAME ofn;
+		wchar_t szFile[260];   // ファイル名を格納するバッファ
+
+		// 構造体の初期化
+		ZeroMemory(&ofn, sizeof(ofn));
+		ofn.lStructSize = sizeof(ofn);
+		ofn.hwndOwner = NULL;
+		ofn.lpstrFile = szFile;
+		ofn.lpstrFile[0] = L'\0';  // ワイド文字の初期化
+		ofn.nMaxFile = sizeof(szFile) / sizeof(szFile[0]); // 配列のサイズをワイド文字数で計算
+		ofn.lpstrFilter = L"All Files\0*.*\0Text Documents\0*.TXT\0"; // フィルタ設定
+		ofn.nFilterIndex = 1;
+		ofn.lpstrFileTitle = NULL;
+		ofn.nMaxFileTitle = 0;
+		ofn.lpstrInitialDir = NULL;
+		ofn.lpstrTitle = L"Save As"; // ダイアログのタイトル
+		ofn.Flags = OFN_OVERWRITEPROMPT; // 上書き確認
+
+		// 保存ダイアログを表示
+		if(GetSaveFileName(&ofn)) {
+			// フルパスからファイル名を取得して返す
+			return PathFindFileName(ofn.lpstrFile); // ファイル名のみを返す
+		} else {
+			return L""; // キャンセルされた場合は空の文字列を返す
+		}
+	}
+}
+
 
 
 void Console::Initialize() {
@@ -25,6 +74,7 @@ void Console::Initialize() {
 	pSceneManager_      = SceneManager::GetInstance();
 	pGameObjectManager_ = GameObjectManager::GetInstance();
 	pCLI_               = CommandLineInterface::GetInstance();
+	pVariableManager_   = VariableManager::GetInstance();
 }
 
 void Console::Update() {
@@ -39,7 +89,7 @@ void Console::Update() {
 
 	Assets();
 
-	CLI();
+	VariableGroupArray();
 #endif // _DEBUG
 }
 
@@ -60,51 +110,9 @@ void Console::ParentWindow() {
 	/// ===================================================
 	if(ImGui::BeginMenuBar()) {
 
-		if(ImGui::BeginMenu("setting")) {
-
-			/// ===================================================
-			/// child window 
-			/// ===================================================
-			if(ImGui::BeginMenu("child window setting")) {
-
-				bool noMove = imguiWinFlags_ & ImGuiWindowFlags_NoMove;
-				if(ImGui::Checkbox("NoMove", &noMove)) {
-					if(noMove) {
-						imguiWinFlags_ |= ImGuiWindowFlags_NoMove;
-					} else {
-						imguiWinFlags_ &= ~ImGuiWindowFlags_NoMove;
-					}
-				}
-				ImGui::EndMenu();
-			}
-			
-			/// ===================================================
-			/// parent window 
-			/// ===================================================
-			if(ImGui::BeginMenu("parent window setting")) {
-
-				bool noResize = parentWinFlags_ & ImGuiWindowFlags_NoResize;
-				if(ImGui::Checkbox("NoResize", &noResize)) {
-					if(noResize) {
-						parentWinFlags_ |= ImGuiWindowFlags_NoResize;
-					} else {
-						parentWinFlags_ &= ~ImGuiWindowFlags_NoResize;
-					}
-				}
-
-				bool noMove = parentWinFlags_ & ImGuiWindowFlags_NoMove;
-				if(ImGui::Checkbox("NoMove", &noMove)) {
-					if(noMove) {
-						parentWinFlags_ |= ImGuiWindowFlags_NoMove;
-					} else {
-						parentWinFlags_ &= ~ImGuiWindowFlags_NoMove;
-					}
-				}
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenu();
-		}
+		WindowSettingMenuBar();
+		DescriptorHeapsMunuBar();
+		CreateGameObjectMenuBar();
 
 		ImGui::EndMenuBar();
 	}
@@ -275,3 +283,93 @@ void Console::CLI() {
 	ImGui::End();
 }
 
+void Console::DescriptorHeapsMunuBar() {
+	if(ImGui::BeginMenu("descriptor heap")) {
+
+		DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+		DxDescriptorHeap<HeapType::RTV>*         pRTVHeap = ONEngine::GetDxCommon()->GetRTVDescriptorHeap();
+		DxDescriptorHeap<HeapType::DSV>*         pDSVHeap = ONEngine::GetDxCommon()->GetDSVDescriptorHeap();
+
+		ImGui::Text(std::format("srv heap count : {}/{}", pSRVHeap->GetUsedIndexCount(), pSRVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("rtv heap count : {}/{}", pRTVHeap->GetUsedIndexCount(), pRTVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("dsv heap count : {}/{}", pDSVHeap->GetUsedIndexCount(), pDSVHeap->GetMaxHeapSize()).c_str());
+
+		ImGui::EndMenu();
+	}
+}
+
+void Console::WindowSettingMenuBar() {
+	if(ImGui::BeginMenu("setting")) {
+
+		/// ===================================================
+		/// child window 
+		/// ===================================================
+		if(ImGui::BeginMenu("child window setting")) {
+
+			bool noMove = imguiWinFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					imguiWinFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					imguiWinFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		/// ===================================================
+		/// parent window 
+		/// ===================================================
+		if(ImGui::BeginMenu("parent window setting")) {
+
+			bool noResize = parentWinFlags_ & ImGuiWindowFlags_NoResize;
+			if(ImGui::Checkbox("NoResize", &noResize)) {
+				if(noResize) {
+					parentWinFlags_ |= ImGuiWindowFlags_NoResize;
+				} else {
+					parentWinFlags_ &= ~ImGuiWindowFlags_NoResize;
+				}
+			}
+
+			bool noMove = parentWinFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					parentWinFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					parentWinFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void Console::VariableGroupArray() {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	if(!ImGui::Begin("variable manager", nullptr, imguiWinFlags_)) {
+		ImGui::End();
+		return;
+	}
+
+	pVariableManager_->DebuggingGroupArray();
+
+	ImGui::End();
+}
+
+void Console::CreateGameObjectMenuBar() {
+	if(ImGui::BeginMenu("command")) {
+
+		if(ImGui::Button("create game object")) {
+			std::locale::global(std::locale(""));
+
+			std::string inputText = ONE::ConvertString(ShowSaveFileDialog());
+			if(!inputText.empty()) {
+				pCLI_->ExecuteCommand("CreateGameObject", inputText);
+			}
+		}
+
+		ImGui::EndMenu();
+	}
+}

@@ -95,7 +95,6 @@ private:
 	/// ===================================================
 
 	ONE::DxCommon*     pDxCommon_ = nullptr;
-	ONE::DxDescriptor* pDxDescriptor_ = nullptr;
 	ONE::WinApp*       pWinApp_ = nullptr;
 
 	bool isActive_ = true;

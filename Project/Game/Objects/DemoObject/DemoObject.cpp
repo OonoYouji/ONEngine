@@ -3,44 +3,43 @@
 /// engine
 #include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "VariableManager/VariableManager.h"
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/ParticleSystem/ParticleSystem.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/AnimationRenderer/SkeletonRenderer.h"
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
 void DemoObject::Initialize() {
-	//auto mr = AddComponent<MeshRenderer>();
-	//mr->SetModel("Sphere");
-
-	//auto ps = AddComponent<ParticleSystem>(12, "Board");
-
-	//ps->SetPartilceUpdateFunction([](Particle* par) {
-	//	Transform* transform = par->GetTransform();
-	//	transform->position.y += Time::DeltaTime();
-	//});
-
-	auto mir = AddComponent<MeshInstancingRenderer>(12);
-	mir->AddTransform(pTransform_);
-
-	for(size_t i = 0; i < 12; ++i) {
-		transformArray_.push_back(std::make_unique<Transform>());
-		Transform* transform = transformArray_.back().get();
-		transform->position = {
-			0.0f, 0.0f,
-			i * 1.0f
-		};
-
-		transform->UpdateMatrix(false);
-		mir->AddTransform(transform);
-	}
-
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("light.png");
 }
 
-void DemoObject::Update() {}
+void DemoObject::Update() {
+}
 
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+
+		ImGui::TreePop();
+	}
+}
+
+void DemoObject2::Initialize() {
+	auto sprite = AddComponent<SpriteRenderer>();
+	sprite->SetTexture("uvChecker.png");
+}
+
+void DemoObject2::Update() {
+}
+
+void DemoObject2::Debug() {
+	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
 
 
 		ImGui::TreePop();

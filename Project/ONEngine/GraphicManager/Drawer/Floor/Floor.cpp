@@ -4,7 +4,7 @@
 
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
 #include "Objects/Camera/Manager/CameraManager.h"
@@ -88,8 +88,6 @@ void Floor::Draw() {
 	ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 	pipeline_->SetPipelineState();
-
-	ONEngine::GetDxCommon()->GetDxDescriptor()->SetSRVHeap(commandList);
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

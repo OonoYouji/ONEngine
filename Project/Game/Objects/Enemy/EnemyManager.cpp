@@ -215,13 +215,13 @@ void EnemyManager::CalcuationEnemyStartedAnchorPoint() {
 
 			Transform transform;
 			transform.position = ap.position;
-			transform.UpdateMatrix(false);
+			transform.UpdateMatrix();
 			startedTTransforms_.push_back(transform);
 
 		} else {
 
 			startedTTransforms_[i].position = ap.position;
-			startedTTransforms_[i].UpdateMatrix(false);
+			startedTTransforms_[i].UpdateMatrix();
 
 		}
 	}

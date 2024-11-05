@@ -8,7 +8,6 @@
 #include <functional>
 
 /// engine
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/ModelManager/Model.h"
 
@@ -35,14 +34,14 @@ public:
 	/// ===================================================
 
 	ParticleSystem(uint32_t maxParticleNum, const std::string& modelFilePath);
-	~ParticleSystem() {}
+	~ParticleSystem();
 
 
 	/// ===================================================
 	/// public : static methods
 	/// ===================================================
 
-	static void SInitialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor);
+	static void SInitialize(ID3D12GraphicsCommandList* commandList);
 	static void SFinalize();
 
 
@@ -109,6 +108,10 @@ public:
 	/// <param name="_max"></param>
 	void SetBoxEmitterMinMax(const Vec3& _min, const Vec3& _max);
 
+	void SetFieldArray(const std::list<ParticleField*>& _filedArray);
+
+	void AddField(ParticleField* _field);
+
 
 	/// <summary>
 	/// const パーティクルの最大数のゲッタ
@@ -169,7 +172,7 @@ private:
 	Mat4*                                  mappingData_         = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
-
+	uint32_t srvDescriptorIndex_;
 
 	/// billboard
 	Mat4 matBackToFront_;
@@ -180,6 +183,9 @@ private:
 
 	/// emitter
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
+
+	/// field
+	std::list<ParticleField*> pFieldArray_;
 
 };
 
@@ -198,7 +204,7 @@ public:
 	ParticlePipeline() {}
 	~ParticlePipeline() {}
 
-	void Initialize(ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* dxDescriptor);
+	void Initialize(ID3D12GraphicsCommandList* commandList);
 	void Update();
 
 	void Draw(
@@ -216,7 +222,6 @@ private:
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
 	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
-	ONE::DxDescriptor*             pDxDescriptor_ = nullptr;
 	
 };
 

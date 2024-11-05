@@ -34,6 +34,8 @@ public:
 	static Quaternion Normalize(const Quaternion& q);
 	static Vector3 Transform(const Vector3& v, const Quaternion& q);
 	
+	static Quaternion Lerp(const Quaternion& start, const Quaternion& end, float t);
+
 	/// <summary>
 	/// ある軸を基にquaternionを計算する
 	/// </summary>
@@ -51,7 +53,7 @@ public:
 	/// <returns></returns>
 	static Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up);
 
-
+	static Quaternion Slerp(const Quaternion& start, const Quaternion& end, float t);
 
 	/// ===================================================
 	/// public : methods

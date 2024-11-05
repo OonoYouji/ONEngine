@@ -7,7 +7,7 @@
 #include "WindowManager/WinApp.h"
 
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptor.h"
+
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
 
@@ -55,21 +55,29 @@ ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(
 
 
 
-void RenderTexture::Initialize(const Vector4& clearColor, ID3D12GraphicsCommandList* commandList, ONE::DxDescriptor* descriptor) {
+void RenderTexture::Initialize(
+	const Vector4& clearColor,
+	ID3D12GraphicsCommandList* commandList, 
+	ONE::DxDescriptorHeap<ONE::HeapType::CBV_SRV_UAV>* _srvDescriptorHeap,
+	ONE::DxDescriptorHeap<ONE::HeapType::RTV>* _rtvDescriptorHeap,
+	ONE::DxDescriptorHeap<ONE::HeapType::DSV>* _dsvDescriptorHeap) {
 
+	/// setting
 	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
 	pCommandList_ = commandList;
-	pDxDescriptor_ = descriptor;
+	pDSVDescriptorHeap_ = _dsvDescriptorHeap;
 	currentResourceState = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	/// textureの作成
+	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	clearColor_ = clearColor;
 	renderTextureResource_ =
 		CreateRenderTextureResource(device, 1280, 720, format, clearColor_);
 
 
-	rtvHandle_.cpuHandle = pDxDescriptor_->GetRtvCpuHandle();
-	pDxDescriptor_->AddRtvUsedCount();
+	/// rtvの生成
+	uint32_t rtvDescriptorIndex = _rtvDescriptorHeap->Allocate();
+	rtvHandle_.cpuHandle = _rtvDescriptorHeap->GetCPUDescriptorHandel(rtvDescriptorIndex);
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = format;
@@ -78,9 +86,11 @@ void RenderTexture::Initialize(const Vector4& clearColor, ID3D12GraphicsCommandL
 	device->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc, rtvHandle_.cpuHandle);
 
 
-	srvHandle_.cpuHandle = pDxDescriptor_->GetSrvCpuHandle();
-	srvHandle_.gpuHandle = pDxDescriptor_->GetSrvGpuHandle();
-	pDxDescriptor_->AddSrvUsedCount();
+
+	/// srvの生成
+	uint32_t srvDescriptorIndex = _srvDescriptorHeap->Allocate();
+	srvHandle_.cpuHandle = _srvDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex);
+	srvHandle_.gpuHandle = _srvDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex);
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
 	renderTextureSrvDesc.Format = format;
@@ -92,7 +102,7 @@ void RenderTexture::Initialize(const Vector4& clearColor, ID3D12GraphicsCommandL
 }
 
 void RenderTexture::SetRenderTarget() {
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDxDescriptor_->GetDsvCpuHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(0);
 	pCommandList_->OMSetRenderTargets(1, &rtvHandle_.cpuHandle, FALSE, &dsvHandle);
 	pCommandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	pCommandList_->ClearRenderTargetView(rtvHandle_.cpuHandle, &clearColor_.x, 0, nullptr);
@@ -122,7 +132,7 @@ void RenderTexture::EndRenderTarget() {
 }
 
 void RenderTexture::ClearDepth() {
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDxDescriptor_->GetDsvCpuHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = pDSVDescriptorHeap_->GetCPUDescriptorHandel(0);
 	pCommandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 

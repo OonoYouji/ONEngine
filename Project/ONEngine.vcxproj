@@ -187,6 +187,11 @@
     <ClCompile Include="ONEngine\CommandManager\Commands\BaseCommand.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
@@ -212,12 +217,12 @@
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptor.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.cpp" />
@@ -234,6 +239,7 @@
     <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
@@ -259,6 +265,7 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />
     <ClInclude Include="Library\Input\Input.h" />
     <ClInclude Include="Library\Input\Keyboard.h" />
@@ -278,6 +285,11 @@
     <ClInclude Include="ONEngine\CommandManager\Commands\BaseCommand.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
@@ -303,12 +315,12 @@
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDebug.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDepthStencil.h" />
-    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptor.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDevice.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.h" />
@@ -325,6 +337,7 @@
     <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
@@ -364,10 +377,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -1,6 +1,9 @@
 #pragma once
 
+/// std
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 #include "GraphicManager/PipelineState/PipelineState.h"
 
@@ -14,6 +17,7 @@
 #include "GraphicManager/Drawer/Mesh/Mesh.h"
 #include "GraphicManager/Drawer/Material/Material.h"
 
+#include "ComponentManager/AnimationRenderer/Skinning.h"
 
 struct TransformData {
 	Mat4 matWorld;
@@ -24,10 +28,22 @@ struct ViewProjectionData {
 };
 
 
+struct Node {
+	Node() {
+		transform.rotateOrder = QUATERNION;
+	}
+
+	Transform         transform;
+	std::string       name;
+	std::vector<Node> children;
+};
+
+
 /// ===================================================
 /// モデル
 /// ===================================================
 class Model final {
+	friend class ModelManager;
 public:
 
 	Model();
@@ -47,7 +63,7 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw(Transform* transform, FillMode fillMode = kSolid);
-	void Draw(Transform* transform, Material* material, FillMode fillMode = kSolid);
+	void Draw(Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode = kSolid);
 
 
 	/// <summary>
@@ -89,6 +105,12 @@ public:
 	const std::vector<Material>& GetMaterials() const { return materials_; }
 	std::vector<Material>& GetMaterials() { return materials_; }
 
+	void SetRootNode(const Node& _root);
+	const Node& GetRootNode() const { return root_; }
+
+	const std::unordered_map<std::string, JointWeightData>& GetSkinClusterData() {
+		return skinClusterData_;
+	}
 
 private:
 
@@ -98,7 +120,11 @@ private:
 
 	FillMode fillMode_;
 
-	std::vector<Mesh> meshes_;
+	std::vector<Mesh>     meshes_;
 	std::vector<Material> materials_;
+
+	Node root_;
+
+	std::unordered_map<std::string, JointWeightData> skinClusterData_;
 
 };
