@@ -141,7 +141,7 @@ void BaseCamera::Transfer() {
 
 
 void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
-	projectionType_ = projectionType_;
+	projectionType_ = projectionType;
 }
 
 void BaseCamera::SetDistance(float _distance) {
