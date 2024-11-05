@@ -147,6 +147,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyChaseState.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -163,7 +165,7 @@
     <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\IdleState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Library\Input\Gamepad.cpp" />
@@ -241,6 +243,9 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTreeForwardDeclaration.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyChaseState.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -259,7 +264,7 @@
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
     <ClInclude Include="Game\Scenes\Scene_Result.h" />
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\IdleState.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
@@ -269,6 +274,7 @@
     <ClInclude Include="Library\Input\Mouse.h" />
     <ClInclude Include="Library\Math\CreateName.h" />
     <ClInclude Include="Library\Math\Easing.h" />
+    <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Library\Math\Matrix3x3.h" />
     <ClInclude Include="Library\Math\Matrix4x4.h" />
     <ClInclude Include="Library\Math\Quaternion.h" />

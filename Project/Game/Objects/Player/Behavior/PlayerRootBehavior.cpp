@@ -3,25 +3,7 @@
 
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
-
-#include <numbers>
-
-float lerpShortAngle(float a,float b,float t){
-	constexpr float maxPi = std::numbers::pi_v<float> *2.0f;
-	constexpr float minPi = std::numbers::pi_v<float> *-2.0f;
-
-	float diff = b - a;
-
-	float rotate = std::fmod(diff,maxPi);
-
-	if(rotate >= std::numbers::pi){
-		rotate += minPi;
-	} else if(rotate <= -std::numbers::pi){
-		rotate += maxPi;
-	}
-
-	return a + rotate * t;
-}
+#include "Library/Math/LerpShortAngle.h"
 
 void PlayerRootBehavior::Update(){
 	direction_ = {
@@ -38,7 +20,7 @@ void PlayerRootBehavior::Update(){
 			lastDir_ = direction_;
 		}
 		Vector3 rotate = host_->GetRotate();
-		rotate.y = lerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),0.1f);
+		rotate.y = LerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),0.1f);
 		host_->SetRotate(rotate);
 	}
 

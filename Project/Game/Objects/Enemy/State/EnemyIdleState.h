@@ -1,25 +1,17 @@
 #pragma once
 #include "IEnemyState.h"
 
-class IdleState :
+class EnemyIdleState :
 	public IEnemyState{
 public:
-	IdleState(Enemy* enemy):IEnemyState(enemy){}
-	~IdleState(){}
+	EnemyIdleState(Enemy* enemy):IEnemyState(enemy){}
+	~EnemyIdleState(){}
 
 	void Initialize();
 	void Update();
 private:
 
 };
-
-namespace EnemyBehaviorTree{
-	class Node;
-	class Action;
-	class Condition;
-	class Sequence;
-	class Selector;
-}
 
 class LongIdleAction
 	:public EnemyBehaviorTree::Action{

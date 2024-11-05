@@ -1,16 +1,16 @@
-#include "IdleState.h"
+#include "EnemyIdleState.h"
 
 #include "FrameManager/Time.h"
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "Game/Objects/Enemy/Enemy.h"
 
-void IdleState::Initialize(){
+void EnemyIdleState::Initialize(){
 	float idlePoint = 0.0f;
 
 	rootNode_.reset(new IdleStateTree(enemy_));
 }
 
-void IdleState::Update(){
+void EnemyIdleState::Update(){
 	rootNode_->tick();
 }
 
@@ -51,6 +51,6 @@ EnemyBehaviorTree::Status IdleCondition::tick(){
 }
 
 EnemyBehaviorTree::Status TransitionNode::tick(){
-	enemy_->TransitionState(new IdleState(enemy_));
+	enemy_->TransitionState(new EnemyIdleState(enemy_));
 	return EnemyBehaviorTree::Status::SUCCESS;
 }
