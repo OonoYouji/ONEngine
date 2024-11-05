@@ -35,5 +35,16 @@ void Enemy::Initialize() {
 }
 
 void Enemy::Update() {
+	meshRenderer_->SetColor(Vec4::kRed);
 
+}
+
+void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {
+	if(_collision->GetTag() == "PlayerBullet") {
+		meshRenderer_->SetColor(Vec4::kWhite);
+	}
+}
+
+void Enemy::SubHP(float _subValue) {
+	hp_ -= _subValue;
 }

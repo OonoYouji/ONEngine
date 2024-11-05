@@ -9,6 +9,10 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"
 
+/// objects
+#include "Objects/Enemy/Enemy.h"
+
+
 PlayerBullet::PlayerBullet() {
 	CreateTag(this);
 }
@@ -51,7 +55,13 @@ void PlayerBullet::OnCollisionEnter(BaseGameObject* const collision) {
 
 	/// 敵の衝突したら敵と自分のインスタンスを消去する
 	if(collision->GetTag() == "Enemy") {
-		collision->Destory();
+		Enemy* enemy = static_cast<Enemy*>(collision);
+		enemy->SubHP(1.0f); /// hpを減らす
+
+		/// 死んだらオブジェクトを削除する
+		if(enemy->GetHP() <= 0.0f) {
+			enemy->Destory();
+		}
 		Destory();
 	}
 }

@@ -12,6 +12,13 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
+
+	void SubHP(float _subValue);
+
+	float GetHP() const { return hp_; }
+
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
