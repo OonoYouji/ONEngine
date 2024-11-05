@@ -35,6 +35,7 @@ public:
 	void RenderCLI();
 
 	void ExecuteCommand(const std::string& commandInput);
+	void ExecuteCommand(const std::string& _commandKey, const std::string& _commandArgs);
 
 
 	void CommandLoop();

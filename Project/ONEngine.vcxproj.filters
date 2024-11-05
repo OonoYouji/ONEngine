@@ -112,11 +112,12 @@
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Ai\EnemyAI.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -209,12 +210,13 @@
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.h" />
-    <ClInclude Include="Game\Objects\Enemy\Ai\EnemyAI.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

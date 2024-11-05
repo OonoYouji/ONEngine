@@ -119,10 +119,6 @@ void ImGuiManager::BeginFrame() {
 		ImGui::BeginDisabled();
 	}
 
-	
-
-	//dxDescriptor_->SetSRVHeap(dxCommon_->GetDxCommand()->GetList());
-
 }
 
 

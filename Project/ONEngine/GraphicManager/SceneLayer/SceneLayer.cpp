@@ -56,7 +56,7 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 	renderTexture_.reset(new RenderTexture);
 	renderTexture_->Initialize(
-		Vec4(0, 0, 0, 0), commandList, 
+		Vec4(0,0,0, 0), commandList, 
 		pDxCommon->GetSRVDescriptorHeap(),
 		pDxCommon->GetRTVDescriptorHeap(),
 		pDxCommon->GetDSVDescriptorHeap()
