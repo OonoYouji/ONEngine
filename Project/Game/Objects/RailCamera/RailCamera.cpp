@@ -33,6 +33,8 @@ void RailCamera::Initialize() {
 	/// transform
 	pTransform_->rotateOrder = YXZ;
 
+	moveSpeed_ = 0.25f;
+
 	/// move param setting...
 	Reset();
 
@@ -44,15 +46,18 @@ void RailCamera::Update() {
 	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
 	const size_t kSegmentCount = anchorPointArray.size();
 
-	/// 移動 and 回転
+	/// 前フレームのデータ保存
 	preMovingTime_ = movingTime_;
-	movingTime_ += Time::DeltaTime();
+
+	/// 移動 and 回転
+	movingTime_ += moveSpeed_ * Time::DeltaTime();
 	movingTime_ = std::clamp(movingTime_, 0.0f, kSegmentCount + 1.0f);
-	nextMoveT_ = 1.0f / kSegmentCount * movingTime_;
+
+	nextMoveT_   = 1.0f / kSegmentCount * movingTime_;
 	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
 
-	/// anchor pointの更新
 
+	/// anchor pointの更新
 	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
 	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
 
@@ -142,11 +147,11 @@ void RailCamera::Debug() {
 void RailCamera::Reset() {
 	/// move param setting...
 	moveDirection_ = {};
-	upDirection_ = Vec3::kUp;
-	movingTime_ = 0.0f;
-	nextMoveT_ = 0.0f;
-	futureMoveT_ = 0.0f;
-	futureTime_ = 1.0f;
+	upDirection_   = Vec3::kUp;
+	movingTime_    = 0.0f;
+	nextMoveT_     = 0.0f;
+	futureMoveT_   = 0.0f;
+	futureTime_    = 1.0f;
 }
 
 

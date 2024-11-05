@@ -45,15 +45,21 @@ private:
 	/// move setting
 	Vec3  moveDirection_{};      /// 移動している方向ベクトル
 	Vec3  upDirection_{};
+	float moveSpeed_;
+	
 	float movingTime_;           /// 移動の総合時間
 	float preMovingTime_;        /// 移動の総合時間
+	
 	float nextMoveT_;            /// アンカーポイント間の移動に使うt
 	float futureMoveT_;          /// アンカーポイント間の移動に使うt
 	float futureTime_;           /// どれくらい先かを表す
+
 	AnchorPoint nextAnchor_{};   /// 移動先のアンカーポイント(補完
 	AnchorPoint futureAnchor_{}; /// 少し先のアンカーポイント(補完
 
 	Vec3 rightDirection_;
+
+
 
 	/// other class pointer
 	ShootingCourse* pShootingCourse_ = nullptr;
