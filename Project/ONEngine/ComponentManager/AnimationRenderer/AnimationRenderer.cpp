@@ -22,6 +22,7 @@
 /// objects
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GameObjectManager/BaseGameObject.h"
+#include "GraphicManager/Light/DirectionalLight.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -48,11 +49,6 @@ void AnimationRenderer::Update() {
 	animationTime_ = std::fmod(animationTime_, duration_);
 
 	NodeAnimation& rootAnimation = nodeAnimationArray_[pModel_->GetRootNode().name];
-
-	//transform_.position   = CalculateValue(rootAnimation.translate, animationTime_);
-	//transform_.quaternion = CalculateValue(rootAnimation.rotate,    animationTime_);
-	//transform_.scale      = CalculateValue(rootAnimation.scale,     animationTime_);
-	//transform_.Update();
 
 	skeleton_.Update(duration_, nodeAnimationArray_);
 	SkinClusterUpdate(skinCluster_, skeleton_);
@@ -95,29 +91,36 @@ void AnimationRenderer::Debug() {
 }
 
 void AnimationRenderer::DrawCall() {
-	ID3D12GraphicsCommandList* pCommandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
-	ID3D12Resource*            pViewBuffer  = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
-	std::vector<Mesh>&         meshArray    = pModel_->GetMeshes();
+
+	AnimationRendererCommon*   pCommon       = AnimationRendererCommon::GetInstance();
+	ID3D12GraphicsCommandList* pCommandList  = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	ID3D12Resource*            pViewBuffer   = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
+	std::vector<Mesh>&         meshArray     = pModel_->GetMeshes();
+	std::vector<Material>&     materialArray = pModel_->GetMaterials();
 
 	/// default setting
 	pCommandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	/// buffer setting
 	pCommandList->SetGraphicsRootConstantBufferView(0, pViewBuffer->GetGPUVirtualAddress());
-	pCommandList->SetGraphicsRootDescriptorTable(2, skinCluster_.paletteSRVHandle.second);
+	pCommon->BindDirectionalLightToCommandList(3, pCommandList);
+	pCommandList->SetGraphicsRootDescriptorTable(4, skinCluster_.paletteSRVHandle.second);
 
-	for(auto& mesh : meshArray) {
+	for(size_t i = 0; i < meshArray.size(); ++i) {
+
+		materialArray[i].BindMaterial(pCommandList, 2);
+		materialArray[i].BindTexture(pCommandList, 5);
 
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-			mesh.GetVBV(), skinCluster_.vbv
+			meshArray[i].GetVBV(), skinCluster_.vbv
 		};
 
 		pCommandList->IASetVertexBuffers(0, 2, vbvs);
-		pCommandList->IASetIndexBuffer(&mesh.GetIBV());
+		pCommandList->IASetIndexBuffer(&meshArray[i].GetIBV());
 		GetOwner()->GetTransform()->BindTransform(pCommandList, 1);
 
 		pCommandList->DrawIndexedInstanced(
-			static_cast<UINT>(mesh.GetIndices().size()),
+			static_cast<UINT>(meshArray[i].GetIndices().size()),
 			1, 0, 0, 0
 		);
 	}
@@ -289,13 +292,6 @@ void AnimationRendererCommon::Initialize() {
 	pipelineState_->SetFillMode(kSolid);
 	pipelineState_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-	///	struct VSInput {
-	///		float4 position : POSITON0;
-	///		float2 texcoord : TEXCOORD0;
-	///		float3 normal : NORMAL0;
-	///		float4 weight : WEIGHT0;
-	///		int4   index : INDEX0;
-	///	};
 
 	/// ---------------------------------------------------
 	/// input layout setting
@@ -328,10 +324,20 @@ void AnimationRendererCommon::Initialize() {
 
 	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// gViewProjection
 	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// gTransform
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// material
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1); /// directional light
+
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 	/// gMatrixPalette
-	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);
+
+	/// texture
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+
+	/// sampler
+	pipelineState_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 	pipelineState_->Initialize();
 }
@@ -353,4 +359,12 @@ void AnimationRendererCommon::PostDraw() {
 
 void AnimationRendererCommon::AddAnimationRenderer(AnimationRenderer* _animationRenderer) {
 	actives_.push_back(_animationRenderer);
+}
+
+void AnimationRendererCommon::BindDirectionalLightToCommandList(UINT _rootParameter, ID3D12GraphicsCommandList* _commandList) {
+	pDirectionalLight_->BindToCommandList(_rootParameter, _commandList);
+}
+
+void AnimationRendererCommon::SetDirectionalLight(DirectionalLight* _directionalLight) {
+	pDirectionalLight_ = _directionalLight;
 }

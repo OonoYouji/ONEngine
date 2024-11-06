@@ -55,7 +55,6 @@ namespace EnemyBehaviorTree{
 	private:
 		std::vector<std::unique_ptr<Node>> children;
 		size_t currentChild = 0;
-
 	public:
 		void addChild(std::unique_ptr<Node> child){
 			children.push_back(std::move(child));
@@ -66,6 +65,9 @@ namespace EnemyBehaviorTree{
 	public:
 		Selector(Enemy* enemy):Node(enemy){}
 
+	class Selector : public Node{
+	public:
+		Selector(Enemy* enemy):Node(enemy){}
 		Status tick() override{
 			while(currentChild < children.size()){
 				Status status = children[currentChild]->tick();
