@@ -3,9 +3,9 @@
 #include <memory>
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
-namespace EnemyBehaviorTree{ class Node; }
 class AnimationRenderer;
 class Player;
 class IEnemyState;

@@ -64,10 +64,6 @@ namespace EnemyBehaviorTree{
 	class Selector : public Node{
 	public:
 		Selector(Enemy* enemy):Node(enemy){}
-
-	class Selector : public Node{
-	public:
-		Selector(Enemy* enemy):Node(enemy){}
 		Status tick() override{
 			while(currentChild < children.size()){
 				Status status = children[currentChild]->tick();
