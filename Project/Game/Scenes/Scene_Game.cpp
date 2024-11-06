@@ -66,11 +66,10 @@ void Scene_Game::Initialize() {
 
 	/// add layers
 
-	GameCamera* uiCamera = new GameCamera("uiCamera");
-	uiCamera->Initialize();
-	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+	GameCamera* defeatedEnemyCamera = new GameCamera("defeatedEnemyCamera");
+	defeatedEnemyCamera->Initialize();
 
-	AddLayer("uiLayer", uiCamera);
+	AddLayer("defeatedEnemyLayer", defeatedEnemyCamera);
 
 }
 
