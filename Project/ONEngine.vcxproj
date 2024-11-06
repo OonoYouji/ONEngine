@@ -148,7 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyChaseState.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -173,6 +172,7 @@
     <ClCompile Include="Library\Input\Keyboard.cpp" />
     <ClCompile Include="Library\Input\Mouse.cpp" />
     <ClCompile Include="Library\Math\Easing.cpp" />
+    <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Library\Math\Matrix3x3.cpp" />
     <ClCompile Include="Library\Math\Matrix4x4.cpp" />
     <ClCompile Include="Library\Math\Quaternion.cpp" />
@@ -243,9 +243,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTreeForwardDeclaration.h" />
     <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyChaseState.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />

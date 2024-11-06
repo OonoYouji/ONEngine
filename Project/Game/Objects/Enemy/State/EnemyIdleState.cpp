@@ -14,43 +14,34 @@ void EnemyIdleState::Update(){
 	rootNode_->tick();
 }
 
+LongIdleAction::LongIdleAction(Enemy* enemy,float _time):EnemyBehaviorTree::Action(enemy),time_(_time){
+//	enemy_->SetAnimationRender("Kari_Boss_LongWait");
+}
+
 EnemyBehaviorTree::Status LongIdleAction::tick(){
 	time_ -= Time::DeltaTime();
+	enemy_->Debug_SetCurrentAction("LongIdle");
 	if(time_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 
 	return EnemyBehaviorTree::Status::RUNNING;
+}
+
+ShortIdleAction::ShortIdleAction(Enemy* enemy,float _time):EnemyBehaviorTree::Action(enemy),time_(_time){
+	// enemy_->SetAnimationRender("Kari_Boss_Wait");
 }
 
 EnemyBehaviorTree::Status ShortIdleAction::tick(){
 	time_ -= Time::DeltaTime();
+	enemy_->Debug_SetCurrentAction("ShortIdle");
 	if(time_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
 
-IdleCondition::IdleCondition(Enemy* enemy):Condition(enemy),
-maxStamina(enemy_->GetMaxStamina()),
-currentStamina(enemy_->GetStamina()),
-maxHP(enemy_->GetMaxHP()),
-currentHP(enemy_->GetHP()){
-}
-
-EnemyBehaviorTree::Status IdleCondition::tick(){
-	float idlePoint = 0.0f;
-	idlePoint += (1.0f - (currentStamina / maxStamina)) * staminaWeight_;
-	idlePoint += (currentHP / maxHP) * hpWeight_;
-	// ロング
-	if(idlePoint >= judgePointLongOrShort_){
-		return EnemyBehaviorTree::Status::SUCCESS;
-	} else{ // ショート
-		return EnemyBehaviorTree::Status::FAILURE;
-	}
-}
-
-EnemyBehaviorTree::Status TransitionNode::tick(){
-	enemy_->TransitionState(new EnemyIdleState(enemy_));
-	return EnemyBehaviorTree::Status::SUCCESS;
+IdleLengthSelector::IdleLengthSelector(Enemy* enemy):EnemyBehaviorTree::ScoringSelectorNode(enemy){
+	addChild(std::make_unique<ShortIdleAction>(enemy,1.0f),[this](){return enemy_->GetShortIdlePoint(); });
+	addChild(std::make_unique<LongIdleAction>(enemy,2.0f),[this](){return enemy_->GetLongIdlePoint(); });
 }

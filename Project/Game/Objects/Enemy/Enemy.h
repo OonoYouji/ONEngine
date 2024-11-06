@@ -13,7 +13,7 @@ class IEnemyState;
 class Enemy :
 	public BaseGameObject{
 public:
-	Enemy();
+	Enemy(Player* player);
 	~Enemy();
 	void Initialize()override;
 	void Update()override;
@@ -31,12 +31,42 @@ private:
 	float stamina_;
 
 	float speed_;
+
+	std::string currentAction_;
+
+	/// <summary>
+	/// IdleState variable
+	/// </summary>
+	struct WorkIdleAction{
+		float hpWeight_;
+		float staminaWeight_;
+
+		float healingStamina_;
+	};
+	WorkIdleAction workShortIdle_;
+	WorkIdleAction workLongIdle_;
+
+	/// <summary>
+	/// AttackState variable
+	/// </summary>
+	struct WorkAttackAction{
+		float hpWeight_;
+		float staminaWeight_;
+
+		float activationDistance_;
+
+		float damage_;
+		float staminaConsumed_;
+	};
+	WorkAttackAction workWeakAttack_;
+	WorkAttackAction workStrongAttack_;
 public:
-	void SetAnimationRender(AnimationRenderer* next){ animationRender_ = next; }
+	void SetAnimationRender(const std::string& filePath);
 	void TransitionState(IEnemyState* next);
 
+	void Debug_SetCurrentAction(const std::string& action){ currentAction_ = action; }
+
 	Player* GetPlayer()const;
-	void SetPlayer(Player* p);
 
 	const float GetMaxHP()const{ return maxHp_; }
 	float GetHP()const{ return hp_; }
@@ -46,5 +76,16 @@ public:
 	float GetStamina()const{ return stamina_; }
 	void  SetStamina(float stamina){ stamina_ = stamina; }
 
-	float GetSpeed()const{return speed_;}
+	float GetSpeed()const{ return speed_; }
+
+	const WorkIdleAction& GetWorkShortIdle()const{ return workShortIdle_; }
+	const WorkIdleAction& GetWorkLongIdle()const{ return workLongIdle_; }
+
+	const WorkAttackAction& GetWorkWeakAttack()const{ return workWeakAttack_; }
+	const WorkAttackAction& GetWorkStrongAttack()const{ return workStrongAttack_; }
+
+	float GetShortIdlePoint()const;
+	float GetLongIdlePoint()const;
+	float GetWeakAttackPoint()const;
+	float GetStrongAttackPoint()const;
 };

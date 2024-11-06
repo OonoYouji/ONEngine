@@ -24,8 +24,9 @@
 void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
-	(new Player)->Initialize();
-	(new Enemy)->Initialize();
+	Player* player = new Player();
+	player->Initialize();
+	(new Enemy(player))->Initialize();
 
 }
 

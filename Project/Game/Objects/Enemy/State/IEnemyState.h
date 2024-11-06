@@ -18,3 +18,11 @@ protected:
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_;
 };
+
+class TransitionNode
+	: public EnemyBehaviorTree::Action{
+public:
+	TransitionNode(Enemy* enemy): EnemyBehaviorTree::Action(enemy){}
+
+	EnemyBehaviorTree::Status tick() override;
+};

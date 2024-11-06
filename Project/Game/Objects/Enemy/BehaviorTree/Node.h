@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -88,5 +89,39 @@ namespace EnemyBehaviorTree{
 		void addChild(std::unique_ptr<Node> child){
 			children.push_back(std::move(child));
 		}
+	};
+
+	class ScoringSelectorNode : public Node{
+	public:
+		ScoringSelectorNode(Enemy* enemy):Node(enemy){}
+
+		void addChild(std::unique_ptr<Node> child,std::function<float()> scoreFunction){
+			children.emplace_back(std::move(child),scoreFunction);
+		}
+
+		Status tick() override{
+			Node* bestChild = nullptr;
+			float highestScore = -std::numeric_limits<float>::infinity();
+
+			// 各ノードのスコアを計算し、最高スコアのノードを選ぶ
+			for(auto& [child,scoreFunction] : children){
+				float score = scoreFunction();
+				if(score > highestScore){
+					highestScore = score;
+					bestChild = child.get();
+				}
+			}
+
+			// 最高スコアのノードがあれば、そのノードを実行
+			if(bestChild){
+				return bestChild->tick();
+			}
+
+			return EnemyBehaviorTree::Status::FAILURE; // 実行可能なノードがない場合は失敗
+		}
+
+	private:
+		// 子ノードとそれぞれのスコア評価関数のペアを保持
+		std::vector<std::pair<std::unique_ptr<Node>,std::function<float()>>> children;
 	};
 }

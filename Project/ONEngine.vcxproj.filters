@@ -116,8 +116,8 @@
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyChaseState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
+    <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -216,8 +216,6 @@
     <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyChaseState.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTreeForwardDeclaration.h" />
     <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
   </ItemGroup>
