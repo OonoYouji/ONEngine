@@ -16,6 +16,9 @@ CapsuleCollider::~CapsuleCollider() {}
 
 void CapsuleCollider::Initialize() {
 
+	/// コライダーの形状
+	colliderType_ = COLLIDER_TYPE_CAPSULE;
+
 	transform_.reset(new Transform());
 	transform_->Initialize();
 	transform_->SetName("Transform" + std::format("##{:p}", reinterpret_cast<void*>(transform_.get())));

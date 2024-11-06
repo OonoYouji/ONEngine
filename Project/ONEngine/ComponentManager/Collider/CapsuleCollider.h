@@ -20,6 +20,10 @@ public:
 
 	void CreateCollider([[maybe_unused]] const Model* model) override;
 
+	/// <summary>
+	/// カプセルの端をセット
+	/// </summary>
+	/// <param name="_positionArray"></param>
 	void SetPositionArray(const std::array<Vec3*, 2>& _positionArray);
 
 private:

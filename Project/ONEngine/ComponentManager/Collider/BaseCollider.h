@@ -7,6 +7,15 @@
 
 #include "GraphicManager/ModelManager/Model.h"
 
+
+enum COLLIDER_TYPE {
+	COLLIDER_TYPE_BOX,
+	COLLIDER_TYPE_SPHERE,
+	COLLIDER_TYPE_CAPSULE,
+	COLLIDER_TYPE_COUNT,
+};
+
+
 /// ===================================================
 /// 3Dコライダーの基底クラス
 /// ===================================================
@@ -29,10 +38,14 @@ public:
 
 	Vec3 GetPosition() const;
 
+	int GetColliderType() const { return colliderType_; }
+
 protected:
 	/// ===================================================
 	/// protected : objects
 	/// ===================================================
 
 	std::unique_ptr<Transform> transform_;
+
+	int colliderType_;
 };

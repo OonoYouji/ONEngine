@@ -6,6 +6,7 @@
 #include "ComponentManager/Collider/BaseCollider.h"
 #include "ComponentManager/Collider/BoxCollider.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/Collider/CapsuleCollider.h"
 
 
 bool CollisionChecker::BoxToBox(BoxCollider* a, BoxCollider* b) {
@@ -72,6 +73,18 @@ bool CollisionChecker::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 	return false;
 }
 
+bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) {
+	return false;
+}
+
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
+	return false;
+}
+
+bool CollisionChecker::BoxToCapsule(BoxCollider* box, CapsuleCollider* capsule) {
+	return false;
+}
+
+bool CollisionChecker::SphereToCapsule(SphereCollider* sphere, CapsuleCollider* capsule) {
 	return false;
 }
