@@ -18,6 +18,11 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void OnCollisionStay(BaseGameObject* const _collision) override;
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+	void OnCollisionExit(BaseGameObject* const _collision) override;
+
 private:
+	class MeshRenderer* meshRenderer_ = nullptr;
 	std::array<Vec3, 2> positionArray_;
 };

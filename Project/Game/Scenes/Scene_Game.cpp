@@ -24,8 +24,9 @@
 void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
-	(new DemoBoxColliderOBJ)->Initialize();
-	(new DemoSphereColliderOBJ)->Initialize();
+	(new DemoObject)->Initialize();
+	//(new DemoBoxColliderOBJ)->Initialize();
+	//(new DemoSphereColliderOBJ)->Initialize();
 
 	mainCamera_->SetPosition({ 0.0f, 0.0f, -5.0f });
 }

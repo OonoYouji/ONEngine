@@ -24,14 +24,14 @@ void CapsuleCollider::Initialize() {
 	transform_->SetName("Transform" + std::format("##{:p}", reinterpret_cast<void*>(transform_.get())));
 	transform_->rotateOrder = QUATERNION;
 	transform_->scale = {
-		1.0f, capsuleScale_, capsuleScale_
+		1.0f, radius_, radius_
 	};
 
 	for(auto& transform : transformArray_) {
 		transform.Initialize();
 		transform.SetName("Transform" + std::format("##{:p}", reinterpret_cast<void*>(&transform)));
 
-		transform.scale = Vec3::kOne * capsuleScale_;
+		transform.scale = Vec3::kOne * radius_;
 	}
 
 	sphere_ = ModelManager::Load("Sphere");
@@ -55,7 +55,7 @@ void CapsuleCollider::Update() {
 
 	/// Scaleの計算
 	transform_->scale = {
-		capsuleScale_, capsuleScale_, 
+		radius_, radius_, 
 		lenght_ * 0.5f
 	};
 
@@ -63,7 +63,7 @@ void CapsuleCollider::Update() {
 	for(size_t i = 0; i < 2; ++i) {
 		Transform* transform = &transformArray_[i];
 		transform->position  = *positionArray_[i];
-		transform->scale     = Vec3::kOne * capsuleScale_;
+		transform->scale     = Vec3::kOne * radius_;
 
 		transform->Update();
 		transform->matTransform *= GetOwner()->GetMatTransform();
@@ -84,7 +84,7 @@ void CapsuleCollider::Debug() {
 
 		transform_->Debug();
 
-		ImGui::DragFloat("capsule scale", &capsuleScale_, 0.01f);
+		ImGui::DragFloat("radius", &radius_, 0.01f);
 		
 		ImGui::TreePop();
 	}
@@ -96,6 +96,18 @@ void CapsuleCollider::CreateCollider(const Model* model) {}
 
 void CapsuleCollider::SetPositionArray(const std::array<Vec3*, 2>& _positionArray) {
 	positionArray_ = _positionArray;
+}
+
+Vec3 CapsuleCollider::GetStartPosition() const {
+	return Mat4::Transform(*positionArray_[0], transform_->matTransform);
+}
+
+Vec3 CapsuleCollider::GetEndPosition() const {
+	return Mat4::Transform(*positionArray_[1], transform_->matTransform);
+}
+
+void CapsuleCollider::SetRadius(float _radius) {
+	radius_ = _radius;
 }
 
 

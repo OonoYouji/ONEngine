@@ -8,8 +8,13 @@
 
 /// components
 #include "ComponentManager/Collider/CapsuleCollider.h"
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 void DemoObject::Initialize() {
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel("axis");
+	meshRenderer_->SetMaterial("white2x2");
+
 	CapsuleCollider* cc = AddComponent<CapsuleCollider>();
 	
 	positionArray_[0] = { 1.0f, 0.0f, 0.0f};
@@ -29,4 +34,16 @@ void DemoObject::Debug() {
 
 		ImGui::TreePop();
 	}
+}
+
+void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+}
+
+void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+}
+
+void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 }
