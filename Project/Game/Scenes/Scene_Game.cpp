@@ -21,9 +21,9 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new DemoObject2)->Initialize();
 	(new DemoObject)->Initialize();
-	
+
+	mainCamera_->SetPosition({ 0.0f, 0.0f, -5.0f });
 }
 
 

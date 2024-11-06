@@ -19,30 +19,7 @@ public:
 	void Debug()      override;
 
 private:
-	int id_;
-	float speed_;
-	bool isAlive_;
-	Vec2 size_;
-	Vec3 position_;
-	Vec4 color_;
-};
+	
+	std::array<Transform, 2> transformArray_;
 
-
-class DemoObject2 final : public BaseGameObject {
-public:
-
-	DemoObject2() { CreateTag(this); }
-	~DemoObject2() {}
-
-	void Initialize() override;
-	void Update()     override;
-	void Debug()      override;
-
-private:
-	int id_;
-	float speed_;
-	bool isAlive_;
-	Vec2 size_;
-	Vec3 position_;
-	Vec4 color_;
 };

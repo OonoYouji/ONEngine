@@ -112,6 +112,7 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

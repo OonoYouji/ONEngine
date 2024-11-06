@@ -189,6 +189,7 @@
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />

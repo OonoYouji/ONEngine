@@ -7,15 +7,20 @@
 #include "VariableManager/VariableManager.h"
 
 /// components
-#include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
-#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
-#include "ComponentManager/AnimationRenderer/SkeletonRenderer.h"
-#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
+#include "ComponentManager/Collider/CapsuleCollider.h"
 
 void DemoObject::Initialize() {
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("light.png");
+	CapsuleCollider* cc = AddComponent<CapsuleCollider>();
+	
+	for(size_t i = 0; i < 2; ++i) {
+		transformArray_[i].Initialize();
+		transformArray_[i].SetName("Transform##" + std::to_string(i));
+	}
+
+	transformArray_[0].position = { 1.0f, 0.0f, 0.0f};
+	transformArray_[1].position = { -1.0f, 0.0f, 0.0f};
+	
+	cc->SetTransformArray({ &transformArray_[0], &transformArray_[1] });
 }
 
 void DemoObject::Update() {
@@ -24,23 +29,9 @@ void DemoObject::Update() {
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-
-		ImGui::TreePop();
-	}
-}
-
-void DemoObject2::Initialize() {
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("uvChecker.png");
-}
-
-void DemoObject2::Update() {
-}
-
-void DemoObject2::Debug() {
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-
+		for(auto& transform : transformArray_) {
+			transform.Debug();
+		}
 
 		ImGui::TreePop();
 	}
