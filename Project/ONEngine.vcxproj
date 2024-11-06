@@ -152,6 +152,7 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />

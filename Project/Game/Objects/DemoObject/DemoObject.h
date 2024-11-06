@@ -19,7 +19,5 @@ public:
 	void Debug()      override;
 
 private:
-	
 	std::array<Vec3, 2> positionArray_;
-
 };
