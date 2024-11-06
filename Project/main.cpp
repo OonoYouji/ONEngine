@@ -90,6 +90,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	AnimationRendererCommon::GetInstance()->Initialize();
 
+	collisionManager->Initialize();
+
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
 	CommandLineInterface::GetInstance()->Initialize();
@@ -163,6 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	sceneManager->Finalize();
 	cameraManager->Finalize();
 	gameObjectManager->Finalize();
+	collisionManager->Finalize();
 
 	Line3D::SFinalize();
 	line2d->Finalize();
