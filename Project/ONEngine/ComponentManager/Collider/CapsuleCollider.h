@@ -26,6 +26,15 @@ public:
 	/// <param name="_positionArray"></param>
 	void SetPositionArray(const std::array<Vec3*, 2>& _positionArray);
 
+	Vec3 GetStartPosition() const;
+	Vec3 GetEndPosition()   const;
+
+	const Vec3& GetDirection() const { return direction_; }
+	float GetLenght() const { return lenght_; }
+
+	float GetRadius() const { return radius_; }
+	void SetRadius(float _radius);
+
 private:
 
 	Model* sphere_ = nullptr;
@@ -37,5 +46,5 @@ private:
 	Vec3  direction_{};
 	float lenght_;
 
-	float capsuleScale_ = 1.0f;
+	float radius_ = 1.0f;
 };

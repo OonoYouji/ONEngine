@@ -1,8 +1,13 @@
 #define NOMINMAX
 #include "CollisionChecker.h"
 
+/// std
+#include <algorithm>
+
+/// lib
 #include "Math/Vector3.h"
 
+/// collider
 #include "ComponentManager/Collider/BaseCollider.h"
 #include "ComponentManager/Collider/BoxCollider.h"
 #include "ComponentManager/Collider/SphereCollider.h"
@@ -74,7 +79,40 @@ bool CollisionChecker::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 }
 
 bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) {
-	return false;
+	const Vec3& aDir   = a->GetDirection(); // カプセルAの線分ベクトル
+	const Vec3& bDir   = b->GetDirection(); // カプセルAの線分ベクトル
+	Vec3 aTobDirection = a->GetStartPosition() - b->GetStartPosition();
+
+	float aLenSq = std::pow(aDir.Len(), 2.0f); // カプセルAの線分の長さの2乗
+	float bLenSq = std::pow(bDir.Len(), 2.0f); // カプセルBの線分の長さの2乗
+
+	float uu = Vec3::Dot(aDir, aDir);
+	float vv = Vec3::Dot(bDir, bDir);
+	float uv = Vec3::Dot(aDir, bDir);
+	float uw = Vec3::Dot(aDir, aTobDirection);
+	float vw = Vec3::Dot(bDir, aTobDirection);
+
+	float denom = uu * vv - uv * uv; // 平行判定用の分母
+	float s = (denom == 0.0f) ? 0.0f : (uv * vw - vv * uw) / denom;
+	float t = (denom == 0.0f) ? 0.0f : (uu * vw - uv * uw) / denom;
+
+	// sとtを線分の範囲にクランプ
+	s = std::clamp(s, 0.0f, 1.0f);
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	// 最近接点を計算
+	Vec3 closestPointA = a->GetStartPosition() + aDir * s;
+	Vec3 closestPointB = b->GetStartPosition() + bDir * t;
+
+	// 最近接点間の距離を求める
+	Vec3 distanceVec = closestPointA - closestPointB;
+	float distanceSq = std::pow(distanceVec.Len(), 2.0f);
+
+	// カプセルの半径の合計
+	float radiusSum = a->GetRadius() + b->GetRadius();
+
+	// 距離が半径の合計以下なら当たっている
+	return distanceSq <= (radiusSum * radiusSum);
 }
 
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
