@@ -26,8 +26,8 @@ public:
 	/// <param name="_positionArray"></param>
 	void SetPositionArray(const std::array<Vec3*, 2>& _positionArray);
 
-	Vec3 GetStartPosition() const;
-	Vec3 GetEndPosition()   const;
+	Vec3 GetStartPosition();
+	Vec3 GetEndPosition();
 
 	const Vec3& GetDirection() const { return direction_; }
 	float GetLenght() const { return lenght_; }
@@ -39,10 +39,12 @@ private:
 
 	Model* sphere_ = nullptr;
 	Model* tube_   = nullptr;
+	Quaternion defaultYQuaternion_;
 
 	std::array<Vec3*, 2>     positionArray_;
 	std::array<Transform, 2> transformArray_;
 
+	Vec3  startPosition, endPosition_;
 	Vec3  direction_{};
 	float lenght_;
 

@@ -17,8 +17,8 @@ void DemoObject::Initialize() {
 
 	CapsuleCollider* cc = AddComponent<CapsuleCollider>();
 	
-	positionArray_[0] = { 1.0f, 0.0f, 0.0f};
-	positionArray_[1] = { -1.0f, 0.0f, 0.0f};
+	positionArray_[0] = {  1.0f, 0.0f, 0.0f };
+	positionArray_[1] = { -1.0f, 0.0f, 0.0f };
 	
 	cc->SetPositionArray({ &positionArray_[0], &positionArray_[1] });
 }
