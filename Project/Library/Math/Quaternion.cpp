@@ -100,6 +100,35 @@ Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target, const Ve
 	return { result.x, result.y, result.z, result.w };
 }
 
+Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target) {
+	XMFLOAT3 xmPosition, xmTarget;
+	xmPosition = { position.x, position.y, position.z };
+	xmTarget   = { target.x,   target.y,   target.z };
+
+	// ベクトルに変換
+	XMVECTOR eyeVec = XMLoadFloat3(&xmPosition);
+	XMVECTOR targetVec = XMLoadFloat3(&xmTarget);
+
+	// 前方ベクトルを計算
+	XMVECTOR forward = XMVector3Normalize(XMVectorSubtract(targetVec, eyeVec));
+
+	// オイラー角の計算
+	float yaw = std::atan2(XMVectorGetX(forward), XMVectorGetZ(forward));
+	float pitch = std::asin(-XMVectorGetY(forward));
+
+	// ロール角は不要なのでゼロとする
+	float roll = 0.0f;
+
+	// オイラー角をクォータニオンに変換
+	XMVECTOR quaternion = XMQuaternionRotationRollPitchYaw(pitch, yaw, roll);
+
+	// XMFLOAT4に変換して返す
+	XMFLOAT4 result;
+	XMStoreFloat4(&result, quaternion);
+
+	return { result.x, result.y, result.z, result.w };
+}
+
 Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, float t) {
 	// startとendの内積を計算
 	float dot = start.w * end.w + start.x * end.x + start.y * end.y + start.z * end.z;

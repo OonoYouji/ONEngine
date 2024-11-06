@@ -20,6 +20,6 @@ public:
 
 private:
 	
-	std::array<Transform, 2> transformArray_;
+	std::array<Vec3, 2> positionArray_;
 
 };
