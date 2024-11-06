@@ -25,10 +25,16 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new Player)->Initialize();
+	Player* player = new Player();
+	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
+
 	(new Stage)->Initialize();
 	(new SkyDome)->Initialize();
-	(new PlayerHPRenderer)->Initialize();
+
+	player->Initialize();
+	playerHPRenderer->Initialize();
+
+	playerHPRenderer->SetPlayer(player);
 
 	/// ui layer  index=1
 	GameCamera* uiCamera = new GameCamera("uiCamera");
