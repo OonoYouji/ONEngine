@@ -12,6 +12,8 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/DemoBoxColliderOBJ/DemoBoxColliderOBJ.h"
+#include "Objects/DemoSphereColliderOBJ/DemoSphereColliderOBJ.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -21,9 +23,11 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new DemoObject2)->Initialize();
 	(new DemoObject)->Initialize();
-	
+	//(new DemoBoxColliderOBJ)->Initialize();
+	(new DemoSphereColliderOBJ)->Initialize();
+
+	mainCamera_->SetPosition({ 0.0f, 0.0f, -5.0f });
 }
 
 

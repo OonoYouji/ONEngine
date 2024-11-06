@@ -7,15 +7,20 @@
 #include "VariableManager/VariableManager.h"
 
 /// components
+#include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
-#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
-#include "ComponentManager/AnimationRenderer/SkeletonRenderer.h"
-#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
 void DemoObject::Initialize() {
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("light.png");
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel("axis");
+	meshRenderer_->SetMaterial("white2x2");
+
+	CapsuleCollider* cc = AddComponent<CapsuleCollider>();
+	
+	positionArray_[0] = {  1.0f, 0.0f, 0.0f };
+	positionArray_[1] = { -1.0f, 0.0f, 0.0f };
+	
+	cc->SetPositionArray({ &positionArray_[0], &positionArray_[1] });
 }
 
 void DemoObject::Update() {
@@ -24,24 +29,21 @@ void DemoObject::Update() {
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+		ImGui::DragFloat3("position1", &positionArray_[0].x, 0.01f);
+		ImGui::DragFloat3("position2", &positionArray_[1].x, 0.01f);
 
 		ImGui::TreePop();
 	}
 }
 
-void DemoObject2::Initialize() {
-	auto sprite = AddComponent<SpriteRenderer>();
-	sprite->SetTexture("uvChecker.png");
+void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 }
 
-void DemoObject2::Update() {
+void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
 }
 
-void DemoObject2::Debug() {
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-
-
-		ImGui::TreePop();
-	}
+void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
+	meshRenderer_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 }
