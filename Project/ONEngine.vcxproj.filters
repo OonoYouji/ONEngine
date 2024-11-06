@@ -120,6 +120,7 @@
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
+    <ClInclude Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

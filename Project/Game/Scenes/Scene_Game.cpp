@@ -12,7 +12,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyManager.h"
 #include "Objects/SkyDome/SkyDome.h"
-
+#include "Objects/DefeatedEnemy/DefeatedEnemy.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -35,6 +35,7 @@ void Scene_Game::Initialize() {
 	Enemy*          enemy          = new Enemy();
 	EnemyManager*   enemyManager   = new EnemyManager();
 	SkyDome*        skyDome        = new SkyDome();
+	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
@@ -44,6 +45,7 @@ void Scene_Game::Initialize() {
 	enemy->Initialize();
 	enemyManager->Initialize();
 	skyDome->Initialize();
+	defeatedEnemy->Initialize();
 	
 	/// その他ポインタ設定など...
 
@@ -60,6 +62,15 @@ void Scene_Game::Initialize() {
 	skyDome->SetOffsetObject(railCamera);
 
 	mainCamera_->SetPosition({ 0.0f, 0.9f, 0.0f }); /// レールに被らないように少し上に設定
+
+
+	/// add layers
+
+	GameCamera* uiCamera = new GameCamera("uiCamera");
+	uiCamera->Initialize();
+	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+
+	AddLayer("uiLayer", uiCamera);
 
 }
 

@@ -2,6 +2,12 @@
 
 #include"Game/Scenes/Manager/BaseScene.h"
 
+enum SCENE_GAME_LAYER {
+	SCENE_GAME_LAYER_DEFAULT,
+	SCENE_GAME_LAYER_DEFEATED_ENEMY,
+	SCENE_GAME_LAYER_UI,
+};
+
 
 /// ===================================================
 /// ゲームシーン
