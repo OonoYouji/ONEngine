@@ -100,7 +100,7 @@ bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) 
 	float radiusSum = a->GetRadius() + b->GetRadius();
 
 	// 距離が半径の合計以下なら当たっている
-	return distanceVec.Len() <= radiusSum;
+	return distanceVec.Len() < radiusSum;
 }
 
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
@@ -112,5 +112,18 @@ bool CollisionChecker::BoxToCapsule(BoxCollider* box, CapsuleCollider* capsule) 
 }
 
 bool CollisionChecker::SphereToCapsule(SphereCollider* sphere, CapsuleCollider* capsule) {
-	return false;
+	const Vec3& capsuleDirection = capsule->GetDirection();
+	Vec3 capsuleToSphereDirection = sphere->GetPosition() - capsule->GetStartPosition();
+
+
+	/// カプセルのスタートからスフィアへの射影
+	float dotSphereToCapsule = Vec3::Dot(capsuleDirection, capsuleToSphereDirection);
+	dotSphereToCapsule       = std::clamp(dotSphereToCapsule, 0.0f, capsule->GetLenght());
+
+	Vec3 closestPoint = capsule->GetStartPosition() + capsuleDirection * dotSphereToCapsule;
+	float radiusSum   = sphere->GetRadius() + capsule->GetRadius();
+
+	Vec3 distance = closestPoint - sphere->GetPosition();
+
+	return distance.Len() < radiusSum;
 }
