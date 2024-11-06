@@ -20,17 +20,18 @@ public:
 
 	void CreateCollider([[maybe_unused]] const Model* model) override;
 
-	void SetTransformArray(const std::array<Transform*, 2>& _transformArray);
+	void SetPositionArray(const std::array<Vec3*, 2>& _positionArray);
 
 private:
 
 	Model* sphere_ = nullptr;
 	Model* tube_   = nullptr;
 
-	std::array<Transform*, 2> transformArray_;
+	std::array<Vec3*, 2>     positionArray_;
+	std::array<Transform, 2> transformArray_;
 
-	Vec3 direction_{};
-	float  lenght_;
+	Vec3  direction_{};
+	float lenght_;
 
-	Vec3 upDirection_ = Vec3::kUp;
+	float capsuleScale_ = 1.0f;
 };
