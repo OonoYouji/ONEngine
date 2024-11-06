@@ -18,6 +18,11 @@ void Player::Initialize(){
 	meshRenderer_->SetModel("Sphere");
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
+
+
+	/// hp parameters
+	maxHP_     = 100.0f;
+	currentHP_ = maxHP_;
 }
 
 void Player::Update(){
@@ -25,5 +30,6 @@ void Player::Update(){
 }
 
 void Player::Debug(){
-	ImGui::DragFloat("Speed",&speed_,0.1f,0.1f);
+	ImGui::DragFloat("Speed", &speed_,     0.1f, 0.1f);
+	ImGui::DragFloat("HP",    &currentHP_, 0.1f, 0.0f, 100.0f);
 }

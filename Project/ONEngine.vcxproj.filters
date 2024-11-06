@@ -125,6 +125,8 @@
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
+    <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -232,6 +234,8 @@
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />
     <ClInclude Include="Game\Objects\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
+    <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
+    <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
