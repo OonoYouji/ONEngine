@@ -47,12 +47,15 @@ void DefeatedEnemy::Initialize() {
 	/// ---------------------------------------------------
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Sphere");
+	meshRenderer_->SetModel("Enemy");
 	meshRenderer_->SetMaterial("white2x2");
+	meshRenderer_->SetIsLighting(false);
 
 }
 
 void DefeatedEnemy::Update() {
+	//ApplyVariables();
+
 	pTransform_->rotate.y = std::fmod(
 		pTransform_->rotate.y + (0.5f * Time::DeltaTime()),
 		2.0f * std::numbers::pi_v<float>
