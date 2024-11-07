@@ -1,11 +1,17 @@
 #define NOMINMAX
 #include "CollisionChecker.h"
 
+/// std
+#include <algorithm>
+
+/// lib
 #include "Math/Vector3.h"
 
+/// collider
 #include "ComponentManager/Collider/BaseCollider.h"
 #include "ComponentManager/Collider/BoxCollider.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/Collider/CapsuleCollider.h"
 
 
 bool CollisionChecker::BoxToBox(BoxCollider* a, BoxCollider* b) {
@@ -72,6 +78,52 @@ bool CollisionChecker::SphereToSphere(SphereCollider* a, SphereCollider* b) {
 	return false;
 }
 
+bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) {
+	
+	/// 必要な値の確保
+	const Vec3& aDir   = a->GetDirection(); // カプセルAの線分ベクトル
+	const Vec3& bDir   = b->GetDirection(); // カプセルAの線分ベクトル
+	Vec3 aTobDirection = b->GetStartPosition() - a->GetStartPosition(); // a -> bへのベクトル
+
+	// 最近接点を計算
+	float dotAToB = Vec3::Dot(aDir, +aTobDirection);
+	float dotBToA = Vec3::Dot(bDir, -aTobDirection);
+
+	dotAToB = std::clamp(dotAToB, 0.0f, a->GetLenght());
+	dotBToA = std::clamp(dotBToA, 0.0f, b->GetLenght());
+
+	Vec3 closestPointA = a->GetStartPosition() + aDir * dotAToB;
+	Vec3 closestPointB = b->GetStartPosition() + bDir * dotBToA;
+
+	// 最近接点間の距離を求める
+	Vec3  distanceVec = closestPointA - closestPointB;
+	float radiusSum = a->GetRadius() + b->GetRadius();
+
+	// 距離が半径の合計以下なら当たっている
+	return distanceVec.Len() < radiusSum;
+}
+
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
 	return false;
+}
+
+bool CollisionChecker::BoxToCapsule(BoxCollider* box, CapsuleCollider* capsule) {
+	return false;
+}
+
+bool CollisionChecker::SphereToCapsule(SphereCollider* sphere, CapsuleCollider* capsule) {
+	const Vec3& capsuleDirection = capsule->GetDirection();
+	Vec3 capsuleToSphereDirection = sphere->GetPosition() - capsule->GetStartPosition();
+
+
+	/// カプセルのスタートからスフィアへの射影
+	float dotSphereToCapsule = Vec3::Dot(capsuleDirection, capsuleToSphereDirection);
+	dotSphereToCapsule       = std::clamp(dotSphereToCapsule, 0.0f, capsule->GetLenght());
+
+	Vec3 closestPoint = capsule->GetStartPosition() + capsuleDirection * dotSphereToCapsule;
+	float radiusSum   = sphere->GetRadius() + capsule->GetRadius();
+
+	Vec3 distance = closestPoint - sphere->GetPosition();
+
+	return distance.Len() < radiusSum;
 }

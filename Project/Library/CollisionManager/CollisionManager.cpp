@@ -7,6 +7,7 @@
 #include "CollisionManager/CollisionChecker.h"
 #include "ComponentManager/Collider/BoxCollider.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/Collider/CapsuleCollider.h"
 
 
 CollisionManager CollisionManager::instance_;
@@ -14,6 +15,39 @@ CollisionManager CollisionManager::instance_;
 
 
 void CollisionManager::Initialize() {
+
+	/// box to ???
+	collisionCheckFuncs_[COLLIDER_TYPE_BOX][COLLIDER_TYPE_BOX] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::BoxToBox(static_cast<BoxCollider*>(a), static_cast<BoxCollider*>(b));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_BOX][COLLIDER_TYPE_SPHERE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::BoxToSphere(static_cast<BoxCollider*>(a), static_cast<SphereCollider*>(b));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_BOX][COLLIDER_TYPE_CAPSULE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::BoxToCapsule(static_cast<BoxCollider*>(a), static_cast<CapsuleCollider*>(b));
+	};
+
+	/// sphere to ???
+	collisionCheckFuncs_[COLLIDER_TYPE_SPHERE][COLLIDER_TYPE_SPHERE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::SphereToSphere(static_cast<SphereCollider*>(a), static_cast<SphereCollider*>(b));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_SPHERE][COLLIDER_TYPE_BOX] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::BoxToSphere(static_cast<BoxCollider*>(b), static_cast<SphereCollider*>(a));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_SPHERE][COLLIDER_TYPE_CAPSULE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::SphereToCapsule(static_cast<SphereCollider*>(a), static_cast<CapsuleCollider*>(b));
+	};
+
+	/// capsule to ???
+	collisionCheckFuncs_[COLLIDER_TYPE_CAPSULE][COLLIDER_TYPE_CAPSULE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::CapsuleToCapsule(static_cast<CapsuleCollider*>(a), static_cast<CapsuleCollider*>(b));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_CAPSULE][COLLIDER_TYPE_BOX] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::BoxToCapsule(static_cast<BoxCollider*>(b), static_cast<CapsuleCollider*>(a));
+	};
+	collisionCheckFuncs_[COLLIDER_TYPE_CAPSULE][COLLIDER_TYPE_SPHERE] = [](BaseCollider* a, BaseCollider* b) {
+		return CollisionChecker::SphereToCapsule(static_cast<SphereCollider*>(b), static_cast<CapsuleCollider*>(a));
+	};
 
 }
 
@@ -44,6 +78,11 @@ void CollisionManager::Update() {
 
 			/// 同じオブジェクトなら除外
 			if(objA == objB) {
+				continue;
+			}
+
+			/// 違うレイヤーなら除外
+			if(objA->drawLayerId != objB->drawLayerId) {
 				continue;
 			}
 
@@ -100,40 +139,19 @@ void CollisionManager::Reset() {
 
 void CollisionManager::CheckCollision(BaseGameObject* objA, BaseCollider* colliderA, BaseGameObject* objB, BaseCollider* colliderB) {
 
+	int aType = colliderA->GetColliderType();
+	int bType = colliderB->GetColliderType();
+
 	/// objA, objBの当たり判定をする
-	bool isCollision = false;
+	bool isCollision = collisionCheckFuncs_[aType][bType](
+		colliderA, colliderB
+	);
 
-	/// colliderAがBoxColliderのとき
-	if(BoxCollider* boxA = dynamic_cast<BoxCollider*>(colliderA)) {
-		if(BoxCollider* boxB = dynamic_cast<BoxCollider*>(colliderB)) {
-			isCollision = CollisionChecker::BoxToBox(boxA, boxB);
-
-		} else if(SphereCollider* sphereB = dynamic_cast<SphereCollider*>(colliderB)) {
-			isCollision = CollisionChecker::BoxToSphere(boxA, sphereB);
-		}
-	}
-
-
-	/// 上で当たってなければ判定を取る
+	/// 当たっていなければ終了
 	if(!isCollision) {
-		if(SphereCollider* sphereA = dynamic_cast<SphereCollider*>(colliderA)) {
-			if(BoxCollider* boxB = dynamic_cast<BoxCollider*>(colliderB)) {
-				isCollision = CollisionChecker::BoxToSphere(boxB, sphereA);
-
-			} else if(SphereCollider* sphereB = dynamic_cast<SphereCollider*>(colliderB)) {
-
-				isCollision = CollisionChecker::SphereToSphere(sphereA, sphereB);
-			}
-		}
-
-
-		/// ここまできて当たっていなければ終了!!!
-		if(!isCollision) {
-			ErasePair(objA, objB);
-			return;
-		}
+		ErasePair(objA, objB);
+		return;
 	}
-
 
 	collisionPair_.push_back(std::make_pair(objA, objB));
 	currentCollisionPair_.push_back(std::make_pair(objA, objB));
@@ -176,7 +194,7 @@ void CollisionManager::ErasePair(BaseGameObject* objA, BaseGameObject* objB) {
 		}
 		return false;
 	});
-	
+
 	currentCollisionPair_.remove_if([&](const CollisionPair& pair) {
 		return (pair.first == objA && pair.second == objB)
 			|| (pair.first == objB && pair.second == objA);

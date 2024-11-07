@@ -29,13 +29,6 @@
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
-    <ClCompile Include="Game\Objects\Player\Player.cpp" />
-    <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
-    <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
-    <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -119,8 +112,24 @@
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
+    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
+    <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
+    <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
+    <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp" />
+    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -128,13 +137,6 @@
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
-    <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
-    <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
-    <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
-    <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
@@ -219,8 +221,25 @@
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
+    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
+    <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
+    <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
+    <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h" />
+    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

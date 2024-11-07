@@ -5,7 +5,7 @@
 
 
 void BoxCollider::Initialize() {
-
+	colliderType_ = COLLIDER_TYPE_BOX;
 }
 
 void BoxCollider::Update() {
