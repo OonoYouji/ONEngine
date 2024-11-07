@@ -24,7 +24,7 @@ void PlayerRootBehavior::Update(){
 			lastDir_ = direction_;
 		}
 		Vector3 rotate = host_->GetRotate();
-		rotate.y = lerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),workInBehavior_.rotateLerpSensitivity_);
+		rotate.y = LerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),workInBehavior_.rotateLerpSensitivity_);
 		host_->SetRotate(rotate);
 	}
 
