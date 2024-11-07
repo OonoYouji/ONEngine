@@ -14,22 +14,26 @@ void MeshRenderer::Draw() {
 
 
 
-void MeshRenderer::SetModel(const std::string& filePath) {
-	model_ = ModelManager::Load(filePath);
+void MeshRenderer::SetModel(const std::string& _filePath) {
+	model_ = ModelManager::Load(_filePath);
 }
 
-void MeshRenderer::SetModel(Model* model) {
-	model_ = model;
+void MeshRenderer::SetModel(Model* _model) {
+	model_ = _model;
 }
 
-void MeshRenderer::SetMaterial(const std::string& texName) {
+void MeshRenderer::SetMaterial(const std::string& _texName) {
 	if(!material_) {
 		material_.reset(new Material);
 	}
 
-	material_->CreateMaterial(texName);
+	material_->CreateMaterial(_texName);
 }
 
-void MeshRenderer::SetColor(const Vec4& color) {
-	material_->SetColor(color);
+void MeshRenderer::SetIsLighting(bool _isLighting) {
+	material_->SetIsLighting(_isLighting);
+}
+
+void MeshRenderer::SetColor(const Vec4& _color) {
+	material_->SetColor(_color);
 }
