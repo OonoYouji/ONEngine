@@ -30,6 +30,9 @@ void Player::Update(){
 }
 
 void Player::Debug(){
-	ImGui::DragFloat("Speed", &speed_,     0.1f, 0.1f);
 	ImGui::DragFloat("HP",    &currentHP_, 0.1f, 0.0f, 100.0f);
+}
+
+void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next){
+	currentBehavior_ = std::move(next);
 }

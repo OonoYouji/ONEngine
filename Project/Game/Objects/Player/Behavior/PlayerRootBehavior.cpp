@@ -23,6 +23,8 @@ float lerpShortAngle(float a,float b,float t){
 	return a + rotate * t;
 }
 
+PlayerRootBehavior::PlayerRootBehavior(Player* _host):IPlayerBehavior(_host),workInBehavior_(host_->GetWorkRootBehavior()){}
+
 void PlayerRootBehavior::Update(){
 	direction_ = {
 		static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
@@ -38,12 +40,12 @@ void PlayerRootBehavior::Update(){
 			lastDir_ = direction_;
 		}
 		Vector3 rotate = host_->GetRotate();
-		rotate.y = lerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),0.1f);
+		rotate.y = lerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),workInBehavior_.rotateLerpSensitivity_);
 		host_->SetRotate(rotate);
 	}
 
 	{  // Postion Update
-		float playerSpeed_ = host_->GetSpeed();
+		float playerSpeed_ = workInBehavior_.speed_;
 		Vector3 velo = {direction_.x * playerSpeed_,0.0f,direction_.y * playerSpeed_};
 		velo *=  Time::DeltaTime();
 		host_->SetPosition(host_->GetPosition() + velo);

@@ -19,23 +19,52 @@ private:
 
 	std::unique_ptr<IPlayerBehavior> currentBehavior_;
 
-	Vector2 direction_;
-	float speed_;
-
+	///===============================================
+	/// status
+	///===============================================
 	float currentHP_;
 	float maxHP_;
 
+	bool isInvisible_ = false;
 public:
-	void SetDirection(const Vector2& direction){ direction_ = direction; }
+	///===============================================
+	/// 各 Behavior で 使われる変数群 (基本調整可能なものだけ)
+	///===============================================
+	/// <summary>
+	/// 各モーションを管理するための 時間変数群
+	/// </summary>
+	struct MotionTimes{
+		float startupTime_;
+		float activeTime_;
+		float endLagTime_;
+	};
+	/// <summary>
+	/// RootBehavior で使われる変数群
+	/// </summary>
+	struct WorkRootBehavior{
+		float speed_;
+		float rotateLerpSensitivity_;
+	};
+	/// <summary>
+	/// AvoidanceBehavior で使われる変数群
+	/// </summary>
+	struct WorkAvoidanceBehavior{
+		MotionTimes motionTimes_;
 
-	const Transform* GetTransform()const{ return pTransform_; }
-	void SetScale(const Vector3 s){ pTransform_->scale = s; }
-	void SetRotate(const Vector3 r){ pTransform_->rotate = r; }
-	void SetPostion(const Vector3 pos){ pTransform_->position= pos; }
+		float moveDistance_;
+	};
+private:
+	WorkRootBehavior workRootBehavior_;
+	WorkAvoidanceBehavior workAvoidanceBehavior_;
+public:
+	void TransitionBehavior(std::unique_ptr<IPlayerBehavior> next);
 
-	float GetSpeed()const{ return speed_; }
+	float GetCurrentHP() const{ return currentHP_; }
+	float GetMaxHP()     const{ return maxHP_; }
 
-	float GetCurrentHP() const { return currentHP_; }
-	float GetMaxHP()     const { return maxHP_; }
+	void SetIsInvisible(bool invisible){ isInvisible_ = invisible; }
+	bool GetIsInvisible()const{ return isInvisible_; }
 
+	const WorkRootBehavior& GetWorkRootBehavior()const{ return workRootBehavior_; }
+	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior()const{ return workAvoidanceBehavior_; }
 };

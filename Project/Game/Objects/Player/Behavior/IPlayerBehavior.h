@@ -40,10 +40,4 @@ public:
 	virtual void Update() = 0;
 protected:
 	Player* host_;
-
-	float anticipationTime_;
-	float chargeTime_;
-	float attackTime_;
-	float RecoveryTime_;
-
 };
