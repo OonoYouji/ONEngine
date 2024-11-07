@@ -1,14 +1,17 @@
 #pragma once
 #include "IPlayerBehavior.h"
 
+struct Player::WorkRootBehavior;
 class PlayerRootBehavior :
     public IPlayerBehavior{
 public:
-	PlayerRootBehavior(Player* _host):IPlayerBehavior(_host){}
+	PlayerRootBehavior(Player* _host);
 	 ~PlayerRootBehavior(){}
 
 	void Update()override;
 protected:
+	const Player::WorkRootBehavior& workInBehavior_;
+
 	Vector2 direction_;
 	Vector2 lastDir_;
 };

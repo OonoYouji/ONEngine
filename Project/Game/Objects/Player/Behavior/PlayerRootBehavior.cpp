@@ -1,9 +1,13 @@
 #include "../Player.h"
 #include "PlayerRootBehavior.h"
 
+#include "PlayerAvoidanceBehavior.h"
+
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
 #include "Library/Math/LerpShortAngle.h"
+
+PlayerRootBehavior::PlayerRootBehavior(Player* _host):IPlayerBehavior(_host),workInBehavior_(host_->GetWorkRootBehavior()){}
 
 void PlayerRootBehavior::Update(){
 	direction_ = {
@@ -20,14 +24,20 @@ void PlayerRootBehavior::Update(){
 			lastDir_ = direction_;
 		}
 		Vector3 rotate = host_->GetRotate();
-		rotate.y = LerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),0.1f);
+		rotate.y = lerpShortAngle(rotate.y,atan2(lastDir_.x,lastDir_.y),workInBehavior_.rotateLerpSensitivity_);
 		host_->SetRotate(rotate);
 	}
 
 	{  // Postion Update
-		float playerSpeed_ = host_->GetSpeed();
+		float playerSpeed_ = workInBehavior_.speed_;
 		Vector3 velo = {direction_.x * playerSpeed_,0.0f,direction_.y * playerSpeed_};
 		velo *=  Time::DeltaTime();
 		host_->SetPosition(host_->GetPosition() + velo);
+	}
+
+	// 回避
+	if(Input::ReleaseKey(KeyCode::LShift)){
+		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_,lastDir_));
+		return;
 	}
 }
