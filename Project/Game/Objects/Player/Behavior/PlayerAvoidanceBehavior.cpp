@@ -1,9 +1,9 @@
 #include "PlayerAvoidanceBehavior.h"
-#include "../Player.h"
 
 #include "PlayerRootBehavior.h"
 
 #include "FrameManager/Time.h"
+#include "Math/Vector3.h"
 
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host,const Vector2& _direction):
 	IPlayerBehavior(_host),
@@ -15,7 +15,7 @@ PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host,const Vector2& _d
 }
 
 void PlayerAvoidanceBehavior::Update(){
-	currentTime_ = Time::DeltaTime();
+	currentTime_ += Time::DeltaTime();
 	currentUpdate_();
 }
 
@@ -24,7 +24,8 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 		currentTime_ = 0.0f;
 
 		beforePos_ = host_->GetPosition();
-		afterPos_ = beforePos_ + (direction_ * workInBehavior_.moveDistance_);
+		Vector3 v3Direction = {direction_.x,0.0f,direction_.y};
+		afterPos_ = beforePos_ + (workInBehavior_.moveDistance_ * v3Direction);
 
 		// 無敵状態に 
 		host_->SetIsInvisible(true);

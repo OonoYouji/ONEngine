@@ -1,6 +1,8 @@
 #include "../Player.h"
 #include "PlayerRootBehavior.h"
 
+#include "PlayerAvoidanceBehavior.h"
+
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
 
@@ -49,5 +51,11 @@ void PlayerRootBehavior::Update(){
 		Vector3 velo = {direction_.x * playerSpeed_,0.0f,direction_.y * playerSpeed_};
 		velo *=  Time::DeltaTime();
 		host_->SetPosition(host_->GetPosition() + velo);
+	}
+
+	// 回避
+	if(Input::ReleaseKey(KeyCode::LShift)){
+		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_,lastDir_));
+		return;
 	}
 }

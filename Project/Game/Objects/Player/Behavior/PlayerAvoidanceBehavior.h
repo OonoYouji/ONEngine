@@ -1,9 +1,11 @@
 #pragma once
 #include "IPlayerBehavior.h"
+#include "../Player.h"
 
 #include <functional>
 
-class Player::WorkAvoidanceBehavior;
+class Vector3;
+
 class PlayerAvoidanceBehavior :
 	public IPlayerBehavior{
 public:
@@ -12,7 +14,7 @@ public:
 
 	void Update()override;
 private:
-	std::function<void ()> currentUpdate_;
+	std::function<void()> currentUpdate_;
 	void StartupUpdate();
 	void Avoidance();
 	void EndLagUpdate();
@@ -24,6 +26,5 @@ private:
 
 	Vector3 beforePos_;
 	Vector3 afterPos_;
-
 	const Player::WorkAvoidanceBehavior& workInBehavior_;
 };

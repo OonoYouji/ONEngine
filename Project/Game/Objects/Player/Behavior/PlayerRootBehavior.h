@@ -1,7 +1,7 @@
 #pragma once
 #include "IPlayerBehavior.h"
 
-class Player::WorkRootBehavior;
+struct Player::WorkRootBehavior;
 class PlayerRootBehavior :
     public IPlayerBehavior{
 public:
