@@ -9,6 +9,12 @@
 #include "ComponentManager/Collider/SphereCollider.h"
 
 
+std::array<std::function<void(void)>, ENEMY_MOVE_STATE_COUNT> Enemy::stateUpdateFunctionArray_ = {
+	[]() { return &Enemy::StateMoveForward; },
+	[]() { return &Enemy::StateRatotion; },
+	[]() { return &Enemy::StateMoveUp; },
+};
+
 
 Enemy::Enemy() {
 	CreateTag(this);
@@ -36,12 +42,13 @@ void Enemy::Initialize() {
 	direction_ = Vec3::kFront;
 	speed_     = 1.0f;
 
+	moveState_ = ENEMY_MOVE_STATE_MOVE_FORWARD;
 }
 
 void Enemy::Update() {
 	meshRenderer_->SetColor(Vec4::kRed);
 
-	pTransform_->position += direction_ * speed_;
+	stateUpdateFunctionArray_[moveState_]();
 
 	lifeTime_ -= Time::DeltaTime();
 }
@@ -50,6 +57,16 @@ void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "PlayerBullet") {
 		meshRenderer_->SetColor(Vec4::kWhite);
 	}
+}
+
+void Enemy::StateMoveForward() {
+	pTransform_->position += direction_ * speed_;
+}
+
+void Enemy::StateRatotion() {}
+
+void Enemy::StateMoveUp() {
+	pTransform_->position += Vec3::kUp * speed_;
 }
 
 void Enemy::SubHP(float _subValue) {

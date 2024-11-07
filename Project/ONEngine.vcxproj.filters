@@ -119,7 +119,7 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
-    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
@@ -229,7 +229,7 @@
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
-    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
