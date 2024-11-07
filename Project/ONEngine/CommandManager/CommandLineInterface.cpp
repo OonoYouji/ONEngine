@@ -34,13 +34,13 @@ void CommandLineInterface::Initialize() {
 	AddCommand("CreateCommand",    new CreateNewCommandCMD());
 
 
-	/// コンソールの初期化
-	InitializeConsole();
+	///// コンソールの初期化
+	//InitializeConsole();
 
 }
 
 void CommandLineInterface::Finalize() {
-	FinalizeConsole();
+	//FinalizeConsole();
 }
 
 void CommandLineInterface::RenderCLI() {
@@ -52,6 +52,10 @@ void CommandLineInterface::RenderCLI() {
 
 void CommandLineInterface::ExecuteCommand(const std::string& commandInput) {
 	commandLog_.push_back(commandInput);
+}
+
+void CommandLineInterface::ExecuteCommand(const std::string& _commandKey, const std::string& _commandArgs) {
+	commands_[_commandKey]->Execution(_commandArgs);
 }
 
 void CommandLineInterface::CommandLoop() {

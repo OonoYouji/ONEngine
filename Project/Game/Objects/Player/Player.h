@@ -21,6 +21,10 @@ private:
 
 	Vector2 direction_;
 	float speed_;
+
+	float currentHP_;
+	float maxHP_;
+
 public:
 	void SetDirection(const Vector2& direction){ direction_ = direction; }
 
@@ -30,4 +34,8 @@ public:
 	void SetPostion(const Vector3 pos){ pTransform_->position= pos; }
 
 	float GetSpeed()const{ return speed_; }
+
+	float GetCurrentHP() const { return currentHP_; }
+	float GetMaxHP()     const { return maxHP_; }
+
 };

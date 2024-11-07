@@ -37,6 +37,8 @@
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
+#include "CommandManager/CommandLineInterface.h"
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// 起動速度を計算するため
@@ -90,7 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/// game object manager の初期化
 	gameObjectManager->Initialize();
-
+	CommandLineInterface::GetInstance()->Initialize();
 
 	DebugCamera* debugCamera = new DebugCamera();
 	debugCamera->Initialize();
@@ -151,6 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		assert(false);
 	}
 
+	CommandLineInterface::GetInstance()->Finalize();
 	AnimationRendererCommon::GetInstance()->Finalize();
 	Bloom::StaticFinalize();
 	MeshInstancingRenderer::SFinalize();

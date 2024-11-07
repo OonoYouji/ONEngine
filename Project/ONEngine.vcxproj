@@ -154,8 +154,12 @@
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
+    <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -239,6 +243,7 @@
     <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
@@ -252,9 +257,13 @@
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
+    <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
+    <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
+    <ClInclude Include="Game\Objects\Stage\Stage.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
@@ -338,6 +347,7 @@
     <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
@@ -377,10 +387,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
