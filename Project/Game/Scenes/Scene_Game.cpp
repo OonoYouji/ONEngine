@@ -12,6 +12,7 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 #include "Objects/Stage/Stage.h"
 #include "Objects/SkyDome/SkyDome.h"
@@ -25,16 +26,16 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Player* player = new Player();
+  Player* player = new Player();
+  player->Initialize();
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
-
+  playerHPRenderer->Initialize();
+	playerHPRenderer->SetPlayer(player);
+  
+	(new Enemy(player))->Initialize();
+	
 	(new Stage)->Initialize();
 	(new SkyDome)->Initialize();
-
-	player->Initialize();
-	playerHPRenderer->Initialize();
-
-	playerHPRenderer->SetPlayer(player);
 
 	/// ui layer  index=1
 	GameCamera* uiCamera = new GameCamera("uiCamera");
@@ -42,7 +43,6 @@ void Scene_Game::Initialize() {
 	uiCamera->SetDistance(10.0f);
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 	AddLayer("ui", uiCamera);
-
 }
 
 

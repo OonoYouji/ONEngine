@@ -147,8 +147,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Objects\Enemy\Ai\EnemyAI.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -168,6 +167,8 @@
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Library\Input\Gamepad.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="Library\Input\Keyboard.cpp" />
     <ClCompile Include="Library\Input\Mouse.cpp" />
     <ClCompile Include="Library\Math\Easing.cpp" />
+    <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Library\Math\Matrix3x3.cpp" />
     <ClCompile Include="Library\Math\Matrix4x4.cpp" />
     <ClCompile Include="Library\Math\Quaternion.cpp" />
@@ -244,11 +246,9 @@
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Objects\Enemy\Ai\EnemyAI.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -256,6 +256,7 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
     <ClInclude Include="Game\Scenes\Scene_Result.h" />
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
@@ -279,6 +281,7 @@
     <ClInclude Include="Library\Input\Mouse.h" />
     <ClInclude Include="Library\Math\CreateName.h" />
     <ClInclude Include="Library\Math\Easing.h" />
+    <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Library\Math\Matrix3x3.h" />
     <ClInclude Include="Library\Math\Matrix4x4.h" />
     <ClInclude Include="Library\Math\Quaternion.h" />
@@ -347,7 +350,6 @@
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
