@@ -1,29 +1,47 @@
 {
     "0": {
-        "hp": 7.5,
+        "direction": [
+            0.0,
+            0.0,
+            1.0
+        ],
+        "hp": 1.0,
+        "speed": 1.0,
         "startOffset": [
+            -4.5,
+            6.25,
+            8.5
+        ],
+        "startedT": 1.5
+    },
+    "1": {
+        "direction": [
             0.0,
             0.0,
-            0.0
+            1.0
+        ],
+        "hp": 1.0,
+        "speed": 1.0,
+        "startOffset": [
+            3.75,
+            2.25,
+            9.0
         ],
         "startedT": 1.75
     },
-    "1": {
-        "hp": 7.75,
-        "startOffset": [
-            0.0,
-            0.0,
-            0.0
-        ],
-        "startedT": 4.0
-    },
     "2": {
-        "hp": 3.5,
-        "startOffset": [
+        "direction": [
             0.0,
             0.0,
-            0.0
+            1.0
         ],
-        "startedT": 5.75
+        "hp": 1.0,
+        "speed": 1.0,
+        "startOffset": [
+            8.25,
+            10.5,
+            10.25
+        ],
+        "startedT": 2.0
     }
 }

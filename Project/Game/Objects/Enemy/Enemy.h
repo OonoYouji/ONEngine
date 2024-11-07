@@ -22,6 +22,11 @@ public:
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
+	Vec3  direction_;	 /// 移動方向
+	float speed_;        /// 移動スピード
+
 	float hp_;           /// ただのHP
 	float updateStartT_; /// プレイヤーのmoveTを参照する、プレイヤーがこれを超えたら更新処理を始める
+
+	float lifeTime_ = 60.0f;
 };

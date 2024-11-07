@@ -14,6 +14,8 @@ class EnemyManager : public BaseGameObject {
 
 	struct IOData {
 		Vec3  startOffset;
+		Vec3  direction;
+		float speed;
 		float startedT;
 		float hp;
 	};

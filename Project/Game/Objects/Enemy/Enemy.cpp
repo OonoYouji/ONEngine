@@ -2,6 +2,7 @@
 
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "FrameManager/Time.h"
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -32,11 +33,17 @@ void Enemy::Initialize() {
 	/// parameter
 	hp_ = 10.0f;
 
+	direction_ = Vec3::kFront;
+	speed_     = 1.0f;
+
 }
 
 void Enemy::Update() {
 	meshRenderer_->SetColor(Vec4::kRed);
 
+	pTransform_->position += direction_ * speed_;
+
+	lifeTime_ -= Time::DeltaTime();
 }
 
 void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {

@@ -82,7 +82,8 @@ void EnemyManager::Debug() {
 		if(ImGui::Button("add")) {
 			ioDataArray_.push_back(IOData(
 				{ 0, 0, 0 },
-				10.0f, 1.0f
+				{ 0, 0, 1 },
+				1.0f, 10.0f, 1.0f
 			));
 		}
 
@@ -90,9 +91,13 @@ void EnemyManager::Debug() {
 		ImGui::BeginChild("io data array", ImVec2(0, 360.0f), true, ImGuiWindowFlags_HorizontalScrollbar);
 		size_t index = 0;
 		for(auto& ioData : ioDataArray_) {
-			ImGui::DragFloat3((std::string("start offset") + std::to_string(index)).c_str(), &ioData.startOffset.x, 0.25f);;
-			ImGui::DragFloat((std::string("hp") + std::to_string(index)).c_str(),        &ioData.hp,         0.25f);;
-			ImGui::DragFloat((std::string("startedT") + std::to_string(index)).c_str(),  &ioData.startedT,   0.25f);;
+			ImGui::DragFloat3((std::string("start offset##")   + std::to_string(index)).c_str(), &ioData.startOffset.x, 0.25f);
+			
+			ImGui::DragFloat3((std::string("move direction##") + std::to_string(index)).c_str(), &ioData.direction.x,   0.25f);
+			ImGui::DragFloat((std::string("move speed##")      + std::to_string(index)).c_str(), &ioData.speed,         0.25f);
+
+			ImGui::DragFloat((std::string("hp##")              + std::to_string(index)).c_str(), &ioData.hp,            0.25f);
+			ImGui::DragFloat((std::string("startedT##")        + std::to_string(index)).c_str(), &ioData.startedT,      0.25f);
 
 			ImGui::Spacing();
 			++index;
@@ -140,6 +145,8 @@ void EnemyManager::SaveFile(const std::string& filePath) {
 
 		IOData& data = ioDataArray_[i];
 		item["startOffset"] = json::array({ data.startOffset.x, data.startOffset.y, data.startOffset.z });
+		item["direction"]   = json::array({ data.direction.x, data.direction.y, data.direction.z });
+		item["speed"]       = data.speed;
 		item["startedT"]    = data.startedT;
 		item["hp"]          = data.hp;
 	}
@@ -189,14 +196,19 @@ void EnemyManager::LoadFile(const std::string& filePath) {
 
 	for(auto& item : root.items()) {
 
-		auto jsonPos      = item.value()["startOffset"];
-		auto jsonStartedT = item.value()["startedT"];
-		auto jsonHP       = item.value()["hp"];
+		auto jsonPos       = item.value()["startOffset"];
+		auto jsonDirection = item.value()["direction"];
+		auto jsonSpeed     = item.value()["speed"];
+
+		auto jsonStartedT  = item.value()["startedT"];
+		auto jsonHP        = item.value()["hp"];
 
 		IOData ioData {
-			.startOffset = {jsonPos.at(0), jsonPos.at(1), jsonPos.at(2)},
-			.startedT = jsonStartedT,
-			.hp = jsonHP
+			.startOffset = { jsonPos.at(0), jsonPos.at(1), jsonPos.at(2) },
+			.direction   = { jsonDirection.at(0), jsonDirection.at(1), jsonDirection.at(2) },
+			.speed       = jsonSpeed,
+			.startedT    = jsonStartedT,
+			.hp          = jsonHP
 		};
 
 		ioDataArray_.push_back(ioData);
