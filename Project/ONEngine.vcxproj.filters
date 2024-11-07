@@ -121,6 +121,10 @@
     <ClCompile Include="Game\Objects\Enemy\Ai\EnemyAI.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
+    <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
@@ -230,6 +234,10 @@
     <ClInclude Include="Game\Objects\Enemy\Ai\EnemyAI.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
+    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
+    <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />

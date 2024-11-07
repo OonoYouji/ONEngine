@@ -5,25 +5,7 @@
 
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
-
-#include <numbers>
-
-float lerpShortAngle(float a,float b,float t){
-	constexpr float maxPi = std::numbers::pi_v<float> *2.0f;
-	constexpr float minPi = std::numbers::pi_v<float> *-2.0f;
-
-	float diff = b - a;
-
-	float rotate = std::fmod(diff,maxPi);
-
-	if(rotate >= std::numbers::pi){
-		rotate += minPi;
-	} else if(rotate <= -std::numbers::pi){
-		rotate += maxPi;
-	}
-
-	return a + rotate * t;
-}
+#include "Library/Math/LerpShortAngle.h"
 
 PlayerRootBehavior::PlayerRootBehavior(Player* _host):IPlayerBehavior(_host),workInBehavior_(host_->GetWorkRootBehavior()){}
 
