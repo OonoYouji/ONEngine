@@ -14,6 +14,7 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
+#include "GraphicManager/Light/DirectionalLight.h"
 
 
 RailCamera::RailCamera() {
@@ -74,6 +75,11 @@ void RailCamera::Update() {
 		std::atan2(moveDirection_.x, moveDirection_.z),
 		std::atan2(rightDirection_.y, upDirection_.y),
 	};
+
+
+
+	/// 進行方向にライトを向ける
+	pDirectionalLight_->SetDirection(moveDirection_.Normalize());
 
 }
 
@@ -161,11 +167,14 @@ void RailCamera::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
 }
 
+void RailCamera::SetDirectionalLight(DirectionalLight* _directionalLight) {
+	pDirectionalLight_ = _directionalLight;
+}
+
 void RailCamera::SetGameCamera(GameCamera* _gameCamera) {
 	pGameCamera_ = _gameCamera;
 	assert(pGameCamera_);
 
 	/// thisがgame cameraの親
 	pGameCamera_->SetParent(pTransform_);
-
 }

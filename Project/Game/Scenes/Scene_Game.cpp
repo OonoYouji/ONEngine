@@ -51,6 +51,8 @@ void Scene_Game::Initialize() {
 
 	railCamera->SetGameCamera(mainCamera_);
 	railCamera->SetShootingCourse(shootingCourse);
+	railCamera->SetDirectionalLight(directionalLight_);
+
 	player->SetParent(railCamera->GetTransform());
 	player->SetReticle(reticle);
 

@@ -31,6 +31,7 @@ public:
 
 	void SetGameCamera(GameCamera* _gameCamera);
 	void SetShootingCourse(ShootingCourse* _shootingCourse);
+	void SetDirectionalLight(class DirectionalLight* _directionalLight);
 
 
 	float GetMovingTime()    const { return movingTime_; }
@@ -64,5 +65,6 @@ private:
 	/// other class pointer
 	ShootingCourse* pShootingCourse_ = nullptr;
     GameCamera*     pGameCamera_ = nullptr;
+	class DirectionalLight* pDirectionalLight_ = nullptr;
 
 };

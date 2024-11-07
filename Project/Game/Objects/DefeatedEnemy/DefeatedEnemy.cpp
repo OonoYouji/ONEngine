@@ -48,6 +48,7 @@ void DefeatedEnemy::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Sphere");
+	meshRenderer_->SetMaterial("white2x2");
 
 }
 
