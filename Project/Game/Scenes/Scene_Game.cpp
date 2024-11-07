@@ -13,6 +13,7 @@
 #include "Objects/Enemy/EnemyManager.h"
 #include "Objects/SkyDome/SkyDome.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
+#include "Objects/ScoreBoard/ScoreBoard.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -36,6 +37,7 @@ void Scene_Game::Initialize() {
 	EnemyManager*   enemyManager   = new EnemyManager();
 	SkyDome*        skyDome        = new SkyDome();
 	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
+	ScoreBoard*     scoreBoard     = new ScoreBoard();
 
 	/// instance initializing...
 	shootingCourse->Initialize();
@@ -46,6 +48,7 @@ void Scene_Game::Initialize() {
 	enemyManager->Initialize();
 	skyDome->Initialize();
 	defeatedEnemy->Initialize();
+	scoreBoard->Initialize();
 	
 	/// その他ポインタ設定など...
 
@@ -72,6 +75,7 @@ void Scene_Game::Initialize() {
 	defeatedEnemyCamera->Initialize();
 
 	AddLayer("defeatedEnemyLayer", defeatedEnemyCamera);
+	AddLayer("uiLayer", defeatedEnemyCamera);
 
 }
 
