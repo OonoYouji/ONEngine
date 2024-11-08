@@ -42,5 +42,6 @@ private:
 	D3D12_INDEX_BUFFER_VIEW               ibv_           = {};
 
 
+	std::list<NumberRenderer*>            activeList_    = {};
 
 };

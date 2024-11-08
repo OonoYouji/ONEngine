@@ -96,12 +96,15 @@ void NumberRendererCommon::Initialize() {
 
 void NumberRendererCommon::Finalize() {
 	pipelineState_.reset();
+
+	vertexBuffer_.Reset();
+	indexBuffer_.Reset();
 }
 
 
 
 void NumberRendererCommon::PreDraw() {
-
+	activeList_.clear();
 }
 
 void NumberRendererCommon::PostDraw() {
@@ -111,11 +114,15 @@ void NumberRendererCommon::PostDraw() {
 	pipelineState_->SetPipelineState();
 
 	/// default setting
+	pCommandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	/// vbv, ivb setting
+	/// vbv, ibv setting
 	pCommandList->IASetIndexBuffer(&ibv_);
 	pCommandList->IASetVertexBuffers(0, 1, &vbv_);
 
-
+	/// buffer setting
+	for(auto& numberRenderer : activeList_) {
+		numberRenderer->MaterialBindToCommandList(1, pCommandList);
+	}
 
 }

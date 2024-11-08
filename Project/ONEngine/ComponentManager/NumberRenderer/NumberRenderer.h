@@ -45,7 +45,7 @@ struct NumberRendererVertexData {
 class NumberRenderer final : public BaseComponent {
 public:
 
-	NumberRenderer();
+	NumberRenderer(uint32_t _maxDigit);
 	~NumberRenderer();
 
 	void Initialize() override;
@@ -59,6 +59,12 @@ public:
 	/// </summary>
 	void CalcuationScoreDigit();
 
+	/// <summary>
+	/// マテリアルをコマンドリストにバインドする
+	/// </summary>
+	/// <param name="_commandList"></param>
+	void MaterialBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList);
+
 
 	void SetTexture(const std::string& _filePath);
 
@@ -70,14 +76,23 @@ public:
 
 private:
 
-	uint32_t                score_;           /// スコア
-	std::vector<uint32_t>   scoreDigitArray_; /// 各桁の値を保持する
-	
-	std::vector<Transform>  transformArray_;  /// 各数字の座標の配列
+	uint32_t                    maxScore_;        /// スコアの最大値
+	uint32_t                    score_;           /// スコア
+	const uint32_t              kMaxDigit_;       /// スコアの桁の最大値
+	std::vector<uint32_t>       scoreDigitArray_; /// 各桁の値を保持する
 
-	ComPtr<ID3D12Resource>  materialBuffer_     = nullptr;
-	NumberRendererMaterial* mappedMaterialData_ = nullptr;
+	std::vector<Transform>      transformArray_;  /// 各数字の座標の配列
+	uint32_t                    transformSRVDescriptorIndex_;
+	D3D12_CPU_DESCRIPTOR_HANDLE transformCPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE transformGPUHandle_;
 
-	std::string             textureName_;     /// テクスチャの名前
+	ComPtr<ID3D12Resource>      transformArrayBuffer_ = nullptr;
+	std::vector<Mat4*>          mappedMatTransformArray_;
+
+	ComPtr<ID3D12Resource>      materialBuffer_       = nullptr;
+	NumberRendererMaterial*     mappedMaterialData_   = nullptr;
+
+	std::string                 textureName_;     /// テクスチャの名前
+
 
 };
