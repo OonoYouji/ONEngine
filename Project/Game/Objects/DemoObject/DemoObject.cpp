@@ -12,10 +12,12 @@
 #include "ComponentManager/NumberRenderer/NumberRenderer.h"
 
 void DemoObject::Initialize() {
-	NumberRenderer* nr = AddComponent<NumberRenderer>(5u);
+	numberRenderer_ = AddComponent<NumberRenderer>(5u);
 }
 
 void DemoObject::Update() {
+	numberRenderer_->SetScore(numberRenderer_->GetScore() + 1);
+	
 }
 
 void DemoObject::Debug() {

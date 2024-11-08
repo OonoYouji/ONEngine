@@ -40,8 +40,10 @@ void NumberRenderer::Initialize() {
 	materialBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedMaterialData_));
 
 	/// マッピング用データの初期化
-	mappedMaterialData_->color = Vec4::kWhite;
-	mappedMaterialData_->space = 1.0f;
+	mappedMaterialData_->color       = Vec4::kWhite;
+	mappedMaterialData_->textureSize = Vec2(1.0f, 1.0f);
+	mappedMaterialData_->tileSize    = Vec2(1.0f, 1.0f);
+	mappedMaterialData_->space       = 1.0f;
 
 
 	/// ---------------------------------------------------
@@ -64,7 +66,17 @@ void NumberRenderer::Initialize() {
 		matTransformBuffer_->SetMappedData(i, transformArray_[i].matTransform);
 	}
 
-	SetTexture("uvChecker.png");
+
+	numberDigitBuffer_.reset(new DxStructuredBuffer<uint32_t>());
+	numberDigitBuffer_->Create(kMaxDigit_);
+
+	scoreDigitArray_.resize(kMaxDigit_);
+	for(size_t i = 0; i < kMaxDigit_; ++i) {
+		scoreDigitArray_[i] = static_cast<uint32_t>(i);
+		numberDigitBuffer_->SetMappedData(i, scoreDigitArray_[i]);
+	}
+
+	SetTexture("number.png");
 
 }
 
@@ -78,6 +90,12 @@ void NumberRenderer::Update() {
 		transform.Update();
 		matTransformBuffer_->SetMappedData(i, transformArray_[i].matTransform);
 	}
+
+	CalcuationScoreDigit();
+	for(size_t i = 0; i < kMaxDigit_; ++i) {
+		numberDigitBuffer_->SetMappedData(i, scoreDigitArray_[i]);
+	}
+
 
 }
 
@@ -101,27 +119,37 @@ void NumberRenderer::Debug() {
 			transform.Debug();
 		}
 
+		ImGui::Spacing();
+
+		for(auto& numberDigit : scoreDigitArray_) {
+			std::string label = std::format("numberDigit##{:p}", reinterpret_cast<void*>(&numberDigit));
+			ImGui::DragInt(label.c_str(), reinterpret_cast<int*>(&numberDigit));
+		}
+
 		ImGui::TreePop();
 	}
 }
 
 
 void NumberRenderer::CalcuationScoreDigit() {
-	Assert(score_ != 0u, "The score was zero.");
+	//Assert(score_ != 0u, "The score was zero.");
 
 	std::vector<uint32_t> digits;
+	uint32_t scoreCopy = score_;
 
 	/// 一の桁から確認
 	do {
-		digits.push_back(score_ % 10);
-		score_ /= 10;
-	} while(score_ > 0);
+		digits.push_back(scoreCopy % 10);
+		scoreCopy /= 10;
+	} while(scoreCopy > 0);
 
 	/// 逆順にする
 	std::reverse(digits.begin(), digits.end());
 
 	/// digit arrayに格納
-	scoreDigitArray_ = digits;
+	for(size_t i = 0; i < digits.size(); ++i) {
+		scoreDigitArray_[i] = digits[i];
+	}
 }
 
 
@@ -143,6 +171,7 @@ void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
 	MaterialBindToCommandList(1, _commandList);
 	TransformArrayBindToCommandList(2, _commandList);
 	TextureBindToCommandList(3, _commandList);
+	numberDigitBuffer_->BindToCommandList(4, _commandList);
 
 	_commandList->DrawIndexedInstanced(6, kMaxDigit_, 0, 0, 0);
 }
@@ -158,9 +187,13 @@ void NumberRenderer::SetTexture(const std::string& _filePath) {
 		name.erase(dotPosition);
 	}
 
-	TextureManager::GetInstance()->Load(name, _filePath);
-
 	textureName_ = name;
+	TextureManager::GetInstance()->Load(textureName_, _filePath);
+	const Texture& texture = TextureManager::GetInstance()->GetTexture(textureName_);
+
+	mappedMaterialData_->textureSize = texture.GetTextureSize();
+	mappedMaterialData_->tileSize    = mappedMaterialData_->textureSize;
+	mappedMaterialData_->tileSize.x /= 10.0f; /// 0~9の数が10なので
 }
 
 void NumberRenderer::SetSpace(float _space) {
