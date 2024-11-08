@@ -21,7 +21,7 @@ PlayerBullet::~PlayerBullet() {}
 
 void PlayerBullet::Initialize() {
 
-	Model* model = ModelManager::Load("Sphere");
+	Model* model = ModelManager::Load("Bullet");
 
 	/// renderer
 	meshRenderer_ = AddComponent<MeshRenderer>();
@@ -31,10 +31,12 @@ void PlayerBullet::Initialize() {
 	/// collider
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
 
+	pTransform_->rotateOrder = QUATERNION;
 }
 
 void PlayerBullet::Update() {
 	pTransform_->position += velocity_;
+	pTransform_->quaternion = Quaternion::LockAt({}, velocity_);
 
 	lifeTime_ -= Time::DeltaTime();
 	if(lifeTime_ < 0.0f) {

@@ -14,6 +14,7 @@
 #include "Objects/SkyDome/SkyDome.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
 #include "Objects/ScoreBoard/ScoreBoard.h"
+#include "Objects/Score/Score.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -38,6 +39,8 @@ void Scene_Game::Initialize() {
 	SkyDome*        skyDome        = new SkyDome();
 	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
 	ScoreBoard*     scoreBoard     = new ScoreBoard();
+	Score*          score          = new Score();
+
 
 	/// instance initializing...
 	shootingCourse->Initialize();
@@ -49,6 +52,7 @@ void Scene_Game::Initialize() {
 	skyDome->Initialize();
 	defeatedEnemy->Initialize();
 	scoreBoard->Initialize();
+	score->Initialize();
 	
 	/// その他ポインタ設定など...
 
