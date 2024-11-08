@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "LoggingManager/Logger.h"
+#include "Debugger/Assertion.h"
 
 #pragma comment(lib, "dxcompiler.lib")
 
@@ -42,7 +43,7 @@ ComPtr<IDxcBlob> ONE::DxShaderCompiler::CompileShader(const std::wstring& filePa
 	///- hlslを読み込む
 	ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
 	hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
-	assert(SUCCEEDED(hr));
+	Assert(SUCCEEDED(hr), "Compile Not Succeended");
 
 	///- ファイルの内容を設定する
 	DxcBuffer shaderSourceBuffer;
@@ -69,20 +70,21 @@ ComPtr<IDxcBlob> ONE::DxShaderCompiler::CompileShader(const std::wstring& filePa
 		includeHandler_.Get(),		//- includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)	//- コンパイル結果
 	);
-	assert(SUCCEEDED(hr));
+	Assert(SUCCEEDED(hr), "Compile Not Succeended");
 
 	///- 警告・エラーが出たらログに出力して止める
 	ComPtr<IDxcBlobUtf8> shaderError = nullptr;
 	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
 	if(shaderError != nullptr && shaderError->GetStringLength() != 0) {
 		Logger::ConsolePrint(shaderError->GetStringPointer());
-		assert(false);
+		Assert(false, shaderError->GetStringPointer());
 	}
 
 	///- Compile結果を受け取りreturnする
 	ComPtr<IDxcBlob> shaderBlob = nullptr;
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-	assert(SUCCEEDED(hr));
+	Assert(SUCCEEDED(hr), "Compile Not Succeended");
+
 	//- 成功したログ出力
 	Logger::ConsolePrint(std::format(L"Compile Succeended,    path:{},   profile:{}", filePath, profile));
 
