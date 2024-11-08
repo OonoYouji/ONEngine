@@ -121,16 +121,10 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
     <ClCompile Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
-    <ClCompile Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
-    <ClCompile Include="Game\Objects\Player\Player.cpp" />
-    <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
-    <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
-    <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
-    <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp" />
-    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
-    <ClCompile Include="Game\Objects\ScoreBoard\ScoreBoard.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -232,16 +226,10 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
     <ClInclude Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
-    <ClInclude Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
-    <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
-    <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
-    <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
-    <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h" />
-    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
-    <ClInclude Include="Game\Objects\ScoreBoard\ScoreBoard.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
+    <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

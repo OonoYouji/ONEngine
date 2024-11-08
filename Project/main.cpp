@@ -1,9 +1,10 @@
 #include <Windows.h>
 
-#include <Core/ONEngine.h>
+/// std
+#include <memory>
 
-#include <iostream>
-#include <thread>
+/// engine
+#include <Core/ONEngine.h>
 
 #include <WindowManager/WinApp.h>
 #include <LoggingManager/Logger.h>
@@ -32,10 +33,8 @@
 
 #include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
 #include "GraphicManager/SceneLayer/SceneLayer.h"
-#include "GraphicManager/PostEffect/Bloom/Bloom.h"
-#include "ComponentManager/ParticleSystem/ParticleSystem.h"
-#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
-#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+#include "ComponentManager/RenderComponentInitializer/RenderComponentInitializer.h"
 
 #include "CommandManager/CommandLineInterface.h"
 
@@ -75,20 +74,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ONEngine::GetDxCommon()
 	);
 
-	/// bloomエフェクトの初期化
-	Bloom::StaticInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList(), 2
-	);
 
-	ParticleSystem::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
-	);
-
-	MeshInstancingRenderer::SInitialize(
-		ONEngine::GetDxCommon()->GetDxCommand()->GetList()
-	);
-
-	AnimationRendererCommon::GetInstance()->Initialize();
+	/// rendering componentの初期化
+	std::unique_ptr<RenderComponentInitializer> renderComponentInitializer = std::make_unique<RenderComponentInitializer>();
+	renderComponentInitializer->Initialize();
 
 	collisionManager->Initialize();
 
@@ -156,11 +145,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		assert(false);
 	}
 
+
 	CommandLineInterface::GetInstance()->Finalize();
-	AnimationRendererCommon::GetInstance()->Finalize();
-	Bloom::StaticFinalize();
-	MeshInstancingRenderer::SFinalize();
-	ParticleSystem::SFinalize();
+
+	/// rendering componentの終了処理を行う
+	renderComponentInitializer->Finalize();
+
 	renderTexManager->Finalize();
 
 	sceneManager->Finalize();

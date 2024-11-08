@@ -9,21 +9,15 @@
 /// components
 #include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/NumberRenderer/NumberRenderer.h"
 
 void DemoObject::Initialize() {
-	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("axis");
-	meshRenderer_->SetMaterial("white2x2");
-
-	CapsuleCollider* cc = AddComponent<CapsuleCollider>();
-	
-	positionArray_[0] = {  1.0f, 0.0f, 0.0f };
-	positionArray_[1] = { -1.0f, 0.0f, 0.0f };
-	
-	cc->SetPositionArray({ &positionArray_[0], &positionArray_[1] });
+	numberRenderer_ = AddComponent<NumberRenderer>(5u);
 }
 
 void DemoObject::Update() {
+	numberRenderer_->SetScore(numberRenderer_->GetScore() + 1);
+	
 }
 
 void DemoObject::Debug() {
