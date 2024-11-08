@@ -40,9 +40,11 @@ void NumberRendererCommon::Initialize() {
 
 	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// transform 
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);  /// texture
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);  /// number digit
 	pipelineState_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 	pipelineState_->Initialize();
@@ -54,10 +56,10 @@ void NumberRendererCommon::Initialize() {
 	/// ---------------------------------------------------
 	
 	/// vertices
-	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
-	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
-	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
-	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
+	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); /// 左下
+	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); /// 左上
+	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); /// 右上
+	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); /// 右下
 
 	/// indices
 	indices_.push_back(0);

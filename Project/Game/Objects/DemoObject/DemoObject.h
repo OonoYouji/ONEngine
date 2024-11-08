@@ -24,5 +24,6 @@ public:
 
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
+	class NumberRenderer* numberRenderer_ = nullptr;
 	std::array<Vec3, 2> positionArray_;
 };

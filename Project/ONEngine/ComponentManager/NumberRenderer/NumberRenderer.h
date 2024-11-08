@@ -30,6 +30,8 @@ using namespace Microsoft::WRL;
 /// ===================================================
 struct NumberRendererMaterial {
 	Vec4  color;
+	Vec2  textureSize;
+	Vec2  tileSize;
 	float space;
 };
 
@@ -104,6 +106,8 @@ private:
 
 	std::vector<Transform>                    transformArray_;     /// 各数字の座標の配列
 	std::unique_ptr<DxStructuredBuffer<Mat4>> matTransformBuffer_;
+
+	std::unique_ptr<DxStructuredBuffer<uint32_t>> numberDigitBuffer_;
 
 	ComPtr<ID3D12Resource>                    materialBuffer_     = nullptr;
 	NumberRendererMaterial*                   mappedMaterialData_ = nullptr;
