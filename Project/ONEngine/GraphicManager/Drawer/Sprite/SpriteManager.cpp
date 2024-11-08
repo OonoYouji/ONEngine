@@ -92,9 +92,6 @@ void SpriteManager::PostDraw() {
 
 	pipelineState_->SetPipelineState();
 
-	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	pSRVDescriptorHeap->BindToCommandList(commandList);
-
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 

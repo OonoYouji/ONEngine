@@ -65,6 +65,25 @@ public:
 	/// <param name="_commandList"></param>
 	void MaterialBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList);
 
+	/// <summary>
+	/// トランスフォームの配列をコマンドリストにバインドする
+	/// </summary>
+	/// <param name="_rootParamIndex"></param>
+	/// <param name="_commandList"></param>
+	void TransformArrayBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList);
+
+	/// <summary>
+	/// テクスチャをコマンドリストにバインドする
+	/// </summary>
+	/// <param name="_rootParamIndex"></param>
+	/// <param name="_commandList"></param>
+	void TextureBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList);
+
+	/// <summary>
+	/// 描画コールまでを行う
+	/// </summary>
+	/// <param name="_commandList"></param>
+	void DrawCall(ID3D12GraphicsCommandList* _commandList);
 
 	void SetTexture(const std::string& _filePath);
 

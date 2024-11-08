@@ -6,6 +6,8 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 
+#include "Objects/Camera/Manager/CameraManager.h"
+
 
 void NumberRendererCommon::Initialize() {
 
@@ -50,21 +52,22 @@ void NumberRendererCommon::Initialize() {
 	/// ---------------------------------------------------
 	/// bufferの作成
 	/// ---------------------------------------------------
-
+	
 	/// vertices
-	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f } });
-	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f } });
-	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f } });
-	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f }, { 1.0f, 1.0f } });
+	vertices_.push_back({ { -0.5f, -0.5f, 0.0f, 1.0f}, { 0.0f, 1.0f } }); ///-  左下
+	vertices_.push_back({ { -0.5f,  0.5f, 0.0f, 1.0f}, { 0.0f, 0.0f } }); ///-  左上
+	vertices_.push_back({ {  0.5f,  0.5f, 0.0f, 1.0f}, { 1.0f, 0.0f } }); ///-  右上
+	vertices_.push_back({ {  0.5f, -0.5f, 0.0f, 1.0f}, { 1.0f, 1.0f } }); ///-  右下
 
 	/// indices
 	indices_.push_back(0);
 	indices_.push_back(1);
 	indices_.push_back(2);
 
+	indices_.push_back(0);
 	indices_.push_back(2);
-	indices_.push_back(1);
 	indices_.push_back(3);
+
 
 
 	/// vertex buffer create
@@ -109,20 +112,22 @@ void NumberRendererCommon::PreDraw() {
 
 void NumberRendererCommon::PostDraw() {
 
-	ID3D12GraphicsCommandList* pCommandList = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	ID3D12GraphicsCommandList* pCommandList         = ONEngine::GetDxCommon()->GetDxCommand()->GetList();
+	CameraManager*             cameraManager        = CameraManager::GetInstance();
+	ID3D12Resource*            viewProjectionBuffer = cameraManager->GetMainCamera()->GetViewBuffer();
 
 	pipelineState_->SetPipelineState();
 
 	/// default setting
 	pCommandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	/// vbv, ibv setting
 	pCommandList->IASetIndexBuffer(&ibv_);
 	pCommandList->IASetVertexBuffers(0, 1, &vbv_);
 
 	/// buffer setting
+	pCommandList->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer->GetGPUVirtualAddress());
+
 	for(auto& numberRenderer : activeList_) {
-		numberRenderer->MaterialBindToCommandList(1, pCommandList);
+		numberRenderer->DrawCall(pCommandList);
 	}
 }
 
