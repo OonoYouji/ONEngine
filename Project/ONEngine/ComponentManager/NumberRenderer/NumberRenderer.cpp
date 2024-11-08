@@ -147,7 +147,9 @@ void NumberRenderer::CalcuationScoreDigit() {
 	std::reverse(digits.begin(), digits.end());
 
 	/// digit arrayに格納
+	scoreDigit_ = 0;
 	for(size_t i = 0; i < digits.size(); ++i) {
+		scoreDigit_++;
 		scoreDigitArray_[i] = digits[i];
 	}
 }
@@ -173,7 +175,7 @@ void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
 	TextureBindToCommandList(3, _commandList);
 	numberDigitBuffer_->BindToCommandList(4, _commandList);
 
-	_commandList->DrawIndexedInstanced(6, kMaxDigit_, 0, 0, 0);
+	_commandList->DrawIndexedInstanced(6, scoreDigit_, 0, 0, 0);
 }
 
 
