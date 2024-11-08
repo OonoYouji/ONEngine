@@ -26,10 +26,7 @@ NumberRenderer::NumberRenderer(uint32_t _maxDigit) : kMaxDigit_(_maxDigit) {
 }
 
 NumberRenderer::~NumberRenderer() {
-	ONE::DxDescriptorHeap<ONE::HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	pSRVHeap->Free(transformSRVDescriptorIndex_);
-
-	transformArrayBuffer_.Reset();
+	matTransformBuffer_.reset();
 	materialBuffer_.Reset();
 }
 
@@ -53,41 +50,19 @@ void NumberRenderer::Initialize() {
 	
 
 	transformArray_.resize(kMaxDigit_);
-	mappedMatTransformArray_.resize(kMaxDigit_);
 
 	for(Transform& transform : transformArray_) {
 		transform.SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
 		transform.SetParent(GetOwner()->GetTransform());
 	}
 
-	/// buffer initialize
-	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxDigit_);
+	
+	matTransformBuffer_.reset(new DxStructuredBuffer<Mat4>());
+	matTransformBuffer_->Create(kMaxDigit_);
 
-	/// desc setting
-	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
-	desc.Format                     = DXGI_FORMAT_UNKNOWN;
-	desc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	desc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
-	desc.Buffer.FirstElement        = 0;
-	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
-	desc.Buffer.NumElements         = static_cast<UINT>(kMaxDigit_);
-	desc.Buffer.StructureByteStride = sizeof(Mat4);
-
-	/// cpu, gpu handle initialize
-	ONE::DxDescriptorHeap<ONE::HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	transformSRVDescriptorIndex_ = pSRVHeap->Allocate();
-
-	transformCPUHandle_ = pSRVHeap->GetCPUDescriptorHandel(transformSRVDescriptorIndex_);
-	transformGPUHandle_ = pSRVHeap->GetGPUDescriptorHandel(transformSRVDescriptorIndex_);
-
-	/// resource create
-	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(transformArrayBuffer_.Get(), &desc, transformCPUHandle_);
-
-	/// mapping data bind
-	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedMatTransformData_));
-	std::memcpy(mappedMatTransformData_, mappedMatTransformArray_.data(), sizeof(Mat4) * mappedMatTransformArray_.size());
-
+	for(size_t i = 0; i < kMaxDigit_; ++i) {
+		matTransformBuffer_->SetMappedData(i, transformArray_[i].matTransform);
+	}
 
 	SetTexture("uvChecker.png");
 
@@ -101,11 +76,9 @@ void NumberRenderer::Update() {
 		
 		transform.position.x = static_cast<float>(i) * mappedMaterialData_->space;
 		transform.Update();
-		mappedMatTransformArray_[i] = transform.matTransform;
+		matTransformBuffer_->SetMappedData(i, transformArray_[i].matTransform);
 	}
 
-	/// mapped dataにコピー
-	std::memcpy(mappedMatTransformData_, mappedMatTransformArray_.data(), sizeof(Mat4) * mappedMatTransformArray_.size());
 }
 
 void NumberRenderer::Draw() {
@@ -157,7 +130,7 @@ void NumberRenderer::MaterialBindToCommandList(UINT _rootParamIndex, ID3D12Graph
 }
 
 void NumberRenderer::TransformArrayBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {
-	_commandList->SetGraphicsRootDescriptorTable(_rootParamIndex, transformGPUHandle_);
+	matTransformBuffer_->BindToCommandList(_rootParamIndex, _commandList);
 }
 
 void NumberRenderer::TextureBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {

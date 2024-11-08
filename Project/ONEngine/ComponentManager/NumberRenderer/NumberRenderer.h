@@ -5,12 +5,14 @@
 #include <d3d12.h>
 
 /// std
+#include <memory>
 #include <vector>
 #include <cstdint>
 #include <string>
 
 /// engine
 #include "GraphicManager/TextureManager/Texture.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxStructuredBuffer.h"
 
 /// component
 #include "ComponentManager/Transform/Transform.h"
@@ -95,24 +97,17 @@ public:
 
 private:
 
-	uint32_t                    maxScore_;        /// スコアの最大値
-	uint32_t                    score_;           /// スコア
-	const uint32_t              kMaxDigit_;       /// スコアの桁の最大値
-	std::vector<uint32_t>       scoreDigitArray_; /// 各桁の値を保持する
+	uint32_t                                  maxScore_;           /// スコアの最大値
+	uint32_t                                  score_;              /// スコア
+	const uint32_t                            kMaxDigit_;          /// スコアの桁の最大値
+	std::vector<uint32_t>                     scoreDigitArray_;    /// 各桁の値を保持する
 
-	std::vector<Transform>      transformArray_;  /// 各数字の座標の配列
-	uint32_t                    transformSRVDescriptorIndex_;
-	D3D12_CPU_DESCRIPTOR_HANDLE transformCPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE transformGPUHandle_;
+	std::vector<Transform>                    transformArray_;     /// 各数字の座標の配列
+	std::unique_ptr<DxStructuredBuffer<Mat4>> matTransformBuffer_;
 
-	ComPtr<ID3D12Resource>      transformArrayBuffer_   = nullptr;
-	std::vector<Mat4>           mappedMatTransformArray_;
-	Mat4*                       mappedMatTransformData_ = nullptr;
+	ComPtr<ID3D12Resource>                    materialBuffer_     = nullptr;
+	NumberRendererMaterial*                   mappedMaterialData_ = nullptr;
 
-	ComPtr<ID3D12Resource>      materialBuffer_         = nullptr;
-	NumberRendererMaterial*     mappedMaterialData_     = nullptr;
-
-	std::string                 textureName_;     /// テクスチャの名前
-
+	std::string                               textureName_;        /// テクスチャの名前
 
 };
