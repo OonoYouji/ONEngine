@@ -17,6 +17,8 @@
 /// lib
 #include "Debugger/Assertion.h"
 
+#include "NumberRendererCommon.h"
+
 
 NumberRenderer::NumberRenderer(uint32_t _maxDigit) : kMaxDigit_(_maxDigit) {
 	Assert(kMaxDigit_ != 0u, "empty");
@@ -49,6 +51,11 @@ void NumberRenderer::Initialize() {
 	/// transform bufferの作成
 	/// ---------------------------------------------------
 	
+
+	transformArray_.resize(kMaxDigit_);
+	mappedMatTransformArray_.resize(kMaxDigit_);
+
+
 	/// buffer initialize
 	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxDigit_);
 
@@ -74,14 +81,29 @@ void NumberRenderer::Initialize() {
 	dxDevice->GetDevice()->CreateShaderResourceView(transformArrayBuffer_.Get(), &desc, transformCPUHandle_);
 
 	/// mapping data bind
-	Mat4* mappedData = nullptr;
-	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData));
+	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappedMatTransformData_));
+	std::memcpy(mappedMatTransformData_, mappedMatTransformArray_.data(), sizeof(Mat4) * mappedMatTransformArray_.size());
+
+
+
 
 }
 
-void NumberRenderer::Update() {}
+void NumberRenderer::Update() {
 
-void NumberRenderer::Draw() {}
+	/// transformの行列の更新、 行列をバッファのコピー用配列にコピー
+	for(size_t i = 0; i < transformArray_.size(); ++i) {
+		transformArray_[i].Update();
+		mappedMatTransformArray_[i] = transformArray_[i].matTransform;
+	}
+
+	/// mapped dataにコピー
+	std::memcpy(mappedMatTransformData_, mappedMatTransformArray_.data(), sizeof(Mat4) * mappedMatTransformArray_.size());
+}
+
+void NumberRenderer::Draw() {
+	NumberRendererCommon::GetInstance()->AddActive(this);
+}
 
 void NumberRenderer::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {

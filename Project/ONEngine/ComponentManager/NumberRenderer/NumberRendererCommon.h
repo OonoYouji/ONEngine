@@ -26,6 +26,8 @@ public:
 	void PreDraw();
 	void PostDraw();
 
+	void AddActive(NumberRenderer* _numberRenderer);
+
 private:
 
 	std::unique_ptr<PipelineState>        pipelineState_ = nullptr;

@@ -86,11 +86,12 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE transformCPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE transformGPUHandle_;
 
-	ComPtr<ID3D12Resource>      transformArrayBuffer_ = nullptr;
-	std::vector<Mat4*>          mappedMatTransformArray_;
+	ComPtr<ID3D12Resource>      transformArrayBuffer_   = nullptr;
+	std::vector<Mat4>           mappedMatTransformArray_;
+	Mat4*                       mappedMatTransformData_ = nullptr;
 
-	ComPtr<ID3D12Resource>      materialBuffer_       = nullptr;
-	NumberRendererMaterial*     mappedMaterialData_   = nullptr;
+	ComPtr<ID3D12Resource>      materialBuffer_         = nullptr;
+	NumberRendererMaterial*     mappedMaterialData_     = nullptr;
 
 	std::string                 textureName_;     /// テクスチャの名前
 

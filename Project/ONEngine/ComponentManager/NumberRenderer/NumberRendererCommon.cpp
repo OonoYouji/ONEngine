@@ -124,5 +124,8 @@ void NumberRendererCommon::PostDraw() {
 	for(auto& numberRenderer : activeList_) {
 		numberRenderer->MaterialBindToCommandList(1, pCommandList);
 	}
+}
 
+void NumberRendererCommon::AddActive(NumberRenderer* _numberRenderer) {
+	activeList_.push_back(_numberRenderer);
 }
