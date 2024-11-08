@@ -44,7 +44,7 @@ void NumberRenderer::Initialize() {
 
 	/// マッピング用データの初期化
 	mappedMaterialData_->color = Vec4::kWhite;
-	mappedMaterialData_->space = 16.0f;
+	mappedMaterialData_->space = 1.0f;
 
 
 	/// ---------------------------------------------------
@@ -55,6 +55,10 @@ void NumberRenderer::Initialize() {
 	transformArray_.resize(kMaxDigit_);
 	mappedMatTransformArray_.resize(kMaxDigit_);
 
+	for(Transform& transform : transformArray_) {
+		transform.SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
+		transform.SetParent(GetOwner()->GetTransform());
+	}
 
 	/// buffer initialize
 	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxDigit_);
@@ -85,7 +89,7 @@ void NumberRenderer::Initialize() {
 	std::memcpy(mappedMatTransformData_, mappedMatTransformArray_.data(), sizeof(Mat4) * mappedMatTransformArray_.size());
 
 
-
+	SetTexture("uvChecker.png");
 
 }
 
@@ -93,8 +97,11 @@ void NumberRenderer::Update() {
 
 	/// transformの行列の更新、 行列をバッファのコピー用配列にコピー
 	for(size_t i = 0; i < transformArray_.size(); ++i) {
-		transformArray_[i].Update();
-		mappedMatTransformArray_[i] = transformArray_[i].matTransform;
+		Transform& transform = transformArray_[i];
+		
+		transform.position.x = static_cast<float>(i) * mappedMaterialData_->space;
+		transform.Update();
+		mappedMatTransformArray_[i] = transform.matTransform;
 	}
 
 	/// mapped dataにコピー
@@ -114,6 +121,12 @@ void NumberRenderer::Debug() {
 
 		ImGui::ColorEdit4("color", &mappedMaterialData_->color.x, ImGuiColorEditFlags_AlphaBar);
 		ImGui::DragFloat("space", &mappedMaterialData_->space, 0.01f);
+
+		ImGui::Spacing();
+
+		for(Transform& transform : transformArray_) {
+			transform.Debug();
+		}
 
 		ImGui::TreePop();
 	}
@@ -142,6 +155,25 @@ void NumberRenderer::CalcuationScoreDigit() {
 void NumberRenderer::MaterialBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {
 	_commandList->SetGraphicsRootConstantBufferView(_rootParamIndex, materialBuffer_->GetGPUVirtualAddress());
 }
+
+void NumberRenderer::TransformArrayBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetGraphicsRootDescriptorTable(_rootParamIndex, transformGPUHandle_);
+}
+
+void NumberRenderer::TextureBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {
+	const Texture& texture = TextureManager::GetInstance()->GetTexture(textureName_);
+	_commandList->SetGraphicsRootDescriptorTable(_rootParamIndex, texture.GetGPUHandle());
+}
+
+void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
+
+	MaterialBindToCommandList(1, _commandList);
+	TransformArrayBindToCommandList(2, _commandList);
+	TextureBindToCommandList(3, _commandList);
+
+	_commandList->DrawIndexedInstanced(6, kMaxDigit_, 0, 0, 0);
+}
+
 
 void NumberRenderer::SetTexture(const std::string& _filePath) {
 	Assert(!_filePath.empty(), "file path emply!!!");
