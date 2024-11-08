@@ -99,19 +99,20 @@ public:
 
 private:
 
-	uint32_t                                  maxScore_;           /// スコアの最大値
-	uint32_t                                  score_;              /// スコア
-	const uint32_t                            kMaxDigit_;          /// スコアの桁の最大値
-	std::vector<uint32_t>                     scoreDigitArray_;    /// 各桁の値を保持する
+	uint32_t                                      maxScore_;           /// スコアの最大値
+	uint32_t                                      score_;              /// スコア
+	uint32_t                                      scoreDigit_;              /// スコア
+	const uint32_t                                kMaxDigit_;          /// スコアの桁の最大値
 
-	std::vector<Transform>                    transformArray_;     /// 各数字の座標の配列
-	std::unique_ptr<DxStructuredBuffer<Mat4>> matTransformBuffer_;
+	std::vector<Transform>                        transformArray_;     /// 各数字の座標の配列
+	std::unique_ptr<DxStructuredBuffer<Mat4>>     matTransformBuffer_;
 
+	std::vector<uint32_t>                         scoreDigitArray_;    /// 各桁の値を保持する
 	std::unique_ptr<DxStructuredBuffer<uint32_t>> numberDigitBuffer_;
 
-	ComPtr<ID3D12Resource>                    materialBuffer_     = nullptr;
-	NumberRendererMaterial*                   mappedMaterialData_ = nullptr;
+	ComPtr<ID3D12Resource>                        materialBuffer_     = nullptr;
+	NumberRendererMaterial*                       mappedMaterialData_ = nullptr;
 
-	std::string                               textureName_;        /// テクスチャの名前
+	std::string                                   textureName_;        /// テクスチャの名前
 
 };
