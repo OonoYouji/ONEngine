@@ -6,6 +6,8 @@
 /// engine
 #include "GraphicManager/PipelineState/PipelineState.h"
 
+#include "NumberRenderer.h"
+
 
 class NumberRendererCommon final {
 	NumberRendererCommon()  = default;
@@ -26,7 +28,19 @@ public:
 
 private:
 
-	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
-	PipelineState::Shader          shader_        = {};
+	std::unique_ptr<PipelineState>        pipelineState_ = nullptr;
+	PipelineState::Shader                 shader_        = {};
+
+	/// vertex buffer
+	std::vector<NumberRendererVertexData> vertices_;
+	ComPtr<ID3D12Resource>                vertexBuffer_  = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW              vbv_           = {};
+
+	/// index buffer
+	std::vector<uint32_t>                 indices_;
+	ComPtr<ID3D12Resource>                indexBuffer_   = nullptr;
+	D3D12_INDEX_BUFFER_VIEW               ibv_           = {};
+
+
 
 };
