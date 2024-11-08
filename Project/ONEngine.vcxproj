@@ -195,9 +195,12 @@
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
@@ -223,6 +226,7 @@
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\DirectionalLight.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\Model.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp" />
@@ -289,9 +293,12 @@
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
@@ -317,6 +324,7 @@
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\DirectionalLight.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\Model.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h" />
