@@ -21,6 +21,9 @@ public:
 	void Initialize();
 	void Finalize();
 
+	void PreDraw();
+	void PostDraw();
+
 private:
 
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
