@@ -26,4 +26,7 @@ private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 	class NumberRenderer* numberRenderer_ = nullptr;
 	std::array<Vec3, 2> positionArray_;
+
+
+	uint32_t score_ = 0u;;
 };
