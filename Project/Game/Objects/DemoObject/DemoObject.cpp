@@ -16,7 +16,7 @@ void DemoObject::Initialize() {
 }
 
 void DemoObject::Update() {
-	numberRenderer_->SetScore(numberRenderer_->GetScore() + 1);
+	numberRenderer_->SetScore(score_);
 	
 }
 
@@ -25,6 +25,12 @@ void DemoObject::Debug() {
 
 		ImGui::DragFloat3("position1", &positionArray_[0].x, 0.01f);
 		ImGui::DragFloat3("position2", &positionArray_[1].x, 0.01f);
+
+		int scoreCopy = score_;
+		if(ImGui::DragInt("score", &scoreCopy)) {
+			score_ = scoreCopy;
+		}
+
 
 		ImGui::TreePop();
 	}
