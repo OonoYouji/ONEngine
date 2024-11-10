@@ -175,7 +175,7 @@ void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
 	TextureBindToCommandList(3, _commandList);
 	numberDigitBuffer_->BindToCommandList(4, _commandList);
 
-	_commandList->DrawIndexedInstanced(6, scoreDigit_, 0, 0, 0);
+	_commandList->DrawIndexedInstanced(6, scoreDigit_ ? scoreDigit_ : 1, 0, 0, 0);
 }
 
 
