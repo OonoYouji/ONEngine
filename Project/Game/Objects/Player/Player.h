@@ -33,6 +33,12 @@ public:
 
 	void SetReticle(Reticle* _reticle);
 
+	/// <summary>
+	/// 弾の発射に必要なエネルギーのゲッタ
+	/// </summary>
+	/// <returns></returns>
+	float GetFiringGauge() const { return firingGauge_; }
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -42,5 +48,9 @@ private:
 
 	/// bullet param
 	float bulletSpeed_;
+
+	float firingGauge_ = 100.0f;
+	float firingSubValue_ = 5.0f;
+	float firingAddValue_ = 0.1f; /// 打っていないときは常に追加される
 
 };

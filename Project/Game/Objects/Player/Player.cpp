@@ -41,13 +41,26 @@ void Player::Initialize() {
 void Player::Update() {
 
 	if(Input::TriggerKey(KeyCode::Space)) {
-		PlayerBullet* bullet = new PlayerBullet();
-		bullet->Initialize();
-		bullet->SetPosition(GetPosition());
 
-		Vec3 diff = pReticle_->GetPosition() - GetPosition();
-		Vec3 velocity = diff.Normalize() * (bulletSpeed_ * Time::DeltaTime());
-		bullet->SetVelocity(velocity);
+		/// 発射ゲージがあれば
+		if(firingGauge_ > firingSubValue_) {
+
+			firingGauge_ -= firingSubValue_;
+			firingGauge_ = std::max(firingGauge_, 0.0f); /// 0未満にならないように
+
+			PlayerBullet* bullet = new PlayerBullet();
+			bullet->Initialize();
+			bullet->SetPosition(GetPosition());
+
+			Vec3 diff = pReticle_->GetPosition() - GetPosition();
+			Vec3 velocity = diff.Normalize() * (bulletSpeed_ * Time::DeltaTime());
+			bullet->SetVelocity(velocity);
+		}  
+
+	} else {
+
+		firingGauge_ += firingAddValue_;
+		firingGauge_ = std::min(firingGauge_, 100.0f); /// 100を超過しないように
 	}
 
 }

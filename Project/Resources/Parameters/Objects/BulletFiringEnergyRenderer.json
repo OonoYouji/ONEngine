@@ -1,0 +1,14 @@
+{
+    "BulletFiringEnergyRenderer": {
+        "position": [
+            -2.200000047683716,
+            -0.5,
+            0.0
+        ],
+        "scale": [
+            1.0,
+            3.0,
+            1.0
+        ]
+    }
+}

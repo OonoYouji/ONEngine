@@ -15,11 +15,25 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+
+	/// ===================================================
+	/// public : setter - other class pointer
+	/// ===================================================
+
+	void SetPlayer(class Player* _player);
+
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	/// component
 	class SpriteRenderer* spriteRenderer_ = nullptr;
+
+
+	/// other class pointer
+	class Player* pPlayer_ = nullptr;
+
 };

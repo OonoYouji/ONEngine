@@ -82,6 +82,8 @@ void Scene_Game::Initialize() {
 
 	skyDome->SetOffsetObject(railCamera);
 
+	bulletFiringEnergyRenderer->SetPlayer(player);
+
 	mainCamera_->SetPosition({ 0.0f, 0.9f, 0.0f }); /// レールに被らないように少し上に設定
 
 
@@ -89,9 +91,14 @@ void Scene_Game::Initialize() {
 
 	GameCamera* defeatedEnemyCamera = new GameCamera("defeatedEnemyCamera");
 	defeatedEnemyCamera->Initialize();
+	
+	GameCamera* uiCamera = new GameCamera("uiCamera");
+	uiCamera->Initialize();
+	uiCamera->SetProjectionType(ORTHOGRAPHIC);
+	uiCamera->SetDistance(10.0f);
 
 	AddLayer("defeatedEnemyLayer", defeatedEnemyCamera);
-	AddLayer("uiLayer", defeatedEnemyCamera);
+	AddLayer("uiLayer", uiCamera);
 
 }
 
