@@ -157,6 +157,7 @@
     <ClCompile Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
     <ClCompile Include="Game\Objects\GameSelector\GameSelectMode.cpp" />
     <ClCompile Include="Game\Objects\GameSelector\GameSelector.cpp" />
     <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
+    <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
     <ClInclude Include="Game\Objects\GameSelector\GameSelectMode.h" />
     <ClInclude Include="Game\Objects\GameSelector\GameSelector.h" />
     <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />

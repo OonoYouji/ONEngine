@@ -22,4 +22,7 @@ public:
 	void Update()     override;
 
 private:
+
+
+	class GameManager* gameManager_ = nullptr;
 };

@@ -19,15 +19,17 @@ class GameCamera;
 class RailCamera : public BaseGameObject {
 public:
 
-    RailCamera();
-    ~RailCamera();
+	RailCamera();
+	~RailCamera();
 
-    void Initialize() override;
-    void Update()     override;
-    void Debug()      override;
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
 
 
 	void Reset();
+	void Move();
+
 
 	void SetGameCamera(GameCamera* _gameCamera);
 	void SetShootingCourse(ShootingCourse* _shootingCourse);
@@ -37,6 +39,7 @@ public:
 	float GetMovingTime()    const { return movingTime_; }
 	float GetPreMovingTime() const { return preMovingTime_; }
 
+	bool GetIsMoveEnd() const { return isMoveEnd_; }
 
 private:
 	/// ===================================================
@@ -47,10 +50,10 @@ private:
 	Vec3  moveDirection_{};      /// 移動している方向ベクトル
 	Vec3  upDirection_{};
 	float moveSpeed_;
-	
+
 	float movingTime_;           /// 移動の総合時間
 	float preMovingTime_;        /// 移動の総合時間
-	
+
 	float nextMoveT_;            /// アンカーポイント間の移動に使うt
 	float futureMoveT_;          /// アンカーポイント間の移動に使うt
 	float futureTime_;           /// どれくらい先かを表す
@@ -59,12 +62,15 @@ private:
 	AnchorPoint futureAnchor_{}; /// 少し先のアンカーポイント(補完
 
 	Vec3 rightDirection_;
+	size_t anchorPointArraySize_; /// アンカーポイントの配列サイズ
 
+	/// 
+	bool isMoveEnd_; /// 最後まで移動したか
 
 
 	/// other class pointer
 	ShootingCourse* pShootingCourse_ = nullptr;
-    GameCamera*     pGameCamera_ = nullptr;
+	GameCamera* pGameCamera_ = nullptr;
 	class DirectionalLight* pDirectionalLight_ = nullptr;
 
 };

@@ -43,43 +43,17 @@ void RailCamera::Initialize() {
 
 void RailCamera::Update() {
 
-	/// shooting courseからanchor point arrayをもらう
-	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
-	const size_t kSegmentCount = anchorPointArray.size();
-
-	/// 前フレームのデータ保存
-	preMovingTime_ = movingTime_;
-
-	/// 移動 and 回転
-	movingTime_ += moveSpeed_ * Time::DeltaTime();
-	movingTime_ = std::clamp(movingTime_, 0.0f, kSegmentCount + 1.0f);
-
-	nextMoveT_   = 1.0f / kSegmentCount * movingTime_;
-	futureMoveT_ = 1.0f / kSegmentCount * (movingTime_ + futureTime_);
-
-
-	/// anchor pointの更新
-	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
-	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
-
-	/// 座標更新
-	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTransform_->position);
-	pTransform_->position = nextAnchor_.position;
-
-	upDirection_ = nextAnchor_.up.Normalize();
-	rightDirection_ = Vec3::Cross(upDirection_, moveDirection_).Normalize();
-
-	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
-	pTransform_->rotate = {
-		std::asin(-moveDirection_.y),
-		std::atan2(moveDirection_.x, moveDirection_.z),
-		std::atan2(rightDirection_.y, upDirection_.y),
-	};
-
-
-
+	Move();
+	
 	/// 進行方向にライトを向ける
 	pDirectionalLight_->SetDirection(moveDirection_.Normalize());
+
+
+
+	/// 最後のアンカーまでたどり着いたか確認
+	if(static_cast<int>(movingTime_) == static_cast<int>(anchorPointArraySize_ - 1)) {
+		isMoveEnd_ = true;
+	}
 
 }
 
@@ -159,6 +133,41 @@ void RailCamera::Reset() {
 	nextMoveT_     = 0.0f;
 	futureMoveT_   = 0.0f;
 	futureTime_    = 1.0f;
+}
+
+void RailCamera::Move() {
+	/// shooting courseからanchor point arrayをもらう
+	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
+	anchorPointArraySize_ = anchorPointArray.size();
+
+	/// 前フレームのデータ保存
+	preMovingTime_ = movingTime_;
+
+	/// 移動 and 回転
+	movingTime_ += moveSpeed_ * Time::DeltaTime();
+	movingTime_ = std::clamp(movingTime_, 0.0f, anchorPointArraySize_ + 1.0f);
+
+	nextMoveT_ = 1.0f / anchorPointArraySize_ * movingTime_;
+	futureMoveT_ = 1.0f / anchorPointArraySize_ * (movingTime_ + futureTime_);
+
+
+	/// anchor pointの更新
+	nextAnchor_ = SplinePosition(anchorPointArray, nextMoveT_);
+	futureAnchor_ = SplinePosition(anchorPointArray, futureMoveT_);
+
+	/// 座標更新
+	moveDirection_ = Vec3::Normalize(nextAnchor_.position - pTransform_->position);
+	pTransform_->position = nextAnchor_.position;
+
+	upDirection_ = nextAnchor_.up.Normalize();
+	rightDirection_ = Vec3::Cross(upDirection_, moveDirection_).Normalize();
+
+	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
+	pTransform_->rotate = {
+		std::asin(-moveDirection_.y),
+		std::atan2(moveDirection_.x, moveDirection_.z),
+		std::atan2(rightDirection_.y, upDirection_.y),
+	};
 }
 
 

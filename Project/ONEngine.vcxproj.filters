@@ -132,6 +132,7 @@
     <ClCompile Include="Game\Objects\Score\Score.cpp" />
     <ClCompile Include="Game\Objects\GameSelector\GameSelector.cpp" />
     <ClCompile Include="Game\Objects\GameSelector\GameSelectMode.cpp" />
+    <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Game\Objects\Score\Score.h" />
     <ClInclude Include="Game\Objects\GameSelector\GameSelector.h" />
     <ClInclude Include="Game\Objects\GameSelector\GameSelectMode.h" />
+    <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

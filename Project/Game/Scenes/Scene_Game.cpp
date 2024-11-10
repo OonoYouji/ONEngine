@@ -1,10 +1,16 @@
 #include "Scene_Game.h"
 
+/// engine
+#include "Scenes/Manager/SceneManager.h"
+
 /// component
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
-/// objects
+/// default objects
 #include "Objects/Camera/GameCamera.h"
+
+/// objects
+#include "Objects/GameManager/GameManager.h"
 #include "Objects/Player/Player.h"
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/RailCamera/RailCamera.h"
@@ -30,6 +36,7 @@ void Scene_Game::Initialize() {
 
 
 	/// instance create...
+	gameManager_                   = new GameManager();
 	ShootingCourse* shootingCourse = new ShootingCourse();
 	RailCamera*     railCamera     = new RailCamera();
 	Reticle*        reticle        = new Reticle();
@@ -43,6 +50,7 @@ void Scene_Game::Initialize() {
 
 
 	/// instance initializing...
+	gameManager_->Initialize();
 	shootingCourse->Initialize();
 	railCamera->Initialize();
 	reticle->Initialize();
@@ -54,7 +62,10 @@ void Scene_Game::Initialize() {
 	scoreBoard->Initialize();
 	score->Initialize();
 	
+
 	/// その他ポインタ設定など...
+
+	gameManager_->SetRailCamera(railCamera);
 
 	railCamera->SetGameCamera(mainCamera_);
 	railCamera->SetShootingCourse(shootingCourse);
@@ -89,5 +100,10 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 	
+
+	/// ゲームが終了したのでシーン遷移
+	if(gameManager_->GetIsGameEnd()) {
+		SceneManager::GetInstance()->SetNextScene(TITLE);
+	}
 
 }

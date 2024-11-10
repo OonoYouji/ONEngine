@@ -30,6 +30,11 @@ void Score::Initialize() {
 	vm->AddValue(groupName, "scale",    pTransform_->scale);
 
 
+	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
+
+	ApplyVariables();
+
+
 }
 
 void Score::Update() {
