@@ -147,6 +147,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.cpp" />
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.cpp" />
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyRenderer.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -258,6 +261,9 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.h" />
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.h" />
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyRenderer.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />

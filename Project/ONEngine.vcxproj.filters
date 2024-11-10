@@ -133,6 +133,9 @@
     <ClCompile Include="Game\Objects\GameSelector\GameSelector.cpp" />
     <ClCompile Include="Game\Objects\GameSelector\GameSelectMode.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyRenderer.cpp" />
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.cpp" />
+    <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -245,6 +248,9 @@
     <ClInclude Include="Game\Objects\GameSelector\GameSelector.h" />
     <ClInclude Include="Game\Objects\GameSelector\GameSelectMode.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyRenderer.h" />
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.h" />
+    <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

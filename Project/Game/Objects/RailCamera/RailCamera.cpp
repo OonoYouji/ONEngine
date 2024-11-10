@@ -34,7 +34,8 @@ void RailCamera::Initialize() {
 	/// transform
 	pTransform_->rotateOrder = YXZ;
 
-	moveSpeed_ = 0.25f;
+	//moveSpeed_ = 0.25f;
+	moveSpeed_ = 0.0f;
 
 	/// move param setting...
 	Reset();

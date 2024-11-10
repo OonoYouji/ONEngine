@@ -21,6 +21,7 @@
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
 #include "Objects/ScoreBoard/ScoreBoard.h"
 #include "Objects/Score/Score.h"
+#include "Objects/BulletFiringEnergyRenderer/BulletFiringEnergyRenderer.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -47,7 +48,7 @@ void Scene_Game::Initialize() {
 	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
 	ScoreBoard*     scoreBoard     = new ScoreBoard();
 	Score*          score          = new Score();
-
+	BulletFiringEnergyRenderer* bulletFiringEnergyRenderer = new BulletFiringEnergyRenderer();
 
 	/// instance initializing...
 	gameManager_->Initialize();
@@ -61,7 +62,7 @@ void Scene_Game::Initialize() {
 	defeatedEnemy->Initialize();
 	scoreBoard->Initialize();
 	score->Initialize();
-	
+	bulletFiringEnergyRenderer->Initialize();
 
 	/// その他ポインタ設定など...
 
@@ -103,6 +104,11 @@ void Scene_Game::Update() {
 
 	/// ゲームが終了したのでシーン遷移
 	if(gameManager_->GetIsGameEnd()) {
+		
+		/*##########################################################
+			TODO : COMMENT
+			シーン遷移を追加する -> 暗転
+		##########################################################*/
 		SceneManager::GetInstance()->SetNextScene(TITLE);
 	}
 
