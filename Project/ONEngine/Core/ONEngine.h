@@ -56,7 +56,8 @@ public:
 	static const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& GetWinApps();
 
 
-	static bool IsRunning();
+	static bool GetIsRunning();
+	static void SetIsRunning(bool _isRunning);
 
 
 private:
@@ -96,7 +97,6 @@ namespace {
 		/// private : objects
 		/// ===================================================
 
-		/// main loop
 		bool isRunning_ = true;
 
 		/// window 

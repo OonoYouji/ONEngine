@@ -32,7 +32,7 @@ void Scene_Title::Update() {
 			break;
 		case GAME_SELECT_MODE_EXIT:
 
-			sceneManager->SetIsRunning(false);
+			ONEngine::SetIsRunning(false);
 			break;
 		}
 	}

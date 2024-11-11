@@ -121,7 +121,7 @@ void CommandLineInterface::CommandLoop() {
 
 		}
 
-		if(!ONEngine::IsRunning()) {
+		if(!ONEngine::GetIsRunning()) {
 			break;
 		}
 
