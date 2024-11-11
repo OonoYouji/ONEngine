@@ -34,6 +34,18 @@ void MeshRenderer::SetIsLighting(bool _isLighting) {
 	material_->SetIsLighting(_isLighting);
 }
 
+void MeshRenderer::SetUVScale(const Vec2& _scale) {
+	material_->SetScale(_scale);
+}
+
+void MeshRenderer::SetUVRotate(float _rotate) {
+	material_->SetRotate(_rotate);
+}
+
+void MeshRenderer::SetUVPosition(const Vec2& _position) {
+	material_->SetPosition(_position);
+}
+
 void MeshRenderer::SetColor(const Vec4& _color) {
 	material_->SetColor(_color);
 }
