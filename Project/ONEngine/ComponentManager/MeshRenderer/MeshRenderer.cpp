@@ -1,5 +1,7 @@
 #include "MeshRenderer.h"
 
+/// engine
+#include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GameObjectManager/BaseGameObject.h"
 
@@ -22,12 +24,19 @@ void MeshRenderer::SetModel(Model* _model) {
 	model_ = _model;
 }
 
-void MeshRenderer::SetMaterial(const std::string& _texName) {
+void MeshRenderer::SetMaterial(const std::string& _filePath) {
 	if(!material_) {
 		material_.reset(new Material);
 	}
+	size_t dotPosition = _filePath.find('.');
+	std::string name = _filePath;
 
-	material_->CreateMaterial(_texName);
+	if(dotPosition != std::string::npos) {
+		name.erase(dotPosition);
+	}
+
+	TextureManager::GetInstance()->Load(name, _filePath);
+	material_->CreateMaterial(name);
 }
 
 void MeshRenderer::SetIsLighting(bool _isLighting) {
