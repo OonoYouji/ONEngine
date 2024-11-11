@@ -31,7 +31,10 @@ EnemyManager::~EnemyManager() {}
 
 void EnemyManager::Initialize() {
 	meshInstancingRenderer_ = AddComponent<MeshInstancingRenderer>(128);
+	popPositionRenderer_    = AddComponent<MeshInstancingRenderer>(128);
+
 	meshInstancingRenderer_->SetModel("EnemyStartedAnchor");
+	popPositionRenderer_->SetModel("Arrow");
 
 	LoadFile("./Resources/Parameters/EnemyManager/");
 	enemyCreateDataArray_ = ioDataArray_;
@@ -40,6 +43,7 @@ void EnemyManager::Initialize() {
 
 void EnemyManager::Update() {
 	CalcuationEnemyStartedAnchorPoint();
+	CalcuationEnemyPopTransform();
 
 	const std::vector<AnchorPoint>& aps = pShootingCourse_->GetAnchorPointArray();
 	AnchorPoint ap{};
@@ -93,7 +97,9 @@ void EnemyManager::Debug() {
 		for(auto& ioData : ioDataArray_) {
 			ImGui::DragFloat3((std::string("start offset##")   + std::to_string(index)).c_str(), &ioData.startOffset.x, 0.25f);
 			
-			ImGui::DragFloat3((std::string("move direction##") + std::to_string(index)).c_str(), &ioData.direction.x,   0.25f);
+			if(ImGui::DragFloat3((std::string("move direction##") + std::to_string(index)).c_str(), &ioData.direction.x, 0.25f)) {
+				ioData.direction = ioData.direction.Normalize();
+			}
 			ImGui::DragFloat((std::string("move speed##")      + std::to_string(index)).c_str(), &ioData.speed,         0.25f);
 
 			ImGui::DragFloat((std::string("hp##")              + std::to_string(index)).c_str(), &ioData.hp,            0.25f);
@@ -245,5 +251,29 @@ void EnemyManager::CalcuationEnemyStartedAnchorPoint() {
 		meshInstancingRenderer_->AddTransform(&transform);
 	}
 
+}
+
+void EnemyManager::CalcuationEnemyPopTransform() {
+	
+	enemyPopTransforms_.resize(ioDataArray_.size());
+
+	for(size_t i = 0; i < ioDataArray_.size(); ++i) {
+		Transform& startAnchorTransform = startedTTransforms_[i];
+		IOData&    ioData               = ioDataArray_[i];
+
+		Transform& transform  = enemyPopTransforms_[i];
+		transform.rotateOrder = QUATERNION;
+
+		transform.position    = startAnchorTransform.position + ioData.startOffset;
+		transform.quaternion  = Quaternion::LockAt({}, ioData.direction);
+
+		transform.Update();
+	}
+
+	/// mesh instancing rendererに渡す
+	popPositionRenderer_->ResetTransformArray();
+	for(auto& transform : enemyPopTransforms_) {
+		popPositionRenderer_->AddTransform(&transform);
+	}
 }
 

@@ -119,7 +119,7 @@ namespace {
 		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
 
 			Mesh&     mesh     = useModel->GetMeshes()[i];
-			Material& material = useModel->GetMaterials()[i];
+			Material& material = useModel->GetMaterials().front();
 
 			material.BindMaterial(pCommnadList_, 1);
 			material.BindTexture(pCommnadList_, 4);

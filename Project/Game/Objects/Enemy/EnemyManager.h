@@ -43,6 +43,7 @@ public:
 
 
 	void CalcuationEnemyStartedAnchorPoint();
+	void CalcuationEnemyPopTransform();
 
 
 
@@ -54,11 +55,13 @@ public:
 private:
 
 	class MeshInstancingRenderer* meshInstancingRenderer_ = nullptr; /// enemyが更新されるタイミングのポイント描画
+	class MeshInstancingRenderer* popPositionRenderer_    = nullptr;
 
 
 	std::vector<IOData> ioDataArray_;
 	std::vector<IOData> enemyCreateDataArray_;
 	std::vector<Transform> startedTTransforms_;
+	std::vector<Transform> enemyPopTransforms_;
 
 
 	/// other class pointer
