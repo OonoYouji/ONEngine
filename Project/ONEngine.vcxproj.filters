@@ -119,6 +119,8 @@
     <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
+    <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
+    <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -217,6 +219,8 @@
     <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
     <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.h" />
+    <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
+    <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
