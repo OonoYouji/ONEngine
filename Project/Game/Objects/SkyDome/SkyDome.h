@@ -28,5 +28,5 @@ private:
 
 	BaseGameObject* pOffsetObject_ = nullptr;
 
-	Vec2 uvScale_ = Vec2::kOne;
+	Vec2 uvScale_ = { 10.0f, 5.0f };
 };
