@@ -30,10 +30,18 @@ ShootingCourse::~ShootingCourse() {}
 void ShootingCourse::Initialize() {
 	splinePathRenderer_         = AddComponent<SplinePathRenderer>(6);
 	upDirInterpolationRenderer_ = AddComponent<SplinePathRenderer>(6);
-	meshInstancedRenderer_      = AddComponent<MeshInstancingRenderer>(128);
-	anchorPointRenderer_        = AddComponent<MeshInstancingRenderer>(32);
 
+#ifdef _DEBUG
+	splinePathRenderer_->isActive = true;
+	upDirInterpolationRenderer_->isActive = true;
+#else
+	splinePathRenderer_->isActive = false;
 	upDirInterpolationRenderer_->isActive = false;
+#endif // _DEBUG
+
+
+	meshInstancedRenderer_      = AddComponent<MeshInstancingRenderer>(256);
+	anchorPointRenderer_        = AddComponent<MeshInstancingRenderer>(48);
 
 	/// レールのモデルをセット
 	meshInstancedRenderer_->SetModel("Rail");
@@ -54,14 +62,16 @@ void ShootingCourse::Initialize() {
 
 	upDirArray_.clear();
 
-	std::vector<Vec3> tmpVertices;
 	for(auto& anchorPoint : anchorPointArray_) {
 		vertices_.push_back(anchorPoint.position);
 		upDirArray_.push_back(anchorPoint.up);
 	}
-	vertices_ = tmpVertices;
 
-	
+	splinePathRenderer_->SetAnchorPointArray(vertices_);
+	splinePathRenderer_->Update();
+	CalcuationUpDirctionArray();
+	upDirInterpolationRenderer_->Update();
+
 }
 
 void ShootingCourse::Update() {
@@ -81,7 +91,6 @@ void ShootingCourse::Update() {
 	CalcuationRailTransform();
 	CalcuationAnchorPointArray();
 
-	splinePathRenderer_->isActive = (vertices_.size() >= 4);
 	splinePathRenderer_->SetAnchorPointArray(vertices_);
 }
 
@@ -339,11 +348,6 @@ void ShootingCourse::CalcuationUpDirctionArray() {
 
 	upDirInterpolationRenderer_->SetAnchorPointArray(upDirArray_);
 
-	if(upDirArray_.size() < 4) {
-		upDirInterpolationRenderer_->isActive = false;
-	} else {
-		upDirInterpolationRenderer_->isActive = true;
-	}
 }
 
 
