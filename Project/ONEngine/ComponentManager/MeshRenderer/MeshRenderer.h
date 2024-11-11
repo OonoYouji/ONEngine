@@ -42,6 +42,24 @@ public:
 	void SetIsLighting(bool _isLighting);
 
 	/// <summary>
+	/// uv transformのscaleをセット
+	/// </summary>
+	/// <param name="_scale"> : uv scale </param>
+	void SetUVScale(const Vec2& _scale);
+
+	/// <summary>
+	/// uv transformのrotateをセット
+	/// </summary>
+	/// <param name="_rotate"> : uv rotate </param>
+	void SetUVRotate(float _rotate);
+
+	/// <summary>
+	/// uv transformのpositionをセット
+	/// </summary>
+	/// <param name="_position"></param>
+	void SetUVPosition(const Vec2& _position);
+
+	/// <summary>
 	/// マテリアルの色のセット
 	/// </summary>
 	/// <param name="color"></param>
