@@ -32,7 +32,7 @@ void RailCamera::Initialize() {
 	meshRenderer->isActive = false;
 
 	/// transform
-	pTransform_->rotateOrder = YXZ;
+	pTransform_->rotateOrder = QUATERNION;
 
 	//moveSpeed_ = 0.25f;
 	moveSpeed_ = 0.0f;
@@ -163,12 +163,9 @@ void RailCamera::Move() {
 	upDirection_ = nextAnchor_.up.Normalize();
 	rightDirection_ = Vec3::Cross(upDirection_, moveDirection_).Normalize();
 
-	// オブジェクトが向くべき進行方向ベクトルからオイラー角を計算
-	pTransform_->rotate = {
-		std::asin(-moveDirection_.y),
-		std::atan2(moveDirection_.x, moveDirection_.z),
-		std::atan2(rightDirection_.y, upDirection_.y),
-	};
+	//// オブジェクトが向くべき進行方向ベクトルからquaternion計算
+	pTransform_->quaternion = Quaternion::LockAt({}, moveDirection_);
+
 }
 
 

@@ -57,7 +57,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Line2D*					line2d				= Line2D::GetInstance();
 	RenderTextureManager*   renderTexManager    = RenderTextureManager::GetInstance();
 
-	ONEngine::Initialize(L"DirectXGame", false, false, 60u);
+	ONEngine::Initialize(L"FF7 ShootingCoaster Copy", false, false, 60u);
 
 	modelManager->Initialize();
 	spriteManager->Initialize();

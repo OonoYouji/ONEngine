@@ -21,14 +21,14 @@ PlayerBullet::~PlayerBullet() {}
 
 void PlayerBullet::Initialize() {
 
-	Model* model = ModelManager::Load("Bullet");
 
 	/// renderer
 	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel(model);
+	meshRenderer_->SetModel("Bullet");
 
 
 	/// collider
+	Model* model = ModelManager::Load("BulletCollider");
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
 
 	pTransform_->rotateOrder = QUATERNION;
