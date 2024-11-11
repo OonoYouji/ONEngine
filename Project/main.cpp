@@ -1,20 +1,12 @@
-#include <Windows.h>
-
 /// engine
 #include "Core/ONEngine.h"
-#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "LoggingManager/Logger.h"
-#include "FrameManager/Time.h"
-
 /// game
 #include "Scenes/Manager/SceneManager.h"
 
-/// lib
-#include "Debugger/Assertion.h"
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	/// 起動速度を計算するため
+	/// 起動速度を計算する
 	std::chrono::steady_clock::time_point start, end;
 	start = std::chrono::high_resolution_clock::now();;
 	ONE::Logger::ConsolePrint("execution!!!");
