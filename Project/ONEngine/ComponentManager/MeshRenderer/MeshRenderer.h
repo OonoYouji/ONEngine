@@ -32,8 +32,8 @@ public:
 	/// <summary>
 	/// マテリアルのセット
 	/// </summary>
-	/// <param name="texName">: "./Resources/Textures/" からのfilePath</param>
-	void SetMaterial(const std::string& _texName);
+	/// <param name="_filePath">: "./Resources/Textures/" からのfilePath</param>
+	void SetMaterial(const std::string& _filePath);
 
 	/// <summary>
 	/// ライティングをするか設定
