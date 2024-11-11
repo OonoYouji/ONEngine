@@ -14,7 +14,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
-
+	void Debug()      override;
 
 	void SetOffsetObject(BaseGameObject* _offsetObject);
 
@@ -27,4 +27,6 @@ private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
 	BaseGameObject* pOffsetObject_ = nullptr;
+
+	Vec2 uvScale_ = Vec2::kOne;
 };
