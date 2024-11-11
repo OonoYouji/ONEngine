@@ -19,18 +19,7 @@ void SpriteRenderer::Update() {
 void SpriteRenderer::Draw() {
 	sprite_->Draw();
 }
-//
-//void SpriteRenderer::BackSpriteDraw() {
-//	if(type_ == SpriteRenderType::Back) {
-//		sprite_->Draw();
-//	}
-//}
-//
-//void SpriteRenderer::FrontSpriteDraw() {
-//	if(type_ == SpriteRenderType::Front) {
-//		sprite_->Draw();
-//	}
-//}
+
 
 void SpriteRenderer::Debug() {
 	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {

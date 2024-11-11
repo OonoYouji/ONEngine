@@ -8,13 +8,6 @@
 
 
 /// ===================================================
-/// enum class : render type
-/// ===================================================
-enum class SpriteRenderType {
-	Front, Back
-};
-
-/// ===================================================
 /// スプライトの描画をするクラス
 /// ===================================================
 class SpriteRenderer final : public BaseComponent {
@@ -78,6 +71,5 @@ private:
 
 	Transform*				pTransform_ = nullptr;
 	std::unique_ptr<Sprite> sprite_		= nullptr;
-	SpriteRenderType		type_		= SpriteRenderType::Front;
 
 };
