@@ -20,7 +20,8 @@ public:
 	~MeshRenderer() {}
 
 	void Initialize() override;
-	void Draw() override;
+	void Update()     override;
+	void Draw()       override;
 
 
 	/// <summary>

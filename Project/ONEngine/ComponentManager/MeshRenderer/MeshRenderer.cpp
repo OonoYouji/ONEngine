@@ -10,6 +10,12 @@ void MeshRenderer::Initialize() {
 	pTransform_ = GetOwner()->GetComponent<Transform>();
 }
 
+void MeshRenderer::Update() {
+	if(material_) {
+		material_->UpdateMatrix();
+	}
+}
+
 void MeshRenderer::Draw() {
 	model_->Draw(pTransform_, nullptr, material_.get(), fillMode_);
 }
