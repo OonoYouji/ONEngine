@@ -216,7 +216,9 @@
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
+    <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
     <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
+    <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
     <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp" />
     <ClCompile Include="ONEngine\FrameManager\Time.cpp" />
     <ClCompile Include="ONEngine\GameObjectManager\BaseGameObject.cpp" />
@@ -328,7 +330,9 @@
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
+    <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
+    <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
     <ClInclude Include="ONEngine\FrameManager\FrameFixation.h" />
     <ClInclude Include="ONEngine\FrameManager\Time.h" />
     <ClInclude Include="ONEngine\GameObjectManager\BaseGameObject.h" />
