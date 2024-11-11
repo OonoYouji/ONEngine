@@ -53,9 +53,6 @@ public:
 	SCENE_ID GetCurrentScene() const { return currentId_; }
 
 
-	bool GetIsRunning() const { return isRunning_; }
-	void SetIsRunning(bool isRunning) { isRunning_ = isRunning; }
-
 	void SetSceneLayers(const std::vector<class SceneLayer*>& sceneLayers);
 
 	SceneLayer* GetSceneLayer(uint32_t layerId) const {
@@ -83,8 +80,6 @@ private:
 
 	std::vector<class SceneLayer*> sceneLayers_;
 	std::unique_ptr<RenderTexture> finalRenderTex_;
-
-	bool isRunning_ = true;
 
 private:
 	SceneManager(const SceneManager&) = delete;
