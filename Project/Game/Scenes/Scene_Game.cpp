@@ -22,6 +22,7 @@
 #include "Objects/ScoreBoard/ScoreBoard.h"
 #include "Objects/Score/Score.h"
 #include "Objects/BulletFiringEnergyRenderer/BulletFiringEnergyRenderer.h"
+#include "Objects/Terrain/Terrain.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -49,6 +50,7 @@ void Scene_Game::Initialize() {
 	ScoreBoard*     scoreBoard     = new ScoreBoard();
 	Score*          score          = new Score();
 	BulletFiringEnergyRenderer* bulletFiringEnergyRenderer = new BulletFiringEnergyRenderer();
+	Terrain*        terrain        = new Terrain();
 
 	/// instance initializing...
 	gameManager_->Initialize();
@@ -63,6 +65,7 @@ void Scene_Game::Initialize() {
 	scoreBoard->Initialize();
 	score->Initialize();
 	bulletFiringEnergyRenderer->Initialize();
+	terrain->Initialize();
 
 	/// その他ポインタ設定など...
 

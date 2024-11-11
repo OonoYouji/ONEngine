@@ -209,8 +209,18 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 	ifs.close();
 
 
+	size_t anchorPointSize = 0;
 	for(auto& item : root.items()) {
+		size_t value = std::stoi(item.key().c_str());
+		if(anchorPointSize < value) {
+			anchorPointSize = value;
+		}
+	}
 
+	anchorPointArray_.resize(anchorPointSize + 1);
+
+	for(auto& item : root.items()) {
+		size_t index = std::stoi(item.key().c_str());
 		auto jsonPos = item.value()["position"];
 		auto jsonUp  = item.value()["up"];
 		AnchorPoint anchorPoint{
@@ -218,7 +228,7 @@ void ShootingCourse::LoadFile(const std::string& filePath) {
 			.up       = {jsonUp.at(0),  jsonUp.at(1),  jsonUp.at(2)}
 		};
 
-		anchorPointArray_.push_back(anchorPoint);
+		anchorPointArray_[index] = anchorPoint;
 	}
 
 
@@ -271,18 +281,14 @@ void ShootingCourse::CalcuationRailTransform() {
 
 		/// transformを計算する
 		Transform transform;
-		transform.rotateOrder = QUATERNION;
+		//transform.rotateOrder = QUATERNION;
 		transform.position = currentPoint;
 
 		transform.rotate = {
 			std::asin(-moveDir.y),
 			std::atan2(moveDir.x, moveDir.z),
-			std::atan2(rightDir.x, upDir.x)
+			0.0f
 		};
-
-		transform.quaternion = Quaternion::MakeFromAxis(Vec3::kUp,              std::atan2(moveDir.x, moveDir.z));
-		transform.quaternion *= Quaternion::MakeFromAxis(rightDir.Normalize() , std::asin(moveDir.y));
-		//transform.quaternion *= Quaternion::MakeFromAxis(moveDir.Normalize(), std::atan2(rightDir.x, upDir.x));
 
 		transform.UpdateMatrix();
 		transformList_.push_back(std::move(transform));

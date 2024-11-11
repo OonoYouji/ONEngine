@@ -171,6 +171,7 @@
     <ClCompile Include="Game\Objects\Score\Score.cpp" />
     <ClCompile Include="Game\Objects\ShootingCourse\ShootingCourse.cpp" />
     <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Game\Objects\Score\Score.h" />
     <ClInclude Include="Game\Objects\ShootingCourse\ShootingCourse.h" />
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
+    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />

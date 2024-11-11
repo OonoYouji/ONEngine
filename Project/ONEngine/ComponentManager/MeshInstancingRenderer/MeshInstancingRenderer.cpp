@@ -220,6 +220,8 @@ void MeshInstancingRenderer::Draw() {
 
 	std::vector<Mat4> matTransformArray{};
 	for(auto& transform : transformArray_) {
+		transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
+
 		matTransformArray.push_back(transform->matTransform);
 	}
 
@@ -229,7 +231,7 @@ void MeshInstancingRenderer::Draw() {
 }
 
 void MeshInstancingRenderer::Debug() {
-	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx(GetName().c_str())) {
 
 		ImGui::BeginChild("space", ImVec2(0.0f, 360.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 		ImGui::SeparatorText("transform debug draw");
