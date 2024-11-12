@@ -29,9 +29,7 @@ void Enemy::Initialize() {
 	/// renderer
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
-	meshRenderer_->SetMaterial("white2x2");
-	meshRenderer_->SetColor(Vec4::kRed);
-
+	meshRenderer_->SetMaterial("Enemy.png");
 
 	/// collider
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
@@ -43,19 +41,24 @@ void Enemy::Initialize() {
 	speed_     = 20.0f;
 
 	moveState_ = ENEMY_MOVE_STATE_MOVE_FORWARD;
+
+	pTransform_->rotateOrder = QUATERNION;
+
 }
 
 void Enemy::Update() {
-	meshRenderer_->SetColor(Vec4::kRed);
+	meshRenderer_->SetColor(Vec4::kWhite);
 
 	pTransform_->position += direction_ * speed_ * Time::DeltaTime();
+
+	pTransform_->quaternion = Quaternion::LockAt({}, direction_);
 
 	lifeTime_ -= Time::DeltaTime();
 }
 
 void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "PlayerBullet") {
-		meshRenderer_->SetColor(Vec4::kWhite);
+		meshRenderer_->SetColor(Vec4::kRed);
 	}
 }
 

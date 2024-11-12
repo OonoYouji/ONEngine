@@ -48,7 +48,7 @@ void DefeatedEnemy::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Enemy");
-	meshRenderer_->SetMaterial("white2x2");
+	meshRenderer_->SetMaterial("Enemy.png");
 	meshRenderer_->SetIsLighting(false);
 
 

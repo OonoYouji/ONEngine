@@ -119,7 +119,7 @@ void Scene_Game::Update() {
 			TODO : COMMENT
 			シーン遷移を追加する -> 暗転
 		##########################################################*/
-		SceneManager::GetInstance()->SetNextScene(TITLE);
+		SceneManager::GetInstance()->SetNextScene(RESULT);
 	}
 
 }

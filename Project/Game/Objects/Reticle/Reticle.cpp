@@ -9,6 +9,7 @@
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -23,12 +24,11 @@ Reticle::~Reticle() {}
 void Reticle::Initialize() {
 
 	/// component
-	MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetModel("axis");
+	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
+	spriteRenderer->SetTexture("Reticle.png");
 
 	/// transform
 	pTransform_->position = { 0, 0, 10.0f };
-	pTransform_->scale *= 0.5f;
 
 	speed_ = 0.1f;
 
