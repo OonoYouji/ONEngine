@@ -34,5 +34,7 @@ private:
 
 	Vec3 offsetPosition_; /// プレイヤーからどのくらい離れているか
 
+	Vec3 playerToEnemyVector_;
+
 
 };

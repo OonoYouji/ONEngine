@@ -1,5 +1,8 @@
 #include "TrackingCamera.h"
 
+/// std
+#include <format>
+
 /// externals
 #include <imgui.h>
 
@@ -36,6 +39,7 @@ void TrackingCamera::Update() {
 
 	/// ボスへの方向ベクトル
 	Vec3 cameraToEnemyDirection = pEnemy_->GetPosition() - (pPlayer_->GetPosition() + offsetPosition_);
+	playerToEnemyVector_ = pEnemy_->GetPosition() - pPlayer_->GetPosition();
 
 	/// offset position の inverse がカメラからプレイヤーへの方向ベクトル
 	pGameCamera_->SetPosition(pPlayer_->GetPosition() + offsetPosition_);
@@ -48,6 +52,11 @@ void TrackingCamera::Update() {
 
 void TrackingCamera::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::Text(std::format(
+			"player to enemy vector : {:0.2f}, {:0.2f}, {:0.2f}",
+			playerToEnemyVector_.x, playerToEnemyVector_.y, playerToEnemyVector_.z).c_str()
+		);
 
 		ImGui::TreePop();
 	}
@@ -66,6 +75,8 @@ void TrackingCamera::AddVariables() {
 	const std::string& groupName = GetTag();
 
 	vm->AddValue(groupName, "offset position", offsetPosition_);
+
+	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
 }
 
