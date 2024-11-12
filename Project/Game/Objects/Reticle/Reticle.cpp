@@ -14,6 +14,8 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 
+#include "Scenes/Scene_Game.h"
+
 
 Reticle::Reticle() {
 	CreateTag(this);
@@ -22,6 +24,8 @@ Reticle::Reticle() {
 Reticle::~Reticle() {}
 
 void Reticle::Initialize() {
+
+	drawLayerId = SCENE_GAME_LAYER_RETICLE;
 
 	/// component
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();

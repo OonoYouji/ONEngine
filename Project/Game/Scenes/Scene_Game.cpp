@@ -111,6 +111,7 @@ void Scene_Game::Initialize() {
 
 	AddLayer("defeatedEnemyLayer", defeatedEnemyCamera);
 	AddLayer("uiLayer", uiCamera);
+	AddLayer("reticleLayer", mainCamera_);
 
 }
 
