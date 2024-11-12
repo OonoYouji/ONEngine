@@ -31,6 +31,8 @@ void Enemy::Initialize() {
 	meshRenderer_->SetModel(model);
 	meshRenderer_->SetMaterial("Enemy.png");
 
+	constantColor_.w = 0.0f;
+
 	/// collider
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
 
@@ -47,18 +49,32 @@ void Enemy::Initialize() {
 }
 
 void Enemy::Update() {
-	meshRenderer_->SetColor(Vec4::kWhite);
 
+
+	/// 移動処理
 	pTransform_->position += direction_ * speed_ * Time::DeltaTime();
-
 	pTransform_->quaternion = Quaternion::LockAt({}, direction_);
 
+	
+	/// 色の変化
+	constantColor_.w = std::lerp(
+		0.0f, 0.8f, 
+		std::clamp((60.0f - lifeTime_), 0.0f, 1.0f)
+	);
+
+	meshRenderer_->SetColor(constantColor_);
+
+
+	/// ライフタイム
 	lifeTime_ -= Time::DeltaTime();
+	if(lifeTime_ < 0.0f) {
+		Destory();
+	}
 }
 
 void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "PlayerBullet") {
-		meshRenderer_->SetColor(Vec4::kRed);
+		meshRenderer_->SetColor(damagedColor_);
 	}
 }
 

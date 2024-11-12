@@ -52,7 +52,6 @@ void DefeatedEnemy::Initialize() {
 	meshRenderer_->SetIsLighting(false);
 
 
-	isActive = false;
 }
 
 void DefeatedEnemy::Update() {
@@ -60,7 +59,7 @@ void DefeatedEnemy::Update() {
 	activeLifeTime_ -= Time::DeltaTime();
 	
 	pTransform_->rotate.y = std::fmod(
-		pTransform_->rotate.y + (0.5f * Time::DeltaTime()),
+		pTransform_->rotate.y + (1.0f * Time::DeltaTime()),
 		2.0f * std::numbers::pi_v<float>
 	);
 
@@ -85,5 +84,6 @@ void DefeatedEnemy::ApplyVariables() {
 void DefeatedEnemy::StartRotate() {
 	meshRenderer_->isActive = true;
 	activeLifeTime_ = 2.0f;
+	pTransform_->rotate.y = 0.5f;
 }
 

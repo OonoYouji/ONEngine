@@ -51,4 +51,7 @@ private:
 	float updateStartT_; /// プレイヤーのmoveTを参照する、プレイヤーがこれを超えたら更新処理を始める
 
 	float lifeTime_ = 60.0f;
+
+	Vec4 constantColor_ = { 1.0f, 1.0f, 1.0f, 0.5f };
+	Vec4 damagedColor_  = { 1.0f, 0.0f, 0.0f, 0.5f };
 };
