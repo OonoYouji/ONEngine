@@ -59,7 +59,7 @@ void Enemy::Update() {
 	/// 色の変化
 	constantColor_.w = std::lerp(
 		0.0f, 0.8f, 
-		std::clamp((60.0f - lifeTime_), 0.0f, 1.0f)
+		std::clamp((10.0f - lifeTime_), 0.0f, 1.0f)
 	);
 
 	meshRenderer_->SetColor(constantColor_);
