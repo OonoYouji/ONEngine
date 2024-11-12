@@ -17,6 +17,8 @@ public:
 
 	void ApplyVariables();
 
+	void StartRotate();
+
 private:
 
 	/// ===================================================
@@ -24,5 +26,7 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+
+	float activeLifeTime_ = 0.0f;
 
 };

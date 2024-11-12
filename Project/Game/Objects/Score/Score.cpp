@@ -50,3 +50,7 @@ void Score::ApplyVariables() {
 	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
 }
 
+void Score::AddScore(uint32_t _value) {
+	numberRenderer_->SetScore(numberRenderer_->GetScore() + _value);
+}
+

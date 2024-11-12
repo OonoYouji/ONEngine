@@ -18,6 +18,8 @@ public:
 
 	void ApplyVariables();
 
+	void AddScore(uint32_t _value);
+
 private:
 
 	/// ===================================================

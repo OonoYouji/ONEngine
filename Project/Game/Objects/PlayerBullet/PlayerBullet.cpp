@@ -11,9 +11,11 @@
 
 /// objects
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/Player/Player.h"
+#include "Objects/DefeatedEnemy/DefeatedEnemy.h"
 
 
-PlayerBullet::PlayerBullet() {
+PlayerBullet::PlayerBullet(Player* _player, class DefeatedEnemy* _defeatedEnemy) : pPlayer_(_player), pDefeatedEnemy_(_defeatedEnemy) {
 	CreateTag(this);
 }
 
@@ -63,6 +65,9 @@ void PlayerBullet::OnCollisionEnter(BaseGameObject* const collision) {
 		/// 死んだらオブジェクトを削除する
 		if(enemy->GetHP() <= 0.0f) {
 			enemy->Destory();
+
+			pPlayer_->AddScore(50u);
+			pDefeatedEnemy_->StartRotate();
 		}
 		Destory();
 	}

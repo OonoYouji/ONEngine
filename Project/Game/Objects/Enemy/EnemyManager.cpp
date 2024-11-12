@@ -60,6 +60,7 @@ void EnemyManager::Update() {
 
 			CreateEnemy(
 				Vec3::kOne, {}, ap.position + data.startOffset,
+				data.direction, data.speed,
 				data.hp, data.startedT
 			);
 
@@ -129,6 +130,8 @@ void EnemyManager::CreateEnemy(
 	const Vec3& _scale,
 	const Vec3& _rotate,
 	const Vec3& _position,
+	const Vec3& _direction,
+	float _speed,
 	float _updateStartT,
 	float _hp) const {
 
@@ -139,6 +142,8 @@ void EnemyManager::CreateEnemy(
 	enemy->SetPosition(_position);
 	enemy->SetRotate(_rotate);
 
+	enemy->direction_    = _direction;
+	enemy->speed_        = _speed;
 	enemy->hp_           = _hp;
 	enemy->updateStartT_ = _updateStartT;
 }

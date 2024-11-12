@@ -37,7 +37,7 @@ void Enemy::Initialize() {
 	SphereCollider* sphereCollider = AddComponent<SphereCollider>(model);
 
 	/// parameter
-	hp_ = 10.0f;
+	hp_ = 3.0f;
 
 	direction_ = Vec3::kFront;
 	speed_     = 20.0f;
@@ -48,7 +48,7 @@ void Enemy::Initialize() {
 void Enemy::Update() {
 	meshRenderer_->SetColor(Vec4::kRed);
 
-	StateMoveForward();
+	pTransform_->position += direction_ * speed_ * Time::DeltaTime();
 
 	lifeTime_ -= Time::DeltaTime();
 }

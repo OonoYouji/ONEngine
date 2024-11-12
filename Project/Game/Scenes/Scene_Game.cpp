@@ -43,7 +43,6 @@ void Scene_Game::Initialize() {
 	RailCamera*     railCamera     = new RailCamera();
 	Reticle*        reticle        = new Reticle();
 	Player*         player         = new Player();
-	Enemy*          enemy          = new Enemy();
 	EnemyManager*   enemyManager   = new EnemyManager();
 	SkyDome*        skyDome        = new SkyDome();
 	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
@@ -58,7 +57,6 @@ void Scene_Game::Initialize() {
 	railCamera->Initialize();
 	reticle->Initialize();
 	player->Initialize();
-	enemy->Initialize();
 	enemyManager->Initialize();
 	skyDome->Initialize();
 	defeatedEnemy->Initialize();
@@ -77,6 +75,8 @@ void Scene_Game::Initialize() {
 
 	player->SetParent(railCamera->GetTransform());
 	player->SetReticle(reticle);
+	player->SetScoreObj(score);
+	player->SetDefeatedEnemy(defeatedEnemy);
 
 	reticle->SetGameCamera(mainCamera_);
 
@@ -87,7 +87,7 @@ void Scene_Game::Initialize() {
 
 	bulletFiringEnergyRenderer->SetPlayer(player);
 
-	mainCamera_->SetPosition({ 0.0f, 0.9f, 0.0f }); /// レールに被らないように少し上に設定
+	mainCamera_->SetPosition({ 0.0f, 1.0f, 0.0f }); /// レールに被らないように少し上に設定
 
 
 	/// add layers

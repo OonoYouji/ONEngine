@@ -39,6 +39,12 @@ public:
 	/// <returns></returns>
 	float GetFiringGauge() const { return firingGauge_; }
 
+
+	void AddScore(uint32_t _value);
+
+	void SetScoreObj(class Score* _score);
+	void SetDefeatedEnemy(class DefeatedEnemy* _defeatedEnemy);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -51,6 +57,8 @@ private:
 
 	float firingGauge_ = 100.0f;
 	float firingSubValue_ = 5.0f;
-	float firingAddValue_ = 0.1f; /// 打っていないときは常に追加される
+	float firingAddValue_ = 0.3f; /// 打っていないときは常に追加される
 
+	class Score* pScore_ = nullptr;
+	class DefeatedEnemy* pDefeatedEnemy_ = nullptr;
 };

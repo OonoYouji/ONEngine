@@ -33,6 +33,8 @@ public:
 		const Vec3& _scale,
 		const Vec3& _rotate, 
 		const Vec3& _position,
+		const Vec3& _direction,
+		float _speed,
 		float _updateStartT,
 		float _hp
 	) const;

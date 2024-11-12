@@ -51,15 +51,24 @@ void DefeatedEnemy::Initialize() {
 	meshRenderer_->SetMaterial("white2x2");
 	meshRenderer_->SetIsLighting(false);
 
+
+	isActive = false;
 }
 
 void DefeatedEnemy::Update() {
-	//ApplyVariables();
 
+	activeLifeTime_ -= Time::DeltaTime();
+	
 	pTransform_->rotate.y = std::fmod(
 		pTransform_->rotate.y + (0.5f * Time::DeltaTime()),
 		2.0f * std::numbers::pi_v<float>
 	);
+
+
+	if(activeLifeTime_ < 0.0f) {
+		meshRenderer_->isActive = false;
+	}
+
 }
 
 
@@ -71,5 +80,10 @@ void DefeatedEnemy::ApplyVariables() {
 	pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
 	pTransform_->rotate   = vm->GetValue<Vec3>(groupName, "rotate");
 	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
+}
+
+void DefeatedEnemy::StartRotate() {
+	meshRenderer_->isActive = true;
+	activeLifeTime_ = 2.0f;
 }
 

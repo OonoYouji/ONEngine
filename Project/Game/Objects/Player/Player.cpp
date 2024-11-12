@@ -20,6 +20,8 @@
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/PlayerBullet/PlayerBullet.h"
 #include "Objects/Reticle/Reticle.h"
+#include "Objects/Score/Score.h"
+#include "Objects/DefeatedEnemy/DefeatedEnemy.h"
 
 /// math
 #include "Math/Quaternion.h"
@@ -48,7 +50,7 @@ void Player::Update() {
 			firingGauge_ -= firingSubValue_;
 			firingGauge_ = std::max(firingGauge_, 0.0f); /// 0未満にならないように
 
-			PlayerBullet* bullet = new PlayerBullet();
+			PlayerBullet* bullet = new PlayerBullet(this, pDefeatedEnemy_);
 			bullet->Initialize();
 			bullet->SetPosition(GetPosition());
 
@@ -94,6 +96,18 @@ void Player::Debug() {
 
 void Player::SetReticle(Reticle* _reticle) {
 	pReticle_ = _reticle;
+}
+
+void Player::AddScore(uint32_t _value) {
+	pScore_->AddScore(_value);
+}
+
+void Player::SetScoreObj(Score* _score) {
+	pScore_ = _score;
+}
+
+void Player::SetDefeatedEnemy(DefeatedEnemy* _defeatedEnemy) {
+	pDefeatedEnemy_ = _defeatedEnemy;
 }
 
 
