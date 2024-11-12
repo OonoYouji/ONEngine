@@ -24,7 +24,7 @@ void PlayerWeakAttack::Update(){
 		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
 		return;
 	} else if(Input::ReleaseKey(KeyCode::J)){
-		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_,0));
+		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_,comboNum_ + 1));
 		return;
 	}
 }
