@@ -8,14 +8,18 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/GameSelector/GameSelector.h"
+#include "Objects/TitleSprite/TitleSprite.h"
 
 void Scene_Title::Initialize() {
 
 	gameSelector_ = new GameSelector();
 	gameSelector_->Initialize();
+	
+	(new TitleSprite)->Initialize();
 
 	mainCamera_->SetProjectionType(ORTHOGRAPHIC);
 	mainCamera_->SetDistance(10.0f);
+	mainCamera_->SetPositionY(0.5f);
 
 }
 

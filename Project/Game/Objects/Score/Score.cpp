@@ -9,6 +9,8 @@
 /// scenes
 #include "Scenes/Scene_Game.h"
 
+uint32_t Score::sGameResultScore_ = 0u;
+
 
 Score::Score() {
 	CreateTag(this);
@@ -17,6 +19,8 @@ Score::Score() {
 Score::~Score() {}
 
 void Score::Initialize() {
+	
+	sGameResultScore_ = 0u;
 
 	drawLayerId = SCENE_GAME_LAYER_UI;
 
