@@ -9,7 +9,7 @@ class Vector3;
 class PlayerAvoidanceBehavior :
 	public IPlayerBehavior{
 public:
-	PlayerAvoidanceBehavior(Player* _host,const Vector2& _direction);
+	PlayerAvoidanceBehavior(Player* _host);
 	~PlayerAvoidanceBehavior(){}
 
 	void Update()override;
@@ -19,10 +19,7 @@ private:
 	void Avoidance();
 	void EndLagUpdate();
 private:
-	float maxTime_;
 	float currentTime_;
-
-	Vector2 direction_;
 
 	Vector3 beforePos_;
 	Vector3 afterPos_;

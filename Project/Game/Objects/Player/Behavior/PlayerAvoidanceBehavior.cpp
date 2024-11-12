@@ -5,9 +5,8 @@
 #include "FrameManager/Time.h"
 #include "Math/Vector3.h"
 
-PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host,const Vector2& _direction):
+PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	IPlayerBehavior(_host),
-	direction_(_direction),
 	workInBehavior_(host_->GetWorkAvoidanceBehavior()){
 	currentTime_ = 0.0f;
 
@@ -24,7 +23,8 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 		currentTime_ = 0.0f;
 
 		beforePos_ = host_->GetPosition();
-		Vector3 v3Direction = {direction_.x,0.0f,direction_.y};
+		Vector3 v3Direction = {0.0f,0.0f,1.0f};
+		v3Direction = Matrix4x4::Transform(v3Direction,Matrix4x4::MakeRotateY(host_->GetRotate().y));
 		afterPos_ = beforePos_ + (workInBehavior_.moveDistance_ * v3Direction);
 
 		// 無敵状態に 
