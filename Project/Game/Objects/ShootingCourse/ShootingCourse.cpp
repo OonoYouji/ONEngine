@@ -45,7 +45,7 @@ void ShootingCourse::Initialize() {
 
 	/// レールのモデルをセット
 	meshInstancedRenderer_->SetModel("Rail");
-	anchorPointRenderer_->SetModel("AnchorPoint");
+	anchorPointRenderer_->SetModel("Post");
 
 	/// file input
 	LoadFile(filePath_);
@@ -73,7 +73,7 @@ void ShootingCourse::Initialize() {
 	upDirInterpolationRenderer_->Update();
 
 
-	anchorPointRenderer_->isActive = false;
+	//anchorPointRenderer_->isActive = false;
 
 }
 
