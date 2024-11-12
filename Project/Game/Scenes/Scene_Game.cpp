@@ -119,6 +119,8 @@ void Scene_Game::Initialize() {
 	AddLayer("reticleLayer", mainCamera_);
 	AddLayer("transitionLayer", transitionCamera);
 
+	isStarted_ = false;
+	sceneTransition_ = nullptr;
 }
 
 
