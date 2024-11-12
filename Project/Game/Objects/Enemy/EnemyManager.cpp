@@ -39,6 +39,9 @@ void EnemyManager::Initialize() {
 	LoadFile("./Resources/Parameters/EnemyManager/");
 	enemyCreateDataArray_ = ioDataArray_;
 
+
+	meshInstancingRenderer_->isActive = false;
+	popPositionRenderer_->isActive = false;
 }
 
 void EnemyManager::Update() {

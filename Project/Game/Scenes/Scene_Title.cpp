@@ -30,6 +30,8 @@ void Scene_Title::Initialize() {
 
 	AddLayer("TransitionLayer", transitionCamera);
 
+	sceneTransition_ = nullptr;
+
 }
 
 void Scene_Title::Update() {

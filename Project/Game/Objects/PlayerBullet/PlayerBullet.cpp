@@ -10,6 +10,7 @@
 #include "ComponentManager/Collider/SphereCollider.h"
 
 /// objects
+#include "Objects/Boss/Boss.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
@@ -70,7 +71,27 @@ void PlayerBullet::OnCollisionEnter(BaseGameObject* const collision) {
 			pDefeatedEnemy_->StartRotate();
 		}
 		Destory();
+
+		return;
 	}
+
+
+	if(collision->GetTag() == "Boss") {
+		Boss* boss = static_cast<Boss*>(collision);
+
+		boss->SubHP(1.0f);
+
+		if(boss->GetHP() <= 0.0f) {
+			boss->EndBattel();
+
+			pPlayer_->AddScore(2000u);
+		}
+
+		Destory();
+
+		return;
+  	}
+
 }
 
 void PlayerBullet::SetVelocity(const Vec3& _velocity) {
