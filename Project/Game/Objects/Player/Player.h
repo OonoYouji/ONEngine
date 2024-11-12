@@ -61,4 +61,6 @@ private:
 
 	class Score* pScore_ = nullptr;
 	class DefeatedEnemy* pDefeatedEnemy_ = nullptr;
+
+	class PlayerBeam* beam_ = nullptr;
 };

@@ -109,12 +109,12 @@ void CapsuleCollider::SetPositionArray(const std::array<Vec3*, 2>& _positionArra
 }
 
 Vec3 CapsuleCollider::GetStartPosition() {
-	startPosition = Mat4::Transform(*positionArray_[0], transform_->matTransform);
+	startPosition = Mat4::Transform(*positionArray_[0], GetOwner()->GetMatTransform());
 	return startPosition;
 }
 
 Vec3 CapsuleCollider::GetEndPosition() {
-	endPosition_ = Mat4::Transform(*positionArray_[1], transform_->matTransform);
+	endPosition_ = Mat4::Transform(*positionArray_[1], GetOwner()->GetMatTransform());
 	return endPosition_;
 }
 

@@ -30,6 +30,7 @@ void Reticle::Initialize() {
 	/// component
 	SpriteRenderer* spriteRenderer = AddComponent<SpriteRenderer>();
 	spriteRenderer->SetTexture("Reticle.png");
+	spriteRenderer->SetAnchor({ 0.5f, -0.5f });
 
 	/// transform
 	pTransform_->position = { 0, 0, 10.0f };

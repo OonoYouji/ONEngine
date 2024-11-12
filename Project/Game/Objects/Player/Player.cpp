@@ -22,6 +22,7 @@
 #include "Objects/Reticle/Reticle.h"
 #include "Objects/Score/Score.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
+#include "Objects/PlayerBeam/PlayerBeam.h"
 
 /// math
 #include "Math/Quaternion.h"
@@ -38,13 +39,18 @@ void Player::Initialize() {
 
 	bulletSpeed_ = 100.0f;
 
+	beam_ = new PlayerBeam();
+	beam_->Initialize();
+	beam_->SetParent(pTransform_);
+	beam_->SetPlayer(this);
+
 }
 
 void Player::Update() {
 
-	if(Input::TriggerKey(KeyCode::Space)) {
+	/*if(Input::TriggerKey(KeyCode::Space)) {
 
-		/// 発射ゲージがあれば
+		 発射ゲージがあれば
 		if(firingGauge_ > firingSubValue_) {
 
 			firingGauge_ -= firingSubValue_;
@@ -63,7 +69,7 @@ void Player::Update() {
 
 		firingGauge_ += firingAddValue_;
 		firingGauge_ = std::min(firingGauge_, 100.0f); /// 100を超過しないように
-	}
+	}*/
 
 }
 
@@ -96,6 +102,7 @@ void Player::Debug() {
 
 void Player::SetReticle(Reticle* _reticle) {
 	pReticle_ = _reticle;
+	beam_->SetReticle(_reticle);
 }
 
 void Player::AddScore(uint32_t _value) {
