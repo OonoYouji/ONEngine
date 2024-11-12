@@ -1,30 +1,34 @@
 #include "PlayerWeakAttack.h"
 
+#include "FrameManager/Time.h"
 #include "Input/Input.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerRootBehavior.h"
 
 PlayerWeakAttack::PlayerWeakAttack(Player* player,int32_t comboNum):
 	IPlayerBehavior(player),
-	workInBehavior_(player->GetWorkWeakAttackBehavior(comboNum)),
 	comboNum_(comboNum){
 	currentUpdate_ = [this](){StartupUpdate(); };
-	if(comboNum > player->GetWeakAttackComboMax()){
-		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
-		return;
-	}
+
+	workInBehavior_ = player->GetWorkWeakAttackBehavior(comboNum_);
 
 	nextBehavior_ = std::make_unique<PlayerRootBehavior>(host_);
 }
 
 void PlayerWeakAttack::Update(){
+	currentTime_ += Time::DeltaTime();
 	currentUpdate_();
 
 	if(Input::ReleaseKey(KeyCode::LShift)){
-		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
+		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
 		return;
-	} else if(Input::ReleaseKey(KeyCode::J)){
-		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_,comboNum_ + 1));
+	} else if(Input::TriggerKey(KeyCode::J)){
+		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
+		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()){
+			return;
+		}
+
+		nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_,comboNum_ + 1);
 		return;
 	}
 }
