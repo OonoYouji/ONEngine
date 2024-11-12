@@ -29,6 +29,7 @@ void ResultScore::Initialize() {
 	vm->AddValue(groupName, "position", pTransform_->position);
 	vm->AddValue(groupName, "scale",    pTransform_->scale);
 
+	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
 	ApplyVariables();
 
@@ -38,6 +39,7 @@ void ResultScore::Initialize() {
 }
 
 void ResultScore::Update() {
+	ApplyVariables();
 
 }
 

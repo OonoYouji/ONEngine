@@ -169,6 +169,7 @@
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
     <ClCompile Include="Game\Objects\ResultScore\ResultScore.cpp" />
     <ClCompile Include="Game\Objects\ResultSprite\ResultSprite.cpp" />
+    <ClCompile Include="Game\Objects\ResultToTitle\ResultToTitle.cpp" />
     <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Objects\Rock\Rock.cpp" />
     <ClCompile Include="Game\Objects\ScoreBoard\ScoreBoard.cpp" />
@@ -291,6 +292,7 @@
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
     <ClInclude Include="Game\Objects\ResultScore\ResultScore.h" />
     <ClInclude Include="Game\Objects\ResultSprite\ResultSprite.h" />
+    <ClInclude Include="Game\Objects\ResultToTitle\ResultToTitle.h" />
     <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
     <ClInclude Include="Game\Objects\Rock\Rock.h" />
     <ClInclude Include="Game\Objects\ScoreBoard\ScoreBoard.h" />
