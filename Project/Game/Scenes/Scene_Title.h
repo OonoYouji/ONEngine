@@ -12,5 +12,6 @@ public:
 
 private:
 
-	class GameSelector* gameSelector_ = nullptr;
+	class GameSelector*    gameSelector_    = nullptr;
+	class SceneTransition* sceneTransition_ = nullptr;
 };

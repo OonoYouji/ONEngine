@@ -157,6 +157,7 @@
     <ClCompile Include="Game\Objects\Home\Home.cpp" />
     <ClCompile Include="Game\Objects\Rock\Rock.cpp" />
     <ClCompile Include="Game\Objects\ResultToTitle\ResultToTitle.cpp" />
+    <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -294,6 +295,7 @@
     <ClInclude Include="Game\Objects\Home\Home.h" />
     <ClInclude Include="Game\Objects\Rock\Rock.h" />
     <ClInclude Include="Game\Objects\ResultToTitle\ResultToTitle.h" />
+    <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
