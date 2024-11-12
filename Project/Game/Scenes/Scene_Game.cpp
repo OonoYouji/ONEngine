@@ -26,6 +26,8 @@
 
 #include "Objects/Home/Home.h"
 #include "Objects/Rock/Rock.h"
+
+#include "Objects/SceneTransition/SceneTransition.h"
 	
 /// lib
 #include "Debugger/Assertion.h"
@@ -43,7 +45,7 @@ void Scene_Game::Initialize() {
 	/// instance create...
 	gameManager_                   = new GameManager();
 	ShootingCourse* shootingCourse = new ShootingCourse();
-	RailCamera*     railCamera     = new RailCamera();
+	railCamera_                    = new RailCamera();
 	Reticle*        reticle        = new Reticle();
 	Player*         player         = new Player();
 	EnemyManager*   enemyManager   = new EnemyManager();
@@ -57,7 +59,7 @@ void Scene_Game::Initialize() {
 	/// instance initializing...
 	gameManager_->Initialize();
 	shootingCourse->Initialize();
-	railCamera->Initialize();
+	railCamera_->Initialize();
 	reticle->Initialize();
 	player->Initialize();
 	enemyManager->Initialize();
@@ -76,13 +78,13 @@ void Scene_Game::Initialize() {
 
 	/// その他ポインタ設定など...
 
-	gameManager_->SetRailCamera(railCamera);
+	gameManager_->SetRailCamera(railCamera_);
 
-	railCamera->SetGameCamera(mainCamera_);
-	railCamera->SetShootingCourse(shootingCourse);
-	railCamera->SetDirectionalLight(directionalLight_);
+	railCamera_->SetGameCamera(mainCamera_);
+	railCamera_->SetShootingCourse(shootingCourse);
+	railCamera_->SetDirectionalLight(directionalLight_);
 
-	player->SetParent(railCamera->GetTransform());
+	player->SetParent(railCamera_->GetTransform());
 	player->SetReticle(reticle);
 	player->SetScoreObj(score);
 	player->SetDefeatedEnemy(defeatedEnemy);
@@ -90,9 +92,9 @@ void Scene_Game::Initialize() {
 	reticle->SetGameCamera(mainCamera_);
 
 	enemyManager->SetShootingCourse(shootingCourse);
-	enemyManager->SetRailCamera(railCamera);
+	enemyManager->SetRailCamera(railCamera_);
 
-	skyDome->SetOffsetObject(railCamera);
+	skyDome->SetOffsetObject(railCamera_);
 
 	bulletFiringEnergyRenderer->SetPlayer(player);
 
@@ -108,10 +110,14 @@ void Scene_Game::Initialize() {
 	uiCamera->Initialize();
 	uiCamera->SetProjectionType(ORTHOGRAPHIC);
 	uiCamera->SetDistance(10.0f);
+	
+	GameCamera* transitionCamera = new GameCamera("transitionCamera");
+	transitionCamera->Initialize();
 
 	AddLayer("defeatedEnemyLayer", defeatedEnemyCamera);
 	AddLayer("uiLayer", uiCamera);
 	AddLayer("reticleLayer", mainCamera_);
+	AddLayer("transitionLayer", transitionCamera);
 
 }
 
@@ -122,14 +128,40 @@ void Scene_Game::Initialize() {
 void Scene_Game::Update() {
 	
 
+
 	/// ゲームが終了したのでシーン遷移
 	if(gameManager_->GetIsGameEnd()) {
 		
-		/*##########################################################
-			TODO : COMMENT
-			シーン遷移を追加する -> 暗転
-		##########################################################*/
-		SceneManager::GetInstance()->SetNextScene(RESULT);
+		if(!sceneTransition_) {
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 1.0f, SCENE_GAME_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		} else {
+
+			if(sceneTransition_->GetIsEnd()) {
+
+				SceneManager::GetInstance()->SetNextScene(RESULT);
+			}
+
+		}
+
+	} else {
+
+
+		/// ゲーム開始の処理
+		if(!isStarted_) {
+			isStarted_ = true;
+
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_OUT, 2.0f, SCENE_GAME_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		} else {
+
+			if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+				railCamera_->isActive = true;
+
+				sceneTransition_->Destory();
+				sceneTransition_ = nullptr;
+			}
+		}
 	}
 
 }

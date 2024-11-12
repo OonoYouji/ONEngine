@@ -7,6 +7,7 @@ enum SCENE_GAME_LAYER {
 	SCENE_GAME_LAYER_DEFEATED_ENEMY,
 	SCENE_GAME_LAYER_UI,
 	SCENE_GAME_LAYER_RETICLE,
+	SCENE_GAME_LAYER_TRANSITION,
 };
 
 
@@ -25,5 +26,9 @@ public:
 private:
 
 
-	class GameManager* gameManager_ = nullptr;
+	class GameManager*     gameManager_     = nullptr;
+	class SceneTransition* sceneTransition_ = nullptr;
+	class RailCamera*      railCamera_      = nullptr;
+
+	bool isStarted_ = false;
 };
