@@ -24,6 +24,15 @@ void Player::Initialize(){
 	/// hp parameters
 	maxHP_     = 100.0f;
 	currentHP_ = maxHP_;
+
+	//移動
+	workRootBehavior_.speed_ = 5.0f;
+	//振り向き
+	workRootBehavior_.rotateLerpSensitivity_ = 0.1f;
+
+	//回避
+	workAvoidanceBehavior_.moveDistance_ = 10;
+	workAvoidanceBehavior_.motionTimes_.activeTime_ = 0.8f;
 }
 
 void Player::Update(){
@@ -34,6 +43,7 @@ void Player::Update(){
 }
 
 void Player::Debug(){
+
 	ImGui::DragFloat("MaxHP",&maxHP_,0.1f);
 	ImGui::InputFloat("HP",&currentHP_);
 	ImGui::InputFloat("Power",&power_);
