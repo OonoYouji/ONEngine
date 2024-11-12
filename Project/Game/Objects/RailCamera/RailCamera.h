@@ -50,6 +50,7 @@ private:
 	Vec3  moveDirection_{};      /// 移動している方向ベクトル
 	Vec3  upDirection_{};
 	float moveSpeed_;
+	float moveSpeedRate_;
 
 	float movingTime_;           /// 移動の総合時間
 	float preMovingTime_;        /// 移動の総合時間
@@ -73,4 +74,6 @@ private:
 	GameCamera* pGameCamera_ = nullptr;
 	class DirectionalLight* pDirectionalLight_ = nullptr;
 
+
+	std::vector<float> moveSpeedRates_;
 };

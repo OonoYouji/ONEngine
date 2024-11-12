@@ -8,6 +8,7 @@
 /// engine
 #include <imgui.h>
 #include "FrameManager/Time.h"
+#include "Math/Random.h"
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -34,8 +35,8 @@ void RailCamera::Initialize() {
 	/// transform
 	pTransform_->rotateOrder = QUATERNION;
 
-	//moveSpeed_ = 0.25f;
-	moveSpeed_ = 0.0f;
+	//moveSpeed_ = 0.0f;
+	moveSpeed_ = 0.25f;
 
 	/// move param setting...
 	Reset();
@@ -140,12 +141,20 @@ void RailCamera::Move() {
 	/// shooting courseからanchor point arrayをもらう
 	const std::vector<AnchorPoint>& anchorPointArray = pShootingCourse_->GetAnchorPointArray();
 	anchorPointArraySize_ = anchorPointArray.size();
+	
+	if(moveSpeedRates_.empty()) {
+		moveSpeedRates_.resize(anchorPointArraySize_);
+	
+		for(auto& rate : moveSpeedRates_) {
+			rate = 1.0f * Random::Float(0.8f, 1.5f);
+		}
+	}
 
 	/// 前フレームのデータ保存
 	preMovingTime_ = movingTime_;
 
 	/// 移動 and 回転
-	movingTime_ += moveSpeed_ * Time::DeltaTime();
+	movingTime_ += moveSpeed_ * moveSpeedRates_[static_cast<size_t>(movingTime_)] * Time::DeltaTime();
 	movingTime_ = std::clamp(movingTime_, 0.0f, anchorPointArraySize_ + 1.0f);
 
 	nextMoveT_ = 1.0f / anchorPointArraySize_ * movingTime_;
