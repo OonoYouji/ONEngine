@@ -166,6 +166,7 @@
     <ClCompile Include="Game\Objects\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\RailCamera\RailCamera.cpp" />
+    <ClCompile Include="Game\Objects\ResultScore\ResultScore.cpp" />
     <ClCompile Include="Game\Objects\ResultSprite\ResultSprite.cpp" />
     <ClCompile Include="Game\Objects\Reticle\Reticle.cpp" />
     <ClCompile Include="Game\Objects\ScoreBoard\ScoreBoard.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Game\Objects\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\RailCamera\RailCamera.h" />
+    <ClInclude Include="Game\Objects\ResultScore\ResultScore.h" />
     <ClInclude Include="Game\Objects\ResultSprite\ResultSprite.h" />
     <ClInclude Include="Game\Objects\Reticle\Reticle.h" />
     <ClInclude Include="Game\Objects\ScoreBoard\ScoreBoard.h" />

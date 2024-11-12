@@ -1,4 +1,4 @@
-#include "Score.h"
+#include "ResultScore.h"
 
 /// engine
 #include "VariableManager/VariableManager.h"
@@ -6,26 +6,22 @@
 /// component
 #include "ComponentManager/NumberRenderer/NumberRenderer.h"
 
-/// scenes
-#include "Scenes/Scene_Game.h"
+/// score
+#include "Objects/Score/Score.h"
 
-uint32_t Score::sGameResultScore_ = 0u;
-
-
-Score::Score() {
+ResultScore::ResultScore() {
 	CreateTag(this);
 }
 
-Score::~Score() {}
+ResultScore::~ResultScore() {}
 
-void Score::Initialize() {
-	
-	sGameResultScore_ = 0u;
+void ResultScore::Initialize() {
 
-	drawLayerId = SCENE_GAME_LAYER_UI;
+	uint32_t score      = Score::GetGameResultScore();
+	uint32_t scoreDigit = static_cast<uint32_t>(std::to_string(score).length());
 
-	numberRenderer_ = AddComponent<NumberRenderer>(4u);
-
+	numberRenderer_ = AddComponent<NumberRenderer>(scoreDigit);
+	numberRenderer_->SetTexture("number.png");
 
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
@@ -34,29 +30,24 @@ void Score::Initialize() {
 	vm->AddValue(groupName, "scale",    pTransform_->scale);
 
 
-	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
-
 	ApplyVariables();
 
 
+	numberRenderer_->SetScore(score);
+
 }
 
-void Score::Update() {
-	ApplyVariables();
+void ResultScore::Update() {
 
-
-	sGameResultScore_ = numberRenderer_->GetScore();
 }
 
-void Score::ApplyVariables() {
+void ResultScore::ApplyVariables() {
+
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
 	pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
 	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
-}
 
-void Score::AddScore(uint32_t _value) {
-	numberRenderer_->SetScore(numberRenderer_->GetScore() + _value);
 }
 
