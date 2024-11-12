@@ -40,7 +40,7 @@ void Enemy::Initialize() {
 	hp_ = 10.0f;
 
 	direction_ = Vec3::kFront;
-	speed_     = 1.0f;
+	speed_     = 20.0f;
 
 	moveState_ = ENEMY_MOVE_STATE_MOVE_FORWARD;
 }
@@ -48,7 +48,7 @@ void Enemy::Initialize() {
 void Enemy::Update() {
 	meshRenderer_->SetColor(Vec4::kRed);
 
-	stateUpdateFunctionArray_[moveState_]();
+	StateMoveForward();
 
 	lifeTime_ -= Time::DeltaTime();
 }
@@ -60,7 +60,7 @@ void Enemy::OnCollisionEnter(BaseGameObject* const _collision) {
 }
 
 void Enemy::StateMoveForward() {
-	pTransform_->position += direction_ * speed_;
+	pTransform_->position += direction_ * speed_ * Time::DeltaTime();
 }
 
 void Enemy::StateRatotion() {}
