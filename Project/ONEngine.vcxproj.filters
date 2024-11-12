@@ -118,20 +118,18 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Ai\EnemyAI.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.cpp" />
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -231,8 +229,6 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
-    <ClInclude Include="Game\Objects\Enemy\Ai\EnemyAI.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Attack\AttackActions.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
@@ -240,12 +236,12 @@
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Wait\WaitActions.h" />
     <ClInclude Include="Game\Objects\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -2,6 +2,7 @@
 #include "PlayerRootBehavior.h"
 
 #include "PlayerAvoidanceBehavior.h"
+#include "PlayerWeakAttack.h"
 
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
@@ -35,9 +36,16 @@ void PlayerRootBehavior::Update(){
 		host_->SetPosition(host_->GetPosition() + velo);
 	}
 
+	InputNextBehavior();
+}
+
+void PlayerRootBehavior::InputNextBehavior(){
 	// 回避
 	if(Input::ReleaseKey(KeyCode::LShift)){
-		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_,lastDir_));
+		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
+		return;
+	} else if(Input::ReleaseKey(KeyCode::J)){
+		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_,0));
 		return;
 	}
 }
