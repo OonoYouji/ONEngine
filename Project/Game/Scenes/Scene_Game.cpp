@@ -24,6 +24,9 @@
 #include "Objects/BulletFiringEnergyRenderer/BulletFiringEnergyRenderer.h"
 #include "Objects/Terrain/Terrain.h"
 
+#include "Objects/Home/Home.h"
+#include "Objects/Rock/Rock.h"
+	
 /// lib
 #include "Debugger/Assertion.h"
 
@@ -64,6 +67,12 @@ void Scene_Game::Initialize() {
 	score->Initialize();
 	bulletFiringEnergyRenderer->Initialize();
 	terrain->Initialize();
+
+	/// bb objects
+	(new Home())->Initialize();
+	(new Rock())->Initialize();
+
+
 
 	/// その他ポインタ設定など...
 

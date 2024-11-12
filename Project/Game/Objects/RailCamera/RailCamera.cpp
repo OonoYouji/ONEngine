@@ -145,8 +145,14 @@ void RailCamera::Move() {
 	if(moveSpeedRates_.empty()) {
 		moveSpeedRates_.resize(anchorPointArraySize_);
 	
-		for(auto& rate : moveSpeedRates_) {
+		for(size_t i = 0; i < moveSpeedRates_.size(); ++i) {
+			float& rate = moveSpeedRates_[i];
 			rate = 1.0f * Random::Float(0.8f, 1.5f);
+
+			if(i > moveSpeedRates_.size() - 7) {
+				rate = 3.0f;
+			}
+
 		}
 	}
 
