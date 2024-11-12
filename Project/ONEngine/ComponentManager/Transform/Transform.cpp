@@ -49,6 +49,7 @@ void Transform::Debug() {
 			rotateOrder  = static_cast<ROTATE_ORDER>(currentIndex);
 		}
 
+		Update();
 
 		ImGui::TreePop();
 	}

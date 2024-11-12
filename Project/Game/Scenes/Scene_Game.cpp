@@ -26,6 +26,7 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
+  
   Player* player = new Player();
   player->Initialize();
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
@@ -43,6 +44,7 @@ void Scene_Game::Initialize() {
 	uiCamera->SetDistance(10.0f);
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 	AddLayer("ui", uiCamera);
+
 }
 
 
