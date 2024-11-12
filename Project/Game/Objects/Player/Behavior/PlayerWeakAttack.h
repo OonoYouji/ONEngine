@@ -24,6 +24,6 @@ private:
 
 	float currentTime_;
 
-	const Player::WorkWeakAttackBehavior& workInBehavior_;
+	Player::WorkWeakAttackBehavior workInBehavior_;
 	Vector2 direction_;
 };
