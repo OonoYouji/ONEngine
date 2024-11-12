@@ -22,7 +22,7 @@ private:
 
 	Vec3 velocity_;
 
-	float lifeTime_ = 10.0f;
+	float lifeTime_ = 3.0f;
 
 	class Player* pPlayer_ = nullptr;
 	class DefeatedEnemy* pDefeatedEnemy_ = nullptr;

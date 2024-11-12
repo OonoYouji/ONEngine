@@ -15,7 +15,7 @@
 #include "Objects/ShootingCourse/ShootingCourse.h"
 #include "Objects/RailCamera/RailCamera.h"
 #include "Objects/Reticle/Reticle.h"
-#include "Objects/Enemy/Enemy.h"
+#include "Objects/Boss/Boss.h"
 #include "Objects/Enemy/EnemyManager.h"
 #include "Objects/SkyDome/SkyDome.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
@@ -48,6 +48,7 @@ void Scene_Game::Initialize() {
 	railCamera_                    = new RailCamera();
 	Reticle*        reticle        = new Reticle();
 	Player*         player         = new Player();
+	Boss*           boss = new Boss();
 	EnemyManager*   enemyManager   = new EnemyManager();
 	SkyDome*        skyDome        = new SkyDome();
 	DefeatedEnemy*  defeatedEnemy  = new DefeatedEnemy();
@@ -63,6 +64,7 @@ void Scene_Game::Initialize() {
 	reticle->Initialize();
 	player->Initialize();
 	enemyManager->Initialize();
+	boss->Initialize();
 	skyDome->Initialize();
 	defeatedEnemy->Initialize();
 	scoreBoard->Initialize();
@@ -93,6 +95,8 @@ void Scene_Game::Initialize() {
 
 	enemyManager->SetShootingCourse(shootingCourse);
 	enemyManager->SetRailCamera(railCamera_);
+
+	boss->SetRailCamera(railCamera_);
 
 	skyDome->SetOffsetObject(railCamera_);
 
