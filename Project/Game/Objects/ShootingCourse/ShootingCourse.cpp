@@ -72,6 +72,9 @@ void ShootingCourse::Initialize() {
 	CalcuationUpDirctionArray();
 	upDirInterpolationRenderer_->Update();
 
+
+	anchorPointRenderer_->isActive = false;
+
 }
 
 void ShootingCourse::Update() {

@@ -144,7 +144,7 @@ void EnemyManager::CreateEnemy(
 
 	enemy->direction_    = _direction;
 	enemy->speed_        = _speed;
-	enemy->hp_           = _hp;
+	enemy->hp_           = 3.0f;
 	enemy->updateStartT_ = _updateStartT;
 }
 

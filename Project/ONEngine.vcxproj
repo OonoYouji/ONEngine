@@ -157,7 +157,7 @@
     <ClCompile Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.cpp" />
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\GameManager\GameManager.cpp" />
@@ -274,7 +274,7 @@
     <ClInclude Include="Game\Objects\DefeatedEnemy\DefeatedEnemy.h" />
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
-    <ClInclude Include="Game\Objects\Enemy\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyManager.h" />
     <ClInclude Include="Game\Objects\GameManager\GameManager.h" />
