@@ -134,8 +134,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
-
 
 	/// ゲームが終了したのでシーン遷移
 	if(gameManager_->GetIsGameEnd()) {
