@@ -61,7 +61,6 @@ void TrackingCamera::Update() {
 	);
 
 
-	//pTransform_->position = pPlayer_->GetPosition() + (playerToEnemyVector_ * 0.5f);
 	cameraOffsetRotate_.x -= 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().y;
 	cameraOffsetRotate_.y += 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().x;
 
@@ -112,7 +111,14 @@ void TrackingCamera::LockOnToEnemy() {
 		pGameCamera_->SetParent(pTransform_);
 	}
 
-	pGameCamera_->SetPosition(Mat4::Transform(cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)));
+	/// positionの更新、プレイヤーと敵の間に配置
+	pTransform_->position = pPlayer_->GetPosition() + (playerToEnemyVector_ * 0.5f);
+
+	/// offset position を rotate分回転させる
+	pGameCamera_->SetPosition(Mat4::Transform(
+		cameraOffsetPosition_ * playerToEnemyVector_.Len() / 10.0f, 
+		Mat4::MakeRotate(cameraOffsetRotate_)));
+
 	pGameCamera_->SetQuaternion(Quaternion::Lerp(
 		toPlayerQuaternion_, toEnemyQuaternion_, 
 		quaternionLerpTime_
@@ -127,7 +133,10 @@ void TrackingCamera::LockOnToPlayer() {
 		pGameCamera_->SetParent(pPlayer_->GetTransform());
 	}
 
-	pGameCamera_->SetPosition(Mat4::Transform(cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)));
+	/// offset position を rotate分回転させる
+	pGameCamera_->SetPosition(Mat4::Transform(
+		cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)));
+
 	pGameCamera_->SetQuaternion(Quaternion::Lerp(
 		toEnemyQuaternion_, toPlayerQuaternion_, 
 		quaternionLerpTime_
