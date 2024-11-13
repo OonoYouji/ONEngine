@@ -24,6 +24,8 @@ void Player::Initialize(){
 	/// hp parameters
 	maxHP_     = 100.0f;
 	currentHP_ = maxHP_;
+
+	workRootBehavior_.speed_ = 30.0f;
 }
 
 void Player::Update(){

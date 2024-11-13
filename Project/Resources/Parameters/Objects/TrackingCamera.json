@@ -1,5 +1,6 @@
 {
     "TrackingCamera": {
+        "missTheTargetLenght": 30.0,
         "offset position": [
             0.0,
             8.800000190734863,
