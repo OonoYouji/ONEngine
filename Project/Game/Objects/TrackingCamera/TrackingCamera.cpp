@@ -34,6 +34,8 @@ void TrackingCamera::Initialize() {
 	missTheTargetLenght_ = 5.0f;
 	quaternionLerpSpeed_ = 10.0f;
 
+	cameraMoveSpeedVector_ = { 0.05f, 0.025f, 0.0f };
+
 	/// 値を外部保存の管理クラスに値を追加する
 	AddVariables();
 	ApplyVariables();
@@ -61,9 +63,16 @@ void TrackingCamera::Update() {
 	);
 
 
-	cameraOffsetRotate_.x -= 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().y;
-	cameraOffsetRotate_.y += 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().x;
+	/// カメラの回転
+	Vec3 mouse = {
+		Input::MouseVelocity().Normalize().y * -1.0f,
+		Input::MouseVelocity().Normalize().x * +1.0f,
+		0.0f
+	};
 
+	cameraOffsetRotate_ += cameraMoveSpeedVector_* mouse;
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 1.0f);
+	//cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 1.0f);
 
 	/// ロックオンのフラグの更新
 	LockOnUpdate();
@@ -89,6 +98,11 @@ void TrackingCamera::Debug() {
 		ImGui::Text(std::format(
 			"camera to enemy vector : {:0.2f}, {:0.2f}, {:0.2f}",
 			cameraToEnemyVector_.x, cameraToEnemyVector_.y, cameraToEnemyVector_.z).c_str()
+		);
+
+		ImGui::Text(std::format(
+			"offset rotate : {:0.2f}, {:0.2f}, {:0.2f}",
+			cameraOffsetRotate_.x, cameraOffsetRotate_.y, cameraOffsetRotate_.z).c_str()
 		);
 
 
@@ -145,7 +159,7 @@ void TrackingCamera::LockOnToPlayer() {
 
 void TrackingCamera::LockOnUpdate() {
 	isLockOn_ = false;
-	if(Input::PressKey(KeyCode::Enter)) {
+	if(Input::PressKey(KeyCode::Enter) || Input::PressMouse(MouseCode::Right)) {
 
 		/// プレイヤーと敵の距離が範囲内であれば
 		if(missTheTargetLenght_ > playerToEnemyVector_.Len()) {
@@ -170,6 +184,7 @@ void TrackingCamera::AddVariables() {
 	vm->AddValue(groupName, "offset position", cameraOffsetPosition_);
 	vm->AddValue(groupName, "missTheTargetLenght", missTheTargetLenght_);
 	vm->AddValue(groupName, "quaternionLerpSpeed", quaternionLerpSpeed_);
+	vm->AddValue(groupName, "cameraMoveSpeedVector", cameraMoveSpeedVector_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -179,9 +194,10 @@ void TrackingCamera::ApplyVariables() {
 	VariableManager*   vm        = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 	
-	cameraOffsetPosition_ = vm->GetValue<Vec3>(groupName, "offset position");
-	missTheTargetLenght_  = vm->GetValue<float>(groupName, "missTheTargetLenght");
-	quaternionLerpSpeed_  = vm->GetValue<float>(groupName, "quaternionLerpSpeed");
+	cameraOffsetPosition_  = vm->GetValue<Vec3>(groupName, "offset position");
+	missTheTargetLenght_   = vm->GetValue<float>(groupName, "missTheTargetLenght");
+	quaternionLerpSpeed_   = vm->GetValue<float>(groupName, "quaternionLerpSpeed");
+	cameraMoveSpeedVector_ = vm->GetValue<Vec3>(groupName, "cameraMoveSpeedVector");
 }
 
 

@@ -59,4 +59,6 @@ private:
 	float      quaternionLerpTime_;  /// 線形補完用の時間
 	float      quaternionLerpSpeed_; /// 線形補完のスピード
 
+	Vec3 cameraMoveSpeedVector_; /// カメラの移動量ベクトル
+
 };
