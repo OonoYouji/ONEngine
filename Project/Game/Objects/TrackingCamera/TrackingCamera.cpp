@@ -9,6 +9,7 @@
 /// engine
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
+#include "FrameManager/Time.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -27,33 +28,48 @@ void TrackingCamera::Initialize() {
 	/// カメラの回転の計算方法
 	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
 
-	missTheTargetLenght_ = 5.0f;
+	/// 親子付け
+	pGameCamera_->SetParent(pTransform_);
 
+	missTheTargetLenght_ = 5.0f;
+	quaternionLerpSpeed_ = 10.0f;
 
 	/// 値を外部保存の管理クラスに値を追加する
 	AddVariables();
 	ApplyVariables();
-
 }
 
 void TrackingCamera::Update() {
 	ApplyVariables();
 
+	prevIsLockOn_ = isLockOn_;
+
 	/// ボスへの方向ベクトル
-	cameraToEnemyVector_ = pEnemy_->GetPosition() - (pPlayer_->GetPosition() + cameraOffsetPosition_);
+	cameraToEnemyVector_ = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
 	playerToEnemyVector_ = pEnemy_->GetPosition() - pPlayer_->GetPosition();
+	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
 
-	
-	isLockOn_ = false;
-	if(Input::PressKey(KeyCode::Enter)) {
+	/// 方向ベクトルをquaternionに変える
+	toPlayerQuaternion_ = Quaternion::LockAt(
+		{ 0.0f, 0.0f, 0.0f },
+		cameraToPlayerVector_.Normalize()
+	);
 
-		/// プレイヤーと敵の距離が範囲内であれば
-		if(missTheTargetLenght_ > playerToEnemyVector_.Len()) {
-			isLockOn_ = true;
-		}
-	}
+	toEnemyQuaternion_ = Quaternion::LockAt(
+		{ 0.0f, 0.0f, 0.0f },
+		(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize()
+	);
 
 
+	//pTransform_->position = pPlayer_->GetPosition() + (playerToEnemyVector_ * 0.5f);
+	cameraOffsetRotate_.x -= 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().y;
+	cameraOffsetRotate_.y += 2.0f * Time::DeltaTime() * Input::MouseVelocity().Normalize().x;
+
+
+	/// ロックオンのフラグの更新
+	LockOnUpdate();
+
+	quaternionLerpTime_ = std::clamp(quaternionLerpTime_ + quaternionLerpSpeed_ * Time::DeltaTime(), 0.0f, 1.0f);
 	if(isLockOn_) {
 		LockOnToEnemy();
 	} else {
@@ -89,21 +105,50 @@ void TrackingCamera::Debug() {
 
 
 void TrackingCamera::LockOnToEnemy() {
-	/// offset position の inverse がカメラからプレイヤーへの方向ベクトル
-	pGameCamera_->SetPosition(pPlayer_->GetPosition() + cameraOffsetPosition_);
-	pGameCamera_->SetQuaternion(Quaternion::LockAt(
-		{ 0.0f, 0.0f, 0.0f },
-		(-cameraOffsetPosition_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize()
+
+	/// parentがplayerならキャンセルしてthisをparentする
+	if(pGameCamera_->GetParent() == pPlayer_->GetTransform()) {
+		pGameCamera_->ParentCancel(false);
+		pGameCamera_->SetParent(pTransform_);
+	}
+
+	pGameCamera_->SetPosition(Mat4::Transform(cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)));
+	pGameCamera_->SetQuaternion(Quaternion::Lerp(
+		toPlayerQuaternion_, toEnemyQuaternion_, 
+		quaternionLerpTime_
 	));
 }
 
 void TrackingCamera::LockOnToPlayer() {
-	/// offset position の inverse がカメラからプレイヤーへの方向ベクトル
-	pGameCamera_->SetPosition(pPlayer_->GetPosition() + cameraOffsetPosition_);
-	pGameCamera_->SetQuaternion(Quaternion::LockAt(
-		{ 0.0f, 0.0f, 0.0f },
-		-cameraOffsetPosition_.Normalize()
+
+	/// parentがthisならキャンセルしてplayerをparentする
+	if(pGameCamera_->GetParent() == pTransform_) {
+		pGameCamera_->ParentCancel(false);
+		pGameCamera_->SetParent(pPlayer_->GetTransform());
+	}
+
+	pGameCamera_->SetPosition(Mat4::Transform(cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)));
+	pGameCamera_->SetQuaternion(Quaternion::Lerp(
+		toEnemyQuaternion_, toPlayerQuaternion_, 
+		quaternionLerpTime_
 	));
+}
+
+void TrackingCamera::LockOnUpdate() {
+	isLockOn_ = false;
+	if(Input::PressKey(KeyCode::Enter)) {
+
+		/// プレイヤーと敵の距離が範囲内であれば
+		if(missTheTargetLenght_ > playerToEnemyVector_.Len()) {
+			isLockOn_ = true;
+		}
+	}
+
+	/// ロックオンのフラグが切り替わった瞬間
+	if((isLockOn_ && !prevIsLockOn_)
+	   || (!isLockOn_ && prevIsLockOn_)) {
+		quaternionLerpTime_ = 0.0f;
+	}
 }
 
 
@@ -115,6 +160,7 @@ void TrackingCamera::AddVariables() {
 
 	vm->AddValue(groupName, "offset position", cameraOffsetPosition_);
 	vm->AddValue(groupName, "missTheTargetLenght", missTheTargetLenght_);
+	vm->AddValue(groupName, "quaternionLerpSpeed", quaternionLerpSpeed_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -126,7 +172,7 @@ void TrackingCamera::ApplyVariables() {
 	
 	cameraOffsetPosition_ = vm->GetValue<Vec3>(groupName, "offset position");
 	missTheTargetLenght_  = vm->GetValue<float>(groupName, "missTheTargetLenght");
-
+	quaternionLerpSpeed_  = vm->GetValue<float>(groupName, "quaternionLerpSpeed");
 }
 
 

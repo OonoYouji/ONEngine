@@ -21,6 +21,9 @@ public:
 
 	void LockOnToPlayer();
 
+	void LockOnUpdate();
+
+
 	/// <summary>
 	/// 値の適用、保存
 	/// </summary>
@@ -40,11 +43,20 @@ private:
 	class Enemy*      pEnemy_      = nullptr;
 
 	Vec3 cameraOffsetPosition_; /// プレイヤーからどのくらい離れているか
+	Vec3 cameraOffsetRotate_;
 
 	Vec3 playerToEnemyVector_; /// オブジェクト間のベクトル
 	Vec3 cameraToEnemyVector_; /// オブジェクト間のベクトル
+	Vec3 cameraToPlayerVector_;
 
 	float missTheTargetLenght_; /// ターゲットが外れる距離
 	bool  isLockOn_;            /// ロックオンする、しているフラグ
+	bool  prevIsLockOn_;
+
+	/// quaternionの補間用の変数
+	Quaternion toPlayerQuaternion_;
+	Quaternion toEnemyQuaternion_;
+	float      quaternionLerpTime_;  /// 線形補完用の時間
+	float      quaternionLerpSpeed_; /// 線形補完のスピード
 
 };
