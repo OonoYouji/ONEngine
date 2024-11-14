@@ -17,6 +17,7 @@
 #include "Objects/Stage/Stage.h"
 #include "Objects/SkyDome/SkyDome.h"
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -26,17 +27,32 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-  
-  Player* player = new Player();
-  player->Initialize();
+
+	/// object creata
+
+	/// プレイヤー
+	Player*           player           = new Player(mainCamera_);
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
-  playerHPRenderer->Initialize();
+
+	/// 敵
+	Enemy* enemy = new Enemy(player);
+
+	/// 背景オブジェクト
+	Stage*   stage   = new Stage();
+	SkyDome* skyDome = new SkyDome();
+
+	TrackingCamera*   trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
+
+	/// 初期化する
+	player->Initialize();
+	playerHPRenderer->Initialize();
+	trackingCamera->Initialize();
+	enemy->Initialize();
+	stage->Initialize();
+	skyDome->Initialize();
+
+
 	playerHPRenderer->SetPlayer(player);
-  
-	(new Enemy(player))->Initialize();
-	
-	(new Stage)->Initialize();
-	(new SkyDome)->Initialize();
 
 	/// ui layer  index=1
 	GameCamera* uiCamera = new GameCamera("uiCamera");
@@ -52,6 +68,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
+
 
 }

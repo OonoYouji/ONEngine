@@ -5,15 +5,16 @@
 #include <memory>
 
 class IPlayerBehavior;
-class Player :
-	public BaseGameObject{
+class Player : public BaseGameObject{
 public:
-	Player();
-	~Player();
-	void Initialize()override;
-	void Update()override;
 
-	void Debug()override;
+	Player(class GameCamera* _mainCamera);
+	~Player();
+
+	void Initialize() override;
+	void Update()     override;
+	void Debug()      override;
+
 private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
@@ -31,6 +32,9 @@ private:
 	float damage_;
 
 	bool isInvisible_ = false;
+
+	/// other class pointer
+	class GameCamera* pGameCamera_ = nullptr;
 
 public:
 	///===============================================
@@ -85,5 +89,9 @@ public:
 	const WorkRootBehavior& GetWorkRootBehavior()const{ return workRootBehavior_; }
 	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior()const{ return workAvoidanceBehavior_; }
 	const WorkWeakAttackBehavior& GetWorkWeakAttackBehavior(int32_t index){ return workWeakAttackBehavior_[index]; }
+
+	class GameCamera* GetCamera() const { return pGameCamera_; }\
+    
 	int32_t GetWeakAttackComboMax()const{ return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
+
 };

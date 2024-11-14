@@ -9,7 +9,7 @@
 
 #include "imgui.h"
 
-Player::Player(){
+Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
 	CreateTag(this);
 }
 
@@ -25,8 +25,7 @@ void Player::Initialize(){
 	maxHP_     = 100.0f;
 	currentHP_ = maxHP_;
 
-	//移動
-	workRootBehavior_.speed_ = 5.0f;
+	workRootBehavior_.speed_ = 30.0f;
 	//振り向き
 	workRootBehavior_.rotateLerpSensitivity_ = 0.1f;
 
