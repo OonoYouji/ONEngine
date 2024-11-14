@@ -68,5 +68,17 @@ private:
 	/// 追尾するオブジェクト
 	BaseGameObject* pTargetObject_;
 	Vec3            targetPosition_;
+	Vec3            saveTargetPosition_;
+
+
+	/// rotateのリセット用
+	Vec3 saveCameraOffsetRotate_;
+	Vec3 saveCameraTargetRotate_;
+
+	float playerToEnemyRotateY_;
+	bool  isTargetingActive_;
+	float toTargetLerpTime_;
+	float toTargetLerpMaxTime_;
+
 
 };

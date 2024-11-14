@@ -1,7 +1,9 @@
+#define NOMINMAX
 #include "TrackingCamera.h"
 
 /// std
 #include <format>
+#include <numbers>
 
 /// externals
 #include <imgui.h>
@@ -37,6 +39,8 @@ void TrackingCamera::Initialize() {
 	quaternionLerpSpeed_ = 10.0f;
 
 	cameraMoveSpeedVector_ = { 0.05f, 0.025f, 0.0f };
+
+	toTargetLerpMaxTime_ = 0.5f;
 
 	/// 値を外部保存の管理クラスに値を追加する
 	AddVariables();
@@ -81,8 +85,13 @@ void TrackingCamera::Debug() {
 		);
 
 		ImGui::Text(std::format(
-			"offset rotate : {:0.2f}, {:0.2f}, {:0.2f}",
+			"camera offset rotate : {:0.2f}, {:0.2f}, {:0.2f}",
 			cameraOffsetRotate_.x, cameraOffsetRotate_.y, cameraOffsetRotate_.z).c_str()
+		);
+		
+		ImGui::Text(std::format(
+			"camera target rotate : {:0.2f}, {:0.2f}, {:0.2f}",
+			cameraTargetRotate_.x, cameraTargetRotate_.y, cameraTargetRotate_.z).c_str()
 		);
 
 
@@ -101,7 +110,6 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// 敵をターゲットする
 	pTargetObject_ = pEnemy_;
-	targetPosition_ = Vec3::Lerp(targetPosition_, pTargetObject_->GetPosition(), 0.5f);
 
 	/// カメラの回転 keyboard
 	Vec3 cameraRotateValue = {
@@ -120,12 +128,34 @@ void TrackingCamera::LockOnToEnemy() {
 	}
 
 
-	/// 回転量の計算
-	Vec3 normP2EVec = playerToEnemyVector_.Normalize();
-	cameraTargetRotate_.y = std::atan2(normP2EVec.x, normP2EVec.z);
 
-	cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
-	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
+	Vec3 normP2EVec = playerToEnemyVector_.Normalize();
+	playerToEnemyRotateY_ = std::atan2(normP2EVec.x, normP2EVec.z);
+
+	/// ターゲット開始した
+	if(isTargetingActive_) {
+		toTargetLerpTime_ += Time::DeltaTime();
+		float lerpT = std::min(toTargetLerpTime_ / toTargetLerpMaxTime_, 1.0f);
+
+		cameraTargetRotate_ = Vec3::Lerp(saveCameraTargetRotate_, { 0.0f, playerToEnemyRotateY_, 0.0f }, lerpT);
+		cameraOffsetRotate_ = Vec3::Lerp(saveCameraOffsetRotate_, {}, lerpT);
+
+		targetPosition_ = Vec3::Lerp(pTargetObject_->GetPosition(), saveTargetPosition_, lerpT);
+
+		/// 終了した
+		if(lerpT == 1.0f) {
+			isTargetingActive_ = false;
+		}
+	} else {
+
+		targetPosition_ = pTargetObject_->GetPosition();
+		
+		cameraTargetRotate_.y = playerToEnemyRotateY_;
+
+		cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
+		cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.4f, 0.8f);
+		cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f * std::numbers::pi_v<float>);
+	}
 
 
 	/// positionの更新、プレイヤーと敵の間に配置
@@ -178,7 +208,7 @@ void TrackingCamera::LockOnToPlayer() {
 
 	/// プレイヤーをターゲットする
 	pTargetObject_ = pPlayer_;
-	targetPosition_ = Vec3::Lerp(targetPosition_, pTargetObject_->GetPosition(), 0.5f);
+	targetPosition_ = Vec3::Lerp(targetPosition_, pTargetObject_->GetPosition(), 0.1f);
 
 
 	/// カメラの回転
@@ -198,7 +228,8 @@ void TrackingCamera::LockOnToPlayer() {
 
 	/// 
 	cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
-	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.4f, 0.8f);
+	cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f * std::numbers::pi_v<float>);
 
 
 
@@ -256,11 +287,18 @@ void TrackingCamera::LockOnUpdate() {
 	if(isLockOn_ && !prevIsLockOn_) {
 		quaternionLerpTime_ = 0.0f;
 
-		cameraTargetRotate_ = {};
-		cameraOffsetRotate_ = {};
+
+		isTargetingActive_ = true;
+		toTargetLerpTime_ = 0.0f;
+
+		saveCameraTargetRotate_ = cameraTargetRotate_;
+		saveCameraOffsetRotate_ = cameraOffsetRotate_;
+
+		saveTargetPosition_ = pTargetObject_->GetPosition();
+
 
 		Vec3 normP2EVec = playerToEnemyVector_.Normalize();
-		cameraTargetRotate_.y = std::atan2(normP2EVec.z, normP2EVec.x);
+		playerToEnemyRotateY_ = std::atan2(normP2EVec.z, normP2EVec.x);
 
 		return;
 	}
@@ -279,6 +317,7 @@ void TrackingCamera::AddVariables() {
 	vm->AddValue(groupName, "quaternionLerpSpeed", quaternionLerpSpeed_);
 	vm->AddValue(groupName, "cameraMoveSpeedVector", cameraMoveSpeedVector_);
 	vm->AddValue(groupName, "lockOnLenghtScaleFactor", lockOnLenghtScaleFactor_);
+	vm->AddValue(groupName, "toTargetLerpMaxTime", toTargetLerpMaxTime_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -293,6 +332,7 @@ void TrackingCamera::ApplyVariables() {
 	quaternionLerpSpeed_     = vm->GetValue<float>(groupName, "quaternionLerpSpeed");
 	cameraMoveSpeedVector_   = vm->GetValue<Vec3>(groupName,  "cameraMoveSpeedVector");
 	lockOnLenghtScaleFactor_ = vm->GetValue<float>(groupName, "lockOnLenghtScaleFactor");
+	toTargetLerpMaxTime_     = vm->GetValue<float>(groupName, "toTargetLerpMaxTime");
 }
 
 
