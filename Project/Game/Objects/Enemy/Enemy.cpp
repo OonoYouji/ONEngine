@@ -66,7 +66,6 @@ void Enemy::Debug(){
 		} else{
 			ImGui::Begin("New Attack Action");
 			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
-			ImGui::SameLine();
 			if(ImGui::Button("Create")){
 				workAttackVariables_[createObjectName_] = WorkAttackAction();
 
@@ -111,7 +110,7 @@ void Enemy::Debug(){
 				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
 				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
 				ImGui::DragFloat("endLagTime",&currentEditAction_->motionTimes_.endLagTime_,0.1f,0.0f);
-				ImGui::DragFloat("setupTime",&currentEditAction_->damage_,0.1f,0.0f);
+				ImGui::DragFloat("damage",&currentEditAction_->damage_,0.1f,0.0f);
 
 				ImGui::TreePop();
 			}
@@ -131,7 +130,6 @@ void Enemy::Debug(){
 		} else{
 			ImGui::Begin("New Attack Combo");
 			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
-			ImGui::SameLine();
 			if(ImGui::Button("Create")){
 				workAttackVariables_[createObjectName_] = WorkAttackAction();
 
@@ -146,20 +144,6 @@ void Enemy::Debug(){
 				createObjectName_ = "NULL";
 			}
 			ImGui::End();
-		}
-
-		if(currentEditActionName_){
-			if(ImGui::TreeNode(currentEditActionName_->c_str())){
-
-				ImGui::Spacing();
-
-				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
-				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
-				ImGui::DragFloat("endLagTime",&currentEditAction_->motionTimes_.endLagTime_,0.1f,0.0f);
-				ImGui::DragFloat("setupTime",&currentEditAction_->damage_,0.1f,0.0f);
-
-				ImGui::TreePop();
-			}
 		}
 		ImGui::TreePop();
 	}
