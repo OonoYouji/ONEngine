@@ -413,7 +413,7 @@
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)\Externals\GenerateFilters\GenerateFilters.ps1" "$(ProjectDir)" "$(ProjectDir)$(ProjectName).vcxproj.filters"</Command>
+      <Command>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)GenerateFilters.ps1" "$(ProjectDir)" "$(ProjectDir)$(ProjectName).vcxproj.filters"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

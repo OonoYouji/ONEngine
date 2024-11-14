@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<GameFrameWork> gameFrameWork(new GameFrameWork);
 	gameFrameWork->Run();
-	
+
 	ONEngine::Finalize();
 	return 0;
 }
