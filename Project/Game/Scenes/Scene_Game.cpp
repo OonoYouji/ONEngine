@@ -31,7 +31,7 @@ void Scene_Game::Initialize() {
 	/// object creata
 
 	/// プレイヤー
-	Player*           player           = new Player();
+	Player*           player           = new Player(mainCamera_);
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
 
 	/// 敵

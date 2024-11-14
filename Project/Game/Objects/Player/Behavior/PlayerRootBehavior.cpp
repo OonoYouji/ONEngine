@@ -8,6 +8,8 @@
 #include "Input/Input.h"
 #include "Library/Math/LerpShortAngle.h"
 
+#include "Objects/Camera/GameCamera.h"
+
 PlayerRootBehavior::PlayerRootBehavior(Player* _host):IPlayerBehavior(_host),workInBehavior_(host_->GetWorkRootBehavior()){}
 
 void PlayerRootBehavior::Update(){
@@ -33,6 +35,7 @@ void PlayerRootBehavior::Update(){
 		float playerSpeed_ = workInBehavior_.speed_;
 		Vector3 velo = {direction_.x * playerSpeed_,0.0f,direction_.y * playerSpeed_};
 		velo *=  Time::DeltaTime();
+		//velo = Mat4::Transform(velo, host_->GetCamera()->GetMatTransform());
 		host_->SetPosition(host_->GetPosition() + velo);
 	}
 

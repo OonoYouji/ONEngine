@@ -44,6 +44,7 @@ private:
 
 	Vec3 cameraOffsetPosition_; /// プレイヤーからどのくらい離れているか
 	Vec3 cameraOffsetRotate_;
+	Vec3 cameraNextPosition_;
 
 	Vec3 playerToEnemyVector_; /// オブジェクト間のベクトル
 	Vec3 cameraToEnemyVector_; /// オブジェクト間のベクトル
@@ -54,11 +55,14 @@ private:
 	bool  prevIsLockOn_;
 
 	/// quaternionの補間用の変数
-	Quaternion toPlayerQuaternion_;
-	Quaternion toEnemyQuaternion_;
+	Quaternion cameraToPlayerQuaternion_;
+	Quaternion cameraToEnemyQuaternion_;
 	float      quaternionLerpTime_;  /// 線形補完用の時間
 	float      quaternionLerpSpeed_; /// 線形補完のスピード
 
 	Vec3 cameraMoveSpeedVector_; /// カメラの移動量ベクトル
+
+
+	BaseGameObject* pTargetObject_;
 
 };

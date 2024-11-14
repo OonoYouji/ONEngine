@@ -9,7 +9,7 @@
 
 #include "imgui.h"
 
-Player::Player(){
+Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
 	CreateTag(this);
 }
 
