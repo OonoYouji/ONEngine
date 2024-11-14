@@ -49,11 +49,12 @@ private:
 
 	Vec3 playerToEnemyVector_;  /// オブジェクト間のベクトル
 	Vec3 cameraToEnemyVector_;  /// オブジェクト間のベクトル
-	Vec3 cameraToPlayerVector_;
+	Vec3 cameraToPlayerVector_; /// オブジェクト間のベクトル
 
 	float missTheTargetLenght_; /// ターゲットが外れる距離
 	bool  isLockOn_;            /// ロックオンする、しているフラグ
 	bool  prevIsLockOn_;
+	float lockOnLenghtScaleFactor_; /// ロックオンしたとき距離の倍率
 
 	/// quaternionの補間用の変数
 	Quaternion cameraToPlayerQuaternion_;
@@ -64,6 +65,8 @@ private:
 	Vec3 cameraMoveSpeedVector_; /// カメラの移動量ベクトル
 
 
+	/// 追尾するオブジェクト
 	BaseGameObject* pTargetObject_;
+	Vec3            targetPosition_;
 
 };
