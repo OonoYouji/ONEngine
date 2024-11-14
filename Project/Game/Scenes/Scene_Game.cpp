@@ -12,6 +12,7 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Terrain/Terrain.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -21,7 +22,7 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-  
+	(new Terrain)->Initialize();
 
 }
 
