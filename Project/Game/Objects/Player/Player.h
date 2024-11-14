@@ -89,8 +89,9 @@ public:
 	const WorkRootBehavior& GetWorkRootBehavior()const{ return workRootBehavior_; }
 	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior()const{ return workAvoidanceBehavior_; }
 	const WorkWeakAttackBehavior& GetWorkWeakAttackBehavior(int32_t index){ return workWeakAttackBehavior_[index]; }
-	int32_t GetWeakAttackComboMax()const{ return static_cast<int32_t>(workWeakAttackBehavior_.size()); }
 
-	class GameCamera* GetCamera() const { return pGameCamera_; }
+	class GameCamera* GetCamera() const { return pGameCamera_; }\
+    
+	int32_t GetWeakAttackComboMax()const{ return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
 
 };
