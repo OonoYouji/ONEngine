@@ -21,4 +21,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class TerrainRenderer* terranRenderer_ = nullptr;
+
 };

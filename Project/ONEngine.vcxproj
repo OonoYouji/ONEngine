@@ -204,6 +204,7 @@
     <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\TerrainRenderer\TerrainRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
     <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
@@ -305,6 +306,7 @@
     <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\TerrainRenderer\TerrainRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
