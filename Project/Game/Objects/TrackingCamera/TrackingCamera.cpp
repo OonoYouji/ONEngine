@@ -204,8 +204,8 @@ void TrackingCamera::LockOnToEnemy() {
 	/// ---------------------------------------------------
 
 	/// positionの更新、プレイヤーと敵の間に配置
-	float scaleFactor = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
-	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * scaleFactor;
+	cameraOffsetLenghtScaleFactor_ = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
+	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
 	if(playerToEnemyVector_.Len() < 15.0f) {
@@ -311,8 +311,10 @@ void TrackingCamera::LockOnToPlayer() {
 	/// ---------------------------------------------------
 
 	/// offset position を rotate分回転させる
+	cameraOffsetLenghtScaleFactor_ = std::lerp(cameraOffsetLenghtScaleFactor_, 1.0f, 0.1f);
 	cameraNextPosition_ = targetPosition_ + Mat4::Transform(
-		cameraOffsetDirection_ * cameraOffsetLenght_, Mat4::MakeRotate(cameraOffsetRotate_)
+		cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_,
+		Mat4::MakeRotate(cameraOffsetRotate_)
 	);
 
 	pGameCamera_->SetPosition(Vec3::Lerp(
@@ -403,7 +405,7 @@ void TrackingCamera::LockOnUpdate() {
 
 void TrackingCamera::CameraOffsetRotateUpdate(const Vec3& _rotateValue) {
 	cameraOffsetRotate_ += cameraMoveSpeedVector_ * _rotateValue;
-	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.3f, 0.8f);
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
 	cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f*  std::numbers::pi_v<float>);
 }
 

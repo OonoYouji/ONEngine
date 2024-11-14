@@ -46,6 +46,7 @@ private:
 
 	Vec3 cameraOffsetDirection_;
 	float cameraOffsetLenght_;
+	float cameraOffsetLenghtScaleFactor_; /// cameraOffsetLenght_の倍率
 
 	Vec3 cameraOffsetPosition_; /// プレイヤーからどのくらい離れているか
 	Vec3 cameraOffsetRotate_;   /// 常に更新されている回転
