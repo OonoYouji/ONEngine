@@ -13,6 +13,9 @@
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
 
+/// math
+#include "Math/LerpShortAngle.h"
+
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/Player/Player.h"
@@ -94,6 +97,18 @@ void TrackingCamera::Debug() {
 			cameraTargetRotate_.x, cameraTargetRotate_.y, cameraTargetRotate_.z).c_str()
 		);
 
+		ImGui::Text(std::format(
+			"target position : {:0.2f}, {:0.2f}, {:0.2f}",
+			targetPosition_.x, targetPosition_.y, targetPosition_.z).c_str()
+		);
+
+			ImGui::Text(std::format(
+			"player to enemy rotateY : {:0.2f}",
+			playerToEnemyRotateY_).c_str()
+		);
+
+		
+
 
 		ImGui::Text(std::format(
 			"isLockOn : {}", isLockOn_).c_str()
@@ -108,8 +123,6 @@ void TrackingCamera::Debug() {
 
 void TrackingCamera::LockOnToEnemy() {
 
-	/// 敵をターゲットする
-	pTargetObject_ = pEnemy_;
 
 	/// カメラの回転 keyboard
 	Vec3 cameraRotateValue = {
@@ -129,6 +142,10 @@ void TrackingCamera::LockOnToEnemy() {
 
 
 
+	/// ---------------------------------------------------
+	/// 
+	/// ---------------------------------------------------
+
 	Vec3 normP2EVec = playerToEnemyVector_.Normalize();
 	playerToEnemyRotateY_ = std::atan2(normP2EVec.x, normP2EVec.z);
 
@@ -137,10 +154,31 @@ void TrackingCamera::LockOnToEnemy() {
 		toTargetLerpTime_ += Time::DeltaTime();
 		float lerpT = std::min(toTargetLerpTime_ / toTargetLerpMaxTime_, 1.0f);
 
-		cameraTargetRotate_ = Vec3::Lerp(saveCameraTargetRotate_, { 0.0f, playerToEnemyRotateY_, 0.0f }, lerpT);
-		cameraOffsetRotate_ = Vec3::Lerp(saveCameraOffsetRotate_, {}, lerpT);
+		Vec3 diff = Vec3(0.0f, playerToEnemyRotateY_, 0.0f) - saveCameraOffsetRotate_ ;
+		bool isInverse = false; /// diffを反転したか
 
-		targetPosition_ = Vec3::Lerp(pTargetObject_->GetPosition(), saveTargetPosition_, lerpT);
+		/// マイナス値をプラス値に直す
+		if(diff.y < 0.0f) {
+			diff.y *= -1.0f;
+			isInverse = true;
+		}
+
+
+		//cameraTargetRotate_ = Vec3::Lerp(saveCameraTargetRotate_, { 0.0f, playerToEnemyRotateY_, 0.0f }, lerpT);
+
+		if(diff.y > std::numbers::pi_v<float>) {
+			if(isInverse) {
+				cameraOffsetRotate_ = Vec3::Lerp(saveCameraOffsetRotate_, { 0.0f, 2.0f * std::numbers::pi_v<float>, 0.0f }, lerpT);
+			} else {
+				cameraOffsetRotate_ = Vec3::Lerp(saveCameraOffsetRotate_, { 0.0f, -2.0f * std::numbers::pi_v<float>, 0.0f }, lerpT);
+			}
+		} else {
+			cameraOffsetRotate_ = Vec3::Lerp(saveCameraOffsetRotate_, {}, lerpT);
+		}
+
+		cameraTargetRotate_ = Vec3::Lerp(saveCameraTargetRotate_, { 0.0f, playerToEnemyRotateY_, 0.0f }, lerpT);
+
+		targetPosition_     = Vec3::Lerp(saveTargetPosition_, pTargetObject_->GetPosition() - (playerToEnemyVector_ * 0.5f), lerpT);
 
 		/// 終了した
 		if(lerpT == 1.0f) {
@@ -148,19 +186,23 @@ void TrackingCamera::LockOnToEnemy() {
 		}
 	} else {
 
-		targetPosition_ = pTargetObject_->GetPosition();
+		targetPosition_ = pTargetObject_->GetPosition() - (playerToEnemyVector_ * 0.5f);
 		
 		cameraTargetRotate_.y = playerToEnemyRotateY_;
 
-		cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
-		cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.4f, 0.8f);
-		cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f * std::numbers::pi_v<float>);
+		CameraOffsetRotateUpdate(cameraRotateValue);
+
 	}
 
 
+
+	/// ---------------------------------------------------
+	/// 座標の計算
+	/// ---------------------------------------------------
+
 	/// positionの更新、プレイヤーと敵の間に配置
 	float scaleFactor = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
-	Vec3 offsetPos = cameraOffsetPosition_ * scaleFactor;
+	Vec3  offsetPos   = cameraOffsetPosition_ * scaleFactor;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
 	if(playerToEnemyVector_.Len() < 15.0f) {
@@ -184,7 +226,12 @@ void TrackingCamera::LockOnToEnemy() {
 		0.5f
 	));
 
+
 	
+	/// ---------------------------------------------------
+	/// 回転角の計算
+	/// ---------------------------------------------------
+
 	/// カメラの行列更新
 	pGameCamera_->UpdateMatrix();
 	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
@@ -206,10 +253,6 @@ void TrackingCamera::LockOnToEnemy() {
 
 void TrackingCamera::LockOnToPlayer() {
 
-	/// プレイヤーをターゲットする
-	pTargetObject_ = pPlayer_;
-	targetPosition_ = Vec3::Lerp(targetPosition_, pTargetObject_->GetPosition(), 0.1f);
-
 
 	/// カメラの回転
 	Vec3 cameraRotateValue = {
@@ -226,12 +269,38 @@ void TrackingCamera::LockOnToPlayer() {
 		};
 	}
 
+
+	/// ---------------------------------------------------
 	/// 
-	cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
-	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.4f, 0.8f);
-	cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f * std::numbers::pi_v<float>);
+	/// ---------------------------------------------------
+
+	/// ターゲットをはずした
+	if(isTargetLost_) {
+
+		toTargetLerpTime_ += Time::DeltaTime();
+		float lerpT = std::min(toTargetLerpTime_ / 0.5f, 1.0f);
+
+		cameraOffsetRotate_ = saveCameraOffsetRotate_ + saveCameraTargetRotate_;
+		
+		targetPosition_ = Vec3::Lerp(saveTargetPosition_, pTargetObject_->GetPosition(), lerpT);
+
+		if(lerpT == 1.0f) {
+			isTargetLost_ = false;
+		}
+
+	} else {
+
+		targetPosition_ = pTargetObject_->GetPosition();
+
+		/// 
+		CameraOffsetRotateUpdate(cameraRotateValue);
+	}
 
 
+
+	/// ---------------------------------------------------
+	/// 位置の計算
+	/// ---------------------------------------------------
 
 	/// offset position を rotate分回転させる
 	cameraNextPosition_ = targetPosition_ + Mat4::Transform(
@@ -244,6 +313,10 @@ void TrackingCamera::LockOnToPlayer() {
 	));
 
 
+
+	/// ---------------------------------------------------
+	/// 回転の計算
+	/// ---------------------------------------------------
 
 	/// カメラの行列更新
 	pGameCamera_->UpdateMatrix();
@@ -276,9 +349,17 @@ void TrackingCamera::LockOnUpdate() {
 	if(!isLockOn_ && prevIsLockOn_) {
 		quaternionLerpTime_ = 0.0f;
 
-		cameraOffsetRotate_ += cameraTargetRotate_;
+		isTargetLost_ = true;
+		toTargetLerpTime_ = 0.0f;
+
+		saveCameraTargetRotate_ = cameraTargetRotate_;
+		saveCameraOffsetRotate_ = cameraOffsetRotate_;
+
 		cameraTargetRotate_ = {};
 
+		/// プレイヤーをターゲットする
+		pTargetObject_ = pPlayer_;
+		saveTargetPosition_ = targetPosition_;
 
 		return;
 	}
@@ -294,7 +375,10 @@ void TrackingCamera::LockOnUpdate() {
 		saveCameraTargetRotate_ = cameraTargetRotate_;
 		saveCameraOffsetRotate_ = cameraOffsetRotate_;
 
-		saveTargetPosition_ = pTargetObject_->GetPosition();
+
+		/// 敵をターゲットする
+		pTargetObject_ = pEnemy_;
+		saveTargetPosition_ = targetPosition_;
 
 
 		Vec3 normP2EVec = playerToEnemyVector_.Normalize();
@@ -303,6 +387,12 @@ void TrackingCamera::LockOnUpdate() {
 		return;
 	}
 
+}
+
+void TrackingCamera::CameraOffsetRotateUpdate(const Vec3& _rotateValue) {
+	cameraOffsetRotate_ += cameraMoveSpeedVector_ * _rotateValue;
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, -0.3f, 0.8f);
+	cameraOffsetRotate_.y = std::fmod(cameraOffsetRotate_.y, 2.0f*  std::numbers::pi_v<float>);
 }
 
 

@@ -23,6 +23,8 @@ public:
 
 	void LockOnUpdate();
 
+	void CameraOffsetRotateUpdate(const Vec3& _rotateValue);
+
 
 	/// <summary>
 	/// 値の適用、保存
@@ -80,5 +82,6 @@ private:
 	float toTargetLerpTime_;
 	float toTargetLerpMaxTime_;
 
+	bool isTargetLost_; /// ターゲットをはずした
 
 };
