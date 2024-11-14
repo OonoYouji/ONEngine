@@ -33,10 +33,23 @@ void PlayerRootBehavior::Update(){
 
 	{  // Postion Update
 		float playerSpeed_ = workInBehavior_.speed_;
-		Vector3 velo = {direction_.x * playerSpeed_,0.0f,direction_.y * playerSpeed_};
-		velo *=  Time::DeltaTime();
-		//velo = Mat4::Transform(velo, host_->GetCamera()->GetMatTransform());
-		host_->SetPosition(host_->GetPosition() + velo);
+
+		Vec3 velocity = {
+			direction_.x, 0.0f, direction_.y
+		};
+
+		auto GetYawFromQuaternion = [](const Quaternion& q) {
+			return std::atan2(
+				2.0f * (q.y * q.w + q.x * q.z),
+				1.0f - 2.0f * (q.x * q.x + q.y * q.y)
+			);
+		};
+
+		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(host_->GetCamera()->GetQuaternion()));
+		velocity = Mat4::TransformNormal(velocity, matCameraRotateY);
+		velocity *= playerSpeed_ * Time::DeltaTime();
+
+		host_->SetPosition(host_->GetPosition() + velocity);
 	}
 
 	InputNextBehavior();

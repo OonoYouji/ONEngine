@@ -54,7 +54,7 @@ void TrackingCamera::Update() {
 	/// カメラの回転
 	Vec3 cameraRotateValue = {
 		static_cast<float>(Input::PressKey(KeyCode::UpArrow) - Input::PressKey(KeyCode::DownArrow)),
-		static_cast<float>(Input::PressKey(KeyCode::LeftArrow) - Input::PressKey(KeyCode::RightArrow)),
+		static_cast<float>(Input::PressKey(KeyCode::RightArrow) - Input::PressKey(KeyCode::LeftArrow)),
 		0.0f
 	};
 
