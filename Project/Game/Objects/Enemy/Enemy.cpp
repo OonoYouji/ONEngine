@@ -1,7 +1,10 @@
 #include "Enemy.h"
-#include "State/IEnemyState.h"
 #include "State/EnemyIdleState.h"
+#include "State/IEnemyState.h"
 
+#include <iostream>
+
+#include "BehaviorTree/AttackBehaviorTree.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
 
@@ -10,7 +13,7 @@
 #endif // _DEBUG
 
 
-Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f),maxStamina_(0.0f){
+Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f){
 	CreateTag(this);
 }
 
@@ -20,7 +23,6 @@ void Enemy::Initialize(){
 	animationRender_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
 
 	hp_ = maxHp_;
-	stamina_ = maxStamina_;
 
 	currentState_.reset(new EnemyIdleState(this));
 	currentState_->Initialize();
@@ -33,71 +35,136 @@ void Enemy::Update(){
 void Enemy::Debug(){
 	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
 
-	float weakAttackPoint = GetWeakAttackPoint();
-	ImGui::InputFloat("WeakAttackPoint",&weakAttackPoint);
-	float strongAttackPoint = GetStrongAttackPoint();
-	ImGui::InputFloat("WeakAttackPoint",&strongAttackPoint);
-	float shortIdlePoint = GetShortIdlePoint();
-	ImGui::InputFloat("WeakAttackPoint",&shortIdlePoint);
-	float longIdlePoint = GetLongIdlePoint();
-	ImGui::InputFloat("WeakAttackPoint",&longIdlePoint);
-
+	///===============================================
+	/// ステータスの表示
+	///===============================================
 	if(ImGui::TreeNode("Status")){
 		ImGui::DragFloat("MaxHP",const_cast<float*>(&maxHp_),0.1f);
-		ImGui::DragFloat("MaxStamina",const_cast<float*>(&maxStamina_),0.1f);
 		ImGui::DragFloat("Speed",&speed_,0.1f);
 
 		ImGui::Spacing();
 
 		ImGui::InputFloat("Current HP",&hp_);
-		ImGui::InputFloat("Current Stamina",&stamina_);
 
 		if(ImGui::Button("SetMax Status")){
 			hp_ = maxHp_;
-			stamina_ = maxStamina_;
 		}
 		ImGui::TreePop();
 	}
 
-	if(ImGui::TreeNode("Idle Action")){
-		if(ImGui::TreeNode("ShortIdle")){
-			ImGui::DragFloat("ShortIdle_hpWeight",&workShortIdle_.hpWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_staminaWeight",&workShortIdle_.staminaWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_healingStamina",&workShortIdle_.healingStamina_,0.1f);
-			ImGui::TreePop();
+	ImGui::Spacing();
+
+	///===============================================
+	/// AttackActions
+	///===============================================
+	if(ImGui::TreeNode("AttackActions")){
+		// 新しい アクションを 生成する時に window を popupする
+		if(!isCreateAttackAction_){
+			if(ImGui::Button("Create Attack Action")){
+				isCreateAttackAction_ = true;
+			}
+		} else{
+			ImGui::Begin("New Attack Action");
+			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
+			ImGui::SameLine();
+			if(ImGui::Button("Create")){
+				workAttackVariables_[createObjectName_] = WorkAttackAction();
+
+				currentEditAction_ = &workAttackVariables_[createObjectName_];
+				currentEditActionName_ = const_cast<std::string*>(&workAttackVariables_.find(createObjectName_)->first);
+				isCreateAttackAction_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel")){
+				isCreateAttackAction_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::End();
 		}
 
 		ImGui::Spacing();
 
-		if(ImGui::TreeNode("LongIdle")){
-			ImGui::DragFloat("LongIdle_hpWeight",&workLongIdle_.hpWeight_,0.1f);
-			ImGui::DragFloat("LongIdle_staminaWeight",&workLongIdle_.staminaWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_healingStamina",&workLongIdle_.healingStamina_,0.1f);
-			ImGui::TreePop();
+		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
+		if(currentEditActionName_){
+			if(ImGui::BeginCombo("Attack Actions",currentEditActionName_->c_str())){
+				for(auto& [key,value] : workAttackVariables_){
+					bool isSelected = (currentEditActionName_ == &key);
+					if(ImGui::Selectable(key.c_str(),isSelected)){
+						currentEditActionName_ = const_cast<std::string*>(&key);
+						currentEditAction_ = &value;
+					}
+					if(isSelected){
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+
+		ImGui::Spacing();
+
+		// 調整できるように 
+		if(currentEditActionName_){
+			if(ImGui::TreeNode(currentEditActionName_->c_str())){
+				ImGui::Spacing();
+				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
+				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
+				ImGui::DragFloat("endLagTime",&currentEditAction_->motionTimes_.endLagTime_,0.1f,0.0f);
+				ImGui::DragFloat("setupTime",&currentEditAction_->damage_,0.1f,0.0f);
+
+				ImGui::TreePop();
+			}
+		}
+
+		ImGui::TreePop();
+	}
+
+	///===============================================
+	/// AttackCombo
+	///===============================================
+	if(ImGui::TreeNode("AttackCombo")){
+		if(!isCreateAttackAction_){
+			if(ImGui::Button("Create Attack Combo")){
+				isCreateAttackCombo_ = true;
+			}
+		} else{
+			ImGui::Begin("New Attack Combo");
+			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
+			ImGui::SameLine();
+			if(ImGui::Button("Create")){
+				workAttackVariables_[createObjectName_] = WorkAttackAction();
+
+				currentEditAction_ = &workAttackVariables_[createObjectName_];
+				currentEditActionName_ = const_cast<std::string*>(&workAttackVariables_.find(createObjectName_)->first);
+				isCreateAttackAction_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel")){
+				isCreateAttackAction_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::End();
+		}
+
+		if(currentEditActionName_){
+			if(ImGui::TreeNode(currentEditActionName_->c_str())){
+
+				ImGui::Spacing();
+
+				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
+				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
+				ImGui::DragFloat("endLagTime",&currentEditAction_->motionTimes_.endLagTime_,0.1f,0.0f);
+				ImGui::DragFloat("setupTime",&currentEditAction_->damage_,0.1f,0.0f);
+
+				ImGui::TreePop();
+			}
 		}
 		ImGui::TreePop();
 	}
 
-	if(ImGui::TreeNode("Attack Action")){
-		if(ImGui::TreeNode("WeakAttack")){
-			ImGui::DragFloat("WeakAttack_hpWeight",&workWeakAttack_.hpWeight_,0.1f);
-			ImGui::DragFloat("WeakAttack_staminaWeight",&workWeakAttack_.staminaWeight_,0.1f);
-			ImGui::DragFloat("WeakAttack_activationDistance",&workWeakAttack_.activationDistance_,0.1f);
-			ImGui::DragFloat("WeakAttack_staminaConsumed",&workWeakAttack_.staminaConsumed_,0.1f);
-			ImGui::DragFloat("WeakAttack_damage",&workWeakAttack_.damage_,0.1f);
-			ImGui::TreePop();
-		}
-
-		ImGui::Spacing();
-
-		if(ImGui::TreeNode("StrongAttack")){
-			ImGui::DragFloat("StrongAttack_hpWeight",&workStrongAttack_.hpWeight_,0.1f);
-			ImGui::DragFloat("StrongAttack_staminaWeight",&workStrongAttack_.staminaWeight_,0.1f);
-			ImGui::DragFloat("StrongAttack_activationDistance",&workStrongAttack_.activationDistance_,0.1f);
-			ImGui::DragFloat("StrongAttack_staminaConsumed",&workStrongAttack_.staminaConsumed_,0.1f);
-			ImGui::DragFloat("StrongAttack_damage",&workStrongAttack_.damage_,0.1f);
-			ImGui::TreePop();
-		}
+	if(ImGui::TreeNode("Action Pattern")){
 		ImGui::TreePop();
 	}
 }
@@ -113,20 +180,11 @@ void Enemy::TransitionState(IEnemyState* next){
 
 Player* Enemy::GetPlayer() const{ return player_; }
 
-float Enemy::GetShortIdlePoint() const{
-	return ((hp_ / maxHp_) * workShortIdle_.hpWeight_) + ((stamina_ / maxStamina_) * workShortIdle_.staminaWeight_);
-}
-
-float Enemy::GetLongIdlePoint() const{
-	return ((hp_ / maxHp_) * workLongIdle_.hpWeight_) + ((stamina_ / maxStamina_) * workLongIdle_.staminaWeight_);
-}
-
-float Enemy::GetWeakAttackPoint() const{
-	return ((hp_ / maxHp_) * workWeakAttack_.hpWeight_) +
-		((stamina_ / maxStamina_) * workWeakAttack_.staminaWeight_);
-}
-
-float Enemy::GetStrongAttackPoint() const{
-	return ((hp_ / maxHp_) * workStrongAttack_.hpWeight_) +
-		((stamina_ / maxStamina_) * workStrongAttack_.staminaWeight_);
+const WorkAttackAction& Enemy::GetWorkAttack(const std::string& attack) const{
+	auto it = workAttackVariables_.find(attack);
+	if(it != workAttackVariables_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("Attack action '" + attack + "' not found");  // 見つからなかった場合の例外処理
+	}
 }

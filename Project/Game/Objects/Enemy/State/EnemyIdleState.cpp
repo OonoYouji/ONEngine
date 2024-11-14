@@ -15,7 +15,7 @@ void EnemyIdleState::Update(){
 }
 
 LongIdleAction::LongIdleAction(Enemy* enemy,float _time):EnemyBehaviorTree::Action(enemy),time_(_time){
-//	enemy_->SetAnimationRender("Kari_Boss_LongWait");
+	//	enemy_->SetAnimationRender("Kari_Boss_LongWait");
 }
 
 EnemyBehaviorTree::Status LongIdleAction::tick(){
@@ -42,6 +42,6 @@ EnemyBehaviorTree::Status ShortIdleAction::tick(){
 }
 
 IdleLengthSelector::IdleLengthSelector(Enemy* enemy):EnemyBehaviorTree::ScoringSelectorNode(enemy){
-	addChild(std::make_unique<ShortIdleAction>(enemy,1.0f),[this](){return enemy_->GetShortIdlePoint(); });
-	addChild(std::make_unique<LongIdleAction>(enemy,2.0f),[this](){return enemy_->GetLongIdlePoint(); });
+	addChild(std::make_unique<ShortIdleAction>(enemy,1.0f),[](){return 10.0f; });
+	addChild(std::make_unique<LongIdleAction>(enemy,2.0f),[](){return 0.0f; });
 }

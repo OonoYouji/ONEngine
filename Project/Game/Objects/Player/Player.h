@@ -1,8 +1,11 @@
 #pragma once
+
 #include "GameObjectManager/BaseGameObject.h"
 
 #include <array>
 #include <memory>
+
+#include "CustomMath/MotionTimes.h"
 
 class IPlayerBehavior;
 class Player :
@@ -36,14 +39,6 @@ public:
 	///===============================================
 	/// 各 Behavior で 使われる変数群 (基本調整可能なものだけ)
 	///===============================================
-	/// <summary>
-	/// 各モーションを管理するための 時間変数群
-	/// </summary>
-	struct MotionTimes{
-		float startupTime_;
-		float activeTime_;
-		float endLagTime_;
-	};
 	/// <summary>
 	/// RootBehavior で使われる変数群
 	/// </summary>

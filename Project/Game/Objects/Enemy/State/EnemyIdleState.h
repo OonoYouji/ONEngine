@@ -43,7 +43,5 @@ public:
 	IdleStateTree(Enemy* enemy): EnemyBehaviorTree::Sequence(enemy){
 		// IdleSelector ノード（LongIdleかShortIdleのいずれかを実行）
 		addChild(std::make_unique<IdleLengthSelector>(enemy));
-		// TransitionNode ノード（次のステートを決定）
-		addChild(std::make_unique<TransitionNode>(enemy));
 	}
 };

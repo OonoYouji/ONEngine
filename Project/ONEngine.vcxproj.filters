@@ -139,6 +139,8 @@
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\AttackBehaviorTree.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -260,6 +262,9 @@
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\AttackBehaviorTree.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.h" />
+    <ClInclude Include="Game\CustomMath\MotionTimes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

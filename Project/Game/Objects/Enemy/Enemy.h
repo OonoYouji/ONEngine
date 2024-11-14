@@ -3,12 +3,32 @@
 #include <memory>
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "CustomMath/MotionTimes.h"
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
 class AnimationRenderer;
 class Player;
 class IEnemyState;
+
+/// <summary>
+/// IdleState variable
+/// </summary>
+struct WorkIdleAction{};
+
+/// <summary>
+/// AttackState variable
+/// </summary>
+struct WorkAttackAction{
+	MotionTimes motionTimes_;
+	// 与えるダメージ
+	float damage_;
+};
+
+namespace EnemyBehaviorTree{
+	class AttackAction;
+	class AttackCombo;
+}
 
 class Enemy :
 	public BaseGameObject{
@@ -27,39 +47,26 @@ private:
 
 	const float maxHp_;
 	float hp_;
-	const float maxStamina_;
-	float stamina_;
 
 	float speed_;
 
 	std::string currentAction_;
 
-	/// <summary>
-	/// IdleState variable
-	/// </summary>
-	struct WorkIdleAction{
-		float hpWeight_;
-		float staminaWeight_;
+	std::unordered_map<std::string,WorkAttackAction> workAttackVariables_;
+	std::unordered_map<std::string,EnemyBehaviorTree::AttackCombo> attackCombo_;
 
-		float healingStamina_;
-	};
-	WorkIdleAction workShortIdle_;
-	WorkIdleAction workLongIdle_;
+#ifdef _DEBUG
+	bool isCreateAttackAction_;
+	bool isCreateAttackCombo_;
 
-	/// <summary>
-	/// AttackState variable
-	/// </summary>
-	struct WorkAttackAction{
-		float hpWeight_;
-		float staminaWeight_;
+	// 編集されているもの 
+	std::string* currentEditActionName_ = nullptr;
+	WorkAttackAction* currentEditAction_;
+	EnemyBehaviorTree::AttackCombo* currentEditCombo_;
 
-		float activationDistance_;
+	std::string createObjectName_ = "NULL";
+#endif // _DEBUG
 
-		float damage_;
-		float staminaConsumed_;
-	};
-	WorkAttackAction workWeakAttack_;
-	WorkAttackAction workStrongAttack_;
 public:
 	void SetAnimationRender(const std::string& filePath);
 	void TransitionState(IEnemyState* next);
@@ -72,20 +79,7 @@ public:
 	float GetHP()const{ return hp_; }
 	void  SetHP(float hp){ hp_ = hp; }
 
-	const float GetMaxStamina()const{ return maxStamina_; }
-	float GetStamina()const{ return stamina_; }
-	void  SetStamina(float stamina){ stamina_ = stamina; }
-
 	float GetSpeed()const{ return speed_; }
 
-	const WorkIdleAction& GetWorkShortIdle()const{ return workShortIdle_; }
-	const WorkIdleAction& GetWorkLongIdle()const{ return workLongIdle_; }
-
-	const WorkAttackAction& GetWorkWeakAttack()const{ return workWeakAttack_; }
-	const WorkAttackAction& GetWorkStrongAttack()const{ return workStrongAttack_; }
-
-	float GetShortIdlePoint()const;
-	float GetLongIdlePoint()const;
-	float GetWeakAttackPoint()const;
-	float GetStrongAttackPoint()const;
+	const WorkAttackAction& GetWorkAttack(const std::string& attack)const;
 };

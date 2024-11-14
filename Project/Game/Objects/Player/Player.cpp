@@ -43,7 +43,6 @@ void Player::Update(){
 }
 
 void Player::Debug(){
-
 	ImGui::DragFloat("MaxHP",&maxHP_,0.1f);
 	ImGui::InputFloat("HP",&currentHP_);
 	ImGui::InputFloat("Power",&power_);
