@@ -5,6 +5,12 @@
             0.02500000037252903,
             0.0
         ],
+        "cameraOffsetDirection": [
+            0.0,
+            0.0,
+            -1.0
+        ],
+        "cameraOffsetLenght": 30.0,
         "lockOnLenghtScaleFactor": 6.699999809265137,
         "missTheTargetLenght": 60.099998474121094,
         "offset position": [
@@ -12,6 +18,7 @@
             8.800000190734863,
             -22.399999618530273
         ],
-        "quaternionLerpSpeed": 7.300000190734863
+        "quaternionLerpSpeed": 7.300000190734863,
+        "toTargetLerpMaxTime": 0.5
     }
 }

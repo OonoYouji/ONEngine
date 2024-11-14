@@ -44,6 +44,9 @@ private:
 	class Player*     pPlayer_     = nullptr; /// プレイヤーへのポインタ
 	class Enemy*      pEnemy_      = nullptr;
 
+	Vec3 cameraOffsetDirection_;
+	float cameraOffsetLenght_;
+
 	Vec3 cameraOffsetPosition_; /// プレイヤーからどのくらい離れているか
 	Vec3 cameraOffsetRotate_;   /// 常に更新されている回転
 	Vec3 cameraTargetRotate_;   /// ターゲットすると0になる回転
@@ -59,6 +62,7 @@ private:
 	float lockOnLenghtScaleFactor_; /// ロックオンしたとき距離の倍率
 
 	/// quaternionの補間用の変数
+	Vec3       currentDirection_;
 	Quaternion cameraToPlayerQuaternion_;
 	Quaternion cameraToEnemyQuaternion_;
 	float      quaternionLerpTime_;  /// 線形補完用の時間

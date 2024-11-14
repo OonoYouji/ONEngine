@@ -41,6 +41,9 @@ void TrackingCamera::Initialize() {
 	missTheTargetLenght_ = 5.0f;
 	quaternionLerpSpeed_ = 10.0f;
 
+	cameraOffsetDirection_ = { 0.0f, 0.0f, -1.0f};
+	cameraOffsetLenght_ = 10.0f;
+
 	cameraMoveSpeedVector_ = { 0.05f, 0.025f, 0.0f };
 
 	toTargetLerpMaxTime_ = 0.5f;
@@ -134,8 +137,8 @@ void TrackingCamera::LockOnToEnemy() {
 	/// カメラの回転 mouse
 	if(Input::PressMouse(MouseCode::Left)) {
 		cameraRotateValue += {
-			3.0f * Input::MouseVelocity().Normalize().y,
-			3.0f * Input::MouseVelocity().Normalize().x,
+			1.5f * Input::MouseVelocity().Normalize().y,
+			1.5f * Input::MouseVelocity().Normalize().x,
 			0.0f
 		};
 	}
@@ -202,17 +205,17 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// positionの更新、プレイヤーと敵の間に配置
 	float scaleFactor = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
-	Vec3  offsetPos   = cameraOffsetPosition_ * scaleFactor;
+	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * scaleFactor;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
 	if(playerToEnemyVector_.Len() < 15.0f) {
 		offsetPos = Mat4::Transform(
-			Vec3::Lerp(offsetPos, cameraOffsetPosition_, 0.5f),
+			Vec3::Lerp(offsetPos, cameraOffsetDirection_, 0.5f),
 			Mat4::MakeRotate(cameraTargetRotate_ + cameraOffsetRotate_)
 		);
 	} else {
 		offsetPos = Mat4::Transform(
-			Vec3::Lerp(cameraOffsetPosition_, offsetPos, 0.5f),
+			Vec3::Lerp(cameraOffsetDirection_, offsetPos, 0.5f),
 			Mat4::MakeRotate(cameraTargetRotate_ + cameraOffsetRotate_)
 		);
 	}
@@ -283,6 +286,11 @@ void TrackingCamera::LockOnToPlayer() {
 		cameraOffsetRotate_ = saveCameraOffsetRotate_ + saveCameraTargetRotate_;
 		
 		targetPosition_ = Vec3::Lerp(saveTargetPosition_, pTargetObject_->GetPosition(), lerpT);
+		currentDirection_ = Vec3::Lerp(
+			(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize(),
+			cameraToPlayerVector_.Normalize(),
+			lerpT
+		);
 
 		if(lerpT == 1.0f) {
 			isTargetLost_ = false;
@@ -304,7 +312,7 @@ void TrackingCamera::LockOnToPlayer() {
 
 	/// offset position を rotate分回転させる
 	cameraNextPosition_ = targetPosition_ + Mat4::Transform(
-		cameraOffsetPosition_, Mat4::MakeRotate(cameraOffsetRotate_)
+		cameraOffsetDirection_ * cameraOffsetLenght_, Mat4::MakeRotate(cameraOffsetRotate_)
 	);
 
 	pGameCamera_->SetPosition(Vec3::Lerp(
@@ -322,10 +330,14 @@ void TrackingCamera::LockOnToPlayer() {
 	pGameCamera_->UpdateMatrix();
 	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
 
+	if(!isTargetLost_) {
+		currentDirection_ = cameraToPlayerVector_.Normalize();
+	}
+
 	/// 方向ベクトルをquaternionに変える
 	cameraToPlayerQuaternion_ = Quaternion::LockAt(
 		{ 0.0f, 0.0f, 0.0f },
-		cameraToPlayerVector_.Normalize()
+		currentDirection_.Normalize()
 	);
 
 	pGameCamera_->SetQuaternion(Quaternion::Lerp(
@@ -402,12 +414,13 @@ void TrackingCamera::AddVariables() {
 	VariableManager*   vm        = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	vm->AddValue(groupName, "offset position", cameraOffsetPosition_);
 	vm->AddValue(groupName, "missTheTargetLenght", missTheTargetLenght_);
 	vm->AddValue(groupName, "quaternionLerpSpeed", quaternionLerpSpeed_);
 	vm->AddValue(groupName, "cameraMoveSpeedVector", cameraMoveSpeedVector_);
 	vm->AddValue(groupName, "lockOnLenghtScaleFactor", lockOnLenghtScaleFactor_);
 	vm->AddValue(groupName, "toTargetLerpMaxTime", toTargetLerpMaxTime_);
+	vm->AddValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
+	vm->AddValue(groupName, "cameraOffsetLenght", cameraOffsetLenght_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -417,12 +430,16 @@ void TrackingCamera::ApplyVariables() {
 	VariableManager*   vm        = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 	
-	cameraOffsetPosition_    = vm->GetValue<Vec3>(groupName,  "offset position");
 	missTheTargetLenght_     = vm->GetValue<float>(groupName, "missTheTargetLenght");
 	quaternionLerpSpeed_     = vm->GetValue<float>(groupName, "quaternionLerpSpeed");
 	cameraMoveSpeedVector_   = vm->GetValue<Vec3>(groupName,  "cameraMoveSpeedVector");
 	lockOnLenghtScaleFactor_ = vm->GetValue<float>(groupName, "lockOnLenghtScaleFactor");
 	toTargetLerpMaxTime_     = vm->GetValue<float>(groupName, "toTargetLerpMaxTime");
+	cameraOffsetDirection_   = vm->GetValue<Vec3>(groupName,  "cameraOffsetDirection");
+	cameraOffsetLenght_      = vm->GetValue<float>(groupName, "cameraOffsetLenght");
+
+	cameraOffsetDirection_ = cameraOffsetDirection_.Normalize();
+	vm->SetValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
 }
 
 
