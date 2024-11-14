@@ -58,6 +58,10 @@
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.cpp" />
     <ClCompile Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AudioSource\AudioSource.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
@@ -83,6 +87,7 @@
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.cpp" />
@@ -111,6 +116,16 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
+    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
+    <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
+    <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -127,6 +142,7 @@
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="Library\Input\Gamepad.h" />
     <ClInclude Include="Library\Input\Input.h" />
     <ClInclude Include="Library\Input\Keyboard.h" />
@@ -147,6 +163,10 @@
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewCommandCMD\CreateNewCommandCMD.h" />
     <ClInclude Include="ONEngine\CommandManager\Commands\CreateNewGameObjectCMD\CreateNewGameObjectCMD.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\AnimationRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="ONEngine\ComponentManager\AudioSource\AudioSource.h" />
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
@@ -172,6 +192,7 @@
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Mesh\Mesh.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\Sprite.h" />
     <ClInclude Include="ONEngine\GraphicManager\Drawer\Sprite\SpriteManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxBarrierCreator.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommand.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxCommon.h" />
@@ -201,6 +222,16 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
+    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
+    <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.h" />
+    <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
+    <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

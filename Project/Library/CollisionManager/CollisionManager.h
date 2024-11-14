@@ -1,6 +1,8 @@
 #pragma once
 
+/// std
 #include <list>
+#include <functional>
 
 #include "GameObjectManager/GameObjectManager.h"
 #include "ComponentManager/Collider/BaseCollider.h"
@@ -83,5 +85,7 @@ private:
 	/// このフレーム内で当たったオブジェクト
 	std::list<CollisionPair> currentCollisionPair_;
 
+	using CollisionCheckFunction = std::function<bool(BaseCollider*, BaseCollider*)>;
+	std::array<std::array<CollisionCheckFunction, COLLIDER_TYPE_COUNT>, COLLIDER_TYPE_COUNT> collisionCheckFuncs_;
 
 };

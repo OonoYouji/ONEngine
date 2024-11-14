@@ -17,6 +17,7 @@
 #include "GraphicManager/Drawer/LineDrawer/Line2D.h"
 #include "GraphicManager/Drawer/LineDrawer/Line3D.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "ComponentManager/NumberRenderer/NumberRendererCommon.h"
 	
 #include "Objects/Camera/Manager/CameraManager.h"
 
@@ -25,14 +26,14 @@
 /// namespace
 /// ===================================================
 namespace {
-	CameraManager*     gCameraManager     = CameraManager::GetInstance();
-	ModelManager*      gModelManager      = ModelManager::GetInstance();
-	SpriteManager*     gSpriteManager     = SpriteManager::GetInstance();
-	GameObjectManager* gGameObjectManager = GameObjectManager::GetInstance();
-	Line2D*            gLine2D            = Line2D::GetInstance();
-	Line3D*            gLine3D            = Line3D::GetInstance();
-
+	CameraManager*           gCameraManager           = CameraManager::GetInstance();
+	ModelManager*            gModelManager            = ModelManager::GetInstance();
+	SpriteManager*           gSpriteManager           = SpriteManager::GetInstance();
+	GameObjectManager*       gGameObjectManager       = GameObjectManager::GetInstance();
+	Line2D*                  gLine2D                  = Line2D::GetInstance();
+	Line3D*                  gLine3D                  = Line3D::GetInstance();
 	AnimationRendererCommon* gAnimationRendererCommon = AnimationRendererCommon::GetInstance();
+	NumberRendererCommon*    gNumberRendererCommon    = NumberRendererCommon::GetInstance();
 } /// namespace
 
 
@@ -56,7 +57,7 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 	renderTexture_.reset(new RenderTexture);
 	renderTexture_->Initialize(
-		Vec4(0, 0, 0, 0), commandList, 
+		Vec4(0,0,0, 0), commandList, 
 		pDxCommon->GetSRVDescriptorHeap(),
 		pDxCommon->GetRTVDescriptorHeap(),
 		pDxCommon->GetDSVDescriptorHeap()
@@ -87,6 +88,7 @@ void SceneLayer::Draw() {
 	gSpriteManager->PreDraw();
 	gModelManager->PreDraw();
 	gAnimationRendererCommon->PreDraw();
+	gNumberRendererCommon->PreDraw();
 
 	gGameObjectManager->Object3dDraw(id_);
 
@@ -95,6 +97,7 @@ void SceneLayer::Draw() {
 	gSpriteManager->PostDraw();
 	gModelManager->PostDraw();
 	gAnimationRendererCommon->PostDraw();
+	gNumberRendererCommon->PostDraw();
 
 	renderTexture_->EndRenderTarget();
 
@@ -153,4 +156,8 @@ void SceneLayer::SetIntensity(float intensity, LAYER_NUMBER layerNumber) {
 
 void SceneLayer::SetRadius(int radius, LAYER_NUMBER layerNumber) {
 	blooms_[layerNumber]->SetRadius(radius);
+}
+
+void SceneLayer::SetMainCamera(BaseCamera* _camera) {
+	camera_ = _camera;
 }

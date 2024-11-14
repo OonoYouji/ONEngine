@@ -4,7 +4,12 @@
 #include "GameObjectManager/GameObjectManager.h"
 
 
-void SphereCollider::Initialize() {}
+void SphereCollider::Initialize() {
+
+	/// コライダーの形状
+	colliderType_ = COLLIDER_TYPE_SPHERE;
+
+}
 
 void SphereCollider::Update() {
 	transform_->position = GetOwner()->GetPosition();

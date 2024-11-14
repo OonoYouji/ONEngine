@@ -22,7 +22,7 @@ void Transform::Update() {
 
 
 void Transform::Debug() {
-	if(ImGui::TreeNodeEx("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::DragFloat3("position",	&position.x,	0.1f);
 
@@ -49,6 +49,7 @@ void Transform::Debug() {
 			rotateOrder  = static_cast<ROTATE_ORDER>(currentIndex);
 		}
 
+		Update();
 
 		ImGui::TreePop();
 	}

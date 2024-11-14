@@ -7,9 +7,18 @@
 #include "FrameManager/Time.h"
 #include "FrameManager/FrameFixation.h"
 #include "ImGuiManager/ImGuiManager.h"
-
-/// command line interface
 #include "CommandManager/CommandLineInterface.h"
+#include "AudioManager/AudioManager.h"
+#include "CollisionManager/CollisionManager.h"
+#include "Objects/Camera/Manager/CameraManager.h"
+#include "Scenes/Manager/SceneManager.h" 
+
+#include "GraphicManager/TextureManager/TextureManager.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
+#include "GraphicManager/Drawer/Sprite/SpriteManager.h"
+#include "GraphicManager/Drawer/LineDrawer/Line2D.h"
+#include "GraphicManager/Drawer/LineDrawer/Line3D.h"
 
 /// graphics engine
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
@@ -21,12 +30,28 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 
-/// game
-#include"Scenes/Manager/SceneManager.h" 
+/// component 
+#include "ComponentManager/RenderComponentInitializer/RenderComponentInitializer.h"
+
+/// objects
+#include "Objects/Camera/DebugCamera.h"
 
 
 namespace {
 	std::unique_ptr<System> gSystem;
+	std::unique_ptr<RenderComponentInitializer> gRenderComponentInitializer;
+
+	SceneManager*         sceneManager      = SceneManager::GetInstance();
+	ModelManager*         modelManager      = ModelManager::GetInstance();
+	SpriteManager*        spriteManager     = SpriteManager::GetInstance();
+	TextureManager*       textureManager    = TextureManager::GetInstance();
+	AudioManager*         audioManager      = AudioManager::GetInstance();
+	CameraManager*        cameraManager     = CameraManager::GetInstance();
+	GameObjectManager*    gameObjectManager = GameObjectManager::GetInstance();
+	CollisionManager*     collisionManager  = CollisionManager::GetInstance();
+	Line2D*               line2d            = Line2D::GetInstance();
+	RenderTextureManager* renderTexManager  = RenderTextureManager::GetInstance();
+
 }
 
 
@@ -37,8 +62,10 @@ namespace {
 void ONEngine::Initialize(
 	const wchar_t* windowName, bool isCreateGameWindow, bool isFrameFixation, uint32_t maxFrame) {
 
+	gRenderComponentInitializer.reset(new RenderComponentInitializer());
 	gSystem.reset(new System);
 	gSystem->Initialize(windowName, isCreateGameWindow, isFrameFixation, maxFrame);
+
 }
 
 void ONEngine::Finalize() {
@@ -73,10 +100,13 @@ const std::unordered_map<std::string, std::unique_ptr<ONE::WinApp>>& ONEngine::G
 	return gSystem->winApps_;
 }
 
-bool ONEngine::IsRunning() {
+bool ONEngine::GetIsRunning() {
 	return gSystem->isRunning_;
 }
 
+void ONEngine::SetIsRunning(bool _isRunning) {
+	gSystem->isRunning_ = _isRunning;
+}
 
 
 /// ===================================================
@@ -123,7 +153,7 @@ void System::Initialize(
 	/// ===================================================
 	/// ↓ engine app initializing
 	/// ===================================================
-
+	
 	input_ = Input::GetInsatnce();
 	input_->Initialize(ONEngine::GetMainWinApp());
 
@@ -143,9 +173,65 @@ void System::Initialize(
 	imguiManager_->Initialize(mainWindow_, dxCommon_.get());
 #endif // _DEBUG
 
+
+	modelManager->Initialize();
+	spriteManager->Initialize();
+	line2d->Initialize();
+	Line3D::SInitialize(ONEngine::GetDxCommon()->GetDxCommand()->GetList());
+	audioManager->Initialize();
+
+	textureManager->Load("uvChecker", "uvChecker.png");
+	textureManager->Load("white2x2", "white2x2.png");
+
+	/// render texture imgui用を作成
+	renderTexManager->Initialize(
+		ONEngine::GetDxCommon()->GetDxCommand()->GetList(),
+		ONEngine::GetDxCommon()
+	);
+
+	/// rendering componentの初期化
+	gRenderComponentInitializer->Initialize();
+
+	collisionManager->Initialize();
+
+	/// game object manager の初期化
+	gameObjectManager->Initialize();
+	CommandLineInterface::GetInstance()->Initialize();
+
+	DebugCamera* debugCamera = new DebugCamera();
+	debugCamera->Initialize();
+	debugCamera->SetPosition({ -1.48f, 0.9f, -14.16f });
+	debugCamera->SetRotate({ 0.066f, 0.0f, 0.0f });
+	debugCamera->BaseUpdate();
+
+	time_->Update();
 }
 
 void System::Finalize() {
+
+	if(!ONEngine::GetDxCommon()->IsGpuExeEnded()) {
+		Assert(false, "gpu was still running");
+	}
+
+	CommandLineInterface::GetInstance()->Finalize();
+
+	/// rendering componentの終了処理を行う
+	gRenderComponentInitializer->Finalize();
+
+	renderTexManager->Finalize();
+
+	sceneManager->Finalize();
+	cameraManager->Finalize();
+	gameObjectManager->Finalize();
+	collisionManager->Finalize();
+
+	Line3D::SFinalize();
+	line2d->Finalize();
+	audioManager->Finalize();
+	spriteManager->Finalize();
+	modelManager->Finalize();
+
+	textureManager->Finalize();
 
 	/// ===================================================
 	/// object finalizing...
@@ -203,6 +289,8 @@ void System::Update() {
 	console_->Update();
 
 #endif // _DEBUG /// release not building objects...
+
+	cameraManager->Update();
 
 }
 

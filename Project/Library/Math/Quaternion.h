@@ -52,6 +52,7 @@ public:
 	/// <param name="up"></param>
 	/// <returns></returns>
 	static Quaternion LockAt(const Vec3& position, const Vec3& target, const Vec3& up);
+	static Quaternion LockAt(const Vec3& position, const Vec3& target);
 
 	static Quaternion Slerp(const Quaternion& start, const Quaternion& end, float t);
 

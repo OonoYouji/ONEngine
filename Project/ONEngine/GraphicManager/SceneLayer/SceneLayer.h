@@ -37,10 +37,11 @@ public:
 	void SetIntensity(float intensity, LAYER_NUMBER layerNumber);
 	void SetRadius(int radius, LAYER_NUMBER layerNumber);
 
+	void SetMainCamera(class BaseCamera* _camera);
 
-	RenderTexture* GetRenderTexture() {
-		return renderTexture_.get();
-	}
+	RenderTexture* GetRenderTexture() { return renderTexture_.get(); }
+
+	const std::string& GetName() { return className_; }
 
 protected:
 	static int sInstanceCount_;

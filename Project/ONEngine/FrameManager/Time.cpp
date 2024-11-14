@@ -9,6 +9,10 @@ Time Time::sInstance_;
 
 
 
+void Time::SetTimeRate(float _timeRate) {
+	sInstance_.timeRate_ = _timeRate;
+}
+
 void Time::Update() {
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - time_;

@@ -7,12 +7,11 @@
 
 BaseScene::BaseScene() {
 
-	CreateObject();
-
 	/// layer  initialize
 	layers_.push_back(std::make_unique<SceneLayer>());
 	layers_[0]->Initialize("default", mainCamera_);
 
+	CreateObject();
 }
 
 std::vector<SceneLayer*> BaseScene::GetSceneLayers() {
@@ -28,16 +27,28 @@ void BaseScene::CreateObject() {
 	mainCamera_ = new GameCamera("MainCamera");
 	mainCamera_->Initialize();
 
-	//CameraManager::GetInstance()->SetMainCamera(mainCamera_);
-
 	/// light  initialize
 	directionalLight_ = new DirectionalLight();
 	directionalLight_->Initialize();
+
+	layers_[0]->SetMainCamera(mainCamera_);
 }
 
 
 
 void BaseScene::AddLayer(const std::string& layerName, GameCamera* layerCamera) {
-	layers_.push_back(std::make_unique<SceneLayer>());
-	layers_.back()->Initialize(layerName, layerCamera);
+	auto itr = std::find_if(layers_.begin(), layers_.end(), [&](const std::unique_ptr<SceneLayer>& layer) {
+		if(layerName == layer->GetName()) {
+			return true;
+		}
+		return false;
+	});
+
+	if(itr == layers_.end()) {
+		layers_.push_back(std::make_unique<SceneLayer>());
+		layers_.back()->Initialize(layerName, layerCamera);
+	} else {
+		SceneLayer* layer = itr->get();
+		layer->SetMainCamera(layerCamera);
+	}
 }

@@ -62,6 +62,7 @@ void BaseCamera::Debug() {
 	if(projectionType_ == ORTHOGRAPHIC) {
 		if(ImGui::TreeNodeEx("Orthographic", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+			ImGui::DragFloat("ditance", &distacene_, 0.005f);
 
 			ImGui::TreePop();
 		}
@@ -140,7 +141,7 @@ void BaseCamera::Transfer() {
 
 
 void BaseCamera::SetProjectionType(PROJECTION_TYPE projectionType) {
-	projectionType_ = projectionType_;
+	projectionType_ = projectionType;
 }
 
 void BaseCamera::SetDistance(float _distance) {
