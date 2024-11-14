@@ -43,11 +43,12 @@ private:
 	class Enemy*      pEnemy_      = nullptr;
 
 	Vec3 cameraOffsetPosition_; /// プレイヤーからどのくらい離れているか
-	Vec3 cameraOffsetRotate_;
-	Vec3 cameraNextPosition_;
+	Vec3 cameraOffsetRotate_;   /// 常に更新されている回転
+	Vec3 cameraTargetRotate_;   /// ターゲットすると0になる回転
+	Vec3 cameraNextPosition_;   /// カメラの次の座標
 
-	Vec3 playerToEnemyVector_; /// オブジェクト間のベクトル
-	Vec3 cameraToEnemyVector_; /// オブジェクト間のベクトル
+	Vec3 playerToEnemyVector_;  /// オブジェクト間のベクトル
+	Vec3 cameraToEnemyVector_;  /// オブジェクト間のベクトル
 	Vec3 cameraToPlayerVector_;
 
 	float missTheTargetLenght_; /// ターゲットが外れる距離

@@ -67,7 +67,6 @@ void TrackingCamera::Update() {
 		};
 	}
 
-
 	cameraOffsetRotate_ += cameraMoveSpeedVector_* cameraRotateValue;
 	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
 
@@ -122,17 +121,41 @@ void TrackingCamera::LockOnToEnemy() {
 	pTargetObject_ = pEnemy_;
 
 
+	/// カメラの回転
+	Vec3 cameraRotateValue = {
+		static_cast<float>(Input::PressKey(KeyCode::UpArrow) - Input::PressKey(KeyCode::DownArrow)),
+		static_cast<float>(Input::PressKey(KeyCode::RightArrow) - Input::PressKey(KeyCode::LeftArrow)),
+		0.0f
+	};
+
+	if(Input::PressMouse(MouseCode::Left)) {
+		cameraRotateValue += {
+			3.0f * Input::MouseVelocity().Normalize().y,
+			3.0f * Input::MouseVelocity().Normalize().x,
+			0.0f
+		};
+	}
+
+	Vec3 normP2EVec = playerToEnemyVector_.Normalize();
+	cameraTargetRotate_.y = std::atan2(normP2EVec.x, normP2EVec.z);
+
+	/// 
+	cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
+
+
+
 	/// positionの更新、プレイヤーと敵の間に配置
 	Vec3 offsetPos = {};
 	if(playerToEnemyVector_.Len() > 15.0f) {
 		offsetPos = Mat4::Transform(
 			cameraOffsetPosition_ * playerToEnemyVector_.Len() / 10.0f,
-			Mat4::MakeRotate(cameraOffsetRotate_)
+			Mat4::MakeRotate(cameraTargetRotate_ + cameraOffsetRotate_)
 		);
 	} else {
 		offsetPos = Mat4::Transform(
 			cameraOffsetPosition_,
-			Mat4::MakeRotate(cameraOffsetRotate_)
+			Mat4::MakeRotate(cameraTargetRotate_ + cameraOffsetRotate_)
 		);
 	}
 
@@ -165,6 +188,26 @@ void TrackingCamera::LockOnToPlayer() {
 
 	/// プレイヤーをターゲットする
 	pTargetObject_ = pPlayer_;
+
+
+	/// カメラの回転
+	Vec3 cameraRotateValue = {
+		static_cast<float>(Input::PressKey(KeyCode::UpArrow) - Input::PressKey(KeyCode::DownArrow)),
+		static_cast<float>(Input::PressKey(KeyCode::RightArrow) - Input::PressKey(KeyCode::LeftArrow)),
+		0.0f
+	};
+
+	if(Input::PressMouse(MouseCode::Left)) {
+		cameraRotateValue += {
+			3.0f * Input::MouseVelocity().Normalize().y,
+			3.0f * Input::MouseVelocity().Normalize().x,
+			0.0f
+		};
+	}
+
+	/// 
+	cameraOffsetRotate_ += cameraMoveSpeedVector_ * cameraRotateValue;
+	cameraOffsetRotate_.x = std::clamp(cameraOffsetRotate_.x, 0.0f, 0.8f);
 
 
 
@@ -207,11 +250,30 @@ void TrackingCamera::LockOnUpdate() {
 		}
 	}
 
-	/// ロックオンのフラグが切り替わった瞬間
-	if((isLockOn_ && !prevIsLockOn_)
-	   || (!isLockOn_ && prevIsLockOn_)) {
+	/// ロックオンを外した瞬間
+	if(!isLockOn_ && prevIsLockOn_) {
 		quaternionLerpTime_ = 0.0f;
+
+		cameraOffsetRotate_ += cameraTargetRotate_;
+		cameraTargetRotate_ = {};
+
+
+		return;
 	}
+
+	/// ロックオンをした瞬間
+	if(isLockOn_ && !prevIsLockOn_) {
+		quaternionLerpTime_ = 0.0f;
+
+		cameraTargetRotate_ = {};
+		cameraOffsetRotate_ = {};
+
+		Vec3 normP2EVec = playerToEnemyVector_.Normalize();
+		cameraTargetRotate_.y = std::atan2(normP2EVec.z, normP2EVec.x);
+
+		return;
+	}
+
 }
 
 
