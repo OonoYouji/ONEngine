@@ -59,9 +59,9 @@ void Enemy::Debug(){
 	///===============================================
 	if(ImGui::TreeNode("AttackActions")){
 		// 新しい アクションを 生成する時に window を popupする
-		if(!isCreateAttackAction_){
+		if(!isCreateWindowPop_){
 			if(ImGui::Button("Create Attack Action")){
-				isCreateAttackAction_ = true;
+				isCreateWindowPop_ = true;
 			}
 		} else{
 			ImGui::Begin("New Attack Action");
@@ -71,12 +71,12 @@ void Enemy::Debug(){
 
 				currentEditAction_ = &workAttackVariables_[createObjectName_];
 				currentEditActionName_ = const_cast<std::string*>(&workAttackVariables_.find(createObjectName_)->first);
-				isCreateAttackAction_ = false;
+				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Cancel")){
-				isCreateAttackAction_ = false;
+				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::End();
@@ -105,7 +105,7 @@ void Enemy::Debug(){
 
 		// 調整できるように 
 		if(currentEditActionName_){
-			if(ImGui::TreeNode(currentEditActionName_->c_str())){
+			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
 				ImGui::Spacing();
 				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
 				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
@@ -115,7 +115,6 @@ void Enemy::Debug(){
 				ImGui::TreePop();
 			}
 		}
-
 		ImGui::TreePop();
 	}
 
@@ -123,27 +122,95 @@ void Enemy::Debug(){
 	/// AttackCombo
 	///===============================================
 	if(ImGui::TreeNode("AttackCombo")){
-		if(!isCreateAttackAction_){
+		// 新しい Combo の 作成
+		if(!isCreateWindowPop_){
 			if(ImGui::Button("Create Attack Combo")){
-				isCreateAttackCombo_ = true;
+				isCreateWindowPop_ = true;
 			}
 		} else{
 			ImGui::Begin("New Attack Combo");
 			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
 			if(ImGui::Button("Create")){
-				workAttackVariables_[createObjectName_] = WorkAttackAction();
+				comboVariables_[createObjectName_];
 
-				currentEditAction_ = &workAttackVariables_[createObjectName_];
-				currentEditActionName_ = const_cast<std::string*>(&workAttackVariables_.find(createObjectName_)->first);
-				isCreateAttackAction_ = false;
+				currentEditCombo_ = &comboVariables_[createObjectName_];
+				currentEditComboName_ = const_cast<std::string*>(&comboVariables_.find(createObjectName_)->first);
+				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Cancel")){
-				isCreateAttackAction_ = false;
+				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::End();
+		}
+
+		ImGui::Spacing();
+
+		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
+		if(currentEditComboName_){
+			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
+				for(auto& [key,value] : comboVariables_){
+					bool isSelected = (currentEditComboName_ == &key);
+					if(ImGui::Selectable(key.c_str(),isSelected)){
+						currentEditComboName_ = const_cast<std::string*>(&key);
+						currentEditCombo_ = &value;
+					}
+					if(isSelected){
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+
+		ImGui::Spacing();
+
+		// 調整
+		if(currentEditComboName_){
+			if(ImGui::TreeNode(currentEditComboName_->c_str())){
+
+				if(ImGui::TreeNode("AttackActions")){
+					for(auto& [attackName,attack] : workAttackVariables_){
+						if(ImGui::Button(attackName.c_str())){
+							currentEditCombo_->push_back(ComboAttack(attackName,static_cast<int32_t>(currentEditCombo_->size())));
+						}
+					}
+					ImGui::TreePop();
+				}
+
+				if(ImGui::TreeNode(("currentCombo::" + *currentEditComboName_).c_str())){
+					int index = 0;
+					for(auto it = currentEditCombo_->begin(); it != currentEditCombo_->end(); ++it,++index){
+						ImGui::PushID(index);
+						ImGui::Text("%s",it->attackName.c_str());
+
+						if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
+							int64_t src_index = std::distance(currentEditCombo_->begin(),it);
+							ImGui::SetDragDropPayload("LIST_ITEM",&src_index,sizeof(int64_t));  // インデックスを渡す
+							ImGui::Text("Moving %s",it->attackName.c_str());
+							ImGui::EndDragDropSource();
+						}
+
+						if(ImGui::BeginDragDropTarget()){
+							if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("LIST_ITEM")){
+								int src_index = *(int*)payload->Data;  // インデックスを取得
+								auto src_it = std::next(currentEditCombo_->begin(),src_index);  // イテレータに変換
+								if(src_it != it){
+									ComboAttack temp = *src_it;
+									currentEditCombo_->erase(src_it);
+									currentEditCombo_->insert(it,temp);
+								}
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::PopID();
+					}
+					ImGui::TreePop();
+				}
+				ImGui::TreePop();
+			}
 		}
 		ImGui::TreePop();
 	}
@@ -151,10 +218,6 @@ void Enemy::Debug(){
 	if(ImGui::TreeNode("Action Pattern")){
 		ImGui::TreePop();
 	}
-}
-
-void Enemy::SetAnimationRender(const std::string& filePath){
-	animationRender_ = AddComponent<AnimationRenderer>(filePath);
 }
 
 void Enemy::TransitionState(IEnemyState* next){
@@ -170,5 +233,14 @@ const WorkAttackAction& Enemy::GetWorkAttack(const std::string& attack) const{
 		return it->second;  // 見つかった場合、その要素を返す
 	} else{
 		throw std::runtime_error("Attack action '" + attack + "' not found");  // 見つからなかった場合の例外処理
+	}
+}
+
+const Enemy::ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
+	auto it = comboVariables_.find(comboName);
+	if(it != comboVariables_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("Attack action '" + comboName + "' not found");  // 見つからなかった場合の例外処理
 	}
 }

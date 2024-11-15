@@ -1,14 +1,17 @@
 #include "AttackBehaviorTree.h"
 
 #include "../Enemy.h"
+#include "FrameManager/Time.h"
 
 EnemyBehaviorTree::AttackAction::AttackAction(Enemy* enemy,const std::string& attackName):EnemyBehaviorTree::Action(enemy),workInBehavior_(enemy->GetWorkAttack(attackName)){
 	currentUpdate_ = [this](){return StartupUpdate(); };
+	currentTime_ = 0.0f;
 }
 
 EnemyBehaviorTree::AttackAction::~AttackAction(){}
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::AttackAction::tick(){
+	currentTime_+= Time::DeltaTime();
 	return currentUpdate_();
 }
 
@@ -36,4 +39,13 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::AttackAction::EndLagUpdate(){
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
+}
+
+EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comboName):EnemyBehaviorTree::Sequence(enemy){
+	const std::list<ComboAttack>& variables = enemy_->GetComboAttacks(comboName);
+
+	for(auto& variableName : variables){
+		addChild(std::make_unique<AttackAction>(enemy_,comboName));
+	}
+
 }

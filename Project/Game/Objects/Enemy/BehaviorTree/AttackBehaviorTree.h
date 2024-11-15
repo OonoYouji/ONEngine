@@ -7,6 +7,13 @@
 
 struct WorkAttackAction;
 
+enum class EnemyAttackRangeType{
+	SHORT_RANGEE,
+	MIDDLE_RANGE,
+	LONG_RANGE
+};
+
+
 namespace EnemyBehaviorTree{
 	class AttackAction
 		:public Action{
@@ -28,6 +35,7 @@ namespace EnemyBehaviorTree{
 	class AttackCombo
 		:public Sequence{
 	public:
-		AttackCombo(Enemy* enemy,const std::string& );
+		AttackCombo(Enemy* enemy,const std::string& comboName);
+	private:
 	};
 }
