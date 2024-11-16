@@ -27,8 +27,6 @@
 /// アニメーションの
 /// ===================================================
 class AnimationRenderer final : public BaseComponent {
-
-
 public:
 	/// ===================================================
 	/// public : methods
@@ -47,6 +45,8 @@ public:
 	void SetModel(const std::string& filePath);
 
 	void LoadAnimation(const std::string& filePath);
+	void ChangeAnimation(const std::string& _filePath);
+
 
 	Vec3       CalculateValue(const std::vector<KeyframeVec3>& keyframe, float time);
 	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframe, float time);
@@ -60,12 +60,19 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	float duration_;
+	//float duration_;
 	float animationTime_;
 
 	Transform transform_;
 
-	std::unordered_map<std::string, NodeAnimation> nodeAnimationArray_;
+	//std::unordered_map<std::string, NodeAnimation> nodeAnimationArray_;
+
+	using NodeAnimationMap = std::unordered_map<std::string, NodeAnimation>;
+	std::unordered_map<std::string, NodeAnimationMap> multiNodeAnimationArray_;
+	std::string currentNodeAnimationKey_;
+
+	std::unordered_map<std::string, float> durationMap_;
+
 
 	class Model* pModel_;
 
@@ -76,9 +83,6 @@ private:
 
 
 class AnimationRendererCommon final {
-
-
-
 public:
 
 	static AnimationRendererCommon* GetInstance() {
