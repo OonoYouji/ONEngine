@@ -69,7 +69,7 @@ public:
 
 private:
 
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class AnimationRenderer* animationRenderer_ = nullptr;
 	std::unique_ptr<IPlayerBehavior> currentBehavior_;
 
 	/// ---------------------------------------------------

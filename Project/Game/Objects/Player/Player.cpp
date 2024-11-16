@@ -9,7 +9,7 @@
 
 /// component
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
 /// this behavior
 #include "Behavior/IPlayerBehavior.h"
@@ -27,8 +27,7 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Sphere");
+	animationRenderer_ = AddComponent<AnimationRenderer>("KariPlayer_Wait");
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
 
