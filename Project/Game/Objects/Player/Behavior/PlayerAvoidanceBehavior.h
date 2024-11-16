@@ -4,20 +4,21 @@
 
 #include <functional>
 
-class Vector3;
-
-class PlayerAvoidanceBehavior :
-	public IPlayerBehavior{
+class PlayerAvoidanceBehavior : public IPlayerBehavior {
 public:
-	PlayerAvoidanceBehavior(Player* _host);
-	~PlayerAvoidanceBehavior(){}
 
-	void Update()override;
+	PlayerAvoidanceBehavior(Player* _host);
+	~PlayerAvoidanceBehavior() {}
+
+	void Update() override;
+
 private:
+
 	std::function<void()> currentUpdate_;
 	void StartupUpdate();
 	void Avoidance();
 	void EndLagUpdate();
+
 private:
 	float currentTime_;
 

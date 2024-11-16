@@ -130,9 +130,13 @@ void Player::AddVariables() {
 
 	/// work root behavior data
 	vm->AddValue(groupName, "speed",                 workRootBehavior_.speed_);
-	vm->AddValue(groupName, "dushSpeedScaleFactor",  workRootBehavior_.dushSpeedScaleFactor_);
 	vm->AddValue(groupName, "rotateLerpSensitivity", workRootBehavior_.rotateLerpSensitivity_);
 
+	/// avoidance behavior
+	vm->AddValue(groupName, "moveDistance",    workAvoidanceBehavior_.moveDistance_);
+	vm->AddValue(groupName, "workStartupTime", workAvoidanceBehavior_.motionTimes_.startupTime_);
+	vm->AddValue(groupName, "workActiveTime",  workAvoidanceBehavior_.motionTimes_.activeTime_);
+	vm->AddValue(groupName, "workEndLagTime",  workAvoidanceBehavior_.motionTimes_.endLagTime_);
 }
 
 void Player::LoadVariables() {
@@ -148,8 +152,13 @@ void Player::ApplyVariables() {
 
 	/// work root behavior data
 	workRootBehavior_.speed_                 = vm->GetValue<float>(groupName, "speed");
-	workRootBehavior_.dushSpeedScaleFactor_  = vm->GetValue<float>(groupName, "dushSpeedScaleFactor");
 	workRootBehavior_.rotateLerpSensitivity_ = vm->GetValue<float>(groupName, "rotateLerpSensitivity");
+
+	/// avoidance behavior
+	workAvoidanceBehavior_.moveDistance_             = vm->GetValue<float>(groupName, "moveDistance");
+	workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(groupName, "workStartupTime");
+	workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(groupName, "workActiveTime");
+	workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(groupName, "workEndLagTime");
 
 }
 

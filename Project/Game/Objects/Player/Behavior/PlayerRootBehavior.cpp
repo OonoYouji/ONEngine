@@ -47,26 +47,13 @@ void PlayerRootBehavior::Update() {
 
 	{  // Postion Update
 		float playerSpeed_ = workInBehavior_.speed_;
-		if(Input::PressKey(KeyCode::LShift)) {
-			playerSpeed_ *= workInBehavior_.dushSpeedScaleFactor_;
-		}
-
-
-		Vec3 velocity = {
+		Vec3  velocity     = {
 			direction_.x, 0.0f, direction_.y
-		};
-
-		auto GetYawFromQuaternion = [](const Quaternion& q) {
-			return std::atan2(
-				2.0f * (q.y * q.w + q.x * q.z),
-				1.0f - 2.0f * (q.x * q.x + q.y * q.y)
-			);
 		};
 
 		velocity *= playerSpeed_ * Time::DeltaTime();
 
 		host_->SetPosition(host_->GetPosition() + velocity);
-
 
 
 		/// 移動しているか確認、アニメーションを変える
@@ -84,7 +71,7 @@ void PlayerRootBehavior::Update() {
 void PlayerRootBehavior::InputNextBehavior() {
 	// 回避
 	if(Input::ReleaseKey(KeyCode::LShift)) {
-		//host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
+		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
 		return;
 	} else if(Input::ReleaseKey(KeyCode::J)) {
 		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_, 0));

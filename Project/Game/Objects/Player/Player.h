@@ -31,7 +31,6 @@ public:
 	/// </summary>
 	struct WorkRootBehavior {
 		float speed_;
-		float dushSpeedScaleFactor_; /// ダッシュ時の速度倍率 
 		float rotateLerpSensitivity_;
 	};
 
@@ -40,7 +39,6 @@ public:
 	/// </summary>
 	struct WorkAvoidanceBehavior {
 		MotionTimes motionTimes_;
-
 		float moveDistance_;
 	};
 
