@@ -42,10 +42,11 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::AttackAction::EndLagUpdate(){
 }
 
 EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comboName):EnemyBehaviorTree::Sequence(enemy){
-	const std::list<ComboAttack>& variables = enemy_->GetComboAttacks(comboName);
+	const ComboAttacks& variables = enemy_->GetComboAttacks(comboName);
 
-	for(auto& variableName : variables){
+	rangeType_ = variables.rangeType_;
+
+	for(auto& variableName : variables.comboAttacks_){
 		addChild(std::make_unique<AttackAction>(enemy_,comboName));
 	}
-
 }

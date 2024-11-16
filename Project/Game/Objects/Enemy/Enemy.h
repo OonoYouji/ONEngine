@@ -7,14 +7,23 @@
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
+/// <summary>
+/// 前方宣言
+/// </summary>
 class AnimationRenderer;
-class Player;
+enum class EnemyAttackRangeType : int16_t;
+namespace EnemyBehaviorTree{
+	class AttackAction;
+	class AttackCombo;
+}
 class IEnemyState;
+class Player;
 
 /// <summary>
 /// IdleState variable
 /// </summary>
 struct WorkIdleAction{
+	std::string animationName_;
 	MotionTimes motionTimes_;
 };
 
@@ -22,8 +31,9 @@ struct WorkIdleAction{
 /// AttackState variable
 /// </summary>
 struct WorkAttackAction{
+	std::string animationName_;
 	MotionTimes motionTimes_;
-	// 与えるダメージ
+	//与えるダメージ
 	float damage_;
 };
 
@@ -31,19 +41,16 @@ struct WorkAttackAction{
 /// コンボで使用される Attack の 情報
 /// </summary>
 struct ComboAttack{
-	std::string attackName;
-	int32_t index;
+	std::string attackName_;
+	int32_t index_;
 
-	ComboAttack(const std::string& name,int32_t i):attackName(name),index(i){}
+	ComboAttack(const std::string& name,int32_t i):attackName_(name),index_(i){}
 };
 
-/// <summary>
-/// 前方宣言
-/// </summary>
-namespace EnemyBehaviorTree{
-	class AttackAction;
-	class AttackCombo;
-}
+struct ComboAttacks{
+	EnemyAttackRangeType rangeType_;
+	std::list<ComboAttack> comboAttacks_;
+};
 
 class Enemy :
 	public BaseGameObject{
@@ -71,7 +78,6 @@ private:
 	using AttackActionName = std::string;
 	std::unordered_map<AttackActionName,WorkAttackAction> workAttackVariables_;
 
-	using ComboAttacks = std::list<ComboAttack>;
 	std::unordered_map<std::string,ComboAttacks> comboVariables_;
 
 #ifdef _DEBUG

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdint.h>
 #include <string>
 #include <unordered_map>
 
@@ -7,12 +8,17 @@
 
 struct WorkAttackAction;
 
-enum class EnemyAttackRangeType{
-	SHORT_RANGEE,
+enum class EnemyAttackRangeType : int16_t{
+	SHORT_RANGE,
 	MIDDLE_RANGE,
 	LONG_RANGE
 };
-
+// EnemyAttackRangeTypeと文字列の対応付け
+std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
+	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
+	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
+};
 
 namespace EnemyBehaviorTree{
 	class AttackAction
@@ -37,5 +43,6 @@ namespace EnemyBehaviorTree{
 	public:
 		AttackCombo(Enemy* enemy,const std::string& comboName);
 	private:
+		EnemyAttackRangeType rangeType_;
 	};
 }

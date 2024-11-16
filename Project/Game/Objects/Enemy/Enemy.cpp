@@ -12,7 +12,6 @@
 #include "imgui.h"
 #endif // _DEBUG
 
-
 Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f){
 	CreateTag(this);
 }
@@ -170,37 +169,50 @@ void Enemy::Debug(){
 		// 調整
 		if(currentEditComboName_){
 			if(ImGui::TreeNode(currentEditComboName_->c_str())){
-
 				if(ImGui::TreeNode("AttackActions")){
 					for(auto& [attackName,attack] : workAttackVariables_){
 						if(ImGui::Button(attackName.c_str())){
-							currentEditCombo_->push_back(ComboAttack(attackName,static_cast<int32_t>(currentEditCombo_->size())));
+							currentEditCombo_->comboAttacks_.push_back(ComboAttack(attackName,static_cast<int32_t>(currentEditCombo_->comboAttacks_.size())));
 						}
 					}
 					ImGui::TreePop();
 				}
 
+				if(ImGui::BeginCombo("RangeType",rangeTypes[currentEditCombo_->rangeType_].c_str())){
+					for(const auto& [type,name] : rangeTypes){
+						bool isSelected = (static_cast<BYTE>(currentEditCombo_->rangeType_) == static_cast<BYTE>(type));
+						if(ImGui::Selectable(name.c_str(),isSelected)){
+							// 選択された型を更新
+							currentEditCombo_->rangeType_ = type;
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
 				if(ImGui::TreeNode(("currentCombo::" + *currentEditComboName_).c_str())){
 					int index = 0;
-					for(auto it = currentEditCombo_->begin(); it != currentEditCombo_->end(); ++it,++index){
+					for(auto it = currentEditCombo_->comboAttacks_.begin(); it != currentEditCombo_->comboAttacks_.end(); ++it,++index){
 						ImGui::PushID(index);
-						ImGui::Text("%s",it->attackName.c_str());
+						ImGui::Text("%s",it->attackName_.c_str());
 
 						if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
-							int64_t src_index = std::distance(currentEditCombo_->begin(),it);
+							int64_t src_index = std::distance(currentEditCombo_->comboAttacks_.begin(),it);
 							ImGui::SetDragDropPayload("LIST_ITEM",&src_index,sizeof(int64_t));  // インデックスを渡す
-							ImGui::Text("Moving %s",it->attackName.c_str());
+							ImGui::Text("Moving %s",it->attackName_.c_str());
 							ImGui::EndDragDropSource();
 						}
 
 						if(ImGui::BeginDragDropTarget()){
 							if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("LIST_ITEM")){
 								int src_index = *(int*)payload->Data;  // インデックスを取得
-								auto src_it = std::next(currentEditCombo_->begin(),src_index);  // イテレータに変換
+								auto src_it = std::next(currentEditCombo_->comboAttacks_.begin(),src_index);  // イテレータに変換
 								if(src_it != it){
 									ComboAttack temp = *src_it;
-									currentEditCombo_->erase(src_it);
-									currentEditCombo_->insert(it,temp);
+									currentEditCombo_->comboAttacks_.erase(src_it);
+									currentEditCombo_->comboAttacks_.insert(it,temp);
 								}
 							}
 							ImGui::EndDragDropTarget();
@@ -220,6 +232,10 @@ void Enemy::Debug(){
 	}
 }
 
+void Enemy::SetAnimationRender(const std::string& filePath){
+	this->animationRender_->ChangeAnimation(filePath);
+}
+
 void Enemy::TransitionState(IEnemyState* next){
 	currentState_.reset(next);
 	currentState_->Initialize();
@@ -236,7 +252,7 @@ const WorkAttackAction& Enemy::GetWorkAttack(const std::string& attack) const{
 	}
 }
 
-const Enemy::ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
+const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
 	auto it = comboVariables_.find(comboName);
 	if(it != comboVariables_.end()){
 		return it->second;  // 見つかった場合、その要素を返す
