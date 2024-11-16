@@ -32,6 +32,20 @@ void Player::Initialize() {
 
 	animationRenderer_ = AddComponent<AnimationRenderer>("KariPlayer_Wait");
 
+
+	/// 攻撃のモーションを先に読み込んでおく
+	const std::array<std::string, 3> weakAnimationFilePaths{
+		"KariPlayer_WeakAttack", "KariPlayer_WeakAttack1", "KariPlayer_WeakAttack2"
+	};
+
+	for(auto& filePath : weakAnimationFilePaths) {
+		SetAnimationModel(filePath);
+	}
+
+
+	SetAnimationModel("KariPlayer_Wait"); /// 元のアニメーションに変更
+
+
 	currentBehavior_.reset(new PlayerRootBehavior(this));
 
 	/// hp parameters
@@ -46,6 +60,11 @@ void Player::Initialize() {
 	workAvoidanceBehavior_.moveDistance_ = 10;
 	workAvoidanceBehavior_.motionTimes_.activeTime_ = 0.8f;
 
+
+	for(size_t i = 0; i < workWeakAttackBehavior_.size(); ++i) {
+		WorkWeakAttackBehavior& wwab = workWeakAttackBehavior_[i];
+		wwab.motionTimes_.activeTime_ = animationRenderer_->GetDuration(weakAnimationFilePaths[i]);
+	}
 
 
 	/// varialbe managerに値を追加する
