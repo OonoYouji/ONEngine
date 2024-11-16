@@ -21,13 +21,27 @@ void PlayerRootBehavior::Update() {
 
 	direction_ = direction_.Normalize();
 
+	auto GetYawFromQuaternion = [](const Quaternion& q) {
+		return std::atan2(
+			2.0f * (q.y * q.w + q.x * q.z),
+			1.0f - 2.0f * (q.x * q.x + q.y * q.y)
+		);
+	};
+
+	{	/// 方向をカメラに合わせる
+		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(host_->GetCamera()->GetQuaternion()));
+		Vec3 dir = Mat4::TransformNormal({direction_.x, 0.0f, direction_.y}, matCameraRotateY);
+		direction_.x = dir.x;
+		direction_.y = dir.z;
+	}
+
 	// Rotate Update
 	{
 		if(direction_.x != 0 || direction_.y != 0) {
 			lastDir_ = direction_;
 		}
 		Vector3 rotate = host_->GetRotate();
-		rotate.y = LerpShortAngle(rotate.y, atan2(lastDir_.x, lastDir_.y), workInBehavior_.rotateLerpSensitivity_);
+		rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDir_.x, lastDir_.y), workInBehavior_.rotateLerpSensitivity_);
 		host_->SetRotate(rotate);
 	}
 
@@ -49,8 +63,6 @@ void PlayerRootBehavior::Update() {
 			);
 		};
 
-		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(host_->GetCamera()->GetQuaternion()));
-		velocity = Mat4::TransformNormal(velocity, matCameraRotateY);
 		velocity *= playerSpeed_ * Time::DeltaTime();
 
 		host_->SetPosition(host_->GetPosition() + velocity);

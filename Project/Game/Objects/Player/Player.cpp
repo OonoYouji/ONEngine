@@ -1,5 +1,8 @@
 #include "Player.h"
 
+/// std
+#include <numbers>
+
 /// externals
 #include <imgui.h>
 
@@ -60,6 +63,7 @@ void Player::Update() {
 	damage_ = 0.0f;
 
 	currentBehavior_->Update();
+
 }
 
 void Player::Debug() {
