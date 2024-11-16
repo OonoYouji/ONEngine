@@ -31,6 +31,7 @@
 AnimationRenderer::AnimationRenderer(const std::string& modelFilePath) {
 	pModel_ = ModelManager::Load(modelFilePath);
 	LoadAnimation(modelFilePath);
+	currentNodeAnimationKey_ = modelFilePath;
 }
 AnimationRenderer::~AnimationRenderer() {
 	skinCluster_.FreeDescriptor();
@@ -46,11 +47,12 @@ void AnimationRenderer::Initialize() {
 
 void AnimationRenderer::Update() {
 	animationTime_ += Time::DeltaTime();
-	animationTime_ = std::fmod(animationTime_, duration_);
+	animationTime_ = std::fmod(animationTime_, durationMap_[currentNodeAnimationKey_]);
 
-	NodeAnimation& rootAnimation = nodeAnimationArray_[pModel_->GetRootNode().name];
+	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
+	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
-	skeleton_.Update(duration_, nodeAnimationArray_);
+	skeleton_.Update(durationMap_[currentNodeAnimationKey_], map);
 	SkinClusterUpdate(skinCluster_, skeleton_);
 
 }
@@ -84,7 +86,7 @@ void AnimationRenderer::Debug() {
 		ImGui::SeparatorText("parameters");
 
 		ImGui::Text(std::format("animation time : {:.2f}", animationTime_).c_str());
-		ImGui::Text(std::format("duration       : {:.2f}", duration_).c_str());
+		ImGui::Text(std::format("duration       : {:.2f}", durationMap_[currentNodeAnimationKey_]).c_str());
 
 		ImGui::TreePop();
 	}
@@ -147,14 +149,17 @@ void AnimationRenderer::LoadAnimation(const std::string& filePath) {
 	/// 解析
 	aiAnimation* animationAssimp = scene->mAnimations[0];
 
-	duration_ = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
+	float&            duration         = durationMap_[filePath];
+	NodeAnimationMap& nodeAnimationMap = multiNodeAnimationArray_[filePath];
+
+	duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
 
 	/// node animationの読み込み
 	for(uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
 
 		/// node animationの解析用データを
 		aiNodeAnim*    nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
-		NodeAnimation& nodeAnimation       = nodeAnimationArray_[nodeAnimationAssimp->mNodeName.C_Str()];
+		NodeAnimation& nodeAnimation       = nodeAnimationMap[nodeAnimationAssimp->mNodeName.C_Str()];
 		
 		/// ---------------------------------------------------
 		/// translateの解析
@@ -207,6 +212,19 @@ void AnimationRenderer::LoadAnimation(const std::string& filePath) {
 
 }
 
+void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
+	
+	/// すでに読み込み済みかチェック
+	/// なければよみこむ
+	auto map = multiNodeAnimationArray_.find(_filePath);
+	if(map == multiNodeAnimationArray_.end()) {
+		LoadAnimation(_filePath);
+	}
+
+	currentNodeAnimationKey_ = _filePath;
+	animationTime_           = 0.0f;
+}
+
 
 
 Vec3 AnimationRenderer::CalculateValue(const std::vector<KeyframeVec3>& keyframeArray, float time) {
@@ -248,10 +266,13 @@ Quaternion AnimationRenderer::CalculateValue(const std::vector<KeyframeQuaternio
 }
 
 void AnimationRenderer::ApplyAnimation(Skeleton& skeleton) {
+
+	NodeAnimationMap& map = multiNodeAnimationArray_[currentNodeAnimationKey_];
+
 	for(Joint& joint : skeleton.joints) {
 
-		auto itr = nodeAnimationArray_.find(joint.name);
-		if(itr != nodeAnimationArray_.end()) {
+		auto itr = map.find(joint.name);
+		if(itr != map.end()) {
 			const NodeAnimation& rootNodeAnimation = (*itr).second;
 
 			joint.transform.position   = CalculateValue(rootNodeAnimation.translate, animationTime_);
