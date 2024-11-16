@@ -20,7 +20,7 @@ void PlayerWeakAttack::Update(){
 	currentUpdate_();
 
 	if(Input::ReleaseKey(KeyCode::LShift)){
-		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
+		//nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
 		return;
 	} else if(Input::TriggerKey(KeyCode::J)){
 		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
