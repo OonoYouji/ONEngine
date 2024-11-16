@@ -13,6 +13,14 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player,int32_t comboNum):
 	workInBehavior_ = player->GetWorkWeakAttackBehavior(comboNum_);
 
 	nextBehavior_ = std::make_unique<PlayerRootBehavior>(host_);
+
+	std::string animationModelFilePath = "KariPlayer_WeakAttack";
+	if(comboNum_) {
+		animationModelFilePath += std::to_string(comboNum_);
+	}
+
+	host_->SetAnimationModel(animationModelFilePath);
+
 }
 
 void PlayerWeakAttack::Update(){
@@ -36,7 +44,7 @@ void PlayerWeakAttack::Update(){
 void PlayerWeakAttack::StartupUpdate(){
 	if(currentTime_ >= workInBehavior_.motionTimes_.startupTime_){
 		currentTime_ = 0.0f;
-
+		
 		currentUpdate_ = [this](){WeakAttack(); };
 		return;
 	}
