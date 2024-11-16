@@ -157,7 +157,6 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
@@ -176,8 +175,6 @@
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
@@ -277,7 +274,6 @@
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
     <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
     <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
@@ -297,7 +293,6 @@
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
     <ClInclude Include="Game\Scenes\Scene_Result.h" />
     <ClInclude Include="Game\Scenes\Scene_Title.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
