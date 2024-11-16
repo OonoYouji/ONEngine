@@ -100,6 +100,7 @@ void Player::Debug() {
 			ImGui::DragFloat("DamageFactor_Combo_1", &workWeakAttackBehavior_[0].damageFactor_, 0.1f);
 			ImGui::TreePop();
 		}
+
 		if(ImGui::TreeNode("Combo_2")) {
 			ImGui::DragFloat("StartUpTime_Combo_2", &workWeakAttackBehavior_[1].motionTimes_.startupTime_, 0.1f);
 			ImGui::DragFloat("ActiveTime_Combo_2", &workWeakAttackBehavior_[1].motionTimes_.activeTime_, 0.1f);
@@ -150,4 +151,10 @@ void Player::ApplyVariables() {
 
 void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 	currentBehavior_ = std::move(next);
+}
+
+
+
+void Player::SetAnimationModel(const std::string& _filePath) {
+	animationRenderer_->ChangeAnimation(_filePath);
 }

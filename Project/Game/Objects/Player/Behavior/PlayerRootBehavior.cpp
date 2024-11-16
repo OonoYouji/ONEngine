@@ -54,6 +54,16 @@ void PlayerRootBehavior::Update() {
 		velocity *= playerSpeed_ * Time::DeltaTime();
 
 		host_->SetPosition(host_->GetPosition() + velocity);
+
+
+
+		/// 移動しているか確認、アニメーションを変える
+		if(velocity != Vec3(0, 0, 0)) {
+			host_->SetAnimationModel("KariPlayer_Walk");
+		} else {
+			host_->SetAnimationModel("KariPlayer_Wait");
+		}
+
 	}
 
 	InputNextBehavior();

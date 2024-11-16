@@ -123,4 +123,7 @@ public:
 	
 	class GameCamera* GetCamera() const { return pGameCamera_; }
 
+	
+	void SetAnimationModel(const std::string& _filePath);
+
 };
