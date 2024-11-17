@@ -130,10 +130,9 @@ void Enemy::Debug(){
 			ImGui::Begin("New Attack Combo");
 			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
 			if(ImGui::Button("Create")){
-				comboVariables_[createObjectName_];
-
-				currentEditCombo_ = &comboVariables_[createObjectName_];
-				currentEditComboName_ = const_cast<std::string*>(&comboVariables_.find(createObjectName_)->first);
+				editComboVariables_[createObjectName_] = ComboAttacks();
+				currentEditCombo_ = &editComboVariables_[createObjectName_];
+				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_.find(createObjectName_)->first);
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -150,7 +149,7 @@ void Enemy::Debug(){
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(currentEditComboName_){
 			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
-				for(auto& [key,value] : comboVariables_){
+				for(auto& [key,value] : editComboVariables_){
 					bool isSelected = (currentEditComboName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
 						currentEditComboName_ = const_cast<std::string*>(&key);
@@ -230,6 +229,19 @@ void Enemy::Debug(){
 	if(ImGui::TreeNode("Action Pattern")){
 		ImGui::TreePop();
 	}
+
+	///=====================================
+	/// RangeType ごと に 仕分け
+	///=====================================
+	{
+		comboByRangeType_[EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeType_[EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeType_[EnemyAttackRangeType::LONG_RANGE].clear();
+
+		for(const auto& [comboName,combo] : editComboVariables_){
+			comboByRangeType_[combo.rangeType_].push_back(comboName);
+		}
+	}
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath){
@@ -253,10 +265,19 @@ const WorkAttackAction& Enemy::GetWorkAttack(const std::string& attack) const{
 }
 
 const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
-	auto it = comboVariables_.find(comboName);
-	if(it != comboVariables_.end()){
+	auto it = editComboVariables_.find(comboName);
+	if(it != editComboVariables_.end()){
 		return it->second;  // 見つかった場合、その要素を返す
 	} else{
 		throw std::runtime_error("Attack action '" + comboName + "' not found");  // 見つからなかった場合の例外処理
+	}
+}
+
+const std::list<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeType) const{
+	auto it = comboByRangeType_.find(rangeType);
+	if(it != comboByRangeType_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理
 	}
 }

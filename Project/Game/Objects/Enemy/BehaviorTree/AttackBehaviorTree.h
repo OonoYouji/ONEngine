@@ -20,6 +20,12 @@ std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
 	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
 };
 
+std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,10.0f},
+	{EnemyAttackRangeType::MIDDLE_RANGE,20.0f},
+	{EnemyAttackRangeType::LONG_RANGE,1000.0f},
+};
+
 namespace EnemyBehaviorTree{
 	class AttackAction
 		:public Action{
@@ -39,7 +45,7 @@ namespace EnemyBehaviorTree{
 	};
 
 	class AttackCombo
-		:public Sequence{
+		:public EnemyBehaviorTree::EnemyTransitionSequence{
 	public:
 		AttackCombo(Enemy* enemy,const std::string& comboName);
 	private:

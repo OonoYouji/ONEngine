@@ -78,9 +78,12 @@ private:
 	using AttackActionName = std::string;
 	std::unordered_map<AttackActionName,WorkAttackAction> workAttackVariables_;
 
-	std::unordered_map<std::string,ComboAttacks> comboVariables_;
+	// RangeType別
+	std::unordered_map<EnemyAttackRangeType,std::list<std::string>> comboByRangeType_;
 
 #ifdef _DEBUG
+
+	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
 	bool isCreateWindowPop_;
 
 	// 編集されているもの 
@@ -109,4 +112,5 @@ public:
 
 	const WorkAttackAction& GetWorkAttack(const std::string& attack)const;
 	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
+	const std::list<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
 };

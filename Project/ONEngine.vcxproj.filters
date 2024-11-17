@@ -142,6 +142,7 @@
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\AttackBehaviorTree.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Node.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
