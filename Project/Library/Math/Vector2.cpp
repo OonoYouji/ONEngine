@@ -29,7 +29,7 @@ Vector2::Vector2(float x, float y) {
 }
 
 float Vector2::Lenght() const {
-	return std::sqrt(x * x + y + y);
+	return std::sqrt(x * x + y * y);
 }
 
 Vector2 Vector2::Normalize() const {
