@@ -24,6 +24,7 @@
 #include "Objects/BulletFiringEnergyRenderer/BulletFiringEnergyRenderer.h"
 #include "Objects/Terrain/Terrain.h"
 
+#include "Objects/BackgroundObjectManager/BackgroundObjectManager.h"
 #include "Objects/Home/Home.h"
 #include "Objects/Rock/Rock.h"
 #include "Objects/WelcomeBoard/WelcomeBoard.h"
@@ -57,6 +58,7 @@ void Scene_Game::Initialize() {
 	Score*          score          = new Score();
 	BulletFiringEnergyRenderer* bulletFiringEnergyRenderer = new BulletFiringEnergyRenderer();
 	Terrain*        terrain        = new Terrain();
+	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 
 	/// instance initializing...
 	gameManager_->Initialize();
@@ -74,6 +76,7 @@ void Scene_Game::Initialize() {
 	terrain->Initialize();
 
 	/// bb objects
+	bbObjectManager->Initialize();
 	(new Home())->Initialize();
 	(new Rock())->Initialize();
 	(new WelcomeBoard())->Initialize();
@@ -106,6 +109,7 @@ void Scene_Game::Initialize() {
 
 	mainCamera_->SetPosition({ 0.0f, 1.0f, 0.0f }); /// レールに被らないように少し上に設定
 
+	bbObjectManager->SetShootingCourse(shootingCourse);
 
 	/// add layers
 
