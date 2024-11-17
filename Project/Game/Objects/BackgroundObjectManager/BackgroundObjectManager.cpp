@@ -36,6 +36,12 @@ void BackgroundObjectManager::Initialize() {
 	offsetPositionRenderer_ = AddComponent<MeshInstancingRenderer>(128);
 	offsetPositionRenderer_->SetModel("Arrow");
 
+
+#ifdef DEBUG
+	startedTRenderer_->isActive = false;
+	offsetPositionRenderer_->isActive = false;s
+#endif // DEBUG
+
 	createClassNameArray_ = {
 		"MovingLight"
 	};
@@ -47,8 +53,10 @@ void BackgroundObjectManager::Initialize() {
 
 void BackgroundObjectManager::Update() {
 
+#ifdef _DEBUG
 	CalcuationObjectDataStartedTransform();
 	CalcuationObjectDataOffsetPositionTransform();
+#endif // _DEBUG
 
 	PopBBObject();
 
