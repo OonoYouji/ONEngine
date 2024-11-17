@@ -110,6 +110,7 @@ void Scene_Game::Initialize() {
 	mainCamera_->SetPosition({ 0.0f, 1.0f, 0.0f }); /// レールに被らないように少し上に設定
 
 	bbObjectManager->SetShootingCourse(shootingCourse);
+	bbObjectManager->SetRailCamera(railCamera_);
 
 	/// add layers
 

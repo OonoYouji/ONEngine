@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObjectManager\BaseBackgroundObject\BaseBackgroundObject.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\MovingLight\MovingLight.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.cpp" />
     <ClCompile Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.cpp" />
@@ -278,6 +279,7 @@
   <ItemGroup>
     <ClInclude Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.h" />
     <ClInclude Include="Game\Objects\BackgroundObjectManager\BaseBackgroundObject\BaseBackgroundObject.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\MovingLight\MovingLight.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyFrame.h" />
     <ClInclude Include="Game\Objects\BulletFiringEnergyRenderer\BulletFiringEnergyGauge.h" />

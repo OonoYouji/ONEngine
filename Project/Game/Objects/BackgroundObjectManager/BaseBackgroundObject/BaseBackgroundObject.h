@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	BaseBackgroundObject();
+	BaseBackgroundObject(const Vec3& wPosition);
 	~BaseBackgroundObject();
 
 	void Initialize() override;

@@ -17,6 +17,8 @@
 
 /// objects
 #include "Objects/ShootingCourse/ShootingCourse.h"
+#include "Objects/RailCamera/RailCamera.h"
+#include "MovingLight/MovingLight.h"
 
 
 using namespace nlohmann;
@@ -32,13 +34,19 @@ void BackgroundObjectManager::Initialize() {
 
 	startedTRenderer_ = AddComponent<MeshInstancingRenderer>(128);
 
+	createClassNameArray_ = {
+		"MovingLight"
+	};
 
 	LoadJsonFile("./Resources/Parameters/BackgroundObjectManager/");
+	popObjectDataArray_ = objectDataArray_;
+
 }
 
 void BackgroundObjectManager::Update() {
 
 	CalcuationObjectDataStartedTransform();
+	PopBBObject();
 
 }
 
@@ -47,7 +55,18 @@ void BackgroundObjectManager::Debug() {
 	ImGui::SeparatorText("object data debug");
 
 	ImGui::DragFloat3("offset position", &srcObjectData_.offsetPosition.x, 0.1f);
-	ImGui::DragFloat("startedT", &srcObjectData_.startedT, 0.1f);
+	ImGui::DragFloat("startedT",         &srcObjectData_.startedT,         0.1f);
+
+
+	std::vector<const char*> cStrings;
+	for(const auto& item : createClassNameArray_) {
+		cStrings.push_back(item.c_str());
+	}
+
+	if(ImGui::Combo("Select an option", &currentStringIndex_, cStrings.data(), static_cast<int>(cStrings.size()))) {
+		srcObjectData_.createClassName = createClassNameArray_[currentStringIndex_];
+	}
+
 
 	ImGui::Spacing();
 
@@ -75,7 +94,9 @@ void BackgroundObjectManager::Debug() {
 	ImGui::SameLine();
 
 	if(ImGui::Button("sub")) {
-		objectDataArray_.erase(objectDataArray_.begin() + operatorIndex_);
+		if(!objectDataArray_.empty()) {
+			objectDataArray_.erase(objectDataArray_.begin() + operatorIndex_);
+		}
 	}
 
 
@@ -86,13 +107,17 @@ void BackgroundObjectManager::Debug() {
 	for(auto& data : objectDataArray_) {
 		
 		ImGui::DragFloat3(
-			std::format("offset position##{:p}", reinterpret_cast<void*>(&data)).c_str(),
+			std::format("offset position ##{:p}", reinterpret_cast<void*>(&data)).c_str(),
 			&data.offsetPosition.x, 0.1f
 		);
 
 		ImGui::DragFloat(
-			std::format("startedT##{:p}", reinterpret_cast<void*>(&data)).c_str(),
+			std::format("startedT ##{:p}", reinterpret_cast<void*>(&data)).c_str(),
 			&data.startedT, 0.1f
+		);
+		
+		ImGui::Text(std::format("{} ##{:p}", 
+			data.createClassName.c_str(), reinterpret_cast<void*>(&data)).c_str()
 		);
 
 
@@ -131,6 +156,34 @@ void BackgroundObjectManager::CalcuationObjectDataStartedTransform() {
 	startedTRenderer_->ResetTransformArray();
 	for(auto& transform : objectDataStartedTTransformArray_) {
 		startedTRenderer_->AddTransform(&transform);
+	}
+}
+
+
+
+void BackgroundObjectManager::PopBBObject() {
+	const std::vector<AnchorPoint>& aps = pShootingCourse_->GetAnchorPointArray();
+	AnchorPoint ap{};
+
+	float movingTime = pRailCamera_->GetMovingTime();
+	float preMovingTime = pRailCamera_->GetPreMovingTime();
+
+	for(auto itr = popObjectDataArray_.begin(); itr != popObjectDataArray_.end();) {
+		ObjectData& data = (*itr);
+
+		if(movingTime > data.startedT && data.startedT > preMovingTime) {
+			float t = 1.0f / static_cast<float>(aps.size()) * data.startedT;
+			ap = SplinePosition(aps, t);
+
+			CreateBBObject(
+				data.createClassName, 
+				ap.position + data.offsetPosition
+			);
+
+			itr = popObjectDataArray_.erase(itr);
+		} else {
+			itr++;
+		}
 	}
 }
 
@@ -211,7 +264,20 @@ void BackgroundObjectManager::LoadJsonFile(const std::string& _filePath) {
 	}
 }
 
+void BackgroundObjectManager::CreateBBObject(const std::string& _className, const Vec3& wPosition) {
+	if(_className == "MovingLight") {
+		CreateObject<MovingLight>(wPosition); 
+		return; 
+	}
+
+
+}
+
 void BackgroundObjectManager::SetShootingCourse(ShootingCourse* _shootingCourse) {
 	pShootingCourse_ = _shootingCourse;
+}
+
+void BackgroundObjectManager::SetRailCamera(RailCamera* _railCamera) {
+	pRailCamera_ = _railCamera;
 }
 
