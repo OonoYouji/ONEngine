@@ -23,6 +23,7 @@
 #include "Objects/Score/Score.h"
 #include "Objects/BulletFiringEnergyRenderer/BulletFiringEnergyRenderer.h"
 #include "Objects/Terrain/Terrain.h"
+#include "Objects/EnemyDefeatParticle/EnemyDefeatParticle.h"
 
 #include "Objects/BackgroundObjectManager/BackgroundObjectManager.h"
 #include "Objects/Home/Home.h"

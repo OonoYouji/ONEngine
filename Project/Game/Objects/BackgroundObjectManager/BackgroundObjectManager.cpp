@@ -80,14 +80,23 @@ void BackgroundObjectManager::Debug() {
 		SaveJsonFile("./Resources/Parameters/BackgroundObjectManager/");
 	}
 
+	ImGui::SameLine();
+	ImGui::Text("/");
+	ImGui::SameLine();
+
+	if(ImGui::Button("load")) {
+		LoadJsonFile("./Resources/Parameters/BackgroundObjectManager/");
+	}
+
 	ImGui::Spacing();
 
 
+
 	if(!objectDataArray_.empty()) {
-		operatorIndex_ = std::clamp(operatorIndex_, 0, static_cast<int>(objectDataArray_.size() - 1));
+		operatorIndex_ = std::clamp(operatorIndex_, 0, static_cast<int>(objectDataArray_.size()));
 	}
 
-	ImGui::SliderInt("operatorIndex", &operatorIndex_, 0, static_cast<int>(objectDataArray_.size() - 1));
+	ImGui::SliderInt("operatorIndex", &operatorIndex_, 0, static_cast<int>(objectDataArray_.size()));
 
 	if(ImGui::Button("add")) {
 		objectDataArray_.insert(objectDataArray_.begin() + operatorIndex_, srcObjectData_);
