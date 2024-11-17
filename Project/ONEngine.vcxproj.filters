@@ -159,6 +159,7 @@
     <ClCompile Include="Game\Objects\ResultToTitle\ResultToTitle.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
+    <ClCompile Include="Game\Objects\WelcomeBoard\WelcomeBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -298,6 +299,7 @@
     <ClInclude Include="Game\Objects\ResultToTitle\ResultToTitle.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
+    <ClInclude Include="Game\Objects\WelcomeBoard\WelcomeBoard.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

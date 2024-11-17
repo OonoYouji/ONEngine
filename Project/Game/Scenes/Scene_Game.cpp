@@ -26,6 +26,7 @@
 
 #include "Objects/Home/Home.h"
 #include "Objects/Rock/Rock.h"
+#include "Objects/WelcomeBoard/WelcomeBoard.h"
 
 #include "Objects/SceneTransition/SceneTransition.h"
 	
@@ -75,6 +76,7 @@ void Scene_Game::Initialize() {
 	/// bb objects
 	(new Home())->Initialize();
 	(new Rock())->Initialize();
+	(new WelcomeBoard())->Initialize();
 
 
 
@@ -132,8 +134,6 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	
-
 
 	/// ゲームが終了したのでシーン遷移
 	if(gameManager_->GetIsGameEnd()) {
