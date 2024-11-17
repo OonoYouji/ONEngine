@@ -1,10 +1,20 @@
 {
     "0": {
+        "createClassName": "MovingLight",
         "offsetPosition": [
-            0.0,
-            0.0,
-            2.5999999046325684
+            5.5,
+            3.5,
+            10.800000190734863
         ],
-        "startedT": 4.199999809265137
+        "startedT": 3.200000047683716
+    },
+    "1": {
+        "createClassName": "MovingLight",
+        "offsetPosition": [
+            -5.300000190734863,
+            3.200000047683716,
+            10.600000381469727
+        ],
+        "startedT": 3.200000047683716
     }
 }

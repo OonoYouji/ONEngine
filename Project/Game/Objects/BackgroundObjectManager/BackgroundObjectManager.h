@@ -33,6 +33,7 @@ public:
 	void Debug()      override;
 
 	void CalcuationObjectDataStartedTransform();
+	void CalcuationObjectDataOffsetPositionTransform();
 
 	void PopBBObject();
 
@@ -64,7 +65,9 @@ private:
 	std::vector<BaseBackgroundObject*> backgroundObjectArray_;
 
 	std::vector<Transform>        objectDataStartedTTransformArray_;
-	class MeshInstancingRenderer* startedTRenderer_ = nullptr;
+	std::vector<Transform>        objectDataOffsetPositionTransformArray_;
+	class MeshInstancingRenderer* startedTRenderer_       = nullptr;
+	class MeshInstancingRenderer* offsetPositionRenderer_ = nullptr;
 
 	class ShootingCourse* pShootingCourse_ = nullptr;
 	class RailCamera*     pRailCamera_     = nullptr;

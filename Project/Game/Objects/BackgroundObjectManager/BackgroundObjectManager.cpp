@@ -32,7 +32,9 @@ BackgroundObjectManager::~BackgroundObjectManager() {}
 
 void BackgroundObjectManager::Initialize() {
 
-	startedTRenderer_ = AddComponent<MeshInstancingRenderer>(128);
+	startedTRenderer_       = AddComponent<MeshInstancingRenderer>(128);
+	offsetPositionRenderer_ = AddComponent<MeshInstancingRenderer>(128);
+	offsetPositionRenderer_->SetModel("Arrow");
 
 	createClassNameArray_ = {
 		"MovingLight"
@@ -46,6 +48,8 @@ void BackgroundObjectManager::Initialize() {
 void BackgroundObjectManager::Update() {
 
 	CalcuationObjectDataStartedTransform();
+	CalcuationObjectDataOffsetPositionTransform();
+
 	PopBBObject();
 
 }
@@ -97,6 +101,10 @@ void BackgroundObjectManager::Debug() {
 		if(!objectDataArray_.empty()) {
 			objectDataArray_.erase(objectDataArray_.begin() + operatorIndex_);
 		}
+	}
+
+	if(ImGui::Button("reload")) {
+		popObjectDataArray_ = objectDataArray_;
 	}
 
 
@@ -159,6 +167,37 @@ void BackgroundObjectManager::CalcuationObjectDataStartedTransform() {
 	}
 }
 
+void BackgroundObjectManager::CalcuationObjectDataOffsetPositionTransform() {
+	const std::vector<AnchorPoint>& anchorPoints = pShootingCourse_->GetAnchorPointArray();
+
+	AnchorPoint ap{};
+	for(size_t i = 0; i < objectDataArray_.size(); ++i) {
+		ap = SplinePosition(anchorPoints, 1.0f / static_cast<float>(anchorPoints.size()) * objectDataArray_[i].startedT);
+		ap.position += objectDataArray_[i].offsetPosition;
+
+		if(i >= objectDataOffsetPositionTransformArray_.size()) {
+
+			Transform transform;
+			transform.position = ap.position;
+			transform.UpdateMatrix();
+			objectDataOffsetPositionTransformArray_.push_back(transform);
+
+		} else {
+
+			objectDataOffsetPositionTransformArray_[i].position = ap.position;
+			objectDataOffsetPositionTransformArray_[i].UpdateMatrix();
+
+		}
+	}
+
+
+	/// mesh instancing rendererに渡す
+	offsetPositionRenderer_->ResetTransformArray();
+	for(auto& transform : objectDataOffsetPositionTransformArray_) {
+		offsetPositionRenderer_->AddTransform(&transform);
+	}
+}
+
 
 
 void BackgroundObjectManager::PopBBObject() {
@@ -195,8 +234,9 @@ void BackgroundObjectManager::SaveJsonFile(const std::string& _filePath) {
 		auto& item = root[std::to_string(i)];
 
 		ObjectData& data = objectDataArray_[i];
-		item["offsetPosition"] = json::array({ data.offsetPosition.x, data.offsetPosition.y, data.offsetPosition.z });
-		item["startedT"]       = data.startedT;
+		item["offsetPosition"]  = json::array({ data.offsetPosition.x, data.offsetPosition.y, data.offsetPosition.z });
+		item["startedT"]        = data.startedT;
+		item["createClassName"] = data.createClassName;
 	}
 
 	///- ディレクトリがなければ作成する
@@ -251,18 +291,21 @@ void BackgroundObjectManager::LoadJsonFile(const std::string& _filePath) {
 
 	for(auto& item : root.items()) {
 
-		size_t index        = std::stoi(item.key().c_str());
-		auto   jsonPos      = item.value()["offsetPosition"];
-		auto   jsonStartedT = item.value()["startedT"];
+		size_t index               = std::stoi(item.key().c_str());
+		auto   jsonPos             = item.value()["offsetPosition"];
+		auto   jsonStartedT        = item.value()["startedT"];
+		//auto   jsonCreateClassName = item.value()["createClassName"];
 
 		ObjectData data = {
-			.offsetPosition = { jsonPos.at(0), jsonPos.at(1), jsonPos.at(2) },
-			.startedT       = jsonStartedT
+			.offsetPosition  = { jsonPos.at(0), jsonPos.at(1), jsonPos.at(2) },
+			.startedT        = jsonStartedT,
 		};
 
 		objectDataArray_[index] = data;
 	}
 }
+
+
 
 void BackgroundObjectManager::CreateBBObject(const std::string& _className, const Vec3& wPosition) {
 	if(_className == "MovingLight") {
