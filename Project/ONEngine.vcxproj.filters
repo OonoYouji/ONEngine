@@ -160,6 +160,11 @@
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\Boss\Boss.cpp" />
     <ClCompile Include="Game\Objects\WelcomeBoard\WelcomeBoard.cpp" />
+    <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\BaseBackgroundObject\BaseBackgroundObject.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\MovingLight\MovingLight.cpp" />
+    <ClCompile Include="Game\Objects\EnemyDefeatParticle\EnemyDefeatParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -300,6 +305,11 @@
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\Boss\Boss.h" />
     <ClInclude Include="Game\Objects\WelcomeBoard\WelcomeBoard.h" />
+    <ClInclude Include="Library\Math\LerpShortAngle.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\BaseBackgroundObject\BaseBackgroundObject.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\MovingLight\MovingLight.h" />
+    <ClInclude Include="Game\Objects\EnemyDefeatParticle\EnemyDefeatParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -14,6 +14,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 #include "Objects/DefeatedEnemy/DefeatedEnemy.h"
+#include "Objects/EnemyDefeatParticle/EnemyDefeatParticle.h"
 
 
 PlayerBullet::PlayerBullet(Player* _player, class DefeatedEnemy* _defeatedEnemy) : pPlayer_(_player), pDefeatedEnemy_(_defeatedEnemy) {
@@ -65,6 +66,10 @@ void PlayerBullet::OnCollisionEnter(BaseGameObject* const collision) {
 
 		/// 死んだらオブジェクトを削除する
 		if(enemy->GetHP() <= 0.0f) {
+			EnemyDefeatParticle* enemyDefeatParticle = new EnemyDefeatParticle;
+			enemyDefeatParticle->Initialize();
+			enemyDefeatParticle->SetPosition(enemy->GetPosition());
+
 			enemy->Destory();
 
 			pPlayer_->AddScore(50u);
