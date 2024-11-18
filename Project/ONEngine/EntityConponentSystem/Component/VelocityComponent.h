@@ -9,13 +9,12 @@
 class VelocityComponent : public IComponent {
 public:
 
-	VelocityComponent() {}
+	VelocityComponent();
 	~VelocityComponent() {}
 
 	void Initialize() override;
 	void Update()     override;
 
-private:
-
+public:
 	Vec3 velocity_;
 };

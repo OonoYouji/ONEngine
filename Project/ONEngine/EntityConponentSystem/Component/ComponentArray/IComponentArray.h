@@ -10,6 +10,6 @@ public:
 	virtual ~IComponentArray() {}
 	virtual void Update() = 0;
 
-private:
+protected:
 	static size_t sNextCompId_;
 };

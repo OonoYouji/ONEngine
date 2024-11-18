@@ -7,6 +7,6 @@ public:
 	virtual ~ISystem() {}
 
 	virtual void Initialize() = 0;
-	virtual void Update()     = 0;
+	virtual void Update(class Entity* _entity)     = 0;
 
 };

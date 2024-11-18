@@ -52,8 +52,8 @@ size_t ComponentArray<T>::sId_ = 0;
 
 template<typename T>
 inline void ComponentArray<T>::Update() {
-	for(auto&& comp : componentArray_) {
-		comp->Update();
+	for(auto& comp : componentArray_) {
+		comp.Update();
 	}
 }
 

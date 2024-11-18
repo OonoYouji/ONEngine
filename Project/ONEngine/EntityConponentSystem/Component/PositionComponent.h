@@ -15,7 +15,6 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
-private:
-
+public:
 	Vec3 position_;
 };

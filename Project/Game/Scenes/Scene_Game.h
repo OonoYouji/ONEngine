@@ -2,6 +2,8 @@
 
 #include"Game/Scenes/Manager/BaseScene.h"
 
+#include "EntityConponentSystem/Entity/DemoEntity.h"
+#include "EntityConponentSystem/System/MoveSystem.h"
 
 /// ===================================================
 /// ゲームシーン
@@ -16,5 +18,8 @@ public:
 	void Update()     override;
 
 private:
+	class DemoObject* demoObj_ = nullptr;
+	DemoEntity demoEntity_;
 
+	std::unique_ptr< MoveSystem> moveSystem_;
 };

@@ -36,6 +36,8 @@ public:
 	template<typename T>
 	T* AddComponent();
 
+
+
 private:
 
 	/// ===================================================
@@ -49,10 +51,11 @@ private:
 
 template<typename T>
 inline T* ComponentManager::AddComponent() {
-	size_t id = ComponentArray<T>::GetId();
+	std::type_index id = typeid(T);
+	//std::type_index id = static_cast<std::type_index>(ComponentArray<T>::GetId());
 	if(componentArrays_.find(id) == componentArrays_.end()) {
 		componentArrays_[id] = std::make_unique<ComponentArray<T>>();
 	}
 
-	return std::static_pointer_cast<ComponentArray<T>>(componentArrays_[id])->AddComponent();
+	return static_cast<ComponentArray<T>*>(componentArrays_[id].get())->AddComponent();
 }

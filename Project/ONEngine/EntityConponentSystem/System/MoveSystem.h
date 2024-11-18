@@ -10,6 +10,6 @@ public:
 	~MoveSystem() {}
 
 	void Initialize() override;
-	void Update()     override;
+	void Update(class Entity* _entity)     override;
 
 };

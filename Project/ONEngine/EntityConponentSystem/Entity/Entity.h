@@ -35,14 +35,18 @@ template<typename T, typename ...Args>
 inline T* Entity::AddComponent(Args && ...args) {
 	/// コンポーネントがIComponentを継承しているかをチェック
 	static_assert(std::is_base_of<IComponent, T>::value, "T must inherit from BaseComponent");
+	size_t id = ComponentArray<T>::GetId();
 
 	ComponentManager* compManager = ComponentManager::GetInstance();
 	T* componentPtr = compManager->AddComponent<T>();
-
 	componentPtr->SetOwner(this);
 	componentPtr->Initialize();
 
-	pComponents_[std::type_index(typeid(T))] = componentPtr;
+	if(pComponents_.size() <= id) {
+		pComponents_.resize(id + 1, nullptr);
+	}
+
+	pComponents_[id] = componentPtr;
 	return componentPtr;
 }
 
