@@ -137,6 +137,8 @@
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\ComponentArray\IComponentArray.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\ComponentManager\ComponentManager.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\Entity\DemoEntity.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\System\SystemManager\SystemManager.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -254,6 +256,8 @@
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\ComponentArray\IComponentArray.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\ComponentManager\ComponentManager.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Entity\DemoEntity.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\System\SystemManager\SystemManager.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
