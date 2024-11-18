@@ -3,12 +3,6 @@
 #include"Game/Scenes/Manager/BaseScene.h"
 
 
-enum GAME_SCENE_LAYER {
-	GAME_SCENE_LAYER_DEFAULT, /// デフォルトのレイヤー
-	GAME_SCENE_LAYER_UI,	  /// UI層のレイヤー
-};
-
-
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -22,4 +16,5 @@ public:
 	void Update()     override;
 
 private:
+
 };
