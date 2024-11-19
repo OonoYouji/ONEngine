@@ -40,8 +40,7 @@ void CapsuleCollider::Initialize() {
 	}
 
 	/// quaternionを正常に計算するためのデフォルト値
-	defaultYQuaternion_ = Quaternion::MakeFromAxis(Vec3::kUp, 0.5f * std::numbers::pi_v<float>);
-
+	defaultYQuaternion_ = Quaternion::MakeFromAxis(Vec3::kUp, 2.0f * std::numbers::pi_v<float>);
 }
 
 void CapsuleCollider::Update() {

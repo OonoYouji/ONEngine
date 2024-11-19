@@ -21,5 +21,8 @@ public:
 private:
 	
 	class AnimationRenderer* animationRenderer_ = nullptr;
+	class CapsuleCollider* capsuleCollider_ = nullptr;
+	std::array<Vec3, 2> positionArray_;
 
+	std::string name_;
 };

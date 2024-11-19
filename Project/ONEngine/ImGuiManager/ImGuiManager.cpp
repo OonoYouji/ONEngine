@@ -55,8 +55,10 @@ void ImGuiManager::Initialize(ONE::WinApp* winApp, ONE::DxCommon* dxCommon) {
 	ImGui::CreateContext();
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
-	imGuiIO.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Resources/Fonts/FiraMono-Regular_0.ttf", 16.0f); // フォントをロード (サイズ 18.0f)
+	imGuiIO.KeyRepeatDelay = 4.145f;
+	imGuiIO.KeyRepeatRate  = 12.0f;
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
