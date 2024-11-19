@@ -2,15 +2,15 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class Stage : public BaseGameObject {
+class Building : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Stage();
-	~Stage();
+	Building();
+	~Building();
 
 	void Initialize() override;
 	void Update()     override;
@@ -22,4 +22,5 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+
 };

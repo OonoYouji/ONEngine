@@ -11,11 +11,11 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
-#include "Objects/DemoObject/DemoObject.h"
+#include "GraphicManager/Light/DirectionalLight.h"
+
+#include "Objects/Background/BackgroundObjectManager/BackgroundObjectManager.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
-#include "Objects/Stage/Stage.h"
-#include "Objects/SkyDome/SkyDome.h"
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
@@ -36,9 +36,7 @@ void Scene_Game::Initialize() {
 	/// 敵
 	Enemy* enemy = new Enemy(player);
 
-	/// 背景オブジェクト
-	Stage*   stage   = new Stage();
-	SkyDome* skyDome = new SkyDome();
+	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 
 	TrackingCamera*   trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
@@ -47,11 +45,14 @@ void Scene_Game::Initialize() {
 	playerHPRenderer->Initialize();
 	trackingCamera->Initialize();
 	enemy->Initialize();
-	stage->Initialize();
-	skyDome->Initialize();
 
+	bbObjectManager->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
+
+
+	directionalLight_->SetDirection({ 0.0, -1.0f, 0.0f });
+
 
 	/// ui layer  index=1
 	GameCamera* uiCamera = new GameCamera("uiCamera");
