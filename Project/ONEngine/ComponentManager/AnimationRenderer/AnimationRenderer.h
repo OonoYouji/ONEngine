@@ -80,7 +80,8 @@ private:
 
 	class Model* pModel_;
 
-	SkinCluster skinCluster_;
+	std::unordered_map<std::string, SkinCluster> skinClusterMap_;
+	std::unordered_map<std::string, Skeleton>    skeletonMap_;
 	Skeleton    skeleton_;
 
 };
