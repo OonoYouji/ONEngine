@@ -1,14 +1,42 @@
 #pragma once
 
+#include <deque>
 #include <memory>
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
+/// <summary>
+/// 前方宣言
+/// </summary>
 class AnimationRenderer;
-class Player;
+enum class ActionTypes;
+enum class EnemyAttackRangeType : int16_t;
+namespace EnemyBehaviorTree{
+	class Action;
+	class AttackAction;
+	class AttackCombo;
+	class IdleAction;
+}
 class IEnemyState;
+class Player;
+class BoxCollider;
+class WorkEnemyAction;
+
+/// <summary>
+/// コンボで使用される Attack の 情報
+/// </summary>
+struct ComboAttack{
+	std::string attackName_;
+	int32_t index_;
+	ComboAttack(const std::string& name,int32_t i):attackName_(name),index_(i){}
+};
+
+struct ComboAttacks{
+	EnemyAttackRangeType rangeType_;
+	std::list<ComboAttack> comboAttacks_;
+};
 
 class Enemy :
 	public BaseGameObject{
@@ -19,47 +47,46 @@ public:
 	void Update()override;
 
 	void Debug()override;
+
+	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
+	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
+
+	void DecideNextNode();
 private:
 	Player* player_ = nullptr;
 
-	std::unique_ptr<IEnemyState> currentState_ = nullptr;
+	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
 
 	const float maxHp_;
 	float hp_;
-	const float maxStamina_;
-	float stamina_;
 
 	float speed_;
 
 	std::string currentAction_;
 
-	/// <summary>
-	/// IdleState variable
-	/// </summary>
-	struct WorkIdleAction{
-		float hpWeight_;
-		float staminaWeight_;
+	// 調整項目保存用
+	using AttackActionName = std::string;
+	std::unordered_map<AttackActionName,std::unique_ptr<WorkEnemyAction>> workEnemyActionVariables_;
 
-		float healingStamina_;
-	};
-	WorkIdleAction workShortIdle_;
-	WorkIdleAction workLongIdle_;
+	// RangeType別
+	std::unordered_map<EnemyAttackRangeType,std::deque<std::string>> comboByRangeType_;
+	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
-	/// <summary>
-	/// AttackState variable
-	/// </summary>
-	struct WorkAttackAction{
-		float hpWeight_;
-		float staminaWeight_;
+#ifdef _DEBUG
+	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
+	bool isCreateWindowPop_;
 
-		float activationDistance_;
+	// 編集されているもの 
+	std::string* currentEditActionName_ = nullptr;
+	std::string* currentEditComboName_ = nullptr;
 
-		float damage_;
-		float staminaConsumed_;
-	};
-	WorkAttackAction workWeakAttack_;
-	WorkAttackAction workStrongAttack_;
+	WorkEnemyAction* currentEditAction_;
+	ComboAttacks* currentEditCombo_;
+
+	std::string createObjectName_ = "NULL";
+#endif // _DEBUG
+
 public:
 	void SetAnimationRender(const std::string& filePath);
 	void TransitionState(IEnemyState* next);
@@ -72,20 +99,10 @@ public:
 	float GetHP()const{ return hp_; }
 	void  SetHP(float hp){ hp_ = hp; }
 
-	const float GetMaxStamina()const{ return maxStamina_; }
-	float GetStamina()const{ return stamina_; }
-	void  SetStamina(float stamina){ stamina_ = stamina; }
-
 	float GetSpeed()const{ return speed_; }
 
-	const WorkIdleAction& GetWorkShortIdle()const{ return workShortIdle_; }
-	const WorkIdleAction& GetWorkLongIdle()const{ return workLongIdle_; }
+	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
+	const std::deque<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
 
-	const WorkAttackAction& GetWorkWeakAttack()const{ return workWeakAttack_; }
-	const WorkAttackAction& GetWorkStrongAttack()const{ return workStrongAttack_; }
-
-	float GetShortIdlePoint()const;
-	float GetLongIdlePoint()const;
-	float GetWeakAttackPoint()const;
-	float GetStrongAttackPoint()const;
+	float getDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
 };

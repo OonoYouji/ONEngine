@@ -1,16 +1,27 @@
 #include "Enemy.h"
-#include "State/IEnemyState.h"
-#include "State/EnemyIdleState.h"
+
+#include <iostream>
+
+#include "BehaviorTree/EnemyActions.h"
+#include "BehaviorWorker/EnemyBehaviorWorlers.h"
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
+#include "Math/Random.h"
+#include "MyFileSystem/MyFileSystem.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
 #endif // _DEBUG
 
+// EnemyAttackRangeTypeと文字列の対応付け
+std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
+	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
+	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
+};
 
-Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f),maxStamina_(0.0f){
+Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f){
 	CreateTag(this);
 }
 
@@ -20,113 +31,356 @@ void Enemy::Initialize(){
 	animationRender_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
 
 	hp_ = maxHp_;
-	stamina_ = maxStamina_;
 
-	currentState_.reset(new EnemyIdleState(this));
-	currentState_->Initialize();
+	// 最初の行動を設定
+	//DecideNextNode();
 }
 
 void Enemy::Update(){
-	currentState_->Update();
+	if(rootNode_){
+		if(rootNode_->tick() == EnemyBehaviorTree::Status::SUCCESS){
+			DecideNextNode();
+		}
+	}
 }
 
 void Enemy::Debug(){
 	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
 
-	float weakAttackPoint = GetWeakAttackPoint();
-	ImGui::InputFloat("WeakAttackPoint",&weakAttackPoint);
-	float strongAttackPoint = GetStrongAttackPoint();
-	ImGui::InputFloat("WeakAttackPoint",&strongAttackPoint);
-	float shortIdlePoint = GetShortIdlePoint();
-	ImGui::InputFloat("WeakAttackPoint",&shortIdlePoint);
-	float longIdlePoint = GetLongIdlePoint();
-	ImGui::InputFloat("WeakAttackPoint",&longIdlePoint);
-
+	///===============================================
+	/// ステータスの表示
+	///===============================================
 	if(ImGui::TreeNode("Status")){
 		ImGui::DragFloat("MaxHP",const_cast<float*>(&maxHp_),0.1f);
-		ImGui::DragFloat("MaxStamina",const_cast<float*>(&maxStamina_),0.1f);
 		ImGui::DragFloat("Speed",&speed_,0.1f);
 
 		ImGui::Spacing();
 
 		ImGui::InputFloat("Current HP",&hp_);
-		ImGui::InputFloat("Current Stamina",&stamina_);
 
 		if(ImGui::Button("SetMax Status")){
 			hp_ = maxHp_;
-			stamina_ = maxStamina_;
 		}
 		ImGui::TreePop();
 	}
 
-	if(ImGui::TreeNode("Idle Action")){
-		if(ImGui::TreeNode("ShortIdle")){
-			ImGui::DragFloat("ShortIdle_hpWeight",&workShortIdle_.hpWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_staminaWeight",&workShortIdle_.staminaWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_healingStamina",&workShortIdle_.healingStamina_,0.1f);
-			ImGui::TreePop();
+	ImGui::Spacing();
+
+	if(ImGui::Button("ReloadResourceFileList")){
+		WorkEnemyAction::animationList =  MyFileSystem::SearchFile("./Resources/Models","gltf");
+	}
+
+	///===============================================
+	/// AttackActions
+	///===============================================
+	if(ImGui::TreeNode("Actions")){
+		// 新しい アクションを 生成する時に window を popupする
+		if(!isCreateWindowPop_){
+			if(ImGui::Button("Create Attack Action")){
+				isCreateWindowPop_ = true;
+			}
+		} else{
+			ImGui::Begin("New Attack Action");
+			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
+			if(ImGui::Button("Create")){
+				workEnemyActionVariables_[createObjectName_] = std::make_unique<WorkIdleAction>();
+
+				currentEditAction_ = workEnemyActionVariables_[createObjectName_].get();
+				currentEditActionName_ = const_cast<std::string*>(&workEnemyActionVariables_.find(createObjectName_)->first);
+				isCreateWindowPop_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel")){
+				isCreateWindowPop_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::End();
 		}
 
 		ImGui::Spacing();
 
-		if(ImGui::TreeNode("LongIdle")){
-			ImGui::DragFloat("LongIdle_hpWeight",&workLongIdle_.hpWeight_,0.1f);
-			ImGui::DragFloat("LongIdle_staminaWeight",&workLongIdle_.staminaWeight_,0.1f);
-			ImGui::DragFloat("ShortIdle_healingStamina",&workLongIdle_.healingStamina_,0.1f);
-			ImGui::TreePop();
+		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
+		if(currentEditActionName_){
+			if(ImGui::BeginCombo("Actions",currentEditActionName_->c_str())){
+				for(auto& [key,value] : workEnemyActionVariables_){
+					bool isSelected = (currentEditActionName_ == &key);
+					if(ImGui::Selectable(key.c_str(),isSelected)){
+						currentEditActionName_ = const_cast<std::string*>(&key);
+						currentEditAction_ = value.get();
+					}
+					if(isSelected){
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+
+		ImGui::Spacing();
+
+		// 調整できるように 
+		if(currentEditActionName_){
+			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
+				ImGui::Spacing();
+
+				// Type を 変更
+				if(ImGui::BeginCombo("Action Type",actionTypeWord[currentEditAction_->type_].c_str())){
+					for(auto& [key,value] : actionTypeWord){
+						bool isSelected = (currentEditAction_->type_ == key);
+						if(ImGui::Selectable(value.c_str(),isSelected)){
+							std::string animation = workEnemyActionVariables_[*currentEditActionName_]->animationName_;
+							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(key));
+							workEnemyActionVariables_[*currentEditActionName_]->animationName_ = animation;
+							currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				currentEditAction_->Debug();
+
+				ImGui::TreePop();
+			}
 		}
 		ImGui::TreePop();
 	}
 
-	if(ImGui::TreeNode("Attack Action")){
-		if(ImGui::TreeNode("WeakAttack")){
-			ImGui::DragFloat("WeakAttack_hpWeight",&workWeakAttack_.hpWeight_,0.1f);
-			ImGui::DragFloat("WeakAttack_staminaWeight",&workWeakAttack_.staminaWeight_,0.1f);
-			ImGui::DragFloat("WeakAttack_activationDistance",&workWeakAttack_.activationDistance_,0.1f);
-			ImGui::DragFloat("WeakAttack_staminaConsumed",&workWeakAttack_.staminaConsumed_,0.1f);
-			ImGui::DragFloat("WeakAttack_damage",&workWeakAttack_.damage_,0.1f);
-			ImGui::TreePop();
+	///===============================================
+	/// AttackCombo
+	///===============================================
+	if(ImGui::TreeNode("AttackCombo")){
+		// 新しい Combo の 作成
+		if(!isCreateWindowPop_){
+			if(ImGui::Button("Create Attack Combo")){
+				isCreateWindowPop_ = true;
+			}
+		} else{
+			ImGui::Begin("New Attack Combo");
+			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
+			if(ImGui::Button("Create")){
+				editComboVariables_[createObjectName_] = ComboAttacks();
+				currentEditCombo_ = &editComboVariables_[createObjectName_];
+				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_.find(createObjectName_)->first);
+				isCreateWindowPop_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::SameLine();
+			if(ImGui::Button("Cancel")){
+				isCreateWindowPop_ = false;
+				createObjectName_ = "NULL";
+			}
+			ImGui::End();
 		}
 
 		ImGui::Spacing();
 
-		if(ImGui::TreeNode("StrongAttack")){
-			ImGui::DragFloat("StrongAttack_hpWeight",&workStrongAttack_.hpWeight_,0.1f);
-			ImGui::DragFloat("StrongAttack_staminaWeight",&workStrongAttack_.staminaWeight_,0.1f);
-			ImGui::DragFloat("StrongAttack_activationDistance",&workStrongAttack_.activationDistance_,0.1f);
-			ImGui::DragFloat("StrongAttack_staminaConsumed",&workStrongAttack_.staminaConsumed_,0.1f);
-			ImGui::DragFloat("StrongAttack_damage",&workStrongAttack_.damage_,0.1f);
-			ImGui::TreePop();
+		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
+		if(currentEditComboName_){
+			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
+				for(auto& [key,value] : editComboVariables_){
+					bool isSelected = (currentEditComboName_ == &key);
+					if(ImGui::Selectable(key.c_str(),isSelected)){
+						currentEditComboName_ = const_cast<std::string*>(&key);
+						currentEditCombo_ = &value;
+					}
+					if(isSelected){
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+		}
+
+		ImGui::Spacing();
+
+		// 調整
+		if(currentEditComboName_){
+			if(ImGui::TreeNode(currentEditComboName_->c_str())){
+				if(ImGui::TreeNode("AttackActions")){
+					for(auto& [attackName,attack] : workEnemyActionVariables_){
+						if(ImGui::Button(attackName.c_str())){
+							currentEditCombo_->comboAttacks_.push_back(ComboAttack(attackName,static_cast<int32_t>(currentEditCombo_->comboAttacks_.size())));
+						}
+					}
+					ImGui::TreePop();
+				}
+
+				if(ImGui::BeginCombo("RangeType",rangeTypes[currentEditCombo_->rangeType_].c_str())){
+					for(const auto& [type,name] : rangeTypes){
+						bool isSelected = (static_cast<BYTE>(currentEditCombo_->rangeType_) == static_cast<BYTE>(type));
+						if(ImGui::Selectable(name.c_str(),isSelected)){
+							// 選択された型を更新
+							currentEditCombo_->rangeType_ = type;
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				if(ImGui::TreeNode(("currentCombo::" + *currentEditComboName_).c_str())){
+					int index = 0;
+					for(auto it = currentEditCombo_->comboAttacks_.begin(); it != currentEditCombo_->comboAttacks_.end(); ++it,++index){
+						ImGui::PushID(index);
+						ImGui::Text("%s",it->attackName_.c_str());
+
+						if(ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)){
+							int64_t src_index = std::distance(currentEditCombo_->comboAttacks_.begin(),it);
+							ImGui::SetDragDropPayload("LIST_ITEM",&src_index,sizeof(int64_t));  // インデックスを渡す
+							ImGui::Text("Moving %s",it->attackName_.c_str());
+							ImGui::EndDragDropSource();
+						}
+
+						if(ImGui::BeginDragDropTarget()){
+							if(const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("LIST_ITEM")){
+								int src_index = *(int*)payload->Data;  // インデックスを取得
+								auto src_it = std::next(currentEditCombo_->comboAttacks_.begin(),src_index);  // イテレータに変換
+								if(src_it != it){
+									ComboAttack temp = *src_it;
+									currentEditCombo_->comboAttacks_.erase(src_it);
+									currentEditCombo_->comboAttacks_.insert(it,temp);
+								}
+							}
+							ImGui::EndDragDropTarget();
+						}
+						ImGui::PopID();
+					}
+					ImGui::TreePop();
+				}
+				ImGui::TreePop();
+			}
 		}
 		ImGui::TreePop();
+	}
+
+	///===============================================
+	/// RangeType ごとの 許容距離
+	///===============================================
+	if(ImGui::TreeNode("distanceByRangeTypes")){
+		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE],0.1f);
+		ImGui::DragFloat("MiddleRange",&distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE],0.1f);
+		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE],0.1f);
+		ImGui::TreePop();
+	}
+
+	///=====================================
+	/// RangeType ごと に 仕分け
+	///=====================================
+	{
+		comboByRangeType_[EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeType_[EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeType_[EnemyAttackRangeType::LONG_RANGE].clear();
+
+		for(const auto& [comboName,combo] : editComboVariables_){
+			comboByRangeType_[combo.rangeType_].push_back(comboName);
+		}
 	}
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath){
-	animationRender_ = AddComponent<AnimationRenderer>(filePath);
-}
-
-void Enemy::TransitionState(IEnemyState* next){
-	currentState_.reset(next);
-	currentState_->Initialize();
+	this->animationRender_->ChangeAnimation(filePath);
 }
 
 Player* Enemy::GetPlayer() const{ return player_; }
 
-float Enemy::GetShortIdlePoint() const{
-	return ((hp_ / maxHp_) * workShortIdle_.hpWeight_) + ((stamina_ / maxStamina_) * workShortIdle_.staminaWeight_);
+std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::string& actionName){
+	WorkEnemyAction* worker = workEnemyActionVariables_[actionName].get();
+
+	std::unique_ptr<EnemyBehaviorTree::Sequence> result = nullptr;
+
+	result = std::make_unique<EnemyBehaviorTree::Sequence>(this);
+	result->addChild(std::make_unique<EnemyBehaviorTree::TransitionAnimation>(this,worker->animationName_));
+
+	switch(worker->type_){
+		case ActionTypes::WEAK_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
+			break;
+		case ActionTypes::STRONG_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
+			break;
+		case ActionTypes::IDLE:
+			result->addChild(std::make_unique<EnemyBehaviorTree::IdleAction>(this,reinterpret_cast<WorkIdleAction*>(worker)));
+			break;
+		default:
+			// 該当 する Typeが なければ reset
+			result.reset();
+			break;
+	}
+	return result;
 }
 
-float Enemy::GetLongIdlePoint() const{
-	return ((hp_ / maxHp_) * workLongIdle_.hpWeight_) + ((stamina_ / maxStamina_) * workLongIdle_.staminaWeight_);
+std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
+	std::unique_ptr<WorkEnemyAction> result = nullptr;
+	switch(type){
+		case ActionTypes::WEAK_ATTACK:
+			result = std::make_unique<WorkWeakAttackAction>();
+			break;
+		case ActionTypes::STRONG_ATTACK:
+			result = std::make_unique<WorkStrongAttackAction>();
+			break;
+		case ActionTypes::IDLE:
+			result = std::make_unique<WorkIdleAction>();
+			break;
+		default:
+			break;
+	}
+
+	return result;
 }
 
-float Enemy::GetWeakAttackPoint() const{
-	return ((hp_ / maxHp_) * workWeakAttack_.hpWeight_) +
-		((stamina_ / maxStamina_) * workWeakAttack_.staminaWeight_);
+/// <summary>
+/// 次の行動を決める
+/// </summary>
+void Enemy::DecideNextNode(){
+	float lengthEnemy2Player = (player_->GetPosition() - this->GetPosition()).Len();
+
+	std::string comboName = "";
+
+	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
+		// ShortRange 以下なら
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::SHORT_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+
+	} else if(lengthEnemy2Player > distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]){
+		// MiddleRange より 大きいなら
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::LONG_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+
+	} else{
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::MIDDLE_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+	}
+	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
 }
 
-float Enemy::GetStrongAttackPoint() const{
-	return ((hp_ / maxHp_) * workStrongAttack_.hpWeight_) +
-		((stamina_ / maxStamina_) * workStrongAttack_.staminaWeight_);
+const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
+	auto it = editComboVariables_.find(comboName);
+	if(it != editComboVariables_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("Attack action '" + comboName + "' not found");  // 見つからなかった場合の例外処理
+	}
+}
+
+const std::deque<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeType) const{
+	auto it = comboByRangeType_.find(rangeType);
+	if(it != comboByRangeType_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理
+	}
+}
+
+float Enemy::getDistanceByRangeTypes(EnemyAttackRangeType rangeType) const{
+	auto it = distanceByRangeTypes_.find(rangeType);
+	if(it != distanceByRangeTypes_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理
+	}
 }
