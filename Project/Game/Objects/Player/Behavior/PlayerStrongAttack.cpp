@@ -17,7 +17,7 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 	currentTime_  = 0.0f;
 
 	for(size_t i = 0; i < chargePhaseDataArray_.size(); ++i) {
-		chargePhaseDataArray_[i].time = (i + 1) * 5.0f;
+		chargePhaseDataArray_[i].time = (i + 1) * 2.0f;
 	}
 
 
@@ -27,7 +27,7 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 void PlayerStrongAttack::Update() {
 
 	/// 入力をやめた瞬間が攻撃する瞬間
-	if(!Input::PressKey(KeyCode::K)) {
+	if(Input::TriggerKey(KeyCode::L)) {
 		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
 		return;
 	}

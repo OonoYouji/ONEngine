@@ -108,6 +108,12 @@ void Player::Debug() {
 		currentHP_ = maxHP_;
 	}
 
+	if(ImGui::Button("change model")) {
+		SetAnimationModel(
+			"KariPlayer_WeakAttack2"
+		);
+	}
+
 	if(ImGui::TreeNode("RootBehavior")) {
 		ImGui::DragFloat("Speed_InRootBehavior", &workRootBehavior_.speed_, 0.1f);
 		ImGui::DragFloat("RotateLerpSensitivity_InRootBehavior", &workRootBehavior_.rotateLerpSensitivity_, 0.1f);
