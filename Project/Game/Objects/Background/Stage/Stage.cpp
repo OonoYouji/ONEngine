@@ -34,8 +34,8 @@ void Stage::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	vm->AddValue(groupName, "position", pTransform_->position);
-	vm->AddValue(groupName, "scale", pTransform_->scale);
+	/*vm->AddValue(groupName, "position", pTransform_->position);
+	vm->AddValue(groupName, "scale", pTransform_->scale);*/
 	vm->AddValue(groupName, "uvScale", uvScale_);
 }
 
@@ -43,8 +43,8 @@ void Stage::ApplyVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
-	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
+	/*pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
+	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");*/
 	uvScale_              = vm->GetValue<Vec2>(groupName, "uvScale");
 
 
