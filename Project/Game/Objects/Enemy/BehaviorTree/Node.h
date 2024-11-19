@@ -5,7 +5,6 @@
 #include <vector>
 
 class Enemy;
-class IEnemyState;
 namespace EnemyBehaviorTree{
 	enum class Status{
 		SUCCESS,
@@ -122,15 +121,5 @@ namespace EnemyBehaviorTree{
 	private:
 		// 子ノードとそれぞれのスコア評価関数のペアを保持
 		std::vector<std::pair<std::unique_ptr<Node>,std::function<float()>>> children;
-	};
-
-	class EnemyTransitionSequence
-		:public Sequence{
-	public:
-		EnemyTransitionSequence(Enemy* enemy,IEnemyState* nextState):Sequence(enemy),nextState_(nextState){}
-
-		Status tick() override;
-	private:
-		IEnemyState* nextState_;
 	};
 }

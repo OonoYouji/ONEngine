@@ -4,22 +4,15 @@
 
 #include "BehaviorTree/EnemyActions.h"
 #include "BehaviorWorker/EnemyBehaviorWorlers.h"
-#include "State/EnemyIdleState.h"
-#include "State/IEnemyState.h"
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
+#include "Math/Random.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
 #endif // _DEBUG
 
-
-std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes = {
-	{EnemyAttackRangeType::SHORT_RANGE,10.0f},
-	{EnemyAttackRangeType::MIDDLE_RANGE,20.0f},
-	{EnemyAttackRangeType::LONG_RANGE,1000.0f},
-};
 // EnemyAttackRangeTypeと文字列の対応付け
 std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
 	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
@@ -38,12 +31,16 @@ void Enemy::Initialize(){
 
 	hp_ = maxHp_;
 
-	currentState_.reset(new EnemyIdleState(this));
-	currentState_->Initialize();
+	// 最初の行動を設定
+	//DecideNextNode();
 }
 
 void Enemy::Update(){
-	currentState_->Update();
+	if(rootNode_){
+		if(rootNode_->tick() == EnemyBehaviorTree::Status::SUCCESS){
+			DecideNextNode();
+		}
+	}
 }
 
 void Enemy::Debug(){
@@ -254,7 +251,13 @@ void Enemy::Debug(){
 		ImGui::TreePop();
 	}
 
-	if(ImGui::TreeNode("Action Pattern")){
+	///===============================================
+	/// RangeType ごとの 許容距離
+	///===============================================
+	if(ImGui::TreeNode("distanceByRangeTypes")){
+		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE],0.1f);
+		ImGui::DragFloat("MiddleRange",&distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE],0.1f);
+		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE],0.1f);
 		ImGui::TreePop();
 	}
 
@@ -276,11 +279,6 @@ void Enemy::SetAnimationRender(const std::string& filePath){
 	this->animationRender_->ChangeAnimation(filePath);
 }
 
-void Enemy::TransitionState(IEnemyState* next){
-	currentState_.reset(next);
-	currentState_->Initialize();
-}
-
 Player* Enemy::GetPlayer() const{ return player_; }
 
 std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::string& actionName){
@@ -291,7 +289,7 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 	result = std::make_unique<EnemyBehaviorTree::Sequence>(this);
 	result->addChild(std::make_unique<EnemyBehaviorTree::TransitionAnimation>(this,worker->animationName_));
 
-	switch(worker->types_){
+	switch(worker->type_){
 		case ActionTypes::WEAK_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
 			break;
@@ -328,6 +326,31 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 	return result;
 }
 
+/// <summary>
+/// 次の行動を決める
+/// </summary>
+void Enemy::DecideNextNode(){
+	float lengthEnemy2Player = (player_->GetPosition() - this->GetPosition()).Len();
+
+	std::string comboName = "";
+
+	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
+		// ShortRange 以下なら
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::SHORT_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+
+	} else if(lengthEnemy2Player > distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]){
+		// MiddleRange より 大きいなら
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::LONG_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+
+	} else{
+		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::MIDDLE_RANGE);
+		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
+	}
+	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
+}
+
 const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
 	auto it = editComboVariables_.find(comboName);
 	if(it != editComboVariables_.end()){
@@ -337,9 +360,18 @@ const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
 	}
 }
 
-const std::list<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeType) const{
+const std::deque<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeType) const{
 	auto it = comboByRangeType_.find(rangeType);
 	if(it != comboByRangeType_.end()){
+		return it->second;  // 見つかった場合、その要素を返す
+	} else{
+		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理
+	}
+}
+
+float Enemy::getDistanceByRangeTypes(EnemyAttackRangeType rangeType) const{
+	auto it = distanceByRangeTypes_.find(rangeType);
+	if(it != distanceByRangeTypes_.end()){
 		return it->second;  // 見つかった場合、その要素を返す
 	} else{
 		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理

@@ -19,6 +19,7 @@ enum class EnemyAttackRangeType : int16_t{
 	MIDDLE_RANGE,
 	LONG_RANGE
 };
+
 namespace EnemyBehaviorTree{
 	///====================================
 	/// アニメーション を 更新するための Node
@@ -97,7 +98,7 @@ namespace EnemyBehaviorTree{
 #pragma region"Combo"
 
 	class AttackCombo
-		:public EnemyBehaviorTree::EnemyTransitionSequence{
+		:public EnemyBehaviorTree::Sequence{
 	public:
 		AttackCombo(Enemy* enemy,const std::string& comboName);
 	private:

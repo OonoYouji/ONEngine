@@ -1,5 +1,6 @@
 #pragma once
 
+#include <deque>
 #include <memory>
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
@@ -49,10 +50,12 @@ public:
 
 	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
 	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
+
+	void DecideNextNode();
 private:
 	Player* player_ = nullptr;
 
-	std::unique_ptr<IEnemyState> currentState_ = nullptr;
+	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
 
 	const float maxHp_;
@@ -67,10 +70,10 @@ private:
 	std::unordered_map<AttackActionName,std::unique_ptr<WorkEnemyAction>> workEnemyActionVariables_;
 
 	// RangeType別
-	std::unordered_map<EnemyAttackRangeType,std::list<std::string>> comboByRangeType_;
+	std::unordered_map<EnemyAttackRangeType,std::deque<std::string>> comboByRangeType_;
+	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
 #ifdef _DEBUG
-
 	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
 	bool isCreateWindowPop_;
 
@@ -99,5 +102,7 @@ public:
 	float GetSpeed()const{ return speed_; }
 
 	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
-	const std::list<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
+	const std::deque<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
+
+	float getDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
 };

@@ -2,7 +2,6 @@
 
 #include "../BehaviorWorker/EnemyBehaviorWorlers.h"
 #include "../Enemy.h"
-#include "../State/EnemyIdleState.h"
 #include "FrameManager/Time.h"
 
 EnemyBehaviorTree::TransitionAnimation::TransitionAnimation(Enemy* enemy,const std::string& animation)
@@ -110,7 +109,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::EndLagUpdate(){
 /// </summary>
 /// <param name="enemy"></param>
 /// <param name="comboName"></param>
-EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comboName):EnemyBehaviorTree::EnemyTransitionSequence(enemy,new EnemyIdleState(enemy_)){
+EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comboName):EnemyBehaviorTree::Sequence(enemy){
 	const ComboAttacks& variables = enemy_->GetComboAttacks(comboName);
 
 	rangeType_ = variables.rangeType_;

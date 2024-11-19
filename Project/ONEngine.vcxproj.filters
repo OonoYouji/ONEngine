@@ -126,9 +126,6 @@
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
     <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
     <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
@@ -140,7 +137,6 @@
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Node.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
   </ItemGroup>
@@ -251,9 +247,6 @@
     <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
