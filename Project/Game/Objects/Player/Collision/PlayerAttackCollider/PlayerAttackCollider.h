@@ -15,6 +15,10 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void AddVariables();
+	void LoadVariables();
+	void ApplyVariables();
+
 private:
 
 	/// ===================================================
