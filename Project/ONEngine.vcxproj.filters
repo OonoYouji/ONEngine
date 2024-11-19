@@ -136,6 +136,8 @@
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
+    <ClCompile Include="Game\Objects\Background\Building\Building.cpp" />
+    <ClCompile Include="Game\Objects\Background\BackgroundObjectManager\BackgroundObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -253,6 +255,8 @@
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
+    <ClInclude Include="Game\Objects\Background\Building\Building.h" />
+    <ClInclude Include="Game\Objects\Background\BackgroundObjectManager\BackgroundObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
