@@ -221,6 +221,8 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 		LoadAnimation(_filePath);
 	}
 
+	SetModel(_filePath);
+
 	currentNodeAnimationKey_ = _filePath;
 	animationTime_           = 0.0f;
 }
