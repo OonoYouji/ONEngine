@@ -55,6 +55,10 @@ public:
 
 	void SkinClusterUpdate(SkinCluster& _skinCluster, const Skeleton& _skeleton) const;
 
+
+	float GetDuration(const std::string& _filePath) const { return durationMap_.at(_filePath); }
+
+
 private:
 	/// ===================================================
 	/// private : objects
