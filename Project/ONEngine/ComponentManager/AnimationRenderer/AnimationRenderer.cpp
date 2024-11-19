@@ -227,8 +227,8 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	if(map == multiNodeAnimationArray_.end()) {
 		LoadAnimation(_filePath);
 
-		skeletonMap_[currentNodeAnimationKey_] = CreateSkeleton(pModel_->GetRootNode());
-		skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeletonMap_[currentNodeAnimationKey_], pModel_);
+		skeletonMap_[_filePath] = CreateSkeleton(pModel_->GetRootNode());
+		skinClusterMap_[_filePath] = CreateSkinCluster(skeletonMap_[_filePath], pModel_);
 	}
 
 	SetModel(_filePath);
