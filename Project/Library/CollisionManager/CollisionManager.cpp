@@ -61,6 +61,10 @@ void CollisionManager::Update() {
 
 	for(auto& objA : gameObjects_) {
 
+		if(!objA->isActive) {
+			continue;
+		}
+
 		/// colliderがあるかチェック
 		BaseCollider* colliderA = objA->GetComponent<BaseCollider>();
 		if(!colliderA) {
@@ -69,15 +73,19 @@ void CollisionManager::Update() {
 
 		for(auto& objB : gameObjects_) {
 
-			/// colliderがあるかチェック
-			BaseCollider* colliderB = objB->GetComponent<BaseCollider>();
-			if(!colliderB) {
+			/// 同じオブジェクトなら除外
+			if(objA == objB) {
 				continue;
 			}
 
 
-			/// 同じオブジェクトなら除外
-			if(objA == objB) {
+			if(!objB->isActive) {
+				continue;
+			}
+
+			/// colliderがあるかチェック
+			BaseCollider* colliderB = objB->GetComponent<BaseCollider>();
+			if(!colliderB) {
 				continue;
 			}
 

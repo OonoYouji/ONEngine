@@ -133,7 +133,7 @@ public:
 	int32_t GetWeakAttackComboMax()const { return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
 	
 	class GameCamera* GetCamera() const { return pGameCamera_; }
-
+	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 	
 	void SetAnimationModel(const std::string& _filePath);
 
