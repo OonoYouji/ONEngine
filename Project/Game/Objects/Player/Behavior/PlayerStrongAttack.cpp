@@ -17,8 +17,9 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 	currentTime_  = 0.0f;
 
 	for(size_t i = 0; i < chargePhaseDataArray_.size(); ++i) {
-		chargePhaseDataArray_[i].time = i * 5.0f;
+		chargePhaseDataArray_[i].time = (i + 1) * 5.0f;
 	}
+
 
 }
 
@@ -40,6 +41,12 @@ void PlayerStrongAttack::Update() {
 		/// 次のphaseに行く
 		++currentPhase_;
 		currentPhase_ = std::clamp(currentPhase_, 0, static_cast<int>(COUNT - 1));
+
+
+		/// アニメーションを設定する
+		host_->SetAnimationModel(
+			"KariPlayer_StrongAttack" + std::to_string(currentPhase_)
+		);
 
 
 		if(currentPhase_ == THIRD) {
