@@ -32,9 +32,6 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
@@ -160,13 +157,12 @@
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
-    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
     <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -178,9 +174,6 @@
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
@@ -313,8 +306,6 @@
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
-    <ClInclude Include="Game\Objects\Stage\Stage.h" />
-    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
@@ -325,6 +316,7 @@
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
     <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
