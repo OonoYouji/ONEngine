@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
-#include "CustomMath/MotionTimes.h"
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
@@ -11,31 +10,18 @@
 /// 前方宣言
 /// </summary>
 class AnimationRenderer;
+enum class ActionTypes;
 enum class EnemyAttackRangeType : int16_t;
 namespace EnemyBehaviorTree{
+	class Action;
 	class AttackAction;
 	class AttackCombo;
+	class IdleAction;
 }
 class IEnemyState;
 class Player;
-
-/// <summary>
-/// IdleState variable
-/// </summary>
-struct WorkIdleAction{
-	std::string animationName_;
-	MotionTimes motionTimes_;
-};
-
-/// <summary>
-/// AttackState variable
-/// </summary>
-struct WorkAttackAction{
-	std::string animationName_;
-	MotionTimes motionTimes_;
-	//与えるダメージ
-	float damage_;
-};
+class BoxCollider;
+class WorkEnemyAction;
 
 /// <summary>
 /// コンボで使用される Attack の 情報
@@ -43,7 +29,6 @@ struct WorkAttackAction{
 struct ComboAttack{
 	std::string attackName_;
 	int32_t index_;
-
 	ComboAttack(const std::string& name,int32_t i):attackName_(name),index_(i){}
 };
 
@@ -61,6 +46,9 @@ public:
 	void Update()override;
 
 	void Debug()override;
+
+	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
+	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
 private:
 	Player* player_ = nullptr;
 
@@ -76,7 +64,7 @@ private:
 
 	// 調整項目保存用
 	using AttackActionName = std::string;
-	std::unordered_map<AttackActionName,WorkAttackAction> workAttackVariables_;
+	std::unordered_map<AttackActionName,std::unique_ptr<WorkEnemyAction>> workEnemyActionVariables_;
 
 	// RangeType別
 	std::unordered_map<EnemyAttackRangeType,std::list<std::string>> comboByRangeType_;
@@ -90,7 +78,7 @@ private:
 	std::string* currentEditActionName_ = nullptr;
 	std::string* currentEditComboName_ = nullptr;
 
-	WorkAttackAction* currentEditAction_;
+	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
 	std::string createObjectName_ = "NULL";
@@ -110,7 +98,6 @@ public:
 
 	float GetSpeed()const{ return speed_; }
 
-	const WorkAttackAction& GetWorkAttack(const std::string& attack)const;
 	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
 	const std::list<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
 };

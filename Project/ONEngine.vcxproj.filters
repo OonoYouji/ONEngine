@@ -140,9 +140,9 @@
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\AttackBehaviorTree.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\Node.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -269,10 +269,10 @@
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\AttackBehaviorTree.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\IdleBehaviorTree.h" />
     <ClInclude Include="Game\CustomMath\MotionTimes.h" />
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

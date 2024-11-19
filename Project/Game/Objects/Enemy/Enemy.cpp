@@ -1,16 +1,31 @@
 #include "Enemy.h"
-#include "State/EnemyIdleState.h"
-#include "State/IEnemyState.h"
 
 #include <iostream>
 
-#include "BehaviorTree/AttackBehaviorTree.h"
+#include "BehaviorTree/EnemyActions.h"
+#include "BehaviorWorker/EnemyBehaviorWorlers.h"
+#include "State/EnemyIdleState.h"
+#include "State/IEnemyState.h"
+
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
 #endif // _DEBUG
+
+
+std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,10.0f},
+	{EnemyAttackRangeType::MIDDLE_RANGE,20.0f},
+	{EnemyAttackRangeType::LONG_RANGE,1000.0f},
+};
+// EnemyAttackRangeTypeと文字列の対応付け
+std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
+	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
+	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
+};
 
 Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f){
 	CreateTag(this);
@@ -66,10 +81,10 @@ void Enemy::Debug(){
 			ImGui::Begin("New Attack Action");
 			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
 			if(ImGui::Button("Create")){
-				workAttackVariables_[createObjectName_] = WorkAttackAction();
+				workEnemyActionVariables_[createObjectName_] = std::make_unique<WorkIdleAction>();
 
-				currentEditAction_ = &workAttackVariables_[createObjectName_];
-				currentEditActionName_ = const_cast<std::string*>(&workAttackVariables_.find(createObjectName_)->first);
+				currentEditAction_ = workEnemyActionVariables_[createObjectName_].get();
+				currentEditActionName_ = const_cast<std::string*>(&workEnemyActionVariables_.find(createObjectName_)->first);
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -85,12 +100,12 @@ void Enemy::Debug(){
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(currentEditActionName_){
-			if(ImGui::BeginCombo("Attack Actions",currentEditActionName_->c_str())){
-				for(auto& [key,value] : workAttackVariables_){
+			if(ImGui::BeginCombo("Actions",currentEditActionName_->c_str())){
+				for(auto& [key,value] : workEnemyActionVariables_){
 					bool isSelected = (currentEditActionName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
 						currentEditActionName_ = const_cast<std::string*>(&key);
-						currentEditAction_ = &value;
+						currentEditAction_ = value.get();
 					}
 					if(isSelected){
 						ImGui::SetItemDefaultFocus();
@@ -106,10 +121,23 @@ void Enemy::Debug(){
 		if(currentEditActionName_){
 			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
 				ImGui::Spacing();
-				ImGui::DragFloat("setupTime",&currentEditAction_->motionTimes_.startupTime_,0.1f,0.0f);
-				ImGui::DragFloat("activeTime",&currentEditAction_->motionTimes_.activeTime_,0.1f,0.0f);
-				ImGui::DragFloat("endLagTime",&currentEditAction_->motionTimes_.endLagTime_,0.1f,0.0f);
-				ImGui::DragFloat("damage",&currentEditAction_->damage_,0.1f,0.0f);
+
+				// Type を 変更
+				if(ImGui::BeginCombo("Attack Type",actionTypeWord[currentEditAction_->type_].c_str())){
+					for(auto& [key,value] : actionTypeWord){
+						bool isSelected = (currentEditAction_->type_ == key);
+						if(ImGui::Selectable(value.c_str(),isSelected)){
+							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(currentEditAction_->type_));
+							currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				currentEditAction_->Debug();
 
 				ImGui::TreePop();
 			}
@@ -169,7 +197,7 @@ void Enemy::Debug(){
 		if(currentEditComboName_){
 			if(ImGui::TreeNode(currentEditComboName_->c_str())){
 				if(ImGui::TreeNode("AttackActions")){
-					for(auto& [attackName,attack] : workAttackVariables_){
+					for(auto& [attackName,attack] : workEnemyActionVariables_){
 						if(ImGui::Button(attackName.c_str())){
 							currentEditCombo_->comboAttacks_.push_back(ComboAttack(attackName,static_cast<int32_t>(currentEditCombo_->comboAttacks_.size())));
 						}
@@ -255,13 +283,49 @@ void Enemy::TransitionState(IEnemyState* next){
 
 Player* Enemy::GetPlayer() const{ return player_; }
 
-const WorkAttackAction& Enemy::GetWorkAttack(const std::string& attack) const{
-	auto it = workAttackVariables_.find(attack);
-	if(it != workAttackVariables_.end()){
-		return it->second;  // 見つかった場合、その要素を返す
-	} else{
-		throw std::runtime_error("Attack action '" + attack + "' not found");  // 見つからなかった場合の例外処理
+std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::string& actionName){
+	WorkEnemyAction* worker = workEnemyActionVariables_[actionName].get();
+
+	std::unique_ptr<EnemyBehaviorTree::Sequence> result = nullptr;
+
+	result = std::make_unique<EnemyBehaviorTree::Sequence>(this);
+	result->addChild(std::make_unique<EnemyBehaviorTree::TransitionAnimation>(this,worker->animationName_));
+
+	switch(worker->types_){
+		case ActionTypes::WEAK_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
+			break;
+		case ActionTypes::STRONG_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
+			break;
+		case ActionTypes::IDLE:
+			result->addChild(std::make_unique<EnemyBehaviorTree::IdleAction>(this,reinterpret_cast<WorkIdleAction*>(worker)));
+			break;
+		default:
+			// 該当 する Typeが なければ reset
+			result.reset();
+			break;
 	}
+	return result;
+}
+
+std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
+	std::unique_ptr<WorkEnemyAction> result = nullptr;
+	switch(type){
+		case ActionTypes::WEAK_ATTACK:
+			result = std::make_unique<WorkWeakAttackAction>();
+			break;
+		case ActionTypes::STRONG_ATTACK:
+			result = std::make_unique<WorkStrongAttackAction>();
+			break;
+		case ActionTypes::IDLE:
+			result = std::make_unique<WorkIdleAction>();
+			break;
+		default:
+			break;
+	}
+
+	return result;
 }
 
 const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
