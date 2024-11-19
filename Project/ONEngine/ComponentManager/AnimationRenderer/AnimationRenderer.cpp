@@ -34,15 +34,19 @@ AnimationRenderer::AnimationRenderer(const std::string& modelFilePath) {
 	currentNodeAnimationKey_ = modelFilePath;
 }
 AnimationRenderer::~AnimationRenderer() {
-	skinCluster_.FreeDescriptor();
+
+	for(auto& skinCluster : skinClusterMap_) {
+		skinCluster.second.FreeDescriptor();
+	}
+
 }
 
 
 void AnimationRenderer::Initialize() {
 	transform_.rotateOrder = QUATERNION;
 
-	skeleton_    = CreateSkeleton(pModel_->GetRootNode());
-	skinCluster_ = CreateSkinCluster(skeleton_, pModel_);
+	skeletonMap_[currentNodeAnimationKey_]    = CreateSkeleton(pModel_->GetRootNode());
+	skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeleton_, pModel_);
 }
 
 void AnimationRenderer::Update() {
@@ -53,7 +57,10 @@ void AnimationRenderer::Update() {
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
 	skeleton_.Update(durationMap_[currentNodeAnimationKey_], map);
-	SkinClusterUpdate(skinCluster_, skeleton_);
+	SkinClusterUpdate(
+		skinClusterMap_[currentNodeAnimationKey_], 
+		skeletonMap_[currentNodeAnimationKey_]
+	);
 
 }
 
@@ -106,7 +113,7 @@ void AnimationRenderer::DrawCall() {
 	/// buffer setting
 	pCommandList->SetGraphicsRootConstantBufferView(0, pViewBuffer->GetGPUVirtualAddress());
 	pCommon->BindDirectionalLightToCommandList(3, pCommandList);
-	pCommandList->SetGraphicsRootDescriptorTable(4, skinCluster_.paletteSRVHandle.second);
+	pCommandList->SetGraphicsRootDescriptorTable(4, skinClusterMap_[currentNodeAnimationKey_].paletteSRVHandle.second);
 
 	for(size_t i = 0; i < meshArray.size(); ++i) {
 
@@ -114,7 +121,7 @@ void AnimationRenderer::DrawCall() {
 		materialArray[i].BindTexture(pCommandList, 5);
 
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-			meshArray[i].GetVBV(), skinCluster_.vbv
+			meshArray[i].GetVBV(), skinClusterMap_[currentNodeAnimationKey_].vbv
 		};
 
 		pCommandList->IASetVertexBuffers(0, 2, vbvs);
@@ -219,6 +226,9 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	auto map = multiNodeAnimationArray_.find(_filePath);
 	if(map == multiNodeAnimationArray_.end()) {
 		LoadAnimation(_filePath);
+
+		skeletonMap_[currentNodeAnimationKey_] = CreateSkeleton(pModel_->GetRootNode());
+		skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeleton_, pModel_);
 	}
 
 	SetModel(_filePath);
