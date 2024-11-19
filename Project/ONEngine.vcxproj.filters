@@ -139,6 +139,7 @@
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
+    <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
+    <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

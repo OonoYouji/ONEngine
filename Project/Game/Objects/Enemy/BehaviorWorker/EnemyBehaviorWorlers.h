@@ -30,7 +30,8 @@ static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 /// </summary>
 class WorkEnemyAction{
 public:
-	WorkEnemyAction(ActionTypes type):type_(type){}
+	WorkEnemyAction(ActionTypes type):type_(type),motionTimes_({0.0f,0.0f,0.0f}){}
+
 	virtual ~WorkEnemyAction(){}
 
 	virtual void Debug();
@@ -38,6 +39,8 @@ public:
 	ActionTypes type_;
 	std::string animationName_;
 	MotionTimes motionTimes_;
+public:
+	static std::list<std::pair<std::string,std::string>> animationList;
 };
 
 //待機系統の アクションで使われる変数群
@@ -60,7 +63,7 @@ public:
 class WorkWeakAttackAction
 	:public WorkEnemyAction{
 public:
-	WorkWeakAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK){}
+	WorkWeakAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK),collisionRadius_(0.0f),damage_(0.0f){}
 	~WorkWeakAttackAction(){}
 
 	void Debug()override;

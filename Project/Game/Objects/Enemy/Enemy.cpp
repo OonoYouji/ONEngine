@@ -8,6 +8,7 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
 #include "Math/Random.h"
+#include "MyFileSystem/MyFileSystem.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
@@ -65,10 +66,14 @@ void Enemy::Debug(){
 
 	ImGui::Spacing();
 
+	if(ImGui::Button("ReloadResourceFileList")){
+		WorkEnemyAction::animationList =  MyFileSystem::SearchFile("./Resources/Models","gltf");
+	}
+
 	///===============================================
 	/// AttackActions
 	///===============================================
-	if(ImGui::TreeNode("AttackActions")){
+	if(ImGui::TreeNode("Actions")){
 		// 新しい アクションを 生成する時に window を popupする
 		if(!isCreateWindowPop_){
 			if(ImGui::Button("Create Attack Action")){
@@ -120,11 +125,13 @@ void Enemy::Debug(){
 				ImGui::Spacing();
 
 				// Type を 変更
-				if(ImGui::BeginCombo("Attack Type",actionTypeWord[currentEditAction_->type_].c_str())){
+				if(ImGui::BeginCombo("Action Type",actionTypeWord[currentEditAction_->type_].c_str())){
 					for(auto& [key,value] : actionTypeWord){
 						bool isSelected = (currentEditAction_->type_ == key);
 						if(ImGui::Selectable(value.c_str(),isSelected)){
-							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(currentEditAction_->type_));
+							std::string animation = workEnemyActionVariables_[*currentEditActionName_]->animationName_;
+							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(key));
+							workEnemyActionVariables_[*currentEditActionName_]->animationName_ = animation;
 							currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
 						}
 						if(isSelected){

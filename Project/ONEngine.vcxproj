@@ -147,6 +147,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
@@ -259,6 +260,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
     <ClInclude Include="Game\CustomMath\MotionTimes.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.h" />
