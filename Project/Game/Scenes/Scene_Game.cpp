@@ -11,11 +11,12 @@
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
+#include "GraphicManager/Light/DirectionalLight.h"
 #include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
-#include "Objects/Stage/Stage.h"
-#include "Objects/SkyDome/SkyDome.h"
+#include "Objects/Background/Stage/Stage.h"
+#include "Objects/Background/SkyDome/SkyDome.h"
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
@@ -52,6 +53,10 @@ void Scene_Game::Initialize() {
 
 
 	playerHPRenderer->SetPlayer(player);
+
+
+	directionalLight_->SetDirection({ 0.0, -1.0f, 0.0f });
+
 
 	/// ui layer  index=1
 	GameCamera* uiCamera = new GameCamera("uiCamera");

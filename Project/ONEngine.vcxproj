@@ -165,8 +165,8 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
-    <ClCompile Include="Game\Objects\SkyDome\SkyDome.cpp" />
-    <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\Background\SkyDome\SkyDome.cpp" />
+    <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
@@ -281,8 +281,8 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
-    <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
-    <ClInclude Include="Game\Objects\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\Background\SkyDome\SkyDome.h" />
+    <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />

@@ -15,6 +15,11 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+
+	void AddVariables();
+	void ApplyVariables();
+
+
 private:
 
 	/// ===================================================
@@ -22,4 +27,7 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+
+	Vec2 uvScale_;
+
 };
