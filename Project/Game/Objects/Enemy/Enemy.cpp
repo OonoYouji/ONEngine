@@ -9,6 +9,7 @@
 #include "Game/Objects/Player/Player.h"
 #include "Math/Random.h"
 #include "MyFileSystem/MyFileSystem.h"
+#include "VariableManager/VariableManager.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
@@ -34,6 +35,11 @@ void Enemy::Initialize(){
 
 	// 最初の行動を設定
 	//DecideNextNode();
+
+	LoadStatus();
+	LoadAllAction();
+	LoadCombos();
+
 }
 
 void Enemy::Update(){
@@ -46,6 +52,12 @@ void Enemy::Update(){
 
 void Enemy::Debug(){
 	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
+
+	if(ImGui::Button("Save")){
+		SaveStatus();
+		SaveAllAction();
+		SaveCombos();
+	}
 
 	///===============================================
 	/// ステータスの表示
@@ -86,7 +98,7 @@ void Enemy::Debug(){
 				workEnemyActionVariables_[createObjectName_] = std::make_unique<WorkIdleAction>();
 
 				currentEditAction_ = workEnemyActionVariables_[createObjectName_].get();
-				currentEditActionName_ = const_cast<std::string*>(&workEnemyActionVariables_.find(createObjectName_)->first);
+				currentEditActionName_ = workEnemyActionVariables_.find(createObjectName_)->first;
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -101,12 +113,16 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
-		if(currentEditActionName_){
-			if(ImGui::BeginCombo("Actions",currentEditActionName_->c_str())){
+		if(!workEnemyActionVariables_.empty()){
+			if(currentEditActionName_ == ""){
+				currentEditActionName_ = workEnemyActionVariables_.begin()->first;
+				currentEditAction_ = workEnemyActionVariables_[currentEditActionName_].get();
+			}
+			if(ImGui::BeginCombo("Actions",currentEditActionName_.c_str())){
 				for(auto& [key,value] : workEnemyActionVariables_){
-					bool isSelected = (currentEditActionName_ == &key);
+					bool isSelected = (currentEditActionName_ == key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditActionName_ = const_cast<std::string*>(&key);
+						currentEditActionName_ = key;
 						currentEditAction_ = value.get();
 					}
 					if(isSelected){
@@ -120,8 +136,8 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整できるように 
-		if(currentEditActionName_){
-			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
+		if(currentEditActionName_ != ""){
+			if(ImGui::TreeNode(("currentCombo::" + currentEditActionName_).c_str())){
 				ImGui::Spacing();
 
 				// Type を 変更
@@ -129,10 +145,10 @@ void Enemy::Debug(){
 					for(auto& [key,value] : actionTypeWord){
 						bool isSelected = (currentEditAction_->type_ == key);
 						if(ImGui::Selectable(value.c_str(),isSelected)){
-							std::string animation = workEnemyActionVariables_[*currentEditActionName_]->animationName_;
-							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(key));
-							workEnemyActionVariables_[*currentEditActionName_]->animationName_ = animation;
-							currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
+							std::string animation = workEnemyActionVariables_[currentEditActionName_]->animationName_;
+							workEnemyActionVariables_[currentEditActionName_] = std::move(CreateWorker(key));
+							workEnemyActionVariables_[currentEditActionName_]->animationName_ = animation;
+							currentEditAction_ = workEnemyActionVariables_[currentEditActionName_].get();
 						}
 						if(isSelected){
 							ImGui::SetItemDefaultFocus();
@@ -164,7 +180,7 @@ void Enemy::Debug(){
 			if(ImGui::Button("Create")){
 				editComboVariables_[createObjectName_] = ComboAttacks();
 				currentEditCombo_ = &editComboVariables_[createObjectName_];
-				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_.find(createObjectName_)->first);
+				currentEditComboName_ = editComboVariables_.find(createObjectName_)->first;
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -179,12 +195,16 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
-		if(currentEditComboName_){
-			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
+		if(!editComboVariables_.empty()){
+			if(currentEditComboName_ != ""){
+				currentEditActionName_ = editComboVariables_.begin()->first;
+				currentEditCombo_ = &editComboVariables_[currentEditActionName_];
+			}
+			if(ImGui::BeginCombo("Combos",currentEditComboName_.c_str())){
 				for(auto& [key,value] : editComboVariables_){
-					bool isSelected = (currentEditComboName_ == &key);
+					bool isSelected = (currentEditComboName_ == key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditComboName_ = const_cast<std::string*>(&key);
+						currentEditComboName_ = key;
 						currentEditCombo_ = &value;
 					}
 					if(isSelected){
@@ -198,8 +218,8 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整
-		if(currentEditComboName_){
-			if(ImGui::TreeNode(currentEditComboName_->c_str())){
+		if(currentEditComboName_ != ""){
+			if(ImGui::TreeNode(currentEditComboName_.c_str())){
 				if(ImGui::TreeNode("AttackActions")){
 					for(auto& [attackName,attack] : workEnemyActionVariables_){
 						if(ImGui::Button(attackName.c_str())){
@@ -223,7 +243,7 @@ void Enemy::Debug(){
 					ImGui::EndCombo();
 				}
 
-				if(ImGui::TreeNode(("currentCombo::" + *currentEditComboName_).c_str())){
+				if(ImGui::TreeNode(("currentCombo::" + currentEditComboName_).c_str())){
 					int index = 0;
 					for(auto it = currentEditCombo_->comboAttacks_.begin(); it != currentEditCombo_->comboAttacks_.end(); ++it,++index){
 						ImGui::PushID(index);
@@ -264,7 +284,7 @@ void Enemy::Debug(){
 	if(ImGui::TreeNode("distanceByRangeTypes")){
 		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE],0.1f);
 		ImGui::DragFloat("MiddleRange",&distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE],0.1f);
-		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE],0.1f);
+		ImGui::DragFloat("LongRange",&distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE],0.1f);
 		ImGui::TreePop();
 	}
 
@@ -279,6 +299,106 @@ void Enemy::Debug(){
 		for(const auto& [comboName,combo] : editComboVariables_){
 			comboByRangeType_[combo.rangeType_].push_back(comboName);
 		}
+	}
+}
+
+void Enemy::SaveStatus(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	variableManager->SetValue("Enemy_Status","HP",maxHp_);
+	variableManager->SetValue("Enemy_Status","speed",speed_);
+
+	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::SHORT_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]);
+	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::MIDDLE_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]);
+	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::LONG_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE]);
+
+	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
+}
+
+void Enemy::SaveCombos(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	variableManager->SetValue("Enemy_Combos","CombosSize",static_cast<int>(editComboVariables_.size()));
+	int32_t index = 0;
+	for(auto& [name,combo] : editComboVariables_){
+		variableManager->SetValue("Enemy_Combos","Index_" + std::to_string(index),name);
+
+		SaveCombo(name);
+		++index;
+	}
+
+	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Combos");
+}
+
+void Enemy::SaveAllAction(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	variableManager->SetValue("Enemy_Actions","ActionSize",static_cast<int>(workEnemyActionVariables_.size()));
+
+	int32_t index = 0;
+	for(auto& [name,worker] : workEnemyActionVariables_){
+		variableManager->SetValue("Enemy_Actions","Index_" + std::to_string(index),name);
+		worker->Save(name);
+		++index;
+	}
+	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Actions");
+}
+
+void Enemy::SaveCombo(const std::string& comboName){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	variableManager->SetValue<int>(comboName,"RangeType",static_cast<int>(editComboVariables_[comboName].rangeType_));
+	variableManager->SetValue(comboName,"ComboSize",static_cast<int>(editComboVariables_[comboName].comboAttacks_.size()));
+	int32_t index = 0;
+	for(auto& [name,combo] : editComboVariables_[comboName].comboAttacks_){
+		variableManager->SetValue(comboName,"Index_" + std::to_string(index),name);
+		++index;
+	}
+
+	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,comboName);
+}
+
+void Enemy::LoadStatus(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
+	maxHp_ = variableManager->GetValue<float>("Enemy_Status","HP");
+	speed_ = variableManager->GetValue<float>("Enemy_Status","speed");
+	distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE] = variableManager->GetValue<float>("Enemy_Status","SHORT_RANGE");
+	distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE] = variableManager->GetValue<float>("Enemy_Status","MIDDLE_RANGE");
+	distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE] = variableManager->GetValue<float>("Enemy_Status","LONG_RANGE");
+}
+
+void Enemy::LoadCombos(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Combos");
+	int32_t combosSize = variableManager->GetValue<int>("Enemy_Combos","CombosSize");
+
+	for(size_t i = 0; i < combosSize; i++){
+		std::string comboName = variableManager->GetValue<std::string>("Enemy_Combos","Index_" + std::to_string(i));
+		variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,comboName);
+		editComboVariables_[comboName] = {};
+		editComboVariables_[comboName].rangeType_ = static_cast<EnemyAttackRangeType>(variableManager->GetValue<int>(comboName,"RangeType"));
+		LoadCombo(comboName,variableManager->GetValue<int>(comboName,"ComboSize"));
+	}
+}
+
+void Enemy::LoadAllAction(){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Actions");
+	int32_t actionSize =  variableManager->GetValue<int>("Enemy_Actions","ActionSize");
+	for(size_t i = 0; i < actionSize; ++i){
+		std::string actionName = variableManager->GetValue<std::string>("Enemy_Actions","Index_" + std::to_string(i));
+		variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,actionName);
+		workEnemyActionVariables_[actionName] = std::move(CreateWorker(static_cast<ActionTypes>(variableManager->GetValue<int>(actionName,"Type"))));
+	}
+}
+
+void Enemy::LoadCombo(const std::string& comboName,int32_t size){
+	VariableManager* variableManager = VariableManager::GetInstance();
+
+	for(int32_t i = 0; i < size; i++){
+		editComboVariables_[comboName].comboAttacks_.push_back({variableManager->GetValue<std::string>(comboName,"Index_" + std::to_string(i)),i});
 	}
 }
 
