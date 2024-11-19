@@ -84,8 +84,12 @@ private:
 
 	bool isInvisible_ = false;
 
-	/// other class pointer
-	class GameCamera* pGameCamera_ = nullptr;
+
+	/// ---------------------------------------------------
+	/// 
+	/// ---------------------------------------------------
+
+	Vec2 lastDirection_; /// 最後に向いている方向
 
 
 	/// ---------------------------------------------------
@@ -95,6 +99,13 @@ private:
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
 	std::array<WorkWeakAttackBehavior, 3> workWeakAttackBehavior_;
+
+
+
+
+	/// other class pointer
+	class GameCamera* pGameCamera_ = nullptr;
+
 
 public:
 
@@ -123,5 +134,9 @@ public:
 
 	
 	void SetAnimationModel(const std::string& _filePath);
+
+
+	const Vec2& GetLastDirection() const { return lastDirection_; }
+	void SetLastDirection(const Vec2& _lastDirection) { lastDirection_ = _lastDirection; }
 
 };

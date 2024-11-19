@@ -10,7 +10,11 @@
 
 #include "Objects/Camera/GameCamera.h"
 
-PlayerRootBehavior::PlayerRootBehavior(Player* _host) :IPlayerBehavior(_host), workInBehavior_(host_->GetWorkRootBehavior()) {}
+PlayerRootBehavior::PlayerRootBehavior(Player* _host) :IPlayerBehavior(_host), workInBehavior_(host_->GetWorkRootBehavior()) {
+
+	/// プレイヤーが持つ最後に向いていた方向を取得
+	lastDir_ = _host->GetLastDirection();
+}
 
 void PlayerRootBehavior::Update() {
 	direction_ = {
@@ -39,6 +43,7 @@ void PlayerRootBehavior::Update() {
 	{
 		if(direction_.x != 0 || direction_.y != 0) {
 			lastDir_ = direction_;
+			host_->SetLastDirection(lastDir_);
 		}
 		Vector3 rotate = host_->GetRotate();
 		rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDir_.x, lastDir_.y), workInBehavior_.rotateLerpSensitivity_);
