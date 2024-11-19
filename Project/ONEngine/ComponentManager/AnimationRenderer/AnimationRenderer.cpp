@@ -46,7 +46,7 @@ void AnimationRenderer::Initialize() {
 	transform_.rotateOrder = QUATERNION;
 
 	skeletonMap_[currentNodeAnimationKey_]    = CreateSkeleton(pModel_->GetRootNode());
-	skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeleton_, pModel_);
+	skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeletonMap_[currentNodeAnimationKey_], pModel_);
 }
 
 void AnimationRenderer::Update() {
@@ -56,7 +56,7 @@ void AnimationRenderer::Update() {
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
-	skeleton_.Update(durationMap_[currentNodeAnimationKey_], map);
+	skeletonMap_[currentNodeAnimationKey_].Update(durationMap_[currentNodeAnimationKey_], map);
 	SkinClusterUpdate(
 		skinClusterMap_[currentNodeAnimationKey_], 
 		skeletonMap_[currentNodeAnimationKey_]
@@ -228,7 +228,7 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 		LoadAnimation(_filePath);
 
 		skeletonMap_[currentNodeAnimationKey_] = CreateSkeleton(pModel_->GetRootNode());
-		skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeleton_, pModel_);
+		skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeletonMap_[currentNodeAnimationKey_], pModel_);
 	}
 
 	SetModel(_filePath);
