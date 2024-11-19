@@ -140,6 +140,7 @@
     <ClCompile Include="Game\Objects\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
+    <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -262,6 +263,7 @@
     <ClInclude Include="Game\Objects\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\Stage\Stage.h" />
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
+    <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

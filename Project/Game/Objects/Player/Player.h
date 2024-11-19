@@ -101,11 +101,13 @@ private:
 	std::array<WorkWeakAttackBehavior, 3> workWeakAttackBehavior_;
 
 
+	/// ---------------------------------------------------
+	/// other class 
+	/// ---------------------------------------------------
 
-
-	/// other class pointer
 	class GameCamera* pGameCamera_ = nullptr;
-
+	class PlayerAttackCollider* attackCollider_ = nullptr;
+	
 
 public:
 

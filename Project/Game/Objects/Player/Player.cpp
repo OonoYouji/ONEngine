@@ -20,6 +20,7 @@
 #include "Behavior/PlayerRootBehavior.h"
 #include "Behavior/PlayerWeakAttack.h"
 
+#include "Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 
 
 Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
@@ -61,10 +62,22 @@ void Player::Initialize() {
 	workAvoidanceBehavior_.motionTimes_.activeTime_ = 0.8f;
 
 
+	/// ---------------------------------------------------
+	/// 攻撃のアクティブタイムをアニメーションで初期化
+	/// ---------------------------------------------------
+
 	for(size_t i = 0; i < workWeakAttackBehavior_.size(); ++i) {
 		WorkWeakAttackBehavior& wwab = workWeakAttackBehavior_[i];
 		wwab.motionTimes_.activeTime_ = animationRenderer_->GetDuration(weakAnimationFilePaths[i]);
 	}
+
+
+	/// ---------------------------------------------------
+	/// コライダーの処理化
+	/// ---------------------------------------------------
+
+	attackCollider_ = new PlayerAttackCollider(this);
+	attackCollider_->Initialize();
 
 
 	/// varialbe managerに値を追加する
@@ -85,6 +98,8 @@ void Player::Update() {
 
 }
 
+
+#pragma region Debug
 void Player::Debug() {
 
 	ImGui::DragFloat("MaxHP", &maxHP_, 0.1f);
@@ -143,6 +158,8 @@ void Player::Debug() {
 	}
 }
 
+
+
 void Player::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
@@ -180,6 +197,9 @@ void Player::ApplyVariables() {
 	workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(groupName, "workEndLagTime");
 
 }
+
+#pragma endregion
+
 
 void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 	currentBehavior_ = std::move(next);
