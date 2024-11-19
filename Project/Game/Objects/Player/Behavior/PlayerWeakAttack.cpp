@@ -30,6 +30,19 @@ void PlayerWeakAttack::Update() {
 	currentUpdate_();
 
 
+	/// 次のbehaviorに行くための処理
+	if(Input::ReleaseKey(KeyCode::LShift)) {
+		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
+		return;
+	} else if(Input::TriggerKey(KeyCode::J)) {
+		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
+		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()) {
+			return;
+		}
+
+		nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
+		return;
+	}
 }
 
 void PlayerWeakAttack::StartupUpdate() {
@@ -62,23 +75,6 @@ void PlayerWeakAttack::WeakAttack() {
 }
 
 void PlayerWeakAttack::EndLagUpdate() {
-
-	/// 次のbehaviorに行くための処理
-	if(Input::ReleaseKey(KeyCode::LShift)) {
-		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
-		return;
-	} else if(Input::TriggerKey(KeyCode::J)) {
-		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
-		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()) {
-			return;
-		}
-
-		nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
-		return;
-	}
-
-
-
 	if(currentTime_ >= workInBehavior_.motionTimes_.endLagTime_) {
 		host_->TransitionBehavior(std::move(nextBehavior_));
 		return;

@@ -71,8 +71,6 @@ private:
 	float currentHP_;
 	float maxHP_;
 
-	float power_;
-
 	// boss に与える ダメージ (攻撃していないときは ずっと0 になるようにする)
 	float damage_;
 
@@ -114,8 +112,8 @@ public:
 	float GetCurrentHP() const { return currentHP_; }
 	float GetMaxHP()     const { return maxHP_; }
 
-	float GetPower()const { return power_; }
-	void SetDamage(float damageFactor) { damage_ = power_ * damageFactor; }
+	float GetDamage() const { return damage_; }
+	void SetDamage(float _damage) { damage_ = _damage; }
 
 	void SetIsInvisible(bool invisible) { isInvisible_ = invisible; }
 	bool GetIsInvisible()const { return isInvisible_; }
