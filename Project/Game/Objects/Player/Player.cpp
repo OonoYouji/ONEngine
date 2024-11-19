@@ -98,7 +98,6 @@ void Player::Update() {
 
 }
 
-
 #pragma region Debug
 void Player::Debug() {
 
@@ -204,8 +203,6 @@ void Player::ApplyVariables() {
 void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 	currentBehavior_ = std::move(next);
 }
-
-
 
 void Player::SetAnimationModel(const std::string& _filePath) {
 	animationRenderer_->ChangeAnimation(_filePath);

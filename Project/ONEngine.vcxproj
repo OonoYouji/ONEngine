@@ -149,6 +149,9 @@
   <ItemGroup>
     <ClCompile Include="Game\Objects\Background\BackgroundObjectManager\BackgroundObjectManager.cpp" />
     <ClCompile Include="Game\Objects\Background\Building\Building.cpp" />
+    <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -157,9 +160,6 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyAttackState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\EnemyIdleState.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\State\IEnemyState.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
@@ -265,6 +265,10 @@
   <ItemGroup>
     <ClInclude Include="Game\Objects\Background\BackgroundObjectManager\BackgroundObjectManager.h" />
     <ClInclude Include="Game\Objects\Background\Building\Building.h" />
+    <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
+    <ClInclude Include="Game\CustomMath\MotionTimes.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -274,9 +278,6 @@
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyAttackState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\EnemyIdleState.h" />
-    <ClInclude Include="Game\Objects\Enemy\State\IEnemyState.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\IPlayerBehavior.h" />
