@@ -213,6 +213,19 @@ void Player::Debug() {
 		ImGui::TreePop();
 	}
 
+
+
+	/// animation
+	if(ImGui::TreeNode("animation")) {
+
+		for(auto& joint : bodyAnimationRenderer_->GetSkeleton()->joints) {
+			std::string label = std::format("time##{:p}", reinterpret_cast<void*>(&joint));
+			label += joint.name;
+			ImGui::DragFloat(label.c_str(), &joint.animationTime, 0.0f);
+		}
+
+		ImGui::TreePop();
+	}
 }
 
 
@@ -324,6 +337,10 @@ void Player::SetAnimationModel(const std::string& _bodyModelFilePath, const std:
 void Player::SetAnimationTotalTime(float _totalTime) {
 	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+float Player::GetAnimationDuration() {
+	return bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Player::SetIsActiveWeapon(bool _isActive) {

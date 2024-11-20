@@ -21,7 +21,8 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 
 
 	std::string animationModelFilePath = "Player_WeakAttack";
-	animationModelFilePath += std::to_string(comboNum_ + 1);
+	//animationModelFilePath += std::to_string(comboNum_ + 1);
+	animationModelFilePath += std::to_string(1);
 
 	host_->SetIsActiveWeapon(true);
 	host_->SetAnimationModel(
@@ -117,6 +118,12 @@ void PlayerWeakAttack::WeakAttack() {
 void PlayerWeakAttack::EndLagUpdate() {
 	if(currentTime_ >= workInBehavior_.motionTimes_.endLagTime_) {
 		host_->SetIsActiveWeapon(false);
+
+		host_->SetAnimationModel(
+			"Player_Wait"
+		);
+		host_->SetAnimationTotalTime(host_->GetAnimationDuration());
+
 		host_->TransitionBehavior(std::move(nextBehavior_));
 		return;
 	}
