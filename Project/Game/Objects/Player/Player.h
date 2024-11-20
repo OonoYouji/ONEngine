@@ -127,11 +127,12 @@ public:
 	void SetIsInvisible(bool invisible) { isInvisible_ = invisible; }
 	bool GetIsInvisible()const { return isInvisible_; }
 
-	const WorkRootBehavior& GetWorkRootBehavior()const { return workRootBehavior_; }
-	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior()const { return workAvoidanceBehavior_; }
+	const WorkRootBehavior& GetWorkRootBehavior() const { return workRootBehavior_; }
+	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior() const { return workAvoidanceBehavior_; }
 	const WorkWeakAttackBehavior& GetWorkWeakAttackBehavior(int32_t index) { return workWeakAttackBehavior_[index]; }
+	const StrongAttackBehavior& GetStrongAttackBehavior() const { return strongAttackBehavior_; }
 
-	int32_t GetWeakAttackComboMax()const { return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
+	int32_t GetWeakAttackComboMax() const { return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
 	
 	class GameCamera* GetCamera() const { return pGameCamera_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }

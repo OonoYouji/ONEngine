@@ -114,6 +114,7 @@ void Player::Debug() {
 		);
 	}
 
+
 	if(ImGui::TreeNode("RootBehavior")) {
 		ImGui::DragFloat("Speed_InRootBehavior", &workRootBehavior_.speed_, 0.1f);
 		ImGui::DragFloat("RotateLerpSensitivity_InRootBehavior", &workRootBehavior_.rotateLerpSensitivity_, 0.1f);
@@ -160,6 +161,19 @@ void Player::Debug() {
 
 		ImGui::TreePop();
 	}
+
+	if(ImGui::TreeNode(strongAttackBehavior_.name_.c_str())) {
+		VariableManager* vm = VariableManager::GetInstance();
+
+		if(ImGui::Button("save file")) {
+			vm->SaveSpecificGroupsToJson("./Resources/Parameters/Objects", strongAttackBehavior_.name_);
+		}
+
+		ImGui::Spacing();
+		vm->DebuggingSpecificGroup(strongAttackBehavior_.name_);
+		ImGui::TreePop();
+	}
+
 }
 
 
@@ -197,7 +211,7 @@ void Player::LoadVariables() {
 
 	{	/// strong behavior 値のio
 		const std::string& groupName = strongAttackBehavior_.name_;
-		//vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
+		vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 	}
 }
 

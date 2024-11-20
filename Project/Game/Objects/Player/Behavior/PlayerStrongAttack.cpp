@@ -26,7 +26,7 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 	{	/// 値のio
 
 		VariableManager* vm = VariableManager::GetInstance();
-		const std::string groupName = "PlayerStrongAttack";
+		const std::string groupName = "StrongAttackBehavior";
 
 		vm->AddValue(groupName, "startLagTime", startLagTime_);
 		vm->AddValue(groupName, "endLagTime",   endLagTime_);
