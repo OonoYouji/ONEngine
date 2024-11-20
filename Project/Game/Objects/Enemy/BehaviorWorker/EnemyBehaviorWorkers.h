@@ -110,7 +110,7 @@ public:
 class WorkRushAttackAction
 	:public WorkEnemyAction{
 public:
-	WorkRushAttackAction():WorkRushAttackAction(ActionTypes::RUSH_ATTACK){
+	WorkRushAttackAction():WorkEnemyAction(ActionTypes::RUSH_ATTACK){
 		damage_          = 0;
 		collisionRadius_ = 0;
 		speed_           = 0;
@@ -121,7 +121,7 @@ public:
 
 	void Save(const std::string& name)override;
 	void Load(const std::string& name)override;
-	
+
 	float collisionRadius_;
 	float damage_;
 	float speed_;
