@@ -3,5 +3,5 @@
 #include "Math/Vector3.h"
 
 struct VelocityComponent {
-	Vec3 velocity_;
+	Vec3 velocity;
 };

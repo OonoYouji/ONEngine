@@ -11,6 +11,6 @@ void MovementSystem::Update(size_t _entity, ECSManager* _ecsManager) {
 	VelocityComponent* velocity = _ecsManager->GetComponent<VelocityComponent>(_entity);
 
 	if(position && velocity) {
-		position->position_ += velocity->velocity_;
+		position->position += velocity->velocity;
 	}
 }

@@ -93,6 +93,12 @@ public:
 	/// <param name="_entity"></param>
 	void RemoveEntity(size_t _entity);
 
+	/// <summary>
+	/// すべてのエンティティを得る
+	/// </summary>
+	/// <returns></returns>
+	const std::vector<size_t>& GetEntities() const { return entities_; }
+
 
 	template<typename T>
 	T* AddComponent(size_t _entity);
