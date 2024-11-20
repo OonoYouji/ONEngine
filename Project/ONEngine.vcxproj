@@ -151,7 +151,7 @@
     <ClCompile Include="Game\Objects\Background\Building\Building.cpp" />
     <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorkers.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -268,7 +268,7 @@
     <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
     <ClInclude Include="Game\CustomMath\MotionTimes.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorlers.h" />
+    <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorkers.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />

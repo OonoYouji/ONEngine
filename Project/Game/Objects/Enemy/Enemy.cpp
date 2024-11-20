@@ -3,8 +3,9 @@
 #include <iostream>
 
 #include "BehaviorTree/EnemyActions.h"
-#include "BehaviorWorker/EnemyBehaviorWorlers.h"
+#include "BehaviorWorker/EnemyBehaviorWorkers.h"
 
+#include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Game/Objects/Player/Player.h"
 #include "Math/Random.h"
@@ -36,16 +37,15 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	/*LoadStatus();
+	LoadStatus();
 	LoadAllAction();
-	LoadCombos();*/
-
+	LoadCombos();
 }
 
 void Enemy::Update(){
 	if(rootNode_){
 		if(rootNode_->tick() == EnemyBehaviorTree::Status::SUCCESS){
-			DecideNextNode();
+			//DecideNextNode();
 		}
 	}
 }
@@ -147,6 +147,7 @@ void Enemy::Debug(){
 						if(ImGui::Selectable(value.c_str(),isSelected)){
 							std::string animation = workEnemyActionVariables_[currentEditActionName_]->animationName_;
 							workEnemyActionVariables_[currentEditActionName_] = std::move(CreateWorker(key));
+							workEnemyActionVariables_[currentEditActionName_]->type_ = key;
 							workEnemyActionVariables_[currentEditActionName_]->animationName_ = animation;
 							currentEditAction_ = workEnemyActionVariables_[currentEditActionName_].get();
 						}
@@ -170,9 +171,9 @@ void Enemy::Debug(){
 	///===============================================
 	if(ImGui::TreeNode("AttackCombo")){
 		// 新しい Combo の 作成
-		if(!isCreateWindowPop_){
+		if(!isComboCreateWindowPop_){
 			if(ImGui::Button("Create Attack Combo")){
-				isCreateWindowPop_ = true;
+				isComboCreateWindowPop_ = true;
 			}
 		} else{
 			ImGui::Begin("New Attack Combo");
@@ -181,12 +182,12 @@ void Enemy::Debug(){
 				editComboVariables_[createObjectName_] = ComboAttacks();
 				currentEditCombo_ = &editComboVariables_[createObjectName_];
 				currentEditComboName_ = editComboVariables_.find(createObjectName_)->first;
-				isCreateWindowPop_ = false;
+				isComboCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::SameLine();
 			if(ImGui::Button("Cancel")){
-				isCreateWindowPop_ = false;
+				isComboCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
 			ImGui::End();
@@ -196,7 +197,7 @@ void Enemy::Debug(){
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!editComboVariables_.empty()){
-			if(currentEditComboName_ != ""){
+			if(currentEditComboName_ == ""){
 				currentEditActionName_ = editComboVariables_.begin()->first;
 				currentEditCombo_ = &editComboVariables_[currentEditActionName_];
 			}
@@ -218,7 +219,7 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整
-		if(currentEditComboName_ != ""){
+		if(currentEditCombo_){
 			if(ImGui::TreeNode(currentEditComboName_.c_str())){
 				if(ImGui::TreeNode("AttackActions")){
 					for(auto& [attackName,attack] : workEnemyActionVariables_){
@@ -231,7 +232,7 @@ void Enemy::Debug(){
 
 				if(ImGui::BeginCombo("RangeType",rangeTypes[currentEditCombo_->rangeType_].c_str())){
 					for(const auto& [type,name] : rangeTypes){
-						bool isSelected = (static_cast<BYTE>(currentEditCombo_->rangeType_) == static_cast<BYTE>(type));
+						bool isSelected = (currentEditCombo_->rangeType_ == type);
 						if(ImGui::Selectable(name.c_str(),isSelected)){
 							// 選択された型を更新
 							currentEditCombo_->rangeType_ = type;
@@ -243,6 +244,12 @@ void Enemy::Debug(){
 					ImGui::EndCombo();
 				}
 
+				if(ImGui::Button("Play CurrentCombo")){
+					rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,currentEditComboName_);
+				}
+				if(ImGui::Button("Stop")){
+					rootNode_ = nullptr;
+				}
 				if(ImGui::TreeNode(("currentCombo::" + currentEditComboName_).c_str())){
 					int index = 0;
 					for(auto it = currentEditCombo_->comboAttacks_.begin(); it != currentEditCombo_->comboAttacks_.end(); ++it,++index){
@@ -339,7 +346,6 @@ void Enemy::SaveAllAction(){
 		variableManager->SetValue("Enemy_Actions","Index_" + std::to_string(index),name);
 
 		worker->Save(name);
-
 		variableManager->SaveSpecificGroupsToJson(enemyActionDirectory,name);
 		++index;
 	}
@@ -394,6 +400,7 @@ void Enemy::LoadAllAction(){
 		std::string actionName = variableManager->GetValue<std::string>("Enemy_Actions","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,actionName);
 		workEnemyActionVariables_[actionName] = std::move(CreateWorker(static_cast<ActionTypes>(variableManager->GetValue<int>(actionName,"Type"))));
+		workEnemyActionVariables_[actionName]->Load(actionName);
 	}
 }
 
@@ -499,7 +506,7 @@ const std::deque<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeTyp
 	}
 }
 
-float Enemy::getDistanceByRangeTypes(EnemyAttackRangeType rangeType) const{
+float Enemy::GetDistanceByRangeTypes(EnemyAttackRangeType rangeType) const{
 	auto it = distanceByRangeTypes_.find(rangeType);
 	if(it != distanceByRangeTypes_.end()){
 		return it->second;  // 見つかった場合、その要素を返す
