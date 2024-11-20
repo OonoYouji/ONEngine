@@ -27,6 +27,8 @@ void ModelPreviewObject::Initialize() {
 
 	searchFiles_ = myFs::SearchFile("./Resources/Models", "gltf");
 
+	totalTime_ = 10.0f;
+
 }
 
 void ModelPreviewObject::Update() {
@@ -44,14 +46,12 @@ void ModelPreviewObject::Debug() {
 	ImGui::Text(std::format("current path\"{}\"", modelFilePath_).c_str());
 
 
-	static int currentItem = 0; // 現在選択されている項目のインデックス
-	// ImGui::Comboに渡すために文字列リストを1つのC文字列に変換
+	static int currentItem = 0; 
 	std::vector<const char*> itemCStrs;
 	for(const auto& item : searchFiles_) {
 		itemCStrs.push_back(item.second.c_str());
 	}
 
-	// Comboボックスの描画
 	if(ImGui::Combo("Select Item", &currentItem, itemCStrs.data(), static_cast<int>(itemCStrs.size()))) {
 		// 項目が選択された時の処理
 		auto itr = std::next(searchFiles_.begin(), currentItem);
@@ -60,5 +60,14 @@ void ModelPreviewObject::Debug() {
 		animationRenderer_->ChangeAnimation(modelFilePath_);
 	}
 	
+
+
+	/// total time
+	ImGui::DragFloat("animation totla time", &totalTime_, 0.1f);
+
+	if(ImGui::Button("set total time")) {
+		animationRenderer_->SetTotalTime(totalTime_, modelFilePath_);
+	}
+
 }
 

@@ -75,14 +75,38 @@ void PlayerRootBehavior::Update() {
 }
 
 void PlayerRootBehavior::InputNextBehavior() {
-	// 回避
-	if(Input::ReleaseKey(KeyCode::LShift)) {
+
+	bool isWeakAttack   = false;
+	bool isStrongAttack = false;
+	bool isDush         = false;
+
+	/// 回避のための入力
+	isDush         |= Input::TriggerKey(KeyCode::LShift);
+	isDush         |= static_cast<bool>(Input::GetLeftTrigger());
+
+	/// 次の弱攻撃のための入力
+	isWeakAttack   |= Input::TriggerKey(KeyCode::J);
+	isWeakAttack   |= static_cast<bool>(Input::GetRightTrigger());
+
+	/// 次の強攻撃のための入力
+	isStrongAttack |= Input::TriggerKey(KeyCode::K);
+	isStrongAttack |= Input::TriggerPadButton(PadCode::A);
+
+
+	/// 回避
+	if(isDush) {
 		host_->TransitionBehavior(std::make_unique<PlayerAvoidanceBehavior>(host_));
 		return;
-	} else if(Input::ReleaseKey(KeyCode::J)) {
+	} 
+	
+	/// 弱攻撃
+	if(isWeakAttack) {
 		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_, 0));
 		return;
-	} else if(Input::TriggerKey(KeyCode::K)) {
+	}
+	
+	/// 強攻撃
+	if(isStrongAttack) {
 		host_->TransitionBehavior(std::make_unique<PlayerStrongAttack>(host_));
 		return;
 	}

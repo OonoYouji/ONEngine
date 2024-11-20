@@ -58,6 +58,9 @@ public:
 
 	float GetDuration(const std::string& _filePath) const { return durationMap_.at(_filePath); }
 
+	void SetTotalTime(float _totalTime, const std::string& _filePath);
+
+	void SetTimeRate(float _timeRate);
 
 private:
 	/// ===================================================
@@ -66,6 +69,7 @@ private:
 
 	//float duration_;
 	float animationTime_;
+	float timeRate_ = 1.0f;
 
 	Transform transform_;
 

@@ -27,4 +27,7 @@ private:
 	std::string modelFilePath_;
 
 	std::list<std::pair<std::string, std::string>> searchFiles_;
+
+	
+	float totalTime_;
 };

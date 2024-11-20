@@ -26,7 +26,7 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 	{	/// 値のio
 
 		VariableManager* vm = VariableManager::GetInstance();
-		const std::string groupName = "PlayerStrongAttack";
+		const std::string groupName = "StrongAttackBehavior";
 
 		vm->AddValue(groupName, "startLagTime", startLagTime_);
 		vm->AddValue(groupName, "endLagTime",   endLagTime_);
@@ -44,8 +44,12 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 
 void PlayerStrongAttack::Update() {
 
+	bool isEnd = false;
+	isEnd |= Input::ReleaseKey(KeyCode::K);
+	isEnd |= Input::ReleasePadButton(PadCode::A);
+
 	/// 入力をやめた瞬間が攻撃する瞬間
-	if(Input::ReleaseKey(KeyCode::K)) {
+	if(isEnd) {
 		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
 		return;
 	}

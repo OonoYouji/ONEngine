@@ -31,7 +31,7 @@ Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframe, float
 struct Skeleton {
 
 	void Update(
-		float _duration,
+		float _timeRate, float _duration,
 		std::unordered_map<std::string, NodeAnimation>& _nodeAnimationArray
 	);
 

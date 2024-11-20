@@ -50,13 +50,10 @@ void AnimationRenderer::Initialize() {
 }
 
 void AnimationRenderer::Update() {
-	animationTime_ += Time::DeltaTime();
-	animationTime_ = std::fmod(animationTime_, durationMap_[currentNodeAnimationKey_]);
-
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
-	skeletonMap_[currentNodeAnimationKey_].Update(durationMap_[currentNodeAnimationKey_], map);
+	skeletonMap_[currentNodeAnimationKey_].Update(timeRate_, durationMap_[currentNodeAnimationKey_], map);
 	SkinClusterUpdate(
 		skinClusterMap_[currentNodeAnimationKey_], 
 		skeletonMap_[currentNodeAnimationKey_]
@@ -117,8 +114,13 @@ void AnimationRenderer::DrawCall() {
 
 	for(size_t i = 0; i < meshArray.size(); ++i) {
 
-		materialArray.front().BindMaterial(pCommandList, 2);
-		materialArray.front().BindTexture(pCommandList, 5);
+		if(i >= materialArray.size()) {
+			materialArray.front().BindMaterial(pCommandList, 2);
+			materialArray.front().BindTexture(pCommandList, 5);
+		} else {
+			materialArray[i].BindMaterial(pCommandList, 2);
+			materialArray[i].BindTexture(pCommandList, 5);
+		}
 
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			meshArray[i].GetVBV(), skinClusterMap_[currentNodeAnimationKey_].vbv
@@ -307,6 +309,15 @@ void AnimationRenderer::SkinClusterUpdate(SkinCluster& _skinCluster, const Skele
 			Mat4::MakeTranspose(Mat4::MakeInverse(_skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
 
 	}
+}
+
+void AnimationRenderer::SetTotalTime(float _totalTime, const std::string& _filePath) {
+	float duration = GetDuration(_filePath);
+	timeRate_ = duration / _totalTime;
+}
+
+void AnimationRenderer::SetTimeRate(float _timeRate) {
+	timeRate_ = _timeRate;
 }
 
 

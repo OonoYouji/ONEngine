@@ -29,12 +29,23 @@ void PlayerWeakAttack::Update() {
 	currentTime_ += Time::DeltaTime();
 	currentUpdate_();
 
+	bool isNextCombo = false;
+	bool isDush      = false;
+
+	/// 回避のための入力
+	isDush      |= Input::TriggerKey(KeyCode::LShift);
+	isDush      |= static_cast<bool>(Input::GetLeftTrigger());
+
+	/// 次のコンボのための入力
+	isNextCombo |= Input::TriggerKey(KeyCode::J);
+	isNextCombo |= static_cast<bool>(Input::GetRightTrigger());
+
 
 	/// 次のbehaviorに行くための処理
-	if(Input::ReleaseKey(KeyCode::LShift)) {
+	if(isDush) {
 		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
 		return;
-	} else if(Input::TriggerKey(KeyCode::J)) {
+	} else if(isNextCombo) {
 		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
 		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()) {
 			return;
