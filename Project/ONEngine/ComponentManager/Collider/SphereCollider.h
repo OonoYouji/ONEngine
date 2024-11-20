@@ -36,6 +36,10 @@ public:
 		return radius_;
 	}
 
+	void SetRadius(float _radius) {
+		radius_ = _radius;
+	}
+
 private:
 	/// ===================================================
 	/// private : objects
