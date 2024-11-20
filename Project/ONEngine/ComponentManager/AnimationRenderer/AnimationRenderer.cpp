@@ -53,7 +53,10 @@ void AnimationRenderer::Update() {
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
-	skeletonMap_[currentNodeAnimationKey_].Update(timeRate_, durationMap_[currentNodeAnimationKey_], map);
+	skeletonMap_[currentNodeAnimationKey_].Update(
+		timeRate_, durationMap_[currentNodeAnimationKey_], map
+	);
+
 	SkinClusterUpdate(
 		skinClusterMap_[currentNodeAnimationKey_], 
 		skeletonMap_[currentNodeAnimationKey_]
@@ -231,13 +234,18 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	if(map == multiNodeAnimationArray_.end()) {
 		LoadAnimation(_filePath);
 
-		skeletonMap_[_filePath] = CreateSkeleton(pModel_->GetRootNode());
+		skeletonMap_[_filePath]    = CreateSkeleton(pModel_->GetRootNode());
 		skinClusterMap_[_filePath] = CreateSkinCluster(skeletonMap_[_filePath], pModel_);
 	}
 
 
 	currentNodeAnimationKey_ = _filePath;
-	animationTime_           = 0.0f;
+
+	Skeleton& skeleton = skeletonMap_[_filePath];
+	for(auto& joint : skeleton.joints) {
+		joint.animationTime = 0.0f;
+	}
+
 }
 
 

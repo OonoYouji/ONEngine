@@ -62,12 +62,15 @@ public:
 
 	void SetTimeRate(float _timeRate);
 
+	const std::string& GetCurrentNodeAnimationKey() const {
+		return currentNodeAnimationKey_;
+	}
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	//float duration_;
 	float animationTime_;
 	float timeRate_ = 1.0f;
 

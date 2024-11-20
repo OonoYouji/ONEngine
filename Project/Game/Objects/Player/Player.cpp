@@ -31,7 +31,25 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	animationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
+	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
+	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
+
+
+	/// ボディの先読み
+	const std::array<std::string, 3> bodyModelAnimationFilePaths{
+		"Player_WeakAttack1_1_P", "Player_WeakAttack1_2_P", "Player_WeakAttack1_3_P"
+	};
+	/// 武器の先読み
+	const std::array<std::string, 3> weaponModelAnimationFilePaths{
+		"Player_WeakAttack1_1_W", "Player_WeakAttack1_2_W", "Player_WeakAttack1_3_W"
+	};
+
+	for(size_t i = 0; i < 3; ++i) {
+		SetAnimationModel(
+			bodyModelAnimationFilePaths[i],
+			weaponModelAnimationFilePaths[i]
+		);
+	}
 
 
 	/// 攻撃のモーションを先に読み込んでおく
@@ -45,6 +63,8 @@ void Player::Initialize() {
 
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
+	SetIsActiveWeapon(false);
+
 
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
@@ -68,7 +88,7 @@ void Player::Initialize() {
 
 	for(size_t i = 0; i < workWeakAttackBehavior_.size(); ++i) {
 		WorkWeakAttackBehavior& wwab = workWeakAttackBehavior_[i];
-		wwab.motionTimes_.activeTime_ = animationRenderer_->GetDuration(weakAnimationFilePaths[i]);
+		wwab.motionTimes_.activeTime_ = bodyAnimationRenderer_->GetDuration(weakAnimationFilePaths[i]);
 	}
 
 
@@ -246,5 +266,19 @@ void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 }
 
 void Player::SetAnimationModel(const std::string& _filePath) {
-	animationRenderer_->ChangeAnimation(_filePath);
+	bodyAnimationRenderer_->ChangeAnimation(_filePath);
+}
+
+void Player::SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath) {
+	bodyAnimationRenderer_->ChangeAnimation(_bodyModelFilePath);
+	weaponAnimationRenderer_->ChangeAnimation(_weaponModelFilePath);
+}
+
+void Player::SetAnimationTotalTime(float _totalTime) {
+	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
+	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+void Player::SetIsActiveWeapon(bool _isActive) {
+	weaponAnimationRenderer_->isActive = _isActive;
 }

@@ -16,12 +16,14 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 
 	nextBehavior_ = std::make_unique<PlayerRootBehavior>(host_);
 
-	std::string animationModelFilePath = "KariPlayer_WeakAttack";
-	if(comboNum_) {
-		animationModelFilePath += std::to_string(comboNum_);
-	}
+	std::string animationModelFilePath = "Player_WeakAttack";
+	animationModelFilePath += std::to_string(comboNum_ + 1);
 
-	host_->SetAnimationModel(animationModelFilePath);
+	host_->SetIsActiveWeapon(true);
+	host_->SetAnimationModel(
+		animationModelFilePath + "_1_P",
+		animationModelFilePath + "_1_W"
+	);
 
 }
 
@@ -60,6 +62,16 @@ void PlayerWeakAttack::StartupUpdate() {
 	if(currentTime_ >= workInBehavior_.motionTimes_.startupTime_) {
 		currentTime_ = 0.0f;
 
+
+		std::string animationModelFilePath = "Player_WeakAttack";
+		animationModelFilePath += std::to_string(comboNum_ + 1);
+
+		host_->SetAnimationModel(
+			animationModelFilePath + "_2_P",
+			animationModelFilePath + "_2_W"
+		);
+
+
 		currentUpdate_ = [this]() {WeakAttack(); };
 		return;
 	}
@@ -79,6 +91,16 @@ void PlayerWeakAttack::WeakAttack() {
 		host_->SetIsInvisible(false);
 		host_->GetAttackCollider()->isActive = false;
 
+
+		std::string animationModelFilePath = "Player_WeakAttack";
+		animationModelFilePath += std::to_string(comboNum_ + 1);
+
+		host_->SetAnimationModel(
+			animationModelFilePath + "_3_P",
+			animationModelFilePath + "_3_W"
+		);
+
+
 		currentUpdate_ = [this]() {EndLagUpdate(); };
 		EndLagUpdate();
 		return;
@@ -87,6 +109,7 @@ void PlayerWeakAttack::WeakAttack() {
 
 void PlayerWeakAttack::EndLagUpdate() {
 	if(currentTime_ >= workInBehavior_.motionTimes_.endLagTime_) {
+		host_->SetIsActiveWeapon(false);
 		host_->TransitionBehavior(std::move(nextBehavior_));
 		return;
 	}
