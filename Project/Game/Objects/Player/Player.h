@@ -45,6 +45,15 @@ public:
 	};
 
 
+	/// <summary>
+	/// StrongAttackで使用する変数
+	/// </summary>
+	struct StrongAttackBehavior {
+		const std::string name_ = "StrongAttackBehavior";
+		float startLagTime_;
+		float endLagTime_;
+	};
+
 public:
 
 	Player(class GameCamera* _mainCamera);
@@ -91,7 +100,7 @@ private:
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
 	std::array<WorkWeakAttackBehavior, 3> workWeakAttackBehavior_;
-
+	StrongAttackBehavior                  strongAttackBehavior_;
 
 	/// ---------------------------------------------------
 	/// other class 

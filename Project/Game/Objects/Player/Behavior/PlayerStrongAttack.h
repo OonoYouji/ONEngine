@@ -41,7 +41,6 @@ public:
 
 	void Update() override;
 
-
 private:
 	/// ===================================================
 	/// private : objects
@@ -52,5 +51,9 @@ private:
 	std::array<ChargePhaseData, COUNT> chargePhaseDataArray_;
 
 	bool isChargeMax_;
+
+
+	float startLagTime_; /// 開始時のラグ
+	float endLagTime_;   /// 終了時のラグ
 
 };

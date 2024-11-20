@@ -31,7 +31,7 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	animationRenderer_ = AddComponent<AnimationRenderer>("KariPlayer_Wait");
+	animationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
 
 
 	/// 攻撃のモーションを先に読み込んでおく
@@ -44,7 +44,7 @@ void Player::Initialize() {
 	}
 
 
-	SetAnimationModel("KariPlayer_Wait"); /// 元のアニメーションに変更
+	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
@@ -177,6 +177,16 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "workStartupTime", workAvoidanceBehavior_.motionTimes_.startupTime_);
 	vm->AddValue(groupName, "workActiveTime",  workAvoidanceBehavior_.motionTimes_.activeTime_);
 	vm->AddValue(groupName, "workEndLagTime",  workAvoidanceBehavior_.motionTimes_.endLagTime_);
+
+
+	{	/// strong behavior 値のio
+		const std::string& groupName = strongAttackBehavior_.name_;
+
+		vm->AddValue(groupName, "startLagTime", strongAttackBehavior_.startLagTime_);
+		vm->AddValue(groupName, "endLagTime", strongAttackBehavior_.endLagTime_);
+	}
+
+
 }
 
 void Player::LoadVariables() {
@@ -184,6 +194,11 @@ void Player::LoadVariables() {
 	const std::string& groupName = GetTag();
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
+
+	{	/// strong behavior 値のio
+		const std::string& groupName = strongAttackBehavior_.name_;
+		//vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
+	}
 }
 
 void Player::ApplyVariables() {
@@ -200,6 +215,13 @@ void Player::ApplyVariables() {
 	workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(groupName, "workActiveTime");
 	workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(groupName, "workEndLagTime");
 
+
+	{	/// strong behavior 値のio
+		const std::string& name = strongAttackBehavior_.name_;
+
+		strongAttackBehavior_.startLagTime_ = vm->GetValue<float>(name, "startLagTime");
+		strongAttackBehavior_.endLagTime_   = vm->GetValue<float>(name, "endLagTime");
+	}
 }
 
 #pragma endregion

@@ -117,8 +117,8 @@ void AnimationRenderer::DrawCall() {
 
 	for(size_t i = 0; i < meshArray.size(); ++i) {
 
-		materialArray[i].BindMaterial(pCommandList, 2);
-		materialArray[i].BindTexture(pCommandList, 5);
+		materialArray.front().BindMaterial(pCommandList, 2);
+		materialArray.front().BindTexture(pCommandList, 5);
 
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			meshArray[i].GetVBV(), skinClusterMap_[currentNodeAnimationKey_].vbv

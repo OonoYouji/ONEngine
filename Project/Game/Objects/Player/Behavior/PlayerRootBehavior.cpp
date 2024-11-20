@@ -66,7 +66,7 @@ void PlayerRootBehavior::Update() {
 		if(velocity != Vec3(0, 0, 0)) {
 			host_->SetAnimationModel("KariPlayer_Walk");
 		} else {
-			host_->SetAnimationModel("KariPlayer_Wait");
+			host_->SetAnimationModel("Player_Wait");
 		}
 
 	}
