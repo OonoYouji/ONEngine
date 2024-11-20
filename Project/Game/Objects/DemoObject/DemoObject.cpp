@@ -20,13 +20,11 @@ void DemoObject::Initialize() {
 }
 
 void DemoObject::Update() {
-	
+
 }
 
 void DemoObject::Debug() {
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::Text(name_.c_str());
 
 
 		static char buff[256];
@@ -57,7 +55,7 @@ void DemoObject::Debug() {
 
 		if(ImGui::Button("change Kari_Boss_LongWait")) {
 			animationRenderer_->ChangeAnimation("Kari_Boss_LongWait");
-		}
+		}*/
 
 
 		ImGui::TreePop();
