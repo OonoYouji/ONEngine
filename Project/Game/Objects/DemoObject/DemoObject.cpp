@@ -6,6 +6,8 @@
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "VariableManager/VariableManager.h"
 
+#include "Input/Input.h"
+
 /// components
 #include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -44,6 +46,13 @@ void DemoObject::Debug() {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::DragFloat("repeat delay", &io.KeyRepeatDelay, 0.01f);
 		ImGui::DragFloat("repeat rate", &io.KeyRepeatRate, 0.01f);
+
+
+		if(Input::GamepadConnected(0)) {
+			ImGui::Text("gamepad connected");
+		} else {
+			ImGui::Text("gamepad found");
+		}
 
 		/*if(ImGui::Button("change Kari_Boss_Wait")) {
 			animationRenderer_->ChangeAnimation("Kari_Boss_Wait");

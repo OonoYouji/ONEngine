@@ -55,6 +55,7 @@ public:
 	static bool TriggerPadButton(PadCode padCode);
 	static bool ReleasePadButton(PadCode padCode);
 
+	static bool GamepadConnected(int gamepadIndex);
 	static bool PadState(XINPUT_STATE& out);
 	static bool PadStatePrevious(XINPUT_STATE& out);
 	static bool PadState(Pad pad);
