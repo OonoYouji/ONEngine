@@ -1,7 +1,10 @@
 #include "PlayerWeakAttack.h"
 
+/// engine
+#include "VariableManager/VariableManager.h"
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
+
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerRootBehavior.h"
 #include "../Collision/PlayerAttackCollider/PlayerAttackCollider.h"
@@ -16,6 +19,7 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 
 	nextBehavior_ = std::make_unique<PlayerRootBehavior>(host_);
 
+
 	std::string animationModelFilePath = "Player_WeakAttack";
 	animationModelFilePath += std::to_string(comboNum_ + 1);
 
@@ -24,6 +28,7 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 		animationModelFilePath + "_1_P",
 		animationModelFilePath + "_1_W"
 	);
+	host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.startupTime_);
 
 }
 
@@ -70,6 +75,7 @@ void PlayerWeakAttack::StartupUpdate() {
 			animationModelFilePath + "_2_P",
 			animationModelFilePath + "_2_W"
 		);
+		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
 
 
 		currentUpdate_ = [this]() {WeakAttack(); };
@@ -99,6 +105,7 @@ void PlayerWeakAttack::WeakAttack() {
 			animationModelFilePath + "_3_P",
 			animationModelFilePath + "_3_W"
 		);
+		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.endLagTime_);
 
 
 		currentUpdate_ = [this]() {EndLagUpdate(); };
