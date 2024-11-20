@@ -78,8 +78,6 @@ private:
 
 	float speed_;
 
-	std::string currentAction_;
-
 	// 調整項目保存用
 	using AttackActionName = std::string;
 	std::unordered_map<AttackActionName,std::unique_ptr<WorkEnemyAction>> workEnemyActionVariables_;
@@ -103,8 +101,6 @@ private:
 
 public:
 	void SetAnimationRender(const std::string& filePath);
-
-	void Debug_SetCurrentAction(const std::string& action){ currentAction_ = action; }
 
 	Player* GetPlayer()const;
 

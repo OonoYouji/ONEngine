@@ -51,7 +51,6 @@ void Enemy::Update(){
 }
 
 void Enemy::Debug(){
-	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
 
 	if(ImGui::Button("Save")){
 		SaveStatus();
@@ -93,12 +92,12 @@ void Enemy::Debug(){
 			}
 		} else{
 			ImGui::Begin("New Attack Action");
-			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
+			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 128);
 			if(ImGui::Button("Create")){
 				workEnemyActionVariables_[createObjectName_] = std::make_unique<WorkIdleAction>();
 
 				currentEditAction_ = workEnemyActionVariables_[createObjectName_].get();
-				currentEditActionName_ = workEnemyActionVariables_.find(createObjectName_)->first;
+				currentEditActionName_ = createObjectName_;
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -138,8 +137,14 @@ void Enemy::Debug(){
 		// 調整できるように 
 		if(currentEditActionName_ != ""){
 			if(ImGui::TreeNode(("currentCombo::" + currentEditActionName_).c_str())){
-				ImGui::Spacing();
+				char buffer[256];
+				strcpy_s(buffer,currentEditActionName_.c_str());
 
+				if(ImGui::InputText("ActionName:",buffer,sizeof(buffer),ImGuiInputTextFlags_EnterReturnsTrue)){
+					workEnemyActionVariables_[buffer] = std::move(workEnemyActionVariables_[currentEditActionName_]);
+					workEnemyActionVariables_.erase(currentEditActionName_);
+					currentEditActionName_ = buffer;
+				}
 				// Type を 変更
 				if(ImGui::BeginCombo("Action Type",actionTypeWord[currentEditAction_->type_].c_str())){
 					for(auto& [key,value] : actionTypeWord){
@@ -176,11 +181,11 @@ void Enemy::Debug(){
 			}
 		} else{
 			ImGui::Begin("New Attack Combo");
-			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
+			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 128);
 			if(ImGui::Button("Create")){
 				editComboVariables_[createObjectName_] = ComboAttacks();
 				currentEditCombo_ = &editComboVariables_[createObjectName_];
-				currentEditComboName_ = editComboVariables_.find(createObjectName_)->first;
+				currentEditComboName_ = createObjectName_;
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -228,6 +233,16 @@ void Enemy::Debug(){
 					}
 					ImGui::TreePop();
 				}
+
+				char buffer[256];
+				strcpy_s(buffer,currentEditComboName_.c_str());
+				if(ImGui::InputText("ComboName:",buffer,sizeof(buffer),ImGuiInputTextFlags_EnterReturnsTrue)){
+					editComboVariables_[buffer] = std::move(editComboVariables_[currentEditComboName_]);
+					editComboVariables_.erase(currentEditComboName_);
+					currentEditComboName_ = buffer;
+				}
+
+				ImGui::Spacing();
 
 				if(ImGui::BeginCombo("RangeType",rangeTypes[currentEditCombo_->rangeType_].c_str())){
 					for(const auto& [type,name] : rangeTypes){
