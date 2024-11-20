@@ -9,11 +9,11 @@
 #include "AnimationRenderer.h"
 
 
-void Skeleton::Update(float _duration, std::unordered_map<std::string, NodeAnimation>& _nodeAnimationArray) {
+void Skeleton::Update(float _timeRate, float _duration, std::unordered_map<std::string, NodeAnimation>& _nodeAnimationArray) {
 
 	for(Joint& joint : joints) {
 
-		joint.animationTime += Time::DeltaTime();
+		joint.animationTime += _timeRate * Time::DeltaTime();
 		joint.animationTime = std::fmod(joint.animationTime, _duration);
 
 		NodeAnimation& rootAnimation = _nodeAnimationArray[joint.name];
