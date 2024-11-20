@@ -17,6 +17,7 @@ enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
 	STRONG_ATTACK,
+	RUSH_ATTACK
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
@@ -106,4 +107,23 @@ public:
 	float maxRotateY2Player_;
 };
 
+class WorkRushAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkRushAttackAction():WorkRushAttackAction(ActionTypes::RUSH_ATTACK){
+		damage_          = 0;
+		collisionRadius_ = 0;
+		speed_           = 0;
+	}
+	~WorkRushAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+	
+	float collisionRadius_;
+	float damage_;
+	float speed_;
+};
 #pragma endregion
