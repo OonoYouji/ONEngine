@@ -13,8 +13,8 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 
-#include "EntityConponentSystem/Component/PositionComponent.h"
-#include "EntityConponentSystem/Component/VelocityComponent.h"
+#include "EntityConponentSystem/Component/PositionComponent/PositionComponent.h"
+#include "EntityConponentSystem/Component/VelocityComponent/VelocityComponent.h"
 
 #include "EntityConponentSystem/ECSManager/ECSManager.h"
 

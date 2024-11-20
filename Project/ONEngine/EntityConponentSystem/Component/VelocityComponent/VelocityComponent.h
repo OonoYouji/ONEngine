@@ -2,10 +2,6 @@
 
 #include "Math/Vector3.h"
 
-class VelocityComponent {
-public:
-	VelocityComponent();
-	~VelocityComponent() {}
-
+struct VelocityComponent {
 	Vec3 velocity_;
 };

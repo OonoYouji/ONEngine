@@ -108,7 +108,7 @@ public:
 
 private:
 
-	//	 entity
+	/// entity
 	std::vector<size_t> entities_;
 	std::vector<size_t> recycleEntities_;
 	size_t              nextEntityId_;
