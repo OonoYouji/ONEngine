@@ -56,28 +56,46 @@ void WorkWeakAttackAction::Debug(){
 void WorkWeakAttackAction::Save(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Save(name);
-	variableManager->SetValue(name,"collisionRadius_",collisionRadius_);
-	variableManager->SetValue(name,"damage_",damage_);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
 }
 
 void WorkWeakAttackAction::Load(const std::string& name){
 	WorkEnemyAction::Load(name);
 	VariableManager* variableManager = VariableManager::GetInstance();
-	damage_ = variableManager->GetValue<float>(name,"damage_");
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius_");
+	damage_ = variableManager->GetValue<float>(name,"damage");
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
 }
 
 void WorkStrongAttackAction::Debug(){
 	WorkEnemyAction::Debug();
-	ImGui::DragFloat("collisionTime_",&collisionTime_,0.1f,0.0f);
+	ImGui::DragFloat("collisionTime",&collisionTime_,0.1f,0.0f);
 	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
-	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
+	ImGui::SliderFloat("rotateSpeed(rad/sec)",&rotateSpeed_,0.0f,std::numbers::pi_v<float> *2.0f);
+	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,-std::numbers::pi_v<float> *2.0f,std::numbers::pi_v<float> *2.0f);
 }
 
-void WorkStrongAttackAction::Save(const std::string& name){}
+void WorkStrongAttackAction::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Save(name); 
+	variableManager->SetValue(name,"collisionTime",collisionTime_);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
+	variableManager->SetValue(name,"rotateSpeed",rotateSpeed_);
+	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
+}
 
-void WorkStrongAttackAction::Load(const std::string& name){}
+void WorkStrongAttackAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+
+	collisionTime_ = variableManager->GetValue<float>(name,"collisionTime");
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
+	damage_ = variableManager->GetValue<float>(name,"damage");
+	rotateSpeed_ = variableManager->GetValue<float>(name,"rotateSpeed");
+	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+}
 
 void WorkIdleAction::Debug(){
 	// Animation を 選ぶ

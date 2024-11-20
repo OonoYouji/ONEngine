@@ -91,11 +91,11 @@ public:
 	void Load(const std::string& name)override;
 
 	float collisionTime_;
-
 	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
 
+	float rotateSpeed_;
 	// player への 振り向き方向
 	float rotateY2Player;
 	// player への 振り向き上限
