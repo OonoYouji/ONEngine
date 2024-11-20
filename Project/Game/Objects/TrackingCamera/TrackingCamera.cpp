@@ -128,14 +128,20 @@ void TrackingCamera::LockOnToEnemy() {
 
 
 	/// カメラの回転 keyboard
-	Vec3 cameraRotateValue = {
-		static_cast<float>(Input::PressKey(KeyCode::UpArrow) - Input::PressKey(KeyCode::DownArrow)),
-		static_cast<float>(Input::PressKey(KeyCode::RightArrow) - Input::PressKey(KeyCode::LeftArrow)),
-		0.0f
-	};
+	Vec3 cameraRotateValue = {};
 
-	/// カメラの回転 mouse
-	if(Input::PressMouse(MouseCode::Left)) {
+	if(Input::GamepadConnected(0)) {
+
+		/// カメラの回転 game pad
+		Vec2 leftStick = Input::GetRightStick().Normalize();
+		cameraRotateValue += {
+			1.5f * leftStick.y,
+			1.5f * leftStick.x,
+			0.0f
+		};
+	} else {
+
+		/// カメラの回転 mouse
 		cameraRotateValue += {
 			1.5f * Input::MouseVelocity().Normalize().y,
 			1.5f * Input::MouseVelocity().Normalize().x,
@@ -258,13 +264,20 @@ void TrackingCamera::LockOnToPlayer() {
 
 
 	/// カメラの回転
-	Vec3 cameraRotateValue = {
-		static_cast<float>(Input::PressKey(KeyCode::UpArrow) - Input::PressKey(KeyCode::DownArrow)),
-		static_cast<float>(Input::PressKey(KeyCode::RightArrow) - Input::PressKey(KeyCode::LeftArrow)),
-		0.0f
-	};
+	Vec3 cameraRotateValue = {};
 
-	if(Input::PressMouse(MouseCode::Left)) {
+	if(Input::GamepadConnected(0)) {
+
+		/// カメラの回転 game pad
+		Vec2 leftStick = Input::GetRightStick().Normalize();
+		cameraRotateValue += {
+			1.5f * leftStick.y,
+			1.5f * leftStick.x,
+			0.0f
+		};
+
+	} else {
+
 		cameraRotateValue += {
 			3.0f * Input::MouseVelocity().Normalize().y,
 			3.0f * Input::MouseVelocity().Normalize().x,
