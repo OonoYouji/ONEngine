@@ -1,4 +1,4 @@
-#include "MoveSystem.h"
+#include "MovementSystem.h"
 
 #include "EntityConponentSystem/Component/PositionComponent/PositionComponent.h"
 #include "EntityConponentSystem/Component/VelocityComponent/VelocityComponent.h"
@@ -6,7 +6,7 @@
 #include "EntityConponentSystem/ECSManager/ECSManager.h"
 
 
-void MoveSystem::Update(size_t _entity, ECSManager* _ecsManager) {
+void MovementSystem::Update(size_t _entity, ECSManager* _ecsManager) {
 	PositionComponent* position = _ecsManager->GetComponent<PositionComponent>(_entity);
 	VelocityComponent* velocity = _ecsManager->GetComponent<VelocityComponent>(_entity);
 

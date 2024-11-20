@@ -17,6 +17,7 @@
 #include "EntityConponentSystem/Component/VelocityComponent/VelocityComponent.h"
 
 #include "EntityConponentSystem/ECSManager/ECSManager.h"
+#include "EntityConponentSystem/System/MovementSystem/MovementSystem.h"
 
 /// lib
 #include "Debugger/Assertion.h"
@@ -32,7 +33,7 @@ void Scene_Game::Initialize() {
 	ECSManager* ecsManager = ECSManager::GetInstance();
 	ecsManager->Initialize();
 
-	ecsManager->AddSystem(new MoveSystem());
+	ecsManager->AddSystem(new MovementSystem());
 
 
 	entity_ = ecsManager->GenerateEntity();

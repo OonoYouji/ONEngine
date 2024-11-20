@@ -210,8 +210,9 @@
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\PositionComponent\PositionComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\VelocityComponent\VelocityComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\System\CollisionCheckerSystem\SphereCollisionSystem.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\System\MoveSystem.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\System\MovementSystem\MovementSystem.cpp" />
     <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
     <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp" />
     <ClCompile Include="ONEngine\FrameManager\Time.cpp" />
@@ -313,11 +314,13 @@
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\SphereColliderComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\PositionComponent\PositionComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent\VelocityComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\System\CollisionCheckerSystem\SphereCollisionSystem.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\System\MoveSystem.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\System\MovementSystem\MovementSystem.h" />
     <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
     <ClInclude Include="ONEngine\FrameManager\FrameFixation.h" />
     <ClInclude Include="ONEngine\FrameManager\Time.h" />
