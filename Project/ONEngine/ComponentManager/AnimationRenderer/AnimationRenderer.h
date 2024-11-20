@@ -66,6 +66,10 @@ public:
 		return currentNodeAnimationKey_;
 	}
 
+	Skeleton* GetSkeleton() {
+		return &skeletonMap_.at(currentNodeAnimationKey_);
+	}
+
 private:
 	/// ===================================================
 	/// private : objects
