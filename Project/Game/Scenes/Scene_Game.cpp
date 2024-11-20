@@ -19,6 +19,8 @@
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
+#include "Objects/ModelPreviewObject/ModelPreviewObject.h"
+
 /// lib
 #include "Debugger/Assertion.h"
 
@@ -26,6 +28,11 @@
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
+
+
+	/// モデル確認用のオブジェクト
+	(new ModelPreviewObject("Player_Wait"))->Initialize();
+
 
 	/// object creata
 
