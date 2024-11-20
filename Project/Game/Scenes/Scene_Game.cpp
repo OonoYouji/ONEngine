@@ -31,7 +31,7 @@ void Scene_Game::Initialize() {
 
 
 	/// モデル確認用のオブジェクト
-	(new ModelPreviewObject("Player_Wait"))->Initialize();
+	(new ModelPreviewObject("Player_Walk"))->Initialize();
 	(new ModelPreviewObject("Player_Wait"))->Initialize();
 
 
