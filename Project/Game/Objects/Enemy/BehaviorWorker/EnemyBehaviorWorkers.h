@@ -24,6 +24,7 @@ static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::IDLE,"IDLE"},
 	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
 	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
+	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},
 };
 
 /// <summary>
@@ -111,9 +112,10 @@ class WorkRushAttackAction
 	:public WorkEnemyAction{
 public:
 	WorkRushAttackAction():WorkEnemyAction(ActionTypes::RUSH_ATTACK){
-		damage_          = 0;
-		collisionRadius_ = 0;
-		speed_           = 0;
+		collisionRadius_   = 0.0f;
+		maxRotateY2Player_ = 0.0f;
+		damage_            = 0.0f;
+		speed_             = 0.0f;
 	}
 	~WorkRushAttackAction(){}
 
@@ -123,6 +125,7 @@ public:
 	void Load(const std::string& name)override;
 
 	float collisionRadius_;
+	float maxRotateY2Player_;
 	float damage_;
 	float speed_;
 };

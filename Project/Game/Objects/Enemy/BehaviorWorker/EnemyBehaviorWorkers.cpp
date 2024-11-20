@@ -119,6 +119,7 @@ void WorkRushAttackAction::Debug(){
 	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::DragFloat("speed",&speed_,0.1f,0.0f);
+	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }
 
 void WorkRushAttackAction::Save(const std::string& name){
@@ -127,6 +128,7 @@ void WorkRushAttackAction::Save(const std::string& name){
 	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"speed",speed_);
+	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
 }
 
 void WorkRushAttackAction::Load(const std::string& name){
@@ -134,5 +136,6 @@ void WorkRushAttackAction::Load(const std::string& name){
 	WorkEnemyAction::Load(name);
 	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
 	damage_          = variableManager->GetValue<float>(name,"damage");
-	speed_           = variableManager->GetValue<float>(name,"speed_");
+	speed_           = variableManager->GetValue<float>(name,"speed");
+	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
 }

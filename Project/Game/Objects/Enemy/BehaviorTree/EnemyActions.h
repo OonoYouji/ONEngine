@@ -13,6 +13,7 @@
 class WorkIdleAction;
 class WorkWeakAttackAction;
 class WorkStrongAttackAction;
+class WorkRushAttackAction;
 
 enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
@@ -94,6 +95,26 @@ namespace EnemyBehaviorTree{
 		float currentTime_;
 	};
 
+	class RushAttack
+		:public Action{
+		public:
+		RushAttack(Enemy* enemy,WorkRushAttackAction* worker);
+		~RushAttack()override{}
+
+		Status tick()override;
+	private:
+		Status InitRotate();
+		Status StartupUpdate();
+		Status Attack();
+		Status EndLagUpdate();
+	private:
+		std::function<Status()> currentUpdate_;
+		WorkRushAttackAction* workInBehavior_;
+
+		float beforeRotateY_;
+		float rotateP2E_;
+		float currentTime_;
+	};
 #pragma endregion
 
 	///====================================
