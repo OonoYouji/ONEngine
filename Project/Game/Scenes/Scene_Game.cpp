@@ -17,6 +17,8 @@
 #include "EntityConponentSystem/Component/PositionComponent.h"
 #include "EntityConponentSystem/Component/VelocityComponent.h"
 
+#include "EntityConponentSystem/ECSManager/ECSManager.h"
+
 /// lib
 #include "Debugger/Assertion.h"
 
@@ -28,15 +30,16 @@ void Scene_Game::Initialize() {
 	demoObj_ = new DemoObject();
 	demoObj_->Initialize();
 
-	ComponentManager::GetInstance()->Initialize();
+	ECSManager* ecsManager = ECSManager::GetInstance();
+	ecsManager->Initialize();
 
-	moveSystem_.reset(new MoveSystem);
-	moveSystem_->Initialize();
+	ecsManager->AddSystem(new MoveSystem());
 
 
-	VelocityComponent* velocity = demoEntity_.GetComponent<VelocityComponent>();
-	velocity->velocity_ = Vec3::kFront;
-
+	entity_ = ecsManager->GenerateEntity();
+	ecsManager->AddComponent<PositionComponent>(entity_);
+	VelocityComponent* veloComp = ecsManager->AddComponent<VelocityComponent>(entity_);
+	veloComp->velocity_ = Vec3::kFront * 0.1f;
 }
 
 
@@ -44,10 +47,13 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
-	ComponentManager::GetInstance()->Update();
 
-	PositionComponent* position = demoEntity_.GetComponent<PositionComponent>();
-	demoObj_->SetPosition(position->position_);
+	ECSManager* ecsManager = ECSManager::GetInstance();
 
-	moveSystem_->Update(&demoEntity_);
+	ecsManager->Update();
+
+	PositionComponent* posComp = ecsManager->GetComponent<PositionComponent>(entity_);
+	
+	demoObj_->SetPosition(posComp->position_);
+
 }

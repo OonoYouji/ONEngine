@@ -9,7 +9,6 @@ public:
 	MoveSystem() {}
 	~MoveSystem() {}
 
-	void Initialize() override;
-	void Update(class Entity* _entity)     override;
+	void Update(size_t _entity, class ECSManager* _ecsManager) override;
 
 };

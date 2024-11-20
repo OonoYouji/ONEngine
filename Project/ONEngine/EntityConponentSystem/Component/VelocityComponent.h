@@ -8,13 +8,8 @@
 
 class VelocityComponent : public IComponent {
 public:
-
 	VelocityComponent();
 	~VelocityComponent() {}
 
-	void Initialize() override;
-	void Update()     override;
-
-public:
 	Vec3 velocity_;
 };

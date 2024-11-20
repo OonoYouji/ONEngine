@@ -8,13 +8,8 @@
 
 class PositionComponent : public IComponent {
 public:
-
 	PositionComponent() {}
 	~PositionComponent() {}
 
-	void Initialize() override;
-	void Update()     override;
-
-public:
 	Vec3 position_;
 };

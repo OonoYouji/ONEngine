@@ -6,7 +6,6 @@ public:
 
 	virtual ~ISystem() {}
 
-	virtual void Initialize() = 0;
-	virtual void Update(class Entity* _entity)     = 0;
+	virtual void Update(size_t _entity, class ECSManager* _ecsManager) = 0;
 
 };

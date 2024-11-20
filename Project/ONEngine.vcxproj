@@ -214,11 +214,8 @@
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\PositionComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Entity\DemoEntity.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Entity\Entity.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\MoveSystem.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\System\SystemManager\SystemManager.cpp" />
     <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
     <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp" />
     <ClCompile Include="ONEngine\FrameManager\Time.cpp" />
@@ -327,11 +324,8 @@
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\PositionComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Entity\DemoEntity.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Entity\Entity.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\MoveSystem.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\System\SystemManager\SystemManager.h" />
     <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
     <ClInclude Include="ONEngine\FrameManager\FrameFixation.h" />
     <ClInclude Include="ONEngine\FrameManager\Time.h" />
