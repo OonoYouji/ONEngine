@@ -128,11 +128,6 @@ void Player::Debug() {
 		currentHP_ = maxHP_;
 	}
 
-	if(ImGui::Button("change model")) {
-		SetAnimationModel(
-			"KariPlayer_WeakAttack2"
-		);
-	}
 
 
 	if(ImGui::TreeNode("RootBehavior")) {
@@ -155,7 +150,7 @@ void Player::Debug() {
 
 	ImGui::Spacing();
 
-	if(ImGui::TreeNode("WeakAttack")) {
+	/*if(ImGui::TreeNode("WeakAttack")) {
 		if(ImGui::TreeNode("Combo_1")) {
 			ImGui::DragFloat("StartUpTime_Combo_1", &workWeakAttackBehavior_[0].motionTimes_.startupTime_, 0.1f);
 			ImGui::DragFloat("ActiveTime_Combo_1", &workWeakAttackBehavior_[0].motionTimes_.activeTime_, 0.1f);
@@ -180,10 +175,34 @@ void Player::Debug() {
 		}
 
 		ImGui::TreePop();
+	}*/
+	
+
+
+
+	VariableManager* vm = VariableManager::GetInstance();
+
+	if(ImGui::TreeNode("WeakAttack")) {
+
+		/// weak attack
+		for(size_t i = 0; i < 3; ++i) {
+			std::string nodeLabel = "WorkWeakAttackBehavior" + std::to_string(i + 1);
+			if(ImGui::TreeNode(nodeLabel.c_str())) {
+
+				if(ImGui::Button("save file")) {
+					vm->SaveSpecificGroupsToJson("./Resources/Parameters/Objects", nodeLabel);
+				}
+
+				ImGui::Spacing();
+				vm->DebuggingSpecificGroup(nodeLabel);
+				ImGui::TreePop();
+			}
+		}
+		ImGui::TreePop();
 	}
 
+	/// strong attack behavior
 	if(ImGui::TreeNode(strongAttackBehavior_.name_.c_str())) {
-		VariableManager* vm = VariableManager::GetInstance();
 
 		if(ImGui::Button("save file")) {
 			vm->SaveSpecificGroupsToJson("./Resources/Parameters/Objects", strongAttackBehavior_.name_);
@@ -213,6 +232,18 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "workEndLagTime",  workAvoidanceBehavior_.motionTimes_.endLagTime_);
 
 
+	for(size_t i = 0; i < 3; ++i){	/// workWeakAttackBehavior_ 値のio
+
+		const std::string& name = "WorkWeakAttackBehavior" + std::to_string(i + 1);
+
+		vm->AddValue(name, "startupTime",  workWeakAttackBehavior_[i].motionTimes_.startupTime_);
+		vm->AddValue(name, "activeTime",   workWeakAttackBehavior_[i].motionTimes_.activeTime_);
+		vm->AddValue(name, "endLagTime",   workWeakAttackBehavior_[i].motionTimes_.endLagTime_);
+		vm->AddValue(name, "damageFactor", workWeakAttackBehavior_[i].damageFactor_);
+	}
+
+
+
 	{	/// strong behavior 値のio
 		const std::string& groupName = strongAttackBehavior_.name_;
 
@@ -228,6 +259,11 @@ void Player::LoadVariables() {
 	const std::string& groupName = GetTag();
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
+
+	for(size_t i = 0; i < 3; ++i) {	/// workWeakAttackBehavior_ 値のio
+		const std::string& name = "WorkWeakAttackBehavior" + std::to_string(i + 1);
+		vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", name);
+	}
 
 	{	/// strong behavior 値のio
 		const std::string& groupName = strongAttackBehavior_.name_;
@@ -248,6 +284,17 @@ void Player::ApplyVariables() {
 	workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(groupName, "workStartupTime");
 	workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(groupName, "workActiveTime");
 	workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(groupName, "workEndLagTime");
+
+
+	for(size_t i = 0; i < 3; ++i) {	/// workWeakAttackBehavior_ 値のio
+
+		const std::string& name = "WorkWeakAttackBehavior" + std::to_string(i + 1);
+
+		workWeakAttackBehavior_[i].motionTimes_.startupTime_ = vm->GetValue<float>(name, "startupTime");
+		workWeakAttackBehavior_[i].motionTimes_.activeTime_  = vm->GetValue<float>(name, "activeTime");
+		workWeakAttackBehavior_[i].motionTimes_.endLagTime_  = vm->GetValue<float>(name, "endLagTime");
+		workWeakAttackBehavior_[i].damageFactor_             = vm->GetValue<float>(name, "damageFactor");
+	}
 
 
 	{	/// strong behavior 値のio
