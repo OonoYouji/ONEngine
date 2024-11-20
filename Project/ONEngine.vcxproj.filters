@@ -132,9 +132,6 @@
     <ClCompile Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\MoveSystem.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\ComponentArray\ComponentArray.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\ComponentArray\IComponentArray.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\ComponentManager\ComponentManager.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +245,6 @@
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\MoveSystem.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ComponentArray\ComponentArray.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ComponentArray\IComponentArray.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ComponentManager\ComponentManager.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.h" />
   </ItemGroup>
   <ItemGroup>
