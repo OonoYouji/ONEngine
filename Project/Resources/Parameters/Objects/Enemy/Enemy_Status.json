@@ -1,9 +1,9 @@
 {
     "Enemy_Status": {
-        "HP": 16.399999618530273,
+        "HP": 20.799999237060547,
         "LONG_RANGE": 0.0,
         "MIDDLE_RANGE": 0.0,
         "SHORT_RANGE": 0.0,
-        "speed": 0.0
+        "speed": 3.5999999046325684
     }
 }

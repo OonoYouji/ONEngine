@@ -38,7 +38,10 @@ struct ComboAttacks{
 	std::list<ComboAttack> comboAttacks_;
 };
 
-static std::string enemyJsonDirectory = "./Resources/Parameters/Objects";
+static std::string enemyJsonDirectory = "./Resources/Parameters/Objects/Enemy";
+static std::string enemyComboDirectory = enemyJsonDirectory + "/Combo";
+static std::string enemyActionDirectory = enemyJsonDirectory + "/Action";
+
 class Enemy :
 	public BaseGameObject{
 public:

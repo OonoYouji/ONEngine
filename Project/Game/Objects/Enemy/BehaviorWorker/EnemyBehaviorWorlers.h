@@ -56,8 +56,6 @@ public:
 	~WorkIdleAction(){}
 
 	void Debug()override;
-
-	virtual void Save(const std::string& name);
 };
 
 #pragma endregion

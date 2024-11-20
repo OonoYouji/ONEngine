@@ -58,7 +58,6 @@ void WorkWeakAttackAction::Save(const std::string& name){
 	WorkEnemyAction::Save(name);
 	variableManager->SetValue(name,"collisionRadius_",collisionRadius_);
 	variableManager->SetValue(name,"damage_",damage_);
-	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,name);
 }
 
 void WorkWeakAttackAction::Load(const std::string& name){
@@ -95,10 +94,4 @@ void WorkIdleAction::Debug(){
 		ImGui::EndCombo();
 	}
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
-}
-
-void WorkIdleAction::Save(const std::string& name){
-	VariableManager* variableManager = VariableManager::GetInstance();
-	WorkEnemyAction::Save(name);
-	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,name);
 }

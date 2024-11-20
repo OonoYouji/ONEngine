@@ -36,9 +36,9 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	LoadStatus();
+	/*LoadStatus();
 	LoadAllAction();
-	LoadCombos();
+	LoadCombos();*/
 
 }
 
@@ -326,7 +326,7 @@ void Enemy::SaveCombos(){
 		++index;
 	}
 
-	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Combos");
+	variableManager->SaveSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
 }
 
 void Enemy::SaveAllAction(){
@@ -337,10 +337,13 @@ void Enemy::SaveAllAction(){
 	int32_t index = 0;
 	for(auto& [name,worker] : workEnemyActionVariables_){
 		variableManager->SetValue("Enemy_Actions","Index_" + std::to_string(index),name);
+
 		worker->Save(name);
+
+		variableManager->SaveSpecificGroupsToJson(enemyActionDirectory,name);
 		++index;
 	}
-	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Actions");
+	variableManager->SaveSpecificGroupsToJson(enemyActionDirectory,"Enemy_Actions");
 }
 
 void Enemy::SaveCombo(const std::string& comboName){
@@ -354,7 +357,7 @@ void Enemy::SaveCombo(const std::string& comboName){
 		++index;
 	}
 
-	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,comboName);
+	variableManager->SaveSpecificGroupsToJson(enemyComboDirectory,comboName);
 }
 
 void Enemy::LoadStatus(){
@@ -370,12 +373,12 @@ void Enemy::LoadStatus(){
 void Enemy::LoadCombos(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 
-	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Combos");
+	variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
 	int32_t combosSize = variableManager->GetValue<int>("Enemy_Combos","CombosSize");
 
 	for(size_t i = 0; i < combosSize; i++){
 		std::string comboName = variableManager->GetValue<std::string>("Enemy_Combos","Index_" + std::to_string(i));
-		variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,comboName);
+		variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,comboName);
 		editComboVariables_[comboName] = {};
 		editComboVariables_[comboName].rangeType_ = static_cast<EnemyAttackRangeType>(variableManager->GetValue<int>(comboName,"RangeType"));
 		LoadCombo(comboName,variableManager->GetValue<int>(comboName,"ComboSize"));
@@ -385,11 +388,11 @@ void Enemy::LoadCombos(){
 void Enemy::LoadAllAction(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 
-	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Actions");
+	variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,"Enemy_Actions");
 	int32_t actionSize =  variableManager->GetValue<int>("Enemy_Actions","ActionSize");
 	for(size_t i = 0; i < actionSize; ++i){
 		std::string actionName = variableManager->GetValue<std::string>("Enemy_Actions","Index_" + std::to_string(i));
-		variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,actionName);
+		variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,actionName);
 		workEnemyActionVariables_[actionName] = std::move(CreateWorker(static_cast<ActionTypes>(variableManager->GetValue<int>(actionName,"Type"))));
 	}
 }
