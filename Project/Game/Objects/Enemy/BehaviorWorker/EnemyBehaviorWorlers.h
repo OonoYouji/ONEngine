@@ -13,7 +13,7 @@ enum class ActionTypes;
 /// <summary>
 /// 行動の一覧
 /// </summary>
-enum class ActionTypes{
+enum class ActionTypes : int32_t{
 	WEAK_ATTACK,
 	STRONG_ATTACK,
 	IDLE
@@ -35,6 +35,9 @@ public:
 	virtual ~WorkEnemyAction(){}
 
 	virtual void Debug();
+
+	virtual void Save(const std::string& name);
+	virtual void Load(const std::string& name);
 public:
 	ActionTypes type_;
 	std::string animationName_;
@@ -68,6 +71,9 @@ public:
 
 	void Debug()override;
 
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
 	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
@@ -80,6 +86,9 @@ public:
 	~WorkStrongAttackAction(){}
 
 	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
 
 	float collisionTime_;
 

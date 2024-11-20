@@ -12,7 +12,7 @@
 /// </summary>
 class AnimationRenderer;
 enum class ActionTypes;
-enum class EnemyAttackRangeType : int16_t;
+enum class EnemyAttackRangeType : int32_t;
 namespace EnemyBehaviorTree{
 	class Action;
 	class AttackAction;
@@ -38,6 +38,10 @@ struct ComboAttacks{
 	std::list<ComboAttack> comboAttacks_;
 };
 
+static std::string enemyJsonDirectory = "./Resources/Parameters/Objects/Enemy";
+static std::string enemyComboDirectory = enemyJsonDirectory + "/Combo";
+static std::string enemyActionDirectory = enemyJsonDirectory + "/Action";
+
 class Enemy :
 	public BaseGameObject{
 public:
@@ -47,6 +51,17 @@ public:
 	void Update()override;
 
 	void Debug()override;
+
+	void SaveStatus();
+	void SaveCombos();
+	void SaveAllAction();
+	void SaveCombo(const std::string& comboName);
+
+	void LoadStatus();
+	void LoadCombos();
+	void LoadAllAction();
+	void LoadCombo(const std::string& comboName,int32_t size);
+
 
 	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
 	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
@@ -58,7 +73,7 @@ private:
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
 
-	const float maxHp_;
+	float maxHp_;
 	float hp_;
 
 	float speed_;
@@ -73,14 +88,13 @@ private:
 	std::unordered_map<EnemyAttackRangeType,std::deque<std::string>> comboByRangeType_;
 	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
-#ifdef _DEBUG
 	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
+#ifdef _DEBUG
 	bool isCreateWindowPop_;
 
 	// 編集されているもの 
-	std::string* currentEditActionName_ = nullptr;
-	std::string* currentEditComboName_ = nullptr;
-
+	std::string currentEditActionName_;
+	std::string currentEditComboName_;
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
@@ -89,7 +103,6 @@ private:
 
 public:
 	void SetAnimationRender(const std::string& filePath);
-	void TransitionState(IEnemyState* next);
 
 	void Debug_SetCurrentAction(const std::string& action){ currentAction_ = action; }
 

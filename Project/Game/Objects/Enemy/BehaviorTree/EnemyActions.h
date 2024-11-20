@@ -14,7 +14,7 @@ class WorkIdleAction;
 class WorkWeakAttackAction;
 class WorkStrongAttackAction;
 
-enum class EnemyAttackRangeType : int16_t{
+enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
 	MIDDLE_RANGE,
 	LONG_RANGE

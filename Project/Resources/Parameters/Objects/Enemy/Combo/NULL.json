@@ -1,0 +1,14 @@
+{
+    "NULL": {
+        "ComboSize": 1,
+        "Index_0": "NULL",
+        "RangeType": 1,
+        "Type": 0,
+        "activeTime": 0.0,
+        "animationName": "./Resources/Models\\AnimatedCube/AnimatedCube",
+        "collisionRadius_": 0.0,
+        "damage_": 0.0,
+        "endLagTime": 0.0,
+        "startupTime": 0.0
+    }
+}
