@@ -2,11 +2,7 @@
 
 #include "Math/Vector3.h"
 
-/// base class
-#include "IComponent/IComponent.h"
-
-
-class VelocityComponent : public IComponent {
+class VelocityComponent {
 public:
 	VelocityComponent();
 	~VelocityComponent() {}

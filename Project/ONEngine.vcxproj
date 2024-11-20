@@ -207,9 +207,8 @@
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
     <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
     <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\IComponent\IComponent.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\PositionComponent.cpp" />
-    <ClCompile Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\Component\PositionComponent\PositionComponent.cpp" />
+    <ClCompile Include="ONEngine\EntityConponentSystem\Component\VelocityComponent\VelocityComponent.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.cpp" />
     <ClCompile Include="ONEngine\EntityConponentSystem\System\MoveSystem.cpp" />
@@ -314,9 +313,8 @@
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\IComponent\IComponent.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\PositionComponent.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\Component\PositionComponent\PositionComponent.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent\VelocityComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\ECSManager\ECSManager.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\ISystem\ISystem.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\MoveSystem.h" />

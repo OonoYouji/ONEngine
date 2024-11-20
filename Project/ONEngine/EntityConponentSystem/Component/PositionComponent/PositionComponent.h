@@ -2,11 +2,8 @@
 
 #include "Math/Vector3.h"
 
-/// base class
-#include "IComponent/IComponent.h"
 
-
-class PositionComponent : public IComponent {
+class PositionComponent {
 public:
 	PositionComponent() {}
 	~PositionComponent() {}
