@@ -221,6 +221,8 @@ void AnimationRenderer::LoadAnimation(const std::string& filePath) {
 
 void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	
+	SetModel(_filePath);
+
 	/// すでに読み込み済みかチェック
 	/// なければよみこむ
 	auto map = multiNodeAnimationArray_.find(_filePath);
@@ -231,7 +233,6 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 		skinClusterMap_[_filePath] = CreateSkinCluster(skeletonMap_[_filePath], pModel_);
 	}
 
-	SetModel(_filePath);
 
 	currentNodeAnimationKey_ = _filePath;
 	animationTime_           = 0.0f;

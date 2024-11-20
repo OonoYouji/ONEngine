@@ -23,7 +23,8 @@ private:
 	/// ===================================================
 
 
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class AnimationRenderer* animationRenderer_ = nullptr;
 	std::string modelFilePath_;
 
+	std::list<std::pair<std::string, std::string>> searchFiles_;
 };
