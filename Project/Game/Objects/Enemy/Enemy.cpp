@@ -436,6 +436,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::IDLE:
 			result->addChild(std::make_unique<EnemyBehaviorTree::IdleAction>(this,reinterpret_cast<WorkIdleAction*>(worker)));
 			break;
+		case ActionTypes::RUSH_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::RushAttack>(this,reinterpret_cast<WorkRushAttackAction*>(worker)));
+			break;
 		default:
 			// 該当 する Typeが なければ reset
 			result.reset();
@@ -456,6 +459,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 		case ActionTypes::IDLE:
 			result = std::make_unique<WorkIdleAction>();
 			break;
+		case ActionTypes::RUSH_ATTACK:
+			result = std::make_unique<WorkRushAttackAction>();
+				break;
 		default:
 			break;
 	}

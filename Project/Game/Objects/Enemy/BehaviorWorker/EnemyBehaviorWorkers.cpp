@@ -113,3 +113,29 @@ void WorkIdleAction::Debug(){
 	}
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
 }
+
+void WorkRushAttackAction::Debug(){
+	WorkEnemyAction::Debug();
+	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
+	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
+	ImGui::DragFloat("speed",&speed_,0.1f,0.0f);
+	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
+}
+
+void WorkRushAttackAction::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Save(name);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
+	variableManager->SetValue(name,"speed",speed_);
+	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
+}
+
+void WorkRushAttackAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
+	damage_          = variableManager->GetValue<float>(name,"damage");
+	speed_           = variableManager->GetValue<float>(name,"speed");
+	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+}
