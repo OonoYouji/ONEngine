@@ -7,10 +7,10 @@
 #include <stdint.h>
 
 class PlayerWeakAttack :
-	public IPlayerBehavior{
+	public IPlayerBehavior {
 public:
-	PlayerWeakAttack(Player* player,int32_t comboNum);
-	~PlayerWeakAttack(){}
+	PlayerWeakAttack(Player* player, int32_t comboNum);
+	~PlayerWeakAttack() {}
 
 	void Update()override;
 private:

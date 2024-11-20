@@ -1,6 +1,7 @@
 #include "../Player.h"
 #include "PlayerRootBehavior.h"
 
+#include "PlayerStrongAttack.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerWeakAttack.h"
 
@@ -65,7 +66,7 @@ void PlayerRootBehavior::Update() {
 		if(velocity != Vec3(0, 0, 0)) {
 			host_->SetAnimationModel("KariPlayer_Walk");
 		} else {
-			host_->SetAnimationModel("KariPlayer_Wait");
+			host_->SetAnimationModel("Player_Wait");
 		}
 
 	}
@@ -80,6 +81,9 @@ void PlayerRootBehavior::InputNextBehavior() {
 		return;
 	} else if(Input::ReleaseKey(KeyCode::J)) {
 		host_->TransitionBehavior(std::make_unique<PlayerWeakAttack>(host_, 0));
+		return;
+	} else if(Input::TriggerKey(KeyCode::K)) {
+		host_->TransitionBehavior(std::make_unique<PlayerStrongAttack>(host_));
 		return;
 	}
 }

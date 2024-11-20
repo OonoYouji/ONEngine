@@ -45,6 +45,15 @@ public:
 	};
 
 
+	/// <summary>
+	/// StrongAttackで使用する変数
+	/// </summary>
+	struct StrongAttackBehavior {
+		const std::string name_ = "StrongAttackBehavior";
+		float startLagTime_;
+		float endLagTime_;
+	};
+
 public:
 
 	Player(class GameCamera* _mainCamera);
@@ -71,8 +80,6 @@ private:
 	float currentHP_;
 	float maxHP_;
 
-	float power_;
-
 	// boss に与える ダメージ (攻撃していないときは ずっと0 になるようにする)
 	float damage_;
 
@@ -93,7 +100,7 @@ private:
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
 	std::array<WorkWeakAttackBehavior, 3> workWeakAttackBehavior_;
-
+	StrongAttackBehavior                  strongAttackBehavior_;
 
 	/// ---------------------------------------------------
 	/// other class 
@@ -114,8 +121,8 @@ public:
 	float GetCurrentHP() const { return currentHP_; }
 	float GetMaxHP()     const { return maxHP_; }
 
-	float GetPower()const { return power_; }
-	void SetDamage(float damageFactor) { damage_ = power_ * damageFactor; }
+	float GetDamage() const { return damage_; }
+	void SetDamage(float _damage) { damage_ = _damage; }
 
 	void SetIsInvisible(bool invisible) { isInvisible_ = invisible; }
 	bool GetIsInvisible()const { return isInvisible_; }

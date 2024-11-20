@@ -61,15 +61,17 @@ void CollisionManager::Update() {
 
 	for(auto& objA : gameObjects_) {
 
-		if(!objA->isActive) {
-			continue;
-		}
-
 		/// colliderがあるかチェック
 		BaseCollider* colliderA = objA->GetComponent<BaseCollider>();
 		if(!colliderA) {
 			continue;
 		}
+
+		/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
+		if(!objA->isActive || !colliderA->isActive) {
+			continue;
+		}
+
 
 		for(auto& objB : gameObjects_) {
 
@@ -78,16 +80,19 @@ void CollisionManager::Update() {
 				continue;
 			}
 
-
-			if(!objB->isActive) {
-				continue;
-			}
-
 			/// colliderがあるかチェック
 			BaseCollider* colliderB = objB->GetComponent<BaseCollider>();
 			if(!colliderB) {
 				continue;
 			}
+
+			/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
+			if(!objB->isActive || !colliderB->isActive) {
+				continue;
+			}
+
+
+
 
 			/// 違うレイヤーなら除外
 			if(objA->drawLayerId != objB->drawLayerId) {
