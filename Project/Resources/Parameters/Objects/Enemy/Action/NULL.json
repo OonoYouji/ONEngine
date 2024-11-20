@@ -1,11 +1,14 @@
 {
     "NULL": {
-        "Type": 0,
-        "activeTime": 0.0,
-        "animationName": "./Resources/Models\\AnimatedCube/AnimatedCube",
-        "collisionRadius_": 0.0,
-        "damage_": 0.0,
+        "Type": 2,
+        "activeTime": 2.0,
+        "animationName": "Kari_Boss_StrongAttack",
+        "collisionRadius": 0.0,
+        "collisionStartTime": 0.0,
+        "collisionTime": 0.0,
+        "damage": 0.0,
         "endLagTime": 0.0,
-        "startupTime": 0.0
+        "maxRotateY2Player": 2.0,
+        "startupTime": 2.0
     }
 }

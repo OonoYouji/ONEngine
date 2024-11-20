@@ -14,15 +14,15 @@ enum class ActionTypes;
 /// 行動の一覧
 /// </summary>
 enum class ActionTypes : int32_t{
+	IDLE,
 	WEAK_ATTACK,
 	STRONG_ATTACK,
-	IDLE
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
+	{ActionTypes::IDLE,"IDLE"},
 	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
 	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
-	{ActionTypes::IDLE,"IDLE"}
 };
 
 /// <summary>
@@ -82,7 +82,13 @@ public:
 class WorkStrongAttackAction
 	:public WorkEnemyAction{
 public:
-	WorkStrongAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK){}
+	WorkStrongAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
+		collisionTime_      = 0;
+		collisionStartTime_ = 0;
+		collisionRadius_    = 0;
+		damage_             = 0;
+		maxRotateY2Player_  = 0;
+	}
 	~WorkStrongAttackAction(){}
 
 	void Debug()override;
@@ -91,13 +97,11 @@ public:
 	void Load(const std::string& name)override;
 
 	float collisionTime_;
-
+	float collisionStartTime_;
 	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
 
-	// player への 振り向き方向
-	float rotateY2Player;
 	// player への 振り向き上限
 	float maxRotateY2Player_;
 };

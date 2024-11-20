@@ -81,12 +81,16 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		Status InitRotate();
 		Status StartupUpdate();
 		Status Attack();
 		Status EndLagUpdate();
 	private:
 		std::function<Status()> currentUpdate_;
 		WorkStrongAttackAction* workInBehavior_;
+
+		float beforeRotateY_;
+		float rotateP2E_;
 		float currentTime_;
 	};
 

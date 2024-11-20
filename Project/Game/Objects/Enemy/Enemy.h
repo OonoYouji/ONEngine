@@ -22,6 +22,7 @@ namespace EnemyBehaviorTree{
 class IEnemyState;
 class Player;
 class BoxCollider;
+class SphereCollider;
 class WorkEnemyAction;
 
 /// <summary>
@@ -36,6 +37,14 @@ struct ComboAttack{
 struct ComboAttacks{
 	EnemyAttackRangeType rangeType_;
 	std::list<ComboAttack> comboAttacks_;
+};
+
+/// <summary>
+/// モデルに対して Colliderを作るので，Collider 用の Model と Collider を 一緒に 管理する
+/// </summary>
+struct EnemyCollider{
+	Model* model_;
+	SphereCollider* sphereCollider_;
 };
 
 static std::string enemyJsonDirectory = "./Resources/Parameters/Objects/Enemy";
@@ -62,7 +71,6 @@ public:
 	void LoadAllAction();
 	void LoadCombo(const std::string& comboName,int32_t size);
 
-
 	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
 	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
 
@@ -72,6 +80,8 @@ private:
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
+	// 本体のコライダー これに当たるとダメージを受ける
+	SphereCollider* enemyCollider_;
 
 	float maxHp_;
 	float hp_;
@@ -79,6 +89,11 @@ private:
 	float speed_;
 
 	std::string currentAction_;
+
+	/// <summary>
+	/// 攻撃を与えるCollider
+	/// </summary>
+	EnemyCollider attackCollider_;
 
 	// 調整項目保存用
 	using AttackActionName = std::string;
@@ -89,9 +104,10 @@ private:
 	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
 	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
+
 #ifdef _DEBUG
 	bool isCreateWindowPop_;
-
+	bool isComboCreateWindowPop_;
 	// 編集されているもの 
 	std::string currentEditActionName_;
 	std::string currentEditComboName_;
@@ -117,5 +133,5 @@ public:
 	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
 	const std::deque<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
 
-	float getDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
+	float GetDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
 };

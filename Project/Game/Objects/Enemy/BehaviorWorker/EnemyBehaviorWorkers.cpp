@@ -1,4 +1,4 @@
-#include "EnemyBehaviorWorlers.h"
+#include "EnemyBehaviorWorkers.h"
 
 #include <numbers>
 
@@ -14,9 +14,9 @@ void WorkEnemyAction::Debug(){
 	// Animation を 選ぶ
 	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
 		for(auto& file : animationList){
-			bool isSelected = (animationName_ == file.first + "/" + file.second);
-			if(ImGui::Selectable((file.first + "/" + file.second).c_str(),isSelected)){
-				animationName_ = file.first + "/" + file.second;
+			bool isSelected = (animationName_ == file.second);
+			if(ImGui::Selectable((file.second).c_str(),isSelected)){
+				animationName_ = file.second;
 			}
 			if(isSelected){
 				ImGui::SetItemDefaultFocus();
@@ -56,36 +56,54 @@ void WorkWeakAttackAction::Debug(){
 void WorkWeakAttackAction::Save(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Save(name);
-	variableManager->SetValue(name,"collisionRadius_",collisionRadius_);
-	variableManager->SetValue(name,"damage_",damage_);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
 }
 
 void WorkWeakAttackAction::Load(const std::string& name){
 	WorkEnemyAction::Load(name);
 	VariableManager* variableManager = VariableManager::GetInstance();
-	damage_ = variableManager->GetValue<float>(name,"damage_");
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius_");
+	damage_ = variableManager->GetValue<float>(name,"damage");
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
 }
 
 void WorkStrongAttackAction::Debug(){
 	WorkEnemyAction::Debug();
-	ImGui::DragFloat("collisionTime_",&collisionTime_,0.1f,0.0f);
+	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
+	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
 	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }
 
-void WorkStrongAttackAction::Save(const std::string& name){}
+void WorkStrongAttackAction::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Save(name);
+	variableManager->SetValue(name,"collisionStartTime",collisionStartTime_);
+	variableManager->SetValue(name,"collisionTime",collisionTime_);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
+	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
+}
 
-void WorkStrongAttackAction::Load(const std::string& name){}
+void WorkStrongAttackAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+
+	collisionStartTime_ = variableManager->GetValue<float>(name,"collisionStartTime");
+	collisionTime_ = variableManager->GetValue<float>(name,"collisionTime");
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
+	damage_ = variableManager->GetValue<float>(name,"damage");
+	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+}
 
 void WorkIdleAction::Debug(){
 	// Animation を 選ぶ
 	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
 		for(auto& file : animationList){
-			bool isSelected = (animationName_ == file.first + "/" + file.second);
-			if(ImGui::Selectable((file.first + "/" + file.second).c_str(),isSelected)){
-				animationName_ = file.first + "/" + file.second;
+			bool isSelected = (animationName_ == file.first);
+			if(ImGui::Selectable((file.first).c_str(),isSelected)){
+				animationName_ = file.first;
 			}
 			if(isSelected){
 				ImGui::SetItemDefaultFocus();
