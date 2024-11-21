@@ -55,7 +55,6 @@ void PlayerWeakAttack::Update() {
 	/// 次のbehaviorに行くための処理
 	if(isDush) {
 		nextBehavior_ = static_cast<int>(NextBehavior::avoidance);
-		//nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
 		return;
 	} else if(isNextCombo) {
 		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
@@ -64,7 +63,6 @@ void PlayerWeakAttack::Update() {
 		}
 
 		nextBehavior_ = static_cast<int>(NextBehavior::combo);
-		//nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
 		return;
 	}
 }

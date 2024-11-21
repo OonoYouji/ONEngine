@@ -6,10 +6,20 @@
 #include "Math/Vector3.h"
 #include "Math/Easing.h"
 
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	IPlayerBehavior(_host),
 	workInBehavior_(host_->GetWorkAvoidanceBehavior()){
 	currentTime_ = 0.0f;
+
+
+	host_->SetIsActiveWeapon(false);
+	host_->SetAnimationModel("Player_Avoidance");
+	host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
+	host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
+
 
 	currentUpdate_ = [this](){StartupUpdate(); };
 }
