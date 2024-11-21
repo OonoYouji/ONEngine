@@ -19,11 +19,18 @@ private:
 	void WeakAttack();
 	void EndLagUpdate();
 private:
-	std::unique_ptr<IPlayerBehavior> nextBehavior_;
+	//std::unique_ptr<IPlayerBehavior> nextBehavior_;
 	int32_t comboNum_;
 
 	float currentTime_;
 
 	Player::WorkWeakAttackBehavior workInBehavior_;
 	Vector2 direction_;
+
+	enum class NextBehavior {
+		root, avoidance, combo,
+	};
+
+	int nextBehavior_;
+
 };
