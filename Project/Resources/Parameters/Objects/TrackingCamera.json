@@ -1,5 +1,10 @@
 {
     "TrackingCamera": {
+        "cameraHeightOffset": [
+            0.0,
+            4.199999809265137,
+            0.0
+        ],
         "cameraMoveSpeedVector": [
             0.05000000074505806,
             0.02500000037252903,
