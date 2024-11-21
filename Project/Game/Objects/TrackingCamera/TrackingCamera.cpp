@@ -211,6 +211,8 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// positionの更新、プレイヤーと敵の間に配置
 	cameraOffsetLenghtScaleFactor_ = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
+	cameraOffsetLenghtScaleFactor_ = std::clamp(cameraOffsetLenghtScaleFactor_, lenScaleFactorMin_, lenScaleFactorMax_);
+
 	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
@@ -441,6 +443,8 @@ void TrackingCamera::AddVariables() {
 	vm->AddValue(groupName, "toTargetLerpMaxTime", toTargetLerpMaxTime_);
 	vm->AddValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
 	vm->AddValue(groupName, "cameraOffsetLenght", cameraOffsetLenght_);
+	vm->AddValue(groupName, "lenScaleFactorMin", lenScaleFactorMin_);
+	vm->AddValue(groupName, "lenScaleFactorMax", lenScaleFactorMax_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -457,6 +461,8 @@ void TrackingCamera::ApplyVariables() {
 	toTargetLerpMaxTime_     = vm->GetValue<float>(groupName, "toTargetLerpMaxTime");
 	cameraOffsetDirection_   = vm->GetValue<Vec3>(groupName,  "cameraOffsetDirection");
 	cameraOffsetLenght_      = vm->GetValue<float>(groupName, "cameraOffsetLenght");
+	lenScaleFactorMin_       = vm->GetValue<float>(groupName, "lenScaleFactorMin");
+	lenScaleFactorMax_       = vm->GetValue<float>(groupName, "lenScaleFactorMax");
 
 	cameraOffsetDirection_ = cameraOffsetDirection_.Normalize();
 	vm->SetValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
