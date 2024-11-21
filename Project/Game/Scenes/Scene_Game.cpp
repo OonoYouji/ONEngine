@@ -4,7 +4,8 @@
 #include <numbers>
 
 /// engine
-#include <ImGuiManager/ImGuiManager.h>
+#include "Input/Input.h"
+#include "Scenes/Manager/SceneManager.h"
 
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
@@ -80,5 +81,7 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
-
+	if(Input::TriggerKey(KeyCode::Escape)) {
+		SceneManager::GetInstance()->SetNextScene(TITLE);
+	}
 }
