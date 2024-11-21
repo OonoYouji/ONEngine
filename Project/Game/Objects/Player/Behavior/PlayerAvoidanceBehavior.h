@@ -25,4 +25,5 @@ private:
 	Vector3 beforePos_;
 	Vector3 afterPos_;
 	const Player::WorkAvoidanceBehavior& workInBehavior_;
+	const Player::WorkRootBehavior& workRootBehavior_;
 };

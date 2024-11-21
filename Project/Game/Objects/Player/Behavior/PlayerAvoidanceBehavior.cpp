@@ -5,21 +5,17 @@
 #include "FrameManager/Time.h"
 #include "Math/Vector3.h"
 #include "Math/Easing.h"
+#include "Math/LerpShortAngle.h"
 
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
 
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	IPlayerBehavior(_host),
-	workInBehavior_(host_->GetWorkAvoidanceBehavior()){
+	workInBehavior_(host_->GetWorkAvoidanceBehavior()),
+	workRootBehavior_(host_->GetWorkRootBehavior()) {
+
 	currentTime_ = 0.0f;
-
-
-	host_->SetIsActiveWeapon(false);
-	host_->SetAnimationModel("Player_Avoidance");
-	host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
-	host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
-
 
 	currentUpdate_ = [this](){StartupUpdate(); };
 }
@@ -30,6 +26,15 @@ void PlayerAvoidanceBehavior::Update(){
 }
 
 void PlayerAvoidanceBehavior::StartupUpdate(){
+
+	{	// Rotate Update
+		Vector3 rotate = host_->GetRotate();
+		const Vec2& lastDir = host_->GetLastDirection();
+		rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDir.x, lastDir.y), workRootBehavior_.rotateLerpSensitivity_);
+		host_->SetRotate(rotate);
+	}
+
+
 	if(currentTime_ >= workInBehavior_.motionTimes_.startupTime_){
 		currentTime_ = 0.0f;
 
@@ -40,6 +45,12 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 
 		// 無敵状態に 
 		host_->SetIsInvisible(true);
+
+		/// アニメーションを変更する
+		host_->SetIsActiveWeapon(false);
+		host_->SetAnimationModel("Player_Avoidance");
+		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
+		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
 		currentUpdate_ = [this](){Avoidance(); };
 		Avoidance();
