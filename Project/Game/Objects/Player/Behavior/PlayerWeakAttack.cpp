@@ -49,7 +49,7 @@ void PlayerWeakAttack::Update() {
 
 	/// 次のコンボのための入力
 	isNextCombo |= Input::TriggerKey(KeyCode::J);
-	isNextCombo |= Input::TriggerPadRT();
+	isNextCombo |= Input::TriggerPadButton(PadCode::B);
 
 
 	/// 次のbehaviorに行くための処理

@@ -85,12 +85,13 @@ void PlayerRootBehavior::InputNextBehavior() {
 	bool isDush         = false;
 
 	/// 回避のための入力
-	isDush         |= Input::TriggerKey(KeyCode::LShift);
-	isDush         |= Input::TriggerPadLT();
+	isDush         |= Input::TriggerKey(KeyCode::Space);
+	isDush         |= Input::TriggerPadRT();
+	isDush         |= Input::TriggerPadButton(PadCode::RightShoulder);
 
 	/// 次の弱攻撃のための入力
 	isWeakAttack   |= Input::TriggerKey(KeyCode::J);
-	isWeakAttack   |= Input::TriggerPadRT();
+	isWeakAttack   |= Input::TriggerPadButton(PadCode::B);
 
 	/// 次の強攻撃のための入力
 	isStrongAttack |= Input::TriggerKey(KeyCode::K);

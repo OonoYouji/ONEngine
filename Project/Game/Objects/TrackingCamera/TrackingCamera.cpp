@@ -366,9 +366,9 @@ void TrackingCamera::LockOnToPlayer() {
 
 void TrackingCamera::LockOnUpdate() {
 	bool isLockOnInput = false;
-	isLockOnInput |= Input::PressMouse(MouseCode::Right);
-	isLockOnInput |= Input::PressPadButton(PadCode::B);
-
+	isLockOnInput |= Input::PressPadLT();
+	isLockOnInput |= Input::PressPadButton(PadCode::RightShoulder);
+	isLockOnInput |= !Input::GamepadConnected(0) && Input::PressMouse(MouseCode::Right);
 
 	isLockOn_ = false;
 	if(isLockOnInput) {
