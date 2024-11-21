@@ -70,6 +70,11 @@ public:
 	static uint8_t GetLTrigger();
 	static uint8_t GetRTrigger();
 
+	static bool PressPadRT();
+	static bool PressPadLT();
+	static bool TriggerPadRT();
+	static bool TriggerPadLT();
+
 	static bool IsLStickStartMoving();
 	static bool IsRStickStartMoving();
 

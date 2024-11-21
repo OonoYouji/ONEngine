@@ -64,7 +64,7 @@ void PlayerRootBehavior::Update() {
 
 		/// 移動しているか確認、アニメーションを変える
 		if(velocity != Vec3(0, 0, 0)) {
-			host_->SetAnimationModel("KariPlayer_Walk");
+			host_->SetAnimationModel("Player_Walk");
 			host_->SetAnimationFlags(0, false);
 
 		} else {
@@ -86,11 +86,11 @@ void PlayerRootBehavior::InputNextBehavior() {
 
 	/// 回避のための入力
 	isDush         |= Input::TriggerKey(KeyCode::LShift);
-	isDush         |= static_cast<bool>(Input::GetLeftTrigger());
+	isDush         |= Input::TriggerPadLT();
 
 	/// 次の弱攻撃のための入力
 	isWeakAttack   |= Input::TriggerKey(KeyCode::J);
-	isWeakAttack   |= static_cast<bool>(Input::GetRightTrigger());
+	isWeakAttack   |= Input::TriggerPadRT();
 
 	/// 次の強攻撃のための入力
 	isStrongAttack |= Input::TriggerKey(KeyCode::K);

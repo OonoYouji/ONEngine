@@ -47,11 +47,11 @@ void PlayerWeakAttack::Update() {
 
 	/// 回避のための入力
 	isDush      |= Input::TriggerKey(KeyCode::LShift);
-	isDush      |= static_cast<bool>(Input::GetLeftTrigger());
+	isDush      |= Input::TriggerPadLT();
 
 	/// 次のコンボのための入力
 	isNextCombo |= Input::TriggerKey(KeyCode::J);
-	isNextCombo |= static_cast<bool>(Input::GetRightTrigger());
+	isNextCombo |= Input::TriggerPadRT();
 
 
 	/// 次のbehaviorに行くための処理
