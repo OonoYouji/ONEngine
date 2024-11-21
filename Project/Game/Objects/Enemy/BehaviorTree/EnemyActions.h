@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "Math/Vector3.h"
 #include "Node.h"
 
 /// <summary>
@@ -14,6 +15,7 @@ class WorkIdleAction;
 class WorkWeakAttackAction;
 class WorkStrongAttackAction;
 class WorkRushAttackAction;
+class WorkChaseAction;
 
 enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
@@ -26,7 +28,6 @@ static std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
 	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
 	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
 };
-
 
 namespace EnemyBehaviorTree{
 	///====================================
@@ -42,6 +43,24 @@ namespace EnemyBehaviorTree{
 	private:
 		std::string animation_;
 	};
+
+	///====================================
+	/// 移動系
+	///====================================
+#pragma region"Move"
+	class ChaseAction
+		:public Action{
+	public:
+		ChaseAction(Enemy* enemy,WorkChaseAction* worker);
+		~ChaseAction()override{}
+
+		Status tick()override;
+	private:
+		WorkChaseAction* workInBehavior_;
+		Vector3 velocity_;
+		float currentTime_;
+	};
+#pragma endregion
 
 	///====================================
 	/// 待機系
@@ -104,7 +123,7 @@ namespace EnemyBehaviorTree{
 
 	class RushAttack
 		:public Action{
-		public:
+	public:
 		RushAttack(Enemy* enemy,WorkRushAttackAction* worker);
 		~RushAttack()override{}
 
