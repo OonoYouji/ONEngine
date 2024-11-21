@@ -18,8 +18,15 @@ class WorkRushAttackAction;
 enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
 	MIDDLE_RANGE,
-	LONG_RANGE
+	LONG_RANGE,
+	COUNT // size 用
 };
+static std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
+	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
+	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
+};
+
 
 namespace EnemyBehaviorTree{
 	///====================================
