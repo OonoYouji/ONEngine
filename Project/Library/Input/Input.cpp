@@ -426,6 +426,31 @@ uint8_t Input::GetRTrigger() {
 	return pad_->GetRightTrigger();
 }
 
+bool Input::PressPadRT() {
+	return GetRTrigger() > 125;
+}
+
+bool Input::PressPadLT() {
+	return GetLTrigger() > 125;
+}
+
+
+bool Input::TriggerPadRT() {
+	XINPUT_STATE current, prev;
+	pad_->GetPadState(current);
+	pad_->GetPadStatePrevious(prev);
+
+	return (current.Gamepad.bRightTrigger >= 125) && (prev.Gamepad.bRightTrigger < 125);
+}
+
+bool Input::TriggerPadLT() {
+	XINPUT_STATE current, prev;
+	pad_->GetPadState(current);
+	pad_->GetPadStatePrevious(prev);
+
+	return (current.Gamepad.bLeftTrigger >= 125) && (prev.Gamepad.bLeftTrigger < 125);
+}
+
 bool Input::IsLStickStartMoving() {
 	return pad_->IsLStickStartMoving();
 }

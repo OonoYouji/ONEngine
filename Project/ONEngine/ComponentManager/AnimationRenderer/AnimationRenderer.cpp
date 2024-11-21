@@ -249,6 +249,10 @@ void AnimationRenderer::LoadAnimation(const std::string& filePath) {
 
 void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	
+	if(currentNodeAnimationKey_ == _filePath) {
+		return;
+	}
+
 	SetModel(_filePath);
 
 	/// すでに読み込み済みかチェック

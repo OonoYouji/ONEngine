@@ -1,8 +1,8 @@
 {
     "WorkWeakAttackBehavior1": {
-        "activeTime": 4.166999816894531,
+        "activeTime": 0.46700000762939453,
         "damageFactor": 0.0,
         "endLagTime": 0.30000001192092896,
-        "startupTime": 2.4000000953674316
+        "startupTime": 0.10000000149011612
     }
 }

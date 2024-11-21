@@ -135,7 +135,7 @@ void TrackingCamera::LockOnToEnemy() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * leftStick.y,
+			1.5f * -leftStick.y,
 			1.5f * leftStick.x,
 			0.0f
 		};
@@ -271,7 +271,7 @@ void TrackingCamera::LockOnToPlayer() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * leftStick.y,
+			1.5f * -leftStick.y,
 			1.5f * leftStick.x,
 			0.0f
 		};
@@ -363,8 +363,13 @@ void TrackingCamera::LockOnToPlayer() {
 
 
 void TrackingCamera::LockOnUpdate() {
+	bool isLockOnInput = false;
+	isLockOnInput |= Input::PressMouse(MouseCode::Right);
+	isLockOnInput |= Input::PressPadButton(PadCode::B);
+
+
 	isLockOn_ = false;
-	if(Input::PressKey(KeyCode::Enter) || Input::PressMouse(MouseCode::Right)) {
+	if(isLockOnInput) {
 
 		/// プレイヤーと敵の距離が範囲内であれば
 		if(missTheTargetLenght_ > playerToEnemyVector_.Len()) {
