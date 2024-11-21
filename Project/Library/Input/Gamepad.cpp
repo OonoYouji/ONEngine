@@ -101,11 +101,13 @@ Vector2 Gamepad::GetRightStick() const {
 }
 
 BYTE Gamepad::GetLeftTrigger() const {
-	return (pad_.state_.Gamepad.bLeftTrigger >= 125) && (pad_.statePre_.Gamepad.bLeftTrigger < 125);
+	return pad_.state_.Gamepad.bLeftTrigger;
+	//return (pad_.state_.Gamepad.bLeftTrigger >= 125) && (pad_.statePre_.Gamepad.bLeftTrigger < 125);
 }
 
 BYTE Gamepad::GetRightTrigger() const {
-	return (pad_.state_.Gamepad.bRightTrigger >= 125) && (pad_.statePre_.Gamepad.bRightTrigger < 125);
+	return pad_.state_.Gamepad.bRightTrigger;
+	//return (pad_.state_.Gamepad.bRightTrigger >= 125) && (pad_.statePre_.Gamepad.bRightTrigger < 125);
 }
 
 Vector2 Gamepad::ApplyDeadZone(int32_t x, int32_t y, int32_t deadZone) const {

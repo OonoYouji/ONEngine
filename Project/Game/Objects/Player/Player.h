@@ -70,7 +70,8 @@ public:
 
 private:
 
-	class AnimationRenderer* animationRenderer_ = nullptr;
+	class AnimationRenderer* bodyAnimationRenderer_   = nullptr;
+	class AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	std::unique_ptr<IPlayerBehavior> currentBehavior_;
 
 	/// ---------------------------------------------------
@@ -138,9 +139,18 @@ public:
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 	
 	void SetAnimationModel(const std::string& _filePath);
+	void SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath);
+	void SetAnimationTotalTime(float _totalTime);
+	void ResetAnimationTotal();
 
+	void SetAnimationFlags(int _flags, bool _isResetTime = true);
+
+	float GetAnimationDuration();
 
 	const Vec2& GetLastDirection() const { return lastDirection_; }
 	void SetLastDirection(const Vec2& _lastDirection) { lastDirection_ = _lastDirection; }
+
+	void SetIsActiveWeapon(bool _isActive);
+
 
 };

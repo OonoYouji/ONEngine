@@ -135,7 +135,7 @@ void TrackingCamera::LockOnToEnemy() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * leftStick.y,
+			1.5f * -leftStick.y,
 			1.5f * leftStick.x,
 			0.0f
 		};
@@ -211,6 +211,8 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// positionの更新、プレイヤーと敵の間に配置
 	cameraOffsetLenghtScaleFactor_ = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
+	cameraOffsetLenghtScaleFactor_ = std::clamp(cameraOffsetLenghtScaleFactor_, lenScaleFactorMin_, lenScaleFactorMax_);
+
 	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
@@ -230,7 +232,7 @@ void TrackingCamera::LockOnToEnemy() {
 	/// offset position を rotate分回転させる
 	cameraNextPosition_ = targetPosition_ + offsetPos;
 
-	pGameCamera_->SetPosition(Vec3::Lerp(
+	pGameCamera_->SetPosition(cameraHeightOffset_ + Vec3::Lerp(
 		pGameCamera_->GetPosition(), cameraNextPosition_,
 		0.5f
 	));
@@ -243,7 +245,7 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// カメラの行列更新
 	pGameCamera_->UpdateMatrix();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
+	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
 	cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
 
 	/// カメラから敵とプレイヤーの間への回転角を計算
@@ -271,7 +273,7 @@ void TrackingCamera::LockOnToPlayer() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * leftStick.y,
+			1.5f * -leftStick.y,
 			1.5f * leftStick.x,
 			0.0f
 		};
@@ -330,7 +332,7 @@ void TrackingCamera::LockOnToPlayer() {
 		Mat4::MakeRotate(cameraOffsetRotate_)
 	);
 
-	pGameCamera_->SetPosition(Vec3::Lerp(
+	pGameCamera_->SetPosition(cameraHeightOffset_ + Vec3::Lerp(
 		pGameCamera_->GetPosition(), cameraNextPosition_,
 		0.5f
 	));
@@ -343,7 +345,7 @@ void TrackingCamera::LockOnToPlayer() {
 
 	/// カメラの行列更新
 	pGameCamera_->UpdateMatrix();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
+	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
 
 	if(!isTargetLost_) {
 		currentDirection_ = cameraToPlayerVector_.Normalize();
@@ -363,8 +365,13 @@ void TrackingCamera::LockOnToPlayer() {
 
 
 void TrackingCamera::LockOnUpdate() {
+	bool isLockOnInput = false;
+	isLockOnInput |= Input::PressPadLT();
+	isLockOnInput |= Input::PressPadButton(PadCode::RightShoulder);
+	isLockOnInput |= !Input::GamepadConnected(0) && Input::PressMouse(MouseCode::Right);
+
 	isLockOn_ = false;
-	if(Input::PressKey(KeyCode::Enter) || Input::PressMouse(MouseCode::Right)) {
+	if(isLockOnInput) {
 
 		/// プレイヤーと敵の距離が範囲内であれば
 		if(missTheTargetLenght_ > playerToEnemyVector_.Len()) {
@@ -436,6 +443,9 @@ void TrackingCamera::AddVariables() {
 	vm->AddValue(groupName, "toTargetLerpMaxTime", toTargetLerpMaxTime_);
 	vm->AddValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
 	vm->AddValue(groupName, "cameraOffsetLenght", cameraOffsetLenght_);
+	vm->AddValue(groupName, "lenScaleFactorMin", lenScaleFactorMin_);
+	vm->AddValue(groupName, "lenScaleFactorMax", lenScaleFactorMax_);
+	vm->AddValue(groupName, "cameraHeightOffset", cameraHeightOffset_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -452,6 +462,9 @@ void TrackingCamera::ApplyVariables() {
 	toTargetLerpMaxTime_     = vm->GetValue<float>(groupName, "toTargetLerpMaxTime");
 	cameraOffsetDirection_   = vm->GetValue<Vec3>(groupName,  "cameraOffsetDirection");
 	cameraOffsetLenght_      = vm->GetValue<float>(groupName, "cameraOffsetLenght");
+	lenScaleFactorMin_       = vm->GetValue<float>(groupName, "lenScaleFactorMin");
+	lenScaleFactorMax_       = vm->GetValue<float>(groupName, "lenScaleFactorMax");
+	cameraHeightOffset_      = vm->GetValue<Vec3>(groupName,  "cameraHeightOffset");
 
 	cameraOffsetDirection_ = cameraOffsetDirection_.Normalize();
 	vm->SetValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);

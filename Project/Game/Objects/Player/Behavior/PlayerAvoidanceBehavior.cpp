@@ -4,11 +4,22 @@
 
 #include "FrameManager/Time.h"
 #include "Math/Vector3.h"
+#include "Math/Easing.h"
+
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
 
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	IPlayerBehavior(_host),
 	workInBehavior_(host_->GetWorkAvoidanceBehavior()){
 	currentTime_ = 0.0f;
+
+
+	host_->SetIsActiveWeapon(false);
+	host_->SetAnimationModel("Player_Avoidance");
+	host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
+	host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
+
 
 	currentUpdate_ = [this](){StartupUpdate(); };
 }
@@ -39,7 +50,10 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 void PlayerAvoidanceBehavior::Avoidance(){
 	float t = currentTime_ / workInBehavior_.motionTimes_.activeTime_;
 
-	host_->SetPosition(Vector3::Lerp(beforePos_,afterPos_,t));
+	host_->SetPosition(Vector3::Lerp(
+		beforePos_,afterPos_,
+		Ease::Out::Sine(t)
+	));
 
 	if(currentTime_ >= workInBehavior_.motionTimes_.activeTime_){
 		currentTime_ = 0.0f;

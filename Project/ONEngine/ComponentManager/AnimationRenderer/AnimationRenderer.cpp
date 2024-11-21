@@ -53,7 +53,33 @@ void AnimationRenderer::Update() {
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
-	skeletonMap_[currentNodeAnimationKey_].Update(timeRate_, durationMap_[currentNodeAnimationKey_], map);
+
+	if(!animationFlags_) {
+		animationTime_ += Time::DeltaTime() * timeRate_;
+		animationTime_ = std::fmod(animationTime_, durationMap_[currentNodeAnimationKey_]);
+
+	} else if(animationFlags_ & ANIMATION_FLAG_NOLOOP){
+		if(!isPlayedOnce_) {
+			float duration = durationMap_[currentNodeAnimationKey_];
+
+			animationTime_ += Time::DeltaTime() * timeRate_;
+			animationTime_ = std::min(animationTime_, duration);
+
+
+			/// 終了
+			if(animationTime_ == duration) {
+				isPlayedOnce_ = true;
+			}
+		}
+
+	}
+
+
+
+	skeletonMap_[currentNodeAnimationKey_].Update(
+		animationTime_, map
+	);
+
 	SkinClusterUpdate(
 		skinClusterMap_[currentNodeAnimationKey_], 
 		skeletonMap_[currentNodeAnimationKey_]
@@ -223,6 +249,10 @@ void AnimationRenderer::LoadAnimation(const std::string& filePath) {
 
 void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	
+	if(currentNodeAnimationKey_ == _filePath) {
+		return;
+	}
+
 	SetModel(_filePath);
 
 	/// すでに読み込み済みかチェック
@@ -231,13 +261,14 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 	if(map == multiNodeAnimationArray_.end()) {
 		LoadAnimation(_filePath);
 
-		skeletonMap_[_filePath] = CreateSkeleton(pModel_->GetRootNode());
+		skeletonMap_[_filePath]    = CreateSkeleton(pModel_->GetRootNode());
 		skinClusterMap_[_filePath] = CreateSkinCluster(skeletonMap_[_filePath], pModel_);
 	}
 
 
 	currentNodeAnimationKey_ = _filePath;
-	animationTime_           = 0.0f;
+	animationTime_ = 0.0f;
+
 }
 
 
@@ -318,6 +349,17 @@ void AnimationRenderer::SetTotalTime(float _totalTime, const std::string& _fileP
 
 void AnimationRenderer::SetTimeRate(float _timeRate) {
 	timeRate_ = _timeRate;
+}
+
+void AnimationRenderer::SetAnimationFlags(int _flags) {
+	animationFlags_ = _flags;
+}
+
+void AnimationRenderer::Restart() {
+	isPlayedOnce_ = false;
+	
+	animationTime_ = 0.0f;
+
 }
 
 
