@@ -897,10 +897,10 @@
 			"componentType":5126,
 			"count":2,
 			"max":[
-				0.6333333333333333
+				0.8666666666666667
 			],
 			"min":[
-				0.3333333333333333
+				0
 			],
 			"type":"SCALAR"
 		},
@@ -1093,19 +1093,19 @@
 		{
 			"bufferView":39,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"max":[
-				0.6333333333333333
+				0.8666666666666667
 			],
 			"min":[
-				0.3333333333333333
+				0
 			],
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":40,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC4"
 		},
 		{
@@ -1117,13 +1117,13 @@
 		{
 			"bufferView":42,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":43,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC4"
 		},
 		{
@@ -1135,19 +1135,19 @@
 		{
 			"bufferView":45,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":46,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":47,
 			"componentType":5126,
-			"count":19,
+			"count":53,
 			"type":"VEC3"
 		}
 	],
@@ -1355,48 +1355,48 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":76,
+			"byteLength":212,
 			"byteOffset":13936
 		},
 		{
 			"buffer":0,
-			"byteLength":304,
-			"byteOffset":14012
+			"byteLength":848,
+			"byteOffset":14148
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":14316
+			"byteOffset":14996
 		},
 		{
 			"buffer":0,
-			"byteLength":228,
-			"byteOffset":14340
+			"byteLength":636,
+			"byteOffset":15020
 		},
 		{
 			"buffer":0,
-			"byteLength":304,
-			"byteOffset":14568
+			"byteLength":848,
+			"byteOffset":15656
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":14872
+			"byteOffset":16504
 		},
 		{
 			"buffer":0,
-			"byteLength":228,
-			"byteOffset":14896
+			"byteLength":636,
+			"byteOffset":16528
 		},
 		{
 			"buffer":0,
-			"byteLength":304,
-			"byteOffset":15124
+			"byteLength":848,
+			"byteOffset":17164
 		},
 		{
 			"buffer":0,
-			"byteLength":228,
-			"byteOffset":15428
+			"byteLength":636,
+			"byteOffset":18012
 		}
 	],
 	"samplers":[
@@ -1407,7 +1407,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":15656,
+			"byteLength":18648,
 			"uri":"Player_WeakAttack1_2_W.bin"
 		}
 	]
