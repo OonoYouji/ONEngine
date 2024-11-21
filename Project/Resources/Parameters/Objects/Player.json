@@ -1,7 +1,7 @@
 {
     "Player": {
         "moveDistance": 10.0,
-        "rotateLerpSensitivity": 0.10000000149011612,
+        "rotateLerpSensitivity": 0.4000000059604645,
         "speed": 18.0,
         "workActiveTime": 0.699999988079071,
         "workEndLagTime": 0.0,

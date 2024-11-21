@@ -40,8 +40,8 @@ void PlayerRootBehavior::Update() {
 		direction_.y = dir.z;
 	}
 
-	// Rotate Update
-	{
+	
+	{	// Rotate Update
 		if(direction_.x != 0 || direction_.y != 0) {
 			lastDir_ = direction_;
 			host_->SetLastDirection(lastDir_);
