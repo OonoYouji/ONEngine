@@ -17,14 +17,16 @@ enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
 	STRONG_ATTACK,
-	RUSH_ATTACK
+	RUSH_ATTACK,
+
+	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::IDLE,"IDLE"},
-	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
-	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
-	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},
+	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},//
+	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},//
+	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},//
 };
 
 /// <summary>

@@ -2,8 +2,8 @@
 
 #include <deque>
 #include <memory>
+#include <unordered_map>
 
-#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "Game/Objects/Enemy/BehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
@@ -21,7 +21,7 @@ namespace EnemyBehaviorTree{
 }
 class IEnemyState;
 class Player;
-class BoxCollider;
+class EnemyAttackCollider;
 class SphereCollider;
 class WorkEnemyAction;
 
@@ -54,7 +54,7 @@ static std::string enemyActionDirectory = enemyJsonDirectory + "/Action";
 class Enemy :
 	public BaseGameObject{
 public:
-	Enemy(Player* player);
+	Enemy(Player* player,EnemyAttackCollider* collider);
 	~Enemy();
 	void Initialize()override;
 	void Update()override;
@@ -77,6 +77,7 @@ public:
 	void DecideNextNode();
 private:
 	Player* player_ = nullptr;
+	EnemyAttackCollider* enemy_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
@@ -93,7 +94,7 @@ private:
 	/// <summary>
 	/// 攻撃を与えるCollider
 	/// </summary>
-	EnemyCollider attackCollider_;
+	EnemyAttackCollider* attackCollider_;
 
 	// 調整項目保存用
 	using AttackActionName = std::string;
@@ -134,4 +135,7 @@ public:
 	const std::deque<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
 
 	float GetDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
+
+	void ActivateAttackCollider(ActionTypes offset,float radius);
+	void TerminateAttackCollider();
 };

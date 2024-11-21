@@ -4,26 +4,23 @@
 
 #include "BehaviorTree/EnemyActions.h"
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "EnemyCollider/EnemyAttackCollider.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
-#include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "Game/Objects/Player/Player.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
 #include "Math/Random.h"
 #include "MyFileSystem/MyFileSystem.h"
 #include "VariableManager/VariableManager.h"
+
+#include "Game/Objects/Player/Player.h"
 
 #ifdef _DEBUG
 #include "imgui.h"
 #endif // _DEBUG
 
-// EnemyAttackRangeTypeと文字列の対応付け
-std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
-	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
-	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
-	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
-};
-
-Enemy::Enemy(Player* player):BaseGameObject(),player_(player),maxHp_(0.0f){
+Enemy::Enemy(Player* player,EnemyAttackCollider* collider):BaseGameObject(),player_(player),maxHp_(0.0f){
+	attackCollider_ = collider;
 	CreateTag(this);
 }
 
@@ -461,7 +458,7 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::RUSH_ATTACK:
 			result = std::make_unique<WorkRushAttackAction>();
-				break;
+			break;
 		default:
 			break;
 	}
@@ -519,4 +516,12 @@ float Enemy::GetDistanceByRangeTypes(EnemyAttackRangeType rangeType) const{
 	} else{
 		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理
 	}
+}
+
+void Enemy::ActivateAttackCollider(ActionTypes offset,float radius){
+	attackCollider_->Activate(offset,radius);
+}
+
+void Enemy::TerminateAttackCollider(){
+	attackCollider_->Terminate();
 }

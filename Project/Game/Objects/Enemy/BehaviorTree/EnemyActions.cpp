@@ -51,6 +51,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::StartupUpdate(){
 	if(currentTime_ >= workInBehavior_->motionTimes_.startupTime_){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return Attack(); };
+		// 当たり判定を有効化
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
@@ -61,6 +63,9 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::Attack(){
 	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return EndLagUpdate(); };
+
+		// 当たり判定を 無効化
+		enemy_->TerminateAttackCollider();
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
@@ -131,8 +136,11 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::StartupUpdate(){
 EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::Attack(){
 	currentTime_ += Time::DeltaTime();
 
+	// 下 の if文 を通っていないときは 攻撃判定がない 
+	enemy_->TerminateAttackCollider();
 	if(workInBehavior_->collisionStartTime_ <= currentTime_ && currentTime_ <= workInBehavior_->collisionStartTime_ + workInBehavior_->collisionTime_){
 		// 当たり判定が有効
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
 	}
 
 	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
@@ -203,6 +211,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::StartupUpdate(){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return Attack(); };
 		// 当たり判定を有効に
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
@@ -217,6 +226,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::Attack(){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return EndLagUpdate(); };
 		// 当たり判定を無効に
+		enemy_->TerminateAttackCollider();
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
