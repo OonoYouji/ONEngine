@@ -51,6 +51,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::StartupUpdate(){
 	if(currentTime_ >= workInBehavior_->motionTimes_.startupTime_){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return Attack(); };
+		// 当たり判定を有効化
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
@@ -61,6 +63,9 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::Attack(){
 	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
 		currentTime_ = 0.0f;
 		currentUpdate_ = [this](){return EndLagUpdate(); };
+
+		// 当たり判定を 無効化
+		enemy_->TerminateAttackCollider();
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
@@ -107,7 +112,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::InitRotate(){
 		}
 
 		// 最大回転角度を適用
-		rotateP2E_ = std::clamp(diff,-workInBehavior_->maxRotateY2Player_,workInBehavior_->maxRotateY2Player_);
+		rotateP2E_ -= std::clamp(diff,-workInBehavior_->maxRotateY2Player_,workInBehavior_->maxRotateY2Player_);
 	}
 
 	currentUpdate_ = [this](){return StartupUpdate(); };
@@ -131,8 +136,11 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::StartupUpdate(){
 EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::Attack(){
 	currentTime_ += Time::DeltaTime();
 
+	// 下 の if文 を通っていないときは 攻撃判定がない 
+	enemy_->TerminateAttackCollider();
 	if(workInBehavior_->collisionStartTime_ <= currentTime_ && currentTime_ <= workInBehavior_->collisionStartTime_ + workInBehavior_->collisionTime_){
 		// 当たり判定が有効
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
 	}
 
 	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
@@ -144,6 +152,86 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::Attack(){
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttack::EndLagUpdate(){
+	currentTime_ += Time::DeltaTime();
+
+	if(currentTime_ >= workInBehavior_->motionTimes_.endLagTime_){
+		currentTime_ = 0.0f;
+		return EnemyBehaviorTree::Status::SUCCESS;
+	}
+	return EnemyBehaviorTree::Status::RUNNING;
+}
+#pragma endregion
+
+#pragma region"RushAttack"
+EnemyBehaviorTree::RushAttack::RushAttack(Enemy* enemy,WorkRushAttackAction* worker)
+	:EnemyBehaviorTree::Action(enemy),workInBehavior_(worker),currentTime_(0.0f){
+	currentUpdate_ = [this](){return InitRotate(); };
+}
+
+EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::tick(){
+	return currentUpdate_();
+}
+
+EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::InitRotate(){
+	beforeRotateY_ = enemy_->GetRotate().y;
+
+	{
+		constexpr float maxPi = std::numbers::pi_v<float> *2.0f;
+		// プレイヤーと敵の位置の差を計算
+		Vector3 diffP2E = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
+		// プレイヤー方向の角度を計算
+		float targetAngle = atan2(diffP2E.x,diffP2E.z); // atan2(x, z)で水平面の角度を求める
+
+		// 差分を計算し、2πの範囲内に正規化
+		float diff = std::fmod(beforeRotateY_ - targetAngle,maxPi);
+
+		// 最短経路の調整 (-π ～ π に収める)
+		if(diff > std::numbers::pi_v<float>){
+			diff -= maxPi;
+		} else if(diff < -std::numbers::pi_v<float>){
+			diff += maxPi;
+		}
+
+		// 最大回転角度を適用
+		rotateP2E_ -= std::clamp(diff,-workInBehavior_->maxRotateY2Player_,workInBehavior_->maxRotateY2Player_);
+	}
+
+	currentUpdate_ = [this](){return StartupUpdate(); };
+	return EnemyBehaviorTree::Status::RUNNING;
+}
+
+EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::StartupUpdate(){
+	currentTime_ += Time::DeltaTime();
+
+	float t = currentTime_ / workInBehavior_->motionTimes_.startupTime_;
+
+	enemy_->SetRotateY(beforeRotateY_ + std::lerp(0.0f,rotateP2E_,t));
+
+	if(currentTime_ >= workInBehavior_->motionTimes_.startupTime_){
+		currentTime_ = 0.0f;
+		currentUpdate_ = [this](){return Attack(); };
+		// 当たり判定を有効に
+		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
+	}
+	return EnemyBehaviorTree::Status::RUNNING;
+}
+
+EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::Attack(){
+	currentTime_ += Time::DeltaTime();
+
+	// Enemy の向いてる方向に 進む
+	enemy_->SetPosition(enemy_->GetPosition() + Matrix4x4::Transform({0.0f,0.0f,workInBehavior_->speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y)));
+
+	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
+		currentTime_ = 0.0f;
+		currentUpdate_ = [this](){return EndLagUpdate(); };
+		// 当たり判定を無効に
+		enemy_->TerminateAttackCollider();
+	}
+	return EnemyBehaviorTree::Status::RUNNING;
+}
+
+EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::EndLagUpdate(){
 	currentTime_ += Time::DeltaTime();
 
 	if(currentTime_ >= workInBehavior_->motionTimes_.endLagTime_){

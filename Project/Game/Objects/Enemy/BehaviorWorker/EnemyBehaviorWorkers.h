@@ -17,12 +17,16 @@ enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
 	STRONG_ATTACK,
+	RUSH_ATTACK,
+
+	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::IDLE,"IDLE"},
-	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
-	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
+	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},//
+	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},//
+	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},//
 };
 
 /// <summary>
@@ -106,4 +110,25 @@ public:
 	float maxRotateY2Player_;
 };
 
+class WorkRushAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkRushAttackAction():WorkEnemyAction(ActionTypes::RUSH_ATTACK){
+		collisionRadius_   = 0.0f;
+		maxRotateY2Player_ = 0.0f;
+		damage_            = 0.0f;
+		speed_             = 0.0f;
+	}
+	~WorkRushAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float collisionRadius_;
+	float maxRotateY2Player_;
+	float damage_;
+	float speed_;
+};
 #pragma endregion

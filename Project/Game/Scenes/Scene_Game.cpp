@@ -15,6 +15,7 @@
 
 #include "Objects/Background/BackgroundObjectManager/BackgroundObjectManager.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/Enemy/EnemyCollider/EnemyAttackCollider.h"
 #include "Objects/Player/Player.h"
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
@@ -27,7 +28,7 @@
 /// ===================================================
 /// 初期化処理
 /// ===================================================
-void Scene_Game::Initialize() {
+void Scene_Game::Initialize(){
 
 
 	/// モデル確認用のオブジェクト
@@ -37,28 +38,31 @@ void Scene_Game::Initialize() {
 	/// object creata
 
 	/// プレイヤー
-	Player*           player           = new Player(mainCamera_);
+	Player* player           = new Player(mainCamera_);
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
 
 	/// 敵
-	Enemy* enemy = new Enemy(player);
+	EnemyAttackCollider* enemyAttackCollider = new EnemyAttackCollider();
+	Enemy* enemy = new Enemy(player,enemyAttackCollider);
+	enemyAttackCollider->SetEnemy(enemy);
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 
-	TrackingCamera*   trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
+	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_,player,enemy);
 
 	/// 初期化する
 	player->Initialize();
 	playerHPRenderer->Initialize();
 	trackingCamera->Initialize();
 	enemy->Initialize();
+	enemyAttackCollider->Initialize();
 
 	bbObjectManager->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 
 
-	directionalLight_->SetDirection({ 0.0, -1.0f, 0.0f });
+	directionalLight_->SetDirection({0.0,-1.0f,0.0f});
 
 
 	/// ui layer  index=1
@@ -66,7 +70,7 @@ void Scene_Game::Initialize() {
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
-	AddLayer("ui", uiCamera);
+	AddLayer("ui",uiCamera);
 
 }
 
@@ -74,7 +78,7 @@ void Scene_Game::Initialize() {
 /// ===================================================
 /// 更新処理
 /// ===================================================
-void Scene_Game::Update() {
+void Scene_Game::Update(){
 
 
 }

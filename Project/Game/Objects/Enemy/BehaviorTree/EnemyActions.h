@@ -13,12 +13,20 @@
 class WorkIdleAction;
 class WorkWeakAttackAction;
 class WorkStrongAttackAction;
+class WorkRushAttackAction;
 
 enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
 	MIDDLE_RANGE,
-	LONG_RANGE
+	LONG_RANGE,
+	COUNT // size 用
 };
+static std::unordered_map<EnemyAttackRangeType,std::string> rangeTypes = {
+	{EnemyAttackRangeType::SHORT_RANGE,"SHORT_RANGE"},
+	{EnemyAttackRangeType::MIDDLE_RANGE,"MIDDLE_RANGE"},
+	{EnemyAttackRangeType::LONG_RANGE,"LONG_RANGE"},
+};
+
 
 namespace EnemyBehaviorTree{
 	///====================================
@@ -94,6 +102,26 @@ namespace EnemyBehaviorTree{
 		float currentTime_;
 	};
 
+	class RushAttack
+		:public Action{
+		public:
+		RushAttack(Enemy* enemy,WorkRushAttackAction* worker);
+		~RushAttack()override{}
+
+		Status tick()override;
+	private:
+		Status InitRotate();
+		Status StartupUpdate();
+		Status Attack();
+		Status EndLagUpdate();
+	private:
+		std::function<Status()> currentUpdate_;
+		WorkRushAttackAction* workInBehavior_;
+
+		float beforeRotateY_;
+		float rotateP2E_;
+		float currentTime_;
+	};
 #pragma endregion
 
 	///====================================
