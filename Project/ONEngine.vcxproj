@@ -175,6 +175,7 @@
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.cpp" />
+    <ClCompile Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
@@ -302,6 +303,7 @@
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.h" />
+    <ClInclude Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />

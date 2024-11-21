@@ -10,6 +10,7 @@
 
 #include "Objects/TitleObjects/TitleTextRenderer/TitleTextRenderer.h"
 #include "Objects/TitleObjects/TitleMenuSelector/TitleMenuSelector.h"
+#include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 #include "Objects/SceneTransition/SceneTransition.h"
 	
 
@@ -17,6 +18,7 @@ void Scene_Title::Initialize() {
 
 	/// create objects  -----------------------------------------------------
 	(new TitleTextRenderer())->Initialize();
+	(new TitleSelectorUI())->Initialize();
 	menuSelector_ = new TitleMenuSelector();
 	menuSelector_->Initialize();
 	
