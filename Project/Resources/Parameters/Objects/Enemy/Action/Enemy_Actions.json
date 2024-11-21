@@ -1,6 +1,5 @@
 {
     "Enemy_Actions": {
-        "ActionSize": 1,
-        "Index_0": "NULL"
+        "ActionSize": 0
     }
 }

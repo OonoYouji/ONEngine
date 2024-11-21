@@ -120,7 +120,6 @@ private:
 	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
 	std::array<std::unordered_map<std::string,ComboAttacks>,static_cast<int32_t>(HpState::COUNT)> editComboVariables_;
-
 #ifdef _DEBUG
 	HpState currentEditHpState_;
 	bool isCreateWindowPop_;

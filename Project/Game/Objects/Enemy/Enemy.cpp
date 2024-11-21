@@ -196,7 +196,7 @@ void Enemy::Debug(){
 		if(ImGui::BeginCombo("Current Edit HpState",wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str())){
 			for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
 				bool isSelected = (i == static_cast<int32_t>(currentEditHpState_));
-				if(ImGui::Selectable(wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str(),isSelected)){
+				if(ImGui::Selectable(wordByHpState[static_cast<int32_t>(i)].c_str(),isSelected)){
 					currentEditHpState_ = static_cast<HpState>(i);
 				}
 				if(isSelected){
@@ -207,10 +207,10 @@ void Enemy::Debug(){
 		};
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
-		if(!editComboVariables_.empty()){
+		if(!editComboVariables_[static_cast<int32_t>(currentEditHpState_)].empty()){
 			if(currentEditComboName_ == ""){
-				currentEditActionName_ = editComboVariables_[0].begin()->first;
-				currentEditCombo_ = &editComboVariables_[0][currentEditActionName_];
+				currentEditActionName_ = editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first;
+				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][currentEditActionName_];
 			}
 			if(ImGui::BeginCombo("Combos",currentEditComboName_.c_str())){
 				int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
@@ -226,6 +226,9 @@ void Enemy::Debug(){
 				}
 				ImGui::EndCombo();
 			}
+		} else{
+			currentEditActionName_ = "";
+			currentEditCombo_ = nullptr;
 		}
 
 		ImGui::Spacing();
@@ -241,6 +244,33 @@ void Enemy::Debug(){
 					}
 					ImGui::TreePop();
 				}
+
+				if(ImGui::BeginCombo("Swap HpState",wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str())){
+					for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
+						bool isSelected = (i == static_cast<int32_t>(currentEditHpState_));
+						if(ImGui::Selectable(wordByHpState[i].c_str(),isSelected)){
+							// 入れ替え処理
+							auto& currentMap = editComboVariables_[static_cast<int32_t>(currentEditHpState_)];
+							auto& targetMap = editComboVariables_[i];
+
+							// currentEditComboName_ が currentMap に存在するか確認
+							auto it = currentMap.find(currentEditComboName_);
+							if(it != currentMap.end()){
+								// 値を移動
+								targetMap[currentEditComboName_] = std::move(it->second);
+								currentMap.erase(it);
+
+								// currentEditCombo_ を更新
+								currentEditCombo_ = &targetMap[currentEditComboName_];
+							}
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
 
 				if(ImGui::BeginCombo("RangeType",rangeTypes[currentEditCombo_->rangeType_].c_str())){
 					for(const auto& [type,name] : rangeTypes){
@@ -369,7 +399,12 @@ void Enemy::SaveStatus(){
 void Enemy::SaveCombos(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 
-	variableManager->SetValue("Enemy_Combos","CombosSize",static_cast<int>(editComboVariables_.size()));
+	int32_t allComboNum = 0;
+	for(auto& combo : editComboVariables_){
+		allComboNum += static_cast<int32_t>(combo.size());
+	}
+
+	variableManager->SetValue("Enemy_Combos","CombosSize",allComboNum);
 	int32_t index = 0;
 	for(int32_t hpState = 0; hpState < static_cast<int32_t>(HpState::COUNT); hpState++){
 
