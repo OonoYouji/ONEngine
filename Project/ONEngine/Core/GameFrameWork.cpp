@@ -16,7 +16,7 @@ void GameFrameWork::Initialize() {
 
 	/// シーンの初期化等...
 	pSceneManager_ = SceneManager::GetInstance();
-	pSceneManager_->Initialize(SCENE_ID::TITLE); /// 初期化時のシーンをここで決定
+	pSceneManager_->Initialize(SCENE_ID::GAME); /// 初期化時のシーンをここで決定
 
 	
 	ONE::Logger::ConsolePrint(std::format(
