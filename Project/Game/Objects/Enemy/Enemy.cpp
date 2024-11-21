@@ -8,6 +8,7 @@
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
 
 #include "Math/Random.h"
 #include "MyFileSystem/MyFileSystem.h"
@@ -28,8 +29,7 @@ Enemy::~Enemy(){}
 
 void Enemy::Initialize(){
 	animationRender_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
-
-	hp_ = maxHp_;
+	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	// 最初の行動を設定
 	//DecideNextNode();
@@ -37,6 +37,8 @@ void Enemy::Initialize(){
 	LoadStatus();
 	LoadAllAction();
 	LoadCombos();
+
+	hp_ = maxHp_;
 }
 
 void Enemy::Update(){

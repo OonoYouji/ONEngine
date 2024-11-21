@@ -95,7 +95,7 @@ private:
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* animationRender_ = nullptr;
 	// 本体のコライダー これに当たるとダメージを受ける
-	SphereCollider* enemyCollider_;
+	SphereCollider* hitCollider_;
 
 	float maxHp_;
 	float hp_;
