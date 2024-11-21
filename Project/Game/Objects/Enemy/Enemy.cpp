@@ -70,6 +70,7 @@ void Enemy::Debug(){
 		if(ImGui::Button("SetMax Status")){
 			hp_ = maxHp_;
 		}
+
 		ImGui::TreePop();
 	}
 
@@ -176,9 +177,9 @@ void Enemy::Debug(){
 			ImGui::Begin("New Attack Combo");
 			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
 			if(ImGui::Button("Create")){
-				editComboVariables_[createObjectName_] = ComboAttacks();
-				currentEditCombo_ = &editComboVariables_[createObjectName_];
-				currentEditComboName_ = editComboVariables_.find(createObjectName_)->first;
+				editComboVariables_[0][createObjectName_] = ComboAttacks();
+				currentEditCombo_ = &editComboVariables_[0][createObjectName_];
+				currentEditComboName_ = editComboVariables_[0].find(createObjectName_)->first;
 				isComboCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -192,14 +193,28 @@ void Enemy::Debug(){
 
 		ImGui::Spacing();
 
+		if(ImGui::BeginCombo("Current Edit HpState",wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str())){
+			for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
+				bool isSelected = (i == static_cast<int32_t>(currentEditHpState_));
+				if(ImGui::Selectable(wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str(),isSelected)){
+					currentEditHpState_ = static_cast<HpState>(i);
+				}
+				if(isSelected){
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		};
+
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!editComboVariables_.empty()){
 			if(currentEditComboName_ == ""){
-				currentEditActionName_ = editComboVariables_.begin()->first;
-				currentEditCombo_ = &editComboVariables_[currentEditActionName_];
+				currentEditActionName_ = editComboVariables_[0].begin()->first;
+				currentEditCombo_ = &editComboVariables_[0][currentEditActionName_];
 			}
 			if(ImGui::BeginCombo("Combos",currentEditComboName_.c_str())){
-				for(auto& [key,value] : editComboVariables_){
+				int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
+				for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
 					bool isSelected = (currentEditComboName_ == key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
 						currentEditComboName_ = key;
@@ -285,10 +300,28 @@ void Enemy::Debug(){
 	///===============================================
 	/// RangeType ごとの 許容距離
 	///===============================================
-	if(ImGui::TreeNode("distanceByRangeTypes")){
+	if(ImGui::TreeNode("distance By RangeTypes")){
+		ImGui::Text("distance < SHORT_RANGE  = SHORT_RANGE\ndistance > MIDDLE_RANGE  = LONG_RANGE\n else = MIDDLE_RANGE");
 		ImGui::DragFloat("ShortRange",&distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE],0.1f);
 		ImGui::DragFloat("MiddleRange",&distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE],0.1f);
 		ImGui::DragFloat("LongRange",&distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE],0.1f);
+		ImGui::TreePop();
+	}
+
+	///===============================================
+	/// 各HP State になるための値
+	///===============================================
+	if(ImGui::TreeNode("threshold By HpState")){
+		int32_t hpStateCount = static_cast<int32_t>(HpState::COUNT);
+		ImGui::Text("hp > HP_NORMAL  = HP_HIGHTE\n hp > HP_LOW  = HP_NORMAL\n else = HP_LOW");
+
+		int32_t hpHight = static_cast<int32_t>(HpState::HP_HIGHTE);
+		int32_t hpNormal = static_cast<int32_t>(HpState::HP_NORMAL);
+		int32_t hpLow = static_cast<int32_t>(HpState::HP_LOW);
+
+		ImGui::SliderFloat(wordByHpState[hpHight].c_str(),&thresholdByHpState_[hpHight],maxHp_,maxHp_);
+		ImGui::SliderFloat(wordByHpState[hpNormal].c_str(),&thresholdByHpState_[hpNormal],thresholdByHpState_[hpLow],thresholdByHpState_[hpHight]);
+		ImGui::SliderFloat(wordByHpState[hpLow].c_str(),&thresholdByHpState_[hpLow],0.0f,thresholdByHpState_[hpNormal]);
 		ImGui::TreePop();
 	}
 
@@ -296,24 +329,39 @@ void Enemy::Debug(){
 	/// RangeType ごと に 仕分け
 	///=====================================
 	{
-		comboByRangeType_[EnemyAttackRangeType::SHORT_RANGE].clear();
-		comboByRangeType_[EnemyAttackRangeType::MIDDLE_RANGE].clear();
-		comboByRangeType_[EnemyAttackRangeType::LONG_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::LONG_RANGE].clear();
 
-		for(const auto& [comboName,combo] : editComboVariables_){
-			comboByRangeType_[combo.rangeType_].push_back(comboName);
+		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
+			for(const auto& [comboName,combo] : editComboVariables_[i]){
+				comboByRangeTypeByHpState_[i][combo.rangeType_].push_back(comboName);
+			}
 		}
 	}
 }
 
 void Enemy::SaveStatus(){
 	VariableManager* variableManager = VariableManager::GetInstance();
-	variableManager->SetValue("Enemy_Status","HP",maxHp_);
-	variableManager->SetValue("Enemy_Status","speed",speed_);
+	{
+		variableManager->SetValue("Enemy_Status","HP",maxHp_);
+		variableManager->SetValue("Enemy_Status","speed",speed_);
+	}
 
-	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::SHORT_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]);
-	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::MIDDLE_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]);
-	variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::LONG_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE]);
+	{
+		variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::SHORT_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]);
+		variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::MIDDLE_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]);
+		variableManager->SetValue<float>("Enemy_Status",rangeTypes[EnemyAttackRangeType::LONG_RANGE],distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE]);
+	}
+
+	{
+		int32_t hpHight = static_cast<int32_t>(HpState::HP_HIGHTE);
+		int32_t hpNormal = static_cast<int32_t>(HpState::HP_NORMAL);
+		int32_t hpLow = static_cast<int32_t>(HpState::HP_LOW);
+		variableManager->SetValue<float>("Enemy_Status",wordByHpState[hpHight],thresholdByHpState_[hpHight]);
+		variableManager->SetValue<float>("Enemy_Status",wordByHpState[hpNormal],thresholdByHpState_[hpNormal]);
+		variableManager->SetValue<float>("Enemy_Status",wordByHpState[hpLow],thresholdByHpState_[hpLow]);
+	}
 
 	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
 }
@@ -323,11 +371,14 @@ void Enemy::SaveCombos(){
 
 	variableManager->SetValue("Enemy_Combos","CombosSize",static_cast<int>(editComboVariables_.size()));
 	int32_t index = 0;
-	for(auto& [name,combo] : editComboVariables_){
-		variableManager->SetValue("Enemy_Combos","Index_" + std::to_string(index),name);
+	for(int32_t hpState = 0; hpState < static_cast<int32_t>(HpState::COUNT); hpState++){
 
-		SaveCombo(name);
-		++index;
+		for(auto& [name,combo] : editComboVariables_[hpState]){
+			variableManager->SetValue("Enemy_Combos","Index_" + std::to_string(index),name);
+
+			SaveCombo(name,hpState);
+			++index;
+		}
 	}
 
 	variableManager->SaveSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
@@ -349,13 +400,15 @@ void Enemy::SaveAllAction(){
 	variableManager->SaveSpecificGroupsToJson(enemyActionDirectory,"Enemy_Actions");
 }
 
-void Enemy::SaveCombo(const std::string& comboName){
+void Enemy::SaveCombo(const std::string& comboName,int32_t hpState){
 	VariableManager* variableManager = VariableManager::GetInstance();
 
-	variableManager->SetValue<int>(comboName,"RangeType",static_cast<int>(editComboVariables_[comboName].rangeType_));
-	variableManager->SetValue(comboName,"ComboSize",static_cast<int>(editComboVariables_[comboName].comboAttacks_.size()));
+	auto& currentCombo = editComboVariables_[hpState][comboName];
+	variableManager->SetValue<int>(comboName,"HpState",static_cast<int>(hpState));
+	variableManager->SetValue<int>(comboName,"RangeType",static_cast<int>(currentCombo.rangeType_));
+	variableManager->SetValue(comboName,"ComboSize",static_cast<int>(currentCombo.comboAttacks_.size()));
 	int32_t index = 0;
-	for(auto& [name,combo] : editComboVariables_[comboName].comboAttacks_){
+	for(auto& [name,combo] : currentCombo.comboAttacks_){
 		variableManager->SetValue(comboName,"Index_" + std::to_string(index),name);
 		++index;
 	}
@@ -371,6 +424,15 @@ void Enemy::LoadStatus(){
 	distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE] = variableManager->GetValue<float>("Enemy_Status","SHORT_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE] = variableManager->GetValue<float>("Enemy_Status","MIDDLE_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE] = variableManager->GetValue<float>("Enemy_Status","LONG_RANGE");
+
+	{
+		int32_t hpHight = static_cast<int32_t>(HpState::HP_HIGHTE);
+		int32_t hpNormal = static_cast<int32_t>(HpState::HP_NORMAL);
+		int32_t hpLow = static_cast<int32_t>(HpState::HP_LOW);
+		thresholdByHpState_[hpHight] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpHight]);
+		thresholdByHpState_[hpNormal] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpNormal]);
+		thresholdByHpState_[hpLow] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpLow]);
+	}
 }
 
 void Enemy::LoadCombos(){
@@ -382,9 +444,10 @@ void Enemy::LoadCombos(){
 	for(size_t i = 0; i < combosSize; i++){
 		std::string comboName = variableManager->GetValue<std::string>("Enemy_Combos","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,comboName);
-		editComboVariables_[comboName] = {};
-		editComboVariables_[comboName].rangeType_ = static_cast<EnemyAttackRangeType>(variableManager->GetValue<int>(comboName,"RangeType"));
-		LoadCombo(comboName,variableManager->GetValue<int>(comboName,"ComboSize"));
+		int hpState = variableManager->GetValue<int>(comboName,"HpState");
+		editComboVariables_[hpState][comboName] = {};
+		editComboVariables_[hpState][comboName].rangeType_ = static_cast<EnemyAttackRangeType>(variableManager->GetValue<int>(comboName,"RangeType"));
+		LoadCombo(comboName,variableManager->GetValue<int>(comboName,"ComboSize"),hpState);
 	}
 }
 
@@ -401,11 +464,11 @@ void Enemy::LoadAllAction(){
 	}
 }
 
-void Enemy::LoadCombo(const std::string& comboName,int32_t size){
+void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState){
 	VariableManager* variableManager = VariableManager::GetInstance();
 
 	for(int32_t i = 0; i < size; i++){
-		editComboVariables_[comboName].comboAttacks_.push_back({variableManager->GetValue<std::string>(comboName,"Index_" + std::to_string(i)),i});
+		editComboVariables_[hpState][comboName].comboAttacks_.push_back({variableManager->GetValue<std::string>(comboName,"Index_" + std::to_string(i)),i});
 	}
 }
 
@@ -474,35 +537,44 @@ void Enemy::DecideNextNode(){
 
 	std::string comboName = "";
 
+	// 現在の HP State を 知る
+	if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_NORMAL)]){
+		currentHPState_ = HpState::HP_HIGHTE;
+	} else if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]){
+		currentHPState_ = HpState::HP_NORMAL;
+	} else{
+		currentHPState_ = HpState::HP_LOW;
+	}
+
 	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
 		// ShortRange 以下なら
-		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::SHORT_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::SHORT_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else if(lengthEnemy2Player > distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]){
 		// MiddleRange より 大きいなら
-		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::LONG_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::LONG_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else{
-		const std::deque<std::string>& comboNameList = this->GetComboList(EnemyAttackRangeType::MIDDLE_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::MIDDLE_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
 }
 
-const ComboAttacks& Enemy::GetComboAttacks(const std::string& comboName) const{
-	auto it = editComboVariables_.find(comboName);
-	if(it != editComboVariables_.end()){
+const ComboAttacks& Enemy::GetComboAttacks(int32_t hpCombo,const std::string& comboName) const{
+	auto it = editComboVariables_[hpCombo].find(comboName);
+	if(it != editComboVariables_[hpCombo].end()){
 		return it->second;  // 見つかった場合、その要素を返す
 	} else{
 		throw std::runtime_error("Attack action '" + comboName + "' not found");  // 見つからなかった場合の例外処理
 	}
 }
 
-const std::deque<std::string>& Enemy::GetComboList(EnemyAttackRangeType rangeType) const{
-	auto it = comboByRangeType_.find(rangeType);
-	if(it != comboByRangeType_.end()){
+const std::deque<std::string>& Enemy::GetComboList(HpState state,EnemyAttackRangeType rangeType) const{
+	auto it = comboByRangeTypeByHpState_[static_cast<int32_t>(state)].find(rangeType);
+	if(it != comboByRangeTypeByHpState_[static_cast<int32_t>(state)].end()){
 		return it->second;  // 見つかった場合、その要素を返す
 	} else{
 		throw std::runtime_error("NotFound the RangeType");  // 見つからなかった場合の例外処理

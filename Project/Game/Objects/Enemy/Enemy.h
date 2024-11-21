@@ -51,6 +51,19 @@ static std::string enemyJsonDirectory = "./Resources/Parameters/Objects/Enemy";
 static std::string enemyComboDirectory = enemyJsonDirectory + "/Combo";
 static std::string enemyActionDirectory = enemyJsonDirectory + "/Action";
 
+enum class HpState{
+	HP_HIGHTE,
+	HP_NORMAL,
+	HP_LOW,
+	COUNT
+};
+
+static std::array <std::string,static_cast<int32_t>(HpState::COUNT)> wordByHpState = {
+	"HP_HIGHTE",
+	"HP_NORMAL",
+	"HP_LOW",
+};
+
 class Enemy :
 	public BaseGameObject{
 public:
@@ -64,12 +77,12 @@ public:
 	void SaveStatus();
 	void SaveCombos();
 	void SaveAllAction();
-	void SaveCombo(const std::string& comboName);
+	void SaveCombo(const std::string& comboName,int32_t hpState);
 
 	void LoadStatus();
 	void LoadCombos();
 	void LoadAllAction();
-	void LoadCombo(const std::string& comboName,int32_t size);
+	void LoadCombo(const std::string& comboName,int32_t size,int32_t hpState);
 
 	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
 	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
@@ -86,6 +99,8 @@ private:
 
 	float maxHp_;
 	float hp_;
+	std::array<float,static_cast<int32_t>(HpState::COUNT)> thresholdByHpState_;
+	HpState currentHPState_;
 
 	float speed_;
 
@@ -101,12 +116,13 @@ private:
 	std::unordered_map<AttackActionName,std::unique_ptr<WorkEnemyAction>> workEnemyActionVariables_;
 
 	// RangeType別
-	std::unordered_map<EnemyAttackRangeType,std::deque<std::string>> comboByRangeType_;
+	std::array<std::unordered_map<EnemyAttackRangeType,std::deque<std::string>>,static_cast<int32_t>(HpState::COUNT)> comboByRangeTypeByHpState_;
 	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
-	std::unordered_map<std::string,ComboAttacks> editComboVariables_;
+	std::array<std::unordered_map<std::string,ComboAttacks>,static_cast<int32_t>(HpState::COUNT)> editComboVariables_;
 
 #ifdef _DEBUG
+	HpState currentEditHpState_;
 	bool isCreateWindowPop_;
 	bool isComboCreateWindowPop_;
 	// 編集されているもの 
@@ -128,11 +144,12 @@ public:
 	const float GetMaxHP()const{ return maxHp_; }
 	float GetHP()const{ return hp_; }
 	void  SetHP(float hp){ hp_ = hp; }
+	HpState GetHpState()const{ return currentHPState_; }
 
 	float GetSpeed()const{ return speed_; }
 
-	const ComboAttacks& GetComboAttacks(const std::string& comboName)const;
-	const std::deque<std::string>& GetComboList(EnemyAttackRangeType rangeType)const;
+	const ComboAttacks& GetComboAttacks(int32_t hpState,const std::string& comboName)const;
+	const std::deque<std::string>& GetComboList(HpState state,EnemyAttackRangeType rangeType)const;
 
 	float GetDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
 

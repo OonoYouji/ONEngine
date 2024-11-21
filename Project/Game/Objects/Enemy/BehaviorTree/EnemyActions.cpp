@@ -248,7 +248,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RushAttack::EndLagUpdate(){
 /// <param name="enemy"></param>
 /// <param name="comboName"></param>
 EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comboName):EnemyBehaviorTree::Sequence(enemy){
-	const ComboAttacks& variables = enemy_->GetComboAttacks(comboName);
+	const ComboAttacks& variables = enemy_->GetComboAttacks(static_cast<int32_t>(enemy_->GetHpState()),comboName);
 
 	rangeType_ = variables.rangeType_;
 
