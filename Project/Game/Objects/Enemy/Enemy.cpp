@@ -43,6 +43,9 @@ void Enemy::Update(){
 	if(rootNode_){
 		if(rootNode_->tick() == EnemyBehaviorTree::Status::SUCCESS){
 			//DecideNextNode();
+			rootNode_ = nullptr;
+		} else if(rootNode_->tick() == EnemyBehaviorTree::Status::FAILURE){
+			rootNode_ = nullptr;
 		}
 	}
 }
@@ -534,6 +537,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::RUSH_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::RushAttack>(this,reinterpret_cast<WorkRushAttackAction*>(worker)));
 			break;
+		case ActionTypes::CHASE:
+			result->addChild(std::make_unique<EnemyBehaviorTree::ChaseAction>(this,reinterpret_cast<WorkChaseAction*>(worker)));
+			break;
 		default:
 			// 該当 する Typeが なければ reset
 			result.reset();
@@ -556,6 +562,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::RUSH_ATTACK:
 			result = std::make_unique<WorkRushAttackAction>();
+			break;
+		case ActionTypes::CHASE:
+			result = std::make_unique<WorkChaseAction>();
 			break;
 		default:
 			break;

@@ -18,16 +18,16 @@
 /// ===================================================
 /// 初期化
 /// ===================================================
-void GameObjectManager::Initialize() {
+void GameObjectManager::Initialize(){
 	objects_.reserve(kMaxInstanceCount_);
 }
 
 /// ===================================================
 /// 終了処理
 /// ===================================================
-void GameObjectManager::Finalize() {
-	if(!addObjectList_.empty()) {
-		for(auto& object : addObjectList_) {
+void GameObjectManager::Finalize(){
+	if(!addObjectList_.empty()){
+		for(auto& object : addObjectList_){
 			std::unique_ptr<BaseGameObject> newObject(object);
 			objects_.push_back(std::move(newObject));
 		}
@@ -36,20 +36,19 @@ void GameObjectManager::Finalize() {
 	objects_.clear();
 }
 
-void GameObjectManager::GameObjectInitialize(int sceneId) {
-	for(auto& obj : objects_) {
+void GameObjectManager::GameObjectInitialize(int sceneId){
+	for(auto& obj : objects_){
 		obj->Initialize();
 	}
 }
 
-
 /// ===================================================
 /// 更新
 /// ===================================================
-void GameObjectManager::Update() {
+void GameObjectManager::Update(){
 
-	if(!addObjectList_.empty()) {
-		for(auto& object : addObjectList_) {
+	if(!addObjectList_.empty()){
+		for(auto& object : addObjectList_){
 			std::unique_ptr<BaseGameObject> newObject(object);
 			objects_.push_back(std::move(newObject));
 		}
@@ -58,29 +57,29 @@ void GameObjectManager::Update() {
 
 	ReName();
 
-	for(auto& obj : objects_) {
-		if(!obj->isActive) { continue; }
+	for(auto& obj : objects_){
+		if(!obj->isActive){ continue; }
 		obj->Update();
-		for(auto& component : obj->GetComponents()) {
-			if(!component->isActive) { continue; }
+		for(auto& component : obj->GetComponents()){
+			if(!component->isActive){ continue; }
 			component->Update();
 		}
 	}
 }
 
-void GameObjectManager::LastUpdate() {
-	for(auto& obj : objects_) {
-		if(!obj->isActive) { continue; }
+void GameObjectManager::LastUpdate(){
+	for(auto& obj : objects_){
+		if(!obj->isActive){ continue; }
 		obj->LastUpdate();
-		for(auto& component : obj->GetComponents()) {
-			if(!component->isActive) { continue; }
+		for(auto& component : obj->GetComponents()){
+			if(!component->isActive){ continue; }
 			component->LastUpdate();
 		}
 	}
 
-	if(!destoryList_.empty()) {
+	if(!destoryList_.empty()){
 		/// 消去命令の出たオブジェクトを削除
-		for(auto& obj : destoryList_) {
+		for(auto& obj : destoryList_){
 			SubGameObject(obj);
 		}
 		destoryList_.clear();
@@ -88,14 +87,12 @@ void GameObjectManager::LastUpdate() {
 
 }
 
+void GameObjectManager::Object3dDraw(int layerId){
+	for(auto& obj : objects_){
+		if(obj->drawLayerId != layerId){ continue; }
 
-
-void GameObjectManager::Object3dDraw(int layerId) {
-	for(auto& obj : objects_) {
-		if(obj->drawLayerId != layerId) { continue; }
-
-		for(auto& component : obj->GetComponents()) {
-			if(!component->isActive) { continue; }
+		for(auto& component : obj->GetComponents()){
+			if(!component->isActive){ continue; }
 			component->Draw();
 		}
 
@@ -107,9 +104,9 @@ void GameObjectManager::Object3dDraw(int layerId) {
 /// ===================================================
 /// ゲームオブジェクトの追加
 /// ===================================================
-void GameObjectManager::AddGameObject(BaseGameObject* object) {
+void GameObjectManager::AddGameObject(BaseGameObject* object){
 	uint32_t currentInstanceCount = static_cast<uint32_t>(addObjectList_.size() + objects_.size());
-	if(currentInstanceCount >= kMaxInstanceCount_) {
+	if(currentInstanceCount >= kMaxInstanceCount_){
 		ONE::Logger::ConsolePrint("GameObjectManager::AddGameObject() -> if(currentInstanceCount >= kMaxInstanceCount) == true; overflow");
 		assert(false);
 	}
@@ -120,14 +117,14 @@ void GameObjectManager::AddGameObject(BaseGameObject* object) {
 /// ===================================================
 /// ゲームオブジェクトの削除
 /// ===================================================
-void GameObjectManager::SubGameObject(BaseGameObject* object) {
-	auto it = std::find_if(objects_.begin(), objects_.end(),
-						   [&object](const std::unique_ptr<BaseGameObject>& obj) {
-		return obj.get() == object;
-	});
+void GameObjectManager::SubGameObject(BaseGameObject* object){
+	auto it = std::find_if(objects_.begin(),objects_.end(),
+						   [&object](const std::unique_ptr<BaseGameObject>& obj){
+							   return obj.get() == object;
+						   });
 
-	if(it != objects_.end()) {
-		if(object == selectObject_) {
+	if(it != objects_.end()){
+		if(object == selectObject_){
 			selectObject_ = nullptr;
 		}
 		CollisionManager::GetInstance()->SubGameObject(object);
@@ -139,9 +136,9 @@ void GameObjectManager::SubGameObject(BaseGameObject* object) {
 /// ===================================================
 /// ゲームオブジェクトの消去リストに追加
 /// ===================================================
-void GameObjectManager::Destory(BaseGameObject* object) {
+void GameObjectManager::Destory(BaseGameObject* object){
 	destoryList_.push_back(object);
-	for(auto& child : object->GetChilds()) {
+	for(auto& child : object->GetChilds()){
 		destoryList_.push_back(object);
 	}
 
@@ -149,12 +146,12 @@ void GameObjectManager::Destory(BaseGameObject* object) {
 
 
 
-void GameObjectManager::ReName() {
-	std::unordered_map<std::string, uint32_t> instanceCounts;
-	for(auto& object : objects_) {
+void GameObjectManager::ReName(){
+	std::unordered_map<std::string,uint32_t> instanceCounts;
+	for(auto& object : objects_){
 		std::string name = CreateName(object.get());
 		uint32_t count = instanceCounts[name];
-		if(count) {
+		if(count){
 			object->SetName(name + std::to_string(count));
 		}
 		++instanceCounts[name];
@@ -165,27 +162,27 @@ void GameObjectManager::ReName() {
 /// ===================================================
 /// nameからGameObjectを探索、返す
 /// ===================================================
-BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
+BaseGameObject* GameObjectManager::GetGameObject(const std::string& name){
 	GameObjectManager* instance = GetInstance();
 	BaseGameObject* result = nullptr;
-	auto itr = std::find_if(instance->objects_.begin(), instance->objects_.end(), [&name, &result](std::unique_ptr<BaseGameObject>& object) {
-		if(object->GetName() == name) {
+	auto itr = std::find_if(instance->objects_.begin(),instance->objects_.end(),[&name,&result](std::unique_ptr<BaseGameObject>& object){
+		if(object->GetName() == name){
 			result = object.get();
 			return true;
 		}
 
 		return false;
-	});
+							});
 
-	if(!result) {
-		if(!instance->addObjectList_.empty()) {
-			auto addObjectListItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), [&name](BaseGameObject* object) {
-				if(object->GetName() == name) {
+	if(!result){
+		if(!instance->addObjectList_.empty()){
+			auto addObjectListItr = std::find_if(instance->addObjectList_.begin(),instance->addObjectList_.end(),[&name](BaseGameObject* object){
+				if(object->GetName() == name){
 					return true;
 				}
 				return false;
-			});
-			if(addObjectListItr != instance->addObjectList_.end()) {
+												 });
+			if(addObjectListItr != instance->addObjectList_.end()){
 				result = (*addObjectListItr);
 			}
 		}
@@ -194,28 +191,28 @@ BaseGameObject* GameObjectManager::GetGameObject(const std::string& name) {
 	return result;
 }
 
-uint32_t GameObjectManager::GetInstanceCount(const std::string& tag) {
+uint32_t GameObjectManager::GetInstanceCount(const std::string& tag){
 	GameObjectManager* instance = GetInstance();
 	uint32_t count = 0U;
-	for(const auto& object : instance->objects_) {
-		if(object->GetTag() == tag) {
+	for(const auto& object : instance->objects_){
+		if(object->GetTag() == tag){
 			count++;
 		}
 	}
 	return count;
 }
 
-std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag) {
+std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::string& tag){
 	GameObjectManager* instance = GetInstance();
 	std::list<BaseGameObject*> result;
-	for(const auto& object : instance->objects_) {
-		if(object->GetTag() == tag) {
+	for(const auto& object : instance->objects_){
+		if(object->GetTag() == tag){
 			result.push_back(object.get());
 		}
 	}
 
-	for(const auto& object : instance->addObjectList_) {
-		if(object->GetTag() == tag) {
+	for(const auto& object : instance->addObjectList_){
+		if(object->GetTag() == tag){
 			result.push_back(object);
 		}
 	}
@@ -227,15 +224,15 @@ std::list<BaseGameObject*> GameObjectManager::GetGameObjectList(const std::strin
 /// ===================================================
 /// すべてのインスタンスを削除する
 /// ===================================================
-void GameObjectManager::DestoryAll() {
+void GameObjectManager::DestoryAll(){
 	GameObjectManager* instance = GetInstance();
 
 
-	for(auto itr = instance->objects_.begin(); itr != instance->objects_.end();) {
+	for(auto itr = instance->objects_.begin(); itr != instance->objects_.end();){
 
-		if((*itr)->GetName() == "DebugCamera") {
+		if((*itr)->GetName() == "DebugCamera"){
 			++itr;
-		} else {
+		} else{
 			(*itr).reset();
 			itr = instance->objects_.erase(itr);
 		}
@@ -245,29 +242,29 @@ void GameObjectManager::DestoryAll() {
 }
 
 
-bool GameObjectManager::IsAliveObject(BaseGameObject* object) {
+bool GameObjectManager::IsAliveObject(BaseGameObject* object){
 	GameObjectManager* instance = GetInstance();
 
-	auto CheckAlive = [&object](const std::unique_ptr<BaseGameObject>& obj) { return obj.get() == object; };
-	auto itr = std::find_if(instance->objects_.begin(), instance->objects_.end(), CheckAlive);
+	auto CheckAlive = [&object](const std::unique_ptr<BaseGameObject>& obj){ return obj.get() == object; };
+	auto itr = std::find_if(instance->objects_.begin(),instance->objects_.end(),CheckAlive);
 
-	if(itr != instance->objects_.end()) {
+	if(itr != instance->objects_.end()){
 		return true;
 	}
 
-	auto CheckAlivePtr = [&object](const BaseGameObject* obj) { return obj == object; };
-	auto addObjItr = std::find_if(instance->addObjectList_.begin(), instance->addObjectList_.end(), CheckAlivePtr);
-	if(addObjItr != instance->addObjectList_.end()) {
+	auto CheckAlivePtr = [&object](const BaseGameObject* obj){ return obj == object; };
+	auto addObjItr = std::find_if(instance->addObjectList_.begin(),instance->addObjectList_.end(),CheckAlivePtr);
+	if(addObjItr != instance->addObjectList_.end()){
 		return true;
 	}
 
 	return false;
 }
 
-void GameObjectManager::AddObjectsToObjectsCopy() {
+void GameObjectManager::AddObjectsToObjectsCopy(){
 	GameObjectManager* instance = GetInstance();
-	if(!instance->addObjectList_.empty()) {
-		for(auto& object : instance->addObjectList_) {
+	if(!instance->addObjectList_.empty()){
+		for(auto& object : instance->addObjectList_){
 			std::unique_ptr<BaseGameObject> newObject(object);
 			instance->objects_.push_back(std::move(newObject));
 		}
@@ -276,13 +273,13 @@ void GameObjectManager::AddObjectsToObjectsCopy() {
 }
 
 
-void GameObjectManager::Hierarchy() {
+void GameObjectManager::Hierarchy(){
 
-	for(auto& gameObject : objects_) {
+	for(auto& gameObject : objects_){
 
 		Transform* parent = gameObject->GetParent();
-		if(parent && parent->GetOwner()) { continue; }
-		if(ImGui::Selectable(gameObject->GetName().c_str(), selectObject_ == gameObject.get())) {
+		if(parent && parent->GetOwner()){ continue; }
+		if(ImGui::Selectable(gameObject->GetName().c_str(),selectObject_ == gameObject.get())){
 			selectObject_ = gameObject.get();
 		}
 
@@ -291,29 +288,29 @@ void GameObjectManager::Hierarchy() {
 
 }
 
-void GameObjectManager::Inspector() {
-	if(!selectObject_) { return; }
+void GameObjectManager::Inspector(){
+	if(!selectObject_){ return; }
 
 	/// activeのフラグをデバッグ
-	ImGui::Checkbox("isActive", &selectObject_->isActive);
-	if(ImGui::IsItemEdited()) {
-		for(auto& child : selectObject_->GetChilds()) {
+	ImGui::Checkbox("isActive",&selectObject_->isActive);
+	if(ImGui::IsItemEdited()){
+		for(auto& child : selectObject_->GetChilds()){
 			child->isActive = selectObject_->isActive;
 		}
 	}
 
 	/// drawLayerIdのフラグをデバッグ
-	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId, 0);
-	if(ImGui::IsItemEdited()) {
-		for(auto& child : selectObject_->GetChilds()) {
+	ImGui::DragInt("drawLayerId",&selectObject_->drawLayerId,0);
+	if(ImGui::IsItemEdited()){
+		for(auto& child : selectObject_->GetChilds()){
 			child->drawLayerId = selectObject_->drawLayerId;
 		}
 	}
 
-	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+	ImGui::SetNextItemOpen(true,ImGuiCond_Always);
 
 	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
-	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
+	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(),flags)){
 		return;
 	}
 
@@ -328,7 +325,7 @@ void GameObjectManager::Inspector() {
 /// ===================================================
 /// imguiでデバッグ表示
 /// ===================================================
-void GameObjectManager::ImGuiDebug() {
+void GameObjectManager::ImGuiDebug(){
 #ifdef _DEBUG
 
 	/// ===================================================
@@ -340,12 +337,12 @@ void GameObjectManager::ImGuiDebug() {
 	/// ------------------------------------------------
 	/// BaseGameObject SelecTable
 	/// ------------------------------------------------
-	for(auto& gameObject : objects_) {
+	for(auto& gameObject : objects_){
 
 		Transform* parent = gameObject->GetParent();
-		if(parent && parent->GetOwner()) { continue; }
+		if(parent && parent->GetOwner()){ continue; }
 		//if(gameObject->GetParent()->GetOwner()) { continue; }
-		if(ImGui::Selectable(gameObject->GetName().c_str(), selectObject_ == gameObject.get())) {
+		if(ImGui::Selectable(gameObject->GetName().c_str(),selectObject_ == gameObject.get())){
 			selectObject_ = gameObject.get();
 		}
 
@@ -361,7 +358,7 @@ void GameObjectManager::ImGuiDebug() {
 	/// ===================================================
 	ImGui::Begin("Inspector");
 
-	if(selectObject_) {
+	if(selectObject_){
 		ImGuiSelectObjectDebug();
 	}
 
@@ -375,12 +372,12 @@ void GameObjectManager::ImGuiDebug() {
 /// ===================================================
 /// ImGuiのBaseGameObjectの子供をselectableで設定
 /// ===================================================
-void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseGameObject*>& childs) {
+void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseGameObject*>& childs){
 #ifdef _DEBUG
 	ImGui::Indent();
-	for(auto& child : childs) {
-		if(!child) { continue; }
-		if(ImGui::Selectable(child->GetName().c_str(), selectObject_ == child)) {
+	for(auto& child : childs){
+		if(!child){ continue; }
+		if(ImGui::Selectable(child->GetName().c_str(),selectObject_ == child)){
 			selectObject_ = child;
 		}
 		ImGuiSelectChilds(child->GetChilds());
@@ -393,29 +390,29 @@ void GameObjectManager::ImGuiSelectChilds([[maybe_unused]] const std::list<BaseG
 /// ===================================================
 /// select objcetのデバッグ
 /// ===================================================
-void GameObjectManager::ImGuiSelectObjectDebug() {
+void GameObjectManager::ImGuiSelectObjectDebug(){
 #ifdef _DEBUG
 
 	/// activeのフラグをデバッグ
-	ImGui::Checkbox("isActive", &selectObject_->isActive);
-	if(ImGui::IsItemEdited()) {
-		for(auto& child : selectObject_->GetChilds()) {
+	ImGui::Checkbox("isActive",&selectObject_->isActive);
+	if(ImGui::IsItemEdited()){
+		for(auto& child : selectObject_->GetChilds()){
 			child->isActive = selectObject_->isActive;
 		}
 	}
 
 	/// drawLayerIdのフラグをデバッグ
-	ImGui::DragInt("drawLayerId", &selectObject_->drawLayerId, 0);
-	if(ImGui::IsItemEdited()) {
-		for(auto& child : selectObject_->GetChilds()) {
+	ImGui::DragInt("drawLayerId",&selectObject_->drawLayerId,0);
+	if(ImGui::IsItemEdited()){
+		for(auto& child : selectObject_->GetChilds()){
 			child->drawLayerId = selectObject_->drawLayerId;
 		}
 	}
 
-	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+	ImGui::SetNextItemOpen(true,ImGuiCond_Always);
 
 	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
-	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
+	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(),flags)){
 		return;
 	}
 

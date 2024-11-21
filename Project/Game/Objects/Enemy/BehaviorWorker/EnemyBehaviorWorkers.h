@@ -18,15 +18,16 @@ enum class ActionTypes : int32_t{
 	WEAK_ATTACK,
 	STRONG_ATTACK,
 	RUSH_ATTACK,
-
+	CHASE,
 	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::IDLE,"IDLE"},
-	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},//
-	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},//
-	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},//
+	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
+	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
+	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},
+	{ActionTypes::CHASE,"CHASE"},
 };
 
 /// <summary>
@@ -49,6 +50,29 @@ public:
 public:
 	static std::list<std::pair<std::string,std::string>> animationList;
 };
+
+#pragma region"MoveWorker"
+class WorkChaseAction
+	:public WorkEnemyAction{
+public:
+	WorkChaseAction():WorkEnemyAction(ActionTypes::IDLE){
+		speed_ = 0.0f;
+		distanceToStopChasing_ = 0.0f;
+	}
+	~WorkChaseAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float speed_;
+	/// <summary>
+	/// どのくらい近づいたら 追いかけるのをやめるか
+	/// </summary>
+	float distanceToStopChasing_;
+};
+#pragma endregion
 
 //待機系統の アクションで使われる変数群
 #pragma region"IdleWorker"

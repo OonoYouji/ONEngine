@@ -139,3 +139,37 @@ void WorkRushAttackAction::Load(const std::string& name){
 	speed_           = variableManager->GetValue<float>(name,"speed");
 	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
 }
+
+void WorkChaseAction::Debug(){
+	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
+		for(auto& file : animationList){
+			bool isSelected = (animationName_ == file.second);
+			if(ImGui::Selectable((file.second).c_str(),isSelected)){
+				animationName_ = file.second;
+			}
+			if(isSelected){
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
+	ImGui::DragFloat("distanceToStopChasing",&distanceToStopChasing_,0.1f);
+	ImGui::DragFloat("speed",&speed_,0.1f);
+}
+
+void WorkChaseAction::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	variableManager->SetValue<int>(name,"Type",static_cast<int>(type_));
+	variableManager->SetValue(name,"activeTime",motionTimes_.activeTime_);
+	variableManager->SetValue<float>(name,"speed",speed_);
+	variableManager->SetValue<float>(name,"distanceToStopChasing",distanceToStopChasing_);
+}
+
+void WorkChaseAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	type_ = static_cast<ActionTypes>(variableManager->GetValue<int>(name,"Type"));
+	motionTimes_.activeTime_ = variableManager->GetValue<float>(name,"activeTime");
+	speed_ = variableManager->GetValue<float>(name,"speed");
+	distanceToStopChasing_ = variableManager->GetValue<float>(name,"distanceToStopChasing");
+}
