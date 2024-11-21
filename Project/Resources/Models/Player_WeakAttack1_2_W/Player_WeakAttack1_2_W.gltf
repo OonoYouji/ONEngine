@@ -1,6 +1,6 @@
 {
 	"asset":{
-		"generator":"Khronos glTF Blender I/O v4.2.57",
+		"generator":"Khronos glTF Blender I/O v4.2.70",
 		"version":"2.0"
 	},
 	"extensionsUsed":[
@@ -693,13 +693,8 @@
 					"output":32
 				},
 				{
-					"input":7,
-					"interpolation":"STEP",
-					"output":33
-				},
-				{
-					"input":7,
-					"interpolation":"STEP",
+					"input":33,
+					"interpolation":"LINEAR",
 					"output":34
 				},
 				{
@@ -723,7 +718,12 @@
 					"output":38
 				},
 				{
-					"input":39,
+					"input":7,
+					"interpolation":"STEP",
+					"output":39
+				},
+				{
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":40
 				},
@@ -733,12 +733,12 @@
 					"output":41
 				},
 				{
-					"input":39,
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":42
 				},
 				{
-					"input":39,
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":43
 				},
@@ -748,17 +748,17 @@
 					"output":44
 				},
 				{
-					"input":39,
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":45
 				},
 				{
-					"input":39,
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":46
 				},
 				{
-					"input":39,
+					"input":33,
 					"interpolation":"LINEAR",
 					"output":47
 				}
@@ -900,7 +900,7 @@
 				1.1666666666666667
 			],
 			"min":[
-				0.31666666666666665
+				0.25
 			],
 			"type":"SCALAR"
 		},
@@ -1057,14 +1057,20 @@
 		{
 			"bufferView":33,
 			"componentType":5126,
-			"count":2,
-			"type":"VEC4"
+			"count":56,
+			"max":[
+				1.1666666666666667
+			],
+			"min":[
+				0.25
+			],
+			"type":"SCALAR"
 		},
 		{
 			"bufferView":34,
 			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
+			"count":56,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":35,
@@ -1076,13 +1082,13 @@
 			"bufferView":36,
 			"componentType":5126,
 			"count":2,
-			"type":"VEC4"
+			"type":"VEC3"
 		},
 		{
 			"bufferView":37,
 			"componentType":5126,
 			"count":2,
-			"type":"VEC3"
+			"type":"VEC4"
 		},
 		{
 			"bufferView":38,
@@ -1093,19 +1099,13 @@
 		{
 			"bufferView":39,
 			"componentType":5126,
-			"count":52,
-			"max":[
-				1.1666666666666667
-			],
-			"min":[
-				0.31666666666666665
-			],
-			"type":"SCALAR"
+			"count":2,
+			"type":"VEC3"
 		},
 		{
 			"bufferView":40,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC4"
 		},
 		{
@@ -1117,13 +1117,13 @@
 		{
 			"bufferView":42,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":43,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC4"
 		},
 		{
@@ -1135,19 +1135,19 @@
 		{
 			"bufferView":45,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":46,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":47,
 			"componentType":5126,
-			"count":52,
+			"count":56,
 			"type":"VEC3"
 		}
 	],
@@ -1325,43 +1325,28 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":32,
+			"byteLength":224,
 			"byteOffset":13776
 		},
 		{
 			"buffer":0,
-			"byteLength":24,
-			"byteOffset":13808
+			"byteLength":896,
+			"byteOffset":14000
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":13832
+			"byteOffset":14896
+		},
+		{
+			"buffer":0,
+			"byteLength":24,
+			"byteOffset":14920
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-			"byteOffset":13856
-		},
-		{
-			"buffer":0,
-			"byteLength":24,
-			"byteOffset":13888
-		},
-		{
-			"buffer":0,
-			"byteLength":24,
-			"byteOffset":13912
-		},
-		{
-			"buffer":0,
-			"byteLength":208,
-			"byteOffset":13936
-		},
-		{
-			"buffer":0,
-			"byteLength":832,
-			"byteOffset":14144
+			"byteOffset":14944
 		},
 		{
 			"buffer":0,
@@ -1370,33 +1355,48 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":624,
+			"byteLength":24,
 			"byteOffset":15000
 		},
 		{
 			"buffer":0,
-			"byteLength":832,
-			"byteOffset":15624
+			"byteLength":896,
+			"byteOffset":15024
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":16456
+			"byteOffset":15920
 		},
 		{
 			"buffer":0,
-			"byteLength":624,
-			"byteOffset":16480
+			"byteLength":672,
+			"byteOffset":15944
 		},
 		{
 			"buffer":0,
-			"byteLength":832,
-			"byteOffset":17104
+			"byteLength":896,
+			"byteOffset":16616
 		},
 		{
 			"buffer":0,
-			"byteLength":624,
-			"byteOffset":17936
+			"byteLength":24,
+			"byteOffset":17512
+		},
+		{
+			"buffer":0,
+			"byteLength":672,
+			"byteOffset":17536
+		},
+		{
+			"buffer":0,
+			"byteLength":896,
+			"byteOffset":18208
+		},
+		{
+			"buffer":0,
+			"byteLength":672,
+			"byteOffset":19104
 		}
 	],
 	"samplers":[
@@ -1407,7 +1407,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":18560,
+			"byteLength":19776,
 			"uri":"Player_WeakAttack1_2_W.bin"
 		}
 	]

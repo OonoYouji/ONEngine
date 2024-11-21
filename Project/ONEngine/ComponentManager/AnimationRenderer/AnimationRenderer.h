@@ -23,6 +23,14 @@
 #include "Skinning.h"
 #include <minwindef.h>
 
+
+enum ANIMATION_FLAG{
+	ANIMATION_FLAG_NONE,   /// 空
+	ANIMATION_FLAG_NOLOOP, /// リピート再生しない
+};
+
+
+
 /// ===================================================
 /// アニメーションの
 /// ===================================================
@@ -62,6 +70,10 @@ public:
 
 	void SetTimeRate(float _timeRate);
 
+	void SetAnimationFlags(int _flags);
+
+	void Restart();
+
 	const std::string& GetCurrentNodeAnimationKey() const {
 		return currentNodeAnimationKey_;
 	}
@@ -70,6 +82,7 @@ public:
 		return &skeletonMap_.at(currentNodeAnimationKey_);
 	}
 
+	
 private:
 	/// ===================================================
 	/// private : objects
@@ -77,6 +90,9 @@ private:
 
 	float animationTime_;
 	float timeRate_ = 1.0f;
+	int animationFlags_ = 0;
+
+	bool isPlayedOnce_ = false;
 
 	Transform transform_;
 

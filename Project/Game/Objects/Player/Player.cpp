@@ -34,6 +34,7 @@ void Player::Initialize() {
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
 
+	SetAnimationFlags(0);
 
 	/// ボディの先読み
 	const std::array<std::string, 3> bodyModelAnimationFilePaths{
@@ -337,6 +338,28 @@ void Player::SetAnimationModel(const std::string& _bodyModelFilePath, const std:
 void Player::SetAnimationTotalTime(float _totalTime) {
 	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+void Player::ResetAnimationTotal() {
+	bodyAnimationRenderer_->SetTotalTime(
+		bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey()), 
+		bodyAnimationRenderer_->GetCurrentNodeAnimationKey()
+	);
+
+	weaponAnimationRenderer_->SetTotalTime(
+		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
+	);
+}
+
+void Player::SetAnimationFlags(int _flags, bool _isResetTime) {
+	bodyAnimationRenderer_->SetAnimationFlags(_flags);
+	weaponAnimationRenderer_->SetAnimationFlags(_flags);
+
+	if(_isResetTime) {
+		bodyAnimationRenderer_->Restart();
+		weaponAnimationRenderer_->Restart();
+	}
 }
 
 float Player::GetAnimationDuration() {

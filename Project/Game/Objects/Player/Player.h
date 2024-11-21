@@ -141,6 +141,9 @@ public:
 	void SetAnimationModel(const std::string& _filePath);
 	void SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath);
 	void SetAnimationTotalTime(float _totalTime);
+	void ResetAnimationTotal();
+
+	void SetAnimationFlags(int _flags, bool _isResetTime = true);
 
 	float GetAnimationDuration();
 
@@ -148,5 +151,6 @@ public:
 	void SetLastDirection(const Vec2& _lastDirection) { lastDirection_ = _lastDirection; }
 
 	void SetIsActiveWeapon(bool _isActive);
+
 
 };

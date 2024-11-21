@@ -53,8 +53,31 @@ void AnimationRenderer::Update() {
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
+
+	if(!animationFlags_) {
+		animationTime_ += Time::DeltaTime() * timeRate_;
+		animationTime_ = std::fmod(animationTime_, durationMap_[currentNodeAnimationKey_]);
+
+	} else if(animationFlags_ & ANIMATION_FLAG_NOLOOP){
+		if(!isPlayedOnce_) {
+			float duration = durationMap_[currentNodeAnimationKey_];
+
+			animationTime_ += Time::DeltaTime() * timeRate_;
+			animationTime_ = std::min(animationTime_, duration);
+
+
+			/// 終了
+			if(animationTime_ == duration) {
+				isPlayedOnce_ = true;
+			}
+		}
+
+	}
+
+
+
 	skeletonMap_[currentNodeAnimationKey_].Update(
-		timeRate_, durationMap_[currentNodeAnimationKey_], map
+		animationTime_, map
 	);
 
 	SkinClusterUpdate(
@@ -240,11 +263,7 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 
 
 	currentNodeAnimationKey_ = _filePath;
-
-	Skeleton& skeleton = skeletonMap_[_filePath];
-	for(auto& joint : skeleton.joints) {
-		joint.animationTime = 0.0f;
-	}
+	animationTime_ = 0.0f;
 
 }
 
@@ -326,6 +345,17 @@ void AnimationRenderer::SetTotalTime(float _totalTime, const std::string& _fileP
 
 void AnimationRenderer::SetTimeRate(float _timeRate) {
 	timeRate_ = _timeRate;
+}
+
+void AnimationRenderer::SetAnimationFlags(int _flags) {
+	animationFlags_ = _flags;
+}
+
+void AnimationRenderer::Restart() {
+	isPlayedOnce_ = false;
+	
+	animationTime_ = 0.0f;
+
 }
 
 

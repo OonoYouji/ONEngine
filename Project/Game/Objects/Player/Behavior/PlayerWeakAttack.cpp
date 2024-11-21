@@ -5,6 +5,10 @@
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
 
+/// component
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+/// player
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerRootBehavior.h"
 #include "../Collision/PlayerAttackCollider/PlayerAttackCollider.h"
@@ -24,13 +28,14 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 	//animationModelFilePath += std::to_string(comboNum_ + 1);
 	animationModelFilePath += std::to_string(1);
 
+
 	host_->SetIsActiveWeapon(true);
 	host_->SetAnimationModel(
 		animationModelFilePath + "_1_P",
 		animationModelFilePath + "_1_W"
 	);
 	host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.startupTime_);
-
+	host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 }
 
 void PlayerWeakAttack::Update() {
@@ -77,6 +82,7 @@ void PlayerWeakAttack::StartupUpdate() {
 			animationModelFilePath + "_2_W"
 		);
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
+		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
 
 		currentUpdate_ = [this]() {WeakAttack(); };
@@ -107,6 +113,7 @@ void PlayerWeakAttack::WeakAttack() {
 			animationModelFilePath + "_3_W"
 		);
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.endLagTime_);
+		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
 
 		currentUpdate_ = [this]() {EndLagUpdate(); };
