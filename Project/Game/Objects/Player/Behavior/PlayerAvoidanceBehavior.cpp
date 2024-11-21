@@ -4,6 +4,7 @@
 
 #include "FrameManager/Time.h"
 #include "Math/Vector3.h"
+#include "Math/Easing.h"
 
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	IPlayerBehavior(_host),
@@ -39,7 +40,10 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 void PlayerAvoidanceBehavior::Avoidance(){
 	float t = currentTime_ / workInBehavior_.motionTimes_.activeTime_;
 
-	host_->SetPosition(Vector3::Lerp(beforePos_,afterPos_,t));
+	host_->SetPosition(Vector3::Lerp(
+		beforePos_,afterPos_,
+		Ease::Out::Sine(t)
+	));
 
 	if(currentTime_ >= workInBehavior_.motionTimes_.activeTime_){
 		currentTime_ = 0.0f;

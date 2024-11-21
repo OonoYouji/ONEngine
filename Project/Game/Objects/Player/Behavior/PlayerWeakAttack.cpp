@@ -21,12 +21,10 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 
 	workInBehavior_ = player->GetWorkWeakAttackBehavior(comboNum_);
 
-	nextBehavior_ = std::make_unique<PlayerRootBehavior>(host_);
-
+	nextBehavior_ = static_cast<int>(NextBehavior::root);
 
 	std::string animationModelFilePath = "Player_WeakAttack";
-	//animationModelFilePath += std::to_string(comboNum_ + 1);
-	animationModelFilePath += std::to_string(1);
+	animationModelFilePath += std::to_string(comboNum_ + 1);
 
 
 	host_->SetIsActiveWeapon(true);
@@ -56,15 +54,17 @@ void PlayerWeakAttack::Update() {
 
 	/// 次のbehaviorに行くための処理
 	if(isDush) {
-		nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
+		nextBehavior_ = static_cast<int>(NextBehavior::avoidance);
+		//nextBehavior_ = std::make_unique<PlayerAvoidanceBehavior>(host_);
 		return;
 	} else if(isNextCombo) {
 		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
-		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()) {
+		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax() - 1) {
 			return;
 		}
 
-		nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
+		nextBehavior_ = static_cast<int>(NextBehavior::combo);
+		//nextBehavior_ = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
 		return;
 	}
 }
@@ -130,8 +130,26 @@ void PlayerWeakAttack::EndLagUpdate() {
 			"Player_Wait"
 		);
 		host_->SetAnimationTotalTime(host_->GetAnimationDuration());
+		host_->SetAnimationFlags(0);
 
-		host_->TransitionBehavior(std::move(nextBehavior_));
+
+		std::unique_ptr<IPlayerBehavior> nextBehavior;
+
+		switch(nextBehavior_) {
+		case static_cast<int>(NextBehavior::root):
+			nextBehavior = std::make_unique<PlayerRootBehavior>(host_);
+			break;
+		case static_cast<int>(NextBehavior::avoidance):
+			nextBehavior = std::make_unique<PlayerAvoidanceBehavior>(host_);
+			break;
+		case static_cast<int>(NextBehavior::combo):
+			nextBehavior = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
+			break;
+		}
+
+		host_->TransitionBehavior(std::move(nextBehavior));
+
+
 		return;
 	}
 }
