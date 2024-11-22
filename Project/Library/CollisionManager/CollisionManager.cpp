@@ -67,10 +67,7 @@ void CollisionManager::Update() {
 			continue;
 		}
 
-		/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
-		if(!objA->isActive || !colliderA->isActive) {
-			continue;
-		}
+		
 
 
 		for(auto& objB : gameObjects_) {
@@ -86,8 +83,16 @@ void CollisionManager::Update() {
 				continue;
 			}
 
+
+			/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
+			if(!objA->isActive || !colliderA->isActive) {
+				ErasePair(objB, objA);
+				continue;
+			}
+
 			/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
 			if(!objB->isActive || !colliderB->isActive) {
+				ErasePair(objB, objA);
 				continue;
 			}
 

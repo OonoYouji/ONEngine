@@ -7,9 +7,6 @@
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
 
-/// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "GraphicManager/Light/DirectionalLight.h"
@@ -22,9 +19,6 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
-
-/// lib
-#include "Debugger/Assertion.h"
 
 /// ===================================================
 /// 初期化処理
@@ -60,6 +54,7 @@ void Scene_Game::Initialize(){
 
 	bbObjectManager->Initialize();
 
+	player->SetEnemy(enemy);
 	playerHPRenderer->SetPlayer(player);
 
 
@@ -67,6 +62,7 @@ void Scene_Game::Initialize(){
 
 
 	/// ui layer  index=1
+
 	GameCamera* uiCamera = new GameCamera("uiCamera");
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);

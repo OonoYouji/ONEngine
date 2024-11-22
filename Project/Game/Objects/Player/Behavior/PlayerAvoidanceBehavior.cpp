@@ -7,7 +7,11 @@
 #include "Math/Easing.h"
 #include "Math/LerpShortAngle.h"
 
+/// component
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+/// objects
+#include "Objects/Enemy/Enemy.h"
 
 
 PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
@@ -43,6 +47,31 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 		v3Direction = Matrix4x4::Transform(v3Direction,Matrix4x4::MakeRotateY(host_->GetRotate().y));
 		afterPos_ = beforePos_ + (workInBehavior_.moveDistance_ * v3Direction);
 
+		
+		{	/// beforeとafterの間にボスがいるのか得る
+
+			Enemy* pEnemy = host_->GetEnemy();
+
+			Vec3  toEnemyVec         = pEnemy->GetPosition() - host_->GetPosition();
+			float projectionValue    = Vec3::Dot((afterPos_ - beforePos_).Normalize(), toEnemyVec);
+
+			if(projectionValue > 0.0f && projectionValue < (afterPos_ - beforePos_).Len()) {
+
+				Vec3  projectionPosition = beforePos_ + (afterPos_ - beforePos_).Normalize() * projectionValue;
+
+				/// TODO: 当たり判定がピッタリすぎて回避できないときがある
+				Vec3  projectionPosToEnemy = pEnemy->GetPosition() - projectionPosition;
+				float radius = host_->GetColliderRadius() + pEnemy->GetColliderRadius();
+
+				/// 当たってたら
+				if(projectionPosToEnemy.Len() < radius) {
+					Vec3 afterPos = projectionPosition;
+					afterPos += projectionPosToEnemy.Normalize() * (radius - projectionPosToEnemy.Len());;
+					afterPos_ = afterPos;
+				}
+			}
+		}
+
 		// 無敵状態に 
 		host_->SetIsInvisible(true);
 
@@ -62,7 +91,7 @@ void PlayerAvoidanceBehavior::Avoidance(){
 	float t = currentTime_ / workInBehavior_.motionTimes_.activeTime_;
 
 	host_->SetPosition(Vector3::Lerp(
-		beforePos_,afterPos_,
+		beforePos_, afterPos_,
 		Ease::Out::Sine(t)
 	));
 

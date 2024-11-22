@@ -171,6 +171,7 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.cpp" />
+    <ClCompile Include="Game\Objects\DamageNumRender\DamageNumRender.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyIdle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.h" />
+    <ClInclude Include="Game\Objects\DamageNumRender\DamageNumRender.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyIdle.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.h" />

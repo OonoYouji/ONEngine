@@ -37,7 +37,7 @@ void Enemy::Initialize(){
 	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
-
+	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
 	//DecideNextNode();
 
