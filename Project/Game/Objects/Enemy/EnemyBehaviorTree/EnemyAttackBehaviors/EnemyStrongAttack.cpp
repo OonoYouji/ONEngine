@@ -17,6 +17,8 @@ EnemyBehaviorTree::StrongAttackStartup::StrongAttackStartup(Enemy* enemy,float s
 	rotateP2E_ = 0.0f;
 	startupTime_ = startupTime;
 	currentTime_ = 0.0f;
+	currentUpdate_ = [this](){return InitRotate(); };
+	maxRotateY_ = maxRotateY;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackStartup::tick(){
@@ -91,7 +93,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 		currentTime_ = 0.0f;
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
-		return EnemyBehaviorTree::Status::RUNNING;
+		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }

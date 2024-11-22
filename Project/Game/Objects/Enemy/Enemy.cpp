@@ -41,9 +41,9 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	LoadStatus();
+	/*LoadStatus();
 	LoadAllAction();
-	LoadCombos();
+	LoadCombos();*/
 
 	hp_ = maxHp_;
 }
@@ -520,8 +520,8 @@ void Enemy::SetAnimationRender(const std::string& filePath){
 
 void Enemy::SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
-	this->bodyAnimationRenderer_->ChangeAnimation(weaponFilePath);
 	this->weaponAnimationRenderer_->isActive = true;
+	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){

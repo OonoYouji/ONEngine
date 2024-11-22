@@ -80,5 +80,5 @@ EnemyBehaviorTree::WeakAttack::WeakAttack(Enemy* enemy,WorkWeakAttackAction* wor
 	addChild(std::make_unique<WeakAttackAction>(enemy,worker->motionTimes_.activeTime_,worker->damage_));
 
 	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_1_3",worker->motionTimes_.endLagTime_,false));
-	addChild(std::make_unique<WeakAttackStartup>(enemy,worker->motionTimes_.endLagTime_,worker->damage_));
+	addChild(std::make_unique<WeakAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }
