@@ -2,8 +2,11 @@
 
 #include <iostream>
 
-#include "BehaviorTree/EnemyActions.h"
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
+#include "EnemyBehaviorTree/EnemyBasicActions.h"
+#include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
+#include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
 #include "EnemyCollider/EnemyAttackCollider.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
@@ -28,7 +31,7 @@ Enemy::Enemy(Player* player,EnemyAttackCollider* collider):BaseGameObject(),play
 Enemy::~Enemy(){}
 
 void Enemy::Initialize(){
-	animationRender_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
+	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	// 最初の行動を設定
@@ -513,7 +516,41 @@ void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState)
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath){
-	this->animationRender_->ChangeAnimation(filePath);
+	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+	this->weaponAnimationRenderer_->isActive = false;
+}
+
+void Enemy::SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath){
+	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+	this->bodyAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->weaponAnimationRenderer_->isActive = true;
+}
+
+void Enemy::SetAnimationTotalTime(float _totalTime){
+	bodyAnimationRenderer_->SetTotalTime(_totalTime,bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
+	weaponAnimationRenderer_->SetTotalTime(_totalTime,weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+void Enemy::ResetAnimationTotal(){
+	bodyAnimationRenderer_->SetTotalTime(
+		bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		bodyAnimationRenderer_->GetCurrentNodeAnimationKey()
+	);
+
+	weaponAnimationRenderer_->SetTotalTime(
+		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
+	);
+}
+
+void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
+	bodyAnimationRenderer_->SetAnimationFlags(_flags);
+	weaponAnimationRenderer_->SetAnimationFlags(_flags);
+
+	if(_isResetTime){
+		bodyAnimationRenderer_->Restart();
+		weaponAnimationRenderer_->Restart();
+	}
 }
 
 Player* Enemy::GetPlayer() const{ return player_; }
@@ -527,20 +564,20 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 	result->addChild(std::make_unique<EnemyBehaviorTree::TransitionAnimation>(this,worker->animationName_));
 
 	switch(worker->type_){
+		case ActionTypes::IDLE:
+			result->addChild(std::make_unique<EnemyBehaviorTree::Idle>(this,reinterpret_cast<WorkIdleAction*>(worker)));
+			break;
+		case ActionTypes::CHASE:
+			result->addChild(std::make_unique<EnemyBehaviorTree::Chase>(this,reinterpret_cast<WorkChaseAction*>(worker)));
+			break;
 		case ActionTypes::WEAK_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
 			break;
 		case ActionTypes::STRONG_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
 			break;
-		case ActionTypes::IDLE:
-			result->addChild(std::make_unique<EnemyBehaviorTree::IdleAction>(this,reinterpret_cast<WorkIdleAction*>(worker)));
-			break;
 		case ActionTypes::RUSH_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::RushAttack>(this,reinterpret_cast<WorkRushAttackAction*>(worker)));
-			break;
-		case ActionTypes::CHASE:
-			result->addChild(std::make_unique<EnemyBehaviorTree::ChaseAction>(this,reinterpret_cast<WorkChaseAction*>(worker)));
 			break;
 		default:
 			// 該当 する Typeが なければ reset

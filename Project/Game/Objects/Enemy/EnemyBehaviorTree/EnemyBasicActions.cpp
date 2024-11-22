@@ -1,4 +1,4 @@
-#include "EnemyActions.h"
+#include "EnemyBasicActions.h"
 
 #include <algorithm>
 #include <numbers>
@@ -8,103 +8,38 @@
 #include "FrameManager/Time.h"
 #include "Objects/Player/Player.h"
 
-EnemyBehaviorTree::TransitionAnimation::TransitionAnimation(Enemy* enemy,const std::string& animation)
-	:EnemyBehaviorTree::Action(enemy),animation_(animation){}
+EnemyBehaviorTree::TransitionAnimation::TransitionAnimation(Enemy* enemy,const std::string& animation,float animationTotalTime,bool isLoop)
+	:EnemyBehaviorTree::Action(enemy){
+	animation_ = animation;
+	animationTotalTime_ = animationTotalTime;
+	isLoop_ = isLoop;
+}
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::TransitionAnimation::tick(){
 	enemy_->SetAnimationRender(animation_);
+	enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
+	if(animationTotalTime_ >= 0.0f){
+		enemy_->SetAnimationTotalTime(animationTotalTime_);
+	}
 	return Status::SUCCESS;
 }
 
-#pragma region"Chase"
-EnemyBehaviorTree::ChaseAction::ChaseAction(Enemy* enemy,WorkChaseAction* worker)
-	:EnemyBehaviorTree::Action(enemy),currentTime_(0.0f),workInBehavior_(worker){
-	velocity_ = Matrix4x4::Transform({0.0f,0.0f,1.0f},Matrix4x4::MakeRotateY(enemy_->GetRotate().y));
+EnemyBehaviorTree::TransitionAnimationWithWeapon::TransitionAnimationWithWeapon(Enemy* enemy,const std::string& animation,float animationTotalTime,bool isLoop)
+	:EnemyBehaviorTree::Action(enemy){
+	animation_[0] = animation + "_E";
+	animation_[1] = animation + "_P";
+	animationTotalTime_ = animationTotalTime;
+	isLoop_ = isLoop;
 }
 
-EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
-	currentTime_ += Time::DeltaTime();
-
-	Vector3 diffP2E = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
-
-	Vector3 newRotate = Vector3::Slerp(Vector3::Normalize(velocity_),Vector3::Normalize(diffP2E),0.024f);
-	enemy_->SetRotateY(atan2(newRotate.x,newRotate.z));
-	velocity_ = Matrix4x4::Transform({0.0f,0.0f,workInBehavior_->speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y));
-	enemy_->SetPosition(enemy_->GetPosition() + velocity_);
-
-	if(workInBehavior_->distanceToStopChasing_ > diffP2E.Len()){
-		return EnemyBehaviorTree::Status::SUCCESS;
-	} else if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
-		return EnemyBehaviorTree::Status::FAILURE;
+EnemyBehaviorTree::Status EnemyBehaviorTree::TransitionAnimationWithWeapon::tick(){
+	enemy_->SetAnimationRender(animation_[0],animation_[1]);
+	enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
+	if(animationTotalTime_ >= 0.0f){
+		enemy_->SetAnimationTotalTime(animationTotalTime_);
 	}
-	return EnemyBehaviorTree::Status::RUNNING;
+	return Status::SUCCESS;
 }
-#pragma endregion
-
-#pragma region"Idle"
-EnemyBehaviorTree::IdleAction::IdleAction(Enemy* enemy,WorkIdleAction* worker)
-	: EnemyBehaviorTree::Action(enemy),currentTime_(0.0f){
-	workInBehavior_ = worker;
-}
-
-EnemyBehaviorTree::Status EnemyBehaviorTree::IdleAction::tick(){
-	currentTime_ += Time::DeltaTime();
-	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
-		return Status::SUCCESS;
-	}
-	return Status::RUNNING;
-}
-#pragma endregion
-
-#pragma region"WeakAttack"
-///=========================================================
-/// 基本アニメーションで完結するため、あんまり書くことがない
-///=========================================================
-EnemyBehaviorTree::WeakAttack::WeakAttack(Enemy* enemy,WorkWeakAttackAction* worker)
-	:EnemyBehaviorTree::Action(enemy),workInBehavior_(worker){
-	currentUpdate_ = [this](){return StartupUpdate(); };
-	currentTime_ = 0.0f;
-}
-
-EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::tick(){
-	return currentUpdate_();
-}
-
-EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::StartupUpdate(){
-	currentTime_ += Time::DeltaTime();
-
-	if(currentTime_ >= workInBehavior_->motionTimes_.startupTime_){
-		currentTime_ = 0.0f;
-		currentUpdate_ = [this](){return Attack(); };
-		// 当たり判定を有効化
-		enemy_->ActivateAttackCollider(workInBehavior_->type_,workInBehavior_->collisionRadius_);
-	}
-	return EnemyBehaviorTree::Status::RUNNING;
-}
-
-EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::Attack(){
-	currentTime_ += Time::DeltaTime();
-
-	if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
-		currentTime_ = 0.0f;
-		currentUpdate_ = [this](){return EndLagUpdate(); };
-
-		// 当たり判定を 無効化
-		enemy_->TerminateAttackCollider();
-	}
-	return EnemyBehaviorTree::Status::RUNNING;
-}
-
-EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttack::EndLagUpdate(){
-	currentTime_ += Time::DeltaTime();
-
-	if(currentTime_ >= workInBehavior_->motionTimes_.endLagTime_){
-		currentTime_ = 0.0f;
-		return EnemyBehaviorTree::Status::SUCCESS;
-	}
-	return EnemyBehaviorTree::Status::RUNNING;
-}
-#pragma endregion
 
 #pragma region"StrongAttack"
 EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackAction* worker)
@@ -281,3 +216,4 @@ EnemyBehaviorTree::AttackCombo::AttackCombo(Enemy* enemy,const std::string& comb
 		addChild(enemy_->CreateAction(variableName.attackName_));
 	}
 }
+

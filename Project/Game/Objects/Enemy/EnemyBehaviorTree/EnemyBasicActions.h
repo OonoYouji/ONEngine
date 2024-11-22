@@ -1,21 +1,18 @@
 #pragma once
 
-#include <functional>
 #include <stdint.h>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 #include "Math/Vector3.h"
+
 #include "Node.h"
 
 /// <summary>
 /// 前方宣言
 /// </summary>
-class WorkIdleAction;
-class WorkWeakAttackAction;
 class WorkStrongAttackAction;
 class WorkRushAttackAction;
-class WorkChaseAction;
 
 enum class EnemyAttackRangeType : int32_t{
 	SHORT_RANGE,
@@ -36,70 +33,45 @@ namespace EnemyBehaviorTree{
 	class TransitionAnimation
 		:public Action{
 	public:
-		TransitionAnimation(Enemy* enemy,const std::string& animation);
+		TransitionAnimation(Enemy* enemy,const std::string& animation,float animationTotalTime,bool isLoop);
 		~TransitionAnimation(){}
 
 		Status tick()override;
 	private:
 		std::string animation_;
+		float animationTotalTime_;
+		bool isLoop_;
 	};
+	class TransitionAnimationWithWeapon
+		:public Action{
+	public:
+		TransitionAnimationWithWeapon(Enemy* enemy,const std::string& animation,float animationTotalTime,bool isLoop);
+		~TransitionAnimationWithWeapon(){}
 
+		Status tick()override;
+	private:
+		std::string animation_[2];
+		float animationTotalTime_;
+		bool isLoop_;
+	};
 	///====================================
 	/// 移動系
 	///====================================
 #pragma region"Move"
-	class ChaseAction
-		:public Action{
-	public:
-		ChaseAction(Enemy* enemy,WorkChaseAction* worker);
-		~ChaseAction()override{}
 
-		Status tick()override;
-	private:
-		WorkChaseAction* workInBehavior_;
-		Vector3 velocity_;
-		float currentTime_;
-	};
 #pragma endregion
 
 	///====================================
 	/// 待機系
 	///====================================
 #pragma region"Idle"
-	class IdleAction
-		:public Action{
-	public:
-		IdleAction(Enemy* enemy,WorkIdleAction* worker);
-		~IdleAction()override{}
 
-		Status tick()override;
-	private:
-		WorkIdleAction* workInBehavior_;
-		float currentTime_;
-	};
 #pragma endregion
 
 	///====================================
 	/// 攻撃系
 	///====================================
 #pragma region"Attack"
-	class WeakAttack
-		:public EnemyBehaviorTree::Action{
-	public:
-		WeakAttack(Enemy* enemy,WorkWeakAttackAction* worker);
-		~WeakAttack()override{}
-
-		Status tick()override;
-	private:
-		Status StartupUpdate();
-		Status Attack();
-		Status EndLagUpdate();
-	private:
-		std::function<Status()> currentUpdate_;
-		WorkWeakAttackAction* workInBehavior_;
-		float currentTime_;
-	};
-
 	class StrongAttack
 		:public EnemyBehaviorTree::Action{
 	public:

@@ -6,11 +6,6 @@
 #include "CustomMath/MotionTimes.h"
 
 /// <summary>
-/// 前方宣言
-/// </summary>
-enum class ActionTypes;
-
-/// <summary>
 /// 行動の一覧
 /// </summary>
 enum class ActionTypes : int32_t{

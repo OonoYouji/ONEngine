@@ -160,7 +160,7 @@
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Library\Math\LerpShortAngle.cpp" />
     <ClCompile Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorkers.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyBasicActions.cpp" />
     <ClCompile Include="Game\MyFileSystem\MyFileSystem.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttack.cpp" />
     <ClCompile Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.cpp" />
@@ -171,6 +171,9 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyIdle.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -180,7 +183,6 @@
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
@@ -320,7 +322,7 @@
     <ClInclude Include="Game\CustomMath\MotionTimes.h" />
     <ClInclude Include="Library\Math\LerpShortAngle.h" />
     <ClInclude Include="Game\Objects\Enemy\BehaviorWorker\EnemyBehaviorWorkers.h" />
-    <ClInclude Include="Game\Objects\Enemy\BehaviorTree\EnemyActions.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyBasicActions.h" />
     <ClInclude Include="Game\MyFileSystem\MyFileSystem.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttack.h" />
@@ -332,6 +334,10 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyIdle.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\Node.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
