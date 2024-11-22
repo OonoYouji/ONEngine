@@ -147,6 +147,7 @@ public:
 	void SetEnemy(class Enemy* _enemy);
 
 	class GameCamera* GetCamera() const { return pGameCamera_; }
+	class Enemy* GetEnemy() const { return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 	
 	void SetAnimationModel(const std::string& _filePath);
@@ -162,6 +163,8 @@ public:
 	void SetLastDirection(const Vec2& _lastDirection) { lastDirection_ = _lastDirection; }
 
 	void SetIsActiveWeapon(bool _isActive);
+
+	float GetColliderRadius() const { return colliderRadius_; }
 
 
 };
