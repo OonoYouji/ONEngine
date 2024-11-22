@@ -33,6 +33,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
 
 EnemyBehaviorTree::Chase::Chase(Enemy* enemy,WorkChaseAction* worker)
 	:EnemyBehaviorTree::Sequence(enemy){
-	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Wait"));
+	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Wait",-1.0f,true));
 	addChild(std::make_unique<ChaseAction>(enemy,worker));
 }
