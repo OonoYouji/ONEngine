@@ -171,6 +171,7 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.cpp" />
+    <ClCompile Include="Game\Objects\DamageNumRender\DamageNumRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -332,6 +333,7 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.h" />
+    <ClInclude Include="Game\Objects\DamageNumRender\DamageNumRender.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

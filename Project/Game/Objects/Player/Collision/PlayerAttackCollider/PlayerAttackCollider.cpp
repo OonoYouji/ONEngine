@@ -12,6 +12,8 @@
 
 /// objects
 #include "../../Player.h"
+#include "Objects/DamageNumRender/DamageNumRender.h"
+
 
 PlayerAttackCollider::PlayerAttackCollider(Player* _player) {
 	CreateTag(this);
@@ -52,6 +54,10 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "Enemy") {
 		isCollisionEnter_ = true;
 		
+
+		DamageNumRender* damageRender = new DamageNumRender(50);
+		damageRender->Initialize();
+		damageRender->SetPosition(_collision->GetPosition() + Vec3::kUp * 2.0f);
 	}
 }
 
@@ -61,6 +67,7 @@ void PlayerAttackCollider::OnCollisionStay(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "Enemy") {
 		isCollisionStay_ = true;
 
+		
 	}
 }
 

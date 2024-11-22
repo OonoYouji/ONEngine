@@ -335,6 +335,7 @@ void Player::PushBack() {
 		Vec3 pushBackDirection = -diff.Normalize();
 
 		pTransform_->position += pushBackDirection * (radius - diff.Len());
+		pTransform_->position.y = 0.0f;
 	}
 }
 

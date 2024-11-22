@@ -62,6 +62,7 @@ void Scene_Game::Initialize(){
 
 
 	/// ui layer  index=1
+
 	GameCamera* uiCamera = new GameCamera("uiCamera");
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);
