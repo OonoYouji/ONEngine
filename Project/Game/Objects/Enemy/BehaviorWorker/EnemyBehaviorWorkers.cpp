@@ -8,22 +8,8 @@
 #include "MyFileSystem/MyFileSystem.h"
 #include "VariableManager/VariableManager.h"
 
-std::list<std::pair<std::string,std::string>> WorkEnemyAction::animationList = MyFileSystem::SearchFile("./Resources/Models","gltf");
 
 void WorkEnemyAction::Debug(){
-	// Animation を 選ぶ
-	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
-		for(auto& file : animationList){
-			bool isSelected = (animationName_ == file.second);
-			if(ImGui::Selectable((file.second).c_str(),isSelected)){
-				animationName_ = file.second;
-			}
-			if(isSelected){
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
 	ImGui::DragFloat("setupTime",&motionTimes_.startupTime_,0.1f,0.0f);
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
 	ImGui::DragFloat("endLagTime",&motionTimes_.endLagTime_,0.1f,0.0f);
@@ -35,7 +21,6 @@ void WorkEnemyAction::Save(const std::string& name){
 	variableManager->SetValue(name,"startupTime",motionTimes_.startupTime_);
 	variableManager->SetValue(name,"activeTime",motionTimes_.activeTime_);
 	variableManager->SetValue(name,"endLagTime",motionTimes_.endLagTime_);
-	variableManager->SetValue(name,"animationName",animationName_);
 }
 
 void WorkEnemyAction::Load(const std::string& name){
@@ -44,7 +29,6 @@ void WorkEnemyAction::Load(const std::string& name){
 	motionTimes_.startupTime_ = variableManager->GetValue<float>(name,"startupTime");
 	motionTimes_.activeTime_ = variableManager->GetValue<float>(name,"activeTime");
 	motionTimes_.endLagTime_ = variableManager->GetValue<float>(name,"endLagTime");
-	animationName_ = variableManager->GetValue<std::string>(name,"animationName");
 }
 
 void WorkWeakAttackAction::Debug(){
@@ -98,61 +82,42 @@ void WorkStrongAttackAction::Load(const std::string& name){
 }
 
 void WorkIdleAction::Debug(){
-	// Animation を 選ぶ
-	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
-		for(auto& file : animationList){
-			bool isSelected = (animationName_ == file.first);
-			if(ImGui::Selectable((file.first).c_str(),isSelected)){
-				animationName_ = file.first;
-			}
-			if(isSelected){
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
 }
 
-void WorkRushAttackAction::Debug(){
+void WorkTackleAttackAction::Debug(){
 	WorkEnemyAction::Debug();
+	ImGui::SliderFloat("lockOnTime",&lockOnTime_,0.0f,motionTimes_.startupTime_);
 	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::DragFloat("speed",&speed_,0.1f,0.0f);
-	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
+	ImGui::SliderFloat("maxRotateSpeed",&maxRotateSpeed_,0.0f,std::numbers::pi_v<float> *2.0f);
+	ImGui::SliderFloat("rotateSensitivity_",&rotateSensitivity_,0.0f,1.0f);
 }
 
-void WorkRushAttackAction::Save(const std::string& name){
+void WorkTackleAttackAction::Save(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Save(name);
+	variableManager->SetValue(name,"lockOnTime",lockOnTime_);
 	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"speed",speed_);
-	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
+	variableManager->SetValue(name,"maxRotateSpeed",maxRotateSpeed_);
+	variableManager->SetValue(name,"rotateSensitivity",rotateSensitivity_);
 }
 
-void WorkRushAttackAction::Load(const std::string& name){
+void WorkTackleAttackAction::Load(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Load(name);
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
-	damage_          = variableManager->GetValue<float>(name,"damage");
-	speed_           = variableManager->GetValue<float>(name,"speed");
-	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+	lockOnTime_ 	   = variableManager->GetValue<float>(name,"lockOnTime");
+	collisionRadius_   = variableManager->GetValue<float>(name,"collisionRadius");
+	damage_            = variableManager->GetValue<float>(name,"damage");
+	speed_             = variableManager->GetValue<float>(name,"speed");
+	maxRotateSpeed_    = variableManager->GetValue<float>(name,"maxRotateSpeed");
+	rotateSensitivity_ = variableManager->GetValue<float>(name,"rotateSensitivity");
 }
 
 void WorkChaseAction::Debug(){
-	if(ImGui::BeginCombo("Animations",animationName_.c_str())){
-		for(auto& file : animationList){
-			bool isSelected = (animationName_ == file.second);
-			if(ImGui::Selectable((file.second).c_str(),isSelected)){
-				animationName_ = file.second;
-			}
-			if(isSelected){
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
 	ImGui::DragFloat("distanceToStopChasing",&distanceToStopChasing_,0.1f);
 	ImGui::DragFloat("speed",&speed_,0.1f);

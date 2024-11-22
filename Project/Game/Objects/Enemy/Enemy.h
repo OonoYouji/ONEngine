@@ -131,6 +131,9 @@ private:
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
+	Vector2 actionListWindowSize_ 	= {50.0f,100.0f};
+	Vector2 combosActionWindowSize_ = {50.0f,100.0f};
+
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
 

@@ -12,7 +12,7 @@ enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
 	STRONG_ATTACK,
-	RUSH_ATTACK,
+	TACKLE_ATTACK,
 	CHASE,
 	COUNT // 要素数を把握するための要素
 };
@@ -21,7 +21,7 @@ static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::IDLE,"IDLE"},
 	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
 	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
-	{ActionTypes::RUSH_ATTACK,"RUSH_ATTACK"},
+	{ActionTypes::TACKLE_ATTACK,"TACKLE_ATTACK"},
 	{ActionTypes::CHASE,"CHASE"},
 };
 
@@ -40,10 +40,7 @@ public:
 	virtual void Load(const std::string& name);
 public:
 	ActionTypes type_;
-	std::string animationName_;
 	MotionTimes motionTimes_;
-public:
-	static std::list<std::pair<std::string,std::string>> animationList;
 };
 
 #pragma region"MoveWorker"
@@ -129,24 +126,28 @@ public:
 	float maxRotateY2Player_;
 };
 
-class WorkRushAttackAction
+class WorkTackleAttackAction
 	:public WorkEnemyAction{
 public:
-	WorkRushAttackAction():WorkEnemyAction(ActionTypes::RUSH_ATTACK){
+	WorkTackleAttackAction():WorkEnemyAction(ActionTypes::TACKLE_ATTACK){
+		lockOnTime_        = 0.0f;
 		collisionRadius_   = 0.0f;
-		maxRotateY2Player_ = 0.0f;
+		maxRotateSpeed_    = 0.0f;
+		rotateSensitivity_ = 0.0f;
 		damage_            = 0.0f;
 		speed_             = 0.0f;
 	}
-	~WorkRushAttackAction(){}
+	~WorkTackleAttackAction(){}
 
 	void Debug()override;
 
 	void Save(const std::string& name)override;
 	void Load(const std::string& name)override;
 
+	float lockOnTime_;
 	float collisionRadius_;
-	float maxRotateY2Player_;
+	float maxRotateSpeed_;
+	float rotateSensitivity_;
 	float damage_;
 	float speed_;
 };
