@@ -4,7 +4,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "Game/Objects/Enemy/BehaviorTree/Node.h"
+#include "EnemyBehaviorTree/Node.h"
 #include "GameObjectManager/BaseGameObject.h"
 
 /// <summary>
@@ -93,7 +93,8 @@ private:
 	EnemyAttackCollider* enemy_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
-	AnimationRenderer* animationRender_ = nullptr;
+	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
+	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	// 本体のコライダー これに当たるとダメージを受ける
 	SphereCollider* hitCollider_;
 
@@ -130,6 +131,9 @@ private:
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
+	Vector2 actionListWindowSize_ 	= {50.0f,100.0f};
+	Vector2 combosActionWindowSize_ = {50.0f,100.0f};
+
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
 
@@ -142,6 +146,13 @@ private:
 
 public:
 	void SetAnimationRender(const std::string& filePath);
+	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath);
+
+	void SetAnimationTotalTime(float _totalTime);
+
+	void ResetAnimationTotal();
+
+	void SetAnimationFlags(int _flags,bool _isResetTime = true);
 
 	void Debug_SetCurrentAction(const std::string& action){ currentAction_ = action; }
 
