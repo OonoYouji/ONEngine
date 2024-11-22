@@ -12,80 +12,28 @@
 #include "../Player.h"
 #include "PlayerRootBehavior.h"
 
-PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_player) {
 
-	currentPhase_ = NONE;
-	currentTime_  = 0.0f;
+PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBehavior(_player) {
+	phase_ = _phase;
+	nextBehavior_ = ROOT;
 
-	for(size_t i = 0; i < chargePhaseDataArray_.size(); ++i) {
-		chargePhaseDataArray_[i].time = (i) * 2.0f;
-	}
+	currentTime_ = 0.0f;
+	maxTime_     = 2.0f; /// 仮の値 ioで設定させる
 
-	
+	host_->SetAnimationModel(
+		"KariPlayer_StrongAttack" + std::to_string(3)
+	);
 
-	{	/// 値のio
-
-		VariableManager* vm = VariableManager::GetInstance();
-		const std::string groupName = "StrongAttackBehavior";
-
-		vm->AddValue(groupName, "startLagTime", startLagTime_);
-		vm->AddValue(groupName, "endLagTime",   endLagTime_);
-
-		//vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
-
-		startLagTime_ = vm->GetValue<float>(groupName, "startLagTime");
-		endLagTime_   = vm->GetValue<float>(groupName, "endLagTime");
-
-	}
-
-
+	host_->SetAnimationTotalTime(maxTime_);
 }
 
-
 void PlayerStrongAttack::Update() {
+
 	currentTime_ += Time::DeltaTime();
 
-
-	/// 離したので攻撃する
-	if(currentPhase_ == RELEASE) {
-
-
-
+	if(currentTime_ >= maxTime_) {
 		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
 		return;
-	}
-
-
-
-	bool isEnd = false;
-	isEnd |= Input::ReleaseKey(KeyCode::K);
-	isEnd |= Input::ReleasePadButton(PadCode::A);
-
-	/// 入力をやめた瞬間が攻撃する瞬間
-	if(isEnd) {
-		currentPhase_ = RELEASE;
-		return;
-	}
-
-
-
-	ChargePhaseData& nextData = chargePhaseDataArray_[std::min(currentPhase_ + 1, static_cast<int>(RELEASE - 1))];
-	if(currentTime_ >= nextData.time) {
-
-		/// 次のphaseに行く
-		++currentPhase_;
-		currentPhase_ = std::clamp(currentPhase_, 0, static_cast<int>(RELEASE - 1));
-
-
-		/// アニメーションを設定する
-		host_->SetAnimationModel(
-			"KariPlayer_StrongAttack" + std::to_string(currentPhase_)
-		);
-
-
-		if(currentPhase_ == THIRD) {
-			isChargeMax_ = true;
-		}
 	}
 
 }

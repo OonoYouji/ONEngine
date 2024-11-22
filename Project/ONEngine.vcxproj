@@ -173,6 +173,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttack.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
@@ -307,6 +308,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerAvoidanceBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttack.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />

@@ -2,6 +2,7 @@
 #include "PlayerRootBehavior.h"
 
 #include "PlayerStrongAttack.h"
+#include "PlayerStrongAttackCharge.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerWeakAttack.h"
 
@@ -112,7 +113,7 @@ void PlayerRootBehavior::InputNextBehavior() {
 	
 	/// 強攻撃
 	if(isStrongAttack) {
-		host_->TransitionBehavior(std::make_unique<PlayerStrongAttack>(host_));
+		host_->TransitionBehavior(std::make_unique<PlayerStrongAttackCharge>(host_, 0, 1.0f));
 		return;
 	}
 }

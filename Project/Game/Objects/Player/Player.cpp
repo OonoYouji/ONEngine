@@ -108,7 +108,7 @@ void Player::Initialize() {
 
 	attackCollider_ = new PlayerAttackCollider(this, pGameCamera_);
 	attackCollider_->Initialize();
-
+	attackCollider_->isActive = false;
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -358,8 +358,6 @@ void Player::SpawnWeapon() {
 
 		mate.UpdateMatrix();
 	}
-
-
 }
 
 
