@@ -14,8 +14,10 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
 
 	void OnCollisionEnter(BaseGameObject* const _collision) override;
+	void OnCollisionStay(BaseGameObject* const _collision) override;
 
 	void AddVariables();
 	void LoadVariables();
@@ -30,5 +32,9 @@ private:
 	class BoxCollider* boxCollider_ = nullptr;
 
 	class Player* pPlayer_ = nullptr;
+
+	bool isCollisionEnter_ = false;
+	bool isCollisionStay_ = false;
+
 
 };
