@@ -45,6 +45,8 @@ public:
 	void SetRotate(float rotate);
 	void SetScale(const Vec2& scale);
 
+	const Vec2& GetPosition() const { return position_; }
+
 	void UpdateMatrix();
 
 	/// <summary>

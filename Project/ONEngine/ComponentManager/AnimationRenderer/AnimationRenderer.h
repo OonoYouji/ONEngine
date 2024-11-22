@@ -82,6 +82,8 @@ public:
 		return &skeletonMap_.at(currentNodeAnimationKey_);
 	}
 
+	std::vector<Material>& GetMaterials() const { return pModel_->GetMaterials(); }
+
 	
 private:
 	/// ===================================================

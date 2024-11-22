@@ -1,10 +1,10 @@
 {
     "Player": {
+        "endPosY": 1.0,
         "moveDistance": 10.0,
         "rotateLerpSensitivity": 0.4000000059604645,
         "speed": 18.0,
-        "workActiveTime": 0.699999988079071,
-        "workEndLagTime": 0.0,
-        "workStartupTime": 0.0
+        "startPosY": 0.25,
+        "weaponSpawnMaxTime": 0.5
     }
 }

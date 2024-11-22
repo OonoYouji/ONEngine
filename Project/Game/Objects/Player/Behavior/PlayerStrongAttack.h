@@ -19,6 +19,7 @@ class PlayerStrongAttack : public IPlayerBehavior {
 		FIRST,   /// 一段階目
 		SECOND,  /// 二段階目
 		THIRD,   /// 三段階目
+		RELEASE, /// 離した時
 		COUNT,   /// カウント用
 	};
 

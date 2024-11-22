@@ -72,6 +72,8 @@ public:
 	/// </summary>
 	void PushBack();
 
+	void SpawnWeapon();
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;
@@ -93,6 +95,9 @@ private:
 	bool isInvisible_ = false;
 
 	float colliderRadius_;
+	
+	float weaponSpawnTime_, weaponSpawnMaxTime_;
+	float startPosY_, endPosY_;
 
 
 	/// ---------------------------------------------------

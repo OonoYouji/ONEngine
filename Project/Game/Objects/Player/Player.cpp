@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Player.h"
 
 /// std
@@ -10,6 +11,7 @@
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "FrameManager/Time.h"
 
 /// component
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -80,6 +82,7 @@ void Player::Initialize() {
 	maxHP_ = 100.0f;
 	currentHP_ = maxHP_;
 
+	weaponSpawnMaxTime_ = 0.5f;
 	workRootBehavior_.speed_ = 30.0f;
 	//振り向き
 	workRootBehavior_.rotateLerpSensitivity_ = 0.1f;
@@ -122,10 +125,10 @@ void Player::Update() {
 	damage_ = 0.0f;
 
 	currentBehavior_->Update();
+	SpawnWeapon();
 
 	pTransform_->Update();
 	PushBack();
-
 }
 
 #pragma region Debug
@@ -137,8 +140,6 @@ void Player::Debug() {
 	if(ImGui::Button("Heal Hp For Max")) {
 		currentHP_ = maxHP_;
 	}
-
-
 
 	if(ImGui::TreeNode("RootBehavior")) {
 		ImGui::DragFloat("Speed_InRootBehavior", &workRootBehavior_.speed_, 0.1f);
@@ -225,6 +226,9 @@ void Player::AddVariables() {
 	/// work root behavior data
 	vm->AddValue(groupName, "speed",                 workRootBehavior_.speed_);
 	vm->AddValue(groupName, "rotateLerpSensitivity", workRootBehavior_.rotateLerpSensitivity_);
+	vm->AddValue(groupName, "startPosY", startPosY_);
+	vm->AddValue(groupName, "endPosY",   endPosY_);
+	vm->AddValue(groupName, "weaponSpawnMaxTime", weaponSpawnMaxTime_);
 
 
 	{	/// avoidance behavior
@@ -285,7 +289,9 @@ void Player::ApplyVariables() {
 	/// work root behavior data
 	workRootBehavior_.speed_                 = vm->GetValue<float>(groupName, "speed");
 	workRootBehavior_.rotateLerpSensitivity_ = vm->GetValue<float>(groupName, "rotateLerpSensitivity");
-
+	startPosY_          = vm->GetValue<float>(groupName, "startPosY");
+	endPosY_            = vm->GetValue<float>(groupName, "endPosY");
+	weaponSpawnMaxTime_ = vm->GetValue<float>(groupName, "weaponSpawnMaxTime");
 
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
@@ -331,6 +337,32 @@ void Player::PushBack() {
 		pTransform_->position += pushBackDirection * (radius - diff.Len());
 	}
 }
+
+void Player::SpawnWeapon() {
+	if(weaponSpawnTime_ == 0.0f) {
+		return;
+	}
+
+	weaponSpawnTime_ -= Time::DeltaTime();
+	weaponSpawnTime_ = std::max(weaponSpawnTime_, 0.0f);
+
+	float lerpT = weaponSpawnTime_ / weaponSpawnMaxTime_;
+
+	std::vector<Material>& materials = weaponAnimationRenderer_->GetMaterials();
+	for(auto& mate : materials) {
+		float posX = mate.GetPosition().x;
+		mate.SetPosition(
+			{ posX , std::lerp(endPosY_, startPosY_, lerpT) }
+		);
+
+		mate.UpdateMatrix();
+	}
+
+
+}
+
+
+
 
 void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 	currentBehavior_ = std::move(next);
@@ -382,4 +414,7 @@ float Player::GetAnimationDuration() {
 
 void Player::SetIsActiveWeapon(bool _isActive) {
 	weaponAnimationRenderer_->isActive = _isActive;
+	if(_isActive) {
+		weaponSpawnTime_ = weaponSpawnMaxTime_;
+	}
 }

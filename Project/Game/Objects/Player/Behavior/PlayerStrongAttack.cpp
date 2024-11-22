@@ -43,6 +43,19 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player) : IPlayerBehavior(_playe
 
 
 void PlayerStrongAttack::Update() {
+	currentTime_ += Time::DeltaTime();
+
+
+	/// 離したので攻撃する
+	if(currentPhase_ == RELEASE) {
+
+
+
+		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
+		return;
+	}
+
+
 
 	bool isEnd = false;
 	isEnd |= Input::ReleaseKey(KeyCode::K);
@@ -50,19 +63,18 @@ void PlayerStrongAttack::Update() {
 
 	/// 入力をやめた瞬間が攻撃する瞬間
 	if(isEnd) {
-		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
+		currentPhase_ = RELEASE;
 		return;
 	}
 
 
-	currentTime_ += Time::DeltaTime();
 
-	ChargePhaseData& nextData = chargePhaseDataArray_[std::min(currentPhase_ + 1, static_cast<int>(COUNT - 1))];
+	ChargePhaseData& nextData = chargePhaseDataArray_[std::min(currentPhase_ + 1, static_cast<int>(RELEASE - 1))];
 	if(currentTime_ >= nextData.time) {
 
 		/// 次のphaseに行く
 		++currentPhase_;
-		currentPhase_ = std::clamp(currentPhase_, 0, static_cast<int>(COUNT - 1));
+		currentPhase_ = std::clamp(currentPhase_, 0, static_cast<int>(RELEASE - 1));
 
 
 		/// アニメーションを設定する
