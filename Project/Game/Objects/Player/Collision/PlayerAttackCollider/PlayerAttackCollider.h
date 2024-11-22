@@ -15,6 +15,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
 	void AddVariables();
 	void LoadVariables();
 	void ApplyVariables();

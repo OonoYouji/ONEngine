@@ -36,6 +36,16 @@ void PlayerAttackCollider::Update() {
 
 }
 
+void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
+
+	/// 衝突相手がEnemyなら
+	if(_collision->GetTag() == "Enemy") {
+
+	}
+}
+
+
+
 void PlayerAttackCollider::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
