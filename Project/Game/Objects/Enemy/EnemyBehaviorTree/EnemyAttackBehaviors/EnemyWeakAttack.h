@@ -15,7 +15,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		float currentTime_;
+		float leftTime_;
 
 		float collisionRadius_;
 	};
@@ -28,7 +28,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		float currentTime_;
+		float leftTime_;
 		float damage_;
 	};
 
@@ -40,7 +40,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		float currentTime_;
+		float leftTime_;
 	};
 
 	class WeakAttack
