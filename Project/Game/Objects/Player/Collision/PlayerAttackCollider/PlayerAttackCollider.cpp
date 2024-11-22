@@ -13,12 +13,14 @@
 /// objects
 #include "../../Player.h"
 #include "Objects/DamageNumRender/DamageNumRender.h"
+#include "Objects/Camera/GameCamera.h"
 
 
-PlayerAttackCollider::PlayerAttackCollider(Player* _player) {
+PlayerAttackCollider::PlayerAttackCollider(Player* _player, GameCamera* _gameCamera) {
 	CreateTag(this);
 
 	pPlayer_ = _player;
+	pGameCamera_ = _gameCamera;
 }
 
 PlayerAttackCollider::~PlayerAttackCollider() {}
@@ -55,7 +57,7 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		isCollisionEnter_ = true;
 		
 
-		DamageNumRender* damageRender = new DamageNumRender(50);
+		DamageNumRender* damageRender = new DamageNumRender(50, pGameCamera_);
 		damageRender->Initialize();
 		damageRender->SetPosition(_collision->GetPosition() + Vec3::kUp * 2.0f);
 	}

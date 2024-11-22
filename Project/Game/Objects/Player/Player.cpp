@@ -106,7 +106,7 @@ void Player::Initialize() {
 	/// コライダーの処理化
 	/// ---------------------------------------------------
 
-	attackCollider_ = new PlayerAttackCollider(this);
+	attackCollider_ = new PlayerAttackCollider(this, pGameCamera_);
 	attackCollider_->Initialize();
 
 

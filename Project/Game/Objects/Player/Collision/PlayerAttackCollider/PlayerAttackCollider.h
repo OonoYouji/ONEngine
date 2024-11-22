@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerAttackCollider(class Player* _player);
+	PlayerAttackCollider(class Player* _player, class GameCamera* _gameCamera);
 	~PlayerAttackCollider();
 
 	void Initialize() override;
@@ -31,7 +31,8 @@ private:
 
 	class BoxCollider* boxCollider_ = nullptr;
 
-	class Player* pPlayer_ = nullptr;
+	class Player*     pPlayer_ = nullptr;
+	class GameCamera* pGameCamera_ = nullptr;
 
 	bool isCollisionEnter_ = false;
 	bool isCollisionStay_ = false;
