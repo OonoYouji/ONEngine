@@ -55,7 +55,7 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 			Vec3  toEnemyVec         = pEnemy->GetPosition() - host_->GetPosition();
 			float projectionValue    = Vec3::Dot((afterPos_ - beforePos_).Normalize(), toEnemyVec);
 
-			if(projectionValue > 0.0f) {
+			if(projectionValue > 0.0f && projectionValue < (afterPos_ - beforePos_).Len()) {
 
 				Vec3  projectionPosition = beforePos_ + (afterPos_ - beforePos_).Normalize() * projectionValue;
 
