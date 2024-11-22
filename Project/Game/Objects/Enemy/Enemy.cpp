@@ -41,9 +41,9 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	/*LoadStatus();
+	LoadStatus();
 	LoadAllAction();
-	LoadCombos();*/
+	LoadCombos();
 
 	hp_ = maxHp_;
 }
