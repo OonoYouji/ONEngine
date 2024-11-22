@@ -50,10 +50,11 @@ void Enemy::Initialize(){
 
 void Enemy::Update(){
 	if(rootNode_){
-		if(rootNode_->tick() == EnemyBehaviorTree::Status::SUCCESS){
+		EnemyBehaviorTree::Status status = rootNode_->tick();
+		if(status == EnemyBehaviorTree::Status::SUCCESS){
 			//DecideNextNode();
 			rootNode_ = nullptr;
-		} else if(rootNode_->tick() == EnemyBehaviorTree::Status::FAILURE){
+		} else if(status == EnemyBehaviorTree::Status::FAILURE){
 			rootNode_ = nullptr;
 		}
 	}
