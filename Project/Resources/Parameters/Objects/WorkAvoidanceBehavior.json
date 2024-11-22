@@ -1,0 +1,8 @@
+{
+    "WorkAvoidanceBehavior": {
+        "activeTime": 0.699999988079071,
+        "endLagTime": 0.0,
+        "moveDistance": 10.0,
+        "startupTime": 0.0
+    }
+}

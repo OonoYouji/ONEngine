@@ -133,6 +133,13 @@ private:
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
 
+
+
+	/// TODO: 整理たのむ
+	/// 当たり判定の範囲
+	float colliderRadius_ = 4.0f; /// 仮の適当な値
+
+
 public:
 	void SetAnimationRender(const std::string& filePath);
 
@@ -154,4 +161,7 @@ public:
 
 	void ActivateAttackCollider(ActionTypes offset,float radius);
 	void TerminateAttackCollider();
+
+
+	float GetColliderRadius() { return colliderRadius_; }
 };

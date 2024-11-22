@@ -60,6 +60,7 @@ void Scene_Game::Initialize(){
 
 	bbObjectManager->Initialize();
 
+	player->SetEnemy(enemy);
 	playerHPRenderer->SetPlayer(player);
 
 

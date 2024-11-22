@@ -67,8 +67,14 @@ public:
 	void LoadVariables();
 	void ApplyVariables();
 
+	/// <summary>
+	/// Enemyの当たり判定に食い込まないように押し戻す
+	/// </summary>
+	void PushBack();
 
 private:
+
+	class SphereCollider* sphereCollider_ = nullptr;
 
 	class AnimationRenderer* bodyAnimationRenderer_   = nullptr;
 	class AnimationRenderer* weaponAnimationRenderer_ = nullptr;
@@ -85,6 +91,8 @@ private:
 	float damage_;
 
 	bool isInvisible_ = false;
+
+	float colliderRadius_;
 
 
 	/// ---------------------------------------------------
@@ -107,9 +115,9 @@ private:
 	/// other class 
 	/// ---------------------------------------------------
 
-	class GameCamera* pGameCamera_ = nullptr;
+	class GameCamera*           pGameCamera_    = nullptr;
+	class Enemy*                pEnemy_         = nullptr;
 	class PlayerAttackCollider* attackCollider_ = nullptr;
-	
 
 public:
 
@@ -135,6 +143,9 @@ public:
 
 	int32_t GetWeakAttackComboMax() const { return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
 	
+
+	void SetEnemy(class Enemy* _enemy);
+
 	class GameCamera* GetCamera() const { return pGameCamera_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 	

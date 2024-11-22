@@ -30,7 +30,7 @@ Enemy::~Enemy(){}
 void Enemy::Initialize(){
 	animationRender_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
-
+	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
 	//DecideNextNode();
 

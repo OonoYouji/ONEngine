@@ -9,10 +9,12 @@
 /// engine
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
 
 /// component
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "ComponentManager/Collider/SphereCollider.h"
 
 /// this behavior
 #include "Behavior/IPlayerBehavior.h"
@@ -20,7 +22,9 @@
 #include "Behavior/PlayerRootBehavior.h"
 #include "Behavior/PlayerWeakAttack.h"
 
+/// objects
 #include "Collision/PlayerAttackCollider/PlayerAttackCollider.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
@@ -30,6 +34,8 @@ Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
 Player::~Player() {}
 
 void Player::Initialize() {
+
+	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
@@ -117,6 +123,9 @@ void Player::Update() {
 
 	currentBehavior_->Update();
 
+	pTransform_->Update();
+	PushBack();
+
 }
 
 #pragma region Debug
@@ -140,48 +149,23 @@ void Player::Debug() {
 
 	ImGui::Spacing();
 
+
+	VariableManager* vm = VariableManager::GetInstance();
+	
+
 	if(ImGui::TreeNode("AvoidanceBehavior")) {
-		ImGui::DragFloat("MoveDistance_InAvoidanceBehavior", &workAvoidanceBehavior_.moveDistance_, 0.1f);
-		ImGui::DragFloat("StartUpTime_InAvoidanceBehavior", &workAvoidanceBehavior_.motionTimes_.startupTime_, 0.1f);
-		ImGui::DragFloat("ActiveTime_InAvoidanceBehavior", &workAvoidanceBehavior_.motionTimes_.activeTime_, 0.1f);
-		ImGui::DragFloat("EndLagTime_InAvoidanceBehavior", &workAvoidanceBehavior_.motionTimes_.endLagTime_, 0.1f);
+
+		if(ImGui::Button("save file")) {
+			vm->SaveSpecificGroupsToJson("./Resources/Parameters/Objects", "WorkAvoidanceBehavior");
+		}
+		vm->DebuggingSpecificGroup("WorkAvoidanceBehavior");
 
 		ImGui::TreePop();
 	}
 
 	ImGui::Spacing();
 
-	/*if(ImGui::TreeNode("WeakAttack")) {
-		if(ImGui::TreeNode("Combo_1")) {
-			ImGui::DragFloat("StartUpTime_Combo_1", &workWeakAttackBehavior_[0].motionTimes_.startupTime_, 0.1f);
-			ImGui::DragFloat("ActiveTime_Combo_1", &workWeakAttackBehavior_[0].motionTimes_.activeTime_, 0.1f);
-			ImGui::DragFloat("EndLagTime_Combo_1", &workWeakAttackBehavior_[0].motionTimes_.endLagTime_, 0.1f);
-			ImGui::DragFloat("DamageFactor_Combo_1", &workWeakAttackBehavior_[0].damageFactor_, 0.1f);
-			ImGui::TreePop();
-		}
 
-		if(ImGui::TreeNode("Combo_2")) {
-			ImGui::DragFloat("StartUpTime_Combo_2", &workWeakAttackBehavior_[1].motionTimes_.startupTime_, 0.1f);
-			ImGui::DragFloat("ActiveTime_Combo_2", &workWeakAttackBehavior_[1].motionTimes_.activeTime_, 0.1f);
-			ImGui::DragFloat("EndLagTime_Combo_2", &workWeakAttackBehavior_[1].motionTimes_.endLagTime_, 0.1f);
-			ImGui::DragFloat("DamageFactor_Combo_2", &workWeakAttackBehavior_[1].damageFactor_, 0.1f);
-			ImGui::TreePop();
-		}
-		if(ImGui::TreeNode("Combo_3")) {
-			ImGui::DragFloat("StartUpTime_Combo_3", &workWeakAttackBehavior_[2].motionTimes_.startupTime_, 0.1f);
-			ImGui::DragFloat("ActiveTime_Combo_3", &workWeakAttackBehavior_[2].motionTimes_.activeTime_, 0.1f);
-			ImGui::DragFloat("EndLagTime_Combo_3", &workWeakAttackBehavior_[2].motionTimes_.endLagTime_, 0.1f);
-			ImGui::DragFloat("DamageFactor_Combo_3", &workWeakAttackBehavior_[2].damageFactor_, 0.1f);
-			ImGui::TreePop();
-		}
-
-		ImGui::TreePop();
-	}*/
-	
-
-
-
-	VariableManager* vm = VariableManager::GetInstance();
 
 	if(ImGui::TreeNode("WeakAttack")) {
 
@@ -201,6 +185,9 @@ void Player::Debug() {
 		}
 		ImGui::TreePop();
 	}
+
+	ImGui::Spacing();
+
 
 	/// strong attack behavior
 	if(ImGui::TreeNode(strongAttackBehavior_.name_.c_str())) {
@@ -239,12 +226,14 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "speed",                 workRootBehavior_.speed_);
 	vm->AddValue(groupName, "rotateLerpSensitivity", workRootBehavior_.rotateLerpSensitivity_);
 
-	/// avoidance behavior
-	vm->AddValue(groupName, "moveDistance",    workAvoidanceBehavior_.moveDistance_);
-	vm->AddValue(groupName, "workStartupTime", workAvoidanceBehavior_.motionTimes_.startupTime_);
-	vm->AddValue(groupName, "workActiveTime",  workAvoidanceBehavior_.motionTimes_.activeTime_);
-	vm->AddValue(groupName, "workEndLagTime",  workAvoidanceBehavior_.motionTimes_.endLagTime_);
 
+	{	/// avoidance behavior
+		const std::string& name = "WorkAvoidanceBehavior";
+		vm->AddValue(name, "moveDistance", workAvoidanceBehavior_.moveDistance_);
+		vm->AddValue(name, "startupTime",  workAvoidanceBehavior_.motionTimes_.startupTime_);
+		vm->AddValue(name, "activeTime",   workAvoidanceBehavior_.motionTimes_.activeTime_);
+		vm->AddValue(name, "endLagTime",   workAvoidanceBehavior_.motionTimes_.endLagTime_);
+	}
 
 	for(size_t i = 0; i < 3; ++i){	/// workWeakAttackBehavior_ 値のio
 
@@ -274,6 +263,10 @@ void Player::LoadVariables() {
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
+	{	/// avoidance behavior 値のio
+		vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", "WorkAvoidanceBehavior");
+	}
+
 	for(size_t i = 0; i < 3; ++i) {	/// workWeakAttackBehavior_ 値のio
 		const std::string& name = "WorkWeakAttackBehavior" + std::to_string(i + 1);
 		vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", name);
@@ -293,11 +286,14 @@ void Player::ApplyVariables() {
 	workRootBehavior_.speed_                 = vm->GetValue<float>(groupName, "speed");
 	workRootBehavior_.rotateLerpSensitivity_ = vm->GetValue<float>(groupName, "rotateLerpSensitivity");
 
-	/// avoidance behavior
-	workAvoidanceBehavior_.moveDistance_             = vm->GetValue<float>(groupName, "moveDistance");
-	workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(groupName, "workStartupTime");
-	workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(groupName, "workActiveTime");
-	workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(groupName, "workEndLagTime");
+
+	{	/// avoidance behavior
+		const std::string& name = "WorkAvoidanceBehavior";
+		workAvoidanceBehavior_.moveDistance_             = vm->GetValue<float>(name, "moveDistance");
+		workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(name, "startupTime");
+		workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(name, "activeTime");
+		workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(name, "endLagTime");
+	}
 
 
 	for(size_t i = 0; i < 3; ++i) {	/// workWeakAttackBehavior_ 値のio
@@ -317,13 +313,31 @@ void Player::ApplyVariables() {
 		strongAttackBehavior_.startLagTime_ = vm->GetValue<float>(name, "startLagTime");
 		strongAttackBehavior_.endLagTime_   = vm->GetValue<float>(name, "endLagTime");
 	}
+
+
 }
 
 #pragma endregion
 
 
+void Player::PushBack() {
+	float radius = pEnemy_->GetColliderRadius() + colliderRadius_;
+	Vec3 diff    = pEnemy_->GetPosition() - GetPosition();
+
+	/// 当たっている
+	if(diff.Len() < radius) {
+		Vec3 pushBackDirection = -diff.Normalize();
+
+		pTransform_->position += pushBackDirection * (radius - diff.Len());
+	}
+}
+
 void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 	currentBehavior_ = std::move(next);
+}
+
+void Player::SetEnemy(Enemy* _enemy) {
+	pEnemy_ = _enemy;
 }
 
 void Player::SetAnimationModel(const std::string& _filePath) {
