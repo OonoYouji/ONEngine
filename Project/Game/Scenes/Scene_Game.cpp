@@ -7,9 +7,6 @@
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
 
-/// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "GraphicManager/Light/DirectionalLight.h"
@@ -22,9 +19,6 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
-
-/// lib
-#include "Debugger/Assertion.h"
 
 /// ===================================================
 /// 初期化処理

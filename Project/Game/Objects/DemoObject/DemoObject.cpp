@@ -15,11 +15,29 @@
 
 
 void DemoObject::Initialize() {
-	animationRenderer_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
+	/*animationRenderer_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
 
+	capsuleCollider_ = AddComponent<CapsuleCollider>();
+	capsuleCollider_->SetPositionArray({ &positionArray_[0], &positionArray_[1] });*/
+
+	VariableManager* vm = VariableManager::GetInstance();
+	vm->AddValue(GetTag(), "name", name_);
+
+	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 }
 
 void DemoObject::Update() {
+
+	VariableManager* vm = VariableManager::GetInstance();
+	name_ = vm->GetValue<std::string>(GetTag(), "name");
+
+
+
+
+	isCollisionEnter_ = false;
+	isCollisionStay_ = false;
+	isCollisionExit_ = false;
+
 
 }
 
@@ -33,31 +51,24 @@ void DemoObject::Debug() {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui::DragFloat("repeat delay", &io.KeyRepeatDelay, 0.01f);
 		ImGui::DragFloat("repeat rate", &io.KeyRepeatRate, 0.01f);
+		
 
-
-		if(Input::GamepadConnected(0)) {
-			ImGui::Text("gamepad connected");
-		} else {
-			ImGui::Text("gamepad found");
-		}
-
-		/*if(ImGui::Button("change Kari_Boss_Wait")) {
-			animationRenderer_->ChangeAnimation("Kari_Boss_Wait");
-		}
-
-		if(ImGui::Button("change Kari_Boss_WeakAttack")) {
-			animationRenderer_->ChangeAnimation("Kari_Boss_WeakAttack");
-		}
-
-		if(ImGui::Button("change Kari_Boss_StrongAttack")) {
-			animationRenderer_->ChangeAnimation("Kari_Boss_StrongAttack");
-		}
-
-		if(ImGui::Button("change Kari_Boss_LongWait")) {
-			animationRenderer_->ChangeAnimation("Kari_Boss_LongWait");
-		}*/
-
+		ImGui::Checkbox("isCollisionEnter", &isCollisionEnter_);
+		ImGui::Checkbox("isCollisionStay", &isCollisionStay_);
+		ImGui::Checkbox("isCollisionExit", &isCollisionExit_);
 
 		ImGui::TreePop();
 	}
+}
+
+void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
+	isCollisionEnter_ = true;
+}
+
+void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
+	isCollisionStay_ = true;
+}
+
+void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
+	isCollisionExit_ = true;
 }
