@@ -4,10 +4,12 @@
 #include <numbers>
 
 /// engine
-#include <ImGuiManager/ImGuiManager.h>
+#include "GraphicManager/ModelManager/ModelManager.h"
 
 /// components
 #include <ComponentManager/MeshRenderer/MeshRenderer.h>
+#include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/Collider/BoxCollider.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -21,7 +23,16 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new DemoObject)->Initialize();
+	Model* sphere = ModelManager::Load("Sphere");
+
+
+	DemoObject* demoObjA = new DemoObject();
+	demoObjA->Initialize();
+	demoObjA->AddComponent<SphereCollider>(sphere);
+	
+	DemoObject* demoObjB = new DemoObject();
+	demoObjB->Initialize();
+	demoObjB->AddComponent<BoxCollider>(sphere);
 
 }
 
