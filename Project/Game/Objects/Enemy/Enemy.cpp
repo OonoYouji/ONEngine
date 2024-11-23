@@ -1,7 +1,10 @@
 #include "Enemy.h"
 
+/// std
 #include <iostream>
 
+
+/// enemy behavior
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyLongRangeAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyRangedAttack.h"
@@ -25,6 +28,7 @@
 #include "Game/Objects/Player/Player.h"
 
 #ifdef _DEBUG
+/// externals
 #include "imgui.h"
 
 bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
@@ -89,6 +93,8 @@ void Enemy::Update(){
 }
 
 void Enemy::Debug(){
+#ifdef _DEBUG
+
 
 	trosoTransform_->Debug();
 
@@ -423,6 +429,7 @@ void Enemy::Debug(){
 			}
 		}
 	}
+#endif // _DEBUG
 }
 
 void Enemy::SaveStatus(){

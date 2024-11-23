@@ -77,11 +77,12 @@ void CapsuleCollider::Update() {
 }
 
 void CapsuleCollider::Draw() {
-
+#ifdef _DEBUG
 	tube_->Draw(transform_.get(), kWireFrame);
 	for(auto& transform : transformArray_) {
 		sphere_->Draw(&transform, kWireFrame);
 	}
+#endif // _DEBUG
 }
 
 void CapsuleCollider::Debug() {
