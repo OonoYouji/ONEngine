@@ -10,6 +10,7 @@
 #include "Input/Input.h"
 
 #include "../Player.h"
+#include "../Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "PlayerRootBehavior.h"
 
 
@@ -32,7 +33,10 @@ void PlayerStrongAttack::Update() {
 
 	currentTime_ += Time::DeltaTime();
 
+	host_->GetAttackCollider()->isActive = true;
+
 	if(currentTime_ >= maxTime_) {
+		host_->GetAttackCollider()->isActive = false;
 		host_->TransitionBehavior(std::make_unique<PlayerRootBehavior>(host_));
 		return;
 	}

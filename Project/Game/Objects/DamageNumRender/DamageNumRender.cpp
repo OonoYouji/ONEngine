@@ -40,6 +40,9 @@ void DamageNumRender::Update() {
 		Destory();
 	}
 
+
+	pTransform_->position.y += 1.0f * Time::DeltaTime();
+
 	Vec3 direction = pMainCamera_->GetPosition() - GetPosition();
 	direction.y *= 1.0f;
 	pTransform_->quaternion = Quaternion::LockAt({}, direction);
