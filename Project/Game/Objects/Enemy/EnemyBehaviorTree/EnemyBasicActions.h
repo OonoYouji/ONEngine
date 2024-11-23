@@ -56,36 +56,9 @@ namespace EnemyBehaviorTree{
 	};
 	
 	///====================================
-	/// 攻撃系
-	///====================================
-#pragma region"Attack"
-	//class TackleAttack
-	//	:public Action{
-	//public:
-	//	TackleAttack(Enemy* enemy,WorkTackleAttackAction* worker);
-	//	~TackleAttack()override{}
-
-	//	Status tick()override;
-	//private:
-	//	Status InitRotate();
-	//	Status StartupUpdate();
-	//	Status Attack();
-	//	Status EndLagUpdate();
-	//private:
-	//	std::function<Status()> currentUpdate_;
-	//	WorkTackleAttackAction* workInBehavior_;
-
-	//	float beforeRotateY_;
-	//	float rotateP2E_;
-	//	float currentTime_;
-	//};
-#pragma endregion
-
-	///====================================
 	/// 連続攻撃 (単発を含む)
 	///====================================
 #pragma region"Combo"
-
 	class AttackCombo
 		:public EnemyBehaviorTree::Sequence{
 	public:

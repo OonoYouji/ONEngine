@@ -7,8 +7,8 @@
 #include "Math/Vector3.h"
 
 class WorkStrongAttackAction;
-
 namespace EnemyBehaviorTree{
+
 	class StrongAttackStartup
 		:public EnemyBehaviorTree::Action{
 	public:

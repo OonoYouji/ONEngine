@@ -177,6 +177,10 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBullet\IEnemyBullet.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBullet\RangedAttackBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -343,6 +347,10 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.h" />
+    <ClInclude Include="Game\Objects\EnemyBullet\IEnemyBullet.h" />
+    <ClInclude Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.h" />
+    <ClInclude Include="Game\Objects\EnemyBullet\RangedAttackBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -8,7 +8,6 @@
 #include "MyFileSystem/MyFileSystem.h"
 #include "VariableManager/VariableManager.h"
 
-
 void WorkEnemyAction::Debug(){
 	ImGui::DragFloat("setupTime",&motionTimes_.startupTime_,0.1f,0.0f);
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
@@ -137,4 +136,42 @@ void WorkChaseAction::Load(const std::string& name){
 	motionTimes_.activeTime_ = variableManager->GetValue<float>(name,"activeTime");
 	speed_ = variableManager->GetValue<float>(name,"speed");
 	distanceToStopChasing_ = variableManager->GetValue<float>(name,"distanceToStopChasing");
+}
+
+void WorkRangedAttackAction::Debug(){
+	WorkEnemyAction::Debug();
+	ImGui::DragFloat("BulletScale",&bulletScale_,0.1f,0.0f);
+	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
+	ImGui::DragFloat("timeToLand",&timeToLand_,0.1f,0.0f);
+	ImGui::DragFloat("spawnCoolTime",&spawnCoolTime_,0.1f,0.0f);
+	ImGui::DragFloat("spawnRange",&spawnRange_,0.1f,0.0f);
+	ImGui::DragFloat("spawnPositionY",&spawnPositionY_,0.1f,0.0f);
+	ImGui::DragFloat("lifeTime",&lifeTime_,0.1f,0.0f);
+	ImGui::SliderFloat("attackForPlayerProbability",&attackForPlayerProbability_,0.0f,100.0f);
+}
+
+void WorkRangedAttackAction::Save(const std::string& name){
+	WorkEnemyAction::Save(name);
+	VariableManager* variableManager = VariableManager::GetInstance();
+	variableManager->SetValue<float>(name,"bulletScale",bulletScale_);
+	variableManager->SetValue<float>(name,"damage",damage_);
+	variableManager->SetValue<float>(name,"timeToLand",timeToLand_);
+	variableManager->SetValue<float>(name,"spawnCoolTime",spawnCoolTime_);
+	variableManager->SetValue<float>(name,"spawnRange",spawnRange_);
+	variableManager->SetValue<float>(name,"spawnPositionY",spawnPositionY_);
+	variableManager->SetValue<float>(name,"lifeTime",lifeTime_);
+	variableManager->SetValue<float>(name,"attackForPlayerProbability",attackForPlayerProbability_);
+}
+
+void WorkRangedAttackAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+	damage_ 					= variableManager->GetValue<float>(name,"damage");
+	bulletScale_ 				= variableManager->GetValue<float>(name,"bulletScale");
+	timeToLand_ 				= variableManager->GetValue<float>(name,"timeToLand");
+	spawnCoolTime_				= variableManager->GetValue<float>(name,"spawnCoolTime");
+	spawnRange_ 				= variableManager->GetValue<float>(name,"spawnRange");
+	spawnPositionY_ 			= variableManager->GetValue<float>(name,"spawnPositionY");
+	lifeTime_ 					= variableManager->GetValue<float>(name,"lifeTime");
+	attackForPlayerProbability_ = variableManager->GetValue<float>(name,"attackForPlayerProbability");
 }

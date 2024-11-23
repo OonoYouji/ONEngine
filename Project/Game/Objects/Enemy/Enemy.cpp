@@ -3,9 +3,9 @@
 #include <iostream>
 
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyRangedAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyStrongAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyTackleAttack.h"
-#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
@@ -577,6 +577,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::TACKLE_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::TackleAttack>(this,reinterpret_cast<WorkTackleAttackAction*>(worker)));
 			break;
+		case ActionTypes::RANGED_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::RangedAttack>(this,reinterpret_cast<WorkRangedAttackAction*>(worker)));
+			break;
 		default:
 			// 該当 する Typeが なければ reset
 			result.reset();
@@ -602,6 +605,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::CHASE:
 			result = std::make_unique<WorkChaseAction>();
+			break;
+		case ActionTypes::RANGED_ATTACK:
+			result = std::make_unique<WorkRangedAttackAction>();
 			break;
 		default:
 			break;
