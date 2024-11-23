@@ -12,27 +12,14 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Action{
 	public:
 		RangedAttackStartup(Enemy* enemy,
-							float startupTime,
-							float downSpeed,
-							float bulletDamage,
-							float bulletSpawnValue_,
-							float spawnRange,
-							float spawnPositionY,
-							float lifeTime,
-							float attackForPlayerProbability);
+							WorkRangedAttackAction* worker);
 		~RangedAttackStartup()override{}
 
 		Status tick()override;
 	private:
 		float leftTime_;
 
-		float bulletDownSpeed_;
-		float bulletDamage_;
-		float bulletSpawnRange_;
-		float bulletSpawnValue_;
-		float bulletSpawnPositionY_;
-		float bulletLifeTime_;
-		float bulletAttackForPlayerProbability_;
+		WorkRangedAttackAction* worker_;
 	};
 
 	class RangedAttackAction

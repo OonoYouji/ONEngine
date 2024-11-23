@@ -4,27 +4,16 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
 
+#include "Objects/EnemyBullet/IEnemyBullet.h"
+#include "Objects/EnemyBulletEmitter/EnemyBulletEmitter.h"
+
 #include "FrameManager/Time.h"
 
 #pragma region"Startup"
-EnemyBehaviorTree::RangedAttackStartup::RangedAttackStartup(Enemy* enemy,
-															float startupTime,
-															float downSpeed,
-															float bulletDamage,
-															float bulletSpawnValue,
-															float spawnRange,
-															float spawnPositionY,
-															float lifeTime,
-															float attackForPlayerProbability)
+
+EnemyBehaviorTree::RangedAttackStartup::RangedAttackStartup(Enemy* enemy,WorkRangedAttackAction* worker)
 	:EnemyBehaviorTree::Action(enemy){
-	leftTime_ 						  = startupTime;
-	bulletDownSpeed_ 				  = downSpeed;
-	bulletDamage_ 					  = bulletDamage;
-	bulletSpawnValue_                 = bulletSpawnValue;
-	bulletSpawnRange_ 				  = spawnRange;
-	bulletSpawnPositionY_ 			  = spawnPositionY;
-	bulletLifeTime_ 				  = lifeTime;
-	bulletAttackForPlayerProbability_ = attackForPlayerProbability;
+	worker_ = worker;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackStartup::tick(){
@@ -32,6 +21,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackStartup::tick(){
 
 	if(leftTime_ <= 0.0f){
 		// ここで Bullet Emitter 生成.
+		new EnemyBulletEmitter(enemy_->GetPlayer(),enemy_,worker_->motionTimes_.activeTime_,worker_);
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -79,14 +69,7 @@ EnemyBehaviorTree::RangedAttack::RangedAttack(Enemy* enemy,WorkRangedAttackActio
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_1",worker->motionTimes_.startupTime_,false));
 	addChild(std::make_unique<RangedAttackStartup>(
 		enemy,
-		worker->motionTimes_.startupTime_,
-		worker->downSpeed_,
-		worker->damage_,
-		worker->spawnValue_,
-		worker->spawnRange_,
-		worker->spawnPositionY_,
-		worker->lifeTime_,
-		worker->attackForPlayerProbability_
+		worker
 	));
 
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_2",worker->motionTimes_.activeTime_,false));
