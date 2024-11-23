@@ -139,6 +139,8 @@ void Player::Update() {
 #pragma region Debug
 void Player::Debug() {
 
+
+
 	ImGui::DragFloat("MaxHP", &maxHP_, 0.1f);
 	ImGui::InputFloat("HP", &currentHP_);
 

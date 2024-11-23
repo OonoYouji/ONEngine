@@ -15,6 +15,7 @@
 
 /// math
 #include "Math/LerpShortAngle.h"
+#include "Math/Random.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -32,8 +33,9 @@ void TrackingCamera::Initialize() {
 
 	/// カメラの回転の計算方法
 	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
+	pGameCamera_->SetParent(&offsetTransform_);
 
-	/// 親子付け
+	/// 見る相手
 	pTargetObject_ = pPlayer_;
 
 	lockOnLenghtScaleFactor_ = 10.0f;
@@ -66,6 +68,20 @@ void TrackingCamera::Update() {
 	/// ロックオンのフラグの更新
 	LockOnUpdate();
 
+
+	/// カメラのシェイク
+	if(shakeTime_ <= shakeMaxTime_) {
+		shakeTime_ += Time::DeltaTime();
+
+		float lerpT = std::min(shakeTime_ / shakeMaxTime_, 1.0f);
+		float value = std::lerp(shakeMinValue_, shakeMaxTime_, lerpT);
+
+		offsetTransform_.position = Random::Vec3(-Vec3::kOne, Vec3::kOne) * value;
+		offsetTransform_.Update();
+	}
+
+
+
 	/// カメラの更新
 	quaternionLerpTime_ = std::clamp(quaternionLerpTime_ + quaternionLerpSpeed_ * Time::DeltaTime(), 0.0f, 1.0f);
 	if(isLockOn_) {
@@ -74,9 +90,22 @@ void TrackingCamera::Update() {
 		LockOnToPlayer();
 	}
 
+
 }
 
 void TrackingCamera::Debug() {
+	{
+		static float minV, maxV, time;
+		ImGui::DragFloat("min", &minV, 0.1f);
+		ImGui::DragFloat("max", &maxV, 0.1f);
+		ImGui::DragFloat("time", &time, 0.1f);
+
+		if(ImGui::Button("shake")) {
+			StartShake(minV, maxV, time);
+		}
+	}
+
+
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::SeparatorText("parameters");
@@ -451,6 +480,8 @@ void TrackingCamera::AddVariables() {
 
 }
 
+
+
 void TrackingCamera::ApplyVariables() {
 	VariableManager*   vm        = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
@@ -470,4 +501,16 @@ void TrackingCamera::ApplyVariables() {
 	vm->SetValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
 }
 
+
+
+void TrackingCamera::StartShake(float _minValue, float _maxValue, float _time) {
+
+	/// 量
+	shakeMinValue_ = _minValue;
+	shakeMaxValue_ = _maxValue;
+
+	/// 時間
+	shakeMaxTime_ = _time;
+	shakeTime_    = 0.0f;
+}
 

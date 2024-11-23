@@ -32,12 +32,19 @@ public:
 	void ApplyVariables();
 	void AddVariables();
 
+
+	void StartShake(float _minValue, float _maxValue, float _time);
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+
+	Transform offsetTransform_;
+	float shakeTime_, shakeMaxTime_;
+	float shakeMinValue_, shakeMaxValue_;
 
 	/// other class pointer
 	class GameCamera* pGameCamera_ = nullptr; /// ゲームカメラへのポインタ
