@@ -6,6 +6,8 @@
 class Enemy;
 class Player;
 
+//TODO class 削除 RangedAttackAction と統合する
+
 /// <summary>
 /// Bullet を random で 生成する必要がある時に使う
 /// </summary>

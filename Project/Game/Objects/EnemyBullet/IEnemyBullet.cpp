@@ -15,7 +15,7 @@
 
 std::array<std::string,static_cast<int32_t>(BulletType::COUNT)> modelByBulletType = {
 	"wrasse",
-	"Sphere"
+	"wrasse"
 };
 
 IEnemyBullet::IEnemyBullet(BulletType type){
@@ -31,7 +31,6 @@ void IEnemyBullet::Initialize(){
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
 		render_ 		= AddComponent<AnimationRenderer>(modelByBulletType[static_cast<int32_t>(type_)]);
-		pTransform_->scale = {3.0f,3.0f,3.0f};
 	}
 }
 

@@ -175,3 +175,35 @@ void WorkRangedAttackAction::Load(const std::string& name){
 	lifeTime_ 					= variableManager->GetValue<float>(name,"lifeTime");
 	attackForPlayerProbability_ = variableManager->GetValue<float>(name,"attackForPlayerProbability");
 }
+
+void WorkLongRangeAttackAction::Debug(){
+	WorkEnemyAction::Debug();
+	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
+	ImGui::DragFloat("bulletSpeed",&bulletSpeed_,0.1f,0.0f);
+	ImGui::DragFloat("bulletScale",&bulletScale_,0.1f,0.0f);
+	ImGui::DragFloat("bulletFireInterval",&bulletFireInterval_,0.1f,0.0f);
+	ImGui::DragFloat("bulletSpawnOffsetZ",&bulletSpawnOffsetZ_,0.1f,0.0f);
+	ImGui::DragFloat("rotateMaxSpeed",&rotateMaxSpeed_,0.1f,0.0f);
+}
+
+void WorkLongRangeAttackAction::Save(const std::string& name){
+	WorkEnemyAction::Save(name);
+	VariableManager* variableManager = VariableManager::GetInstance();
+	variableManager->SetValue<float>(name,"damage",			   damage_);
+	variableManager->SetValue<float>(name,"bulletSpeed",	   bulletSpeed_);
+	variableManager->SetValue<float>(name,"bulletScale",	   bulletScale_);
+	variableManager->SetValue<float>(name,"bulletFireInterval",bulletFireInterval_);
+	variableManager->SetValue<float>(name,"bulletSpawnOffsetZ",bulletSpawnOffsetZ_);
+	variableManager->SetValue<float>(name,"rotateMaxSpeed",	   rotateMaxSpeed_);
+}
+
+void WorkLongRangeAttackAction::Load(const std::string& name){
+	WorkEnemyAction::Save(name);
+	VariableManager* variableManager = VariableManager::GetInstance();
+	damage_ 			= variableManager->GetValue<float>(name,"damage");
+	bulletSpeed_ 		= variableManager->GetValue<float>(name,"bulletSpeed");
+	bulletScale_ 		= variableManager->GetValue<float>(name,"bulletScale");
+	bulletFireInterval_ = variableManager->GetValue<float>(name,"bulletFireInterval");
+	bulletSpawnOffsetZ_ = variableManager->GetValue<float>(name,"bulletSpawnOffsetZ");
+	rotateMaxSpeed_ 	= variableManager->GetValue<float>(name,"rotateMaxSpeed");
+}

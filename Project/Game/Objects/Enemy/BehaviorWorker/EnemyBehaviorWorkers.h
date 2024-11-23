@@ -15,6 +15,7 @@ enum class ActionTypes : int32_t{
 	TACKLE_ATTACK,
 	CHASE,
 	RANGED_ATTACK,
+	LONGRANGE_ATTACK,
 	COUNT // 要素数を把握するための要素
 };
 
@@ -25,6 +26,7 @@ static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::TACKLE_ATTACK,"TACKLE_ATTACK"},
 	{ActionTypes::CHASE,"CHASE"},
 	{ActionTypes::RANGED_ATTACK,"RANGED_ATTACK"},
+	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"}
 };
 
 /// <summary>
@@ -183,5 +185,32 @@ public:
 	float lifeTime_;
 	// プレイヤーを 攻撃する 確率
 	float attackForPlayerProbability_;
+};
+
+class WorkLongRangeAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkLongRangeAttackAction()
+		:WorkEnemyAction(ActionTypes::LONGRANGE_ATTACK){
+		damage_ 			 = 0.0f;
+		bulletSpeed_ 		 = 0.0f;
+		bulletScale_ 		 = 0.0f;
+		bulletFireInterval_  = 0.0f;
+		bulletSpawnOffsetZ_  = 0.0f;
+		rotateMaxSpeed_ 	 = 0.0f;
+	}
+	~WorkLongRangeAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float damage_;
+	float bulletSpeed_;
+	float bulletScale_;
+	float bulletFireInterval_;
+	float bulletSpawnOffsetZ_;
+	float rotateMaxSpeed_;
 };
 #pragma endregion
