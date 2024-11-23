@@ -91,8 +91,6 @@ void TrackingCamera::Update() {
 	}
 
 
-	offsetTransform_.Update();
-
 	/// カメラの更新
 	quaternionLerpTime_ = std::clamp(quaternionLerpTime_ + quaternionLerpSpeed_ * Time::DeltaTime(), 0.0f, 1.0f);
 	if(isLockOn_) {
@@ -101,10 +99,27 @@ void TrackingCamera::Update() {
 		LockOnToPlayer();
 	}
 
+	pTransform_->Update();
+	offsetTransform_.Update();
 
 }
 
 void TrackingCamera::Debug() {
+	{
+	
+		ImGui::DragFloat("cameraOffsetLenghtScaleFactor", &cameraOffsetLenghtScaleFactor_);
+		ImGui::DragFloat3("targetPosition", &targetPosition_.x);
+		ImGui::DragFloat3("cameraNextPosition", &cameraNextPosition_.x);
+		ImGui::DragFloat3("cameraOffsetRotate", &cameraOffsetRotate_.x);
+		ImGui::DragFloat3("cameraOffsetDirection", &cameraOffsetDirection_.x);
+		ImGui::DragFloat("cameraOffsetLenght", &cameraOffsetLenght_);
+
+		ImGui::DragFloat4("quaternion", &pTransform_->quaternion.x);
+
+		ImGui::Separator();
+	}
+
+
 	{
 		static float minV, maxV, time;
 		ImGui::DragFloat("min", &minV, 0.1f);
@@ -333,6 +348,8 @@ void TrackingCamera::LockOnToPlayer() {
 	/// 
 	/// ---------------------------------------------------
 
+	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
+
 	/// ターゲットをはずした
 	if(isTargetLost_) {
 
@@ -343,7 +360,7 @@ void TrackingCamera::LockOnToPlayer() {
 		
 		targetPosition_ = Vec3::Lerp(saveTargetPosition_, pTargetObject_->GetPosition(), lerpT);
 		currentDirection_ = Vec3::Lerp(
-			(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize(),
+			((cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize())).Normalize(),
 			cameraToPlayerVector_.Normalize(),
 			lerpT
 		);
