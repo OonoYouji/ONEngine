@@ -126,8 +126,11 @@ private:
 	bool isCreateWindowPop_;
 	bool isComboCreateWindowPop_;
 	// 編集されているもの 
-	std::string currentEditActionName_;
-	std::string currentEditComboName_;
+	std::string* currentEditActionName_;
+	std::string* currentEditComboName_;
+	std::string actionNameBeforeNameChange_;
+	std::string comboNameBeforeNameChange_;
+
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
