@@ -1,7 +1,8 @@
 #include "Joint.h"
 
 Joint::Joint() {
-	transform.rotateOrder = QUATERNION;
+	transform.rotateOrder       = QUATERNION;
+	offsetTransform.rotateOrder = QUATERNION;
 }
 
 int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints) {

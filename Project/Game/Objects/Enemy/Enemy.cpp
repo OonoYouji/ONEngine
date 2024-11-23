@@ -1,16 +1,21 @@
 #include "Enemy.h"
 
+/// std
 #include <iostream>
 
+
+/// enemy behavior
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyLongRangeAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyRangedAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyStrongAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyTackleAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack2.h"
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
+#include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyJumpAway.h"
 #include "EnemyCollider/EnemyAttackCollider.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
@@ -24,6 +29,7 @@
 #include "Game/Objects/Player/Player.h"
 
 #ifdef _DEBUG
+/// externals
 #include "imgui.h"
 
 bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = 0,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
@@ -64,6 +70,10 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
+	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
+	trosoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
+	trosoTransform_->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(trosoTransform_)));
+
 	LoadStatus();
 	LoadAllAction();
 	LoadCombos();
@@ -84,6 +94,11 @@ void Enemy::Update(){
 }
 
 void Enemy::Debug(){
+#ifdef _DEBUG
+
+
+	trosoTransform_->Debug();
+
 	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
 
 	if(ImGui::Button("Save")){
@@ -417,6 +432,7 @@ void Enemy::Debug(){
 			}
 		}
 	}
+#endif // _DEBUG
 }
 
 void Enemy::SaveStatus(){
@@ -572,8 +588,10 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 							   const std::string& weaponFilePath,
 							   const std::string& subWeapon){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+
 	this->weaponAnimationRenderer_->isActive = true;
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+
 	this->subWeaponAnimationRenderer_->isActive = true;
 	this->subWeaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 }
@@ -597,17 +615,20 @@ void Enemy::ResetAnimationTotal(){
 		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
-	subWeaponAnimationRenderer_->SetTotalTime(subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
-											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+
+	subWeaponAnimationRenderer_->SetTotalTime(
+		subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
-
+	subWeaponAnimationRenderer_->SetAnimationFlags(_flags);
 	if(_isResetTime){
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
+		subWeaponAnimationRenderer_->Restart();
 	}
 }
 
@@ -630,6 +651,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::WEAK_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
 			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+			break;
 		case ActionTypes::STRONG_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
 			break;
@@ -641,6 +665,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 			break;
 		case ActionTypes::LONGRANGE_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::LongRangeAttack>(this,reinterpret_cast<WorkLongRangeAttackAction*>(worker)));
+			break;
+		case ActionTypes::JUMP_AWAY:
+			result->addChild(std::make_unique<EnemyBehaviorTree::JumpAway>(this,reinterpret_cast<WorkJumpAwayAction*>(worker)));
 			break;
 		default:
 			// 該当 する Typeが なければ reset
@@ -673,6 +700,12 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::LONGRANGE_ATTACK:
 			result = std::make_unique<WorkLongRangeAttackAction>();
+			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result = std::make_unique<WorkWeakAttack2Action>();
+			break;
+		case ActionTypes::JUMP_AWAY:
+			result = std::make_unique<WorkJumpAwayAction>();
 			break;
 		default:
 			break;

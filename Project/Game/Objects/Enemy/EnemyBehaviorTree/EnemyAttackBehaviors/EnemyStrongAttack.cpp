@@ -61,7 +61,6 @@ EnemyBehaviorTree::Status  EnemyBehaviorTree::StrongAttackStartup::Update(){
 	enemy_->SetRotateY(beforeRotateY_ + std::lerp(0.0f,rotateP2E_,t));
 
 	if(currentTime_ >= startupTime_){
-		currentTime_ = 0.0f;
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -90,7 +89,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	}
 
 	if(currentTime_ >= activeTime_){
-		currentTime_ = 0.0f;
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
 		return EnemyBehaviorTree::Status::SUCCESS;
@@ -109,7 +107,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackEndLag::tick(){
 	currentTime_ -= Time::DeltaTime();
 
 	if(currentTime_ <= 0.0f){
-		currentTime_ = 0.0f;
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -128,5 +125,5 @@ EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackActio
 
 	// end lag
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,false));
-	addChild(std::make_unique<StrongAttackEndLag>(enemy,worker->motionTimes_.startupTime_));
+	addChild(std::make_unique<StrongAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }

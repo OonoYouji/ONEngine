@@ -1,6 +1,7 @@
 {
     "StrongAttackBehavior": {
-        "endLagTime": 0.5,
-        "startLagTime": 0.20000000298023224
+        "damage0": 10.399999618530273,
+        "damage1": 26.5,
+        "damage2": 50.70000076293945
     }
 }

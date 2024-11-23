@@ -11,22 +11,26 @@
 enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
+	WEAK_ATTACK_2,
 	STRONG_ATTACK,
 	TACKLE_ATTACK,
 	CHASE,
 	RANGED_ATTACK,
 	LONGRANGE_ATTACK,
+	JUMP_AWAY,
 	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
-	{ActionTypes::IDLE,"IDLE"},
-	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
-	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
-	{ActionTypes::TACKLE_ATTACK,"TACKLE_ATTACK"},
-	{ActionTypes::CHASE,"CHASE"},
-	{ActionTypes::RANGED_ATTACK,"RANGED_ATTACK"},
-	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"}
+	{ActionTypes::IDLE			  ,"IDLE"},
+	{ActionTypes::WEAK_ATTACK	  ,"WEAK_ATTACK"},
+	{ActionTypes::WEAK_ATTACK_2	  ,"WEAK_ATTACK_2"},
+	{ActionTypes::STRONG_ATTACK	  ,"STRONG_ATTACK"},
+	{ActionTypes::TACKLE_ATTACK	  ,"TACKLE_ATTACK"},
+	{ActionTypes::CHASE			  ,"CHASE"},
+	{ActionTypes::RANGED_ATTACK	  ,"RANGED_ATTACK"},
+	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"},
+	{ActionTypes::JUMP_AWAY       ,"JUMP_AWAY"}
 };
 
 /// <summary>
@@ -101,6 +105,33 @@ public:
 	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
+};
+
+class WorkWeakAttack2Action
+	:public WorkEnemyAction{
+public:
+	WorkWeakAttack2Action():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
+		collisionTime_      = 0;
+		collisionStartTime_ = 0;
+		collisionRadius_    = 0;
+		damage_             = 0;
+		maxRotateY2Player_  = 0;
+	}
+	~WorkWeakAttack2Action(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float collisionTime_;
+	float collisionStartTime_;
+	float collisionRadius_;
+	//与えるダメージ
+	float damage_;
+
+	// player への 振り向き上限
+	float maxRotateY2Player_;
 };
 
 class WorkStrongAttackAction
@@ -213,4 +244,27 @@ public:
 	float bulletSpawnOffsetZ_;
 	float rotateMaxSpeed_;
 };
+
+class WorkJumpAwayAction
+	:public WorkEnemyAction{
+public:
+	WorkJumpAwayAction()
+		:WorkEnemyAction(ActionTypes::JUMP_AWAY){
+		jumpSpeed_ = 0.0f;
+		mass_ 	   = 0.0f;
+		distance_  = 0.0f;
+	}
+	~WorkJumpAwayAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float jumpSpeed_;
+	float mass_;
+	// 中心からどれだけ離れたところに移動するか
+	float distance_;
+};
+
 #pragma endregion

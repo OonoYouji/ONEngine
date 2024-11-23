@@ -21,6 +21,9 @@ void Skeleton::Update(float animationTime, std::unordered_map<std::string, NodeA
 		if(!rootAnimation.rotate.empty())    { joint.transform.quaternion = CalculateValue(rootAnimation.rotate, joint.animationTime); }
 		if(!rootAnimation.scale.empty())     { joint.transform.scale      = CalculateValue(rootAnimation.scale, joint.animationTime); }
 		joint.transform.Update();
+		joint.offsetTransform.Update();
+
+		joint.transform.matTransform *= joint.offsetTransform.matTransform;
 
 		joint.matSkeletonSpace = joint.transform.matTransform;
 		if(joint.parent) {

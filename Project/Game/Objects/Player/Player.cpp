@@ -106,9 +106,9 @@ void Player::Initialize() {
 	/// コライダーの処理化
 	/// ---------------------------------------------------
 
-	attackCollider_ = new PlayerAttackCollider(this);
+	attackCollider_ = new PlayerAttackCollider(this, pGameCamera_);
 	attackCollider_->Initialize();
-
+	attackCollider_->isActive = false;
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -122,7 +122,7 @@ void Player::Update() {
 	ApplyVariables();
 
 	// ダメージを初期化
-	damage_ = 0.0f;
+	//damage_ = 0.0f;
 
 	currentBehavior_->Update();
 	SpawnWeapon();
@@ -254,8 +254,9 @@ void Player::AddVariables() {
 	{	/// strong behavior 値のio
 		const std::string& groupName = strongAttackBehavior_.name_;
 
-		vm->AddValue(groupName, "startLagTime", strongAttackBehavior_.startLagTime_);
-		vm->AddValue(groupName, "endLagTime", strongAttackBehavior_.endLagTime_);
+		vm->AddValue(groupName, "damage0", strongAttackBehavior_.damages_[0]);
+		vm->AddValue(groupName, "damage1", strongAttackBehavior_.damages_[1]);
+		vm->AddValue(groupName, "damage2", strongAttackBehavior_.damages_[2]);
 	}
 
 
@@ -316,8 +317,9 @@ void Player::ApplyVariables() {
 	{	/// strong behavior 値のio
 		const std::string& name = strongAttackBehavior_.name_;
 
-		strongAttackBehavior_.startLagTime_ = vm->GetValue<float>(name, "startLagTime");
-		strongAttackBehavior_.endLagTime_   = vm->GetValue<float>(name, "endLagTime");
+		strongAttackBehavior_.damages_[0] = vm->GetValue<float>(name, "damage0");
+		strongAttackBehavior_.damages_[1] = vm->GetValue<float>(name, "damage1");
+		strongAttackBehavior_.damages_[2] = vm->GetValue<float>(name, "damage2");
 	}
 
 
@@ -358,8 +360,6 @@ void Player::SpawnWeapon() {
 
 		mate.UpdateMatrix();
 	}
-
-
 }
 
 
@@ -416,6 +416,10 @@ float Player::GetAnimationDuration() {
 void Player::SetIsActiveWeapon(bool _isActive) {
 	weaponAnimationRenderer_->isActive = _isActive;
 	if(_isActive) {
-		weaponSpawnTime_ = weaponSpawnMaxTime_;
+		//weaponSpawnTime_ = weaponSpawnMaxTime_;
 	}
+}
+
+void Player::SetAttackMode(int _mode) {
+	attackCollider_->SetMode(_mode);
 }
