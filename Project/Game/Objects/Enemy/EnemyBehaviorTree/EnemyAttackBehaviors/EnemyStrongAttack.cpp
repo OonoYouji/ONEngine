@@ -128,5 +128,5 @@ EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackActio
 
 	// end lag
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,false));
-	addChild(std::make_unique<StrongAttackEndLag>(enemy,worker->motionTimes_.startupTime_));
+	addChild(std::make_unique<StrongAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }
