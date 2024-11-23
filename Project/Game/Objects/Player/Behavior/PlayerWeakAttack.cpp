@@ -27,6 +27,9 @@ PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 	animationModelFilePath += std::to_string(comboNum_ + 1);
 
 
+	host_->SetDamage(workInBehavior_.damageFactor_);
+	host_->SetAttackMode(PlayerAttackCollider::MODE_WEAK_ATTACK);
+
 	host_->SetIsActiveWeapon(true);
 	host_->SetAnimationModel(
 		animationModelFilePath + "_1_P",

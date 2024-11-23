@@ -27,6 +27,9 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 	);
 
 	host_->SetAnimationTotalTime(maxTime_);
+
+	host_->SetAttackMode(PlayerAttackCollider::MODE_STRONG_ATTACK);
+
 }
 
 void PlayerStrongAttack::Update() {

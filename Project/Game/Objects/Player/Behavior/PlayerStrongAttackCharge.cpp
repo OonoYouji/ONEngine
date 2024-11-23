@@ -27,6 +27,13 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	}
 
 
+	/// チャージ段階が1以上になったらダメージ量を設定する
+	if(currentPhase_ != NONE) {
+
+		const Player::StrongAttackBehavior& strongAttack = host_->GetStrongAttackBehavior();
+		host_->SetDamage(strongAttack.damages_[currentPhase_ - 1]);
+	}
+
 	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
 	host_->SetAnimationModel(
 		animationFilePath + "_P",

@@ -45,4 +45,6 @@ private:
 
 	float currentTime_, maxTime_;
 
+	float damage_;
+
 };
