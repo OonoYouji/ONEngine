@@ -143,6 +143,7 @@ private:
 	/// 当たり判定の範囲
 	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
+	Transform* trosoTransform_ = nullptr;
 
 public:
 	void SetAnimationRender(const std::string& filePath);

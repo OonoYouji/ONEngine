@@ -26,18 +26,21 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 		isChargeMax_ = true;
 	}
 
+
+	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
+	host_->SetAnimationModel(
+		animationFilePath + "_P",
+		animationFilePath + "_W"
+	);
+
 	if(currentPhase_ == NONE) {
 		host_->SetAnimationModel(
-			"KariPlayer_StrongAttack" + std::to_string(1)
+			"KariPlayer_StrongAttack" + std::to_string(currentPhase_ + 1)
 		);
 		
 		host_->SetAnimationTotalTime(1.0f);
 
 	} else {
-
-		host_->SetAnimationModel(
-			"KariPlayer_StrongAttack" + std::to_string(2)
-		);
 
 		host_->SetAnimationTotalTime(0.5f);
 	}
