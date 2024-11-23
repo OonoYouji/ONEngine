@@ -1,5 +1,6 @@
 {
     "Enemy_Combos": {
-        "CombosSize": 0
+        "CombosSize": 1,
+        "Index_0": "NULL"
     }
 }

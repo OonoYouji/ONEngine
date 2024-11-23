@@ -26,7 +26,7 @@
 #ifdef _DEBUG
 #include "imgui.h"
 
-bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
+bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = 0,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
 	// バッファを作成
 	char buffer[256];
 	strncpy_s(buffer,sizeof(buffer),str->c_str(),_TRUNCATE); // 安全なコピー関数を使用
@@ -97,7 +97,6 @@ void Enemy::Debug(){
 	///===============================================
 	if(ImGui::TreeNode("Status")){
 		ImGui::DragFloat("MaxHP",const_cast<float*>(&maxHp_),0.1f);
-		ImGui::DragFloat("Speed",&speed_,0.1f);
 
 		ImGui::Spacing();
 
@@ -155,6 +154,7 @@ void Enemy::Debug(){
 					bool isSelected = (currentEditActionName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
 						currentEditActionName_ = const_cast<AttackActionName*>(&key);
+						actionNameBeforeNameChange_ = *currentEditActionName_;
 						currentEditAction_ = value.get();
 					}
 					if(isSelected){
@@ -170,7 +170,7 @@ void Enemy::Debug(){
 		// 調整できるように 
 		if(currentEditActionName_){
 			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
-				if(InputText("Name",&actionNameBeforeNameChange_)){
+				if(InputText("Name",&actionNameBeforeNameChange_,ImGuiInputTextFlags_EnterReturnsTrue)){
 					*currentEditActionName_ = actionNameBeforeNameChange_;
 					actionNameBeforeNameChange_ = *currentEditActionName_;
 				}
@@ -245,26 +245,28 @@ void Enemy::Debug(){
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!editComboVariables_[static_cast<int32_t>(currentEditHpState_)].empty()){
 			if(!currentEditComboName_){
-				currentEditActionName_ = const_cast<std::string*>(&editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first);
-				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][*currentEditActionName_];
-			}
-			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
-				int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
-				for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
-					bool isSelected = (currentEditComboName_ == &key);
-					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditComboName_ = const_cast<std::string*>(&key);
-						comboNameBeforeNameChange_ = *currentEditComboName_;
-						currentEditCombo_ = &value;
+				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first);
+				comboNameBeforeNameChange_ = *currentEditComboName_;
+				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][*currentEditComboName_];
+			} else{
+				if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
+					int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
+					for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
+						bool isSelected = (currentEditComboName_ == &key);
+						if(ImGui::Selectable(key.c_str(),isSelected)){
+							currentEditComboName_ = const_cast<std::string*>(&key);
+							comboNameBeforeNameChange_ = *currentEditComboName_;
+							currentEditCombo_ = &value;
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
 					}
-					if(isSelected){
-						ImGui::SetItemDefaultFocus();
-					}
+					ImGui::EndCombo();
 				}
-				ImGui::EndCombo();
 			}
 		} else{
-			currentEditActionName_ = nullptr;
+			currentEditComboName_ = nullptr;
 			currentEditCombo_ = nullptr;
 		}
 
@@ -308,7 +310,7 @@ void Enemy::Debug(){
 					ImGui::EndCombo();
 				}
 
-				if(InputText("Name",&comboNameBeforeNameChange_)){
+				if(InputText("Name",&comboNameBeforeNameChange_,ImGuiInputTextFlags_EnterReturnsTrue)){
 					*currentEditComboName_ = comboNameBeforeNameChange_;
 					comboNameBeforeNameChange_ = *currentEditComboName_;
 				}
@@ -596,7 +598,7 @@ void Enemy::ResetAnimationTotal(){
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
 	subWeaponAnimationRenderer_->SetTotalTime(subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
-												 subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
