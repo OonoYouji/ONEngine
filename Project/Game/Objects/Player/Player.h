@@ -50,8 +50,7 @@ public:
 	/// </summary>
 	struct StrongAttackBehavior {
 		const std::string name_ = "StrongAttackBehavior";
-		float startLagTime_;
-		float endLagTime_;
+		std::array<float, 3> damages_; /// 各段階ごとのダメージ
 	};
 
 public:
@@ -171,5 +170,7 @@ public:
 
 	float GetColliderRadius() const { return colliderRadius_; }
 
+
+	void SetAttackMode(int _mode);
 
 };

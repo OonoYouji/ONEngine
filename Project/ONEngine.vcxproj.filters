@@ -177,6 +177,7 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyChase.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.cpp" />
     <ClCompile Include="Game\Objects\EnemyBullet\IEnemyBullet.cpp" />
     <ClCompile Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.cpp" />
@@ -350,6 +351,7 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\Node.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.h" />
     <ClInclude Include="Game\Objects\EnemyBullet\IEnemyBullet.h" />
     <ClInclude Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.h" />

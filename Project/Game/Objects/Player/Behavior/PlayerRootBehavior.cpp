@@ -2,6 +2,7 @@
 #include "PlayerRootBehavior.h"
 
 #include "PlayerStrongAttack.h"
+#include "PlayerStrongAttackCharge.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerWeakAttack.h"
 
@@ -15,6 +16,9 @@ PlayerRootBehavior::PlayerRootBehavior(Player* _host) :IPlayerBehavior(_host), w
 
 	/// プレイヤーが持つ最後に向いていた方向を取得
 	lastDir_ = _host->GetLastDirection();
+
+	host_->SetIsActiveWeapon(false);
+
 }
 
 void PlayerRootBehavior::Update() {
@@ -112,7 +116,7 @@ void PlayerRootBehavior::InputNextBehavior() {
 	
 	/// 強攻撃
 	if(isStrongAttack) {
-		host_->TransitionBehavior(std::make_unique<PlayerStrongAttack>(host_));
+		host_->TransitionBehavior(std::make_unique<PlayerStrongAttackCharge>(host_, 0, 1.0f));
 		return;
 	}
 }

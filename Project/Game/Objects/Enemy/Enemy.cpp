@@ -65,6 +65,10 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
+	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
+	trosoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
+	trosoTransform_->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(trosoTransform_)));
+
 	LoadStatus();
 	LoadAllAction();
 	LoadCombos();
@@ -85,6 +89,9 @@ void Enemy::Update(){
 }
 
 void Enemy::Debug(){
+
+	trosoTransform_->Debug();
+
 	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
 
 	if(ImGui::Button("Save")){

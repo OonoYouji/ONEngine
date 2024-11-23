@@ -16,6 +16,7 @@ struct Joint {
 	Joint();
 
 	Transform              transform;
+	Transform              offsetTransform;
 	Mat4                   matSkeletonSpace;
 	std::string            name;
 	std::vector<int32_t>   chidren;

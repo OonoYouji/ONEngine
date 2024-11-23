@@ -5,6 +5,7 @@
 
 /// base class
 #include "IPlayerBehavior.h"
+#include <Objects/Player/Player.h>
 
 /// ===================================================
 /// 強攻撃用 behavior
@@ -12,32 +13,22 @@
 class PlayerStrongAttack : public IPlayerBehavior {
 
 	/// ===================================================
-	/// 現在の段階を表すenum
+	/// 次のbehavior
 	/// ===================================================
-	enum PHASE {
-		NONE,    /// 最初のなにもないとき
-		FIRST,   /// 一段階目
-		SECOND,  /// 二段階目
-		THIRD,   /// 三段階目
-		RELEASE, /// 離した時
-		COUNT,   /// カウント用
+	enum NEXT_BEHAVIOR {
+		ROOT,               /// 通常に戻る
+		NEXT_STRONG_ATTACK, /// 次のチャージ
+		LAST_STRONG_ATTACK, /// 攻撃する
+		AVOIDANCE,          /// 回避攻撃
 	};
 
-
-	/// ===================================================
-	/// 各段階のデータ
-	/// ===================================================
-	struct ChargePhaseData {
-		float damage; /// 定数
-		float time;   /// 絶対的な時間
-	};
 
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PlayerStrongAttack(Player* _player);
+	PlayerStrongAttack(Player* _player, int _phase);
 	~PlayerStrongAttack() {}
 
 	void Update() override;
@@ -47,14 +38,13 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	int                                currentPhase_;
-	float                              currentTime_ = 0.0f;
-	std::array<ChargePhaseData, COUNT> chargePhaseDataArray_;
+	int   phase_;
+	int   nextBehavior_;
 
-	bool isChargeMax_;
+	bool isFinish_; /// 入力をやめて攻撃または回避したとき
 
+	float currentTime_, maxTime_;
 
-	float startLagTime_; /// 開始時のラグ
-	float endLagTime_;   /// 終了時のラグ
+	float damage_;
 
 };

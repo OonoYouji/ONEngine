@@ -13,23 +13,26 @@
 /// objects
 #include "../../Player.h"
 #include "Objects/DamageNumRender/DamageNumRender.h"
+#include "Objects/Camera/GameCamera.h"
 
 
-PlayerAttackCollider::PlayerAttackCollider(Player* _player) {
+PlayerAttackCollider::PlayerAttackCollider(Player* _player, GameCamera* _gameCamera) {
 	CreateTag(this);
 
 	pPlayer_ = _player;
+	pGameCamera_ = _gameCamera;
 }
 
 PlayerAttackCollider::~PlayerAttackCollider() {}
 
 void PlayerAttackCollider::Initialize() {
-	
+
 	Model* colliderModel = ModelManager::Load("Sphere");
 	boxCollider_ = AddComponent<BoxCollider>(colliderModel);
 
 	SetParent(pPlayer_->GetTransform());
 
+	mode_ = 0;
 
 	AddVariables();
 	LoadVariables();
@@ -38,6 +41,17 @@ void PlayerAttackCollider::Initialize() {
 
 void PlayerAttackCollider::Update() {
 	ApplyVariables();
+
+	if(mode_ == MODE_WEAK_ATTACK) {
+
+		pTransform_->position = weakAttackTransform_.position;
+		pTransform_->rotate   = weakAttackTransform_.rotate;
+		pTransform_->scale    = weakAttackTransform_.scale;
+	} else {
+		pTransform_->position = strongAttackTransform_.position;
+		pTransform_->rotate   = strongAttackTransform_.rotate;
+		pTransform_->scale    = strongAttackTransform_.scale;
+	}
 
 	isCollisionStay_ = false;
 	isCollisionEnter_ = false;
@@ -53,33 +67,26 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 	/// 衝突相手がEnemyなら
 	if(_collision->GetTag() == "Enemy") {
 		isCollisionEnter_ = true;
-		
 
-		DamageNumRender* damageRender = new DamageNumRender(50);
+
+		DamageNumRender* damageRender = new DamageNumRender(static_cast<uint32_t>(pPlayer_->GetDamage()), pGameCamera_);
 		damageRender->Initialize();
 		damageRender->SetPosition(_collision->GetPosition() + Vec3::kUp * 2.0f);
 	}
 }
-
-void PlayerAttackCollider::OnCollisionStay(BaseGameObject* const _collision) {
-
-	/// 衝突相手がEnemyなら
-	if(_collision->GetTag() == "Enemy") {
-		isCollisionStay_ = true;
-
-		
-	}
-}
-
 
 
 void PlayerAttackCollider::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	vm->AddValue(groupName, "position", pTransform_->position);
-	vm->AddValue(groupName, "rotate",   pTransform_->rotate);
-	vm->AddValue(groupName, "scale",    pTransform_->scale);
+	vm->AddValue(groupName, "weakA_position",   weakAttackTransform_.position);
+	vm->AddValue(groupName, "weakA_rotate",     weakAttackTransform_.rotate);
+	vm->AddValue(groupName, "weakA_scale",      weakAttackTransform_.scale);
+	
+	vm->AddValue(groupName, "strongA_position", strongAttackTransform_.position);
+	vm->AddValue(groupName, "strongA_rotate",   strongAttackTransform_.rotate);
+	vm->AddValue(groupName, "strongA_scale",    strongAttackTransform_.scale);
 }
 
 void PlayerAttackCollider::LoadVariables() {
@@ -92,8 +99,16 @@ void PlayerAttackCollider::ApplyVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
-	pTransform_->rotate   = vm->GetValue<Vec3>(groupName, "rotate");
-	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
+	weakAttackTransform_.position   = vm->GetValue<Vec3>(groupName, "weakA_position");
+	weakAttackTransform_.rotate     = vm->GetValue<Vec3>(groupName, "weakA_rotate");
+	weakAttackTransform_.scale      = vm->GetValue<Vec3>(groupName, "weakA_scale");
+
+	strongAttackTransform_.position = vm->GetValue<Vec3>(groupName, "strongA_position");
+	strongAttackTransform_.rotate   = vm->GetValue<Vec3>(groupName, "strongA_rotate");
+	strongAttackTransform_.scale    = vm->GetValue<Vec3>(groupName, "strongA_scale");
+}
+
+void PlayerAttackCollider::SetMode(int _mode) {
+	mode_ = _mode;
 }
 
