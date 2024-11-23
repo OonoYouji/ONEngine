@@ -17,6 +17,7 @@ enum class ActionTypes : int32_t{
 	CHASE,
 	RANGED_ATTACK,
 	LONGRANGE_ATTACK,
+	JUMP_AWAY,
 	COUNT // 要素数を把握するための要素
 };
 
@@ -28,7 +29,8 @@ static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
 	{ActionTypes::TACKLE_ATTACK	  ,"TACKLE_ATTACK"},
 	{ActionTypes::CHASE			  ,"CHASE"},
 	{ActionTypes::RANGED_ATTACK	  ,"RANGED_ATTACK"},
-	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"}
+	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"},
+	{ActionTypes::JUMP_AWAY       ,"JUMP_AWAY"}
 };
 
 /// <summary>
@@ -242,4 +244,27 @@ public:
 	float bulletSpawnOffsetZ_;
 	float rotateMaxSpeed_;
 };
+
+class WorkJumpAwayAction
+	:public WorkEnemyAction{
+public:
+	WorkJumpAwayAction()
+		:WorkEnemyAction(ActionTypes::JUMP_AWAY){
+		jumpSpeed_ = 0.0f;
+		mass_ 	   = 0.0f;
+		distance_  = 0.0f;
+	}
+	~WorkJumpAwayAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float jumpSpeed_;
+	float mass_;
+	// 中心からどれだけ離れたところに移動するか
+	float distance_;
+};
+
 #pragma endregion

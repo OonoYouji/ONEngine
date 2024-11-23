@@ -15,6 +15,7 @@
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
+#include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyJumpAway.h"
 #include "EnemyCollider/EnemyAttackCollider.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
@@ -648,6 +649,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::WEAK_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
 			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+			break;
 		case ActionTypes::STRONG_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
 			break;
@@ -660,8 +664,8 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::LONGRANGE_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::LongRangeAttack>(this,reinterpret_cast<WorkLongRangeAttackAction*>(worker)));
 			break;
-		case ActionTypes::WEAK_ATTACK_2:
-			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+		case ActionTypes::JUMP_AWAY:
+			result->addChild(std::make_unique<EnemyBehaviorTree::JumpAway>(this,reinterpret_cast<WorkJumpAwayAction*>(worker)));
 			break;
 		default:
 			// 該当 する Typeが なければ reset
@@ -697,6 +701,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::WEAK_ATTACK_2:
 			result = std::make_unique<WorkWeakAttack2Action>();
+			break;
+		case ActionTypes::JUMP_AWAY:
+			result = std::make_unique<WorkJumpAwayAction>();
 			break;
 		default:
 			break;
