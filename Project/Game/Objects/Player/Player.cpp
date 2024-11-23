@@ -414,6 +414,6 @@ float Player::GetAnimationDuration() {
 void Player::SetIsActiveWeapon(bool _isActive) {
 	weaponAnimationRenderer_->isActive = _isActive;
 	if(_isActive) {
-		weaponSpawnTime_ = weaponSpawnMaxTime_;
+		//weaponSpawnTime_ = weaponSpawnMaxTime_;
 	}
 }

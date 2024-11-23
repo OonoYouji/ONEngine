@@ -16,6 +16,9 @@ PlayerRootBehavior::PlayerRootBehavior(Player* _host) :IPlayerBehavior(_host), w
 
 	/// プレイヤーが持つ最後に向いていた方向を取得
 	lastDir_ = _host->GetLastDirection();
+
+	host_->SetIsActiveWeapon(false);
+
 }
 
 void PlayerRootBehavior::Update() {

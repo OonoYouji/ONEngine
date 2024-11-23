@@ -33,17 +33,13 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 		animationFilePath + "_W"
 	);
 
+	host_->SetIsActiveWeapon(true);
 	if(currentPhase_ == NONE) {
-		host_->SetAnimationModel(
-			"KariPlayer_StrongAttack" + std::to_string(currentPhase_ + 1)
-		);
-		
 		host_->SetAnimationTotalTime(1.0f);
-
 	} else {
-
 		host_->SetAnimationTotalTime(0.5f);
 	}
+	host_->SetAnimationFlags(0);
 
 
 	{	/// 値のio
@@ -69,13 +65,18 @@ void PlayerStrongAttackCharge::Update() {
 	currentTime_ += Time::DeltaTime();
 
 
+
 	isFinish_ = false;
 	isFinish_ |= Input::ReleaseKey(KeyCode::K);
 	isFinish_ |= Input::ReleasePadButton(PadCode::A);
 
 	/// 入力をやめた瞬間が攻撃する瞬間
 	if(isFinish_) {
-		nextBehavior_ = STRONG_ATTACK;
+		if(currentPhase_ != NONE) {
+			nextBehavior_ = STRONG_ATTACK;
+		} else {
+			nextBehavior_ = ROOT;
+		}
 	}
 
 

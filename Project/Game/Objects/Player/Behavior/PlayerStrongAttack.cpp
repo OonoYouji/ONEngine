@@ -21,7 +21,8 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 	maxTime_     = 2.0f; /// 仮の値 ioで設定させる
 
 	host_->SetAnimationModel(
-		"KariPlayer_StrongAttack" + std::to_string(3)
+		"Player_StrongAttack_5_P",
+		"Player_StrongAttack_5_W"
 	);
 
 	host_->SetAnimationTotalTime(maxTime_);
