@@ -2,6 +2,7 @@
 
 #include <random>
 
+#include "Vector2.h"
 #include "Vector3.h"
 
 class Random final {
@@ -17,6 +18,13 @@ public:
 	static float Float(float min, float max) {
 		std::uniform_real_distribution<float> distribution(min, max);
 		return distribution(generator_);
+	}
+
+	static Vec2 Vec2(const Vec2& min,const Vec2& max){
+		return {
+			Float(min.x,max.x),
+			Float(min.y,max.y)
+		};
 	}
 
 	static Vec3 Vec3(const Vec3& min, const Vec3& max) {

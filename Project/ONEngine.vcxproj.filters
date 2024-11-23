@@ -178,6 +178,13 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBullet\IEnemyBullet.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBullet\RangedAttackBullet.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.cpp" />
+    <ClCompile Include="Game\Objects\EnemyBullet\LongRangeBullet.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -345,6 +352,13 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyStrongAttack.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyTackleAttack.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.h" />
+    <ClInclude Include="Game\Objects\EnemyBullet\IEnemyBullet.h" />
+    <ClInclude Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.h" />
+    <ClInclude Include="Game\Objects\EnemyBullet\RangedAttackBullet.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.h" />
+    <ClInclude Include="Game\Objects\EnemyBullet\LongRangeBullet.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

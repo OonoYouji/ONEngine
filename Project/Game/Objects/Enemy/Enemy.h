@@ -95,6 +95,7 @@ private:
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
 	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
+	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
 	// 本体のコライダー これに当たるとダメージを受ける
 	SphereCollider* hitCollider_;
 
@@ -126,8 +127,11 @@ private:
 	bool isCreateWindowPop_;
 	bool isComboCreateWindowPop_;
 	// 編集されているもの 
-	std::string currentEditActionName_;
-	std::string currentEditComboName_;
+	std::string* currentEditActionName_;
+	std::string* currentEditComboName_;
+	std::string actionNameBeforeNameChange_;
+	std::string comboNameBeforeNameChange_;
+
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
@@ -136,8 +140,6 @@ private:
 
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
-
-
 
 	/// TODO: 整理たのむ
 	/// 当たり判定の範囲
@@ -148,6 +150,7 @@ private:
 public:
 	void SetAnimationRender(const std::string& filePath);
 	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath);
+	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath,const std::string& subWeapon);
 
 	void SetAnimationTotalTime(float _totalTime);
 

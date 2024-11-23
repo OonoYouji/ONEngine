@@ -3,10 +3,12 @@
 #include <iostream>
 
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyLongRangeAttack.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyRangedAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyStrongAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyTackleAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
-#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack2.h"
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
@@ -24,6 +26,24 @@
 
 #ifdef _DEBUG
 #include "imgui.h"
+
+bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
+	// バッファを作成
+	char buffer[256];
+	strncpy_s(buffer,sizeof(buffer),str->c_str(),_TRUNCATE); // 安全なコピー関数を使用
+	buffer[sizeof(buffer) - 1] = '\0'; // 念のための終端文字
+
+	// ImGuiの処理
+	bool changed = ImGui::InputText(label,buffer,sizeof(buffer),flags,callback,user_data);
+
+	// 入力が変更された場合、string を更新
+	if(changed){
+		*str = std::string(buffer);
+	}
+
+	return changed;
+}
+
 #endif // _DEBUG
 
 Enemy::Enemy(Player* player,EnemyAttackCollider* collider):BaseGameObject(),player_(player),maxHp_(0.0f){
@@ -36,6 +56,10 @@ Enemy::~Enemy(){}
 void Enemy::Initialize(){
 	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
+	weaponAnimationRenderer_->isActive = false;
+	subWeaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
+	subWeaponAnimationRenderer_->isActive = false;
+
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
@@ -107,12 +131,13 @@ void Enemy::Debug(){
 			}
 		} else{
 			ImGui::Begin("New Attack Action");
-			ImGui::InputText("New ActionName",&createObjectName_[0],sizeof(char) * 64);
+			InputText("New ActionName",&createObjectName_);
 			if(ImGui::Button("Create")){
 				workEnemyActionVariables_[createObjectName_] = std::make_unique<WorkIdleAction>();
 
 				currentEditAction_ = workEnemyActionVariables_[createObjectName_].get();
-				currentEditActionName_ = workEnemyActionVariables_.find(createObjectName_)->first;
+				currentEditActionName_ = const_cast<AttackActionName*>(&workEnemyActionVariables_.find(createObjectName_)->first);
+				actionNameBeforeNameChange_ = *currentEditActionName_;
 				isCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -128,15 +153,16 @@ void Enemy::Debug(){
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!workEnemyActionVariables_.empty()){
-			if(currentEditActionName_ == ""){
-				currentEditActionName_ = workEnemyActionVariables_.begin()->first;
-				currentEditAction_ = workEnemyActionVariables_[currentEditActionName_].get();
+			if(!currentEditActionName_){
+				currentEditActionName_ = const_cast<std::string*>(&workEnemyActionVariables_.begin()->first);
+				actionNameBeforeNameChange_ = *currentEditActionName_;
+				currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
 			}
-			if(ImGui::BeginCombo("Actions",currentEditActionName_.c_str())){
+			if(ImGui::BeginCombo("Actions",currentEditActionName_->c_str())){
 				for(auto& [key,value] : workEnemyActionVariables_){
-					bool isSelected = (currentEditActionName_ == key);
+					bool isSelected = (currentEditActionName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditActionName_ = key;
+						currentEditActionName_ = const_cast<AttackActionName*>(&key);
 						currentEditAction_ = value.get();
 					}
 					if(isSelected){
@@ -150,8 +176,12 @@ void Enemy::Debug(){
 		ImGui::Spacing();
 
 		// 調整できるように 
-		if(currentEditActionName_ != ""){
-			if(ImGui::TreeNode(("currentCombo::" + currentEditActionName_).c_str())){
+		if(currentEditActionName_){
+			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
+				if(InputText("Name",&actionNameBeforeNameChange_)){
+					*currentEditActionName_ = actionNameBeforeNameChange_;
+					actionNameBeforeNameChange_ = *currentEditActionName_;
+				}
 				ImGui::Spacing();
 
 				// Type を 変更
@@ -159,9 +189,9 @@ void Enemy::Debug(){
 					for(auto& [key,value] : actionTypeWord){
 						bool isSelected = (currentEditAction_->type_ == key);
 						if(ImGui::Selectable(value.c_str(),isSelected)){
-							workEnemyActionVariables_[currentEditActionName_] = std::move(CreateWorker(key));
-							workEnemyActionVariables_[currentEditActionName_]->type_ = key;
-							currentEditAction_ = workEnemyActionVariables_[currentEditActionName_].get();
+							workEnemyActionVariables_[*currentEditActionName_] = std::move(CreateWorker(key));
+							workEnemyActionVariables_[*currentEditActionName_]->type_ = key;
+							currentEditAction_ = workEnemyActionVariables_[*currentEditActionName_].get();
 						}
 						if(isSelected){
 							ImGui::SetItemDefaultFocus();
@@ -169,7 +199,6 @@ void Enemy::Debug(){
 					}
 					ImGui::EndCombo();
 				}
-
 				currentEditAction_->Debug();
 
 				ImGui::TreePop();
@@ -179,12 +208,12 @@ void Enemy::Debug(){
 	}
 
 	///===============================================
-	/// AttackCombo
+	/// Combo
 	///===============================================
-	if(ImGui::TreeNode("AttackCombo")){
+	if(ImGui::TreeNode("Combo")){
 		// 新しい Combo の 作成
 		if(!isComboCreateWindowPop_){
-			if(ImGui::Button("Create Attack Combo")){
+			if(ImGui::Button("Create Combo")){
 				isComboCreateWindowPop_ = true;
 			}
 		} else{
@@ -201,12 +230,13 @@ void Enemy::Debug(){
 				ImGui::EndCombo();
 			};
 
-			ImGui::Begin("New Attack Combo");
-			ImGui::InputText("New Combo Name",&createObjectName_[0],sizeof(char) * 64);
+			ImGui::Begin("New Combo");
+			InputText("New Combo Name",&createObjectName_);
 			if(ImGui::Button("Create")){
 				editComboVariables_[0][createObjectName_] = ComboAttacks();
 				currentEditCombo_ = &editComboVariables_[0][createObjectName_];
-				currentEditComboName_ = editComboVariables_[0].find(createObjectName_)->first;
+				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_[0].find(createObjectName_)->first);
+				comboNameBeforeNameChange_ = *currentEditComboName_;
 				isComboCreateWindowPop_ = false;
 				createObjectName_ = "NULL";
 			}
@@ -222,16 +252,17 @@ void Enemy::Debug(){
 
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!editComboVariables_[static_cast<int32_t>(currentEditHpState_)].empty()){
-			if(currentEditComboName_ == ""){
-				currentEditActionName_ = editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first;
-				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][currentEditActionName_];
+			if(!currentEditComboName_){
+				currentEditActionName_ = const_cast<std::string*>(&editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first);
+				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][*currentEditActionName_];
 			}
-			if(ImGui::BeginCombo("Combos",currentEditComboName_.c_str())){
+			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
 				int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
 				for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
-					bool isSelected = (currentEditComboName_ == key);
+					bool isSelected = (currentEditComboName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditComboName_ = key;
+						currentEditComboName_ = const_cast<std::string*>(&key);
+						comboNameBeforeNameChange_ = *currentEditComboName_;
 						currentEditCombo_ = &value;
 					}
 					if(isSelected){
@@ -241,7 +272,7 @@ void Enemy::Debug(){
 				ImGui::EndCombo();
 			}
 		} else{
-			currentEditActionName_ = "";
+			currentEditActionName_ = nullptr;
 			currentEditCombo_ = nullptr;
 		}
 
@@ -249,7 +280,7 @@ void Enemy::Debug(){
 
 		// 調整
 		if(currentEditCombo_){
-			if(ImGui::TreeNode(currentEditComboName_.c_str())){
+			if(ImGui::TreeNode(currentEditComboName_->c_str())){
 				if(ImGui::BeginCombo("Swap HpState",wordByHpState[static_cast<int32_t>(currentEditHpState_)].c_str())){
 					for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
 						bool isSelected = (i == static_cast<int32_t>(currentEditHpState_));
@@ -257,12 +288,12 @@ void Enemy::Debug(){
 							auto& currentMap = editComboVariables_[static_cast<int32_t>(currentEditHpState_)];
 							auto& targetMap = editComboVariables_[i];
 
-							auto it = currentMap.find(currentEditComboName_);
+							auto it = currentMap.find(*currentEditComboName_);
 							if(it != currentMap.end()){
-								targetMap[currentEditComboName_] = std::move(it->second);
+								targetMap[*currentEditComboName_] = std::move(it->second);
 								currentMap.erase(it);
 
-								currentEditCombo_ = &targetMap[currentEditComboName_];
+								currentEditCombo_ = &targetMap[*currentEditComboName_];
 							}
 						}
 						if(isSelected){
@@ -285,6 +316,11 @@ void Enemy::Debug(){
 					ImGui::EndCombo();
 				}
 
+				if(InputText("Name",&comboNameBeforeNameChange_)){
+					*currentEditComboName_ = comboNameBeforeNameChange_;
+					comboNameBeforeNameChange_ = *currentEditComboName_;
+				}
+
 				if(ImGui::BeginChild("Action List",ImVec2(130,270),true)){
 					for(auto& [attackName,attack] : workEnemyActionVariables_){
 						if(ImGui::Button(attackName.c_str())){
@@ -295,7 +331,7 @@ void Enemy::Debug(){
 				}
 				ImGui::EndChild();
 				ImGui::SameLine();
-				if(ImGui::BeginChild(("currentCombo::" + currentEditComboName_).c_str(),ImVec2(130,270),true)){
+				if(ImGui::BeginChild(("currentCombo::" + *currentEditComboName_).c_str(),ImVec2(130,270),true)){
 					int index = 0;
 					for(auto it = currentEditCombo_->comboAttacks_.begin();
 						it != currentEditCombo_->comboAttacks_.end(); ++it,++index){
@@ -322,22 +358,26 @@ void Enemy::Debug(){
 							}
 							ImGui::EndDragDropTarget();
 						}
-
 						ImGui::PopID();
 					}
 				}
 				ImGui::EndChild();
+				if(ImGui::Button("DeleteBackAction")){
+					if(!currentEditCombo_->comboAttacks_.empty()){
+						currentEditCombo_->comboAttacks_.pop_back();
+					}
+				}
 
 				if(ImGui::SmallButton("Play")){
-					rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,currentEditComboName_);
+					rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,*currentEditComboName_);
 				}
+				ImGui::SameLine();
 				if(ImGui::SmallButton("Stop")){
 					rootNode_ = nullptr;
 				}
 				ImGui::TreePop(); // 必ず呼ぶ
 			}
 		}
-
 		ImGui::TreePop();
 	}
 
@@ -478,9 +518,9 @@ void Enemy::LoadStatus(){
 		int32_t hpHight = static_cast<int32_t>(HpState::HP_HIGHTE);
 		int32_t hpNormal = static_cast<int32_t>(HpState::HP_NORMAL);
 		int32_t hpLow = static_cast<int32_t>(HpState::HP_LOW);
-		thresholdByHpState_[hpHight] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpHight]);
+		thresholdByHpState_[hpHight]  = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpHight]);
 		thresholdByHpState_[hpNormal] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpNormal]);
-		thresholdByHpState_[hpLow] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpLow]);
+		thresholdByHpState_[hpLow] 	  = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpLow]);
 	}
 }
 
@@ -524,17 +564,35 @@ void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState)
 void Enemy::SetAnimationRender(const std::string& filePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
 	this->weaponAnimationRenderer_->isActive = false;
+	this->subWeaponAnimationRenderer_->isActive = false;
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
 	this->weaponAnimationRenderer_->isActive = true;
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->subWeaponAnimationRenderer_->isActive = false;
+}
+
+void Enemy::SetAnimationRender(const std::string& filePath,
+							   const std::string& weaponFilePath,
+							   const std::string& subWeapon){
+	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+
+	this->weaponAnimationRenderer_->isActive = true;
+	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+
+	this->subWeaponAnimationRenderer_->isActive = true;
+	this->subWeaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){
-	bodyAnimationRenderer_->SetTotalTime(_totalTime,bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
-	weaponAnimationRenderer_->SetTotalTime(_totalTime,weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	bodyAnimationRenderer_->SetTotalTime(_totalTime,
+										 bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
+	weaponAnimationRenderer_->SetTotalTime(_totalTime,
+										   weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	subWeaponAnimationRenderer_->SetTotalTime(_totalTime,
+											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::ResetAnimationTotal(){
@@ -547,15 +605,20 @@ void Enemy::ResetAnimationTotal(){
 		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
+
+	subWeaponAnimationRenderer_->SetTotalTime(
+		subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
-
+	subWeaponAnimationRenderer_->SetAnimationFlags(_flags);
 	if(_isResetTime){
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
+		subWeaponAnimationRenderer_->Restart();
 	}
 }
 
@@ -584,6 +647,15 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::TACKLE_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::TackleAttack>(this,reinterpret_cast<WorkTackleAttackAction*>(worker)));
 			break;
+		case ActionTypes::RANGED_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::RangedAttack>(this,reinterpret_cast<WorkRangedAttackAction*>(worker)));
+			break;
+		case ActionTypes::LONGRANGE_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::LongRangeAttack>(this,reinterpret_cast<WorkLongRangeAttackAction*>(worker)));
+			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+			break;
 		default:
 			// 該当 する Typeが なければ reset
 			result.reset();
@@ -609,6 +681,15 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::CHASE:
 			result = std::make_unique<WorkChaseAction>();
+			break;
+		case ActionTypes::RANGED_ATTACK:
+			result = std::make_unique<WorkRangedAttackAction>();
+			break;
+		case ActionTypes::LONGRANGE_ATTACK:
+			result = std::make_unique<WorkLongRangeAttackAction>();
+			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result = std::make_unique<WorkWeakAttack2Action>();
 			break;
 		default:
 			break;

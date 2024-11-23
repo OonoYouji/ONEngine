@@ -11,18 +11,24 @@
 enum class ActionTypes : int32_t{
 	IDLE,
 	WEAK_ATTACK,
+	WEAK_ATTACK_2,
 	STRONG_ATTACK,
 	TACKLE_ATTACK,
 	CHASE,
+	RANGED_ATTACK,
+	LONGRANGE_ATTACK,
 	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
-	{ActionTypes::IDLE,"IDLE"},
-	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
-	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
-	{ActionTypes::TACKLE_ATTACK,"TACKLE_ATTACK"},
-	{ActionTypes::CHASE,"CHASE"},
+	{ActionTypes::IDLE			  ,"IDLE"},
+	{ActionTypes::WEAK_ATTACK	  ,"WEAK_ATTACK"},
+	{ActionTypes::WEAK_ATTACK_2	  ,"WEAK_ATTACK_2"},
+	{ActionTypes::STRONG_ATTACK	  ,"STRONG_ATTACK"},
+	{ActionTypes::TACKLE_ATTACK	  ,"TACKLE_ATTACK"},
+	{ActionTypes::CHASE			  ,"CHASE"},
+	{ActionTypes::RANGED_ATTACK	  ,"RANGED_ATTACK"},
+	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"}
 };
 
 /// <summary>
@@ -99,6 +105,33 @@ public:
 	float damage_;
 };
 
+class WorkWeakAttack2Action
+	:public WorkEnemyAction{
+public:
+	WorkWeakAttack2Action():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
+		collisionTime_      = 0;
+		collisionStartTime_ = 0;
+		collisionRadius_    = 0;
+		damage_             = 0;
+		maxRotateY2Player_  = 0;
+	}
+	~WorkWeakAttack2Action(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float collisionTime_;
+	float collisionStartTime_;
+	float collisionRadius_;
+	//与えるダメージ
+	float damage_;
+
+	// player への 振り向き上限
+	float maxRotateY2Player_;
+};
+
 class WorkStrongAttackAction
 	:public WorkEnemyAction{
 public:
@@ -150,5 +183,63 @@ public:
 	float rotateSensitivity_;
 	float damage_;
 	float speed_;
+};
+
+class WorkRangedAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkRangedAttackAction():WorkEnemyAction(ActionTypes::RANGED_ATTACK){
+		attackForPlayerProbability_ = 0.0f;
+		bulletScale_				= 0.0f;
+		damage_ 					= 0.0f;
+		spawnCoolTime_				= 0.0f;
+		spawnPositionY_ 			= 0.0f;
+		timeToLand_					= 0.0f;
+		spawnRange_ 				= 0.0f;
+		lifeTime_ 					= 0.0f;
+	}
+	~WorkRangedAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float bulletScale_;
+	float damage_;
+	float timeToLand_;
+	float spawnCoolTime_;
+	float spawnRange_;
+	float spawnPositionY_;
+	float lifeTime_;
+	// プレイヤーを 攻撃する 確率
+	float attackForPlayerProbability_;
+};
+
+class WorkLongRangeAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkLongRangeAttackAction()
+		:WorkEnemyAction(ActionTypes::LONGRANGE_ATTACK){
+		damage_ 			 = 0.0f;
+		bulletSpeed_ 		 = 0.0f;
+		bulletScale_ 		 = 0.0f;
+		bulletFireInterval_  = 0.0f;
+		bulletSpawnOffsetZ_  = 0.0f;
+		rotateMaxSpeed_ 	 = 0.0f;
+	}
+	~WorkLongRangeAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float damage_;
+	float bulletSpeed_;
+	float bulletScale_;
+	float bulletFireInterval_;
+	float bulletSpawnOffsetZ_;
+	float rotateMaxSpeed_;
 };
 #pragma endregion
