@@ -122,6 +122,7 @@ private:
 	class GameCamera*           pGameCamera_    = nullptr;
 	class Enemy*                pEnemy_         = nullptr;
 	class PlayerAttackCollider* attackCollider_ = nullptr;
+	class EntityShadow*         entityShadow_   = nullptr;
 
 public:
 

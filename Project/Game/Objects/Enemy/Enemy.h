@@ -146,6 +146,7 @@ private:
 	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
 	Transform* trosoTransform_ = nullptr;
+	class EntityShadow* entityShadow_ = nullptr;
 
 public:
 	void SetAnimationRender(const std::string& filePath);

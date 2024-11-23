@@ -27,6 +27,7 @@
 /// objects
 #include "Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/EntityShadow/EntityShadow.h"
 
 
 Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
@@ -109,6 +110,10 @@ void Player::Initialize() {
 	attackCollider_ = new PlayerAttackCollider(this, pGameCamera_);
 	attackCollider_->Initialize();
 	attackCollider_->isActive = false;
+
+	entityShadow_ = new EntityShadow();
+	entityShadow_->Initialize();
+	entityShadow_->SetParent(pTransform_);
 
 	/// varialbe managerに値を追加する
 	AddVariables();

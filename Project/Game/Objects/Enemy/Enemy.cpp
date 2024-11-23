@@ -25,7 +25,9 @@
 #include "MyFileSystem/MyFileSystem.h"
 #include "VariableManager/VariableManager.h"
 
-#include "Game/Objects/Player/Player.h"
+/// objects
+#include "Objects/Player/Player.h"
+#include "Objects/EntityShadow/EntityShadow.h"
 
 #ifdef _DEBUG
 /// externals
@@ -72,6 +74,11 @@ void Enemy::Initialize(){
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
 	trosoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
 	trosoTransform_->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(trosoTransform_)));
+
+	entityShadow_ = new EntityShadow();
+	entityShadow_->Initialize();
+	entityShadow_->SetParent(pTransform_);
+	entityShadow_->SetScale(Vec3::kOne * 1.5f);
 
 	LoadStatus();
 	LoadAllAction();
