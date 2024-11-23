@@ -96,13 +96,13 @@ namespace EnemyBehaviorTree{
 	JumpAway::JumpAway(Enemy* enemy,WorkJumpAwayAction* worker)
 		:Sequence(enemy){
 
-		addChild(std::make_unique<TransitionAnimation>(enemy,/*"Boss_JumpAttack_1_1"*/"Boss_WeakAttack_1_1",worker->motionTimes_.startupTime_,false));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Jump_1",worker->motionTimes_.startupTime_,false));
 		addChild(std::make_unique<JumpAwayStartup>(enemy,worker->motionTimes_.startupTime_));
 
-		addChild(std::make_unique<TransitionAnimation>(enemy,/*"Boss_JumpAttack_1_1"*/"Boss_WeakAttack_1_2",0.0f,false));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Jump_2",-1.0f,false));
 		addChild(std::make_unique<JumpAwayAction>(enemy,worker->jumpSpeed_,worker->mass_,worker->distance_));
 
-		addChild(std::make_unique<TransitionAnimation>(enemy,/*"Boss_JumpAttack_1_3"*/"Boss_WeakAttack_1_3",worker->motionTimes_.endLagTime_,false));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Jump_3",worker->motionTimes_.endLagTime_,false));
 		addChild(std::make_unique<Landing>(enemy,worker->motionTimes_.endLagTime_));
 	}
 }
