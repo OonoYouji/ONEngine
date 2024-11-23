@@ -207,3 +207,33 @@ void WorkLongRangeAttackAction::Load(const std::string& name){
 	bulletSpawnOffsetZ_ = variableManager->GetValue<float>(name,"bulletSpawnOffsetZ");
 	rotateMaxSpeed_ 	= variableManager->GetValue<float>(name,"rotateMaxSpeed");
 }
+
+void WorkWeakAttack2Action::Debug(){
+	WorkEnemyAction::Debug();
+	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
+	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
+	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
+	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
+	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
+}
+
+void WorkWeakAttack2Action::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Save(name);
+	variableManager->SetValue(name,"collisionStartTime",collisionStartTime_);
+	variableManager->SetValue(name,"collisionTime",collisionTime_);
+	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
+	variableManager->SetValue(name,"damage",damage_);
+	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
+}
+
+void WorkWeakAttack2Action::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+
+	collisionStartTime_ = variableManager->GetValue<float>(name,"collisionStartTime");
+	collisionTime_ = variableManager->GetValue<float>(name,"collisionTime");
+	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
+	damage_ = variableManager->GetValue<float>(name,"damage");
+	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+}

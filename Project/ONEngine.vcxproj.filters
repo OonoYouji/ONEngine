@@ -183,6 +183,7 @@
     <ClCompile Include="Game\Objects\EnemyBullet\RangedAttackBullet.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.cpp" />
     <ClCompile Include="Game\Objects\EnemyBullet\LongRangeBullet.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -355,6 +356,7 @@
     <ClInclude Include="Game\Objects\EnemyBullet\RangedAttackBullet.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.h" />
     <ClInclude Include="Game\Objects\EnemyBullet\LongRangeBullet.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
