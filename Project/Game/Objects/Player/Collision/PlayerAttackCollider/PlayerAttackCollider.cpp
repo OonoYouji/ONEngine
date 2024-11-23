@@ -71,7 +71,14 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 
 		DamageNumRender* damageRender = new DamageNumRender(static_cast<uint32_t>(pPlayer_->GetDamage()), pGameCamera_);
 		damageRender->Initialize();
-		damageRender->SetPosition(_collision->GetPosition() + Vec3::kUp * 2.0f);
+
+		Vec3 collisionPosition = _collision->GetPosition();
+		Vec3 position = collisionPosition; 
+		position += (pGameCamera_->GetPosition() - collisionPosition).Normalize() * 0.5f;
+		position += Vec3::kUp * 2.0f;
+
+		damageRender->SetPosition(position);
+		damageRender->SetScale(Vec3::kOne * 0.5f);
 	}
 }
 

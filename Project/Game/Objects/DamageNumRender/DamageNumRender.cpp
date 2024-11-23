@@ -10,6 +10,8 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 
+/// scenes
+#include "Scenes/Scene_Game.h"
 
 
 DamageNumRender::DamageNumRender(uint32_t _score, GameCamera* _gameCamera) : score_(_score), pMainCamera_(_gameCamera) {
@@ -19,6 +21,8 @@ DamageNumRender::DamageNumRender(uint32_t _score, GameCamera* _gameCamera) : sco
 DamageNumRender::~DamageNumRender() {}
 
 void DamageNumRender::Initialize() {
+
+	drawLayerId = GAME_SCENE_LAYER_NUMBER;
 
 	lifeTime_ = 5.0f;
 	

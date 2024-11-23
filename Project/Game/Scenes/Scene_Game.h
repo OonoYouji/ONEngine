@@ -5,6 +5,7 @@
 
 enum GAME_SCENE_LAYER {
 	GAME_SCENE_LAYER_DEFAULT, /// デフォルトのレイヤー
+	GAME_SCENE_LAYER_NUMBER,  /// デフォルトのレイヤー
 	GAME_SCENE_LAYER_UI,	  /// UI層のレイヤー
 };
 

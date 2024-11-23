@@ -35,6 +35,8 @@ public:
 
 	void StartShake(float _minValue, float _maxValue, float _time);
 
+	class GameCamera* GetGameCamera() const { return pGameCamera_; }
+
 private:
 
 	/// ===================================================

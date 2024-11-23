@@ -33,6 +33,17 @@ void TrackingCamera::Initialize() {
 
 	/// カメラの回転の計算方法
 	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
+	pTransform_->rotateOrder = QUATERNION;
+	
+	/*
+		TranckingCamera   ---| 
+			|			     | 
+			|			     | <--- GameCamera
+			v			     | 
+		offset transform  ---| 
+	*/
+
+	offsetTransform_.SetParent(pTransform_);
 	pGameCamera_->SetParent(&offsetTransform_);
 
 	/// 見る相手
@@ -74,13 +85,13 @@ void TrackingCamera::Update() {
 		shakeTime_ += Time::DeltaTime();
 
 		float lerpT = std::min(shakeTime_ / shakeMaxTime_, 1.0f);
-		float value = std::lerp(shakeMinValue_, shakeMaxTime_, lerpT);
+		float value = std::lerp(shakeMaxValue_, shakeMinValue_, lerpT);
 
 		offsetTransform_.position = Random::Vec3(-Vec3::kOne, Vec3::kOne) * value;
-		offsetTransform_.Update();
 	}
 
 
+	offsetTransform_.Update();
 
 	/// カメラの更新
 	quaternionLerpTime_ = std::clamp(quaternionLerpTime_ + quaternionLerpSpeed_ * Time::DeltaTime(), 0.0f, 1.0f);
@@ -261,7 +272,7 @@ void TrackingCamera::LockOnToEnemy() {
 	/// offset position を rotate分回転させる
 	cameraNextPosition_ = targetPosition_ + offsetPos;
 
-	pGameCamera_->SetPosition(cameraHeightOffset_ + Vec3::Lerp(
+	SetPosition(cameraHeightOffset_ + Vec3::Lerp(
 		pGameCamera_->GetPosition(), cameraNextPosition_,
 		0.5f
 	));
@@ -273,6 +284,7 @@ void TrackingCamera::LockOnToEnemy() {
 	/// ---------------------------------------------------
 
 	/// カメラの行列更新
+	pTransform_->Update();
 	pGameCamera_->UpdateMatrix();
 	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
 	cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
@@ -283,7 +295,7 @@ void TrackingCamera::LockOnToEnemy() {
 		(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize()
 	);
 
-	pGameCamera_->SetQuaternion(Quaternion::Lerp(
+	SetQuaternion(Quaternion::Lerp(
 		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
 		quaternionLerpTime_
 	));
@@ -361,7 +373,7 @@ void TrackingCamera::LockOnToPlayer() {
 		Mat4::MakeRotate(cameraOffsetRotate_)
 	);
 
-	pGameCamera_->SetPosition(cameraHeightOffset_ + Vec3::Lerp(
+	SetPosition(cameraHeightOffset_ + Vec3::Lerp(
 		pGameCamera_->GetPosition(), cameraNextPosition_,
 		0.5f
 	));
@@ -373,6 +385,7 @@ void TrackingCamera::LockOnToPlayer() {
 	/// ---------------------------------------------------
 
 	/// カメラの行列更新
+	pTransform_->Update();
 	pGameCamera_->UpdateMatrix();
 	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
 
@@ -386,7 +399,7 @@ void TrackingCamera::LockOnToPlayer() {
 		currentDirection_.Normalize()
 	);
 
-	pGameCamera_->SetQuaternion(Quaternion::Lerp(
+	SetQuaternion(Quaternion::Lerp(
 		cameraToEnemyQuaternion_, cameraToPlayerQuaternion_, 
 		quaternionLerpTime_
 	));

@@ -33,7 +33,7 @@ void Scene_Game::Initialize(){
 	/// object creata
 
 	/// プレイヤー
-	Player* player           = new Player(mainCamera_);
+	Player* player           = new Player();
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
 
 	/// 敵
@@ -46,6 +46,10 @@ void Scene_Game::Initialize(){
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_,player,enemy);
 
 	/// 初期化する
+	player->SetTrackingCamera(trackingCamera);
+	player->SetEnemy(enemy);
+
+
 	player->Initialize();
 	playerHPRenderer->Initialize();
 	trackingCamera->Initialize();
@@ -54,7 +58,6 @@ void Scene_Game::Initialize(){
 
 	bbObjectManager->Initialize();
 
-	player->SetEnemy(enemy);
 	playerHPRenderer->SetPlayer(player);
 
 
@@ -62,6 +65,9 @@ void Scene_Game::Initialize(){
 
 
 	/// ui layer  index=1
+
+	AddLayer("numberLayer", mainCamera_);
+
 
 	GameCamera* uiCamera = new GameCamera("uiCamera");
 	uiCamera->Initialize();
