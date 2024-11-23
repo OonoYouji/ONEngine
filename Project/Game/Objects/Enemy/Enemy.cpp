@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyLongRangeAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyRangedAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyStrongAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyTackleAttack.h"
@@ -54,6 +55,10 @@ Enemy::~Enemy(){}
 void Enemy::Initialize(){
 	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
+	weaponAnimationRenderer_->isActive = false;
+	subWeaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
+	subWeaponAnimationRenderer_->isActive = false;
+
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
@@ -551,17 +556,33 @@ void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState)
 void Enemy::SetAnimationRender(const std::string& filePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
 	this->weaponAnimationRenderer_->isActive = false;
+	this->subWeaponAnimationRenderer_->isActive = false;
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
 	this->weaponAnimationRenderer_->isActive = true;
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->subWeaponAnimationRenderer_->isActive = false;
+}
+
+void Enemy::SetAnimationRender(const std::string& filePath,
+							   const std::string& weaponFilePath,
+							   const std::string& subWeapon){
+	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+	this->weaponAnimationRenderer_->isActive = true;
+	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->subWeaponAnimationRenderer_->isActive = true;
+	this->subWeaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){
-	bodyAnimationRenderer_->SetTotalTime(_totalTime,bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
-	weaponAnimationRenderer_->SetTotalTime(_totalTime,weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	bodyAnimationRenderer_->SetTotalTime(_totalTime,
+										 bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
+	weaponAnimationRenderer_->SetTotalTime(_totalTime,
+										   weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	subWeaponAnimationRenderer_->SetTotalTime(_totalTime,
+											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::ResetAnimationTotal(){
@@ -574,6 +595,8 @@ void Enemy::ResetAnimationTotal(){
 		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
+	subWeaponAnimationRenderer_->SetTotalTime(subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
+												 subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
@@ -614,6 +637,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::RANGED_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::RangedAttack>(this,reinterpret_cast<WorkRangedAttackAction*>(worker)));
 			break;
+		case ActionTypes::LONGRANGE_ATTACK:
+			result->addChild(std::make_unique<EnemyBehaviorTree::LongRangeAttack>(this,reinterpret_cast<WorkLongRangeAttackAction*>(worker)));
+			break;
 		default:
 			// 該当 する Typeが なければ reset
 			result.reset();
@@ -642,6 +668,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 			break;
 		case ActionTypes::RANGED_ATTACK:
 			result = std::make_unique<WorkRangedAttackAction>();
+			break;
+		case ActionTypes::LONGRANGE_ATTACK:
+			result = std::make_unique<WorkLongRangeAttackAction>();
 			break;
 		default:
 			break;

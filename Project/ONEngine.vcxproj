@@ -147,6 +147,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\EnemyBullet\LongRangeBullet.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.cpp" />
     <ClCompile Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.cpp" />
     <ClCompile Include="Game\Objects\EnemyBullet\RangedAttackBullet.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.cpp" />
@@ -282,6 +284,8 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\EnemyBullet\LongRangeBullet.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyLongRangeAttack.h" />
     <ClInclude Include="Game\Objects\EnemyBulletEmitter\EnemyBulletEmitter.h" />
     <ClInclude Include="Game\Objects\EnemyBullet\RangedAttackBullet.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyRangedAttack.h" />
