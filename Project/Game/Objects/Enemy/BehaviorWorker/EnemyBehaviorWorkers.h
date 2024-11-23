@@ -17,18 +17,20 @@ enum class ActionTypes : int32_t{
 	CHASE,
 	RANGED_ATTACK,
 	LONGRANGE_ATTACK,
+	JUMP_ATTACK,
 	COUNT // 要素数を把握するための要素
 };
 
 static std::unordered_map<ActionTypes,std::string> actionTypeWord = {
-	{ActionTypes::IDLE			  ,"IDLE"},
-	{ActionTypes::WEAK_ATTACK	  ,"WEAK_ATTACK"},
-	{ActionTypes::WEAK_ATTACK_2	  ,"WEAK_ATTACK_2"},
-	{ActionTypes::STRONG_ATTACK	  ,"STRONG_ATTACK"},
-	{ActionTypes::TACKLE_ATTACK	  ,"TACKLE_ATTACK"},
-	{ActionTypes::CHASE			  ,"CHASE"},
-	{ActionTypes::RANGED_ATTACK	  ,"RANGED_ATTACK"},
-	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"}
+	{ActionTypes::IDLE,"IDLE"},
+	{ActionTypes::WEAK_ATTACK,"WEAK_ATTACK"},
+	{ActionTypes::WEAK_ATTACK_2,"WEAK_ATTACK_2"},
+	{ActionTypes::STRONG_ATTACK,"STRONG_ATTACK"},
+	{ActionTypes::TACKLE_ATTACK,"TACKLE_ATTACK"},
+	{ActionTypes::CHASE,"CHASE"},
+	{ActionTypes::RANGED_ATTACK,"RANGED_ATTACK"},
+	{ActionTypes::LONGRANGE_ATTACK,"LONGRANGE_ATTACK"},
+	{ActionTypes::JUMP_ATTACK,"JUMP_ATTACK"}
 };
 
 /// <summary>
@@ -242,4 +244,29 @@ public:
 	float bulletSpawnOffsetZ_;
 	float rotateMaxSpeed_;
 };
+
+
+class WorkJumpAttackAction
+	:public WorkEnemyAction{
+public:
+	WorkJumpAttackAction()
+		:WorkEnemyAction(ActionTypes::JUMP_ATTACK){
+		damage_ 		  = 0.0f;
+		collisionRadius_  = 0.0f;
+		jumpUpTime_ 	  = 0.0f;
+		moveToPlayerTime_ = 0.0f;
+	}
+	~WorkJumpAttackAction(){}
+
+	void Debug()override;
+
+	void Save(const std::string& name)override;
+	void Load(const std::string& name)override;
+
+	float damage_;
+	float collisionRadius_;
+	float jumpUpTime_;
+	float moveToPlayerTime_;
+};
+
 #pragma endregion
