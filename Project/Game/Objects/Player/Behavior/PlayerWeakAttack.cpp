@@ -58,7 +58,7 @@ void PlayerWeakAttack::Update() {
 		return;
 	} else if(isNextCombo) {
 		// comboNum_が範囲外（0未満または最大コンボ数以上）の場合にreturn
-		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax() - 1) {
+		if(comboNum_ < 0 || comboNum_ >= host_->GetWeakAttackComboMax()) {
 			return;
 		}
 
