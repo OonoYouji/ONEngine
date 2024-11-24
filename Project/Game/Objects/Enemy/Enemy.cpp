@@ -592,7 +592,7 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 
 	this->subWeaponAnimationRenderer_->isActive = true;
-	this->subWeaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->subWeaponAnimationRenderer_->ChangeAnimation(subWeapon);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){

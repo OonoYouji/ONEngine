@@ -45,8 +45,6 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_,player,enemy);
 
-	(new ModelPreviewObject("Player_Walk"))->Initialize();
-
 	/// 初期化する
 	player->Initialize();
 	playerHPRenderer->Initialize();

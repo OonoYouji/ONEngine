@@ -32,7 +32,7 @@ namespace EnemyBehaviorTree{
 		// アニメーション時間で再生
 		enemy_->ResetAnimationTotal();
 
-		enemy_->SetAnimationFlags(false);
+		enemy_->SetAnimationFlags(true);
 		return Status::SUCCESS;
 	}
 
