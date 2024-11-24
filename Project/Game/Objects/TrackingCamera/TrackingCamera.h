@@ -55,7 +55,7 @@ private:
 
 	Vec3 cameraOffsetDirection_;
 	float cameraOffsetLenght_;
-	float cameraOffsetLenghtScaleFactor_; /// cameraOffsetLenght_の倍率
+	float cameraOffsetLenghtScaleFactor_, saveCameraOffsetLenghtScaleFactor_; /// cameraOffsetLenght_の倍率
 	float lenScaleFactorMin_, lenScaleFactorMax_;
 	Vec3 cameraHeightOffset_;
 

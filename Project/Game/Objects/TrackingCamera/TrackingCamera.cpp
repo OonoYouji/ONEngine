@@ -242,7 +242,18 @@ void TrackingCamera::LockOnToEnemy() {
 
 		cameraTargetRotate_ = Vec3::Lerp(saveCameraTargetRotate_, { 0.0f, playerToEnemyRotateY_, 0.0f }, lerpT);
 
-		targetPosition_     = Vec3::Lerp(saveTargetPosition_, pTargetObject_->GetPosition() - (playerToEnemyVector_ * 0.5f), lerpT);
+		targetPosition_ = Vec3::Lerp(
+			saveTargetPosition_,
+			pTargetObject_->GetPosition() - (playerToEnemyVector_ * 0.5f), 
+			lerpT
+		);
+
+
+		/// positionの更新、プレイヤーと敵の間に配置
+		float lenghtScaleFactor = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
+		lenghtScaleFactor = std::clamp(lenghtScaleFactor, lenScaleFactorMin_, lenScaleFactorMax_);
+		cameraOffsetLenghtScaleFactor_ = std::lerp(saveCameraOffsetLenghtScaleFactor_, lenghtScaleFactor, lerpT);
+
 
 		/// 終了した
 		if(lerpT == 1.0f) {
@@ -256,6 +267,10 @@ void TrackingCamera::LockOnToEnemy() {
 
 		CameraOffsetRotateUpdate(cameraRotateValue);
 
+		/// positionの更新、プレイヤーと敵の間に配置
+		cameraOffsetLenghtScaleFactor_ = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
+		cameraOffsetLenghtScaleFactor_ = std::clamp(cameraOffsetLenghtScaleFactor_, lenScaleFactorMin_, lenScaleFactorMax_);
+
 	}
 
 
@@ -264,11 +279,8 @@ void TrackingCamera::LockOnToEnemy() {
 	/// 座標の計算
 	/// ---------------------------------------------------
 
-	/// positionの更新、プレイヤーと敵の間に配置
-	cameraOffsetLenghtScaleFactor_ = playerToEnemyVector_.Len() / lockOnLenghtScaleFactor_;
-	cameraOffsetLenghtScaleFactor_ = std::clamp(cameraOffsetLenghtScaleFactor_, lenScaleFactorMin_, lenScaleFactorMax_);
-
-	Vec3  offsetPos   = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
+	
+	Vec3 offsetPos = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
 	if(playerToEnemyVector_.Len() < 15.0f) {
@@ -308,6 +320,11 @@ void TrackingCamera::LockOnToEnemy() {
 	cameraToEnemyQuaternion_ = Quaternion::LockAt(
 		{ 0.0f, 0.0f, 0.0f },
 		(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize()
+	);
+
+	cameraToPlayerQuaternion_ = Quaternion::LockAt(
+		{ 0.0f, 0.0f, 0.0f },
+		currentDirection_.Normalize()
 	);
 
 	SetQuaternion(Quaternion::Lerp(
@@ -473,6 +490,7 @@ void TrackingCamera::LockOnUpdate() {
 		pTargetObject_ = pEnemy_;
 		saveTargetPosition_ = targetPosition_;
 
+		saveCameraOffsetLenghtScaleFactor_ = std::clamp(cameraOffsetLenghtScaleFactor_, lenScaleFactorMin_, lenScaleFactorMax_);
 
 		Vec3 normP2EVec = playerToEnemyVector_.Normalize();
 		playerToEnemyRotateY_ = std::atan2(normP2EVec.z, normP2EVec.x);
