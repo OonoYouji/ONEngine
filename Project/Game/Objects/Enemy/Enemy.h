@@ -90,28 +90,26 @@ public:
 	void DecideNextNode();
 private:
 	Player* player_ = nullptr;
-	EnemyAttackCollider* enemy_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
 	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
-	// 本体のコライダー これに当たるとダメージを受ける
+
+	/// <summary>
+	/// 本体のコライダー これに当たるとダメージを受ける
+	/// </summary>
 	SphereCollider* hitCollider_;
-
-	float maxHp_;
-	float hp_;
-	std::array<float,static_cast<int32_t>(HpState::COUNT)> thresholdByHpState_;
-	HpState currentHPState_;
-
-	float speed_;
-
-	std::string currentAction_;
-
 	/// <summary>
 	/// 攻撃を与えるCollider
 	/// </summary>
 	EnemyAttackCollider* attackCollider_;
+
+	float maxHp_;
+	float hp_;
+	HpState currentHpState_;
+	HpState preHpState_;
+	std::array<float,static_cast<int32_t>(HpState::COUNT)> thresholdByHpState_;
 
 	// 調整項目保存用
 	using AttackActionName = std::string;
@@ -135,8 +133,8 @@ private:
 	WorkEnemyAction* currentEditAction_;
 	ComboAttacks* currentEditCombo_;
 
-	Vector2 actionListWindowSize_ 	= {50.0f,100.0f};
-	Vector2 combosActionWindowSize_ = {50.0f,100.0f};
+	Vector2 actionListWindowSize_ 	= {50.0f,75.0f};
+	Vector2 combosActionWindowSize_ = {50.0f,75.0f};
 
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
@@ -145,7 +143,7 @@ private:
 	/// 当たり判定の範囲
 	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
-	Transform* trosoTransform_ = nullptr;
+	Transform* torsoTransform_ = nullptr;
 
 public:
 	void SetAnimationRender(const std::string& filePath);
@@ -154,20 +152,18 @@ public:
 
 	void SetAnimationTotalTime(float _totalTime);
 
+	float GetBodyAnimationTotalTime()const;
+
 	void ResetAnimationTotal();
 
 	void SetAnimationFlags(int _flags,bool _isResetTime = true);
-
-	void Debug_SetCurrentAction(const std::string& action){ currentAction_ = action; }
 
 	Player* GetPlayer()const;
 
 	const float GetMaxHP()const{ return maxHp_; }
 	float GetHP()const{ return hp_; }
 	void  SetHP(float hp){ hp_ = hp; }
-	HpState GetHpState()const{ return currentHPState_; }
-
-	float GetSpeed()const{ return speed_; }
+	HpState GetHpState()const{ return currentHpState_; }
 
 	const ComboAttacks& GetComboAttacks(int32_t hpState,const std::string& comboName)const;
 	const std::deque<std::string>& GetComboList(HpState state,EnemyAttackRangeType rangeType)const;
@@ -176,7 +172,6 @@ public:
 
 	void ActivateAttackCollider(ActionTypes offset,float radius);
 	void TerminateAttackCollider();
-
 
 	float GetColliderRadius() { return colliderRadius_; }
 };

@@ -50,6 +50,9 @@ void EnemyAttackCollider::Update(){
 	ApplyVariables();
 }
 
+void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
+}
+
 void EnemyAttackCollider::ApplyVariables(){
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
