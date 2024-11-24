@@ -72,6 +72,8 @@ public:
 
 	void SetAnimationFlags(int _flags);
 
+	void SetTime(float _time);
+
 	void Restart();
 
 	const std::string& GetCurrentNodeAnimationKey() const {

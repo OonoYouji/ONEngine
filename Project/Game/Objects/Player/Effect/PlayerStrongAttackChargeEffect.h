@@ -24,6 +24,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AnimationRenderer* animationRenderer_ = nullptr;
+	//class AnimationRenderer* animationRenderer_ = nullptr;
+
+	std::array<class AnimationRenderer*, 3> animationRenderers_;
 
 };

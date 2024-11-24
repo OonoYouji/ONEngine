@@ -39,7 +39,7 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 		host_->SetDamage(strongAttack.damages_[currentPhase_ - 1]);
 
 		effect_->SetAnimationActive(true);
-		effect_->SetTimeRate(1.0f + (0.25f * currentPhase_));
+		effect_->SetTimeRate(0.5f + (0.25f * currentPhase_));
 	}
 
 	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
