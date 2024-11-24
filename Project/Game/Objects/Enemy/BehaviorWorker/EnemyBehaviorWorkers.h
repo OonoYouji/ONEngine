@@ -167,8 +167,6 @@ public:
 	WorkTackleAttackAction():WorkEnemyAction(ActionTypes::TACKLE_ATTACK){
 		lockOnTime_        = 0.0f;
 		collisionRadius_   = 0.0f;
-		maxRotateSpeed_    = 0.0f;
-		rotateSensitivity_ = 0.0f;
 		damage_            = 0.0f;
 		speed_             = 0.0f;
 	}
@@ -181,8 +179,6 @@ public:
 
 	float lockOnTime_;
 	float collisionRadius_;
-	float maxRotateSpeed_;
-	float rotateSensitivity_;
 	float damage_;
 	float speed_;
 };
