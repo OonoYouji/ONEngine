@@ -43,7 +43,7 @@ void Scene_Game::Initialize(){
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 
-	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_,player,enemy);
+	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
 	/// 初期化する
 	player->SetTrackingCamera(trackingCamera);
