@@ -69,7 +69,5 @@ private:
 	bool isFinish_; /// 入力をやめて攻撃または回避したとき
 
 
-	float startLagTime_; /// 開始時のラグ
-	float endLagTime_;   /// 終了時のラグ
-
+	float nextTime_ = 0.0f;
 };
