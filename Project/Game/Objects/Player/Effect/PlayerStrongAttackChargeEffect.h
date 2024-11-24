@@ -15,12 +15,15 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void SetTimeRate(float _timeRate);
+	void SetAnimationActive(bool _isActive);
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class ParticleSystem* particleSystem_ = nullptr;
+	class AnimationRenderer* animationRenderer_ = nullptr;
 
 };

@@ -31,6 +31,7 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Effect/PlayerStrongAttackChargeEffect.h"
 
 Player::Player() {
 	CreateTag(this);
@@ -116,6 +117,11 @@ void Player::Initialize() {
 	entityShadow_ = new EntityShadow();
 	entityShadow_->Initialize();
 	entityShadow_->SetParent(pTransform_);
+
+	strongAttackChargeEffect_ = new PlayerStrongAttackChargeEffect();
+	strongAttackChargeEffect_->Initialize();
+	strongAttackChargeEffect_->SetParent(pTransform_);
+	strongAttackChargeEffect_->SetAnimationActive(false);
 
 	/// varialbe managerに値を追加する
 	AddVariables();

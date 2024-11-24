@@ -125,6 +125,7 @@ private:
 	class Enemy*                pEnemy_          = nullptr;
 	class PlayerAttackCollider* attackCollider_  = nullptr;
 	class EntityShadow*         entityShadow_    = nullptr;
+	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
 
 public:
 
@@ -157,6 +158,7 @@ public:
 	class TrackingCamera* GetTrackingCamera() const { return pTrackingCamera_; }
 	class Enemy* GetEnemy() const { return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
+	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const { return strongAttackChargeEffect_; }
 	
 	void SetAnimationModel(const std::string& _filePath);
 	void SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath);

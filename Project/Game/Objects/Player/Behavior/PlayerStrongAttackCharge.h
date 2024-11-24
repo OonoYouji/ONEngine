@@ -70,4 +70,7 @@ private:
 
 
 	float nextTime_ = 0.0f;
+
+
+	class PlayerStrongAttackChargeEffect* effect_ = nullptr;
 };
