@@ -46,13 +46,15 @@ void PlayerAttackCollider::Update() {
 
 		pTransform_->position = weakAttackTransform_.position;
 		pTransform_->rotate   = weakAttackTransform_.rotate;
-		pTransform_->scale    = weakAttackTransform_.scale;
+		colliderSize_         = weakAttackTransform_.scale;
 	} else {
 		pTransform_->position = strongAttackTransform_.position;
 		pTransform_->rotate   = strongAttackTransform_.rotate;
-		pTransform_->scale    = strongAttackTransform_.scale;
+		colliderSize_         = strongAttackTransform_.scale;
 	}
 
+	pTransform_->scale = Vec3::kOne * 1.0f;
+	boxCollider_->SetSize(colliderSize_);
 	isCollisionStay_ = false;
 	isCollisionEnter_ = false;
 }

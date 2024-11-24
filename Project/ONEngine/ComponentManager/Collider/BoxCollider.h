@@ -34,6 +34,9 @@ public:
 		return orientatinos_;
 	}
 
+
+	void SetSize(const Vec3& _size);
+
 	const Vec3& GetSize() const {
 		return size_;
 	}

@@ -40,7 +40,7 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	//sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
