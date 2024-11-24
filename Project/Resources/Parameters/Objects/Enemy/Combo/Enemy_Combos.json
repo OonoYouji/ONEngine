@@ -1,6 +1,12 @@
 {
     "Enemy_Combos": {
-        "CombosSize": 1,
-        "Index_0": "NULL"
+        "CombosSize": 7,
+        "Index_0": "default_weak2_1",
+        "Index_1": "default_strong_1",
+        "Index_2": "default_jumpLongRange_1",
+        "Index_3": "default_LongRangeAttack_1",
+        "Index_4": "default_chaseWeak1_1",
+        "Index_5": "default_chaseStrong_1",
+        "Index_6": "default_jumpTackle_1"
     }
 }

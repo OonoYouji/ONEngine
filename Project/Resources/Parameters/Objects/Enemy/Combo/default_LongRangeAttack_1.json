@@ -1,0 +1,9 @@
+{
+    "default_LongRangeAttack_1": {
+        "ComboSize": 2,
+        "HpState": 0,
+        "Index_0": "default_LongRangeAttack",
+        "Index_1": "default_idle",
+        "RangeType": 2
+    }
+}
