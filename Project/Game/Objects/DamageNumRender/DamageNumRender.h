@@ -9,7 +9,15 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	DamageNumRender(uint32_t _score, class GameCamera* _gameCamera);
+	DamageNumRender(
+		uint32_t _score,
+		const Vec3& _startScale,
+		const Vec3& _endScale,
+		float _lerpTime,
+		float _lifeTime,
+		class GameCamera* _gameCamera
+	);
+
 	~DamageNumRender();
 
 	void Initialize() override;
@@ -26,6 +34,8 @@ private:
 	float lifeTime_;
 	uint32_t score_;
 
+	Vec3 startScale_, endScale_;
+	float lerpTime_, lerpMaxTime_;
 
 	Quaternion defaultQuaternionY_;
 	class GameCamera* pMainCamera_ = nullptr;
