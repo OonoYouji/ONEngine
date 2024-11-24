@@ -48,7 +48,7 @@ void PlayerWeakAttack::Update() {
 
 	/// 回避のための入力
 	isDush      |= Input::TriggerKey(KeyCode::LShift);
-	isDush      |= Input::TriggerPadLT();
+	isDush      |= Input::TriggerPadRT();
 
 	/// 次のコンボのための入力
 	isNextCombo |= Input::TriggerKey(KeyCode::J);
@@ -124,6 +124,28 @@ void PlayerWeakAttack::WeakAttack() {
 }
 
 void PlayerWeakAttack::EndLagUpdate() {
+	if(nextBehavior_ == static_cast<int>(NextBehavior::combo)) {
+		host_->SetIsActiveWeapon(false);
+
+		std::unique_ptr<IPlayerBehavior> nextBehavior;
+
+		switch(nextBehavior_) {
+		case static_cast<int>(NextBehavior::avoidance):
+			nextBehavior = std::make_unique<PlayerAvoidanceBehavior>(host_);
+			break;
+		case static_cast<int>(NextBehavior::combo):
+			nextBehavior = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);
+			break;
+		}
+
+		host_->TransitionBehavior(std::move(nextBehavior));
+		return;
+	}
+
+
+
+
+
 	if(currentTime_ >= workInBehavior_.motionTimes_.endLagTime_) {
 		host_->SetIsActiveWeapon(false);
 
