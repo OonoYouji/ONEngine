@@ -17,6 +17,7 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// this behavior
 #include "Behavior/IPlayerBehavior.h"
@@ -41,10 +42,12 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	//sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
+
+	audioSource_ = AddComponent<AudioSource>();
 
 	SetAnimationFlags(0);
 
@@ -389,6 +392,10 @@ void Player::SpawnWeapon() {
 
 		mate.UpdateMatrix();
 	}
+}
+
+void Player::PlayAudio(const std::string& _filePath, float _volume) {
+	audioSource_->PlayOneShot("PlayerSE/" + _filePath, _volume);
 }
 
 

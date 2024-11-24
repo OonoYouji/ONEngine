@@ -75,6 +75,8 @@ public:
 
 	void SpawnWeapon();
 
+	void PlayAudio(const std::string& _filePath, float _volume);
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;
@@ -82,6 +84,8 @@ private:
 	class AnimationRenderer* bodyAnimationRenderer_   = nullptr;
 	class AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	std::unique_ptr<IPlayerBehavior> currentBehavior_;
+
+	class AudioSource* audioSource_ = nullptr;
 
 	/// ---------------------------------------------------
 	/// status
