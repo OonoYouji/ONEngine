@@ -83,7 +83,7 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
-	if(Input::TriggerKey(KeyCode::Escape)) {
+	if(Input::TriggerKey(KeyCode::Escape)){
 		SceneManager::GetInstance()->SetNextScene(TITLE);
 	}
 }

@@ -103,8 +103,6 @@ void Enemy::Update(){
 
 void Enemy::Debug(){
 #ifdef _DEBUG
-
-
 	torsoTransform_->Debug();
 
 	if(ImGui::Button("Save")){
@@ -131,6 +129,10 @@ void Enemy::Debug(){
 	}
 
 	ImGui::Spacing();
+
+	if(ImGui::Button("Play Awakening Motion")){
+		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
+	}
 
 	///===============================================
 	/// AttackActions
@@ -597,7 +599,7 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 
 	this->subWeaponAnimationRenderer_->isActive = true;
-	this->subWeaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+	this->subWeaponAnimationRenderer_->ChangeAnimation(subWeapon);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){
