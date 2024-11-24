@@ -1,0 +1,10 @@
+{
+    "default_jumpLongRange_1": {
+        "ComboSize": 3,
+        "HpState": 0,
+        "Index_0": "default_jump_1",
+        "Index_1": "default_LongRangeAttack",
+        "Index_2": "default_idle",
+        "RangeType": 0
+    }
+}

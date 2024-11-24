@@ -23,6 +23,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
 	void ApplyVariables();
 private:
 	/// ===================================================
@@ -30,6 +32,8 @@ private:
 	/// ===================================================
 	Enemy* enemy_ = nullptr;
 	class SphereCollider* sphereCollider_ = nullptr;
+
+	int32_t currentUsingType_;
 
 	/// <summary>
 	/// 攻撃の種類ごとに offsetを決める

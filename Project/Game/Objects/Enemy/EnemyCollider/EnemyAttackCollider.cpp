@@ -9,6 +9,7 @@
 
 /// objects
 #include "../Enemy.h"
+#include "Game/Objects/Player/Player.h"
 
 #include "imgui.h"
 
@@ -50,6 +51,15 @@ void EnemyAttackCollider::Update(){
 	ApplyVariables();
 }
 
+void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
+	if(_collision->GetTag() == "Player"){
+		Player* player = reinterpret_cast<Player*>(_collision);
+		{// hp を damage 分マイナス
+			// float attackedDamage = enemy_->GetDamage();
+		}
+	}
+}
+
 void EnemyAttackCollider::ApplyVariables(){
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
@@ -65,9 +75,11 @@ void EnemyAttackCollider::SetEnemy(Enemy* enemy){
 
 void EnemyAttackCollider::Activate(ActionTypes type,float radius){
 	sphereCollider_->isActive = true;
-	SetPosition(offsetByActionTypes_[static_cast<int32_t>(type)]);
+	currentUsingType_ = static_cast<int32_t>(type);
+	SetPosition(offsetByActionTypes_[currentUsingType_]);
 }
 
 void EnemyAttackCollider::Terminate(){
 	sphereCollider_->isActive = false;
+	currentUsingType_ = -1;
 }

@@ -13,8 +13,10 @@
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack2.h"
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
+#include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyAwakening.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
+#include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyJumpAway.h"
 #include "EnemyCollider/EnemyAttackCollider.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
@@ -33,7 +35,7 @@
 /// externals
 #include "imgui.h"
 
-bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
+bool InputText(const char* label,std::string* str,ImGuiInputTextFlags flags = 0,ImGuiInputTextCallback callback = nullptr,void* user_data = nullptr){
 	// バッファを作成
 	char buffer[256];
 	strncpy_s(buffer,sizeof(buffer),str->c_str(),_TRUNCATE); // 安全なコピー関数を使用
@@ -72,8 +74,8 @@ void Enemy::Initialize(){
 	//DecideNextNode();
 
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
-	trosoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
-	trosoTransform_->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(trosoTransform_)));
+	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
+	torsoTransform_->SetName(std::format("Transform##{:p}",reinterpret_cast<void*>(torsoTransform_)));
 
 	entityShadow_ = new EntityShadow();
 	entityShadow_->Initialize();
@@ -103,9 +105,7 @@ void Enemy::Debug(){
 #ifdef _DEBUG
 
 
-	trosoTransform_->Debug();
-
-	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
+	torsoTransform_->Debug();
 
 	if(ImGui::Button("Save")){
 		SaveStatus();
@@ -118,7 +118,6 @@ void Enemy::Debug(){
 	///===============================================
 	if(ImGui::TreeNode("Status")){
 		ImGui::DragFloat("MaxHP",const_cast<float*>(&maxHp_),0.1f);
-		ImGui::DragFloat("Speed",&speed_,0.1f);
 
 		ImGui::Spacing();
 
@@ -176,6 +175,7 @@ void Enemy::Debug(){
 					bool isSelected = (currentEditActionName_ == &key);
 					if(ImGui::Selectable(key.c_str(),isSelected)){
 						currentEditActionName_ = const_cast<AttackActionName*>(&key);
+						actionNameBeforeNameChange_ = *currentEditActionName_;
 						currentEditAction_ = value.get();
 					}
 					if(isSelected){
@@ -191,7 +191,7 @@ void Enemy::Debug(){
 		// 調整できるように 
 		if(currentEditActionName_){
 			if(ImGui::TreeNode(("currentCombo::" + *currentEditActionName_).c_str())){
-				if(InputText("Name",&actionNameBeforeNameChange_)){
+				if(InputText("Name",&actionNameBeforeNameChange_,ImGuiInputTextFlags_EnterReturnsTrue)){
 					*currentEditActionName_ = actionNameBeforeNameChange_;
 					actionNameBeforeNameChange_ = *currentEditActionName_;
 				}
@@ -266,26 +266,28 @@ void Enemy::Debug(){
 		// 調整できるオブジェクトが存在すれば オブジェクトを 一覧表示
 		if(!editComboVariables_[static_cast<int32_t>(currentEditHpState_)].empty()){
 			if(!currentEditComboName_){
-				currentEditActionName_ = const_cast<std::string*>(&editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first);
-				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][*currentEditActionName_];
-			}
-			if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
-				int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
-				for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
-					bool isSelected = (currentEditComboName_ == &key);
-					if(ImGui::Selectable(key.c_str(),isSelected)){
-						currentEditComboName_ = const_cast<std::string*>(&key);
-						comboNameBeforeNameChange_ = *currentEditComboName_;
-						currentEditCombo_ = &value;
+				currentEditComboName_ = const_cast<std::string*>(&editComboVariables_[static_cast<int32_t>(currentEditHpState_)].begin()->first);
+				comboNameBeforeNameChange_ = *currentEditComboName_;
+				currentEditCombo_ = &editComboVariables_[static_cast<int32_t>(currentEditHpState_)][*currentEditComboName_];
+			} else{
+				if(ImGui::BeginCombo("Combos",currentEditComboName_->c_str())){
+					int32_t currentEditComboHpIndex = static_cast<int32_t>(currentEditHpState_);
+					for(auto& [key,value] : editComboVariables_[currentEditComboHpIndex]){
+						bool isSelected = (currentEditComboName_ == &key);
+						if(ImGui::Selectable(key.c_str(),isSelected)){
+							currentEditComboName_ = const_cast<std::string*>(&key);
+							comboNameBeforeNameChange_ = *currentEditComboName_;
+							currentEditCombo_ = &value;
+						}
+						if(isSelected){
+							ImGui::SetItemDefaultFocus();
+						}
 					}
-					if(isSelected){
-						ImGui::SetItemDefaultFocus();
-					}
+					ImGui::EndCombo();
 				}
-				ImGui::EndCombo();
 			}
 		} else{
-			currentEditActionName_ = nullptr;
+			currentEditComboName_ = nullptr;
 			currentEditCombo_ = nullptr;
 		}
 
@@ -329,7 +331,7 @@ void Enemy::Debug(){
 					ImGui::EndCombo();
 				}
 
-				if(InputText("Name",&comboNameBeforeNameChange_)){
+				if(InputText("Name",&comboNameBeforeNameChange_,ImGuiInputTextFlags_EnterReturnsTrue)){
 					*currentEditComboName_ = comboNameBeforeNameChange_;
 					comboNameBeforeNameChange_ = *currentEditComboName_;
 				}
@@ -426,9 +428,9 @@ void Enemy::Debug(){
 	/// RangeType ごと に 仕分け
 	///=====================================
 	{
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::LONG_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::LONG_RANGE].clear();
 
 		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
 			for(const auto& [comboName,combo] : editComboVariables_[i]){
@@ -443,7 +445,6 @@ void Enemy::SaveStatus(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	{
 		variableManager->SetValue("Enemy_Status","HP",maxHp_);
-		variableManager->SetValue("Enemy_Status","speed",speed_);
 	}
 
 	{
@@ -523,7 +524,6 @@ void Enemy::LoadStatus(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
 	maxHp_ = variableManager->GetValue<float>("Enemy_Status","HP");
-	speed_ = variableManager->GetValue<float>("Enemy_Status","speed");
 	distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE] = variableManager->GetValue<float>("Enemy_Status","SHORT_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE] = variableManager->GetValue<float>("Enemy_Status","MIDDLE_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE] = variableManager->GetValue<float>("Enemy_Status","LONG_RANGE");
@@ -609,6 +609,10 @@ void Enemy::SetAnimationTotalTime(float _totalTime){
 											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
+float Enemy::GetBodyAnimationTotalTime() const{
+	return bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
 void Enemy::ResetAnimationTotal(){
 	bodyAnimationRenderer_->SetTotalTime(
 		bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey()),
@@ -655,6 +659,9 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::WEAK_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack>(this,reinterpret_cast<WorkWeakAttackAction*>(worker)));
 			break;
+		case ActionTypes::WEAK_ATTACK_2:
+			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+			break;
 		case ActionTypes::STRONG_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::StrongAttack>(this,reinterpret_cast<WorkStrongAttackAction*>(worker)));
 			break;
@@ -667,8 +674,8 @@ std::unique_ptr<EnemyBehaviorTree::Sequence> Enemy::CreateAction(const std::stri
 		case ActionTypes::LONGRANGE_ATTACK:
 			result->addChild(std::make_unique<EnemyBehaviorTree::LongRangeAttack>(this,reinterpret_cast<WorkLongRangeAttackAction*>(worker)));
 			break;
-		case ActionTypes::WEAK_ATTACK_2:
-			result->addChild(std::make_unique<EnemyBehaviorTree::WeakAttack2>(this,reinterpret_cast<WorkWeakAttack2Action*>(worker)));
+		case ActionTypes::JUMP_AWAY:
+			result->addChild(std::make_unique<EnemyBehaviorTree::JumpAway>(this,reinterpret_cast<WorkJumpAwayAction*>(worker)));
 			break;
 		default:
 			// 該当 する Typeが なければ reset
@@ -705,6 +712,9 @@ std::unique_ptr<WorkEnemyAction> Enemy::CreateWorker(ActionTypes type){
 		case ActionTypes::WEAK_ATTACK_2:
 			result = std::make_unique<WorkWeakAttack2Action>();
 			break;
+		case ActionTypes::JUMP_AWAY:
+			result = std::make_unique<WorkJumpAwayAction>();
+			break;
 		default:
 			break;
 	}
@@ -720,27 +730,34 @@ void Enemy::DecideNextNode(){
 
 	std::string comboName = "";
 
+	preHpState_ = currentEditHpState_;
 	// 現在の HP State を 知る
 	if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_NORMAL)]){
-		currentHPState_ = HpState::HP_HIGHTE;
+		currentEditHpState_ = HpState::HP_HIGHTE;
 	} else if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]){
-		currentHPState_ = HpState::HP_NORMAL;
+		currentEditHpState_ = HpState::HP_NORMAL;
 	} else{
-		currentHPState_ = HpState::HP_LOW;
+		currentEditHpState_ = HpState::HP_LOW;
+	}
+
+	// HP が 低くなったら 覚醒モーション
+	if(currentEditHpState_ == HpState::HP_LOW
+	   && preHpState_ != HpState::HP_LOW){
+		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
 	}
 
 	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
 		// ShortRange 以下なら
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::SHORT_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::SHORT_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else if(lengthEnemy2Player > distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]){
 		// MiddleRange より 大きいなら
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::LONG_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::LONG_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else{
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::MIDDLE_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::MIDDLE_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);

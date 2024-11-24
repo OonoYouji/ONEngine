@@ -1,0 +1,10 @@
+{
+    "default_weak1": {
+        "Type": 1,
+        "activeTime": 3.4000000953674316,
+        "collisionRadius": 0.0,
+        "damage": 0.0,
+        "endLagTime": 1.399999976158142,
+        "startupTime": 1.899999976158142
+    }
+}

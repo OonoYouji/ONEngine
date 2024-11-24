@@ -189,12 +189,12 @@ void WorkLongRangeAttackAction::Debug(){
 void WorkLongRangeAttackAction::Save(const std::string& name){
 	WorkEnemyAction::Save(name);
 	VariableManager* variableManager = VariableManager::GetInstance();
-	variableManager->SetValue<float>(name,"damage",			   damage_);
-	variableManager->SetValue<float>(name,"bulletSpeed",	   bulletSpeed_);
-	variableManager->SetValue<float>(name,"bulletScale",	   bulletScale_);
+	variableManager->SetValue<float>(name,"damage",damage_);
+	variableManager->SetValue<float>(name,"bulletSpeed",bulletSpeed_);
+	variableManager->SetValue<float>(name,"bulletScale",bulletScale_);
 	variableManager->SetValue<float>(name,"bulletFireInterval",bulletFireInterval_);
 	variableManager->SetValue<float>(name,"bulletSpawnOffsetZ",bulletSpawnOffsetZ_);
-	variableManager->SetValue<float>(name,"rotateMaxSpeed",	   rotateMaxSpeed_);
+	variableManager->SetValue<float>(name,"rotateMaxSpeed",rotateMaxSpeed_);
 }
 
 void WorkLongRangeAttackAction::Load(const std::string& name){
@@ -232,8 +232,33 @@ void WorkWeakAttack2Action::Load(const std::string& name){
 	WorkEnemyAction::Load(name);
 
 	collisionStartTime_ = variableManager->GetValue<float>(name,"collisionStartTime");
-	collisionTime_ = variableManager->GetValue<float>(name,"collisionTime");
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
-	damage_ = variableManager->GetValue<float>(name,"damage");
-	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
+	collisionTime_ 		= variableManager->GetValue<float>(name,"collisionTime");
+	collisionRadius_ 	= variableManager->GetValue<float>(name,"collisionRadius");
+	damage_ 			= variableManager->GetValue<float>(name,"damage");
+	maxRotateY2Player_ 	= variableManager->GetValue<float>(name,"maxRotateY2Player");
+}
+
+void WorkJumpAwayAction::Debug(){
+	ImGui::DragFloat("setupTime",&motionTimes_.startupTime_,0.1f,0.0f);
+	ImGui::DragFloat("endLagTime",&motionTimes_.endLagTime_,0.1f,0.0f);
+	ImGui::DragFloat("jumpSpeed",&jumpSpeed_,0.1f,0.0f);
+	ImGui::DragFloat("mass",&mass_,0.1f,0.0f);
+	ImGui::DragFloat("distance",&distance_,0.1f);
+}
+
+void WorkJumpAwayAction::Save(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Save(name);
+	variableManager->SetValue(name,"jumpSpeed",jumpSpeed_);
+	variableManager->SetValue(name,"mass",mass_);
+	variableManager->SetValue(name,"distance",distance_);
+}
+
+void WorkJumpAwayAction::Load(const std::string& name){
+	VariableManager* variableManager = VariableManager::GetInstance();
+	WorkEnemyAction::Load(name);
+
+	jumpSpeed_ = variableManager->GetValue<float>(name,"jumpSpeed");
+	mass_ 	   = variableManager->GetValue<float>(name,"mass");
+	distance_  = variableManager->GetValue<float>(name,"distance");
 }

@@ -1,5 +1,13 @@
 {
     "Enemy_Actions": {
-        "ActionSize": 0
+        "ActionSize": 8,
+        "Index_0": "default_weak2",
+        "Index_1": "default_idle",
+        "Index_2": "defaultChase",
+        "Index_3": "default_strongAttack",
+        "Index_4": "default_LongRangeAttack",
+        "Index_5": "default_weak1",
+        "Index_6": "default_jump_1",
+        "Index_7": "default_tackle_1"
     }
 }
