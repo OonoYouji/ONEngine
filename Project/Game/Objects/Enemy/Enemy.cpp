@@ -92,9 +92,12 @@ void Enemy::Initialize(){
 void Enemy::Update(){
 	if(rootNode_){
 		EnemyBehaviorTree::Status status = rootNode_->tick();
+
 		if(status == EnemyBehaviorTree::Status::SUCCESS){
-			//DecideNextNode();
-			rootNode_ = nullptr;
+			if(actionIsActive_){
+				DecideNextNode();
+			}
+
 		} else if(status == EnemyBehaviorTree::Status::FAILURE){
 			rootNode_ = nullptr;
 		}
@@ -132,6 +135,9 @@ void Enemy::Debug(){
 
 	if(ImGui::Button("Play Awakening Motion")){
 		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
+	}
+	if(ImGui::Checkbox("actionIsActive",&actionIsActive_)){
+		DecideNextNode();
 	}
 
 	///===============================================
