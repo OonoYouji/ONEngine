@@ -9,7 +9,7 @@ void BoxCollider::Initialize() {
 }
 
 void BoxCollider::Update() {
-	
+
 	UpdateMatrix();
 	CalculationOrientations();
 
@@ -20,7 +20,7 @@ void BoxCollider::Update() {
 
 void BoxCollider::Draw() {
 #ifdef _DEBUG
-	if(cube_) {
+	if(isDrawCollider_) {
 		cube_->Draw(transform_.get(), kWireFrame);
 	}
 #endif // _DEBUG

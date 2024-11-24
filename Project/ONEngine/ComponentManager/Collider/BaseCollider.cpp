@@ -10,3 +10,7 @@ void BaseCollider::UpdateMatrix() {
 Vec3 BaseCollider::GetPosition() const {
 	return GetOwner()->GetPosition();
 }
+
+void BaseCollider::SetIsDrawCollider(bool _isCollider) {
+	isDrawCollider_ = _isCollider;
+}

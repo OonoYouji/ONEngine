@@ -38,6 +38,8 @@ public:
 
 	int GetColliderType() const { return colliderType_; }
 
+	void SetIsDrawCollider(bool _isCollider);
+
 protected:
 	/// ===================================================
 	/// protected : objects
@@ -46,4 +48,6 @@ protected:
 	std::unique_ptr<Transform> transform_;
 
 	int colliderType_;
+
+	bool isDrawCollider_ = false;
 };
