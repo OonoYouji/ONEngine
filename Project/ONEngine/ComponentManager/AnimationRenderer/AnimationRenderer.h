@@ -85,10 +85,14 @@ public:
 	std::vector<Material>& GetMaterials() const { return pModel_->GetMaterials(); }
 
 	
+	void SetIsStopAnimation(bool _isStop);
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	bool isStopAnimation_ = false;
 
 	float animationTime_;
 	float timeRate_ = 1.0f;

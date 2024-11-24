@@ -30,4 +30,6 @@ private:
 
 	
 	float totalTime_;
+
+	bool isStopAnimation_;
 };
