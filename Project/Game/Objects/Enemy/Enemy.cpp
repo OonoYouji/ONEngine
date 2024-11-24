@@ -13,6 +13,7 @@
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyWeakAttack2.h"
 #include "EnemyBehaviorTree/EnemyBasicActions.h"
+#include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyAwakening.h"
 #include "EnemyBehaviorTree/EnemyIdleBehaviors/EnemyIdle.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyJumpAway.h"
@@ -71,8 +72,8 @@ void Enemy::Initialize(){
 	//DecideNextNode();
 
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
-	trosoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
-	trosoTransform_->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(trosoTransform_)));
+	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
+	torsoTransform_->SetName(std::format("Transform##{:p}",reinterpret_cast<void*>(torsoTransform_)));
 
 	LoadStatus();
 	LoadAllAction();
@@ -97,9 +98,7 @@ void Enemy::Debug(){
 #ifdef _DEBUG
 
 
-	trosoTransform_->Debug();
-
-	ImGui::InputText("CurrentAction :",const_cast<char*>(currentAction_.c_str()),currentAction_.size());
+	torsoTransform_->Debug();
 
 	if(ImGui::Button("Save")){
 		SaveStatus();
@@ -422,9 +421,9 @@ void Enemy::Debug(){
 	/// RangeType ごと に 仕分け
 	///=====================================
 	{
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
-		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHPState_)][EnemyAttackRangeType::LONG_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentEditHpState_)][EnemyAttackRangeType::LONG_RANGE].clear();
 
 		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
 			for(const auto& [comboName,combo] : editComboVariables_[i]){
@@ -439,7 +438,6 @@ void Enemy::SaveStatus(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	{
 		variableManager->SetValue("Enemy_Status","HP",maxHp_);
-		variableManager->SetValue("Enemy_Status","speed",speed_);
 	}
 
 	{
@@ -519,7 +517,6 @@ void Enemy::LoadStatus(){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	variableManager->LoadSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
 	maxHp_ = variableManager->GetValue<float>("Enemy_Status","HP");
-	speed_ = variableManager->GetValue<float>("Enemy_Status","speed");
 	distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE] = variableManager->GetValue<float>("Enemy_Status","SHORT_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE] = variableManager->GetValue<float>("Enemy_Status","MIDDLE_RANGE");
 	distanceByRangeTypes_[EnemyAttackRangeType::LONG_RANGE] = variableManager->GetValue<float>("Enemy_Status","LONG_RANGE");
@@ -603,6 +600,10 @@ void Enemy::SetAnimationTotalTime(float _totalTime){
 										   weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 	subWeaponAnimationRenderer_->SetTotalTime(_totalTime,
 											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+float Enemy::GetBodyAnimationTotalTime() const{
+	return bodyAnimationRenderer_->GetDuration(bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::ResetAnimationTotal(){
@@ -722,27 +723,34 @@ void Enemy::DecideNextNode(){
 
 	std::string comboName = "";
 
+	preHpState_ = currentEditHpState_;
 	// 現在の HP State を 知る
 	if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_NORMAL)]){
-		currentHPState_ = HpState::HP_HIGHTE;
+		currentEditHpState_ = HpState::HP_HIGHTE;
 	} else if(hp_ > thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]){
-		currentHPState_ = HpState::HP_NORMAL;
+		currentEditHpState_ = HpState::HP_NORMAL;
 	} else{
-		currentHPState_ = HpState::HP_LOW;
+		currentEditHpState_ = HpState::HP_LOW;
+	}
+
+	// HP が 低くなったら 覚醒モーション
+	if(currentEditHpState_ == HpState::HP_LOW
+	   && preHpState_ != HpState::HP_LOW){
+		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
 	}
 
 	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
 		// ShortRange 以下なら
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::SHORT_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::SHORT_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else if(lengthEnemy2Player > distanceByRangeTypes_[EnemyAttackRangeType::MIDDLE_RANGE]){
 		// MiddleRange より 大きいなら
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::LONG_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::LONG_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 
 	} else{
-		const std::deque<std::string>& comboNameList = this->GetComboList(currentHPState_,EnemyAttackRangeType::MIDDLE_RANGE);
+		const std::deque<std::string>& comboNameList = this->GetComboList(currentEditHpState_,EnemyAttackRangeType::MIDDLE_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
