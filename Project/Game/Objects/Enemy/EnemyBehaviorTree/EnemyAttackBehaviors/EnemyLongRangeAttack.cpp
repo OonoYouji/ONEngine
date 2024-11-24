@@ -147,7 +147,6 @@ namespace EnemyBehaviorTree{
 
 	LongRangeAttack::LongRangeAttack(Enemy* enemy,WorkLongRangeAttackAction* worker)
 		:Sequence(enemy){
-
 		std::string animationName = "Boss_LongRangeAttack_";
 		if(worker->motionTimes_.activeTime_ <= 5.0f){
 			animationName += "half_";

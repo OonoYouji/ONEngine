@@ -123,6 +123,7 @@ private:
 
 	std::array<std::unordered_map<std::string,ComboAttacks>,static_cast<int32_t>(HpState::COUNT)> editComboVariables_;
 #ifdef _DEBUG
+	bool actionIsActive_;
 	HpState currentEditHpState_;
 	bool isCreateWindowPop_;
 	bool isComboCreateWindowPop_;
@@ -169,7 +170,7 @@ public:
 	HpState GetHpState()const{ return currentHpState_; }
 
 	float GetDamage()const{ return currentDamage_; }
-	void  SetDamage(float damage){ currentDamage_  = damage;}
+	void  SetDamage(float damage){ currentDamage_  = damage; }
 
 	const ComboAttacks& GetComboAttacks(int32_t hpState,const std::string& comboName)const;
 	const std::deque<std::string>& GetComboList(HpState state,EnemyAttackRangeType rangeType)const;
