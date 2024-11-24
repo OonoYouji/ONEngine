@@ -1,5 +1,6 @@
 {
     "StrongAttackBehavior": {
+        "actionTime": 1.2999999523162842,
         "damage0": 10.399999618530273,
         "damage1": 26.5,
         "damage2": 50.70000076293945,

@@ -270,6 +270,8 @@ void Player::AddVariables() {
 		vm->AddValue(groupName, "nextChargeTime0", strongAttackBehavior_.nextChargeTime_[0]);
 		vm->AddValue(groupName, "nextChargeTime1", strongAttackBehavior_.nextChargeTime_[1]);
 		vm->AddValue(groupName, "nextChargeTime2", strongAttackBehavior_.nextChargeTime_[2]);
+
+		vm->AddValue(groupName, "actionTime", strongAttackBehavior_.actionTime_);
 	}
 
 
@@ -339,6 +341,7 @@ void Player::ApplyVariables() {
 		strongAttackBehavior_.nextChargeTime_[1] = vm->GetValue<float>(name, "nextChargeTime1");
 		strongAttackBehavior_.nextChargeTime_[2] = vm->GetValue<float>(name, "nextChargeTime2");
 
+		strongAttackBehavior_.actionTime_ = vm->GetValue<float>(name, "actionTime");
 
 	}
 

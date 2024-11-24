@@ -19,7 +19,9 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 	nextBehavior_ = ROOT;
 
 	currentTime_ = 0.0f;
-	maxTime_     = 2.0f; /// 仮の値 ioで設定させる
+
+	VariableManager* vm = VariableManager::GetInstance();
+	maxTime_     = vm->GetValue<float>("StrongAttackBehavior", "actionTime"); /// 仮の値 ioで設定させる
 
 	host_->SetAnimationModel(
 		"Player_StrongAttack_5_P",

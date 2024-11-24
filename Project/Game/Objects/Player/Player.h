@@ -49,9 +49,10 @@ public:
 	/// StrongAttackで使用する変数
 	/// </summary>
 	struct StrongAttackBehavior {
-		const std::string name_ = "StrongAttackBehavior";
+		const std::string    name_ = "StrongAttackBehavior";
 		std::array<float, 3> damages_;        /// 各段階ごとのダメージ
 		std::array<float, 3> nextChargeTime_; /// 各段階ごとの遷移までの時間
+		float                actionTime_;
 	};
 
 public:
