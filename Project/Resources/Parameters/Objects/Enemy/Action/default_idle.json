@@ -1,0 +1,8 @@
+{
+    "default_idle": {
+        "Type": 0,
+        "activeTime": 2.799999952316284,
+        "endLagTime": 0.0,
+        "startupTime": 0.0
+    }
+}
