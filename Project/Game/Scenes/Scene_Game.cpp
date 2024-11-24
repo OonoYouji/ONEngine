@@ -45,6 +45,8 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_,player,enemy);
 
+	(new ModelPreviewObject("Player_Walk"))->Initialize();
+
 	/// 初期化する
 	player->Initialize();
 	playerHPRenderer->Initialize();
@@ -77,7 +79,7 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
-	if(Input::TriggerKey(KeyCode::Escape)) {
+	if(Input::TriggerKey(KeyCode::Escape)){
 		SceneManager::GetInstance()->SetNextScene(TITLE);
 	}
 }

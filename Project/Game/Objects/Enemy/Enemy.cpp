@@ -96,8 +96,6 @@ void Enemy::Update(){
 
 void Enemy::Debug(){
 #ifdef _DEBUG
-
-
 	torsoTransform_->Debug();
 
 	if(ImGui::Button("Save")){
@@ -124,6 +122,10 @@ void Enemy::Debug(){
 	}
 
 	ImGui::Spacing();
+
+	if(ImGui::Button("Play Awakening Motion")){
+		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
+	}
 
 	///===============================================
 	/// AttackActions
