@@ -107,6 +107,8 @@ private:
 
 	float maxHp_;
 	float hp_;
+	// 各 アクションで セットするので 基本は 0
+	float currentDamage_ = 0.0f;
 	HpState currentHpState_;
 	HpState preHpState_;
 	std::array<float,static_cast<int32_t>(HpState::COUNT)> thresholdByHpState_;
@@ -165,6 +167,9 @@ public:
 	void  SetHP(float hp){ hp_ = hp; }
 	HpState GetHpState()const{ return currentHpState_; }
 
+	float GetDamage()const{ return currentDamage_; }
+	void  SetDamage(float damage){ currentDamage_  = damage;}
+
 	const ComboAttacks& GetComboAttacks(int32_t hpState,const std::string& comboName)const;
 	const std::deque<std::string>& GetComboList(HpState state,EnemyAttackRangeType rangeType)const;
 
@@ -173,5 +178,5 @@ public:
 	void ActivateAttackCollider(ActionTypes offset,float radius);
 	void TerminateAttackCollider();
 
-	float GetColliderRadius() { return colliderRadius_; }
+	float GetColliderRadius(){ return colliderRadius_; }
 };

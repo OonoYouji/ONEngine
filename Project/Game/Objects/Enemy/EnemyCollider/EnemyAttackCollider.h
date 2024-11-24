@@ -33,6 +33,8 @@ private:
 	Enemy* enemy_ = nullptr;
 	class SphereCollider* sphereCollider_ = nullptr;
 
+	int32_t currentUsingType_;
+
 	/// <summary>
 	/// 攻撃の種類ごとに offsetを決める
 	/// </summary>

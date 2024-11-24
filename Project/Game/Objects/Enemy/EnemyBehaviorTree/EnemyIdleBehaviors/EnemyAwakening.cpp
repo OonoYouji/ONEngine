@@ -20,6 +20,6 @@ namespace EnemyBehaviorTree{
 
 	EnemyAwakening::EnemyAwakening(Enemy* enemy)
 		:Sequence(enemy){
-		addChild(std::make_unique<TransitionAnimation>(enemy_,"Boss_Wait",-1.0f,false));
+		addChild(std::make_unique<TransitionAnimation>(enemy_,"Boss_Awakening",-1.0f,false));
 	}
 }
