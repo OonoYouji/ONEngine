@@ -27,7 +27,8 @@ void Scene_Game::Initialize(){
 
 
 	/// モデル確認用のオブジェクト
-	//(new ModelPreviewObject("Player_Walk"))->Initialize();
+	(new ModelPreviewObject("Effect3"))->Initialize();
+	(new ModelPreviewObject("Effect3"))->Initialize();
 
 
 	/// object creata
@@ -83,7 +84,7 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
-	if(Input::TriggerKey(KeyCode::Escape)) {
+	if(Input::TriggerKey(KeyCode::Escape)){
 		SceneManager::GetInstance()->SetNextScene(TITLE);
 	}
 }

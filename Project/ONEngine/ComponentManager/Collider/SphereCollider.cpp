@@ -19,7 +19,9 @@ void SphereCollider::Update() {
 
 void SphereCollider::Draw() {
 #ifdef _DEBUG
-	sphere_->Draw(transform_.get(), kWireFrame);
+	if(isDrawCollider_) {
+		sphere_->Draw(transform_.get(), kWireFrame);
+	}
 #endif // _DEBUG
 }
 

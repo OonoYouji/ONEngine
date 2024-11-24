@@ -37,6 +37,14 @@ void ModelPreviewObject::Update() {
 
 void ModelPreviewObject::Debug() {
 	
+
+	
+	if(ImGui::Checkbox("isStopAnimation", &isStopAnimation_)) {
+		animationRenderer_->SetIsStopAnimation(isStopAnimation_);
+	}
+
+	ImGui::Spacing();
+
 	if(ImGui::Button("research")) {
 		searchFiles_ = myFs::SearchFile("./Resources/Models", "gltf");
 	}

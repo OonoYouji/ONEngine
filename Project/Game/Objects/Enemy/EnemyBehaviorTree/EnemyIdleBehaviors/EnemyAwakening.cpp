@@ -4,11 +4,14 @@
 #include "Game/Objects/Enemy/Enemy.h"
 #include "Game/Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
 
+#include "ONEngine/ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
 namespace EnemyBehaviorTree{
 	EnemyAwakeningAction::EnemyAwakeningAction(Enemy* enemy)
 		:Action(enemy){
 		leftTime_ = enemy_->GetBodyAnimationTotalTime();
 	}
+
 	Status EnemyAwakeningAction::tick(){
 		leftTime_ -= Time::DeltaTime();
 
@@ -18,8 +21,24 @@ namespace EnemyBehaviorTree{
 		return Status::RUNNING;
 	}
 
+	EnemyLoadAwakeAnimation::EnemyLoadAwakeAnimation(Enemy* enemy)
+		:Action(enemy){
+		animation_[0] = "Boss_Awakening";
+		animation_[1] = "Effect1";
+		animation_[2] = "Effect2";
+	}
+	Status EnemyLoadAwakeAnimation::tick(){
+		enemy_->SetAnimationRender(animation_[0],animation_[1],animation_[2]);
+		// アニメーション時間で再生
+		enemy_->ResetAnimationTotal();
+
+		enemy_->SetAnimationFlags(true);
+		return Status::SUCCESS;
+	}
+
 	EnemyAwakening::EnemyAwakening(Enemy* enemy)
 		:Sequence(enemy){
-		addChild(std::make_unique<TransitionAnimation>(enemy_,"Boss_Awakening",-1.0f,false));
+		addChild(std::make_unique<EnemyLoadAwakeAnimation>(enemy_));
+		addChild(std::make_unique<EnemyAwakeningAction>(enemy_));
 	}
 }

@@ -34,7 +34,8 @@ PSOutput main(VSOutput input) {
 	}
 	
 	/// pixelの破棄
-	if (output.color.a == 0.0f) {
+	//仮でしきい値を設定
+	if (output.color.a <= 0.5f) {
 		discard;
 	}
 

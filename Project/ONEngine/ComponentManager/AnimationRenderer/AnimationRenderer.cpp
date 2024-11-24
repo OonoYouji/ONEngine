@@ -50,6 +50,10 @@ void AnimationRenderer::Initialize() {
 }
 
 void AnimationRenderer::Update() {
+	if(isStopAnimation_) {
+		return;
+	}
+
 	NodeAnimationMap& map        = multiNodeAnimationArray_[currentNodeAnimationKey_];
 	NodeAnimation& rootAnimation = map[pModel_->GetRootNode().name];
 
@@ -360,6 +364,10 @@ void AnimationRenderer::Restart() {
 	
 	animationTime_ = 0.0f;
 
+}
+
+void AnimationRenderer::SetIsStopAnimation(bool _isStop) {
+	isStopAnimation_ = _isStop;
 }
 
 
