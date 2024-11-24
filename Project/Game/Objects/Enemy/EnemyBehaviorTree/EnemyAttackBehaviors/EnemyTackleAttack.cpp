@@ -36,7 +36,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
 		enemy_->SetRotateY(newRotateY);
 	}
 
-	if(currentTime_ >= 0.0f){
+	if(currentTime_ >= startupTime_){
 		// 当たり判定を有効に
 		enemy_->ActivateAttackCollider(ActionTypes::TACKLE_ATTACK,collisionRadius_);
 		return EnemyBehaviorTree::Status::SUCCESS;
