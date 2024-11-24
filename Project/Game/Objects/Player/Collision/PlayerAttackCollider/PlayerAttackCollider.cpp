@@ -46,13 +46,15 @@ void PlayerAttackCollider::Update() {
 
 		pTransform_->position = weakAttackTransform_.position;
 		pTransform_->rotate   = weakAttackTransform_.rotate;
-		pTransform_->scale    = weakAttackTransform_.scale;
+		colliderSize_         = weakAttackTransform_.scale;
 	} else {
 		pTransform_->position = strongAttackTransform_.position;
 		pTransform_->rotate   = strongAttackTransform_.rotate;
-		pTransform_->scale    = strongAttackTransform_.scale;
+		colliderSize_         = strongAttackTransform_.scale;
 	}
 
+	pTransform_->scale = Vec3::kOne * 1.0f;
+	boxCollider_->SetSize(colliderSize_);
 	isCollisionStay_ = false;
 	isCollisionEnter_ = false;
 }
@@ -68,10 +70,35 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "Enemy") {
 		isCollisionEnter_ = true;
 
+		DamageNumRender* damageRender = nullptr;
+		uint32_t score = static_cast<uint32_t>(pPlayer_->GetDamage());
 
-		DamageNumRender* damageRender = new DamageNumRender(static_cast<uint32_t>(pPlayer_->GetDamage()), pGameCamera_);
+		if(score < 20) {
+			damageRender = new DamageNumRender(
+				score,
+				Vec3::kOne * 0.1f,
+				Vec3::kOne * 0.5f,
+				0.5f, 2.0f,
+				pGameCamera_
+			);
+		} else {
+			damageRender = new DamageNumRender(
+				score,
+				Vec3::kOne * 0.1f,
+				Vec3::kOne,
+				0.5f, 2.0f,
+				pGameCamera_
+			);
+		}
+
 		damageRender->Initialize();
-		damageRender->SetPosition(_collision->GetPosition() + Vec3::kUp * 2.0f);
+
+		Vec3 collisionPosition = _collision->GetPosition();
+		Vec3 position = collisionPosition; 
+		position += (pGameCamera_->GetPosition() - collisionPosition).Normalize() * 0.5f;
+		position += Vec3::kUp * 2.0f;
+
+		damageRender->SetPosition(position);
 	}
 }
 

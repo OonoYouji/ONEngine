@@ -27,9 +27,12 @@
 /// objects
 #include "Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/EntityShadow/EntityShadow.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
+#include "Objects/Camera/GameCamera.h"
 
 
-Player::Player(GameCamera* _mainCamera) : pGameCamera_(_mainCamera) {
+Player::Player() {
 	CreateTag(this);
 }
 
@@ -37,7 +40,7 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	//sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
@@ -106,9 +109,13 @@ void Player::Initialize() {
 	/// コライダーの処理化
 	/// ---------------------------------------------------
 
-	attackCollider_ = new PlayerAttackCollider(this, pGameCamera_);
+	attackCollider_ = new PlayerAttackCollider(this, pTrackingCamera_->GetGameCamera());
 	attackCollider_->Initialize();
 	attackCollider_->isActive = false;
+
+	entityShadow_ = new EntityShadow();
+	entityShadow_->Initialize();
+	entityShadow_->SetParent(pTransform_);
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -133,6 +140,8 @@ void Player::Update() {
 
 #pragma region Debug
 void Player::Debug() {
+
+
 
 	ImGui::DragFloat("MaxHP", &maxHP_, 0.1f);
 	ImGui::InputFloat("HP", &currentHP_);
@@ -371,6 +380,10 @@ void Player::TransitionBehavior(std::unique_ptr<IPlayerBehavior> next) {
 
 void Player::SetEnemy(Enemy* _enemy) {
 	pEnemy_ = _enemy;
+}
+
+void Player::SetTrackingCamera(TrackingCamera* _trackingCamera) {
+	pTrackingCamera_ = _trackingCamera;
 }
 
 void Player::SetAnimationModel(const std::string& _filePath) {

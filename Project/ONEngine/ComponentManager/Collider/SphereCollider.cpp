@@ -12,6 +12,7 @@ void SphereCollider::Initialize() {
 }
 
 void SphereCollider::Update() {
+	transform_->scale = { radius_, radius_, radius_ };
 	transform_->position = GetOwner()->GetPosition();
 	transform_->UpdateMatrix();
 }

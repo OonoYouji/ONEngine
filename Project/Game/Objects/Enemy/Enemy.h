@@ -145,6 +145,7 @@ private:
 	/// 当たり判定の範囲
 	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
+	class EntityShadow* entityShadow_ = nullptr;
 	Transform* torsoTransform_ = nullptr;
 
 public:

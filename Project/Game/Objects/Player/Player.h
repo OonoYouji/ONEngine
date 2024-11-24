@@ -55,7 +55,7 @@ public:
 
 public:
 
-	Player(class GameCamera* _mainCamera);
+	Player();
 	~Player();
 
 	void Initialize() override;
@@ -119,9 +119,10 @@ private:
 	/// other class 
 	/// ---------------------------------------------------
 
-	class GameCamera*           pGameCamera_    = nullptr;
-	class Enemy*                pEnemy_         = nullptr;
-	class PlayerAttackCollider* attackCollider_ = nullptr;
+	class TrackingCamera*       pTrackingCamera_ = nullptr;
+	class Enemy*                pEnemy_          = nullptr;
+	class PlayerAttackCollider* attackCollider_  = nullptr;
+	class EntityShadow*         entityShadow_    = nullptr;
 
 public:
 
@@ -149,8 +150,9 @@ public:
 	
 
 	void SetEnemy(class Enemy* _enemy);
+	void SetTrackingCamera(class TrackingCamera* _trackingCamera);
 
-	class GameCamera* GetCamera() const { return pGameCamera_; }
+	class TrackingCamera* GetTrackingCamera() const { return pTrackingCamera_; }
 	class Enemy* GetEnemy() const { return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 	

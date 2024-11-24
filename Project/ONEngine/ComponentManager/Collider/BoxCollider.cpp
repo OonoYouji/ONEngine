@@ -13,7 +13,8 @@ void BoxCollider::Update() {
 	UpdateMatrix();
 	CalculationOrientations();
 
-	obbMatTransform_ = Mat4::MakeRotate(transform_->rotate) * Mat4::MakeTranslate(transform_->position);
+	transform_->scale = size_;
+	obbMatTransform_ = Mat4::MakeAffine(Vec3::kOne, transform_->rotate, transform_->position);
 	obbMatTransform_ *= GetOwner()->GetMatTransform();
 }
 
@@ -87,6 +88,10 @@ std::vector<Vec3> BoxCollider::GetVertices() const {
 	}
 
 	return result;
+}
+
+void BoxCollider::SetSize(const Vec3& _size) {
+	size_ = _size;
 }
 
 void BoxCollider::CalculationOrientations() {

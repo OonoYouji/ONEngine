@@ -10,7 +10,8 @@
 #include "Input/Input.h"
 #include "Library/Math/LerpShortAngle.h"
 
-#include "Objects/Camera/GameCamera.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
+
 
 PlayerRootBehavior::PlayerRootBehavior(Player* _host) :IPlayerBehavior(_host), workInBehavior_(host_->GetWorkRootBehavior()) {
 
@@ -38,7 +39,7 @@ void PlayerRootBehavior::Update() {
 	};
 
 	{	/// 方向をカメラに合わせる
-		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(host_->GetCamera()->GetQuaternion()));
+		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(host_->GetTrackingCamera()->GetQuaternion()));
 		Vec3 dir = Mat4::TransformNormal({direction_.x, 0.0f, direction_.y}, matCameraRotateY);
 		direction_.x = dir.x;
 		direction_.y = dir.z;

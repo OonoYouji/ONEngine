@@ -56,4 +56,6 @@ private:
 	Transform weakAttackTransform_;
 	Transform strongAttackTransform_;
 
+	Vec3 colliderSize_ = {};
+
 };

@@ -32,12 +32,21 @@ public:
 	void ApplyVariables();
 	void AddVariables();
 
+
+	void StartShake(float _minValue, float _maxValue, float _time);
+
+	class GameCamera* GetGameCamera() const { return pGameCamera_; }
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+
+	Transform offsetTransform_;
+	float shakeTime_, shakeMaxTime_;
+	float shakeMinValue_, shakeMaxValue_;
 
 	/// other class pointer
 	class GameCamera* pGameCamera_ = nullptr; /// ゲームカメラへのポインタ
@@ -46,7 +55,7 @@ private:
 
 	Vec3 cameraOffsetDirection_;
 	float cameraOffsetLenght_;
-	float cameraOffsetLenghtScaleFactor_; /// cameraOffsetLenght_の倍率
+	float cameraOffsetLenghtScaleFactor_, saveCameraOffsetLenghtScaleFactor_; /// cameraOffsetLenght_の倍率
 	float lenScaleFactorMin_, lenScaleFactorMax_;
 	Vec3 cameraHeightOffset_;
 
