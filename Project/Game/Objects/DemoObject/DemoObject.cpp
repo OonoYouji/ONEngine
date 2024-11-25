@@ -6,44 +6,72 @@
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "VariableManager/VariableManager.h"
 
+#include "Input/Input.h"
+
 /// components
 #include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/NumberRenderer/NumberRenderer.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
 
 void DemoObject::Initialize() {
-	numberRenderer_ = AddComponent<NumberRenderer>(5u);
+	/*animationRenderer_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
+
+	capsuleCollider_ = AddComponent<CapsuleCollider>();
+	capsuleCollider_->SetPositionArray({ &positionArray_[0], &positionArray_[1] });*/
+
+	VariableManager* vm = VariableManager::GetInstance();
+	vm->AddValue(GetTag(), "name", name_);
+
+	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 }
 
 void DemoObject::Update() {
-	numberRenderer_->SetScore(score_);
-	
+
+	VariableManager* vm = VariableManager::GetInstance();
+	name_ = vm->GetValue<std::string>(GetTag(), "name");
+
+
+
+
+	isCollisionEnter_ = false;
+	isCollisionStay_ = false;
+	isCollisionExit_ = false;
+
+
 }
 
 void DemoObject::Debug() {
+
 	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat3("position1", &positionArray_[0].x, 0.01f);
-		ImGui::DragFloat3("position2", &positionArray_[1].x, 0.01f);
+		ImGui::Text(name_.c_str());
 
-		int scoreCopy = score_;
-		if(ImGui::DragInt("score", &scoreCopy)) {
-			score_ = scoreCopy;
-		}
 
+		static char buff[256];
+		ImGui::InputText("test text", buff, sizeof(buff));
+
+		ImGuiIO& io = ImGui::GetIO();
+		ImGui::DragFloat("repeat delay", &io.KeyRepeatDelay, 0.01f);
+		ImGui::DragFloat("repeat rate", &io.KeyRepeatRate, 0.01f);
+		
+
+		ImGui::Checkbox("isCollisionEnter", &isCollisionEnter_);
+		ImGui::Checkbox("isCollisionStay", &isCollisionStay_);
+		ImGui::Checkbox("isCollisionExit", &isCollisionExit_);
 
 		ImGui::TreePop();
 	}
 }
 
-void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
+	isCollisionEnter_ = true;
 }
 
-void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
+void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
+	isCollisionStay_ = true;
 }
 
 void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	isCollisionExit_ = true;
 }
