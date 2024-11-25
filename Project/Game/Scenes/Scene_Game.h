@@ -15,7 +15,9 @@ public:
 	void Update()     override;
 
 private:
-	class DemoObject* demoObj_ = nullptr;
+	class DemoObject* demoObjA_ = nullptr;
+	class DemoObject* demoObjB_ = nullptr;
 
-	size_t entity_;
+	size_t entityA_;
+	size_t entityB_;
 };

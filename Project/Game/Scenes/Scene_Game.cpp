@@ -6,11 +6,6 @@
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
 
-/// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
-#include "ComponentManager/Collider/SphereCollider.h"
-#include "ComponentManager/Collider/BoxCollider.h"
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
@@ -23,16 +18,18 @@
 #include "EntityConponentSystem/System/MovementSystem/MovementSystem.h"
 #include "EntityConponentSystem/System/CollisionCheckerSystem/SphereCollisionSystem.h"
 
-/// lib
-#include "Debugger/Assertion.h"
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	demoObj_ = new DemoObject();
-	demoObj_->Initialize();
+	demoObjA_ = new DemoObject();
+	demoObjA_->Initialize();
+	
+	demoObjB_ = new DemoObject();
+	demoObjB_->Initialize();
+
 
 	ECSManager* ecsManager = ECSManager::GetInstance();
 	ecsManager->Initialize();
@@ -42,13 +39,27 @@ void Scene_Game::Initialize() {
 
 
 	/// entity の作成
-	entity_ = ecsManager->GenerateEntity();
+	entityA_ = ecsManager->GenerateEntity();
 	
-	ecsManager->AddComponent<SphereColliderComponent>(entity_);
+	SphereColliderComponent* sphereColliderA = ecsManager->AddComponent<SphereColliderComponent>(entityA_);
+	sphereColliderA->radius = 5.0f;
 
-	ecsManager->AddComponent<PositionComponent>(entity_);
-	VelocityComponent* veloComp = ecsManager->AddComponent<VelocityComponent>(entity_);
-	veloComp->velocity = Vec3::kFront * 0.1f;
+	PositionComponent* posA = ecsManager->AddComponent<PositionComponent>(entityA_);
+	posA->position = {};
+
+	ecsManager->AddComponent<VelocityComponent>(entityA_);
+
+
+
+	/// entity B create
+	entityB_ = ecsManager->GenerateEntity();
+
+	SphereColliderComponent* sphereColliderB = ecsManager->AddComponent<SphereColliderComponent>(entityB_);
+	sphereColliderB->radius = 5.0f;
+
+	PositionComponent* posB = ecsManager->AddComponent<PositionComponent>(entityB_);
+	posB->position = { 2.0f, 0.0f, 0.0f };
+
 }
 
 
@@ -61,8 +72,10 @@ void Scene_Game::Update() {
 
 	ecsManager->Update();
 
-	PositionComponent* posComp = ecsManager->GetComponent<PositionComponent>(entity_);
+	PositionComponent* posAComp = ecsManager->GetComponent<PositionComponent>(entityA_);
+	PositionComponent* posBComp = ecsManager->GetComponent<PositionComponent>(entityB_);
 	
-	demoObj_->SetPosition(posComp->position);
+	demoObjA_->SetPosition(posAComp->position);
+	demoObjB_->SetPosition(posBComp->position);
 
 }
