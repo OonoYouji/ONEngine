@@ -91,7 +91,7 @@ namespace EnemyBehaviorTree{
 		enemy_->TerminateAttackCollider();
 		if(collisionStartTime_ <= currentTime_ && currentTime_ <= collisionStartTime_ + collisionTime_){
 			// 当たり判定が有効
-			enemy_->ActivateAttackCollider(ActionTypes::STRONG_ATTACK);
+			enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK_2);
 		}
 
 		if(currentTime_ >= activeTime_){
@@ -124,15 +124,15 @@ namespace EnemyBehaviorTree{
 	WeakAttack2::WeakAttack2(Enemy* enemy,WorkWeakAttack2Action* worker)
 		:Sequence(enemy){
 		// startup
-		addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,/*"Boss_WeakAttack2_1_1"*/"Boss_StrongAttack_1_1",worker->motionTimes_.startupTime_,true));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_1",worker->motionTimes_.startupTime_,true));
 		addChild(std::make_unique<WeakAttack2Startup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 		// attackAction
-		addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,/*"Boss_WeakAttack2_1_2"*/"Boss_StrongAttack_1_2",worker->motionTimes_.activeTime_,true));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_2",worker->motionTimes_.activeTime_,true));
 		addChild(std::make_unique<WeakAttack2Action>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 
 		// end lag
-		addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,/*"Boss_WeakAttack2_1_3"*/"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,true));
+		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_3",worker->motionTimes_.endLagTime_,true));
 		addChild(std::make_unique<WeakAttack2EndLag>(enemy,worker->motionTimes_.endLagTime_));
 	}
 
