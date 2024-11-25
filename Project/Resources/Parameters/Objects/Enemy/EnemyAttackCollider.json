@@ -33,9 +33,9 @@
         "STRONG_ATTACK_Offset": [
             0.0,
             0.0,
-            5.0
+            7.0
         ],
-        "STRONG_ATTACK_Radius": 3.0,
+        "STRONG_ATTACK_Radius": 7.0,
         "TACKLE_ATTACK_Offset": [
             0.0,
             0.0,
@@ -45,9 +45,9 @@
         "WEAK_ATTACK_2_Offset": [
             0.0,
             0.0,
-            1.0
+            4.0
         ],
-        "WEAK_ATTACK_2_Radius": 7.0,
+        "WEAK_ATTACK_2_Radius": 4.0,
         "WEAK_ATTACK_Offset": [
             0.0,
             0.0,
