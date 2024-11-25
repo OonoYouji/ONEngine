@@ -69,6 +69,8 @@ void PlayerHPRenderer::Initialize() {
 
 void PlayerHPRenderer::Update() {
 	
+	ApplyVariables();
+
 	/// hpによって大きさを変える
 	float lerpT = pPlayer_->GetCurrentHP() / pPlayer_->GetMaxHP();
 	pTransform_->scale = Vec3::Lerp(

@@ -359,6 +359,10 @@ void AnimationRenderer::SetAnimationFlags(int _flags) {
 	animationFlags_ = _flags;
 }
 
+void AnimationRenderer::SetTime(float _time) {
+	animationTime_ = _time;
+}
+
 void AnimationRenderer::Restart() {
 	isPlayedOnce_ = false;
 	

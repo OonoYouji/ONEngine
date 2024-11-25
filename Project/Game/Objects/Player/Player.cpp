@@ -17,6 +17,7 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// this behavior
 #include "Behavior/IPlayerBehavior.h"
@@ -31,6 +32,7 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Effect/PlayerStrongAttackChargeEffect.h"
 
 Player::Player() {
 	CreateTag(this);
@@ -40,10 +42,12 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	//sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
+
+	audioSource_ = AddComponent<AudioSource>();
 
 	SetAnimationFlags(0);
 
@@ -117,6 +121,11 @@ void Player::Initialize() {
 	entityShadow_->Initialize();
 	entityShadow_->SetParent(pTransform_);
 
+	strongAttackChargeEffect_ = new PlayerStrongAttackChargeEffect();
+	strongAttackChargeEffect_->Initialize();
+	strongAttackChargeEffect_->SetParent(pTransform_);
+	strongAttackChargeEffect_->SetAnimationActive(false);
+
 	/// varialbe managerに値を追加する
 	AddVariables();
 	LoadVariables();
@@ -136,6 +145,8 @@ void Player::Update() {
 
 	pTransform_->Update();
 	PushBack();
+
+	ClampStage();
 }
 
 #pragma region Debug
@@ -238,6 +249,7 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "startPosY", startPosY_);
 	vm->AddValue(groupName, "endPosY",   endPosY_);
 	vm->AddValue(groupName, "weaponSpawnMaxTime", weaponSpawnMaxTime_);
+	vm->AddValue(groupName, "stageRange", stageRange_);
 
 
 	{	/// avoidance behavior
@@ -266,6 +278,12 @@ void Player::AddVariables() {
 		vm->AddValue(groupName, "damage0", strongAttackBehavior_.damages_[0]);
 		vm->AddValue(groupName, "damage1", strongAttackBehavior_.damages_[1]);
 		vm->AddValue(groupName, "damage2", strongAttackBehavior_.damages_[2]);
+		
+		vm->AddValue(groupName, "nextChargeTime0", strongAttackBehavior_.nextChargeTime_[0]);
+		vm->AddValue(groupName, "nextChargeTime1", strongAttackBehavior_.nextChargeTime_[1]);
+		vm->AddValue(groupName, "nextChargeTime2", strongAttackBehavior_.nextChargeTime_[2]);
+
+		vm->AddValue(groupName, "actionTime", strongAttackBehavior_.actionTime_);
 	}
 
 
@@ -302,6 +320,7 @@ void Player::ApplyVariables() {
 	startPosY_          = vm->GetValue<float>(groupName, "startPosY");
 	endPosY_            = vm->GetValue<float>(groupName, "endPosY");
 	weaponSpawnMaxTime_ = vm->GetValue<float>(groupName, "weaponSpawnMaxTime");
+	stageRange_         = vm->GetValue<float>(groupName, "stageRange");
 
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
@@ -329,6 +348,14 @@ void Player::ApplyVariables() {
 		strongAttackBehavior_.damages_[0] = vm->GetValue<float>(name, "damage0");
 		strongAttackBehavior_.damages_[1] = vm->GetValue<float>(name, "damage1");
 		strongAttackBehavior_.damages_[2] = vm->GetValue<float>(name, "damage2");
+
+		
+		strongAttackBehavior_.nextChargeTime_[0] = vm->GetValue<float>(name, "nextChargeTime0");
+		strongAttackBehavior_.nextChargeTime_[1] = vm->GetValue<float>(name, "nextChargeTime1");
+		strongAttackBehavior_.nextChargeTime_[2] = vm->GetValue<float>(name, "nextChargeTime2");
+
+		strongAttackBehavior_.actionTime_ = vm->GetValue<float>(name, "actionTime");
+
 	}
 
 
@@ -369,6 +396,22 @@ void Player::SpawnWeapon() {
 
 		mate.UpdateMatrix();
 	}
+}
+
+void Player::ClampStage() {
+
+	float len = pTransform_->position.Len();
+
+	/// 範囲外(ステージの外に出た
+	if(len > stageRange_) {
+		Vec3 direction = -pTransform_->position.Normalize();
+		pTransform_->position += direction * (len - stageRange_);
+	}
+
+}
+
+void Player::PlayAudio(const std::string& _filePath, float _volume) {
+	audioSource_->PlayOneShot("PlayerSE/" + _filePath, _volume);
 }
 
 

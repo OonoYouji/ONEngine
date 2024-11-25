@@ -49,8 +49,10 @@ public:
 	/// StrongAttackで使用する変数
 	/// </summary>
 	struct StrongAttackBehavior {
-		const std::string name_ = "StrongAttackBehavior";
-		std::array<float, 3> damages_; /// 各段階ごとのダメージ
+		const std::string    name_ = "StrongAttackBehavior";
+		std::array<float, 3> damages_;        /// 各段階ごとのダメージ
+		std::array<float, 3> nextChargeTime_; /// 各段階ごとの遷移までの時間
+		float                actionTime_;
 	};
 
 public:
@@ -73,6 +75,10 @@ public:
 
 	void SpawnWeapon();
 
+	void ClampStage();
+
+	void PlayAudio(const std::string& _filePath, float _volume);
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;
@@ -80,6 +86,8 @@ private:
 	class AnimationRenderer* bodyAnimationRenderer_   = nullptr;
 	class AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	std::unique_ptr<IPlayerBehavior> currentBehavior_;
+
+	class AudioSource* audioSource_ = nullptr;
 
 	/// ---------------------------------------------------
 	/// status
@@ -97,7 +105,9 @@ private:
 	
 	float weaponSpawnTime_, weaponSpawnMaxTime_;
 	float startPosY_, endPosY_;
+	
 
+	float stageRange_ = 50.0f;;
 
 	/// ---------------------------------------------------
 	/// 
@@ -123,6 +133,7 @@ private:
 	class Enemy*                pEnemy_          = nullptr;
 	class PlayerAttackCollider* attackCollider_  = nullptr;
 	class EntityShadow*         entityShadow_    = nullptr;
+	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
 
 public:
 
@@ -155,6 +166,7 @@ public:
 	class TrackingCamera* GetTrackingCamera() const { return pTrackingCamera_; }
 	class Enemy* GetEnemy() const { return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
+	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const { return strongAttackChargeEffect_; }
 	
 	void SetAnimationModel(const std::string& _filePath);
 	void SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath);

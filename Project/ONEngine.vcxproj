@@ -147,6 +147,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.cpp" />
@@ -186,6 +188,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Background\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
@@ -289,6 +292,8 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.h" />
@@ -331,6 +336,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Background\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
