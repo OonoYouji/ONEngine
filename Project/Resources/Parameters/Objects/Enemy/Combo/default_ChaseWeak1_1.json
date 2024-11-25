@@ -2,7 +2,7 @@
     "default_chaseWeak1_1": {
         "ComboSize": 3,
         "HpState": 0,
-        "Index_0": "defaultChase",
+        "Index_0": "default_Chase",
         "Index_1": "default_weak1",
         "Index_2": "default_idle",
         "RangeType": 1
