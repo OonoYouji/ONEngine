@@ -1,0 +1,10 @@
+{
+    "jump_longrange_1": {
+        "ComboSize": 3,
+        "HpState": 0,
+        "Index_0": "normal_jump_1",
+        "Index_1": "normal_longrange_1",
+        "Index_2": "normal_longIdle_1",
+        "RangeType": 0
+    }
+}

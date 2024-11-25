@@ -20,6 +20,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::IdleAction::tick(){
 
 EnemyBehaviorTree::Idle::Idle(Enemy* enemy,WorkIdleAction* worker)
 	: EnemyBehaviorTree::Sequence(enemy){
-	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Wait",worker->motionTimes_.activeTime_,true));
+	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Wait",worker->motionTimes_.activeTime_,false));
 	addChild(std::make_unique<IdleAction>(enemy,worker));
 }

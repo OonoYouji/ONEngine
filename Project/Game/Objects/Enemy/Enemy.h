@@ -29,7 +29,7 @@ class WorkEnemyAction;
 /// コンボで使用される Attack の 情報
 /// </summary>
 struct ComboAttack{
-	std::string attackName_;
+	const std::string& attackName_;
 	int32_t index_;
 	ComboAttack(const std::string& name,int32_t i):attackName_(name),index_(i){}
 };
@@ -177,7 +177,7 @@ public:
 
 	float GetDistanceByRangeTypes(EnemyAttackRangeType rangeType)const;
 
-	void ActivateAttackCollider(ActionTypes offset,float radius);
+	void ActivateAttackCollider(ActionTypes offset);
 	void TerminateAttackCollider();
 
 	float GetColliderRadius(){ return colliderRadius_; }

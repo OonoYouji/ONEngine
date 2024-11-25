@@ -10,14 +10,13 @@ namespace EnemyBehaviorTree{
 	class WeakAttackStartup
 		:public EnemyBehaviorTree::Action{
 	public:
-		WeakAttackStartup(Enemy* enemy,float startupTime,float collisionRadius);
+		WeakAttackStartup(Enemy* enemy,
+						  float startupTime);
 		~WeakAttackStartup()override{}
 
 		Status tick()override;
 	private:
 		float leftTime_;
-
-		float collisionRadius_;
 	};
 
 	class WeakAttackAction

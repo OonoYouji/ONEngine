@@ -12,13 +12,11 @@
 #pragma region"Setup"
 EnemyBehaviorTree::TackleAttackStartup::TackleAttackStartup(Enemy* enemy,
 															float startupTime,
-															float lockOnTime,
-															float collisionRadius)
+															float lockOnTime)
 	:EnemyBehaviorTree::Action(enemy){
 	startupTime_ 	   = startupTime;
 	currentTime_       = 0.0f;
 	lockOnTime_ 	   = lockOnTime;
-	collisionRadius_   = collisionRadius;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
@@ -27,12 +25,12 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
 	// 時間内なら ロックオン
 	if(currentTime_ <= lockOnTime_){
 		Vector3 diffE2P = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
-		enemy_->SetRotateY(std::lerp(enemy_->GetRotate().y,atan2(diffE2P.x,diffE2P.z),0.1f));
+		enemy_->SetRotateY(std::lerp(enemy_->GetRotate().y,atan2(diffE2P.x,diffE2P.z),0.4f));
 	}
 
 	if(currentTime_ >= startupTime_){
 		// 当たり判定を有効に
-		enemy_->ActivateAttackCollider(ActionTypes::TACKLE_ATTACK,collisionRadius_);
+		enemy_->ActivateAttackCollider(ActionTypes::TACKLE_ATTACK);
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -86,15 +84,14 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackEndLag::tick(){
 EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackAction* worker)
 	:EnemyBehaviorTree::Sequence(enemy){
 	// startup
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_1",worker->motionTimes_.startupTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_1",worker->motionTimes_.startupTime_,true));
 	addChild(std::make_unique<TackleAttackStartup>(enemy,
 			 worker->motionTimes_.startupTime_,
-			 worker->lockOnTime_,
-			 worker->collisionRadius_)
+			 worker->lockOnTime_)
 	);
 
 	// attackAction
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_2",worker->motionTimes_.activeTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<TackleAttackAction>(enemy,
 			 worker->motionTimes_.activeTime_,
 			 worker->speed_,
@@ -102,7 +99,7 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	);
 
 	// end lag
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,true));
 	addChild(std::make_unique<TackleAttackEndLag>(enemy,
 			 worker->motionTimes_.endLagTime_)
 	);

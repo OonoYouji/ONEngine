@@ -1,0 +1,10 @@
+{
+    "chase_strong_1": {
+        "ComboSize": 3,
+        "HpState": 1,
+        "Index_0": "normal_chase",
+        "Index_1": "normal_strong_1",
+        "Index_2": "normal_longIdle_1",
+        "RangeType": 1
+    }
+}

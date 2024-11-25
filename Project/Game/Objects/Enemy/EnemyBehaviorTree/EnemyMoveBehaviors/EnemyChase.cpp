@@ -3,8 +3,8 @@
 #include "Math/Matrix4x4.h"
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
-#include "../EnemyBasicActions.h"
 #include "../../Enemy.h"
+#include "../EnemyBasicActions.h"
 #include "FrameManager/Time.h"
 #include "Objects/Player/Player.h"
 
@@ -18,7 +18,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
 
 	Vector3 diffP2E = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
 
-	Vector3 newRotate = Vector3::Slerp(Vector3::Normalize(velocity_),Vector3::Normalize(diffP2E),0.024f);
+	Vector3 newRotate = Vector3::Slerp(Vector3::Normalize(velocity_),Vector3::Normalize(diffP2E),0.084f);
 	enemy_->SetRotateY(atan2(newRotate.x,newRotate.z));
 	velocity_ = Matrix4x4::Transform({0.0f,0.0f,workInBehavior_->speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y));
 	enemy_->SetPosition(enemy_->GetPosition() + velocity_);
@@ -33,6 +33,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
 
 EnemyBehaviorTree::Chase::Chase(Enemy* enemy,WorkChaseAction* worker)
 	:EnemyBehaviorTree::Sequence(enemy){
-	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Wait",-1.0f,true));
+	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Walk",-1.0f,false));
 	addChild(std::make_unique<ChaseAction>(enemy,worker));
 }

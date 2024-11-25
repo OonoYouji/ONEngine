@@ -35,7 +35,8 @@ void EnemyAttackCollider::Initialize(){
 
 		/// 値の追加
 		for(size_t i = 0; i < offsetByActionTypes_.size(); i++){
-			vm->AddValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)].c_str(),offsetByActionTypes_[i]);
+			vm->AddValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset",offsetByActionTypes_[i]);
+			vm->AddValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius",offsetByActionTypes_[i]);
 		}
 
 		/// 読み込み
@@ -49,6 +50,39 @@ void EnemyAttackCollider::Initialize(){
 
 void EnemyAttackCollider::Update(){
 	ApplyVariables();
+}
+
+void EnemyAttackCollider::Debug(){
+#ifdef _DEBUG
+	// ActionType を選択する Combo
+	if(ImGui::BeginCombo("Action Type",actionTypeWord[currentActionType_].c_str())){
+		for(const auto& [type,name] : actionTypeWord){
+			bool isSelected = (currentActionType_ == type);
+			if(ImGui::Selectable(name.c_str(),isSelected)){
+				currentActionType_ = type; // 現在の選択を更新
+			}
+			// 現在選択中の項目にフォーカスを移動
+			if(isSelected){
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	int32_t currentActionTypeInt = static_cast<int>(currentActionType_);
+
+	// 選択中の ActionType に対応する値を表示・編集
+	if(currentActionTypeInt >= 0 &&
+	   currentActionTypeInt <= static_cast<int>(ActionTypes::COUNT)){
+		// Offset 編集用の UI
+		ImGui::Text("Offset:");
+		ImGui::DragFloat3("Offset Values",&offsetByActionTypes_[currentActionTypeInt].x);
+
+		// Radius 編集用の UI
+		ImGui::Text("Radius:");
+		ImGui::DragFloat("Radius Value",&radiusByActionTypes_[currentActionTypeInt]);
+	}
+#endif // DEBUG
 }
 
 void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
@@ -65,7 +99,8 @@ void EnemyAttackCollider::ApplyVariables(){
 	const std::string& groupName = GetTag();
 	/// 値の追加
 	for(size_t i = 0; i < offsetByActionTypes_.size(); i++){
-		offsetByActionTypes_[i] = vm->GetValue<Vec3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)].c_str());
+		offsetByActionTypes_[i] = vm->GetValue<Vec3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset");
+		offsetByActionTypes_[i] = vm->GetValue<Vec3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius");
 	}
 }
 
@@ -73,10 +108,12 @@ void EnemyAttackCollider::SetEnemy(Enemy* enemy){
 	enemy_ = enemy;
 }
 
-void EnemyAttackCollider::Activate(ActionTypes type,float radius){
+void EnemyAttackCollider::Activate(ActionTypes type){
 	sphereCollider_->isActive = true;
 	currentUsingType_ = static_cast<int32_t>(type);
 	SetPosition(offsetByActionTypes_[currentUsingType_]);
+
+	sphereCollider_->SetRadius(radiusByActionTypes_[currentUsingType_]);
 }
 
 void EnemyAttackCollider::Terminate(){

@@ -1,0 +1,16 @@
+{
+    "targetting_rangedAttack_2": {
+        "Type": 6,
+        "activeTime": 6.599999904632568,
+        "attackForPlayerProbability": 40.55699920654297,
+        "bulletScale": 1.5,
+        "damage": 0.0,
+        "endLagTime": 0.800000011920929,
+        "lifeTime": 0.6000000238418579,
+        "spawnCoolTime": 0.4000000059604645,
+        "spawnPositionY": 8.899999618530273,
+        "spawnRange": 49.79999923706055,
+        "startupTime": 1.100000023841858,
+        "timeToLand": 0.699999988079071
+    }
+}

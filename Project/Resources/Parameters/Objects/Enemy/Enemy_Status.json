@@ -4,9 +4,9 @@
         "HP_HIGHTE": 62.0,
         "HP_LOW": 19.451000213623047,
         "HP_NORMAL": 39.617000579833984,
-        "LONG_RANGE": 0.0,
-        "MIDDLE_RANGE": 0.0,
-        "SHORT_RANGE": 0.0,
+        "LONG_RANGE": 105.80000305175781,
+        "MIDDLE_RANGE": 33.20000076293945,
+        "SHORT_RANGE": 15.0,
         "speed": 0.0
     }
 }

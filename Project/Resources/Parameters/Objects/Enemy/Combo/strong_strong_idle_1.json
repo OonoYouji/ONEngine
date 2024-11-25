@@ -1,0 +1,10 @@
+{
+    "strong_strong_idle_1": {
+        "ComboSize": 3,
+        "HpState": 2,
+        "Index_0": "short_strong_1",
+        "Index_1": "short_strong_1",
+        "Index_2": "longIdle_1",
+        "RangeType": 0
+    }
+}

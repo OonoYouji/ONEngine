@@ -1,0 +1,9 @@
+{
+    "weak1_idle_1": {
+        "ComboSize": 2,
+        "HpState": 1,
+        "Index_0": "normal_weak1_1",
+        "Index_1": "normal_longIdle_1",
+        "RangeType": 0
+    }
+}

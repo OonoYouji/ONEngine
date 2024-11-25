@@ -32,7 +32,11 @@ namespace EnemyBehaviorTree{
 	class StrongAttackAction
 		:public EnemyBehaviorTree::Action{
 	public:
-		StrongAttackAction(Enemy* enemy,float activeTime,float collisionStartTime,float collisionTime,float collisionRadius,float damage);
+		StrongAttackAction(Enemy* enemy,
+						   float activeTime,
+						   float collisionStartTime,
+						   float collisionTime,
+						   float damage);
 		~StrongAttackAction()override{}
 
 		Status tick()override;
@@ -41,7 +45,6 @@ namespace EnemyBehaviorTree{
 		float currentTime_;
 		float collisionStartTime_;
 		float collisionTime_;
-		float collisionRadius_;
 
 		float damage_;
 	};

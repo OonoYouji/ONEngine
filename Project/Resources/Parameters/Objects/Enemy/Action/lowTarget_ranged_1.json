@@ -1,0 +1,16 @@
+{
+    "lowTarget_ranged_1": {
+        "Type": 6,
+        "activeTime": 4.699999809265137,
+        "attackForPlayerProbability": 15.788999557495117,
+        "bulletScale": 1.2999999523162842,
+        "damage": 0.0,
+        "endLagTime": 0.8999999761581421,
+        "lifeTime": 0.800000011920929,
+        "spawnCoolTime": 0.4000000059604645,
+        "spawnPositionY": 8.899999618530273,
+        "spawnRange": 69.5,
+        "startupTime": 1.2000000476837158,
+        "timeToLand": 0.8999999761581421
+    }
+}

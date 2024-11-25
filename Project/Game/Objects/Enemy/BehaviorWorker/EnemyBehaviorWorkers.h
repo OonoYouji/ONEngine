@@ -94,7 +94,7 @@ public:
 class WorkWeakAttackAction
 	:public WorkEnemyAction{
 public:
-	WorkWeakAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK),collisionRadius_(0.0f),damage_(0.0f){}
+	WorkWeakAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK),damage_(0.0f){}
 	~WorkWeakAttackAction(){}
 
 	void Debug()override;
@@ -102,7 +102,6 @@ public:
 	void Save(const std::string& name)override;
 	void Load(const std::string& name)override;
 
-	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
 };
@@ -113,7 +112,6 @@ public:
 	WorkWeakAttack2Action():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
 		collisionTime_      = 0;
 		collisionStartTime_ = 0;
-		collisionRadius_    = 0;
 		damage_             = 0;
 		maxRotateY2Player_  = 0;
 	}
@@ -126,7 +124,6 @@ public:
 
 	float collisionTime_;
 	float collisionStartTime_;
-	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
 
@@ -140,7 +137,6 @@ public:
 	WorkStrongAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
 		collisionTime_      = 0;
 		collisionStartTime_ = 0;
-		collisionRadius_    = 0;
 		damage_             = 0;
 		maxRotateY2Player_  = 0;
 	}
@@ -153,7 +149,6 @@ public:
 
 	float collisionTime_;
 	float collisionStartTime_;
-	float collisionRadius_;
 	//与えるダメージ
 	float damage_;
 
@@ -166,7 +161,6 @@ class WorkTackleAttackAction
 public:
 	WorkTackleAttackAction():WorkEnemyAction(ActionTypes::TACKLE_ATTACK){
 		lockOnTime_        = 0.0f;
-		collisionRadius_   = 0.0f;
 		damage_            = 0.0f;
 		speed_             = 0.0f;
 	}
@@ -178,7 +172,6 @@ public:
 	void Load(const std::string& name)override;
 
 	float lockOnTime_;
-	float collisionRadius_;
 	float damage_;
 	float speed_;
 };
