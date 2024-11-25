@@ -73,6 +73,8 @@ public:
 
 	void SpawnWeapon();
 
+	void ClampStage();
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;
@@ -97,7 +99,9 @@ private:
 	
 	float weaponSpawnTime_, weaponSpawnMaxTime_;
 	float startPosY_, endPosY_;
+	
 
+	float stageRange_ = 50.0f;;
 
 	/// ---------------------------------------------------
 	/// 

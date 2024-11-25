@@ -136,6 +136,8 @@ void Player::Update() {
 
 	pTransform_->Update();
 	PushBack();
+
+	ClampStage();
 }
 
 #pragma region Debug
@@ -238,6 +240,7 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "startPosY", startPosY_);
 	vm->AddValue(groupName, "endPosY",   endPosY_);
 	vm->AddValue(groupName, "weaponSpawnMaxTime", weaponSpawnMaxTime_);
+	vm->AddValue(groupName, "stageRange", stageRange_);
 
 
 	{	/// avoidance behavior
@@ -302,6 +305,7 @@ void Player::ApplyVariables() {
 	startPosY_          = vm->GetValue<float>(groupName, "startPosY");
 	endPosY_            = vm->GetValue<float>(groupName, "endPosY");
 	weaponSpawnMaxTime_ = vm->GetValue<float>(groupName, "weaponSpawnMaxTime");
+	stageRange_         = vm->GetValue<float>(groupName, "stageRange");
 
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
@@ -369,6 +373,18 @@ void Player::SpawnWeapon() {
 
 		mate.UpdateMatrix();
 	}
+}
+
+void Player::ClampStage() {
+
+	float len = pTransform_->position.Len();
+
+	/// 範囲外(ステージの外に出た
+	if(len > stageRange_) {
+		Vec3 direction = -pTransform_->position.Normalize();
+		pTransform_->position += direction * (len - stageRange_);
+	}
+
 }
 
 
