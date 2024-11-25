@@ -103,7 +103,11 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		damageRender->SetPosition(position);
 
 
-
+		if(mode_ == MODE_WEAK_ATTACK) {
+			pPlayer_->PlayAudio("weakAttackCollision.wav", 0.5f);
+		} else {
+			pPlayer_->PlayAudio("strongAttackCollision.wav", 0.5f);
+		}
 
 
 		/// 実際にダメージを与える
