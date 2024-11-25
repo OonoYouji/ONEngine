@@ -62,7 +62,6 @@ void EnemyHPRenderer::Initialize() {
 	spriteRenderer_->SetAnchor(uvAnchor_);
 
 	maxScale_ = GetScale();
-	spriteRenderer_->SetUVRotate(std::numbers::pi_v<float>);
 
 	/// objects create
 	hpFrame_ = new EnemyHPFrame();
