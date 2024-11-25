@@ -248,6 +248,7 @@
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\SphereColliderComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\System\CollisionCheckerSystem\SphereCollisionSystem.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\CollisionResultComponent.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\CollisionCallbackFunctionComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
