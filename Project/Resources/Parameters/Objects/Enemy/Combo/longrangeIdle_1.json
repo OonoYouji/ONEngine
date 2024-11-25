@@ -2,7 +2,7 @@
     "longrangeIdle_1": {
         "ComboSize": 2,
         "HpState": 1,
-        "Index_0": "normal_longrange_1",
+        "Index_0": "default_LongRangeAttack",
         "Index_1": "normal_longIdle_1",
         "RangeType": 1
     }

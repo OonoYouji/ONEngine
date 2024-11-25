@@ -2,8 +2,8 @@
     "default_strong_1": {
         "ComboSize": 2,
         "HpState": 0,
-        "Index_0": "default_strongAttack",
-        "Index_1": "default_idle",
+        "Index_0": "long_strong_1",
+        "Index_1": "longIdle_1",
         "RangeType": 0
     }
 }

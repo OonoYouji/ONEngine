@@ -2,12 +2,12 @@
     "long_strong_1": {
         "Type": 3,
         "activeTime": 1.899999976158142,
-        "collisionStartTime": 0.15299999713897705,
+        "collisionStartTime": 0.0,
         "collisionTime": 0.17000000178813934,
-        "damage": 0.0,
-        "endLagTime": 1.399999976158142,
-        "maxRotateY2Player": 3.7290000915527344,
+        "damage": 28.0,
+        "endLagTime": 1.899999976158142,
+        "maxRotateY2Player": 4.465000152587891,
         "rotateMaxSpeed": 0.0,
-        "startupTime": 1.2999999523162842
+        "startupTime": 2.299999952316284
     }
 }
