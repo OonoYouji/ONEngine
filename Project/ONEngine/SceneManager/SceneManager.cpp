@@ -155,6 +155,8 @@ void SceneManager::Load(const std::string& _sceneName) {
 	/// 必要な変数のリセットをかける
 	SceneLayer::ResetInstanceCount();
 
+	currentSceneName_ = _sceneName;
+
 	/// idに沿ったシーンの作成
 	if(!scenes_[currentSceneName_]) {
 		scenes_[currentSceneName_].reset(sceneFactory_->CreateScene(_sceneName));

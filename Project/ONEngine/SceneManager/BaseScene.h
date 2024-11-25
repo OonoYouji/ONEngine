@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <GraphicManager/SceneLayer/SceneLayer.h>
+#include <string>
 
 /// ===================================================
 /// 各シーンの基底クラス
@@ -27,7 +28,10 @@ private:
 
 	void CreateObject();
 
+
 protected:
+
+	void SetNextScene(const std::string& _sceneName);
 
 	void AddLayer(const std::string& layerName, class GameCamera* layerCamera);
 
