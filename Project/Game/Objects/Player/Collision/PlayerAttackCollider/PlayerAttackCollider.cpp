@@ -14,6 +14,7 @@
 #include "../../Player.h"
 #include "Objects/DamageNumRender/DamageNumRender.h"
 #include "Objects/Camera/GameCamera.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 PlayerAttackCollider::PlayerAttackCollider(Player* _player, GameCamera* _gameCamera) {
@@ -71,7 +72,8 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		isCollisionEnter_ = true;
 
 		DamageNumRender* damageRender = nullptr;
-		uint32_t score = static_cast<uint32_t>(pPlayer_->GetDamage());
+		float damage = pPlayer_->GetDamage();
+		uint32_t score = static_cast<uint32_t>(damage);
 
 		if(score < 20) {
 			damageRender = new DamageNumRender(
@@ -99,6 +101,16 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		position += Vec3::kUp * 2.0f;
 
 		damageRender->SetPosition(position);
+
+
+
+
+
+		/// 実際にダメージを与える
+		Enemy* enemy = static_cast<Enemy*>(_collision);
+		enemy->SetHP(enemy->GetHP() - damage);
+
+
 	}
 }
 
