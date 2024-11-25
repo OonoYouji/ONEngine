@@ -1,4 +1,7 @@
-#include "PlayerHPRenderer.h"
+#include "EnemyHPRenderer.h"
+
+/// std
+#include <numbers>
 
 /// externals
 #include <imgui.h>
@@ -13,18 +16,18 @@
 #include "Scenes/Scene_Game.h"
 
 /// objects
-#include "Objects/Player/Player.h"
-#include "PlayerHPFrame.h"
+#include "Objects/Enemy/Enemy.h"
+#include "EnemyHPFrame.h"
 
 
 
-PlayerHPRenderer::PlayerHPRenderer() {
+EnemyHPRenderer::EnemyHPRenderer() {
 	CreateTag(this);
 }
 
-PlayerHPRenderer::~PlayerHPRenderer() {}
+EnemyHPRenderer::~EnemyHPRenderer() {}
 
-void PlayerHPRenderer::Initialize() {
+void EnemyHPRenderer::Initialize() {
 
 	/// ui layerに表示
 	drawLayerId = GAME_SCENE_LAYER_UI;
@@ -38,8 +41,8 @@ void PlayerHPRenderer::Initialize() {
 	const std::string& groupName = GetTag();
 
 	vm->AddValue(groupName, "position", pTransform_->position);
-	vm->AddValue(groupName, "scale",    pTransform_->scale);
-	vm->AddValue(groupName, "rotate",   pTransform_->rotate);
+	vm->AddValue(groupName, "scale", pTransform_->scale);
+	vm->AddValue(groupName, "rotate", pTransform_->rotate);
 	vm->AddValue(groupName, "uvAnchor", uvAnchor_);
 
 	/// jsonの読み込み
@@ -59,65 +62,50 @@ void PlayerHPRenderer::Initialize() {
 	spriteRenderer_->SetAnchor(uvAnchor_);
 
 	maxScale_ = GetScale();
-
+	spriteRenderer_->SetUVRotate(std::numbers::pi_v<float>);
 
 	/// objects create
-	hpFrame_ = new PlayerHPFrame();
+	hpFrame_ = new EnemyHPFrame();
 	hpFrame_->Initialize();
-
 }
 
-void PlayerHPRenderer::Update() {
-	
+void EnemyHPRenderer::Update() {
+
 	ApplyVariables();
 
 	/// hpによって大きさを変える
-	float lerpT = pPlayer_->GetCurrentHP() / pPlayer_->GetMaxHP();
+	float lerpT = pEnemy_->GetHP() / pEnemy_->GetMaxHP();
 	pTransform_->scale = Vec3::Lerp(
 		{ 0.0f, maxScale_.y, 1.0f, }, maxScale_, lerpT
 	);
 
 }
 
-void PlayerHPRenderer::Debug() {
-	if(ImGui::TreeNodeEx("label", ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		if(ImGui::Button("apply variable")) {
-			ApplyVariables();
-		}
-		
-		if(ImGui::Button("set variable")) {
-			SetVariables();
-		}
-
-		ImGui::TreePop();
-	}
-}
-
-void PlayerHPRenderer::SetPlayer(Player* _player) {
-	pPlayer_ = _player;
+void EnemyHPRenderer::SetEnemy(Enemy* _enemy) {
+	pEnemy_ = _enemy;
 }
 
 
-void PlayerHPRenderer::ApplyVariables() {
+
+void EnemyHPRenderer::ApplyVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
 	pTransform_->position = vm->GetValue<Vec3>(groupName, "position");
-	pTransform_->scale    = vm->GetValue<Vec3>(groupName, "scale");
-	pTransform_->rotate   = vm->GetValue<Vec3>(groupName, "rotate");
-	uvAnchor_             = vm->GetValue<Vec2>(groupName, "uvAnchor");
+	pTransform_->scale = vm->GetValue<Vec3>(groupName, "scale");
+	pTransform_->rotate = vm->GetValue<Vec3>(groupName, "rotate");
+	uvAnchor_ = vm->GetValue<Vec2>(groupName, "uvAnchor");
 
 	maxScale_ = GetScale();
 }
 
 
-void PlayerHPRenderer::SetVariables() {
+void EnemyHPRenderer::SetVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
 	vm->SetValue(groupName, "position", pTransform_->position);
-	vm->SetValue(groupName, "scale",    pTransform_->scale);
-	vm->SetValue(groupName, "rotate",   pTransform_->rotate);
+	vm->SetValue(groupName, "scale", pTransform_->scale);
+	vm->SetValue(groupName, "rotate", pTransform_->rotate);
 	vm->SetValue(groupName, "uvAnchor", uvAnchor_);
 }

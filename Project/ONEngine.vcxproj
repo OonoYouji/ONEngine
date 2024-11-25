@@ -147,6 +147,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.cpp" />
@@ -289,6 +291,8 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyAttackBehaviors\EnemyWeakAttack2.h" />

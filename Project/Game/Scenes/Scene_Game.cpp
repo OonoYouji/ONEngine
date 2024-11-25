@@ -16,6 +16,7 @@
 #include "Objects/Enemy/EnemyCollider/EnemyAttackCollider.h"
 #include "Objects/Player/Player.h"
 #include "Objects/PlayerHPRenderer/PlayerHPRenderer.h"
+#include "Objects/EnemyHPRenderer/EnemyHPRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
@@ -40,7 +41,10 @@ void Scene_Game::Initialize(){
 	/// 敵
 	EnemyAttackCollider* enemyAttackCollider = new EnemyAttackCollider();
 	Enemy* enemy = new Enemy(player,enemyAttackCollider);
+	EnemyHPRenderer* enemyHPRenderer = new EnemyHPRenderer();
+
 	enemyAttackCollider->SetEnemy(enemy);
+	enemyHPRenderer->SetEnemy(enemy);
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 
@@ -55,6 +59,7 @@ void Scene_Game::Initialize(){
 	playerHPRenderer->Initialize();
 	trackingCamera->Initialize();
 	enemy->Initialize();
+	enemyHPRenderer->Initialize();
 	enemyAttackCollider->Initialize();
 
 	bbObjectManager->Initialize();
