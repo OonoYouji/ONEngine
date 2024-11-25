@@ -24,8 +24,8 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 
 	nextBehavior_ = ROOT;
 
-	currentTime_    = 0.0f;
-	currentPhase_   = _phase;
+	currentTime_ = 0.0f;
+	currentPhase_ = _phase;
 	nextChargeTime_ = _nextChargeTime;
 
 	if(currentPhase_ == THIRD) {
@@ -59,6 +59,18 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 	} else {
 		host_->SetAnimationFlags(0);
+	}
+
+
+
+	/// 音を再生する
+	if(currentPhase_ != NONE) {
+
+		if(currentPhase_ != THIRD ) {
+			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.5f);
+		} else {
+			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.5f);
+		}
 	}
 
 
@@ -119,7 +131,13 @@ void PlayerStrongAttackCharge::Update() {
 		}
 
 		host_->TransitionBehavior(std::move(nextBehavior));
+		return;
 	}
+
+
+
+	/// phaseが thirdの時に効果音をリピート再生する
+	if
 
 }
 

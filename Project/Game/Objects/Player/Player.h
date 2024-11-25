@@ -54,6 +54,7 @@ public:
 		std::array<float, 3> damages_;        /// 各段階ごとのダメージ
 		std::array<float, 3> nextChargeTime_; /// 各段階ごとの遷移までの時間
 		float                actionTime_;
+		float                thirdSERepeatTime_;
 	};
 
 public:
