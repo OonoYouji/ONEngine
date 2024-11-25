@@ -1,12 +1,17 @@
 {
     "long_strong_1": {
-        "Type": 3,
-        "activeTime": 1.899999976158142,
+        "Type": 7,
+        "activeTime": 0.0,
+        "bulletFireInterval": 0.0,
+        "bulletScale": 0.0,
+        "bulletSpawnOffsetZ": 0.0,
+        "bulletSpeed": 0.0,
         "collisionStartTime": 0.0,
         "collisionTime": 0.0,
         "damage": 0.0,
-        "endLagTime": 1.399999976158142,
+        "endLagTime": 0.0,
         "maxRotateY2Player": 6.2829999923706055,
-        "startupTime": 1.899999976158142
+        "rotateMaxSpeed": 0.0,
+        "startupTime": 1.2999999523162842
     }
 }
