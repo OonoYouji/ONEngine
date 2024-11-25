@@ -154,8 +154,10 @@
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
-    <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
-    <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="Game\Scenes\Base\BaseScene.cpp" />
+    <ClCompile Include="Game\Scenes\Base\AbstructSceneFactory.cpp" />
+    <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
@@ -254,8 +256,10 @@
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
-    <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
-    <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Scenes\Base\BaseScene.h" />
+    <ClInclude Include="Game\Scenes\Base\AbstructSceneFactory.h" />
+    <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
+    <ClInclude Include="ONEngine\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />

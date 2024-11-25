@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scenes/Manager/BaseScene.h"
+#include "Base/BaseScene.h"
 
 #include <memory>
 

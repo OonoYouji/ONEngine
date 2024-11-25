@@ -8,7 +8,7 @@
 #include "FrameManager/ExecutionTimer.h"
 
 /// game
-#include "Scenes/Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 
 
 void GameFrameWork::Initialize() {

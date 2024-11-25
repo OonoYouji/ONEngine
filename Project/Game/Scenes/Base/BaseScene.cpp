@@ -1,4 +1,4 @@
-#include "Scenes/Manager/BaseScene.h"
+#include "BaseScene.h"
 
 #include "Objects/Camera/GameCamera.h"
 

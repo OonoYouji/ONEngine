@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ImGuiManager/ImGuiManager.h"
-#include "Scenes/Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include "CommandManager/CommandLineInterface.h"
 #include "VariableManager/VariableManager.h"

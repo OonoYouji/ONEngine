@@ -2,7 +2,7 @@
 
 /// engine
 #include "Input/Input.h"
-#include "Scenes/Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"

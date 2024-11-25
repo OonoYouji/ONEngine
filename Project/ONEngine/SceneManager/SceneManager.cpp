@@ -23,11 +23,11 @@
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
-#include "BaseScene.h"
-#include "../Scene_Game.h"
-#include "../Scene_Title.h"
-#include "../Scene_Result.h"
-#include "../Scene_Clear.h"
+#include "Scenes/Base/BaseScene.h"
+#include "Scenes/Scene_Game.h"
+#include "Scenes/Scene_Title.h"
+#include "Scenes/Scene_Result.h"
+#include "Scenes/Scene_Clear.h"
 
 
 
