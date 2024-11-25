@@ -9,6 +9,10 @@
 #include "FrameManager/Time.h"
 #include "Input/Input.h"
 
+/// component
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+/// objects
 #include "../Player.h"
 #include "../Effect/PlayerStrongAttackChargeEffect.h"
 
@@ -49,12 +53,13 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	);
 
 	host_->SetIsActiveWeapon(true);
-	if(currentPhase_ == NONE) {
-		host_->SetAnimationTotalTime(1.0f);
+	host_->SetAnimationTotalTime(nextChargeTime_);
+
+	if(currentPhase_ != THIRD) {
+		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 	} else {
-		host_->SetAnimationTotalTime(0.5f);
+		host_->SetAnimationFlags(0);
 	}
-	host_->SetAnimationFlags(0);
 
 
 	if(currentPhase_ != THIRD) {	/// 値のio
