@@ -67,6 +67,12 @@ void CollisionManager::Update() {
 			continue;
 		}
 
+		/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
+		if(!objA->isActive || !colliderA->isActive) {
+			continue;
+		}
+
+
 		for(auto& objB : gameObjects_) {
 
 			/// colliderがあるかチェック
@@ -75,6 +81,11 @@ void CollisionManager::Update() {
 				continue;
 			}
 
+			/// オブジェクト本体かコライダーのアクティブがfalseならcontinue
+			if(!objB->isActive || !colliderB->isActive) {
+				continue;
+			}
+			
 
 			/// 同じオブジェクトなら除外
 			if(objA == objB) {

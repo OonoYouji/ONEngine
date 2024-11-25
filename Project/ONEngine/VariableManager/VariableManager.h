@@ -157,7 +157,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	using Item  = std::variant<int, float, bool, Vec2, Vec3, Vec4>;
+	using Item  = std::variant<int, float, bool, Vec2, Vec3, Vec4, std::string>;
 	using Group = std::unordered_map<std::string, Item>;
 
 	std::unordered_map<std::string, Group> groupArray_;
