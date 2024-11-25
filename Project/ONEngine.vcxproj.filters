@@ -191,6 +191,7 @@
     <ClCompile Include="ONEngine\GameObjectManager\GameObjectManager.cpp" />
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
+    <ClCompile Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -371,6 +372,7 @@
     <ClInclude Include="ONEngine\GameObjectManager\GameObjectManager.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
+    <ClInclude Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
