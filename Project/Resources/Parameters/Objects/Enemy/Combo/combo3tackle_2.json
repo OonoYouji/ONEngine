@@ -1,0 +1,11 @@
+{
+    "combo3tackle_2": {
+        "ComboSize": 4,
+        "HpState": 2,
+        "Index_0": "comboTackle_1",
+        "Index_1": "comboTackle_2",
+        "Index_2": "comboTackle_3",
+        "Index_3": "shortIdle_2",
+        "RangeType": 1
+    }
+}

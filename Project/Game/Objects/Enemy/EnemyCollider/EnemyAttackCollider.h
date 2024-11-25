@@ -23,6 +23,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void Debug()override;
+
 	void OnCollisionEnter(BaseGameObject* const _collision) override;
 
 	void ApplyVariables();
@@ -39,8 +41,16 @@ private:
 	/// 攻撃の種類ごとに offsetを決める
 	/// </summary>
 	std::array<Vector3,static_cast<int32_t>(ActionTypes::COUNT)> offsetByActionTypes_;
+
+	std::array<float,static_cast<int32_t>(ActionTypes::COUNT)> radiusByActionTypes_;
+
+#ifdef _DEBUG
+	ActionTypes currentActionType_;
+#endif // _DEBUG
+
+
 public:
 	void SetEnemy(Enemy* enemy);
-	void Activate(ActionTypes actionType,float radius);
+	void Activate(ActionTypes actionType);
 	void Terminate();
 };

@@ -32,14 +32,12 @@ void WorkEnemyAction::Load(const std::string& name){
 
 void WorkWeakAttackAction::Debug(){
 	WorkEnemyAction::Debug();
-	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 }
 
 void WorkWeakAttackAction::Save(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Save(name);
-	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 }
 
@@ -47,14 +45,12 @@ void WorkWeakAttackAction::Load(const std::string& name){
 	WorkEnemyAction::Load(name);
 	VariableManager* variableManager = VariableManager::GetInstance();
 	damage_ = variableManager->GetValue<float>(name,"damage");
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
 }
 
 void WorkStrongAttackAction::Debug(){
 	WorkEnemyAction::Debug();
 	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
 	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
-	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }
@@ -64,7 +60,6 @@ void WorkStrongAttackAction::Save(const std::string& name){
 	WorkEnemyAction::Save(name);
 	variableManager->SetValue(name,"collisionStartTime",collisionStartTime_);
 	variableManager->SetValue(name,"collisionTime",collisionTime_);
-	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
 }
@@ -75,7 +70,6 @@ void WorkStrongAttackAction::Load(const std::string& name){
 
 	collisionStartTime_ = variableManager->GetValue<float>(name,"collisionStartTime");
 	collisionTime_ = variableManager->GetValue<float>(name,"collisionTime");
-	collisionRadius_ = variableManager->GetValue<float>(name,"collisionRadius");
 	damage_ = variableManager->GetValue<float>(name,"damage");
 	maxRotateY2Player_ = variableManager->GetValue<float>(name,"maxRotateY2Player");
 }
@@ -87,7 +81,6 @@ void WorkIdleAction::Debug(){
 void WorkTackleAttackAction::Debug(){
 	WorkEnemyAction::Debug();
 	ImGui::SliderFloat("lockOnTime",&lockOnTime_,0.0f,motionTimes_.startupTime_);
-	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::DragFloat("speed",&speed_,0.1f,0.0f);
 }
@@ -96,7 +89,6 @@ void WorkTackleAttackAction::Save(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Save(name);
 	variableManager->SetValue(name,"lockOnTime",lockOnTime_);
-	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"speed",speed_);
 }
@@ -105,7 +97,6 @@ void WorkTackleAttackAction::Load(const std::string& name){
 	VariableManager* variableManager = VariableManager::GetInstance();
 	WorkEnemyAction::Load(name);
 	lockOnTime_ 	   = variableManager->GetValue<float>(name,"lockOnTime");
-	collisionRadius_   = variableManager->GetValue<float>(name,"collisionRadius");
 	damage_            = variableManager->GetValue<float>(name,"damage");
 	speed_             = variableManager->GetValue<float>(name,"speed");
 }
@@ -206,7 +197,6 @@ void WorkWeakAttack2Action::Debug(){
 	WorkEnemyAction::Debug();
 	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
 	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
-	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }
@@ -216,7 +206,6 @@ void WorkWeakAttack2Action::Save(const std::string& name){
 	WorkEnemyAction::Save(name);
 	variableManager->SetValue(name,"collisionStartTime",collisionStartTime_);
 	variableManager->SetValue(name,"collisionTime",collisionTime_);
-	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"maxRotateY2Player",maxRotateY2Player_);
 }
@@ -227,7 +216,6 @@ void WorkWeakAttack2Action::Load(const std::string& name){
 
 	collisionStartTime_ = variableManager->GetValue<float>(name,"collisionStartTime");
 	collisionTime_ 		= variableManager->GetValue<float>(name,"collisionTime");
-	collisionRadius_ 	= variableManager->GetValue<float>(name,"collisionRadius");
 	damage_ 			= variableManager->GetValue<float>(name,"damage");
 	maxRotateY2Player_ 	= variableManager->GetValue<float>(name,"maxRotateY2Player");
 }

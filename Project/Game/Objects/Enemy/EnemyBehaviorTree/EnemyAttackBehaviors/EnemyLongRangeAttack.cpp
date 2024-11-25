@@ -152,7 +152,7 @@ namespace EnemyBehaviorTree{
 			animationName += "half_";
 		}
 
-		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "1",worker->motionTimes_.startupTime_,false));
+		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "1",worker->motionTimes_.startupTime_,true));
 		addChild(std::make_unique<LongRangeAttackStartup>(
 			enemy,
 			worker->motionTimes_.startupTime_,
@@ -160,10 +160,10 @@ namespace EnemyBehaviorTree{
 		));
 
 		// Long Short を activeTime で 選ぶ
-		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "2",worker->motionTimes_.activeTime_,false));
+		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "2",worker->motionTimes_.activeTime_,true));
 		addChild(std::make_unique<LongRangeAttackAction>(enemy,worker));
 
-		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "3",worker->motionTimes_.endLagTime_,false));
+		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "3",worker->motionTimes_.endLagTime_,true));
 		addChild(std::make_unique<LongRangeAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 	}
 }

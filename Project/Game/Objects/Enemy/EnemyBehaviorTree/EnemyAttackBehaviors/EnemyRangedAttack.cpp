@@ -66,15 +66,15 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackEndLag::tick(){
 EnemyBehaviorTree::RangedAttack::RangedAttack(Enemy* enemy,WorkRangedAttackAction* worker)
 	:EnemyBehaviorTree::Sequence(enemy){
 
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_1",worker->motionTimes_.startupTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_1",worker->motionTimes_.startupTime_,true));
 	addChild(std::make_unique<RangedAttackStartup>(
 		enemy,
 		worker
 	));
 
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_2",worker->motionTimes_.activeTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.activeTime_));
 
-	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_3",worker->motionTimes_.endLagTime_,false));
+	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_3",worker->motionTimes_.endLagTime_,true));
 	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.endLagTime_));
 }

@@ -1,0 +1,11 @@
+{
+    "jump_longrange_strog_idle_1": {
+        "ComboSize": 4,
+        "HpState": 2,
+        "Index_0": "longJump_1",
+        "Index_1": "hightSpeed_longrange_1",
+        "Index_2": "long_strong_1",
+        "Index_3": "shortIdle_2",
+        "RangeType": 1
+    }
+}

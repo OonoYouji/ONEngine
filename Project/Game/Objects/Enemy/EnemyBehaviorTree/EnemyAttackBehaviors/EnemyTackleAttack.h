@@ -14,8 +14,7 @@ namespace EnemyBehaviorTree{
 	public:
 		TackleAttackStartup(Enemy* enemy,
 							float startupTime,
-							float lockOnTime,
-							float collisionRadius);
+							float lockOnTime);
 		~TackleAttackStartup()override{}
 
 		Status tick()override;
@@ -23,8 +22,6 @@ namespace EnemyBehaviorTree{
 		float startupTime_;
 		float currentTime_;
 		float lockOnTime_;
-
-		float collisionRadius_;
 	};
 
 	class TackleAttackAction

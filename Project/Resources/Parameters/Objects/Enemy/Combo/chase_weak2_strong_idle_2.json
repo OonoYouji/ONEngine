@@ -1,0 +1,11 @@
+{
+    "chase_weak2_strong_idle_2": {
+        "ComboSize": 4,
+        "HpState": 2,
+        "Index_0": "fast_chase_1",
+        "Index_1": "short_weak2_1",
+        "Index_2": "short_strong_1",
+        "Index_3": "shortIdle_2",
+        "RangeType": 2
+    }
+}

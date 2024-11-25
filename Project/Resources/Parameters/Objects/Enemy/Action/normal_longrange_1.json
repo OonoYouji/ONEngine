@@ -1,0 +1,14 @@
+{
+    "normal_longrange_1": {
+        "Type": 7,
+        "activeTime": 0.0,
+        "bulletFireInterval": 0.4000000059604645,
+        "bulletScale": 1.2000000476837158,
+        "bulletSpawnOffsetZ": 1.5,
+        "bulletSpeed": 21.299999237060547,
+        "damage": 0.0,
+        "endLagTime": 0.0,
+        "rotateMaxSpeed": 1.0,
+        "startupTime": 0.0
+    }
+}

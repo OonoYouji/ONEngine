@@ -2,7 +2,6 @@
     "weak2": {
         "Type": 2,
         "activeTime": 0.800000011920929,
-        "collisionRadius": 0.0,
         "collisionStartTime": 0.2460000067949295,
         "collisionTime": 0.2759999930858612,
         "damage": 0.0,

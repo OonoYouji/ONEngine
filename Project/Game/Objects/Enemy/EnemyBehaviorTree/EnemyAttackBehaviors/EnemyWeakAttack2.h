@@ -36,7 +36,11 @@ namespace EnemyBehaviorTree{
 	class WeakAttack2Action
 		:public EnemyBehaviorTree::Action{
 	public:
-		WeakAttack2Action(Enemy* enemy,float activeTime,float collisionStartTime,float collisionTime,float collisionRadius,float damage);
+		WeakAttack2Action(Enemy* enemy
+						  ,float activeTime,
+						  float collisionStartTime,
+						  float collisionTime,
+						  float damage);
 		~WeakAttack2Action()override{}
 
 		Status tick()override;
@@ -45,7 +49,6 @@ namespace EnemyBehaviorTree{
 		float currentTime_;
 		float collisionStartTime_;
 		float collisionTime_;
-		float collisionRadius_;
 
 		float damage_;
 	};
