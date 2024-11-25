@@ -1,9 +1,11 @@
 {
     "Player": {
+        "colliderRadius": 1.0,
         "endPosY": 1.0,
         "moveDistance": 10.0,
         "rotateLerpSensitivity": 0.4000000059604645,
         "speed": 18.0,
+        "stageRange": 50.0,
         "startPosY": 0.25,
         "weaponSpawnMaxTime": 0.5
     }
