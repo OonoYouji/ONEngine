@@ -27,7 +27,7 @@ public:
 
 	void OnCollisionEnter(BaseGameObject* const _collision) override;
 
-	void ApplyVariables();
+	void Save();
 private:
 	/// ===================================================
 	/// private : objects
@@ -47,7 +47,6 @@ private:
 #ifdef _DEBUG
 	ActionTypes currentActionType_;
 #endif // _DEBUG
-
 
 public:
 	void SetEnemy(Enemy* enemy);

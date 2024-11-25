@@ -1,0 +1,58 @@
+{
+    "EnemyAttackCollider": {
+        "CHASE_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "CHASE_Radius": 0.0,
+        "IDLE_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "IDLE_Radius": 0.0,
+        "JUMP_AWAY_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "JUMP_AWAY_Radius": 0.0,
+        "LONGRANGE_ATTACK_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "LONGRANGE_ATTACK_Radius": 0.0,
+        "RANGED_ATTACK_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "RANGED_ATTACK_Radius": 0.0,
+        "STRONG_ATTACK_Offset": [
+            0.0,
+            0.0,
+            5.0
+        ],
+        "STRONG_ATTACK_Radius": 3.0,
+        "TACKLE_ATTACK_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "TACKLE_ATTACK_Radius": 5.0,
+        "WEAK_ATTACK_2_Offset": [
+            0.0,
+            0.0,
+            1.0
+        ],
+        "WEAK_ATTACK_2_Radius": 7.0,
+        "WEAK_ATTACK_Offset": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "WEAK_ATTACK_Radius": 8.899999618530273
+    }
+}
