@@ -188,6 +188,8 @@
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -365,6 +367,8 @@
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyMoveBehaviors\EnemyJumpAway.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyBehaviorTree\EnemyIdleBehaviors\EnemyAwakening.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
