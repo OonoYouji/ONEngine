@@ -20,6 +20,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackStartup::tick(){
 		leftTime_ = 0.0f;
 		// 当たり判定を有効化
 		enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK);
+
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
@@ -36,6 +37,8 @@ EnemyBehaviorTree::WeakAttackAction::WeakAttackAction(Enemy* enemy,float activeT
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 	leftTime_ -= Time::DeltaTime();
+
+	enemy_->SetDamage(damage_);
 
 	if(leftTime_ <= 0.0f){
 		leftTime_ = 0.0f;

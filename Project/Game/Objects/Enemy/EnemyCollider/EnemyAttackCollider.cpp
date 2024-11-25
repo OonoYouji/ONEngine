@@ -88,7 +88,7 @@ void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 	if(_collision->GetTag() == "Player"){
 		Player* player = reinterpret_cast<Player*>(_collision);
 		{// hp を damage 分マイナス
-			// float attackedDamage = enemy_->GetDamage();
+			player->SetHp(player->GetCurrentHP() - enemy_->GetDamage());
 		}
 	}
 }

@@ -10,6 +10,7 @@
 
 /// component
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "Game/Objects/Player/Player.h"
 
 #include "imgui.h"
 
@@ -40,5 +41,12 @@ void IEnemyBullet::Update(){
 	// lifeTime が 0 になったら 死亡
 	if(lifeLeftTime_ <= 0.0f){
 		Destory();
+	}
+}
+
+void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
+	if(_collision->GetTag() == "Player"){
+		Player* player = reinterpret_cast<Player*>(_collision);
+		player->SetHp(player->GetCurrentHP() - damage_);
 	}
 }

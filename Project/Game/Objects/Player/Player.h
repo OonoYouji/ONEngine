@@ -8,7 +8,7 @@
 #include "CustomMath/MotionTimes.h"
 
 class IPlayerBehavior;
-class Player : public BaseGameObject {
+class Player : public BaseGameObject{
 public:
 
 	///===============================================
@@ -23,7 +23,7 @@ public:
 	/// <summary>
 	/// RootBehavior で使われる変数群
 	/// </summary>
-	struct WorkRootBehavior {
+	struct WorkRootBehavior{
 		float speed_;
 		float rotateLerpSensitivity_;
 	};
@@ -31,7 +31,7 @@ public:
 	/// <summary>
 	/// AvoidanceBehavior で使われる変数群
 	/// </summary>
-	struct WorkAvoidanceBehavior {
+	struct WorkAvoidanceBehavior{
 		MotionTimes motionTimes_;
 		float moveDistance_;
 		float jastAvoidanceTime_;
@@ -40,7 +40,7 @@ public:
 	/// <summary>
 	/// AvoidanceBehavior で使われる変数群
 	/// </summary>
-	struct WorkWeakAttackBehavior {
+	struct WorkWeakAttackBehavior{
 		MotionTimes motionTimes_;
 		float damageFactor_;
 	};
@@ -49,10 +49,10 @@ public:
 	/// <summary>
 	/// StrongAttackで使用する変数
 	/// </summary>
-	struct StrongAttackBehavior {
+	struct StrongAttackBehavior{
 		const std::string    name_ = "StrongAttackBehavior";
-		std::array<float, 3> damages_;        /// 各段階ごとのダメージ
-		std::array<float, 3> nextChargeTime_; /// 各段階ごとの遷移までの時間
+		std::array<float,3> damages_;        /// 各段階ごとのダメージ
+		std::array<float,3> nextChargeTime_; /// 各段階ごとの遷移までの時間
 		float                actionTime_;
 	};
 
@@ -78,7 +78,7 @@ public:
 
 	void ClampStage();
 
-	void PlayAudio(const std::string& _filePath, float _volume);
+	void PlayAudio(const std::string& _filePath,float _volume);
 
 private:
 
@@ -103,10 +103,10 @@ private:
 	bool isInvisible_ = false;
 
 	float colliderRadius_;
-	
-	float weaponSpawnTime_, weaponSpawnMaxTime_;
-	float startPosY_, endPosY_;
-	
+
+	float weaponSpawnTime_,weaponSpawnMaxTime_;
+	float startPosY_,endPosY_;
+
 
 	float stageRange_ = 50.0f;;
 
@@ -123,17 +123,17 @@ private:
 
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
-	std::array<WorkWeakAttackBehavior, 3> workWeakAttackBehavior_;
+	std::array<WorkWeakAttackBehavior,3> workWeakAttackBehavior_;
 	StrongAttackBehavior                  strongAttackBehavior_;
 
 	/// ---------------------------------------------------
 	/// other class 
 	/// ---------------------------------------------------
 
-	class TrackingCamera*       pTrackingCamera_ = nullptr;
-	class Enemy*                pEnemy_          = nullptr;
+	class TrackingCamera* pTrackingCamera_ = nullptr;
+	class Enemy* pEnemy_          = nullptr;
 	class PlayerAttackCollider* attackCollider_  = nullptr;
-	class EntityShadow*         entityShadow_    = nullptr;
+	class EntityShadow* entityShadow_    = nullptr;
 	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
 
 public:
@@ -144,46 +144,48 @@ public:
 
 	void TransitionBehavior(std::unique_ptr<IPlayerBehavior> next);
 
-	float GetCurrentHP() const { return currentHP_; }
-	float GetMaxHP()     const { return maxHP_; }
+	float GetCurrentHP() const{ return currentHP_; }
+	float GetMaxHP()     const{ return maxHP_; }
 
-	float GetDamage() const { return damage_; }
-	void SetDamage(float _damage) { damage_ = _damage; }
+	void SetHp(float hp){ currentHP_ = hp; }
 
-	void SetIsInvisible(bool invisible) { isInvisible_ = invisible; }
-	bool GetIsInvisible()const { return isInvisible_; }
+	float GetDamage() const{ return damage_; }
+	void SetDamage(float _damage){ damage_ = _damage; }
 
-	const WorkRootBehavior&       GetWorkRootBehavior()                    const { return workRootBehavior_; }
-	const WorkAvoidanceBehavior&  GetWorkAvoidanceBehavior()               const { return workAvoidanceBehavior_; }
-	const WorkWeakAttackBehavior& GetWorkWeakAttackBehavior(int32_t index) const { return workWeakAttackBehavior_[index]; }
-	const StrongAttackBehavior&   GetStrongAttackBehavior()                const { return strongAttackBehavior_; }
+	void SetIsInvisible(bool invisible){ isInvisible_ = invisible; }
+	bool GetIsInvisible()const{ return isInvisible_; }
 
-	int32_t GetWeakAttackComboMax() const { return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
-	
+	const WorkRootBehavior& GetWorkRootBehavior()                    const{ return workRootBehavior_; }
+	const WorkAvoidanceBehavior& GetWorkAvoidanceBehavior()               const{ return workAvoidanceBehavior_; }
+	const WorkWeakAttackBehavior& GetWorkWeakAttackBehavior(int32_t index) const{ return workWeakAttackBehavior_[index]; }
+	const StrongAttackBehavior& GetStrongAttackBehavior()                const{ return strongAttackBehavior_; }
+
+	int32_t GetWeakAttackComboMax() const{ return static_cast<int32_t>(workWeakAttackBehavior_.size() - 1); }
+
 
 	void SetEnemy(class Enemy* _enemy);
 	void SetTrackingCamera(class TrackingCamera* _trackingCamera);
 
-	class TrackingCamera* GetTrackingCamera() const { return pTrackingCamera_; }
-	class Enemy* GetEnemy() const { return pEnemy_; }
-	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
-	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const { return strongAttackChargeEffect_; }
-	
+	class TrackingCamera* GetTrackingCamera() const{ return pTrackingCamera_; }
+	class Enemy* GetEnemy() const{ return pEnemy_; }
+	class PlayerAttackCollider* GetAttackCollider() const{ return attackCollider_; }
+	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const{ return strongAttackChargeEffect_; }
+
 	void SetAnimationModel(const std::string& _filePath);
-	void SetAnimationModel(const std::string& _bodyModelFilePath, const std::string& _weaponModelFilePath);
+	void SetAnimationModel(const std::string& _bodyModelFilePath,const std::string& _weaponModelFilePath);
 	void SetAnimationTotalTime(float _totalTime);
 	void ResetAnimationTotal();
 
-	void SetAnimationFlags(int _flags, bool _isResetTime = true);
+	void SetAnimationFlags(int _flags,bool _isResetTime = true);
 
 	float GetAnimationDuration();
 
-	const Vec2& GetLastDirection() const { return lastDirection_; }
-	void SetLastDirection(const Vec2& _lastDirection) { lastDirection_ = _lastDirection; }
+	const Vec2& GetLastDirection() const{ return lastDirection_; }
+	void SetLastDirection(const Vec2& _lastDirection){ lastDirection_ = _lastDirection; }
 
 	void SetIsActiveWeapon(bool _isActive);
 
-	float GetColliderRadius() const { return colliderRadius_; }
+	float GetColliderRadius() const{ return colliderRadius_; }
 
 
 	void SetAttackMode(int _mode);

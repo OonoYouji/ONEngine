@@ -111,6 +111,7 @@ private:
 
 	float maxHp_;
 	float hp_;
+
 	// 各 アクションで セットするので 基本は 0
 	float currentDamage_ = 0.0f;
 	HpState currentHpState_;

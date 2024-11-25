@@ -88,6 +88,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 
 	// 下 の if文 を通っていないときは 攻撃判定がない 
 	enemy_->TerminateAttackCollider();
+	enemy_->SetDamage(0.0f);
+
 	/*
 	 collisionStartTime_ と collisionTime_ は
 	 0~1 で activeTime 全体から 線形補間された数字とする
@@ -96,6 +98,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	   <=
 	   (activeTime_ * collisionStartTime_) + (activeTime_ * collisionTime_)){
 		// 当たり判定が有効
+		enemy_->SetDamage(damage_);
 		enemy_->ActivateAttackCollider(ActionTypes::STRONG_ATTACK);
 	}
 

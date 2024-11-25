@@ -53,6 +53,7 @@ TackleAttackAction::TackleAttackAction(Enemy* enemy,
 EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 	currentTime_ += Time::DeltaTime();
 
+	enemy_->SetDamage(damage_);
 	// Enemy の向いてる方向に 進む
 	enemy_->SetPosition(enemy_->GetPosition() + Matrix4x4::Transform({0.0f,0.0f,speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y)));
 
@@ -74,7 +75,7 @@ EnemyBehaviorTree::TackleAttackEndLag::TackleAttackEndLag(Enemy* enemy,float end
 EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackEndLag::tick(){
 	leftTime_ -= Time::DeltaTime();
 
-	if(leftTime_){
+	if(leftTime_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;

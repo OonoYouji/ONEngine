@@ -112,6 +112,7 @@ namespace EnemyBehaviorTree{
 					{0.0f,0.0f,1.0f},
 					rotateY
 				);
+				newBullet->SetDamage(worker_->damage_);
 				newBullet->SetLifeTime(15.0f);
 				newBullet->SetScale({worker_->bulletScale_,worker_->bulletScale_,worker_->bulletScale_});
 				newBullet->SetPosition(enemy_->GetPosition() + (enemyDir * worker_->bulletSpawnOffsetZ_));

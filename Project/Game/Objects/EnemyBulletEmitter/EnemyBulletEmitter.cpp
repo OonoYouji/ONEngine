@@ -40,6 +40,7 @@ void EnemyBulletEmitter::Update(){
 															   enemy_->GetPosition(),
 															   player_->GetPosition());
 		newBullet->Initialize();
+		newBullet->SetDamage(worker_.damage_);
 		newBullet->SetLifeTime(worker_.lifeTime_);
 		newBullet->SetScale({worker_.bulletScale_,worker_.bulletScale_,worker_.bulletScale_});
 

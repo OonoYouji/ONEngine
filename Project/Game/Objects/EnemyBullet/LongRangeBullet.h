@@ -13,6 +13,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+
 private:
 	// XZ 方面の velocity
 	Vector2 velocityXZ_;

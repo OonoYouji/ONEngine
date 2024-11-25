@@ -94,7 +94,10 @@ namespace EnemyBehaviorTree{
 			enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK_2);
 		}
 
+		enemy_->SetDamage(damage_);
+
 		if(currentTime_ >= activeTime_){
+			enemy_->SetDamage(0.0f);
 			currentTime_ = 0.0f;
 			// 当たり判定を無効に
 			enemy_->TerminateAttackCollider();

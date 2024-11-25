@@ -27,6 +27,7 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision);
 protected:
 	/// ===================================================
 	/// protected : objects
@@ -37,7 +38,10 @@ protected:
 	BulletType type_;
 
 	float lifeLeftTime_;
+
+	float damage_;
 public:
 	float GetLifeLeftTime()const{ return lifeLeftTime_; }
 	void SetLifeTime(float lifeTime){ lifeLeftTime_ = lifeTime; }
+	void SetDamage(float damage){ damage_ = damage; }
 };
