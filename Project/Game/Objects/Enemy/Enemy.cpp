@@ -68,6 +68,12 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
+	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Walk");
+	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
+	weaponAnimationRenderer_->isActive = false;
+	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
+	subWeaponAnimationRenderer_->isActive = false;
+
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
 	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
 	torsoTransform_->SetName(std::format("Transform##{:p}",reinterpret_cast<void*>(torsoTransform_)));
