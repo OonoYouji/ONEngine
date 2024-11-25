@@ -75,7 +75,7 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		float damage = pPlayer_->GetDamage();
 		uint32_t score = static_cast<uint32_t>(damage);
 
-		if(score < 20) {
+		if(score < 500) {
 			damageRender = new DamageNumRender(
 				score,
 				Vec3::kOne * 0.1f,

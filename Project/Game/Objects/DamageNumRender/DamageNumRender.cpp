@@ -42,7 +42,7 @@ void DamageNumRender::Initialize() {
 	pTransform_->scale = Vec3::kOne * 3.0f;
 	pTransform_->rotateOrder = QUATERNION;
 
-	numberRenderer_ = AddComponent<NumberRenderer>(3);
+	numberRenderer_ = AddComponent<NumberRenderer>(5);
 	numberRenderer_->SetScore(score_);
 
 	defaultQuaternionY_ = Quaternion::MakeFromAxis(Vec3::kUp, std::numbers::pi_v<float>);
