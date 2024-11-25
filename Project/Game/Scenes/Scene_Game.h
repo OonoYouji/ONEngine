@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base/BaseScene.h"
+#include "SceneManager/BaseScene.h"
 
 enum GAME_SCENE_LAYER {
 	GAME_SCENE_LAYER_DEFAULT, /// デフォルトのレイヤー

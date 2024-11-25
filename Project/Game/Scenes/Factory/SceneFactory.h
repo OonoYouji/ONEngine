@@ -5,16 +5,11 @@
 #include <unordered_map>
 
 /// base class
-#include "../Base/AbstructSceneFactory.h"
+#include "SceneManager/AbstructSceneFactory.h"
 
 
 class SceneFactory : public AbstructSceneFactory {
 public:
-	SceneFactory();
+	SceneFactory(const std::string& _startupScene);
 	~SceneFactory();
-
-	BaseScene* CreateScene(const std::string& _sceneName) override;
-
-private:
-	//std::unordered_map<std::string, >;
 };

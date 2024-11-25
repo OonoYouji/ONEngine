@@ -23,7 +23,7 @@
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
-#include "Scenes/Base/BaseScene.h"
+#include "BaseScene.h"
 #include "Scenes/Scene_Game.h"
 #include "Scenes/Scene_Title.h"
 #include "Scenes/Scene_Result.h"
@@ -43,11 +43,14 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 /// 初期化処理
 /// ===================================================
-void SceneManager::Initialize(SCENE_ID sceneId) {
-	currentId_ = sceneId;
-	nextSceneId_ = currentId_;
+void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
+
+	sceneFactory_.reset(_sceneFactory);
+
+	currentSceneName_ = sceneFactory_->GetStartupSceneName();
+	nextSceneName_ = currentSceneName_;
 	pGameObjectManager_ = GameObjectManager::GetInstance();
-	Load(currentId_);
+	Load(currentSceneName_);
 
 	pCollisionManager_ = CollisionManager::GetInstance();
 
@@ -70,9 +73,7 @@ void SceneManager::Initialize(SCENE_ID sceneId) {
 /// ===================================================
 void SceneManager::Finalize() {
 	finalRenderTex_.reset();
-	for(auto& scene : scenes_) {
-		scene.reset();
-	}
+	scenes_.clear();
 }
 
 
@@ -80,11 +81,11 @@ void SceneManager::Finalize() {
 /// 更新処理
 /// ===================================================
 void SceneManager::Update() {
-	if(currentId_ != nextSceneId_) {
-		Load(nextSceneId_);
+	if(currentSceneName_ != nextSceneName_) {
+		Load(nextSceneName_);
 	}
 
-	scenes_[currentId_]->Update();
+	scenes_[currentSceneName_]->Update();
 
 	/// 更新1
 	pGameObjectManager_->Update();
@@ -92,8 +93,6 @@ void SceneManager::Update() {
 	pCollisionManager_->Update();
 	/// 更新2
 	pGameObjectManager_->LastUpdate();
-
-
 
 }
 
@@ -123,7 +122,7 @@ void SceneManager::ImGuiDebug() {
 		return;
 	}
 
-	const char* labels[4]{ "Title", "Game", "Result", "Clear"};
+	/*const char* labels[4]{ "Title", "Game", "Result", "Clear"};
 	int currentItem = static_cast<int>(nextSceneId_);
 	if(ImGui::Combo("next scene", &currentItem, labels, 4)) {
 		nextSceneId_ = SCENE_ID(currentItem);
@@ -135,13 +134,13 @@ void SceneManager::ImGuiDebug() {
 			layer->ImGuiDebug();
 		}
 		ImGui::TreePop();
-	}
+	}*/
 
 	ImGui::End();
 }
 
-void SceneManager::SetNextScene(SCENE_ID nextId) {
-	nextSceneId_ = nextId;
+void SceneManager::SetNextScene(const std::string& _nextSceneName) {
+	nextSceneName_ = _nextSceneName;
 }
 
 void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLayers) {
@@ -149,48 +148,31 @@ void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLay
 }
 
 DirectionalLight* SceneManager::GetDirectionalLight() {
-	return scenes_[currentId_]->directionalLight_;
+	return scenes_[currentSceneName_]->directionalLight_;
 }
 
-void SceneManager::Load(SCENE_ID id) {
-
+void SceneManager::Load(const std::string& _sceneName) {
 	/// 必要な変数のリセットをかける
 	SceneLayer::ResetInstanceCount();
 
-	currentId_ = id;
-	auto SceneCreate = [&]() -> BaseScene* {
-		switch(id) {
-		case TITLE:
-			return new Scene_Title();
-		case GAME:
-			return new Scene_Game();
-		case RESULT:
-			return new Scene_Result();
-		case CLEAR:
-			return new Scene_Clear();
-		}
-		return nullptr;
-	};
-
 	/// idに沿ったシーンの作成
-	if(!scenes_[currentId_]) {
-		scenes_[currentId_].reset(SceneCreate());
+	if(!scenes_[currentSceneName_]) {
+		scenes_[currentSceneName_].reset(sceneFactory_->CreateScene(_sceneName));
 	} else {
-		scenes_[currentId_]->CreateObject();
+		scenes_[currentSceneName_]->CreateObject();
 	}
-	
+
 
 	GameObjectManager::DestoryAll();
 	CollisionManager::GetInstance()->Reset();
 
-	scenes_[currentId_]->Initialize();
+	scenes_[currentSceneName_]->Initialize();
 
-	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
-	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentId_]->directionalLight_);
-	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentId_]->directionalLight_);
-	SetSceneLayers(scenes_[currentId_]->GetSceneLayers());
+	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
+	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
+	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
+	SetSceneLayers(scenes_[currentSceneName_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;
 }
-
 

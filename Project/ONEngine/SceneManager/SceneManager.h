@@ -10,19 +10,11 @@
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
 
+#include "AbstructSceneFactory.h"
+
 class BaseScene;
 
 using namespace Microsoft::WRL;
-
-
-enum SCENE_ID {
-	TITLE,	/// タイトルシーン
-	GAME,	/// ゲームシーン
-	RESULT,	/// リザルトシーン
-	CLEAR,  /// ゲームクリア
-	SCENE_ID_COUNT
-};
-
 
 /// ===================================================
 /// シーンの管理クラス
@@ -37,7 +29,7 @@ public:
 	/// </summary>
 	static SceneManager* GetInstance();
 
-	void Initialize(SCENE_ID sceneId);
+	void Initialize(AbstructSceneFactory* _sceneFactory);
 	void Finalize();
 
 
@@ -48,32 +40,28 @@ public:
 	void ImGuiDebug();
 
 
-	void SetNextScene(SCENE_ID nextId);
+	void SetNextScene(const std::string& _nextSceneName);
 
-	SCENE_ID GetCurrentScene() const { return currentId_; }
-
+	const std::string& GetCurrentScene() const { return currentSceneName_; }
 
 	void SetSceneLayers(const std::vector<class SceneLayer*>& sceneLayers);
 
-	SceneLayer* GetSceneLayer(uint32_t layerId) const {
-		return sceneLayers_.at(layerId);
-	}
+	SceneLayer* GetSceneLayer(uint32_t layerId) const { return sceneLayers_.at(layerId); }
 
-	RenderTexture* GetFinalRenderTex() const {
-		return finalRenderTex_.get();
-	}
+	RenderTexture* GetFinalRenderTex() const { return finalRenderTex_.get(); }
 
 	class DirectionalLight* GetDirectionalLight();
 
 private:
 
-	void Load(SCENE_ID id);
+	void Load(const std::string& _sceneName);
 
 private:
 
-	std::array<std::unique_ptr<BaseScene>, SCENE_ID_COUNT> scenes_;
-	SCENE_ID nextSceneId_;
-	SCENE_ID currentId_;
+	std::unique_ptr<AbstructSceneFactory> sceneFactory_;
+	std::unordered_map<std::string, std::unique_ptr<BaseScene>> scenes_;
+	std::string nextSceneName_;
+	std::string currentSceneName_;
 
 	class GameObjectManager* pGameObjectManager_ = nullptr;
 	class CollisionManager*  pCollisionManager_ = nullptr;
