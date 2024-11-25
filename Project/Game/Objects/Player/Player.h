@@ -75,6 +75,8 @@ public:
 
 	void SpawnWeapon();
 
+	void ClampStage();
+
 	void PlayAudio(const std::string& _filePath, float _volume);
 
 private:
@@ -103,7 +105,9 @@ private:
 	
 	float weaponSpawnTime_, weaponSpawnMaxTime_;
 	float startPosY_, endPosY_;
+	
 
+	float stageRange_ = 50.0f;;
 
 	/// ---------------------------------------------------
 	/// 

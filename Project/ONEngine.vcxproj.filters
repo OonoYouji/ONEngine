@@ -189,6 +189,8 @@
     <ClCompile Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.cpp" />
     <ClCompile Include="ONEngine\GameObjectManager\BaseGameObject.cpp" />
     <ClCompile Include="ONEngine\GameObjectManager\GameObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
+    <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -367,6 +369,8 @@
     <ClInclude Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.h" />
     <ClInclude Include="ONEngine\GameObjectManager\BaseGameObject.h" />
     <ClInclude Include="ONEngine\GameObjectManager\GameObjectManager.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
+    <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

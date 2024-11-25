@@ -15,8 +15,6 @@ namespace EnemyBehaviorTree{
 		TackleAttackStartup(Enemy* enemy,
 							float startupTime,
 							float lockOnTime,
-							float maxRotateSpeed,
-							float rotateSensitivity,
 							float collisionRadius);
 		~TackleAttackStartup()override{}
 
@@ -25,9 +23,6 @@ namespace EnemyBehaviorTree{
 		float startupTime_;
 		float currentTime_;
 		float lockOnTime_;
-
-		float maxRotateSpeed_;
-		float rotateSensitivity_;
 
 		float collisionRadius_;
 	};

@@ -90,8 +90,6 @@ void WorkTackleAttackAction::Debug(){
 	ImGui::DragFloat("collisionRadius",&collisionRadius_,0.1f,0.0f);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::DragFloat("speed",&speed_,0.1f,0.0f);
-	ImGui::SliderFloat("maxRotateSpeed",&maxRotateSpeed_,0.0f,std::numbers::pi_v<float> *2.0f);
-	ImGui::SliderFloat("rotateSensitivity_",&rotateSensitivity_,0.0f,1.0f);
 }
 
 void WorkTackleAttackAction::Save(const std::string& name){
@@ -101,8 +99,6 @@ void WorkTackleAttackAction::Save(const std::string& name){
 	variableManager->SetValue(name,"collisionRadius",collisionRadius_);
 	variableManager->SetValue(name,"damage",damage_);
 	variableManager->SetValue(name,"speed",speed_);
-	variableManager->SetValue(name,"maxRotateSpeed",maxRotateSpeed_);
-	variableManager->SetValue(name,"rotateSensitivity",rotateSensitivity_);
 }
 
 void WorkTackleAttackAction::Load(const std::string& name){
@@ -112,8 +108,6 @@ void WorkTackleAttackAction::Load(const std::string& name){
 	collisionRadius_   = variableManager->GetValue<float>(name,"collisionRadius");
 	damage_            = variableManager->GetValue<float>(name,"damage");
 	speed_             = variableManager->GetValue<float>(name,"speed");
-	maxRotateSpeed_    = variableManager->GetValue<float>(name,"maxRotateSpeed");
-	rotateSensitivity_ = variableManager->GetValue<float>(name,"rotateSensitivity");
 }
 
 void WorkChaseAction::Debug(){

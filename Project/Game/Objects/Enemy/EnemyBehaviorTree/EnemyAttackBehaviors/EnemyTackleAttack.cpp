@@ -13,15 +13,11 @@
 EnemyBehaviorTree::TackleAttackStartup::TackleAttackStartup(Enemy* enemy,
 															float startupTime,
 															float lockOnTime,
-															float maxRotateSpeed,
-															float rotateSensitivity,
 															float collisionRadius)
 	:EnemyBehaviorTree::Action(enemy){
 	startupTime_ 	   = startupTime;
 	currentTime_       = 0.0f;
 	lockOnTime_ 	   = lockOnTime;
-	maxRotateSpeed_    = maxRotateSpeed;
-	rotateSensitivity_ = rotateSensitivity;
 	collisionRadius_   = collisionRadius;
 }
 
@@ -31,9 +27,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
 	// 時間内なら ロックオン
 	if(currentTime_ <= lockOnTime_){
 		Vector3 diffE2P = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
-		float newRotateY = LerpShortAngle(enemy_->GetRotate().y,atan2(diffE2P.x,diffE2P.y),rotateSensitivity_);
-		newRotateY = (std::min)(newRotateY,maxRotateSpeed_);
-		enemy_->SetRotateY(newRotateY);
+		enemy_->SetRotateY(std::lerp(enemy_->GetRotate().y,atan2(diffE2P.x,diffE2P.z),0.1f));
 	}
 
 	if(currentTime_ >= startupTime_){
@@ -96,8 +90,6 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	addChild(std::make_unique<TackleAttackStartup>(enemy,
 			 worker->motionTimes_.startupTime_,
 			 worker->lockOnTime_,
-			 worker->maxRotateSpeed_,
-			 worker->rotateSensitivity_,
 			 worker->collisionRadius_)
 	);
 
