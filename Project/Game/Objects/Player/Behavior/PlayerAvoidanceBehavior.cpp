@@ -2,6 +2,7 @@
 
 #include "PlayerRootBehavior.h"
 
+#include "VariableManager/VariableManager.h"
 #include "FrameManager/Time.h"
 #include "Math/Vector3.h"
 #include "Math/Easing.h"
@@ -20,6 +21,8 @@ PlayerAvoidanceBehavior::PlayerAvoidanceBehavior(Player* _host):
 	workRootBehavior_(host_->GetWorkRootBehavior()) {
 
 	currentTime_ = 0.0f;
+
+	jastAvoidanceTime_ = host_->GetWorkAvoidanceBehavior().jastAvoidanceTime_;
 
 	currentUpdate_ = [this](){StartupUpdate(); };
 }
@@ -89,6 +92,7 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 
 void PlayerAvoidanceBehavior::Avoidance(){
 	float t = currentTime_ / workInBehavior_.motionTimes_.activeTime_;
+	jastAvoidanceTime_ -= Time::DeltaTime();
 
 	host_->SetPosition(Vector3::Lerp(
 		beforePos_, afterPos_,

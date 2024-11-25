@@ -251,13 +251,13 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "weaponSpawnMaxTime", weaponSpawnMaxTime_);
 	vm->AddValue(groupName, "stageRange", stageRange_);
 
-
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
-		vm->AddValue(name, "moveDistance", workAvoidanceBehavior_.moveDistance_);
-		vm->AddValue(name, "startupTime",  workAvoidanceBehavior_.motionTimes_.startupTime_);
-		vm->AddValue(name, "activeTime",   workAvoidanceBehavior_.motionTimes_.activeTime_);
-		vm->AddValue(name, "endLagTime",   workAvoidanceBehavior_.motionTimes_.endLagTime_);
+		vm->AddValue(name, "moveDistance",      workAvoidanceBehavior_.moveDistance_);
+		vm->AddValue(name, "startupTime",       workAvoidanceBehavior_.motionTimes_.startupTime_);
+		vm->AddValue(name, "activeTime",        workAvoidanceBehavior_.motionTimes_.activeTime_);
+		vm->AddValue(name, "endLagTime",        workAvoidanceBehavior_.motionTimes_.endLagTime_);
+		vm->AddValue(name, "jastAvoidanceTime", workAvoidanceBehavior_.jastAvoidanceTime_);
 	}
 
 	for(size_t i = 0; i < 3; ++i){	/// workWeakAttackBehavior_ 値のio
