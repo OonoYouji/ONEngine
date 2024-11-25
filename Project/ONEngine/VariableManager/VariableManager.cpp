@@ -178,7 +178,7 @@ void VariableManager::SaveSpecificGroupsToJson(const std::string& _filePath, con
 		return;
 	}
 
-	MessageBoxA(nullptr, "Preservation succeeded!", "VariableManager", MB_OK | MB_ICONINFORMATION);
+	//MessageBoxA(nullptr, "Preservation succeeded!", "VariableManager", MB_OK | MB_ICONINFORMATION);
 
 	///- ファイルにjson文字列を書き込む(インデント幅4)
 	ofs << std::setw(4) << root << std::endl;
