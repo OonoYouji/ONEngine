@@ -188,6 +188,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Background\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Background\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />

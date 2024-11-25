@@ -17,6 +17,7 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
 
 /// this behavior
 #include "Behavior/IPlayerBehavior.h"
@@ -31,6 +32,7 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Effect/PlayerStrongAttackChargeEffect.h"
 
 Player::Player() {
 	CreateTag(this);
@@ -40,10 +42,12 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	//sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
+	sphereCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 
 	bodyAnimationRenderer_   = AddComponent<AnimationRenderer>("Player_Wait");
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
+
+	audioSource_ = AddComponent<AudioSource>();
 
 	SetAnimationFlags(0);
 
@@ -116,6 +120,11 @@ void Player::Initialize() {
 	entityShadow_ = new EntityShadow();
 	entityShadow_->Initialize();
 	entityShadow_->SetParent(pTransform_);
+
+	strongAttackChargeEffect_ = new PlayerStrongAttackChargeEffect();
+	strongAttackChargeEffect_->Initialize();
+	strongAttackChargeEffect_->SetParent(pTransform_);
+	strongAttackChargeEffect_->SetAnimationActive(false);
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -269,6 +278,12 @@ void Player::AddVariables() {
 		vm->AddValue(groupName, "damage0", strongAttackBehavior_.damages_[0]);
 		vm->AddValue(groupName, "damage1", strongAttackBehavior_.damages_[1]);
 		vm->AddValue(groupName, "damage2", strongAttackBehavior_.damages_[2]);
+		
+		vm->AddValue(groupName, "nextChargeTime0", strongAttackBehavior_.nextChargeTime_[0]);
+		vm->AddValue(groupName, "nextChargeTime1", strongAttackBehavior_.nextChargeTime_[1]);
+		vm->AddValue(groupName, "nextChargeTime2", strongAttackBehavior_.nextChargeTime_[2]);
+
+		vm->AddValue(groupName, "actionTime", strongAttackBehavior_.actionTime_);
 	}
 
 
@@ -333,6 +348,14 @@ void Player::ApplyVariables() {
 		strongAttackBehavior_.damages_[0] = vm->GetValue<float>(name, "damage0");
 		strongAttackBehavior_.damages_[1] = vm->GetValue<float>(name, "damage1");
 		strongAttackBehavior_.damages_[2] = vm->GetValue<float>(name, "damage2");
+
+		
+		strongAttackBehavior_.nextChargeTime_[0] = vm->GetValue<float>(name, "nextChargeTime0");
+		strongAttackBehavior_.nextChargeTime_[1] = vm->GetValue<float>(name, "nextChargeTime1");
+		strongAttackBehavior_.nextChargeTime_[2] = vm->GetValue<float>(name, "nextChargeTime2");
+
+		strongAttackBehavior_.actionTime_ = vm->GetValue<float>(name, "actionTime");
+
 	}
 
 
@@ -385,6 +408,10 @@ void Player::ClampStage() {
 		pTransform_->position += direction * (len - stageRange_);
 	}
 
+}
+
+void Player::PlayAudio(const std::string& _filePath, float _volume) {
+	audioSource_->PlayOneShot("PlayerSE/" + _filePath, _volume);
 }
 
 

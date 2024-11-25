@@ -35,13 +35,6 @@ void TrackingCamera::Initialize() {
 	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
 	pTransform_->rotateOrder = QUATERNION;
 	
-	/*
-		TranckingCamera   ---| 
-			|			     | 
-			|			     | <--- GameCamera
-			v			     | 
-		offset transform  ---| 
-	*/
 
 	offsetTransform_.SetParent(pTransform_);
 	pGameCamera_->SetParent(&offsetTransform_);
@@ -64,6 +57,11 @@ void TrackingCamera::Initialize() {
 	/// 値を外部保存の管理クラスに値を追加する
 	AddVariables();
 	ApplyVariables();
+
+	LockOnToPlayer();
+
+	isLockOn_ = true;
+
 }
 
 void TrackingCamera::Update() {

@@ -10,6 +10,8 @@
 #include "Input/Input.h"
 
 #include "../Player.h"
+#include "../Effect/PlayerStrongAttackChargeEffect.h"
+
 #include "PlayerRootBehavior.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerStrongAttack.h"
@@ -27,11 +29,17 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	}
 
 
+	effect_ = host_->GetPlayerStrongAttackChargeEffect();
+	effect_->SetAnimationActive(false);
+
 	/// チャージ段階が1以上になったらダメージ量を設定する
 	if(currentPhase_ != NONE) {
 
 		const Player::StrongAttackBehavior& strongAttack = host_->GetStrongAttackBehavior();
 		host_->SetDamage(strongAttack.damages_[currentPhase_ - 1]);
+
+		effect_->SetAnimationActive(true);
+		effect_->SetTimeRate(0.5f + (0.25f * currentPhase_));
 	}
 
 	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
@@ -49,19 +57,10 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	host_->SetAnimationFlags(0);
 
 
-	{	/// 値のio
-
+	if(currentPhase_ != THIRD) {	/// 値のio
 		VariableManager* vm = VariableManager::GetInstance();
 		const std::string groupName = "StrongAttackBehavior";
-
-		vm->AddValue(groupName, "startLagTime", startLagTime_);
-		vm->AddValue(groupName, "endLagTime", endLagTime_);
-
-		//vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
-
-		startLagTime_ = vm->GetValue<float>(groupName, "startLagTime");
-		endLagTime_   = vm->GetValue<float>(groupName, "endLagTime");
-
+		nextTime_ = vm->GetValue<float>(groupName, "nextChargeTime" + std::to_string(currentPhase_));
 	}
 
 
@@ -96,30 +95,9 @@ void PlayerStrongAttackCharge::Update() {
 	}
 
 
-	//ChargePhaseData& nextData = chargePhaseDataArray_[std::min(currentPhase_ + 1, static_cast<int>(RELEASE - 1))];
-	//if(currentTime_ >= nextData.time) {
-
-	//	/// 次のphaseに行く
-	//	++currentPhase_;
-	//	currentPhase_ = std::clamp(currentPhase_, 0, static_cast<int>(RELEASE - 1));
-
-
-	//	/// アニメーションを設定する
-	//	host_->SetAnimationModel(
-	//		"KariPlayer_StrongAttack" + std::to_string(currentPhase_)
-	//	);
-
-
-	//	if(currentPhase_ == THIRD) {
-	//		isChargeMax_ = true;
-	//	}
-	//}
-
-
-
-
 	if(isFinish_) {
 		std::unique_ptr<IPlayerBehavior> nextBehavior;
+		effect_->SetAnimationActive(false);
 		switch(nextBehavior_) {
 		case ROOT:
 			nextBehavior.reset(new PlayerRootBehavior(host_));

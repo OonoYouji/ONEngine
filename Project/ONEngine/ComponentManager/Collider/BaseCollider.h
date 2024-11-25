@@ -49,5 +49,5 @@ protected:
 
 	int colliderType_;
 
-	bool isDrawCollider_ = false;
+	bool isDrawCollider_ = true;
 };
