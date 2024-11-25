@@ -250,6 +250,7 @@ void Player::AddVariables() {
 	vm->AddValue(groupName, "endPosY",   endPosY_);
 	vm->AddValue(groupName, "weaponSpawnMaxTime", weaponSpawnMaxTime_);
 	vm->AddValue(groupName, "stageRange", stageRange_);
+	vm->AddValue(groupName, "colliderRadius", colliderRadius_);
 
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
@@ -321,6 +322,7 @@ void Player::ApplyVariables() {
 	endPosY_            = vm->GetValue<float>(groupName, "endPosY");
 	weaponSpawnMaxTime_ = vm->GetValue<float>(groupName, "weaponSpawnMaxTime");
 	stageRange_         = vm->GetValue<float>(groupName, "stageRange");
+	colliderRadius_ = vm->GetValue<float>(groupName, "colliderRadius");
 
 	{	/// avoidance behavior
 		const std::string& name = "WorkAvoidanceBehavior";
@@ -365,6 +367,9 @@ void Player::ApplyVariables() {
 
 
 void Player::PushBack() {
+	sphereCollider_->SetRadius(colliderRadius_);
+
+
 	float radius = pEnemy_->GetColliderRadius() + colliderRadius_;
 	Vec3 diff    = pEnemy_->GetPosition() - GetPosition();
 
