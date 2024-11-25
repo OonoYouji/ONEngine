@@ -21,6 +21,7 @@ private:
 
 private:
 	float currentTime_;
+	float jastAvoidanceTime_;
 
 	Vector3 beforePos_;
 	Vector3 afterPos_;
