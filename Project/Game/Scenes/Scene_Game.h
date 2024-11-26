@@ -23,4 +23,5 @@ public:
 	void Update()     override;
 
 private:
+	class GameManagerObject* gameManager_ = nullptr;
 };

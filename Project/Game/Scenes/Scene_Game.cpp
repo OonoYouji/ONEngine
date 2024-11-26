@@ -20,6 +20,7 @@
 #include "Objects/EnemyNameRenderer/EnemyNameRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
+#include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
 
 /// ===================================================
@@ -28,9 +29,9 @@
 void Scene_Game::Initialize(){
 
 
-	/// モデル確認用のオブジェクト
+	/*/// モデル確認用のオブジェクト
 	(new ModelPreviewObject("Effect3"))->Initialize();
-	(new ModelPreviewObject("Effect3"))->Initialize();
+	(new ModelPreviewObject("Effect3"))->Initialize();*/
 
 
 	/// object creata
@@ -52,6 +53,9 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
+	gameManager_ = new GameManagerObject();
+
+
 	/// 初期化する
 	player->SetTrackingCamera(trackingCamera);
 	player->SetEnemy(enemy);
@@ -66,9 +70,13 @@ void Scene_Game::Initialize(){
 	enemyAttackCollider->Initialize();
 
 	bbObjectManager->Initialize();
+	gameManager_->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 
+
+	gameManager_->SetPlayer(player);
+	gameManager_->SetEnemy(enemy);
 
 	directionalLight_->SetDirection({0.0,-1.0f,0.0f});
 
@@ -93,6 +101,12 @@ void Scene_Game::Initialize(){
 void Scene_Game::Update(){
 
 	if(Input::TriggerKey(KeyCode::Escape)){
-		SceneManager::GetInstance()->SetNextScene(TITLE);
+		SceneManager::GetInstance()->SetNextScene(RESULT);
 	}
+
+
+	if(gameManager_->GetFlag("isGameClear").Trigger()) {
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+	}
+
 }
