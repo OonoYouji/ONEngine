@@ -87,5 +87,5 @@ EnemyBehaviorTree::RangedAttack::RangedAttack(Enemy* enemy,WorkRangedAttackActio
 	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.activeTime_));
 
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_3",worker->motionTimes_.endLagTime_,true));
-	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.endLagTime_));
+	addChild(std::make_unique<RangedAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }

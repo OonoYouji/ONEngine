@@ -1,6 +1,6 @@
 {
     "ranged_idle_1": {
-        "ComboSize": 0,
+        "ComboSize": 2,
         "HpState": 2,
         "Index_0": "rangedAttack_1",
         "Index_1": "normal_longIdle_1",

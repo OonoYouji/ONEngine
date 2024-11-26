@@ -93,11 +93,21 @@ public:
 private:
 	Player* player_ = nullptr;
 
+	class EntityShadow* entityShadow_ = nullptr;
+
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
 	AnimationRenderer* bodyAnimationRenderer_ 	   = nullptr;
 	AnimationRenderer* weaponAnimationRenderer_    = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
 	AnimationRenderer* effectAnimationRenderer_    = nullptr;
+
+	// 武器がスポーンする とき の uv 座標
+	float spawnWeaponUvEndPosY_;
+	float spawnWeaponUvStartPosY_;
+
+	float spawnSubWeaponUvEndPosY_;
+	float spawnSubWeaponUvStartPosY_;
+
 
 	/// <summary>
 	/// 本体のコライダー これに当たるとダメージを受ける
@@ -107,16 +117,13 @@ private:
 	/// 攻撃を与えるCollider
 	/// </summary>
 	EnemyAttackCollider* attackCollider_;
+	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
 	float maxHp_;
 	float hp_;
 
-	// 武器がスポーンする とき の uv 座標
-	float spawnWeaponUvEndPosY_;
-	float spawnWeaponUvStartPosY_;
-
-	float spawnSubWeaponUvEndPosY_;
-	float spawnSubWeaponUvStartPosY_;
+	bool outOfStage_;
+	bool preOutOfStage_;
 
 	// 各 アクションで セットするので 基本は 0
 	float currentDamage_ = 0.0f;
@@ -155,14 +162,6 @@ private:
 
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
-
-	/// TODO: 整理たのむ
-	/// 当たり判定の範囲
-	float colliderRadius_ = 4.0f; /// 仮の適当な値
-
-	class EntityShadow* entityShadow_ = nullptr;
-	Transform* torsoTransform_ = nullptr;
-
 public:
 	void SetAnimationRender(const std::string& filePath);
 
@@ -177,6 +176,8 @@ public:
 							const std::string& weaponFilePath,
 							const std::string& subWeapon
 							,const std::string& effect);
+
+	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }
 
 	void SpawnWeapon(float t);
 	void SpawnSubWeapon(float t);
