@@ -433,7 +433,7 @@ void TrackingCamera::LockOnToPlayer() {
 	/// カメラの行列更新
 	pTransform_->Update();
 	pGameCamera_->UpdateMatrix();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
+	cameraToPlayerVector_ = Mat4::Transform(cameraHeightOffset_, pPlayer_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
 
 	if(!isTargetLost_) {
 		currentDirection_ = cameraToPlayerVector_.Normalize();
