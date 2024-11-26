@@ -12,12 +12,14 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Action{
 	public:
 		LongRangeAttackStartup(Enemy* enemy,
+							   WorkLongRangeAttackAction* worker,
 							   float startupTime,
 							   float maxRotateYSpeed);
 		~LongRangeAttackStartup()override{}
 
 		Status tick()override;
 	private:
+		WorkLongRangeAttackAction* worker_;
 		float leftTime_;
 
 		float maxRotateYSpeed_;

@@ -12,7 +12,9 @@ public:
 					   float percentOfLockOnPlayer,
 					   const Vector3& enemyPos,
 					   const Vector3& playerPos);
-	~RangedAttackBullet(){};
+	~RangedAttackBullet(){
+		pTransform_ = nullptr;
+	};
 
 	void Initialize()override;
 	void Update()override;

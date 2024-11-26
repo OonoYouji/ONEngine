@@ -1,13 +1,14 @@
 #pragma once
 
-#include "Game/Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
-#include "GameObjectManager/BaseGameObject.h"
+#include <functional>
 
+#include "Game/Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
+#include "Game/Objects/EnemyBullet/IEnemyBullet.h"
+#include "GameObjectManager/BaseGameObject.h"
 class Enemy;
 class Player;
 
-//TODO class 削除 RangedAttackAction と統合する
-
+class MeshInstancingRenderer;
 /// <summary>
 /// Bullet を random で 生成する必要がある時に使う
 /// </summary>
@@ -19,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyBulletEmitter(Player* player,Enemy* enemy,float emitterActiveTime,WorkRangedAttackAction* workRangedAttackAction_);
+	EnemyBulletEmitter(Player* player,Enemy* enemy,float emitterActiveTime,WorkEnemyAction* workRangedAttackAction_);
 	~EnemyBulletEmitter();
 
 	void Initialize() override;
@@ -30,7 +31,13 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-	WorkRangedAttackAction worker_;
+	WorkEnemyAction* worker_;
+	ActionTypes type_;
+
+	MeshInstancingRenderer* meshInstancingRenderer_;
+
+	std::vector<IEnemyBullet*> drawBullets_;
+	std::vector<Transform*> drawTransform_;
 
 	Player* player_;
 	Enemy* enemy_;
@@ -39,4 +46,8 @@ private:
 	float leftActiveTime_;
 
 	float leftCoolTime_;
+
+	std::function<void()>spawnUpdate_;
+	void SpawnRangedBullet();
+	void SpawnLongRangeBullet();
 };
