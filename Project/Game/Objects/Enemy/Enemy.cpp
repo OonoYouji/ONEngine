@@ -151,6 +151,7 @@ void Enemy::Debug(){
 	if(ImGui::Checkbox("actionIsActive",&actionIsActive_)){
 		DecideNextNode();
 	}
+	ImGui::Text("%s", dointCombo_.c_str());
 
 	///===============================================
 	/// AttackActions
@@ -861,6 +862,7 @@ void Enemy::DecideNextNode(){
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
+	dointCombo_ = comboName;
 }
 
 const ComboAttacks& Enemy::GetComboAttacks(int32_t hpCombo,const std::string& comboName) const{
