@@ -6,10 +6,35 @@
 #include "Scenes/Manager/SceneManager.h"
 
 /// objects
+#include "Objects/Camera/GameCamera.h"
 #include "Objects/SceneTransition/SceneTransition.h"
+
+#include "Objects/TitleObjects/TitleMenuSelector/TitleMenuSelector.h"
 
 
 void Scene_Result::Initialize() {
+
+
+	/// 仮オブジェクト
+	(new TitleMenuSelector)->Initialize();
+
+	
+	
+	
+	/// add layer ---------------------------------------------------------------------
+	
+	GameCamera* uiCamera = new GameCamera("UICamera");
+	uiCamera->Initialize();
+	uiCamera->SetProjectionType(ORTHOGRAPHIC);
+
+	AddLayer("UILayer", uiCamera);
+
+
+
+	GameCamera* transitionCamera = new GameCamera("TransitionCamera");
+	transitionCamera->Initialize();
+	transitionCamera->SetProjectionType(ORTHOGRAPHIC);
+	AddLayer("TransitionLayer", transitionCamera);
 
 }
 
