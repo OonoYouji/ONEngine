@@ -23,6 +23,8 @@ namespace EnemyBehaviorTree{
 		strtupTime_ = startupTime;
 		leftTime_ = 0.0f;
 		maxRotateYSpeed_ = maxRotateYSpeed;
+
+		worker_ = worker;
 	}
 
 	Status LongRangeAttackStartup::tick(){
@@ -61,6 +63,12 @@ namespace EnemyBehaviorTree{
 		enemy_->SpawnSubWeapon(t);
 
 		if(leftTime_ >= strtupTime_){
+			new EnemyBulletEmitter(
+				enemy_->GetPlayer(),
+				enemy_,
+				worker_->motionTimes_.activeTime_,
+				worker_
+			);
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;

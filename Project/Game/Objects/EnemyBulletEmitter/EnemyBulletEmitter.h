@@ -20,7 +20,10 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyBulletEmitter(Player* player,Enemy* enemy,float emitterActiveTime,WorkEnemyAction* workRangedAttackAction_);
+	EnemyBulletEmitter(Player* player,
+					   Enemy* enemy,
+					   float emitterActiveTime,
+					   WorkEnemyAction* workRangedAttackAction_);
 	~EnemyBulletEmitter();
 
 	void Initialize() override;

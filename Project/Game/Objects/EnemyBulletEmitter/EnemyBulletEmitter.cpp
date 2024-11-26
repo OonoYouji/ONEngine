@@ -24,7 +24,7 @@ EnemyBulletEmitter::EnemyBulletEmitter(Player* player,
 	} else if(worker->type_ == ActionTypes::LONGRANGE_ATTACK){
 		spawnUpdate_ = [this](){SpawnLongRangeBullet(); };
 	} else{
-		assert(0);
+		assert(0); // 玉を使わないクラスで 生成されたら エラー
 	}
 
 	activeTime_ 	= emitterActiveTime;
