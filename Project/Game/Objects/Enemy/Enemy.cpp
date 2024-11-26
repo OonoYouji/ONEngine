@@ -28,8 +28,8 @@
 #include "VariableManager/VariableManager.h"
 
 /// objects
-#include "Objects/EntityShadow/EntityShadow.h"
 #include "Objects/Player/Player.h"
+#include "Objects/EntityShadow/EntityShadow.h"
 
 #ifdef _DEBUG
 /// externals
@@ -579,7 +579,7 @@ void Enemy::LoadCombos(){
 	variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
 	int32_t combosSize = variableManager->GetValue<int>("Enemy_Combos","CombosSize");
 
-	for(size_t i = 0; i <= combosSize; i++){
+	for(size_t i = 0; i < combosSize; i++){
 		std::string comboName = variableManager->GetValue<std::string>("Enemy_Combos","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,comboName);
 		int hpState = variableManager->GetValue<int>(comboName,"HpState");
@@ -594,7 +594,7 @@ void Enemy::LoadAllAction(){
 
 	variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,"Enemy_Actions");
 	int32_t actionSize =  variableManager->GetValue<int>("Enemy_Actions","ActionSize");
-	for(size_t i = 0; i <= actionSize; ++i){
+	for(size_t i = 0; i < actionSize; ++i){
 		std::string actionName = variableManager->GetValue<std::string>("Enemy_Actions","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,actionName);
 		workEnemyActionVariables_[actionName] = std::move(CreateWorker(static_cast<ActionTypes>(variableManager->GetValue<int>(actionName,"Type"))));
