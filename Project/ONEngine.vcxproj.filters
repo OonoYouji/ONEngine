@@ -194,6 +194,9 @@
     <ClCompile Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.cpp" />
     <ClCompile Include="Game\Objects\GameManagerObject\GameManagerObject.cpp" />
     <ClCompile Include="Game\Objects\Player\Effect\PlayerEffect.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\UIManager.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\ButtonAUI\ButtonAUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\ButtonBUI\ButtonBUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -378,6 +381,9 @@
     <ClInclude Include="Game\Objects\GameManagerObject\GameManagerObject.h" />
     <ClInclude Include="Game\CustomMath\Flag.h" />
     <ClInclude Include="Game\Objects\Player\Effect\PlayerEffect.h" />
+    <ClInclude Include="Game\Objects\UIManager\UIManager.h" />
+    <ClInclude Include="Game\Objects\UIManager\ButtonAUI\ButtonAUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\ButtonBUI\ButtonBUI.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
