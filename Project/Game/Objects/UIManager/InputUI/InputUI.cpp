@@ -4,6 +4,8 @@
 
 #include "ButtonAUI/ButtonAUI.h"
 #include "ButtonBUI/ButtonBUI.h"
+#include "ButtonLTUI/ButtonLTUI.h"
+#include "ButtonRTUI/ButtonRTUI.h"
 
 InputUI::InputUI() {
 	CreateTag(this);
@@ -15,6 +17,8 @@ void InputUI::Initialize() {
 
 	uis_.push_back(new ButtonAUI());
 	uis_.push_back(new ButtonBUI());
+	uis_.push_back(new ButtonRTUI());
+	uis_.push_back(new ButtonLTUI());
 
 
 	for(auto& ui : uis_) {
