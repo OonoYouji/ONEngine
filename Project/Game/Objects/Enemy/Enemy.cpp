@@ -73,14 +73,12 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
 	effectAnimationRenderer_= AddComponent<AnimationRenderer>("Boss_Walk");
 
+	// あにめーしょん を ロード
 	LoadAllAnimation();
+
 	weaponAnimationRenderer_->isActive 	  = false;
 	subWeaponAnimationRenderer_->isActive = false;
 	effectAnimationRenderer_->isActive 	  = false;
-
-	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
-	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
-	torsoTransform_->SetName(std::format("Transform##{:p}",reinterpret_cast<void*>(torsoTransform_)));
 
 	entityShadow_ = new EntityShadow();
 	entityShadow_->Initialize();
@@ -90,7 +88,6 @@ void Enemy::Initialize(){
 	LoadStatus();
 	LoadAllAction();
 	LoadCombos();
-
 
 	hp_ = maxHp_;
 }
@@ -119,8 +116,6 @@ void Enemy::Update(){
 
 void Enemy::Debug(){
 #ifdef _DEBUG
-	torsoTransform_->Debug();
-
 	if(!actionIsActive_){
 		currentHpState_ = currentEditHpState_;
 	}
@@ -597,6 +592,13 @@ void Enemy::LoadStatus(){
 		thresholdByHpState_[hpHight]  = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpHight]);
 		thresholdByHpState_[hpNormal] = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpNormal]);
 		thresholdByHpState_[hpLow] 	  = variableManager->GetValue<float>("Enemy_Status",wordByHpState[hpLow]);
+	}
+
+	{
+		spawnSubWeaponUvStartPosY_ = variableManager->GetValue<float>("Enemy_Status","spawnSubWeaponUvStartPosY");
+		spawnWeaponUvEndPosY_ 	   = variableManager->GetValue<float>("Enemy_Status","spawnWeaponUvEndPosY");
+		spawnWeaponUvStartPosY_    = variableManager->GetValue<float>("Enemy_Status","spawnWeaponUvStartPosY");
+		spawnSubWeaponUvEndPosY_   = variableManager->GetValue<float>("Enemy_Status","spawnSubWeaponUvEndPosY");
 	}
 }
 
