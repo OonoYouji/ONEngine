@@ -18,11 +18,33 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
 
 	Vector3 diffP2E = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
 
-	Vector3 newRotate = Vector3::Slerp(Vector3::Normalize(velocity_),Vector3::Normalize(diffP2E),0.084f);
-	enemy_->SetRotateY(atan2(newRotate.x,newRotate.z));
-	velocity_ = Matrix4x4::Transform({0.0f,0.0f,workInBehavior_->speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y));
-	enemy_->SetPosition(enemy_->GetPosition() + velocity_);
+	// 正規化の安全性チェック
+	Vector3 normalizedVelocity = velocity_.Len() > 0.0f ? Vector3::Normalize(velocity_) : Vector3();
+	Vector3 normalizedDiffP2E = diffP2E.Len() > 0.0f ? Vector3::Normalize(diffP2E) : Vector3();
 
+	// Slerp 結果の検証
+	Vector3 newRotate = Vector3::Slerp(normalizedVelocity,normalizedDiffP2E,0.14f);
+	if(std::isfinite(newRotate.x) && std::isfinite(newRotate.z)){
+		enemy_->SetRotateY(atan2(newRotate.x,newRotate.z));
+	}
+
+	// 回転行列と速度計算の安全性チェック
+	float speed = workInBehavior_->speed_ * Time::DeltaTime();
+	if(std::isfinite(speed)){
+		velocity_ = Matrix4x4::Transform({0.0f,0.0f,speed},
+										 Matrix4x4::MakeRotateY(enemy_->GetRotate().y));
+	}
+
+	// 位置の更新
+	if(std::isfinite(velocity_.x) && std::isfinite(velocity_.y) && std::isfinite(velocity_.z)){
+		enemy_->SetPosition(enemy_->GetPosition() + velocity_);
+	}
+
+	if(isnan(enemy_->GetPosition().x) || isnan(enemy_->GetRotate().y)){
+		enemy_->SetPosition({0.0f,0.0f,0.0f});
+	}
+
+	// 終了条件の判定
 	if(workInBehavior_->distanceToStopChasing_ > diffP2E.Len()){
 		return EnemyBehaviorTree::Status::SUCCESS;
 	} else if(currentTime_ >= workInBehavior_->motionTimes_.activeTime_){
