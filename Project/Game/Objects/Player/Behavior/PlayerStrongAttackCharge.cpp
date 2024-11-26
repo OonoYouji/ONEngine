@@ -109,21 +109,9 @@ void PlayerStrongAttackCharge::Update() {
 
 
 
+
 	{	// Rotate Update
-		Vec2 direction, lastDir;
-
-		direction = {
-			static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
-			static_cast<float>(Input::PressKey(KeyCode::W)) - static_cast<float>(Input::PressKey(KeyCode::S))
-		};
-		direction += Input::GetLeftStick();
-		direction = direction.Normalize();
-
-
-		if(direction.x != 0 || direction.y != 0) {
-			lastDir = direction;
-			host_->SetLastDirection(lastDir);
-		}
+		Vec2 lastDir = host_->GetLastDirection();
 		Vector3 rotate = host_->GetRotate();
 
 		/// 回転のスピードはここで調整

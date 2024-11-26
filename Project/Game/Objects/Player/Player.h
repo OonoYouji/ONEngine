@@ -115,6 +115,7 @@ private:
 	/// 
 	/// ---------------------------------------------------
 
+	Vec2 direction_;
 	Vec2 lastDirection_; /// 最後に向いている方向
 
 
@@ -183,6 +184,8 @@ public:
 
 	const Vec2& GetLastDirection() const{ return lastDirection_; }
 	void SetLastDirection(const Vec2& _lastDirection){ lastDirection_ = _lastDirection; }
+
+	const Vec2& GetDirection() const { return direction_; }
 
 	void SetIsActiveWeapon(bool _isActive);
 

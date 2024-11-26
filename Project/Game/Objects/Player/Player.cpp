@@ -115,8 +115,33 @@ void Player::Initialize() {
 void Player::Update() {
 	ApplyVariables();
 
-	// ダメージを初期化
-	//damage_ = 0.0f;
+
+	direction_ = {
+		static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
+		static_cast<float>(Input::PressKey(KeyCode::W)) - static_cast<float>(Input::PressKey(KeyCode::S))
+	};
+	direction_ += Input::GetLeftStick();
+
+	direction_ = direction_.Normalize();
+
+	auto GetYawFromQuaternion = [](const Quaternion& q) {
+		return std::atan2(
+			2.0f * (q.y * q.w + q.x * q.z),
+			1.0f - 2.0f * (q.x * q.x + q.y * q.y)
+		);
+	};
+
+	{	/// 方向をカメラに合わせる
+		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(GetTrackingCamera()->GetQuaternion()));
+		Vec3 dir = Mat4::TransformNormal({ direction_.x, 0.0f, direction_.y }, matCameraRotateY);
+		direction_.x = dir.x;
+		direction_.y = dir.z;
+
+		if(direction_.x != 0 || direction_.y != 0) {
+			lastDirection_ = direction_;
+		}
+	}
+
 
 	currentBehavior_->Update();
 	SpawnWeapon();
