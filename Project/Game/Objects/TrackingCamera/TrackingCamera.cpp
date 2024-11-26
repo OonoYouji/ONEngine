@@ -198,16 +198,16 @@ void TrackingCamera::LockOnToEnemy() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * -leftStick.y,
-			1.5f * leftStick.x,
+			Time::DeltaTime() * 1.5f * -leftStick.y,
+			Time::DeltaTime() * 1.5f * leftStick.x,
 			0.0f
 		};
 	} else {
 
 		/// カメラの回転 mouse
 		cameraRotateValue += {
-			1.5f * Input::MouseVelocity().Normalize().y,
-			1.5f * Input::MouseVelocity().Normalize().x,
+			Time::DeltaTime() * 1.5f * Input::MouseVelocity().Normalize().y,
+			Time::DeltaTime() * 1.5f * Input::MouseVelocity().Normalize().x,
 			0.0f
 		};
 	}
