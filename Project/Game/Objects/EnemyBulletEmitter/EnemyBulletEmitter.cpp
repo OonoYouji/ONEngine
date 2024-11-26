@@ -21,10 +21,8 @@ EnemyBulletEmitter::EnemyBulletEmitter(Player* player,
 
 	if(worker->type_ == ActionTypes::RANGED_ATTACK){
 		spawnUpdate_ = [this](){SpawnRangedBullet(); };
-		spawnUpdate_();
 	} else if(worker->type_ == ActionTypes::LONGRANGE_ATTACK){
 		spawnUpdate_ = [this](){SpawnLongRangeBullet(); };
-		spawnUpdate_();
 	} else{
 		assert(0);
 	}
@@ -57,7 +55,7 @@ void EnemyBulletEmitter::Update(){
 		}
 		bullet->Destory();
 		return true;
-	});
+				  });
 
 	meshInstancingRenderer_->ResetTransformArray();
 	drawTransform_.clear();
@@ -66,8 +64,6 @@ void EnemyBulletEmitter::Update(){
 	}
 
 	meshInstancingRenderer_->SetTransformArray(drawTransform_);
-
-	meshInstancingRenderer_->Update();
 
 	if(leftActiveTime_ <= 0.0f && drawBullets_.empty()){
 		drawBullets_.clear();
@@ -112,13 +108,15 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 			rotateY
 		);
 		newBullet->SetDamage(longWorker->damage_);
-		newBullet->SetLifeTime(15.0f);
+		newBullet->SetLifeTime(10.0f);
 		newBullet->SetScale({longWorker->bulletScale_,
 							longWorker->bulletScale_,
 							longWorker->bulletScale_});
 
 		newBullet->SetPosition(enemy_->GetPosition() + (enemyDir * longWorker->bulletSpawnOffsetZ_));
 		newBullet->SetVelocityXZ(Vector2(enemyDir.x,enemyDir.z).Normalize() * longWorker->bulletSpeed_);
+
+		newBullet->UpdateMatrix();
 
 		drawBullets_.push_back(newBullet);
 

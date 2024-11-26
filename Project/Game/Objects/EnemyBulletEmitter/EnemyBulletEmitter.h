@@ -32,7 +32,6 @@ private:
 	/// private : objects
 	/// ===================================================
 	WorkEnemyAction* worker_;
-	ActionTypes type_;
 
 	MeshInstancingRenderer* meshInstancingRenderer_;
 
