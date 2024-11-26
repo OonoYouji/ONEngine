@@ -75,6 +75,7 @@ void PlayerRootBehavior::Update() {
 
 		} else {
 			host_->SetAnimationModel("Player_Wait");
+			host_->SetAnimationTotalTime(host_->GetAnimationDuration());
 			host_->SetAnimationFlags(0, false);
 
 		}
