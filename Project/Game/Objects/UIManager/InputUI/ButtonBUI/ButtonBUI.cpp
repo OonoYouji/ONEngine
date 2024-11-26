@@ -12,7 +12,7 @@ ButtonBUI::~ButtonBUI() {}
 void ButtonBUI::Initialize() {
 
 	renderer_ = AddComponent<SpriteRenderer>();
-	renderer_->SetTexture("buttonB.png");
+	renderer_->SetTexture("WeakAttackText.png");
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());

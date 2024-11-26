@@ -15,7 +15,7 @@ ButtonAUI::~ButtonAUI() {}
 void ButtonAUI::Initialize() {
 
 	renderer_ = AddComponent<SpriteRenderer>();
-	renderer_->SetTexture("buttonA.png");
+	renderer_->SetTexture("StrongAttackText.png");
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
