@@ -114,6 +114,7 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 		Enemy* enemy = static_cast<Enemy*>(_collision);
 		enemy->SetHP(enemy->GetHP() - damage);
 
+		/// enemyの被弾エフェクトを出す
 
 	}
 }

@@ -30,7 +30,13 @@ void PlayerEffect::SetTotalTime(float _totalTime) {
 void PlayerEffect::OneShotAnimation(const std::string& _filePath, float _totalTime) {
 	animationRenderer_->ChangeAnimation(_filePath);
 	animationRenderer_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
-	animationRenderer_->SetTotalTime(_totalTime, animationRenderer_->GetCurrentNodeAnimationKey());
+	
+	if(_totalTime == NULL) {
+		animationRenderer_->SetTimeRate(1.0f);
+	} else {
+		animationRenderer_->SetTotalTime(_totalTime, animationRenderer_->GetCurrentNodeAnimationKey());
+	}
+	
 	animationRenderer_->Restart();
 }
 
