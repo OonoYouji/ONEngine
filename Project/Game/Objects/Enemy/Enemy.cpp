@@ -579,7 +579,7 @@ void Enemy::LoadCombos(){
 	variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
 	int32_t combosSize = variableManager->GetValue<int>("Enemy_Combos","CombosSize");
 
-	for(size_t i = 0; i <= combosSize; i++){
+	for(size_t i = 0; i < combosSize; i++){
 		std::string comboName = variableManager->GetValue<std::string>("Enemy_Combos","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyComboDirectory,comboName);
 		int hpState = variableManager->GetValue<int>(comboName,"HpState");
