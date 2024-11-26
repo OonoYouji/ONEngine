@@ -84,6 +84,8 @@ public:
 	void LoadAllAction();
 	void LoadCombo(const std::string& comboName,int32_t size,int32_t hpState);
 
+	void LoadAllAnimation();
+
 	std::unique_ptr<EnemyBehaviorTree::Sequence> CreateAction(const std::string& actionName);
 	std::unique_ptr<WorkEnemyAction> CreateWorker(ActionTypes type);
 
@@ -95,6 +97,8 @@ private:
 	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
 	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
+
+	std::unordered_map<std::string,AnimationRenderer*> animations_;
 
 	/// <summary>
 	/// 本体のコライダー これに当たるとダメージを受ける

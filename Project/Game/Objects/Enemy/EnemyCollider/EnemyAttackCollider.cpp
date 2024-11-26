@@ -33,27 +33,26 @@ void EnemyAttackCollider::Initialize(){
 		VariableManager* vm = VariableManager::GetInstance();
 		const std::string& groupName = GetTag();
 
-		/// 値の追加
-		for(size_t i = 0; i < offsetByActionTypes_.size(); i++){
-			vm->AddValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset",offsetByActionTypes_[i]);
-			vm->AddValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius",offsetByActionTypes_[i]);
-		}
-
-		/// 読み込み
+		// 読み込み
 		vm->LoadSpecificGroupsToJson(
-			"./Resources/Parameters/Objects",groupName
+			enemyJsonDirectory,groupName
 		);
 
-		ApplyVariables();
+		for(size_t i = 0; i < offsetByActionTypes_.size(); i++){
+			offsetByActionTypes_[i] = vm->GetValue<Vector3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset");
+			radiusByActionTypes_[i] = vm->GetValue<float>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius");
+		}
 	}
 }
 
-void EnemyAttackCollider::Update(){
-	ApplyVariables();
-}
+void EnemyAttackCollider::Update(){}
 
 void EnemyAttackCollider::Debug(){
 #ifdef _DEBUG
+	if(ImGui::Button("Save")){
+		Save();
+	}
+
 	// ActionType を選択する Combo
 	if(ImGui::BeginCombo("Action Type",actionTypeWord[currentActionType_].c_str())){
 		for(const auto& [type,name] : actionTypeWord){
@@ -94,14 +93,16 @@ void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 	}
 }
 
-void EnemyAttackCollider::ApplyVariables(){
+void EnemyAttackCollider::Save(){
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
-	/// 値の追加
+
 	for(size_t i = 0; i < offsetByActionTypes_.size(); i++){
-		offsetByActionTypes_[i] = vm->GetValue<Vec3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset");
-		offsetByActionTypes_[i] = vm->GetValue<Vec3>(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius");
+		vm->SetValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Offset",offsetByActionTypes_[i]);
+		vm->SetValue(groupName,actionTypeWord[static_cast<ActionTypes>(i)] + "_Radius",radiusByActionTypes_[i]);
 	}
+
+	vm->SaveSpecificGroupsToJson(enemyJsonDirectory,groupName);
 }
 
 void EnemyAttackCollider::SetEnemy(Enemy* enemy){
@@ -111,6 +112,7 @@ void EnemyAttackCollider::SetEnemy(Enemy* enemy){
 void EnemyAttackCollider::Activate(ActionTypes type){
 	sphereCollider_->isActive = true;
 	currentUsingType_ = static_cast<int32_t>(type);
+
 	SetPosition(offsetByActionTypes_[currentUsingType_]);
 
 	sphereCollider_->SetRadius(radiusByActionTypes_[currentUsingType_]);

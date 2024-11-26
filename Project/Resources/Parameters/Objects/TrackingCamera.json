@@ -2,7 +2,7 @@
     "TrackingCamera": {
         "cameraHeightOffset": [
             0.0,
-            4.199999809265137,
+            0.10000000149011612,
             0.0
         ],
         "cameraMoveSpeedVector": [
@@ -15,14 +15,14 @@
             0.13296662271022797,
             -0.9911205768585205
         ],
-        "cameraOffsetLenght": 30.0,
+        "cameraOffsetLenght": 40.0,
         "lenScaleFactorMax": 4.400000095367432,
-        "lenScaleFactorMin": 3.200000047683716,
-        "lockOnLenghtScaleFactor": 6.699999809265137,
-        "missTheTargetLenght": 60.099998474121094,
+        "lenScaleFactorMin": 2.299999952316284,
+        "lockOnLenghtScaleFactor": 22.600000381469727,
+        "missTheTargetLenght": 114.9000015258789,
         "offset position": [
             0.0,
-            8.800000190734863,
+            17.0,
             -22.399999618530273
         ],
         "quaternionLerpSpeed": 7.300000190734863,

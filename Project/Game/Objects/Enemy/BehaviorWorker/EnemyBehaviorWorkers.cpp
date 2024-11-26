@@ -8,6 +8,12 @@
 #include "MyFileSystem/MyFileSystem.h"
 #include "VariableManager/VariableManager.h"
 
+float WorkStrongAttackAction::collisionTime_      = 0;
+float WorkStrongAttackAction::collisionStartTime_ = 0;
+
+float WorkWeakAttack2Action::collisionTime_      = 0;
+float WorkWeakAttack2Action::collisionStartTime_ = 0;
+
 void WorkEnemyAction::Debug(){
 	ImGui::DragFloat("setupTime",&motionTimes_.startupTime_,0.1f,0.0f);
 	ImGui::DragFloat("activeTime",&motionTimes_.activeTime_,0.1f,0.0f);
@@ -49,8 +55,8 @@ void WorkWeakAttackAction::Load(const std::string& name){
 
 void WorkStrongAttackAction::Debug(){
 	WorkEnemyAction::Debug();
-	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
-	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
+	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,1.0f);
+	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,1.0f - collisionStartTime_);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }
@@ -195,8 +201,8 @@ void WorkLongRangeAttackAction::Load(const std::string& name){
 
 void WorkWeakAttack2Action::Debug(){
 	WorkEnemyAction::Debug();
-	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,this->motionTimes_.activeTime_);
-	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,this->motionTimes_.activeTime_ - collisionStartTime_);
+	ImGui::SliderFloat("collisionStartTime",&collisionStartTime_,0.0f,1.0f);
+	ImGui::SliderFloat("collisionTime",&collisionTime_,0.0f,1.0f - collisionStartTime_);
 	ImGui::DragFloat("damage",&damage_,0.1f,0.0f);
 	ImGui::SliderFloat("maxRotateY2Player",&maxRotateY2Player_,0.0f,std::numbers::pi_v<float> *2.0f);
 }

@@ -110,8 +110,6 @@ class WorkWeakAttack2Action
 	:public WorkEnemyAction{
 public:
 	WorkWeakAttack2Action():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
-		collisionTime_      = 0;
-		collisionStartTime_ = 0;
 		damage_             = 0;
 		maxRotateY2Player_  = 0;
 	}
@@ -122,8 +120,10 @@ public:
 	void Save(const std::string& name)override;
 	void Load(const std::string& name)override;
 
-	float collisionTime_;
-	float collisionStartTime_;
+	// 線形補間された数字 T
+	// アニメーションがループされるわけじゃないので t で管理すれば すべて似たような結果になる
+	static float collisionTime_;
+	static float collisionStartTime_;
 	//与えるダメージ
 	float damage_;
 
@@ -135,8 +135,6 @@ class WorkStrongAttackAction
 	:public WorkEnemyAction{
 public:
 	WorkStrongAttackAction():WorkEnemyAction(ActionTypes::WEAK_ATTACK){
-		collisionTime_      = 0;
-		collisionStartTime_ = 0;
 		damage_             = 0;
 		maxRotateY2Player_  = 0;
 	}
@@ -147,8 +145,8 @@ public:
 	void Save(const std::string& name)override;
 	void Load(const std::string& name)override;
 
-	float collisionTime_;
-	float collisionStartTime_;
+	static float collisionTime_;
+	static float collisionStartTime_;
 	//与えるダメージ
 	float damage_;
 

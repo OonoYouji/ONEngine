@@ -281,7 +281,7 @@ void TrackingCamera::LockOnToEnemy() {
 	Vec3 offsetPos = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
-	if(playerToEnemyVector_.Len() < 15.0f) {
+	if(playerToEnemyVector_.Len() < 10.0f) {
 		offsetPos = Mat4::Transform(
 			Vec3::Lerp(offsetPos, cameraOffsetDirection_, 0.5f),
 			Mat4::MakeRotate(cameraTargetRotate_ + cameraOffsetRotate_)

@@ -62,16 +62,17 @@ Enemy::Enemy(Player* player,EnemyAttackCollider* collider):BaseGameObject(),play
 Enemy::~Enemy(){}
 
 void Enemy::Initialize(){
-	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
-	weaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
-	weaponAnimationRenderer_->isActive = false;
-	subWeaponAnimationRenderer_ =  AddComponent<AnimationRenderer>("Boss_Wait");
-	subWeaponAnimationRenderer_->isActive = false;
-
+	
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
 	//DecideNextNode();
+
+	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Walk");
+	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
+	weaponAnimationRenderer_->isActive = false;
+	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
+	subWeaponAnimationRenderer_->isActive = false;
 
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
 	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
@@ -96,7 +97,7 @@ void Enemy::Update(){
 		if(status == EnemyBehaviorTree::Status::SUCCESS){
 			if(actionIsActive_){
 				DecideNextNode();
-			}else{
+			} else{
 				rootNode_ = nullptr;
 			}
 
@@ -607,6 +608,64 @@ void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState)
 	for(int32_t i = 0; i < size; i++){
 		editComboVariables_[hpState][comboName].comboAttacks_.push_back({variableManager->GetValue<std::string>(comboName,"Index_" + std::to_string(i)),i});
 	}
+}
+
+void Enemy::LoadAllAnimation(){
+	animations_["Boss_Wait"] = AddComponent<AnimationRenderer>("Boss_Wait");
+	animations_["Boss_Awakening"] = AddComponent<AnimationRenderer>("Boss_Awakening");
+
+	animations_["Boss_Jump1"] = AddComponent<AnimationRenderer>("Boss_Jump1");
+	animations_["Boss_Jump2"] = AddComponent<AnimationRenderer>("Boss_Jump2");
+	animations_["Boss_Jump3"] = AddComponent<AnimationRenderer>("Boss_Jump3");
+
+	animations_["Boss_LongRangeAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_B");
+	animations_["Boss_LongRangeAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_B");
+	animations_["Boss_LongRangeAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_B");
+
+	animations_["Boss_LongRangeAttack_1_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_W1");
+	animations_["Boss_LongRangeAttack_2_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_W1");
+	animations_["Boss_LongRangeAttack_3_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_W1");
+
+	animations_["Boss_LongRangeAttack_1_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_W2");
+	animations_["Boss_LongRangeAttack_2_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_W2");
+	animations_["Boss_LongRangeAttack_3_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_W2");
+
+	animations_["Boss_LongRangeAttack_half_1_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_B");
+	animations_["Boss_LongRangeAttack_half_2_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_B");
+	animations_["Boss_LongRangeAttack_half_3_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_B");
+
+	animations_["Boss_LongRangeAttack_half_1_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W1");
+	animations_["Boss_LongRangeAttack_half_2_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W1");
+	animations_["Boss_LongRangeAttack_half_3_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W1");
+	
+	animations_["Boss_LongRangeAttack_half_1_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W2");
+	animations_["Boss_LongRangeAttack_half_2_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W2");
+	animations_["Boss_LongRangeAttack_half_3_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W2");
+	
+	animations_["Boss_RangedAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_B");
+	animations_["Boss_RangedAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_B");
+	animations_["Boss_RangedAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_B");
+
+	animations_["Boss_RangedAttack_1_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_W");
+	animations_["Boss_RangedAttack_2_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_W");
+	animations_["Boss_RangedAttack_3_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_W");
+	
+	animations_["Boss_RushAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_1_B");
+	animations_["Boss_RushAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_2_B");
+	animations_["Boss_RushAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_3_B");
+
+	animations_["Boss_RushAttack_1_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_1_W");
+	animations_["Boss_RushAttack_2_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_2_W");
+	animations_["Boss_RushAttack_3_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_3_W");
+
+	animations_["Boss_StrongAttack_1_1_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_1_B");
+	animations_["Boss_StrongAttack_1_2_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_2_B");
+	animations_["Boss_StrongAttack_1_3_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_3_B");
+
+	animations_["Boss_StrongAttack_1_1_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_1_W");
+	animations_["Boss_StrongAttack_1_2_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_2_W");
+	animations_["Boss_StrongAttack_1_3_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_3_W");
+
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath){
