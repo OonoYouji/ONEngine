@@ -47,6 +47,10 @@ void IEnemyBullet::Update(){
 void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 	if(_collision->GetTag() == "Player"){
 		Player* player = reinterpret_cast<Player*>(_collision);
+
+		if(player->GetIsInvisible()){
+			return;
+		}
 		player->SetHp(player->GetCurrentHP() - damage_);
 	}
 }
