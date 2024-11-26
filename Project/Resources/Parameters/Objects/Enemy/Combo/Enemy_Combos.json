@@ -1,6 +1,6 @@
 {
     "Enemy_Combos": {
-        "CombosSize": 40,
+        "CombosSize": 39,
         "Index_0": "default_weak2_1",
         "Index_1": "default_strong_1",
         "Index_10": "jump_longrange_1",
@@ -24,7 +24,7 @@
         "Index_27": "ranged_weak1_idle_1",
         "Index_28": "chase_weak2_strong_idle_2",
         "Index_29": "ranged_weak1_idle_2",
-        "Index_3": "default_chaseWeak1_1",
+        "Index_3": "default_chaseWeak2_1",
         "Index_30": "ranged_weak1_idle_3",
         "Index_31": "jump_longrange_strog_idle_1",
         "Index_32": "jump_longrange_strong_idle_2",
@@ -34,15 +34,15 @@
         "Index_36": "jump_ranged_idle_1",
         "Index_37": "strong_strong_idle_1",
         "Index_38": "ranged_idle_3",
-        "Index_39": "longrange_idle_1",
+        "Index_39": "strong_strong_idle_1",
         "Index_4": "default_LongRangeAttack_1",
         "Index_40": "ranged_idle_3",
-        "Index_41": "ranged_idle_1",
+        "Index_41": "longrange_idle_1",
         "Index_42": "longrange_idle_1",
         "Index_5": "default_jumpLongRange_1",
         "Index_6": "default_chaseStrong_1",
         "Index_7": "default_jumpTackle_1",
-        "Index_8": "default_chaseWeak1_long_1",
+        "Index_8": "default_chaseWeak2_long_1",
         "Index_9": "default_chaseStrong_long_1"
     }
 }

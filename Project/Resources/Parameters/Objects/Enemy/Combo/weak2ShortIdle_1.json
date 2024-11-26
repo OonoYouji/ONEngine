@@ -2,7 +2,7 @@
     "weak2ShortIdle_1": {
         "ComboSize": 2,
         "HpState": 1,
-        "Index_0": "normal_weak2_1",
+        "Index_0": "default_weak2",
         "Index_1": "normal_shortIdle_1",
         "RangeType": 0
     }

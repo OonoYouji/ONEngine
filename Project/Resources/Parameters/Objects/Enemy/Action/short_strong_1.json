@@ -2,7 +2,7 @@
     "short_strong_1": {
         "Type": 3,
         "activeTime": 0.8999999761581421,
-        "collisionStartTime": 0.15299999713897705,
+        "collisionStartTime": 0.0,
         "collisionTime": 0.17000000178813934,
         "damage": 0.30000001192092896,
         "endLagTime": 1.600000023841858,

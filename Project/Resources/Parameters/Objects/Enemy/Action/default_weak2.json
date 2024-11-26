@@ -2,8 +2,8 @@
     "default_weak2": {
         "Type": 2,
         "activeTime": 1.2000000476837158,
-        "collisionStartTime": 0.3409999907016754,
-        "collisionTime": 0.17800000309944153,
+        "collisionStartTime": 0.18799999356269836,
+        "collisionTime": 0.20200000703334808,
         "damage": 7.199999809265137,
         "endLagTime": 1.0,
         "maxRotateY2Player": 1.3179999589920044,

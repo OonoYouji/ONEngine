@@ -1,10 +1,10 @@
 {
-    "default_chaseWeak1_long_1": {
+    "default_chaseWeak2_long_1": {
         "ComboSize": 3,
         "HpState": 0,
         "Index_0": "default_longChase_1",
-        "Index_1": "default_weak1",
+        "Index_1": "default_weak2",
         "Index_2": "default_idle",
-        "RangeType": 0
+        "RangeType": 2
     }
 }
