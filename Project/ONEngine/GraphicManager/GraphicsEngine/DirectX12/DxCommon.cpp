@@ -38,7 +38,7 @@ void ONE::DxCommon::Initialize() {
 	command_->Initialize(device_->GetDevice());
 
 	/// srv, rtv, dsvの生成、初期化
-	srvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::CBV_SRV_UAV>(128));
+	srvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::CBV_SRV_UAV>(2042));
 	rtvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::RTV>(32));
 	dsvDescriptorHeap_.reset(new DxDescriptorHeap<HeapType::DSV>(1));
 

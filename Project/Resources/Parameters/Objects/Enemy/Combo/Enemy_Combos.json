@@ -1,6 +1,6 @@
 {
     "Enemy_Combos": {
-        "CombosSize": 39,
+        "CombosSize": 40,
         "Index_0": "default_weak2_1",
         "Index_1": "defalut_longRangeAttack_middle_1",
         "Index_10": "jump_longrange_1",
@@ -34,7 +34,7 @@
         "Index_36": "jump_ranged_idle_1",
         "Index_37": "strong_strong_idle_1",
         "Index_38": "ranged_idle_3",
-        "Index_39": "strong_strong_idle_1",
+        "Index_39": "jump_Chase_Weak2_Weak1_Idle",
         "Index_4": "default_jumpLongRange_1",
         "Index_40": "ranged_idle_3",
         "Index_41": "longrange_idle_1",
