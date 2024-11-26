@@ -21,7 +21,7 @@ namespace EnemyBehaviorTree{
 	private:
 		WorkLongRangeAttackAction* worker_;
 		float leftTime_;
-
+		float strtupTime_;
 		float maxRotateYSpeed_;
 	};
 
