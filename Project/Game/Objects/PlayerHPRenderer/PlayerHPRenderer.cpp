@@ -55,7 +55,7 @@ void PlayerHPRenderer::Initialize() {
 	/// ---------------------------------------------------
 
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
-	spriteRenderer_->SetTexture("uvChecker");
+	spriteRenderer_->SetTexture("HPBar.png");
 	spriteRenderer_->SetAnchor(uvAnchor_);
 
 	maxScale_ = GetScale();
