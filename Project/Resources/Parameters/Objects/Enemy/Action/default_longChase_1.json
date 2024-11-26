@@ -1,8 +1,0 @@
-{
-    "default_longChase_1": {
-        "Type": 5,
-        "activeTime": 13.199999809265137,
-        "distanceToStopChasing": 6.599999904632568,
-        "speed": 17.700000762939453
-    }
-}

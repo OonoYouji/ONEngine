@@ -1,8 +1,0 @@
-{
-    "normal_chase": {
-        "Type": 5,
-        "activeTime": 13.5,
-        "distanceToStopChasing": 6.099999904632568,
-        "speed": 13.5
-    }
-}

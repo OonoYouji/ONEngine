@@ -1,5 +1,5 @@
 {
-    "default_jump_1": {
+    "Jump": {
         "Type": 8,
         "activeTime": 0.0,
         "distance": 14.800000190734863,
