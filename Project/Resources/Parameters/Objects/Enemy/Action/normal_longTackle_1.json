@@ -1,11 +1,11 @@
 {
     "normal_longTackle_1": {
         "Type": 4,
-        "activeTime": 8.5,
+        "activeTime": 6.800000190734863,
         "damage": 20.0,
         "endLagTime": 0.699999988079071,
-        "lockOnTime": 0.9229999780654907,
-        "speed": 42.5,
-        "startupTime": 1.399999976158142
+        "lockOnTime": 1.100000023841858,
+        "speed": 64.0999984741211,
+        "startupTime": 1.100000023841858
     }
 }

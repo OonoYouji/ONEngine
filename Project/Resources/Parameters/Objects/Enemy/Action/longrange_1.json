@@ -5,10 +5,10 @@
         "bulletFireInterval": 0.20000000298023224,
         "bulletScale": 1.899999976158142,
         "bulletSpawnOffsetZ": 0.800000011920929,
-        "bulletSpeed": 21.399999618530273,
+        "bulletSpeed": 41.70000076293945,
         "damage": 10.0,
         "endLagTime": 1.100000023841858,
         "rotateMaxSpeed": 2.299999952316284,
-        "startupTime": 1.7000000476837158
+        "startupTime": 1.100000023841858
     }
 }

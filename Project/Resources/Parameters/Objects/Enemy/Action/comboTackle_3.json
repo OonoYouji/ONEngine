@@ -1,11 +1,11 @@
 {
     "comboTackle_3": {
         "Type": 4,
-        "activeTime": 2.700000047683716,
+        "activeTime": 3.0,
         "damage": 20.0,
         "endLagTime": 1.100000023841858,
         "lockOnTime": 0.10000000149011612,
-        "speed": 31.600000381469727,
+        "speed": 58.20000076293945,
         "startupTime": 0.10000000149011612
     }
 }

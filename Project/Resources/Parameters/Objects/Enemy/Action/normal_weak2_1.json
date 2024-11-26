@@ -1,7 +1,7 @@
 {
     "normal_weak2_1": {
         "Type": 2,
-        "activeTime": 2.200000047683716,
+        "activeTime": 1.5,
         "collisionStartTime": 0.18799999356269836,
         "collisionTime": 0.20200000703334808,
         "damage": 7.0,

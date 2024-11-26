@@ -2,12 +2,12 @@
     "default_tackle_1": {
         "Type": 4,
         "activeTime": 1.2000000476837158,
-        "damage": 0.0,
+        "damage": 20.0,
         "endLagTime": 1.7000000476837158,
-        "lockOnTime": 0.8560000061988831,
+        "lockOnTime": 1.2999999523162842,
         "maxRotateSpeed": 6.2829999923706055,
         "rotateSensitivity": 1.0,
         "speed": 33.900001525878906,
-        "startupTime": 1.5
+        "startupTime": 1.2999999523162842
     }
 }
