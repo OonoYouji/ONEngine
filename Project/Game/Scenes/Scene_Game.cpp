@@ -121,5 +121,9 @@ void Scene_Game::Update(){
 	if(gameManager_->GetFlag("isGameClear").Trigger()) {
 		SceneManager::GetInstance()->SetNextScene(RESULT);
 	}
+	
+	if(gameManager_->GetFlag("isGameOver").Trigger()) {
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+	}
 
 }
