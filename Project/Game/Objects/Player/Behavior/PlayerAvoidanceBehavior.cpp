@@ -84,7 +84,10 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
-		currentUpdate_ = [this](){Avoidance(); };
+		/// 回避の効果音再生
+		host_->PlayAudio("avoidance.wav", 0.5f);
+
+		currentUpdate_ = [this](){ Avoidance(); };
 		Avoidance();
 		return;
 	}
@@ -105,7 +108,7 @@ void PlayerAvoidanceBehavior::Avoidance(){
 		// 無敵状態 を 解除
 		host_->SetIsInvisible(false);
 
-		currentUpdate_ = [this](){EndLagUpdate(); };
+		currentUpdate_ = [this](){ EndLagUpdate(); };
 		EndLagUpdate();
 		return;
 	}
