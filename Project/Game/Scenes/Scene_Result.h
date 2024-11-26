@@ -20,4 +20,5 @@ public:
 
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
+
 };

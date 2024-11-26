@@ -1,6 +1,5 @@
 #include "Scene_Result.h"
 
-
 /// engine
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
@@ -8,17 +7,27 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/SceneTransition/SceneTransition.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 
-#include "Objects/TitleObjects/TitleMenuSelector/TitleMenuSelector.h"
+/// game over objects
+#include "Objects/ResultObjects/ResultText/ResultText.h"
 
 
 void Scene_Result::Initialize() {
 
-
-	/// 仮オブジェクト
-	(new TitleMenuSelector)->Initialize();
-
+	std::list<BaseGameObject*> objects = {};
 	
+	/// 結果で初期化するオブジェクトを変更
+	if(GameManagerObject::GetFlag("isGameOver").Press()) {
+		
+		objects.push_back(new ResultText("GameOverText.png"));
+	} 
+
+
+	for(auto& object : objects) {
+		object->Initialize();
+		object->drawLayerId = RESULT_LAYER_UI;
+	}
 	
 	
 	/// add layer ---------------------------------------------------------------------

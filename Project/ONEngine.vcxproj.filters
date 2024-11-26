@@ -200,6 +200,7 @@
     <ClCompile Include="Game\Objects\UIManager\InputUI\InputUI.cpp" />
     <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.cpp" />
     <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -390,6 +391,7 @@
     <ClInclude Include="Game\Objects\UIManager\InputUI\InputUI.h" />
     <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.h" />
     <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

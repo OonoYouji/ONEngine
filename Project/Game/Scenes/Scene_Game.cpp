@@ -106,6 +106,7 @@ void Scene_Game::Update(){
 
 	if(Input::TriggerKey(KeyCode::Escape)){
 		SceneManager::GetInstance()->SetNextScene(RESULT);
+		gameManager_->SetFlag("isGameOver", true);
 	}
 
 

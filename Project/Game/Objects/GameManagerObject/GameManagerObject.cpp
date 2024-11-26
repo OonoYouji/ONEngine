@@ -5,6 +5,8 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 
+std::unordered_map<std::string, Flag> GameManagerObject::flags_;
+
 
 GameManagerObject::GameManagerObject() {
 	CreateTag(this);
@@ -14,9 +16,9 @@ GameManagerObject::~GameManagerObject() {}
 
 void GameManagerObject::Initialize() {
 
-	flags_["isGameStart"];
-	flags_["isGameClear"];
-	flags_["isGameOver"];
+	flags_["isGameStart"] = {};
+	flags_["isGameClear"] = {};
+	flags_["isGameOver"] = {};
 
 }
 
@@ -50,5 +52,9 @@ void GameManagerObject::SetPlayer(Player* _player) {
 
 const Flag& GameManagerObject::GetFlag(const std::string& _key) {
 	return flags_.at(_key);
+}
+
+void GameManagerObject::SetFlag(const std::string& _key, bool value) {
+	flags_[_key].current = value;
 }
 
