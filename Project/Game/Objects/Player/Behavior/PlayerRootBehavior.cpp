@@ -70,10 +70,12 @@ void PlayerRootBehavior::Update() {
 		/// 移動しているか確認、アニメーションを変える
 		if(velocity != Vec3(0, 0, 0)) {
 			host_->SetAnimationModel("Player_Walk");
+			host_->SetAnimationTotalTime(host_->GetAnimationDuration());
 			host_->SetAnimationFlags(0, false);
 
 		} else {
 			host_->SetAnimationModel("Player_Wait");
+			host_->SetAnimationTotalTime(host_->GetAnimationDuration());
 			host_->SetAnimationFlags(0, false);
 
 		}
