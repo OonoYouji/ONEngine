@@ -131,6 +131,7 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<WeakAttack2Startup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 		// attackAction
+		addChild(std::make_unique<TransitionEffectAnimation>(enemy,"Effect5",-1.0f,enemy->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2)));
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_2",worker->motionTimes_.activeTime_,true));
 		addChild(std::make_unique<WeakAttack2Action>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 

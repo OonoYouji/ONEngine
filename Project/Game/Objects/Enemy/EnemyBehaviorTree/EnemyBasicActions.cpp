@@ -5,6 +5,7 @@
 
 #include "../BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "../Enemy.h"
+#include "../EnemyEffect/EnemyEffect.h"
 #include "FrameManager/Time.h"
 #include "Objects/Player/Player.h"
 
@@ -71,6 +72,65 @@ namespace EnemyBehaviorTree{
 			enemy_->SetAnimationTotalTime(animationTotalTime_);
 		}
 		enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
+		return Status::SUCCESS;
+	}
+
+	TransitionEffectAnimation::TransitionEffectAnimation(Enemy* enemy,
+														 const std::string& animation,
+														 float animationTotalTime,
+														 Vector3 effectPos,
+														 bool isLoop)
+		:Action(enemy){
+		animation_ = animation;
+		animationTotalTime_ = animationTotalTime;
+		effectPos_ = effectPos;
+		isLoop_ = isLoop;
+	}
+
+	Status TransitionEffectAnimation::tick(){
+		auto effect = enemy_->GetEnemy1Effect();
+		enemy_->GetEnemy2Effect()->isActive = false;
+
+		effect->SetPosition(effectPos_);
+
+		if(animationTotalTime_ >= 0.0f){
+			effect->SetEffectAnimationTotalTime(animationTotalTime_);
+		}
+		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),true);
+		return Status::SUCCESS;
+	}
+	TransitionEffectAnimationWithSub::TransitionEffectAnimationWithSub(Enemy* enemy,
+																	   const std::string& animation,
+																	   const std::string& subAnimation,
+																	   float animationTotalTime,
+																	   Vector3 effectPos,
+																	   Vector3 effect2Pos,
+																	   bool isLoop)
+		:Action(enemy){
+		animation_[0] = animation;
+		animation_[1] = subAnimation;
+		effectPos_ = effectPos;
+		effect2Pos_ = effect2Pos;
+		animationTotalTime_ = animationTotalTime;
+		isLoop_ = isLoop;
+	}
+	Status TransitionEffectAnimationWithSub::tick(){
+		auto effect = enemy_->GetEnemy1Effect();
+		effect->isActive = true;
+		auto effect2 = enemy_->GetEnemy2Effect();
+		effect2->isActive = true;
+
+		effect->SetPosition(effectPos_);
+		effect2->SetPosition(effect2Pos_);
+
+		effect->SetEffectAnimationRender(animation_[0]);
+		effect2->SetEffectAnimationRender(animation_[1]);
+
+		if(animationTotalTime_ >= 0.0f){
+			effect->SetEffectAnimationTotalTime(animationTotalTime_);
+			effect2->SetEffectAnimationTotalTime(animationTotalTime_);
+		}
+		enemy_->SetEffectAnimationFlags(static_cast<int>(isLoop_));
 		return Status::SUCCESS;
 	}
 }

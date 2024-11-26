@@ -67,7 +67,46 @@ namespace EnemyBehaviorTree{
 		float animationTotalTime_;
 		bool isLoop_;
 	};
-	
+
+	class TransitionEffectAnimation
+		:public Action{
+	public:
+		TransitionEffectAnimation(Enemy* enemy,
+								  const std::string& animation,
+								  float animationTotalTime,
+								  Vector3 effectPos = {0.0f,0.0f,0.0f},
+								  bool isLoop = false);
+		~TransitionEffectAnimation(){}
+
+		Status tick()override;
+	private:
+		std::string animation_;
+		Vector3 effectPos_;
+		float animationTotalTime_;
+		bool isLoop_;
+	};
+
+	class TransitionEffectAnimationWithSub
+		:public Action{
+	public:
+		TransitionEffectAnimationWithSub(Enemy* enemy,
+										 const std::string& animation,
+										 const std::string& subAnimation,
+										 float animationTotalTime,
+										 Vector3 effectPos = {0.0f,0.0f,0.0f},
+										 Vector3 effect2Pos = {0.0f,0.0f,0.0f},
+										 bool isLoop = false);
+		~TransitionEffectAnimationWithSub(){}
+
+		Status tick()override;
+	private:
+		std::string animation_[2];
+		Vector3 effectPos_ = {0.0f,0.0f,0.0f};
+		Vector3 effect2Pos_ = {0.0f,0.0f,0.0f};
+		float animationTotalTime_;
+		bool isLoop_;
+	};
+
 	///====================================
 	/// 連続攻撃 (単発を含む)
 	///====================================

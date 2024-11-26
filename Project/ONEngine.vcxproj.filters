@@ -203,6 +203,7 @@
     <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -396,6 +397,7 @@
     <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
