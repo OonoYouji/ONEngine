@@ -36,6 +36,19 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 
 	host_->SetNextStrongChargeCount(0);
 
+
+	if(_phase != 3) {
+
+		host_->OneShotEffect(
+			"Effect5", maxTime_
+		);
+	} else {
+
+		host_->OneShotEffect(
+			"Effect3", maxTime_
+		);
+	}
+
 }
 
 void PlayerStrongAttack::Update() {
