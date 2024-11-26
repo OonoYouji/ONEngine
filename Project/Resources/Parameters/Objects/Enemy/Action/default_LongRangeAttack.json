@@ -1,7 +1,7 @@
 {
     "default_LongRangeAttack": {
         "Type": 7,
-        "activeTime": 5.199999809265137,
+        "activeTime": 5.099999904632568,
         "bulletFireInterval": 0.6000000238418579,
         "bulletScale": 1.0,
         "bulletSpawnOffsetZ": 1.5,

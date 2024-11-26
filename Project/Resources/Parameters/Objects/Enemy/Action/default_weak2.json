@@ -5,7 +5,7 @@
         "collisionStartTime": 0.18799999356269836,
         "collisionTime": 0.20200000703334808,
         "damage": 7.199999809265137,
-        "endLagTime": 1.0,
+        "endLagTime": 0.800000011920929,
         "maxRotateY2Player": 1.3179999589920044,
         "startupTime": 0.8999999761581421
     }

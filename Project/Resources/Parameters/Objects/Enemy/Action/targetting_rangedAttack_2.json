@@ -1,7 +1,7 @@
 {
     "targetting_rangedAttack_2": {
         "Type": 6,
-        "activeTime": 6.599999904632568,
+        "activeTime": 4.400000095367432,
         "attackForPlayerProbability": 40.55699920654297,
         "bulletScale": 1.5,
         "damage": 10.0,

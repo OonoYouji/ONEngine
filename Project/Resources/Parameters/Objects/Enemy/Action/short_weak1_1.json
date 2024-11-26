@@ -1,9 +1,9 @@
 {
     "short_weak1_1": {
         "Type": 1,
-        "activeTime": 1.7000000476837158,
+        "activeTime": 1.2999999523162842,
         "damage": 10.100000381469727,
-        "endLagTime": 1.100000023841858,
+        "endLagTime": 0.699999988079071,
         "startupTime": 1.100000023841858
     }
 }

@@ -1,9 +1,9 @@
 {
     "long_weak1_1": {
         "Type": 1,
-        "activeTime": 4.300000190734863,
+        "activeTime": 2.799999952316284,
         "damage": 10.0,
-        "endLagTime": 1.5,
-        "startupTime": 0.8999999761581421
+        "endLagTime": 0.8999999761581421,
+        "startupTime": 1.0
     }
 }

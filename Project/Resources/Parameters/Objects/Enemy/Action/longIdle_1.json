@@ -1,7 +1,7 @@
 {
     "longIdle_1": {
         "Type": 0,
-        "activeTime": 8.0,
+        "activeTime": 4.0,
         "endLagTime": 0.0,
         "startupTime": 0.0
     }

@@ -1,12 +1,12 @@
 {
     "StrongAttackBehavior": {
-        "actionTime": 1.100000023841858,
+        "actionTime": 0.8999999761581421,
         "damage0": 200.0,
         "damage1": 523.0,
         "damage2": 1259.0,
-        "nextChargeTime0": 1.0,
-        "nextChargeTime1": 1.899999976158142,
-        "nextChargeTime2": 2.0,
+        "nextChargeTime0": 0.8999999761581421,
+        "nextChargeTime1": 1.5,
+        "nextChargeTime2": 5.300000190734863,
         "thirdSERepeatTime": 0.30000001192092896
     }
 }
