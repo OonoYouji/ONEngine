@@ -2,9 +2,9 @@
     "default_jump_1": {
         "Type": 8,
         "activeTime": 0.0,
-        "distance": 20.0,
+        "distance": 19.200000762939453,
         "endLagTime": 0.4000000059604645,
-        "jumpSpeed": 1.7000000476837158,
+        "jumpSpeed": 1.399999976158142,
         "mass": 0.4000000059604645,
         "startupTime": 0.800000011920929
     }
