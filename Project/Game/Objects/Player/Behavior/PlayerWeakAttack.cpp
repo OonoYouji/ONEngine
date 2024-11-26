@@ -98,10 +98,10 @@ void PlayerWeakAttack::StartupUpdate() {
 			host_->OneShotEffect("Effect6", workInBehavior_.motionTimes_.activeTime_);
 			break;
 		case 1:
-			host_->OneShotEffect("Effect5", workInBehavior_.motionTimes_.activeTime_);
+			host_->OneShotEffect("Effect7", workInBehavior_.motionTimes_.activeTime_);
 			break;
 		case 2:
-			host_->OneShotEffect("Effect5", workInBehavior_.motionTimes_.activeTime_);
+			host_->OneShotEffect("Effect8", workInBehavior_.motionTimes_.activeTime_);
 			break;
 		}
 
