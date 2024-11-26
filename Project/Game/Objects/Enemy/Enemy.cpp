@@ -62,7 +62,7 @@ Enemy::Enemy(Player* player,EnemyAttackCollider* collider):BaseGameObject(),play
 Enemy::~Enemy(){}
 
 void Enemy::Initialize(){
-	
+
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
 	// 最初の行動を設定
@@ -105,6 +105,11 @@ void Enemy::Update(){
 			rootNode_ = nullptr;
 		}
 	}
+	float clampedEnemyPosLength = (std::clamp)(pTransform_->position.Len(),
+											   -player_->GetStageRange() - colliderRadius_,
+											   player_->GetStageRange() + colliderRadius_);
+	pTransform_->position = Vec3::Normalize(pTransform_->position) * clampedEnemyPosLength;
+
 }
 
 void Enemy::Debug(){
@@ -637,11 +642,11 @@ void Enemy::LoadAllAnimation(){
 	animations_["Boss_LongRangeAttack_half_1_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W1");
 	animations_["Boss_LongRangeAttack_half_2_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W1");
 	animations_["Boss_LongRangeAttack_half_3_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W1");
-	
+
 	animations_["Boss_LongRangeAttack_half_1_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W2");
 	animations_["Boss_LongRangeAttack_half_2_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W2");
 	animations_["Boss_LongRangeAttack_half_3_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W2");
-	
+
 	animations_["Boss_RangedAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_B");
 	animations_["Boss_RangedAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_B");
 	animations_["Boss_RangedAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_B");
@@ -649,7 +654,7 @@ void Enemy::LoadAllAnimation(){
 	animations_["Boss_RangedAttack_1_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_W");
 	animations_["Boss_RangedAttack_2_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_W");
 	animations_["Boss_RangedAttack_3_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_W");
-	
+
 	animations_["Boss_RushAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_1_B");
 	animations_["Boss_RushAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_2_B");
 	animations_["Boss_RushAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_3_B");
