@@ -1,7 +1,7 @@
 {
-    "Idle_long": {
+    "shortIdle_2": {
         "Type": 0,
-        "activeTime": 6.0,
+        "activeTime": 1.899999976158142,
         "endLagTime": 0.0,
         "startupTime": 0.0
     }

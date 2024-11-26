@@ -1,5 +1,5 @@
 {
-    "Weak2_long": {
+    "default_weak2": {
         "Type": 2,
         "activeTime": 1.2000000476837158,
         "collisionStartTime": 0.18799999356269836,

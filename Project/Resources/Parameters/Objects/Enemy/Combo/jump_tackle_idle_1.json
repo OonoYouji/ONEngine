@@ -1,10 +1,7 @@
 {
     "jump_tackle_idle_1": {
-        "ComboSize": 3,
+        "ComboSize": 0,
         "HpState": 1,
-        "Index_0": "default_jump_1",
-        "Index_1": "default_tackle_1",
-        "Index_2": "longIdle_1",
         "RangeType": 0
     }
 }
