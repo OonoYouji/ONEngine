@@ -56,9 +56,7 @@ void Player::Initialize() {
 	effect_ = new PlayerEffect();
 	effect_->Initialize();
 	effect_->SetParent(pTransform_);
-	//effect_->animationRenderer_->isActive = false;
-
-
+	
 
 	SetAnimationFlags(0);
 
@@ -253,12 +251,18 @@ void Player::Debug() {
 	}
 }
 
+
+
+
 void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "EnemyAttackCollider") {
 		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
 		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
 			nextStrongChargeCount_ = 3;
 		}
+
+
+		OneShotEffect("Effect5", NULL);
 	}
 }
 
