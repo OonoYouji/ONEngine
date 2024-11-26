@@ -104,10 +104,18 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
+#ifdef _DEBUG
 	if(Input::TriggerKey(KeyCode::Escape)){
 		SceneManager::GetInstance()->SetNextScene(RESULT);
 		gameManager_->SetFlag("isGameOver", true);
 	}
+
+	
+	if(Input::TriggerKey(KeyCode::F1)){
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+		gameManager_->SetFlag("isGameClear", true);
+	}
+#endif // _DEBUG
 
 
 	if(gameManager_->GetFlag("isGameClear").Trigger()) {
