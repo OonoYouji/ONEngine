@@ -52,12 +52,12 @@ void EnemyBulletEmitter::Update(){
 	spawnUpdate_();
 
 	std::erase_if(drawBullets_,[](IEnemyBullet* bullet){
-		if(bullet->GetLifeLeftTime() <= 0.0f){
+		if(bullet->GetLifeLeftTime() > 0.0f){
 			return false;
 		}
 		bullet->Destory();
 		return true;
-				  });
+	});
 
 	meshInstancingRenderer_->ResetTransformArray();
 	drawTransform_.clear();
