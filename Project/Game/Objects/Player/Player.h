@@ -66,6 +66,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
+
 	void AddVariables();
 	void LoadVariables();
 	void ApplyVariables();
@@ -109,7 +113,8 @@ private:
 	float startPosY_,endPosY_;
 
 
-	float stageRange_ = 50.0f;;
+	float stageRange_ = 50.0f;
+	int nextStrongChargeCount_;
 
 	/// ---------------------------------------------------
 	/// 
@@ -125,7 +130,7 @@ private:
 
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
-	std::array<WorkWeakAttackBehavior,3> workWeakAttackBehavior_;
+	std::array<WorkWeakAttackBehavior,3>  workWeakAttackBehavior_;
 	StrongAttackBehavior                  strongAttackBehavior_;
 
 	/// ---------------------------------------------------
@@ -137,6 +142,7 @@ private:
 	class PlayerAttackCollider* attackCollider_  = nullptr;
 	class EntityShadow* entityShadow_    = nullptr;
 	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
+	class PlayerEffect* effect_;
 
 public:
 
@@ -174,7 +180,17 @@ public:
 	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const{ return strongAttackChargeEffect_; }
 
 	void SetAnimationModel(const std::string& _filePath);
-	void SetAnimationModel(const std::string& _bodyModelFilePath,const std::string& _weaponModelFilePath);
+	void SetAnimationModel(
+		const std::string& _bodyModelFilePath,
+		const std::string& _weaponModelFilePath
+	);
+
+	void SetAnimationModel(
+		const std::string& _bodyModelFilePath,
+		const std::string& _weaponModelFilePath,
+		const std::string& _effectFilePath
+	);
+
 	void SetAnimationTotalTime(float _totalTime);
 	void ResetAnimationTotal();
 
@@ -195,4 +211,7 @@ public:
 	void SetAttackMode(int _mode);
 
 	float GetStageRange()const{ return stageRange_; }
+
+	int GetNextStrongChargeCount() const { return nextStrongChargeCount_; }
+	void SetNextStrongChargeCount(int _count) { nextStrongChargeCount_ = _count; }
 };

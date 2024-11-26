@@ -117,7 +117,7 @@ void PlayerRootBehavior::InputNextBehavior() {
 	
 	/// 強攻撃
 	if(isStrongAttack) {
-		host_->TransitionBehavior(std::make_unique<PlayerStrongAttackCharge>(host_, 0, 1.0f));
+		host_->TransitionBehavior(std::make_unique<PlayerStrongAttackCharge>(host_, host_->GetNextStrongChargeCount(), 1.0f));
 		return;
 	}
 }

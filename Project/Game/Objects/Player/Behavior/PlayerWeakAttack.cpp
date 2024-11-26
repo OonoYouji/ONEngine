@@ -122,7 +122,8 @@ void PlayerWeakAttack::WeakAttack() {
 
 		host_->SetAnimationModel(
 			animationModelFilePath + "_3_P",
-			animationModelFilePath + "_3_W"
+			animationModelFilePath + "_3_W",
+			"Effect5"
 		);
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.endLagTime_);
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);

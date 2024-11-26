@@ -32,6 +32,7 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Effect/PlayerEffect.h"
 #include "Effect/PlayerStrongAttackChargeEffect.h"
 
 Player::Player() {
@@ -48,6 +49,16 @@ void Player::Initialize() {
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
 
 	audioSource_ = AddComponent<AudioSource>();
+
+
+
+	/// nullptr対策
+	effect_ = new PlayerEffect();
+	effect_->Initialize();
+	effect_->SetParent(pTransform_);
+	//effect_->animationRenderer_->isActive = false;
+
+
 
 	SetAnimationFlags(0);
 
@@ -103,6 +114,8 @@ void Player::Initialize() {
 	strongAttackChargeEffect_->Initialize();
 	strongAttackChargeEffect_->SetParent(pTransform_);
 	strongAttackChargeEffect_->SetAnimationActive(false);
+
+
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -240,6 +253,16 @@ void Player::Debug() {
 	}
 }
 
+void Player::OnCollisionEnter(BaseGameObject* const _collision) {
+	if(_collision->GetTag() == "EnemyAttackCollider") {
+		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
+		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
+			nextStrongChargeCount_ = 3;
+		
+		}
+	}
+}
+
 
 
 void Player::AddVariables() {
@@ -334,6 +357,7 @@ void Player::ApplyVariables() {
 		workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(name, "startupTime");
 		workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(name, "activeTime");
 		workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(name, "endLagTime");
+		workAvoidanceBehavior_.jastAvoidanceTime_        = vm->GetValue<float>(name, "jastAvoidanceTime");
 	}
 
 
@@ -447,9 +471,20 @@ void Player::SetAnimationModel(const std::string& _bodyModelFilePath, const std:
 	weaponAnimationRenderer_->ChangeAnimation(_weaponModelFilePath);
 }
 
+void Player::SetAnimationModel(
+	const std::string& _bodyModelFilePath, 
+	const std::string& _weaponModelFilePath,
+	const std::string& _effectFilePath) {
+
+	bodyAnimationRenderer_->ChangeAnimation(_bodyModelFilePath);
+	weaponAnimationRenderer_->ChangeAnimation(_weaponModelFilePath);
+	effect_->animationRenderer_->ChangeAnimation(_effectFilePath);
+}
+
 void Player::SetAnimationTotalTime(float _totalTime) {
 	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	effect_->animationRenderer_->SetTotalTime(_totalTime, effect_->animationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Player::ResetAnimationTotal() {
@@ -462,15 +497,24 @@ void Player::ResetAnimationTotal() {
 		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
+
+	
+	effect_->animationRenderer_->SetTotalTime(
+		effect_->animationRenderer_->GetDuration(effect_->animationRenderer_->GetCurrentNodeAnimationKey()),
+		effect_->animationRenderer_->GetCurrentNodeAnimationKey()
+	);
+
 }
 
 void Player::SetAnimationFlags(int _flags, bool _isResetTime) {
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
+	effect_->animationRenderer_->SetAnimationFlags(_flags);
 
 	if(_isResetTime) {
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
+		effect_->animationRenderer_->Restart();
 	}
 }
 

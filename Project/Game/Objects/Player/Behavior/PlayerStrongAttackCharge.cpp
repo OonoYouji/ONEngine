@@ -54,8 +54,10 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
 	host_->SetAnimationModel(
 		animationFilePath + "_P",
-		animationFilePath + "_W"
+		animationFilePath + "_W",
+		"Effect5"
 	);
+
 
 	host_->SetIsActiveWeapon(true);
 	host_->SetAnimationTotalTime(nextChargeTime_);
