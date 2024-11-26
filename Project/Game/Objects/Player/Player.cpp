@@ -246,8 +246,10 @@ void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
 		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
 			nextStrongChargeCount_ = 3;
-		}
 
+			strongAttackChargeEffect_->SetAnimationActive(true);
+			strongAttackChargeEffect_->SetTimeRate(0.5f + (0.25f * 3));
+		}
 
 		OneShotEffect("Effect5", NULL);
 	}
