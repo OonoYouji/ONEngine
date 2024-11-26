@@ -70,6 +70,8 @@ private:
 
 
 	float nextTime_ = 0.0f;
+	float repeatTime_ = 0.0f;
+	float repeatMaxTime_ = 0.0f;
 
 
 	class PlayerStrongAttackChargeEffect* effect_ = nullptr;

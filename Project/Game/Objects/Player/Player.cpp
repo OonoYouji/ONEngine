@@ -67,17 +67,6 @@ void Player::Initialize() {
 		);
 	}
 
-
-	/// 攻撃のモーションを先に読み込んでおく
-	const std::array<std::string, 3> weakAnimationFilePaths{
-		"KariPlayer_WeakAttack", "KariPlayer_WeakAttack1", "KariPlayer_WeakAttack2"
-	};
-
-	for(auto& filePath : weakAnimationFilePaths) {
-		SetAnimationModel(filePath);
-	}
-
-
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
 
@@ -97,17 +86,6 @@ void Player::Initialize() {
 	//回避
 	workAvoidanceBehavior_.moveDistance_ = 10;
 	workAvoidanceBehavior_.motionTimes_.activeTime_ = 0.8f;
-
-
-	/// ---------------------------------------------------
-	/// 攻撃のアクティブタイムをアニメーションで初期化
-	/// ---------------------------------------------------
-
-	for(size_t i = 0; i < workWeakAttackBehavior_.size(); ++i) {
-		WorkWeakAttackBehavior& wwab = workWeakAttackBehavior_[i];
-		wwab.motionTimes_.activeTime_ = bodyAnimationRenderer_->GetDuration(weakAnimationFilePaths[i]);
-	}
-
 
 	/// ---------------------------------------------------
 	/// コライダーの処理化
@@ -284,7 +262,8 @@ void Player::AddVariables() {
 		vm->AddValue(groupName, "nextChargeTime1", strongAttackBehavior_.nextChargeTime_[1]);
 		vm->AddValue(groupName, "nextChargeTime2", strongAttackBehavior_.nextChargeTime_[2]);
 
-		vm->AddValue(groupName, "actionTime", strongAttackBehavior_.actionTime_);
+		vm->AddValue(groupName, "actionTime",        strongAttackBehavior_.actionTime_);
+		vm->AddValue(groupName, "thirdSERepeatTime", strongAttackBehavior_.thirdSERepeatTime_);
 	}
 
 
