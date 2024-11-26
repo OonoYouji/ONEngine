@@ -148,7 +148,7 @@ void PlayerWeakAttack::WeakAttack() {
 }
 
 void PlayerWeakAttack::EndLagUpdate() {
-	if(nextBehavior_ == static_cast<int>(NextBehavior::combo)) {
+	if(nextBehavior_ != static_cast<int>(NextBehavior::root)) {
 
 
 		{	// Rotate Update
