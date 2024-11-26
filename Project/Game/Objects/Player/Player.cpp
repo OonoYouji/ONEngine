@@ -32,6 +32,7 @@
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Effect/PlayerEffect.h"
 #include "Effect/PlayerStrongAttackChargeEffect.h"
 
 Player::Player() {
@@ -49,23 +50,18 @@ void Player::Initialize() {
 
 	audioSource_ = AddComponent<AudioSource>();
 
+
+
+	/// nullptr対策
+	effect_ = new PlayerEffect();
+	effect_->Initialize();
+	effect_->SetParent(pTransform_);
+	
+
 	SetAnimationFlags(0);
 
-	/// ボディの先読み
-	const std::array<std::string, 3> bodyModelAnimationFilePaths{
-		"Player_WeakAttack1_1_P", "Player_WeakAttack1_2_P", "Player_WeakAttack1_3_P"
-	};
-	/// 武器の先読み
-	const std::array<std::string, 3> weaponModelAnimationFilePaths{
-		"Player_WeakAttack1_1_W", "Player_WeakAttack1_2_W", "Player_WeakAttack1_3_W"
-	};
-
-	for(size_t i = 0; i < 3; ++i) {
-		SetAnimationModel(
-			bodyModelAnimationFilePaths[i],
-			weaponModelAnimationFilePaths[i]
-		);
-	}
+	/// アニメーションを先に読ませる
+	LoadingAnimations();
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
@@ -104,6 +100,8 @@ void Player::Initialize() {
 	strongAttackChargeEffect_->SetParent(pTransform_);
 	strongAttackChargeEffect_->SetAnimationActive(false);
 
+
+
 	/// varialbe managerに値を追加する
 	AddVariables();
 	LoadVariables();
@@ -115,8 +113,33 @@ void Player::Initialize() {
 void Player::Update() {
 	ApplyVariables();
 
-	// ダメージを初期化
-	//damage_ = 0.0f;
+
+	direction_ = {
+		static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
+		static_cast<float>(Input::PressKey(KeyCode::W)) - static_cast<float>(Input::PressKey(KeyCode::S))
+	};
+	direction_ += Input::GetLeftStick();
+
+	direction_ = direction_.Normalize();
+
+	auto GetYawFromQuaternion = [](const Quaternion& q) {
+		return std::atan2(
+			2.0f * (q.y * q.w + q.x * q.z),
+			1.0f - 2.0f * (q.x * q.x + q.y * q.y)
+		);
+	};
+
+	{	/// 方向をカメラに合わせる
+		Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(GetTrackingCamera()->GetQuaternion()));
+		Vec3 dir = Mat4::TransformNormal({ direction_.x, 0.0f, direction_.y }, matCameraRotateY);
+		direction_.x = dir.x;
+		direction_.y = dir.z;
+
+		if(direction_.x != 0 || direction_.y != 0) {
+			lastDirection_ = direction_;
+		}
+	}
+
 
 	currentBehavior_->Update();
 	SpawnWeapon();
@@ -217,6 +240,21 @@ void Player::Debug() {
 
 
 
+
+void Player::OnCollisionEnter(BaseGameObject* const _collision) {
+	if(_collision->GetTag() == "EnemyAttackCollider") {
+		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
+		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
+			nextStrongChargeCount_ = 3;
+		}
+
+
+		OneShotEffect("Effect5", NULL);
+	}
+}
+
+
+
 void Player::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
@@ -309,6 +347,7 @@ void Player::ApplyVariables() {
 		workAvoidanceBehavior_.motionTimes_.startupTime_ = vm->GetValue<float>(name, "startupTime");
 		workAvoidanceBehavior_.motionTimes_.activeTime_  = vm->GetValue<float>(name, "activeTime");
 		workAvoidanceBehavior_.motionTimes_.endLagTime_  = vm->GetValue<float>(name, "endLagTime");
+		workAvoidanceBehavior_.jastAvoidanceTime_        = vm->GetValue<float>(name, "jastAvoidanceTime");
 	}
 
 
@@ -398,6 +437,58 @@ void Player::PlayAudio(const std::string& _filePath, float _volume) {
 	audioSource_->PlayOneShot("PlayerSE/" + _filePath, _volume);
 }
 
+void Player::LoadingAnimations() {
+
+	SetAnimationModel("Player_Avoidance");
+	SetAnimationModel("Player_Walk");
+
+
+	/// ボディの先読み
+	const std::array<std::string, 3> bodyModelAnimationFilePaths{
+		"Player_WeakAttack1_1_P", "Player_WeakAttack1_2_P", "Player_WeakAttack1_3_P"
+	};
+	/// 武器の先読み
+	const std::array<std::string, 3> weaponModelAnimationFilePaths{
+		"Player_WeakAttack1_1_W", "Player_WeakAttack1_2_W", "Player_WeakAttack1_3_W"
+	};
+
+	for(size_t i = 0; i < 3; ++i) {
+		SetAnimationModel(
+			bodyModelAnimationFilePaths[i],
+			weaponModelAnimationFilePaths[i]
+		);
+	}
+
+
+	SetAnimationModel(
+		"Player_StrongAttack_5_P",
+		"Player_StrongAttack_5_W"
+	);
+
+	for(size_t i = 1; i <= 3; ++i) {
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_1_P",
+			"Player_WeakAttack" + std::to_string(i) + "_1_W"
+		);
+
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_2_P",
+			"Player_WeakAttack" + std::to_string(i) + "_2_W"
+		);
+	
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_3_P",
+			"Player_WeakAttack" + std::to_string(i) + "_3_W"
+		);
+	}
+
+
+	for(size_t i = 4; i <= 9; ++i) {
+		OneShotEffect("Effect" + std::to_string(i), 5.0f);
+	}
+
+}
+
 
 
 
@@ -422,9 +513,20 @@ void Player::SetAnimationModel(const std::string& _bodyModelFilePath, const std:
 	weaponAnimationRenderer_->ChangeAnimation(_weaponModelFilePath);
 }
 
+void Player::SetAnimationModel(
+	const std::string& _bodyModelFilePath, 
+	const std::string& _weaponModelFilePath,
+	const std::string& _effectFilePath) {
+
+	bodyAnimationRenderer_->ChangeAnimation(_bodyModelFilePath);
+	weaponAnimationRenderer_->ChangeAnimation(_weaponModelFilePath);
+	effect_->animationRenderer_->ChangeAnimation(_effectFilePath);
+}
+
 void Player::SetAnimationTotalTime(float _totalTime) {
 	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	//effect_->animationRenderer_->SetTotalTime(_totalTime, effect_->animationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Player::ResetAnimationTotal() {
@@ -437,16 +539,29 @@ void Player::ResetAnimationTotal() {
 		weaponAnimationRenderer_->GetDuration(weaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		weaponAnimationRenderer_->GetCurrentNodeAnimationKey()
 	);
+
+	
+	//effect_->animationRenderer_->SetTotalTime(
+	//	effect_->animationRenderer_->GetDuration(effect_->animationRenderer_->GetCurrentNodeAnimationKey()),
+	//	effect_->animationRenderer_->GetCurrentNodeAnimationKey()
+	//);
+
 }
 
 void Player::SetAnimationFlags(int _flags, bool _isResetTime) {
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
+	//effect_->animationRenderer_->SetAnimationFlags(_flags);
 
 	if(_isResetTime) {
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
+		//effect_->animationRenderer_->Restart();
 	}
+}
+
+void Player::OneShotEffect(const std::string& _filePath, float _totalTime) {
+	effect_->OneShotAnimation(_filePath, _totalTime);
 }
 
 float Player::GetAnimationDuration() {

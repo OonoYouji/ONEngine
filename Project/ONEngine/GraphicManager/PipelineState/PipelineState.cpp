@@ -213,7 +213,8 @@ void PipelineState::CreatePipelineState(ID3D12Device* device) {
 	/// ---------------------------------------------------
 	/// resterizer desc
 	/// ---------------------------------------------------
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+	//rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+	rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE; /// 背面カリングを切る
 
 	/// ---------------------------------------------------
 	/// blend state

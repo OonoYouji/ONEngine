@@ -192,6 +192,17 @@
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.cpp" />
+    <ClCompile Include="Game\Objects\GameManagerObject\GameManagerObject.cpp" />
+    <ClCompile Include="Game\Objects\Player\Effect\PlayerEffect.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\UIManager.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\InputUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -373,6 +384,18 @@
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.h" />
+    <ClInclude Include="Game\Objects\GameManagerObject\GameManagerObject.h" />
+    <ClInclude Include="Game\CustomMath\Flag.h" />
+    <ClInclude Include="Game\Objects\Player\Effect\PlayerEffect.h" />
+    <ClInclude Include="Game\Objects\UIManager\UIManager.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\InputUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

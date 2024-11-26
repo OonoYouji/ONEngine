@@ -180,6 +180,7 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyCollider\EnemyAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\EnemyBullet\IEnemyBullet.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
+    <ClCompile Include="Game\Objects\GameManagerObject\GameManagerObject.cpp" />
     <ClCompile Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
@@ -190,9 +191,13 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.cpp" />
+    <ClCompile Include="Game\Objects\Player\Effect\PlayerEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Background\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.cpp" />
@@ -200,6 +205,12 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\InputUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\UIManager.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -293,6 +304,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\CustomMath\Flag.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EnemyNameRenderer\EnemyNameRenderer.h" />
@@ -328,6 +340,7 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyCollider\EnemyAttackCollider.h" />
     <ClInclude Include="Game\Objects\EnemyBullet\IEnemyBullet.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
+    <ClInclude Include="Game\Objects\GameManagerObject\GameManagerObject.h" />
     <ClInclude Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
@@ -339,9 +352,13 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.h" />
+    <ClInclude Include="Game\Objects\Player\Effect\PlayerEffect.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Background\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.h" />
@@ -349,6 +366,12 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonLTUI\ButtonLTUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonRTUI\ButtonRTUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\InputUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\UIManager.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />

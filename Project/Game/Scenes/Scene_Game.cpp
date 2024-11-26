@@ -20,6 +20,8 @@
 #include "Objects/EnemyNameRenderer/EnemyNameRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
+#include "Objects/UIManager/UIManager.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
 
 /// ===================================================
@@ -29,8 +31,8 @@ void Scene_Game::Initialize(){
 
 
 	/// モデル確認用のオブジェクト
-	(new ModelPreviewObject("Effect3"))->Initialize();
-	(new ModelPreviewObject("Effect3"))->Initialize();
+	(new ModelPreviewObject("Effect7"))->Initialize();
+	//(new ModelPreviewObject("Effect3"))->Initialize();
 
 
 	/// object creata
@@ -49,8 +51,12 @@ void Scene_Game::Initialize(){
 	enemyHPRenderer->SetEnemy(enemy);
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
+	UIManager* uiManager = new UIManager();
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
+
+	gameManager_ = new GameManagerObject();
+
 
 	/// 初期化する
 	player->SetTrackingCamera(trackingCamera);
@@ -66,9 +72,15 @@ void Scene_Game::Initialize(){
 	enemyAttackCollider->Initialize();
 
 	bbObjectManager->Initialize();
+	uiManager->Initialize();
+	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
+	gameManager_->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 
+
+	gameManager_->SetPlayer(player);
+	gameManager_->SetEnemy(enemy);
 
 	directionalLight_->SetDirection({0.0,-1.0f,0.0f});
 
@@ -92,7 +104,26 @@ void Scene_Game::Initialize(){
 /// ===================================================
 void Scene_Game::Update(){
 
+#ifdef _DEBUG
 	if(Input::TriggerKey(KeyCode::Escape)){
-		SceneManager::GetInstance()->SetNextScene(TITLE);
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+		gameManager_->SetFlag("isGameOver", true);
 	}
+
+	
+	if(Input::TriggerKey(KeyCode::F1)){
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+		gameManager_->SetFlag("isGameClear", true);
+	}
+#endif // _DEBUG
+
+
+	if(gameManager_->GetFlag("isGameClear").Trigger()) {
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+	}
+	
+	if(gameManager_->GetFlag("isGameOver").Trigger()) {
+		SceneManager::GetInstance()->SetNextScene(RESULT);
+	}
+
 }

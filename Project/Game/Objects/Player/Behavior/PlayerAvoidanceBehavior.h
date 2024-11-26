@@ -27,4 +27,8 @@ private:
 	Vector3 afterPos_;
 	const Player::WorkAvoidanceBehavior& workInBehavior_;
 	const Player::WorkRootBehavior& workRootBehavior_;
+public:
+
+	float GetJastAvoidanceTime() { return jastAvoidanceTime_; }
+
 };

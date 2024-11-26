@@ -1,5 +1,7 @@
 #include "EnemyRangedAttack.h"
 
+#include <algorithm>
+
 #include "Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
@@ -14,12 +16,18 @@
 EnemyBehaviorTree::RangedAttackStartup::RangedAttackStartup(Enemy* enemy,WorkRangedAttackAction* worker)
 	:EnemyBehaviorTree::Action(enemy){
 	worker_ = worker;
+	currentTime_ = 0.0f;
+	startupTime_ = worker->motionTimes_.startupTime_;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackStartup::tick(){
-	leftTime_ -= Time::DeltaTime();
+	currentTime_ += Time::DeltaTime();
 
-	if(leftTime_ <= 0.0f){
+	float t = (std::clamp)(currentTime_ / startupTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
+
+	if(currentTime_ >= startupTime_){
 		// ここで Bullet Emitter 生成.
 		new EnemyBulletEmitter(enemy_->GetPlayer(),enemy_,worker_->motionTimes_.activeTime_,worker_);
 		return EnemyBehaviorTree::Status::SUCCESS;
@@ -49,12 +57,15 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackAction::tick(){
 EnemyBehaviorTree::RangedAttackEndLag::RangedAttackEndLag(Enemy* enemy,float endLagTime)
 	:EnemyBehaviorTree::Action(enemy){
 	leftTime_ = endLagTime;
+	endLagTime_ = endLagTime;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::RangedAttackEndLag::tick(){
 	leftTime_ -= Time::DeltaTime();
 
-	// Enemyは動かない
+	float t = (std::clamp)(leftTime_ / endLagTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
 
 	if(leftTime_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;
@@ -76,5 +87,5 @@ EnemyBehaviorTree::RangedAttack::RangedAttack(Enemy* enemy,WorkRangedAttackActio
 	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.activeTime_));
 
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_3",worker->motionTimes_.endLagTime_,true));
-	addChild(std::make_unique<RangedAttackAction>(enemy,worker->motionTimes_.endLagTime_));
+	addChild(std::make_unique<RangedAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }

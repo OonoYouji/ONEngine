@@ -50,6 +50,7 @@ namespace EnemyBehaviorTree{
 		Status tick()override;
 	private:
 		float leftTime_;
+		float endLagTime_;
 	};
 
 	class TackleAttack

@@ -31,7 +31,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		std::string animation_[3];
+		std::string animation_[4];
 	};
 
 	class EnemyAwakening

@@ -20,13 +20,13 @@ namespace EnemyBehaviorTree{
 												   float startupTime,
 												   float maxRotateYSpeed)
 		:Action(enemy){
-		worker_ = worker;
-		leftTime_ = startupTime;
+		strtupTime_ = startupTime;
+		leftTime_ = 0.0f;
 		maxRotateYSpeed_ = maxRotateYSpeed;
 	}
 
 	Status LongRangeAttackStartup::tick(){
-		leftTime_ -= Time::DeltaTime();
+		leftTime_ += Time::DeltaTime();
 
 		{// RotateUpdate
 			Vector3 diffP2E = enemy_->GetPlayer()->GetPosition() - enemy_->GetPosition();
@@ -55,8 +55,12 @@ namespace EnemyBehaviorTree{
 			enemy_->SetRotateY(enemy_->GetRotate().y + newRotateY);
 		}
 
-		if(leftTime_ <= 0.0f){
-			new EnemyBulletEmitter(enemy_->GetPlayer(),enemy_,worker_->motionTimes_.activeTime_,worker_);
+		float t = (std::clamp)(leftTime_ / strtupTime_,0.0f,1.0f);
+
+		enemy_->SpawnWeapon(t);
+		enemy_->SpawnSubWeapon(t);
+
+		if(leftTime_ >= strtupTime_){
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;
@@ -118,9 +122,16 @@ namespace EnemyBehaviorTree{
 	LongRangeAttackEndLag::LongRangeAttackEndLag(Enemy* enemy,float endLagTime)
 		:Action(enemy){
 		leftTime_  = endLagTime;
+		endLagTime_ = endLagTime;
 	}
 	Status LongRangeAttackEndLag::tick(){
 		leftTime_ -= Time::DeltaTime();
+
+		float t = (std::clamp)(leftTime_ / endLagTime_,0.0f,1.0f);
+
+		// leftTime のはじめが endlag だから 1-t ではない
+		enemy_->SpawnWeapon(t);
+		enemy_->SpawnSubWeapon(t);
 
 		if(leftTime_ <= 0.0f){
 			return Status::SUCCESS;

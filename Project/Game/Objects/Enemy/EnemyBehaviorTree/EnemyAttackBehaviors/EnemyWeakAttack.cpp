@@ -33,12 +33,23 @@ EnemyBehaviorTree::WeakAttackAction::WeakAttackAction(Enemy* enemy,float activeT
 	:EnemyBehaviorTree::Action(enemy){
 	damage_ = damage;
 	leftTime_ = activeTime;
+
+	currentColliderSwitchingTime_ = 0.0f; 
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 	leftTime_ -= Time::DeltaTime();
 
 	enemy_->SetDamage(damage_);
+
+	enemy_->TerminateAttackCollider();
+	// SwitchingTime_ で collider を on off
+	// isActiveCollider をtime で切り替える
+	currentColliderSwitchingTime_ -= Time::DeltaTime();
+	if(currentColliderSwitchingTime_ <= 0.0f){
+		currentColliderSwitchingTime_ = colliderSwitchingTime_;
+		enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK);
+	}
 
 	if(leftTime_ <= 0.0f){
 		leftTime_ = 0.0f;
@@ -47,6 +58,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
+
 	return EnemyBehaviorTree::Status::RUNNING;
 }
 #pragma endregion

@@ -1,12 +1,12 @@
 {
     "short_strong_1": {
         "Type": 3,
-        "activeTime": 0.8999999761581421,
+        "activeTime": 1.2999999523162842,
         "collisionStartTime": 0.0,
         "collisionTime": 0.17000000178813934,
         "damage": 30.0,
         "endLagTime": 1.600000023841858,
         "maxRotateY2Player": 6.2829999923706055,
-        "startupTime": 0.8999999761581421
+        "startupTime": 1.2000000476837158
     }
 }

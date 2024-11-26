@@ -2,11 +2,15 @@
     "Enemy_Status": {
         "HP": 10000.0,
         "HP_HIGHTE": 10000.0,
-        "HP_LOW": 9823.853515625,
-        "HP_NORMAL": 9867.5146484375,
+        "HP_LOW": 5056.23291015625,
+        "HP_NORMAL": 7502.97900390625,
         "LONG_RANGE": 105.80000305175781,
         "MIDDLE_RANGE": 23.200000762939453,
         "SHORT_RANGE": 13.0,
+        "spawnSubWeaponUvEndPosY": 1.0,
+        "spawnSubWeaponUvStartPosY": 0.3959999978542328,
+        "spawnWeaponUvEndPosY": 1.0,
+        "spawnWeaponUvStartPosY": 0.39800000190734863,
         "speed": 0.0
     }
 }

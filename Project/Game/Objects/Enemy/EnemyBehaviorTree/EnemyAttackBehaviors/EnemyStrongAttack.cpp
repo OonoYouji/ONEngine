@@ -58,7 +58,9 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackStartup::InitRotate(){
 EnemyBehaviorTree::Status  EnemyBehaviorTree::StrongAttackStartup::Update(){
 	currentTime_ += Time::DeltaTime();
 
-	float t = currentTime_ / startupTime_;
+	float t = (std::clamp)(currentTime_ / startupTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
 
 	enemy_->SetRotateY(beforeRotateY_ + std::lerp(0.0f,rotateP2E_,t));
 
@@ -115,10 +117,15 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 EnemyBehaviorTree::StrongAttackEndLag::StrongAttackEndLag(Enemy* enemy,float endLagTime)
 	:EnemyBehaviorTree::Action(enemy){
 	currentTime_ = endLagTime;
+	endLagTime_ = endLagTime;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackEndLag::tick(){
 	currentTime_ -= Time::DeltaTime();
+
+	float t = (std::clamp)(currentTime_ / endLagTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
 
 	if(currentTime_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;

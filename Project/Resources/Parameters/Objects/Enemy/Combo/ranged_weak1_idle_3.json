@@ -3,7 +3,7 @@
         "ComboSize": 3,
         "HpState": 2,
         "Index_0": "targetting_rangedAttack_1",
-        "Index_1": "long_weak1_1",
+        "Index_1": "default_weak1",
         "Index_2": "shortIdle_2",
         "RangeType": 2
     }

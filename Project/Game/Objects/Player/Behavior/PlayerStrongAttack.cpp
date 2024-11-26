@@ -34,6 +34,21 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 
 	host_->PlayAudio("strongAttack" + std::to_string(_phase) + ".wav", 0.5f);
 
+	host_->SetNextStrongChargeCount(0);
+
+
+	if(_phase != 3) {
+
+		host_->OneShotEffect(
+			"Effect9", maxTime_
+		);
+	} else {
+
+		host_->OneShotEffect(
+			"Effect9", maxTime_
+		);
+	}
+
 }
 
 void PlayerStrongAttack::Update() {

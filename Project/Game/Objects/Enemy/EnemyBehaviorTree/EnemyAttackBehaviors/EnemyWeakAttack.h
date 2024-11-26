@@ -29,6 +29,10 @@ namespace EnemyBehaviorTree{
 	private:
 		float leftTime_;
 		float damage_;
+
+		const float colliderSwitchingTime_ = 0.5f;
+		float currentColliderSwitchingTime_ = 0.0f;
+		bool isActiveCollider_;
 	};
 
 	class WeakAttackEndLag

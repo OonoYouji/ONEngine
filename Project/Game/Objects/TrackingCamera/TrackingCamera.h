@@ -43,6 +43,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	float speed_;
+
 
 	Transform offsetTransform_;
 	float shakeTime_, shakeMaxTime_;

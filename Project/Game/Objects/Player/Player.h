@@ -66,6 +66,10 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
+
 	void AddVariables();
 	void LoadVariables();
 	void ApplyVariables();
@@ -80,6 +84,9 @@ public:
 	void ClampStage();
 
 	void PlayAudio(const std::string& _filePath,float _volume);
+
+
+	void LoadingAnimations();
 
 private:
 
@@ -109,12 +116,14 @@ private:
 	float startPosY_,endPosY_;
 
 
-	float stageRange_ = 50.0f;;
+	float stageRange_ = 50.0f;
+	int nextStrongChargeCount_;
 
 	/// ---------------------------------------------------
 	/// 
 	/// ---------------------------------------------------
 
+	Vec2 direction_;
 	Vec2 lastDirection_; /// 最後に向いている方向
 
 
@@ -124,7 +133,7 @@ private:
 
 	WorkRootBehavior                      workRootBehavior_;
 	WorkAvoidanceBehavior                 workAvoidanceBehavior_;
-	std::array<WorkWeakAttackBehavior,3> workWeakAttackBehavior_;
+	std::array<WorkWeakAttackBehavior,3>  workWeakAttackBehavior_;
 	StrongAttackBehavior                  strongAttackBehavior_;
 
 	/// ---------------------------------------------------
@@ -136,6 +145,7 @@ private:
 	class PlayerAttackCollider* attackCollider_  = nullptr;
 	class EntityShadow* entityShadow_    = nullptr;
 	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
+	class PlayerEffect* effect_;
 
 public:
 
@@ -171,18 +181,33 @@ public:
 	class Enemy* GetEnemy() const{ return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const{ return attackCollider_; }
 	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const{ return strongAttackChargeEffect_; }
+	class PlayerEffect* GetEffect() const{ return effect_; }
 
 	void SetAnimationModel(const std::string& _filePath);
-	void SetAnimationModel(const std::string& _bodyModelFilePath,const std::string& _weaponModelFilePath);
+	void SetAnimationModel(
+		const std::string& _bodyModelFilePath,
+		const std::string& _weaponModelFilePath
+	);
+
+	void SetAnimationModel(
+		const std::string& _bodyModelFilePath,
+		const std::string& _weaponModelFilePath,
+		const std::string& _effectFilePath
+	);
+
 	void SetAnimationTotalTime(float _totalTime);
 	void ResetAnimationTotal();
 
 	void SetAnimationFlags(int _flags,bool _isResetTime = true);
 
+	void OneShotEffect(const std::string& _filePath, float _totalTime);
+
 	float GetAnimationDuration();
 
 	const Vec2& GetLastDirection() const{ return lastDirection_; }
 	void SetLastDirection(const Vec2& _lastDirection){ lastDirection_ = _lastDirection; }
+
+	const Vec2& GetDirection() const { return direction_; }
 
 	void SetIsActiveWeapon(bool _isActive);
 
@@ -192,4 +217,7 @@ public:
 	void SetAttackMode(int _mode);
 
 	float GetStageRange()const{ return stageRange_; }
+
+	int GetNextStrongChargeCount() const { return nextStrongChargeCount_; }
+	void SetNextStrongChargeCount(int _count) { nextStrongChargeCount_ = _count; }
 };
