@@ -16,9 +16,14 @@
 #include "../Player.h"
 #include "../Effect/PlayerStrongAttackChargeEffect.h"
 
+/// this behavior
 #include "PlayerRootBehavior.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerStrongAttack.h"
+
+/// math
+#include "Math/LerpShortAngle.h"
+
 
 PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, float _nextChargeTime) : IPlayerBehavior(_player) {
 
@@ -101,6 +106,38 @@ void PlayerStrongAttackCharge::Update() {
 	isFinish_ = false;
 	isFinish_ |= Input::ReleaseKey(KeyCode::K);
 	isFinish_ |= Input::ReleasePadButton(PadCode::A);
+
+
+
+	{	// Rotate Update
+		Vec2 direction, lastDir;
+
+		direction = {
+			static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
+			static_cast<float>(Input::PressKey(KeyCode::W)) - static_cast<float>(Input::PressKey(KeyCode::S))
+		};
+		direction += Input::GetLeftStick();
+		direction = direction.Normalize();
+
+
+		if(direction.x != 0 || direction.y != 0) {
+			lastDir = direction;
+			host_->SetLastDirection(lastDir);
+		}
+		Vector3 rotate = host_->GetRotate();
+
+		/// 回転のスピードはここで調整
+		rotate.y = LerpShortAngle(
+			rotate.y, std::atan2(lastDir.x, lastDir.y),
+			host_->GetWorkRootBehavior().rotateLerpSensitivity_
+		);
+
+		host_->SetRotate(rotate);
+	}
+
+
+
+
 
 	/// 入力をやめた瞬間が攻撃する瞬間
 	if(isFinish_) {

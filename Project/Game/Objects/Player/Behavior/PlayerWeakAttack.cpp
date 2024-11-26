@@ -13,6 +13,9 @@
 #include "PlayerRootBehavior.h"
 #include "../Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 
+/// math
+#include "Math/LerpShortAngle.h"
+
 
 PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 	IPlayerBehavior(player),
@@ -71,6 +74,10 @@ void PlayerWeakAttack::Update() {
 }
 
 void PlayerWeakAttack::StartupUpdate() {
+
+	
+
+
 	if(currentTime_ >= workInBehavior_.motionTimes_.startupTime_) {
 		currentTime_ = 0.0f;
 
@@ -129,6 +136,36 @@ void PlayerWeakAttack::WeakAttack() {
 
 void PlayerWeakAttack::EndLagUpdate() {
 	if(nextBehavior_ == static_cast<int>(NextBehavior::combo)) {
+
+
+		{	// Rotate Update
+			Vec2 direction, lastDir;
+
+			direction = {
+				static_cast<float>(Input::PressKey(KeyCode::D)) - static_cast<float>(Input::PressKey(KeyCode::A)),
+				static_cast<float>(Input::PressKey(KeyCode::W)) - static_cast<float>(Input::PressKey(KeyCode::S))
+			};
+			direction += Input::GetLeftStick();
+			direction = direction.Normalize();
+
+
+			if(direction.x != 0 || direction.y != 0) {
+				lastDir = direction;
+				host_->SetLastDirection(lastDir);
+			}
+			Vector3 rotate = host_->GetRotate();
+
+			/// 回転のスピードはここで調整
+			rotate.y = LerpShortAngle(
+				rotate.y, std::atan2(lastDir.x, lastDir.y),
+				host_->GetWorkRootBehavior().rotateLerpSensitivity_
+			);
+
+			host_->SetRotate(rotate);
+		}
+
+
+
 		host_->SetIsActiveWeapon(false);
 
 		std::unique_ptr<IPlayerBehavior> nextBehavior;
