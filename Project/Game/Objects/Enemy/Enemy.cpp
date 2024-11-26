@@ -594,7 +594,7 @@ void Enemy::LoadAllAction(){
 
 	variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,"Enemy_Actions");
 	int32_t actionSize =  variableManager->GetValue<int>("Enemy_Actions","ActionSize");
-	for(size_t i = 0; i <= actionSize; ++i){
+	for(size_t i = 0; i < actionSize; ++i){
 		std::string actionName = variableManager->GetValue<std::string>("Enemy_Actions","Index_" + std::to_string(i));
 		variableManager->LoadSpecificGroupsToJson(enemyActionDirectory,actionName);
 		workEnemyActionVariables_[actionName] = std::move(CreateWorker(static_cast<ActionTypes>(variableManager->GetValue<int>(actionName,"Type"))));
