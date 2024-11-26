@@ -14,7 +14,7 @@ Stage::~Stage() {}
 
 void Stage::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Field");
+	meshRenderer_->SetModel("Stage");
 
 	meshRenderer_->SetMaterial("FieldTex.png");
 	meshRenderer_->SetUVScale(Vec2(3.0f, 3.0f));
