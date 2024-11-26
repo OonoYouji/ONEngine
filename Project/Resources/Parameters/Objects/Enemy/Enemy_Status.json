@@ -7,6 +7,10 @@
         "LONG_RANGE": 105.80000305175781,
         "MIDDLE_RANGE": 23.200000762939453,
         "SHORT_RANGE": 13.0,
+        "spawnSubWeaponUvEndPosY": 1.0,
+        "spawnSubWeaponUvStartPosY": 0.0,
+        "spawnWeaponUvEndPosY": 1.0,
+        "spawnWeaponUvStartPosY": 0.0,
         "speed": 0.0
     }
 }

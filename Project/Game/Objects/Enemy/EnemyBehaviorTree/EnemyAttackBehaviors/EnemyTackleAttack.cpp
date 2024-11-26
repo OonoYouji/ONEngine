@@ -28,6 +28,10 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
 		enemy_->SetRotateY(std::lerp(enemy_->GetRotate().y,atan2(diffE2P.x,diffE2P.z),0.4f));
 	}
 
+	float t = (std::clamp)(currentTime_ / startupTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
+
 	if(currentTime_ >= startupTime_){
 		// 当たり判定を有効に
 		enemy_->ActivateAttackCollider(ActionTypes::TACKLE_ATTACK);
@@ -71,9 +75,14 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 EnemyBehaviorTree::TackleAttackEndLag::TackleAttackEndLag(Enemy* enemy,float endLagTime)
 	: EnemyBehaviorTree::Action(enemy){
 	leftTime_ = endLagTime;
+	endLagTime_ = endLagTime;
 }
 EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackEndLag::tick(){
 	leftTime_ -= Time::DeltaTime();
+
+	float t = (std::clamp)(leftTime_ / endLagTime_,0.0f,1.0f);
+
+	enemy_->SpawnWeapon(t);
 
 	if(leftTime_ <= 0.0f){
 		return EnemyBehaviorTree::Status::SUCCESS;

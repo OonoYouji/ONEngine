@@ -145,6 +145,15 @@ void Enemy::Debug(){
 			hp_ = maxHp_;
 		}
 
+		ImGui::Text("Spawn Weapon");
+		ImGui::SliderFloat("spawnWeaponUvStartY",&spawnWeaponUvStartPosY_,0.0f,1.0f);
+		ImGui::SliderFloat("spawnWeaponUvEndY",&spawnWeaponUvEndPosY_,0.0f,1.0f);
+
+		ImGui::Text("Spawn SubWeapon");
+		ImGui::SliderFloat("spawnSubWeaponUvStartY",&spawnSubWeaponUvStartPosY_,0.0f,1.0f);
+		ImGui::SliderFloat("spawnSubWeaponUvEndY",&spawnSubWeaponUvEndPosY_,0.0f,1.0f);
+
+
 		ImGui::TreePop();
 	}
 
@@ -508,6 +517,13 @@ void Enemy::SaveStatus(){
 		variableManager->SetValue<float>("Enemy_Status",wordByHpState[hpLow],thresholdByHpState_[hpLow]);
 	}
 
+	{
+		variableManager->SetValue<float>("Enemy_Status","spawnWeaponUvStartPosY",spawnWeaponUvStartPosY_);
+		variableManager->SetValue<float>("Enemy_Status","spawnWeaponUvEndPosY",spawnWeaponUvEndPosY_);
+
+		variableManager->SetValue<float>("Enemy_Status","spawnSubWeaponUvStartPosY",spawnSubWeaponUvStartPosY_);
+		variableManager->SetValue<float>("Enemy_Status","spawnSubWeaponUvEndPosY",spawnSubWeaponUvEndPosY_);
+	}
 	variableManager->SaveSpecificGroupsToJson(enemyJsonDirectory,"Enemy_Status");
 }
 
@@ -725,6 +741,30 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 
 	this->effectAnimationRenderer_->isActive = true;
 	this->effectAnimationRenderer_->ChangeAnimation(effect);
+}
+
+void Enemy::SpawnWeapon(float t){
+	std::vector<Material>& materials = weaponAnimationRenderer_->GetMaterials();
+	for(auto& mate : materials){
+		float posX = mate.GetPosition().x;
+		mate.SetPosition(
+			{posX,std::lerp(spawnWeaponUvStartPosY_,spawnWeaponUvEndPosY_,t)}
+		);
+
+		mate.UpdateMatrix();
+	}
+}
+
+void Enemy::SpawnSubWeapon(float t){
+	std::vector<Material>& materials = subWeaponAnimationRenderer_->GetMaterials();
+	for(auto& mate : materials){
+		float posX = mate.GetPosition().x;
+		mate.SetPosition(
+			{posX,std::lerp(spawnSubWeaponUvStartPosY_,spawnSubWeaponUvEndPosY_,t)}
+		);
+
+		mate.UpdateMatrix();
+	}
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){

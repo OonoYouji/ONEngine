@@ -111,6 +111,13 @@ private:
 	float maxHp_;
 	float hp_;
 
+	// 武器がスポーンする とき の uv 座標
+	float spawnWeaponUvEndPosY_;
+	float spawnWeaponUvStartPosY_;
+
+	float spawnSubWeaponUvEndPosY_;
+	float spawnSubWeaponUvStartPosY_;
+
 	// 各 アクションで セットするので 基本は 0
 	float currentDamage_ = 0.0f;
 	HpState currentHpState_;
@@ -170,6 +177,9 @@ public:
 							const std::string& weaponFilePath,
 							const std::string& subWeapon
 							,const std::string& effect);
+
+	void SpawnWeapon(float t);
+	void SpawnSubWeapon(float t);
 
 	void SetAnimationTotalTime(float _totalTime);
 
