@@ -1,7 +1,7 @@
 {
     "default_LongRangeAttack": {
         "Type": 7,
-        "activeTime": 0.0,
+        "activeTime": 2.200000047683716,
         "bulletFireInterval": 0.6000000238418579,
         "bulletScale": 1.0,
         "bulletSpawnOffsetZ": 1.5,
@@ -9,9 +9,9 @@
         "collisionStartTime": 0.03099999949336052,
         "collisionTime": 0.20200000703334808,
         "damage": 10.0,
-        "endLagTime": 0.0,
+        "endLagTime": 3.0999999046325684,
         "maxRotateY2Player": 0.0,
         "rotateMaxSpeed": 16.799999237060547,
-        "startupTime": 0.0
+        "startupTime": 1.2999999523162842
     }
 }
