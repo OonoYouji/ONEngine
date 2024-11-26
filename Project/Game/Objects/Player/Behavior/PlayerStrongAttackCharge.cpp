@@ -74,10 +74,19 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	}
 
 
-	if(currentPhase_ != THIRD) {	/// 値のio
+	{	/// 値の io
+
 		VariableManager* vm = VariableManager::GetInstance();
 		const std::string groupName = "StrongAttackBehavior";
-		nextTime_ = vm->GetValue<float>(groupName, "nextChargeTime" + std::to_string(currentPhase_));
+
+		if(currentPhase_ != THIRD) {
+			nextTime_ = vm->GetValue<float>(groupName, "nextChargeTime" + std::to_string(currentPhase_));
+		} else {
+
+			/// repeat timeをゲット
+			repeatMaxTime_ = vm->GetValue<float>(groupName, "thirdSERepeatTime");
+			repeatTime_ = repeatMaxTime_;
+		}
 	}
 
 
@@ -138,6 +147,14 @@ void PlayerStrongAttackCharge::Update() {
 
 	/// phaseが thirdの時に効果音をリピート再生する
 
+	if(currentPhase_ == THIRD) {
+		repeatTime_ -= Time::DeltaTime();
+		if(repeatTime_ <= 0.0f) {
+			repeatTime_ = repeatMaxTime_;
+
+			host_->PlayAudio("strongAttackCharge3.wav", 0.5f);
+		}
+	}
 
 }
 

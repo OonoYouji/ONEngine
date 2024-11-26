@@ -284,7 +284,8 @@ void Player::AddVariables() {
 		vm->AddValue(groupName, "nextChargeTime1", strongAttackBehavior_.nextChargeTime_[1]);
 		vm->AddValue(groupName, "nextChargeTime2", strongAttackBehavior_.nextChargeTime_[2]);
 
-		vm->AddValue(groupName, "actionTime", strongAttackBehavior_.actionTime_);
+		vm->AddValue(groupName, "actionTime",        strongAttackBehavior_.actionTime_);
+		vm->AddValue(groupName, "thirdSERepeatTime", strongAttackBehavior_.thirdSERepeatTime_);
 	}
 
 
