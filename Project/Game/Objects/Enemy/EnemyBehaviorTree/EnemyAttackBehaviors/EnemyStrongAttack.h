@@ -58,6 +58,7 @@ namespace EnemyBehaviorTree{
 		Status tick()override;
 	private:
 		float currentTime_;
+		float endLagTime_;
 	};
 
 	class StrongAttack

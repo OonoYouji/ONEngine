@@ -94,11 +94,10 @@ private:
 	Player* player_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
-	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
-	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
+	AnimationRenderer* bodyAnimationRenderer_ 	   = nullptr;
+	AnimationRenderer* weaponAnimationRenderer_    = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
-
-	std::unordered_map<std::string,AnimationRenderer*> animations_;
+	AnimationRenderer* effectAnimationRenderer_    = nullptr;
 
 	/// <summary>
 	/// 本体のコライダー これに当たるとダメージを受ける
@@ -111,6 +110,13 @@ private:
 
 	float maxHp_;
 	float hp_;
+
+	// 武器がスポーンする とき の uv 座標
+	float spawnWeaponUvEndPosY_;
+	float spawnWeaponUvStartPosY_;
+
+	float spawnSubWeaponUvEndPosY_;
+	float spawnSubWeaponUvStartPosY_;
 
 	// 各 アクションで セットするので 基本は 0
 	float currentDamage_ = 0.0f;
@@ -159,8 +165,21 @@ private:
 
 public:
 	void SetAnimationRender(const std::string& filePath);
-	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath);
-	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath,const std::string& subWeapon);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath,
+							const std::string& subWeapon);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath,
+							const std::string& subWeapon
+							,const std::string& effect);
+
+	void SpawnWeapon(float t);
+	void SpawnSubWeapon(float t);
 
 	void SetAnimationTotalTime(float _totalTime);
 

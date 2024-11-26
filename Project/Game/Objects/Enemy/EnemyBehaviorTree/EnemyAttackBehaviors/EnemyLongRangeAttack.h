@@ -18,6 +18,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		float strtupTime_;
 		float leftTime_;
 
 		float maxRotateYSpeed_;
@@ -31,6 +32,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+
 		float leftTime_;
 		float leftBulletSpawnTime_;
 
@@ -45,6 +47,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		float endLagTime_;
 		float leftTime_;
 	};
 
