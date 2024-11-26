@@ -198,16 +198,16 @@ void TrackingCamera::LockOnToEnemy() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			Time::DeltaTime() * 1.5f * -leftStick.y,
-			Time::DeltaTime() * 1.5f * leftStick.x,
+			Time::DeltaTime() * speed_ * -leftStick.y,
+			Time::DeltaTime() * speed_* leftStick.x,
 			0.0f
 		};
 	} else {
 
 		/// カメラの回転 mouse
 		cameraRotateValue += {
-			Time::DeltaTime() * 1.5f * Input::MouseVelocity().Normalize().y,
-			Time::DeltaTime() * 1.5f * Input::MouseVelocity().Normalize().x,
+			Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().y,
+			Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().x,
 			0.0f
 		};
 	}
@@ -354,16 +354,16 @@ void TrackingCamera::LockOnToPlayer() {
 		/// カメラの回転 game pad
 		Vec2 leftStick = Input::GetRightStick().Normalize();
 		cameraRotateValue += {
-			1.5f * -leftStick.y,
-			1.5f * leftStick.x,
+			Time::DeltaTime() * speed_ * -leftStick.y,
+			Time::DeltaTime() * speed_ * leftStick.x,
 			0.0f
 		};
 
 	} else {
 
 		cameraRotateValue += {
-			3.0f * Input::MouseVelocity().Normalize().y,
-			3.0f * Input::MouseVelocity().Normalize().x,
+			Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().y,
+			Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().x,
 			0.0f
 		};
 	}
@@ -533,9 +533,10 @@ void TrackingCamera::AddVariables() {
 	vm->AddValue(groupName, "toTargetLerpMaxTime", toTargetLerpMaxTime_);
 	vm->AddValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
 	vm->AddValue(groupName, "cameraOffsetLenght", cameraOffsetLenght_);
-	vm->AddValue(groupName, "lenScaleFactorMin", lenScaleFactorMin_);
-	vm->AddValue(groupName, "lenScaleFactorMax", lenScaleFactorMax_);
+	vm->AddValue(groupName, "lenScaleFactorMin",  lenScaleFactorMin_);
+	vm->AddValue(groupName, "lenScaleFactorMax",  lenScaleFactorMax_);
 	vm->AddValue(groupName, "cameraHeightOffset", cameraHeightOffset_);
+	vm->AddValue(groupName, "speed",              speed_);
 
 	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", groupName);
 
@@ -557,6 +558,7 @@ void TrackingCamera::ApplyVariables() {
 	lenScaleFactorMin_       = vm->GetValue<float>(groupName, "lenScaleFactorMin");
 	lenScaleFactorMax_       = vm->GetValue<float>(groupName, "lenScaleFactorMax");
 	cameraHeightOffset_      = vm->GetValue<Vec3>(groupName,  "cameraHeightOffset");
+	speed_                   = vm->GetValue<float>(groupName,  "speed");
 
 	cameraOffsetDirection_ = cameraOffsetDirection_.Normalize();
 	vm->SetValue(groupName, "cameraOffsetDirection", cameraOffsetDirection_);
