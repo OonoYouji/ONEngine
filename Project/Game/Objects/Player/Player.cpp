@@ -60,21 +60,8 @@ void Player::Initialize() {
 
 	SetAnimationFlags(0);
 
-	/// ボディの先読み
-	const std::array<std::string, 3> bodyModelAnimationFilePaths{
-		"Player_WeakAttack1_1_P", "Player_WeakAttack1_2_P", "Player_WeakAttack1_3_P"
-	};
-	/// 武器の先読み
-	const std::array<std::string, 3> weaponModelAnimationFilePaths{
-		"Player_WeakAttack1_1_W", "Player_WeakAttack1_2_W", "Player_WeakAttack1_3_W"
-	};
-
-	for(size_t i = 0; i < 3; ++i) {
-		SetAnimationModel(
-			bodyModelAnimationFilePaths[i],
-			weaponModelAnimationFilePaths[i]
-		);
-	}
+	/// アニメーションを先に読ませる
+	LoadingAnimations();
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
@@ -448,6 +435,58 @@ void Player::ClampStage() {
 
 void Player::PlayAudio(const std::string& _filePath, float _volume) {
 	audioSource_->PlayOneShot("PlayerSE/" + _filePath, _volume);
+}
+
+void Player::LoadingAnimations() {
+
+	SetAnimationModel("Player_Avoidance");
+	SetAnimationModel("Player_Walk");
+
+
+	/// ボディの先読み
+	const std::array<std::string, 3> bodyModelAnimationFilePaths{
+		"Player_WeakAttack1_1_P", "Player_WeakAttack1_2_P", "Player_WeakAttack1_3_P"
+	};
+	/// 武器の先読み
+	const std::array<std::string, 3> weaponModelAnimationFilePaths{
+		"Player_WeakAttack1_1_W", "Player_WeakAttack1_2_W", "Player_WeakAttack1_3_W"
+	};
+
+	for(size_t i = 0; i < 3; ++i) {
+		SetAnimationModel(
+			bodyModelAnimationFilePaths[i],
+			weaponModelAnimationFilePaths[i]
+		);
+	}
+
+
+	SetAnimationModel(
+		"Player_StrongAttack_5_P",
+		"Player_StrongAttack_5_W"
+	);
+
+	for(size_t i = 1; i <= 3; ++i) {
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_1_P",
+			"Player_WeakAttack" + std::to_string(i) + "_1_W"
+		);
+
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_2_P",
+			"Player_WeakAttack" + std::to_string(i) + "_2_W"
+		);
+	
+		SetAnimationModel(
+			"Player_WeakAttack" + std::to_string(i) + "_3_P",
+			"Player_WeakAttack" + std::to_string(i) + "_3_W"
+		);
+	}
+
+
+	for(size_t i = 4; i <= 9; ++i) {
+		OneShotEffect("Effect" + std::to_string(i), 5.0f);
+	}
+
 }
 
 

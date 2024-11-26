@@ -6,7 +6,8 @@
 #include "Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
-#include "Objects/EnemyBullet/LongRangeBullet.h"
+#include "Objects/EnemyBullet/IEnemyBullet.h"
+#include "Objects/EnemyBulletEmitter/EnemyBulletEmitter.h"
 #include "Objects/Player/Player.h"
 
 #include "FrameManager/Time.h"
@@ -15,6 +16,7 @@ namespace EnemyBehaviorTree{
 
 #pragma region"Startup"
 	LongRangeAttackStartup::LongRangeAttackStartup(Enemy* enemy,
+												   WorkLongRangeAttackAction* worker,
 												   float startupTime,
 												   float maxRotateYSpeed)
 		:Action(enemy){
@@ -53,7 +55,6 @@ namespace EnemyBehaviorTree{
 			enemy_->SetRotateY(enemy_->GetRotate().y + newRotateY);
 		}
 
-
 		float t = (std::clamp)(leftTime_ / strtupTime_,0.0f,1.0f);
 
 		enemy_->SpawnWeapon(t);
@@ -79,7 +80,6 @@ namespace EnemyBehaviorTree{
 	Status LongRangeAttackAction::tick(){
 		{
 			leftTime_ -= Time::DeltaTime();
-			leftBulletSpawnTime_ -= Time::DeltaTime();
 		}
 
 		{// RotateUpdate
@@ -107,26 +107,6 @@ namespace EnemyBehaviorTree{
 			}
 
 			enemy_->SetRotateY(enemy_->GetRotate().y + newRotateY);
-		}
-
-		{
-			if(leftBulletSpawnTime_ <= 0.0f){
-				// SpawnBullet
-				LongRangeBullet* newBullet = new LongRangeBullet();
-				newBullet->Initialize();
-				Matrix4x4 rotateY = Matrix4x4::MakeRotateY(enemy_->GetRotate().y);
-				Vector3 enemyDir = Matrix4x4::Transform(
-					{0.0f,0.0f,1.0f},
-					rotateY
-				);
-				newBullet->SetDamage(worker_->damage_);
-				newBullet->SetLifeTime(15.0f);
-				newBullet->SetScale({worker_->bulletScale_,worker_->bulletScale_,worker_->bulletScale_});
-				newBullet->SetPosition(enemy_->GetPosition() + (enemyDir * worker_->bulletSpawnOffsetZ_));
-				newBullet->SetVelocityXZ(Vector2(enemyDir.x,enemyDir.z).Normalize() * worker_->bulletSpeed_);
-
-				leftBulletSpawnTime_ = worker_->bulletFireInterval_;
-			}
 		}
 
 		{
@@ -170,6 +150,7 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "1",worker->motionTimes_.startupTime_,true));
 		addChild(std::make_unique<LongRangeAttackStartup>(
 			enemy,
+			worker,
 			worker->motionTimes_.startupTime_,
 			worker->rotateMaxSpeed_
 		));

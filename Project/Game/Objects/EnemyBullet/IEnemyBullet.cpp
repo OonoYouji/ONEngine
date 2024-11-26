@@ -25,14 +25,15 @@ IEnemyBullet::IEnemyBullet(BulletType type){
 	type_ = type;
 }
 
-IEnemyBullet::~IEnemyBullet(){}
+IEnemyBullet::~IEnemyBullet(){
+}
 
 void IEnemyBullet::Initialize(){
 	{// Component
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
-		render_ 		= AddComponent<AnimationRenderer>(modelByBulletType[static_cast<int32_t>(type_)]);
 	}
+	isAlive_ = true;
 }
 
 void IEnemyBullet::Update(){
@@ -40,13 +41,17 @@ void IEnemyBullet::Update(){
 
 	// lifeTime が 0 になったら 死亡
 	if(lifeLeftTime_ <= 0.0f){
-		Destory();
+		isAlive_ = false;
 	}
 }
 
 void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 	if(_collision->GetTag() == "Player"){
 		Player* player = reinterpret_cast<Player*>(_collision);
+
+		if(player->GetIsInvisible()){
+			return;
+		}
 		player->SetHp(player->GetCurrentHP() - damage_);
 	}
 }

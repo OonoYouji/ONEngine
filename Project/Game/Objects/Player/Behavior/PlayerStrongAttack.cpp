@@ -40,12 +40,12 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 	if(_phase != 3) {
 
 		host_->OneShotEffect(
-			"Effect5", maxTime_
+			"Effect9", maxTime_
 		);
 	} else {
 
 		host_->OneShotEffect(
-			"Effect3", maxTime_
+			"Effect9", maxTime_
 		);
 	}
 
