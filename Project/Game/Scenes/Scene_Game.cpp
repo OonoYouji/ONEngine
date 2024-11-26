@@ -29,9 +29,9 @@
 void Scene_Game::Initialize(){
 
 
-	/*/// モデル確認用のオブジェクト
-	(new ModelPreviewObject("Effect3"))->Initialize();
-	(new ModelPreviewObject("Effect3"))->Initialize();*/
+	/// モデル確認用のオブジェクト
+	(new ModelPreviewObject("Effect6"))->Initialize();
+	//(new ModelPreviewObject("Effect3"))->Initialize();
 
 
 	/// object creata
