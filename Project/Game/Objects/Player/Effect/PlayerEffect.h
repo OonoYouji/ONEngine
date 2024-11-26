@@ -26,6 +26,8 @@ private:
 
 public:
 	void ActiveAnimation();
-
 	void SetTotalTime(float _totalTime);
+
+
+	void OneShotAnimation(const std::string& _filePath, float _totalTime);
 };

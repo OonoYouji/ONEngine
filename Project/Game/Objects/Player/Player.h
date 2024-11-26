@@ -178,6 +178,7 @@ public:
 	class Enemy* GetEnemy() const{ return pEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const{ return attackCollider_; }
 	class PlayerStrongAttackChargeEffect* GetPlayerStrongAttackChargeEffect() const{ return strongAttackChargeEffect_; }
+	class PlayerEffect* GetEffect() const{ return effect_; }
 
 	void SetAnimationModel(const std::string& _filePath);
 	void SetAnimationModel(
@@ -195,6 +196,8 @@ public:
 	void ResetAnimationTotal();
 
 	void SetAnimationFlags(int _flags,bool _isResetTime = true);
+
+	void OneShotEffect(const std::string& _filePath, float _totalTime);
 
 	float GetAnimationDuration();
 

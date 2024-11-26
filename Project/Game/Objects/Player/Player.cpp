@@ -258,7 +258,6 @@ void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
 		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
 			nextStrongChargeCount_ = 3;
-		
 		}
 	}
 }
@@ -484,7 +483,7 @@ void Player::SetAnimationModel(
 void Player::SetAnimationTotalTime(float _totalTime) {
 	bodyAnimationRenderer_->SetTotalTime(_totalTime, bodyAnimationRenderer_->GetCurrentNodeAnimationKey());
 	weaponAnimationRenderer_->SetTotalTime(_totalTime, weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
-	effect_->animationRenderer_->SetTotalTime(_totalTime, effect_->animationRenderer_->GetCurrentNodeAnimationKey());
+	//effect_->animationRenderer_->SetTotalTime(_totalTime, effect_->animationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Player::ResetAnimationTotal() {
@@ -499,23 +498,27 @@ void Player::ResetAnimationTotal() {
 	);
 
 	
-	effect_->animationRenderer_->SetTotalTime(
-		effect_->animationRenderer_->GetDuration(effect_->animationRenderer_->GetCurrentNodeAnimationKey()),
-		effect_->animationRenderer_->GetCurrentNodeAnimationKey()
-	);
+	//effect_->animationRenderer_->SetTotalTime(
+	//	effect_->animationRenderer_->GetDuration(effect_->animationRenderer_->GetCurrentNodeAnimationKey()),
+	//	effect_->animationRenderer_->GetCurrentNodeAnimationKey()
+	//);
 
 }
 
 void Player::SetAnimationFlags(int _flags, bool _isResetTime) {
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
-	effect_->animationRenderer_->SetAnimationFlags(_flags);
+	//effect_->animationRenderer_->SetAnimationFlags(_flags);
 
 	if(_isResetTime) {
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
-		effect_->animationRenderer_->Restart();
+		//effect_->animationRenderer_->Restart();
 	}
+}
+
+void Player::OneShotEffect(const std::string& _filePath, float _totalTime) {
+	effect_->OneShotAnimation(_filePath, _totalTime);
 }
 
 float Player::GetAnimationDuration() {

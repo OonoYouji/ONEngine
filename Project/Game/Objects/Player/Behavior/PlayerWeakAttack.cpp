@@ -92,6 +92,7 @@ void PlayerWeakAttack::StartupUpdate() {
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
+		host_->OneShotEffect("Effect5", workInBehavior_.motionTimes_.activeTime_);
 
 		currentUpdate_ = [this]() {WeakAttack(); };
 		return;
