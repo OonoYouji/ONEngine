@@ -20,6 +20,7 @@
 #include "Objects/EnemyNameRenderer/EnemyNameRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
+#include "Objects/UIManager/UIManager.h"
 #include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
 
@@ -29,9 +30,9 @@
 void Scene_Game::Initialize(){
 
 
-	/*/// モデル確認用のオブジェクト
-	(new ModelPreviewObject("Effect3"))->Initialize();
-	(new ModelPreviewObject("Effect3"))->Initialize();*/
+	/// モデル確認用のオブジェクト
+	(new ModelPreviewObject("Effect7"))->Initialize();
+	//(new ModelPreviewObject("Effect3"))->Initialize();
 
 
 	/// object creata
@@ -50,6 +51,7 @@ void Scene_Game::Initialize(){
 	enemyHPRenderer->SetEnemy(enemy);
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
+	UIManager* uiManager = new UIManager();
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
@@ -70,6 +72,8 @@ void Scene_Game::Initialize(){
 	enemyAttackCollider->Initialize();
 
 	bbObjectManager->Initialize();
+	uiManager->Initialize();
+	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	gameManager_->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
