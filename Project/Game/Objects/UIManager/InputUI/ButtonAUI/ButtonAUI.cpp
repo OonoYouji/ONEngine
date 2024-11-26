@@ -18,7 +18,7 @@ void ButtonAUI::Initialize() {
 	renderer_->SetTexture("buttonA.png");
 
 	AddVariables();
-	//VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resoures/Parameters/Objects", GetTag());
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 	ApplyVariables();
 
 }

@@ -24,7 +24,7 @@ void InputUI::Initialize() {
 
 
 	AddVariables();
-	//VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resoures/Parameters/Objects", GetTag());
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 	ApplyVariables();
 
 }

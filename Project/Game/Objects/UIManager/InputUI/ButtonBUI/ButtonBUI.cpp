@@ -12,10 +12,10 @@ ButtonBUI::~ButtonBUI() {}
 void ButtonBUI::Initialize() {
 
 	renderer_ = AddComponent<SpriteRenderer>();
-	renderer_->SetTexture("buttonA.png");
+	renderer_->SetTexture("buttonB.png");
 
 	AddVariables();
-	//VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resoures/Parameters/Objects", GetTag());
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 	ApplyVariables();
 
 }
