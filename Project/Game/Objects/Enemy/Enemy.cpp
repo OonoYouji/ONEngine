@@ -377,7 +377,7 @@ void Enemy::Debug(){
 					comboNameBeforeNameChange_ = *currentEditComboName_;
 				}
 
-				if(ImGui::BeginChild("Action List",ImVec2(130,270),true)){
+				if(ImGui::BeginChild("Action List",ImVec2(230,270),true)){
 					for(auto& [attackName,attack] : workEnemyActionVariables_){
 						if(ImGui::Button(attackName.c_str())){
 							currentEditCombo_->comboAttacks_.push_back(
@@ -387,7 +387,7 @@ void Enemy::Debug(){
 				}
 				ImGui::EndChild();
 				ImGui::SameLine();
-				if(ImGui::BeginChild(("currentCombo::" + *currentEditComboName_).c_str(),ImVec2(130,270),true)){
+				if(ImGui::BeginChild(("currentCombo::" + *currentEditComboName_).c_str(),ImVec2(230,270),true)){
 					int index = 0;
 					for(auto it = currentEditCombo_->comboAttacks_.begin();
 						it != currentEditCombo_->comboAttacks_.end(); ++it,++index){

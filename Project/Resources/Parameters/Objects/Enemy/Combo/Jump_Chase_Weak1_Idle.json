@@ -1,0 +1,11 @@
+{
+    "Jump_Chase_Weak1_Idle": {
+        "ComboSize": 4,
+        "HpState": 1,
+        "Index_0": "default_jump_1",
+        "Index_1": "default_Chase",
+        "Index_2": "default_weak1",
+        "Index_3": "shortIdle_2",
+        "RangeType": 0
+    }
+}
