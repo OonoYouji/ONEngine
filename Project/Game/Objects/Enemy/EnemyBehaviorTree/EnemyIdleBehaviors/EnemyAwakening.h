@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -15,6 +16,10 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		std::function<Status()>currentUpdate_;
+		Status Init();
+		Status Update();
+
 		float leftTime_;
 	};
 

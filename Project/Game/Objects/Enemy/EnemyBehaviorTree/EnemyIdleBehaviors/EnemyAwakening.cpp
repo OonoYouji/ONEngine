@@ -10,9 +10,21 @@ namespace EnemyBehaviorTree{
 	EnemyAwakeningAction::EnemyAwakeningAction(Enemy* enemy)
 		:Action(enemy){
 		leftTime_ = enemy_->GetBodyAnimationTotalTime();
+
+		currentUpdate_ = [this](){return Init(); };
 	}
 
 	Status EnemyAwakeningAction::tick(){
+		return currentUpdate_();
+	}
+
+	Status EnemyAwakeningAction::Init(){
+		leftTime_ = enemy_->GetBodyAnimationTotalTime();
+		currentUpdate_ = [this](){return Update(); };
+		return Status::RUNNING;
+	}
+
+	Status EnemyAwakeningAction::Update(){
 		leftTime_ -= Time::DeltaTime();
 
 		if(leftTime_ <= 0.0f){

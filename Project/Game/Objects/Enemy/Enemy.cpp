@@ -843,6 +843,7 @@ void Enemy::DecideNextNode(){
 	if(currentHpState_ == HpState::HP_LOW
 	   && preHpState_ != HpState::HP_LOW){
 		rootNode_ = std::make_unique<EnemyBehaviorTree::EnemyAwakening>(this);
+		return;
 	}
 
 	if(lengthEnemy2Player <= distanceByRangeTypes_[EnemyAttackRangeType::SHORT_RANGE]){
