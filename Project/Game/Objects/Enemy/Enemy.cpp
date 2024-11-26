@@ -90,6 +90,7 @@ void Enemy::Initialize(){
 	LoadCombos();
 
 	hp_ = maxHp_;
+
 }
 
 void Enemy::Update(){
@@ -107,11 +108,21 @@ void Enemy::Update(){
 			rootNode_ = nullptr;
 		}
 	}
-	float clampedEnemyPosLength = (std::clamp)(pTransform_->position.Len(),
-											   -player_->GetStageRange() - colliderRadius_,
-											   player_->GetStageRange() + colliderRadius_);
-	pTransform_->position = Vec3::Normalize(pTransform_->position) * clampedEnemyPosLength;
+	float playerLength = pTransform_->position.Len();
+	float lengthMax = player_->GetStageRange() + colliderRadius_;
+	float lengthMin = -player_->GetStageRange() - colliderRadius_;
+	float clampedEnemyPosLength = (std::clamp)(playerLength,
+											   lengthMin,
+											   lengthMax);
 
+	preOutOfStage_ = outOfStage_;
+	outOfStage_ = false;
+	if(playerLength > lengthMax 
+	   || playerLength < lengthMin){
+		outOfStage_ = true;
+	}
+
+	pTransform_->position = Vec3::Normalize(pTransform_->position) * clampedEnemyPosLength;
 }
 
 void Enemy::Debug(){
