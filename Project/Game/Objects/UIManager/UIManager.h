@@ -21,4 +21,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::vector<BaseGameObject*> uis_;
+
 };
