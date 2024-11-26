@@ -99,6 +99,9 @@ void BackgroundObjectManager::Update() {
 		object->SetScale(data.scale);
 
 		index++;
+		if(objectIOData_.size() <= index) {
+			break;
+		}
 	}
 
 }
