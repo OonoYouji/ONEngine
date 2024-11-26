@@ -68,10 +68,10 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Walk");
-	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
-	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
-	effectAnimationRenderer_= AddComponent<AnimationRenderer>("Boss_Walk");
+	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
+	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
+	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
+	effectAnimationRenderer_= AddComponent<AnimationRenderer>("Boss_Wait");
 
 	// あにめーしょん を ロード
 	LoadAllAnimation();
