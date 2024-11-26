@@ -189,7 +189,7 @@ void WorkLongRangeAttackAction::Save(const std::string& name){
 }
 
 void WorkLongRangeAttackAction::Load(const std::string& name){
-	WorkEnemyAction::Save(name);
+	WorkEnemyAction::Load(name);
 	VariableManager* variableManager = VariableManager::GetInstance();
 	damage_ 			= variableManager->GetValue<float>(name,"damage");
 	bulletSpeed_ 		= variableManager->GetValue<float>(name,"bulletSpeed");
