@@ -249,9 +249,13 @@ void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 
 			strongAttackChargeEffect_->SetAnimationActive(true);
 			strongAttackChargeEffect_->SetTimeRate(0.5f + (0.25f * 3));
+
+			PlayAudio("jastAvoidance.wav", 0.5f);
+
+			OneShotEffect("Effect10", NULL);
+
 		}
 
-		OneShotEffect("Effect5", NULL);
 	}
 }
 
@@ -485,7 +489,7 @@ void Player::LoadingAnimations() {
 	}
 
 
-	for(size_t i = 4; i <= 9; ++i) {
+	for(size_t i = 4; i <= 10; ++i) {
 		OneShotEffect("Effect" + std::to_string(i), 5.0f);
 	}
 
