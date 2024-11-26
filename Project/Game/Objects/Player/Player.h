@@ -191,4 +191,5 @@ public:
 
 	void SetAttackMode(int _mode);
 
+	float GetStageRange()const{ return stageRange_; }
 };
