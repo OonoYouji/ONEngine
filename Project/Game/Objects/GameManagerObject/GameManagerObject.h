@@ -27,7 +27,8 @@ public:
 	void SetPlayer(class Player* _player);
 
 
-	const Flag& GetFlag(const std::string& _key);
+	static const Flag& GetFlag(const std::string& _key);
+	static void SetFlag(const std::string& _key, bool value);
 
 private:
 
@@ -35,7 +36,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unordered_map<std::string, Flag> flags_;
+	static std::unordered_map<std::string, Flag> flags_;
 
 
 	class Enemy*  pEnemy_  = nullptr;

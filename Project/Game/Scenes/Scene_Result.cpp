@@ -1,6 +1,5 @@
 #include "Scene_Result.h"
 
-
 /// engine
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
@@ -8,21 +7,42 @@
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/SceneTransition/SceneTransition.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 
-#include "Objects/TitleObjects/TitleMenuSelector/TitleMenuSelector.h"
+/// game over objects
+#include "Objects/ResultObjects/ResultText/ResultText.h"
+#include "Objects/ResultObjects/ResultToTitleText/ResultToTitleText.h"
+#include "Objects/ResultObjects/ResultArrow/ResultArrow.h"
+
+#include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 
 
 void Scene_Result::Initialize() {
 
+	std::list<BaseGameObject*> objects = {};
 
-	/// 仮オブジェクト
-	(new TitleMenuSelector)->Initialize();
+	/// 結果で初期化するオブジェクトを変更
+	if(GameManagerObject::GetFlag("isGameClear").Press()) {
 
-	
-	
-	
+		objects.push_back(new ResultText("GameClearText.png"));
+
+	} else {
+
+		objects.push_back(new ResultText("GameOverText.png"));
+	}
+
+	objects.push_back(new ResultToTitleText());
+	objects.push_back(new ResultArrow());
+	objects.push_back(new TitleSelectorUI());
+
+	for(auto& object : objects) {
+		object->Initialize();
+		object->drawLayerId = RESULT_LAYER_UI;
+	}
+
+
 	/// add layer ---------------------------------------------------------------------
-	
+
 	GameCamera* uiCamera = new GameCamera("UICamera");
 	uiCamera->Initialize();
 	uiCamera->SetProjectionType(ORTHOGRAPHIC);
@@ -36,6 +56,8 @@ void Scene_Result::Initialize() {
 	transitionCamera->SetProjectionType(ORTHOGRAPHIC);
 	AddLayer("TransitionLayer", transitionCamera);
 
+
+	sceneTransition_ = nullptr;
 }
 
 void Scene_Result::Update() {
