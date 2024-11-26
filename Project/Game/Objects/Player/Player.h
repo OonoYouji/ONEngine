@@ -85,6 +85,9 @@ public:
 
 	void PlayAudio(const std::string& _filePath,float _volume);
 
+
+	void LoadingAnimations();
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;
