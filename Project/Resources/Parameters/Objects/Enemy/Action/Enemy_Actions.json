@@ -1,6 +1,6 @@
 {
   "Enemy_Actions": {
-    "ActionSize": 35,
+    "ActionSize": 36,
     "Index_0": "default_weak2",
     "Index_1": "long_strong_1",
     "Index_10": "default_jump_1",
@@ -30,6 +30,7 @@
     "Index_32": "targetting_rangedAttack_3",
     "Index_33": "longrange_1",
     "Index_34": "comboTackle_3",
+    "Index_35": "default_Chase",
     "Index_4": "default_idle",
     "Index_5": "default_strongAttack",
     "Index_6": "lowTarget_ranged_1",
