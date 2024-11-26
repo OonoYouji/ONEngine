@@ -202,8 +202,9 @@
     <ClCompile Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
-    <ClCompile Include="Game\Objects\UIManager\ButtonAUI\ButtonAUI.cpp" />
-    <ClCompile Include="Game\Objects\UIManager\ButtonBUI\ButtonBUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.cpp" />
+    <ClCompile Include="Game\Objects\UIManager\InputUI\InputUI.cpp" />
     <ClCompile Include="Game\Objects\UIManager\UIManager.cpp" />
     <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
     <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
@@ -357,8 +358,9 @@
     <ClInclude Include="Game\Objects\TitleObjects\TitleStartText\TitleStartText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleTextRenderer\TitleTextRenderer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
-    <ClInclude Include="Game\Objects\UIManager\ButtonAUI\ButtonAUI.h" />
-    <ClInclude Include="Game\Objects\UIManager\ButtonBUI\ButtonBUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonAUI\ButtonAUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\ButtonBUI\ButtonBUI.h" />
+    <ClInclude Include="Game\Objects\UIManager\InputUI\InputUI.h" />
     <ClInclude Include="Game\Objects\UIManager\UIManager.h" />
     <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
     <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />

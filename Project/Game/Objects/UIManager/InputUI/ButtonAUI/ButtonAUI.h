@@ -2,23 +2,29 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class UIManager : public BaseGameObject {
+class ButtonAUI : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	UIManager();
-	~UIManager();
+	ButtonAUI();
+	~ButtonAUI();
 
 	void Initialize() override;
 	void Update()     override;
+
+	void AddVariables();
+	void ApplyVariables();
 
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	class SpriteRenderer* renderer_ = nullptr;
+
 
 };

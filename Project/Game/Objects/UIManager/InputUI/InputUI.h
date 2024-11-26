@@ -2,15 +2,15 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class UIManager : public BaseGameObject {
+class InputUI : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	UIManager();
-	~UIManager();
+	InputUI();
+	~InputUI();
 
 	void Initialize() override;
 	void Update()     override;
