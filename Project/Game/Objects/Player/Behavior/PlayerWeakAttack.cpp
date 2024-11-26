@@ -13,6 +13,9 @@
 #include "PlayerRootBehavior.h"
 #include "../Collision/PlayerAttackCollider/PlayerAttackCollider.h"
 
+/// math
+#include "Math/LerpShortAngle.h"
+
 
 PlayerWeakAttack::PlayerWeakAttack(Player* player, int32_t comboNum) :
 	IPlayerBehavior(player),
@@ -71,6 +74,10 @@ void PlayerWeakAttack::Update() {
 }
 
 void PlayerWeakAttack::StartupUpdate() {
+
+	
+
+
 	if(currentTime_ >= workInBehavior_.motionTimes_.startupTime_) {
 		currentTime_ = 0.0f;
 
@@ -85,6 +92,7 @@ void PlayerWeakAttack::StartupUpdate() {
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.activeTime_);
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
+		host_->OneShotEffect("Effect5", workInBehavior_.motionTimes_.activeTime_);
 
 		currentUpdate_ = [this]() {WeakAttack(); };
 		return;
@@ -115,7 +123,8 @@ void PlayerWeakAttack::WeakAttack() {
 
 		host_->SetAnimationModel(
 			animationModelFilePath + "_3_P",
-			animationModelFilePath + "_3_W"
+			animationModelFilePath + "_3_W",
+			"Effect5"
 		);
 		host_->SetAnimationTotalTime(workInBehavior_.motionTimes_.endLagTime_);
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
@@ -129,6 +138,23 @@ void PlayerWeakAttack::WeakAttack() {
 
 void PlayerWeakAttack::EndLagUpdate() {
 	if(nextBehavior_ == static_cast<int>(NextBehavior::combo)) {
+
+
+		{	// Rotate Update
+			Vec2 lastDir = host_->GetLastDirection();
+			Vector3 rotate = host_->GetRotate();
+
+			/// 回転のスピードはここで調整
+			rotate.y = LerpShortAngle(
+				rotate.y, std::atan2(lastDir.x, lastDir.y),
+				host_->GetWorkRootBehavior().rotateLerpSensitivity_
+			);
+
+			host_->SetRotate(rotate);
+		}
+
+
+
 		host_->SetIsActiveWeapon(false);
 
 		std::unique_ptr<IPlayerBehavior> nextBehavior;

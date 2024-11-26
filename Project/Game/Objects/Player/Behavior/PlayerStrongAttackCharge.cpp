@@ -16,9 +16,14 @@
 #include "../Player.h"
 #include "../Effect/PlayerStrongAttackChargeEffect.h"
 
+/// this behavior
 #include "PlayerRootBehavior.h"
 #include "PlayerAvoidanceBehavior.h"
 #include "PlayerStrongAttack.h"
+
+/// math
+#include "Math/LerpShortAngle.h"
+
 
 PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, float _nextChargeTime) : IPlayerBehavior(_player) {
 
@@ -49,8 +54,10 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	const std::string animationFilePath = "Player_StrongAttack_" + std::to_string(currentPhase_ + 1);
 	host_->SetAnimationModel(
 		animationFilePath + "_P",
-		animationFilePath + "_W"
+		animationFilePath + "_W",
+		"Effect5"
 	);
+
 
 	host_->SetIsActiveWeapon(true);
 	host_->SetAnimationTotalTime(nextChargeTime_);
@@ -101,6 +108,26 @@ void PlayerStrongAttackCharge::Update() {
 	isFinish_ = false;
 	isFinish_ |= Input::ReleaseKey(KeyCode::K);
 	isFinish_ |= Input::ReleasePadButton(PadCode::A);
+
+
+
+
+	{	// Rotate Update
+		Vec2 lastDir = host_->GetLastDirection();
+		Vector3 rotate = host_->GetRotate();
+
+		/// 回転のスピードはここで調整
+		rotate.y = LerpShortAngle(
+			rotate.y, std::atan2(lastDir.x, lastDir.y),
+			host_->GetWorkRootBehavior().rotateLerpSensitivity_
+		);
+
+		host_->SetRotate(rotate);
+	}
+
+
+
+
 
 	/// 入力をやめた瞬間が攻撃する瞬間
 	if(isFinish_) {
