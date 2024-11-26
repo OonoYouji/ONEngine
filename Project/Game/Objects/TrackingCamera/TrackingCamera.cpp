@@ -70,9 +70,13 @@ void TrackingCamera::Update() {
 	prevIsLockOn_ = isLockOn_;
 
 	/// オブジェクト間のベクトルを計算
-	cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
+	//cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
+	//cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
+
 	playerToEnemyVector_  = pEnemy_->GetPosition() - pPlayer_->GetPosition();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
+	cameraToPlayerVector_ = Mat4::Transform(cameraHeightOffset_, pPlayer_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
+	cameraToEnemyVector_ = Mat4::Transform(cameraHeightOffset_, pEnemy_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
+
 
 	/// ロックオンのフラグの更新
 	LockOnUpdate();
@@ -144,6 +148,12 @@ void TrackingCamera::Debug() {
 		);
 
 		ImGui::Text(std::format(
+			"camera to player vector : {:0.2f}, {:0.2f}, {:0.2f}",
+			cameraToPlayerVector_.x, cameraToPlayerVector_.y, cameraToPlayerVector_.z).c_str()
+		);
+
+
+		ImGui::Text(std::format(
 			"camera offset rotate : {:0.2f}, {:0.2f}, {:0.2f}",
 			cameraOffsetRotate_.x, cameraOffsetRotate_.y, cameraOffsetRotate_.z).c_str()
 		);
@@ -158,7 +168,7 @@ void TrackingCamera::Debug() {
 			targetPosition_.x, targetPosition_.y, targetPosition_.z).c_str()
 		);
 
-			ImGui::Text(std::format(
+		ImGui::Text(std::format(
 			"player to enemy rotateY : {:0.2f}",
 			playerToEnemyRotateY_).c_str()
 		);
@@ -272,7 +282,7 @@ void TrackingCamera::LockOnToEnemy() {
 	}
 
 
-
+	
 	/// ---------------------------------------------------
 	/// 座標の計算
 	/// ---------------------------------------------------
@@ -311,18 +321,18 @@ void TrackingCamera::LockOnToEnemy() {
 	/// カメラの行列更新
 	pTransform_->Update();
 	pGameCamera_->UpdateMatrix();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
-	cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
+	cameraToPlayerVector_ = Mat4::Transform(cameraHeightOffset_, pPlayer_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
+	cameraToEnemyVector_ = Mat4::Transform(cameraHeightOffset_, pEnemy_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
 
 	/// カメラから敵とプレイヤーの間への回転角を計算
 	cameraToEnemyQuaternion_ = Quaternion::LockAt(
 		{ 0.0f, 0.0f, 0.0f },
-		(cameraToPlayerVector_.Normalize() + cameraToEnemyVector_.Normalize()).Normalize()
+		((cameraToPlayerVector_ + cameraToEnemyVector_) * 0.5f).Normalize()
 	);
 
 	cameraToPlayerQuaternion_ = Quaternion::LockAt(
 		{ 0.0f, 0.0f, 0.0f },
-		currentDirection_.Normalize()
+		cameraToPlayerVector_.Normalize()
 	);
 
 	SetQuaternion(Quaternion::Lerp(
@@ -423,7 +433,7 @@ void TrackingCamera::LockOnToPlayer() {
 	/// カメラの行列更新
 	pTransform_->Update();
 	pGameCamera_->UpdateMatrix();
-	cameraToPlayerVector_ = pPlayer_->GetPosition() - (pGameCamera_->GetPosition() - cameraHeightOffset_);
+	cameraToPlayerVector_ = Mat4::Transform(cameraHeightOffset_, pPlayer_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
 
 	if(!isTargetLost_) {
 		currentDirection_ = cameraToPlayerVector_.Normalize();

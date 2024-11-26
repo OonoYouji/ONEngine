@@ -6,6 +6,7 @@
         "damage2": 1259.0,
         "nextChargeTime0": 1.0,
         "nextChargeTime1": 1.899999976158142,
-        "nextChargeTime2": 2.0
+        "nextChargeTime2": 2.0,
+        "thirdSERepeatTime": 0.30000001192092896
     }
 }
