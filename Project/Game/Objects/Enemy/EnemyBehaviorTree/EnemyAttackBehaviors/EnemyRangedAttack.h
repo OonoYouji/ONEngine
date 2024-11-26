@@ -17,7 +17,8 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		float leftTime_;
+		float startupTime_;
+		float currentTime_;
 
 		WorkRangedAttackAction* worker_;
 	};
@@ -41,6 +42,7 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		float endLagTime_;
 		float leftTime_;
 	};
 
