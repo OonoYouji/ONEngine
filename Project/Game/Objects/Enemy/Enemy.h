@@ -94,11 +94,10 @@ private:
 	Player* player_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
-	AnimationRenderer* bodyAnimationRenderer_ = nullptr;
-	AnimationRenderer* weaponAnimationRenderer_ = nullptr;
+	AnimationRenderer* bodyAnimationRenderer_ 	   = nullptr;
+	AnimationRenderer* weaponAnimationRenderer_    = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
-
-	std::unordered_map<std::string,AnimationRenderer*> animations_;
+	AnimationRenderer* effectAnimationRenderer_    = nullptr;
 
 	/// <summary>
 	/// 本体のコライダー これに当たるとダメージを受ける
@@ -159,8 +158,18 @@ private:
 
 public:
 	void SetAnimationRender(const std::string& filePath);
-	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath);
-	void SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath,const std::string& subWeapon);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath,
+							const std::string& subWeapon);
+
+	void SetAnimationRender(const std::string& filePath,
+							const std::string& weaponFilePath,
+							const std::string& subWeapon
+							,const std::string& effect);
 
 	void SetAnimationTotalTime(float _totalTime);
 

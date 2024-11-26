@@ -38,9 +38,13 @@ namespace EnemyBehaviorTree{
 		animation_[0] = "Boss_Awakening";
 		animation_[1] = "Effect1";
 		animation_[2] = "Effect2";
+		animation_[3] = "Effect3";
 	}
 	Status EnemyLoadAwakeAnimation::tick(){
-		enemy_->SetAnimationRender(animation_[0],animation_[1],animation_[2]);
+		enemy_->SetAnimationRender(animation_[0],
+								   animation_[1],
+								   animation_[2],
+								   animation_[3]);
 		// アニメーション時間で再生
 		enemy_->ResetAnimationTotal();
 

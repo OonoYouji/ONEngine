@@ -28,8 +28,8 @@
 #include "VariableManager/VariableManager.h"
 
 /// objects
-#include "Objects/Player/Player.h"
 #include "Objects/EntityShadow/EntityShadow.h"
+#include "Objects/Player/Player.h"
 
 #ifdef _DEBUG
 /// externals
@@ -70,9 +70,13 @@ void Enemy::Initialize(){
 
 	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Walk");
 	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
-	weaponAnimationRenderer_->isActive = false;
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Walk");
+	effectAnimationRenderer_= AddComponent<AnimationRenderer>("Boss_Walk");
+
+	LoadAllAnimation();
+	weaponAnimationRenderer_->isActive 	  = false;
 	subWeaponAnimationRenderer_->isActive = false;
+	effectAnimationRenderer_->isActive 	  = false;
 
 	int32_t trosoIndex = bodyAnimationRenderer_->GetSkeleton()->jointMap.at("torso");
 	torsoTransform_ = &bodyAnimationRenderer_->GetSkeleton()->joints[trosoIndex].offsetTransform;
@@ -86,6 +90,7 @@ void Enemy::Initialize(){
 	LoadStatus();
 	LoadAllAction();
 	LoadCombos();
+
 
 	hp_ = maxHp_;
 }
@@ -151,7 +156,7 @@ void Enemy::Debug(){
 	if(ImGui::Checkbox("actionIsActive",&actionIsActive_)){
 		DecideNextNode();
 	}
-	ImGui::Text("%s", dointCombo_.c_str());
+	ImGui::Text("%s",dointCombo_.c_str());
 
 	///===============================================
 	/// AttackActions
@@ -617,60 +622,63 @@ void Enemy::LoadCombo(const std::string& comboName,int32_t size,int32_t hpState)
 }
 
 void Enemy::LoadAllAnimation(){
-	animations_["Boss_Wait"] = AddComponent<AnimationRenderer>("Boss_Wait");
-	animations_["Boss_Awakening"] = AddComponent<AnimationRenderer>("Boss_Awakening");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_Wait");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_Awakening");
+	weaponAnimationRenderer_->ChangeAnimation("Effect1");
+	subWeaponAnimationRenderer_->ChangeAnimation("Effect2");
+	effectAnimationRenderer_->ChangeAnimation("Effect3");
 
-	animations_["Boss_Jump1"] = AddComponent<AnimationRenderer>("Boss_Jump1");
-	animations_["Boss_Jump2"] = AddComponent<AnimationRenderer>("Boss_Jump2");
-	animations_["Boss_Jump3"] = AddComponent<AnimationRenderer>("Boss_Jump3");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_Jump_1");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_Jump_2");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_Jump_3");
 
-	animations_["Boss_LongRangeAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_B");
-	animations_["Boss_LongRangeAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_B");
-	animations_["Boss_LongRangeAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_1_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_2_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_3_B");
 
-	animations_["Boss_LongRangeAttack_1_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_W1");
-	animations_["Boss_LongRangeAttack_2_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_W1");
-	animations_["Boss_LongRangeAttack_3_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_1_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_2_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_3_W1");
 
-	animations_["Boss_LongRangeAttack_1_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_1_W2");
-	animations_["Boss_LongRangeAttack_2_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_2_W2");
-	animations_["Boss_LongRangeAttack_3_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_3_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_1_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_2_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_3_W2");
 
-	animations_["Boss_LongRangeAttack_half_1_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_B");
-	animations_["Boss_LongRangeAttack_half_2_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_B");
-	animations_["Boss_LongRangeAttack_half_3_B"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_1_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_2_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_3_B");
 
-	animations_["Boss_LongRangeAttack_half_1_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W1");
-	animations_["Boss_LongRangeAttack_half_2_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W1");
-	animations_["Boss_LongRangeAttack_half_3_W1"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_1_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_2_W1");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_3_W1");
 
-	animations_["Boss_LongRangeAttack_half_1_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_1_W2");
-	animations_["Boss_LongRangeAttack_half_2_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_2_W2");
-	animations_["Boss_LongRangeAttack_half_3_W2"] = AddComponent<AnimationRenderer>("Boss_LongRangeAttack_half_3_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_1_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_2_W2");
+	subWeaponAnimationRenderer_->ChangeAnimation("Boss_LongRangeAttack_half_3_W2");
 
-	animations_["Boss_RangedAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_B");
-	animations_["Boss_RangedAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_B");
-	animations_["Boss_RangedAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_1_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_2_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_3_B");
 
-	animations_["Boss_RangedAttack_1_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_1_W");
-	animations_["Boss_RangedAttack_2_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_2_W");
-	animations_["Boss_RangedAttack_3_W"] = AddComponent<AnimationRenderer>("Boss_RangedAttack_3_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_1_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_2_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RangedAttack_3_W");
 
-	animations_["Boss_RushAttack_1_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_1_B");
-	animations_["Boss_RushAttack_2_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_2_B");
-	animations_["Boss_RushAttack_3_B"] = AddComponent<AnimationRenderer>("Boss_RushAttack_3_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RushAttack_1_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RushAttack_2_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_RushAttack_3_B");
 
-	animations_["Boss_RushAttack_1_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_1_W");
-	animations_["Boss_RushAttack_2_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_2_W");
-	animations_["Boss_RushAttack_3_W"] = AddComponent<AnimationRenderer>("Boss_RushAttack_3_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RushAttack_1_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RushAttack_2_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_RushAttack_3_W");
 
-	animations_["Boss_StrongAttack_1_1_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_1_B");
-	animations_["Boss_StrongAttack_1_2_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_2_B");
-	animations_["Boss_StrongAttack_1_3_B"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_3_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_1_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_2_B");
+	bodyAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_3_B");
 
-	animations_["Boss_StrongAttack_1_1_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_1_W");
-	animations_["Boss_StrongAttack_1_2_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_2_W");
-	animations_["Boss_StrongAttack_1_3_W"] = AddComponent<AnimationRenderer>("Boss_StrongAttack_1_3_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_1_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_2_W");
+	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_3_W");
 
 }
 
@@ -678,6 +686,7 @@ void Enemy::SetAnimationRender(const std::string& filePath){
 	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
 	this->weaponAnimationRenderer_->isActive = false;
 	this->subWeaponAnimationRenderer_->isActive = false;
+	this->effectAnimationRenderer_->isActive = false;
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath,const std::string& weaponFilePath){
@@ -685,6 +694,7 @@ void Enemy::SetAnimationRender(const std::string& filePath,const std::string& we
 	this->weaponAnimationRenderer_->isActive = true;
 	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
 	this->subWeaponAnimationRenderer_->isActive = false;
+	this->effectAnimationRenderer_->isActive = false;
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath,
@@ -697,6 +707,24 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 
 	this->subWeaponAnimationRenderer_->isActive = true;
 	this->subWeaponAnimationRenderer_->ChangeAnimation(subWeapon);
+
+	this->effectAnimationRenderer_->isActive = false;
+}
+
+void Enemy::SetAnimationRender(const std::string& filePath,
+							   const std::string& weaponFilePath,
+							   const std::string& subWeapon,
+							   const std::string& effect){
+	this->bodyAnimationRenderer_->ChangeAnimation(filePath);
+
+	this->weaponAnimationRenderer_->isActive = true;
+	this->weaponAnimationRenderer_->ChangeAnimation(weaponFilePath);
+
+	this->subWeaponAnimationRenderer_->isActive = true;
+	this->subWeaponAnimationRenderer_->ChangeAnimation(subWeapon);
+
+	this->effectAnimationRenderer_->isActive = true;
+	this->effectAnimationRenderer_->ChangeAnimation(effect);
 }
 
 void Enemy::SetAnimationTotalTime(float _totalTime){
@@ -706,6 +734,8 @@ void Enemy::SetAnimationTotalTime(float _totalTime){
 										   weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 	subWeaponAnimationRenderer_->SetTotalTime(_totalTime,
 											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+	effectAnimationRenderer_->SetTotalTime(_totalTime,
+										   effectAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 float Enemy::GetBodyAnimationTotalTime() const{
@@ -726,16 +756,22 @@ void Enemy::ResetAnimationTotal(){
 	subWeaponAnimationRenderer_->SetTotalTime(
 		subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+
+	effectAnimationRenderer_->SetTotalTime(
+		effectAnimationRenderer_->GetDuration(effectAnimationRenderer_->GetCurrentNodeAnimationKey()),
+		effectAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
 
 void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
 	bodyAnimationRenderer_->SetAnimationFlags(_flags);
 	weaponAnimationRenderer_->SetAnimationFlags(_flags);
 	subWeaponAnimationRenderer_->SetAnimationFlags(_flags);
+	effectAnimationRenderer_->SetAnimationFlags(_flags);
 	if(_isResetTime){
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
 		subWeaponAnimationRenderer_->Restart();
+		effectAnimationRenderer_->Restart();
 	}
 }
 
