@@ -46,7 +46,7 @@ void PlayerHPFrame::Initialize() {
 	/// ---------------------------------------------------
 
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
-	spriteRenderer_->SetTexture("white2x2.png");
+	spriteRenderer_->SetTexture("HPBarFrame.png");
 
 }
 
