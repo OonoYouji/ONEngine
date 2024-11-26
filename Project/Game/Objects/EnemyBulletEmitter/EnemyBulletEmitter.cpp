@@ -104,7 +104,7 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 		newBullet->Initialize();
 		Matrix4x4 rotateY = Matrix4x4::MakeRotateY(enemy_->GetRotate().y);
 		Vector3 enemyDir = Matrix4x4::Transform(
-			{0.0f,0.0f,1.0f},
+			{0.0f,3.5f,1.0f},
 			rotateY
 		);
 		newBullet->SetDamage(longWorker->damage_);
@@ -114,6 +114,7 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 							longWorker->bulletScale_});
 
 		newBullet->SetPosition(enemy_->GetPosition() + (enemyDir * longWorker->bulletSpawnOffsetZ_));
+		newBullet->SetRotateY(atan2(enemyDir.x,enemyDir.z));
 		newBullet->SetVelocityXZ(Vector2(enemyDir.x,enemyDir.z).Normalize() * longWorker->bulletSpeed_);
 
 		newBullet->UpdateMatrix();
