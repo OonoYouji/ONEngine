@@ -109,6 +109,11 @@ void PlayerStrongAttackCharge::Update() {
 	isFinish_ |= Input::ReleaseKey(KeyCode::K);
 	isFinish_ |= Input::ReleasePadButton(PadCode::A);
 
+	bool isDush = false;
+	isDush |= Input::TriggerKey(KeyCode::Space);
+	isDush |= Input::TriggerPadRT();
+	isDush |= Input::TriggerPadButton(PadCode::RightShoulder);
+
 
 
 
@@ -171,6 +176,13 @@ void PlayerStrongAttackCharge::Update() {
 	}
 
 
+	if(isDush) {
+		effect_->SetAnimationActive(false);
+		std::unique_ptr<IPlayerBehavior> nextBehavior;
+		nextBehavior.reset(new PlayerAvoidanceBehavior(host_));
+		host_->TransitionBehavior(std::move(nextBehavior));
+		return;
+	}
 
 	/// phaseが thirdの時に効果音をリピート再生する
 
