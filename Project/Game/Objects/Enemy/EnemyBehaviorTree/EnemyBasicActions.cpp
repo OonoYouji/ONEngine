@@ -21,6 +21,8 @@ namespace EnemyBehaviorTree{
 		enemy_->SetAnimationRender(animation_);
 		if(animationTotalTime_ >= 0.0f){
 			enemy_->SetAnimationTotalTime(animationTotalTime_);
+		} else{
+			enemy_->ResetAnimationTotal();
 		}
 		enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
 		return Status::SUCCESS;
@@ -95,13 +97,13 @@ namespace EnemyBehaviorTree{
 		effect->SetEffectAnimationRender(animation_);
 
 		effect->SetPosition(effectPos_);
-    
+
 		if(animationTotalTime_ >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_);
 		} else{
 			effect->ResetAnimationTotal();
 		}
-		
+
 		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_));
 
 
