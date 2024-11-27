@@ -36,7 +36,7 @@ void Scene_Game::Initialize(){
 
 	/// モデル確認用のオブジェクト
 	(new ModelPreviewObject("Stage"))->Initialize();
-	(new ModelPreviewObject("CameraTest"))->Initialize();
+	//(new ModelPreviewObject("CameraTest"))->Initialize();
 
 
 	/// object creata
