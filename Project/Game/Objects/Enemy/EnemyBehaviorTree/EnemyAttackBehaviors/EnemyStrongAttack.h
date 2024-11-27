@@ -41,8 +41,6 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
-		void SpawnEffect();
-	private:
 		float activeTime_;
 		float currentTime_;
 		float collisionStartTime_;

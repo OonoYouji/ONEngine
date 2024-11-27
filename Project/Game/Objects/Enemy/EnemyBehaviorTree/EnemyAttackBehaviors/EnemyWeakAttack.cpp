@@ -2,6 +2,7 @@
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "../../Enemy.h"
+#include "../../EnemyEffect/EnemyEffect.h"
 #include "../EnemyBasicActions.h"
 
 #include "FrameManager/Time.h"
@@ -37,7 +38,7 @@ EnemyBehaviorTree::WeakAttackAction::WeakAttackAction(Enemy* enemy,float activeT
 	damage_ = damage;
 	leftTime_ = activeTime;
 
-	currentColliderSwitchingTime_ = 0.0f; 
+	currentColliderSwitchingTime_ = 0.0f;
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
@@ -56,6 +57,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 
 	if(leftTime_ <= 0.0f){
 		leftTime_ = 0.0f;
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		// 当たり判定を 無効化
 		enemy_->TerminateAttackCollider();
 		// 次のNode へ
@@ -92,6 +94,7 @@ EnemyBehaviorTree::WeakAttack::WeakAttack(Enemy* enemy,WorkWeakAttackAction* wor
 	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_1_1",worker->motionTimes_.startupTime_,true));
 	addChild(std::make_unique<WeakAttackStartup>(enemy,worker->motionTimes_.startupTime_));
 
+	addChild(std::make_unique<TransitionEffectAnimation>(enemy_,"Effect12",worker->motionTimes_.activeTime_,Vector3(0.0f,0.0f,0.0f),true));
 	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_1_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<WeakAttackAction>(enemy,worker->motionTimes_.activeTime_,worker->damage_));
 
