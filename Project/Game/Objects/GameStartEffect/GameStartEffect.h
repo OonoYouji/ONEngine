@@ -35,6 +35,7 @@ private:
 	class AudioSource* se_;
 	std::vector<BaseGameObject*> gameObjectVector_;
 	class Enemy* enemy_;
+	class TrackingCamera* camera_;
 
 	float transitionTime_ = 2.0f;
 

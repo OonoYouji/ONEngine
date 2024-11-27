@@ -9,6 +9,7 @@
 #include "ComponentManager/AudioSource/AudioSource.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/GameManagerObject/GameManagerObject.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
 
 GameStartEffect::GameStartEffect(std::vector<BaseGameObject*>& _gameObjectVector)
@@ -23,6 +24,7 @@ void GameStartEffect::Initialize() {
 	se_ = AddComponent<AudioSource>();
 
 	/// 演出を見せるために一旦すべてのオブジェクトのアクティブを切る
+	camera_ = nullptr;
 	enemy_ = nullptr;
 	for(auto& obj : gameObjectVector_) {
 		obj->isActive = false;
@@ -31,6 +33,12 @@ void GameStartEffect::Initialize() {
 			enemy_ = static_cast<Enemy*>(obj);
 			continue;
 		}
+		
+		if(obj->GetTag() == "TrackingCamera") {
+			camera_ = static_cast<TrackingCamera*>(obj);
+			continue;
+		}
+
 	}
 
 	maxEffectTime_ = 7.5f;
@@ -45,6 +53,7 @@ void GameStartEffect::Initialize() {
 
 
 	isRestart_ = GameManagerObject::GetFlag("isGameRestart");
+
 }
 
 void GameStartEffect::Update() {
@@ -70,6 +79,8 @@ void GameStartEffect::Update() {
 		if(seTriggerTime_ <= enemy_->GetBodyCurrentAnimationTime()) {
 			isPlaySE_.current = true;
 			se_->PlayOneShot("EnemyStart.wav", 0.1f);
+			camera_->StartShake(0.3f, 1.0f, maxEffectTime_ - currentEffectTime_ - 1.3f);
+			camera_->isActive = true;
 		}
 	}
 
