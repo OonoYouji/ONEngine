@@ -32,7 +32,7 @@ void Scene_Game::Initialize(){
 
 	/// モデル確認用のオブジェクト
 	(new ModelPreviewObject("Stage"))->Initialize();
-	//(new ModelPreviewObject("Effect3"))->Initialize();
+	(new ModelPreviewObject("Effect12"))->Initialize();
 
 
 	/// object creata
