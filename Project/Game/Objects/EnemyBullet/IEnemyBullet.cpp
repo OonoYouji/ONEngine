@@ -66,5 +66,8 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 			2.0f,damage_,
 			0.1f * scale, 10.3f * scale
 		);
+
+		player->PlayAudio("PlayerDamage.wav", 0.1f);
+
 	}
 }
