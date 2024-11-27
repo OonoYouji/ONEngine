@@ -66,6 +66,8 @@ namespace EnemyBehaviorTree{
 
 		if(currentTime_ >= startupTime_){
 			currentTime_ = 0.0f;
+
+			enemy_->PlaySE("EnemySE/weak2.wav");
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;
@@ -113,8 +115,8 @@ namespace EnemyBehaviorTree{
 
 	void EnemyBehaviorTree::WeakAttack2Action::SpawnEffect(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
-		enemy_->GetEnemy2Effect()->isActive = false;
+		effect->SetIsActive(true);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 
 		effect->SetEffectAnimationRender("Effect5");
 

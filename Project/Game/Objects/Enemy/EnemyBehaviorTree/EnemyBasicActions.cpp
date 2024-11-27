@@ -89,8 +89,8 @@ namespace EnemyBehaviorTree{
 
 	Status TransitionEffectAnimation::tick(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
-		enemy_->GetEnemy2Effect()->isActive = false;
+		effect->SetIsActive(true);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 
 		effect->SetEffectAnimationRender(animation_);
 
@@ -119,9 +119,9 @@ namespace EnemyBehaviorTree{
 	}
 	Status TransitionEffectAnimationWithSub::tick(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
+		effect->SetIsActive(true);
 		auto effect2 = enemy_->GetEnemy2Effect();
-		effect2->isActive = true;
+		effect2->SetIsActive(true);
 
 		effect->SetPosition(effectPos_);
 		effect2->SetPosition(effect2Pos_);
@@ -134,6 +134,14 @@ namespace EnemyBehaviorTree{
 			effect2->SetEffectAnimationTotalTime(animationTotalTime_);
 		}
 		enemy_->SetEffectAnimationFlags(static_cast<int>(isLoop_));
+		return Status::SUCCESS;
+	}
+	PlaySe::PlaySe(Enemy* enemy,const std::string& seName)
+		:Action(enemy){
+		seName_ = seName;
+	}
+	Status PlaySe::tick(){
+		enemy_->PlaySE(seName_);
 		return Status::SUCCESS;
 	}
 }
