@@ -117,18 +117,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
 }
-void EnemyBehaviorTree::StrongAttackAction::SpawnEffect(){
-	auto effect = enemy_->GetEnemy1Effect();
-	effect->SetIsActive(true);
-	enemy_->GetEnemy2Effect()->SetIsActive(false);
-
-	effect->SetEffectAnimationRender("Effect5");
-
-	effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::STRONG_ATTACK));
-
-	// リピートしない
-	effect->SetEffectAnimationFlags(1,true);
-}
 #pragma endregion
 
 #pragma region"EndLag"

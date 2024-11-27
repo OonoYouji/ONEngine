@@ -141,10 +141,6 @@ namespace EnemyBehaviorTree{
 		effect->SetEffectAnimationRender(animation_[0]);
 		effect2->SetEffectAnimationRender(animation_[1]);
 
-
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_[0]),true);
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_[1]),true);
-
 		if(animationTotalTime_[0] >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_[0]);
 		} else{
@@ -156,6 +152,8 @@ namespace EnemyBehaviorTree{
 			effect2->ResetAnimationTotal();
 		}
 
+		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_[0]),true);
+		effect2->SetEffectAnimationFlags(static_cast<int>(isLoop_[1]),true);
 
 		return Status::SUCCESS;
 	}
