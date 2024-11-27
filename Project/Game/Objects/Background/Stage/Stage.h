@@ -2,25 +2,18 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class Player : public BaseGameObject {
+class Stage : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Player();
-	~Player();
+	Stage();
+	~Stage();
 
 	void Initialize() override;
 	void Update()     override;
-
-
-	void AddVariables();
-	void ApplyVariables();
-
-
-	void Movement();
 
 private:
 
@@ -29,10 +22,5 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
-
-
-	float movementSpeed_;
-	Vec3 velocity_;
-	
 
 };

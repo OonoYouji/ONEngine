@@ -132,6 +132,7 @@
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
+    <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
+    <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

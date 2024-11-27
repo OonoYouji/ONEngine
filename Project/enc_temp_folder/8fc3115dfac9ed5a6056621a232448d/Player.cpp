@@ -35,9 +35,6 @@ void Player::Initialize() {
 	/// ===================================================
 
 	AddVariables();
-	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
-		"./Resources/Parameters/Objects", GetTag()
-	);
 	ApplyVariables();
 
 }
