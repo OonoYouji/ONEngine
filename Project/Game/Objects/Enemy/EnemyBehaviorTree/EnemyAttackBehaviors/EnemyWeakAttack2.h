@@ -45,6 +45,8 @@ namespace EnemyBehaviorTree{
 
 		Status tick()override;
 	private:
+		void SpawnEffect();
+	private:
 		float activeTime_;
 		float currentTime_;
 		float collisionStartTime_;
@@ -68,6 +70,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		WeakAttack2(Enemy* enemy,WorkWeakAttack2Action* worker);
-		~WeakAttack2()override{}
+		~WeakAttack2()override;
 	};
 }
