@@ -1,11 +1,11 @@
 {
     "hightSpeed_longrange_1": {
         "Type": 7,
-        "activeTime": 1.0,
-        "bulletFireInterval": 0.4000000059604645,
+        "activeTime": 3.299999952316284,
+        "bulletFireInterval": 0.30000001192092896,
         "bulletScale": 1.2999999523162842,
         "bulletSpawnOffsetZ": 0.5,
-        "bulletSpeed": 58.29999923706055,
+        "bulletSpeed": 69.9000015258789,
         "damage": 0.0,
         "endLagTime": 0.699999988079071,
         "rotateMaxSpeed": 0.6000000238418579,
