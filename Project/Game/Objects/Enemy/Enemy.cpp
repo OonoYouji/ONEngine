@@ -71,10 +71,10 @@ void Enemy::Initialize(){
 
 	effect1_ = new EnemyEffect();
 	effect1_->SetParent(pTransform_);
-	effect1_->isActive = false;
+	effect1_->SetIsActive(false);
 	effect2_ = new EnemyEffect();
 	effect2_->SetParent(pTransform_);
-	effect2_->isActive = false;
+	effect2_->SetIsActive(false);
 
 	passiveEffect_ = new EnemyEffect();
 
@@ -143,14 +143,15 @@ void Enemy::Update(){
 		}
 	}
 	float playerLength = pTransform_->position.Len();
-	float lengthMax = player_->GetStageRange() + colliderRadius_;
-	float lengthMin = -player_->GetStageRange() - colliderRadius_;
+	float lengthMax = player_->GetStageRange() - colliderRadius_;
+	float lengthMin = -player_->GetStageRange() + colliderRadius_;
 	float clampedEnemyPosLength = (std::clamp)(playerLength,
 											   lengthMin,
 											   lengthMax);
 
 	preOutOfStage_ = outOfStage_;
 	outOfStage_ = false;
+
 	if(playerLength > lengthMax
 	   || playerLength < lengthMin){
 		outOfStage_ = true;
@@ -739,7 +740,6 @@ void Enemy::LoadAllAnimation(){
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_1_W");
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_2_W");
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_3_W");
-
 
 	/// effect 
 	effectAnimationRenderer_->ChangeAnimation("Effect5");

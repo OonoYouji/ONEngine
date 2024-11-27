@@ -60,6 +60,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		// 当たり判定を 無効化
 		enemy_->TerminateAttackCollider();
+
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
