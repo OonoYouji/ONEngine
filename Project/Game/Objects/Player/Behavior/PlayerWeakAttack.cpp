@@ -116,7 +116,7 @@ void PlayerWeakAttack::WeakAttack() {
 	host_->SetDamage(workInBehavior_.damageFactor_);
 
 	if(!host_->GetAttackCollider()->isActive) {
-		host_->PlayAudio("strongAttack" + std::to_string(comboNum_ + 1) + ".wav", 0.5f);
+		host_->PlayAudio("strongAttack" + std::to_string(comboNum_ + 1) + ".wav", 0.1f);
 	}
 
 	host_->GetAttackCollider()->isActive = true;
@@ -205,6 +205,7 @@ void PlayerWeakAttack::EndLagUpdate() {
 			break;
 		case static_cast<int>(NextBehavior::avoidance):
 			nextBehavior = std::make_unique<PlayerAvoidanceBehavior>(host_);
+			nextBehavior->Update();
 			break;
 		case static_cast<int>(NextBehavior::combo):
 			nextBehavior = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);

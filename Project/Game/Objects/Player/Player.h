@@ -146,6 +146,7 @@ private:
 	class EntityShadow* entityShadow_    = nullptr;
 	class PlayerStrongAttackChargeEffect* strongAttackChargeEffect_ = nullptr;
 	class PlayerEffect* effect_;
+	class PlayerDamageEffect* damageEffect_ = nullptr;
 
 public:
 

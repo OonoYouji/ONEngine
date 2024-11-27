@@ -85,7 +85,7 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 		host_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 
 		/// 回避の効果音再生
-		host_->PlayAudio("avoidance.wav", 0.5f);
+		host_->PlayAudio("avoidance.wav", 0.1f);
 
 		currentUpdate_ = [this](){ Avoidance(); };
 		Avoidance();
