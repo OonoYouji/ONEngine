@@ -94,7 +94,6 @@ namespace EnemyBehaviorTree{
 		// 下 の if文 を通っていないときは 攻撃判定がない 
 		enemy_->TerminateAttackCollider();
 		if(collisionStartTime_ <= currentTime_ && currentTime_ <= collisionStartTime_ + collisionTime_){
-			SpawnEffect();
 			// 当たり判定が有効
 			enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK_2);
 		}
@@ -120,7 +119,7 @@ namespace EnemyBehaviorTree{
 
 		effect->SetEffectAnimationRender("Effect5");
 
-		effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::STRONG_ATTACK));
+		effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2));
 
 		// リピートしない
 		effect->SetEffectAnimationFlags(1,true);
@@ -152,6 +151,9 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<WeakAttack2Startup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 		// attackAction
+
+		Vector3 offsetPos = enemy_->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2);
+		addChild(std::make_unique<TransitionEffectAnimation>(enemy_,"Effect5",-1.0f,offsetPos,true));
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_2",worker->motionTimes_.activeTime_,true));
 		addChild(std::make_unique<WeakAttack2Action>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 
