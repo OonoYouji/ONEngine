@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Objects\BGMObj\BGMObj.cpp" />
+    <ClCompile Include="Game\Objects\ControllerConnectAlert\ControllerConnectAlert.cpp" />
     <ClCompile Include="Game\Objects\DefaultVignette\DefaultVignette.cpp" />
     <ClCompile Include="Game\Objects\EnemyKilledEffect\EnemyKilledEffect.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.cpp" />
@@ -319,6 +320,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\BGMObj\BGMObj.h" />
+    <ClInclude Include="Game\Objects\ControllerConnectAlert\ControllerConnectAlert.h" />
     <ClInclude Include="Game\Objects\DefaultVignette\DefaultVignette.h" />
     <ClInclude Include="Game\Objects\EnemyKilledEffect\EnemyKilledEffect.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.h" />

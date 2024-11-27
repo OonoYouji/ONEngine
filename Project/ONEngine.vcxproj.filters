@@ -217,6 +217,7 @@
     <ClCompile Include="Game\Objects\PlayerDeadEffect\PlayerDeadEffect.cpp" />
     <ClCompile Include="Game\Objects\BGMObj\BGMObj.cpp" />
     <ClCompile Include="Game\Objects\SEObj\SEObj.cpp" />
+    <ClCompile Include="Game\Objects\ControllerConnectAlert\ControllerConnectAlert.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -424,6 +425,7 @@
     <ClInclude Include="Game\Objects\PlayerDeadEffect\PlayerDeadEffect.h" />
     <ClInclude Include="Game\Objects\BGMObj\BGMObj.h" />
     <ClInclude Include="Game\Objects\SEObj\SEObj.h" />
+    <ClInclude Include="Game\Objects\ControllerConnectAlert\ControllerConnectAlert.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
