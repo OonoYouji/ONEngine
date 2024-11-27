@@ -214,6 +214,7 @@
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.cpp" />
     <ClCompile Include="Game\Objects\GameStartEffect\GameStartEffect.cpp" />
     <ClCompile Include="Game\Objects\EnemyKilledEffect\EnemyKilledEffect.cpp" />
+    <ClCompile Include="Game\Objects\PlayerDeadEffect\PlayerDeadEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -418,6 +419,7 @@
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.h" />
     <ClInclude Include="Game\Objects\GameStartEffect\GameStartEffect.h" />
     <ClInclude Include="Game\Objects\EnemyKilledEffect\EnemyKilledEffect.h" />
+    <ClInclude Include="Game\Objects\PlayerDeadEffect\PlayerDeadEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

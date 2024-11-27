@@ -29,6 +29,7 @@
 #include "Objects/SceneTransition/SceneTransition.h"
 
 #include "Objects/EnemyKilledEffect/EnemyKilledEffect.h"
+#include "Objects/PlayerDeadEffect/PlayerDeadEffect.h"
 
 
 /// ===================================================
@@ -191,7 +192,7 @@ void Scene_Game::Update(){
 
 		if(gameManager_->GetFlag("isGameOver").Trigger()) {
 			if(!endEffect_) {
-				endEffect_ = new EnemyKilledEffect(objectVector_);
+				endEffect_ = new PlayerDeadEffect(objectVector_);
 				endEffect_->Initialize();
 				nextScene_ = RESULT;
 			}
@@ -218,8 +219,8 @@ void Scene_Game::Update(){
 					}
 				}
 
-			} else if(className == "EnemyKilledEffect") {
-				EnemyKilledEffect* effect = static_cast<EnemyKilledEffect*>(endEffect_);
+			} else if(className == "PlayerDeadEffect") {
+				PlayerDeadEffect* effect = static_cast<PlayerDeadEffect*>(endEffect_);
 				if(effect->GetIsFinish().Trigger()) {
 
 					if(!sceneTransition_) {
