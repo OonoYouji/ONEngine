@@ -2,6 +2,8 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
+#include "Behavior/PlayerBehaviorManager.h"
+
 class Player : public BaseGameObject {
 public:
 
@@ -19,6 +21,7 @@ public:
 	void AddVariables();
 	void ApplyVariables();
 
+	void LoadingBehaviors();
 
 	void Movement();
 	void Rotation();
@@ -40,5 +43,7 @@ private:
 
 	/// other class
 	class GameCamera* pGameCamera_ = nullptr;
+
+	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
 
 };

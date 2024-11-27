@@ -30,7 +30,10 @@ void Player::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Player");
 
-
+	/// behavior
+	behaviorManager_.reset(new PlayerBehaviorManager(this));
+	behaviorManager_->Initialize();
+	//behaviorManager_->AddBehavior("dush", new PlayerDushBehavior);
 
 
 	/// ===================================================
@@ -48,6 +51,8 @@ void Player::Initialize() {
 void Player::Update() {
 	ApplyVariables();
 
+
+	behaviorManager_->Update();
 	Movement();
 	Rotation();
 }
@@ -72,6 +77,12 @@ void Player::ApplyVariables() {
 
 	movementSpeed_ = vm->GetValue<float>(groupName, "movementSpeed");
 	rotateSpeed_   = vm->GetValue<float>(groupName, "rotateSpeed");
+
+}
+
+
+
+void Player::LoadingBehaviors() {
 
 }
 
