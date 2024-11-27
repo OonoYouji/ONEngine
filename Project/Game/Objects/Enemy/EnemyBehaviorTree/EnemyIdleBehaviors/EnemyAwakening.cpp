@@ -28,6 +28,7 @@ namespace EnemyBehaviorTree{
 		leftTime_ -= Time::DeltaTime();
 
 		if(leftTime_ <= 0.0f){
+			enemy_->StartPassiveEffect();
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;

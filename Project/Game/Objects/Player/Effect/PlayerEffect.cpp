@@ -11,8 +11,9 @@ PlayerEffect::~PlayerEffect() {}
 
 void PlayerEffect::Initialize() {
 
-	animationRenderer_ = AddComponent<AnimationRenderer>("Effect5");
-
+	animationRenderer_ = AddComponent<AnimationRenderer>("Effect9");
+	animationRenderer_->SetTimeRate(0.0f);
+	animationRenderer_->SetIsStopAnimation(true);
 }
 
 void PlayerEffect::Update() {
@@ -30,7 +31,8 @@ void PlayerEffect::SetTotalTime(float _totalTime) {
 void PlayerEffect::OneShotAnimation(const std::string& _filePath, float _totalTime) {
 	animationRenderer_->ChangeAnimation(_filePath);
 	animationRenderer_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
-	
+	animationRenderer_->SetIsStopAnimation(false);
+
 	if(_totalTime == NULL) {
 		animationRenderer_->SetTimeRate(1.0f);
 	} else {
