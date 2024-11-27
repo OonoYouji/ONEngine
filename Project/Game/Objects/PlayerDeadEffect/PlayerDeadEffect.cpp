@@ -62,7 +62,7 @@ void PlayerDeadEffect::Initialize() {
 
 	AudioSource* se = AddComponent<AudioSource>();
 	se->volume = 0.1f;
-	se->PlayOneShot("EnemyDead.wav", se->volume);
+	se->PlayOneShot("PlayerDead.wav", se->volume);
 
 
 }
