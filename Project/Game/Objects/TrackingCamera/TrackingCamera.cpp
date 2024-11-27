@@ -75,7 +75,7 @@ void TrackingCamera::ApplyVariables() {
 
 	offsetPosition_  = vm->GetValue<Vec3>(groupName, "offsetPosition");
 	offsetDirection_ = vm->GetValue<Vec3>(groupName, "offsetDirection");
-	rotateSpeed_     = vm->GetValue<float>(groupName, "rotateSpeed");
+	rotateSpeed_     = vm->GetValue<Vec2>(groupName, "rotateSpeed");
 
 }
 

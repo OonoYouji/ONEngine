@@ -40,7 +40,7 @@ private:
 
 	Vec3  cameraRotate_; /// カメラの回転角
 	Mat4  matCameraRotate_;
-	float rotateSpeed_;  /// カメラの回転速度
+	Vec2  rotateSpeed_;  /// カメラの回転速度
 
 
 	Vec2 inputRightStick_;
