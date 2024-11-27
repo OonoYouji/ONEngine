@@ -312,6 +312,11 @@ void TrackingCamera::LockOnToEnemy() {
 		0.5f
 	));
 
+	bool isClamp = false;
+	if(pTransform_->position.y > 17.5f) {
+		pTransform_->position.y = 17.5f;
+		isClamp = true;
+	}
 
 	
 	/// ---------------------------------------------------
@@ -335,10 +340,13 @@ void TrackingCamera::LockOnToEnemy() {
 		cameraToPlayerVector_.Normalize()
 	);
 
-	SetQuaternion(Quaternion::Lerp(
-		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
-		quaternionLerpTime_
-	));
+	if(!isClamp) {
+
+		SetQuaternion(Quaternion::Lerp(
+			cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
+			quaternionLerpTime_
+		));
+	}
 }
 
 
