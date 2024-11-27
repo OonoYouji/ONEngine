@@ -13,6 +13,7 @@
 #include "Objects/ResultObjects/ResultText/ResultText.h"
 #include "Objects/ResultObjects/ResultToTitleText/ResultToTitleText.h"
 #include "Objects/ResultObjects/ResultArrow/ResultArrow.h"
+#include "Objects/ResultObjects/ResultGameClearTimeRenderer/ResultGameClearTimeRenderer.h"
 
 #include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 
@@ -25,6 +26,7 @@ void Scene_Result::Initialize() {
 	if(GameManagerObject::GetFlag("isGameClear").Press()) {
 
 		objects.push_back(new ResultText("GameClearText.png"));
+		objects.push_back(new ResultGameClearTimeRenderer(GameManagerObject::GetClearTime()));
 
 	} else {
 

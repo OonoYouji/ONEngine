@@ -95,7 +95,7 @@ namespace EnemyBehaviorTree{
 		effect->SetEffectAnimationRender(animation_);
 
 		effect->SetPosition(effectPos_);
-		
+    
 		if(animationTotalTime_ >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_);
 		} else{
@@ -155,6 +155,15 @@ namespace EnemyBehaviorTree{
 		}
 
 
+		return Status::SUCCESS;
+	}
+	PlaySe::PlaySe(Enemy* enemy,const std::string& se)
+		:Action(enemy){
+		se_ = se;
+	}
+
+	Status PlaySe::tick(){
+		enemy_->PlaySE(se_);
 		return Status::SUCCESS;
 	}
 }

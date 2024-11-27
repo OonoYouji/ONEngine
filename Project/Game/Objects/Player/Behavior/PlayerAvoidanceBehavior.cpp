@@ -93,9 +93,15 @@ void PlayerAvoidanceBehavior::StartupUpdate(){
 	}
 }
 
-void PlayerAvoidanceBehavior::Avoidance(){
+void PlayerAvoidanceBehavior::Avoidance() {
 	float t = currentTime_ / workInBehavior_.motionTimes_.activeTime_;
 	jastAvoidanceTime_ -= Time::DeltaTime();
+	if(jastAvoidanceTime_ >= 0.0f) {
+		host_->SetTexture("PlayerTex2");
+	} else {
+		host_->SetTexture("PlayerTex");
+	}
+
 
 	host_->SetPosition(Vector3::Lerp(
 		beforePos_, afterPos_,

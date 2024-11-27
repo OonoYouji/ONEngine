@@ -22,6 +22,9 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackStartup::tick(){
 		// 当たり判定を有効化
 		enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK);
 
+		// se Play
+		enemy_->PlaySE("EnemySE/weak1.wav");
+
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
@@ -53,6 +56,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 	}
 
 	if(leftTime_ <= 0.0f){
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		leftTime_ = 0.0f;
 		// 当たり判定を 無効化
 		enemy_->TerminateAttackCollider();

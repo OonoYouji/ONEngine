@@ -165,6 +165,7 @@ namespace EnemyBehaviorTree{
 
 		// Long Short を activeTime で 選ぶ
 		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "2",worker->motionTimes_.activeTime_,true));
+		addChild(std::make_unique<PlaySe>(enemy_,"EnemySE/longRange.wav"));
 		addChild(std::make_unique<LongRangeAttackAction>(enemy,worker));
 
 		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "3",worker->motionTimes_.endLagTime_,true));

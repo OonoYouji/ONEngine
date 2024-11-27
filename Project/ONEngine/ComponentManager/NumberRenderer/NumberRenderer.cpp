@@ -152,6 +152,18 @@ void NumberRenderer::CalcuationScoreDigit() {
 		scoreDigit_++;
 		scoreDigitArray_[i] = digits[i];
 	}
+
+	if(drawDigit_ != -1) {
+		bool isReverse = false;
+		for(size_t i = scoreDigit_; i < kMaxDigit_; ++i) {
+			scoreDigitArray_[i] = 0;
+			isReverse = true;
+		}
+	
+		if(isReverse) {
+			std::reverse(scoreDigitArray_.begin(), scoreDigitArray_.end());
+		}
+	}
 }
 
 
@@ -175,7 +187,11 @@ void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
 	TextureBindToCommandList(3, _commandList);
 	numberDigitBuffer_->BindToCommandList(4, _commandList);
 
-	_commandList->DrawIndexedInstanced(6, scoreDigit_ ? scoreDigit_ : 1, 0, 0, 0);
+	if(drawDigit_ == -1) {
+		_commandList->DrawIndexedInstanced(6, scoreDigit_ ? scoreDigit_ : 1, 0, 0, 0);
+	} else {
+		_commandList->DrawIndexedInstanced(6, drawDigit_, 0, 0, 0);
+	}
 }
 
 
@@ -208,4 +224,8 @@ void NumberRenderer::SetColor(const Vec4& _color) {
 
 void NumberRenderer::SetScore(uint32_t _score) {
 	score_ = _score;
+}
+
+void NumberRenderer::SetDrawDigit(uint32_t _drawDigit) {
+	drawDigit_ = _drawDigit;
 }

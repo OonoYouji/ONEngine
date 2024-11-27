@@ -2,6 +2,7 @@
 
 /// std
 #include <unordered_map>
+#include <chrono>
 
 
 #include "GameObjectManager/BaseGameObject.h"
@@ -30,6 +31,8 @@ public:
 	static const Flag& GetFlag(const std::string& _key);
 	static void SetFlag(const std::string& _key, bool value);
 
+	static float GetClearTime();
+
 private:
 
 	/// ===================================================
@@ -37,6 +40,9 @@ private:
 	/// ===================================================
 
 	static std::unordered_map<std::string, Flag> flags_;
+
+	static std::chrono::high_resolution_clock::time_point startTime_;
+	static std::chrono::high_resolution_clock::time_point endTime_;
 
 
 	class Enemy*  pEnemy_  = nullptr;

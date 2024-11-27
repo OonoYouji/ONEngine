@@ -797,6 +797,10 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 	this->effectAnimationRenderer_->ChangeAnimation(effect);
 }
 
+void Enemy::PlaySE(const std::string& se){
+	se_->PlayOneShot(se,0.4f);
+}
+
 void Enemy::SpawnWeapon(float t){
 	std::vector<Material>& materials = weaponAnimationRenderer_->GetMaterials();
 	for(auto& mate : materials){
@@ -1004,7 +1008,13 @@ void Enemy::DecideNextNode(){
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
+
 	dointCombo_ = comboName;
+
+	if(!rootNode_)
+	{
+		assert(0);
+	}
 }
 
 const ComboAttacks& Enemy::GetComboAttacks(int32_t hpCombo,const std::string& comboName) const{

@@ -109,6 +109,18 @@ namespace EnemyBehaviorTree{
 		bool isLoop_[2];
 	};
 
+	class PlaySe
+		:public Action{
+	public:
+		PlaySe(Enemy* enemy,const std::string& se);
+		~PlaySe(){}
+
+		Status tick()override;
+	private:
+		std::string se_;
+	};
+
+
 	///====================================
 	/// 連続攻撃 (単発を含む)
 	///====================================

@@ -199,6 +199,9 @@
     <ClCompile Include="Game\Objects\Background\SkyDome\SkyDome.cpp" />
     <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\MinuteRenderer\MinuteRenderer.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\ResultGameClearTimeRenderer.cpp" />
+    <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\SecondRenderer\SecondRenderer.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
@@ -363,6 +366,9 @@
     <ClInclude Include="Game\Objects\Background\SkyDome\SkyDome.h" />
     <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\MinuteRenderer\MinuteRenderer.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\ResultGameClearTimeRenderer.h" />
+    <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\SecondRenderer\SecondRenderer.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
