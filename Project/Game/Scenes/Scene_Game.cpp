@@ -24,6 +24,7 @@
 #include "Objects/UIManager/UIManager.h"
 #include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
+#include "Objects/GameStartEffect/GameStartEffect.h"
 
 /// ===================================================
 /// 初期化処理
@@ -38,6 +39,7 @@ void Scene_Game::Initialize(){
 
 	/// object creata
 	gameManager_ = new GameManagerObject();
+
 
 	/// プレイヤー
 	Player* player           = new Player();
@@ -59,10 +61,17 @@ void Scene_Game::Initialize(){
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
 
+	/// objectの配列を宣言 start effectに渡す
+
+	std::vector<BaseGameObject*> objectVec = {
+		player, enemyAttackCollider, enemy, trackingCamera
+	};
+
+	GameStartEffect* gameStartEffect = new GameStartEffect(objectVec);
+
 
 	/// 初期化する
 	gameManager_->Initialize();
-
 
 	player->SetTrackingCamera(trackingCamera);
 	player->SetEnemy(enemy);
@@ -80,6 +89,8 @@ void Scene_Game::Initialize(){
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	defaultVignette->Initialize();
+
+	gameStartEffect->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 

@@ -212,6 +212,7 @@
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.cpp" />
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverToTitleText\GameOverToTitleText.cpp" />
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.cpp" />
+    <ClCompile Include="Game\Objects\GameStartEffect\GameStartEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -414,6 +415,7 @@
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.h" />
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverToTitleText\GameOverToTitleText.h" />
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.h" />
+    <ClInclude Include="Game\Objects\GameStartEffect\GameStartEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -186,6 +186,7 @@
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.cpp" />
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.cpp" />
     <ClCompile Include="Game\Objects\GameOverObjects\GameOverToTitleText\GameOverToTitleText.cpp" />
+    <ClCompile Include="Game\Objects\GameStartEffect\GameStartEffect.cpp" />
     <ClCompile Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverMenuSelector\GameOverMenuSelector.h" />
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.h" />
     <ClInclude Include="Game\Objects\GameOverObjects\GameOverToTitleText\GameOverToTitleText.h" />
+    <ClInclude Include="Game\Objects\GameStartEffect\GameStartEffect.h" />
     <ClInclude Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />
