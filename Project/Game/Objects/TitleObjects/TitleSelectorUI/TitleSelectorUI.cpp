@@ -32,13 +32,8 @@ void TitleSelectorUI::Initialize() {
 void TitleSelectorUI::Update() {
 	ApplyVariables();
 
-	if(Input::GamepadConnected(0)) {
-		spriteRenderer_->SetTexture("StartButton.png");
-		pTransform_->scale = gamepadUIScale_;
-	} else {
-		spriteRenderer_->SetTexture("SpaceKeyUI.png");
-		pTransform_->scale = keyboardUIScale_;
-	}
+	spriteRenderer_->SetTexture("StartButton.png");
+	pTransform_->scale = gamepadUIScale_;
 
 }
 

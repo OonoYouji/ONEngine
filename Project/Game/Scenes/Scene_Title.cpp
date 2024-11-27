@@ -14,6 +14,7 @@
 #include "Objects/SceneTransition/SceneTransition.h"
 #include "Objects/BGMObj/BGMObj.h"
 #include "Objects/SEObj/SEObj.h"
+#include "Objects/ControllerConnectAlert/ControllerConnectAlert.h"
 
 
 void Scene_Title::Initialize() {
@@ -27,6 +28,8 @@ void Scene_Title::Initialize() {
 	(new BGMObj("BGMs/Title.wav"))->Initialize();
 	seObj_ = new SEObj();
 	seObj_->Initialize();
+
+	(new ControllerConnectAlert)->Initialize();
 
 	/// add layer -----------------------------------------------------
 

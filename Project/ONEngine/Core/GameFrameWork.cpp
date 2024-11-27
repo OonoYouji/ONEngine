@@ -18,7 +18,7 @@ void GameFrameWork::Initialize() {
 	pSceneManager_ = SceneManager::GetInstance();
 
 #ifdef _DEBUG
-	pSceneManager_->Initialize(SCENE_ID::GAME); /// 初期化時のシーンをここで決定
+	pSceneManager_->Initialize(SCENE_ID::TITLE); /// 初期化時のシーンをここで決定
 #else
 	pSceneManager_->Initialize(SCENE_ID::TITLE); /// 初期化時のシーンをここで決定
 #endif // _DEBUG
