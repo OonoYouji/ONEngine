@@ -13,6 +13,7 @@
 #include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 #include "Objects/SceneTransition/SceneTransition.h"
 #include "Objects/BGMObj/BGMObj.h"
+#include "Objects/SEObj/SEObj.h"
 
 
 void Scene_Title::Initialize() {
@@ -24,6 +25,8 @@ void Scene_Title::Initialize() {
 	menuSelector_->Initialize();
 	
 	(new BGMObj("BGMs/Title.wav"))->Initialize();
+	seObj_ = new SEObj();
+	seObj_->Initialize();
 
 	/// add layer -----------------------------------------------------
 
@@ -51,6 +54,7 @@ void Scene_Title::Update() {
 		if(!sceneTransition_) {
 			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 1.0f, TITLE_LAYER_TRANSITION);
 			sceneTransition_->Initialize();
+			seObj_->PlayOneShot("select.wav", 0.1f);
 		}
 	}
 

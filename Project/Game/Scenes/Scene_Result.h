@@ -21,5 +21,5 @@ public:
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
 	class GameOverMenuSelector* selector_ = nullptr;
-
+	class SEObj* seObj_ = nullptr;
 };
