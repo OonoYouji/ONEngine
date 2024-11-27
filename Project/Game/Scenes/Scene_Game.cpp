@@ -6,11 +6,6 @@
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
 
-/// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
-#include "ComponentManager/Collider/SphereCollider.h"
-#include "ComponentManager/Collider/BoxCollider.h"
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
@@ -23,17 +18,10 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Model* sphere = ModelManager::Load("Sphere");
+	(new DemoObject)->Initialize();
 
-
-	DemoObject* demoObjA = new DemoObject();
-	demoObjA->Initialize();
-	demoObjA->AddComponent<SphereCollider>(sphere);
-	
-	DemoObject* demoObjB = new DemoObject();
-	demoObjB->Initialize();
-	demoObjB->AddComponent<BoxCollider>(sphere);
-
+	mainCamera_->SetPosition({ 0, 5.5f, -17.0f });
+	mainCamera_->SetRotate({ 0.25f, 0.0f, 0.0f });
 }
 
 
