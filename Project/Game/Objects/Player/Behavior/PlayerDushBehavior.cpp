@@ -5,7 +5,7 @@ PlayerDushBehavior::PlayerDushBehavior(Player* _player)
 
 PlayerDushBehavior::~PlayerDushBehavior() {}
 
-void PlayerDushBehavior::Initialize() {
+void PlayerDushBehavior::Start() {
 
 }
 
@@ -13,6 +13,14 @@ void PlayerDushBehavior::Update() {
 
 }
 
-void PlayerDushBehavior::Finalize() {
+void PlayerDushBehavior::Exit() {
 
+}
+
+std::string PlayerDushBehavior::GetNextBehavior() {
+	return std::string();
+}
+
+bool PlayerDushBehavior::CanExit() {
+	return false;
 }

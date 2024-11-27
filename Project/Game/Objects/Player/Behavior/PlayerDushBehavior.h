@@ -2,15 +2,18 @@
 
 #include "BasePlayerBehavior.h"
 
-class PlayerDushBehavior : BasePlayerBehavior {
+class PlayerDushBehavior : public BasePlayerBehavior {
 public:
 
 	PlayerDushBehavior(class Player* _player);
 	~PlayerDushBehavior();
 
-	void Initialize() override;
+	void Start()  override;
 	void Update() override;
-	void Finalize() override;
+	void Exit()   override;
+
+	std::string GetNextBehavior() override;
+	bool CanExit() override;
 
 private:
 
