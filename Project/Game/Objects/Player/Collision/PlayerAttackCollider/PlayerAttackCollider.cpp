@@ -119,7 +119,7 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 		enemy->SetHP(enemy->GetHP() - damage);
 
 		/// enemyの被弾エフェクトを出す
-
+		enemy->SpawnDamageEffect(damage);
 	}
 }
 

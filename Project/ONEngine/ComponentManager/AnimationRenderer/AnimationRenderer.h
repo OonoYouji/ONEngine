@@ -13,7 +13,7 @@
 
 /// engine
 #include "GraphicManager/PipelineState/PipelineState.h"
-	
+
 /// base class & component
 #include "../Base/BaseComponent.h"
 #include "../Transform/Transform.h"
@@ -34,7 +34,7 @@ enum ANIMATION_FLAG{
 /// ===================================================
 /// アニメーションの
 /// ===================================================
-class AnimationRenderer final : public BaseComponent {
+class AnimationRenderer final : public BaseComponent{
 public:
 	/// ===================================================
 	/// public : methods
@@ -55,18 +55,19 @@ public:
 	void LoadAnimation(const std::string& filePath);
 	void ChangeAnimation(const std::string& _filePath);
 
+	bool GetPlayOnced()const;
 
-	Vec3       CalculateValue(const std::vector<KeyframeVec3>& keyframe, float time);
-	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframe, float time);
+	Vec3       CalculateValue(const std::vector<KeyframeVec3>& keyframe,float time);
+	Quaternion CalculateValue(const std::vector<KeyframeQuaternion>& keyframe,float time);
 
 	void ApplyAnimation(Skeleton& skeleton);
 
-	void SkinClusterUpdate(SkinCluster& _skinCluster, const Skeleton& _skeleton) const;
+	void SkinClusterUpdate(SkinCluster& _skinCluster,const Skeleton& _skeleton) const;
 
 
-	float GetDuration(const std::string& _filePath) const { return durationMap_.at(_filePath); }
+	float GetDuration(const std::string& _filePath) const{ return durationMap_.at(_filePath); }
 
-	void SetTotalTime(float _totalTime, const std::string& _filePath);
+	void SetTotalTime(float _totalTime,const std::string& _filePath);
 
 	void SetTimeRate(float _timeRate);
 
@@ -76,17 +77,17 @@ public:
 
 	void Restart();
 
-	const std::string& GetCurrentNodeAnimationKey() const {
+	const std::string& GetCurrentNodeAnimationKey() const{
 		return currentNodeAnimationKey_;
 	}
 
-	Skeleton* GetSkeleton() {
+	Skeleton* GetSkeleton(){
 		return &skeletonMap_.at(currentNodeAnimationKey_);
 	}
 
-	std::vector<Material>& GetMaterials() const { return pModel_->GetMaterials(); }
+	std::vector<Material>& GetMaterials() const{ return pModel_->GetMaterials(); }
 
-	
+
 	void SetIsStopAnimation(bool _isStop);
 
 private:
@@ -106,25 +107,25 @@ private:
 
 	//std::unordered_map<std::string, NodeAnimation> nodeAnimationArray_;
 
-	using NodeAnimationMap = std::unordered_map<std::string, NodeAnimation>;
-	std::unordered_map<std::string, NodeAnimationMap> multiNodeAnimationArray_;
+	using NodeAnimationMap = std::unordered_map<std::string,NodeAnimation>;
+	std::unordered_map<std::string,NodeAnimationMap> multiNodeAnimationArray_;
 	std::string currentNodeAnimationKey_;
 
-	std::unordered_map<std::string, float> durationMap_;
+	std::unordered_map<std::string,float> durationMap_;
 
 
 	class Model* pModel_;
 
-	std::unordered_map<std::string, SkinCluster> skinClusterMap_;
-	std::unordered_map<std::string, Skeleton>    skeletonMap_;
+	std::unordered_map<std::string,SkinCluster> skinClusterMap_;
+	std::unordered_map<std::string,Skeleton>    skeletonMap_;
 
 };
 
 
-class AnimationRendererCommon final {
+class AnimationRendererCommon final{
 public:
 
-	static AnimationRendererCommon* GetInstance() {
+	static AnimationRendererCommon* GetInstance(){
 		static AnimationRendererCommon instance;
 		return &instance;
 	}
@@ -137,7 +138,7 @@ public:
 
 	void AddAnimationRenderer(AnimationRenderer* _animationRenderer);
 
-	void BindDirectionalLightToCommandList(UINT _rootParameter, ID3D12GraphicsCommandList* _commandList);
+	void BindDirectionalLightToCommandList(UINT _rootParameter,ID3D12GraphicsCommandList* _commandList);
 
 	void SetDirectionalLight(class DirectionalLight* _directionalLight);
 

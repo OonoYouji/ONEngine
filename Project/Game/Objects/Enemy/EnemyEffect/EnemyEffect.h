@@ -18,7 +18,10 @@ public:
 private:
 	AnimationRenderer* effect_;
 public:
+	AnimationRenderer* GetAnimationRenderer()const;
+
 	void SetIsActive(bool isActive);
+	bool GetIsActiveAnimation()const;
 	void SetEffectAnimationRender(const std::string& filePath);
 	void SetEffectAnimationTotalTime(float _totalTime);
 	void ResetAnimationTotal();
