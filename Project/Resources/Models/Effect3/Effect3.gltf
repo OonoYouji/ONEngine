@@ -227,31 +227,31 @@
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":101,
+			"count":120,
 			"max":[
-				2.6666666666666665
+				4.133333333333334
 			],
 			"min":[
-				1
+				2.15
 			],
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":101,
+			"count":120,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":9,
 			"componentType":5126,
-			"count":101,
+			"count":120,
 			"type":"VEC4"
 		},
 		{
 			"bufferView":10,
 			"componentType":5126,
-			"count":101,
+			"count":120,
 			"type":"VEC3"
 		},
 		{
@@ -329,43 +329,43 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":404,
+			"byteLength":480,
 			"byteOffset":5344
 		},
 		{
 			"buffer":0,
-			"byteLength":1212,
-			"byteOffset":5748
+			"byteLength":1440,
+			"byteOffset":5824
 		},
 		{
 			"buffer":0,
-			"byteLength":1616,
-			"byteOffset":6960
+			"byteLength":1920,
+			"byteOffset":7264
 		},
 		{
 			"buffer":0,
-			"byteLength":1212,
-			"byteOffset":8576
+			"byteLength":1440,
+			"byteOffset":9184
 		},
 		{
 			"buffer":0,
 			"byteLength":8,
-			"byteOffset":9788
+			"byteOffset":10624
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":9796
+			"byteOffset":10632
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-			"byteOffset":9820
+			"byteOffset":10656
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":9852
+			"byteOffset":10688
 		}
 	],
 	"samplers":[
@@ -376,7 +376,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":9876,
+			"byteLength":10712,
 			"uri":"Effect3.bin"
 		}
 	]
