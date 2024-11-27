@@ -37,6 +37,7 @@ void Scene_Game::Initialize(){
 
 
 	/// object creata
+	gameManager_ = new GameManagerObject();
 
 	/// プレイヤー
 	Player* player           = new Player();
@@ -57,10 +58,12 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
-	gameManager_ = new GameManagerObject();
 
 
 	/// 初期化する
+	gameManager_->Initialize();
+
+
 	player->SetTrackingCamera(trackingCamera);
 	player->SetEnemy(enemy);
 
@@ -77,7 +80,6 @@ void Scene_Game::Initialize(){
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	defaultVignette->Initialize();
-	gameManager_->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 

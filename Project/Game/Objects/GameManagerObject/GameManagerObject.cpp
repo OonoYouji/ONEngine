@@ -5,7 +5,12 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Player/Player.h"
 
-std::unordered_map<std::string, Flag> GameManagerObject::flags_;
+std::unordered_map<std::string, Flag> GameManagerObject::flags_ = {
+	{ "isGameStart", Flag()},
+	{ "isGameClear", Flag()},
+	{ "isGameOver", Flag()},
+	{ "isGameRestart", Flag()}
+};
 std::chrono::high_resolution_clock::time_point GameManagerObject::startTime_;
 std::chrono::high_resolution_clock::time_point GameManagerObject::endTime_;
 
@@ -23,7 +28,7 @@ void GameManagerObject::Initialize() {
 	flags_["isGameStart"] = {};
 	flags_["isGameClear"] = {};
 	flags_["isGameOver"] = {};
-	flags_["isGameRestart"] = {};
+	//flags_["isGameRestart"] = {};
 
 }
 
@@ -39,7 +44,7 @@ void GameManagerObject::Update() {
 		flags_.at("isGameClear").current = true;
 		endTime_ = std::chrono::high_resolution_clock::now();
 	}
-	
+
 	/// プレイヤーが死んだ
 	if(pPlayer_->GetCurrentHP() <= 0.0f) {
 		flags_.at("isGameOver").current = true;

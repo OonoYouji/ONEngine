@@ -32,6 +32,7 @@
 /// objects
 #include "Objects/EntityShadow/EntityShadow.h"
 #include "Objects/Player/Player.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 
 #ifdef _DEBUG
 /// externals
@@ -125,6 +126,16 @@ void Enemy::Initialize(){
 
 	// 最初の行動を設定
 	DecideNextNode();
+
+
+	/// リスタート 処理をした
+	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
+	if(isGameRestart.Press()) {
+
+		/// hpを半分からスタート
+		hp_ = maxHp_ * 0.5f + 10.0f;
+
+	}
 }
 
 void Enemy::Update(){
