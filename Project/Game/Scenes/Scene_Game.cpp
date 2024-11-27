@@ -19,6 +19,7 @@
 #include "Objects/EnemyHPRenderer/EnemyHPRenderer.h"
 #include "Objects/EnemyNameRenderer/EnemyNameRenderer.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
+#include "Objects/DefaultVignette/DefaultVignette.h"
 
 #include "Objects/UIManager/UIManager.h"
 #include "Objects/GameManagerObject/GameManagerObject.h"
@@ -52,6 +53,7 @@ void Scene_Game::Initialize(){
 
 	BackgroundObjectManager* bbObjectManager = new BackgroundObjectManager();
 	UIManager* uiManager = new UIManager();
+	DefaultVignette* defaultVignette = new DefaultVignette();
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
@@ -74,6 +76,7 @@ void Scene_Game::Initialize(){
 	bbObjectManager->Initialize();
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
+	defaultVignette->Initialize();
 	gameManager_->Initialize();
 
 	playerHPRenderer->SetPlayer(player);

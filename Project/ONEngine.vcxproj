@@ -147,6 +147,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\DefaultVignette\DefaultVignette.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.cpp" />
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.cpp" />
     <ClCompile Include="Game\Objects\EnemyHPRenderer\EnemyHPRenderer.cpp" />
@@ -306,6 +307,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\DefaultVignette\DefaultVignette.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.h" />
     <ClInclude Include="Game\CustomMath\Flag.h" />
     <ClInclude Include="Game\Objects\EnemyHPRenderer\EnemyHPFrame.h" />

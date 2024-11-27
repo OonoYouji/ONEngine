@@ -22,8 +22,8 @@ void PlayerDamageEffect::Initialize() {
 	drawLayerId = GAME_SCENE_LAYER_UI;
 
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
-	spriteRenderer_->SetTexture("playerDamage.png");
-
+	spriteRenderer_->SetTexture("damage.png");
+	
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
 		"./Resources/Parameters/Objects", GetTag()

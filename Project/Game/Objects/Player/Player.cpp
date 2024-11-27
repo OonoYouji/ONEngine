@@ -62,7 +62,7 @@ void Player::Initialize() {
 	SetAnimationFlags(0);
 
 	/// アニメーションを先に読ませる
-	LoadingAnimations();
+	//LoadingAnimations();
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);

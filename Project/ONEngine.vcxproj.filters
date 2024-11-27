@@ -205,6 +205,7 @@
     <ClCompile Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Effect\PlayerDamageEffect.cpp" />
+    <ClCompile Include="Game\Objects\DefaultVignette\DefaultVignette.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -400,6 +401,7 @@
     <ClInclude Include="Game\Objects\ResultObjects\ResultArrow\ResultArrow.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyEffect\EnemyEffect.h" />
     <ClInclude Include="Game\Objects\Player\Effect\PlayerDamageEffect.h" />
+    <ClInclude Include="Game\Objects\DefaultVignette\DefaultVignette.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
