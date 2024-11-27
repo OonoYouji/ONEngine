@@ -11,6 +11,7 @@
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/TextureManager/TextureManager.h"
 #include "FrameManager/Time.h"
 
 /// component
@@ -51,6 +52,7 @@ void Player::Initialize() {
 
 	audioSource_ = AddComponent<AudioSource>();
 
+	TextureManager::GetInstance()->Load("PlayerTex2", "PlayerTex2.png");
 
 
 	/// nullptr対策
@@ -590,4 +592,11 @@ void Player::SetIsActiveWeapon(bool _isActive) {
 
 void Player::SetAttackMode(int _mode) {
 	attackCollider_->SetMode(_mode);
+}
+
+void Player::SetTexture(const std::string& _texName) {
+	std::vector<Material>& materials = bodyAnimationRenderer_->GetMaterials();
+	for(auto& mate : materials) {
+		mate.SetTextureName(_texName);
+	}
 }
