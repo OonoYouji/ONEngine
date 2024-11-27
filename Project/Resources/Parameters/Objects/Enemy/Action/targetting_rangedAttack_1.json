@@ -1,16 +1,16 @@
 {
-  "targetting_rangedAttack_1": {
-    "Type": 6,
-    "activeTime": 3.5999999046325684,
-    "attackForPlayerProbability": 100.0,
-    "bulletScale": 1.399999976158142,
-    "damage": 10.0,
-    "endLagTime": 1.2000000476837158,
-    "lifeTime": 0.30000001192092896,
-    "spawnCoolTime": 0.6000000238418579,
-    "spawnPositionY": 8.100000381469727,
-    "spawnRange": 76.19999694824219,
-    "startupTime": 1.2999999523162842,
-    "timeToLand": 0.8999999761581421
-  }
+    "targetting_rangedAttack_1": {
+        "Type": 6,
+        "activeTime": 3.5999999046325684,
+        "attackForPlayerProbability": 100.0,
+        "bulletScale": 1.399999976158142,
+        "damage": 10.0,
+        "endLagTime": 1.2000000476837158,
+        "lifeTime": 0.30000001192092896,
+        "spawnCoolTime": 0.6000000238418579,
+        "spawnPositionY": 8.100000381469727,
+        "spawnRange": 76.19999694824219,
+        "startupTime": 1.2999999523162842,
+        "timeToLand": 0.8999999761581421
+    }
 }
