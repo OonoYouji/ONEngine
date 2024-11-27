@@ -226,4 +226,8 @@ public:
 
 	int GetNextStrongChargeCount() const { return nextStrongChargeCount_; }
 	void SetNextStrongChargeCount(int _count) { nextStrongChargeCount_ = _count; }
+
+
+	void SetTexture(const std::string& _texName);
+
 };
