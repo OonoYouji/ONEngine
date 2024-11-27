@@ -88,6 +88,11 @@ public:
 
 	void LoadingAnimations();
 
+	void DamageEffectStart(
+		float _time, float _damage,
+		float _minShakeValue, float _maxShakeValue
+	);
+
 private:
 
 	class SphereCollider* sphereCollider_ = nullptr;

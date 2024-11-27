@@ -91,7 +91,16 @@ void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 			if(player->GetIsInvisible()){
 				return;
 			}
-			player->SetHp(player->GetCurrentHP() - enemy_->GetDamage());
+
+			float damage = enemy_->GetDamage();
+			player->SetHp(player->GetCurrentHP() - damage);
+
+			///　シェイク、ビネット
+			float scale = damage / 250.0f;
+			player->DamageEffectStart(
+				1.0f, damage,
+				0.01f * scale, 0.3f * scale
+			);
 		}
 	}
 }
