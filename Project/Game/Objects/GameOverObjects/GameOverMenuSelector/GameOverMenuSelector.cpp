@@ -7,6 +7,8 @@
 #include "../GameOverToRestartText/GameOverToRestartText.h"
 #include "../GameOverToTitleText/GameOverToTitleText.h"
 
+#include "Objects/GameManagerObject/GameManagerObject.h"
+
 #include "Scenes/Scene_Result.h"
 
 GameOverMenuSelector::GameOverMenuSelector() {
@@ -18,12 +20,19 @@ GameOverMenuSelector::~GameOverMenuSelector() {}
 void GameOverMenuSelector::Initialize() {
 	drawLayerId = RESULT_LAYER_UI;
 
-	texts_[0] = new GameOverToRestartText();
+	if(GameManagerObject::GetFlag("isEnemyHalfLife").Press()) {
+		texts_[0] = new GameOverToRestartText();
+	} else {
+		texts_[0] = nullptr;
+	}
+
 	texts_[1] = new GameOverToTitleText();
 
 	for(auto& text : texts_) {
-		text->Initialize();
-		text->drawLayerId = drawLayerId;
+		if(text) {
+			text->Initialize();
+			text->drawLayerId = drawLayerId;
+		}
 	}
 
 	renderer_ = AddComponent<SpriteRenderer>();
@@ -52,8 +61,11 @@ void GameOverMenuSelector::Update() {
 
 
 	if(isUp) { ++selectMenuIndex_; }
-	if(isDown) { --selectMenuIndex_; }
-
+	if(GameManagerObject::GetFlag("isEnemyHalfLife").Press()) {
+		if(isDown) { --selectMenuIndex_; }
+	} else {
+		selectMenuIndex_ = 1;
+	}
 
 	selectMenuIndex_ = std::clamp(selectMenuIndex_, 0, 1);
 	pTransform_->position = texts_[selectMenuIndex_]->GetPosition();

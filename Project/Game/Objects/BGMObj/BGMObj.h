@@ -2,16 +2,15 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class PlayerEffect : public BaseGameObject {
-	friend class Player;
+class BGMObj : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PlayerEffect();
-	~PlayerEffect();
+	BGMObj();
+	~BGMObj();
 
 	void Initialize() override;
 	void Update()     override;
@@ -22,11 +21,4 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AnimationRenderer* animationRenderer_ = nullptr;
-	float totalTime_ = 0.0f;
-
-public:
-	void SetTotalTime(float _totalTime);
-	void OneShotAnimation(const std::string& _filePath, float _totalTime);
-	void SetAnimationActive(bool _active);
 };

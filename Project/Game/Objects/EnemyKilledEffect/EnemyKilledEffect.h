@@ -2,19 +2,25 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class PlayerEffect : public BaseGameObject {
-	friend class Player;
+#include "CustomMath/Flag.h"
+
+class EnemyKilledEffect : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PlayerEffect();
-	~PlayerEffect();
+	EnemyKilledEffect(const std::vector<BaseGameObject*>& _objects);
+	~EnemyKilledEffect();
 
 	void Initialize() override;
 	void Update()     override;
+
+	void AddVariables();
+	void ApplyVariables();
+
+	const Flag& GetIsFinish() const { return isFinish_; }
 
 private:
 
@@ -22,11 +28,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AnimationRenderer* animationRenderer_ = nullptr;
-	float totalTime_ = 0.0f;
 
-public:
-	void SetTotalTime(float _totalTime);
-	void OneShotAnimation(const std::string& _filePath, float _totalTime);
-	void SetAnimationActive(bool _active);
+	float maxTime_;
+	float currentTime_;
+
+	std::vector<BaseGameObject*> objectVector_;
+	Flag isFinish_;
+
 };

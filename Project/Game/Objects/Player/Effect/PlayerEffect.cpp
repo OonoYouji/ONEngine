@@ -23,10 +23,6 @@ void PlayerEffect::Update() {
 	}
 }
 
-void PlayerEffect::ActiveAnimation() {
-	animationRenderer_->isActive = true; 
-}
-
 void PlayerEffect::SetTotalTime(float _totalTime) {
 	animationRenderer_->SetTotalTime(_totalTime, animationRenderer_->GetCurrentNodeAnimationKey());
 }
@@ -45,5 +41,9 @@ void PlayerEffect::OneShotAnimation(const std::string& _filePath, float _totalTi
 	}
 	
 	animationRenderer_->Restart();
+}
+
+void PlayerEffect::SetAnimationActive(bool _active) {
+	animationRenderer_->isActive = _active;
 }
 

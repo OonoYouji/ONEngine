@@ -40,9 +40,7 @@ private:
 	/// ===================================================
 
 	static std::unordered_map<std::string, Flag> flags_;
-
-	static std::chrono::high_resolution_clock::time_point startTime_;
-	static std::chrono::high_resolution_clock::time_point endTime_;
+	static float gameClearedTime_;
 
 
 	class Enemy*  pEnemy_  = nullptr;
