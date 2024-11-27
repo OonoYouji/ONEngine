@@ -154,3 +154,8 @@ EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackActio
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_3",worker->motionTimes_.endLagTime_,true));
 	addChild(std::make_unique<StrongAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }
+
+EnemyBehaviorTree::StrongAttack::~StrongAttack(){
+	enemy_->GetEnemy1Effect()->SetIsActive(false);
+	enemy_->GetEnemy2Effect()->SetIsActive(false);
+}

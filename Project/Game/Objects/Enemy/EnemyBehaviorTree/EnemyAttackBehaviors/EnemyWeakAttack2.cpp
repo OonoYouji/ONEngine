@@ -147,6 +147,9 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<WeakAttack2EndLag>(enemy,worker->motionTimes_.endLagTime_));
 	}
 
-	WeakAttack2::~WeakAttack2(){}
+	WeakAttack2::~WeakAttack2(){
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
+	}
 
 }

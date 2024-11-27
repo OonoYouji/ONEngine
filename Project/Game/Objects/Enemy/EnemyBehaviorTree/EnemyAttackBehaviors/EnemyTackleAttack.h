@@ -57,6 +57,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		TackleAttack(Enemy* enemy,WorkTackleAttackAction* worker);
-		~TackleAttack()override{}
+		~TackleAttack()override;
 	};
 }

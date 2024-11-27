@@ -50,6 +50,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		RangedAttack(Enemy* enemy,WorkRangedAttackAction* worker);
-		~RangedAttack()override{}
+		~RangedAttack()override;
 	};
 }

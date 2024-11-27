@@ -50,6 +50,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		WeakAttack(Enemy* enemy,WorkWeakAttackAction* worker);
-		~WeakAttack()override{}
+		~WeakAttack()override;
 	};
 }

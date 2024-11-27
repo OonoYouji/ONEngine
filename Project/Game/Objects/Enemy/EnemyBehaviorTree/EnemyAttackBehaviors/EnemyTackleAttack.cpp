@@ -68,7 +68,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 
 	/// TODO fix
 	if(enemy_->GetOutOfStage()){
-  	enemy_->GetEnemy1Effect()->SetIsActive(false);
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		currentTime_ = 0.0f;
 
 		// se
@@ -126,4 +126,9 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	addChild(std::make_unique<TackleAttackEndLag>(enemy,
 			 worker->motionTimes_.endLagTime_)
 	);
+}
+
+EnemyBehaviorTree::TackleAttack::~TackleAttack(){
+	enemy_->GetEnemy1Effect()->SetIsActive(false);
+	enemy_->GetEnemy2Effect()->SetIsActive(false);
 }

@@ -65,6 +65,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		StrongAttack(Enemy* enemy,WorkStrongAttackAction* worker);
-		~StrongAttack()override{}
+		~StrongAttack()override;
 	};
 }

@@ -6,6 +6,7 @@
 #include "Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
+#include "Objects/Enemy/EnemyEffect/EnemyEffect.h"
 #include "Objects/EnemyBullet/IEnemyBullet.h"
 #include "Objects/EnemyBulletEmitter/EnemyBulletEmitter.h"
 #include "Objects/Player/Player.h"
@@ -170,5 +171,9 @@ namespace EnemyBehaviorTree{
 
 		addChild(std::make_unique<TransitionAnimationWithWeaponAndSub>(enemy,animationName + "3",worker->motionTimes_.endLagTime_,true));
 		addChild(std::make_unique<LongRangeAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
+	}
+	LongRangeAttack::~LongRangeAttack(){
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 	}
 }

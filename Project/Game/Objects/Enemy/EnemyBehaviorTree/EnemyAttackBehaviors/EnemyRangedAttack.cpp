@@ -5,6 +5,7 @@
 #include "Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
+#include "Objects/Enemy/EnemyEffect/EnemyEffect.h"
 
 #include "Objects/EnemyBullet/IEnemyBullet.h"
 #include "Objects/EnemyBulletEmitter/EnemyBulletEmitter.h"
@@ -90,3 +91,9 @@ EnemyBehaviorTree::RangedAttack::RangedAttack(Enemy* enemy,WorkRangedAttackActio
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RangedAttack_3",worker->motionTimes_.endLagTime_,true));
 	addChild(std::make_unique<RangedAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
 }
+
+EnemyBehaviorTree::RangedAttack::~RangedAttack(){
+	enemy_->GetEnemy1Effect()->SetIsActive(false);
+	enemy_->GetEnemy2Effect()->SetIsActive(false);
+}
+
