@@ -67,6 +67,8 @@ EnemyBehaviorTree::Status  EnemyBehaviorTree::StrongAttackStartup::Update(){
 	enemy_->SetRotateY(beforeRotateY_ + std::lerp(0.0f,rotateP2E_,t));
 
 	if(currentTime_ >= startupTime_){
+		// se
+		enemy_->PlaySE("EnemySE/Strong.wav");
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -120,8 +122,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 }
 void EnemyBehaviorTree::StrongAttackAction::SpawnEffect(){
 	auto effect = enemy_->GetEnemy1Effect();
-	effect->isActive = true;
-	enemy_->GetEnemy2Effect()->isActive = false;
+	effect->SetIsActive(true);
+	enemy_->GetEnemy2Effect()->SetIsActive(false);
 
 	effect->SetEffectAnimationRender("Effect5");
 

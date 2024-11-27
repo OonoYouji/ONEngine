@@ -795,6 +795,10 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 	this->effectAnimationRenderer_->ChangeAnimation(effect);
 }
 
+void Enemy::PlaySE(const std::string& se){
+	se_->PlayOneShot(se,0.4f);
+}
+
 void Enemy::SpawnWeapon(float t){
 	std::vector<Material>& materials = weaponAnimationRenderer_->GetMaterials();
 	for(auto& mate : materials){
