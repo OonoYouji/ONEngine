@@ -42,6 +42,7 @@ void IEnemyBullet::Update(){
 	// lifeTime が 0 になったら 死亡
 	if(lifeLeftTime_ <= 0.0f){
 		isAlive_ = false;
+		isActive = false;
 	}
 }
 
