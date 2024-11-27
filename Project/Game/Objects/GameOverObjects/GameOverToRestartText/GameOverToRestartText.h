@@ -2,19 +2,21 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
-class PlayerEffect : public BaseGameObject {
-	friend class Player;
+class GameOverToRestartText : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PlayerEffect();
-	~PlayerEffect();
+	GameOverToRestartText();
+	~GameOverToRestartText();
 
 	void Initialize() override;
 	void Update()     override;
+
+	void AddVariables();
+	void ApplyVariables();
 
 private:
 
@@ -22,13 +24,5 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AnimationRenderer* animationRenderer_ = nullptr;
-	float totalTime_ = 0.0f;
-
-public:
-	void ActiveAnimation();
-	void SetTotalTime(float _totalTime);
-
-
-	void OneShotAnimation(const std::string& _filePath, float _totalTime);
+	class SpriteRenderer* renderer_ = nullptr;
 };

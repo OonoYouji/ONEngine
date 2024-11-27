@@ -47,6 +47,8 @@ void AnimationRenderer::Initialize() {
 
 	skeletonMap_[currentNodeAnimationKey_]    = CreateSkeleton(pModel_->GetRootNode());
 	skinClusterMap_[currentNodeAnimationKey_] = CreateSkinCluster(skeletonMap_[currentNodeAnimationKey_], pModel_);
+
+	Update();
 }
 
 void AnimationRenderer::Update() {

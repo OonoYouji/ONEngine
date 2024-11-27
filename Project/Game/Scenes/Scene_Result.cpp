@@ -11,37 +11,23 @@
 
 /// game over objects
 #include "Objects/ResultObjects/ResultText/ResultText.h"
-#include "Objects/ResultObjects/ResultToTitleText/ResultToTitleText.h"
-#include "Objects/ResultObjects/ResultArrow/ResultArrow.h"
-#include "Objects/ResultObjects/ResultGameClearTimeRenderer/ResultGameClearTimeRenderer.h"
-
-#include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
+#include "Objects/GameOverObjects/GameOverMenuSelector/GameOverMenuSelector.h"
 
 
 void Scene_Result::Initialize() {
 
-	std::list<BaseGameObject*> objects = {};
+	std::vector<BaseGameObject*> objects = {};
 
 	/// 結果で初期化するオブジェクトを変更
-	if(GameManagerObject::GetFlag("isGameClear").Press()) {
-
-		objects.push_back(new ResultText("GameClearText.png"));
-		objects.push_back(new ResultGameClearTimeRenderer(GameManagerObject::GetClearTime()));
-
-	} else {
-
-		objects.push_back(new ResultText("GameOverText.png"));
-	}
-
-	objects.push_back(new ResultToTitleText());
-	objects.push_back(new ResultArrow());
-	objects.push_back(new TitleSelectorUI());
+	objects.push_back(new ResultText("GameOverText.png"));
+	objects.push_back(new GameOverMenuSelector());
 
 	for(auto& object : objects) {
 		object->Initialize();
 		object->drawLayerId = RESULT_LAYER_UI;
 	}
 
+	selector_ = static_cast<GameOverMenuSelector*>(objects[1]);
 
 	/// add layer ---------------------------------------------------------------------
 
@@ -83,16 +69,16 @@ void Scene_Result::Update() {
 
 	if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
 		SceneManager* sceneManager = SceneManager::GetInstance();
-		sceneManager->SetNextScene(TITLE);
 
-		//switch(menuSelector_->GetSelectMenu()) {
-		//case SELECT_MENU_START:
-		//	sceneManager->SetNextScene(GAME);
-		//	break;
-		//case SELECT_MENU_EXIT:
-		//	ONEngine::SetIsRunning(false);
-		//	break;
-		//}
+		switch(selector_->GetSelectMenu()) {
+		case SELECT_MENU_RESTART:
+			sceneManager->SetNextScene(SCENE_ID::GAME);
+			GameManagerObject::SetFlag("isGameRestart", true);
+			break;
+		case SELECT_MENU_TITLE:
+			sceneManager->SetNextScene(SCENE_ID::TITLE);
+			break;
+		}
 	}
 
 }

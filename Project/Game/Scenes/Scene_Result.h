@@ -20,5 +20,6 @@ public:
 
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
+	class GameOverMenuSelector* selector_ = nullptr;
 
 };

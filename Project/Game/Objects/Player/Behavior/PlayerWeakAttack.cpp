@@ -50,12 +50,15 @@ void PlayerWeakAttack::Update() {
 	bool isDush      = false;
 
 	/// 回避のための入力
-	isDush      |= Input::TriggerKey(KeyCode::LShift);
-	isDush      |= Input::TriggerPadRT();
+	isDush |= Input::TriggerKey(KeyCode::Space);
+	isDush |= Input::TriggerPadRT();
+	isDush |= Input::TriggerPadButton(PadCode::RightShoulder);
+
 
 	/// 次のコンボのための入力
 	isNextCombo |= Input::TriggerKey(KeyCode::J);
 	isNextCombo |= Input::TriggerPadButton(PadCode::B);
+	isNextCombo |= Input::TriggerMouse(MouseCode::Left);
 
 
 	/// 次のbehaviorに行くための処理

@@ -15,6 +15,8 @@ void EntityShadow::Initialize() {
 }
 
 void EntityShadow::Update() {
-
+	if(GetParent()) {
+		pTransform_->position.y = -GetParent()->position.y;
+	}
 }
 

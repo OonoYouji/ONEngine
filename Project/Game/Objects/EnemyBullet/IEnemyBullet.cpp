@@ -11,6 +11,7 @@
 /// component
 #include "ComponentManager/Collider/SphereCollider.h"
 #include "Game/Objects/Player/Player.h"
+#include "Objects/Player/Behavior/PlayerAvoidanceBehavior.h"
 
 #include "imgui.h"
 
@@ -41,6 +42,7 @@ void IEnemyBullet::Update(){
 
 	// lifeTime が 0 になったら 死亡
 	if(lifeLeftTime_ <= 0.0f){
+		isAlive_ = false;
 		isActive = false;
 	}
 }
@@ -52,6 +54,15 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 		if(player->GetIsInvisible()){
 			return;
 		}
+
+
+		/// ジャスト回避の時間内であれば除外
+		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(player->GetCurrentBehavior());
+		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
+			return;
+		}
+
+
 		player->SetHp(player->GetCurrentHP() - damage_);
 		
 		

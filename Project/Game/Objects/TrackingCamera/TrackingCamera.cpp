@@ -59,9 +59,15 @@ void TrackingCamera::Initialize() {
 	ApplyVariables();
 
 	LockOnToPlayer();
-
 	isLockOn_ = true;
 
+	for(size_t i = 0; i < 60 ; ++i) {
+		Update();
+		pTransform_->Update();
+		pPlayer_->UpdateMatrix();
+		pGameCamera_->UpdateMatrix();
+		offsetTransform_.Update();
+	}
 }
 
 void TrackingCamera::Update() {
@@ -70,9 +76,6 @@ void TrackingCamera::Update() {
 	prevIsLockOn_ = isLockOn_;
 
 	/// オブジェクト間のベクトルを計算
-	//cameraToEnemyVector_  = pEnemy_->GetPosition() - pGameCamera_->GetPosition();
-	//cameraToPlayerVector_ = pPlayer_->GetPosition() - pGameCamera_->GetPosition();
-
 	playerToEnemyVector_  = pEnemy_->GetPosition() - pPlayer_->GetPosition();
 	cameraToPlayerVector_ = Mat4::Transform(cameraHeightOffset_, pPlayer_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
 	cameraToEnemyVector_ = Mat4::Transform(cameraHeightOffset_, pEnemy_->GetMatTransform()) - (GetPosition() - cameraHeightOffset_);
@@ -103,6 +106,7 @@ void TrackingCamera::Update() {
 
 	pTransform_->Update();
 	offsetTransform_.Update();
+
 
 }
 
@@ -310,13 +314,6 @@ void TrackingCamera::LockOnToEnemy() {
 		pGameCamera_->GetPosition(), cameraNextPosition_,
 		0.5f
 	));
-
-	/*bool isClamp = false;
-	if(pTransform_->position.y > 17.5f) {
-		pTransform_->position.y = 17.5f;
-		isClamp = true;
-	}*/
-
 	
 	/// ---------------------------------------------------
 	/// 回転角の計算
@@ -338,15 +335,6 @@ void TrackingCamera::LockOnToEnemy() {
 		{ 0.0f, 0.0f, 0.0f },
 		cameraToPlayerVector_.Normalize()
 	);
-
-	//if(!isClamp) {
-	//	SetQuaternion(Quaternion::Lerp(
-	//		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
-	//		quaternionLerpTime_
-	//	));
-	//} else {
-	//	
-	//}
 
 	SetQuaternion(Quaternion::Lerp(
 		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_,

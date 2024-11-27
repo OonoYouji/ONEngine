@@ -51,6 +51,7 @@ void Player::Initialize() {
 	weaponAnimationRenderer_ = AddComponent<AnimationRenderer>("Player_Wait");
 
 	audioSource_ = AddComponent<AudioSource>();
+	audioSource_->volume = 0.1f;
 
 	TextureManager::GetInstance()->Load("PlayerTex2", "PlayerTex2.png");
 
@@ -64,12 +65,19 @@ void Player::Initialize() {
 	SetAnimationFlags(0);
 
 	/// アニメーションを先に読ませる
-	//LoadingAnimations();
+	LoadingAnimations();
+
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
 
+	SetAnimationTotalTime(GetAnimationDuration());
+	SetAnimationFlags(0, false);
 
+	pTransform_->position = Vec3(
+		0.0f, 0.0f, -20.0f
+	);
+	pTransform_->Update();
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
 

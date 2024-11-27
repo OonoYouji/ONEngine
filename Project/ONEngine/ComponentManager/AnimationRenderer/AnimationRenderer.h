@@ -89,6 +89,8 @@ public:
 	
 	void SetIsStopAnimation(bool _isStop);
 
+	float GetAnimationTime() const { return animationTime_; }
+
 private:
 	/// ===================================================
 	/// private : objects

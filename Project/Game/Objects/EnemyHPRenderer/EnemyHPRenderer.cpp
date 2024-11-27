@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "EnemyHPRenderer.h"
 
 /// std
@@ -73,7 +74,7 @@ void EnemyHPRenderer::Update() {
 	ApplyVariables();
 
 	/// hpによって大きさを変える
-	float lerpT = pEnemy_->GetHP() / pEnemy_->GetMaxHP();
+	float lerpT = std::max(pEnemy_->GetHP() / pEnemy_->GetMaxHP(), 0.0f);
 	pTransform_->scale = Vec3::Lerp(
 		{ 0.0f, maxScale_.y, 1.0f, }, maxScale_, lerpT
 	);

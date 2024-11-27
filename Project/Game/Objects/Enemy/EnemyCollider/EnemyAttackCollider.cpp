@@ -10,6 +10,7 @@
 /// objects
 #include "../Enemy.h"
 #include "Game/Objects/Player/Player.h"
+#include "Objects/Player/Behavior/PlayerAvoidanceBehavior.h"
 
 #include "imgui.h"
 
@@ -91,6 +92,13 @@ void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 			if(player->GetIsInvisible()){
 				return;
 			}
+
+			/// ジャスト回避の時間内であれば除外
+			PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(player->GetCurrentBehavior());
+			if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
+				return;
+			}
+
 
 			float damage = enemy_->GetDamage();
 			player->SetHp(player->GetCurrentHP() - damage);

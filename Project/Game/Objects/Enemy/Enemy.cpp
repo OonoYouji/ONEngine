@@ -2,7 +2,7 @@
 
 /// std
 #include <iostream>
-
+#include <numbers>
 
 /// enemy behavior
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
@@ -32,6 +32,7 @@
 /// objects
 #include "Objects/EntityShadow/EntityShadow.h"
 #include "Objects/Player/Player.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 
 #ifdef _DEBUG
 /// externals
@@ -85,9 +86,10 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
-	LoadAllAnimation();
+	//LoadAllAnimation();
 
 	se_ = AddComponent<AudioSource>();
+	se_->volume = 0.1f;
 
 	weaponAnimationRenderer_->isActive 	  = false;
 	subWeaponAnimationRenderer_->isActive = false;
@@ -106,6 +108,10 @@ void Enemy::Initialize(){
 
 	currentHpState_ = HpState::HP_HIGHTE;
 
+
+	/// 反対を向いているのを正面にする
+	pTransform_->rotate.y = std::numbers::pi_v<float>;
+
 	///=====================================
 	/// RangeType ごと に 仕分け
 	///=====================================
@@ -123,6 +129,7 @@ void Enemy::Initialize(){
 
 	// 最初の行動を設定
 	DecideNextNode();
+
 }
 
 void Enemy::Update(){

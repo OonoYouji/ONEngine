@@ -55,7 +55,7 @@ void EnemyBulletEmitter::Update(){
 		}
 		bullet->Destory();
 		return true;
-				  });
+	});
 
 	meshInstancingRenderer_->ResetTransformArray();
 	drawTransform_.clear();

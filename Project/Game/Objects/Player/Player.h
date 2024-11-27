@@ -230,4 +230,7 @@ public:
 
 	void SetTexture(const std::string& _texName);
 
+
+	IPlayerBehavior* GetCurrentBehavior() const { return currentBehavior_.get(); }
+
 };

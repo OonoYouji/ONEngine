@@ -6,6 +6,7 @@
 /// engine
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
+#include "FrameManager/Time.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -24,6 +25,8 @@
 #include "Objects/UIManager/UIManager.h"
 #include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
+#include "Objects/GameStartEffect/GameStartEffect.h"
+#include "Objects/SceneTransition/SceneTransition.h"
 
 /// ===================================================
 /// 初期化処理
@@ -37,6 +40,8 @@ void Scene_Game::Initialize(){
 
 
 	/// object creata
+	gameManager_ = new GameManagerObject();
+
 
 	/// プレイヤー
 	Player* player           = new Player();
@@ -57,10 +62,19 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
-	gameManager_ = new GameManagerObject();
+
+	/// objectの配列を宣言 start effectに渡す
+
+	std::vector<BaseGameObject*> objectVec = {
+		player, enemyAttackCollider, enemy, trackingCamera
+	};
+
+	GameStartEffect* gameStartEffect = new GameStartEffect(objectVec);
 
 
 	/// 初期化する
+	gameManager_->Initialize();
+
 	player->SetTrackingCamera(trackingCamera);
 	player->SetEnemy(enemy);
 
@@ -77,7 +91,8 @@ void Scene_Game::Initialize(){
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	defaultVignette->Initialize();
-	gameManager_->Initialize();
+
+	gameStartEffect->Initialize();
 
 	playerHPRenderer->SetPlayer(player);
 
@@ -97,8 +112,38 @@ void Scene_Game::Initialize(){
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
-	AddLayer("ui",uiCamera);
+	AddLayer("ui", uiCamera);
 
+
+	GameCamera* transitionCamera = new GameCamera("transitionCamera");
+	transitionCamera->Initialize();
+	transitionCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+	AddLayer("transitionLayer", transitionCamera);
+
+
+
+
+
+	/// リスタート 処理をした
+	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
+	if(isGameRestart.Press()) {
+		/// hpを半分からスタート
+		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
+	} else {
+		enemy->SetAnimationRender("Boss_Awakening");
+		enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
+	}
+
+	//gameStartEffect->StartGame();
+
+	sceneTransition_ = nullptr;
+
+
+	/// フラグのリセット
+	GameManagerObject::SetFlag("isGameRestart", false);
+
+	/// Loadがクソ重でdelta timeがバカでかくなり演出が吹き飛ぶので
+	Time::GetInstance()->Update();
 }
 
 
@@ -115,18 +160,57 @@ void Scene_Game::Update(){
 
 	
 	if(Input::TriggerKey(KeyCode::F1)){
-		SceneManager::GetInstance()->SetNextScene(RESULT);
+		SceneManager::GetInstance()->SetNextScene(CLEAR);
 		gameManager_->SetFlag("isGameClear", true);
 	}
 #endif // _DEBUG
-
-
-	if(gameManager_->GetFlag("isGameClear").Trigger()) {
-		SceneManager::GetInstance()->SetNextScene(RESULT);
-	}
 	
-	if(gameManager_->GetFlag("isGameOver").Trigger()) {
-		SceneManager::GetInstance()->SetNextScene(RESULT);
+	if(!isStartInTransition_) {
+		if(!sceneTransition_) {
+			isStartInTransition_ = true;
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_OUT, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		}
 	}
+
+	if(!isEndInTransition_) {
+		if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+			sceneTransition_->Destory();
+			sceneTransition_ = nullptr;
+			isEndInTransition_ = true;
+		}
+	}
+
+
+	if(!isStartOutTransition_) {
+
+		if(gameManager_->GetFlag("isGameOver").Trigger()) {
+			if(!sceneTransition_) {
+				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+				sceneTransition_->Initialize();
+				isStartOutTransition_ = true;
+				nextScene_ = RESULT;
+				return;
+			}
+		}
+
+		if(gameManager_->GetFlag("isGameClear").Trigger()) {
+			if(!sceneTransition_) {
+				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+				sceneTransition_->Initialize();
+				isStartOutTransition_ = true;
+				nextScene_ = CLEAR;
+				return;
+			}
+		}
+
+	} else {
+
+		if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+			SceneManager::GetInstance()->SetNextScene(static_cast<SCENE_ID>(nextScene_));
+		}
+
+	}
+
 
 }
