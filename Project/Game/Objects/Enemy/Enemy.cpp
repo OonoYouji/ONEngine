@@ -87,9 +87,10 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
-	//LoadAllAnimation();
+	LoadAllAnimation();
 
 	se_ = AddComponent<AudioSource>();
+	se_->volume = 0.1f;
 	/*se_->PlayOneShot("PlayerSE/dekai.wav",1.1f);*/
 
 	weaponAnimationRenderer_->isActive 	  = false;

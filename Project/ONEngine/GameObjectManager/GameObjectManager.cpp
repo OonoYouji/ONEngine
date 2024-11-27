@@ -55,7 +55,10 @@ void GameObjectManager::Update(){
 		addObjectList_.clear();
 	}
 
+#ifdef _DEBUG
 	ReName();
+#endif // _DEBUG
+
 
 	for(auto& obj : objects_){
 		if(obj->isActive){ 
