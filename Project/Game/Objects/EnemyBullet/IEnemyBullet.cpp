@@ -47,11 +47,19 @@ void IEnemyBullet::Update(){
 
 void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 	if(_collision->GetTag() == "Player"){
-		Player* player = reinterpret_cast<Player*>(_collision);
+		Player* player = static_cast<Player*>(_collision);
 
 		if(player->GetIsInvisible()){
 			return;
 		}
 		player->SetHp(player->GetCurrentHP() - damage_);
+		
+		
+		///　シェイク、ビネット
+		float scale = damage_ / 250.0f;
+		player->DamageEffectStart(
+			1.0f, damage_,
+			0.01f * scale, 0.3f * scale
+		);
 	}
 }

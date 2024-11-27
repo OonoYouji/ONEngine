@@ -62,7 +62,7 @@ void Player::Initialize() {
 	SetAnimationFlags(0);
 
 	/// アニメーションを先に読ませる
-	LoadingAnimations();
+	//LoadingAnimations();
 
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
@@ -498,6 +498,10 @@ void Player::LoadingAnimations() {
 
 }
 
+void Player::DamageEffectStart(float _time, float _damage, float _minShakeValue, float _maxShakeValue) {
+	damageEffect_->Start(_time, _damage);
+	pTrackingCamera_->StartShake(_minShakeValue, _maxShakeValue, _time);
+}
 
 
 
