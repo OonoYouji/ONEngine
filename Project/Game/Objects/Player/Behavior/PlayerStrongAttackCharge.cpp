@@ -178,7 +178,9 @@ void PlayerStrongAttackCharge::Update() {
 
 
 	if(isDush) {
-		effect_->SetAnimationActive(false);
+		if(host_->GetNextStrongChargeCount() != 3) {
+			effect_->SetAnimationActive(false);
+		}
 		std::unique_ptr<IPlayerBehavior> nextBehavior;
 		nextBehavior.reset(new PlayerAvoidanceBehavior(host_));
 		host_->TransitionBehavior(std::move(nextBehavior));

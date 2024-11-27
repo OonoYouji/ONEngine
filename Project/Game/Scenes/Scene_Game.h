@@ -31,4 +31,7 @@ private:
 
 	bool isStartOutTransition_ = false;
 	int nextScene_;
+
+	class BaseGameObject* endEffect_;
+	std::vector<class BaseGameObject*> objectVector_;
 };

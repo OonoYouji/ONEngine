@@ -66,10 +66,10 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 
 
 		///　シェイク、ビネット
-		float scale = damage_ / 250.0f;
+		float scale = damage / 250.0f;
 		player->DamageEffectStart(
-			1.0f,damage_,
-			0.1f * scale,1.0f * scale
+			2.0f, damage,
+			0.1f * scale, 10.3f * scale
 		);
 	}
 }
