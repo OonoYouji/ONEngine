@@ -111,6 +111,8 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	);
 
 	// attackAction
+
+	addChild(std::make_unique<TransitionEffectAnimation>(enemy_,"Effect11",-1.0f,Vector3(0.0f,0.0f,-1.0f),false));
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RushAttack_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<TackleAttackAction>(enemy,
 			 worker->motionTimes_.activeTime_,
