@@ -52,7 +52,6 @@ TackleAttackAction::TackleAttackAction(Enemy* enemy,
 	currentTime_		= 0.0f;
 	speed_ 				= speed;
 	damage_				= damage;
-	isHitWall_ = enemy_->GetOutOfStage();
 }
 
 EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
@@ -62,7 +61,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 	// Enemy の向いてる方向に 進む
 	enemy_->SetPosition(enemy_->GetPosition() + Matrix4x4::Transform({0.0f,0.0f,speed_ * Time::DeltaTime()},Matrix4x4::MakeRotateY(enemy_->GetRotate().y)));
 
-	if(enemy_->GetTriggerOutOfStage() && isHitWall_){
+	/// TODO fix
+	if(enemy_->GetOutOfStage()){
 		currentTime_ = 0.0f;
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
