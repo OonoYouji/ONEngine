@@ -50,7 +50,7 @@ void PlayerWeakAttack::Update() {
 	bool isDush      = false;
 
 	/// 回避のための入力
-	isDush |= Input::TriggerKey(KeyCode::Space);
+	isDush |= Input::TriggerKey(KeyCode::LShift);
 	isDush |= Input::TriggerPadRT();
 	isDush |= Input::TriggerPadButton(PadCode::RightShoulder);
 
