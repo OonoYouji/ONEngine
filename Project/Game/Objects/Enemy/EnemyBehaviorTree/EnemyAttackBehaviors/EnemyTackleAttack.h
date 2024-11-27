@@ -39,6 +39,8 @@ namespace EnemyBehaviorTree{
 		float currentTime_;
 		float speed_;
 		float damage_;
+
+		bool isHitWall_;
 	};
 
 	class TackleAttackEndLag
