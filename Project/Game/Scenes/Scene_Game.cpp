@@ -1,39 +1,32 @@
 #include "Scene_Game.h"
 
-/// std
-#include <numbers>
-
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "Input/Input.h"
 
-/// components
-#include <ComponentManager/MeshRenderer/MeshRenderer.h>
-#include "ComponentManager/Collider/SphereCollider.h"
-#include "ComponentManager/Collider/BoxCollider.h"
-
 /// objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
+#include "Objects/Player/Player.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
-/// lib
-#include "Debugger/Assertion.h"
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Model* sphere = ModelManager::Load("Sphere");
+	/// insatnce create
+	std::vector<BaseGameObject*> createObjects;
+	createObjects.reserve(16);
+	createObjects.push_back(new Player());
+	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
 
 
-	DemoObject* demoObjA = new DemoObject();
-	demoObjA->Initialize();
-	demoObjA->AddComponent<SphereCollider>(sphere);
-	
-	DemoObject* demoObjB = new DemoObject();
-	demoObjB->Initialize();
-	demoObjB->AddComponent<BoxCollider>(sphere);
+	/// initailizing
+	for(BaseGameObject* obj : createObjects) {
+		obj->Initialize();
+	}
 
 }
 
@@ -43,9 +36,6 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 
-	if(Input::TriggerKey(KeyCode::A)) {
-		SetNextScene("TitleScene");
-	}
 
 
 }

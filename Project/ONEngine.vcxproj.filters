@@ -130,6 +130,8 @@
     <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
     <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
+    <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -240,6 +242,8 @@
     <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
     <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
+    <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
