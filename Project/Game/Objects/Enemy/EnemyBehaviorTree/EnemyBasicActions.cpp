@@ -21,6 +21,8 @@ namespace EnemyBehaviorTree{
 		enemy_->SetAnimationRender(animation_);
 		if(animationTotalTime_ >= 0.0f){
 			enemy_->SetAnimationTotalTime(animationTotalTime_);
+		} else{
+			enemy_->ResetAnimationTotal();
 		}
 		enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
 		return Status::SUCCESS;
@@ -38,6 +40,8 @@ namespace EnemyBehaviorTree{
 		enemy_->SetAnimationRender(animation_[0],animation_[1]);
 		if(animationTotalTime_ >= 0.0f){
 			enemy_->SetAnimationTotalTime(animationTotalTime_);
+		} else{
+			enemy_->ResetAnimationTotal();
 		}
 		enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
 		return Status::SUCCESS;
@@ -70,6 +74,8 @@ namespace EnemyBehaviorTree{
 		enemy_->SetAnimationRender(animation_[0],animation_[1],animation_[2]);
 		if(animationTotalTime_ >= 0.0f){
 			enemy_->SetAnimationTotalTime(animationTotalTime_);
+		} else{
+			enemy_->ResetAnimationTotal();
 		}
 		enemy_->SetAnimationFlags(static_cast<int>(isLoop_));
 		return Status::SUCCESS;
@@ -96,8 +102,9 @@ namespace EnemyBehaviorTree{
 
 		effect->SetPosition(effectPos_);
 
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),isLoop_);
+		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),true);
 
+		effect->ResetAnimationTotal();
 
 		if(animationTotalTime_ >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_);
@@ -138,7 +145,10 @@ namespace EnemyBehaviorTree{
 
 
 		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_[0]),true);
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_[1]),true);
+		effect2->SetEffectAnimationFlags(static_cast<int>(isLoop_[1]),true);
+
+		effect->ResetAnimationTotal();
+		effect2->ResetAnimationTotal();
 
 		if(animationTotalTime_[0] >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_[0]);

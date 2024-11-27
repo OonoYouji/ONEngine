@@ -163,10 +163,6 @@ void Enemy::Update(){
 
 void Enemy::Debug(){
 #ifdef _DEBUG
-	if(!actionIsActive_){
-		currentHpState_ = currentEditHpState_;
-	}
-
 	if(ImGui::Button("Save")){
 		SaveStatus();
 		SaveAllAction();

@@ -109,25 +109,11 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	}
 
 	if(currentTime_ >= activeTime_){
-		enemy_->GetEnemy1Effect()->SetIsActive(false);
-		enemy_->GetEnemy2Effect()->SetIsActive(false);
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
-}
-void EnemyBehaviorTree::StrongAttackAction::SpawnEffect(){
-	auto effect = enemy_->GetEnemy1Effect();
-	effect->SetIsActive(true);
-	enemy_->GetEnemy2Effect()->SetIsActive(false);
-
-	effect->SetEffectAnimationRender("Effect5");
-
-	effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::STRONG_ATTACK));
-
-	// リピートしない
-	effect->SetEffectAnimationFlags(1,true);
 }
 #pragma endregion
 

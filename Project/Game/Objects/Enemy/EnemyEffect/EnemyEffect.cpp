@@ -40,6 +40,6 @@ void EnemyEffect::ResetAnimationTotal(){
 void EnemyEffect::SetEffectAnimationFlags(int _flags,bool _isResetTime){
 	effect_->SetAnimationFlags(_flags);
 	if(_isResetTime){
-		ResetAnimationTotal();
+		effect_->Restart();
 	}
 }
