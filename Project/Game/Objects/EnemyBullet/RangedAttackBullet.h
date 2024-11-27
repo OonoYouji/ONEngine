@@ -20,8 +20,6 @@ public:
 	void Update()override;
 
 private:
-	void Falling();
-	void FadeOut();
 
 	std::function<void()> currentUpdate_;
 

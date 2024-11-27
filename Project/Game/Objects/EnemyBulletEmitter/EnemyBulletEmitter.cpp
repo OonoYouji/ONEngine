@@ -50,7 +50,7 @@ void EnemyBulletEmitter::Update(){
 	spawnUpdate_();
 
 	std::erase_if(drawBullets_,[](IEnemyBullet* bullet){
-		if(bullet->GetLifeLeftTime() > 0.0f){
+		if(bullet->isActive){
 			return false;
 		}
 		bullet->Destory();

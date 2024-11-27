@@ -22,6 +22,7 @@
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "ComponentManager/AudioSource/AudioSource.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 
 #include "Math/Random.h"
@@ -70,7 +71,11 @@ void Enemy::Initialize(){
 	//DecideNextNode();
 
 	effect1_ = new EnemyEffect();
+	effect1_->SetParent(pTransform_);
+	effect1_->isActive = false;
 	effect2_ = new EnemyEffect();
+	effect2_->SetParent(pTransform_);
+	effect2_->isActive = false;
 
 	bodyAnimationRenderer_ 		 = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_  	 = AddComponent<AnimationRenderer>("Boss_Wait");
@@ -78,6 +83,9 @@ void Enemy::Initialize(){
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
 	LoadAllAnimation();
+
+	se_ = AddComponent<AudioSource>();
+	/*se_->PlayOneShot("PlayerSE/dekai.wav",1.1f);*/
 
 	weaponAnimationRenderer_->isActive 	  = false;
 	subWeaponAnimationRenderer_->isActive = false;

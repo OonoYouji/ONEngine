@@ -11,7 +11,6 @@ EnemyEffect::EnemyEffect(){
 EnemyEffect::~EnemyEffect(){}
 
 void EnemyEffect::Initialize(){
-
 }
 
 void EnemyEffect::Update(){}
@@ -30,9 +29,16 @@ void EnemyEffect::SetEffectAnimationTotalTime(float _totalTime){
 						  effect_->GetCurrentNodeAnimationKey());
 }
 
+void EnemyEffect::ResetAnimationTotal(){
+	effect_->SetTotalTime(
+		effect_->GetDuration(effect_->GetCurrentNodeAnimationKey()),
+		effect_->GetCurrentNodeAnimationKey()
+	);
+}
+
 void EnemyEffect::SetEffectAnimationFlags(int _flags,bool _isResetTime){
 	effect_->SetAnimationFlags(_flags);
 	if(_isResetTime){
-		effect_->Restart();
+		ResetAnimationTotal();
 	}
 }

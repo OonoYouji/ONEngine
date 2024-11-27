@@ -89,14 +89,17 @@ namespace EnemyBehaviorTree{
 
 	Status TransitionEffectAnimation::tick(){
 		auto effect = enemy_->GetEnemy1Effect();
+		effect->isActive = true;
 		enemy_->GetEnemy2Effect()->isActive = false;
+
+		effect->SetEffectAnimationRender(animation_);
 
 		effect->SetPosition(effectPos_);
 
 		if(animationTotalTime_ >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_);
 		}
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),true);
+		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),isLoop_);
 		return Status::SUCCESS;
 	}
 	TransitionEffectAnimationWithSub::TransitionEffectAnimationWithSub(Enemy* enemy,

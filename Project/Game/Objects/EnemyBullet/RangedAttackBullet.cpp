@@ -30,7 +30,6 @@ RangedAttackBullet::RangedAttackBullet(float spawnRange,
 			spawnPosY_ = spawnPositionY;
 		}
 
-		currentUpdate_ = [this](){this->Falling(); };
 }
 
 void RangedAttackBullet::Initialize(){
@@ -38,19 +37,11 @@ void RangedAttackBullet::Initialize(){
 }
 
 void RangedAttackBullet::Update(){
-	currentUpdate_();
-}
-
-void RangedAttackBullet::Falling(){
 	currentTimeToLand_+= Time::DeltaTime();
 	float t = currentTimeToLand_ / timeToLand_;
-	pTransform_->position.y = (std::lerp)(spawnPosY_,0.0f,Ease::In::Back(t));
+	pTransform_->position.y = (std::lerp)(spawnPosY_,-0.5f,Ease::In::Back(t));
 
 	if(t >= 1.0f){
-		currentUpdate_ = [this](){this->FadeOut(); };
+		isActive = false;
 	}
-}
-
-void RangedAttackBullet::FadeOut(){
-	IEnemyBullet::Update();
 }

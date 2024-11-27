@@ -25,6 +25,7 @@ class EnemyAttackCollider;
 class SphereCollider;
 class WorkEnemyAction;
 class EnemyEffect;
+class AudioSource;
 
 /// <summary>
 /// コンボで使用される Attack の 情報
@@ -102,6 +103,8 @@ private:
 	AnimationRenderer* subWeaponAnimationRenderer_ 	   = nullptr;
 	AnimationRenderer* effectAnimationRenderer_    	   = nullptr;
 	
+	AudioSource* se_;
+
 	EnemyEffect* effect1_;
 	EnemyEffect* effect2_;
 

@@ -5,6 +5,8 @@
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "../../Enemy.h"
+#include "../../EnemyEffect/EnemyEffect.h"
+#include "../../EnemyEffect/EnemyEffect.h"
 #include "../EnemyBasicActions.h"
 #include "Game/Objects/Player/Player.h"
 
@@ -90,6 +92,7 @@ namespace EnemyBehaviorTree{
 		// 下 の if文 を通っていないときは 攻撃判定がない 
 		enemy_->TerminateAttackCollider();
 		if(collisionStartTime_ <= currentTime_ && currentTime_ <= collisionStartTime_ + collisionTime_){
+			SpawnEffect();
 			// 当たり判定が有効
 			enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK_2);
 		}
@@ -97,6 +100,8 @@ namespace EnemyBehaviorTree{
 		enemy_->SetDamage(damage_);
 
 		if(currentTime_ >= activeTime_){
+			enemy_->GetEnemy1Effect()->isActive = false;
+
 			enemy_->SetDamage(0.0f);
 			currentTime_ = 0.0f;
 			// 当たり判定を無効に
@@ -105,6 +110,20 @@ namespace EnemyBehaviorTree{
 		}
 		return Status::RUNNING;
 	}
+
+	void EnemyBehaviorTree::WeakAttack2Action::SpawnEffect(){
+		auto effect = enemy_->GetEnemy1Effect();
+		effect->isActive = true;
+		enemy_->GetEnemy2Effect()->isActive = false;
+
+		effect->SetEffectAnimationRender("Effect5");
+
+		effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::STRONG_ATTACK));
+
+		// リピートしない
+		effect->SetEffectAnimationFlags(1,true);
+	}
+
 #pragma endregion
 
 #pragma region"EndLag"
@@ -131,7 +150,6 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<WeakAttack2Startup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 		// attackAction
-		addChild(std::make_unique<TransitionEffectAnimation>(enemy,"Effect5",-1.0f,enemy->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2)));
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_2",worker->motionTimes_.activeTime_,true));
 		addChild(std::make_unique<WeakAttack2Action>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 
@@ -139,5 +157,7 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_3",worker->motionTimes_.endLagTime_,true));
 		addChild(std::make_unique<WeakAttack2EndLag>(enemy,worker->motionTimes_.endLagTime_));
 	}
+
+	WeakAttack2::~WeakAttack2(){}
 
 }
