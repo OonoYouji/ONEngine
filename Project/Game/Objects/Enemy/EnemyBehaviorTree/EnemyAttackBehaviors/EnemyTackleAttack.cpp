@@ -35,6 +35,10 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackStartup::tick(){
 	if(currentTime_ >= startupTime_){
 		// 当たり判定を有効に
 		enemy_->ActivateAttackCollider(ActionTypes::TACKLE_ATTACK);
+
+		// se
+		enemy_->PlaySE("EnemySE/Rush.wav");
+
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;
@@ -63,6 +67,10 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 
 	if(enemy_->GetTriggerOutOfStage()){
 		currentTime_ = 0.0f;
+
+		// se
+		enemy_->PlaySE("EnemySE/HitWall.wav");
+
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
 		return EnemyBehaviorTree::Status::SUCCESS;
@@ -95,6 +103,7 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	:EnemyBehaviorTree::Sequence(enemy){
 	// startup
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RushAttack_1",worker->motionTimes_.startupTime_,true));
+	addChild(std::make_unique<PlaySe>(enemy_,"EnemySE/RushStartup.wav"));
 	addChild(std::make_unique<TackleAttackStartup>(enemy,
 			 worker->motionTimes_.startupTime_,
 			 worker->lockOnTime_)

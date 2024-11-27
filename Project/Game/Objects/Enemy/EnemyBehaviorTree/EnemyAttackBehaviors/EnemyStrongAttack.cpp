@@ -67,6 +67,8 @@ EnemyBehaviorTree::Status  EnemyBehaviorTree::StrongAttackStartup::Update(){
 	enemy_->SetRotateY(beforeRotateY_ + std::lerp(0.0f,rotateP2E_,t));
 
 	if(currentTime_ >= startupTime_){
+		// se
+		enemy_->PlaySE("EnemySE/Strong.wav");
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
 	return EnemyBehaviorTree::Status::RUNNING;

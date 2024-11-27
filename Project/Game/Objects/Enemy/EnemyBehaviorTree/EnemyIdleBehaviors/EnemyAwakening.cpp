@@ -56,6 +56,7 @@ namespace EnemyBehaviorTree{
 	EnemyAwakening::EnemyAwakening(Enemy* enemy)
 		:Sequence(enemy){
 		addChild(std::make_unique<EnemyLoadAwakeAnimation>(enemy_));
+		addChild(std::make_unique<PlaySe>(enemy,"EnemySE/Awakening.wav"));
 		addChild(std::make_unique<EnemyAwakeningAction>(enemy_));
 	}
 }

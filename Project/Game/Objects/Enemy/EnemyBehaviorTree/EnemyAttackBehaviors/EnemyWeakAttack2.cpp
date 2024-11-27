@@ -66,6 +66,8 @@ namespace EnemyBehaviorTree{
 
 		if(currentTime_ >= startupTime_){
 			currentTime_ = 0.0f;
+
+			enemy_->PlaySE("EnemySE/weak2.wav");
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;
