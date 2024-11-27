@@ -35,6 +35,8 @@ private:
 	class AudioSource* se_;
 	std::vector<BaseGameObject*> gameObjectVector_;
 
+	float transitionTime_ = 2.0f;
+
 	float maxEffectTime_;
 	float currentEffectTime_;
 
@@ -42,4 +44,6 @@ private:
 
 	Flag isPlaySE_;
 	Flag isFinish_;
+
+	class Enemy* enemy_;
 };

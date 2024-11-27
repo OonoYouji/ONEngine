@@ -42,7 +42,10 @@ void GameStartEffect::Update() {
 	isPlaySE_.Update();
 
 	//ApplyVariables();
-
+	transitionTime_ -= Time::DeltaTime();
+	if(transitionTime_ > 0.0f) {
+		return;
+	}
 
 	/// 演出の時間経過
 	currentEffectTime_ += Time::DeltaTime();
@@ -84,6 +87,8 @@ void GameStartEffect::ApplyVariables() {
 }
 
 void GameStartEffect::StartGame() {
+	currentEffectTime_ = maxEffectTime_;
+
 	for(auto& obj : gameObjectVector_) {
 		obj->isActive = true;
 	}

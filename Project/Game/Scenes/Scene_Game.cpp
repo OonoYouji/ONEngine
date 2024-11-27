@@ -37,7 +37,7 @@
 /// ===================================================
 /// 初期化処理
 /// ===================================================
-void Scene_Game::Initialize(){
+void Scene_Game::Initialize() {
 
 
 	/// モデル確認用のオブジェクト
@@ -50,12 +50,12 @@ void Scene_Game::Initialize(){
 
 
 	/// プレイヤー
-	Player* player           = new Player();
+	Player* player = new Player();
 	PlayerHPRenderer* playerHPRenderer = new PlayerHPRenderer();
 
 	/// 敵
 	EnemyAttackCollider* enemyAttackCollider = new EnemyAttackCollider();
-	Enemy* enemy = new Enemy(player,enemyAttackCollider);
+	Enemy* enemy = new Enemy(player, enemyAttackCollider);
 	EnemyHPRenderer* enemyHPRenderer = new EnemyHPRenderer();
 	EnemyNameRenderer* enemyNameRenderer = new EnemyNameRenderer();
 
@@ -66,7 +66,7 @@ void Scene_Game::Initialize(){
 	UIManager* uiManager = new UIManager();
 	DefaultVignette* defaultVignette = new DefaultVignette();
 
-	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
+	TrackingCamera* trackingCamera = new TrackingCamera(mainCamera_, player, enemy);
 
 	BGMObj* bgm = new BGMObj("BGMs/GameBGM.wav");
 
@@ -108,7 +108,7 @@ void Scene_Game::Initialize(){
 	gameManager_->SetPlayer(player);
 	gameManager_->SetEnemy(enemy);
 
-	directionalLight_->SetDirection({0.0,-1.0f,0.0f});
+	directionalLight_->SetDirection({ 0.0,-1.0f,0.0f });
 
 
 	/// ui layer  index=1
@@ -131,16 +131,19 @@ void Scene_Game::Initialize(){
 
 
 
-
 	/// リスタート 処理をした
 	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
 	if(isGameRestart.Press()) {
+		gameStartEffect->StartGame();
 		/// hpを半分からスタート
 		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
-	}
+		enemy->DecideNextNode();
+	} else {
 
-	enemy->SetAnimationRender("Boss_Awakening");
-	enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
+		enemy->SetAnimationRender("Boss_Awakening");
+		enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
+
+	}
 
 	sceneTransition_ = nullptr;
 	endEffect_ = nullptr;

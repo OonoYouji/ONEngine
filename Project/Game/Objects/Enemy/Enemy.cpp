@@ -4,6 +4,8 @@
 #include <iostream>
 #include <numbers>
 
+#include "GraphicManager/TextureManager/TextureManager.h"
+
 /// enemy behavior
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "EnemyBehaviorTree/EnemyAttackBehaviors/EnemyLongRangeAttack.h"
@@ -141,8 +143,14 @@ void Enemy::Initialize(){
 		}
 	}
 
-	// 最初の行動を設定
-	DecideNextNode();
+	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
+	if(!isGameRestart.Press()) {
+		// 最初の行動を設定
+		DecideNextNode();
+	}
+
+
+	//ChangeTexture("HPBar", "HPBar.png");
 
 }
 
@@ -1120,4 +1128,14 @@ void Enemy::ActivateAttackCollider(ActionTypes offset){
 
 void Enemy::TerminateAttackCollider(){
 	attackCollider_->Terminate();
+}
+
+void Enemy::ChangeTexture(const std::string& _texName, const std::string& _filePath) {
+	TextureManager::GetInstance()->Load(_texName, _filePath);
+
+	std::vector<Material>& materials = bodyAnimationRenderer_->GetMaterials();
+	for(auto& mate : materials) {
+		mate.SetTextureName(_texName);
+		//mate.SetFilePath(_filePath);
+	}
 }
