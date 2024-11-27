@@ -7,6 +7,7 @@
 
 #include "ComponentManager/AudioSource/AudioSource.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
 
 EnemyKilledEffect::EnemyKilledEffect(const std::vector<BaseGameObject*>& _objects)
@@ -30,18 +31,28 @@ void EnemyKilledEffect::Initialize() {
 	AddVariables();
 	ApplyVariables();
 
-
+	TrackingCamera* camera = nullptr;
 	Enemy* enemy = nullptr;
 	for(auto& obj : objectVector_) {
 		if(obj->GetTag() == "Enemy") {
 			enemy = static_cast<Enemy*>(obj);
-			break;
+			continue;
+		}
+
+		if(obj->GetTag() == "TrackingCamera") {
+			camera = static_cast<TrackingCamera*>(obj);
+			continue;
 		}
 	}
 
 	if(enemy) {
 		enemy->SetAnimationRender("Boss_Dead");
 		enemy->SetAnimationTotalTime(maxTime_);
+	}
+
+	if(camera) {
+		camera->StartShake(0.3f, 1.0f, maxTime_ - 0.5f);
+		camera->isActive = true;
 	}
 
 	AudioSource* se = AddComponent<AudioSource>();
