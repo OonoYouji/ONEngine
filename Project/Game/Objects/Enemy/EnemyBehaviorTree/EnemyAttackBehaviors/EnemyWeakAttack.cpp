@@ -21,6 +21,9 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackStartup::tick(){
 		// 当たり判定を有効化
 		enemy_->ActivateAttackCollider(ActionTypes::WEAK_ATTACK);
 
+		// se Play
+		enemy_->PlaySE("EnemySE/weak1.wav");
+
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}

@@ -159,4 +159,12 @@ namespace EnemyBehaviorTree{
 		enemy_->PlaySE(se_);
 		return Status::SUCCESS;
 	}
+	PlaySe::PlaySe(Enemy* enemy,const std::string& seName)
+		:Action(enemy){
+		seName_ = seName;
+	}
+	Status PlaySe::tick(){
+		enemy_->PlaySE(seName_);
+		return Status::SUCCESS;
+	}
 }

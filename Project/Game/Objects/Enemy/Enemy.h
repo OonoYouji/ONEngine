@@ -190,6 +190,9 @@ public:
 							const std::string& subWeapon,
 							const std::string& effect);
 
+	void PlaySE(const std::string& se);
+
+	bool GetOutOfStage()const{ return outOfStage_; }
 	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }
 
 	void PlaySE(const std::string& file);

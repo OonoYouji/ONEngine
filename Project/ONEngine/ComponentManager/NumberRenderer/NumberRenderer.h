@@ -97,6 +97,10 @@ public:
 	void SetScore(uint32_t _score);
 	uint32_t GetScore() const { return score_; }
 
+
+
+	void SetDrawDigit(uint32_t _drawDigit);
+
 private:
 
 	uint32_t                                      maxScore_;           /// スコアの最大値
@@ -114,5 +118,9 @@ private:
 	NumberRendererMaterial*                       mappedMaterialData_ = nullptr;
 
 	std::string                                   textureName_;        /// テクスチャの名前
+
+
+
+	uint32_t drawDigit_ = -1;
 
 };

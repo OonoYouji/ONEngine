@@ -93,6 +93,8 @@ void EnemyBulletEmitter::SpawnRangedBullet(){
 		drawBullets_.push_back(newBullet);
 
 		leftCoolTime_ = rangedWorker->spawnCoolTime_;
+
+		enemy_->PlaySE("EnemySE/SpawnWrasse.wav");
 	}
 }
 
@@ -104,7 +106,7 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 		newBullet->Initialize();
 		Matrix4x4 rotateY = Matrix4x4::MakeRotateY(enemy_->GetRotate().y);
 		Vector3 enemyDir = Matrix4x4::Transform(
-			{0.0f,0.5f,1.0f},
+			{0.0f,0.0f,1.0f},
 			rotateY
 		);
 		newBullet->SetDamage(longWorker->damage_);
@@ -122,5 +124,10 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 		drawBullets_.push_back(newBullet);
 
 		leftCoolTime_ = longWorker->bulletFireInterval_;
+
+		const std::string seName = "EnemySE/SpawnLongRangeBullet_" + std::to_string(switchSound_);
+		enemy_->PlaySE(seName + ".wav");
+		++switchSound_;
+		switchSound_ = switchSound_ % 2;
 	}
 }

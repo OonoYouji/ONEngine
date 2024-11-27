@@ -49,6 +49,8 @@ private:
 
 	float leftCoolTime_;
 
+	int32_t switchSound_;
+
 	std::function<void()>spawnUpdate_;
 	void SpawnRangedBullet();
 	void SpawnLongRangeBullet();
