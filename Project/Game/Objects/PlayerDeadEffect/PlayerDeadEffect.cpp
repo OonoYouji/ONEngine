@@ -52,6 +52,7 @@ void PlayerDeadEffect::Initialize() {
 		player->SetAnimationModel("Player_Dead");
 		player->SetAnimationTotalTime(maxTime_);
 		player->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
+		player->SetIsActiveWeapon(false);
 	}
 
 	/*if(camera) {
