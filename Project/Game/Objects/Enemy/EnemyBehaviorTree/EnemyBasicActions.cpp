@@ -89,8 +89,8 @@ namespace EnemyBehaviorTree{
 
 	Status TransitionEffectAnimation::tick(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
-		enemy_->GetEnemy2Effect()->isActive = false;
+		effect->SetIsActive(true);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 
 		effect->SetEffectAnimationRender(animation_);
 
@@ -119,9 +119,9 @@ namespace EnemyBehaviorTree{
 	}
 	Status TransitionEffectAnimationWithSub::tick(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
+		effect->SetIsActive(true);
 		auto effect2 = enemy_->GetEnemy2Effect();
-		effect2->isActive = true;
+		effect2->SetIsActive(true);
 
 		effect->SetPosition(effectPos_);
 		effect2->SetPosition(effect2Pos_);
