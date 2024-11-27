@@ -2,7 +2,7 @@
 
 /// std
 #include <iostream>
-
+#include <numbers>
 
 /// enemy behavior
 #include "BehaviorWorker/EnemyBehaviorWorkers.h"
@@ -87,11 +87,10 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
-	LoadAllAnimation();
+	//LoadAllAnimation();
 
 	se_ = AddComponent<AudioSource>();
 	se_->volume = 0.1f;
-	/*se_->PlayOneShot("PlayerSE/dekai.wav",1.1f);*/
 
 	weaponAnimationRenderer_->isActive 	  = false;
 	subWeaponAnimationRenderer_->isActive = false;
@@ -109,6 +108,10 @@ void Enemy::Initialize(){
 	hp_ = maxHp_;
 
 	currentHpState_ = HpState::HP_HIGHTE;
+
+
+	/// 反対を向いているのを正面にする
+	pTransform_->rotate.y = std::numbers::pi_v<float>;
 
 	///=====================================
 	/// RangeType ごと に 仕分け
