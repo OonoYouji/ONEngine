@@ -17,7 +17,7 @@
 
 std::array<std::string,static_cast<int32_t>(BulletType::COUNT)> modelByBulletType = {
 	"wrasse",
-	"wrasse"
+	"Boss_Bullet"
 };
 
 IEnemyBullet::IEnemyBullet(BulletType type){
@@ -26,13 +26,13 @@ IEnemyBullet::IEnemyBullet(BulletType type){
 	type_ = type;
 }
 
-IEnemyBullet::~IEnemyBullet(){
-}
+IEnemyBullet::~IEnemyBullet(){}
 
 void IEnemyBullet::Initialize(){
 	{// Component
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
+		sphereCollider_->SetRadius(1.3f);
 	}
 	isActive = true;
 }
@@ -57,14 +57,14 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 
 		/// ジャスト回避の時間内であれば除外
 		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(player->GetCurrentBehavior());
-		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
+		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f){
 			return;
 		}
 
 
 		player->SetHp(player->GetCurrentHP() - damage_);
-		
-		
+
+
 		///　シェイク、ビネット
 		float scale = damage / 250.0f;
 		player->DamageEffectStart(

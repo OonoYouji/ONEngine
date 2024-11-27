@@ -100,7 +100,7 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
-	//LoadAllAnimation();
+	LoadAllAnimation();
 
 	se_ = AddComponent<AudioSource>();
 	se_->volume = 0.1f;
@@ -502,6 +502,7 @@ void Enemy::Debug(){
 				}
 
 				if(ImGui::SmallButton("Play")){
+					currentHpState_ = currentEditHpState_;
 					rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,*currentEditComboName_);
 				}
 				ImGui::SameLine();
@@ -1075,6 +1076,11 @@ void Enemy::DecideNextNode(){
 	}
 
 	preComboName_ = comboName;
+
+#ifdef _DEBUG
+	dointCombo_ = comboName;
+#endif // _DEBUG
+
 
 	if(!rootNode_){
 		assert(0);

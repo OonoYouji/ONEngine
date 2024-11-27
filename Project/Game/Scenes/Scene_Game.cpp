@@ -28,6 +28,9 @@
 #include "Objects/GameStartEffect/GameStartEffect.h"
 #include "Objects/SceneTransition/SceneTransition.h"
 
+#include "Objects/EnemyKilledEffect/EnemyKilledEffect.h"
+
+
 /// ===================================================
 /// 初期化処理
 /// ===================================================
@@ -65,11 +68,11 @@ void Scene_Game::Initialize(){
 
 	/// objectの配列を宣言 start effectに渡す
 
-	std::vector<BaseGameObject*> objectVec = {
+	objectVector_ = {
 		player, enemyAttackCollider, enemy, trackingCamera
 	};
 
-	GameStartEffect* gameStartEffect = new GameStartEffect(objectVec);
+	GameStartEffect* gameStartEffect = new GameStartEffect(objectVector_);
 
 
 	/// 初期化する
@@ -135,10 +138,14 @@ void Scene_Game::Initialize(){
 	enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
 
 	sceneTransition_ = nullptr;
-
+	endEffect_ = nullptr;
 
 	/// フラグのリセット
 	GameManagerObject::SetFlag("isGameRestart", false);
+	isStartOutTransition_ = false;
+	isStartInTransition_  = false;
+	isEndInTransition_    = false;
+
 
 	/// Loadがクソ重でdelta timeがバカでかくなり演出が吹き飛ぶので
 	Time::GetInstance()->Update();
@@ -183,24 +190,48 @@ void Scene_Game::Update(){
 	if(!isStartOutTransition_) {
 
 		if(gameManager_->GetFlag("isGameOver").Trigger()) {
-			if(!sceneTransition_) {
-				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
-				sceneTransition_->Initialize();
-				isStartOutTransition_ = true;
+			if(!endEffect_) {
+				endEffect_ = new EnemyKilledEffect(objectVector_);
+				endEffect_->Initialize();
 				nextScene_ = RESULT;
-				return;
 			}
 		}
 
 		if(gameManager_->GetFlag("isGameClear").Trigger()) {
-			if(!sceneTransition_) {
-				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
-				sceneTransition_->Initialize();
-				isStartOutTransition_ = true;
+			if(!endEffect_) {
+				endEffect_ = new EnemyKilledEffect(objectVector_);
+				endEffect_->Initialize();
 				nextScene_ = CLEAR;
-				return;
 			}
 		}
+
+		if(endEffect_) {
+			const std::string& className = endEffect_->GetTag();
+			if(className == "EnemyKilledEffect") {
+				EnemyKilledEffect* effect = static_cast<EnemyKilledEffect*>(endEffect_);
+				if(effect->GetIsFinish().Trigger()) {
+
+					if(!sceneTransition_) {
+						sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+						sceneTransition_->Initialize();
+						isStartOutTransition_ = true;
+					}
+				}
+
+			} else if(className == "EnemyKilledEffect") {
+				EnemyKilledEffect* effect = static_cast<EnemyKilledEffect*>(endEffect_);
+				if(effect->GetIsFinish().Trigger()) {
+
+					if(!sceneTransition_) {
+						sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+						sceneTransition_->Initialize();
+						isStartOutTransition_ = true;
+					}
+				}
+			}
+
+		}
+
 
 	} else {
 
