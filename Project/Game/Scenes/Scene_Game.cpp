@@ -33,7 +33,7 @@ void Scene_Game::Initialize() {
 	/// insatnce create
 	std::vector<BaseGameObject*> createObjects;
 	createObjects.reserve(16);
-	createObjects.push_back(new Player());
+	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
 	createObjects.push_back(new Stage());
 

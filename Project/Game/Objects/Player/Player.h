@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Player();
+	Player(class GameCamera* _gameCamera);
 	~Player();
 
 	void Initialize() override;
@@ -21,6 +21,7 @@ public:
 
 
 	void Movement();
+	void Rotation();
 
 private:
 
@@ -32,7 +33,12 @@ private:
 
 
 	float movementSpeed_;
-	Vec3 velocity_;
+	Vec3  velocity_;
+	Vec3  prevDirection_;
+	float rotateSpeed_;
 	
+
+	/// other class
+	class GameCamera* pGameCamera_ = nullptr;
 
 };
