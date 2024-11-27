@@ -139,6 +139,10 @@ void Scene_Game::Initialize(){
 
 	/// フラグのリセット
 	GameManagerObject::SetFlag("isGameRestart", false);
+	isStartOutTransition_ = false;
+	isStartInTransition_  = false;
+	isEndInTransition_    = false;
+
 
 	/// Loadがクソ重でdelta timeがバカでかくなり演出が吹き飛ぶので
 	Time::GetInstance()->Update();

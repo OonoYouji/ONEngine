@@ -508,6 +508,7 @@ void Player::LoadingAnimations() {
 		OneShotEffect("Effect" + std::to_string(i), 5.0f);
 	}
 
+	effect_->SetAnimationActive(false);
 }
 
 void Player::DamageEffectStart(float _time, float _damage, float _minShakeValue, float _maxShakeValue) {
