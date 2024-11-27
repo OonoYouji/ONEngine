@@ -14,6 +14,12 @@ enum class BulletType{
 	COUNT
 };
 
+static std::array<std::string,static_cast<int32_t>(BulletType::COUNT)> modelByBulletType = {
+	"wrasse",
+	"Boss_Bullet"
+};
+
+
 class IEnemyBullet : public BaseGameObject{
 public:
 
