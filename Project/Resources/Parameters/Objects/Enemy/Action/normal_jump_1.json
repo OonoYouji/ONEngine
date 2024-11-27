@@ -1,11 +1,11 @@
 {
-    "normal_jump_1": {
-        "Type": 8,
-        "activeTime": 0.0,
-        "distance": 42.29999923706055,
-        "endLagTime": 0.6000000238418579,
-        "jumpSpeed": 0.6000000238418579,
-        "mass": 0.699999988079071,
-        "startupTime": 1.100000023841858
-    }
+  "normal_jump_1": {
+    "Type": 8,
+    "activeTime": 0.865,
+    "distance": 42.29999923706055,
+    "endLagTime": 0.6000000238418579,
+    "jumpSpeed": 18.6000000238418579,
+    "mass": 0.699999988079071,
+    "startupTime": 1.100000023841858
+  }
 }
