@@ -66,10 +66,14 @@ void Player::Initialize() {
 	/// アニメーションを先に読ませる
 	//LoadingAnimations();
 
+
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
 
-
+	pTransform_->position = Vec3(
+		0.0f, 0.0f, -20.0f
+	);
+	pTransform_->Update();
 
 	currentBehavior_.reset(new PlayerRootBehavior(this));
 

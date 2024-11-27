@@ -6,6 +6,7 @@
 /// engine
 #include "Input/Input.h"
 #include "Scenes/Manager/SceneManager.h"
+#include "FrameManager/Time.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -126,6 +127,8 @@ void Scene_Game::Initialize(){
 	/// フラグのリセット
 	GameManagerObject::SetFlag("isGameRestart", false);
 
+	/// Loadがクソ重でdelta timeがバカでかくなり演出が吹き飛ぶので
+	Time::GetInstance()->Update();
 }
 
 

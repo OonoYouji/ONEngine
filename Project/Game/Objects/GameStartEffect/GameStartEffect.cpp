@@ -20,7 +20,7 @@ void GameStartEffect::Initialize() {
 		obj->isActive = false;
 	}
 
-	maxEffectTime_ = 30.0f;
+	maxEffectTime_ = 10.0f;
 	AddVariables();
 	ApplyVariables();
 

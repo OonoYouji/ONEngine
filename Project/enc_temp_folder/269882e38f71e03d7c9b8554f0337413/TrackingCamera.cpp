@@ -61,12 +61,13 @@ void TrackingCamera::Initialize() {
 	LockOnToPlayer();
 	isLockOn_ = true;
 
-	for(size_t i = 0; i < 60 ; ++i) {
+	 {
 		Update();
 		pTransform_->Update();
 		pPlayer_->UpdateMatrix();
 		pGameCamera_->UpdateMatrix();
 		offsetTransform_.Update();
+
 	}
 }
 
