@@ -14,6 +14,7 @@ void MinuteRenderer::Initialize() {
 	size_t digit = std::to_string(static_cast<int>(minute_)).size();
 	auto renderer = AddComponent<NumberRenderer>(static_cast<uint32_t>(digit));
 	renderer->SetScore(static_cast<uint32_t>(minute_));
+	renderer->SetTexture("ClearTimeText.png");
 
 	pTransform_->position.x = -1.0f * static_cast<float>(digit);
 

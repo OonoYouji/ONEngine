@@ -16,6 +16,7 @@ void SecondRenderer::Initialize() {
 
 	renderer_->SetDrawDigit(2);
 	renderer_->SetScore(static_cast<uint32_t>(timeSecond_));
+	renderer_->SetTexture("ClearTimeText.png");
 
 	pTransform_->position.x = 1.0f;
 }

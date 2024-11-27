@@ -33,7 +33,7 @@ void ResultGameClearTimeRenderer::Initialize() {
 	minuteRenderer_->drawLayerId = RESULT_LAYER_UI;
 
 
-	pTransform_->scale = Vec3::kOne * 0.05f;
+	pTransform_->scale = { 0.025f, 0.04f, 1.0f };
 
 }
 
