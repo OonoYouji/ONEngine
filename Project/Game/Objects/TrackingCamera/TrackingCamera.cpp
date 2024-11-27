@@ -22,19 +22,12 @@ TrackingCamera::~TrackingCamera() {}
 
 void TrackingCamera::Initialize() {
 
-	auto mesh = AddComponent<MeshRenderer>();
-	mesh->SetModel("Sphere");
-
-
 	/// ===================================================
 	/// setting
 	/// ===================================================
 
-	/// parent setting
-	pGameCamera_->SetParent(pTransform_);
-
 	/// trasform setting
-	pTransform_->rotateOrder = QUATERNION;
+	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
 
 
 	/// ===================================================
@@ -56,7 +49,7 @@ void TrackingCamera::Update() {
 
 	/// 座標決定
 	Vec3 offset = Mat4::Transform(offsetPosition_, matCameraRotate_);
-	SetPosition(trackingObject_->GetPosition() + offset);
+	pGameCamera_->SetPosition(trackingObject_->GetPosition() + offset);
 
 	LockToTarget();
 }
@@ -98,7 +91,7 @@ void TrackingCamera::LockToTarget() {
 	Vec3 direction = Mat4::TransformNormal(offsetDirection_, matCameraRotate_);
 
 	/// 回転角決定
-	SetQuaternion(Quaternion::LockAt({}, direction));
+	pGameCamera_->SetQuaternion(Quaternion::LockAt({}, direction));
 
 }
 
@@ -112,7 +105,7 @@ void TrackingCamera::Input() {
 
 
 	cameraRotate_ += {
-		inputRightStick_.y, -inputRightStick_.x, 0.0f
+		inputRightStick_.y, inputRightStick_.x, 0.0f
 	};
 
 	matCameraRotate_ = Mat4::MakeRotate(cameraRotate_);
