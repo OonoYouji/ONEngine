@@ -102,7 +102,7 @@ private:
 	AnimationRenderer* weaponAnimationRenderer_    	   = nullptr;
 	AnimationRenderer* subWeaponAnimationRenderer_ 	   = nullptr;
 	AnimationRenderer* effectAnimationRenderer_    	   = nullptr;
-	
+
 	AudioSource* se_;
 
 	EnemyEffect* effect1_;
@@ -126,6 +126,7 @@ private:
 	EnemyAttackCollider* attackCollider_;
 	float colliderRadius_ = 4.0f; /// 仮の適当な値
 
+	bool isInvisible_;
 	float maxHp_;
 	float hp_;
 
@@ -147,6 +148,8 @@ private:
 	std::unordered_map<EnemyAttackRangeType,float> distanceByRangeTypes_;
 
 	std::array<std::unordered_map<std::string,ComboAttacks>,static_cast<int32_t>(HpState::COUNT)> editComboVariables_;
+
+	std::string preComboName_;
 #ifdef _DEBUG
 	bool actionIsActive_;
 	HpState currentEditHpState_;
@@ -173,6 +176,9 @@ public:
 	EnemyEffect* GetEnemy1Effect();
 	EnemyEffect* GetEnemy2Effect();
 	void StartPassiveEffect();
+
+	bool GetIsInvisible()const{ return isInvisible_; }
+	void SetIsInvisible(bool isInvisible){ isInvisible_ = isInvisible; }
 
 	Vector3 GetCollisionOffset(ActionTypes type);
 
