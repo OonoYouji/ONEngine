@@ -26,6 +26,7 @@
 #include "Objects/GameManagerObject/GameManagerObject.h"
 #include "Objects/ModelPreviewObject/ModelPreviewObject.h"
 #include "Objects/GameStartEffect/GameStartEffect.h"
+#include "Objects/SceneTransition/SceneTransition.h"
 
 /// ===================================================
 /// 初期化処理
@@ -111,7 +112,13 @@ void Scene_Game::Initialize(){
 	uiCamera->Initialize();
 	uiCamera->SetDistance(10.0f);
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
-	AddLayer("ui",uiCamera);
+	AddLayer("ui", uiCamera);
+
+
+	GameCamera* transitionCamera = new GameCamera("transitionCamera");
+	transitionCamera->Initialize();
+	transitionCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+	AddLayer("transitionLayer", transitionCamera);
 
 
 
@@ -123,6 +130,10 @@ void Scene_Game::Initialize(){
 		/// hpを半分からスタート
 		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
 	}
+
+
+	sceneTransition_ = nullptr;
+
 
 	/// フラグのリセット
 	GameManagerObject::SetFlag("isGameRestart", false);
@@ -150,14 +161,52 @@ void Scene_Game::Update(){
 	}
 #endif // _DEBUG
 	
-
-
-	if(gameManager_->GetFlag("isGameOver").Trigger()) {
-		SceneManager::GetInstance()->SetNextScene(RESULT);
+	if(!isStartInTransition_) {
+		if(!sceneTransition_) {
+			isStartInTransition_ = true;
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_OUT, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		}
 	}
 
-	if(gameManager_->GetFlag("isGameClear").Trigger()) {
-		SceneManager::GetInstance()->SetNextScene(CLEAR);
+	if(!isEndInTransition_) {
+		if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+			sceneTransition_->Destory();
+			sceneTransition_ = nullptr;
+			isEndInTransition_ = true;
+		}
 	}
+
+
+	if(!isStartOutTransition_) {
+
+		if(gameManager_->GetFlag("isGameOver").Trigger()) {
+			if(!sceneTransition_) {
+				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+				sceneTransition_->Initialize();
+				isStartOutTransition_ = true;
+				nextScene_ = RESULT;
+				return;
+			}
+		}
+
+		if(gameManager_->GetFlag("isGameClear").Trigger()) {
+			if(!sceneTransition_) {
+				sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 2.0f, GAME_SCENE_LAYER_TRANSITION);
+				sceneTransition_->Initialize();
+				isStartOutTransition_ = true;
+				nextScene_ = CLEAR;
+				return;
+			}
+		}
+
+	} else {
+
+		if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+			SceneManager::GetInstance()->SetNextScene(static_cast<SCENE_ID>(nextScene_));
+		}
+
+	}
+
 
 }
