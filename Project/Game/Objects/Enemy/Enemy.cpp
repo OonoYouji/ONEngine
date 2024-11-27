@@ -135,7 +135,7 @@ void Enemy::Update(){
 	}
 
 	if(currentHpState_ != HpState::HP_LOW){
-		hp_ = (std::min)(hp_,thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]);
+		hp_ = (std::max)(hp_,thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]);
 	}
 
 	float playerLength = pTransform_->position.Len();
