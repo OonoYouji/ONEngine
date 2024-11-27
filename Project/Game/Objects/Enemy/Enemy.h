@@ -107,6 +107,7 @@ private:
 
 	EnemyEffect* effect1_;
 	EnemyEffect* effect2_;
+	EnemyEffect* passiveEffect_;
 
 	// 武器がスポーンする とき の uv 座標
 	float spawnWeaponUvEndPosY_;
@@ -171,6 +172,7 @@ private:
 public:
 	EnemyEffect* GetEnemy1Effect();
 	EnemyEffect* GetEnemy2Effect();
+	void StartPassiveEffect();
 
 	Vector3 GetCollisionOffset(ActionTypes type);
 

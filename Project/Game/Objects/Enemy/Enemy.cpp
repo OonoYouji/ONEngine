@@ -77,6 +77,11 @@ void Enemy::Initialize(){
 	effect2_->SetParent(pTransform_);
 	effect2_->isActive = false;
 
+	passiveEffect_ = new EnemyEffect();
+
+	passiveEffect_->SetEffectAnimationRender("Effect13");
+	passiveEffect_->SetIsActive(false);
+
 	bodyAnimationRenderer_ 		 = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_  	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
@@ -131,6 +136,8 @@ void Enemy::Update(){
 	   || playerLength < lengthMin){
 		outOfStage_ = true;
 	}
+
+	passiveEffect_->SetPosition(pTransform_->position);
 
 	pTransform_->position = Vec3::Normalize(pTransform_->position) * clampedEnemyPosLength;
 }
@@ -730,6 +737,13 @@ EnemyEffect* Enemy::GetEnemy1Effect(){
 
 EnemyEffect* Enemy::GetEnemy2Effect(){
 	return effect2_;
+}
+
+void Enemy::StartPassiveEffect(){
+	passiveEffect_->SetIsActive(true);
+
+	passiveEffect_->SetEffectAnimationRender("Effect13");
+	passiveEffect_->SetEffectAnimationFlags(0,true);
 }
 
 Vector3 Enemy::GetCollisionOffset(ActionTypes type){
