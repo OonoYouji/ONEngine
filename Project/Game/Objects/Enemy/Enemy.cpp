@@ -1076,6 +1076,11 @@ void Enemy::DecideNextNode(){
 
 	preComboName_ = comboName;
 
+#ifdef _DEBUG
+	dointCombo_ = comboName;
+#endif // _DEBUG
+
+
 	if(!rootNode_){
 		assert(0);
 	}
