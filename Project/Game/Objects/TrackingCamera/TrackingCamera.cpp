@@ -287,7 +287,6 @@ void TrackingCamera::LockOnToEnemy() {
 	/// 座標の計算
 	/// ---------------------------------------------------
 
-	
 	Vec3 offsetPos = cameraOffsetDirection_ * cameraOffsetLenght_ * cameraOffsetLenghtScaleFactor_;
 
 	/// 近づき過ぎたら倍率で値を変えていたのをやめる
@@ -312,11 +311,11 @@ void TrackingCamera::LockOnToEnemy() {
 		0.5f
 	));
 
-	bool isClamp = false;
+	/*bool isClamp = false;
 	if(pTransform_->position.y > 17.5f) {
 		pTransform_->position.y = 17.5f;
 		isClamp = true;
-	}
+	}*/
 
 	
 	/// ---------------------------------------------------
@@ -340,13 +339,19 @@ void TrackingCamera::LockOnToEnemy() {
 		cameraToPlayerVector_.Normalize()
 	);
 
-	if(!isClamp) {
+	//if(!isClamp) {
+	//	SetQuaternion(Quaternion::Lerp(
+	//		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
+	//		quaternionLerpTime_
+	//	));
+	//} else {
+	//	
+	//}
 
-		SetQuaternion(Quaternion::Lerp(
-			cameraToPlayerQuaternion_, cameraToEnemyQuaternion_, 
-			quaternionLerpTime_
-		));
-	}
+	SetQuaternion(Quaternion::Lerp(
+		cameraToPlayerQuaternion_, cameraToEnemyQuaternion_,
+		quaternionLerpTime_
+	));
 }
 
 

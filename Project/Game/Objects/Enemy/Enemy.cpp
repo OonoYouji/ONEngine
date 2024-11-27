@@ -67,8 +67,7 @@ void Enemy::Initialize(){
 
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
-	// 最初の行動を設定
-	//DecideNextNode();
+	
 
 	effect1_ = new EnemyEffect();
 	effect1_->SetParent(pTransform_);
@@ -87,7 +86,7 @@ void Enemy::Initialize(){
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
 	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
-	//LoadAllAnimation();
+	LoadAllAnimation();
 
 	se_ = AddComponent<AudioSource>();
 	/*se_->PlayOneShot("PlayerSE/dekai.wav",1.1f);*/
@@ -108,6 +107,24 @@ void Enemy::Initialize(){
 	hp_ = maxHp_;
 
 	currentHpState_ = HpState::HP_HIGHTE;
+
+	///=====================================
+	/// RangeType ごと に 仕分け
+	///=====================================
+	{
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHpState_)][EnemyAttackRangeType::SHORT_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHpState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
+		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHpState_)][EnemyAttackRangeType::LONG_RANGE].clear();
+
+		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++) {
+			for(const auto& [comboName, combo] : editComboVariables_[i]) {
+				comboByRangeTypeByHpState_[i][combo.rangeType_].push_back(comboName);
+			}
+		}
+	}
+
+	// 最初の行動を設定
+	DecideNextNode();
 }
 
 void Enemy::Update(){
@@ -115,11 +132,11 @@ void Enemy::Update(){
 		EnemyBehaviorTree::Status status = rootNode_->tick();
 
 		if(status == EnemyBehaviorTree::Status::SUCCESS){
-			if(actionIsActive_){
 				DecideNextNode();
+			/*if(actionIsActive_){
 			} else{
 				rootNode_ = nullptr;
-			}
+			}*/
 
 		} else if(status == EnemyBehaviorTree::Status::FAILURE){
 			rootNode_ = nullptr;
@@ -1009,7 +1026,7 @@ void Enemy::DecideNextNode(){
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
 
-	dointCombo_ = comboName;
+	//dointCombo_ = comboName;
 
 	if(!rootNode_)
 	{
