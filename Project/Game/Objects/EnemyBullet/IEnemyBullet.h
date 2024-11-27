@@ -41,11 +41,9 @@ protected:
 
 	float damage_;
 
-	bool isAlive_;
 public:
 	float GetLifeLeftTime()const{ return lifeLeftTime_; }
 	void SetLifeTime(float lifeTime){ lifeLeftTime_ = lifeTime; }
 	void SetDamage(float damage){ damage_ = damage; }
 
-	bool GetIsActive()const{ return isAlive_; }
 };
