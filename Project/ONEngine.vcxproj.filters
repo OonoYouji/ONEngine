@@ -209,6 +209,7 @@
     <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\ResultGameClearTimeRenderer.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\MinuteRenderer\MinuteRenderer.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\SecondRenderer\SecondRenderer.cpp" />
+    <ClCompile Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -408,6 +409,7 @@
     <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\ResultGameClearTimeRenderer.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\MinuteRenderer\MinuteRenderer.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultGameClearTimeRenderer\SecondRenderer\SecondRenderer.h" />
+    <ClInclude Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

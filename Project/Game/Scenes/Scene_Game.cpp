@@ -115,18 +115,19 @@ void Scene_Game::Update(){
 
 	
 	if(Input::TriggerKey(KeyCode::F1)){
-		SceneManager::GetInstance()->SetNextScene(RESULT);
+		SceneManager::GetInstance()->SetNextScene(CLEAR);
 		gameManager_->SetFlag("isGameClear", true);
 	}
 #endif // _DEBUG
-
-
-	if(gameManager_->GetFlag("isGameClear").Trigger()) {
-		SceneManager::GetInstance()->SetNextScene(RESULT);
-	}
 	
+
+
 	if(gameManager_->GetFlag("isGameOver").Trigger()) {
 		SceneManager::GetInstance()->SetNextScene(RESULT);
+	}
+
+	if(gameManager_->GetFlag("isGameClear").Trigger()) {
+		SceneManager::GetInstance()->SetNextScene(CLEAR);
 	}
 
 }

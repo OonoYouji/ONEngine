@@ -183,6 +183,7 @@
     <ClCompile Include="Game\Objects\EnemyBullet\IEnemyBullet.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\GameManagerObject\GameManagerObject.cpp" />
+    <ClCompile Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.cpp" />
     <ClCompile Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.cpp" />
     <ClCompile Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="Game\Objects\EnemyBullet\IEnemyBullet.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\GameManagerObject\GameManagerObject.h" />
+    <ClInclude Include="Game\Objects\GameOverObjects\GameOverToRestartText\GameOverToRestartText.h" />
     <ClInclude Include="Game\Objects\ModelPreviewObject\ModelPreviewObject.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPFrame.h" />
     <ClInclude Include="Game\Objects\PlayerHPRenderer\PlayerHPRenderer.h" />

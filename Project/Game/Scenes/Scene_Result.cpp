@@ -23,19 +23,7 @@ void Scene_Result::Initialize() {
 	std::list<BaseGameObject*> objects = {};
 
 	/// 結果で初期化するオブジェクトを変更
-	if(GameManagerObject::GetFlag("isGameClear").Press()) {
-
-		objects.push_back(new ResultText("GameClearText.png"));
-		objects.push_back(new ResultGameClearTimeRenderer(GameManagerObject::GetClearTime()));
-
-	} else {
-
-		objects.push_back(new ResultText("GameOverText.png"));
-	}
-
-	objects.push_back(new ResultToTitleText());
-	objects.push_back(new ResultArrow());
-	objects.push_back(new TitleSelectorUI());
+	objects.push_back(new ResultText("GameOverText.png"));
 
 	for(auto& object : objects) {
 		object->Initialize();
