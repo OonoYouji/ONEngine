@@ -15,7 +15,7 @@ void BGMObj::Initialize() {
 	bgm_ = AddComponent<AudioSource>();
 	bgm_->SetAudioClip(filePath_);
 
-	bgm_->volume = 0.01f;
+	bgm_->volume = 0.03f;
 	bgm_->isLoop = true;
 
 	Play();

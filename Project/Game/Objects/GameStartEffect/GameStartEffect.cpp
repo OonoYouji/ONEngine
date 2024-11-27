@@ -26,7 +26,7 @@ void GameStartEffect::Initialize() {
 	}
 
 	maxEffectTime_ = 7.5f;
-	seTriggerTime_ = 1.0f;
+	seTriggerTime_ = 1.5f;
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
