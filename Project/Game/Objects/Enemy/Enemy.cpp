@@ -988,7 +988,13 @@ void Enemy::DecideNextNode(){
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
 	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
+
 	dointCombo_ = comboName;
+
+	if(!rootNode_)
+	{
+		assert(0);
+	}
 }
 
 const ComboAttacks& Enemy::GetComboAttacks(int32_t hpCombo,const std::string& comboName) const{

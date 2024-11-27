@@ -99,7 +99,7 @@ void EnemyAttackCollider::OnCollisionEnter(BaseGameObject* const _collision){
 			float scale = damage / 250.0f;
 			player->DamageEffectStart(
 				1.0f, damage,
-				0.01f * scale, 0.3f * scale
+				0.1f * scale, 5.3f * scale
 			);
 		}
 	}
