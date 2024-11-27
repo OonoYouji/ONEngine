@@ -16,5 +16,8 @@ public:
 	bool CanExit() override;
 
 private:
+	
 
+	float maxTime_;
+	float currentTime_;
 };

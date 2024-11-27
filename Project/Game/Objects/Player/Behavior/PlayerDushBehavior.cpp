@@ -1,7 +1,7 @@
 #include "PlayerDushBehavior.h"
 
 PlayerDushBehavior::PlayerDushBehavior(Player* _player)
-	: BasePlayerBehavior(_player) {}
+	: BasePlayerBehavior("DushBehavior", _player) {}
 
 PlayerDushBehavior::~PlayerDushBehavior() {}
 
@@ -18,6 +18,7 @@ void PlayerDushBehavior::Exit() {
 }
 
 std::string PlayerDushBehavior::GetNextBehavior() {
+
 	return std::string();
 }
 

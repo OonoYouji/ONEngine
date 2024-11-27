@@ -15,6 +15,13 @@ public:
 	std::string GetNextBehavior() override;
 	bool CanExit() override;
 
+
+	void AddVariables() override;
+	void ApplyVariables() override;
+
 private:
 
+	float maxHeight_;
+	float maxTime_;
+	float currentTime_;
 };

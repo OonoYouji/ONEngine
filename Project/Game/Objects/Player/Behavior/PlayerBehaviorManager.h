@@ -19,6 +19,8 @@ public:
 
 	void AddBehavior(const std::string& _name, BasePlayerBehavior* _addBehavior);
 
+	void Debugging();
+
 private:
 	class Player* pPlayer_ = nullptr;
 

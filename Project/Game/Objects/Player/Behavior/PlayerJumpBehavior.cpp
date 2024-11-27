@@ -1,7 +1,7 @@
 #include "PlayerJumpBehavior.h"
 
 PlayerJumpBehavior::PlayerJumpBehavior(Player* _player) 
-	: BasePlayerBehavior(_player) {
+	: BasePlayerBehavior("JumpBehavior", _player) {
 }
 
 PlayerJumpBehavior::~PlayerJumpBehavior() {}
@@ -27,3 +27,8 @@ std::string PlayerJumpBehavior::GetNextBehavior() {
 bool PlayerJumpBehavior::CanExit() {
 	return false;
 }
+
+void PlayerJumpBehavior::AddVariables() {
+}
+
+void PlayerJumpBehavior::ApplyVariables() {}

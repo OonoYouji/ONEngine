@@ -12,6 +12,10 @@
 /// game
 #include "Objects/Camera/GameCamera.h"
 
+/// behavior
+#include "Behavior/PlayerDushBehavior.h"
+#include "Behavior/PlayerJumpBehavior.h"
+
 
 Player::Player(GameCamera* _gameCamera)
 	: pGameCamera_(_gameCamera) {
@@ -33,7 +37,8 @@ void Player::Initialize() {
 	/// behavior
 	behaviorManager_.reset(new PlayerBehaviorManager(this));
 	behaviorManager_->Initialize();
-	//behaviorManager_->AddBehavior("dush", new PlayerDushBehavior);
+	behaviorManager_->AddBehavior("dush", new PlayerDushBehavior(this));
+	behaviorManager_->AddBehavior("jump", new PlayerJumpBehavior(this));
 
 
 	/// ===================================================
@@ -55,6 +60,10 @@ void Player::Update() {
 	behaviorManager_->Update();
 	Movement();
 	Rotation();
+}
+
+void Player::Debug() {
+	behaviorManager_->Debugging();
 }
 
 

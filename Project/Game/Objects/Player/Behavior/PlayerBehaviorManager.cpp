@@ -1,5 +1,12 @@
 #include "PlayerBehaviorManager.h"
 
+/// std
+#include <format>
+
+/// externals
+#include <imgui.h>
+
+/// game
 #include "../Player.h"
 
 PlayerBehaviorManager::PlayerBehaviorManager(Player* _player)
@@ -15,6 +22,18 @@ void PlayerBehaviorManager::Update() {
 	if(currentBehavior_) {
 		currentBehavior_->Update();
 
+
+		/// 次のbehaviorに飛ぶ
+		if(currentBehavior_->CanExit()) {
+			/// 次のbehaviorを確認、あれば遷移
+			std::string next = currentBehavior_->GetNextBehavior();
+			if(behaviorMap_.count(next)) {
+				/// 終了時、スタート時に呼ぶ関数をコール
+				currentBehavior_->Exit();
+				currentBehavior_ = behaviorMap_.at(next).get();
+				currentBehavior_->Start();
+			}
+		}
 	}
 }
 
@@ -23,4 +42,26 @@ void PlayerBehaviorManager::Update() {
 void PlayerBehaviorManager::AddBehavior(const std::string& _name, BasePlayerBehavior* _addBehavior) {
 	std::unique_ptr<BasePlayerBehavior> add(_addBehavior);
 	behaviorMap_[_name] = std::move(add);
+}
+
+void PlayerBehaviorManager::Debugging() {
+	if(ImGui::TreeNode("BehaviorManager")) {
+
+		VariableManager* vm = VariableManager::GetInstance();
+		for(auto& behavior : behaviorMap_) {
+
+			if(ImGui::Button(std::format(
+				"save file##{:p}",
+				reinterpret_cast<void*>(behavior.second.get())).c_str())) {
+
+				vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
+			}
+			vm->DebuggingSpecificGroup(behavior.second->kName_);
+
+			ImGui::Spacing();
+			ImGui::Separator();
+		}
+
+		ImGui::TreePop();
+	}
 }
