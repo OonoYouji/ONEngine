@@ -52,7 +52,7 @@ namespace EnemyBehaviorTree{
 				}
 
 				// 最大回転角度を適用
-				newRotateY -= (std::clamp)(diff,-maxRotateYSpeed_,maxRotateYSpeed_) * Time::DeltaTime();
+				newRotateY -= diff;
 			}
 
 			enemy_->SetRotateY(enemy_->GetRotate().y + newRotateY);
@@ -112,7 +112,7 @@ namespace EnemyBehaviorTree{
 				}
 
 				// 最大回転角度を適用
-				newRotateY -= (std::clamp)(diff,-worker_->rotateMaxSpeed_,worker_->rotateMaxSpeed_) * Time::DeltaTime();
+				newRotateY -= diff;
 			}
 
 			enemy_->SetRotateY(enemy_->GetRotate().y + newRotateY);

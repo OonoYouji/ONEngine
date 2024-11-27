@@ -2,7 +2,7 @@
     "lowTarget_ranged_1": {
         "Type": 6,
         "activeTime": 4.0,
-        "attackForPlayerProbability": 15.788999557495117,
+        "attackForPlayerProbability": 100.0,
         "bulletScale": 1.2999999523162842,
         "damage": 10.0,
         "endLagTime": 0.8999999761581421,
