@@ -247,7 +247,9 @@ void Player::Debug() {
 
 
 void Player::OnCollisionEnter(BaseGameObject* const _collision) {
-	if(_collision->GetTag() == "EnemyAttackCollider") {
+	if(_collision->GetTag() == "EnemyAttackCollider" ||
+	   _collision->GetTag() == "LongRangeBullet" ||
+	   _collision->GetTag() == "RangedAttackBullet"){
 		PlayerAvoidanceBehavior* avoi = dynamic_cast<PlayerAvoidanceBehavior*>(currentBehavior_.get());
 		if(avoi && avoi->GetJastAvoidanceTime() > 0.0f) {
 			nextStrongChargeCount_ = 3;
