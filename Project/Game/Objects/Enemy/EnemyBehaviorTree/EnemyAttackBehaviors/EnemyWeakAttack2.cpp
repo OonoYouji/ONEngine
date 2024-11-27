@@ -100,7 +100,7 @@ namespace EnemyBehaviorTree{
 		enemy_->SetDamage(damage_);
 
 		if(currentTime_ >= activeTime_){
-			enemy_->GetEnemy1Effect()->isActive = false;
+			enemy_->GetEnemy1Effect()->SetIsActive(false);
 
 			enemy_->SetDamage(0.0f);
 			currentTime_ = 0.0f;
@@ -113,8 +113,8 @@ namespace EnemyBehaviorTree{
 
 	void EnemyBehaviorTree::WeakAttack2Action::SpawnEffect(){
 		auto effect = enemy_->GetEnemy1Effect();
-		effect->isActive = true;
-		enemy_->GetEnemy2Effect()->isActive = false;
+		effect->SetIsActive(true);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 
 		effect->SetEffectAnimationRender("Effect5");
 

@@ -93,9 +93,11 @@ namespace EnemyBehaviorTree{
 										 const std::string& animation,
 										 const std::string& subAnimation,
 										 float animationTotalTime,
+										 float animationTotalTime2,
 										 Vector3 effectPos = {0.0f,0.0f,0.0f},
 										 Vector3 effect2Pos = {0.0f,0.0f,0.0f},
-										 bool isLoop = false);
+										 bool isLoop = false,
+										 bool isLoop2 = false);
 		~TransitionEffectAnimationWithSub(){}
 
 		Status tick()override;
@@ -103,8 +105,8 @@ namespace EnemyBehaviorTree{
 		std::string animation_[2];
 		Vector3 effectPos_ = {0.0f,0.0f,0.0f};
 		Vector3 effect2Pos_ = {0.0f,0.0f,0.0f};
-		float animationTotalTime_;
-		bool isLoop_;
+		float animationTotalTime_[2];
+		bool isLoop_[2];
 	};
 
 	///====================================

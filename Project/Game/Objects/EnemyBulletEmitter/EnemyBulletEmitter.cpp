@@ -104,11 +104,11 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 		newBullet->Initialize();
 		Matrix4x4 rotateY = Matrix4x4::MakeRotateY(enemy_->GetRotate().y);
 		Vector3 enemyDir = Matrix4x4::Transform(
-			{0.0f,3.5f,1.0f},
+			{0.0f,0.5f,1.0f},
 			rotateY
 		);
 		newBullet->SetDamage(longWorker->damage_);
-		newBullet->SetLifeTime(10.0f);
+		newBullet->SetLifeTime(5.0f);
 		newBullet->SetScale({longWorker->bulletScale_,
 							longWorker->bulletScale_,
 							longWorker->bulletScale_});

@@ -106,6 +106,8 @@ void Enemy::Initialize(){
 	LoadCombos();
 
 	hp_ = maxHp_;
+
+	currentHpState_ = HpState::HP_HIGHTE;
 }
 
 void Enemy::Update(){
