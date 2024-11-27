@@ -34,7 +34,7 @@ void IEnemyBullet::Initialize(){
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
 	}
-	isAlive_ = true;
+	isActive = true;
 }
 
 void IEnemyBullet::Update(){

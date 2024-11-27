@@ -60,6 +60,8 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		// 当たり判定を 無効化
 		enemy_->TerminateAttackCollider();
+
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		// 次のNode へ
 		return EnemyBehaviorTree::Status::SUCCESS;
 	}
@@ -100,4 +102,9 @@ EnemyBehaviorTree::WeakAttack::WeakAttack(Enemy* enemy,WorkWeakAttackAction* wor
 
 	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_1_3",worker->motionTimes_.endLagTime_,true));
 	addChild(std::make_unique<WeakAttackEndLag>(enemy,worker->motionTimes_.endLagTime_));
+}
+
+EnemyBehaviorTree::WeakAttack::~WeakAttack(){
+	enemy_->GetEnemy1Effect()->SetIsActive(false);
+	enemy_->GetEnemy2Effect()->SetIsActive(false);
 }

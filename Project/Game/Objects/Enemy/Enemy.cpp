@@ -68,14 +68,13 @@ void Enemy::Initialize(){
 
 	hitCollider_ = AddComponent<SphereCollider>(ModelManager::Load("Sphere"));
 	hitCollider_->SetRadius(colliderRadius_);
-	
 
 	effect1_ = new EnemyEffect();
 	effect1_->SetParent(pTransform_);
-	effect1_->isActive = false;
+	effect1_->SetIsActive(false);
 	effect2_ = new EnemyEffect();
 	effect2_->SetParent(pTransform_);
-	effect2_->isActive = false;
+	effect2_->SetIsActive(false);
 
 	passiveEffect_ = new EnemyEffect();
 
@@ -121,8 +120,8 @@ void Enemy::Initialize(){
 		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHpState_)][EnemyAttackRangeType::MIDDLE_RANGE].clear();
 		comboByRangeTypeByHpState_[static_cast<int32_t>(currentHpState_)][EnemyAttackRangeType::LONG_RANGE].clear();
 
-		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++) {
-			for(const auto& [comboName, combo] : editComboVariables_[i]) {
+		for(int32_t i = 0; i < static_cast<int32_t>(HpState::COUNT); i++){
+			for(const auto& [comboName,combo] : editComboVariables_[i]){
 				comboByRangeTypeByHpState_[i][combo.rangeType_].push_back(comboName);
 			}
 		}
@@ -137,26 +136,25 @@ void Enemy::Update(){
 	if(rootNode_){
 		EnemyBehaviorTree::Status status = rootNode_->tick();
 
-		if(status == EnemyBehaviorTree::Status::SUCCESS){
-				DecideNextNode();
-			/*if(actionIsActive_){
-			} else{
-				rootNode_ = nullptr;
-			}*/
-
-		} else if(status == EnemyBehaviorTree::Status::FAILURE){
-			rootNode_ = nullptr;
+		if(status != EnemyBehaviorTree::Status::RUNNING){
+			DecideNextNode();
 		}
 	}
+
+	if(currentHpState_ != HpState::HP_LOW){
+		hp_ = (std::max)(hp_,thresholdByHpState_[static_cast<int32_t>(HpState::HP_LOW)]);
+	}
+
 	float playerLength = pTransform_->position.Len();
-	float lengthMax = player_->GetStageRange() + colliderRadius_;
-	float lengthMin = -player_->GetStageRange() - colliderRadius_;
+	float lengthMax = player_->GetStageRange() - colliderRadius_;
+	float lengthMin = -player_->GetStageRange() + colliderRadius_;
 	float clampedEnemyPosLength = (std::clamp)(playerLength,
 											   lengthMin,
 											   lengthMax);
 
 	preOutOfStage_ = outOfStage_;
 	outOfStage_ = false;
+
 	if(playerLength > lengthMax
 	   || playerLength < lengthMin){
 		outOfStage_ = true;
@@ -746,7 +744,6 @@ void Enemy::LoadAllAnimation(){
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_2_W");
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_3_W");
 
-
 	/// effect 
 	effectAnimationRenderer_->ChangeAnimation("Effect5");
 
@@ -1026,12 +1023,18 @@ void Enemy::DecideNextNode(){
 		const std::deque<std::string>& comboNameList = this->GetComboList(currentHpState_,EnemyAttackRangeType::MIDDLE_RANGE);
 		comboName = comboNameList[Random::Int(0,static_cast<int>(comboNameList.size() - 1))];
 	}
-	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
 
+	rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,comboName);
 	//dointCombo_ = comboName;
 
-	if(!rootNode_)
-	{
+	if(comboName == preComboName_){
+		DecideNextNode();
+		return;
+	}
+
+	preComboName_ = comboName;
+
+	if(!rootNode_){
 		assert(0);
 	}
 }

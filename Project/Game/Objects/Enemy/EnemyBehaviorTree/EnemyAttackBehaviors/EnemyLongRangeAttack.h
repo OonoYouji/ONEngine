@@ -57,6 +57,6 @@ namespace EnemyBehaviorTree{
 		:public EnemyBehaviorTree::Sequence{
 	public:
 		LongRangeAttack(Enemy* enemy,WorkLongRangeAttackAction* worker);
-		~LongRangeAttack()override{}
+		~LongRangeAttack()override;
 	};
 }

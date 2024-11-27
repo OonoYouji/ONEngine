@@ -1,5 +1,7 @@
 #include "EnemyChase.h"
 
+#include <algorithm>
+
 #include "Math/Matrix4x4.h"
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
@@ -55,6 +57,15 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::ChaseAction::tick(){
 
 EnemyBehaviorTree::Chase::Chase(Enemy* enemy,WorkChaseAction* worker)
 	:EnemyBehaviorTree::Sequence(enemy){
-	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Walk",-1.0f,false));
+
+	const float minChaseSpeed = 9.7f;
+	const float maxChaseSpeed = 24.5f;
+
+	const float minChaseAnimationTime_ = 0.3f;
+	const float maxChaseAnimationTime_ = 1.2f;
+
+	float animationTime = (std::lerp)(minChaseAnimationTime_,maxChaseAnimationTime_,minChaseSpeed/maxChaseSpeed);
+
+	addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Walk",animationTime,false));
 	addChild(std::make_unique<ChaseAction>(enemy,worker));
 }

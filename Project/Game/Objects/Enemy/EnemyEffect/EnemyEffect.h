@@ -22,5 +22,5 @@ public:
 	void SetEffectAnimationRender(const std::string& filePath);
 	void SetEffectAnimationTotalTime(float _totalTime);
 	void ResetAnimationTotal();
-	void SetEffectAnimationFlags(int _flags,bool _isResetTime);
+	void SetEffectAnimationFlags(int _flags,bool _isResetTime = true);
 };
