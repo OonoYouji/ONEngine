@@ -240,4 +240,9 @@ public:
 	void TerminateAttackCollider();
 
 	float GetColliderRadius(){ return colliderRadius_; }
+
+
+	void ChangeTexture(const std::string& _texName, const std::string& _filePath);
+
+
 };

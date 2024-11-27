@@ -147,7 +147,7 @@ void Enemy::Initialize(){
 	DecideNextNode();
 
 
-	//ChangeTexture("HPBar", "HPBar.png");
+	ChangeTexture("HPBar", "HPBar.png");
 
 }
 
