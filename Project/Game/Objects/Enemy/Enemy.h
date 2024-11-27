@@ -244,5 +244,5 @@ public:
 
 	void ChangeTexture(const std::string& _texName, const std::string& _filePath);
 
-
+	float GetBodyCurrentAnimationTime();
 };

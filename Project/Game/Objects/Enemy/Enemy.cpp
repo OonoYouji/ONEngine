@@ -1139,3 +1139,7 @@ void Enemy::ChangeTexture(const std::string& _texName, const std::string& _fileP
 		//mate.SetFilePath(_filePath);
 	}
 }
+
+float Enemy::GetBodyCurrentAnimationTime() {
+	return bodyAnimationRenderer_->GetAnimationTime();
+}
