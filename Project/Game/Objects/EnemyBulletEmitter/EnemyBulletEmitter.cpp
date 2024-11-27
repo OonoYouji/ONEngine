@@ -18,11 +18,13 @@ EnemyBulletEmitter::EnemyBulletEmitter(Player* player,
 
 	player_ = player;
 	enemy_ 	= enemy;
+	int32_t bulletType = 0;
 
 	if(worker->type_ == ActionTypes::RANGED_ATTACK){
 		spawnUpdate_ = [this](){SpawnRangedBullet(); };
 	} else if(worker->type_ == ActionTypes::LONGRANGE_ATTACK){
 		spawnUpdate_ = [this](){SpawnLongRangeBullet(); };
+		bulletType = 1;
 	} else{
 		assert(0); // 玉を使わないクラスで 生成されたら エラー
 	}
@@ -33,7 +35,7 @@ EnemyBulletEmitter::EnemyBulletEmitter(Player* player,
 	worker_ = worker;
 
 	meshInstancingRenderer_ = AddComponent<MeshInstancingRenderer>(50);
-	meshInstancingRenderer_->SetModel("Wrasse");
+	meshInstancingRenderer_->SetModel(modelByBulletType[bulletType]);
 	drawBullets_.reserve(50);
 	drawTransform_.reserve(50);
 }
@@ -55,7 +57,7 @@ void EnemyBulletEmitter::Update(){
 		}
 		bullet->Destory();
 		return true;
-	});
+				  });
 
 	meshInstancingRenderer_->ResetTransformArray();
 	drawTransform_.clear();

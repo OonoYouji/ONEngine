@@ -15,11 +15,6 @@
 
 #include "imgui.h"
 
-std::array<std::string,static_cast<int32_t>(BulletType::COUNT)> modelByBulletType = {
-	"wrasse",
-	"Boss_Bullet"
-};
-
 IEnemyBullet::IEnemyBullet(BulletType type){
 	CreateTag(this);
 
@@ -32,7 +27,7 @@ void IEnemyBullet::Initialize(){
 	{// Component
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
-		sphereCollider_->SetRadius(1.3f);
+		sphereCollider_->SetRadius(2.1f);
 	}
 	isActive = true;
 }
@@ -68,7 +63,7 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 		///　シェイク、ビネット
 		float scale = damage_ / 250.0f;
 		player->DamageEffectStart(
-			2.0f, damage_,
+			2.0f,damage_,
 			0.1f * scale, 10.3f * scale
 		);
 	}
