@@ -74,9 +74,9 @@ PlayerStrongAttackCharge::PlayerStrongAttackCharge(Player* _player, int _phase, 
 	if(currentPhase_ != NONE) {
 
 		if(currentPhase_ != THIRD ) {
-			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.5f);
+			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.1f);
 		} else {
-			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.5f);
+			host_->PlayAudio("strongAttackCharge" + std::to_string(currentPhase_) + ".wav", 0.1f);
 		}
 	}
 
@@ -179,7 +179,7 @@ void PlayerStrongAttackCharge::Update() {
 		if(repeatTime_ <= 0.0f) {
 			repeatTime_ = repeatMaxTime_;
 
-			host_->PlayAudio("strongAttackCharge3.wav", 0.5f);
+			host_->PlayAudio("strongAttackCharge3.wav", 0.1f);
 		}
 	}
 

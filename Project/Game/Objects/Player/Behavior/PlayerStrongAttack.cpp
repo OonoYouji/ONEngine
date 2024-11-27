@@ -32,7 +32,7 @@ PlayerStrongAttack::PlayerStrongAttack(Player* _player, int _phase) : IPlayerBeh
 
 	host_->SetAttackMode(PlayerAttackCollider::MODE_STRONG_ATTACK);
 
-	host_->PlayAudio("strongAttack" + std::to_string(_phase) + ".wav", 0.5f);
+	host_->PlayAudio("strongAttack" + std::to_string(_phase) + ".wav", 0.1f);
 
 	host_->SetNextStrongChargeCount(0);
 

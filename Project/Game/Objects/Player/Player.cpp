@@ -34,6 +34,7 @@
 
 #include "Effect/PlayerEffect.h"
 #include "Effect/PlayerStrongAttackChargeEffect.h"
+#include "Effect/PlayerDamageEffect.h"
 
 Player::Player() {
 	CreateTag(this);
@@ -101,6 +102,8 @@ void Player::Initialize() {
 	strongAttackChargeEffect_->SetAnimationActive(false);
 
 
+	damageEffect_ = new PlayerDamageEffect();
+	damageEffect_->Initialize();
 
 	/// varialbe managerに値を追加する
 	AddVariables();
@@ -250,7 +253,7 @@ void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 			strongAttackChargeEffect_->SetAnimationActive(true);
 			strongAttackChargeEffect_->SetTimeRate(0.5f + (0.25f * 3));
 
-			PlayAudio("jastAvoidance.wav", 0.5f);
+			PlayAudio("jastAvoidance.wav", 0.1f);
 
 			OneShotEffect("Effect10", NULL);
 

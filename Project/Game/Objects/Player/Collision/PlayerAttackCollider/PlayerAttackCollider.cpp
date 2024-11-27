@@ -104,9 +104,9 @@ void PlayerAttackCollider::OnCollisionEnter(BaseGameObject* const _collision) {
 
 
 		if(mode_ == MODE_WEAK_ATTACK) {
-			pPlayer_->PlayAudio("weakAttackCollision.wav", 0.5f);
+			pPlayer_->PlayAudio("weakAttackCollision.wav", 0.1f);
 		} else {
-			pPlayer_->PlayAudio("strongAttackCollision.wav", 0.5f);
+			pPlayer_->PlayAudio("strongAttackCollision.wav", 0.1f);
 		}
 
 
