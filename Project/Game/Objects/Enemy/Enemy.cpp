@@ -71,9 +71,15 @@ void Enemy::Initialize(){
 
 	effect1_ = new EnemyEffect();
 	effect1_->SetParent(pTransform_);
+	// 先に使うモーションを 読み込んでおく
+	effect1_->SetEffectAnimationRender("Effect14");
+	effect1_->SetEffectAnimationRender("Effect5");
+	effect1_->SetEffectAnimationRender("Effect11");
 	effect1_->SetIsActive(false);
+
 	effect2_ = new EnemyEffect();
 	effect2_->SetParent(pTransform_);
+	effect2_->SetEffectAnimationRender("Effect5");
 	effect2_->SetIsActive(false);
 
 	passiveEffect_ = new EnemyEffect();
@@ -84,6 +90,8 @@ void Enemy::Initialize(){
 	damageEffects_.resize(3);
 	for(auto& effect : damageEffects_){
 		effect =  new EnemyEffect();
+		effect->SetEffectAnimationRender("Effect15");
+		effect->SetEffectAnimationRender("Effect16");
 		effect->SetIsActive(false);
 	}
 
