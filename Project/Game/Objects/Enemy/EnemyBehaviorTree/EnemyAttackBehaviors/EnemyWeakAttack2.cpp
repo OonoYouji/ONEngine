@@ -101,7 +101,6 @@ namespace EnemyBehaviorTree{
 		enemy_->SetDamage(damage_);
 
 		if(currentTime_ >= activeTime_){
-			enemy_->GetEnemy1Effect()->SetIsActive(false);
 
 			enemy_->SetDamage(0.0f);
 			currentTime_ = 0.0f;
@@ -110,19 +109,6 @@ namespace EnemyBehaviorTree{
 			return Status::SUCCESS;
 		}
 		return Status::RUNNING;
-	}
-
-	void EnemyBehaviorTree::WeakAttack2Action::SpawnEffect(){
-		auto effect = enemy_->GetEnemy1Effect();
-		effect->SetIsActive(true);
-		enemy_->GetEnemy2Effect()->SetIsActive(false);
-
-		effect->SetEffectAnimationRender("Effect5");
-
-		effect->SetPosition(enemy_->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2));
-
-		// リピートしない
-		effect->SetEffectAnimationFlags(1,true);
 	}
 
 #pragma endregion
@@ -151,7 +137,6 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<WeakAttack2Startup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 		// attackAction
-
 		Vector3 offsetPos = enemy_->GetCollisionOffset(ActionTypes::WEAK_ATTACK_2);
 		addChild(std::make_unique<TransitionEffectAnimation>(enemy_,"Effect5",-1.0f,offsetPos,true));
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_WeakAttack_2_2",worker->motionTimes_.activeTime_,true));

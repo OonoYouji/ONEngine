@@ -109,8 +109,6 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	}
 
 	if(currentTime_ >= activeTime_){
-		enemy_->GetEnemy1Effect()->SetIsActive(false);
-		enemy_->GetEnemy2Effect()->SetIsActive(false);
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
 		return EnemyBehaviorTree::Status::SUCCESS;
