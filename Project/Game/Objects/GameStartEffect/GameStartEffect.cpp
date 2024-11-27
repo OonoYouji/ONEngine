@@ -22,6 +22,9 @@ void GameStartEffect::Initialize() {
 
 	maxEffectTime_ = 10.0f;
 	AddVariables();
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
+		"./Resources/Parameters/Objects", GetTag()
+	);
 	ApplyVariables();
 
 }
