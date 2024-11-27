@@ -128,12 +128,10 @@ void Scene_Game::Initialize(){
 	if(isGameRestart.Press()) {
 		/// hpを半分からスタート
 		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
-	} else {
-		enemy->SetAnimationRender("Boss_Awakening");
-		enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
 	}
 
-	//gameStartEffect->StartGame();
+	enemy->SetAnimationRender("Boss_Awakening");
+	enemy->SetAnimationTotalTime(gameStartEffect->GetMaxEffectTime());
 
 	sceneTransition_ = nullptr;
 
