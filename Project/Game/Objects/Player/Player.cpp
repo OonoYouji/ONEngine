@@ -250,7 +250,7 @@ void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 			strongAttackChargeEffect_->SetAnimationActive(true);
 			strongAttackChargeEffect_->SetTimeRate(0.5f + (0.25f * 3));
 
-			PlayAudio("jastAvoidance.wav", 0.5f);
+			PlayAudio("jastAvoidance.wav", 0.1f);
 
 			OneShotEffect("Effect10", NULL);
 

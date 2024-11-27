@@ -116,7 +116,7 @@ void PlayerWeakAttack::WeakAttack() {
 	host_->SetDamage(workInBehavior_.damageFactor_);
 
 	if(!host_->GetAttackCollider()->isActive) {
-		host_->PlayAudio("strongAttack" + std::to_string(comboNum_ + 1) + ".wav", 0.5f);
+		host_->PlayAudio("strongAttack" + std::to_string(comboNum_ + 1) + ".wav", 0.1f);
 	}
 
 	host_->GetAttackCollider()->isActive = true;
