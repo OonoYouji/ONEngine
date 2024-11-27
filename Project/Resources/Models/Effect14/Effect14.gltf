@@ -97,7 +97,7 @@
 					}
 				}
 			],
-			"name":"\u30a2\u30fc\u30de\u30c1\u30e5\u30a2\u30a2\u30af\u30b7\u30e7\u30f3_\u30a2\u30fc\u30de\u30c1\u30e5\u30a2.001",
+			"name":"\u30a2\u30fc\u30de\u30c1\u30e5\u30a2\u30a2\u30af\u30b7\u30e7\u30f3_\u30a2\u30fc\u30de\u30c1\u30e5\u30a2.002",
 			"samplers":[
 				{
 					"input":11,
@@ -113,49 +113,6 @@
 					"input":11,
 					"interpolation":"STEP",
 					"output":14
-				}
-			]
-		},
-		{
-			"channels":[
-				{
-					"sampler":0,
-					"target":{
-						"node":0,
-						"path":"translation"
-					}
-				},
-				{
-					"sampler":1,
-					"target":{
-						"node":0,
-						"path":"rotation"
-					}
-				},
-				{
-					"sampler":2,
-					"target":{
-						"node":0,
-						"path":"scale"
-					}
-				}
-			],
-			"name":"\u30a2\u30fc\u30de\u30c1\u30e5\u30a2\u30a2\u30af\u30b7\u30e7\u30f3_\u30a2\u30fc\u30de\u30c1\u30e5\u30a2.002",
-			"samplers":[
-				{
-					"input":15,
-					"interpolation":"STEP",
-					"output":16
-				},
-				{
-					"input":15,
-					"interpolation":"STEP",
-					"output":17
-				},
-				{
-					"input":15,
-					"interpolation":"STEP",
-					"output":18
 				}
 			]
 		}
@@ -220,14 +177,14 @@
 			"componentType":5126,
 			"count":96,
 			"max":[
-				1,
-				0.9770877957344055,
-				1
+				1.6120867729187012,
+				1.5751503705978394,
+				1.6120867729187012
 			],
 			"min":[
-				-1,
-				-0.15344984829425812,
-				-1
+				-1.6120867729187012,
+				-0.24737447500228882,
+				-1.6120867729187012
 			],
 			"type":"VEC3"
 		},
@@ -302,7 +259,7 @@
 			"componentType":5126,
 			"count":2,
 			"max":[
-				2.8333333333333335
+				1.75
 			],
 			"min":[
 				0
@@ -323,36 +280,6 @@
 		},
 		{
 			"bufferView":14,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":15,
-			"componentType":5126,
-			"count":2,
-			"max":[
-				1.75
-			],
-			"min":[
-				0
-			],
-			"type":"SCALAR"
-		},
-		{
-			"bufferView":16,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC3"
-		},
-		{
-			"bufferView":17,
-			"componentType":5126,
-			"count":2,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":18,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC3"
@@ -439,26 +366,6 @@
 			"buffer":0,
 			"byteLength":24,
 			"byteOffset":7036
-		},
-		{
-			"buffer":0,
-			"byteLength":8,
-			"byteOffset":7060
-		},
-		{
-			"buffer":0,
-			"byteLength":24,
-			"byteOffset":7068
-		},
-		{
-			"buffer":0,
-			"byteLength":32,
-			"byteOffset":7092
-		},
-		{
-			"buffer":0,
-			"byteLength":24,
-			"byteOffset":7124
 		}
 	],
 	"samplers":[
@@ -469,7 +376,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":7148,
+			"byteLength":7060,
 			"uri":"Effect14.bin"
 		}
 	]
