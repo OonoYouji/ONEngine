@@ -11,6 +11,7 @@
 /// game
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
+#include "Objects/Player/Player.h"
 
 
 EnemyKilledEffect::EnemyKilledEffect(const std::vector<BaseGameObject*>& _objects)
@@ -36,6 +37,7 @@ void EnemyKilledEffect::Initialize() {
 
 	TrackingCamera* camera = nullptr;
 	Enemy* enemy = nullptr;
+	Player* player = nullptr;
 	for(auto& obj : objectVector_) {
 		if(obj->GetTag() == "Enemy") {
 			enemy = static_cast<Enemy*>(obj);
@@ -46,6 +48,12 @@ void EnemyKilledEffect::Initialize() {
 			camera = static_cast<TrackingCamera*>(obj);
 			continue;
 		}
+		
+		if(obj->GetTag() == "Player") {
+			player = static_cast<Player*>(obj);
+			continue;
+		}
+
 	}
 
 	if(enemy) {
@@ -57,6 +65,10 @@ void EnemyKilledEffect::Initialize() {
 	if(camera) {
 		camera->StartShake(0.3f, 1.0f, maxTime_ - 0.5f);
 		camera->isActive = true;
+	}
+
+	if(player) {
+		player->SetAnimationFlags(1);
 	}
 
 	AudioSource* se = AddComponent<AudioSource>();
