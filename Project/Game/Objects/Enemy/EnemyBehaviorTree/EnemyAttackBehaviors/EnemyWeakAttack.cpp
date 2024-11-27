@@ -2,6 +2,7 @@
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "../../Enemy.h"
+#include "../../EnemyEffect/EnemyEffect.h"
 #include "../EnemyBasicActions.h"
 
 #include "FrameManager/Time.h"
@@ -55,6 +56,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::WeakAttackAction::tick(){
 	}
 
 	if(leftTime_ <= 0.0f){
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
 		leftTime_ = 0.0f;
 		// 当たり判定を 無効化
 		enemy_->TerminateAttackCollider();

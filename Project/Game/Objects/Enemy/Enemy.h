@@ -195,8 +195,6 @@ public:
 	bool GetOutOfStage()const{ return outOfStage_; }
 	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }
 
-	void PlaySE(const std::string& file);
-
 	void SpawnWeapon(float t);
 	void SpawnSubWeapon(float t);
 
