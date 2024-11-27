@@ -14,7 +14,7 @@
 	],
 	"nodes":[
 		{
-			"name":"\u30dc\u30fc\u30f3"
+			"name":"Camera"
 		},
 		{
 			"name":"Cube",
