@@ -99,6 +99,10 @@ void Scene_Game::Initialize(){
 	uiCamera->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 	AddLayer("ui",uiCamera);
 
+
+	/// フラグのリセット
+	GameManagerObject::SetFlag("isGameRestart", false);
+
 }
 
 

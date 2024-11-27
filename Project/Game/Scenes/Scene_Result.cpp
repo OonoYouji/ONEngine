@@ -44,7 +44,6 @@ void Scene_Result::Initialize() {
 	transitionCamera->SetProjectionType(ORTHOGRAPHIC);
 	AddLayer("TransitionLayer", transitionCamera);
 
-	GameManagerObject::SetFlag("isGameRestart", false);
 
 	sceneTransition_ = nullptr;
 }
