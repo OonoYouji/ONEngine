@@ -797,6 +797,10 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 	this->effectAnimationRenderer_->ChangeAnimation(effect);
 }
 
+void Enemy::PlaySE(const std::string& file){
+	se_->PlayOneShot(file);
+}
+
 void Enemy::SpawnWeapon(float t){
 	std::vector<Material>& materials = weaponAnimationRenderer_->GetMaterials();
 	for(auto& mate : materials){
