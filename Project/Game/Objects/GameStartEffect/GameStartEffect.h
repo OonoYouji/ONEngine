@@ -32,9 +32,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class AudioSource* se_;
 	std::vector<BaseGameObject*> gameObjectVector_;
 
 	float maxEffectTime_;
 	float currentEffectTime_;
+
+	float seTriggerTime_;
+
+	Flag isPlaySE_;
 	Flag isFinish_;
 };

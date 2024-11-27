@@ -1,5 +1,6 @@
 {
     "GameStartEffect": {
-        "maxEffectTime": 3.0999999046325684
+        "maxEffectTime": 7.599999904632568,
+        "seTriggerTime": 2.299999952316284
     }
 }
