@@ -205,6 +205,7 @@ void PlayerWeakAttack::EndLagUpdate() {
 			break;
 		case static_cast<int>(NextBehavior::avoidance):
 			nextBehavior = std::make_unique<PlayerAvoidanceBehavior>(host_);
+			nextBehavior->Update();
 			break;
 		case static_cast<int>(NextBehavior::combo):
 			nextBehavior = std::make_unique<PlayerWeakAttack>(host_, comboNum_ + 1);

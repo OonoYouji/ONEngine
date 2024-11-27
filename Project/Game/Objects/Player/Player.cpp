@@ -34,6 +34,7 @@
 
 #include "Effect/PlayerEffect.h"
 #include "Effect/PlayerStrongAttackChargeEffect.h"
+#include "Effect/PlayerDamageEffect.h"
 
 Player::Player() {
 	CreateTag(this);
@@ -101,6 +102,8 @@ void Player::Initialize() {
 	strongAttackChargeEffect_->SetAnimationActive(false);
 
 
+	damageEffect_ = new PlayerDamageEffect();
+	damageEffect_->Initialize();
 
 	/// varialbe managerに値を追加する
 	AddVariables();

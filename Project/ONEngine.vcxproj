@@ -191,6 +191,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerWeakAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\Effect\PlayerDamageEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Effect\PlayerEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerStrongAttackCharge.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerWeakAttack.h" />
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\Effect\PlayerDamageEffect.h" />
     <ClInclude Include="Game\Objects\Player\Effect\PlayerStrongAttackChargeEffect.h" />
     <ClInclude Include="Game\Objects\Player\Effect\PlayerEffect.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
