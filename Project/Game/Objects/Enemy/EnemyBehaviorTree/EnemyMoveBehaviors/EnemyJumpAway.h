@@ -26,8 +26,8 @@ namespace EnemyBehaviorTree{
 	public:
 		JumpAwayAction(Enemy* enemy,
 					   float jumpSpeed,
-					   float mass,
-					   float moveXZSpeed);
+					   float activeTime,
+					   float distance);
 
 		Status tick()override;
 	private:
@@ -35,9 +35,11 @@ namespace EnemyBehaviorTree{
 		Status InitTargetPoint();
 		Status Jump();
 	private:
+		Vector3 beforePos_;
 		Vector3 targetPoint_;
 		float jumpSpeed_;
-		float mass_;
+		float leftTime_;
+		float activeTime_;
 		float distance_;
 	};
 

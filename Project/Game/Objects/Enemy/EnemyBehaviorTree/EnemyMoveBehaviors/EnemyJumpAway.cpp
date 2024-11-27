@@ -1,6 +1,7 @@
 #include "EnemyJumpAway.h"
 
 #include <algorithm>
+#include <numbers>
 #include <cmath>
 
 #include "Game/Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
@@ -10,6 +11,13 @@
 #include "Math/Easing.h"
 
 #include "FrameManager/Time.h"
+
+float ParabolicEase(float t){
+	if(t < 0.0f) t = 0.0f; // t を範囲内に制限
+	if(t > 1.0f) t = 1.0f;
+
+	return -4.0f * (t - 0.5f) * (t - 0.5f) + 1.0f;
+}
 
 namespace EnemyBehaviorTree{
 
@@ -32,11 +40,12 @@ namespace EnemyBehaviorTree{
 #pragma region"JumpAway"
 	JumpAwayAction::JumpAwayAction(Enemy* enemy,
 								   float jumpSpeed,
-								   float mass,
+								   float activeTime,
 								   float distance)
 		: Action(enemy){
 		jumpSpeed_ = jumpSpeed;
-		mass_ = mass;
+		activeTime_ = activeTime;
+		leftTime_ = 0.0f;
 		distance_ = distance;
 
 		currentUpdate_ = [this](){return InitTargetPoint(); };
@@ -47,6 +56,8 @@ namespace EnemyBehaviorTree{
 	}
 
 	Status JumpAwayAction::InitTargetPoint(){
+		beforePos_ = enemy_->GetPosition();
+
 		Vector3 playerDirectionFromCenter = enemy_->GetPlayer()->GetPosition() * -1.0f;
 		Vector2 targetPosXZ = {playerDirectionFromCenter.x,playerDirectionFromCenter.z};
 
@@ -58,17 +69,17 @@ namespace EnemyBehaviorTree{
 	}
 
 	Status JumpAwayAction::Jump(){
-		const float kGravity = 9.8f;
 		Vector3 currentEnemyPos = enemy_->GetPosition();
 
-		jumpSpeed_ -= (kGravity * mass_) * Time::DeltaTime();
-		currentEnemyPos.y += jumpSpeed_;
-		currentEnemyPos.x = std::lerp(currentEnemyPos.x,targetPoint_.x,0.1f);
-		currentEnemyPos.z = std::lerp(currentEnemyPos.z,targetPoint_.z,0.1f);
+		leftTime_ += Time::DeltaTime();
+		float t = leftTime_ / activeTime_;
+		currentEnemyPos.y = std::lerp(0.0f,jumpSpeed_,ParabolicEase(t));
+		currentEnemyPos.x = std::lerp(beforePos_.x,targetPoint_.x,t);
+		currentEnemyPos.z = std::lerp(beforePos_.z,targetPoint_.z,t);
 
 		enemy_->SetPosition(currentEnemyPos);
 
-		if(enemy_->GetPosition().y <= 1.0f && jumpSpeed_ <= -0.1f){
+		if(t >= 1.0f){
 			enemy_->SetPositionY(0.0f);
 			return Status::SUCCESS;
 		}
@@ -100,7 +111,7 @@ namespace EnemyBehaviorTree{
 		addChild(std::make_unique<JumpAwayStartup>(enemy,worker->motionTimes_.startupTime_));
 
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Jump_2",-1.0f,false));
-		addChild(std::make_unique<JumpAwayAction>(enemy,worker->jumpSpeed_,worker->mass_,worker->distance_));
+		addChild(std::make_unique<JumpAwayAction>(enemy,worker->jumpSpeed_,worker->motionTimes_.activeTime_,worker->distance_));
 
 		addChild(std::make_unique<TransitionAnimation>(enemy,"Boss_Jump_3",worker->motionTimes_.endLagTime_,false));
 		addChild(std::make_unique<Landing>(enemy,worker->motionTimes_.endLagTime_));
