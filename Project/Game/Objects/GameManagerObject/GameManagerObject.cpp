@@ -10,7 +10,8 @@ std::unordered_map<std::string, Flag> GameManagerObject::flags_ = {
 	{ "isGameStart", Flag()},
 	{ "isGameClear", Flag()},
 	{ "isGameOver", Flag()},
-	{ "isGameRestart", Flag()}
+	{ "isGameRestart", Flag()},
+	{ "isEnemyHalfLife", Flag()}
 };
 float GameManagerObject::gameClearedTime_ = 0.0f;
 
@@ -30,6 +31,7 @@ void GameManagerObject::Initialize() {
 	flags_["isGameStart"] = {};
 	flags_["isGameClear"] = {};
 	flags_["isGameOver"] = {};
+	flags_["isEnemyHalfLife"] = {};
 
 
 }
@@ -49,6 +51,11 @@ void GameManagerObject::Update() {
 	if(pEnemy_->GetHP() <= 0.0f) {
 		flags_.at("isGameClear").current = true;
 	}
+
+	if(pEnemy_->GetHP() / pEnemy_->GetMaxHP() <= 0.5f) {
+		flags_["isEnemyHalfLife"].current = true;;
+	}
+
 
 	/// プレイヤーが死んだ
 	if(pPlayer_->GetCurrentHP() <= 0.0f) {
