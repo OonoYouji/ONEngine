@@ -70,6 +70,9 @@ void Player::Initialize() {
 	SetAnimationModel("Player_Wait"); /// 元のアニメーションに変更
 	SetIsActiveWeapon(false);
 
+	SetAnimationTotalTime(GetAnimationDuration());
+	SetAnimationFlags(0, false);
+
 	pTransform_->position = Vec3(
 		0.0f, 0.0f, -20.0f
 	);
