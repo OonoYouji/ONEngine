@@ -102,6 +102,16 @@ void Scene_Game::Initialize(){
 	AddLayer("ui",uiCamera);
 
 
+
+
+
+	/// リスタート 処理をした
+	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
+	if(isGameRestart.Press()) {
+		/// hpを半分からスタート
+		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
+	}
+
 	/// フラグのリセット
 	GameManagerObject::SetFlag("isGameRestart", false);
 
