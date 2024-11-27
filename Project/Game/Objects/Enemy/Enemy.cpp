@@ -143,8 +143,11 @@ void Enemy::Initialize(){
 		}
 	}
 
-	// 最初の行動を設定
-	DecideNextNode();
+	const Flag& isGameRestart = GameManagerObject::GetFlag("isGameRestart");
+	if(!isGameRestart.Press()) {
+		// 最初の行動を設定
+		DecideNextNode();
+	}
 
 
 	//ChangeTexture("HPBar", "HPBar.png");

@@ -137,7 +137,6 @@ void Scene_Game::Initialize() {
 		gameStartEffect->StartGame();
 		/// hpを半分からスタート
 		enemy->SetHP(enemy->GetMaxHP() * 0.5f);
-		enemy->isActive = false;
 		enemy->DecideNextNode();
 	} else {
 
