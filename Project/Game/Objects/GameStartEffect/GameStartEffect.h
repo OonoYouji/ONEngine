@@ -45,5 +45,6 @@ private:
 
 	Flag isPlaySE_;
 	Flag isFinish_;
+	Flag isRestart_;
 
 };

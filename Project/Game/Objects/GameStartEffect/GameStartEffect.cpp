@@ -8,6 +8,7 @@
 /// game
 #include "ComponentManager/AudioSource/AudioSource.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/GameManagerObject/GameManagerObject.h"
 
 
 GameStartEffect::GameStartEffect(std::vector<BaseGameObject*>& _gameObjectVector)
@@ -42,6 +43,8 @@ void GameStartEffect::Initialize() {
 	);
 	ApplyVariables();
 
+
+	isRestart_ = GameManagerObject::GetFlag("isGameRestart");
 }
 
 void GameStartEffect::Update() {
@@ -63,7 +66,7 @@ void GameStartEffect::Update() {
 		isFinish_.current = true;
 	}
 
-	if(!isPlaySE_.Press()) {
+	if(!isPlaySE_.Press() && !isRestart_.Press()) {
 		if(seTriggerTime_ <= enemy_->GetBodyCurrentAnimationTime()) {
 			isPlaySE_.current = true;
 			se_->PlayOneShot("EnemyStart.wav", 0.1f);
