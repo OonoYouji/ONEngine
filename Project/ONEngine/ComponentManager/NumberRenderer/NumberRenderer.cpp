@@ -153,7 +153,7 @@ void NumberRenderer::CalcuationScoreDigit() {
 		scoreDigitArray_[i] = digits[i];
 	}
 
-	{
+	if(drawDigit_ != -1) {
 		bool isReverse = false;
 		for(size_t i = scoreDigit_; i < kMaxDigit_; ++i) {
 			scoreDigitArray_[i] = 0;
