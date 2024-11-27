@@ -58,18 +58,18 @@
 			"samplers":[
 				{
 					"input":7,
-					"interpolation":"STEP",
+					"interpolation":"LINEAR",
 					"output":8
 				},
 				{
-					"input":9,
+					"input":7,
 					"interpolation":"LINEAR",
-					"output":10
+					"output":9
 				},
 				{
-					"input":9,
+					"input":7,
 					"interpolation":"LINEAR",
-					"output":11
+					"output":10
 				}
 			]
 		},
@@ -100,19 +100,19 @@
 			"name":"\u30a2\u30fc\u30de\u30c1\u30e5\u30a2\u30a2\u30af\u30b7\u30e7\u30f3_\u30a2\u30fc\u30de\u30c1\u30e5\u30a2.001",
 			"samplers":[
 				{
-					"input":12,
+					"input":11,
+					"interpolation":"STEP",
+					"output":12
+				},
+				{
+					"input":11,
 					"interpolation":"STEP",
 					"output":13
 				},
 				{
-					"input":12,
+					"input":11,
 					"interpolation":"STEP",
 					"output":14
-				},
-				{
-					"input":12,
-					"interpolation":"STEP",
-					"output":15
 				}
 			]
 		}
@@ -227,9 +227,9 @@
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":2,
+			"count":101,
 			"max":[
-				2.3333333333333335
+				2.6666666666666665
 			],
 			"min":[
 				1
@@ -239,35 +239,23 @@
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":2,
+			"count":101,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":9,
 			"componentType":5126,
-			"count":81,
-			"max":[
-				2.3333333333333335
-			],
-			"min":[
-				1
-			],
-			"type":"SCALAR"
+			"count":101,
+			"type":"VEC4"
 		},
 		{
 			"bufferView":10,
 			"componentType":5126,
-			"count":81,
-			"type":"VEC4"
-		},
-		{
-			"bufferView":11,
-			"componentType":5126,
-			"count":81,
+			"count":101,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":12,
+			"bufferView":11,
 			"componentType":5126,
 			"count":2,
 			"max":[
@@ -279,19 +267,19 @@
 			"type":"SCALAR"
 		},
 		{
-			"bufferView":13,
+			"bufferView":12,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC3"
 		},
 		{
-			"bufferView":14,
+			"bufferView":13,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC4"
 		},
 		{
-			"bufferView":15,
+			"bufferView":14,
 			"componentType":5126,
 			"count":2,
 			"type":"VEC3"
@@ -341,48 +329,43 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":8,
+			"byteLength":404,
 			"byteOffset":5344
 		},
 		{
 			"buffer":0,
-			"byteLength":24,
-			"byteOffset":5352
+			"byteLength":1212,
+			"byteOffset":5748
 		},
 		{
 			"buffer":0,
-			"byteLength":324,
-			"byteOffset":5376
+			"byteLength":1616,
+			"byteOffset":6960
 		},
 		{
 			"buffer":0,
-			"byteLength":1296,
-			"byteOffset":5700
-		},
-		{
-			"buffer":0,
-			"byteLength":972,
-			"byteOffset":6996
+			"byteLength":1212,
+			"byteOffset":8576
 		},
 		{
 			"buffer":0,
 			"byteLength":8,
-			"byteOffset":7968
+			"byteOffset":9788
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":7976
+			"byteOffset":9796
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-			"byteOffset":8000
+			"byteOffset":9820
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":8032
+			"byteOffset":9852
 		}
 	],
 	"samplers":[
@@ -393,7 +376,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":8056,
+			"byteLength":9876,
 			"uri":"Effect3.bin"
 		}
 	]
