@@ -96,12 +96,15 @@ namespace EnemyBehaviorTree{
 
 		effect->SetPosition(effectPos_);
 		
-		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_),isLoop_);
-
-
 		if(animationTotalTime_ >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_);
+		} else{
+			effect->ResetAnimationTotal();
 		}
+		
+		effect->SetEffectAnimationFlags(static_cast<int>(isLoop_));
+
+
 		return Status::SUCCESS;
 	}
 	TransitionEffectAnimationWithSub::TransitionEffectAnimationWithSub(Enemy* enemy,
@@ -142,9 +145,13 @@ namespace EnemyBehaviorTree{
 
 		if(animationTotalTime_[0] >= 0.0f){
 			effect->SetEffectAnimationTotalTime(animationTotalTime_[0]);
+		} else{
+			effect->ResetAnimationTotal();
 		}
 		if(animationTotalTime_[1] >= 0.0f){
 			effect2->SetEffectAnimationTotalTime(animationTotalTime_[1]);
+		} else{
+			effect2->ResetAnimationTotal();
 		}
 
 

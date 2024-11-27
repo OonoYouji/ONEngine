@@ -33,7 +33,7 @@ void IEnemyBullet::Initialize(){
 		Model* model 	= ModelManager::Load(modelByBulletType[static_cast<int32_t>(type_)]);
 		sphereCollider_ = AddComponent<SphereCollider>(model);
 	}
-	isAlive_ = true;
+	isActive = true;
 }
 
 void IEnemyBullet::Update(){
@@ -41,7 +41,7 @@ void IEnemyBullet::Update(){
 
 	// lifeTime が 0 になったら 死亡
 	if(lifeLeftTime_ <= 0.0f){
-		isAlive_ = false;
+		isActive = false;
 	}
 }
 
