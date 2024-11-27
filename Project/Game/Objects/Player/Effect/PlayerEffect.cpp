@@ -13,11 +13,14 @@ void PlayerEffect::Initialize() {
 
 	animationRenderer_ = AddComponent<AnimationRenderer>("Effect9");
 	animationRenderer_->SetTimeRate(0.0f);
-	animationRenderer_->SetIsStopAnimation(true);
+	animationRenderer_->isActive = false;
 }
 
 void PlayerEffect::Update() {
-
+	float animationTime = animationRenderer_->GetAnimationTime();
+	if(animationTime / totalTime_ >= 1.0f) {
+		animationRenderer_->isActive = false;
+	}
 }
 
 void PlayerEffect::ActiveAnimation() {
@@ -31,12 +34,14 @@ void PlayerEffect::SetTotalTime(float _totalTime) {
 void PlayerEffect::OneShotAnimation(const std::string& _filePath, float _totalTime) {
 	animationRenderer_->ChangeAnimation(_filePath);
 	animationRenderer_->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
-	animationRenderer_->SetIsStopAnimation(false);
+	animationRenderer_->isActive = true;
 
 	if(_totalTime == NULL) {
 		animationRenderer_->SetTimeRate(1.0f);
+		totalTime_ = 1.0f;
 	} else {
 		animationRenderer_->SetTotalTime(_totalTime, animationRenderer_->GetCurrentNodeAnimationKey());
+		totalTime_ = _totalTime;
 	}
 	
 	animationRenderer_->Restart();

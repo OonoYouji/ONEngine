@@ -23,6 +23,7 @@ private:
 	/// ===================================================
 
 	class AnimationRenderer* animationRenderer_ = nullptr;
+	float totalTime_ = 0.0f;
 
 public:
 	void ActiveAnimation();
