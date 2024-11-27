@@ -107,7 +107,6 @@ void PlayerStrongAttackCharge::Update() {
 
 	isFinish_ = false;
 	isFinish_ |= Input::ReleaseKey(KeyCode::Space);
-	isFinish_ |= Input::ReleaseMouse(MouseCode::Right);
 	isFinish_ |= Input::ReleasePadButton(PadCode::A);
 
 	bool isDush = false;

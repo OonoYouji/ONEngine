@@ -104,7 +104,6 @@ void PlayerRootBehavior::InputNextBehavior() {
 	/// 次の強攻撃のための入力
 	isStrongAttack |= Input::TriggerKey(KeyCode::Space);
 	isStrongAttack |= Input::TriggerPadButton(PadCode::A);
-	isStrongAttack |= Input::TriggerMouse(MouseCode::Right);
 
 
 	/// 回避
