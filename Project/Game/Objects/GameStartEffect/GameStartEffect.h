@@ -23,6 +23,9 @@ public:
 
 	void StartGame();
 
+	void SetMaxEffectTime(float _time);
+	float GetMaxEffectTime() const { return maxEffectTime_; }
+
 private:
 
 	/// ===================================================

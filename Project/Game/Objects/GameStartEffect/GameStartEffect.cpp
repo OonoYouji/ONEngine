@@ -69,3 +69,7 @@ void GameStartEffect::StartGame() {
 	}
 }
 
+void GameStartEffect::SetMaxEffectTime(float _time) {
+	maxEffectTime_ = _time;
+}
+
