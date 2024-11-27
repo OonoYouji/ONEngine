@@ -102,7 +102,7 @@ namespace EnemyBehaviorTree{
 		enemy_->SetDamage(damage_);
 
 		if(currentTime_ >= activeTime_){
-			enemy_->GetEnemy1Effect()->isActive = false;
+			enemy_->GetEnemy1Effect()->SetIsActive(false);
 
 			enemy_->SetDamage(0.0f);
 			currentTime_ = 0.0f;

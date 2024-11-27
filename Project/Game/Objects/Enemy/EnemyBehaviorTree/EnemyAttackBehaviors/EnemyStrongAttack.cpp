@@ -103,17 +103,14 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::StrongAttackAction::tick(){
 	if(activeTime_ * collisionStartTime_ <= currentTime_ && currentTime_
 	   <=
 	   (activeTime_ * collisionStartTime_) + (activeTime_ * collisionTime_)){
-		if(!enemy_->GetEnemy1Effect()->isActive){
-			SpawnEffect();
-		}
-
 		// 当たり判定が有効
 		enemy_->SetDamage(damage_);
 		enemy_->ActivateAttackCollider(ActionTypes::STRONG_ATTACK);
 	}
 
 	if(currentTime_ >= activeTime_){
-		enemy_->GetEnemy1Effect()->isActive = false;
+		enemy_->GetEnemy1Effect()->SetIsActive(false);
+		enemy_->GetEnemy2Effect()->SetIsActive(false);
 		// 当たり判定を無効に
 		enemy_->TerminateAttackCollider();
 		return EnemyBehaviorTree::Status::SUCCESS;
@@ -162,6 +159,8 @@ EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackActio
 	addChild(std::make_unique<StrongAttackStartup>(enemy,worker->motionTimes_.startupTime_,worker->maxRotateY2Player_));
 
 	// attackAction
+	Vector3 offsetPos = enemy_->GetCollisionOffset(ActionTypes::STRONG_ATTACK);
+	addChild(std::make_unique<TransitionEffectAnimationWithSub>(enemy_,"Effect14","Effect5",-1.0f,-1.0f,offsetPos,offsetPos,true,true));
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<StrongAttackAction>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 

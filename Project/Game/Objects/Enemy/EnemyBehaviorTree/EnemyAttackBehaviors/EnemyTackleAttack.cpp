@@ -7,6 +7,7 @@
 #include "Objects/Enemy/BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/Enemy/EnemyBehaviorTree/EnemyBasicActions.h"
+#include "Objects/Enemy/EnemyEffect/EnemyEffect.h"
 #include "Objects/Player/Player.h"
 
 #pragma region"Setup"
@@ -67,6 +68,7 @@ EnemyBehaviorTree::Status EnemyBehaviorTree::TackleAttackAction::tick(){
 
 	/// TODO fix
 	if(enemy_->GetOutOfStage()){
+  	enemy_->GetEnemy1Effect()->SetIsActive(false);
 		currentTime_ = 0.0f;
 
 		// se
@@ -111,6 +113,7 @@ EnemyBehaviorTree::TackleAttack::TackleAttack(Enemy* enemy,WorkTackleAttackActio
 	);
 
 	// attackAction
+	addChild(std::make_unique<TransitionEffectAnimation>(enemy_,"Effect11",-1.0f,Vector3(0.0f,0.0f,-1.0f),false));
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_RushAttack_2",worker->motionTimes_.activeTime_,true));
 	addChild(std::make_unique<TackleAttackAction>(enemy,
 			 worker->motionTimes_.activeTime_,
