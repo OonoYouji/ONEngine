@@ -110,7 +110,7 @@ void EnemyBulletEmitter::SpawnLongRangeBullet(){
 			rotateY
 		);
 		newBullet->SetDamage(longWorker->damage_);
-		newBullet->SetLifeTime(10.0f);
+		newBullet->SetLifeTime(5.0f);
 		newBullet->SetScale({longWorker->bulletScale_,
 							longWorker->bulletScale_,
 							longWorker->bulletScale_});
