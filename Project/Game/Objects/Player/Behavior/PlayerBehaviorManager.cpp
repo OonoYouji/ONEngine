@@ -9,6 +9,12 @@
 /// game
 #include "../Player.h"
 
+/// behavior
+#include "PlayerDushBehavior.h"
+#include "PlayerJumpBehavior.h"
+
+
+
 PlayerBehaviorManager::PlayerBehaviorManager(Player* _player)
 	: pPlayer_(_player) {
 
@@ -16,7 +22,19 @@ PlayerBehaviorManager::PlayerBehaviorManager(Player* _player)
 
 PlayerBehaviorManager::~PlayerBehaviorManager() {}
 
-void PlayerBehaviorManager::Initialize() {}
+void PlayerBehaviorManager::Initialize() {
+	AddBehavior("dush", new PlayerDushBehavior(pPlayer_));
+	AddBehavior("jump", new PlayerJumpBehavior(pPlayer_));
+
+
+	VariableManager* vm = VariableManager::GetInstance();
+	for(auto& behavior : behaviorMap_) {
+		vm->LoadSpecificGroupsToJson(
+			BasePlayerBehavior::sDirectoryPath_,
+			behavior.second->kName_
+		);
+	}
+}
 
 void PlayerBehaviorManager::Update() {
 	if(currentBehavior_) {

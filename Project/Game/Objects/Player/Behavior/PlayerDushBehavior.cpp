@@ -1,7 +1,9 @@
 #include "PlayerDushBehavior.h"
 
 PlayerDushBehavior::PlayerDushBehavior(Player* _player)
-	: BasePlayerBehavior("DushBehavior", _player) {}
+	: BasePlayerBehavior("DushBehavior", _player) {
+	AddVariables();
+}
 
 PlayerDushBehavior::~PlayerDushBehavior() {}
 

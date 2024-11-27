@@ -196,7 +196,7 @@ void VariableManager::LoadSpecificGroupsToJson(const std::string& _filePath, con
 	ifs.open(filePath);
 
 	if(!ifs.is_open()) {
-		Assert(false, "File could not be opened.");
+		//Assert(false, "File could not be opened.");
 		return;
 	}
 
