@@ -1,31 +1,31 @@
-#include "GameOverToRestartText.h"
+#include "GameOverToTitleText.h"
 
 #include "VariableManager/VariableManager.h"
 #include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
-GameOverToRestartText::GameOverToRestartText() {
+GameOverToTitleText::GameOverToTitleText() {
 	CreateTag(this);
 }
 
-GameOverToRestartText::~GameOverToRestartText() {}
+GameOverToTitleText::~GameOverToTitleText() {}
 
-void GameOverToRestartText::Initialize() {
+void GameOverToTitleText::Initialize() {
 	renderer_ = AddComponent<SpriteRenderer>();
-	renderer_->SetTexture("restart.png");
+	renderer_->SetTexture("Title.png");
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 	ApplyVariables();
 }
 
-void GameOverToRestartText::Update() {
+void GameOverToTitleText::Update() {
 	ApplyVariables();
 
 }
 
 
 
-void GameOverToRestartText::AddVariables() {
+void GameOverToTitleText::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
@@ -33,7 +33,7 @@ void GameOverToRestartText::AddVariables() {
 	vm->AddValue(groupName, "scale", pTransform_->scale);
 }
 
-void GameOverToRestartText::ApplyVariables() {
+void GameOverToTitleText::ApplyVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 

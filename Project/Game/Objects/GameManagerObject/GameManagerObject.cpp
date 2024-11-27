@@ -23,6 +23,7 @@ void GameManagerObject::Initialize() {
 	flags_["isGameStart"] = {};
 	flags_["isGameClear"] = {};
 	flags_["isGameOver"] = {};
+	flags_["isGameRestart"] = {};
 
 }
 
