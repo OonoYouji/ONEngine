@@ -192,6 +192,7 @@ public:
 
 	void PlaySE(const std::string& se);
 
+	bool GetOutOfStage()const{ return outOfStage_; }
 	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }
 
 	void SpawnWeapon(float t);

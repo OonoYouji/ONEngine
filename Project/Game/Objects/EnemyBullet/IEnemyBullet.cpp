@@ -59,7 +59,7 @@ void IEnemyBullet::OnCollisionEnter(BaseGameObject* const _collision){
 		float scale = damage_ / 250.0f;
 		player->DamageEffectStart(
 			1.0f, damage_,
-			0.01f * scale, 0.3f * scale
+			0.1f * scale, 1.0f * scale
 		);
 	}
 }
