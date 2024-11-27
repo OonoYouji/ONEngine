@@ -6,7 +6,9 @@
 #include "Math/Easing.h"
 #include "Math/Random.h"
 
-LongRangeBullet::LongRangeBullet():IEnemyBullet(BulletType::LONG_RANGE_BULLET){}
+LongRangeBullet::LongRangeBullet():IEnemyBullet(BulletType::LONG_RANGE_BULLET){
+	CreateTag(this);
+}
 
 void LongRangeBullet::Initialize(){
 	IEnemyBullet::Initialize();
