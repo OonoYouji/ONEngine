@@ -502,6 +502,7 @@ void Enemy::Debug(){
 				}
 
 				if(ImGui::SmallButton("Play")){
+					currentHpState_ = currentEditHpState_;
 					rootNode_ = std::make_unique<EnemyBehaviorTree::AttackCombo>(this,*currentEditComboName_);
 				}
 				ImGui::SameLine();
