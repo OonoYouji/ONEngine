@@ -7,6 +7,7 @@
 
 /// game
 #include "ComponentManager/AudioSource/AudioSource.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 GameStartEffect::GameStartEffect(std::vector<BaseGameObject*>& _gameObjectVector)
@@ -21,12 +22,19 @@ void GameStartEffect::Initialize() {
 	se_ = AddComponent<AudioSource>();
 
 	/// 演出を見せるために一旦すべてのオブジェクトのアクティブを切る
+	enemy_ = nullptr;
 	for(auto& obj : gameObjectVector_) {
 		obj->isActive = false;
+
+		if(obj->GetTag() == "Enemy") {
+			enemy_ = static_cast<Enemy*>(obj);
+			continue;
+		}
 	}
 
 	maxEffectTime_ = 7.5f;
 	seTriggerTime_ = 2.0f;
+	transitionTime_ = 2.0f;
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
@@ -56,7 +64,7 @@ void GameStartEffect::Update() {
 	}
 
 	if(!isPlaySE_.Press()) {
-		if(seTriggerTime_ <= currentEffectTime_) {
+		if(seTriggerTime_ <= enemy_->GetBodyCurrentAnimationTime()) {
 			isPlaySE_.current = true;
 			se_->PlayOneShot("EnemyStart.wav", 0.1f);
 		}
