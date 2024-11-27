@@ -31,6 +31,8 @@
 #include "Objects/EnemyKilledEffect/EnemyKilledEffect.h"
 #include "Objects/PlayerDeadEffect/PlayerDeadEffect.h"
 
+#include "Objects/BGMObj/BGMObj.h"
+
 
 /// ===================================================
 /// 初期化処理
@@ -66,6 +68,7 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
+	BGMObj* bgm = new BGMObj("BGMs/GameBGM.wav");
 
 	/// objectの配列を宣言 start effectに渡す
 
@@ -95,6 +98,7 @@ void Scene_Game::Initialize(){
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	defaultVignette->Initialize();
+	bgm->Initialize();
 
 	gameStartEffect->Initialize();
 

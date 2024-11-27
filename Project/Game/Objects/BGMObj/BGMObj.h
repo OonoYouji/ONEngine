@@ -9,11 +9,14 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	BGMObj();
+	BGMObj(const std::string& _filePath);
 	~BGMObj();
 
 	void Initialize() override;
 	void Update()     override;
+
+	void Play();
+	void Stop();
 
 private:
 
@@ -21,4 +24,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class AudioSource* bgm_ = nullptr;
+	std::string filePath_;
 };

@@ -16,6 +16,7 @@
 #include "Objects/ResultObjects/ResultGameClearTimeRenderer/ResultGameClearTimeRenderer.h"
 
 #include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
+#include "Objects/BGMObj/BGMObj.h"
 
 
 void Scene_Clear::Initialize() {
@@ -26,6 +27,7 @@ void Scene_Clear::Initialize() {
 	objects.push_back(new ResultToTitleText());
 	objects.push_back(new ResultArrow());
 	objects.push_back(new TitleSelectorUI());
+	objects.push_back(new BGMObj("BGMs/Result.wav"));
 
 	for(auto& object : objects) {
 		object->Initialize();

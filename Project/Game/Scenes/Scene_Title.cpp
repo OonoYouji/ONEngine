@@ -12,7 +12,8 @@
 #include "Objects/TitleObjects/TitleMenuSelector/TitleMenuSelector.h"
 #include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 #include "Objects/SceneTransition/SceneTransition.h"
-	
+#include "Objects/BGMObj/BGMObj.h"
+
 
 void Scene_Title::Initialize() {
 
@@ -22,6 +23,7 @@ void Scene_Title::Initialize() {
 	menuSelector_ = new TitleMenuSelector();
 	menuSelector_->Initialize();
 	
+	(new BGMObj("BGMs/Title.wav"))->Initialize();
 
 	/// add layer -----------------------------------------------------
 

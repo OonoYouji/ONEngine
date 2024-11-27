@@ -3,6 +3,8 @@
 #include "VariableManager/VariableManager.h"
 #include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
+#include "Objects/GameManagerObject/GameManagerObject.h"
+
 GameOverToTitleText::GameOverToTitleText() {
 	CreateTag(this);
 }
@@ -13,13 +15,18 @@ void GameOverToTitleText::Initialize() {
 	renderer_ = AddComponent<SpriteRenderer>();
 	renderer_->SetTexture("Title.png");
 
+
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
 	ApplyVariables();
+
+
+	if(!GameManagerObject::GetFlag("isEnemyHalfLife").Press()) {
+		SetPositionX(0.0f);
+	}
 }
 
 void GameOverToTitleText::Update() {
-	ApplyVariables();
 
 }
 
