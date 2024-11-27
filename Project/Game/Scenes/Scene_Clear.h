@@ -17,5 +17,6 @@ public:
 	void Update() override;
 private:
 	class SceneTransition* sceneTransition_ = nullptr;
+	class SEObj* seObj_ = nullptr;
 
 };

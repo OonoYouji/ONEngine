@@ -20,4 +20,5 @@ private:
 
 	class TitleMenuSelector* menuSelector_ = nullptr;
 	class SceneTransition* sceneTransition_ = nullptr;
+	class SEObj* seObj_ = nullptr;
 };

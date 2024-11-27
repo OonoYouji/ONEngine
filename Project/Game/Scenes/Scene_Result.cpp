@@ -15,6 +15,7 @@
 
 #include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
 #include "Objects/BGMObj/BGMObj.h"
+#include "Objects/SEObj/SEObj.h"
 
 
 void Scene_Result::Initialize() {
@@ -26,6 +27,8 @@ void Scene_Result::Initialize() {
 	objects.push_back(new GameOverMenuSelector());
 	objects.push_back(new TitleSelectorUI());
 	objects.push_back(new BGMObj("BGMs/Retry.wav"));
+	seObj_ = new SEObj();
+	seObj_->Initialize();
 
 	for(auto& object : objects) {
 		object->Initialize();
@@ -67,6 +70,7 @@ void Scene_Result::Update() {
 		if(!sceneTransition_) {
 			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 1.0f, RESULT_LAYER_TRANSITION);
 			sceneTransition_->Initialize();
+			seObj_->PlayOneShot("select.wav", 0.1f);
 		}
 	}
 

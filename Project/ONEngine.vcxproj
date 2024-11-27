@@ -212,6 +212,7 @@
     <ClCompile Include="Game\Objects\ResultObjects\ResultText\ResultText.cpp" />
     <ClCompile Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.cpp" />
     <ClCompile Include="Game\Objects\SceneTransition\SceneTransition.cpp" />
+    <ClCompile Include="Game\Objects\SEObj\SEObj.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.cpp" />
     <ClCompile Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.cpp" />
@@ -386,6 +387,7 @@
     <ClInclude Include="Game\Objects\ResultObjects\ResultText\ResultText.h" />
     <ClInclude Include="Game\Objects\ResultObjects\ResultToTitleText\ResultToTitleText.h" />
     <ClInclude Include="Game\Objects\SceneTransition\SceneTransition.h" />
+    <ClInclude Include="Game\Objects\SEObj\SEObj.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleExitText\TitleExitText.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleMenuSelector\TitleMenuSelector.h" />
     <ClInclude Include="Game\Objects\TitleObjects\TitleSelectorUI\TitleSelectorUI.h" />
