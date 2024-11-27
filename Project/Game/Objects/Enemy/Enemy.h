@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <list>
 #include <memory>
 #include <unordered_map>
 
@@ -109,6 +110,8 @@ private:
 	EnemyEffect* effect2_;
 	EnemyEffect* passiveEffect_;
 
+	std::list<EnemyEffect*> damageEffects_;
+
 	// 武器がスポーンする とき の uv 座標
 	float spawnWeaponUvEndPosY_;
 	float spawnWeaponUvStartPosY_;
@@ -197,6 +200,8 @@ public:
 							const std::string& effect);
 
 	void PlaySE(const std::string& se);
+
+	void SpawnDamageEffect(float damage);
 
 	bool GetOutOfStage()const{ return outOfStage_; }
 	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }

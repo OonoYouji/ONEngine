@@ -14,9 +14,17 @@ void EnemyEffect::Initialize(){}
 
 void EnemyEffect::Update(){}
 
+AnimationRenderer* EnemyEffect::GetAnimationRenderer() const{
+	return effect_;
+}
+
 void EnemyEffect::SetIsActive(bool isActive){
 	isActive = isActive;
 	effect_->isActive = isActive;
+}
+
+bool EnemyEffect::GetIsActiveAnimation() const{
+	return effect_->isActive;
 }
 
 void EnemyEffect::SetEffectAnimationRender(const std::string& filePath){

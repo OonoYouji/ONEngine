@@ -81,6 +81,12 @@ void Enemy::Initialize(){
 	passiveEffect_->SetEffectAnimationRender("Effect13");
 	passiveEffect_->SetIsActive(false);
 
+	damageEffects_.resize(3);
+	for(auto& effect : damageEffects_){
+		effect =  new EnemyEffect();
+		effect->SetIsActive(false);
+	}
+
 	bodyAnimationRenderer_ 		 = AddComponent<AnimationRenderer>("Boss_Wait");
 	weaponAnimationRenderer_  	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
@@ -91,9 +97,9 @@ void Enemy::Initialize(){
 	se_ = AddComponent<AudioSource>();
 	se_->volume = 0.1f;
 
-	weaponAnimationRenderer_->isActive 	  = false;
+	weaponAnimationRenderer_->isActive = false;
 	subWeaponAnimationRenderer_->isActive = false;
-	effectAnimationRenderer_->isActive 	  = false;
+	effectAnimationRenderer_->isActive = false;
 
 	entityShadow_ = new EntityShadow();
 	entityShadow_->Initialize();
@@ -138,6 +144,13 @@ void Enemy::Update(){
 
 		if(status != EnemyBehaviorTree::Status::RUNNING){
 			DecideNextNode();
+		}
+	}
+
+	for(auto& damageEffect : damageEffects_){
+		// 再生後 の エフェクトは消す
+		if(damageEffect->GetAnimationRenderer()->GetPlayOnced()){
+			damageEffect->SetIsActive(false);
 		}
 	}
 
@@ -815,6 +828,27 @@ void Enemy::SetAnimationRender(const std::string& filePath,
 
 void Enemy::PlaySE(const std::string& se){
 	se_->PlayOneShot(se,0.4f);
+}
+
+void Enemy::SpawnDamageEffect(float damage){
+	std::string damageEffectName;
+	if(damage > 500.0f){ // 大ダメージ
+		damageEffectName = "Effect15";
+	} else{
+		damageEffectName = "Effect16";
+	}
+
+	for(auto& damageEffect : damageEffects_){
+		if(!damageEffect->GetIsActiveAnimation()){
+			damageEffect->SetIsActive(true);
+			damageEffect->SetEffectAnimationRender(damageEffectName);
+			damageEffect->SetEffectAnimationFlags(1,true);
+
+			damageEffect->ResetAnimationTotal();
+
+			damageEffect->SetPosition(GetPosition());
+		}
+	}
 }
 
 void Enemy::SpawnWeapon(float t){

@@ -277,7 +277,9 @@ void AnimationRenderer::ChangeAnimation(const std::string& _filePath) {
 
 }
 
-
+bool AnimationRenderer::GetPlayOnced() const{
+	return isPlayedOnce_;
+}
 
 Vec3 AnimationRenderer::CalculateValue(const std::vector<KeyframeVec3>& keyframeArray, float time) {
 	Assert(!keyframeArray.empty(), "keyframe empty...");

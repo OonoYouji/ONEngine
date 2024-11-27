@@ -13,22 +13,24 @@ RangedAttackBullet::RangedAttackBullet(float spawnRange,
 									   const Vector3& enemyPos,
 									   const Vector3& playerPos)
 	:IEnemyBullet(BulletType::RANGED_ATTACK_BULLET){
-		{// Times Initialize
-			timeToLand_ = timeToLand;
-			currentTimeToLand_ = 0.0f;
+	CreateTag(this);
+
+	{// Times Initialize
+		timeToLand_ = timeToLand;
+		currentTimeToLand_ = 0.0f;
+	}
+
+	{// Position Initialize
+		float luck = Random::Float(0.0f,100.0f);
+		if(luck - percentOfLockOnPlayer < 0.0f){
+			pTransform_->position = {playerPos.x,spawnPositionY,playerPos.z};
+		} else{
+			Vector2 positionXZ = (Random::Vec2({-1.0f,-1.0f},{1.0f,1.0f})).Normalize() * spawnRange;
+			pTransform_->position = {enemyPos.x + positionXZ.x,spawnPositionY,enemyPos.z + positionXZ.y};
 		}
 
-		{// Position Initialize
-			float luck = Random::Float(0.0f,100.0f);
-			if(luck - percentOfLockOnPlayer < 0.0f){
-				pTransform_->position = {playerPos.x,spawnPositionY,playerPos.z};
-			} else{
-				Vector2 positionXZ = (Random::Vec2({-1.0f,-1.0f},{1.0f,1.0f})).Normalize() * spawnRange;
-				pTransform_->position = {enemyPos.x + positionXZ.x,spawnPositionY,enemyPos.z + positionXZ.y};
-			}
-
-			spawnPosY_ = spawnPositionY;
-		}
+		spawnPosY_ = spawnPositionY;
+	}
 
 }
 
