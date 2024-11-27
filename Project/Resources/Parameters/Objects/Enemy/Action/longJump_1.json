@@ -1,11 +1,11 @@
 {
-    "longJump_1": {
-        "Type": 8,
-        "activeTime": 0.0,
-        "distance": 36.20000076293945,
-        "endLagTime": 0.4000000059604645,
-        "jumpSpeed": 2.5,
-        "mass": 1.600000023841858,
-        "startupTime": 0.5
-    }
+  "longJump_1": {
+    "Type": 8,
+    "activeTime": 0.76,
+    "distance": 36.20000076293945,
+    "endLagTime": 0.4000000059604645,
+    "jumpSpeed": 17.5,
+    "mass": 1.600000023841858,
+    "startupTime": 0.5
+  }
 }
