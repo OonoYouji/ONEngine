@@ -81,6 +81,7 @@ void GameStartEffect::Update() {
 			se_->PlayOneShot("EnemyStart.wav", 0.1f);
 			camera_->StartShake(0.3f, 1.0f, maxEffectTime_ - currentEffectTime_ - 1.3f);
 			camera_->isActive = true;
+			camera_->isInput = false;
 		}
 	}
 
@@ -88,6 +89,7 @@ void GameStartEffect::Update() {
 	/// 演出が終わった瞬間
 	if(isFinish_.Trigger()) {
 		StartGame();
+		camera_->isInput = true;
 	}
 
 }

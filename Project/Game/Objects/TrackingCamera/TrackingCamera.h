@@ -37,6 +37,9 @@ public:
 
 	class GameCamera* GetGameCamera() const { return pGameCamera_; }
 
+	
+	bool isInput = true;
+
 private:
 
 	/// ===================================================

@@ -196,24 +196,26 @@ void TrackingCamera::LockOnToEnemy() {
 
 	/// カメラの回転 keyboard
 	Vec3 cameraRotateValue = {};
+	if(isInput) {
 
-	if(Input::GamepadConnected(0)) {
+		if(Input::GamepadConnected(0)) {
 
-		/// カメラの回転 game pad
-		Vec2 leftStick = Input::GetRightStick().Normalize();
-		cameraRotateValue += {
-			Time::DeltaTime() * speed_ * -leftStick.y,
-			Time::DeltaTime() * speed_* leftStick.x,
-			0.0f
-		};
-	} else {
+			/// カメラの回転 game pad
+			Vec2 leftStick = Input::GetRightStick().Normalize();
+			cameraRotateValue += {
+				Time::DeltaTime() * speed_ * -leftStick.y,
+				Time::DeltaTime() * speed_* leftStick.x,
+				0.0f
+			};
+		} else {
 
-		/// カメラの回転 mouse
-		cameraRotateValue += {
-			Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().y,
-			Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().x,
-			0.0f
-		};
+			/// カメラの回転 mouse
+			cameraRotateValue += {
+				Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().y,
+				Time::DeltaTime() * speed_* Input::MouseVelocity().Normalize().x,
+				0.0f
+			};
+		}
 	}
 
 
@@ -350,23 +352,26 @@ void TrackingCamera::LockOnToPlayer() {
 	/// カメラの回転
 	Vec3 cameraRotateValue = {};
 
-	if(Input::GamepadConnected(0)) {
+	if(isInput) {
 
-		/// カメラの回転 game pad
-		Vec2 leftStick = Input::GetRightStick().Normalize();
-		cameraRotateValue += {
-			Time::DeltaTime() * speed_ * -leftStick.y,
-			Time::DeltaTime() * speed_ * leftStick.x,
-			0.0f
-		};
-
-	} else {
-
-		cameraRotateValue += {
-			Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().y,
-			Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().x,
-			0.0f
-		};
+		if(Input::GamepadConnected(0)) {
+	
+			/// カメラの回転 game pad
+			Vec2 leftStick = Input::GetRightStick().Normalize();
+			cameraRotateValue += {
+				Time::DeltaTime() * speed_ * -leftStick.y,
+				Time::DeltaTime() * speed_ * leftStick.x,
+				0.0f
+			};
+	
+		} else {
+	
+			cameraRotateValue += {
+				Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().y,
+				Time::DeltaTime() * speed_ * Input::MouseVelocity().Normalize().x,
+				0.0f
+			};
+		}
 	}
 
 
