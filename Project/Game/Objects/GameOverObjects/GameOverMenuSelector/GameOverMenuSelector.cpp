@@ -25,8 +25,9 @@ void GameOverMenuSelector::Initialize() {
 	} else {
 		texts_[0] = nullptr;
 	}
-
+	
 	texts_[1] = new GameOverToTitleText();
+	
 
 	for(auto& text : texts_) {
 		if(text) {

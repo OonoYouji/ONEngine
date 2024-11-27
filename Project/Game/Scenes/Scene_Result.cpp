@@ -13,6 +13,9 @@
 #include "Objects/ResultObjects/ResultText/ResultText.h"
 #include "Objects/GameOverObjects/GameOverMenuSelector/GameOverMenuSelector.h"
 
+#include "Objects/TitleObjects/TitleSelectorUI/TitleSelectorUI.h"
+#include "Objects/BGMObj/BGMObj.h"
+
 
 void Scene_Result::Initialize() {
 
@@ -21,6 +24,8 @@ void Scene_Result::Initialize() {
 	/// 結果で初期化するオブジェクトを変更
 	objects.push_back(new ResultText("GameOverText.png"));
 	objects.push_back(new GameOverMenuSelector());
+	objects.push_back(new TitleSelectorUI());
+	objects.push_back(new BGMObj("BGMs/Retry.wav"));
 
 	for(auto& object : objects) {
 		object->Initialize();

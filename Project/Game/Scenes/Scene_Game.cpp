@@ -29,6 +29,9 @@
 #include "Objects/SceneTransition/SceneTransition.h"
 
 #include "Objects/EnemyKilledEffect/EnemyKilledEffect.h"
+#include "Objects/PlayerDeadEffect/PlayerDeadEffect.h"
+
+#include "Objects/BGMObj/BGMObj.h"
 
 
 /// ===================================================
@@ -65,6 +68,7 @@ void Scene_Game::Initialize(){
 
 	TrackingCamera* trackingCamera   = new TrackingCamera(mainCamera_, player, enemy);
 
+	BGMObj* bgm = new BGMObj("BGMs/GameBGM.wav");
 
 	/// objectの配列を宣言 start effectに渡す
 
@@ -94,6 +98,7 @@ void Scene_Game::Initialize(){
 	uiManager->Initialize();
 	uiManager->drawLayerId = GAME_SCENE_LAYER_UI;
 	defaultVignette->Initialize();
+	bgm->Initialize();
 
 	gameStartEffect->Initialize();
 
@@ -191,7 +196,7 @@ void Scene_Game::Update(){
 
 		if(gameManager_->GetFlag("isGameOver").Trigger()) {
 			if(!endEffect_) {
-				endEffect_ = new EnemyKilledEffect(objectVector_);
+				endEffect_ = new PlayerDeadEffect(objectVector_);
 				endEffect_->Initialize();
 				nextScene_ = RESULT;
 			}
@@ -218,8 +223,8 @@ void Scene_Game::Update(){
 					}
 				}
 
-			} else if(className == "EnemyKilledEffect") {
-				EnemyKilledEffect* effect = static_cast<EnemyKilledEffect*>(endEffect_);
+			} else if(className == "PlayerDeadEffect") {
+				PlayerDeadEffect* effect = static_cast<PlayerDeadEffect*>(endEffect_);
 				if(effect->GetIsFinish().Trigger()) {
 
 					if(!sceneTransition_) {

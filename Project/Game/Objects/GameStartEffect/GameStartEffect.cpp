@@ -20,12 +20,12 @@ void GameStartEffect::Initialize() {
 		obj->isActive = false;
 	}
 
-	maxEffectTime_ = 10.0f;
-	AddVariables();
+	maxEffectTime_ = 7.5f;
+	/*AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
 		"./Resources/Parameters/Objects", GetTag()
 	);
-	ApplyVariables();
+	ApplyVariables();*/
 
 }
 
@@ -33,7 +33,7 @@ void GameStartEffect::Update() {
 	
 	isFinish_.Update();
 
-	ApplyVariables();
+	//ApplyVariables();
 
 
 	/// 演出の時間経過

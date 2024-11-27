@@ -6,6 +6,9 @@
 #include "FrameManager/Time.h"
 
 #include "ComponentManager/AudioSource/AudioSource.h"
+#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+
+/// game
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
@@ -48,6 +51,7 @@ void EnemyKilledEffect::Initialize() {
 	if(enemy) {
 		enemy->SetAnimationRender("Boss_Dead");
 		enemy->SetAnimationTotalTime(maxTime_);
+		enemy->SetAnimationFlags(ANIMATION_FLAG_NOLOOP);
 	}
 
 	if(camera) {
