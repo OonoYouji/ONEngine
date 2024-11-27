@@ -24,6 +24,7 @@ class Player;
 class EnemyAttackCollider;
 class SphereCollider;
 class WorkEnemyAction;
+class EnemyEffect;
 
 /// <summary>
 /// コンボで使用される Attack の 情報
@@ -96,10 +97,13 @@ private:
 	class EntityShadow* entityShadow_ = nullptr;
 
 	std::unique_ptr<EnemyBehaviorTree::Node> rootNode_ = nullptr;
-	AnimationRenderer* bodyAnimationRenderer_ 	   = nullptr;
-	AnimationRenderer* weaponAnimationRenderer_    = nullptr;
-	AnimationRenderer* subWeaponAnimationRenderer_ = nullptr;
-	AnimationRenderer* effectAnimationRenderer_    = nullptr;
+	AnimationRenderer* bodyAnimationRenderer_ 	   	   = nullptr;
+	AnimationRenderer* weaponAnimationRenderer_    	   = nullptr;
+	AnimationRenderer* subWeaponAnimationRenderer_ 	   = nullptr;
+	AnimationRenderer* effectAnimationRenderer_    	   = nullptr;
+	
+	EnemyEffect* effect1_;
+	EnemyEffect* effect2_;
 
 	// 武器がスポーンする とき の uv 座標
 	float spawnWeaponUvEndPosY_;
@@ -107,7 +111,6 @@ private:
 
 	float spawnSubWeaponUvEndPosY_;
 	float spawnSubWeaponUvStartPosY_;
-
 
 	/// <summary>
 	/// 本体のコライダー これに当たるとダメージを受ける
@@ -163,6 +166,11 @@ private:
 	std::string createObjectName_ = "NULL";
 #endif // _DEBUG
 public:
+	EnemyEffect* GetEnemy1Effect();
+	EnemyEffect* GetEnemy2Effect();
+
+	Vector3 GetCollisionOffset(ActionTypes type);
+
 	void SetAnimationRender(const std::string& filePath);
 
 	void SetAnimationRender(const std::string& filePath,
@@ -174,8 +182,8 @@ public:
 
 	void SetAnimationRender(const std::string& filePath,
 							const std::string& weaponFilePath,
-							const std::string& subWeapon
-							,const std::string& effect);
+							const std::string& subWeapon,
+							const std::string& effect);
 
 	bool GetTriggerOutOfStage()const{ return outOfStage_ && !preOutOfStage_; }
 
@@ -184,11 +192,15 @@ public:
 
 	void SetAnimationTotalTime(float _totalTime);
 
+	void SetEffectAnimationTotalTime(float _totalTime);
+
 	float GetBodyAnimationTotalTime()const;
 
 	void ResetAnimationTotal();
+	void ResetEffectAnimationTotal();
 
 	void SetAnimationFlags(int _flags,bool _isResetTime = true);
+	void SetEffectAnimationFlags(int _flags,bool _isResetTime = true);
 
 	Player* GetPlayer()const;
 

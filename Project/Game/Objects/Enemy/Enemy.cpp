@@ -18,6 +18,7 @@
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyChase.h"
 #include "EnemyBehaviorTree/EnemyMoveBehaviors/EnemyJumpAway.h"
 #include "EnemyCollider/EnemyAttackCollider.h"
+#include "EnemyEffect/EnemyEffect.h"
 
 #include "../ONEngine/ComponentManager/Collider/SphereCollider.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
@@ -68,11 +69,13 @@ void Enemy::Initialize(){
 	// 最初の行動を設定
 	//DecideNextNode();
 
-	bodyAnimationRenderer_ = AddComponent<AnimationRenderer>("Boss_Wait");
-	weaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
-	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
-	effectAnimationRenderer_= AddComponent<AnimationRenderer>("Boss_Wait");
+	effect1_ = new EnemyEffect();
+	effect2_ = new EnemyEffect();
 
+	bodyAnimationRenderer_ 		 = AddComponent<AnimationRenderer>("Boss_Wait");
+	weaponAnimationRenderer_  	 = AddComponent<AnimationRenderer>("Boss_Wait");
+	subWeaponAnimationRenderer_  = AddComponent<AnimationRenderer>("Boss_Wait");
+	effectAnimationRenderer_	 = AddComponent<AnimationRenderer>("Boss_Wait");
 	// あにめーしょん を ロード
 	LoadAllAnimation();
 
@@ -90,7 +93,6 @@ void Enemy::Initialize(){
 	LoadCombos();
 
 	hp_ = maxHp_;
-
 }
 
 void Enemy::Update(){
@@ -117,7 +119,7 @@ void Enemy::Update(){
 
 	preOutOfStage_ = outOfStage_;
 	outOfStage_ = false;
-	if(playerLength > lengthMax 
+	if(playerLength > lengthMax
 	   || playerLength < lengthMin){
 		outOfStage_ = true;
 	}
@@ -552,7 +554,6 @@ void Enemy::SaveCombos(){
 			++index;
 		}
 	}
-
 	variableManager->SaveSpecificGroupsToJson(enemyComboDirectory,"Enemy_Combos");
 }
 
@@ -709,6 +710,22 @@ void Enemy::LoadAllAnimation(){
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_2_W");
 	weaponAnimationRenderer_->ChangeAnimation("Boss_StrongAttack_1_3_W");
 
+
+	/// effect 
+	effectAnimationRenderer_->ChangeAnimation("Effect5");
+
+}
+
+EnemyEffect* Enemy::GetEnemy1Effect(){
+	return effect1_;
+}
+
+EnemyEffect* Enemy::GetEnemy2Effect(){
+	return effect2_;
+}
+
+Vector3 Enemy::GetCollisionOffset(ActionTypes type){
+	return attackCollider_->GetOffset(type);
 }
 
 void Enemy::SetAnimationRender(const std::string& filePath){
@@ -787,6 +804,9 @@ void Enemy::SetAnimationTotalTime(float _totalTime){
 										   weaponAnimationRenderer_->GetCurrentNodeAnimationKey());
 	subWeaponAnimationRenderer_->SetTotalTime(_totalTime,
 											  subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
+
+void Enemy::SetEffectAnimationTotalTime(float _totalTime){
 	effectAnimationRenderer_->SetTotalTime(_totalTime,
 										   effectAnimationRenderer_->GetCurrentNodeAnimationKey());
 }
@@ -809,7 +829,9 @@ void Enemy::ResetAnimationTotal(){
 	subWeaponAnimationRenderer_->SetTotalTime(
 		subWeaponAnimationRenderer_->GetDuration(subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		subWeaponAnimationRenderer_->GetCurrentNodeAnimationKey());
+}
 
+void Enemy::ResetEffectAnimationTotal(){
 	effectAnimationRenderer_->SetTotalTime(
 		effectAnimationRenderer_->GetDuration(effectAnimationRenderer_->GetCurrentNodeAnimationKey()),
 		effectAnimationRenderer_->GetCurrentNodeAnimationKey());
@@ -824,6 +846,13 @@ void Enemy::SetAnimationFlags(int _flags,bool _isResetTime){
 		bodyAnimationRenderer_->Restart();
 		weaponAnimationRenderer_->Restart();
 		subWeaponAnimationRenderer_->Restart();
+		effectAnimationRenderer_->Restart();
+	}
+}
+
+void Enemy::SetEffectAnimationFlags(int _flags,bool _isResetTime){
+	effectAnimationRenderer_->SetAnimationFlags(_flags);
+	if(_isResetTime){
 		effectAnimationRenderer_->Restart();
 	}
 }

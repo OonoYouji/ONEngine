@@ -5,6 +5,7 @@
 
 #include "../../BehaviorWorker/EnemyBehaviorWorkers.h"
 #include "../../Enemy.h"
+#include "../../EnemyCollider/EnemyAttackCollider.h"
 #include "../EnemyBasicActions.h"
 #include "Game/Objects/Player/Player.h"
 
@@ -142,6 +143,7 @@ EnemyBehaviorTree::StrongAttack::StrongAttack(Enemy* enemy,WorkStrongAttackActio
 
 	// attackAction
 	addChild(std::make_unique<TransitionAnimationWithWeapon>(enemy,"Boss_StrongAttack_1_2",worker->motionTimes_.activeTime_,true));
+	addChild(std::make_unique<TransitionEffectAnimation>(enemy,"Effect5",-1.0f,enemy->GetCollisionOffset(ActionTypes::STRONG_ATTACK)));
 	addChild(std::make_unique<StrongAttackAction>(enemy,worker->motionTimes_.activeTime_,worker->collisionStartTime_,worker->collisionTime_,worker->damage_));
 
 	// end lag

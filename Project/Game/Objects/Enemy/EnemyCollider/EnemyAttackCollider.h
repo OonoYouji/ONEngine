@@ -49,6 +49,7 @@ private:
 #endif // _DEBUG
 
 public:
+	Vector3 GetOffset(ActionTypes type)const{ return offsetByActionTypes_[static_cast<int32_t>(type)]; };
 	void SetEnemy(Enemy* enemy);
 	void Activate(ActionTypes actionType);
 	void Terminate();
