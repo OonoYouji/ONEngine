@@ -7,7 +7,6 @@ enum GAME_SCENE_LAYER {
 	GAME_SCENE_LAYER_UI,	  /// UI層のレイヤー
 };
 
-
 /// ===================================================
 /// ゲームシーン
 /// ===================================================
@@ -20,5 +19,4 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
-private:
 };

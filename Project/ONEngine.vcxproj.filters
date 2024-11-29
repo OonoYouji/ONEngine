@@ -28,6 +28,7 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
     <ClCompile Include="ONEngine\SceneManager\SceneManager.cpp" />
@@ -66,12 +67,16 @@
     <ClCompile Include="ONEngine\ComponentManager\Base\BaseComponent.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BaseCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\BoxCollider.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\SphereCollider.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.cpp" />
+    <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
@@ -97,6 +102,7 @@
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\DirectionalLight.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\Model.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp" />
@@ -109,6 +115,7 @@
     <ClCompile Include="ONEngine\GraphicManager\TextureManager\TextureManager.cpp" />
     <ClCompile Include="ONEngine\ImGuiManager\ImGuiManager.cpp" />
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
+    <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
@@ -118,7 +125,6 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
-    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
@@ -132,13 +138,14 @@
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
-    <ClCompile Include="Game\Objects\Background\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
     <ClInclude Include="ONEngine\SceneManager\SceneManager.h" />
@@ -178,12 +185,16 @@
     <ClInclude Include="ONEngine\ComponentManager\Base\BaseComponent.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BaseCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\BoxCollider.h" />
+    <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\SphereCollider.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshInstancingRenderer\MeshInstancingRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\MeshRenderer\MeshRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
+    <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleEmitter.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleField.h" />
     <ClInclude Include="ONEngine\ComponentManager\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
@@ -209,6 +220,7 @@
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDoubleBuffer.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxResourceCreator.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxShaderCompiler.h" />
+    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxStructuredBuffer.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\DirectionalLight.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\Model.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h" />
@@ -221,6 +233,7 @@
     <ClInclude Include="ONEngine\GraphicManager\TextureManager\TextureManager.h" />
     <ClInclude Include="ONEngine\ImGuiManager\ImGuiManager.h" />
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
+    <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
@@ -231,7 +244,6 @@
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
-    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
@@ -245,7 +257,7 @@
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
-    <ClInclude Include="Game\Objects\Background\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
