@@ -4,6 +4,16 @@
 
 #include "Behavior/PlayerBehaviorManager.h"
 
+
+struct CommonData {
+	Vec3 direction; /// 向いているほう
+
+	Vec3 velocity;	/// 移動方向
+	float movementSpeed;
+
+	bool useGravity; /// 重力方向に落ちているか
+};
+
 class Player : public BaseGameObject {
 public:
 
@@ -23,29 +33,26 @@ public:
 
 	void LoadingBehaviors();
 
-	void Movement();
-	void Rotation();
-
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
+
+	/// components
 	class MeshRenderer* meshRenderer_ = nullptr;
-
-
-	float movementSpeed_;
-	Vec3  velocity_;
-	Vec3  prevDirection_;
-	float rotateSpeed_;
-
-	/// bullet param
-	float bulletSpeed_;
 
 	/// other class
 	class GameCamera* pGameCamera_ = nullptr;
 
-	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
+	/// parameters
+	CommonData currentCommonData_;
+
+public:
+
+	CommonData& GetCommonData() { return currentCommonData_; }
+	GameCamera* GetGameCamera() { return pGameCamera_; }
 
 };

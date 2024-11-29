@@ -10,6 +10,7 @@
 #include "../Player.h"
 
 /// behavior
+#include "PlayerRootBehavior.h"
 #include "PlayerDushBehavior.h"
 #include "PlayerJumpBehavior.h"
 
@@ -25,7 +26,9 @@ PlayerBehaviorManager::~PlayerBehaviorManager() {}
 void PlayerBehaviorManager::Initialize() {
 	AddBehavior("dush", new PlayerDushBehavior(pPlayer_));
 	AddBehavior("jump", new PlayerJumpBehavior(pPlayer_));
+	AddBehavior("root", new PlayerRootBehavior(pPlayer_));
 
+	currentBehavior_ = behaviorMap_.at("root").get();
 
 	VariableManager* vm = VariableManager::GetInstance();
 	for(auto& behavior : behaviorMap_) {

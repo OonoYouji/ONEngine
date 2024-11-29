@@ -60,10 +60,7 @@ void Player::Initialize() {
 void Player::Update() {
 	ApplyVariables();
 
-
 	behaviorManager_->Update();
-	Movement();
-	Rotation();
 }
 
 void Player::Debug() {
@@ -79,8 +76,8 @@ void Player::AddVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	vm->AddValue(groupName, "movementSpeed", movementSpeed_);
-	vm->AddValue(groupName, "rotateSpeed", rotateSpeed_);
+	vm->AddValue(groupName, "movementSpeed", currentCommonData_.movementSpeed);
+	vm->AddValue(groupName, "useGravity",    currentCommonData_.useGravity);
 
 }
 
@@ -88,8 +85,8 @@ void Player::ApplyVariables() {
 	VariableManager* vm = VariableManager::GetInstance();
 	const std::string& groupName = GetTag();
 
-	movementSpeed_ = vm->GetValue<float>(groupName, "movementSpeed");
-	rotateSpeed_ = vm->GetValue<float>(groupName, "rotateSpeed");
+	currentCommonData_.movementSpeed = vm->GetValue<float>(groupName, "movementSpeed");
+	currentCommonData_.useGravity    = vm->GetValue<bool>(groupName, "useGravity");
 
 }
 
@@ -97,45 +94,5 @@ void Player::ApplyVariables() {
 
 void Player::LoadingBehaviors() {
 
-}
-
-
-/// ===================================================
-/// member methods
-/// ===================================================
-
-void Player::Movement() {
-
-	Vec2 inputLeftStick = Input::GetLeftStick();
-	inputLeftStick = inputLeftStick.Normalize();
-	velocity_ = {
-		inputLeftStick.x * movementSpeed_ * Time::DeltaTime(),
-		0.0f,
-		inputLeftStick.y * movementSpeed_ * Time::DeltaTime(),
-	};
-
-	auto GetYawFromQuaternion = [](const Quaternion& q) {
-		return std::atan2(
-			2.0f * (q.y * q.w + q.x * q.z),
-			1.0f - 2.0f * (q.x * q.x + q.y * q.y)
-		);
-	};
-
-	Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(pGameCamera_->GetQuaternion()));
-	velocity_ = Mat4::TransformNormal(velocity_, matCameraRotateY);
-
-	pTransform_->position += velocity_;
-
-}
-
-void Player::Rotation() {
-	if(velocity_ != Vec3(0, 0, 0)) {
-		prevDirection_ = velocity_;
-	}
-
-	Vec3  dir = velocity_.Normalize();
-	float nextRotateY = std::atan2(prevDirection_.x, prevDirection_.z);
-
-	pTransform_->rotate.y = LerpShortAngle(pTransform_->rotate.y, nextRotateY, rotateSpeed_);
 }
 
