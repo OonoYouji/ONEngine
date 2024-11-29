@@ -18,7 +18,6 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-
 	void AddVariables();
 	void ApplyVariables();
 
@@ -40,7 +39,9 @@ private:
 	Vec3  velocity_;
 	Vec3  prevDirection_;
 	float rotateSpeed_;
-	
+
+	/// bullet param
+	float bulletSpeed_;
 
 	/// other class
 	class GameCamera* pGameCamera_ = nullptr;

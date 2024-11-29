@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 
+/// using namespace
+using namespace DirectX;
 
 using namespace DirectX;
 

@@ -6,14 +6,11 @@
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
-/// objects
+/// default objects
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Player/Player.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
-
-/// bb obj
-#include "Objects/Background/Stage/Stage.h"
 
 
 /// ===================================================
@@ -35,14 +32,12 @@ void Scene_Game::Initialize() {
 	createObjects.reserve(16);
 	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
-	createObjects.push_back(new Stage());
 
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {
 		obj->Initialize();
 	}
-
 }
 
 
@@ -51,6 +46,40 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 
+	/*/// ゲームが終了したのでシーン遷移
+	if(gameManager_->GetIsGameEnd()) {
+		
+		if(!sceneTransition_) {
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 1.0f, SCENE_GAME_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		} else {
+
+			if(sceneTransition_->GetIsEnd()) {
+
+				SceneManager::GetInstance()->SetNextScene(RESULT);
+			}
+
+		}
+
+	} else {
+
+
+		/// ゲーム開始の処理
+		if(!isStarted_) {
+			isStarted_ = true;
+
+			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_OUT, 2.0f, SCENE_GAME_LAYER_TRANSITION);
+			sceneTransition_->Initialize();
+		} else {
+
+			if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
+				railCamera_->isActive = true;
+
+				sceneTransition_->Destory();
+				sceneTransition_ = nullptr;
+			}
+		}
+	}*/
 
 
 }

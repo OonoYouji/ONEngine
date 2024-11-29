@@ -1,10 +1,20 @@
+#define NOMINMAX
 #include "Player.h"
+
+/// std
+#include <algorithm>
+#include <cassert>
 
 /// engine
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
+#include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
 
+/// graphics
+#include "GraphicManager/ModelManager/ModelManager.h"
+
+/// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 #include "Math/LerpShortAngle.h"
@@ -45,7 +55,6 @@ void Player::Initialize() {
 		"./Resources/Parameters/Objects", GetTag()
 	);
 	ApplyVariables();
-
 }
 
 void Player::Update() {
@@ -80,7 +89,7 @@ void Player::ApplyVariables() {
 	const std::string& groupName = GetTag();
 
 	movementSpeed_ = vm->GetValue<float>(groupName, "movementSpeed");
-	rotateSpeed_   = vm->GetValue<float>(groupName, "rotateSpeed");
+	rotateSpeed_ = vm->GetValue<float>(groupName, "rotateSpeed");
 
 }
 
@@ -120,11 +129,11 @@ void Player::Movement() {
 }
 
 void Player::Rotation() {
-	if(velocity_ != Vec3(0,0,0)) {
+	if(velocity_ != Vec3(0, 0, 0)) {
 		prevDirection_ = velocity_;
 	}
 
-	Vec3  dir         = velocity_.Normalize();
+	Vec3  dir = velocity_.Normalize();
 	float nextRotateY = std::atan2(prevDirection_.x, prevDirection_.z);
 
 	pTransform_->rotate.y = LerpShortAngle(pTransform_->rotate.y, nextRotateY, rotateSpeed_);

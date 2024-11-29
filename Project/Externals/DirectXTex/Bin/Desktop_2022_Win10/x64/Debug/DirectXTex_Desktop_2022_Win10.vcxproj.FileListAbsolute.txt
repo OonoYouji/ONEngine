@@ -1,0 +1,1 @@
+C:\Users\k023g\source\repos\2023_CG2\ONEngine\ONEngine\Project\Externals\DirectXTex\Bin\Desktop_2022_Win10\x64\Debug\DirectXTex.lib
