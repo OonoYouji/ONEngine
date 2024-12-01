@@ -233,6 +233,7 @@
     <ClCompile Include="ONEngine\GraphicManager\Light\DirectionalLight.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\Model.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PipelineState\ComputePipelineState.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PipelineState\PipelineState.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="ONEngine\GraphicManager\Light\DirectionalLight.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\Model.h" />
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PipelineState\ComputePipelineState.h" />
     <ClInclude Include="ONEngine\GraphicManager\PipelineState\PipelineState.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.h" />
