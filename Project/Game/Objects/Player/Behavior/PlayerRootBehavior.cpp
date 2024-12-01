@@ -8,7 +8,7 @@
 #include "Objects/Camera/GameCamera.h"
 
 PlayerRootBehavior::PlayerRootBehavior(Player* _player) 
-	: BasePlayerBehavior("root", _player) {
+	: BasePlayerBehavior("RootBehavior", _player) {
 
 }
 
@@ -49,6 +49,7 @@ void PlayerRootBehavior::Exit() {
 }
 
 std::string PlayerRootBehavior::GetNextBehavior() {
+	if(Input::TriggerPadButton(PadCode::RightShoulder)) { return "dush"; }
 	return std::string();
 }
 

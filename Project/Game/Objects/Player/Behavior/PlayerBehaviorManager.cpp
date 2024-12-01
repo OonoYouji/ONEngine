@@ -68,17 +68,32 @@ void PlayerBehaviorManager::AddBehavior(const std::string& _name, BasePlayerBeha
 void PlayerBehaviorManager::Debugging() {
 	if(ImGui::TreeNode("BehaviorManager")) {
 
+		ImGui::SeparatorText("debug");
+		ImGui::Text(
+			std::format("current behavior: \"{}\"", currentBehavior_->kName_).c_str()
+		);
+
+		ImGui::SeparatorText("behaviors");
+
 		VariableManager* vm = VariableManager::GetInstance();
 		for(auto& behavior : behaviorMap_) {
+			if(ImGui::TreeNodeEx(
+				std::format("\"{}\"", behavior.second->kName_).c_str(),
+				ImGuiTreeNodeFlags_Framed
+				)) {
 
-			if(ImGui::Button(std::format(
-				"save file##{:p}",
-				reinterpret_cast<void*>(behavior.second.get())).c_str())) {
 
-				vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
+				if(ImGui::Button(std::format(
+					"save file##{:p}",
+					reinterpret_cast<void*>(behavior.second.get())).c_str())) {
+
+					vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
+				}
+				vm->DebuggingSpecificGroup(behavior.second->kName_);
+
+				ImGui::TreePop();
 			}
-			vm->DebuggingSpecificGroup(behavior.second->kName_);
-
+			
 			ImGui::Spacing();
 			ImGui::Separator();
 		}
