@@ -38,9 +38,8 @@ public:
 	/// <summary>
 	/// 定数バッファのパラメータを追加
 	/// </summary>
-	/// <param name="shaderVisibilty"> : 使用するshader</param>
 	/// <param name="shaderRegister"> : レジスタ番号</param>
-	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _shaderRegister);
+	void AddCBV(uint32_t _shaderRegister);
 
 	/// <summary>
 	/// ディスクリプターレンジの追加

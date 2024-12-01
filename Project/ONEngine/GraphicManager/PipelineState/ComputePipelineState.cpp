@@ -82,10 +82,10 @@ void ComputePipelineState::SetShaderBlob(ShaderBlob* _shaderBlob) {
 /// ===================================================
 /// ConstantBufferViewを設定
 /// ===================================================
-void ComputePipelineState::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _shaderRegister) {
+void ComputePipelineState::AddCBV(uint32_t _shaderRegister) {
 	D3D12_ROOT_PARAMETER rootParameter{};
 	rootParameter.ParameterType             = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParameter.ShaderVisibility          = _shaderVisibilty;
+	rootParameter.ShaderVisibility          = D3D12_SHADER_VISIBILITY_ALL;
 	rootParameter.Descriptor.ShaderRegister = _shaderRegister;
 	rootParameters_.push_back(rootParameter);
 }
