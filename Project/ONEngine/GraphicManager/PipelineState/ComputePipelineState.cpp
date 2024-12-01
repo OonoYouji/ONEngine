@@ -1,6 +1,8 @@
 #include "ComputePipelineState.h"
 
 /// engine
+#include "Core/ONEngine.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "LoggingManager/Logger.h"
 #include "Debugger/Assertion.h"
 
@@ -12,7 +14,8 @@ ComputePipelineState::~ComputePipelineState() {}
 
 
 void ComputePipelineState::Create() {
-	CreateRootSignature();
+	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
+	CreateRootSignature(device);
 }
 
 void ComputePipelineState::CreateRootSignature(ID3D12Device* _device) {
@@ -56,16 +59,20 @@ void ComputePipelineState::CreatePipelineState(ID3D12Device* _device) {
 	D3D12_COMPUTE_PIPELINE_STATE_DESC desc{};
 	desc.pRootSignature = rootSignature_.Get();	//- RootSignature
 
-	///- Shaderの設定
+	/// Shaderの設定
 	desc.CS = {
-		shaderBlob->GetCS()->GetBufferPointer(),
-		shaderBlob->GetCS()->GetBufferSize()
+		shaderBlob_->GetBlob(ShaderBlob::CS)->GetBufferPointer(),
+		shaderBlob_->GetBlob(ShaderBlob::CS)->GetBufferSize()
 	};
 
-	///- 生成
+	/// 生成
 	HRESULT result = _device->CreateComputePipelineState(
 		&desc, IID_PPV_ARGS(&pipelineState_)
 	);
 
 	Assert(SUCCEEDED(result), "compute pipeline state creation failed.");
+}
+
+void ComputePipelineState::SetShaderBlob(ShaderBlob* _shaderBlob) {
+	shaderBlob_ = _shaderBlob;
 }
