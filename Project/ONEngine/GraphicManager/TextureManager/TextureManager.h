@@ -1,9 +1,13 @@
 #pragma once
 
+/// std
 #include <unordered_map>
 #include <string>
 
+/// engine
 #include "Texture.h"
+
+
 
 /// ===================================================
 /// テクスチャの管理クラス
@@ -48,9 +52,16 @@ public:
 	/// <param name="filePath"></param>
 	void Load(const std::string& texName, const std::string& filePath);
 
+
+	const Texture& CreateUAVTexture(
+		const std::string& _textureName,
+		const Vec2& _textureSize,
+		DXGI_FORMAT _format
+	);
+
 	void AddTexture(
-		const std::string& name, 
-		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, 
+		const std::string& name,
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle,
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle
 	);
 

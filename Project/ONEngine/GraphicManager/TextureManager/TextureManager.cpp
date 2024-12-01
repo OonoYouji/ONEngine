@@ -1,11 +1,13 @@
 #include "TextureManager.h"
 
-#include <DirectXTex.h>
-
+/// directX
 #include <d3dx12.h>
 
-#include <Core/ONEngine.h>
+/// externals
+#include <DirectXTex.h>
 
+/// engine
+#include <Core/ONEngine.h>
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
@@ -15,6 +17,7 @@
 
 
 using namespace ONE;
+
 
 /// ===================================================
 /// 無記名名前空間 : 関数の定義
@@ -205,6 +208,64 @@ void TextureManager::Load(const std::string& texName, const std::string& filePat
 
 	textures_[texName] = newTexture;
 
+}
+
+const Texture& TextureManager::CreateUAVTexture(
+	const std::string& _textureName, const Vec2& _textureSize, DXGI_FORMAT _format) {
+
+	if(auto itr = textures_.find(_textureName); itr != textures_.end()) {
+		return (*itr).second; /// すでに存在している
+	}
+
+	ID3D12Device*                            device            = ONEngine::GetDxCommon()->GetDevice();
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* srvDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+
+
+
+	D3D12_RESOURCE_DESC textureDesc{};
+	textureDesc.Dimension        = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureDesc.Width            = static_cast<UINT64>(_textureSize.x);
+	textureDesc.Height           = static_cast<UINT64>(_textureSize.y);
+	textureDesc.DepthOrArraySize = 1;
+	textureDesc.MipLevels        = 1;
+	textureDesc.Format           = _format;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Layout           = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	textureDesc.Flags            = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+
+	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
+
+
+	Texture texture;
+	HRESULT	hr = device->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&textureDesc, 
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		nullptr,
+		IID_PPV_ARGS(&texture.resource_)
+	);
+
+	Assert(SUCCEEDED(hr), "texture creation failed");
+
+
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+	uavDesc.Format             = _format;
+	uavDesc.ViewDimension      = D3D12_UAV_DIMENSION_TEXTURE2D;
+	uavDesc.Texture2D.MipSlice = 0;
+
+	uint32_t index = srvDescriptorHeap->Allocate();
+	texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(index);
+	texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(index);
+
+	/// uavを作成してディスクリプタヒープに登録
+	device->CreateUnorderedAccessView(texture.resource_.Get(), nullptr, &uavDesc, texture.cpuHandle_);
+
+	textures_[_textureName] = texture;
+
+	return textures_[_textureName];
 }
 
 void TextureManager::AddTexture(const std::string& name, D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle) {

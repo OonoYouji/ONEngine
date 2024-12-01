@@ -6,6 +6,7 @@
 
 /// engine
 #include "GraphicManager/PipelineState/ComputePipelineState.h"
+#include "GraphicManager/TextureManager/TextureManager.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -21,6 +22,11 @@ void Scene_Game::Initialize() {
 
 	mainCamera_->SetPosition({ 0, 5.5f, -17.0f });
 	mainCamera_->SetRotate({ 0.25f, 0.0f, 0.0f });
+
+
+	TextureManager::GetInstance()->CreateUAVTexture(
+		"test", Vec2(1,1), DXGI_FORMAT_R32G32B32A32_FLOAT
+	);
 
 	std::unique_ptr<ComputePipelineState> cpos;
 	std::unique_ptr<ShaderBlob> shader;
