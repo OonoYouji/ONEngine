@@ -78,6 +78,11 @@ void ComputePipelineState::SetShaderBlob(ShaderBlob* _shaderBlob) {
 	shaderBlob_ = _shaderBlob;
 }
 
+void ComputePipelineState::SetToCommnadList(ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetComputeRootSignature(rootSignature_.Get());
+	_commandList->SetPipelineState(pipelineState_.Get());
+}
+
 
 
 /// ===================================================

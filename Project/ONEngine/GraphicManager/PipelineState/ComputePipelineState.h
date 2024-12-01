@@ -35,6 +35,9 @@ public:
 	void SetShaderBlob(ShaderBlob* _shaderBlob);
 
 
+	void SetToCommnadList(ID3D12GraphicsCommandList* _commandList);
+
+
 	/// <summary>
 	/// 定数バッファのパラメータを追加
 	/// </summary>

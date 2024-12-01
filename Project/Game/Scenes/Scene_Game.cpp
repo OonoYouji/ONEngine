@@ -27,18 +27,15 @@ void Scene_Game::Initialize() {
 
 	shader.reset(new ShaderBlob);
 	shader->Compile(
-		L"./Resources/Shaders/Compute/SampleCS.hlsl",
+		L"./Resources/Shaders/Compute/CreateWhite1x1TextureCS.hlsl",
 		L"cs_6_6", ShaderBlob::CS
 	);
 
 	cpos.reset(new ComputePipelineState());
 	cpos->SetShaderBlob(shader.get());
-	cpos->AddCBV(0);
 	
-	cpos->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	cpos->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
 	cpos->AddDescriptorTable(0);
-
-	cpos->AddStaticSampler(0);
 
 	cpos->Create();
 
