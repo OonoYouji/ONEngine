@@ -52,16 +52,14 @@ public:
 	/// <summary>
 	/// ディスクリプターテーブルの追加
 	/// </summary>
-	/// <param name="shaderVisibilty"> : 使用するshader</param>
 	/// <param name="descriptorIndex"> : DescriptorRangeの配列index !!!範囲外参照に注意!!! </param>
-	void AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _descriptorIndex);
+	void AddDescriptorTable(uint32_t _descriptorIndex);
 
 	/// <summary>
 	/// サンプラーの追加
 	/// </summary>
-	/// <param name="shaderVisibility"></param>
 	/// <param name="shaderRegister"></param>
-	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+	void AddStaticSampler(uint32_t _shaderRegister);
 
 private:
 

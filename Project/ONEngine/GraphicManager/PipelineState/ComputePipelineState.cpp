@@ -16,6 +16,7 @@ ComputePipelineState::~ComputePipelineState() {}
 void ComputePipelineState::Create() {
 	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
 	CreateRootSignature(device);
+	CreatePipelineState(device);
 }
 
 void ComputePipelineState::CreateRootSignature(ID3D12Device* _device) {
@@ -107,11 +108,11 @@ void ComputePipelineState::AddDescriptorRange(uint32_t _baseShaderRegister, uint
 /// ===================================================
 /// DescriptorTableの追加
 /// ===================================================
-void ComputePipelineState::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _descriptorIndex) {
+void ComputePipelineState::AddDescriptorTable(uint32_t _descriptorIndex) {
 	Assert(_descriptorIndex <= descriptorRanges_.size(), "out of range.");
 	D3D12_ROOT_PARAMETER rootParameter{};
-	rootParameter.ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;        /// 使用するRegisterの種類
-	rootParameter.ShaderVisibility                    = _shaderVisibilty;                                   /// 使用するShader
+	rootParameter.ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;         /// 使用するRegisterの種類
+	rootParameter.ShaderVisibility                    = D3D12_SHADER_VISIBILITY_ALL;                        /// 使用するShader
 	rootParameter.DescriptorTable.pDescriptorRanges   = &descriptorRanges_[_descriptorIndex];               /// Tableの中身の配列
 	rootParameter.DescriptorTable.NumDescriptorRanges = descriptorRanges_[_descriptorIndex].NumDescriptors; /// Tableで使用する数
 	rootParameters_.push_back(rootParameter);
@@ -121,7 +122,7 @@ void ComputePipelineState::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVis
 /// ===================================================
 /// Samplerの追加
 /// ===================================================
-void ComputePipelineState::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+void ComputePipelineState::AddStaticSampler(uint32_t _shaderRegister) {
 	D3D12_STATIC_SAMPLER_DESC staticSampler{};
 	staticSampler.Filter           = D3D12_FILTER_MIN_MAG_MIP_LINEAR; /// バイリニアフィルタ
 	staticSampler.AddressU         = D3D12_TEXTURE_ADDRESS_MODE_WRAP; /// 0~1の範囲外をリピート
@@ -129,7 +130,7 @@ void ComputePipelineState::AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisib
 	staticSampler.AddressW         = D3D12_TEXTURE_ADDRESS_MODE_WRAP; 
 	staticSampler.ComparisonFunc   = D3D12_COMPARISON_FUNC_NEVER;     /// 比較しない
 	staticSampler.MaxLOD           = D3D12_FLOAT32_MAX;               /// ありったけのMipMapを使う
-	staticSampler.ShaderRegister   = _shaderRegister;                  /// 使用するRegister番号
-	staticSampler.ShaderVisibility = _shaderVisibility;                /// 使用するShader
+	staticSampler.ShaderRegister   = _shaderRegister;                 /// 使用するRegister番号
+	staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;     /// 使用するShader
 	staticSamplers_.push_back(staticSampler);
 }
