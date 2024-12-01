@@ -235,6 +235,7 @@
     <ClCompile Include="ONEngine\GraphicManager\ModelManager\ModelManager.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PipelineState\ComputePipelineState.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PipelineState\PipelineState.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PipelineState\ShaderBlob.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.cpp" />
@@ -337,6 +338,7 @@
     <ClInclude Include="ONEngine\GraphicManager\ModelManager\ModelManager.h" />
     <ClInclude Include="ONEngine\GraphicManager\PipelineState\ComputePipelineState.h" />
     <ClInclude Include="ONEngine\GraphicManager\PipelineState\PipelineState.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PipelineState\ShaderBlob.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\Bloom\Bloom.h" />
     <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTexture.h" />
     <ClInclude Include="ONEngine\GraphicManager\RenderTextureManager\RenderTextureManager.h" />
