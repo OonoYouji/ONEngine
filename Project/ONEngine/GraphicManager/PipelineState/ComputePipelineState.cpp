@@ -76,3 +76,60 @@ void ComputePipelineState::CreatePipelineState(ID3D12Device* _device) {
 void ComputePipelineState::SetShaderBlob(ShaderBlob* _shaderBlob) {
 	shaderBlob_ = _shaderBlob;
 }
+
+
+
+/// ===================================================
+/// ConstantBufferViewを設定
+/// ===================================================
+void ComputePipelineState::AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t shaderRegister) {
+	D3D12_ROOT_PARAMETER rootParameter{};
+	rootParameter.ParameterType             = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameter.ShaderVisibility          = shaderVisibilty;
+	rootParameter.Descriptor.ShaderRegister = shaderRegister;
+	rootParameters_.push_back(rootParameter);
+}
+
+
+/// ===================================================
+/// DescriptorRangeの追加
+/// ===================================================
+void ComputePipelineState::AddDescriptorRange(uint32_t baseShaderRegister, uint32_t numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE rangeType) {
+	D3D12_DESCRIPTOR_RANGE descriptorRange{};
+	descriptorRange.BaseShaderRegister                = baseShaderRegister;                   /// 開始する番号
+	descriptorRange.NumDescriptors                    = numDescriptor;                        /// 使用するTextureの数
+	descriptorRange.RangeType                         = rangeType;                            /// 使用するRangeType
+	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND; /// 
+	descriptorRanges_.push_back(descriptorRange);
+}
+
+
+/// ===================================================
+/// DescriptorTableの追加
+/// ===================================================
+void ComputePipelineState::AddDescriptorTable(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t descriptorIndex) {
+	assert(descriptorIndex <= descriptorRanges_.size());
+	D3D12_ROOT_PARAMETER rootParameter{};
+	rootParameter.ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;        /// 使用するRegisterの種類
+	rootParameter.ShaderVisibility                    = shaderVisibilty;                                   /// 使用するShader
+	rootParameter.DescriptorTable.pDescriptorRanges   = &descriptorRanges_[descriptorIndex];               /// Tableの中身の配列
+	rootParameter.DescriptorTable.NumDescriptorRanges = descriptorRanges_[descriptorIndex].NumDescriptors; /// Tableで使用する数
+	rootParameters_.push_back(rootParameter);
+}
+
+
+/// ===================================================
+/// Samplerの追加
+/// ===================================================
+void ComputePipelineState::AddStaticSampler(D3D12_SHADER_VISIBILITY shaderVisibility, uint32_t shaderRegister) {
+	D3D12_STATIC_SAMPLER_DESC staticSampler{};
+	staticSampler.Filter           = D3D12_FILTER_MIN_MAG_MIP_LINEAR; /// バイリニアフィルタ
+	staticSampler.AddressU         = D3D12_TEXTURE_ADDRESS_MODE_WRAP; /// 0~1の範囲外をリピート
+	staticSampler.AddressV         = D3D12_TEXTURE_ADDRESS_MODE_WRAP; 
+	staticSampler.AddressW         = D3D12_TEXTURE_ADDRESS_MODE_WRAP; 
+	staticSampler.ComparisonFunc   = D3D12_COMPARISON_FUNC_NEVER;     /// 比較しない
+	staticSampler.MaxLOD           = D3D12_FLOAT32_MAX;               /// ありったけのMipMapを使う
+	staticSampler.ShaderRegister   = shaderRegister;                  /// 使用するRegister番号
+	staticSampler.ShaderVisibility = shaderVisibility;                /// 使用するShader
+	staticSamplers_.push_back(staticSampler);
+}
