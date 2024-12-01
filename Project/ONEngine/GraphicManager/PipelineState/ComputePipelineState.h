@@ -40,7 +40,7 @@ public:
 	/// </summary>
 	/// <param name="shaderVisibilty"> : 使用するshader</param>
 	/// <param name="shaderRegister"> : レジスタ番号</param>
-	void AddCBV(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t shaderRegister);
+	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _shaderRegister);
 
 	/// <summary>
 	/// ディスクリプターレンジの追加
@@ -48,21 +48,21 @@ public:
 	/// <param name="baseShaderRegister"> : レジスタ番号</param>
 	/// <param name="numDescriptor"> : 使用するSRVの数</param>
 	/// <param name="rangeType"></param>
-	void AddDescriptorRange(uint32_t baseShaderRegister, uint32_t numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE rangeType);
+	void AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE _rangeType);
 
 	/// <summary>
 	/// ディスクリプターテーブルの追加
 	/// </summary>
 	/// <param name="shaderVisibilty"> : 使用するshader</param>
 	/// <param name="descriptorIndex"> : DescriptorRangeの配列index !!!範囲外参照に注意!!! </param>
-	void AddDescriptorTable(D3D12_SHADER_VISIBILITY shaderVisibilty, uint32_t descriptorIndex);
+	void AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _descriptorIndex);
 
 	/// <summary>
 	/// サンプラーの追加
 	/// </summary>
 	/// <param name="shaderVisibility"></param>
 	/// <param name="shaderRegister"></param>
-	void AddStaticSampler(D3D12_SHADER_VISIBILITY shaderVisibility, uint32_t shaderRegister);
+	void AddStaticSampler(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
 private:
 
