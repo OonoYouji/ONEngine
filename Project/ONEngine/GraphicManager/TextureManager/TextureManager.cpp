@@ -251,22 +251,49 @@ const Texture& TextureManager::CreateUAVTexture(
 
 
 
+	/// ---------------------------------------------------
+	/// uav resourceの作成
+	/// ---------------------------------------------------
+
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 	uavDesc.Format             = _format;
 	uavDesc.ViewDimension      = D3D12_UAV_DIMENSION_TEXTURE2D;
 	uavDesc.Texture2D.MipSlice = 0;
 
-	uint32_t index = srvDescriptorHeap->Allocate();
-	texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(index);
-	texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(index);
+	uint32_t uavIndex  = srvDescriptorHeap->Allocate();
+	texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(uavIndex);
+	texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(uavIndex);
 
 	/// uavを作成してディスクリプタヒープに登録
 	device->CreateUnorderedAccessView(texture.resource_.Get(), nullptr, &uavDesc, texture.cpuHandle_);
+
+
+
+	/// ---------------------------------------------------
+	/// srv resourceの作成
+	/// ---------------------------------------------------
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Shader4ComponentMapping   = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format                    = _format;
+	srvDesc.ViewDimension             = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels       = 1;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+
+	//uint32_t srvIndex  = srvDescriptorHeap->Allocate();
+	//texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(srvIndex);
+	//texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(srvIndex);
+
+	device->CreateShaderResourceView(texture.resource_.Get(), &srvDesc, texture.cpuHandle_);
+
+
 
 	textures_[_textureName] = texture;
 
 	return textures_[_textureName];
 }
+
+
 
 void TextureManager::AddTexture(const std::string& name, D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle) {
 
