@@ -56,7 +56,7 @@ void SceneLayer::ResetInstanceCount() {
 }
 
 
-void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
+void SceneLayer::Initialize(const std::string& _className, BaseCamera* _camera) {
 	auto pDxCommon = ONEngine::GetDxCommon();
 	auto commandList = pDxCommon->GetDxCommand()->GetList();
 
@@ -68,8 +68,8 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 		pDxCommon->GetDSVDescriptorHeap()
 	);
 
-	camera_    = camera;
-	className_ = className;
+	camera_    = _camera;
+	className_ = _className;
 
 	TextureManager::GetInstance()->AddTexture(
 		className_,
@@ -77,12 +77,6 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 		renderTexture_->GetSrvGpuHandle()
 	);
 
-
-	postEffectProcessor_.reset(new PostEffectProcessor());
-	postEffectProcessor_->Initialize();
-	postEffectProcessor_->SetLayerRenderTexture(GetRenderTexture());
-	postEffectProcessor_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
-	postEffectProcessor_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
 }
 
 
@@ -138,4 +132,8 @@ void SceneLayer::Draw() {
 
 void SceneLayer::SetMainCamera(BaseCamera* _camera) {
 	camera_ = _camera;
+}
+
+void SceneLayer::AddPostEffectPipeline(BasePostEffectPipeline* _postEffectProcessor) {
+	postEffectProcessor_->AddPipeline(_postEffectProcessor);
 }

@@ -23,12 +23,6 @@
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
-#include "BaseScene.h"
-#include "Scenes/Scene_Game.h"
-#include "Scenes/Scene_Title.h"
-#include "Scenes/Scene_Result.h"
-#include "Scenes/Scene_Clear.h"
-
 
 
 /// ===================================================
@@ -43,17 +37,23 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 /// 初期化処理
 /// ===================================================
-void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
+void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory, BasePostEffectPipelineRegistry* _pipelineRegstry) {
 
+	/// メモリの再設定
 	sceneFactory_.reset(_sceneFactory);
+	postEffectPipelineRegistry_.reset(_pipelineRegstry);
 
-	currentSceneName_ = sceneFactory_->GetStartupSceneName();
-	nextSceneName_ = currentSceneName_;
+	/// instanceのゲット
 	pGameObjectManager_ = GameObjectManager::GetInstance();
+	pCollisionManager_  = CollisionManager::GetInstance();
+
+	/// 最初のシーンを取得、読み込み
+	currentSceneName_   = sceneFactory_->GetStartupSceneName();
+	nextSceneName_      = currentSceneName_;
 	Load(currentSceneName_);
 
-	pCollisionManager_ = CollisionManager::GetInstance();
 
+	/// RTVの作成
 	auto dxCommon = ONEngine::GetDxCommon();
 
 	finalRenderTex_.reset(new RenderTexture);
@@ -72,6 +72,8 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 /// 終了処理
 /// ===================================================
 void SceneManager::Finalize() {
+	postEffectPipelineRegistry_.reset();
+	sceneFactory_.reset();
 	finalRenderTex_.reset();
 	scenes_.clear();
 }

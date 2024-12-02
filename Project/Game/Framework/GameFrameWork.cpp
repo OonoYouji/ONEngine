@@ -6,25 +6,21 @@
 /// engine
 #include "FrameManager/ExecutionTimer.h"
 #include "SceneManager/SceneManager.h"
-#include "GraphicManager/PostEffect/PostEffectPipeline/PostEffectPipelineManager.h"
-#include "GraphicManager/PostEffect/Grayscale/Grayscale.h"
 
 /// game
 #include "Scenes/Factory/SceneFactory.h"
+#include "PostProcess/PipelineRegistry/GamePostEffectPipelineRegistry.h"
 
 
 void GameFrameWork::Initialize() {
 	ExecutionTimer timer;
 
 
-	PostEffectPipelineManager::GetInstance()->AddPipeline(
-		"grayscale", std::make_unique<Grayscale>()
-	);
+	GamePostEffectPipelineRegistry* postEffectPipelineRegistry = new GamePostEffectPipelineRegistry();
+	SceneFactory*                   sceneFacory                = new SceneFactory("GameScene");
 
-	SceneFactory* sceneFacory = new SceneFactory("GameScene");
-	/// シーンの初期化等...
 	pSceneManager_ = SceneManager::GetInstance();
-	pSceneManager_->Initialize(sceneFacory); /// 初期化時のシーンをここで決定
+	pSceneManager_->Initialize(sceneFacory, postEffectPipelineRegistry);
 
 	
 	ONE::Logger::ConsolePrint(std::format(

@@ -12,7 +12,7 @@
 
 void DemoObject::Initialize() {
 	auto renderer = AddComponent<SpriteRenderer>();
-	renderer->SetTexture("grayscaleTestTexture.png");
+	renderer->SetTexture("uvChecker.png");
 
 	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
 	angle_ = 0.44f;

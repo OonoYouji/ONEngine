@@ -9,6 +9,6 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float4 color     = gInputTexture[DTid.xy];
 	float  grayscale = 0.2989 * color.r + 0.5870 * color.g + 0.1140 * color.b;
 
-	gOutputTexture[DTid.xy] = float4(grayscale, grayscale, grayscale, 1.0f);
+	gOutputTexture[DTid.xy] = float4(grayscale, grayscale, grayscale, color.a);
 
 }

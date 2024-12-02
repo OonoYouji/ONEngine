@@ -154,8 +154,10 @@
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.cpp" />
@@ -263,8 +265,10 @@
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.h" />

@@ -59,3 +59,7 @@ void BaseScene::AddLayer(const std::string& layerName, GameCamera* layerCamera) 
 		layer->SetMainCamera(layerCamera);
 	}
 }
+
+void BaseScene::AddPostEffect(const std::string& _layerName, const std::string& _postEffectName) {
+
+}

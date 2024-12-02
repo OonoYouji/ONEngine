@@ -131,6 +131,8 @@
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.cpp" />
+    <ClCompile Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -241,6 +243,8 @@
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.h" />
+    <ClInclude Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

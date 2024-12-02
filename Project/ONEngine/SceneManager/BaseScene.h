@@ -56,11 +56,11 @@ protected:
 	void AddLayer(const std::string& layerName, class GameCamera* layerCamera);
 
 	/// <summary>
-	/// ポストエフェクトの追加 
+	/// ポストエフェクトの追加
 	/// </summary>
-	/// <param name="_layerName"></param>
-	/// <param name=""></param>
-	//void AddPostEffect(const std::string& _layerName, );
+	/// <param name="_layerName">      : ポストエフェクトを追加するレイヤーの名前 </param>
+	/// <param name="_postEffectName"> : 追加するポストエフェクトの名前         </param>
+	void AddPostEffect(const std::string& _layerName, const std::string& _postEffectName);
 
 protected:
 
@@ -72,4 +72,14 @@ protected:
 	class DirectionalLight* directionalLight_ = nullptr;
 
 	std::vector<std::unique_ptr<SceneLayer>> layers_;
+
+	class SceneManager*     pSceneManager_ = nullptr;
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+
 };
