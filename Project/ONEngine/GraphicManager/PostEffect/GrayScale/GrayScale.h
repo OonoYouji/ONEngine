@@ -1,16 +1,37 @@
 #pragma once
 
-/// engine
-#include "../BasePostEffect/BasePostEffect.h"
+#include "../PostEffectPipeline/BasePostEffectPipeline.h"
 
-class GrayScale : BasePostEffect {
+
+/// ===================================================
+/// 
+/// ===================================================
+class Grayscale : BasePostEffectPipeline {
 public:
 
-	GrayScale(const std::string& _uavTextureName);
-	~GrayScale();
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+	
+	Grayscale();
+	~Grayscale();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize() override;
+
+	/// <summary>
+	/// shaderの実行処理
+	/// </summary>
+	/// <param name="_input">  : 入力resource   </param>
+	/// <param name="_output"> : 出力先resource </param>
+	void Execution(ID3D12Resource* _input, ID3D12Resource* _output) override;
 
 private:
 
-
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
 };

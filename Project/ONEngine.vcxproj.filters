@@ -127,8 +127,9 @@
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\PostEffect\BasePostEffect\BasePostEffect.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\PostEffect\GrayScale\GrayScale.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -235,8 +236,9 @@
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="ONEngine\GraphicManager\PostEffect\BasePostEffect\BasePostEffect.h" />
-    <ClInclude Include="ONEngine\GraphicManager\PostEffect\GrayScale\GrayScale.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
