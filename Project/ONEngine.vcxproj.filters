@@ -130,7 +130,7 @@
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffect.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -240,7 +240,7 @@
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\BasePostEffectPipeline.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectPipeline\PostEffectPipelineManager.h" />
-    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffect.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

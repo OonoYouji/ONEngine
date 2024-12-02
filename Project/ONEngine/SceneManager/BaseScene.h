@@ -12,6 +12,10 @@ class BaseScene {
 	friend class SceneManager;
 public:
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
 	BaseScene();
 	virtual ~BaseScene() = default;
 
@@ -19,6 +23,10 @@ public:
 	virtual void Update()     = 0;
 
 private:
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
 
 	/// <summary>
 	/// layers_のポインタを返す
@@ -28,14 +36,38 @@ private:
 
 	void CreateObject();
 
-
 protected:
 
+	/// ===================================================
+	/// protected : methods
+	/// ===================================================
+	
+	/// <summary>
+	/// 次のシーンを設定する
+	/// </summary>
+	/// <param name="_sceneName"></param>
 	void SetNextScene(const std::string& _sceneName);
 
+	/// <summary>
+	/// 描画用レイヤーの追加
+	/// </summary>
+	/// <param name="layerName"></param>
+	/// <param name="layerCamera"></param>
 	void AddLayer(const std::string& layerName, class GameCamera* layerCamera);
 
+	/// <summary>
+	/// ポストエフェクトの追加 
+	/// </summary>
+	/// <param name="_layerName"></param>
+	/// <param name=""></param>
+	//void AddPostEffect(const std::string& _layerName, );
+
 protected:
+
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
+
 	class GameCamera*       mainCamera_       = nullptr;
 	class DirectionalLight* directionalLight_ = nullptr;
 

@@ -6,7 +6,7 @@
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 
-#include "GraphicManager/PostEffect/PostEffect.h"
+#include "GraphicManager/PostEffect/PostEffectProcessor/PostEffectProcessor.h"
 
 
 /// ===================================================
@@ -45,7 +45,7 @@ protected:
 
 	ONE::DxCommand*                pDxCommand_    = nullptr;
 
-	std::unique_ptr<PostEffect>    postEffect_    = nullptr;
+	std::unique_ptr<PostEffectProcessor> postEffectProcessor_    = nullptr;
 
 public:
 

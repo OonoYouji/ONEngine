@@ -78,10 +78,11 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 	);
 
 
-	postEffect_.reset(new PostEffect);
-	postEffect_->Initialize();
-	postEffect_->SetLayerRenderTexture(GetRenderTexture());
-	postEffect_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
+	postEffectProcessor_.reset(new PostEffectProcessor());
+	postEffectProcessor_->Initialize();
+	postEffectProcessor_->SetLayerRenderTexture(GetRenderTexture());
+	postEffectProcessor_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
+	postEffectProcessor_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
 }
 
 
@@ -114,7 +115,10 @@ void SceneLayer::Draw() {
 	renderTexture_->EndRenderTarget();
 
 
-	postEffect_->Execution();
+	/// post effectがあるならかける
+	if(postEffectProcessor_) {
+		postEffectProcessor_->Execution();
+	}
 
 	
 	/// command execution.

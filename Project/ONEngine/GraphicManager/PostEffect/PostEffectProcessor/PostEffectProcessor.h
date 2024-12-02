@@ -1,21 +1,21 @@
 #pragma once
 
 #include "GraphicManager/TextureManager/Texture.h"
-#include "PostEffectPipeline/BasePostEffectPipeline.h"
+#include "../PostEffectPipeline/BasePostEffectPipeline.h"
 
 
 /// ===================================================
 /// layer毎に持たせるpost effectのクラス
 /// ===================================================
-class PostEffect {
+class PostEffectProcessor {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PostEffect();
-	~PostEffect();
+	PostEffectProcessor();
+	~PostEffectProcessor();
 
 	void Initialize();
 

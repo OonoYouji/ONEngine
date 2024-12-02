@@ -1,4 +1,4 @@
-#include "PostEffect.h"
+#include "PostEffectProcessor.h"
 
 /// engine
 #include "Core/ONEngine.h"
@@ -10,15 +10,15 @@
 #include "GraphicManager/TextureManager/TextureManager.h"
 
 
-PostEffect::PostEffect() {}
-PostEffect::~PostEffect() {}
+PostEffectProcessor::PostEffectProcessor() {}
+PostEffectProcessor::~PostEffectProcessor() {}
 
-void PostEffect::Initialize() {
+void PostEffectProcessor::Initialize() {
 	intermediateTextures_[0] = TextureManager::GetInstance()->CreateUAVTexture("intermediateTexture1", { 1280.0f, 720.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
 	intermediateTextures_[1] = TextureManager::GetInstance()->CreateUAVTexture("intermediateTexture2", { 1280.0f, 720.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
-void PostEffect::Execution() {
+void PostEffectProcessor::Execution() {
 
 	/// post effectが空なら return
 	if(postEffectPipelines_.empty()) {
@@ -136,10 +136,10 @@ void PostEffect::Execution() {
 
 }
 
-void PostEffect::AddPipeline(BasePostEffectPipeline* _postEffectPipeline) {
+void PostEffectProcessor::AddPipeline(BasePostEffectPipeline* _postEffectPipeline) {
 	postEffectPipelines_.push_back(_postEffectPipeline);
 }
 
-void PostEffect::SetLayerRenderTexture(RenderTexture* _renderTexture) {
+void PostEffectProcessor::SetLayerRenderTexture(RenderTexture* _renderTexture) {
 	pLayerRenderTexture_ = _renderTexture;
 }
