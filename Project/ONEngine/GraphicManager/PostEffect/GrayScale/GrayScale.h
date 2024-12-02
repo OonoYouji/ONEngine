@@ -6,7 +6,7 @@
 /// ===================================================
 /// 
 /// ===================================================
-class Grayscale : BasePostEffectPipeline {
+class Grayscale : public BasePostEffectPipeline {
 public:
 
 	/// ===================================================

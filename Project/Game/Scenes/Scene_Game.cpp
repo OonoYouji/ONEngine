@@ -11,6 +11,10 @@
 #include "GraphicManager/PipelineState/ComputePipelineState.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
 
+#include "GraphicManager/PostEffect/PostEffectPipeline/PostEffectPipelineManager.h"
+#include "GraphicManager/PostEffect/Grayscale/Grayscale.h"
+
+
 
 /// objects
 #include "Objects/Camera/GameCamera.h"

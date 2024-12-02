@@ -22,6 +22,9 @@
 #include "Objects/Camera/Manager/CameraManager.h"
 
 
+#include "GraphicManager/PostEffect/PostEffectPipeline/PostEffectPipelineManager.h"
+
+
 /// ===================================================
 /// namespace
 /// ===================================================
@@ -73,6 +76,12 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 		renderTexture_->GetSrvCpuHandle(),
 		renderTexture_->GetSrvGpuHandle()
 	);
+
+
+	postEffect_.reset(new PostEffect);
+	postEffect_->Initialize();
+	postEffect_->SetLayerRenderTexture(GetRenderTexture());
+	postEffect_->AddPipeline(PostEffectPipelineManager::GetInstance()->GetPostEffectPipeline("grayscale"));
 }
 
 
@@ -104,6 +113,8 @@ void SceneLayer::Draw() {
 
 	renderTexture_->EndRenderTarget();
 
+
+	postEffect_->Execution();
 
 	
 	/// command execution.

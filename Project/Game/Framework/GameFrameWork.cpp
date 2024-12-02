@@ -6,6 +6,8 @@
 /// engine
 #include "FrameManager/ExecutionTimer.h"
 #include "SceneManager/SceneManager.h"
+#include "GraphicManager/PostEffect/PostEffectPipeline/PostEffectPipelineManager.h"
+#include "GraphicManager/PostEffect/Grayscale/Grayscale.h"
 
 /// game
 #include "Scenes/Factory/SceneFactory.h"
@@ -13,6 +15,11 @@
 
 void GameFrameWork::Initialize() {
 	ExecutionTimer timer;
+
+
+	PostEffectPipelineManager::GetInstance()->AddPipeline(
+		"grayscale", std::make_unique<Grayscale>()
+	);
 
 	SceneFactory* sceneFacory = new SceneFactory("GameScene");
 	/// シーンの初期化等...

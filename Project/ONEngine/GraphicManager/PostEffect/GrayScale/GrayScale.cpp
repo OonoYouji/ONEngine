@@ -12,7 +12,9 @@
 #include "../PostEffectPipeline/PostEffectPipelineManager.h"
 
 
-Grayscale::Grayscale() {}
+Grayscale::Grayscale() {
+	Initialize();
+}
 
 Grayscale::~Grayscale() {}
 

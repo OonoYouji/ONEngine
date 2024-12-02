@@ -6,6 +6,8 @@
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 
+#include "GraphicManager/PostEffect/PostEffect.h"
+
 
 /// ===================================================
 /// シーンの描画レイヤー
@@ -42,6 +44,8 @@ protected:
 	std::unique_ptr<RenderTexture> renderTexture_ = nullptr;
 
 	ONE::DxCommand*                pDxCommand_    = nullptr;
+
+	std::unique_ptr<PostEffect>    postEffect_    = nullptr;
 
 public:
 
