@@ -4,19 +4,20 @@
 #include <format>
 
 /// engine
-#include "ONEngine.h"
 #include "FrameManager/ExecutionTimer.h"
+#include "SceneManager/SceneManager.h"
 
 /// game
-#include "Scenes/Manager/SceneManager.h"
+#include "Scenes/Factory/SceneFactory.h"
 
 
 void GameFrameWork::Initialize() {
 	ExecutionTimer timer;
 
+	SceneFactory* sceneFacory = new SceneFactory("GameScene");
 	/// シーンの初期化等...
 	pSceneManager_ = SceneManager::GetInstance();
-	pSceneManager_->Initialize(SCENE_ID::GAME); /// 初期化時のシーンをここで決定
+	pSceneManager_->Initialize(sceneFacory); /// 初期化時のシーンをここで決定
 
 	
 	ONE::Logger::ConsolePrint(std::format(
@@ -26,29 +27,14 @@ void GameFrameWork::Initialize() {
 }
 
 void GameFrameWork::Update() {
-	ONEngine::Update();
 	pSceneManager_->Update();
 }
 
 void GameFrameWork::Draw() {
-	ONEngine::PreDraw();
 	pSceneManager_->Draw();
-	ONEngine::PostDraw();
 }
 
 void GameFrameWork::Finalize() {
 	pSceneManager_ = nullptr;
 }
 
-
-
-void GameFrameWork::Run() {
-	Initialize();
-
-	while(ONEngine::GetIsRunning()) {
-		Update();
-		Draw();
-	}
-
-	Finalize();
-}

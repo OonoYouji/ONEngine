@@ -3,7 +3,7 @@
 #include <format>
 
 #include "ImGuiManager/ImGuiManager.h"
-#include "Scenes/Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include <CollisionManager/CollisionManager.h>
 #include "VariableManager/VariableManager.h"

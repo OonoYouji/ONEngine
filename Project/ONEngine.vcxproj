@@ -154,8 +154,11 @@
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
-    <ClCompile Include="Game\Scenes\Manager\BaseScene.cpp" />
-    <ClCompile Include="Game\Scenes\Manager\SceneManager.cpp" />
+    <ClCompile Include="ONEngine\Core\Framework.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
+    <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
@@ -205,7 +208,7 @@
     <ClCompile Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Transform\Transform.cpp" />
-    <ClCompile Include="ONEngine\Core\GameFrameWork.cpp" />
+    <ClCompile Include="Game\Framework\GameFrameWork.cpp" />
     <ClCompile Include="ONEngine\Core\ONEngine.cpp" />
     <ClCompile Include="ONEngine\FrameManager\ExecutionTimer.cpp" />
     <ClCompile Include="ONEngine\FrameManager\FrameFixation.cpp" />
@@ -254,8 +257,11 @@
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
-    <ClInclude Include="Game\Scenes\Manager\BaseScene.h" />
-    <ClInclude Include="Game\Scenes\Manager\SceneManager.h" />
+    <ClInclude Include="ONEngine\Core\Framework.h" />
+    <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
+    <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
+    <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
+    <ClInclude Include="ONEngine\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
     <ClInclude Include="Game\Scenes\Scene_Game.h" />
@@ -306,7 +312,7 @@
     <ClInclude Include="ONEngine\ComponentManager\SplinePathRenderer\SplinePathRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\SpriteRenderer\SpriteRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
-    <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
+    <ClInclude Include="Game\Framework\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
     <ClInclude Include="ONEngine\FrameManager\ExecutionTimer.h" />
     <ClInclude Include="ONEngine\FrameManager\FrameFixation.h" />

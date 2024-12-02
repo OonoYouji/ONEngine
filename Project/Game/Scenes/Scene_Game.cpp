@@ -5,6 +5,7 @@
 
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "Input/Input.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"
@@ -29,6 +30,10 @@ void Scene_Game::Initialize() {
 /// 更新処理
 /// ===================================================
 void Scene_Game::Update() {
+
+	if(Input::TriggerKey(KeyCode::A)) {
+		SetNextScene("TitleScene");
+	}
 
 
 }
