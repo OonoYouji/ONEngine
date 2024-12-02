@@ -11,7 +11,7 @@
 #include "AudioManager/AudioManager.h"
 #include "CollisionManager/CollisionManager.h"
 #include "Objects/Camera/Manager/CameraManager.h"
-#include "Scenes/Manager/SceneManager.h" 
+#include "SceneManager/SceneManager.h" 
 
 #include "GraphicManager/TextureManager/TextureManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"

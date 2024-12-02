@@ -1,9 +1,12 @@
-#include "Scenes/Manager/BaseScene.h"
+#include "BaseScene.h"
 
 #include "Objects/Camera/GameCamera.h"
 
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "Objects/Camera/Manager/CameraManager.h"
+
+#include "SceneManager.h"
+
 
 BaseScene::BaseScene() {
 
@@ -32,6 +35,10 @@ void BaseScene::CreateObject() {
 	directionalLight_->Initialize();
 
 	layers_[0]->SetMainCamera(mainCamera_);
+}
+
+void BaseScene::SetNextScene(const std::string& _sceneName) {
+	SceneManager::GetInstance()->SetNextScene(_sceneName);
 }
 
 

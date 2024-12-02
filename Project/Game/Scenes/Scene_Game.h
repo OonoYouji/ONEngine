@@ -3,7 +3,7 @@
 #include <memory>
 #include "GraphicManager/PipelineState/ComputePipelineState.h"
 
-#include"Game/Scenes/Manager/BaseScene.h"
+#include "SceneManager/BaseScene.h"
 
 
 enum GAME_SCENE_LAYER {
