@@ -1,57 +1,57 @@
 #pragma once
 
+/// std
 #include <string>
 
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
-#include "GraphicManager/PostEffect/Bloom/Bloom.h"
-#include "Math/Vector2.h"
-
-enum LAYER_NUMBER {
-	BACK_SPRITE,
-	OBJECT3D,
-	FRONT_SPRITE,
-	LAYERNUM_COUNTER,
-};
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 
 
+/// ===================================================
+/// シーンの描画レイヤー
+/// ===================================================
 class SceneLayer final {
 public:
+	
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	SceneLayer();
 	~SceneLayer() {}
 
 	static void ResetInstanceCount();
 
-
-
 	void Initialize(const std::string& className, class BaseCamera* camera);
 
 	void Draw();
 
-	void ImGuiDebug();
+protected:
 
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
 
-	void SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber);
+	static int                     sInstanceCount_;
 
-	void SetTexSize(const Vec2& texSize, LAYER_NUMBER layerNumber);
-	void SetIntensity(float intensity, LAYER_NUMBER layerNumber);
-	void SetRadius(int radius, LAYER_NUMBER layerNumber);
+	std::string                    className_;
+	int                            id_;
+
+	class BaseCamera*              camera_        = nullptr;
+	class BaseScene*               currentScene_  = nullptr;
+	std::unique_ptr<RenderTexture> renderTexture_ = nullptr;
+
+	ONE::DxCommand*                pDxCommand_    = nullptr;
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
 
 	void SetMainCamera(class BaseCamera* _camera);
 
 	RenderTexture* GetRenderTexture() { return renderTexture_.get(); }
 
 	const std::string& GetName() { return className_; }
-
-protected:
-	static int sInstanceCount_;
-
-	class BaseCamera* camera_ = nullptr;
-	class BaseScene*  currentScene_ = nullptr;
-	std::unique_ptr<RenderTexture> renderTexture_;
-	std::string className_;
-	int id_;
-
-	bool isApplyBlooms_[LAYERNUM_COUNTER]{};
-	std::unique_ptr<Bloom> blooms_[LAYERNUM_COUNTER];
 };

@@ -44,6 +44,8 @@ int SceneLayer::sInstanceCount_ = 0;
 
 SceneLayer::SceneLayer() {
 	id_ = sInstanceCount_++;
+
+	pDxCommand_ = ONEngine::GetDxCommon()->GetDxCommand();
 }
 
 void SceneLayer::ResetInstanceCount() {
@@ -76,6 +78,7 @@ void SceneLayer::Initialize(const std::string& className, BaseCamera* camera) {
 
 void SceneLayer::Draw() {
 
+
 	auto debugCamera = gCameraManager->GetCamera("DebugCamera");
 	if(!debugCamera->isActive) {
 		gCameraManager->SetMainCamera(camera_);
@@ -101,62 +104,22 @@ void SceneLayer::Draw() {
 
 	renderTexture_->EndRenderTarget();
 
+
 	
+	/// command execution.
+	pDxCommand_->Close();
+	pDxCommand_->Execution();
+	pDxCommand_->Reset();
+
+
+
+	/// srv heapの再設定
+	ONE::DxCommon*             dxCommon     = ONEngine::GetDxCommon();
+	ID3D12GraphicsCommandList* pCommandList = dxCommon->GetDxCommand()->GetList();
+	dxCommon->GetSRVDescriptorHeap()->BindToCommandList(pCommandList);
 
 }
 
-void SceneLayer::ImGuiDebug() {
-	if(!ImGui::TreeNodeEx(className_.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-		return;
-	}
-
-	for(uint8_t i = 0; i < LAYERNUM_COUNTER; ++i) {
-		if(blooms_[i] && isApplyBlooms_[i]) {
-			std::string treeNodeName = className_ + "_" + std::to_string(i);
-			blooms_[i]->ImGuiDebug(treeNodeName);
-			if(ImGui::Button(("is delete ???" + std::to_string(i)).c_str())) {
-				SetIsApplyBloom(false, LAYER_NUMBER(i));
-			}
-		} else {
-			std::string text = "non create_" + std::to_string(i);
-			ImGui::Text(text.c_str());
-			if(ImGui::Button(("is create ???" + std::to_string(i)).c_str())) {
-				SetIsApplyBloom(true, LAYER_NUMBER(i));
-			}
-		}
-
-		ImGui::Separator();
-	}
-
-	ImGui::TreePop();
-}
-
-
-void SceneLayer::SetIsApplyBloom(bool isApplyBloom, LAYER_NUMBER layerNumber) {
-	if(blooms_[layerNumber]) {
-		isApplyBlooms_[layerNumber] = isApplyBloom;
-		return;
-	}
-
-	isApplyBlooms_[layerNumber] = isApplyBloom;
-
-
-	blooms_[layerNumber].reset(new Bloom);
-	blooms_[layerNumber]->Initialize();
-
-}
-
-void SceneLayer::SetTexSize(const Vec2& texSize, LAYER_NUMBER layerNumber) {
-	blooms_[layerNumber]->SetTexSize(texSize);
-}
-
-void SceneLayer::SetIntensity(float intensity, LAYER_NUMBER layerNumber) {
-	blooms_[layerNumber]->SetIntensity(intensity);
-}
-
-void SceneLayer::SetRadius(int radius, LAYER_NUMBER layerNumber) {
-	blooms_[layerNumber]->SetRadius(radius);
-}
 
 void SceneLayer::SetMainCamera(BaseCamera* _camera) {
 	camera_ = _camera;
