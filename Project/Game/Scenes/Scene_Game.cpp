@@ -5,6 +5,9 @@
 #include <numbers>
 
 /// engine
+#include "Core/ONEngine.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/PipelineState/ComputePipelineState.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
 
@@ -24,12 +27,10 @@ void Scene_Game::Initialize() {
 	mainCamera_->SetRotate({ 0.25f, 0.0f, 0.0f });
 
 
-	TextureManager::GetInstance()->CreateUAVTexture(
+	const Texture& tex = TextureManager::GetInstance()->CreateUAVTexture(
 		"test", Vec2(1,1), DXGI_FORMAT_R32G32B32A32_FLOAT
 	);
 
-	std::unique_ptr<ComputePipelineState> cpos;
-	std::unique_ptr<ShaderBlob> shader;
 
 	shader.reset(new ShaderBlob);
 	shader->Compile(
@@ -44,7 +45,6 @@ void Scene_Game::Initialize() {
 	cpos->AddDescriptorTable(0);
 
 	cpos->Create();
-
 }
 
 
@@ -53,5 +53,19 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 
+	const Texture& texture = TextureManager::GetInstance()->GetTexture("test");
 
+	ONE::DxCommon* dxCommon = ONEngine::GetDxCommon();
+	ONE::DxCommand* dxCommand = dxCommon->GetDxCommand();
+	ID3D12GraphicsCommandList* commandList = dxCommand->GetList();
+
+
+	cpos->SetToCommnadList(commandList);
+	dxCommon->GetSRVDescriptorHeap()->BindToCommandList(dxCommand->GetList());
+	commandList->SetComputeRootDescriptorTable(0, texture.GetGPUHandle());
+	commandList->Dispatch(1, 1, 1);
+
+	dxCommand->Close();
+	dxCommand->Execution();
+	dxCommand->Reset();
 }

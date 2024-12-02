@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include "GraphicManager/PipelineState/ComputePipelineState.h"
+
 #include"Game/Scenes/Manager/BaseScene.h"
 
 
@@ -22,4 +25,8 @@ public:
 	void Update()     override;
 
 private:
+
+	std::unique_ptr<ComputePipelineState> cpos;
+	std::unique_ptr<ShaderBlob> shader;
+
 };
