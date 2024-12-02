@@ -26,9 +26,4 @@ public:
 
 private:
 
-	std::unique_ptr<Grayscale> grayscale_;
-	
-	Texture* input_;
-	Texture* output_;
-
 };
