@@ -164,8 +164,8 @@ void NumberRenderer::TransformArrayBindToCommandList(UINT _rootParamIndex, ID3D1
 }
 
 void NumberRenderer::TextureBindToCommandList(UINT _rootParamIndex, ID3D12GraphicsCommandList* _commandList) {
-	const Texture& texture = TextureManager::GetInstance()->GetTexture(textureName_);
-	_commandList->SetGraphicsRootDescriptorTable(_rootParamIndex, texture.GetGPUHandle());
+	Texture* texture = TextureManager::GetInstance()->GetTexture(textureName_);
+	_commandList->SetGraphicsRootDescriptorTable(_rootParamIndex, texture->GetGPUHandle());
 }
 
 void NumberRenderer::DrawCall(ID3D12GraphicsCommandList* _commandList) {
@@ -191,9 +191,9 @@ void NumberRenderer::SetTexture(const std::string& _filePath) {
 
 	textureName_ = name;
 	TextureManager::GetInstance()->Load(textureName_, _filePath);
-	const Texture& texture = TextureManager::GetInstance()->GetTexture(textureName_);
+	Texture* texture = TextureManager::GetInstance()->GetTexture(textureName_);
 
-	mappedMaterialData_->textureSize = texture.GetTextureSize();
+	mappedMaterialData_->textureSize = texture->GetTextureSize();
 	mappedMaterialData_->tileSize    = mappedMaterialData_->textureSize;
 	mappedMaterialData_->tileSize.x /= 10.0f; /// 0~9の数が10なので
 }

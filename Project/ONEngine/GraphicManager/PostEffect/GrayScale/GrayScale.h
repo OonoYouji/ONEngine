@@ -26,7 +26,7 @@ public:
 	/// </summary>
 	/// <param name="_input">  : 入力resource   </param>
 	/// <param name="_output"> : 出力先resource </param>
-	void Execution(ID3D12Resource* _input, ID3D12Resource* _output) override;
+	void Execution(Texture* _input, Texture* _output) override;
 
 private:
 

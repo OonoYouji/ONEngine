@@ -3,7 +3,9 @@
 #include "Debugger/Assertion.h"
 
 
-void PostEffectPipelineManager::AddPipeline(const std::string _key, std::unique_ptr<BasePostEffectPipeline> _pipeline) {
+void PostEffectPipelineManager::AddPipeline(
+	const std::string _key, std::unique_ptr<BasePostEffectPipeline> _pipeline) {
+
 	pipelineMap_[_key] = std::move(_pipeline);
 }
 

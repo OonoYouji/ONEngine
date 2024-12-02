@@ -36,7 +36,7 @@ void Sprite::Initialize(const std::string& textureName, const std::string& fileP
 
 	TextureManager::GetInstance()->GetTexture(textureName);
 
-	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName).GetTextureSize();
+	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName)->GetTextureSize();
 
 	material_.CreateBuffer();
 
@@ -79,7 +79,7 @@ void Sprite::SetTexture(const std::string& textureName, const std::string& fileP
 	material_.SetTextureName(textureName);
 	material_.SetFilePath(filePath);
 
-	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName).GetTextureSize();
+	textureSize_ = TextureManager::GetInstance()->GetTexture(textureName)->GetTextureSize();
 
 	if(isDefaultScaling) {
 		SetUVSize(textureSize_);

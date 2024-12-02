@@ -73,14 +73,14 @@ namespace {
 		/// ↓ metadataを基にResourceの設定
 		/// --------------------------------------
 		D3D12_RESOURCE_DESC desc{};
-		desc.Width = UINT(metadata.width);		//- textureの幅
-		desc.Height = UINT(metadata.height);	//- textureの高さ
-		desc.MipLevels = UINT16(metadata.mipLevels);		//- mipmapの数
-		desc.DepthOrArraySize = UINT16(metadata.arraySize);	//- 奥行き or 配列Textureの配列数
-		desc.Format = metadata.format;	//- TextureのFormat
-		desc.SampleDesc.Count = 1;	//- サンプリングカウント; 1固定
-		desc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);	//- Textureの次元数
-		desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+		desc.Width            = UINT(metadata.width);                         /// textureの幅
+		desc.Height           = UINT(metadata.height);                        /// textureの高さ
+		desc.MipLevels        = UINT16(metadata.mipLevels);                   /// mipmapの数
+		desc.DepthOrArraySize = UINT16(metadata.arraySize);                   /// 奥行き or 配列Textureの配列数
+		desc.Format           = metadata.format;                              /// TextureのFormat
+		desc.SampleDesc.Count = 1;                                            /// サンプリングカウント; 1固定
+		desc.Dimension        = D3D12_RESOURCE_DIMENSION(metadata.dimension); /// Textureの次元数
+		desc.Flags            = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 		/// --------------------------------------
 		/// ↓ 利用するHeapの設定
@@ -163,8 +163,8 @@ void TextureManager::Finalize() {
 /// ===================================================
 /// テクスチャのゲッタ
 /// ===================================================
-const Texture& TextureManager::GetTexture(const std::string& name) const {
-	return textures_.at(name);
+Texture* TextureManager::GetTexture(const std::string& name) const {
+	return textures_.at(name).get();
 }
 
 
@@ -173,48 +173,114 @@ const Texture& TextureManager::GetTexture(const std::string& name) const {
 /// ===================================================
 void TextureManager::Load(const std::string& texName, const std::string& filePath) {
 
+	/// check loaded
 	if(textures_.find(texName) != textures_.end()) {
 		return; /// すでに存在している
 	}
 
-	Texture newTexture{};
-	DirectX::ScratchImage mipImages = LoadTexture(kDirectoryPath_ + filePath);
-	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
-	newTexture.resource_ = CreataTextureResouece(ONEngine::GetDxCommon()->GetDevice(), metadata);
-	ComPtr<ID3D12Resource> intermediateResource = UploadTextureData(newTexture.resource_.Get(), mipImages);
+	/// create texture insatnce
+	std::unique_ptr <Texture> newTexture{};
+	newTexture.reset(new Texture());
+
+	/// get other pointer
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	ID3D12Device*                            device             = ONEngine::GetDxCommon()->GetDevice();
+
+	/// load texture
+	DirectX::ScratchImage       mipImages = LoadTexture(kDirectoryPath_ + filePath);
+	const DirectX::TexMetadata& metadata  = mipImages.GetMetadata();
+
+	
+
+
+	/// ---------------------------------------------------
+	/// uav resourceの作成
+	/// ---------------------------------------------------
+
+	D3D12_RESOURCE_DESC uavDesc{};
+	uavDesc.Dimension        = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	uavDesc.Width            = static_cast<UINT64>(metadata.width);
+	uavDesc.Height           = static_cast<UINT>(metadata.height);
+	uavDesc.DepthOrArraySize = 1;
+	uavDesc.MipLevels        = UINT(metadata.mipLevels);
+	uavDesc.Format           = metadata.format;
+	uavDesc.SampleDesc.Count = 1;
+	uavDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	uavDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+	newTexture->descriptorIndices_[Texture::UAV] = pSRVDescriptorHeap->Allocate();
+	newTexture->cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(newTexture->descriptorIndices_[Texture::UAV]);
+	newTexture->gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(newTexture->descriptorIndices_[Texture::UAV]);
+
+	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
+
+	HRESULT	hr = device->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&uavDesc,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		nullptr,
+		IID_PPV_ARGS(&newTexture->resource_)
+	);
+
+	Assert(SUCCEEDED(hr), "texture creation failed");
+
+
+
+	/// ---------------------------------------------------
+	/// texture resourceの作成
+	/// ---------------------------------------------------
+
+	newTexture->resource_ = CreataTextureResouece(ONEngine::GetDxCommon()->GetDevice(), metadata);
+	ComPtr<ID3D12Resource> intermediateResource = UploadTextureData(newTexture->resource_.Get(), mipImages);
 
 
 	ONEngine::GetDxCommon()->ExecuteCommands();
 	intermediateResource.Reset();
 
-	///- metadataを基にSRVの設定
+
+
+	/// ---------------------------------------------------
+	/// srv resourceの作成
+	/// ---------------------------------------------------
+
+	/// metadataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = metadata.format;
+	srvDesc.Format                  = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = UINT(metadata.mipLevels);
+	srvDesc.ViewDimension           = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels     = UINT(metadata.mipLevels);
 
-	///- srvHandleの取得
+	/// create srv
+	newTexture->descriptorIndices_[Texture::SRV] = pSRVDescriptorHeap->Allocate();
+	newTexture->cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(newTexture->descriptorIndices_[Texture::SRV]);
+	newTexture->gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(newTexture->descriptorIndices_[Texture::SRV]);
 
-	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	device->CreateShaderResourceView(newTexture->resource_.Get(), &srvDesc, newTexture->cpuHandle_);
+	
 
-	uint32_t srvDescriptorIndex = pSRVDescriptorHeap->Allocate();
-	newTexture.cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex);
-	newTexture.gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex);
 
-	///- srvの生成
-	ID3D12Device* device = ONEngine::GetDxCommon()->GetDevice();
-	device->CreateShaderResourceView(newTexture.resource_.Get(), &srvDesc, newTexture.cpuHandle_);
+	/// ---------------------------------------------------
+	/// barrier transition
+	/// ---------------------------------------------------
 
-	textures_[texName] = newTexture;
+	/// barrier transition
+	newTexture->currentState_ = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	DxBarrierCreator::CreateBarrier(newTexture->resource_.Get(), newTexture->currentState_, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);;
+	newTexture->currentState_ = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 
+
+	textures_[texName] = std::move(newTexture);
 }
 
-const Texture& TextureManager::CreateUAVTexture(
+
+
+
+Texture* TextureManager::CreateUAVTexture(
 	const std::string& _textureName, const Vec2& _textureSize, DXGI_FORMAT _format) {
 
 	if(auto itr = textures_.find(_textureName); itr != textures_.end()) {
-		return (*itr).second; /// すでに存在している
+		return (*itr).second.get(); /// すでに存在している
 	}
 
 	ID3D12Device*                            device            = ONEngine::GetDxCommon()->GetDevice();
@@ -237,14 +303,16 @@ const Texture& TextureManager::CreateUAVTexture(
 	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
 
 
-	Texture texture;
+	std::unique_ptr<Texture> texture;
+	texture.reset(new Texture);
+
 	HRESULT	hr = device->CreateCommittedResource(
 		&heapProps,
 		D3D12_HEAP_FLAG_NONE,
 		&textureDesc, 
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		nullptr,
-		IID_PPV_ARGS(&texture.resource_)
+		IID_PPV_ARGS(&texture->resource_)
 	);
 
 	Assert(SUCCEEDED(hr), "texture creation failed");
@@ -260,12 +328,12 @@ const Texture& TextureManager::CreateUAVTexture(
 	uavDesc.ViewDimension      = D3D12_UAV_DIMENSION_TEXTURE2D;
 	uavDesc.Texture2D.MipSlice = 0;
 
-	uint32_t uavIndex  = srvDescriptorHeap->Allocate();
-	texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(uavIndex);
-	texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(uavIndex);
+	texture->descriptorIndices_[Texture::UAV] = srvDescriptorHeap->Allocate();
+	texture->cpuHandle_                       = srvDescriptorHeap->GetCPUDescriptorHandel(texture->descriptorIndices_[Texture::UAV]);
+	texture->gpuHandle_                       = srvDescriptorHeap->GetGPUDescriptorHandel(texture->descriptorIndices_[Texture::UAV]);
 
 	/// uavを作成してディスクリプタヒープに登録
-	device->CreateUnorderedAccessView(texture.resource_.Get(), nullptr, &uavDesc, texture.cpuHandle_);
+	device->CreateUnorderedAccessView(texture->resource_.Get(), nullptr, &uavDesc, texture->cpuHandle_);
 
 
 
@@ -280,17 +348,18 @@ const Texture& TextureManager::CreateUAVTexture(
 	srvDesc.Texture2D.MipLevels       = 1;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 
-	//uint32_t srvIndex  = srvDescriptorHeap->Allocate();
-	//texture.cpuHandle_ = srvDescriptorHeap->GetCPUDescriptorHandel(srvIndex);
-	//texture.gpuHandle_ = srvDescriptorHeap->GetGPUDescriptorHandel(srvIndex);
+	texture->descriptorIndices_[Texture::SRV] = srvDescriptorHeap->Allocate();
+	texture->cpuHandle_                       = srvDescriptorHeap->GetCPUDescriptorHandel(texture->descriptorIndices_[Texture::SRV]);
+	texture->gpuHandle_                       = srvDescriptorHeap->GetGPUDescriptorHandel(texture->descriptorIndices_[Texture::SRV]);
 
-	device->CreateShaderResourceView(texture.resource_.Get(), &srvDesc, texture.cpuHandle_);
+	device->CreateShaderResourceView(texture->resource_.Get(), &srvDesc, texture->cpuHandle_);
 
 
+	texture->currentState_ = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
 
-	textures_[_textureName] = texture;
+	textures_[_textureName] = std::move(texture);
 
-	return textures_[_textureName];
+	return textures_[_textureName].get();
 }
 
 
@@ -302,6 +371,8 @@ void TextureManager::AddTexture(const std::string& name, D3D12_CPU_DESCRIPTOR_HA
 		return;
 	}
 
-	Texture newTexture(cpuHandle, gpuHandle);
-	textures_[name] = newTexture;
+	std::unique_ptr<Texture> newTexture;
+	newTexture.reset(new Texture(cpuHandle, gpuHandle));
+
+	textures_[name] = std::move(newTexture);
 }

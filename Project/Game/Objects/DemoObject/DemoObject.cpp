@@ -7,13 +7,12 @@
 #include <imgui.h>
 
 /// components
-#include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
 
 
 void DemoObject::Initialize() {
-	auto renderer = AddComponent<MeshRenderer>();
-	renderer->SetModel("axis");
-	pTransform_->rotateOrder = QUATERNION;
+	auto renderer = AddComponent<SpriteRenderer>();
+	renderer->SetTexture("grayscaleTestTexture.png");
 
 	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
 	angle_ = 0.44f;
@@ -25,7 +24,6 @@ void DemoObject::Update() {
 	
 	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 
-	pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
 }
 
 void DemoObject::Debug() {

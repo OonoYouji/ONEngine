@@ -203,7 +203,9 @@ void Console::Scene() {
 	/// scene gpu handle ptr
 	auto renderTex = pSceneManager_->GetFinalRenderTex();
 	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);
-	ImTextureID bgId    = ImTextureID(TextureManager::GetInstance()->GetTexture("white2x2").GetGPUHandle().ptr);
+
+	uint32_t bgSRVIndex = TextureManager::GetInstance()->GetTexture("white2x2")->GetDescriptorIndex(Texture::SRV);
+	ImTextureID bgId    = ImTextureID(ONEngine::GetDxCommon()->GetSRVDescriptorHeap()->GetGPUDescriptorHandel(bgSRVIndex).ptr);
 
 	/// scene draw
 	ImGui::SetCursorPos(texPos);
@@ -234,11 +236,11 @@ void Console::Assets() {
 	}
 
 	ImVec2 texSize = ImVec2(128, 128);
-	auto texAll = TextureManager::GetInstance()->GetTextureAll();
+	const auto& texAll = TextureManager::GetInstance()->GetTextureAll();
 
 	for(auto& tex : texAll) {
 		ImGui::Image(
-			ImTextureID(tex.second.GetGPUHandle().ptr), 
+			ImTextureID(tex.second->GetGPUHandle().ptr), 
 			texSize
 		);
 	}

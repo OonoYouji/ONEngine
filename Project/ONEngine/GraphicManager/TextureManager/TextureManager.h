@@ -1,6 +1,7 @@
 #pragma once
 
 /// std
+#include <memory>
 #include <unordered_map>
 #include <string>
 
@@ -39,9 +40,9 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	const Texture& GetTexture(const std::string& name) const;
+	Texture* GetTexture(const std::string& name) const;
 
-	const std::unordered_map<std::string, Texture>& GetTextureAll() const {
+	const std::unordered_map<std::string, std::unique_ptr<Texture>>& GetTextureAll() const {
 		return textures_;
 	}
 
@@ -53,7 +54,7 @@ public:
 	void Load(const std::string& texName, const std::string& filePath);
 
 
-	const Texture& CreateUAVTexture(
+	Texture* CreateUAVTexture(
 		const std::string& _textureName,
 		const Vec2& _textureSize,
 		DXGI_FORMAT _format
@@ -80,7 +81,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unordered_map<std::string, Texture> textures_;
+	std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
 
 
 

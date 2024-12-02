@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "GraphicManager/PipelineState/ComputePipelineState.h"
+#include "GraphicManager/PostEffect/Grayscale/Grayscale.h"
 
 #include "SceneManager/BaseScene.h"
 
@@ -26,7 +26,9 @@ public:
 
 private:
 
-	std::unique_ptr<ComputePipelineState> cpos;
-	std::unique_ptr<ShaderBlob> shader;
+	std::unique_ptr<Grayscale> grayscale_;
+	
+	Texture* input_;
+	Texture* output_;
 
 };

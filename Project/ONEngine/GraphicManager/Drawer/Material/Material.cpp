@@ -74,7 +74,7 @@ void Material::SetTextureName(const std::string& textureName) {
 /// テクスチャのバインド
 /// ===================================================
 void Material::BindTexture(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex) {
-	commandList->SetGraphicsRootDescriptorTable(rootParamIndex, TextureManager::GetInstance()->GetTexture(texName_).GetGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(rootParamIndex, TextureManager::GetInstance()->GetTexture(texName_)->GetGPUHandle());
 }
 
 

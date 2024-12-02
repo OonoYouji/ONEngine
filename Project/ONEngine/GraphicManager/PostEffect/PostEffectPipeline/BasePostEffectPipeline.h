@@ -8,7 +8,7 @@
 
 /// engine
 #include "GraphicManager/PipelineState/ComputePipelineState.h"
-
+#include "GraphicManager/TextureManager/Texture.h"
 
 
 /// ===================================================
@@ -33,7 +33,7 @@ public:
 	/// </summary>
 	/// <param name="_input">  : 入力resource   </param>
 	/// <param name="_output"> : 出力先resource </param>
-	virtual void Execution(ID3D12Resource* _input, ID3D12Resource* _output) = 0;
+	virtual void Execution(Texture* _input, Texture* _output) = 0;
 
 protected:
 	
