@@ -32,6 +32,7 @@ private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 
 	class PlayerBulletRenderer* bulletRenderer_ = nullptr;
+	class PlayerNormalEffect*   normalEffect_   = nullptr;
 
 
 	/// parameters

@@ -9,6 +9,7 @@
 /// game
 #include "PlayerBulletRenderer/PlayerBulletRenderer.h"
 #include "PlayerBullet/PlayerBullet.h"
+#include "Objects/Effect/PlayerNormalEffect/PlayerNormalEffect.h"
 
 
 Player::Player() {
@@ -27,6 +28,10 @@ void Player::Initialize() {
 	/// create insatnce
 	bulletRenderer_ = new PlayerBulletRenderer();
 	bulletRenderer_->Initialize();
+
+	normalEffect_   = new PlayerNormalEffect();
+	normalEffect_->Initialize();
+	normalEffect_->SetParent(pTransform_);
 
 	/// parameter setting
 	direction_      = Vec3::kFront;

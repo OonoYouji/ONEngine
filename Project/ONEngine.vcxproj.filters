@@ -138,6 +138,8 @@
     <ClCompile Include="Game\Objects\BackgroundObjectManager\Skydome\Skydome.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObjectManager\Wall\Wall.cpp" />
     <ClCompile Include="Game\Objects\TopDownCamera\TopDownCamera.cpp" />
+    <ClCompile Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.cpp" />
+    <ClCompile Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -256,6 +258,8 @@
     <ClInclude Include="Game\Objects\BackgroundObjectManager\Skydome\Skydome.h" />
     <ClInclude Include="Game\Objects\BackgroundObjectManager\Wall\Wall.h" />
     <ClInclude Include="Game\Objects\TopDownCamera\TopDownCamera.h" />
+    <ClInclude Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.h" />
+    <ClInclude Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

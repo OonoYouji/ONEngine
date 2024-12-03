@@ -158,6 +158,8 @@
     <ClCompile Include="Game\Objects\Demo\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Demo\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.cpp" />
+    <ClCompile Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
@@ -269,6 +271,8 @@
     <ClInclude Include="Game\Objects\Demo\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Demo\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.h" />
+    <ClInclude Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
