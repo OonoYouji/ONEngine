@@ -156,6 +156,7 @@
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\PostEffect\GaussianFilter\GaussianFilter.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.cpp" />
@@ -267,6 +268,7 @@
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\PostProcess\PipelineRegistry\GamePostEffectPipelineRegistry.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
+    <ClInclude Include="ONEngine\GraphicManager\PostEffect\GaussianFilter\GaussianFilter.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\Grayscale\Grayscale.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PipelineRegistry\BasePostEffectPipelineRegistry.h" />
     <ClInclude Include="ONEngine\GraphicManager\PostEffect\PostEffectProcessor\PostEffectProcessor.h" />
