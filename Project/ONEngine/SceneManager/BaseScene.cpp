@@ -11,8 +11,8 @@
 BaseScene::BaseScene() {
 
 	/// layer  initialize
-	layers_.push_back(std::make_unique<SceneLayer>());
-	layers_[0]->Initialize("default", mainCamera_);
+	layers_["default"] = (std::make_unique<SceneLayer>());
+	layers_["default"]->Initialize("default", mainCamera_);
 
 	CreateObject();
 }
@@ -20,7 +20,7 @@ BaseScene::BaseScene() {
 std::vector<SceneLayer*> BaseScene::GetSceneLayers() {
 	std::vector<SceneLayer*> result{};
 	for(auto& sceneLayer : layers_) {
-		result.push_back(sceneLayer.get());
+		result.push_back(sceneLayer.second.get());
 	}
 	return result;
 }
@@ -34,7 +34,7 @@ void BaseScene::CreateObject() {
 	directionalLight_ = new DirectionalLight();
 	directionalLight_->Initialize();
 
-	layers_[0]->SetMainCamera(mainCamera_);
+	layers_["default"]->SetMainCamera(mainCamera_);
 }
 
 void BaseScene::SetNextScene(const std::string& _sceneName) {
@@ -44,22 +44,19 @@ void BaseScene::SetNextScene(const std::string& _sceneName) {
 
 
 void BaseScene::AddLayer(const std::string& layerName, GameCamera* layerCamera) {
-	auto itr = std::find_if(layers_.begin(), layers_.end(), [&](const std::unique_ptr<SceneLayer>& layer) {
-		if(layerName == layer->GetName()) {
-			return true;
-		}
-		return false;
-	});
-
+	auto itr = layers_.find(layerName);
 	if(itr == layers_.end()) {
-		layers_.push_back(std::make_unique<SceneLayer>());
-		layers_.back()->Initialize(layerName, layerCamera);
+		layers_[layerName] = (std::make_unique<SceneLayer>());
+		layers_[layerName]->Initialize(layerName, layerCamera);
 	} else {
-		SceneLayer* layer = itr->get();
+		SceneLayer* layer = itr->second.get();
 		layer->SetMainCamera(layerCamera);
 	}
 }
 
 void BaseScene::AddPostEffect(const std::string& _layerName, const std::string& _postEffectName) {
+	BasePostEffectPipelineRegistry* pipelineRegistry = SceneManager::GetInstance()->GetPostEffectPipelineRegistry();
+	BasePostEffectPipeline*         pipeline         = pipelineRegistry->GetPipeline(_postEffectName);
 
+	layers_.at(_layerName)->AddPostEffectPipeline(pipeline);
 }

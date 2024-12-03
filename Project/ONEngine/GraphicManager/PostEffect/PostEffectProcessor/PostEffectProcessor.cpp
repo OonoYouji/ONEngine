@@ -14,6 +14,9 @@ PostEffectProcessor::PostEffectProcessor() {}
 PostEffectProcessor::~PostEffectProcessor() {}
 
 void PostEffectProcessor::Initialize() {
+
+	postEffectPipelines_.clear();
+
 	intermediateTextures_[0] = TextureManager::GetInstance()->CreateUAVTexture("intermediateTexture1", { 1280.0f, 720.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
 	intermediateTextures_[1] = TextureManager::GetInstance()->CreateUAVTexture("intermediateTexture2", { 1280.0f, 720.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
 }

@@ -146,6 +146,12 @@ public:
 	/// <returns> : 直線ライト </returns>
 	class DirectionalLight* GetDirectionalLight();
 
+	/// <summary>
+	/// ポストエフェクトのパイプラインを
+	/// </summary>
+	/// <returns></returns>
+	BasePostEffectPipelineRegistry* GetPostEffectPipelineRegistry() const { return postEffectPipelineRegistry_.get(); }
+
 
 private:
 	

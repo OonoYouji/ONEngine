@@ -1,9 +1,14 @@
 #pragma once
 
+/// std
 #include <vector>
-
-#include <GraphicManager/SceneLayer/SceneLayer.h>
 #include <string>
+#include <unordered_map>
+#include <memory>
+
+/// engine
+#include "GraphicManager/SceneLayer/SceneLayer.h"
+
 
 /// ===================================================
 /// 各シーンの基底クラス
@@ -71,7 +76,7 @@ protected:
 	class GameCamera*       mainCamera_       = nullptr;
 	class DirectionalLight* directionalLight_ = nullptr;
 
-	std::vector<std::unique_ptr<SceneLayer>> layers_;
+	std::unordered_map<std::string, std::unique_ptr<SceneLayer>> layers_;
 
 	class SceneManager*     pSceneManager_ = nullptr;
 

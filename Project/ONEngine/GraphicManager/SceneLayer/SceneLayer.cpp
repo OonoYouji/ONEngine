@@ -77,6 +77,10 @@ void SceneLayer::Initialize(const std::string& _className, BaseCamera* _camera) 
 		renderTexture_->GetSrvGpuHandle()
 	);
 
+	postEffectProcessor_.reset(new PostEffectProcessor());
+	postEffectProcessor_->Initialize();
+	postEffectProcessor_->SetLayerRenderTexture(GetRenderTexture());
+
 }
 
 
