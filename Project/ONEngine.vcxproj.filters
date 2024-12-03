@@ -134,6 +134,9 @@
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\Ground\Ground.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\Skydome\Skydome.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\Wall\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -248,6 +251,9 @@
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\Ground\Ground.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\Skydome\Skydome.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\Wall\Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

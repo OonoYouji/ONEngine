@@ -4,6 +4,7 @@
 #include "Objects/Camera/GameCamera.h"
 
 #include "Objects/Player/Player.h"
+#include "Objects/BackgroundObjectManager/BackgroundObjectManager.h"
 
 /// ===================================================
 /// 初期化処理
@@ -11,6 +12,7 @@
 void Scene_Game::Initialize() {
 
 	(new Player())->Initialize();
+	(new BackgroundObjectManager())->Initialize();
 
 
 	mainCamera_->SetPosition({ 0, 5.5f, -17.0f });
