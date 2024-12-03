@@ -15,6 +15,10 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Debugger/Assertion.h"
 
+/// game 
+#include "Skydome/Skydome.h"
+#include "Ground/Ground.h"
+#include "Wall/Wall.h"
 
 using namespace nlohmann;
 
@@ -33,7 +37,7 @@ void BackgroundObjectManager::Initialize() {
 
 	currentItemIndex_ = 0;
 
-	srcObject_.className = "Building";
+	srcObject_.className = "Wall";
 	srcObject_.position = { 0, 0, 0 };
 	srcObject_.rotate = { 0, 0, 0 };
 	srcObject_.scale = Vec3::kOne;
@@ -44,9 +48,9 @@ void BackgroundObjectManager::Initialize() {
 	meshRenderer->SetModel("axis");
 #endif // DEBUG
 
-	/*Register("Building", []() { return new Building(); });
-	Register("SkyDome", []() { return new SkyDome(); });
-	Register("Stage", []() { return new Stage(); });*/
+	Register("Wall", []() { return new Wall(); });
+	Register("Ground", []() { return new Ground(); });
+	Register("Skydome", []() { return new Skydome(); });
 
 
 
@@ -54,10 +58,10 @@ void BackgroundObjectManager::Initialize() {
 	/// オブジェクトの読み込み、生成
 	/// ---------------------------------------------------
 
-	//LoadFile(directoryFile_);
-	//for(auto& data : objectIOData_) {
-	//	CreateObject(data);
-	//}
+	LoadFile(directoryFile_);
+	for(auto& data : objectIOData_) {
+		CreateObject(data);
+	}
 
 
 	/// ---------------------------------------------------
