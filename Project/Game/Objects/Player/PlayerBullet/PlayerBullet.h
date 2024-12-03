@@ -15,6 +15,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
+
 	/// <summary>
 	/// 弾を発射したあと初期化用の設定
 	/// </summary>
