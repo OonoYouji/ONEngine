@@ -32,6 +32,7 @@ PSOutput main(VSOutput input) {
 		output.color = materialColor * texColor;
 	}
 	
+	output.color = materialColor * texColor;
 	/// pixelの破棄
 	if (output.color.a == 0.0f) {
 		discard;

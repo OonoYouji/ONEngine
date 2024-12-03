@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerNormalEffect();
+	PlayerNormalEffect(class Player* _player);
 	~PlayerNormalEffect();
 
 	void Initialize() override;
@@ -22,5 +22,6 @@ private:
 	/// ===================================================
 
 	class ParticleSystem* particleSystem_;
+	class Player*         pPlayer_ = nullptr;
 
 };

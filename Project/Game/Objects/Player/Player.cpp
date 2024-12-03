@@ -29,7 +29,7 @@ void Player::Initialize() {
 	bulletRenderer_ = new PlayerBulletRenderer();
 	bulletRenderer_->Initialize();
 
-	normalEffect_   = new PlayerNormalEffect();
+	normalEffect_   = new PlayerNormalEffect(this);
 	normalEffect_->Initialize();
 	normalEffect_->SetParent(pTransform_);
 

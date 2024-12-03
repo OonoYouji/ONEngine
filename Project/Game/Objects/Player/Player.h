@@ -43,4 +43,10 @@ private:
 
 	float bulletSpeed_;
 	float bulletLifeTime_;
+
+	float colliderRadius_ = 2.0f;
+
+public:
+
+	float GetColliderRadius() const { return colliderRadius_; }
 };
