@@ -33,7 +33,7 @@ private:
 
 	class PlayerBulletRenderer* bulletRenderer_ = nullptr;
 	class PlayerNormalEffect*   normalEffect_   = nullptr;
-
+	class TopDownCamera*        pTopDownCamera_ = nullptr;
 
 	/// parameters
 
@@ -49,4 +49,7 @@ private:
 public:
 
 	float GetColliderRadius() const { return colliderRadius_; }
+
+
+	void SetTopDownCamera(class TopDownCamera* _camera);
 };

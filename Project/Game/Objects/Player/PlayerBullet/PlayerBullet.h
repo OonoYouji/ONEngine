@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerBullet();
+	PlayerBullet(class TopDownCamera* _topDownCamera);
 	~PlayerBullet();
 
 	void Initialize() override;
@@ -30,10 +30,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class PlayerBulletHitEffect* effect_         = nullptr;
+	class TopDownCamera*         pTopDownCamera_ = nullptr;
+
 	Vec3  velocity_;
 	float lifeTime_;
 	bool  isAlive_;
 
+	bool isHit_ = false;
 
 public:
 
@@ -42,5 +46,7 @@ public:
 	/// ===================================================
 
 	bool GetIsAlive() const { return isAlive_; }
+
+	bool GetIsHit() const { return isHit_; }
 
 };

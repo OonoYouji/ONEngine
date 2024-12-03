@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "PlayerNormalEffect.h"
 
 /// engine
@@ -21,7 +22,7 @@ void PlayerNormalEffect::Initialize() {
 	
 	particleSystem_->SetParticleRespawnTime(0.1f);
 	particleSystem_->SetEmittedParticleCount(5);
-	particleSystem_->SetBoxEmitterMinMax({ -20.0f, 0.0f, -20.0f }, { 20.0f, 0.0f, 20.0f });
+	particleSystem_->SetBoxEmitterMinMax({ -30.0f, 0.0f, -30.0f }, { 30.0f, 0.0f, 30.0f });
 	particleSystem_->SetUseBillboard(false);
 	particleSystem_->SetParticleLifeTime(12.0f);
 
@@ -30,7 +31,10 @@ void PlayerNormalEffect::Initialize() {
 
 		//transform->position.y += 2.0f * Time::DeltaTime();
 		transform->rotate.y   += 0.01f;
-		transform->scale       = Vec3::kOne * std::lerp(1.5f, 0.2f, 1.0f - _particle->GetNormLifeTime());
+		transform->scale = Vec3::kOne * std::lerp(
+			0.0f, 1.5f, 
+			std::min((1.0f - _particle->GetNormLifeTime() * 0.3f), 1.0f)
+		);
 
 		Vec3 diff = transform->position - pPlayer_->GetPosition();
 		if(pPlayer_->GetColliderRadius() >= diff.Len()) {
@@ -47,7 +51,7 @@ void PlayerNormalEffect::Initialize() {
 	
 	particleSystem_->SetParticleRespawnTime(0.1f);
 	particleSystem_->SetEmittedParticleCount(5);
-	particleSystem_->SetBoxEmitterMinMax({ -20.0f, 0.0f, -20.0f }, { 20.0f, 0.0f, 20.0f });
+	particleSystem_->SetBoxEmitterMinMax({ -30.0f, 0.0f, -30.0f }, { 30.0f, 0.0f, 30.0f });
 	particleSystem_->SetUseBillboard(false);
 	particleSystem_->SetParticleLifeTime(12.0f);
 
@@ -56,7 +60,11 @@ void PlayerNormalEffect::Initialize() {
 
 		//transform->position.y += 2.0f * Time::DeltaTime();
 		transform->rotate.y   -= 0.02f;
-		transform->scale       = Vec3::kOne * std::lerp(3.0f, 1.0f, 1.0f - _particle->GetNormLifeTime());
+		transform->scale = Vec3::kOne * std::lerp(
+			0.0f, 1.5f,
+			std::min((1.0f - _particle->GetNormLifeTime() * 0.3f), 1.0f)
+		);
+
 
 		Vec3 diff = transform->position - pPlayer_->GetPosition();
 		if(pPlayer_->GetColliderRadius() >= diff.Len()) {

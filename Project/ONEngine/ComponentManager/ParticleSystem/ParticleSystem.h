@@ -137,6 +137,10 @@ public:
 		return emitter_->isBurst_;
 	}
 
+	const std::vector<std::unique_ptr<class Particle>>& GetParticles() const {
+		return particleArray_;
+	}
+
 private:
 
 	/// ===================================================

@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerBulletHitEffect();
+	PlayerBulletHitEffect(class PlayerBullet* _playerBullet);
 	~PlayerBulletHitEffect();
 
 	void Initialize() override;
@@ -21,6 +21,15 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class ParticleSystem* particleSystem_;
+	class ParticleSystem* particleSystem_ = nullptr;
+	class MeshRenderer*   meshRenderer_   = nullptr;
+	class PlayerBullet*   pPlayerBullet_  = nullptr;
 
+	float lifeTime_ = 1.0f;
+
+	bool isAlive_ = true;
+
+public:
+
+	bool GetIsAlive() const { return isAlive_; }
 };

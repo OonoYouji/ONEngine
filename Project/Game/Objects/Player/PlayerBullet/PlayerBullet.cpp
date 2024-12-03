@@ -5,8 +5,13 @@
 #include "FrameManager/Time.h"
 #include "ComponentManager/Collider/BoxCollider.h"
 
+/// game
+#include "Objects/Effect/PlayerBulletHitEffect/PlayerBulletHitEffect.h"
+#include "Objects/TopDownCamera/TopDownCamera.h"
 
-PlayerBullet::PlayerBullet() {
+
+PlayerBullet::PlayerBullet(TopDownCamera* _topDownCamera) 
+	: pTopDownCamera_(_topDownCamera) {
 	CreateTag(this);
 }
 
@@ -28,19 +33,40 @@ void PlayerBullet::Update() {
 		return;
 	}
 
-	/// 移動
-	pTransform_->position += velocity_;
+	
 
 	/// 寿命を減らす
 	lifeTime_ -= Time::DeltaTime();
-	if(lifeTime_ < 0.0f) {
-		isAlive_ = false;
+
+	/// 当たっていたら
+	if(isHit_) {
+
+		if(!effect_->GetIsAlive()) {
+			isAlive_ = false;
+			effect_->Destory();
+		}
+
+	} else {
+
+		/// 移動
+		pTransform_->position += velocity_;
+
+		if(lifeTime_ < 0.0f) {
+			isAlive_ = false;
+		}
+
 	}
 }
 
 void PlayerBullet::OnCollisionEnter(BaseGameObject* const _collision) {
 	if(_collision->GetTag() == "Wall") {
-		isAlive_ = false;
+		isHit_ = true;
+		
+		pTopDownCamera_->StartShake(0.1f, 1.0f, 1.0f);
+
+		effect_ = new PlayerBulletHitEffect(this);
+		effect_->Initialize();
+		effect_->SetPosition(GetPosition());
 	}
 }
 

@@ -94,7 +94,7 @@ void Player::Movement() {
 
 
 void Player::Fire() {
-	PlayerBullet* bullet = new PlayerBullet();
+	PlayerBullet* bullet = new PlayerBullet(pTopDownCamera_);
 	bullet->Initialize();
 	bullet->SetPosition(GetPosition());
 
@@ -104,5 +104,9 @@ void Player::Fire() {
 	);
 
 	bulletRenderer_->PushBackBullet(bullet);
+}
+
+void Player::SetTopDownCamera(TopDownCamera* _camera) {
+	pTopDownCamera_ = _camera;
 }
 

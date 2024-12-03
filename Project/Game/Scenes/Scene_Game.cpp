@@ -12,11 +12,15 @@
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	Player* player = new Player();
+	Player*                  player        = new Player();
+	BackgroundObjectManager* bbObjManager  = new BackgroundObjectManager();
+	TopDownCamera*           topDownCamera = new TopDownCamera(mainCamera_, player);
+	
 	player->Initialize();
+	bbObjManager->Initialize();
+	topDownCamera->Initialize();
 
-	(new BackgroundObjectManager())->Initialize();
-	(new TopDownCamera(mainCamera_, player))->Initialize();
+	player->SetTopDownCamera(topDownCamera);
 
 
 	mainCamera_->SetPosition({ 0.0f, 23.2f, -27.7f });

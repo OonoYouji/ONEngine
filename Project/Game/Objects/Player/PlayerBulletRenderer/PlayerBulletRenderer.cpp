@@ -34,7 +34,9 @@ void PlayerBulletRenderer::Update() {
 	/// 描画するtransformを追加
 	instancingRenderer_->ResetTransformArray();
 	for(auto& bullet : bullets_) {
-		instancingRenderer_->AddTransform(bullet->GetTransform());
+		if(!bullet->GetIsHit()) {
+			instancingRenderer_->AddTransform(bullet->GetTransform());
+		}
 	}
 }
 
