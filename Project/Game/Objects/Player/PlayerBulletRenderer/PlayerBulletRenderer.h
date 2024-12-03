@@ -1,22 +1,25 @@
 #pragma once
 
+/// std
+#include <list>
+
+/// engine
 #include "GameObjectManager/BaseGameObject.h"
 
-class Player : public BaseGameObject {
+class PlayerBulletRenderer : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Player();
-	~Player();
+	PlayerBulletRenderer();
+	~PlayerBulletRenderer();
 
 	void Initialize() override;
 	void Update()     override;
 
-
-	void Fire();
+	void PushBackBullet(class PlayerBullet* _bullet);
 
 private:
 
@@ -24,17 +27,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class MeshInstancingRenderer* instancingRenderer_ = nullptr;
 
-	class PlayerBulletRenderer* bulletRenderer_ = nullptr;
+	std::list<class PlayerBullet*> bullets_;
 
-
-	/// parameters
-
-	Vec3 direction_;
-	Vec3 velocity_;
-
-
-	float bulletSpeed_;
-	float bulletLifeTime_;
 };

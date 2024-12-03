@@ -133,6 +133,7 @@
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
