@@ -5,18 +5,22 @@
 
 #include "Objects/Player/Player.h"
 #include "Objects/BackgroundObjectManager/BackgroundObjectManager.h"
+#include "Objects/TopDownCamera/TopDownCamera.h"
 
 /// ===================================================
 /// 初期化処理
 /// ===================================================
 void Scene_Game::Initialize() {
 
-	(new Player())->Initialize();
+	Player* player = new Player();
+	player->Initialize();
+
 	(new BackgroundObjectManager())->Initialize();
+	(new TopDownCamera(mainCamera_, player))->Initialize();
 
 
-	mainCamera_->SetPosition({ 0, 5.5f, -17.0f });
-	mainCamera_->SetRotate({ 0.25f, 0.0f, 0.0f });
+	mainCamera_->SetPosition({ 0.0f, 23.2f, -27.7f });
+	mainCamera_->SetRotate({ 0.65f, 0.0f, 0.0f });
 }
 
 
