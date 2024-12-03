@@ -16,6 +16,11 @@ public:
 	void Update()     override;
 
 
+	void AddVariables();
+	void ApplyVariables();
+
+	void Movement();
+
 	void Fire();
 
 private:
@@ -33,7 +38,7 @@ private:
 
 	Vec3 direction_;
 	Vec3 velocity_;
-
+	float movementSpeed_;
 
 	float bulletSpeed_;
 	float bulletLifeTime_;

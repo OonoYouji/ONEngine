@@ -1,0 +1,7 @@
+{
+    "Player": {
+        "bulletLifeTime": 5.0,
+        "bulletSpeed": 10.0,
+        "movementSpeed": 14.600000381469727
+    }
+}

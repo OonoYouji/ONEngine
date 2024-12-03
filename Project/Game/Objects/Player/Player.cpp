@@ -3,6 +3,7 @@
 /// engine
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
+#include "VariableManager/VariableManager.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 /// game
@@ -31,14 +32,59 @@ void Player::Initialize() {
 	direction_      = Vec3::kFront;
 	bulletSpeed_    = 10.0f;
 	bulletLifeTime_ = 5.0f;
+
+
+
+	AddVariables();
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
+		"./Resources/Parameters/Objects", GetTag()
+	);
+	ApplyVariables();
 }
 
 void Player::Update() {
+	ApplyVariables();
+
+	Movement();
+	pTransform_->Update();
 
 	if(Input::TriggerKey(KeyCode::Space)) {
 		Fire();
 	}
 
+}
+
+void Player::AddVariables() {
+	VariableManager* vm = VariableManager::GetInstance();
+	const std::string& groupName = GetTag();
+
+	vm->AddValue(groupName, "bulletSpeed",    bulletSpeed_);
+	vm->AddValue(groupName, "bulletLifeTime", bulletLifeTime_);
+	vm->AddValue(groupName, "movementSpeed",  movementSpeed_);
+}
+
+void Player::ApplyVariables() {
+	VariableManager* vm = VariableManager::GetInstance();
+	const std::string& groupName = GetTag();
+
+	bulletSpeed_    = vm->GetValue<float>(groupName, "bulletSpeed");
+	bulletLifeTime_ = vm->GetValue<float>(groupName, "bulletLifeTime");
+	movementSpeed_  = vm->GetValue<float>(groupName, "movementSpeed");
+}
+
+
+
+void Player::Movement() {
+
+	velocity_ = {};
+	if(Input::PressKey(KeyCode::W)) { velocity_.z += 1.0f; }
+	if(Input::PressKey(KeyCode::A)) { velocity_.x -= 1.0f; }
+	if(Input::PressKey(KeyCode::S)) { velocity_.z -= 1.0f; }
+	if(Input::PressKey(KeyCode::D)) { velocity_.x += 1.0f; }
+
+	velocity_ = velocity_.Normalize() * movementSpeed_;
+
+	pTransform_->position += velocity_ * Time::DeltaTime();
 }
 
 
