@@ -28,7 +28,7 @@
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\CameraManager.cpp" />
-    <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
+    <ClCompile Include="Game\Objects\Demo\DemoObject\DemoObject.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
     <ClCompile Include="ONEngine\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
@@ -118,8 +118,8 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\Collider\CapsuleCollider.cpp" />
-    <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
-    <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
+    <ClCompile Include="Game\Objects\Demo\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.cpp" />
@@ -130,13 +130,16 @@
     <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
     <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
+    <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\CameraManager.h" />
-    <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
+    <ClInclude Include="Game\Objects\Demo\DemoObject\DemoObject.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
     <ClInclude Include="ONEngine\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene_Clear.h" />
@@ -228,8 +231,8 @@
     <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\ComponentManager\Collider\CapsuleCollider.h" />
-    <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
-    <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
+    <ClInclude Include="Game\Objects\Demo\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\NumberRenderer\NumberRendererCommon.h" />
     <ClInclude Include="ONEngine\ComponentManager\RenderComponentInitializer\RenderComponentInitializer.h" />
@@ -240,6 +243,9 @@
     <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
     <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
+    <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
+    <ClInclude Include="Game\Objects\BackgroundObjectManager\BackgroundObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
