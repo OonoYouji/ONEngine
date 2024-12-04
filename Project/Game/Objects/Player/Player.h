@@ -15,6 +15,7 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void OnCollisionEnter(BaseGameObject* const _collision) override;
 
 	void AddVariables();
 	void ApplyVariables();
@@ -29,7 +30,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class MeshRenderer*   meshRenderer_ = nullptr;
+	class SphereCollider* SphereCollider_  = nullptr;
 
 	class PlayerBulletRenderer* bulletRenderer_ = nullptr;
 	class PlayerNormalEffect*   normalEffect_   = nullptr;
@@ -45,6 +47,8 @@ private:
 	float bulletLifeTime_;
 
 	float colliderRadius_ = 2.0f;
+
+	Vec3 currentDiff_, prevDiff_;
 
 public:
 

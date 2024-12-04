@@ -4,7 +4,10 @@
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
 #include "VariableManager/VariableManager.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/Collider/BoxCollider.h"
+#include "ComponentManager/Collider/SphereCollider.h"
 
 /// game
 #include "PlayerBulletRenderer/PlayerBulletRenderer.h"
@@ -20,9 +23,15 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
+	Model* model = ModelManager::Load("cube");
+
+	/// render component
+	SphereCollider_ = AddComponent<SphereCollider>(model);
+
+	
 	/// render component
 	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("cube");
+	meshRenderer_->SetModel(model);
 
 
 	/// create insatnce
@@ -56,6 +65,10 @@ void Player::Update() {
 	if(Input::TriggerKey(KeyCode::Space)) {
 		Fire();
 	}
+
+}
+
+void Player::OnCollisionEnter(BaseGameObject* const _collision) {
 
 }
 
