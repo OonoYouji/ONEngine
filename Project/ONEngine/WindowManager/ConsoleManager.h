@@ -45,7 +45,25 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// <summary>
+	/// 親windowの表示
+	/// </summary>
 	void ParentWindow();
+
+	/// <summary>
+	/// 子windowのimgui window flagsを切り替えるmenuを表示
+	/// </summary>
+	void ChildWindowSetting();
+
+	
+	
+	/*##########################################################
+		TODO : COMMENT
+		ここに持たせるべき関数ではないので引っ越し先を探す
+	##########################################################*/
+
+	void DescriptorHeapUsedCount();
+
 
 private:
 
@@ -72,5 +90,11 @@ public:
 	/// </summary>
 	/// <param name="_function"></param>
 	void RegisterFunction(DebugFunction _function);
+
+	/// <summary>
+	/// メニューの表示関数を設定
+	/// </summary>
+	/// <param name="_menuFunction"></param>
+	void RegisterMenuFunction(MenuFunction _menuFunction);
 
 };

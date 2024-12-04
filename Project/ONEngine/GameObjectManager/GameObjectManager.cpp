@@ -290,7 +290,6 @@ void GameObjectManager::Hierarchy(ImGuiWindowFlags _windowFlags) {
 		return;
 	}
 
-	ImGui::End();
 	for(auto& gameObject : objects_) {
 
 		Transform* parent = gameObject->GetParent();
@@ -302,7 +301,6 @@ void GameObjectManager::Hierarchy(ImGuiWindowFlags _windowFlags) {
 		ImGuiSelectChilds(gameObject->GetChilds());
 	}
 
-
 	ImGui::End();
 }
 
@@ -313,7 +311,10 @@ void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 	}
 
 
-	if(!selectObject_) { return; }
+	if(!selectObject_) { 
+		ImGui::End();
+		return;
+	}
 
 	/// activeのフラグをデバッグ
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
@@ -334,16 +335,17 @@ void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 
 	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
-	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
-		return;
+	if(ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
+
+		ImGui::Unindent();
+
+
+		selectObject_->ImGuiDebug();
+
+		ImGui::TreePop();
 	}
 
-	ImGui::Unindent();
 
-
-	selectObject_->ImGuiDebug();
-
-	ImGui::TreePop();
 	ImGui::End();
 }
 

@@ -1,5 +1,15 @@
 #include "ConsoleManager.h"
 
+/// std
+#include <format>
+
+/// engine
+#include "Core/ONEngine.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
+
+using namespace ONE;
+
 
 
 void ConsoleManager::Initialize() {
@@ -13,6 +23,11 @@ void ConsoleManager::Initialize() {
 	imguiWindowFlags_ = 0;
 	imguiWindowFlags_ |= ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse;
 	imguiWindowFlags_ |= ImGuiWindowFlags_::ImGuiWindowFlags_NoMove;
+
+
+	RegisterMenuFunction([this]() { ChildWindowSetting(); });
+	RegisterMenuFunction([this]() { DescriptorHeapUsedCount(); });
+
 }
 
 void ConsoleManager::Finalize() {}
@@ -63,6 +78,74 @@ void ConsoleManager::ParentWindow() {
 	ImGui::End();
 }
 
+
+void ConsoleManager::ChildWindowSetting() {
+	if(ImGui::BeginMenu("setting")) {
+
+		/// ===================================================
+		/// child window 
+		/// ===================================================
+		if(ImGui::BeginMenu("child window setting")) {
+
+			bool noMove = imguiWindowFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					imguiWindowFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					imguiWindowFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		/// ===================================================
+		/// parent window 
+		/// ===================================================
+		if(ImGui::BeginMenu("parent window setting")) {
+
+			bool noResize = parentImGuiWindowFlags_ & ImGuiWindowFlags_NoResize;
+			if(ImGui::Checkbox("NoResize", &noResize)) {
+				if(noResize) {
+					parentImGuiWindowFlags_ |= ImGuiWindowFlags_NoResize;
+				} else {
+					parentImGuiWindowFlags_ &= ~ImGuiWindowFlags_NoResize;
+				}
+			}
+
+			bool noMove = parentImGuiWindowFlags_ & ImGuiWindowFlags_NoMove;
+			if(ImGui::Checkbox("NoMove", &noMove)) {
+				if(noMove) {
+					parentImGuiWindowFlags_ |= ImGuiWindowFlags_NoMove;
+				} else {
+					parentImGuiWindowFlags_ &= ~ImGuiWindowFlags_NoMove;
+				}
+			}
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+
+void ConsoleManager::DescriptorHeapUsedCount() {
+	if(ImGui::BeginMenu("descriptor heap")) {
+		DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+		DxDescriptorHeap<HeapType::RTV>* pRTVHeap = ONEngine::GetDxCommon()->GetRTVDescriptorHeap();
+		DxDescriptorHeap<HeapType::DSV>* pDSVHeap = ONEngine::GetDxCommon()->GetDSVDescriptorHeap();
+
+		ImGui::Text(std::format("srv heap count : {}/{}", pSRVHeap->GetUsedIndexCount(), pSRVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("rtv heap count : {}/{}", pRTVHeap->GetUsedIndexCount(), pRTVHeap->GetMaxHeapSize()).c_str());
+		ImGui::Text(std::format("dsv heap count : {}/{}", pDSVHeap->GetUsedIndexCount(), pDSVHeap->GetMaxHeapSize()).c_str());
+
+		ImGui::EndMenu();
+	}
+}
+
 void ConsoleManager::RegisterFunction(DebugFunction _function) {
 	debugFunctions_.push_back(_function);
+}
+
+void ConsoleManager::RegisterMenuFunction(MenuFunction _menuFunction) {
+	menuFunctions_.push_back(_menuFunction);
 }
