@@ -139,7 +139,7 @@ void Console::Inspector() {
 		return;
 	}
 
-	pGameObjectManager_->Inspector();
+	//pGameObjectManager_->Inspector();
 
 
 	ImGui::End();

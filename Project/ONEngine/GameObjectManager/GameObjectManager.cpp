@@ -6,6 +6,7 @@
 /// engine
 #include "LoggingManager/Logger.h"
 #include "CollisionManager/CollisionManager.h"
+#include "WindowManager/ConsoleManager.h"
 
 /// objects
 #include "Objects/Camera/Manager/BaseCamera.h"
@@ -20,6 +21,10 @@
 /// ===================================================
 void GameObjectManager::Initialize() {
 	objects_.reserve(kMaxInstanceCount_);
+
+
+	ConsoleManager* manager = ConsoleManager::GetInstance();
+	manager->RegisterFunction([&](ImGuiWindowFlags_ _windowFlags) { Inspector(_windowFlags); });
 }
 
 /// ===================================================
@@ -276,8 +281,14 @@ void GameObjectManager::AddObjectsToObjectsCopy() {
 }
 
 
-void GameObjectManager::Hierarchy() {
+void GameObjectManager::Hierarchy(ImGuiWindowFlags_ _windowFlags) {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	if(!ImGui::Begin("Heararchy", nullptr, _windowFlags)) {
+		ImGui::End();
+		return;
+	}
 
+	ImGui::End();
 	for(auto& gameObject : objects_) {
 
 		Transform* parent = gameObject->GetParent();
@@ -291,7 +302,13 @@ void GameObjectManager::Hierarchy() {
 
 }
 
-void GameObjectManager::Inspector() {
+void GameObjectManager::Inspector(ImGuiWindowFlags_ _windowFlags) {
+	if(!ImGui::Begin("Inspector", nullptr, _windowFlags)) {
+		ImGui::End();
+		return;
+	}
+
+
 	if(!selectObject_) { return; }
 
 	/// activeのフラグをデバッグ
@@ -323,6 +340,7 @@ void GameObjectManager::Inspector() {
 	selectObject_->ImGuiDebug();
 
 	ImGui::TreePop();
+	ImGui::End();
 }
 
 /// ===================================================
