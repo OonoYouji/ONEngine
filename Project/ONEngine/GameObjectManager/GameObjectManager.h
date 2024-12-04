@@ -104,8 +104,8 @@ public:
 
 #pragma region ImGui
 
-	void Hierarchy(ImGuiWindowFlags_ _windowFlags);
-	void Inspector(ImGuiWindowFlags_ _windowFlags);
+	void Hierarchy(ImGuiWindowFlags _windowFlags);
+	void Inspector(ImGuiWindowFlags _windowFlags);
 
 	/// <summary>
 	/// imguiでデバッグ表示

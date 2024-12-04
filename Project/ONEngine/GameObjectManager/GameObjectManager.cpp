@@ -24,7 +24,9 @@ void GameObjectManager::Initialize() {
 
 
 	ConsoleManager* manager = ConsoleManager::GetInstance();
-	manager->RegisterFunction([&](ImGuiWindowFlags_ _windowFlags) { Inspector(_windowFlags); });
+	manager->RegisterFunction([&](ImGuiWindowFlags _windowFlags) -> void { Inspector(_windowFlags); });
+	manager->RegisterFunction([&](ImGuiWindowFlags _windowFlags) -> void { Hierarchy(_windowFlags); });
+
 }
 
 /// ===================================================
@@ -281,7 +283,7 @@ void GameObjectManager::AddObjectsToObjectsCopy() {
 }
 
 
-void GameObjectManager::Hierarchy(ImGuiWindowFlags_ _windowFlags) {
+void GameObjectManager::Hierarchy(ImGuiWindowFlags _windowFlags) {
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	if(!ImGui::Begin("Heararchy", nullptr, _windowFlags)) {
 		ImGui::End();
@@ -300,9 +302,11 @@ void GameObjectManager::Hierarchy(ImGuiWindowFlags_ _windowFlags) {
 		ImGuiSelectChilds(gameObject->GetChilds());
 	}
 
+
+	ImGui::End();
 }
 
-void GameObjectManager::Inspector(ImGuiWindowFlags_ _windowFlags) {
+void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 	if(!ImGui::Begin("Inspector", nullptr, _windowFlags)) {
 		ImGui::End();
 		return;

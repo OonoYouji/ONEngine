@@ -152,7 +152,7 @@ void Console::Herarchy() {
 		return;
 	}
 
-	pGameObjectManager_->Hierarchy();
+	//pGameObjectManager_->Hierarchy();
 
 	ImGui::End();
 }
