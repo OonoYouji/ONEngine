@@ -21,6 +21,8 @@ public:
 
 	void Debugging();
 
+	void Editor();
+
 private:
 	class Player* pPlayer_ = nullptr;
 

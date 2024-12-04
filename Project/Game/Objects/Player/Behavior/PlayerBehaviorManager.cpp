@@ -101,3 +101,10 @@ void PlayerBehaviorManager::Debugging() {
 		ImGui::TreePop();
 	}
 }
+
+
+
+void PlayerBehaviorManager::Editor() {
+
+
+}

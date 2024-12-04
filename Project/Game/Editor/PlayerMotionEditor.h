@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <map>
+#include <string>
+
 /// externals
 #include <imgui.h>
 
@@ -23,6 +27,29 @@ public:
 
 private:
 
+	/// <summary>
+	/// モーションのエディタ
+	/// </summary>
+	void AddMotionEdit();
+
+
+	/// <summary>
+	/// モーションの追加
+	/// </summary>
+	/// <param name="_motionName"></param>
+	/// <param name="_value"></param>
+	void AddMotion(const std::string& _motionName, int _value);
+
+
+	void RenderMotionAll();
+
+private:
+
 	Player* pPlayer_ = nullptr;
 
+	std::map<std::string, int> motions_;
+	
+	std::string addMotionName_;
+	int addMotionValue_;
 };
+

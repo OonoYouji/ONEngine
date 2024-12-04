@@ -32,9 +32,6 @@ void Scene_Game::Initialize() {
 	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
 
-	playerMotionEditor_.reset(new PlayerMotionEditor(static_cast<Player*>(createObjects[0])));
-	playerMotionEditor_->Initialize();
-
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {
 		obj->Initialize();
