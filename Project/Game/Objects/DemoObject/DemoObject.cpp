@@ -4,7 +4,9 @@
 #include <format>
 
 /// externals
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
@@ -30,27 +32,23 @@ void DemoObject::Update() {
 
 void DemoObject::Debug() {
 
-	if(ImGui::TreeNodeEx("MT4_01_01", ImGuiTreeNodeFlags_DefaultOpen)) {
+	ImVec2 viewportPos = ImGui::GetWindowPos();
+	ImVec2 viewportSize = ImGui::GetWindowSize();
 
-		if(ImGui::DragFloat3("axis", &axis_.x, 0.025f)) {
-			axis_ = axis_.Normalize();
-		}
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(viewportPos.x, viewportPos.y, viewportSize.x, viewportSize.y);
 
-		ImGui::DragFloat("angle", &angle_);
-	
 
-		ImGui::Text("rotate matrix");
-		for(size_t r = 0; r < 4; ++r) {
-			for(size_t c = 0; c < 4; ++c) {
-				if(c != 0) {
-					ImGui::SameLine();
-				}
-					
-				ImGui::Text(std::format("{:0.3f},", matRotata_.m[r][c]).c_str());
+	if(ImGui::TreeNodeEx("Debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-			}
+		ImGuizmo::Manipulate(
+			nullptr, // 視点行列（使用しない場合はnullptr）
+			nullptr, // プロジェクション行列（使用しない場合はnullptr）
+			ImGuizmo::OPERATION::TRANSLATE, // 操作タイプ（移動、回転、スケーリングなど）
+			ImGuizmo::MODE::WORLD, // 操作モード（ローカルまたはワールド）
+			&pTransform_->matTransform.m[0][0]  // 操作対象の行列
+		);
 
-		}
 
 		ImGui::TreePop();
 	}
