@@ -3,9 +3,13 @@
 #include <wrl/client.h>
 #include <d3d12.h>
 
+/// std
 #include <memory>
 #include <string>
 #include <vector>
+
+/// extrenals
+#include <imgui.h>
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
@@ -55,6 +59,23 @@ public:
 private:
 
 	void Load(const std::string& _sceneName);
+
+	/// <summary>
+	/// シーンをコンソールにデバッグ表示する
+	/// </summary>
+	/// <param name="_imguiWindowFlags"></param>
+	void Scene(ImGuiWindowFlags _imguiWindowFlags);
+
+	/// <summary>
+	/// デバッグシーンをコンソールに表示する
+	/// </summary>
+	/// <param name="_imguiWindowFlags"></param>
+	void DebugScene(ImGuiWindowFlags _imguiWindowFlags);
+
+	/// <summary>
+	/// sub windowを出したり消したりする
+	/// </summary>
+	void PlayControl();
 
 private:
 

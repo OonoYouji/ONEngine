@@ -166,8 +166,8 @@ void System::Initialize(
 
 #ifdef _DEBUG /// release not building  initializing
 	/// console initialize
-	console_.reset(new Console());
-	console_->Initialize();
+	consoleManager_ = ConsoleManager::GetInstance();
+	consoleManager_->Initialize();
 
 	imguiManager_ = ImGuiManager::GetInstance();
 	imguiManager_->Initialize(mainWindow_, dxCommon_.get());
@@ -249,7 +249,7 @@ void System::Finalize() {
 	imguiManager_->Finalize();
 	imguiManager_ = nullptr;
 
-	console_.reset();
+	consoleManager_ = nullptr;
 #endif // _DEBUG /// release not building objects
 
 
@@ -286,7 +286,7 @@ void System::Update() {
 #ifdef _DEBUG /// release not building objects...
 
 	imguiManager_->BeginFrame();
-	console_->Update();
+	consoleManager_->Update();
 
 #endif // _DEBUG /// release not building objects...
 
