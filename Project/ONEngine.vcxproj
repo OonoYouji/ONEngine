@@ -255,6 +255,7 @@
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
+    <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +368,7 @@
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
+    <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

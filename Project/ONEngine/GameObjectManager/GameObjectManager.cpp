@@ -6,6 +6,7 @@
 /// engine
 #include "LoggingManager/Logger.h"
 #include "CollisionManager/CollisionManager.h"
+#include "WindowManager/ConsoleManager.h"
 
 /// objects
 #include "Objects/Camera/Manager/BaseCamera.h"
@@ -20,6 +21,12 @@
 /// ===================================================
 void GameObjectManager::Initialize() {
 	objects_.reserve(kMaxInstanceCount_);
+
+
+	ConsoleManager* manager = ConsoleManager::GetInstance();
+	manager->RegisterFunction([&](ImGuiWindowFlags _windowFlags) -> void { Inspector(_windowFlags); });
+	manager->RegisterFunction([&](ImGuiWindowFlags _windowFlags) -> void { Hierarchy(_windowFlags); });
+
 }
 
 /// ===================================================
@@ -276,7 +283,12 @@ void GameObjectManager::AddObjectsToObjectsCopy() {
 }
 
 
-void GameObjectManager::Hierarchy() {
+void GameObjectManager::Hierarchy(ImGuiWindowFlags _windowFlags) {
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	if(!ImGui::Begin("Heararchy", nullptr, _windowFlags)) {
+		ImGui::End();
+		return;
+	}
 
 	for(auto& gameObject : objects_) {
 
@@ -289,10 +301,20 @@ void GameObjectManager::Hierarchy() {
 		ImGuiSelectChilds(gameObject->GetChilds());
 	}
 
+	ImGui::End();
 }
 
-void GameObjectManager::Inspector() {
-	if(!selectObject_) { return; }
+void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
+	if(!ImGui::Begin("Inspector", nullptr, _windowFlags)) {
+		ImGui::End();
+		return;
+	}
+
+
+	if(!selectObject_) { 
+		ImGui::End();
+		return;
+	}
 
 	/// activeのフラグをデバッグ
 	ImGui::Checkbox("isActive", &selectObject_->isActive);
@@ -313,16 +335,18 @@ void GameObjectManager::Inspector() {
 	ImGui::SetNextItemOpen(true, ImGuiCond_Always);
 
 	ImGuiTreeNodeFlags_ flags = ImGuiTreeNodeFlags_(ImGuiTreeNodeFlags_DefaultOpen);
-	if(!ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
-		return;
+	if(ImGui::TreeNodeEx(selectObject_->GetName().c_str(), flags)) {
+
+		ImGui::Unindent();
+
+
+		selectObject_->ImGuiDebug();
+
+		ImGui::TreePop();
 	}
 
-	ImGui::Unindent();
 
-
-	selectObject_->ImGuiDebug();
-
-	ImGui::TreePop();
+	ImGui::End();
 }
 
 /// ===================================================

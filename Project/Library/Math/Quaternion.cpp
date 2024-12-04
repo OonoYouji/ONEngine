@@ -74,6 +74,10 @@ Quaternion Quaternion::MakeFromAxis(const Vec3& axis, float theta) {
 	return Quaternion(x, y, z, w);
 }
 
+Mat4 Quaternion::MakeRotateAxisAngle(const Vec3& axis, float theta) {
+	return Mat4::MakeRotateQuaternion(MakeFromAxis(axis, theta));
+}
+
 Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target, const Vec3& up) {
 	XMFLOAT3 xmPosition, xmTarget, xmUp;
 	xmPosition = { position.x, position.y, position.z };
