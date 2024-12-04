@@ -12,8 +12,7 @@
 
 void DemoObject::Initialize() {
 	auto renderer = AddComponent<MeshRenderer>();
-	renderer->SetModel("axis");
-	pTransform_->rotateOrder = QUATERNION;
+	renderer->SetModel("Field");
 
 	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
 	angle_ = 0.44f;
@@ -25,7 +24,7 @@ void DemoObject::Update() {
 	
 	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 
-	pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
+	//pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
 }
 
 void DemoObject::Debug() {

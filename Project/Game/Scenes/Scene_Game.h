@@ -1,5 +1,10 @@
 #pragma once
 
+/// std
+#include <memory>
+
+#include "Editor/PlayerMotionEditor.h"
+
 #include "SceneManager/BaseScene.h"
 
 enum GAME_SCENE_LAYER {
@@ -19,4 +24,6 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+private:
+	std::unique_ptr<PlayerMotionEditor> playerMotionEditor_ = nullptr;
 };
