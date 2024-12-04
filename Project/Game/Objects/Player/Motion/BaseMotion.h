@@ -1,21 +1,49 @@
 #pragma once
 
-#include "../Player.h"
+/// std
+#include <vector>
+#include <array>
+#include <span>
+
+#include "Math/Vector3.h"
+
+
+struct MotionKeyframe {
+	Vec3 position;
+	Vec3 rotate;
+	Vec3 scale;
+};
 
 class BaseMotion {
+	friend class PlayerBehaviorManager;
 public:
 
-	BaseMotion(Player* _player);
+	BaseMotion(class Player* _player);
 	~BaseMotion();
+
+	void Start();
+
+	void Update();
 
 protected:
 
-	Player* pPlayer_ = nullptr;
+	class Player* pPlayer_ = nullptr;
 
 	float maxTime_;      /// モーションの全体時間
 	float currentTime_;  /// 今現在の時間
 
-	Vec3 startPosition_; /// 開始位置
-	Vec3 endOffset_;     /// 移動先
+	std::vector<MotionKeyframe> keyframes_;
+
+	MotionKeyframe currentKeyframe_;
+
+	std::vector<Vec3> positions_;
+	std::vector<Vec3> rotates_;
+	std::vector<Vec3> scales_;
+
+	bool isActive_ = false;
+
+public:
+
+	const MotionKeyframe& GetMotionKeyframe() const { return currentKeyframe_; }
 
 };

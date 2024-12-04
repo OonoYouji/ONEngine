@@ -61,6 +61,11 @@ void Player::Update() {
 	ApplyVariables();
 
 	behaviorManager_->Update();
+
+	const MotionKeyframe& keyframe = behaviorManager_->GetMotion()->GetMotionKeyframe();
+	pTransform_->position = keyframe.position;
+	pTransform_->rotate   = keyframe.rotate;
+	pTransform_->scale    = keyframe.scale;
 }
 
 void Player::Debug() {

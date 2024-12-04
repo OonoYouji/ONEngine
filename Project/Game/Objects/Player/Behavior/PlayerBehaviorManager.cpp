@@ -2,6 +2,7 @@
 
 /// std
 #include <format>
+#include <numbers>
 
 /// externals
 #include <imgui.h>
@@ -37,9 +38,16 @@ void PlayerBehaviorManager::Initialize() {
 			behavior.second->kName_
 		);
 	}
+
+	tmp.reset(new BaseMotion(pPlayer_));
 }
 
+
 void PlayerBehaviorManager::Update() {
+
+	tmp->Update();
+
+
 	if(currentBehavior_) {
 		currentBehavior_->Update();
 
@@ -68,43 +76,93 @@ void PlayerBehaviorManager::AddBehavior(const std::string& _name, BasePlayerBeha
 void PlayerBehaviorManager::Debugging() {
 	if(ImGui::TreeNode("BehaviorManager")) {
 
-		ImGui::SeparatorText("debug");
-		ImGui::Text(
-			std::format("current behavior: \"{}\"", currentBehavior_->kName_).c_str()
-		);
+		//ImGui::SeparatorText("debug");
+		//ImGui::Text(
+		//	std::format("current behavior: \"{}\"", currentBehavior_->kName_).c_str()
+		//);
 
-		ImGui::SeparatorText("behaviors");
+		//ImGui::SeparatorText("behaviors");
 
-		VariableManager* vm = VariableManager::GetInstance();
-		for(auto& behavior : behaviorMap_) {
-			if(ImGui::TreeNodeEx(
-				std::format("\"{}\"", behavior.second->kName_).c_str(),
-				ImGuiTreeNodeFlags_Framed
-				)) {
+		//VariableManager* vm = VariableManager::GetInstance();
+		//for(auto& behavior : behaviorMap_) {
+		//	if(ImGui::TreeNodeEx(
+		//		std::format("\"{}\"", behavior.second->kName_).c_str(),
+		//		ImGuiTreeNodeFlags_Framed
+		//		)) {
 
 
-				if(ImGui::Button(std::format(
-					"save file##{:p}",
-					reinterpret_cast<void*>(behavior.second.get())).c_str())) {
+		//		if(ImGui::Button(std::format(
+		//			"save file##{:p}",
+		//			reinterpret_cast<void*>(behavior.second.get())).c_str())) {
 
-					vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
-				}
-				vm->DebuggingSpecificGroup(behavior.second->kName_);
+		//			vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
+		//		}
+		//		vm->DebuggingSpecificGroup(behavior.second->kName_);
 
-				ImGui::TreePop();
-			}
-			
-			ImGui::Spacing();
-			ImGui::Separator();
-		}
+		//		ImGui::TreePop();
+		//	}
+		//	
+		//	ImGui::Spacing();
+		//	ImGui::Separator();
+		//}
+
+
+		AddMotion();
+		MotionEdit(tmp.get());
 
 		ImGui::TreePop();
 	}
 }
 
+void PlayerBehaviorManager::AddMotion() {
+	if(ImGui::Button("add")) {
+
+	}
+}
+
+void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
+	if(ImGui::TreeNode("motion edit")) {
+
+		/// 再生する
+		if(ImGui::Button("play")) {
+			_motion->Start();
+		}
+
+		ImGui::Separator();
 
 
-void PlayerBehaviorManager::Editor() {
+		ImGui::DragFloat("current time", &_motion->currentTime_);
+		ImGui::DragFloat3("current keyfrarme position", &_motion->currentKeyframe_.position.x, 0.0f);
+		ImGui::DragFloat3("current keyfrarme rotate",   &_motion->currentKeyframe_.rotate.x,   0.0f);
+		ImGui::DragFloat3("current keyfrarme scale",    &_motion->currentKeyframe_.scale.x,    0.0f);
 
+		ImGui::Spacing();
+
+		if(ImGui::TreeNode("parameterss")) {
+			ImGui::DragFloat("max time",     &_motion->maxTime_,     0.025f);
+			ImGui::TreePop();
+		}
+
+		if(ImGui::TreeNode("keyframes")) {
+
+			size_t index = 0;
+			for(auto& keyframe : _motion->keyframes_) {
+				ImGui::Text("index(%d)", index);
+				ImGui::DragFloat3(std::format("position##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.position.x, 0.1f);
+				ImGui::DragFloat3(std::format("rotate##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.rotate.x, std::numbers::pi_v<float> * 0.1f);
+				ImGui::DragFloat3(std::format("scale##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.scale.x, 0.1f);
+			}
+
+			ImGui::TreePop();
+		}
+
+		ImGui::TreePop();
+	}
 
 }
+
+void PlayerBehaviorManager::SelectEditMotion() {
+	//ImGui::Combo();
+}
+
+
