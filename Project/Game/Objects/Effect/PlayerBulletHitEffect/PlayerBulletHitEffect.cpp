@@ -25,7 +25,7 @@ PlayerBulletHitEffect::~PlayerBulletHitEffect() {}
 void PlayerBulletHitEffect::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Sphere");
-	meshRenderer_->SetMaterial("white2x2");
+	meshRenderer_->SetMaterial("uvChecker.png");
 
 
 	particleSystem_ = AddComponent<ParticleSystem>(512, "Triangle");
@@ -52,7 +52,7 @@ void PlayerBulletHitEffect::Initialize() {
 			diff.y *= -1.0f;
 		}
 
-		transform->position += diff.Normalize() * 10.0f * Time::DeltaTime();
+		transform->position += diff.Normalize() * 30.0f * Time::DeltaTime();
 	});
 
 	particleSystem_->SetBurst(true, lifeTime_, 0.1f);
@@ -61,7 +61,7 @@ void PlayerBulletHitEffect::Initialize() {
 void PlayerBulletHitEffect::Update() {
 
 	pTransform_->scale = Vec3::Lerp(
-		{ 0, 0, 0 }, Vec3::kOne * 50.0f,
+		{ 0, 0, 0 }, Vec3::kOne * 30.0f,
 		Ease::In::Expo(1.0f - std::clamp(lifeTime_ / 2.0f, 0.0f, 1.0f))
 	);
 
