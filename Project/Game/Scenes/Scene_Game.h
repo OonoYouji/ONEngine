@@ -1,6 +1,6 @@
 #pragma once
 
-#include"Game/Scenes/Manager/BaseScene.h"
+#include "SceneManager/BaseScene.h"
 
 /// ===================================================
 /// ゲームシーン
