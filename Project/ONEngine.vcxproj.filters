@@ -140,6 +140,7 @@
     <ClCompile Include="Game\Objects\TopDownCamera\TopDownCamera.cpp" />
     <ClCompile Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.cpp" />
     <ClCompile Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.cpp" />
+    <ClCompile Include="Game\Objects\ParticleEditor\ParticleEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -260,6 +261,7 @@
     <ClInclude Include="Game\Objects\TopDownCamera\TopDownCamera.h" />
     <ClInclude Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.h" />
     <ClInclude Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.h" />
+    <ClInclude Include="Game\Objects\ParticleEditor\ParticleEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
