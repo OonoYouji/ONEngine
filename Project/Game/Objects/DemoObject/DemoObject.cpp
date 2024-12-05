@@ -1,77 +1,58 @@
 #include "DemoObject.h"
 
-/// engine
-#include "ImGuiManager/ImGuiManager.h"
-#include "FrameManager/Time.h"
-#include "GraphicManager/ModelManager/ModelManager.h"
-#include "VariableManager/VariableManager.h"
+/// std
+#include <format>
 
-#include "Input/Input.h"
+/// externals
+#include <imgui.h>
 
 /// components
-#include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 
 
 void DemoObject::Initialize() {
-	/*animationRenderer_ = AddComponent<AnimationRenderer>("Kari_Boss_Wait");
+	auto renderer = AddComponent<MeshRenderer>();
+	renderer->SetModel("axis");
+	pTransform_->rotateOrder = QUATERNION;
 
-	capsuleCollider_ = AddComponent<CapsuleCollider>();
-	capsuleCollider_->SetPositionArray({ &positionArray_[0], &positionArray_[1] });*/
+	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
+	angle_ = 0.44f;
 
-	VariableManager* vm = VariableManager::GetInstance();
-	vm->AddValue(GetTag(), "name", name_);
-
-	vm->LoadSpecificGroupsToJson("./Resources/Parameters/Objects", GetTag());
+	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 }
 
 void DemoObject::Update() {
+	
+	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 
-	VariableManager* vm = VariableManager::GetInstance();
-	name_ = vm->GetValue<std::string>(GetTag(), "name");
-
-
-
-
-	isCollisionEnter_ = false;
-	isCollisionStay_ = false;
-	isCollisionExit_ = false;
-
-
+	pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
 }
 
 void DemoObject::Debug() {
 
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if(ImGui::TreeNodeEx("MT4_01_01", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::Text(name_.c_str());
+		if(ImGui::DragFloat3("axis", &axis_.x, 0.025f)) {
+			axis_ = axis_.Normalize();
+		}
 
+		ImGui::DragFloat("angle", &angle_);
+	
 
-		static char buff[256];
-		ImGui::InputText("test text", buff, sizeof(buff));
+		ImGui::Text("rotate matrix");
+		for(size_t r = 0; r < 4; ++r) {
+			for(size_t c = 0; c < 4; ++c) {
+				if(c != 0) {
+					ImGui::SameLine();
+				}
+					
+				ImGui::Text(std::format("{:0.3f},", matRotata_.m[r][c]).c_str());
 
-		ImGuiIO& io = ImGui::GetIO();
-		ImGui::DragFloat("repeat delay", &io.KeyRepeatDelay, 0.01f);
-		ImGui::DragFloat("repeat rate", &io.KeyRepeatRate, 0.01f);
-		
+			}
 
-		ImGui::Checkbox("isCollisionEnter", &isCollisionEnter_);
-		ImGui::Checkbox("isCollisionStay", &isCollisionStay_);
-		ImGui::Checkbox("isCollisionExit", &isCollisionExit_);
+		}
 
 		ImGui::TreePop();
 	}
 }
 
-void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
-	isCollisionEnter_ = true;
-}
-
-void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
-	isCollisionStay_ = true;
-}
-
-void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
-	isCollisionExit_ = true;
-}

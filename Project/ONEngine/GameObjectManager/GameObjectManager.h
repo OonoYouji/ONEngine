@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 
+#include <imgui.h>
+
 #include "BaseGameObject.h"
 
 /// <summary>
@@ -102,8 +104,8 @@ public:
 
 #pragma region ImGui
 
-	void Hierarchy();
-	void Inspector();
+	void Hierarchy(ImGuiWindowFlags _windowFlags);
+	void Inspector(ImGuiWindowFlags _windowFlags);
 
 	/// <summary>
 	/// imguiでデバッグ表示

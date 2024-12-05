@@ -105,14 +105,15 @@ bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) 
 
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
 	/// OBBの逆行列
-	Matrix4x4 inverseObbWorldMatrix = Mat4::MakeInverse(box->GetObbMatTransform());
+	Matrix4x4 matOBBTransformInverse = box->GetObbMatTransform().Inverse();
 
 	/// Sphereの座標をOBBのLocal空間へ変換
-	Vec3 obbLocalPosition = Mat4::Transform(sphere->GetPosition(), inverseObbWorldMatrix);
+	Vec3 spherePos = sphere->GetPosition();
+	Vec3 obbLocalPosition = Mat4::Transform(spherePos, matOBBTransformInverse);
 
 	/// OBBのLocal空間内のAABB
-	Vec3 aabbMin = -box->GetSize() + box->GetPosition();
-	Vec3 aabbMax = +box->GetSize() + box->GetPosition();
+	Vec3 aabbMin = -box->GetSize();
+	Vec3 aabbMax = +box->GetSize();
 
 
 	/// AABBとSphereの判定

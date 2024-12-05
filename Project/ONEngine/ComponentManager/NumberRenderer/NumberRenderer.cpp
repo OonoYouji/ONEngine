@@ -13,11 +13,12 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxResourceCreator.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDescriptorHeap.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
+#include "GameObjectManager/BaseGameObject.h"
+#include "NumberRendererCommon.h"
 
 /// lib
 #include "Debugger/Assertion.h"
 
-#include "NumberRendererCommon.h"
 
 
 NumberRenderer::NumberRenderer(uint32_t _maxDigit) : kMaxDigit_(_maxDigit) {

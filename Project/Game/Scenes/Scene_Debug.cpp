@@ -1,7 +1,7 @@
 #include "Scene_Debug.h"
 
 #include "Objects/Camera/Manager/CameraManager.h"
-#include "Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Drawer/Sprite/SpriteManager.h"
 

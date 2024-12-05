@@ -5,6 +5,7 @@
 
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
+#include "Input/Input.h"
 
 /// objects
 #include "Objects/Camera/GameCamera.h"

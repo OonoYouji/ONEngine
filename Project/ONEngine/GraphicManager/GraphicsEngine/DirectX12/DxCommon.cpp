@@ -7,14 +7,9 @@
 #include "DxDevice.h"
 #include "DxCommand.h"
 
-#include "DxDoubleBuffer.h"
 #include "DxDepthStencil.h"
 #include "DxDebug.h"
 #include "DxShaderCompiler.h"
-
-#include "GraphicManager/RenderTextureManager/RenderTexture.h"
-
-#include "Scenes/Manager/SceneManager.h"
 
 
 #pragma comment(lib, "d3d12.lib")
