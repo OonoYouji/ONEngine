@@ -314,8 +314,7 @@
     <ClInclude Include="ONEngine\ComponentManager\Transform\Transform.h" />
     <ClInclude Include="ONEngine\Core\GameFrameWork.h" />
     <ClInclude Include="ONEngine\Core\ONEngine.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\CollisionCallbackFunctionComponent.h" />
-    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\CollisionResultComponent.h" />
+    <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\CollisionResult.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\ColliderComponents\SphereColliderComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\PositionComponent\PositionComponent.h" />
     <ClInclude Include="ONEngine\EntityConponentSystem\Component\VelocityComponent\VelocityComponent.h" />

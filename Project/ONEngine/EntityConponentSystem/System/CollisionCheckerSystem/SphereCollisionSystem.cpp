@@ -4,7 +4,6 @@
 
 #include "EntityConponentSystem/Component/PositionComponent/PositionComponent.h"
 #include "EntityConponentSystem/Component/ColliderComponents/SphereColliderComponent.h"	
-#include "EntityConponentSystem/Component/ColliderComponents/CollisionCallbackFunctionComponent.h"
 
 
 void SphereCollisionSystem::Update(size_t _entity, ECSManager* _ecsManager) {
@@ -23,23 +22,10 @@ void SphereCollisionSystem::Update(size_t _entity, ECSManager* _ecsManager) {
 		for(auto& otherEntity : entities) {
 			if(CheckCollision(otherEntity, _ecsManager, position, sphereCollider)) {
 
+				SphereColliderComponent* otherCollider = _ecsManager->GetComponent<SphereColliderComponent>(otherEntity);
 
-				/// entityのcallback関数
-				CollisionCallbackFunctionComponent* callbackFunc = 
-					_ecsManager->GetComponent<CollisionCallbackFunctionComponent>(_entity);
-
-				if(callbackFunc) {
-					callbackFunc->onCollisionEnter(otherEntity);
-				}
-
-
-				/// other entityのcallback関数
-				CollisionCallbackFunctionComponent* otherCallbackFunc =
-					_ecsManager->GetComponent<CollisionCallbackFunctionComponent>(otherEntity);
-
-				if(otherCallbackFunc) {
-					otherCallbackFunc->onCollisionEnter(_entity);
-				}
+				sphereCollider->result.enterCollideds_.push_back(otherEntity);
+				otherCollider->result.enterCollideds_.push_back(_entity);
 
 			}
 		}
