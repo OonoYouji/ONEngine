@@ -64,7 +64,7 @@ void PlayerBullet::OnCollisionEnter(BaseGameObject* const _collision) {
 		
 		pTopDownCamera_->StartShake(0.1f, 1.0f, 1.0f);
 
-		effect_ = new PlayerBulletHitEffect(this);
+		effect_ = new PlayerBulletHitEffect(this, pTopDownCamera_);
 		effect_->Initialize();
 		effect_->SetPosition(GetPosition());
 	}

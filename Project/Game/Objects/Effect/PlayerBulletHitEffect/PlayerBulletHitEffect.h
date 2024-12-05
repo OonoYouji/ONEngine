@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerBulletHitEffect(class PlayerBullet* _playerBullet);
+	PlayerBulletHitEffect(class PlayerBullet* _playerBullet, class TopDownCamera* _topDownCamera);
 	~PlayerBulletHitEffect();
 
 	void Initialize() override;
@@ -23,11 +23,14 @@ private:
 
 	class ParticleSystem* particleSystem_ = nullptr;
 	class MeshRenderer*   meshRenderer_   = nullptr;
+	class MeshRenderer*   explosionRenderer_   = nullptr;
 	class PlayerBullet*   pPlayerBullet_  = nullptr;
 
 	float lifeTime_ = 1.0f;
 
 	bool isAlive_ = true;
+
+	class TopDownCamera* pTopDownCamera_ = nullptr;
 
 public:
 
