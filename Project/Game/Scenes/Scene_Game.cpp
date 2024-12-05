@@ -2,6 +2,7 @@
 
 /// std
 #include <numbers>
+#include <format>
 
 /// engine
 #include "GraphicManager/ModelManager/ModelManager.h"
@@ -79,4 +80,14 @@ void Scene_Game::Update() {
 	demoObjA_->SetPosition(posAComp->position);
 	demoObjB_->SetPosition(posBComp->position);
 
+	ImGui::Begin("ecs collision result");
+
+	SphereColliderComponent* sphereCollider = ecsManager->GetComponent<SphereColliderComponent>(entityA_);
+	if(sphereCollider) {
+		for(auto& enter : sphereCollider->result.enterCollideds_) {
+			ImGui::Text(std::format("{},", enter).c_str());
+		}
+	}
+
+	ImGui::End();
 }
