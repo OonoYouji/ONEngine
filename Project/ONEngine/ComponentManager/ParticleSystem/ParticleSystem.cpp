@@ -19,7 +19,7 @@
 
 /// game
 #include "Objects/Camera/Manager/CameraManager.h"
-#include "Scenes/Manager/SceneManager.h"
+#include "SceneManager/SceneManager.h"
 
 /// math
 #include "Math/Random.h"

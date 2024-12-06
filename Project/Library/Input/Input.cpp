@@ -369,6 +369,15 @@ bool Input::ReleasePadButton(PadCode padCode) {
 	return pad_->Release(padCode);
 }
 
+bool Input::GamepadConnected(int gamepadIndex) {
+	XINPUT_STATE state = {};
+	// XInputGetStateで指定したコントローラーの状態を取得
+	DWORD result = XInputGetState(gamepadIndex, &state);
+
+	// 接続状態を確認
+	return result == ERROR_SUCCESS;
+}
+
 bool Input::PadState(XINPUT_STATE& out) {
 	return pad_->GetPadState(out);
 }

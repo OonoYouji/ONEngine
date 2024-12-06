@@ -1,49 +1,58 @@
 #include "DemoObject.h"
 
-/// engine
-#include "ImGuiManager/ImGuiManager.h"
-#include "FrameManager/Time.h"
-#include "GraphicManager/ModelManager/ModelManager.h"
-#include "VariableManager/VariableManager.h"
+/// std
+#include <format>
+
+/// externals
+#include <imgui.h>
 
 /// components
-#include "ComponentManager/Collider/CapsuleCollider.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
-#include "ComponentManager/NumberRenderer/NumberRenderer.h"
+
 
 void DemoObject::Initialize() {
-	numberRenderer_ = AddComponent<NumberRenderer>(5u);
+	auto renderer = AddComponent<MeshRenderer>();
+	renderer->SetModel("axis");
+	pTransform_->rotateOrder = QUATERNION;
+
+	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
+	angle_ = 0.44f;
+
+	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 }
 
 void DemoObject::Update() {
-	numberRenderer_->SetScore(score_);
 	
+	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
+
+	pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
 }
 
 void DemoObject::Debug() {
-	if(ImGui::TreeNodeEx("debug", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		ImGui::DragFloat3("position1", &positionArray_[0].x, 0.01f);
-		ImGui::DragFloat3("position2", &positionArray_[1].x, 0.01f);
+	if(ImGui::TreeNodeEx("MT4_01_01", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-		int scoreCopy = score_;
-		if(ImGui::DragInt("score", &scoreCopy)) {
-			score_ = scoreCopy;
+		if(ImGui::DragFloat3("axis", &axis_.x, 0.025f)) {
+			axis_ = axis_.Normalize();
 		}
 
+		ImGui::DragFloat("angle", &angle_);
+	
+
+		ImGui::Text("rotate matrix");
+		for(size_t r = 0; r < 4; ++r) {
+			for(size_t c = 0; c < 4; ++c) {
+				if(c != 0) {
+					ImGui::SameLine();
+				}
+					
+				ImGui::Text(std::format("{:0.3f},", matRotata_.m[r][c]).c_str());
+
+			}
+
+		}
 
 		ImGui::TreePop();
 	}
 }
 
-void DemoObject::OnCollisionStay(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-}
-
-void DemoObject::OnCollisionEnter(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 0.0f, 0.0f, 1.0f });
-}
-
-void DemoObject::OnCollisionExit(BaseGameObject* const _collision) {
-	meshRenderer_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-}

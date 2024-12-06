@@ -8,7 +8,8 @@
 /// externals
 #include <imgui.h>
 
-
+/// engine
+#include "Input/Input.h"
 
 void VariableManager::Initialize() {
 
@@ -57,6 +58,19 @@ void VariableManager::DebuggingVariable<Vec4>(const std::string& _label, Vec4& _
 	int flags = ImGuiColorEditFlags_AlphaBar;
 	ImGui::ColorEdit4(_label.c_str(), &_value.x, flags);
 }
+
+template<>
+void VariableManager::DebuggingVariable<std::string>(const std::string& _label, std::string& _value) {
+	std::vector<char> buffer(_value.begin(), _value.end());
+	buffer.resize(512, '\0');
+
+	ImGui::Text(std::format("current text -> {}", _value).c_str());
+	ImGui::InputText(_label.c_str(), buffer.data(), buffer.size());
+
+	if(Input::TriggerKey(KeyCode::Return)) {
+		_value = std::string(buffer.data());
+	}
+}
 #pragma endregion
 
 
@@ -82,17 +96,22 @@ void VariableManager::RegisterToJson<bool>(json& _root, const std::string& _key,
 
 template<>
 void VariableManager::RegisterToJson<Vec2>(json& _root, const std::string& _key, const Vec2& _value) {
-	_root[_key] = json::array({ _value.x, _value.y });;
+	_root[_key] = json::array({ _value.x, _value.y });
 }
 
 template<>
 void VariableManager::RegisterToJson<Vec3>(json& _root, const std::string& _key, const Vec3& _value) {
-	_root[_key] = json::array({ _value.x, _value.y, _value.z });;
+	_root[_key] = json::array({ _value.x, _value.y, _value.z });
 }
 
 template<>
 void VariableManager::RegisterToJson<Vec4>(json& _root, const std::string& _key, const Vec4& _value) {
-	_root[_key] = json::array({ _value.x, _value.y, _value.z, _value.w });;
+	_root[_key] = json::array({ _value.x, _value.y, _value.z, _value.w });
+}
+
+template<>
+void VariableManager::RegisterToJson<std::string>(json& _root, const std::string& _key, const std::string& _value) {
+	_root[_key] = _value;
 }
 #pragma endregion
 
@@ -223,6 +242,9 @@ void VariableManager::LoadSpecificGroupsToJson(const std::string& _filePath, con
 			Vec4 value = { itrItem->at(0), itrItem->at(1), itrItem->at(2), itrItem->at(3) };
 			SetValue(_groupName, itemName, value);
 
+		} else if(itrItem->is_string()) {
+			std::string value = itrItem->get<std::string>();
+			SetValue(_groupName, itemName, value);
 		}
 
 	}

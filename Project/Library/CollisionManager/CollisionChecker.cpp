@@ -104,6 +104,30 @@ bool CollisionChecker::CapsuleToCapsule(CapsuleCollider* a, CapsuleCollider* b) 
 }
 
 bool CollisionChecker::BoxToSphere(BoxCollider* box, SphereCollider* sphere) {
+	/// OBBの逆行列
+	Matrix4x4 matOBBTransformInverse = box->GetObbMatTransform().Inverse();
+
+	/// Sphereの座標をOBBのLocal空間へ変換
+	Vec3 spherePos = sphere->GetPosition();
+	Vec3 obbLocalPosition = Mat4::Transform(spherePos, matOBBTransformInverse);
+
+	/// OBBのLocal空間内のAABB
+	Vec3 aabbMin = -box->GetSize();
+	Vec3 aabbMax = +box->GetSize();
+
+
+	/// AABBとSphereの判定
+	Vec3 closestPoint{
+		{std::clamp(obbLocalPosition.x, aabbMin.x, aabbMax.x)},
+		{std::clamp(obbLocalPosition.y, aabbMin.y, aabbMax.y)},
+		{std::clamp(obbLocalPosition.z, aabbMin.z, aabbMax.z)}
+	};
+
+	float distance = (closestPoint - obbLocalPosition).Len();
+	if(distance <= sphere->GetRadius()) {
+		return true;
+	}
+
 	return false;
 }
 

@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "WindowManager/WinApp.h"
-#include "WindowManager/Console.h"
+#include "WindowManager/ConsoleManager.h"
 
 /// ===================================================
 /// 前方宣言
@@ -116,8 +116,8 @@ namespace {
 
 		
 #ifdef _DEBUG /// release not building objects
-		std::unique_ptr<Console> console_  = nullptr; /// console window
-		ImGuiManager*            imguiManager_ = nullptr;
+		ConsoleManager* consoleManager_ = nullptr;
+		ImGuiManager*   imguiManager_   = nullptr;
 #endif // _DEBUG
 
 
