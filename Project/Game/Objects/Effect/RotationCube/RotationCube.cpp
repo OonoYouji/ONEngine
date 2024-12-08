@@ -74,7 +74,7 @@ void RotationCube::Initialize() {
 		transform->rotateOrder = QUATERNION;
 
 		auto mate        = _particle->GetMaterial();
-		mate.color       = Vec4(Random::Vec3({0.5f, 0.5f, 0.5f}, Vec3::kOne), 1.0f);
+		mate.color       = Vec4(Random::Vec3(Vec3::kOne * 0.8f, Vec3::kOne), 1.0f);
 		data.offset      = Random::Vec3(-Vec3::kOne * 2.0f, Vec3::kOne * 2.0f);
 		_particle->GetMaterial().color = Vec4(Random::Vec3({}, Vec3::kOne), 1.0f);
 		_particle->GetMaterial().isLighting = true;

@@ -8,6 +8,7 @@
 #include "VariableManager/VariableManager.h"
 #include "FrameManager/Time.h"
 #include "Math/Random.h"
+#include "Input/Input.h"
 
 /// game
 #include "Objects/Camera/GameCamera.h"
@@ -34,7 +35,7 @@ void TopDownCamera::Initialize() {
 }
 
 void TopDownCamera::Update() {
-	ApplyVariables();
+	//ApplyVariables();
 
 	if(shakeTime_ <= shakeMaxTime_) {
 		shakeTime_ += Time::DeltaTime();
@@ -48,6 +49,14 @@ void TopDownCamera::Update() {
 			shakeValue_ = { 0,0,0 };
 		}
 	}
+
+	if(Input::PressKey(KeyCode::Q)) { offsetRotate_.y -= 2.0f * Time::DeltaTime(); }
+	if(Input::PressKey(KeyCode::E)) { offsetRotate_.y += 2.0f * Time::DeltaTime(); }
+
+	if(Input::PressKey(KeyCode::ArrowUp))    { offsetPosition_.y += 10.0f * Time::DeltaTime(); }
+	if(Input::PressKey(KeyCode::ArrowDown))  { offsetPosition_.y -= 10.0f * Time::DeltaTime(); }
+	if(Input::PressKey(KeyCode::ArrowLeft))  { offsetPosition_.x -= 10.0f * Time::DeltaTime(); }
+	if(Input::PressKey(KeyCode::ArrowRight)) { offsetPosition_.x += 10.0f * Time::DeltaTime(); }
 
 
 	pGameCamera_->SetPosition(offsetPosition_ + shakeValue_);
