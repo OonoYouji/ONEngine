@@ -43,7 +43,7 @@ void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _
 
 }
 
-void ParticleEmitter::Update() {
+void ParticleEmitter::Update(std::function<void(Particle*)> _particleStartupFunc) {
 
 	if((particleEmitterFlags_ & PARTICLE_EMITTER_NOTIME) == 0) {
 		/// 時間を減らす
@@ -54,7 +54,7 @@ void ParticleEmitter::Update() {
 			currentTime_ = rateOverTime_;
 
 			/// 発生
-			Emit();
+			Emit(_particleStartupFunc);
 		}
 	}
 
@@ -66,7 +66,7 @@ void ParticleEmitter::Update() {
 
 		if(burstRateOverTime_ <= 0.0f) {
 			burstRateOverTime_ = maxBurstRateOverTime_;
-			Emit();
+			Emit(_particleStartupFunc);
 		}
 
 		if(burstTime_ <= 0.0f) {
@@ -154,7 +154,7 @@ void ParticleEmitter::Debug() {
 	}
 }
 
-void ParticleEmitter::Emit() {
+void ParticleEmitter::Emit(std::function<void(Particle*)> _particleStartupFunc) {
 	for(size_t i = 0; i < static_cast<size_t>(emissionCount_); ++i) {
 
 		/// 現在のparticle配列の大きさと最大値を比べる
@@ -171,6 +171,8 @@ void ParticleEmitter::Emit() {
 			}
 
 			pParticleArray_->back()->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
+
+			_particleStartupFunc(pParticleArray_->back().get());
 
 		} else {
 			/// ここに入るときはすでに最大値分配列を作成している
@@ -199,6 +201,8 @@ void ParticleEmitter::Emit() {
 			(*itr)->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
 			(*itr)->lifeTime_ = pParticleSystem_->GetParticleLifeTime();
 			(*itr)->isAlive_ = true;
+
+			_particleStartupFunc((*itr).get());
 
 		}
 

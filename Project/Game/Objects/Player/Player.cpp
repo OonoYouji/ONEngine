@@ -15,6 +15,7 @@
 #include "Objects/Effect/PlayerNormalEffect/PlayerNormalEffect.h"
 
 
+
 Player::Player() {
 	CreateTag(this);
 }

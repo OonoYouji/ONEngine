@@ -22,7 +22,8 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	float4x4 matWvp = mul(gTransformArray[instanceId].matWorld, gViewProjection.matVp);
 	output.position = mul(input.position, matWvp);
 	output.texcoord = input.texcoord;
-	output.normal   = normalize(mul(float4(input.normal, 1), gTransformArray[instanceId].matWorld)).xyz;
+	output.normal = normalize(mul(input.normal, (float3x3) (gTransformArray[instanceId].matWorld)));
+	output.instanceId = instanceId;
 
 	return output;
 }

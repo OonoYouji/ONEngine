@@ -160,6 +160,7 @@
     <ClCompile Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.cpp" />
     <ClCompile Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.cpp" />
+    <ClCompile Include="Game\Objects\Effect\RotationCube\RotationCube.cpp" />
     <ClCompile Include="Game\Objects\ParticleEditor\ParticleEditor.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="Game\Objects\Demo\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\Effect\PlayerBulletHitEffect\PlayerBulletHitEffect.h" />
     <ClInclude Include="Game\Objects\Effect\PlayerNormalEffect\PlayerNormalEffect.h" />
+    <ClInclude Include="Game\Objects\Effect\RotationCube\RotationCube.h" />
     <ClInclude Include="Game\Objects\ParticleEditor\ParticleEditor.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBulletRenderer\PlayerBulletRenderer.h" />

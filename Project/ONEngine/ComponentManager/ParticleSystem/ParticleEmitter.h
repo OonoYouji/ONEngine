@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <functional>
 
 /// math
 #include "Math/Vector3.h"
@@ -54,7 +55,7 @@ public:
 	/// <summary>
 	/// 更新処理
 	/// </summary>
-	void Update();
+	void Update(std::function<void(class Particle*)> _particleStartupFunc);
 
 	/// <summary>
 	/// imguiを使ってデバッグ表示
@@ -66,7 +67,7 @@ public:
 	/// <summary>
 	/// パーティクルの発生
 	/// </summary>
-	void Emit();
+	void Emit(std::function<void(class Particle*)> _particleStartupFunc);
 
 
 	/// <summary>

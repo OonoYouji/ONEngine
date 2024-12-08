@@ -8,6 +8,8 @@
 #include <functional>
 
 /// engine
+#include "GraphicManager/GraphicsEngine/DirectX12/DxStructuredBuffer.h"
+#include "GraphicManager/Drawer/Material/Material.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/ModelManager/Model.h"
 
@@ -88,6 +90,8 @@ public:
 	/// </summary>
 	/// <param name="_function">: 更新処理関数 </param>
 	void SetPartilceUpdateFunction(const std::function<void(class Particle*)>& _function);
+
+	void SetPartilceStartupFunction(const std::function<void(class Particle*)>& _function);
 
 	/// <summary>
 	/// パーティクルのエミッターのフラグを設定
@@ -171,12 +175,8 @@ private:
 	bool  useBillboard_;     /// ビルボードを使用するか
 
 
-	/// particles trasform buffers
-	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingData_         = nullptr;
-	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
-	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
-	uint32_t srvDescriptorIndex_;
+	std::unique_ptr<DxStructuredBuffer<Mat4>>                   transforms_ = nullptr;
+	std::unique_ptr<DxStructuredBuffer<Material::MaterialData>> materials_  = nullptr;
 
 	/// billboard
 	Mat4 matBackToFront_;
@@ -184,6 +184,7 @@ private:
 
 	/// particle function
 	std::function<void(Particle*)> particleUpdateFunc_;
+	std::function<void(Particle*)> particleStartupFunc_;
 
 	/// emitter
 	std::unique_ptr<ParticleEmitter> emitter_ = nullptr;
@@ -212,9 +213,10 @@ public:
 	void Update();
 
 	void Draw(
-		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
-		Model* useModel,
-		uint32_t instanceCount
+		DxStructuredBuffer<Mat4>* _transformBuffer,
+		DxStructuredBuffer<Material::MaterialData>* _materialBuffer,
+		Model* _useModel,
+		uint32_t _instanceCount
 	);
 
 private:
@@ -223,10 +225,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
-	PipelineState::Shader          shader_;
-	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
-	
+	std::unique_ptr<PipelineState>                              pipelineState_ = nullptr;
+	PipelineState::Shader                                       shader_;
+	ID3D12GraphicsCommandList*                                  pCommandList_  = nullptr;
 };
 
 
@@ -259,6 +260,8 @@ public:
 
 	uint32_t GetID() { return id_; }
 
+	Material::MaterialData& GetMaterial() { return material_; }
+
 private:
 
 	/// ===================================================
@@ -272,6 +275,7 @@ private:
 	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
+	Material::MaterialData material_;
 
 
 };
