@@ -31,7 +31,7 @@ void PlayerBulletHitEffect::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Sphere");
 	meshRenderer_->SetMaterial("uvChecker.png");
-
+	meshRenderer_->SetColor({ 1,1,1,0.5f });
 
 
 	particleSystem_ = AddComponent<ParticleSystem>(512, "Triangle");
@@ -79,13 +79,13 @@ void PlayerBulletHitEffect::Update() {
 	Vec3 dir = pTopDownCamera_->GetPosition() - GetPosition();
 	pTransform_->quaternion = Quaternion::LockAt({}, dir.Normalize());
 
-	meshRenderer_->SetColor(
-		{ 1.0f, 1.0f, 1.0f, 
-		std::lerp(
-			0.5f, 0.0f,
-			Ease::In::Back(1.0f - std::clamp(lifeTime_ / 2.0f, 0.0f, 1.0f))
-		) }
-	);
+	//meshRenderer_->SetColor(
+	//	{ 1.0f, 1.0f, 1.0f, 
+	//	std::lerp(
+	//		0.5f, 0.0f,
+	//		Ease::In::Back(1.0f - std::clamp(lifeTime_ / 2.0f, 0.0f, 1.0f))
+	//	) }
+	//);
 
 	lifeTime_ -= Time::DeltaTime();
 

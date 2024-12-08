@@ -102,6 +102,7 @@ void ParticleSystem::Initialize() {
 
 
 void ParticleSystem::Update() {
+	emitter_->Update(particleStartupFunc_);
 
 	/// ビルボード用行列の作成
 	if(useBillboard_) {
@@ -164,7 +165,6 @@ void ParticleSystem::Update() {
 		}
 	}
 
-	emitter_->Update(particleStartupFunc_);
 }
 
 void ParticleSystem::Draw() {

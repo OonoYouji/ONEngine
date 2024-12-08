@@ -15,22 +15,22 @@
 void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _particleArray, ParticleSystem* _particleSystem) {
 
 	/// other pointer
-	pParticleArray_  = _particleArray;
+	pParticleArray_ = _particleArray;
 	pParticleSystem_ = _particleSystem;
 
 
 	/// 出現する形状と方法
 	emissionShape_ = static_cast<int32_t>(EMISSION_SHAPE::BOX);
-	emissionType_  = static_cast<int32_t>(EMISSION_TYEP::TIME);
+	emissionType_ = static_cast<int32_t>(EMISSION_TYEP::TIME);
 
 	SetParticleEmitterFlags(PARTICLE_EMITTER_NONE);
 
 	/// particle emission time
-	rateOverTime_     = 1.0f;
+	rateOverTime_ = 1.0f;
 	rateOverDistance_ = 1.0f;
 
-	currentTime_      = rateOverTime_;
-	currentDistance_  = rateOverDistance_;
+	currentTime_ = rateOverTime_;
+	currentDistance_ = rateOverDistance_;
 
 
 	/// particle emission count
@@ -61,7 +61,7 @@ void ParticleEmitter::Update(std::function<void(Particle*)> _particleStartupFunc
 	/// バーストの処理
 	if(isBurst_) {
 
-		burstTime_         -= Time::DeltaTime();
+		burstTime_ -= Time::DeltaTime();
 		burstRateOverTime_ -= Time::DeltaTime();
 
 		if(burstRateOverTime_ <= 0.0f) {
@@ -97,14 +97,14 @@ void ParticleEmitter::Debug() {
 			ImGui::SeparatorText("type time");
 
 			ImGui::DragFloat("rate over time", &rateOverTime_, 0.05f);
-			ImGui::DragFloat("current time",   &currentTime_,  0.05f);
+			ImGui::DragFloat("current time", &currentTime_, 0.05f);
 
 		} else {
 
 			ImGui::SeparatorText("type distance");
 
 			ImGui::DragFloat("rate over distance", &rateOverDistance_, 0.05f);
-			ImGui::DragFloat("current distance",   &currentDistance_,  0.05f);
+			ImGui::DragFloat("current distance", &currentDistance_, 0.05f);
 
 		}
 
@@ -116,7 +116,7 @@ void ParticleEmitter::Debug() {
 
 		ImGui::SeparatorText("shape");
 
-		int currentShapeIndex       = static_cast<int>(emissionShape_);
+		int currentShapeIndex = static_cast<int>(emissionShape_);
 		const char* emitterShapes[] = { "Box", "Sphere" };
 		if(ImGui::Combo("emitter shape", &currentShapeIndex, emitterShapes, 2)) {
 			emissionShape_ = static_cast<int32_t>(currentShapeIndex);
@@ -146,9 +146,9 @@ void ParticleEmitter::Debug() {
 
 		ImGui::SeparatorText("particle emission count");
 
-		ImGui::DragInt("emission count",        reinterpret_cast<int*>(&emissionCount_), 1, 0, maxParticleCount_);
+		ImGui::DragInt("emission count", reinterpret_cast<int*>(&emissionCount_), 1, 0, maxParticleCount_);
 		ImGui::DragInt("current particle count", reinterpret_cast<int*>(&currentParticleCount_), 0);
-		ImGui::DragInt("max particle count",    reinterpret_cast<int*>(&maxParticleCount_),     0);
+		ImGui::DragInt("max particle count", reinterpret_cast<int*>(&maxParticleCount_), 0);
 
 		ImGui::TreePop();
 	}
@@ -173,6 +173,7 @@ void ParticleEmitter::Emit(std::function<void(Particle*)> _particleStartupFunc) 
 			pParticleArray_->back()->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
 
 			_particleStartupFunc(pParticleArray_->back().get());
+			pParticleArray_->back()->GetTransform()->Update();
 
 		} else {
 			/// ここに入るときはすでに最大値分配列を作成している
@@ -180,8 +181,9 @@ void ParticleEmitter::Emit(std::function<void(Particle*)> _particleStartupFunc) 
 			/// 1, isAliveがfalseになっているオブジェクトを探す
 			/// 2, 見つかったオブジェクトを使用してパーティクルを発生させる
 
-			auto itr = std::find_if( pParticleArray_->begin(),  pParticleArray_->end(),
-									[](const std::unique_ptr<Particle>& particle) {
+			auto itr = std::find_if(
+				pParticleArray_->begin(), pParticleArray_->end(),
+				[](const std::unique_ptr<Particle>& particle) {
 				if(!particle->GetIsAlive()) {
 					return true;
 				}
@@ -189,7 +191,7 @@ void ParticleEmitter::Emit(std::function<void(Particle*)> _particleStartupFunc) 
 			});
 
 			/// 見つからなかったらこれ以降もないので終了する
-			if(itr ==  pParticleArray_->end()) {
+			if(itr == pParticleArray_->end()) {
 				break;
 			}
 
@@ -204,15 +206,16 @@ void ParticleEmitter::Emit(std::function<void(Particle*)> _particleStartupFunc) 
 
 			_particleStartupFunc((*itr).get());
 
+			(*itr)->GetTransform()->Update();
 		}
 
 	}
 }
 
 void ParticleEmitter::SetBurst(bool _isBurst, float _burstTime, float _rateOverTime) {
-	isBurst_              = _isBurst;
-	burstTime_            = _burstTime;
-	burstRateOverTime_    = _rateOverTime;
+	isBurst_ = _isBurst;
+	burstTime_ = _burstTime;
+	burstRateOverTime_ = _rateOverTime;
 	maxBurstRateOverTime_ = _rateOverTime;
 }
 
