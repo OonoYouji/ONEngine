@@ -148,6 +148,11 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 			size_t index = 0;
 			for(auto& keyframe : _motion->keyframes_) {
 				ImGui::Text("index(%d)", index);
+				
+				ImGui::DragFloat(std::format("time##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.time, 0.1f);
+				
+				ImGui::Spacing();
+
 				ImGui::DragFloat3(std::format("position##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.position.x, 0.1f);
 				ImGui::DragFloat3(std::format("rotate##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.rotate.x, std::numbers::pi_v<float> * 0.1f);
 				ImGui::DragFloat3(std::format("scale##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.scale.x, 0.1f);

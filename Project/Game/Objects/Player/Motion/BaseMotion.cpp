@@ -83,6 +83,15 @@ BaseMotion::~BaseMotion() {}
 void BaseMotion::Start() {
 	currentTime_ = 0.0f;
 	isActive_ = true;
+
+	currentKeyframeTime_ = 0.0f;
+	currentKeyframeIndex_ = 0;
+
+	/// アニメーションの最大時間を計算
+	maxTime_ = 0.0f;
+	for(auto& keyframe : keyframes_) {
+		maxTime_ += keyframe.time;
+	}
 }
 
 
@@ -94,6 +103,7 @@ void BaseMotion::Update() {
 
 	/// 時間を増やす
 	currentTime_ += Time::DeltaTime();
+	currentKeyframeTime_ += Time::DeltaTime();
 	currentTime_ = std::min(currentTime_, maxTime_);
 
 	/// すべてクリアする
@@ -107,15 +117,27 @@ void BaseMotion::Update() {
 		scales_.push_back(keyframe.scale);
 	}
 
-	size_t segmentCount = keyframes_.size() * 6;
-	float t = currentTime_ / maxTime_;
+	/// lerpTの計算,
+	float t = static_cast<float>(currentKeyframeIndex_) / static_cast<float>(keyframes_.size() - 1);
+	t += (1.0f / static_cast<float>(keyframes_.size() - 1)) * (currentKeyframeTime_ / keyframes_[currentKeyframeIndex_].time);
 
 	currentKeyframe_.position = CaclationSpline(positions_, t);
 	currentKeyframe_.rotate   = CaclationSpline(rotates_,   t);
 	currentKeyframe_.scale    = CaclationSpline(scales_,    t);
 
-	/// 終わったのか確認
 
+	/// 次のkeyframeに行くかどうか
+	if(currentKeyframeTime_ >= keyframes_[currentKeyframeIndex_].time) {
+		/// すべてのkeyframeを回った
+		if(currentKeyframeIndex_ == keyframes_.size() - 1) {
+			isActive_ = false;
+		} else {
+			currentKeyframeIndex_++;
+			currentKeyframeTime_ = 0.0f;
+		}
+	}
+
+	/// 終わったのか確認
 	if(currentTime_ >= maxTime_) {
 		isActive_ = false;
 	}
