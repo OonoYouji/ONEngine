@@ -136,6 +136,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Editor\PlayerMotionEditor.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

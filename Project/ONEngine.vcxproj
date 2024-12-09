@@ -161,6 +161,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerDushBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerDushBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
+    <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
     <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />

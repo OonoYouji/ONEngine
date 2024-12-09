@@ -11,17 +11,12 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
 
-/// graphics
-#include "GraphicManager/ModelManager/ModelManager.h"
-
-/// components
-#include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 #include "Math/LerpShortAngle.h"
 
 /// game
 #include "Objects/Camera/GameCamera.h"
-
+#include "Mesh/PlayerMesh.h"
 
 
 Player::Player(GameCamera* _gameCamera)
@@ -38,8 +33,9 @@ void Player::Initialize() {
 	/// ===================================================
 
 	/// component setting
-	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Player");
+	mesh_ = new PlayerMesh();
+	mesh_->Initialize();
+	mesh_->SetParent(pTransform_);
 
 	/// behavior
 	behaviorManager_.reset(new PlayerBehaviorManager(this));

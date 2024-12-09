@@ -139,7 +139,6 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 		ImGui::Spacing();
 
 		ImGui::DragFloat("max time", &_motion->maxTime_, 0.025f);
-		ImGui::TreePop();
 
 		if(ImGui::TreeNode("keyframes")) {
 

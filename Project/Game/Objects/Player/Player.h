@@ -42,8 +42,7 @@ private:
 
 	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
 
-	/// components
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class PlayerMesh* mesh_ = nullptr;
 
 	/// other class
 	class GameCamera* pGameCamera_ = nullptr;
