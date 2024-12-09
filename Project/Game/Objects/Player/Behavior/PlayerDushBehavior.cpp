@@ -27,7 +27,7 @@ void PlayerDushBehavior::Update() {
 
 	dushVelocity_ = dushVelocity_.Normalize() * dushSpeed_;
 
-	player_->SetPosition(player_->GetPosition() + dushVelocity_);
+	player_->GetCommonData().position += dushVelocity_;
 }
 
 void PlayerDushBehavior::Exit() {

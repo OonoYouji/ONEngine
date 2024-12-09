@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Editor\PlayerMotionEditor.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -261,6 +262,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Editor\PlayerMotionEditor.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />

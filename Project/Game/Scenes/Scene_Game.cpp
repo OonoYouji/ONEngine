@@ -12,6 +12,8 @@
 #include "Objects/Player/Player.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
+#include "Objects/BackgroundObject/Stage/Stage.h"
+
 
 /// ===================================================
 /// 初期化処理
@@ -31,6 +33,7 @@ void Scene_Game::Initialize() {
 	createObjects.reserve(16);
 	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
+	createObjects.push_back(new Stage());
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {

@@ -41,7 +41,7 @@ void PlayerRootBehavior::Update() {
 	Mat4 matCameraRotateY = Mat4::MakeRotateY(GetYawFromQuaternion(player_->GetGameCamera()->GetQuaternion()));
 	data.velocity = Mat4::TransformNormal(data.velocity, matCameraRotateY);
 
-	player_->SetPosition(player_->GetPosition() + data.velocity);
+	player_->GetCommonData().position += data.velocity;
 }
 
 void PlayerRootBehavior::Exit() {

@@ -63,7 +63,7 @@ void Player::Update() {
 	behaviorManager_->Update();
 
 	const MotionKeyframe& keyframe = behaviorManager_->GetMotion()->GetMotionKeyframe();
-	pTransform_->position = keyframe.position;
+	pTransform_->position = currentCommonData_.position + keyframe.position;
 	pTransform_->rotate   = keyframe.rotate;
 	pTransform_->scale    = keyframe.scale;
 }
