@@ -252,6 +252,7 @@
     <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
     <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
+    <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

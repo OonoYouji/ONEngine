@@ -9,6 +9,7 @@
 
 /// game
 #include "CustomMath/Json/CreateJsonFile.h"
+#include "CustomMath/ImGui/Combo.h"
 #include "../Player.h"
 
 /// behavior
@@ -40,13 +41,22 @@ void PlayerBehaviorManager::Initialize() {
 		);
 	}
 
-	tmp.reset(new BaseMotion(pPlayer_));
+
+
+	selectedEditMotionIndex_ = 0;
+	selectMotionKey_ = "default";
+
+	motions_["default"].reset(new BaseMotion(pPlayer_));
+	motions_["aaa"].reset(new BaseMotion(pPlayer_));
+	motions_["bbb"].reset(new BaseMotion(pPlayer_));
+	motions_["ccc"].reset(new BaseMotion(pPlayer_));
+
 }
 
 
 void PlayerBehaviorManager::Update() {
 
-	tmp->Update();
+	motions_[selectMotionKey_]->Update();
 
 
 	if(currentBehavior_) {
@@ -108,8 +118,10 @@ void PlayerBehaviorManager::Debugging() {
 		//}
 
 
+		SelectEditMotion();
+
 		//AddMotion(tmp.get());
-		MotionEdit(tmp.get());
+		MotionEdit(selectMotionKey_, motions_[selectMotionKey_].get());
 
 		ImGui::TreePop();
 	}
@@ -121,7 +133,7 @@ void PlayerBehaviorManager::AddMotion(BaseMotion* _motion) {
 	}
 }
 
-void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
+void PlayerBehaviorManager::MotionEdit(const std::string& _key, BaseMotion* _motion) {
 	if(ImGui::TreeNode("motion edit")) {
 
 		if(ImGui::Button("save json")) {
@@ -151,24 +163,44 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 			_motion->keyframes_.push_back(_motion->keyframes_.back());
 		}
 
-		if(ImGui::TreeNode("keyframes")) {
+		KeyframeEdit(_motion->keyframes_);
 
-			size_t index = 0;
-			for(auto& keyframe : _motion->keyframes_) {
-				ImGui::Text("index(%d)", index);
-				
-				ImGui::DragFloat(std::format("time##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.time, 0.1f);
-				
-				ImGui::Spacing();
+		ImGui::TreePop();
+	}
 
-				ImGui::DragFloat3(std::format("position##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.position.x, 0.1f);
-				ImGui::DragFloat3(std::format("rotate##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.rotate.x, std::numbers::pi_v<float> * 0.1f);
-				ImGui::DragFloat3(std::format("scale##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.scale.x, 0.1f);
+}
 
-				index++;
+void PlayerBehaviorManager::KeyframeEdit(std::vector<MotionKeyframe>& _keyframes) {
+	if(ImGui::TreeNode("keyframes")) {
+
+		size_t index = 0;
+
+		for(auto itr = _keyframes.begin(); itr != _keyframes.end(); index++) {
+			MotionKeyframe& keyframe = (*itr);
+			void* pointer = reinterpret_cast<void*>(&keyframe);
+
+			ImGui::Text("index(%d) ==============================", index);
+
+			ImGui::DragFloat(std::format("time##{:p}", pointer).c_str(), &keyframe.time, 0.1f);
+
+			ImGui::Spacing();
+
+			ImGui::DragFloat3(std::format("position##{:p}", pointer).c_str(), &keyframe.position.x, 0.1f);
+			ImGui::DragFloat3(std::format("rotate##{:p}", pointer).c_str(), &keyframe.rotate.x, std::numbers::pi_v<float> *0.1f);
+			ImGui::DragFloat3(std::format("scale##{:p}", pointer).c_str(), &keyframe.scale.x, 0.1f);
+
+			if(ImGui::Button(std::format("remove keyframe##{:p}", pointer).c_str())) {
+
+				/// keyframeは4以上じゃなければ削除できない
+				if(_keyframes.size() > 4) {
+					itr = _keyframes.erase(itr);
+				}
+			} else {
+				itr++;
 			}
 
-			ImGui::TreePop();
+			ImGui::Spacing();
+			ImGui::Spacing();
 		}
 
 		ImGui::TreePop();
@@ -177,7 +209,17 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 }
 
 void PlayerBehaviorManager::SelectEditMotion() {
-	//ImGui::Combo();
+
+	std::vector<std::string> motionNames;
+	motionNames.reserve(motions_.size());
+	for(auto& map : motions_) {
+		motionNames.push_back(map.first);
+	}
+
+	ImGuiCombo(selectedEditMotionIndex_, motionNames);
+
+	selectMotionKey_ = motionNames[selectedEditMotionIndex_];
+
 }
 
 
