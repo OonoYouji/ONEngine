@@ -23,7 +23,7 @@ public:
 	void Debugging();
 
 
-	void AddMotion();
+	void AddMotion(BaseMotion* _motion);
 
 	void MotionEdit(BaseMotion* _motion);
 

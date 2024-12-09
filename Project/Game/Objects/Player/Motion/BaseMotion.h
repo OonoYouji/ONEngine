@@ -11,7 +11,7 @@
 struct MotionKeyframe {
 	Vec3 position;
 	Vec3 rotate;
-	Vec3 scale;
+	Vec3 scale = Vec3::kOne;
 };
 
 class BaseMotion {

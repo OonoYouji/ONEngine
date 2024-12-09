@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "BaseMotion.h"
 
 /// std
@@ -93,6 +94,7 @@ void BaseMotion::Update() {
 
 	/// 時間を増やす
 	currentTime_ += Time::DeltaTime();
+	currentTime_ = std::min(currentTime_, maxTime_);
 
 	/// すべてクリアする
 	positions_.clear();
@@ -105,9 +107,12 @@ void BaseMotion::Update() {
 		scales_.push_back(keyframe.scale);
 	}
 
-	currentKeyframe_.position = CaclationSpline(positions_, currentTime_);
-	currentKeyframe_.rotate   = CaclationSpline(rotates_,   currentTime_);
-	currentKeyframe_.scale    = CaclationSpline(scales_,    currentTime_);
+	size_t segmentCount = keyframes_.size() * 6;
+	float t = currentTime_ / maxTime_;
+
+	currentKeyframe_.position = CaclationSpline(positions_, t);
+	currentKeyframe_.rotate   = CaclationSpline(rotates_,   t);
+	currentKeyframe_.scale    = CaclationSpline(scales_,    t);
 
 	/// 終わったのか確認
 

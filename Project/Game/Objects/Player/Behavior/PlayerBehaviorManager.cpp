@@ -107,16 +107,16 @@ void PlayerBehaviorManager::Debugging() {
 		//}
 
 
-		AddMotion();
+		AddMotion(tmp.get());
 		MotionEdit(tmp.get());
 
 		ImGui::TreePop();
 	}
 }
 
-void PlayerBehaviorManager::AddMotion() {
+void PlayerBehaviorManager::AddMotion(BaseMotion* _motion) {
 	if(ImGui::Button("add")) {
-
+		_motion->keyframes_.push_back(_motion->keyframes_.back());
 	}
 }
 
@@ -151,6 +151,8 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 				ImGui::DragFloat3(std::format("position##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.position.x, 0.1f);
 				ImGui::DragFloat3(std::format("rotate##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.rotate.x, std::numbers::pi_v<float> * 0.1f);
 				ImGui::DragFloat3(std::format("scale##{:p}", reinterpret_cast<void*>(&keyframe)).c_str(), &keyframe.scale.x, 0.1f);
+
+				index++;
 			}
 
 			ImGui::TreePop();
