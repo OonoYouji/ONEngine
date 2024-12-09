@@ -24,7 +24,6 @@
     <FxCompile Include="Resources\Shaders\Sprite\Sprite.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Editor\PlayerMotionEditor.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -139,7 +138,6 @@
     <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Editor\PlayerMotionEditor.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -253,6 +251,7 @@
     <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
+    <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

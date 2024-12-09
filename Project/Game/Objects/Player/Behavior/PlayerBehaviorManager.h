@@ -31,6 +31,8 @@ public:
 
 	BaseMotion* GetMotion() const { return tmp.get(); }
 
+	void SaveMotionToJson(const std::string& _fileName, BaseMotion* _motion);
+
 private:
 	class Player* pPlayer_ = nullptr;
 	std::unique_ptr<BaseMotion> tmp;

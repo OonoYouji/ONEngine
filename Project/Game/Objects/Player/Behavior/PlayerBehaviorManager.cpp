@@ -8,6 +8,7 @@
 #include <imgui.h>
 
 /// game
+#include "CustomMath/Json/CreateJsonFile.h"
 #include "../Player.h"
 
 /// behavior
@@ -107,7 +108,7 @@ void PlayerBehaviorManager::Debugging() {
 		//}
 
 
-		AddMotion(tmp.get());
+		//AddMotion(tmp.get());
 		MotionEdit(tmp.get());
 
 		ImGui::TreePop();
@@ -116,12 +117,16 @@ void PlayerBehaviorManager::Debugging() {
 
 void PlayerBehaviorManager::AddMotion(BaseMotion* _motion) {
 	if(ImGui::Button("add")) {
-		_motion->keyframes_.push_back(_motion->keyframes_.back());
+
 	}
 }
 
 void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 	if(ImGui::TreeNode("motion edit")) {
+
+		if(ImGui::Button("save json")) {
+			SaveMotionToJson("test", _motion);
+		}
 
 		/// 再生する
 		if(ImGui::Button("play")) {
@@ -139,6 +144,12 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 		ImGui::Spacing();
 
 		ImGui::DragFloat("max time", &_motion->maxTime_, 0.025f);
+
+		ImGui::Spacing();
+
+		if(ImGui::Button("add keyframe")) {
+			_motion->keyframes_.push_back(_motion->keyframes_.back());
+		}
 
 		if(ImGui::TreeNode("keyframes")) {
 
@@ -167,6 +178,27 @@ void PlayerBehaviorManager::MotionEdit(BaseMotion* _motion) {
 
 void PlayerBehaviorManager::SelectEditMotion() {
 	//ImGui::Combo();
+}
+
+
+
+void PlayerBehaviorManager::SaveMotionToJson(const std::string& _fileName, BaseMotion* _motion) {
+
+	json root = json::object();
+	
+	for(size_t i = 0; i < _motion->keyframes_.size(); ++i) {
+		MotionKeyframe& keyframe = _motion->keyframes_[i];
+		json& item = root[std::to_string(i)];
+
+		item["time"] = keyframe.time;
+		item["position"] = json::array({ keyframe.position.x, keyframe.position.y, keyframe.position.z });
+		item["rotate"] = json::array({ keyframe.rotate.x, keyframe.rotate.y, keyframe.rotate.z });
+		item["scale"] = json::array({ keyframe.scale.x, keyframe.scale.y, keyframe.scale.z });
+	}
+
+
+	CreateJsonFile("./Resources/Parameters/Player/", "TestMotion", root);
+
 }
 
 
