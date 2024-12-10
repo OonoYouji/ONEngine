@@ -1,17 +1,9 @@
 #include "Sprite.hlsli"
-
-struct Transform {
-	float4x4 matWorld;
-};
-
-struct ViewProjection {
-	float4x4 matVp;
-};
-
+#include "../Camera/Camera.hlsli"
+#include "../Transform/Transform.hlsli"
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 ConstantBuffer<Transform> gTransform : register(b1);
-
 
 VSOutput main(VSInput input) {
 	VSOutput output;
