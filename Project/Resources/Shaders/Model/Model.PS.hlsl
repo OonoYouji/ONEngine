@@ -21,9 +21,10 @@ PSOutput main(VSOutput input) {
 	if (gMaterial.isLighting) {
 
 		float3 toEye        = normalize(gCamera.position - input.worldPosition);
+		float3 halfVector   = normalize(-gDirLight.direction + toEye);
 		float3 reflectLight = reflect(gDirLight.direction, normalize(input.normal));
-		float RdotE         = dot(reflectLight, toEye);
-		float specularPow   = pow(saturate(RdotE), gMaterial.shininess);
+		float NdotH         = dot(normalize(input.normal), halfVector);
+		float specularPow   = pow(saturate(NdotH), gMaterial.shininess);
 
 		float NdotL         = dot(normalize(input.normal), -gDirLight.direction);
 		float cos           = pow(NdotL * 0.5f + 0.5f, 2.0f);
