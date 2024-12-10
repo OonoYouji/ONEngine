@@ -84,6 +84,10 @@ void BaseCamera::BaseInitialize() {
 	viewProjectionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
 	viewProjectionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&matVpData_));
 	*matVpData_ = matVp_;
+	
+	cameraPostionBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Vec3));
+	cameraPostionBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&worldPosData));
+	*worldPosData = pTransform_->position;
 
 	Transfer();
 }
@@ -136,6 +140,8 @@ void BaseCamera::Transfer() {
 	}
 
 	*matVpData_ = matVp_;
+	*worldPosData = pTransform_->position;
+
 }
 
 

@@ -254,5 +254,8 @@
     <None Include="Resources\Shaders\Model\Model.hlsli" />
     <None Include="Resources\Shaders\Particle\Particle.hlsli" />
     <None Include="Resources\Shaders\Sprite\Sprite.hlsli" />
+    <None Include="Resources\Shaders\Light\DirectionalLight.hlsli" />
+    <None Include="Resources\Shaders\Camera\Camera.hlsli" />
+    <None Include="Resources\Shaders\Material\Material.hlsli" />
   </ItemGroup>
 </Project>
