@@ -1,13 +1,9 @@
 #include "MeshInstancingRenderer.hlsli"
+#include "../Camera/Camera.hlsli"
 
 struct Transform {
 	float4x4 matWorld;
 };
-
-struct ViewProjection {
-	float4x4 matVp;
-};
-
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 StructuredBuffer<Transform> gTransformArray : register(t0);

@@ -7,8 +7,6 @@
     <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl" />
@@ -247,7 +245,6 @@
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
     <None Include="Resources\Shaders\Bloom\Bloom.hlsli" />
     <None Include="Resources\Shaders\Blur\Blur.hlsli" />
-    <None Include="Resources\Shaders\Floor\Floor.hlsli" />
     <None Include="Resources\Shaders\Line2D\Line2D.hlsli" />
     <None Include="Resources\Shaders\Line3D\Line3D.hlsli" />
     <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli" />
