@@ -11,7 +11,7 @@
 /// 初期化
 /// ===================================================
 void Transform::Initialize() {
-	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4));
+	transformBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(BufferData));
 	transformBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 	//UpdateMatrix();
 }
@@ -73,12 +73,13 @@ void Transform::UpdateMatrix() {
 }
 
 void Transform::BindTransform(ID3D12GraphicsCommandList* commandList, UINT rootParamIndex, Mat4* matLocal) {
-	*mappingData_ = matTransform;
+	mappingData_->matWorld = matTransform;
 
 	if(matLocal) {
-		*mappingData_ *= (*matLocal);
+		mappingData_->matWorld = (*matLocal);
 	}
 
+	mappingData_->matWorldInverseTranspose = Mat4::MakeTranspose(mappingData_->matWorld.Inverse());
 	commandList->SetGraphicsRootConstantBufferView(rootParamIndex, transformBuffer_->GetGPUVirtualAddress());
 }
 

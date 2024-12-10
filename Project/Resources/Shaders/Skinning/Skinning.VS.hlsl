@@ -1,9 +1,6 @@
 #include "Skinning.hlsli"
 #include "../Camera/Camera.hlsli"
-
-struct Transform {
-	float4x4 matWorld;
-};
+#include "../Transform/Transform.hlsli"
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 ConstantBuffer<Transform>      gTransform      : register(b1);

@@ -254,5 +254,6 @@
     <None Include="Resources\Shaders\Light\DirectionalLight.hlsli" />
     <None Include="Resources\Shaders\Camera\Camera.hlsli" />
     <None Include="Resources\Shaders\Material\Material.hlsli" />
+    <None Include="Resources\Shaders\Transform\Transform.hlsli" />
   </ItemGroup>
 </Project>

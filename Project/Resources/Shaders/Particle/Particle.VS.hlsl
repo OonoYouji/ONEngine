@@ -1,11 +1,6 @@
 #include "Particle.hlsli"
 #include "../Camera/Camera.hlsli"
-
-
-struct Transform {
-	float4x4 matWorld;
-};
-
+#include "../Transform/Transform.hlsli"
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 StructuredBuffer<Transform> gTransformArray : register(t0);
