@@ -1,5 +1,7 @@
 #include "Matrix4x4.h"
 
+#include <numbers>
+
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Quaternion.h"
@@ -234,4 +236,88 @@ Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
 		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
 		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
 	};
+}
+
+Vector3 Matrix4x4::ExtractEulerAngles(const Matrix4x4& mat, ROTATE_ORDER order) {
+	// 回転行列の要素
+	float r00 = mat.m[0][0];
+	float r01 = mat.m[0][1];
+	float r02 = mat.m[0][2];
+	float r10 = mat.m[1][0];
+	float r11 = mat.m[1][1];
+	float r12 = mat.m[1][2];
+	float r20 = mat.m[2][0];
+	float r21 = mat.m[2][1];
+	float r22 = mat.m[2][2];
+
+	Vec3 angles = { 0.0f, 0.0f, 0.0f };
+	switch(order) {
+	case XYZ:
+		if(std::abs(r02) < 0.99999f) {
+			angles.x = std::atan2(r12, r22); // pitch
+			angles.y = std::asin(-r02);              // yaw
+			angles.z = std::atan2(r01, r00); // roll
+		} else {
+			angles.x = std::atan2(-r21, r11);
+			angles.y = (r02 > 0) ? -std::numbers::pi_v<float> / 2.0f : std::numbers::pi_v<float> / 2.0f;
+			angles.z = 0.0f;
+		}
+		break;
+	case XZY:
+		if(std::abs(r01) < 0.99999f) {
+			angles.x = std::atan2(-r21, r11); // pitch
+			angles.y = std::atan2(-r02, r00); // yaw
+			angles.z = std::asin(r01);        // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = std::atan2(r20, r22);
+			angles.z = (r01 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+		}
+		break;
+	case YXZ:
+		if(std::abs(r12) < 0.99999f) {
+			angles.y = std::asin(r12); // pitch
+			angles.x = std::atan2(-r02, r22); // yaw
+			angles.z = std::atan2(-r10, r11); // roll
+		} else {
+			angles.y = (r12 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.x = std::atan2(r20, r00);
+			angles.z = 0.0f;
+		}
+		break;
+	case YZX:
+		if(std::abs(r10) < 0.99999f) {
+			angles.x = std::atan2(r20, r00); // pitch
+			angles.y = std::atan2(r12, r11); // yaw
+			angles.z = std::asin(-r10);               // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = (r10 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.z = std::atan2(-r21, r11);
+		}
+		break;
+	case ZXY:
+		if(std::abs(r21) < 0.99999f) {
+			angles.x = std::asin(-r21);             // pitch
+			angles.y = std::atan2(r20, r22); // yaw
+			angles.z = std::atan2(r01, r11); // roll
+		} else {
+			angles.x = (r21 > 0) ? -std::numbers::pi_v<float> / 2.0f : std::numbers::pi_v<float> / 2.0f;
+			angles.y = 0.0f;
+			angles.z = std::atan2(-r10, r00);
+		}
+		break;
+	case ZYX:
+		if(std::abs(r20) < 0.99999f) {
+			angles.x = std::atan2(r21, r22); // pitch
+			angles.y = std::atan2(r10, r00); // yaw
+			angles.z = std::asin(-r20);               // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = (r20 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.z = std::atan2(-r12, r11);
+		}
+		break;
+	}
+	return angles;
 }
