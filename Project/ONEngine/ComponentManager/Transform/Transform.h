@@ -17,6 +17,7 @@
 /// オブジェクトのSRTを持つ
 /// ===================================================
 class Transform final : public BaseComponent {
+public:
 
 	struct BufferData {
 		Mat4 matWorld;

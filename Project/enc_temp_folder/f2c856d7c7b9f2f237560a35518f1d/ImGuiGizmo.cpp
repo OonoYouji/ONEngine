@@ -49,6 +49,17 @@ void ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale, ROTATE_ORDER _rota
 
 	ImGui::End();
 
+	// Gizmo の使用状態を確認
+	if(ImGuizmo::IsUsing()) {
+		ImGui::Text("Gizmo is active!");
+	} else {
+		ImGui::Text("Gizmo is NOT active!");
+	}
+
+	ImGui::Text("rectMin: (%f, %f)", rectMin.x, rectMin.y);
+	ImGui::Text("rectMax: (%f, %f)", rectMax.x, rectMax.y);
+
+
 	switch(operation) {
 	case ImGuizmo::TRANSLATE:
 		/// 座標を行列から抽出

@@ -13,6 +13,7 @@
 
 /// game
 #include "CustomMath/Json/CreateJsonFile.h"
+#include "CustomMath/ImGui/ImGuiGizmo.h"
 #include "../Player.h"
 
 using namespace nlohmann;
@@ -29,7 +30,7 @@ void PlayerMotionDebugRenderer::Initialize() {
 
 	splinePathRenderer_ = AddComponent<SplinePathRenderer>(6);
 	meshInstancingRenderer_ = AddComponent<MeshInstancingRenderer>(32);
-	meshInstancingRenderer_->SetModel("Sphere");
+	meshInstancingRenderer_->SetModel("Arrow");
 
 
 	pBehaviorManage_ = pPlayer_->GetBehaviorManager();
@@ -43,6 +44,26 @@ void PlayerMotionDebugRenderer::Update() {
 	for(auto& keyframe : motion->keyframes_) {
 		splinePathRenderer_->AddAnchorPoint(keyframe.position);
 	}
+
+	
+	/// Transform Listを作りなおす
+	transformList_.clear();
+	for(auto& keyframe : motion->keyframes_) {
+		Transform transform;
+		transform.position = keyframe.position;
+		transform.rotate   = keyframe.rotate;
+		transform.Update();
+
+		transformList_.push_back(transform);
+	}
+
+	/// Rendererに渡す
+	meshInstancingRenderer_->ResetTransformArray();
+	for(auto& transform : transformList_) {
+		meshInstancingRenderer_->AddTransform(&transform);
+	}
+	
+
 }
 
 void PlayerMotionDebugRenderer::Debug() {
@@ -50,6 +71,11 @@ void PlayerMotionDebugRenderer::Debug() {
 
 	//AddMotion(tmp.get());
 	MotionEdit(pBehaviorManage_->GetMotionKey(), pBehaviorManage_->GetCurrentMotion());
+
+	for(auto& keyframe : pBehaviorManage_->GetCurrentMotion()->keyframes_) {
+		ImGuiGizmo(&keyframe.position, &keyframe.rotate, &keyframe.scale, XYZ);
+	}
+	
 }
 
 void PlayerMotionDebugRenderer::SelectEditMotion() {}

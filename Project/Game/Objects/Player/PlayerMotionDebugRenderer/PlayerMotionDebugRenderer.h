@@ -60,4 +60,6 @@ private:
 	class Player* pPlayer_ = nullptr;
 	class PlayerBehaviorManager* pBehaviorManage_ = nullptr;
 
+	std::list<Transform> transformList_;
+
 };
