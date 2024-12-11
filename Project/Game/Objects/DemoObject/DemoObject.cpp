@@ -13,21 +13,14 @@
 
 
 void DemoObject::Initialize() {
-	auto renderer = AddComponent<MeshRenderer>();
-	renderer->SetModel("axis");
-	pTransform_->rotateOrder = QUATERNION;
-
-	axis_ = Vec3(1.0f, 1.0f, 1.0f).Normalize();
-	angle_ = 0.44f;
-
-	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
+	renderer_ = AddComponent<MeshRenderer>();
+	renderer_->SetModel("Sphere");
+	renderer_->SetMaterial("uvChecker.png");
 }
 
 void DemoObject::Update() {
 	
-	matRotata_ = Quaternion::MakeRotateAxisAngle(axis_, angle_);
 
-	pTransform_->quaternion = Quaternion::MakeFromAxis(axis_, angle_);
 }
 
 void DemoObject::Debug() {

@@ -48,8 +48,6 @@ public:
 	void UpdateMatPerspective();
 	void UpdateMatOrthographic();
 
-	void Move();
-
 	void Transfer();
 
 	const Mat4& GetMatView() const { return matView_; }
@@ -57,6 +55,8 @@ public:
 	const Mat4& GetMatVp() const { return matVp_; }
 
 	ID3D12Resource* GetViewBuffer() const { return viewProjectionBuffer_.Get(); }
+
+	ID3D12Resource* GetPositionBuffer() const { return cameraPostionBuffer_.Get(); }
 
 	void SetProjectionType(PROJECTION_TYPE projectionType);
 
@@ -82,6 +82,9 @@ protected:
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> viewProjectionBuffer_ = nullptr;
 	Mat4* matVpData_ = nullptr;
+	
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraPostionBuffer_ = nullptr;
+	Vec3* worldPosData = nullptr;
 public:
 	inline BaseCamera& operator=(const BaseCamera& other) = default;
 };

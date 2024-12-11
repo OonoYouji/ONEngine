@@ -1,8 +1,5 @@
 #include "Line3D.hlsli"
-
-struct ViewProjection {
-	float4x4 matVp;
-};
+#include "../Camera/Camera.hlsli"
 
 ConstantBuffer<ViewProjection> gViewProjection : register(b0);
 
