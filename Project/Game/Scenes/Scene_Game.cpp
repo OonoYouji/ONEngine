@@ -27,6 +27,7 @@ void Scene_Game::Initialize() {
 	}
 #endif // _DEBUG
 
+	(new DemoObject)->Initialize();
 
 	/// insatnce create
 	std::vector<BaseGameObject*> createObjects;

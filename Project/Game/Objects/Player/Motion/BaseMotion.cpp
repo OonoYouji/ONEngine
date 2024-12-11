@@ -119,7 +119,8 @@ void BaseMotion::Update() {
 
 	/// lerpTの計算,
 	float t = static_cast<float>(currentKeyframeIndex_) / static_cast<float>(keyframes_.size() - 1);
-	t += (1.0f / static_cast<float>(keyframes_.size() - 1)) * (currentKeyframeTime_ / keyframes_[currentKeyframeIndex_].time);
+	t += (1.0f / static_cast<float>(keyframes_.size() - 1)) *
+		(currentKeyframeTime_ / (keyframes_[currentKeyframeIndex_].time == 0.0f ? 1.0f : keyframes_[currentKeyframeIndex_].time));
 
 	currentKeyframe_.position = CaclationSpline(positions_, t);
 	currentKeyframe_.rotate   = CaclationSpline(rotates_,   t);
@@ -137,9 +138,9 @@ void BaseMotion::Update() {
 		}
 	}
 
-	/// 終わったのか確認
+	/*/// 終わったのか確認
 	if(currentTime_ >= maxTime_) {
 		isActive_ = false;
-	}
+	}*/
 
 }

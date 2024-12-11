@@ -134,6 +134,7 @@
     <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
     <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
     <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

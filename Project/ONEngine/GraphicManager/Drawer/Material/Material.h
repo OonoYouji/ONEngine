@@ -23,7 +23,7 @@ public:
 		Vec4 color;
 		Mat4 uvTransform;
 		int isLighting = true;
-		float shininess = 0.1f;
+		float shininess = 10.0f;
 	};
 
 public:

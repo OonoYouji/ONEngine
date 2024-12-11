@@ -55,6 +55,7 @@ void Material::CreateBuffer() {
 	materialData_->color = Vec4(1, 1, 1, 1);
 	materialData_->uvTransform = Mat3::kIdentity.ToMat4();
 	materialData_->isLighting = true;
+	materialData_->shininess = 10.0f;
 }
 
 

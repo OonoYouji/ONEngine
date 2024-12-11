@@ -155,6 +155,7 @@
     <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
     <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
