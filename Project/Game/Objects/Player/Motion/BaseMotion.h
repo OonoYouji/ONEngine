@@ -18,6 +18,7 @@ struct MotionKeyframe {
 
 class BaseMotion {
 	friend class PlayerBehaviorManager;
+	friend class PlayerMotionDebugRenderer;
 public:
 
 	BaseMotion(class Player* _player);

@@ -50,9 +50,15 @@ private:
 	/// parameters
 	CommonData currentCommonData_;
 
+#ifdef _DEBUG
+	class PlayerMotionDebugRenderer* motionDebugRenderer_ = nullptr;
+#endif // _DEBUG
+
+
 public:
 
 	CommonData& GetCommonData() { return currentCommonData_; }
 	GameCamera* GetGameCamera() { return pGameCamera_; }
 
+	PlayerBehaviorManager* GetBehaviorManager() const { return behaviorManager_.get(); }
 };

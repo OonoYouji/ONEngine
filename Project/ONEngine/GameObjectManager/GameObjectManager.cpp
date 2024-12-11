@@ -348,6 +348,7 @@ void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 		ImGui::TreePop();
 	}
 
+	ImGui::Indent();
 	Transform* transform = selectObject_->GetTransform();
 	ImGuiGizmo(
 		&transform->position, &transform->rotate, &transform->scale,

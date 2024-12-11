@@ -26,14 +26,7 @@ public:
 
 	void AddBehavior(const std::string& _name, BasePlayerBehavior* _addBehavior);
 
-	void Debugging();
-
-
 	void AddMotion(BaseMotion* _motion);
-
-
-
-	BaseMotion* GetMotion() const { return motions_.at("default").get(); }
 
 	void SaveMotionToJson(const std::string& _fileName, BaseMotion* _motion);
 private:
@@ -43,23 +36,12 @@ private:
 	/// ===================================================
 
 
-	void SelectEditMotion();
-
-
-	/// <summary>
-	/// モーションの編集
-	/// </summary>
-	/// <param name="_motion"></param>
-	void MotionEdit(const std::string& _key, BaseMotion* _motion);
-
-	/// <summary>
-	/// キーフレームの編集
-	/// </summary>
-	/// <param name="_keyframes"></param>
-	void KeyframeEdit(std::vector<MotionKeyframe>& _keyframes);
-
-
 private:
+	
+	/// ===================================================
+	/// private : object
+	/// ===================================================
+
 	class Player* pPlayer_ = nullptr;
 	std::unordered_map<std::string, std::unique_ptr<BaseMotion>> motions_;
 
@@ -70,5 +52,37 @@ private:
 	/// editor parameters
 	int selectedEditMotionIndex_;
 	std::string selectMotionKey_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// <summary>
+	/// 引数のモーションを得る
+	/// </summary>
+	/// <param name="_motionKey"></param>
+	/// <returns></returns>
+	BaseMotion* GetMotion(const std::string& _motionKey) const {
+		return motions_.at(_motionKey).get();
+	}
+
+	/// <summary>
+	/// 現在のモーションを得る
+	/// </summary>
+	/// <returns></returns>
+	BaseMotion* GetCurrentMotion() const {
+		return motions_.at(selectMotionKey_).get();
+	}
+
+	/// <summary>
+	/// モーションのキーを得る
+	/// </summary>
+	/// <returns></returns>
+	const std::string& GetMotionKey() const {
+		return selectMotionKey_;
+	}
 
 };

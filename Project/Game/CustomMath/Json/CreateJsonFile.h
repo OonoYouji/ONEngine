@@ -16,7 +16,7 @@
 /// <param name="_directoryPath">  : ファイルの作成するディレクトリパス </param>
 /// <param name="_outputFileName"> : 作成するファイルの名前           </param>
 /// <param name="_jsonItme">       : jsonのデータ                   </param>
-bool CreateJsonFile(
+inline bool CreateJsonFile(
 	const std::string& _directoryPath,
 	const std::string& _outputFileName,
 	nlohmann::json& _jsonItme) {
