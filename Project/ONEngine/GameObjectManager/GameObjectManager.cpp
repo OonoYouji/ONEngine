@@ -15,6 +15,9 @@
 /// lib
 #include <Math/CreateName.h>
 
+/// game
+#include "CustomMath/ImGui/ImGuiGizmo.h"
+
 
 /// ===================================================
 /// 初期化
@@ -345,6 +348,11 @@ void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 		ImGui::TreePop();
 	}
 
+	Transform* transform = selectObject_->GetTransform();
+	ImGuiGizmo(
+		&transform->position, &transform->rotate, &transform->scale,
+		ROTATE_ORDER(transform->rotateOrder)
+	);
 
 	ImGui::End();
 }
