@@ -65,6 +65,9 @@ private:
 	void DescriptorHeapUsedCount();
 
 
+	void CreateGameObjectCMD();
+
+
 private:
 
 	/// ===================================================

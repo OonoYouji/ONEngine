@@ -28,6 +28,12 @@ enum ROTATE_ORDER : uint32_t {
 /// オブジェクトのSRTを持つ
 /// ===================================================
 class Transform final : public BaseComponent {
+
+	struct BufferData {
+		Mat4 matWorld;
+		Mat4 matWorldInverseTranspose;
+	};
+
 public:
 
 	Transform() {}
@@ -84,7 +90,7 @@ public:
 	std::list<Transform*> childs_;
 
 private:
-	Mat4* mappingData_ = nullptr;
+	BufferData* mappingData_ = nullptr;
 public:
 	inline Transform& operator= (const Transform&) = default;
 };

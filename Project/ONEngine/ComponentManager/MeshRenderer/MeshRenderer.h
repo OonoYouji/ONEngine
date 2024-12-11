@@ -67,6 +67,12 @@ public:
 	void SetColor(const Vec4& _color);
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="_shininess"></param>
+	void SetShiniess(float _shininess);
+
+	/// <summary>
 	/// マテリアルの色のゲット
 	/// </summary>
 	/// <returns></returns>

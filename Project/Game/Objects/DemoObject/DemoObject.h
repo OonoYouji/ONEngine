@@ -19,9 +19,8 @@ public:
 	void Debug()      override;
 
 private:
-	
-	Vec3  axis_;
-	float angle_;
-	Mat4  matRotata_;
+
+	class MeshRenderer* renderer_ = nullptr;
+	float shininess;
 
 };

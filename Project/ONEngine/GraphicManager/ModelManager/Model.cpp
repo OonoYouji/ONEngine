@@ -40,8 +40,8 @@ void Model::Draw(Transform* transform, Mat4* matLocal, Material* material, FillM
 void Model::DrawCall(ID3D12GraphicsCommandList* commandList, Material* material, uint32_t materialRootParamIndex, uint32_t textureRootParamIndex) {
 	if(material) {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {
-			material->BindMaterial(commandList, 2);
-			material->BindTexture(commandList, 4);
+			material->BindMaterial(commandList, materialRootParamIndex);
+			material->BindTexture(commandList, textureRootParamIndex);
 		}
 	} else {
 		for(uint32_t index = 0; index < materials_.size(); ++index) {

@@ -64,3 +64,7 @@ void MeshRenderer::SetUVPosition(const Vec2& _position) {
 void MeshRenderer::SetColor(const Vec4& _color) {
 	material_->SetColor(_color);
 }
+
+void MeshRenderer::SetShiniess(float _shininess) {
+	material_->SetSininess(_shininess);
+}

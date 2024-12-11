@@ -23,6 +23,7 @@ public:
 		Vec4 color;
 		Mat4 uvTransform;
 		int isLighting = true;
+		float shininess = 0.1f;
 	};
 
 public:
@@ -44,6 +45,8 @@ public:
 	void SetPosition(const Vec2& position);
 	void SetRotate(float rotate);
 	void SetScale(const Vec2& scale);
+
+	void SetSininess(float _shininess);
 
 	void UpdateMatrix();
 
