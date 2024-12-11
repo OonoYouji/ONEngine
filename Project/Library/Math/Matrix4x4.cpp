@@ -235,3 +235,51 @@ Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
 		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
 	};
 }
+
+Matrix4x4 Matrix4x4::DirectionToDirection(const Vector3& _from, const Vector3& _to) {
+	Vec3 cross     = Vec3::Cross(_from, _to).Normalize();
+	float cosTheta = Vec3::Dot(_from, _to);
+	float sinTheta = Vec3::Cross(_from, _to).Len();
+
+	if(cross == Vec3(0, 0, 0)) {
+		if(_from.x != 0.0f || _from.y != 0.0f) {
+			cross = { _from.y, -_from.x, 0.0f };
+		}
+	}
+	
+	//if(_from.x != 0.0f || _from.y != 0.0f) {
+	//	cross = { _from.y, -_from.x, 0.0f };
+	//}
+
+	//if(_from.x != 0.0f || _from.z != 0.0f) {
+	//	cross = { _from.z, 0.0f, -_from.x };
+	//}
+
+
+	return Matrix4x4(
+		{
+			std::pow(cross.x, 2.0f) * (1.0f - cosTheta) + cosTheta,
+			cross.x * cross.y * (1.0f - cosTheta) + cross.z * sinTheta,
+			cross.x * cross.z * (1.0f - cosTheta) + cross.y * sinTheta,
+			0.0f
+		},
+		{
+			cross.x * cross.y * (1.0f - cosTheta) - cross.z * sinTheta,
+			std::pow(cross.y, 2.0f) * (1.0f - cosTheta) + cosTheta,
+			cross.y * cross.z * (1.0f - cosTheta) + cross.x * sinTheta,
+			0.0f
+		},
+		{
+			cross.x * cross.z * (1.0f - cosTheta) + cross.y * sinTheta,
+			cross.y * cross.z * (1.0f - cosTheta) - cross.x * sinTheta,
+			std::pow(cross.z, 2.0f) * (1.0f - cosTheta) + cosTheta,
+			0.0f
+		},
+		{
+			0.0f,
+			0.0f,
+			0.0f,
+			1.0f
+		}
+	);
+}

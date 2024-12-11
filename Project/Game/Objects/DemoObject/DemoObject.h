@@ -18,9 +18,16 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void TextMatrix(const Mat4& _matrix);
+
 private:
 
-	class MeshRenderer* renderer_ = nullptr;
-	float shininess;
+	Vec3 from0;
+	Vec3 to0;
+	
+	Vec3 from1;
+	Vec3 to1;
+
+	Mat4 matRotate0, matRotate1, matRotate2;
 
 };

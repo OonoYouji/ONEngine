@@ -20,8 +20,6 @@
 void Scene_Game::Initialize() {
 
 	(new DemoObject)->Initialize();
-	(new DemoObject)->Initialize();
-	(new DemoObject)->Initialize();
 
 	mainCamera_->SetPosition({ 0, 5.5f, -17.0f });
 	mainCamera_->SetRotate({ 0.25f, 0.0f, 0.0f });

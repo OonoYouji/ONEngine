@@ -87,7 +87,7 @@ public:
 	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);
 	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
-
+	static Matrix4x4 DirectionToDirection(const Vector3& _from, const Vector3& _to);
 	
 
 public:
