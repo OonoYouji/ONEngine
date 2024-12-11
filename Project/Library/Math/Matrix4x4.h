@@ -87,7 +87,7 @@ public:
 	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);
 	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
-
+	static Vector3 ExtractEuler(const Matrix4x4& _matrix);
 	
 
 public:

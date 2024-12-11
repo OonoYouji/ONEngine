@@ -227,6 +227,9 @@ void SceneManager::Scene(ImGuiWindowFlags _imguiWindowFlags) {
 	texPos.x = std::max(texPos.x, min.x);
 	texPos.y = std::max(texPos.y, min.y + 64.0f);
 
+	sceneRectMin_ = { texPos.x, texPos.y };
+	sceneRectMax_ = sceneRectMin_ + Vec2{ texSize.x, texSize.y };
+
 	/// scene gpu handle ptr
 	auto renderTex = GetFinalRenderTex();
 	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);

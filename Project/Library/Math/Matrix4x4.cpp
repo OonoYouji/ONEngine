@@ -1,5 +1,7 @@
 #include "Matrix4x4.h"
 
+#include <numbers>
+
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Quaternion.h"
@@ -234,4 +236,33 @@ Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
 		v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
 		v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]
 	};
+}
+
+Vector3 Matrix4x4::ExtractEuler(const Matrix4x4& _matrix) {
+	// 回転行列部分を抽出
+	float R11 = _matrix.m[0][0], R12 = _matrix.m[0][1], R13 = _matrix.m[0][2];
+	float R21 = _matrix.m[1][0], R22 = _matrix.m[1][1], R23 = _matrix.m[1][2];
+	float R31 = _matrix.m[2][0], R32 = _matrix.m[2][1], R33 = _matrix.m[2][2];
+
+	// オイラー角
+	float yaw, pitch, roll;
+
+	// ピッチ（Pitch）の計算
+	if(std::abs(R31) != 1.0) {
+		pitch = std::asin(-R31);  // -sin(theta)
+		roll = std::atan2(R32, R33);
+		yaw = std::atan2(R21, R11);
+	} else {
+		// ジンバルロック時の特別処理
+		yaw = 0;
+		if(R31 == -1.0) {
+			pitch = std::numbers::pi_v<float> / 2;  // +90 degrees
+			roll = std::atan2(R12, R13);
+		} else {
+			pitch = -std::numbers::pi_v<float> / 2; // -90 degrees
+			roll = std::atan2(-R12, -R13);
+		}
+	}
+
+	return { yaw, pitch, roll };
 }

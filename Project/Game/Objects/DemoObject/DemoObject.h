@@ -1,5 +1,8 @@
 #pragma once
 
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 #include <vector>
 #include <memory>
 
@@ -17,6 +20,12 @@ public:
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+
+	void ImGuiGizmo(
+		Vec3* _position, Vec3* _rotate, Vec3* _scale, 
+		ImGuizmo::OPERATION _operation,
+		ImGuizmo::MODE _mode
+	);
 
 private:
 
