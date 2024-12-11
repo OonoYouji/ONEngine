@@ -11,6 +11,18 @@ class Vector3;
 class Vector4;
 class Quaternion;
 
+
+/// ===================================================
+/// 行列の計算方式のenum
+/// ===================================================
+enum ROTATE_ORDER : uint32_t {
+	XZY, XYZ,
+	YXZ, YZX,
+	ZYX, ZXY,
+	QUATERNION
+};
+
+
 /// ===================================================
 /// 4x4行列
 /// ===================================================
@@ -87,8 +99,8 @@ public:
 	static Vector3 Transform(const Vector3& v, const Matrix4x4& m);
 	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
-	static Vector3 ExtractEuler(const Matrix4x4& _matrix);
-	
+	static Vector3 ExtractEulerAngles(const Matrix4x4& mat, ROTATE_ORDER order);
+
 
 public:
 

@@ -238,59 +238,86 @@ Vector3 Matrix4x4::TransformNormal(const Vector3& v, const Matrix4x4& m) {
 	};
 }
 
-Vector3 Matrix4x4::ExtractEuler(const Matrix4x4& _matrix) {
+Vector3 Matrix4x4::ExtractEulerAngles(const Matrix4x4& mat, ROTATE_ORDER order) {
 	// 回転行列の要素
-	float r00 = _matrix.m[0][0];
-	float r01 = _matrix.m[1][0];
-	float r02 = _matrix.m[2][0];
-	float r10 = _matrix.m[0][1];
-	float r11 = _matrix.m[1][1];
-	float r12 = _matrix.m[2][1];
-	float r20 = _matrix.m[0][2];
-	float r21 = _matrix.m[1][2];
-	float r22 = _matrix.m[2][2];
+	float r00 = mat.m[0][0];
+	float r01 = mat.m[0][1];
+	float r02 = mat.m[0][2];
+	float r10 = mat.m[1][0];
+	float r11 = mat.m[1][1];
+	float r12 = mat.m[1][2];
+	float r20 = mat.m[2][0];
+	float r21 = mat.m[2][1];
+	float r22 = mat.m[2][2];
 
-	float pitch, yaw, roll;
-
-	// Yaw (Y軸) を arcsin(r20) で計算
-	if(std::abs(r20) < 0.99999f) {
-		pitch = std::atan2(r21, r22);  // X軸回り
-		yaw = std::asin(-r20);         // Y軸回り
-		roll = std::atan2(r10, r00);   // Z軸回り
-	} else {
-		// Gimbal Lock発生時
-		pitch = std::atan2(-r12, r11);
-		yaw = (r20 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;  // ±90度
-		roll = 0.0f;  // 任意の値
+	Vec3 angles = { 0.0f, 0.0f, 0.0f };
+	switch(order) {
+	case XYZ:
+		if(std::abs(r02) < 0.99999f) {
+			angles.x = std::atan2(r12, r22); // pitch
+			angles.y = std::asin(-r02);              // yaw
+			angles.z = std::atan2(r01, r00); // roll
+		} else {
+			angles.x = std::atan2(-r21, r11);
+			angles.y = (r02 > 0) ? -std::numbers::pi_v<float> / 2.0f : std::numbers::pi_v<float> / 2.0f;
+			angles.z = 0.0f;
+		}
+		break;
+	case XZY:
+		if(std::abs(r01) < 0.99999f) {
+			angles.x = std::atan2(-r21, r11); // pitch
+			angles.y = std::atan2(-r02, r00); // yaw
+			angles.z = std::asin(r01);        // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = std::atan2(r20, r22);
+			angles.z = (r01 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+		}
+		break;
+	case YXZ:
+		if(std::abs(r12) < 0.99999f) {
+			angles.y = std::asin(r12); // pitch
+			angles.x = std::atan2(-r02, r22); // yaw
+			angles.z = std::atan2(-r10, r11); // roll
+		} else {
+			angles.y = (r12 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.x = std::atan2(r20, r00);
+			angles.z = 0.0f;
+		}
+		break;
+	case YZX:
+		if(std::abs(r10) < 0.99999f) {
+			angles.x = std::atan2(r20, r00); // pitch
+			angles.y = std::atan2(r12, r11); // yaw
+			angles.z = std::asin(-r10);               // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = (r10 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.z = std::atan2(-r21, r11);
+		}
+		break;
+	case ZXY:
+		if(std::abs(r21) < 0.99999f) {
+			angles.x = std::asin(-r21);             // pitch
+			angles.y = std::atan2(r20, r22); // yaw
+			angles.z = std::atan2(r01, r11); // roll
+		} else {
+			angles.x = (r21 > 0) ? -std::numbers::pi_v<float> / 2.0f : std::numbers::pi_v<float> / 2.0f;
+			angles.y = 0.0f;
+			angles.z = std::atan2(-r10, r00);
+		}
+		break;
+	case ZYX:
+		if(std::abs(r20) < 0.99999f) {
+			angles.x = std::atan2(r21, r22); // pitch
+			angles.y = std::atan2(r10, r00); // yaw
+			angles.z = std::asin(-r20);               // roll
+		} else {
+			angles.x = 0.0f;
+			angles.y = (r20 > 0) ? std::numbers::pi_v<float> / 2.0f : -std::numbers::pi_v<float> / 2.0f;
+			angles.z = std::atan2(-r12, r11);
+		}
+		break;
 	}
-
-	return { pitch, yaw, roll };
-
-
-	//// 回転行列部分を抽出
-	//float R11 = _matrix.m[0][0], R12 = _matrix.m[0][1], R13 = _matrix.m[0][2];
-	//float R21 = _matrix.m[1][0], R22 = _matrix.m[1][1], R23 = _matrix.m[1][2];
-	//float R31 = _matrix.m[2][0], R32 = _matrix.m[2][1], R33 = _matrix.m[2][2];
-
-	//// オイラー角
-	//float yaw, pitch, roll;
-
-	//// ピッチ（Pitch）の計算
-	//if(std::abs(R31) != 1.0) {
-	//	pitch = std::asin(-R31);  // -sin(theta)
-	//	roll = std::atan2(R32, R33);
-	//	yaw = std::atan2(R21, R11);
-	//} else {
-	//	// ジンバルロック時の特別処理
-	//	yaw = 0;
-	//	if(R31 == -1.0) {
-	//		pitch = std::numbers::pi_v<float> / 2;  // +90 degrees
-	//		roll = std::atan2(R12, R13);
-	//	} else {
-	//		pitch = -std::numbers::pi_v<float> / 2; // -90 degrees
-	//		roll = std::atan2(-R12, -R13);
-	//	}
-	//}
-
-	//return { yaw, pitch, roll };
+	return angles;
 }

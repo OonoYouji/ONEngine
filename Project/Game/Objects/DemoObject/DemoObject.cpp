@@ -26,12 +26,13 @@ void DemoObject::Update() {
 void DemoObject::Debug() {
 
 	ImGuiGizmo(
-		&pTransform_->position, &pTransform_->rotate, &pTransform_->scale
+		&pTransform_->position, &pTransform_->rotate, &pTransform_->scale,
+		ROTATE_ORDER(pTransform_->rotateOrder)
 	);
 
 }
 
-void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
+void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale, ROTATE_ORDER _rotateOrder) {
 
 	/// operation, modeを切り替える
 	static ImGuizmo::OPERATION operation = ImGuizmo::OPERATION::TRANSLATE;
@@ -85,16 +86,14 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 	ImGui::Text("rectMax: (%f, %f)", rectMax.x, rectMax.y);
 
 
-	/// 座標を行列から抽出
-	Mat4 matScaleInverse = {};
 	switch(operation) {
 	case ImGuizmo::TRANSLATE:
+		/// 座標を行列から抽出
 		*_position = { matTransform.m[3][0], matTransform.m[3][1], matTransform.m[3][2] };
 		break;
 	case ImGuizmo::ROTATE:
 		/// 回転率を行列から抽出
-		matScaleInverse = Mat4::MakeScale(*_scale).Inverse();
-		*_rotate = Mat4::ExtractEuler(matTransform);
+		*_rotate = Mat4::ExtractEulerAngles(matTransform, _rotateOrder);
 		break;
 	case ImGuizmo::SCALE:
 		/// 拡縮率を行列から抽出
@@ -104,12 +103,6 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 		break;
 	}
 
-
-	
-	//_scale->x = std::sqrt(matTransform.m[0][0] + matTransform.m[0][1] + matTransform.m[0][2]);
-	//_scale->y = std::sqrt(matTransform.m[1][0] + matTransform.m[1][1] + matTransform.m[1][2]);
-	//_scale->z = std::sqrt(matTransform.m[2][0] + matTransform.m[2][1] + matTransform.m[2][2]);
-	
 
 }
 

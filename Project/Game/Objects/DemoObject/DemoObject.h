@@ -22,7 +22,8 @@ public:
 	void Debug()      override;
 
 	void ImGuiGizmo(
-		Vec3* _position, Vec3* _rotate, Vec3* _scale
+		Vec3* _position, Vec3* _rotate, Vec3* _scale,
+		ROTATE_ORDER _rotateOrder
 	);
 
 private:
