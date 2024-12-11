@@ -36,6 +36,7 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 	/// operation, modeを切り替える
 	static ImGuizmo::OPERATION operation = ImGuizmo::OPERATION::TRANSLATE;
 	static ImGuizmo::MODE      mode      = ImGuizmo::MODE::WORLD;
+	static float pivotSize = 0.2f;
 
 	if(Input::TriggerKey(KeyCode::W)) { operation = ImGuizmo::OPERATION::TRANSLATE; }
 	if(Input::TriggerKey(KeyCode::E)) { operation = ImGuizmo::OPERATION::ROTATE; }
@@ -43,6 +44,9 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 
 	if(Input::TriggerKey(KeyCode::Alpha1)) { mode = ImGuizmo::MODE::WORLD; }
 	if(Input::TriggerKey(KeyCode::Alpha2)) { mode = ImGuizmo::MODE::LOCAL; }
+
+	if(Input::TriggerKey(KeyCode::Alpha3)) { pivotSize -= 0.1f; }
+	if(Input::TriggerKey(KeyCode::Alpha4)) { pivotSize += 0.1f; }
 
 
 	/// 操作する行列
@@ -59,6 +63,7 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 	CameraManager* cameraManager = CameraManager::GetInstance();
 	BaseCamera* camera = cameraManager->GetMainCamera();
 	
+	ImGuizmo::SetGizmoSizeClipSpace(pivotSize);
 	ImGuizmo::Manipulate(
 		&camera->GetMatView().m[0][0], // 視点行列（使用しない場合はnullptr）
 		&camera->GetMatProjection().m[0][0], // プロジェクション行列（使用しない場合はnullptr）
@@ -89,7 +94,7 @@ void DemoObject::ImGuiGizmo(Vec3* _position, Vec3* _rotate, Vec3* _scale) {
 	case ImGuizmo::ROTATE:
 		/// 回転率を行列から抽出
 		matScaleInverse = Mat4::MakeScale(*_scale).Inverse();
-		*_rotate = Mat4::ExtractEuler(matTransform * matScaleInverse);
+		*_rotate = Mat4::ExtractEuler(matTransform);
 		break;
 	case ImGuizmo::SCALE:
 		/// 拡縮率を行列から抽出
