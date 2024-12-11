@@ -63,7 +63,7 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 	);
 
 
-	ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { Scene(_windowFlags); });
+	//ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { Scene(_windowFlags); });
 	ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { DebugScene(_windowFlags); });
 }
 
@@ -227,9 +227,7 @@ void SceneManager::Scene(ImGuiWindowFlags _imguiWindowFlags) {
 	texPos.x = std::max(texPos.x, min.x);
 	texPos.y = std::max(texPos.y, min.y + 64.0f);
 
-	sceneRectMin_ = { texPos.x, texPos.y };
-	sceneRectMax_ = sceneRectMin_ + Vec2{ texSize.x, texSize.y };
-
+	
 	/// scene gpu handle ptr
 	auto renderTex = GetFinalRenderTex();
 	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);
@@ -252,6 +250,7 @@ void SceneManager::DebugScene(ImGuiWindowFlags _imguiWindowFlags) {
 
 	PlayControl();
 
+	ImVec2 windowPos = ImGui::GetWindowPos();
 	ImVec2 max = ImGui::GetWindowContentRegionMax();
 	ImVec2 min = ImGui::GetWindowContentRegionMin();
 	ImVec2 winSize = {
@@ -284,6 +283,9 @@ void SceneManager::DebugScene(ImGuiWindowFlags _imguiWindowFlags) {
 
 	texPos.x = std::max(texPos.x, min.x);
 	texPos.y = std::max(texPos.y, min.y + 64.0f);
+
+	sceneRectMin_ = { texPos.x + windowPos.x, texPos.y + windowPos.y };
+	sceneRectMax_ = { texSize.x, texSize.y };
 
 	/// scene gpu handle ptr
 	auto renderTex = GetFinalRenderTex();
