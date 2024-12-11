@@ -56,6 +56,10 @@ public:
 
 	class DirectionalLight* GetDirectionalLight();
 
+
+	const Vec2& GetSceneRectMin() const { return sceneRectMin_; }
+	const Vec2& GetSceneRectMax() const { return sceneRectMax_; }
+
 private:
 
 	void Load(const std::string& _sceneName);
@@ -89,6 +93,9 @@ private:
 
 	std::vector<class SceneLayer*> sceneLayers_;
 	std::unique_ptr<RenderTexture> finalRenderTex_;
+
+
+	Vec2 sceneRectMin_, sceneRectMax_;
 
 private:
 	SceneManager(const SceneManager&) = delete;
