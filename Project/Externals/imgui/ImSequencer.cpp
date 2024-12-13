@@ -23,6 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
 #include "ImSequencer.h"
 #include "imgui.h"
 #include "imgui_internal.h"
