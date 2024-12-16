@@ -241,10 +241,12 @@
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="TestRenderer\BaseRenderer\BaseRenderable.cpp" />
+    <ClCompile Include="TestRenderer\BaseRenderable\BaseRenderable.cpp" />
     <ClCompile Include="TestRenderer\BaseRenderer\BaseRenderer.cpp" />
     <ClCompile Include="TestRenderer\BaseRenderingFramework\BaseRenderingFramework.cpp" />
     <ClCompile Include="TestRenderer\BaseRenderingFramework\GameRenderingFramework.cpp" />
+    <ClCompile Include="TestRenderer\Renderers\ModelRenderable.cpp" />
+    <ClCompile Include="TestRenderer\Renderers\ModelRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -350,10 +352,12 @@
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="TestRenderer\BaseRenderer\BaseRenderable.h" />
+    <ClInclude Include="TestRenderer\BaseRenderable\BaseRenderable.h" />
     <ClInclude Include="TestRenderer\BaseRenderer\BaseRenderer.h" />
     <ClInclude Include="TestRenderer\BaseRenderingFramework\BaseRenderingFramework.h" />
     <ClInclude Include="TestRenderer\BaseRenderingFramework\GameRenderingFramework.h" />
+    <ClInclude Include="TestRenderer\Renderers\ModelRenderable.h" />
+    <ClInclude Include="TestRenderer\Renderers\ModelRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
