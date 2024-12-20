@@ -11,17 +11,13 @@
 #include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
 
-/// graphics
-#include "GraphicManager/ModelManager/ModelManager.h"
-
-/// components
-#include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 #include "Math/LerpShortAngle.h"
 
 /// game
 #include "Objects/Camera/GameCamera.h"
-
+#include "Mesh/PlayerMesh.h"
+#include "PlayerMotionDebugRenderer/PlayerMotionDebugRenderer.h"
 
 
 Player::Player(GameCamera* _gameCamera)
@@ -38,13 +34,20 @@ void Player::Initialize() {
 	/// ===================================================
 
 	/// component setting
-	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Player");
+	mesh_ = new PlayerMesh();
+	mesh_->Initialize();
+	mesh_->SetParent(pTransform_);
 
 	/// behavior
 	behaviorManager_.reset(new PlayerBehaviorManager(this));
 	behaviorManager_->Initialize();
 	
+#ifdef _DEBUG
+	motionDebugRenderer_ = new PlayerMotionDebugRenderer(this);
+	motionDebugRenderer_->Initialize();
+	motionDebugRenderer_->SetParent(pTransform_);
+#endif // _DEBUG
+
 
 	/// ===================================================
 	/// json variable io
@@ -61,10 +64,14 @@ void Player::Update() {
 	ApplyVariables();
 
 	behaviorManager_->Update();
+
+	const MotionKeyframe& keyframe = behaviorManager_->GetCurrentMotion()->GetMotionKeyframe();
+	pTransform_->position = currentCommonData_.position + keyframe.position;
+	pTransform_->rotate   = keyframe.rotate;
+	pTransform_->scale    = keyframe.scale;
 }
 
 void Player::Debug() {
-	behaviorManager_->Debugging();
 }
 
 

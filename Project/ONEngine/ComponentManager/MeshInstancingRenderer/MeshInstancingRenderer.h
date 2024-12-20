@@ -76,7 +76,7 @@ private:
 
 	/// buffer, 
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingData_ = nullptr;
+	Transform::BufferData*                 mappingData_ = nullptr;
 	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
 	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
 

@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Math/Vector3.h"
+#include "Math/Matrix4x4.h"
 
 /// ===================================================
 /// 三次元での回転を表すクラス
@@ -43,6 +44,14 @@ public:
 	/// <param name="theta">  : 回転率									 </param>
 	/// <returns>             return: axisを基にtheta分回転させたquaternion </returns>
 	static Quaternion MakeFromAxis(const Vec3& axis, float theta);
+
+	/// <summary>
+	/// 回転行列を生成する
+	/// </summary>
+	/// <param name="axis"></param>
+	/// <param name="theta"></param>
+	/// <returns></returns>
+	static Mat4 MakeRotateAxisAngle(const Vec3& axis, float theta);
 
 	/// <summary>
 	/// 特定の方向を見る関数

@@ -7,8 +7,6 @@
     <FxCompile Include="Resources\Shaders\Bloom\Bloom.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Blur\Blur.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl" />
-    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.GS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line2D\Line2D.VS.hlsl" />
@@ -35,6 +33,7 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerDushBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
@@ -130,8 +129,13 @@
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
+    <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
+    <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.cpp" />
+    <ClCompile Include="Game\CustomMath\ImGui\ImGuiGizmo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -145,6 +149,7 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerDushBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.h" />
+    <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
@@ -241,19 +246,29 @@
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
+    <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
+    <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
+    <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
+    <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
+    <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.h" />
+    <ClInclude Include="Game\CustomMath\ImGui\ImGuiGizmo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
     <None Include="Resources\Shaders\Bloom\Bloom.hlsli" />
     <None Include="Resources\Shaders\Blur\Blur.hlsli" />
-    <None Include="Resources\Shaders\Floor\Floor.hlsli" />
     <None Include="Resources\Shaders\Line2D\Line2D.hlsli" />
     <None Include="Resources\Shaders\Line3D\Line3D.hlsli" />
     <None Include="Resources\Shaders\LuminanceExtraction\LuminanceExtraction.hlsli" />
     <None Include="Resources\Shaders\Model\Model.hlsli" />
     <None Include="Resources\Shaders\Particle\Particle.hlsli" />
     <None Include="Resources\Shaders\Sprite\Sprite.hlsli" />
+    <None Include="Resources\Shaders\Light\DirectionalLight.hlsli" />
+    <None Include="Resources\Shaders\Camera\Camera.hlsli" />
+    <None Include="Resources\Shaders\Material\Material.hlsli" />
+    <None Include="Resources\Shaders\Transform\Transform.hlsli" />
   </ItemGroup>
 </Project>

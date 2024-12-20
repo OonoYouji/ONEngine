@@ -54,6 +54,7 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
+		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2);		///- camera 
 
 		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -89,7 +90,7 @@ Model* ModelManager::Load(const std::string& filePath) {
 
 	Assimp::Importer importer;
 	std::string objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".obj";
-	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate);
 	if(scene == nullptr) {
 		objPath = instance->kDirectoryPath_ + filePath + "/" + filePath + ".gltf";
 		scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
@@ -420,11 +421,12 @@ void ModelManager::PostDraw() {
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(4, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
 	pDirectionalLight_->BindToCommandList(3, commandList);
 
 	for(auto& model : solid) {
 		model.transform->BindTransform(commandList, 1, model.matLocal);
-		model.model->DrawCall(commandList, model.material);
+		model.model->DrawCall(commandList, model.material, 2, 5);
 	}
 
 

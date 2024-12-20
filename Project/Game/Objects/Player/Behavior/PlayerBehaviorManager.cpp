@@ -2,11 +2,14 @@
 
 /// std
 #include <format>
+#include <numbers>
 
 /// externals
 #include <imgui.h>
 
 /// game
+#include "CustomMath/Json/CreateJsonFile.h"
+#include "CustomMath/ImGui/Combo.h"
 #include "../Player.h"
 
 /// behavior
@@ -37,9 +40,25 @@ void PlayerBehaviorManager::Initialize() {
 			behavior.second->kName_
 		);
 	}
+
+
+
+	selectedEditMotionIndex_ = 0;
+	selectMotionKey_ = "default";
+
+	motions_["default"].reset(new BaseMotion(pPlayer_));
+	motions_["aaa"].reset(new BaseMotion(pPlayer_));
+	motions_["bbb"].reset(new BaseMotion(pPlayer_));
+	motions_["ccc"].reset(new BaseMotion(pPlayer_));
+
 }
 
+
 void PlayerBehaviorManager::Update() {
+
+	motions_[selectMotionKey_]->Update();
+
+
 	if(currentBehavior_) {
 		currentBehavior_->Update();
 
@@ -59,45 +78,34 @@ void PlayerBehaviorManager::Update() {
 }
 
 
-
 void PlayerBehaviorManager::AddBehavior(const std::string& _name, BasePlayerBehavior* _addBehavior) {
 	std::unique_ptr<BasePlayerBehavior> add(_addBehavior);
 	behaviorMap_[_name] = std::move(add);
 }
 
-void PlayerBehaviorManager::Debugging() {
-	if(ImGui::TreeNode("BehaviorManager")) {
+void PlayerBehaviorManager::AddMotion(BaseMotion* _motion) {
+	if(ImGui::Button("add")) {
 
-		ImGui::SeparatorText("debug");
-		ImGui::Text(
-			std::format("current behavior: \"{}\"", currentBehavior_->kName_).c_str()
-		);
-
-		ImGui::SeparatorText("behaviors");
-
-		VariableManager* vm = VariableManager::GetInstance();
-		for(auto& behavior : behaviorMap_) {
-			if(ImGui::TreeNodeEx(
-				std::format("\"{}\"", behavior.second->kName_).c_str(),
-				ImGuiTreeNodeFlags_Framed
-				)) {
-
-
-				if(ImGui::Button(std::format(
-					"save file##{:p}",
-					reinterpret_cast<void*>(behavior.second.get())).c_str())) {
-
-					vm->SaveSpecificGroupsToJson(behavior.second->sDirectoryPath_, behavior.second->kName_);
-				}
-				vm->DebuggingSpecificGroup(behavior.second->kName_);
-
-				ImGui::TreePop();
-			}
-			
-			ImGui::Spacing();
-			ImGui::Separator();
-		}
-
-		ImGui::TreePop();
 	}
 }
+
+void PlayerBehaviorManager::SaveMotionToJson(const std::string& _fileName, BaseMotion* _motion) {
+
+	json root = json::object();
+	
+	for(size_t i = 0; i < _motion->keyframes_.size(); ++i) {
+		MotionKeyframe& keyframe = _motion->keyframes_[i];
+		json& item = root[std::to_string(i)];
+
+		item["time"] = keyframe.time;
+		item["position"] = json::array({ keyframe.position.x, keyframe.position.y, keyframe.position.z });
+		item["rotate"] = json::array({ keyframe.rotate.x, keyframe.rotate.y, keyframe.rotate.z });
+		item["scale"] = json::array({ keyframe.scale.x, keyframe.scale.y, keyframe.scale.z });
+	}
+
+
+	CreateJsonFile("./Resources/Parameters/Player/", "TestMotion", root);
+
+}
+
+

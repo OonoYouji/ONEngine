@@ -14,20 +14,16 @@
 
 
 /// ===================================================
-/// 行列の計算方式のenum
-/// ===================================================
-enum ROTATE_ORDER : uint32_t {
-	XZY, XYZ,
-	YXZ, YZX,
-	ZYX, ZXY,
-	QUATERNION
-};
-
-
-/// ===================================================
 /// オブジェクトのSRTを持つ
 /// ===================================================
 class Transform final : public BaseComponent {
+public:
+
+	struct BufferData {
+		Mat4 matWorld;
+		Mat4 matWorldInverseTranspose;
+	};
+
 public:
 
 	Transform() {}
@@ -84,7 +80,7 @@ public:
 	std::list<Transform*> childs_;
 
 private:
-	Mat4* mappingData_ = nullptr;
+	BufferData* mappingData_ = nullptr;
 public:
 	inline Transform& operator= (const Transform&) = default;
 };

@@ -31,10 +31,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Resources\Shaders\Floor\Floor.hlsli">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    <None Include="Resources\Shaders\Camera\Camera.hlsli" />
+    <None Include="Resources\Shaders\Light\DirectionalLight.hlsli" />
     <None Include="Resources\Shaders\Line2D\Line2D.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -47,6 +45,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="Resources\Shaders\Material\Material.hlsli" />
     <None Include="Resources\Shaders\Model\Model.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -59,6 +58,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+    <None Include="Resources\Shaders\Transform\Transform.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.PS.hlsl">
@@ -82,14 +82,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Blur\Blur.VS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\Floor\Floor.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\Floor\Floor.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -147,6 +139,8 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\CustomMath\ImGui\ImGuiGizmo.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Objects\Camera\Manager\BaseCamera.cpp" />
@@ -159,7 +153,10 @@
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerDushBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
+    <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
@@ -254,9 +251,14 @@
     <ClCompile Include="ONEngine\LoggingManager\Logger.cpp" />
     <ClCompile Include="ONEngine\VariableManager\VariableManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
+    <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
+    <ClInclude Include="Game\CustomMath\ImGui\ImGuiGizmo.h" />
+    <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
     <ClInclude Include="Game\Objects\Camera\GameCamera.h" />
     <ClInclude Include="Game\Objects\Camera\Manager\BaseCamera.h" />
@@ -269,7 +271,10 @@
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerDushBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
+    <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
+    <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
@@ -365,6 +370,7 @@
     <ClInclude Include="ONEngine\LoggingManager\Logger.h" />
     <ClInclude Include="ONEngine\VariableManager\VariableManager.h" />
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
+    <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

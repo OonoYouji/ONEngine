@@ -35,6 +35,10 @@ void Material::SetScale(const Vec2& scale) {
 	scale_ = scale;
 }
 
+void Material::SetSininess(float _shininess) {
+	materialData_->shininess = _shininess;
+}
+
 void Material::UpdateMatrix() {
 	materialData_->uvTransform = Mat3::MakeAffine(scale_, rotate_, position_).ToMat4();
 }
@@ -51,6 +55,7 @@ void Material::CreateBuffer() {
 	materialData_->color = Vec4(1, 1, 1, 1);
 	materialData_->uvTransform = Mat3::kIdentity.ToMat4();
 	materialData_->isLighting = true;
+	materialData_->shininess = 10.0f;
 }
 
 

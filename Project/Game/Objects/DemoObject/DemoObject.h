@@ -1,5 +1,8 @@
 #pragma once
 
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 #include <vector>
 #include <memory>
 
@@ -18,19 +21,9 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-	void OnCollisionEnter(BaseGameObject* const _collision) override;
-	void OnCollisionStay(BaseGameObject* const _collision) override;
-	void OnCollisionExit(BaseGameObject* const _collision) override;
-
 private:
-	
-	class AnimationRenderer* animationRenderer_ = nullptr;
-	class CapsuleCollider* capsuleCollider_ = nullptr;
-	std::array<Vec3, 2> positionArray_;
 
-	std::string name_;
+	class MeshRenderer* renderer_ = nullptr;
+	float shininess;
 
-	bool isCollisionEnter_= false;
-	bool isCollisionStay_= false;
-	bool isCollisionExit_= false;
 };

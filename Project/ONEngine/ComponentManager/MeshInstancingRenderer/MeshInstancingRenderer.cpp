@@ -218,14 +218,14 @@ void MeshInstancingRenderer::Draw() {
 		return;
 	}
 
-	std::vector<Mat4> matTransformArray{};
+	std::vector<Transform::BufferData> matTransformArray{};
 	for(auto& transform : transformArray_) {
 		transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
 
-		matTransformArray.push_back(transform->matTransform);
+		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse())});
 	}
 
-	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Mat4));
+	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
 
 	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
 }

@@ -6,11 +6,13 @@
 
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
-/// default objects
+/// game
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Player/Player.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
+
+#include "Objects/BackgroundObject/Stage/Stage.h"
 
 
 /// ===================================================
@@ -25,14 +27,14 @@ void Scene_Game::Initialize() {
 	}
 #endif // _DEBUG
 
-
+	(new DemoObject)->Initialize();
 
 	/// insatnce create
 	std::vector<BaseGameObject*> createObjects;
 	createObjects.reserve(16);
 	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
-
+	createObjects.push_back(new Stage());
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {

@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "SceneManager.h"
 
 /// directX
@@ -8,26 +9,22 @@
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommand.h"
 #include "GraphicManager/GraphicsEngine/DirectX12/DxDevice.h"
-
 #include "GraphicManager/GraphicsEngine/DirectX12/DxBarrierCreator.h"
-#include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
 
+#include "GraphicManager/TextureManager/TextureManager.h"
+#include "GraphicManager/RenderTextureManager/RenderTextureManager.h"
+#include "GraphicManager/ModelManager/ModelManager.h"
+#include "GraphicManager/SceneLayer/SceneLayer.h"
+
+#include "WindowManager/ConsoleManager.h"
 #include "WindowManager/WinApp.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include "GameObjectManager/GameObjectManager.h"
 #include "CollisionManager/CollisionManager.h"
 #include "AudioManager/AudioManager.h"
-#include "GraphicManager/ModelManager/ModelManager.h"
-#include "GraphicManager/SceneLayer/SceneLayer.h"
 
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
-
-#include "BaseScene.h"
-#include "Scenes/Scene_Game.h"
-#include "Scenes/Scene_Title.h"
-#include "Scenes/Scene_Result.h"
-#include "Scenes/Scene_Clear.h"
 
 
 
@@ -65,6 +62,9 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 		dxCommon->GetDSVDescriptorHeap()
 	);
 
+
+	//ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { Scene(_windowFlags); });
+	ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { DebugScene(_windowFlags); });
 }
 
 
@@ -139,6 +139,8 @@ void SceneManager::ImGuiDebug() {
 	ImGui::End();
 }
 
+
+
 void SceneManager::SetNextScene(const std::string& _nextSceneName) {
 	nextSceneName_ = _nextSceneName;
 }
@@ -178,3 +180,148 @@ void SceneManager::Load(const std::string& _sceneName) {
 	GameObjectManager::AddObjectsToObjectsCopy();;
 }
 
+
+/// ===================================================
+/// シーンのデバッグ
+/// ===================================================
+
+void SceneManager::Scene(ImGuiWindowFlags _imguiWindowFlags) {
+	if(!ImGui::Begin("Scene", nullptr, _imguiWindowFlags)) {
+		ImGui::End();
+		return;
+	}
+
+	PlayControl();
+
+
+	ImVec2 max = ImGui::GetWindowContentRegionMax();
+	ImVec2 min = ImGui::GetWindowContentRegionMin();
+	ImVec2 winSize = {
+		max.x - min.x,
+		max.y - min.y
+	};
+
+	///- 大きさの調整
+	ImVec2 texSize = winSize;
+	if(texSize.x <= texSize.y) {
+		///- x優先
+		texSize.y = (texSize.x / 16.0f) * 9.0f;
+	} else {
+		///- y優先
+		float x = (texSize.y / 9.0f) * 16.0f;
+		if(x < texSize.x) {
+			texSize.x = x;
+		} else {
+			texSize.y = (texSize.x / 16.0f) * 9.0f;
+		}
+	}
+
+	ImVec2 texPos = {
+		winSize.x * 0.5f,
+		winSize.y * 0.5f
+	};
+
+	texPos.y -= texSize.y / 2.0f;
+	texPos.x -= texSize.x / 2.0f;
+
+	texPos.x = std::max(texPos.x, min.x);
+	texPos.y = std::max(texPos.y, min.y + 64.0f);
+
+	
+	/// scene gpu handle ptr
+	auto renderTex = GetFinalRenderTex();
+	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);
+	ImTextureID bgId = ImTextureID(TextureManager::GetInstance()->GetTexture("white2x2").GetGPUHandle().ptr);
+
+	/// scene draw
+	ImGui::SetCursorPos(texPos);
+	ImGui::Image(bgId, texSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 1));
+	ImGui::SetCursorPos(texPos);
+	ImGui::Image(sceneId, texSize);
+
+	ImGui::End();
+}
+
+void SceneManager::DebugScene(ImGuiWindowFlags _imguiWindowFlags) {
+	if(!ImGui::Begin("Debug", nullptr, _imguiWindowFlags)) {
+		ImGui::End();
+		return;
+	}
+
+	PlayControl();
+
+	ImVec2 windowPos = ImGui::GetWindowPos();
+	ImVec2 max = ImGui::GetWindowContentRegionMax();
+	ImVec2 min = ImGui::GetWindowContentRegionMin();
+	ImVec2 winSize = {
+		max.x - min.x,
+		max.y - min.y
+	};
+
+	///- 大きさの調整
+	ImVec2 texSize = winSize;
+	if(texSize.x <= texSize.y) {
+		///- x優先
+		texSize.y = (texSize.x / 16.0f) * 9.0f;
+	} else {
+		///- y優先
+		float x = (texSize.y / 9.0f) * 16.0f;
+		if(x < texSize.x) {
+			texSize.x = x;
+		} else {
+			texSize.y = (texSize.x / 16.0f) * 9.0f;
+		}
+	}
+
+	ImVec2 texPos = {
+		winSize.x * 0.5f,
+		winSize.y * 0.5f
+	};
+
+	texPos.y -= texSize.y / 2.0f;
+	texPos.x -= texSize.x / 2.0f;
+
+	texPos.x = std::max(texPos.x, min.x);
+	texPos.y = std::max(texPos.y, min.y + 64.0f);
+
+	sceneRectMin_ = { texPos.x + windowPos.x, texPos.y + windowPos.y };
+	sceneRectMax_ = { texSize.x, texSize.y };
+
+	/// scene gpu handle ptr
+	auto renderTex = GetFinalRenderTex();
+	ImTextureID sceneId = ImTextureID(renderTex->GetSrvGpuHandle().ptr);
+	ImTextureID bgId = ImTextureID(TextureManager::GetInstance()->GetTexture("white2x2").GetGPUHandle().ptr);
+
+	/// scene draw
+	ImGui::SetCursorPos(texPos);
+	ImGui::Image(bgId, texSize, ImVec2(0, 0), ImVec2(1, 1), ImVec4(0, 0, 0, 1));
+	ImGui::SetCursorPos(texPos);
+	ImGui::Image(sceneId, texSize);
+
+	ImGui::End();
+}
+
+void SceneManager::PlayControl() {
+	ONE::WinApp* winApp = ONEngine::GetWinApps().at("Game").get();
+	HWND hwnd = winApp->GetHWND();
+
+	if(ImGui::Button("Play")) {
+		/// game window create
+		if(!IsWindowVisible(hwnd)) {
+			winApp->ShowGameWindow();
+		}
+
+	}
+
+	ImGui::SameLine();
+	ImGui::Text("/");
+	ImGui::SameLine();
+
+	if(ImGui::Button("Stop")) {
+		/// game window desctory
+		if(IsWindowVisible(hwnd)) {
+			winApp->DestoryGameWindow();
+		}
+
+	}
+}
