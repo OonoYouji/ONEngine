@@ -11,9 +11,14 @@ Enemy::~Enemy() {}
 void Enemy::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Sphere");
+	meshRenderer_->SetModel("Enemy");
 
 	pTransform_->position = { 0.0f, 0.0f, 10.0f };
+
+	/// parameter setting
+	maxHP_ = 100.0f;
+	hp_    = maxHP_;
+
 
 }
 

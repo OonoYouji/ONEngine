@@ -1,19 +1,30 @@
 #pragma once
 
+
+#include <list>
+
+
 #include "GameObjectManager/BaseGameObject.h"
 
-class Enemy : public BaseGameObject {
+class EnemyManager : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Enemy();
-	~Enemy();
+	EnemyManager();
+	~EnemyManager();
 
 	void Initialize() override;
 	void Update()     override;
+
+
+	/// <summary>
+	/// Enemyを生成する
+	/// </summary>
+	/// <param name="_position"></param>
+	void GenerateEnemy(const Vec3& _position);
 
 private:
 
@@ -21,27 +32,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class MeshRenderer* meshRenderer_ = nullptr;
-
-
-	/// parameters
-	float hp_;
-	float maxHP_;
-
-
-public:
-
-
-	/// <summary>
-	/// 現在のHPを取得
-	/// </summary>
-	/// <returns></returns>
-	float GetHP() const { return hp_; }
-
-	/// <summary>
-	/// HPの最大値を取得
-	/// </summary>
-	/// <returns></returns>
-	float GetMaxHP() const { return maxHP_; }
+	std::list<class Enemy*> enemyList_;
 
 };
