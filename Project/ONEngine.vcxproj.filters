@@ -7,6 +7,10 @@
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
     <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
+    <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
+    <ClCompile Include="Engine\WindowManager\Window.cpp" />
+    <ClCompile Include="Lib\Math\Vector2.cpp" />
+    <ClCompile Include="Lib\Math\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
@@ -15,5 +19,9 @@
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
     <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
+    <ClInclude Include="Engine\WindowManager\WindowManager.h" />
+    <ClInclude Include="Engine\WindowManager\Window.h" />
+    <ClInclude Include="Lib\Math\Vector2.h" />
+    <ClInclude Include="Lib\Math\Vector3.h" />
   </ItemGroup>
 </Project>
