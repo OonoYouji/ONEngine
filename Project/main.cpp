@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	windowManager->Initialize();
 
 	Window* window = windowManager->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Main);
-	Window* imgui = windowManager->GenerateWindow(L"imgui", Vec2(1280, 720));
+	Window* imgui  = windowManager->GenerateWindow(L"imgui", Vec2(1280, 720));
 
 	while(true) {
 		window->Update();
