@@ -2,26 +2,23 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.cpp" />
-    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.cpp" />
-    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Joint.cpp" />
-    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.cpp" />
-    <ClCompile Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.cpp" />
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
     <ClCompile Include="Lib\Math\Vector2.cpp" />
     <ClCompile Include="Lib\Math\Vector3.cpp" />
+    <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
+    <ClCompile Include="Engine\DirectX12\Device\DxDevice.cpp" />
+    <ClCompile Include="Lib\DebugTools\Log.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ONEngine\GraphicManager\GraphicsEngine\DirectX12\DxDescriptorHeap.h" />
-    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skeleton.h" />
-    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Joint.h" />
-    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\SkeletonRenderer.h" />
-    <ClInclude Include="ONEngine\ComponentManager\AnimationRenderer\Skinning.h" />
-    <ClInclude Include="Library\Debugger\Assertion.h" />
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
     <ClInclude Include="Engine\WindowManager\Window.h" />
     <ClInclude Include="Lib\Math\Vector2.h" />
     <ClInclude Include="Lib\Math\Vector3.h" />
+    <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
+    <ClInclude Include="Engine\DirectX12\Device\DxDevice.h" />
+    <ClInclude Include="Engine\DirectX12\ComPtr\ComPtr.h" />
+    <ClInclude Include="Lib\DebugTools\Assert.h" />
+    <ClInclude Include="Lib\DebugTools\Log.h" />
   </ItemGroup>
 </Project>

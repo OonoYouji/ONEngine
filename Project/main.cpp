@@ -1,13 +1,16 @@
-
-#include <Engine/WindowManager/WindowManager.h>
+#include "Engine/WindowManager/WindowManager.h"
+#include "Engine/DirectX12/Manager/DxManager.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<WindowManager> windowManager = std::make_unique<WindowManager>();
+	std::unique_ptr<DxManager>    dxManager      = std::make_unique<DxManager>();
+
 	windowManager->Initialize();
+	dxManager->Initialize();
+
 
 	Window* window = windowManager->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Main);
-	Window* imgui  = windowManager->GenerateWindow(L"imgui", Vec2(1280, 720));
 
 	while(true) {
 		window->Update();
