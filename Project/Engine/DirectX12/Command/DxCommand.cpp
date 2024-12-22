@@ -13,7 +13,7 @@ DxCommand::~DxCommand() {}
 
 
 void DxCommand::Initialize(DxDevice* _dxDevice) {
-	HRESULT hr = S_FALSE;
+	HRESULT result = S_FALSE;
 
 	ID3D12Device* device = _dxDevice->GetDevice();
 
@@ -21,29 +21,29 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	/// command queue
 	/// ---------------------------------------------------
 	D3D12_COMMAND_QUEUE_DESC desc{};
-	hr = device->CreateCommandQueue(&desc, IID_PPV_ARGS(&commandQueue_));
-	Assert(SUCCEEDED(hr), "Failed to create command queue.");
+	result = device->CreateCommandQueue(&desc, IID_PPV_ARGS(&commandQueue_));
+	Assert(SUCCEEDED(result), "Failed to create command queue.");
 
 
 
 	/// ---------------------------------------------------
 	/// command allocator
 	/// ---------------------------------------------------
-	hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
-	Assert(SUCCEEDED(hr), "Failed to create command allocator.");
+	result = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
+	Assert(SUCCEEDED(result), "Failed to create command allocator.");
 
 
 	/// ---------------------------------------------------
 	/// command list
 	/// ---------------------------------------------------
-	hr = device->CreateCommandList(
+	result = device->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		commandAllocator_.Get(),
 		nullptr,
 		IID_PPV_ARGS(&commandList_)
 	);
-	Assert(SUCCEEDED(hr), "Failed to create command list.");
+	Assert(SUCCEEDED(result), "Failed to create command list.");
 
 
 	/// ---------------------------------------------------
@@ -51,10 +51,33 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	/// ---------------------------------------------------
 
 	fenceValue_ = 0;
-	hr = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
-	Assert(SUCCEEDED(hr), "Failed to create fence.");
+	result = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	Assert(SUCCEEDED(result), "Failed to create fence.");
 
 
 	Log("dx command create success!!");
+}
+
+void DxCommand::CommandExecute() {
+	ID3D12CommandList* commandLists[] = { commandList_.Get() };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	++fenceValue_;
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+
+	if(fence_->GetCompletedValue() < fenceValue_) {
+		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
+		fence_->SetEventOnCompletion(fenceValue_, event);
+		WaitForSingleObject(event, INFINITE);
+		CloseHandle(event);
+	}
+}
+
+void DxCommand::CommandReset() {
+	HRESULT hr = commandAllocator_->Reset();
+	Assert(SUCCEEDED(hr), "command allocator reset failed.");
+
+	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	Assert(SUCCEEDED(hr), "Failed to reset command list.");
 }
 

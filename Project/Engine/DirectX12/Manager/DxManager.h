@@ -37,6 +37,31 @@ private:
 	std::array<std::unique_ptr<IDxDescriptorHeap>, DescriptorHeapType_COUNT> dxDescriptorHeaps_;
 
 
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// <summary>
+	/// dxDeviceを取得
+	/// </summary>
+	/// <returns></returns>
+	DxDevice* GetDxDevice() const { return dxDevice_.get(); }
+
+	/// <summary>
+	/// dxCommandを取得
+	/// </summary>
+	/// <returns></returns>
+	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
+
+	/// <summary>
+	/// dxDescriptorHeapを取得
+	/// </summary>
+	/// <param name="_type"> : descriptor heapのtype               </param>
+	/// <returns>              return : 引数のtypeのdescriptor heap </returns>
+	IDxDescriptorHeap* GetDxDescriptorHeap(DescriptorHeapType _type) const { return dxDescriptorHeaps_[_type].get(); }
+
 private:
 
 	/// ===================================================

@@ -52,8 +52,12 @@ public:
 
 public:
 
-	WindowManager() = default;
-	~WindowManager() = default;
+	/// ===================================================
+	/// public : method
+	/// ===================================================
+
+	WindowManager(class DxManager* _dxManager);
+	~WindowManager();
 
 	void Initialize();
 	void Finalize();
@@ -70,7 +74,7 @@ public:
 	/// <summary>
 	/// game windowを生成
 	/// </summary>
-	void CreateGameWindow(const wchar_t* _title, const Vec2& _size, Window* _windowPtr, WindowType _windowType);
+	void CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType);
 
 private:
 
@@ -79,6 +83,8 @@ private:
 	/// ===================================================
 
 	std::vector<std::unique_ptr<Window>> windows_;
+
+	class DxManager*                     pDxManager_ = nullptr;
 
 };
 

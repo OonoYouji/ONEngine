@@ -19,6 +19,9 @@ public:
 	DxDevice();
 	~DxDevice();
 	
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
 	void Initialize();
 
 
@@ -40,10 +43,16 @@ public:
 	/// ===================================================
 
 	/// <summary>
+	/// factoryを取得
+	/// </summary>
+	/// <returns></returns>
+	IDXGIFactory7* GetFactory() const { return dxgiFactory_.Get(); }
+
+	/// <summary>
 	/// deviceを取得
 	/// </summary>
 	/// <returns></returns>
-	inline ID3D12Device* GetDevice() const { return device_.Get(); }
+	ID3D12Device* GetDevice() const { return device_.Get(); }
 
 };
 

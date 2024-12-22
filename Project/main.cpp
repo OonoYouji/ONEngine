@@ -3,8 +3,8 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	std::unique_ptr<WindowManager> windowManager = std::make_unique<WindowManager>();
-	std::unique_ptr<DxManager>    dxManager      = std::make_unique<DxManager>();
+	std::unique_ptr<DxManager>     dxManager     = std::make_unique<DxManager>();
+	std::unique_ptr<WindowManager> windowManager = std::make_unique<WindowManager>(dxManager.get());
 
 	windowManager->Initialize();
 	dxManager->Initialize();
@@ -15,6 +15,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	while(true) {
 		window->Update();
 
+		window->PreDraw();
+		//window->Draw();
+		window->PostDraw();
+
+		dxManager->GetDxCommand()->CommandExecute();
+		window->Present();
+		dxManager->GetDxCommand()->CommandReset();
 
 		/// 破棄されたら終了
 		if(window->GetProcessMessage()) {

@@ -5,6 +5,10 @@
 
 /// std
 #include <string>
+#include <memory>
+
+/// engine
+#include "Engine/DirectX12/SwapChain/DxSwapChain.h"
 
 /// lib
 #include "Math/Vector2.h"
@@ -25,9 +29,25 @@ public:
 	Window();
 	~Window();
 
-	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, UINT _windowStyle);
+	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, class DxManager* _dxManager);
 	void Update();
 	void Draw();
+
+
+	/// <summary>
+	/// 描画前の処理
+	/// </summary>
+	void PreDraw();
+
+	/// <summary>
+	/// 描画後の処理
+	/// </summary>
+	void PostDraw();
+
+	/// <summary>
+	/// front bufferとback bufferの交換
+	/// </summary>
+	void Present();
 
 private:
 
@@ -35,16 +55,19 @@ private:
 	/// public : objects
 	/// ===================================================
 
-	std::wstring windowName_;
-	Vec2         windowSize_;
+	std::wstring                 windowName_;
+	Vec2                         windowSize_;
 
-	WNDCLASS     windowClass_;
-	RECT         wrc_;
-	HWND         hwnd_;
-	MSG          msg_;
-	UINT         windowStyle_;
+	WNDCLASS                     windowClass_;
+	RECT                         wrc_;
+	HWND                         hwnd_;
+	MSG                          msg_;
+	UINT                         windowStyle_;
 
-	UINT         processMessage_;
+	UINT                         processMessage_;
+
+	std::unique_ptr<DxSwapChain> dxSwapChain_;
+	class DxManager*             pDxManager_;
 
 
 public:
@@ -57,13 +80,19 @@ public:
 	/// windowのハンドルを取得
 	/// </summary>
 	/// <returns></returns>
-	inline HWND GetHwnd() const { return hwnd_; }
+	HWND GetHwnd() const { return hwnd_; }
 
 	/// <summary>
 	/// プロセスメッセージを取得
 	/// </summary>
 	/// <returns></returns>
-	inline UINT GetProcessMessage() const { return processMessage_; }
+	UINT GetProcessMessage() const { return processMessage_; }
+
+	/// <summary>
+	/// ウィンドウのサイズを取得
+	/// </summary>
+	/// <returns></returns>
+	const Vec2& GetWindowSize() const { return windowSize_; }
 
 private:
 	Window(const Window&)             = delete;

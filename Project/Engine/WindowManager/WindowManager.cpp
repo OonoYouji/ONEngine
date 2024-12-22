@@ -1,5 +1,9 @@
 #include "WindowManager.h"
 
+/// engine
+#include "Engine/DirectX12/Manager/DxManager.h"
+
+
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 	switch(_msg) {
 	case WM_CLOSE:
@@ -26,6 +30,13 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 
+WindowManager::WindowManager(DxManager* _dxManager) 
+	: pDxManager_(_dxManager) {
+}
+
+WindowManager::~WindowManager() {}
+
+
 void WindowManager::Initialize() {
 	/// COM初期化
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -42,10 +53,10 @@ void WindowManager::Finalize() {
 
 Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
-	newWindow->Initialize(_windowName, _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME));
-
+	
 	/// game windowを作成して表示する
-	CreateGameWindow(_windowName.c_str(), _windowSize, newWindow.get(), _windowType);
+	CreateGameWindow(_windowName.c_str(), _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME), newWindow.get(), _windowType);
+	newWindow->Initialize(_windowName, _windowSize, pDxManager_);
 
 	/// returnする用のpointer	
 	Window* resultPtr = newWindow.get();
@@ -55,16 +66,17 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	return resultPtr;
 }
 
-void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, Window* _windowPtr, WindowType _windowType) {
+void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
 
 	timeBeginPeriod(1);
 
+	_windowPtr->windowStyle_ = _windowStyle;
 
 	/// windowの設定
 	if(_windowType == WindowType::Main) {
-		_windowPtr->windowClass_.lpfnWndProc   = MainWindowProc;
+		_windowPtr->windowClass_.lpfnWndProc = MainWindowProc;
 	} else {
-		_windowPtr->windowClass_.lpfnWndProc   = SubWindowProc;
+		_windowPtr->windowClass_.lpfnWndProc = SubWindowProc;
 	}
 
 	_windowPtr->windowClass_.lpszClassName = _title;
@@ -73,11 +85,9 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, W
 
 	RegisterClass(&_windowPtr->windowClass_);
 
-
 	_windowPtr->wrc_ = { 0, 0, static_cast<int>(_size.x), static_cast<int>(_size.y) };
 	AdjustWindowRect(&_windowPtr->wrc_, WS_OVERLAPPEDWINDOW, false);
 
-	///- 
 	_windowPtr->hwnd_ = CreateWindowEx(
 		0,
 		_windowPtr->windowClass_.lpszClassName,
@@ -94,6 +104,6 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, W
 	);
 
 
-	///- window表示
+	/// window表示
 	ShowWindow(_windowPtr->hwnd_, SW_SHOW);
 }

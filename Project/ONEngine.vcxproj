@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
     <ClCompile Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.cpp" />
     <ClCompile Include="Engine\DirectX12\Command\DxCommand.cpp" />
     <ClCompile Include="Engine\DirectX12\Device\DxDevice.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
     <ClInclude Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.h" />
     <ClInclude Include="Engine\DirectX12\Command\DxCommand.h" />
     <ClInclude Include="Engine\DirectX12\ComPtr\ComPtr.h" />

@@ -23,7 +23,21 @@ public:
 	DxCommand();
 	~DxCommand();
 
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="_dxDevice"> : DxDeviceへのpointer </param>
 	void Initialize(class DxDevice* _dxDevice);
+
+	/// <summary>
+	/// commandを実行する
+	/// </summary>
+	void CommandExecute();
+
+	/// <summary>
+	/// commandをリセットする
+	/// </summary>
+	void CommandReset();
 
 
 private:
@@ -46,9 +60,14 @@ public:
 	/// public : accessor
 	/// ===================================================
 
+	/// <summary>
+	/// command queueを取得
+	/// </summary>
+	/// <returns></returns>
+	ID3D12CommandQueue* GetCommandQueue() const { return commandQueue_.Get(); }
 
 	/// <summary>
-	/// コマンドリストを取得
+	/// command listを取得
 	/// </summary>
 	/// <returns> return : command list pointer </returns>
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }

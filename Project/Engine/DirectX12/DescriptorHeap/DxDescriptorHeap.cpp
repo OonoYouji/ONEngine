@@ -1,6 +1,8 @@
 #include "DxDescriptorHeap.h"
 
-#include "Lib/DebugTools/Assert.h"
+/// lib
+#include "DebugTools/Assert.h"
+#include "DebugTools/Log.h"
 
 
 namespace {
@@ -73,6 +75,8 @@ void DxDescriptorHeap<DescriptorHeapType_CBV_SRV_UAV>::Initialize() {
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	useIndex_ = 0;
+
+	Log("dx descriptor heap cbv,srv,uav create success!!");
 }
 
 template<>
@@ -83,6 +87,8 @@ void DxDescriptorHeap<DescriptorHeapType_RTV>::Initialize() {
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	useIndex_ = 0;
+
+	Log("dx descriptor heap rtv create success!!");
 }
 
 template<>
@@ -93,4 +99,6 @@ void DxDescriptorHeap<DescriptorHeapType_DSV>::Initialize() {
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	useIndex_ = 0;
+
+	Log("dx descriptor heap dsv create success!!");
 }
