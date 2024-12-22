@@ -2,9 +2,11 @@
 
 /// std
 #include <memory>
+#include <array>
 
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
+#include "../DescriptorHeap/DxDescriptorHeap.h"
 
 
 /// ===================================================
@@ -31,6 +33,8 @@ private:
 
 	std::unique_ptr<DxDevice>  dxDevice_  = nullptr;
 	std::unique_ptr<DxCommand> dxCommand_ = nullptr;
+
+	std::array<std::unique_ptr<IDxDescriptorHeap>, DescriptorHeapType_COUNT> dxDescriptorHeaps_;
 
 
 private:
