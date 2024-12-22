@@ -15,23 +15,7 @@
 /// windowクラス
 /// ===================================================
 class Window {
-public:
-	
-	/// ===================================================
-	/// public : static method
-	/// ===================================================
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="hwnd"></param>
-	/// <param name="msg"></param>
-	/// <param name="wparam"></param>
-	/// <param name="lparam"></param>
-	/// <returns></returns>
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-
+	friend class WindowManager;
 public:
 
 	/// ===================================================
@@ -41,19 +25,9 @@ public:
 	Window();
 	~Window();
 
-	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize);
+	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, UINT _windowStyle);
 	void Update();
 	void Draw();
-
-
-	/// <summary>
-	/// windowを生成する
-	/// </summary>
-	/// <param name="_title"></param>
-	/// <param name="_windowStyle"></param>
-	/// <param name="_size"></param>
-	void CreateGameWindow(const wchar_t* _title, UINT _windowStyle, const Vec2& _size);
-
 
 private:
 
@@ -62,13 +36,15 @@ private:
 	/// ===================================================
 
 	std::wstring windowName_;
-	Vec2        windowSize_;
+	Vec2         windowSize_;
 
-	WNDCLASS    wc_;
-	RECT        wrc_;
-	HWND        hwnd_;
-	MSG         msg_;
-	UINT        windowStyle_;
+	WNDCLASS     windowClass_;
+	RECT         wrc_;
+	HWND         hwnd_;
+	MSG          msg_;
+	UINT         windowStyle_;
+
+	UINT         processMessage_;
 
 
 public:
@@ -83,7 +59,11 @@ public:
 	/// <returns></returns>
 	inline HWND GetHwnd() const { return hwnd_; }
 
-
+	/// <summary>
+	/// プロセスメッセージを取得
+	/// </summary>
+	/// <returns></returns>
+	inline UINT GetProcessMessage() const { return processMessage_; }
 
 private:
 	Window(const Window&)             = delete;
