@@ -9,6 +9,7 @@
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\DirectX12\Device\DxDevice.cpp" />
     <ClCompile Include="Lib\DebugTools\Log.cpp" />
+    <ClCompile Include="Engine\DirectX12\Command\DxCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -20,5 +21,6 @@
     <ClInclude Include="Engine\DirectX12\ComPtr\ComPtr.h" />
     <ClInclude Include="Lib\DebugTools\Assert.h" />
     <ClInclude Include="Lib\DebugTools\Log.h" />
+    <ClInclude Include="Engine\DirectX12\Command\DxCommand.h" />
   </ItemGroup>
 </Project>

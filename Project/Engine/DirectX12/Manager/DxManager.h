@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "../Device/DxDevice.h"
+#include "../Command/DxCommand.h"
 
 
 /// ===================================================
@@ -28,7 +29,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<DxDevice> dxDevice_ = nullptr;
+	std::unique_ptr<DxDevice>  dxDevice_  = nullptr;
+	std::unique_ptr<DxCommand> dxCommand_ = nullptr;
 
 
 private:

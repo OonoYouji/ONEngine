@@ -69,5 +69,5 @@ void DxDevice::Initialize() {
 
 	/// 生成できたか確認、生成出来ていたらログ出力する
 	Assert(device_ != nullptr, "Device creation failed.");
-	Log("Compile create D3D12Device!!!");
+	Log("dx device create success!!");
 }
