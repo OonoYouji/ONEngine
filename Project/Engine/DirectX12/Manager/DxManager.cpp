@@ -6,11 +6,20 @@ DxManager::~DxManager() {}
 
 void DxManager::Initialize() {
 
+	/// deug layerをセット
+	dxDebug_.reset(new DxDebug());
+	dxDebug_->SetDebugLayer();
+
+
 	/// deviceの初期化
 	dxDevice_.reset(new DxDevice());
 	dxDevice_->Initialize();
 
-	
+
+	/// debugの初期化
+	dxDebug_->Initialize(dxDevice_.get());
+
+
 	/// commandの初期化
 	dxCommand_.reset(new DxCommand());
 	dxCommand_->Initialize(dxDevice_.get());

@@ -39,6 +39,11 @@ public:
 	/// </summary>
 	void CommandReset();
 
+	/// <summary>
+	/// gpuの処理が完了するまで待つ
+	/// </summary>
+	void WaitForGpuComplete();
+
 
 private:
 

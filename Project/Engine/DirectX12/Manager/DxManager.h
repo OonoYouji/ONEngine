@@ -4,6 +4,8 @@
 #include <memory>
 #include <array>
 
+/// engine
+#include "../Debug/DxDebug.h"
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
 #include "../DescriptorHeap/DxDescriptorHeap.h"
@@ -31,6 +33,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::unique_ptr<DxDebug>   dxDebug_   = nullptr;
 	std::unique_ptr<DxDevice>  dxDevice_  = nullptr;
 	std::unique_ptr<DxCommand> dxCommand_ = nullptr;
 

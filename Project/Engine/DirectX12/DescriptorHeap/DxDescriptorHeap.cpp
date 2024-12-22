@@ -71,7 +71,7 @@ template<>
 void DxDescriptorHeap<DescriptorHeapType_CBV_SRV_UAV>::Initialize() {
 	ID3D12Device* pDevice = pDxDevice_->GetDevice();
 
-	descriptorHeap_ = CreateHeap(pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kMaxHeapSize_, false);
+	descriptorHeap_ = CreateHeap(pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxHeapSize_, true);
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	useIndex_ = 0;
@@ -95,7 +95,7 @@ template<>
 void DxDescriptorHeap<DescriptorHeapType_DSV>::Initialize() {
 	ID3D12Device* pDevice = pDxDevice_->GetDevice();
 
-	descriptorHeap_ = CreateHeap(pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kMaxHeapSize_, false);
+	descriptorHeap_ = CreateHeap(pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, kMaxHeapSize_, false);
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	useIndex_ = 0;

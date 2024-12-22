@@ -59,9 +59,24 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 }
 
 void DxCommand::CommandExecute() {
+	HRESULT hr = commandList_->Close();
+	Assert(SUCCEEDED(hr), "Failed to close command list.");
+
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
+	WaitForGpuComplete();
+}
+
+void DxCommand::CommandReset() {
+	HRESULT hr = commandAllocator_->Reset();
+	Assert(SUCCEEDED(hr), "command allocator reset failed.");
+
+	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	Assert(SUCCEEDED(hr), "Failed to reset command list.");
+}
+
+void DxCommand::WaitForGpuComplete() {
 	++fenceValue_;
 	commandQueue_->Signal(fence_.Get(), fenceValue_);
 
@@ -71,13 +86,5 @@ void DxCommand::CommandExecute() {
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
-}
-
-void DxCommand::CommandReset() {
-	HRESULT hr = commandAllocator_->Reset();
-	Assert(SUCCEEDED(hr), "command allocator reset failed.");
-
-	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
-	Assert(SUCCEEDED(hr), "Failed to reset command list.");
 }
 

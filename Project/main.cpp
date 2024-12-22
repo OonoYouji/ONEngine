@@ -15,8 +15,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	while(true) {
 		window->Update();
 
+
+		dxManager->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV)->BindToCommandList(
+			dxManager->GetDxCommand()->GetCommandList()
+		);
+		
 		window->PreDraw();
-		//window->Draw();
 		window->PostDraw();
 
 		dxManager->GetDxCommand()->CommandExecute();
@@ -29,8 +33,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
+	dxManager->GetDxCommand()->WaitForGpuComplete();
 
 	windowManager->Finalize();
+	dxManager->Finalize();
 
 	return 0;
 }
