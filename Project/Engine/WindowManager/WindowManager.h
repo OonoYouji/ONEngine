@@ -59,9 +59,35 @@ public:
 	WindowManager(class DxManager* _dxManager);
 	~WindowManager();
 
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// 終了処理
+	/// </summary>
 	void Finalize();
 
+	/// <summary>
+	/// すべてのwindowの更新処理
+	/// </summary>
+	void Update();
+
+	/// <summary>
+	/// すべてのwindowの描画前処理
+	/// </summary>
+	void PreDraw();
+
+	/// <summary>
+	/// すべてのwindowの描画後処理
+	/// </summary>
+	void PostDraw();
+
+	/// <summary>
+	/// すべてのwindowの画面を交換
+	/// </summary>
+	void Present();
 
 	/// <summary>
 	/// 新しいウィンドウを生成
@@ -70,11 +96,16 @@ public:
 	/// <param name="_windowSize"> : ウィンドウのサイズ </param>
 	Window* GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType = WindowType::Sub);
 
-
 	/// <summary>
 	/// game windowを生成
 	/// </summary>
 	void CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType);
+
+	/// <summary>
+	/// main windowの更新処理
+	/// </summary>
+	void UpdateMainWindow();
+
 
 private:
 
@@ -83,8 +114,35 @@ private:
 	/// ===================================================
 
 	std::vector<std::unique_ptr<Window>> windows_;
+	Window*                              pMainWindow_ = nullptr;
 
 	class DxManager*                     pDxManager_ = nullptr;
 
+	bool                                 isProcessEnd_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// <summary>
+	/// main windowを取得
+	/// </summary>
+	/// <returns></returns>
+	Window* GetMainWindow() const { return pMainWindow_; }
+
+
+private:
+
+	/// ===================================================
+	/// private : copy delete
+	/// ===================================================
+
+	WindowManager(const WindowManager&)            = delete;
+	WindowManager(WindowManager&&)                 = delete;
+	WindowManager& operator=(const WindowManager&) = delete;
+	WindowManager& operator=(WindowManager&&)      = delete;
 };
 

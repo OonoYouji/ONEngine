@@ -9,22 +9,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	windowManager->Initialize();
 	dxManager->Initialize();
 
-
 	Window* window = windowManager->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Main);
+	windowManager->GenerateWindow(L"imgui", Vec2(1280, 720));
+	windowManager->GenerateWindow(L"test", Vec2(640, 360));
 
 	while(true) {
-		window->Update();
+		windowManager->Update();
 
 
 		dxManager->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV)->BindToCommandList(
 			dxManager->GetDxCommand()->GetCommandList()
 		);
 		
-		window->PreDraw();
-		window->PostDraw();
+		windowManager->PreDraw();
+		windowManager->PostDraw();
 
 		dxManager->GetDxCommand()->CommandExecute();
-		window->Present();
+		windowManager->Present();
 		dxManager->GetDxCommand()->CommandReset();
 
 		/// 破棄されたら終了

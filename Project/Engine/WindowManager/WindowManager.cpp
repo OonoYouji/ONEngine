@@ -7,9 +7,10 @@
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 	switch(_msg) {
 	case WM_CLOSE:
-		PostQuitMessage(0);
+		DestroyWindow(_hwnd);
 		return 0;
 	case WM_DESTROY: /// window破棄
+		PostQuitMessage(0);
 		return 0;
 	}
 
@@ -19,9 +20,8 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 	switch(_msg) {
 	case WM_CLOSE:
-		DestroyWindow(_hwnd);
-		return 0;
 	case WM_DESTROY: /// window破棄
+		DestroyWindow(_hwnd);
 		return 0;
 	}
 
@@ -41,12 +41,46 @@ void WindowManager::Initialize() {
 	/// COM初期化
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
+	isProcessEnd_ = false;
 }
 
 void WindowManager::Finalize() {
 	windows_.clear();
 	/// COM終了
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+}
+
+void WindowManager::Update() {
+
+	/// windowの更新
+	for(auto itr = windows_.begin(); itr != windows_.end();) {
+		if(!(*itr)->IsOpenWindow() && (*itr).get() != pMainWindow_) {
+			itr = windows_.erase(itr);
+		} else {
+			++itr;
+		}
+	}
+
+	/// main windowの更新
+	UpdateMainWindow();
+}
+
+void WindowManager::PreDraw() {
+	for(auto& window : windows_) {
+		window->PreDraw();
+	}
+}
+
+void WindowManager::PostDraw() {
+	for(auto& window : windows_) {
+		window->PostDraw();
+	}
+}
+
+void WindowManager::Present() {
+	for(auto& window : windows_) {
+		window->Present();
+	}
 }
 
 
@@ -62,6 +96,9 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	Window* resultPtr = newWindow.get();
 
 	windows_.push_back(std::move(newWindow));
+	if(_windowType == WindowType::Main) {
+		pMainWindow_ = resultPtr;
+	}
 
 	return resultPtr;
 }
@@ -106,4 +143,21 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 
 	/// window表示
 	ShowWindow(_windowPtr->hwnd_, SW_SHOW);
+}
+
+void WindowManager::UpdateMainWindow() {
+	if(PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
+		TranslateMessage(&pMainWindow_->msg_);
+		DispatchMessage(&pMainWindow_->msg_);
+	}
+
+	/// 終了メッセージ
+	if(pMainWindow_->msg_.message == WM_QUIT) {
+		isProcessEnd_ = true;
+		pMainWindow_->processMessage_ = true;
+		return;
+	}
+
+	isProcessEnd_ = false;
+	pMainWindow_->processMessage_ = false;
 }

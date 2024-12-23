@@ -35,23 +35,8 @@ void Window::Initialize(const std::wstring& _windowName, const Vec2& _windowSize
 }
 
 void Window::Update() {
-	if(PeekMessage(&msg_, nullptr, 0, 0, PM_REMOVE)) {
-		TranslateMessage(&msg_);
-		DispatchMessage(&msg_);
-	}
-
-	///- 終了メッセージ
-	if(msg_.message == WM_QUIT) {
-		processMessage_ = true;
-		return;
-	}
-
-	processMessage_ = false;
+	
 }
-
-void Window::Draw() {}
-
-
 
 void Window::PreDraw() {
 	ID3D12GraphicsCommandList* commandList = pDxManager_->GetDxCommand()->GetCommandList();
@@ -68,5 +53,9 @@ void Window::PostDraw() {
 
 void Window::Present() {
 	dxSwapChain_->Present();
+}
+
+bool Window::IsOpenWindow() {
+	return hwnd_ != nullptr && IsWindow(hwnd_);
 }
 

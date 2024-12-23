@@ -31,7 +31,6 @@ public:
 
 	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, class DxManager* _dxManager);
 	void Update();
-	void Draw();
 
 
 	/// <summary>
@@ -48,6 +47,12 @@ public:
 	/// front bufferとback bufferの交換
 	/// </summary>
 	void Present();
+
+	/// <summary>
+	/// windowを開いているか
+	/// </summary>
+	/// <returns></returns>
+	bool IsOpenWindow();
 
 private:
 
