@@ -29,9 +29,13 @@ public:
 	Window();
 	~Window();
 
+	/// <summary>
+	/// 初期化処理
+	/// </summary>
+	/// <param name="_windowName"> : ウィンドウの名前       </param>
+	/// <param name="_windowSize"> : ウィンドウのサイズ     </param>
+	/// <param name="_dxManager">  : DxManagerのポインター </param>
 	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, class DxManager* _dxManager);
-	void Update();
-
 
 	/// <summary>
 	/// 描画前の処理

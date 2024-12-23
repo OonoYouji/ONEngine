@@ -34,10 +34,6 @@ void Window::Initialize(const std::wstring& _windowName, const Vec2& _windowSize
 	dxSwapChain_->Initialize(_dxManager, this);
 }
 
-void Window::Update() {
-	
-}
-
 void Window::PreDraw() {
 	ID3D12GraphicsCommandList* commandList = pDxManager_->GetDxCommand()->GetCommandList();
 
