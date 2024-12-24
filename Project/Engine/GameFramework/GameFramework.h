@@ -7,7 +7,7 @@
 #include "Engine/WindowManager/WindowManager.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
 #include "IGameLoop/IGameLoop.h"
-#include "GameFrameworkStartSetting.h"
+#include "GameFrameworkConfig.h"
 
 
 /// ===================================================
@@ -26,7 +26,7 @@ public:
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialize(const GameFrameworkStartSetting& _startSetting);
+	void Initialize(const GameFrameworkConfig& _startSetting);
 
 	/// <summary>
 	/// ゲームのメインループを回す
@@ -38,13 +38,12 @@ public:
 	/// </summary>
 	void Finalize();
 
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-
-	/// framework, scene manager, main loop etc...
 
 	std::unique_ptr<DxManager>     dxManager_     = nullptr;
 	std::unique_ptr<WindowManager> windowManager_ = nullptr;

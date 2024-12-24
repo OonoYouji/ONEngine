@@ -14,7 +14,7 @@
 /// ===================================================
 /// GameFrameworkクラスの初期化に使う設定構造体
 /// ===================================================
-struct GameFrameworkStartSetting final {
+struct GameFrameworkConfig final {
 	/// window
 	std::wstring windowName;
 	Vec2         windowSize;

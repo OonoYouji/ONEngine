@@ -43,7 +43,7 @@
     <ClInclude Include="Engine\DirectX12\ComPtr\ComPtr.h" />
     <ClInclude Include="Engine\DirectX12\Device\DxDevice.h" />
     <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
-    <ClInclude Include="Engine\GameFramework\GameFrameworkStartSetting.h" />
+    <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
     <ClInclude Include="Engine\WindowManager\Window.h" />
     <ClInclude Include="Engine\GameFramework\GameFramework.h" />
