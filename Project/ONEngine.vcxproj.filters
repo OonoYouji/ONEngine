@@ -13,6 +13,9 @@
     <ClCompile Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
     <ClCompile Include="Engine\DirectX12\Debug\DxDebug.cpp" />
+    <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
+    <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
+    <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -28,5 +31,9 @@
     <ClInclude Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.h" />
     <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
+    <ClInclude Include="Engine\GameFramework\GameFramework.h" />
+    <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
+    <ClInclude Include="Engine\GameFramework\GameFrameworkStartSetting.h" />
+    <ClInclude Include="Game\GameLoop\GameLoop.h" />
   </ItemGroup>
 </Project>
