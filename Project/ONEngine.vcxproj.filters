@@ -138,6 +138,9 @@
     <ClCompile Include="Game\CustomMath\ImGui\ImGuiGizmo.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\EnemyManager\EnemyManager.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -259,6 +262,9 @@
     <ClInclude Include="Game\CustomMath\ImGui\ImGuiGizmo.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\EnemyManager\EnemyManager.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

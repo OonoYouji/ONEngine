@@ -1,34 +1,23 @@
 #pragma once
 
 /// std
-#include <list>
+#include <array>
 
 /// engine
 #include "GameObjectManager/BaseGameObject.h"
 
-
-/// ===================================================
-/// Enemyの管理クラス
-/// ===================================================
-class EnemyManager : public BaseGameObject {
+class EnemyHPRenderer : public BaseGameObject {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	EnemyManager();
-	~EnemyManager();
+	EnemyHPRenderer(class Enemy* _enemyPtr);
+	~EnemyHPRenderer();
 
 	void Initialize() override;
 	void Update()     override;
-
-
-	/// <summary>
-	/// Enemyを生成する
-	/// </summary>
-	/// <param name="_position"></param>
-	void GenerateEnemy(const Vec3& _position);
 
 private:
 
@@ -36,6 +25,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::list<class Enemy*> enemyList_;
+	class EnemyHPBarGauge* hpBarGauge_ = nullptr;
+	class EnemyHPBarFrame* hpBarFrame_ = nullptr;
+	
+	/// other class pointer
+	class Enemy*      pEnemy_      = nullptr;
+	class BaseCamera* pMainCamera_ = nullptr;
 
 };

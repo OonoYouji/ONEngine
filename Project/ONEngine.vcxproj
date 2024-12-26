@@ -150,6 +150,9 @@
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\BasePlayerBehavior.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.cpp" />
     <ClCompile Include="Game\Objects\Player\Behavior\PlayerDushBehavior.cpp" />
@@ -270,6 +273,9 @@
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Objects\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\BasePlayerBehavior.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.h" />
     <ClInclude Include="Game\Objects\Player\Behavior\PlayerDushBehavior.h" />

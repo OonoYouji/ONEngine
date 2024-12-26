@@ -2,6 +2,9 @@
 
 #include "GameObjectManager/BaseGameObject.h"
 
+/// ===================================================
+/// Enemyのクラス
+/// ===================================================
 class Enemy : public BaseGameObject {
 public:
 
@@ -21,8 +24,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class MeshRenderer* meshRenderer_ = nullptr;
-
+	class MeshRenderer*    meshRenderer_ = nullptr;
+	class EnemyHPRenderer* hpRenderer_ = nullptr;
 
 	/// parameters
 	float hp_;

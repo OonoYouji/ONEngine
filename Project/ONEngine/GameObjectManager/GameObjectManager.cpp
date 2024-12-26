@@ -349,11 +349,13 @@ void GameObjectManager::Inspector(ImGuiWindowFlags _windowFlags) {
 	}
 
 	ImGui::Indent();
-	Transform* transform = selectObject_->GetTransform();
-	ImGuiGizmo(
-		&transform->position, &transform->rotate, &transform->scale,
-		ROTATE_ORDER(transform->rotateOrder)
-	);
+	//Transform* transform    = selectObject_->GetTransform();
+	//Mat4       matTransform = selectObject_->GetMatTransform();
+	//ImGuiGizmo(
+	//	&matTransform,
+	//	&transform->position, &transform->rotate, &transform->scale,
+	//	ROTATE_ORDER(transform->rotateOrder)
+	//);
 
 	ImGui::End();
 }

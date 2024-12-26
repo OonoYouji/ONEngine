@@ -7,9 +7,11 @@
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 /// game
+#include "GraphicManager/Light/DirectionalLight.h"
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Player/Player.h"
+#include "Objects/EnemyManager/EnemyManager.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
@@ -36,11 +38,16 @@ void Scene_Game::Initialize() {
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
 	createObjects.push_back(new Stage());
 	createObjects.push_back(new Enemy());
+	createObjects.push_back(new EnemyManager());
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {
 		obj->Initialize();
 	}
+
+
+	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
+
 }
 
 
