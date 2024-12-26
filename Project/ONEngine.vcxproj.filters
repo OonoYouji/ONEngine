@@ -29,12 +29,6 @@
     <ClCompile Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.cpp" />
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\BasePlayerBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerDushBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerRootBehavior.cpp" />
-    <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
@@ -131,16 +125,15 @@
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
-    <ClCompile Include="Game\Objects\Player\Motion\BaseMotion.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject\Stage\Stage.cpp" />
-    <ClCompile Include="Game\Objects\Player\Mesh\PlayerMesh.cpp" />
-    <ClCompile Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.cpp" />
     <ClCompile Include="Game\CustomMath\ImGui\ImGuiGizmo.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\Objects\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
+    <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -150,12 +143,6 @@
     <ClInclude Include="Game\Objects\DemoBoxColliderOBJ\DemoBoxColliderOBJ.h" />
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\BasePlayerBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerBehaviorManager.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerDushBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerJumpBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerRootBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
@@ -253,18 +240,17 @@
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
-    <ClInclude Include="Game\Objects\Player\Motion\BaseMotion.h" />
     <ClInclude Include="Game\Objects\BackgroundObject\Stage\Stage.h" />
-    <ClInclude Include="Game\Objects\Player\Mesh\PlayerMesh.h" />
     <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
     <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
-    <ClInclude Include="Game\Objects\Player\PlayerMotionDebugRenderer\PlayerMotionDebugRenderer.h" />
     <ClInclude Include="Game\CustomMath\ImGui\ImGuiGizmo.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
     <ClInclude Include="Game\Objects\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
+    <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

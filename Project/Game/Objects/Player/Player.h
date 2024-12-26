@@ -1,20 +1,15 @@
 #pragma once
 
+/// engine
 #include "GameObjectManager/BaseGameObject.h"
 
-#include "Behavior/PlayerBehaviorManager.h"
+/// user
+#include "PlayerMesh/PlayerMesh.h"
 
 
-struct CommonData {
-	Vec3 direction; /// 向いているほう
-
-	Vec3 velocity;	/// 移動方向
-	float movementSpeed;
-	Vec3 position;
-
-	bool useGravity; /// 重力方向に落ちているか
-};
-
+/// ===================================================
+/// プレイヤーのクラス
+/// ===================================================
 class Player : public BaseGameObject {
 public:
 
@@ -22,17 +17,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Player(class GameCamera* _gameCamera);
+	Player(class GameCamera* _gameCameraPtr);
 	~Player();
 
 	void Initialize() override;
 	void Update()     override;
-	void Debug()      override;
-
-	void AddVariables();
-	void ApplyVariables();
-
-	void LoadingBehaviors();
 
 private:
 
@@ -40,25 +29,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
+	PlayerMesh* playerMesh_ = nullptr;
 
-	class PlayerMesh* mesh_ = nullptr;
-
-	/// other class
-	class GameCamera* pGameCamera_ = nullptr;
-
-	/// parameters
-	CommonData currentCommonData_;
-
-#ifdef _DEBUG
-	class PlayerMotionDebugRenderer* motionDebugRenderer_ = nullptr;
-#endif // _DEBUG
-
-
-public:
-
-	CommonData& GetCommonData() { return currentCommonData_; }
-	GameCamera* GetGameCamera() { return pGameCamera_; }
-
-	PlayerBehaviorManager* GetBehaviorManager() const { return behaviorManager_.get(); }
 };
