@@ -1,5 +1,8 @@
 #include "EnemyHPRenderer.h"
 
+/// std
+#include <algorithm>
+
 /// engine
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
@@ -49,6 +52,11 @@ void EnemyHPRenderer::Update() {
 		pTransform_->rotate = pMainCamera_->GetTransform()->rotate;
 		pTransform_->scale  = pMainCamera_->GetTransform()->scale;
 	}
+
+	/// HPの割合から表示するゲージの長さを計算
+	float hpRate = pEnemy_->GetHP() / pEnemy_->GetMaxHP();
+	hpRate = std::clamp(hpRate, 0.0f, 1.0f); /// 0~1の間に収める
+	hpBarGauge_->SetScale(Vec3(hpRate, 1.0f, 1.0f));
 
 }
 
