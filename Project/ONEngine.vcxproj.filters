@@ -16,6 +16,9 @@
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
+    <ClCompile Include="Engine\EntityComponentSystem\Manager\ECSManager.cpp" />
+    <ClCompile Include="Engine\EntityComponentSystem\System\ISystem\ISystem.cpp" />
+    <ClCompile Include="Engine\EntityComponentSystem\System\TriangleRenderer\TriangleRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -35,5 +38,8 @@
     <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
     <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
+    <ClInclude Include="Engine\EntityComponentSystem\Manager\ECSManager.h" />
+    <ClInclude Include="Engine\EntityComponentSystem\System\ISystem\ISystem.h" />
+    <ClInclude Include="Engine\EntityComponentSystem\System\TriangleRenderer\TriangleRenderer.h" />
   </ItemGroup>
 </Project>
