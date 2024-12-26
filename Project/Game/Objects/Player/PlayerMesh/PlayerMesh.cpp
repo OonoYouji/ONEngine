@@ -20,7 +20,9 @@ void PlayerMesh::Initialize() {
 	meshRenderer_->SetModel("Player");
 
 	AddVariables();
-
+	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
+		GetTag(), "./Resources/Parameters/Objects"
+	);
 	ApplyVariables();
 }
 
