@@ -3,7 +3,7 @@
 #include "../IPlayerState/IPlayerState.h"
 
 /// ===================================================
-/// 
+/// プレイヤーのダッシュステート
 /// ===================================================
 class PlayerDushState : public IPlayerState {
 public:
@@ -25,8 +25,27 @@ public:
 private:
 
 	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void RotateUpdate();
+
+	void MoveUpdate();
+
+
+private:
+
+	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	float dushStartSpeed_;
+	float dushNormalSpeed_;
+
+	float dushTransitionTime_;
+	float currentTime_;
+
+	bool isAccelerateEnded_ = false;
 
 };
 

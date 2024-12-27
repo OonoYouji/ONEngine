@@ -2,6 +2,7 @@
 
 /// std
 #include <memory>
+#include <vector>
 
 /// engine
 #include "GameObjectManager/BaseGameObject.h"
@@ -9,6 +10,13 @@
 /// user
 #include "PlayerMesh/PlayerMesh.h"
 #include "State/Manager/PlayerStateManager.h"
+#include "CustomMath/Flag/Flag.h"
+
+enum PlayerFlag {
+	PlayerFlag_IsDush,
+	PlayerFlag_IsJump,
+	PlayerFlag_Max
+};
 
 
 /// ===================================================
@@ -44,7 +52,12 @@ private:
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
+	Vec3  lastDirection_;
+	Vec3  velocity_;
 	float moveSpeed_ = 0.1f;
+
+
+	std::vector<Flag> flags_;
 
 public:
 	
@@ -52,8 +65,30 @@ public:
 	/// public : accessor
 	/// ===================================================
 
+	/// ---------------------------------------------------
+	/// Direction
 	const Vec3& GetDirection() const { return direction_; }
 
+	const Vec3& GetLastDirection() const { return lastDirection_; }
+	void SetLastDirection(const Vec3& _direction) { lastDirection_ = _direction; }
+
+
+	/// ---------------------------------------------------
+	/// Velocity
+	const Vec3& GetVelocity() const { return velocity_; }
+	void SetVelocity(const Vec3& _velocity) { velocity_ = _velocity; }
+
+
 	float GetMoveSpeed() const { return moveSpeed_; }
+
+	const Flag& GetFlag(PlayerFlag _flag) { return flags_[_flag]; }
+
+
+	/// ---------------------------------------------------
+	/// Mesh
+	PlayerMesh* GetMesh() const { return playerMesh_; }
+
+	void SetMeshRotate(const Vec3& _rotate) { playerMesh_->SetRotate(_rotate); }
+	
 
 };

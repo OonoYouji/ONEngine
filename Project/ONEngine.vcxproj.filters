@@ -261,6 +261,7 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
+    <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

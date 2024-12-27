@@ -258,6 +258,7 @@
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
     <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
     <ClInclude Include="Game\CustomMath\ImGui\ImGuiGizmo.h" />
     <ClInclude Include="Game\CustomMath\Json\CreateJsonFile.h" />
