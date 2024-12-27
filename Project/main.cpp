@@ -4,7 +4,7 @@
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	ONEngine::Initialize(L"world trigger like", false, false, 60u);
+	ONEngine::Initialize(L"world trigger like", false, true, 60u);
 
 	std::unique_ptr<GameFrameWork> gameFrameWork(new GameFrameWork);
 	gameFrameWork->Run();

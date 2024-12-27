@@ -28,8 +28,6 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	void RotateUpdate();
-
 	void MoveUpdate();
 
 

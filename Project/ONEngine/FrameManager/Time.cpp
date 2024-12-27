@@ -20,10 +20,10 @@ void Time::Update() {
 
 	deltaTime_ = duration.count() / 1000.0f;
 
-	exeTimes_.push_back(duration.count());
-	if(exeTimes_.size() > 120) {
-		exeTimes_.pop_front();
-	}
+	//exeTimes_.push_back(duration.count());
+	//if(exeTimes_.size() > 120) {
+	//	exeTimes_.pop_front();
+	//}
 
 }
 

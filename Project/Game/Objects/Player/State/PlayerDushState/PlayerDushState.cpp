@@ -16,8 +16,8 @@ PlayerDushState::~PlayerDushState() {}
 
 void PlayerDushState::Start() {
 
-	dushStartSpeed_     = 1.0f;
-	dushNormalSpeed_    = 0.2f;
+	dushStartSpeed_     = 20.0f;
+	dushNormalSpeed_    = 18.0f;
 
 	dushTransitionTime_ = 0.2f;
 	currentTime_        = 0.0f;
@@ -28,7 +28,6 @@ void PlayerDushState::Start() {
 
 void PlayerDushState::Update() {
 
-	RotateUpdate();
 	MoveUpdate();
 
 }
@@ -54,19 +53,6 @@ int PlayerDushState::NextStateIndex() {
 }
 
 
-void PlayerDushState::RotateUpdate() {
-	const Vec3& direction = pPlayer_->GetDirection();
-	const Vec3& lastDir = pPlayer_->GetLastDirection();
-
-	if(direction.x != 0 || direction.z != 0) {
-		pPlayer_->SetLastDirection(direction);
-	}
-
-	Vector3 rotate = pPlayer_->GetMesh()->GetRotate();
-	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDir.x, lastDir.z), 0.1f);
-	pPlayer_->SetMeshRotate(rotate);
-}
-
 void PlayerDushState::MoveUpdate() {
 	Transform* playerTransform = pPlayer_->GetTransform();
 
@@ -77,7 +63,9 @@ void PlayerDushState::MoveUpdate() {
 		lerpT
 	);
 
-	pPlayer_->SetVelocity(pPlayer_->GetDirection() * speed);
+	Vec3 velocity = pPlayer_->GetDirection() * speed * Time::DeltaTime();
+	velocity.y    = pPlayer_->GetVelocity().y;
+	pPlayer_->SetVelocity(velocity);
 	playerTransform->position += pPlayer_->GetVelocity();
 
 

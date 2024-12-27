@@ -2,6 +2,8 @@
 
 #include "../IPlayerState/IPlayerState.h"
 
+#include "Math/Vector3.h"
+
 /// ===================================================
 /// 
 /// ===================================================
@@ -22,11 +24,24 @@ public:
 	bool IsEnd()  override;
 	int NextStateIndex() override;
 
+
+private:
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void VelocitySetting();
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	class Transform* playerTransform_ = nullptr;
+
+	float inputTimeLimit_;
 
 };
 

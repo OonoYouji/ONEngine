@@ -34,11 +34,16 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
 
 	/// <summary>
 	/// 入力からの更新
 	/// </summary>
 	void InputUpdate();
+
+	void ApplyGravity();
+
+	void MeshRotateUpdate();
 
 private:
 
@@ -54,8 +59,9 @@ private:
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
 	Vec3  lastDirection_;
 	Vec3  velocity_;
-	float moveSpeed_ = 0.1f;
+	float moveSpeed_ = 12.0f;
 
+	float gravityAccel_ = 1.0f;
 
 	std::vector<Flag> flags_;
 
