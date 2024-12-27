@@ -16,8 +16,8 @@ PlayerDushState::~PlayerDushState() {}
 
 void PlayerDushState::Start() {
 
-	dushStartSpeed_     = 20.0f;
-	dushNormalSpeed_    = 18.0f;
+	dushStartSpeed_     = 40.0f;
+	dushNormalSpeed_    = 30.0f;
 
 	dushTransitionTime_ = 0.2f;
 	currentTime_        = 0.0f;
@@ -37,9 +37,18 @@ void PlayerDushState::Exit() {
 }
 
 bool PlayerDushState::IsEnd() {
+
+	/// 加速が終わった通常のダッシュ状態になったら終了
 	if(isAccelerateEnded_) {
-		return !pPlayer_->GetFlag(PlayerFlag_IsDush).Stay();
+		if(!pPlayer_->GetFlag(PlayerFlag_IsDush).Stay()) {
+			return true;
+		}
 	}
+	
+	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
+		return true;
+	}
+
 
 	return false;
 }
@@ -47,6 +56,10 @@ bool PlayerDushState::IsEnd() {
 int PlayerDushState::NextStateIndex() {
 	if(!pPlayer_->GetFlag(PlayerFlag_IsDush).Stay()) {
 		return PlayerStateOrder_Root;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
+		return PlayerStateOrder_Jump;
 	}
 
 	return 0;

@@ -5,6 +5,7 @@
 
 /// engine
 #include "FrameManager/Time.h"
+#include "Debugger/Assertion.h"
 
 /// user
 #include "../../Player.h"
@@ -31,10 +32,30 @@ void PlayerJumpState::Update() {
 
 		if(pPlayer_->GetFlag(PlayerFlag_IsJump).Stay()) {
 			VelocitySetting();
+		} else if(pPlayer_->GetFlag(PlayerFlag_IsJump).Exit()) {
+			inputTimeLimit_ = 0.0f;
 		}
+
 	}
 
+	/// 向きの修正を行う
+	Vec3 nextVelocity    = pPlayer_->GetDirection() * Time::DeltaTime();
+	nextVelocity.y       = 0.0f;
+	
+	Vec3 currentVelocity = pPlayer_->GetVelocity();
+	currentVelocity.y    = 0.0f;
+
+	Vec3 velocity = Vec3::Lerp(currentVelocity.Normalize(), nextVelocity.Normalize(), 0.5f);
+	velocity = velocity.Normalize() * currentVelocity.Len();
+	velocity.y = pPlayer_->GetVelocity().y;
+
+	pPlayer_->SetVelocity(velocity);
+
 	playerTransform_->position += pPlayer_->GetVelocity();
+
+	Assert(!std::isinf(playerTransform_->position.x), "is inf");
+	Assert(!std::isinf(playerTransform_->position.y), "is inf");
+	Assert(!std::isinf(playerTransform_->position.z), "is inf");
 	
 }
 

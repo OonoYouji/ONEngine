@@ -94,7 +94,7 @@ void Player::ApplyGravity() {
 void Player::MeshRotateUpdate() {
 	/// 移動方向に向けて回転
 	Vector3 rotate = GetMesh()->GetRotate();
-	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.1f);
+	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.2f);
 	SetMeshRotate(rotate);
 }
 
