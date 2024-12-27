@@ -20,8 +20,8 @@ void Player::Initialize() {
 	playerMesh_->SetParent(pTransform_);
 
 
-	playerState_.reset(new PlayerRootState(this));
-	playerState_->Start();
+	stateManager_.reset(new PlayerStateManager(this));
+	stateManager_->Initialize();
 
 }
 
@@ -29,9 +29,7 @@ void Player::Update() {
 
 	InputUpdate();
 
-	if(playerState_) {
-		playerState_->Update();
-	}
+	stateManager_->Update();
 
 }
 

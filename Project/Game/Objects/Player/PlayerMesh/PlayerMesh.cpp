@@ -21,7 +21,7 @@ void PlayerMesh::Initialize() {
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
-		GetTag(), "./Resources/Parameters/Objects"
+		"./Resources/Parameters/Objects", GetTag()
 	);
 	ApplyVariables();
 }

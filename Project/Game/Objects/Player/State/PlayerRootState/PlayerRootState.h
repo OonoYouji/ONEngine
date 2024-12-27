@@ -17,13 +17,17 @@ public:
 
 	void Start()  override;
 	void Update() override;
-	void End()    override;
+	void Exit()   override;
+
+	bool IsEnd()  override;
+	int NextStateIndex() override;
 
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
 
 };
 

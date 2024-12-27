@@ -16,6 +16,14 @@ void PlayerRootState::Update() {
 
 }
 
-void PlayerRootState::End() {
+void PlayerRootState::Exit() {
 
+}
+
+bool PlayerRootState::IsEnd() {
+	return false;
+}
+
+int PlayerRootState::NextStateIndex() {
+	return 0;
 }

@@ -156,6 +156,7 @@
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\State\IPlayerState\IPlayerState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
     <ClInclude Include="Game\Objects\Player\State\IPlayerState\IPlayerState.h" />
+    <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />

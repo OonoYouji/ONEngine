@@ -8,7 +8,7 @@
 
 /// user
 #include "PlayerMesh/PlayerMesh.h"
-#include "State/IPlayerState/IPlayerState.h"
+#include "State/Manager/PlayerStateManager.h"
 
 
 /// ===================================================
@@ -39,8 +39,8 @@ private:
 	/// ===================================================
 
 	/// 
-	PlayerMesh*                   playerMesh_  = nullptr;
-	std::unique_ptr<IPlayerState> playerState_ = nullptr;
+	PlayerMesh*                         playerMesh_   = nullptr;
+	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };

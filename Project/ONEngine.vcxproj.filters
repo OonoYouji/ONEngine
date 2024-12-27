@@ -138,6 +138,7 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
+    <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

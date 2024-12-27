@@ -1,5 +1,7 @@
 #include "PlayerDushState.h"
 
+#include "../PlayerRootState/PlayerRootState.h"
+
 PlayerDushState::PlayerDushState(Player* _player) : IPlayerState(_player) {}
 PlayerDushState::~PlayerDushState() {}
 
@@ -11,6 +13,14 @@ void PlayerDushState::Update() {
 
 }
 
-void PlayerDushState::End() {
+void PlayerDushState::Exit() {
 
+}
+
+bool PlayerDushState::IsEnd() {
+	return false;
+}
+
+int PlayerDushState::NextStateIndex() {
+	return 0;
 }
