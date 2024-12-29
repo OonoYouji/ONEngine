@@ -1,20 +1,27 @@
 #pragma once
 
+/// std
+#include <memory>
+#include <vector>
+
+/// engine
 #include "GameObjectManager/BaseGameObject.h"
 
-#include "Behavior/PlayerBehaviorManager.h"
+/// user
+#include "PlayerMesh/PlayerMesh.h"
+#include "State/Manager/PlayerStateManager.h"
+#include "CustomMath/Flag/Flag.h"
 
-
-struct CommonData {
-	Vec3 direction; /// 向いているほう
-
-	Vec3 velocity;	/// 移動方向
-	float movementSpeed;
-	Vec3 position;
-
-	bool useGravity; /// 重力方向に落ちているか
+enum PlayerFlag {
+	PlayerFlag_IsDush,
+	PlayerFlag_IsJump,
+	PlayerFlag_Max
 };
 
+
+/// ===================================================
+/// プレイヤーのクラス
+/// ===================================================
 class Player : public BaseGameObject {
 public:
 
@@ -22,17 +29,21 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Player(class GameCamera* _gameCamera);
+	Player(class GameCamera* _gameCameraPtr);
 	~Player();
 
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
 
-	void AddVariables();
-	void ApplyVariables();
+	/// <summary>
+	/// 入力からの更新
+	/// </summary>
+	void InputUpdate();
 
-	void LoadingBehaviors();
+	void ApplyGravity();
+
+	void MeshRotateUpdate();
 
 private:
 
@@ -40,25 +51,50 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<PlayerBehaviorManager> behaviorManager_;
-
-	class PlayerMesh* mesh_ = nullptr;
-
-	/// other class
-	class GameCamera* pGameCamera_ = nullptr;
+	/// 
+	PlayerMesh*                         playerMesh_   = nullptr;
+	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
 
 	/// parameters
-	CommonData currentCommonData_;
+	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
+	Vec3  lastDirection_;
+	Vec3  velocity_;
+	float moveSpeed_ = 12.0f;
 
-#ifdef _DEBUG
-	class PlayerMotionDebugRenderer* motionDebugRenderer_ = nullptr;
-#endif // _DEBUG
+	float gravityAccel_ = 1.0f;
 
+	std::vector<Flag> flags_;
 
 public:
+	
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
 
-	CommonData& GetCommonData() { return currentCommonData_; }
-	GameCamera* GetGameCamera() { return pGameCamera_; }
+	/// ---------------------------------------------------
+	/// Direction
+	const Vec3& GetDirection() const { return direction_; }
 
-	PlayerBehaviorManager* GetBehaviorManager() const { return behaviorManager_.get(); }
+	const Vec3& GetLastDirection() const { return lastDirection_; }
+	void SetLastDirection(const Vec3& _direction) { lastDirection_ = _direction; }
+
+
+	/// ---------------------------------------------------
+	/// Velocity
+	const Vec3& GetVelocity() const { return velocity_; }
+	void SetVelocity(const Vec3& _velocity) { velocity_ = _velocity; }
+
+
+	float GetMoveSpeed() const { return moveSpeed_; }
+
+	const Flag& GetFlag(PlayerFlag _flag) { return flags_[_flag]; }
+
+
+	/// ---------------------------------------------------
+	/// Mesh
+	PlayerMesh* GetMesh() const { return playerMesh_; }
+
+	void SetMeshRotate(const Vec3& _rotate) { playerMesh_->SetRotate(_rotate); }
+	
+
 };

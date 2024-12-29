@@ -1,5 +1,10 @@
 #include "Mouse.h"
 
+
+/// windows
+#include <windows.h>
+
+/// std
 #include <cassert>
 #include <cmath>
 
@@ -7,6 +12,34 @@
 
 #include "WindowManager/WinApp.h"
 #include "Objects/Camera/Manager/CameraManager.h"
+#include "Input.h"
+
+namespace {
+	bool IsWindowActive(HWND hwnd) {
+		// 現在アクティブなウィンドウと比較
+		return GetForegroundWindow() == hwnd;
+	}
+
+	void ConfineCursorToWindow(HWND hwnd) {
+		if(IsWindowActive(hwnd)) {
+			// ウィンドウがアクティブな場合、カーソルを制限
+			RECT clientRect;
+			GetClientRect(hwnd, &clientRect);
+
+			// クライアント座標をスクリーン座標に変換
+			POINT topLeft = { clientRect.left, clientRect.top };
+			POINT bottomRight = { clientRect.right, clientRect.bottom };
+			ClientToScreen(hwnd, &topLeft);
+			ClientToScreen(hwnd, &bottomRight);
+
+			RECT clipRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+			ClipCursor(&clipRect); // カーソルの移動範囲を制限
+		} else {
+			// ウィンドウが非アクティブな場合、制限を解除
+			ClipCursor(NULL);
+		}
+	}
+}
 
 
 Mouse::Mouse() {}
@@ -31,7 +64,7 @@ void Mouse::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 	// DISCL_NOWINKEY     : Windowsキーを無効にする
 
 	hr = mouse_->SetCooperativeLevel(
-		pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		pWinApp_->GetHWND(), Input::sDWord_);
 	assert(SUCCEEDED(hr));
 }
 
@@ -41,7 +74,7 @@ void Mouse::Begin() {
 
 	pWinApp_ = ONEngine::GetActiveWinApp();
 	mouse_->SetCooperativeLevel(
-		pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		pWinApp_->GetHWND(), Input::sDWord_);
 
 	preState_ = state_;
 
@@ -50,6 +83,8 @@ void Mouse::Begin() {
 	POINT mousePos{};
 	GetCursorPos(&mousePos);
 	ScreenToClient(pWinApp_->GetHWND(), &mousePos);
+
+	ConfineCursorToWindow(pWinApp_->GetHWND());
 
 	position_ = Vec2(
 		static_cast<float>(mousePos.x),

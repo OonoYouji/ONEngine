@@ -6,6 +6,7 @@
 // engine
 #include "Core/ONEngine.h"
 #include "WindowManager/WinApp.h"
+#include "Input.h"
 
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")
@@ -35,7 +36,7 @@ void Keyboard::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 
 	hr = keyboard_->SetCooperativeLevel(
 		winApp->GetHWND(),
-		DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY
+		Input::sDWord_
 	);
 	assert(SUCCEEDED(hr));
 }
@@ -48,7 +49,7 @@ void Keyboard::Begin() {
 
 	pWinApp_ = ONEngine::GetActiveWinApp();
 	keyboard_->SetCooperativeLevel(
-		pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		pWinApp_->GetHWND(), Input::sDWord_);
 
 	///- キーボード情報の取得開始
 	keyboard_->Acquire();

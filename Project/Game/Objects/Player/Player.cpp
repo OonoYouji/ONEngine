@@ -1,27 +1,18 @@
-#define NOMINMAX
 #include "Player.h"
 
-/// std
-#include <algorithm>
-#include <cassert>
+/// extrernal
+#include <imgui.h>
 
 /// engine
-#include "VariableManager/VariableManager.h"
+#include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Input/Input.h"
-#include "ImGuiManager/ImGuiManager.h"
 #include "FrameManager/Time.h"
-
-
 #include "Math/LerpShortAngle.h"
 
-/// game
-#include "Objects/Camera/GameCamera.h"
-#include "Mesh/PlayerMesh.h"
-#include "PlayerMotionDebugRenderer/PlayerMotionDebugRenderer.h"
+/// user
+#include "State/PlayerRootState/PlayerRootState.h"
 
-
-Player::Player(GameCamera* _gameCamera)
-	: pGameCamera_(_gameCamera) {
+Player::Player(GameCamera* _gameCameraPtr) {
 	CreateTag(this);
 }
 
@@ -29,77 +20,82 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	/// ===================================================
-	/// setting
-	/// ===================================================
-
-	/// component setting
-	mesh_ = new PlayerMesh();
-	mesh_->Initialize();
-	mesh_->SetParent(pTransform_);
-
-	/// behavior
-	behaviorManager_.reset(new PlayerBehaviorManager(this));
-	behaviorManager_->Initialize();
-	
-#ifdef _DEBUG
-	motionDebugRenderer_ = new PlayerMotionDebugRenderer(this);
-	motionDebugRenderer_->Initialize();
-	motionDebugRenderer_->SetParent(pTransform_);
-#endif // _DEBUG
+	playerMesh_ = new PlayerMesh();
+	playerMesh_->Initialize();
+	playerMesh_->SetParent(pTransform_);
 
 
-	/// ===================================================
-	/// json variable io
-	/// ===================================================
+	stateManager_.reset(new PlayerStateManager(this));
+	stateManager_->Initialize();
 
-	AddVariables();
-	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
-		"./Resources/Parameters/Objects", GetTag()
-	);
-	ApplyVariables();
+	/// フラグの初期化
+	flags_.resize(PlayerFlag_Max);
+
 }
 
 void Player::Update() {
-	ApplyVariables();
 
-	behaviorManager_->Update();
+	InputUpdate();
 
-	const MotionKeyframe& keyframe = behaviorManager_->GetCurrentMotion()->GetMotionKeyframe();
-	pTransform_->position = currentCommonData_.position + keyframe.position;
-	pTransform_->rotate   = keyframe.rotate;
-	pTransform_->scale    = keyframe.scale;
+	ApplyGravity();
+	MeshRotateUpdate();
+	stateManager_->Update();
+
+	/// 地面に着地したときの処理
+	if(pTransform_->position.y < 0.0f) {
+		pTransform_->position.y = 0.0f;
+		velocity_.y = 0.0f;
+	}
+
 }
 
 void Player::Debug() {
-}
 
+	ImGui::DragFloat3("velocity", &velocity_.x, 0.01f);
 
-/// ===================================================
-/// variable io
-/// ===================================================
+	ImGui::DragFloat("gravity accel", &gravityAccel_, 0.01f);
 
-void Player::AddVariables() {
-	VariableManager* vm = VariableManager::GetInstance();
-	const std::string& groupName = GetTag();
-
-	vm->AddValue(groupName, "movementSpeed", currentCommonData_.movementSpeed);
-	vm->AddValue(groupName, "useGravity",    currentCommonData_.useGravity);
-
-}
-
-void Player::ApplyVariables() {
-	VariableManager* vm = VariableManager::GetInstance();
-	const std::string& groupName = GetTag();
-
-	currentCommonData_.movementSpeed = vm->GetValue<float>(groupName, "movementSpeed");
-	currentCommonData_.useGravity    = vm->GetValue<bool>(groupName, "useGravity");
+	ImGui::Text("fps : %f", 1.0f / Time::DeltaTime());
+	ImGui::Text("delta time : %f", Time::DeltaTime());
 
 }
 
 
 
-void Player::LoadingBehaviors() {
+void Player::InputUpdate() {
+
+	/// すべてのフラグを更新
+	for(auto& flag : flags_) {
+		flag.Update();
+	}
+
+	/// 方向の初期化
+	direction_ = { 0.0f, 0.0f, 0.0f };
+
+	if(Input::PressKey(KeyCode::W)) { direction_.z += 1.0f; }
+	if(Input::PressKey(KeyCode::A)) { direction_.x -= 1.0f; }
+	if(Input::PressKey(KeyCode::S)) { direction_.z -= 1.0f; }
+	if(Input::PressKey(KeyCode::D)) { direction_.x += 1.0f; }
+
+	direction_ = direction_.Normalize();
+	if(direction_ != Vec3(0.0f, 0.0f, 0.0f)) {
+		lastDirection_ = direction_;
+	}
+
+	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift));
+	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space));
 
 }
+
+void Player::ApplyGravity() {
+	velocity_.y -= gravityAccel_ * Time::DeltaTime();
+}
+
+void Player::MeshRotateUpdate() {
+	/// 移動方向に向けて回転
+	Vector3 rotate = GetMesh()->GetRotate();
+	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.2f);
+	SetMeshRotate(rotate);
+}
+
 

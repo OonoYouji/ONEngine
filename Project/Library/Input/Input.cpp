@@ -158,9 +158,9 @@ namespace {
 
 
 std::unique_ptr<Keyboard> Input::keyboard_ = nullptr;
-std::unique_ptr<Mouse> Input::mouse_ = nullptr;
-std::unique_ptr<Gamepad> Input::pad_ = nullptr;
-
+std::unique_ptr<Mouse>    Input::mouse_    = nullptr;
+std::unique_ptr<Gamepad>  Input::pad_      = nullptr;
+DWORD                     Input::sDWord_   = DISCL_FOREGROUND | DISCL_NONEXCLUSIVE;
 
 /// ===================================================
 /// インスタンス確保

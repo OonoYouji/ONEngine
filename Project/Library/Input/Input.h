@@ -73,6 +73,7 @@ public:
 	static bool IsLStickStartMoving();
 	static bool IsRStickStartMoving();
 
+
 private:
 
 	/// ===================================================
@@ -83,6 +84,16 @@ private:
 	static std::unique_ptr<Mouse> mouse_;
 	static std::unique_ptr<Gamepad> pad_;
 
+
+public:
+
+	/// ===================================================
+	/// public : objects
+	/// ===================================================
+
+	static DWORD sDWord_;
+
+
 private:
 
 	/// ===================================================
@@ -91,6 +102,7 @@ private:
 
 	Microsoft::WRL::ComPtr<IDirectInput8> directInput_;
 	ONE::WinApp* pWinApp_ = nullptr;
+
 
 private:
 	Input(const Input&) = delete;
