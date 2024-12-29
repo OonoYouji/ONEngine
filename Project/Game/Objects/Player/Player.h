@@ -65,6 +65,10 @@ private:
 
 	std::vector<Flag> flags_;
 
+
+	/// 他クラスへのポインタ
+	class GameCamera* pGameCamera_ = nullptr;
+
 public:
 	
 	/// ===================================================

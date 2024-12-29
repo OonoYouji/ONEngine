@@ -64,10 +64,6 @@ void PlayerJumpState::Update() {
 
 	playerTransform_->position += pPlayer_->GetVelocity();
 
-	//Assert(!std::isinf(playerTransform_->position.x), "is inf");
-	//Assert(!std::isinf(playerTransform_->position.y), "is inf");
-	//Assert(!std::isinf(playerTransform_->position.z), "is inf");
-
 }
 
 void PlayerJumpState::Exit() {

@@ -26,6 +26,8 @@ public:
 
 	void Input();
 
+	Vec3 LockAt(const Vec3& _direction);
+
 private:
 
 	/// ===================================================

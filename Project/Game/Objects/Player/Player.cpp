@@ -11,8 +11,11 @@
 
 /// user
 #include "State/PlayerRootState/PlayerRootState.h"
+#include "Objects/Camera/GameCamera.h"
 
-Player::Player(GameCamera* _gameCameraPtr) {
+
+Player::Player(GameCamera* _gameCameraPtr) 
+	: pGameCamera_(_gameCameraPtr) {
 	CreateTag(this);
 }
 
@@ -78,10 +81,19 @@ void Player::InputUpdate() {
 	if(Input::PressKey(KeyCode::D)) { direction_.x += 1.0f; }
 
 	direction_ = direction_.Normalize();
+
+	/// カメラの回転に合わせて移動方向を変更
+	Mat4 matCameraRotateY = Mat4::MakeRotateY(pGameCamera_->GetRotate().y);
+	direction_ = Mat4::TransformNormal(direction_, matCameraRotateY);
+	
+
 	if(direction_ != Vec3(0.0f, 0.0f, 0.0f)) {
 		lastDirection_ = direction_;
 	}
 
+
+
+	/// フラグの更新
 	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift));
 	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space));
 

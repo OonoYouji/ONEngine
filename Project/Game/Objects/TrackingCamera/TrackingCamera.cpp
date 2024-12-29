@@ -27,7 +27,7 @@ void TrackingCamera::Initialize() {
 	/// ===================================================
 
 	/// trasform setting
-	pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
+	//pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
 
 
 	/// ===================================================
@@ -91,14 +91,16 @@ void TrackingCamera::LockToTarget() {
 	Vec3 direction = Mat4::TransformNormal(offsetDirection_, matCameraRotate_);
 
 	/// 回転角決定
-	pGameCamera_->SetQuaternion(Quaternion::LockAt({}, direction));
+	pGameCamera_->SetRotate(LockAt(direction));
 
 }
 
 void TrackingCamera::Input() {
 
 	inputRightStick_ = Vec2(0, 0);
-	inputRightStick_ += Input::MouseVelocity();
+	inputRightStick_ += Input::MouseVelocity() * Vec2(5.0f, 10.0f);
+	inputRightStick_.y *= -1.0f;
+
 	inputRightStick_ += Input::GetRightStick();
 	inputRightStick_ = inputRightStick_.Normalize();
 	inputRightStick_.y *= -1.0f;
@@ -115,5 +117,14 @@ void TrackingCamera::Input() {
 
 	matCameraRotate_ = Mat4::MakeRotate(cameraRotate_);
 
+}
+
+Vec3 TrackingCamera::LockAt(const Vec3& _direction) {
+
+	float yaw   = std::atan2(_direction.x, _direction.z);
+	float pitch = std::atan2(-_direction.y, std::sqrt(_direction.x * _direction.x + _direction.z * _direction.z));
+	float roll  = 0.0f;
+
+	return { pitch, yaw, roll };
 }
 
