@@ -2,6 +2,7 @@
 
 /// std
 #include <list>
+#include <vector>
 
 /// engine
 #include "GameObjectManager/BaseGameObject.h"
@@ -38,14 +39,23 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
-	void EmitterEdit();
 
+private:
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
 
 	/// <summary>
-	/// Enemyを生成する
+	/// Emitterの編集
 	/// </summary>
-	/// <param name="_position"></param>
-	void GenerateEnemy(const Vec3& _position);
+	void EmitterEdit();
+
+	/// <summary>
+	/// EmitterDataのImGuiデバッグ
+	/// </summary>
+	/// <param name="_data"></param>
+	void EmitterDataImGuiDebug(EmitterData& _data);
 
 
 private:
@@ -57,6 +67,7 @@ private:
 	std::list<class Enemy*>        enemyList_;
 	std::list<class EnemyEmitter*> enemyEmitterList_;
 
-
+	EmitterData              sourceEmitterData_;
+	std::vector<EmitterData> emitterDatas_;
 
 };
