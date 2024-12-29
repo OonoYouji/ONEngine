@@ -13,6 +13,7 @@
 #include "Objects/Player/Player.h"
 #include "Objects/EnemyManager/EnemyManager.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/EnemyEmitter/EnemyEmitter.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 
 #include "Objects/BackgroundObject/Stage/Stage.h"
@@ -37,8 +38,7 @@ void Scene_Game::Initialize() {
 	createObjects.push_back(new Player(mainCamera_));
 	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
 	createObjects.push_back(new Stage());
-	createObjects.push_back(new Enemy());
-	createObjects.push_back(new EnemyManager());
+	createObjects.push_back(new EnemyManager(static_cast<Player*>(createObjects[0])));
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {
