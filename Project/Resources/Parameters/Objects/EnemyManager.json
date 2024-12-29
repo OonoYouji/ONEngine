@@ -1,0 +1,26 @@
+{
+    "emitterDatas": [
+        {
+            "config": {
+                "emitEnemyNum": 5,
+                "radius": 5.0
+            },
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "config": {
+                "emitEnemyNum": 5,
+                "radius": 5.0
+            },
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ]
+}

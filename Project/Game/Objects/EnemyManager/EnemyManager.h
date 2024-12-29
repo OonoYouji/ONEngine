@@ -32,7 +32,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyManager();
+	EnemyManager(class Player* _playerPtr);
 	~EnemyManager();
 
 	void Initialize() override;
@@ -57,6 +57,15 @@ private:
 	/// <param name="_data"></param>
 	void EmitterDataImGuiDebug(EmitterData& _data);
 
+	/// <summary>
+	/// EmitterDataをJsonファイルに保存
+	/// </summary>
+	void EmitterDataSaveToJsonFile(const std::string& _directoryPath, bool _isDrawPopupWindow);
+
+	/// <summary>
+	/// JsonファイルからEmitterDataを読み込む
+	/// </summary>
+	void EmitterDataLoadFromJsonFile(const std::string& _directoryPath, bool _isDrawPopupWindow);
 
 private:
 
@@ -64,9 +73,13 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class Player* pPlayer_ = nullptr;
+
 	std::list<class Enemy*>        enemyList_;
 	std::list<class EnemyEmitter*> enemyEmitterList_;
 
+
+	const std::string        directoryPath_ = "./Resources/Parameters/Objects/EnemyManager.json";
 	EmitterData              sourceEmitterData_;
 	std::vector<EmitterData> emitterDatas_;
 
