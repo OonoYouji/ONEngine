@@ -14,6 +14,10 @@ public:
 
 	virtual bool IsEnd()  = 0;
 	virtual int NextStateIndex() = 0;
+	
+	virtual void Debug();
+	virtual void Save() {}
+	virtual void Load() {}
 
 protected:
 

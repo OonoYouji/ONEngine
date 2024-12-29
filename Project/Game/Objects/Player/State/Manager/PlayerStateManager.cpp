@@ -1,5 +1,11 @@
 #include "PlayerStateManager.h"
 
+/// std
+
+/// external
+#include <imgui.h>
+
+/// user
 #include "../PlayerDushState/PlayerDushState.h"
 #include "../PlayerJumpState/PlayerJumpState.h"
 #include "../PlayerRootState/PlayerRootState.h"
@@ -51,5 +57,16 @@ void PlayerStateManager::Update() {
 
 	}
 
+
+}
+
+void PlayerStateManager::Debug() {
+
+	if(ImGui::BeginChild("state list", ImVec2(0.0f, 320.0f), true, ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+		for(auto& state : states_) {
+			state->Debug();
+		}
+		ImGui::EndChild();
+	}
 
 }

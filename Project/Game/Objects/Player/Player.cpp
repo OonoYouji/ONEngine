@@ -55,6 +55,11 @@ void Player::Update() {
 
 void Player::Debug() {
 
+	/// state manager debugging
+	ImGui::SeparatorText("/// state manager");
+	stateManager_->Debug();
+
+
 	ImGui::DragFloat3("velocity", &velocity_.x, 0.01f);
 
 	ImGui::DragFloat("gravity accel", &gravityAccel_, 0.01f);
