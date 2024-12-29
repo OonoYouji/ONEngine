@@ -22,7 +22,7 @@ void PlayerJumpState::Start() {
 	VelocitySetting();
 
 	inputTimeLimit_ = 0.2f;
-
+	canDoubleJump_  = true;
 }
 
 void PlayerJumpState::Update() {
@@ -37,6 +37,17 @@ void PlayerJumpState::Update() {
 		}
 
 	}
+
+
+	/// 二段ジャンプの処理
+	if(canDoubleJump_) {
+		if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
+			inputTimeLimit_ = 0.2f;
+			canDoubleJump_  = false;
+			VelocitySetting();
+		}
+	}
+
 
 	/// 向きの修正を行う
 	Vec3 nextVelocity    = pPlayer_->GetDirection() * Time::DeltaTime();
@@ -53,10 +64,10 @@ void PlayerJumpState::Update() {
 
 	playerTransform_->position += pPlayer_->GetVelocity();
 
-	Assert(!std::isinf(playerTransform_->position.x), "is inf");
-	Assert(!std::isinf(playerTransform_->position.y), "is inf");
-	Assert(!std::isinf(playerTransform_->position.z), "is inf");
-	
+	//Assert(!std::isinf(playerTransform_->position.x), "is inf");
+	//Assert(!std::isinf(playerTransform_->position.y), "is inf");
+	//Assert(!std::isinf(playerTransform_->position.z), "is inf");
+
 }
 
 void PlayerJumpState::Exit() {

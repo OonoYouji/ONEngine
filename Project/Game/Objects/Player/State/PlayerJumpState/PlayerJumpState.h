@@ -42,6 +42,7 @@ private:
 	class Transform* playerTransform_ = nullptr;
 
 	float inputTimeLimit_;
+	bool  canDoubleJump_;
 
 };
 
