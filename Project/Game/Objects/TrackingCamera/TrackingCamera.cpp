@@ -1,5 +1,8 @@
 #include "TrackingCamera.h"
 
+/// extrernals
+#include <imgui.h>
+
 /// engine
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
@@ -54,6 +57,11 @@ void TrackingCamera::Update() {
 	LockToTarget();
 }
 
+void TrackingCamera::Debug() {
+
+	ImGui::DragFloat3("camera rotate", &cameraRotate_.x);
+}
+
 
 /// ===================================================
 /// variable io
@@ -87,11 +95,11 @@ void TrackingCamera::ApplyVariables() {
 
 void TrackingCamera::LockToTarget() {
 
-
 	Vec3 direction = Mat4::TransformNormal(offsetDirection_, matCameraRotate_);
 
 	/// 回転角決定
-	pGameCamera_->SetRotate(LockAt(direction));
+	Vec3 euler = LockAt(direction);
+	pGameCamera_->SetRotate(euler);
 
 }
 
@@ -114,6 +122,8 @@ void TrackingCamera::Input() {
 	cameraRotate_ += {
 		inputRightStick_.y, inputRightStick_.x, 0.0f
 	};
+
+	cameraRotate_.x = std::clamp(cameraRotate_.x, -0.35f, 1.0f);
 
 	matCameraRotate_ = Mat4::MakeRotate(cameraRotate_);
 

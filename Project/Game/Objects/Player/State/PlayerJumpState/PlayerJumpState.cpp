@@ -81,7 +81,13 @@ bool PlayerJumpState::IsEnd() {
 
 int PlayerJumpState::NextStateIndex() {
 	if(playerTransform_->position.y < 0.0f) {
-		return PlayerStateOrder_Root;
+
+		if(pPlayer_->GetFlag(PlayerFlag_IsDush).Stay()) {
+			return PlayerStateOrder_Dush;
+		} else {
+			return PlayerStateOrder_Root;
+		}
+
 	}
 
 	return 0;

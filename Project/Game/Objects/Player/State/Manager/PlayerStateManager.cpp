@@ -34,14 +34,19 @@ void PlayerStateManager::Update() {
 		/// currentのステートが終了したら次のステートに移行
 		if(currentState_->IsEnd()) {
 
+			currentState_->Exit();
+			
+			int nextIndex = currentState_->NextStateIndex();
+
 			/// 前のステートを記憶
 			beforeState_ = static_cast<int>(std::distance(states_.begin(), std::find_if(states_.begin(), states_.end(), [&](const std::unique_ptr<IPlayerState>& _state) {
 				return _state.get() == currentState_;
 			})));
 
-			currentState_->Exit();
-			currentState_ = states_[currentState_->NextStateIndex()].get();
+			currentState_ = states_[nextIndex].get();
+
 			currentState_->Start();
+
 		}
 
 	}

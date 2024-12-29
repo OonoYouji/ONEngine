@@ -141,6 +141,7 @@
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\EnemyEmitter\EnemyEmitter.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.cpp" />
+    <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -266,6 +267,7 @@
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
     <ClInclude Include="Game\Objects\EnemyEmitter\EnemyEmitter.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.h" />
+    <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

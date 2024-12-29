@@ -12,6 +12,7 @@
 /// user
 #include "State/PlayerRootState/PlayerRootState.h"
 #include "Objects/Camera/GameCamera.h"
+#include "Objects/EntityShadow/EntityShadow.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -27,9 +28,9 @@ void Player::Initialize() {
 	playerMesh_->Initialize();
 	playerMesh_->SetParent(pTransform_);
 
-
 	stateManager_.reset(new PlayerStateManager(this));
 	stateManager_->Initialize();
+
 
 	/// フラグの初期化
 	flags_.resize(PlayerFlag_Max);

@@ -14,6 +14,8 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
+
 
 	/// <summary>
 	/// json io

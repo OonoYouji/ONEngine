@@ -8,6 +8,9 @@
 #include "FrameManager/Time.h"
 #include "VariableManager/VariableManager.h"
 
+/// user
+#include "Objects/EntityShadow/EntityShadow.h"
+
 
 PlayerMesh::PlayerMesh() {
 	CreateTag(this);
@@ -18,6 +21,11 @@ PlayerMesh::~PlayerMesh() {}
 void PlayerMesh::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Player");
+
+	/// 影の生成
+	EntityShadow* shadow = new EntityShadow(this, GetModel());
+	shadow->Initialize();
+
 
 	AddVariables();
 	VariableManager::GetInstance()->LoadSpecificGroupsToJson(
@@ -61,5 +69,9 @@ void PlayerMesh::ApplyVariables() {
 	offsetPosition_ = vm->GetValue<Vec3>(groupName, "offsetPosition");
 	animationRange_ = vm->GetValue<float>(groupName, "animationRange");
 	animationSpeed_ = vm->GetValue<float>(groupName, "animationSpeed");
+}
+
+Model* PlayerMesh::GetModel() const {
+	return meshRenderer_->GetModel();
 }
 
