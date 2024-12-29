@@ -7,7 +7,7 @@
 /// user
 #include "../../Player.h"
 
-PlayerRootState::PlayerRootState(Player* _player) : IPlayerState(_player) {}
+PlayerRootState::PlayerRootState(Player* _player, PlayerStateManager* _stateManager) : IPlayerState(_player, _stateManager) {}
 PlayerRootState::~PlayerRootState() {}
 
 void PlayerRootState::Start() {

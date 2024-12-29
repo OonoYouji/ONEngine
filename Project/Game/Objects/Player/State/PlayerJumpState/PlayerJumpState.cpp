@@ -12,7 +12,7 @@
 #include "../PlayerRootState/PlayerRootState.h"
 
 
-PlayerJumpState::PlayerJumpState(Player* _player) : IPlayerState(_player) {}
+PlayerJumpState::PlayerJumpState(Player* _player, PlayerStateManager* _stateManager) : IPlayerState(_player, _stateManager) {}
 PlayerJumpState::~PlayerJumpState() {}
 
 void PlayerJumpState::Start() {
@@ -63,6 +63,7 @@ void PlayerJumpState::Update() {
 	pPlayer_->SetVelocity(velocity);
 
 	playerTransform_->position += pPlayer_->GetVelocity();
+
 
 }
 

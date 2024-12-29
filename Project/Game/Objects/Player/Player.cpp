@@ -80,6 +80,12 @@ void Player::InputUpdate() {
 	if(Input::PressKey(KeyCode::S)) { direction_.z -= 1.0f; }
 	if(Input::PressKey(KeyCode::D)) { direction_.x += 1.0f; }
 
+	direction_ += {
+		Input::GetLeftStick().x,
+		0.0f,
+		Input::GetLeftStick().y
+	};
+
 	direction_ = direction_.Normalize();
 
 	/// カメラの回転に合わせて移動方向を変更
@@ -94,8 +100,9 @@ void Player::InputUpdate() {
 
 
 	/// フラグの更新
-	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift));
-	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space));
+	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift) || Input::PressPadButton(PadCode::RB));
+	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A));
+	flags_[PlayerFlag_IsAttack].Set(Input::PressMouse(MouseCode::Left));
 
 }
 

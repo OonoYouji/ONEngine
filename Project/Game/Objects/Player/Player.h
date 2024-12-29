@@ -15,6 +15,7 @@
 enum PlayerFlag {
 	PlayerFlag_IsDush,
 	PlayerFlag_IsJump,
+	PlayerFlag_IsAttack,
 	PlayerFlag_Max
 };
 

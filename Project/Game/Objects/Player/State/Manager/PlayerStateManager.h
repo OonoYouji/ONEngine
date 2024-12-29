@@ -14,6 +14,7 @@ enum PlayerStateOrder {
 	PlayerStateOrder_Root,
 	PlayerStateOrder_Jump,
 	PlayerStateOrder_Dush,
+	PlayerStateOrder_NormalAttack,
 	PlayerStateOrder_Max
 };
 
@@ -44,5 +45,16 @@ private:
 	class IPlayerState* currentState_ = nullptr;
 
 	std::vector<std::unique_ptr<IPlayerState>> states_;
+
+	int beforeState_ = 0;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	int GetBeforeState() const { return beforeState_; }
 
 };

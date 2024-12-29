@@ -3,17 +3,17 @@
 #include "../IPlayerState/IPlayerState.h"
 
 /// ===================================================
-/// プレイヤーのダッシュステート
+/// プレイヤーの通常攻撃ステート
 /// ===================================================
-class PlayerDushState : public IPlayerState {
+class PlayerNormalAttack : public IPlayerState {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	PlayerDushState(class Player* _player, class PlayerStateManager* _stateManager);
-	~PlayerDushState();
+	PlayerNormalAttack(class Player* _player, class PlayerStateManager* _stateManager);
+	~PlayerNormalAttack();
 
 	void Start()  override;
 	void Update() override;
@@ -22,14 +22,6 @@ public:
 	bool IsEnd()  override;
 	int NextStateIndex() override;
 
-private:
-
-	/// ===================================================
-	/// private : methods
-	/// ===================================================
-
-	void MoveUpdate();
-
 
 private:
 
@@ -37,13 +29,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	float dushStartSpeed_;
-	float dushNormalSpeed_;
-
-	float dushTransitionTime_;
-	float currentTime_;
-
-	bool isAccelerateEnded_ = false;
 
 };
 

@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerRootState(class Player* _player);
+	PlayerRootState(class Player* _player, class PlayerStateManager* _stateManager);
 	~PlayerRootState();
 
 	void Start()  override;

@@ -5,7 +5,7 @@
 class IPlayerState {
 public:
 
-	IPlayerState(class Player* _player);
+	IPlayerState(class Player* _player, class PlayerStateManager* _stateManager);
 	virtual ~IPlayerState();
 
 	virtual void Start()  = 0;
@@ -18,5 +18,6 @@ public:
 protected:
 
 	class Player* pPlayer_ = nullptr;
+	class PlayerStateManager* pStateManager_ = nullptr;
 };
 
