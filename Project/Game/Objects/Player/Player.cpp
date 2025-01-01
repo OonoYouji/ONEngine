@@ -13,6 +13,7 @@
 #include "State/PlayerRootState/PlayerRootState.h"
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/EntityShadow/EntityShadow.h"
+#include "PlayerProtectionMesh/PlayerProtectionMesh.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -27,6 +28,9 @@ void Player::Initialize() {
 	playerMesh_ = new PlayerMesh();
 	playerMesh_->Initialize();
 	playerMesh_->SetParent(pTransform_);
+	
+	protectionMesh_ = new PlayerProtectionMesh(this);
+	protectionMesh_->Initialize();
 
 	stateManager_.reset(new PlayerStateManager(this));
 	stateManager_->Initialize();
@@ -109,6 +113,7 @@ void Player::InputUpdate() {
 	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift) || Input::PressPadButton(PadCode::RB));
 	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A));
 	flags_[PlayerFlag_IsAttack].Set(Input::PressMouse(MouseCode::Left));
+	flags_[PlayerFlag_IsProtection].Set(Input::PressMouse(MouseCode::Right));
 
 }
 

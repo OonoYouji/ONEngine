@@ -16,6 +16,7 @@ enum PlayerFlag {
 	PlayerFlag_IsDush,
 	PlayerFlag_IsJump,
 	PlayerFlag_IsAttack,
+	PlayerFlag_IsProtection,
 	PlayerFlag_Max
 };
 
@@ -53,8 +54,9 @@ private:
 	/// ===================================================
 
 	/// 
-	PlayerMesh*                         playerMesh_   = nullptr;
 	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
+	PlayerMesh*                         playerMesh_   = nullptr;
+	class PlayerProtectionMesh*         protectionMesh_ = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };

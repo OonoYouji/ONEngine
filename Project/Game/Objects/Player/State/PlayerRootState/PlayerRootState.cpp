@@ -33,6 +33,10 @@ bool PlayerRootState::IsEnd() {
 	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
 		return true;
 	}
+	
+	if(pPlayer_->GetFlag(PlayerFlag_IsProtection).Enter()) {
+		return true;
+	}
 
 	return false;
 }
@@ -44,6 +48,10 @@ int PlayerRootState::NextStateIndex() {
 
 	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
 		return PlayerStateOrder_Jump;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsProtection).Enter()) {
+		return PlayerStateOrder_Protection;
 	}
 
 	return PlayerStateOrder_Root;
