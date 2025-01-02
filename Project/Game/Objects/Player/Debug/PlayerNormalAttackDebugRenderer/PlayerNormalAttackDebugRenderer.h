@@ -23,5 +23,7 @@ private:
 
 	class MeshInstancingRenderer*  meshInstancingRenderer_ = nullptr;
 	class Player*                  pPlayer_                = nullptr;
-	class PlayerNormalAttack*      pNormalAttakState_       = nullptr;
+	class PlayerNormalAttack*      pNormalAttakState_      = nullptr;
+
+	std::vector<Transform>         bouncePositionTransforms_;
 };

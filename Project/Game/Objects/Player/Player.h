@@ -47,6 +47,11 @@ public:
 
 	void MeshRotateUpdate();
 
+	/// <summary>
+	/// デバッグ用のオブジェクトの初期化
+	/// </summary>
+	void DebugObjectInitialize();
+
 private:
 
 	/// ===================================================
@@ -72,6 +77,11 @@ private:
 	/// 他クラスへのポインタ
 	class GameCamera* pGameCamera_ = nullptr;
 
+#ifdef _DEBUG
+
+	class PlayerNormalAttackDebugRenderer* normalAttackDebugRenderer_ = nullptr;
+
+#endif // _DEBUG
 public:
 	
 	/// ===================================================

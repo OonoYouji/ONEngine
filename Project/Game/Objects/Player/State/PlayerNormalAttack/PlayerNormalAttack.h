@@ -57,5 +57,13 @@ private:
 	bool isEnded_;
 
 
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	const std::vector<Vec3>& GetBouncePositions() { return bouncePositions_; }
+
 };
 

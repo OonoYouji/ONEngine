@@ -14,6 +14,7 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/EntityShadow/EntityShadow.h"
 #include "PlayerProtectionMesh/PlayerProtectionMesh.h"
+#include "Debug/PlayerNormalAttackDebugRenderer/PlayerNormalAttackDebugRenderer.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -39,6 +40,7 @@ void Player::Initialize() {
 	/// フラグの初期化
 	flags_.resize(PlayerFlag_Max);
 
+	DebugObjectInitialize();
 }
 
 void Player::Update() {
@@ -126,6 +128,17 @@ void Player::MeshRotateUpdate() {
 	Vector3 rotate = GetMesh()->GetRotate();
 	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.2f);
 	SetMeshRotate(rotate);
+}
+
+void Player::DebugObjectInitialize() {
+#ifdef _DEBUG
+
+	normalAttackDebugRenderer_ = new PlayerNormalAttackDebugRenderer(this);
+	normalAttackDebugRenderer_->Initialize();
+
+
+
+#endif // _DEBUG
 }
 
 
