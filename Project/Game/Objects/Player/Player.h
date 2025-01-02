@@ -104,4 +104,6 @@ public:
 	void SetMeshRotate(const Vec3& _rotate) { playerMesh_->SetRotate(_rotate); }
 	
 
+	PlayerStateManager* GetStateManager() const { return stateManager_.get(); }
+
 };

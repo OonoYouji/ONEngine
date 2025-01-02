@@ -2,8 +2,11 @@
 
 /// std
 #include <string>
+#include <vector>
 
 #include "../IPlayerState/IPlayerState.h"
+
+#include "Math/Vector3.h"
 
 /// ===================================================
 /// プレイヤーの通常攻撃ステート
@@ -47,19 +50,12 @@ private:
 	float time_;
 	float maxTime_;
 
-	AttackData sourceAttackData_ = {
-		.hitCount = 1,
-		.hitInterval = 0.2f,
-		.damage = 10.0f
-	};
-
-	AttackData attackData_;
+	std::vector<Vec3> bouncePositions_; /// バウンドする位置
+	
 	float hitBoxRadius_;
 
 	bool isEnded_;
 
 
-	const std::string filePath_ = "./Resources/Parameters/Objects/PlayerNormalAttack.json";
-	const std::string groupName_ = "PlayerNormalAttack";
 };
 

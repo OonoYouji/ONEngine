@@ -59,4 +59,8 @@ public:
 
 	int GetBeforeState() const { return beforeState_; }
 
+
+	IPlayerState* GetState(PlayerStateOrder _order) const {
+		return states_[_order].get();
+	}
 };
