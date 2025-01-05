@@ -76,6 +76,11 @@ private:
 
 	/// 他クラスへのポインタ
 	class GameCamera* pGameCamera_ = nullptr;
+	class EnemyManager* pEnemyManager_ = nullptr;
+
+	BaseGameObject* nearObject_   = nullptr;
+	BaseGameObject* targetObject_ = nullptr;
+
 
 #ifdef _DEBUG
 
@@ -114,5 +119,10 @@ public:
 	
 
 	PlayerStateManager* GetStateManager() const { return stateManager_.get(); }
+
+
+	/// ---------------------------------------------------
+	/// other class
+	void SetEnemyManager(class EnemyManager* _enemyManager) { pEnemyManager_ = _enemyManager; }
 
 };

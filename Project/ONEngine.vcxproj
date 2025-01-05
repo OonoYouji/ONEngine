@@ -162,6 +162,7 @@
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />

@@ -45,6 +45,9 @@ void Scene_Game::Initialize() {
 		obj->Initialize();
 	}
 
+	Player* player = static_cast<Player*>(createObjects[0]);
+	player->SetEnemyManager(static_cast<EnemyManager*>(createObjects[3]));
+
 
 	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
 
