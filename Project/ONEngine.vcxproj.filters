@@ -144,6 +144,7 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.cpp" />
+    <ClCompile Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -272,6 +273,7 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
     <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.h" />
+    <ClInclude Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

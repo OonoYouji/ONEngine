@@ -49,7 +49,16 @@ void EnemyEmitter::Update() {
 
 	ApplyVariables();
 
-	if(!isStart_) { return; } /// startしてなければ終了
+
+	/// startしてなければ終了
+	if(!isStart_) { 
+		config_.activionTime -= Time::DeltaTime();
+		if(config_.activionTime <= 0.0f) {
+			Start();
+		}
+		return; 
+	} 
+
 	if(isEnd_) { return; }    /// endしていたら終了
 
 	animationTime_ += Time::DeltaTime();

@@ -17,6 +17,8 @@ enum PlayerFlag {
 	PlayerFlag_IsJump,
 	PlayerFlag_IsAttack,
 	PlayerFlag_IsProtection,
+	PlayerFlag_IsTargetButtonPressed,
+	PlayerFlag_IsTarget,
 	PlayerFlag_Max
 };
 
@@ -52,6 +54,10 @@ public:
 	/// </summary>
 	void DebugObjectInitialize();
 
+	
+	void UpdateTargetEnemy();
+	void UpdateNearEnemy();
+
 private:
 
 	/// ===================================================
@@ -62,6 +68,7 @@ private:
 	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
 	PlayerMesh*                         playerMesh_   = nullptr;
 	class PlayerProtectionMesh*         protectionMesh_ = nullptr;
+	class TargetSpriteRender*           targetSpriteRender_ = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
@@ -75,11 +82,14 @@ private:
 
 
 	/// 他クラスへのポインタ
-	class GameCamera* pGameCamera_ = nullptr;
+	class GameCamera*   pGameCamera_   = nullptr;
 	class EnemyManager* pEnemyManager_ = nullptr;
 
-	BaseGameObject* nearObject_   = nullptr;
-	BaseGameObject* targetObject_ = nullptr;
+	class Enemy* nearEnemy_   = nullptr;
+	class Enemy* targetEnemy_ = nullptr;
+
+	std::list<class Enemy*> pEnemyList_;
+	std::list<class Enemy*> pForwardEnemyList_;
 
 
 #ifdef _DEBUG

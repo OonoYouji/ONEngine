@@ -19,6 +19,7 @@ public:
 	/// Emitterの設定
 	/// </summary>
 	struct Config {
+		float    activionTime;
 		uint32_t emitEnemyNum;
 		float    radius;
 	};
@@ -76,5 +77,7 @@ public:
 	void SetConfig(const Config& _config) { config_ = _config; }
 
 	std::list<class Enemy*>& GetEnemyList() { return enemyList_; }
+
+	bool GetIsEnd() const { return isEnd_; }
 
 };

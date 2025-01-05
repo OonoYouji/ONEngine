@@ -51,6 +51,15 @@ void Scene_Game::Initialize() {
 
 	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
 
+	/// Layerの設定
+	GameCamera* uiCamera = new GameCamera("UICamera");
+	uiCamera->Initialize();
+	uiCamera->SetProjectionType(ORTHOGRAPHIC);
+	uiCamera->SetDistance(10.0f);
+
+	AddLayer("UILayer", uiCamera);
+	AddLayer("TargetSpriteLayer", mainCamera_);
+
 }
 
 

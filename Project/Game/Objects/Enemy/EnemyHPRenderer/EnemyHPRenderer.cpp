@@ -10,6 +10,7 @@
 #include "Library/Debugger/Assertion.h"
 
 /// user
+#include "Scenes/Scene_Game.h"
 #include "../Enemy.h"
 #include "EnemyHPBarGauge/EnemyHPBarGauge.h"
 #include "EnemyHPBarFrame/EnemyHPBarFrame.h"
@@ -38,6 +39,8 @@ void EnemyHPRenderer::Initialize() {
 	
 	pTransform_->position.x = -1.7f;
 	pTransform_->position.y = 1.0f;
+
+	drawLayerId = GAME_SCENE_LAYER_UI;
 
 }
 
