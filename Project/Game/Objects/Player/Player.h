@@ -79,7 +79,6 @@ private:
 
 #ifdef _DEBUG
 
-	class PlayerNormalAttackDebugRenderer* normalAttackDebugRenderer_ = nullptr;
 
 #endif // _DEBUG
 public:

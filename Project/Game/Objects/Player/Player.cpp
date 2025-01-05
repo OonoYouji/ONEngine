@@ -14,7 +14,6 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/EntityShadow/EntityShadow.h"
 #include "PlayerProtectionMesh/PlayerProtectionMesh.h"
-#include "Debug/PlayerNormalAttackDebugRenderer/PlayerNormalAttackDebugRenderer.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -130,11 +129,13 @@ void Player::MeshRotateUpdate() {
 	SetMeshRotate(rotate);
 }
 
+
+
+
+
 void Player::DebugObjectInitialize() {
 #ifdef _DEBUG
 
-	normalAttackDebugRenderer_ = new PlayerNormalAttackDebugRenderer(this);
-	normalAttackDebugRenderer_->Initialize();
 
 
 

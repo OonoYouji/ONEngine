@@ -140,11 +140,9 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\EnemyEmitter\EnemyEmitter.cpp" />
-    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
-    <ClCompile Include="Game\Objects\Player\Debug\PlayerNormalAttackDebugRenderer\PlayerNormalAttackDebugRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -269,11 +267,9 @@
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
     <ClInclude Include="Game\Objects\EnemyEmitter\EnemyEmitter.h" />
-    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
     <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
-    <ClInclude Include="Game\Objects\Player\Debug\PlayerNormalAttackDebugRenderer\PlayerNormalAttackDebugRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

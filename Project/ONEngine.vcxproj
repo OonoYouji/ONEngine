@@ -155,7 +155,6 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
-    <ClCompile Include="Game\Objects\Player\Debug\PlayerNormalAttackDebugRenderer\PlayerNormalAttackDebugRenderer.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
@@ -163,7 +162,6 @@
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.cpp" />
-    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
@@ -283,7 +281,6 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
-    <ClInclude Include="Game\Objects\Player\Debug\PlayerNormalAttackDebugRenderer\PlayerNormalAttackDebugRenderer.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
     <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
@@ -291,7 +288,6 @@
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
-    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttack\PlayerNormalAttack.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />

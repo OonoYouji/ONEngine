@@ -9,7 +9,6 @@
 #include "../PlayerDushState/PlayerDushState.h"
 #include "../PlayerJumpState/PlayerJumpState.h"
 #include "../PlayerRootState/PlayerRootState.h"
-#include "../PlayerNormalAttack/PlayerNormalAttack.h"
 #include "../PlayerProtectionState/PlayerProtectionState.h"
 
 
@@ -25,7 +24,6 @@ void PlayerStateManager::Initialize() {
 	states_.push_back(std::make_unique<PlayerRootState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerJumpState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerDushState>(pPlayer_, this));
-	states_.push_back(std::make_unique<PlayerNormalAttack>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerProtectionState>(pPlayer_, this));
 	
 	currentState_ = states_[PlayerStateOrder_Root].get();
