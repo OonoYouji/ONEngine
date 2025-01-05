@@ -9,7 +9,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	TargetSpriteRender();
+	TargetSpriteRender(class GameCamera* _gameCamera);
 	~TargetSpriteRender();
 
 	void Initialize() override;
@@ -22,5 +22,6 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+	class GameCamera*   pGameCamera_  = nullptr;
 
 };

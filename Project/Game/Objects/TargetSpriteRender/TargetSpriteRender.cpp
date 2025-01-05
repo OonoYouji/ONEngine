@@ -5,9 +5,11 @@
 
 /// user
 #include "Scenes/Scene_Game.h"
+#include "Objects/Camera/GameCamera.h"
 
 
-TargetSpriteRender::TargetSpriteRender() {
+TargetSpriteRender::TargetSpriteRender(GameCamera* _gameCamera)
+	: pGameCamera_(_gameCamera) {
 	CreateTag(this);
 }
 
@@ -21,6 +23,12 @@ void TargetSpriteRender::Initialize() {
 }
 
 void TargetSpriteRender::Update() {
+
+	if(pGameCamera_) {
+		/// ビルボード計算
+		pTransform_->rotate = pGameCamera_->GetTransform()->rotate;
+		pTransform_->scale = pGameCamera_->GetTransform()->scale;
+	}
 
 }
 

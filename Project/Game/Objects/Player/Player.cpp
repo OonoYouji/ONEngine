@@ -39,7 +39,7 @@ void Player::Initialize() {
 	stateManager_.reset(new PlayerStateManager(this));
 	stateManager_->Initialize();
 
-	targetSpriteRender_ = new TargetSpriteRender();
+	targetSpriteRender_ = new TargetSpriteRender(pGameCamera_);
 	targetSpriteRender_->Initialize();
 
 
@@ -181,22 +181,8 @@ void Player::UpdateTargetEnemy() {
 		
 		targetSpriteRender_->SetPosition(targetEnemy_->GetPosition());
 
-		/*/// targetがいる場合はtargetの方向に向く
-		Vec3 targetPosition = targetEnemy_->GetTransform()->position;
-		Vec3 playerPosition = pTransform_->position;
-		Vec3 targetDirection = (targetPosition - playerPosition).Normalize();
-		
-		/// カメラの回転に合わせて移動方向を変更
-		Mat4 matCameraRotateY = Mat4::MakeRotateY(pGameCamera_->GetRotate().y);
-		targetDirection = Mat4::TransformNormal(targetDirection, matCameraRotateY);
-		if(targetDirection != Vec3(0.0f, 0.0f, 0.0f)) {
-			lastDirection_ = targetDirection;
-		}
-	
-		/// 移動方向に向けて回転
-		Vector3 rotate = GetMesh()->GetRotate();
-		rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.2f);
-		SetMeshRotate(rotate);*/
+		/// TODO: targetが画面の後ろに出たらtargetを外す
+
 	}
 
 }
@@ -208,18 +194,18 @@ void Player::UpdateNearEnemy() {
 	/// プレイヤーの前方にいる敵だけを取得する
 	pForwardEnemyList_.clear();
 
-	{	/// playerのlocal座標に変換して前方にいる敵だけを取得
-		Mat4  matPlayerLocalTransform = Mat4::kIdentity;
+	{	/// camaraのlocal座標に変換して前方にいる敵だけを取得
+		Mat4  matCameraLocalTransform = Mat4::kIdentity;
 		Vec3  localPosition = { 0.0f, 0.0f, 0.0f };
 	
 		for(auto& enemy : pEnemyList_) {
 	
 			/// playerのlocal座標に変換
-			matPlayerLocalTransform = enemy->GetMatTransform() * pTransform_->matTransform.Inverse();
+			matCameraLocalTransform = enemy->GetMatTransform() * pGameCamera_->GetMatTransform().Inverse();
 			localPosition = {
-				matPlayerLocalTransform.m[3][0],
-				matPlayerLocalTransform.m[3][1],
-				matPlayerLocalTransform.m[3][2]
+				matCameraLocalTransform.m[3][0],
+				matCameraLocalTransform.m[3][1],
+				matCameraLocalTransform.m[3][2]
 			};
 	
 			/// local座標のzがマイナスなら後ろにいる
