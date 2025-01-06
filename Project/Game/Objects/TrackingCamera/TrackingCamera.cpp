@@ -12,6 +12,8 @@
 
 /// game
 #include "Objects/Camera/GameCamera.h"
+#include "Objects/Player/Player.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 TrackingCamera::TrackingCamera(GameCamera* _gameCamera, BaseGameObject* _trackingObject)
@@ -29,8 +31,7 @@ void TrackingCamera::Initialize() {
 	/// setting
 	/// ===================================================
 
-	/// trasform setting
-	//pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
+	pPlayer_ = static_cast<Player*>(trackingObject_);
 
 
 	/// ===================================================
@@ -116,12 +117,18 @@ void TrackingCamera::Input() {
 	if(inputRightStick_ != Vec2(0, 0)) {
 		inputRightStick_ = inputRightStick_.Normalize() * rotateSpeed_ * Time::DeltaTime();
 	}
-
-
-
+	
+	/// カメラの回転角
 	cameraRotate_ += {
 		inputRightStick_.y, inputRightStick_.x, 0.0f
 	};
+
+	/// ターゲットがいる場合はターゲットに向かって回転
+	if(pPlayer_->GetTargetEnemy() != nullptr) {
+
+		Vec3 toTargetDirection = pPlayer_->GetTargetEnemy()->GetPosition() - pPlayer_->GetPosition();
+		cameraRotate_.y        = std::atan2(toTargetDirection.x, toTargetDirection.z);
+	}
 
 	cameraRotate_.x = std::clamp(cameraRotate_.x, -0.35f, 1.0f);
 

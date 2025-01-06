@@ -38,6 +38,7 @@ void PlayerNormalAttackState::Start() {
 	colliderPosition_ = pPlayer_->GetPosition() + direction_ * 1.0f;
 	colliderRotate_   = { 0.0f, 0.0f, 0.0f };
 	colliderSize_     = { 1.0f, 1.0f, 1.0f };
+	colliderRotate_.y = std::atan2(direction_.x, direction_.z);
 
 	PlayerAttackCollider* collider = pPlayer_->GetAttackCollider();
 	collider->SetPosition(colliderPosition_);
@@ -51,7 +52,9 @@ void PlayerNormalAttackState::Update() {
 	currentTime_ += Time::DeltaTime();
 	float lerpT = std::clamp(currentTime_ / maxTime_, 0.0f, 1.0f);
 
-
+	pPlayer_->SetPosition(
+		startPosition_ + direction_ * 1.0f * lerpT
+	);
 
 }
 
