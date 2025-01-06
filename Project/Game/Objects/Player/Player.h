@@ -49,7 +49,7 @@ public:
 
 	void ApplyGravity();
 
-	void MeshRotateUpdate();
+	void MeshUpdate();
 
 	/// <summary>
 	/// デバッグ用のオブジェクトの初期化

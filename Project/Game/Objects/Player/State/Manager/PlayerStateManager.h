@@ -49,6 +49,7 @@ private:
 	std::vector<std::unique_ptr<IPlayerState>> states_;
 
 	int beforeState_ = 0;
+	int currentStateIndex_ = 0;
 
 
 public:
@@ -58,7 +59,7 @@ public:
 	/// ===================================================
 
 	int GetBeforeState() const { return beforeState_; }
-
+	int GetCurrentStateIndex() const { return currentStateIndex_; }
 
 	IPlayerState* GetState(PlayerStateOrder _order) const {
 		return states_[_order].get();

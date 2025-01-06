@@ -68,10 +68,10 @@ void Enemy::OnCollisionStay(BaseGameObject* const collision) {
 		if(distance < sumRadius) {
 			pushBackDirection.y = 0.0f;
 			pushBackDirection = pushBackDirection.Normalize();
-			pTransform_->position += pushBackDirection * ((sumRadius - distance) / 0.5f);
+			pTransform_->position += pushBackDirection * ((sumRadius - distance) * 0.5f);
 
 			collision->SetPosition(
-				collision->GetPosition() + -pushBackDirection * ((sumRadius - distance) / 0.5f)
+				collision->GetPosition() + -pushBackDirection * ((sumRadius - distance) * 0.5f)
 			);
 		}
 	}

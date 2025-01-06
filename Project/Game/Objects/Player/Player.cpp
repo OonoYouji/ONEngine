@@ -57,7 +57,7 @@ void Player::Update() {
 	InputUpdate();
 
 	ApplyGravity();
-	MeshRotateUpdate();
+	MeshUpdate();
 
 	UpdateNearEnemy();
 	UpdateTargetEnemy();
@@ -149,11 +149,17 @@ void Player::ApplyGravity() {
 	velocity_.y -= gravityAccel_ * Time::DeltaTime();
 }
 
-void Player::MeshRotateUpdate() {
+void Player::MeshUpdate() {
 	/// 移動方向に向けて回転
 	Vector3 rotate = GetMesh()->GetRotate();
 	rotate.y = LerpShortAngle(rotate.y, std::atan2(lastDirection_.x, lastDirection_.z), 0.2f);
 	SetMeshRotate(rotate);
+
+	if(stateManager_->GetCurrentStateIndex() == PlayerStateOrder_Dush) {
+		playerMesh_->SetScale(Vec3(1.0f, 1.0f, 1.2f));
+	} else {
+		playerMesh_->SetScale(Vec3(1.0f, 1.0f, 1.0f));
+	}
 }
 
 
