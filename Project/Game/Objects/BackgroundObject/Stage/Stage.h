@@ -23,5 +23,6 @@ private:
 	/// ===================================================
 
 	/// components
-	class MeshRenderer* meshRenderer_ = nullptr;
+	class MeshRenderer* stageRenderer_ = nullptr;
+	class MeshRenderer* wallRenderer = nullptr;
 };

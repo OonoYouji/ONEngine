@@ -61,6 +61,8 @@ public:
 	void UpdateTargetEnemy();
 	void UpdateNearEnemy();
 
+	void PushBackStage();
+
 private:
 
 	/// ===================================================
@@ -96,6 +98,7 @@ private:
 	std::list<class Enemy*> pForwardEnemyList_;
 	int nearEnemyIndex_ = 0;
 
+	float currentFovY_ = 0.45f;
 
 #ifdef _DEBUG
 

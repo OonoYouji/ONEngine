@@ -1,5 +1,8 @@
 #include "Player.h"
 
+/// std
+#include <algorithm>
+
 /// extrernal
 #include <imgui.h>
 
@@ -69,6 +72,8 @@ void Player::Update() {
 		pTransform_->position.y = 0.0f;
 		velocity_.y = 0.0f;
 	}
+
+	PushBackStage();
 
 }
 
@@ -157,10 +162,12 @@ void Player::MeshUpdate() {
 	SetMeshRotate(rotate);
 
 	if(stateManager_->GetCurrentStateIndex() == PlayerStateOrder_Dush) {
-		playerMesh_->SetScale(Vec3(1.0f, 1.0f, 1.2f));
+		currentFovY_ = std::lerp(currentFovY_, 0.6f, 0.1f);
 	} else {
-		playerMesh_->SetScale(Vec3(1.0f, 1.0f, 1.0f));
+		currentFovY_ = std::lerp(currentFovY_, 0.45f, 0.1f);
 	}
+
+	pGameCamera_->SetFovY(currentFovY_);
 }
 
 
@@ -277,6 +284,16 @@ void Player::UpdateNearEnemy() {
 	if(pForwardEnemyList_.size() > 0) {
 		nearEnemy_ = *pForwardEnemyList_.begin();
 	}
+
+}
+
+void Player::PushBackStage() {
+	Vec3 minSize = { -65.0f, 0.0f, -65.0f };
+	Vec3 maxSize = {  65.0f, 0.0f,  65.0f };
+
+	Vec3& position = pTransform_->position;
+	position.x = std::clamp(position.x, minSize.x, maxSize.x);
+	position.z = std::clamp(position.z, minSize.z, maxSize.z);
 
 }
 

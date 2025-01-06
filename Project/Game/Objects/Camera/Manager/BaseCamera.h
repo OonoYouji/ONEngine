@@ -62,6 +62,8 @@ public:
 
 	void SetDistance(float _distance);
 
+	void SetFovY(float _fovY);
+
 protected:
 
 	float fovY_ = 0.45f;
