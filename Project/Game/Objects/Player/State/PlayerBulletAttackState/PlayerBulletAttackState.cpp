@@ -8,6 +8,7 @@
 #include "../../Player.h"
 #include "../../PlayerBullet/PlayerBullet.h"
 #include "Objects/Enemy/Enemy.h"
+#include "Objects/Camera/GameCamera.h"
 
 
 PlayerBulletAttackState::PlayerBulletAttackState(Player* _player, PlayerStateManager* _stateManager)
@@ -105,21 +106,29 @@ void PlayerBulletAttackState::SpreadToTheLeftAndRight() {
 	rightBulletList_.insert(rightBulletList_.begin(), bullets_.begin(), itr);
 	leftBulletList_.insert(leftBulletList_.begin(), itr, bullets_.end());
 
+	Mat4 matRotate = Mat4::MakeRotateY(pPlayer_->GetMesh()->GetTransform()->rotate.y);
+
 	int index = 0;
 	for(auto& bullet : leftBulletList_) {
+
+		Vec3 idelPosition = Vec3(-index * 2.0f, Random::Float(2.0f, 4.0f), Random::Float(-1.0f, 1.0f));
+		idelPosition = Mat4::Transform(idelPosition, matRotate);
+		idelPosition += pPlayer_->GetPosition();
+
 		bullet->SetPosition(pPlayer_->GetPosition() + Vec3(-2.0f, 3.0f, 0.0f));
-		bullet->SetIdelPosition(
-			pPlayer_->GetPosition() + Vec3(-index * 2.0f, Random::Float(2.0f, 4.0f), Random::Float(-1.0f, 1.0f))
-		);
+		bullet->SetIdelPosition(idelPosition);
 		index++;
 	}
 	
 	index = 0;
 	for(auto& bullet : rightBulletList_) {
+
+		Vec3 idelPosition = Vec3(index * 2.0f, Random::Float(2.0f, 4.0f), Random::Float(-1.0f, 1.0f));
+		idelPosition = Mat4::Transform(idelPosition, matRotate);
+		idelPosition += pPlayer_->GetPosition();
+
 		bullet->SetPosition(pPlayer_->GetPosition() + Vec3(-2.0f, 3.0f, 0.0f));
-		bullet->SetIdelPosition(
-			pPlayer_->GetPosition() + Vec3(index * 2.0f, Random::Float(2.0f, 4.0f), Random::Float(-1.0f, 1.0f))
-		);
+		bullet->SetIdelPosition(idelPosition);
 		index++;
 	}
 

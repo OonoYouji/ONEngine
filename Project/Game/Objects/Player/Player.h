@@ -148,4 +148,6 @@ public:
 
 	const std::list<class Enemy*>& GetForwardEnemyList() const { return pForwardEnemyList_; }
 
+	GameCamera* GetCamera() const { return pGameCamera_; }
+
 };

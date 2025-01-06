@@ -38,6 +38,7 @@ private:
 	/// ===================================================
 
 	class MeshRenderer*   meshRenderer_ = nullptr;
+	class MeshRenderer*   locusRenderer_ = nullptr;
 	class SphereCollider* collider_ = nullptr;
 
 	int stateIndex_;
