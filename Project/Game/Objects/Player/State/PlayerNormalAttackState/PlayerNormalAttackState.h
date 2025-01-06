@@ -2,6 +2,7 @@
 
 #include "../IPlayerState/IPlayerState.h"
 
+#include "Math/Vector3.h"
 
 class PlayerNormalAttackState : public IPlayerState {
 public:
@@ -20,6 +21,12 @@ public:
 
 private:
 
-	
+	Vec3 direction_;
+
+	float maxTime_;
+	float currentTime_;
+
+	Vec3 startPosition_;
+
 
 };

@@ -19,6 +19,8 @@ enum PlayerFlag {
 	PlayerFlag_IsProtection,
 	PlayerFlag_IsTargetButtonPressed,
 	PlayerFlag_IsTarget,
+	PlayerFlag_InputRight,
+	PlayerFlag_InputLeft,
 	PlayerFlag_Max
 };
 
@@ -90,6 +92,7 @@ private:
 
 	std::list<class Enemy*> pEnemyList_;
 	std::list<class Enemy*> pForwardEnemyList_;
+	int nearEnemyIndex_ = 0;
 
 
 #ifdef _DEBUG

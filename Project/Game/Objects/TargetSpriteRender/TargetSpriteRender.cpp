@@ -19,6 +19,8 @@ void TargetSpriteRender::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Target");
+	meshRenderer_->isActive = false;
+
 	drawLayerId = GAME_SCENE_LAYER_TARGET_SPRITE;
 }
 

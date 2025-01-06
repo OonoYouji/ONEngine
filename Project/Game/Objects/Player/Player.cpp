@@ -42,7 +42,6 @@ void Player::Initialize() {
 	targetSpriteRender_ = new TargetSpriteRender(pGameCamera_);
 	targetSpriteRender_->Initialize();
 
-
 	/// フラグの初期化
 	flags_.resize(PlayerFlag_Max);
 
@@ -133,6 +132,12 @@ void Player::InputUpdate() {
 	flags_[PlayerFlag_IsAttack].Set(Input::PressMouse(MouseCode::Left));
 	flags_[PlayerFlag_IsProtection].Set(Input::PressMouse(MouseCode::Right));
 	flags_[PlayerFlag_IsTargetButtonPressed].Set(Input::PressKey(KeyCode::F) || Input::PressPadButton(PadCode::LB));
+	flags_[PlayerFlag_IsTarget].Set(targetEnemy_ != nullptr);
+
+	/// 左右キーの入力フラグ
+	flags_[PlayerFlag_InputRight].Set(Input::PressKey(KeyCode::RightArrow) || Input::PressPadButton(PadCode::Right));
+	flags_[PlayerFlag_InputLeft].Set(Input::PressKey(KeyCode::LeftArrow) || Input::PressPadButton(PadCode::Left));
+
 
 }
 
@@ -179,6 +184,25 @@ void Player::UpdateTargetEnemy() {
 
 	if(targetEnemy_ != nullptr) {
 		
+		/// 
+		if(GetFlag(PlayerFlag_InputLeft).Enter()) {
+			nearEnemyIndex_--;
+			if(nearEnemyIndex_ < 0) {
+				nearEnemyIndex_ = static_cast<int>(pForwardEnemyList_.size() - 1);
+			}
+		}
+		if(GetFlag(PlayerFlag_InputRight).Enter()) {
+			nearEnemyIndex_++;
+			if(nearEnemyIndex_ >= pForwardEnemyList_.size()) {
+				nearEnemyIndex_ = 0;
+			}
+		}
+
+		if(nearEnemyIndex_ > 0 && nearEnemyIndex_ < pForwardEnemyList_.size()) {
+			targetEnemy_ = *std::next(pForwardEnemyList_.begin(), nearEnemyIndex_);
+		}
+
+
 		targetSpriteRender_->SetPosition(targetEnemy_->GetPosition());
 
 		/// TODO: targetが画面の後ろに出たらtargetを外す
