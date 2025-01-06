@@ -15,10 +15,16 @@ void PlayerAttackCollider::Initialize() {
 	
 	Model* model = ModelManager::Load("PlayerAttackCollider");
 	collider_ = AddComponent<BoxCollider>(model);
+	collider_->isActive = false;
 
+	damageValue_ = 10.0f;
 }
 
 void PlayerAttackCollider::Update() {
 
+}
+
+void PlayerAttackCollider::SetColliderActive(bool _isActive) {
+	collider_->isActive = _isActive;
 }
 

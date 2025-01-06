@@ -22,5 +22,12 @@ private:
 	/// ===================================================
 
 	class BoxCollider* collider_ = nullptr;
+	float damageValue_;
 
+public:
+
+	void SetColliderActive(bool _isActive);
+
+	void SetDamageValue(float _value) { damageValue_ = _value; }
+	float GetDamageValue() const { return damageValue_; }
 };

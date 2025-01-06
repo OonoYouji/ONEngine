@@ -21,7 +21,10 @@ PlayerNormalAttackState::~PlayerNormalAttackState() {}
 
 void PlayerNormalAttackState::Start() {
 
-	direction_ = pPlayer_->GetDirection();
+	direction_ = pPlayer_->GetLastDirection();
+	if(direction_.Len() == 0.0f) {
+		direction_ = Vec3(0,0,1);
+	}
 
 	maxTime_     = 0.1f;
 	currentTime_ = 0.0f;
@@ -37,13 +40,15 @@ void PlayerNormalAttackState::Start() {
 	/// colliderの設定
 	colliderPosition_ = pPlayer_->GetPosition() + direction_ * 1.0f;
 	colliderRotate_   = { 0.0f, 0.0f, 0.0f };
-	colliderSize_     = { 1.0f, 1.0f, 1.0f };
+	colliderSize_     = { 1.5f, 1.5f, 5.0f };
 	colliderRotate_.y = std::atan2(direction_.x, direction_.z);
 
 	PlayerAttackCollider* collider = pPlayer_->GetAttackCollider();
 	collider->SetPosition(colliderPosition_);
 	collider->SetRotate(colliderRotate_);
 	collider->SetScale(colliderSize_);
+	collider->UpdateMatrix();
+	collider->SetColliderActive(true);
 
 }
 
@@ -53,22 +58,23 @@ void PlayerNormalAttackState::Update() {
 	float lerpT = std::clamp(currentTime_ / maxTime_, 0.0f, 1.0f);
 
 	pPlayer_->SetPosition(
-		startPosition_ + direction_ * 1.0f * lerpT
+		startPosition_ + (direction_ * 5.0f) * lerpT
 	);
 
 }
 
 void PlayerNormalAttackState::Exit() {
-
+	PlayerAttackCollider* collider = pPlayer_->GetAttackCollider();
+	collider->SetColliderActive(false);
 }
 
 
 bool PlayerNormalAttackState::IsEnd() { 
-	return false; 
+	return currentTime_ >= maxTime_; 
 }
 
 int PlayerNormalAttackState::NextStateIndex() { 
-	return 0; 
+	return PlayerStateOrder_Root; 
 }
 
 

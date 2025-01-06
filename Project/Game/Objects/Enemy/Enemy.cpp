@@ -10,6 +10,7 @@
 
 /// user
 #include "EnemyHPRenderer/EnemyHPRenderer.h"
+#include "Objects/Player/PlayerAttackCollider/PlayerAttackCollider.h"
 
 Enemy::Enemy() {
 	CreateTag(this);
@@ -54,7 +55,12 @@ void Enemy::Debug() {
 
 void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
-	
+	if(collision->GetTag() == "PlayerAttackCollider") {
+		PlayerAttackCollider* other = static_cast<PlayerAttackCollider*>(collision);
+		hp_ -= other->GetDamageValue();
+
+		/// TODO: hit effectを出す
+	}
 
 }
 

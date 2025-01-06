@@ -38,6 +38,10 @@ bool PlayerRootState::IsEnd() {
 		return true;
 	}
 
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return true;
+	}
+
 	return false;
 }
 
@@ -52,6 +56,10 @@ int PlayerRootState::NextStateIndex() {
 
 	if(pPlayer_->GetFlag(PlayerFlag_IsProtection).Enter()) {
 		return PlayerStateOrder_Protection;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return PlayerStateOrder_NormalAttack;
 	}
 
 	return PlayerStateOrder_Root;
