@@ -7,12 +7,15 @@
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "ComponentManager/Collider/SphereCollider.h"
+#include "FrameManager/Time.h"
+#include "Math/Random.h"
 
 /// user
 #include "EnemyHPRenderer/EnemyHPRenderer.h"
 #include "Objects/Player/PlayerAttackCollider/PlayerAttackCollider.h"
+#include "Objects/Player/Player.h"
 
-Enemy::Enemy() {
+Enemy::Enemy(Player* _player) : pPlayer_(_player) {
 	CreateTag(this);
 }
 
@@ -29,16 +32,27 @@ void Enemy::Initialize() {
 
 	hpRenderer_ = new EnemyHPRenderer(this);
 	hpRenderer_->Initialize();
-	hpRenderer_->SetParent(pTransform_);
 
 	pTransform_->position = { 0.0f, 0.0f, 10.0f };
 
 	/// parameter setting
 	maxHP_ = 100.0f;
 	hp_    = maxHP_;
+
+	stateIndex_ = 0;
+
 }
 
 void Enemy::Update() {
+
+	pTransform_->rotate.y = std::atan2(
+		direction_.x, direction_.z
+	);
+
+	switch(stateIndex_) {
+	case 0: RootUpdate(); break;
+	case 1: AttackUpdate(); break;
+	}
 
 }
 
@@ -81,4 +95,33 @@ void Enemy::OnCollisionStay(BaseGameObject* const collision) {
 			);
 		}
 	}
+}
+
+void Enemy::RootUpdate() {
+
+	/// 移動する
+	Vec3 diff  = pPlayer_->GetPosition() - GetPosition();
+	direction_ = diff.Normalize();
+	pTransform_->position += direction_ * 0.1f * Time::DeltaTime();
+
+
+	if(diff.Len() < 3.0f) {
+		stateIndex_ = 1;
+		attackTime_ = 2.0f;
+	}
+
+}
+
+void Enemy::AttackUpdate() {
+
+	/// 攻撃する
+	pTransform_->position += direction_ * 0.5f * Time::DeltaTime();
+
+	/// もとに戻る
+	attackTime_ -= Time::DeltaTime();
+	if(attackTime_ <= 0.0f) {
+		stateIndex_ = 0;
+	}
+
+
 }

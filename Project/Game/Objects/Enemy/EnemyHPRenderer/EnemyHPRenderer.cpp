@@ -50,7 +50,6 @@ void EnemyHPRenderer::Update() {
 	pMainCamera_ = cameraManager->GetMainCamera();
 
 	if(pMainCamera_) {
-
 		/// ビルボード計算
 		pTransform_->rotate = pMainCamera_->GetTransform()->rotate;
 		pTransform_->scale  = pMainCamera_->GetTransform()->scale;
@@ -60,6 +59,8 @@ void EnemyHPRenderer::Update() {
 	float hpRate = pEnemy_->GetHP() / pEnemy_->GetMaxHP();
 	hpRate = std::clamp(hpRate, 0.0f, 1.0f); /// 0~1の間に収める
 	hpBarGauge_->SetScale(Vec3(hpRate, 1.0f, 1.0f));
+
+	pTransform_->position = pEnemy_->GetPosition() + Vec3(0.0f, 2.0f, 0.0f);
 
 }
 

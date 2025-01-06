@@ -220,7 +220,7 @@ void EnemyManager::EmitterDataLoadFromJsonFile(const std::string& _directoryPath
 	enemyEmitterList_.clear();
 
 	for(const EmitterData& data : emitterDatas_) {
-		EnemyEmitter* emitter = new EnemyEmitter();
+		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_);
 		emitter->Initialize();
 		emitter->SetPosition(data.position);
 		emitter->SetConfig(data.config);

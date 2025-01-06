@@ -17,7 +17,8 @@
 #include "../Enemy/Enemy.h"
 
 
-EnemyEmitter::EnemyEmitter() {
+EnemyEmitter::EnemyEmitter(class Player* _player)
+	: pPlayer_(_player) {
 	CreateTag(this);
 }
 
@@ -95,7 +96,7 @@ void EnemyEmitter::Emit() {
 
 	for(size_t i = 0; i < config_.emitEnemyNum; ++i) {
 		/// emit enemy
-		Enemy* enemy = new Enemy();
+		Enemy* enemy = new Enemy(pPlayer_);
 		enemy->Initialize();
 
 		Vec3 position = pTransform_->position;
