@@ -36,9 +36,15 @@ void Stage::Initialize() {
 	/// ===================================================
 
 	/// component setting
-	meshRenderer_ = AddComponent<MeshRenderer>();
-	meshRenderer_->SetModel("Stage");
+	stageRenderer_ = AddComponent<MeshRenderer>();
+	stageRenderer_->SetModel("Stage");
+	stageRenderer_->SetMaterial("StageTile.png");
+	stageRenderer_->SetUVScale(Vec2(100.0f, 100.0f));
 
+	wallRenderer = AddComponent<MeshRenderer>();
+	wallRenderer->SetModel("Wall");
+	wallRenderer->SetMaterial("Wall.png");
+	wallRenderer->SetUVScale(Vec2(100.0f, 100.0f));
 
 	/// ===================================================
 	/// json variable io

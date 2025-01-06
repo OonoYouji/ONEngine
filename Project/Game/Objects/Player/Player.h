@@ -15,6 +15,13 @@
 enum PlayerFlag {
 	PlayerFlag_IsDush,
 	PlayerFlag_IsJump,
+	PlayerFlag_IsAttack,
+	PlayerFlag_IsBulletAttack,
+	PlayerFlag_IsProtection,
+	PlayerFlag_IsTargetButtonPressed,
+	PlayerFlag_IsTarget,
+	PlayerFlag_InputRight,
+	PlayerFlag_InputLeft,
 	PlayerFlag_Max
 };
 
@@ -43,7 +50,18 @@ public:
 
 	void ApplyGravity();
 
-	void MeshRotateUpdate();
+	void MeshUpdate();
+
+	/// <summary>
+	/// デバッグ用のオブジェクトの初期化
+	/// </summary>
+	void DebugObjectInitialize();
+
+	
+	void UpdateTargetEnemy();
+	void UpdateNearEnemy();
+
+	void PushBackStage();
 
 private:
 
@@ -52,8 +70,11 @@ private:
 	/// ===================================================
 
 	/// 
-	PlayerMesh*                         playerMesh_   = nullptr;
 	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
+	PlayerMesh*                         playerMesh_   = nullptr;
+	class PlayerProtectionMesh*         protectionMesh_ = nullptr;
+	class TargetSpriteRender*           targetSpriteRender_ = nullptr;
+	class PlayerAttackCollider*         attackCollider_ = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
@@ -67,8 +88,22 @@ private:
 
 
 	/// 他クラスへのポインタ
-	class GameCamera* pGameCamera_ = nullptr;
+	class GameCamera*   pGameCamera_   = nullptr;
+	class EnemyManager* pEnemyManager_ = nullptr;
 
+	class Enemy* nearEnemy_   = nullptr;
+	class Enemy* targetEnemy_ = nullptr;
+
+	std::list<class Enemy*> pEnemyList_;
+	std::list<class Enemy*> pForwardEnemyList_;
+	int nearEnemyIndex_ = 0;
+
+	float currentFovY_ = 0.45f;
+
+#ifdef _DEBUG
+
+
+#endif // _DEBUG
 public:
 	
 	/// ===================================================
@@ -100,5 +135,19 @@ public:
 
 	void SetMeshRotate(const Vec3& _rotate) { playerMesh_->SetRotate(_rotate); }
 	
+
+	PlayerStateManager* GetStateManager() const { return stateManager_.get(); }
+
+
+	/// ---------------------------------------------------
+	/// other class
+	void SetEnemyManager(class EnemyManager* _enemyManager) { pEnemyManager_ = _enemyManager; }
+
+	class Enemy* GetTargetEnemy() const { return targetEnemy_; }
+	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
+
+	const std::list<class Enemy*>& GetForwardEnemyList() const { return pForwardEnemyList_; }
+
+	GameCamera* GetCamera() const { return pGameCamera_; }
 
 };

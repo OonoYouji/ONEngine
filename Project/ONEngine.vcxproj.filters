@@ -140,6 +140,14 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
     <ClCompile Include="Game\Objects\EnemyEmitter\EnemyEmitter.cpp" />
+    <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.cpp" />
+    <ClCompile Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -264,6 +272,14 @@
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
     <ClInclude Include="Game\Objects\EnemyEmitter\EnemyEmitter.h" />
+    <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.h" />
+    <ClInclude Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

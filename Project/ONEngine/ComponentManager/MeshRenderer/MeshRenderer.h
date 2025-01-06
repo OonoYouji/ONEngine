@@ -30,6 +30,8 @@ public:
 	void SetModel(const std::string& _filePath);
 	void SetModel(Model* _model);
 
+	Model* GetModel() const { return model_; }
+
 	/// <summary>
 	/// マテリアルのセット
 	/// </summary>

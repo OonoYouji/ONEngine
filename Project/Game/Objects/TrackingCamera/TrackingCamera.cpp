@@ -1,5 +1,8 @@
 #include "TrackingCamera.h"
 
+/// extrernals
+#include <imgui.h>
+
 /// engine
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
@@ -9,6 +12,8 @@
 
 /// game
 #include "Objects/Camera/GameCamera.h"
+#include "Objects/Player/Player.h"
+#include "Objects/Enemy/Enemy.h"
 
 
 TrackingCamera::TrackingCamera(GameCamera* _gameCamera, BaseGameObject* _trackingObject)
@@ -26,8 +31,7 @@ void TrackingCamera::Initialize() {
 	/// setting
 	/// ===================================================
 
-	/// trasform setting
-	//pGameCamera_->GetTransform()->rotateOrder = QUATERNION;
+	pPlayer_ = static_cast<Player*>(trackingObject_);
 
 
 	/// ===================================================
@@ -52,6 +56,11 @@ void TrackingCamera::Update() {
 	pGameCamera_->SetPosition(trackingObject_->GetPosition() + offset);
 
 	LockToTarget();
+}
+
+void TrackingCamera::Debug() {
+
+	ImGui::DragFloat3("camera rotate", &cameraRotate_.x);
 }
 
 
@@ -87,19 +96,19 @@ void TrackingCamera::ApplyVariables() {
 
 void TrackingCamera::LockToTarget() {
 
-
 	Vec3 direction = Mat4::TransformNormal(offsetDirection_, matCameraRotate_);
 
 	/// 回転角決定
-	pGameCamera_->SetRotate(LockAt(direction));
+	Vec3 euler = LockAt(direction);
+	pGameCamera_->SetRotate(euler);
 
 }
 
 void TrackingCamera::Input() {
 
 	inputRightStick_ = Vec2(0, 0);
-	inputRightStick_ += Input::MouseVelocity() * Vec2(5.0f, 10.0f);
-	inputRightStick_.y *= -1.0f;
+	//inputRightStick_ += Input::MouseVelocity() * Vec2(5.0f, 10.0f);
+	//inputRightStick_.y *= -1.0f;
 
 	inputRightStick_ += Input::GetRightStick();
 	inputRightStick_ = inputRightStick_.Normalize();
@@ -108,12 +117,20 @@ void TrackingCamera::Input() {
 	if(inputRightStick_ != Vec2(0, 0)) {
 		inputRightStick_ = inputRightStick_.Normalize() * rotateSpeed_ * Time::DeltaTime();
 	}
-
-
-
+	
+	/// カメラの回転角
 	cameraRotate_ += {
 		inputRightStick_.y, inputRightStick_.x, 0.0f
 	};
+
+	/// ターゲットがいる場合はターゲットに向かって回転
+	if(pPlayer_->GetTargetEnemy() != nullptr) {
+
+		Vec3 toTargetDirection = pPlayer_->GetTargetEnemy()->GetPosition() - pPlayer_->GetPosition();
+		cameraRotate_.y        = std::atan2(toTargetDirection.x, toTargetDirection.z);
+	}
+
+	cameraRotate_.x = std::clamp(cameraRotate_.x, -0.35f, 1.0f);
 
 	matCameraRotate_ = Mat4::MakeRotate(cameraRotate_);
 

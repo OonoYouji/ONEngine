@@ -45,8 +45,20 @@ void Scene_Game::Initialize() {
 		obj->Initialize();
 	}
 
+	Player* player = static_cast<Player*>(createObjects[0]);
+	player->SetEnemyManager(static_cast<EnemyManager*>(createObjects[3]));
+
 
 	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
+
+	/// Layerの設定
+	GameCamera* uiCamera = new GameCamera("UICamera");
+	uiCamera->Initialize();
+	uiCamera->SetProjectionType(ORTHOGRAPHIC);
+	uiCamera->SetDistance(10.0f);
+
+	AddLayer("UILayer", uiCamera);
+	AddLayer("TargetSpriteLayer", mainCamera_);
 
 }
 

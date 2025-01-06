@@ -14,6 +14,8 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
+
 
 	/// <summary>
 	/// json io
@@ -36,6 +38,7 @@ private:
 
 	class GameCamera*     pGameCamera_    = nullptr;
 	class BaseGameObject* trackingObject_ = nullptr;
+	class Player*         pPlayer_        = nullptr;
 
 	Vec3 offsetPosition_;  /// 追従対象からの距離
 	Vec3 offsetDirection_; /// 見る方向

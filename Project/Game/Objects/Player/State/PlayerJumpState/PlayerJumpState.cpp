@@ -12,7 +12,7 @@
 #include "../PlayerRootState/PlayerRootState.h"
 
 
-PlayerJumpState::PlayerJumpState(Player* _player) : IPlayerState(_player) {}
+PlayerJumpState::PlayerJumpState(Player* _player, PlayerStateManager* _stateManager) : IPlayerState(_player, _stateManager) {}
 PlayerJumpState::~PlayerJumpState() {}
 
 void PlayerJumpState::Start() {
@@ -64,6 +64,7 @@ void PlayerJumpState::Update() {
 
 	playerTransform_->position += pPlayer_->GetVelocity();
 
+
 }
 
 void PlayerJumpState::Exit() {
@@ -80,7 +81,13 @@ bool PlayerJumpState::IsEnd() {
 
 int PlayerJumpState::NextStateIndex() {
 	if(playerTransform_->position.y < 0.0f) {
-		return PlayerStateOrder_Root;
+
+		if(pPlayer_->GetFlag(PlayerFlag_IsDush).Stay()) {
+			return PlayerStateOrder_Dush;
+		} else {
+			return PlayerStateOrder_Root;
+		}
+
 	}
 
 	return 0;

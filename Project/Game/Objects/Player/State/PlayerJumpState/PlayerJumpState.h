@@ -14,7 +14,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerJumpState(class Player* _player);
+	PlayerJumpState(class Player* _player, class PlayerStateManager* _stateManager);
 	~PlayerJumpState();
 
 	void Start()  override;
@@ -43,6 +43,18 @@ private:
 
 	float inputTimeLimit_;
 	bool  canDoubleJump_;
+
+	int beforeState_;
+
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	void SetBeforeState(int _state) { beforeState_ = _state; }
 
 };
 

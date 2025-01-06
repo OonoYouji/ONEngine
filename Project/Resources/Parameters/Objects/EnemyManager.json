@@ -2,6 +2,7 @@
     "emitterDatas": [
         {
             "config": {
+                "activionTime": 0.0,
                 "emitEnemyNum": 5,
                 "radius": 5.0
             },
@@ -13,6 +14,7 @@
         },
         {
             "config": {
+                "activionTime": 3.200000047683716,
                 "emitEnemyNum": 5,
                 "radius": 5.0
             },

@@ -81,6 +81,15 @@ private:
 
 	const std::string        directoryPath_ = "./Resources/Parameters/Objects/EnemyManager.json";
 	EmitterData              sourceEmitterData_;
-	std::vector<EmitterData> emitterDatas_;
+	std::vector<EmitterData> emitterDatas_; /// jsonに保存する用
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	const std::list<class Enemy*>& GetEnemyList() const { return enemyList_; }
 
 };

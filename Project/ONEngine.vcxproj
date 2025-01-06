@@ -154,13 +154,20 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
+    <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\State\IPlayerState\IPlayerState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
+    <ClCompile Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
@@ -257,6 +264,7 @@
     <ClCompile Include="ONEngine\WindowManager\Console.cpp" />
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
@@ -277,13 +285,20 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
+    <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
     <ClInclude Include="Game\Objects\Player\State\IPlayerState\IPlayerState.h" />
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerDushState\PlayerDushState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerJumpState\PlayerJumpState.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
+    <ClInclude Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
@@ -381,6 +396,7 @@
     <ClInclude Include="ONEngine\WindowManager\Console.h" />
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -19,6 +19,7 @@ public:
 	/// Emitterの設定
 	/// </summary>
 	struct Config {
+		float    activionTime;
 		uint32_t emitEnemyNum;
 		float    radius;
 	};
@@ -30,7 +31,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyEmitter();
+	EnemyEmitter(class Player* _player);
 	~EnemyEmitter();
 
 	void Initialize() override;
@@ -53,6 +54,7 @@ private:
 	/// ===================================================
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+	class Player*       pPlayer_      = nullptr;
 
 	Config config_;
 
@@ -76,5 +78,7 @@ public:
 	void SetConfig(const Config& _config) { config_ = _config; }
 
 	std::list<class Enemy*>& GetEnemyList() { return enemyList_; }
+
+	bool GetIsEnd() const { return isEnd_; }
 
 };

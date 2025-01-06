@@ -37,4 +37,13 @@ private:
 	float animationSpeed_ = 1.0f;
 	float animationRange_ = 1.0f;
 
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	Model* GetModel() const;
+
 };

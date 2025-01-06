@@ -8,8 +8,12 @@
 #include <imgui.h>
 #include <nlohmann/json.hpp>
 
+/// engine
+#include "FrameManager/Time.h"
+
 /// user
 #include "../Enemy/Enemy.h"
+#include "../EnemyEmitter/EnemyEmitter.h"
 
 
 using namespace nlohmann;
@@ -37,10 +41,27 @@ void EnemyManager::Initialize() {
 	/// jsonファイルから読み込み
 	EmitterDataLoadFromJsonFile(directoryPath_, false);
 
+
+
+
 }
 
 void EnemyManager::Update() {
 
+	for(auto itr = enemyEmitterList_.begin(); itr != enemyEmitterList_.end();) {
+
+		Emitter* emitter = *itr;
+		if(emitter->GetIsEnd()) {
+			/// enemyListに追加
+			enemyList_.splice(enemyList_.end(), emitter->GetEnemyList());
+			emitter->Destory();
+			itr = enemyEmitterList_.erase(itr);
+			continue;
+		}
+
+		itr++;
+	}
+	
 }
 
 void EnemyManager::Debug() {
@@ -116,6 +137,7 @@ void EnemyManager::EmitterDataImGuiDebug(EmitterData& _data) {
 
 	ImGui::DragFloat3(std::format("position{}", pointer).c_str(), &_data.position.x, 0.1f);
 	ImGui::DragFloat(std::format("radius{}", pointer).c_str(), &_data.config.radius, 0.05f);
+	ImGui::DragFloat(std::format("activion time{}", pointer).c_str(), &_data.config.activionTime, 0.1f);
 
 	int emitEnemyNum = static_cast<int>(_data.config.emitEnemyNum);
 	if(ImGui::DragInt(std::format("emitEnemyNum{}", pointer).c_str(), &emitEnemyNum, 1)) {
@@ -133,7 +155,8 @@ void EnemyManager::EmitterDataSaveToJsonFile(const std::string& _directoryPath, 
 	for(const EmitterData& data : emitterDatas_) {
 		nlohmann::json j;
 		j["position"] = { data.position.x, data.position.y, data.position.z };
-		j["config"]   = {
+		j["config"] = {
+			{ "activionTime", data.config.activionTime },
 			{ "emitEnemyNum", data.config.emitEnemyNum },
 			{ "radius", data.config.radius }
 		};
@@ -175,6 +198,7 @@ void EnemyManager::EmitterDataLoadFromJsonFile(const std::string& _directoryPath
 				data["position"][2]
 			},
 			.config = {
+				.activionTime = data["config"]["activionTime"],
 				.emitEnemyNum = data["config"]["emitEnemyNum"],
 				.radius       = data["config"]["radius"]
 			}
@@ -187,4 +211,20 @@ void EnemyManager::EmitterDataLoadFromJsonFile(const std::string& _directoryPath
 	if(_isDrawPopupWindow) {
 		MessageBoxA(nullptr, "load success", "EnemyManager::EmitterDataLoadFromJson()", MB_OK | MB_ICONINFORMATION);
 	}
+
+
+	/// emitterを再生成する
+	for(auto& emitter : enemyEmitterList_) {
+		emitter->Destory();
+	}
+	enemyEmitterList_.clear();
+
+	for(const EmitterData& data : emitterDatas_) {
+		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_);
+		emitter->Initialize();
+		emitter->SetPosition(data.position);
+		emitter->SetConfig(data.config);
+		enemyEmitterList_.push_back(emitter);
+	}
+
 }

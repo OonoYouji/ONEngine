@@ -8,16 +8,32 @@
 class Enemy : public BaseGameObject {
 public:
 
+	enum State {
+		State_Root,
+		State_Attack,
+		State_Blowing,
+		State_Max
+	};
+
+public:
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Enemy();
+	Enemy(class Player* _player);
 	~Enemy();
 
 	void Initialize() override;
 	void Update()     override;
 	void Debug()      override;
+
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) override;
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) override;
+
+	void RootUpdate();
+	void AttackUpdate();
+	void BlowingUpdate();
 
 private:
 
@@ -26,12 +42,23 @@ private:
 	/// ===================================================
 
 	class MeshRenderer*    meshRenderer_ = nullptr;
-	class EnemyHPRenderer* hpRenderer_ = nullptr;
+	class SphereCollider*  collider_     = nullptr;
+	class EnemyHPRenderer* hpRenderer_   = nullptr;
+	class EntityShadow*    shadow_       = nullptr;
+
+	class Player* pPlayer_ = nullptr;
 
 	/// parameters
 	float hp_;
 	float maxHP_;
 
+	int stateIndex_;
+	Vec3 direction_;
+
+	float attackTime_;
+
+	Vec3 blowingDirection_;
+	float blowingTime_;
 
 public:
 
@@ -47,5 +74,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	float GetMaxHP() const { return maxHP_; }
+
+
+	int GetStateIndex() const { return stateIndex_; }
 
 };

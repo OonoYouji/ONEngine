@@ -11,7 +11,7 @@
 #include "../../Player.h"
 #include "../PlayerRootState/PlayerRootState.h"
 
-PlayerDushState::PlayerDushState(Player* _player) : IPlayerState(_player) {}
+PlayerDushState::PlayerDushState(Player* _player, PlayerStateManager* _stateManager) : IPlayerState(_player, _stateManager) {}
 PlayerDushState::~PlayerDushState() {}
 
 void PlayerDushState::Start() {

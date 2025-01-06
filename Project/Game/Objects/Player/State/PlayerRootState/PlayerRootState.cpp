@@ -7,7 +7,7 @@
 /// user
 #include "../../Player.h"
 
-PlayerRootState::PlayerRootState(Player* _player) : IPlayerState(_player) {}
+PlayerRootState::PlayerRootState(Player* _player, PlayerStateManager* _stateManager) : IPlayerState(_player, _stateManager) {}
 PlayerRootState::~PlayerRootState() {}
 
 void PlayerRootState::Start() {
@@ -33,6 +33,18 @@ bool PlayerRootState::IsEnd() {
 	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
 		return true;
 	}
+	
+	if(pPlayer_->GetFlag(PlayerFlag_IsProtection).Enter()) {
+		return true;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return true;
+	}
+	
+	if(pPlayer_->GetFlag(PlayerFlag_IsBulletAttack).Enter()) {
+		return true;
+	}
 
 	return false;
 }
@@ -44,6 +56,18 @@ int PlayerRootState::NextStateIndex() {
 
 	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
 		return PlayerStateOrder_Jump;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsProtection).Enter()) {
+		return PlayerStateOrder_Protection;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return PlayerStateOrder_NormalAttack;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsBulletAttack).Enter()) {
+		return PlayerStateOrder_BulletAttack;
 	}
 
 	return PlayerStateOrder_Root;

@@ -154,3 +154,7 @@ void BaseCamera::SetDistance(float _distance) {
 	distacene_ = _distance;
 }
 
+void BaseCamera::SetFovY(float _fovY) {
+	fovY_ = _fovY;
+}
+

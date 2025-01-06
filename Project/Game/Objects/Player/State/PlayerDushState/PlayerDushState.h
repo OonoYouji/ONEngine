@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	PlayerDushState(class Player* _player);
+	PlayerDushState(class Player* _player, class PlayerStateManager* _stateManager);
 	~PlayerDushState();
 
 	void Start()  override;
