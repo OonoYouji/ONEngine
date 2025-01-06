@@ -148,6 +148,8 @@
     <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\PointLight.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -280,6 +282,8 @@
     <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\PointLight.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

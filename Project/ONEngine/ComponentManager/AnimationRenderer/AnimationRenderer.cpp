@@ -395,7 +395,8 @@ void AnimationRendererCommon::AddAnimationRenderer(AnimationRenderer* _animation
 }
 
 void AnimationRendererCommon::BindDirectionalLightToCommandList(UINT _rootParameter, ID3D12GraphicsCommandList* _commandList) {
-	pDirectionalLight_->BindToCommandList(_rootParameter, _commandList);
+	/// TODO: light groupで処理する
+	//pDirectionalLight_->BindToCommandList(_rootParameter, _commandList);
 }
 
 void AnimationRendererCommon::SetDirectionalLight(DirectionalLight* _directionalLight) {

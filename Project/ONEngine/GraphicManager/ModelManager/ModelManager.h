@@ -97,13 +97,13 @@ public:
 	/// </summary>
 	void AddActiveModel(Model* model, Transform* transform, Mat4* matLocal, Material* material, FillMode fillMode);
 
-	void SetDirectionalLight(class DirectionalLight* directionalLight);
-
 	/// <summary>
 	/// ディレクトリパスのゲッタ
 	/// </summary>
 	/// <returns></returns>
 	const std::string& GetDirectoryPath() const { return kDirectoryPath_; }
+
+	void SetLightGroup(class LightGroup* pLightGroup) { pLightGroup_ = pLightGroup; }
 
 private:
 
@@ -129,7 +129,7 @@ private:
 
 	std::list<Element> activeModels_;
 
-	class DirectionalLight* pDirectionalLight_ = nullptr;
+	class LightGroup* pLightGroup_ = nullptr;
 
 private:
 	ModelManager(const ModelManager&) = delete;

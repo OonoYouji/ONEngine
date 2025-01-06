@@ -112,7 +112,8 @@ namespace {
 		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		/// buffer setting
-		pDirectionalLight_->BindToCommandList(2, pCommnadList_);
+		/// TODO: light groupで処理する
+		//pDirectionalLight_->BindToCommandList(2, pCommnadList_);
 		pCommnadList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
 		pCommnadList_->SetGraphicsRootDescriptorTable(3, gpuHandle);
 

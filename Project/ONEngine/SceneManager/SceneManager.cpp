@@ -42,6 +42,10 @@ SceneManager* SceneManager::GetInstance() {
 /// ===================================================
 void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 
+
+	lightGroup_.reset(new LightGroup());
+	lightGroup_->Initialize();
+
 	sceneFactory_.reset(_sceneFactory);
 
 	currentSceneName_ = sceneFactory_->GetStartupSceneName();
@@ -74,6 +78,7 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 void SceneManager::Finalize() {
 	finalRenderTex_.reset();
 	scenes_.clear();
+	lightGroup_.reset();
 }
 
 
@@ -149,10 +154,6 @@ void SceneManager::SetSceneLayers(const std::vector<class SceneLayer*>& sceneLay
 	sceneLayers_ = sceneLayers;
 }
 
-DirectionalLight* SceneManager::GetDirectionalLight() {
-	return scenes_[currentSceneName_]->directionalLight_;
-}
-
 void SceneManager::Load(const std::string& _sceneName) {
 	/// 必要な変数のリセットをかける
 	SceneLayer::ResetInstanceCount();
@@ -174,7 +175,7 @@ void SceneManager::Load(const std::string& _sceneName) {
 
 	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
 	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
-	ModelManager::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
+	ModelManager::GetInstance()->SetLightGroup(lightGroup_.get());
 	SetSceneLayers(scenes_[currentSceneName_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;

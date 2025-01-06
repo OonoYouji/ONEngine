@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "SceneManager/BaseScene.h"
 
 enum GAME_SCENE_LAYER {
@@ -20,4 +22,6 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+private:
+	std::array<class PointLight*, 5> pointLightArray_;
 };
