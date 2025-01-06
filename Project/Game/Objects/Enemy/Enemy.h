@@ -19,6 +19,9 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void OnCollisionEnter([[maybe_unused]] BaseGameObject* const collision) override;
+	void OnCollisionStay([[maybe_unused]] BaseGameObject* const collision) override;
+
 private:
 
 	/// ===================================================
@@ -26,7 +29,8 @@ private:
 	/// ===================================================
 
 	class MeshRenderer*    meshRenderer_ = nullptr;
-	class EnemyHPRenderer* hpRenderer_ = nullptr;
+	class SphereCollider*  collider_     = nullptr;
+	class EnemyHPRenderer* hpRenderer_   = nullptr;
 
 	/// parameters
 	float hp_;

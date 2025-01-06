@@ -28,5 +28,8 @@ private:
 
 	Vec3 startPosition_;
 
+	Vec3 colliderPosition_;
+	Vec3 colliderRotate_;
+	Vec3 colliderSize_;
 
 };

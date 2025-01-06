@@ -8,6 +8,8 @@
 
 /// user
 #include "../../Player.h"
+#include "../../PlayerAttackCollider/PlayerAttackCollider.h"
+#include "Objects/Enemy/Enemy.h"
 
 PlayerNormalAttackState::PlayerNormalAttackState(Player* _player, PlayerStateManager* _stateManager) 
 	: IPlayerState(_player, _stateManager) {
@@ -26,9 +28,21 @@ void PlayerNormalAttackState::Start() {
 
 	startPosition_ = pPlayer_->GetPosition();
 
+	/// ターゲットがいる場合はターゲットに向かって攻撃
 	if(pPlayer_->GetFlag(PlayerFlag_IsTarget).Stay()) {
-
+		direction_ = pPlayer_->GetTargetEnemy()->GetPosition() - pPlayer_->GetPosition();
+		direction_ = direction_.Normalize();
 	}
+
+	/// colliderの設定
+	colliderPosition_ = pPlayer_->GetPosition() + direction_ * 1.0f;
+	colliderRotate_   = { 0.0f, 0.0f, 0.0f };
+	colliderSize_     = { 1.0f, 1.0f, 1.0f };
+
+	PlayerAttackCollider* collider = pPlayer_->GetAttackCollider();
+	collider->SetPosition(colliderPosition_);
+	collider->SetRotate(colliderRotate_);
+	collider->SetScale(colliderSize_);
 
 }
 

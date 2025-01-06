@@ -18,6 +18,7 @@
 #include "Objects/EnemyManager/EnemyManager.h"
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TargetSpriteRender/TargetSpriteRender.h"
+#include "PlayerAttackCollider/PlayerAttackCollider.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -41,6 +42,9 @@ void Player::Initialize() {
 
 	targetSpriteRender_ = new TargetSpriteRender(pGameCamera_);
 	targetSpriteRender_->Initialize();
+
+	attackCollider_ = new PlayerAttackCollider();
+	attackCollider_->Initialize();
 
 	/// フラグの初期化
 	flags_.resize(PlayerFlag_Max);

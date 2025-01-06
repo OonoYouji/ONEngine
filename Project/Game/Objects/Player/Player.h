@@ -71,6 +71,7 @@ private:
 	PlayerMesh*                         playerMesh_   = nullptr;
 	class PlayerProtectionMesh*         protectionMesh_ = nullptr;
 	class TargetSpriteRender*           targetSpriteRender_ = nullptr;
+	class PlayerAttackCollider*         attackCollider_ = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };
@@ -137,5 +138,8 @@ public:
 	/// ---------------------------------------------------
 	/// other class
 	void SetEnemyManager(class EnemyManager* _enemyManager) { pEnemyManager_ = _enemyManager; }
+
+	class Enemy* GetTargetEnemy() const { return targetEnemy_; }
+	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
 
 };

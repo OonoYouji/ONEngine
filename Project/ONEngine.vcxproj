@@ -156,6 +156,7 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\State\IPlayerState\IPlayerState.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
     <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
     <ClInclude Include="Game\Objects\Player\State\IPlayerState\IPlayerState.h" />
