@@ -8,6 +8,15 @@
 class Enemy : public BaseGameObject {
 public:
 
+	enum State {
+		State_Root,
+		State_Attack,
+		State_Blowing,
+		State_Max
+	};
+
+public:
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -24,6 +33,7 @@ public:
 
 	void RootUpdate();
 	void AttackUpdate();
+	void BlowingUpdate();
 
 private:
 
@@ -34,6 +44,7 @@ private:
 	class MeshRenderer*    meshRenderer_ = nullptr;
 	class SphereCollider*  collider_     = nullptr;
 	class EnemyHPRenderer* hpRenderer_   = nullptr;
+	class EntityShadow*    shadow_       = nullptr;
 
 	class Player* pPlayer_ = nullptr;
 
@@ -45,6 +56,9 @@ private:
 	Vec3 direction_;
 
 	float attackTime_;
+
+	Vec3 blowingDirection_;
+	float blowingTime_;
 
 public:
 
