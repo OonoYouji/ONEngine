@@ -16,6 +16,7 @@ enum PlayerFlag {
 	PlayerFlag_IsDush,
 	PlayerFlag_IsJump,
 	PlayerFlag_IsAttack,
+	PlayerFlag_IsBulletAttack,
 	PlayerFlag_IsProtection,
 	PlayerFlag_IsTargetButtonPressed,
 	PlayerFlag_IsTarget,
@@ -141,5 +142,7 @@ public:
 
 	class Enemy* GetTargetEnemy() const { return targetEnemy_; }
 	class PlayerAttackCollider* GetAttackCollider() const { return attackCollider_; }
+
+	const std::list<class Enemy*>& GetForwardEnemyList() const { return pForwardEnemyList_; }
 
 };

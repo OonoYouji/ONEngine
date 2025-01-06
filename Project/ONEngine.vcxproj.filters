@@ -146,6 +146,8 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.cpp" />
     <ClCompile Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -276,6 +278,8 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackState.h" />
     <ClInclude Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.h" />
     <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerBulletAttackState\PlayerBulletAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

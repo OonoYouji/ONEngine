@@ -16,6 +16,7 @@ enum PlayerStateOrder {
 	PlayerStateOrder_Dush,
 	PlayerStateOrder_Protection,
 	PlayerStateOrder_NormalAttack,
+	PlayerStateOrder_BulletAttack,
 	PlayerStateOrder_Max
 };
 
