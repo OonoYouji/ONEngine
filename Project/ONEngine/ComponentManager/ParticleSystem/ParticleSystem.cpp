@@ -331,7 +331,7 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 
 	/// other pointer get
 	ID3D12Resource*   viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
-	DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
+	//DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
 
 	/// default setting
 	pipelineState_->SetPipelineState();
@@ -339,7 +339,8 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 	/// command setting
 	pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-	pLight->BindToCommandList(2, pCommandList_);
+	/// TODO: light groupで処理する
+	//pLight->BindToCommandList(2, pCommandList_);
 
 
 	/// transform の bind

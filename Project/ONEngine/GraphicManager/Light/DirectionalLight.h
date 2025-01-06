@@ -10,6 +10,19 @@ using namespace Microsoft::WRL;
 class DirectionalLight final : public BaseGameObject {
 public:
 
+	struct BufferData {
+		Vec4 color;
+		Vec3 direction;
+		float intencity;
+		int   active;
+	};
+
+public:
+
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
 	DirectionalLight() { CreateTag(this); }
 	~DirectionalLight() {}
 
@@ -19,29 +32,28 @@ public:
 	void Debug() override;
 
 
+private:
+
 	/// ===================================================
-	///	non overriding methods
+	///	private : objects
 	/// ===================================================
 
-	/// <summary>
-	/// commandListにconstantBufferをバインドする
-	/// </summary>
-	void BindToCommandList(
-		UINT rootParamIndex,
-		ID3D12GraphicsCommandList* commandList
-	);
+	BufferData data_;
+
+	
+public:
+	
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+
+	void SetColor(const Vec4& color) { data_.color = color; }
 
 	void SetDirection(const Vec3& direction);
 
-private:
+	void SetIntencity(float intencity) { data_.intencity = intencity; }
 
-	struct BufferData final {
-		Vec4 color;
-		Vec3 direction;
-		float intencity;
-	};
-
-	ComPtr<ID3D12Resource> constantBuffer_;
-	BufferData* bufferData_ = nullptr;
+	const BufferData& GetData() const { return data_; }
 
 };

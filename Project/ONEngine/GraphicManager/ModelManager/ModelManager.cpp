@@ -19,7 +19,7 @@
 
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "GraphicManager/TextureManager/TextureManager.h"
-#include "GraphicManager/Light/DirectionalLight.h"
+#include "../Light/LightGroup.h"
 
 #include "Debugger/Assertion.h"
 
@@ -53,11 +53,15 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
-		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
+		//pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2);		///- camera 
 
 		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+		pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// Texture
+		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);	/// DirectionalLight
+		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// PointLight
 		pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline->Initialize();
@@ -421,12 +425,14 @@ void ModelManager::PostDraw() {
 
 	commandList->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootConstantBufferView(4, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
-	pDirectionalLight_->BindToCommandList(3, commandList);
+	commandList->SetGraphicsRootConstantBufferView(3, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
+	//pDirectionalLight_->BindToCommandList(3, commandList);
+	pLightGroup_->BindDirectionalLightBufferForCommandList(5, commandList);
+	pLightGroup_->BindPointLightBufferForCommandList(6, commandList);
 
 	for(auto& model : solid) {
 		model.transform->BindTransform(commandList, 1, model.matLocal);
-		model.model->DrawCall(commandList, model.material, 2, 5);
+		model.model->DrawCall(commandList, model.material, 2, 4);
 	}
 
 
@@ -438,7 +444,7 @@ void ModelManager::PostDraw() {
 
 	for(auto& model : wire) {
 		model.transform->BindTransform(commandList, 1, model.matLocal);
-		model.model->DrawCall(commandList, model.material, 2, 5);
+		model.model->DrawCall(commandList, model.material, 2, 4);
 	}
 
 
@@ -478,8 +484,4 @@ void ModelManager::AddActiveModel(Model* model, Transform* transform, Mat4* matL
 	element.matLocal  = matLocal;
 
 	activeModels_.push_back(element);
-}
-
-void ModelManager::SetDirectionalLight(DirectionalLight* directionalLight) {
-	pDirectionalLight_ = directionalLight;
 }

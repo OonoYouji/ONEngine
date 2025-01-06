@@ -13,6 +13,7 @@
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
 #include "GraphicManager/RenderTextureManager/RenderTexture.h"
+#include "GraphicManager/Light/LightGroup.h"
 
 #include "AbstructSceneFactory.h"
 
@@ -54,8 +55,7 @@ public:
 
 	RenderTexture* GetFinalRenderTex() const { return finalRenderTex_.get(); }
 
-	class DirectionalLight* GetDirectionalLight();
-
+	LightGroup* GetLightGroup() { return lightGroup_.get(); }
 
 	const Vec2& GetSceneRectMin() const { return sceneRectMin_; }
 	const Vec2& GetSceneRectMax() const { return sceneRectMax_; }
@@ -94,6 +94,7 @@ private:
 	std::vector<class SceneLayer*> sceneLayers_;
 	std::unique_ptr<RenderTexture> finalRenderTex_;
 
+	std::unique_ptr<LightGroup> lightGroup_;
 
 	Vec2 sceneRectMin_, sceneRectMax_;
 
