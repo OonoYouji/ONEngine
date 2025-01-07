@@ -27,6 +27,8 @@ EnemyEmitter::~EnemyEmitter() {}
 void EnemyEmitter::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("EnemyEmitter");
+	meshRenderer_->SetMaterial("white2x2.png");
+	meshRenderer_->SetColor({ 0,0,0,1 });
 
 	config_ = {};
 	config_.emitEnemyNum = 5;

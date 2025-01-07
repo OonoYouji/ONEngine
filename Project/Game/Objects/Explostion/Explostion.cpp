@@ -17,8 +17,10 @@ void Explostion::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Explosion");
+	meshRenderer_->SetMaterial("Explosion.png");
+	meshRenderer_->SetColor(Vec4(Vec3::kOne * 0.75f, 1.0f));
 
-	lifeTime_ = 1.0f;
+	lifeTime_ = 0.2f;
 
 	/// TODO: 音を流す
 	particle_ = new ExplostionParticle();
