@@ -25,7 +25,7 @@ void Scene_Title::Initialize() {
 
 void Scene_Title::Update() {
 
-	if(Input::TriggerKey(KeyCode::Space)) {
+	if(Input::TriggerKey(KeyCode::Space)|| Input::PressPadButton(PadCode::A)) {
 		SetNextScene("GameScene");
 	}
 
