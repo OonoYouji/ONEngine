@@ -73,6 +73,10 @@ void PlayerNormalAttackStep2::Update() {
 		isEnd_ = true;
 	}
 
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		isInputNextAttack_ = true;
+	}
+
 }
 
 void PlayerNormalAttackStep2::Exit() {
@@ -86,6 +90,10 @@ bool PlayerNormalAttackStep2::IsEnd() {
 }
 
 int PlayerNormalAttackStep2::NextStateIndex() {
+	if(isInputNextAttack_) {
+		return PlayerStateOrder_NormalAttackStep3;
+	}
+
 	return PlayerStateOrder_Root;
 }
 

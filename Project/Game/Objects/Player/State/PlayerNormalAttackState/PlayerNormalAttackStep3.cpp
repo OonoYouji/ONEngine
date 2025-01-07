@@ -1,7 +1,11 @@
 #include "PlayerNormalAttackStep3.h"
 
+/// std
+#include <algorithm>
+
 /// engine
 #include "FrameManager/Time.h"
+#include "Math/Easing.h"
 
 /// user
 #include "../../Player.h"
@@ -24,9 +28,18 @@ void PlayerNormalAttackStep3::Start() {
 
 void PlayerNormalAttackStep3::Update() {
 	currentTime_ += Time::DeltaTime();
-	if(currentTime_ >= maxTime_) {
+
+	float lerpT = std::clamp(currentTime_ / maxTime_, 0.0f, 1.0f);
+
+	pPlayer_->GetTransform()->position.y = std::lerp(
+		0.0f, 10.0f,
+		Ease::In::Expo(lerpT)
+	);
+
+	if(lerpT == 1.0f) {
 		isEnd_ = true;
 	}
+
 }
 
 void PlayerNormalAttackStep3::Exit() {
@@ -40,7 +53,7 @@ bool PlayerNormalAttackStep3::IsEnd() {
 }
 
 int PlayerNormalAttackStep3::NextStateIndex() {
-	return PlayerStateOrder_Root;
+	return PlayerStateOrder_BulletAttack;
 }
 
 void PlayerNormalAttackStep3::Debug() {

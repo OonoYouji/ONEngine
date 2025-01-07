@@ -1,3 +1,7 @@
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
+
+
 // https://github.com/CedricGuillemet/ImGuizmo
 // v 1.83
 //

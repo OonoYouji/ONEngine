@@ -1,5 +1,9 @@
 #pragma once
 
+/// engine
+#include "Math/Vector3.h"
+
+/// user
 #include "../IPlayerState/IPlayerState.h"
 
 class PlayerNormalAttackStep3 : public IPlayerState {
@@ -34,4 +38,5 @@ private:
 	float currentTime_;
 
 	bool isEnd_;
+
 };

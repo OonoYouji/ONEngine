@@ -40,6 +40,7 @@ private:
 	float currentTime_;
 
 	bool isEnd_;
+	bool isInputNextAttack_;
 
 
 };

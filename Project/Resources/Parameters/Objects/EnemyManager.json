@@ -2,26 +2,38 @@
     "emitterDatas": [
         {
             "config": {
-                "activionTime": 0.0,
-                "emitEnemyNum": 5,
-                "radius": 5.0
+                "activionTime": 1.0,
+                "emitEnemyNum": 10,
+                "radius": 10.0
             },
             "position": [
                 0.0,
                 0.0,
-                0.0
+                34.70000076293945
             ]
         },
         {
             "config": {
-                "activionTime": 3.200000047683716,
-                "emitEnemyNum": 5,
+                "activionTime": 1.0,
+                "emitEnemyNum": 10,
                 "radius": 5.0
             },
             "position": [
+                -21.700000762939453,
                 0.0,
+                34.599998474121094
+            ]
+        },
+        {
+            "config": {
+                "activionTime": 1.0,
+                "emitEnemyNum": 10,
+                "radius": 5.0
+            },
+            "position": [
+                21.799999237060547,
                 0.0,
-                0.0
+                35.099998474121094
             ]
         }
     ]
