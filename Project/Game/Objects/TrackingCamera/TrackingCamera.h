@@ -30,6 +30,8 @@ public:
 
 	Vec3 LockAt(const Vec3& _direction);
 
+	void StartShake(float _minValue, float _maxValue, float _time);
+
 private:
 
 	/// ===================================================
@@ -49,5 +51,13 @@ private:
 
 
 	Vec2 inputRightStick_;
+
+	/// shake
+	float shakeMinValue_;
+	float shakeMaxValue_;
+	float shakeMaxTime_;
+	float shakeTime_;
+
+	Vec3 shakeOffset_;
 
 };

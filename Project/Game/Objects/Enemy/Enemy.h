@@ -21,7 +21,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Enemy(class Player* _player, class EnemyManager* _manager);
+	Enemy(class Player* _player, class EnemyManager* _manager, class TrackingCamera* _camera);
 	~Enemy();
 
 	void Initialize() override;
@@ -50,6 +50,7 @@ private:
 
 	class Player* pPlayer_ = nullptr;
 	class EnemyManager* pManager_ = nullptr;
+	class TrackingCamera* pTrackingCamera_ = nullptr;
 
 	/// parameters
 	float hp_;

@@ -19,8 +19,8 @@
 using namespace nlohmann;
 
 
-EnemyManager::EnemyManager(Player* _playerPtr) 
-	: pPlayer_(_playerPtr) {
+EnemyManager::EnemyManager(Player* _playerPtr, TrackingCamera* _cameraPtr)
+	: pPlayer_(_playerPtr), pTrackingCamera_(_cameraPtr) {
 	CreateTag(this);
 }
 
@@ -220,7 +220,7 @@ void EnemyManager::EmitterDataLoadFromJsonFile(const std::string& _directoryPath
 	enemyEmitterList_.clear();
 
 	for(const EmitterData& data : emitterDatas_) {
-		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_, this);
+		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_, this, pTrackingCamera_);
 		emitter->Initialize();
 		emitter->SetPosition(data.position);
 		emitter->SetConfig(data.config);

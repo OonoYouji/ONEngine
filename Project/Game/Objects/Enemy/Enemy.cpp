@@ -17,10 +17,12 @@
 #include "Objects/Player/Player.h"
 #include "Objects/EntityShadow/EntityShadow.h"
 #include "Objects/Explostion/Explostion.h"
+#include "Objects/Camera/GameCamera.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
 
-Enemy::Enemy(Player* _player, EnemyManager* _manager) 
-	: pPlayer_(_player), pManager_(_manager) {
+Enemy::Enemy(Player* _player, EnemyManager* _manager, TrackingCamera* _camera) 
+	: pPlayer_(_player), pManager_(_manager), pTrackingCamera_(_camera) {
 	CreateTag(this);
 }
 
@@ -117,6 +119,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		Explostion* explostion = new Explostion();
 		explostion->Initialize();
 		explostion->SetPosition(collision->GetPosition());
+
+		pTrackingCamera_->StartShake(0.05f, 0.1f, 0.2f);
 	}
 
 

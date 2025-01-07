@@ -31,7 +31,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyEmitter(class Player* _player, class EnemyManager* _manager);
+	EnemyEmitter(class Player* _player, class EnemyManager* _manager, class TrackingCamera* _camera);
 	~EnemyEmitter();
 
 	void Initialize() override;
@@ -56,6 +56,7 @@ private:
 	class MeshRenderer* meshRenderer_ = nullptr;
 	class Player*       pPlayer_      = nullptr;
 	class EnemyManager* pManager_     = nullptr;
+	class TrackingCamera* pTrackingCamera_ = nullptr;
 
 	Config config_;
 

@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "TrackingCamera.h"
 
 /// extrernals
@@ -7,7 +8,7 @@
 #include "VariableManager/VariableManager.h"
 #include "Input/Input.h"
 #include "FrameManager/Time.h"
-
+#include "Math/Random.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 
 /// game
@@ -52,15 +53,35 @@ void TrackingCamera::Update() {
 	Input();
 
 	/// 座標決定
-	Vec3 offset = Mat4::Transform(offsetPosition_, matCameraRotate_);
+	Vec3 offset = Mat4::Transform(offsetPosition_ + shakeOffset_, matCameraRotate_);
 	pGameCamera_->SetPosition(trackingObject_->GetPosition() + offset);
 
 	LockToTarget();
+
+
+	/// カメラのシェイク
+	if(shakeTime_ <= shakeMaxTime_) {
+		shakeTime_ += Time::DeltaTime();
+
+		float lerpT = std::min(shakeTime_ / shakeMaxTime_, 1.0f);
+		float value = std::lerp(shakeMaxValue_, shakeMinValue_, lerpT);
+
+		shakeOffset_ = Random::Vec3(-Vec3::kOne, Vec3::kOne) * value;
+
+		if(shakeTime_ >= shakeMaxTime_) {
+			shakeOffset_ = Vec3(0, 0, 0);
+		}
+	}
 }
 
 void TrackingCamera::Debug() {
 
 	ImGui::DragFloat3("camera rotate", &cameraRotate_.x);
+
+	if(ImGui::Button("start shake")) {
+		StartShake(0.1f, 0.5f, 0.5f);
+	}
+
 }
 
 
@@ -143,5 +164,15 @@ Vec3 TrackingCamera::LockAt(const Vec3& _direction) {
 	float roll  = 0.0f;
 
 	return { pitch, yaw, roll };
+}
+
+void TrackingCamera::StartShake(float _minValue, float _maxValue, float _time) {
+	/// 量
+	shakeMinValue_ = _minValue;
+	shakeMaxValue_ = _maxValue;
+
+	/// 時間
+	shakeMaxTime_ = _time;
+	shakeTime_    = 0.0f;
 }
 

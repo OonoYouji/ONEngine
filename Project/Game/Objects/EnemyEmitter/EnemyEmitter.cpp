@@ -16,10 +16,11 @@
 /// user
 #include "../Enemy/Enemy.h"
 #include "Objects/EnemyManager/EnemyManager.h"
+#include "Objects/TrackingCamera/TrackingCamera.h"
 
 
-EnemyEmitter::EnemyEmitter(class Player* _player, EnemyManager* _manager)
-	: pPlayer_(_player), pManager_(_manager) {
+EnemyEmitter::EnemyEmitter(class Player* _player, EnemyManager* _manager, TrackingCamera* _camera)
+	: pPlayer_(_player), pManager_(_manager), pTrackingCamera_(_camera) {
 	CreateTag(this);
 }
 
@@ -99,7 +100,7 @@ void EnemyEmitter::Emit() {
 
 	for(size_t i = 0; i < config_.emitEnemyNum; ++i) {
 		/// emit enemy
-		Enemy* enemy = new Enemy(pPlayer_, pManager_);
+		Enemy* enemy = new Enemy(pPlayer_, pManager_, pTrackingCamera_);
 		enemy->Initialize();
 
 		Vec3 position = pTransform_->position;

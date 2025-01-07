@@ -32,7 +32,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EnemyManager(class Player* _playerPtr);
+	EnemyManager(class Player* _playerPtr, class TrackingCamera* _cameraPtr);
 	~EnemyManager();
 
 	void Initialize() override;
@@ -77,6 +77,7 @@ private:
 	/// ===================================================
 
 	class Player* pPlayer_ = nullptr;
+	class TrackingCamera* pTrackingCamera_ = nullptr;
 
 	std::list<class Enemy*>        enemyList_;
 	std::list<class EnemyEmitter*> enemyEmitterList_;
