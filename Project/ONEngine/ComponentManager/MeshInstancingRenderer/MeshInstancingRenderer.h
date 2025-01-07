@@ -29,7 +29,7 @@ public:
 	static void SInitialize(ID3D12GraphicsCommandList* _commandList);
 	static void SFinalize();
 
-	static void SetDirectionalLight(class DirectionalLight* _directionalLight);
+	static void SetLightGroup(class LightGroup* _lightGroup);
 
 
 	/// ===================================================
