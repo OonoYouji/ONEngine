@@ -14,7 +14,7 @@
 /// engine
 #include "Core/ONEngine.h"
 #include "GraphicManager/PipelineState/PipelineState.h"
-#include "GraphicManager/Light/DirectionalLight.h"
+#include "GraphicManager/Light/LightGroup.h"
 #include "GraphicManager/ModelManager/ModelManager.h"
 
 #include "GraphicManager/GraphicsEngine/DirectX12/DxCommon.h"
@@ -54,7 +54,7 @@ namespace {
 		PipelineState::Shader shader_;
 
 		/// other pointer
-		DirectionalLight*          pDirectionalLight_ = nullptr;
+		LightGroup*                pLightGroup_ = nullptr;
 		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
 
 	};
@@ -87,14 +87,17 @@ namespace {
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// transform
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// light
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); /// light
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// texture
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -113,9 +116,11 @@ namespace {
 
 		/// buffer setting
 		/// TODO: light groupで処理する
-		//pDirectionalLight_->BindToCommandList(2, pCommnadList_);
 		pCommnadList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-		pCommnadList_->SetGraphicsRootDescriptorTable(3, gpuHandle);
+		pCommnadList_->SetGraphicsRootDescriptorTable(2, gpuHandle);
+		pLightGroup_->BindDirectionalLightBufferForCommandList(3, pCommnadList_);
+		pLightGroup_->BindPointLightBufferForCommandList(4, pCommnadList_);
+
 
 		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
 
@@ -123,7 +128,7 @@ namespace {
 			Material& material = useModel->GetMaterials().front();
 
 			material.BindMaterial(pCommnadList_, 1);
-			material.BindTexture(pCommnadList_, 4);
+			material.BindTexture(pCommnadList_, 5);
 			mesh.Draw(pCommnadList_, false);
 
 			UINT meshIndex = static_cast<UINT>(mesh.GetIndices().size());
@@ -160,9 +165,8 @@ void MeshInstancingRenderer::SFinalize() {
 	gPipeline.reset();
 }
 
-
-void MeshInstancingRenderer::SetDirectionalLight(DirectionalLight* _directionalLight) {
-	gPipeline->pDirectionalLight_ = _directionalLight;
+void MeshInstancingRenderer::SetLightGroup(LightGroup* _lightGroup) {
+	gPipeline->pLightGroup_ = _lightGroup;
 }
 
 

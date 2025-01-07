@@ -174,7 +174,7 @@ void SceneManager::Load(const std::string& _sceneName) {
 	scenes_[currentSceneName_]->Initialize();
 
 	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
-	MeshInstancingRenderer::SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
+	MeshInstancingRenderer::SetLightGroup(lightGroup_.get());
 	ModelManager::GetInstance()->SetLightGroup(lightGroup_.get());
 	SetSceneLayers(scenes_[currentSceneName_]->GetSceneLayers());
 

@@ -22,6 +22,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TargetSpriteRender/TargetSpriteRender.h"
 #include "PlayerAttackCollider/PlayerAttackCollider.h"
+#include "Objects/PlayerMoveLocus/PlayerMoveLocus.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 

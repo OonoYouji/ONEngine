@@ -11,6 +11,7 @@
 #include "Math/Random.h"
 
 /// user
+#include "../EnemyManager/EnemyManager.h"
 #include "EnemyHPRenderer/EnemyHPRenderer.h"
 #include "Objects/Player/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "Objects/Player/Player.h"
@@ -18,7 +19,8 @@
 #include "Objects/Explostion/Explostion.h"
 
 
-Enemy::Enemy(Player* _player) : pPlayer_(_player) {
+Enemy::Enemy(Player* _player, EnemyManager* _manager) 
+	: pPlayer_(_player), pManager_(_manager) {
 	CreateTag(this);
 }
 
@@ -76,6 +78,7 @@ void Enemy::Debug() {
 
 void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
+
 	if(collision->GetTag() == "PlayerAttackCollider") {
 		PlayerAttackCollider* other = static_cast<PlayerAttackCollider*>(collision);
 		hp_ -= other->GetDamageValue();
@@ -93,11 +96,21 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
 	if(collision->GetTag() == "PlayerBullet") {
 		hp_ -= 10.0f;
+#ifdef _DEBUG /// デバッグ用高速で倒す
+		hp_ -= 100.0f;
+#endif // _DEBUG
+
 
 		/// TODO: hit effectを出す
 		Explostion* explostion = new Explostion();
 		explostion->Initialize();
 		explostion->SetPosition(collision->GetPosition());
+	}
+
+
+	if(hp_ <= 0.0f) {
+		pManager_->AddDefeatEnemiesCount();
+		pManager_->DestroyEnemy(this);
 	}
 
 }
@@ -160,4 +173,13 @@ void Enemy::BlowingUpdate() {
 	if(blowingTime_ <= 0.0f) {
 		stateIndex_ = State_Root;
 	}
+}
+
+void Enemy::Destroy() {
+	Destory();
+	for(auto& child : hpRenderer_->GetChilds()) {
+		child->Destory();
+	}
+	hpRenderer_->Destory();
+	shadow_->Destory();
 }

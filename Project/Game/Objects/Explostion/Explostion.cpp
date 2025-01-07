@@ -17,11 +17,15 @@ void Explostion::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Explosion");
+	meshRenderer_->SetMaterial("Explosion.png");
+	meshRenderer_->SetColor(Vec4(Vec3::kOne * 0.75f, 1.0f));
 
-	lifeTime_ = 1.0f;
+	lifeTime_ = 0.2f;
 
 	/// TODO: 音を流す
-
+	particle_ = new ExplostionParticle();
+	particle_->Initialize();
+	particle_->SetParent(pTransform_);
 
 }
 
@@ -49,8 +53,25 @@ void Explostion::Update() {
 
 	if(currentTime_ > lifeTime_) {
 		Destory();
+		particle_->Destory();
 	}
 
 
+}
+
+
+ExplostionParticle::ExplostionParticle() {
+	CreateTag(this);
+}
+
+ExplostionParticle::~ExplostionParticle() {}
+
+void ExplostionParticle::Initialize() {
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel("ExplosionParticle");
+}
+
+void ExplostionParticle::Update() {
+	pTransform_->rotate += Vec3(0.1f, 0.2f, 0.0f);
 }
 

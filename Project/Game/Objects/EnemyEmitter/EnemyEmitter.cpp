@@ -15,10 +15,11 @@
 
 /// user
 #include "../Enemy/Enemy.h"
+#include "Objects/EnemyManager/EnemyManager.h"
 
 
-EnemyEmitter::EnemyEmitter(class Player* _player)
-	: pPlayer_(_player) {
+EnemyEmitter::EnemyEmitter(class Player* _player, EnemyManager* _manager)
+	: pPlayer_(_player), pManager_(_manager) {
 	CreateTag(this);
 }
 
@@ -27,6 +28,8 @@ EnemyEmitter::~EnemyEmitter() {}
 void EnemyEmitter::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("EnemyEmitter");
+	meshRenderer_->SetMaterial("white2x2.png");
+	meshRenderer_->SetColor({ 0,0,0,1 });
 
 	config_ = {};
 	config_.emitEnemyNum = 5;
@@ -96,7 +99,7 @@ void EnemyEmitter::Emit() {
 
 	for(size_t i = 0; i < config_.emitEnemyNum; ++i) {
 		/// emit enemy
-		Enemy* enemy = new Enemy(pPlayer_);
+		Enemy* enemy = new Enemy(pPlayer_, pManager_);
 		enemy->Initialize();
 
 		Vec3 position = pTransform_->position;

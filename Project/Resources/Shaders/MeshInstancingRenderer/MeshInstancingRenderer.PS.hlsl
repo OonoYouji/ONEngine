@@ -1,5 +1,7 @@
 #include "MeshInstancingRenderer.hlsli"
 
+#include "../Light/DirectionalLight.hlsli"
+#include "../Light/PointLight.hlsli"
 
 cbuffer material : register(b0) {
 	float4 materialColor;
@@ -7,14 +9,12 @@ cbuffer material : register(b0) {
 	int isLighting;
 }
 
-cbuffer directionalLight : register(b1) {
-	float4 lightColor;
-	float3 lightDirection;
-	float intensity;
-}
-
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
+
+StructuredBuffer<DirectionalLight> gDirLights   : register(t1);
+StructuredBuffer<PointLight>       gPointLights : register(t2);
+
 
 
 PSOutput main(VSOutput input) {
@@ -25,11 +25,51 @@ PSOutput main(VSOutput input) {
 	
 	///- Half Lambert
 	if (isLighting) {
-		float NdotL = dot(normalize(input.normal), -lightDirection);
-		float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-		output.color = materialColor * texColor * lightColor * cos * intensity;
-		output.color.a = materialColor.a * texColor.a;
+		/// Half Lambert
+		/// Directional Light
+		//for (int i = 0; i < 5; ++i) {
+			
+		//	if (gDirLights[i].active != 0) {
+		//		float3 toEye = normalize(gCamera.position - input.worldPosition);
+		//		float3 halfVector = normalize(-gDirLights[i].direction + toEye);
+		//		float3 reflectLight = reflect(gDirLights[i].direction, normalize(input.normal));
+		//		float NdotH = dot(normalize(input.normal), halfVector);
+		//		float specularPow = pow(saturate(NdotH), gMaterial.shininess);
 
+		//		float NdotL = dot(normalize(input.normal), -gDirLights[i].direction);
+		//		float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+		//		float3 diffuse = (gMaterial.color * texColor * gDirLights[i].color * cos * gDirLights[i].intensity).rgb;
+		//		float3 specular = gDirLights[i].color.rgb * gDirLights[i].intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
+
+		//		shaderColor += diffuse + specular;
+		//	}
+		//}
+
+		///// Point Light
+		//for (i = 0; i < 5; ++i) {
+
+		//	/// lightが有効の時のみ計算する
+		//	if (gPointLights[i].active != 0) {
+		//		float3 toEye = normalize(gCamera.position - input.worldPosition);
+		//		float3 pointLightDirection = normalize(gPointLights[i].position - input.worldPosition);
+		//		float distance = length(gPointLights[i].position - input.worldPosition);
+		//		float factor = pow(saturate(-distance / gPointLights[i].radius + 1.0f), gPointLights[i].decay);
+
+		//		float3 reflectLight = reflect(pointLightDirection, normalize(input.normal));
+		//		float NdotH = dot(normalize(input.normal), normalize(pointLightDirection + toEye));
+		//		float specularPow = pow(saturate(NdotH), gMaterial.shininess);
+
+		//		float NdotL = dot(normalize(input.normal), pointLightDirection);
+		//		float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+		//		float3 diffuse = (gMaterial.color * texColor * gPointLights[i].color * cos * gPointLights[i].intensity).rgb;
+		//		float3 specular = gPointLights[i].color.rgb * gPointLights[i].intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
+
+		//		//shaderColor += gPointLights[i].color.rgb * gPointLights[i].intensity * factor;
+		//		shaderColor += diffuse + specular;
+		//	}
+		//}
+
+		output.color = texColor * materialColor;
 	} else {
 		output.color = materialColor * texColor;
 	}

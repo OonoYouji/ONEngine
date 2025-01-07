@@ -21,7 +21,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Enemy(class Player* _player);
+	Enemy(class Player* _player, class EnemyManager* _manager);
 	~Enemy();
 
 	void Initialize() override;
@@ -35,6 +35,8 @@ public:
 	void AttackUpdate();
 	void BlowingUpdate();
 
+	void Destroy();
+
 private:
 
 	/// ===================================================
@@ -47,6 +49,7 @@ private:
 	class EntityShadow*    shadow_       = nullptr;
 
 	class Player* pPlayer_ = nullptr;
+	class EnemyManager* pManager_ = nullptr;
 
 	/// parameters
 	float hp_;
