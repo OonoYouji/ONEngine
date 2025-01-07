@@ -21,7 +21,9 @@ void Explostion::Initialize() {
 	lifeTime_ = 1.0f;
 
 	/// TODO: 音を流す
-
+	particle_ = new ExplostionParticle();
+	particle_->Initialize();
+	particle_->SetParent(pTransform_);
 
 }
 
@@ -49,8 +51,25 @@ void Explostion::Update() {
 
 	if(currentTime_ > lifeTime_) {
 		Destory();
+		particle_->Destory();
 	}
 
 
+}
+
+
+ExplostionParticle::ExplostionParticle() {
+	CreateTag(this);
+}
+
+ExplostionParticle::~ExplostionParticle() {}
+
+void ExplostionParticle::Initialize() {
+	meshRenderer_ = AddComponent<MeshRenderer>();
+	meshRenderer_->SetModel("ExplosionParticle");
+}
+
+void ExplostionParticle::Update() {
+	pTransform_->rotate += Vec3(0.1f, 0.2f, 0.0f);
 }
 

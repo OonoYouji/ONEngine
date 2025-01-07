@@ -14,7 +14,7 @@
 void GameFrameWork::Initialize() {
 	ExecutionTimer timer;
 
-	SceneFactory* sceneFacory = new SceneFactory("GameScene");
+	SceneFactory* sceneFacory = new SceneFactory("TitleScene");
 	/// シーンの初期化等...
 	pSceneManager_ = SceneManager::GetInstance();
 	pSceneManager_->Initialize(sceneFacory); /// 初期化時のシーンをここで決定
