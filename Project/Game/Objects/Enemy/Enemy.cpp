@@ -15,6 +15,7 @@
 #include "Objects/Player/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "Objects/Player/Player.h"
 #include "Objects/EntityShadow/EntityShadow.h"
+#include "Objects/Explostion/Explostion.h"
 
 
 Enemy::Enemy(Player* _player) : pPlayer_(_player) {
@@ -92,6 +93,11 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
 	if(collision->GetTag() == "PlayerBullet") {
 		hp_ -= 10.0f;
+
+		/// TODO: hit effectを出す
+		Explostion* explostion = new Explostion();
+		explostion->Initialize();
+		explostion->SetPosition(collision->GetPosition());
 	}
 
 }

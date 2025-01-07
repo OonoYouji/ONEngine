@@ -153,6 +153,7 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep2.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerOperationGUI\PlayerOperationGUI.cpp" />
+    <ClCompile Include="Game\Objects\Explostion\Explostion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -290,6 +291,7 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep2.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.h" />
     <ClInclude Include="Game\Objects\Player\PlayerOperationGUI\PlayerOperationGUI.h" />
+    <ClInclude Include="Game\Objects\Explostion\Explostion.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
