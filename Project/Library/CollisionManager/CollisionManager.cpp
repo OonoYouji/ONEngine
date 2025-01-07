@@ -136,7 +136,9 @@ void CollisionManager::AddGameObject(BaseGameObject* obj) {
 
 void CollisionManager::SubGameObject(BaseGameObject* obj) {
 	auto itr = std::find(gameObjects_.begin(), gameObjects_.end(), obj);
-	gameObjects_.erase(itr);
+	if(itr != gameObjects_.end()) {
+		gameObjects_.erase(itr);
+	}
 }
 
 

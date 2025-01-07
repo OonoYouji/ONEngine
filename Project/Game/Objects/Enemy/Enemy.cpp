@@ -78,6 +78,7 @@ void Enemy::Debug() {
 
 void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
+
 	if(collision->GetTag() == "PlayerAttackCollider") {
 		PlayerAttackCollider* other = static_cast<PlayerAttackCollider*>(collision);
 		hp_ -= other->GetDamageValue();
@@ -95,6 +96,10 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
 	if(collision->GetTag() == "PlayerBullet") {
 		hp_ -= 10.0f;
+#ifdef _DEBUG /// デバッグ用高速で倒す
+		hp_ -= 100.0f;
+#endif // _DEBUG
+
 
 		/// TODO: hit effectを出す
 		Explostion* explostion = new Explostion();

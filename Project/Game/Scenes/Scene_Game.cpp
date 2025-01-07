@@ -110,7 +110,7 @@ void Scene_Game::Update() {
 
 	/// ゲームが終了したのでシーン遷移
 	if(enemyManager_->GetDefeatEnemiesCount() > 20) {
-		SetNextScene("TitleScene");
+		SetNextScene("ClearScene");
 	}
 
 }
