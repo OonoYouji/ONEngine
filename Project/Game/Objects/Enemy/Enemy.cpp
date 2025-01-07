@@ -90,6 +90,10 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		/// TODO: hit effectを出す
 	}
 
+	if(collision->GetTag() == "PlayerBullet") {
+		hp_ -= 10.0f;
+	}
+
 }
 
 void Enemy::OnCollisionStay(BaseGameObject* const collision) {

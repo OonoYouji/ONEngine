@@ -42,10 +42,6 @@ bool PlayerRootState::IsEnd() {
 		return true;
 	}
 	
-	if(pPlayer_->GetFlag(PlayerFlag_IsBulletAttack).Enter()) {
-		return true;
-	}
-
 	return false;
 }
 
@@ -64,10 +60,6 @@ int PlayerRootState::NextStateIndex() {
 
 	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
 		return PlayerStateOrder_NormalAttack;
-	}
-
-	if(pPlayer_->GetFlag(PlayerFlag_IsBulletAttack).Enter()) {
-		return PlayerStateOrder_BulletAttack;
 	}
 
 	return PlayerStateOrder_Root;

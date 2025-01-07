@@ -32,4 +32,6 @@ private:
 	Vec3 colliderRotate_;
 	Vec3 colliderSize_;
 
+	bool isInputNextAttack_;
+
 };
