@@ -17,6 +17,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/EnemyEmitter/EnemyEmitter.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
+#include "Objects/Player/PlayerOperationGUI/PlayerOperationGUI.h"
 
 #include "Objects/BackgroundObject/Stage/Stage.h"
 
@@ -46,6 +47,7 @@ void Scene_Game::Initialize() {
 	createObjects.push_back(new PointLight());
 	createObjects.push_back(new PointLight());
 	createObjects.push_back(new PointLight());
+	createObjects.push_back(new PlayerOperationGUI());
 
 	/// initailizing
 	for(BaseGameObject* obj : createObjects) {

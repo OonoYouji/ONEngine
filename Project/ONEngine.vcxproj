@@ -159,6 +159,7 @@
     <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerMesh\PlayerMesh.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerOperationGUI\PlayerOperationGUI.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.cpp" />
     <ClCompile Include="Game\Objects\Player\State\IPlayerState\IPlayerState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\Manager\PlayerStateManager.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="Game\Objects\Player\PlayerMesh\PlayerMesh.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerOperationGUI\PlayerOperationGUI.h" />
     <ClInclude Include="Game\Objects\Player\PlayerProtectionMesh\PlayerProtectionMesh.h" />
     <ClInclude Include="Game\Objects\Player\State\IPlayerState\IPlayerState.h" />
     <ClInclude Include="Game\Objects\Player\State\Manager\PlayerStateManager.h" />
