@@ -16,7 +16,6 @@ enum PlayerFlag {
 	PlayerFlag_IsDush,
 	PlayerFlag_IsJump,
 	PlayerFlag_IsAttack,
-	PlayerFlag_IsBulletAttack,
 	PlayerFlag_IsProtection,
 	PlayerFlag_IsTargetButtonPressed,
 	PlayerFlag_IsTarget,

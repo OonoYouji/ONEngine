@@ -139,7 +139,6 @@ void Player::InputUpdate() {
 	flags_[PlayerFlag_IsDush].Set(Input::PressKey(KeyCode::LShift) || Input::PressPadButton(PadCode::RB));
 	flags_[PlayerFlag_IsJump].Set(Input::PressKey(KeyCode::Space) || Input::PressPadButton(PadCode::A));
 	flags_[PlayerFlag_IsAttack].Set(Input::PressMouse(MouseCode::Left) || Input::PressPadButton(PadCode::X));
-	flags_[PlayerFlag_IsBulletAttack].Set(Input::PressMouse(MouseCode::Right) || Input::PressPadButton(PadCode::Y));
 	flags_[PlayerFlag_IsProtection].Set(Input::PressKey(KeyCode::LeftControl));
 	flags_[PlayerFlag_IsTargetButtonPressed].Set(Input::PressKey(KeyCode::F) || Input::PressPadButton(PadCode::LB));
 	flags_[PlayerFlag_IsTarget].Set(targetEnemy_ != nullptr);
