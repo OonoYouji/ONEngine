@@ -26,7 +26,7 @@ void PlayerNormalAttackState::Start() {
 		direction_ = Vec3(0,0,1);
 	}
 
-	maxTime_     = 0.1f;
+	maxTime_     = 0.3f;
 	currentTime_ = 0.0f;
 
 	startPosition_ = pPlayer_->GetPosition();
@@ -50,6 +50,8 @@ void PlayerNormalAttackState::Start() {
 	collider->UpdateMatrix();
 	collider->SetColliderActive(true);
 
+	isInputNextAttack_ = false;
+
 }
 
 void PlayerNormalAttackState::Update() {
@@ -58,8 +60,12 @@ void PlayerNormalAttackState::Update() {
 	float lerpT = std::clamp(currentTime_ / maxTime_, 0.0f, 1.0f);
 
 	pPlayer_->SetPosition(
-		startPosition_ + (direction_ * 5.0f) * lerpT
+		startPosition_ + (direction_ * 12.0f) * lerpT
 	);
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		isInputNextAttack_ = true;
+	}
 
 }
 
@@ -74,6 +80,10 @@ bool PlayerNormalAttackState::IsEnd() {
 }
 
 int PlayerNormalAttackState::NextStateIndex() { 
+	if(isInputNextAttack_) {
+		return PlayerStateOrder_NormalAttackStep2;
+	}
+
 	return PlayerStateOrder_Root; 
 }
 

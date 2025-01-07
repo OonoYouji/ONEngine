@@ -83,13 +83,13 @@ void Scene_Game::Initialize() {
 		lightGroup->SetPointLightBufferData(i, pointLightArray_[i]->GetData());
 	}
 
-	pointLightArray_[0]->SetPosition({ 0.0f, -4.0f, 0.0f });
+	pointLightArray_[0]->SetPosition({ 0.0f, 8.0f, 0.0f });
 	pointLightArray_[0]->SetColor({ 0.25f, 0.25f, 0.72f, 1.0f });
 	
-	pointLightArray_[1]->SetPosition({ -20.0f, -4.0f, -20.0f });
-	pointLightArray_[2]->SetPosition({ -20.0f, -4.0f, +20.0f });
-	pointLightArray_[3]->SetPosition({ +20.0f, -4.0f, -20.0f });
-	pointLightArray_[4]->SetPosition({ +20.0f, -4.0f, +20.0f });
+	pointLightArray_[1]->SetPosition({ -20.0f, 8.0f, -20.0f });
+	pointLightArray_[2]->SetPosition({ -20.0f, 8.0f, +20.0f });
+	pointLightArray_[3]->SetPosition({ +20.0f, 8.0f, -20.0f });
+	pointLightArray_[4]->SetPosition({ +20.0f, 8.0f, +20.0f });
 
 
 }

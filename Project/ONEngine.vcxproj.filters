@@ -150,6 +150,8 @@
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\PointLight.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep2.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -284,6 +286,8 @@
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\PointLight.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep2.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

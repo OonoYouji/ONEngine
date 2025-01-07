@@ -11,6 +11,8 @@
 #include "../PlayerRootState/PlayerRootState.h"
 #include "../PlayerProtectionState/PlayerProtectionState.h"
 #include "../PlayerNormalAttackState/PlayerNormalAttackState.h"
+#include "../PlayerNormalAttackState/PlayerNormalAttackStep2.h"
+#include "../PlayerNormalAttackState/PlayerNormalAttackStep3.h"
 #include "../PlayerBulletAttackState/PlayerBulletAttackState.h"
 
 
@@ -28,6 +30,7 @@ void PlayerStateManager::Initialize() {
 	states_.push_back(std::make_unique<PlayerDushState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerProtectionState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerNormalAttackState>(pPlayer_, this));
+	states_.push_back(std::make_unique<PlayerNormalAttackStep2>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerBulletAttackState>(pPlayer_, this));
 	
 	currentState_ = states_[PlayerStateOrder_Root].get();
