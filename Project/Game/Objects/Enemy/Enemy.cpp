@@ -32,6 +32,8 @@ void Enemy::Initialize() {
 
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel(model);
+	meshRenderer_->SetMaterial("white2x2.png");
+	meshRenderer_->SetColor(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	collider_ = AddComponent<SphereCollider>(model);
 
@@ -63,6 +65,13 @@ void Enemy::Update() {
 	case State_Blowing: BlowingUpdate(); break;
 	}
 
+	if(hittedTime_ > 0.0f) {
+		hittedTime_ -= Time::DeltaTime();
+		if(hittedTime_ <= 0.0f) {
+			meshRenderer_->SetColor(Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+	}
+
 }
 
 void Enemy::Debug() {
@@ -91,7 +100,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
 		stateIndex_ = State_Blowing;
 
-		/// TODO: hit effectを出す
+		meshRenderer_->SetColor(Vec4(0.75f, 0.2f, 0.2f, 1.0f));
+		hittedTime_ = 0.2f;
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {
@@ -99,6 +109,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 #ifdef _DEBUG /// デバッグ用高速で倒す
 		hp_ -= 100.0f;
 #endif // _DEBUG
+		meshRenderer_->SetColor(Vec4(0.75f, 0.0f, 0.0f, 1.0f));
+		hittedTime_ = 0.2f;
 
 
 		/// TODO: hit effectを出す

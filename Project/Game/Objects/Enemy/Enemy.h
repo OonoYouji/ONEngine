@@ -63,6 +63,8 @@ private:
 	Vec3 blowingDirection_;
 	float blowingTime_;
 
+	float hittedTime_;
+
 public:
 
 
