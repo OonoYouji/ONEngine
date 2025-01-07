@@ -50,7 +50,7 @@ private:
 
 	Vec3 idelPosition_  = {};
 
-	float lifeTime_ = 5.0f;
+	float lifeTime_ = 1.5f;
 
 public:
 

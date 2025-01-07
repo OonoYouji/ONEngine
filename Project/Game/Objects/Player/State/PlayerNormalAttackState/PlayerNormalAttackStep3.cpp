@@ -33,7 +33,7 @@ void PlayerNormalAttackStep3::Update() {
 
 	pPlayer_->GetTransform()->position.y = std::lerp(
 		0.0f, 10.0f,
-		Ease::In::Expo(lerpT)
+		Ease::InOut::Quad(lerpT)
 	);
 
 	if(lerpT == 1.0f) {
