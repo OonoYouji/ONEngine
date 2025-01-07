@@ -18,9 +18,11 @@ void BoxCollider::Update() {
 }
 
 void BoxCollider::Draw() {
+#ifdef _DEBUG
 	if(cube_) {
 		cube_->Draw(transform_.get(), kWireFrame);
 	}
+#endif // _DEBUG
 }
 
 
