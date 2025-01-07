@@ -31,6 +31,7 @@ void PlayerStateManager::Initialize() {
 	states_.push_back(std::make_unique<PlayerProtectionState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerNormalAttackState>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerNormalAttackStep2>(pPlayer_, this));
+	states_.push_back(std::make_unique<PlayerNormalAttackStep3>(pPlayer_, this));
 	states_.push_back(std::make_unique<PlayerBulletAttackState>(pPlayer_, this));
 	
 	currentState_ = states_[PlayerStateOrder_Root].get();
