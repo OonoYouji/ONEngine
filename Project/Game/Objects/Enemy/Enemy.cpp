@@ -11,6 +11,7 @@
 #include "Math/Random.h"
 
 /// user
+#include "../EnemyManager/EnemyManager.h"
 #include "EnemyHPRenderer/EnemyHPRenderer.h"
 #include "Objects/Player/PlayerAttackCollider/PlayerAttackCollider.h"
 #include "Objects/Player/Player.h"
@@ -18,7 +19,8 @@
 #include "Objects/Explostion/Explostion.h"
 
 
-Enemy::Enemy(Player* _player) : pPlayer_(_player) {
+Enemy::Enemy(Player* _player, EnemyManager* _manager) 
+	: pPlayer_(_player), pManager_(_manager) {
 	CreateTag(this);
 }
 
@@ -100,6 +102,12 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		explostion->SetPosition(collision->GetPosition());
 	}
 
+
+	if(hp_ <= 0.0f) {
+		pManager_->AddDefeatEnemiesCount();
+		pManager_->DestroyEnemy(this);
+	}
+
 }
 
 void Enemy::OnCollisionStay(BaseGameObject* const collision) {
@@ -160,4 +168,13 @@ void Enemy::BlowingUpdate() {
 	if(blowingTime_ <= 0.0f) {
 		stateIndex_ = State_Root;
 	}
+}
+
+void Enemy::Destroy() {
+	Destory();
+	for(auto& child : hpRenderer_->GetChilds()) {
+		child->Destory();
+	}
+	hpRenderer_->Destory();
+	shadow_->Destory();
 }

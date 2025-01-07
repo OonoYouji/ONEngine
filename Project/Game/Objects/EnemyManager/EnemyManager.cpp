@@ -220,11 +220,16 @@ void EnemyManager::EmitterDataLoadFromJsonFile(const std::string& _directoryPath
 	enemyEmitterList_.clear();
 
 	for(const EmitterData& data : emitterDatas_) {
-		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_);
+		EnemyEmitter* emitter = new EnemyEmitter(pPlayer_, this);
 		emitter->Initialize();
 		emitter->SetPosition(data.position);
 		emitter->SetConfig(data.config);
 		enemyEmitterList_.push_back(emitter);
 	}
 
+}
+
+void EnemyManager::DestroyEnemy(Enemy* _enemy) {
+	enemyList_.remove(_enemy);
+	_enemy->Destroy();
 }

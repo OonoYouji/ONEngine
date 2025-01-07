@@ -24,4 +24,5 @@ public:
 
 private:
 	std::array<class PointLight*, 5> pointLightArray_;
+	class EnemyManager* enemyManager_ = nullptr;
 };

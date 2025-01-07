@@ -39,7 +39,9 @@ public:
 	void Update()     override;
 	void Debug()      override;
 
+	void AddDefeatEnemiesCount() { defeatEnemiesCount_++; }
 
+	void DestroyEnemy(class Enemy* _enemy);
 private:
 
 	/// ===================================================
@@ -67,6 +69,7 @@ private:
 	/// </summary>
 	void EmitterDataLoadFromJsonFile(const std::string& _directoryPath, bool _isDrawPopupWindow);
 
+
 private:
 
 	/// ===================================================
@@ -92,5 +95,7 @@ public:
 	/// ===================================================
 
 	const std::list<class Enemy*>& GetEnemyList() const { return enemyList_; }
+
+	uint32_t GetDefeatEnemiesCount() const { return defeatEnemiesCount_; }
 
 };

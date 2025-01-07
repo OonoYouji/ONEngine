@@ -54,9 +54,9 @@ void Scene_Game::Initialize() {
 		obj->Initialize();
 	}
 
+	enemyManager_ = static_cast<EnemyManager*>(createObjects[3]);
 	Player* player = static_cast<Player*>(createObjects[0]);
-	player->SetEnemyManager(static_cast<EnemyManager*>(createObjects[3]));
-
+	player->SetEnemyManager(enemyManager_);
 
 	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
 
@@ -108,40 +108,9 @@ void Scene_Game::Update() {
 		lightGroup->SetPointLightBufferData(i, pointLightArray_[i]->GetData());
 	}
 
-	/*/// ゲームが終了したのでシーン遷移
-	if(gameManager_->GetIsGameEnd()) {
-		
-		if(!sceneTransition_) {
-			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_IN, 1.0f, SCENE_GAME_LAYER_TRANSITION);
-			sceneTransition_->Initialize();
-		} else {
-
-			if(sceneTransition_->GetIsEnd()) {
-
-				SceneManager::GetInstance()->SetNextScene(RESULT);
-			}
-
-		}
-
-	} else {
-
-
-		/// ゲーム開始の処理
-		if(!isStarted_) {
-			isStarted_ = true;
-
-			sceneTransition_ = new SceneTransition(TRANSITION_TYPE_OUT, 2.0f, SCENE_GAME_LAYER_TRANSITION);
-			sceneTransition_->Initialize();
-		} else {
-
-			if(sceneTransition_ && sceneTransition_->GetIsEnd()) {
-				railCamera_->isActive = true;
-
-				sceneTransition_->Destory();
-				sceneTransition_ = nullptr;
-			}
-		}
-	}*/
-
+	/// ゲームが終了したのでシーン遷移
+	if(enemyManager_->GetDefeatEnemiesCount() > 20) {
+		SetNextScene("TitleScene");
+	}
 
 }
