@@ -19,6 +19,7 @@
 #include "Objects/Explostion/Explostion.h"
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
+#include "Objects/HitEffect/HitEffect.h"
 
 
 Enemy::Enemy(Player* _player, EnemyManager* _manager, TrackingCamera* _camera) 
@@ -104,6 +105,11 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 
 		meshRenderer_->SetColor(Vec4(0.75f, 0.2f, 0.2f, 1.0f));
 		hittedTime_ = 0.2f;
+
+		HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
+		hitEffect->Initialize();
+		hitEffect->SetPosition(pTransform_->position + Vec3(0,2,0));
+		hitEffect->SetScale(Vec3::kOne * 2.0f);
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {

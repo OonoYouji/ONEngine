@@ -60,4 +60,10 @@ private:
 
 	Vec3 shakeOffset_;
 
+
+
+public:
+
+	class GameCamera* GetGameCamera() { return pGameCamera_; }
+
 };

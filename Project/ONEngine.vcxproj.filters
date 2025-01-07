@@ -157,6 +157,7 @@
     <ClCompile Include="Game\Objects\TitleSprite\TitleSprite.cpp" />
     <ClCompile Include="Game\Objects\ClearSprite\ClearSprite.cpp" />
     <ClCompile Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.cpp" />
+    <ClCompile Include="Game\Objects\HitEffect\HitEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -298,6 +299,7 @@
     <ClInclude Include="Game\Objects\TitleSprite\TitleSprite.h" />
     <ClInclude Include="Game\Objects\ClearSprite\ClearSprite.h" />
     <ClInclude Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.h" />
+    <ClInclude Include="Game\Objects\HitEffect\HitEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
