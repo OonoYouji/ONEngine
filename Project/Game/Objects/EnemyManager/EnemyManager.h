@@ -83,6 +83,7 @@ private:
 	EmitterData              sourceEmitterData_;
 	std::vector<EmitterData> emitterDatas_; /// jsonに保存する用
 
+	uint32_t defeatEnemiesCount_ = 0;
 
 public:
 

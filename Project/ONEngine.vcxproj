@@ -172,6 +172,7 @@
     <ClCompile Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.cpp" />
     <ClCompile Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.cpp" />
+    <ClCompile Include="Game\Objects\TitleSprite\TitleSprite.cpp" />
     <ClCompile Include="Game\Objects\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
@@ -309,6 +310,7 @@
     <ClInclude Include="Game\Objects\Player\State\PlayerNormalAttackState\PlayerNormalAttackStep3.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerRootState\PlayerRootState.h" />
     <ClInclude Include="Game\Objects\TargetSpriteRender\TargetSpriteRender.h" />
+    <ClInclude Include="Game\Objects\TitleSprite\TitleSprite.h" />
     <ClInclude Include="Game\Objects\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
