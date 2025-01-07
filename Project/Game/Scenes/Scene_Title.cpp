@@ -7,6 +7,8 @@
 #include "Objects/TitleSprite/TitleSprite.h"
 #include "Objects/Camera/GameCamera.h"
 
+#include "Objects/HitEffect/HitEffect.h"
+
 void Scene_Title::Initialize() {
 
 	TitleSprite* sprite = new TitleSprite();

@@ -157,6 +157,7 @@
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Explostion\Explostion.cpp" />
+    <ClCompile Include="Game\Objects\HitEffect\HitEffect.cpp" />
     <ClCompile Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Explostion\Explostion.h" />
+    <ClInclude Include="Game\Objects\HitEffect\HitEffect.h" />
     <ClInclude Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
