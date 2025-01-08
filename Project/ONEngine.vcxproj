@@ -19,7 +19,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\EntityComponentSystem\Manager\ECSManager.cpp" />
     <ClCompile Include="Engine\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
     <ClCompile Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.cpp" />
@@ -29,17 +28,14 @@
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
-    <ClCompile Include="Engine\EntityComponentSystem\System\ISystem\ISystem.cpp" />
     <ClCompile Include="Lib\Math\Vector2.cpp" />
     <ClCompile Include="Lib\Math\Vector3.cpp" />
     <ClCompile Include="Lib\DebugTools\Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
-    <ClCompile Include="Engine\EntityComponentSystem\System\TriangleRenderer\TriangleRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\EntityComponentSystem\Manager\ECSManager.h" />
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
     <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
     <ClInclude Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.h" />
@@ -53,12 +49,10 @@
     <ClInclude Include="Engine\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
-    <ClInclude Include="Engine\EntityComponentSystem\System\ISystem\ISystem.h" />
     <ClInclude Include="Lib\DebugTools\Assert.h" />
     <ClInclude Include="Lib\Math\Vector2.h" />
     <ClInclude Include="Lib\Math\Vector3.h" />
     <ClInclude Include="Lib\DebugTools\Log.h" />
-    <ClInclude Include="Engine\EntityComponentSystem\System\TriangleRenderer\TriangleRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

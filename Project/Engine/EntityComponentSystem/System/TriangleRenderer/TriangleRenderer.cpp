@@ -1,1 +1,0 @@
-#include "TriangleRenderer.h"
