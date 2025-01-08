@@ -18,7 +18,7 @@ void Explostion::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("Explosion");
 	meshRenderer_->SetMaterial("Explosion.png");
-	meshRenderer_->SetColor(Vec4(Vec3::kOne * 0.75f, 1.0f));
+	meshRenderer_->SetColor(Vec4(Vec3::kOne * 0.75f, 0.5f));
 
 	lifeTime_ = 0.2f;
 
@@ -69,6 +69,8 @@ ExplostionParticle::~ExplostionParticle() {}
 void ExplostionParticle::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("ExplosionParticle");
+	meshRenderer_->SetMaterial("white2x2.png");
+	meshRenderer_->SetColor(Vec4(0.25f, 0.75f, 0.25f, 0.5f));
 }
 
 void ExplostionParticle::Update() {
