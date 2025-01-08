@@ -16,6 +16,9 @@
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
+    <ClCompile Include="Engine\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="Engine\SceneManager\IScene.cpp" />
+    <ClCompile Include="Engine\SceneManager\ISceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -35,5 +38,8 @@
     <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
     <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
+    <ClInclude Include="Engine\SceneManager\SceneManager.h" />
+    <ClInclude Include="Engine\SceneManager\IScene.h" />
+    <ClInclude Include="Engine\SceneManager\ISceneFactory.h" />
   </ItemGroup>
 </Project>
