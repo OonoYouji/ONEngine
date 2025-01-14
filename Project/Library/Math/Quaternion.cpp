@@ -6,6 +6,10 @@
 using namespace DirectX;
 
 
+const Quaternion Quaternion::kIdentity = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+
+
 Quaternion::Quaternion() {
 	x = 0.0f;
 	y = 0.0f;

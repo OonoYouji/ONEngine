@@ -22,12 +22,7 @@ public:
 
 private:
 
-	Vec3 from0;
-	Vec3 to0;
-	
-	Vec3 from1;
-	Vec3 to1;
-
-	Mat4 matRotate0, matRotate1, matRotate2;
+	Quaternion q1, q2, identity, conj, inv, normal, mul1, mul2;
+	float norm;
 
 };
