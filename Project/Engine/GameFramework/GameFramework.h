@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/WindowManager/WindowManager.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/SceneManager/SceneManager.h"
 #include "IGameLoop/IGameLoop.h"
 #include "GameFrameworkConfig.h"
 
@@ -47,6 +48,7 @@ private:
 
 	std::unique_ptr<DxManager>     dxManager_     = nullptr;
 	std::unique_ptr<WindowManager> windowManager_ = nullptr;
+	std::unique_ptr<SceneManager>  sceneManager_  = nullptr;
 
 	std::unique_ptr<IGameLoop>     gameLoop_;
 

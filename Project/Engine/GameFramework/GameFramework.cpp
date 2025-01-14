@@ -17,7 +17,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// main windowの生成
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 
-
 	/// game loopの初期化
 	gameLoop_.reset(_startSetting.gameLoop);
 	gameLoop_->Initialize();

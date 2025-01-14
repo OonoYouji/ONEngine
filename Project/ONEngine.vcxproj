@@ -37,6 +37,7 @@
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
     <ClCompile Include="Engine\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Lib\Math\Vector3.h" />
     <ClInclude Include="Lib\DebugTools\Log.h" />
     <ClInclude Include="Engine\SceneManager\SceneManager.h" />
+    <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

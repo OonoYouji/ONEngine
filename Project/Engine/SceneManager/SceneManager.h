@@ -3,9 +3,11 @@
 /// std
 #include <memory>
 #include <vector>
+#include <string>
 
 /// engine
 #include "IScene.h"
+#include "ISceneFactory.h"
 
 
 /// ===================================================
@@ -25,7 +27,12 @@ public:
 	void Update();
 	void Render();
 
-	void SetNextScene(IScene* _nextScene);
+	/// <summary>
+	/// 次のシーンを設定する
+	/// </summary>
+	/// <param name="_sceneName"></param>
+	void SetNextScene(const std::string* _sceneName);
+
 
 private:
 
@@ -36,7 +43,20 @@ private:
 	std::unique_ptr<IScene> currentScene_ = nullptr;
 	std::unique_ptr<IScene> nextScene_    = nullptr;
 
-	/// factory
+	std::unique_ptr<ISceneFactory> sceneFactory_ = nullptr;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// <summary>
+	/// SceneFactoryを設定する
+	/// </summary>
+	/// <param name="_sceneFactory"></param>
+	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
 
 };
 

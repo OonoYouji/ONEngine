@@ -19,6 +19,7 @@
     <ClCompile Include="Engine\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Engine\SceneManager\IScene.cpp" />
     <ClCompile Include="Engine\SceneManager\ISceneFactory.cpp" />
+    <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -41,5 +42,6 @@
     <ClInclude Include="Engine\SceneManager\SceneManager.h" />
     <ClInclude Include="Engine\SceneManager\IScene.h" />
     <ClInclude Include="Engine\SceneManager\ISceneFactory.h" />
+    <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
   </ItemGroup>
 </Project>
