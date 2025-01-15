@@ -12,16 +12,11 @@
 
 void DemoObject::Initialize() {
 
-	q1 = { 2.0f, 3.0f, 4.0f, 1.0f };
-	q2 = { 1.0f, 3.0f, 5.0f, 2.0f };
-	identity = Quaternion::kIdentity;
-	conj = q1.Conjugate();
-	inv = q1.Inverse();
-	normal = Quaternion::Normalize(q1);
-	mul1 = q1 * q2;
-	mul2 = q2 * q1;
-
-	norm = q1.Lenght();
+	rotation = Quaternion::MakeFromAxis(Vec3(1.0f, 0.4f, -0.2f).Normalize(), 0.45f);
+	pointY = { 2.1f, -0.9f, 1.3f };
+	rotateMatrix = Quaternion::MakeRotateAxisAngle(Vec3(1.0f, 0.4f, -0.2f).Normalize(), 0.45f);
+	rotateByQuaternion = Quaternion::Transform(pointY, rotation);
+	rotateByMatrix = Mat4::Transform(pointY, rotateMatrix);
 
 }
 
@@ -32,18 +27,20 @@ void DemoObject::Update() {
 
 void DemoObject::Debug() {
 
-    auto QuaternionToString = [](const Quaternion& _q) -> std::string {
+	auto QuaternionToString = [](const Quaternion& _q) -> std::string {
 		return std::format("({:.2f}, {:.2f}, {:.2f}, {:.2f})", _q.x, _q.y, _q.z, _q.w);
-    };
+	};
 
 
-	ImGui::Text((QuaternionToString(identity) + ": Identity").c_str());
-	ImGui::Text((QuaternionToString(conj) + ": Conjugate").c_str());
-	ImGui::Text((QuaternionToString(inv) + ": Inverse").c_str());
-	ImGui::Text((QuaternionToString(normal) + ": Normalizes").c_str());
-	ImGui::Text((QuaternionToString(mul1) + ": Multiply(q1, q2)").c_str());
-	ImGui::Text((QuaternionToString(mul2) + ": Multiply(q2, q1)").c_str());
-	ImGui::Text(std::format("{:.2f} : Norm", norm).c_str());
+	ImGui::Text((QuaternionToString(rotation) + ": rotation").c_str());
+
+	/// 行列の表示
+	ImGui::Text("rotateMatrix");
+	TextMatrix(rotateMatrix);
+
+	ImGui::Text(std::format("{:.2f}, {:.2f}, {:.2f} : rotateByQuaternion", rotateByQuaternion.x, rotateByQuaternion.y, rotateByQuaternion.z).c_str());
+	ImGui::Text(std::format("{:.2f}, {:.2f}, {:.2f} : rotateByMatrix", rotateByMatrix.x, rotateByMatrix.y, rotateByMatrix.z).c_str());
+
 
 }
 
@@ -53,7 +50,7 @@ void DemoObject::TextMatrix(const Mat4& _matrix) {
 			if(c != 0) {
 				ImGui::SameLine();
 			}
-			
+
 			ImGui::Text("%0.3f,", _matrix.m[r][c]);
 		}
 	}

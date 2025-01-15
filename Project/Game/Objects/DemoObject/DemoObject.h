@@ -22,7 +22,10 @@ public:
 
 private:
 
-	Quaternion q1, q2, identity, conj, inv, normal, mul1, mul2;
-	float norm;
+	Quaternion rotation;
+	Vec3 pointY;
+	Mat4 rotateMatrix;
+	Vec3 rotateByQuaternion;
+	Vec3 rotateByMatrix;
 
 };
