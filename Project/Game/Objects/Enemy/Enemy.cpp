@@ -110,6 +110,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		hitEffect->Initialize();
 		hitEffect->SetPosition(pTransform_->position + Vec3(0,2,0));
 		hitEffect->SetScale(Vec3::kOne * 2.0f);
+
+		Time::SetTimeRate(0.0f, 0.25f);
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {
@@ -127,6 +129,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		explostion->SetPosition(collision->GetPosition());
 
 		pTrackingCamera_->StartShake(0.05f, 0.1f, 0.2f);
+
+		Time::SetTimeRate(0.0f, 0.1f);
 	}
 
 
