@@ -142,21 +142,20 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 	float dot = start.w * end.w + start.x * end.x + start.y * end.y + start.z * end.z;
 
 	/// 内積が負の場合、endを反転してショートパスを取る
-	Quaternion q0 = end;
+	Quaternion q0 = start;
 	if(dot < 0.0f) {
 		q0  = -q0;
 		dot = -dot;
 	}
 
 	/// もし内積がほぼ1なら、線形補間を使う
-	if(dot > 0.9995f) {
-		Quaternion result = {
-			start.x + t * (q0.x - start.x),
-			start.y + t * (q0.y - start.y),
-			start.z + t * (q0.z - start.z),
-			start.w + t * (q0.w - start.w)
+	if(dot >= 1.0f - FLT_EPSILON) {
+		return {
+			((1.0f - t) * q0.x) + (t * end.x),
+			((1.0f - t) * q0.y) + (t * end.y),
+			((1.0f - t) * q0.z) + (t * end.z),
+			((1.0f - t) * q0.w) + (t * end.w)
 		};
-		return Normalize(result);
 	}
 
 	/// なす角を計算
@@ -172,10 +171,10 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 
 	/// 補間したクォータニオンを計算
 	return {
-		(s1 * start.x) + (s2 * q0.x),
-		(s1 * start.y) + (s2 * q0.y),
-		(s1 * start.z) + (s2 * q0.z),
-		(s1 * start.w) + (s2 * q0.w)
+		(s1 * q0.x) + (s2 * end.x),
+		(s1 * q0.y) + (s2 * end.y),
+		(s1 * q0.z) + (s2 * end.z),
+		(s1 * q0.w) + (s2 * end.w)
 	};
 }
 

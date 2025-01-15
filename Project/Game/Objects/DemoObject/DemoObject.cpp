@@ -13,9 +13,8 @@
 void DemoObject::Initialize() {
 
 	rotation0 = Quaternion::MakeFromAxis({0.71f, 0.71f, 0.0f}, 0.3f);
-	rotation1 = Quaternion::MakeFromAxis({0.71f, 0.0f, 0.71f}, 3.141592f);
+	rotation1 = -rotation0;
 
-	interpolate0 = Quaternion::Slerp(rotation0, rotation1, 0.0f);
 	interpolate1 = Quaternion::Slerp(rotation0, rotation1, 0.3f);
 	interpolate2 = Quaternion::Slerp(rotation0, rotation1, 0.5f);
 	interpolate3 = Quaternion::Slerp(rotation0, rotation1, 0.7f);
@@ -24,7 +23,6 @@ void DemoObject::Initialize() {
 
 void DemoObject::Update() {
 
-	interpolate2 = Quaternion::Slerp(rotation0, rotation1, 0.5f);
 
 }
 
