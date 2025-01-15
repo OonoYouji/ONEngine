@@ -20,7 +20,8 @@
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipeline\GraphicsPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
@@ -44,6 +45,7 @@
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
-    <ClInclude Include="Engine\Graphics\Pipeline\GraphicsPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Shader\GraphicsPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
   </ItemGroup>
 </Project>
