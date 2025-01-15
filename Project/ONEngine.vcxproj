@@ -33,6 +33,7 @@
     <ClCompile Include="Engine\Utility\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector3.cpp" />
     <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipeline\GraphicsPipeline.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="Engine\Utility\DebugTools\Log.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
+    <ClInclude Include="Engine\Graphics\Pipeline\GraphicsPipeline.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
