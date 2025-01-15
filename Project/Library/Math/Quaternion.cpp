@@ -138,50 +138,46 @@ Quaternion Quaternion::LockAt(const Vec3& position, const Vec3& target) {
 }
 
 Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, float t) {
-	// startとendの内積を計算
+	/// startとendの内積を計算
 	float dot = start.w * end.w + start.x * end.x + start.y * end.y + start.z * end.z;
 
-	// 内積が負の場合、endを反転してショートパスを取る
-	Quaternion q2Copy = end;
+	/// 内積が負の場合、endを反転してショートパスを取る
+	Quaternion q0 = end;
 	if(dot < 0.0f) {
+		q0  = -q0;
 		dot = -dot;
-		q2Copy.w = -q2Copy.w;
-		q2Copy.x = -q2Copy.x;
-		q2Copy.y = -q2Copy.y;
-		q2Copy.z = -q2Copy.z;
 	}
 
-	// もし内積がほぼ1なら、線形補間を使う
+	/// もし内積がほぼ1なら、線形補間を使う
 	const float THRESHOLD = 0.9995f;
 	if(dot > THRESHOLD) {
 		Quaternion result = {
-			start.x + t * (q2Copy.x - start.x),
-			start.y + t * (q2Copy.y - start.y),
-			start.z + t * (q2Copy.z - start.z),
-			start.w + t * (q2Copy.w - start.w)
+			start.x + t * (q0.x - start.x),
+			start.y + t * (q0.y - start.y),
+			start.z + t * (q0.z - start.z),
+			start.w + t * (q0.w - start.w)
 		};
 		return Normalize(result);
 	}
 
-	// θを計算
-	float theta_0 = std::acos(dot); // θ_0 = cos^(-1)(dot)
-	float theta = theta_0 * t;      // θ = θ_0 * t
+	/// なす角を計算
+	float theta0 = std::acos(dot);
+	float theta  = theta0 * t;
 
-	// sinを計算
-	float sin_theta = std::sin(theta);
-	float sin_theta_0 = std::sin(theta_0);
+	/// sinを計算
+	float sinTheta  = std::sin(theta);
+	float sinTheta0 = std::sin(theta0);
 
-	float s1 = std::cos(theta) - dot * sin_theta / sin_theta_0;
-	float s2 = sin_theta / sin_theta_0;
+	float s1 = std::cos(theta) - dot * sinTheta / sinTheta0;
+	float s2 = sinTheta / sinTheta0;
 
-	// 補間したクォータニオンを計算
-	Quaternion result = {
-		(s1 * start.x) + (s2 * q2Copy.x),
-		(s1 * start.y) + (s2 * q2Copy.y),
-		(s1 * start.z) + (s2 * q2Copy.z),
-		(s1 * start.w) + (s2 * q2Copy.w)
+	/// 補間したクォータニオンを計算
+	return {
+		(s1 * start.x) + (s2 * q0.x),
+		(s1 * start.y) + (s2 * q0.y),
+		(s1 * start.z) + (s2 * q0.z),
+		(s1 * start.w) + (s2 * q0.w)
 	};
-	return result;
 }
 
 

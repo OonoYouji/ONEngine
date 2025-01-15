@@ -112,7 +112,7 @@ public:
 
 	inline Quaternion& operator*= (const Quaternion& other);
 
-
+	inline Quaternion operator- () const;
 
 };
 
@@ -144,4 +144,8 @@ inline Quaternion operator/ (const Quaternion& q, float value) {
 inline Quaternion& Quaternion::operator*=(const Quaternion& other) {
 	*this = *this * other;
 	return *this;
+}
+
+inline Quaternion Quaternion::operator-() const {
+	return { -x, -y, -z, -w };
 }

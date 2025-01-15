@@ -22,10 +22,7 @@ public:
 
 private:
 
-	Quaternion rotation;
-	Vec3 pointY;
-	Mat4 rotateMatrix;
-	Vec3 rotateByQuaternion;
-	Vec3 rotateByMatrix;
+	Quaternion rotation0, rotation1;
+	Quaternion interpolate0, interpolate1, interpolate2, interpolate3, interpolate4;
 
 };

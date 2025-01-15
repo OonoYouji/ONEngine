@@ -12,16 +12,19 @@
 
 void DemoObject::Initialize() {
 
-	rotation = Quaternion::MakeFromAxis(Vec3(1.0f, 0.4f, -0.2f).Normalize(), 0.45f);
-	pointY = { 2.1f, -0.9f, 1.3f };
-	rotateMatrix = Quaternion::MakeRotateAxisAngle(Vec3(1.0f, 0.4f, -0.2f).Normalize(), 0.45f);
-	rotateByQuaternion = Quaternion::Transform(pointY, rotation);
-	rotateByMatrix = Mat4::Transform(pointY, rotateMatrix);
+	rotation0 = Quaternion::MakeFromAxis({0.71f, 0.71f, 0.0f}, 0.3f);
+	rotation1 = Quaternion::MakeFromAxis({0.71f, 0.0f, 0.71f}, 3.141592f);
 
+	interpolate0 = Quaternion::Slerp(rotation0, rotation1, 0.0f);
+	interpolate1 = Quaternion::Slerp(rotation0, rotation1, 0.3f);
+	interpolate2 = Quaternion::Slerp(rotation0, rotation1, 0.5f);
+	interpolate3 = Quaternion::Slerp(rotation0, rotation1, 0.7f);
+	interpolate4 = Quaternion::Slerp(rotation0, rotation1, 1.0f);
 }
 
 void DemoObject::Update() {
 
+	interpolate2 = Quaternion::Slerp(rotation0, rotation1, 0.5f);
 
 }
 
@@ -31,16 +34,11 @@ void DemoObject::Debug() {
 		return std::format("({:.2f}, {:.2f}, {:.2f}, {:.2f})", _q.x, _q.y, _q.z, _q.w);
 	};
 
-
-	ImGui::Text((QuaternionToString(rotation) + ": rotation").c_str());
-
-	/// 行列の表示
-	ImGui::Text("rotateMatrix");
-	TextMatrix(rotateMatrix);
-
-	ImGui::Text(std::format("{:.2f}, {:.2f}, {:.2f} : rotateByQuaternion", rotateByQuaternion.x, rotateByQuaternion.y, rotateByQuaternion.z).c_str());
-	ImGui::Text(std::format("{:.2f}, {:.2f}, {:.2f} : rotateByMatrix", rotateByMatrix.x, rotateByMatrix.y, rotateByMatrix.z).c_str());
-
+	ImGui::Text((QuaternionToString(interpolate0) + ": interpolate0, Slerp(q1, q2, 0.0f) ").c_str());
+	ImGui::Text((QuaternionToString(interpolate1) + ": interpolate1, Slerp(q1, q2, 0.3f) ").c_str());
+	ImGui::Text((QuaternionToString(interpolate2) + ": interpolate2, Slerp(q1, q2, 0.5f) ").c_str());
+	ImGui::Text((QuaternionToString(interpolate3) + ": interpolate3, Slerp(q1, q2, 0.7f) ").c_str());
+	ImGui::Text((QuaternionToString(interpolate4) + ": interpolate4, Slerp(q1, q2, 1.0f) ").c_str());
 
 }
 
