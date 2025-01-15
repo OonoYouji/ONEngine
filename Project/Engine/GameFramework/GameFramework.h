@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/WindowManager/WindowManager.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
-#include "Engine/SceneManager/SceneManager.h"
+#include "Engine/Scene/SceneManager.h"
 #include "IGameLoop/IGameLoop.h"
 #include "GameFrameworkConfig.h"
 

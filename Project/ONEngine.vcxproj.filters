@@ -16,9 +16,9 @@
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
-    <ClCompile Include="Engine\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Engine\SceneManager\IScene.cpp" />
-    <ClCompile Include="Engine\SceneManager\ISceneFactory.cpp" />
+    <ClCompile Include="Engine\Scene\SceneManager.cpp" />
+    <ClCompile Include="Engine\Scene\IScene.cpp" />
+    <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,9 +39,9 @@
     <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
     <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
-    <ClInclude Include="Engine\SceneManager\SceneManager.h" />
-    <ClInclude Include="Engine\SceneManager\IScene.h" />
-    <ClInclude Include="Engine\SceneManager\ISceneFactory.h" />
+    <ClInclude Include="Engine\Scene\SceneManager.h" />
+    <ClInclude Include="Engine\Scene\IScene.h" />
+    <ClInclude Include="Engine\Scene\ISceneFactory.h" />
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "Engine/SceneManager/ISceneFactory.h"
+#include "Engine/Scene/ISceneFactory.h"
 
 /// ===================================================
 /// シーンの生成を行うクラス
