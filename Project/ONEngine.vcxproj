@@ -30,9 +30,9 @@
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
     <ClCompile Include="Engine\SceneManager\IScene.cpp" />
     <ClCompile Include="Engine\SceneManager\ISceneFactory.cpp" />
-    <ClCompile Include="Lib\Math\Vector2.cpp" />
-    <ClCompile Include="Lib\Math\Vector3.cpp" />
-    <ClCompile Include="Lib\DebugTools\Log.cpp" />
+    <ClCompile Include="Engine\Utility\Math\Vector2.cpp" />
+    <ClCompile Include="Engine\Utility\Math\Vector3.cpp" />
+    <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
@@ -55,10 +55,10 @@
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
     <ClInclude Include="Engine\SceneManager\IScene.h" />
     <ClInclude Include="Engine\SceneManager\ISceneFactory.h" />
-    <ClInclude Include="Lib\DebugTools\Assert.h" />
-    <ClInclude Include="Lib\Math\Vector2.h" />
-    <ClInclude Include="Lib\Math\Vector3.h" />
-    <ClInclude Include="Lib\DebugTools\Log.h" />
+    <ClInclude Include="Engine\Utility\DebugTools\Assert.h" />
+    <ClInclude Include="Engine\Utility\Math\Vector2.h" />
+    <ClInclude Include="Engine\Utility\Math\Vector3.h" />
+    <ClInclude Include="Engine\Utility\DebugTools\Log.h" />
     <ClInclude Include="Engine\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
   </ItemGroup>

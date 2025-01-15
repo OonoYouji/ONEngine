@@ -5,8 +5,8 @@
 #include "Engine/WindowManager/Window.h"
 
 /// lib
-#include "DebugTools/Assert.h"
-#include "DebugTools/Log.h"
+#include "Engine/Utility/DebugTools/Assert.h"
+#include "Engine/Utility/DebugTools/Log.h"
 
 
 DxSwapChain::DxSwapChain() {}

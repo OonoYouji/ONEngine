@@ -1,8 +1,8 @@
 #include "DxDevice.h"
 
 /// lib
-#include "Lib/DebugTools/Log.h"
-#include "Lib/DebugTools/Assert.h"
+#include "Engine/Utility/DebugTools/Log.h"
+#include "Engine/Utility/DebugTools/Assert.h"
 
 
 /// comment

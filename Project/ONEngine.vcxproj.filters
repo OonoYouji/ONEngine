@@ -4,11 +4,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
     <ClCompile Include="Engine\WindowManager\Window.cpp" />
-    <ClCompile Include="Lib\Math\Vector2.cpp" />
-    <ClCompile Include="Lib\Math\Vector3.cpp" />
+    <ClCompile Include="Engine\Utility\Math\Vector2.cpp" />
+    <ClCompile Include="Engine\Utility\Math\Vector3.cpp" />
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\DirectX12\Device\DxDevice.cpp" />
-    <ClCompile Include="Lib\DebugTools\Log.cpp" />
+    <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
     <ClCompile Include="Engine\DirectX12\Command\DxCommand.cpp" />
     <ClCompile Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
@@ -24,13 +24,13 @@
   <ItemGroup>
     <ClInclude Include="Engine\WindowManager\WindowManager.h" />
     <ClInclude Include="Engine\WindowManager\Window.h" />
-    <ClInclude Include="Lib\Math\Vector2.h" />
-    <ClInclude Include="Lib\Math\Vector3.h" />
+    <ClInclude Include="Engine\Utility\Math\Vector2.h" />
+    <ClInclude Include="Engine\Utility\Math\Vector3.h" />
     <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
     <ClInclude Include="Engine\DirectX12\Device\DxDevice.h" />
     <ClInclude Include="Engine\DirectX12\ComPtr\ComPtr.h" />
-    <ClInclude Include="Lib\DebugTools\Assert.h" />
-    <ClInclude Include="Lib\DebugTools\Log.h" />
+    <ClInclude Include="Engine\Utility\DebugTools\Assert.h" />
+    <ClInclude Include="Engine\Utility\DebugTools\Log.h" />
     <ClInclude Include="Engine\DirectX12\Command\DxCommand.h" />
     <ClInclude Include="Engine\DirectX12\DescriptorHeap\DxDescriptorHeap.h" />
     <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
