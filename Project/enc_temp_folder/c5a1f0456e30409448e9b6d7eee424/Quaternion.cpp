@@ -149,7 +149,8 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 	}
 
 	/// もし内積がほぼ1なら、線形補間を使う
-	if(dot > 0.9995f) {
+	const float THRESHOLD = 0.9995f;
+	if(dot > THRESHOLD) {
 		Quaternion result = {
 			start.x + t * (q0.x - start.x),
 			start.y + t * (q0.y - start.y),
@@ -182,13 +183,12 @@ Quaternion Quaternion::Slerp(const Quaternion& start, const Quaternion& end, flo
 
 
 Quaternion Quaternion::Inverse() const {
-	Quaternion conjugate = this->Conjugate(); /// 共役を計算
-	float len = this->Lenght();               /// 長さを計算
-	if(len == 0.0f) {
-		/// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
-		return *this; 
+	Quaternion conjugate = this->Conjugate(); // 共役を計算
+	float norm = this->Lenght();                // ノルムを計算
+	if(norm == 0.0f) {
+		// ノルムがゼロの場合、逆クォータニオンは定義されないため、適切なエラー処理を追加
 	}
 
-	float lenSquared = len * len;    // 長さの二乗
-	return conjugate / lenSquared;
+	float normSquared = norm * norm;    // ノルムの二乗
+	return conjugate / normSquared;
 }

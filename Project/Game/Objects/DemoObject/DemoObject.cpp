@@ -30,7 +30,14 @@ void DemoObject::Update() {
 
 void DemoObject::Debug() {
 
-	auto QuaternionToString = [](const Quaternion& _q) -> std::string {
+	static bool isAllDigitDraw = false;
+	ImGui::Checkbox("all digit draw", &isAllDigitDraw);
+
+
+	auto QuaternionToString = [&](const Quaternion& _q) -> std::string {
+		if(isAllDigitDraw) {
+			return std::format("({}, {}, {}, {})", _q.x, _q.y, _q.z, _q.w);
+		}
 		return std::format("({:.2f}, {:.2f}, {:.2f}, {:.2f})", _q.x, _q.y, _q.z, _q.w);
 	};
 
