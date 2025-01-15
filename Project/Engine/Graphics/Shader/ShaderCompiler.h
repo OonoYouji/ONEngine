@@ -4,47 +4,41 @@
 #include <Windows.h>
 
 /// directx
+#include <wrl/client.h>
 #include <dxcapi.h>
-
-/// std
-#include <string>
 
 /// engine
 #include "Engine/DirectX12/ComPtr/ComPtr.h"
 
 
 /// ===================================================
-/// hlslシェーダー
+/// hlslシェーダーコンパイラー
 /// ===================================================
-class Shader final {
+class ShaderCompiler final {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Shader();
-	~Shader();
+	ShaderCompiler();
+	~ShaderCompiler();
 
-	
 	/// <summary>
-	/// shaderのコンパイル
+	/// このクラスの初期化関数
 	/// </summary>
-	/// <param name="_filePath"></param>
-	/// <param name="_profile"></param>
-	/// <returns></returns>
-	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile);
+	void Initialize();	
 
 
-public:
+private:
 
 	/// ===================================================
-	/// public : objects
+	/// private : objects
 	/// ===================================================
 
-	ComPtr<IDxcBlob> vs_ = nullptr;
-	ComPtr<IDxcBlob> ps_ = nullptr;
-
-
+	ComPtr<IDxcUtils>          dxcUtils_       = nullptr;
+	ComPtr<IDxcCompiler3>      dxcCompiler_    = nullptr;
+	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
 };
+

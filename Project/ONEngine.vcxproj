@@ -40,6 +40,7 @@
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
+    <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
@@ -65,6 +66,7 @@
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
     <ClInclude Include="Engine\Graphics\Shader\GraphicsPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
+    <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
