@@ -123,7 +123,7 @@ void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_R
 void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	IDxDescriptorHeap* dsvDescriptorHeap  = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
+	//IDxDescriptorHeap* dsvDescriptorHeap  = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
 	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
 
 	_commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, nullptr);

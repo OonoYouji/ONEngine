@@ -31,7 +31,7 @@ public:
 	/// 次のシーンを設定する
 	/// </summary>
 	/// <param name="_sceneName"></param>
-	void SetNextScene(const std::string* _sceneName);
+	void SetNextScene(const std::string& _sceneName);
 
 
 private:

@@ -28,5 +28,4 @@ std::string ConvertString(const std::wstring& _wstr) {
 	std::string result(sizeNeeded, 0);
 	WideCharToMultiByte(CP_UTF8, 0, _wstr.data(), static_cast<int>(_wstr.size()), result.data(), sizeNeeded, NULL, NULL);
 	return result;
-	return std::string();
 }
