@@ -7,6 +7,9 @@
 #include <wrl/client.h>
 #include <dxcapi.h>
 
+/// std
+#include <string>
+
 /// engine
 #include "Engine/DirectX12/ComPtr/ComPtr.h"
 
@@ -28,6 +31,14 @@ public:
 	/// このクラスの初期化関数
 	/// </summary>
 	void Initialize();	
+
+	/// <summary>
+	/// shaderのコンパイル
+	/// </summary>
+	/// <param name="_filePath"></param>
+	/// <param name="_profile"></param>
+	/// <returns></returns>
+	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile);
 
 
 private:
