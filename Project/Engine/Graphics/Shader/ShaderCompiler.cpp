@@ -38,12 +38,12 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 
 	Log(std::format(L"Begin CompileShader,   path:{},   _profile:{}", _filePath, _profile));
 
-	///- hlslを読み込む
+	/// hlslを読み込む
 	ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
 	hr = dxcUtils_->LoadFile(_filePath.c_str(), nullptr, &shaderSource);
 	Assert(SUCCEEDED(hr), "Compile Not Succeended");
 
-	///- ファイルの内容を設定する
+	/// ファイルの内容を設定する
 	DxcBuffer shaderSourceBuffer;
 	shaderSourceBuffer.Ptr      = shaderSource->GetBufferPointer();
 	shaderSourceBuffer.Size     = shaderSource->GetBufferSize();
