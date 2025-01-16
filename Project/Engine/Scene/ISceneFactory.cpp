@@ -8,3 +8,7 @@ std::unique_ptr<IScene> ISceneFactory::CreateScene(const std::string& _sceneName
 
 	return std::move(itr->second());
 }
+
+void ISceneFactory::SetStartupSceneName(const std::string& _sceneName) {
+	startupSceneName_ = _sceneName;
+}

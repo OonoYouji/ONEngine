@@ -25,7 +25,7 @@ public:
 
 	void Initialize();
 	void Update();
-	void Render();
+	void Draw();
 
 	/// <summary>
 	/// 次のシーンを設定する

@@ -17,6 +17,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// main windowの生成
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 
+	/// scene managerの初期化
+	sceneManager_ = std::make_unique<SceneManager>();
+	sceneManager_->Initialize();
+
 	/// game loopの初期化
 	gameLoop_.reset(_startSetting.gameLoop);
 	gameLoop_->Initialize();
@@ -30,6 +34,9 @@ void GameFramework::Run() {
 
 		/// 更新処理
 		windowManager_->Update();
+
+		/// ゲームループの更新
+		sceneManager_->Update();
 		gameLoop_->Update();
 
 
@@ -39,6 +46,7 @@ void GameFramework::Run() {
 		);
 
 		windowManager_->PreDraw();
+		sceneManager_->Draw();
 		gameLoop_->Draw();
 		windowManager_->PostDraw();
 

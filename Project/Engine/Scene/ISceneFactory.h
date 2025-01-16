@@ -53,6 +53,22 @@ private:
 
 	std::unordered_map<std::string, SceneCreator> sceneCreatorMap_;
 
+	std::string startupSceneName_; /// 初期化時のシーンの名前
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// <summary>
+	/// 初期化時のシーン名を設定する
+	/// </summary>
+	/// <param name="_sceneName"></param>
+	void SetStartupSceneName(const std::string& _sceneName);
+
+
 };
 
 

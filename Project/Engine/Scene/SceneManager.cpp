@@ -7,6 +7,7 @@ SceneManager::~SceneManager() {}
 
 void SceneManager::Initialize() {
 
+
 }
 
 void SceneManager::Update() {
@@ -23,8 +24,8 @@ void SceneManager::Update() {
 
 }
 
-void SceneManager::Render() {
-	currentScene_->Render();
+void SceneManager::Draw() {
+	currentScene_->Draw();
 }
 
 
