@@ -3,6 +3,13 @@
 #include "GameObjectManager/BaseGameObject.h"
 
 class HitEffect : public BaseGameObject {
+
+	struct EffectElement {
+		Transform transform;
+		Vec3      velocity;
+	};
+
+
 public:
 
 	/// ===================================================
@@ -24,10 +31,15 @@ private:
 	class GameCamera* pCamera_ = nullptr;
 
 	class MeshRenderer* meshRenderer_ = nullptr;
+	class MeshInstancingRenderer* meshInstancingRenderer_ = nullptr;
 
 	float time_;
 	float frameDuration_;
 
 	int frameIndex_;
+
+	std::vector<EffectElement> elements_;
+
+
 
 };
