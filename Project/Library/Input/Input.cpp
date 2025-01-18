@@ -221,6 +221,13 @@ void Input::Update() {
 	pad_->Begin();
 
 
+	/*if(PressKey(KeyCode::LAlt)) {
+		ShowCursor(true);
+	} else {
+		ShowCursor(false);
+		mouse_->ConfineCursorToWindow(pWinApp_->GetHWND());
+	}
+ 	 */
 }
 
 

@@ -38,6 +38,8 @@ public:
 
 	void Begin();
 
+	void ConfineCursorToWindow(HWND _hwnd);
+
 
 	bool Press(MouseCode code) const;
 	bool Trigger(MouseCode code) const;
@@ -47,6 +49,8 @@ public:
 
 	inline const Vec2& GetPosition() const { return position_; }
 	inline const Vec2& GetVelocity() const { return velocity_; }
+
+	inline bool GetIsCursorConfined() const { return isCursorConfined_; }
 
 	Vec3 MouseRay(float distance);
 	Vec3 MouseNearPosition();
@@ -67,6 +71,8 @@ private:
 
 	Vec2 position_;
 	Vec2 velocity_;
+
+	bool isCursorConfined_ = false; /// カーソルがウィンドウ内に制限されているか
 
 private:
 	Mouse(const Mouse&) = delete;
