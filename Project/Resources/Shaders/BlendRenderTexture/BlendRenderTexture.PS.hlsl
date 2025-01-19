@@ -6,16 +6,13 @@ SamplerState gSampler : register(s0);
 
 PSOutput main(VSOutput input) {
 	PSOutput output;
-	
+
 	float4 frontColor = gRtvTexFront.Sample(gSampler, input.texcoord);
-	float4 backColor = gRtvTexBack.Sample(gSampler, input.texcoord);
+	float4 backColor  = gRtvTexBack.Sample(gSampler, input.texcoord);
 	
-	float alpha = frontColor.a; // frontRenderTex のアルファチャンネルを使用
-	output.color = lerp(backColor, frontColor, alpha);
-
-	if (output.color.a == 0.0f) {
-		discard;
-	}
-
+	/// frontRenderTex のアルファチャンネルを使用
+	float alpha      = frontColor.a; 
+	output.color.rgb = lerp(backColor.rgb, frontColor.rgb, alpha);
+	output.color.a   = 1.0f;
 	return output;
 }

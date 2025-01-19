@@ -31,6 +31,9 @@ public:
 
 	static void SetLightGroup(class LightGroup* _lightGroup);
 
+	static void PreDraw();
+	static void PostDraw();
+
 
 	/// ===================================================
 	/// public : overriding methods
@@ -41,6 +44,7 @@ public:
 	void Draw()       override;
 	void Debug()      override;
 
+	void DrawCall();
 
 	/// ===================================================
 	/// public : not overriding methods

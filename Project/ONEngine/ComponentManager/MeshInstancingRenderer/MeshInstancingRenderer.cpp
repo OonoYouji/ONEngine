@@ -57,6 +57,8 @@ namespace {
 		LightGroup*                pLightGroup_ = nullptr;
 		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
 
+
+		std::list<MeshInstancingRenderer*> activeMeshInstancingRenderer_;
 	};
 
 
@@ -148,7 +150,8 @@ namespace {
 
 
 
-MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) : kMaxInstanceCount_(maxInstanceCount) {
+MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) 
+	: kMaxInstanceCount_(maxInstanceCount) {
 
 }
 
@@ -167,6 +170,16 @@ void MeshInstancingRenderer::SFinalize() {
 
 void MeshInstancingRenderer::SetLightGroup(LightGroup* _lightGroup) {
 	gPipeline->pLightGroup_ = _lightGroup;
+}
+
+void MeshInstancingRenderer::PreDraw() {
+	gPipeline->activeMeshInstancingRenderer_.clear();
+}
+
+void MeshInstancingRenderer::PostDraw() {
+	for(auto& renderer : gPipeline->activeMeshInstancingRenderer_) {
+		renderer->DrawCall();
+	}
 }
 
 
@@ -217,22 +230,7 @@ void MeshInstancingRenderer::Initialize() {
 void MeshInstancingRenderer::Update() {}
 
 void MeshInstancingRenderer::Draw() {
-
-	/// 描画するインスタンスが0なら描画しない
-	if(transformArray_.empty()) {
-		return;
-	}
-
-	std::vector<Transform::BufferData> matTransformArray{};
-	for(auto& transform : transformArray_) {
-		transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
-
-		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse())});
-	}
-
-	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
-
-	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
+	gPipeline->activeMeshInstancingRenderer_.push_back(this);
 }
 
 void MeshInstancingRenderer::Debug() {
@@ -250,6 +248,28 @@ void MeshInstancingRenderer::Debug() {
 		ImGui::TreePop();
 	}
 
+}
+
+void MeshInstancingRenderer::DrawCall() {
+	/// 描画するインスタンスが0なら描画しない
+	if(transformArray_.empty()) {
+		return;
+	}
+
+	std::vector<Transform::BufferData> matTransformArray{};
+	for(auto& transform : transformArray_) {
+		//transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
+
+		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse()) });
+	}
+
+	assert(mappingData_ != nullptr);
+	assert(matTransformArray.size() <= kMaxInstanceCount_);
+	assert(sizeof(Transform::BufferData) * matTransformArray.size() <= sizeof(Transform::BufferData) * kMaxInstanceCount_);
+
+	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
+
+	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
 }
 
 void MeshInstancingRenderer::AddTransform(Transform* transform) {

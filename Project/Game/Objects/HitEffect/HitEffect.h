@@ -9,7 +9,6 @@ class HitEffect : public BaseGameObject {
 		Vec3      velocity;
 	};
 
-
 public:
 
 	/// ===================================================
@@ -37,9 +36,8 @@ private:
 	float frameDuration_;
 
 	int frameIndex_;
+	int frameMaxIndex_;
 
 	std::vector<EffectElement> elements_;
-
-
 
 };

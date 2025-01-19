@@ -6,16 +6,14 @@
 #include "SceneManager/SceneManager.h"
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
 #include "Math/Random.h"
+#include "FrameManager/Time.h"
 
 /// game
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "GraphicManager/Light/PointLight.h"
 #include "Objects/Camera/GameCamera.h"
-#include "Objects/DemoObject/DemoObject.h"
 #include "Objects/Player/Player.h"
 #include "Objects/EnemyManager/EnemyManager.h"
-#include "Objects/Enemy/Enemy.h"
-#include "Objects/EnemyEmitter/EnemyEmitter.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/Player/PlayerOperationGUI/PlayerOperationGUI.h"
 
@@ -67,7 +65,7 @@ void Scene_Game::Initialize() {
 	uiCamera->SetDistance(10.0f);
 
 	AddLayer("UILayer", uiCamera);
-	AddLayer("TargetSpriteLayer", mainCamera_);
+	//AddLayer("TargetSpriteLayer", mainCamera_);
 
 
 	/// Lightの設定
@@ -93,7 +91,10 @@ void Scene_Game::Initialize() {
 	pointLightArray_[3]->SetPosition({ +20.0f, 8.0f, -20.0f });
 	pointLightArray_[4]->SetPosition({ +20.0f, 8.0f, +20.0f });
 
-
+	
+	/// 初期化でdelta timeが非常に大きくなるのを防ぐために2回更新
+	Time::GetInstance()->Update();
+	Time::GetInstance()->Update();
 }
 
 

@@ -128,7 +128,7 @@ void TrackingCamera::LockToTarget() {
 void TrackingCamera::Input() {
 
 	inputRightStick_ = Vec2(0, 0);
-	inputRightStick_ += Input::MouseVelocity() * Vec2(5.0f, 10.0f);
+	//inputRightStick_ += Input::MouseVelocity() * Vec2(5.0f, 10.0f);
 	inputRightStick_.y *= -1.0f;
 
 	inputRightStick_ += Input::GetRightStick();
