@@ -60,4 +60,14 @@ public:
 
 	class ShaderCompiler* pShaderCompiler_ = nullptr;
 
+
+public:
+
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	IDxcBlob* GetVS() const { return vs_.Get(); }
+	IDxcBlob* GetPS() const { return ps_.Get(); }
+
 };
