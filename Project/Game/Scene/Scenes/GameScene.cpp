@@ -1,5 +1,7 @@
 #include "GameScene.h"
 
+#include "Engine/Graphics/Shader/GraphicsPipeline.h"
+
 
 GameScene::GameScene() {}
 GameScene::~GameScene() {}

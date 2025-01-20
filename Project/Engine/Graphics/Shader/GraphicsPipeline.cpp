@@ -153,7 +153,6 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	desc.pRootSignature = rootSignature_.Get();
 	desc.InputLayout	= inputLayoutDesc;
 
-
 	/// shader setting
 	desc.VS = { 
 		pShader_->GetVS()->GetBufferPointer(), 
@@ -165,17 +164,13 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 		pShader_->GetPS()->GetBufferSize()
 	};
 
-
-	
 	/// depth stencil desc
 	if(depthStancilDesc_.has_value()) {
 		desc.DepthStencilState = depthStancilDesc_.value();
 	}
 
-	/// blend desc
-	desc.BlendState = blendDesc_;
-	/// rasterizer desc
-	desc.RasterizerState = rasterizerDesc_;
+	desc.BlendState = blendDesc_;           /// blend desc
+	desc.RasterizerState = rasterizerDesc_; /// rasterizer desc
 
 	desc.NumRenderTargets = rtvNum_;
 	for(uint32_t i = 0; i < rtvNum_; ++i) {
@@ -187,6 +182,8 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	desc.SampleMask            = D3D12_DEFAULT_SAMPLE_MASK;
 	desc.DSVFormat             = DXGI_FORMAT_D32_FLOAT;
 
+
+	/// pipeline state objectの生成
 	HRESULT result = _dxDevice->GetDevice()->CreateGraphicsPipelineState(
 		&desc, IID_PPV_ARGS(&pipelineState_)
 	);
