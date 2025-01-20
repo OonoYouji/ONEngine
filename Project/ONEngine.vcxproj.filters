@@ -24,6 +24,7 @@
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer\Interface\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -51,5 +52,6 @@
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\Interface\IRenderer.h" />
   </ItemGroup>
 </Project>

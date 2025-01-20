@@ -35,6 +35,7 @@
     <ClCompile Include="Engine\Utility\Math\Vector3.cpp" />
     <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer\Interface\IRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
@@ -69,6 +70,7 @@
     <ClInclude Include="Engine\Graphics\Shader\GraphicsPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\Interface\IRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
