@@ -27,6 +27,7 @@
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
+    <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -35,8 +36,8 @@
     <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
-    <ClCompile Include="Engine\WindowManager\Window.cpp" />
+    <ClCompile Include="Engine\Window\WindowManager.cpp" />
+    <ClCompile Include="Engine\Window\Window.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
@@ -51,10 +52,11 @@
     <ClInclude Include="Engine\DirectX12\Device\DxDevice.h" />
     <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
     <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
-    <ClInclude Include="Engine\WindowManager\WindowManager.h" />
-    <ClInclude Include="Engine\WindowManager\Window.h" />
+    <ClInclude Include="Engine\Window\WindowManager.h" />
+    <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
+    <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Game\GameLoop\GameLoop.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />

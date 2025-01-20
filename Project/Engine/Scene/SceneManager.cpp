@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 
+#include "Scene/Factory/SceneFactory.h"
 
 SceneManager::SceneManager() {}
 SceneManager::~SceneManager() {}
@@ -7,6 +8,10 @@ SceneManager::~SceneManager() {}
 
 void SceneManager::Initialize() {
 
+	sceneFactory_ = std::make_unique<SceneFactory>();
+	sceneFactory_->Initialize();
+
+	currentScene_ = sceneFactory_->CreateScene("Game");
 
 }
 

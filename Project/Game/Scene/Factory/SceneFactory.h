@@ -17,7 +17,6 @@ public:
 	/// </summary>
 	void Initialize() override;
 
-
 private:
 	
 	/// ===================================================

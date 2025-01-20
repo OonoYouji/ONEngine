@@ -2,8 +2,8 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\WindowManager\WindowManager.cpp" />
-    <ClCompile Include="Engine\WindowManager\Window.cpp" />
+    <ClCompile Include="Engine\Window\WindowManager.cpp" />
+    <ClCompile Include="Engine\Window\Window.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector3.cpp" />
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
@@ -23,10 +23,11 @@
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
+    <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\WindowManager\WindowManager.h" />
-    <ClInclude Include="Engine\WindowManager\Window.h" />
+    <ClInclude Include="Engine\Window\WindowManager.h" />
+    <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\Utility\Math\Vector2.h" />
     <ClInclude Include="Engine\Utility\Math\Vector3.h" />
     <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
@@ -49,5 +50,6 @@
     <ClInclude Include="Engine\Graphics\Shader\GraphicsPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
+    <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
   </ItemGroup>
 </Project>

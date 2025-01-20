@@ -62,12 +62,13 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// 初期化時のシーン名を設定する
-	/// </summary>
-	/// <param name="_sceneName"></param>
+	/// @brief 初期化時のシーン名を設定する
+	/// @param _sceneName 初期化時のシーン名
 	void SetStartupSceneName(const std::string& _sceneName);
 
+	/// @brief 初期化時のシーン名を取得する
+	/// @return シーン名
+	const std::string& GetStartupSceneName() const { return startupSceneName_; }
 
 };
 

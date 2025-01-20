@@ -13,13 +13,15 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// windowの初期化
 	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
 	windowManager_->Initialize();
-
+	
 	/// main windowの生成
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 
+	
 	/// scene managerの初期化
 	sceneManager_ = std::make_unique<SceneManager>();
 	sceneManager_->Initialize();
+	
 
 	/// game loopの初期化
 	gameLoop_.reset(_startSetting.gameLoop);
