@@ -17,19 +17,19 @@ ShaderCompiler::ShaderCompiler() {}
 ShaderCompiler::~ShaderCompiler() {}
 
 void ShaderCompiler::Initialize() {
-    HRESULT result = S_FALSE;
+	HRESULT result = S_FALSE;
 
-    /// dxcUtilsの初期化
-    result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
-    Assert(SUCCEEDED(result), "Failed to create DxcUtils instance.");
+	/// dxcUtilsの初期化
+	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	Assert(SUCCEEDED(result), "Failed to create DxcUtils instance.");
 
-    /// dxcCompilerの初期化
-    result = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
-    Assert(SUCCEEDED(result), "Failed to create DxcCompiler instance.");
+	/// dxcCompilerの初期化
+	result = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	Assert(SUCCEEDED(result), "Failed to create DxcCompiler instance.");
 
-    /// includeHandlerの初期化
-    result = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
-    Assert(SUCCEEDED(result), "Failed to create include handler.");
+	/// includeHandlerの初期化
+	result = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	Assert(SUCCEEDED(result), "Failed to create include handler.");
 }
 
 
@@ -45,8 +45,8 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 
 	/// ファイルの内容を設定する
 	DxcBuffer shaderSourceBuffer;
-	shaderSourceBuffer.Ptr      = shaderSource->GetBufferPointer();
-	shaderSourceBuffer.Size     = shaderSource->GetBufferSize();
+	shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
 	shaderSourceBuffer.Encoding = DXC_CP_UTF8; /// 文字コード
 
 	/// Compileの設定
@@ -73,7 +73,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	/// 警告・エラーが出たらログに出力して止める
 	ComPtr<IDxcBlobUtf8> shaderError = nullptr;
 	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
-	if(shaderError != nullptr && shaderError->GetStringLength() != 0) {
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
 		Log(shaderError->GetStringPointer());
 		Assert(false, shaderError->GetStringPointer());
 	}
