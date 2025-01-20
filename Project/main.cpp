@@ -5,7 +5,6 @@
 #include "GameLoop/GameLoop.h"
 #include "Scene/Factory/SceneFactory.h"
 
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<GameFramework> gameFramework = std::make_unique<GameFramework>();
