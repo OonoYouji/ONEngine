@@ -10,6 +10,9 @@
 #include "IGameLoop/IGameLoop.h"
 #include "GameFrameworkConfig.h"
 
+#include "Engine/Graphics/Framework/RenderingFramework.h"
+#include "Engine/Graphics/Renderer/Primitive/Line2DRenderer.h"
+
 
 /// ===================================================
 /// game framework class
@@ -52,6 +55,7 @@ private:
 
 	std::unique_ptr<IGameLoop>     gameLoop_;
 
+	std::unique_ptr<RenderingFramework> renderingFramework_;
 
 
 public:

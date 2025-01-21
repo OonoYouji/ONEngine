@@ -28,6 +28,7 @@
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
     <ClCompile Include="Engine\Graphics\Renderer\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector4.cpp" />
+    <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -59,5 +60,6 @@
     <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Utility\Math\Vector4.h" />
+    <ClInclude Include="Engine\DirectX12\Resource\DxResource.h" />
   </ItemGroup>
 </Project>

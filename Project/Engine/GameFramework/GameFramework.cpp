@@ -27,6 +27,11 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	gameLoop_.reset(_startSetting.gameLoop);
 	gameLoop_->Initialize();
 
+
+	renderingFramework_ = std::make_unique<RenderingFramework>();
+	renderingFramework_->Initialize(dxManager_.get());
+	renderingFramework_->GenerateRenderer<Line2DRenderer>();
+
 }
 
 void GameFramework::Run() {
@@ -50,6 +55,7 @@ void GameFramework::Run() {
 		windowManager_->PreDraw();
 		sceneManager_->Draw();
 		gameLoop_->Draw();
+		renderingFramework_->Draw();
 		windowManager_->PostDraw();
 
 

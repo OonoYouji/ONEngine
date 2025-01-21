@@ -2,7 +2,8 @@
 
 /// engine
 #include "../Interface/IRenderer.h"
-#include "Engine/Utility/Math/Vector2.h"
+#include "Engine/Utility/Math/Vector4.h"
+#include "Engine/DirectX12/Resource/DxResource.h"
 
 
 /// ===================================================
@@ -16,8 +17,8 @@ public:
 	/// ===================================================
 
 	struct VertexData {
-		/*Vec4 position;
-		Vec4 color;*/
+		Vec4 position;
+		Vec4 color;
 	};
 
 public:
@@ -49,6 +50,15 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	const size_t kMaxVertexNum_ = 1024; ///< 最大ライン数
+
+	DxResource                  vertexBuffer_;
+	D3D12_VERTEX_BUFFER_VIEW    vbv_;
+	VertexData*                 mappingData_  = nullptr;
+
+
+	std::vector<VertexData> vertices_;
 
 };
 
