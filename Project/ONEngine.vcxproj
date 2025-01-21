@@ -36,6 +36,7 @@
     <ClCompile Include="Engine\Utility\DebugTools\Log.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Renderer\Interface\IRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
@@ -43,6 +44,7 @@
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
+    <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
@@ -71,6 +73,8 @@
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Interface\IRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\Primitive\Line2DRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

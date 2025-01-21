@@ -5,10 +5,8 @@
 #include "GameLoop/GameLoop.h"
 #include "Scene/Factory/SceneFactory.h"
 
-
-#include "Engine/Graphics/Shader/GraphicsPipeline.h"
-#include "Engine/Graphics/Shader/ShaderCompiler.h"
-
+#include "Engine/Graphics/Framework/RenderingFramework.h"
+#include "Engine/Graphics/Renderer/Primitive/Line2DRenderer.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -19,20 +17,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.gameLoop     = new GameLoop()
 	});
 
-	
+	{
+		std::unique_ptr<RenderingFramework> renderingFramework = std::make_unique<RenderingFramework>();
+		renderingFramework->Initialize(gameFramework->GetDxManager()->GetDxDevice());
 
-	{	/// pso create test
-		ShaderCompiler compiler;
-		compiler.Initialize();
-
-		Shader shader;
-		shader.Initialize(&compiler);
-		shader.CompileShader(L"Assets/Shader/Line2D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Line2D.ps.hlsl", L"vs_6_0", Shader::Type::ps);
-
-		std::unique_ptr<GraphicsPipeline> pso = std::make_unique<GraphicsPipeline>();
-		pso->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		pso->AddInputElement("COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		renderingFramework->GenerateRenderer<Line2DRenderer>();
 
 	}
 

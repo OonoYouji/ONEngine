@@ -52,5 +52,11 @@ private:
 
 	std::unique_ptr<IGameLoop>     gameLoop_;
 
+
+
+public:
+
+	DxManager* GetDxManager() const { return dxManager_.get(); }
+
 };
 
