@@ -22,12 +22,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_ = std::make_unique<SceneManager>();
 	sceneManager_->Initialize();
 	
-
-	/// game loopの初期化
-	gameLoop_.reset(_startSetting.gameLoop);
-	gameLoop_->Initialize();
-
-
 	renderingFramework_ = std::make_unique<RenderingFramework>();
 	renderingFramework_->Initialize(dxManager_.get());
 	renderingFramework_->GenerateRenderer<Line2DRenderer>();
@@ -37,15 +31,13 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
-	while(!gameLoop_->GetIsEnd()) {
+	while(true) {
 
 		/// 更新処理
 		windowManager_->Update();
 
 		/// ゲームループの更新
 		sceneManager_->Update();
-		gameLoop_->Update();
-
 
 		/// 描画処理
 		dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV)->BindToCommandList(
@@ -54,7 +46,6 @@ void GameFramework::Run() {
 
 		windowManager_->PreDraw();
 		sceneManager_->Draw();
-		gameLoop_->Draw();
 		renderingFramework_->Draw();
 		windowManager_->PostDraw();
 
@@ -77,9 +68,6 @@ void GameFramework::Finalize() {
 
 	/// gpuの処理が終わるまで待つ
 	dxManager_->GetDxCommand()->WaitForGpuComplete();
-
-	/// main loopの終了処理
-	gameLoop_->Finalize();
 
 	/// engineの終了処理
 	windowManager_->Finalize();

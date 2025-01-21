@@ -27,10 +27,8 @@
     <ClCompile Include="Engine\DirectX12\Device\DxDevice.cpp" />
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
-    <ClCompile Include="Engine\GameFramework\IGameLoop\IGameLoop.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
-    <ClCompile Include="Game\GameLoop\GameLoop.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector2.cpp" />
@@ -62,9 +60,7 @@
     <ClInclude Include="Engine\Window\WindowManager.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\GameFramework\GameFramework.h" />
-    <ClInclude Include="Engine\GameFramework\IGameLoop\IGameLoop.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
-    <ClInclude Include="Game\GameLoop\GameLoop.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
     <ClInclude Include="Engine\Utility\DebugTools\Assert.h" />

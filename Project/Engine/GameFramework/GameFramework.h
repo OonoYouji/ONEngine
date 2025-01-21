@@ -7,7 +7,6 @@
 #include "Engine/Window/WindowManager.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
 #include "Engine/Scene/SceneManager.h"
-#include "IGameLoop/IGameLoop.h"
 #include "GameFrameworkConfig.h"
 
 #include "Engine/Graphics/Framework/RenderingFramework.h"
@@ -52,8 +51,6 @@ private:
 	std::unique_ptr<DxManager>     dxManager_     = nullptr;
 	std::unique_ptr<WindowManager> windowManager_ = nullptr;
 	std::unique_ptr<SceneManager>  sceneManager_  = nullptr;
-
-	std::unique_ptr<IGameLoop>     gameLoop_;
 
 	std::unique_ptr<RenderingFramework> renderingFramework_;
 
