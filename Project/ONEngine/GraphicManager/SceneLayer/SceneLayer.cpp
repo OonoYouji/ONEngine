@@ -104,8 +104,6 @@ void SceneLayer::Draw() {
 
 	renderTexture_->EndRenderTarget();
 
-	
-
 }
 
 void SceneLayer::ImGuiDebug() {

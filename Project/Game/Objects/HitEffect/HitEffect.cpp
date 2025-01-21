@@ -46,7 +46,7 @@ void HitEffect::Initialize() {
 	/// MeshInstancingRendererの初期化
 	Model*    plane = ModelManager::CreatePlane();
 	Material& material = plane->GetMaterials().front();
-	material.SetColor({ 1, 1, 1, 0.2f });
+	material.SetColor({ 1, 1, 1, 0.1f });
 	material.SetIsLighting(true);
 	material.SetTextureName("circle");
 
