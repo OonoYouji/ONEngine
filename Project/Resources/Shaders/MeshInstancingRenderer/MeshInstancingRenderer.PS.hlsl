@@ -1,17 +1,19 @@
 #include "MeshInstancingRenderer.hlsli"
 
+#include "../Material/Material.hlsli"
 #include "../Light/DirectionalLight.hlsli"
 #include "../Light/PointLight.hlsli"
 
-cbuffer material : register(b0) {
-	float4 materialColor;
-	float4x4 uvTransform;
-	int isLighting;
-}
+//cbuffer material : register(b0) {
+//	float4 materialColor;
+//	float4x4 uvTransform;
+//	int isLighting;
+//}
 
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
+ConstantBuffer<Material> gMaterial : register(b0);
 StructuredBuffer<DirectionalLight> gDirLights   : register(t1);
 StructuredBuffer<PointLight>       gPointLights : register(t2);
 
@@ -20,11 +22,11 @@ StructuredBuffer<PointLight>       gPointLights : register(t2);
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	float2 texcoord = mul(float3(input.texcoord, 1), (float3x3) uvTransform).xy;
+	float2 texcoord = mul(float3(input.texcoord, 1), (float3x3) gMaterial.uvTransform).xy;
 	float4 texColor = gTexture.Sample(gSampler, texcoord);
 	
 	///- Half Lambert
-	if (isLighting) {
+	if (gMaterial.isLighting) {
 		/// Half Lambert
 		/// Directional Light
 		//for (int i = 0; i < 5; ++i) {
@@ -69,9 +71,9 @@ PSOutput main(VSOutput input) {
 		//	}
 		//}
 
-		output.color = texColor * materialColor;
+		output.color = texColor * gMaterial.color;
 	} else {
-		output.color = materialColor * texColor;
+		output.color = gMaterial.color * texColor;
 	}
 	
 	/// pixelの破棄

@@ -5,7 +5,7 @@
 
 /// graphic
 #include "GraphicManager/ModelManager/Model.h"
-
+#include "GraphicManager/Drawer/Material/Material.h"
 
 /// base class
 #include "ComponentManager/Base/BaseComponent.h"
@@ -21,6 +21,7 @@ public:
 
 	MeshInstancingRenderer(uint32_t maxInstanceCount);
 	~MeshInstancingRenderer() {}
+
 
 	/// ===================================================
 	/// public : static methods
@@ -46,6 +47,7 @@ public:
 
 	void DrawCall();
 
+
 	/// ===================================================
 	/// public : not overriding methods
 	/// ===================================================
@@ -67,21 +69,40 @@ public:
 	/// </summary>
 	void ResetTransformArray();
 
+private:
+	
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
+	const uint32_t                         kMaxInstanceCount_    = 0u;
+	std::vector<Transform*>                transformArray_;
+	Model*                                 model_                = nullptr;
+	std::unique_ptr<Material>              material_             = nullptr;
+
+	/// buffer
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformArrayBuffer_ = nullptr;
+	Transform::BufferData*                 mappingData_          = nullptr;
+	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
+	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
 
 	void SetModel(const std::string& filePath);
 	void SetModel(Model* model);
 
-private:
+	/// @brief マテリアルの生成と色の設定
+	/// @param _color 
+	void CreateMaterial(const std::string& _textureName);
 
-	const uint32_t kMaxInstanceCount_ = 0u;
-	std::vector<Transform*> transformArray_;
-	Model* model_ = nullptr;
+	/// @brief マテリアルのゲット
+	/// @return 
+	Material* GetMaterial() { return material_.get(); }
 
-	/// buffer, 
-	Microsoft::WRL::ComPtr<ID3D12Resource> transformArrayBuffer_ = nullptr;
-	Transform::BufferData*                 mappingData_ = nullptr;
-	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
-	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
 
 };

@@ -156,7 +156,7 @@
     <ClCompile Include="Game\Objects\Explostion\Explostion.cpp" />
     <ClCompile Include="Game\Objects\TitleSprite\TitleSprite.cpp" />
     <ClCompile Include="Game\Objects\ClearSprite\ClearSprite.cpp" />
-    <ClCompile Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.cpp" />
     <ClCompile Include="Game\Objects\HitEffect\HitEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -298,7 +298,7 @@
     <ClInclude Include="Game\Objects\Explostion\Explostion.h" />
     <ClInclude Include="Game\Objects\TitleSprite\TitleSprite.h" />
     <ClInclude Include="Game\Objects\ClearSprite\ClearSprite.h" />
-    <ClInclude Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.h" />
     <ClInclude Include="Game\Objects\HitEffect\HitEffect.h" />
   </ItemGroup>
   <ItemGroup>

@@ -69,11 +69,12 @@ private:
 	/// ===================================================
 
 	/// 
-	std::unique_ptr<PlayerStateManager> stateManager_ = nullptr;
-	PlayerMesh*                         playerMesh_   = nullptr;
-	class PlayerProtectionMesh*         protectionMesh_ = nullptr;
+	std::unique_ptr<PlayerStateManager> stateManager_       = nullptr;
+	PlayerMesh*                         playerMesh_         = nullptr;
+	class PlayerProtectionMesh*         protectionMesh_     = nullptr;
 	class TargetSpriteRender*           targetSpriteRender_ = nullptr;
-	class PlayerAttackCollider*         attackCollider_ = nullptr;
+	class PlayerAttackCollider*         attackCollider_     = nullptr;
+	class PlayerMoveLocus*              moveLocus_          = nullptr;
 
 	/// parameters
 	Vec3  direction_ = { 0.0f, 0.0f, 0.0f };

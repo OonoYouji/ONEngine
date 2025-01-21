@@ -45,7 +45,7 @@ namespace {
 			ID3D12GraphicsCommandList* _commandList
 		);
 
-		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount);
+		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, Material* _material, uint32_t instanceCount);
 
 	private:
 
@@ -107,7 +107,7 @@ namespace {
 		pipeline_->Initialize();
 	}
 
-	void RenderingPipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
+	void RenderingPipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, Material* _material, uint32_t instanceCount) {
 
 		/// other pointer
 		ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
@@ -126,11 +126,19 @@ namespace {
 
 		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
 
-			Mesh&     mesh     = useModel->GetMeshes()[i];
-			Material& material = useModel->GetMaterials().front();
+			Mesh& mesh = useModel->GetMeshes()[i];
 
-			material.BindMaterial(pCommnadList_, 1);
-			material.BindTexture(pCommnadList_, 5);
+			/// 引数の_materialがnullptrなら、modelのmaterialを使う
+			if (_material) {
+				_material->BindMaterial(pCommnadList_, 1);
+				_material->BindTexture(pCommnadList_, 5);
+			} else {
+				Material& material = useModel->GetMaterials().front();
+				material.BindMaterial(pCommnadList_, 1);
+				material.BindTexture(pCommnadList_, 5);
+			}
+
+
 			mesh.Draw(pCommnadList_, false);
 
 			UINT meshIndex = static_cast<UINT>(mesh.GetIndices().size());
@@ -268,7 +276,7 @@ void MeshInstancingRenderer::DrawCall() {
 
 	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
 
-	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
+	gPipeline->Draw(gpuHandle_, model_, material_.get(), static_cast<uint32_t>(transformArray_.size()));
 }
 
 void MeshInstancingRenderer::AddTransform(Transform* transform) {
@@ -289,4 +297,15 @@ void MeshInstancingRenderer::SetModel(const std::string& filePath) {
 
 void MeshInstancingRenderer::SetModel(Model* model) {
 	model_ = model;
+}
+
+void MeshInstancingRenderer::CreateMaterial(const std::string& _textureName) {
+
+	if (material_ == nullptr) {
+		material_ = std::make_unique<Material>();
+		material_->CreateBuffer();
+		material_->SetTextureName(_textureName);
+	}
+
+
 }

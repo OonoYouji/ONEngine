@@ -22,7 +22,7 @@
 #include "Objects/Enemy/Enemy.h"
 #include "Objects/TargetSpriteRender/TargetSpriteRender.h"
 #include "PlayerAttackCollider/PlayerAttackCollider.h"
-#include "Objects/PlayerMoveLocus/PlayerMoveLocus.h"
+#include "Objects/Player/PlayerMoveLocus/PlayerMoveLocus.h"
 
 
 Player::Player(GameCamera* _gameCameraPtr) 
@@ -49,6 +49,10 @@ void Player::Initialize() {
 
 	attackCollider_ = new PlayerAttackCollider();
 	attackCollider_->Initialize();
+
+	moveLocus_ = new PlayerMoveLocus(this);
+	moveLocus_->Initialize();
+	moveLocus_->SetParent(pTransform_);
 
 	/// フラグの初期化
 	flags_.resize(PlayerFlag_Max);
