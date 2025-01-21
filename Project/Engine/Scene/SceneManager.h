@@ -23,13 +23,14 @@ public:
 	SceneManager();
 	~SceneManager();
 
+	/// @brief このクラスの初期化
 	void Initialize();
+
+	/// @brief シーンの更新
 	void Update();
 
-	/// <summary>
-	/// 次のシーンを設定する
-	/// </summary>
-	/// <param name="_sceneName"></param>
+	/// @brief 次のシーンを設定する
+	/// @param _sceneName 次のシーンの名前
 	void SetNextScene(const std::string& _sceneName);
 
 
@@ -51,10 +52,8 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// SceneFactoryを設定する
-	/// </summary>
-	/// <param name="_sceneFactory"></param>
+	/// @brief シーンファクトリーのクラスを登録
+	/// @param _sceneFactory シーンファクトリーのインスタンス
 	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
 
 };
