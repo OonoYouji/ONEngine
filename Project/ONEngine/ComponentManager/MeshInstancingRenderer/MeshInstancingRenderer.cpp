@@ -221,7 +221,6 @@ void MeshInstancingRenderer::Initialize() {
 	/// mapping data bind
 	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
-
 	/// model setting
 	model_ = ModelManager::Load("Sphere");
 
