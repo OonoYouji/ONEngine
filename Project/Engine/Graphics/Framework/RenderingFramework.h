@@ -8,6 +8,7 @@
 #include "../Renderer/Interface/IRenderer.h"
 #include "../Shader/ShaderCompiler.h"
 #include "Engine/DirectX12/Manager/DxManager.h" 
+#include "Engine/Window/WindowManager.h"
 
 /* TODO: RenderingFrameworkクラスの実装
  *
@@ -31,7 +32,7 @@ public:
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager);
+	void Initialize(DxManager* _dxManager, WindowManager* _windowManager);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();
@@ -53,7 +54,8 @@ private:
 	std::unique_ptr<ShaderCompiler>         shaderCompiler_;
 	std::vector<std::unique_ptr<IRenderer>> renderers_; ///< レンダラーの配列
 
-	DxManager* dxManager_ = nullptr;
+	DxManager*     dxManager_     = nullptr;
+	WindowManager* windowManager_ = nullptr;
 
 };
 

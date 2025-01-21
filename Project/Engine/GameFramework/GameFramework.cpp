@@ -30,7 +30,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_->Initialize();
 	
 	renderingFramework_ = std::make_unique<RenderingFramework>();
-	renderingFramework_->Initialize(dxManager_.get());
+	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get());
 	renderingFramework_->GenerateRenderer<Line2DRenderer>();
 
 }
@@ -42,25 +42,10 @@ void GameFramework::Run() {
 
 		/// 更新処理
 		windowManager_->Update();
-
-		/// ゲームループの更新
 		sceneManager_->Update();
 
 		/// 描画処理
-		dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV)->BindToCommandList(
-			dxManager_->GetDxCommand()->GetCommandList()
-		);
-
-		windowManager_->PreDraw();
 		renderingFramework_->Draw();
-		windowManager_->PostDraw();
-
-
-		/// commandの実行
-		dxManager_->GetDxCommand()->CommandExecute();
-		windowManager_->Present();
-		dxManager_->GetDxCommand()->CommandReset();
-
 
 		/// 破棄されたら終了
 		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
