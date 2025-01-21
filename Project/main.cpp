@@ -12,7 +12,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	gameFramework->Run();
 
-	gameFramework->Finalize();
-
 	return 0;
 }

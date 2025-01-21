@@ -26,20 +26,12 @@ public:
 	GameFramework();
 	~GameFramework();
 	
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
+	/// @brief 初期化処理
+	/// @param _startSetting 開始時の設定
 	void Initialize(const GameFrameworkConfig& _startSetting);
 
-	/// <summary>
-	/// ゲームのメインループを回す
-	/// </summary>
+	/// @brief ゲームのメインループ
 	void Run();
-
-	/// <summary>
-	/// 終了処理
-	/// </summary>
-	void Finalize();
 
 
 private:
@@ -53,11 +45,6 @@ private:
 	std::unique_ptr<SceneManager>  sceneManager_  = nullptr;
 
 	std::unique_ptr<RenderingFramework> renderingFramework_;
-
-
-public:
-
-	DxManager* GetDxManager() const { return dxManager_.get(); }
 
 };
 

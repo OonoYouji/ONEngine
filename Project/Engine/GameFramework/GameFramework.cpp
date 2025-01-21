@@ -1,7 +1,14 @@
 #include "GameFramework.h"
 
 GameFramework::GameFramework() {}
-GameFramework::~GameFramework() {}
+GameFramework::~GameFramework() {
+	/// gpuの処理が終わるまで待つ
+	dxManager_->GetDxCommand()->WaitForGpuComplete();
+
+	/// engineの終了処理
+	windowManager_->Finalize();
+	dxManager_->Finalize();
+}
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
@@ -64,13 +71,3 @@ void GameFramework::Run() {
 
 }
 
-void GameFramework::Finalize() {
-
-	/// gpuの処理が終わるまで待つ
-	dxManager_->GetDxCommand()->WaitForGpuComplete();
-
-	/// engineの終了処理
-	windowManager_->Finalize();
-	dxManager_->Finalize();
-
-}
