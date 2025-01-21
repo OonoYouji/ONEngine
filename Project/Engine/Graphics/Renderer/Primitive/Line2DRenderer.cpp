@@ -31,11 +31,23 @@ void Line2DRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDe
 
 }
 
-void Line2DRenderer::PreDraw([[maybe_unused]] ID3D12GraphicsCommandList* _commandList) {
+void Line2DRenderer::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
+
+	/// pipelineの設定
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
 }
 
-void Line2DRenderer::PostDraw([[maybe_unused]] ID3D12GraphicsCommandList* _commandList) {
+void Line2DRenderer::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
+
+	/// 今までに積んだデータを実行する
+
+
+
 }
 
 void Line2DRenderer::DrawCall() {
+
+
+
 }

@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/DirectX12/Device/DxDevice.h"
+#include "Engine/DirectX12/Command/DxCommand.h"
 #include "Engine/Utility/DebugTools/Assert.h"
 #include "Engine/Utility/DebugTools/Log.h"
 
@@ -99,6 +100,11 @@ void GraphicsPipeline::SetBlendDesc(const D3D12_BLEND_DESC& _desc) {
 void GraphicsPipeline::SetRTVNum(uint32_t _rtvNum) {
 	Assert(_rtvNum <= 8, "error..."); /// RTVの数は8以下
 	rtvNum_ = _rtvNum;
+}
+
+void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
+	_dxCommand->GetCommandList()->SetPipelineState(pipelineState_.Get());
+	_dxCommand->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 }
 
 

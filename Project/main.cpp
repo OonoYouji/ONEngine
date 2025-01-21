@@ -19,7 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	{
 		std::unique_ptr<RenderingFramework> renderingFramework = std::make_unique<RenderingFramework>();
-		renderingFramework->Initialize(gameFramework->GetDxManager()->GetDxDevice());
+		renderingFramework->Initialize(gameFramework->GetDxManager());
 
 		renderingFramework->GenerateRenderer<Line2DRenderer>();
 

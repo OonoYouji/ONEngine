@@ -1,6 +1,8 @@
 #pragma once
 
+/// engine
 #include "../Interface/IRenderer.h"
+#include "Engine/Utility/Math/Vector2.h"
 
 
 /// ===================================================
@@ -8,6 +10,21 @@
 /// ===================================================
 class Line2DRenderer : public IRenderer {
 public:
+
+	/// ===================================================
+	/// public : nest class
+	/// ===================================================
+
+	struct VertexData {
+		/*Vec4 position;
+		Vec4 color;*/
+	};
+
+public:
+
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	Line2DRenderer();
 	~Line2DRenderer();
@@ -18,11 +35,11 @@ public:
 
 	/// @brief 描画前の処理を行う
 	/// @param _commandList DirectX12のコマンドリスト
-	void PreDraw(ID3D12GraphicsCommandList* _commandList) override;
+	void PreDraw(DxCommand* _dxCommand) override;
 
 	/// @brief 描画後の処理を行う
 	/// @param _commandList DirectX12のコマンドリスト
-	void PostDraw(ID3D12GraphicsCommandList* _commandList) override;
+	void PostDraw(DxCommand* _dxCommand) override;
 
 	/// @brief 描画のコールを行う
 	void DrawCall() override;

@@ -90,6 +90,10 @@ public:
 	/// @param _rtvNum rtvの数
 	void SetRTVNum(uint32_t _rtvNum);
 
+	/// @brief コマンドリストにパイプラインステートをセットする
+	/// @param _dxCommand command listを管理しているクラスへのポインタ
+	void SetPipelineStateForCommandList(class DxCommand* _dxCommand);
+
 private:
 
 	/// ===================================================
@@ -126,7 +130,7 @@ private:
 	std::vector<D3D12_STATIC_SAMPLER_DESC>  staticSamplers_;
 	std::vector<D3D12_DESCRIPTOR_RANGE>     descriptorRanges_;
 
-	Shader*                                 pShader_;
+	Shader* pShader_;
 
 
 	/// pipeline settings
