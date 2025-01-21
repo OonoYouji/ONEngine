@@ -110,23 +110,23 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	ComPtr<ID3D12RootSignature>            rootSignature_;
-	ComPtr<ID3D12PipelineState>            pipelineState_;
+	ComPtr<ID3D12RootSignature>             rootSignature_;
+	ComPtr<ID3D12PipelineState>             pipelineState_;
 
 
 	/// parameters
-	std::vector<D3D12_INPUT_ELEMENT_DESC>  inputElements_;
-	std::vector<std::string>               semanticNames_;
+	std::vector<D3D12_INPUT_ELEMENT_DESC>   inputElements_;
+	std::vector<std::string>                semanticNames_;
 
-	D3D12_RASTERIZER_DESC                  rasterizerDesc_;
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE          primitiveTopologyType_;
-	D3D12_BLEND_DESC                       blendDesc_;
+	D3D12_RASTERIZER_DESC                   rasterizerDesc_;
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE           primitiveTopologyType_;
+	D3D12_BLEND_DESC                        blendDesc_;
 
-	std::vector<D3D12_ROOT_PARAMETER>      rootParameters_;
-	std::vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers_;
-	std::vector<D3D12_DESCRIPTOR_RANGE>    descriptorRanges_;
+	std::vector<D3D12_ROOT_PARAMETER>       rootParameters_;
+	std::vector<D3D12_STATIC_SAMPLER_DESC>  staticSamplers_;
+	std::vector<D3D12_DESCRIPTOR_RANGE>     descriptorRanges_;
 
-	Shader*                                pShader_;
+	Shader*                                 pShader_;
 
 
 	/// pipeline settings
