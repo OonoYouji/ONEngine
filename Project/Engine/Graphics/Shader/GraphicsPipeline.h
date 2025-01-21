@@ -32,9 +32,9 @@ public:
 
 	/*--- root signature ---*/
 
-	/// @brief 使用するshaderへのポインタをセットする
+	/// @brief 使用する shaderへのポインタをセットする
 	/// @param _shader 使用するshader
-	void SetShadaer(Shader* _shader);
+	void SetShader(Shader* _shader);
 
 	/// @brief InputElementを追加する
 	/// @param _semanticName   セマンティクスの名前
@@ -43,9 +43,9 @@ public:
 	void AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format);
 
 	/// @brief constant buffer viewを追加する
-	/// @param _shaderVisibilty shaderの種類
+	/// @param _shaderVisibility shaderの種類
 	/// @param _shaderRegister  register(b0)の0の部分
-	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _shaderRegister);
+	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
 	/// @brief descriptor rangeを追加する
 	/// @param _baseShaderRegister register(b0)の0の部分
@@ -54,9 +54,9 @@ public:
 	void AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType);
 
 	/// @brief descriptor tableを追加する
-	/// @param _shaderVisibilty 使用するshaderの種類(vs, ps)
+	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)
 	/// @param _descriptorIndex descriptor rangeの配列のインデックス
-	void AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _descriptorIndex);
+	void AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex);
 
 	/// @brief static samplerを追加する
 	/// @param _shaderVisibility 使用するshaderの種類(vs, ps)

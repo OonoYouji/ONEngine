@@ -17,7 +17,7 @@ void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 }
 
 
-void GraphicsPipeline::SetShadaer(Shader* _shader) {
+void GraphicsPipeline::SetShader(Shader* _shader) {
 	pShader_ = _shader;
 }
 
@@ -32,10 +32,10 @@ void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_
 	semanticNames_.push_back(_semanticName);
 }
 
-void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _shaderRegister) {
+void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType             = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	parameter.ShaderVisibility          = _shaderVisibilty;
+	parameter.ShaderVisibility          = _shaderVisibility;
 	parameter.Descriptor.ShaderRegister = _shaderRegister;
 
 	rootParameters_.push_back(parameter);
@@ -51,12 +51,12 @@ void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t
 	descriptorRanges_.push_back(range);
 }
 
-void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibilty, uint32_t _descriptorIndex) {
+void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
 	Assert(descriptorRanges_.size() >= _descriptorIndex, "out of range...");
 
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	parameter.ShaderVisibility                    = _shaderVisibilty;
+	parameter.ShaderVisibility                    = _shaderVisibility;
 	parameter.DescriptorTable.pDescriptorRanges   = &descriptorRanges_[_descriptorIndex];
 	parameter.DescriptorTable.NumDescriptorRanges = descriptorRanges_[_descriptorIndex].NumDescriptors;
 
