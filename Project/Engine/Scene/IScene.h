@@ -13,7 +13,10 @@ public:
 
 	virtual ~IScene() = default;
 
+	/// @brief シーンの初期化
 	virtual void Initialize() = 0;
+
+	/// @brief シーンの更新
 	virtual void Update()     = 0;
 
 private:
@@ -22,10 +25,8 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	/// <summary>
-	/// SceneManagerのポインタを設定する
-	/// </summary>
-	/// <param name="_sceneManager"> : SceneManagerへのポインタ </param>
+	/// @brief シーンマネジャーへのポインタをセットする
+	/// @param _sceneManager 
 	void SetSceneManagerPtr(class SceneManager* _sceneManager);
 
 
