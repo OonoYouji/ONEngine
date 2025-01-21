@@ -193,7 +193,7 @@ void MeshInstancingRenderer::Initialize() {
 
 	/// buffer create
 	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(
-		sizeof(Mat4) * kMaxInstanceCount_);
+		sizeof(Transform::BufferData) * kMaxInstanceCount_);
 
 	/// desc setting
 	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
@@ -203,7 +203,7 @@ void MeshInstancingRenderer::Initialize() {
 	desc.Buffer.FirstElement        = 0;
 	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
 	desc.Buffer.NumElements         = static_cast<UINT>(kMaxInstanceCount_);
-	desc.Buffer.StructureByteStride = sizeof(Mat4);
+	desc.Buffer.StructureByteStride = sizeof(Transform::BufferData);
 
 	/// cpu, gpu handle initialize
 
