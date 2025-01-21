@@ -52,7 +52,6 @@ void GameFramework::Run() {
 		);
 
 		windowManager_->PreDraw();
-		sceneManager_->Draw();
 		renderingFramework_->Draw();
 		windowManager_->PostDraw();
 

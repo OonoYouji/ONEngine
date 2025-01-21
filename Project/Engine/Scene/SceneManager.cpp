@@ -29,11 +29,6 @@ void SceneManager::Update() {
 
 }
 
-void SceneManager::Draw() {
-	currentScene_->Draw();
-}
-
-
 void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = sceneFactory_->CreateScene(_sceneName);
 }
