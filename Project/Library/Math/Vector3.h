@@ -60,6 +60,8 @@ public:
 	static Vector3 Cross(const Vector3& v1, const Vector3& v2);
 	static float Dot(const Vector3& v1, const Vector3& v2);
 
+	static Vector3 Project(const Vector3& _v1, const Vector3& _v2);
+
 	static Vector3 MaxDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
 	static Vector3 MinDotVector(const Vector3& direction, const std::vector<Vector3>& vertices);
 

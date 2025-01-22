@@ -14,14 +14,14 @@
 /// static objects initialize
 /// ===================================================
 
-const Vector3 Vector3::kUp    = Vector3( 0,  1,  0);	//- ( 0,  1,  0 )
-const Vector3 Vector3::kDown  = Vector3( 0, -1,  0);	//- ( 0, -1,  0 )
-const Vector3 Vector3::kLeft  = Vector3(-1,  0,  0);	//- (-1,  0,  0 )
-const Vector3 Vector3::kRight = Vector3( 1,  0,  0);	//- ( 1,  0,  0 )
-const Vector3 Vector3::kFront = Vector3( 0,  0,  1);	//- ( 0,  0,  1 )
-const Vector3 Vector3::kBack  = Vector3( 0,  0, -1);	//- ( 0,  0, -1 )
+const Vector3 Vector3::kUp = Vector3(0, 1, 0);	//- ( 0,  1,  0 )
+const Vector3 Vector3::kDown = Vector3(0, -1, 0);	//- ( 0, -1,  0 )
+const Vector3 Vector3::kLeft = Vector3(-1, 0, 0);	//- (-1,  0,  0 )
+const Vector3 Vector3::kRight = Vector3(1, 0, 0);	//- ( 1,  0,  0 )
+const Vector3 Vector3::kFront = Vector3(0, 0, 1);	//- ( 0,  0,  1 )
+const Vector3 Vector3::kBack = Vector3(0, 0, -1);	//- ( 0,  0, -1 )
 
-const Vector3 Vector3::kOne   = Vector3(1, 1, 1);	//- ( 1,  1,  1 )
+const Vector3 Vector3::kOne = Vector3(1, 1, 1);	//- ( 1,  1,  1 )
 
 
 Vector3::Vector3() {
@@ -50,7 +50,7 @@ float Vector3::Len() const {
 
 Vector3 Vector3::Normalize() const {
 	float len = this->Len();
-	if(len != 0.0f) {
+	if (len != 0.0f) {
 		return *this / len;
 	}
 	return *this;
@@ -85,7 +85,7 @@ Vector3 Vector3::Slerp(const Vector3& start, const Vector3& end, float t) {
 	float sinThetaTo = std::sin(t * theta);
 
 	Vec3 nLerpVector = nv1 * (sinThetaFrom / sinTheta) + nv2 * (sinThetaTo / sinTheta);
-	if(sinTheta < 1.0e-5) {
+	if (sinTheta < 1.0e-5) {
 		nLerpVector = nv1;
 	} else {
 		nLerpVector = (nv1 * sinThetaFrom + nv2 * sinThetaTo) / sinTheta;
@@ -110,12 +110,19 @@ float Vector3::Dot(const Vector3& v1, const Vector3& v2) {
 	return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 }
 
+Vector3 Vector3::Project(const Vector3& _v1, const Vector3& _v2) {
+	float&& dot           = Dot(_v1, _v2);
+	float&& v2LenhSquared = _v2.x * _v2.x + _v2.y * _v2.y + _v2.z * _v2.z;
+
+	return _v2 * (dot / v2LenhSquared);
+}
+
 Vector3 Vector3::MaxDotVector(const Vector3& direction, const std::vector<Vector3>& vertices) {
 	float maxDot = Dot(vertices.front(), direction);
 	Vec3 maxVertex = vertices.front();
-	for(auto& vertex : vertices) {
+	for (auto& vertex : vertices) {
 		float dot = Dot(vertex, direction);
-		if(dot > maxDot) {
+		if (dot > maxDot) {
 			maxDot = dot;
 			maxVertex = vertex;
 		}
@@ -127,9 +134,9 @@ Vector3 Vector3::MaxDotVector(const Vector3& direction, const std::vector<Vector
 Vector3 Vector3::MinDotVector(const Vector3& direction, const std::vector<Vector3>& vertices) {
 	float minDot = Dot(vertices.front(), direction);
 	Vec3 minVertex = vertices.front();
-	for(auto& vertex : vertices) {
+	for (auto& vertex : vertices) {
 		float dot = Dot(vertex, direction);
-		if(dot < minDot) {
+		if (dot < minDot) {
 			minDot = dot;
 			minVertex = vertex;
 		}
