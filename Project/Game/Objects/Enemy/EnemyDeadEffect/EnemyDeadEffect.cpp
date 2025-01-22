@@ -45,6 +45,9 @@ void EnemyDeadEffect::Initialize() {
 			data.velocity = data.velocity.Normalize() * Random::Float(1.0f, 5.0f);
 
 			data.rotateValue = Random::Vec3(-Vec3::kOne, Vec3::kOne) * 0.25f;
+
+			//50e4a6
+			_particle->GetMaterial().color = { 0.3137f, 0.3922f, 0.6509f, 1.0f };
 		}
 	});
 
