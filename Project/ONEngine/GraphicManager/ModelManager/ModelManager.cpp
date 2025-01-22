@@ -438,7 +438,7 @@ void ModelManager::PostDraw() {
 
 	for(auto& model : wire) {
 		model.transform->BindTransform(commandList, 1, model.matLocal);
-		model.model->DrawCall(commandList, model.material);
+		model.model->DrawCall(commandList, model.material, 2, 5);
 	}
 
 

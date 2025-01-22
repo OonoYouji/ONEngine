@@ -64,7 +64,6 @@ void Line3D::Draw(const Vec3& v1, const Vec3& v2, const Vec4& v1Color, const Vec
 
 
 void Line3D::PreDraw() {
-	vertices_.clear();
 }
 
 void Line3D::PostDraw() {
@@ -91,4 +90,8 @@ void Line3D::PostDraw() {
 
 	/// draw call
 	pCommandList_->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
+
+	/// 頂点のリセット
+	vertices_.clear();
 }
+
