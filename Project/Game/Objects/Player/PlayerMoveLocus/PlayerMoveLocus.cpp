@@ -6,6 +6,7 @@
 /// engine
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "FrameManager/Time.h"
+#include "Math/Easing.h"
 
 /// user
 #include "Objects/Player/Player.h"
@@ -26,7 +27,8 @@ void PlayerMoveLocus::Initialize() {
 	material->SetColor({ 1.0f, 1.0f, 1.0f, 0.2f });
 
 
-	durationTime_ = 0.05f;
+	durationTime_       = 0.01f;
+	timeSubScalerValue_ = 1.0f;
 }
 
 void PlayerMoveLocus::Update() {
@@ -42,10 +44,12 @@ void PlayerMoveLocus::Update() {
 
 
 		transform.scale = Vec3::kOne * (lifeTime);
+		transform.scale = Vec3::Lerp(Vec3::kOne, {}, Ease::Out::Quart(1.0f - lifeTime));
+
 		transform.Update();
 
 		/// life timeの更新、0.0f以下になったら削除
-		lifeTime -= 2.0f * Time::DeltaTime();
+		lifeTime -= timeSubScalerValue_  * Time::DeltaTime();
 		if (lifeTime < 0.0f) {
 			itr = transformWithLifeTimes_.erase(itr);
 		} else {
@@ -89,6 +93,11 @@ void PlayerMoveLocus::Update() {
 }
 
 void PlayerMoveLocus::Debug() {
+
+	ImGui::DragFloat("duration time", &durationTime_, 0.001f);
+	ImGui::DragFloat("time sub scaler value", &timeSubScalerValue_, 0.001f);
+
+	ImGui::Separator();
 
 	for (auto& transformWithLifeTime : transformWithLifeTimes_) {
 		Transform&          transform = transformWithLifeTime.second;

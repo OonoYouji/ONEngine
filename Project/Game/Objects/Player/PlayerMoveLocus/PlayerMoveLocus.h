@@ -31,4 +31,6 @@ private:
 	float durationTime_ = 0.1f;
 	float currentTime_  = 0.0f;
 
+	float timeSubScalerValue_ = 0.0f;
+
 };
