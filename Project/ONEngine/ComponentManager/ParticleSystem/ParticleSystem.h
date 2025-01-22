@@ -47,6 +47,9 @@ public:
 
 	static void SetLightGroup(class LightGroup* _lightGroup);
 
+	static void PreDraw();
+	static void PostDraw();
+
 
 	/// ===================================================
 	/// public : overriding methods
@@ -58,9 +61,14 @@ public:
 	void Debug()      override;
 
 
+
 	/// ===================================================
 	/// public : non overriding methods
 	/// ===================================================
+
+	/// @brief 描画コールを行う
+	void DrawCall();
+
 
 	///// <summary>
 	///// パーティクルの出現までの時間のセット
@@ -216,6 +224,15 @@ public:
 
 	void SetLightGroup(class LightGroup* _lightGroup);
 
+	void PreDraw();
+	void PostDraw();
+
+
+	void AddActiveParticleSystem(ParticleSystem* _renderer) {
+		activeParticleSystem_.push_back(_renderer);
+	}
+
+
 private:
 
 	/// ===================================================
@@ -226,6 +243,8 @@ private:
 	PipelineState::Shader          shader_;
 	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
 	class LightGroup*              pLightGroup_   = nullptr;
+
+	std::list<ParticleSystem*> activeParticleSystem_;
 
 };
 

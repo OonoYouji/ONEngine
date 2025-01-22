@@ -21,6 +21,10 @@ void EnemyDeadEffect::Initialize() {
 	/// particle systemの初期化
 	particleSystem_ = AddComponent<ParticleSystem>(kMaxParticleCount_, "Cube");
 	particleSystem_->SetUseBillboard(false);
+	particleSystem_->SetParticleLifeTime(5.0f);
+	particleSystem_->SetEmittedParticleCount(10);
+	particleSystem_->SetParticleRespawnTime(0.1f);
+
 
 	particleSystem_->SetPartilceUpdateFunction([&](Particle* _particle) {
 
@@ -30,6 +34,9 @@ void EnemyDeadEffect::Initialize() {
 
 		/// ここでparticleの更新
 		transform->position += data.velocity * Time::DeltaTime();
+		
+		/// alphaを更新
+		_particle->GetMaterial().color.w = _particle->GetNormLifeTime();
 
 
 		/// 死亡判定、ここでリセットをかける

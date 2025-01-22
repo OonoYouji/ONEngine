@@ -59,6 +59,14 @@ void ParticleSystem::SetLightGroup(LightGroup* _lightGroup) {
 	sPipeline_->SetLightGroup(_lightGroup);
 }
 
+void ParticleSystem::PreDraw() {
+	sPipeline_->PreDraw();
+}
+
+void ParticleSystem::PostDraw() {
+	sPipeline_->PostDraw();
+}
+
 
 void ParticleSystem::Initialize() {
 
@@ -168,7 +176,29 @@ void ParticleSystem::Update() {
 }
 
 void ParticleSystem::Draw() {
+	sPipeline_->AddActiveParticleSystem(this);
+}
 
+void ParticleSystem::Debug() {
+	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
+		ImGui::Checkbox("use billboard", &useBillboard_);
+
+		if(ImGui::Button("burst particle")) {
+			SetBurst(true, 1.0f, 0.1f);
+		}
+
+		ImGui::Spacing();
+
+		emitter_->Debug();
+
+		ImGui::TreePop();
+	}
+}
+
+
+void ParticleSystem::DrawCall() {
 	emitter_->currentParticleCount_ = 0u;
 	std::vector<Mat4> matTransformArray;
 
@@ -196,25 +226,6 @@ void ParticleSystem::Draw() {
 		sPipeline_->Draw(transforms_.get(), materials_.get(), pModel_, emitter_->currentParticleCount_);
 	}
 }
-
-void ParticleSystem::Debug() {
-	if(ImGui::TreeNodeEx(GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-
-		ImGui::DragFloat("particle life time",            &particleLifeTime_, 0.05f, 0.0f, 60.0f);
-		ImGui::Checkbox("use billboard", &useBillboard_);
-
-		if(ImGui::Button("burst particle")) {
-			SetBurst(true, 1.0f, 0.1f);
-		}
-
-		ImGui::Spacing();
-
-		emitter_->Debug();
-
-		ImGui::TreePop();
-	}
-}
-
 
 void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
 	emitter_->rateOverTime_ = _particleRespawnTime;
@@ -370,6 +381,18 @@ void ParticlePipeline::Draw(
 
 void ParticlePipeline::SetLightGroup(LightGroup* _lightGroup) {
 	pLightGroup_ = _lightGroup;
+}
+
+void ParticlePipeline::PreDraw() {
+	activeParticleSystem_.clear();
+}
+
+void ParticlePipeline::PostDraw() {
+
+	for (auto& renderer : activeParticleSystem_) {
+		renderer->DrawCall();
+	}
+
 }
 
 
