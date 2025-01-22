@@ -26,6 +26,8 @@ void PlayerMoveLocus::Initialize() {
 	Material* material = renderer_->GetMaterial();
 	material->SetColor({ 1.0f, 1.0f, 1.0f, 0.2f });
 
+	transformWithLifeTimes_.reserve(16);
+	transformWithLifeTimes_.clear();
 
 	durationTime_       = 0.01f;
 	timeSubScalerValue_ = 1.0f;
@@ -36,7 +38,6 @@ void PlayerMoveLocus::Update() {
 
 	/// 要素の更新
 	size_t i = 0;
-	Mat4 matRotate = Mat4::MakeRotateY(pPlayer_->GetMesh()->GetRotate().y);
 	for(auto itr = transformWithLifeTimes_.begin(); itr != transformWithLifeTimes_.end(); ) {
 
 		Transform& transform = (*itr).second;
