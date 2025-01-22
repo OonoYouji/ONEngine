@@ -16,8 +16,7 @@
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "FrameManager/Time.h"
-
-/// game
+#include "GraphicManager/Light/LightGroup.h"
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "SceneManager/SceneManager.h"
 
@@ -54,6 +53,10 @@ void ParticleSystem::SInitialize(ID3D12GraphicsCommandList* pCommandList_) {
 
 void ParticleSystem::SFinalize() {
 	sPipeline_.reset();
+}
+
+void ParticleSystem::SetLightGroup(LightGroup* _lightGroup) {
+	sPipeline_->SetLightGroup(_lightGroup);
 }
 
 
@@ -301,20 +304,27 @@ void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_) {
 	pipelineState_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 	/// Constant Buffer
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	/// viewProjection
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// material
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	/// camera 
+
 
 	/// descriptor
 	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 
 	/// SRV - Transform
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);
 
 	/// SRV - Texture
-	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);
 	pipelineState_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+
+	/// SRV - Light
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3);
 	
 
 	/// Pipeline Create
@@ -330,17 +340,18 @@ void ParticlePipeline::Update() {}
 void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
 
 	/// other pointer get
-	ID3D12Resource*   viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
-	//DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
+	BaseCamera*       pCamera    = CameraManager::GetInstance()->GetMainCamera();
 
 	/// default setting
 	pipelineState_->SetPipelineState();
 
 	/// command setting
 	pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-	/// TODO: light groupで処理する
-	//pLight->BindToCommandList(2, pCommandList_);
+	pCommandList_->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
+	pCommandList_->SetGraphicsRootConstantBufferView(2, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
+
+	pLightGroup_->BindDirectionalLightBufferForCommandList(5, pCommandList_);
+	pLightGroup_->BindPointLightBufferForCommandList(6, pCommandList_);
 
 
 	/// transform の bind
@@ -359,6 +370,10 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 		UINT indexCountPerInstance = static_cast<UINT>(mesh.GetIndices().size());
 		pCommandList_->DrawIndexedInstanced(indexCountPerInstance, instanceCount, 0, 0, 0);
 	}
+}
+
+void ParticlePipeline::SetLightGroup(LightGroup* _lightGroup) {
+	pLightGroup_ = _lightGroup;
 }
 
 

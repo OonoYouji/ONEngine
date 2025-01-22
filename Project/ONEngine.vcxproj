@@ -152,6 +152,7 @@
     <ClCompile Include="Game\Objects\EnemyEmitter\EnemyEmitter.cpp" />
     <ClCompile Include="Game\Objects\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="Game\Objects\EnemyEmitter\EnemyEmitter.h" />
     <ClInclude Include="Game\Objects\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />

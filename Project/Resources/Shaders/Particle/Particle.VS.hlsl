@@ -12,6 +12,7 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	output.position = mul(input.position, matWvp);
 	output.texcoord = input.texcoord;
 	output.normal   = normalize(mul(float4(input.normal, 1), gTransformArray[instanceId].matWorld)).xyz;
+	output.worldPosition = mul(input.position, gTransformArray[instanceId].matWorld).xyz;
 
 	return output;
 }

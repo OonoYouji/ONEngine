@@ -25,6 +25,7 @@
 
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 
 
@@ -176,6 +177,8 @@ void SceneManager::Load(const std::string& _sceneName) {
 	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
 	MeshInstancingRenderer::SetLightGroup(lightGroup_.get());
 	ModelManager::GetInstance()->SetLightGroup(lightGroup_.get());
+	ParticleSystem::SetLightGroup(lightGroup_.get());
+
 	SetSceneLayers(scenes_[currentSceneName_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;

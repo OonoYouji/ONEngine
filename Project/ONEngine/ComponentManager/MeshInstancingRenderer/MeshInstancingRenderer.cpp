@@ -55,7 +55,7 @@ namespace {
 
 		/// other pointer
 		LightGroup*                pLightGroup_ = nullptr;
-		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
+		ID3D12GraphicsCommandList* pCommandList_      = nullptr;
 
 
 		std::list<MeshInstancingRenderer*> activeMeshInstancingRenderer_;
@@ -70,8 +70,8 @@ namespace {
 
 
 		/// set pointer
-		pCommnadList_ = _commandList;
-		assert(pCommnadList_);
+		pCommandList_ = _commandList;
+		assert(pCommandList_);
 
 		/// shader compile
 		shader_.ShaderCompile(
@@ -114,14 +114,14 @@ namespace {
 
 		/// default setting
 		pipeline_->SetPipelineState();
-		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		/// buffer setting
 		/// TODO: light groupで処理する
-		pCommnadList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-		pCommnadList_->SetGraphicsRootDescriptorTable(2, gpuHandle);
-		pLightGroup_->BindDirectionalLightBufferForCommandList(3, pCommnadList_);
-		pLightGroup_->BindPointLightBufferForCommandList(4, pCommnadList_);
+		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+		pCommandList_->SetGraphicsRootDescriptorTable(2, gpuHandle);
+		pLightGroup_->BindDirectionalLightBufferForCommandList(3, pCommandList_);
+		pLightGroup_->BindPointLightBufferForCommandList(4, pCommandList_);
 
 
 		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
@@ -130,19 +130,19 @@ namespace {
 
 			/// 引数の_materialがnullptrなら、modelのmaterialを使う
 			if (_material) {
-				_material->BindMaterial(pCommnadList_, 1);
-				_material->BindTexture(pCommnadList_, 5);
+				_material->BindMaterial(pCommandList_, 1);
+				_material->BindTexture(pCommandList_, 5);
 			} else {
 				Material& material = useModel->GetMaterials().front();
-				material.BindMaterial(pCommnadList_, 1);
-				material.BindTexture(pCommnadList_, 5);
+				material.BindMaterial(pCommandList_, 1);
+				material.BindTexture(pCommandList_, 5);
 			}
 
 
-			mesh.Draw(pCommnadList_, false);
+			mesh.Draw(pCommandList_, false);
 
 			UINT meshIndex = static_cast<UINT>(mesh.GetIndices().size());
-			pCommnadList_->DrawIndexedInstanced(meshIndex, instanceCount, 0, 0, 0);
+			pCommandList_->DrawIndexedInstanced(meshIndex, instanceCount, 0, 0, 0);
 		}
 	}
 

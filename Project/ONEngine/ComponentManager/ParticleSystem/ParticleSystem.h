@@ -44,6 +44,8 @@ public:
 	static void SInitialize(ID3D12GraphicsCommandList* commandList);
 	static void SFinalize();
 
+	static void SetLightGroup(class LightGroup* _lightGroup);
+
 
 	/// ===================================================
 	/// public : overriding methods
@@ -213,6 +215,8 @@ public:
 		uint32_t instanceCount
 	);
 
+	void SetLightGroup(class LightGroup* _lightGroup);
+
 private:
 
 	/// ===================================================
@@ -222,7 +226,8 @@ private:
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
 	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
-	
+	class LightGroup*              pLightGroup_   = nullptr;
+
 };
 
 

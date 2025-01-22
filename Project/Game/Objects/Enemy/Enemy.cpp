@@ -20,6 +20,7 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/HitEffect/HitEffect.h"
+#include "EnemyDeadEffect/EnemyDeadEffect.h"
 
 
 Enemy::Enemy(Player* _player, EnemyManager* _manager, TrackingCamera* _camera) 
@@ -133,6 +134,11 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 	if(hp_ <= 0.0f) {
 		pManager_->AddDefeatEnemiesCount();
 		pManager_->DestroyEnemy(this);
+
+		/// 死亡エフェクト
+		EnemyDeadEffect* deadEffect = new EnemyDeadEffect();
+		deadEffect->Initialize();
+		deadEffect->SetPosition(pTransform_->position);
 	}
 
 }

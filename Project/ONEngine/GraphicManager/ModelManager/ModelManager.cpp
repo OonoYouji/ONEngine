@@ -53,7 +53,6 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
-		//pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2);		///- camera 
 
 		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
