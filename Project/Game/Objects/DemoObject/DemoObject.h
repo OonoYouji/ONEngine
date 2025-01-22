@@ -22,7 +22,5 @@ public:
 
 private:
 
-	Quaternion rotation0, rotation1;
-	Quaternion interpolate0, interpolate1, interpolate2, interpolate3, interpolate4;
 
 };
