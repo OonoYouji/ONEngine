@@ -21,7 +21,7 @@ void TargetSpriteRender::Initialize() {
 	meshRenderer_->SetModel("Target");
 	meshRenderer_->isActive = false;
 
-	drawLayerId = GAME_SCENE_LAYER_TARGET_SPRITE;
+	//drawLayerId = GAME_SCENE_LAYER_TARGET_SPRITE;
 }
 
 void TargetSpriteRender::Update() {

@@ -18,6 +18,7 @@
 #include "Objects/Player/PlayerOperationGUI/PlayerOperationGUI.h"
 
 #include "Objects/BackgroundObject/Stage/Stage.h"
+#include "Objects/GameClearEffect/GameClearEffect.h"
 
 
 /// ===================================================
@@ -63,9 +64,13 @@ void Scene_Game::Initialize() {
 	uiCamera->Initialize();
 	uiCamera->SetProjectionType(ORTHOGRAPHIC);
 	uiCamera->SetDistance(10.0f);
-
 	AddLayer("UILayer", uiCamera);
-	//AddLayer("TargetSpriteLayer", mainCamera_);
+	
+	GameCamera* clearEffectLayerCamera = new GameCamera("ClearEffectLayerCamera");
+	clearEffectLayerCamera->Initialize();
+	clearEffectLayerCamera->SetProjectionType(ORTHOGRAPHIC);
+	clearEffectLayerCamera->SetDistance(10.0f);
+	AddLayer("ClearEffectLayer", clearEffectLayerCamera);
 
 
 	/// Lightの設定
@@ -95,6 +100,10 @@ void Scene_Game::Initialize() {
 	/// 初期化でdelta timeが非常に大きくなるのを防ぐために2回更新
 	Time::GetInstance()->Update();
 	Time::GetInstance()->Update();
+
+	/// クリア演出の初期化
+	gameClearEffect_ = nullptr;
+
 }
 
 
@@ -109,9 +118,25 @@ void Scene_Game::Update() {
 		lightGroup->SetPointLightBufferData(i, pointLightArray_[i]->GetData());
 	}
 
-	/// ゲームが終了したのでシーン遷移
-	if(enemyManager_->GetDefeatEnemiesCount() > 20) {
-		SetNextScene("ClearScene");
+	
+
+
+	/// game clear effectが生成されているのであれば更新、そうでなければ通常の更新
+	if (gameClearEffect_) {
+		
+		if (gameClearEffect_->IsEnd()) {
+			SetNextScene("ClearScene");
+		}
+
+	} else {
+
+		/// ゲームが終了したのでシーン遷移
+		if(enemyManager_->GetDefeatEnemiesCount() > 20) {
+			/// ここでクリア演出を行う 演出が終わったらシーン遷移
+
+			gameClearEffect_ = new GameClearEffect();
+			gameClearEffect_->Initialize();
+		}
 	}
 
 }
