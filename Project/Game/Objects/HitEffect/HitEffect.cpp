@@ -38,7 +38,7 @@ void HitEffect::Initialize() {
 	meshRenderer_ = AddComponent<MeshRenderer>();
 	meshRenderer_->SetModel("HitEffect");
 	meshRenderer_->SetMaterial("HitEffect-sheet.png");
-	meshRenderer_->SetColor({ 1,1,1,1 });
+	meshRenderer_->SetColor({ 1, 1, 1, 0.5f });
 	meshRenderer_->SetIsLighting(false);
 	meshRenderer_->SetUVScale({ 1.0f / static_cast<float>(frameMaxIndex_), 1.0f});
 
@@ -46,7 +46,7 @@ void HitEffect::Initialize() {
 	/// MeshInstancingRendererの初期化
 	Model*    plane = ModelManager::CreatePlane();
 	Material& material = plane->GetMaterials().front();
-	material.SetColor({ 1, 1, 1, 0.1f });
+	material.SetColor({ 1, 1, 1, 0.05f });
 	material.SetIsLighting(true);
 	material.SetTextureName("circle");
 
@@ -60,6 +60,7 @@ void HitEffect::Initialize() {
 		EffectElement& element = elements_.back();
 		
 		element.transform.position = {};
+		element.transform.scale = Vec3::kOne * Random::Float(1.0f, 5.0f);
 		element.transform.rotate.x = std::numbers::pi_v<float> * -0.5f;
 		element.velocity = Random::Vec3({ -1.0f, 0.0f, -1.0f }, Vec3::kOne * 1.0f);
 		element.velocity = element.velocity.Normalize() * Random::Float(1.0f, 5.0f);
