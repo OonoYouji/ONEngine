@@ -10,6 +10,7 @@
 /// engine
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/ModelManager/Model.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxStructuredBuffer.h"
 
 /// components
 #include "ComponentManager/Base/BaseComponent.h"
@@ -170,11 +171,8 @@ private:
 
 
 	/// particles trasform buffers
-	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingData_         = nullptr;
-	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
-	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
-	uint32_t srvDescriptorIndex_;
+	std::unique_ptr<DxStructuredBuffer<Mat4>>                   transforms_ ;
+	std::unique_ptr<DxStructuredBuffer<Material::MaterialData>> materials_  ;
 
 	/// billboard
 	Mat4 matBackToFront_;
@@ -210,7 +208,8 @@ public:
 	void Update();
 
 	void Draw(
-		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
+		DxStructuredBuffer<Mat4>* _transformBuffer, 
+		DxStructuredBuffer<Material::MaterialData>* _materialBuffer, 
 		Model* useModel,
 		uint32_t instanceCount
 	);
@@ -260,6 +259,8 @@ public:
 
 	uint32_t GetID() { return id_; }
 
+	Material::MaterialData& GetMaterial() { return material_; }
+
 private:
 
 	/// ===================================================
@@ -273,6 +274,6 @@ private:
 	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
-
+	Material::MaterialData material_;
 
 };

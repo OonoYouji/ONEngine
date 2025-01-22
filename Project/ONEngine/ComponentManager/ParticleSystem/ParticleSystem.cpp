@@ -39,8 +39,8 @@ ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& fileP
 }
 
 ParticleSystem::~ParticleSystem() {
-	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	pSRVDescriptorHeap->Free(srvDescriptorIndex_);
+	transforms_.reset();
+	materials_.reset();
 }
 
 
@@ -62,32 +62,15 @@ void ParticleSystem::SetLightGroup(LightGroup* _lightGroup) {
 
 void ParticleSystem::Initialize() {
 
-	/// buffer initialize
-	trasformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxParticleNum_);
+	transforms_.reset(new DxStructuredBuffer<Mat4>());
+	transforms_->Create(kMaxParticleNum_);
 
-	/// desc setting
-	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
-	desc.Format                     = DXGI_FORMAT_UNKNOWN;
-	desc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	desc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
-	desc.Buffer.FirstElement        = 0;
-	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
-	desc.Buffer.NumElements         = static_cast<UINT>(kMaxParticleNum_);
-	desc.Buffer.StructureByteStride = sizeof(Mat4);
+	materials_.reset(new DxStructuredBuffer<Material::MaterialData>());
+	materials_->Create(kMaxParticleNum_);
+	for(size_t i = 0; i < kMaxParticleNum_; ++i) {
+		materials_->SetMappedData(i, *pModel_->GetMaterials().front().GetMaterialData());
 
-	/// cpu, gpu handle initialize
-	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
-	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex_);
-
-	/// resource create
-	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(trasformArrayBuffer_.Get(), &desc, cpuHandle_);
-
-	/// mapping data bind
-	trasformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-
+	}
 
 	/// particle system setting
 	particleArray_.reserve(kMaxParticleNum_);
@@ -199,12 +182,18 @@ void ParticleSystem::Draw() {
 		return false;
 	});
 
+	for(size_t i = 0; i < particleArray_.size(); ++i) {
+		materials_->SetMappedData(i, particleArray_[i]->GetMaterial());
+	}
+
 
 	/// 描画処理に移行する
 	if(emitter_->currentParticleCount_ > 0) {
-		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
+		for(size_t i = 0; i < matTransformArray.size(); ++i) {
+			transforms_->SetMappedData(i, matTransformArray[i]);
+		}
 
-		sPipeline_->Draw(gpuHandle_, pModel_, emitter_->currentParticleCount_);
+		sPipeline_->Draw(transforms_.get(), materials_.get(), pModel_, emitter_->currentParticleCount_);
 	}
 }
 
@@ -305,15 +294,14 @@ void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_) {
 
 	/// Constant Buffer
 	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	/// viewProjection
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// material
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	/// camera 
-
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// camera 
 
 	/// descriptor
-	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-	pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-	pipelineState_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Transform
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Texture
+	pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Directional Light
+	pipelineState_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Point Light
+	pipelineState_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Material
 
 	/// SRV - Transform
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);
@@ -326,6 +314,10 @@ void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_) {
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3);
 	
+	/// SRV - Material
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 4);
+
+
 
 	/// Pipeline Create
 	pipelineState_->Initialize();
@@ -337,10 +329,14 @@ void ParticlePipeline::Update() {}
 
 
 
-void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
+void ParticlePipeline::Draw(
+	DxStructuredBuffer<Mat4>* _transformBuffer, 
+	DxStructuredBuffer<Material::MaterialData>* _materialBuffer, 
+	Model* useModel, uint32_t instanceCount) {
 
 	/// other pointer get
-	BaseCamera*       pCamera    = CameraManager::GetInstance()->GetMainCamera();
+	BaseCamera* pCamera = CameraManager::GetInstance()->GetMainCamera();
+
 
 	/// default setting
 	pipelineState_->SetPipelineState();
@@ -348,19 +344,19 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 	/// command setting
 	pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pCommandList_->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
-	pCommandList_->SetGraphicsRootConstantBufferView(2, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
+	pCommandList_->SetGraphicsRootConstantBufferView(1, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
 
-	pLightGroup_->BindDirectionalLightBufferForCommandList(5, pCommandList_);
-	pLightGroup_->BindPointLightBufferForCommandList(6, pCommandList_);
+	pLightGroup_->BindDirectionalLightBufferForCommandList(4, pCommandList_);
+	pLightGroup_->BindPointLightBufferForCommandList(5, pCommandList_);
 
-
-	/// transform の bind
-	pCommandList_->SetGraphicsRootDescriptorTable(3, gpuHandle);
+	_transformBuffer->BindToCommandList(2, pCommandList_); /// bind transform
+	_materialBuffer->BindToCommandList(6, pCommandList_);  /// bind material
 
 	for(auto& material : useModel->GetMaterials()) {
 		material.BindMaterial(pCommandList_, 1);
-		material.BindTexture(pCommandList_, 4);
+		material.BindTexture(pCommandList_, 3);
 	}
+
 
 	/// 描画コールの呼び出し
 	for(auto& mesh : useModel->GetMeshes()) {

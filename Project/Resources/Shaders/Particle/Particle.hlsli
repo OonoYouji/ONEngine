@@ -9,6 +9,7 @@ struct VSOutput {
 	float2 texcoord : TEXCOORD0;
 	float3 normal   : NORMAL0;
 	float3 worldPosition : WORLD_POSITION0;
+	uint   instanceId : INSTANCE_ID0;
 };
 
 struct PSOutput {
