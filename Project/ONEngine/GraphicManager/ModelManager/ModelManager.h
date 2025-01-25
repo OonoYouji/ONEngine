@@ -47,6 +47,8 @@ public:
 	/// </summary>
 	static Model* Load(const std::string& filePath);
 
+	static bool Unload(const std::string& _filePath);
+
 	Node ReadNode(aiNode* node);
 
 	/// <summary>

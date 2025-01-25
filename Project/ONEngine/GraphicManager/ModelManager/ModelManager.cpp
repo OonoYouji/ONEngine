@@ -237,6 +237,17 @@ Model* ModelManager::Load(const std::string& filePath) {
 	return GetModel(filePath);
 }
 
+bool ModelManager::Unload(const std::string& _filePath) {
+	auto itr = GetInstance()->models_.find(_filePath);
+
+	if (itr != GetInstance()->models_.end()) {
+		GetInstance()->models_.erase(itr);
+		return true;
+	}
+
+	return false;
+}
+
 
 Node ModelManager::ReadNode(aiNode* node) {
 	Node result;

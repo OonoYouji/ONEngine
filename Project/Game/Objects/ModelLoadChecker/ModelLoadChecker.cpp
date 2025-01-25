@@ -30,15 +30,22 @@ void ModelLoadChecker::Debug() {
 
 	const std::string modelDirectory = "./Resources/Models/";
 
+	int id = 0;
 	for (const auto& entry : fs::directory_iterator(modelDirectory)) {
 		const std::string&& modelName = entry.path().filename().string();
 		bool&&              isLoaded  = ModelManager::IsModelLoaded(modelName);
 
+		ImGui::PushID(id++);
 		ImGui::Checkbox("##loaded", &isLoaded);
 		ImGui::SameLine();
 		if (ImGui::Button(modelName.c_str())) {
-			ModelManager::Load(modelName);
+			if (isLoaded) {
+				ModelManager::Unload(modelName);
+			} else {
+				ModelManager::Load(modelName);
+			}
 		}
+		ImGui::PopID();
 	}
 
 }
