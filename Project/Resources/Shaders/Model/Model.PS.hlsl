@@ -78,7 +78,7 @@ PSOutput main(VSOutput input) {
 				float  falloffFactor               = saturate((cosAngle - gSpotLights[i].cosAngle) / (gSpotLights[i].cosFalloffStart - gSpotLights[i].cosAngle));
 				//float  attemuationFactor           = 1.0f;
 				
-				shaderColor += gSpotLights[i].color.rgb * texColor.rgb * gSpotLights[i].intensity * falloffFactor;
+				shaderColor += gSpotLights[i].color.rgb * gMaterial.color.rgb * texColor.rgb * gSpotLights[i].intensity * falloffFactor;
 			}
 		}
 
