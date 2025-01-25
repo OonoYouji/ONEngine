@@ -37,26 +37,30 @@ void Scene_Game::Initialize() {
 
 	/// instance create
 	std::vector<BaseGameObject*> createObjects;
-	createObjects.reserve(16);
-	createObjects.push_back(new Player(mainCamera_));
-	createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
-	createObjects.push_back(new Stage());
-	createObjects.push_back(new EnemyManager(static_cast<Player*>(createObjects[0]), static_cast<TrackingCamera*>(createObjects[1])));
-	createObjects.push_back(new PlayerOperationGUI());
 
-	createObjects.push_back(new PointLight());
-	createObjects.push_back(new PointLight());
-	createObjects.push_back(new PointLight());
-	createObjects.push_back(new PointLight());
-	createObjects.push_back(new PointLight());
+	{	/// create objects
+		createObjects.reserve(16);
+		createObjects.push_back(new Player(mainCamera_));
+		createObjects.push_back(new TrackingCamera(mainCamera_, createObjects[0]));
+		createObjects.push_back(new Stage());
+		createObjects.push_back(new EnemyManager(static_cast<Player*>(createObjects[0]), static_cast<TrackingCamera*>(createObjects[1])));
+		createObjects.push_back(new PlayerOperationGUI());
 
-	createObjects.push_back(new SpotLight());
-	createObjects.push_back(new SpotLight());
+		createObjects.push_back(new PointLight());
+		createObjects.push_back(new PointLight());
+		createObjects.push_back(new PointLight());
+		createObjects.push_back(new PointLight());
+		createObjects.push_back(new PointLight());
 
-	/// initializing
-	for(BaseGameObject* obj : createObjects) {
-		obj->Initialize();
+		createObjects.push_back(new SpotLight());
+		createObjects.push_back(new SpotLight());
+
+		/// initializing
+		for (BaseGameObject* obj : createObjects) {
+			obj->Initialize();
+		}
 	}
+
 
 	enemyManager_ = static_cast<EnemyManager*>(createObjects[3]);
 	Player* player = static_cast<Player*>(createObjects[0]);
@@ -64,57 +68,61 @@ void Scene_Game::Initialize() {
 
 	directionalLight_->SetDirection({ 0.0f, -1.0f, 0.0f });
 
-	/// Layerの設定
-	GameCamera* uiCamera = new GameCamera("UICamera");
-	uiCamera->Initialize();
-	uiCamera->SetProjectionType(ORTHOGRAPHIC);
-	uiCamera->SetDistance(10.0f);
-	AddLayer("UILayer", uiCamera);
-	
-	GameCamera* clearEffectLayerCamera = new GameCamera("ClearEffectLayerCamera");
-	clearEffectLayerCamera->Initialize();
-	clearEffectLayerCamera->SetProjectionType(ORTHOGRAPHIC);
-	clearEffectLayerCamera->SetDistance(10.0f);
-	AddLayer("ClearEffectLayer", clearEffectLayerCamera);
+	{	/// Layerの設定
+		GameCamera* uiCamera = new GameCamera("UICamera");
+		uiCamera->Initialize();
+		uiCamera->SetProjectionType(ORTHOGRAPHIC);
+		uiCamera->SetDistance(10.0f);
+		AddLayer("UILayer", uiCamera);
 
-	/// Lightの設定
-	LightGroup* lightGroup = SceneManager::GetInstance()->GetLightGroup();
-	//lightGroup->SetDirectionalLightBufferData(0, directionalLight_->GetData());
-
-	for(int i = 0; i < 5; ++i) {
-		/// 4番以降から5個のオブジェクトがライト
-		pointLightArray_[i] = static_cast<PointLight*>(createObjects[5 + i]);
-		pointLightArray_[i]->SetColor(Vec4(Random::Vec3({ 0.25f, 0.25f, 0.25f }, Vec3::kOne), 1.0f));
-		pointLightArray_[i]->SetIntencity(0.5f);
-	}
-
-	for(int i = 0; i < 5; ++i) {
-		lightGroup->SetPointLightBufferData(i, pointLightArray_[i]->GetData());
-	}
-
-	pointLightArray_[0]->SetPosition({ 0.0f, 8.0f, 0.0f });
-	pointLightArray_[0]->SetColor({ 0.25f, 0.25f, 0.72f, 1.0f });
-	
-	pointLightArray_[1]->SetPosition({ -20.0f, 8.0f, -20.0f });
-	pointLightArray_[2]->SetPosition({ -20.0f, 8.0f, +20.0f });
-	pointLightArray_[3]->SetPosition({ +20.0f, 8.0f, -20.0f });
-	pointLightArray_[4]->SetPosition({ +20.0f, 8.0f, +20.0f });
-
-
-	for (int i = 0; i < 2; ++i) {
-		spotLightArray_[i] = static_cast<SpotLight*>(createObjects[10 + i]);
-		spotLightArray_[i]->SetColor(Vec4(Random::Vec3({0.25f, 0.25f, 0.25f}, Vec3::kOne), 1.0f));
-		spotLightArray_[i]->SetIntensity(0.25f);
-		spotLightArray_[i]->SetDirection(i == 0 ? Vec3(1,0,0) : Vec3(-1,0,0));
-		spotLightArray_[i]->SetPosition(i == 0 ? Vec3(-50.0f, 10.0f, 0) : Vec3(50.0f, 10.0f, 0));
-	}
-
-	for (int i = 0; i < 2; ++i) {
-		lightGroup->SetSpotLightBufferData(i, spotLightArray_[i]->GetData());
+		GameCamera* clearEffectLayerCamera = new GameCamera("ClearEffectLayerCamera");
+		clearEffectLayerCamera->Initialize();
+		clearEffectLayerCamera->SetProjectionType(ORTHOGRAPHIC);
+		clearEffectLayerCamera->SetDistance(10.0f);
+		AddLayer("ClearEffectLayer", clearEffectLayerCamera);
 	}
 
 	
-	/// 初期化でdelta timeが非常に大きくなるのを防ぐために2回更新
+	{	/// Lightの設定
+		LightGroup* lightGroup = SceneManager::GetInstance()->GetLightGroup();
+
+		/// PointLightの設定
+		for (int i = 0; i < 5; ++i) {
+			/// 4番以降から5個のオブジェクトがライト
+			pointLightArray_[i] = static_cast<PointLight*>(createObjects[5 + i]);
+			pointLightArray_[i]->SetColor(Vec4(Random::Vec3({ 0.25f, 0.25f, 0.25f }, Vec3::kOne), 1.0f));
+			pointLightArray_[i]->SetIntencity(0.5f);
+		}
+
+		for (int i = 0; i < 5; ++i) {
+			lightGroup->SetPointLightBufferData(i, pointLightArray_[i]->GetData());
+		}
+
+		pointLightArray_[0]->SetPosition({ 0.0f, 8.0f, 0.0f });
+		pointLightArray_[0]->SetColor({ 0.25f, 0.25f, 0.72f, 1.0f });
+
+		pointLightArray_[1]->SetPosition({ -20.0f, 8.0f, -20.0f });
+		pointLightArray_[2]->SetPosition({ -20.0f, 8.0f, +20.0f });
+		pointLightArray_[3]->SetPosition({ +20.0f, 8.0f, -20.0f });
+		pointLightArray_[4]->SetPosition({ +20.0f, 8.0f, +20.0f });
+
+
+		/// SpotLightの設定
+		for (int i = 0; i < 2; ++i) {
+			spotLightArray_[i] = static_cast<SpotLight*>(createObjects[10 + i]);
+			spotLightArray_[i]->SetColor(Vec4(Random::Vec3({0.25f, 0.25f, 0.25f}, Vec3::kOne), 1.0f));
+			spotLightArray_[i]->SetIntensity(0.25f);
+			spotLightArray_[i]->SetDirection(i == 0 ? Vec3(1, 0, 0) : Vec3(-1, 0, 0));
+			spotLightArray_[i]->SetPosition(i == 0 ? Vec3(-50.0f, 10.0f, 0) : Vec3(50.0f, 10.0f, 0));
+		}
+
+		for (int i = 0; i < 2; ++i) {
+			lightGroup->SetSpotLightBufferData(i, spotLightArray_[i]->GetData());
+		}
+	}
+
+	
+	/// 初期化で delta time が非常に大きくなるのを防ぐために2回更新
 	Time::GetInstance()->Update();
 	Time::GetInstance()->Update();
 
