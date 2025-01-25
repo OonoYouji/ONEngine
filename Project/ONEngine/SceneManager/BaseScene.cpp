@@ -34,6 +34,7 @@ void BaseScene::CreateObject() {
 	directionalLight_ = new DirectionalLight();
 	directionalLight_->Initialize();
 
+	CameraManager::GetInstance()->SetMainCamera(mainCamera_);
 	layers_[0]->SetMainCamera(mainCamera_);
 }
 
