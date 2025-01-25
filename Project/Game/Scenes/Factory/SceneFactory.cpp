@@ -1,10 +1,10 @@
 #include "SceneFactory.h"
 
+#include "../DemoScene.h"
 
+SceneFactory::SceneFactory(const std::string& _startupScene) : AbstructSceneFactory("DemoScene") {
 
-SceneFactory::SceneFactory(const std::string& _startupScene) : AbstructSceneFactory(_startupScene){
-
-
+	RegisterSceneCreator("DemoScene", []() { return new DemoScene(); });
 }
 
 SceneFactory::~SceneFactory() {}

@@ -20,6 +20,7 @@ public:
 
 private:
 
+	std::array<class SpotLight*, 5> spotLights_ = {};
 
 };
 

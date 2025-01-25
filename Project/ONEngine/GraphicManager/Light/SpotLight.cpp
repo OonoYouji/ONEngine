@@ -34,6 +34,11 @@ void SpotLight::Update() {
 
 
 void SpotLight::Debug() {
+	
+	bool isActive = data_.active;
+	ImGui::Checkbox("active", &isActive);
+	data_.active = isActive;
+
 	ImGui::ColorEdit4("color",     &data_.color.x);
 	ImGui::DragFloat("intensity",  &data_.intensity, 0.1f, 0.0f, 10.0f);
 	ImGui::DragFloat3("direction", &data_.direction.x, 0.1f);
@@ -42,9 +47,6 @@ void SpotLight::Debug() {
 	ImGui::DragFloat("cos angle",  &data_.cosAngle, 0.01f, 0.0f, 1.0f);
 	ImGui::DragFloat("cos falloff start",  &data_.cosFalloffStart, 0.01f, 0.0f, 1.0f);
 
-	bool isActive = data_.active;
-	ImGui::Checkbox("active", &isActive);
-	data_.active = isActive;
 }
 
 

@@ -243,7 +243,6 @@
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
-    <ClCompile Include="Game\Scenes\CG3ET2Scenes\SpotLightDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Scenes\DemoScene.h" />
@@ -354,7 +353,6 @@
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
-    <ClInclude Include="Game\Scenes\CG3ET2Scenes\SpotLightDemoScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
