@@ -21,6 +21,8 @@ void DemoScene::Initialize() {
 		for (auto& spotLight : spotLights_) {
 			spotLight = new SpotLight();
 			spotLight->Initialize();
+
+			spotLight->SetPosition(Vec3(0.0f, 10.0f, 0.0f));
 		}
 
 		for (size_t i = 0; i < 5; i++) {
