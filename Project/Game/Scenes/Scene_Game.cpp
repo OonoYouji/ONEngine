@@ -77,7 +77,6 @@ void Scene_Game::Initialize() {
 	clearEffectLayerCamera->SetDistance(10.0f);
 	AddLayer("ClearEffectLayer", clearEffectLayerCamera);
 
-	directionalLight_->SetIntencity(false);
 	/// Lightの設定
 	LightGroup* lightGroup = SceneManager::GetInstance()->GetLightGroup();
 	//lightGroup->SetDirectionalLightBufferData(0, directionalLight_->GetData());
@@ -87,7 +86,6 @@ void Scene_Game::Initialize() {
 		pointLightArray_[i] = static_cast<PointLight*>(createObjects[5 + i]);
 		pointLightArray_[i]->SetColor(Vec4(Random::Vec3({ 0.25f, 0.25f, 0.25f }, Vec3::kOne), 1.0f));
 		pointLightArray_[i]->SetIntencity(0.5f);
-		pointLightArray_[i]->SetActive(false);
 	}
 
 	for(int i = 0; i < 5; ++i) {
@@ -105,10 +103,10 @@ void Scene_Game::Initialize() {
 
 	for (int i = 0; i < 2; ++i) {
 		spotLightArray_[i] = static_cast<SpotLight*>(createObjects[10 + i]);
-		spotLightArray_[i]->SetColor(Vec4(1,0,0,1));
-		spotLightArray_[i]->SetIntensity(0.5f);
+		spotLightArray_[i]->SetColor(Vec4(Random::Vec3({0.25f, 0.25f, 0.25f}, Vec3::kOne), 1.0f));
+		spotLightArray_[i]->SetIntensity(0.25f);
 		spotLightArray_[i]->SetDirection(i == 0 ? Vec3(1,0,0) : Vec3(-1,0,0));
-		spotLightArray_[i]->SetPosition(i == 0 ? Vec3(-5,0,0) : Vec3(5,0,0));
+		spotLightArray_[i]->SetPosition(i == 0 ? Vec3(-50.0f, 10.0f, 0) : Vec3(50.0f, 10.0f, 0));
 	}
 
 	for (int i = 0; i < 2; ++i) {

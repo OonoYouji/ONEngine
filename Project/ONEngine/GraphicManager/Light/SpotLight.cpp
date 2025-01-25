@@ -22,7 +22,7 @@ void SpotLight::Initialize() {
 		.distance  = 10.0f,
 		.decay     = 2.0f,
 		.cosAngle  = std::cos(std::numbers::pi_v<float> / 3.0f),
-		.cosFalloffStart = data_.cosAngle,
+		.cosFalloffStart = std::cos(std::numbers::pi_v<float> / 3.0f) + 0.25f,
 		.active    = true
 	};
 }
