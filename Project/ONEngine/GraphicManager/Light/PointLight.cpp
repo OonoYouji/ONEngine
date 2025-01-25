@@ -35,3 +35,23 @@ void PointLight::Debug() {
 	ImGui::DragFloat("decay",     &data_.decay,     0.01f, 0.0f, 10.0f);
 
 }
+
+void PointLight::SetColor(const Vec4& _color) {
+	data_.color = _color;
+}
+
+void PointLight::SetIntensity(float _intensity) {
+	data_.intensity = _intensity;
+}
+
+void PointLight::SetRadius(float _radius) {
+	data_.radius = _radius;
+}
+
+void PointLight::SetDecay(float _decay) {
+	data_.decay = _decay;
+}
+
+void PointLight::SetActive(bool _active) {
+	data_.active = _active;
+}

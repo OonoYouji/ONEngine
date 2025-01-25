@@ -48,40 +48,28 @@ public:
 	/// public : getter
 	/// ===================================================
 
-	/// <summary>
-	/// ライトのバッファデータを取得
-	/// </summary>
-	/// <returns></returns>
+	/// @brief buffer dataの取得
+	/// @return buffer data
 	const BufferData& GetData() const { return data_; }
 
-	/// <summary>
-	/// ライトの色を設定
-	/// </summary>
-	/// <param name="color"></param>
-	void SetColor(const Vec4& color) { data_.color = color; }
+	/// @brief ライトの色を設定
+	/// @param _color 色
+	void SetColor(const Vec4& _color);
 
-	/// <summary>
-	/// ライトの輝度を設定
-	/// </summary>
-	/// <param name="intensity"></param>
-	void SetIntensity(float intensity) { data_.intensity = intensity; }
+	/// @brief ライトの輝度を設定
+	/// @param _intensity 輝度
+	void SetIntensity(float _intensity);
 
-	/// <summary>
-	/// ライトの範囲を設定
-	/// </summary>
-	/// <param name="radius"></param>
-	void SetRadius(float radius) { data_.radius = radius; }
+	/// @brief ライトの届く最大距離を設定
+	/// @param _radius 最大距離
+	void SetRadius(float _radius);
 
-	/// <summary>
-	/// ライトの減衰率を設定
-	/// </summary>
-	/// <param name="decay"></param>
-	void SetDecay(float decay) { data_.decay = decay; }
+	/// @brief ライトの減衰率を設定
+	/// @param _decay 減衰率
+	void SetDecay(float _decay);
 
-	/// <summary>
-	/// ライトの有効かどうかを設定
-	/// </summary>
-	/// <param name="active"></param>
-	void SetActive(bool active) { data_.active = active; }
+	/// @brief ライトの有効無効を設定
+	/// @param _active 有効無効
+	void SetActive(bool _active);
 
 };
