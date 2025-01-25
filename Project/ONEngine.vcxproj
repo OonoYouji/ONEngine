@@ -277,6 +277,7 @@
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
@@ -421,6 +422,7 @@
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
+    <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
