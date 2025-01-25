@@ -6,6 +6,10 @@
 /// external
 #include "imgui.h"
 
+/// engine
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
+#include "Objects/Camera/Manager/CameraManager.h"
+
 
 SpotLight::SpotLight() {
 	CreateTag(this);
@@ -14,6 +18,15 @@ SpotLight::SpotLight() {
 SpotLight::~SpotLight() {}
 
 void SpotLight::Initialize() {
+#ifdef _DEBUG
+	{	/// デバッグ用のアイコンを設定
+		SpriteRenderer* renderer = AddComponent<SpriteRenderer>();
+		renderer->SetTexture("LightIcon.png");
+	}
+#endif // _DEBUG
+
+
+
 	data_ = {
 		.color     = Vec4(1.0f, 1.0f, 1.0f, 1.0f),
 		.position  = Vec3(0.0f, 10.0f, 0.0f),
@@ -28,6 +41,15 @@ void SpotLight::Initialize() {
 }
 
 void SpotLight::Update() {
+#ifdef _DEBUG
+	{	/// アイコンのビルボード
+		BaseCamera* pCamera = CameraManager::GetInstance()->GetMainCamera();
+		if (pCamera) {
+			pTransform_->rotate = pCamera->GetRotate();
+		}
+	}
+#endif // _DEBUG
+
 	data_.position  = pTransform_->position;
 	data_.direction = data_.direction.Normalize();
 }

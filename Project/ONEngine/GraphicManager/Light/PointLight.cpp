@@ -3,7 +3,20 @@
 /// external
 #include <imgui.h>
 
+/// engine
+#include "ComponentManager/SpriteRenderer/SpriteRenderer.h"
+#include "Objects/Camera/Manager/CameraManager.h"
+
+
 void PointLight::Initialize() {
+#ifdef _DEBUG
+	{	/// デバッグ用のアイコンを設定
+		SpriteRenderer* renderer = AddComponent<SpriteRenderer>();
+		renderer->SetTexture("LightIcon.png");
+	}
+#endif // _DEBUG
+
+
 
 	data_ = {
 		.color     = Vec4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -18,6 +31,16 @@ void PointLight::Initialize() {
 }
 
 void PointLight::Update() {
+#ifdef _DEBUG
+	{	/// アイコンのビルボード
+		BaseCamera* pCamera = CameraManager::GetInstance()->GetMainCamera();
+		if (pCamera) {
+			pTransform_->rotate = pCamera->GetRotate();
+		}
+	}
+#endif // _DEBUG
+
+
 
 	data_.position = pTransform_->position;
 
