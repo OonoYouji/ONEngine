@@ -4,7 +4,7 @@
 #include "../PointLightDemoScene.h"
 #include "../PhongLightDemoScene.h"
 
-SceneFactory::SceneFactory(const std::string& _startupScene) : AbstructSceneFactory("SpotLightDemoScene") {
+SceneFactory::SceneFactory(const std::string& _startupScene) : AbstructSceneFactory("PhongLightDemoScene") {
 
 	RegisterSceneCreator("SpotLightDemoScene", []() { return new DemoScene(); });
 	RegisterSceneCreator("PointLightDemoScene", []() { return new PointLightDemoScene(); });

@@ -58,3 +58,14 @@ void DebugCamera::Update() {
 	BaseUpdate();
 }
 
+void DebugCamera::Debug() {
+	std::string&& text = "operation\n";
+	text += "left ctrl + mouse wheel + mouse moving: move\n";
+	text += "mouse wheel scroll: zoom in, zoom out\n";
+
+	/// テキスト表示
+	ImGui::InputTextMultiline("##readonly", text.data(), text.size(), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 4), ImGuiInputTextFlags_ReadOnly);
+
+	BaseCamera::Debug();
+}
+

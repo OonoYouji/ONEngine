@@ -14,7 +14,8 @@ public:
 	~DebugCamera();
 
 	void Initialize() override;
-	void Update() override;
+	void Update()     override;
+	void Debug()      override;
 
 private:
 
