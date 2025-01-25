@@ -126,6 +126,8 @@
     <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
     <ClCompile Include="Game\Scenes\DemoScene.cpp" />
+    <ClCompile Include="PointLightDemoScene.cpp" />
+    <ClCompile Include="Game\Scenes\PointLightDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -236,6 +238,8 @@
     <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
     <ClInclude Include="Game\Scenes\DemoScene.h" />
+    <ClInclude Include="PointLightDemoScene.h" />
+    <ClInclude Include="Game\Scenes\PointLightDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
