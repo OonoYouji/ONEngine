@@ -24,7 +24,7 @@ void LightGroup::Initialize() {
 		DirectionalLight::BufferData data = {
 			.color     = Vec4(1.0f, 1.0f, 1.0f, 1.0f),
 			.direction = Vec3(-0.98f, 0.0f, 0.195f).Normalize(),
-			.intencity = 1.0f,
+			.intensity = 1.0f,
 			//.isActive  = false
 		};
 

@@ -7,13 +7,20 @@
 
 using namespace Microsoft::WRL;
 
+/// ===================================================
+/// DirectionalLight
+/// ===================================================
 class DirectionalLight final : public BaseGameObject {
 public:
 
+	/// ===================================================
+	/// public : sub class
+	/// ===================================================
+
 	struct BufferData {
-		Vec4 color;
-		Vec3 direction;
-		float intencity;
+		Vec4  color;
+		Vec3  direction;
+		float intensity;
 		int   active;
 	};
 
@@ -27,9 +34,8 @@ public:
 	~DirectionalLight() {}
 
 	void Initialize() override;
-	void Update() override;
-
-	void Debug() override;
+	void Update()     override;
+	void Debug()      override;
 
 
 private:
@@ -47,13 +53,20 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-
-	void SetColor(const Vec4& color) { data_.color = color; }
-
-	void SetDirection(const Vec3& direction);
-
-	void SetIntencity(float intencity) { data_.intencity = intencity; }
-
+	/// @brief buffer dataの取得
+	/// @return buffer data
 	const BufferData& GetData() const { return data_; }
+
+	/// @brief 色の設定
+	/// @param _color 色
+	void SetColor(const Vec4& _color);
+
+	/// @brief 方向の設定
+	/// @param _direction 方向
+	void SetDirection(const Vec3& _direction);
+
+	/// @brief 輝度の設定
+	/// @param _intensity 輝度
+	void SetIntensity(float _intensity);
 
 };

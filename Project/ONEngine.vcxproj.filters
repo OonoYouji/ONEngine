@@ -127,6 +127,7 @@
     <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
     <ClCompile Include="Game\Scenes\DemoScene.cpp" />
     <ClCompile Include="Game\Scenes\PointLightDemoScene.cpp" />
+    <ClCompile Include="Game\Scenes\PhongLightDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -238,6 +239,7 @@
     <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
     <ClInclude Include="Game\Scenes\DemoScene.h" />
     <ClInclude Include="Game\Scenes\PointLightDemoScene.h" />
+    <ClInclude Include="Game\Scenes\PhongLightDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
