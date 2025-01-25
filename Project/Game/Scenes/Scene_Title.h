@@ -15,8 +15,4 @@ public:
 	void Initialize() override;
 	void Update() override;
 
-private:
-
-	class GameSelector*    gameSelector_    = nullptr;
-	class SceneTransition* sceneTransition_ = nullptr;
 };
