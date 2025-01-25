@@ -60,6 +60,30 @@ void LightGroup::Initialize() {
 	}
 }
 
+void LightGroup::Update() {
+	
+	/// lightのデータを更新して、あるはずのないlightを無効化
+
+	for (size_t i = 0; i < kMaxDirectionalLightNum_; ++i) {
+		DirectionalLight::BufferData data = directionalLightBuffer_->GetMappedData(i);
+		data.active = 0;
+		directionalLightBuffer_->SetMappedData(i, data);
+	}
+
+	for (size_t i = 0; i < kMaxPointLightNum_; ++i) {
+		PointLight::BufferData data = pointLightBuffer_->GetMappedData(i);
+		data.active = 0;
+		pointLightBuffer_->SetMappedData(i, data);
+	}
+
+	for (size_t i = 0; i < kMaxSpotLightNum_; ++i) {
+		SpotLight::BufferData data = spotLightBuffer_->GetMappedData(i);
+		data.active = 0;
+		spotLightBuffer_->SetMappedData(i, data);
+	}
+
+}
+
 
 void LightGroup::BindDirectionalLightBufferForCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
 	directionalLightBuffer_->BindToCommandList(_rootParameterIndex, _commandList);

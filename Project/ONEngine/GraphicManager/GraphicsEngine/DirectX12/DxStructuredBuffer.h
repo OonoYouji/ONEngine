@@ -50,6 +50,11 @@ public:
 	/// <param name="_setValue"> : セットする値             </param>
 	void SetMappedData(size_t _index, const T& _setValue);
 
+	/// @brief mapped dataを取得する
+	/// @param _index 
+	/// @return 
+	const T& GetMappedData(size_t _index) const;
+
 private:
 
 	/// ===================================================
@@ -132,4 +137,11 @@ inline void DxStructuredBuffer<T>::SetMappedData(size_t _index, const T& _setVal
 	Assert(_index < bufferSize_, "out of range");
 
 	mappedDataArray_[_index] = _setValue;
+}
+
+template<typename T>
+inline const T& DxStructuredBuffer<T>::GetMappedData(size_t _index) const {
+	Assert(_index < bufferSize_, "out of range");
+
+	return mappedDataArray_[_index];
 }

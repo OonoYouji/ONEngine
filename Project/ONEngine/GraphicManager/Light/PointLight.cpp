@@ -29,9 +29,9 @@ void PointLight::Debug() {
 	ImGui::Checkbox("active", &active);
 	data_.active = active;
 
-	ImGui::ColorEdit3("color", &data_.color.x);
-	ImGui::DragFloat("intensity", &data_.intensity, 0.01f);
-	ImGui::DragFloat("radius", &data_.radius, 0.01f);
-	ImGui::DragFloat("decay", &data_.decay, 0.01f);
+	ImGui::ColorEdit3("color",    &data_.color.x);
+	ImGui::DragFloat("intensity", &data_.intensity, 0.01f, 0.0f, 100.0f);
+	ImGui::DragFloat("radius",    &data_.radius,    0.01f, 0.0f, 100.0f);
+	ImGui::DragFloat("decay",     &data_.decay,     0.01f, 0.0f, 10.0f);
 
 }

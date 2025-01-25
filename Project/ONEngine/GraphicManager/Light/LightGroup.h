@@ -19,6 +19,7 @@ public:
 	~LightGroup();
 
 	void Initialize();
+	void Update();
 
 	/// <summary>
 	/// DirectionalLightBufferをコマンドリストにバインド

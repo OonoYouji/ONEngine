@@ -61,8 +61,8 @@ PSOutput main(VSOutput input) {
 
 				float  NdotL               = dot(normalize(input.normal), pointLightDirection);
 				float  cos                 = pow(NdotL * 0.5f + 0.5f, 2.0f);
-				float3 diffuse             = (gMaterial.color * texColor * gPointLights[i].color * cos * gPointLights[i].intensity).rgb;
-				float3 specular            = gPointLights[i].color.rgb * gPointLights[i].intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
+				float3 diffuse             = (gMaterial.color * texColor * gPointLights[i].color * cos * gPointLights[i].intensity).rgb * factor;
+				float3 specular            = gPointLights[i].color.rgb * gPointLights[i].intensity * specularPow * float3(1.0f, 1.0f, 1.0f) * factor;
 
 				shaderColor += diffuse + specular;
 			}

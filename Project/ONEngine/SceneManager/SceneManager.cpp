@@ -94,6 +94,7 @@ void SceneManager::Update() {
 		Load(nextSceneName_);
 	}
 
+	lightGroup_->Update();
 	scenes_[currentSceneName_]->Update();
 
 	/// 更新1
