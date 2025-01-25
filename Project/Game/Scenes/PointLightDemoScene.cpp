@@ -5,6 +5,7 @@
 #include "Input/Input.h"
 #include "GraphicManager/Light/LightGroup.h"
 #include "GraphicManager/Light/PointLight.h"
+#include "Math/Random.h"
 
 /// user
 #include "Objects/Camera/GameCamera.h"
@@ -17,11 +18,28 @@ void PointLightDemoScene::Initialize() {
 	
 		/// light groupの instance を取得
 		LightGroup* lightGroup = SceneManager::GetInstance()->GetLightGroup();
+
+		std::array<Vec3, 5> lightPosition = {
+			Vec3(0.0f,  10.0f, 0.0f),
+			Vec3(40.0f, 10.0f, 0.0f),
+			Vec3(0.0f,  10.0f, 40.0f),
+			Vec3(40.0f, 10.0f, 40.0f),
+			Vec3(20.0f, 10.0f, 20.0f)
+		};
+
 		/// spot light の instance を生成
+		size_t index = 0;
 		for (auto& spotLight : pointLights_) {
 			spotLight = new PointLight();
+		
 			spotLight->Initialize();
+			spotLight->SetPosition(lightPosition[index]);
+			spotLight->SetColor(Vec4(Random::Vec3({ 0.25f, 0.25f, 0.25f }, Vec3::kOne), 1.0f));
+			spotLight->SetRadius(20.0f);
+
+			++index;
 		}
+
 		for (size_t i = 0; i < 5; i++) {
 			lightGroup->SetPointLightBufferData(i, pointLights_[i]->GetData());
 		}
