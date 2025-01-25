@@ -128,6 +128,8 @@
     <ClCompile Include="Game\Scenes\DemoScene.cpp" />
     <ClCompile Include="Game\Scenes\PointLightDemoScene.cpp" />
     <ClCompile Include="Game\Scenes\PhongLightDemoScene.cpp" />
+    <ClCompile Include="Game\Objects\ModelLoadChecker\ModelLoadChecker.cpp" />
+    <ClCompile Include="Game\Scenes\ModelLoadCheckDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -240,6 +242,8 @@
     <ClInclude Include="Game\Scenes\DemoScene.h" />
     <ClInclude Include="Game\Scenes\PointLightDemoScene.h" />
     <ClInclude Include="Game\Scenes\PhongLightDemoScene.h" />
+    <ClInclude Include="Game\Objects\ModelLoadChecker\ModelLoadChecker.h" />
+    <ClInclude Include="Game\Scenes\ModelLoadCheckDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

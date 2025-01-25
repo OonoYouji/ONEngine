@@ -101,6 +101,8 @@ Model* ModelManager::Load(const std::string& filePath) {
 		scene = importer.ReadFile(objPath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices);
 	}
 
+	Assert(scene != nullptr, "scene nullptr!!!");
+
 	Model* model = new Model();
 
 	/// ---------------------------------------------------
@@ -454,6 +456,17 @@ void ModelManager::PostDraw() {
 
 Model* ModelManager::GetModel(const std::string& filePath) {
 	return GetInstance()->models_.at(filePath).get();
+}
+
+bool ModelManager::IsModelLoaded(const std::string& _filePath) {
+	auto itr = GetInstance()->models_.find(_filePath);
+
+	/// end()に到達していない場合は読み込み済み
+	if (itr != GetInstance()->models_.end()) {
+		return true;
+	}
+
+	return false;
 }
 
 

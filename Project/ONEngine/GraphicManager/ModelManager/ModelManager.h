@@ -56,6 +56,8 @@ public:
 	/// <returns></returns>
 	static Model* GetModel(const std::string& filePath);
 
+	static bool IsModelLoaded(const std::string& _filePath);
+
 
 	/// <summary>
 	/// 平面の生成

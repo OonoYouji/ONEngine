@@ -139,6 +139,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Objects\ModelLoadChecker\ModelLoadChecker.cpp" />
     <ClCompile Include="Game\Scenes\DemoScene.cpp" />
     <ClCompile Include="Game\CustomMath\ImGui\ImGuiGizmo.cpp" />
     <ClCompile Include="Game\Objects\Camera\DebugCamera.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Game\Objects\DemoObject\DemoObject.cpp" />
     <ClCompile Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.cpp" />
     <ClCompile Include="Game\Scenes\PointLightDemoScene.cpp" />
+    <ClCompile Include="Game\Scenes\ModelLoadCheckDemoScene.cpp" />
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\PointLight.cpp" />
@@ -247,6 +249,7 @@
     <ClCompile Include="Game\Scenes\PhongLightDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Objects\ModelLoadChecker\ModelLoadChecker.h" />
     <ClInclude Include="Game\Scenes\DemoScene.h" />
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
     <ClInclude Include="Game\CustomMath\ImGui\Combo.h" />
@@ -260,6 +263,7 @@
     <ClInclude Include="Game\Objects\DemoObject\DemoObject.h" />
     <ClInclude Include="Game\Objects\DemoSphereColliderOBJ\DemoSphereColliderOBJ.h" />
     <ClInclude Include="Game\Scenes\PointLightDemoScene.h" />
+    <ClInclude Include="Game\Scenes\ModelLoadCheckDemoScene.h" />
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\PointLight.h" />
