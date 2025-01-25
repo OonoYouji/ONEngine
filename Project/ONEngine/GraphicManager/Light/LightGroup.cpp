@@ -35,7 +35,7 @@ void LightGroup::Initialize() {
 		PointLight::BufferData data = {
 			.color     = Vec4(1.0f, 1.0f, 1.0f, 1.0f),
 			.position  = Vec3(0.0f, 10.0f, 0.0f),
-			.intencity = 1.0f,
+			.intensity = 1.0f,
 			.radius    = 1.0f,
 			.decay     = 1.0f,
 			.active    = 0

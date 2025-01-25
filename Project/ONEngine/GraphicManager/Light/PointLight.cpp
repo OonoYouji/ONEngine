@@ -8,7 +8,7 @@ void PointLight::Initialize() {
 	data_ = {
 		.color     = Vec4(1.0f, 1.0f, 1.0f, 1.0f),
 		.position  = Vec3(0.0f, 0.0f, 0.0f),
-		.intencity = 1.0f,
+		.intensity = 1.0f,
 		.radius    = 10.0f,
 		.decay     = 1.0f,
 		.active    = true
@@ -30,7 +30,7 @@ void PointLight::Debug() {
 	data_.active = active;
 
 	ImGui::ColorEdit3("color", &data_.color.x);
-	ImGui::DragFloat("intencity", &data_.intencity, 0.01f);
+	ImGui::DragFloat("intensity", &data_.intensity, 0.01f);
 	ImGui::DragFloat("radius", &data_.radius, 0.01f);
 	ImGui::DragFloat("decay", &data_.decay, 0.01f);
 

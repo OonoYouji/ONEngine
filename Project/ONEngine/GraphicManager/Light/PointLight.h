@@ -13,7 +13,7 @@ public:
 	struct BufferData final {
 		Vec4 color;      /// 色
 		Vec3 position;	 /// 座標
-		float intencity; /// 輝度
+		float intensity; /// 輝度
 		float radius;    /// ライトの届く最大距離
 		float decay;     /// 減衰率
 		int active;      /// 有効かどうか
@@ -63,8 +63,8 @@ public:
 	/// <summary>
 	/// ライトの輝度を設定
 	/// </summary>
-	/// <param name="intencity"></param>
-	void SetIntencity(float intencity) { data_.intencity = intencity; }
+	/// <param name="intensity"></param>
+	void SetIntensity(float intensity) { data_.intensity = intensity; }
 
 	/// <summary>
 	/// ライトの範囲を設定
