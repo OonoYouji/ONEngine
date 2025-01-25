@@ -70,6 +70,9 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 
 	//ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { Scene(_windowFlags); });
 	ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { DebugScene(_windowFlags); });
+
+	sceneEditor_ = std::make_unique<SceneEditor>();
+	sceneEditor_->Initialize();
 }
 
 

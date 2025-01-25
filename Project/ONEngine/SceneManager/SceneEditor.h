@@ -47,6 +47,8 @@ private:
 
 	class SceneManager*      pSceneManager_ = nullptr;
 	std::vector<std::string> sceneNames_;
+	ImVec2                   buttonSize_;
+	float                    buttonScale_;
 
 };
 

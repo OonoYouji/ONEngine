@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-/// extrenals
+/// externals
 #include <imgui.h>
 
 #include "GraphicManager/SceneLayer/SceneLayer.h"
@@ -16,6 +16,7 @@
 #include "GraphicManager/Light/LightGroup.h"
 
 #include "AbstructSceneFactory.h"
+#include "SceneEditor.h"
 
 class BaseScene;
 
@@ -92,7 +93,7 @@ private:
 	std::unique_ptr<LightGroup> lightGroup_;
 
 	Vec2 sceneRectMin_, sceneRectMax_;
-	
+	std::unique_ptr<SceneEditor> sceneEditor_;
 
 public:
 
