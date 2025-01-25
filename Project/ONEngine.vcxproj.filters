@@ -34,11 +34,7 @@
     <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
     <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
     <ClCompile Include="ONEngine\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Game\Scenes\Scene_Clear.cpp" />
     <ClCompile Include="Game\Scenes\Scene_Debug.cpp" />
-    <ClCompile Include="Game\Scenes\Scene_Game.cpp" />
-    <ClCompile Include="Game\Scenes\Scene_Result.cpp" />
-    <ClCompile Include="Game\Scenes\Scene_Title.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionChecker.cpp" />
     <ClCompile Include="Library\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Library\Input\Gamepad.cpp" />
@@ -129,6 +125,8 @@
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
     <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
+    <ClCompile Include="Game\Scenes\DemoScene.cpp" />
+    <ClCompile Include="Game\Scenes\CG3ET2Scenes\SpotLightDemoScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -143,11 +141,7 @@
     <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
     <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
     <ClInclude Include="ONEngine\SceneManager\SceneManager.h" />
-    <ClInclude Include="Game\Scenes\Scene_Clear.h" />
     <ClInclude Include="Game\Scenes\Scene_Debug.h" />
-    <ClInclude Include="Game\Scenes\Scene_Game.h" />
-    <ClInclude Include="Game\Scenes\Scene_Result.h" />
-    <ClInclude Include="Game\Scenes\Scene_Title.h" />
     <ClInclude Include="Library\CollisionManager\CollisionChecker.h" />
     <ClInclude Include="Library\CollisionManager\CollisionManager.h" />
     <ClInclude Include="Library\Debugger\Assertion.h" />
@@ -242,6 +236,8 @@
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
     <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
+    <ClInclude Include="Game\Scenes\DemoScene.h" />
+    <ClInclude Include="Game\Scenes\CG3ET2Scenes\SpotLightDemoScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />
