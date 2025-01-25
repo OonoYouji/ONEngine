@@ -24,6 +24,7 @@ public:
 
 private:
 	std::array<class PointLight*, 5> pointLightArray_;
+	std::array<class SpotLight*, 2> spotLightArray_;
 	class EnemyManager* enemyManager_ = nullptr;
 
 	class GameClearEffect* gameClearEffect_ = nullptr;

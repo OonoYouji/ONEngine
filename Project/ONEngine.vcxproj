@@ -182,6 +182,7 @@
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\PointLight.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
     <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
     <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\PointLight.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
     <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
     <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
