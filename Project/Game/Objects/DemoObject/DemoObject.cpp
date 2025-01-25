@@ -26,6 +26,11 @@ void DemoObject::Update() {
 
 void DemoObject::Debug() {
 
-	
+	ImGui::DragFloat("shininess", &shininess, 0.1f, 0.0f, 100.0f);
+
+	Vec4 color = renderer_->GetColor();
+	if (ImGui::ColorEdit3("color", &color.x)) {
+		renderer_->SetColor(color);
+	}
 
 }

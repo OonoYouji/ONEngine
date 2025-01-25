@@ -39,13 +39,13 @@ void SpotLight::Debug() {
 	ImGui::Checkbox("active", &isActive);
 	data_.active = isActive;
 
-	ImGui::ColorEdit4("color",     &data_.color.x);
-	ImGui::DragFloat("intensity",  &data_.intensity, 0.1f, 0.0f, 10.0f);
-	ImGui::DragFloat3("direction", &data_.direction.x, 0.1f);
-	ImGui::DragFloat("distance",   &data_.distance, 0.1f, 0.0f, 100.0f);
-	ImGui::DragFloat("decay",      &data_.decay, 0.1f, 0.0f, 10.0f);
-	ImGui::DragFloat("cos angle",  &data_.cosAngle, 0.01f, 0.0f, 1.0f);
-	ImGui::DragFloat("cos falloff start",  &data_.cosFalloffStart, 0.01f, 0.0f, 1.0f);
+	ImGui::ColorEdit3("color",            &data_.color.x);
+	ImGui::DragFloat("intensity",         &data_.intensity,       0.1f,  0.0f, 10.0f);
+	ImGui::DragFloat3("direction",        &data_.direction.x,     0.1f);
+	ImGui::DragFloat("distance",          &data_.distance,        0.1f,  0.0f, 100.0f);
+	ImGui::DragFloat("decay",             &data_.decay,           0.1f,  0.0f, 10.0f);
+	ImGui::DragFloat("cos angle",         &data_.cosAngle,        0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("cos falloff start", &data_.cosFalloffStart, 0.01f, 0.0f, 1.0f);
 
 }
 
