@@ -14,6 +14,8 @@ SceneEditor::SceneEditor() {}
 SceneEditor::~SceneEditor() {}
 
 void SceneEditor::Initialize() {
+	TextureManager::GetInstance()->Load("Scene", "Scene.png");
+
 	ConsoleManager* consoleManager = ConsoleManager::GetInstance();
 
 	/// consoleに登録
@@ -67,7 +69,7 @@ void SceneEditor::SceneChange() {
 	for (const auto& sceneName : sceneNames_) {
 
 		{	/// ボタンの表示
-			ImTextureID myTextureID = ImTextureID(textureManager->GetTexture("uvChecker").GetGPUHandle().ptr); // ここにテクスチャIDを設定
+			ImTextureID myTextureID = ImTextureID(textureManager->GetTexture("Scene").GetGPUHandle().ptr); // ここにテクスチャIDを設定
 
 			ImGui::BeginGroup();
 			if (ImGui::ImageButton(sceneName.c_str(), myTextureID, ImVec2(buttonSize_.x * buttonScale_, buttonSize_.y * buttonScale_))) {
