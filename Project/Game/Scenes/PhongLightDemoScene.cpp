@@ -16,6 +16,9 @@ void PhongLightDemoScene::Initialize() {
 	
 	{	/// lightの設定
 		LightGroup* lightGroup = SceneManager::GetInstance()->GetLightGroup();
+
+		directionalLight_->SetDirection(Vec3(2.0f, -1.0f, 1.0f).Normalize());
+
 		lightGroup->SetDirectionalLightBufferData(0, directionalLight_->GetData());
 	}
 
@@ -24,7 +27,8 @@ void PhongLightDemoScene::Initialize() {
 		demoObject->Initialize();
 		demoObject->SetPosition(Vec3(0.0f, 0.0f, 0.0f));
 
-		mainCamera_->SetPosition({});
+		mainCamera_->SetPosition({ 0.0f, 2.5f, -10.0f});
+		mainCamera_->SetRotateX(0.25f);
 	}
 }
 
