@@ -42,12 +42,12 @@ void DemoObject::Debug() {
 
 	Line3D::GetInstance()->Draw(
 		GetPosition(),
-		GetPosition() + velocity_.Normalize() * 3.0f
+		GetPosition() + velocity_.Normalize() * 32.0f
 	);
 
 }
 
-std::pair<Vec3, Vec3> ComputeCollisionVelocities(float _mass1, const Vec3& _velocity1, float _mass2, const Vec3& _velocity2, float _coefficientRestitution, const Vec3& _normal) {
+std::pair<Vec3, Vec3> ComputeCollisionVelocities(float _mass1, const Vec3& _velocity1, float _mass2, const Vec3& _velocity2, float _coefficientOfRestitution, const Vec3& _normal) {
 
 	/// 衝突面法線方向 (射影) とその他に分解する
 	const Vec3&& project1 = Vec3::Project(_velocity1, _normal);
@@ -58,8 +58,14 @@ std::pair<Vec3, Vec3> ComputeCollisionVelocities(float _mass1, const Vec3& _velo
 
 
 	/// 衝突面方向に対する反発後の速度を求める
-	const Vec3&& velocityAfter1 = project1 * (-_coefficientRestitution * _mass2) + project2 * ((1.0f + _coefficientRestitution) * _mass2) + sub1;
-	const Vec3&& velocityAfter2 = project1 * ((1.0f + _coefficientRestitution) * _mass1) + project2 * (-_coefficientRestitution * _mass1) + sub2;
+	//const Vec3&& velocityAfter1 = project1 * (-_coefficientOfRestitution * _mass2) + project2 * ((1.0f + _coefficientOfRestitution) * _mass2);
+	//const Vec3&& velocityAfter2 = project1 * ((1.0f + _coefficientOfRestitution) * _mass1) + project2 * (-_coefficientOfRestitution * _mass1);
+
+	const Vec3&& temp = (_mass1 * _velocity1) + (_mass2 * _velocity2);
+
+	const Vec3&& velocityAfter1 = (temp + (_coefficientOfRestitution * _mass2 * (_velocity2 - _velocity1))) / (_mass1 + _mass2);
+	const Vec3&& velocityAfter2 = (temp + (_coefficientOfRestitution * _mass1 * (_velocity1 - _velocity2))) / (_mass1 + _mass2);
+	
 
 
 	return std::pair<Vec3, Vec3>(velocityAfter1 + sub1, velocityAfter2 + sub2);
@@ -94,7 +100,7 @@ void RedBall::OnCollisionEnter(BaseGameObject* _other) {
 	std::pair<Vec3, Vec3> velocities = ComputeCollisionVelocities(
 		mass_, velocity_,
 		demo2->GetMass(), demo2->GetVelocity(),
-		1.0f, normal
+		0.8f, normal
 	);
 
 	/// 適用
@@ -110,11 +116,16 @@ void WhiteBall::Initialize() {
 	DemoObject::Initialize();
 	renderer_->SetColor({ 1, 1, 1, 1 });
 
-	pTransform_->position = { -5, 0, 0 };
+	pTransform_->position = { 0.2f, 0, 20.0f };
 	velocity_ = { 0, 0, 0 };
 }
 
 void WhiteBall::Update() {
+	if (!isCollided_) {
+		localTime_ += Time::DeltaTime();
+		velocity_.x = std::cos(localTime_) * 5.0f;
+	}
+
 	pTransform_->position += velocity_ * Time::DeltaTime();
 }
 
@@ -122,4 +133,10 @@ void WhiteBall::Debug() {
 	DemoObject::Debug();
 }
 
-void WhiteBall::OnCollisionEnter(BaseGameObject* _other) {}
+void WhiteBall::OnCollisionEnter(BaseGameObject* _other) {
+	if (_other->GetTag() != "RedBall") {
+		return;
+	}
+
+	isCollided_ = true;
+}

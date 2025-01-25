@@ -71,4 +71,8 @@ public:
 
 	void OnCollisionEnter(BaseGameObject* _other) override;
 
+private:
+
+	float localTime_ = 0.0f;
+	bool isCollided_ = false;
 };

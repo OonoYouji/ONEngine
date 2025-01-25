@@ -14,8 +14,6 @@ void Scene_Title::Initialize() {
 
 void Scene_Title::Update() {
 
-	if(Input::TriggerKey(KeyCode::A)) {
-		SetNextScene("GameScene");
-	}
+	SetNextScene("GameScene");
 
 }

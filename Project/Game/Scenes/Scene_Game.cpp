@@ -36,9 +36,16 @@ void Scene_Game::Initialize() {
 /// ===================================================
 void Scene_Game::Update() {
 
-	if(Input::TriggerKey(KeyCode::A)) {
+	if(Input::TriggerKey(KeyCode::R)) {
 		SetNextScene("TitleScene");
 	}
 
+	Mat4 matScale = Mat4::kIdentity;
+	Mat4 matRotate = Mat4::MakeRotateQuaternion(
+		Quaternion::Normalize({ 0.0f, -0.7f, 0.0f, 0.7f })
+	);
+
+
+	Mat4 matWorld = matScale * matRotate;
 
 }
