@@ -45,7 +45,7 @@ namespace {
 			ID3D12GraphicsCommandList* _commandList
 		);
 
-		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount);
+		void Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, Material* _material, uint32_t instanceCount);
 
 	private:
 
@@ -55,8 +55,10 @@ namespace {
 
 		/// other pointer
 		LightGroup*                pLightGroup_ = nullptr;
-		ID3D12GraphicsCommandList* pCommnadList_      = nullptr;
+		ID3D12GraphicsCommandList* pCommandList_      = nullptr;
 
+
+		std::list<MeshInstancingRenderer*> activeMeshInstancingRenderer_;
 	};
 
 
@@ -68,8 +70,8 @@ namespace {
 
 
 		/// set pointer
-		pCommnadList_ = _commandList;
-		assert(pCommnadList_);
+		pCommandList_ = _commandList;
+		assert(pCommandList_);
 
 		/// shader compile
 		shader_.ShaderCompile(
@@ -105,34 +107,42 @@ namespace {
 		pipeline_->Initialize();
 	}
 
-	void RenderingPipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
+	void RenderingPipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, Material* _material, uint32_t instanceCount) {
 
 		/// other pointer
 		ID3D12Resource* viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
 
 		/// default setting
 		pipeline_->SetPipelineState();
-		pCommnadList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		/// buffer setting
 		/// TODO: light groupで処理する
-		pCommnadList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-		pCommnadList_->SetGraphicsRootDescriptorTable(2, gpuHandle);
-		pLightGroup_->BindDirectionalLightBufferForCommandList(3, pCommnadList_);
-		pLightGroup_->BindPointLightBufferForCommandList(4, pCommnadList_);
+		pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
+		pCommandList_->SetGraphicsRootDescriptorTable(2, gpuHandle);
+		pLightGroup_->BindDirectionalLightBufferForCommandList(3, pCommandList_);
+		pLightGroup_->BindPointLightBufferForCommandList(4, pCommandList_);
 
 
 		for(size_t i = 0; i < useModel->GetMeshes().size(); ++i) {
 
-			Mesh&     mesh     = useModel->GetMeshes()[i];
-			Material& material = useModel->GetMaterials().front();
+			Mesh& mesh = useModel->GetMeshes()[i];
 
-			material.BindMaterial(pCommnadList_, 1);
-			material.BindTexture(pCommnadList_, 5);
-			mesh.Draw(pCommnadList_, false);
+			/// 引数の_materialがnullptrなら、modelのmaterialを使う
+			if (_material) {
+				_material->BindMaterial(pCommandList_, 1);
+				_material->BindTexture(pCommandList_, 5);
+			} else {
+				Material& material = useModel->GetMaterials().front();
+				material.BindMaterial(pCommandList_, 1);
+				material.BindTexture(pCommandList_, 5);
+			}
+
+
+			mesh.Draw(pCommandList_, false);
 
 			UINT meshIndex = static_cast<UINT>(mesh.GetIndices().size());
-			pCommnadList_->DrawIndexedInstanced(meshIndex, instanceCount, 0, 0, 0);
+			pCommandList_->DrawIndexedInstanced(meshIndex, instanceCount, 0, 0, 0);
 		}
 	}
 
@@ -148,7 +158,8 @@ namespace {
 
 
 
-MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) : kMaxInstanceCount_(maxInstanceCount) {
+MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount) 
+	: kMaxInstanceCount_(maxInstanceCount) {
 
 }
 
@@ -169,6 +180,16 @@ void MeshInstancingRenderer::SetLightGroup(LightGroup* _lightGroup) {
 	gPipeline->pLightGroup_ = _lightGroup;
 }
 
+void MeshInstancingRenderer::PreDraw() {
+	gPipeline->activeMeshInstancingRenderer_.clear();
+}
+
+void MeshInstancingRenderer::PostDraw() {
+	for(auto& renderer : gPipeline->activeMeshInstancingRenderer_) {
+		renderer->DrawCall();
+	}
+}
+
 
 /// ===================================================
 /// normal methods
@@ -180,7 +201,7 @@ void MeshInstancingRenderer::Initialize() {
 
 	/// buffer create
 	transformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(
-		sizeof(Mat4) * kMaxInstanceCount_);
+		sizeof(Transform::BufferData) * kMaxInstanceCount_);
 
 	/// desc setting
 	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
@@ -190,7 +211,7 @@ void MeshInstancingRenderer::Initialize() {
 	desc.Buffer.FirstElement        = 0;
 	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
 	desc.Buffer.NumElements         = static_cast<UINT>(kMaxInstanceCount_);
-	desc.Buffer.StructureByteStride = sizeof(Mat4);
+	desc.Buffer.StructureByteStride = sizeof(Transform::BufferData);
 
 	/// cpu, gpu handle initialize
 
@@ -208,7 +229,6 @@ void MeshInstancingRenderer::Initialize() {
 	/// mapping data bind
 	transformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
-
 	/// model setting
 	model_ = ModelManager::Load("Sphere");
 
@@ -217,22 +237,7 @@ void MeshInstancingRenderer::Initialize() {
 void MeshInstancingRenderer::Update() {}
 
 void MeshInstancingRenderer::Draw() {
-
-	/// 描画するインスタンスが0なら描画しない
-	if(transformArray_.empty()) {
-		return;
-	}
-
-	std::vector<Transform::BufferData> matTransformArray{};
-	for(auto& transform : transformArray_) {
-		transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
-
-		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse())});
-	}
-
-	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
-
-	gPipeline->Draw(gpuHandle_, model_, static_cast<uint32_t>(transformArray_.size()));
+	gPipeline->activeMeshInstancingRenderer_.push_back(this);
 }
 
 void MeshInstancingRenderer::Debug() {
@@ -250,6 +255,28 @@ void MeshInstancingRenderer::Debug() {
 		ImGui::TreePop();
 	}
 
+}
+
+void MeshInstancingRenderer::DrawCall() {
+	/// 描画するインスタンスが0なら描画しない
+	if(transformArray_.empty()) {
+		return;
+	}
+
+	std::vector<Transform::BufferData> matTransformArray{};
+	for(auto& transform : transformArray_) {
+		//transform->SetName(std::format("Transform##{:p}", reinterpret_cast<void*>(&transform)));
+
+		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse()) });
+	}
+
+	assert(mappingData_ != nullptr);
+	assert(matTransformArray.size() <= kMaxInstanceCount_);
+	assert(sizeof(Transform::BufferData) * matTransformArray.size() <= sizeof(Transform::BufferData) * kMaxInstanceCount_);
+
+	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
+
+	gPipeline->Draw(gpuHandle_, model_, material_.get(), static_cast<uint32_t>(transformArray_.size()));
 }
 
 void MeshInstancingRenderer::AddTransform(Transform* transform) {
@@ -270,4 +297,15 @@ void MeshInstancingRenderer::SetModel(const std::string& filePath) {
 
 void MeshInstancingRenderer::SetModel(Model* model) {
 	model_ = model;
+}
+
+void MeshInstancingRenderer::CreateMaterial(const std::string& _textureName) {
+
+	if (material_ == nullptr) {
+		material_ = std::make_unique<Material>();
+		material_->CreateBuffer();
+		material_->SetTextureName(_textureName);
+	}
+
+
 }

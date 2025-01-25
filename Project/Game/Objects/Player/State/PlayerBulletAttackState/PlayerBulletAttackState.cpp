@@ -32,6 +32,11 @@ void PlayerBulletAttackState::Start() {
 
 	creationBulletNum_ = static_cast<int>(forwardEnemyList_.size());
 
+	/// 弾を撃つ数を制限
+	if (creationBulletNum_ > 16) {
+		creationBulletNum_ = 16;
+	}
+
 	CreateBullets();
 	SpreadToTheLeftAndRight();
 
@@ -45,7 +50,6 @@ void PlayerBulletAttackState::Update() {
 	}
 
 	/// current timeが max time以下になるまで以下の処理を行う
-
 	currentTime_ += Time::DeltaTime();
 	float lerpT = std::clamp(currentTime_ / maxTime_, 0.0f, 1.0f);
 

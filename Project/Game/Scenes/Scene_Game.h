@@ -7,7 +7,7 @@
 enum GAME_SCENE_LAYER {
 	GAME_SCENE_LAYER_DEFAULT, /// デフォルトのレイヤー
 	GAME_SCENE_LAYER_UI,	  /// UI層のレイヤー
-	GAME_SCENE_LAYER_TARGET_SPRITE,	  /// UI層のレイヤー
+	GAME_SCENE_LAYER_CLEAR_EFFECT,	  /// クリア演出用レイヤー
 };
 
 /// ===================================================
@@ -24,5 +24,8 @@ public:
 
 private:
 	std::array<class PointLight*, 5> pointLightArray_;
+	std::array<class SpotLight*, 2> spotLightArray_;
 	class EnemyManager* enemyManager_ = nullptr;
+
+	class GameClearEffect* gameClearEffect_ = nullptr;
 };

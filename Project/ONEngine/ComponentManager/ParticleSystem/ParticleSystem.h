@@ -10,6 +10,7 @@
 /// engine
 #include "GraphicManager/PipelineState/PipelineState.h"
 #include "GraphicManager/ModelManager/Model.h"
+#include "GraphicManager/GraphicsEngine/DirectX12/DxStructuredBuffer.h"
 
 /// components
 #include "ComponentManager/Base/BaseComponent.h"
@@ -44,6 +45,11 @@ public:
 	static void SInitialize(ID3D12GraphicsCommandList* commandList);
 	static void SFinalize();
 
+	static void SetLightGroup(class LightGroup* _lightGroup);
+
+	static void PreDraw();
+	static void PostDraw();
+
 
 	/// ===================================================
 	/// public : overriding methods
@@ -55,9 +61,14 @@ public:
 	void Debug()      override;
 
 
+
 	/// ===================================================
 	/// public : non overriding methods
 	/// ===================================================
+
+	/// @brief 描画コールを行う
+	void DrawCall();
+
 
 	///// <summary>
 	///// パーティクルの出現までの時間のセット
@@ -168,11 +179,8 @@ private:
 
 
 	/// particles trasform buffers
-	Microsoft::WRL::ComPtr<ID3D12Resource> trasformArrayBuffer_ = nullptr;
-	Mat4*                                  mappingData_         = nullptr;
-	D3D12_GPU_DESCRIPTOR_HANDLE            gpuHandle_;
-	D3D12_CPU_DESCRIPTOR_HANDLE            cpuHandle_;
-	uint32_t srvDescriptorIndex_;
+	std::unique_ptr<DxStructuredBuffer<Mat4>>                   transforms_ ;
+	std::unique_ptr<DxStructuredBuffer<Material::MaterialData>> materials_  ;
 
 	/// billboard
 	Mat4 matBackToFront_;
@@ -208,10 +216,22 @@ public:
 	void Update();
 
 	void Draw(
-		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
+		DxStructuredBuffer<Mat4>* _transformBuffer, 
+		DxStructuredBuffer<Material::MaterialData>* _materialBuffer, 
 		Model* useModel,
 		uint32_t instanceCount
 	);
+
+	void SetLightGroup(class LightGroup* _lightGroup);
+
+	void PreDraw();
+	void PostDraw();
+
+
+	void AddActiveParticleSystem(ParticleSystem* _renderer) {
+		activeParticleSystem_.push_back(_renderer);
+	}
+
 
 private:
 
@@ -222,7 +242,10 @@ private:
 	std::unique_ptr<PipelineState> pipelineState_ = nullptr;
 	PipelineState::Shader          shader_;
 	ID3D12GraphicsCommandList*     pCommandList_  = nullptr;
-	
+	class LightGroup*              pLightGroup_   = nullptr;
+
+	std::list<ParticleSystem*> activeParticleSystem_;
+
 };
 
 
@@ -255,6 +278,8 @@ public:
 
 	uint32_t GetID() { return id_; }
 
+	Material::MaterialData& GetMaterial() { return material_; }
+
 private:
 
 	/// ===================================================
@@ -268,6 +293,6 @@ private:
 	float maxLifeTime_ = 10.0f; // seconds
 
 	Transform transform_{};
-
+	Material::MaterialData material_;
 
 };

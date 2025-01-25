@@ -156,8 +156,12 @@
     <ClCompile Include="Game\Objects\Explostion\Explostion.cpp" />
     <ClCompile Include="Game\Objects\TitleSprite\TitleSprite.cpp" />
     <ClCompile Include="Game\Objects\ClearSprite\ClearSprite.cpp" />
-    <ClCompile Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.cpp" />
     <ClCompile Include="Game\Objects\HitEffect\HitEffect.cpp" />
+    <ClCompile Include="Game\Objects\GameClearEffect\GameClearEffect.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Objects\Camera\DebugCamera.h" />
@@ -298,8 +302,12 @@
     <ClInclude Include="Game\Objects\Explostion\Explostion.h" />
     <ClInclude Include="Game\Objects\TitleSprite\TitleSprite.h" />
     <ClInclude Include="Game\Objects\ClearSprite\ClearSprite.h" />
-    <ClInclude Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.h" />
     <ClInclude Include="Game\Objects\HitEffect\HitEffect.h" />
+    <ClInclude Include="Game\Objects\GameClearEffect\GameClearEffect.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.h" />
+    <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\BlendRenderTexture\BlendRenderTexture.hlsli" />

@@ -80,6 +80,9 @@ public:
 	/// <param name="rootParamIndex"> : ルートパラメータのインデックス</param>
 	void BindMaterial(ID3D12GraphicsCommandList* commandList, uint32_t rootParamIndex);
 
+
+	MaterialData* GetMaterialData() { return materialData_; }
+
 private:
 
 	/// ===================================================

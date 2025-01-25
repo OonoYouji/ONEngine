@@ -18,6 +18,8 @@
 #include "GraphicManager/Drawer/LineDrawer/Line3D.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
 #include "ComponentManager/NumberRenderer/NumberRendererCommon.h"
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 	
 #include "Objects/Camera/Manager/CameraManager.h"
 
@@ -89,6 +91,8 @@ void SceneLayer::Draw() {
 	gModelManager->PreDraw();
 	gAnimationRendererCommon->PreDraw();
 	gNumberRendererCommon->PreDraw();
+	MeshInstancingRenderer::PreDraw();
+	ParticleSystem::PreDraw();
 
 	gGameObjectManager->Object3dDraw(id_);
 
@@ -98,10 +102,10 @@ void SceneLayer::Draw() {
 	gModelManager->PostDraw();
 	gAnimationRendererCommon->PostDraw();
 	gNumberRendererCommon->PostDraw();
+	MeshInstancingRenderer::PostDraw();
+	ParticleSystem::PostDraw();
 
 	renderTexture_->EndRenderTarget();
-
-	
 
 }
 

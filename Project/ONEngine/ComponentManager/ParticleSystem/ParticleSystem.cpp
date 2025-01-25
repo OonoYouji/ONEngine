@@ -16,8 +16,7 @@
 #include "GraphicManager/ModelManager/ModelManager.h"
 #include "GraphicManager/Light/DirectionalLight.h"
 #include "FrameManager/Time.h"
-
-/// game
+#include "GraphicManager/Light/LightGroup.h"
 #include "Objects/Camera/Manager/CameraManager.h"
 #include "SceneManager/SceneManager.h"
 
@@ -40,8 +39,8 @@ ParticleSystem::ParticleSystem(uint32_t maxParticleNum, const std::string& fileP
 }
 
 ParticleSystem::~ParticleSystem() {
-	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	pSRVDescriptorHeap->Free(srvDescriptorIndex_);
+	transforms_.reset();
+	materials_.reset();
 }
 
 
@@ -56,35 +55,30 @@ void ParticleSystem::SFinalize() {
 	sPipeline_.reset();
 }
 
+void ParticleSystem::SetLightGroup(LightGroup* _lightGroup) {
+	sPipeline_->SetLightGroup(_lightGroup);
+}
+
+void ParticleSystem::PreDraw() {
+	sPipeline_->PreDraw();
+}
+
+void ParticleSystem::PostDraw() {
+	sPipeline_->PostDraw();
+}
+
 
 void ParticleSystem::Initialize() {
 
-	/// buffer initialize
-	trasformArrayBuffer_ = ONE::DxResourceCreator::CreateResource(sizeof(Mat4) * kMaxParticleNum_);
+	transforms_.reset(new DxStructuredBuffer<Mat4>());
+	transforms_->Create(kMaxParticleNum_);
 
-	/// desc setting
-	D3D12_SHADER_RESOURCE_VIEW_DESC desc{};
-	desc.Format                     = DXGI_FORMAT_UNKNOWN;
-	desc.Shader4ComponentMapping    = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	desc.ViewDimension              = D3D12_SRV_DIMENSION_BUFFER;
-	desc.Buffer.FirstElement        = 0;
-	desc.Buffer.Flags               = D3D12_BUFFER_SRV_FLAG_NONE;
-	desc.Buffer.NumElements         = static_cast<UINT>(kMaxParticleNum_);
-	desc.Buffer.StructureByteStride = sizeof(Mat4);
+	materials_.reset(new DxStructuredBuffer<Material::MaterialData>());
+	materials_->Create(kMaxParticleNum_);
+	for(size_t i = 0; i < kMaxParticleNum_; ++i) {
+		materials_->SetMappedData(i, *pModel_->GetMaterials().front().GetMaterialData());
 
-	/// cpu, gpu handle initialize
-	auto pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
-	srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
-	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex_);
-
-	/// resource create
-	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(trasformArrayBuffer_.Get(), &desc, cpuHandle_);
-
-	/// mapping data bind
-	trasformArrayBuffer_->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-
+	}
 
 	/// particle system setting
 	particleArray_.reserve(kMaxParticleNum_);
@@ -182,27 +176,7 @@ void ParticleSystem::Update() {
 }
 
 void ParticleSystem::Draw() {
-
-	emitter_->currentParticleCount_ = 0u;
-	std::vector<Mat4> matTransformArray;
-
-	/// 生きているParticleの数を確認
-	std::partition(particleArray_.begin(), particleArray_.end(), [&](const std::unique_ptr<Particle>& particle) {
-		if(particle->GetIsAlive()) {
-			emitter_->currentParticleCount_++;
-			matTransformArray.push_back(particle->GetTransform()->matTransform);
-			return true;
-		}
-		return false;
-	});
-
-
-	/// 描画処理に移行する
-	if(emitter_->currentParticleCount_ > 0) {
-		std::memcpy(mappingData_, matTransformArray.data(), sizeof(Mat4) * matTransformArray.size());
-
-		sPipeline_->Draw(gpuHandle_, pModel_, emitter_->currentParticleCount_);
-	}
+	sPipeline_->AddActiveParticleSystem(this);
 }
 
 void ParticleSystem::Debug() {
@@ -223,6 +197,35 @@ void ParticleSystem::Debug() {
 	}
 }
 
+
+void ParticleSystem::DrawCall() {
+	emitter_->currentParticleCount_ = 0u;
+	std::vector<Mat4> matTransformArray;
+
+	/// 生きているParticleの数を確認
+	std::partition(particleArray_.begin(), particleArray_.end(), [&](const std::unique_ptr<Particle>& particle) {
+		if(particle->GetIsAlive()) {
+			emitter_->currentParticleCount_++;
+			matTransformArray.push_back(particle->GetTransform()->matTransform);
+			return true;
+		}
+		return false;
+	});
+
+	for(size_t i = 0; i < particleArray_.size(); ++i) {
+		materials_->SetMappedData(i, particleArray_[i]->GetMaterial());
+	}
+
+
+	/// 描画処理に移行する
+	if(emitter_->currentParticleCount_ > 0) {
+		for(size_t i = 0; i < matTransformArray.size(); ++i) {
+			transforms_->SetMappedData(i, matTransformArray[i]);
+		}
+
+		sPipeline_->Draw(transforms_.get(), materials_.get(), pModel_, emitter_->currentParticleCount_);
+	}
+}
 
 void ParticleSystem::SetParticleRespawnTime(float _particleRespawnTime) {
 	emitter_->rateOverTime_ = _particleRespawnTime;
@@ -301,21 +304,31 @@ void ParticlePipeline::Initialize(ID3D12GraphicsCommandList* commandList_) {
 	pipelineState_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 	/// Constant Buffer
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	///- material
-	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);	///- directional light
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	/// viewProjection
+	pipelineState_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// camera 
 
 	/// descriptor
-	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Transform
+	pipelineState_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Texture
+	pipelineState_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Directional Light
+	pipelineState_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Point Light
+	pipelineState_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV - Material
 
 	/// SRV - Transform
 	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0);
 
 	/// SRV - Texture
-	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);
 	pipelineState_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+
+	/// SRV - Light
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3);
 	
+	/// SRV - Material
+	pipelineState_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 4);
+
+
 
 	/// Pipeline Create
 	pipelineState_->Initialize();
@@ -327,29 +340,34 @@ void ParticlePipeline::Update() {}
 
 
 
-void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useModel, uint32_t instanceCount) {
+void ParticlePipeline::Draw(
+	DxStructuredBuffer<Mat4>* _transformBuffer, 
+	DxStructuredBuffer<Material::MaterialData>* _materialBuffer, 
+	Model* useModel, uint32_t instanceCount) {
 
 	/// other pointer get
-	ID3D12Resource*   viewBuffer = CameraManager::GetInstance()->GetMainCamera()->GetViewBuffer();
-	//DirectionalLight* pLight     = SceneManager::GetInstance()->GetDirectionalLight();
+	BaseCamera* pCamera = CameraManager::GetInstance()->GetMainCamera();
+
 
 	/// default setting
 	pipelineState_->SetPipelineState();
 
 	/// command setting
 	pCommandList_->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pCommandList_->SetGraphicsRootConstantBufferView(0, viewBuffer->GetGPUVirtualAddress());
-	/// TODO: light groupで処理する
-	//pLight->BindToCommandList(2, pCommandList_);
+	pCommandList_->SetGraphicsRootConstantBufferView(0, pCamera->GetViewBuffer()->GetGPUVirtualAddress());
+	pCommandList_->SetGraphicsRootConstantBufferView(1, pCamera->GetPositionBuffer()->GetGPUVirtualAddress());
 
+	pLightGroup_->BindDirectionalLightBufferForCommandList(4, pCommandList_);
+	pLightGroup_->BindPointLightBufferForCommandList(5, pCommandList_);
 
-	/// transform の bind
-	pCommandList_->SetGraphicsRootDescriptorTable(3, gpuHandle);
+	_transformBuffer->BindToCommandList(2, pCommandList_); /// bind transform
+	_materialBuffer->BindToCommandList(6, pCommandList_);  /// bind material
 
 	for(auto& material : useModel->GetMaterials()) {
 		material.BindMaterial(pCommandList_, 1);
-		material.BindTexture(pCommandList_, 4);
+		material.BindTexture(pCommandList_, 3);
 	}
+
 
 	/// 描画コールの呼び出し
 	for(auto& mesh : useModel->GetMeshes()) {
@@ -359,6 +377,22 @@ void ParticlePipeline::Draw(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle, Model* useMod
 		UINT indexCountPerInstance = static_cast<UINT>(mesh.GetIndices().size());
 		pCommandList_->DrawIndexedInstanced(indexCountPerInstance, instanceCount, 0, 0, 0);
 	}
+}
+
+void ParticlePipeline::SetLightGroup(LightGroup* _lightGroup) {
+	pLightGroup_ = _lightGroup;
+}
+
+void ParticlePipeline::PreDraw() {
+	activeParticleSystem_.clear();
+}
+
+void ParticlePipeline::PostDraw() {
+
+	for (auto& renderer : activeParticleSystem_) {
+		renderer->DrawCall();
+	}
+
 }
 
 

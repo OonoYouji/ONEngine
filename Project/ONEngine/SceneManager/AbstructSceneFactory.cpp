@@ -11,14 +11,15 @@ BaseScene* AbstructSceneFactory::CreateScene(const std::string& _sceneName) {
 	return sceneCreator_.at(_sceneName)();
 }
 
-bool AbstructSceneFactory::RegisterSceneCreator(const std::string& _sceneName, SceneCreator _createor) {
+bool AbstructSceneFactory::RegisterSceneCreator(const std::string& _sceneName, SceneCreator _creator) {
 
 	/// すでにregisterされているかチェック
 	auto itr = sceneCreator_.find(_sceneName);
 
 	/// なかったら登録
 	if(itr == sceneCreator_.end()) {
-		sceneCreator_[_sceneName] = _createor;
+		sceneCreator_[_sceneName] = _creator;
+		sceneNames_.push_back(_sceneName);
 		return true;
 	}
 

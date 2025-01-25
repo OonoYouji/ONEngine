@@ -9,6 +9,7 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 
 class LightGroup final {
@@ -37,14 +38,21 @@ public:
 		UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList
 	);
 
+
+	void BindSpotLightBufferForCommandList(
+		UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList
+	);
+
 private:
 
 	/// 配置できるライトの最大数
-	const uint32_t kMaxDirectionalLightNum_ = 5;
-	const uint32_t kMaxPointLightNum_       = 5;
+	const size_t kMaxDirectionalLightNum_ = 5;
+	const size_t kMaxPointLightNum_       = 5;
+	const size_t kMaxSpotLightNum_        = 5;
 
 	std::unique_ptr<DxStructuredBuffer<DirectionalLight::BufferData>> directionalLightBuffer_;
 	std::unique_ptr<DxStructuredBuffer<PointLight::BufferData>>       pointLightBuffer_;
+	std::unique_ptr<DxStructuredBuffer<SpotLight::BufferData>>        spotLightBuffer_;
 
 
 public:
@@ -55,6 +63,10 @@ public:
 
 	void SetPointLightBufferData(size_t _index, const PointLight::BufferData& _data) {
 		pointLightBuffer_->SetMappedData(_index, _data);
+	}
+
+	void SetSpotLightBufferData(size_t _index, const SpotLight::BufferData& _data) {
+		spotLightBuffer_->SetMappedData(_index, _data);
 	}
 
 };

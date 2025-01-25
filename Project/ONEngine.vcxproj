@@ -152,13 +152,15 @@
     <ClCompile Include="Game\Objects\EnemyEmitter\EnemyEmitter.cpp" />
     <ClCompile Include="Game\Objects\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.cpp" />
     <ClCompile Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.cpp" />
     <ClCompile Include="Game\Objects\EntityShadow\EntityShadow.cpp" />
     <ClCompile Include="Game\Objects\Explostion\Explostion.cpp" />
+    <ClCompile Include="Game\Objects\GameClearEffect\GameClearEffect.cpp" />
     <ClCompile Include="Game\Objects\HitEffect\HitEffect.cpp" />
-    <ClCompile Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.cpp" />
+    <ClCompile Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.cpp" />
     <ClCompile Include="Game\Objects\Player\Player.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.cpp" />
     <ClCompile Include="Game\Objects\Player\PlayerBullet\PlayerBullet.cpp" />
@@ -180,6 +182,7 @@
     <ClCompile Include="ONEngine\Core\Framework.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\LightGroup.cpp" />
     <ClCompile Include="ONEngine\GraphicManager\Light\PointLight.cpp" />
+    <ClCompile Include="ONEngine\GraphicManager\Light\SpotLight.cpp" />
     <ClCompile Include="ONEngine\SceneManager\BaseScene.cpp" />
     <ClCompile Include="ONEngine\SceneManager\AbstructSceneFactory.cpp" />
     <ClCompile Include="Game\Scenes\Factory\SceneFactory.cpp" />
@@ -275,6 +278,7 @@
     <ClCompile Include="ONEngine\WindowManager\ConsoleManager.cpp" />
     <ClCompile Include="ONEngine\WindowManager\WinApp.cpp" />
     <ClCompile Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.cpp" />
+    <ClCompile Include="ONEngine\SceneManager\SceneEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\CustomMath\Flag\Flag.h" />
@@ -293,13 +297,15 @@
     <ClInclude Include="Game\Objects\EnemyEmitter\EnemyEmitter.h" />
     <ClInclude Include="Game\Objects\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Objects\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Objects\Enemy\EnemyDeadEffect\EnemyDeadEffect.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarFrame\EnemyHPBarFrame.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPBarGauge\EnemyHPBarGauge.h" />
     <ClInclude Include="Game\Objects\Enemy\EnemyHPRenderer\EnemyHPRenderer.h" />
     <ClInclude Include="Game\Objects\EntityShadow\EntityShadow.h" />
     <ClInclude Include="Game\Objects\Explostion\Explostion.h" />
+    <ClInclude Include="Game\Objects\GameClearEffect\GameClearEffect.h" />
     <ClInclude Include="Game\Objects\HitEffect\HitEffect.h" />
-    <ClInclude Include="Game\Objects\PlayerMoveLocus\PlayerMoveLocus.h" />
+    <ClInclude Include="Game\Objects\Player\PlayerMoveLocus\PlayerMoveLocus.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Player\PlayerAttackCollider\PlayerAttackCollider.h" />
     <ClInclude Include="Game\Objects\Player\PlayerBullet\PlayerBullet.h" />
@@ -321,6 +327,7 @@
     <ClInclude Include="ONEngine\Core\Framework.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\LightGroup.h" />
     <ClInclude Include="ONEngine\GraphicManager\Light\PointLight.h" />
+    <ClInclude Include="ONEngine\GraphicManager\Light\SpotLight.h" />
     <ClInclude Include="ONEngine\SceneManager\BaseScene.h" />
     <ClInclude Include="ONEngine\SceneManager\AbstructSceneFactory.h" />
     <ClInclude Include="Game\Scenes\Factory\SceneFactory.h" />
@@ -417,6 +424,7 @@
     <ClInclude Include="ONEngine\WindowManager\ConsoleManager.h" />
     <ClInclude Include="ONEngine\WindowManager\WinApp.h" />
     <ClInclude Include="Game\Objects\Player\State\PlayerProtectionState\PlayerProtectionState.h" />
+    <ClInclude Include="ONEngine\SceneManager\SceneEditor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

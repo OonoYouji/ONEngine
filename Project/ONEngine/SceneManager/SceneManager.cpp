@@ -25,6 +25,7 @@
 
 #include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "ComponentManager/AnimationRenderer/AnimationRenderer.h"
+#include "ComponentManager/ParticleSystem/ParticleSystem.h"
 
 
 
@@ -69,6 +70,9 @@ void SceneManager::Initialize(AbstructSceneFactory * _sceneFactory) {
 
 	//ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { Scene(_windowFlags); });
 	ConsoleManager::GetInstance()->RegisterFunction([&](ImGuiWindowFlags _windowFlags) { DebugScene(_windowFlags); });
+
+	sceneEditor_ = std::make_unique<SceneEditor>();
+	sceneEditor_->Initialize();
 }
 
 
@@ -176,6 +180,8 @@ void SceneManager::Load(const std::string& _sceneName) {
 	AnimationRendererCommon::GetInstance()->SetDirectionalLight(scenes_[currentSceneName_]->directionalLight_);
 	MeshInstancingRenderer::SetLightGroup(lightGroup_.get());
 	ModelManager::GetInstance()->SetLightGroup(lightGroup_.get());
+	ParticleSystem::SetLightGroup(lightGroup_.get());
+
 	SetSceneLayers(scenes_[currentSceneName_]->GetSceneLayers());
 
 	GameObjectManager::AddObjectsToObjectsCopy();;

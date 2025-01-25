@@ -53,15 +53,16 @@ void ModelManager::Initialize() {
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);	///- viewProjection
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);	///- transform
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);		///- material
-		//pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);		///- directional light
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2);		///- camera 
 
 		pipeline->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);	/// Texture
 		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);	/// DirectionalLight
 		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// PointLight
+		pipeline->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); /// SpotLight
 		pipeline->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline->Initialize();
@@ -429,6 +430,7 @@ void ModelManager::PostDraw() {
 	//pDirectionalLight_->BindToCommandList(3, commandList);
 	pLightGroup_->BindDirectionalLightBufferForCommandList(5, commandList);
 	pLightGroup_->BindPointLightBufferForCommandList(6, commandList);
+	pLightGroup_->BindSpotLightBufferForCommandList(7, commandList);
 
 	for(auto& model : solid) {
 		model.transform->BindTransform(commandList, 1, model.matLocal);

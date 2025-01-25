@@ -20,25 +20,6 @@ namespace {
 		return GetForegroundWindow() == hwnd;
 	}
 
-	void ConfineCursorToWindow(HWND hwnd) {
-		if(IsWindowActive(hwnd)) {
-			// ウィンドウがアクティブな場合、カーソルを制限
-			RECT clientRect;
-			GetClientRect(hwnd, &clientRect);
-
-			// クライアント座標をスクリーン座標に変換
-			POINT topLeft = { clientRect.left, clientRect.top };
-			POINT bottomRight = { clientRect.right, clientRect.bottom };
-			ClientToScreen(hwnd, &topLeft);
-			ClientToScreen(hwnd, &bottomRight);
-
-			RECT clipRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
-			ClipCursor(&clipRect); // カーソルの移動範囲を制限
-		} else {
-			// ウィンドウが非アクティブな場合、制限を解除
-			ClipCursor(NULL);
-		}
-	}
 }
 
 
@@ -66,6 +47,14 @@ void Mouse::Initialize(IDirectInput8* directInput, ONE::WinApp* winApp) {
 	hr = mouse_->SetCooperativeLevel(
 		pWinApp_->GetHWND(), Input::sDWord_);
 	assert(SUCCEEDED(hr));
+
+
+	isCursorConfined_ = true;
+#ifdef _DEBUG
+	isCursorConfined_ = false;
+#endif // DEBUG
+
+
 }
 
 
@@ -84,7 +73,9 @@ void Mouse::Begin() {
 	GetCursorPos(&mousePos);
 	ScreenToClient(pWinApp_->GetHWND(), &mousePos);
 
-	ConfineCursorToWindow(pWinApp_->GetHWND());
+	if(isCursorConfined_) {
+		ConfineCursorToWindow(pWinApp_->GetHWND());
+	}
 
 	position_ = Vec2(
 		static_cast<float>(mousePos.x),
@@ -95,6 +86,26 @@ void Mouse::Begin() {
 		static_cast<float>(state_.lX),
 		static_cast<float>(state_.lY)
 	);
+}
+
+void Mouse::ConfineCursorToWindow(HWND _hwnd) {
+	if(IsWindowActive(_hwnd)) {
+		// ウィンドウがアクティブな場合、カーソルを制限
+		RECT clientRect;
+		GetClientRect(_hwnd, &clientRect);
+
+		// クライアント座標をスクリーン座標に変換
+		POINT topLeft = { clientRect.left, clientRect.top };
+		POINT bottomRight = { clientRect.right, clientRect.bottom };
+		ClientToScreen(_hwnd, &topLeft);
+		ClientToScreen(_hwnd, &bottomRight);
+
+		RECT clipRect = { topLeft.x, topLeft.y, bottomRight.x, bottomRight.y };
+		ClipCursor(&clipRect); // カーソルの移動範囲を制限
+	} else {
+		// ウィンドウが非アクティブな場合、制限を解除
+		ClipCursor(NULL);
+	}
 }
 
 bool Mouse::Press(MouseCode code) const {

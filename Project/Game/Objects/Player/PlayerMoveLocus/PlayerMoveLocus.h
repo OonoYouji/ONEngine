@@ -14,6 +14,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+	void Debug()      override;
 
 private:
 
@@ -22,8 +23,14 @@ private:
 	/// ===================================================
 
 	class MeshInstancingRenderer* renderer_ = nullptr;
-	class Player* pPlayer_ = nullptr;
+	class Player*                 pPlayer_  = nullptr;
 
-	std::array<Transform, 16> transforms_;
+	using TransformWithLifeTime = std::pair<float, Transform>;
+	std::vector<TransformWithLifeTime> transformWithLifeTimes_;
+
+	float durationTime_ = 0.1f;
+	float currentTime_  = 0.0f;
+
+	float timeSubScalerValue_ = 0.0f;
 
 };
