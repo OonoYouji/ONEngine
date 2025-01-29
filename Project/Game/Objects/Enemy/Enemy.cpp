@@ -20,6 +20,7 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/HitEffect/HitEffect.h"
+#include "Objects/HitEffect/HitEffectSprite.h"
 #include "EnemyDeadEffect/EnemyDeadEffect.h"
 
 
@@ -111,6 +112,11 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		hitEffect->Initialize();
 		hitEffect->SetPosition(pTransform_->position + Vec3(0,2,0));
 		hitEffect->SetScale(Vec3::kOne * 2.0f);
+
+		HitEffectSprite* hitEffectSprite = new HitEffectSprite();
+		hitEffectSprite->Initialize();
+		hitEffectSprite->SetPosition(pTransform_->position + Vec3(0,2,0));
+		hitEffectSprite->UpdateMatrix();
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {

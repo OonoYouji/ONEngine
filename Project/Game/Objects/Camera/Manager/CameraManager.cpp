@@ -24,6 +24,10 @@ void CameraManager::Finalize() {
 void CameraManager::Update() {
 
 #ifdef _DEBUG
+
+	/// 毎フレームsceneCameraをメインカメラにセット
+	SetMainCamera(sceneCamera_);
+
 	BaseCamera* debugCamera = cameras_.at("DebugCamera");
 	if(debugCamera->isActive) {
 		if(GetMainCamera() != debugCamera) {
@@ -61,6 +65,10 @@ void CameraManager::SetMainCamera(BaseCamera* camera) {
 
 BaseCamera* CameraManager::GetCamera(const std::string& name) {
 	return cameras_.at(name);
+}
+
+void CameraManager::SetSceneCamera(BaseCamera* _camera) {
+	sceneCamera_ = _camera;
 }
 
 

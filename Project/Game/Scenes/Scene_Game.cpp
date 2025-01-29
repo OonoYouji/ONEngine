@@ -20,6 +20,7 @@
 
 #include "Objects/BackgroundObject/Stage/Stage.h"
 #include "Objects/GameClearEffect/GameClearEffect.h"
+#include "Objects/HitEffect/HitEffectSprite.h"
 
 
 /// ===================================================
@@ -74,6 +75,9 @@ void Scene_Game::Initialize() {
 		uiCamera->SetProjectionType(ORTHOGRAPHIC);
 		uiCamera->SetDistance(10.0f);
 		AddLayer("UILayer", uiCamera);
+
+		/// SPRITE_EFFECT用のレイヤー
+		AddLayer("SpriteEffectLayer", mainCamera_);
 
 		GameCamera* clearEffectLayerCamera = new GameCamera("ClearEffectLayerCamera");
 		clearEffectLayerCamera->Initialize();
