@@ -270,10 +270,6 @@ void MeshInstancingRenderer::DrawCall() {
 		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse()) });
 	}
 
-	assert(mappingData_ != nullptr);
-	assert(matTransformArray.size() <= kMaxInstanceCount_);
-	assert(sizeof(Transform::BufferData) * matTransformArray.size() <= sizeof(Transform::BufferData) * kMaxInstanceCount_);
-
 	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
 
 	gPipeline->Draw(gpuHandle_, model_, material_.get(), static_cast<uint32_t>(transformArray_.size()));

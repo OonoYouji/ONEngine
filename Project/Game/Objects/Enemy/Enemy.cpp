@@ -139,6 +139,7 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		EnemyDeadEffect* deadEffect = new EnemyDeadEffect();
 		deadEffect->Initialize();
 		deadEffect->SetPosition(pTransform_->position);
+		deadEffect->UpdateMatrix();
 	}
 
 }
