@@ -108,15 +108,17 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		meshRenderer_->SetColor(Vec4(0.75f, 0.2f, 0.2f, 1.0f));
 		hittedTime_ = 0.2f;
 
-		HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
-		hitEffect->Initialize();
-		hitEffect->SetPosition(pTransform_->position + Vec3(0,2,0));
-		hitEffect->SetScale(Vec3::kOne * 2.0f);
+		{	/// ヒットエフェクトオブジェクトの生成
+			HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
+			hitEffect->Initialize();
+			hitEffect->SetPosition(pTransform_->position + Vec3(0, 2, 0));
+			hitEffect->SetScale(Vec3::kOne * 2.0f);
 
-		HitEffectSprite* hitEffectSprite = new HitEffectSprite();
-		hitEffectSprite->Initialize();
-		hitEffectSprite->SetPosition(pTransform_->position + Vec3(0,2,0));
-		hitEffectSprite->UpdateMatrix();
+			HitEffectSprite* hitEffectSprite = new HitEffectSprite();
+			hitEffectSprite->Initialize();
+			hitEffectSprite->SetPosition(pTransform_->position + Vec3(0, 2, 0));
+			hitEffectSprite->UpdateMatrix();
+		}
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {
