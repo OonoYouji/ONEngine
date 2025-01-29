@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.cpp" />
     <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
@@ -46,10 +47,10 @@
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
-    <ClCompile Include="Engine\Graphics\Buffer\ViewProjection.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
     <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
@@ -79,7 +80,7 @@
     <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
     <ClInclude Include="Engine\Graphics\Renderer\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Entity\Interface\IEntity.h" />
-    <ClInclude Include="Engine\Graphics\Buffer\ViewProjection.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Utility\Math\Matrix4x4.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
