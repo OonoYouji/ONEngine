@@ -19,7 +19,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.cpp" />
     <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />

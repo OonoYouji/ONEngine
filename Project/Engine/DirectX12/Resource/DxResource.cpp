@@ -11,7 +11,7 @@ DxResource::~DxResource() {}
 void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	HRESULT result = S_FALSE;
 
-	/// 頂点リソース用のヒープ設定
+	/// ヒープ設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
 

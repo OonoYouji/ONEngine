@@ -29,7 +29,6 @@
     <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
