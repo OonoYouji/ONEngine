@@ -49,7 +49,7 @@
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
     <ClInclude Include="Engine\DirectX12\SwapChain\DxSwapChain.h" />
@@ -59,6 +59,7 @@
     <ClInclude Include="Engine\DirectX12\Device\DxDevice.h" />
     <ClInclude Include="Engine\DirectX12\Manager\DxManager.h" />
     <ClInclude Include="Engine\GameFramework\GameFrameworkConfig.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
     <ClInclude Include="Engine\Utility\Math\Vector4.h" />
     <ClInclude Include="Engine\Window\WindowManager.h" />
     <ClInclude Include="Engine\Window\Window.h" />

@@ -62,6 +62,7 @@
     <ClInclude Include="Engine\Entity\Interface\IEntity.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Utility\Math\Matrix4x4.h" />
-    <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
   </ItemGroup>
 </Project>
