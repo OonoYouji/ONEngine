@@ -108,11 +108,15 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		meshRenderer_->SetColor(Vec4(0.75f, 0.2f, 0.2f, 1.0f));
 		hittedTime_ = 0.2f;
 
+
+		/// ヒットストップの設定
+		Time::SetTimeRate(0.0f, 0.1f);
+
 		{	/// ヒットエフェクトオブジェクトの生成
-			HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
+			/*HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
 			hitEffect->Initialize();
 			hitEffect->SetPosition(pTransform_->position + Vec3(0, 2, 0));
-			hitEffect->SetScale(Vec3::kOne * 2.0f);
+			hitEffect->SetScale(Vec3::kOne * 2.0f);*/
 
 			HitEffectSprite* hitEffectSprite = new HitEffectSprite();
 			hitEffectSprite->Initialize();
@@ -136,6 +140,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		explostion->SetPosition(collision->GetPosition());
 
 		pTrackingCamera_->StartShake(0.05f, 0.1f, 0.2f);
+
+		Time::SetTimeRate(0.0f, 0.1f);
 	}
 
 

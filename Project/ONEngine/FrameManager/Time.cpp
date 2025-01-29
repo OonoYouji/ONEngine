@@ -13,6 +13,11 @@ void Time::SetTimeRate(float _timeRate) {
 	sInstance_.timeRate_ = _timeRate;
 }
 
+void Time::SetTimeRate(float _timeRate, float _limit) {
+	sInstance_.timeRate_      = _timeRate;
+	sInstance_.timeRateLimit_ = _limit;
+}
+
 void Time::Update() {
 	auto end = std::chrono::high_resolution_clock::now();
 	std::chrono::duration<float, std::milli> duration = end - time_;
@@ -20,11 +25,12 @@ void Time::Update() {
 
 	deltaTime_ = duration.count() / 1000.0f;
 
-	//exeTimes_.push_back(duration.count());
-	//if(exeTimes_.size() > 120) {
-	//	exeTimes_.pop_front();
-	//}
-
+	if(timeRateLimit_ > 0.0f) {
+		timeRateLimit_ -= deltaTime_;
+		if(timeRateLimit_ <= 0.0f) {
+			timeRate_ = 1.0f;
+		}
+	}
 }
 
 
@@ -39,15 +45,6 @@ void Time::ImGuiDebug() {
 
 	float fps = 1.0f / deltaTime_;
 	ImGui::DragFloat("fps", &fps, 0.0f);
-
-	ImVec2 winSize = ImGui::GetContentRegionAvail();
-	ImGui::BeginChild("execution time", winSize, 0, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-
-	for(uint32_t i = 0u; i < uint32_t(exeTimes_.size()); ++i) {
-		ImGui::Text(std::format("time[{}] = {} mill second", i, exeTimes_[i]).c_str());
-	}
-
-	ImGui::EndChild();
 
 
 	ImGui::End();

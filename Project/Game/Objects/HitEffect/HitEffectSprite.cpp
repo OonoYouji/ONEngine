@@ -38,7 +38,7 @@ void HitEffectSprite::Initialize() {
 
 
 	/// life time param setting
-	maxLifeTime_ = 0.2f;
+	maxLifeTime_ = 0.1f;
 	lifeTime_    = maxLifeTime_;
 
 }
