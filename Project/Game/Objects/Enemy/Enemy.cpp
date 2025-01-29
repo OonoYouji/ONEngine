@@ -20,6 +20,7 @@
 #include "Objects/Camera/GameCamera.h"
 #include "Objects/TrackingCamera/TrackingCamera.h"
 #include "Objects/HitEffect/HitEffect.h"
+#include "Objects/HitEffect/HitEffectSprite.h"
 #include "EnemyDeadEffect/EnemyDeadEffect.h"
 
 
@@ -107,10 +108,21 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		meshRenderer_->SetColor(Vec4(0.75f, 0.2f, 0.2f, 1.0f));
 		hittedTime_ = 0.2f;
 
-		HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
-		hitEffect->Initialize();
-		hitEffect->SetPosition(pTransform_->position + Vec3(0,2,0));
-		hitEffect->SetScale(Vec3::kOne * 2.0f);
+
+		/// ヒットストップの設定
+		Time::SetTimeRate(0.0f, 0.1f);
+
+		{	/// ヒットエフェクトオブジェクトの生成
+			/*HitEffect* hitEffect = new HitEffect(pTrackingCamera_->GetGameCamera());
+			hitEffect->Initialize();
+			hitEffect->SetPosition(pTransform_->position + Vec3(0, 2, 0));
+			hitEffect->SetScale(Vec3::kOne * 2.0f);*/
+
+			HitEffectSprite* hitEffectSprite = new HitEffectSprite();
+			hitEffectSprite->Initialize();
+			hitEffectSprite->SetPosition(pTransform_->position + Vec3(0, 2, 0));
+			hitEffectSprite->UpdateMatrix();
+		}
 	}
 
 	if(collision->GetTag() == "PlayerBullet") {
@@ -128,6 +140,8 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		explostion->SetPosition(collision->GetPosition());
 
 		pTrackingCamera_->StartShake(0.05f, 0.1f, 0.2f);
+
+		Time::SetTimeRate(0.0f, 0.1f);
 	}
 
 
@@ -139,6 +153,7 @@ void Enemy::OnCollisionEnter(BaseGameObject* const collision) {
 		EnemyDeadEffect* deadEffect = new EnemyDeadEffect();
 		deadEffect->Initialize();
 		deadEffect->SetPosition(pTransform_->position);
+		deadEffect->UpdateMatrix();
 	}
 
 }

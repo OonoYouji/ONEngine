@@ -59,6 +59,7 @@ public:
 		return mainCamera_; 
 	}
 
+	void SetSceneCamera(BaseCamera* _camera);
 private:
 
 	/// ===================================================
@@ -68,6 +69,7 @@ private:
 	std::unordered_map<std::string, BaseCamera*> cameras_;
 	BaseCamera* mainCamera_ = nullptr;
 	BaseCamera* beforeCamera_ = nullptr;
+	BaseCamera* sceneCamera_ = nullptr;
 
 private:
 	CameraManager(const CameraManager&) = delete;

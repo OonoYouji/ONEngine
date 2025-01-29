@@ -12,6 +12,7 @@ public:
 	struct ParticleData {
 		Vec3 velocity;
 		Vec3 rotateValue;
+		Vec3 scale;
 	};
 
 
@@ -37,5 +38,9 @@ private:
 
 	class ParticleSystem*     particleSystem_ = nullptr;
 	std::vector<ParticleData> particles_;
+
+	float  thisLifeTime_;
+	bool   isDestroy_;
+	size_t particleDeadCount_;
 
 };

@@ -19,7 +19,7 @@ public:
 	}
 
 	static float DeltaTime() {
-		return sInstance_.deltaTime_;
+		return sInstance_.deltaTime_ * sInstance_.timeRate_;
 	}
 
 	static float TimeRateDeltaTime() {
@@ -34,6 +34,8 @@ public:
 	/// </summary>
 	/// <param name="_timeRate"></param>
 	static void SetTimeRate(float _timeRate);
+
+	static void SetTimeRate(float _timeRate, float _limit);
 
 
 	/// ===================================================
@@ -59,6 +61,6 @@ private:
 	std::chrono::high_resolution_clock::time_point time_{};
 	float deltaTime_ = 0.0f;
 	float timeRate_  = 1.0f;
+	float timeRateLimit_ = 0.0f;
 
-	std::deque<float> exeTimes_;
 };

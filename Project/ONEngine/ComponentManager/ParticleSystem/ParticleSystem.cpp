@@ -152,8 +152,8 @@ void ParticleSystem::Update() {
 
 
 		particle->LifeTimeUpdate();
-		particleUpdateFunc_(particle);
 		particle->id_ = static_cast<uint32_t>(i);
+		particleUpdateFunc_(particle);
 
 		if(useBillboard_) {
 
@@ -364,7 +364,7 @@ void ParticlePipeline::Draw(
 	_materialBuffer->BindToCommandList(6, pCommandList_);  /// bind material
 
 	for(auto& material : useModel->GetMaterials()) {
-		material.BindMaterial(pCommandList_, 1);
+		//material.BindMaterial(pCommandList_, 1);
 		material.BindTexture(pCommandList_, 3);
 	}
 
@@ -404,7 +404,7 @@ void ParticlePipeline::PostDraw() {
 /// ===================================================
 
 void Particle::Initialize() {
-	transform_.Initialize();
+	//transform_.Initialize();
 }
 
 

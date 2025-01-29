@@ -5,9 +5,10 @@
 #include "SceneManager/BaseScene.h"
 
 enum GAME_SCENE_LAYER {
-	GAME_SCENE_LAYER_DEFAULT, /// デフォルトのレイヤー
-	GAME_SCENE_LAYER_UI,	  /// UI層のレイヤー
-	GAME_SCENE_LAYER_CLEAR_EFFECT,	  /// クリア演出用レイヤー
+	GAME_SCENE_LAYER_DEFAULT,        /// デフォルトのレイヤー
+	GAME_SCENE_LAYER_UI,	         /// UI層のレイヤー
+	GAME_SCENE_LAYER_SPRITE_EFFECT,	 /// スプライトのエフェクトのレイヤー
+	GAME_SCENE_LAYER_CLEAR_EFFECT,	 /// クリア演出用レイヤー
 };
 
 /// ===================================================

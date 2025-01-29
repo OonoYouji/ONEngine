@@ -163,6 +163,11 @@ MeshInstancingRenderer::MeshInstancingRenderer(uint32_t maxInstanceCount)
 
 }
 
+MeshInstancingRenderer::~MeshInstancingRenderer() {
+	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
+	pSRVDescriptorHeap->Free(srvDescriptorIndex_);
+}
+
 /// ===================================================
 /// static methods
 /// ===================================================
@@ -218,9 +223,9 @@ void MeshInstancingRenderer::Initialize() {
 
 	DxDescriptorHeap<HeapType::CBV_SRV_UAV>* pSRVDescriptorHeap = ONEngine::GetDxCommon()->GetSRVDescriptorHeap();
 
-	uint32_t srvDescriptorIndex = pSRVDescriptorHeap->Allocate();
-	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex);
-	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex);
+	srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
+	cpuHandle_ = pSRVDescriptorHeap->GetCPUDescriptorHandel(srvDescriptorIndex_);
+	gpuHandle_ = pSRVDescriptorHeap->GetGPUDescriptorHandel(srvDescriptorIndex_);
 
 	/// resource create
 	auto dxDevice = ONEngine::GetDxCommon()->GetDxDevice();
@@ -269,10 +274,6 @@ void MeshInstancingRenderer::DrawCall() {
 
 		matTransformArray.push_back({ transform->matTransform, Mat4::MakeTranspose(transform->matTransform.Inverse()) });
 	}
-
-	assert(mappingData_ != nullptr);
-	assert(matTransformArray.size() <= kMaxInstanceCount_);
-	assert(sizeof(Transform::BufferData) * matTransformArray.size() <= sizeof(Transform::BufferData) * kMaxInstanceCount_);
 
 	std::memcpy(mappingData_, matTransformArray.data(), matTransformArray.size() * sizeof(Transform::BufferData));
 

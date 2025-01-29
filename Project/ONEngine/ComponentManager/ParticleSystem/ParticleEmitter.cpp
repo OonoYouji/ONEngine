@@ -29,7 +29,7 @@ void ParticleEmitter::Initialize(std::vector<std::unique_ptr<class Particle>>* _
 	rateOverTime_     = 1.0f;
 	rateOverDistance_ = 1.0f;
 
-	currentTime_      = rateOverTime_;
+	currentTime_      = 0.0f;
 	currentDistance_  = rateOverDistance_;
 
 
@@ -171,6 +171,7 @@ void ParticleEmitter::Emit() {
 			}
 
 			pParticleArray_->back()->GetTransform()->position = pParticleSystem_->GetOwner()->GetPosition() + offset;
+			pParticleArray_->back()->GetTransform()->Update();
 
 		} else {
 			/// ここに入るときはすでに最大値分配列を作成している

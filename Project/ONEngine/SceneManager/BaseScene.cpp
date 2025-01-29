@@ -29,6 +29,7 @@ void BaseScene::CreateObject() {
 	/// camera initialize
 	mainCamera_ = new GameCamera("MainCamera");
 	mainCamera_->Initialize();
+	CameraManager::GetInstance()->SetSceneCamera(mainCamera_);
 
 	/// light  initialize
 	directionalLight_ = new DirectionalLight();
