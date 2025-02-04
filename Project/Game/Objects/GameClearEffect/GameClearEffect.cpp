@@ -59,14 +59,15 @@ void ClearEffectSprite::Initialize() {
 	spriteRenderer_->SetTexture("GameClear.png");
 
 	pTransform_->scale = { 10.0f, 6.0f, 1.0f };
+	pTransform_->scale *= 0.9f;
 
 	scrollVelocity_.x = 250.0f;
 	uvPosition_.y = 350.0f;
 
-	spriteRenderer_->SetUVRotate(std::numbers::pi_v<float> * 0.25f * -1.0f);
+	//spriteRenderer_->SetUVRotate(std::numbers::pi_v<float> * 0.25f * -1.0f);
 	spriteRenderer_->SetColor({ 1.0f, 1.0f, 1.0f, 0.5f });
 
-	currentTime_ = 0.0f;
+	currentTime_  = 0.0f;
 	durationTime_ = 1.0f;
 
 	colorMaxLerpTime_ = 1.0f;
@@ -78,8 +79,8 @@ void ClearEffectSprite::Update() {
 	currentTime_ += Time::DeltaTime();
 	float&& lerpT = std::fmod(currentTime_, durationTime_) / durationTime_;
 	uvPosition_   = Vec2::Lerp(
-		{ 0.0f + kOffsetX_, 360.0f },
-		{ kTextureSize_.x + kOffsetX_, 360.0f }, 
+		{ 0.0f + kOffsetX_, 0.0f },
+		{ kTextureSize_.x + kOffsetX_, 0.0f }, 
 		Ease::Out::Expo(lerpT)
 	);
 
@@ -97,7 +98,6 @@ void ClearEffectSprite::Update() {
 	if (currentTime_ > 2.0f) {
 		isEnd_ = true;
 	}
-
 
 }
 

@@ -62,10 +62,10 @@ void EnemyDeadEffect::Initialize() {
 		transform->scale = data.scale;
 		
 		/// alphaを更新
-		//_particle->GetMaterial().color.w = std::lerp(
-		//	0.8f, 0.2f,
-		//	Ease::In::Expo(_particle->GetNormLifeTime())
-		//);
+		_particle->GetMaterial().color.w = std::lerp(
+			0.8f, 0.2f,
+			Ease::In::Expo(_particle->GetNormLifeTime())
+		);
 
 		_particle->GetMaterial().color = { 0.3f, 0.8f, 0.3f, 0.1f };
 		_particle->GetMaterial().isLighting = false;
@@ -77,8 +77,6 @@ void EnemyDeadEffect::Initialize() {
 
 			data.rotateValue = Random::Vec3(-Vec3::kOne, Vec3::kOne) * 0.25f;
 
-			//50e4a6
-			//_particle->GetMaterial().color = { 0.3137f, 0.3922f, 0.6509f, 1.0f };
 			_particle->GetMaterial().color = { 0.3f, 0.8f, 0.3f, 0.1f };
 
 			++particleDeadCount_;
