@@ -49,6 +49,9 @@ bool PlayerDushState::IsEnd() {
 		return true;
 	}
 
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return true;
+	}
 
 	return false;
 }
@@ -60,6 +63,10 @@ int PlayerDushState::NextStateIndex() {
 
 	if(pPlayer_->GetFlag(PlayerFlag_IsJump).Enter()) {
 		return PlayerStateOrder_Jump;
+	}
+
+	if(pPlayer_->GetFlag(PlayerFlag_IsAttack).Enter()) {
+		return PlayerStateOrder_NormalAttack;
 	}
 
 	return 0;
