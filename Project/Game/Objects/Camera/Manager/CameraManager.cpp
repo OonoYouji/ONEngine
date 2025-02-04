@@ -23,10 +23,10 @@ void CameraManager::Finalize() {
 /// ===================================================
 void CameraManager::Update() {
 
-#ifdef _DEBUG
-
 	/// 毎フレームsceneCameraをメインカメラにセット
 	SetMainCamera(sceneCamera_);
+
+#ifdef _DEBUG
 
 	BaseCamera* debugCamera = cameras_.at("DebugCamera");
 	if(debugCamera->isActive) {

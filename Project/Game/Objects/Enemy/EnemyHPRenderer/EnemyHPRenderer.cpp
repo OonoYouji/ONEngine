@@ -51,8 +51,8 @@ void EnemyHPRenderer::Update() {
 
 	if(pMainCamera_) {
 		/// ビルボード計算
-		pTransform_->rotate = pMainCamera_->GetTransform()->rotate;
-		pTransform_->scale  = pMainCamera_->GetTransform()->scale;
+		pTransform_->rotate = pMainCamera_->GetRotate();
+		pTransform_->scale  = pMainCamera_->GetScale();
 	}
 
 	/// HPの割合から表示するゲージの長さを計算
