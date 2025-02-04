@@ -58,8 +58,8 @@ void ClearEffectSprite::Initialize() {
 	spriteRenderer_ = AddComponent<SpriteRenderer>();
 	spriteRenderer_->SetTexture("GameClear.png");
 
-	pTransform_->scale = { 10.0f, 6.0f, 1.0f };
-	pTransform_->scale *= 0.9f;
+	pTransform_->scale = { 20.0f, 6.0f, 1.0f };
+	pTransform_->scale *= 0.5f;
 
 	scrollVelocity_.x = 250.0f;
 	uvPosition_.y = 350.0f;
