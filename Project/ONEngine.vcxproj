@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
     <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\DirectX12\SwapChain\DxSwapChain.cpp" />
@@ -49,6 +50,7 @@
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Entity\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\DirectX12\Debug\DxDebug.h" />
