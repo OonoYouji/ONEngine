@@ -5,7 +5,7 @@ GameScene::~GameScene() {}
 
 
 void GameScene::Initialize() {
-	 
+	pEntityCollection_->GenerateCamera();
 }
 
 void GameScene::Update() {

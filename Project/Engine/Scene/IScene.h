@@ -1,5 +1,9 @@
 #pragma once
 
+/// engine
+#include "Engine/Entity/Collection/EntityCollection.h"
+
+
 /// ===================================================
 /// 各シーンの基底クラス
 /// ===================================================
@@ -31,7 +35,7 @@ private:
 
 	/// @brief entity collection へのポインタをセットする
 	/// @param _entityCollection 
-	void SetEntityCollectionPtr(class EntityCollection* _entityCollection);
+	void SetEntityCollectionPtr(EntityCollection* _entityCollection);
 
 
 protected:
@@ -41,14 +45,22 @@ protected:
 	/// ===================================================
 	
 
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	EntityCollection*   pEntityCollection_ = nullptr;
+
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class SceneManager*     pSceneManager_     = nullptr;
-	class EntityCollection* pEntityCollection_ = nullptr;
+	class SceneManager* pSceneManager_     = nullptr;
 
 };
-

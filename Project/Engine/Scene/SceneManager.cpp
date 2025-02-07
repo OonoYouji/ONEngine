@@ -15,15 +15,16 @@ void SceneManager::Initialize() {
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
 
-	currentScene_ = sceneFactory_->CreateScene("Game");
 
+	SetNextScene(sceneFactory_->GetStartupSceneName());
+	MoveNextToCurrentScene();
 }
 
 void SceneManager::Update() {
 
 	/// 次のシーンが設定されていたら、シーンを切り替える
 	if(nextScene_ != nullptr) {
-		
+		MoveNextToCurrentScene();
 	}
 
 	/// 現在のシーンの更新処理

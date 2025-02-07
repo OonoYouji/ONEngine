@@ -13,7 +13,7 @@ GameFramework::~GameFramework() {
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// directX12の初期化
-	dxManager_     = std::make_unique<DxManager>();
+	dxManager_ = std::make_unique<DxManager>();
 	dxManager_->Initialize();
 	
 
