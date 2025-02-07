@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Window/WindowManager.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "GameFrameworkConfig.h"
 
@@ -40,9 +41,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<DxManager>     dxManager_     = nullptr;
-	std::unique_ptr<WindowManager> windowManager_ = nullptr;
-	std::unique_ptr<SceneManager>  sceneManager_  = nullptr;
+	std::unique_ptr<DxManager>          dxManager_        = nullptr;
+	std::unique_ptr<WindowManager>      windowManager_    = nullptr;
+	std::unique_ptr<SceneManager>       sceneManager_     = nullptr;
+	std::unique_ptr<EntityCollection>   entityCollection_ = nullptr;
 
 	std::unique_ptr<RenderingFramework> renderingFramework_;
 

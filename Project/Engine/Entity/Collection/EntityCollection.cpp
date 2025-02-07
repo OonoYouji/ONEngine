@@ -16,9 +16,17 @@ void EntityCollection::Initialize() {
 
 void EntityCollection::Update() {
 
+	for (std::unique_ptr<IEntity>& entity : entities_) {
+		entity->Update();
+	}
+
 }
 
 void EntityCollection::Draw() {
+
+	for (std::unique_ptr<IEntity>& entity : entities_) {
+		entity->Draw();
+	}
 
 }
 

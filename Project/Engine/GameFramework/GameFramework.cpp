@@ -24,6 +24,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// main windowの生成
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 
+	/// entity collectionの初期化
+	entityCollection_ = std::make_unique<EntityCollection>(dxManager_.get());
+	entityCollection_->Initialize();
 	
 	/// scene managerの初期化
 	sceneManager_ = std::make_unique<SceneManager>();
@@ -43,8 +46,10 @@ void GameFramework::Run() {
 		/// 更新処理
 		windowManager_->Update();
 		sceneManager_->Update();
+		entityCollection_->Update();
 
 		/// 描画処理
+		entityCollection_->Draw();
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了
