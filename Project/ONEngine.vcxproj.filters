@@ -30,6 +30,7 @@
     <ClCompile Include="Engine\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\Entity\Collection\EntityCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -66,5 +67,6 @@
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
+    <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
   </ItemGroup>
 </Project>

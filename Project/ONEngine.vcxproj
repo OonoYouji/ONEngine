@@ -29,6 +29,7 @@
     <ClCompile Include="Engine\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector4.cpp" />
+    <ClCompile Include="Engine\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -66,6 +67,7 @@
     <ClInclude Include="Engine\Window\WindowManager.h" />
     <ClInclude Include="Engine\Window\Window.h" />
     <ClInclude Include="Engine\GameFramework\GameFramework.h" />
+    <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />

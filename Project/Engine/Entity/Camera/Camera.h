@@ -20,12 +20,13 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Camera();
+	Camera(class DxDevice* _dxDevice);
 	~Camera();
 
 	void Initialize() override;
 	void Update()     override;
 	void Draw()       override;
+
 
 private:
 	
