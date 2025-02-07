@@ -25,9 +25,13 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	/// @brief シーンマネジャーへのポインタをセットする
+	/// @brief scene manager へのポインタをセットする
 	/// @param _sceneManager 
 	void SetSceneManagerPtr(class SceneManager* _sceneManager);
+
+	/// @brief entity collection へのポインタをセットする
+	/// @param _entityCollection 
+	void SetEntityCollectionPtr(class EntityCollection* _entityCollection);
 
 
 protected:
@@ -43,8 +47,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class SceneManager* pSceneManager_ = nullptr;
-
+	class SceneManager*     pSceneManager_     = nullptr;
+	class EntityCollection* pEntityCollection_ = nullptr;
 
 };
 

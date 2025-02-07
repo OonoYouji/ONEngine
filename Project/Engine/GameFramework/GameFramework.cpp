@@ -29,7 +29,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityCollection_->Initialize();
 	
 	/// scene managerの初期化
-	sceneManager_ = std::make_unique<SceneManager>();
+	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
 	sceneManager_->Initialize();
 	
 	renderingFramework_ = std::make_unique<RenderingFramework>();

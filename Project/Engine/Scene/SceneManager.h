@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SceneManager();
+	SceneManager(class EntityCollection* _entityCollection);
 	~SceneManager();
 
 	/// @brief このクラスの初期化
@@ -37,13 +37,24 @@ public:
 private:
 
 	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void MoveNextToCurrentScene();
+
+
+private:
+
+	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<IScene>        currentScene_ = nullptr;
-	std::unique_ptr<IScene>        nextScene_    = nullptr;
+	class EntityCollection*        pEntityCollection_ = nullptr;
 
-	std::unique_ptr<ISceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<IScene>        currentScene_      = nullptr;
+	std::unique_ptr<IScene>        nextScene_         = nullptr;
+
+	std::unique_ptr<ISceneFactory> sceneFactory_      = nullptr;
 
 
 public:

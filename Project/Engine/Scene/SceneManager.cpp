@@ -1,8 +1,12 @@
 #include "SceneManager.h"
 
+/// engine
 #include "Scene/Factory/SceneFactory.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
 
-SceneManager::SceneManager() {}
+
+SceneManager::SceneManager(EntityCollection* _entityCollection) 
+	: pEntityCollection_(_entityCollection) {}
 SceneManager::~SceneManager() {}
 
 
@@ -19,9 +23,7 @@ void SceneManager::Update() {
 
 	/// 次のシーンが設定されていたら、シーンを切り替える
 	if(nextScene_ != nullptr) {
-		currentScene_ = std::move(nextScene_);
-		currentScene_->Initialize();
-		nextScene_ = nullptr;
+		
 	}
 
 	/// 現在のシーンの更新処理
@@ -31,6 +33,16 @@ void SceneManager::Update() {
 
 void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = sceneFactory_->CreateScene(_sceneName);
+}
+
+void SceneManager::MoveNextToCurrentScene() {
+	currentScene_ = std::move(nextScene_);
+	
+	currentScene_->SetEntityCollectionPtr(pEntityCollection_);
+	currentScene_->SetSceneManagerPtr(this);
+	currentScene_->Initialize();
+
+	nextScene_ = nullptr;
 }
 
 
