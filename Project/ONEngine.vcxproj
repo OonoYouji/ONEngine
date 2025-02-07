@@ -49,6 +49,7 @@
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
@@ -86,6 +87,7 @@
     <ClInclude Include="Engine\Entity\Interface\IEntity.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Utility\Math\Matrix4x4.h" />
+    <ClInclude Include="Engine\Graphics\Renderer\Mesh\MeshRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
