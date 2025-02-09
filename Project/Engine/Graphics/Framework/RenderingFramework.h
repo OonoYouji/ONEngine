@@ -38,6 +38,7 @@ public:
 	/// @brief 作成された順番に描画を行う
 	void Draw();
 
+
 private:
 
 	/// ===================================================
@@ -51,6 +52,15 @@ private:
 	DxManager*                      dxManager_        = nullptr;
 	WindowManager*                  windowManager_    = nullptr;
 	class EntityCollection*         entityCollection_ = nullptr;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	GraphicsResourceCollection* GetResourceCollection() const { return resourceCollection_.get(); }
 
 };
 

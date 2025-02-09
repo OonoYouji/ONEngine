@@ -35,7 +35,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// entity collectionの初期化
 	entityCollection_->Initialize();
 	/// scene managerの初期化
-	sceneManager_->Initialize();
+	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 }
 
 void GameFramework::Run() {

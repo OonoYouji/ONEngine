@@ -24,7 +24,7 @@ public:
 	~SceneManager();
 
 	/// @brief このクラスの初期化
-	void Initialize();
+	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
 
 	/// @brief シーンの更新
 	void Update();
@@ -49,12 +49,13 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityCollection*        pEntityCollection_ = nullptr;
+	class EntityCollection*           entityCollection_           = nullptr;
+	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
 
-	std::unique_ptr<IScene>        currentScene_      = nullptr;
-	std::unique_ptr<IScene>        nextScene_         = nullptr;
+	std::unique_ptr<IScene>           currentScene_               = nullptr;
+	std::unique_ptr<IScene>           nextScene_                  = nullptr;
 
-	std::unique_ptr<ISceneFactory> sceneFactory_      = nullptr;
+	std::unique_ptr<ISceneFactory>    sceneFactory_               = nullptr;
 
 
 public:

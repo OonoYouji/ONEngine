@@ -5,9 +5,6 @@
 #include <vector>
 #include <memory>
 
-/// engine
-#include "../ResourceData/Mesh.h"
-
 /// ===================================================
 /// グラフィクスリソースのローダー
 /// ===================================================
@@ -18,7 +15,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GraphicsResourceLoader(class DxManager* _dxManager);
+	GraphicsResourceLoader(class DxManager* _dxManager, class GraphicsResourceCollection* _collection);
 	~GraphicsResourceLoader();
 
 	void Initialize();
@@ -29,20 +26,19 @@ public:
 
 	/// @brief modelの読み込み (.obj)
 	/// @param _filePath .slnファイルからの相対パス
-	size_t LoadModelObj(const std::string& _filePath);
+	void LoadModelObj(const std::string& _filePath);
+
 
 private:
+
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class DxManager* dxManager_;
+	class DxManager*                  dxManager_;
+	class GraphicsResourceCollection* resourceCollection_;
 
 	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
-
-
-	/// mesh管理
-	std::vector<std::unique_ptr<Mesh>> meshes_;
 
 
 };

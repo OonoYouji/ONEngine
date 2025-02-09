@@ -8,10 +8,10 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "../GraphicsResourceCollection.h"
 
-
-GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager) 
-	: dxManager_(_dxManager) {}
+GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection) 
+	: dxManager_(_dxManager), resourceCollection_(_collection) {}
 
 GraphicsResourceLoader::~GraphicsResourceLoader() {}
 
@@ -26,13 +26,13 @@ void GraphicsResourceLoader::Initialize() {
 
 void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filePath) {}
 
-size_t GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _filePath) {
+void GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _filePath) {
 
 	Assimp::Importer importer;
 	const aiScene*   scene = importer.ReadFile(_filePath, assimpLoadFlags_);
 
 	if (!scene) {
-		return 0; ///< 読み込み失敗
+		return; ///< 読み込み失敗
 	}
 
 	/// mesh 解析
@@ -80,8 +80,7 @@ size_t GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& 
 		/// bufferの作成
 		meshData->CreateBuffer(dxManager_->GetDxDevice());
 
-		meshes_.push_back(std::move(meshData));
+		resourceCollection_->AddMesh(_filePath, meshData);
 	}
 
-	return meshes_.size() - 1; ///< 読み込み成功, meshのindexを返す
 }
