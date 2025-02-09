@@ -29,7 +29,7 @@ public:
 	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
 
 	template <class T>
-	T* GetComponent() const requires std::is_base_of_v<IComponent, T> ;
+	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
 
 private:
 

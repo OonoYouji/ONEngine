@@ -37,7 +37,6 @@ void RenderingPipelineCollection::DrawEntities() {
 		if (lineRenderer) {
 			lineRenderer->PushBackRenderingData(this);
 		}
-
 	}
 
 
