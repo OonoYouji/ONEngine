@@ -32,7 +32,7 @@
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RendererCollection.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Component\IComponent.cpp" />
     <ClCompile Include="Component\RendererComponents\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
@@ -73,7 +73,7 @@
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
     <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
-    <ClInclude Include="Engine\Graphics\Pipelines\Collection\RendererCollection.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Component\IComponent.h" />
     <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
   </ItemGroup>

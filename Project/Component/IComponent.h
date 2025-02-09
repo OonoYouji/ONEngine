@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Graphics/Pipelines/Collection/RendererCollection.h"
+#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 
 /// ===================================================
 /// 全てのコンポーネントの基底クラス

@@ -24,10 +24,9 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	dxManager_     = _dxManager;
 	windowManager_ = _windowManager;
 
+	rendererCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_->GetDxDevice());
+	rendererCollection_->Initialize();
 
-	/// レンダラーの生成
-	GenerateRenderer<Line2DRenderingPipeline>();
-	GenerateRenderer<MeshRenderingPipeline>();
 }
 
 void RenderingFramework::Draw() {
@@ -53,18 +52,18 @@ void RenderingFramework::Draw() {
 
 void RenderingFramework::DrawEntities() {
 	
-	/// shaderのpre draw
-	for (std::unique_ptr<IRenderingPipeline>& renderer : renderers_) {
-		renderer->PreDraw(dxManager_->GetDxCommand());
-	}
+	///// shaderのpre draw
+	//for (std::unique_ptr<IRenderingPipeline>& renderer : renderers_) {
+	//	renderer->PreDraw(dxManager_->GetDxCommand());
+	//}
 
 	/// 描画データを積む
 	entityCollection_->Draw();
 
-	/// shaderのpost draw
-	for (std::unique_ptr<IRenderingPipeline>& renderer : renderers_) {
-		renderer->PostDraw(dxManager_->GetDxCommand());
-	}
+	///// shaderのpost draw
+	//for (std::unique_ptr<IRenderingPipeline>& renderer : renderers_) {
+	//	renderer->PostDraw(dxManager_->GetDxCommand());
+	//}
 
 }
 

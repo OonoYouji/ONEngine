@@ -1,4 +1,4 @@
-#include "RendererCollection.h"
+#include "RenderingPipelineCollection.h"
 
 #include "../Mesh/MeshRenderingPipeline.h"
 #include "../Primitive/Line2DRenderingPipeline.h"

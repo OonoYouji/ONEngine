@@ -51,7 +51,7 @@
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RendererCollection.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Component\RendererComponents\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +91,7 @@
     <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
-    <ClInclude Include="Engine\Graphics\Pipelines\Collection\RendererCollection.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Component\IComponent.h" />
     <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
   </ItemGroup>
