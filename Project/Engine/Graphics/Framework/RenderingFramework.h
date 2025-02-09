@@ -29,11 +29,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingFramework(class EntityCollection* _entityCollection);
+	RenderingFramework();
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager, WindowManager* _windowManager);
+	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityCollection* _entityCollection);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();

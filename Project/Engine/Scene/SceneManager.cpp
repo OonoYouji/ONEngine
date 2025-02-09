@@ -39,6 +39,10 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 void SceneManager::MoveNextToCurrentScene() {
 	currentScene_ = std::move(nextScene_);
 	
+	/// resourceの読み込み、解放をここで行う
+
+
+	/// sceneに必要な情報を渡して初期化
 	currentScene_->SetEntityCollectionPtr(pEntityCollection_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
