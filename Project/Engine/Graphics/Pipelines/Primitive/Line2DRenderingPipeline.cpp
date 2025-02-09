@@ -65,20 +65,24 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 
 void Line2DRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	vertices_.clear(); /// 積んでいたデータをリセット
+	renderingDataList_.clear(); /// 積んでいたデータをリセット
 
-	vertices_.push_back(VertexData{ .position = Vec4(0,360,0,1), .color = Vec4(1, 0, 0, 1) });
-	vertices_.push_back(VertexData{ .position = Vec4(1280,360,0,1), .color = Vec4(1, 0, 0, 1) });
 }
 
 void Line2DRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
-	/// 頂点データが最大数を超えたらエラーを出す
-	Assert(vertices_.size() < kMaxVertexNum_, "Maximum number exceeded");
-
-	/// データがない場合は描画しない
-	if (vertices_.empty()) {
+	/// 描画データがない場合は描画しない
+	if (renderingDataList_.empty()) {
 		return;
 	}
+
+	/// rendering data listからデータを取得
+	for (RenderingData* renderingData : renderingDataList_) {
+		vertices_.insert(vertices_.end(), renderingData->vertices.begin(), renderingData->vertices.end());
+	}
+
+	/// 頂点データが最大数を超えたらエラーを出す
+	Assert(vertices_.size() < kMaxVertexNum_, "Maximum number exceeded");
 
 
 	/// pipelineの設定
@@ -100,5 +104,9 @@ void Line2DRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 
+}
+
+void Line2DRenderingPipeline::PushBackRenderingData(RenderingData* _renderingData) {
+	renderingDataList_.push_back(_renderingData);
 }
 

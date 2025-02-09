@@ -41,6 +41,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line2DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Component\IComponent.cpp" />
+    <ClCompile Include="Component\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Window\Window.cpp" />
@@ -94,6 +95,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Component\IComponent.h" />
     <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Component\RendererComponents\Primitive\Line2DRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

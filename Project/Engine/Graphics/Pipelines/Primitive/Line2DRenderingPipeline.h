@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <list>
+
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "Engine/Utility/Math/Vector4.h"
@@ -19,6 +22,10 @@ public:
 	struct VertexData {
 		Vec4 position;
 		Vec4 color;
+	};
+
+	struct RenderingData final {
+		std::vector<VertexData> vertices;
 	};
 
 public:
@@ -42,6 +49,10 @@ public:
 	/// @param _commandList DirectX12のコマンドリスト
 	void PostDraw(DxCommand* _dxCommand) override;
 
+	/// @brief rendering dataの追加
+	/// @param _renderingData rendering data
+	void PushBackRenderingData(RenderingData* _renderingData);
+
 private:
 
 	/// ===================================================
@@ -53,9 +64,9 @@ private:
 	DxResource                  vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW    vbv_;
 	VertexData*                 mappingData_  = nullptr;
+	std::vector<VertexData>     vertices_;
 
-
-	std::vector<VertexData> vertices_;
+	std::list<RenderingData*>   renderingDataList_;	
 
 };
 
