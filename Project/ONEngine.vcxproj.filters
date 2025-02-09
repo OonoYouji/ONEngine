@@ -39,6 +39,7 @@
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
+    <ClCompile Include="Engine\Entity\Demo\DemoEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -84,5 +85,6 @@
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
+    <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
   </ItemGroup>
 </Project>

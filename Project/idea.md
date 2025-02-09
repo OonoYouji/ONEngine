@@ -18,3 +18,8 @@
 ```
 
 
+TODO: GraphicsResourceCollection‚ÌResourceŠÇ—‚ğl‚¦‚é
+std::unordered_map<std::string, Resource> resources;
+std::vector<Resource> resources;
+
+

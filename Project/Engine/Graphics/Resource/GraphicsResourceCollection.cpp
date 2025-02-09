@@ -45,7 +45,17 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 		case GraphicsResourceCollection::Type::model:
 
 			/// meshの解放
-			meshes_.erase(path);
+			auto itr = meshIndices_.find(path);
+			if (itr != meshIndices_.end()) {
+
+				/// 解放するmeshのindexをfreeIndices_に追加
+				freeIndices_.push_back(itr->second);
+
+				/// meshの解放
+				meshes_[itr->second].reset();
+				meshIndices_.erase(itr);
+			}
+
 			break;
 		}
 
@@ -72,5 +82,17 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 }
 
 void GraphicsResourceCollection::AddMesh(const std::string& _filePath, std::unique_ptr<Mesh>& _mesh) {
-	meshes_[_filePath] = std::move(_mesh);
+
+	if (!freeIndices_.empty()) { ///< 空いているindexがある場合はそこに追加
+		size_t index = freeIndices_.back();
+		freeIndices_.pop_back();
+
+		meshIndices_[_filePath] = index;
+		meshes_[index] = std::move(_mesh);
+		return;
+	}
+
+
+	meshIndices_[_filePath] = meshes_.size();
+	meshes_.push_back(std::move(_mesh));
 }

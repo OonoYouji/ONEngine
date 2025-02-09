@@ -36,7 +36,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderingPipeline();
+	MeshRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
 	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
@@ -62,7 +62,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::list<RenderingData*> renderingDataList_;
+	class GraphicsResourceCollection* resourceCollection_;
+
+	std::list<RenderingData*>         renderingDataList_;
 
 };
 

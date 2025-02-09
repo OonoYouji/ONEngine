@@ -23,10 +23,10 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	windowManager_    = _windowManager;
 	entityCollection_ = _entityCollection;
 
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_);
-	renderingPipelineCollection_->Initialize();
+	resourceCollection_          = std::make_unique<GraphicsResourceCollection>();
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
 
-	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
+	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
 
 }

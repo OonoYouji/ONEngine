@@ -1,6 +1,12 @@
 #include "MeshRenderingPipeline.h"
 
-MeshRenderingPipeline::MeshRenderingPipeline() {}
+/// engine
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+
+
+MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection) 
+	: resourceCollection_(_resourceCollection) {}
+
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
 void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
@@ -44,23 +50,6 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 	}
 
-
-	{	/// vertex buffer
-
-		//vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * 3);
-		//vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-
-		//mappingData_[0].position = Vector4(0.0f, 0.5f, 0.0f, 1.0f);
-		//mappingData_[1].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
-		//mappingData_[2].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
-
-		//vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-		//vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * 3);
-		//vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
-
-	}
-
-
 }
 
 void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
@@ -83,9 +72,13 @@ void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 	/// 個々に必要なデータをセットし描画する
 	for (RenderingData* renderingData : renderingDataList_) {
-		/// render mesh idを利用して描画するmeshを切り替える
-		renderingData;
 
+		const Mesh* mesh = resourceCollection_->GetMesh(renderingData->renderMeshId);
+
+		commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+		commandList->IASetIndexBuffer(&mesh->GetIBV());
+
+		commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
 	}
 
 }

@@ -19,7 +19,7 @@ public:
 
 	/// @brief rendering pipelineに描画データを追加
 	/// @param _collection pipelineのコレクションクラスへのポインタ
-	void PushBackRenderingData(RenderingPipelineCollection* _collection) override;
+	void PushBackRenderingData(class RenderingPipelineCollection* _collection) override;
 
 private:
 
@@ -28,6 +28,17 @@ private:
 	/// ===================================================
 
 	MeshRenderingPipeline::RenderingData renderingData_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	void SetMeshId(size_t _meshId) {
+		renderingData_.renderMeshId = _meshId;
+	}
 
 };
 
