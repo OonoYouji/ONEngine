@@ -52,6 +52,7 @@
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RendererCollection.cpp" />
+    <ClCompile Include="Component\RendererComponents\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RendererCollection.h" />
     <ClInclude Include="Component\IComponent.h" />
+    <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -15,6 +15,6 @@ public:
 /// ===================================================
 class IRenderComponent : public IComponent {
 public:
-	virtual void PushBackRenderingData(RendererCollection* _collection) = 0;
+	virtual void PushBackRenderingData(RenderingPipelineCollection* _collection) = 0;
 };
 

@@ -34,6 +34,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RendererCollection.cpp" />
     <ClCompile Include="Component\IComponent.cpp" />
+    <ClCompile Include="Component\RendererComponents\Mesh\MeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -74,5 +75,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RendererCollection.h" />
     <ClInclude Include="Component\IComponent.h" />
+    <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
   </ItemGroup>
 </Project>

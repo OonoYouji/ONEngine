@@ -41,16 +41,16 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 	{	/// vertex buffer
 
-		vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * 3);
-		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
+		//vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * 3);
+		//vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
-		mappingData_[0].position = Vector4(0.0f, 0.5f, 0.0f, 1.0f);
-		mappingData_[1].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
-		mappingData_[2].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
+		//mappingData_[0].position = Vector4(0.0f, 0.5f, 0.0f, 1.0f);
+		//mappingData_[1].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
+		//mappingData_[2].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
 
-		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-		vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * 3);
-		vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
+		//vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
+		//vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * 3);
+		//vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
 
 	}
 
@@ -64,13 +64,26 @@ void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
+	/// 描画データが空なら描画する必要がないのでreturn
+	if (renderingDataList_.empty()) {
+		return;
+	}
+
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	/// 共通のデータをセット
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	commandList->DrawInstanced(3, 1, 0, 0);
+	/// 個々に必要なデータをセットし描画する
+	for (RenderingData* renderingData : renderingDataList_) {
+		commandList->IASetVertexBuffers(0, 1, &renderingData->vbv);
+		commandList->DrawInstanced(static_cast<UINT>(renderingData->vertices.size()), 1, 0, 0);
+	}
 
+}
+
+void MeshRenderingPipeline::PushBackRenderingData(RenderingData* _renderingData) {
+	renderingDataList_.push_back(_renderingData);
 }
 
