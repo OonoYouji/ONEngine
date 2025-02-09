@@ -21,14 +21,6 @@ void EntityCollection::Update() {
 	}
 }
 
-void EntityCollection::Draw() {
-
-	for (std::unique_ptr<IEntity>& entity : entities_) {
-		entity->Draw();
-	}
-}
-
-
 
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());

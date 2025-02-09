@@ -25,10 +25,6 @@ public:
 	/// @brief 更新関数
 	void Update();
 
-	/// @brief 描画関数
-	void Draw();
-
-
 	/// @brief 新しい entity を生成する
 	/// @tparam T entityを継承したクラス
 	/// @return 
@@ -38,6 +34,8 @@ public:
 	/// @brief 新しい camera を生成する
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
+
+	const std::vector<std::unique_ptr<IEntity>>& GetEntities() { return entities_; }
 
 private:
 

@@ -5,7 +5,7 @@
 #include <memory>
 
 /// engine
-#include "../Renderers/Interface/IRenderer.h"
+#include "../Pipelines/Collection/RenderingPipelineCollection.h"
 #include "../Shader/ShaderCompiler.h"
 #include "Engine/DirectX12/Manager/DxManager.h" 
 #include "Engine/Window/WindowManager.h"
@@ -37,48 +37,18 @@ public:
 	/// @brief 作成された順番に描画を行う
 	void Draw();
 
-
-	/// @brief Rendererの作成を行う
-	/// @tparam T 作成するRendererの型
-	/// @return 生成したRendererのポインタ
-	template<class T>
-	T* GenerateRenderer() requires std::is_base_of_v<IRenderer, T>;
-
-
-	/// @brief entityの描画処理を行う
-	void DrawEntities();
-
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<ShaderCompiler>         shaderCompiler_;
-	std::vector<std::unique_ptr<IRenderer>> renderers_; ///< レンダラーの配列
+	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
+	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 
-	DxManager*              dxManager_        = nullptr;
-	WindowManager*          windowManager_    = nullptr;
-	class EntityCollection* entityCollection_ = nullptr;
+	DxManager*                      dxManager_        = nullptr;
+	WindowManager*                  windowManager_    = nullptr;
+	class EntityCollection*         entityCollection_ = nullptr;
 
 };
 
-
-/// ===================================================
-/// methods
-/// ===================================================
-
-template<class T>
-inline T* RenderingFramework::GenerateRenderer() requires std::is_base_of_v<IRenderer, T> {
-	/// rednererの作成
-	std::unique_ptr<T> renderer = std::make_unique<T>();
-	renderer->Initialize(shaderCompiler_.get(), dxManager_->GetDxDevice());
-
-	/// return用のポインタを取得
-	T* result = renderer.get();
-
-	/// リストに追加
-	renderers_.push_back(std::move(renderer));
-
-	return result;
-}

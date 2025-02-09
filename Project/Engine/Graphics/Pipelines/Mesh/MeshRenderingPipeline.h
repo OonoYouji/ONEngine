@@ -1,7 +1,11 @@
 #pragma once
 
+/// std
+#include <list>
+#include <vector>
+
 /// engine
-#include "../Interface/IRenderer.h"
+#include "../Interface/IRenderingPipeline.h"
 #include "Engine/DirectX12/Resource/DxResource.h"
 #include "Engine/Utility/Math/Vector4.h"
 
@@ -9,15 +13,21 @@
 /// ===================================================
 /// mesh描画クラス
 /// ===================================================
-class MeshRenderer final : public IRenderer {
-	
+class MeshRenderingPipeline final : public IRenderingPipeline {
+public:
+
 	/// ===================================================
-	/// private : sub class
+	/// public : sub class
 	/// ===================================================
 
 	/// @brief 頂点データ
 	struct VertexData {
 		Vector4 position;
+	};
+
+	/// @brief 描画に必要なデータ
+	struct RenderingData final {
+		size_t renderMeshId;
 	};
 
 public:
@@ -26,8 +36,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderer();
-	~MeshRenderer();
+	MeshRenderingPipeline();
+	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 
@@ -42,16 +52,17 @@ public:
 	/// @param _dxCommand 
 	void PostDraw(DxCommand* _dxCommand) override;
 
+	/// @brief 描画に必要なデータを追加
+	/// @param _renderingData 
+	void PushBackRenderingData(RenderingData* _renderingData) ;
+
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	DxResource               vertexBuffer_;
-	D3D12_VERTEX_BUFFER_VIEW vbv_;
-	VertexData*              mappingData_ = nullptr;
-
+	std::list<RenderingData*> renderingDataList_;
 
 };
 

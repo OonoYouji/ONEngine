@@ -6,8 +6,8 @@
 #include "Engine/Entity/Collection/EntityCollection.h"
 
 /// shader
-#include "Engine/Graphics/Renderers/Primitive/Line2DRenderer.h"
-#include "Engine/Graphics/Renderers/Mesh/MeshRenderer.h"
+#include "Engine/Graphics/Pipelines/Primitive/Line2DRenderingPipeline.h"
+#include "Engine/Graphics/Pipelines/Mesh/MeshRenderingPipeline.h"
 
 
 RenderingFramework::RenderingFramework(EntityCollection* _entityCollection)
@@ -24,10 +24,9 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	dxManager_     = _dxManager;
 	windowManager_ = _windowManager;
 
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_);
+	renderingPipelineCollection_->Initialize();
 
-	/// レンダラーの生成
-	GenerateRenderer<Line2DRenderer>();
-	GenerateRenderer<MeshRenderer>();
 }
 
 void RenderingFramework::Draw() {
@@ -40,7 +39,7 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 	windowManager_->PreDraw();
 
-	DrawEntities();
+	renderingPipelineCollection_->DrawEntities();
 
 	windowManager_->PostDraw();
 
@@ -49,22 +48,5 @@ void RenderingFramework::Draw() {
 	dxManager_->GetDxCommand()->CommandExecute();
 	windowManager_->Present();
 	dxManager_->GetDxCommand()->CommandReset();
-}
-
-void RenderingFramework::DrawEntities() {
-	
-	/// shaderのpre draw
-	for (std::unique_ptr<IRenderer>& renderer : renderers_) {
-		renderer->PreDraw(dxManager_->GetDxCommand());
-	}
-
-	/// 描画データを積む
-	entityCollection_->Draw();
-
-	/// shaderのpost draw
-	for (std::unique_ptr<IRenderer>& renderer : renderers_) {
-		renderer->PostDraw(dxManager_->GetDxCommand());
-	}
-
 }
 

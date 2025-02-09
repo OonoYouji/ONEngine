@@ -50,7 +50,6 @@ void GameFramework::Run() {
 		entityCollection_->Update();
 
 		/// 描画処理
-		entityCollection_->Draw();
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了

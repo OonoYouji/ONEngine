@@ -1,7 +1,10 @@
 #pragma once
 
+/// std
+#include <list>
+
 /// engine
-#include "../Interface/IRenderer.h"
+#include "../Interface/IRenderingPipeline.h"
 #include "Engine/Utility/Math/Vector4.h"
 #include "Engine/DirectX12/Resource/DxResource.h"
 
@@ -9,7 +12,7 @@
 /// ===================================================
 /// 2Dライン描画クラス
 /// ===================================================
-class Line2DRenderer : public IRenderer {
+class Line2DRenderingPipeline : public IRenderingPipeline {
 public:
 
 	/// ===================================================
@@ -21,14 +24,18 @@ public:
 		Vec4 color;
 	};
 
+	struct RenderingData final {
+		std::vector<VertexData> vertices;
+	};
+
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Line2DRenderer();
-	~Line2DRenderer();
+	Line2DRenderingPipeline();
+	~Line2DRenderingPipeline();
 
 	/// @brief 初期化関数
 	/// @param _shaderCompiler シェーダーコンパイラーへのポインタ
@@ -42,6 +49,10 @@ public:
 	/// @param _commandList DirectX12のコマンドリスト
 	void PostDraw(DxCommand* _dxCommand) override;
 
+	/// @brief rendering dataの追加
+	/// @param _renderingData rendering data
+	void PushBackRenderingData(RenderingData* _renderingData);
+
 private:
 
 	/// ===================================================
@@ -53,9 +64,9 @@ private:
 	DxResource                  vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW    vbv_;
 	VertexData*                 mappingData_  = nullptr;
+	std::vector<VertexData>     vertices_;
 
-
-	std::vector<VertexData> vertices_;
+	std::list<RenderingData*>   renderingDataList_;	
 
 };
 
