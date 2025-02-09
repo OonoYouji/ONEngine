@@ -22,12 +22,17 @@ public:
 	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice);
 	~RenderingPipelineCollection();
 
+	/// @brief 初期化関数
 	void Initialize();
 
-
+	/// @brief rendering pipelineの生成
+	/// @tparam T 生成する rendering pipelineの型
 	template <class T>
 	void GenerateRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T>;
 
+	/// @brief rendering pipelineの取得
+	/// @tparam T 取得する rendering pipeline の型
+	/// @return 取得した rendering pipeline のポインタ
 	template <class T>
 	T* GetRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T>;
 
@@ -43,6 +48,12 @@ private:
 	std::unordered_map<size_t, std::unique_ptr<IRenderingPipeline>> renderers_;
 
 };
+
+
+
+/// ===================================================
+/// inline methods
+/// ===================================================
 
 template<class T>
 inline void RenderingPipelineCollection::GenerateRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T> {
