@@ -6,6 +6,8 @@
 
 /// engine
 #include "../Interface/IRenderingPipeline.h"
+#include "Engine/Graphics/Shader/ShaderCompiler.h"
+#include "Engine/DirectX12/Device/DxDevice.h"
 
 /// ===================================================
 /// renderer collection
@@ -17,7 +19,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection();
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice);
 	~RenderingPipelineCollection();
 
 	void Initialize();
@@ -35,6 +37,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	ShaderCompiler* shaderCompiler_ = nullptr;
+	DxDevice*       dxDevice_       = nullptr;
+
 	std::unordered_map<size_t, std::unique_ptr<IRenderingPipeline>> renderers_;
 
 };
@@ -42,7 +47,7 @@ private:
 template<class T>
 inline void RenderingPipelineCollection::GenerateRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>();
-	renderer->Initialize();
+	renderer->Initialize(shaderCompiler_, dxDevice_);
 	renderers_.emplace(typeid(T).hash_code(), std::move(renderer));
 }
 
