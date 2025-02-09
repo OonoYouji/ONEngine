@@ -40,7 +40,19 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 	windowManager_->PreDraw();
 
+	DrawEntities();
 
+	windowManager_->PostDraw();
+
+
+	/// commandの実行
+	dxManager_->GetDxCommand()->CommandExecute();
+	windowManager_->Present();
+	dxManager_->GetDxCommand()->CommandReset();
+}
+
+void RenderingFramework::DrawEntities() {
+	
 	/// shaderのpre draw
 	for (std::unique_ptr<IRenderer>& renderer : renderers_) {
 		renderer->PreDraw(dxManager_->GetDxCommand());
@@ -54,14 +66,5 @@ void RenderingFramework::Draw() {
 		renderer->PostDraw(dxManager_->GetDxCommand());
 	}
 
-
-
-	windowManager_->PostDraw();
-
-
-	/// commandの実行
-	dxManager_->GetDxCommand()->CommandExecute();
-	windowManager_->Present();
-	dxManager_->GetDxCommand()->CommandReset();
 }
 

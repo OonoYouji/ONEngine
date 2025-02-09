@@ -45,6 +45,9 @@ public:
 	T* GenerateRenderer() requires std::is_base_of_v<IRenderer, T>;
 
 
+	/// @brief entityの描画処理を行う
+	void DrawEntities();
+
 private:
 
 	/// ===================================================

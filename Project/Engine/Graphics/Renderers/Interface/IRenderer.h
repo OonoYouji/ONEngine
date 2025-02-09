@@ -39,10 +39,6 @@ public:
 	/// @param _commandList dxManagerが管理しているcommandListへのポインタ
 	virtual void PostDraw(DxCommand* _dxCommand) = 0;
 
-	/// @brief 描画のコールを行う
-	virtual void DrawCall() = 0;
-
-
 protected:
 
 	/// ===================================================

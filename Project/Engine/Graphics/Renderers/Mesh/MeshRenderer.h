@@ -41,8 +41,6 @@ public:
 	/// @brief 描画後の処理
 	/// @param _dxCommand 
 	void PostDraw(DxCommand* _dxCommand) override;
-	
-	void DrawCall() override;
 
 private:
 

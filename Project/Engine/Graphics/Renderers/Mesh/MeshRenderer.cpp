@@ -57,14 +57,14 @@ void MeshRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevi
 
 }
 
-void MeshRenderer::PreDraw(DxCommand* _dxCommand) {
+void MeshRenderer::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 }
 
-void MeshRenderer::PostDraw([[maybe_unused]]DxCommand* _dxCommand) {
+void MeshRenderer::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
@@ -74,6 +74,3 @@ void MeshRenderer::PostDraw([[maybe_unused]]DxCommand* _dxCommand) {
 
 }
 
-void MeshRenderer::DrawCall() {
-
-}

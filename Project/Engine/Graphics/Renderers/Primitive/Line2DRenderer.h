@@ -42,9 +42,6 @@ public:
 	/// @param _commandList DirectX12のコマンドリスト
 	void PostDraw(DxCommand* _dxCommand) override;
 
-	/// @brief 描画のコールを行う
-	void DrawCall() override;
-
 private:
 
 	/// ===================================================
