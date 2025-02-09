@@ -9,6 +9,7 @@
 #include "../Shader/ShaderCompiler.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 /* TODO: RenderingFrameworkクラスの実装
  *
@@ -45,6 +46,7 @@ private:
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
+	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
 
 	DxManager*                      dxManager_        = nullptr;
 	WindowManager*                  windowManager_    = nullptr;

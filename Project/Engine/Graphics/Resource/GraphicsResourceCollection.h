@@ -1,5 +1,11 @@
 #pragma once
 
+/// std
+#include <memory>
+
+/// engine
+#include "Loader/GraphicsResourceLoader.h"
+
 /// ===================================================
 /// グラフィクスリソースのコレクション
 /// ===================================================
@@ -26,12 +32,17 @@ public:
 	GraphicsResourceCollection();
 	~GraphicsResourceCollection();
 
+	void Initialize(class DxManager* _dxManager);
+
+	void Load(const std::string& _filePath, type _type);
 
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	std::unique_ptr<GraphicsResourceLoader> resourceLoader_;
 
 };
 
