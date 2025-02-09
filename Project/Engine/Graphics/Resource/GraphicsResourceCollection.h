@@ -5,6 +5,19 @@
 /// ===================================================
 class GraphicsResourceCollection final {
 public:
+
+	/// ===================================================
+	/// public : sub class, enum
+	/// ===================================================
+
+	/// @brief resourceの種類
+	enum class type {
+		texture,
+		model,
+	};
+
+
+public:
 	
 	/// ===================================================
 	/// public : methods
@@ -12,6 +25,7 @@ public:
 
 	GraphicsResourceCollection();
 	~GraphicsResourceCollection();
+
 
 private:
 

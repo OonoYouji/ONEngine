@@ -37,6 +37,8 @@
     <ClCompile Include="Component\RendererComponents\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Component\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -80,5 +82,7 @@
     <ClInclude Include="Component\RendererComponents\Mesh\MeshRenderer.h" />
     <ClInclude Include="Component\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
+    <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
   </ItemGroup>
 </Project>
