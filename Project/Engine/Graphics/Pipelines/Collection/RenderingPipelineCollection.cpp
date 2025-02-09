@@ -8,7 +8,7 @@
 #include "../Primitive/Line2DRenderingPipeline.h"
 
 /// renderers
-#include "Component/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
 
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityCollection* _entityCollection)

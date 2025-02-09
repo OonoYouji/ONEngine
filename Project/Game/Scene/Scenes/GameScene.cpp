@@ -1,7 +1,7 @@
 #include "GameScene.h"
 
-#include "Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Component/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
 
 
 GameScene::GameScene() {}
