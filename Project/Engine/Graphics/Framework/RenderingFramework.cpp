@@ -57,8 +57,6 @@ void RenderingFramework::DrawEntities() {
 	//	renderer->PreDraw(dxManager_->GetDxCommand());
 	//}
 
-	/// 描画データを積む
-	entityCollection_->Draw();
 
 	///// shaderのpost draw
 	//for (std::unique_ptr<IRenderingPipeline>& renderer : renderers_) {

@@ -77,8 +77,9 @@ void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 	/// 個々に必要なデータをセットし描画する
 	for (RenderingData* renderingData : renderingDataList_) {
-		commandList->IASetVertexBuffers(0, 1, &renderingData->vbv);
-		commandList->DrawInstanced(static_cast<UINT>(renderingData->vertices.size()), 1, 0, 0);
+		/// render mesh idを利用して描画するmeshを切り替える
+		renderingData;
+
 	}
 
 }

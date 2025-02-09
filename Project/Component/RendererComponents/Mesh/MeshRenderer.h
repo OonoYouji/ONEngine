@@ -10,9 +10,15 @@
 class MeshRenderer : public IRenderComponent {
 public:
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
 	MeshRenderer();
 	~MeshRenderer();
 
+	/// @brief rendering pipelineに描画データを追加
+	/// @param _collection pipelineのコレクションクラスへのポインタ
 	void PushBackRenderingData(RenderingPipelineCollection* _collection) override;
 
 private:

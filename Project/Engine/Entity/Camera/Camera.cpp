@@ -17,7 +17,3 @@ void Camera::Initialize() {
 void Camera::Update() {
 
 }
-
-void Camera::Draw() {
-
-}

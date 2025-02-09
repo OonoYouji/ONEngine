@@ -25,10 +25,6 @@ public:
 	/// @brief 更新関数
 	void Update();
 
-	/// @brief 描画関数
-	void Draw();
-
-
 	/// @brief 新しい entity を生成する
 	/// @tparam T entityを継承したクラス
 	/// @return 

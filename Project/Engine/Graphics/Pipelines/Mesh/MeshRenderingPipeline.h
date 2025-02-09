@@ -27,10 +27,7 @@ public:
 
 	/// @brief 描画に必要なデータ
 	struct RenderingData final {
-		DxResource               vertexBuffer;
-		D3D12_VERTEX_BUFFER_VIEW vbv;
-		VertexData*              mappingData;
-		std::vector<VertexData>  vertices;
+		size_t renderMeshId;
 	};
 
 public:

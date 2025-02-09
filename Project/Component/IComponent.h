@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 
 /// ===================================================
 /// 全てのコンポーネントの基底クラス
@@ -15,6 +14,6 @@ public:
 /// ===================================================
 class IRenderComponent : public IComponent {
 public:
-	virtual void PushBackRenderingData(RenderingPipelineCollection* _collection) = 0;
+	virtual void PushBackRenderingData(class RenderingPipelineCollection* _collection) = 0;
 };
 
