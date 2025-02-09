@@ -6,6 +6,7 @@
 
 /// shader
 #include "Engine/Graphics/Renderers/Primitive/Line2DRenderer.h"
+#include "Engine/Graphics/Renderers/Mesh/MeshRenderer.h"
 
 
 RenderingFramework::RenderingFramework() {}
@@ -23,6 +24,7 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	/// レンダラーの生成
 	GenerateRenderer<Line2DRenderer>();
+	GenerateRenderer<MeshRenderer>();
 }
 
 void RenderingFramework::Draw() {

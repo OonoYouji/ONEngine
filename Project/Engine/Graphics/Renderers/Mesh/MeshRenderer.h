@@ -22,6 +22,7 @@ public:
 	/// @param _dxCommand 
 	void PostDraw(DxCommand* _dxCommand) override;
 	
+	void DrawCall() override;
 
 private:
 };

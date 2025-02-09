@@ -50,3 +50,7 @@ void MeshRenderer::PostDraw([[maybe_unused]]DxCommand* _dxCommand) {
 
 
 }
+
+void MeshRenderer::DrawCall() {
+
+}
