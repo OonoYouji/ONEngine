@@ -3,13 +3,16 @@
 /// engine
 #include "Engine/DirectX12/Device/DxDevice.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
 
 /// shader
 #include "Engine/Graphics/Renderers/Primitive/Line2DRenderer.h"
 #include "Engine/Graphics/Renderers/Mesh/MeshRenderer.h"
 
 
-RenderingFramework::RenderingFramework() {}
+RenderingFramework::RenderingFramework(EntityCollection* _entityCollection)
+	: entityCollection_(_entityCollection) {}
+
 RenderingFramework::~RenderingFramework() {}
 
 void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager) {
@@ -37,11 +40,21 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 	windowManager_->PreDraw();
 
+
+	/// shaderのpre draw
 	for (std::unique_ptr<IRenderer>& renderer : renderers_) {
 		renderer->PreDraw(dxManager_->GetDxCommand());
-		renderer->DrawCall();
+	}
+
+	/// 描画データを積む
+	entityCollection_->Draw();
+
+	/// shaderのpost draw
+	for (std::unique_ptr<IRenderer>& renderer : renderers_) {
 		renderer->PostDraw(dxManager_->GetDxCommand());
 	}
+
+
 
 	windowManager_->PostDraw();
 

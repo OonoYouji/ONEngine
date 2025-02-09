@@ -32,6 +32,7 @@
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Renderers\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderers\Collection\RendererCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -70,5 +71,6 @@
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
     <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\Graphics\Renderers\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Renderers\Collection\RendererCollection.h" />
   </ItemGroup>
 </Project>

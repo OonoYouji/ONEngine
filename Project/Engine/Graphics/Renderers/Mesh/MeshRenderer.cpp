@@ -38,6 +38,23 @@ void MeshRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevi
 
 	}
 
+
+	{	/// vertex buffer
+
+		vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * 3);
+		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
+
+		mappingData_[0].position = Vector4(0.0f, 0.5f, 0.0f, 1.0f);
+		mappingData_[1].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
+		mappingData_[2].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
+
+		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
+		vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * 3);
+		vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
+
+	}
+
+
 }
 
 void MeshRenderer::PreDraw(DxCommand* _dxCommand) {
@@ -48,6 +65,12 @@ void MeshRenderer::PreDraw(DxCommand* _dxCommand) {
 
 void MeshRenderer::PostDraw([[maybe_unused]]DxCommand* _dxCommand) {
 
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+
+	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	commandList->DrawInstanced(3, 1, 0, 0);
 
 }
 

@@ -34,7 +34,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
 	sceneManager_->Initialize();
 	
-	renderingFramework_ = std::make_unique<RenderingFramework>();
+	renderingFramework_ = std::make_unique<RenderingFramework>(entityCollection_.get());
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get());
 
 }

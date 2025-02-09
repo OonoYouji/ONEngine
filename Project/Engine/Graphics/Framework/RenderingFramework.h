@@ -28,7 +28,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingFramework();
+	RenderingFramework(class EntityCollection* _entityCollection);
 	~RenderingFramework();
 
 	/// @brief 初期化
@@ -54,8 +54,9 @@ private:
 	std::unique_ptr<ShaderCompiler>         shaderCompiler_;
 	std::vector<std::unique_ptr<IRenderer>> renderers_; ///< レンダラーの配列
 
-	DxManager*     dxManager_     = nullptr;
-	WindowManager* windowManager_ = nullptr;
+	DxManager*              dxManager_        = nullptr;
+	WindowManager*          windowManager_    = nullptr;
+	class EntityCollection* entityCollection_ = nullptr;
 
 };
 
