@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Interface/IRenderer.h"
+#include "../Interface/IRenderingPipeline.h"
 
 /// ===================================================
 /// renderer collection

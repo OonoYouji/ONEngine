@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../Interface/IRenderer.h"
+#include "../Interface/IRenderingPipeline.h"
 #include "Engine/Utility/Math/Vector4.h"
 #include "Engine/DirectX12/Resource/DxResource.h"
 
@@ -9,7 +9,7 @@
 /// ===================================================
 /// 2Dライン描画クラス
 /// ===================================================
-class Line2DRenderer : public IRenderer {
+class Line2DRenderingPipeline : public IRenderingPipeline {
 public:
 
 	/// ===================================================
@@ -27,8 +27,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	Line2DRenderer();
-	~Line2DRenderer();
+	Line2DRenderingPipeline();
+	~Line2DRenderingPipeline();
 
 	/// @brief 初期化関数
 	/// @param _shaderCompiler シェーダーコンパイラーへのポインタ

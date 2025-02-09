@@ -5,7 +5,7 @@
 #include <memory>
 
 /// engine
-#include "../Renderers/Interface/IRenderer.h"
+#include "../Pipelines/Interface/IRenderingPipeline.h"
 #include "../Shader/ShaderCompiler.h"
 #include "Engine/DirectX12/Manager/DxManager.h" 
 #include "Engine/Window/WindowManager.h"
@@ -42,7 +42,7 @@ public:
 	/// @tparam T 作成するRendererの型
 	/// @return 生成したRendererのポインタ
 	template<class T>
-	T* GenerateRenderer() requires std::is_base_of_v<IRenderer, T>;
+	T* GenerateRenderer() requires std::is_base_of_v<IRenderingPipeline, T>;
 
 
 	/// @brief entityの描画処理を行う
@@ -54,8 +54,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<ShaderCompiler>         shaderCompiler_;
-	std::vector<std::unique_ptr<IRenderer>> renderers_; ///< レンダラーの配列
+	std::unique_ptr<ShaderCompiler>                  shaderCompiler_;
+	std::vector<std::unique_ptr<IRenderingPipeline>> renderers_; ///< レンダラーの配列
 
 	DxManager*              dxManager_        = nullptr;
 	WindowManager*          windowManager_    = nullptr;
@@ -69,7 +69,7 @@ private:
 /// ===================================================
 
 template<class T>
-inline T* RenderingFramework::GenerateRenderer() requires std::is_base_of_v<IRenderer, T> {
+inline T* RenderingFramework::GenerateRenderer() requires std::is_base_of_v<IRenderingPipeline, T> {
 	/// rednererの作成
 	std::unique_ptr<T> renderer = std::make_unique<T>();
 	renderer->Initialize(shaderCompiler_.get(), dxManager_->GetDxDevice());

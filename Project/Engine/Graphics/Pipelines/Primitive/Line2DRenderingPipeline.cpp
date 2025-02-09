@@ -1,14 +1,14 @@
-#include "Line2DRenderer.h"
+#include "Line2DRenderingPipeline.h"
 
 /// engine
 #include "Engine/Graphics/Shader/Shader.h"
 #include "Engine/Utility/DebugTools/Assert.h"
 
 
-Line2DRenderer::Line2DRenderer() {}
-Line2DRenderer::~Line2DRenderer() {}
+Line2DRenderingPipeline::Line2DRenderingPipeline() {}
+Line2DRenderingPipeline::~Line2DRenderingPipeline() {}
 
-void Line2DRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
+void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
 
 	{	/// pipelineの作成
 		
@@ -63,14 +63,14 @@ void Line2DRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDe
 
 }
 
-void Line2DRenderer::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
+void Line2DRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	vertices_.clear(); /// 積んでいたデータをリセット
 
 	vertices_.push_back(VertexData{ .position = Vec4(0,360,0,1), .color = Vec4(1, 0, 0, 1) });
 	vertices_.push_back(VertexData{ .position = Vec4(1280,360,0,1), .color = Vec4(1, 0, 0, 1) });
 }
 
-void Line2DRenderer::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
+void Line2DRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 	/// 頂点データが最大数を超えたらエラーを出す
 	Assert(vertices_.size() < kMaxVertexNum_, "Maximum number exceeded");

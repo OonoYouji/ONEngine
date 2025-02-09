@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../Interface/IRenderer.h"
+#include "../Interface/IRenderingPipeline.h"
 #include "Engine/DirectX12/Resource/DxResource.h"
 #include "Engine/Utility/Math/Vector4.h"
 
@@ -9,7 +9,7 @@
 /// ===================================================
 /// mesh描画クラス
 /// ===================================================
-class MeshRenderer final : public IRenderer {
+class MeshRenderingPipeline final : public IRenderingPipeline {
 	
 	/// ===================================================
 	/// private : sub class
@@ -26,8 +26,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MeshRenderer();
-	~MeshRenderer();
+	MeshRenderingPipeline();
+	~MeshRenderingPipeline();
 
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 

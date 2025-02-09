@@ -18,14 +18,14 @@
 /// ===================================================
 /// 描画のinterfaceクラス
 /// ===================================================
-class IRenderer {
+class IRenderingPipeline {
 public:
 
 	/// ===================================================
 	/// public : virtual methods
 	/// ===================================================
 
-	virtual ~IRenderer() = default;
+	virtual ~IRenderingPipeline() = default;
 
 	/// @brief このクラスの初期化関数
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ

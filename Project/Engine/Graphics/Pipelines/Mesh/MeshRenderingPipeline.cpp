@@ -1,9 +1,9 @@
-#include "MeshRenderer.h"
+#include "MeshRenderingPipeline.h"
 
-MeshRenderer::MeshRenderer() {}
-MeshRenderer::~MeshRenderer() {}
+MeshRenderingPipeline::MeshRenderingPipeline() {}
+MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
-void MeshRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
+void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
 
 	{	/// pipeline create
 
@@ -57,12 +57,12 @@ void MeshRenderer::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevi
 
 }
 
-void MeshRenderer::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
+void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	
 
 }
 
-void MeshRenderer::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
+void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();

@@ -22,17 +22,18 @@
     <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderers\Interface\IRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderers\Primitive\Line2DRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line2DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Engine\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Entity\Collection\EntityCollection.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderers\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderers\Collection\RendererCollection.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RendererCollection.cpp" />
+    <ClCompile Include="Component\IComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Window\WindowManager.h" />
@@ -58,9 +59,9 @@
     <ClInclude Include="Engine\Graphics\Shader\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shader\ShaderCompiler.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
-    <ClInclude Include="Engine\Graphics\Renderers\Interface\IRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
-    <ClInclude Include="Engine\Graphics\Renderers\Primitive\Line2DRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line2DRenderingPipeline.h" />
     <ClInclude Include="Engine\Utility\Math\Vector4.h" />
     <ClInclude Include="Engine\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\Entity\Interface\IEntity.h" />
@@ -70,7 +71,8 @@
     <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
     <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
-    <ClInclude Include="Engine\Graphics\Renderers\Mesh\MeshRenderer.h" />
-    <ClInclude Include="Engine\Graphics\Renderers\Collection\RendererCollection.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Collection\RendererCollection.h" />
+    <ClInclude Include="Component\IComponent.h" />
   </ItemGroup>
 </Project>

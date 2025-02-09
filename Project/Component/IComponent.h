@@ -1,0 +1,20 @@
+#pragma once
+
+#include "Engine/Graphics/Pipelines/Collection/RendererCollection.h"
+
+/// ===================================================
+/// 全てのコンポーネントの基底クラス
+/// ===================================================
+class IComponent {
+public:
+	virtual ~IComponent() {}
+};
+
+/// ===================================================
+/// 描画コンポーネントの基底クラス
+/// ===================================================
+class IRenderComponent : public IComponent {
+public:
+	virtual void PushBackRenderingData(RendererCollection* _collection) = 0;
+};
+
