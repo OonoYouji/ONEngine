@@ -17,11 +17,17 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+		pipeline_->AddInputElement("NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);
+
 
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
