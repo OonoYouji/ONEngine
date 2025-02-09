@@ -1,5 +1,7 @@
 #include "GameFramework.h"
 
+
+
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
 	/// gpuの処理が終わるまで待つ
@@ -34,7 +36,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	
 	renderingFramework_ = std::make_unique<RenderingFramework>();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get());
-	renderingFramework_->GenerateRenderer<Line2DRenderer>();
 
 }
 

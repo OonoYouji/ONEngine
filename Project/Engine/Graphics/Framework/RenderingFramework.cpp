@@ -4,6 +4,9 @@
 #include "Engine/DirectX12/Device/DxDevice.h"
 #include "Engine/DirectX12/Manager/DxManager.h"
 
+/// shader
+#include "Engine/Graphics/Renderers/Primitive/Line2DRenderer.h"
+
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -16,6 +19,10 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	dxManager_     = _dxManager;
 	windowManager_ = _windowManager;
+
+
+	/// レンダラーの生成
+	GenerateRenderer<Line2DRenderer>();
 }
 
 void RenderingFramework::Draw() {
