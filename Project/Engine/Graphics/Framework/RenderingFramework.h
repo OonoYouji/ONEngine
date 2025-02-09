@@ -37,9 +37,6 @@ public:
 	/// @brief 作成された順番に描画を行う
 	void Draw();
 
-	/// @brief entityの描画処理を行う
-	void DrawEntities();
-
 private:
 
 	/// ===================================================
@@ -47,7 +44,7 @@ private:
 	/// ===================================================
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
-	std::unique_ptr<RenderingPipelineCollection> rendererCollection_;
+	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 
 	DxManager*                      dxManager_        = nullptr;
 	WindowManager*                  windowManager_    = nullptr;

@@ -35,6 +35,8 @@ public:
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
+	const std::vector<std::unique_ptr<IEntity>>& GetEntities() { return entities_; }
+
 private:
 
 	/// other class pointer

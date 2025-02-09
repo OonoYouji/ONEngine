@@ -29,7 +29,7 @@ public:
 	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
 
 	template <class T>
-	T* GetComponent() requires std::is_base_of_v<IComponent, T>;
+	T* GetComponent() const requires std::is_base_of_v<IComponent, T> ;
 
 private:
 
@@ -40,7 +40,6 @@ private:
 	std::unordered_map<size_t, std::unique_ptr<IComponent>> components_;
 
 };
-
 
 /// ===================================================
 /// inline methods
@@ -62,6 +61,10 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 }
 
 template<class T>
-inline T* IEntity::GetComponent() requires std::is_base_of_v<IComponent, T> {
-	return dynamic_cast<T*>(components_[typeid(T).hash_code()].get());
+inline T* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, T> {
+	auto it = components_.find(typeid(T).hash_code());
+	if (it != components_.end()) {
+		return dynamic_cast<T*>(it->second.get());
+	}
+	return nullptr;
 }
