@@ -5,8 +5,8 @@
 #include <format>
 
 /// engine
-#include "Engine/Utility/DebugTools/Assert.h"
-#include "Engine/Utility/DebugTools/Log.h"
+#include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "Engine/Core/Utility/DebugTools/Log.h"
 
 /// comment
 #pragma comment(lib, "dxcompiler.lib")

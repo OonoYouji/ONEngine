@@ -7,8 +7,8 @@
 /// engine
 #include "../Pipelines/Collection/RenderingPipelineCollection.h"
 #include "../Shader/ShaderCompiler.h"
-#include "Engine/DirectX12/Manager/DxManager.h" 
-#include "Engine/Window/WindowManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h" 
+#include "Engine/Core/Window/WindowManager.h"
 
 /* TODO: RenderingFrameworkクラスの実装
  *

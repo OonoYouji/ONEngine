@@ -7,7 +7,7 @@
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Shader/ShaderCompiler.h"
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 /// ===================================================
 /// renderer collection

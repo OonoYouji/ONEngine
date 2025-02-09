@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "Engine/Utility/Math/Matrix4x4.h"
+#include "Engine/Core/Utility/Math/Matrix4x4.h"
 
 /// ===================================================
 /// カメラのビュー行列と射影行列

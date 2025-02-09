@@ -1,8 +1,8 @@
 #include "RenderingFramework.h"
 
 /// engine
-#include "Engine/DirectX12/Device/DxDevice.h"
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/Device/DxDevice.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 
 /// shader

@@ -8,10 +8,8 @@
 #include <memory>
 
 /// engine
-#include "Engine/DirectX12/SwapChain/DxSwapChain.h"
-
-/// lib
-#include "Engine/Utility/Math/Vector2.h"
+#include "Engine/Core/DirectX12/SwapChain/DxSwapChain.h"
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 
 

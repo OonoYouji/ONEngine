@@ -4,8 +4,8 @@
 #include <memory>
 
 /// engine
-#include "Engine/Window/WindowManager.h"
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "GameFrameworkConfig.h"

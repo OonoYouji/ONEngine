@@ -5,7 +5,7 @@
 
 /// engine
 #include "WindowManager.h"
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 #pragma comment(lib, "winmm.lib")
 

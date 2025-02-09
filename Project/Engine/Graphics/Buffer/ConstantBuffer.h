@@ -1,8 +1,8 @@
 #pragma once
 
 /// engine
-#include "Engine/DirectX12/Resource/DxResource.h"
-#include "Engine/DirectX12/Device/DxDevice.h"
+#include "Engine/Core/DirectX12/Resource/DxResource.h"
+#include "Engine/Core/DirectX12/Device/DxDevice.h"
 
 
 /// ===================================================

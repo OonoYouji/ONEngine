@@ -1,7 +1,7 @@
 #include "WindowManager.h"
 
 /// engine
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {

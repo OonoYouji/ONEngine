@@ -1,7 +1,7 @@
 #include "EntityCollection.h"
 
 /// engine
-#include "Engine/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 
 EntityCollection::EntityCollection(DxManager* _dxManager)

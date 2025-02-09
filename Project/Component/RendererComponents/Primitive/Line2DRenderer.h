@@ -3,7 +3,7 @@
 /// engine
 #include "../../IComponent.h"
 #include "Engine/Graphics/Pipelines/Primitive/Line2DRenderingPipeline.h"
-#include "Engine/Utility/Math/Vector2.h"
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 
 /// ===================================================

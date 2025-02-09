@@ -6,9 +6,7 @@
 
 /// engine
 #include "Engine/Scene/ISceneFactory.h"
-
-/// lib
-#include "Engine/Utility/Math/Vector2.h"
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 
 /// ===================================================
