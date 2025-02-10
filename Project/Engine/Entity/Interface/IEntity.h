@@ -1,6 +1,8 @@
 #pragma once
 
+/// engine
 #include "Engine/Component/IComponent.h"
+#include "Engine/Component/Transform/Transform.h"
 
 /// std
 #include <unordered_map>
@@ -11,6 +13,8 @@
 /// ===================================================
 class IEntity {
 public:
+
+	IEntity();
 
 	/// @brief 仮想デストラクタ
 	virtual ~IEntity() {}
@@ -28,8 +32,26 @@ public:
 	template <class T>
 	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
 
+	/// @brief component の取得
+	/// @tparam T ゲットする component の型
+	/// @return component のポインタ
 	template <class T>
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
+
+
+	/// @brief transform の取得
+	/// @return transform のポインタ
+	const Transform* GetTransform() const { return transform_; }
+
+
+protected:
+
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
+
+	Transform* transform_;
+
 
 private:
 
@@ -40,6 +62,8 @@ private:
 	std::unordered_map<size_t, std::unique_ptr<IComponent>> components_;
 
 };
+
+
 
 /// ===================================================
 /// inline methods
