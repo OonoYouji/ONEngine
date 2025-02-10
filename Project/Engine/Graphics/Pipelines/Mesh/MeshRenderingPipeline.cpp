@@ -105,6 +105,8 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
 
 	/// pre draw
+
+	/// settings
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 1);
 

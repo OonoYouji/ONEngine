@@ -61,7 +61,6 @@ private:
 
 	class GraphicsResourceCollection*          resourceCollection_;
 	class EntityCollection*                    entityCollection_;
-	std::list<RenderingData*>                  renderingDataList_;
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
 
 
