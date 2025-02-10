@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Component/Transform/Transform.h"
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection) 
@@ -50,6 +51,14 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 	}
 
+
+	{	/// constant buffer create
+
+		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
+		transformBuffer_->Create(_dxDevice);
+
+	}
+
 }
 
 void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
@@ -75,9 +84,15 @@ void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 
 		const Mesh* mesh = resourceCollection_->GetMesh(renderingData->renderMeshId);
 
+		/// vbv, ibvのセット
 		commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
 		commandList->IASetIndexBuffer(&mesh->GetIBV());
 
+		/// buffer dataのセット
+		transformBuffer_->SetMappingData(renderingData->transformPtr->GetMatWorld());
+		commandList->SetGraphicsRootConstantBufferView(0, transformBuffer_->Get()->GetGPUVirtualAddress());
+
+		/// 描画
 		commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
 	}
 

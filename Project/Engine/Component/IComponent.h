@@ -7,6 +7,13 @@
 class IComponent {
 public:
 	virtual ~IComponent() {}
+
+	/// @brief このcomponentのownerを設定
+	/// @param _owner オーナーとなるentity
+	void SetOwner(class IEntity* _owner) { owner_ = _owner; }
+
+protected:
+	class IEntity* owner_ = nullptr;
 };
 
 /// ===================================================

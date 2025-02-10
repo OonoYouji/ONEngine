@@ -7,7 +7,6 @@
 #include "../IComponent.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
-#include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 
 /// ===============================================
@@ -36,9 +35,6 @@ public:
 
 	void Update();
 
-	void CreateBuffer(class DxDevice* _dxDevice);
-
-
 public:
 
 	/// ===============================================
@@ -58,7 +54,6 @@ private:
 	/// ===============================================
 
 	Transform*                                  parent_          = nullptr;
-	std::unique_ptr<ConstantBuffer<BufferData>> transformBuffer_ = nullptr;
 
 
 public:

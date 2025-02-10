@@ -5,6 +5,7 @@
 
 MeshRenderer::MeshRenderer() {
 	renderingData_.renderMeshId = 0;
+
 }
 
 MeshRenderer::~MeshRenderer() {}

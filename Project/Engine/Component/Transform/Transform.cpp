@@ -13,7 +13,3 @@ void Transform::Update() {
 	}
 }
 
-void Transform::CreateBuffer(DxDevice* _dxDevice) {
-	transformBuffer_ = std::make_unique<ConstantBuffer<BufferData>>();
-	transformBuffer_->Create(_dxDevice);
-}

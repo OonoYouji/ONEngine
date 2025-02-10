@@ -3,10 +3,13 @@
 /// std
 #include <list>
 #include <vector>
+#include <memory>
 
 /// engine
 #include "../Interface/IRenderingPipeline.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
+#include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
@@ -27,7 +30,8 @@ public:
 
 	/// @brief 描画に必要なデータ
 	struct RenderingData final {
-		size_t renderMeshId;
+		size_t           renderMeshId;
+		class Transform* transformPtr;
 	};
 
 public:
@@ -62,9 +66,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* resourceCollection_;
+	class GraphicsResourceCollection*          resourceCollection_;
+	std::list<RenderingData*>                  renderingDataList_;
+	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
 
-	std::list<RenderingData*>         renderingDataList_;
 
 };
 

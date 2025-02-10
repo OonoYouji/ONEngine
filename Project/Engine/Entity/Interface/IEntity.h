@@ -79,6 +79,7 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 	}
 
 	std::unique_ptr<T> component = std::make_unique<T>();
+	component->SetOwner(this);
 	T* componentPtr = component.get();
 	components_.emplace(hash, std::move(component));
 	return componentPtr;
