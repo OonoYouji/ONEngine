@@ -5,8 +5,7 @@
 #include "Engine/Entity/Interface/IEntity.h"
 
 MeshRenderer::MeshRenderer() {
-	renderingData_.renderMeshId = 0;
-	renderingData_.meshRenderer = this;
+	meshId_ = 0;
 }
 
 MeshRenderer::~MeshRenderer() {}

@@ -49,5 +49,11 @@ public:
 		return viewProjection_->GetMappingData(); 
 	}
 
+	/// @brief view projection buffer の取得
+	/// @return view projection buffer のポインタ
+	ConstantBuffer<ViewProjection>* GetViewProjectionBuffer() {
+		return viewProjection_.get();
+	}
+
 };
 

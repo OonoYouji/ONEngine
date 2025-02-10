@@ -34,8 +34,8 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< transform
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); ///< view projection
 
 
 		D3D12_BLEND_DESC blendDesc = {};
@@ -102,21 +102,28 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-
+	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
 
 	/// pre draw
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 1);
+
 
 	/// draw
+	for (auto& entity : _entityCollection->GetEntities()) {
+		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
+
+		if (meshRenderer) {
+
+			//const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshId());
+			//Transform*&&  transform = entity->GetTransform();
+
+		}
+	}
+
 
 	/// post draw
-	for (auto& entity : _entityCollection->GetEntities()) {
-		MeshRenderer* meshRenderer = entity->GetComponent<MeshRenderer>();
-		if (meshRenderer) {
-			//meshRenderer->PushBackRenderingData(this);
-		}
 
-	}
 
 }
 

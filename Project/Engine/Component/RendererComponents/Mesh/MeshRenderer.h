@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	MeshRenderingPipeline::RenderingData renderingData_;
+	size_t meshId_;
 
 
 public:
@@ -33,7 +33,12 @@ public:
 	/// ===================================================
 
 	void SetMeshId(size_t _meshId) {
-		renderingData_.renderMeshId = _meshId;
+		meshId_ = _meshId;
+	}
+
+
+	size_t GetMeshId() const {
+		return meshId_;
 	}
 
 };
