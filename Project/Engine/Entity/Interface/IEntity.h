@@ -41,7 +41,7 @@ public:
 
 	/// @brief transform の取得
 	/// @return transform のポインタ
-	const Transform* GetTransform() const { return transform_; }
+	Transform* GetTransform() const { return transform_; }
 
 
 protected:

@@ -16,6 +16,10 @@
 class EntityCollection final {
 public:
 
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
 	EntityCollection(class DxManager* _dxManager);
 	~EntityCollection();
 
@@ -29,20 +33,40 @@ public:
 	/// @tparam T entityを継承したクラス
 	/// @return 
 	template <class T>
-	IEntity* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
+	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
 
 	/// @brief 新しい camera を生成する
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
-	const std::vector<std::unique_ptr<IEntity>>& GetEntities() { return entities_; }
 
 private:
+	
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
 	/// other class pointer
 	class DxManager* pDxManager_;
 
 	std::vector<std::unique_ptr<IEntity>> entities_;
+	std::vector<Camera*>                  cameras_;  ///< カメラのリスト、本体はentities_に格納されている
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+	
+	/// @brief entities の取得
+	/// @return entities
+	const std::vector<std::unique_ptr<IEntity>>& GetEntities() { return entities_; }
+
+	/// @brief cameras の取得
+	/// @return cameras
+	const std::vector<Camera*>& GetCameras() { return cameras_; }
+
 
 };
 
@@ -52,11 +76,11 @@ private:
 /// ===================================================
 
 template<class T>
-inline IEntity* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
+inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
 	std::unique_ptr<T> entity = std::make_unique<T>();
 	entity->Initialize();
 
-	IEntity* entityPtr = entity.get();
+	T* entityPtr = entity.get();
 	entities_.push_back(std::move(entity));
 
 	return entityPtr;
