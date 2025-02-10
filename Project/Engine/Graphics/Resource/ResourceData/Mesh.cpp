@@ -23,6 +23,7 @@ void Mesh::CreateBuffer(DxDevice* _dxDevice) {
 
 	ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
 	ibv_.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
+	ibv_.Format         = DXGI_FORMAT_R32_UINT;
 
 	/// mapping
 	VertexBufferMapping();

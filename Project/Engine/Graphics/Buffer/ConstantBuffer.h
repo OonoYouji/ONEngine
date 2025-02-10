@@ -66,7 +66,7 @@ inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
 
 	mappingData_ = nullptr;
 	constantBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-
+	SetMappingData(T{}); ///< 0クリア
 }
 
 template<typename T>

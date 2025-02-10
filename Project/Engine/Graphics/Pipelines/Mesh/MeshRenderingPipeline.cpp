@@ -107,6 +107,8 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	/// pre draw
 
 	/// settings
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 1);
 
@@ -117,9 +119,21 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 		if (meshRenderer) {
 
-			//const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshId());
-			//Transform*&&  transform = entity->GetTransform();
+			const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshId());
+			Transform*&&  transform = entity->GetTransform();
 
+
+			/// vbv, ibvのセット
+			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			commandList->IASetIndexBuffer(&mesh->GetIBV());
+
+			/// buffer dataのセット
+			transformBuffer_->SetMappingData(transform->GetMatWorld());
+			transformBuffer_->BindForCommandList(commandList, 0);
+
+
+			/// 描画
+			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
 		}
 	}
 
