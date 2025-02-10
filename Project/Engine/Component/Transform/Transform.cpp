@@ -6,9 +6,14 @@ Transform::~Transform() {}
 
 
 void Transform::Update() {
-	matWorld_ = Matrix4x4::MakeAffine(position_, rotate_, scale_);
+	matWorld = Matrix4x4::MakeAffine(position, rotate, scale);
 
-	if (parent_) {
-		matWorld_ = parent_->GetMatWorld() * matWorld_;
+	if (parent) {
+		matWorld = parent->GetMatWorld() * matWorld;
 	}
+}
+
+void Transform::CreateBuffer(DxDevice* _dxDevice) {
+	transformBuffer_ = std::make_unique<ConstantBuffer<BufferData>>();
+	transformBuffer_->Create(_dxDevice);
 }
