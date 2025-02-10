@@ -8,8 +8,8 @@ Transform::~Transform() {}
 void Transform::Update() {
 	matWorld = Matrix4x4::MakeAffine(position, rotate, scale);
 
-	if (parent) {
-		matWorld = parent->GetMatWorld() * matWorld;
+	if (parent_) {
+		matWorld = parent_->GetMatWorld() * matWorld;
 	}
 }
 

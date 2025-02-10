@@ -50,15 +50,16 @@ public:
 	Vector3                                     scale;
 	Matrix4x4                                   matWorld;
 
-	Transform*                                  parent          = nullptr;
-
 
 private:
 
 	/// ===============================================
 	/// private : objects
 	/// ===============================================
+
+	Transform*                                  parent_          = nullptr;
 	std::unique_ptr<ConstantBuffer<BufferData>> transformBuffer_ = nullptr;
+
 
 public:
 
@@ -68,7 +69,7 @@ public:
 
 	/// @brief 親のセット
 	/// @param _parent 親のtransform
-	void SetParent(Transform* _parent) { parent = _parent; }
+	void SetParent(Transform* _parent) { parent_ = _parent; }
 
 
 
@@ -128,7 +129,7 @@ public:
 
 	/// @brief 親の取得
 	/// @return 親のtransform
-	const Transform* GetParent() const { return parent; }
+	const Transform* GetParent() const { return parent_; }
 
 	/// @brief positionを得る
 	/// @return position 
