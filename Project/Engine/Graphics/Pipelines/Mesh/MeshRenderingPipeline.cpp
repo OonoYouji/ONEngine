@@ -83,7 +83,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 		if (meshRenderer) {
 
-			const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshId());
+			const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshPath());
 			Transform*&&  transform = entity->GetTransform();
 
 

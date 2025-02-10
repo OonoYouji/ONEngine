@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	size_t meshId_;
+	std::string meshPath_;
 
 
 public:
@@ -32,14 +32,9 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	void SetMeshId(size_t _meshId) {
-		meshId_ = _meshId;
-	}
+	void SetMeshPath(const std::string& _path) { meshPath_ = _path; }
 
-
-	size_t GetMeshId() const {
-		return meshId_;
-	}
+	const std::string& GetMeshPath() const { return meshPath_; }
 
 };
 

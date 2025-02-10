@@ -5,7 +5,7 @@
 #include "Engine/Entity/Interface/IEntity.h"
 
 MeshRenderer::MeshRenderer() {
-	meshId_ = 0;
+	SetMeshPath("Assets/Models/primitive/cube.obj");
 }
 
 MeshRenderer::~MeshRenderer() {}

@@ -68,10 +68,8 @@ private:
 	std::unique_ptr<GraphicsResourceLoader>                resourceLoader_;
 
 
-	/// mesh管理
-	std::unordered_map<std::string, size_t> meshIndices_; ///< ファイルパスとMeshのペア、indexで参照するときに使う
-	std::vector<std::unique_ptr<Mesh>>      meshes_;      ///< Meshのポインタリスト、indexで参照するときに使う
-	std::vector<size_t>                     freeIndices_; ///< 空いているindexのリスト
+	/// mesh
+	std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes_;
 
 public:
 
@@ -82,8 +80,13 @@ public:
 	/// @brief meshの取得
 	/// @param _index vectorのindex
 	/// @return mesh
-	const Mesh* GetMesh(size_t _index) const {
-		return meshes_[_index].get();
+	const Mesh* GetMesh(const std::string& _filePath) const {
+		auto itr = meshes_.find(_filePath);
+		if (itr == meshes_.end()) {
+			return nullptr;
+		}
+
+		return itr->second.get();
 	}
 
 };
