@@ -45,7 +45,7 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 		case GraphicsResourceCollection::Type::model:
 
 			/// meshの解放
-			meshes_.erase(path);
+			models_.erase(path);
 
 			break;
 		}
@@ -72,7 +72,6 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 }
 
-void GraphicsResourceCollection::AddMesh(const std::string& _filePath, std::unique_ptr<Mesh>& _mesh) {
-
-	meshes_[_filePath] = std::move(_mesh);
+void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model>& _model) {
+	models_[_filePath] = std::move(_model);
 }

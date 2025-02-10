@@ -41,6 +41,7 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
     <ClCompile Include="Engine\Entity\Demo\DemoEntity.cpp" />
     <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -88,5 +89,6 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
     <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
     <ClInclude Include="Engine\Component\Transform\Transform.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
   </ItemGroup>
 </Project>

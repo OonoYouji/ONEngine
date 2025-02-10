@@ -83,25 +83,29 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 		if (meshRenderer) {
 
-			const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshPath());
-			Transform*&&  transform = entity->GetTransform();
+			const Model*&& model     = resourceCollection_->GetModel(meshRenderer->GetMeshPath());
+			Transform*&&   transform = entity->GetTransform();
 
-			if (!mesh) { ///< meshがない場合は描画しない
+			if (!model) { ///< meshがない場合は描画しない
 				continue;
 			}
 
 
-			/// vbv, ibvのセット
-			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-			commandList->IASetIndexBuffer(&mesh->GetIBV());
+			for (auto& mesh : model->GetMeshes()) {
 
-			/// buffer dataのセット
-			transformBuffer_->SetMappingData(transform->GetMatWorld());
-			transformBuffer_->BindForCommandList(commandList, 0);
+				/// vbv, ibvのセット
+				commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+				commandList->IASetIndexBuffer(&mesh->GetIBV());
+
+				/// buffer dataのセット
+				transformBuffer_->SetMappingData(transform->GetMatWorld());
+				transformBuffer_->BindForCommandList(commandList, 0);
 
 
-			/// 描画
-			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
+				/// 描画
+				commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
+
+			}
 		}
 	}
 

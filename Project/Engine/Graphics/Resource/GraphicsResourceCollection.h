@@ -6,7 +6,7 @@
 
 /// engine
 #include "Loader/GraphicsResourceLoader.h"
-#include "ResourceData/Mesh.h"
+#include "ResourceData/Model.h"
 
 
 /// ===================================================
@@ -54,10 +54,10 @@ public:
 	void Load(const std::string& _filePath, Type _type);
 
 
-	/// @brief 新しいmeshの追加
+	/// @brief 新しい model の追加
 	/// @param _filePath unordered_mapのキー
-	/// @param _mesh 追加するmesh
-	void AddMesh(const std::string& _filePath, std::unique_ptr<Mesh>& _mesh);
+	/// @param _model 追加する model
+	void AddModel(const std::string& _filePath, std::unique_ptr<Model>& _model);
 
 private:
 
@@ -67,9 +67,8 @@ private:
 
 	std::unique_ptr<GraphicsResourceLoader>                resourceLoader_;
 
-
 	/// mesh
-	std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes_;
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 
 public:
 
@@ -77,15 +76,14 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief meshの取得
-	/// @param _index vectorのindex
-	/// @return mesh
-	const Mesh* GetMesh(const std::string& _filePath) const {
-		auto itr = meshes_.find(_filePath);
-		if (itr == meshes_.end()) {
+	/// @brief modelの取得
+	/// @param _filePath .slnファイルからの相対パス
+	/// @return modelのポインタ
+	const Model* GetModel(const std::string& _filePath) const {
+		auto itr = models_.find(_filePath);
+		if (itr == models_.end()) {
 			return nullptr;
 		}
-
 		return itr->second.get();
 	}
 

@@ -10,6 +10,7 @@
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 #include "../GraphicsResourceCollection.h"
 
+
 GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection) 
 	: dxManager_(_dxManager), resourceCollection_(_collection) {}
 
@@ -26,7 +27,7 @@ void GraphicsResourceLoader::Initialize() {
 
 void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filePath) {}
 
-void GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _filePath) {
+void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 	Assimp::Importer importer;
 	const aiScene*   scene = importer.ReadFile(_filePath, assimpLoadFlags_);
@@ -34,6 +35,9 @@ void GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _f
 	if (!scene) {
 		return; ///< 読み込み失敗
 	}
+
+	std::unique_ptr<Model> model = std::make_unique<Model>();
+	model->SetPath(_filePath);
 
 	/// mesh 解析
 	for (uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
@@ -80,7 +84,9 @@ void GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _f
 		/// bufferの作成
 		meshData->CreateBuffer(dxManager_->GetDxDevice());
 
-		resourceCollection_->AddMesh(_filePath, meshData);
+		model->AddMesh(std::move(meshData));
 	}
+	
+	resourceCollection_->AddModel(_filePath, model);
 
 }
