@@ -10,7 +10,7 @@ GameScene::GameScene() {
 	loadResourcePaths_ = {
 		"Assets/Models/primitive/cube.obj",
 		"Assets/Models/primitive/sphere.obj",
-		"Assets/Models/primitive/cube.obj",
+		"Assets/Models/primitive/cylinder.obj",
 	};
 
 	unloadResourcePaths_ = {

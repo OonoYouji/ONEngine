@@ -86,6 +86,10 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			const Mesh*&& mesh      = resourceCollection_->GetMesh(meshRenderer->GetMeshPath());
 			Transform*&&  transform = entity->GetTransform();
 
+			if (!mesh) { ///< meshがない場合は描画しない
+				continue;
+			}
+
 
 			/// vbv, ibvのセット
 			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());

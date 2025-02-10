@@ -8,7 +8,7 @@
 
 void DemoEntity::Initialize() {
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
-	renderer->SetMeshPath("Assets/Models/primitive/cube.obj");
+	renderer->SetMeshPath("Assets/Models/primitive/cylinder.obj");
 
 	transform_->scale  = Vector3::kOne;
 	transform_->rotate = Vector3::kZero;
