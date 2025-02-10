@@ -2,11 +2,13 @@
 
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Component/Transform/Transform.h"
+#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection) 
-	: resourceCollection_(_resourceCollection) {}
+MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection, EntityCollection* _entityCollection) 
+	: resourceCollection_(_resourceCollection), entityCollection_(_entityCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
@@ -61,44 +63,60 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 }
 
-void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
-	
+//void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
+//
+//	/// 描画データが空なら描画する必要がないのでreturn
+//	if (renderingDataList_.empty()) {
+//		return;
+//	}
+//
+//	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+//	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+//
+//	/// 共通のデータをセット
+//	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+//
+//	/// camera
+//
+//
+//
+//	/// 個々に必要なデータをセットし描画する
+//	for (RenderingData* renderingData : renderingDataList_) {
+//
+//		const Mesh*  mesh      = resourceCollection_->GetMesh(renderingData->renderMeshId);
+//		Transform*&& transform = renderingData->meshRenderer->GetOwner()->GetTransform();
+//
+//		/// vbv, ibvのセット
+//		commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+//		commandList->IASetIndexBuffer(&mesh->GetIBV());
+//
+//		/// buffer dataのセット
+//		transformBuffer_->SetMappingData(transform->GetMatWorld());
+//		commandList->SetGraphicsRootConstantBufferView(0, transformBuffer_->Get()->GetGPUVirtualAddress());
+//
+//		/// 描画
+//		commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
+//	}
+//
+//}
 
-}
-
-void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
-
-	/// 描画データが空なら描画する必要がないのでreturn
-	if (renderingDataList_.empty()) {
-		return;
-	}
-
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-	/// 共通のデータをセット
+
+	/// pre draw
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	/// 個々に必要なデータをセットし描画する
-	for (RenderingData* renderingData : renderingDataList_) {
+	/// draw
 
-		const Mesh* mesh = resourceCollection_->GetMesh(renderingData->renderMeshId);
+	/// post draw
+	for (auto& entity : _entityCollection->GetEntities()) {
+		MeshRenderer* meshRenderer = entity->GetComponent<MeshRenderer>();
+		if (meshRenderer) {
+			//meshRenderer->PushBackRenderingData(this);
+		}
 
-		/// vbv, ibvのセット
-		commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-		commandList->IASetIndexBuffer(&mesh->GetIBV());
-
-		/// buffer dataのセット
-		transformBuffer_->SetMappingData(renderingData->transformPtr->GetMatWorld());
-		commandList->SetGraphicsRootConstantBufferView(0, transformBuffer_->Get()->GetGPUVirtualAddress());
-
-		/// 描画
-		commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
 	}
 
-}
-
-void MeshRenderingPipeline::PushBackRenderingData(RenderingData* _renderingData) {
-	renderingDataList_.push_back(_renderingData);
 }
 

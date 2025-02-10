@@ -78,11 +78,13 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 		return nullptr;
 	}
 
+	/// component の生成, 追加
 	std::unique_ptr<T> component = std::make_unique<T>();
 	component->SetOwner(this);
 	T* componentPtr = component.get();
 	components_.emplace(hash, std::move(component));
-	return componentPtr;
+
+	return componentPtr; ///< 生成した component のポインタを返す
 }
 
 template<class T>

@@ -12,6 +12,10 @@ public:
 	/// @param _owner オーナーとなるentity
 	void SetOwner(class IEntity* _owner) { owner_ = _owner; }
 
+	/// @brief ownerの取得
+	/// @return ownerのentity
+	IEntity* GetOwner() const { return owner_; }
+
 protected:
 	class IEntity* owner_ = nullptr;
 };
@@ -21,6 +25,6 @@ protected:
 /// ===================================================
 class IRenderComponent : public IComponent {
 public:
-	virtual void PushBackRenderingData(class RenderingPipelineCollection* _collection) = 0;
+
 };
 

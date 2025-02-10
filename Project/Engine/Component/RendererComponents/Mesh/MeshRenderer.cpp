@@ -6,12 +6,7 @@
 
 MeshRenderer::MeshRenderer() {
 	renderingData_.renderMeshId = 0;
-	renderingData_.transformPtr = owner_->GetTransform();
+	renderingData_.meshRenderer = this;
 }
 
 MeshRenderer::~MeshRenderer() {}
-
-void MeshRenderer::PushBackRenderingData(RenderingPipelineCollection* _collection) {
-	MeshRenderingPipeline* renderer = _collection->GetRenderingPipeline<MeshRenderingPipeline>();
-	renderer->PushBackRenderingData(&renderingData_);
-}

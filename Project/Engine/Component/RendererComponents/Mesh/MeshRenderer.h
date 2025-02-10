@@ -17,10 +17,6 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	/// @brief rendering pipelineに描画データを追加
-	/// @param _collection pipelineのコレクションクラスへのポインタ
-	void PushBackRenderingData(class RenderingPipelineCollection* _collection) override;
-
 private:
 
 	/// ===================================================

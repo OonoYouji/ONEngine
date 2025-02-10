@@ -21,27 +21,12 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// generate rendering pipeline
 	GenerateRenderingPipeline<Line2DRenderingPipeline>();
-	GenerateRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
+	GenerateRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_, entityCollection_);
 
 }
 
 void RenderingPipelineCollection::DrawEntities() {
 	for (auto& renderer : renderers_) {
-		renderer.second->PreDraw(dxManager_->GetDxCommand());
-	}
-
-	/// すべての entity の描画処理
-	const std::vector<std::unique_ptr<IEntity>>& entities = entityCollection_->GetEntities();
-	for (auto& entity : entities) {
-
-		Line2DRenderer* lineRenderer = entity->GetComponent<Line2DRenderer>();
-		if (lineRenderer) {
-			lineRenderer->PushBackRenderingData(this);
-		}
-	}
-
-
-	for (auto& renderer : renderers_) {
-		renderer.second->PostDraw(dxManager_->GetDxCommand());
+		renderer.second->Draw(dxManager_->GetDxCommand(), entityCollection_);
 	}
 }

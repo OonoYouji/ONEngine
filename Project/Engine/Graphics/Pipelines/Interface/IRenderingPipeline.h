@@ -31,13 +31,11 @@ public:
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxDevice* _dxDevice) = 0;
 
-	/// @brief 描画前の処理を行う
-	/// @param _commandList dxManagerが管理しているcommandListへのポインタ
-	virtual void PreDraw(DxCommand* _dxCommand)  = 0;
+	/// @brief 描画処理を行う
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @param _entityCollection EntityCollectionへのポインタ
+	virtual void Draw(DxCommand* _dxCommand, class EntityCollection* _entityCollection) = 0;
 
-	/// @brief 描画後の処理を行う
-	/// @param _commandList dxManagerが管理しているcommandListへのポインタ
-	virtual void PostDraw(DxCommand* _dxCommand) = 0;
 
 protected:
 
