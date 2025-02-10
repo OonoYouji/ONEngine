@@ -58,6 +58,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
+    <ClInclude Include="Engine\Component\Transform\Transform.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
