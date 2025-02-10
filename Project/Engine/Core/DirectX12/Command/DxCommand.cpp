@@ -4,8 +4,8 @@
 #include "../Device/DxDevice.h"
 
 /// lib
-#include "Engine/Utility/DebugTools/Assert.h"
-#include "Engine/Utility/DebugTools/Log.h"
+#include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "Engine/Core/Utility/DebugTools/Log.h"
 
 
 DxCommand::DxCommand() {}
