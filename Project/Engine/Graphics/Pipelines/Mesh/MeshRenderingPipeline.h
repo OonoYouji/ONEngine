@@ -23,11 +23,6 @@ public:
 	/// public : sub class
 	/// ===================================================
 
-	/// @brief 頂点データ
-	struct VertexData {
-		Vector4 position;
-	};
-
 	/// @brief 描画に必要なデータ
 	struct RenderingData final {
 		size_t              renderMeshId; /// TODO: stringに変更
