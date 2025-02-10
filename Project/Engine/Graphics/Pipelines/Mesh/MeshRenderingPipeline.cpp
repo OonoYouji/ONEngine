@@ -30,7 +30,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 		pipeline_->AddInputElement("NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
@@ -63,42 +63,6 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 
 }
 
-//void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
-//
-//	/// 描画データが空なら描画する必要がないのでreturn
-//	if (renderingDataList_.empty()) {
-//		return;
-//	}
-//
-//	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-//	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-//
-//	/// 共通のデータをセット
-//	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//	/// camera
-//
-//
-//
-//	/// 個々に必要なデータをセットし描画する
-//	for (RenderingData* renderingData : renderingDataList_) {
-//
-//		const Mesh*  mesh      = resourceCollection_->GetMesh(renderingData->renderMeshId);
-//		Transform*&& transform = renderingData->meshRenderer->GetOwner()->GetTransform();
-//
-//		/// vbv, ibvのセット
-//		commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-//		commandList->IASetIndexBuffer(&mesh->GetIBV());
-//
-//		/// buffer dataのセット
-//		transformBuffer_->SetMappingData(transform->GetMatWorld());
-//		commandList->SetGraphicsRootConstantBufferView(0, transformBuffer_->Get()->GetGPUVirtualAddress());
-//
-//		/// 描画
-//		commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
-//	}
-//
-//}
 
 void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();

@@ -52,8 +52,8 @@ void GraphicsResourceLoader::LoadModelObj([[maybe_unused]] const std::string& _f
 		/// vertex 解析
 		for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
 			Mesh::VertexData&& vertex = {
-				Vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
-				Vec3(mesh->mNormals[i].x,  mesh->mNormals[i].y,  mesh->mNormals[i].z),
+				Vec4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
+				Vec3(-mesh->mNormals[i].x,  mesh->mNormals[i].y,  mesh->mNormals[i].z),
 				Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y)
 			};
 
