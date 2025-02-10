@@ -41,13 +41,10 @@ public:
 	/// @param _shaderCompiler シェーダーコンパイラーへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) override;
 
-	/// @brief 描画前の処理を行う
-	/// @param _commandList DirectX12のコマンドリスト
-	void PreDraw(DxCommand* _dxCommand) override;
-
-	/// @brief 描画後の処理を行う
-	/// @param _commandList DirectX12のコマンドリスト
-	void PostDraw(DxCommand* _dxCommand) override;
+	/// @brief 描画処理を行う
+	/// @param _dxCommand DxCommandへのポインタ
+	/// @param _entityCollection EntityCollectionへのポインタ
+	void Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) override;
 
 	/// @brief rendering dataの追加
 	/// @param _renderingData rendering data

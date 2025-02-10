@@ -10,22 +10,24 @@
 #include "Engine/Graphics/Pipelines/Mesh/MeshRenderingPipeline.h"
 
 
-RenderingFramework::RenderingFramework(EntityCollection* _entityCollection)
-	: entityCollection_(_entityCollection) {}
-
+RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
 
-void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager) {
+void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager, EntityCollection* _entityCollection) {
 
 	/// shader compilerの初期化
 	shaderCompiler_ = std::make_unique<ShaderCompiler>();
 	shaderCompiler_->Initialize();
 
-	dxManager_     = _dxManager;
-	windowManager_ = _windowManager;
+	dxManager_        = _dxManager;
+	windowManager_    = _windowManager;
+	entityCollection_ = _entityCollection;
 
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_);
+	resourceCollection_          = std::make_unique<GraphicsResourceCollection>();
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
+
 	renderingPipelineCollection_->Initialize();
+	resourceCollection_->Initialize(dxManager_);
 
 }
 

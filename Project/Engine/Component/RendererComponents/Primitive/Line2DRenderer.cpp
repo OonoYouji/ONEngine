@@ -9,10 +9,6 @@ Line2DRenderer::Line2DRenderer() {
 }
 Line2DRenderer::~Line2DRenderer() {}
 
-void Line2DRenderer::PushBackRenderingData(RenderingPipelineCollection* _collection) {
-	Line2DRenderingPipeline* pipeline = _collection->GetRenderingPipeline<Line2DRenderingPipeline>();
-	pipeline->PushBackRenderingData(&renderingData_);
-}
 
 void Line2DRenderer::SetLine(const Vec2& _start, const Vec2& _end, const Vec4& _color) {
 

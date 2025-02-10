@@ -3,14 +3,17 @@
 /// engine
 #include "Scene/Factory/SceneFactory.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 
 SceneManager::SceneManager(EntityCollection* _entityCollection) 
-	: pEntityCollection_(_entityCollection) {}
+	: entityCollection_(_entityCollection) {}
 SceneManager::~SceneManager() {}
 
 
-void SceneManager::Initialize() {
+void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+
+	graphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
@@ -39,7 +42,12 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 void SceneManager::MoveNextToCurrentScene() {
 	currentScene_ = std::move(nextScene_);
 	
-	currentScene_->SetEntityCollectionPtr(pEntityCollection_);
+	/// resourceの読み込み、解放をここで行う
+	graphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
+	graphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
+
+	/// sceneに必要な情報を渡して初期化
+	currentScene_->SetEntityCollectionPtr(entityCollection_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
 

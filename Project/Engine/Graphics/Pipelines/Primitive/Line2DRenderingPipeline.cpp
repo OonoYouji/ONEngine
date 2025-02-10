@@ -3,6 +3,8 @@
 /// engine
 #include "Engine/Graphics/Shader/Shader.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
 
 
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}
@@ -63,16 +65,28 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 
 }
 
-void Line2DRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
-	vertices_.clear(); /// 積んでいたデータをリセット
-	renderingDataList_.clear(); /// 積んでいたデータをリセット
 
-}
+void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-void Line2DRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
+	/// pre draw
+	/// setting
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	/// 描画データがない場合は描画しない
-	if (renderingDataList_.empty()) {
+
+
+	/// draw
+	for (auto& entity : _entityCollection->GetEntities()) {
+		Line2DRenderer*&& lineRenderer = entity->GetComponent<Line2DRenderer>();
+
+		if (lineRenderer) {
+			renderingDataList_.push_back(lineRenderer->GetRenderingDataPtr());
+		}
+	}
+
+	if (renderingDataList_.empty()) { ///< 描画データがない場合は描画しない
 		return;
 	}
 
@@ -80,29 +94,23 @@ void Line2DRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
 	for (RenderingData* renderingData : renderingDataList_) {
 		vertices_.insert(vertices_.end(), renderingData->vertices.begin(), renderingData->vertices.end());
 	}
-
-	/// 頂点データが最大数を超えたらエラーを出す
-	Assert(vertices_.size() < kMaxVertexNum_, "Maximum number exceeded");
-
-
-	/// pipelineの設定
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	
+	if (vertices_.size() > kMaxVertexNum_) { ///< 頂点データが最大数を超えたら超過分を消す
+		vertices_.resize(kMaxVertexNum_);
+	}
 
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-
-	/// データをコピー
+	/// 描画データをバッファにコピー
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
-
-	/// pipelineのセット
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-
-	/// param setting
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
+
+
+
+	/// post draw
+	/// 描画データのクリア
+	vertices_.clear();
+	renderingDataList_.clear();
 
 }
 

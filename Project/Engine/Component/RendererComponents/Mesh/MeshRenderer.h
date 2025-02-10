@@ -17,17 +17,24 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
-	/// @brief rendering pipelineに描画データを追加
-	/// @param _collection pipelineのコレクションクラスへのポインタ
-	void PushBackRenderingData(RenderingPipelineCollection* _collection) override;
-
 private:
 
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	MeshRenderingPipeline::RenderingData renderingData_;
+	std::string meshPath_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	void SetMeshPath(const std::string& _path) { meshPath_ = _path; }
+
+	const std::string& GetMeshPath() const { return meshPath_; }
 
 };
 

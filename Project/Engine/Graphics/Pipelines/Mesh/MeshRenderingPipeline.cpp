@@ -1,6 +1,15 @@
 #include "MeshRenderingPipeline.h"
 
-MeshRenderingPipeline::MeshRenderingPipeline() {}
+/// engine
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/Component/Transform/Transform.h"
+#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
+
+
+MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection, EntityCollection* _entityCollection) 
+	: resourceCollection_(_resourceCollection), entityCollection_(_entityCollection) {}
+
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 
 void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
@@ -17,11 +26,17 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+		pipeline_->AddInputElement("NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< transform
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); ///< view projection
+
 
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
@@ -39,52 +54,65 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 	}
 
 
-	{	/// vertex buffer
+	{	/// constant buffer create
 
-		//vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * 3);
-		//vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-
-		//mappingData_[0].position = Vector4(0.0f, 0.5f, 0.0f, 1.0f);
-		//mappingData_[1].position = Vector4(0.5f, -0.5f, 0.0f, 1.0f);
-		//mappingData_[2].position = Vector4(-0.5f, -0.5f, 0.0f, 1.0f);
-
-		//vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-		//vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * 3);
-		//vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
+		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
+		transformBuffer_->Create(_dxDevice);
 
 	}
 
-
 }
 
-void MeshRenderingPipeline::PreDraw([[maybe_unused]] DxCommand* _dxCommand) {
-	
 
-}
-
-void MeshRenderingPipeline::PostDraw([[maybe_unused]] DxCommand* _dxCommand) {
-
-	/// 描画データが空なら描画する必要がないのでreturn
-	if (renderingDataList_.empty()) {
-		return;
-	}
-
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
 
-	/// 共通のデータをセット
+	/// pre draw
+
+	/// settings
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 1);
 
-	/// 個々に必要なデータをセットし描画する
-	for (RenderingData* renderingData : renderingDataList_) {
-		/// render mesh idを利用して描画するmeshを切り替える
-		renderingData;
 
+	/// draw
+	for (auto& entity : _entityCollection->GetEntities()) {
+		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
+
+		if (!meshRenderer) { 
+			continue;
+		}
+
+		const Model*&& model     = resourceCollection_->GetModel(meshRenderer->GetMeshPath());
+		Transform*&&   transform = entity->GetTransform();
+
+		if (!model) { ///< meshがない場合は描画しない
+			continue;
+		}
+
+
+		for (auto& mesh : model->GetMeshes()) {
+
+			/// vbv, ibvのセット
+			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			commandList->IASetIndexBuffer(&mesh->GetIBV());
+
+			/// buffer dataのセット
+			transformBuffer_->SetMappingData(transform->GetMatWorld());
+			transformBuffer_->BindForCommandList(commandList, 0);
+
+
+			/// 描画
+			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);
+
+		}
 	}
 
-}
 
-void MeshRenderingPipeline::PushBackRenderingData(RenderingData* _renderingData) {
-	renderingDataList_.push_back(_renderingData);
+	/// post draw
+
+
 }
 

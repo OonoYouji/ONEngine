@@ -14,29 +14,28 @@ GameFramework::~GameFramework() {
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
-	/// directX12の初期化
+	/// 各クラスのインスタンスを生成する
 	dxManager_ = std::make_unique<DxManager>();
-	dxManager_->Initialize();
-	
-
-	/// windowの初期化
 	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
+	renderingFramework_ = std::make_unique<RenderingFramework>();
+	entityCollection_ = std::make_unique<EntityCollection>(dxManager_.get());
+	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
+
+
+	/// 各クラスの初期化を行う
+
+	/// directX12の初期化
+	dxManager_->Initialize();
+	/// windowの初期化
 	windowManager_->Initialize();
-	
 	/// main windowの生成
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
-
+	/// rendering frameworkの初期化
+	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityCollection_.get());
 	/// entity collectionの初期化
-	entityCollection_ = std::make_unique<EntityCollection>(dxManager_.get());
 	entityCollection_->Initialize();
-	
 	/// scene managerの初期化
-	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
-	sceneManager_->Initialize();
-	
-	renderingFramework_ = std::make_unique<RenderingFramework>(entityCollection_.get());
-	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get());
-
+	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 }
 
 void GameFramework::Run() {

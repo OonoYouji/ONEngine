@@ -18,10 +18,6 @@ public:
 	Line2DRenderer();
 	~Line2DRenderer();
 
-	/// @brief rendering pipelineに描画データを追加
-	/// @param _collection pipelineのコレクションクラスへのポインタ
-	void PushBackRenderingData(RenderingPipelineCollection* _collection) override;
-
 	/// @brief lineの設定
 	/// @param _start 初期値
 	/// @param _end   終了値
@@ -36,6 +32,16 @@ private:
 
 	size_t refCount_;
 	Line2DRenderingPipeline::RenderingData renderingData_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+	
+	const Line2DRenderingPipeline::RenderingData& GetRenderingData() const { return renderingData_; }
+	Line2DRenderingPipeline::RenderingData* GetRenderingDataPtr() { return &renderingData_; }
 
 };
 

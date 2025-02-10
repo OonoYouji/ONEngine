@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <vector>
+#include <string>
+
 /// engine
 #include "Engine/Entity/Collection/EntityCollection.h"
 
@@ -41,9 +45,12 @@ private:
 protected:
 
 	/// ===================================================
-	/// protected : methods
+	/// protected : objects
 	/// ===================================================
 	
+	EntityCollection*        pEntityCollection_ = nullptr;
+	std::vector<std::string> loadResourcePaths_;
+	std::vector<std::string> unloadResourcePaths_;
 
 
 public:
@@ -52,7 +59,17 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	EntityCollection*   pEntityCollection_ = nullptr;
+	/// @brief このシーンに切り替わるときに読み込むリソースのパスを取得する
+	/// @return リソースのパス配列
+	const std::vector<std::string>& GetLoadResourcePaths() const {
+		return loadResourcePaths_;
+	}
+
+	/// @brief このシーンに切り替わるときにアンロードするリソースのパスを取得する
+	/// @return リソースのパス配列
+	const std::vector<std::string>& GetUnloadResourcePaths() const {
+		return unloadResourcePaths_;
+	}
 
 
 private:

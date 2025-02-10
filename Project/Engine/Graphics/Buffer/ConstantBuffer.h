@@ -23,6 +23,10 @@ public:
 	/// @param _dxDevice DxDeviceへのポインタ
 	void Create(DxDevice* _dxDevice);
 
+	/// @brief 
+	/// @param _commandList 
+	/// @param _rootParameterIndex 
+	void BindForCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
 
 private:
 
@@ -62,7 +66,12 @@ inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
 
 	mappingData_ = nullptr;
 	constantBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
+	SetMappingData(T{}); ///< 0クリア
+}
 
+template<typename T>
+inline void ConstantBuffer<T>::BindForCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
+	_commandList->SetGraphicsRootConstantBufferView(_rootParameterIndex, constantBuffer_.Get()->GetGPUVirtualAddress());
 }
 
 template<typename T>

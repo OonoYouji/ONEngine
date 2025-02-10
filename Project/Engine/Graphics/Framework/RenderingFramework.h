@@ -9,6 +9,7 @@
 #include "../Shader/ShaderCompiler.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 /* TODO: RenderingFrameworkクラスの実装
  *
@@ -28,14 +29,15 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingFramework(class EntityCollection* _entityCollection);
+	RenderingFramework();
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager, WindowManager* _windowManager);
+	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityCollection* _entityCollection);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();
+
 
 private:
 
@@ -45,10 +47,20 @@ private:
 
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
+	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
 
 	DxManager*                      dxManager_        = nullptr;
 	WindowManager*                  windowManager_    = nullptr;
 	class EntityCollection*         entityCollection_ = nullptr;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	GraphicsResourceCollection* GetResourceCollection() const { return resourceCollection_.get(); }
 
 };
 

@@ -1,7 +1,12 @@
 #pragma once
 
+/// external
+#include <DirectXMath.h>
+
 /// math
 #include "Vector3.h"
+
+using namespace DirectX;
 
 
 /// ===================================================
@@ -126,6 +131,31 @@ public:
 };
 
 
+namespace {
+	inline Matrix4x4 Convert(const XMMATRIX& _matrix) {
+		Matrix4x4  result;
+		XMFLOAT4X4 tempMatrix;
+		XMStoreFloat4x4(&tempMatrix, _matrix);
+
+		for(size_t i = 0; i < 4; ++i) {
+			for(size_t j = 0; j < 4; ++j) {
+				result.m[i][j] = tempMatrix.m[i][j];
+			}
+		}
+		return result;
+	}
+
+	inline XMMATRIX Convert(const Matrix4x4& _matrix) {
+		return XMMATRIX(
+			_matrix.m[0][0], _matrix.m[0][1], _matrix.m[0][2], _matrix.m[0][3],
+			_matrix.m[1][0], _matrix.m[1][1], _matrix.m[1][2], _matrix.m[1][3],
+			_matrix.m[2][0], _matrix.m[2][1], _matrix.m[2][2], _matrix.m[2][3],
+			_matrix.m[3][0], _matrix.m[3][1], _matrix.m[3][2], _matrix.m[3][3]
+		);
+	}
+}
+
+
 
 
 /// ===================================================
@@ -133,17 +163,7 @@ public:
 /// ===================================================
 
 inline Matrix4x4 operator*(const Matrix4x4& _m1, const Matrix4x4& _m2) {
-	Matrix4x4 result{};
-	for (size_t r = 0; r < 4; r++) {
-		for (size_t c = 0; c < 4; c++) {
-			result.m[r][c] =
-				_m1.m[r][0] * _m2.m[0][c] +
-				_m1.m[r][1] * _m2.m[1][c] +
-				_m1.m[r][2] * _m2.m[2][c] +
-				_m1.m[r][3] * _m2.m[3][c];
-		}
-	}
-	return result;
+	return Convert(Convert(_m1) * Convert(_m2));
 }
 
 

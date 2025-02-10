@@ -28,6 +28,7 @@ Camera* EntityCollection::GenerateCamera() {
 
 	Camera* cameraPtr = camera.get();
 	entities_.push_back(std::move(camera));
+	cameras_.push_back(cameraPtr);
 
 	return cameraPtr;
 }
