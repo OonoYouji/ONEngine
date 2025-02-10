@@ -11,6 +11,7 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/cube.obj",
 		"Assets/Models/primitive/sphere.obj",
 		"Assets/Models/primitive/cylinder.obj",
+		"Assets/Models/multiMeshTest/test.obj",
 	};
 
 	unloadResourcePaths_ = {
