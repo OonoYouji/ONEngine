@@ -59,6 +59,9 @@ private:
 	float nearClip_ = 0.0f;
 	float farClip_  = 0.0f;
 
+	Matrix4x4 matView_;
+	Matrix4x4 matProjection_;
+
 public:
 
 	/// ===================================================

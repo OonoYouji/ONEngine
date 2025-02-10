@@ -3,7 +3,6 @@
 /// std
 #include <cmath>
 
-#include <DirectXMath.h>
 
 using namespace DirectX;
 
@@ -15,36 +14,6 @@ const Matrix4x4 Matrix4x4::kIdentity = Matrix4x4(
 	0.0f, 0.0f, 1.0f, 0.0f,
 	0.0f, 0.0f, 0.0f, 1.0f
 );
-
-
-
-namespace { /// unnamed namespace
-
-	Matrix4x4 Convert(const XMMATRIX& _matrix) {
-		Matrix4x4  result{};
-		XMFLOAT4X4 tempMatrix;
-		XMStoreFloat4x4(&tempMatrix, _matrix);
-
-		for(size_t i = 0; i < 4; ++i) {
-			for(size_t j = 0; j < 4; ++j) {
-				result.m[i][j] = tempMatrix.m[i][j];
-			}
-		}
-		return result;
-	}
-
-	XMMATRIX Convert(const Matrix4x4& _matrix) {
-		return XMMATRIX(
-			_matrix.m[0][0], _matrix.m[0][1], _matrix.m[0][2], _matrix.m[0][3],
-			_matrix.m[1][0], _matrix.m[1][1], _matrix.m[1][2], _matrix.m[1][3],
-			_matrix.m[2][0], _matrix.m[2][1], _matrix.m[2][2], _matrix.m[2][3],
-			_matrix.m[3][0], _matrix.m[3][1], _matrix.m[3][2], _matrix.m[3][3]
-		);
-	}
-
-} /// unnamed namespace
-
-
 
 
 /// ===================================================
@@ -147,9 +116,9 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 
 Matrix4x4 Matrix4x4::MakeTranslate(const Vector3& _v) {
 	return Matrix4x4(
-		0.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
 		_v.x, _v.y, _v.z, 1.0f
 	);
 }
