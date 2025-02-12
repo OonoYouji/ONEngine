@@ -83,6 +83,52 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		}
 	}
 
+	{	
+		/// ---------------------------------------------------
+		/// depth stencil create
+		/// ---------------------------------------------------
+
+		D3D12_RESOURCE_DESC depthStencilDesc = {};
+		depthStencilDesc.Dimension        = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		depthStencilDesc.Width            = static_cast<UINT>(pWindow_->GetWindowSize().x);
+		depthStencilDesc.Height           = static_cast<UINT>(pWindow_->GetWindowSize().y);
+		depthStencilDesc.DepthOrArraySize = 1;
+		depthStencilDesc.MipLevels        = 1;
+		depthStencilDesc.Format           = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilDesc.SampleDesc.Count = 1;
+		depthStencilDesc.Flags            = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+		D3D12_CLEAR_VALUE clearValue = {};
+		clearValue.Format               = DXGI_FORMAT_D32_FLOAT;
+		clearValue.DepthStencil.Depth   = 1.0f;
+		clearValue.DepthStencil.Stencil = 0;
+
+		D3D12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
+
+		ComPtr<ID3D12Resource> depthStencilBuffer;
+		HRESULT hr = pDxManager_->GetDxDevice()->GetDevice()->CreateCommittedResource(
+			&heapProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&depthStencilDesc,
+			D3D12_RESOURCE_STATE_DEPTH_WRITE,
+			&clearValue,
+			IID_PPV_ARGS(&depthStencilBuffer)
+		);
+		Assert(SUCCEEDED(hr), "Failed to create depth stencil buffer");
+
+
+		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+		dsvDesc.Format        = DXGI_FORMAT_D32_FLOAT;
+		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		dsvDesc.Flags         = D3D12_DSV_FLAG_NONE;
+
+		IDxDescriptorHeap*          dsvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle         = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
+
+		pDxManager_->GetDxDevice()->GetDevice()->CreateDepthStencilView(depthStencilBuffer.Get(), &dsvDesc, dsvHandle);
+	}
+
+
 
 	{
 		/// ---------------------------------------------------
@@ -123,11 +169,11 @@ void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_R
 void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	//IDxDescriptorHeap* dsvDescriptorHeap  = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
+	IDxDescriptorHeap*          dsvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle         = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
 
 	_commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, nullptr);
-	//_commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	_commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	_commandList->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);
 }
