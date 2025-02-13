@@ -8,5 +8,5 @@ void IScene::SetSceneManagerPtr(SceneManager* _sceneManager) {
 }
 
 void IScene::SetEntityCollectionPtr(EntityCollection* _entityCollection) {
-	pEntityCollection_ = _entityCollection;
+	entityCollection_ = _entityCollection;
 }

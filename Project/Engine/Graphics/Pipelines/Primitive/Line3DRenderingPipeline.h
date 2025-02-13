@@ -17,6 +17,7 @@ public:
 
 	struct VertexData {
 		Vector4 position;
+		Vector4 color;
 	};
 
 	struct RenderingData {

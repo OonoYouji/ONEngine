@@ -48,6 +48,7 @@
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Engine\Component\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.h" />
+    <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

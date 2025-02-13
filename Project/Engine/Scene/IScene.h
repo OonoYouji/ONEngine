@@ -48,7 +48,7 @@ protected:
 	/// protected : objects
 	/// ===================================================
 	
-	EntityCollection*        pEntityCollection_ = nullptr;
+	EntityCollection*        entityCollection_ = nullptr;
 	std::vector<std::string> loadResourcePaths_;
 	std::vector<std::string> unloadResourcePaths_;
 
