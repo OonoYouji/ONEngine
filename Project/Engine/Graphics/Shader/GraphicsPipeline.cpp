@@ -89,7 +89,7 @@ void GraphicsPipeline::SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE _topologyTy
 	primitiveTopologyType_ = _topologyType;
 }
 
-void GraphicsPipeline::SetDepthStandilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc) {
+void GraphicsPipeline::SetDepthStencilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc) {
 	depthStancilDesc_ = _desc;
 }
 

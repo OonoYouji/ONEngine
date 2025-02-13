@@ -9,7 +9,7 @@
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
 #include "../DescriptorHeap/DxDescriptorHeap.h"
-
+#include "../DepthStencil/DxDepthStencil.h"
 
 /// ===================================================
 /// DxObjectの管理クラス
@@ -33,9 +33,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<DxDebug>   dxDebug_   = nullptr;
-	std::unique_ptr<DxDevice>  dxDevice_  = nullptr;
-	std::unique_ptr<DxCommand> dxCommand_ = nullptr;
+	std::unique_ptr<DxDebug>        dxDebug_        = nullptr;
+	std::unique_ptr<DxDevice>       dxDevice_       = nullptr;
+	std::unique_ptr<DxCommand>      dxCommand_      = nullptr;
+	std::unique_ptr<DxDepthStencil> dxDepthStencil_ = nullptr;
 
 	std::array<std::unique_ptr<IDxDescriptorHeap>, DescriptorHeapType_COUNT> dxDescriptorHeaps_;
 

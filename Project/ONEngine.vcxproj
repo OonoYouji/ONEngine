@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
     <ClCompile Include="Engine\Entity\Demo\DemoEntity.cpp" />
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
     <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
