@@ -10,41 +10,38 @@
 
 
 /// ===================================================
-/// 2Dライン描画クラス
+/// 3Dライン描画クラス
 /// ===================================================
-class Line2DRenderingPipeline : public IRenderingPipeline {
+class Line3DRenderingPipeline : public IRenderingPipeline {
 public:
 
-	/// ===================================================
-	/// public : nest class
-	/// ===================================================
-
 	struct VertexData {
-		Vec4 position;
-		Vec4 color;
+		Vector4 position;
 	};
 
-	struct RenderingData final {
+	struct RenderingData {
 		std::vector<VertexData> vertices;
 	};
 
 public:
-
+	
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	Line2DRenderingPipeline();
-	~Line2DRenderingPipeline();
+	Line3DRenderingPipeline();
+	~Line3DRenderingPipeline();
 
-	/// @brief 初期化関数
-	/// @param _shaderCompiler シェーダーコンパイラーへのポインタ
+	/// @brief 初期化処理
+	/// @param _shaderCompiler shaderのコンパイラー
+	/// @param _dxDevice DxDeviceへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) override;
 
-	/// @brief 描画処理を行う
+	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
 	void Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) override;
+
 
 private:
 
@@ -56,10 +53,9 @@ private:
 
 	DxResource                  vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW    vbv_;
-	VertexData*                 mappingData_  = nullptr;
+	VertexData*                 mappingData_ = nullptr;
 	std::vector<VertexData>     vertices_;
 
 	std::list<RenderingData*>   renderingDataList_;	
-
 };
 

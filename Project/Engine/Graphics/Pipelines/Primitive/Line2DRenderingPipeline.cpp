@@ -114,7 +114,3 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 
 }
 
-void Line2DRenderingPipeline::PushBackRenderingData(RenderingData* _renderingData) {
-	renderingDataList_.push_back(_renderingData);
-}
-

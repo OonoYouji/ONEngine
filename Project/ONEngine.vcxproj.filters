@@ -43,6 +43,7 @@
     <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -92,5 +93,6 @@
     <ClInclude Include="Engine\Component\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.h" />
   </ItemGroup>
 </Project>
