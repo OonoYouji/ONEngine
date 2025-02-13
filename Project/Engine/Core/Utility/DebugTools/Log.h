@@ -23,3 +23,4 @@ void Log(const std::wstring& _message);
 ##########################################################*/
 
 std::string ConvertString(const std::wstring& _wstr);
+std::wstring ConvertString(const std::string& _str);

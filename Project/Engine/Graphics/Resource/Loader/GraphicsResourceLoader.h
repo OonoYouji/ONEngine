@@ -1,9 +1,20 @@
 #pragma once
 
+/// directX
+#include <d3d12.h>
+
 /// std
 #include <string>
 #include <vector>
 #include <memory>
+
+/// externals
+#include <DirectXTex.h>
+
+/// engine
+#include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
+#include "Engine/Core/DirectX12/Resource/DxResource.h"
+
 
 /// ===================================================
 /// グラフィクスリソースのローダー
@@ -27,6 +38,30 @@ public:
 	/// @brief modelの読み込み (.obj)
 	/// @param _filePath .slnファイルからの相対パス
 	void LoadModelObj(const std::string& _filePath);
+
+private:
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	/// @brief scratchImageを読み込む
+	/// @param _filePath .slnファイルからの相対パス
+	/// @return DirectX::ScratchImage
+	DirectX::ScratchImage LoadScratchImage(const std::string& _filePath);
+
+	/// @brief texture resourceを生成する
+	/// @param _dxDevice DxDeviceのポインタ
+	/// @param _metadata TextureMetadata 構造体への参照
+	/// @return texture resource
+	DxResource CreateTextureResource(class DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata);
+
+	/// @brief texture dataをアップロードする
+	/// @param _texture texture resource
+	/// @param _mipImages scratchImage
+	/// @return 
+	[[nodiscard]]
+	DxResource UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage);
 
 
 private:

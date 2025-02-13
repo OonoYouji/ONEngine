@@ -2,6 +2,7 @@
 
 /// engine
 #include "../Device/DxDevice.h"
+#include "../Command/DxCommand.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 
 
@@ -35,4 +36,30 @@ void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	);
 
 	Assert(SUCCEEDED(result), "Resource creation failed.");
+}
+
+void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
+	_dxDevice->GetDevice()->CreateCommittedResource(
+		_pHeapProperties,
+		_HeapFlags,
+		_pDesc,
+		_InitialResourceState,
+		_pOptimizedClearValue,
+		IID_PPV_ARGS(&resource_)
+	);
+}
+
+
+void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	if(_before == _after) { return; }
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource   = _resource;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.StateBefore = _before;
+	barrier.Transition.StateAfter  = _after;
+
+	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }

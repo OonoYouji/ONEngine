@@ -2,6 +2,7 @@
 
 /// directX
 #include <d3d12.h>
+#include <d3dx12.h>
 
 /// engine
 #include "../ComPtr/ComPtr.h"
@@ -25,6 +26,15 @@ public:
 	/// @param _sizeInByte 
 	void CreateResource(class DxDevice* _dxDevice, size_t _sizeInByte);
 
+	void CreateCommittedResource(
+		class DxDevice* _dxDevice,
+		const D3D12_HEAP_PROPERTIES* _pHeapProperties,
+		D3D12_HEAP_FLAGS _HeapFlags,
+		const D3D12_RESOURCE_DESC* _pDesc,
+		D3D12_RESOURCE_STATES _InitialResourceState,
+		const D3D12_CLEAR_VALUE* _pOptimizedClearValue
+	);
+
 private:
 
 	/// ===================================================
@@ -44,3 +54,10 @@ public:
 
 };
 
+
+
+
+/// ===================================================
+/// Barrierを作成する関数
+/// ===================================================
+void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);

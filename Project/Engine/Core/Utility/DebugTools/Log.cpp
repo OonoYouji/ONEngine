@@ -14,18 +14,37 @@ void Log(const std::wstring& _message) {
 std::string ConvertString(const std::wstring& _wstr) {
 
 	/// 引数が空の場合は空文字を返す
-	if(_wstr.empty()) {
+	if (_wstr.empty()) {
 		return std::string();
 	}
 
 	/// 変換後のサイズを取得
 	auto sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, _wstr.data(), static_cast<int>(_wstr.size()), NULL, 0, NULL, NULL);
-	if(sizeNeeded == 0) {
+	if (sizeNeeded == 0) {
 		return std::string();
 	}
 
 	/// 変換
 	std::string result(sizeNeeded, 0);
 	WideCharToMultiByte(CP_UTF8, 0, _wstr.data(), static_cast<int>(_wstr.size()), result.data(), sizeNeeded, NULL, NULL);
+	return result;
+}
+
+std::wstring ConvertString(const std::string& _str) {
+
+	/// 引数が空の場合は空文字を返す
+	if (_str.empty()) {
+		return std::wstring();
+	}
+
+	/// 変換後のサイズを取得
+	auto sizeNeeded = MultiByteToWideChar(CP_UTF8, 0, _str.data(), static_cast<int>(_str.size()), NULL, 0);
+	if (sizeNeeded == 0) {
+		return std::wstring();
+	}
+
+	/// 変換
+	std::wstring result(sizeNeeded, 0);
+	MultiByteToWideChar(CP_UTF8, 0, _str.data(), static_cast<int>(_str.size()), result.data(), sizeNeeded);
 	return result;
 }

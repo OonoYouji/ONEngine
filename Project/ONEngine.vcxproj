@@ -63,6 +63,7 @@
     <ClCompile Include="Engine\Component\RendererComponents\Mesh\MeshRenderer.cpp" />
     <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

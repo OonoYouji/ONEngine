@@ -63,7 +63,12 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 	switch (_type) {
 	case GraphicsResourceCollection::Type::texture:
-		resourceLoader_->LoadTexture(_filePath);
+		
+		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
+		if (GetTexture(_filePath) == nullptr) {
+			resourceLoader_->LoadTexture(_filePath);
+		}
+
 		break;
 	case GraphicsResourceCollection::Type::model:
 		resourceLoader_->LoadModelObj(_filePath);
@@ -74,4 +79,22 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model>& _model) {
 	models_[_filePath] = std::move(_model);
+}
+
+const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {
+	auto itr = models_.find(_filePath);
+	if (itr != models_.end()) {
+		return itr->second.get();
+	}
+
+	return nullptr;
+}
+
+const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePath) const {
+	auto itr = textures_.find(_filePath);
+	if (itr != textures_.end()) {
+		return itr->second.get();
+	}
+
+	return nullptr;
 }

@@ -7,6 +7,7 @@
 /// engine
 #include "Loader/GraphicsResourceLoader.h"
 #include "ResourceData/Model.h"
+#include "ResourceData/Texture.h"
 
 
 /// ===================================================
@@ -65,10 +66,12 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<GraphicsResourceLoader>                resourceLoader_;
+	std::unique_ptr<GraphicsResourceLoader>                   resourceLoader_;
 
 	/// mesh
-	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+	std::unordered_map<std::string, std::unique_ptr<Model>>   models_;
+	/// texture
+	std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
 
 public:
 
@@ -79,13 +82,12 @@ public:
 	/// @brief modelの取得
 	/// @param _filePath .slnファイルからの相対パス
 	/// @return modelのポインタ
-	const Model* GetModel(const std::string& _filePath) const {
-		auto itr = models_.find(_filePath);
-		if (itr == models_.end()) {
-			return nullptr;
-		}
-		return itr->second.get();
-	}
+	const Model* GetModel(const std::string& _filePath) const;
+
+	/// @brief textureの取得
+	/// @param _filePath .slnファイルからの相対パス
+	/// @return textureのポインタ
+	const Texture* GetTexture(const std::string& _filePath) const;
 
 };
 
