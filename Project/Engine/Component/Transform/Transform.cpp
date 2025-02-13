@@ -1,7 +1,11 @@
 #include "Transform.h"
 
 
-Transform::Transform() {}
+Transform::Transform() {
+	position = Vector3::kZero;
+	rotate   = Vector3::kZero;
+	scale    = Vector3::kOne;
+}
 Transform::~Transform() {}
 
 
