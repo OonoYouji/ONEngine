@@ -126,7 +126,7 @@ void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	IDxDescriptorHeap*          dsvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle         = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
 
-	_commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, nullptr);
+	_commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
 	_commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	_commandList->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);

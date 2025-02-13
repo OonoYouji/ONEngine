@@ -42,6 +42,7 @@
     <ClCompile Include="Engine\Entity\Demo\DemoEntity.cpp" />
     <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
+    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -90,5 +91,6 @@
     <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
     <ClInclude Include="Engine\Component\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
+    <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
   </ItemGroup>
 </Project>

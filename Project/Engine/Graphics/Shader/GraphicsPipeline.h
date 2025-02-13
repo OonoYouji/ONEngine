@@ -80,7 +80,7 @@ public:
 
 	/// @brief depth stencil descを設定する
 	/// @param _desc 
-	void SetDepthStandilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc);
+	void SetDepthStencilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc);
 
 	/// @brief blend descを設定する
 	/// @param _desc 設定するblend desc
