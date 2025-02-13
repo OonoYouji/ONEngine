@@ -17,8 +17,8 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 		/// shaderをコンパイル
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/Line2D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Line2D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"Assets/Shader/Line/Line2D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"Assets/Shader/Line/Line2D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipeline_.reset(new GraphicsPipeline());
 		pipeline_->SetShader(&shader);
