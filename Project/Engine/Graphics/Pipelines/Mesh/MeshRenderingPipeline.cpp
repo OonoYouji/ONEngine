@@ -37,6 +37,10 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< transform
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); ///< view projection
 
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);      ///< texture
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);        ///< texture sampler
+
 
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
@@ -109,6 +113,8 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			transformBuffer_->SetMappingData(transform->GetMatWorld());
 			transformBuffer_->BindForCommandList(commandList, 0);
 
+			const Texture* texture = resourceCollection_->GetTexture("Assets/Textures/uvChecker.png");
+			commandList->SetGraphicsRootDescriptorTable(2, texture->GetGPUDescriptorHandle());
 
 			/// 描画
 			commandList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), 1, 0, 0, 0);

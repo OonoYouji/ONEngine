@@ -9,25 +9,17 @@
 
 void DemoEntity::Initialize() {
 
-	Line3DRenderer* renderer = AddComponent<Line3DRenderer>();
-	renderer->SetLine(
-		Vector3(0.0f, 0.0f, 0.0f), 
-		Vector3(0.0f, 0.0f, 1.0f), 
-		Vector4(1.0f, 0.0f, 0.0f, 1.0f)
-	);
+	MeshRenderer* renderer = AddComponent<MeshRenderer>();
+	renderer->SetMeshPath("Assets/Models/primitive/cube.obj");
 
-	renderer->SetLine(
-		Vector3(0.0f, 0.0f, 0.0f), 
-		Vector3(1.0f, 1.0f, 0.0f), 
-		Vector4(0.0f, 1.0f, 0.0f, 1.0f)
-	);
+
 
 
 }
 
 void DemoEntity::Update() {
 
-	//transform_->rotate.y += 0.01f;
+	transform_->rotate.y += 0.01f;
 
 	transform_->Update();
 }

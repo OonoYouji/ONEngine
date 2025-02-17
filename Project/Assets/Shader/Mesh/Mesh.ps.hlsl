@@ -1,10 +1,15 @@
 #include "Mesh.hlsli"
 
+Texture2D<float4> texture        : register(t0);
+SamplerState      textureSampler : register(s0);
+
 
 PSOutput main(VSOutput input) {
 	PSOutput output;
 
-	output.color = float4(input.normal, 1.0f);
+	float4 textureColor = texture.Sample(textureSampler, input.uv);
+
+	output.color = textureColor;
 
 	return output;
 }
