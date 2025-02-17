@@ -113,7 +113,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			transformBuffer_->SetMappingData(transform->GetMatWorld());
 			transformBuffer_->BindForCommandList(commandList, 0);
 
-			const Texture* texture = resourceCollection_->GetTexture("Assets/Textures/uvChecker.png");
+			const Texture* texture = resourceCollection_->GetTexture(meshRenderer->GetTexturePath());
 			commandList->SetGraphicsRootDescriptorTable(2, texture->GetGPUDescriptorHandle());
 
 			/// 描画

@@ -24,6 +24,7 @@ private:
 	/// ===================================================
 
 	std::string meshPath_;
+	std::string texturePath_;
 
 
 public:
@@ -35,6 +36,11 @@ public:
 	void SetMeshPath(const std::string& _path) { meshPath_ = _path; }
 
 	const std::string& GetMeshPath() const { return meshPath_; }
+
+	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
+
+	const std::string& GetTexturePath() const { return texturePath_; }
+
 
 };
 

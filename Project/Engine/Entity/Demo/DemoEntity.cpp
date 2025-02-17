@@ -11,7 +11,7 @@ void DemoEntity::Initialize() {
 
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
 	renderer->SetMeshPath("Assets/Models/primitive/cube.obj");
-
+	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
 
 
 
