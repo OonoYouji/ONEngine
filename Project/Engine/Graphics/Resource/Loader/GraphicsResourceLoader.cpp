@@ -41,14 +41,14 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	dxManager_->GetDxCommand()->CommandExecute();
 	dxManager_->GetDxCommand()->CommandReset();
 
-	/// metadataを基にSRVの設定
+	/// metadataを基に srv の設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format                  = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension           = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels     = static_cast<UINT>(metadata.mipLevels);
 
-	/// srvHandleの取得
+	/// srv handleの取得
 	IDxDescriptorHeap* pSRVDescriptorHeap = dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV);
 
 	texture->srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
