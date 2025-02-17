@@ -77,8 +77,12 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 }
 
-void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model>& _model) {
+void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model> _model) {
 	models_[_filePath] = std::move(_model);
+}
+
+void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
+	textures_[_filePath] = std::move(_texture);
 }
 
 const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {

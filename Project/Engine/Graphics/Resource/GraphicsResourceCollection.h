@@ -58,7 +58,12 @@ public:
 	/// @brief 新しい model の追加
 	/// @param _filePath unordered_mapのキー
 	/// @param _model 追加する model
-	void AddModel(const std::string& _filePath, std::unique_ptr<Model>& _model);
+	void AddModel(const std::string& _filePath, std::unique_ptr<Model> _model);
+
+	/// @brief 新しい texture の追加
+	/// @param _filePath unordered_mapのキー
+	/// @param _texture 追加する texture
+	void AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture);
 
 private:
 

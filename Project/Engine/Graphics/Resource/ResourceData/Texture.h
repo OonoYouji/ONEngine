@@ -24,7 +24,11 @@ public:
 	/// public : objects
 	/// ===================================================
 
-	DxResource dxResource_;
+	DxResource                  dxResource_;
+
+	uint32_t                    srvDescriptorIndex_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle_;
 
 };
 

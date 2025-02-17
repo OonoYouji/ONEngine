@@ -35,10 +35,31 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filePath);
 	const DirectX::TexMetadata& metadata     = scratchImage.GetMetadata();
 
-	texture->dxResource_ = CreateTextureResource(dxManager_->GetDxDevice(), metadata);
+	texture->dxResource_            = CreateTextureResource(dxManager_->GetDxDevice(), metadata);
 	DxResource intermediateResource = UploadTextureData(texture->dxResource_.Get(), scratchImage);
 
+	dxManager_->GetDxCommand()->CommandExecute();
+	dxManager_->GetDxCommand()->CommandReset();
 
+	/// metadataを基にSRVの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format                  = metadata.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension           = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels     = static_cast<UINT>(metadata.mipLevels);
+
+	/// srvHandleの取得
+	IDxDescriptorHeap* pSRVDescriptorHeap = dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV);
+
+	texture->srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
+	texture->cpuHandle_          = pSRVDescriptorHeap->GetCPUDescriptorHandel(texture->srvDescriptorIndex_);
+	texture->gpuHandle_          = pSRVDescriptorHeap->GetGPUDescriptorHandel(texture->srvDescriptorIndex_);
+
+	/// srvの生成
+	DxDevice* dxDevice = dxManager_->GetDxDevice();
+	dxDevice->GetDevice()->CreateShaderResourceView(texture->dxResource_.Get(), &srvDesc, texture->cpuHandle_);
+
+	resourceCollection_->AddTexture(_filePath, std::move(texture));
 }
 
 void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
@@ -101,7 +122,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		model->AddMesh(std::move(meshData));
 	}
 	
-	resourceCollection_->AddModel(_filePath, model);
+	resourceCollection_->AddModel(_filePath, std::move(model));
 
 }
 
