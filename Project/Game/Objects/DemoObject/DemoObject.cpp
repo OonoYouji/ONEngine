@@ -6,29 +6,58 @@
 
 #include "SceneManager/SceneManager.h"
 #include "Input/Input.h"
+#include "FrameManager/Time.h" 
 
 /// components
 #include "ComponentManager/MeshRenderer/MeshRenderer.h"
+#include "ComponentManager/MeshInstancingRenderer/MeshInstancingRenderer.h"
 #include "Objects/Camera/Manager/CameraManager.h"
 
 
 void DemoObject::Initialize() {
-	renderer_ = AddComponent<MeshRenderer>();
-	renderer_->SetModel("Sphere");
-	renderer_->SetMaterial("uvChecker.png");
+
+	const uint32_t maxInstanceCount = 1024;
+
+	renderer_ = AddComponent<MeshInstancingRenderer>(maxInstanceCount);
+	renderer_->SetModel("Triangle");
+
+	transforms_.reserve(maxInstanceCount);
+	for (uint32_t i = 0; i < maxInstanceCount; ++i) {
+		transforms_.emplace_back();
+
+		Transform* transform = &transforms_.back();
+		transform->SetName(std::format("transform_{:04}", i));
+
+		renderer_->AddTransform(transform);
+	}
+
+	maxFPS_ = 0.0f;
+	minFPS_ = 0.0f;
+
 }
 
 void DemoObject::Update() {
 
+	for (auto& transform : transforms_) {
+		transform.Update();
+	}
+
+	if (maxFPS_ < Time::DeltaTime() || maxFPS_ == 0.0f) {
+		maxFPS_ = Time::DeltaTime();
+	}
+
+	if (minFPS_ > Time::DeltaTime() || minFPS_ == 0.0f) {
+		minFPS_ = Time::DeltaTime();
+	}
 
 }
 
 void DemoObject::Debug() {
 
-	ImGuiGizmo(
-		&pTransform_->position, &pTransform_->rotate, &pTransform_->scale,
-		ROTATE_ORDER(pTransform_->rotateOrder)
-	);
+	ImGui::Text("fps: %f", 1.0f / Time::DeltaTime());
+	
+	ImGui::Text("max fps: %f", 1.0f / maxFPS_);
+	ImGui::Text("min fps: %f", 1.0f / minFPS_);
 
 }
 

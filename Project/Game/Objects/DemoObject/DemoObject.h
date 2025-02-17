@@ -28,7 +28,11 @@ public:
 
 private:
 
-	class MeshRenderer* renderer_ = nullptr;
+	class MeshInstancingRenderer* renderer_ = nullptr;
 	float shininess;
+
+	std::vector<Transform> transforms_;
+
+	float maxFPS_, minFPS_;
 
 };
