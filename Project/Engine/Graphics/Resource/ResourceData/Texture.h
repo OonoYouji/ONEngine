@@ -18,10 +18,10 @@ public:
 	Texture();
 	~Texture();
 
-public:
+private:
 	
 	/// ===================================================
-	/// public : objects
+	/// private : objects
 	/// ===================================================
 
 	DxResource                  dxResource_;
