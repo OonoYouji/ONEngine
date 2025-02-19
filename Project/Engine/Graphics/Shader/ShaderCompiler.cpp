@@ -36,8 +36,6 @@ void ShaderCompiler::Initialize() {
 ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile) {
 	HRESULT hr = S_FALSE;
 
-	Log(std::format(L"Begin CompileShader,   path:{},   _profile:{}", _filePath, _profile));
-
 	/// hlslを読み込む
 	ComPtr<IDxcBlobEncoding> shaderSource = nullptr;
 	hr = dxcUtils_->LoadFile(_filePath.c_str(), nullptr, &shaderSource);
