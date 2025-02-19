@@ -66,7 +66,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 		includeHandler_.Get(),		/// includeが含まれた諸々
 		IID_PPV_ARGS(&shaderResult)	/// コンパイル結果
 	);
-	Assert(SUCCEEDED(hr), "Compile Not Succeended");
+	Assert(SUCCEEDED(hr), "compile not succeeded");
 
 	/// 警告・エラーが出たらログに出力して止める
 	ComPtr<IDxcBlobUtf8> shaderError = nullptr;
@@ -79,7 +79,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	/// Compile結果を受け取りreturnする
 	ComPtr<IDxcBlob> shaderBlob = nullptr;
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-	Assert(SUCCEEDED(hr), "Compile Not Succeended");
+	Assert(SUCCEEDED(hr), "compile Not succeeded");
 
 	/// 成功したログ出力
 	Log(std::format(L"compile succeeded,    path:{},   _profile:{}", _filePath, _profile));
