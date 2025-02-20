@@ -39,6 +39,7 @@ public:
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
+	void RemoveEntity(IEntity* _entity);
 
 private:
 	

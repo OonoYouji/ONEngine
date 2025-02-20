@@ -37,14 +37,17 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection: 0
 
-		pipeline_->AddDescriptorRange(0, 16, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< transform
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);      ///< texture: 1
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1);     ///< transform: 2
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< material
+		pipeline_->AddDescriptorRange(1, 16, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< material  : 1
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< texture   : 2
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 2);      ///< transform : 3
 
-		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);        ///< texture sampler
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
-		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1); ///< instance id: 3
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1);        ///< instance id: 4
+
 
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
@@ -68,14 +71,14 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 	}
 
 
-	{	/// constant buffer create
+	{	/// buffer create
 
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV));
 
-		for (size_t i = 0; i < kMaxRenderingMeshCount_; i++) {
-			transformBuffer_->SetMappedData(i, Matrix4x4::kIdentity * Matrix4x4::MakeTranslate(Vector3(0,0,-10)));
-		}
+		materialBuffer = std::make_unique<StructuredBuffer<Vector4>>();
+		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV));
+
 
 	}
 
@@ -95,17 +98,17 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
 
 	/// mesh と transform の対応付け
-	std::unordered_map<std::string, std::list<Transform*>> transformPerMesh;
+	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
 	for (auto& entity : _entityCollection->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 		if (meshRenderer) {
-			transformPerMesh[meshRenderer->GetMeshPath()].push_back(entity->GetTransform());
+			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
 		}
 	}
 
 	size_t transformIndex = 0; ///< transform buffer の index
 	UINT   instanceIndex  = 0; ///< instance id
-	for (auto& [meshPath, transforms] : transformPerMesh) {
+	for (auto& [meshPath, renderers] : rendererPerMesh) {
 
 		/// modelの取得、なければ次へ
 		const Model*&& model = resourceCollection_->GetModel(meshPath);
@@ -113,34 +116,35 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			continue;
 		}
 
-		/// transform を mapping
-		for (auto& transform : transforms) {
-			transformBuffer_->SetMappedData(transformIndex, transform->GetMatWorld());
+		/// transform, material を mapping
+		for (auto& renderer : renderers) {
+			materialBuffer->SetMappedData(transformIndex, renderer->GetColor());
+			transformBuffer_->SetMappedData(transformIndex, renderer->GetOwner()->GetTransform()->GetMatWorld());
 			++transformIndex;
 		}
-		transformBuffer_->BindToCommandList(2, commandList);
+		materialBuffer->BindToCommandList(1, commandList);
+		transformBuffer_->BindToCommandList(3, commandList);
 
 		/// mesh の描画
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
 			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
 			commandList->IASetIndexBuffer(&mesh->GetIBV());
+			commandList->SetGraphicsRoot32BitConstant(4, instanceIndex, 0);
 
 			/// buffer dataのセット、先頭の texture gpu handle をセットする
 			auto& textures = resourceCollection_->GetTextures();
-			commandList->SetGraphicsRootDescriptorTable(1, textures.begin()->second->GetGPUDescriptorHandle());
-
-			commandList->SetGraphicsRoot32BitConstant(3, instanceIndex, 0);
+			commandList->SetGraphicsRootDescriptorTable(2, textures.begin()->second->GetGPUDescriptorHandle());
 
 			/// 描画
 			commandList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
-				static_cast<UINT>(transforms.size()), 
+				static_cast<UINT>(renderers.size()), 
 				0, 0, 0
 			);
 		}
 
-		instanceIndex += static_cast<UINT>(transforms.size());
+		instanceIndex += static_cast<UINT>(renderers.size());
 	}
 
 	/// post draw

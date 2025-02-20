@@ -34,3 +34,12 @@ Camera* EntityCollection::GenerateCamera() {
 
 	return cameraPtr;
 }
+
+void EntityCollection::RemoveEntity(IEntity* _entity) {
+	/// entityの削除
+	auto itr = std::remove_if(entities_.begin(), entities_.end(), [_entity](const std::unique_ptr<IEntity>& entity) {
+		return entity.get() == _entity;
+	});
+
+	entities_.erase(itr, entities_.end());
+}

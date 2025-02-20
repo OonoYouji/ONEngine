@@ -14,4 +14,9 @@ void Player::Initialize() {
 
 }
 
-void Player::Update() {}
+void Player::Update() {
+
+	MeshRenderer* renderer = GetComponent<MeshRenderer>();
+	renderer->SetColor(type_ == static_cast<int>(BlockType::black) ? Vector4(0, 0, 0, 1) : Vector4::kWhite);
+
+}

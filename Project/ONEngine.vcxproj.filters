@@ -110,5 +110,6 @@
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
     <ClInclude Include="Game\Entity\Player\Player.h" />
+    <ClInclude Include="Game\Entity\Config\EntityConfig.h" />
   </ItemGroup>
 </Project>

@@ -18,9 +18,10 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	uint instanceIndex = instanceId + instanceOffset.offset;
 	float4x4 matWVP = mul(transforms[instanceIndex].matWorld, viewProjection.matVP);
 
-	output.position = mul(input.position, matWVP);
-	output.normal = mul(input.normal, (float3x3) transforms[instanceIndex].matWorld);
-	output.uv       = input.uv;
+	output.position   = mul(input.position, matWVP);
+	output.normal     = mul(input.normal, (float3x3) transforms[instanceIndex].matWorld);
+	output.uv         = input.uv;
+	output.instanceId = instanceIndex;
 	
 	return output;
 }

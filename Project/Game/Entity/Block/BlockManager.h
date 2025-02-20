@@ -21,6 +21,7 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	void LoadStage(const std::vector<std::vector<int>>& _stageMap);
 
 private:
 
