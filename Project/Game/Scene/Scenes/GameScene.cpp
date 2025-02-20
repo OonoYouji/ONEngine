@@ -4,6 +4,7 @@
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/Entity/Demo/DemoEntity.h"
+#include "Engine/Entity/Grid/Grid.h"
 
 /// user
 #include "Game/Entity/Block/BlockManager.h"
@@ -31,6 +32,8 @@ GameScene::~GameScene() {}
 
 
 void GameScene::Initialize() {
+	entityCollection_->GenerateEntity<Grid>();
+
 	Camera* camera = entityCollection_->GenerateCamera();
 	Transform* transform =camera->GetTransform();
 	transform->SetPosition(Vector3(0.0f, 0.0f, -5.0f));

@@ -11,8 +11,8 @@ void Line3DRenderer::SetLine(const Vector3& _start, const Vector3& _end, const V
 		vertices_.resize(refCount_ * 2 + 2);
 	}
 
-	vertices_[refCount_ * 2 + 0].position = { _start.x, _start.y, 0.0f, 1.0f };
-	vertices_[refCount_ * 2 + 1].position = { _end.x,   _end.y,   0.0f, 1.0f };
+	vertices_[refCount_ * 2 + 0].position = { _start.x, _start.y, _start.z, 1.0f };
+	vertices_[refCount_ * 2 + 1].position = { _end.x,   _end.y,   _end.z,   1.0f };
 
 	vertices_[refCount_ * 2 + 0].color = _color;
 	vertices_[refCount_ * 2 + 1].color = _color;
