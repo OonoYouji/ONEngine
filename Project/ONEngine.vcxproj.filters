@@ -51,6 +51,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
+    <ClCompile Include="Game\Entity\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -108,5 +109,6 @@
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
+    <ClInclude Include="Game\Entity\Player\Player.h" />
   </ItemGroup>
 </Project>

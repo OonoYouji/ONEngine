@@ -69,6 +69,7 @@
     <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
+    <ClCompile Include="Game\Entity\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Entity\Block\BlockManager.h" />
@@ -126,6 +127,7 @@
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
+    <ClInclude Include="Game\Entity\Player\Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

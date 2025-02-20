@@ -7,6 +7,7 @@
 
 /// user
 #include "Game/Entity/Block/BlockManager.h"
+#include "Game/Entity/Player/Player.h"
 
 
 GameScene::GameScene() {
@@ -15,6 +16,7 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/sphere.obj",
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/multiMeshTest/test.obj",
+		"Assets/Models/entity/player.obj",
 		"Assets/Textures/uvChecker.png",
 		"Assets/Textures/gradation.png",
 	};
@@ -34,6 +36,7 @@ void GameScene::Initialize() {
 	transform->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
 	
 	entityCollection_->GenerateEntity<BlockManager>();
+	entityCollection_->GenerateEntity<Player>();
 
 }
 
