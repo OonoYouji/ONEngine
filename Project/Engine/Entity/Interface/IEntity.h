@@ -103,7 +103,7 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 	size_t hash = typeid(T).hash_code();
 	auto it = components_.find(hash);
 	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
-		return nullptr;
+		return static_cast<T*>(it->second.get());
 	}
 
 	/// component の生成, 追加
