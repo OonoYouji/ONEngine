@@ -68,7 +68,7 @@ void GraphicsPipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibil
 	parameter.ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	parameter.ShaderVisibility                    = _shaderVisibility;
 	parameter.DescriptorTable.pDescriptorRanges   = &descriptorRanges_[_descriptorIndex];
-	parameter.DescriptorTable.NumDescriptorRanges = descriptorRanges_[_descriptorIndex].NumDescriptors;
+	parameter.DescriptorTable.NumDescriptorRanges = 1;
 
 	rootParameters_.push_back(parameter);
 }

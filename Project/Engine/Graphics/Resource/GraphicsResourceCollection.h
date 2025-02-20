@@ -94,5 +94,8 @@ public:
 	/// @return textureのポインタ
 	const Texture* GetTexture(const std::string& _filePath) const;
 
+	/// @brief textureのコンテナを取得
+	/// @return texture container
+	const std::unordered_map<std::string, std::unique_ptr<Texture>>& GetTextures() const { return textures_; }
 };
 

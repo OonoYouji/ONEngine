@@ -37,7 +37,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection: 0
 
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(0, 16, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< transform
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);      ///< texture: 1
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1);     ///< transform: 2
@@ -126,9 +126,9 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
 			commandList->IASetIndexBuffer(&mesh->GetIBV());
 
-			/// buffer dataのセット
-			const Texture* texture = resourceCollection_->GetTexture("Assets/Textures/uvChecker.png");
-			commandList->SetGraphicsRootDescriptorTable(1, texture->GetGPUDescriptorHandle());
+			/// buffer dataのセット、先頭の texture gpu handle をセットする
+			auto& textures = resourceCollection_->GetTextures();
+			commandList->SetGraphicsRootDescriptorTable(1, textures.begin()->second->GetGPUDescriptorHandle());
 
 			commandList->SetGraphicsRoot32BitConstant(3, instanceIndex, 0);
 
