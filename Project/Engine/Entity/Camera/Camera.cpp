@@ -31,12 +31,18 @@ void Camera::Initialize() {
 
 void Camera::Update() {
 
-	if (Input::PressKey(DIK_W)) { transform_->position.z += 0.1f; }
-	if (Input::PressKey(DIK_S)) { transform_->position.z -= 0.1f; }
-	if (Input::PressKey(DIK_A)) { transform_->position.x -= 0.1f; }
-	if (Input::PressKey(DIK_D)) { transform_->position.x += 0.1f; }
-	if (Input::PressKey(DIK_SPACE)) { transform_->position.y += 0.1f; }
-	if (Input::PressKey(DIK_LSHIFT)) { transform_->position.y -= 0.1f; }
+	Vector3 velocity = Vector3::kZero;
+
+	if (Input::PressKey(DIK_W)) { velocity.z += 0.1f; }
+	if (Input::PressKey(DIK_S)) { velocity.z -= 0.1f; }
+	if (Input::PressKey(DIK_A)) { velocity.x -= 0.1f; }
+	if (Input::PressKey(DIK_D)) { velocity.x += 0.1f; }
+
+	velocity = Matrix4x4::Transform(velocity, Matrix4x4::MakeRotateY(transform_->rotate.y));
+
+	if (Input::PressKey(DIK_SPACE)) { velocity.y += 0.1f; }
+	if (Input::PressKey(DIK_LSHIFT)) { velocity.y -= 0.1f; }
+
 
 	const float speed = std::numbers::pi_v<float> / 100.0f;
 	if (Input::PressKey(DIK_UP)) { transform_->rotate.x -= speed; }
@@ -44,7 +50,7 @@ void Camera::Update() {
 	if (Input::PressKey(DIK_LEFT)) { transform_->rotate.y -= speed; }
 	if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
 
-
+	transform_->position += velocity;
 
 	transform_->Update();
 

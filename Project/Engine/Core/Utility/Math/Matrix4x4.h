@@ -82,6 +82,11 @@ public:
 	/// @return 逆行列
 	static Matrix4x4 MakeInverse(const Matrix4x4& _matrix);
 
+	/// @brief ベクトルに行列をかける
+	/// @param _v ベクトル
+	/// @param _m 行列
+	/// @return 変換後のベクトル
+	static Vector3 Transform(const Vector3& _v, const Matrix4x4& _m);
 
 
 	/// ===================================================
