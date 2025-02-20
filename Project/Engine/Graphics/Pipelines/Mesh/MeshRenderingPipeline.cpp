@@ -120,6 +120,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 		}
 		transformBuffer_->BindToCommandList(2, commandList);
 
+		/// mesh の描画
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
 			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
@@ -135,9 +136,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			commandList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
 				static_cast<UINT>(transforms.size()), 
-				0,
-				0,
-				0
+				0, 0, 0
 			);
 		}
 

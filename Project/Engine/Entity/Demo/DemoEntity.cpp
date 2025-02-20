@@ -10,7 +10,7 @@
 void DemoEntity::Initialize() {
 
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
-	renderer->SetMeshPath("Assets/Models/primitive/sphere.obj");
+	renderer->SetMeshPath("Assets/Models/primitive/cylinder.obj");
 	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
 
 	transform_->position.y = 3;
