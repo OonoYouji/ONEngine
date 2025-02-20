@@ -1,6 +1,7 @@
 #include "Line2DRenderingPipeline.h"
 
 /// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Shader/Shader.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 #include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
@@ -10,7 +11,7 @@
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}
 Line2DRenderingPipeline::~Line2DRenderingPipeline() {}
 
-void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
+void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
 	{	/// pipelineの作成
 		
@@ -48,7 +49,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 
 
 		/// create pipeline
-		pipeline_->CreatePipeline(_dxDevice);
+		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
 
@@ -56,7 +57,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 	vertices_.reserve(kMaxVertexNum_);
 
 	/// vertex bufferの作成
-	vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * kMaxVertexNum_);
+	vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();

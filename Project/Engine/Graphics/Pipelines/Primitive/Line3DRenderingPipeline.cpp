@@ -1,6 +1,7 @@
 #include "Line3DRenderingPipeline.h"
 
 /// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
 
@@ -8,7 +9,7 @@
 Line3DRenderingPipeline::Line3DRenderingPipeline() {}
 Line3DRenderingPipeline::~Line3DRenderingPipeline() {}
 
-void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) {
+void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 	{	/// pipelineの作成
 		
 		/// shaderをコンパイル
@@ -54,7 +55,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		/// create pipeline
-		pipeline_->CreatePipeline(_dxDevice);
+		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
 	
@@ -62,7 +63,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxDevi
 	vertices_.reserve(kMaxVertexNum_);
 
 	/// vertex bufferの作成
-	vertexBuffer_.CreateResource(_dxDevice, sizeof(VertexData) * kMaxVertexNum_);
+	vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(VertexData) * kMaxVertexNum_);
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();

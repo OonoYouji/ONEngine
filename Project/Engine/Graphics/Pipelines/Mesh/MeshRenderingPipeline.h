@@ -8,6 +8,7 @@
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
@@ -41,7 +42,7 @@ public:
 	/// @brief 初期化関数
 	/// @param _shaderCompiler 
 	/// @param _dxDevice 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxDevice* _dxDevice) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
@@ -54,9 +55,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection*          resourceCollection_;
-	class EntityCollection*                    entityCollection_;
-	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
+	const size_t                                 kMaxRenderingMeshCount_ = 1024; ///< 最大描画メッシュ数
+
+	class GraphicsResourceCollection*            resourceCollection_;
+	class EntityCollection*                      entityCollection_;
+	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 
 
 };

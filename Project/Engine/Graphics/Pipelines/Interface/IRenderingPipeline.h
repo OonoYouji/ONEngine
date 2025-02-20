@@ -16,7 +16,7 @@
 
 
 /// ===================================================
-/// 描画のinterfaceクラス
+/// 描画の interface クラス
 /// ===================================================
 class IRenderingPipeline {
 public:
@@ -29,7 +29,7 @@ public:
 
 	/// @brief このクラスの初期化関数
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
-	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxDevice* _dxDevice) = 0;
+	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
 
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ

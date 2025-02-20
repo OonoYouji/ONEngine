@@ -63,7 +63,7 @@ private:
 template<class T, typename... Args>
 inline void RenderingPipelineCollection::GenerateRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
-	renderer->Initialize(shaderCompiler_, dxManager_->GetDxDevice());
+	renderer->Initialize(shaderCompiler_, dxManager_);
 	renderers_.emplace(typeid(T).hash_code(), std::move(renderer));
 }
 

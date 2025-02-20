@@ -36,7 +36,7 @@ public:
 	/// @brief 初期化処理
 	/// @param _shaderCompiler shaderのコンパイラー
 	/// @param _dxDevice DxDeviceへのポインタ
-	void Initialize(ShaderCompiler* _shaderCompiler, DxDevice* _dxDevice) override;
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ

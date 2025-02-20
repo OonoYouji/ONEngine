@@ -41,6 +41,16 @@ void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_
 	rootParameters_.push_back(parameter);
 }
 
+void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+	D3D12_ROOT_PARAMETER parameter{};
+	parameter.ParameterType             = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	parameter.ShaderVisibility          = _shaderVisibility;
+	parameter.Descriptor.ShaderRegister = _shaderRegister;
+	parameter.Constants.Num32BitValues  = 1;
+
+	rootParameters_.push_back(parameter);
+}
+
 void GraphicsPipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t _numDescriptor, D3D12_DESCRIPTOR_RANGE_TYPE  _rangeType) {
 	D3D12_DESCRIPTOR_RANGE range{};
 	range.BaseShaderRegister                = _baseShaderRegister;

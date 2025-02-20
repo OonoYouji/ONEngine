@@ -3,16 +3,23 @@
 #include "../ConstantBufferData/Transform.hlsli"
 #include "../ConstantBufferData/ViewProjection.hlsli"
 
-ConstantBuffer<Transform>      transform      : register(b0);
-ConstantBuffer<ViewProjection> viewProjection : register(b1);
+struct InstanceOffset {
+	uint offset;
+};
 
-VSOutput main(VSInput input) {
+ConstantBuffer<ViewProjection> viewProjection : register(b0);
+StructuredBuffer<Transform>    transforms     : register(t0);
+
+ConstantBuffer<InstanceOffset> instanceOffset : register(b1);
+
+VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 	VSOutput output;
 
-	float4x4 matWVP = mul(transform.matWorld, viewProjection.matVP);
+	uint instanceIndex = instanceId + instanceOffset.offset;
+	float4x4 matWVP = mul(transforms[instanceIndex].matWorld, viewProjection.matVP);
 
 	output.position = mul(input.position, matWVP);
-	output.normal   = mul(input.normal, (float3x3) transform.matWorld);
+	output.normal = mul(input.normal, (float3x3) transforms[instanceIndex].matWorld);
 	output.uv       = input.uv;
 	
 	return output;

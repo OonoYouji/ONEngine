@@ -47,6 +47,8 @@ public:
 	/// @param _shaderRegister  register(b0)の0の部分
 	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
+	void Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+
 	/// @brief descriptor rangeを追加する
 	/// @param _baseShaderRegister register(b0)の0の部分
 	/// @param _numDescriptor      descriptorの数

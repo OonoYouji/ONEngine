@@ -9,25 +9,26 @@
 #include <span>
 
 /// engine
-#include "Engine/DirectX12/ComPtr/ComPtr.h"
-#include "Engine/DirectX12/Resource/DxResource.h"
-#include "Engine/DirectX12/Device/DxDevice.h"
-#include "Engine/DirectX12/DescriptorHeap/DxDescriptorHeap.h"
+#include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
+#include "Engine/Core/DirectX12/Resource/DxResource.h"
+#include "Engine/Core/DirectX12/Device/DxDevice.h"
+#include "Engine/Core/DirectX12/DescriptorHeap/DxDescriptorHeap.h"
+#include "Engine/Core/Utility/DebugTools/Assert.h"
 
 
 /// ===================================================
 /// ストラクチャードバッファ用クラス
 /// ===================================================
 template <typename T>
-class DxStructuredBuffer final {
+class StructuredBuffer final {
 public:
 	
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 	
-	DxStructuredBuffer();
-	~DxStructuredBuffer();
+	StructuredBuffer();
+	~StructuredBuffer();
 
 	void Create(uint32_t _size, DxDevice* _dxDevice, IDxDescriptorHeap* _dxDescriptorHeap);
 
@@ -63,16 +64,16 @@ private:
 /// ===================================================
 
 template<typename T>
-inline DxStructuredBuffer<T>::DxStructuredBuffer() {}
+inline StructuredBuffer<T>::StructuredBuffer() {}
 
 template<typename T>
-inline DxStructuredBuffer<T>::~DxStructuredBuffer() {
+inline StructuredBuffer<T>::~StructuredBuffer() {
 	pDxDescriptorHeap_->Free(srvDescriptorIndex_);
 }
 
 
 template<typename T>
-inline void DxStructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, IDxDescriptorHeap* _dxDescriptorHeap) {
+inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, IDxDescriptorHeap* _dxDescriptorHeap) {
 
 	/// bufferのサイズを計算
 	structureSize_  = sizeof(T);
@@ -108,12 +109,12 @@ inline void DxStructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, I
 
 
 template<typename T>
-inline void DxStructuredBuffer<T>::BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+inline void StructuredBuffer<T>::BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
 	_commandList->SetGraphicsRootDescriptorTable(_rootParameterIndex, gpuHandle_);
 }
 
 template<typename T>
-inline void DxStructuredBuffer<T>::SetMappedData(size_t _index, const T& _setValue) {
+inline void StructuredBuffer<T>::SetMappedData(size_t _index, const T& _setValue) {
 	Assert(_index < bufferSize_, "out of range");
 	mappedDataArray_[_index] = _setValue;
 }

@@ -20,9 +20,9 @@ void BlockManager::Initialize() {
 			auto& block = blocks_[r][c];
 			block = entityCollection_->GenerateEntity<Block>();
 			block->SetPosition(Vector3(
-				static_cast<float>(r),
+				static_cast<float>(r) * 2.0f,
 				0.0f,
-				static_cast<float>(c)
+				static_cast<float>(c) * 2.0f
 			));
 		}
 	}
