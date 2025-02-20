@@ -32,7 +32,6 @@ void GameScene::Initialize() {
 	transform->SetPosition(Vector3(0.0f, 0.0f, -5.0f));
 	transform->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
 	
-	entityCollection_->GenerateEntity<DemoEntity>();
 	entityCollection_->GenerateEntity<BlockManager>();
 
 }

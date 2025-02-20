@@ -40,11 +40,6 @@ public:
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
 
 
-	/// @brief transform の取得
-	/// @return transform のポインタ
-	Transform* GetTransform() const { return transform_; }
-
-
 protected:
 
 	/// ===================================================
@@ -88,6 +83,11 @@ public:
 	const Vector3& GetPosition() const { return transform_->GetPosition(); }
 	const Vector3& GetRotate()   const { return transform_->GetRotate(); }
 	const Vector3& GetScale()    const { return transform_->GetScale(); }
+
+	
+	/// @brief transform の取得
+	/// @return transform のポインタ
+	Transform* GetTransform() const { return transform_; }
 
 };
 
