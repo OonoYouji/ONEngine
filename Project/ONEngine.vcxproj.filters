@@ -46,6 +46,8 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
+    <ClCompile Include="Game\Entity\Block\Block.cpp" />
+    <ClCompile Include="Game\Entity\Block\BlockManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -98,5 +100,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
+    <ClInclude Include="Game\Entity\Block\Block.h" />
+    <ClInclude Include="Game\Entity\Block\BlockManager.h" />
   </ItemGroup>
 </Project>

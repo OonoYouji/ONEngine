@@ -1,9 +1,12 @@
 #include "GameScene.h"
 
+/// engine
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
-
 #include "Engine/Entity/Demo/DemoEntity.h"
+
+/// user
+#include "Game/Entity/Block/BlockManager.h"
 
 
 GameScene::GameScene() {
@@ -29,7 +32,7 @@ void GameScene::Initialize() {
 	transform->SetPosition(Vector3(0.0f, 0.0f, -5.0f));
 	transform->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
 	
-	entityCollection_->GenerateEntity<DemoEntity>();
+	entityCollection_->GenerateEntity<BlockManager>();
 
 }
 

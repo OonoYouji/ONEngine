@@ -12,6 +12,7 @@
 /// エンティティインターフェース
 /// ===================================================
 class IEntity {
+	friend class EntityCollection;
 public:
 
 	IEntity();
@@ -51,7 +52,7 @@ protected:
 	/// ===================================================
 
 	Transform* transform_;
-
+	class EntityCollection* entityCollection_;
 
 private:
 
@@ -60,6 +61,33 @@ private:
 	/// ===================================================
 
 	std::unordered_map<size_t, std::unique_ptr<IComponent>> components_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	void SetPosition(const Vector3& _v) { transform_->SetPosition(_v); }
+	void SetPositionX(float _x) { transform_->SetPositionX(_x); }
+	void SetPositionY(float _y) { transform_->SetPositionY(_y); }
+	void SetPositionZ(float _z) { transform_->SetPositionZ(_z); }
+
+	void SetRotate(const Vector3& _v) { transform_->SetRotate(_v); }
+	void SetRotateX(float _x) { transform_->SetRotateX(_x); }
+	void SetRotateY(float _y) { transform_->SetRotateY(_y); }
+	void SetRotateZ(float _z) { transform_->SetRotateZ(_z); }
+
+	void SetScale(const Vector3& _v) { transform_->SetScale(_v); }
+	void SetScaleX(float _x) { transform_->SetScaleX(_x); }
+	void SetScaleY(float _y) { transform_->SetScaleY(_y); }
+	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
+
+
+	const Vector3& GetPosition() const { return transform_->GetPosition(); }
+	const Vector3& GetRotate()   const { return transform_->GetRotate(); }
+	const Vector3& GetScale()    const { return transform_->GetScale(); }
 
 };
 

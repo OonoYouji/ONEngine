@@ -24,6 +24,7 @@ void EntityCollection::Update() {
 
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
+	camera->entityCollection_ = this;
 	camera->Initialize();
 
 	Camera* cameraPtr = camera.get();

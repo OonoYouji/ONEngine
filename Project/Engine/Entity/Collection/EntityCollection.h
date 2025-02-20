@@ -78,6 +78,7 @@ public:
 template<class T>
 inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
 	std::unique_ptr<T> entity = std::make_unique<T>();
+	entity->entityCollection_ = this;
 	entity->Initialize();
 
 	T* entityPtr = entity.get();
