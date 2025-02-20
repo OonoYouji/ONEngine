@@ -89,6 +89,10 @@ public:
 	/// <returns></returns>
 	HWND GetHwnd() const { return hwnd_; }
 
+	/// @brief WNDCLASSの取得
+	/// @return 
+	const WNDCLASS& GetWNDCLASS() const { return windowClass_; }
+
 	/// <summary>
 	/// プロセスメッセージを取得
 	/// </summary>

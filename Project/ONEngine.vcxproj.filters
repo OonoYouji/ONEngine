@@ -48,6 +48,9 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Game\Entity\Block\BlockManager.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -102,5 +105,8 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Game\Entity\Block\BlockManager.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
   </ItemGroup>
 </Project>

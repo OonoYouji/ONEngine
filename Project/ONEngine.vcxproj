@@ -51,6 +51,9 @@
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -120,6 +123,9 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Primitive\Line3DRenderingPipeline.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

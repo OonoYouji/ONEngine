@@ -1,5 +1,11 @@
 #include "Camera.h"
 
+/// std
+#include <numbers>
+
+/// engine
+#include "Engine/Core/Utility/Input/Input.h"
+
 Camera::Camera(DxDevice* _dxDevice) {
 
 	viewProjection_ = std::make_unique<ConstantBuffer<ViewProjection>>();
@@ -24,6 +30,21 @@ void Camera::Initialize() {
 }
 
 void Camera::Update() {
+
+	if (Input::PressKey(DIK_W)) { transform_->position.z += 0.1f; }
+	if (Input::PressKey(DIK_S)) { transform_->position.z -= 0.1f; }
+	if (Input::PressKey(DIK_A)) { transform_->position.x -= 0.1f; }
+	if (Input::PressKey(DIK_D)) { transform_->position.x += 0.1f; }
+	if (Input::PressKey(DIK_SPACE)) { transform_->position.y += 0.1f; }
+	if (Input::PressKey(DIK_LSHIFT)) { transform_->position.y -= 0.1f; }
+
+	const float speed = std::numbers::pi_v<float> / 100.0f;
+	if (Input::PressKey(DIK_UP)) { transform_->rotate.x -= speed; }
+	if (Input::PressKey(DIK_DOWN)) { transform_->rotate.x += speed; }
+	if (Input::PressKey(DIK_LEFT)) { transform_->rotate.y -= speed; }
+	if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
+
+
 
 	transform_->Update();
 

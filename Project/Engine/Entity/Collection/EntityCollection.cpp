@@ -18,6 +18,7 @@ void EntityCollection::Update() {
 
 	for (std::unique_ptr<IEntity>& entity : entities_) {
 		entity->Update();
+		entity->transform_->Update();
 	}
 }
 
