@@ -5,22 +5,17 @@
 #include "Engine/Core/Utility/DebugTools/Log.h"
 
 
-namespace {
-	/// ===================================================
-	/// DescriptorHeapを作成する関数
-	/// ===================================================
-	ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _heapType, UINT _numDescriptors, bool shaderVisible) {
-		ComPtr<ID3D12DescriptorHeap> heap;
-		D3D12_DESCRIPTOR_HEAP_DESC desc{};
-		desc.Type = _heapType;
-		desc.NumDescriptors = _numDescriptors;
-		desc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _heapType, uint32_t _numDescriptors, bool _isShaderVisible) {
+	ComPtr<ID3D12DescriptorHeap> heap;
+	D3D12_DESCRIPTOR_HEAP_DESC desc{};
+	desc.Type = _heapType;
+	desc.NumDescriptors = _numDescriptors;
+	desc.Flags = _isShaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-		HRESULT result = _device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap));
-		Assert(SUCCEEDED(result), "miss created descriptor heap");
+	HRESULT result = _device->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&heap));
+	Assert(SUCCEEDED(result), "miss created descriptor heap");
 
-		return heap;
-	}
+	return heap;
 }
 
 
@@ -33,7 +28,7 @@ void IDxDescriptorHeap::Free(uint32_t _index) {
 }
 
 uint32_t IDxDescriptorHeap::Allocate() {
-	/// 削除されたindexがあれば再利用する
+	/// 削除された index があれば再利用する
 	if(!spaceIndex_.empty()) {
 		uint32_t index = spaceIndex_.front();
 		spaceIndex_.pop_front();
@@ -102,3 +97,4 @@ void DxDescriptorHeap<DescriptorHeapType_DSV>::Initialize() {
 
 	Log("dx descriptor heap dsv create success!!");
 }
+

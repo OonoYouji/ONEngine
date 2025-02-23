@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
     <ClCompile Include="Game\Entity\Block\BlockManager.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
@@ -73,6 +74,7 @@
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
     <ClInclude Include="Game\Entity\Config\EntityConfig.h" />
     <ClInclude Include="Game\Entity\Block\BlockManager.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />

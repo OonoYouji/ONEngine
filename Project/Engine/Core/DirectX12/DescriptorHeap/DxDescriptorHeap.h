@@ -178,3 +178,12 @@ private:
 	DxDescriptorHeap& operator=(const DxDescriptorHeap&) = delete;
 	DxDescriptorHeap& operator=(DxDescriptorHeap&&)      = delete;
 };
+
+
+/// @brief DescriptorHeapの生成
+/// @param _device device へのポインタ
+/// @param _type heapの種類
+/// @param _numDescriptors descriptorの個数 
+/// @param _isShaderVisible shader visibleかどうか
+/// @return 生成された DescriptorHeap
+ComPtr<ID3D12DescriptorHeap> CreateHeap(ID3D12Device* _device, D3D12_DESCRIPTOR_HEAP_TYPE _type, uint32_t _numDescriptors, bool _isShaderVisible);

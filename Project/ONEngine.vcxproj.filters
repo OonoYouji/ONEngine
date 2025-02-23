@@ -53,6 +53,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\Entity\Grid\Grid.cpp" />
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -113,5 +114,6 @@
     <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Game\Entity\Config\EntityConfig.h" />
     <ClInclude Include="Engine\Entity\Grid\Grid.h" />
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
   </ItemGroup>
 </Project>
