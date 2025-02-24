@@ -42,6 +42,8 @@ void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<BlockManager>();
 	entityCollection_->GenerateEntity<Player>();
 
+	entityCollection_->GenerateEntity<DemoEntity>();
+
 }
 
 void GameScene::Update() {

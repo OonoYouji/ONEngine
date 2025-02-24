@@ -1,12 +1,31 @@
 #pragma once
 
+/// std
+#include <vector>
+
 /// engine
 #include "../Interface/IRenderingPipeline.h"
+#include "Engine/Core/DirectX12/Resource/DxResource.h"
+#include "Engine/Core/Utility/Math/Vector4.h"
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
 /// ===================================================d
 class SpriteRenderingPipeline final : public IRenderingPipeline {
+public:
+
+	/// ===================================================
+	/// public : sub class
+	/// ===================================================
+
+	/// @brief 頂点データ
+	struct VertexData {
+		Vector4 position;
+		Vector2 uv;
+	};
+
+
 public:
 	
 	/// ===================================================
@@ -35,6 +54,14 @@ private:
 	/// ===================================================
 
 	class GraphicsResourceCollection* resourceCollection_ = nullptr;
+
+	std::vector<VertexData>  vertices_;
+	DxResource               vertexBuffer_;
+	D3D12_VERTEX_BUFFER_VIEW vbv_;
+
+	std::vector<uint32_t>    indices_;
+	DxResource               indexBuffer_;
+	D3D12_INDEX_BUFFER_VIEW  ibv_;
 
 };
 

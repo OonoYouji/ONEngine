@@ -1,8 +1,13 @@
 #include "SpriteRenderingPipeline.h"
 
+/// std
+#include <list>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-
+#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -56,11 +61,89 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 	}
 
+
+	{	/// buffer
+
+			/// vertex data
+			vertices_ = {
+				{ Vector4(-0.5f,  0.5f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) },
+				{ Vector4( 0.5f,  0.5f, 0.0f, 1.0f), Vector2(1.0f, 0.0f) },
+				{ Vector4(-0.5f, -0.5f, 0.0f, 1.0f), Vector2(0.0f, 1.0f) },
+				{ Vector4( 0.5f, -0.5f, 0.0f, 1.0f), Vector2(1.0f, 1.0f) },
+			};
+
+			indices_ = {
+				0, 1, 2, ///< 1面
+				2, 1, 3, ///< 2面
+			};
+
+			const size_t kVertexDataSize = sizeof(VertexData);
+
+			/// vertex buffer
+			vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
+		
+			vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
+			vbv_.SizeInBytes    = static_cast<UINT>(kVertexDataSize * vertices_.size());
+			vbv_.StrideInBytes  = static_cast<UINT>(kVertexDataSize);
+		
+			/// index buffer
+			indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+		
+			ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
+			ibv_.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
+			ibv_.Format         = DXGI_FORMAT_R32_UINT;
+	
+
+			/// mapping
+			VertexData* vertexData = nullptr;
+			vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+			memcpy(vertexData, vertices_.data(), kVertexDataSize * vertices_.size());
+
+			uint32_t* indexData = nullptr;
+			indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+			memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
+
+	}
+
 }
 
 void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 
-	_dxCommand;
-	_entityCollection;
+	/// entityから sprite renderer を集める
+	std::list<SpriteRenderer*> renderers;
+	for (auto& entity : _entityCollection->GetEntities()) {
+		SpriteRenderer*&& spriteRenderer = entity->GetComponent<SpriteRenderer>();
+		if (spriteRenderer) {
+			renderers.push_back(spriteRenderer);
+		}
+	}
+
+	///< rendererがなければ 早期リターン
+	if (renderers.empty()) { 
+		return;
+	}
+
+
+
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	
+	/// settings
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	
+	/// vbv, ivb setting
+	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	commandList->IASetIndexBuffer(&ibv_);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	/// buffer dataのセット、先頭の texture gpu handle をセットする
+	auto& textures = resourceCollection_->GetTextures();
+	commandList->SetGraphicsRootDescriptorTable(0, textures.begin()->second->GetGPUDescriptorHandle());
+	
+	/// 描画
+	commandList->DrawIndexedInstanced(
+		static_cast<UINT>(indices_.size()),
+		static_cast<UINT>(renderers.size()),
+		0, 0, 0
+	);
 
 }
