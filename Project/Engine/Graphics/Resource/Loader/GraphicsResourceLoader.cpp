@@ -49,11 +49,11 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	srvDesc.Texture2D.MipLevels     = static_cast<UINT>(metadata.mipLevels);
 
 	/// srv handleの取得
-	IDxDescriptorHeap* pSRVDescriptorHeap = dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV);
+	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 
-	texture->srvDescriptorIndex_ = pSRVDescriptorHeap->Allocate();
-	texture->cpuHandle_          = pSRVDescriptorHeap->GetCPUDescriptorHandel(texture->srvDescriptorIndex_);
-	texture->gpuHandle_          = pSRVDescriptorHeap->GetGPUDescriptorHandel(texture->srvDescriptorIndex_);
+	texture->srvDescriptorIndex_ = dxSRVHeap->AllocateTexture();
+	texture->cpuHandle_          = dxSRVHeap->GetCPUDescriptorHandel(texture->srvDescriptorIndex_);
+	texture->gpuHandle_          = dxSRVHeap->GetGPUDescriptorHandel(texture->srvDescriptorIndex_);
 
 	/// srvの生成
 	DxDevice* dxDevice = dxManager_->GetDxDevice();

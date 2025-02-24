@@ -11,114 +11,6 @@
 #include "../ComPtr/ComPtr.h"
 #include "../Device/DxDevice.h"
 
-/// ===================================================
-/// DescriptorHeapの基底クラス
-/// ===================================================
-class IDxDescriptorHeap {
-public:
-
-	/// ===================================================
-	/// public : methods
-	/// ===================================================
-
-	IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : pDxDevice_(_dxDevice), kMaxHeapSize_(_maxHeapSize) {}
-	virtual ~IDxDescriptorHeap() {}
-
-
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	virtual void Initialize() = 0;
-
-
-	/// <summary>
-	/// 特定のDescriptorを解放する
-	/// </summary>
-	/// <param name="_index"> : Allocate()でゲットしたindex </param>
-	void Free(uint32_t _index);
-
-	/// <summary>
-	/// DescriptorHeapのindexをゲットする
-	/// </summary>
-	/// <returns> return : DescriptorHeapのindex </returns>
-	uint32_t Allocate();
-
-	/// <summary>
-	/// コマンドリストにDescriptorHeapをセットする
-	/// </summary>
-	/// <param name="_commandList"></param>
-	void BindToCommandList(ID3D12GraphicsCommandList* _commandList);
-
-
-protected:
-
-	/// ===================================================
-	/// protected : objects
-	/// ===================================================
-
-	ComPtr<ID3D12DescriptorHeap> descriptorHeap_ = nullptr;
-
-
-	const uint32_t               kMaxHeapSize_;             /// heapのmax
-	uint32_t                     descriptorSize_;           /// heapの1つあたりsize
-
-	uint32_t                     useIndex_;
-	std::deque<uint32_t>         spaceIndex_;               /// 解放された後の空きindex
-
-	/// other class pointer
-	DxDevice*                    pDxDevice_ = nullptr;
-
-
-public:
-
-	/// ===================================================
-	/// public : accessor
-	/// ===================================================
-
-	/// <summary>
-	/// cpuHandleのゲッタ
-	/// </summary>
-	/// <param name="_index"> : </param>
-	/// <returns></returns>
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandel(uint32_t _index) const;
-
-	/// <summary>
-	/// gpuHandleのゲッタ
-	/// </summary>
-	/// <param name="_index"></param>
-	/// <returns></returns>
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandel(uint32_t _index) const;
-
-	/// <summary>
-	/// DescriptorHeapのゲッター
-	/// </summary>
-	/// <returns></returns>
-	ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
-
-	/// <summary>
-	/// DescriptorHeapの最大数をゲットする
-	/// </summary>
-	/// <returns> return : ヒープのマックスのサイズを得る </returns>
-	uint32_t GetMaxHeapSize() const { return kMaxHeapSize_; }
-
-	/// <summary>
-	/// DescriptorHeapの使用済みの
-	/// </summary>
-	/// <returns></returns>
-	uint32_t GetUsedIndexCount() const { return useIndex_ - static_cast<uint32_t>(spaceIndex_.size()); }
-
-
-private:
-
-	/// ===================================================
-	/// private : copy delete
-	/// ===================================================
-
-	IDxDescriptorHeap(const IDxDescriptorHeap&)            = delete;
-	IDxDescriptorHeap(IDxDescriptorHeap&&)                 = delete;
-	IDxDescriptorHeap& operator=(const IDxDescriptorHeap&) = delete;
-	IDxDescriptorHeap& operator=(IDxDescriptorHeap&&)      = delete;
-};
 
 
 /// ===================================================
@@ -132,21 +24,52 @@ enum DescriptorHeapType {
 };
 
 
+
 /// ===================================================
-/// dx12のdescriptor heapを管理するクラス
+/// DescriptorHeapの基底クラス
 /// ===================================================
-template<DescriptorHeapType T>
-class DxDescriptorHeap : public IDxDescriptorHeap {
+class IDxDescriptorHeap {
 public:
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	DxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : IDxDescriptorHeap(_dxDevice, _maxHeapSize) {}
-	~DxDescriptorHeap() {}
+	IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : pDxDevice_(_dxDevice), kMaxHeapSize_(_maxHeapSize) {}
+	virtual ~IDxDescriptorHeap() {}
 
-	void Initialize() override;
+	/// @brief 初期化
+	virtual void Initialize() = 0;
+
+	/// @brief _indexのDescriptorHeapを解放する
+	/// @param _index 解放したいDescriptorのIndex
+	void Free(uint32_t _index);
+
+	/// @brief DescriptorHeapのindexを取得する
+	/// @return DescriptorHeapのindex
+	uint32_t Allocate();
+
+	/// @brief commandListにDescriptorHeapをバインドする
+	/// @param _commandList ID3D12GraphicsCommandListのポインタ
+	void BindToCommandList(ID3D12GraphicsCommandList* _commandList);
+
+
+protected:
+
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
+
+	ComPtr<ID3D12DescriptorHeap> descriptorHeap_ = nullptr;
+
+	const uint32_t               kMaxHeapSize_;             ///< heapのmax
+	uint32_t                     descriptorSize_;           ///< heapの1つあたりsize
+
+	uint32_t                     useIndex_;
+	std::deque<uint32_t>         spaceIndex_;               ///< 解放された後の空きindex
+
+	DxDevice*                    pDxDevice_ = nullptr;
+
 
 public:
 
@@ -154,16 +77,26 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// DescriptorHeapの最大数を取得する
-	/// </summary>
-	/// <returns> return : ヒープのマックスのサイズを得る </returns>
+	/// @brief cpu handleのゲッタ
+	/// @param _index ゲットしたいindex
+	/// @return cpu handle
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandel(uint32_t _index) const;
+
+	/// @brief gpu handleのゲッタ
+	/// @param _index ゲットしたいindex
+	/// @return gpu handle
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandel(uint32_t _index) const;
+
+	/// @brief descriptor heapのゲッタ
+	/// @return descriptor heapへのポインタ
+	ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
+
+	/// @brief descriptor heapの最大サイズのゲッタ
+	/// @return descriptor heapの最大サイズ
 	uint32_t GetMaxHeapSize() const { return kMaxHeapSize_; }
 
-	/// <summary>
-	/// DescriptorHeapの使用済みの数を取得する
-	/// </summary>
-	/// <returns></returns>
+	/// @brief 使用済みのindexの数を取得する
+	/// @return 使用済みのindexの数
 	uint32_t GetUsedIndexCount() const { return useIndex_ - static_cast<uint32_t>(spaceIndex_.size()); }
 
 
@@ -173,10 +106,10 @@ private:
 	/// private : copy delete
 	/// ===================================================
 
-	DxDescriptorHeap(const DxDescriptorHeap&)            = delete;
-	DxDescriptorHeap(DxDescriptorHeap&&)                 = delete;
-	DxDescriptorHeap& operator=(const DxDescriptorHeap&) = delete;
-	DxDescriptorHeap& operator=(DxDescriptorHeap&&)      = delete;
+	IDxDescriptorHeap(const IDxDescriptorHeap&)            = delete;
+	IDxDescriptorHeap(IDxDescriptorHeap&&)                 = delete;
+	IDxDescriptorHeap& operator=(const IDxDescriptorHeap&) = delete;
+	IDxDescriptorHeap& operator=(IDxDescriptorHeap&&)      = delete;
 };
 
 

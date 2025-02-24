@@ -34,7 +34,7 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 void RenderingFramework::Draw() {
 
 	/// descriptor heapの設定
-	dxManager_->GetDxDescriptorHeap(DescriptorHeapType_CBV_SRV_UAV)->BindToCommandList(
+	dxManager_->GetDxSRVHeap()->BindToCommandList(
 		dxManager_->GetDxCommand()->GetCommandList()
 	);
 

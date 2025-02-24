@@ -12,7 +12,7 @@
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
-#include "Engine/Core/DirectX12/DescriptorHeap/DxDescriptorHeap.h"
+#include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 
 
@@ -30,7 +30,7 @@ public:
 	StructuredBuffer();
 	~StructuredBuffer();
 
-	void Create(uint32_t _size, DxDevice* _dxDevice, IDxDescriptorHeap* _dxDescriptorHeap);
+	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 
 	void BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
 
@@ -55,7 +55,7 @@ private:
 	size_t                      bufferSize_;
 
 
-	IDxDescriptorHeap*          pDxDescriptorHeap_;
+	DxSRVHeap*                  pDxSRVHeap_;
 };
 
 
@@ -68,12 +68,12 @@ inline StructuredBuffer<T>::StructuredBuffer() {}
 
 template<typename T>
 inline StructuredBuffer<T>::~StructuredBuffer() {
-	pDxDescriptorHeap_->Free(srvDescriptorIndex_);
+	pDxSRVHeap_->Free(srvDescriptorIndex_);
 }
 
 
 template<typename T>
-inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, IDxDescriptorHeap* _dxDescriptorHeap) {
+inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
 	/// bufferのサイズを計算
 	structureSize_  = sizeof(T);
@@ -94,10 +94,10 @@ inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, IDx
 	desc.Buffer.StructureByteStride   = static_cast<UINT>(structureSize_);
 
 	/// cpu, gpu handle initialize
-	pDxDescriptorHeap_  = _dxDescriptorHeap;
-	srvDescriptorIndex_ = pDxDescriptorHeap_->Allocate();
-	cpuHandle_          = pDxDescriptorHeap_->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_          = pDxDescriptorHeap_->GetGPUDescriptorHandel(srvDescriptorIndex_);
+	pDxSRVHeap_         = _dxSRVHeap;
+	srvDescriptorIndex_ = pDxSRVHeap_->AllocateBuffer();
+	cpuHandle_          = pDxSRVHeap_->GetCPUDescriptorHandel(srvDescriptorIndex_);
+	gpuHandle_          = pDxSRVHeap_->GetGPUDescriptorHandel(srvDescriptorIndex_);
 
 	/// resource create
 	_dxDevice->GetDevice()->CreateShaderResourceView(bufferResource_.Get(), &desc, cpuHandle_);

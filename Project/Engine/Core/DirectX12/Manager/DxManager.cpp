@@ -26,9 +26,9 @@ void DxManager::Initialize() {
 
 	
 	/// descriptor heapの初期化
-	dxDescriptorHeaps_[DescriptorHeapType_RTV].reset(new DxDescriptorHeap<DescriptorHeapType_RTV>(dxDevice_.get(), 16));
-	dxDescriptorHeaps_[DescriptorHeapType_DSV].reset(new DxDescriptorHeap<DescriptorHeapType_DSV>(dxDevice_.get(), 1));
-	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].reset(new DxDescriptorHeap<DescriptorHeapType_CBV_SRV_UAV>(dxDevice_.get(), 128));
+	dxDescriptorHeaps_[DescriptorHeapType_RTV].reset(new DxRTVHeap(dxDevice_.get(), 16));
+	dxDescriptorHeaps_[DescriptorHeapType_DSV].reset(new DxDSVHeap(dxDevice_.get(), 1));
+	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].reset(new DxSRVHeap(dxDevice_.get(), 128, 32));
 	
 	for(auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();
@@ -42,3 +42,17 @@ void DxManager::Initialize() {
 }
 
 void DxManager::Finalize() {}
+
+
+
+DxSRVHeap* DxManager::GetDxSRVHeap() const {
+	return static_cast<DxSRVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].get());
+}
+
+DxRTVHeap* DxManager::GetDxRTVHeap() const {
+	return static_cast<DxRTVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_RTV].get());
+}
+
+DxDSVHeap* DxManager::GetDxDSVHeap() const {
+	return static_cast<DxDSVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_DSV].get());
+}

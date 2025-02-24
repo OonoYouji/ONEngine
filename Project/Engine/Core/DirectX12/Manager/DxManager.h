@@ -9,6 +9,9 @@
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
 #include "../DescriptorHeap/DxDescriptorHeap.h"
+#include "../DescriptorHeap/DxSRVHeap.h"
+#include "../DescriptorHeap/DxDSVHeap.h"
+#include "../DescriptorHeap/DxRTVHeap.h"
 #include "../DepthStencil/DxDepthStencil.h"
 
 /// ===================================================
@@ -47,24 +50,27 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// dxDeviceを取得
-	/// </summary>
-	/// <returns></returns>
+	/// @brief DxDeviceのインスタンスの取得
+	/// @return DxDeviceインスタンス
 	DxDevice* GetDxDevice() const { return dxDevice_.get(); }
 
-	/// <summary>
-	/// dxCommandを取得
-	/// </summary>
-	/// <returns></returns>
+	/// @brief DxCommandのインスタンスの取得
+	/// @return DxCommandインスタンス
 	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
 
-	/// <summary>
-	/// dxDescriptorHeapを取得
-	/// </summary>
-	/// <param name="_type"> : descriptor heapのtype               </param>
-	/// <returns>              return : 引数のtypeのdescriptor heap </returns>
-	IDxDescriptorHeap* GetDxDescriptorHeap(DescriptorHeapType _type) const { return dxDescriptorHeaps_[_type].get(); }
+	//IDxDescriptorHeap* GetDxDescriptorHeap(DescriptorHeapType _type) const { return dxDescriptorHeaps_[_type].get(); }
+
+	/// @brief DxSRVHeapのインスタンスの取得
+	/// @return DxSRVHeapインスタンス
+	DxSRVHeap* GetDxSRVHeap() const;
+
+	/// @brief DxRTVHeapのインスタンスの取得
+	/// @return DxRTVHeapインスタンス
+	DxRTVHeap* GetDxRTVHeap() const; 
+
+	/// @brief DxDSVHeapのインスタンスの取得
+	/// @return DxDSVHeapインスタンス
+	DxDSVHeap* GetDxDSVHeap() const;
 
 private:
 

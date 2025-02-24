@@ -11,10 +11,10 @@
 
 DxSwapChain::DxSwapChain() {}
 DxSwapChain::~DxSwapChain() {
-	IDxDescriptorHeap* rtvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_RTV);
+	DxRTVHeap* dxRTVHeap = pDxManager_->GetDxRTVHeap();
 
 	for(uint32_t index : rtvIndices_) {
-		rtvDescriptorHeap->Free(index);
+		dxRTVHeap->Free(index);
 	}
 }
 
@@ -69,14 +69,14 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		rtvHandles_.resize(kBufferCount);
 		rtvIndices_.resize(kBufferCount);
 
-		IDxDescriptorHeap* rtvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_RTV);
+		DxRTVHeap* dxRTVHeap = pDxManager_->GetDxRTVHeap();
 
 		for(uint8_t i = 0u; i < kBufferCount; ++i) {
 			HRESULT hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&buffers_[i]));
 			Assert(SUCCEEDED(hr), "Failed to create buffer");
 
-			rtvIndices_[i] = rtvDescriptorHeap->Allocate();
-			rtvHandles_[i] = rtvDescriptorHeap->GetCPUDescriptorHandel(rtvIndices_[i]);
+			rtvIndices_[i] = dxRTVHeap->Allocate();
+			rtvHandles_[i] = dxRTVHeap->GetCPUDescriptorHandel(rtvIndices_[i]);
 
 			pDxManager_->GetDxDevice()->GetDevice()->CreateRenderTargetView(
 				buffers_[i].Get(), &desc, rtvHandles_[i]);
@@ -123,8 +123,8 @@ void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_R
 void DxSwapChain::ClearBackBuffer(ID3D12GraphicsCommandList* _commandList) {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	IDxDescriptorHeap*          dsvDescriptorHeap = pDxManager_->GetDxDescriptorHeap(DescriptorHeapType_DSV);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle         = dsvDescriptorHeap->GetCPUDescriptorHandel(0);
+	DxDSVHeap*                  dxDSVHeap = pDxManager_->GetDxDSVHeap();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dxDSVHeap->GetCPUDescriptorHandel(0);
 
 	_commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
 	_commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
