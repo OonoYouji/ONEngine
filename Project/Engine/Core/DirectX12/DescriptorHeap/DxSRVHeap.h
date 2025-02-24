@@ -6,7 +6,7 @@
 /// ===================================================
 /// DescriptorHeapの基底クラス
 /// ===================================================
-class DxSRVHeap : public IDxDescriptorHeap {
+class DxSRVHeap final : public IDxDescriptorHeap {
 public:
 
 	/// ===================================================
