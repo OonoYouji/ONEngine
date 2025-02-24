@@ -2,7 +2,7 @@
 
 /// engine
 #include "../Device/DxDevice.h"
-#include "../DescriptorHeap/DxDescriptorHeap.h"
+#include "../DescriptorHeap/DxDSVHeap.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 #include "Engine/Core/Utility/DebugTools/Log.h"
 
@@ -10,7 +10,7 @@ DxDepthStencil::DxDepthStencil() {}
 DxDepthStencil::~DxDepthStencil() {}
 
 
-void DxDepthStencil::Initialize(DxDevice* _dxDevice, IDxDescriptorHeap* _dsvHeap) {
+void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 	
 	{
 		D3D12_RESOURCE_DESC desc{};
@@ -48,11 +48,11 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, IDxDescriptorHeap* _dsvHeap
 		desc.Format                                         = DXGI_FORMAT_D32_FLOAT;
 		desc.ViewDimension                                  = D3D12_DSV_DIMENSION_TEXTURE2D;
 
-		uint32_t descriptorIndex                            = _dsvHeap->Allocate();
+		uint32_t descriptorIndex                            = _dxDsvHeap->Allocate();
 
 		_dxDevice->GetDevice()->CreateDepthStencilView(
 			depthStencilResource_.Get(), &desc, 
-			_dsvHeap->GetCPUDescriptorHandel(descriptorIndex)
+			_dxDsvHeap->GetCPUDescriptorHandel(descriptorIndex)
 		);
 		
 	}

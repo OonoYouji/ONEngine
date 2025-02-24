@@ -37,7 +37,7 @@ void DxManager::Initialize() {
 
 	/// depth stencilの初期化
 	dxDepthStencil_.reset(new DxDepthStencil());
-	dxDepthStencil_->Initialize(dxDevice_.get(), dxDescriptorHeaps_[DescriptorHeapType_DSV].get());
+	dxDepthStencil_->Initialize(dxDevice_.get(), GetDxDSVHeap());
 
 }
 

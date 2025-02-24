@@ -30,7 +30,7 @@
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDescriptorHeap.cpp" />
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Command\DxCommand.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Device\DxDevice.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp" />
@@ -89,7 +89,7 @@
     <ClInclude Include="Engine\Core\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\Core\DirectX12\Debug\DxDebug.h" />
     <ClInclude Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDescriptorHeap.h" />
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\Command\DxCommand.h" />
     <ClInclude Include="Engine\Core\DirectX12\ComPtr\ComPtr.h" />
     <ClInclude Include="Engine\Core\DirectX12\Device\DxDevice.h" />

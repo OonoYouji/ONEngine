@@ -8,7 +8,6 @@
 #include "../Debug/DxDebug.h"
 #include "../Device/DxDevice.h"
 #include "../Command/DxCommand.h"
-#include "../DescriptorHeap/DxDescriptorHeap.h"
 #include "../DescriptorHeap/DxSRVHeap.h"
 #include "../DescriptorHeap/DxDSVHeap.h"
 #include "../DescriptorHeap/DxRTVHeap.h"

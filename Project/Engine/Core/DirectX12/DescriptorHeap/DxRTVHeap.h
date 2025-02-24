@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "DxDescriptorHeap.h"
+#include "IDxDescriptorHeap.h"
 
 /// ===================================================
 /// RTVHeap

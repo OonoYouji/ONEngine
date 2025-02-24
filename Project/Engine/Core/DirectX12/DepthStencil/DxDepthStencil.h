@@ -22,7 +22,7 @@ public:
 
 	/// @brief 初期化処理
 	/// @param _dxDevice DxDeviceへのポインタ 
-	void Initialize(class DxDevice* _dxDevice, class IDxDescriptorHeap* _dsvHeap);
+	void Initialize(class DxDevice* _dxDevice, class DxDSVHeap* _dxDsvHeap);
 
 
 private:

@@ -1,4 +1,4 @@
-#include "DxDescriptorHeap.h"
+#include "IDxDescriptorHeap.h"
 
 /// lib
 #include "Engine/Core/Utility/DebugTools/Assert.h"
