@@ -56,6 +56,7 @@
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
+    <ClCompile Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -119,5 +120,6 @@
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
+    <ClInclude Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.h" />
   </ItemGroup>
 </Project>
