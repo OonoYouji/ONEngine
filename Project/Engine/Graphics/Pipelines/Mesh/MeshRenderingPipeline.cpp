@@ -8,8 +8,8 @@
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection, EntityCollection* _entityCollection) 
-	: resourceCollection_(_resourceCollection), entityCollection_(_entityCollection) {}
+MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection) 
+	: resourceCollection_(_resourceCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
 

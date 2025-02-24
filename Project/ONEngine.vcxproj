@@ -75,6 +75,7 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Engine\Entity\Grid\Grid.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -8,6 +8,7 @@
 #include "../Mesh/MeshRenderingPipeline.h"
 #include "../Primitive/Line2DRenderingPipeline.h"
 #include "../Primitive/Line3DRenderingPipeline.h"
+#include "../Sprite/SpriteRenderingPipeline.h"
 
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityCollection* _entityCollection, GraphicsResourceCollection* _graphicsResourceCollection)
@@ -20,7 +21,8 @@ void RenderingPipelineCollection::Initialize() {
 	/// generate rendering pipeline
 	GenerateRenderingPipeline<Line2DRenderingPipeline>();
 	GenerateRenderingPipeline<Line3DRenderingPipeline>();
-	GenerateRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_, entityCollection_);
+	GenerateRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
+	GenerateRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 }
 
