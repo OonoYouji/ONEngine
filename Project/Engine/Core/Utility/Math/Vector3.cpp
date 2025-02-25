@@ -57,7 +57,7 @@ Vector3 Vector3::Normalize() const {
 	return *this;
 }
 
-float Vector3::Lenght(const Vector3& v) {
+float Vector3::Length(const Vector3& v) {
 	return v.Len();
 }
 
@@ -92,8 +92,8 @@ Vector3 Vector3::Slerp(const Vector3& start, const Vector3& end, float t) {
 		nLerpVector = (nv1 * sinThetaFrom + nv2 * sinThetaTo) / sinTheta;
 	}
 
-	float length1 = Lenght(start);
-	float length2 = Lenght(end);
+	float length1 = Length(start);
+	float length2 = Length(end);
 	float length = std::lerp(length1, length2, t);
 
 	return nLerpVector * length;
