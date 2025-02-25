@@ -20,6 +20,7 @@ GameScene::GameScene() {
 		"Assets/Textures/white.png",
 		"Assets/Textures/uvChecker.png",
 		"Assets/Textures/gradation.png",
+		"Assets/Textures/Player.png",
 	};
 
 	unloadResourcePaths_ = {

@@ -70,11 +70,6 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 				{ Vector4( 0.5f, -0.5f, 0.0f, 1.0f), Vector2(1.0f, 1.0f) },
 			};
 
-			for (auto& vertex : vertices_) {
-				vertex.position.x *= 100.0f;
-				vertex.position.y *= 100.0f;
-			}
-
 			indices_ = {
 				0, 1, 2, ///< 1面
 				2, 1, 3, ///< 2面

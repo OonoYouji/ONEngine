@@ -11,8 +11,9 @@ Player::~Player() {}
 void Player::Initialize() {
 
 	SpriteRenderer* renderer = AddComponent<SpriteRenderer>();
-	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
+	renderer->SetTexturePath("Assets/Textures/Player.png");
 
+	transform_->scale = Vector3(100.0f, 100.0f, 0.5f); ///< texture size に合わせる
 
 	velocity_ = Vector3::kZero;
 	speed_    = 10.0f; //< 移動する速度
