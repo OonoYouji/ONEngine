@@ -113,17 +113,17 @@ void Camera2D::Initialize() {
 void Camera2D::Update() {
 
 
-	{	/// カメラ移動
-		Vector3 velocity = Vector3::kZero;
+	//{	/// カメラ移動
+	//	Vector3 velocity = Vector3::kZero;
 
-		if (Input::PressKey(DIK_W)) { velocity.y += 0.1f; }
-		if (Input::PressKey(DIK_S)) { velocity.y -= 0.1f; }
-		if (Input::PressKey(DIK_A)) { velocity.x -= 0.1f; }
-		if (Input::PressKey(DIK_D)) { velocity.x += 0.1f; }
+	//	if (Input::PressKey(DIK_W)) { velocity.y += 0.1f; }
+	//	if (Input::PressKey(DIK_S)) { velocity.y -= 0.1f; }
+	//	if (Input::PressKey(DIK_A)) { velocity.x -= 0.1f; }
+	//	if (Input::PressKey(DIK_D)) { velocity.x += 0.1f; }
 
-		velocity = velocity.Normalize() * 10.0f;
-		transform_->position += velocity;
-	}
+	//	velocity = velocity.Normalize() * 10.0f;
+	//	transform_->position += velocity;
+	//}
 
 	transform_->Update();
 

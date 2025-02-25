@@ -26,7 +26,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	Vector2 velocity_;
+	Vector3 velocity_;
 	float   speed_;
 
 public:
