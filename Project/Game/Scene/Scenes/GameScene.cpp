@@ -1,7 +1,7 @@
 #include "GameScene.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/Entity/Demo/DemoEntity.h"
 #include "Engine/Entity/Grid/Grid.h"
@@ -44,6 +44,25 @@ void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<Player>();
 
 	entityCollection_->GenerateEntity<DemoEntity>();
+
+
+	std::vector<std::string> filePaths = {
+		"Assets/Textures/white.png",
+		"Assets/Textures/uvChecker.png",
+		"Assets/Textures/gradation.png"
+	};
+
+	for (size_t i = 0; i < 32; i++) {
+		DemoEntity* entity = entityCollection_->GenerateEntity<DemoEntity>();
+		entity->GetTransform()->SetPosition(Vector3(
+			static_cast<float>(i) * 5.0f, 
+			static_cast<float>(i) * 5.0f, 
+			0.0f
+		));
+
+		SpriteRenderer* renderer = entity->AddComponent<SpriteRenderer>();
+		renderer->SetTexturePath(filePaths[i % 3]);
+	}
 
 }
 

@@ -168,6 +168,8 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 			transformIndex, 
 			renderer->GetOwner()->GetTransform()->GetMatWorld()
 		);
+
+		++transformIndex;
 	}
 
 	textureIDsBuffer_->BindToCommandList(1, commandList); ///< textureID
