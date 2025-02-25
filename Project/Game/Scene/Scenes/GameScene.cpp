@@ -1,5 +1,7 @@
 #include "GameScene.h"
 
+#include <imgui.h>
+
 /// engine
 #include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
@@ -41,6 +43,15 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	ImGui::Begin("GameScene");
+
+	ImGui::Text("GameScene");
+
+	static int count = 0;
+	ImGui::SliderInt("count", &count, 0, 100);
+
+	ImGui::End();
 
 }
 

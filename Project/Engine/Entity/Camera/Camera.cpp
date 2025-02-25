@@ -108,6 +108,8 @@ void Camera2D::Initialize() {
 	transform_->scale    = Vector3::kOne;
 	transform_->rotate   = Vector3::kZero;
 
+	transform_->matrixCalcFlags = Transform::kPosition;
+
 	matProjection_ = MakeOrthographicMatrix(
 		-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1.0f
 	);
@@ -130,12 +132,7 @@ void Camera2D::Update() {
 
 	transform_->Update();
 
-	Matrix4x4 matScale = Matrix4x4::MakeScale(transform_->scale);
-	if (transform_->GetParent()) {
-		matScale *= Matrix4x4::MakeScale(transform_->GetParent()->scale);
-	}
-
-	matView_       = (transform_->GetMatWorld() * matScale.Inverse()).Inverse();
+	matView_ = transform_->GetMatWorld().Inverse();
 	viewProjection_->SetMappingData(ViewProjection(matView_ * matProjection_));
 
 }

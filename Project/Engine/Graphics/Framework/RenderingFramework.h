@@ -49,9 +49,13 @@ private:
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
 
-	DxManager*                      dxManager_        = nullptr;
-	WindowManager*                  windowManager_    = nullptr;
-	class EntityCollection*         entityCollection_ = nullptr;
+	DxManager*                                   dxManager_        = nullptr;
+	WindowManager*                               windowManager_    = nullptr;
+	class EntityCollection*                      entityCollection_ = nullptr;
+
+#ifdef _DEBUG
+	class ImGuiManager*                          imGuiManager_ = nullptr;
+#endif // _DEBUG
 
 
 public:
@@ -60,7 +64,17 @@ public:
 	/// public : accessor
 	/// ===================================================
 
+	/// @brief 描画に使用するリソースコレクションの取得
+	/// @return リソースのコレクションを返す
 	GraphicsResourceCollection* GetResourceCollection() const { return resourceCollection_.get(); }
+
+
+
+#ifdef _DEBUG
+	/// @brief ImGuiManagerへのポインタを設定
+	/// @param _imGuiManager ImGuiManagerへのポインタ
+	void SetImGuiManager(class ImGuiManager* _imGuiManager) { imGuiManager_ = _imGuiManager; }
+#endif // _DEBUG
 
 };
 

@@ -4,13 +4,14 @@
 #include <memory>
 
 /// engine
-#include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Scene/SceneManager.h"
+#include "Engine/Graphics/Framework/RenderingFramework.h"
 #include "GameFrameworkConfig.h"
 
-#include "Engine/Graphics/Framework/RenderingFramework.h"
 
 
 /// ===================================================
@@ -44,6 +45,11 @@ private:
 	std::unique_ptr<WindowManager>      windowManager_    = nullptr;
 	std::unique_ptr<SceneManager>       sceneManager_     = nullptr;
 	std::unique_ptr<EntityCollection>   entityCollection_ = nullptr;
+
+#ifdef _DEBUG
+	std::unique_ptr<ImGuiManager>       imGuiManager_     = nullptr;
+#endif // _DEBUG
+
 
 	std::unique_ptr<RenderingFramework> renderingFramework_;
 

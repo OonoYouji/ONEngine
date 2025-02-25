@@ -25,6 +25,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityCollection_   = std::make_unique<EntityCollection>(dxManager_.get());
 	sceneManager_       = std::make_unique<SceneManager>(entityCollection_.get());
 
+#ifdef _DEBUG
+	imGuiManager_       = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get());
+#endif // _DEBUG
+
 
 	/// 各クラスの初期化を行う
 
@@ -42,6 +46,13 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityCollection_->Initialize();
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
+
+
+#ifdef _DEBUG
+	imGuiManager_->Initialize();
+	renderingFramework_->SetImGuiManager(imGuiManager_.get());
+#endif // _DEBUG
+
 }
 
 void GameFramework::Run() {
@@ -52,12 +63,17 @@ void GameFramework::Run() {
 		Input::Update();
 
 		/// 更新処理
+#ifdef _DEBUG
+		imGuiManager_->Update();
+#endif // _DEBUG
+
 		windowManager_->Update();
 		sceneManager_->Update();
 		entityCollection_->Update();
 
 		/// 描画処理
 		renderingFramework_->Draw();
+
 
 		/// 破棄されたら終了
 		if(windowManager_->GetMainWindow()->GetProcessMessage()) {

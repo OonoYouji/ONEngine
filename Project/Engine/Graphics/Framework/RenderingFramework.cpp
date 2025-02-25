@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 
 /// shader
@@ -42,6 +43,10 @@ void RenderingFramework::Draw() {
 	windowManager_->PreDraw();
 
 	renderingPipelineCollection_->DrawEntities();
+
+#ifdef _DEBUG
+	imGuiManager_->Draw(); ///< imguiの描画
+#endif // _DEBUG
 
 	windowManager_->PostDraw();
 

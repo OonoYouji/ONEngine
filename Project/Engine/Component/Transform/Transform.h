@@ -15,6 +15,18 @@
 class Transform : public IComponent {
 public:
 
+	/// @brief 親子付けしているTransformの行列計算フラグ
+	enum MatrixCalcFlag : int {
+		kNone     = 0,
+		kPosition = 1 << 0, ///< positionのみを子に反映
+		kRotate   = 1 << 1, ///< rotateのみを子に反映
+		kScale    = 1 << 2, ///< scaleのみを子に反映
+		kAll      = kPosition | kRotate | kScale
+	};
+
+
+public:
+
 	/// ===============================================
 	/// public : sub class
 	/// ===============================================
@@ -41,11 +53,12 @@ public:
 	/// public : objects
 	/// ===============================================
 
-	Vector3                                     position;
-	Vector3                                     rotate;
-	Vector3                                     scale;
-	Matrix4x4                                   matWorld;
+	Vector3   position;
+	Vector3   rotate;
+	Vector3   scale;
+	Matrix4x4 matWorld;
 
+	int       matrixCalcFlags = kAll;
 
 private:
 
@@ -53,7 +66,7 @@ private:
 	/// private : objects
 	/// ===============================================
 
-	Transform*                                  parent_          = nullptr;
+	Transform* parent_          = nullptr;
 
 
 public:
