@@ -86,16 +86,6 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 
 void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
-
-	/// pre draw
-
-	/// settings
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
@@ -105,6 +95,21 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
 		}
 	}
+
+	///< 描画対象がなければ 早期リターン
+	if (rendererPerMesh.empty()) {
+		return;
+	}
+
+
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
+
+	/// settings
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
 
 	size_t transformIndex = 0; ///< transform buffer の index
 	UINT   instanceIndex  = 0; ///< instance id
@@ -147,6 +152,5 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 		instanceIndex += static_cast<UINT>(renderers.size());
 	}
 
-	/// post draw
 }
 
