@@ -35,6 +35,10 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// topology type setting
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 
+
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection: 0
+
+
 		/// blend desc setting
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
@@ -68,17 +72,8 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 
 void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-
-	/// pre draw
-	/// setting
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-
-
-
-	/// draw
+	
+	/// entityから描画データを取得
 	for (auto& entity : _entityCollection->GetEntities()) {
 		Line2DRenderer*&& lineRenderer = entity->GetComponent<Line2DRenderer>();
 
@@ -87,7 +82,8 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 		}
 	}
 
-	if (renderingDataList_.empty()) { ///< 描画データがない場合は描画しない
+	///< 描画データがない場合は描画しない
+	if (renderingDataList_.empty()) {
 		return;
 	}
 
@@ -103,10 +99,22 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	/// 描画データをバッファにコピー
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 
+
+
+	/// draw settings
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	Camera2D*                  camera      = _entityCollection->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
+
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
+	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	/// buffer
+	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
+
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
-
-
 
 	/// post draw
 	/// 描画データのクリア

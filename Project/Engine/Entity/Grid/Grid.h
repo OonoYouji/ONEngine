@@ -18,14 +18,23 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
+};
 
 
-private:
+/// ===================================================
+/// グリッドクラス
+/// ===================================================
+class Grid2D final : public IEntity {
+public:
 
 	/// ===================================================
-	/// private : methods
+	/// public : methods
 	/// ===================================================
 
+	Grid2D() {}
+	~Grid2D() {}
 
+	void Initialize() override;
+	void Update()     override;
 };
 

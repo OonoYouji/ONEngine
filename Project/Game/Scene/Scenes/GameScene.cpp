@@ -32,37 +32,9 @@ GameScene::~GameScene() {}
 
 
 void GameScene::Initialize() {
-	//entityCollection_->GenerateEntity<Grid>();
+	entityCollection_->GenerateEntity<Grid2D>();
 	entityCollection_->GenerateCamera2D();
-
-	//Camera* camera = entityCollection_->GenerateCamera();
-	//Transform* transform = camera->GetTransform();
-	//transform->SetPosition(Vector3(0.0f, 0.0f, -5.0f));
-	//transform->SetRotate(Vector3(0.0f, 0.0f, 0.0f));
-	
-	/*entityCollection_->GenerateEntity<BlockManager>();
-	entityCollection_->GenerateEntity<Player>();*/
-
 	entityCollection_->GenerateEntity<DemoEntity>();
-
-
-	std::vector<std::string> filePaths = {
-		"Assets/Textures/white.png",
-		"Assets/Textures/uvChecker.png",
-		"Assets/Textures/gradation.png"
-	};
-
-	for (size_t i = 0; i < 1023; i++) {
-		DemoEntity* entity = entityCollection_->GenerateEntity<DemoEntity>();
-		entity->GetTransform()->SetPosition(Vector3(
-			static_cast<float>(i) * 5.0f, 
-			static_cast<float>(i) * 5.0f, 
-			0.0f
-		));
-
-		SpriteRenderer* renderer = entity->AddComponent<SpriteRenderer>();
-		renderer->SetTexturePath(filePaths[i % 3]);
-	}
 
 }
 
