@@ -43,7 +43,14 @@ public:
 	/// @return 2D cameraへのポインタ
 	Camera2D* GenerateCamera2D();
 
+	/// @brief entity の削除
+	/// @param _entity 
 	void RemoveEntity(IEntity* _entity);
+
+
+
+	/// @brief imguiのデバッグ表示
+	void ImGuiDebug();
 
 private:
 	
@@ -57,6 +64,11 @@ private:
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*>                  cameras_;   ///< カメラのリスト、本体はentities_に格納されている
 	std::vector<Camera2D*>                camera2ds_; ///< カメラのリスト、本体はentities_に格納されている
+
+
+#ifdef _DEBUG ///< デバッグモードのみ
+	IEntity* selectedEntity_ = nullptr;
+#endif // _DEBUG
 
 
 public:

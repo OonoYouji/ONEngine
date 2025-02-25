@@ -44,14 +44,6 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
-	ImGui::Begin("GameScene");
-
-	ImGui::Text("GameScene");
-
-	static int count = 0;
-	ImGui::SliderInt("count", &count, 0, 100);
-
-	ImGui::End();
 
 }
 
