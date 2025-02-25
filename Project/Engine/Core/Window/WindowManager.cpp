@@ -1,10 +1,24 @@
 #include "WindowManager.h"
 
+/// external
+#include <imgui.h>
+#include <imgui_impl_dx12.h>
+#include <imgui_impl_win32.h>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
+
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
+#ifdef _DEBUG
+	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
+		return true;
+	}
+#endif // _DEBUG
+
+
 	switch(_msg) {
 	case WM_CLOSE:
 		DestroyWindow(_hwnd);
@@ -18,6 +32,12 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 }
 
 LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
+#ifdef _DEBUG
+	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
+		return true;
+	}
+#endif // _DEBUG
+
 	switch(_msg) {
 	case WM_CLOSE:
 	case WM_DESTROY: /// window破棄

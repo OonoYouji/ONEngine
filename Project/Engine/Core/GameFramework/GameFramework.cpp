@@ -60,20 +60,20 @@ void GameFramework::Run() {
 	/// game loopが終了するまで回す
 	while(true) {
 
+		/// 更新処理
 		Input::Update();
 
-		/// 更新処理
+		windowManager_->Update();
 #ifdef _DEBUG
 		imGuiManager_->Update();
 #endif // _DEBUG
 
-		windowManager_->Update();
 		sceneManager_->Update();
 		entityCollection_->Update();
 
+
 		/// 描画処理
 		renderingFramework_->Draw();
-
 
 		/// 破棄されたら終了
 		if(windowManager_->GetMainWindow()->GetProcessMessage()) {

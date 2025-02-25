@@ -35,8 +35,8 @@ GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<Grid2D>();
-	Camera2D* camera = entityCollection_->GenerateCamera2D();
 	Player*   player = entityCollection_->GenerateEntity<Player>();
+	Camera2D* camera = entityCollection_->GenerateCamera2D();
 
 	camera->SetParent(player);
 
