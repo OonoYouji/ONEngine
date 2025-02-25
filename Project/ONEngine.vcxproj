@@ -22,8 +22,6 @@
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
-    <ClCompile Include="Game\Entity\Block\BlockManager.cpp" />
-    <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
     <ClCompile Include="Engine\Entity\Demo\DemoEntity.cpp" />
     <ClCompile Include="Engine\Entity\Camera\Camera.cpp" />
@@ -81,9 +79,6 @@
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
-    <ClInclude Include="Game\Entity\Config\EntityConfig.h" />
-    <ClInclude Include="Game\Entity\Block\BlockManager.h" />
-    <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
     <ClInclude Include="Engine\Entity\Demo\DemoEntity.h" />
     <ClInclude Include="Engine\Entity\Camera\Camera.h" />

@@ -2,7 +2,7 @@
 
 /// engine
 #include "Engine/Entity/Interface/IEntity.h"
-#include "../Config/EntityConfig.h"
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 /// ===================================================
 /// Player
@@ -26,8 +26,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	int type_; ///< BlockType参照
-
+	Vector2 velocity_;
+	float   speed_;
 
 public:
 
@@ -35,9 +35,6 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	void SetType(int _type) { type_ = _type; }
-
-	int GetType() const { return type_; }
 
 
 };

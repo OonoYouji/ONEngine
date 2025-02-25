@@ -30,12 +30,12 @@ Vector2::Vector2(float x, float y) {
 	this->y = y;
 }
 
-float Vector2::Lenght() const {
+float Vector2::Length() const {
 	return std::sqrt(x * x + y * y);
 }
 
 Vector2 Vector2::Normalize() const {
-	float len = this->Lenght();
+	float len = this->Length();
 	if(len != 0.0f) {
 		return (*this) / len;
 	}

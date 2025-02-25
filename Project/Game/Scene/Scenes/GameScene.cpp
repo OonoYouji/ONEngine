@@ -7,7 +7,6 @@
 #include "Engine/Entity/Grid/Grid.h"
 
 /// user
-#include "Game/Entity/Block/BlockManager.h"
 #include "Game/Entity/Player/Player.h"
 
 
@@ -34,7 +33,6 @@ GameScene::~GameScene() {}
 void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<Grid2D>();
 	entityCollection_->GenerateCamera2D();
-	entityCollection_->GenerateEntity<DemoEntity>();
 
 }
 

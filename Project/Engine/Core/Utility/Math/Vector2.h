@@ -21,7 +21,7 @@ public:
 
 public:
 
-	float Lenght() const;
+	float Length() const;
 	Vector2 Normalize() const;
 
 public:
