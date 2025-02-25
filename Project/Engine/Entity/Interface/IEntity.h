@@ -79,6 +79,8 @@ public:
 	void SetScaleY(float _y) { transform_->SetScaleY(_y); }
 	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
 
+	void SetParent(IEntity* _parent);
+
 
 	const Vector3& GetPosition() const { return transform_->GetPosition(); }
 	const Vector3& GetRotate()   const { return transform_->GetRotate(); }

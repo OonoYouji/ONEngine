@@ -19,8 +19,8 @@ GameScene::GameScene() {
 		"Assets/Models/entity/player.obj",
 		"Assets/Textures/white.png",
 		"Assets/Textures/uvChecker.png",
-		"Assets/Textures/gradation.png",
-		"Assets/Textures/Player.png",
+		"Assets/Textures/player.png",
+		//"Assets/Textures/sword.png",
 	};
 
 	unloadResourcePaths_ = {
@@ -33,9 +33,10 @@ GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<Grid2D>();
-	entityCollection_->GenerateCamera2D();
+	Camera2D* camera = entityCollection_->GenerateCamera2D();
+	Player*   player = entityCollection_->GenerateEntity<Player>();
 
-	entityCollection_->GenerateEntity<Player>();
+	camera->SetParent(player);
 
 }
 
