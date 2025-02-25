@@ -20,7 +20,7 @@ void DemoEntity::Initialize() {
 
 void DemoEntity::Update() {
 
-	transform_->rotate.y += 0.01f;
+	//transform_->rotate.y += 0.01f;
 
 	transform_->Update();
 }

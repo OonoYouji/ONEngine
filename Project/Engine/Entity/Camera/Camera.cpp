@@ -6,6 +6,18 @@
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 
+
+
+namespace {
+
+	float Cot(float _t) {
+		return 1.0f / std::tan(_t);
+	}
+
+} /// unnamed namespace
+
+
+
 Camera::Camera(DxDevice* _dxDevice) {
 
 	viewProjection_ = std::make_unique<ConstantBuffer<ViewProjection>>();
@@ -51,10 +63,9 @@ void Camera::Update() {
 	if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
 
 	transform_->position += velocity;
-
 	transform_->Update();
 
-	matView_       = MakeViewMatrix(transform_->GetMatWorld());
+	matView_       = transform_->GetMatWorld().Inverse();
 	matProjection_ = MakePerspectiveFovMatrix(
 		fovY_, 1280.0f / 720.0f,
 		nearClip_, farClip_
@@ -64,13 +75,7 @@ void Camera::Update() {
 
 }
 
-float Camera::Cot(float _t) const {
-	return 1.0f / std::tanf(_t);
-}
 
-Matrix4x4 Camera::MakeViewMatrix(const Matrix4x4& _matWorld) const {
-	return Matrix4x4::MakeInverse(_matWorld);
-}
 
 Matrix4x4 Camera::MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip) const {
 	return Matrix4x4(
@@ -81,3 +86,81 @@ Matrix4x4 Camera::MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, floa
 	);
 }
 
+
+
+/// ===================================================
+/// 2Dカメラ
+/// ===================================================
+
+Camera2D::Camera2D(DxDevice* _dxDevice) {
+	viewProjection_ = std::make_unique<ConstantBuffer<ViewProjection>>();
+	viewProjection_->Create(_dxDevice);
+	viewProjection_->SetMappingData(ViewProjection(
+		Matrix4x4::kIdentity
+	));
+}
+
+Camera2D::~Camera2D() {}
+
+void Camera2D::Initialize() {
+
+	transform_->position = { 0.0f, 0.0f, -10.0f };
+	transform_->scale    = Vector3::kOne;
+	transform_->rotate   = Vector3::kZero;
+
+}
+
+void Camera2D::Update() {
+
+
+	{	/// カメラ移動
+		Vector3 velocity = Vector3::kZero;
+
+		if (Input::PressKey(DIK_W)) { velocity.z += 0.1f; }
+		if (Input::PressKey(DIK_S)) { velocity.z -= 0.1f; }
+		if (Input::PressKey(DIK_A)) { velocity.x -= 0.1f; }
+		if (Input::PressKey(DIK_D)) { velocity.x += 0.1f; }
+
+		velocity = Matrix4x4::Transform(velocity, Matrix4x4::MakeRotateY(transform_->rotate.y));
+
+		if (Input::PressKey(DIK_SPACE)) { velocity.y += 0.1f; }
+		if (Input::PressKey(DIK_LSHIFT)) { velocity.y -= 0.1f; }
+
+
+		const float speed = std::numbers::pi_v<float> / 100.0f;
+		if (Input::PressKey(DIK_UP)) { transform_->rotate.x -= speed; }
+		if (Input::PressKey(DIK_DOWN)) { transform_->rotate.x += speed; }
+		if (Input::PressKey(DIK_LEFT)) { transform_->rotate.y -= speed; }
+		if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
+
+		transform_->position += velocity;
+	}
+
+	transform_->Update();
+
+	matView_       = transform_->GetMatWorld().Inverse();
+	matProjection_ = MakeOrthographicMatrix(
+		-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1.0f
+	);
+
+	viewProjection_->SetMappingData(ViewProjection(matView_ * matProjection_));
+
+}
+
+Matrix4x4 Camera2D::MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar) const {
+	Matrix4x4 result = {};
+
+	float width  = _right - _left;
+	float height = _top - _bottom;
+	float depth  = _zfar - _znear;
+
+	result.m[0][0] = 2.0f / width;
+	result.m[1][1] = 2.0f / height;
+	result.m[2][2] = 1.0f / depth;
+	result.m[3][0] = -(_right + _left) / width;
+	result.m[3][1] = -(_top + _bottom) / height;
+	result.m[3][2] = -_znear / depth;
+	result.m[3][3] = 1.0f;
+
+	return result;
+}

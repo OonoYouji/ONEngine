@@ -35,6 +35,18 @@ Camera* EntityCollection::GenerateCamera() {
 	return cameraPtr;
 }
 
+Camera2D* EntityCollection::GenerateCamera2D() {
+	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
+	camera->entityCollection_ = this;
+	camera->Initialize();
+
+	Camera2D* cameraPtr = camera.get();
+	entities_.push_back(std::move(camera));
+	camera2ds_.push_back(cameraPtr);
+
+	return cameraPtr;
+}
+
 void EntityCollection::RemoveEntity(IEntity* _entity) {
 	/// entityの削除
 	auto itr = std::remove_if(entities_.begin(), entities_.end(), [_entity](const std::unique_ptr<IEntity>& entity) {

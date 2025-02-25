@@ -29,16 +29,6 @@ public:
 
 private:
 
-	/// @brief 逆タンジェント
-	/// @param _t 
-	/// @return 逆タンジェント
-	float Cot(float _t) const;
-
-	/// @brief view matrix の作成
-	/// @param _matWorld view matrix を作成するための world matrix
-	/// @return 作成された view matrix
-	Matrix4x4 MakeViewMatrix(const Matrix4x4& _matWorld) const;
-
 	/// @brief perspective matrix の作成
 	/// @param _fovY 視野角
 	/// @param _aspectRatio アスペクト比 
@@ -94,3 +84,59 @@ public:
 
 };
 
+
+
+/// ===================================================
+/// 2Dカメラ
+/// ===================================================
+class Camera2D final : public IEntity {
+public:
+	
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	Camera2D(class DxDevice* _dxDevice);
+	~Camera2D();
+
+	void Initialize() override;
+	void Update()     override;
+	
+	/// @brief 平行投影行列の作成
+	/// @param _left 左
+	/// @param _right 右
+	/// @param _bottom 下
+	/// @param _top 上
+	/// @param _znear 手前
+	/// @param _zfar 奥行き
+	/// @return 平行投影行列
+	Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar) const;
+
+
+private:
+
+	/// ===================================================d
+	/// private : objects
+	/// ===================================================d
+
+	std::unique_ptr<ConstantBuffer<ViewProjection>> viewProjection_;
+
+	Matrix4x4 matView_;
+	Matrix4x4 matProjection_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	/// @brief view projection buffer の取得
+	/// @return view projection buffer のポインタ
+	ConstantBuffer<ViewProjection>* GetViewProjectionBuffer() {
+		return viewProjection_.get();
+	}
+
+
+
+};

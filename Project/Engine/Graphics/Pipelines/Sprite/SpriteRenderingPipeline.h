@@ -1,13 +1,17 @@
 #pragma once
 
 /// std
+#include <memory>
 #include <vector>
+#include <list>
 
 /// engine
 #include "../Interface/IRenderingPipeline.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
+#include "Engine/Core/Utility/Math/Matrix4x4.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
@@ -53,15 +57,20 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* resourceCollection_ = nullptr;
+	const size_t                                 kMaxRenderingSpriteCount_ = 1024; ///< 最大描画スプライト数
 
-	std::vector<VertexData>  vertices_;
-	DxResource               vertexBuffer_;
-	D3D12_VERTEX_BUFFER_VIEW vbv_;
+	class GraphicsResourceCollection*            resourceCollection_       = nullptr;
 
-	std::vector<uint32_t>    indices_;
-	DxResource               indexBuffer_;
-	D3D12_INDEX_BUFFER_VIEW  ibv_;
+	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformsBuffer_;
+	std::list<class SpriteRenderer*>             renderers_;
+	
+	std::vector<VertexData>                      vertices_;
+	DxResource                                   vertexBuffer_;
+	D3D12_VERTEX_BUFFER_VIEW                     vbv_;
+
+	std::vector<uint32_t>                        indices_;
+	DxResource                                   indexBuffer_;
+	D3D12_INDEX_BUFFER_VIEW                      ibv_;
 
 };
 

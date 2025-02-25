@@ -39,6 +39,10 @@ public:
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
+	/// @brief 新しい　2D camera を生成する
+	/// @return 2D cameraへのポインタ
+	Camera2D* GenerateCamera2D();
+
 	void RemoveEntity(IEntity* _entity);
 
 private:
@@ -51,7 +55,8 @@ private:
 	class DxManager* pDxManager_;
 
 	std::vector<std::unique_ptr<IEntity>> entities_;
-	std::vector<Camera*>                  cameras_;  ///< カメラのリスト、本体はentities_に格納されている
+	std::vector<Camera*>                  cameras_;   ///< カメラのリスト、本体はentities_に格納されている
+	std::vector<Camera2D*>                camera2ds_; ///< カメラのリスト、本体はentities_に格納されている
 
 
 public:
@@ -68,6 +73,9 @@ public:
 	/// @return cameras
 	const std::vector<Camera*>& GetCameras() { return cameras_; }
 
+	/// @brief 2d cameras の取得
+	/// @return camera2ds
+	const std::vector<Camera2D*>& GetCamera2Ds() { return camera2ds_; }
 
 };
 

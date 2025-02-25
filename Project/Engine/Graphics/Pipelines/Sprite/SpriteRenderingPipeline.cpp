@@ -1,8 +1,5 @@
 #include "SpriteRenderingPipeline.h"
 
-/// std
-#include <list>
-
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
@@ -32,13 +29,18 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-		pipeline_->AddDescriptorRange(0, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);      ///< texture : 1
 
-		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);        ///< texture sampler
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< view projection : 0
+
+		pipeline_->AddDescriptorRange(0, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< texture   : 1
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1);      ///< transform : 2
+
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
@@ -50,12 +52,6 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].BlendOpAlpha          = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
-
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable                    = TRUE;
-		depthStencilDesc.DepthWriteMask                 = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc                      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
@@ -71,6 +67,11 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 				{ Vector4(-0.5f, -0.5f, 0.0f, 1.0f), Vector2(0.0f, 1.0f) },
 				{ Vector4( 0.5f, -0.5f, 0.0f, 1.0f), Vector2(1.0f, 1.0f) },
 			};
+
+			for (auto& vertex : vertices_) {
+				vertex.position.x *= 100.0f;
+				vertex.position.y *= 100.0f;
+			}
 
 			indices_ = {
 				0, 1, 2, ///< 1面
@@ -105,27 +106,34 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 	}
 
+
+	{	/// structured buffer
+
+		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
+		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+
+	}
 }
 
 void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
 
 	/// entityから sprite renderer を集める
-	std::list<SpriteRenderer*> renderers;
 	for (auto& entity : _entityCollection->GetEntities()) {
 		SpriteRenderer*&& spriteRenderer = entity->GetComponent<SpriteRenderer>();
 		if (spriteRenderer) {
-			renderers.push_back(spriteRenderer);
+			renderers_.push_back(spriteRenderer);
 		}
 	}
 
 	///< rendererがなければ 早期リターン
-	if (renderers.empty()) { 
+	if (renderers_.empty()) { 
 		return;
 	}
 
 
 
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	Camera2D*                  camera      = _entityCollection->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
 	
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -134,16 +142,32 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0); ///< view projection
 	
-	/// buffer dataのセット、先頭の texture gpu handle をセットする
+	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(0, textures.begin()->second->GetGPUDescriptorHandle());
+	commandList->SetGraphicsRootDescriptorTable(1, textures.begin()->second->GetGPUDescriptorHandle()); ///< texture
 	
+
+	/// bufferにデータをセット
+	size_t transformIndex = 0;
+	for (auto& renderer : renderers_) {
+		transformsBuffer_->SetMappedData(
+			transformIndex, 
+			renderer->GetOwner()->GetTransform()->GetMatWorld()
+		);
+	}
+	transformsBuffer_->BindToCommandList(2, commandList); ///< transform
+
+
 	/// 描画
 	commandList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
-		static_cast<UINT>(renderers.size()),
+		static_cast<UINT>(renderers_.size()),
 		0, 0, 0
 	);
 
+
+	renderers_.clear();
 }

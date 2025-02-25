@@ -1,7 +1,7 @@
 #pragma once
 
 /// std
-#include <unordered_map>
+#include <vector>
 #include <memory>
 
 /// engine
@@ -30,14 +30,8 @@ public:
 	template <class T, typename... Args>
 	void GenerateRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T>;
 
-	/// @brief rendering pipelineの取得
-	/// @tparam T 取得する rendering pipeline の型
-	/// @return 取得した rendering pipeline のポインタ
-	template <class T>
-	T* GetRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T>;
-
+	/// @brief すべてのEntityを描画する
 	void DrawEntities();
-
 
 private:
 
@@ -50,7 +44,7 @@ private:
 	class EntityCollection*           entityCollection_           = nullptr;
 	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
 
-	std::unordered_map<size_t, std::unique_ptr<IRenderingPipeline>> renderers_;
+	std::vector<std::unique_ptr<IRenderingPipeline>> renderers_;
 
 };
 
@@ -64,10 +58,5 @@ template<class T, typename... Args>
 inline void RenderingPipelineCollection::GenerateRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
 	renderer->Initialize(shaderCompiler_, dxManager_);
-	renderers_.emplace(typeid(T).hash_code(), std::move(renderer));
-}
-
-template<class T>
-inline T* RenderingPipelineCollection::GetRenderingPipeline() requires std::is_base_of_v<IRenderingPipeline, T> {
-	return dynamic_cast<T*>(renderers_[typeid(T).hash_code()].get());
+	renderers_.push_back(std::move(renderer));
 }

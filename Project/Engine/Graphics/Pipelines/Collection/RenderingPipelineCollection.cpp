@@ -28,6 +28,6 @@ void RenderingPipelineCollection::Initialize() {
 
 void RenderingPipelineCollection::DrawEntities() {
 	for (auto& renderer : renderers_) {
-		renderer.second->Draw(dxManager_->GetDxCommand(), entityCollection_);
+		renderer->Draw(dxManager_->GetDxCommand(), entityCollection_);
 	}
 }
