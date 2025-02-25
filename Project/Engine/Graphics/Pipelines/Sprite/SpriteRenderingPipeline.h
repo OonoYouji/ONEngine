@@ -61,6 +61,7 @@ private:
 
 	class GraphicsResourceCollection*            resourceCollection_       = nullptr;
 
+	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIDsBuffer_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformsBuffer_;
 	std::list<class SpriteRenderer*>             renderers_;
 	

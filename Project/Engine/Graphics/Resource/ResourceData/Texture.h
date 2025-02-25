@@ -46,5 +46,8 @@ public:
 	/// @return gpu handle
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle() const { return gpuHandle_; }
 
+	/// @brief SRVHeapのindexの取得
+	/// @return descriptor index
+	uint32_t GetSRVHeapIndex() const { return srvDescriptorIndex_; }
 };
 

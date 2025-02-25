@@ -35,10 +35,12 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< view projection : 0
 
-		pipeline_->AddDescriptorRange(0, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< texture   : 1
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 1);      ///< transform : 2
+		pipeline_->AddDescriptorRange(1, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< textureID : 1
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< texture   : 2
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 2);      ///< transform : 3
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
@@ -112,6 +114,9 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
+		textureIDsBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
+		textureIDsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+
 	}
 }
 
@@ -147,18 +152,26 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(1, textures.begin()->second->GetGPUDescriptorHandle()); ///< texture
+	commandList->SetGraphicsRootDescriptorTable(2, textures.begin()->second->GetGPUDescriptorHandle()); ///< texture
 	
 
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& renderer : renderers_) {
+		
+		textureIDsBuffer_->SetMappedData(
+			transformIndex,
+			textures.at(renderer->GetTexturePath())->GetSRVHeapIndex()
+		);
+
 		transformsBuffer_->SetMappedData(
 			transformIndex, 
 			renderer->GetOwner()->GetTransform()->GetMatWorld()
 		);
 	}
-	transformsBuffer_->BindToCommandList(2, commandList); ///< transform
+
+	textureIDsBuffer_->BindToCommandList(1, commandList); ///< textureID
+	transformsBuffer_->BindToCommandList(3, commandList); ///< transform
 
 
 	/// 描画

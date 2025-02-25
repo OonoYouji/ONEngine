@@ -11,8 +11,9 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 
 	float4x4 matWVP = mul(transforms[instanceId].matWorld, viewProjection.matVP);
 	
-	output.position = mul(input.position, matWVP);
-	output.uv       = input.uv;
+	output.position   = mul(input.position, matWVP);
+	output.uv         = input.uv;
+	output.instanceId = instanceId;
 
 	return output;
 }
