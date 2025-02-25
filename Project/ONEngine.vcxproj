@@ -56,6 +56,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
     <ClCompile Include="Engine\Entity\Grid\Grid.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="Engine\Entity\Grid\Grid.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
