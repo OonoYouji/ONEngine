@@ -62,12 +62,12 @@ void EntityCollection::ImGuiDebug() {
 		ImGui::Begin("Hierarchy");
 
 
-		/// selectableからentityを選択
+		/*/// selectableからentityを選択
 		for (std::unique_ptr<IEntity>& entity : entities_) {
 			if (ImGui::Selectable(entity->GetName().c_str(), selectedEntity_ == entity.get())) {
 				selectedEntity_ = entity.get();
 			}
-		}
+		}*/
 
 
 		ImGui::End();
