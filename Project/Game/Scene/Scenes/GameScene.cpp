@@ -1,15 +1,11 @@
 #include "GameScene.h"
 
-#include <imgui.h>
-
 /// engine
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
-#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
-#include "Engine/Entity/Demo/DemoEntity.h"
 #include "Engine/Entity/Grid/Grid.h"
 
 /// user
 #include "Game/Entity/Player/Player.h"
+#include "Game/Entity/Weapon/Weapon.h"
 
 
 GameScene::GameScene() {
@@ -40,6 +36,8 @@ void GameScene::Initialize() {
 	Camera2D* camera = entityCollection_->GenerateCamera2D();
 
 	camera->SetParent(player);
+
+	entityCollection_->GenerateEntity<Weapon>();
 
 }
 
