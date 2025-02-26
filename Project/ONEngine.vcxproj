@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Entity\Enemy\Enemy.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="Game\Entity\Weapon\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Entity\Enemy\Enemy.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
