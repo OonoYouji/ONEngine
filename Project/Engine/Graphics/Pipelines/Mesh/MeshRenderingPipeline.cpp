@@ -139,7 +139,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 			/// buffer dataのセット、先頭の texture gpu handle をセットする
 			auto& textures = resourceCollection_->GetTextures();
-			commandList->SetGraphicsRootDescriptorTable(2, textures.begin()->second->GetGPUDescriptorHandle());
+			commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetGPUDescriptorHandle());
 
 			/// 描画
 			commandList->DrawIndexedInstanced(

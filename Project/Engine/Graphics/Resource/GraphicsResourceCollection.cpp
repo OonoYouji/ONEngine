@@ -6,6 +6,8 @@ GraphicsResourceCollection::~GraphicsResourceCollection() {}
 void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
+
+	textures_.resize(32);
 }
 
 void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _filePaths) {
@@ -82,7 +84,8 @@ void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::uni
 }
 
 void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
-	textures_[_filePath] = std::move(_texture);
+	textureIndices_[_filePath] = textureIndices_.size();
+	textures_[textureIndices_[_filePath]] = std::move(_texture);
 }
 
 const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {
@@ -95,10 +98,14 @@ const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) 
 }
 
 const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePath) const {
-	auto itr = textures_.find(_filePath);
-	if (itr != textures_.end()) {
-		return itr->second.get();
+	auto itr = textureIndices_.find(_filePath);
+	if (itr != textureIndices_.end()) {
+		return textures_[itr->second].get();
 	}
 
 	return nullptr;
+}
+
+size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filePath) const {
+	return textureIndices_.at(_filePath);
 }

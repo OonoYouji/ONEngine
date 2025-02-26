@@ -76,7 +76,8 @@ private:
 	/// mesh
 	std::unordered_map<std::string, std::unique_ptr<Model>>   models_;
 	/// texture
-	std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
+	std::unordered_map<std::string, size_t> textureIndices_;
+	std::vector<std::unique_ptr<Texture>>   textures_;
 
 public:
 
@@ -94,8 +95,14 @@ public:
 	/// @return textureのポインタ
 	const Texture* GetTexture(const std::string& _filePath) const;
 
+	/// @brief textureのインデックスを取得
+	/// @param _filePath .slnファイルからの相対パス
+	/// @return textureのインデックス
+	size_t GetTextureIndex(const std::string& _filePath) const;
+
+
 	/// @brief textureのコンテナを取得
 	/// @return texture container
-	const std::unordered_map<std::string, std::unique_ptr<Texture>>& GetTextures() const { return textures_; }
+	const std::vector<std::unique_ptr<Texture>>& GetTextures() const { return textures_; }
 };
 

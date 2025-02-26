@@ -147,16 +147,17 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(2, textures.begin()->second->GetGPUDescriptorHandle()); ///< texture
+	commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetGPUDescriptorHandle()); ///< texture
 	
 
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& renderer : renderers_) {
 		
+		size_t textureID = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 		textureIDsBuffer_->SetMappedData(
 			transformIndex,
-			textures.at(renderer->GetTexturePath())->GetSRVHeapIndex()
+			textures[textureID]->GetSRVHeapIndex()
 		);
 
 		transformsBuffer_->SetMappedData(

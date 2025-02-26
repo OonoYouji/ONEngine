@@ -22,7 +22,8 @@ GameScene::GameScene() {
 		"Assets/Textures/white.png",
 		"Assets/Textures/uvChecker.png",
 		"Assets/Textures/player.png",
-		//"Assets/Textures/sword.png",
+		"Assets/Textures/sword.png",
+		"Assets/Textures/enemy.png",
 	};
 
 	unloadResourcePaths_ = {
