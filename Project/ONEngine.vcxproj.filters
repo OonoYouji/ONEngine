@@ -60,6 +60,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiMath.cpp" />
     <ClCompile Include="Game\Entity\Weapon\Weapon.cpp" />
     <ClCompile Include="Game\Entity\Enemy\Enemy.cpp" />
+    <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -126,5 +127,6 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
     <ClInclude Include="Game\Entity\Weapon\Weapon.h" />
     <ClInclude Include="Game\Entity\Enemy\Enemy.h" />
+    <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
   </ItemGroup>
 </Project>
