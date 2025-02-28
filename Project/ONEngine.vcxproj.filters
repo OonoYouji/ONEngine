@@ -58,8 +58,6 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiMath.cpp" />
-    <ClCompile Include="Game\Entity\Weapon\Weapon.cpp" />
-    <ClCompile Include="Game\Entity\Enemy\Enemy.cpp" />
     <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +123,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
-    <ClInclude Include="Game\Entity\Weapon\Weapon.h" />
-    <ClInclude Include="Game\Entity\Enemy\Enemy.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
   </ItemGroup>
 </Project>

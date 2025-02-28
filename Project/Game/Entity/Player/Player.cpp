@@ -1,7 +1,7 @@
 #include "Player.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
 
@@ -10,7 +10,8 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	SpriteRenderer* renderer = AddComponent<SpriteRenderer>();
+	MeshRenderer* renderer = AddComponent<MeshRenderer>();
+	renderer->SetMeshPath("Assets/Models/player.obj");
 	renderer->SetTexturePath("Assets/Textures/player.png");
 
 	transform_->scale = Vector3(100.0f, 100.0f, 0.5f); ///< texture size に合わせる

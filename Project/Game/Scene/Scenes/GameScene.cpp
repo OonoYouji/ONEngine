@@ -1,11 +1,13 @@
 #include "GameScene.h"
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Engine/Entity/Grid/Grid.h"
 
 /// user
 #include "Game/Entity/Player/Player.h"
-#include "Game/Entity/Weapon/Weapon.h"
 
 
 GameScene::GameScene() {
@@ -31,13 +33,14 @@ GameScene::~GameScene() {}
 
 
 void GameScene::Initialize() {
-	entityCollection_->GenerateEntity<Grid2D>();
-	Player*   player = entityCollection_->GenerateEntity<Player>();
-	Camera2D* camera = entityCollection_->GenerateCamera2D();
+	entityCollection_->GenerateEntity<Grid>();
+	
+	Camera* camera = entityCollection_->GenerateCamera();
+	camera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	camera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 
-	camera->SetParent(player);
+	entityCollection_->GenerateEntity<Player>();
 
-	entityCollection_->GenerateEntity<Weapon>();
 
 }
 
