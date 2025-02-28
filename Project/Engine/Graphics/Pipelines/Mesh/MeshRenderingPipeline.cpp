@@ -38,15 +38,17 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection: 0
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< material
-		pipeline_->AddDescriptorRange(1, 16, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< textureId
+		pipeline_->AddDescriptorRange(2, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< material  : 1
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< texture   : 2
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 2);      ///< transform : 3
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< textureId : 2
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2);       ///< texture   : 3
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 3);      ///< transform : 4
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
-		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1);        ///< instance id: 4
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1);        ///< instance id: 5
 
 
 		D3D12_BLEND_DESC blendDesc = {};
@@ -79,6 +81,8 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		materialBuffer = std::make_unique<StructuredBuffer<Vector4>>();
 		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
+		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
+		textureIdBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 	}
 
@@ -111,6 +115,11 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
 
+	/// buffer dataのセット、先頭の texture gpu handle をセットする
+	auto& textures = resourceCollection_->GetTextures();
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetGPUDescriptorHandle());
+
+
 	size_t transformIndex = 0; ///< transform buffer の index
 	UINT   instanceIndex  = 0; ///< instance id
 	for (auto& [meshPath, renderers] : rendererPerMesh) {
@@ -123,23 +132,43 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 		/// transform, material を mapping
 		for (auto& renderer : renderers) {
-			materialBuffer->SetMappedData(transformIndex, renderer->GetColor());
-			transformBuffer_->SetMappedData(transformIndex, renderer->GetOwner()->GetTransform()->GetMatWorld());
+
+			/// materialのセット
+			materialBuffer->SetMappedData(
+				transformIndex, 
+				renderer->GetColor()
+			);
+
+			/// texture id のセット
+			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+			textureIdBuffer_->SetMappedData(
+				transformIndex,
+				textures[textureIndex]->GetSRVHeapIndex()
+			);
+
+			/// transform のセット
+			transformBuffer_->SetMappedData(
+				transformIndex, 
+				renderer->GetOwner()->GetTransform()->GetMatWorld()
+			);
+
+
 			++transformIndex;
 		}
+
+		/// 上でセットしたデータをバインド
 		materialBuffer->BindToCommandList(1, commandList);
-		transformBuffer_->BindToCommandList(3, commandList);
+		textureIdBuffer_->BindToCommandList(2, commandList);
+		transformBuffer_->BindToCommandList(4, commandList);
+
+		/// 現在のinstance idをセット
+		commandList->SetGraphicsRoot32BitConstant(5, instanceIndex, 0);
 
 		/// mesh の描画
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
 			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
 			commandList->IASetIndexBuffer(&mesh->GetIBV());
-			commandList->SetGraphicsRoot32BitConstant(4, instanceIndex, 0);
-
-			/// buffer dataのセット、先頭の texture gpu handle をセットする
-			auto& textures = resourceCollection_->GetTextures();
-			commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetGPUDescriptorHandle());
 
 			/// 描画
 			commandList->DrawIndexedInstanced(

@@ -12,7 +12,7 @@ void Player::Initialize() {
 
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
 	renderer->SetMeshPath("Assets/Models/entity/player.obj");
-	renderer->SetTexturePath("Assets/Textures/player.png");
+	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
 
 	velocity_ = Vector3::kZero;
 	speed_    = 1.0f; //< 移動する速度

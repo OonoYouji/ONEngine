@@ -60,6 +60,7 @@ private:
 	class GraphicsResourceCollection*            resourceCollection_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<StructuredBuffer<Vector4>>   materialBuffer;
+	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
 
 
 };
