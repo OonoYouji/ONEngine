@@ -11,13 +11,11 @@ Player::~Player() {}
 void Player::Initialize() {
 
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
-	renderer->SetMeshPath("Assets/Models/player.obj");
+	renderer->SetMeshPath("Assets/Models/entity/player.obj");
 	renderer->SetTexturePath("Assets/Textures/player.png");
 
-	transform_->scale = Vector3(100.0f, 100.0f, 0.5f); ///< texture size に合わせる
-
 	velocity_ = Vector3::kZero;
-	speed_    = 10.0f; //< 移動する速度
+	speed_    = 1.0f; //< 移動する速度
 
 }
 
@@ -29,8 +27,8 @@ void Player::Update() {
 
 		velocity_ = Vector3::kZero;
 		
-		if (Input::PressKey(DIK_W)) { velocity_.y += 1.0f; }
-		if (Input::PressKey(DIK_S)) { velocity_.y -= 1.0f; }
+		if (Input::PressKey(DIK_W)) { velocity_.z += 1.0f; }
+		if (Input::PressKey(DIK_S)) { velocity_.z -= 1.0f; }
 		if (Input::PressKey(DIK_A)) { velocity_.x -= 1.0f; }
 		if (Input::PressKey(DIK_D)) { velocity_.x += 1.0f; }
 
