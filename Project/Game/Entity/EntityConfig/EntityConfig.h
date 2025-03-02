@@ -2,6 +2,6 @@
 
 /// @brief タイプ
 enum class Type {
-	kBlack, ///< 黒
-	kWhite, ///< 白
+	black, ///< 黒
+	white, ///< 白
 };

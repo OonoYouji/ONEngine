@@ -28,10 +28,10 @@ void Block::Update() {
 	MeshRenderer* meshRenderer = GetComponent<MeshRenderer>();
 
 	switch (type_) {
-	case static_cast<int>(Type::kBlack):
+	case static_cast<int>(Type::black):
 		meshRenderer->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 		break;
-	case static_cast<int>(Type::kWhite):
+	case static_cast<int>(Type::white):
 		meshRenderer->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	}
