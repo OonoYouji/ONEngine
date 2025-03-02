@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../../IComponent.h"
+#include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Pipelines/Primitive/Line3DRenderingPipeline.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector4.h"

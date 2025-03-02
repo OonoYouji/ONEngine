@@ -50,7 +50,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Primitive\Line2DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Entity\Interface\IEntity.cpp" />
-    <ClCompile Include="Engine\Component\IComponent.cpp" />
+    <ClCompile Include="Engine\Component\Interface\IComponent.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
@@ -82,6 +82,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Component\Component.h" />
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
@@ -129,7 +130,7 @@
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
-    <ClInclude Include="Engine\Component\IComponent.h" />
+    <ClInclude Include="Engine\Component\Interface\IComponent.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Mesh\MeshRenderer.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />

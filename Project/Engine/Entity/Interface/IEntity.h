@@ -6,8 +6,7 @@
 #include <string>
 
 /// engine
-#include "Engine/Component/IComponent.h"
-#include "Engine/Component/Transform/Transform.h"
+#include <Engine/Component/Transform/Transform.h>
 
 
 /// ===================================================

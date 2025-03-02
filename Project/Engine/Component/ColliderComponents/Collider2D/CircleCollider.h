@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../../IComponent.h"
+#include "../../Interface/IComponent.h"
 
 /// ===================================================
 /// 2dの円の当たり判定

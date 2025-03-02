@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../../IComponent.h"
+#include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Pipelines/Mesh/MeshRenderingPipeline.h"
 
 /// ===================================================

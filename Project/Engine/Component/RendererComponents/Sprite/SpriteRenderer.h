@@ -4,7 +4,7 @@
 #include <string>
 
 /// engine
-#include "../../IComponent.h"
+#include "../../Interface/IComponent.h"
 
 /// ===================================================
 /// sprite描画クラス
