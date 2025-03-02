@@ -11,7 +11,7 @@
 
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager) 
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager)
 	: dxManager_(_dxManager), windowManager_(_windowManager) {}
 
 ImGuiManager::~ImGuiManager() {
@@ -24,18 +24,18 @@ ImGuiManager::~ImGuiManager() {
 
 void ImGuiManager::Initialize() {
 
-	DxSRVHeap* dxSRVHeap          = dxManager_->GetDxSRVHeap();
+	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
 
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 
-	ImGuiIO& imGuiIO       = ImGui::GetIO();
-	imGuiIO.ConfigFlags    = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
+	ImGuiIO& imGuiIO = ImGui::GetIO();
+	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/FiraMono-Regular_0.ttf", 16.0f);
 	imGuiIO.KeyRepeatDelay = 4.145f;
-	imGuiIO.KeyRepeatRate  = 12.0f;
+	imGuiIO.KeyRepeatRate = 12.0f;
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
@@ -60,17 +60,36 @@ void ImGuiManager::Initialize() {
 }
 
 void ImGuiManager::Update() {
-	ImGui::NewFrame();
+	if (!imguiWindow_->GetProcessMessage()) {
+		ImGui::NewFrame();
+		RenderingMainWindow();
+	}
 }
 
 void ImGuiManager::Draw() {
-	imguiWindow_->PreDraw();
+	if (!imguiWindow_->GetProcessMessage()) {
+		imguiWindow_->PreDraw();
 
-	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(
-		ImGui::GetDrawData(),
-		dxManager_->GetDxCommand()->GetCommandList()
-	);
+		ImGui::Render();
+		ImGui_ImplDX12_RenderDrawData(
+			ImGui::GetDrawData(),
+			dxManager_->GetDxCommand()->GetCommandList()
+		);
 
-	imguiWindow_->PostDraw();
+		imguiWindow_->PostDraw();
+	} else {
+		ImGui::GetIO().ClearInputCharacters();
+		ImGui::GetIO().ClearInputKeys();
+		ImGui::GetIO().ClearInputMouse();
+	}
+}
+void ImGuiManager::RenderingMainWindow() {
+
+	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowSize(ImVec2(1280.0f, 720.0f));
+
+	ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+
+	ImGui::End();
 }

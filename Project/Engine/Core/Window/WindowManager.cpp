@@ -12,12 +12,6 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _m
 
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
-#ifdef _DEBUG
-	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
-		return true;
-	}
-#endif // _DEBUG
-
 
 	switch(_msg) {
 	case WM_CLOSE:
@@ -83,6 +77,27 @@ void WindowManager::Update() {
 
 	/// main windowの更新
 	UpdateMainWindow();
+
+	/// sub windowの更新
+	for (auto& window : windows_) {
+		if (window.get() == pMainWindow_) {
+			continue;
+		}
+
+		if (PeekMessage(&window->msg_, nullptr, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&window->msg_);
+			DispatchMessage(&window->msg_);
+		}
+
+		/// 終了メッセージ
+		if (window->msg_.message == WM_QUIT) {
+			window->processMessage_ = true;
+			continue;
+		}
+
+		window->processMessage_ = false;
+	}
+
 }
 
 void WindowManager::PreDraw() {
