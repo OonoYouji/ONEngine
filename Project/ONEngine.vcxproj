@@ -105,6 +105,7 @@
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
+    <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />

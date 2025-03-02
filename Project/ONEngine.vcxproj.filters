@@ -126,5 +126,6 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
+    <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
   </ItemGroup>
 </Project>

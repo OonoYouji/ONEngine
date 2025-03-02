@@ -28,7 +28,7 @@ private:
 	/// private : objects
 	/// ==================================================
 
-
+	int type_; ///< ブロックの種類
 
 
 public:
@@ -37,7 +37,9 @@ public:
 	/// public : accessors
 	/// ==================================================
 
-
+	/// @brief ブロックのタイプをセット
+	/// @param _type 
+	void SetType(int _type) { type_ = _type; }
 
 };
 

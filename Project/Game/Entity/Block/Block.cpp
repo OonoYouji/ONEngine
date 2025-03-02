@@ -4,6 +4,9 @@
 #include <Engine/Entity/Collection/EntityCollection.h>
 #include <Engine/Component/RendererComponents/Mesh/MeshRenderer.h>
 
+/// user
+#include "../EntityConfig/EntityConfig.h"
+
 
 /// ///////////////////////////////////////////////////
 /// Block
@@ -21,6 +24,17 @@ void Block::Initialize() {
 }
 
 void Block::Update() {
+
+	MeshRenderer* meshRenderer = GetComponent<MeshRenderer>();
+
+	switch (type_) {
+	case static_cast<int>(Type::kBlack):
+		meshRenderer->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+		break;
+	case static_cast<int>(Type::kWhite):
+		meshRenderer->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+		break;
+	}
 
 }
 
@@ -71,9 +85,11 @@ void BlockManager::CreateBlock(const std::vector<std::vector<int>>& _mapData) {
 
 			/// ブロックの生成
 			Block* block = entityCollection_->GenerateEntity<Block>();
-			block->Initialize();
+
 			/// ブロックの位置を設定
 			block->SetPosition(Vector3(c * 2.0f, 0.0f, r * 2.0f));
+			block->SetType(_mapData[r][c]);
+
 			/// ブロックの二次元配列に追加
 			blocks_[r].push_back(block);
 
