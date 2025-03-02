@@ -14,9 +14,7 @@ public:
 	~ImGuiManager();
 
 	void Initialize();
-
 	void Update();
-
 	void Draw();
 
 private:
@@ -27,5 +25,7 @@ private:
 
 	class DxManager*     dxManager_     = nullptr;
 	class WindowManager* windowManager_ = nullptr;
+	class Window*        imguiWindow_   = nullptr;
+
 };
 

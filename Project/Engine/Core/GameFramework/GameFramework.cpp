@@ -52,7 +52,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->Initialize();
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 #endif // _DEBUG
-
 }
 
 void GameFramework::Run() {

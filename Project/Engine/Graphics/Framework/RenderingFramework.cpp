@@ -41,15 +41,13 @@ void RenderingFramework::Draw() {
 
 	/// 描画処理
 	windowManager_->PreDraw();
-
 	renderingPipelineCollection_->DrawEntities();
-
-#ifdef _DEBUG
-	imGuiManager_->Draw(); ///< imguiの描画
-#endif // _DEBUG
-
 	windowManager_->PostDraw();
 
+
+#ifdef _DEBUG /// imguiの描画
+	imGuiManager_->Draw(); 
+#endif // _DEBUG
 
 	/// commandの実行
 	dxManager_->GetDxCommand()->CommandExecute();

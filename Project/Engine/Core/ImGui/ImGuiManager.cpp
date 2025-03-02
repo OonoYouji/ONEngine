@@ -33,7 +33,7 @@ void ImGuiManager::Initialize() {
 
 	ImGuiIO& imGuiIO       = ImGui::GetIO();
 	imGuiIO.ConfigFlags    = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
-	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/FiraMono-Regular_0.ttf", 16.0f); // フォントをロード (サイズ 18.0f)
+	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/FiraMono-Regular_0.ttf", 16.0f);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate  = 12.0f;
 
@@ -54,6 +54,9 @@ void ImGuiManager::Initialize() {
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+
+	imguiWindow_ = windowManager_->GenerateWindow(L"ImGuiDebug", Vec2(1280, 720), WindowManager::WindowType::Sub);
+
 }
 
 void ImGuiManager::Update() {
@@ -61,8 +64,13 @@ void ImGuiManager::Update() {
 }
 
 void ImGuiManager::Draw() {
+	imguiWindow_->PreDraw();
 
 	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), dxManager_->GetDxCommand()->GetCommandList());
+	ImGui_ImplDX12_RenderDrawData(
+		ImGui::GetDrawData(),
+		dxManager_->GetDxCommand()->GetCommandList()
+	);
 
+	imguiWindow_->PostDraw();
 }

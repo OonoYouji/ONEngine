@@ -86,15 +86,11 @@ void WindowManager::Update() {
 }
 
 void WindowManager::PreDraw() {
-	for(auto& window : windows_) {
-		window->PreDraw();
-	}
+	GetMainWindow()->PreDraw();
 }
 
 void WindowManager::PostDraw() {
-	for(auto& window : windows_) {
-		window->PostDraw();
-	}
+	GetMainWindow()->PostDraw();
 }
 
 void WindowManager::Present() {
