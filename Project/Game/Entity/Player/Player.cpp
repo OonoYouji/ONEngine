@@ -25,6 +25,27 @@ void Player::Initialize() {
 
 void Player::Update() {
 	
+	MeshRenderer* renderer = GetComponent<MeshRenderer>();
+	switch (type_) {
+	case static_cast<int>(Type::black):
+		renderer->SetColor(Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+		break;
+	case static_cast<int>(Type::white):
+		renderer->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+		break;
+	}
+
+
+	///!< debug type_ の切り替え
+	if (Input::TriggerKey(DIK_SPACE)) {
+		if (type_ == static_cast<int>(Type::black)) {
+			type_ = static_cast<int>(Type::white);
+		} else {
+			type_ = static_cast<int>(Type::black);
+		}
+	}
+
+
 	//{	/// 移動処理
 
 	//	/// WASD keyで移動
