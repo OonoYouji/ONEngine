@@ -4,9 +4,6 @@
 #include <Engine/Entity/Collection/EntityCollection.h>
 #include <Engine/Component/RendererComponents/Mesh/MeshRenderer.h>
 
-/// user
-#include "../EntityConfig/EntityConfig.h"
-
 
 /// ///////////////////////////////////////////////////
 /// Block
@@ -107,4 +104,20 @@ void BlockManager::CreateBlock(const std::vector<std::vector<int>>& _mapData) {
 	}
 
 
+}
+
+std::pair<bool, int> BlockManager::CheckAddress(const Address& _address) const {
+
+	/// ステージ外かどうか
+	if (_address.row < 0 || _address.row >= blocks_.size() ||
+		_address.col < 0 || _address.col >= blocks_[0].size()) {
+
+		return std::make_pair<bool, int>(false, -1);
+	}
+
+	/// ブロックの種類を取得
+	return std::make_pair<bool, int>(
+		true, 
+		blocks_[_address.row][_address.col]->GetType()
+	);
 }

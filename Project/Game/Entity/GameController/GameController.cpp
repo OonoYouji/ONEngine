@@ -70,9 +70,18 @@ void GameController::MovePlayer() {
 		input.col = 1;
 	}
 
+	if (input.row == 0 && input.col == 0) {
+		return;
+	}
 
 	///< プレイヤーの移動
-	const Address& current = player_->GetCurrentAddress();
+	const Address&       current     = player_->GetCurrentAddress();
+	std::pair<bool, int> checkResult = blockManager_->CheckAddress(current + input);
+
+	///< ステージ外
+	if (!checkResult.first) {
+		return;
+	}
 
 	player_->Move(current + input);
 

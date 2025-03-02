@@ -2,9 +2,13 @@
 
 /// std
 #include <vector>
+#include <utility>
 
 /// engine
 #include <Engine/Entity/Interface/IEntity.h>
+
+/// user
+#include "../EntityConfig/EntityConfig.h"
 
 /// ///////////////////////////////////////////////////
 /// Block
@@ -41,6 +45,11 @@ public:
 	/// @param _type 
 	void SetType(int _type) { type_ = _type; }
 
+
+	/// @brief このブロックのタイプを取得
+	/// @return ブロックのタイプを返す
+	int GetType() const { return type_; }
+
 };
 
 
@@ -65,6 +74,12 @@ public:
 	/// @brief csvなどのマップデータからブロックを生成
 	/// @param _mapData ブロックの配置データ
 	void CreateBlock(const std::vector<std::vector<int>>& _mapData);
+
+
+	/// @brief 引数のアドレスがステージ内か確認し、ステージ内ならばそのブロックの種類を返す
+	/// @param _address 確認したいアドレス
+	/// @return ステージ内かどうか、ブロックの種類
+	std::pair<bool, int> CheckAddress(const Address& _address) const;
 
 private:
 
