@@ -61,5 +61,8 @@ public:
 	/// @return 現在のアドレス
 	const Address& GetCurrentAddress() const { return currentAddress_; }
 
+	/// @brief type_ のゲット
+	/// @return ブロックのタイプ
+	int GetType() const { return type_; }
 };
 

@@ -70,6 +70,8 @@ void GameController::MovePlayer() {
 		input.col = 1;
 	}
 
+
+	///!< 入力がない場合
 	if (input.row == 0 && input.col == 0) {
 		return;
 	}
@@ -78,11 +80,17 @@ void GameController::MovePlayer() {
 	const Address&       current     = player_->GetCurrentAddress();
 	std::pair<bool, int> checkResult = blockManager_->CheckAddress(current + input);
 
-	///< ステージ外
+	///!< ステージ外
 	if (!checkResult.first) {
 		return;
 	}
 
+	///!< プレイヤーとブロックのタイプが一致していない場合
+	if (player_->GetType() != checkResult.second) {
+		return;
+	}
+
+	///< 移動先のアドレスを指定する
 	player_->Move(current + input);
 
 
