@@ -7,8 +7,7 @@
 #include "Engine/Entity/Grid/Grid.h"
 
 /// user
-#include "Game/Entity/Player/Player.h"
-#include "Game/Entity/Block/Block.h"
+#include "Game/Entity/GameController/GameController.h"
 
 
 GameScene::GameScene() {
@@ -34,14 +33,12 @@ GameScene::~GameScene() {}
 
 
 void GameScene::Initialize() {
-	entityCollection_->GenerateEntity<Grid>();
-	
-	Camera* camera = entityCollection_->GenerateCamera();
-	camera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
-	camera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 
-	entityCollection_->GenerateEntity<Player>();
-	entityCollection_->GenerateEntity<BlockManager>();
+#ifdef _DEBUG
+	entityCollection_->GenerateEntity<Grid>();
+#endif // _DEBUG
+	
+	entityCollection_->GenerateEntity<GameController>();
 
 }
 
