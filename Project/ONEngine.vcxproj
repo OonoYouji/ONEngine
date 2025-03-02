@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />

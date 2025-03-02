@@ -16,15 +16,31 @@ void Player::Initialize() {
 	renderer->SetMeshPath("Assets/Models/entity/player.obj");
 	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
 
-	velocity_ = Vector3::kZero;
-	speed_    = 1.0f; //< 移動する速度
-
+	/// 適当な値で初期化
 	type_ = static_cast<int>(Type::white);
+
+	currentAddress_ = { 0, 0 };
+	nextAddress_    = { 0, 0 };
+	isAnimation_    = false;
+	isMove_         = false;
 
 }
 
 void Player::Update() {
 	
+#ifdef _DEBUG
+	///!< debug type_ の切り替え
+	if (Input::TriggerKey(DIK_SPACE)) {
+		if (type_ == static_cast<int>(Type::black)) {
+			type_ = static_cast<int>(Type::white);
+		} else {
+			type_ = static_cast<int>(Type::black);
+		}
+	}
+#endif // _DEBUG
+
+
+
 	MeshRenderer* renderer = GetComponent<MeshRenderer>();
 	switch (type_) {
 	case static_cast<int>(Type::black):
@@ -36,31 +52,24 @@ void Player::Update() {
 	}
 
 
-	///!< debug type_ の切り替え
-	if (Input::TriggerKey(DIK_SPACE)) {
-		if (type_ == static_cast<int>(Type::black)) {
-			type_ = static_cast<int>(Type::white);
-		} else {
-			type_ = static_cast<int>(Type::black);
-		}
+	transform_->position = Vector3(
+		static_cast<float>(nextAddress_.col) * GameConfig::kBlockSize,
+		1.0f, 
+		static_cast<float>(nextAddress_.row) * GameConfig::kBlockSize
+	);
+
+
+	if (isMove_) {
+		currentAddress_ = nextAddress_;
+		isMove_         = false;
 	}
 
+}
 
-	//{	/// 移動処理
+void Player::Move(const Address& _address) {
 
-	//	/// WASD keyで移動
-
-	//	velocity_ = Vector3::kZero;
-	//	
-	//	if (Input::PressKey(DIK_W)) { velocity_.z += 1.0f; }
-	//	if (Input::PressKey(DIK_S)) { velocity_.z -= 1.0f; }
-	//	if (Input::PressKey(DIK_A)) { velocity_.x -= 1.0f; }
-	//	if (Input::PressKey(DIK_D)) { velocity_.x += 1.0f; }
-
-	//	velocity_ = velocity_.Normalize() * speed_;
-
-	//	transform_->position += velocity_;
-
-	//}
-
+	nextAddress_     = _address;
+	isMove_          = true;
+	isAnimation_     = true;
+	currentMoveTime_ = 0.0f;
 }

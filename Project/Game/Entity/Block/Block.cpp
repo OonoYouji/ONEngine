@@ -52,7 +52,7 @@ void BlockManager::Initialize() {
 
 	/// 仮のマップデータ
 	std::vector<std::vector<int>> mapData = {
-		{ 1, 1, 1, 1 },
+		{ 0, 1, 1, 1 },
 		{ 1, 0, 0, 1 },
 		{ 1, 0, 0, 1 },
 		{ 1, 1, 1, 1 }
@@ -76,6 +76,9 @@ void BlockManager::CreateBlock(const std::vector<std::vector<int>>& _mapData) {
 	const size_t kMaxRow = _mapData.size();
 	const size_t kMaxCol = _mapData[0].size();
 
+	std::vector<std::vector<int>> mapData = _mapData;
+	std::reverse(mapData.begin(), mapData.end());
+
 
 	for (size_t r = 0; r < kMaxRow; r++) {
 
@@ -86,9 +89,16 @@ void BlockManager::CreateBlock(const std::vector<std::vector<int>>& _mapData) {
 			/// ブロックの生成
 			Block* block = entityCollection_->GenerateEntity<Block>();
 
+			block->SetType(mapData[r][c]);
 			/// ブロックの位置を設定
-			block->SetPosition(Vector3(c * 2.0f, 0.0f, r * 2.0f));
-			block->SetType(_mapData[r][c]);
+			block->SetPosition(
+				Vector3(
+					c * GameConfig::kBlockSize,
+					0.0f, 
+					r * GameConfig::kBlockSize
+				)
+			);
+			
 
 			/// ブロックの二次元配列に追加
 			blocks_[r].push_back(block);

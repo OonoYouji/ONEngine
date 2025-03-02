@@ -61,6 +61,7 @@
     <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
+    <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
