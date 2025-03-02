@@ -8,6 +8,7 @@
 
 /// user
 #include "Game/Entity/Player/Player.h"
+#include "Game/Entity/Block/Block.h"
 
 
 GameScene::GameScene() {
@@ -40,7 +41,7 @@ void GameScene::Initialize() {
 	camera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 
 	entityCollection_->GenerateEntity<Player>();
-
+	entityCollection_->GenerateEntity<BlockManager>();
 
 }
 

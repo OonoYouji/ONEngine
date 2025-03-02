@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />

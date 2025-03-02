@@ -59,6 +59,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiMath.cpp" />
     <ClCompile Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
+    <ClCompile Include="Game\Entity\Block\Block.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -124,5 +125,6 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
+    <ClInclude Include="Game\Entity\Block\Block.h" />
   </ItemGroup>
 </Project>
