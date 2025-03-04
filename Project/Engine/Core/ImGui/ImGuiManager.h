@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <functional>
+#include <vector>
+
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
 /// ///////////////////////////////////////////////////
@@ -24,9 +28,11 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	/// @brief imgui のメインウィンドウを描画する
-	void RenderingMainWindow();
-
+	/// @brief imgui のレンダリング関数を登録する
+	/// @param _func レンダリング関数
+	void RegisterImguiRenderFunc(std::function<void()> _func) {
+		imguiRenderFuncs_.push_back(_func);
+	}
 
 private:
 
@@ -37,6 +43,8 @@ private:
 	class DxManager*     dxManager_     = nullptr;
 	class WindowManager* windowManager_ = nullptr;
 	class Window*        imguiWindow_   = nullptr;
+
+	std::vector<std::function<void()>> imguiRenderFuncs_;
 
 };
 

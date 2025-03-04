@@ -57,12 +57,27 @@ void ImGuiManager::Initialize() {
 
 	imguiWindow_ = windowManager_->GenerateWindow(L"ImGuiDebug", Vec2(1280, 720), WindowManager::WindowType::Sub);
 
+
+	/// main windowの描画関数を登録
+	RegisterImguiRenderFunc([this]() {
+		ImGui::Begin("Main Window");
+		ImGui::End();
+	});
+
+	RegisterImguiRenderFunc([]() {
+		ImGui::Begin("scene");
+		ImGui::End();
+	});
+
 }
 
 void ImGuiManager::Update() {
 	if (!imguiWindow_->GetProcessMessage()) {
 		ImGui::NewFrame();
-		RenderingMainWindow();
+
+		for (auto& func : imguiRenderFuncs_) {
+			func();
+		}
 	}
 }
 
@@ -83,13 +98,4 @@ void ImGuiManager::Draw() {
 		ImGui::GetIO().ClearInputMouse();
 	}
 }
-void ImGuiManager::RenderingMainWindow() {
 
-	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
-	ImGui::SetNextWindowSize(ImVec2(1280.0f, 720.0f));
-
-	ImGui::Begin("Main Window", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-
-
-	ImGui::End();
-}
