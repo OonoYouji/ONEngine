@@ -34,6 +34,6 @@ private:
 	ComPtr<IDirectInput8>     directInput_;
 	std::unique_ptr<Keyboard> keyboard_;
 
-
+	class WindowManager*      windowManager_ = nullptr;
 };
 

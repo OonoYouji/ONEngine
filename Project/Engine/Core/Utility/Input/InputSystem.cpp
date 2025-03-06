@@ -9,6 +9,8 @@ InputSystem::~InputSystem() {}
 
 void InputSystem::Initialize(WindowManager* _windowManager) {
 
+	windowManager_ = _windowManager;
+
 	HRESULT hr = DirectInput8Create(
 		_windowManager->GetMainWindow()->GetWNDCLASS().hInstance,
 		DIRECTINPUT_VERSION,
@@ -26,6 +28,6 @@ void InputSystem::Initialize(WindowManager* _windowManager) {
 
 void InputSystem::Update() {
 
-	keyboard_->Update();
+	keyboard_->Update(windowManager_->GetActiveWindow());
 
 }

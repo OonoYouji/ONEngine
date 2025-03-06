@@ -197,3 +197,15 @@ void WindowManager::UpdateMainWindow() {
 	isProcessEnd_ = false;
 	pMainWindow_->processMessage_ = false;
 }
+
+Window* WindowManager::GetActiveWindow() const {
+
+	HWND activeWindow = GetForegroundWindow();
+	for (auto& window : windows_) {
+		if (window->GetHwnd() == activeWindow) {
+			return window.get();
+		}
+	}
+
+	return GetMainWindow();
+}

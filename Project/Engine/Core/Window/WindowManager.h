@@ -127,6 +127,9 @@ public:
 	/// <returns></returns>
 	Window* GetMainWindow() const { return pMainWindow_; }
 
+	/// @brief 現在のアクティブなwindowを取得
+	/// @return アクティブなwindowのポインタ
+	Window* GetActiveWindow() const;
 
 private:
 

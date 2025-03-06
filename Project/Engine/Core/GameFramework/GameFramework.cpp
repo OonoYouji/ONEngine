@@ -79,7 +79,6 @@ void GameFramework::Run() {
 			entityCollection_->Update();
 		}
 #else
-
 		sceneManager_->Update();
 		entityCollection_->Update();
 #endif // _DEBUG
@@ -94,32 +93,3 @@ void GameFramework::Run() {
 	}
 
 }
-
-void GameFramework::DebugRun() {
-
-	/// game loopが終了するまで回す
-	while (true) {
-
-		/// 更新処理
-		Input::Update();
-
-		windowManager_->Update();
-#ifdef _DEBUG
-		imGuiManager_->Update();
-#endif // _DEBUG
-
-		sceneManager_->Update();
-		entityCollection_->Update();
-
-
-		/// 描画処理
-		renderingFramework_->Draw();
-
-		/// 破棄されたら終了
-		if (windowManager_->GetMainWindow()->GetProcessMessage()) {
-			break;
-		}
-	}
-
-}
-

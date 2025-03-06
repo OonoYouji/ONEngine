@@ -37,11 +37,11 @@ void Keyboard::Initialize(IDirectInput8* _directInput, WindowManager* _windowMan
 }
 
 
-void Keyboard::Update() {
-	//pWinApp_ = ONEngine::GetActiveWinApp();
-	//keyboard_->SetCooperativeLevel(
-	//	pWinApp_->GetHWND(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-
+void Keyboard::Update(Window* _window) {
+	
+	keyboard_->SetCooperativeLevel(
+		_window->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY
+	);
 
 	/// キーボード情報の取得開始
 	keyboard_->Acquire();

@@ -63,5 +63,7 @@ public:
 
 	bool GetIsGameDebug() const { return isGameDebug_; }
 
+	class Window* GetDebugGameWindow() const { return debugGameWindow_; }
+
 };
 

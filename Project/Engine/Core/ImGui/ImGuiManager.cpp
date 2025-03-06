@@ -57,6 +57,9 @@ void ImGuiManager::Initialize() {
 	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
+	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
+	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
+	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
 	/// main windowの描画関数を登録
 	RegisterImguiRenderFunc([this]() {
