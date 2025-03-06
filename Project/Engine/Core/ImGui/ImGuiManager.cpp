@@ -1,14 +1,13 @@
 #include "ImGuiManager.h"
 
 /// external
-#include <imgui.h>
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
-
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 
 ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager)
@@ -22,7 +21,9 @@ ImGuiManager::~ImGuiManager() {
 
 
 
-void ImGuiManager::Initialize() {
+void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+
+	resourceCollection_ = _graphicsResourceCollection;
 
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 	uint32_t   srvDescriptorIndex = dxSRVHeap->AllocateBuffer();
@@ -54,6 +55,7 @@ void ImGuiManager::Initialize() {
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+	/// debug windowの生成
 	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
@@ -61,22 +63,23 @@ void ImGuiManager::Initialize() {
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
 	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
+
+
+	startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetGPUDescriptorHandle().ptr);
+	endImage_   = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
+
 	/// main windowの描画関数を登録
-	RegisterImguiRenderFunc([this]() {
-		ImGui::Begin("main window");
-		ImGui::End();
-	});
-
-
 	RegisterImguiRenderFunc([this]() {
 		ImGui::Begin("game debug button");
 
-		if (ImGui::Button("start")) {
+		if (ImGui::ImageButton("start", startImage_, ImVec2(16.0f, 16.0f))) {
 			isGameDebug_ = true;
 			windowManager_->ShowGameWindow(debugGameWindow_);
 		}
 
-		if (ImGui::Button("end")) {
+		ImGui::SameLine();
+
+		if (ImGui::ImageButton("end", endImage_, ImVec2(16.0f, 16.0f))) {
 			isGameDebug_ = false;
 			windowManager_->HideGameWindow(debugGameWindow_);
 		}

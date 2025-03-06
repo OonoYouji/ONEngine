@@ -39,8 +39,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// main windowの生成
 #ifdef _DEBUG
 	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1280, 720), WindowManager::WindowType::Main);
-	imGuiManager_->Initialize();
-	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
@@ -57,6 +55,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 
 #ifdef _DEBUG
+	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
+	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 #endif // _DEBUG
 }
