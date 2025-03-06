@@ -12,6 +12,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _m
 
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
+#ifdef _DEBUG
+	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
+		return true;
+	}
+#endif // _DEBUG
 
 	switch(_msg) {
 	case WM_CLOSE:
@@ -45,7 +50,7 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 WindowManager::WindowManager(DxManager* _dxManager) 
-	: pDxManager_(_dxManager) {
+	: dxManager_(_dxManager) {
 }
 
 WindowManager::~WindowManager() {}
@@ -121,7 +126,7 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	
 	/// game windowを作成して表示する
 	CreateGameWindow(_windowName.c_str(), _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME), newWindow.get(), _windowType);
-	newWindow->Initialize(_windowName, _windowSize, pDxManager_);
+	newWindow->Initialize(_windowName, _windowSize, dxManager_);
 
 	/// returnする用のpointer	
 	Window* resultPtr = newWindow.get();

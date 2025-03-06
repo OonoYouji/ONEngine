@@ -29,24 +29,20 @@ public:
 	/// public : static method
 	/// ===================================================
 
-	/// <summary>
-	/// mainのwindowプロシージャ
-	/// </summary>
-	/// <param name="hwnd"></param>
-	/// <param name="msg"></param>
-	/// <param name="wparam"></param>
-	/// <param name="lparam"></param>
-	/// <returns></returns>
+	/// @brief main windowのwindowプロシージャ
+	/// @param _hwnd 
+	/// @param _msg 
+	/// @param _wparam 
+	/// @param _lparam 
+	/// @return 
 	static LRESULT CALLBACK MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam);
 
-	/// <summary>
-	/// subのwindowプロシージャ
-	/// </summary>
-	/// <param name="_hwnd"></param>
-	/// <param name="_msg"></param>
-	/// <param name="_wparam"></param>
-	/// <param name="_lparam"></param>
-	/// <returns></returns>
+	/// @brief sub windowのwindowプロシージャ
+	/// @param _hwnd 
+	/// @param _msg 
+	/// @param _wparam 
+	/// @param _lparam 
+	/// @return 
 	static LRESULT CALLBACK SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam);
 
 
@@ -59,51 +55,49 @@ public:
 	WindowManager(class DxManager* _dxManager);
 	~WindowManager();
 
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
 	void Initialize();
-
-	/// <summary>
-	/// 終了処理
-	/// </summary>
+	void Update();
 	void Finalize();
 
-	/// <summary>
-	/// すべてのwindowの更新処理
-	/// </summary>
-	void Update();
-
-	/// <summary>
-	/// すべてのwindowの描画前処理
-	/// </summary>
+	/// @brief windows_の描画前処理
 	void PreDraw();
 
-	/// <summary>
-	/// すべてのwindowの描画後処理
-	/// </summary>
+	/// @brief windows_の描画後処理
 	void PostDraw();
 
-	/// <summary>
-	/// すべてのwindowの画面を交換
-	/// </summary>
+	/// @brief windows_の描画
 	void Present();
 
-	/// <summary>
-	/// 新しいウィンドウを生成
-	/// </summary>
-	/// <param name="_windowName"> : ウィンドウの名前   </param>
-	/// <param name="_windowSize"> : ウィンドウのサイズ </param>
+	/// @brief 新しいwindowを生成
+	/// @param _windowName windowの名前
+	/// @param _windowSize windowのサイズ
+	/// @param _windowType windowの種類
+	/// @return 生成したwindowのポインタ
 	Window* GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType = WindowType::Sub);
 
-	/// <summary>
-	/// game windowを生成
-	/// </summary>
+	/// @brief game windowを非表示
+	/// @param _windowPtr 隠したいwindowのポインタ
+	void HideGameWindow(Window* _windowPtr) { ShowWindow(_windowPtr->GetHwnd(), SW_HIDE); }
+
+	/// @brief game windowを表示
+	/// @param _windowPtr 表示したいwindowのポインタ
+	void ShowGameWindow(Window* _windowPtr) { ShowWindow(_windowPtr->GetHwnd(), SW_SHOW); }
+
+private:
+
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	/// @brief  game windowの生成
+	/// @param _title windowのタイトル
+	/// @param _size  windowのサイズ
+	/// @param _windowStyle windowのスタイル
+	/// @param _windowPtr windowのポインタ
+	/// @param _windowType windowの種類
 	void CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType);
 
-	/// <summary>
-	/// main windowの更新処理
-	/// </summary>
+	/// @brief main windowの更新
 	void UpdateMainWindow();
 
 
@@ -116,7 +110,7 @@ private:
 	std::vector<std::unique_ptr<Window>> windows_;
 	Window*                              pMainWindow_ = nullptr;
 
-	class DxManager*                     pDxManager_ = nullptr;
+	class DxManager*                     dxManager_ = nullptr;
 
 	bool                                 isProcessEnd_;
 

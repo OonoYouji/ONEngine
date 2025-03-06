@@ -40,9 +40,10 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class DxManager*     dxManager_     = nullptr;
-	class WindowManager* windowManager_ = nullptr;
-	class Window*        imguiWindow_   = nullptr;
+	class DxManager*     dxManager_       = nullptr;
+	class WindowManager* windowManager_   = nullptr;
+	class Window*        imguiWindow_     = nullptr;
+	class Window*        debugGameWindow_ = nullptr;
 
 	std::vector<std::function<void()>> imguiRenderFuncs_;
 
@@ -54,6 +55,10 @@ public:
 	/// ===================================================
 	/// public : accessors
 	/// ===================================================
+
+	/// @brief imgui windowを設定する
+	/// @param _window Window
+	void SetImGuiWindow(Window* _window) { imguiWindow_ = _window; }
 
 
 	bool GetIsGameDebug() const { return isGameDebug_; }

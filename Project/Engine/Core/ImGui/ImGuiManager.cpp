@@ -54,8 +54,8 @@ void ImGuiManager::Initialize() {
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
-
-	imguiWindow_ = windowManager_->GenerateWindow(L"ImGuiDebug", Vec2(1280, 720), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
+	windowManager_->HideGameWindow(debugGameWindow_);
 
 
 	/// main windowの描画関数を登録
@@ -70,10 +70,12 @@ void ImGuiManager::Initialize() {
 
 		if (ImGui::Button("start")) {
 			isGameDebug_ = true;
+			windowManager_->ShowGameWindow(debugGameWindow_);
 		}
 
 		if (ImGui::Button("end")) {
 			isGameDebug_ = false;
+			windowManager_->HideGameWindow(debugGameWindow_);
 		}
 
 		ImGui::End();
@@ -81,30 +83,18 @@ void ImGuiManager::Initialize() {
 }
 
 void ImGuiManager::Update() {
-	if (!imguiWindow_->GetProcessMessage()) {
-		ImGui::NewFrame();
+	ImGui::NewFrame();
 
-		for (auto& func : imguiRenderFuncs_) {
-			func();
-		}
+	for (auto& func : imguiRenderFuncs_) {
+		func();
 	}
 }
 
 void ImGuiManager::Draw() {
-	if (!imguiWindow_->GetProcessMessage()) {
-		imguiWindow_->PreDraw();
-
-		ImGui::Render();
-		ImGui_ImplDX12_RenderDrawData(
-			ImGui::GetDrawData(),
-			dxManager_->GetDxCommand()->GetCommandList()
-		);
-
-		imguiWindow_->PostDraw();
-	} else {
-		ImGui::GetIO().ClearInputCharacters();
-		ImGui::GetIO().ClearInputKeys();
-		ImGui::GetIO().ClearInputMouse();
-	}
+	ImGui::Render();
+	ImGui_ImplDX12_RenderDrawData(
+		ImGui::GetDrawData(),
+		dxManager_->GetDxCommand()->GetCommandList()
+	);
 }
 
