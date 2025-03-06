@@ -46,5 +46,17 @@ private:
 
 	std::vector<std::function<void()>> imguiRenderFuncs_;
 
+	bool isGameDebug_ = false;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+
+	bool GetIsGameDebug() const { return isGameDebug_; }
+
 };
 

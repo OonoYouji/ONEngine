@@ -34,6 +34,8 @@ public:
 	/// @brief ゲームのメインループ
 	void Run();
 
+	/// @brief デバッグ実行
+	void DebugRun();
 
 private:
 

@@ -65,6 +65,40 @@ void GameFramework::Run() {
 		windowManager_->Update();
 #ifdef _DEBUG
 		imGuiManager_->Update();
+
+		///!< ゲームデバッグモードの場合は更新処理を行う
+		if (imGuiManager_->GetIsGameDebug()) {
+			sceneManager_->Update();
+			entityCollection_->Update();
+		}
+#else
+
+		sceneManager_->Update();
+		entityCollection_->Update();
+#endif // _DEBUG
+
+		/// 描画処理
+		renderingFramework_->Draw();
+
+		/// 破棄されたら終了
+		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
+			break;
+		}
+	}
+
+}
+
+void GameFramework::DebugRun() {
+
+	/// game loopが終了するまで回す
+	while (true) {
+
+		/// 更新処理
+		Input::Update();
+
+		windowManager_->Update();
+#ifdef _DEBUG
+		imGuiManager_->Update();
 #endif // _DEBUG
 
 		sceneManager_->Update();
@@ -75,7 +109,7 @@ void GameFramework::Run() {
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了
-		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
+		if (windowManager_->GetMainWindow()->GetProcessMessage()) {
 			break;
 		}
 	}

@@ -60,15 +60,24 @@ void ImGuiManager::Initialize() {
 
 	/// main windowの描画関数を登録
 	RegisterImguiRenderFunc([this]() {
-		ImGui::Begin("Main Window");
+		ImGui::Begin("main window");
 		ImGui::End();
 	});
 
-	RegisterImguiRenderFunc([]() {
-		ImGui::Begin("scene");
+
+	RegisterImguiRenderFunc([this]() {
+		ImGui::Begin("game debug button");
+
+		if (ImGui::Button("start")) {
+			isGameDebug_ = true;
+		}
+
+		if (ImGui::Button("end")) {
+			isGameDebug_ = false;
+		}
+
 		ImGui::End();
 	});
-
 }
 
 void ImGuiManager::Update() {
