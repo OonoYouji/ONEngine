@@ -18,7 +18,6 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 	}
 #endif // _DEBUG
 
-
 	switch(_msg) {
 	case WM_CLOSE:
 		DestroyWindow(_hwnd);
@@ -51,7 +50,7 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 WindowManager::WindowManager(DxManager* _dxManager) 
-	: pDxManager_(_dxManager) {
+	: dxManager_(_dxManager) {
 }
 
 WindowManager::~WindowManager() {}
@@ -83,18 +82,35 @@ void WindowManager::Update() {
 
 	/// main windowの更新
 	UpdateMainWindow();
+
+	/// sub windowの更新
+	for (auto& window : windows_) {
+		if (window.get() == pMainWindow_) {
+			continue;
+		}
+
+		if (PeekMessage(&window->msg_, nullptr, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&window->msg_);
+			DispatchMessage(&window->msg_);
+		}
+
+		/// 終了メッセージ
+		if (window->msg_.message == WM_QUIT) {
+			window->processMessage_ = true;
+			continue;
+		}
+
+		window->processMessage_ = false;
+	}
+
 }
 
 void WindowManager::PreDraw() {
-	for(auto& window : windows_) {
-		window->PreDraw();
-	}
+	GetMainWindow()->PreDraw();
 }
 
 void WindowManager::PostDraw() {
-	for(auto& window : windows_) {
-		window->PostDraw();
-	}
+	GetMainWindow()->PostDraw();
 }
 
 void WindowManager::Present() {
@@ -110,7 +126,7 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	
 	/// game windowを作成して表示する
 	CreateGameWindow(_windowName.c_str(), _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME), newWindow.get(), _windowType);
-	newWindow->Initialize(_windowName, _windowSize, pDxManager_);
+	newWindow->Initialize(_windowName, _windowSize, dxManager_);
 
 	/// returnする用のpointer	
 	Window* resultPtr = newWindow.get();
@@ -180,4 +196,16 @@ void WindowManager::UpdateMainWindow() {
 
 	isProcessEnd_ = false;
 	pMainWindow_->processMessage_ = false;
+}
+
+Window* WindowManager::GetActiveWindow() const {
+
+	HWND activeWindow = GetForegroundWindow();
+	for (auto& window : windows_) {
+		if (window->GetHwnd() == activeWindow) {
+			return window.get();
+		}
+	}
+
+	return GetMainWindow();
 }

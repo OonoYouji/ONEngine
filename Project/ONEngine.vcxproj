@@ -80,6 +80,7 @@
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Component\Component.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
+    <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

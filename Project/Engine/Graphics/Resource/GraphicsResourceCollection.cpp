@@ -3,11 +3,30 @@
 GraphicsResourceCollection::GraphicsResourceCollection() {}
 GraphicsResourceCollection::~GraphicsResourceCollection() {}
 
+#include <filesystem>
+
 void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
 	textures_.resize(32);
+
+	/// Assets/Textures/Engineにあるテクスチャを自動で読み込む
+	std::vector<std::string> texturePaths;
+	for (const auto& entry : std::filesystem::directory_iterator("Assets/Textures/Engine")) {
+		if (entry.is_regular_file()) {
+			std::string path = entry.path().string();
+			
+			/// パスの中にある "\\" を "/" に置き換える
+			std::replace(path.begin(), path.end(), '\\', '/');
+			
+			if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+				texturePaths.push_back(path);
+			}
+		}
+	}
+
+	LoadResources(texturePaths);
 }
 
 void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _filePaths) {
@@ -65,7 +84,7 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 	switch (_type) {
 	case GraphicsResourceCollection::Type::texture:
-		
+
 		/// 読み込み済みかチェックし、読み込んでいない場合のみ読み込む
 		if (GetTexture(_filePath) == nullptr) {
 			resourceLoader_->LoadTexture(_filePath);

@@ -19,9 +19,6 @@ GameScene::GameScene() {
 		"Assets/Models/entity/player.obj",
 		"Assets/Textures/white.png",
 		"Assets/Textures/uvChecker.png",
-		"Assets/Textures/player.png",
-		"Assets/Textures/sword.png",
-		"Assets/Textures/enemy.png",
 	};
 
 	unloadResourcePaths_ = {

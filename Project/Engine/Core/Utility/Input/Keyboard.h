@@ -23,7 +23,7 @@ public:
 	~Keyboard();
 
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager);
-	void Update();
+	void Update(class Window* _window);
 
 private:
 

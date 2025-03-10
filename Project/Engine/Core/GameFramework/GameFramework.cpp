@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/Utility/Time/Time.h"
 
 
 GameFramework::GameFramework() {}
@@ -9,6 +10,7 @@ GameFramework::~GameFramework() {
 	/// gpuの処理が終わるまで待つ
 	dxManager_->GetDxCommand()->WaitForGpuComplete();
 
+	Time::Finalize();
 	Input::Finalize();
 
 	/// engineの終了処理
@@ -37,7 +39,13 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// windowの初期化
 	windowManager_->Initialize();
 	/// main windowの生成
+#ifdef _DEBUG
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1280, 720), WindowManager::WindowType::Main);
+#else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
+#endif // _DEBUG
+
+
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get());
 	/// rendering frameworkの初期化
@@ -49,10 +57,14 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 
 #ifdef _DEBUG
-	imGuiManager_->Initialize();
+	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
+	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 #endif // _DEBUG
 
+
+	/// timeの初期化
+	Time::Initialize();
 }
 
 void GameFramework::Run() {
@@ -62,15 +74,21 @@ void GameFramework::Run() {
 
 		/// 更新処理
 		Input::Update();
+		Time::Update();
 
 		windowManager_->Update();
 #ifdef _DEBUG
 		imGuiManager_->Update();
-#endif // _DEBUG
 
+		///!< ゲームデバッグモードの場合は更新処理を行う
+		if (imGuiManager_->GetIsGameDebug()) {
+			sceneManager_->Update();
+			entityCollection_->Update();
+		}
+#else
 		sceneManager_->Update();
 		entityCollection_->Update();
-
+#endif // _DEBUG
 
 		/// 描画処理
 		renderingFramework_->Draw();
@@ -82,4 +100,3 @@ void GameFramework::Run() {
 	}
 
 }
-
