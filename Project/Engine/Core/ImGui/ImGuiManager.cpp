@@ -8,7 +8,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-
+#include "Engine/Core/Utility/Time/Time.h"
 
 ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager)
 	: dxManager_(_dxManager), windowManager_(_windowManager) {}
@@ -86,6 +86,24 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 		ImGui::End();
 	});
+
+	RegisterImguiRenderFunc([this]() {
+		ImGui::Begin("scene");
+
+		ImGui::End();
+	});
+
+
+	RegisterImguiRenderFunc([this]() {
+		ImGui::Begin("time");
+		ImGui::Text("delta time : %f", Time::DeltaTime());
+		ImGui::SameLine();
+		ImGui::Text("/");
+		ImGui::SameLine();
+		ImGui::Text("fps : %f", 1.0f / Time::DeltaTime());
+		ImGui::End();
+	});
+
 }
 
 void ImGuiManager::Update() {

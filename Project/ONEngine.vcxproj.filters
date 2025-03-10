@@ -62,6 +62,7 @@
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -131,5 +132,6 @@
     <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
     <ClInclude Include="Engine\Component\Component.h" />
+    <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
   </ItemGroup>
 </Project>

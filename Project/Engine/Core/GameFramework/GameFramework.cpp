@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/Utility/Time/Time.h"
 
 
 GameFramework::GameFramework() {}
@@ -9,6 +10,7 @@ GameFramework::~GameFramework() {
 	/// gpuの処理が終わるまで待つ
 	dxManager_->GetDxCommand()->WaitForGpuComplete();
 
+	Time::Finalize();
 	Input::Finalize();
 
 	/// engineの終了処理
@@ -59,6 +61,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 #endif // _DEBUG
+
+
+	/// timeの初期化
+	Time::Initialize();
 }
 
 void GameFramework::Run() {
@@ -68,6 +74,7 @@ void GameFramework::Run() {
 
 		/// 更新処理
 		Input::Update();
+		Time::Update();
 
 		windowManager_->Update();
 #ifdef _DEBUG
