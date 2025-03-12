@@ -87,3 +87,12 @@ void EntityCollection::ImGuiDebug() {
 		ImGui::End();
 	}
 }
+
+
+#ifdef _DEBUG
+
+void EntityCollection::ImGui() {
+
+}
+
+#endif // _DEBUG

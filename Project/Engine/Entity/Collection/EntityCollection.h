@@ -89,6 +89,18 @@ public:
 	/// @return camera2ds
 	const std::vector<Camera2D*>& GetCamera2Ds() { return camera2ds_; }
 
+
+
+#ifdef _DEBUG
+public:
+
+	/// ===================================================
+	/// public : debug methods
+	/// ===================================================
+
+	void ImGui();
+
+#endif // _DEBUG
 };
 
 

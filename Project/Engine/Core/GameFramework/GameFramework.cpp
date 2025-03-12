@@ -60,6 +60,11 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
+
+	imGuiManager_->RegisterImguiRenderFunc([&]() {
+		entityCollection_->ImGui();
+	});
+
 #endif // _DEBUG
 
 

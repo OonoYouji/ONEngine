@@ -24,13 +24,6 @@ public:
 	void Update();
 	void Draw();
 
-
-private:
-
-	/// ===================================================
-	/// private : methods
-	/// ===================================================
-
 	/// @brief imgui のレンダリング関数を登録する
 	/// @param _func レンダリング関数
 	void RegisterImguiRenderFunc(std::function<void()> _func) {
