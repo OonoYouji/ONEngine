@@ -59,7 +59,11 @@ private:
 
 	/// @brief フォルダーの描画
 	/// @param _folder 描画するフォルダ
-	void DrawFolder(std::shared_ptr<Folder> _folder, size_t _depth);
+	void DrawFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth);
+
+	/// @brief フォルダーの中身を描画
+	/// @param _folder 表示するフォルダ
+	void DrawFolder(std::shared_ptr<Folder> _folder);
 
 private:
 	/// ===================================================
@@ -67,6 +71,7 @@ private:
 	/// ===================================================
 	
 	std::shared_ptr<Folder> rootFolder_;
+	std::shared_ptr<Folder> selectedFolder_;
 
 };
 
