@@ -65,6 +65,7 @@
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -137,5 +138,6 @@
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.h" />
   </ItemGroup>
 </Project>
