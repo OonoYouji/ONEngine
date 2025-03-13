@@ -65,6 +65,8 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -157,6 +159,8 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

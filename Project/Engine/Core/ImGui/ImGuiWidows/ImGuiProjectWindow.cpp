@@ -9,9 +9,9 @@ void ImGuiProjectWindow::ImGuiFunc() {
 	// 2列のテーブルを作成
 	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersInnerV)) {
 		// 左側（フォルダツリー）
-		ImGui::TableSetupColumn("Folders", ImGuiTableColumnFlags_WidthStretch, 0.3f); // 幅30%
+		ImGui::TableSetupColumn("folders", ImGuiTableColumnFlags_WidthStretch, 0.3f); // 幅30%
 		// 右側（ファイルリスト）
-		ImGui::TableSetupColumn("Files", ImGuiTableColumnFlags_WidthStretch, 0.7f); // 幅70%
+		ImGui::TableSetupColumn("files", ImGuiTableColumnFlags_WidthStretch, 0.7f); // 幅70%
 		ImGui::TableHeadersRow();
 
 		ImGui::TableNextRow();
