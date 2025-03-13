@@ -63,6 +63,8 @@
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -133,5 +135,7 @@
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
     <ClInclude Include="Engine\Component\Component.h" />
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
   </ItemGroup>
 </Project>

@@ -66,52 +66,76 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 	startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetGPUDescriptorHandle().ptr);
-	endImage_   = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
+	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
+
+
+	imGuiWindowCollection = std::make_unique<ImGuiWindowCollection>();
+
+	/*RegisterImguiRenderFunc(
+		[this]() {
+			ImGui::Begin("engine", nullptr, ImGuiWindowFlags_MenuBar);
+
+			if (ImGui::BeginMainMenuBar()) {
+
+
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::End();
+		}
+	);
+
 
 	/// main windowの描画関数を登録
-	RegisterImguiRenderFunc([this]() {
-		ImGui::Begin("game debug button");
+	RegisterImguiRenderFunc(
+		[this]() {
+			ImGui::Begin("game debug button");
 
-		if (ImGui::ImageButton("start", startImage_, ImVec2(16.0f, 16.0f))) {
-			isGameDebug_ = true;
-			windowManager_->ShowGameWindow(debugGameWindow_);
+			{	/// game debug button
+				if (ImGui::ImageButton("start", startImage_, ImVec2(16.0f, 16.0f))) {
+					isGameDebug_ = true;
+					windowManager_->ShowGameWindow(debugGameWindow_);
+				}
+
+				ImGui::SameLine();
+
+				if (ImGui::ImageButton("end", endImage_, ImVec2(16.0f, 16.0f))) {
+					isGameDebug_ = false;
+					windowManager_->HideGameWindow(debugGameWindow_);
+				}
+			}
+
+			ImGui::End();
 		}
+	);
 
-		ImGui::SameLine();
+	RegisterImguiRenderFunc(
+		[this]() {
+			ImGui::Begin("scene");
 
-		if (ImGui::ImageButton("end", endImage_, ImVec2(16.0f, 16.0f))) {
-			isGameDebug_ = false;
-			windowManager_->HideGameWindow(debugGameWindow_);
+			ImGui::End();
 		}
+	);
 
-		ImGui::End();
-	});
-
-	RegisterImguiRenderFunc([this]() {
-		ImGui::Begin("scene");
-
-		ImGui::End();
-	});
-
-
-	RegisterImguiRenderFunc([this]() {
-		ImGui::Begin("time");
-		ImGui::Text("delta time : %f", Time::DeltaTime());
-		ImGui::SameLine();
-		ImGui::Text("/");
-		ImGui::SameLine();
-		ImGui::Text("fps : %f", 1.0f / Time::DeltaTime());
-		ImGui::End();
-	});
+	RegisterImguiRenderFunc(
+		[this]() {
+			ImGui::Begin("time");
+			ImGui::Text("delta time : %f", Time::DeltaTime());
+			ImGui::SameLine();
+			ImGui::Text("/");
+			ImGui::SameLine();
+			ImGui::Text("fps : %f", 1.0f / Time::DeltaTime());
+			ImGui::End();
+		}
+	);*/
 
 }
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
 
-	for (auto& func : imguiRenderFuncs_) {
-		func();
-	}
+	imGuiWindowCollection->Update();
 }
 
 void ImGuiManager::Draw() {

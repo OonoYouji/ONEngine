@@ -3,9 +3,14 @@
 /// std
 #include <functional>
 #include <vector>
+#include <memory>
 
 /// external
 #include <imgui.h>
+
+/// engine
+#include "ImGuiWidows/Collection/ImGuiWindowCollection.h"
+
 
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
@@ -24,12 +29,6 @@ public:
 	void Update();
 	void Draw();
 
-	/// @brief imgui のレンダリング関数を登録する
-	/// @param _func レンダリング関数
-	void RegisterImguiRenderFunc(std::function<void()> _func) {
-		imguiRenderFuncs_.push_back(_func);
-	}
-
 private:
 
 	/// ===================================================
@@ -39,15 +38,15 @@ private:
 	class DxManager*                  dxManager_          = nullptr;
 	class WindowManager*              windowManager_      = nullptr;
 	class GraphicsResourceCollection* resourceCollection_ = nullptr;
-	class Window*                     imguiWindow_        = nullptr;
+	class Window*                     imGuiWindow_        = nullptr;
 	class Window*                     debugGameWindow_    = nullptr;
-
-	std::vector<std::function<void()>> imguiRenderFuncs_;
 
 	bool isGameDebug_ = false;
 
 	ImTextureID startImage_;
 	ImTextureID endImage_;
+
+	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection = nullptr;
 
 public:
 
@@ -57,12 +56,18 @@ public:
 
 	/// @brief imgui windowを設定する
 	/// @param _window Window
-	void SetImGuiWindow(Window* _window) { imguiWindow_ = _window; }
+	void SetImGuiWindow(Window* _window) { imGuiWindow_ = _window; }
 
 
+
+	/// @brief gameをdebugするかのフラグ 
+	/// @return 
 	bool GetIsGameDebug() const { return isGameDebug_; }
 
+	/// @brief game debug windowを取得する
+	/// @return　Window
 	class Window* GetDebugGameWindow() const { return debugGameWindow_; }
 
 };
+
 
