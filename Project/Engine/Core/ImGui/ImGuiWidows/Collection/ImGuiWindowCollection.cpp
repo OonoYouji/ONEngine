@@ -5,6 +5,8 @@
 #include "../ImGuiProjectWindow.h"
 #include "../ImGuiGameWindow.h"
 #include "../ImGuiSceneWindow.h"
+#include "../ImGuiInspectorWindow.h"
+#include "../ImGuiHierarchyWindow.h"
 
 
 ImGuiWindowCollection::ImGuiWindowCollection() {
@@ -14,6 +16,8 @@ ImGuiWindowCollection::ImGuiWindowCollection() {
 	AddWindow(std::make_unique<ImGuiProjectWindow>());
 	AddWindow(std::make_unique<ImGuiGameWindow>());
 	AddWindow(std::make_unique<ImGuiSceneWindow>());
+	AddWindow(std::make_unique<ImGuiInspectorWindow>());
+	AddWindow(std::make_unique<ImGuiHierarchyWindow>());
 
 }
 ImGuiWindowCollection::~ImGuiWindowCollection() {}

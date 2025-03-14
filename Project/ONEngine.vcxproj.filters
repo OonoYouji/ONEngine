@@ -68,6 +68,8 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -143,5 +145,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.h" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,24 @@
+#pragma once
+
+/// engine
+#include "Collection/ImGuiWindowCollection.h"
+
+/// ///////////////////////////////////////////////////
+/// ImGuiHierarchyWindow
+/// ///////////////////////////////////////////////////
+class ImGuiHierarchyWindow : public IImGuiWindow {
+public:
+	/// ===================================================
+	/// public : methods   
+	/// ===================================================
+
+	ImGuiHierarchyWindow() = default;
+	~ImGuiHierarchyWindow() override = default;
+
+	void ImGuiFunc() override;
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+};

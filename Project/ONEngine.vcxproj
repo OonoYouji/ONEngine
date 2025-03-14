@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -89,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Component\Component.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Engine\Component\ColliderComponents\Collider2D\CircleCollider.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

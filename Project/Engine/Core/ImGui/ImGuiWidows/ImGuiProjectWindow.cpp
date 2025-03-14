@@ -87,10 +87,12 @@ void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Fo
 
 void ImGuiProjectWindow::DrawFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth) {
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+	
 	ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 	if (selectedFolder_ == _folder) {
 		nodeFlags |= ImGuiTreeNodeFlags_Selected;
 	}
+
 	if (_folder->folders.empty()) {
 		nodeFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 	}
@@ -99,7 +101,7 @@ void ImGuiProjectWindow::DrawFolderHierarchy(std::shared_ptr<Folder> _folder, si
 	if (ImGui::IsItemClicked()) {
 		selectedFolder_ = _folder;
 	}
-	
+
 	if (nodeOpen && !(_folder->folders.empty())) {
 		for (const auto& subFolder : _folder->folders) {
 			DrawFolderHierarchy(subFolder, _depth + 1);
@@ -112,6 +114,7 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 	for (const auto& subFolder : _folder->folders) {
 		ImGui::BulletText("%s", subFolder->name.c_str());
 	}
+
 	for (const auto& file : _folder->files) {
 		ImGui::BulletText("%s", file.name.c_str());
 	}
