@@ -11,7 +11,10 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityCollection* _entityCollection)
 	: entityCollection_(_entityCollection) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
-	ImGui::Begin("Hierarchy");
+	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoMove)) {
+		ImGui::End();
+		return;
+	}
 
 	std::string entityName = "empty";
 	const std::string kClassPrefix = "class ";

@@ -7,7 +7,10 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 void ImGuiSceneWindow::ImGuiFunc() {
-	ImGui::Begin("scene");
+	if (!ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoMove)) {
+		ImGui::End();
+		return;
+	}
 
 	const auto& textures = resourceCollection_->GetTextures();
 	auto texture = textures[resourceCollection_->GetTextureIndex("scene")].get();
