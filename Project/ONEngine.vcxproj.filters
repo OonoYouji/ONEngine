@@ -70,6 +70,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.cpp" />
+    <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -147,5 +148,6 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.h" />
+    <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
   </ItemGroup>
 </Project>

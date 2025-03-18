@@ -49,6 +49,35 @@ void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_P
 	);
 }
 
+void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format, const Vector4& _clearColor) {
+	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		_format,
+		static_cast<UINT64>(_size.x),
+		static_cast<UINT64>(_size.y),
+		1, 1, 1, 0,
+		D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
+	);
+
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	D3D12_CLEAR_VALUE clearValue{};
+	clearValue.Format   = _format;
+	clearValue.Color[0] = _clearColor.x;
+	clearValue.Color[1] = _clearColor.y;
+	clearValue.Color[2] = _clearColor.z;
+	clearValue.Color[3] = _clearColor.w;
+
+	_dxDevice->GetDevice()->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		&clearValue,
+		IID_PPV_ARGS(&resource_)
+	);
+}
+
 
 void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	if(_before == _after) { return; }
