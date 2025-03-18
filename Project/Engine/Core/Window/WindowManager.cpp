@@ -105,15 +105,27 @@ void WindowManager::Update() {
 
 }
 
-void WindowManager::PreDraw() {
+void WindowManager::MainWindowPreDraw() {
 	GetMainWindow()->PreDraw();
 }
 
-void WindowManager::PostDraw() {
+void WindowManager::MainWindowPostDraw() {
 	GetMainWindow()->PostDraw();
 }
 
-void WindowManager::Present() {
+void WindowManager::PreDrawAll() {
+	for (auto& window : windows_) {
+		window->PreDraw();
+	}
+}
+
+void WindowManager::PostDrawAll() {
+	for (auto& window : windows_) {
+		window->PostDraw();
+	}
+}
+
+void WindowManager::PresentAll() {
 	for(auto& window : windows_) {
 		window->Present();
 	}

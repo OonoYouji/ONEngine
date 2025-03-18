@@ -59,14 +59,20 @@ public:
 	void Update();
 	void Finalize();
 
+	/// @brief main windowの描画前処理
+	void MainWindowPreDraw();
+
+	/// @brief main windowの描画後処理
+	void MainWindowPostDraw();
+
 	/// @brief windows_の描画前処理
-	void PreDraw();
+	void PreDrawAll();
 
 	/// @brief windows_の描画後処理
-	void PostDraw();
+	void PostDrawAll();
 
 	/// @brief windows_の描画
-	void Present();
+	void PresentAll();
 
 	/// @brief 新しいwindowを生成
 	/// @param _windowName windowの名前

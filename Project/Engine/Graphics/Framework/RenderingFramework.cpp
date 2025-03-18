@@ -48,22 +48,22 @@ void RenderingFramework::Draw() {
 		imGuiManager_->GetDebugGameWindow()->PostDraw();
 	}
 	
-	windowManager_->PreDraw();
+	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
-	windowManager_->PostDraw();
+	windowManager_->MainWindowPostDraw();
 
 #else
 
-	windowManager_->PreDraw();
+	windowManager_->MainWindowPreDraw();
 	renderingPipelineCollection_->DrawEntities();
-	windowManager_->PostDraw();
+	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG
 
 
 	/// commandの実行
 	dxManager_->GetDxCommand()->CommandExecute();
-	windowManager_->Present();
+	windowManager_->PresentAll();
 	dxManager_->GetDxCommand()->CommandReset();
 }
 
