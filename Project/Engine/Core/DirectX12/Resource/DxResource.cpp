@@ -17,13 +17,13 @@ void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 	D3D12_RESOURCE_DESC desc{};
-	desc.Dimension        = D3D12_RESOURCE_DIMENSION_BUFFER; /// バッファリソース
-	desc.Width            = _sizeInByte;                     /// リソースのサイズ
-	desc.Height           = 1;
+	desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; /// バッファリソース
+	desc.Width = _sizeInByte;                     /// リソースのサイズ
+	desc.Height = 1;
 	desc.DepthOrArraySize = 1;
-	desc.MipLevels        = 1;
+	desc.MipLevels = 1;
 	desc.SampleDesc.Count = 1;
-	desc.Layout           = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	/// リソースの作成
 	result = _dxDevice->GetDevice()->CreateCommittedResource(
@@ -62,7 +62,7 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
 	D3D12_CLEAR_VALUE clearValue{};
-	clearValue.Format   = _format;
+	clearValue.Format = _format;
 	clearValue.Color[0] = _clearColor.x;
 	clearValue.Color[1] = _clearColor.y;
 	clearValue.Color[2] = _clearColor.z;
@@ -78,17 +78,33 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 	);
 }
 
-
-void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
-	if(_before == _after) { return; }
+void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	if (_before == _after) {
+		return;
+	}
 
 	D3D12_RESOURCE_BARRIER barrier{};
-	barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource   = _resource;
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = resource_.Get();
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = _before;
-	barrier.Transition.StateAfter  = _after;
+	barrier.Transition.StateAfter = _after;
+
+	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
+}
+
+
+void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	if (_before == _after) { return; }
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = _resource;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.StateBefore = _before;
+	barrier.Transition.StateAfter = _after;
 
 	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }

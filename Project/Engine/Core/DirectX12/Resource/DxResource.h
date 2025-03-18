@@ -55,6 +55,13 @@ public:
 		const Vector4& _clearColor
 	);
 
+	/// @brief リソースのバリアーを作成する
+	/// @param _before 前の状態
+	/// @param _after 変更後の状態
+	/// @param _dxCommand DxCommandのインスタンスへのポインタ
+	void CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
+
+
 private:
 
 	/// ===================================================

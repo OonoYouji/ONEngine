@@ -10,13 +10,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-
-/* TODO: RenderingFrameworkクラスの実装
- *
- * ここにRendererのリストを持たせる
- * RendererはIRendererを継承している
- *
-*/
+#include "Engine/Graphics/RenderTexture/RenderTexture.h"
 
 
 /// ===================================================
@@ -48,10 +42,12 @@ private:
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
+	std::unique_ptr<RenderTexture>               renderTexture_;
 
 	DxManager*                                   dxManager_        = nullptr;
 	WindowManager*                               windowManager_    = nullptr;
 	class EntityCollection*                      entityCollection_ = nullptr;
+
 
 #ifdef _DEBUG
 	class ImGuiManager*                          imGuiManager_ = nullptr;

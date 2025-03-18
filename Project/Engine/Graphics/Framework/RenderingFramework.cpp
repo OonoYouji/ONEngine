@@ -20,15 +20,18 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	shaderCompiler_ = std::make_unique<ShaderCompiler>();
 	shaderCompiler_->Initialize();
 
-	dxManager_        = _dxManager;
-	windowManager_    = _windowManager;
+	dxManager_ = _dxManager;
+	windowManager_ = _windowManager;
 	entityCollection_ = _entityCollection;
 
-	resourceCollection_          = std::make_unique<GraphicsResourceCollection>();
+	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
 	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
+	renderTexture_ = std::make_unique<RenderTexture>();
 
 	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
+
+	renderTexture_->Initialize(Vector4(0.0f, 0.0f, 0.0f, 1.0f), dxManager_);
 
 }
 
@@ -41,16 +44,21 @@ void RenderingFramework::Draw() {
 
 	/// 描画処理
 #ifdef _DEBUG /// imguiの描画
-	
+
 	if (imGuiManager_->GetIsGameDebug()) {
 		imGuiManager_->GetDebugGameWindow()->PreDraw();
+
+		renderTexture_->Begin(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
 		renderingPipelineCollection_->DrawEntities();
+		renderTexture_->End(dxManager_->GetDxCommand());
+
 		imGuiManager_->GetDebugGameWindow()->PostDraw();
 	}
-	
+
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
 	windowManager_->MainWindowPostDraw();
+
 
 #else
 
