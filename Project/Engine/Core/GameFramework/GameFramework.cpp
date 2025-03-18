@@ -28,7 +28,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_       = std::make_unique<SceneManager>(entityCollection_.get());
 
 #ifdef _DEBUG
-	imGuiManager_       = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get());
+	imGuiManager_       = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityCollection_.get());
 #endif // _DEBUG
 
 

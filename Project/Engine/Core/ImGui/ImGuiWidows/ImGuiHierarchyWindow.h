@@ -12,7 +12,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow() = default;
+	ImGuiHierarchyWindow(class EntityCollection* _entityCollection);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ImGuiFunc() override;
@@ -21,4 +21,13 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
+		
+
+private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+	class EntityCollection* entityCollection_ = nullptr;
+
 };

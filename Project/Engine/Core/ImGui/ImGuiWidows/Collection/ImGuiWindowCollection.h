@@ -10,8 +10,11 @@
 /// ///////////////////////////////////////////////////
 class ImGuiWindowCollection {
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
-	ImGuiWindowCollection();
+	ImGuiWindowCollection(class EntityCollection* _entityCollection);
 	~ImGuiWindowCollection();
 
 	/// @brief 更新
@@ -22,13 +25,15 @@ public:
 		iImguiWindows_.push_back(std::move(_window));
 	}
 
-private:
 
+private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
 	std::vector<std::unique_ptr<class IImGuiWindow>> iImguiWindows_;
+
+	class EntityCollection* entityCollection_ = nullptr;
 
 };
 

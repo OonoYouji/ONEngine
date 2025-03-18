@@ -22,7 +22,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiManager(class DxManager* _dxManager, class WindowManager* _windowManager);
+	ImGuiManager(class DxManager* _dxManager, class WindowManager* _windowManager, class EntityCollection* _entityCollection);
 	~ImGuiManager();
 
 	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
@@ -38,6 +38,7 @@ private:
 	class DxManager*                  dxManager_          = nullptr;
 	class WindowManager*              windowManager_      = nullptr;
 	class GraphicsResourceCollection* resourceCollection_ = nullptr;
+	class EntityCollection*           entityCollection_   = nullptr;
 	class Window*                     imGuiWindow_        = nullptr;
 	class Window*                     debugGameWindow_    = nullptr;
 
@@ -46,7 +47,7 @@ private:
 	ImTextureID startImage_;
 	ImTextureID endImage_;
 
-	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection = nullptr;
+	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
 public:
 

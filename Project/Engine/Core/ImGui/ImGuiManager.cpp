@@ -10,8 +10,8 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager)
-	: dxManager_(_dxManager), windowManager_(_windowManager) {}
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityCollection* _entityCollection)
+	: dxManager_(_dxManager), windowManager_(_windowManager), entityCollection_(_entityCollection) {}
 
 ImGuiManager::~ImGuiManager() {
 	ImGui_ImplDX12_Shutdown();
@@ -70,14 +70,14 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
 
 
-	imGuiWindowCollection = std::make_unique<ImGuiWindowCollection>();
+	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_);
 
 }
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
 
-	imGuiWindowCollection->Update();
+	imGuiWindowCollection_->Update();
 }
 
 void ImGuiManager::Draw() {
