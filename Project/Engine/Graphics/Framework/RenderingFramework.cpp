@@ -31,7 +31,7 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
 
-	renderTexture_->Initialize(Vector4(0.0f, 0.0f, 0.0f, 1.0f), dxManager_);
+	renderTexture_->Initialize(Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
 
 }
 
@@ -45,15 +45,15 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 #ifdef _DEBUG /// imguiの描画
 
-	if (imGuiManager_->GetIsGameDebug()) {
-		imGuiManager_->GetDebugGameWindow()->PreDraw();
+	//if (imGuiManager_->GetIsGameDebug()) {
+	imGuiManager_->GetDebugGameWindow()->PreDraw();
 
-		renderTexture_->Begin(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
-		renderingPipelineCollection_->DrawEntities();
-		renderTexture_->End(dxManager_->GetDxCommand());
+	renderTexture_->Begin(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+	renderingPipelineCollection_->DrawEntities();
+	renderTexture_->End(dxManager_->GetDxCommand());
 
-		imGuiManager_->GetDebugGameWindow()->PostDraw();
-	}
+	imGuiManager_->GetDebugGameWindow()->PostDraw();
+	//}
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();

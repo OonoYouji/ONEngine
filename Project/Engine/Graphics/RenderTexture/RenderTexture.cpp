@@ -2,21 +2,26 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-void RenderTexture::Initialize(const Vector4& _clearColor, DxManager* _dxManager) {
+void RenderTexture::Initialize(const Vector4& _clearColor, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
 	clearColor_ = _clearColor;
 
-	
-	/// create instance
-	//texture_ = std::make_unique<Texture>();
+	{	/// textureの作成
+		std::unique_ptr<Texture> rtvTexture = std::make_unique<Texture>();
+		texture_ = rtvTexture.get();
+		_resourceCollection->AddTexture("scene", std::move(rtvTexture));
+	}
 
+	/// 必要なオブジェクトの取得
 	DxDevice* dxDevice = _dxManager->GetDxDevice();
 	DxSRVHeap* dxSRVHeap = _dxManager->GetDxSRVHeap();
 	DxRTVHeap* dxRTVHeap = _dxManager->GetDxRTVHeap();
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DxResource& renderTextureResource = texture_->GetDxResource();
 
 	/// render texture resourceの作成
-	renderTextureResource_.CreateRenderTextureResource(
+	renderTextureResource.CreateRenderTextureResource(
 		dxDevice, Vector2(1280.0f, 720.0f), format, _clearColor
 	);
 
@@ -26,13 +31,13 @@ void RenderTexture::Initialize(const Vector4& _clearColor, DxManager* _dxManager
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = format;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	dxDevice->GetDevice()->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc, rtvHandle_.cpuHandle);
+	dxDevice->GetDevice()->CreateRenderTargetView(renderTextureResource.Get(), &rtvDesc, rtvHandle_.cpuHandle);
 
 
 	/// shader resource viewの作成
-	uint32_t srvHeapIndex = dxSRVHeap->AllocateTexture();
-	srvHandle_.cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(srvHeapIndex);
-	srvHandle_.gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(srvHeapIndex);
+	texture_->SetSRVHeapIndex(dxSRVHeap->AllocateTexture());
+	texture_->SetCPUDescriptorHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVHeapIndex()));
+	texture_->SetGPUDescriptorHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVHeapIndex()));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = format;
@@ -40,10 +45,10 @@ void RenderTexture::Initialize(const Vector4& _clearColor, DxManager* _dxManager
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	dxDevice->GetDevice()->CreateShaderResourceView(renderTextureResource_.Get(), &srvDesc, srvHandle_.cpuHandle);
+	dxDevice->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &srvDesc, texture_->GetCPUDescriptorHandle());
 
 
-	renderTextureResource_.CreateBarrier(
+	renderTextureResource.CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		_dxManager->GetDxCommand()
@@ -60,9 +65,9 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 }
 
 void RenderTexture::Begin(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
-	renderTextureResource_.CreateBarrier(
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 
-		D3D12_RESOURCE_STATE_RENDER_TARGET, 
+	texture_->GetDxResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		_dxCommand
 	);
 
@@ -70,7 +75,7 @@ void RenderTexture::Begin(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
 }
 
 void RenderTexture::End(DxCommand* _dxCommand) {
-	renderTextureResource_.CreateBarrier(
+	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		_dxCommand

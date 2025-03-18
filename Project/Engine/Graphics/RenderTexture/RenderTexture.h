@@ -27,7 +27,7 @@ public:
 	RenderTexture() = default;
 	~RenderTexture() = default;
 
-	void Initialize(const Vector4& _clearColor, class DxManager* _dxManager);
+	void Initialize(const Vector4& _clearColor, class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
 
 	/// @brief render targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
@@ -47,9 +47,8 @@ private:
 	/// ===================================================
 
 	//std::unique_ptr<Texture> texture_; /// 書き込み先のテクスチャ
-	DxResource renderTextureResource_;
 	Handle rtvHandle_;
-	Handle srvHandle_;
+	Texture* texture_ = nullptr;
 	
 	Vector4 clearColor_;
 
