@@ -57,36 +57,36 @@ void EntityCollection::RemoveEntity(IEntity* _entity) {
 	entities_.erase(itr, entities_.end());
 }
 
-void EntityCollection::ImGuiDebug() {
-	{	/// Hierarchy window 
-		ImGui::Begin("Hierarchy");
-
-
-		/*/// selectableからentityを選択
-		for (std::unique_ptr<IEntity>& entity : entities_) {
-			if (ImGui::Selectable(entity->GetName().c_str(), selectedEntity_ == entity.get())) {
-				selectedEntity_ = entity.get();
-			}
-		}*/
-
-
-		ImGui::End();
-	}
-
-
-	{	/// Inspector window
-		ImGui::Begin("Inspector");
-
-		/// 選択されていなければ何もしない
-		if (!selectedEntity_) {
-			return;
-		}
-
-		TransformDebug(selectedEntity_->transform_);
-
-		ImGui::End();
-	}
-}
+//void EntityCollection::ImGuiDebug() {
+//	{	/// Hierarchy window 
+//		ImGui::Begin("Hierarchy");
+//
+//
+//		/*/// selectableからentityを選択
+//		for (std::unique_ptr<IEntity>& entity : entities_) {
+//			if (ImGui::Selectable(entity->GetName().c_str(), selectedEntity_ == entity.get())) {
+//				selectedEntity_ = entity.get();
+//			}
+//		}*/
+//
+//
+//		ImGui::End();
+//	}
+//
+//
+//	{	/// Inspector window
+//		ImGui::Begin("Inspector");
+//
+//		/// 選択されていなければ何もしない
+//		if (!selectedEntity_) {
+//			return;
+//		}
+//
+//		TransformDebug(selectedEntity_->transform_);
+//
+//		ImGui::End();
+//	}
+//}
 
 
 #ifdef _DEBUG
