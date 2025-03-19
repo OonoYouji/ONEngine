@@ -5,12 +5,23 @@
 
 
 void ImGuiMainWindow::ImGuiFunc() {
-	ImGui::Begin("main", nullptr, ImGuiWindowFlags_MenuBar);
+    int imGuiFlags = 0;
+    imGuiFlags |= ImGuiWindowFlags_NoMove;
+    imGuiFlags |= ImGuiWindowFlags_NoResize;
+    imGuiFlags |= ImGuiWindowFlags_NoTitleBar;
+    imGuiFlags |= ImGuiWindowFlags_MenuBar;
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(1280, 720));
+    ImGui::Begin("main", nullptr, imGuiFlags);
 
-	FileMenu();
-	EffectMenu();
+    // ドッキングスペースの作成
+    ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None | ImGuiDockNodeFlags_NoUndocking);
 
-	ImGui::End();
+    FileMenu();
+    EffectMenu();
+
+    ImGui::End();
 }
 
 

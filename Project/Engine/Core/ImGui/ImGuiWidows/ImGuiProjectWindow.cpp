@@ -15,7 +15,10 @@ ImGuiProjectWindow::ImGuiProjectWindow() {
 }
 
 void ImGuiProjectWindow::ImGuiFunc() {
-	ImGui::Begin("project", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	if (!ImGui::Begin("Project", nullptr, ImGuiWindowFlags_NoMove)) {
+		ImGui::End();
+		return;
+	}
 
 	// 2列のテーブルを作成
 	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_BordersInnerV)) {

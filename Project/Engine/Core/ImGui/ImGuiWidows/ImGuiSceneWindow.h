@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 	
-	ImGuiSceneWindow() {}
+	ImGuiSceneWindow(class GraphicsResourceCollection* _graphicsResourceCollection) : resourceCollection_(_graphicsResourceCollection){}
 	~ImGuiSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理
@@ -23,6 +23,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	class GraphicsResourceCollection* resourceCollection_ = nullptr;
 
 };
 

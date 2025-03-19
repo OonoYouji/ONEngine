@@ -70,7 +70,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
 
 
-	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_);
+	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_, resourceCollection_);
 
 }
 

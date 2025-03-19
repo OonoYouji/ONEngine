@@ -4,7 +4,10 @@
 #include <imgui.h>
 
 void ImGuiGameWindow::ImGuiFunc() {
-	ImGui::Begin("Game");
+	if (!ImGui::Begin("Game", nullptr, ImGuiWindowFlags_NoMove)) {
+		ImGui::End();
+		return;
+	}
 
 
 	ImGui::End();

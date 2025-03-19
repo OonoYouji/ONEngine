@@ -11,7 +11,10 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityCollection* _entityCollection)
 	: entityCollection_(_entityCollection) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
-	ImGui::Begin("Hierarchy");
+	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoMove)) {
+		ImGui::End();
+		return;
+	}
 
 	std::string entityName = "empty";
 	const std::string kClassPrefix = "class ";
@@ -19,11 +22,14 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 	/// entityの表示
 	for (auto& entity : entityCollection_->GetEntities()) {
 		entityName = typeid(*entity).name();
+        entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
 		if (entityName.find(kClassPrefix) == 0) {
 			entityName = entityName.substr(kClassPrefix.length());
 		}
 
-		ImGui::Text(entityName.c_str());
+		if (ImGui::Selectable(entityName.c_str(), entity.get() == selectedEntity_)) {
+			selectedEntity_ = entity.get();
+		}
 	}
 
 	ImGui::End();

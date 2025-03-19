@@ -21,14 +21,14 @@ GameFramework::~GameFramework() {
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// 各クラスのインスタンスを生成する
-	dxManager_          = std::make_unique<DxManager>();
-	windowManager_      = std::make_unique<WindowManager>(dxManager_.get());
+	dxManager_ = std::make_unique<DxManager>();
+	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
 	renderingFramework_ = std::make_unique<RenderingFramework>();
-	entityCollection_   = std::make_unique<EntityCollection>(dxManager_.get());
-	sceneManager_       = std::make_unique<SceneManager>(entityCollection_.get());
+	entityCollection_ = std::make_unique<EntityCollection>(dxManager_.get());
+	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
 
 #ifdef _DEBUG
-	imGuiManager_       = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityCollection_.get());
+	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityCollection_.get());
 #endif // _DEBUG
 
 
@@ -70,7 +70,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 void GameFramework::Run() {
 
 	/// game loopが終了するまで回す
-	while(true) {
+	while (true) {
 
 		/// 更新処理
 		Input::Update();
@@ -81,10 +81,10 @@ void GameFramework::Run() {
 		imGuiManager_->Update();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		if (imGuiManager_->GetIsGameDebug()) {
-			sceneManager_->Update();
-			entityCollection_->Update();
-		}
+		//if (imGuiManager_->GetIsGameDebug()) {
+		sceneManager_->Update();
+		entityCollection_->Update();
+		//}
 #else
 		sceneManager_->Update();
 		entityCollection_->Update();
@@ -94,7 +94,7 @@ void GameFramework::Run() {
 		renderingFramework_->Draw();
 
 		/// 破棄されたら終了
-		if(windowManager_->GetMainWindow()->GetProcessMessage()) {
+		if (windowManager_->GetMainWindow()->GetProcessMessage()) {
 			break;
 		}
 	}

@@ -14,7 +14,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiWindowCollection(class EntityCollection* _entityCollection);
+	ImGuiWindowCollection(class EntityCollection* _entityCollection, class GraphicsResourceCollection* _resourceCollection);
 	~ImGuiWindowCollection();
 
 	/// @brief 更新
@@ -34,6 +34,7 @@ private:
 	std::vector<std::unique_ptr<class IImGuiWindow>> iImguiWindows_;
 
 	class EntityCollection* entityCollection_ = nullptr;
+	class GraphicsResourceCollection* resourceCollection_ = nullptr;
 
 };
 

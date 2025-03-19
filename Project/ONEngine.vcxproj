@@ -88,6 +88,7 @@
     <ClCompile Include="Engine\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
+    <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Component\Component.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.h" />
+    <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -260,7 +262,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /Y /I /E "$(ProjectDir)Resources" "$(OutDir)Resources"</Command>
+xcopy /Y /I /E "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

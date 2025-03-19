@@ -3,11 +3,11 @@
 #include <Windows.h>
 
 void Log(const std::string& _message) {
-	OutputDebugStringA(("### ONE : " + _message + "\n").c_str());
+	OutputDebugStringA(("[ ONE : " + _message + " ]\n").c_str());
 }
 
 void Log(const std::wstring& _message) {
-	OutputDebugStringA(("### ONE : " + ConvertString(_message) + "\n").c_str());
+	OutputDebugStringA(("[ ONE : " + ConvertString(_message) + " ]\n").c_str());
 }
 
 
