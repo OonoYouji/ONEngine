@@ -27,7 +27,7 @@ public:
 	RenderTexture() = default;
 	~RenderTexture() = default;
 
-	void Initialize(const Vector4& _clearColor, class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
+	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
 
 	/// @brief render targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ

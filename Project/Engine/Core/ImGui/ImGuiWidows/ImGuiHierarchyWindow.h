@@ -29,5 +29,5 @@ private:
 	/// ===================================================
 
 	class EntityCollection* entityCollection_ = nullptr;
-
+	class IEntity* selectedEntity_ = nullptr;
 };
