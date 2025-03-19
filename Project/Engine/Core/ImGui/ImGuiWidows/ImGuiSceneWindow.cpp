@@ -22,6 +22,13 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	} else {
 		windowSize.y = windowSize.x / aspectRatio;
 	}
+	
+	ImVec2 windowPos = ImGui::GetCursorScreenPos();
+	ImVec2 imagePos = windowPos;
+	imagePos.x += (ImGui::GetContentRegionAvail().x - windowSize.x) * 0.5f;
+	imagePos.y += (ImGui::GetContentRegionAvail().y - windowSize.y) * 0.5f;
+	
+	ImGui::SetCursorScreenPos(imagePos);
 	ImGui::Image(ImTextureID(texture->GetGPUDescriptorHandle().ptr), windowSize);
 
 	ImGui::End();
