@@ -6,11 +6,6 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 
-/// shader
-#include "Engine/Graphics/Pipelines/Primitive/Line2DRenderingPipeline.h"
-#include "Engine/Graphics/Pipelines/Mesh/MeshRenderingPipeline.h"
-
-
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
 
@@ -68,6 +63,8 @@ void RenderingFramework::Draw() {
 
 #endif // _DEBUG
 
+	/// post processの実行
+	renderingPipelineCollection_->ExecutePostProcess();
 
 	/// commandの実行
 	dxManager_->GetDxCommand()->CommandExecute();

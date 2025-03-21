@@ -16,10 +16,13 @@ bool Shader::CompileShader(const std::wstring& _filePath, const wchar_t* _profil
 	switch(_type) {
 	case Shader::Type::vs:
 		vs_ = shader;
-		break;
+		return true;
 	case Shader::Type::ps:
 		ps_ = shader;
-		break;
+		return true;
+	case Shader::Type::cs:
+		cs_ = shader;
+		return true;
 	}
 
 

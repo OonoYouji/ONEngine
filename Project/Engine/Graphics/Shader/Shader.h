@@ -24,7 +24,7 @@ public:
 	/// ===================================================
 
 	enum class Type {
-		vs, ps,
+		vs, ps, cs
 	};
 
 
@@ -57,6 +57,7 @@ public:
 
 	ComPtr<IDxcBlob> vs_ = nullptr;
 	ComPtr<IDxcBlob> ps_ = nullptr;
+	ComPtr<IDxcBlob> cs_ = nullptr;
 
 	class ShaderCompiler* pShaderCompiler_ = nullptr;
 
@@ -69,5 +70,6 @@ public:
 
 	IDxcBlob* GetVS() const { return vs_.Get(); }
 	IDxcBlob* GetPS() const { return ps_.Get(); }
+	IDxcBlob* GetCS() const { return cs_.Get(); }
 
 };

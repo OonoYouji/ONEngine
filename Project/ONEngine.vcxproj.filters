@@ -74,6 +74,9 @@
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -155,5 +158,8 @@
     <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
   </ItemGroup>
 </Project>
