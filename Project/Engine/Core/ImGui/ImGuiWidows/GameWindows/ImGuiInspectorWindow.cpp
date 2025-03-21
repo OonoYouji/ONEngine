@@ -10,6 +10,5 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 		return;
 	}
 
-
 	ImGui::End();
 }

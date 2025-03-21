@@ -40,12 +40,6 @@ void ImGuiGameWindow::ImGuiFunc() {
 	ImGuiID dockspaceID = ImGui::GetID("GameDockingSpace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
 
-	///// ウィンドウの描画
-	//ImGui::SetWindowPos("Game", ImVec2(0, 20), ImGuiCond_Always);
-	//ImGui::SetWindowSize("Game", ImVec2(1280, 700), ImGuiCond_Always);
-	//ImGui::SetWindowFocus(nullptr);
-
-
 	UpdateChildren();
 
 	ImGui::End();

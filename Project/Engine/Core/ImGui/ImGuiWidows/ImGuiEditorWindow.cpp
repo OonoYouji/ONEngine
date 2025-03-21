@@ -20,9 +20,10 @@ void ImGuiEditorWindow::ImGuiFunc() {
 		return;
 	}
 
-
 	ImGuiID dockspaceID = ImGui::GetID("EditorDockingSpace");
 	ImGui::DockSpace(dockspaceID, ImVec2(0.0f, 0.0f));
+
+	UpdateChildren();
 
 	ImGui::End();
 }
