@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 void ImGuiGameSceneWindow::ImGuiFunc() {
-	if (!ImGui::Begin("GameScene", nullptr, 0)) {
+	if (!ImGui::Begin("GameScene")) {
 		ImGui::End();
 		return;
 	}

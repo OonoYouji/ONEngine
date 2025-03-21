@@ -15,7 +15,7 @@ ImGuiProjectWindow::ImGuiProjectWindow() {
 }
 
 void ImGuiProjectWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Project", nullptr, 0)) {
+	if (!ImGui::Begin("Project")) {
 		ImGui::End();
 		return;
 	}

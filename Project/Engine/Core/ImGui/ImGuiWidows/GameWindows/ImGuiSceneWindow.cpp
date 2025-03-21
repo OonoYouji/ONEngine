@@ -7,7 +7,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 void ImGuiSceneWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Scene", nullptr, 0)) {
+	if (!ImGui::Begin("Scene")) {
 		ImGui::End();
 		return;
 	}

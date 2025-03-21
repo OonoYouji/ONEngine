@@ -18,14 +18,14 @@ ImGuiWindowCollection::ImGuiWindowCollection(EntityCollection* _entityCollection
 	/// ここでwindowを生成する
 	AddWindow(std::make_unique<ImGuiMainWindow>());
 
-	AddWindow(std::make_unique<ImGuiGameWindow>());
+	//AddWindow(std::make_unique<ImGuiGameWindow>());
 	AddWindow(std::make_unique<ImGuiProjectWindow>());
 	AddWindow(std::make_unique<ImGuiGameSceneWindow>());
 	AddWindow(std::make_unique<ImGuiSceneWindow>(resourceCollection_));
 	AddWindow(std::make_unique<ImGuiInspectorWindow>());
 	AddWindow(std::make_unique<ImGuiHierarchyWindow>(entityCollection_));
 	
-	AddWindow(std::make_unique<ImGuiEditorWindow>());
+	//AddWindow(std::make_unique<ImGuiEditorWindow>());
 }
 
 

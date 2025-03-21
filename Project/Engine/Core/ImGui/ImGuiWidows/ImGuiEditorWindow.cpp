@@ -8,9 +8,14 @@ ImGuiEditorWindow::~ImGuiEditorWindow() {}
 
 
 void ImGuiEditorWindow::ImGuiFunc() {
+	
+
 	if (!ImGui::Begin("Editor")) {
 		ImGui::End();
 		return;
 	}
+
+	
+
 	ImGui::End();
 }

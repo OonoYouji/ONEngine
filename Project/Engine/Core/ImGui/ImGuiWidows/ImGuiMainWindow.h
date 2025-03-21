@@ -23,9 +23,17 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	void FileMenu();
+	void MainMenu();
 
 	void EffectMenu();
+
+
+private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+	int currentMenuIndex_ = 0;
 
 };
 

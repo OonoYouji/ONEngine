@@ -9,9 +9,6 @@ void ImGuiGameWindow::ImGuiFunc() {
 		return;
 	}
 
-	// ドッキングスペースの作成
-	ImGuiID dockspaceId = ImGui::GetID("game_dockspace");
-	ImGui::DockSpace(dockspaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
 
 	ImGui::End();
 }
