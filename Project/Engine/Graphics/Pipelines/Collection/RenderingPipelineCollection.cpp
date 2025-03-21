@@ -5,10 +5,10 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 /// pipelines
-#include "../Mesh/MeshRenderingPipeline.h"
-#include "../Primitive/Line2DRenderingPipeline.h"
-#include "../Primitive/Line3DRenderingPipeline.h"
-#include "../Sprite/SpriteRenderingPipeline.h"
+#include "../Render/Mesh/MeshRenderingPipeline.h"
+#include "../Render/Primitive/Line2DRenderingPipeline.h"
+#include "../Render/Primitive/Line3DRenderingPipeline.h"
+#include "../Render/Sprite/SpriteRenderingPipeline.h"
 
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityCollection* _entityCollection, GraphicsResourceCollection* _graphicsResourceCollection)

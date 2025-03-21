@@ -6,7 +6,7 @@
 #include <memory>
 
 /// engine
-#include "../Interface/IRenderingPipeline.h"
+#include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
