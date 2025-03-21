@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// エディターウィンドウ
 /// ///////////////////////////////////////////////////
-class ImGuiEditorWindow : public IImGuiWindow {
+class ImGuiEditorWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
 	/// public : methods   

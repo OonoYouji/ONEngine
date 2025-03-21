@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiSceneWindow
 /// ///////////////////////////////////////////////////
-class ImGuiSceneWindow : public IImGuiWindow {
+class ImGuiSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
 	/// public : methods

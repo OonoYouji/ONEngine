@@ -6,12 +6,13 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiGameWindow
 /// ///////////////////////////////////////////////////
-class ImGuiGameWindow : public IImGuiWindow {
+class ImGuiGameWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiGameWindow() {}
+
+	ImGuiGameWindow(class EntityCollection* _entityCollection, class GraphicsResourceCollection* _resourceCollection);
 	~ImGuiGameWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -21,6 +22,6 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-	
+
 };
 

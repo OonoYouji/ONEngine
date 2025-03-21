@@ -8,7 +8,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiProjectWindow
 /// ///////////////////////////////////////////////////
-class ImGuiProjectWindow : public IImGuiWindow {
+class ImGuiProjectWindow : public IImGuiChildWindow {
 	/// ===================================================
 	/// private : sub class
 	/// ===================================================

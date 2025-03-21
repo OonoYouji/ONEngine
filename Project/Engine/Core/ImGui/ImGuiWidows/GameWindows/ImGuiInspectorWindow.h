@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
 /// ///////////////////////////////////////////////////
-class ImGuiInspectorWindow : public IImGuiWindow {
+class ImGuiInspectorWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
 	/// public : methods

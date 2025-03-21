@@ -3,6 +3,7 @@
 /// std
 #include <vector>
 #include <memory>
+#include <string>
 
 
 /// ///////////////////////////////////////////////////
@@ -21,9 +22,15 @@ public:
 	void Update();
 
 	/// @brief windowの追加
-	void AddWindow(std::unique_ptr<class IImGuiWindow> _window) {
-		iImguiWindows_.push_back(std::move(_window));
-	}
+	void AddParentWindow(const std::string& _name, std::unique_ptr<class IImGuiParentWindow> _window);
+
+
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	void MainMenuUpdate();
 
 
 private:
@@ -31,25 +38,56 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::vector<std::unique_ptr<class IImGuiWindow>> iImguiWindows_;
+	std::vector<std::unique_ptr<class IImGuiParentWindow>> parentWindows_;
+	std::vector<std::string> parentWindowNames_;
+	int selectedMenuIndex_ = 0;
 
-	class EntityCollection* entityCollection_ = nullptr;
-	class GraphicsResourceCollection* resourceCollection_ = nullptr;
+
+	/// 何度も定義すると重たい一時変数
 
 };
 
 
 /// ///////////////////////////////////////////////////
-/// ImGuiWindow: Begin, Endをラップするクラス
+/// ImGuiの親windowクラス
 /// ///////////////////////////////////////////////////
-class IImGuiWindow {
+class IImGuiParentWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	virtual ~IImGuiWindow() = default;
+	virtual ~IImGuiParentWindow() = default;
+	virtual void ImGuiFunc() = 0;
 
-	/// @brief imgui windowの描画処理
+	/// @brief 子windowの更新
+	void UpdateChildren();
+
+	/// @brief 子windowの追加
+	/// @param _child 子window 
+	void AddChild(std::unique_ptr<class IImGuiChildWindow> _child) {
+		children_.push_back(std::move(_child));
+	}
+
+
+protected:
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
+
+	std::vector<std::unique_ptr<class IImGuiChildWindow>> children_;
+};
+
+
+/// ///////////////////////////////////////////////////
+/// ImGuiの子windowクラス
+/// ///////////////////////////////////////////////////
+class IImGuiChildWindow {
+public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	virtual ~IImGuiChildWindow() = default;
 	virtual void ImGuiFunc() = 0;
 };
