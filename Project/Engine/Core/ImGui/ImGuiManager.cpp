@@ -38,6 +38,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080);
+	//imGuiID.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
@@ -71,6 +72,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_, resourceCollection_);
+
+	//ImGui::DockSpaceOverViewport(ImGuiID(), ImGui::GetMainViewport());
 
 }
 

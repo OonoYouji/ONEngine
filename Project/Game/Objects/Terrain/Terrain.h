@@ -1,27 +1,29 @@
 #pragma once
 
 /// engine
-#include "Collection/ImGuiWindowCollection.h"
+#include "Engine/Entity/Interface/IEntity.h"
 
 /// ///////////////////////////////////////////////////
-/// ImGuiInspectorWindow
+/// 地形のオブジェクトクラス
 /// ///////////////////////////////////////////////////
-class ImGuiInspectorWindow : public IImGuiWindow {
+class Terrain : public IEntity {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow() {}
-	~ImGuiInspectorWindow() {}
+	Terrain();
+	~Terrain();
 
-	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
+	void Initialize() override;
+	void Update()     override;
 
 private:
 	/// ===================================================
-	/// private : methods
+	/// private : objects
 	/// ===================================================
+
+
 
 };
 

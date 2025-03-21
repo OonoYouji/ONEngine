@@ -5,7 +5,7 @@
 
 
 void ImGuiInspectorWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_NoMove)) {
+	if (!ImGui::Begin("Inspector", nullptr, 0)) {
 		ImGui::End();
 		return;
 	}

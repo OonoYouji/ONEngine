@@ -65,12 +65,15 @@
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -143,11 +146,14 @@
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiProjectWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiGameWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiInspectorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiHierarchyWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
+    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
   </ItemGroup>
 </Project>

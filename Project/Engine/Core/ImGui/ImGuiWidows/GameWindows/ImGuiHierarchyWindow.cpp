@@ -11,7 +11,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityCollection* _entityCollection)
 	: entityCollection_(_entityCollection) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_NoMove)) {
+	if (!ImGui::Begin("Hierarchy", nullptr, 0)) {
 		ImGui::End();
 		return;
 	}
