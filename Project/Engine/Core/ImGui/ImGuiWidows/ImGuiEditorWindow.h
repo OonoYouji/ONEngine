@@ -13,15 +13,16 @@ public:
 	/// ===================================================
 
 	ImGuiEditorWindow();
-	~ImGuiEditorWindow();
+	~ImGuiEditorWindow() {}
 
 	void ImGuiFunc() override;
 
 private:
 	/// ===================================================
-	/// private : methods
+	/// private : objects
 	/// ===================================================
 
+	int imGuiFlags_ = 0;
 
 };
 

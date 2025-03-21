@@ -30,8 +30,8 @@ ImGuiGameWindow::ImGuiGameWindow(EntityCollection* _entityCollection, GraphicsRe
 
 void ImGuiGameWindow::ImGuiFunc() {
 
-	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(1280, 700), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(1280, 700), ImGuiCond_Appearing);
 	if (!ImGui::Begin("Game", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;
