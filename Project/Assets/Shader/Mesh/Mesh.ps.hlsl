@@ -18,7 +18,9 @@ PSOutput main(VSOutput input) {
 	float4 textureColor  = textures[textureIds[input.instanceId].id].Sample(textureSampler, input.uv);
 	float4 materialColor = materials[input.instanceId].color;
 	
-	output.color = textureColor * materialColor;
+	output.color         = textureColor * materialColor;
+	output.worldPosition = input.worldPosition;
+	output.normal        = float4(input.normal, 1.0f);
 
 	if (output.color.a == 0.0f) { ///< alpha == 0.0f ? pixel discard
 		discard;

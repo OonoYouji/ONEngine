@@ -68,8 +68,10 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		depthStencilDesc.DepthFunc                      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->SetRTVNum(1);
-		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
+		pipeline_->SetRTVNum(3); /// 色、ワールド座標、法線
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 

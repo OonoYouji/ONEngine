@@ -119,6 +119,9 @@ void GraphicsPipeline::SetRTVFormats(const std::vector<DXGI_FORMAT>& _rtvFormats
 
 void GraphicsPipeline::SetRTVFormat(DXGI_FORMAT _rtvFormat, uint32_t _rtvIndex) {
 	Assert(_rtvIndex < rtvNum_, "out of range...");
+	if (rtvFormats_.size() <= _rtvIndex) {
+		rtvFormats_.resize(_rtvIndex + 1);
+	}
 	rtvFormats_[_rtvIndex] = _rtvFormat;
 }
 
