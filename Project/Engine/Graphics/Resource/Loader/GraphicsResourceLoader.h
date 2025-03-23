@@ -54,6 +54,7 @@ private:
 	/// @param _dxDevice DxDeviceのポインタ
 	/// @param _metadata TextureMetadata 構造体への参照
 	/// @return texture resource
+	[[nodiscard]]
 	DxResource CreateTextureResource(class DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata);
 
 	/// @brief texture dataをアップロードする

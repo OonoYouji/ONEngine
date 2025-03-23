@@ -52,6 +52,10 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		_dxManager->GetDxCommand()
 	);
+
+	/// command exe
+	_dxManager->GetDxCommand()->CommandExecute();
+	_dxManager->GetDxCommand()->CommandReset();
 }
 
 void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
@@ -63,17 +67,32 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 	command->ClearRenderTargetView(rtvHandle_.cpuHandle, &clearColor_.x, 0, nullptr);
 }
 
-void RenderTexture::Begin(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap) {
+void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<class RenderTexture>>& _others) {
+	auto command = _dxCommand->GetCommandList();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = _dxDSVHeap->GetCPUDescriptorHandel(0);
+
+	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
+	for (auto& rt : _others) {
+		rtvHandles.push_back(rt->rtvHandle_.cpuHandle);
+	}
+
+	command->OMSetRenderTargets(static_cast<UINT>(rtvHandles.size()), rtvHandles.data(), FALSE, &dsvHandle);
+	command->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+	for (auto& rt : _others) {
+		command->ClearRenderTargetView(rt->rtvHandle_.cpuHandle, &rt->clearColor_.x, 0, nullptr);
+	}
+}
+
+void RenderTexture::CreateBarrierRenderTarget(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		_dxCommand
 	);
-
-	SetRenderTarget(_dxCommand, _dxDSVHeap);
 }
 
-void RenderTexture::End(DxCommand* _dxCommand) {
+void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,

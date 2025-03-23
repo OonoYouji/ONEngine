@@ -42,7 +42,7 @@ private:
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
-	std::unique_ptr<RenderTexture>               renderTexture_;
+	std::vector<std::unique_ptr<RenderTexture>>  renderTextures_;
 
 	DxManager*                                   dxManager_        = nullptr;
 	WindowManager*                               windowManager_    = nullptr;

@@ -35,7 +35,7 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filePath);
 	const DirectX::TexMetadata& metadata     = scratchImage.GetMetadata();
 
-	texture->dxResource_            = CreateTextureResource(dxManager_->GetDxDevice(), metadata);
+	texture->dxResource_            = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
 	DxResource intermediateResource = UploadTextureData(texture->dxResource_.Get(), scratchImage);
 
 	dxManager_->GetDxCommand()->CommandExecute();

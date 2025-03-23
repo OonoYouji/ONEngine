@@ -21,12 +21,19 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
 	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
-	renderTexture_ = std::make_unique<RenderTexture>();
+
+	renderTextures_.resize(3);
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture = std::make_unique<RenderTexture>();
+	}
+
 
 	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
 
-	renderTexture_->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[1]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
 
 }
 
@@ -43,9 +50,29 @@ void RenderingFramework::Draw() {
 	//if (imGuiManager_->GetIsGameDebug()) {
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
 
-	renderTexture_->Begin(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+
+	/* 
+	* [TODO: このCreateBarrierRenderTargetで発生しているエラーを解決する]
+	* 配列のindex0は問題なく動作するが、index1以降でエラーが発生する
+	*/
+
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	}
+
+	//rendererTextures_[0]->SetRenderTarget(
+	//	dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+	//	rendererTextures_
+	//);
+	renderTextures_[0]->SetRenderTarget(
+		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap()
+	);
+
 	renderingPipelineCollection_->DrawEntities();
-	renderTexture_->End(dxManager_->GetDxCommand());
+
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	}
 
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
 	//}

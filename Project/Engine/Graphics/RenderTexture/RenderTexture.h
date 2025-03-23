@@ -33,13 +33,19 @@ public:
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
 	void SetRenderTarget(class DxCommand* _dxCommand, class DxDSVHeap* _dxDSVHeap);
 
-	/// @brief render textureの開始
+	/// @brief 複数のrender targetとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
-	void Begin(class DxCommand* _dxCommand, class DxDSVHeap* _dxDSVHeap);
+	/// @param _dxDSVHeap DxDSVHeapのインスタンスへのポインタ
+	/// @param _other 他のrender textureのvector
+	void SetRenderTarget(class DxCommand* _dxCommand, class DxDSVHeap* _dxDSVHeap, const std::vector<std::unique_ptr<class RenderTexture>>& _other);
 
-	/// @brief render textureの終了
+	/// @brief render textureとして設定
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
-	void End(class DxCommand* _dxCommand);
+	void CreateBarrierRenderTarget(class DxCommand* _dxCommand);
+
+	/// @brief srvとして設定
+	/// @param _dxCommand DxCommandのインスタンスへのポインタ
+	void CreateBarrierPixelShaderResource(class DxCommand* _dxCommand);
 
 private:
 	/// ===================================================
