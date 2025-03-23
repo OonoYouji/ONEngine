@@ -32,7 +32,7 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	resourceCollection_->Initialize(dxManager_);
 
 	renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
-	renderTextures_[1]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
 	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
 
 }
