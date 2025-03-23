@@ -55,6 +55,9 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
+		pipeline_->SetRTVNum(1);
+		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
+
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
 	}

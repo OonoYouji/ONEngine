@@ -108,8 +108,18 @@ void GraphicsPipeline::SetBlendDesc(const D3D12_BLEND_DESC& _desc) {
 }
 
 void GraphicsPipeline::SetRTVNum(uint32_t _rtvNum) {
-	Assert(_rtvNum <= 8, "error..."); /// RTVの数は8以下
+	Assert(_rtvNum <= 8, "the number of rtv is less than 8"); /// RTVの数は8以下
 	rtvNum_ = _rtvNum;
+}
+
+void GraphicsPipeline::SetRTVFormats(const std::vector<DXGI_FORMAT>& _rtvFormats) {
+	Assert(_rtvFormats.size() <= 8, "the number of rtv is less than 8"); /// RTVの数は8以下
+	rtvFormats_ = _rtvFormats;
+}
+
+void GraphicsPipeline::SetRTVFormat(DXGI_FORMAT _rtvFormat, uint32_t _rtvIndex) {
+	Assert(_rtvIndex < rtvNum_, "out of range...");
+	rtvFormats_[_rtvIndex] = _rtvFormat;
 }
 
 void GraphicsPipeline::SetPipelineStateForCommandList(DxCommand* _dxCommand) {
@@ -190,7 +200,8 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 
 	desc.NumRenderTargets = rtvNum_;
 	for(uint32_t i = 0; i < rtvNum_; ++i) {
-		desc.RTVFormats[i] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		Assert(rtvFormats_.size() > i, "out of range...");
+		desc.RTVFormats[i] = rtvFormats_[i];
 	}
 
 	desc.PrimitiveTopologyType = primitiveTopologyType_;

@@ -92,6 +92,15 @@ public:
 	/// @param _rtvNum rtvの数
 	void SetRTVNum(uint32_t _rtvNum);
 
+	/// @brief rtvのフォーマットを設定する
+	/// @param _rtvFormats rtvのフォーマットarray
+	void SetRTVFormats(const std::vector<DXGI_FORMAT>& _rtvFormats);
+
+	/// @brief rtvのフォーマットを設定する
+	/// @param _rtvFormat rtvのフォーマット
+	/// @param _rtvIndex setするrtvのインデックス
+	void SetRTVFormat(DXGI_FORMAT _rtvFormat, uint32_t _rtvIndex);
+
 	/// @brief コマンドリストにパイプラインステートをセットする
 	/// @param _dxCommand command listを管理しているクラスへのポインタ
 	void SetPipelineStateForCommandList(class DxCommand* _dxCommand);
@@ -138,5 +147,5 @@ private:
 	/// pipeline settings
 	std::optional<D3D12_DEPTH_STENCIL_DESC> depthStancilDesc_;
 	uint32_t                                rtvNum_ = 1;
-
+	std::vector<DXGI_FORMAT>                rtvFormats_;
 };
