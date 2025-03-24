@@ -49,11 +49,6 @@ void RenderingFramework::Draw() {
 
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
 
-	/* 
-	* [TODO: このCreateBarrierRenderTargetで発生しているエラーを解決する]
-	* 配列のindex0は問題なく動作するが、index1以降でエラーが発生する
-	*/
-
 	for (auto& renderTexture : renderTextures_) {
 		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
 	}
