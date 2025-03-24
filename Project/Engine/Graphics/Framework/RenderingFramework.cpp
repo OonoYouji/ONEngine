@@ -56,17 +56,18 @@ void RenderingFramework::Draw() {
 	* 配列のindex0は問題なく動作するが、index1以降でエラーが発生する
 	*/
 
-	for (auto& renderTexture : renderTextures_) {
-		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	}
+	//for (auto& renderTexture : renderTextures_) {
+	//	renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	//}
+	renderTextures_[0]->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
 
 	//rendererTextures_[0]->SetRenderTarget(
 	//	dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
 	//	rendererTextures_
 	//);
-	renderTextures_[0]->SetRenderTarget(
-		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap()
-	);
+	//renderTextures_[0]->SetRenderTarget(
+	//	dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap()
+	//);
 
 	renderingPipelineCollection_->DrawEntities();
 
