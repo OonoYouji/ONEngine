@@ -31,9 +31,9 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
 
-	renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
-	renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
-	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "scene", dxManager_, resourceCollection_.get());
+	renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "worldPosition", dxManager_, resourceCollection_.get());
+	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "normal", dxManager_, resourceCollection_.get());
 
 }
 
@@ -47,27 +47,21 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 #ifdef _DEBUG /// imguiの描画
 
-	//if (imGuiManager_->GetIsGameDebug()) {
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
-
 
 	/* 
 	* [TODO: このCreateBarrierRenderTargetで発生しているエラーを解決する]
 	* 配列のindex0は問題なく動作するが、index1以降でエラーが発生する
 	*/
 
-	//for (auto& renderTexture : renderTextures_) {
-	//	renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	//}
-	renderTextures_[0]->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	}
 
-	//rendererTextures_[0]->SetRenderTarget(
-	//	dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
-	//	rendererTextures_
-	//);
-	//renderTextures_[0]->SetRenderTarget(
-	//	dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap()
-	//);
+	renderTextures_[0]->SetRenderTarget(
+		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+		renderTextures_
+	);
 
 	renderingPipelineCollection_->DrawEntities();
 
@@ -76,12 +70,10 @@ void RenderingFramework::Draw() {
 	}
 
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
-	//}
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
 	windowManager_->MainWindowPostDraw();
-
 
 #else
 

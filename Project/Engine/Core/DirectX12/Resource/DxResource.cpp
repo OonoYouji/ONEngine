@@ -80,19 +80,6 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), _before, _after, _dxCommand);
-	//if (_before == _after) {
-	//	return;
-	//}
-
-	//D3D12_RESOURCE_BARRIER barrier{};
-	//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	//barrier.Transition.pResource = resource_.Get();
-	//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	//barrier.Transition.StateBefore = _before;
-	//barrier.Transition.StateAfter = _after;
-
-	//_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }
 
 

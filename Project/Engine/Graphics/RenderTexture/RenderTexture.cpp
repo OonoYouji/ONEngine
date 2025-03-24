@@ -4,13 +4,13 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
 	clearColor_ = _clearColor;
 
 	{	/// textureの作成
 		std::unique_ptr<Texture> rtvTexture = std::make_unique<Texture>();
 		texture_ = rtvTexture.get();
-		_resourceCollection->AddTexture("scene", std::move(rtvTexture));
+		_resourceCollection->AddTexture(_name, std::move(rtvTexture));
 	}
 
 	/// 必要なオブジェクトの取得
