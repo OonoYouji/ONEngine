@@ -78,8 +78,8 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 	}
 
+	auto& textures = _resourceCollection->GetTextures();
 	{	/// set textures
-		auto& textures = _resourceCollection->GetTextures();
 
 		textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
 		textureIndices_[1] = _resourceCollection->GetTextureIndex("normal");
@@ -90,8 +90,20 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetGPUDescriptorHandle());
 		}
 	}
-
-
+	
+	/// uav textureのbarrier遷移
+	textures[textureIndices_[3]]->GetDxResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
 
 	command->Dispatch(1280 / 32, 720 / 32, 1);
+
+	/// uav textureのbarrier遷移
+	textures[textureIndices_[3]]->GetDxResource().CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		_dxCommand
+	);
 }

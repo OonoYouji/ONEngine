@@ -121,7 +121,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 
 	/// UAV texture resourceの作成
 	uavTextureResource.CreateUAVTextureResource(
-		dxDevice, Vector2(1280.0f, 720.0f), DXGI_FORMAT_R8G8B8A8_UNORM
+		dxDevice, Vector2(1280.0f, 720.0f), DXGI_FORMAT_R32G32B32A32_FLOAT
 	);
 
 	uint32_t uavHeapIndex = dxSRVHeap->AllocateTexture();
@@ -129,7 +129,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 	uavHandle_.gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(uavHeapIndex);
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
-	uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	uavDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	dxDevice->GetDevice()->CreateUnorderedAccessView(uavTextureResource.Get(), nullptr, &uavDesc, uavHandle_.cpuHandle);
 
@@ -139,7 +139,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 	texture_->SetGPUDescriptorHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVHeapIndex()));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
