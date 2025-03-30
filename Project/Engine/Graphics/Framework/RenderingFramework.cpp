@@ -35,6 +35,8 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "worldPosition", dxManager_, resourceCollection_.get());
 	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "normal", dxManager_, resourceCollection_.get());
 
+	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
+	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
 }
 
 void RenderingFramework::Draw() {

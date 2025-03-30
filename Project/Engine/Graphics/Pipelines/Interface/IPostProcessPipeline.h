@@ -24,7 +24,7 @@ public:
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
 
 	/// @brief post processの実行
-	virtual void Execute(class DxCommand* _dxCommand) = 0;
+	virtual void Execute(class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) = 0;
 
 protected:
 	/// ===================================================

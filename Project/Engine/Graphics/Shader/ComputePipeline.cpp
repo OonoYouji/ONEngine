@@ -1,4 +1,5 @@
 #include "ComputePipeline.h"
+#include <iostream>
 
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
@@ -10,6 +11,9 @@ ComputePipeline::ComputePipeline() {}
 ComputePipeline::~ComputePipeline() {}
 
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {
+
+	std::string message = std::to_string(rootParameters_.size());
+	Log("root parameter size : " + message);
 
 	CreateRootSignature(_dxDevice);
 	CreatePipelineStateObject(_dxDevice);
@@ -52,7 +56,7 @@ void ComputePipeline::AddDescriptorRange(uint32_t _baseShaderRegister, uint32_t 
 }
 
 void ComputePipeline::AddDescriptorTable(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _descriptorIndex) {
-	Assert(descriptorRanges_.size() >= _descriptorIndex, "out of range...");
+	Assert(descriptorRanges_.size() > _descriptorIndex, "out of range...");
 
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;

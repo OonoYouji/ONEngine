@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
@@ -32,13 +33,30 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
-	
+
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
 }
 
-void PostProcessLighting::Execute(DxCommand* _dxCommand) {
+void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
- 	_dxCommand->GetCommandList()->Dispatch(1280 / 32, 720 / 32, 1);
+
+	auto command = _dxCommand->GetCommandList();
+
+	auto& textures = _resourceCollection->GetTextures();
+
+	textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
+	textureIndices_[1] = _resourceCollection->GetTextureIndex("normal");
+	textureIndices_[2] = _resourceCollection->GetTextureIndex("worldPosition");
+	textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
+
+	for (uint32_t index = 0; index < 4; ++index) {
+		command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetGPUDescriptorHandle());
+	}
+
+	// Set UAV
+	//command->SetGraphicsRootDescriptorTable(3, textures_[3]->GetGPUDescriptorHandle());
+
+	command->Dispatch(1280 / 32, 720 / 32, 1);
 }

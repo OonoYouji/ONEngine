@@ -38,6 +38,6 @@ void RenderingPipelineCollection::DrawEntities() {
 
 void RenderingPipelineCollection::ExecutePostProcess() {
 	for (auto& postProcess : postProcesses_) {
-		postProcess->Execute(dxManager_->GetDxCommand());
+		postProcess->Execute(dxManager_->GetDxCommand(), graphicsResourceCollection_);
 	}
 }

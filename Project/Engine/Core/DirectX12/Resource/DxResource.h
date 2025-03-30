@@ -55,6 +55,16 @@ public:
 		const Vector4& _clearColor
 	);
 
+	/// @brief unordered access view texture resourceを作成する
+	/// @param _dxDevice DxDeviceのインスタンスへのポインタ
+	/// @param _size texture size
+	/// @param _format dxgi format
+	void CreateUAVTextureResource(
+		class DxDevice* _dxDevice,
+		const Vector2& _size,
+		DXGI_FORMAT _format
+	);
+
 	/// @brief リソースのバリアーを作成する
 	/// @param _before 前の状態
 	/// @param _after 変更後の状態

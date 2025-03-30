@@ -1,5 +1,10 @@
 #pragma once
 
+///std
+#include <array>
+#include <string>
+
+/// engine
 #include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
 
 /// ///////////////////////////////////////////////////
@@ -20,12 +25,13 @@ public:
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) override;
 	
 	/// @brief post processの実行
-	void Execute(class DxCommand* _dxCommand) override;
+	void Execute(class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) override;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	std::array<size_t, 4> textureIndices_;
 };
 

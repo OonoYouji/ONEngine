@@ -99,3 +99,60 @@ void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 		_dxCommand
 	);
 }
+
+
+
+/// ///////////////////////////////////////////////////
+/// UAVTexture
+/// ///////////////////////////////////////////////////
+
+UAVTexture::UAVTexture() {}
+UAVTexture::~UAVTexture() {}
+
+void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
+	std::unique_ptr<Texture> uavTexture = std::make_unique<Texture>();
+	texture_ = uavTexture.get();
+	_resourceCollection->AddTexture(_textureName, std::move(uavTexture));
+
+	/// 必要なオブジェクトの取得
+	DxDevice* dxDevice = _dxManager->GetDxDevice();
+	DxSRVHeap* dxSRVHeap = _dxManager->GetDxSRVHeap();
+	DxResource& uavTextureResource = texture_->GetDxResource();
+
+	/// UAV texture resourceの作成
+	uavTextureResource.CreateUAVTextureResource(
+		dxDevice, Vector2(1280.0f, 720.0f), DXGI_FORMAT_R8G8B8A8_UNORM
+	);
+
+	uint32_t uavHeapIndex = dxSRVHeap->AllocateTexture();
+	uavHandle_.cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(uavHeapIndex);
+	uavHandle_.gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(uavHeapIndex);
+
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+	uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+	dxDevice->GetDevice()->CreateUnorderedAccessView(uavTextureResource.Get(), nullptr, &uavDesc, uavHandle_.cpuHandle);
+
+	// shader resource viewの作成
+	texture_->SetSRVHeapIndex(dxSRVHeap->AllocateTexture());
+	texture_->SetCPUDescriptorHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVHeapIndex()));
+	texture_->SetGPUDescriptorHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVHeapIndex()));
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	dxDevice->GetDevice()->CreateShaderResourceView(uavTextureResource.Get(), &srvDesc, texture_->GetCPUDescriptorHandle());
+
+	uavTextureResource.CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		_dxManager->GetDxCommand()
+	);
+
+	/// command exe
+	_dxManager->GetDxCommand()->CommandExecute();
+	_dxManager->GetDxCommand()->CommandReset();
+}
