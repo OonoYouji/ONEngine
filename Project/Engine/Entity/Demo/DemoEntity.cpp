@@ -6,7 +6,6 @@
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
-#include "Engine/Component/Transform/Transform.h"
 
 void DemoEntity::Initialize() {
 

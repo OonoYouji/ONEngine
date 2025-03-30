@@ -104,7 +104,7 @@ void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, [[may
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 
 	/// draw call

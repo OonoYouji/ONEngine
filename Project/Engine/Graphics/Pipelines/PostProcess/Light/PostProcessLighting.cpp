@@ -1,8 +1,13 @@
 #include "PostProcessLighting.h"
 
+/// std
+#include <list>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/Component/ComputeComponents/Light/Light.h"
 
 PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
@@ -37,26 +42,56 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
+
+	{
+		/// constant buffer
+		directionalLightBufferData_ = std::make_unique<ConstantBuffer<DirectionalLightBufferData>>();
+		directionalLightBufferData_->Create(_dxManager->GetDxDevice());
+
+		cameraBufferData_ = std::make_unique<ConstantBuffer<CameraBufferData>>();
+		cameraBufferData_->Create(_dxManager->GetDxDevice());
+
+	}
+
 }
 
-void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
+void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityCollection* _entityCollection) {
+
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
 
-	auto& textures = _resourceCollection->GetTextures();
+	{	/// set constant buffers
+		std::list<DirectionalLight*> directionalLights;
+		for (auto& entity : _entityCollection->GetEntities()) {
+			auto light = entity->GetComponent<DirectionalLight>();
+			if (light) {
+				directionalLights.push_back(light);
+			}
+		}
 
-	textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
-	textureIndices_[1] = _resourceCollection->GetTextureIndex("normal");
-	textureIndices_[2] = _resourceCollection->GetTextureIndex("worldPosition");
-	textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
+		directionalLightBufferData_->SetMappingData({ Vector3::kZero, 0.0f, Vector4::kWhite });
+		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
-	for (uint32_t index = 0; index < 4; ++index) {
-		command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetGPUDescriptorHandle());
+		cameraBufferData_->SetMappingData({ Vector4::kZero });
+		cameraBufferData_->BindForComputeCommandList(command, 1);
+
 	}
 
-	// Set UAV
-	//command->SetGraphicsRootDescriptorTable(3, textures_[3]->GetGPUDescriptorHandle());
+	{	/// set textures
+		auto& textures = _resourceCollection->GetTextures();
+
+		textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
+		textureIndices_[1] = _resourceCollection->GetTextureIndex("normal");
+		textureIndices_[2] = _resourceCollection->GetTextureIndex("worldPosition");
+		textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
+
+		for (uint32_t index = 0; index < 4; ++index) {
+			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetGPUDescriptorHandle());
+		}
+	}
+
+
 
 	command->Dispatch(1280 / 32, 720 / 32, 1);
 }

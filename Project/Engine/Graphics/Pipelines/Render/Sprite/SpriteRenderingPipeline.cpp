@@ -146,7 +146,7 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	commandList->IASetIndexBuffer(&ibv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0); ///< view projection
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0); ///< view projection
 	
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();

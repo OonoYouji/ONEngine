@@ -18,6 +18,8 @@ const Vector4 Vector4::kRed   = { 1,0,0,1 };
 const Vector4 Vector4::kGreen = { 0,1,0,1 };
 const Vector4 Vector4::kBlue  = { 0,0,1,1 };
 
+const Vector4 Vector4::kZero = { 0,0,0,0 };
+
 
 Vector4::Vector4() {
 	this->x = 0.0f;

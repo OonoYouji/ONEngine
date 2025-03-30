@@ -35,6 +35,8 @@ public:
 	static const Vector4 kRed;
 	static const Vector4 kGreen;
 	static const Vector4 kBlue;
+
+	static const Vector4 kZero;
 	
 	
 	/// @brief Vector4の線形補間

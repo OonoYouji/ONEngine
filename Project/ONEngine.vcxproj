@@ -73,6 +73,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
+    <ClCompile Include="Engine\Component\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -85,7 +86,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Engine\Component\RendererComponents\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\Component\Transform\Transform.cpp" />
+    <ClCompile Include="Engine\Component\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
@@ -152,7 +153,7 @@
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
-    <ClInclude Include="Engine\Component\Transform\Transform.h" />
+    <ClInclude Include="Engine\Component\ComputeComponents\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.h" />
     <ClInclude Include="Engine\Component\RendererComponents\Primitive\Line3DRenderer.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
+    <ClInclude Include="Engine\Component\ComputeComponents\Light\Light.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

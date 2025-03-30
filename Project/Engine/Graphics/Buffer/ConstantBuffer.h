@@ -23,10 +23,15 @@ public:
 	/// @param _dxDevice DxDeviceへのポインタ
 	void Create(DxDevice* _dxDevice);
 
-	/// @brief 
-	/// @param _commandList 
-	/// @param _rootParameterIndex 
-	void BindForCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
+	/// @brief graphics pipeline にバインド
+	/// @param _commandList ID3D12GraphicsCommandList
+	/// @param _rootParameterIndex root parameter index
+	void BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
+
+	/// @brief compute pipeline にバインド
+	/// @param _commandList ID3D12GraphicsCommandList
+	/// @param _rootParameterIndex root parameter index
+	void BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex);
 
 private:
 
@@ -70,8 +75,13 @@ inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
 }
 
 template<typename T>
-inline void ConstantBuffer<T>::BindForCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
+inline void ConstantBuffer<T>::BindForGraphicsCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
 	_commandList->SetGraphicsRootConstantBufferView(_rootParameterIndex, constantBuffer_.Get()->GetGPUVirtualAddress());
+}
+
+template<typename T>
+inline void ConstantBuffer<T>::BindForComputeCommandList(ID3D12GraphicsCommandList* _commandList, UINT _rootParameterIndex) {
+	_commandList->SetComputeRootConstantBufferView(_rootParameterIndex, constantBuffer_.Get()->GetGPUVirtualAddress());
 }
 
 template<typename T>

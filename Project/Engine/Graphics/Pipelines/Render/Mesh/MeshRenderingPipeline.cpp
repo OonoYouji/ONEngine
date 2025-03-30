@@ -4,7 +4,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/Transform/Transform.h"
+#include "Engine/Component/ComputeComponents/Transform/Transform.h"
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 
 
@@ -118,7 +118,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();

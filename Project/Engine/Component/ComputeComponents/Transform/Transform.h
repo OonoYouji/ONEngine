@@ -4,7 +4,7 @@
 #include <memory>
 
 /// engine
-#include "../Interface/IComponent.h"
+#include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 

@@ -113,7 +113,7 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	/// buffer
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
