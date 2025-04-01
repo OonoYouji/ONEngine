@@ -122,7 +122,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetGPUDescriptorHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
 
 
 	size_t transformIndex = 0; ///< transform buffer の index
@@ -148,7 +148,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 			textureIdBuffer_->SetMappedData(
 				transformIndex,
-				textures[textureIndex]->GetSRVHeapIndex()
+				textures[textureIndex]->GetSRVDescriptorIndex()
 			);
 
 			/// transform のセット

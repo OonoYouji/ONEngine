@@ -34,9 +34,10 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 
 	/// shader resource viewの作成
-	texture_->SetSRVHeapIndex(dxSRVHeap->AllocateTexture());
-	texture_->SetCPUDescriptorHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVHeapIndex()));
-	texture_->SetGPUDescriptorHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVHeapIndex()));
+	texture_->CreateEmptySRVHandle();
+	texture_->SetSRVDescriptorIndex(dxSRVHeap->AllocateTexture());
+	texture_->SetSRVCPUHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVDescriptorIndex()));
+	texture_->SetSRVGPUHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVDescriptorIndex()));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = _format;
@@ -44,7 +45,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	dxDevice->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &srvDesc, texture_->GetCPUDescriptorHandle());
+	dxDevice->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &srvDesc, texture_->GetSRVCPUHandle());
 
 
 	renderTextureResource.CreateBarrier(
@@ -124,19 +125,21 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 		dxDevice, Vector2(1280.0f, 720.0f), DXGI_FORMAT_R32G32B32A32_FLOAT
 	);
 
-	uint32_t uavHeapIndex = dxSRVHeap->AllocateTexture();
-	uavHandle_.cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(uavHeapIndex);
-	uavHandle_.gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(uavHeapIndex);
+	texture_->CreateEmptyUAVHandle();
+	texture_->SetUAVDescriptorIndex(dxSRVHeap->AllocateTexture());
+	texture_->SetUAVCPUHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetUAVDescriptorIndex()));
+	texture_->SetUAVGPUHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetUAVDescriptorIndex()));
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
 	uavDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
-	dxDevice->GetDevice()->CreateUnorderedAccessView(uavTextureResource.Get(), nullptr, &uavDesc, uavHandle_.cpuHandle);
+	dxDevice->GetDevice()->CreateUnorderedAccessView(uavTextureResource.Get(), nullptr, &uavDesc, texture_->GetUAVCPUHandle());
 
-	// shader resource viewの作成
-	texture_->SetSRVHeapIndex(dxSRVHeap->AllocateTexture());
-	texture_->SetCPUDescriptorHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVHeapIndex()));
-	texture_->SetGPUDescriptorHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVHeapIndex()));
+	/// shader resource viewの作成
+	texture_->CreateEmptySRVHandle();
+	texture_->SetSRVDescriptorIndex(dxSRVHeap->AllocateTexture());
+	texture_->SetSRVCPUHandle(dxSRVHeap->GetCPUDescriptorHandel(texture_->GetSRVDescriptorIndex()));
+	texture_->SetSRVGPUHandle(dxSRVHeap->GetGPUDescriptorHandel(texture_->GetSRVDescriptorIndex()));
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -144,7 +147,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	dxDevice->GetDevice()->CreateShaderResourceView(uavTextureResource.Get(), &srvDesc, texture_->GetCPUDescriptorHandle());
+	dxDevice->GetDevice()->CreateShaderResourceView(uavTextureResource.Get(), &srvDesc, texture_->GetSRVCPUHandle());
 
 	uavTextureResource.CreateBarrier(
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,

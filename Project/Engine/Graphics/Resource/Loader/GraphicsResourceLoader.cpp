@@ -51,13 +51,14 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	/// srv handleの取得
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 
-	texture->srvDescriptorIndex_ = dxSRVHeap->AllocateTexture();
-	texture->cpuHandle_          = dxSRVHeap->GetCPUDescriptorHandel(texture->srvDescriptorIndex_);
-	texture->gpuHandle_          = dxSRVHeap->GetGPUDescriptorHandel(texture->srvDescriptorIndex_);
+	texture->CreateEmptySRVHandle();
+	texture->srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
+	texture->srvHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture->srvHandle_->descriptorIndex);
+	texture->srvHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture->srvHandle_->descriptorIndex);
 
 	/// srvの生成
 	DxDevice* dxDevice = dxManager_->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(texture->dxResource_.Get(), &srvDesc, texture->cpuHandle_);
+	dxDevice->GetDevice()->CreateShaderResourceView(texture->dxResource_.Get(), &srvDesc, texture->srvHandle_->cpuHandle);
 
 	resourceCollection_->AddTexture(_filePath, std::move(texture));
 }

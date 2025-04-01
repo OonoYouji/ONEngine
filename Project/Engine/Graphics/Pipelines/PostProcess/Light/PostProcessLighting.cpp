@@ -75,35 +75,29 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 		cameraBufferData_->SetMappingData({ Vector4::kZero });
 		cameraBufferData_->BindForComputeCommandList(command, 1);
-
 	}
 
-	auto& textures = _resourceCollection->GetTextures();
-	{	/// set textures
 
+
+	{	/// set textures
+		
+		auto& textures = _resourceCollection->GetTextures();
+		
 		textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
 		textureIndices_[1] = _resourceCollection->GetTextureIndex("normal");
 		textureIndices_[2] = _resourceCollection->GetTextureIndex("worldPosition");
 		textureIndices_[3] = _resourceCollection->GetTextureIndex("postProcessResult");
 
-		for (uint32_t index = 0; index < 4; ++index) {
-			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetGPUDescriptorHandle());
+		for (uint32_t index = 0; index < 3; ++index) {
+			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetSRVGPUHandle());
 		}
+
+		command->SetComputeRootDescriptorTable(5, textures[textureIndices_[3]]->GetUAVGPUHandle());
 	}
 	
-	/// uav textureのbarrier遷移
-	textures[textureIndices_[3]]->GetDxResource().CreateBarrier(
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		_dxCommand
-	);
 
+	//command->SetComputeRootUnorderedAccessView(3 + 2, textures[textureIndices_[3]]->GetGPUDescriptorHandle().ptr);
 	command->Dispatch(1280 / 32, 720 / 32, 1);
 
-	/// uav textureのbarrier遷移
-	textures[textureIndices_[3]]->GetDxResource().CreateBarrier(
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		_dxCommand
-	);
+
 }

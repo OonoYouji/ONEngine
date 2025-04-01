@@ -97,7 +97,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	Handle uavHandle_;
 	Texture* texture_ = nullptr;
 
 };
