@@ -78,6 +78,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
     <ClCompile Include="Engine\Component\ComputeComponents\Light\Light.cpp" />
+    <ClCompile Include="Engine\Component\ComputeComponents\Audio\AudioSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -163,5 +164,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
     <ClInclude Include="Engine\Component\ComputeComponents\Light\Light.h" />
+    <ClInclude Include="Engine\Component\ComputeComponents\Audio\AudioSource.h" />
   </ItemGroup>
 </Project>
