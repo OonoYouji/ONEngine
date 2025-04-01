@@ -96,8 +96,5 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 	}
 	
 
-	//command->SetComputeRootUnorderedAccessView(3 + 2, textures[textureIndices_[3]]->GetGPUDescriptorHandle().ptr);
 	command->Dispatch(1280 / 32, 720 / 32, 1);
-
-
 }

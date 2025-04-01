@@ -44,4 +44,7 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 		//outputTex
 		outputTex[dispatchId.xy] = float4(diffuse + specular, 1.0f);
 	}
+
+	outputTex[dispatchId.xy] = color;
+
 }
