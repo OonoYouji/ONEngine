@@ -94,9 +94,10 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 
 
+	auto& textures = _resourceCollection->GetTextures();
 	{	/// set textures
 
-		auto& textures = _resourceCollection->GetTextures();
+		//auto& textures = _resourceCollection->GetTextures();
 
 		textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
 		textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
@@ -116,47 +117,48 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 	/// 大本のsceneテクスチャに結果をコピー
 
-	///// resource barrier
-	//CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-	//	_resourceCollection->GetTextures()[textureIndices_[4]]->GetDxResource().Get(),
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-	//	D3D12_RESOURCE_STATE_COPY_SOURCE
-	//);	
-	//
-	//CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-	//	_resourceCollection->GetTextures()[textureIndices_[4]]->GetDxResource().Get(),
-	//	D3D12_RESOURCE_STATE_RENDER_TARGET,
-	//	D3D12_RESOURCE_STATE_COPY_DEST
-	//);
+	/// resource barrier
+	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		textures[textureIndices_[4]]->GetDxResource().Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
+	);	
+	
+	CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		textures[textureIndices_[0]]->GetDxResource().Get(),
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_COPY_DEST
+	);
 
-	//command->ResourceBarrier(1, &uavTexBarrier);
-	//command->ResourceBarrier(1, &sceneTexBarrier);
-
-
-	///// copy
-	//command->CopyResource(
-	//	_resourceCollection->GetTextures()[textureIndices_[4]]->GetDxResource().Get(),
-	//	_resourceCollection->GetTextures()[textureIndices_[0]]->GetDxResource().Get()
-	//);
-	//
-	//
-	///// resource barrier
-	//uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-	//	_resourceCollection->GetTextures()[textureIndices_[4]]->GetDxResource().Get(),
-	//	D3D12_RESOURCE_STATE_COPY_SOURCE,
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	//);
-
-	//sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-	//	_resourceCollection->GetTextures()[textureIndices_[4]]->GetDxResource().Get(),
-	//	D3D12_RESOURCE_STATE_COPY_DEST,
-	//	D3D12_RESOURCE_STATE_RENDER_TARGET
-	//);
+	command->ResourceBarrier(1, &uavTexBarrier);
+	command->ResourceBarrier(1, &sceneTexBarrier);
 
 
-	///// resource barrier
-	//command->ResourceBarrier(1, &uavTexBarrier);
-	//command->ResourceBarrier(1, &sceneTexBarrier);
+	/// copy
+	command->CopyResource(
+		textures[textureIndices_[0]]->GetDxResource().Get(),
+		textures[textureIndices_[4]]->GetDxResource().Get()
+	);
+	
+	
+	/// resource barrier
+	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		textures[textureIndices_[4]]->GetDxResource().Get(),
+		D3D12_RESOURCE_STATE_COPY_SOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
+	sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		textures[textureIndices_[0]]->GetDxResource().Get(),
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+	);
+
+
+	command->ResourceBarrier(1, &uavTexBarrier);
+	command->ResourceBarrier(1, &sceneTexBarrier);
+
+
 
 
 }

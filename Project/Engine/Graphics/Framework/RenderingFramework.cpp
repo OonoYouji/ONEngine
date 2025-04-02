@@ -69,6 +69,9 @@ void RenderingFramework::Draw() {
 
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
 
+	/// post processの実行
+	renderingPipelineCollection_->ExecutePostProcess();
+
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
 	windowManager_->MainWindowPostDraw();
@@ -88,13 +91,13 @@ void RenderingFramework::Draw() {
 		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
 	}
 
+	/// post processの実行
+	renderingPipelineCollection_->ExecutePostProcess();
 	windowManager_->MainWindowPreDraw();
 	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG
 
-	/// post processの実行
-	renderingPipelineCollection_->ExecutePostProcess();
 
 	/// commandの実行
 	dxManager_->GetDxCommand()->CommandExecute();
