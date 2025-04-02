@@ -56,6 +56,8 @@ public:
 	/// @return 
 	static Vector4 Normalize(const Vector4& _v);
 
+	static Vector4 Convert(const Vector3& _v, float _w = 1.0f);
+
 public:
 
 	/// ===================================================

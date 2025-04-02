@@ -68,3 +68,7 @@ Vector4 Vector4::Normalize(const Vector4& _v) {
 	}
 	return _v;
 }
+
+Vector4 Vector4::Convert(const Vector3& _v, float _w) {
+	return Vector4(_v, _w);
+}

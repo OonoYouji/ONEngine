@@ -20,9 +20,10 @@ private:
 	/// ===================================================
 
 	struct DirectionalLightBufferData final {
+		Vector4 position;
+		Vector4 color;
 		Vector3 direction;
 		float intensity;
-		Vector4 color;
 	};
 
 	struct CameraBufferData final {
@@ -54,7 +55,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::array<size_t, 4> textureIndices_;
+	std::array<size_t, 5> textureIndices_;
 	std::unique_ptr<ConstantBuffer<DirectionalLightBufferData>> directionalLightBufferData_;
 	std::unique_ptr<ConstantBuffer<CameraBufferData>> cameraBufferData_;
 
