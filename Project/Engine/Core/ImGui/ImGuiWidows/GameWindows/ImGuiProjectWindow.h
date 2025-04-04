@@ -72,6 +72,7 @@ private:
 	
 	std::shared_ptr<Folder> rootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
+	uint32_t selectedItemPtr_ = 0;
 
 };
 

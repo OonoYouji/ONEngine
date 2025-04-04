@@ -115,10 +115,19 @@ void ImGuiProjectWindow::DrawFolderHierarchy(std::shared_ptr<Folder> _folder, si
 
 void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 	for (const auto& subFolder : _folder->folders) {
-		ImGui::BulletText("%s", subFolder->name.c_str());
+		uint32_t ptr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(subFolder.get()));
+		if (ImGui::Selectable(subFolder->name.c_str(), ptr == selectedItemPtr_)) {
+			selectedItemPtr_ = ptr;
+			selectedFolder_ = subFolder;
+		}
 	}
 
 	for (const auto& file : _folder->files) {
-		ImGui::BulletText("%s", file.name.c_str());
+		uint32_t ptr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&file));
+		if (ImGui::Selectable(file.name.c_str(), ptr == selectedItemPtr_)) {
+			selectedItemPtr_ = ptr;
+
+			/// TODO: inspectorに表示
+		}
 	}
 }
