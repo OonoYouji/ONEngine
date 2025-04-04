@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
 
 /// pipelines
 #include "../Render/Mesh/MeshRenderingPipeline.h"
@@ -10,7 +11,6 @@
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
 #include "../Render/Sprite/SpriteRenderingPipeline.h"
 #include "../PostProcess/Light/PostProcessLighting.h"
-
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityCollection* _entityCollection, GraphicsResourceCollection* _graphicsResourceCollection)
 	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), entityCollection_(_entityCollection), graphicsResourceCollection_(_graphicsResourceCollection) {}
@@ -27,7 +27,6 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
-
 }
 
 void RenderingPipelineCollection::DrawEntities() {

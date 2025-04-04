@@ -53,7 +53,6 @@ private:
 
 	std::vector<std::unique_ptr<IRenderingPipeline>>   renderers_;
 	std::vector<std::unique_ptr<IPostProcessPipeline>> postProcesses_;
-
 };
 
 

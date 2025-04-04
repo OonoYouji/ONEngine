@@ -94,6 +94,7 @@ void RenderingFramework::Draw() {
 	/// post processの実行
 	renderingPipelineCollection_->ExecutePostProcess();
 	windowManager_->MainWindowPreDraw();
+
 	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG
