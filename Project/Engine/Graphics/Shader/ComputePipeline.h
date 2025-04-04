@@ -1,32 +1,30 @@
 #pragma once
 
-/// directx
+/// directX
 #include <d3d12.h>
 
 /// std
 #include <vector>
 #include <string>
-#include <optional>
 
 /// engine
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Shader.h"
 
-
-/// ===================================================
-/// グラフィクス用	pipeline
-/// ===================================================
-class GraphicsPipeline {
+/// ///////////////////////////////////////////////////
+/// ComputePipeline
+/// ///////////////////////////////////////////////////
+class ComputePipeline {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	GraphicsPipeline();
-	~GraphicsPipeline();
+	ComputePipeline();
+	~ComputePipeline();
 
-	/// @brief 今までにセットした値を使ってパイプラインを生成する
+	/// @brief pipelineを生成する
+	/// @param _dxDevice DxDeviceへのポインタ
 	void CreatePipeline(class DxDevice* _dxDevice);
 
 
@@ -36,17 +34,14 @@ public:
 	/// @param _shader 使用するshader
 	void SetShader(Shader* _shader);
 
-	/// @brief InputElementを追加する
-	/// @param _semanticName   セマンティクスの名前
-	/// @param _semanticIndex  セマンティクスのインデックス
-	/// @param _format         フォーマットの種類
-	void AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format);
-
 	/// @brief constant buffer viewを追加する
 	/// @param _shaderVisibility shaderの種類
 	/// @param _shaderRegister  register(b0)の0の部分
 	void AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
+	/// @brief 32bit constantを追加する
+	/// @param _shaderVisibility shaderの種類
+	/// @param _shaderRegister   register(b0)の0の部分
 	void Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
 
 	/// @brief descriptor rangeを追加する
@@ -80,58 +75,33 @@ public:
 
 	/*--- pipeline state ---*/
 
-	/// @brief depth stencil descを設定する
-	/// @param _desc 
-	void SetDepthStencilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc);
-
-	/// @brief blend descを設定する
-	/// @param _desc 設定するblend desc
-	void SetBlendDesc(const D3D12_BLEND_DESC& _desc);
-
-	/// @brief render target viewの数を設定する
-	/// @param _rtvNum rtvの数
-	void SetRTVNum(uint32_t _rtvNum);
-
-	/// @brief rtvのフォーマットを設定する
-	/// @param _rtvFormats rtvのフォーマットarray
-	void SetRTVFormats(const std::vector<DXGI_FORMAT>& _rtvFormats);
-
-	/// @brief rtvのフォーマットを設定する
-	/// @param _rtvFormat rtvのフォーマット
-	/// @param _rtvIndex setするrtvのインデックス
-	void SetRTVFormat(DXGI_FORMAT _rtvFormat, uint32_t _rtvIndex);
-
 	/// @brief コマンドリストにパイプラインステートをセットする
 	/// @param _dxCommand command listを管理しているクラスへのポインタ
 	void SetPipelineStateForCommandList(class DxCommand* _dxCommand);
 
-private:
 
+private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
 
 	/// @brief root signatureを生成する
+	/// @param _dxDevice DxDeviceへのポインタ
 	void CreateRootSignature(class DxDevice* _dxDevice);
 
 	/// @brief pipeline state objectを生成する
+	/// @param _dxDevice DxDeviceへのポインタ
 	void CreatePipelineStateObject(class DxDevice* _dxDevice);
 
-
-
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	Shader* shader_;
+
 	ComPtr<ID3D12RootSignature>             rootSignature_;
 	ComPtr<ID3D12PipelineState>             pipelineState_;
-
-
-	/// parameters
-	std::vector<D3D12_INPUT_ELEMENT_DESC>   inputElements_;
-	std::vector<std::string>                semanticNames_;
 
 	D3D12_RASTERIZER_DESC                   rasterizerDesc_;
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE           primitiveTopologyType_;
@@ -140,12 +110,5 @@ private:
 	std::vector<D3D12_ROOT_PARAMETER>       rootParameters_;
 	std::vector<D3D12_STATIC_SAMPLER_DESC>  staticSamplers_;
 	std::vector<D3D12_DESCRIPTOR_RANGE>     descriptorRanges_;
-
-	Shader* pShader_;
-
-
-	/// pipeline settings
-	std::optional<D3D12_DEPTH_STENCIL_DESC> depthStancilDesc_;
-	uint32_t                                rtvNum_ = 1;
-	std::vector<DXGI_FORMAT>                rtvFormats_;
 };
+

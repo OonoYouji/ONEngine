@@ -35,6 +35,8 @@ public:
 	static const Vector4 kRed;
 	static const Vector4 kGreen;
 	static const Vector4 kBlue;
+
+	static const Vector4 kZero;
 	
 	
 	/// @brief Vector4の線形補間
@@ -53,6 +55,8 @@ public:
 	/// @param _v 
 	/// @return 
 	static Vector4 Normalize(const Vector4& _v);
+
+	static Vector4 Convert(const Vector3& _v, float _w = 1.0f);
 
 public:
 

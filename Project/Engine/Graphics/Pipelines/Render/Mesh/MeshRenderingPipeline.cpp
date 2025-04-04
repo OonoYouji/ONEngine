@@ -4,7 +4,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/Transform/Transform.h"
+#include "Engine/Component/ComputeComponents/Transform/Transform.h"
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 
 
@@ -68,6 +68,12 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		depthStencilDesc.DepthFunc                      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
+		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
+
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
 	}
@@ -113,11 +119,11 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetGPUDescriptorHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
 
 
 	size_t transformIndex = 0; ///< transform buffer の index
@@ -143,7 +149,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 			textureIdBuffer_->SetMappedData(
 				transformIndex,
-				textures[textureIndex]->GetSRVHeapIndex()
+				textures[textureIndex]->GetSRVDescriptorIndex()
 			);
 
 			/// transform のセット

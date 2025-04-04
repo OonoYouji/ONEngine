@@ -1,22 +1,25 @@
-#include "Line3DRenderingPipeline.h"
+#include "Line2DRenderingPipeline.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Graphics/Shader/Shader.h"
+#include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
 
 
-Line3DRenderingPipeline::Line3DRenderingPipeline() {}
-Line3DRenderingPipeline::~Line3DRenderingPipeline() {}
+Line2DRenderingPipeline::Line2DRenderingPipeline() {}
+Line2DRenderingPipeline::~Line2DRenderingPipeline() {}
 
-void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+
 	{	/// pipelineの作成
 		
 		/// shaderをコンパイル
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/Line/Line3D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Line/Line3D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"Assets/Shader/Line/Line2D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"Assets/Shader/Line/Line2D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipeline_.reset(new GraphicsPipeline());
 		pipeline_->SetShader(&shader);
@@ -29,11 +32,12 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
-		/// buffer
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection
-
 		/// topology type setting
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
+
+
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection: 0
+
 
 		/// blend desc setting
 		D3D12_BLEND_DESC blendDesc = {};
@@ -47,18 +51,14 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
-		/// depth stencil desc setting
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable    = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		pipeline_->SetDepthStencilDesc(depthStencilDesc);
+		pipeline_->SetRTVNum(1);
+		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
 
 		/// create pipeline
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
-	
+
 	/// verticesを最大数分メモリを確保
 	vertices_.reserve(kMaxVertexNum_);
 
@@ -70,46 +70,58 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * kMaxVertexNum_);
 	vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
 
-
 }
 
-void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, [[maybe_unused]] EntityCollection* _entityCollection) {
 
-	/// rendering dataの収集
+void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+	
+	/// entityから描画データを取得
 	for (auto& entity : _entityCollection->GetEntities()) {
-		Line3DRenderer* renderer = entity->GetComponent<Line3DRenderer>();
+		Line2DRenderer*&& lineRenderer = entity->GetComponent<Line2DRenderer>();
 
-		if (renderer) {
-			vertices_.insert(vertices_.end(), renderer->GetVertices().begin(), renderer->GetVertices().end());
+		if (lineRenderer) {
+			renderingDataList_.push_back(lineRenderer->GetRenderingDataPtr());
 		}
 	}
 
-	if (vertices_.empty()) { return; } ///< 描画するデータがない場合は、描画処理を行わない
+	///< 描画データがない場合は描画しない
+	if (renderingDataList_.empty()) {
+		return;
+	}
 
-	if (vertices_.size() > kMaxVertexNum_) { ///< 描画数が最大数を超える場合は超過分を削除
+	/// rendering data listからデータを取得
+	for (RenderingData* renderingData : renderingDataList_) {
+		vertices_.insert(vertices_.end(), renderingData->vertices.begin(), renderingData->vertices.end());
+	}
+	
+	if (vertices_.size() > kMaxVertexNum_) { ///< 頂点データが最大数を超えたら超過分を消す
 		vertices_.resize(kMaxVertexNum_);
-	} 
+	}
 
-	/// データのコピー
+	/// 描画データをバッファにコピー
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 
-	/// ここから描画処理
+
+
+	/// draw settings
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
-	
+	Camera2D*                  camera      = _entityCollection->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0);
 
+	/// buffer
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
-	/// draw call
+	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 
-
-
+	/// post draw
 	/// 描画データのクリア
 	vertices_.clear();
+	renderingDataList_.clear();
 
 }
+

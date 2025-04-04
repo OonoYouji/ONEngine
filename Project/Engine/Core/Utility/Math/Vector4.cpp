@@ -18,6 +18,8 @@ const Vector4 Vector4::kRed   = { 1,0,0,1 };
 const Vector4 Vector4::kGreen = { 0,1,0,1 };
 const Vector4 Vector4::kBlue  = { 0,0,1,1 };
 
+const Vector4 Vector4::kZero = { 0,0,0,0 };
+
 
 Vector4::Vector4() {
 	this->x = 0.0f;
@@ -65,4 +67,8 @@ Vector4 Vector4::Normalize(const Vector4& _v) {
 		return _v / len;
 	}
 	return _v;
+}
+
+Vector4 Vector4::Convert(const Vector3& _v, float _w) {
+	return Vector4(_v, _w);
 }

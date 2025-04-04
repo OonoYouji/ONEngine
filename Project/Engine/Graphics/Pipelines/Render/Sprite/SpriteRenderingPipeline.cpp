@@ -45,15 +45,18 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
 		D3D12_BLEND_DESC blendDesc = {};
-		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend              = D3D12_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend             = D3D12_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp               = D3D12_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha         = D3D12_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha        = D3D12_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha          = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
+
+		pipeline_->SetRTVNum(1);
+		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
@@ -63,43 +66,43 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	{	/// buffer
 
 			/// vertex data
-			vertices_ = {
-				{ Vector4(-0.5f,  0.5f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) },
-				{ Vector4( 0.5f,  0.5f, 0.0f, 1.0f), Vector2(1.0f, 0.0f) },
-				{ Vector4(-0.5f, -0.5f, 0.0f, 1.0f), Vector2(0.0f, 1.0f) },
-				{ Vector4( 0.5f, -0.5f, 0.0f, 1.0f), Vector2(1.0f, 1.0f) },
-			};
+		vertices_ = {
+			{ Vector4(-0.5f, 0.5f, 0.0f, 1.0f), Vector2(0.0f, 0.0f) },
+			{ Vector4(0.5f, 0.5f, 0.0f, 1.0f), Vector2(1.0f, 0.0f) },
+			{ Vector4(-0.5f, -0.5f, 0.0f, 1.0f), Vector2(0.0f, 1.0f) },
+			{ Vector4(0.5f, -0.5f, 0.0f, 1.0f), Vector2(1.0f, 1.0f) },
+		};
 
-			indices_ = {
-				0, 1, 2, ///< 1面
-				2, 1, 3, ///< 2面
-			};
+		indices_ = {
+			0, 1, 2, ///< 1面
+			2, 1, 3, ///< 2面
+		};
 
-			const size_t kVertexDataSize = sizeof(VertexData);
+		const size_t kVertexDataSize = sizeof(VertexData);
 
-			/// vertex buffer
-			vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
-		
-			vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-			vbv_.SizeInBytes    = static_cast<UINT>(kVertexDataSize * vertices_.size());
-			vbv_.StrideInBytes  = static_cast<UINT>(kVertexDataSize);
-		
-			/// index buffer
-			indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
-		
-			ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
-			ibv_.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
-			ibv_.Format         = DXGI_FORMAT_R32_UINT;
-	
+		/// vertex buffer
+		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
 
-			/// mapping
-			VertexData* vertexData = nullptr;
-			vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
-			memcpy(vertexData, vertices_.data(), kVertexDataSize * vertices_.size());
+		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
+		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
+		vbv_.StrideInBytes = static_cast<UINT>(kVertexDataSize);
 
-			uint32_t* indexData = nullptr;
-			indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
-			memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
+		/// index buffer
+		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+
+		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
+		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
+		ibv_.Format = DXGI_FORMAT_R32_UINT;
+
+
+		/// mapping
+		VertexData* vertexData = nullptr;
+		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData));
+		memcpy(vertexData, vertices_.data(), kVertexDataSize * vertices_.size());
+
+		uint32_t* indexData = nullptr;
+		indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
+		memcpy(indexData, indices_.data(), sizeof(uint32_t) * indices_.size());
 
 	}
 
@@ -113,6 +116,10 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		textureIDsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 	}
+
+
+	defaultCamera_ = std::make_unique<Camera2D>(_dxManager->GetDxDevice());
+	defaultCamera_->Initialize();
 }
 
 void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
@@ -126,42 +133,48 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	}
 
 	///< rendererがなければ 早期リターン
-	if (renderers_.empty()) { 
+	if (renderers_.empty()) {
 		return;
 	}
 
 
 
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera2D*                  camera      = _entityCollection->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
-	
+
+	Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
+	if (_entityCollection->GetCamera2Ds().size() == 0) {
+		camera = defaultCamera_.get();
+	} else {
+		camera = _entityCollection->GetCamera2Ds()[0];
+	}
+
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	
+
 	/// vbv, ivb setting
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	camera->GetViewProjectionBuffer()->BindForCommandList(commandList, 0); ///< view projection
-	
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0); ///< view projection
+
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetGPUDescriptorHandle()); ///< texture
-	
+	commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetSRVGPUHandle()); ///< texture
+
 
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& renderer : renderers_) {
-		
+
 		size_t textureID = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 		textureIDsBuffer_->SetMappedData(
 			transformIndex,
-			textures[textureID]->GetSRVHeapIndex()
+			textures[textureID]->GetSRVDescriptorIndex()
 		);
 
 		transformsBuffer_->SetMappedData(
-			transformIndex, 
+			transformIndex,
 			renderer->GetOwner()->GetTransform()->GetMatWorld()
 		);
 

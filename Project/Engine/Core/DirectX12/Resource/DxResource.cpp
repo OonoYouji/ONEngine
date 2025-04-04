@@ -78,25 +78,39 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 	);
 }
 
+void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format) {
+	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		_format,
+		static_cast<UINT64>(_size.x),
+		static_cast<UINT64>(_size.y),
+		1, 1, 1, 0,
+		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS
+	);
+
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	HRESULT result = _dxDevice->GetDevice()->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		nullptr,
+		IID_PPV_ARGS(&resource_)
+	);
+
+	Assert(SUCCEEDED(result), "UAV Texture Resource creation failed.");
+}
+
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
-	if (_before == _after) {
-		return;
-	}
-
-	D3D12_RESOURCE_BARRIER barrier{};
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = resource_.Get();
-	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	barrier.Transition.StateBefore = _before;
-	barrier.Transition.StateAfter = _after;
-
-	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
+	::CreateBarrier(resource_.Get(), _before, _after, _dxCommand);
 }
 
 
 void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
-	if (_before == _after) { return; }
+	if (_before == _after) {
+		return;
+	}
 
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

@@ -6,11 +6,6 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Entity/Collection/EntityCollection.h"
 
-/// shader
-#include "Engine/Graphics/Pipelines/Primitive/Line2DRenderingPipeline.h"
-#include "Engine/Graphics/Pipelines/Mesh/MeshRenderingPipeline.h"
-
-
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
 
@@ -26,13 +21,23 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
 	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
-	renderTexture_ = std::make_unique<RenderTexture>();
+
+	renderTextures_.resize(4);
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture = std::make_unique<RenderTexture>();
+	}
+
 
 	renderingPipelineCollection_->Initialize();
 	resourceCollection_->Initialize(dxManager_);
 
-	renderTexture_->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), dxManager_, resourceCollection_.get());
+	renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "scene", dxManager_, resourceCollection_.get());
+	renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "worldPosition", dxManager_, resourceCollection_.get());
+	renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, Vector4(0.1f, 0.25f, 0.5f, 1.0f), "normal", dxManager_, resourceCollection_.get());
+	renderTextures_[3]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM, {}, "flags", dxManager_, resourceCollection_.get());
 
+	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
+	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
 }
 
 void RenderingFramework::Draw() {
@@ -45,25 +50,51 @@ void RenderingFramework::Draw() {
 	/// 描画処理
 #ifdef _DEBUG /// imguiの描画
 
-	//if (imGuiManager_->GetIsGameDebug()) {
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
 
-	renderTexture_->Begin(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	}
+
+	renderTextures_[0]->SetRenderTarget(
+		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+		renderTextures_
+	);
+
 	renderingPipelineCollection_->DrawEntities();
-	renderTexture_->End(dxManager_->GetDxCommand());
+
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	}
 
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
-	//}
+
+	/// post processの実行
+	renderingPipelineCollection_->ExecutePostProcess();
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
 	windowManager_->MainWindowPostDraw();
 
-
 #else
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	}
 
-	windowManager_->MainWindowPreDraw();
+	renderTextures_[0]->SetRenderTarget(
+		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+		renderTextures_
+	);
 	renderingPipelineCollection_->DrawEntities();
+	
+	for (auto& renderTexture : renderTextures_) {
+		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	}
+
+	/// post processの実行
+	renderingPipelineCollection_->ExecutePostProcess();
+	windowManager_->MainWindowPreDraw();
+
 	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG

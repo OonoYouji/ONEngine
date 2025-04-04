@@ -82,7 +82,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	Assert(SUCCEEDED(hr), "compile Not succeeded");
 
 	/// 成功したログ出力
-	Log(std::format(L"compile succeeded,    path:{},   _profile:{}", _filePath, _profile));
+	Log(std::format(L"compile succeeded, path:{}, profile:{}", _filePath, _profile));
 
 	return shaderBlob;
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <optional>
+
 /// engine
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
@@ -10,12 +13,26 @@ class Texture final {
 	friend class GraphicsResourceLoader;
 public:
 	/// ===================================================
+	/// public : sub class
+	/// ===================================================
+
+	struct Handle {
+		uint32_t descriptorIndex;
+		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+	};
+
+public:
+	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
 	Texture();
 	~Texture();
 
+
+	void CreateEmptySRVHandle();
+	void CreateEmptyUAVHandle();
 
 private:
 	/// ===================================================
@@ -24,41 +41,58 @@ private:
 
 	DxResource                  dxResource_;
 
-	uint32_t                    srvDescriptorIndex_;
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle_;
-
+	std::optional<Handle>       srvHandle_;
+	std::optional<Handle>       uavHandle_;
 
 public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief Set the CPU descriptor handle
-	/// @param _cpuHandle The CPU descriptor handle to set
-	void SetCPUDescriptorHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { cpuHandle_ = _cpuHandle; }
+	/// @brief SRV handleを設定
+	/// @param _handle cpu, gpu handle
+	void SetSRVHandle(const Handle& _handle) { srvHandle_ = _handle; }
 
-	/// @brief Set the GPU descriptor handle
-	/// @param _gpuHandle The GPU descriptor handle to set
-	void SetGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { gpuHandle_ = _gpuHandle; }
+	/// @brief UAV handleを設定
+	/// @param _handle cpu, gpu handle
+	void SetUAVHandle(const Handle& _handle) { uavHandle_ = _handle; }
 
-	/// @brief Set the SRV heap index
-	/// @param _index The SRV heap index to set
-	void SetSRVHeapIndex(uint32_t _index) { srvDescriptorIndex_ = _index; }
+	/// @brief SRV handleを設定
+	/// @param _descriptorIndex descriptor index
+	/// @param _cpuHandle cpu handle
+	/// @param _gpuHandle gpu handle
+	void SetSRVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+		srvHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
+	}
+
+	/// @brief UAV handleを設定
+	/// @param _descriptorIndex descriptor index
+	/// @param _cpuHandle cpu handle
+	/// @param _gpuHandle gpu handle
+	void SetUAVHandle(uint32_t _descriptorIndex, D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle, D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) {
+		uavHandle_ = Handle{ _descriptorIndex, _cpuHandle, _gpuHandle };
+	}
+
+	void SetSRVDescriptorIndex(uint32_t _index) { srvHandle_->descriptorIndex = _index; }
+	void SetSRVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { srvHandle_->cpuHandle = _cpuHandle; }
+	void SetSRVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { srvHandle_->gpuHandle = _gpuHandle; }
+
+	void SetUAVDescriptorIndex(uint32_t _index) { uavHandle_->descriptorIndex = _index; }
+	void SetUAVCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle) { uavHandle_->cpuHandle = _cpuHandle; }
+	void SetUAVGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle) { uavHandle_->gpuHandle = _gpuHandle; }
 
 
 
-	/// @brief Get the CPU descriptor handle
-	/// @return The CPU descriptor handle
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle() const { return cpuHandle_; }
+	const Handle& GetSRVHandle() const { return *srvHandle_; }
+	const Handle& GetUAVHandle() const { return *uavHandle_; }
 
-	/// @brief Get the GPU descriptor handle
-	/// @return The GPU descriptor handle
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle() const { return gpuHandle_; }
+	uint32_t GetSRVDescriptorIndex() const { return srvHandle_->descriptorIndex; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVCPUHandle() const { return srvHandle_->cpuHandle; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle() const { return srvHandle_->gpuHandle; }
 
-	/// @brief Get the SRV heap index
-	/// @return The SRV heap index
-	uint32_t GetSRVHeapIndex() const { return srvDescriptorIndex_; }
+	uint32_t GetUAVDescriptorIndex() const { return uavHandle_->descriptorIndex; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVCPUHandle() const { return uavHandle_->cpuHandle; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetUAVGPUHandle() const { return uavHandle_->gpuHandle; }
 
 	/// @brief resourceを取得
 	/// @return DxResource

@@ -6,12 +6,13 @@
 #include <list>
 
 /// engine
-#include "../Interface/IRenderingPipeline.h"
+#include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Entity/Camera/Camera.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
@@ -72,6 +73,8 @@ private:
 	std::vector<uint32_t>                        indices_;
 	DxResource                                   indexBuffer_;
 	D3D12_INDEX_BUFFER_VIEW                      ibv_;
+	
+	std::unique_ptr<Camera2D> defaultCamera_ = nullptr;
 
 };
 

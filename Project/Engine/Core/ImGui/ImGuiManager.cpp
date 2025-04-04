@@ -593,8 +593,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 
-	startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetGPUDescriptorHandle().ptr);
-	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetGPUDescriptorHandle().ptr);
+	startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetSRVGPUHandle().ptr);
+	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetSRVGPUHandle().ptr);
 
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_, resourceCollection_);

@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Component/ComputeComponents/Light/Light.h"
 
 /// user
 #include "../EntityConfig/EntityConfig.h"
@@ -11,6 +12,12 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
+
+	DirectionalLight* light = AddComponent<DirectionalLight>();
+	light->SetIntensity(1.0f);
+	light->SetDirection(Vector3(0.0f, -1.0f, 0.0f));
+	light->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+
 
 	MeshRenderer* renderer = AddComponent<MeshRenderer>();
 	renderer->SetMeshPath("Assets/Models/entity/player.obj");

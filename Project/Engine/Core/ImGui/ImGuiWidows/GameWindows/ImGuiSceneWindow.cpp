@@ -29,7 +29,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	imagePos.y += (ImGui::GetContentRegionAvail().y - windowSize.y) * 0.5f;
 	
 	ImGui::SetCursorScreenPos(imagePos);
-	ImGui::Image(ImTextureID(texture->GetGPUDescriptorHandle().ptr), windowSize);
+	ImGui::Image(ImTextureID(texture->GetSRVGPUHandle().ptr), windowSize);
 
 	ImGui::End();
 }
