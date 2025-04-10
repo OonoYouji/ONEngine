@@ -11,7 +11,7 @@ Line3DRenderingPipeline::~Line3DRenderingPipeline() {}
 
 void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 	{	/// pipelineの作成
-		
+
 		/// shaderをコンパイル
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
@@ -37,23 +37,23 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 		/// blend desc setting
 		D3D12_BLEND_DESC blendDesc = {};
-		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend              = D3D12_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend             = D3D12_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp               = D3D12_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha         = D3D12_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha        = D3D12_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha          = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
 		/// depth stencil desc setting
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable    = TRUE;
+		depthStencilDesc.DepthEnable = TRUE;
 		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
-		
+
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
 
@@ -61,7 +61,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
-	
+
 	/// verticesを最大数分メモリを確保
 	vertices_.reserve(kMaxVertexNum_);
 
@@ -70,8 +70,8 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-	vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * kMaxVertexNum_);
-	vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
+	vbv_.SizeInBytes = static_cast<UINT>(sizeof(VertexData) * kMaxVertexNum_);
+	vbv_.StrideInBytes = static_cast<UINT>(sizeof(VertexData));
 
 
 }
@@ -91,15 +91,18 @@ void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, [[may
 
 	if (vertices_.size() > kMaxVertexNum_) { ///< 描画数が最大数を超える場合は超過分を削除
 		vertices_.resize(kMaxVertexNum_);
-	} 
+	}
 
 	/// データのコピー
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 
 	/// ここから描画処理
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
-	
+
+	Camera* camera = _entityCollection->GetMainCamera();
+	if (!camera) { ///< カメラがない場合は描画しない
+		return;
+	}
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);

@@ -7,13 +7,13 @@
 
 
 SceneManager::SceneManager(EntityCollection* _entityCollection) 
-	: entityCollection_(_entityCollection) {}
+	: pEntityCollection_(_entityCollection) {}
 SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-
-	graphicsResourceCollection_ = _graphicsResourceCollection;
+	pEntityCollection_->GenerateCamera();
+	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
@@ -43,11 +43,11 @@ void SceneManager::MoveNextToCurrentScene() {
 	currentScene_ = std::move(nextScene_);
 	
 	/// resourceの読み込み、解放をここで行う
-	graphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
-	graphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
+	pGraphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
+	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
-	currentScene_->SetEntityCollectionPtr(entityCollection_);
+	currentScene_->SetEntityCollectionPtr(pEntityCollection_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
 

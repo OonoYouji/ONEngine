@@ -49,8 +49,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityCollection*           entityCollection_           = nullptr;
-	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
+	class EntityCollection*           pEntityCollection_           = nullptr;
+	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<IScene>           currentScene_               = nullptr;
 	std::unique_ptr<IScene>           nextScene_                  = nullptr;

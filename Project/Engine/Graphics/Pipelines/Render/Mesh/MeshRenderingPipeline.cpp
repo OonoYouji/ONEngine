@@ -113,7 +113,10 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetCameras()[0]; ///< TODO: 仮のカメラ取得
+	Camera* camera = _entityCollection->GetMainCamera();
+	if (!camera) { ///< カメラがない場合は描画しない
+		return;
+	}
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);

@@ -1,5 +1,8 @@
 #include "EntityCollection.h"
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/ImGuiMath.h"
@@ -13,6 +16,13 @@ EntityCollection::~EntityCollection() {}
 
 void EntityCollection::Initialize() {
 	entities_.reserve(128);
+	cameras_.reserve(8);
+	camera2ds_.reserve(8);
+
+	Camera* mainCamera = GenerateCamera();
+	mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	SetMainCamera(mainCamera);
 }
 
 void EntityCollection::Update() {
@@ -26,7 +36,7 @@ void EntityCollection::Update() {
 
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
-	camera->entityCollection_ = this;
+	camera->pEntityCollection_ = this;
 	camera->Initialize();
 
 	Camera* cameraPtr = camera.get();
@@ -38,7 +48,7 @@ Camera* EntityCollection::GenerateCamera() {
 
 Camera2D* EntityCollection::GenerateCamera2D() {
 	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
-	camera->entityCollection_ = this;
+	camera->pEntityCollection_ = this;
 	camera->Initialize();
 
 	Camera2D* cameraPtr = camera.get();

@@ -48,7 +48,7 @@ protected:
 	/// ===================================================
 
 	Transform* transform_;
-	class EntityCollection* entityCollection_;
+	class EntityCollection* pEntityCollection_;
 
 private:
 

@@ -35,7 +35,7 @@ void GameScene::Initialize() {
 	entityCollection_->GenerateEntity<Grid>();
 #endif // _DEBUG
 	
-	entityCollection_->GenerateEntity<GameController>();
+	//entityCollection_->GenerateEntity<GameController>();
 
 }
 

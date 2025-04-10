@@ -21,12 +21,13 @@ GameController::~GameController() {}
 
 void GameController::Initialize() {
 
-	camera_ = entityCollection_->GenerateCamera();
+	camera_ = pEntityCollection_->GenerateCamera();
 	camera_->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	camera_->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	pEntityCollection_->SetMainCamera(camera_);
 
-	blockManager_ = entityCollection_->GenerateEntity<BlockManager>();
-	player_       = entityCollection_->GenerateEntity<Player>();
+	blockManager_ = pEntityCollection_->GenerateEntity<BlockManager>();
+	player_       = pEntityCollection_->GenerateEntity<Player>();
 }
 
 void GameController::Update() {
