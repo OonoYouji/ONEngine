@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <string>
+
 /// engine
 #include <Engine/Entity/Interface/IEntity.h>
 
