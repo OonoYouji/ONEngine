@@ -1,7 +1,7 @@
 #include "Terrain.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 Terrain::Terrain() {}
 Terrain::~Terrain() {}
@@ -46,9 +46,12 @@ void Terrain::Initialize() {
 	
 
 	/// spanに変換
-	vertexSpan_ = std::span<std::span<Vertex>>(reinterpret_cast<std::span<Vertex>*>(vertices_.data()), 16);
+	vertexSpan_ = std::span<std::span<Mesh::VertexData>>(reinterpret_cast<std::span<Mesh::VertexData>*>(vertices_.data()), 16);
 
-
+	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
+	meshRenderer->SetVertices(vertices_);
+	meshRenderer->SetIndices(indices_);
+	meshRenderer->SetMeshPath("Terrain");
 }
 
 void Terrain::Update() {

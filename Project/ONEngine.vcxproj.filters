@@ -79,6 +79,7 @@
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
     <ClCompile Include="Engine\Component\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="Engine\Component\ComputeComponents\Audio\AudioSource.cpp" />
+    <ClCompile Include="Engine\Component\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -165,5 +166,6 @@
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
     <ClInclude Include="Engine\Component\ComputeComponents\Light\Light.h" />
     <ClInclude Include="Engine\Component\ComputeComponents\Audio\AudioSource.h" />
+    <ClInclude Include="Engine\Component\RendererComponents\Mesh\CustomMeshRenderer.h" />
   </ItemGroup>
 </Project>

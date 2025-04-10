@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Component\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
     <ClCompile Include="Engine\Component\ComputeComponents\Audio\AudioSource.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Component\RendererComponents\Mesh\CustomMeshRenderer.h" />
     <ClInclude Include="Engine\Component\ComputeComponents\Audio\AudioSource.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
     <ClInclude Include="Engine\Component\Component.h" />

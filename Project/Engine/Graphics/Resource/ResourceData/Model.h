@@ -27,6 +27,11 @@ public:
 		meshes_.push_back(std::move(_mesh));
 	}
 
+	Mesh* CreateMesh() {
+		meshes_.emplace_back(std::make_unique<Mesh>());
+		return meshes_.back().get();
+	}
+
 private:
 
 	/// ===================================================
