@@ -8,6 +8,7 @@
 
 /// user
 #include "Game/Entity/GameController/GameController.h"
+#include "Game/Objects/Terrain/Terrain.h"
 
 
 GameScene::GameScene() {
@@ -36,6 +37,7 @@ void GameScene::Initialize() {
 #endif // _DEBUG
 	
 	//entityCollection_->GenerateEntity<GameController>();
+	entityCollection_->GenerateEntity<Terrain>();
 
 }
 
