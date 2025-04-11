@@ -19,6 +19,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
+    <ClCompile Include="Engine\ECS\System\Interface\ECSISystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\ComponentArray\ComponentArray.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
@@ -102,6 +104,9 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
+    <ClInclude Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.h" />
+    <ClInclude Include="Engine\ECS\System\Interface\ECSISystem.h" />
     <ClInclude Include="Engine\ECS\Component\ComponentArray\ComponentArray.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />

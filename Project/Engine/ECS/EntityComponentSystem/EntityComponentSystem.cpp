@@ -7,6 +7,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 #include "../Component/Component.h"
+#include "AddECSSystemFunction.h"
 
 IEntity::IEntity() {}
 
@@ -31,12 +32,18 @@ void EntityComponentSystem::Initialize() {
 	mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetMainCamera(mainCamera);
+
+	AddECSSystemFunction(this, pDxManager_);
 }
 
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
 		entity->Update();
 		entity->transform_->Update();
+	}
+
+	for (auto& system : systemMap_) {
+		system->Update(this);
 	}
 }
 

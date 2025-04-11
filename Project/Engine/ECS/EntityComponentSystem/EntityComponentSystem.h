@@ -9,6 +9,7 @@
 #include "../Component/ComponentArray/ComponentArray.h"
 #include "../Component/Components/Interface/IComponent.h"
 #include "../Component/Components/ComputeComponents/Transform/Transform.h"
+#include "../System/Interface/ECSISystem.h"
 
 class Camera;
 class Camera2D;
@@ -149,6 +150,13 @@ public:
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+
+
+	/// ----- system ----- ///
+
+	template<typename T, typename... Args>
+	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -164,6 +172,9 @@ private:
 
 	/// ----- component ----- ///
 	std::unordered_map<size_t, std::unique_ptr<IComponentArray>> componentArrayMap_;
+
+	/// ----- system ----- ///
+	std::vector<std::unique_ptr<ECSISystem>> systemMap_;
 
 
 public:
@@ -293,5 +304,12 @@ inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
+}
+
+template<typename T, typename ...Args>
+inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base_of_v<ECSISystem, T> {
+	
+	systemMap_.push_back(std::make_unique<T>(args...));
+
 }
 
