@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SceneManager(class EntityCollection* _entityCollection);
+	SceneManager(class EntityComponentSystem* _entityCompnentSystem);
 	~SceneManager();
 
 	/// @brief このクラスの初期化
@@ -49,7 +49,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityCollection*           pEntityCollection_           = nullptr;
+	class EntityComponentSystem*      pEntityComponentSystem_      = nullptr;
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<IScene>           currentScene_               = nullptr;

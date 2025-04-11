@@ -1,8 +1,7 @@
 #include "Grid.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
-#include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Engine/ECS/Component/Component.h"
 
 void Grid::Initialize() {
 

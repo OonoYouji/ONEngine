@@ -3,10 +3,11 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/ComputeComponents/Transform/Transform.h"
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -96,12 +97,12 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 }
 
 
-void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
 	std::list<CustomMeshRenderer*> customRenderers;
-	for (auto& entity : _entityCollection->GetEntities()) {
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 		if (meshRenderer) {
 			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
@@ -120,7 +121,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 
 	ID3D12GraphicsCommandList* _commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetMainCamera();
+	Camera* camera = _pEntityComponentSystem->GetMainCamera();
 	if (!camera) { ///< カメラがない場合は描画しない
 		return;
 	}
@@ -138,7 +139,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
 	RenderingMesh(_commandList, &rendererPerMesh, textures);
-	//RenderingMesh(_commandList, &customRenderers, textures);
+	RenderingMesh(_commandList, &customRenderers, textures);
 }
 
 void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
@@ -208,8 +209,8 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 	for (auto& renderer : (*_pCustomRenderers)) {
 
 		/// modelの取得、なければ次へ
-		const Model*&& model = renderer->GetModel();
-		if (!model) {
+		const Mesh* mesh = renderer->GetMesh();
+		if (!mesh) {
 			continue;
 		}
 
@@ -243,18 +244,15 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
 
-		/// mesh の描画
-		for (auto& mesh : model->GetMeshes()) {
-			/// vbv, ibvのセット
-			_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-			_commandList->IASetIndexBuffer(&mesh->GetIBV());
+		/// vbv, ibvのセット
+		_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+		_commandList->IASetIndexBuffer(&mesh->GetIBV());
 
-			/// 描画
-			_commandList->DrawIndexedInstanced(
-				static_cast<UINT>(mesh->GetIndices().size()),
-				1, 0, 0, 0
-			);
-		}
+		/// 描画
+		_commandList->DrawIndexedInstanced(
+			static_cast<UINT>(mesh->GetIndices().size()),
+			1, 0, 0, 0
+		);
 
 		++instanceIndex_;
 	}

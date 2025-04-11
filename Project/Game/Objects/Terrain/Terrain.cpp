@@ -1,7 +1,7 @@
 #include "Terrain.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Component/Component.h"
 
 Terrain::Terrain() {}
 Terrain::~Terrain() {}
@@ -51,7 +51,7 @@ void Terrain::Initialize() {
 	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
 	meshRenderer->SetVertices(vertices_);
 	meshRenderer->SetIndices(indices_);
-	meshRenderer->SetMeshPath("Terrain");
+	meshRenderer->SetIsBufferRecreate(true);
 }
 
 void Terrain::Update() {

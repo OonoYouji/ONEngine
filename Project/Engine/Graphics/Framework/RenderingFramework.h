@@ -27,7 +27,7 @@ public:
 	~RenderingFramework();
 
 	/// @brief 初期化
-	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityCollection* _entityCollection);
+	void Initialize(DxManager* _dxManager, WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();
@@ -46,7 +46,7 @@ private:
 
 	DxManager*                                   dxManager_        = nullptr;
 	WindowManager*                               windowManager_    = nullptr;
-	class EntityCollection*                      entityCollection_ = nullptr;
+	class EntityComponentSystem*                 pEntityComponentSystem_ = nullptr;
 
 
 #ifdef _DEBUG

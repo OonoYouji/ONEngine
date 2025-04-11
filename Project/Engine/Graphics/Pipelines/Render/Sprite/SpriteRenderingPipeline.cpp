@@ -2,9 +2,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Component.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -118,14 +118,12 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 
 
-	defaultCamera_ = std::make_unique<Camera2D>(_dxManager->GetDxDevice());
-	defaultCamera_->Initialize();
 }
 
-void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// entityから sprite renderer を集める
-	for (auto& entity : _entityCollection->GetEntities()) {
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		SpriteRenderer*&& spriteRenderer = entity->GetComponent<SpriteRenderer>();
 		if (spriteRenderer) {
 			renderers_.push_back(spriteRenderer);
@@ -142,10 +140,10 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
 	Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
-	if (_entityCollection->GetCamera2Ds().size() == 0) {
-		camera = defaultCamera_.get();
+	if (_pEntityComponentSystem->GetCamera2Ds().size() == 0) {
+		return;
 	} else {
-		camera = _entityCollection->GetCamera2Ds()[0];
+		camera = _pEntityComponentSystem->GetCamera2Ds()[0];
 	}
 
 	/// settings

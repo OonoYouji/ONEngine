@@ -1,9 +1,7 @@
 #include "Block.h"
 
 /// engine
-#include <Engine/Entity/Collection/EntityCollection.h>
-#include <Engine/Component/RendererComponents/Mesh/MeshRenderer.h>
-
+#include <Engine/ECS/Component/Component.h>
 
 /// ///////////////////////////////////////////////////
 /// Block
@@ -84,7 +82,7 @@ void BlockManager::CreateBlock(const std::vector<std::vector<int>>& _mapData) {
 		for (size_t c = 0; c < kMaxCol; c++) {
 
 			/// ブロックの生成
-			Block* block = pEntityCollection_->GenerateEntity<Block>();
+			Block* block = pEntityComponentSystem_->GenerateEntity<Block>();
 
 			block->SetType(mapData[r][c]);
 			/// ブロックの位置を設定

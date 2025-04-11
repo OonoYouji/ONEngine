@@ -4,12 +4,12 @@
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
 
-void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager, EntityCollection* _entityCollection) {
+void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// shader compilerの初期化
 	shaderCompiler_ = std::make_unique<ShaderCompiler>();
@@ -17,10 +17,10 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	dxManager_ = _dxManager;
 	windowManager_ = _windowManager;
-	entityCollection_ = _entityCollection;
+	pEntityComponentSystem_ = _pEntityComponentSystem;
 
 	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, entityCollection_, resourceCollection_.get());
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, pEntityComponentSystem_, resourceCollection_.get());
 
 	renderTextures_.resize(4);
 	for (auto& renderTexture : renderTextures_) {

@@ -22,7 +22,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiManager(class DxManager* _dxManager, class WindowManager* _windowManager, class EntityCollection* _entityCollection);
+	ImGuiManager(class DxManager* _dxManager, class WindowManager* _windowManager, class EntityComponentSystem* _pEntityComponentSystem);
 	~ImGuiManager();
 
 	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
@@ -38,7 +38,7 @@ private:
 	class DxManager*                  dxManager_          = nullptr;
 	class WindowManager*              windowManager_      = nullptr;
 	class GraphicsResourceCollection* resourceCollection_ = nullptr;
-	class EntityCollection*           entityCollection_   = nullptr;
+	class EntityComponentSystem*      pEntityComponentSystem_ = nullptr;
 	class Window*                     imGuiWindow_        = nullptr;
 	class Window*                     debugGameWindow_    = nullptr;
 

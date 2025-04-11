@@ -4,9 +4,9 @@
 #include <numbers>
 
 /// engine
-#include <Engine/Entity/Collection/EntityCollection.h>
 #include <Engine/Core/Utility/Input/Input.h>
-#include "Engine/Entity/Camera/Camera.h"
+#include <Engine/ECS/EntityComponentSystem/EntityComponentSystem.h>
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// user
 #include "../Player/Player.h"
@@ -21,13 +21,13 @@ GameController::~GameController() {}
 
 void GameController::Initialize() {
 
-	camera_ = pEntityCollection_->GenerateCamera();
+	camera_ = pEntityComponentSystem_->GenerateCamera();
 	camera_->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	camera_->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	pEntityCollection_->SetMainCamera(camera_);
+	pEntityComponentSystem_->SetMainCamera(camera_);
 
-	blockManager_ = pEntityCollection_->GenerateEntity<BlockManager>();
-	player_       = pEntityCollection_->GenerateEntity<Player>();
+	blockManager_ = pEntityComponentSystem_->GenerateEntity<BlockManager>();
+	player_       = pEntityComponentSystem_->GenerateEntity<Player>();
 }
 
 void GameController::Update() {

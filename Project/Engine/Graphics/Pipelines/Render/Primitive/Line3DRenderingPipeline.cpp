@@ -2,8 +2,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 
 
 Line3DRenderingPipeline::Line3DRenderingPipeline() {}
@@ -76,10 +77,10 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, [[maybe_unused]] EntityCollection* _entityCollection) {
+void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// rendering dataの収集
-	for (auto& entity : _entityCollection->GetEntities()) {
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		Line3DRenderer* renderer = entity->GetComponent<Line3DRenderer>();
 
 		if (renderer) {
@@ -99,7 +100,7 @@ void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, [[may
 	/// ここから描画処理
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-	Camera* camera = _entityCollection->GetMainCamera();
+	Camera* camera = _pEntityComponentSystem->GetMainCamera();
 	if (!camera) { ///< カメラがない場合は描画しない
 		return;
 	}

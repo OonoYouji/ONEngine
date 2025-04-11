@@ -5,7 +5,7 @@
 #include <string>
 
 /// engine
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 
 /// ===================================================
@@ -39,7 +39,7 @@ private:
 
 	/// @brief entity collection へのポインタをセットする
 	/// @param _entityCollection 
-	void SetEntityCollectionPtr(EntityCollection* _entityCollection);
+	void SetEntityComponentSystem(EntityComponentSystem* _pEntityComponentSystem);
 
 
 protected:
@@ -48,7 +48,7 @@ protected:
 	/// protected : objects
 	/// ===================================================
 	
-	EntityCollection*        entityCollection_ = nullptr;
+	EntityComponentSystem*   pEntityComponentSystem_ = nullptr;
 	std::vector<std::string> loadResourcePaths_;
 	std::vector<std::string> unloadResourcePaths_;
 

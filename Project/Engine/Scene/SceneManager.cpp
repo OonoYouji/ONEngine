@@ -2,17 +2,17 @@
 
 /// engine
 #include "Scene/Factory/SceneFactory.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 
-SceneManager::SceneManager(EntityCollection* _entityCollection) 
-	: pEntityCollection_(_entityCollection) {}
+SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
+	: pEntityComponentSystem_(entityComponentSystem_) {}
 SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-	pEntityCollection_->GenerateCamera();
+	pEntityComponentSystem_->GenerateCamera();
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -47,7 +47,7 @@ void SceneManager::MoveNextToCurrentScene() {
 	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
-	currentScene_->SetEntityCollectionPtr(pEntityCollection_);
+	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
 

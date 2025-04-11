@@ -5,7 +5,8 @@
 #include <utility>
 
 /// engine
-#include <Engine/Entity/Interface/IEntity.h>
+//#include <Engine/ECS/Entity/Interface/IEntity.h>
+#include <Engine/ECS/EntityComponentSystem/EntityComponentSystem.h>
 
 /// user
 #include "../EntityConfig/EntityConfig.h"

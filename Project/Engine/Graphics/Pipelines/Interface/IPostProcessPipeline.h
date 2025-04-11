@@ -27,7 +27,7 @@ public:
 	virtual void Execute(
 		class DxCommand* _dxCommand, 
 		class GraphicsResourceCollection* _resourceCollection,
-		class EntityCollection* _entityCollection
+		class EntityComponentSystem* _pEntityComponentSystem
 	) = 0;
 
 protected:

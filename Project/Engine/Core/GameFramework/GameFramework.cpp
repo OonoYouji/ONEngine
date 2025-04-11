@@ -24,11 +24,11 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	dxManager_ = std::make_unique<DxManager>();
 	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
 	renderingFramework_ = std::make_unique<RenderingFramework>();
-	entityCollection_ = std::make_unique<EntityCollection>(dxManager_.get());
-	sceneManager_ = std::make_unique<SceneManager>(entityCollection_.get());
+	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
+	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
 
 #ifdef _DEBUG
-	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityCollection_.get());
+	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 #endif // _DEBUG
 
 
@@ -49,9 +49,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get());
 	/// rendering frameworkの初期化
-	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityCollection_.get());
+	entityComponentSystem_->Initialize();
+	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 	/// entity collectionの初期化
-	entityCollection_->Initialize();
+	//entityComponentSystem_->Initialize();
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 
@@ -83,11 +84,11 @@ void GameFramework::Run() {
 		///!< ゲームデバッグモードの場合は更新処理を行う
 		//if (imGuiManager_->GetIsGameDebug()) {
 		sceneManager_->Update();
-		entityCollection_->Update();
+		entityComponentSystem_->Update();
 		//}
 #else
 		sceneManager_->Update();
-		entityCollection_->Update();
+		entityComponentSystem_->Update();
 #endif // _DEBUG
 
 		/// 描画処理

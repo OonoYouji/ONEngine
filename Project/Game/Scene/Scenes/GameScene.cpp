@@ -4,7 +4,7 @@
 #include <numbers>
 
 /// engine
-#include "Engine/Entity/Grid/Grid.h"
+#include "Engine/ECS/Entity/Grid/Grid.h"
 
 /// user
 #include "Game/Entity/GameController/GameController.h"
@@ -33,11 +33,11 @@ GameScene::~GameScene() {}
 void GameScene::Initialize() {
 
 #ifdef _DEBUG
-	entityCollection_->GenerateEntity<Grid>();
+	pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
 	
-	//entityCollection_->GenerateEntity<GameController>();
-	entityCollection_->GenerateEntity<Terrain>();
+	pEntityComponentSystem_->GenerateEntity<GameController>();
+	pEntityComponentSystem_->GenerateEntity<Terrain>();
 
 }
 

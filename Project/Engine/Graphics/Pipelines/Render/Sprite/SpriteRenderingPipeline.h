@@ -12,7 +12,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
-#include "Engine/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
@@ -49,7 +49,7 @@ public:
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) override;
+	void Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) override;
 
 
 private:
@@ -74,7 +74,5 @@ private:
 	DxResource                                   indexBuffer_;
 	D3D12_INDEX_BUFFER_VIEW                      ibv_;
 	
-	std::unique_ptr<Camera2D> defaultCamera_ = nullptr;
-
 };
 

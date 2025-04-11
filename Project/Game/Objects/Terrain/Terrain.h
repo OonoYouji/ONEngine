@@ -5,7 +5,8 @@
 #include <span>
 
 /// engine
-#include "Engine/Entity/Interface/IEntity.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+//#include "Engine/ECS/Entity/Interface/IEntity.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Graphics/Resource/ResourceData/Mesh.h"
 

@@ -49,7 +49,7 @@ public:
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(DxCommand* _dxCommand, class EntityCollection* _entityCollection);
+	void Draw(DxCommand* _dxCommand, class EntityComponentSystem* _pEntityComponentSystem);
 
 private:
 	/// ===================================================
