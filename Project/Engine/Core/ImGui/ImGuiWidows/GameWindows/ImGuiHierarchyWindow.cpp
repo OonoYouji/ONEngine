@@ -5,10 +5,11 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "ImGuiInspectorWindow.h"
 
 
-ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem)
-	: pEntityComponentSystem_(_pEntityComponentSystem) {}
+ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem, ImGuiInspectorWindow* _inspectorWindow)
+	: pEntityComponentSystem_(_pEntityComponentSystem), pInspectorWindow_(_inspectorWindow) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Hierarchy", nullptr, 0)) {
@@ -22,7 +23,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 	/// entityの表示
 	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
 		entityName = typeid(*entity).name();
-        entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
+		entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
 		if (entityName.find(kClassPrefix) == 0) {
 			entityName = entityName.substr(kClassPrefix.length());
 		}
@@ -31,6 +32,9 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 			selectedEntity_ = entity.get();
 		}
 	}
+
+
+	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
 
 	ImGui::End();
 }

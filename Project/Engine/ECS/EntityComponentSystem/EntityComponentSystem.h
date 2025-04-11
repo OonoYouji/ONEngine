@@ -100,6 +100,8 @@ public:
 	/// @return transform のポインタ
 	Transform* GetTransform() const { return transform_; }
 
+	const std::unordered_map<size_t, IComponent*> GetComponents() const { return components_; }
+
 };
 
 

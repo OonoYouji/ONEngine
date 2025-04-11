@@ -65,8 +65,10 @@ public:
 
 	/// @brief 子windowの追加
 	/// @param _child 子window 
-	void AddChild(std::unique_ptr<class IImGuiChildWindow> _child) {
+	class IImGuiChildWindow*  AddChild(std::unique_ptr<class IImGuiChildWindow> _child) {
+		class IImGuiChildWindow* child = _child.get();
 		children_.push_back(std::move(_child));
+		return child;
 	}
 
 
