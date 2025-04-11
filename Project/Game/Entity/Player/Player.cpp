@@ -1,9 +1,9 @@
 #include "Player.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/Core/Utility/Input/Input.h"
-#include "Engine/Component/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/ComputeComponents/Light/Light.h"
 
 /// user
 #include "../EntityConfig/EntityConfig.h"

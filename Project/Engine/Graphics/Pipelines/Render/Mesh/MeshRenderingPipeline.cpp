@@ -3,10 +3,10 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/ComputeComponents/Transform/Transform.h"
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Component/ComputeComponents/Transform/Transform.h"
+#include "Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 
 MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection)

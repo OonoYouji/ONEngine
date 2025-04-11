@@ -2,9 +2,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Component/RendererComponents/Sprite/SpriteRenderer.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)

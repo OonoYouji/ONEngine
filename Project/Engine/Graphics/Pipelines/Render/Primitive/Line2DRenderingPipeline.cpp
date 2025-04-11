@@ -4,8 +4,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Shader/Shader.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
-#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Component/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
 
 
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}

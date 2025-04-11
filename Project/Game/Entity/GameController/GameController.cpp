@@ -4,9 +4,9 @@
 #include <numbers>
 
 /// engine
-#include <Engine/Entity/Collection/EntityCollection.h>
 #include <Engine/Core/Utility/Input/Input.h>
-#include "Engine/Entity/Camera/Camera.h"
+#include <Engine/ECS/Entity/Collection/EntityCollection.h>
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// user
 #include "../Player/Player.h"

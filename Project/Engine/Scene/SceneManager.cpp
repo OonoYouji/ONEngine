@@ -2,7 +2,7 @@
 
 /// engine
 #include "Scene/Factory/SceneFactory.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 

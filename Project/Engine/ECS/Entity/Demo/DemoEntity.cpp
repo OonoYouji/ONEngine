@@ -3,9 +3,9 @@
 #include <numbers>
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
-#include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/Component/RendererComponents/Primitive/Line3DRenderer.h"
 
 void DemoEntity::Initialize() {
 

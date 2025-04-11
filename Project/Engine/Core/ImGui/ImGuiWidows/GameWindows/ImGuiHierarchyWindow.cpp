@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 /// engine
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
 
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityCollection* _entityCollection)

@@ -4,7 +4,7 @@
 #include <string>
 
 /// engine
-#include <Engine/Entity/Interface/IEntity.h>
+#include <Engine/ECS/Entity/Interface/IEntity.h>
 
 /// ///////////////////////////////////////////////////
 /// GameController

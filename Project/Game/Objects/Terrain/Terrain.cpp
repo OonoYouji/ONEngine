@@ -1,7 +1,7 @@
 #include "Terrain.h"
 
 /// engine
-#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 Terrain::Terrain() {}
 Terrain::~Terrain() {}

@@ -7,7 +7,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Entity/Collection/EntityCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Graphics/Framework/RenderingFramework.h"
 #include "GameFrameworkConfig.h"

@@ -1,8 +1,8 @@
 #include "Block.h"
 
 /// engine
-#include <Engine/Entity/Collection/EntityCollection.h>
-#include <Engine/Component/RendererComponents/Mesh/MeshRenderer.h>
+#include <Engine/ECS/Entity/Collection/EntityCollection.h>
+#include <Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h>
 
 
 /// ///////////////////////////////////////////////////
