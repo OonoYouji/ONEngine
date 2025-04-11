@@ -20,7 +20,6 @@ public:
 	CustomMeshRenderer();
 	~CustomMeshRenderer();
 
-	void CreateMesh(const std::vector<Mesh)
 
 private:
 	/// ===================================================

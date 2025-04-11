@@ -138,7 +138,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
 	RenderingMesh(_commandList, &rendererPerMesh, textures);
-	RenderingMesh(_commandList, &customRenderers, textures);
+	//RenderingMesh(_commandList, &customRenderers, textures);
 }
 
 void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
