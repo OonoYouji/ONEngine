@@ -46,7 +46,6 @@
     <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp" />
     <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
@@ -57,7 +56,6 @@
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
@@ -138,7 +136,6 @@
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
-    <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
     <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
@@ -156,7 +153,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.h" />
-    <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
