@@ -6,9 +6,103 @@
 #include <string>
 
 /// engine
-#include "../Entity/Interface/IEntity.h"
-#include "../Entity/Camera/Camera.h"
+//#include "../Entity/Interface/IEntity.h"
+//#include "../Entity/Camera/Camera.h"
 #include "../Component/ComponentArray/ComponentArray.h"
+#include "../Component/Components/Interface/IComponent.h"
+#include "../Component/Components/ComputeComponents/Transform/Transform.h"
+
+class Camera;
+class Camera2D;
+
+
+/// ===================================================
+/// エンティティインターフェース
+/// ===================================================
+class IEntity {
+	friend class EntityComponentSystem;
+public:
+
+	IEntity();
+
+	void CommonInitialize();
+
+	/// @brief 仮想デストラクタ
+	virtual ~IEntity() {}
+
+	/// @brief 初期化の純粋仮想関数
+	virtual void Initialize() = 0;
+
+	/// @brief 更新の純粋仮想関数
+	virtual void Update() = 0;
+
+
+	/// @brief component の追加
+	/// @tparam T 追加する component の型
+	/// @return 追加した component のポインタ
+	template <class T>
+	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
+
+	/// @brief component の取得
+	/// @tparam T ゲットする component の型
+	/// @return component のポインタ
+	template <class T>
+	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
+
+
+protected:
+
+	/// ===================================================
+	/// protected : objects
+	/// ===================================================
+
+	Transform* transform_;
+	class EntityComponentSystem* pEntityComponentSystem_;
+
+private:
+
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+	std::unordered_map<size_t, IComponent*> components_;
+
+
+public:
+
+	/// ===================================================
+	/// public : accessor
+	/// ===================================================
+
+	void SetPosition(const Vector3& _v) { transform_->SetPosition(_v); }
+	void SetPositionX(float _x) { transform_->SetPositionX(_x); }
+	void SetPositionY(float _y) { transform_->SetPositionY(_y); }
+	void SetPositionZ(float _z) { transform_->SetPositionZ(_z); }
+
+	void SetRotate(const Vector3& _v) { transform_->SetRotate(_v); }
+	void SetRotateX(float _x) { transform_->SetRotateX(_x); }
+	void SetRotateY(float _y) { transform_->SetRotateY(_y); }
+	void SetRotateZ(float _z) { transform_->SetRotateZ(_z); }
+
+	void SetScale(const Vector3& _v) { transform_->SetScale(_v); }
+	void SetScaleX(float _x) { transform_->SetScaleX(_x); }
+	void SetScaleY(float _y) { transform_->SetScaleY(_y); }
+	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
+
+	void SetParent(IEntity* _parent);
+
+
+	const Vector3& GetPosition() const { return transform_->GetPosition(); }
+	const Vector3& GetRotate()   const { return transform_->GetRotate(); }
+	const Vector3& GetScale()    const { return transform_->GetScale(); }
+
+
+	/// @brief transform の取得
+	/// @return transform のポインタ
+	Transform* GetTransform() const { return transform_; }
+
+};
+
 
 
 /// ///////////////////////////////////////////////////
@@ -71,7 +165,7 @@ private:
 	Camera* mainCamera_ = nullptr;
 
 	/// ----- component ----- ///
-	std::unordered_map<std::string, std::unique_ptr<IComponentArray>> componentArrayMap_;
+	std::unordered_map<size_t, std::unique_ptr<IComponentArray>> componentArrayMap_;
 
 
 public:
@@ -108,6 +202,41 @@ public:
 
 
 
+
+
+
+/// ===================================================
+/// inline methods
+/// ===================================================
+
+template<class T>
+inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
+
+	size_t hash = typeid(T).hash_code();
+	auto it = components_.find(hash);
+	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
+		//return static_cast<T*>(it->second());
+	}
+
+	/// component の生成, 追加
+	T* component = pEntityComponentSystem_->AddComponent<T>();
+	component->SetOwner(this);
+	components_.emplace(hash, component);
+
+	return component; ///< 生成した component のポインタを返す
+}
+
+template<class T>
+inline T* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, T> {
+	auto it = components_.find(typeid(T).hash_code());
+	if (it != components_.end()) {
+		//return dynamic_cast<T*>(it->second());
+	}
+	return nullptr;
+}
+
+
+
 /// ===================================================
 /// inline methods
 /// ===================================================
@@ -116,6 +245,7 @@ template<typename T>
 inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
 	std::unique_ptr<T> entity = std::make_unique<T>();
 	entity->pEntityComponentSystem_ = this;
+	entity->CommonInitialize();
 	entity->Initialize();
 
 	T* entityPtr = entity.get();
@@ -127,19 +257,27 @@ inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEn
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = typeid(Comp).hash_code();
-	auto it = componentArrayMap_[hash]->AddComponent();
-	return static_cast<Comp*>(componentArrayMap_[hash]->GetComponent(it));
+
+	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
+		componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
+	}
+
+	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+	auto it = componentArray->AddComponent();
+	return static_cast<Comp*>(componentArray->GetComponent(it));
 }
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = typeid(Comp).hash_code();
-	auto it = componentArrayMap_[hash]->GetComponent(_index);
+	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+	auto it = componentArray->GetComponent(_index);
 	return static_cast<Comp*>(it);
 }
 
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = typeid(Comp).hash_code();
-	componentArrayMap_[hash]->RemoveComponent(_index);
+	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+	componentArray->RemoveComponent(_index);
 }

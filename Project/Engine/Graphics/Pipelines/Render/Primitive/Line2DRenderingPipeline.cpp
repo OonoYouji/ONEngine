@@ -6,6 +6,7 @@
 #include "Engine/Core/Utility/DebugTools/Assert.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}

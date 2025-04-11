@@ -1,6 +1,8 @@
 #include "Line3DRenderer.h"
 
-Line3DRenderer::Line3DRenderer() {}
+Line3DRenderer::Line3DRenderer() {
+	refCount_ = 0;
+}
 Line3DRenderer::~Line3DRenderer() {}
 
 

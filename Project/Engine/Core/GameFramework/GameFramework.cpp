@@ -49,9 +49,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get());
 	/// rendering frameworkの初期化
+	entityComponentSystem_->Initialize();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 	/// entity collectionの初期化
-	entityComponentSystem_->Initialize();
+	//entityComponentSystem_->Initialize();
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 

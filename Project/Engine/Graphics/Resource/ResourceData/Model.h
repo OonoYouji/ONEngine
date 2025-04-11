@@ -23,12 +23,13 @@ public:
 
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr
-	void AddMesh(std::unique_ptr<Mesh> _mesh) {
-		meshes_.push_back(std::move(_mesh));
+	void AddMesh(std::unique_ptr<Mesh>&& _mesh) {
+		_mesh;
+		//meshes_.push_back(std::move(_mesh));
 	}
 
 	Mesh* CreateMesh() {
-		meshes_.emplace_back(std::make_unique<Mesh>());
+		//meshes_.emplace_back(std::make_unique<Mesh>());
 		return meshes_.back().get();
 	}
 
@@ -49,7 +50,7 @@ public:
 
 	/// @brief mesh配列のセッタ
 	/// @param _meshes unique_ptrのmesh配列
-	void SetMeshes(std::vector<std::unique_ptr<Mesh>>&& _meshes) { meshes_ = std::move(_meshes); }
+	void SetMeshes(std::vector<std::unique_ptr<Mesh>>&& _meshes);
 
 	/// @brief パスのセッタ
 	/// @param _path ファイルパス

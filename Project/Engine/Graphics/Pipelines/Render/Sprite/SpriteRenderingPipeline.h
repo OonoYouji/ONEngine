@@ -74,7 +74,5 @@ private:
 	DxResource                                   indexBuffer_;
 	D3D12_INDEX_BUFFER_VIEW                      ibv_;
 	
-	std::unique_ptr<Camera2D> defaultCamera_ = nullptr;
-
 };
 

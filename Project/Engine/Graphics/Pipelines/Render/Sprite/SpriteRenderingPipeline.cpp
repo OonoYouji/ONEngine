@@ -118,8 +118,6 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 
 
-	defaultCamera_ = std::make_unique<Camera2D>(_dxManager->GetDxDevice());
-	defaultCamera_->Initialize();
 }
 
 void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
@@ -143,7 +141,7 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 
 	Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
 	if (_pEntityComponentSystem->GetCamera2Ds().size() == 0) {
-		camera = defaultCamera_.get();
+		return;
 	} else {
 		camera = _pEntityComponentSystem->GetCamera2Ds()[0];
 	}

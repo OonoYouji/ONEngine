@@ -5,6 +5,19 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
+
+IEntity::IEntity() {}
+
+void IEntity::CommonInitialize() {
+	transform_ = AddComponent<Transform>();
+}
+
+void IEntity::SetParent(IEntity* _parent) {
+	transform_->SetParent(_parent->GetTransform());
+}
+
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
 EntityComponentSystem::~EntityComponentSystem() {}
@@ -39,6 +52,7 @@ void EntityComponentSystem::RemoveEntity(IEntity* _entity) {
 Camera* EntityComponentSystem::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
 	camera->pEntityComponentSystem_ = this;
+	camera->CommonInitialize();
 	camera->Initialize();
 
 	Camera* cameraPtr = camera.get();
@@ -51,6 +65,7 @@ Camera* EntityComponentSystem::GenerateCamera() {
 Camera2D* EntityComponentSystem::GenerateCamera2D() {
 	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
 	camera->pEntityComponentSystem_ = this;
+	camera->CommonInitialize();
 	camera->Initialize();
 
 	Camera2D* cameraPtr = camera.get();
