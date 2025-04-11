@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager, class EntityCollection* _entityCollection, class GraphicsResourceCollection* _graphicsResourceCollection);
+	RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager, class EntityComponentSystem* _pEntityComponentSystem, class GraphicsResourceCollection* _graphicsResourceCollection);
 	~RenderingPipelineCollection();
 
 	/// @brief 初期化関数
@@ -48,7 +48,7 @@ private:
 
 	ShaderCompiler*                   shaderCompiler_             = nullptr;
 	DxManager*                        dxManager_                  = nullptr;
-	class EntityCollection*           entityCollection_           = nullptr;
+	class EntityComponentSystem*      pEntityComponentSystem_     = nullptr;
 	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
 
 	std::vector<std::unique_ptr<IRenderingPipeline>>   renderers_;

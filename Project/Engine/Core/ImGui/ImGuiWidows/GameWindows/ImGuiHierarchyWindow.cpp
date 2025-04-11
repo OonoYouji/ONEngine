@@ -4,11 +4,11 @@
 #include <imgui.h>
 
 /// engine
-#include "Engine/ECS/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 
-ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityCollection* _entityCollection)
-	: entityCollection_(_entityCollection) {}
+ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem)
+	: pEntityComponentSystem_(_pEntityComponentSystem) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Hierarchy", nullptr, 0)) {
@@ -20,7 +20,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 	const std::string kClassPrefix = "class ";
 
 	/// entityの表示
-	for (auto& entity : entityCollection_->GetEntities()) {
+	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
 		entityName = typeid(*entity).name();
         entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
 		if (entityName.find(kClassPrefix) == 0) {

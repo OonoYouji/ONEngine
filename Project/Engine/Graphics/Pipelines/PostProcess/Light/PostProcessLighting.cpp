@@ -6,8 +6,8 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Entity/Collection/EntityCollection.h"
-#include "Engine/Component/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 
 PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
@@ -57,7 +57,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 }
 
-void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityCollection* _entityCollection) {
+void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
@@ -65,7 +65,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 	{	/// set constant buffers
 		std::list<DirectionalLight*> directionalLights;
-		for (auto& entity : _entityCollection->GetEntities()) {
+		for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 			auto light = entity->GetComponent<DirectionalLight>();
 			if (light) {
 				directionalLights.push_back(light);

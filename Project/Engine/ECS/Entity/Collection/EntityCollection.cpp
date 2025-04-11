@@ -27,16 +27,16 @@ void EntityCollection::Initialize() {
 
 void EntityCollection::Update() {
 
-	for (std::unique_ptr<IEntity>& entity : entities_) {
-		entity->Update();
-		entity->transform_->Update();
-	}
+	//for (std::unique_ptr<IEntity>& entity : entities_) {
+	//	entity->Update();
+	//	entity->transform_->Update();
+	//}
 }
 
 
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
-	camera->pEntityCollection_ = this;
+	//camera->pEntityComponentSystem_ = this;
 	camera->Initialize();
 
 	Camera* cameraPtr = camera.get();
@@ -48,7 +48,7 @@ Camera* EntityCollection::GenerateCamera() {
 
 Camera2D* EntityCollection::GenerateCamera2D() {
 	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
-	camera->pEntityCollection_ = this;
+	//camera->pEntityComponentSystem_ = this;
 	camera->Initialize();
 
 	Camera2D* cameraPtr = camera.get();

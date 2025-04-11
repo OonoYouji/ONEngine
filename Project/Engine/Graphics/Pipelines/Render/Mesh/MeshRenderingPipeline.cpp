@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/ECS/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
@@ -96,12 +96,12 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 }
 
 
-void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
 	std::list<CustomMeshRenderer*> customRenderers;
-	for (auto& entity : _entityCollection->GetEntities()) {
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 		if (meshRenderer) {
 			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
@@ -120,7 +120,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 
 	ID3D12GraphicsCommandList* _commandList = _dxCommand->GetCommandList();
-	Camera* camera = _entityCollection->GetMainCamera();
+	Camera* camera = _pEntityComponentSystem->GetMainCamera();
 	if (!camera) { ///< カメラがない場合は描画しない
 		return;
 	}

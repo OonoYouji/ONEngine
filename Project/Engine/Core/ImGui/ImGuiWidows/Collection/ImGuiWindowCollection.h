@@ -15,7 +15,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiWindowCollection(class EntityCollection* _entityCollection, class GraphicsResourceCollection* _resourceCollection);
+	ImGuiWindowCollection(class EntityComponentSystem* _pEntityComponentSystem, class GraphicsResourceCollection* _resourceCollection);
 	~ImGuiWindowCollection();
 
 	/// @brief 更新

@@ -33,11 +33,11 @@ GameScene::~GameScene() {}
 void GameScene::Initialize() {
 
 #ifdef _DEBUG
-	entityCollection_->GenerateEntity<Grid>();
+	pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
 	
 	//entityCollection_->GenerateEntity<GameController>();
-	entityCollection_->GenerateEntity<Terrain>();
+	pEntityComponentSystem_->GenerateEntity<Terrain>();
 
 }
 

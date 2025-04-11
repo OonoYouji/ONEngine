@@ -28,7 +28,7 @@ public:
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	virtual void Draw(DxCommand* _dxCommand, class EntityCollection* _entityCollection) = 0;
+	virtual void Draw(DxCommand* _dxCommand, class EntityComponentSystem* _pEntityComponentSystem) = 0;
 
 
 protected:

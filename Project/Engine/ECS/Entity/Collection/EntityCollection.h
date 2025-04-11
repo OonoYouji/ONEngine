@@ -47,6 +47,7 @@ public:
 	/// @param _entity 
 	void RemoveEntity(IEntity* _entity);
 
+
 private:
 	
 	/// ===================================================
@@ -55,6 +56,7 @@ private:
 
 	/// other class pointer
 	class DxManager* pDxManager_;
+	class EntityComponentSystem* pEntityComponentSystem_;
 
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*>                  cameras_;   ///< カメラのリスト、本体はentities_に格納されている

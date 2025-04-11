@@ -4,8 +4,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Shader/Shader.h"
 #include "Engine/Core/Utility/DebugTools/Assert.h"
-#include "Engine/ECS/Component/RendererComponents/Primitive/Line2DRenderer.h"
-#include "Engine/ECS/Entity/Collection/EntityCollection.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}
@@ -73,10 +73,10 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entityCollection) {
+void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
 	
 	/// entityから描画データを取得
-	for (auto& entity : _entityCollection->GetEntities()) {
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		Line2DRenderer*&& lineRenderer = entity->GetComponent<Line2DRenderer>();
 
 		if (lineRenderer) {
@@ -105,7 +105,7 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _ent
 
 	/// draw settings
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera2D*                  camera      = _entityCollection->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
+	Camera2D*                  camera      = _pEntityComponentSystem->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 

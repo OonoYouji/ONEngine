@@ -535,8 +535,8 @@ namespace {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityCollection* _entityCollection)
-	: dxManager_(_dxManager), windowManager_(_windowManager), entityCollection_(_entityCollection) {}
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem) 
+	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem) {}
 
 ImGuiManager::~ImGuiManager() {
 	ImGui_ImplDX12_Shutdown();
@@ -597,7 +597,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetSRVGPUHandle().ptr);
 
 
-	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(entityCollection_, resourceCollection_);
+	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(pEntityComponentSystem_, resourceCollection_);
 
 	//ImGui::DockSpaceOverViewport(ImGuiID(), ImGui::GetMainViewport());
 

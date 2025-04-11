@@ -12,7 +12,7 @@
 /// エンティティインターフェース
 /// ===================================================
 class IEntity {
-	friend class EntityCollection;
+	friend class EntityComponentSystem;
 public:
 
 	IEntity();
@@ -47,7 +47,7 @@ protected:
 	/// ===================================================
 
 	Transform* transform_;
-	class EntityCollection* pEntityCollection_;
+	class EntityComponentSystem* pEntityComponentSystem_;
 
 private:
 
