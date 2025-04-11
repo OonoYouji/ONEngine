@@ -6,9 +6,10 @@
 #include "Engine/Entity/Collection/EntityCollection.h"
 #include "Engine/Component/ComputeComponents/Transform/Transform.h"
 #include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/Component/RendererComponents/Mesh/CustomMeshRenderer.h"
 
 
-MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection) 
+MeshRenderingPipeline::MeshRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
 	: resourceCollection_(_resourceCollection) {}
 
 MeshRenderingPipeline::~MeshRenderingPipeline() {}
@@ -28,7 +29,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
-		pipeline_->AddInputElement("NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT);
+		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
@@ -52,20 +53,20 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 
 		D3D12_BLEND_DESC blendDesc = {};
-		blendDesc.RenderTarget[0].BlendEnable           = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend              = D3D12_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend             = D3D12_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp               = D3D12_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha         = D3D12_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha        = D3D12_BLEND_ZERO;
-		blendDesc.RenderTarget[0].BlendOpAlpha          = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].BlendEnable = TRUE;
+		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+		blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
-		depthStencilDesc.DepthEnable                    = TRUE;
-		depthStencilDesc.DepthWriteMask                 = D3D12_DEPTH_WRITE_MASK_ALL;
-		depthStencilDesc.DepthFunc                      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		depthStencilDesc.DepthEnable = TRUE;
+		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
@@ -99,20 +100,26 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
+	std::list<CustomMeshRenderer*> customRenderers;
 	for (auto& entity : _entityCollection->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 		if (meshRenderer) {
 			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
 		}
+
+		CustomMeshRenderer*&& customMeshRenderer = entity->GetComponent<CustomMeshRenderer>();
+		if (customMeshRenderer) {
+			customRenderers.push_back(customMeshRenderer);
+		}
 	}
 
 	///< 描画対象がなければ 早期リターン
-	if (rendererPerMesh.empty()) {
+	if (rendererPerMesh.empty() && customRenderers.empty()) {
 		return;
 	}
 
 
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
+	ID3D12GraphicsCommandList* _commandList = _dxCommand->GetCommandList();
 	Camera* camera = _entityCollection->GetMainCamera();
 	if (!camera) { ///< カメラがない場合は描画しない
 		return;
@@ -121,21 +128,26 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(_commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+	_commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
 
+	transformIndex_ = 0;
+	instanceIndex_ = 0;
+	RenderingMesh(_commandList, &rendererPerMesh, textures);
+	RenderingMesh(_commandList, &customRenderers, textures);
+}
 
-	size_t transformIndex = 0; ///< transform buffer の index
-	UINT   instanceIndex  = 0; ///< instance id
-	for (auto& [meshPath, renderers] : rendererPerMesh) {
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
+
+	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
 		/// modelの取得、なければ次へ
 		const Model*&& model = resourceCollection_->GetModel(meshPath);
-		if (!model) { 
+		if (!model) {
 			continue;
 		}
 
@@ -144,51 +156,107 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityCollection* _entit
 
 			/// materialのセット
 			materialBuffer->SetMappedData(
-				transformIndex, 
+				transformIndex_,
 				renderer->GetColor()
 			);
 
 			/// texture id のセット
 			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 			textureIdBuffer_->SetMappedData(
-				transformIndex,
-				textures[textureIndex]->GetSRVDescriptorIndex()
+				transformIndex_,
+				_pTexture[textureIndex]->GetSRVDescriptorIndex()
 			);
 
 			/// transform のセット
 			transformBuffer_->SetMappedData(
-				transformIndex, 
+				transformIndex_,
 				renderer->GetOwner()->GetTransform()->GetMatWorld()
 			);
 
 
-			++transformIndex;
+			++transformIndex_;
 		}
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->BindToCommandList(1, commandList);
-		textureIdBuffer_->BindToCommandList(2, commandList);
-		transformBuffer_->BindToCommandList(4, commandList);
+		materialBuffer->BindToCommandList(1, _commandList);
+		textureIdBuffer_->BindToCommandList(2, _commandList);
+		transformBuffer_->BindToCommandList(4, _commandList);
 
 		/// 現在のinstance idをセット
-		commandList->SetGraphicsRoot32BitConstant(5, instanceIndex, 0);
+		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
 
 		/// mesh の描画
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
-			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-			commandList->IASetIndexBuffer(&mesh->GetIBV());
+			_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			_commandList->IASetIndexBuffer(&mesh->GetIBV());
 
 			/// 描画
-			commandList->DrawIndexedInstanced(
+			_commandList->DrawIndexedInstanced(
 				static_cast<UINT>(mesh->GetIndices().size()),
-				static_cast<UINT>(renderers.size()), 
+				static_cast<UINT>(renderers.size()),
 				0, 0, 0
 			);
 		}
 
-		instanceIndex += static_cast<UINT>(renderers.size());
+		instanceIndex_ += static_cast<UINT>(renderers.size());
 	}
+}
 
+
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<CustomMeshRenderer*>* _pCustomRenderers, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
+	for (auto& renderer : (*_pCustomRenderers)) {
+
+		/// modelの取得、なければ次へ
+		const Model*&& model = renderer->GetModel();
+		if (!model) {
+			continue;
+		}
+
+		/// materialのセット
+		materialBuffer->SetMappedData(
+			transformIndex_,
+			renderer->GetColor()
+		);
+
+		/// texture id のセット
+		size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
+		textureIdBuffer_->SetMappedData(
+			transformIndex_,
+			_pTexture[textureIndex]->GetSRVDescriptorIndex()
+		);
+
+		/// transform のセット
+		transformBuffer_->SetMappedData(
+			transformIndex_,
+			renderer->GetOwner()->GetTransform()->GetMatWorld()
+		);
+
+
+		++transformIndex_;
+
+		/// 上でセットしたデータをバインド
+		materialBuffer->BindToCommandList(1, _commandList);
+		textureIdBuffer_->BindToCommandList(2, _commandList);
+		transformBuffer_->BindToCommandList(4, _commandList);
+
+		/// 現在のinstance idをセット
+		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
+
+		/// mesh の描画
+		for (auto& mesh : model->GetMeshes()) {
+			/// vbv, ibvのセット
+			_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			_commandList->IASetIndexBuffer(&mesh->GetIBV());
+
+			/// 描画
+			_commandList->DrawIndexedInstanced(
+				static_cast<UINT>(mesh->GetIndices().size()),
+				1, 0, 0, 0
+			);
+		}
+
+		++instanceIndex_;
+	}
 }
 

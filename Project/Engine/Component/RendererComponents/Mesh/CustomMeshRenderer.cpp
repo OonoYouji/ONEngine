@@ -5,6 +5,7 @@
 
 CustomMeshRenderer::CustomMeshRenderer() {
 	frontMesh_ = model_.CreateMesh();
+	model_.SetPath("Terrain");
 }
 CustomMeshRenderer::~CustomMeshRenderer() {}
 

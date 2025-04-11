@@ -4,12 +4,14 @@
 #include <list>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
+#include "Engine/Graphics/Resource/ResourceData/Texture.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 
@@ -50,6 +52,14 @@ public:
 	void Draw(DxCommand* _dxCommand, class EntityCollection* _entityCollection);
 
 private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+	
+	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture);
+	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<class CustomMeshRenderer*>* _pCustomRenderers, const std::vector<std::unique_ptr<Texture>>& _pTexture);
+
+private:
 
 	/// ===================================================
 	/// private : objects
@@ -61,7 +71,9 @@ private:
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<StructuredBuffer<Vector4>>   materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
-
+	
+	size_t transformIndex_;
+	uint32_t instanceIndex_;
 
 };
 
