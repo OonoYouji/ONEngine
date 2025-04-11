@@ -14,6 +14,7 @@ class IComponentArray {};
 /// ///////////////////////////////////////////////////
 template <typename Comp>
 class ComponentArray final : public IComponentArray {
+	friend class EntityComponentSystem;
 public:
 	/// ===================================================
 	/// public : methods
@@ -22,9 +23,10 @@ public:
 	ComponentArray();
 	~ComponentArray() {}
 
-	size_t AddComponent();
-	Comp* GetComponent(size_t _index);
-	void RemoveComponent(size_t _index);
+	//template<typename ...Args>
+	//size_t AddComponent();
+	//Comp* GetComponent(size_t _index);
+	//void RemoveComponent(size_t _index);
 
 private:
 	/// ===================================================
@@ -42,29 +44,29 @@ inline ComponentArray<Comp>::ComponentArray() {
 	components_.reserve(1024); ///< 1024個のコンポーネントを格納できるように予約
 }
 
-template<typename Comp>
-inline size_t ComponentArray<Comp>::AddComponent() {
-	if (removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
-		size_t index = removedIndices_.back();
-		removedIndices_.pop_back();
-		usedIndices_.push_back(index);
-		components_[index] = Comp(); ///< 今までのデータを上書き
-		return index;
-	}
-
-	components_.emplace_back();
-	size_t index = components_.size() - 1;
-	usedIndices_.push_back(index);
-	return index;
-}
-
-template<typename Comp>
-inline Comp* ComponentArray<Comp>::GetComponent(size_t _index) {
-	return &components_[_index];
-}
-
-template<typename Comp>
-inline void ComponentArray<Comp>::RemoveComponent(size_t _index) {
-	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _index), usedIndices_.end());
-	removedIndices_.push_back(_index);
-}
+//template<typename Comp>
+//inline size_t ComponentArray<Comp>::AddComponent() {
+//	if (removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
+//		size_t index = removedIndices_.back();
+//		removedIndices_.pop_back();
+//		usedIndices_.push_back(index);
+//		components_[index] = Comp(); ///< 今までのデータを上書き
+//		return index;
+//	}
+//
+//	components_.emplace_back();
+//	size_t index = components_.size() - 1;
+//	usedIndices_.push_back(index);
+//	return index;
+//}
+//
+//template<typename Comp>
+//inline Comp* ComponentArray<Comp>::GetComponent(size_t _index) {
+//	return &components_[_index];
+//}
+//
+//template<typename Comp>
+//inline void ComponentArray<Comp>::RemoveComponent(size_t _index) {
+//	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _index), usedIndices_.end());
+//	removedIndices_.push_back(_index);
+//}

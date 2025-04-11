@@ -24,12 +24,11 @@ public:
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr
 	void AddMesh(std::unique_ptr<Mesh>&& _mesh) {
-		_mesh;
-		//meshes_.push_back(std::move(_mesh));
+		meshes_.push_back(std::move(_mesh));
 	}
 
 	Mesh* CreateMesh() {
-		//meshes_.emplace_back(std::make_unique<Mesh>());
+		meshes_.emplace_back(std::make_unique<Mesh>());
 		return meshes_.back().get();
 	}
 

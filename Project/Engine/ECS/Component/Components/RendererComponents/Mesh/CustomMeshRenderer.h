@@ -20,16 +20,20 @@ public:
 	CustomMeshRenderer();
 	~CustomMeshRenderer();
 
+	/// @brief meshの再作成
+	/// @param _pDxDevice DxDeviceへのポインタ
+	void MeshRecreate(class DxDevice* _pDxDevice);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ====================================================
 
-	Model model_;
-	Mesh* frontMesh_ = nullptr;
+	Mesh mesh_;
 	std::string texturePath_ = "Assets/Textures/white.png";
 	Vector4 color_ = Vector4::kWhite; ///< RGBA 0.0f ~ 1.0f
+	bool isVisible_ = true; ///< 描画するかどうか
+	bool isBufferRecreate_ = false; ///< バッファを再作成するかどうか
 
 public:
 	/// ====================================================
@@ -44,10 +48,6 @@ public:
 	/// @param _indices 頂点インデックスデータ
 	void SetIndices(const std::vector<uint32_t>& _indices);
 
-	/// @brief meshのpathのセッタ
-	/// @param _path 
-	void SetMeshPath(const std::string& _path) { model_.SetPath(_path); }
-
 	/// @brief textureのpathのセッタ
 	/// @param _path Textureのpath
 	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
@@ -56,10 +56,15 @@ public:
 	/// @param _color RGBAの色を設定する
 	void SetColor(const Vector4& _color) { color_ = _color; }
 
+	/// @brief 描画するかどうかのセッタ
+	/// @param _isVisible 描画フラグ
+	void SetIsVisible(bool _isVisible) { isVisible_ = _isVisible; }
 
-	/// @brief meshのpathのゲッタ
-	/// @return Meshのpath
-	const std::string& GetMeshPath() const { return model_.GetPath(); }
+	/// @brief bufferを再作成するかどうかのセッタ
+	/// @param _isBufferRecreate bufferを再作成するフラグ
+	void SetIsBufferRecreate(bool _isBufferRecreate) { isBufferRecreate_ = _isBufferRecreate; }
+
+
 
 	/// @brief textureのpathのゲッタ
 	/// @return textureのpath
@@ -69,9 +74,17 @@ public:
 	/// @return RGBAの色
 	const Vector4& GetColor() const { return color_; }
 
-	/// @brief modelへのゲッタ
-	/// @return このクラスが保持するモデルのポインタ
-	const Model* GetModel() const { return &model_; }
+	/// @brief meshのゲッタ
+	/// @return Meshのポインタ
+	const Mesh* GetMesh() const { return &mesh_; }
+
+	/// @brief 描画するかどうかのゲッタ
+	/// @return 描画フラグ
+	bool GetIsVisible() const { return isVisible_; }
+
+	/// @brief bufferを再作成するかどうかのゲッタ
+	/// @return bufferを再作成するフラグ
+	bool GetIsBufferRecreate() const { return isBufferRecreate_; }
 
 };
 

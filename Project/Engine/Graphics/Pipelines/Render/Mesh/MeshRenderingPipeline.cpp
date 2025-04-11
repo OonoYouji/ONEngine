@@ -139,7 +139,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
 	RenderingMesh(_commandList, &rendererPerMesh, textures);
-	//RenderingMesh(_commandList, &customRenderers, textures);
+	RenderingMesh(_commandList, &customRenderers, textures);
 }
 
 void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
@@ -209,8 +209,8 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 	for (auto& renderer : (*_pCustomRenderers)) {
 
 		/// modelの取得、なければ次へ
-		const Model*&& model = renderer->GetModel();
-		if (!model) {
+		const Mesh* mesh = renderer->GetMesh();
+		if (!mesh) {
 			continue;
 		}
 
@@ -244,18 +244,15 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
 
-		/// mesh の描画
-		for (auto& mesh : model->GetMeshes()) {
-			/// vbv, ibvのセット
-			_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
-			_commandList->IASetIndexBuffer(&mesh->GetIBV());
+		/// vbv, ibvのセット
+		_commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+		_commandList->IASetIndexBuffer(&mesh->GetIBV());
 
-			/// 描画
-			_commandList->DrawIndexedInstanced(
-				static_cast<UINT>(mesh->GetIndices().size()),
-				1, 0, 0, 0
-			);
-		}
+		/// 描画
+		_commandList->DrawIndexedInstanced(
+			static_cast<UINT>(mesh->GetIndices().size()),
+			1, 0, 0, 0
+		);
 
 		++instanceIndex_;
 	}

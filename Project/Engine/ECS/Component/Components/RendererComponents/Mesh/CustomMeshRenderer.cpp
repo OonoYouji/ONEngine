@@ -3,16 +3,19 @@
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-CustomMeshRenderer::CustomMeshRenderer() {
-	frontMesh_ = model_.CreateMesh();
-	model_.SetPath("Terrain");
-}
+CustomMeshRenderer::CustomMeshRenderer() {}
 CustomMeshRenderer::~CustomMeshRenderer() {}
 
+void CustomMeshRenderer::MeshRecreate(DxDevice* _pDxDevice) {
+	mesh_.CreateBuffer(_pDxDevice);
+	mesh_.VertexBufferMapping();
+	mesh_.IndexBufferMapping();
+}
+
 void CustomMeshRenderer::SetVertices(const std::vector<Mesh::VertexData>& _vertices) {
-	frontMesh_->SetVertices(_vertices);
+	mesh_.SetVertices(_vertices);
 }
 
 void CustomMeshRenderer::SetIndices(const std::vector<uint32_t>& _indices) {
-	frontMesh_->SetIndices(_indices);
+	mesh_.SetIndices(_indices);
 }

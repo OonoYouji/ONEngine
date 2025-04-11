@@ -6,8 +6,6 @@
 #include <string>
 
 /// engine
-//#include "../Entity/Interface/IEntity.h"
-//#include "../Entity/Camera/Camera.h"
 #include "../Component/ComponentArray/ComponentArray.h"
 #include "../Component/Components/Interface/IComponent.h"
 #include "../Component/Components/ComputeComponents/Transform/Transform.h"
@@ -215,13 +213,13 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 	size_t hash = typeid(T).hash_code();
 	auto it = components_.find(hash);
 	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
-		//return static_cast<T*>(it->second());
+		return static_cast<T*>(it->second);
 	}
 
 	/// component の生成, 追加
 	T* component = pEntityComponentSystem_->AddComponent<T>();
 	component->SetOwner(this);
-	components_.emplace(hash, component);
+	components_[hash] = component;
 
 	return component; ///< 生成した component のポインタを返す
 }
@@ -230,7 +228,7 @@ template<class T>
 inline T* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, T> {
 	auto it = components_.find(typeid(T).hash_code());
 	if (it != components_.end()) {
-		//return dynamic_cast<T*>(it->second());
+		return dynamic_cast<T*>(it->second);
 	}
 	return nullptr;
 }
@@ -262,22 +260,38 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 		componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
 	}
 
-	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
-	auto it = componentArray->AddComponent();
-	return static_cast<Comp*>(componentArray->GetComponent(it));
+	{	/// componentを追加する
+
+		ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+
+		if (componentArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
+			size_t index = componentArray->removedIndices_.back();
+			componentArray->removedIndices_.pop_back();
+			componentArray->usedIndices_.push_back(index);
+			componentArray->components_[index] = Comp(); ///< 今までのデータを上書き
+
+			return &componentArray->components_[index];
+		}
+
+		componentArray->components_.emplace_back();
+		size_t index = componentArray->components_.size() - 1;
+		componentArray->usedIndices_.push_back(index);
+
+		return &componentArray->components_[index];
+	}
 }
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = typeid(Comp).hash_code();
-	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
-	auto it = componentArray->GetComponent(_index);
-	return static_cast<Comp*>(it);
+	return &componentArrayMap_[hash]->components_[_index];
 }
 
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = typeid(Comp).hash_code();
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
-	componentArray->RemoveComponent(_index);
+	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
+	componentArray->removedIndices_.push_back(_index);
 }
+

@@ -36,7 +36,7 @@ void GameScene::Initialize() {
 	pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
 	
-	//entityCollection_->GenerateEntity<GameController>();
+	pEntityComponentSystem_->GenerateEntity<GameController>();
 	pEntityComponentSystem_->GenerateEntity<Terrain>();
 
 }
