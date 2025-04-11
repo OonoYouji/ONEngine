@@ -62,7 +62,7 @@ void Camera::Update() {
 	if (Input::PressKey(DIK_LEFT)) { transform_->rotate.y -= speed; }
 	if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
 
-	transform_->position += velocity;
+	transform_->position += velocity * 10.0f;
 	transform_->Update();
 
 	matView_       = transform_->GetMatWorld().Inverse();

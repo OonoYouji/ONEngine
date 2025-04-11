@@ -6,7 +6,6 @@ struct TextureId {
 	uint id;
 };
 
-//Texture2D<float4> texture        : register(t0);
 StructuredBuffer<Material> materials : register(t0);
 StructuredBuffer<TextureId> textureIds : register(t1);
 Texture2D<float4> textures[] : register(t2);
@@ -26,6 +25,8 @@ PSOutput main(VSOutput input) {
 	if (output.color.a == 0.0f) { ///< alpha == 0.0f ? pixel discard
 		discard;
 	}
+	
+	//output.color.rgb = output.normal.rgb * 0.5f + 0.5f; ///< normal map
 	
 	return output;
 }
