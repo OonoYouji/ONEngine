@@ -19,14 +19,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Audio\AudioSource.cpp" />
+    <ClCompile Include="Engine\ECS\Component\ComponentArray\ComponentArray.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
     <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
@@ -54,12 +56,12 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Interface\IComponent.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Primitive\Line2DRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Primitive\Line3DRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
@@ -75,7 +77,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Light\Light.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -87,12 +89,12 @@
     <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Transform\Transform.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
@@ -100,14 +102,16 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Mesh\CustomMeshRenderer.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Audio\AudioSource.h" />
+    <ClInclude Include="Engine\ECS\Component\ComponentArray\ComponentArray.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Component.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.h" />
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
-    <ClInclude Include="Engine\ECS\Component\ColliderComponents\Collider2D\CircleCollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
@@ -152,22 +156,22 @@
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
-    <ClInclude Include="Engine\ECS\Component\Interface\IComponent.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Mesh\MeshRenderer.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Primitive\Line2DRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\Interface\IComponent.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Transform\Transform.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Primitive\Line3DRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
     <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Engine\ECS\Entity\Grid\Grid.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Sprite\SpriteRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
@@ -184,7 +188,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Light\Light.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -33,18 +33,18 @@
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Interface\IComponent.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Primitive\Line2DRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Demo\DemoEntity.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Transform\Transform.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Primitive\Line3DRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
@@ -54,11 +54,11 @@
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Sprite\SpriteRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiMath.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ColliderComponents\Collider2D\CircleCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.cpp" />
     <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
     <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
@@ -77,9 +77,11 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Light\Light.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComputeComponents\Audio\AudioSource.cpp" />
-    <ClCompile Include="Engine\ECS\Component\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
+    <ClCompile Include="Engine\ECS\Component\ComponentArray\ComponentArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -119,18 +121,18 @@
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
-    <ClInclude Include="Engine\ECS\Component\Interface\IComponent.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Mesh\MeshRenderer.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Primitive\Line2DRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\Interface\IComponent.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
     <ClInclude Include="Engine\ECS\Entity\Demo\DemoEntity.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Transform\Transform.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Primitive\Line3DRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
@@ -140,11 +142,11 @@
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Sprite\SpriteRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
-    <ClInclude Include="Engine\ECS\Component\ColliderComponents\Collider2D\CircleCollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.h" />
     <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
     <ClInclude Include="Game\Entity\GameController\GameController.h" />
@@ -164,8 +166,10 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Light\Light.h" />
-    <ClInclude Include="Engine\ECS\Component\ComputeComponents\Audio\AudioSource.h" />
-    <ClInclude Include="Engine\ECS\Component\RendererComponents\Mesh\CustomMeshRenderer.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.h" />
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
+    <ClInclude Include="Engine\ECS\Component\ComponentArray\ComponentArray.h" />
   </ItemGroup>
 </Project>

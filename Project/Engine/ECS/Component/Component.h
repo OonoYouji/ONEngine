@@ -4,15 +4,18 @@
 /// component include
 /// ///////////////////////////////////////////////////
 
-/// transform
-#include "Engine/Component/Transform/Transform.h"
+/// computes
+#include "Components/ComputeComponents/Transform/Transform.h"
+#include "Components/ComputeComponents/Light/Light.h"
+#include "Components/ComputeComponents/Audio/AudioSource.h"
 
 /// renderer
-#include "Engine/Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Engine/Component/RendererComponents/Sprite/SpriteRenderer.h"
-#include "Engine/Component/RendererComponents/Primitive/Line2DRenderer.h"
-#include "Engine/Component/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Components/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Components/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Components/RendererComponents/Primitive/Line3DRenderer.h"
 
 /// collider
-#include "Engine/Component/ColliderComponents/Collider2D/CircleCollider.h"
+#include "Components/ColliderComponents/Collider2D/CircleCollider.h"
 

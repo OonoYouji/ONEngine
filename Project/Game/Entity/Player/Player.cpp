@@ -2,8 +2,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
-#include "Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h"
-#include "Engine/ECS/Component/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/Component/Component.h"
 
 /// user
 #include "../EntityConfig/EntityConfig.h"

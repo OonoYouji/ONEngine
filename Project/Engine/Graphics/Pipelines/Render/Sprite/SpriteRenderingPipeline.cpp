@@ -4,7 +4,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/Entity/Collection/EntityCollection.h"
-#include "Engine/ECS/Component/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/Component/Component.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)

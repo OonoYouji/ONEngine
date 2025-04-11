@@ -2,8 +2,7 @@
 
 /// engine
 #include <Engine/ECS/Entity/Collection/EntityCollection.h>
-#include <Engine/ECS/Component/RendererComponents/Mesh/MeshRenderer.h>
-
+#include <Engine/ECS/Component/Component.h>
 
 /// ///////////////////////////////////////////////////
 /// Block
