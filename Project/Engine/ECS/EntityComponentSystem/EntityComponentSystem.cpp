@@ -1,12 +1,22 @@
 #include "EntityComponentSystem.h"
 
+/// std
+#include <numbers>
+
+/// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
+
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
 EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize() {
 
 	entities_.reserve(256);
-
+	
+	Camera* mainCamera = GenerateCamera();
+	mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	SetMainCamera(mainCamera);
 }
 
 void EntityComponentSystem::Update() {
@@ -27,9 +37,25 @@ void EntityComponentSystem::RemoveEntity(IEntity* _entity) {
 }
 
 Camera* EntityComponentSystem::GenerateCamera() {
-	return nullptr;
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
+	camera->pEntityComponentSystem_ = this;
+	camera->Initialize();
+
+	Camera* cameraPtr = camera.get();
+	entities_.push_back(std::move(camera));
+	cameras_.push_back(cameraPtr);
+
+	return cameraPtr;
 }
 
 Camera2D* EntityComponentSystem::GenerateCamera2D() {
-	return nullptr;
+	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
+	camera->pEntityComponentSystem_ = this;
+	camera->Initialize();
+
+	Camera2D* cameraPtr = camera.get();
+	entities_.push_back(std::move(camera));
+	camera2ds_.push_back(cameraPtr);
+
+	return cameraPtr;
 }
