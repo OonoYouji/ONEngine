@@ -1,8 +1,5 @@
 #include "EntityComponentSystem.h"
 
-/// std
-#include <numbers>
-
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
@@ -28,10 +25,10 @@ void EntityComponentSystem::Initialize() {
 
 	entities_.reserve(256);
 
-	Camera* mainCamera = GenerateCamera();
-	mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
-	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	SetMainCamera(mainCamera);
+	//Camera* mainCamera = GenerateCamera();
+	//mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	//mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	//SetMainCamera(mainCamera);
 
 	AddECSSystemFunction(this, pDxManager_);
 }

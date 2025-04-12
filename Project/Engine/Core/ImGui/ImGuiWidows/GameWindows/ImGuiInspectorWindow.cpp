@@ -5,7 +5,8 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-
+#include "Engine/ECS/Component/Component.h"
+#include "../../ImGuiMath.h"
 
 enum SelectedType {
 	kNone,
@@ -15,11 +16,22 @@ enum SelectedType {
 
 
 ImGuiInspectorWindow::ImGuiInspectorWindow() {
+
+
+	RegisterComponentDebugFunc(typeid(Transform).hash_code(),          [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
+	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(),   [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
+	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(),        [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(),       [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(CircleCollider).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+
+
 	inspectorFunctions_.emplace_back([]() {});
 	inspectorFunctions_.emplace_back(
 		[this]() {
-			//ImGui::Text("entity");
-
 			IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
 
 			for (auto& component : entity->GetComponents()) {
@@ -28,14 +40,23 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 				if (componentName.find("class ") == 0) {
 					componentName = componentName.substr(6);
 				}
+
 				if (ImGui::Selectable(componentName.c_str(), component.second == selectedComponent_)) {
 					selectedComponent_ = component.second;
 				}
+
+				// デバッグ表示
+				componentDebugFuncs_[component.first](component.second);
+				////DebugComponent(component.second);
 			}
 
+			/*TransformDebug(
+				reinterpret_cast<Transform*>(entity->GetComponent<Transform>())
+			);*/
 		}
 	);
 }
+
 
 void ImGuiInspectorWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Inspector")) {

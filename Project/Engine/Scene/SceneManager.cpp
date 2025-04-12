@@ -1,8 +1,13 @@
 #include "SceneManager.h"
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Scene/Factory/SceneFactory.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
@@ -11,7 +16,11 @@ SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-	pEntityComponentSystem_->GenerateCamera();
+	Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
+	mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
+	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	pEntityComponentSystem_->SetMainCamera(mainCamera);
+
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
