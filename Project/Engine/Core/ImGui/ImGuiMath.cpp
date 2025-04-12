@@ -2,6 +2,7 @@
 
 /// std
 #include <numbers>
+#include <format>
 
 /// engine
 #include "Engine/ECS/Component/Component.h"
@@ -33,57 +34,54 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color) {
 	float width = 50.0f; // 各ボックスの横幅
 	static bool openPicker = false;
 
-	ImGui::Text(_label);
-	ImVec4 myColor = ImVec4(_color->x, _color->y, _color->z, _color->w);
+	//ImGui::Text(_label);
+	ImVec4 editColor = ImVec4(_color->x, _color->y, _color->z, _color->w);
 
 	/// R
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.3f, 0.0f, 0.0f, 1.0f));
 	ImGui::SetNextItemWidth(width);
-	ImGui::DragFloat("##R", &myColor.x, 0.01f, 0.0f, 1.0f, "R: %.2f");
+	ImGui::DragFloat(std::format("##R{:p}", reinterpret_cast<void*>(&_label)).c_str(), &editColor.x, 0.01f, 0.0f, 1.0f, "R: %.2f");
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
 
 	/// G
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.3f, 0.0f, 1.0f));
 	ImGui::SetNextItemWidth(width);
-	ImGui::DragFloat("##G", &myColor.y, 0.01f, 0.0f, 1.0f, "G: %.2f");
+	ImGui::DragFloat(std::format("##G{:p}", reinterpret_cast<void*>(&_label)).c_str(), &editColor.y, 0.01f, 0.0f, 1.0f, "G: %.2f");
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
 
 	/// B
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.0f, 0.0f, 0.3f, 1.0f));
 	ImGui::SetNextItemWidth(width);
-	ImGui::DragFloat("##B", &myColor.z, 0.01f, 0.0f, 1.0f, "B: %.2f");
+	ImGui::DragFloat(std::format("##B{:p}", reinterpret_cast<void*>(&_label)).c_str(), &editColor.z, 0.01f, 0.0f, 1.0f, "B: %.2f");
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
 
 	/// A
 	ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
 	ImGui::SetNextItemWidth(width);
-	ImGui::DragFloat("##A", &myColor.w, 0.01f, 0.0f, 1.0f, "A: %.2f");
+	ImGui::DragFloat(std::format("##A{:p}", reinterpret_cast<void*>(&_label)).c_str(), &editColor.w, 0.01f, 0.0f, 1.0f, "A: %.2f");
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
 
-
 	/// 色のプレビュー
-	if (ImGui::ColorButton("##Preview", myColor, ImGuiColorEditFlags_NoTooltip, ImVec2(30, 0))) {
+	if (ImGui::ColorButton(std::format("##Preview{}", *_label).c_str(), editColor, ImGuiColorEditFlags_NoTooltip, ImVec2(30, 0))) {
 		openPicker = !openPicker;
 	}
 
 	if (openPicker) {
-		ImGui::ColorPicker4("##Picker", (float*)&myColor, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoLabel);
+		ImGui::ColorPicker4(std::format("##Picker{}", *_label).c_str(), (float*)&editColor, ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoLabel);
 	}
-
 
 	/// 色を更新
-	if (myColor.x != _color->x || myColor.y != _color->y || myColor.z != _color->z || myColor.w != _color->w) {
-		_color->x = myColor.x;
-		_color->y = myColor.y;
-		_color->z = myColor.z;
-		_color->w = myColor.w;
+	if (editColor.x != _color->x || editColor.y != _color->y || editColor.z != _color->z || editColor.w != _color->w) {
+		_color->x = editColor.x;
+		_color->y = editColor.y;
+		_color->z = editColor.z;
+		_color->w = editColor.w;
 		result = true;
 	}
-
 
 	return result;
 }
@@ -171,7 +169,7 @@ void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 
 	/// param get
 	Vec4 color = _customMeshRenderer->GetColor();
-	
+	//ImGuiColorEdit("colorあ", &color);
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_customMeshRenderer->SetColor(color);
