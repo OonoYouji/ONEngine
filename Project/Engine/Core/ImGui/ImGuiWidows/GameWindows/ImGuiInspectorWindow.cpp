@@ -20,13 +20,13 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 
 	RegisterComponentDebugFunc(typeid(Transform).hash_code(),          [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
 	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(),   [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
-	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(),        [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(),       [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
-	RegisterComponentDebugFunc(typeid(CircleCollider).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { /*TransformDebug(reinterpret_cast<Transform*>(_component));*/ });
+	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(),        [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
+	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(),       [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component));});
+	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component));});
+	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
+	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
+	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
+	RegisterComponentDebugFunc(typeid(CircleCollider).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 
 
 	inspectorFunctions_.emplace_back([]() {});
@@ -41,18 +41,15 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 					componentName = componentName.substr(6);
 				}
 
-				if (ImGui::Selectable(componentName.c_str(), component.second == selectedComponent_)) {
-					selectedComponent_ = component.second;
+				
+				/// component debug
+				if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+					componentDebugFuncs_[component.first](component.second);
+
+					ImGui::TreePop();
 				}
 
-				// デバッグ表示
-				componentDebugFuncs_[component.first](component.second);
-				////DebugComponent(component.second);
 			}
-
-			/*TransformDebug(
-				reinterpret_cast<Transform*>(entity->GetComponent<Transform>())
-			);*/
 		}
 	);
 }
