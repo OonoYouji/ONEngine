@@ -13,7 +13,7 @@ ComputePipeline::~ComputePipeline() {}
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {
 
 	std::string message = std::to_string(rootParameters_.size());
-	Log("root parameter size : " + message);
+	Console::Log("root parameter size : " + message);
 
 	CreateRootSignature(_dxDevice);
 	CreatePipelineStateObject(_dxDevice);
@@ -119,7 +119,7 @@ void ComputePipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	);
 
 	if (FAILED(hr)) {
-		Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+		Console::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		Assert(false, "error...");
 	}
 

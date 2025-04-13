@@ -57,5 +57,5 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 		
 	}
 
-	Log("dx depth stencil create success!!");
+	Console::Log("dx depth stencil create success!!");
 }

@@ -102,7 +102,7 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		sicssorRect_.bottom = static_cast<LONG>(pWindow_->GetWindowSize().y);
 	}
 
-	Log("dx swap chain create success!!");
+	Console::Log("dx swap chain create success!!");
 }
 
 void DxSwapChain::BindViewportAndScissorRectForCommandList(ID3D12GraphicsCommandList* _commandList) const {

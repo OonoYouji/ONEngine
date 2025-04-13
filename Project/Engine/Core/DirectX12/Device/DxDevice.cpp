@@ -36,7 +36,7 @@ void DxDevice::Initialize() {
 
 		/// ソフトウェアアダプタでなければ採用
 		if(!(desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-			Log(std::format(L"Use Adapter:{}", desc.Description));
+			Console::Log(std::format(L"Use Adapter:{}", desc.Description));
 			break;
 		}
 
@@ -63,12 +63,12 @@ void DxDevice::Initialize() {
 		hr = D3D12CreateDevice(useAdapter_.Get(), featureLevels[i], IID_PPV_ARGS(&device_));
 		/// 指定した機能ベルで生成できたか確認
 		if(SUCCEEDED(hr)) {
-			Log(std::format("FeatureLevel : {}", featureLevelStaring[i]));
+			Console::Log(std::format("FeatureLevel : {}", featureLevelStaring[i]));
 			break;
 		}
 	}
 
 	/// 生成できたか確認、生成出来ていたらログ出力する
 	Assert(device_ != nullptr, "Device creation failed.");
-	Log("dx device create success!!");
+	Console::Log("dx device create success!!");
 }

@@ -1,14 +1,46 @@
 #include "Log.h"
 
+
 #include <Windows.h>
 
-void Log(const std::string& _message) {
-	OutputDebugStringA(("[ ONE : " + _message + " ]\n").c_str());
-}
+/// std
+#include <fstream>
+#include <filesystem>
+#include <chrono>
 
-void Log(const std::wstring& _message) {
-	OutputDebugStringA(("[ ONE : " + ConvertString(_message) + " ]\n").c_str());
-}
+
+namespace {
+
+	/// @brief 現在の年月日時間をstringで取得する
+	/// @return 
+	std::string GetCurrentDateTimeString() {
+		std::time_t now = std::time(nullptr);
+		std::tm timeInfo{};
+		localtime_s(&timeInfo, &now);
+
+		std::ostringstream oss;
+		oss << std::setfill('0')
+			<< (timeInfo.tm_year + 1900)
+			<< std::setw(2) << (timeInfo.tm_mon + 1)
+			<< std::setw(2) << timeInfo.tm_mday << "_"
+			<< std::setw(2) << timeInfo.tm_hour
+			<< std::setw(2) << timeInfo.tm_min
+			<< std::setw(2) << timeInfo.tm_sec;
+
+		return oss.str(); 
+	}
+
+	/// ////////////////////////////////////////////
+	/// LogData
+	/// ////////////////////////////////////////////
+	struct LogData {
+		std::string message;
+	};
+
+	LogData gLogData;
+	std::string gMessage;
+
+} /// namespace
 
 
 std::string ConvertString(const std::wstring& _wstr) {
@@ -47,4 +79,36 @@ std::wstring ConvertString(const std::string& _str) {
 	std::wstring result(sizeNeeded, 0);
 	MultiByteToWideChar(CP_UTF8, 0, _str.data(), static_cast<int>(_str.size()), result.data(), sizeNeeded);
 	return result;
+}
+
+
+
+Console::~Console() {
+	OutputLogToFile("../Generated/Log");
+}
+
+void Console::Log(const std::string& _message) {
+	gMessage = _message + "\n";
+	gLogData.message += gMessage;
+	OutputDebugStringA(gMessage.c_str());
+}
+
+void Console::Log(const std::wstring& _message) {
+	gMessage += ConvertString(_message) + "\n";
+	gLogData.message += gMessage;
+	OutputDebugStringA(gMessage.c_str());
+}
+
+void Console::OutputLogToFile(const std::string& _directory) {
+
+	std::string fileName = "/log" + GetCurrentDateTimeString() + ".md";
+
+	/// ファイルを開く
+	std::ofstream file(_directory + fileName, std::ios::trunc);
+	if (!file.is_open()) {
+		std::filesystem::create_directory(_directory);
+	}
+
+	file << gLogData.message;
+	file.close();
 }
