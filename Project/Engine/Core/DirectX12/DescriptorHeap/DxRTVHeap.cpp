@@ -10,5 +10,5 @@ void DxRTVHeap::Initialize() {
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	useIndex_       = 0;
 
-	Log("dx descriptor heap rtv create success!!");
+	Console::Log("dx descriptor heap rtv create success!!");
 }

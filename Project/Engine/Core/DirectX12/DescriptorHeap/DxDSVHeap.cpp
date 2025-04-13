@@ -10,5 +10,5 @@ void DxDSVHeap::Initialize() {
 	descriptorSize_ = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	useIndex_       = 0;
 
-	Log("dx descriptor heap dsv create success!!");
+	Console::Log("dx descriptor heap dsv create success!!");
 }

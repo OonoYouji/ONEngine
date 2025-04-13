@@ -55,7 +55,7 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 	Assert(SUCCEEDED(result), "Failed to create fence.");
 
 
-	Log("dx command create success!!");
+	Console::Log("dx command create success!!");
 }
 
 void DxCommand::CommandExecute() {

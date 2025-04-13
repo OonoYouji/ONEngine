@@ -3,18 +3,23 @@
 /// std
 #include <format>
 
-/// <summary>
-/// 引数の文字列をログに出力する
-/// </summary>
-/// <param name="_message"> :　出力する文字列 </param>
-void Log(const std::string& _message);
+/// ////////////////////////////////////////////////
+/// Console Log
+/// ////////////////////////////////////////////////
+class Console final {
+public:
 
-/// <summary>
-/// 引数の文字列をログに出力する
-/// </summary>
-/// <param name="_message"> :　出力する文字列 </param>
-void Log(const std::wstring& _message);
+	~Console();
 
+	static void Log(const std::string& _message);
+	static void Log(const std::wstring& _message);
+
+
+	/// @brief logをfileに出力する
+	/// @param _directory
+	static void OutputLogToFile(const std::string& _directory);
+
+};
 
 
 /*##########################################################

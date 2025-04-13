@@ -14,7 +14,7 @@ void DxSRVHeap::Initialize() {
 	bufferUseIndex_ = textureHeapSize_; ///< indexの開始地点はtextureの分だけずらす
 
 
-	Log("dx descriptor heap cbv,srv,uav create success!!");
+	Console::Log("dx descriptor heap cbv,srv,uav create success!!");
 }
 
 
