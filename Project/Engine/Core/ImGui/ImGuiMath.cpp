@@ -107,7 +107,7 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 	Vec3  direction = _light->GetDirection();
 	
 	/// edit
-	if (ImGui::ColorEdit4("color", &color.x)) {
+	if (ImGuiColorEdit("color", &color)) {
 		_light->SetColor(color);
 	}
 
