@@ -23,5 +23,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	float jumpPower_ = 0.0f;
+	Vector3 velocity_;
+	float speed_;
+
 };
 

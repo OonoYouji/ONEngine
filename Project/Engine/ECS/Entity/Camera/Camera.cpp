@@ -42,6 +42,12 @@ void Camera::Initialize() {
 }
 
 void Camera::Update() {
+	static bool isActive = true;
+	if (Input::TriggerKey(DIK_TAB)) {
+		isActive = !isActive;
+	}
+
+	if (!isActive) { return; }
 
 	Vector3 velocity = Vector3::kZero;
 

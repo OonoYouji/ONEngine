@@ -7,9 +7,9 @@
 #include "Engine/ECS/Entity/Grid/Grid.h"
 
 /// user
-#include "Game/Entity/GameController/GameController.h"
+//#include "Game/Entity/GameController/GameController.h"
 #include "Game/Objects/Terrain/Terrain.h"
-
+#include "Game/Entity/Player/Player.h"
 
 GameScene::GameScene() {
 	loadResourcePaths_ = {
@@ -37,6 +37,7 @@ void GameScene::Initialize() {
 #endif // _DEBUG
 	
 	//pEntityComponentSystem_->GenerateEntity<GameController>();
+	pEntityComponentSystem_->GenerateEntity<Player>();
 	pEntityComponentSystem_->GenerateEntity<Terrain>();
 
 }
