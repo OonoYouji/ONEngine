@@ -13,7 +13,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	}
 
 	const auto& textures = resourceCollection_->GetTextures();
-	auto texture = textures[resourceCollection_->GetTextureIndex("scene")].get();
+	auto texture = textures[resourceCollection_->GetTextureIndex("debugScene")].get();
 
 	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	float aspectRatio = 16.0f / 9.0f;

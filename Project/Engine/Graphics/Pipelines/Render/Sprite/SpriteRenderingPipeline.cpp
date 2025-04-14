@@ -120,7 +120,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
+void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
 
 	/// entityから sprite renderer を集める
 	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
@@ -139,12 +139,12 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-	Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
-	if (_pEntityComponentSystem->GetCamera2Ds().size() == 0) {
-		return;
-	} else {
-		camera = _pEntityComponentSystem->GetCamera2Ds()[0];
-	}
+	//Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
+	//if (_pEntityComponentSystem->GetCamera2Ds().size() == 0) {
+	//	return;
+	//} else {
+	//	camera = _pEntityComponentSystem->GetCamera2Ds()[0];
+	//}
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -154,7 +154,7 @@ void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 	commandList->IASetIndexBuffer(&ibv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0); ///< view projection
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0); ///< view projection
 
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();

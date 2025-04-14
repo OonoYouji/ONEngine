@@ -41,7 +41,7 @@ public:
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) override;
+	void Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) override;
 
 
 private:

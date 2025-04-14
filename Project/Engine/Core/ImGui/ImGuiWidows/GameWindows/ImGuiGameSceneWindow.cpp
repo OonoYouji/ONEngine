@@ -9,6 +9,7 @@ void ImGuiGameSceneWindow::ImGuiFunc() {
 		return;
 	}
 
+	///TODO: game sceneを表示する
 
 	ImGui::End();
 }

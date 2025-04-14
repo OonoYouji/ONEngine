@@ -1,5 +1,8 @@
 #include "EntityComponentSystem.h"
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
@@ -25,10 +28,10 @@ void EntityComponentSystem::Initialize() {
 
 	entities_.reserve(256);
 
-	//Camera* mainCamera = GenerateCamera();
-	//mainCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
-	//mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	//SetMainCamera(mainCamera);
+	Camera* debugCamera = GenerateCamera();
+	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	SetDebugCamera(debugCamera);
 
 	AddECSSystemFunction(this, pDxManager_);
 }
@@ -68,16 +71,16 @@ Camera* EntityComponentSystem::GenerateCamera() {
 	return cameraPtr;
 }
 
-Camera2D* EntityComponentSystem::GenerateCamera2D() {
-	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
-	camera->pEntityComponentSystem_ = this;
-	camera->CommonInitialize();
-	camera->Initialize();
-
-	Camera2D* cameraPtr = camera.get();
-	entities_.push_back(std::move(camera));
-	camera2ds_.push_back(cameraPtr);
-
-	return cameraPtr;
-}
-
+//Camera2D* EntityComponentSystem::GenerateCamera2D() {
+//	std::unique_ptr<Camera2D> camera = std::make_unique<Camera2D>(pDxManager_->GetDxDevice());
+//	camera->pEntityComponentSystem_ = this;
+//	camera->CommonInitialize();
+//	camera->Initialize();
+//
+//	Camera2D* cameraPtr = camera.get();
+//	entities_.push_back(std::move(camera));
+//	camera2ds_.push_back(cameraPtr);
+//
+//	return cameraPtr;
+//}
+//
