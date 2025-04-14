@@ -11,13 +11,8 @@ ComputePipeline::ComputePipeline() {}
 ComputePipeline::~ComputePipeline() {}
 
 void ComputePipeline::CreatePipeline(DxDevice* _dxDevice) {
-
-	std::string message = std::to_string(rootParameters_.size());
-	Console::Log("root parameter size : " + message);
-
 	CreateRootSignature(_dxDevice);
 	CreatePipelineStateObject(_dxDevice);
-
 }
 
 

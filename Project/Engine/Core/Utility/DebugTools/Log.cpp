@@ -30,6 +30,21 @@ namespace {
 		return oss.str(); 
 	}
 
+	/// @brief 現在の時間をstringで取得する
+	/// @return 
+	std::string GetCurrentTimeString() {
+		std::time_t now = std::time(nullptr);
+		std::tm timeInfo{};
+		localtime_s(&timeInfo, &now);
+		std::ostringstream oss;
+		oss << std::setw(2) << "["
+			<< std::setw(2) << timeInfo.tm_hour << ":"
+			<< std::setw(2) << timeInfo.tm_min << ":"
+			<< std::setw(2) << timeInfo.tm_sec
+			<< std::setw(2) << "] ";
+		return oss.str();
+	}
+
 	/// ////////////////////////////////////////////
 	/// LogData
 	/// ////////////////////////////////////////////
@@ -88,13 +103,13 @@ Console::~Console() {
 }
 
 void Console::Log(const std::string& _message) {
-	gMessage = _message + "\n";
+	gMessage = GetCurrentTimeString() + _message + "\n";
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
 }
 
 void Console::Log(const std::wstring& _message) {
-	gMessage += ConvertString(_message) + "\n";
+	gMessage = GetCurrentTimeString() + ConvertString(_message) + "\n";
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
 }
