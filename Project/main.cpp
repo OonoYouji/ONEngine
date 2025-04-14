@@ -13,11 +13,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		.windowSize = Vec2(1280, 720),
 	});
 
-
 	gameFramework->Run();
-
-
-	Assert(false, "GameFramework is not running");
 
 	return 0;
 }

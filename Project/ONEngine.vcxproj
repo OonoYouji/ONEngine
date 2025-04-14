@@ -27,9 +27,6 @@
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
-    <ClCompile Include="Game\Entity\EntityConfig\EntityConfig.cpp" />
-    <ClCompile Include="Game\Entity\GameController\GameController.cpp" />
-    <ClCompile Include="Game\Entity\Block\Block.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
@@ -93,13 +90,13 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
-    <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
+    <ClCompile Include="Game\Entity\Player\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
@@ -112,8 +109,6 @@
     <ClInclude Include="Engine\ECS\Component\Component.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
-    <ClInclude Include="Game\Entity\GameController\GameController.h" />
-    <ClInclude Include="Game\Entity\Block\Block.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ColliderComponents\Collider2D\CircleCollider.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
@@ -137,7 +132,6 @@
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
-    <ClInclude Include="Game\Entity\EntityConfig\EntityConfig.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
@@ -170,7 +164,6 @@
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
-    <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Engine\ECS\Entity\Grid\Grid.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
@@ -190,6 +183,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
+    <ClInclude Include="Game\Entity\Player\Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
