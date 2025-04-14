@@ -1,6 +1,7 @@
 /// engine
 #include "Engine/Core/GameFramework/GameFramework.h"
 #include "Engine/Core/Utility/DebugTools/Log.h"
+#include "Engine/Core/Utility/DebugTools/Assert.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -14,6 +15,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 	gameFramework->Run();
+
+
+	Assert(false, "GameFramework is not running");
 
 	return 0;
 }

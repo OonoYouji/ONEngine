@@ -27,7 +27,7 @@ namespace {
 			<< std::setw(2) << timeInfo.tm_min
 			<< std::setw(2) << timeInfo.tm_sec;
 
-		return oss.str(); 
+		return oss.str();
 	}
 
 	/// @brief 現在の時間をstringで取得する
@@ -103,13 +103,28 @@ Console::~Console() {
 }
 
 void Console::Log(const std::string& _message) {
-	gMessage = GetCurrentTimeString() + _message + "\n";
+	std::string formattedMessage;
+	std::istringstream stream(_message);
+	std::string line;
+	while (std::getline(stream, line)) {
+		formattedMessage += GetCurrentTimeString() + line + "\n";
+	}
+	gMessage = formattedMessage;
+
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
 }
 
 void Console::Log(const std::wstring& _message) {
-	gMessage = GetCurrentTimeString() + ConvertString(_message) + "\n";
+	std::string formattedMessage;
+	std::istringstream stream(ConvertString(_message));
+	std::string line;
+	while (std::getline(stream, line)) {
+		formattedMessage += GetCurrentTimeString() + line + "\n";
+	}
+	gMessage = formattedMessage;
+
+	//gMessage = GetCurrentTimeStrinConvertString(_message)g() + ConvertString(_message) + "\n";
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
 }
