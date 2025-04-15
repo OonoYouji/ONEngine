@@ -3,8 +3,8 @@
 /// engine
 #include "../Device/DxDevice.h"
 #include "../DescriptorHeap/DxDSVHeap.h"
-#include "Engine/Core/Utility/DebugTools/Assert.h"
-#include "Engine/Core/Utility/DebugTools/Log.h"
+#include "Engine/Core/Utility/Tools/Assert.h"
+#include "Engine/Core/Utility/Tools/Log.h"
 
 DxDepthStencil::DxDepthStencil() {}
 DxDepthStencil::~DxDepthStencil() {}

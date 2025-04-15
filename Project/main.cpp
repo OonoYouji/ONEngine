@@ -1,7 +1,6 @@
 /// engine
 #include "Engine/Core/GameFramework/GameFramework.h"
-#include "Engine/Core/Utility/DebugTools/Log.h"
-#include "Engine/Core/Utility/DebugTools/Assert.h"
+#include "Engine/Core/Utility/Tools/Log.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 

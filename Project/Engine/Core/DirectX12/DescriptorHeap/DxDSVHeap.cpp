@@ -1,7 +1,7 @@
 #include "DxDSVHeap.h"
 
 /// engine
-#include "Engine/Core/Utility/DebugTools/Log.h"
+#include "Engine/Core/Utility/Tools/Log.h"
 
 void DxDSVHeap::Initialize() {
 	ID3D12Device* pDevice = pDxDevice_->GetDevice();

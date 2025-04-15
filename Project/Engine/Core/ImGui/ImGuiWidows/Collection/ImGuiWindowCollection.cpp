@@ -30,9 +30,6 @@ void ImGuiWindowCollection::Update() {
 
 	parentWindows_[selectedMenuIndex_]->ImGuiFunc();
 
-	//for (auto& window : parentWIndows_) {
-		//window->ImGuiFunc();
-	//}
 }
 
 void ImGuiWindowCollection::AddParentWindow(const std::string& _name, std::unique_ptr<class IImGuiParentWindow> _window) {

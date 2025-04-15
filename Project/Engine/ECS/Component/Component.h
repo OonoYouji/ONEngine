@@ -8,6 +8,7 @@
 #include "Components/ComputeComponents/Transform/Transform.h"
 #include "Components/ComputeComponents/Light/Light.h"
 #include "Components/ComputeComponents/Audio/AudioSource.h"
+#include "Components/ComputeComponents/Variables/Variables.h"
 
 /// renderer
 #include "Components/RendererComponents/Mesh/MeshRenderer.h"

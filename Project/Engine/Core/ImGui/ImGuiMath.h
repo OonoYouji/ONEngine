@@ -27,6 +27,12 @@ void DirectionalLightDebug(class DirectionalLight* _light);
 
 void AudioSourceDebug(class AudioSource* _audioSource);
 
+void VariablesDebug(class Variables* _variables);
+
 void MeshRendererDebug(class MeshRenderer* _meshRenderer);
 
 void CustomMeshRendererDebug(class CustomMeshRenderer* _customMeshRenderer);
+
+
+
+void ValueImGui(class Variables* _variables, const std::string& _label, const std::string& _name, size_t _type);

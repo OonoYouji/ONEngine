@@ -49,7 +49,7 @@
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector3.cpp" />
-    <ClCompile Include="Engine\Core\Utility\DebugTools\Log.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Tools\Log.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp" />
@@ -97,6 +97,8 @@
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Light\PostProcessLighting.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
@@ -135,10 +137,10 @@
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
-    <ClInclude Include="Engine\Core\Utility\DebugTools\Assert.h" />
+    <ClInclude Include="Engine\Core\Utility\Tools\Assert.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector2.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector3.h" />
-    <ClInclude Include="Engine\Core\Utility\DebugTools\Log.h" />
+    <ClInclude Include="Engine\Core\Utility\Tools\Log.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\Factory\SceneFactory.h" />
     <ClInclude Include="Engine\Graphics\Shader\GraphicsPipeline.h" />
@@ -184,6 +186,8 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
     <ClInclude Include="Game\Entity\Player\Player.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
+    <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

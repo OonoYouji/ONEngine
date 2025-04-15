@@ -14,6 +14,11 @@ void Player::Initialize() {
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
 	meshRenderer->SetTexturePath("Assets/Textures/uvChecker.png");
 
+	Variables* variables = AddComponent<Variables>();
+	variables->Add("speed", 10.0f);
+	variables->Add("jumpPower", 0.0f);
+	variables->Add("velo", Vec3::kZero);
+
 	speed_ = 10.0f;
 
 }

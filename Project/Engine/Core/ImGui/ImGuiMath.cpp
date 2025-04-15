@@ -3,6 +3,7 @@
 /// std
 #include <numbers>
 #include <format>
+#include <variant>
 
 /// engine
 #include "Engine/ECS/Component/Component.h"
@@ -29,7 +30,7 @@ void ImGuiInputText(const char* _label, std::string* _text) {
 }
 
 bool ImGuiColorEdit(const char* _label, Vector4* _color) {
-	
+
 	bool result = false;
 	float width = 50.0f; // 各ボックスの横幅
 	static bool openPicker = false;
@@ -92,8 +93,8 @@ void TransformDebug(Transform* _transform) {
 	}
 
 	ImGui::DragFloat3("position", &_transform->position.x, 0.1f);
-	ImGui::DragFloat3("rotate",   &_transform->rotate.x,   rotateSpeed);
-	ImGui::DragFloat3("scale",    &_transform->scale.x,    0.1f);
+	ImGui::DragFloat3("rotate", &_transform->rotate.x, rotateSpeed);
+	ImGui::DragFloat3("scale", &_transform->scale.x, 0.1f);
 }
 
 void DirectionalLightDebug(DirectionalLight* _light) {
@@ -103,9 +104,9 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 
 	/// param get
 	float intensity = _light->GetIntensity();
-	Vec4  color     = _light->GetColor();
+	Vec4  color = _light->GetColor();
 	Vec3  direction = _light->GetDirection();
-	
+
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_light->SetColor(color);
@@ -118,7 +119,7 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 	if (ImGui::DragFloat("intensity", &intensity, 0.1f)) {
 		_light->SetIntensity(intensity);
 	}
-	
+
 }
 
 void AudioSourceDebug(AudioSource* _audioSource) {
@@ -128,7 +129,7 @@ void AudioSourceDebug(AudioSource* _audioSource) {
 
 	/// param get
 	float volume = _audioSource->GetVolume();
-	float pitch  = _audioSource->GetPitch();
+	float pitch = _audioSource->GetPitch();
 	std::string path = _audioSource->GetAudioPath();
 
 	/// edit
@@ -148,14 +149,50 @@ void AudioSourceDebug(AudioSource* _audioSource) {
 
 }
 
+void VariablesDebug(Variables* _variables) {
+	if (!_variables) {
+		return;
+	}
+
+	ImGui::Text("variables");
+
+	std::list<std::pair<std::string, std::string>> removeList;
+	std::vector<std::tuple<std::string, Variables::Var, std::string>> variables;
+	std::string ptrStr, label;
+
+	for (const auto& [key, index] : _variables->GetKeyMap()) {
+		variables.emplace_back(key, _variables->GetVariables()[index], "##{:p}" + std::to_string(reinterpret_cast<uintptr_t>(&_variables->GetVariables()[index])));
+	}
+
+	for (auto& [name, variable, str] : variables) {
+		ptrStr = str;
+		label = name;
+
+		ImGui::SetNextItemWidth(128.0f);
+		if (ImGui::InputText((ptrStr + "string").c_str(), label.data(), label.capacity())) {
+			label.resize(strlen(label.c_str()));
+			removeList.push_back({ name, label });
+		}
+
+		ImGui::SameLine();
+
+		/// 変数の型によって処理を変える
+		ValueImGui(_variables, ptrStr, name, variable.index());
+	}
+
+	for (auto& [oldName, newName] : removeList) {
+		_variables->Rename(oldName, newName);
+	}
+}
+
 void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 	if (!_meshRenderer) {
 		return;
 	}
-	
+
 	/// param get
 	Vec4 color = _meshRenderer->GetColor();
-	
+
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_meshRenderer->SetColor(color);
@@ -173,5 +210,33 @@ void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_customMeshRenderer->SetColor(color);
+	}
+}
+
+void ValueImGui(Variables* _variables, const std::string& _label, const std::string& _name, size_t _type) {
+	{
+		switch (_type) {
+		case 0:
+			ImGui::DragInt(_label.c_str(), &_variables->Get<int>(_name), 1, -INT_MAX, INT_MAX, "%d", ImGuiSliderFlags_AlwaysClamp);
+			break;
+		case 1:
+			ImGui::DragFloat(_label.c_str(), &_variables->Get<float>(_name), 0.2f, -FLT_MAX, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+			break;
+		case 2:
+			ImGui::Checkbox(_label.c_str(), &_variables->Get<bool>(_name));
+			break;
+		case 3:
+			ImGuiInputText(_label.c_str(), &_variables->Get<std::string>(_name));
+			break;
+		case 4:
+			ImGui::DragFloat2(_label.c_str(), &_variables->Get<Vector2>(_name).x, 0.2f, -FLT_MAX, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+			break;
+		case 5:
+			ImGui::DragFloat3(_label.c_str(), &_variables->Get<Vector3>(_name).x, 0.2f, -FLT_MAX, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+			break;
+		case 6:
+			ImGui::DragFloat4(_label.c_str(), &_variables->Get<Vector4>(_name).x, 0.2f, -FLT_MAX, FLT_MAX, "%.3f", ImGuiSliderFlags_AlwaysClamp);
+			break;
+		}
 	}
 }
