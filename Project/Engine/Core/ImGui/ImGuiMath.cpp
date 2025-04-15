@@ -154,8 +154,6 @@ void VariablesDebug(Variables* _variables) {
 		return;
 	}
 
-	ImGui::Text("variables");
-
 	std::list<std::pair<std::string, std::string>> removeList;
 	std::vector<std::tuple<std::string, Variables::Var, std::string>> variables;
 	std::string ptrStr, label;
@@ -168,7 +166,7 @@ void VariablesDebug(Variables* _variables) {
 		ptrStr = str;
 		label = name;
 
-		ImGui::SetNextItemWidth(128.0f);
+		ImGui::SetNextItemWidth(64.0f);
 		if (ImGui::InputText((ptrStr + "string").c_str(), label.data(), label.capacity())) {
 			label.resize(strlen(label.c_str()));
 			removeList.push_back({ name, label });

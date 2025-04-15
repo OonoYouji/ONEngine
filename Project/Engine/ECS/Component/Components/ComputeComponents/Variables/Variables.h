@@ -88,17 +88,27 @@ public:
 	/// @return 変数のコンテナ
 	const std::vector<Var>& GetVariables() const { return variables_; }
 
+#ifdef _DEBUG
+	/// @brief 変数のindexコンテナを取得
+	/// @return 変数のindexコンテナ
+	const std::map<std::string, size_t>& GetKeyMap() const { return keyMap_; }
+#else
 	/// @brief 変数のindexコンテナを取得
 	/// @return 変数のindexコンテナ
 	const std::unordered_map<std::string, size_t>& GetKeyMap() const { return keyMap_; }
-
+#endif // _DEBUG
 
 private:
 	/// ================================================
 	/// private : objects
 	/// ================================================
 
-	std::unordered_map<std::string, size_t> keyMap_;
+#ifdef _DEBUG
+	std::map<std::string, size_t> keyMap_;
+#else
+	std::unordered_map<std::string, size_t> keyMap_; // 変数名とインデックスのマップ
+#endif // _DEBUG
+
 	std::vector<Var> variables_;
 
 

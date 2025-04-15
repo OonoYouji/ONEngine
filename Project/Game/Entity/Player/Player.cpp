@@ -18,6 +18,8 @@ void Player::Initialize() {
 	variables->Add("speed", 10.0f);
 	variables->Add("jumpPower", 0.0f);
 	variables->Add("velo", Vec3::kZero);
+	variables->Add("color", Vec4::kZero);
+	variables->Add("name", "player");
 
 	speed_ = 10.0f;
 

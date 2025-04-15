@@ -8,11 +8,11 @@
 #include "../Math/Vector3.h"
 #include "../Math/Vector4.h"
 
-void from_json(const nlohmann::json& j, Vec2& v);
-void to_json(nlohmann::json& j, const Vec2& v);
+void from_json(const nlohmann::json& _j, Vec2& _v);
+void to_json(nlohmann::json& _j, const Vec2& _v);
 
-void from_json(const nlohmann::json& j, Vec3& v);
-void to_json(nlohmann::json& j, const Vec3& v);
+void from_json(const nlohmann::json& _j, Vec3& _v);
+void to_json(nlohmann::json& _j, const Vec3& _v);
 
-void from_json(const nlohmann::json& j, Vec4& v);
-void to_json(nlohmann::json& j, const Vec4& v);
+void from_json(const nlohmann::json& _j, Vec4& _v);
+void to_json(nlohmann::json& _j, const Vec4& _v);
