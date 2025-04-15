@@ -74,7 +74,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
+void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
 	
 	/// entityから描画データを取得
 	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
@@ -106,7 +106,7 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 
 	/// draw settings
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-	Camera2D*                  camera      = _pEntityComponentSystem->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
+	//Camera2D*                  camera      = _pEntityComponentSystem->GetCamera2Ds()[0]; ///< TODO: 仮のカメラ取得
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
@@ -114,7 +114,7 @@ void Line2DRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	/// buffer
-	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);

@@ -20,20 +20,25 @@ RenderingPipelineCollection::~RenderingPipelineCollection() {}
 void RenderingPipelineCollection::Initialize() {
 
 	/// generate rendering pipeline
-	GenerateRenderingPipeline<Line2DRenderingPipeline>();
-	GenerateRenderingPipeline<Line3DRenderingPipeline>();
-	GenerateRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
-	GenerateRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
+	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
+	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
+	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
+	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
 }
 
-void RenderingPipelineCollection::DrawEntities() {
-	for (auto& renderer : renderers_) {
-		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_);
+void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
+	for (auto& renderer : renderer3ds_) {
+		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
+	}
+	
+	for (auto& renderer : renderer2ds_) {
+		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _2dCamera);
 	}
 }
+
 
 void RenderingPipelineCollection::ExecutePostProcess() {
 	for (auto& postProcess : postProcesses_) {

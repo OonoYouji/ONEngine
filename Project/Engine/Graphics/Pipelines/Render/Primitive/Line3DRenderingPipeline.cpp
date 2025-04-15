@@ -77,7 +77,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
+void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
 
 	/// rendering dataの収集
 	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
@@ -100,15 +100,10 @@ void Line3DRenderingPipeline::Draw([[maybe_unused]] DxCommand* _dxCommand, Entit
 	/// ここから描画処理
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
-	Camera* camera = _pEntityComponentSystem->GetMainCamera();
-	if (!camera) { ///< カメラがない場合は描画しない
-		return;
-	}
-
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 
 	/// draw call

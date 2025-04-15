@@ -29,13 +29,16 @@ public:
 	/// @brief rendering pipelineの生成
 	/// @tparam T 生成する rendering pipelineの型
 	template <class T, typename... Args>
-	void GenerateRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T>;
+	void Generate3DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T>;
+
+	template <class T, typename... Args>
+	void Generate2DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T>;
 
 	template <class T, typename... Args>
 	void GeneratePostProcessPipeline(Args&&... _args) requires std::is_base_of_v<IPostProcessPipeline, T>;
 
 	/// @brief すべてのEntityを描画する
-	void DrawEntities();
+	void DrawEntities(class Camera* _3dCamera, class Camera* _2dCamera);
 
 	/// @brief post processの実行
 	void ExecutePostProcess();
@@ -51,7 +54,8 @@ private:
 	class EntityComponentSystem*      pEntityComponentSystem_     = nullptr;
 	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
 
-	std::vector<std::unique_ptr<IRenderingPipeline>>   renderers_;
+	std::vector<std::unique_ptr<IRenderingPipeline>>   renderer3ds_;
+	std::vector<std::unique_ptr<IRenderingPipeline>>   renderer2ds_;
 	std::vector<std::unique_ptr<IPostProcessPipeline>> postProcesses_;
 };
 
@@ -62,10 +66,17 @@ private:
 /// ===================================================
 
 template<class T, typename... Args>
-inline void RenderingPipelineCollection::GenerateRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
+inline void RenderingPipelineCollection::Generate3DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
 	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
 	renderer->Initialize(shaderCompiler_, dxManager_);
-	renderers_.push_back(std::move(renderer));
+	renderer3ds_.push_back(std::move(renderer));
+}
+
+template<class T, typename... Args>
+inline void RenderingPipelineCollection::Generate2DRenderingPipeline(Args&&... _args) requires std::is_base_of_v<IRenderingPipeline, T> {
+	std::unique_ptr<T> renderer = std::make_unique<T>(std::forward<Args>(_args)...);
+	renderer->Initialize(shaderCompiler_, dxManager_);
+	renderer2ds_.push_back(std::move(renderer));
 }
 
 template<class T, typename... Args>

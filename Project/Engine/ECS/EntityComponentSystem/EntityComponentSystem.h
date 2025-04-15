@@ -169,8 +169,9 @@ private:
 	/// ----- entity ----- ///
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*> cameras_;
-	std::vector<Camera2D*> camera2ds_;
 	Camera* mainCamera_ = nullptr;
+	Camera* mainCamera2D_ = nullptr;
+	Camera* debugCamera_ = nullptr;
 
 	/// ----- component ----- ///
 	std::unordered_map<size_t, std::unique_ptr<IComponentArray>> componentArrayMap_;
@@ -184,13 +185,15 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	/// @brief main cameraの設定
-	/// @param _camera Cameraクラスへのポインタ
 	void SetMainCamera(Camera* _camera) { mainCamera_ = _camera; }
-
-	/// @brief main cameraの設定
-	/// @param _index cameraのインデックス
 	void SetMainCamera(size_t _index) { mainCamera_ = cameras_[_index]; }
+	
+	void SetMainCamera2D(Camera* _camera) { mainCamera2D_ = _camera; }
+	void SetMainCamera2D(size_t _index) { mainCamera2D_ = cameras_[_index]; }
+
+	void SetDebugCamera(Camera* _camera) { debugCamera_ = _camera; }
+	void SetDebugCamera(size_t _index) { debugCamera_ = cameras_[_index]; }
+
 
 
 	/// @brief entities の取得
@@ -203,12 +206,19 @@ public:
 
 	/// @brief 2d cameras の取得
 	/// @return camera2ds
-	const std::vector<Camera2D*>& GetCamera2Ds() { return camera2ds_; }
+	//const std::vector<Camera2D*>& GetCamera2Ds() { return camera2ds_; }
 
 	/// @brief main cameraの取得
 	/// @return Cameraクラスへのポインタ
 	const Camera* GetMainCamera() const { return mainCamera_; }
 	Camera* GetMainCamera() { return mainCamera_; }
+
+	const Camera* GetMainCamera2D() const { return mainCamera2D_; }
+	Camera* GetMainCamera2D() { return mainCamera2D_; }
+
+	const Camera* GetDebugCamera() const { return debugCamera_; }
+	Camera* GetDebugCamera() { return debugCamera_; }
+
 };
 
 

@@ -97,7 +97,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 }
 
 
-void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem) {
+void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
@@ -121,16 +121,12 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 
 
 	ID3D12GraphicsCommandList* _commandList = _dxCommand->GetCommandList();
-	Camera* camera = _pEntityComponentSystem->GetMainCamera();
-	if (!camera) { ///< カメラがない場合は描画しない
-		return;
-	}
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(_commandList, 0);
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(_commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
