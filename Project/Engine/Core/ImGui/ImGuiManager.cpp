@@ -560,12 +560,10 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
-	//imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/FiraMono-Regular_0.ttf", 16.0f);
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080);
-	//imGuiID.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
