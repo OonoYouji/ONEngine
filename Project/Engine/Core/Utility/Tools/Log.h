@@ -19,6 +19,8 @@ public:
 	/// @param _directory
 	static void OutputLogToFile(const std::string& _directory);
 
+	static const std::string& GetCurrentLog();
+	static const std::string& GetAllLogs();
 };
 
 

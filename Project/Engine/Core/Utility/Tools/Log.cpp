@@ -142,3 +142,11 @@ void Console::OutputLogToFile(const std::string& _directory) {
 	file << gLogData.message;
 	file.close();
 }
+
+const std::string& Console::GetCurrentLog() {
+	return gMessage;
+}
+
+const std::string& Console::GetAllLogs() {
+	return gLogData.message;
+}

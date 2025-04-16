@@ -9,6 +9,7 @@
 #include "../GameWindows/ImGuiSceneWindow.h"
 #include "../GameWindows/ImGuiInspectorWindow.h"
 #include "../GameWindows/ImGuiHierarchyWindow.h"
+#include "../GameWindows/ImGuiConsoleWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _resourceCollection) {
 
@@ -24,6 +25,7 @@ ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem,
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiHierarchyWindow>(_pEntityComponentSystem, static_cast<ImGuiInspectorWindow*>(inspector)));
+	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }
 
 
