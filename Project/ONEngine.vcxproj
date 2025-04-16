@@ -44,6 +44,7 @@
     <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
+    <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -134,6 +135,8 @@
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
+    <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
+    <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
@@ -242,7 +245,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

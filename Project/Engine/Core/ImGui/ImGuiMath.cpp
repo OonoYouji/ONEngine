@@ -5,9 +5,12 @@
 #include <format>
 #include <variant>
 
+/// external
+#include <Externals/imgui/dialog/ImGuiFileDialog.h>
+
 /// engine
 #include "Engine/ECS/Component/Component.h"
-
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 namespace {
 
@@ -180,6 +183,37 @@ void VariablesDebug(Variables* _variables) {
 
 	for (auto& [oldName, newName] : removeList) {
 		_variables->Rename(oldName, newName);
+	}
+
+	ImGui::Spacing();
+
+	if (ImGui::Button("export")) {
+		std::string ownerName = typeid(*_variables->GetOwner()).name();
+		/// "class "を除去
+		ownerName.erase(0, 6);
+
+		_variables->SaveJson("Assets/Jsons/" + ownerName + ".json");
+	}
+
+	ImGui::SameLine();
+
+	// open Dialog Simple
+	if (ImGui::Button("Open File Dialog")) {
+		IGFD::FileDialogConfig config;
+		config.path = ".";
+		ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
+	}
+	// display
+	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
+		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			// action
+			_variables->LoadJson(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
 	}
 }
 

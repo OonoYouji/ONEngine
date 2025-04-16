@@ -38,7 +38,7 @@ namespace {
 	void to_json(json& j, const Vec3& v) {
 		j = json{ { "x", v.x }, { "y", v.y }, { "z", v.z } };
 	}
-	
+
 	/// ==================================================
 	/// vector2 json
 	/// ==================================================
@@ -75,6 +75,11 @@ void Variables::Rename(const std::string& _oldName, const std::string& _newName)
 
 
 void Variables::LoadJson(const std::string& _path) {
+	/// .jsonファイルかチェック
+	if (_path.find(".json") == std::string::npos) {
+		return;
+	}
+
 	variables_.clear();
 	nlohmann::json json;
 
@@ -101,7 +106,7 @@ void Variables::LoadJson(const std::string& _path) {
 		} else if (value.is_object() && value.contains("x") && value.contains("y") && value.contains("z") && value.contains("w")) {
 			Vec4 vec = value.get<Vec4>();
 			Add(key, vec);
-			
+
 		} else if (value.is_object() && value.contains("x") && value.contains("y") && value.contains("z")) {
 			Vec3 vec = value.get<Vec3>();
 			Add(key, vec);
@@ -132,6 +137,8 @@ void Variables::SaveJson(const std::string& _path) const {
 			} else if constexpr (std::is_same_v<T, Vec2>) {
 				json[key] = arg;
 			} else if constexpr (std::is_same_v<T, Vec3>) {
+				json[key] = arg;
+			} else if constexpr (std::is_same_v<T, Vec4>) {
 				json[key] = arg;
 			}
 			}, variables_[value]);

@@ -3,6 +3,7 @@
 /// external
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
+#include <dialog/ImGuiFileDialog.h>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
@@ -615,5 +616,6 @@ void ImGuiManager::Draw() {
 		ImGui::GetDrawData(),
 		dxManager_->GetDxCommand()->GetCommandList()
 	);
+	//ImGuiFileDialog::Instance()->Display("FileDialogKey", ImGuiWindowFlags_NoCollapse, ImVec2(700, 400));
 }
 
