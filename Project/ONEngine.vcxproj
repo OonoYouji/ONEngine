@@ -101,6 +101,7 @@
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
+    <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

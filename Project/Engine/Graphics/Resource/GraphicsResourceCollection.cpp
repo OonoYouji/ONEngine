@@ -1,5 +1,9 @@
 #include "GraphicsResourceCollection.h"
 
+/// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Creator/PrimitiveMeshCreator.h"
+
 GraphicsResourceCollection::GraphicsResourceCollection() {}
 GraphicsResourceCollection::~GraphicsResourceCollection() {}
 
@@ -27,6 +31,10 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	}
 
 	LoadResources(texturePaths);
+
+
+	/// primitive meshを作成
+	PrimitiveMeshCreator primitiveMeshCreator(this, _dxManager->GetDxDevice());
 }
 
 void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _filePaths) {
