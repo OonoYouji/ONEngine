@@ -16,10 +16,15 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	/// @brief デフォルトコンストラクタ
 	Quaternion();
+
+	/// @brief パラメータ付きコンストラクタ
+	/// @param _x x成分
+	/// @param _y y成分
+	/// @param _z z成分
+	/// @param _w w成分
 	Quaternion(float _x, float _y, float _z, float _w);
-
-
 
 	/// ===================================================
 	/// public : objects
@@ -27,54 +32,90 @@ public:
 
 	float x, y, z, w;
 
-
-
 	/// ===================================================
 	/// public : static methods
 	/// ===================================================
 
+	/// @brief クォータニオンの長さを計算する
+	/// @param _q クォータニオン
+	/// @return クォータニオンの長さ
 	static float Length(const Quaternion& _q);
+
+	/// @brief クォータニオンを正規化する
+	/// @param _q クォータニオン
+	/// @return 正規化されたクォータニオン
 	static Quaternion Normalize(const Quaternion& _q);
+
+	/// @brief ベクトルをクォータニオンで変換する
+	/// @param _v ベクトル
+	/// @param _q クォータニオン
+	/// @return 変換されたベクトル
 	static Vector3 Transform(const Vector3& _v, const Quaternion& _q);
 
+	/// @brief クォータニオンを線形補間する
+	/// @param _start 開始クォータニオン
+	/// @param _end 終了クォータニオン
+	/// @param _t 補間係数
+	/// @return 補間されたクォータニオン
 	static Quaternion Lerp(const Quaternion& _start, const Quaternion& _end, float _t);
 
+	/// @brief ある軸を基にクォータニオンを計算する
+	/// @param _axis 回転の軸となるベクトル
+	/// @param _theta 回転角度
+	/// @return 軸を基に回転させたクォータニオン
 	static Quaternion MakeFromAxis(const Vec3& _axis, float _theta);
 
+	/// @brief 回転行列を生成する
+	/// @param axis 回転軸
+	/// @param theta 回転角度
+	/// @return 回転行列
 	static Matrix4x4 MakeRotateAxisAngle(const Vec3& axis, float theta);
 
+	/// @brief 特定の方向を見るクォータニオンを生成する
+	/// @param _position 現在の位置
+	/// @param _target 目標位置
+	/// @param _up 上方向ベクトル
+	/// @return 生成されたクォータニオン
 	static Quaternion LockAt(const Vec3& _position, const Vec3& _target, const Vec3& _up);
+
+	/// @brief 特定の方向を見るクォータニオンを生成する
+	/// @param _position 現在の位置
+	/// @param _target 目標位置
+	/// @return 生成されたクォータニオン
 	static Quaternion LockAt(const Vec3& _position, const Vec3& _target);
 
+	/// @brief クォータニオンを球面線形補間する
+	/// @param _start 開始クォータニオン
+	/// @param _end 終了クォータニオン
+	/// @param _t 補間係数
+	/// @return 補間されたクォータニオン
 	static Quaternion Slerp(const Quaternion& _start, const Quaternion& _end, float _t);
 
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	// クォータニオンの共役を計算する関数
+	/// @brief クォータニオンの共役を計算する
+	/// @return 共役クォータニオン
 	Quaternion Conjugate() const {
 		return { -x, -y, -z, w };
 	}
 
-	// クォータニオンのノルムを計算する関数
+	/// @brief クォータニオンのノルムを計算する
+	/// @return クォータニオンのノルム
 	float Length() const {
 		return std::sqrt(w * w + x * x + y * y + z * z);
 	}
 
-	// 逆クォータニオンを計算する関数
+	/// @brief 逆クォータニオンを計算する
+	/// @return 逆クォータニオン
 	Quaternion Inverse() const;
-
-
 
 	/// ===================================================
 	/// public : operator
 	/// ===================================================
 
 	inline Quaternion& operator*= (const Quaternion& _other);
-
-
-
 };
 
 
