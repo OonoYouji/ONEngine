@@ -5,6 +5,7 @@
         "y": 0.0,
         "z": 0.0
     },
+    "count": 40,
     "jumpPower": 0.0,
     "name": "player",
     "speed": 10.0,

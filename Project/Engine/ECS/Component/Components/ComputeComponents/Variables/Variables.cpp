@@ -60,7 +60,20 @@ bool Variables::Has(const std::string& _name) const {
 }
 
 void Variables::Remove(const std::string& _name) {
-	variables_.erase(variables_.begin() + keyMap_.at(_name));
+	if (!Has(_name)) {
+		return;
+	}
+
+	size_t index = keyMap_.at(_name);
+	variables_.erase(variables_.begin() + index);
+	keyMap_.erase(_name);
+
+	// Update indices in keyMap_ to avoid out of range errors
+	for (auto& [key, value] : keyMap_) {
+		if (value > index) {
+			--value;
+		}
+	}
 }
 
 void Variables::Rename(const std::string& _oldName, const std::string& _newName) {
