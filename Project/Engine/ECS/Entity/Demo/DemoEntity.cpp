@@ -8,7 +8,7 @@
 void DemoEntity::Initialize() {
 
 	SpriteRenderer* renderer = AddComponent<SpriteRenderer>();
-	renderer->SetTexturePath("Assets/Textures/uvChecker.png");
+	renderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
 	transform_->position.y = 3;
 

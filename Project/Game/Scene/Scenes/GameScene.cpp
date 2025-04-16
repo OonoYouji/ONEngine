@@ -18,8 +18,6 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
-		"Assets/Textures/white.png",
-		"Assets/Textures/uvChecker.png",
 	};
 
 	unloadResourcePaths_ = {

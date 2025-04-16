@@ -8,15 +8,9 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	//transform_->position = { 0.0f, 0.0f, -10.0f };
-	
 	MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
-	meshRenderer->SetTexturePath("Assets/Textures/uvChecker.png");
-
-	//AddComponent<Variables>();
-
-	//speed_ = 10.0f;
+	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
 }
 

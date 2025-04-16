@@ -30,7 +30,7 @@ private:
 	/// ====================================================
 
 	Mesh mesh_;
-	std::string texturePath_ = "Assets/Textures/uvChecker.png";
+	std::string texturePath_ = "Packages/Textures/uvChecker.png";
 	Vector4 color_ = Vector4::kWhite; ///< RGBA 0.0f ~ 1.0f
 	bool isVisible_ = true; ///< 描画するかどうか
 	bool isBufferRecreate_ = false; ///< バッファを再作成するかどうか

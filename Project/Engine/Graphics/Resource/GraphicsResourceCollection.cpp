@@ -15,9 +15,9 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 
 	textures_.resize(32);
 
-	/// Assets/Textures/Engineにあるテクスチャを自動で読み込む
+	/// Packages内のファイルがすべて読み込む
 	std::vector<std::string> texturePaths;
-	for (const auto& entry : std::filesystem::directory_iterator("Assets/Textures/Engine")) {
+	for (const auto& entry : std::filesystem::directory_iterator("Packages/Textures")) {
 		if (entry.is_regular_file()) {
 			std::string path = entry.path().string();
 			
