@@ -158,11 +158,14 @@ void VariablesDebug(Variables* _variables) {
 	}
 
 	{	/// 新規変数の追加
+		ImGui::SetNextItemWidth(128.0f);
 		static std::string varName;
-		ImGuiInputText("name", &varName);
+		ImGuiInputText("##name", &varName);
 
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(80.0f);
 		static int type = 0;
-		ImGui::Combo("mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
+		ImGui::Combo("##mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
 		ImGui::Spacing();
 
 		/// 追加
@@ -206,6 +209,8 @@ void VariablesDebug(Variables* _variables) {
 
 	}
 
+	ImGui::SeparatorText("");
+
 	{	/// 既存の変数の表示
 
 		std::list<std::pair<std::string, std::string>> removeList;
@@ -215,6 +220,11 @@ void VariablesDebug(Variables* _variables) {
 		for (const auto& [key, index] : _variables->GetKeyMap()) {
 			variables.emplace_back(key, _variables->GetVariables()[index], "##{:p}" + std::to_string(reinterpret_cast<uintptr_t>(&_variables->GetVariables()[index])));
 		}
+
+		if (variables.empty()) {
+			ImGui::Text("no variables...");
+		}
+
 
 		for (auto& [name, variable, str] : variables) {
 			ptrStr = str;
@@ -237,7 +247,7 @@ void VariablesDebug(Variables* _variables) {
 		}
 	}
 
-	ImGui::Spacing();
+	ImGui::SeparatorText("");
 
 	if (ImGui::Button("export")) {
 		std::string ownerName = typeid(*_variables->GetOwner()).name();
@@ -250,9 +260,9 @@ void VariablesDebug(Variables* _variables) {
 	ImGui::SameLine();
 
 	// open Dialog Simple
-	if (ImGui::Button("Open File Dialog")) {
+	if (ImGui::Button("import")) {
 		IGFD::FileDialogConfig config;
-		config.path = ".";
+		config.path = "./Assets/Jsons";
 		ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
 	}
 	// display

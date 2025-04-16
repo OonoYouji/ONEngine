@@ -9,7 +9,7 @@
     "jumpPower": 0.0,
     "name": "player",
     "speed": 10.0,
-    "velo": {
+    "velocity": {
         "x": 0.0,
         "y": 0.0,
         "z": 0.0

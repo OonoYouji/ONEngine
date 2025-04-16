@@ -44,12 +44,12 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 
 				
 				/// component debug
+				ImGui::Separator();
 				if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 					componentDebugFuncs_[component.first](component.second);
 
 					ImGui::TreePop();
 				}
-
 			}
 		}
 	);

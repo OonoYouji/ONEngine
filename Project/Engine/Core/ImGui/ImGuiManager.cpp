@@ -616,6 +616,5 @@ void ImGuiManager::Draw() {
 		ImGui::GetDrawData(),
 		dxManager_->GetDxCommand()->GetCommandList()
 	);
-	//ImGuiFileDialog::Instance()->Display("FileDialogKey", ImGuiWindowFlags_NoCollapse, ImVec2(700, 400));
 }
 
