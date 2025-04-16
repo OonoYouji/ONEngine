@@ -80,6 +80,11 @@ void Variables::LoadJson(const std::string& _path) {
 		return;
 	}
 
+	/// fileが存在するのかチェック
+	if (!std::filesystem::exists(_path)) {
+		return;
+	}
+
 	variables_.clear();
 	nlohmann::json json;
 

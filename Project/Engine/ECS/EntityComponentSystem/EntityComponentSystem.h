@@ -9,6 +9,7 @@
 #include "../Component/ComponentArray/ComponentArray.h"
 #include "../Component/Components/Interface/IComponent.h"
 #include "../Component/Components/ComputeComponents/Transform/Transform.h"
+#include "../Component/Components/ComputeComponents/Variables/Variables.h"
 #include "../System/Interface/ECSISystem.h"
 
 class Camera;
@@ -56,6 +57,7 @@ protected:
 	/// ===================================================
 
 	Transform* transform_;
+	Variables* variables_;
 	class EntityComponentSystem* pEntityComponentSystem_;
 
 private:

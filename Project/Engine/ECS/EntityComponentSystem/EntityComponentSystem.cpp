@@ -13,6 +13,10 @@ IEntity::IEntity() {}
 
 void IEntity::CommonInitialize() {
 	transform_ = AddComponent<Transform>();
+	variables_ = AddComponent<Variables>();
+	std::string name = typeid(*this).name();
+	name.erase(0, 6);
+	variables_->LoadJson("./Assets/Jsons/" + name + ".json");
 }
 
 void IEntity::SetParent(IEntity* _parent) {
