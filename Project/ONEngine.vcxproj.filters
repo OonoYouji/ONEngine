@@ -84,6 +84,7 @@
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -177,5 +178,6 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
+    <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,9 @@
 /// std
 #include <cmath>
 
+/// engine
+#include "Quaternion.h"
+
 
 using namespace DirectX;
 
@@ -110,6 +113,40 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 	Matrix4x4&& z = MakeRotateZ(_v.z);
 
 	Matrix4x4&& result = x * y * z;
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::MakeRotateQuaternion(const Quaternion& _q) {
+	if (Quaternion::Length(_q) == 0.0f) {
+		return kIdentity;
+	}
+	Matrix4x4 result{};
+
+	float ww = _q.w * _q.w;
+	float xx = _q.x * _q.x;
+	float yy = _q.y * _q.y;
+	float zz = _q.z * _q.z;
+	float wx = _q.w * _q.x;
+	float wy = _q.w * _q.y;
+	float wz = _q.w * _q.z;
+	float xy = _q.x * _q.y;
+	float xz = _q.x * _q.z;
+	float yz = _q.y * _q.z;
+
+	result.m[0][0] = ww + xx - yy - zz;
+	result.m[0][1] = 2 * (xy + wz);
+	result.m[0][2] = 2 * (xz - wy);
+
+	result.m[1][0] = 2 * (xy - wz);
+	result.m[1][1] = ww - xx + yy - zz;
+	result.m[1][2] = 2 * (yz + wx);
+
+	result.m[2][0] = 2 * (xz + wy);
+	result.m[2][1] = 2 * (yz - wx);
+	result.m[2][2] = ww - xx - yy + zz;
+
+	result.m[3][3] = 1.0f;
 
 	return result;
 }

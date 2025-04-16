@@ -60,6 +60,8 @@ public:
 	/// @return 回転行列
 	static Matrix4x4 MakeRotate(const Vector3& _v);
 
+	static Matrix4x4 MakeRotateQuaternion(const class Quaternion& _q);
+
 	/// @brief 平行移動行列の作成
 	/// @param _v 平行移動成分
 	/// @return 平行移動行列
@@ -106,7 +108,7 @@ public:
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
-	
+
 	static const Matrix4x4 kIdentity; ///< 単位行列
 
 
@@ -142,8 +144,8 @@ namespace {
 		XMFLOAT4X4 tempMatrix;
 		XMStoreFloat4x4(&tempMatrix, _matrix);
 
-		for(size_t i = 0; i < 4; ++i) {
-			for(size_t j = 0; j < 4; ++j) {
+		for (size_t i = 0; i < 4; ++i) {
+			for (size_t j = 0; j < 4; ++j) {
 				result.m[i][j] = tempMatrix.m[i][j];
 			}
 		}

@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
     <ClCompile Include="Engine\ECS\System\Interface\ECSISystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\ComponentArray\ComponentArray.cpp" />
@@ -104,6 +105,7 @@
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
     <ClInclude Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.h" />
     <ClInclude Include="Engine\ECS\System\Interface\ECSISystem.h" />
