@@ -14,7 +14,8 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
-
+#include "Engine/Core/Utility/Tools/Log.h"
+//#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 /// ////////////////////////////////////////////
 /// 変数component
@@ -128,10 +129,13 @@ void Variables::Add(const std::string& _name, const T& _value) {
 template<typename T>
 T& Variables::Get(const std::string& _name) {
 	T* ptr = nullptr;
+	//*ptr = {};
 	if (keyMap_.contains(_name)) {
 		ptr = &std::get<T>(variables_[keyMap_.at(_name)]);
-		return *ptr;
+	} else {
+		Console::Log(std::string("Key not found: ") + _name);
 	}
+
 	return *ptr;
 }
 
@@ -139,6 +143,8 @@ template<typename T>
 const T& Variables::Get(const std::string& _name) const {
 	if (keyMap_.contains(_name)) {
 		return std::get<T>(variables_[keyMap_.at(_name)]);
+	} else {
+		Console::Log(std::string("Key not found: ") + _name);
 	}
 
 	// 例外を投げるか、デフォルト値を返す
