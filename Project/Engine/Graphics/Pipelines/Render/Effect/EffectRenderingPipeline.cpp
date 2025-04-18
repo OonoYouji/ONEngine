@@ -123,7 +123,8 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 	auto& textures = pResourceCollection_->GetTextures();
 	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
 
-
+	transformIndex_ = 0;
+	instanceIndex_ = 0;
 
 	for (auto& [meshPath, renderers] : effectPerMesh) {
 
@@ -155,7 +156,7 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 				/// transform のセット
 				transformBuffer_->SetMappedData(
 					transformIndex_,
-					renderer->GetOwner()->GetTransform()->GetMatWorld()
+					element.transform.GetMatWorld()
 				);
 
 
@@ -179,12 +180,12 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 				/// 描画
 				commandList->DrawIndexedInstanced(
 					static_cast<UINT>(mesh->GetIndices().size()),
-					static_cast<UINT>(renderers.size()),
+					static_cast<UINT>(renderer->GetElements().size()),
 					0, 0, 0
 				);
 			}
 
-			instanceIndex_ += static_cast<UINT>(renderers.size());
+			instanceIndex_ += static_cast<UINT>(renderer->GetElements().size());
 		}
 	}
 
