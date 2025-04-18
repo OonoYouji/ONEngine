@@ -23,8 +23,8 @@ public:
 	/// ============================================  
 
 	enum class EmitType {
-		Distance,
-		Time,
+		Time,     ///< 時間で指定する場合
+		Distance, ///< 距離で指定する場合
 	};
 
 	/// /////////////////////////////////////////////  
@@ -53,7 +53,6 @@ public:
 	/// /////////////////////////////////////////////
 	struct TimeEmitData final {
 		float emitTime;
-		float currentTime;
 		float emitInterval;
 	};
 
@@ -93,6 +92,7 @@ private:
 	DistanceEmitData distanceEmitData_;
 	TimeEmitData timeEmitData_;
 
+	size_t emitInstanceCount_; /// emitごとに生成するインスタンス数
 
 public:
 	/// ===================================================  
@@ -110,7 +110,7 @@ public:
 		elements_.reserve(maxEffectCount_);
 	}
 
-	void SetEmitType(const DistanceEmitData& _data);
+	void SetEmitTypeDistance(float _interval, size_t _emitInstanceCount);
 	void SetEmitType(const TimeEmitData& _data);
 
 

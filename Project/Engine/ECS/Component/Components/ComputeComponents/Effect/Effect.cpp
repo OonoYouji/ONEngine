@@ -25,9 +25,11 @@ void Effect::CreateElement(const Vector3& _velocity, const Vector4& _color) {
 	elements_.push_back(element);
 }
 
-void Effect::SetEmitType(const DistanceEmitData& _data) {
+void Effect::SetEmitTypeDistance(float _interval, size_t _emitInstanceCount) {
 	emitType_ = EmitType::Distance;
-	distanceEmitData_ = _data;
+	distanceEmitData_.emitDistance = _interval;
+	distanceEmitData_.emitInterval = _interval;
+	emitInstanceCount_ = _emitInstanceCount;
 }
 
 void Effect::SetEmitType(const TimeEmitData& _data) {

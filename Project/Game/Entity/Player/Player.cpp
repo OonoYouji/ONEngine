@@ -13,7 +13,7 @@ void Player::Initialize() {
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
 	Effect* effect = AddComponent<Effect>();
-	//effect->modelPath_ = "Assets/Models/entity/player.obj";
+	effect->SetEmitTypeDistance(1.0f, 4);
 
 }
 
@@ -32,7 +32,7 @@ void Player::Update() {
 	if (Input::PressKey(DIK_D)) { velo.x += 1.0f; }
 
 	/// 上下移動
-	if (Input::PressKey(DIK_SPACE)) { 
+	if (Input::PressKey(DIK_SPACE)) {
 		if (jumpPower <= 0.0f) {
 			jumpPower = variables_->Get<float>("startJumpPower");
 		}

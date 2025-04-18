@@ -38,7 +38,7 @@ void GameScene::Initialize() {
 	Player* player = pEntityComponentSystem_->GenerateEntity<Player>();
 	Camera* camera = pEntityComponentSystem_->GenerateCamera();
 	camera->SetParent(player);
-	camera->SetPosition(Vector3(0, 6.0f, -10.0f));
+	camera->SetPosition(Vector3(0, 1.8f, -2.5f));
 	camera->SetRotateX(std::numbers::pi_v<float> * 0.1f);
 
 	pEntityComponentSystem_->SetMainCamera(camera);

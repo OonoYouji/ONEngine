@@ -27,6 +27,60 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 			UpdateElement(&element);
 		}
 
+		switch (effect->emitType_) {
+			/// ----------------------------------------
+			/// 距離で指定する場合の処理
+			/// ----------------------------------------
+		case Effect::EmitType::Distance:
+		{
+
+			Effect::DistanceEmitData& data = effect->distanceEmitData_;
+			data.currentPosition = data.nextPosition;
+			data.nextPosition = effect->owner_->GetTransform()->position;
+			data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
+			data.emitInterval -= data.moveLength;
+
+			if (data.emitInterval <= 0.0f) {
+				data.emitInterval = data.emitDistance;
+
+				/// エフェクトの要素を生成
+				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
+					if (effect->elements_.size() < effect->maxEffectCount_) {
+						effect->CreateElement(
+							effect->GetOwner()->GetPosition(),
+							Vec4::kWhite
+						);
+					}
+				}
+			}
+
+		}
+		break;
+		/// ----------------------------------------
+		/// 時間で指定する場合の処理
+		/// ----------------------------------------
+		case Effect::EmitType::Time:
+		{
+			Effect::TimeEmitData& data = effect->timeEmitData_;
+			data.emitInterval -= Time::DeltaTime();
+			if (data.emitInterval <= 0.0f) {
+				data.emitInterval = data.emitTime;
+
+				/// エフェクトの要素を生成
+				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
+					if (effect->elements_.size() < effect->maxEffectCount_) {
+						effect->CreateElement(
+							effect->GetOwner()->GetPosition(),
+							Vec4::kWhite
+						);
+					}
+				}
+			}
+
+		}
+		break;
+		}
+
 	}
 
 }
