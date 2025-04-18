@@ -65,8 +65,8 @@ public:
 
 	/// @brief 新しい要素の作成
 	/// @param _color 
-	void CreateElement(const Vector4& _color = Vector4::kWhite);
-	void CreateElement(const Vector3& _velocity, const Vector4& _color);
+	void CreateElement(const Vector3& _position, const Vector4& _color = Vector4::kWhite);
+	void CreateElement(const Vector3& _position, const Vector3& _velocity, const Vector4& _color);
 
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
@@ -103,7 +103,9 @@ public:
 	/// @brief メッシュパスを設定  
 	/// @param _path メッシュパス  
 	void SetMeshPath(const std::string& _path) { meshPath_ = _path; }
-	
+
+	/// @brief テクスチャパスを設定  
+	/// @param _path テクスチャパス  
 	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
 
 	/// @brief 最大エフェクト数を設定  
@@ -113,8 +115,23 @@ public:
 		elements_.reserve(maxEffectCount_);
 	}
 
+	/// @brief 距離でのエミットタイプを設定  
+	/// @param _interval エミット間隔  
+	/// @param _emitInstanceCount エミットごとのインスタンス数  
 	void SetEmitTypeDistance(float _interval, size_t _emitInstanceCount);
+
+	/// @brief 時間でのエミットタイプを設定  
+	/// @param _data 時間エミットデータ  
 	void SetEmitType(const TimeEmitData& _data);
+
+	/// @brief 開始速度を設定  
+	/// @param _speed 開始速度  
+	void SetStartSpeed(float _speed) { startSpeed_ = _speed; }
+
+	/// @brief 残り寿命を設定  
+	/// @param _time 残り寿命  
+	void SetLifeLeftTime(float _time) { lifeLeftTime_ = _time; }
+
 
 
 	/// @brief メッシュパスを取得
@@ -128,4 +145,3 @@ public:
 	const std::vector<Element>& GetElements() const { return elements_; }
 };
 
-	

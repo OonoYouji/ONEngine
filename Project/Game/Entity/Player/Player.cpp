@@ -13,9 +13,12 @@ void Player::Initialize() {
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
 	Effect* effect = AddComponent<Effect>();
-	effect->SetEmitTypeDistance(1.0f, 4);
+	effect->SetEmitTypeDistance(10.0f, 4);
 	effect->SetMeshPath("Assets/Models/primitive/sphere.obj");
 	effect->SetTexturePath("Packages/Textures/uvChecker.png");
+
+	effect->SetStartSpeed(0.1f);
+	effect->SetLifeLeftTime(3.0f);
 }
 
 void Player::Update() {

@@ -139,7 +139,6 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 
 			for (auto& element : renderer->GetElements()) {
 
-
 				/// materialのセット
 				materialBuffer->SetMappedData(
 					transformIndex_,
@@ -158,7 +157,6 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 					transformIndex_,
 					element.transform.GetMatWorld()
 				);
-
 
 				++transformIndex_;
 			}

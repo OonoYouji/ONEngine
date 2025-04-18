@@ -48,6 +48,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					if (effect->elements_.size() < effect->maxEffectCount_) {
 						effect->CreateElement(
 							effect->GetOwner()->GetPosition(),
+							Vec3::kUp,
 							Vec4::kWhite
 						);
 					}
@@ -83,13 +84,30 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 	}
 
+
+	/// -------------------------------------
+	/// エフェクトの要素を削除
+	/// -------------------------------------
+
+	for (auto& effect : effectList) {
+		if (effect->elements_.empty()) {
+			continue;
+		}
+
+		for (size_t i = 0; i < effect->elements_.size(); i++) {
+			if (effect->elements_[i].lifeTime <= 0.0f) {
+				effect->RemoveElement(i);
+				i--;
+			}
+		}
+	}
+
 }
 
 void EffectUpdateSystem::UpdateElement(Effect::Element* _element) {
-	_element->transform.position += _element->velocity; // 位置の更新
+	_element->transform.position += _element->velocity * Time::DeltaTime();
 	_element->lifeTime -= Time::DeltaTime();
 	if (_element->lifeTime <= 0.0f) {
-		// エフェクトの寿命が尽きた場合、要素を削除する処理を追加
 		return;
 	}
 

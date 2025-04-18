@@ -32,7 +32,7 @@ private:
 
 	class GraphicsResourceCollection* pResourceCollection_ = nullptr;
 
-	const size_t kMaxRenderingMeshCount_ = std::pow(2, 20);
+	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<StructuredBuffer<Vector4>>   materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
