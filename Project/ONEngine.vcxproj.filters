@@ -86,6 +86,8 @@
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
     <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
+    <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -181,5 +183,7 @@
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
     <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
+    <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
   </ItemGroup>
 </Project>

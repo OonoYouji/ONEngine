@@ -12,6 +12,9 @@ void Player::Initialize() {
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
+	Effect* effect = AddComponent<Effect>();
+	//effect->modelPath_ = "Assets/Models/entity/player.obj";
+
 }
 
 void Player::Update() {

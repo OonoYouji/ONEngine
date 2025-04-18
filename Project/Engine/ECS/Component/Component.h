@@ -9,6 +9,7 @@
 #include "Components/ComputeComponents/Light/Light.h"
 #include "Components/ComputeComponents/Audio/AudioSource.h"
 #include "Components/ComputeComponents/Variables/Variables.h"
+#include "Components/ComputeComponents/Effect/Effect.h"
 
 /// renderer
 #include "Components/RendererComponents/Mesh/MeshRenderer.h"
