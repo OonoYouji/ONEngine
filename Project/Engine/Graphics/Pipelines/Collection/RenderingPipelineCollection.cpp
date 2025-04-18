@@ -7,6 +7,7 @@
 
 /// pipelines
 #include "../Render/Mesh/MeshRenderingPipeline.h"
+#include "../Render/Effect/EffectRenderingPipeline.h"
 #include "../Render/Primitive/Line2DRenderingPipeline.h"
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
 #include "../Render/Sprite/SpriteRenderingPipeline.h"
@@ -23,6 +24,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 	/// post process

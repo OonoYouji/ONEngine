@@ -88,6 +88,7 @@
     <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
     <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -185,5 +186,6 @@
     <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
     <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
   </ItemGroup>
 </Project>

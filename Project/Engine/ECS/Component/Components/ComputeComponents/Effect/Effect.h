@@ -83,6 +83,7 @@ private:
 
 	size_t maxEffectCount_ = 1000;
 	std::string meshPath_;
+	std::string texturePath_;
 	std::vector<Element> elements_;
 
 	float lifeLeftTime_;
@@ -102,6 +103,8 @@ public:
 	/// @brief メッシュパスを設定  
 	/// @param _path メッシュパス  
 	void SetMeshPath(const std::string& _path) { meshPath_ = _path; }
+	
+	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
 
 	/// @brief 最大エフェクト数を設定  
 	/// @param _maxCount 最大エフェクト数  
@@ -117,6 +120,8 @@ public:
 	/// @brief メッシュパスを取得
 	/// @return メッシュパス
 	const std::string& GetMeshPath() const { return meshPath_; }
+
+	const std::string& GetTexturePath() const { return texturePath_; }
 
 	/// @brief エフェクト要素を取得
 	/// @return エフェクト要素のリスト

@@ -120,22 +120,22 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 	}
 
 
-	ID3D12GraphicsCommandList* _commandList = _dxCommand->GetCommandList();
+	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(_commandList, 0);
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	_commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
 
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
-	RenderingMesh(_commandList, &rendererPerMesh, textures);
-	RenderingMesh(_commandList, &customRenderers, textures);
+	RenderingMesh(commandList, &rendererPerMesh, textures);
+	RenderingMesh(commandList, &customRenderers, textures);
 }
 
 void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
