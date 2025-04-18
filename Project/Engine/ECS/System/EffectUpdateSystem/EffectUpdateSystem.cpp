@@ -24,15 +24,20 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 		/// エフェクトの要素を更新
 		for (auto& element : effect->elements_) {
-			element.transform.position += element.velocity; // 位置の更新
-			element.lifeTime -= Time::DeltaTime(); // 寿命の減少(仮に1フレーム0.016秒とする)
-			if (element.lifeTime <= 0.0f) {
-				// エフェクトの寿命が尽きた場合、要素を削除する処理を追加
-			}
-
-			element.transform.Update();
+			UpdateElement(&element);
 		}
 
 	}
 
+}
+
+void EffectUpdateSystem::UpdateElement(Effect::Element* _element) {
+	_element->transform.position += _element->velocity; // 位置の更新
+	_element->lifeTime -= Time::DeltaTime();
+	if (_element->lifeTime <= 0.0f) {
+		// エフェクトの寿命が尽きた場合、要素を削除する処理を追加
+		return;
+	}
+
+	_element->transform.Update();
 }

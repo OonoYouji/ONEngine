@@ -3,6 +3,8 @@
 /// std
 #include <vector>
 #include <string>
+//#include <memory>
+#include <optional>
 
 /// engine
 #include "Engine/Core/Utility/Math/Vector3.h"
@@ -20,6 +22,11 @@ public:
 	/// public : sub class  
 	/// ============================================  
 
+	enum class EmitType {
+		Distance,
+		Time,
+	};
+
 	/// /////////////////////////////////////////////  
 	/// @brief Effectの一要素  
 	/// /////////////////////////////////////////////  
@@ -28,6 +35,26 @@ public:
 		Vector4   color;     /// RGBA 0.0f ~ 1.0f  
 		float     lifeTime;  /// エフェクトの寿命  
 		Vector3   velocity;  /// エフェクトの移動速度  
+	};
+
+	/// /////////////////////////////////////////////
+	/// 出現するまでの距離を指定する場合のデータ
+	/// /////////////////////////////////////////////
+	struct DistanceEmitData final {
+		Vec3 currentPosition;
+		Vec3 nextPosition;
+		float moveLength;
+		float emitDistance;
+		float emitInterval;
+	};
+
+	/// /////////////////////////////////////////////
+	/// 出現するまでの時間を指定する場合のデータ
+	/// /////////////////////////////////////////////
+	struct TimeEmitData final {
+		float emitTime;
+		float currentTime;
+		float emitInterval;
 	};
 
 public:
@@ -40,7 +67,7 @@ public:
 	/// @brief 新しい要素の作成
 	/// @param _color 
 	void CreateElement(const Vector4& _color = Vector4::kWhite);
-	void CreateElement(const Vector3& _velocity, const Vector3& _color);
+	void CreateElement(const Vector3& _velocity, const Vector4& _color);
 
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
@@ -59,6 +86,14 @@ private:
 	std::string meshPath_;
 	std::vector<Element> elements_;
 
+	float lifeLeftTime_;
+	float startSpeed_;
+
+	EmitType emitType_;
+	DistanceEmitData distanceEmitData_;
+	TimeEmitData timeEmitData_;
+
+
 public:
 	/// ===================================================  
 	/// public : accessors  
@@ -75,6 +110,8 @@ public:
 		elements_.reserve(maxEffectCount_);
 	}
 
+	void SetEmitType(const DistanceEmitData& _data);
+	void SetEmitType(const TimeEmitData& _data);
 
 
 	/// @brief メッシュパスを取得

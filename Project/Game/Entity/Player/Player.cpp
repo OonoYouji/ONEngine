@@ -26,15 +26,15 @@ void Player::Update() {
 	velo = Vec3::kZero;
 
 	/// 横移動
-	if (Input::PressKey(DIK_UP)) { velo.z += 1.0f; }
-	if (Input::PressKey(DIK_DOWN)) { velo.z -= 1.0f; }
-	if (Input::PressKey(DIK_LEFT)) { velo.x -= 1.0f; }
-	if (Input::PressKey(DIK_RIGHT)) { velo.x += 1.0f; }
+	if (Input::PressKey(DIK_W)) { velo.z += 1.0f; }
+	if (Input::PressKey(DIK_S)) { velo.z -= 1.0f; }
+	if (Input::PressKey(DIK_A)) { velo.x -= 1.0f; }
+	if (Input::PressKey(DIK_D)) { velo.x += 1.0f; }
 
 	/// 上下移動
 	if (Input::PressKey(DIK_SPACE)) { 
 		if (jumpPower <= 0.0f) {
-			jumpPower = 10.0f;
+			jumpPower = variables_->Get<float>("startJumpPower");
 		}
 	}
 
