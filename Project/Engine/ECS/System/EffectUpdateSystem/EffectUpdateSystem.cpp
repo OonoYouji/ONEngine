@@ -24,7 +24,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 		/// エフェクトの要素を更新
 		for (auto& element : effect->elements_) {
-			UpdateElement(&element);
+			UpdateElement(effect, &element);
 		}
 
 		switch (effect->emitType_) {
@@ -104,7 +104,12 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 }
 
-void EffectUpdateSystem::UpdateElement(Effect::Element* _element) {
+void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _element) {
+
+	if (_effect->elementUpdateFunc_) {
+		_effect->elementUpdateFunc_(_element);
+	}
+
 	_element->transform.position += _element->velocity * Time::DeltaTime();
 	_element->lifeTime -= Time::DeltaTime();
 	if (_element->lifeTime <= 0.0f) {

@@ -15,6 +15,7 @@ GameScene::GameScene() {
 	loadResourcePaths_ = {
 		"Assets/Models/primitive/cube.obj",
 		"Assets/Models/primitive/sphere.obj",
+		"Assets/Models/primitive/plane.obj",
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",

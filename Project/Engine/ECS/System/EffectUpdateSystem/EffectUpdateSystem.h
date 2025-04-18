@@ -30,7 +30,7 @@ private:
 	/// ==================================================
 
 	/// @brief エフェクトの要素を更新する
-	void UpdateElement(Effect::Element* _element);
+	void UpdateElement(Effect* _effect, Effect::Element* _element);
 
 
 };

@@ -3,8 +3,7 @@
 /// std
 #include <vector>
 #include <string>
-//#include <memory>
-#include <optional>
+#include <functional>
 
 /// engine
 #include "Engine/Core/Utility/Math/Vector3.h"
@@ -95,6 +94,8 @@ private:
 
 	size_t emitInstanceCount_; /// emitごとに生成するインスタンス数
 
+	std::function<void(Element*)> elementUpdateFunc_ = nullptr; ///< エフェクトの更新関数
+
 public:
 	/// ===================================================  
 	/// public : accessors  
@@ -131,6 +132,12 @@ public:
 	/// @brief 残り寿命を設定  
 	/// @param _time 残り寿命  
 	void SetLifeLeftTime(float _time) { lifeLeftTime_ = _time; }
+
+	/// @brief 要素の更新関数を設定
+	/// @param _func 
+	void SetElementUpdateFunc(std::function<void(Element*)> _func) {
+		elementUpdateFunc_ = _func;
+	}
 
 
 
