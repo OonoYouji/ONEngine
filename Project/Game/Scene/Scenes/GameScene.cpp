@@ -5,9 +5,9 @@
 
 /// engine
 #include "Engine/ECS/Entity/Grid/Grid.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// user
-//#include "Game/Entity/GameController/GameController.h"
 #include "Game/Objects/Terrain/Terrain.h"
 #include "Game/Entity/Player/Player.h"
 
@@ -35,7 +35,13 @@ void GameScene::Initialize() {
 #endif // _DEBUG
 	
 	//pEntityComponentSystem_->GenerateEntity<GameController>();
-	pEntityComponentSystem_->GenerateEntity<Player>();
+	Player* player = pEntityComponentSystem_->GenerateEntity<Player>();
+	Camera* camera = pEntityComponentSystem_->GenerateCamera();
+	camera->SetParent(player);
+	camera->SetPosition(Vector3(0, 6.0f, -10.0f));
+	camera->SetRotateX(std::numbers::pi_v<float> * 0.1f);
+
+	pEntityComponentSystem_->SetMainCamera(camera);
 	pEntityComponentSystem_->GenerateEntity<Terrain>();
 
 }

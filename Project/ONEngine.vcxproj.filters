@@ -85,6 +85,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -179,5 +180,6 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
   </ItemGroup>
 </Project>

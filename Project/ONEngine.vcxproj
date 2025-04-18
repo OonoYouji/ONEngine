@@ -103,6 +103,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
