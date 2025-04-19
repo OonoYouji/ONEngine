@@ -117,7 +117,7 @@ void RenderingFramework::Draw() {
 		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
 		renderTextures_
 	);
-	renderingPipelineCollection_->DrawEntities();
+	renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
 
 	for (auto& renderTexture : renderTextures_) {
 		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
