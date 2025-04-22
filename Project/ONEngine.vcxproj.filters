@@ -187,5 +187,6 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
     <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
+    <ClInclude Include="Engine\Core\Utility\Utility.h" />
   </ItemGroup>
 </Project>
