@@ -6,6 +6,9 @@
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
+/// game 
+#include "Game/Effects/PlaneEffects/PlayerWalkEffect.h"
+
 Player::Player() {}
 Player::~Player() {}
 
@@ -14,27 +17,9 @@ void Player::Initialize() {
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
-	Effect* effect = AddComponent<Effect>();
-	effect->SetEmitTypeDistance(10.0f, 4);
-	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
-	effect->SetTexturePath("Packages/Textures/uvChecker.png");
+	PlayerWalkEffect* effect = pEntityComponentSystem_->GenerateEntity<PlayerWalkEffect>();
+	effect->SetParent(this);
 
-	effect->SetStartSpeed(0.1f);
-	effect->SetLifeLeftTime(0.2f);
-
-	effect->SetElementUpdateFunc(
-		[](Effect::Element* _element) {
-			_element->color.w = std::max(0.0f, _element->lifeTime / 3.0f);
-
-			_element->transform.scale.z = 3.0f * (1.0f + (1.0f - _element->lifeTime / 0.2f));
-
-			if (_element->transform.rotate.y == 0) {
-				_element->transform.rotate.y = static_cast<float>(rand() % 360) / 180.0f;
-			}
-
-			_element->transform.Update();
-		}
-	);
 }
 
 void Player::Update() {

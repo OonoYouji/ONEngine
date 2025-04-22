@@ -15,7 +15,8 @@ public:
 	PlayerWalkEffect() = default;
 	~PlayerWalkEffect() = default;
 
-
+	void Initialize() override;
+	void Update() override;
 
 private:
 	/// ============================================================
