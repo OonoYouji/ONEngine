@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <string>
+#include <list>
+
 /// engine
 #include "../Collection/ImGuiWindowCollection.h"
 
@@ -27,6 +31,12 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+	 
+	std::string entityName_ = "empty";
+	const std::string kClassPrefix = "class ";
+
+	std::list<class IEntity*> entityList_;
+
 
 	class EntityComponentSystem* pEntityComponentSystem_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;

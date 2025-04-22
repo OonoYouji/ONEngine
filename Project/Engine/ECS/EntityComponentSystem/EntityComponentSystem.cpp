@@ -19,8 +19,48 @@ void IEntity::CommonInitialize() {
 	variables_->LoadJson("./Assets/Jsons/" + name + ".json");
 }
 
+void IEntity::UpdateTransform() {
+	transform_->matWorld = Matrix4x4::MakeAffine(transform_->scale, transform_->rotate, transform_->position);
+
+	if (parent_) {
+
+		if ((transform_->matrixCalcFlags & Transform::kAll) == Transform::kAll) {
+			transform_->matWorld *= parent_->transform_->GetMatWorld();
+			return;
+		}
+
+		Matrix4x4 matCancel = Matrix4x4::kIdentity;
+		if (transform_->matrixCalcFlags & Transform::kScale) {
+			matCancel = Matrix4x4::MakeScale(parent_->transform_->scale);
+		}
+
+		if (transform_->matrixCalcFlags & Transform::kRotate) {
+			matCancel *= Matrix4x4::MakeRotate(parent_->transform_->rotate);
+		}
+
+		if (transform_->matrixCalcFlags & Transform::kPosition) {
+			matCancel *= Matrix4x4::MakeTranslate(parent_->transform_->position);
+		}
+
+		transform_->matWorld *= matCancel;
+	}
+}
+
 void IEntity::SetParent(IEntity* _parent) {
-	transform_->SetParent(_parent->GetTransform());
+	_parent->children_.push_back(this);
+	parent_ = _parent;
+}
+
+void IEntity::RemoveParent() {
+	if (parent_) {
+		auto itr = std::remove_if(parent_->children_.begin(), parent_->children_.end(),
+			[this](IEntity* child) {
+				return child == this;
+			}
+		);
+		parent_->children_.erase(itr, parent_->children_.end());
+		parent_ = nullptr;
+	}
 }
 
 Vector3 IEntity::GetWorldPosition() {
@@ -55,7 +95,7 @@ void EntityComponentSystem::Initialize() {
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
 		entity->Update();
-		entity->transform_->Update();
+		entity->UpdateTransform();
 	}
 
 	for (auto& system : systemMap_) {

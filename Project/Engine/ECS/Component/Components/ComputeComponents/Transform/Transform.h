@@ -66,7 +66,7 @@ private:
 	/// private : objects
 	/// ===============================================
 
-	Transform* parent_          = nullptr;
+	//Transform* parent_          = nullptr;
 
 
 public:
@@ -77,7 +77,7 @@ public:
 
 	/// @brief 親のセット
 	/// @param _parent 親のtransform
-	void SetParent(Transform* _parent) { parent_ = _parent; }
+	//void SetParent(Transform* _parent) { parent_ = _parent; }
 
 
 
@@ -137,7 +137,7 @@ public:
 
 	/// @brief 親の取得
 	/// @return 親のtransform
-	const Transform* GetParent() const { return parent_; }
+	//const Transform* GetParent() const { return parent_; }
 
 	/// @brief positionを得る
 	/// @return position 

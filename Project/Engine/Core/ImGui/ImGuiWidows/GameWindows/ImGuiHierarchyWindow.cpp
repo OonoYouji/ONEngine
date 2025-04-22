@@ -17,18 +17,23 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
-	std::string entityName = "empty";
-	const std::string kClassPrefix = "class ";
+	
+	/// entityの選択
+	entityList_.clear();
+	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
+		entityList_.push_back(entity.get());
+	}
+
 
 	/// entityの表示
 	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
-		entityName = typeid(*entity).name();
-		entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
-		if (entityName.find(kClassPrefix) == 0) {
-			entityName = entityName.substr(kClassPrefix.length());
+		entityName_ = typeid(*entity).name();
+		entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
+		if (entityName_.find(kClassPrefix) == 0) {
+			entityName_ = entityName_.substr(kClassPrefix.length());
 		}
 
-		if (ImGui::Selectable(entityName.c_str(), entity.get() == selectedEntity_)) {
+		if (ImGui::Selectable(entityName_.c_str(), entity.get() == selectedEntity_)) {
 			selectedEntity_ = entity.get();
 		}
 	}

@@ -49,6 +49,7 @@ public:
 	template <class T>
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
 
+	void UpdateTransform();
 
 protected:
 
@@ -67,7 +68,8 @@ private:
 	/// ===================================================
 
 	std::unordered_map<size_t, IComponent*> components_;
-
+	std::vector<IEntity*> children_;
+	IEntity* parent_;
 
 public:
 
@@ -91,7 +93,7 @@ public:
 	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
 
 	void SetParent(IEntity* _parent);
-
+	void RemoveParent();
 
 	const Vector3& GetLocalPosition() const { return transform_->GetPosition(); }
 	const Vector3& GetLocalRotate()   const { return transform_->GetRotate(); }
