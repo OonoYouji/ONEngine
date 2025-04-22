@@ -36,7 +36,8 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 			Effect::DistanceEmitData& data = effect->distanceEmitData_;
 			data.currentPosition = data.nextPosition;
-			data.nextPosition = effect->owner_->GetTransform()->position;
+			data.nextPosition = effect->owner_->GetWorldPosition();
+
 			data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
 			data.emitInterval -= data.moveLength;
 
@@ -47,7 +48,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 					if (effect->elements_.size() < effect->maxEffectCount_) {
 						effect->CreateElement(
-							effect->GetOwner()->GetPosition(),
+							effect->GetOwner()->GetWorldPosition(),
 							Vec3::kUp,
 							Vec4::kWhite
 						);
@@ -71,7 +72,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 					if (effect->elements_.size() < effect->maxEffectCount_) {
 						effect->CreateElement(
-							effect->GetOwner()->GetPosition(),
+							effect->GetOwner()->GetLocalPosition(),
 							Vec4::kWhite
 						);
 					}

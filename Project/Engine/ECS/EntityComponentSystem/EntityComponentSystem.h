@@ -93,9 +93,13 @@ public:
 	void SetParent(IEntity* _parent);
 
 
-	const Vector3& GetPosition() const { return transform_->GetPosition(); }
-	const Vector3& GetRotate()   const { return transform_->GetRotate(); }
-	const Vector3& GetScale()    const { return transform_->GetScale(); }
+	const Vector3& GetLocalPosition() const { return transform_->GetPosition(); }
+	const Vector3& GetLocalRotate()   const { return transform_->GetRotate(); }
+	const Vector3& GetLocalScale()    const { return transform_->GetScale(); }
+
+	Vector3 GetWorldPosition();
+	Vector3 GetWorldRotate();
+	Vector3 GetWorldScale();
 
 
 	/// @brief transform の取得

@@ -80,7 +80,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		/// set light data
 		directionalLightBufferData_->SetMappingData(
 			{
-				Vector4::Convert(directionalLights.front()->GetOwner()->GetPosition()),
+				Vector4::Convert(directionalLights.front()->GetOwner()->GetLocalPosition()),
 				directionalLights.front()->GetColor(),
 				directionalLights.front()->GetDirection(),
 				directionalLights.front()->GetIntensity()

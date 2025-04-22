@@ -23,6 +23,18 @@ void IEntity::SetParent(IEntity* _parent) {
 	transform_->SetParent(_parent->GetTransform());
 }
 
+Vector3 IEntity::GetWorldPosition() {
+	return Matrix4x4::Transform(GetLocalPosition(), transform_->GetMatWorld());
+}
+
+Vector3 IEntity::GetWorldRotate() {
+	return Vector3();
+}
+
+Vector3 IEntity::GetWorldScale() {
+	return Vector3();
+}
+
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
