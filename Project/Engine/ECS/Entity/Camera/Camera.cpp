@@ -71,7 +71,8 @@ void Camera::Update() {
 	//transform_->position += velocity * 10.0f;
 
 
-	transform_->Update();
+	//transform_->Update();
+	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
 
 	if (cameraType_ == static_cast<int>(CameraType::Type3D)) { ///!< 3Dカメラの場合

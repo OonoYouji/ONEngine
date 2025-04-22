@@ -49,6 +49,7 @@ public:
 	template <class T>
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
 
+	void UpdateTransform();
 
 protected:
 
@@ -67,7 +68,8 @@ private:
 	/// ===================================================
 
 	std::unordered_map<size_t, IComponent*> components_;
-
+	std::vector<IEntity*> children_;
+	IEntity* parent_;
 
 public:
 
@@ -91,6 +93,8 @@ public:
 	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
 
 	void SetParent(IEntity* _parent);
+	void RemoveParent();
+
 
 
 	const Vector3& GetLocalPosition() const { return transform_->GetPosition(); }
@@ -105,6 +109,12 @@ public:
 	/// @brief transform の取得
 	/// @return transform のポインタ
 	Transform* GetTransform() const { return transform_; }
+
+	const IEntity* GetParent() const { return parent_; }
+	IEntity* GetParent() { return parent_; }
+
+	const std::vector<IEntity*>& GetChildren() const { return children_; }
+	IEntity* GetChild(size_t _index) { return children_[_index]; }
 
 	const std::unordered_map<size_t, IComponent*> GetComponents() const { return components_; }
 

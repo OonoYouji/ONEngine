@@ -17,24 +17,80 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
-	std::string entityName = "empty";
-	const std::string kClassPrefix = "class ";
-
-	/// entityの表示
+	/// entityの選択  
+	entityList_.clear();
 	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
-		entityName = typeid(*entity).name();
-		entityName += "##" + std::to_string(reinterpret_cast<uintptr_t>(entity.get()));
-		if (entityName.find(kClassPrefix) == 0) {
-			entityName = entityName.substr(kClassPrefix.length());
-		}
-
-		if (ImGui::Selectable(entityName.c_str(), entity.get() == selectedEntity_)) {
-			selectedEntity_ = entity.get();
+		if (!entity->GetParent()) { //!< 親がいない場合  
+			entityList_.push_back(entity.get());
 		}
 	}
 
+	/// entityの表示  
+	for (auto& entity : entityList_) {
+		DrawEntityHierarchy(entity);
+	}
 
 	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
 
 	ImGui::End();
 }
+
+void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
+	entityName_ = typeid(*_entity).name();
+	entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(_entity));
+	if (entityName_.find(kClassPrefix) == 0) {
+		entityName_ = entityName_.substr(kClassPrefix.length());
+	}
+
+	if (_entity->GetChildren().empty()) {
+		// 子がいない場合はSelectableで選択可能にする  
+		if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
+			selectedEntity_ = _entity;
+		}
+	} else {
+		// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
+		bool nodeOpen = ImGui::TreeNodeEx(entityName_.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth);
+		if (ImGui::IsItemClicked()) {
+			selectedEntity_ = _entity;
+		}
+
+		if (nodeOpen) {
+
+			ImGui::Indent();
+			for (auto& child : _entity->GetChildren()) {
+				DrawEntityHierarchy(child);
+			}
+			ImGui::Unindent();
+			ImGui::TreePop();
+		}
+	}
+}
+
+//void ImGuiHierarchyWindow::DrawChildren(IEntity* _entity) {
+//	for (auto& child : _entity->GetChildren()) {
+//		entityName_ = typeid(*child).name();
+//		entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(child));
+//		if (entityName_.find(kClassPrefix) == 0) {
+//			entityName_ = entityName_.substr(kClassPrefix.length());
+//		}
+//
+//		ImGui::Indent();
+//		if (child->GetChildren().empty()) {
+//			// 子がいない場合はSelectableで選択可能にする  
+//			if (ImGui::Selectable(entityName_.c_str(), child == selectedEntity_)) {
+//				selectedEntity_ = child;
+//			}
+//		} else {
+//			// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
+//			if (ImGui::TreeNodeEx(entityName_.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth)) {
+//				if (ImGui::Selectable(entityName_.c_str(), child == selectedEntity_)) {
+//					selectedEntity_ = child;
+//				}
+//				DrawChildren(child);
+//				ImGui::TreePop();
+//			}
+//		}
+//
+//		ImGui::Unindent();
+//	}
+//}
