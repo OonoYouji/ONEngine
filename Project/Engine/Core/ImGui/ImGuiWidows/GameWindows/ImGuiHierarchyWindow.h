@@ -26,6 +26,7 @@ private:
 	/// private : methods
 	/// ===================================================
 		
+	void DrawChildren(class IEntity* _entity);
 
 private:
 	/// ===================================================

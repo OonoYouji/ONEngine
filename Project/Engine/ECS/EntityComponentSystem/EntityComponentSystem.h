@@ -95,6 +95,8 @@ public:
 	void SetParent(IEntity* _parent);
 	void RemoveParent();
 
+
+
 	const Vector3& GetLocalPosition() const { return transform_->GetPosition(); }
 	const Vector3& GetLocalRotate()   const { return transform_->GetRotate(); }
 	const Vector3& GetLocalScale()    const { return transform_->GetScale(); }
@@ -107,6 +109,12 @@ public:
 	/// @brief transform の取得
 	/// @return transform のポインタ
 	Transform* GetTransform() const { return transform_; }
+
+	const IEntity* GetParent() const { return parent_; }
+	IEntity* GetParent() { return parent_; }
+
+	const std::vector<IEntity*>& GetChildren() const { return children_; }
+	IEntity* GetChild(size_t _index) { return children_[_index]; }
 
 	const std::unordered_map<size_t, IComponent*> GetComponents() const { return components_; }
 
