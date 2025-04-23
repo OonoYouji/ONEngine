@@ -8,17 +8,20 @@ void PlayerWalkEffect::Initialize() {
 	Effect* effect = AddComponent<Effect>();
 	effect->SetEmitTypeDistance(2, 4);
 	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
-	effect->SetTexturePath("Packages/Textures/uvChecker.png");
+	//effect->SetTexturePath("Packages/Textures/uvChecker.png");
+	effect->SetTexturePath("Assets/Textures/playerWalkEffect.png");
 
+	//effect->SetUseBillboard(true);
 	effect->SetStartSpeed(0.1f);
-	effect->SetLifeLeftTime(0.5f);
+	effect->SetLifeLeftTime(0.4f);
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
-			_element->color.w = std::max(0.0f, _element->lifeTime / 3.0f);
+			float lerpT = std::clamp(_element->lifeTime / 3.0f, 0.0f, 1.0f);
+			_element->color.w = std::lerp(0.0f, 0.3f, lerpT);
 
 			_element->transform.position.y += 0.1f * Time::DeltaTime();
-			_element->transform.scale.z = 3.0f * (1.0f + (1.0f - _element->lifeTime / 0.2f));
+			_element->transform.scale.z = std::lerp(3.0f, 0.5f, (lerpT));
 
 			if (_element->transform.rotate.y == 0) {
 				_element->transform.rotate.y = static_cast<float>(rand() % 360) / 180.0f;

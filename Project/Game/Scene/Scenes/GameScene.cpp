@@ -19,11 +19,12 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
+		"Assets/Textures/playerWalkEffect.png"
 	};
 
-	unloadResourcePaths_ = {
-		"Assets/Models/cube/cube.obj"
-	};
+	//unloadResourcePaths_ = {
+	//	"Assets/Models/cube/cube.obj"
+	//};
 }
 
 GameScene::~GameScene() {}

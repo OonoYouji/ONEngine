@@ -2,11 +2,14 @@
 
 /// std
 #include <list>
+#include <numbers>
 
 /// engine
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 #include "Engine/ECS/Component/Component.h"
+
 
 void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 
@@ -18,6 +21,13 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 			effectList.push_back(effect);
 		}
 	}
+
+	mainCamera_ = _pEntityComponentSystem->GetMainCamera();
+	matBillboard_ = mainCamera_->GetTransform()->matWorld;
+	matBillboard_.m[3][0] = 0.0f;
+	matBillboard_.m[3][1] = 0.0f;
+	matBillboard_.m[3][2] = 0.0f;
+
 
 	/// エフェクトの更新処理
 	for (auto& effect : effectList) {
@@ -117,5 +127,13 @@ void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _elemen
 		return;
 	}
 
-	_element->transform.Update();
+	if (_effect->useBillboard_) {
+		Matrix4x4&& matScale = Matrix4x4::MakeScale(_element->transform.scale);
+		Matrix4x4&& matTranslate = Matrix4x4::MakeTranslate(_element->transform.position);
+
+		_element->transform.matWorld = matScale * matBillboard_ * matTranslate;
+
+	} else {
+		_element->transform.Update();
+	}
 }

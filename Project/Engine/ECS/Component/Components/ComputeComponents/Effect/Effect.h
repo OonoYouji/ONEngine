@@ -85,6 +85,7 @@ private:
 	std::string texturePath_;
 	std::vector<Element> elements_;
 
+	bool useBillboard_ = false; ///< ビルボードを使用するかどうか
 	float lifeLeftTime_;
 	float startSpeed_;
 
@@ -138,7 +139,10 @@ public:
 	void SetElementUpdateFunc(std::function<void(Element*)> _func) {
 		elementUpdateFunc_ = _func;
 	}
-
+	
+	/// @brief ビルボードの使用を設定
+	/// @param _use true: ビルボードを使用する, false: 使用しない
+	void SetUseBillboard(bool _use) { useBillboard_ = _use; }
 
 
 	/// @brief メッシュパスを取得
