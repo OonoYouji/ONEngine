@@ -82,6 +82,8 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
+    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -208,6 +210,8 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
+    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

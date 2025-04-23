@@ -90,6 +90,8 @@
     <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
+    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -190,5 +192,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Utility.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
+    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
   </ItemGroup>
 </Project>

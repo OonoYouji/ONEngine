@@ -5,6 +5,8 @@
 
 Effect::Effect() {
 	isCreateParticle_ = true;
+	emitInstanceCount_ = 10;
+	emittedElementColor_ = Vector4::kWhite;
 }
 
 void Effect::CreateElement(const Vector3& _position, const Vector4& _color) {
@@ -40,7 +42,8 @@ void Effect::SetEmitTypeDistance(float _interval, size_t _emitInstanceCount) {
 	emitInstanceCount_ = _emitInstanceCount;
 }
 
-void Effect::SetEmitType(const TimeEmitData& _data) {
+void Effect::SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount) {
 	emitType_ = EmitType::Time;
 	timeEmitData_ = _data;
+	emitInstanceCount_ = _emitInstanceCount;
 }

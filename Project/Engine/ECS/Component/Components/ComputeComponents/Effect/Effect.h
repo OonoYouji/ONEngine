@@ -128,7 +128,7 @@ public:
 
 	/// @brief 時間でのエミットタイプを設定  
 	/// @param _data 時間エミットデータ  
-	void SetEmitType(const TimeEmitData& _data);
+	void SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount);
 
 	/// @brief 開始速度を設定  
 	/// @param _speed 開始速度  

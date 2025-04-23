@@ -10,6 +10,7 @@
 /// user
 #include "Game/Objects/Terrain/Terrain.h"
 #include "Game/Entity/Player/Player.h"
+#include "Game/Objects/KeyItem/KeyItem.h"
 
 GameScene::GameScene() {
 	loadResourcePaths_ = {
@@ -17,10 +18,13 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/sphere.obj",
 		"Assets/Models/primitive/plane.obj",
 		"Assets/Models/primitive/cylinder.obj",
+		"Assets/Models/primitive/frontToPlane.obj",
+		"Assets/Models/primitive/tube.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
 		"Assets/Textures/playerWalkEffect.png",
-		"Assets/Models/primitive/frontToPlane.obj",
+		"Assets/Textures/gradation.png",
+		"Assets/Textures/ring.png",
 	};
 
 	//unloadResourcePaths_ = {
@@ -46,6 +50,7 @@ void GameScene::Initialize() {
 
 	pEntityComponentSystem_->SetMainCamera(camera);
 	pEntityComponentSystem_->GenerateEntity<Terrain>();
+	pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
 }
 
