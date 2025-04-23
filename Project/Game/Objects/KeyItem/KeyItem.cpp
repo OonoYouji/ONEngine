@@ -17,6 +17,9 @@ void KeyItem::Initialize() {
 
 	KeyItemRipplesEffect* ripplesEffect = pEntityComponentSystem_->GenerateEntity<KeyItemRipplesEffect>();
 	ripplesEffect->SetParent(this);
+
+	transform_->position.y = 1.0f;
+
 }
 
 void KeyItem::Update() {

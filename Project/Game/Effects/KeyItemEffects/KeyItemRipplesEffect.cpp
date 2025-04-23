@@ -12,10 +12,11 @@ void KeyItemRipplesEffect::Initialize() {
 	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
 	effect->SetTexturePath("Assets/Textures/ring.png");
 
-	effect->SetEmitTypeTime({.emitTime = 0.4f, .emitInterval = 0.0f}, 1);
+	effect->SetEmitTypeTime({ .emitTime = 0.5f, .emitInterval = 0.0f }, 1);
 	effect->SetLifeLeftTime(2.0f);
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);
+	effect->SetEmittedElementColor(Vector4(0xf7 / 255.0f, 0xeb / 255.0f, 0x0a / 255.0f, 1.0f)); //#F7EB0AFF
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
@@ -24,7 +25,7 @@ void KeyItemRipplesEffect::Initialize() {
 
 			_element->transform.scale.x += 10.0f * Time::DeltaTime();
 			_element->transform.scale.z += 10.0f * Time::DeltaTime();
-			_element->transform.Update();
+			//_element->transform.Update();
 		}
 	);
 }
