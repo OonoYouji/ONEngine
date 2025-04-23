@@ -149,3 +149,12 @@ private:
 	uint32_t                                rtvNum_ = 1;
 	std::vector<DXGI_FORMAT>                rtvFormats_;
 };
+
+
+namespace BlendMode {
+	D3D12_BLEND_DESC Normal();
+	D3D12_BLEND_DESC Add();
+	D3D12_BLEND_DESC Subtract();
+	D3D12_BLEND_DESC Multiply();
+	D3D12_BLEND_DESC Screen();
+}

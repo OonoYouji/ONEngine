@@ -26,6 +26,14 @@ public:
 		Distance, ///< 距離で指定する場合
 	};
 
+	enum class BlendMode {
+		Normal,
+		Add,
+		Sub,
+		Multiply,
+		Screen,
+	};
+
 	/// /////////////////////////////////////////////  
 	/// @brief Effectの一要素  
 	/// /////////////////////////////////////////////  
@@ -101,6 +109,8 @@ private:
 
 	Vector4 emittedElementColor_;
 
+	BlendMode blendMode_ = BlendMode::Normal; ///< ブレンドモード
+
 public:
 	/// ===================================================  
 	/// public : accessors  
@@ -160,6 +170,10 @@ public:
 		isCreateParticle_ = _isCreateParticle;
 	}
 
+	void SetBlendMode(BlendMode _blendMode) {
+		blendMode_ = _blendMode;
+	}
+
 
 	/// @brief メッシュパスを取得
 	/// @return メッシュパス
@@ -170,5 +184,7 @@ public:
 	/// @brief エフェクト要素を取得
 	/// @return エフェクト要素のリスト
 	const std::vector<Element>& GetElements() const { return elements_; }
+
+	BlendMode GetBlendMode() const { return blendMode_; }
 };
 

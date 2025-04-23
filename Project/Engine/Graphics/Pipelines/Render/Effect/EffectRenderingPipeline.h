@@ -2,6 +2,8 @@
 
 /// std
 #include <cmath>
+#include <unordered_map>
+#include <memory>
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
@@ -26,6 +28,10 @@ public:
 	void Draw(DxCommand* _dxCommand, class EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) override;
 
 private:
+
+
+
+private:
 	/// ====================================================
 	/// private : objects
 	/// ====================================================
@@ -39,6 +45,8 @@ private:
 
 	size_t transformIndex_;
 	uint32_t instanceIndex_;
+
+	std::unordered_map<size_t, std::unique_ptr<GraphicsPipeline>> pipelines_;
 
 };
 
