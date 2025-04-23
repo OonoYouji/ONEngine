@@ -27,6 +27,7 @@ void Player::Update() {
 	Vec3& velo = variables_->Get<Vec3>("velocity");
 	float& jumpPower = variables_->Get<float>("jumpPower");
 	float& speed = variables_->Get<float>("speed");
+	bool& onGround = variables_->Get<bool>("onGround");
 
 	velo = Vec3::kZero;
 
@@ -38,8 +39,9 @@ void Player::Update() {
 
 	/// 上下移動
 	if (Input::PressKey(DIK_SPACE)) {
-		if (jumpPower <= 0.0f) {
+		if (onGround) {
 			jumpPower = variables_->Get<float>("startJumpPower");
+			onGround = false;
 		}
 	}
 
@@ -61,6 +63,7 @@ void Player::Update() {
 	if (transform_->position.y < 0.0f) {
 		transform_->position.y = 0.0f;
 		jumpPower = 0.0f;
+		onGround = true;
 	}
 
 

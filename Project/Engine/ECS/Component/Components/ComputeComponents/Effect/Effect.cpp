@@ -3,6 +3,10 @@
 /// engine
 #include "Engine/Core/Utility/Math/Vector4.h"
 
+Effect::Effect() {
+	isCreateParticle_ = true;
+}
+
 void Effect::CreateElement(const Vector3& _position, const Vector4& _color) {
 	Element element;
 	element.transform.position = _position;

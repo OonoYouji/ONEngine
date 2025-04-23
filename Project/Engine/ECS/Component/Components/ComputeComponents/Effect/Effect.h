@@ -59,7 +59,7 @@ public:
 	/// ===================================================  
 	/// public : methods  
 	/// ===================================================  
-	Effect() = default;
+	Effect();
 	~Effect() = default;
 
 	/// @brief 新しい要素の作成
@@ -80,6 +80,8 @@ private:
 	/// private : objects  
 	/// ===================================================  
 
+	bool isCreateParticle_; ///!< これがtrueじゃないとパーティクルが出現しない
+
 	size_t maxEffectCount_ = 1000;
 	std::string meshPath_;
 	std::string texturePath_;
@@ -96,6 +98,8 @@ private:
 	size_t emitInstanceCount_; /// emitごとに生成するインスタンス数
 
 	std::function<void(Element*)> elementUpdateFunc_ = nullptr; ///< エフェクトの更新関数
+
+	Vector4 emittedElementColor_;
 
 public:
 	/// ===================================================  
@@ -143,6 +147,18 @@ public:
 	/// @brief ビルボードの使用を設定
 	/// @param _use true: ビルボードを使用する, false: 使用しない
 	void SetUseBillboard(bool _use) { useBillboard_ = _use; }
+
+	/// @brief クリエイトされた要素の色
+	/// @param _color 
+	void SetEmittedElementColor(const Vector4& _color) {
+		emittedElementColor_ = _color;
+	}
+
+	/// @brief particle を出現させるかのフラグ
+	/// @param _isCreateParticle true: 出現できる false: 出現できない
+	void SetIsCreateParticle(bool _isCreateParticle) {
+		isCreateParticle_ = _isCreateParticle;
+	}
 
 
 	/// @brief メッシュパスを取得

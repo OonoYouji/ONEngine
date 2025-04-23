@@ -1,21 +1,28 @@
 #include "PlayerWalkEffect.h"
 
 #define NOMINMAX
+
+/// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Utility.h"
 
+/// game
+#include "Game/Entity/Player/Player.h"
+
+
 void PlayerWalkEffect::Initialize() {
-	Effect* effect = AddComponent<Effect>();
-	effect->SetEmitTypeDistance(2, 4);
-	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
+	effect_ = AddComponent<Effect>();
+	effect_->SetEmitTypeDistance(2, 4);
+	effect_->SetMeshPath("Assets/Models/primitive/plane.obj");
 	//effect->SetTexturePath("Packages/Textures/uvChecker.png");
-	effect->SetTexturePath("Assets/Textures/playerWalkEffect.png");
+	effect_->SetTexturePath("Assets/Textures/playerWalkEffect.png");
 
 	//effect->SetUseBillboard(true);
-	effect->SetStartSpeed(0.1f);
-	effect->SetLifeLeftTime(0.4f);
+	effect_->SetStartSpeed(0.1f);
+	effect_->SetLifeLeftTime(0.4f);
+	effect_->SetEmittedElementColor(Vector4::kWhite);
 
-	effect->SetElementUpdateFunc(
+	effect_->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
 			float lerpT = std::clamp(_element->lifeTime / 3.0f, 0.0f, 1.0f);
 			_element->color.w = std::lerp(0.0f, 0.3f, lerpT);
@@ -34,4 +41,16 @@ void PlayerWalkEffect::Initialize() {
 
 void PlayerWalkEffect::Update() {
 
+	Player* pPlayer = dynamic_cast<Player*>(GetParent());
+	if (!pPlayer) {
+		return;
+	}
+
+	auto vars = pPlayer->GetComponent<Variables>();
+
+	if (vars->Get<float>("jumpPower") == 0) {
+		effect_->SetIsCreateParticle(false);
+	} else {
+		effect_->SetIsCreateParticle(true);
+	}
 }

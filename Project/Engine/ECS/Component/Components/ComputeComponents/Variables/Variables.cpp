@@ -86,6 +86,35 @@ void Variables::Rename(const std::string& _oldName, const std::string& _newName)
 	keyMap_[_newName] = index;
 }
 
+Variables::VarType Variables::GetType(const std::string& _name) {
+	if (!Has(_name)) {
+		return VarType::Unknown;
+	}
+
+	const auto& var = variables_[keyMap_.at(_name)];
+	return std::visit([](auto&& arg) -> Variables::VarType {
+		using T = std::decay_t<decltype(arg)>;
+		if constexpr (std::is_same_v<T, int>) {
+			return VarType::kInt;
+		} else if constexpr (std::is_same_v<T, float>) {
+			return VarType::kFloat;
+		} else if constexpr (std::is_same_v<T, bool>) {
+			return VarType::kBool;
+		} else if constexpr (std::is_same_v<T, std::string>) {
+			return VarType::kString;
+		} else if constexpr (std::is_same_v<T, Vec2>) {
+			return VarType::kVector2;
+		} else if constexpr (std::is_same_v<T, Vec3>) {
+			return VarType::kVector3;
+		} else if constexpr (std::is_same_v<T, Vec4>) {
+			return VarType::kVector4;
+		} else {
+			return static_cast<int>(VarType::Unknown);
+		}
+		}, var
+	);
+}
+
 
 void Variables::LoadJson(const std::string& _path) {
 	/// .jsonファイルかチェック

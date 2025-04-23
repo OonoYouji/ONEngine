@@ -1,10 +1,11 @@
 {
-    "jumpPower": -0.10000000149011612,
+    "jumpPower": 0.0,
+    "onGround": false,
     "speed": 1.0,
     "startJumpPower": 0.800000011920929,
     "velocity": {
         "x": 0.0,
-        "y": 0.0,
+        "y": -0.10000000149011612,
         "z": 0.0
     }
 }

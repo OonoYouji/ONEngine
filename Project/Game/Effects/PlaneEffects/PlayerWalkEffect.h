@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// ============================================================
 
-
+	class Effect* effect_ = nullptr;
 
 };
 

@@ -37,62 +37,67 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 			UpdateElement(effect, &element);
 		}
 
-		switch (effect->emitType_) {
-			/// ----------------------------------------
-			/// 距離で指定する場合の処理
-			/// ----------------------------------------
-		case Effect::EmitType::Distance:
-		{
 
-			Effect::DistanceEmitData& data = effect->distanceEmitData_;
-			data.currentPosition = data.nextPosition;
-			data.nextPosition = effect->owner_->GetWorldPosition();
+		///!< エフェクトを出現するまでの
+		if (effect->isCreateParticle_) {
 
-			data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
-			data.emitInterval -= data.moveLength;
+			switch (effect->emitType_) {
+				/// ----------------------------------------
+				/// 距離で指定する場合の処理
+				/// ----------------------------------------
+			case Effect::EmitType::Distance:
+			{
 
-			if (data.emitInterval <= 0.0f) {
-				data.emitInterval = data.emitDistance;
+				Effect::DistanceEmitData& data = effect->distanceEmitData_;
+				data.currentPosition = data.nextPosition;
+				data.nextPosition = effect->owner_->GetWorldPosition();
 
-				/// エフェクトの要素を生成
-				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
-					if (effect->elements_.size() < effect->maxEffectCount_) {
-						effect->CreateElement(
-							effect->GetOwner()->GetWorldPosition(),
-							Vec3::kUp,
-							Vec4::kWhite
-						);
+				data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
+				data.emitInterval -= data.moveLength;
+
+				if (data.emitInterval <= 0.0f) {
+					data.emitInterval = data.emitDistance;
+
+					/// エフェクトの要素を生成
+					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
+						if (effect->elements_.size() < effect->maxEffectCount_) {
+							effect->CreateElement(
+								effect->GetOwner()->GetWorldPosition(),
+								Vec3::kUp,
+								effect->emittedElementColor_
+							);
+						}
 					}
 				}
+
+			}
+			break;
+			/// ----------------------------------------
+			/// 時間で指定する場合の処理
+			/// ----------------------------------------
+			case Effect::EmitType::Time:
+			{
+				Effect::TimeEmitData& data = effect->timeEmitData_;
+				data.emitInterval -= Time::DeltaTime();
+				if (data.emitInterval <= 0.0f) {
+					data.emitInterval = data.emitTime;
+
+					/// エフェクトの要素を生成
+					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
+						if (effect->elements_.size() < effect->maxEffectCount_) {
+							effect->CreateElement(
+								effect->GetOwner()->GetLocalPosition(),
+								effect->emittedElementColor_
+							);
+						}
+					}
+				}
+
+			}
+			break;
 			}
 
 		}
-		break;
-		/// ----------------------------------------
-		/// 時間で指定する場合の処理
-		/// ----------------------------------------
-		case Effect::EmitType::Time:
-		{
-			Effect::TimeEmitData& data = effect->timeEmitData_;
-			data.emitInterval -= Time::DeltaTime();
-			if (data.emitInterval <= 0.0f) {
-				data.emitInterval = data.emitTime;
-
-				/// エフェクトの要素を生成
-				for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
-					if (effect->elements_.size() < effect->maxEffectCount_) {
-						effect->CreateElement(
-							effect->GetOwner()->GetLocalPosition(),
-							Vec4::kWhite
-						);
-					}
-				}
-			}
-
-		}
-		break;
-		}
-
 	}
 
 

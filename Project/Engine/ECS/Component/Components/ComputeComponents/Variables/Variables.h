@@ -26,8 +26,18 @@ public:
 	/// public : sub class
 	/// ================================================
 
-	using Var   = std::variant<int, float, bool, std::string, Vector2, Vector3, Vector4>;
-	//using Value = std::pair<std::string, Var>;
+	enum class VarType {
+		kInt,
+		kFloat,
+		kBool,
+		kString,
+		kVector2,
+		kVector3,
+		kVector4,
+		Unknown
+	};
+
+	using Var = std::variant<int, float, bool, std::string, Vector2, Vector3, Vector4>;
 
 
 public:
@@ -74,6 +84,11 @@ public:
 	/// @param _oldName 変数名
 	///	@param _newName 新しい変数名
 	void Rename(const std::string& _oldName, const std::string& _newName);
+
+	/// @brief 変数の型をintで得る
+	/// @param _name 変数の名前
+	/// @return 
+	VarType GetType(const std::string& _name);
 
 
 	/// @brief jsonを読み込んで変数を設定する
@@ -148,7 +163,7 @@ const T& Variables::Get(const std::string& _name) const {
 	}
 
 	// 例外を投げるか、デフォルト値を返す
-	throw std::runtime_error("Key not found: " + _name);
+	//throw std::runtime_error("Key not found: " + _name);
 }
 
 template<typename T>
