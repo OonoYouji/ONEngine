@@ -2,6 +2,9 @@
 
 #define NOMINMAX
 
+/// std
+#include <numbers>
+
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Utility.h"
@@ -30,7 +33,7 @@ void PlayerWalkEffect::Initialize() {
 			_element->transform.scale.z = std::lerp(3.0f, 0.5f, (lerpT));
 
 			if (_element->transform.rotate.y == 0) {
-				_element->transform.rotate.y = static_cast<float>(rand() % 360) / 180.0f;
+				_element->transform.rotate.y = Random::Float(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
 			}
 
 			_element->transform.Update();
