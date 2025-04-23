@@ -22,7 +22,7 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/tube.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
-		"Assets/Textures/playerWalkEffect.png",
+		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
 		"Assets/Textures/ring.png",
 	};

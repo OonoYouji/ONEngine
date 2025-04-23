@@ -5,6 +5,7 @@
 
 /// game
 #include "Game/Effects/KeyItemEffects/KeyItemRipplesEffect.h"
+#include "Game/Effects/KeyItemEffects/KeyItemRiseParticle.h"
 
 KeyItem::KeyItem() {}
 KeyItem::~KeyItem() {}
@@ -17,6 +18,9 @@ void KeyItem::Initialize() {
 
 	KeyItemRipplesEffect* ripplesEffect = pEntityComponentSystem_->GenerateEntity<KeyItemRipplesEffect>();
 	ripplesEffect->SetParent(this);
+
+	KeyItemRiseParticle* riseParticle = pEntityComponentSystem_->GenerateEntity<KeyItemRiseParticle>();
+	riseParticle->SetParent(this);
 
 	transform_->position.y = 1.0f;
 

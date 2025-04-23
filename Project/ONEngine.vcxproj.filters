@@ -92,6 +92,7 @@
     <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
     <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -194,5 +195,6 @@
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
     <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
   </ItemGroup>
 </Project>

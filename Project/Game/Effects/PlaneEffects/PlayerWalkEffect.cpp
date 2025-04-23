@@ -14,7 +14,7 @@ void PlayerWalkEffect::Initialize() {
 	effect_ = AddComponent<Effect>();
 	effect_->SetEmitTypeDistance(2, 4);
 	effect_->SetMeshPath("Assets/Models/primitive/frontToPlane.obj");
-	effect_->SetTexturePath("Assets/Textures/playerWalkEffect.png");
+	effect_->SetTexturePath("Assets/Textures/circle.png");
 
 	effect_->SetUseBillboard(true);
 	effect_->SetStartSpeed(0.1f);
