@@ -23,10 +23,10 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 	}
 
 	mainCamera_ = _pEntityComponentSystem->GetMainCamera();
-	matBillboard_ = mainCamera_->GetTransform()->matWorld;
-	matBillboard_.m[3][0] = 0.0f;
-	matBillboard_.m[3][1] = 0.0f;
-	matBillboard_.m[3][2] = 0.0f;
+	matBillboard_ = Matrix4x4::MakeRotate(mainCamera_->GetWorldRotate());
+	//matBillboard_.m[3][0] = 0.0f;
+	//matBillboard_.m[3][1] = 0.0f;
+	//matBillboard_.m[3][2] = 0.0f;
 
 
 	/// エフェクトの更新処理

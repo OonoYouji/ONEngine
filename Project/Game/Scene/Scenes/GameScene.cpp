@@ -19,7 +19,8 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
-		"Assets/Textures/playerWalkEffect.png"
+		"Assets/Textures/playerWalkEffect.png",
+		"Assets/Models/primitive/frontToPlane.obj",
 	};
 
 	//unloadResourcePaths_ = {

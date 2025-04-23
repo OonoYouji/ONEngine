@@ -13,11 +13,10 @@
 void PlayerWalkEffect::Initialize() {
 	effect_ = AddComponent<Effect>();
 	effect_->SetEmitTypeDistance(2, 4);
-	effect_->SetMeshPath("Assets/Models/primitive/plane.obj");
-	//effect->SetTexturePath("Packages/Textures/uvChecker.png");
+	effect_->SetMeshPath("Assets/Models/primitive/frontToPlane.obj");
 	effect_->SetTexturePath("Assets/Textures/playerWalkEffect.png");
 
-	//effect->SetUseBillboard(true);
+	effect_->SetUseBillboard(true);
 	effect_->SetStartSpeed(0.1f);
 	effect_->SetLifeLeftTime(0.4f);
 	effect_->SetEmittedElementColor(Vector4::kWhite);
@@ -47,10 +46,5 @@ void PlayerWalkEffect::Update() {
 	}
 
 	auto vars = pPlayer->GetComponent<Variables>();
-
-	if (vars->Get<float>("jumpPower") == 0) {
-		effect_->SetIsCreateParticle(false);
-	} else {
-		effect_->SetIsCreateParticle(true);
-	}
+	effect_->SetIsCreateParticle(vars->Get<bool>("onGround"));
 }
