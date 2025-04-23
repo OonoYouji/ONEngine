@@ -62,7 +62,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
 							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition(),
+								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
 								Vec3::kUp,
 								effect->emittedElementColor_
 							);
@@ -86,7 +86,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
 							effect->CreateElement(
-								effect->GetOwner()->GetLocalPosition(),
+								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
 								effect->emittedElementColor_
 							);
 						}
