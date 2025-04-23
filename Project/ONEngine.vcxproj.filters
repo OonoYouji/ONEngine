@@ -93,6 +93,7 @@
     <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -196,5 +197,6 @@
     <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
   </ItemGroup>
 </Project>

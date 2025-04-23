@@ -10,6 +10,7 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "../../Interface/IComponent.h"
 #include "../Transform/Transform.h"
+#include "EmitShape/EffectEmitShape.h"
 
 /// ///////////////////////////////////////////////////
 /// Effectクラス
@@ -99,6 +100,7 @@ private:
 	float lifeLeftTime_;
 	float startSpeed_;
 
+	EffectEmitShape emitShape_; ///< エミット形状
 	EmitType emitType_;
 	DistanceEmitData distanceEmitData_;
 	TimeEmitData timeEmitData_;
@@ -110,6 +112,7 @@ private:
 	Vector4 emittedElementColor_;
 
 	BlendMode blendMode_ = BlendMode::Normal; ///< ブレンドモード
+
 
 public:
 	/// ===================================================  
@@ -174,6 +177,9 @@ public:
 		blendMode_ = _blendMode;
 	}
 
+	void SetEmitShape(const Vector3& _center, float _radius);
+	void SetEmitShape(const Vector3& _center, const Vector3& _size);
+	void SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height);
 
 	/// @brief メッシュパスを取得
 	/// @return メッシュパス

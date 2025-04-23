@@ -47,3 +47,18 @@ void Effect::SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCoun
 	timeEmitData_ = _data;
 	emitInstanceCount_ = _emitInstanceCount;
 }
+
+void Effect::SetEmitShape(const Vector3& _center, float _radius) {
+	emitShape_.SetShapeType(EffectEmitShape::ShapeType::Sphere);
+	emitShape_.SetSphere(_center, _radius);
+}
+
+void Effect::SetEmitShape(const Vector3& _center, const Vector3& _size) {
+	emitShape_.SetShapeType(EffectEmitShape::ShapeType::Cube);
+	emitShape_.SetCube(_center, _size);
+}
+
+void Effect::SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height) {
+	emitShape_.SetShapeType(EffectEmitShape::ShapeType::Cone);
+	emitShape_.SetCone(_apex, _angle, _radius, _height);
+}
