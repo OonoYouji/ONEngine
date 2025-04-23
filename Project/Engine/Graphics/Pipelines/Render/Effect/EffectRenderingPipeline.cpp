@@ -147,6 +147,9 @@ void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 
 			/// transform, material を mapping
 			for (auto& effect : effects) {
+				if (effect->GetElements().empty()) {
+					continue;
+				}
 
 				for (auto& element : effect->GetElements()) {
 
