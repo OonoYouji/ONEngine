@@ -19,6 +19,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
@@ -81,6 +85,9 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
+    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -106,9 +113,14 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
+    <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
+    <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
+    <ClInclude Include="Engine\Core\Utility\Utility.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
@@ -204,7 +216,10 @@
     <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
+    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

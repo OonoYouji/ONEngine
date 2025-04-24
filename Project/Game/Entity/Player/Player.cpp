@@ -5,9 +5,10 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// game 
-#include "Game/Effects/PlaneEffects/PlayerWalkEffect.h"
+#include "Game/Effects/PlaneEffects/PlayerMoveEffect.h"
 
 Player::Player() {}
 Player::~Player() {}
@@ -17,8 +18,8 @@ void Player::Initialize() {
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
-	PlayerWalkEffect* effect = pEntityComponentSystem_->GenerateEntity<PlayerWalkEffect>();
-	effect->SetParent(this);
+	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
+	walkEffect->SetParent(this);
 
 }
 
@@ -27,6 +28,7 @@ void Player::Update() {
 	Vec3& velo = variables_->Get<Vec3>("velocity");
 	float& jumpPower = variables_->Get<float>("jumpPower");
 	float& speed = variables_->Get<float>("speed");
+	bool& onGround = variables_->Get<bool>("onGround");
 
 	velo = Vec3::kZero;
 
@@ -38,8 +40,9 @@ void Player::Update() {
 
 	/// 上下移動
 	if (Input::PressKey(DIK_SPACE)) {
-		if (jumpPower <= 0.0f) {
+		if (onGround) {
 			jumpPower = variables_->Get<float>("startJumpPower");
+			onGround = false;
 		}
 	}
 
@@ -61,8 +64,13 @@ void Player::Update() {
 	if (transform_->position.y < 0.0f) {
 		transform_->position.y = 0.0f;
 		jumpPower = 0.0f;
+		onGround = true;
 	}
 
+
+	if (pCamera_) {
+		pCamera_->SetPosition(variables_->Get<Vec3>("cameraOffset"));
+	}
 
 }
 

@@ -10,6 +10,7 @@
 /// user
 #include "Game/Objects/Terrain/Terrain.h"
 #include "Game/Entity/Player/Player.h"
+#include "Game/Objects/KeyItem/KeyItem.h"
 
 GameScene::GameScene() {
 	loadResourcePaths_ = {
@@ -17,13 +18,24 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/sphere.obj",
 		"Assets/Models/primitive/plane.obj",
 		"Assets/Models/primitive/cylinder.obj",
+		"Assets/Models/primitive/frontToPlane.obj",
+		"Assets/Models/primitive/tube.obj",
+
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
+		"Assets/Models/objects/statue/statue.obj",
+		"Assets/Models/objects/sideToPlane/sideToPlane.obj",
+
+		"Assets/Textures/circle.png",
+		"Assets/Textures/gradation.png",
+		"Assets/Textures/ring.png",
+		"Assets/Textures/gradationLine.png",
+		"Assets/Textures/smoke.png",
 	};
 
-	unloadResourcePaths_ = {
-		"Assets/Models/cube/cube.obj"
-	};
+	//unloadResourcePaths_ = {
+	//	"Assets/Models/cube/cube.obj"
+	//};
 }
 
 GameScene::~GameScene() {}
@@ -41,9 +53,12 @@ void GameScene::Initialize() {
 	camera->SetParent(player);
 	camera->SetPosition(Vector3(0, 1.8f, -2.5f));
 	camera->SetRotateX(std::numbers::pi_v<float> * 0.1f);
+	player->SetCamera(camera);
+
 
 	pEntityComponentSystem_->SetMainCamera(camera);
-	pEntityComponentSystem_->GenerateEntity<Terrain>();
+	//pEntityComponentSystem_->GenerateEntity<Terrain>();
+	pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
 }
 

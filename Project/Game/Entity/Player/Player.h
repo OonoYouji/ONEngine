@@ -23,6 +23,12 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	Camera* pCamera_;
+
+public:
+	void SetCamera(Camera* _camera) {
+		pCamera_ = _camera;
+	}
 
 };
 

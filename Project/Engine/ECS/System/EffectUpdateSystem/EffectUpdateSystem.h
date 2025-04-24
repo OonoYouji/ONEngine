@@ -23,6 +23,8 @@ private:
 	/// private : objects
 	/// ==================================================
 
+	class Camera* mainCamera_ = nullptr;
+	Matrix4x4 matBillboard_ = Matrix4x4::kIdentity; ///< ビルボード用の行列
 
 private:
 	/// ==================================================

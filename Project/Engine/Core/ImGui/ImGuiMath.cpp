@@ -307,6 +307,33 @@ void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 	}
 }
 
+void EffectDebug(Effect* _effect) {
+	if (!_effect) {
+		return;
+	}
+
+	/// main module
+	if (ImGui::TreeNodeEx("main module", ImGuiTreeNodeFlags_DefaultOpen)) {
+		EffectMainModule* mainModule = _effect->GetMainModule();
+		if (!mainModule) {
+			ImGui::Text("no main module");
+		} else {
+
+			/// param get
+			/*std::pair<float, float> speed = mainModule->GetSpeedStartData();
+			std::pair<Vec3, Vec3> size = mainModule->GetSpeedStartData();
+			std::pair<Vec3, Vec3> rotate = mainModule->GetSpeedStartData();
+			std::pair<Vec4, Vec4> color = mainModule->GetSpeedStartData();
+			float lifeTime = mainModule->GetLifeTime();*/
+
+
+		}
+
+		ImGui::TreePop();
+	}
+
+}
+
 void ValueImGui(Variables* _variables, const std::string& _label, const std::string& _name, size_t _type) {
 	{
 		switch (_type) {

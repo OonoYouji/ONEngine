@@ -68,7 +68,18 @@ Vector3 IEntity::GetWorldPosition() {
 }
 
 Vector3 IEntity::GetWorldRotate() {
-	return Vector3();
+	if (!parent_) {
+		return transform_->rotate;
+	}
+
+	// 親のワールド行列を取得  
+	//const Matrix4x4& parentWorldMatrix = parent_->transform_->GetMatWorld();
+
+	// 親の回転を抽出  
+	//Vector3 parentRotation = parent_->GetWorldRotate();
+
+	// 自身のローカル回転を加算  
+	return parent_->GetWorldRotate() + transform_->rotate;
 }
 
 Vector3 IEntity::GetWorldScale() {

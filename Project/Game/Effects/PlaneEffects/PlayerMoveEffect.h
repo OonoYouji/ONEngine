@@ -6,14 +6,14 @@
 /// ////////////////////////////////////////////////////////
 /// プレイヤーが歩くときのエフェクト
 /// ////////////////////////////////////////////////////////
-class PlayerWalkEffect : public IEntity {
+class PlayerMoveEffect : public IEntity {
 public:
 	/// ============================================================
 	/// public : methods
 	/// ============================================================
 
-	PlayerWalkEffect() = default;
-	~PlayerWalkEffect() = default;
+	PlayerMoveEffect() = default;
+	~PlayerMoveEffect() = default;
 
 	void Initialize() override;
 	void Update() override;
@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// ============================================================
 
-
+	class Effect* effect_ = nullptr;
 
 };
 
