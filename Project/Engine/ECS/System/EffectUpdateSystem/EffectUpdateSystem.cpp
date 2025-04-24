@@ -62,27 +62,17 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
 
-							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
-								effect->CreateElement(
-									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-									effect->startData_.size,
-									effect->startData_.rotate,
-									Vector3::kUp,
-									effect->startData_.color.first
-								);
+							std::pair<Vector3, Vector3> size = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.sizeStartData_);
+							std::pair<Vector3, Vector3> rotate = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.rotateStartData_);
+							std::pair<Color, Color> color = effect->mainModule_.GetValue<Color>(effect->mainModule_.colorStartData_);
 
-							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
-								effect->CreateElement(
-									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-									effect->startData_.size,
-									effect->startData_.rotate,
-									Vector3::kUp,
-									Random::Vector4(
-										effect->startData_.color.first,
-										effect->startData_.color.second
-									)
-								);
-							}
+							effect->CreateElement(
+								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+								Random::Vector3(size.first, size.second),
+								Random::Vector3(rotate.first, rotate.second),
+								Vector3::kUp,
+								Random::Vector4(color.first, color.second)
+							);
 
 						}
 					}
@@ -103,27 +93,19 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					/// エフェクトの要素を生成
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
-							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
-								effect->CreateElement(
-									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-									effect->startData_.size,
-									effect->startData_.rotate,
-									Vector3::kUp,
-									effect->startData_.color.first
-								);
 
-							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
-								effect->CreateElement(
-									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-									effect->startData_.size,
-									effect->startData_.rotate,
-									Vector3::kUp,
-									Random::Vector4(
-										effect->startData_.color.first,
-										effect->startData_.color.second
-									)
-								);
-							}
+							std::pair<Vector3, Vector3> size = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.sizeStartData_);
+							std::pair<Vector3, Vector3> rotate = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.rotateStartData_);
+							std::pair<Color, Color> color = effect->mainModule_.GetValue<Color>(effect->mainModule_.colorStartData_);
+
+							effect->CreateElement(
+								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+								Random::Vector3(size.first, size.second),
+								Random::Vector3(rotate.first, rotate.second),
+								Vector3::kUp,
+								Random::Vector4(color.first, color.second)
+							);
+
 						}
 					}
 				}

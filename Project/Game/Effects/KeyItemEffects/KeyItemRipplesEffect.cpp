@@ -16,8 +16,9 @@ void KeyItemRipplesEffect::Initialize() {
 	effect->SetLifeLeftTime(2.0f);
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);
-	effect->SetColorStartType(Effect::StartData::TwoConstant);
-	effect->SetColorStart(HSVColor(0.0f, 1.0f, 1.0f), HSVColor(1.0f, 1.0f, 1.0f));
+	//effect->SetColorStartType(Effect::StartData::TwoConstant);
+	//effect->SetColorStart(HSVColor(0.0f, 1.0f, 1.0f), HSVColor(1.0f, 1.0f, 1.0f));
+	effect->SetStartColor(Color::kBlack, Color::kWhite);
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {

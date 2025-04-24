@@ -12,6 +12,7 @@
 #include "../../Interface/IComponent.h"
 #include "../Transform/Transform.h"
 #include "EmitShape/EffectEmitShape.h"
+#include "MainModule/EffectMainModule.h"
 
 /// ///////////////////////////////////////////////////
 /// Effectクラス
@@ -65,41 +66,6 @@ public:
 		float emitInterval;
 	};
 
-	/// /////////////////////////////////////////////
-	/// エミット形状のデータ
-	/// /////////////////////////////////////////////
-	struct StartData final {
-		Vector3 size;
-		Vector3 rotate;
-
-		enum {
-			Constant,
-			TwoConstant,
-		};
-
-		int colorStartType = Constant; ///< 定数か2つの定数か
-		using TwoConstnatColor = std::pair<Color, Color>;
-		using TwoConstantHSV = std::pair<HSVColor, HSVColor>;
-		union { /// startの色
-			TwoConstnatColor color;
-			TwoConstantHSV   hsv;
-		};
-
-		StartData() {
-			size = Vector3::kOne;
-			rotate = Vector3::kZero;
-			colorStartType = Constant;
-			color.first = Color::kWhite;
-			color.second = Color::kWhite;
-		}
-		StartData& operator=(const StartData& _data) {
-			size = _data.size;
-			rotate = _data.rotate;
-			colorStartType = _data.colorStartType;
-			color = _data.color;
-			return *this;
-		}
-	};
 
 public:
 	/// ===================================================  
@@ -129,16 +95,17 @@ private:
 
 	bool isCreateParticle_; ///!< これがtrueじゃないとパーティクルが出現しない
 
+
 	size_t maxEffectCount_ = 1000;
 	std::string meshPath_;
 	std::string texturePath_;
 	std::vector<Element> elements_;
 
 	bool useBillboard_ = false; ///< ビルボードを使用するかどうか
-	float lifeLeftTime_;
-	float startSpeed_;
 
-	EffectEmitShape emitShape_; ///< エミット形状
+	EffectMainModule mainModule_; ///< メインモジュール
+	EffectEmitShape emitShape_;  ///< エミット形状
+
 	EmitType emitType_;
 	DistanceEmitData distanceEmitData_;
 	TimeEmitData timeEmitData_;
@@ -149,7 +116,7 @@ private:
 
 	BlendMode blendMode_ = BlendMode::Normal; ///< ブレンドモード
 
-	StartData startData_; ///< particleの初期データ
+
 
 public:
 	/// ===================================================  
@@ -182,11 +149,11 @@ public:
 
 	/// @brief 開始速度を設定  
 	/// @param _speed 開始速度  
-	void SetStartSpeed(float _speed) { startSpeed_ = _speed; }
+	void SetStartSpeed(float _speed) { mainModule_.SetSpeedStartData(_speed); }
 
 	/// @brief 残り寿命を設定  
 	/// @param _time 残り寿命  
-	void SetLifeLeftTime(float _time) { lifeLeftTime_ = _time; }
+	void SetLifeLeftTime(float _time) { mainModule_.lifeLeftTime_ = _time; }
 
 	/// @brief 要素の更新関数を設定
 	/// @param _func 
@@ -208,31 +175,25 @@ public:
 		blendMode_ = _blendMode;
 	}
 
-	void SetStartScale(const Vector3& _scale) {
-		startData_.size = _scale;
+	void SetStartSize(const Vector3& _size) {
+		mainModule_.SetSizeStartData(_size);
+	}
+	void SetStartSize(const Vector3& _size1, const Vector3& _size2) {
+		mainModule_.SetSizeStartData(std::make_pair(_size1, _size2));
 	}
 
 	void SetStartRotate(const Vector3& _rotate) {
-		startData_.rotate = _rotate;
+		mainModule_.SetRotateStartData(_rotate);
+	}
+	void SetStartRotate(const Vector3& _rotate1, const Vector3& _rotate2) {
+		mainModule_.SetRotateStartData(std::make_pair(_rotate1, _rotate2));
 	}
 
-	void SetColorStartType(int _type) {
-		startData_.colorStartType = _type;
+	void SetStartColor(const Color& _color) {
+		mainModule_.SetColorStartData(_color);
 	}
-
-	void SetColorStart(const Color& _color) {
-		startData_.color.first = _color;
-	}
-	void SetColorStart(const HSVColor& _color) {
-		startData_.hsv.first = _color;
-	}
-	void SetColorStart(const Color& _color1, const Color& _color2) {
-		startData_.color.first = _color1;
-		startData_.color.second = _color2;
-	}
-	void SetColorStart(const HSVColor& _color1, const HSVColor& _color2) {
-		startData_.hsv.first = _color1;
-		startData_.hsv.second = _color2;
+	void SetStartColor(const Color& _color1, const Color& _color2) {
+		mainModule_.SetColorStartData(std::make_pair(_color1, _color2));
 	}
 
 

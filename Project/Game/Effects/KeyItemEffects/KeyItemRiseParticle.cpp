@@ -19,8 +19,8 @@ void KeyItemRiseParticle::Initialize() {
 	effect->SetMaxEffectCount(64);
 	effect->SetBlendMode(Effect::BlendMode::Add);
 	effect->SetEmitShape({ 0, 0, 0 }, Vec3::kOne * 10.0f);
-	effect->SetColorStartType(Effect::StartData::Constant);
-	effect->SetColorStart(Color(0xF8650AFF));
+	//effect->SetColorStartType(Effect::StartData::Constant);
+	effect->SetStartColor(Color(0xF8650AFF));
 
 
 	effect->SetElementUpdateFunc(

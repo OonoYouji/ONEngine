@@ -24,6 +24,9 @@ public:
 
 	template<typename T>
 	struct ConstantData {
+		ConstantData() = default;
+		ConstantData(const T& _data) : constant(_data) {}
+
 		T constant;
 	};
 
@@ -31,7 +34,6 @@ public:
 	struct TwoConstantData {
 		TwoConstantData() = default;
 		TwoConstantData(const std::pair<T, T>& _data) : constant(_data) {}
-		TwoConstantData(const T& _data) : constant(std::make_pair(_data, _data)) {}
 		TwoConstantData(const T& _data1, const T& _data2) : constant(std::make_pair(_data1, _data2)) {}
 
 		std::pair<T, T> constant;
@@ -76,22 +78,10 @@ private:
 	float lifeLeftTime_ = 0.0f; ///< 残り寿命
 	float startSpeed_ = 0.0f;   ///< 開始速度
 
-	/// speed
-	//int speedStartType_ = Constant; ///< 定数か2つの定数か
-	Value<float> speedStartData_;   ///< 開始速度のデータ
-
-	/// size
-	//int sizeStartType_ = Constant; ///< 定数か2つの定数か
-	Value<Vector3> sizeStartData_; ///< 開始サイズのデータ
-
-	/// rotate
-	//int rotateStartType_ = Constant; ///< 定数か2つの定数か
+	Value<float> speedStartData_;    ///< 開始速度のデータ
+	Value<Vector3> sizeStartData_;   ///< 開始サイズのデータ
 	Value<Vector3> rotateStartData_; ///< 開始回転のデータ
-
-	/// color
-	//int colorStartType_ = Constant; ///< 定数か2つの定数か
-	Value<Color> colorStartData_;   ///< 開始色のデータ
-
+	Value<Color> colorStartData_;    ///< 開始色のデータ
 
 	float gravityModifier_ = 0.0f; ///< 重力の影響
 
