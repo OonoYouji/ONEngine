@@ -36,6 +36,10 @@ public:
 	/// @param _max 最大値  
 	/// @return _min ~ _maxの値でランダムな値を得る  
 	static float Float(float _min, float _max) {
+		if (_min > _max) {
+			std::swap(_min, _max);
+		}
+
 		std::uniform_real_distribution<float> distribution(_min, _max);
 		return distribution(generator_);
 	}

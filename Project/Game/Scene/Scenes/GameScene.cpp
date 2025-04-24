@@ -24,6 +24,7 @@ GameScene::GameScene() {
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
 		"Assets/Models/objects/statue/statue.obj",
+		"Assets/Models/objects/sideToPlane/sideToPlane.obj",
 
 		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
@@ -56,7 +57,7 @@ void GameScene::Initialize() {
 
 
 	pEntityComponentSystem_->SetMainCamera(camera);
-	pEntityComponentSystem_->GenerateEntity<Terrain>();
+	//pEntityComponentSystem_->GenerateEntity<Terrain>();
 	pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
 }
