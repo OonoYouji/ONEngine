@@ -20,13 +20,16 @@ GameScene::GameScene() {
 		"Assets/Models/primitive/cylinder.obj",
 		"Assets/Models/primitive/frontToPlane.obj",
 		"Assets/Models/primitive/tube.obj",
+
 		"Assets/Models/multiMeshTest/test.obj",
 		"Assets/Models/entity/player.obj",
+		"Assets/Models/objects/statue/statue.obj",
+
 		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
 		"Assets/Textures/ring.png",
 		"Assets/Textures/gradationLine.png",
-		"Assets/Models/objects/statue/statue.obj",
+		"Assets/Textures/smoke.png",
 	};
 
 	//unloadResourcePaths_ = {
