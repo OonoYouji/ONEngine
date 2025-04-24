@@ -16,12 +16,13 @@ void KeyItemRipplesEffect::Initialize() {
 	effect->SetLifeLeftTime(2.0f);
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);
-	effect->SetEmittedElementColor(Vector4(0xf7 / 255.0f, 0xeb / 255.0f, 0x0a / 255.0f, 1.0f)); //#F7EB0AFF
+	effect->SetColorStartType(Effect::StartData::TwoConstant);
+	effect->SetColorStart(HSVColor(0.0f, 1.0f, 1.0f), HSVColor(1.0f, 1.0f, 1.0f));
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
 			float lerpT = _element->lifeTime / 2.0f;
-			_element->color.w = std::lerp(0.0f, 1.0f, lerpT);
+			_element->color.a = std::lerp(0.0f, 1.0f, lerpT);
 
 			_element->transform.scale.x += 10.0f * Time::DeltaTime();
 			_element->transform.scale.z += 10.0f * Time::DeltaTime();

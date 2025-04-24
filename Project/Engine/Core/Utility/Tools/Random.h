@@ -9,6 +9,7 @@
 /// engine  
 #include "../Math/Vector2.h"  
 #include "../Math/Vector3.h"  
+#include "../Math/Vector4.h"  
 
 class Random final {
 	Random() = default;
@@ -57,6 +58,15 @@ public:
 			Float(_min.x, _max.x),
 			Float(_min.y, _max.y),
 			Float(_min.z, _max.z)
+		};
+	}
+
+	static Vector4 Vector4(const Vector4& _min, const Vector4& _max) {
+		return {
+			Float(_min.x, _max.x),
+			Float(_min.y, _max.y),
+			Float(_min.z, _max.z),
+			Float(_min.w, _max.w)
 		};
 	}
 

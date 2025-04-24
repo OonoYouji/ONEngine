@@ -6,12 +6,14 @@
 Effect::Effect() {
 	isCreateParticle_ = true;
 	emitInstanceCount_ = 10;
-	emittedElementColor_ = Vector4::kWhite;
+	//emittedElementColor_ = Vector4::kWhite;
 	startData_.size = Vector3::kOne;
 	startData_.rotate = Vector3::kZero;
+	startData_.color.first = Vector4::kWhite;
+	startData_.color.second = Vector4::kWhite;
 }
 
-void Effect::CreateElement(const Vector3& _position, const Vector4& _color) {
+void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale    = Vector3::kOne;
@@ -24,7 +26,7 @@ void Effect::CreateElement(const Vector3& _position, const Vector4& _color) {
 	elements_.push_back(element);
 }
 
-void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, const Vector4& _color) {
+void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale    = Vector3::kOne;
@@ -37,7 +39,7 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, c
 	elements_.push_back(element);
 }
 
-void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Vector4& _color) {
+void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale = _scale;

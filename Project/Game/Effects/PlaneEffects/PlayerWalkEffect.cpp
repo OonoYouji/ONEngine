@@ -22,13 +22,13 @@ void PlayerWalkEffect::Initialize() {
 	effect_->SetUseBillboard(true);
 	effect_->SetStartSpeed(0.1f);
 	effect_->SetLifeLeftTime(0.4f);
-	effect_->SetEmittedElementColor(Vector4::kWhite);
+	//effect_->SetEmittedElementColor(Vector4::kWhite);
 	effect_->SetStartScale(Vector3(0.5f, 0.5f, 0.5f)); 
 
 	effect_->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
 			float lerpT = std::clamp(_element->lifeTime / 3.0f, 0.0f, 1.0f);
-			_element->color.w = std::lerp(0.0f, 0.3f, lerpT);
+			_element->color.a = std::lerp(0.0f, 0.3f, lerpT);
 
 			_element->transform.position.y += 0.1f * Time::DeltaTime();
 			_element->transform.scale.z = std::lerp(3.0f, 0.5f, (lerpT));

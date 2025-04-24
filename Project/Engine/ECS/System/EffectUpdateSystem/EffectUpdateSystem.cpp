@@ -61,11 +61,25 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					/// エフェクトの要素を生成
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
-							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-								Vec3::kUp,
-								effect->emittedElementColor_
-							);
+
+							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
+								effect->CreateElement(
+									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									Vector3::kUp,
+									effect->startData_.color.first
+								);
+
+							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
+								effect->CreateElement(
+									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									Vector3::kUp,
+									Random::Vector4(
+										effect->startData_.color.first,
+										effect->startData_.color.second
+									)
+								);
+							}
+
 						}
 					}
 				}
@@ -85,10 +99,23 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 					/// エフェクトの要素を生成
 					for (size_t i = 0; i < effect->emitInstanceCount_; i++) {
 						if (effect->elements_.size() < effect->maxEffectCount_) {
-							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
-								effect->emittedElementColor_
-							);
+							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
+								effect->CreateElement(
+									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									Vector3::kUp,
+									effect->startData_.color.first
+								);
+
+							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
+								effect->CreateElement(
+									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									Vector3::kUp,
+									Random::Vector4(
+										effect->startData_.color.first,
+										effect->startData_.color.second
+									)
+								);
+							}
 						}
 					}
 				}

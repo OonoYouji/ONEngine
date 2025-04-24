@@ -8,6 +8,7 @@
 /// engine
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
+#include "Engine/Core/Utility/Math/Color.h"
 #include "../../Interface/IComponent.h"
 #include "../Transform/Transform.h"
 #include "EmitShape/EffectEmitShape.h"
@@ -40,7 +41,7 @@ public:
 	/// /////////////////////////////////////////////  
 	struct Element final {
 		Transform transform; /// 座標(SRT)  
-		Vector4   color;     /// RGBA 0.0f ~ 1.0f  
+		Color   color;     /// RGBA 0.0f ~ 1.0f  
 		float     lifeTime;  /// エフェクトの寿命  
 		Vector3   velocity;  /// エフェクトの移動速度  
 	};
@@ -70,6 +71,34 @@ public:
 	struct StartData final {
 		Vector3 size;
 		Vector3 rotate;
+
+		enum {
+			Constant,
+			TwoConstant,
+		};
+
+		int colorStartType = Constant; ///< 定数か2つの定数か
+		using TwoConstnatColor = std::pair<Color, Color>;
+		using TwoConstantHSV = std::pair<HSVColor, HSVColor>;
+		union { /// startの色
+			TwoConstnatColor color;
+			TwoConstantHSV   hsv;
+		};
+
+		StartData() {
+			size = Vector3::kOne;
+			rotate = Vector3::kZero;
+			colorStartType = Constant;
+			color.first = Color::kWhite;
+			color.second = Color::kWhite;
+		}
+		StartData& operator=(const StartData& _data) {
+			size = _data.size;
+			rotate = _data.rotate;
+			colorStartType = _data.colorStartType;
+			color = _data.color;
+			return *this;
+		}
 	};
 
 public:
@@ -81,9 +110,9 @@ public:
 
 	/// @brief 新しい要素の作成
 	/// @param _color 
-	void CreateElement(const Vector3& _position, const Vector4& _color = Vector4::kWhite);
-	void CreateElement(const Vector3& _position, const Vector3& _velocity, const Vector4& _color);
-	void CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Vector4& _color);
+	void CreateElement(const Vector3& _position, const Color& _color = Color::kWhite);
+	void CreateElement(const Vector3& _position, const Vector3& _velocity, const Color& _color);
+	void CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Color& _color);
 
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
@@ -117,8 +146,6 @@ private:
 	size_t emitInstanceCount_; /// emitごとに生成するインスタンス数
 
 	std::function<void(Element*)> elementUpdateFunc_ = nullptr; ///< エフェクトの更新関数
-
-	Vector4 emittedElementColor_;
 
 	BlendMode blendMode_ = BlendMode::Normal; ///< ブレンドモード
 
@@ -166,16 +193,10 @@ public:
 	void SetElementUpdateFunc(std::function<void(Element*)> _func) {
 		elementUpdateFunc_ = _func;
 	}
-	
+
 	/// @brief ビルボードの使用を設定
 	/// @param _use true: ビルボードを使用する, false: 使用しない
 	void SetUseBillboard(bool _use) { useBillboard_ = _use; }
-
-	/// @brief クリエイトされた要素の色
-	/// @param _color 
-	void SetEmittedElementColor(const Vector4& _color) {
-		emittedElementColor_ = _color;
-	}
 
 	/// @brief particle を出現させるかのフラグ
 	/// @param _isCreateParticle true: 出現できる false: 出現できない
@@ -195,9 +216,41 @@ public:
 		startData_.rotate = _rotate;
 	}
 
+	void SetColorStartType(int _type) {
+		startData_.colorStartType = _type;
+	}
 
+	void SetColorStart(const Color& _color) {
+		startData_.color.first = _color;
+	}
+	void SetColorStart(const HSVColor& _color) {
+		startData_.hsv.first = _color;
+	}
+	void SetColorStart(const Color& _color1, const Color& _color2) {
+		startData_.color.first = _color1;
+		startData_.color.second = _color2;
+	}
+	void SetColorStart(const HSVColor& _color1, const HSVColor& _color2) {
+		startData_.hsv.first = _color1;
+		startData_.hsv.second = _color2;
+	}
+
+
+	/// @brief sphereのエミット形状を設定
+	/// @param _center 中心
+	/// @param _radius 半径
 	void SetEmitShape(const Vector3& _center, float _radius);
+
+	/// @brief cubeのエミット形状を設定
+	/// @param _center 中心 
+	/// @param _size cubeのサイズ
 	void SetEmitShape(const Vector3& _center, const Vector3& _size);
+
+	/// @brief coneのエミット形状を設定
+	/// @param _apex 天辺の位置
+	/// @param _angle coneの角度
+	/// @param _radius coneの半径
+	/// @param _height coneの高さ
 	void SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height);
 
 	/// @brief メッシュパスを取得
@@ -212,4 +265,3 @@ public:
 
 	BlendMode GetBlendMode() const { return blendMode_; }
 };
-
