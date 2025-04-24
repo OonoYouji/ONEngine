@@ -65,6 +65,8 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
 								effect->CreateElement(
 									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									effect->startData_.size,
+									effect->startData_.rotate,
 									Vector3::kUp,
 									effect->startData_.color.first
 								);
@@ -72,6 +74,8 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
 								effect->CreateElement(
 									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									effect->startData_.size,
+									effect->startData_.rotate,
 									Vector3::kUp,
 									Random::Vector4(
 										effect->startData_.color.first,
@@ -102,6 +106,8 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							if (effect->startData_.colorStartType == Effect::StartData::Constant) {
 								effect->CreateElement(
 									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									effect->startData_.size,
+									effect->startData_.rotate,
 									Vector3::kUp,
 									effect->startData_.color.first
 								);
@@ -109,6 +115,8 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							} else if (effect->startData_.colorStartType == Effect::StartData::TwoConstant) {
 								effect->CreateElement(
 									effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+									effect->startData_.size,
+									effect->startData_.rotate,
 									Vector3::kUp,
 									Random::Vector4(
 										effect->startData_.color.first,

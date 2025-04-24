@@ -95,6 +95,7 @@
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -200,5 +201,6 @@
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
   </ItemGroup>
 </Project>

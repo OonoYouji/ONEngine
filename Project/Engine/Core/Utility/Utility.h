@@ -9,6 +9,7 @@
 #include "Math/Vector4.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Quaternion.h"
+#include "Math/Color.h"
 
 /// time
 #include "Time/Time.h"

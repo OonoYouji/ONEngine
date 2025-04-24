@@ -19,6 +19,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
@@ -115,6 +116,7 @@
     <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
