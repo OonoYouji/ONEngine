@@ -12,13 +12,13 @@ void KeyItemRipplesEffect::Initialize() {
 	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
 	effect->SetTexturePath("Assets/Textures/ring.png");
 
-	effect->SetEmitTypeTime({ .emitTime = 0.5f, .emitInterval = 0.0f }, 3);
+	effect->SetEmitTypeTime({ .emitTime = 0.5f, .emitInterval = 0.0f }, 6);
 	effect->SetLifeLeftTime(2.0f);
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);
-	//effect->SetColorStartType(Effect::StartData::TwoConstant);
-	//effect->SetColorStart(HSVColor(0.0f, 1.0f, 1.0f), HSVColor(1.0f, 1.0f, 1.0f));
-	effect->SetStartColor(Color::kBlack, Color::kWhite);
+	effect->SetStartColor(Color(0.5f, 1.0f, 1.0f, 0.2f), Color(1.0f, 1.0f, 1.0f, 0.3f));
+	effect->SetEmitShape({ 0, 0, 0 }, Vec3(2.0f, 0.0f, 2.0f));
+	effect->SetBlendMode(Effect::BlendMode::Add);
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {

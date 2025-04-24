@@ -88,6 +88,7 @@
     <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

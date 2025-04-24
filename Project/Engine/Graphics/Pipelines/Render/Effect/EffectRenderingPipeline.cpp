@@ -65,10 +65,17 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 			pipeline->SetBlendDesc(blendModeFuncs[i]());
 
+			//D3D12_RASTERIZER_DESC rasterDesc = {};
+			//rasterDesc.DepthBias = 10;            // 単位：整数値
+			//rasterDesc.DepthBiasClamp = 0.0f;      // 最大のバイアス
+			//rasterDesc.SlopeScaledDepthBias = 1.0f;// 傾きによる追加バイアス
+			//rasterDesc.FillMode = D3D12_FILL_MODE_SOLID;
+			//rasterDesc.CullMode = D3D12_CULL_MODE_NONE;
+			//pipeline->SetRasterizerDesc(rasterDesc);
 
 			D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 			depthStencilDesc.DepthEnable = TRUE;
-			depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+			depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			pipeline->SetDepthStencilDesc(depthStencilDesc);
 

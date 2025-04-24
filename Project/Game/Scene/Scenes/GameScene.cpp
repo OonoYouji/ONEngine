@@ -25,6 +25,8 @@ GameScene::GameScene() {
 		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
 		"Assets/Textures/ring.png",
+		"Assets/Textures/gradationLine.png",
+		"Assets/Models/objects/statue/statue.obj",
 	};
 
 	//unloadResourcePaths_ = {

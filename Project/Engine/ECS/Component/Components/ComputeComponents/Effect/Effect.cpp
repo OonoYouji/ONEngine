@@ -48,7 +48,7 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, cons
 
 	element.color = _color;
 	element.lifeTime = mainModule_.lifeLeftTime_;
-	element.velocity = _velocity;
+	element.velocity = _velocity * mainModule_.GetStartSpeed();
 	elements_.push_back(element);
 }
 

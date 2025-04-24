@@ -80,6 +80,10 @@ public:
 
 	/*--- pipeline state ---*/
 
+	/// @brief rasterizer descを設定する
+	/// @param _desc 
+	void SetRasterizerDesc(const D3D12_RASTERIZER_DESC& _desc);
+
 	/// @brief depth stencil descを設定する
 	/// @param _desc 
 	void SetDepthStencilDesc(const D3D12_DEPTH_STENCIL_DESC& _desc);

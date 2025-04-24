@@ -18,20 +18,17 @@ void KeyItemRiseParticle::Initialize() {
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);
 	effect->SetBlendMode(Effect::BlendMode::Add);
-	effect->SetEmitShape({ 0, 0, 0 }, Vec3::kOne * 10.0f);
-	//effect->SetColorStartType(Effect::StartData::Constant);
+	effect->SetEmitShape({ 0, 0, 0 }, Vec3(10.0f, 0.0f, 10.0f));
 	effect->SetStartColor(Color(0xF8650AFF));
-
+	effect->SetStartSize(Vec3(0.25f, 6.0f, 0.25f));
+	//Color(0.5f, 1.0f, 1.0f, 0.2f), Color(1.0f, 1.0f, 1.0f, 0.3f)
 
 	effect->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
-			float lerpT = _element->lifeTime / 2.0f;
-			_element->color.a = std::lerp(0.0f, 1.0f, lerpT);
-			_element->transform.scale = {
-				0.5f, 5.0f, 0.5f
-			};
+			float lerpT = _element->lifeTime / 1.0f;
+			_element->color.a = std::lerp(0.0f, 0.5f, lerpT);
 
-			_element->transform.position.y += 3.0f + 1.0f * Time::DeltaTime();
+			_element->transform.position.y += 8.0f * Time::DeltaTime();
 			_element->transform.Update();
 		}
 	);
