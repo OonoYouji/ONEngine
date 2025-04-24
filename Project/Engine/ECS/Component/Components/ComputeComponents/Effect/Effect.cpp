@@ -7,6 +7,8 @@ Effect::Effect() {
 	isCreateParticle_ = true;
 	emitInstanceCount_ = 10;
 	emittedElementColor_ = Vector4::kWhite;
+	startData_.size = Vector3::kOne;
+	startData_.rotate = Vector3::kZero;
 }
 
 void Effect::CreateElement(const Vector3& _position, const Vector4& _color) {
@@ -27,6 +29,19 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, c
 	element.transform.position = _position;
 	element.transform.scale    = Vector3::kOne;
 	element.transform.rotate   = Vector3::kZero;
+	element.transform.Update();
+
+	element.color = _color;
+	element.lifeTime = lifeLeftTime_;
+	element.velocity = _velocity;
+	elements_.push_back(element);
+}
+
+void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Vector4& _color) {
+	Element element;
+	element.transform.position = _position;
+	element.transform.scale = _scale;
+	element.transform.rotate = _rotate;
 	element.transform.Update();
 
 	element.color = _color;

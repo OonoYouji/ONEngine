@@ -64,6 +64,14 @@ public:
 		float emitInterval;
 	};
 
+	/// /////////////////////////////////////////////
+	/// エミット形状のデータ
+	/// /////////////////////////////////////////////
+	struct StartData final {
+		Vector3 size;
+		Vector3 rotate;
+	};
+
 public:
 	/// ===================================================  
 	/// public : methods  
@@ -75,6 +83,7 @@ public:
 	/// @param _color 
 	void CreateElement(const Vector3& _position, const Vector4& _color = Vector4::kWhite);
 	void CreateElement(const Vector3& _position, const Vector3& _velocity, const Vector4& _color);
+	void CreateElement(const Vector3& _position, const Vector3& _scale, const Vector3& _rotate, const Vector3& _velocity, const Vector4& _color);
 
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
@@ -113,6 +122,7 @@ private:
 
 	BlendMode blendMode_ = BlendMode::Normal; ///< ブレンドモード
 
+	StartData startData_; ///< particleの初期データ
 
 public:
 	/// ===================================================  
@@ -176,6 +186,15 @@ public:
 	void SetBlendMode(BlendMode _blendMode) {
 		blendMode_ = _blendMode;
 	}
+
+	void SetStartScale(const Vector3& _scale) {
+		startData_.size = _scale;
+	}
+
+	void SetStartRotate(const Vector3& _rotate) {
+		startData_.rotate = _rotate;
+	}
+
 
 	void SetEmitShape(const Vector3& _center, float _radius);
 	void SetEmitShape(const Vector3& _center, const Vector3& _size);

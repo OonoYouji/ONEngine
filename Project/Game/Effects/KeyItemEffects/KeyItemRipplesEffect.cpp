@@ -12,7 +12,7 @@ void KeyItemRipplesEffect::Initialize() {
 	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
 	effect->SetTexturePath("Assets/Textures/ring.png");
 
-	effect->SetEmitTypeTime({ .emitTime = 0.5f, .emitInterval = 0.0f }, 1);
+	effect->SetEmitTypeTime({ .emitTime = 0.5f, .emitInterval = 0.0f }, 3);
 	effect->SetLifeLeftTime(2.0f);
 	effect->SetStartSpeed(0.0f);
 	effect->SetMaxEffectCount(64);

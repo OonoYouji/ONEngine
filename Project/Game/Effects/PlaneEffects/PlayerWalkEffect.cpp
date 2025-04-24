@@ -23,6 +23,7 @@ void PlayerWalkEffect::Initialize() {
 	effect_->SetStartSpeed(0.1f);
 	effect_->SetLifeLeftTime(0.4f);
 	effect_->SetEmittedElementColor(Vector4::kWhite);
+	effect_->SetStartScale(Vector3(0.5f, 0.5f, 0.5f)); 
 
 	effect_->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
