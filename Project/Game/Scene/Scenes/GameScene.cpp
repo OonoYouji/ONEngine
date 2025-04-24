@@ -49,6 +49,8 @@ void GameScene::Initialize() {
 	camera->SetParent(player);
 	camera->SetPosition(Vector3(0, 1.8f, -2.5f));
 	camera->SetRotateX(std::numbers::pi_v<float> * 0.1f);
+	player->SetCamera(camera);
+
 
 	pEntityComponentSystem_->SetMainCamera(camera);
 	pEntityComponentSystem_->GenerateEntity<Terrain>();

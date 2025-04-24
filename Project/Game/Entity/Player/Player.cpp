@@ -5,6 +5,7 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// game 
 #include "Game/Effects/PlaneEffects/PlayerWalkEffect.h"
@@ -66,6 +67,10 @@ void Player::Update() {
 		onGround = true;
 	}
 
+
+	if (pCamera_) {
+		pCamera_->SetPosition(variables_->Get<Vec3>("cameraOffset"));
+	}
 
 }
 

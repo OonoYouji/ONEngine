@@ -1,8 +1,13 @@
 {
+    "cameraOffset": {
+        "x": 0.0,
+        "y": 3.200000047683716,
+        "z": -7.199999809265137
+    },
     "jumpPower": -0.10000000149011612,
     "onGround": true,
-    "speed": 1.0,
-    "startJumpPower": 1.7999999523162842,
+    "speed": 0.4000000059604645,
+    "startJumpPower": 1.0,
     "velocity": {
         "x": 0.0,
         "y": 0.0,
