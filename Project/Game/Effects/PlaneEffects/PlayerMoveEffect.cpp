@@ -1,4 +1,4 @@
-#include "PlayerWalkEffect.h"
+#include "PlayerMoveEffect.h"
 
 #define NOMINMAX
 
@@ -13,7 +13,7 @@
 #include "Game/Entity/Player/Player.h"
 
 
-void PlayerWalkEffect::Initialize() {
+void PlayerMoveEffect::Initialize() {
 	effect_ = AddComponent<Effect>();
 	effect_->SetEmitTypeDistance(1.0f, 12);
 	effect_->SetMeshPath("Assets/Models/primitive/frontToPlane.obj");
@@ -32,11 +32,8 @@ void PlayerWalkEffect::Initialize() {
 
 	effect_->SetElementUpdateFunc(
 		[](Effect::Element* _element) {
-			float lerpT = std::clamp(_element->lifeTime / 1.8f, 0.0f, 1.0f);
-			//_element->color.a = std::lerp(1.0f, 1.0f, lerpT);
 
 			_element->transform.position.y += 1.5f * Time::DeltaTime();
-			//_element->transform.scale.y += 2.0f * Time::DeltaTime();
 			_element->transform.rotate.y += (1.0f / 12.0f) * Time::DeltaTime();
 
 			_element->transform.Update();
@@ -44,7 +41,7 @@ void PlayerWalkEffect::Initialize() {
 	);
 }
 
-void PlayerWalkEffect::Update() {
+void PlayerMoveEffect::Update() {
 
 	/*Player* pPlayer = dynamic_cast<Player*>(GetParent());
 	if (!pPlayer) {

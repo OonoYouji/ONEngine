@@ -85,7 +85,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
     <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp" />
@@ -97,7 +97,6 @@
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveLocusEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -192,7 +191,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
     <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
@@ -205,6 +204,5 @@
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveLocusEffect.h" />
   </ItemGroup>
 </Project>

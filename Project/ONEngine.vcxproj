@@ -114,8 +114,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerWalkEffect.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveLocusEffect.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -218,12 +217,11 @@
     <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerWalkEffect.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
     <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveLocusEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

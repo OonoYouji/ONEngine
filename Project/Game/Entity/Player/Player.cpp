@@ -8,8 +8,7 @@
 #include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// game 
-#include "Game/Effects/PlaneEffects/PlayerWalkEffect.h"
-#include "Game/Effects/PlaneEffects/PlayerMoveLocusEffect.h"
+#include "Game/Effects/PlaneEffects/PlayerMoveEffect.h"
 
 Player::Player() {}
 Player::~Player() {}
@@ -19,11 +18,8 @@ void Player::Initialize() {
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
 	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
 
-	PlayerWalkEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerWalkEffect>();
+	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
-	/*
-	PlayerMoveLocusEffect* moveLocusEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveLocusEffect>();
-	moveLocusEffect->SetParent(this);*/
 
 }
 
