@@ -225,4 +225,8 @@ public:
 	const std::vector<Element>& GetElements() const { return elements_; }
 
 	BlendMode GetBlendMode() const { return blendMode_; }
+
+
+	EffectMainModule* GetMainModule() { return &mainModule_; }
+
 };
