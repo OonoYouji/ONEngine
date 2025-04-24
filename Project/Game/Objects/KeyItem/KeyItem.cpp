@@ -6,7 +6,6 @@
 /// game
 #include "Game/Effects/KeyItemEffects/KeyItemRipplesEffect.h"
 #include "Game/Effects/KeyItemEffects/KeyItemRiseParticle.h"
-#include "Game/Effects/KeyItemEffects/KeyItemCylinderEffect.h"
 
 KeyItem::KeyItem() {}
 KeyItem::~KeyItem() {}
@@ -16,9 +15,6 @@ void KeyItem::Initialize() {
 	renderer->SetMeshPath("Assets/Models/objects/statue/statue.obj");
 	renderer->SetTexturePath("Packages/Textures/white.png");
 	renderer->SetColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
-
-	//KeyItemCylinderEffect* cylinder = pEntityComponentSystem_->GenerateEntity<KeyItemCylinderEffect>();
-	//cylinder->SetParent(this);
 
 	KeyItemRipplesEffect* ripplesEffect = pEntityComponentSystem_->GenerateEntity<KeyItemRipplesEffect>();
 	ripplesEffect->SetParent(this);

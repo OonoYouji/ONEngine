@@ -96,7 +96,6 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
-    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -203,6 +202,5 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
-    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemCylinderEffect.h" />
   </ItemGroup>
 </Project>
