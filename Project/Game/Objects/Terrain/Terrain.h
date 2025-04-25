@@ -13,6 +13,7 @@
 /// 地形のオブジェクトクラス
 /// ///////////////////////////////////////////////////
 class Terrain : public IEntity {
+	friend class TerrainEditor;
 public:
 	/// ===================================================
 	/// public : methods

@@ -97,6 +97,8 @@
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -204,5 +206,7 @@
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
+    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
   </ItemGroup>
 </Project>

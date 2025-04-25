@@ -2,6 +2,7 @@
 
 /// engine
 #include "Keyboard.h"
+#include "Mouse.h"
 
 /// ===================================================
 /// 入力処理クラス
@@ -23,6 +24,12 @@ public:
 	static bool TriggerKey(int _key);
 	static bool ReleaseKey(int _key);
 
+	static bool PressMouse(int _button);
+	static bool TriggerMouse(int _button);
+	static bool ReleaseMouse(int _button);
+
+	static Vector2 GetMousePosition();
+	static Vector2 GetMouseVelocity();
 
 };
 

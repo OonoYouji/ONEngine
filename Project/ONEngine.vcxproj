@@ -115,6 +115,8 @@
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -222,6 +224,8 @@
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
+    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

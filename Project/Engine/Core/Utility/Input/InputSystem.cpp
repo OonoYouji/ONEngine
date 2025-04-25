@@ -24,10 +24,13 @@ void InputSystem::Initialize(WindowManager* _windowManager) {
 	keyboard_ = std::make_unique<Keyboard>();
 	keyboard_->Initialize(directInput_.Get(), _windowManager);
 
+	mouse_ = std::make_unique<Mouse>();
+	mouse_->Initialize(directInput_.Get(), _windowManager);
 }
 
 void InputSystem::Update() {
 
 	keyboard_->Update(windowManager_->GetActiveWindow());
+	mouse_->Update(windowManager_->GetActiveWindow());
 
 }

@@ -9,6 +9,15 @@
 /// ////////////////////////////////////
 class TerrainRenderingPipeline : public IRenderingPipeline {
 public:
+	/// =====================================
+	/// public : sub class
+	/// =====================================
+
+	struct BufferData {
+
+	};
+
+public:
 	/// ====================================
 	/// public : methods
 	/// ====================================
@@ -22,7 +31,7 @@ private:
 	/// private : objects
 	/// ====================================
 
-
+	
 
 };
 
