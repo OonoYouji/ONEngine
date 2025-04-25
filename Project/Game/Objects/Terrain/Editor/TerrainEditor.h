@@ -11,20 +11,34 @@ public:
 	/// ==========================================
 	/// public : methods
 	/// ==========================================
-	TerrainEditor(Terrain* _terrain);
+	TerrainEditor(Terrain* _terrain, EntityComponentSystem* _ecs);
 	~TerrainEditor();
 
 	void Initialize();
 	void Update();
+
+
+private:
+	/// ==========================================
+	/// private : methods
+	/// ==========================================
+
+	Vector3 CalculateMouseWorldPosition(const Vector2& _mousePosition) const;
+
 
 private:
 	/// ==========================================
 	/// private : objects
 	/// ==========================================
 
-	Terrain* terrain_ = nullptr; ///< Terrainへのポインタ
+	EntityComponentSystem* pECS_;
+	Terrain* pTerrain_ = nullptr; ///< Terrainへのポインタ
+
+	/* --- terrain --- */
 
 	std::vector<Mesh::VertexData> points_; ///< Terrainの点のリスト
 
+	/* --- input --- */
+	Vector2 mousePosition_ = Vector2(0.0f, 0.0f); ///< マウスの位置
 };
 

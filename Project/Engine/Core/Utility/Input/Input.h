@@ -10,7 +10,7 @@
 class Input final {
 	friend class GameFramework;
 
-	static void Initialize(class WindowManager* _windowManager);
+	static void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imguiManager);
 	static void Update();
 	static void Finalize();
 
@@ -30,6 +30,6 @@ public:
 
 	static Vector2 GetMousePosition();
 	static Vector2 GetMouseVelocity();
-
+	static Vector2 GetImGuiImageMousePosition();
 };
 

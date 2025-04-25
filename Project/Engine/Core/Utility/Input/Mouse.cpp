@@ -4,7 +4,10 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Window/WindowManager.h"
 
-void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager) {
+void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
+	pImGuiManager_ = _imGuiManager;
+	Assert(pImGuiManager_ != nullptr, "pImGuiManager_ == nullptr");
+
 	HRESULT hr = _directInput->CreateDevice(
 		GUID_SysKeyboard, &mouse_, NULL);
 
@@ -51,4 +54,34 @@ void Mouse::Update(Window* _window) {
 		static_cast<float>(state_.lX),
 		static_cast<float>(state_.lY)
 	);
+}
+
+const Vector2& Mouse::GetImGuiImageMousePosition() {
+	const ImGuiSceneImageInfo& imageInfo = pImGuiManager_->GetSceneImageInfo("Scene");
+
+	// 2. 現在のマウス位置を取得  
+	ImVec2 mousePos = ImGui::GetMousePos();
+
+	// 3. 画像の左上の位置 (imageInfo.pos) と画像のサイズ (imageInfo.size) を取得  
+	ImVec2 imageMin = imageInfo.position;
+	ImVec2 imageMax = ImVec2(
+		imageMin.x + imageInfo.size.x,
+		imageMin.y + imageInfo.size.y
+	);
+
+	// 4. 画像内での相対位置を計算 (画像の左上を基準にした位置)  
+	ImVec2 mousePosInImage = ImVec2(
+		mousePos.x - imageMin.x,
+		mousePos.y - imageMin.y
+	);
+
+	// 5. クランプ（画像の範囲内に収める）  
+	mousePosInImage.x = std::clamp(mousePosInImage.x, 0.0f, imageInfo.size.x);
+	mousePosInImage.y = std::clamp(mousePosInImage.y, 0.0f, imageInfo.size.y);
+
+	// 6. 1280x720のRTVサイズに合わせて正規化  
+	imageMousePosition.x = (mousePosInImage.x / imageInfo.size.x) * 1280.0f;
+	imageMousePosition.y = (mousePosInImage.y / imageInfo.size.y) * 720.0f;
+
+	return imageMousePosition;
 }

@@ -22,7 +22,7 @@ public:
 	InputSystem();
 	~InputSystem();
 
-	void Initialize(class WindowManager* _windowManager);
+	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
 	void Update();
 
 

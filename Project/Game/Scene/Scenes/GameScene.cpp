@@ -46,24 +46,27 @@ void GameScene::Initialize() {
 #ifdef _DEBUG
 	pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
-	
+
 	//pEntityComponentSystem_->GenerateEntity<GameController>();
 	Player* player = pEntityComponentSystem_->GenerateEntity<Player>();
 	Camera* camera = pEntityComponentSystem_->GenerateCamera();
 	camera->SetParent(player);
 	camera->SetPosition(Vector3(0, 1.8f, -2.5f));
-	camera->SetRotateX(std::numbers::pi_v<float> * 0.1f);
+	camera->SetRotateX(std::numbers::pi_v<float> *0.1f);
 	player->SetCamera(camera);
 
 
 	pEntityComponentSystem_->SetMainCamera(camera);
 	pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
-	terrainEditor_ = std::make_unique<TerrainEditor>(pEntityComponentSystem_->GenerateEntity<Terrain>());
+	terrainEditor_ = std::make_unique<TerrainEditor>(
+		pEntityComponentSystem_->GenerateEntity<Terrain>(),
+		pEntityComponentSystem_
+	);
 }
 
 void GameScene::Update() {
-
+	terrainEditor_->Update();
 
 }
 

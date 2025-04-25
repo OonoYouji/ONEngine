@@ -5,6 +5,7 @@
 #include <wrl/client.h>
 
 /// engine
+#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 /// /////////////////////////////////////////////
@@ -33,14 +34,17 @@ public:
 	Mouse() = default;
 	~Mouse() = default;
 
-	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager);
+	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, ImGuiManager* _imGuiManager);
 	void Update(class Window* _window);
+
+	const Vector2& GetImGuiImageMousePosition();
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
+	ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse_;
 
@@ -50,5 +54,6 @@ private:
 	Vector2 position_;
 	Vector2 velocity_;
 
+	Vector2 imageMousePosition;
 };
 

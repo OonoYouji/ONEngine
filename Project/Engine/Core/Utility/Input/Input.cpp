@@ -7,9 +7,9 @@ namespace {
 	std::unique_ptr<InputSystem> gInputSystem_;
 } /// namespace
 
-void Input::Initialize(WindowManager* _windowManager) {
+void Input::Initialize(WindowManager* _windowManager, ImGuiManager* _imguiManager) {
 	gInputSystem_ = std::make_unique<InputSystem>();
-	gInputSystem_->Initialize(_windowManager);
+	gInputSystem_->Initialize(_windowManager, _imguiManager);
 }
 
 void Input::Update() {
@@ -51,4 +51,8 @@ Vector2 Input::GetMousePosition() {
 
 Vector2 Input::GetMouseVelocity() {
 	return gInputSystem_->mouse_->velocity_;
+}
+
+Vector2 Input::GetImGuiImageMousePosition() {
+	return gInputSystem_->mouse_->GetImGuiImageMousePosition();
 }

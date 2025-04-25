@@ -596,7 +596,9 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	//endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetSRVGPUHandle().ptr);
 
 
-	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(pEntityComponentSystem_, resourceCollection_);
+	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
+		pEntityComponentSystem_, resourceCollection_, this
+	);
 
 	//ImGui::DockSpaceOverViewport(ImGuiID(), ImGui::GetMainViewport());
 

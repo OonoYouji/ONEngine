@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
-#include "../../ImGuiMath.h"
+#include "../../Math/ImGuiMath.h"
 
 enum SelectedType {
 	kNone,

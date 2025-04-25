@@ -73,7 +73,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Grid\Grid.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiMath.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.cpp" />
@@ -88,6 +88,7 @@
     <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
     <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -199,7 +200,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiMath.h" />
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiMath.h" />
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
     <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

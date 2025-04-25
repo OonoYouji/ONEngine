@@ -78,6 +78,13 @@ public:
 	/// public : accessors
 	/// ===================================================
 
+	void SetFovY(float _fovY) { fovY_ = _fovY; }
+	void SetNearClip(float _nearClip) { nearClip_ = _nearClip; }
+	void SetFarClip(float _farClip) { farClip_ = _farClip; }
+
+	void SetCameraType(int _cameraType);
+
+
 	/// @brief view projection の取得
 	/// @return view projection data
 	const ViewProjection& GetViewProjection() const {
@@ -90,6 +97,8 @@ public:
 		return viewProjection_.get();
 	}
 
+	const Matrix4x4& GetViewMatrix() { return matView_; }
+	const Matrix4x4& GetProjectionMatrix() { return matProjection_; }
 
 	float GetFovY()     const { return fovY_; }
 	float GetNearClip() const { return nearClip_; }
@@ -98,10 +107,5 @@ public:
 	int GetCameraType() const { return cameraType_; }
 
 
-	void SetFovY(float _fovY) { fovY_ = _fovY; }
-	void SetNearClip(float _nearClip) { nearClip_ = _nearClip; }
-	void SetFarClip(float _farClip) { farClip_ = _farClip; }
-
-	void SetCameraType(int _cameraType);
 
 };

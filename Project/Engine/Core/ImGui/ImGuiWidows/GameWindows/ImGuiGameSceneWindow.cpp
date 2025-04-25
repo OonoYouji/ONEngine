@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Core/ImGui/ImGuiManager.h"
 
 
 void ImGuiGameSceneWindow::ImGuiFunc() {
@@ -31,6 +32,8 @@ void ImGuiGameSceneWindow::ImGuiFunc() {
 
 	ImGui::SetCursorScreenPos(imagePos);
 	ImGui::Image(ImTextureID(texture->GetSRVGPUHandle().ptr), windowSize);
+
+	pImGuiManager_->AddSceneImageInfo("GameScene", ImGuiSceneImageInfo{ imagePos, windowSize });
 
 	ImGui::End();
 }
