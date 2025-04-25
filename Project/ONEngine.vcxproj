@@ -114,6 +114,7 @@
     <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
     <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
