@@ -31,8 +31,8 @@ void TerrainEditor::Update() {
 
 	Vector3 rayDirection = CalculateMouseRayDirection(Vec2(640.0f, 360.0f));
 
-	ImGui::Text(std::format(
-		"TerrainEditor::Update: mousePosition: {}, \n rayDirection: {}, {}, {}", mousePosition_, rayDirection.x, rayDirection.y, rayDirection.z).c_str());
+	//ImGui::Text(std::format(
+		//"TerrainEditor::Update: mousePosition: {}, \n rayDirection: {}, {}, {}", mousePosition_, rayDirection.x, rayDirection.y, rayDirection.z).c_str());
 }
 
 Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition) const {
