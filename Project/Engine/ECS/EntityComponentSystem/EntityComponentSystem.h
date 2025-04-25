@@ -151,11 +151,6 @@ public:
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
-	/// @brief 新しい　2D camera を生成する
-	/// @return 2D cameraへのポインタ
-	Camera2D* GenerateCamera2D();
-
-
 
 	/// ----- component ----- ///
 
