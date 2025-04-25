@@ -30,6 +30,6 @@ public:
 
 	static Vector2 GetMousePosition();
 	static Vector2 GetMouseVelocity();
-	static Vector2 GetImGuiImageMousePosition();
+	static Vector2 GetImGuiImageMousePosition(const std::string& _imageName);
 };
 

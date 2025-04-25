@@ -23,7 +23,7 @@ private:
 	/// private : methods
 	/// ==========================================
 
-	Vector3 CalculateMouseWorldPosition(const Vector2& _mousePosition) const;
+	Vector3 CalculateMouseRayDirection(const Vector2& _mousePosition) const;
 
 
 private:

@@ -53,6 +53,6 @@ Vector2 Input::GetMouseVelocity() {
 	return gInputSystem_->mouse_->velocity_;
 }
 
-Vector2 Input::GetImGuiImageMousePosition() {
-	return gInputSystem_->mouse_->GetImGuiImageMousePosition();
+Vector2 Input::GetImGuiImageMousePosition(const std::string& _imageName) {
+	return gInputSystem_->mouse_->GetImGuiImageMousePosition(_imageName);
 }

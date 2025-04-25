@@ -190,9 +190,12 @@ Matrix4x4 Matrix4x4::MakeInverse(const Matrix4x4& _matrix) {
 Vector3 Matrix4x4::Transform(const Vector3& _v, const Matrix4x4& _m) {
 	Vector3 result{};
 
+	float w = _v.x * _m.m[0][3] + _v.y * _m.m[1][3] + _v.z * _m.m[2][3] + 1.0f * _m.m[3][3];
 	result.x = _v.x * _m.m[0][0] + _v.y * _m.m[1][0] + _v.z * _m.m[2][0] + 1.0f * _m.m[3][0];
 	result.y = _v.x * _m.m[0][1] + _v.y * _m.m[1][1] + _v.z * _m.m[2][1] + 1.0f * _m.m[3][1];
 	result.z = _v.x * _m.m[0][2] + _v.y * _m.m[1][2] + _v.z * _m.m[2][2] + 1.0f * _m.m[3][2];
+
+	result /= w;
 
 	return result;
 }

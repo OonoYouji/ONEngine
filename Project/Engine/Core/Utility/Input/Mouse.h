@@ -37,7 +37,7 @@ public:
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, ImGuiManager* _imGuiManager);
 	void Update(class Window* _window);
 
-	const Vector2& GetImGuiImageMousePosition();
+	const Vector2& GetImGuiImageMousePosition(const std::string& _name);
 
 private:
 	/// =========================================

@@ -56,8 +56,8 @@ void Mouse::Update(Window* _window) {
 	);
 }
 
-const Vector2& Mouse::GetImGuiImageMousePosition() {
-	const ImGuiSceneImageInfo& imageInfo = pImGuiManager_->GetSceneImageInfo("Scene");
+const Vector2& Mouse::GetImGuiImageMousePosition(const std::string& _name) {
+	const ImGuiSceneImageInfo& imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 
 	// 2. 現在のマウス位置を取得  
 	ImVec2 mousePos = ImGui::GetMousePos();
