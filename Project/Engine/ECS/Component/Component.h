@@ -18,3 +18,5 @@
 #include "Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Components/RendererComponents/Primitive/Line3DRenderer.h"
 
+/// collision
+#include "Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"

@@ -25,6 +25,8 @@ private:
 
 	Vector3 CalculateMouseRayDirection(const Vector2& _mousePosition) const;
 
+	Vector3 CalculateMouseNearPoint(const Vector2& _mousePosition) const;
+	Vector3 CalculateMouseFarPoint(const Vector2& _mousePosition) const;
 
 private:
 	/// ==========================================

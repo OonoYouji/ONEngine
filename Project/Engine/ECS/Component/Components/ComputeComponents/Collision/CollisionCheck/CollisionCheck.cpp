@@ -1,12 +1,12 @@
 #include "CollisionCheck.h"
 
-//bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _sphereCenter, float _sphereRadius) {
-//
-//	Vector3 lineDiff = _lineEnd - _lineStart;
-//
-//
-//	return false;
-//}
+bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _sphereCenter, float _sphereRadius) {
+
+	Vector3 lineDiff = _lineEnd - _lineStart;
+
+
+	return false;
+}
 
 bool CollisionCheck::LineVsTriangle(const Vector3& _lineStart, const Vector3& _lineEnd, const std::array<Vector3, 3>& _triangleVertices) {
 
@@ -37,4 +37,18 @@ bool CollisionCheck::LineVsTriangle(const Vector3& _lineStart, const Vector3& _l
 	}
 
 	return false;
+}
+
+bool CollisionCheck::RayVsSphere(const Vector3& _rayStartPosition, const Vector3& _rayDirection, const Vector3& _sphereCenter, float _sphereRadius) {
+
+	Vector3&& rayDirection = _rayDirection.Normalize();
+	Vector3&& sphereToRay = _sphereCenter - rayDirection + _rayStartPosition;
+
+	/// 最近接点を計算
+	float dot = Vector3::Dot(sphereToRay, rayDirection);
+	Vector3&& nearPos = rayDirection * dot;
+
+	/// 球の中心からRayの最近接点までの距離を計算
+	float distance = Vector3::Length(sphereToRay - nearPos);
+	return distance <= _sphereRadius;
 }
