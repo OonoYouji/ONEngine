@@ -11,26 +11,6 @@ namespace {
 	class GizmoSystem {
 		friend class Gizmo;
 	public:
-
-		struct SphereData {
-			Vector3 position; ///< 球の位置
-			float radius;     ///< 球の半径
-			Vector4 color;    ///< 球の色
-		};
-
-		struct CubeData {
-			Vector3 position; ///< 箱の位置
-			Vector3 size;     ///< 箱のサイズ
-			Vector4 color;    ///< 箱の色
-		};
-
-		struct LineData {
-			Vector3 startPosition; ///< 線の開始地点
-			Vector3 endPosition;   ///< 線の終了地点
-			Vector4 color;         ///< 線の色
-		};
-
-	public:
 		/*##########################################################
 			TODO : COMMENT
 			仮に１つの値ですべてのreserveを行うがこれを別々の引数にする
@@ -52,13 +32,13 @@ namespace {
 		const size_t maxInstanceCount_;
 
 		/// solid data
-		std::vector<SphereData> sphereData_;
-		std::vector<CubeData>   cubeData_;
+		std::vector<Gizmo::SphereData> sphereData_;
+		std::vector<Gizmo::CubeData>   cubeData_;
 
 		/// wire data
-		std::vector<SphereData> wireSphereData_;
-		std::vector<CubeData>   wireCubeData_;
-		std::vector<LineData>   lineData_;
+		std::vector<Gizmo::SphereData> wireSphereData_;
+		std::vector<Gizmo::CubeData>   wireCubeData_;
+		std::vector<Gizmo::LineData>   lineData_;
 
 	};
 
@@ -73,6 +53,30 @@ namespace {
 void Gizmo::Initialize(const size_t _maxDrawInstanceCount) {
 	gGizmoSystem = std::make_unique<GizmoSystem>(_maxDrawInstanceCount);
 }
+
+
+
+const std::vector<Gizmo::SphereData>& Gizmo::GetSphereData() {
+	return gGizmoSystem->sphereData_;
+}
+
+const std::vector<Gizmo::SphereData>& Gizmo::GetWireSphereData() {
+	return gGizmoSystem->wireSphereData_;
+}
+
+const std::vector<Gizmo::CubeData>& Gizmo::GetCubeData() {
+	return gGizmoSystem->cubeData_;
+}
+
+const std::vector<Gizmo::CubeData>& Gizmo::GetWireCubeData() {
+	return gGizmoSystem->wireCubeData_;
+}
+
+const std::vector<Gizmo::LineData>& Gizmo::GetLineData() {
+	return gGizmoSystem->lineData_;
+}
+
+
 
 void Gizmo::DrawSphere(const Vector3& _position, float _radius, const Vector4& _color) {
 	gGizmoSystem->sphereData_.push_back({ _position, _radius, _color });

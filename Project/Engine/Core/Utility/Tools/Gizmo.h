@@ -7,12 +7,48 @@
 /// gizmoのクラス
 /// ///////////////////////////////////////////////////
 class Gizmo final {
+	friend class GizmoRenderingPipeline;
+public:
+	/// ====================================
+	/// private : sub class 
+	/// ====================================
+
+	struct SphereData {
+		Vector3 position; ///< 球の位置
+		float radius;     ///< 球の半径
+		Vector4 color;    ///< 球の色
+	};
+
+	struct CubeData {
+		Vector3 position; ///< 箱の位置
+		Vector3 size;     ///< 箱のサイズ
+		Vector4 color;    ///< 箱の色
+	};
+
+	struct LineData {
+		Vector3 startPosition; ///< 線の開始地点
+		Vector3 endPosition;   ///< 線の終了地点
+		Vector4 color;         ///< 線の色
+	};
+
+private:
+	/// ====================================
+	/// private : methods
+	/// ====================================
+
 	Gizmo() = default;
 	~Gizmo() = default;
 
 	/// @brief 初期化関数、rendering pipelineクラスで呼び出す
 	/// @param _maxDrawInstanceCount 描画するインスタンスの最大数を返す
 	static void Initialize(const size_t _maxDrawInstanceCount);
+
+	static const std::vector<SphereData>& GetSphereData();
+	static const std::vector<SphereData>& GetWireSphereData();
+	static const std::vector<CubeData>& GetCubeData();
+	static const std::vector<CubeData>& GetWireCubeData();
+	static const std::vector<LineData>& GetLineData();
+
 public:
 	/// ====================================
 	/// public : static methods
