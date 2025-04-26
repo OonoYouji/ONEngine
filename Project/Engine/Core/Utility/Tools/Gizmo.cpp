@@ -76,6 +76,14 @@ const std::vector<Gizmo::LineData>& Gizmo::GetLineData() {
 	return gGizmoSystem->lineData_;
 }
 
+void Gizmo::Reset() {
+	gGizmoSystem->sphereData_.clear();
+	gGizmoSystem->cubeData_.clear();
+	gGizmoSystem->wireSphereData_.clear();
+	gGizmoSystem->wireCubeData_.clear();
+	gGizmoSystem->lineData_.clear();
+}
+
 
 
 void Gizmo::DrawSphere(const Vector3& _position, float _radius, const Vector4& _color) {

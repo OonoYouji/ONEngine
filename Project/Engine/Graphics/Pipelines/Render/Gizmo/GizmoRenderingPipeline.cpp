@@ -118,12 +118,13 @@ void GizmoRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] Entity
 	}
 
 
+	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
+
 	/// 描画命令を行う
 	auto commandList = _dxCommand->GetCommandList();
 	auto wirePipeline = pipelines_[Wire].get();
 	wirePipeline->SetPipelineStateForCommandList(_dxCommand);
 
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
@@ -132,12 +133,12 @@ void GizmoRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] Entity
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);
 
 	/// 描画データのクリア
+	Gizmo::Reset();
 	vertices_.clear();
 }
 
 std::vector<GizmoRenderingPipeline::VertexData> GizmoRenderingPipeline::GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment) {
-	const float PI = std::numbers::pi_v<float>;
-	const float deltaAngle = 2.0f * PI / _segment;
+	const float deltaAngle = 2.0f * std::numbers::pi_v<float> / _segment;
 	std::vector<VertexData> outVertices;
 
 	auto addCircle = [&](const Vector3& _axis1, const Vector3& _axis2) {
@@ -145,8 +146,8 @@ std::vector<GizmoRenderingPipeline::VertexData> GizmoRenderingPipeline::GetSpher
 			float angle0 = i * deltaAngle;
 			float angle1 = (i + 1) * deltaAngle;
 
-			Vector3 dir0 = _axis1 * cosf(angle0) + _axis2 * sinf(angle0);
-			Vector3 dir1 = _axis1 * cosf(angle1) + _axis2 * sinf(angle1);
+			Vector3 dir0 = _axis1 * std::cos(angle0) + _axis2 * std::sin(angle0);
+			Vector3 dir1 = _axis1 * std::cos(angle1) + _axis2 * std::sin(angle1);
 
 			VertexData v0;
 			v0.position = Vector4(_center + dir0 * _radius, 1.0f);

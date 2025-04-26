@@ -48,6 +48,9 @@ void TerrainEditor::Update() {
 	//	}
 	//}
 
+	Gizmo::DrawSphere(nearPos, 1.0f, Color::kRed);
+	Gizmo::DrawSphere(farPos, 1.0f, Color::kBlue);
+
 	ImGui::Text(text.c_str());
 	ImGui::Text("MousePosition: (%f, %f)", mousePosition_.x, mousePosition_.y);
 	//ImGui::Text("RayDirection: (%f, %f, %f)", rayDirection.x, rayDirection.y, rayDirection.z);

@@ -49,6 +49,8 @@ private:
 	static const std::vector<CubeData>& GetWireCubeData();
 	static const std::vector<LineData>& GetLineData();
 
+	static void Reset();
+
 public:
 	/// ====================================
 	/// public : static methods
