@@ -30,5 +30,15 @@ private:
 
 	std::span<Mesh::VertexData> chunkVertices; ///< 頂点データのスパン
 
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	const Vector3& GetPosition() const { return position_; }
+
+	const Vector2& GetChunkSize() const { return chunkSize_; }
+
 };
 

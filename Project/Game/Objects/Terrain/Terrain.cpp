@@ -61,7 +61,7 @@ void Terrain::Initialize() {
 				0.0f,
 				static_cast<float>(col) * chunkSize.y
 			);
-			
+
 			chunks_.emplace_back(this, chunkPosition, chunkSize);
 		}
 	}
@@ -78,5 +78,15 @@ void Terrain::Initialize() {
 }
 
 void Terrain::Update() {
+	for (auto& chunk : chunks_) {
 
+
+		/// チャンクの描画
+		Vector3 chunkSize3 = Vector3(chunk.GetChunkSize().x, 50.0f, chunk.GetChunkSize().y);
+		Gizmo::DrawWireCube(
+			chunk.GetPosition() + chunkSize3 * 0.5f,
+			chunkSize3,
+			Color::kGreen
+		);
+	}
 }
