@@ -101,6 +101,7 @@
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -212,5 +213,6 @@
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.h" />
     <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.h" />
   </ItemGroup>
 </Project>
