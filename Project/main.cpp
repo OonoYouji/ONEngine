@@ -2,6 +2,7 @@
 #include "Engine/Core/GameFramework/GameFramework.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Console console;
