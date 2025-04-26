@@ -47,11 +47,30 @@ void Terrain::Initialize() {
 
 	/// spanに変換
 	vertexSpan_ = std::span<std::span<Mesh::VertexData>>(reinterpret_cast<std::span<Mesh::VertexData>*>(vertices_.data()), terrainWidth);
-	//for (size_t r = 0; r < terrainWidth; r++) {
-	//	vertexSpan_[r] = std::span<Mesh::VertexData>(&vertices_[r * terrainHeight], terrainHeight);
-	//}
+
+	/// チャンクの生成
+	Vector2 chunkSize = Vector2(
+		terrainSize_.x / static_cast<float>(chunkCountX_),
+		terrainSize_.y / static_cast<float>(chunkCountY_)
+	);
+
+	for (size_t row = 0; row < chunkCountX_; ++row) {
+		for (size_t col = 0; col < chunkCountY_; ++col) {
+			Vector3 chunkPosition = Vector3(
+				static_cast<float>(row) * chunkSize.x,
+				0.0f,
+				static_cast<float>(col) * chunkSize.y
+			);
+			
+			chunks_.emplace_back(this, chunkPosition, chunkSize);
+		}
+	}
+
+	chunkSpan_ = std::span<std::span<TerrainChunk>>(reinterpret_cast<std::span<TerrainChunk>*>(chunks_.data()), chunkCountX_);
 
 
+
+	/// カスタムメッシュで地形の描画を行う
 	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
 	meshRenderer->SetVertices(vertices_);
 	meshRenderer->SetIndices(indices_);

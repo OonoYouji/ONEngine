@@ -100,6 +100,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -210,5 +211,6 @@
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.h" />
+    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
   </ItemGroup>
 </Project>

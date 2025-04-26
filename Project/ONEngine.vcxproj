@@ -118,6 +118,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.h" />
+    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
