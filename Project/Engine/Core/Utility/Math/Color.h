@@ -38,7 +38,6 @@ public:
 	Color(uint32_t _colorCode);
 	~Color() = default;
 
-	inline operator Vector4() const { return { r, g, b, a }; } ///< Vector4に変換
 
 	void SetHSVtoRGB(float _h, float _s, float _v) {
 		Vector4 color = HSVtoRGB(_h, _s, _v);
@@ -65,6 +64,8 @@ public:
 	/// ===================================================  
 	/// public : operator  
 	/// ===================================================  
+
+	inline operator Vector4() const { return { r, g, b, a }; } ///< Vector4に変換
 
 	inline Color& operator=(const Vector4& _color);
 	inline Color& operator=(const Color& _color);
@@ -100,30 +101,30 @@ inline Color& Color::operator=(const Color& _color) {
 }
 
 
-
-class HSVColor final {
-public:
-	/// ===================================================  
-	/// public : methods  
-	/// ===================================================  
-	HSVColor() = default;
-	HSVColor(float _h, float _s, float _v) : h(_h), s(_s), v(_v) {}
-	~HSVColor() = default;
-
-
-
-
-public:
-	/// ===================================================  
-	/// public : objects  
-	/// ===================================================  
-
-	float h = 0.0f; ///< 色相
-	float s = 0.0f; ///< 彩度
-	float v = 0.0f; ///< 明度
-
-};
-
+//
+//class HSVColor final {
+//public:
+//	/// ===================================================  
+//	/// public : methods  
+//	/// ===================================================  
+//	HSVColor() = default;
+//	HSVColor(float _h, float _s, float _v) : h(_h), s(_s), v(_v) {}
+//	~HSVColor() = default;
+//
+//
+//
+//
+//public:
+//	/// ===================================================  
+//	/// public : objects  
+//	/// ===================================================  
+//
+//	float h = 0.0f; ///< 色相
+//	float s = 0.0f; ///< 彩度
+//	float v = 0.0f; ///< 明度
+//
+//};
+//
 
 
 //namespace ColorMethods {

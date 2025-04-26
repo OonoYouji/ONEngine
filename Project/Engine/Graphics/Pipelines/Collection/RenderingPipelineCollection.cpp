@@ -11,6 +11,7 @@
 #include "../Render/Primitive/Line2DRenderingPipeline.h"
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
 #include "../Render/Sprite/SpriteRenderingPipeline.h"
+#include "../Render/Gizmo/GizmoRenderingPipeline.h"
 #include "../PostProcess/Light/PostProcessLighting.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _graphicsResourceCollection)
@@ -26,6 +27,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();

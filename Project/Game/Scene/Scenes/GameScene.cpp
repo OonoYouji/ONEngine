@@ -57,7 +57,7 @@ void GameScene::Initialize() {
 
 
 	pEntityComponentSystem_->SetMainCamera(camera);
-	pEntityComponentSystem_->GenerateEntity<KeyItem>();
+	//pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
 	terrainEditor_ = std::make_unique<TerrainEditor>(
 		pEntityComponentSystem_->GenerateEntity<Terrain>(),

@@ -4,7 +4,7 @@
 
 /// engine
 #include "Engine/ECS/Component/Component.h"
-#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 
 /// game 
@@ -72,5 +72,9 @@ void Player::Update() {
 		pCamera_->SetPosition(variables_->Get<Vec3>("cameraOffset"));
 	}
 
+
+	Gizmo::DrawWireSphere(transform_->position, 10.0f, Color::kRed);
+	Gizmo::DrawWireCube(transform_->position, Vec3::kOne * 10, Color::kGreen);
+	Gizmo::DrawRay(transform_->position, velo * 10.0f, Color::kBlue);
 }
 

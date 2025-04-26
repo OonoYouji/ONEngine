@@ -7,6 +7,7 @@ ConstantBuffer<ViewProjection> viewProjection : register(b0);
 VSOutput main(VSInput input) {
 	VSOutput output;
 
+	output.worldPosition = input.position;
 	output.position = mul(input.position, viewProjection.matVP);
 	output.color    = input.color;
 	
