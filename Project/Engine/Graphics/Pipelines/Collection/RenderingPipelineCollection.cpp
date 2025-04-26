@@ -27,7 +27,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
-	Generate2DRenderingPipeline<GizmoRenderingPipeline>();
+	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
