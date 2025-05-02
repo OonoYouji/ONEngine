@@ -28,7 +28,7 @@ private:
 	Vector3 position_;
 	Vector2 chunkSize_;
 
-	std::span<Mesh::VertexData> chunkVertices; ///< 頂点データのスパン
+	std::vector<Mesh::VertexData*> chunkVertices_; ///< 頂点データのpointer
 
 
 public:
@@ -39,6 +39,8 @@ public:
 	const Vector3& GetPosition() const { return position_; }
 
 	const Vector2& GetChunkSize() const { return chunkSize_; }
+
+	const std::vector<Mesh::VertexData*>& GetChunkVertices() const { return chunkVertices_; }
 
 };
 

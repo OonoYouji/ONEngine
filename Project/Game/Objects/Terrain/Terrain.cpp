@@ -86,7 +86,13 @@ void Terrain::Update() {
 		Gizmo::DrawWireCube(
 			chunk.GetPosition() + chunkSize3 * 0.5f,
 			chunkSize3,
-			Color::kGreen
+			Color::kRed
 		);
+	}
+
+	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
+		meshRenderer->SetVertices(vertices_);
+		//meshRenderer->SetIndices(indices_);
+		meshRenderer->SetIsBufferRecreate(true);
 	}
 }

@@ -1,4 +1,6 @@
+#define NOMINMAX
 #include "CollisionCheck.h"
+
 
 bool CollisionCheck::LineVsSphere(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _sphereCenter, float _sphereRadius) {
 
@@ -51,4 +53,57 @@ bool CollisionCheck::RayVsSphere(const Vector3& _rayStartPosition, const Vector3
 	/// 球の中心からRayの最近接点までの距離を計算
 	float distance = Vector3::Length(sphereToRay - nearPos);
 	return distance <= _sphereRadius;
+}
+
+bool CollisionCheck::RayVsCube(const Vector3& _rayStartPosition, const Vector3& _rayDirection, const Vector3& _cubePosition, const Vector3& _cubeSize) {
+	Vector3 aabbMin = _cubePosition - _cubeSize / 2.0f;
+	Vector3 aabbMax = _cubePosition + _cubeSize / 2.0f;
+
+	Vector3 min = (aabbMin - _rayStartPosition) / _rayDirection;
+	Vector3 max = (aabbMax - _rayStartPosition) / _rayDirection;
+
+	Vector3 nearPoint = {
+		std::min(min.x, max.x),
+		std::min(min.y, max.y),
+		std::min(min.z, max.z)
+	};
+
+	Vector3 farPoint = {
+		std::max(min.x, max.x),
+		std::max(min.y, max.y),
+		std::max(min.z, max.z)
+	};
+
+	float tmin = std::max({ nearPoint.x, nearPoint.y, nearPoint.z });
+	float tmax = std::min({ farPoint.x, farPoint.y, farPoint.z });
+
+	/// Ray用の制限
+	if (tmax < 0.0f) {
+		return false;
+	}
+
+	if (tmin <= tmax) {
+		return true;
+	}
+
+	return false;
+}
+
+bool CollisionCheck::CubeVsSphere(const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _sphereCenter, float _sphereRadius) {
+
+	Vector3&& cubeMin = _cubePosition - _cubeSize / 2.0f;
+	Vector3&& cubeMax = _cubePosition + _cubeSize / 2.0f;
+
+	Vector3&& colsestPoint = {
+		std::clamp(_sphereCenter.x, cubeMin.x, cubeMax.x),
+		std::clamp(_sphereCenter.y, cubeMin.y, cubeMax.y),
+		std::clamp(_sphereCenter.z, cubeMin.z, cubeMax.z)
+	};
+
+	float distance = Vector3::Length(_sphereCenter - colsestPoint);
+	if (distance <= _sphereRadius) {
+		return true;
+	}
+
+	return false;
 }

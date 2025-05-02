@@ -40,5 +40,23 @@ namespace CollisionCheck {
 	);
 
 
+	/// @brief Rayと箱の当たり判定を取る
+	/// @param _rayStartPosition rayの始点
+	/// @param _rayDirection rayのベクトル
+	/// @param _cubePosition cubeの中心点
+	/// @param _cubeSize cubeのサイズ
+	/// @return true: 衝突している false: 衝突していない
+	bool RayVsCube(
+		const Vector3& _rayStartPosition, const Vector3& _rayDirection,
+		const Vector3& _cubePosition, const Vector3& _cubeSize
+	);
+
+
+	bool CubeVsSphere(
+		const Vector3& _cubePosition, const Vector3& _cubeSize,
+		const Vector3& _sphereCenter, float _sphereRadius
+	);
+
+
 }
 

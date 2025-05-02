@@ -14,8 +14,10 @@ void CustomMeshRenderer::MeshRecreate(DxDevice* _pDxDevice) {
 
 void CustomMeshRenderer::SetVertices(const std::vector<Mesh::VertexData>& _vertices) {
 	mesh_.SetVertices(_vertices);
+	//mesh_.VertexBufferMapping();
 }
 
 void CustomMeshRenderer::SetIndices(const std::vector<uint32_t>& _indices) {
 	mesh_.SetIndices(_indices);
+	//mesh_.IndexBufferMapping();
 }

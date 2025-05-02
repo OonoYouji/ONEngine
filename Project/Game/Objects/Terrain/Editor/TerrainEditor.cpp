@@ -30,30 +30,56 @@ void TerrainEditor::Update() {
 	if (Input::TriggerKey(DIK_SPACE)) {
 		points_ = pTerrain_->vertices_;
 	}
-	Camera* camera = pECS_->GetDebugCamera();
 	Vector3 nearPos = CalculateMouseNearPoint(mousePosition_);
 	Vector3 farPos = CalculateMouseFarPoint(mousePosition_);
 
-	std::string text = "CollisionCheck::RayVsSphere == false";
-	if (CollisionCheck::RayVsSphere(nearPos, farPos - nearPos,
-		Vec3(points_[0].position.x, points_[0].position.y, points_[0].position.z), 1.0f)) {
-		text = "CollisionCheck::RayVsSphere == true";
+	/// チャンクとの当たり判定をとる
+	std::list<TerrainChunk*> collidedChunks;
+	for (auto& chunk : pTerrain_->chunks_) {
+		const Vector3& chunkPosition = chunk.GetPosition();
+		const Vector2& chunkSize     = chunk.GetChunkSize();
 
+		if (CollisionCheck::RayVsCube(nearPos, Vector3::Normalize(farPos - nearPos),
+			chunkPosition, Vector3(chunkSize.x, 1.0f, chunkSize.y))) {
+			collidedChunks.push_back(&chunk);
+		}
 	}
 
-	//for (auto& vertex : points_) {
-	//	if (CollisionCheck::RayVsSphere(camera->GetWorldPosition(), rayDirection, Vec3(vertex.position.x, vertex.position.y, vertex.position.z), 1.0f)) {
-	//		//vertex.color = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
-	//		text = "CollisionCheck::RayVsSphere == true";
-	//	}
-	//}
+	std::list<Vector4*> hitPoints;
 
-	Gizmo::DrawSphere(nearPos, 1.0f, Color::kRed);
-	Gizmo::DrawSphere(farPos, 1.0f, Color::kBlue);
+	/// 衝突しているチャンクを使って当たり判定を計算する
+	for (auto& chunk : collidedChunks) {
 
-	ImGui::Text(text.c_str());
+		const std::vector<Mesh::VertexData*>& vertices = chunk->GetChunkVertices();
+		for (auto& vertex : vertices) {
+
+			if (CollisionCheck::RayVsSphere(
+				nearPos, Vector3::Normalize(farPos - nearPos),
+				Vec3(vertex->position.x, vertex->position.y, vertex->position.z), 3.0f)) {
+				hitPoints.push_back(&vertex->position);
+			}
+		}
+	}
+
+
+	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
+		for (auto& point : hitPoints) {
+			point->y += 0.1f;
+		}
+	}
+
 	ImGui::Text("MousePosition: (%f, %f)", mousePosition_.x, mousePosition_.y);
-	//ImGui::Text("RayDirection: (%f, %f, %f)", rayDirection.x, rayDirection.y, rayDirection.z);
+	ImGui::Text("MouseScreenPosition: (%f, %f)", Input::GetMousePosition().x, Input::GetMousePosition().y);
+	ImGui::Text("Mouse Left Button: %s", Input::PressMouse(Mouse::Left) ? "Pressed" : "Released");
+	ImGui::Text("Mouse Right Button: %s", Input::PressMouse(Mouse::Right) ? "Pressed" : "Released");
+
+
+	for (auto& hitPoint : hitPoints) {
+		ImGui::Text("HitPoint: (%f, %f, %f)", hitPoint->x, hitPoint->y, hitPoint->z);
+	}
+
+
+
 }
 
 Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition) const {
