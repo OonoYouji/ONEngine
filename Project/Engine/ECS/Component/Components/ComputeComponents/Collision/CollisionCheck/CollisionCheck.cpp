@@ -107,3 +107,12 @@ bool CollisionCheck::CubeVsSphere(const Vector3& _cubePosition, const Vector3& _
 
 	return false;
 }
+
+bool CollisionCheck::SphereVsSphere(const Vector3& _sphere1Center, float _sphere1Radius, const Vector3& _sphere2Center, float _sphere2Radius) {
+	float distance = Vector3::Length(_sphere1Center - _sphere2Center);
+	if (distance <= _sphere1Radius + _sphere2Radius) {
+		return true;
+	}
+
+	return false;
+}

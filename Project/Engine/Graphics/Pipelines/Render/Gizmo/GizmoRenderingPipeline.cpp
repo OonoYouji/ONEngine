@@ -117,6 +117,11 @@ void GizmoRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] Entity
 		vertices_.push_back(v1);
 	}
 
+	/// 超過した分を削除
+	if (vertices_.size() > maxVertexNum_) {
+		vertices_.resize(maxVertexNum_);
+	}
+
 
 	std::memcpy(mappingData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 

@@ -73,8 +73,8 @@ void Player::Update() {
 	}
 
 
-	Gizmo::DrawWireSphere(transform_->position, 10.0f, Color::kRed);
+	/*Gizmo::DrawWireSphere(transform_->position, 10.0f, Color::kRed);
 	Gizmo::DrawWireCube(transform_->position, Vec3::kOne * 10, Color::kGreen);
-	Gizmo::DrawRay(transform_->position, velo * 10.0f, Color::kBlue);
+	Gizmo::DrawRay(transform_->position, velo * 10.0f, Color::kBlue);*/
 }
 

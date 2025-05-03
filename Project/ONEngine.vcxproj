@@ -122,6 +122,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Gizmo.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
+    <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

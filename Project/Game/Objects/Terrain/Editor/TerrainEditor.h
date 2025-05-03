@@ -42,5 +42,9 @@ private:
 
 	/* --- input --- */
 	Vector2 mousePosition_ = Vector2(0.0f, 0.0f); ///< マウスの位置
+	
+	/* --- edit param --- */
+	float editRadius_ = 1.0f; ///< 編集する半径
+
 };
 

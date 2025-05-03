@@ -14,7 +14,7 @@ TerrainChunk::TerrainChunk(Terrain* _terrain, const Vector3& _position, const Ve
 	position_  = _position;
 	chunkSize_ = _chunkSize;
 
-	/// ここではチャンクの範囲内の地形の頂点を探索して自身のchunkVertices_にいれる
+	/*/// ここではチャンクの範囲内の地形の頂点を探索して自身のchunkVertices_にいれる
 	for (auto& vertex : pTerrain_->GetVertices()) {
 		/// チャンクの範囲内にある頂点を探索
 		if (CollisionCheck::CubeVsSphere(
@@ -23,7 +23,7 @@ TerrainChunk::TerrainChunk(Terrain* _terrain, const Vector3& _position, const Ve
 
 			chunkVertices_.push_back(&vertex);
 		}
-	}
+	}*/
 
 
 }

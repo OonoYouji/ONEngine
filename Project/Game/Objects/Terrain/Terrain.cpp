@@ -49,24 +49,24 @@ void Terrain::Initialize() {
 	vertexSpan_ = std::span<std::span<Mesh::VertexData>>(reinterpret_cast<std::span<Mesh::VertexData>*>(vertices_.data()), terrainWidth);
 
 	/// チャンクの生成
-	Vector2 chunkSize = Vector2(
-		terrainSize_.x / static_cast<float>(chunkCountX_),
-		terrainSize_.y / static_cast<float>(chunkCountY_)
-	);
+	//Vector2 chunkSize = Vector2(
+	//	terrainSize_.x / static_cast<float>(chunkCountX_),
+	//	terrainSize_.y / static_cast<float>(chunkCountY_)
+	//);
 
-	for (size_t row = 0; row < chunkCountX_; ++row) {
-		for (size_t col = 0; col < chunkCountY_; ++col) {
-			Vector3 chunkPosition = Vector3(
-				static_cast<float>(row) * chunkSize.x,
-				0.0f,
-				static_cast<float>(col) * chunkSize.y
-			);
+	//for (size_t row = 0; row < chunkCountX_; ++row) {
+	//	for (size_t col = 0; col < chunkCountY_; ++col) {
+	//		Vector3 chunkPosition = Vector3(
+	//			static_cast<float>(row) * chunkSize.x,
+	//			0.0f,
+	//			static_cast<float>(col) * chunkSize.y
+	//		);
 
-			chunks_.emplace_back(this, chunkPosition, chunkSize);
-		}
-	}
+	//		chunks_.emplace_back(this, chunkPosition, chunkSize);
+	//	}
+	//}
 
-	chunkSpan_ = std::span<std::span<TerrainChunk>>(reinterpret_cast<std::span<TerrainChunk>*>(chunks_.data()), chunkCountX_);
+	//chunkSpan_ = std::span<std::span<TerrainChunk>>(reinterpret_cast<std::span<TerrainChunk>*>(chunks_.data()), chunkCountX_);
 
 
 
@@ -75,10 +75,23 @@ void Terrain::Initialize() {
 	meshRenderer->SetVertices(vertices_);
 	meshRenderer->SetIndices(indices_);
 	meshRenderer->SetIsBufferRecreate(true);
+
+
+
+	/// Octreeの生成
+	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
+	Vector3 halfSize = Vector3(terrainSize_.x * 0.5f, 50.0f, terrainSize_.y * 0.5f);
+	octree_ = std::make_unique<TerrainOctree>(AABB{ center, halfSize });
+
+	/// Octreeに頂点を登録
+	for (auto& vertex : vertices_) {
+		octree_->Insert(&vertex);
+	}
+
 }
 
 void Terrain::Update() {
-	for (auto& chunk : chunks_) {
+	/*for (auto& chunk : chunks_) {
 
 
 		/// チャンクの描画
@@ -88,7 +101,7 @@ void Terrain::Update() {
 			chunkSize3,
 			Color::kRed
 		);
-	}
+	}*/
 
 	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
 		meshRenderer->SetVertices(vertices_);

@@ -10,6 +10,7 @@
 #include "Engine/Graphics/Resource/ResourceData/Mesh.h"
 
 #include "Chunk/TerrainChunk.h"
+#include "Octree/Octree.h"
 
 /// ///////////////////////////////////////////////////
 /// 地形のオブジェクトクラス
@@ -41,12 +42,16 @@ private:
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 
 
-	/* ----- chunk ----- */
-	std::vector<TerrainChunk> chunks_; ///< チャンクの配列（チャンクの数は地形のサイズによって変化する）
-	std::span<std::span<TerrainChunk>> chunkSpan_; ///< チャンクの頂点データのスパン
+	///* ----- chunk ----- */
+	//std::vector<TerrainChunk> chunks_; ///< チャンクの配列（チャンクの数は地形のサイズによって変化する）
+	//std::span<std::span<TerrainChunk>> chunkSpan_; ///< チャンクの頂点データのスパン
 
-	size_t chunkCountX_ = 10; ///< チャンクの数（X軸方向）
-	size_t chunkCountY_ = 10; ///< チャンクの数（Y軸方向）
+	//size_t chunkCountX_ = 10; ///< チャンクの数（X軸方向）
+	//size_t chunkCountY_ = 10; ///< チャンクの数（Y軸方向）
+
+	/* ----- Octree ----- */
+
+	std::unique_ptr<TerrainOctree> octree_; ///< Octreeのポインタ
 
 public:
 	/// ===================================================
@@ -60,5 +65,7 @@ public:
 	const std::vector<Mesh::VertexData>& GetVertices() const { return vertices_; } ///< 頂点データ
 
 	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
+
+	TerrainOctree* GetOctree() { return octree_.get(); }
 };
 

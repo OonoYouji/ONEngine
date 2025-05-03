@@ -57,6 +57,11 @@ namespace CollisionCheck {
 		const Vector3& _sphereCenter, float _sphereRadius
 	);
 
+	bool SphereVsSphere(
+		const Vector3& _sphere1Center, float _sphere1Radius,
+		const Vector3& _sphere2Center, float _sphere2Radius
+	);
+
 
 }
 

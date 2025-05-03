@@ -39,17 +39,18 @@ void Mouse::Update(Window* _window) {
 
 	/// キーボード情報の取得開始
 	preState_ = state_; ///< 前フレームの入力を保存
+	mouse_->Acquire();
 
-	HRESULT hr = mouse_->Acquire();
-	if (FAILED(hr)) {
-		char errorMessage[256];
-		FormatMessageA(
-			FORMAT_MESSAGE_FROM_SYSTEM, nullptr, hr, 0,
-			errorMessage, sizeof(errorMessage), nullptr
-		);
-		// エラーメッセージを出力
-		Console::Log(std::format("[Mouse] Acquire failed: {}", errorMessage));
-	}
+	/*HRESULT hr = */
+	//if (FAILED(hr)) {
+	//	char errorMessage[256];
+	//	FormatMessageA(
+	//		FORMAT_MESSAGE_FROM_SYSTEM, nullptr, hr, 0,
+	//		errorMessage, sizeof(errorMessage), nullptr
+	//	);
+	//	// エラーメッセージを出力
+	//	Console::Log(std::format("[Mouse] Acquire failed: {}", errorMessage));
+	//}
 
 	mouse_->GetDeviceState(sizeof(state_), &state_);
 	POINT mousePos{};
