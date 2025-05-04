@@ -9,12 +9,12 @@ void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManage
 	Assert(pImGuiManager_ != nullptr, "pImGuiManager_ == nullptr");
 
 	HRESULT hr = _directInput->CreateDevice(
-		GUID_SysKeyboard, &mouse_, NULL);
+		GUID_SysMouse, &mouse_, NULL);
 
 	Assert(SUCCEEDED(hr), "マウスデバイスの生成に失敗しました");
 
 	/// 入力データ形式のセット
-	hr = mouse_->SetDataFormat(&c_dfDIKeyboard); ///< 標準形式
+	hr = mouse_->SetDataFormat(&c_dfDIMouse2); ///< 標準形式
 	Assert(SUCCEEDED(hr), "マウスデバイスの生成に失敗しました");
 
 	/// 排他制御レベルのセット
@@ -32,27 +32,16 @@ void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManage
 }
 
 void Mouse::Update(Window* _window) {
-	//mouse_->SetCooperativeLevel(
-	//	_window->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY
-	//);
-	//Assert(SUCCEEDED(hr));
+	mouse_->SetCooperativeLevel(
+		_window->GetHwnd(),
+		DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY
+	);
 
-	/// キーボード情報の取得開始
+	/// マウス情報の取得開始
 	preState_ = state_; ///< 前フレームの入力を保存
 	mouse_->Acquire();
-
-	/*HRESULT hr = */
-	//if (FAILED(hr)) {
-	//	char errorMessage[256];
-	//	FormatMessageA(
-	//		FORMAT_MESSAGE_FROM_SYSTEM, nullptr, hr, 0,
-	//		errorMessage, sizeof(errorMessage), nullptr
-	//	);
-	//	// エラーメッセージを出力
-	//	Console::Log(std::format("[Mouse] Acquire failed: {}", errorMessage));
-	//}
-
 	mouse_->GetDeviceState(sizeof(state_), &state_);
+
 	POINT mousePos{};
 	GetCursorPos(&mousePos);
 	ScreenToClient(_window->GetHwnd(), &mousePos);
