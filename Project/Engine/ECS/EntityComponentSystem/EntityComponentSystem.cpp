@@ -14,9 +14,9 @@ IEntity::IEntity() {}
 void IEntity::CommonInitialize() {
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
-	std::string name = typeid(*this).name();
-	name.erase(0, 6);
-	variables_->LoadJson("./Assets/Jsons/" + name + ".json");
+	name_ = typeid(*this).name();
+	name_.erase(0, 6);
+	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
 void IEntity::UpdateTransform() {
