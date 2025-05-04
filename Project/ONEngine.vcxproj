@@ -124,6 +124,7 @@
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
     <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
     <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

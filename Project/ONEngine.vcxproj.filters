@@ -106,6 +106,7 @@
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -222,5 +223,6 @@
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
     <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
     <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
   </ItemGroup>
 </Project>

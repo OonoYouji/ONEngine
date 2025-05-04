@@ -28,6 +28,8 @@ public:
 	void Initialize() override;
 	void Update()     override;
 
+	bool Collision(Transform* _transform, class ToTerrainCollider* _toTerrainCollider); ///< 当たり判定を取る
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -41,13 +43,6 @@ private:
 
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 
-
-	///* ----- chunk ----- */
-	//std::vector<TerrainChunk> chunks_; ///< チャンクの配列（チャンクの数は地形のサイズによって変化する）
-	//std::span<std::span<TerrainChunk>> chunkSpan_; ///< チャンクの頂点データのスパン
-
-	//size_t chunkCountX_ = 10; ///< チャンクの数（X軸方向）
-	//size_t chunkCountY_ = 10; ///< チャンクの数（Y軸方向）
 
 	/* ----- Octree ----- */
 

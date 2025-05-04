@@ -112,3 +112,29 @@ void Terrain::Update() {
 		//meshRenderer->SetIsBufferRecreate(true);
 	}
 }
+
+bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainCollider) {
+	_toTerrainCollider->SetIsCollided(false);
+
+	/// 最近接点から地形との当たり判定を取る
+	std::vector<Mesh::VertexData*> hitPoints;
+	octree_->QuerySphere(
+		_transform->GetPosition(), 1.0f, &hitPoints
+	);
+
+	/// 衝突している点に位置を合わせる
+	if (hitPoints.size() > 0) {
+		Vector3 average = Vector3::kZero;
+		for (auto& point : hitPoints) {
+			average += Vector3(point->position.x, point->position.y, point->position.z);
+		}
+		average /= static_cast<float>(hitPoints.size());
+		//_transform->SetPosition(average);
+		_transform->SetPositionY(average.y);
+		_toTerrainCollider->SetIsCollided(true);
+		return true;
+	}
+
+
+	return false;
+}

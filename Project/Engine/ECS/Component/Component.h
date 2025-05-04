@@ -20,3 +20,4 @@
 
 /// collision
 #include "Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
+#include "Components/ComputeComponents/Collision/3D/ToTerrainCollider.h"

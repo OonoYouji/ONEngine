@@ -21,6 +21,8 @@ void Player::Initialize() {
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
 
+	AddComponent<ToTerrainCollider>();
+
 }
 
 void Player::Update() {
@@ -61,8 +63,8 @@ void Player::Update() {
 
 
 	/// 地面に着地したら
-	if (transform_->position.y < 0.0f) {
-		transform_->position.y = 0.0f;
+	if (GetComponent<ToTerrainCollider>()->GetIsCollided()) {
+		//transform_->position.y = 0.0f;
 		jumpPower = 0.0f;
 		onGround = true;
 	}

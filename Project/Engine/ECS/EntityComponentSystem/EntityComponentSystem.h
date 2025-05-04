@@ -70,6 +70,7 @@ private:
 	std::unordered_map<size_t, IComponent*> components_;
 	std::vector<IEntity*> children_;
 	IEntity* parent_;
+	std::string name_;
 
 public:
 
@@ -117,6 +118,11 @@ public:
 	IEntity* GetChild(size_t _index) { return children_[_index]; }
 
 	const std::unordered_map<size_t, IComponent*> GetComponents() const { return components_; }
+
+
+	/// @brief このエンティティの名前を設定する
+	/// @return string型の名前
+	const std::string& GetName() const { return name_; }
 
 };
 
