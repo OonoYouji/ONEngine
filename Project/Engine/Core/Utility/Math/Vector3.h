@@ -44,6 +44,7 @@ public:
 	/// ===================================================
 
 	float Len() const;
+	float LengthSquared() const;
 
 	Vector3 Normalize() const;
 
@@ -53,6 +54,8 @@ public:
 	/// ===================================================
 
 	static float Length(const Vector3& _v);
+	static float LengthSquared(const Vector3& _v);
+
 	static Vector3 Normalize(const Vector3& _v);
 
 	static Vector3 Lerp(const Vector3& _start, const Vector3& _end, float _t);

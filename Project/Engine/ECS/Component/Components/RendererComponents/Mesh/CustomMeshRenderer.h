@@ -24,6 +24,8 @@ public:
 	/// @param _pDxDevice DxDeviceへのポインタ
 	void MeshRecreate(class DxDevice* _pDxDevice);
 
+	void VertexMemcpy();
+
 private:
 	/// ===================================================
 	/// private : objects

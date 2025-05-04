@@ -4,12 +4,14 @@
 #include <functional>
 #include <vector>
 #include <memory>
+#include <unordered_map>
 
 /// external
 #include <imgui.h>
 
 /// engine
 #include "ImGuiWidows/Collection/ImGuiWindowCollection.h"
+#include "Math/ImGuiSceneImageInfo.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -17,7 +19,6 @@
 /// ///////////////////////////////////////////////////
 class ImGuiManager final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -29,28 +30,29 @@ public:
 	void Update();
 	void Draw();
 
-private:
+	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
+		sceneImageInfos_[_name] = _info;
+	}
 
+private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	class DxManager*                  dxManager_          = nullptr;
-	class WindowManager*              windowManager_      = nullptr;
-	class GraphicsResourceCollection* resourceCollection_ = nullptr;
-	class EntityComponentSystem*      pEntityComponentSystem_ = nullptr;
-	class Window*                     imGuiWindow_        = nullptr;
-	class Window*                     debugGameWindow_    = nullptr;
+	class DxManager* dxManager_;
+	class WindowManager* windowManager_;
+	class GraphicsResourceCollection* resourceCollection_;
+	class EntityComponentSystem* pEntityComponentSystem_;
+	class Window* imGuiWindow_;
+	class Window* debugGameWindow_;
 
 	bool isGameDebug_ = false;
 
-	ImTextureID startImage_;
-	ImTextureID endImage_;
-
 	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
-public:
+	std::unordered_map<std::string, ImGuiSceneImageInfo> sceneImageInfos_ = {}; ///< imguiのシーンイメージ情報
 
+public:
 	/// ===================================================
 	/// public : accessors
 	/// ===================================================
@@ -69,6 +71,14 @@ public:
 	/// @return　Window
 	class Window* GetDebugGameWindow() const { return debugGameWindow_; }
 
+	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const {
+		auto it = sceneImageInfos_.find(_name);
+		if (it != sceneImageInfos_.end()) {
+			return it->second;
+		}
+
+		return {};
+	}
 };
 
 

@@ -49,6 +49,10 @@ float Vector3::Len() const {
 	return std::sqrt(x * x + y * y + z * z);
 }
 
+float Vector3::LengthSquared() const {
+	return x * x + y * y + z * z;
+}
+
 Vector3 Vector3::Normalize() const {
 	float len = this->Len();
 	if(len != 0.0f) {
@@ -59,6 +63,10 @@ Vector3 Vector3::Normalize() const {
 
 float Vector3::Length(const Vector3& _v) {
 	return _v.Len();
+}
+
+float Vector3::LengthSquared(const Vector3& _v) {
+	return _v.LengthSquared();
 }
 
 Vector3 Vector3::Normalize(const Vector3& _v) {

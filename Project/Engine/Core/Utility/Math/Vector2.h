@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 
 class Vector3;
 
@@ -193,6 +194,20 @@ inline Vector2 Vector2::operator+() {
 }
 
 #pragma endregion
+
+
+template <>
+struct std::formatter<Vector2> {
+	constexpr auto parse(format_parse_context& ctx) {
+		return ctx.begin();  // フォーマットの詳細設定は今回は無視
+	}
+
+	template <typename FormatContext>
+	auto format(const Vector2& vec, FormatContext& ctx) const {
+		return std::format_to(ctx.out(), "({}, {})", vec.x, vec.y);
+	}
+};
+
 
 
 using Vec2 = Vector2;

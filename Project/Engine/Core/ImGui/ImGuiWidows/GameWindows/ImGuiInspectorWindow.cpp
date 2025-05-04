@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
-#include "../../ImGuiMath.h"
+#include "../../Math/ImGuiMath.h"
 
 enum SelectedType {
 	kNone,
@@ -28,7 +28,6 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(CircleCollider).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 
 
 	inspectorFunctions_.emplace_back([]() {});

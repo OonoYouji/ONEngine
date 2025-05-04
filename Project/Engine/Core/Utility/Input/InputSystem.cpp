@@ -2,12 +2,13 @@
 
 /// engine
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 
 InputSystem::InputSystem() {}
 InputSystem::~InputSystem() {}
 
-void InputSystem::Initialize(WindowManager* _windowManager) {
+void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
 
 	windowManager_ = _windowManager;
 
@@ -24,10 +25,13 @@ void InputSystem::Initialize(WindowManager* _windowManager) {
 	keyboard_ = std::make_unique<Keyboard>();
 	keyboard_->Initialize(directInput_.Get(), _windowManager);
 
+	mouse_ = std::make_unique<Mouse>();
+	mouse_->Initialize(directInput_.Get(), _windowManager, _imGuiManager);
 }
 
 void InputSystem::Update() {
 
 	keyboard_->Update(windowManager_->GetActiveWindow());
+	mouse_->Update(windowManager_->GetActiveWindow());
 
 }
