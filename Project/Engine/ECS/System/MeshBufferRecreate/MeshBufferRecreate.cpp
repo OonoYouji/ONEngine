@@ -16,6 +16,8 @@ void MeshBufferRecreate::Update(EntityComponentSystem* _pEntityComponentSystem) 
 			continue;
 		}
 
+		meshRenderer->VertexMemcpy();
+
 		if (meshRenderer->GetIsBufferRecreate()) {
 			meshRenderer->MeshRecreate(pDxDevice_);
 			meshRenderer->SetIsBufferRecreate(false);

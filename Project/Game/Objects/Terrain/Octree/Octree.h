@@ -28,14 +28,33 @@ struct AABB final {
 };
 
 
+struct Rect3D {
+	float x;
+	float z;
+	float width;
+	float depth;
+
+	bool Contains(const Vector3& _point) const {
+		return (_point.x >= x && _point.x <= x + width
+			&& _point.z >= z && _point.z <= z + depth);
+	}
+
+	bool Intersects(const Rect3D& _range) const {
+		return (std::abs(x - _range.x) <= (width + _range.width)
+			&& std::abs(z - _range.z) <= (depth + _range.depth));
+	}
+
+};
+
+
 /// ////////////////////////////////////////////////////////////
 /// QuadTree
 /// ////////////////////////////////////////////////////////////
-class TerrainOctree final {
+class TerrainQuadTree final {
 public:
 
 	enum {
-		CAPACITY = 100, ///< ノードの最大数
+		CAPACITY = 126, ///< ノードの最大数
 	};
 
 public:
@@ -43,7 +62,7 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	TerrainOctree(const AABB& _aabb);
+	TerrainQuadTree(const AABB& _aabb);
 
 	bool Insert(Mesh::VertexData* _vertex);
 
@@ -57,16 +76,18 @@ public:
 	/// @param _result 衝突している頂点のポインタを格納する配列
 	void QuerySphere(const Vector3& _center, float _radius, std::vector<Mesh::VertexData*>* _result);
 
+	void Draw(TerrainQuadTree* _octree, const Vector4& _color, size_t _depth = 1) const;
+
 private:
 	/// ====================================================
 	/// private : objects
 	/// ====================================================
 
-	AABB boundary_;        ///< 範囲
+	std::unique_ptr<AABB> boundary_;        ///< 範囲
 	bool divided_ = false; ///< 分割されているかどうか
 	std::vector<Mesh::VertexData*> terrainVertices_;
 
-	std::array<std::unique_ptr<TerrainOctree>, 8> children_; ///< 子ノード
+	std::array<std::unique_ptr<TerrainQuadTree>, 4> children_; ///< 子ノード
 
 
 };

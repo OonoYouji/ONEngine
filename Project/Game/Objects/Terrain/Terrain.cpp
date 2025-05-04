@@ -81,7 +81,7 @@ void Terrain::Initialize() {
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
 	Vector3 halfSize = Vector3(terrainSize_.x * 0.5f, 50.0f, terrainSize_.y * 0.5f);
-	octree_ = std::make_unique<TerrainOctree>(AABB{ center, halfSize });
+	octree_ = std::make_unique<TerrainQuadTree>(AABB{ center, halfSize });
 
 	/// Octreeに頂点を登録
 	for (auto& vertex : vertices_) {
@@ -103,9 +103,12 @@ void Terrain::Update() {
 		);
 	}*/
 
+
+	//octree_->Draw(octree_.get(), Color::kBlack);
+
 	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
 		meshRenderer->SetVertices(vertices_);
 		//meshRenderer->SetIndices(indices_);
-		meshRenderer->SetIsBufferRecreate(true);
+		//meshRenderer->SetIsBufferRecreate(true);
 	}
 }

@@ -51,7 +51,7 @@ private:
 
 	/* ----- Octree ----- */
 
-	std::unique_ptr<TerrainOctree> octree_; ///< Octreeのポインタ
+	std::unique_ptr<TerrainQuadTree> octree_; ///< Octreeのポインタ
 
 public:
 	/// ===================================================
@@ -66,6 +66,6 @@ public:
 
 	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
 
-	TerrainOctree* GetOctree() { return octree_.get(); }
+	TerrainQuadTree* GetOctree() { return octree_.get(); }
 };
 

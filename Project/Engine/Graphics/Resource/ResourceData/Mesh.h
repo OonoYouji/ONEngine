@@ -50,6 +50,8 @@ public:
 	/// @brief index bufferをマッピング
 	void IndexBufferMapping();
 
+	void MemcpyVertexData();
+
 private:
 
 	/// ===================================================
@@ -59,6 +61,7 @@ private:
 	std::vector<VertexData>  vertices_;
 	DxResource               vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
+	VertexData* mappingVertexData_ = nullptr;
 
 	std::vector<uint32_t>    indices_;
 	DxResource               indexBuffer_;

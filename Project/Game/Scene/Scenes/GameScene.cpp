@@ -44,7 +44,7 @@ GameScene::~GameScene() {}
 void GameScene::Initialize() {
 
 #ifdef _DEBUG
-	pEntityComponentSystem_->GenerateEntity<Grid>();
+	//pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
 
 	//pEntityComponentSystem_->GenerateEntity<GameController>();

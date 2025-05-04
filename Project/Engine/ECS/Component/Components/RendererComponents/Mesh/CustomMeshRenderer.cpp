@@ -12,6 +12,10 @@ void CustomMeshRenderer::MeshRecreate(DxDevice* _pDxDevice) {
 	mesh_.IndexBufferMapping();
 }
 
+void CustomMeshRenderer::VertexMemcpy() {
+	mesh_.MemcpyVertexData();
+}
+
 void CustomMeshRenderer::SetVertices(const std::vector<Mesh::VertexData>& _vertices) {
 	mesh_.SetVertices(_vertices);
 	//mesh_.VertexBufferMapping();

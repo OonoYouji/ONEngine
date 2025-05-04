@@ -16,13 +16,13 @@ bool AABB::Intersects(const AABB& _range) const {
 		&& std::abs(center.z - _range.center.z) <= (halfSize.z + _range.halfSize.z));
 }
 
-TerrainOctree::TerrainOctree(const AABB& _aabb)
-	: boundary_(_aabb) {
-
+TerrainQuadTree::TerrainQuadTree(const AABB& _aabb)
+	/*: boundary_(_aabb) */{
+	boundary_.reset(new AABB(_aabb));
 }
 
-bool TerrainOctree::Insert(Mesh::VertexData* _vertex) {
-	if (!boundary_.Contains(Vector3(_vertex->position.x, _vertex->position.y, _vertex->position.z))) {
+bool TerrainQuadTree::Insert(Mesh::VertexData* _vertex) {
+	if (!boundary_->Contains(Vector3(_vertex->position.x, _vertex->position.y, _vertex->position.z))) {
 		return false;
 	}
 
@@ -42,24 +42,30 @@ bool TerrainOctree::Insert(Mesh::VertexData* _vertex) {
 	return false; // どこにも入らなかった（めったに起きない）
 }
 
-void TerrainOctree::Subdivide() {
-	Vector3 c = boundary_.center;
-	Vector3 h = boundary_.halfSize * 0.5f;
+void TerrainQuadTree::Subdivide() {
+	Vector3 c = boundary_->center;
+	Vector3 h = boundary_->halfSize * 0.5f;
 
-	for (int i = 0; i < 8; ++i) {
-		Vector3 offset = {
-			(i & 1 ? h.x : -h.x),
-			(i & 2 ? h.y : -h.y),
-			(i & 4 ? h.z : -h.z)
-		};
-		children_[i] = std::make_unique<TerrainOctree>(AABB{ c + offset, h });
+	// インデックス: 0 = NW, 1 = NE, 2 = SW, 3 = SE（XZ方向）
+	for (int i = 0; i < 4; ++i) {
+		float offsetX = (i % 2 == 0) ? -h.x : h.x;
+		float offsetZ = (i < 2) ? -h.z : h.z;
+
+		Vector3 offset = { offsetX, 0.0f, offsetZ }; // Yは固定（高さの分割なし）
+
+		// Y方向の中心とサイズはそのまま
+		Vector3 childCenter = c + offset;
+		Vector3 childHalfSize = { h.x, boundary_->halfSize.y, h.z }; // Yは分割しない
+
+		children_[i] = std::make_unique<TerrainQuadTree>(AABB{ childCenter, childHalfSize });
 	}
 
 	divided_ = true;
 }
 
-void TerrainOctree::Query(const AABB& _range, std::vector<Mesh::VertexData*>& _vertices) const {
-	if (!boundary_.Intersects(_range)) {
+
+void TerrainQuadTree::Query(const AABB& _range, std::vector<Mesh::VertexData*>& _vertices) const {
+	if (!boundary_->Intersects(_range)) {
 		return;
 	}
 
@@ -76,21 +82,28 @@ void TerrainOctree::Query(const AABB& _range, std::vector<Mesh::VertexData*>& _v
 	}
 }
 
-void TerrainOctree::QuerySphere(const Vector3& _center, float _radius, std::vector<Mesh::VertexData*>* _result) {
+void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::vector<Mesh::VertexData*>* _result) {
 
 	/// AABBの範囲外なら何もしない
 	if (!CollisionCheck::CubeVsSphere(
-		boundary_.center, boundary_.halfSize * 2.0f,
+		boundary_->center, boundary_->halfSize * 2.0f,
 		_center, _radius)) {
 		return;
 	}
 
 	/// AABBの範囲内にある頂点を取得
 	for (const auto& vertex : terrainVertices_) {
+
 		if (CollisionCheck::SphereVsSphere(
 			_center, _radius,
 			Vector3(vertex->position.x, vertex->position.y, vertex->position.z), 0.5f)) {
+
 			_result->push_back(vertex);
+
+			Gizmo::DrawWireSphere(
+				Vector3(vertex->position.x, vertex->position.y, vertex->position.z), 0.5f,
+				Color::kGreen
+			);
 		}
 	}
 
@@ -98,5 +111,30 @@ void TerrainOctree::QuerySphere(const Vector3& _center, float _radius, std::vect
 		for (const auto& child : children_) {
 			child->QuerySphere(_center, _radius, _result);
 		}
+	}
+}
+
+void TerrainQuadTree::Draw(TerrainQuadTree* _octree, const Vector4& _color, size_t _depth) const {
+
+	//if (_depth > 5) return; // 深さ制限
+
+	if (!this || !boundary_) return;
+
+	std::array<Color, 5> color{
+		Color(1.0f, 0.0f, 0.0f, 1.0f),
+		Color(0.0f, 1.0f, 0.0f, 1.0f),
+		Color(0.0f, 0.0f, 1.0f, 1.0f),
+		Color(1.0f, 1.0f, 0.0f, 1.0f),
+		Color(1.0f, 1.0f, 1.0f, 1.0f)
+	};
+
+	//Gizmo::DrawWireCube(
+	//	boundary_->center,
+	//	boundary_->halfSize * 2.0f,
+	//	color[_depth % color.size()]
+	//);
+
+	for (auto& child : _octree->children_) {
+		child->Draw(child.get(), _color + Color(0.1f, 0.1f, 0.1f, 0.0f), _depth + 1);
 	}
 }

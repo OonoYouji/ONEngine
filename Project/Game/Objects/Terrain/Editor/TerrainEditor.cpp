@@ -64,7 +64,7 @@ void TerrainEditor::Update() {
 
 
 	std::vector<Mesh::VertexData*> candidates;
-	TerrainOctree* octree = pTerrain_->GetOctree();
+	TerrainQuadTree* octree = pTerrain_->GetOctree();
 
 	/// 最近接点の候補を計算
 	Vec3 rayDir = Vector3::Normalize(farPos - nearPos);
@@ -135,6 +135,15 @@ void TerrainEditor::Update() {
 	//}
 
 
+
+}
+
+void TerrainEditor::RecalculateNormal() {
+	
+	/// 法線の再計算
+	//for (size_t i = 0; i < length; i++) {
+
+	//}
 
 }
 
