@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <array>
+
 /// engine
 #include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
 
@@ -25,5 +28,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::array<size_t, 2> textureIndices_;
 };
 

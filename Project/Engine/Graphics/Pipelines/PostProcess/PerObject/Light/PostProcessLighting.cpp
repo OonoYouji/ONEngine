@@ -62,6 +62,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
+	auto& textures = _resourceCollection->GetTextures();
 
 	{	/// set constant buffers
 		std::list<DirectionalLight*> directionalLights;
@@ -94,7 +95,6 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 
 
-	auto& textures = _resourceCollection->GetTextures();
 	{	/// set textures
 
 		//auto& textures = _resourceCollection->GetTextures();
