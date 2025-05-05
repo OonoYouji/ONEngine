@@ -540,9 +540,11 @@ ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager,
 	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem) {}
 
 ImGuiManager::~ImGuiManager() {
+#ifdef _DEBUG
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+#endif // _DEBUG
 }
 
 
