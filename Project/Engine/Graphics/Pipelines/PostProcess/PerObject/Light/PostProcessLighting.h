@@ -12,7 +12,7 @@
 /// ///////////////////////////////////////////////////
 /// PostProcessLighting
 /// ///////////////////////////////////////////////////
-class PostProcessLighting : public IPostProcessPipeline {
+class PostProcessLighting : public PerObjectPostProcess {
 private:
 
 	/// ===================================================

@@ -39,3 +39,9 @@ protected:
 
 };
 
+
+/// ===================================================
+/// 部分的なpost processとスクリーンに適用するpost processのinterfaceを統一
+/// ===================================================
+using PerObjectPostProcess = IPostProcessPipeline;
+using ScreenPostProcess = IPostProcessPipeline;

@@ -20,7 +20,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/PostProcess/Lighting/Lighting.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"Packages/Shader/PostProcess/PerObject/Lighting/Lighting.cs.hlsl", L"cs_6_6", Shader::Type::cs);
 
 		pipeline_->SetShader(&shader);
 

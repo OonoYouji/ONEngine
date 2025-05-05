@@ -1,4 +1,4 @@
-#include "../../ConstantBufferData/ViewProjection.hlsli"
+#include "../../../ConstantBufferData/ViewProjection.hlsli"
 
 struct DirectionalLight {
 	float4 position;

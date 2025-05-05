@@ -6,7 +6,7 @@
 /// ///////////////////////////////////////////////////
 /// グレースケール処理
 /// ///////////////////////////////////////////////////
-class PostProcessGrayscale : public IPostProcessPipeline {
+class PostProcessGrayscale : public ScreenPostProcess {
 public:
 	/// ===================================================
 	/// public : methods
