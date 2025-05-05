@@ -11,6 +11,7 @@
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Graphics/RenderTexture/RenderTexture.h"
+#include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
 
 /// ===================================================
@@ -52,6 +53,10 @@ private:
 
 #ifdef _DEBUG
 	class ImGuiManager*                          imGuiManager_ = nullptr;
+#else
+
+	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
+
 #endif // _DEBUG
 
 

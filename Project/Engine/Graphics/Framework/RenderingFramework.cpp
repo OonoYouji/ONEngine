@@ -51,6 +51,14 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
 	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
+
+
+#ifdef _DEBUG
+#else
+	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
+	copyImagePipeline_->Initialize(shaderCompiler_.get(), dxManager_);
+#endif // _DEBUG
+
 }
 
 void RenderingFramework::Draw() {
@@ -125,8 +133,9 @@ void RenderingFramework::Draw() {
 
 	/// post processの実行
 	renderingPipelineCollection_->ExecutePostProcess();
-	windowManager_->MainWindowPreDraw();
 
+	windowManager_->MainWindowPreDraw();
+	copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());
 	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG
