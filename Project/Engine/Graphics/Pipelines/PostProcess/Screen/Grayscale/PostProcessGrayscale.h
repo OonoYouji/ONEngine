@@ -1,0 +1,29 @@
+#pragma once
+
+/// engine
+#include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
+
+/// ///////////////////////////////////////////////////
+/// グレースケール処理
+/// ///////////////////////////////////////////////////
+class PostProcessGrayscale : public IPostProcessPipeline {
+public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+
+	void Execute(
+		class DxCommand* _dxCommand,
+		class GraphicsResourceCollection* _resourceCollection,
+		class EntityComponentSystem* _entityComponentSystem
+	) override;
+
+private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
+};
+
