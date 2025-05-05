@@ -20,7 +20,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/PostProcess/Lighting/Lighting.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"Packages/Shader/PostProcess/PerObject/Lighting/Lighting.cs.hlsl", L"cs_6_6", Shader::Type::cs);
 
 		pipeline_->SetShader(&shader);
 
@@ -62,6 +62,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
+	auto& textures = _resourceCollection->GetTextures();
 
 	{	/// set constant buffers
 		std::list<DirectionalLight*> directionalLights;
@@ -94,7 +95,6 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 
 
-	auto& textures = _resourceCollection->GetTextures();
 	{	/// set textures
 
 		//auto& textures = _resourceCollection->GetTextures();
