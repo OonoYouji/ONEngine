@@ -97,12 +97,12 @@ void TerrainEditor::Update() {
 
 
 	/// 最近接点から地形との当たり判定を取る
-	std::vector<Mesh::VertexData*> hitPoints;
+	editedVertices_.clear();
 	if (closestPoint) {
 
 		octree->QuerySphere(
-			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z), 
-			editRadius_, &hitPoints
+			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z),
+			editRadius_, &editedVertices_
 		);
 
 		Gizmo::DrawWireSphere(
@@ -115,11 +115,18 @@ void TerrainEditor::Update() {
 
 	/// 衝突している点を上げる
 	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
-		for (auto& point : hitPoints) {
+		for (auto& point : editedVertices_) {
 			point->position.y += 0.1f;
 		}
+		RecalculateNormal();
 	}
 
+
+
+	/*/// 法線の再計算をする
+	if (Input::TriggerKey(DIK_R)) {
+		RecalculateNormal();
+	}*/
 
 
 	//ImGui::Text("MousePosition: (%f, %f)", mousePosition_.x, mousePosition_.y);
@@ -139,11 +146,21 @@ void TerrainEditor::Update() {
 }
 
 void TerrainEditor::RecalculateNormal() {
-	
-	/// 法線の再計算
-	//for (size_t i = 0; i < length; i++) {
 
-	//}
+	/// 法線の再計算
+	for (auto& vertex : editedVertices_) {
+		vertex->normal = Vector3(0.0f, 0.0f, 0.0f);
+		// 周囲の点を取得
+		std::vector<Mesh::VertexData*> neighbors;
+		pTerrain_->GetOctree()->QuerySphere(Vector4::Convert(vertex->position), 1.0f, &neighbors);
+		// 法線を計算
+		for (const auto& neighbor : neighbors) {
+			Vector3&& edge = Vector4::Convert(neighbor->position) - Vector4::Convert(vertex->position);
+			vertex->normal += edge;
+		}
+
+		vertex->normal = vertex->normal.Normalize();
+	}
 
 }
 

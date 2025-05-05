@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/ECS/Entity/Grid/Grid.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Light/DirectionalLightObject.h"
 
 /// user
 #include "Game/Objects/Terrain/Terrain.h"
@@ -46,6 +47,7 @@ void GameScene::Initialize() {
 #ifdef _DEBUG
 	//pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
+	pEntityComponentSystem_->GenerateEntity<DirectionalLightObject>();
 
 	//pEntityComponentSystem_->GenerateEntity<GameController>();
 	Player* player = pEntityComponentSystem_->GenerateEntity<Player>();

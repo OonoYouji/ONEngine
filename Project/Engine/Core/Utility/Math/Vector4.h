@@ -1,6 +1,6 @@
 #pragma once
 
-class Vector3;
+#include "Vector3.h"
 
 /// ===================================================
 /// 4次元ベクトル
@@ -57,6 +57,8 @@ public:
 	static Vector4 Normalize(const Vector4& _v);
 
 	static Vector4 Convert(const Vector3& _v, float _w = 1.0f);
+
+	static Vector3 Convert(const Vector4& _v);
 
 public:
 

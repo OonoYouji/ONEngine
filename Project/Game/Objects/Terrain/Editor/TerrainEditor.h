@@ -40,6 +40,7 @@ private:
 	/* --- terrain --- */
 
 	std::vector<Mesh::VertexData> points_; ///< Terrainの点のリスト
+	std::vector<Mesh::VertexData*> editedVertices_; ///< 選択された点のリスト
 
 	/* --- input --- */
 	Vector2 mousePosition_ = Vector2(0.0f, 0.0f); ///< マウスの位置
