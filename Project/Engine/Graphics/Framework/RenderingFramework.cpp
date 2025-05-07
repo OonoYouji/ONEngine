@@ -57,6 +57,8 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 #else
 	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), dxManager_);
+	releaseBuildSubWindow_ = windowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
+	windowManager_->HideGameWindow(releaseBuildSubWindow_);
 #endif // _DEBUG
 
 }
@@ -118,7 +120,7 @@ void RenderingFramework::Draw() {
 	windowManager_->MainWindowPostDraw();
 
 #else
-	imGuiManager_->GetDebugGameWindow()->PreDraw();
+	releaseBuildSubWindow_->PreDraw();
 	{	/// Game Camera Rendering
 		for (auto& renderTexture : renderTextures_) {
 			renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
@@ -135,7 +137,8 @@ void RenderingFramework::Draw() {
 			renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
 		}
 	}
-	imGuiManager_->GetDebugGameWindow()->PostDraw();
+	releaseBuildSubWindow_->PostDraw();
+
 	/// post processの実行
 	renderingPipelineCollection_->ExecutePostProcess();
 
