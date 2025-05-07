@@ -18,7 +18,7 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		pipeline_->SetShader(&shader);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
@@ -28,6 +28,13 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 	}
 }
 
-void MeshShaderTest::Draw([[maybe_unused]] DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, [[maybe_unused]] Camera* _camera) {
+void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, [[maybe_unused]] Camera* _camera) {
+
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
+	auto command = _dxCommand->GetCommandList();
+
+	command->DispatchMesh(1, 1, 1);
+
 
 }

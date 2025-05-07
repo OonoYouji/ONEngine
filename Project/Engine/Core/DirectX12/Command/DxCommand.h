@@ -53,7 +53,7 @@ private:
 
 	ComPtr<ID3D12CommandQueue>        commandQueue_     = nullptr;
 	ComPtr<ID3D12CommandAllocator>    commandAllocator_ = nullptr;
-	ComPtr<ID3D12GraphicsCommandList> commandList_      = nullptr;
+	ComPtr<ID3D12GraphicsCommandList6> commandList_      = nullptr;
 
 	ComPtr<ID3D12Fence>               fence_            = nullptr;
 	uint64_t                          fenceValue_       = 0;
@@ -75,7 +75,7 @@ public:
 	/// command listを取得
 	/// </summary>
 	/// <returns> return : command list pointer </returns>
-	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
+	ID3D12GraphicsCommandList6* GetCommandList() const { return commandList_.Get(); }
 
 
 private:

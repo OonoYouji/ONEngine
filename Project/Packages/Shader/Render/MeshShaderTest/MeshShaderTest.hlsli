@@ -1,7 +1,7 @@
 
-struct MSInput {
+//struct MSInput {
 	
-};
+//};
 
 struct MSOutput {
 	float4 position : SV_POSITION;
@@ -12,13 +12,6 @@ struct MSOutput {
 
 struct PayloadType {
 	uint someData;
-	float4 color;
-};
-
-struct VertexOut {
-	float3 position : POSITION;
-	float3 normal : NORMAL;
-	float2 uv : TEXCOORD;
 };
 
 struct PSInput {
