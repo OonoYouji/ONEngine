@@ -74,5 +74,7 @@ public:
 	IDxcBlob* GetVS() const { return vs_.Get(); }
 	IDxcBlob* GetPS() const { return ps_.Get(); }
 	IDxcBlob* GetCS() const { return cs_.Get(); }
+	IDxcBlob* GetMS() const { return ms_.Get(); }
+	IDxcBlob* GetAS() const { return as_.Get(); }
 
 };

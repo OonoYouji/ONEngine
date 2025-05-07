@@ -34,7 +34,7 @@ private:
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 	ComPtr<IDXGIAdapter4> useAdapter_  = nullptr;
 	ComPtr<ID3D12Device>  device_      = nullptr;
-
+	ComPtr<ID3D12Device10> device10_ = nullptr;
 
 public:
 
@@ -53,6 +53,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	ID3D12Device* GetDevice() const { return device_.Get(); }
+
+	ID3D12Device10* GetDevice10() const { return device10_.Get(); }
 
 };
 

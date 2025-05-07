@@ -121,6 +121,7 @@ private:
 	/// @brief pipeline state objectを生成する
 	void CreatePipelineStateObject(class DxDevice* _dxDevice);
 
+	void CreateMeshPipelineStateObject(class DxDevice* _dxDevice);
 
 
 private:
