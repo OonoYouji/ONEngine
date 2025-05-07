@@ -23,6 +23,12 @@ bool Shader::CompileShader(const std::wstring& _filePath, const wchar_t* _profil
 	case Shader::Type::cs:
 		cs_ = shader;
 		return true;
+	case Shader::Type::ms:
+		ms_ = shader;
+		return true;
+	case Shader::Type::as:
+		as_ = shader;
+		return true;
 	}
 
 

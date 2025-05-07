@@ -24,7 +24,7 @@ public:
 	/// ===================================================
 
 	enum class Type {
-		vs, ps, cs
+		vs, ps, cs, ms, as
 	};
 
 
@@ -58,6 +58,8 @@ public:
 	ComPtr<IDxcBlob> vs_ = nullptr;
 	ComPtr<IDxcBlob> ps_ = nullptr;
 	ComPtr<IDxcBlob> cs_ = nullptr;
+	ComPtr<IDxcBlob> ms_ = nullptr;
+	ComPtr<IDxcBlob> as_ = nullptr;
 
 	class ShaderCompiler* pShaderCompiler_ = nullptr;
 
