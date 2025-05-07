@@ -55,10 +55,10 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 
 
-#ifdef _DEBUG
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
+#ifdef _DEBUG
 #endif // _DEBUG
 
 

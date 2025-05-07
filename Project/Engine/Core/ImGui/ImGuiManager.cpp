@@ -585,6 +585,9 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui_ImplWin32_NewFrame();
 
 	/// debug windowの生成
+//#ifdef _DEBUG
+
+
 	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
@@ -592,6 +595,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
 	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
 
+//#endif // _DEBUG
 
 
 	//startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetSRVGPUHandle().ptr);

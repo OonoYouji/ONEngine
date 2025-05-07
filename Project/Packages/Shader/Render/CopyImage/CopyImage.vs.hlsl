@@ -1,9 +1,9 @@
 #include "CopyImage.hlsli"
 
 static const float4 positions[3] = {
-	float4(-1, -1, 0, 1),
+	float4(-1, 1, 0, 1),
 	float4(3, 1, 0, 1),
-	float4(-1, 3, 0, 1)
+	float4(-1, -3, 0, 1)
 };
 
 static const float2 texcoords[3] = {

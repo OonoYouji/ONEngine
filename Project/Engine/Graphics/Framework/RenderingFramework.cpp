@@ -114,23 +114,28 @@ void RenderingFramework::Draw() {
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
+	//copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());
 	windowManager_->MainWindowPostDraw();
 
 #else
-	for (auto& renderTexture : renderTextures_) {
-		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+	imGuiManager_->GetDebugGameWindow()->PreDraw();
+	{	/// Game Camera Rendering
+		for (auto& renderTexture : renderTextures_) {
+			renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+		}
+
+		renderTextures_[0]->SetRenderTarget(
+			dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+			renderTextures_
+		);
+
+		renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
+
+		for (auto& renderTexture : renderTextures_) {
+			renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+		}
 	}
-
-	renderTextures_[0]->SetRenderTarget(
-		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
-		renderTextures_
-	);
-	renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
-
-	for (auto& renderTexture : renderTextures_) {
-		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
-	}
-
+	imGuiManager_->GetDebugGameWindow()->PostDraw();
 	/// post processの実行
 	renderingPipelineCollection_->ExecutePostProcess();
 

@@ -52,13 +52,14 @@ private:
 
 
 #ifdef _DEBUG
-	class ImGuiManager*                          imGuiManager_ = nullptr;
 #else
+	class ImGuiManager*                          imGuiManager_ = nullptr;
 
 	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 
 #endif // _DEBUG
 
+	//std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 
 public:
 
@@ -75,8 +76,8 @@ public:
 #ifdef _DEBUG
 	/// @brief ImGuiManagerへのポインタを設定
 	/// @param _imGuiManager ImGuiManagerへのポインタ
-	void SetImGuiManager(class ImGuiManager* _imGuiManager) { imGuiManager_ = _imGuiManager; }
 #endif // _DEBUG
+	void SetImGuiManager(class ImGuiManager* _imGuiManager) { imGuiManager_ = _imGuiManager; }
 
 };
 
