@@ -17,6 +17,12 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 
 		pipeline_->SetShader(&shader);
 
+		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+
+		pipeline_->SetRTVNum(1);
+		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
 	}

@@ -236,6 +236,9 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
 
 	D3DX12_MESH_SHADER_PIPELINE_STATE_DESC meshDesc = {};
+	meshDesc.pRootSignature = rootSignature_.Get();
+
+
 	meshDesc.AS = {
 		pShader_->GetAS()->GetBufferPointer(),
 		pShader_->GetAS()->GetBufferSize()
