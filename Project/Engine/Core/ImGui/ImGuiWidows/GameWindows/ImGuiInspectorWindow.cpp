@@ -28,6 +28,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
 	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
+	RegisterComponentDebugFunc(typeid(ToTerrainCollider).hash_code(),  [&]( [[maybe_unused]] IComponent* _component) { });
 
 
 	inspectorFunctions_.emplace_back([]() {});

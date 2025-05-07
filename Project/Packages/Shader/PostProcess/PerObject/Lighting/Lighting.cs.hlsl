@@ -54,4 +54,7 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 		outputTex[dispatchId.xy] = float4(diffuse + specular, 1.0f);
 	}
 	
+	/// 法線に合わせて色を変える
+	//outputTex[dispatchId.xy] = float4(normal.xyz * 0.5f + 0.5f, 1.0f);
+	
 }

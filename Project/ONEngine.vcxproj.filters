@@ -108,6 +108,8 @@
     <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -226,5 +228,7 @@
     <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
+    <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
   </ItemGroup>
 </Project>

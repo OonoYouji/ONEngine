@@ -19,6 +19,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
@@ -128,6 +130,8 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
+    <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
@@ -339,7 +343,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /Y /I /E "$(ProjectDir)Assets" "$(OutDir)Assets"</Command>
+xcopy /Y /I /E "$(ProjectDir)Assets" "$(OutDir)Assets"
+xcopy /Y /I /E "$(ProjectDir)Packages" "$(OutDir)Packages"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

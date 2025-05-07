@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "Vector3.h"
+//#include "Vector3.h"
 
 /// ===================================================
 /// static objects initialize
@@ -71,4 +71,12 @@ Vector4 Vector4::Normalize(const Vector4& _v) {
 
 Vector4 Vector4::Convert(const Vector3& _v, float _w) {
 	return Vector4(_v, _w);
+}
+
+Vector3 Vector4::Convert(const Vector4& _v) {
+	return Vector3(
+		_v.x / _v.w,
+		_v.y / _v.w,
+		_v.z / _v.w
+	);
 }

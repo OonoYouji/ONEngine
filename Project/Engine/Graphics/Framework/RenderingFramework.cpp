@@ -51,6 +51,16 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
 	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
+
+
+#ifdef _DEBUG
+#else
+	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
+	copyImagePipeline_->Initialize(shaderCompiler_.get(), dxManager_);
+	releaseBuildSubWindow_ = windowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
+	windowManager_->HideGameWindow(releaseBuildSubWindow_);
+#endif // _DEBUG
+
 }
 
 void RenderingFramework::Draw() {
@@ -106,27 +116,34 @@ void RenderingFramework::Draw() {
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
+	//copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());
 	windowManager_->MainWindowPostDraw();
 
 #else
-	for (auto& renderTexture : renderTextures_) {
-		renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	}
+	releaseBuildSubWindow_->PreDraw();
+	{	/// Game Camera Rendering
+		for (auto& renderTexture : renderTextures_) {
+			renderTexture->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
+		}
 
-	renderTextures_[0]->SetRenderTarget(
-		dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
-		renderTextures_
-	);
-	renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
+		renderTextures_[0]->SetRenderTarget(
+			dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap(),
+			renderTextures_
+		);
 
-	for (auto& renderTexture : renderTextures_) {
-		renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+		renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
+
+		for (auto& renderTexture : renderTextures_) {
+			renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+		}
 	}
+	releaseBuildSubWindow_->PostDraw();
 
 	/// post processの実行
 	renderingPipelineCollection_->ExecutePostProcess();
-	windowManager_->MainWindowPreDraw();
 
+	windowManager_->MainWindowPreDraw();
+	copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());
 	windowManager_->MainWindowPostDraw();
 
 #endif // _DEBUG

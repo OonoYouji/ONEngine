@@ -34,7 +34,7 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
-	GeneratePostProcessPipeline<PostProcessGrayscale>();
+	//GeneratePostProcessPipeline<PostProcessGrayscale>();
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {

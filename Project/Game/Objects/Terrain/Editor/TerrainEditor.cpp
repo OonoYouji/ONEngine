@@ -1,8 +1,12 @@
 #define NOMINMAX
 #include "TerrainEditor.h"
 
+/// std
+#include <fstream>
+
 /// externals
 #include <imgui.h>
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -97,12 +101,12 @@ void TerrainEditor::Update() {
 
 
 	/// 最近接点から地形との当たり判定を取る
-	std::vector<Mesh::VertexData*> hitPoints;
+	editedVertices_.clear();
 	if (closestPoint) {
 
 		octree->QuerySphere(
-			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z), 
-			editRadius_, &hitPoints
+			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z),
+			editRadius_, &editedVertices_
 		);
 
 		Gizmo::DrawWireSphere(
@@ -115,36 +119,64 @@ void TerrainEditor::Update() {
 
 	/// 衝突している点を上げる
 	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
-		for (auto& point : hitPoints) {
+		for (auto& point : editedVertices_) {
 			point->position.y += 0.1f;
 		}
+		RecalculateNormal();
 	}
 
 
-
-	//ImGui::Text("MousePosition: (%f, %f)", mousePosition_.x, mousePosition_.y);
-	//ImGui::Text("MouseScreenPosition: (%f, %f)", Input::GetMousePosition().x, Input::GetMousePosition().y);
-	//ImGui::Text("Mouse Left Button: %s", Input::PressMouse(Mouse::Left) ? "Pressed" : "Released");
-	//ImGui::Text("Mouse Right Button: %s", Input::PressMouse(Mouse::Right) ? "Pressed" : "Released");
-
-	ImGui::Text(std::format("near position: ({}, {}, {})", nearPos.x, nearPos.y, nearPos.z).c_str());
-	ImGui::Text(std::format("far position: ({}, {}, {})", farPos.x, farPos.y, farPos.z).c_str());
-
-	//for (auto& hitPoint : hitPoints) {
-	//	//ImGui::Text("HitPoint: (%f, %f, %f)", hitPoint->x, hitPoint->y, hitPoint->z);
-	//}
-
-
+	if (Input::TriggerKey(DIK_O)) {
+		OutputVertices("Packages/Jsons/Terrain/TerrainVertices.json");
+	}
 
 }
 
 void TerrainEditor::RecalculateNormal() {
-	
+
 	/// 法線の再計算
-	//for (size_t i = 0; i < length; i++) {
+	for (auto& vertex : editedVertices_) {
+		vertex->normal = Vector3(0.0f, 0.0f, 0.0f);
+		// 周囲の点を取得
+		std::vector<Mesh::VertexData*> neighbors;
+		pTerrain_->GetOctree()->QuerySphere(Vector4::Convert(vertex->position), 1.0f, &neighbors);
+		// 法線を計算
+		for (const auto& neighbor : neighbors) {
+			Vector3&& edge = Vector4::Convert(neighbor->position) - Vector4::Convert(vertex->position);
+			vertex->normal += edge;
+		}
 
-	//}
+		vertex->normal = vertex->normal.Normalize();
+	}
 
+}
+
+#include <filesystem> // For std::filesystem::create_directories
+
+void TerrainEditor::OutputVertices(const std::string& _filePath) {
+	// Ensure the directory exists
+	std::filesystem::path dirPath = std::filesystem::path(_filePath).parent_path();
+	if (!std::filesystem::exists(dirPath)) {
+		std::filesystem::create_directories(dirPath);
+	}
+
+	nlohmann::json jsonVertices;
+
+	for (const auto& vertex : pTerrain_->GetVertices()) {
+		jsonVertices.push_back({
+			{ "position", { vertex.position.x, vertex.position.y, vertex.position.z } }
+			//{ "normal", { vertex.normal.x, vertex.normal.y, vertex.normal.z } },
+			//{ "uv", { vertex.uv.x, vertex.uv.y } }
+			});
+	}
+
+	std::ofstream outFile(_filePath);
+	if (outFile.is_open()) {
+		outFile << jsonVertices.dump(4); // 4 is the indentation level for pretty printing  
+		outFile.close();
+	} else {
+		Assert(false, ("Failed to open file for writing: " + _filePath).c_str());
+	}
 }
 
 Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition) const {
