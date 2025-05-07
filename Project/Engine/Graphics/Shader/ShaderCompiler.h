@@ -39,6 +39,7 @@ public:
 	/// <param name="_profile"></param>
 	/// <returns></returns>
 	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile);
+	ComPtr<IDxcBlob> CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _main);
 
 
 private:

@@ -47,6 +47,7 @@ public:
 	/// <param name="_profile"></param>
 	/// <returns></returns>
 	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type);
+	bool CompileShader(const std::wstring& _filePath, const wchar_t* _profile, Type _type, const std::wstring& _entryPoint);
 
 
 public:
