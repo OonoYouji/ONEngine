@@ -1,5 +1,11 @@
 #include "Terrain.h"
 
+/// std
+#include <fstream>
+
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "Engine/ECS/Component/Component.h"
 
@@ -48,35 +54,12 @@ void Terrain::Initialize() {
 	/// spanに変換
 	vertexSpan_ = std::span<std::span<Mesh::VertexData>>(reinterpret_cast<std::span<Mesh::VertexData>*>(vertices_.data()), terrainWidth);
 
-	/// チャンクの生成
-	//Vector2 chunkSize = Vector2(
-	//	terrainSize_.x / static_cast<float>(chunkCountX_),
-	//	terrainSize_.y / static_cast<float>(chunkCountY_)
-	//);
-
-	//for (size_t row = 0; row < chunkCountX_; ++row) {
-	//	for (size_t col = 0; col < chunkCountY_; ++col) {
-	//		Vector3 chunkPosition = Vector3(
-	//			static_cast<float>(row) * chunkSize.x,
-	//			0.0f,
-	//			static_cast<float>(col) * chunkSize.y
-	//		);
-
-	//		chunks_.emplace_back(this, chunkPosition, chunkSize);
-	//	}
-	//}
-
-	//chunkSpan_ = std::span<std::span<TerrainChunk>>(reinterpret_cast<std::span<TerrainChunk>*>(chunks_.data()), chunkCountX_);
-
-
 
 	/// カスタムメッシュで地形の描画を行う
 	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
 	meshRenderer->SetVertices(vertices_);
 	meshRenderer->SetIndices(indices_);
 	meshRenderer->SetIsBufferRecreate(true);
-
-
 
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
@@ -88,6 +71,9 @@ void Terrain::Initialize() {
 		octree_->Insert(&vertex);
 	}
 
+
+	/// 頂点のinputを行う
+	//InputVertices();
 }
 
 void Terrain::Update() {
@@ -137,4 +123,41 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 
 
 	return false;
+}
+
+void Terrain::InputVertices() {
+	const std::string&& filePath = "Packages/Jsons/Terrain/TerrainVertices.json";
+
+	/// Jsonから頂点を読み込む
+	std::ifstream inFile(filePath);
+	if (!inFile.is_open()) {
+		Assert(false, ("Failed to open file for reading: " + filePath).c_str());
+		return;
+	}
+	nlohmann::json jsonVertices;
+	inFile >> jsonVertices;
+	inFile.close();
+
+	/// 頂点の読み込み
+	for (size_t i = 0; i < jsonVertices.size(); ++i) {
+		const auto& vertexData = jsonVertices[i];
+		Mesh::VertexData vertex;
+		vertex.position = Vector4(
+			vertexData["position"][0].get<float>(),
+			vertexData["position"][1].get<float>(),
+			vertexData["position"][2].get<float>(),
+			1.0f
+		);
+		vertex.normal = Vector3(
+			vertexData["normal"][0].get<float>(),
+			vertexData["normal"][1].get<float>(),
+			vertexData["normal"][2].get<float>()
+		);
+		vertex.uv = Vector2(
+			vertexData["uv"][0].get<float>(),
+			vertexData["uv"][1].get<float>()
+		);
+		vertices_[i] = vertex;
+	}
+
 }

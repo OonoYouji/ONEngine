@@ -19,6 +19,8 @@ public:
 
 	void RecalculateNormal();
 
+	void OutputVertices(const std::string& _filePath);
+
 private:
 	/// ==========================================
 	/// private : methods
