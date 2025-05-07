@@ -46,8 +46,8 @@ private:
 	std::unique_ptr<EntityComponentSystem> entityComponentSystem_ = nullptr;
 
 #ifdef _DEBUG
-	std::unique_ptr<ImGuiManager>          imGuiManager_     = nullptr;
 #endif // _DEBUG
+	std::unique_ptr<ImGuiManager>          imGuiManager_     = nullptr;
 
 
 	std::unique_ptr<RenderingFramework> renderingFramework_;

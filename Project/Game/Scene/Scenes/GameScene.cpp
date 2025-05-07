@@ -69,7 +69,9 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+#ifdef _DEBUG
 	terrainEditor_->Update();
+#endif // _DEBUG
 
 }
 
