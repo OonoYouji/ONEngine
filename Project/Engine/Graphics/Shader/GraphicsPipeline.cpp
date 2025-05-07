@@ -239,10 +239,13 @@ void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
 	meshDesc.pRootSignature = rootSignature_.Get();
 
 
-	meshDesc.AS = {
-		pShader_->GetAS()->GetBufferPointer(),
-		pShader_->GetAS()->GetBufferSize()
-	};
+	if (pShader_->GetAS()) {
+
+		meshDesc.AS = {
+			pShader_->GetAS()->GetBufferPointer(),
+			pShader_->GetAS()->GetBufferSize()
+		};
+	}
 
 	meshDesc.MS = {
 		pShader_->GetMS()->GetBufferPointer(),
