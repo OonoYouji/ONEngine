@@ -148,16 +148,16 @@ void Terrain::InputVertices() {
 			vertexData["position"][2].get<float>(),
 			1.0f
 		);
-		vertex.normal = Vector3(
-			vertexData["normal"][0].get<float>(),
-			vertexData["normal"][1].get<float>(),
-			vertexData["normal"][2].get<float>()
-		);
-		vertex.uv = Vector2(
-			vertexData["uv"][0].get<float>(),
-			vertexData["uv"][1].get<float>()
-		);
-		vertices_[i] = vertex;
+		//vertex.normal = Vector3(
+		//	vertexData["normal"][0].get<float>(),
+		//	vertexData["normal"][1].get<float>(),
+		//	vertexData["normal"][2].get<float>()
+		//);
+		//vertex.uv = Vector2(
+		//	vertexData["uv"][0].get<float>(),
+		//	vertexData["uv"][1].get<float>()
+		//);
+		vertices_[i].position = vertex.position;
 	}
 
 }
