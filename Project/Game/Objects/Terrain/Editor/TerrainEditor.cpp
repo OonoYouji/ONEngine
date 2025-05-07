@@ -164,9 +164,9 @@ void TerrainEditor::OutputVertices(const std::string& _filePath) {
 
 	for (const auto& vertex : pTerrain_->GetVertices()) {
 		jsonVertices.push_back({
-			{ "position", { vertex.position.x, vertex.position.y, vertex.position.z } },
-			{ "normal", { vertex.normal.x, vertex.normal.y, vertex.normal.z } },
-			{ "uv", { vertex.uv.x, vertex.uv.y } }
+			{ "position", { vertex.position.x, vertex.position.y, vertex.position.z } }
+			//{ "normal", { vertex.normal.x, vertex.normal.y, vertex.normal.z } },
+			//{ "uv", { vertex.uv.x, vertex.uv.y } }
 			});
 	}
 
