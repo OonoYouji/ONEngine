@@ -25,6 +25,23 @@ struct MSOutput {
 };
 
 struct PayloadType {
-	uint someData;
+	uint meshletIndex;
 };
 
+//struct Meshlet {
+//	uint vertexOffset;
+//	uint indexOffset;
+//	uint vertexCount;
+//	uint indexCount;
+	
+//	/// culling
+//	float3 boudingSphereCenter;
+//	float boudingSphereRadius;
+//};
+
+/// ============================================================
+/// Global Buffer
+/// ============================================================
+
+ConstantBuffer<BufferLength> bufferLength : register(b0);
+//StructuredBuffer<Meshlet>    meshlets     : register(t0);

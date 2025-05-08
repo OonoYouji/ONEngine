@@ -29,8 +29,19 @@ private:
 		uint32_t indexLength;
 	};
 
+	//struct Meshlet {
+	//	uint32_t vertexInputLength;
+	//	uint32_t indexLength;
+	//	uint32_t vertexCount;
+	//	uint32_t indexCount;
+
+	//	Vector3 boundingSphereCenter;
+	//	float boundingSphereRadius;
+	//};
+
 	StructuredBuffer<VSInput> vertexBuffer_;
 	StructuredBuffer<Index> indexBuffer_;
 	ConstantBuffer<BufferLength> bufferLength_;
+	//StructuredBuffer<Meshlet> meshletBuffer_;
 };
 

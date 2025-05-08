@@ -9,7 +9,7 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
 
-		//shader.CompileShader(L"Packages/Shader/Render/MeshShaderTest/MeshShaderTest.as.hlsl", L"as_6_5", Shader::Type::as);
+		shader.CompileShader(L"Packages/Shader/Render/MeshShaderTest/MeshShaderTest.as.hlsl", L"as_6_5", Shader::Type::as);
 		shader.CompileShader(L"Packages/Shader/Render/MeshShaderTest/MeshShaderTest.ms.hlsl", L"ms_6_5", Shader::Type::ms);
 		shader.CompileShader(L"Packages/Shader/Render/MeshShaderTest/MeshShaderTest.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
@@ -23,13 +23,15 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 
 
 		/// buffer
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< vertices
-		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< indices
+		//pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< indices
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< vertices
+		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< indices
 
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 0);       ///< vertices
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 1);       ///< indices
+		//pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);       ///< vertices
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 1 - 1);       ///< vertices
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 2 - 1);       ///< indices
 
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_MESH, 0); ///< buffer length
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); ///< buffer length
 
 
 		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
@@ -45,6 +47,7 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 	{
 		vertexBuffer_.Create(1024, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 		indexBuffer_.Create(1024, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		//meshletBuffer_.Create(1024, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 		std::vector<VSInput> vertices;
 		vertices.push_back({ { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f } });
@@ -66,12 +69,20 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 			indexBuffer_.SetMappedData(i, indices[i]);
 		}
 
+		
+	/*	std::vector<Meshlet> meshlets;
+		meshlets.push_back({ 0, 0, 1, 3, { 0.0f, 0.0f, 0.0f }, 1.0f });
+		meshlets.push_back({ 3, 1, 1, 3, { 0.0f, 0.0f, 0.0f }, 1.0f });
+
+		for (size_t i = 0; i < meshlets.size(); i++) {
+			meshletBuffer_.SetMappedData(i, meshlets[i]);
+		}*/
+
 		bufferLength_.Create(_dxManager->GetDxDevice());
-		bufferLength_.SetMappingData({
-			static_cast<uint32_t>(vertices.size()),
-			static_cast<uint32_t>(indices.size()) 
-		});
-		//bufferLength_.Unmap(_dxManager->GetDxDevice());
+		bufferLength_.SetMappedData(
+			{ static_cast<uint32_t>(vertices.size()), static_cast<uint32_t>(indices.size()) });
+
+
 
 	}
 
@@ -83,10 +94,10 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 
 	auto command = _dxCommand->GetCommandList();
 
+	//meshletBuffer_.BindToCommandList(0, command);
 	vertexBuffer_.BindToCommandList(0, command);
 	indexBuffer_.BindToCommandList(1, command);
 	bufferLength_.BindForGraphicsCommandList(command, 2);
+
 	command->DispatchMesh(1, 1, 1);
-
-
 }
