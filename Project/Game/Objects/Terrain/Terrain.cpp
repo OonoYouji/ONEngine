@@ -56,10 +56,10 @@ void Terrain::Initialize() {
 
 
 	/// カスタムメッシュで地形の描画を行う
-	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
+	/*CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
 	meshRenderer->SetVertices(vertices_);
 	meshRenderer->SetIndices(indices_);
-	meshRenderer->SetIsBufferRecreate(true);
+	meshRenderer->SetIsBufferRecreate(true);*/
 
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);

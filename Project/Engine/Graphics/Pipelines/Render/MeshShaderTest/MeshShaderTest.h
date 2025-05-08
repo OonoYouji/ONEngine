@@ -42,6 +42,7 @@ private:
 	StructuredBuffer<VSInput> vertexBuffer_;
 	StructuredBuffer<Index> indexBuffer_;
 	ConstantBuffer<BufferLength> bufferLength_;
+	//ConstantBuffer<BufferLength> ;
 	//StructuredBuffer<Meshlet> meshletBuffer_;
 };
 

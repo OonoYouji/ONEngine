@@ -1,7 +1,11 @@
 #include "MeshShaderTest.hlsli"
+#include "../../ConstantBufferData/ViewProjection.hlsli"
+
 
 StructuredBuffer<VertexInput> vertexInputs : register(t1);
 StructuredBuffer<Index> gIndices : register(t2);
+
+ConstantBuffer<ViewProjection> viewProjection : register(b1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
@@ -32,9 +36,11 @@ void main(
 	   0, 0, 0, 1
 	);
 	
+	float4x4 mat = mul(world, viewProjection.matVP);
+	
 	// 頂点設定
 	for (int i = 0; i < bufferLength.vertexInputLength; ++i) {
-		vers[i].position = mul(vertexInputs[i].position, world);
+		vers[i].position = mul(vertexInputs[i].position, mat);
 		vers[i].normal   = vertexInputs[i].normal;
 		vers[i].uv       = vertexInputs[i].uv;
 	}

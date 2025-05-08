@@ -69,6 +69,8 @@ public:
 
 	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
 
+	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
+
 	TerrainQuadTree* GetOctree() { return octree_.get(); }
 };
 
