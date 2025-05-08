@@ -6,7 +6,12 @@ struct VertexInput {
 };
 
 struct Index {
-	uint index;
+	uint3 index;
+};
+
+struct BufferLength {
+	uint vertexInputLength : INDEX0;
+	uint indexLength : INDEX1;
 };
 
 struct PrimitiveOutput {
