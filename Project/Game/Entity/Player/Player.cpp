@@ -27,10 +27,20 @@ void Player::Initialize() {
 
 void Player::Update() {
 
+
+
+
 	Vec3& velo = variables_->Get<Vec3>("velocity");
 	float& jumpPower = variables_->Get<float>("jumpPower");
 	float& speed = variables_->Get<float>("speed");
+	float& gravity = variables_->Get<float>("gravity");
 	bool& onGround = variables_->Get<bool>("onGround");
+
+
+	if (Input::TriggerKey(DIK_R)) {
+		transform_->position = Vec3::kZero;
+		jumpPower = 0.0f;
+	}
 
 	velo = Vec3::kZero;
 
@@ -53,7 +63,7 @@ void Player::Update() {
 	velo = Matrix4x4::Transform(velo, Matrix4x4::MakeRotateY(transform_->rotate.y));
 
 	/// ジャンプ力の減衰
-	jumpPower -= 0.1f;
+	jumpPower -= gravity * Time::DeltaTime();
 
 	/// 移動
 	if (velo != Vector3::kZero) {

@@ -4,6 +4,9 @@
 #include <vector>
 #include <span>
 
+/// externals
+#include <meshoptimizer/src/meshoptimizer.h>
+
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
@@ -17,6 +20,15 @@
 /// ///////////////////////////////////////////////////
 class Terrain : public IEntity {
 	friend class TerrainEditor;
+public:
+
+	struct Meshlet {
+		meshopt_Meshlet meshlet;
+		/*Vec3 boundingSphereCenter;
+		float boundingSphereRadius;*/
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -37,6 +49,7 @@ private:
 	
 	void InputVertices();
 
+	void CalculateMeshlet(); ///< 頂点の計算
 
 private:
 	/// ===================================================
@@ -46,6 +59,7 @@ private:
 	/* ----- terrain ----- */
 	std::vector<Mesh::VertexData> vertices_; ///< 頂点データ
 	std::vector<uint32_t> indices_; ///< インデックスデータ
+	std::vector<Meshlet> meshlets_;
 
 	std::span<std::span<Mesh::VertexData>> vertexSpan_; ///< 頂点データのスパン
 
@@ -70,6 +84,9 @@ public:
 	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
 
 	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
+
+	const std::vector<Meshlet>& GetMeshlets() const { return meshlets_; } ///< メッシュレットデータ
+
 
 	TerrainQuadTree* GetOctree() { return octree_.get(); }
 };

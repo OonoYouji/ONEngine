@@ -56,10 +56,10 @@ void Terrain::Initialize() {
 
 
 	/// カスタムメッシュで地形の描画を行う
-	/*CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
-	meshRenderer->SetVertices(vertices_);
-	meshRenderer->SetIndices(indices_);
-	meshRenderer->SetIsBufferRecreate(true);*/
+	//CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
+	//meshRenderer->SetVertices(vertices_);
+	//meshRenderer->SetIndices(indices_);
+	//meshRenderer->SetIsBufferRecreate(true);
 
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
@@ -71,7 +71,7 @@ void Terrain::Initialize() {
 		octree_->Insert(&vertex);
 	}
 
-
+	CalculateMeshlet();
 	/// 頂点のinputを行う
 	//InputVertices();
 }
@@ -158,6 +158,61 @@ void Terrain::InputVertices() {
 		//	vertexData["uv"][1].get<float>()
 		//);
 		vertices_[i].position = vertex.position;
+	}
+
+}
+
+
+
+void Terrain::CalculateMeshlet() {
+	// メッシュレット分割を行う  
+
+	// 入力メッシュ  
+	// 変換用のインデックスリスト（位置だけを使用してメッシュレット構築）  
+	std::vector<float> positions;
+	for (const auto& v : vertices_) {
+		positions.push_back(v.position.x);
+		positions.push_back(v.position.y);
+		positions.push_back(v.position.z);
+	}
+
+	// メッシュレット構築に必要な最大制限（ハードウェア制限参考）  
+	constexpr size_t MaxVertices = 64;
+	constexpr size_t MaxTriangles = 124;
+
+	// メッシュレットの最大数を事前計算（少し余裕を持たせる）  
+	size_t maxMeshlets = meshopt_buildMeshletsBound(indices_.size(), MaxVertices, MaxTriangles);
+
+	// 出力バッファを確保  
+	std::vector<meshopt_Meshlet> meshlets(maxMeshlets);
+	std::vector<unsigned int> meshletVertices(maxMeshlets * MaxVertices);
+	std::vector<unsigned char> meshletTriangles(maxMeshlets * MaxTriangles * 3);
+
+	// 実行  
+	size_t meshletCount = meshopt_buildMeshlets(
+		meshlets.data(),
+		meshletVertices.data(),
+		meshletTriangles.data(),
+		indices_.data(),
+		indices_.size(),
+		positions.data(),
+		vertices_.size(),
+		sizeof(float) * 3,
+		MaxVertices,
+		MaxTriangles,
+		0.0f // cone_weight  
+	);
+
+	// 出力を必要数に絞る  
+	meshlets.resize(meshletCount);
+
+	meshlets_.reserve(meshletCount);
+	for (size_t i = 0; i < meshletCount; ++i) {
+		meshlets_.push_back({ 
+			meshlets[i]
+			//Vector3(meshlets[i].boundingSphereCenter), 
+			//meshlets[i].boundingSphereRadius 
+			});
 	}
 
 }

@@ -3,6 +3,9 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
+#include "Game/Objects/Terrain/Terrain.h"
+
+
 class MeshShaderTest : public IRenderingPipeline {
 public:
 
@@ -16,8 +19,8 @@ private:
 
 	struct VSInput {
 		Vector4 position;
-		Vector2 uv;
 		Vector3 normal;
+		Vector2 uv;
 	};
 
 	struct Index {
@@ -43,6 +46,6 @@ private:
 	StructuredBuffer<Index> indexBuffer_;
 	ConstantBuffer<BufferLength> bufferLength_;
 	//ConstantBuffer<BufferLength> ;
-	//StructuredBuffer<Meshlet> meshletBuffer_;
+	StructuredBuffer<Terrain::Meshlet> meshletBuffer_;
 };
 

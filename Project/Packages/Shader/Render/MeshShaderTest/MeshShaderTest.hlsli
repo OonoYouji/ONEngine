@@ -18,26 +18,28 @@ struct PrimitiveOutput {
 	uint primitiveId : INDEX0;
 };
 
-struct MSOutput {
+struct VertexOutput {
 	float4 position : SV_POSITION;
 	float3 normal : NORMAL;
 	float2 uv : TEXCOORD;
+	uint index : INDEX0;
 };
 
 struct PayloadType {
 	uint meshletIndex;
 };
 
-//struct Meshlet {
-//	uint vertexOffset;
-//	uint indexOffset;
-//	uint vertexCount;
-//	uint indexCount;
+
+struct Meshlet {
+	uint vertexOffset;
+	uint triangleOffset;
+	uint vertexCount;
+	uint triangleCount;
 	
-//	/// culling
-//	float3 boudingSphereCenter;
-//	float boudingSphereRadius;
-//};
+	/// culling
+	//float3 boudingSphereCenter;
+	//float boudingSphereRadius;
+};
 
 /// ============================================================
 /// Global Buffer
