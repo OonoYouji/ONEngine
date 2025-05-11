@@ -15,7 +15,7 @@
 #include "../GraphicsResourceCollection.h"
 
 
-GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection) 
+GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection)
 	: dxManager_(_dxManager), resourceCollection_(_collection) {}
 
 GraphicsResourceLoader::~GraphicsResourceLoader() {}
@@ -31,11 +31,11 @@ void GraphicsResourceLoader::Initialize() {
 
 void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filePath) {
 
-	std::unique_ptr<Texture>    texture      = std::make_unique<Texture>();
+	std::unique_ptr<Texture>    texture = std::make_unique<Texture>();
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filePath);
-	const DirectX::TexMetadata& metadata     = scratchImage.GetMetadata();
+	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
-	texture->dxResource_            = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
+	texture->dxResource_ = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
 	DxResource intermediateResource = UploadTextureData(texture->dxResource_.Get(), scratchImage);
 
 	dxManager_->GetDxCommand()->CommandExecute();
@@ -43,10 +43,10 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 
 	/// metadataを基に srv の設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format                  = metadata.format;
+	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension           = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels     = static_cast<UINT>(metadata.mipLevels);
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
 
 	/// srv handleの取得
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
@@ -67,7 +67,7 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 	Assimp::Importer importer;
-	const aiScene*   scene = importer.ReadFile(_filePath, assimpLoadFlags_);
+	const aiScene* scene = importer.ReadFile(_filePath, assimpLoadFlags_);
 
 	if (!scene) {
 		return; ///< 読み込み失敗
@@ -95,7 +95,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 			Mesh::VertexData&& vertex = {
 				Vec4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
 				Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
-				Vec3(-mesh->mNormals[i].x,  mesh->mNormals[i].y,  mesh->mNormals[i].z)
+				Vec3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
 			};
 
 			vertices.push_back(vertex);
@@ -123,7 +123,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 		model->AddMesh(std::move(meshData));
 	}
-	
+
 	Console::Log("[Load Resource] type:Model, path:\"" + _filePath + "\"");
 	resourceCollection_->AddModel(_filePath, std::move(model));
 
@@ -134,7 +134,11 @@ DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string
 	/// テクスチャファイルを読んでプログラムで扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring          filePathW = ConvertString(_filePath);
-	DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	if (_filePath.ends_with(".dds")) {
+		DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+	} else {
+		DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 
 	/// mipMapの作成
 	DirectX::ScratchImage mipImages{};
@@ -144,20 +148,20 @@ DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string
 }
 
 DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, const DirectX::TexMetadata& _metadata) {
-	
+
 	/// --------------------------------------
 	/// ↓ metadataを基にResourceの設定
 	/// --------------------------------------
-	
+
 	D3D12_RESOURCE_DESC desc{};
-	desc.Width            = UINT(_metadata.width);                         /// textureの幅
-	desc.Height           = UINT(_metadata.height);                        /// textureの高さ
-	desc.MipLevels        = UINT16(_metadata.mipLevels);                   /// mipmapの数
+	desc.Width = UINT(_metadata.width);                         /// textureの幅
+	desc.Height = UINT(_metadata.height);                        /// textureの高さ
+	desc.MipLevels = UINT16(_metadata.mipLevels);                   /// mipmapの数
 	desc.DepthOrArraySize = UINT16(_metadata.arraySize);                   /// 奥行き or 配列Textureの配列数
-	desc.Format           = _metadata.format;                              /// TextureのFormat
+	desc.Format = _metadata.format;                              /// TextureのFormat
 	desc.SampleDesc.Count = 1;                                             /// サンプリングカウント; 1固定
-	desc.Dimension        = D3D12_RESOURCE_DIMENSION(_metadata.dimension); /// Textureの次元数
-	desc.Flags            = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+	desc.Dimension = D3D12_RESOURCE_DIMENSION(_metadata.dimension); /// Textureの次元数
+	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 
 	/// --------------------------------------
@@ -186,7 +190,7 @@ DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, co
 }
 
 DxResource GraphicsResourceLoader::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
-	DxDevice*  dxDevice  = dxManager_->GetDxDevice();
+	DxDevice* dxDevice = dxManager_->GetDxDevice();
 	DxCommand* dxCommand = dxManager_->GetDxCommand();
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
