@@ -142,7 +142,13 @@ DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string
 
 	/// mipMapの作成
 	DirectX::ScratchImage mipImages{};
-	DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+
+	/// 圧縮されていたらそのままimageを使うようにする
+	if (DirectX::IsCompressed(image.GetMetadata().format)) {
+		mipImages = std::move(image);
+	} else {
+		DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	}
 
 	return mipImages;
 }
