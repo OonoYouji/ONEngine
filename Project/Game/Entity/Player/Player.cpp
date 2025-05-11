@@ -38,7 +38,7 @@ void Player::Update() {
 
 
 	if (Input::TriggerKey(DIK_R)) {
-		transform_->position = Vec3::kZero;
+		transform_->position.y = 0.0f;
 		jumpPower = 0.0f;
 	}
 
