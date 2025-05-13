@@ -2,8 +2,13 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/ECS/Entity/Skybox/Skybox.h"
+#include "Engine/ECS/Entity/Camera/Camera.h"
 
-SkyboxRenderingPipeline::SkyboxRenderingPipeline() {}
+
+SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
+	: pResourceCollection_(_resourceCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
 void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -54,6 +59,132 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 	}
 
+	{	/// buffer
+
+		texIndex_.Create(_dxManager->GetDxDevice());
+		transformMatrix_.Create(_dxManager->GetDxDevice());
+
+
+		/// vbv
+		vertices_ = {
+			/// 右面
+			{ { -1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { 1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, 1.0f, 1.0f } },
+			{ { 1.0f, 1.0f, 1.0f, 1.0f } },
+
+			/// 左面
+			{ { -1.0f, -1.0f, -1.0f, 1.0f } },
+			{ { -1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, -1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, 1.0f, 1.0f } },
+
+			/// 前面
+			{ { -1.0f, -1.0f, -1.0f, 1.0f } },
+			{ { 1.0f, -1.0f, -1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, -1.0f, 1.0f } },
+			{ { 1.0f, 1.0f, -1.0f, 1.0f } },
+
+			/// 後面
+			{ { 1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { -1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { 1.0f, 1.0f, 1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, 1.0f, 1.0f } },
+
+			/// 上面
+			{ { -1.0f, 1.0f, -1.0f, 1.0f } },
+			{ { 1.0f, 1.0f, -1.0f, 1.0f } },
+			{ { -1.0f, 1.0f, 1.0f, 1.0f } },
+			{ { 1.0f, 1.0f, 1.0f, 1.0f } },
+
+			/// 下面
+			{ { -1.0f, -1.0f, -1.0f, 1.0f } },
+			{ { 1.0f, -1.0f, -1.0f, 1.0f } },
+			{ { -1.0f, -1.0f, 1.0f, 1.0f } },
+			{ { 1.0f, -1.0f, 1.0f, 1.0f } }
+		};
+
+		indices_ = {
+			/// 右面
+			0, 1, 2,
+			2, 1, 3,
+			/// 左面
+			4, 5, 6,
+			6, 5, 7,
+			/// 前面
+			8, 9, 10,
+			10, 9, 11,
+			/// 後面
+			12, 13, 14,
+			14, 13, 15,
+			/// 上面
+			16, 17, 18,
+			18, 17, 19,
+			/// 下面
+			20, 21, 22,
+			22, 21, 23
+		};
+
+
+
+		const size_t kVertexDataSize = sizeof(VSInput);
+
+		/// vertex buffer
+		vertexBuffer_.CreateResource(_dxManager->GetDxDevice(), kVertexDataSize * vertices_.size());
+
+		vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
+		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
+		vbv_.StrideInBytes = static_cast<UINT>(kVertexDataSize);
+
+		/// index buffer
+		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
+
+		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
+		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
+		ibv_.Format = DXGI_FORMAT_R32_UINT;
+
+	}
 }
 
-void SkyboxRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {}
+void SkyboxRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
+
+
+	Skybox* skybox = nullptr;
+	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+		if (entity->GetName() == "Skybox") {
+			skybox = static_cast<Skybox*>(entity.get());
+			break;
+		}
+	}
+
+	if (!skybox) {
+		return;
+	}
+
+	auto& textures = pResourceCollection_->GetTextures();
+	size_t texIndex = pResourceCollection_->GetTextureIndex(skybox->GetTexturePath());
+
+	texIndex_.SetMappingData(texIndex);
+	transformMatrix_.SetMappingData(_camera->GetTransform()->GetMatWorld());
+
+
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	auto commandList = _dxCommand->GetCommandList();
+
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	commandList->IASetVertexBuffers(0, 1, &vbv_);
+	commandList->IASetIndexBuffer(&ibv_);
+
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	transformMatrix_.BindForGraphicsCommandList(commandList, 1);
+	texIndex_.BindForGraphicsCommandList(commandList, 2);
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+
+	commandList->DrawIndexedInstanced(
+		static_cast<UINT>(indices_.size()),
+		1,
+		0, 0, 0
+	);
+
+
+}

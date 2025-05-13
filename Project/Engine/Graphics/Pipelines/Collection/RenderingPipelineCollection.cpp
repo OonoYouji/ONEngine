@@ -30,7 +30,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
-	Generate3DRenderingPipeline<SkyboxRenderingPipeline>();
+	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
