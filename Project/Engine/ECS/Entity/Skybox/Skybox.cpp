@@ -21,11 +21,3 @@ void Skybox::SetTexturePath(const std::string& _path) {
 const std::string& Skybox::GetTexturePath() const {
 	return texturePath_;
 }
-
-const std::vector<Skybox::VSInput>& Skybox::GetVSInputs() const {
-	return vsInputs_;
-}
-
-const std::vector<uint32_t>& Skybox::GetIndices() const {
-	return indices_;
-}

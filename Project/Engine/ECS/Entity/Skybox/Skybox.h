@@ -34,8 +34,6 @@ private:
 	
 	std::string texturePath_;
 
-	std::vector<VSInput> vsInputs_;
-	std::vector<uint32_t> indices_;
 public:
 	/// =============================================
 	/// public : accessors
@@ -44,8 +42,6 @@ public:
 	void SetTexturePath(const std::string& _path);
 
 	const std::string& GetTexturePath() const;
-	const std::vector<VSInput>& GetVSInputs() const;
-	const std::vector<uint32_t>& GetIndices() const;
 
 };
 

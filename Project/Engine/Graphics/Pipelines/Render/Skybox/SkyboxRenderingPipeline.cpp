@@ -34,7 +34,6 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		//pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
@@ -136,12 +135,25 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		vbv_.SizeInBytes = static_cast<UINT>(kVertexDataSize * vertices_.size());
 		vbv_.StrideInBytes = static_cast<UINT>(kVertexDataSize);
 
+		/// mapping
+		VSInput* mappingVertexData = nullptr;
+		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingVertexData));
+		std::memcpy(mappingVertexData, vertices_.data(), sizeof(VSInput)* vertices_.size());
+		vertexBuffer_.Get()->Unmap(0, nullptr);
+
 		/// index buffer
 		indexBuffer_.CreateResource(_dxManager->GetDxDevice(), sizeof(uint32_t) * indices_.size());
 
 		ibv_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();
 		ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
 		ibv_.Format = DXGI_FORMAT_R32_UINT;
+
+		/// mapping
+		uint32_t* mappingData = nullptr;
+		indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData));
+		std::memcpy(mappingData, indices_.data(), sizeof(uint32_t)* indices_.size());
+		indexBuffer_.Get()->Unmap(0, nullptr);
+
 
 	}
 }
