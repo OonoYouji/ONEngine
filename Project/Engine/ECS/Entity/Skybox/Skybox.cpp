@@ -8,6 +8,7 @@ Skybox::~Skybox() {}
 
 void Skybox::Initialize() {
 	SetTexturePath("Packages/Textures/rostock_laage_airport_4k.dds");
+	transform_->scale = Vec3::kOne * 30.0f;
 }
 
 void Skybox::Update() {
