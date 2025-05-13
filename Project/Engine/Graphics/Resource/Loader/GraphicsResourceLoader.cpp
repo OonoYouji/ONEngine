@@ -178,7 +178,7 @@ DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, co
 	desc.Format = _metadata.format;                              /// TextureのFormat
 	desc.SampleDesc.Count = 1;                                             /// サンプリングカウント; 1固定
 	desc.Dimension = D3D12_RESOURCE_DIMENSION(_metadata.dimension); /// Textureの次元数
-	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+	//desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 
 	/// --------------------------------------
