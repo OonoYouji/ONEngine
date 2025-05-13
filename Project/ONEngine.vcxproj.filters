@@ -111,6 +111,7 @@
     <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -232,5 +233,6 @@
     <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
   </ItemGroup>
 </Project>

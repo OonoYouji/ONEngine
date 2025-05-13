@@ -129,6 +129,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
     <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
