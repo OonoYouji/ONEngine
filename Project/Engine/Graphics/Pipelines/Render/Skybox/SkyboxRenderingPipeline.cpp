@@ -178,7 +178,7 @@ void SkyboxRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem*
 	size_t texIndex = pResourceCollection_->GetTextureIndex(skybox->GetTexturePath());
 
 	texIndex_.SetMappingData(texIndex);
-	transformMatrix_.SetMappingData(_camera->GetTransform()->GetMatWorld());
+	transformMatrix_.SetMappingData(skybox->GetTransform()->GetMatWorld());
 
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
