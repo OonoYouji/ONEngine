@@ -41,16 +41,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
-		D3D12_BLEND_DESC blendDesc = {};
-		blendDesc.RenderTarget[0].BlendEnable = TRUE;
-		blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-		blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-		blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
-		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-		pipeline_->SetBlendDesc(blendDesc);
+		pipeline_->SetBlendDesc(BlendMode::Normal());
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = true;

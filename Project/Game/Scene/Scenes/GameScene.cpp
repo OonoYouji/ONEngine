@@ -4,6 +4,7 @@
 #include <numbers>
 
 /// engine
+#include "Engine/ECS/Entity/Demo/DemoEntity.h"
 #include "Engine/ECS/Entity/Grid/Grid.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 #include "Engine/ECS/Entity/Light/DirectionalLightObject.h"
@@ -67,6 +68,9 @@ void GameScene::Initialize() {
 		pEntityComponentSystem_
 	);
 	terrainEditor_->Initialize();
+
+
+	pEntityComponentSystem_->GenerateEntity<DemoEntity>();
 }
 
 void GameScene::Update() {
