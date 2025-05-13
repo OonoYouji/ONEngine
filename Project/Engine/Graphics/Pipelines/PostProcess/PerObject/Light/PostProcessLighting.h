@@ -55,7 +55,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::array<size_t, 5> textureIndices_;
+	std::array<size_t, 6> textureIndices_;
 	std::unique_ptr<ConstantBuffer<DirectionalLightBufferData>> directionalLightBufferData_;
 	std::unique_ptr<ConstantBuffer<CameraBufferData>> cameraBufferData_;
 

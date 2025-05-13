@@ -12,6 +12,7 @@
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
 #include "../Render/Sprite/SpriteRenderingPipeline.h"
 #include "../Render/Gizmo/GizmoRenderingPipeline.h"
+#include "../Render/Skybox/SkyboxRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -26,10 +27,12 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// generate rendering pipeline
 	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
+	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
+
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
+	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
-	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
 	/// post process

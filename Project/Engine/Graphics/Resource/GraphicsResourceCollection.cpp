@@ -24,7 +24,9 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 			/// パスの中にある "\\" を "/" に置き換える
 			std::replace(path.begin(), path.end(), '\\', '/');
 			
-			if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+			if (path.find(".png") != std::string::npos 
+				|| path.find(".jpg") != std::string::npos
+				|| path.find(".dds") != std::string::npos) {
 				texturePaths.push_back(path);
 			}
 		}
@@ -42,7 +44,9 @@ void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _
 	for (auto& path : _filePaths) {
 		Type type = Type::none;
 
-		if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+		if (path.find(".png") != std::string::npos
+			|| path.find(".jpg") != std::string::npos
+			|| path.find(".dds") != std::string::npos) {
 			type = Type::texture;
 		} else if (path.find(".obj") != std::string::npos) {
 			type = Type::model;

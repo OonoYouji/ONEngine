@@ -4,9 +4,11 @@
 #include <numbers>
 
 /// engine
+#include "Engine/ECS/Entity/Demo/DemoEntity.h"
 #include "Engine/ECS/Entity/Grid/Grid.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 #include "Engine/ECS/Entity/Light/DirectionalLightObject.h"
+#include "Engine/ECS/Entity/Skybox/Skybox.h"
 
 /// user
 #include "Game/Objects/Terrain/Terrain.h"
@@ -57,7 +59,7 @@ void GameScene::Initialize() {
 	camera->SetRotateX(std::numbers::pi_v<float> *0.1f);
 	player->SetCamera(camera);
 
-
+	pEntityComponentSystem_->GenerateEntity<Skybox>();
 	pEntityComponentSystem_->SetMainCamera(camera);
 	//pEntityComponentSystem_->GenerateEntity<KeyItem>();
 
@@ -66,6 +68,9 @@ void GameScene::Initialize() {
 		pEntityComponentSystem_
 	);
 	terrainEditor_->Initialize();
+
+
+	pEntityComponentSystem_->GenerateEntity<DemoEntity>();
 }
 
 void GameScene::Update() {
