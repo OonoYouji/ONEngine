@@ -7,7 +7,7 @@ Skybox::Skybox() {}
 Skybox::~Skybox() {}
 
 void Skybox::Initialize() {
-	SetTexturePath("Assets/Textures/circle.png");
+	SetTexturePath("Packages/Textures/rostock_laage_airport_4k.dds");
 }
 
 void Skybox::Update() {
