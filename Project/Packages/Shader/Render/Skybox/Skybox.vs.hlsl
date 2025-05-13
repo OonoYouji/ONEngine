@@ -14,7 +14,8 @@ VSOutput main(VSInput input) {
 	
 	output.position = mul(input.position, matWVP);
 	output.worldPosition = mul(input.position, transform.matWorld);
-	//output.normal = input.normal;
+	output.normal = input.normal;
 	output.uv = input.uv;
+	
 	return output;
 }
