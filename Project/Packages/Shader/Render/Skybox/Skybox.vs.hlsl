@@ -12,10 +12,10 @@ VSOutput main(VSInput input) {
 
 	float4x4 matWVP = mul(transform.matWorld, viewProjection.matVP);
 	
-	output.position = mul(input.position, matWVP);
+	output.position = mul(input.position, matWVP).xyww;
 	output.worldPosition = mul(input.position, transform.matWorld);
-	output.normal = input.normal;
-	output.uv = input.uv;
+	output.normal = float3(0, 0, 0);
+	output.uv = input.position.xyz;
 	
 	return output;
 }

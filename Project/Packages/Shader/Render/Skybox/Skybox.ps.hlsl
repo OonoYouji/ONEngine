@@ -1,8 +1,10 @@
 #include "Skybox.hlsli"
 
+#include "../../ConstantBufferData/Material.hlsli"
+
 ConstantBuffer<TexIndex> texIndex : register(b0);
 
-Texture2D<float4> textures[] : register(t0);
+TextureCube<float4> textures[] : register(t0);
 SamplerState samplerState : register(s0);
 
 

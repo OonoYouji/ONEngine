@@ -1,14 +1,12 @@
 struct VSInput {
 	float4 position      : POSITION;
-	float3 normal        : NORMAL;
-	float2 uv            : TEXCOORD0;
 };
 
 struct VSOutput {
 	float4 position      : SV_POSITION;
 	float4 worldPosition : TEXCOORD0;
-	float3 normal        : TEXCOORD1;
-	float2 uv            : TEXCOORD2;
+	float3 normal        : NORMAL0;
+	float3 uv            : TEXCOORD2;
 };
 
 struct PSOutput {
