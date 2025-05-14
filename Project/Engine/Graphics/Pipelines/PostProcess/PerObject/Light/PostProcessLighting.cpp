@@ -31,6 +31,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(4, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
@@ -38,6 +39,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 3);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 4);
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 5);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
@@ -94,6 +96,15 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 	}
 
 
+	enum {
+		SCENE,
+		WORLD_POSITION,
+		NORMAL,
+		FLAGS,
+		SKYBOX,
+		POST_PROCESS_RESULT,
+	};
+
 
 	{	/// set textures
 
@@ -103,13 +114,14 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
 		textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
 		textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
-		textureIndices_[4] = _resourceCollection->GetTextureIndex("postProcessResult");
+		textureIndices_[4] = _resourceCollection->GetTextureIndex("Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
+		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
-		for (uint32_t index = 0; index < 4; ++index) {
+		for (uint32_t index = 0; index < 5; ++index) {
 			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetSRVGPUHandle());
 		}
 
-		command->SetComputeRootDescriptorTable(6, textures[textureIndices_[4]]->GetUAVGPUHandle());
+		command->SetComputeRootDescriptorTable(7, textures[textureIndices_[POST_PROCESS_RESULT]]->GetUAVGPUHandle());
 	}
 
 
@@ -119,13 +131,13 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 	/// resource barrier
 	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[4]]->GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_SOURCE
 	);	
 	
 	CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[0]]->GetDxResource().Get(),
+		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
@@ -136,20 +148,20 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 	/// copy
 	command->CopyResource(
-		textures[textureIndices_[0]]->GetDxResource().Get(),
-		textures[textureIndices_[4]]->GetDxResource().Get()
+		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get()
 	);
 	
 	
 	/// resource barrier
 	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[4]]->GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_COPY_SOURCE,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
 
 	sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[0]]->GetDxResource().Get(),
+		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 	);

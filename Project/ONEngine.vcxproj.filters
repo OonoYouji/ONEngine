@@ -128,6 +128,8 @@
     <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -250,5 +252,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
+    <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
   </ItemGroup>
 </Project>
