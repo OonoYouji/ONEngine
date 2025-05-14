@@ -114,7 +114,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
 		textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
 		textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
-		textureIndices_[4] = _resourceCollection->GetTextureIndex("Packages/Textures/rostock_laage_airport_4k.dds");
+		textureIndices_[4] = _resourceCollection->GetTextureIndex("Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 		for (uint32_t index = 0; index < 5; ++index) {
