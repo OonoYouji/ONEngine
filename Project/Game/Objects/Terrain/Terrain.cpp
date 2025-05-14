@@ -67,8 +67,9 @@ void Terrain::Initialize() {
 	octree_ = std::make_unique<TerrainQuadTree>(AABB{ center, halfSize });
 
 	/// Octreeに頂点を登録
+	size_t index = 0;
 	for (auto& vertex : vertices_) {
-		octree_->Insert(&vertex);
+		octree_->Insert(index++, &vertex);
 	}
 
 	CalculateMeshlet();
@@ -103,7 +104,7 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	_toTerrainCollider->SetIsCollided(false);
 
 	/// 最近接点から地形との当たり判定を取る
-	std::vector<Mesh::VertexData*> hitPoints;
+	std::vector<std::pair<size_t, Mesh::VertexData*>> hitPoints;
 	octree_->QuerySphere(
 		_transform->GetPosition(), 1.0f, &hitPoints
 	);
@@ -112,7 +113,8 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	if (hitPoints.size() > 0) {
 		Vector3 average = Vector3::kZero;
 		for (auto& point : hitPoints) {
-			average += Vector3(point->position.x, point->position.y, point->position.z);
+			const Vector4& v = point.second->position;
+			average += Vector3(v.x, v.y, v.z);
 		}
 		average /= static_cast<float>(hitPoints.size());
 		//_transform->SetPosition(average);
@@ -229,6 +231,10 @@ void Terrain::CalculateMeshlet() {
 		}
 	}
 
+}
+
+const std::vector<std::pair<size_t, Mesh::VertexData*>>& Terrain::GetEditVertices() {
+	return editVertices_;
 }
 
 

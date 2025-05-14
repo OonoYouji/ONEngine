@@ -75,6 +75,10 @@ private:
 
 	std::unique_ptr<TerrainQuadTree> octree_; ///< Octreeのポインタ
 
+
+	/* ----- edit ----- */
+	std::vector<std::pair<size_t, Mesh::VertexData*>> editVertices_;
+
 public:
 	/// ===================================================
 	/// public : accessor
@@ -91,6 +95,8 @@ public:
 	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
 
 	const std::vector<Meshlet>& GetMeshlets() const { return meshlets_; } ///< メッシュレットデータ
+
+	const std::vector<std::pair<size_t, Mesh::VertexData*>>& GetEditVertices();
 
 
 	TerrainQuadTree* GetOctree() { return octree_.get(); }

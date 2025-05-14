@@ -81,7 +81,18 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 		return;
 	}
 
-	
+
+	if (!terrain->GetEditVertices().empty()) {
+
+		for (auto& editV : terrain->GetEditVertices()) {
+			vertexBuffer_.SetMappedData(
+				editV.first, { editV.second->position, editV.second->normal, editV.second->uv }
+			);
+		}
+
+	}
+
+
 
 	static bool isSetting = false;
 	if (!isSetting) {
@@ -114,7 +125,6 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 				);
 			}
 		}
-
 
 		/// インデックスの設定
 		for (size_t i = 0; i < terrain->GetIndices().size(); i++) {

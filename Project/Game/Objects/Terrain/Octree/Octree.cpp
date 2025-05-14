@@ -21,13 +21,13 @@ TerrainQuadTree::TerrainQuadTree(const AABB& _aabb)
 	boundary_.reset(new AABB(_aabb));
 }
 
-bool TerrainQuadTree::Insert(Mesh::VertexData* _vertex) {
+bool TerrainQuadTree::Insert(size_t _index, Mesh::VertexData* _vertex) {
 	if (!boundary_->Contains(Vector3(_vertex->position.x, _vertex->position.y, _vertex->position.z))) {
 		return false;
 	}
 
 	if (terrainVertices_.size() < CAPACITY) {
-		terrainVertices_.push_back(_vertex);
+		terrainVertices_.push_back(std::make_pair(_index, _vertex));
 		return true;
 	}
 
@@ -36,7 +36,7 @@ bool TerrainQuadTree::Insert(Mesh::VertexData* _vertex) {
 	}
 
 	for (auto& child : children_) {
-		if (child->Insert(_vertex)) return true;
+		if (child->Insert(_index, _vertex)) return true;
 	}
 
 	return false; // どこにも入らなかった（めったに起きない）
@@ -64,13 +64,14 @@ void TerrainQuadTree::Subdivide() {
 }
 
 
-void TerrainQuadTree::Query(const AABB& _range, std::vector<Mesh::VertexData*>& _vertices) const {
+void TerrainQuadTree::Query(const AABB& _range, std::vector<std::pair<size_t, Mesh::VertexData*>>& _vertices) const {
 	if (!boundary_->Intersects(_range)) {
 		return;
 	}
 
 	for (const auto& vertex : terrainVertices_) {
-		if (_range.Contains(Vector3(vertex->position.x, vertex->position.y, vertex->position.z))) {
+		const Vector4& v = vertex.second->position;
+		if (_range.Contains(Vector3(v.x, v.y, v.z))) {
 			_vertices.push_back(vertex);
 		}
 	}
@@ -82,7 +83,7 @@ void TerrainQuadTree::Query(const AABB& _range, std::vector<Mesh::VertexData*>& 
 	}
 }
 
-void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::vector<Mesh::VertexData*>* _result) {
+void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::vector<std::pair<size_t, Mesh::VertexData*>>* _result) {
 
 	/// AABBの範囲外なら何もしない
 	if (!CollisionCheck::CubeVsSphere(
@@ -93,15 +94,15 @@ void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::ve
 
 	/// AABBの範囲内にある頂点を取得
 	for (const auto& vertex : terrainVertices_) {
-
+		const Vector4& v = vertex.second->position;
 		if (CollisionCheck::SphereVsSphere(
 			_center, _radius,
-			Vector3(vertex->position.x, vertex->position.y, vertex->position.z), 0.5f)) {
+			Vector3(v.x, v.y, v.z), 0.5f)) {
 
 			_result->push_back(vertex);
 
 			Gizmo::DrawWireSphere(
-				Vector3(vertex->position.x, vertex->position.y, vertex->position.z), 0.5f,
+				Vector3(v.x, v.y, v.z), 0.5f,
 				Color::kGreen
 			);
 		}

@@ -64,17 +64,17 @@ public:
 
 	TerrainQuadTree(const AABB& _aabb);
 
-	bool Insert(Mesh::VertexData* _vertex);
+	bool Insert(size_t _index, Mesh::VertexData* _vertex);
 
 	void Subdivide();
 
-	void Query(const AABB& _range, std::vector<Mesh::VertexData*>& _vertices) const;
+	void Query(const AABB& _range, std::vector<std::pair<size_t, Mesh::VertexData*>>& _vertices) const;
 
 	/// @brief terrainVertices_の中から、指定した範囲内にある頂点を取得する
 	/// @param _center sphereの中心
 	/// @param _radius sphereの半径
 	/// @param _result 衝突している頂点のポインタを格納する配列
-	void QuerySphere(const Vector3& _center, float _radius, std::vector<Mesh::VertexData*>* _result);
+	void QuerySphere(const Vector3& _center, float _radius, std::vector<std::pair<size_t, Mesh::VertexData*>>* _result);
 
 	void Draw(TerrainQuadTree* _octree, const Vector4& _color, size_t _depth = 1) const;
 
@@ -85,7 +85,9 @@ private:
 
 	std::unique_ptr<AABB> boundary_;        ///< 範囲
 	bool divided_ = false; ///< 分割されているかどうか
-	std::vector<Mesh::VertexData*> terrainVertices_;
+	std::vector<std::pair<size_t, Mesh::VertexData*>> terrainVertices_;
+	
+
 
 	std::array<std::unique_ptr<TerrainQuadTree>, 4> children_; ///< 子ノード
 
