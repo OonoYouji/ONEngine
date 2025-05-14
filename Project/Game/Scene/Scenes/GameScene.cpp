@@ -70,7 +70,6 @@ void GameScene::Initialize() {
 	terrainEditor_->Initialize();
 
 
-	pEntityComponentSystem_->GenerateEntity<DemoEntity>();
 }
 
 void GameScene::Update() {

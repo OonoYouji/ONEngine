@@ -87,6 +87,25 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 				terrain->GetMeshlets()[i].meshlet
 			}
 		);
+
+		if (i == 0) {
+			/// meshletの最初の頂点と最後の頂点を得る
+
+			auto& meshlet = terrain->GetMeshlets()[i];
+
+			Vec4 firstPos = terrain->GetVertices()[meshlet.meshlet.vertex_offset].position;
+			Vec4 endPos = terrain->GetVertices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count].position;
+
+			Gizmo::DrawWireSphere(
+				Vec3(firstPos.x, firstPos.y, firstPos.z), 0.5f, Color::kRed
+			);
+			
+			Gizmo::DrawWireSphere(
+				Vec3(endPos.x, endPos.y, endPos.z), 0.5f, Color::kGreen
+			);
+
+		}
+
 	}
 
 	static bool isSetting = false;
