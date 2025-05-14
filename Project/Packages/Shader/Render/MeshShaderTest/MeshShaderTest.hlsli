@@ -6,7 +6,8 @@ struct VertexInput {
 };
 
 struct Index {
-	uint3 index;
+	uint index;
+	//uint3 index;
 };
 
 struct BufferLength {
@@ -35,15 +36,4 @@ struct Meshlet {
 	uint triangleOffset;
 	uint vertexCount;
 	uint triangleCount;
-	
-	/// culling
-	//float3 boudingSphereCenter;
-	//float boudingSphereRadius;
 };
-
-/// ============================================================
-/// Global Buffer
-/// ============================================================
-
-ConstantBuffer<BufferLength> bufferLength : register(b0);
-//StructuredBuffer<Meshlet>    meshlets     : register(t0);

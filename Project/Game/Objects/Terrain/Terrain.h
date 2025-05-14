@@ -22,8 +22,13 @@ class Terrain : public IEntity {
 	friend class TerrainEditor;
 public:
 
+	struct Triangle {
+		uint32_t i0, i1, i2;
+	};
+
 	struct Meshlet {
 		meshopt_Meshlet meshlet;
+		std::vector<Triangle> triangles;
 		/*Vec3 boundingSphereCenter;
 		float boundingSphereRadius;*/
 	};

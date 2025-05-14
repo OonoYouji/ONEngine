@@ -33,12 +33,14 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< vertices
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< indices
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< meshlet
+		pipeline_->AddDescriptorRange(4, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< unique vertex indices
 
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 1 - 1);       ///< vertices
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 2 - 1);       ///< indices
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 0);       ///< vertices
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 1);       ///< indices
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 2);       ///< meshlet
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 3);       ///< unique vertex indices
 
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); ///< buffer length
+		//pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); ///< buffer length
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_MESH, 1); ///< view projection
 
 
@@ -54,10 +56,10 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 
 	{
 		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-		indexBuffer_.Create(999 * 999 * 6 / 3, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		indexBuffer_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 		meshletBuffer_.Create(30000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-		bufferLength_.Create(_dxManager->GetDxDevice());
-
+		//bufferLength_.Create(_dxManager->GetDxDevice());
+		uniqueVertexIndices_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 
 	}
@@ -79,42 +81,21 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 		return;
 	}
 
-	/// meshletの設定
-	for (size_t i = 0; i < terrain->GetMeshlets().size() - 1; i++) {
-		meshletBuffer_.SetMappedData(
-			i,
-			{
-				terrain->GetMeshlets()[i].meshlet
-			}
-		);
-
-		if (i == 0) {
-			/// meshletの最初の頂点と最後の頂点を得る
-
-			auto& meshlet = terrain->GetMeshlets()[i];
-
-			Vec4 firstPos = terrain->GetVertices()[meshlet.meshlet.vertex_offset].position;
-			Vec4 endPos = terrain->GetVertices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count].position;
-
-			Gizmo::DrawWireSphere(
-				Vec3(firstPos.x, firstPos.y, firstPos.z), 0.5f, Color::kRed
-			);
-			
-			Gizmo::DrawWireSphere(
-				Vec3(endPos.x, endPos.y, endPos.z), 0.5f, Color::kGreen
-			);
-
-		}
-
-	}
+	
 
 	static bool isSetting = false;
 	if (!isSetting) {
-
 		isSetting = true;
 
+		/// meshletの設定
+		for (size_t i = 0; i < terrain->GetMeshlets().size(); i++) {
+			meshletBuffer_.SetMappedData(
+				i, terrain->GetMeshlets()[i].meshlet
+			);
+		}
+
 		/// 頂点の設定
-		for (size_t i = 0; i < terrain->GetVertices().size() - 1; ++i) {
+		for (size_t i = 0; i < terrain->GetVertices().size(); ++i) {
 			const Mesh::VertexData& v = terrain->GetVertices()[i];
 			vertexBuffer_.SetMappedData(
 				i,
@@ -124,26 +105,27 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 			);
 		}
 
+		/// メッシュレットごとのローカルのインデックス
+		size_t primitiveIndex = 0;
+		for (size_t i = 0; i < terrain->GetMeshlets().size(); i++) {
+			auto& meshlet = terrain->GetMeshlets()[i];
+			for (size_t j = 0; j < meshlet.triangles.size(); j++) {
+				auto& tri = meshlet.triangles[j];
+
+				indexBuffer_.SetMappedData(
+					primitiveIndex++, { PackPrimitive(tri.i0, tri.i1, tri.i2) }
+				);
+			}
+		}
+
 
 		/// インデックスの設定
-		for (size_t i = 0; i < terrain->GetIndices().size(); i += 3) {
-			indexBuffer_.SetMappedData(
-				i / 3,
-				{
-					terrain->GetIndices()[i + 0],
-					terrain->GetIndices()[i + 1],
-					terrain->GetIndices()[i + 2]
-				}
+		for (size_t i = 0; i < terrain->GetIndices().size(); i++) {
+			uniqueVertexIndices_.SetMappedData(
+				i, terrain->GetIndices()[i]
 			);
 		}
 	}
-
-	bufferLength_.SetMappedData(
-		{ static_cast<uint32_t>(terrain->GetVertices().size()),
-		static_cast<uint32_t>(terrain->GetIndices().size() / 3) }
-	);
-
-
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto command = _dxCommand->GetCommandList();
@@ -152,11 +134,16 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	vertexBuffer_.BindToCommandList(0, command); /// vertices
 	indexBuffer_.BindToCommandList(1, command);  /// indices
 	meshletBuffer_.BindToCommandList(2, command); /// meshlet
-	bufferLength_.BindForGraphicsCommandList(command, 4); /// buffer length
+	uniqueVertexIndices_.BindToCommandList(3, command);
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(
 		command, 4
 	);
 
 
-	command->DispatchMesh(32, 1, 1);
+	//command->DispatchMesh(1, 1, 1);
+	command->DispatchMesh(static_cast<UINT>(terrain->GetMeshlets().size()), 1, 1);
+}
+
+uint32_t MeshShaderTest::PackPrimitive(uint32_t i0, uint32_t i1, uint32_t i2) {
+	return (i0 & 0x3FF) | ((i1 & 0x3FF) << 10) | ((i2 & 0x3FF) << 20);
 }

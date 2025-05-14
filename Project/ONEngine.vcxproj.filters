@@ -130,6 +130,7 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -254,5 +255,6 @@
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
   </ItemGroup>
 </Project>

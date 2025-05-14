@@ -2,6 +2,8 @@
 #include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/ByteAddressBuffer.h"
+#include "Engine/Core/DirectX12/Resource/DxResource.h"
 
 #include "Game/Objects/Terrain/Terrain.h"
 
@@ -17,6 +19,10 @@ public:
 
 private:
 
+	uint32_t PackPrimitive(uint32_t i0, uint32_t i1, uint32_t i2);
+
+private:
+
 	struct VSInput {
 		Vector4 position;
 		Vector3 normal;
@@ -24,7 +30,8 @@ private:
 	};
 
 	struct Index {
-		uint32_t indices[3];
+		uint32_t index;
+		//uint32_t indices[3];
 	};
 
 	struct BufferLength {
@@ -44,8 +51,7 @@ private:
 
 	StructuredBuffer<VSInput> vertexBuffer_;
 	StructuredBuffer<Index> indexBuffer_;
-	ConstantBuffer<BufferLength> bufferLength_;
-	//ConstantBuffer<BufferLength> ;
-	StructuredBuffer<Terrain::Meshlet> meshletBuffer_;
+	StructuredBuffer<meshopt_Meshlet> meshletBuffer_;
+	ByteAddressBuffer uniqueVertexIndices_;
 };
 

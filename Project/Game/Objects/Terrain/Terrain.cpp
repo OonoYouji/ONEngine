@@ -208,11 +208,27 @@ void Terrain::CalculateMeshlet() {
 
 	meshlets_.reserve(meshletCount);
 	for (size_t i = 0; i < meshletCount; ++i) {
-		meshlets_.push_back({ 
-			meshlets[i]
-			//Vector3(meshlets[i].boundingSphereCenter), 
-			//meshlets[i].boundingSphereRadius 
+		meshlets_.push_back({
+			meshlets[i], {}
 			});
 	}
 
+	for (size_t i = 0; i < meshlets.size(); ++i) {
+		const meshopt_Meshlet& m = meshlets[i];
+
+		for (size_t j = 0; j < m.triangle_count; ++j) {
+			size_t triOffset = m.triangle_offset + j * 3;
+			uint8_t i0 = meshletTriangles[triOffset + 0];
+			uint8_t i1 = meshletTriangles[triOffset + 1];
+			uint8_t i2 = meshletTriangles[triOffset + 2];
+
+			/// ローカルのインデックス
+			meshlets_[i].triangles.push_back(
+				{ i0, i1, i2 }
+			);
+		}
+	}
+
 }
+
+
