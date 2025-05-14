@@ -98,10 +98,7 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 		for (size_t i = 0; i < terrain->GetVertices().size(); ++i) {
 			const Mesh::VertexData& v = terrain->GetVertices()[i];
 			vertexBuffer_.SetMappedData(
-				i,
-				{
-					v.position, v.normal, v.uv
-				}
+				i, { v.position, v.normal, v.uv }
 			);
 		}
 
@@ -138,7 +135,6 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(
 		command, 4
 	);
-
 
 	//command->DispatchMesh(1, 1, 1);
 	command->DispatchMesh(static_cast<UINT>(terrain->GetMeshlets().size()), 1, 1);

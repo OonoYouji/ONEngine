@@ -31,23 +31,12 @@ private:
 
 	struct Index {
 		uint32_t index;
-		//uint32_t indices[3];
 	};
 
 	struct BufferLength {
 		uint32_t vertexInputLength;
 		uint32_t indexLength;
 	};
-
-	//struct Meshlet {
-	//	uint32_t vertexInputLength;
-	//	uint32_t indexLength;
-	//	uint32_t vertexCount;
-	//	uint32_t indexCount;
-
-	//	Vector3 boundingSphereCenter;
-	//	float boundingSphereRadius;
-	//};
 
 	StructuredBuffer<VSInput> vertexBuffer_;
 	StructuredBuffer<Index> indexBuffer_;
