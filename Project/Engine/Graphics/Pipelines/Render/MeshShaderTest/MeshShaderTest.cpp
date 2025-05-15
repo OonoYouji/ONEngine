@@ -1,8 +1,21 @@
+#define NOMINMAX
 #include "MeshShaderTest.h"
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
+
+
+namespace {
+	enum ROOT_PARAMETER {
+		ROOT_PARAM_VERTEX,
+		ROOT_PARAM_INDEX,
+		ROOT_PARAM_MESHLET,
+		ROOT_PARAM_UNIQUE_VERTEX_INDEX,
+		ROOT_PARAM_VIEW_PROJECTION,
+		ROOT_PARAM_MESH_INFO,
+	};
+}
 
 
 void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -40,8 +53,8 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 2);       ///< meshlet
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_MESH, 3);       ///< unique vertex indices
 
-		//pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); ///< buffer length
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_MESH, 1); ///< view projection
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_MESH, 2); ///< mesh info
 
 
 		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
@@ -60,7 +73,7 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		meshletBuffer_.Create(30000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 		//bufferLength_.Create(_dxManager->GetDxDevice());
 		uniqueVertexIndices_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-
+		//meshInfoBuffer_.Create(_dxManager->GetDxDevice());
 
 	}
 
@@ -82,14 +95,31 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	}
 
 
-	if (!terrain->GetEditVertices().empty()) {
 
+	/// meshlet index0の最初と最後の頂点を描画する
+	{
+		auto& meshlet = terrain->GetMeshlets()[20000];
+		Vec4 beginPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset]].position;
+		Vec4 endPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count]].position;
+
+		Gizmo::DrawWireSphere(
+			{ beginPos.x, beginPos.y, beginPos.z },
+			0.5f, Color::kRed
+		);
+
+		Gizmo::DrawWireSphere(
+			{ endPos.x, endPos.y, endPos.z },
+			0.5f, Color::kGreen
+		);
+	}
+
+	/// 編集した頂点を更新する
+	if (!terrain->GetEditVertices().empty()) {
 		for (auto& editV : terrain->GetEditVertices()) {
 			vertexBuffer_.SetMappedData(
 				editV.first, { editV.second->position, editV.second->normal, editV.second->uv }
 			);
 		}
-
 	}
 
 
@@ -137,17 +167,36 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto command = _dxCommand->GetCommandList();
 
-	//meshletBuffer_.BindToCommandList(0, command);
-	vertexBuffer_.BindToCommandList(0, command); /// vertices
-	indexBuffer_.BindToCommandList(1, command);  /// indices
-	meshletBuffer_.BindToCommandList(2, command); /// meshlet
-	uniqueVertexIndices_.BindToCommandList(3, command);
+	vertexBuffer_.BindToCommandList(ROOT_PARAM_VERTEX, command); /// vertices
+	indexBuffer_.BindToCommandList(ROOT_PARAM_INDEX, command);  /// indices
+	meshletBuffer_.BindToCommandList(ROOT_PARAM_MESHLET, command); /// meshlet
+	uniqueVertexIndices_.BindToCommandList(ROOT_PARAM_UNIQUE_VERTEX_INDEX, command);
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(
-		command, 4
+		command, ROOT_PARAM_VIEW_PROJECTION
 	);
 
-	//command->DispatchMesh(1, 1, 1);
-	command->DispatchMesh(static_cast<UINT>(terrain->GetMeshlets().size()), 1, 1);
+
+	uint32_t dispatchCount = 128;
+	uint32_t totalMeshlets = static_cast<uint32_t>(terrain->GetMeshlets().size());
+	for (uint32_t i = 0; i < totalMeshlets; i += dispatchCount) {
+		uint32_t meshletOffset = i;
+		uint32_t currentDispatchCount = std::min(dispatchCount, totalMeshlets - i);
+
+		// オフセットを RootConstant や CB で渡す
+		command->SetGraphicsRoot32BitConstant(
+			ROOT_PARAM_MESH_INFO, 
+			meshletOffset, 0);
+
+		// DispatchMesh 呼び出し
+		command->DispatchMesh(currentDispatchCount, 1, 1);
+	}
+
+	//command->SetGraphicsRoot32BitConstant(
+	//	ROOT_PARAM_MESH_INFO,
+	//	terrain->GetMeshlets().size() - 129, 0);
+	//command->DispatchMesh(128, 1, 1);
+
+	//command->DispatchMesh(static_cast<UINT>(terrain->GetMeshlets().size()), 1, 1);
 }
 
 uint32_t MeshShaderTest::PackPrimitive(uint32_t i0, uint32_t i1, uint32_t i2) {

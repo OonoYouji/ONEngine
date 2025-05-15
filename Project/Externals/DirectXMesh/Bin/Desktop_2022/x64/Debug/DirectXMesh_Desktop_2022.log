@@ -1,0 +1,18 @@
+﻿  DirectXMeshUtil.cpp
+  DirectXMeshConcat.cpp
+  DirectXMeshletGenerator.cpp
+  DirectXMeshWeldVertices.cpp
+  DirectXMeshAdjacency.cpp
+  DirectXMeshClean.cpp
+  DirectXMeshGSAdjacency.cpp
+  DirectXMeshNormals.cpp
+  DirectXMeshOptimize.cpp
+  DirectXMeshOptimizeLRU.cpp
+  DirectXMeshOptimizeTVC.cpp
+  DirectXMeshRemap.cpp
+  DirectXMeshTangentFrame.cpp
+  DirectXMeshValidate.cpp
+  DirectXMeshVBReader.cpp
+  DirectXMeshVBWriter.cpp
+  コードを生成中...
+  DirectXMesh_Desktop_2022.vcxproj -> C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Externals\DirectXMesh\Bin\Desktop_2022\x64\Debug\DirectXMesh.lib

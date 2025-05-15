@@ -195,14 +195,9 @@ void Terrain::CalculateMeshlet() {
 		meshlets.data(),
 		meshletVertices.data(),
 		meshletTriangles.data(),
-		indices_.data(),
-		indices_.size(),
-		positions.data(),
-		vertices_.size(),
-		sizeof(float) * 3,
-		MaxVertices,
-		MaxTriangles,
-		0.0f // cone_weight  
+		indices_.data(), indices_.size(),
+		positions.data(), vertices_.size(), sizeof(Vector3),
+		MaxVertices, MaxTriangles, 0.0f // cone_weight  
 	);
 
 	// 出力を必要数に絞る  

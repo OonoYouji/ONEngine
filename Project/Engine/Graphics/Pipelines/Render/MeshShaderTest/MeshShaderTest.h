@@ -38,9 +38,14 @@ private:
 		uint32_t indexLength;
 	};
 
+	struct meshInfo {
+		uint32_t meshletOffset;
+	};
+
 	StructuredBuffer<VSInput> vertexBuffer_;
 	StructuredBuffer<Index> indexBuffer_;
 	StructuredBuffer<meshopt_Meshlet> meshletBuffer_;
+	ConstantBuffer<meshInfo> meshInfoBuffer_;
 	ByteAddressBuffer uniqueVertexIndices_;
 };
 

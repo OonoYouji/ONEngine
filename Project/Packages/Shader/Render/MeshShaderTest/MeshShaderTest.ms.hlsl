@@ -1,6 +1,12 @@
 #include "MeshShaderTest.hlsli"
 #include "../../ConstantBufferData/ViewProjection.hlsli"
 
+struct MeshInfo {
+	uint meshletOffset;
+	//uint currentMeshletIndex;
+};
+
+
 
 StructuredBuffer<VertexInput> vertexInputs : register(t1);
 StructuredBuffer<Index> gIndices : register(t2);
@@ -8,6 +14,7 @@ StructuredBuffer<Meshlet> meshlets : register(t3);
 ByteAddressBuffer UniqueVertexIndices : register(t4);
 
 ConstantBuffer<ViewProjection> viewProjection : register(b1);
+ConstantBuffer<MeshInfo> meshInfo : register(b2);
 
 static const float4x4 matWorld = float4x4(
 	1, 0, 0, 0,
@@ -39,7 +46,6 @@ VertexOutput GetVertexAttributes(uint meshletIndex, uint vertexIndex) {
 	VertexOutput vout;
 	vout.position = mul(v.position, viewProjection.matVP);
 	vout.uv = v.uv;
-	//vout.PositionHS = mul(float4(v.Position, 1), Globals.WorldViewProj);
 	vout.normal = mul(float4(v.normal, 0), matWorld).xyz;
 	vout.index = meshletIndex;
 
@@ -52,37 +58,21 @@ VertexOutput GetVertexAttributes(uint meshletIndex, uint vertexIndex) {
 [numthreads(128, 1, 1)]
 void main(
 	uint GTid : SV_GroupThreadID,
-	//uint groupIndex : SV_GroupIndex,
 	uint groupId : SV_GroupID,
-	//uint3 DTid : SV_DispatchThreadID,
-	//in payload PayloadType payload,
-	out vertices VertexOutput vers[64],
-	out indices uint3 tris[126]) {
+	uint3 DTid : SV_DispatchThreadID,
+	out vertices VertexOutput vers[256],
+	out indices uint3 tris[256]) {
 
-	Meshlet m = meshlets[groupId];
+	Meshlet m = meshlets[meshInfo.meshletOffset + groupId];
 	SetMeshOutputCounts(m.vertexCount, m.triangleCount);
 
-	//for (int i = 0; i < m.triangleCount; ++i) {
-	//	uint3 triIndex = GetPrimitive(m, i);
-	//	tris[i] = triIndex;
-	//}
-
-	//for (i = 0; i < m.vertexCount; ++i) {
-	//	uint vertexIndex = GetVertexIndex(m, i);
-	//	VertexOutput v = GetVertexAttributes(groupId, vertexIndex);
-	//	vers[i] = v;
-	//}
-
-
 	if (GTid < m.triangleCount) {
-		uint3 i = GetPrimitive(m, GTid);
-		tris[GTid] = i;
+		tris[GTid] = GetPrimitive(m, GTid);
 	}
 
 	if (GTid < m.vertexCount) {
 		uint vertexIndex = GetVertexIndex(m, GTid);
-		VertexOutput v = GetVertexAttributes(groupId, vertexIndex);
-		vers[GTid] = v;
+		vers[GTid] = GetVertexAttributes(groupId, vertexIndex);
 	}
 
 }
