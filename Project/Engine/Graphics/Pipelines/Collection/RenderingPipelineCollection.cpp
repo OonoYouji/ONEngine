@@ -14,6 +14,7 @@
 #include "../Render/Gizmo/GizmoRenderingPipeline.h"
 #include "../Render/MeshShaderTest/MeshShaderTest.h"
 #include "../Render/Skybox/SkyboxRenderingPipeline.h"
+#include "../Render/Terrain/TerrainRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -32,6 +33,7 @@ void RenderingPipelineCollection::Initialize() {
 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
@@ -46,7 +48,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 	for (auto& renderer : renderer3ds_) {
 		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
 	}
-	
+
 	for (auto& renderer : renderer2ds_) {
 		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _2dCamera);
 	}

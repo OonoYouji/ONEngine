@@ -37,6 +37,14 @@ public:
 	};
 
 
+	struct Vertex {
+		Vector4 position;
+		Vector3 normal;
+		Vector2 uv;
+		Vector4 splatBlend;
+	};
+
+
 public:
 	/// ===================================================
 	/// public : methods
