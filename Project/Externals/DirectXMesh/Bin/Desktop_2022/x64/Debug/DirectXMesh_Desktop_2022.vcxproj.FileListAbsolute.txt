@@ -1,1 +1,0 @@
-C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Externals\DirectXMesh\Bin\Desktop_2022\x64\Debug\DirectXMesh.lib

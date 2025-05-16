@@ -43,9 +43,9 @@ private:
 	};
 
 	StructuredBuffer<VSInput> vertexBuffer_;
-	StructuredBuffer<Index> indexBuffer_;
+	StructuredBuffer<Index> primitiveBuffer_;
 	StructuredBuffer<meshopt_Meshlet> meshletBuffer_;
 	ConstantBuffer<meshInfo> meshInfoBuffer_;
-	ByteAddressBuffer uniqueVertexIndices_;
+	StructuredBuffer<uint32_t> uniqueVertexIndices_;
 };
 

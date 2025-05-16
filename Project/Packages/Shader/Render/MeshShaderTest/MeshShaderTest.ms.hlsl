@@ -11,7 +11,7 @@ struct MeshInfo {
 StructuredBuffer<VertexInput> vertexInputs : register(t1);
 StructuredBuffer<Index> gIndices : register(t2);
 StructuredBuffer<Meshlet> meshlets : register(t3);
-ByteAddressBuffer UniqueVertexIndices : register(t4);
+StructuredBuffer<uint> UniqueVertexIndices : register(t4);
 
 ConstantBuffer<ViewProjection> viewProjection : register(b1);
 ConstantBuffer<MeshInfo> meshInfo : register(b2);
@@ -37,7 +37,7 @@ uint GetVertexIndex(Meshlet m, uint localIndex) {
 	localIndex = m.vertexOffset + localIndex;
 
 	/// 32bit固定なのでこの処理だけでよい
-	return UniqueVertexIndices.Load(localIndex * 4);
+	return UniqueVertexIndices[localIndex];
 }
 
 VertexOutput GetVertexAttributes(uint meshletIndex, uint vertexIndex) {
@@ -67,12 +67,14 @@ void main(
 	SetMeshOutputCounts(m.vertexCount, m.triangleCount);
 
 	if (GTid < m.triangleCount) {
-		tris[GTid] = GetPrimitive(m, GTid);
+		uint3 index = GetPrimitive(m, GTid);
+		tris[GTid] = index;
 	}
 
 	if (GTid < m.vertexCount) {
 		uint vertexIndex = GetVertexIndex(m, GTid);
-		vers[GTid] = GetVertexAttributes(groupId, vertexIndex);
+		VertexOutput v = GetVertexAttributes(groupId, vertexIndex);
+		vers[GTid] = v;
 	}
 
 }

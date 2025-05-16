@@ -15,6 +15,15 @@ namespace {
 		ROOT_PARAM_VIEW_PROJECTION,
 		ROOT_PARAM_MESH_INFO,
 	};
+
+	struct uint3 {
+		uint32_t x, y, z;
+	};
+
+	uint3 UnpackPrimitive(uint32_t primitive) {
+		// Unpacks a 10 bits per index triangle from a 32-bit uint.
+		return uint3(primitive & 0x3FF, (primitive >> 10) & 0x3FF, (primitive >> 20) & 0x3FF);
+	}
 }
 
 
@@ -69,7 +78,7 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 
 	{
 		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-		indexBuffer_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		primitiveBuffer_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 		meshletBuffer_.Create(30000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 		//bufferLength_.Create(_dxManager->GetDxDevice());
 		uniqueVertexIndices_.Create(999 * 999 * 6, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
@@ -96,22 +105,22 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 
 
 
-	/// meshlet index0の最初と最後の頂点を描画する
-	{
-		auto& meshlet = terrain->GetMeshlets()[20000];
-		Vec4 beginPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset]].position;
-		Vec4 endPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count]].position;
+	///// meshlet index0の最初と最後の頂点を描画する
+	//{
+	//	auto& meshlet = terrain->GetMeshlets()[20000];
+	//	Vec4 beginPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset]].position;
+	//	Vec4 endPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count]].position;
 
-		Gizmo::DrawWireSphere(
-			{ beginPos.x, beginPos.y, beginPos.z },
-			0.5f, Color::kRed
-		);
+	//	Gizmo::DrawWireSphere(
+	//		{ beginPos.x, beginPos.y, beginPos.z },
+	//		0.5f, Color::kRed
+	//	);
 
-		Gizmo::DrawWireSphere(
-			{ endPos.x, endPos.y, endPos.z },
-			0.5f, Color::kGreen
-		);
-	}
+	//	Gizmo::DrawWireSphere(
+	//		{ endPos.x, endPos.y, endPos.z },
+	//		0.5f, Color::kGreen
+	//	);
+	//}
 
 	/// 編集した頂点を更新する
 	if (!terrain->GetEditVertices().empty()) {
@@ -150,7 +159,7 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 			for (size_t j = 0; j < meshlet.triangles.size(); j++) {
 				auto& tri = meshlet.triangles[j];
 
-				indexBuffer_.SetMappedData(
+				primitiveBuffer_.SetMappedData(
 					primitiveIndex++, { PackPrimitive(tri.i0, tri.i1, tri.i2) }
 				);
 			}
@@ -168,7 +177,7 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	auto command = _dxCommand->GetCommandList();
 
 	vertexBuffer_.BindToCommandList(ROOT_PARAM_VERTEX, command); /// vertices
-	indexBuffer_.BindToCommandList(ROOT_PARAM_INDEX, command);  /// indices
+	primitiveBuffer_.BindToCommandList(ROOT_PARAM_INDEX, command);  /// indices
 	meshletBuffer_.BindToCommandList(ROOT_PARAM_MESHLET, command); /// meshlet
 	uniqueVertexIndices_.BindToCommandList(ROOT_PARAM_UNIQUE_VERTEX_INDEX, command);
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(
@@ -200,5 +209,7 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 }
 
 uint32_t MeshShaderTest::PackPrimitive(uint32_t i0, uint32_t i1, uint32_t i2) {
-	return (i0 & 0x3FF) | ((i1 & 0x3FF) << 10) | ((i2 & 0x3FF) << 20);
+	uint32_t result = (i0 & 0x3FF) | ((i1 & 0x3FF) << 10) | ((i2 & 0x3FF) << 20);
+	//uint3 unpacked = UnpackPrimitive(result);
+	return result;
 }

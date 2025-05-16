@@ -196,7 +196,8 @@ void Terrain::CalculateMeshlet() {
 		meshletVertices.data(),
 		meshletTriangles.data(),
 		indices_.data(), indices_.size(),
-		positions.data(), vertices_.size(), sizeof(Vector3),
+		reinterpret_cast<const float*>(vertices_.data()), vertices_.size(),
+		sizeof(Mesh::VertexData),
 		MaxVertices, MaxTriangles, 0.0f // cone_weight  
 	);
 

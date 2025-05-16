@@ -23,7 +23,10 @@ class Terrain : public IEntity {
 public:
 
 	struct Triangle {
-		uint32_t i0, i1, i2;
+		uint32_t i0 : 10;
+		uint32_t i1 : 10;
+		uint32_t i2 : 10;
+		uint32_t padding : 2; ///< パディング
 	};
 
 	struct Meshlet {
@@ -68,7 +71,7 @@ private:
 
 	std::span<std::span<Mesh::VertexData>> vertexSpan_; ///< 頂点データのスパン
 
-	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
+	Vector2 terrainSize_ = Vector2(10.0f, 10.0f); ///< 地形のサイズ
 
 
 	/* ----- Octree ----- */
