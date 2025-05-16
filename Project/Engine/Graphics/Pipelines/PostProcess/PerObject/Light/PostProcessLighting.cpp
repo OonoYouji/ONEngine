@@ -81,7 +81,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		}
 
 		/// set light data
-		directionalLightBufferData_->SetMappingData(
+		directionalLightBufferData_->SetMappedData(
 			{
 				Vector4::Convert(directionalLights.front()->GetOwner()->GetLocalPosition()),
 				directionalLights.front()->GetColor(),
@@ -91,7 +91,7 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		);
 		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
-		cameraBufferData_->SetMappingData({ Vector4::kZero });
+		cameraBufferData_->SetMappedData({ Vector4::kZero });
 		cameraBufferData_->BindForComputeCommandList(command, 1);
 	}
 

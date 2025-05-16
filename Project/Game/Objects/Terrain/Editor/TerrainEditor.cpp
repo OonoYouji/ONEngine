@@ -67,7 +67,7 @@ void TerrainEditor::Update() {
 	}
 
 
-	std::vector<Mesh::VertexData*> candidates;
+	std::vector<std::pair<size_t, Mesh::VertexData*>> candidates;
 	TerrainQuadTree* octree = pTerrain_->GetOctree();
 
 	/// 最近接点の候補を計算
@@ -78,17 +78,18 @@ void TerrainEditor::Update() {
 
 	octree->Query(rayAABB, candidates);
 	for (const auto& point : candidates) {
+		Vec4 v = point.second->position;
 		// レイ上の最近接点との距離を計算
-		Vec3 toPoint = Vector3(point->position.x, point->position.y, point->position.z) - nearPos;
+		Vec3 toPoint = Vector3(v.x, v.y, v.z) - nearPos;
 		float t = Vector3::Dot(toPoint, rayDir); // レイ上の位置
 		if (t < 0.0f) continue; // レイの後ろは無視
 
 		Vec3 closest = nearPos + rayDir * t;
-		float dist = (closest - Vector3(point->position.x, point->position.y, point->position.z)).Len();
+		float dist = (closest - Vector3(v.x, v.y, v.z)).Len();
 
 		if (dist < threshold && t < minDist) {
 			minDist = t;
-			closestPoint = point;
+			closestPoint = point.second;
 
 
 			Gizmo::DrawRay(
@@ -120,10 +121,13 @@ void TerrainEditor::Update() {
 	/// 衝突している点を上げる
 	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
 		for (auto& point : editedVertices_) {
-			point->position.y += 0.1f;
+			Vector4& v = point.second->position;
+			v.y += 0.1f;
 		}
 		RecalculateNormal();
 	}
+
+	pTerrain_->editVertices_ = editedVertices_;
 
 
 	if (Input::TriggerKey(DIK_O)) {
@@ -134,20 +138,20 @@ void TerrainEditor::Update() {
 
 void TerrainEditor::RecalculateNormal() {
 
-	/// 法線の再計算
-	for (auto& vertex : editedVertices_) {
-		vertex->normal = Vector3(0.0f, 0.0f, 0.0f);
-		// 周囲の点を取得
-		std::vector<Mesh::VertexData*> neighbors;
-		pTerrain_->GetOctree()->QuerySphere(Vector4::Convert(vertex->position), 1.0f, &neighbors);
-		// 法線を計算
-		for (const auto& neighbor : neighbors) {
-			Vector3&& edge = Vector4::Convert(neighbor->position) - Vector4::Convert(vertex->position);
-			vertex->normal += edge;
-		}
+	///// 法線の再計算
+	//for (auto& vertex : editedVertices_) {
+	//	vertex->normal = Vector3(0.0f, 0.0f, 0.0f);
+	//	// 周囲の点を取得
+	//	std::vector<Mesh::VertexData*> neighbors;
+	//	pTerrain_->GetOctree()->QuerySphere(Vector4::Convert(vertex->position), 1.0f, &neighbors);
+	//	// 法線を計算
+	//	for (const auto& neighbor : neighbors) {
+	//		Vector3&& edge = Vector4::Convert(neighbor->position) - Vector4::Convert(vertex->position);
+	//		vertex->normal += edge;
+	//	}
 
-		vertex->normal = vertex->normal.Normalize();
-	}
+	//	vertex->normal = vertex->normal.Normalize();
+	//}
 
 }
 

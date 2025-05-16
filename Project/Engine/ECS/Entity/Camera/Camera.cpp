@@ -22,7 +22,7 @@ Camera::Camera(DxDevice* _dxDevice) {
 	SetCameraType(static_cast<int>(CameraType::Type3D));
 	viewProjection_ = std::make_unique<ConstantBuffer<ViewProjection>>();
 	viewProjection_->Create(_dxDevice);
-	viewProjection_->SetMappingData(ViewProjection(
+	viewProjection_->SetMappedData(ViewProjection(
 		Matrix4x4::kIdentity
 	));
 }
@@ -82,7 +82,7 @@ void Camera::Update() {
 		);
 	}
 
-	viewProjection_->SetMappingData(ViewProjection(matView_ * matProjection_));
+	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 
 }
 

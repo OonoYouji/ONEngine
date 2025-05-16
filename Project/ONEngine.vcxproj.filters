@@ -110,8 +110,27 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\indexcodec.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\indexgenerator.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\overdrawanalyzer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\overdrawoptimizer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\partition.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\quantization.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\simplifier.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\spatialorder.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\stripifier.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vcacheanalyzer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vcacheoptimizer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vertexcodec.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
+    <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -232,7 +251,10 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
     <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
+    <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
   </ItemGroup>
 </Project>

@@ -34,6 +34,10 @@ void ShaderCompiler::Initialize() {
 
 
 ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile) {
+	return CompileShader(_filePath, _profile, L"main");
+}
+
+ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, const wchar_t* _profile, const std::wstring& _main) {
 	HRESULT hr = S_FALSE;
 
 	/// hlslを読み込む
@@ -50,7 +54,7 @@ ComPtr<IDxcBlob> ShaderCompiler::CompileShader(const std::wstring& _filePath, co
 	/// Compileの設定
 	LPCWSTR arguments[] = {
 		_filePath.c_str(),			/// Compile対象のhlslファイル名
-		L"-E", L"main",				/// エントリーポイントの指定; 基本的にmain以外にはしない
+		L"-E", _main.c_str(),				/// エントリーポイントの指定; 基本的にmain以外にはしない
 		L"-T", _profile,			/// ShaderProfileの設定
 		L"-Zi", L"-Qembed_debug",	/// デバッグ用の情報を埋め込む
 		L"-Od",						/// 最適化を外す

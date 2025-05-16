@@ -56,10 +56,10 @@ void Terrain::Initialize() {
 
 
 	/// カスタムメッシュで地形の描画を行う
-	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
-	meshRenderer->SetVertices(vertices_);
-	meshRenderer->SetIndices(indices_);
-	meshRenderer->SetIsBufferRecreate(true);
+	//CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
+	//meshRenderer->SetVertices(vertices_);
+	//meshRenderer->SetIndices(indices_);
+	//meshRenderer->SetIsBufferRecreate(true);
 
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
@@ -67,11 +67,12 @@ void Terrain::Initialize() {
 	octree_ = std::make_unique<TerrainQuadTree>(AABB{ center, halfSize });
 
 	/// Octreeに頂点を登録
+	size_t index = 0;
 	for (auto& vertex : vertices_) {
-		octree_->Insert(&vertex);
+		octree_->Insert(index++, &vertex);
 	}
 
-
+	CalculateMeshlet();
 	/// 頂点のinputを行う
 	//InputVertices();
 }
@@ -103,7 +104,7 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	_toTerrainCollider->SetIsCollided(false);
 
 	/// 最近接点から地形との当たり判定を取る
-	std::vector<Mesh::VertexData*> hitPoints;
+	std::vector<std::pair<size_t, Mesh::VertexData*>> hitPoints;
 	octree_->QuerySphere(
 		_transform->GetPosition(), 1.0f, &hitPoints
 	);
@@ -112,7 +113,8 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	if (hitPoints.size() > 0) {
 		Vector3 average = Vector3::kZero;
 		for (auto& point : hitPoints) {
-			average += Vector3(point->position.x, point->position.y, point->position.z);
+			const Vector4& v = point.second->position;
+			average += Vector3(v.x, v.y, v.z);
 		}
 		average /= static_cast<float>(hitPoints.size());
 		//_transform->SetPosition(average);
@@ -161,3 +163,65 @@ void Terrain::InputVertices() {
 	}
 
 }
+
+
+
+void Terrain::CalculateMeshlet() {
+	// メッシュレット分割を行う  
+
+	// メッシュレット構築に必要な最大制限（ハードウェア制限参考）  
+	constexpr size_t MaxVertices = 64;
+	constexpr size_t MaxTriangles = 124;
+
+	// メッシュレットの最大数を事前計算（少し余裕を持たせる）  
+	size_t maxMeshlets = meshopt_buildMeshletsBound(indices_.size(), MaxVertices, MaxTriangles);
+
+	// 出力バッファを確保  
+	std::vector<meshopt_Meshlet> meshlets(maxMeshlets);
+	std::vector<unsigned int> meshletVertices(maxMeshlets * MaxVertices);
+	std::vector<unsigned char> meshletTriangles(maxMeshlets * MaxTriangles * 3);
+
+	// 実行  
+	size_t meshletCount = meshopt_buildMeshlets(
+		meshlets.data(),
+		meshletVertices.data(),
+		meshletTriangles.data(),
+		indices_.data(), indices_.size(),
+		reinterpret_cast<const float*>(vertices_.data()), vertices_.size(),
+		sizeof(Mesh::VertexData),
+		MaxVertices, MaxTriangles, 0.0f // cone_weight  
+	);
+
+	// 出力を必要数に絞る  
+	meshlets.resize(meshletCount);
+
+	meshlets_.reserve(meshletCount);
+	for (size_t i = 0; i < meshletCount; ++i) {
+		meshlets_.push_back({
+			meshlets[i], {}
+			});
+	}
+
+	for (size_t i = 0; i < meshlets.size(); ++i) {
+		const meshopt_Meshlet& m = meshlets[i];
+
+		for (size_t j = 0; j < m.triangle_count; ++j) {
+			size_t triOffset = m.triangle_offset + j * 3;
+			uint8_t i0 = meshletTriangles[triOffset + 0];
+			uint8_t i1 = meshletTriangles[triOffset + 1];
+			uint8_t i2 = meshletTriangles[triOffset + 2];
+
+			/// ローカルのインデックス
+			meshlets_[i].triangles.push_back(
+				{ i0, i1, i2 }
+			);
+		}
+	}
+
+}
+
+const std::vector<std::pair<size_t, Mesh::VertexData*>>& Terrain::GetEditVertices() {
+	return editVertices_;
+}
+
+

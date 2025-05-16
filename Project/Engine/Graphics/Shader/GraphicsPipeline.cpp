@@ -1,5 +1,8 @@
 #include "GraphicsPipeline.h"
 
+/// directx
+#include <DirectX-Headers/include/directx/d3dx12_pipeline_state_stream.h>
+
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
 #include "Engine/Core/DirectX12/Command/DxCommand.h"
@@ -13,7 +16,12 @@ GraphicsPipeline::~GraphicsPipeline() {}
 void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 	/// root signatureとpipeline state objectを生成する
 	CreateRootSignature(_dxDevice);
-	CreatePipelineStateObject(_dxDevice);
+
+	if (pShader_->GetMS() != nullptr) {
+		CreateMeshPipelineStateObject(_dxDevice);
+	} else {
+		CreatePipelineStateObject(_dxDevice);
+	}
 }
 
 
@@ -220,6 +228,63 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 	/// pipeline state objectの生成
 	HRESULT result = _dxDevice->GetDevice()->CreateGraphicsPipelineState(
 		&desc, IID_PPV_ARGS(&pipelineState_)
+	);
+
+	Assert(SUCCEEDED(result), "error...");
+}
+
+void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
+
+	D3DX12_MESH_SHADER_PIPELINE_STATE_DESC meshDesc = {};
+	meshDesc.pRootSignature = rootSignature_.Get();
+
+
+	if (pShader_->GetAS()) {
+
+		meshDesc.AS = {
+			pShader_->GetAS()->GetBufferPointer(),
+			pShader_->GetAS()->GetBufferSize()
+		};
+	}
+
+	meshDesc.MS = {
+		pShader_->GetMS()->GetBufferPointer(),
+		pShader_->GetMS()->GetBufferSize()
+	};
+
+	meshDesc.PS = {
+		pShader_->GetPS()->GetBufferPointer(),
+		pShader_->GetPS()->GetBufferSize()
+	};
+
+	/// depth stencil desc
+	if (depthStancilDesc_.has_value()) {
+		meshDesc.DepthStencilState = depthStancilDesc_.value();
+	}
+
+	meshDesc.BlendState = blendDesc_;
+	meshDesc.RasterizerState = rasterizerDesc_;
+
+	meshDesc.NumRenderTargets = rtvNum_;
+	for (uint32_t i = 0; i < rtvNum_; ++i) {
+		Assert(rtvFormats_.size() > i, "out of range...");
+		meshDesc.RTVFormats[i] = rtvFormats_[i];
+	}
+
+	meshDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	meshDesc.SampleDesc.Count = 1;
+	meshDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+	meshDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+	CD3DX12_PIPELINE_MESH_STATE_STREAM psoStream = CD3DX12_PIPELINE_MESH_STATE_STREAM(meshDesc);
+
+	D3D12_PIPELINE_STATE_STREAM_DESC streamDesc = {};
+	streamDesc.pPipelineStateSubobjectStream = &psoStream;
+	streamDesc.SizeInBytes = sizeof(psoStream);
+
+	/// pipeline state objectの生成
+	HRESULT result = _dxDevice->GetDevice10()->CreatePipelineState(
+		&streamDesc, IID_PPV_ARGS(&pipelineState_)
 	);
 
 	Assert(SUCCEEDED(result), "error...");

@@ -71,4 +71,14 @@ void DxDevice::Initialize() {
 	/// 生成できたか確認、生成出来ていたらログ出力する
 	Assert(device_ != nullptr, "Device creation failed.");
 	Console::Log("dx device create success!!");
+
+
+
+	/// ---------------------------------------------------
+	/// device10
+	/// ---------------------------------------------------
+
+	hr = device_->QueryInterface(IID_PPV_ARGS(&device10_));
+	Assert(SUCCEEDED(hr), "Device10 creation failed.");
+
 }

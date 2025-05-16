@@ -51,7 +51,7 @@ public:
 
 	/// @brief mappingDataの設定
 	/// @param _mappingData 設定するデータ
-	void SetMappingData(const T& _mappingData);
+	void SetMappedData(const T& _mappingData);
 
 	/// @brief mappingDataの取得
 	/// @return 取得したデータ
@@ -71,7 +71,7 @@ inline void ConstantBuffer<T>::Create(DxDevice* _dxDevice) {
 
 	mappingData_ = nullptr;
 	constantBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
-	SetMappingData(T{}); ///< 0クリア
+	SetMappedData(T{}); ///< 0クリア
 }
 
 template<typename T>
@@ -85,6 +85,6 @@ inline void ConstantBuffer<T>::BindForComputeCommandList(ID3D12GraphicsCommandLi
 }
 
 template<typename T>
-inline void ConstantBuffer<T>::SetMappingData(const T& _mappingData) {
+inline void ConstantBuffer<T>::SetMappedData(const T& _mappingData) {
 	*mappingData_ = _mappingData;
 }
