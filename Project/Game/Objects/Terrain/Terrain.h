@@ -45,6 +45,14 @@ public:
 	};
 
 
+	enum SPLAT_TEX {
+		GRASS,
+		DIRT,
+		ROCK,
+		SNOW,
+		SPLAT_TEX_COUNT
+	};
+
 public:
 	/// ===================================================
 	/// public : methods
@@ -62,7 +70,7 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-	
+
 	void InputVertices();
 
 	void CalculateMeshlet(); ///< 頂点の計算
@@ -90,6 +98,13 @@ private:
 	/* ----- edit ----- */
 	std::vector<std::pair<size_t, Mesh::VertexData*>> editVertices_;
 
+
+
+	/* ----- splatting ----- */
+
+	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
+
+
 public:
 	/// ===================================================
 	/// public : accessor
@@ -109,6 +124,7 @@ public:
 
 	const std::vector<std::pair<size_t, Mesh::VertexData*>>& GetEditVertices();
 
+	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
 	TerrainQuadTree* GetOctree() { return octree_.get(); }
 };

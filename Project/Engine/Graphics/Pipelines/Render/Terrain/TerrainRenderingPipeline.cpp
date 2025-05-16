@@ -6,6 +6,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 
+#include "Game/Objects/Terrain/Terrain.h"
+
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
 	: pResourceCollection_(_resourceCollection) {}
@@ -46,7 +48,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// rock
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// snow
 
-		for (size_t i = 0; i < 4; i++) {
+		for (uint32_t i = 0; i < 4; i++) {
 			pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, i); /// textures
 		}
 
@@ -77,9 +79,66 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 
+
+	{ /// buffer
+
+		transformBuffer_.Create(_dxManager->GetDxDevice());
+
+	}
+
 }
 
-void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
+void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _entityComponentSystem, Camera* _camera) {
+
+
+	/// 地形を取得
+	if (pTerrain_ == nullptr) {
+
+		for (auto& entity : _entityComponentSystem->GetEntities()) {
+
+			if (entity->GetName() == "Terrain") {
+				pTerrain_ = static_cast<Terrain*>(entity.get());
+				break;
+			}
+		}
+
+		/// 見つかんなかったらreturn
+		if (pTerrain_ == nullptr) {
+			return;
+		}
+
+	}
+
+
+	/// value setting
+	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->matWorld);
+
+
+
+	/// 描画する
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	auto command = _dxCommand->GetCommandList();
+
+	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
+	transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
+
+	/// texs
+	const auto& textures = pResourceCollection_->GetTextures();
+
+	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
+		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
+		size_t index = pResourceCollection_->GetTextureIndex(path);
+		command->SetGraphicsRootDescriptorTable(
+			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
+			textures[index]->GetSRVGPUHandle()
+		);
+	}
+
+
+
+	/// vbv ivb setting
+
+
 
 }
 

@@ -83,7 +83,6 @@ public:
 	void SetIndices(const std::vector<uint32_t>& _indices);
 
 
-
 	/// @brief 頂点データを取得
 	/// @return 頂点データの配列
 	const std::vector<VertexData>& GetVertices() const {

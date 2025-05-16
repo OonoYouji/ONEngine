@@ -2,7 +2,8 @@
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
-
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Core/Utility/Utility.h"
 
 /// ////////////////////////////////////
 /// Terrainの描画pipeline
@@ -20,13 +21,9 @@ public:
 		ROOT_PARAM_TEX_DIRT,
 		ROOT_PARAM_TEX_ROCK,
 		ROOT_PARAM_TEX_SNOW,
-
 	};
 
 
-	struct BufferData {
-
-	};
 
 public:
 	/// ====================================
@@ -45,6 +42,13 @@ private:
 	/// ====================================
 
 	class GraphicsResourceCollection* pResourceCollection_;
+
+	class Terrain* pTerrain_ = nullptr;
+
+	ConstantBuffer<Matrix4x4> transformBuffer_;
+
+
+
 
 };
 
