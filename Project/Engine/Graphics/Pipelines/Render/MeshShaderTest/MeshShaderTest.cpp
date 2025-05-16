@@ -42,8 +42,8 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 		pipeline_->SetShader(&shader);
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
-		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetFillMode(D3D12_FILL_MODE_WIREFRAME);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
@@ -102,25 +102,6 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 	if (terrain == nullptr) {
 		return;
 	}
-
-
-
-	///// meshlet index0の最初と最後の頂点を描画する
-	//{
-	//	auto& meshlet = terrain->GetMeshlets()[20000];
-	//	Vec4 beginPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset]].position;
-	//	Vec4 endPos = terrain->GetVertices()[terrain->GetIndices()[meshlet.meshlet.vertex_offset + meshlet.meshlet.vertex_count]].position;
-
-	//	Gizmo::DrawWireSphere(
-	//		{ beginPos.x, beginPos.y, beginPos.z },
-	//		0.5f, Color::kRed
-	//	);
-
-	//	Gizmo::DrawWireSphere(
-	//		{ endPos.x, endPos.y, endPos.z },
-	//		0.5f, Color::kGreen
-	//	);
-	//}
 
 	/// 編集した頂点を更新する
 	if (!terrain->GetEditVertices().empty()) {
@@ -191,7 +172,7 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 		uint32_t meshletOffset = i;
 		uint32_t currentDispatchCount = std::min(dispatchCount, totalMeshlets - i);
 
-		// オフセットを RootConstant や CB で渡す
+		// オフセットを RootConstantで渡す
 		command->SetGraphicsRoot32BitConstant(
 			ROOT_PARAM_MESH_INFO, 
 			meshletOffset, 0);
@@ -200,12 +181,6 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 		command->DispatchMesh(currentDispatchCount, 1, 1);
 	}
 
-	//command->SetGraphicsRoot32BitConstant(
-	//	ROOT_PARAM_MESH_INFO,
-	//	terrain->GetMeshlets().size() - 129, 0);
-	//command->DispatchMesh(128, 1, 1);
-
-	//command->DispatchMesh(static_cast<UINT>(terrain->GetMeshlets().size()), 1, 1);
 }
 
 uint32_t MeshShaderTest::PackPrimitive(uint32_t i0, uint32_t i1, uint32_t i2) {

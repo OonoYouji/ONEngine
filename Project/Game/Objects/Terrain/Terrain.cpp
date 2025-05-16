@@ -169,15 +169,6 @@ void Terrain::InputVertices() {
 void Terrain::CalculateMeshlet() {
 	// メッシュレット分割を行う  
 
-	// 入力メッシュ  
-	// 変換用のインデックスリスト（位置だけを使用してメッシュレット構築）  
-	std::vector<float> positions;
-	for (const auto& v : vertices_) {
-		positions.push_back(v.position.x);
-		positions.push_back(v.position.y);
-		positions.push_back(v.position.z);
-	}
-
 	// メッシュレット構築に必要な最大制限（ハードウェア制限参考）  
 	constexpr size_t MaxVertices = 64;
 	constexpr size_t MaxTriangles = 124;

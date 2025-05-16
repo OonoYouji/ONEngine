@@ -73,7 +73,7 @@ void main(
 
 	if (GTid < m.vertexCount) {
 		uint vertexIndex = GetVertexIndex(m, GTid);
-		VertexOutput v = GetVertexAttributes(groupId, vertexIndex);
+		VertexOutput v = GetVertexAttributes(GTid, vertexIndex);
 		vers[GTid] = v;
 	}
 
