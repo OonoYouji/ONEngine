@@ -71,7 +71,7 @@ private:
 
 	std::span<std::span<Mesh::VertexData>> vertexSpan_; ///< 頂点データのスパン
 
-	Vector2 terrainSize_ = Vector2(10.0f, 10.0f); ///< 地形のサイズ
+	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 
 
 	/* ----- Octree ----- */
