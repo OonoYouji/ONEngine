@@ -21,7 +21,7 @@ TerrainQuadTree::TerrainQuadTree(const AABB& _aabb)
 	boundary_.reset(new AABB(_aabb));
 }
 
-bool TerrainQuadTree::Insert(size_t _index, Mesh::VertexData* _vertex) {
+bool TerrainQuadTree::Insert(size_t _index, TerrainVertex* _vertex) {
 	if (!boundary_->Contains(Vector3(_vertex->position.x, _vertex->position.y, _vertex->position.z))) {
 		return false;
 	}
@@ -64,7 +64,7 @@ void TerrainQuadTree::Subdivide() {
 }
 
 
-void TerrainQuadTree::Query(const AABB& _range, std::vector<std::pair<size_t, Mesh::VertexData*>>& _vertices) const {
+void TerrainQuadTree::Query(const AABB& _range, std::vector<std::pair<size_t, TerrainVertex*>>& _vertices) const {
 	if (!boundary_->Intersects(_range)) {
 		return;
 	}
@@ -83,7 +83,7 @@ void TerrainQuadTree::Query(const AABB& _range, std::vector<std::pair<size_t, Me
 	}
 }
 
-void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::vector<std::pair<size_t, Mesh::VertexData*>>* _result) {
+void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::vector<std::pair<size_t, TerrainVertex*>>* _result) {
 
 	/// AABBの範囲外なら何もしない
 	if (!CollisionCheck::CubeVsSphere(

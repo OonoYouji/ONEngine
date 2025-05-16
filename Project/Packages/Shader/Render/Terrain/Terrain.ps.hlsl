@@ -18,7 +18,8 @@ PSOutput main(VSOutput input) {
 	float4 rock = texRock.Sample(textureSampler, input.uv);
 	float4 snow = texSnow.Sample(textureSampler, input.uv);
 	
-	output.color = mul(grass, blend.r);
+	output.color = float4(0, 0, 0, 1);
+	output.color += mul(grass, blend.r);
 	output.color += mul(dirt, blend.g);
 	output.color += mul(rock, blend.b);
 	output.color += mul(snow, blend.a);

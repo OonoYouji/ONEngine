@@ -259,5 +259,6 @@
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
+    <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
   </ItemGroup>
 </Project>

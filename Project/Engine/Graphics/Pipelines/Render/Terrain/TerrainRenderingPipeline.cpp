@@ -46,9 +46,10 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// rock
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// snow
 
-		for (uint32_t i = 0; i < 4; i++) {
-			pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, i); /// textures
-		}
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// textures
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1); /// textures
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// textures
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); /// textures
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -58,7 +59,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
@@ -82,7 +83,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 		transformBuffer_.Create(_dxManager->GetDxDevice());
 		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
-		indexBuffer_.Create(1000 * 1000 * 6, _dxManager->GetDxDevice());
+		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
 }
@@ -107,7 +108,10 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 		}
 
 		indexBuffer_.SetIndices(pTerrain_->GetIndices());
-		//vertexBuffer_.GetVertices(pTerrain_->GetVertices());
+		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
+
+		indexBuffer_.Map();
+		vertexBuffer_.Map();
 
 	}
 
@@ -142,10 +146,11 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 	vertexBuffer_.BindForCommandList(command);
 	indexBuffer_.BindForCommandList(command);
 
+	command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	command->DrawIndexedInstanced(
 		indexBuffer_.GetIndices().size(),
-		1, 1, 1, 1
+		1, 0, 0, 0
 	);
 
 

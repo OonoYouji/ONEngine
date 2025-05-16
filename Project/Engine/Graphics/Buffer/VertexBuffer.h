@@ -27,6 +27,8 @@ public:
 
 	void BindForCommandList(ID3D12GraphicsCommandList* _commandList);
 
+	void Map();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -78,6 +80,13 @@ inline void VertexBuffer<T>::Resize(size_t _value) {
 template<typename T>
 inline void VertexBuffer<T>::BindForCommandList(ID3D12GraphicsCommandList* _commandList) {
 	_commandList->IASetVertexBuffers(0, 1, &vbv_);
+}
+
+template<typename T>
+inline void VertexBuffer<T>::Map() {
+	T* map = nullptr;
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&map));
+	std::memcpy(map, vertices_.data(), sizeof(T) * vertices_.size());
 }
 
 template<typename T>

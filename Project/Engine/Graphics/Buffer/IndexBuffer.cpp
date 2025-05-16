@@ -8,8 +8,8 @@ void IndexBuffer::Create(size_t _indicesSize, DxDevice* _dxDevice) {
 	resource_.CreateResource(_dxDevice, sizeof(uint32_t) * indices_.size());
 
 	ibv_.BufferLocation = resource_.Get()->GetGPUVirtualAddress();
-	ibv_.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
-	ibv_.Format         = DXGI_FORMAT_R32_UINT;
+	ibv_.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * indices_.size());
+	ibv_.Format = DXGI_FORMAT_R32_UINT;
 }
 
 void IndexBuffer::Reserve(size_t _value) {
@@ -22,6 +22,12 @@ void IndexBuffer::Resize(size_t _value) {
 
 void IndexBuffer::BindForCommandList(ID3D12GraphicsCommandList* _commandList) {
 	_commandList->IASetIndexBuffer(&ibv_);
+}
+
+void IndexBuffer::Map() {
+	uint32_t* map = nullptr;
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&map));
+	std::memcpy(map, indices_.data(), sizeof(uint32_t) * indices_.size());
 }
 
 const std::vector<uint32_t>& IndexBuffer::GetIndices() const {

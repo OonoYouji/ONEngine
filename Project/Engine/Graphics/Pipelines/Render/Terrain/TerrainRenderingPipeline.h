@@ -51,7 +51,7 @@ private:
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 
 	IndexBuffer indexBuffer_;
-	VertexBuffer<Terrain::Vertex> vertexBuffer_;
+	VertexBuffer<TerrainVertex> vertexBuffer_;
 
 
 };

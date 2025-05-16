@@ -204,6 +204,7 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
+    <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />

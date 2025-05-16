@@ -26,6 +26,8 @@ public:
 
 	void BindForCommandList(ID3D12GraphicsCommandList* _commandList);
 
+	void Map();
+
 private:
 	/// ===================================================
 	/// private : objects

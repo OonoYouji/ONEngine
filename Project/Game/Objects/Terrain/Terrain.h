@@ -14,6 +14,7 @@
 
 #include "Chunk/TerrainChunk.h"
 #include "Octree/Octree.h"
+#include "TerrainVertex.h"
 
 /// ///////////////////////////////////////////////////
 /// 地形のオブジェクトクラス
@@ -35,15 +36,6 @@ public:
 		/*Vec3 boundingSphereCenter;
 		float boundingSphereRadius;*/
 	};
-
-
-	struct Vertex {
-		Vector4 position;
-		Vector3 normal;
-		Vector2 uv;
-		Vector4 splatBlend;
-	};
-
 
 	enum SPLAT_TEX {
 		GRASS,
@@ -81,11 +73,11 @@ private:
 	/// ===================================================
 
 	/* ----- terrain ----- */
-	std::vector<Mesh::VertexData> vertices_; ///< 頂点データ
+	std::vector<TerrainVertex> vertices_; ///< 頂点データ
 	std::vector<uint32_t> indices_; ///< インデックスデータ
 	std::vector<Meshlet> meshlets_;
 
-	std::span<std::span<Mesh::VertexData>> vertexSpan_; ///< 頂点データのスパン
+	std::span<std::span<TerrainVertex>> vertexSpan_; ///< 頂点データのスパン
 
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 
@@ -96,7 +88,7 @@ private:
 
 
 	/* ----- edit ----- */
-	std::vector<std::pair<size_t, Mesh::VertexData*>> editVertices_;
+	std::vector<std::pair<size_t, TerrainVertex*>> editVertices_;
 
 
 
@@ -112,18 +104,18 @@ public:
 
 	/// @brief 頂点を二次元配列化したものを取得する
 	/// @return 二次元配列にした頂点データのスパン
-	const std::span<std::span<Mesh::VertexData>>& GetVertexSpan() const { return vertexSpan_; }
+	const std::span<std::span<TerrainVertex>>& GetVertexSpan() const { return vertexSpan_; }
 
-	const std::vector<Mesh::VertexData>& GetVertices() const { return vertices_; } ///< 頂点データ
+	const std::vector<TerrainVertex>& GetVertices() const { return vertices_; } ///< 頂点データ
 
-	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
+	std::vector<TerrainVertex>& GetVertices() { return vertices_; } ///< 頂点データ
 	//std::vector<Vertec>& GetVertices() { return vertices_; } ///< 頂点データ
 
 	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
 
 	const std::vector<Meshlet>& GetMeshlets() const { return meshlets_; } ///< メッシュレットデータ
 
-	const std::vector<std::pair<size_t, Mesh::VertexData*>>& GetEditVertices();
+	const std::vector<std::pair<size_t, TerrainVertex*>>& GetEditVertices();
 
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
