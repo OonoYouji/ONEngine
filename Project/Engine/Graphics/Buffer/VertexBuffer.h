@@ -37,7 +37,7 @@ private:
 	DxResource resource_;
 	std::vector<T> vertices_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
-
+	T* mappingData_ = nullptr;
 
 public:
 	/// ===================================================
@@ -84,9 +84,8 @@ inline void VertexBuffer<T>::BindForCommandList(ID3D12GraphicsCommandList* _comm
 
 template<typename T>
 inline void VertexBuffer<T>::Map() {
-	T* map = nullptr;
-	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&map));
-	std::memcpy(map, vertices_.data(), sizeof(T) * vertices_.size());
+	resource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
+	std::memcpy(mappingData_, vertices_.data(), sizeof(T) * vertices_.size());
 }
 
 template<typename T>
@@ -96,6 +95,9 @@ inline const std::vector<T>& VertexBuffer<T>::GetVertices() const {
 
 template<typename T>
 inline void VertexBuffer<T>::SetVertex(size_t _index, const T& _vertex) {
+	if (mappingData_) {
+		mappingData_[_index] = _vertex;
+	}
 	vertices_[_index] = _vertex;
 }
 

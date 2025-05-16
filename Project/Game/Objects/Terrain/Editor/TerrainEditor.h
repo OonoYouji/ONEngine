@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <vector>
+#include <functional>
+
 /// edit target
 #include "../Terrain.h"
 #include "../TerrainVertex.h"
@@ -8,6 +12,15 @@
 /// Terrain のエディタクラス
 /// /////////////////////////////////////////////////
 class TerrainEditor final {
+public:
+
+	enum EDIT_MODE {
+		EDIT_MODE_NONE,
+		EDIT_MODE_TERRAIN_VERTEX,
+		EDIT_MODE_SPLAT_BLEND,
+	};
+
+
 public:
 	/// ==========================================
 	/// public : methods
@@ -21,6 +34,9 @@ public:
 	void RecalculateNormal();
 
 	void OutputVertices(const std::string& _filePath);
+
+	void EditTerrainVertex();
+	void EditSplatBlend();
 
 private:
 	/// ==========================================
@@ -40,6 +56,9 @@ private:
 	EntityComponentSystem* pECS_;
 	Terrain* pTerrain_ = nullptr; ///< Terrainへのポインタ
 
+	int editMode_;
+	std::vector<std::function<void()>> editFunctions_; ///< 編集モードの関数リスト
+
 	/* --- terrain --- */
 
 	std::vector<TerrainVertex> points_; ///< Terrainの点のリスト
@@ -47,6 +66,8 @@ private:
 
 	/* --- input --- */
 	Vector2 mousePosition_ = Vector2(0.0f, 0.0f); ///< マウスの位置
+	Vector3 mouseNearPos_ = Vector3(0.0f, 0.0f, 0.0f); ///< マウスの近点
+	Vector3 mouseFarPos_ = Vector3(0.0f, 0.0f, 0.0f); ///< マウスの遠点
 	
 	/* --- edit param --- */
 	float editRadius_ = 1.0f; ///< 編集する半径

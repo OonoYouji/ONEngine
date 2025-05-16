@@ -28,6 +28,11 @@ TerrainEditor::~TerrainEditor() {}
 void TerrainEditor::Initialize() {
 	points_ = pTerrain_->vertices_;
 
+	editMode_ = 0;
+	editFunctions_.resize(EDIT_MODE_SPLAT_BLEND + 1);
+	editFunctions_[EDIT_MODE_NONE] = [this]() { /* Do nothing */ };
+	editFunctions_[EDIT_MODE_TERRAIN_VERTEX] = [this]() { EditTerrainVertex(); };
+	editFunctions_[EDIT_MODE_SPLAT_BLEND] = [this]() { EditSplatBlend(); };
 }
 
 void TerrainEditor::Update() {
@@ -35,28 +40,8 @@ void TerrainEditor::Update() {
 	if (Input::TriggerKey(DIK_SPACE)) {
 		points_ = pTerrain_->vertices_;
 	}
-	Vector3 nearPos = CalculateMouseNearPoint(mousePosition_);
-	Vector3 farPos = CalculateMouseFarPoint(mousePosition_);
-
-	// nearPos と farPos の間にある AABB を構築
-	Vec3 min = {
-		std::min(nearPos.x, farPos.x),
-		std::min(nearPos.y, farPos.y),
-		std::min(nearPos.z, farPos.z)
-	};
-	Vec3 max = {
-		std::max(nearPos.x, farPos.x),
-		std::max(nearPos.y, farPos.y),
-		std::max(nearPos.z, farPos.z)
-	};
-	Vec3 center = (min + max) * 0.5f;
-	Vec3 halfSize = (max - min) * 0.5f;
-	AABB rayAABB = { center, halfSize };
-
-	//Gizmo::DrawRay(nearPos, farPos - nearPos);
-	Gizmo::DrawWireSphere(nearPos, 10.0f, Color::kRed);
-	//Gizmo::DrawWireSphere(farPos, 2.0f, Color::kGreen);
-
+	mouseNearPos_ = CalculateMouseNearPoint(mousePosition_);
+	mouseFarPos_ = CalculateMouseFarPoint(mousePosition_);
 
 	if (Input::PressKey(DIK_UPARROW)) {
 		editRadius_ += 0.1f;
@@ -67,67 +52,20 @@ void TerrainEditor::Update() {
 	}
 
 
-	std::vector<std::pair<size_t, TerrainVertex*>> candidates;
-	TerrainQuadTree* octree = pTerrain_->GetOctree();
-
-	/// 最近接点の候補を計算
-	Vec3 rayDir = Vector3::Normalize(farPos - nearPos);
-	TerrainVertex* closestPoint = nullptr;
-	float minDist = std::numeric_limits<float>::max();
-	float threshold = 5.0f;
-
-	octree->Query(rayAABB, candidates);
-	for (const auto& point : candidates) {
-		Vec4 v = point.second->position;
-		// レイ上の最近接点との距離を計算
-		Vec3 toPoint = Vector3(v.x, v.y, v.z) - nearPos;
-		float t = Vector3::Dot(toPoint, rayDir); // レイ上の位置
-		if (t < 0.0f) continue; // レイの後ろは無視
-
-		Vec3 closest = nearPos + rayDir * t;
-		float dist = (closest - Vector3(v.x, v.y, v.z)).Len();
-
-		if (dist < threshold && t < minDist) {
-			minDist = t;
-			closestPoint = point.second;
-
-
-			Gizmo::DrawRay(
-				nearPos,
-				toPoint.Normalize() * 100.0f,
-				Color::kBlue
-			);
-		}
+	if (Input::PressKey(DIK_1)) {
+		editMode_ = EDIT_MODE_TERRAIN_VERTEX;
+	}
+	if (Input::PressKey(DIK_2)) {
+		editMode_ = EDIT_MODE_SPLAT_BLEND;
 	}
 
-
-	/// 最近接点から地形との当たり判定を取る
-	editedVertices_.clear();
-	if (closestPoint) {
-
-		octree->QuerySphere(
-			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z),
-			editRadius_, &editedVertices_
-		);
-
-		Gizmo::DrawWireSphere(
-			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z) / closestPoint->position.w,
-			editRadius_
-		);
-
-	}
+	editFunctions_[editMode_]();
 
 
-	/// 衝突している点を上げる
-	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
-		for (auto& point : editedVertices_) {
-			Vector4& v = point.second->position;
-			v.y += 0.1f;
-		}
-		RecalculateNormal();
-	}
+	//Gizmo::DrawRay(mouseNearPos_, mouseFarPos_ - mouseNearPos_);
+	Gizmo::DrawWireSphere(mouseNearPos_, 10.0f, Color::kRed);
+	//Gizmo::DrawWireSphere(mouseFarPos_, 2.0f, Color::kGreen);
 
-	pTerrain_->editVertices_ = editedVertices_;
 
 
 	if (Input::TriggerKey(DIK_O)) {
@@ -181,6 +119,93 @@ void TerrainEditor::OutputVertices(const std::string& _filePath) {
 	} else {
 		Assert(false, ("Failed to open file for writing: " + _filePath).c_str());
 	}
+}
+
+void TerrainEditor::EditTerrainVertex() {
+
+	// mouseNearPos_ と mouseFarPos_ の間にある AABB を構築
+	Vec3 min = {
+		std::min(mouseNearPos_.x, mouseFarPos_.x),
+		std::min(mouseNearPos_.y, mouseFarPos_.y),
+		std::min(mouseNearPos_.z, mouseFarPos_.z)
+	};
+	Vec3 max = {
+		std::max(mouseNearPos_.x, mouseFarPos_.x),
+		std::max(mouseNearPos_.y, mouseFarPos_.y),
+		std::max(mouseNearPos_.z, mouseFarPos_.z)
+	};
+	Vec3 center = (min + max) * 0.5f;
+	Vec3 halfSize = (max - min) * 0.5f;
+	AABB rayAABB = { center, halfSize };
+
+
+
+	std::vector<std::pair<size_t, TerrainVertex*>> candidates;
+	TerrainQuadTree* octree = pTerrain_->GetOctree();
+
+	/// 最近接点の候補を計算
+	Vec3 rayDir = Vector3::Normalize(mouseFarPos_ - mouseNearPos_);
+	TerrainVertex* closestPoint = nullptr;
+	float minDist = std::numeric_limits<float>::max();
+	float threshold = 5.0f;
+
+	octree->Query(rayAABB, candidates);
+	for (const auto& point : candidates) {
+		Vec4 v = point.second->position;
+		// レイ上の最近接点との距離を計算
+		Vec3 toPoint = Vector3(v.x, v.y, v.z) - mouseNearPos_;
+		float t = Vector3::Dot(toPoint, rayDir); // レイ上の位置
+		if (t < 0.0f) continue; // レイの後ろは無視
+
+		Vec3 closest = mouseNearPos_ + rayDir * t;
+		float dist = (closest - Vector3(v.x, v.y, v.z)).Len();
+
+		if (dist < threshold && t < minDist) {
+			minDist = t;
+			closestPoint = point.second;
+
+
+			Gizmo::DrawRay(
+				mouseNearPos_,
+				toPoint.Normalize() * 100.0f,
+				Color::kBlue
+			);
+		}
+	}
+
+
+	/// 最近接点から地形との当たり判定を取る
+	editedVertices_.clear();
+	if (closestPoint) {
+
+		octree->QuerySphere(
+			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z),
+			editRadius_, &editedVertices_
+		);
+
+		Gizmo::DrawWireSphere(
+			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z) / closestPoint->position.w,
+			editRadius_
+		);
+
+	}
+
+
+	/// 衝突している点を上げる
+	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
+		for (auto& point : editedVertices_) {
+			Vector4& v = point.second->position;
+			v.y += 0.1f;
+		}
+		RecalculateNormal();
+	}
+
+	pTerrain_->editVertices_ = editedVertices_;
+
+}
+
+void TerrainEditor::EditSplatBlend() {
+
 }
 
 Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition) const {

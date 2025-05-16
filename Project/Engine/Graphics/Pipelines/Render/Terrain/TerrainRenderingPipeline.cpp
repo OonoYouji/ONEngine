@@ -119,6 +119,12 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 	/// value setting
 	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->matWorld);
 
+	/// 編集した頂点を更新する
+	if (!pTerrain_->GetEditVertices().empty()) {
+		for (auto& editV : pTerrain_->GetEditVertices()) {
+			vertexBuffer_.SetVertex(editV.first, *editV.second);
+		}
+	}
 
 
 	/// 描画する
