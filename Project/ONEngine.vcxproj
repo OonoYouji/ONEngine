@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
@@ -155,6 +156,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />

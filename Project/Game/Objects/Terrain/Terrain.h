@@ -117,6 +117,7 @@ public:
 	const std::vector<Mesh::VertexData>& GetVertices() const { return vertices_; } ///< 頂点データ
 
 	std::vector<Mesh::VertexData>& GetVertices() { return vertices_; } ///< 頂点データ
+	//std::vector<Vertec>& GetVertices() { return vertices_; } ///< 頂点データ
 
 	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
 

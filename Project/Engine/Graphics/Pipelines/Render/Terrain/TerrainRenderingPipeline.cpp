@@ -6,8 +6,6 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 
-#include "Game/Objects/Terrain/Terrain.h"
-
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
 	: pResourceCollection_(_resourceCollection) {}
@@ -83,7 +81,8 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 	{ /// buffer
 
 		transformBuffer_.Create(_dxManager->GetDxDevice());
-
+		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
+		indexBuffer_.Create(1000 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
 }
@@ -106,6 +105,9 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 		if (pTerrain_ == nullptr) {
 			return;
 		}
+
+		indexBuffer_.SetIndices(pTerrain_->GetIndices());
+		//vertexBuffer_.GetVertices(pTerrain_->GetVertices());
 
 	}
 
@@ -137,7 +139,14 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 
 
 	/// vbv ivb setting
+	vertexBuffer_.BindForCommandList(command);
+	indexBuffer_.BindForCommandList(command);
 
+
+	command->DrawIndexedInstanced(
+		indexBuffer_.GetIndices().size(),
+		1, 1, 1, 1
+	);
 
 
 }

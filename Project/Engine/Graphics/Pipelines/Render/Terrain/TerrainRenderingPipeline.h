@@ -3,7 +3,11 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/VertexBuffer.h"
+#include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Game/Objects/Terrain/Terrain.h"
+
 
 /// ////////////////////////////////////
 /// Terrainの描画pipeline
@@ -42,12 +46,12 @@ private:
 	/// ====================================
 
 	class GraphicsResourceCollection* pResourceCollection_;
-
 	class Terrain* pTerrain_ = nullptr;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 
-
+	IndexBuffer indexBuffer_;
+	VertexBuffer<Terrain::Vertex> vertexBuffer_;
 
 
 };
