@@ -29,6 +29,7 @@ void Terrain::Initialize() {
 				static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
 			);
 			vertices_[index].normal = Vector3(0.0f, 1.0f, 0.0f);
+			vertices_[index].splatBlend = Vector4(1.0f - vertices_[index].uv.x, 1.0f - vertices_[index].uv.y, 0.0f, 0.0f);
 		}
 	}
 
@@ -52,14 +53,19 @@ void Terrain::Initialize() {
 
 
 	/// spanに変換
-	vertexSpan_ = std::span<std::span<Mesh::VertexData>>(reinterpret_cast<std::span<Mesh::VertexData>*>(vertices_.data()), terrainWidth);
+	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
 
 
 	/// カスタムメッシュで地形の描画を行う
-	CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
-	meshRenderer->SetVertices(vertices_);
-	meshRenderer->SetIndices(indices_);
-	meshRenderer->SetIsBufferRecreate(true);
+	//CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
+	//meshRenderer->SetVertices(vertices_);
+	//meshRenderer->SetIndices(indices_);
+	//meshRenderer->SetIsBufferRecreate(true);
+
+	splattingTexPaths_[GRASS] = "Packages/Textures/Grass.jpg";
+	splattingTexPaths_[DIRT] = "Packages/Textures/Dirt.jpg";
+	splattingTexPaths_[ROCK] = "Packages/Textures/Rock.jpg";
+	splattingTexPaths_[SNOW] = "Packages/Textures/Snow.jpg";
 
 	/// Octreeの生成
 	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
@@ -72,7 +78,7 @@ void Terrain::Initialize() {
 		octree_->Insert(index++, &vertex);
 	}
 
-	CalculateMeshlet();
+	//CalculateMeshlet();
 	/// 頂点のinputを行う
 	//InputVertices();
 }
@@ -94,7 +100,7 @@ void Terrain::Update() {
 	//octree_->Draw(octree_.get(), Color::kBlack);
 
 	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
-		meshRenderer->SetVertices(vertices_);
+		//meshRenderer->SetVertices(vertices_);
 		//meshRenderer->SetIndices(indices_);
 		//meshRenderer->SetIsBufferRecreate(true);
 	}
@@ -104,7 +110,7 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	_toTerrainCollider->SetIsCollided(false);
 
 	/// 最近接点から地形との当たり判定を取る
-	std::vector<std::pair<size_t, Mesh::VertexData*>> hitPoints;
+	std::vector<std::pair<size_t, TerrainVertex*>> hitPoints;
 	octree_->QuerySphere(
 		_transform->GetPosition(), 1.0f, &hitPoints
 	);
@@ -220,8 +226,12 @@ void Terrain::CalculateMeshlet() {
 
 }
 
-const std::vector<std::pair<size_t, Mesh::VertexData*>>& Terrain::GetEditVertices() {
+const std::vector<std::pair<size_t, TerrainVertex*>>& Terrain::GetEditVertices() {
 	return editVertices_;
+}
+
+const std::array<std::string, Terrain::SPLAT_TEX_COUNT>& Terrain::GetSplatTexPaths() const {
+	return splattingTexPaths_;
 }
 
 

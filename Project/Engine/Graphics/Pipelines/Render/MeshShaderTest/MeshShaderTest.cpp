@@ -127,10 +127,10 @@ void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponen
 
 		/// 頂点の設定
 		for (size_t i = 0; i < terrain->GetVertices().size(); ++i) {
-			const Mesh::VertexData& v = terrain->GetVertices()[i];
-			vertexBuffer_.SetMappedData(
-				i, { v.position, v.normal, v.uv }
-			);
+			//const Mesh::VertexData& v = terrain->GetVertices()[i];
+			//vertexBuffer_.SetMappedData(
+			//	i, { v.position, v.normal, v.uv }
+			//);
 		}
 
 		/// メッシュレットごとのローカルのインデックス

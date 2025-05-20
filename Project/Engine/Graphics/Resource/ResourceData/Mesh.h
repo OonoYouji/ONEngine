@@ -14,9 +14,9 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// graphics resource の mesh data
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class Mesh final {
 public:
 
@@ -81,7 +81,6 @@ public:
 	/// @brief 頂点のインデックスをセット
 	/// @param _indices 頂点インデックス配列
 	void SetIndices(const std::vector<uint32_t>& _indices);
-
 
 
 	/// @brief 頂点データを取得
