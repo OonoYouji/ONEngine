@@ -78,29 +78,29 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	void SetPosition(const Vector3& _v) { transform_->SetPosition(_v); }
-	void SetPositionX(float _x) { transform_->SetPositionX(_x); }
-	void SetPositionY(float _y) { transform_->SetPositionY(_y); }
-	void SetPositionZ(float _z) { transform_->SetPositionZ(_z); }
+	void SetPosition(const Vector3& _v);
+	void SetPositionX(float _x);
+	void SetPositionY(float _y);
+	void SetPositionZ(float _z);
 
-	void SetRotate(const Vector3& _v) { transform_->SetRotate(_v); }
-	void SetRotateX(float _x) { transform_->SetRotateX(_x); }
-	void SetRotateY(float _y) { transform_->SetRotateY(_y); }
-	void SetRotateZ(float _z) { transform_->SetRotateZ(_z); }
+	void SetRotate(const Vector3& _v);
+	void SetRotateX(float _x);
+	void SetRotateY(float _y);
+	void SetRotateZ(float _z);
 
-	void SetScale(const Vector3& _v) { transform_->SetScale(_v); }
-	void SetScaleX(float _x) { transform_->SetScaleX(_x); }
-	void SetScaleY(float _y) { transform_->SetScaleY(_y); }
-	void SetScaleZ(float _z) { transform_->SetScaleZ(_z); }
+	void SetScale(const Vector3& _v);
+	void SetScaleX(float _x);
+	void SetScaleY(float _y);
+	void SetScaleZ(float _z);
 
 	void SetParent(IEntity* _parent);
 	void RemoveParent();
 
 
 
-	const Vector3& GetLocalPosition() const { return transform_->GetPosition(); }
-	const Vector3& GetLocalRotate()   const { return transform_->GetRotate(); }
-	const Vector3& GetLocalScale()    const { return transform_->GetScale(); }
+	const Vector3& GetLocalPosition() const;
+	const Vector3& GetLocalRotate() const;
+	const Vector3& GetLocalScale() const;
 
 	Vector3 GetWorldPosition();
 	Vector3 GetWorldRotate();
@@ -109,20 +109,20 @@ public:
 
 	/// @brief transform の取得
 	/// @return transform のポインタ
-	Transform* GetTransform() const { return transform_; }
+	Transform* GetTransform() const;
 
-	const IEntity* GetParent() const { return parent_; }
-	IEntity* GetParent() { return parent_; }
+	const IEntity* GetParent() const;
+	IEntity* GetParent();
 
-	const std::vector<IEntity*>& GetChildren() const { return children_; }
-	IEntity* GetChild(size_t _index) { return children_[_index]; }
+	const std::vector<IEntity*>& GetChildren() const;
+	IEntity* GetChild(size_t _index);
 
-	const std::unordered_map<size_t, IComponent*> GetComponents() const { return components_; }
+	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
 
 
 	/// @brief このエンティティの名前を設定する
 	/// @return string型の名前
-	const std::string& GetName() const { return name_; }
+	const std::string& GetName() const;
 
 };
 
@@ -202,39 +202,35 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	void SetMainCamera(Camera* _camera) { mainCamera_ = _camera; }
-	void SetMainCamera(size_t _index) { mainCamera_ = cameras_[_index]; }
-	
-	void SetMainCamera2D(Camera* _camera) { mainCamera2D_ = _camera; }
-	void SetMainCamera2D(size_t _index) { mainCamera2D_ = cameras_[_index]; }
+	void SetMainCamera(Camera* _camera);
+	void SetMainCamera(size_t _index);
 
-	void SetDebugCamera(Camera* _camera) { debugCamera_ = _camera; }
-	void SetDebugCamera(size_t _index) { debugCamera_ = cameras_[_index]; }
+	void SetMainCamera2D(Camera* _camera);
+	void SetMainCamera2D(size_t _index);
+
+	void SetDebugCamera(Camera* _camera);
+	void SetDebugCamera(size_t _index);
 
 
 
 	/// @brief entities の取得
 	/// @return entities
-	const std::vector<std::unique_ptr<IEntity>>& GetEntities() { return entities_; }
+	const std::vector<std::unique_ptr<IEntity>>& GetEntities();
 
 	/// @brief cameras の取得
 	/// @return cameras
-	const std::vector<Camera*>& GetCameras() { return cameras_; }
-
-	/// @brief 2d cameras の取得
-	/// @return camera2ds
-	//const std::vector<Camera2D*>& GetCamera2Ds() { return camera2ds_; }
+	const std::vector<Camera*>& GetCameras();
 
 	/// @brief main cameraの取得
 	/// @return Cameraクラスへのポインタ
-	const Camera* GetMainCamera() const { return mainCamera_; }
-	Camera* GetMainCamera() { return mainCamera_; }
+	const Camera* GetMainCamera() const;
+	Camera* GetMainCamera();
 
-	const Camera* GetMainCamera2D() const { return mainCamera2D_; }
-	Camera* GetMainCamera2D() { return mainCamera2D_; }
+	const Camera* GetMainCamera2D() const;
+	Camera* GetMainCamera2D();
 
-	const Camera* GetDebugCamera() const { return debugCamera_; }
-	Camera* GetDebugCamera() { return debugCamera_; }
+	const Camera* GetDebugCamera() const;
+	Camera* GetDebugCamera();
 
 };
 
@@ -337,7 +333,7 @@ inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::
 
 template<typename T, typename ...Args>
 inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base_of_v<ECSISystem, T> {
-	
+
 	systemMap_.push_back(std::make_unique<T>(args...));
 
 }

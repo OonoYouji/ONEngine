@@ -104,21 +104,18 @@ public:
 
 	/// @brief 頂点を二次元配列化したものを取得する
 	/// @return 二次元配列にした頂点データのスパン
-	const std::span<std::span<TerrainVertex>>& GetVertexSpan() const { return vertexSpan_; }
+	const std::span<std::span<TerrainVertex>>& GetVertexSpan() const;
 
-	const std::vector<TerrainVertex>& GetVertices() const { return vertices_; } ///< 頂点データ
+	const std::vector<TerrainVertex>& GetVertices() const;
+	std::vector<TerrainVertex>& GetVertices();
+	const std::vector<uint32_t>& GetIndices() const;
 
-	std::vector<TerrainVertex>& GetVertices() { return vertices_; } ///< 頂点データ
-	//std::vector<Vertec>& GetVertices() { return vertices_; } ///< 頂点データ
-
-	const std::vector<uint32_t>& GetIndices() const { return indices_; } ///< インデックスデータ
-
-	const std::vector<Meshlet>& GetMeshlets() const { return meshlets_; } ///< メッシュレットデータ
+	const std::vector<Meshlet>& GetMeshlets() const;
 
 	const std::vector<std::pair<size_t, TerrainVertex*>>& GetEditVertices();
 
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
-	TerrainQuadTree* GetOctree() { return octree_.get(); }
+	TerrainQuadTree* GetQuadTree();
 };
 

@@ -51,13 +51,11 @@ public:
 
 	/// @brief DxDeviceのインスタンスの取得
 	/// @return DxDeviceインスタンス
-	DxDevice* GetDxDevice() const { return dxDevice_.get(); }
+	DxDevice* GetDxDevice() const;
 
 	/// @brief DxCommandのインスタンスの取得
 	/// @return DxCommandインスタンス
-	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
-
-	//IDxDescriptorHeap* GetDxDescriptorHeap(DescriptorHeapType _type) const { return dxDescriptorHeaps_[_type].get(); }
+	DxCommand* GetDxCommand() const;
 
 	/// @brief DxSRVHeapのインスタンスの取得
 	/// @return DxSRVHeapインスタンス
