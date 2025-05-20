@@ -8,9 +8,9 @@ Texture2D<float4> texSnow : register(t3);
 SamplerState textureSampler : register(s0);
 
 static const float3x3 uvTransform = float3x3(
-	10, 00, 0,
-	00, 10, 0,
-	00, 00, 1
+	100, 0, 0,
+	0, 100, 0,
+	0, 0, 1
 );
 
 
