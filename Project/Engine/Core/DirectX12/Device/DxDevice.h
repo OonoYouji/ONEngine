@@ -42,19 +42,18 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// factoryを取得
-	/// </summary>
-	/// <returns></returns>
-	IDXGIFactory7* GetFactory() const { return dxgiFactory_.Get(); }
+	
+	/// @brief DxgiFactoryのインスタンスの取得
+	/// @return DxgiFactoryインスタンス
+	IDXGIFactory7* GetFactory() const;
 
-	/// <summary>
-	/// deviceを取得
-	/// </summary>
-	/// <returns></returns>
-	ID3D12Device* GetDevice() const { return device_.Get(); }
+	/// @brief Deviceのインスタンスの取得
+	/// @return Deviceインスタンス
+	ID3D12Device* GetDevice() const;
 
-	ID3D12Device10* GetDevice10() const { return device10_.Get(); }
+	/// @brief Device10のインスタンスの取得
+	/// @return Device10インスタンス
+	ID3D12Device10* GetDevice10() const;
 
 };
 

@@ -82,3 +82,15 @@ void DxDevice::Initialize() {
 	Assert(SUCCEEDED(hr), "Device10 creation failed.");
 
 }
+
+IDXGIFactory7* DxDevice::GetFactory() const {
+	return dxgiFactory_.Get();
+}
+
+ID3D12Device* DxDevice::GetDevice() const {
+	return device_.Get();
+}
+
+ID3D12Device10* DxDevice::GetDevice10() const {
+	return device10_.Get();
+}
