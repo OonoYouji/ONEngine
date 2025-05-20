@@ -77,8 +77,8 @@ const Vector2& Mouse::GetImGuiImageMousePosition(const std::string& _name) {
 	);
 
 	// 5. クランプ（画像の範囲内に収める）  
-	mousePosInImage.x = std::clamp(mousePosInImage.x, 0.0f, imageInfo.size.x);
-	mousePosInImage.y = std::clamp(mousePosInImage.y, 0.0f, imageInfo.size.y);
+	//mousePosInImage.x = std::clamp(mousePosInImage.x, 0.0f, imageInfo.size.x);
+	//mousePosInImage.y = std::clamp(mousePosInImage.y, 0.0f, imageInfo.size.y);
 
 	// 6. 1280x720のRTVサイズに合わせて正規化  
 	imageMousePosition.x = (mousePosInImage.x / imageInfo.size.x) * 1280.0f;

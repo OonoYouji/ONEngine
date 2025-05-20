@@ -17,12 +17,11 @@ enum class CameraType {
 };
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// カメラ
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class Camera : public IEntity {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -34,7 +33,7 @@ public:
 	void Update()     override;
 
 
-private:
+protected:
 
 	/// @brief perspective matrix の作成
 	/// @param _fovY 視野角
@@ -55,10 +54,9 @@ private:
 	Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar) const;
 
 
-private:
-	
+protected:
 	/// ===================================================
-	/// private : objects
+	/// protected : objects
 	/// ===================================================
 
 	std::unique_ptr<ConstantBuffer<ViewProjection>> viewProjection_;
@@ -73,7 +71,6 @@ private:
 	int cameraType_;
 
 public:
-
 	/// ===================================================
 	/// public : accessors
 	/// ===================================================
