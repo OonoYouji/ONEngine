@@ -52,10 +52,10 @@ void TerrainEditor::Update() {
 	}
 
 
-	if (Input::PressKey(DIK_1)) {
+	if (Input::PressKey(DIK_V)) {
 		editMode_ = EDIT_MODE_TERRAIN_VERTEX;
 	}
-	if (Input::PressKey(DIK_2)) {
+	if (Input::PressKey(DIK_B)) {
 		editMode_ = EDIT_MODE_SPLAT_BLEND;
 	}
 
@@ -286,9 +286,9 @@ void TerrainEditor::EditSplatBlend() {
 	}
 
 
-	if (Input::PressMouse(Mouse::Left) || Input::PressKey(Mouse::Right)) {
+	if (Input::PressMouse(Mouse::Left) || Input::PressMouse(Mouse::Right)) {
 		float value = 0.1f;
-		if (Input::PressKey(Mouse::Right)) {
+		if (Input::PressMouse(Mouse::Right)) {
 			value = -value;
 		}
 
