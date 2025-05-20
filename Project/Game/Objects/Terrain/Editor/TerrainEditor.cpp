@@ -141,7 +141,7 @@ void TerrainEditor::EditTerrainVertex() {
 
 
 	std::vector<std::pair<size_t, TerrainVertex*>> candidates;
-	TerrainQuadTree* octree = pTerrain_->GetOctree();
+	TerrainQuadTree* octree = pTerrain_->GetQuadTree();
 
 	/// 最近接点の候補を計算
 	Vec3 rayDir = Vector3::Normalize(mouseFarPos_ - mouseNearPos_);
@@ -236,7 +236,7 @@ void TerrainEditor::EditSplatBlend() {
 
 
 	std::vector<std::pair<size_t, TerrainVertex*>> candidates;
-	TerrainQuadTree* octree = pTerrain_->GetOctree();
+	TerrainQuadTree* octree = pTerrain_->GetQuadTree();
 
 	/// 最近接点の候補を計算
 	Vec3 rayDir = Vector3::Normalize(mouseFarPos_ - mouseNearPos_);

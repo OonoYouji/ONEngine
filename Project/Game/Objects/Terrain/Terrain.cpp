@@ -226,12 +226,36 @@ void Terrain::CalculateMeshlet() {
 
 }
 
+const std::span<std::span<TerrainVertex>>& Terrain::GetVertexSpan() const {
+	return vertexSpan_;
+}
+
+const std::vector<TerrainVertex>& Terrain::GetVertices() const {
+	return vertices_;
+}
+
+std::vector<TerrainVertex>& Terrain::GetVertices() {
+	return vertices_;
+}
+
+const std::vector<uint32_t>& Terrain::GetIndices() const {
+	return indices_;
+}
+
+const std::vector<Terrain::Meshlet>& Terrain::GetMeshlets() const {
+	return meshlets_;
+}
+
 const std::vector<std::pair<size_t, TerrainVertex*>>& Terrain::GetEditVertices() {
 	return editVertices_;
 }
 
 const std::array<std::string, Terrain::SPLAT_TEX_COUNT>& Terrain::GetSplatTexPaths() const {
 	return splattingTexPaths_;
+}
+
+TerrainQuadTree* Terrain::GetQuadTree() {
+	return octree_.get();
 }
 
 
