@@ -133,6 +133,7 @@
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -262,5 +263,6 @@
     <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
   </ItemGroup>
 </Project>
