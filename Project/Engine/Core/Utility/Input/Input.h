@@ -28,8 +28,8 @@ public:
 	static bool TriggerMouse(int _button);
 	static bool ReleaseMouse(int _button);
 
-	static Vector2 GetMousePosition();
-	static Vector2 GetMouseVelocity();
+	static const Vector2& GetMousePosition();
+	static const Vector2& GetMouseVelocity();
 	static Vector2 GetImGuiImageMousePosition(const std::string& _imageName);
 };
 
