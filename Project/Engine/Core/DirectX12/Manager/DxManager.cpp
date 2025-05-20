@@ -45,6 +45,14 @@ void DxManager::Finalize() {}
 
 
 
+DxDevice* DxManager::GetDxDevice() const {
+	return dxDevice_.get();
+}
+
+DxCommand* DxManager::GetDxCommand() const {
+	return dxCommand_.get();
+}
+
 DxSRVHeap* DxManager::GetDxSRVHeap() const {
 	return static_cast<DxSRVHeap*>(dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].get());
 }
