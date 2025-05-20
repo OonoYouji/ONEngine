@@ -20,6 +20,13 @@ public:
 		EDIT_MODE_SPLAT_BLEND,
 	};
 
+	enum SPLAT_BLEND_MODE {
+		BLEND_MODE_GRASS,
+		BLEND_MODE_DIRT,
+		BLEND_MODE_ROCK,
+		BLEND_MODE_SNOW,
+	};
+
 
 public:
 	/// ==========================================
@@ -58,6 +65,8 @@ private:
 
 	int editMode_;
 	std::vector<std::function<void()>> editFunctions_; ///< 編集モードの関数リスト
+	int editSplatBlendMode_ = 0; ///< 編集モードのインデックス
+
 
 	/* --- terrain --- */
 
