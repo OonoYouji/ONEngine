@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Camera/DebugCamera.h"
 #include "../Component/Component.h"
 #include "AddECSSystemFunction.h"
 
@@ -181,9 +182,11 @@ EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize() {
 
+	pDxDevice_ = pDxManager_->GetDxDevice();
+
 	entities_.reserve(256);
 
-	Camera* debugCamera = GenerateCamera();
+	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetDebugCamera(debugCamera);

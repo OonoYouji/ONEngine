@@ -157,6 +157,9 @@ public:
 	/// @return cameraへのポインタ
 	Camera* GenerateCamera();
 
+	template<typename T>
+	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
+
 
 	/// ----- component ----- ///
 
@@ -182,6 +185,7 @@ private:
 	/// ===================================================
 
 	class DxManager* pDxManager_ = nullptr;
+	class DxDevice* pDxDevice_ = nullptr;
 
 	/// ----- entity ----- ///
 	std::vector<std::unique_ptr<IEntity>> entities_;
@@ -286,6 +290,18 @@ inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEn
 	entities_.push_back(std::move(entity));
 
 	return entityPtr;
+}
+
+template<typename T>
+inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Camera, T> {
+	std::unique_ptr<T> camera = std::make_unique<T>(pDxDevice_);
+	camera->pEntityComponentSystem_ = this;
+	camera->CommonInitialize();
+	camera->Initialize();
+	T* cameraPtr = camera.get();
+	entities_.push_back(std::move(camera));
+	cameras_.push_back(cameraPtr);
+	return cameraPtr;
 }
 
 template<typename Comp>
