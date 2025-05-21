@@ -39,14 +39,9 @@ public:
 
 	void Initialize();
 
+	void Update();
 
 	/* ----- factory ----- */
-
-	//template<typename T>
-	//void RegisterCommand() requires IsEditorCommand<T>;
-
-	//template<typename T, typename... Args>
-	//std::unique_ptr<IEditorCommand> CreateCommand(Args&& ...args) requires IsEditorCommand<T>;
 
 	template<typename T, typename... Args>
 	std::unique_ptr<T> CloneCommand(Args&&... _args) requires IsEditorCommand<T>;
@@ -84,23 +79,6 @@ private:
 	std::string className_;
 };
 
-
-
-//
-//template<typename T>
-//inline void EditorManager::RegisterCommand() requires IsEditorCommand<T> {
-//	className_ = typeid(T).name();
-//	commandFactoryMap_[className_] = [](auto&& ...args) -> std::unique_ptr<IEditorCommand> {
-//		return std::make_unique<T>(std::forward<decltype(args)>(args)...);
-//		};
-//
-//}
-//
-//template<typename T, typename... Args>
-//inline std::unique_ptr<IEditorCommand> EditorManager::CreateCommand(Args&& ..._args) requires IsEditorCommand<T> {
-//	className_ = typeid(T).name();
-//	return commandFactoryMap_[className_](_args);
-//}
 
 template<typename T, typename ...Args>
 inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires IsEditorCommand<T> {

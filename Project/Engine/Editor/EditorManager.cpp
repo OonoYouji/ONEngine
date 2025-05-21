@@ -4,7 +4,6 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
-
 class LogCommand : public IEditorCommand {
 public:
 	LogCommand() {}
@@ -38,6 +37,20 @@ void EditorManager::Initialize() {
 	//CreateCommand<CreateGameObjectCommand>(pECS_);
 }
 
+void EditorManager::Update() {
+
+	// undo, redo を行う
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
+		Undo();
+	}
+
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
+		Redo();
+	}
+
+
+}
+
 
 
 void EditorManager::Undo() {
@@ -54,7 +67,13 @@ void EditorManager::Redo() {
 	if (redoStack_.empty()) {
 		return;
 	}
+
+	/// stackから実行する
 	std::unique_ptr<IEditorCommand> command = std::move(redoStack_.front());
 	command->Execute();
 	redoStack_.pop_front();
+
+	/// command stackに戻す
+	commandStack_.push_back(std::move(command));
+
 }
