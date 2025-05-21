@@ -119,6 +119,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

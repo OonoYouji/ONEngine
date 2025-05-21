@@ -140,6 +140,7 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -276,5 +277,6 @@
     <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
   </ItemGroup>
 </Project>
