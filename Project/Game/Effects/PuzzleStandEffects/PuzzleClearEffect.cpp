@@ -15,7 +15,7 @@ void PuzzleClearEffect::Initialize() {
 	effect->SetMeshPath("Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj");
 	effect->SetTexturePath("Assets/Textures/circle.png");
 	effect->SetLifeLeftTime(2.0f);
-	
+
 	effect->SetStartSpeed(100.0f);
 	effect->SetStartSize(Vector3::kOne);
 	effect->SetStartColor(Color(0.75f, 0.75f, 0.75f, 0.2f));
@@ -23,10 +23,12 @@ void PuzzleClearEffect::Initialize() {
 	effect->SetEmitTypeTime({ .emitTime = 0.01f, .emitInterval = 0.0f }, 7);
 	effect->SetEmitShape({ 0, 0, 0 }, Vec3::kZero);
 
-	effect->SetElementUpdateFunc([this](Effect::Element* _element) {
-		Vector3& direction = variables_->Get<Vector3>("effectDirection");
-		_element->transform.position += Matrix4x4::Transform(direction, transform_->matWorld) * Time::DeltaTime();
-	});
+	effect->SetElementUpdateFunc(
+		[this](Effect::Element* _element) {
+			Vector3& direction = variables_->Get<Vector3>("effectDirection");
+			_element->transform.position += Matrix4x4::Transform(direction, transform_->matWorld) * Time::DeltaTime();
+		}
+	);
 
 
 }
