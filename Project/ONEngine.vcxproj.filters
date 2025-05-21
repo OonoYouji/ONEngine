@@ -137,6 +137,7 @@
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\EditorManager.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -270,5 +271,6 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
     <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
     <ClInclude Include="Engine\Editor\EditorManager.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
   </ItemGroup>
 </Project>

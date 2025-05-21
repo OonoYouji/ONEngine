@@ -158,6 +158,7 @@
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Editor\EditorManager.h" />
@@ -291,6 +292,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
