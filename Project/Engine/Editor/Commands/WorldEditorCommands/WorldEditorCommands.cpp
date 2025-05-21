@@ -42,9 +42,6 @@ EntityRenameCommand::EntityRenameCommand(IEntity* _entity)
 EDITOR_STATE EntityRenameCommand::Execute() {
 	EDITOR_STATE result = EDITOR_STATE_RUNNING;
 
-
-
-
 	if (pEntity_) {
 
 		// 変更前の名前を保存

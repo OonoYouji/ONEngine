@@ -28,6 +28,7 @@ GameScene::GameScene() {
 		"Assets/Models/entity/player.obj",
 		"Assets/Models/objects/statue/statue.obj",
 		"Assets/Models/objects/sideToPlane/sideToPlane.obj",
+		"Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
 
 		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
