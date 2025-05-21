@@ -21,6 +21,9 @@ void DebugCamera::Initialize() {
 }
 
 void DebugCamera::Update() {
+#ifdef _DEBUG
+
+
 
 	/// カメラが移動していないときだけ判定を取る
 	if (!isMoving_) {
@@ -53,7 +56,7 @@ void DebugCamera::Update() {
 
 		velocity = Matrix4x4::Transform(velocity, Matrix4x4::MakeRotate(transform_->rotate));
 		transform_->position += velocity * 10.0f;
-		
+
 		const Vector2& move = Input::GetMouseVelocity();
 		transform_->rotate.y += move.x * 0.01f;
 		transform_->rotate.x += move.y * 0.01f;
@@ -67,5 +70,6 @@ void DebugCamera::Update() {
 		);
 		viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 	}
+#endif // _DEBUG
 
 }
