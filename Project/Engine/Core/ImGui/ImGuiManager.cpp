@@ -536,8 +536,8 @@ namespace {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem) 
-	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem) {}
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager)
+	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager) {}
 
 ImGuiManager::~ImGuiManager() {
 #ifdef _DEBUG
@@ -603,7 +603,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
-		pEntityComponentSystem_, resourceCollection_, this
+		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_
 	);
 
 	//ImGui::DockSpaceOverViewport(ImGuiID(), ImGui::GetMainViewport());

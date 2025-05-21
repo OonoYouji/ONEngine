@@ -5,11 +5,12 @@
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Editor/EditorManager.h"
 #include "ImGuiInspectorWindow.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
-
-ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem, ImGuiInspectorWindow* _inspectorWindow)
-	: pEntityComponentSystem_(_pEntityComponentSystem), pInspectorWindow_(_inspectorWindow) {}
+ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, ImGuiInspectorWindow* _inspectorWindow)
+	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager), pInspectorWindow_(_inspectorWindow) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_MenuBar)) {
@@ -71,7 +72,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 	/// メニューの表示
 	if (ImGui::BeginMenu("create")) {
 		if (ImGui::MenuItem("create empty object")) {
-
+			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_);
 		}
 
 		ImGui::EndMenu();

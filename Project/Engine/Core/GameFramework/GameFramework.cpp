@@ -27,8 +27,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
 	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
 
-	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
+	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get());
 
 	/// 各クラスの初期化を行う
 
