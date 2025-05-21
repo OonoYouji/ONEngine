@@ -98,4 +98,9 @@ inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCom
 	auto command = CloneCommand<T>(_args...);
 	command->Execute();
 	commandStack_.push_back(std::move(command));
+
+	/// redoスタックにコマンドがあればクリアする
+	if (redoStack_.size() > 0) {
+		redoStack_.clear();
+	}
 }
