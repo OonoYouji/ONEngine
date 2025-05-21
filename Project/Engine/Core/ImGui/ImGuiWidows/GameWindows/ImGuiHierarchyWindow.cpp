@@ -27,23 +27,40 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 }
 
 void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
-	entityName_ = typeid(*_entity).name();
+	entityName_ = _entity->GetName();
 	entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(_entity));
-	if (entityName_.find(kClassPrefix) == 0) {
-		entityName_ = entityName_.substr(kClassPrefix.length());
-	}
 
+
+	auto PopupWindow = [&]() {
+		/// 右クリックしたときのメニューの表示
+		if (ImGui::BeginPopupContextItem(entityName_.c_str())) {
+			if (ImGui::MenuItem("rename")) {
+				pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity);
+			}
+			ImGui::EndPopup();
+		}
+		};
+
+
+	/// 子オブジェクトの表示
 	if (_entity->GetChildren().empty()) {
 		// 子がいない場合はSelectableで選択可能にする  
 		if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
 			selectedEntity_ = _entity;
 		}
+
+		/// 右クリックしたときのメニューの表示
+		PopupWindow();
+
 	} else {
 		// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
 		bool nodeOpen = ImGui::TreeNodeEx(entityName_.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth);
 		if (ImGui::IsItemClicked()) {
 			selectedEntity_ = _entity;
 		}
+
+		/// 右クリックしたときのメニューの表示
+		PopupWindow();
 
 		if (nodeOpen) {
 

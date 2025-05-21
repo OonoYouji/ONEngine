@@ -1,6 +1,7 @@
 #include "WorldEditorCommands.h"
 
 /// engine
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/EmptyEntity/EmptyEntity.h"
 
@@ -41,12 +42,22 @@ EntityRenameCommand::EntityRenameCommand(IEntity* _entity)
 EDITOR_STATE EntityRenameCommand::Execute() {
 	EDITOR_STATE result = EDITOR_STATE_RUNNING;
 
+
+
+
 	if (pEntity_) {
 
-		std::string newName = pEntity_->GetName();
-		newName += "_Renamed";
-		pEntity_->SetName(newName);
-		result = EDITOR_STATE_FINISH;
+		// 変更前の名前を保存
+		oldName_ = pEntity_->GetName();
+		newName_ = oldName_;
+		newName_ += "_Renamed";
+		pEntity_->SetName(newName_);
+
+		//if (Input::TriggerKey(DIK_RETURN)) {
+			result = EDITOR_STATE_FINISH;
+		//}
+
+
 	} else if (pEntity_ == nullptr) {
 		result = EDITOR_STATE_FAILED;
 		Console::Log("EntityRenameCommand : Entity is nullptr");
@@ -60,7 +71,14 @@ EDITOR_STATE EntityRenameCommand::Execute() {
 }
 
 EDITOR_STATE EntityRenameCommand::Undo() {
-	return EDITOR_STATE();
+
+	if (pEntity_) {
+		pEntity_->SetName(oldName_);
+	} else {
+		Console::Log("EntityRenameCommand : Entity is nullptr");
+	}
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
 

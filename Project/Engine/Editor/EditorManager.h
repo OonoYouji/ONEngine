@@ -71,6 +71,7 @@ private:
 
 	std::unordered_map<std::string, std::unique_ptr<IEditorCommand>> prototypeCommands_; ///< コマンドのコレクション
 
+	IEditorCommand* runningCommand_; ///< 現在実行中のコマンド
 	std::deque<std::unique_ptr<IEditorCommand>> commandStack_; ///< コマンドのスタック
 	std::deque<std::unique_ptr<IEditorCommand>> redoStack_; ///< コマンドのリドゥスタック
 
@@ -96,7 +97,10 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires 
 template<typename T, typename ...Args>
 inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCommand<T> {
 	auto command = CloneCommand<T>(_args...);
-	command->Execute();
+	if (command->Execute() == EDITOR_STATE_RUNNING) {
+		runningCommand_ = command.get();
+	}
+
 	commandStack_.push_back(std::move(command));
 
 	/// redoスタックにコマンドがあればクリアする

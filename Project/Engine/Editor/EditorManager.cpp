@@ -35,19 +35,30 @@ void EditorManager::Initialize() {
 	//Redo();
 
 	//CreateCommand<CreateGameObjectCommand>(pECS_);
+	runningCommand_ = nullptr;
 }
 
 void EditorManager::Update() {
 
-	// undo, redo を行う
-	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
-		Undo();
-	}
+	if (runningCommand_) {
+		EDITOR_STATE state = runningCommand_->Execute();
+		if (state != EDITOR_STATE_RUNNING) {
+			runningCommand_ = nullptr;
+		} else {
+			Console::Log("editor command is running");
+		}
 
-	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
-		Redo();
-	}
+	} else {
 
+		// undo, redo を行う
+		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
+			Undo();
+		}
+
+		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
+			Redo();
+		}
+	}
 
 }
 
