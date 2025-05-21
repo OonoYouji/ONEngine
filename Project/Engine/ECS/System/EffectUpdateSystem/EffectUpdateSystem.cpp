@@ -32,6 +32,12 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 	/// エフェクトの更新処理
 	for (auto& effect : effectList) {
 
+		/// オブジェクトのアクティブ状態を確認
+		if (!effect->GetOwner()->GetIsActive()) {
+			continue;
+		}
+
+
 		/// エフェクトの要素を更新
 		for (auto& element : effect->elements_) {
 			UpdateElement(effect, &element);

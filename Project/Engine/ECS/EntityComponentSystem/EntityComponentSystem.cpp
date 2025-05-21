@@ -116,6 +116,10 @@ void IEntity::SetName(const std::string& _name) {
 	name_ = _name;
 }
 
+void IEntity::SetActive(bool _active) {
+	active_ = _active;
+}
+
 const Vector3& IEntity::GetLocalPosition() const {
 	return transform_->position;
 }
@@ -179,6 +183,10 @@ const std::string& IEntity::GetName() const {
 	return name_;
 }
 
+bool IEntity::GetIsActive() const {
+	return active_;
+}
+
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
@@ -200,6 +208,10 @@ void EntityComponentSystem::Initialize() {
 
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
+		if (!entity->GetIsActive()) {
+			continue;
+		}
+
 		entity->Update();
 		entity->UpdateTransform();
 	}

@@ -61,6 +61,8 @@ protected:
 	Variables* variables_;
 	class EntityComponentSystem* pEntityComponentSystem_;
 
+	bool active_ = true; ///< true のときは更新する
+
 private:
 
 	/// ===================================================
@@ -98,6 +100,8 @@ public:
 
 	void SetName(const std::string& _name);
 
+	void SetActive(bool _active);
+
 
 	const Vector3& GetLocalPosition() const;
 	const Vector3& GetLocalRotate() const;
@@ -125,6 +129,7 @@ public:
 	/// @return string型の名前
 	const std::string& GetName() const;
 
+	bool GetIsActive() const;
 
 };
 
