@@ -24,6 +24,9 @@ void LaserEffect::Initialize() {
 			_element->transform.position += Matrix4x4::Transform(direction, transform_->matWorld) * Time::DeltaTime();
 		}
 	);
+
+
+	transform_->position.y = 1.2f;
 }
 
 void LaserEffect::Update() {

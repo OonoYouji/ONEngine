@@ -9,6 +9,8 @@ void PuzzleClearEffectCannon::Initialize() {
 	meshRenderer->SetTexturePath("Packages/Textures/white.png");
 	meshRenderer->SetColor(Color(0.5f, 0.5f, 0.5f, 1.0f));
 
+	transform_->position.y = 2.2f;
+
 }
 
 void PuzzleClearEffectCannon::Update() {
