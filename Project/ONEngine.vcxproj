@@ -22,6 +22,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Editor\EditorManager.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Collection\EditorCommandCollection.cpp" />
     <ClCompile Include="Engine\Editor\Client\EditorClient.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Editor\EditorManager.h" />
     <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
     <ClInclude Include="Engine\Editor\Commands\Collection\EditorCommandCollection.h" />
     <ClInclude Include="Engine\Editor\Client\EditorClient.h" />

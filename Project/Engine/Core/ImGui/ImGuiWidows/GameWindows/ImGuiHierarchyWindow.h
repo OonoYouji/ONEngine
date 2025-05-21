@@ -28,6 +28,10 @@ private:
 		
 	void DrawEntityHierarchy(class IEntity* _entity);
 
+	void MenuBar();
+
+	void Hierarchy();
+
 private:
 	/// ===================================================
 	/// private : objects

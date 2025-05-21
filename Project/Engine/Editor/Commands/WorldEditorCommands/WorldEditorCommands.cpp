@@ -45,3 +45,5 @@ EDITOR_STATE EntityRenameCommand::Execute() {
 EDITOR_STATE EntityRenameCommand::Undo() {
 	return EDITOR_STATE();
 }
+
+

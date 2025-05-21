@@ -12,25 +12,15 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityCompon
 	: pEntityComponentSystem_(_pEntityComponentSystem), pInspectorWindow_(_inspectorWindow) {}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Hierarchy", nullptr, 0)) {
+	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
 
-	/// entityの選択  
-	entityList_.clear();
-	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
-		if (!entity->GetParent()) { //!< 親がいない場合  
-			entityList_.push_back(entity.get());
-		}
-	}
+	MenuBar();
 
-	/// entityの表示  
-	for (auto& entity : entityList_) {
-		DrawEntityHierarchy(entity);
-	}
-
-	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+	/// ヒエラルキーの表示
+	Hierarchy();
 
 	ImGui::End();
 }
@@ -64,6 +54,48 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 			ImGui::TreePop();
 		}
 	}
+}
+
+void ImGuiHierarchyWindow::MenuBar() {
+
+	/// 早期リターン
+	if (!ImGui::BeginMenuBar()) {
+		return;
+	}
+
+	if (!ImGui::BeginMenu("+")) {
+		ImGui::EndMenuBar();
+		return;
+	}
+
+	/// メニューの表示
+	if (ImGui::BeginMenu("create")) {
+		if (ImGui::MenuItem("create empty object")) {
+
+		}
+
+		ImGui::EndMenu();
+	}
+
+	ImGui::EndMenu();
+	ImGui::EndMenuBar();
+}
+
+void ImGuiHierarchyWindow::Hierarchy() {
+	/// entityの選択  
+	entityList_.clear();
+	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
+		if (!entity->GetParent()) { //!< 親がいない場合  
+			entityList_.push_back(entity.get());
+		}
+	}
+
+	/// entityの表示  
+	for (auto& entity : entityList_) {
+		DrawEntityHierarchy(entity);
+	}
+
+	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
 }
 
 //void ImGuiHierarchyWindow::DrawChildren(IEntity* _entity) {
