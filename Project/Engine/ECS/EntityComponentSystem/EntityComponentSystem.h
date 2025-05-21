@@ -96,6 +96,7 @@ public:
 	void SetParent(IEntity* _parent);
 	void RemoveParent();
 
+	void SetName(const std::string& _name);
 
 
 	const Vector3& GetLocalPosition() const;
@@ -123,6 +124,7 @@ public:
 	/// @brief このエンティティの名前を設定する
 	/// @return string型の名前
 	const std::string& GetName() const;
+
 
 };
 

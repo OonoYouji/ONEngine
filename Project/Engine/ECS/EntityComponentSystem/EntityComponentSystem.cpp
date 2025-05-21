@@ -112,6 +112,10 @@ void IEntity::RemoveParent() {
 	}
 }
 
+void IEntity::SetName(const std::string& _name) {
+	name_ = _name;
+}
+
 const Vector3& IEntity::GetLocalPosition() const {
 	return transform_->position;
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <string>
+
 /// engine
 #include "../Interface/IEditorCommand.h"
 
@@ -39,6 +42,8 @@ public:
 
 private:
 	class IEntity* pEntity_;
+	std::string oldName_ = "";
+	std::string newName_ = "";
 };
 
 

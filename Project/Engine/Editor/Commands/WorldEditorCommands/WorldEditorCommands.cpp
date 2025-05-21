@@ -39,7 +39,24 @@ EntityRenameCommand::EntityRenameCommand(IEntity* _entity)
 	: pEntity_(_entity) {}
 
 EDITOR_STATE EntityRenameCommand::Execute() {
-	return EDITOR_STATE();
+	EDITOR_STATE result = EDITOR_STATE_RUNNING;
+
+	if (pEntity_) {
+
+		std::string newName = pEntity_->GetName();
+		newName += "_Renamed";
+		pEntity_->SetName(newName);
+		result = EDITOR_STATE_FINISH;
+	} else if (pEntity_ == nullptr) {
+		result = EDITOR_STATE_FAILED;
+		Console::Log("EntityRenameCommand : Entity is nullptr");
+
+
+	} else {
+		result = EDITOR_STATE_FAILED;
+	}
+
+	return result;
 }
 
 EDITOR_STATE EntityRenameCommand::Undo() {
