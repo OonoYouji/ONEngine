@@ -22,6 +22,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Editor\Commands\Collection\EditorCommandCollection.cpp" />
+    <ClCompile Include="Engine\Editor\Client\EditorClient.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
@@ -155,8 +157,11 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Editor\Commands\Collection\EditorCommandCollection.h" />
+    <ClInclude Include="Engine\Editor\Client\EditorClient.h" />
     <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
@@ -285,6 +290,7 @@
     <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
+    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

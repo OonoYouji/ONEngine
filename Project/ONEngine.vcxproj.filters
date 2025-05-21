@@ -134,6 +134,9 @@
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
+    <ClCompile Include="Engine\Editor\Client\EditorClient.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\Collection\EditorCommandCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -264,5 +267,8 @@
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
+    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
+    <ClInclude Include="Engine\Editor\Client\EditorClient.h" />
+    <ClInclude Include="Engine\Editor\Commands\Collection\EditorCommandCollection.h" />
   </ItemGroup>
 </Project>
