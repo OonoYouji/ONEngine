@@ -137,6 +137,7 @@
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
     <ClCompile Include="Engine\Editor\Client\EditorClient.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Collection\EditorCommandCollection.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -270,5 +271,6 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
     <ClInclude Include="Engine\Editor\Client\EditorClient.h" />
     <ClInclude Include="Engine\Editor\Commands\Collection\EditorCommandCollection.h" />
+    <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
   </ItemGroup>
 </Project>
