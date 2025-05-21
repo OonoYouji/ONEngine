@@ -1,5 +1,9 @@
 #include "PuzzleClearEffectCannon.h"
 
+/// std
+#include <numbers>
+
+/// engine
 #include "Engine/ECS/Component/Component.h"
 
 void PuzzleClearEffectCannon::Initialize() {
@@ -14,5 +18,16 @@ void PuzzleClearEffectCannon::Initialize() {
 }
 
 void PuzzleClearEffectCannon::Update() {
+	float& cannonAnimeTime = variables_->Get<float>("animeTime");
+
+	if (cannonAnimeTime < 2.0f) {
+		cannonAnimeTime += Time::DeltaTime();
+
+		transform_->rotate.x = std::lerp(
+			std::numbers::pi_v<float> / 5.0f, 0.0f,
+			cannonAnimeTime / 2.0f
+		);
+
+	}
 
 }

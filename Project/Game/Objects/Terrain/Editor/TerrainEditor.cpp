@@ -68,9 +68,9 @@ void TerrainEditor::Update() {
 
 
 
-	if (Input::TriggerKey(DIK_O)) {
-		OutputVertices("Packages/Jsons/Terrain/TerrainVertices.json");
-	}
+	//if (Input::TriggerKey(DIK_O)) {
+	//	OutputVertices("Packages/Jsons/Terrain/TerrainVertices.json");
+	//}
 
 }
 

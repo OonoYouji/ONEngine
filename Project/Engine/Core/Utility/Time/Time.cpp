@@ -48,7 +48,7 @@ namespace {
 		time_ = std::chrono::high_resolution_clock::now();
 
 		deltaTime_ = duration.count() / 1000.0f;  ///< 秒に変換
-		//deltaTime_ = std::min(deltaTime_, 1.0f / 60.0f); ///< 0.05秒以上は無視
+		deltaTime_ = std::min(deltaTime_, 1.0f / 60.0f); ///< 0.05秒以上は無視
 	}
 
 

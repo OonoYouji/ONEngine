@@ -24,6 +24,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class PuzzleClearEffectCannon* cannon_;
+	class LaserEffect* laser_;
 
 };
 
