@@ -40,7 +40,7 @@ void PuzzleClearEffect::Initialize() {
 	cannonStand->SetParent(this);
 
 	PuzzleClearEffectCannon* cannon = pEntityComponentSystem_->GenerateEntity<PuzzleClearEffectCannon>();
-	cannon->SetParent(cannonStand);
+	cannon->SetParent(this);
 
 }
 

@@ -55,8 +55,8 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 }
 
 
-void RenderingPipelineCollection::ExecutePostProcess() {
+void RenderingPipelineCollection::ExecutePostProcess(const std::string& _sceneTextureName) {
 	for (auto& postProcess : postProcesses_) {
-		postProcess->Execute(dxManager_->GetDxCommand(), graphicsResourceCollection_, pEntityComponentSystem_);
+		postProcess->Execute(_sceneTextureName, dxManager_->GetDxCommand(), graphicsResourceCollection_, pEntityComponentSystem_);
 	}
 }
