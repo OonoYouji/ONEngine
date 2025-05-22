@@ -6,16 +6,20 @@
 #include "Cannon/PuzzleClearEffectCannon.h"
 #include "Cannon/PuzzleClearEffectCannonStand.h"
 #include "Effect/LaserEffect.h"
+#include "Effect/LaserHitEffect.h"
 
 PuzzleClearEffect::PuzzleClearEffect() {}
 PuzzleClearEffect::~PuzzleClearEffect() {}
 
 void PuzzleClearEffect::Initialize() {
 
-	/// エフェクトの生成
+	///// エフェクトの生成
 	laser_ = pEntityComponentSystem_->GenerateEntity<LaserEffect>();
 	laser_->SetParent(this);
 	laser_->SetActive(false);
+
+	LaserHitEffect* laserHit = pEntityComponentSystem_->GenerateEntity<LaserHitEffect>();
+
 
 
 	/// 子オブジェクトを生成する

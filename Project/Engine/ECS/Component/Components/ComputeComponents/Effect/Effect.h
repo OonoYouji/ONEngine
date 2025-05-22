@@ -82,11 +82,7 @@ public:
 
 	/// @brief Elementを削除する
 	/// @param _index 削除する要素のインデックス
-	void RemoveElement(size_t _index) {
-		if (_index < elements_.size()) {
-			elements_.erase(elements_.begin() + _index);
-		}
-	}
+	void RemoveElement(size_t _index);
 
 private:
 	/// ===================================================  
@@ -133,10 +129,7 @@ public:
 
 	/// @brief 最大エフェクト数を設定  
 	/// @param _maxCount 最大エフェクト数  
-	void SetMaxEffectCount(size_t _maxCount) {
-		maxEffectCount_ = _maxCount;
-		elements_.reserve(maxEffectCount_);
-	}
+	void SetMaxEffectCount(size_t _maxCount);
 
 	/// @brief 距離でのエミットタイプを設定  
 	/// @param _interval エミット間隔  
@@ -147,55 +140,35 @@ public:
 	/// @param _data 時間エミットデータ  
 	void SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount);
 
-	/// @brief 開始速度を設定  
-	/// @param _speed 開始速度  
-	void SetStartSpeed(float _speed) { mainModule_.SetSpeedStartData(_speed); }
-
 	/// @brief 残り寿命を設定  
 	/// @param _time 残り寿命  
-	void SetLifeLeftTime(float _time) { mainModule_.lifeLeftTime_ = _time; }
+	void SetLifeLeftTime(float _time);
 
 	/// @brief 要素の更新関数を設定
 	/// @param _func 
-	void SetElementUpdateFunc(std::function<void(Element*)> _func) {
-		elementUpdateFunc_ = _func;
-	}
+	void SetElementUpdateFunc(std::function<void(Element*)> _func);
 
 	/// @brief ビルボードの使用を設定
 	/// @param _use true: ビルボードを使用する, false: 使用しない
-	void SetUseBillboard(bool _use) { useBillboard_ = _use; }
+	void SetUseBillboard(bool _use);
 
 	/// @brief particle を出現させるかのフラグ
 	/// @param _isCreateParticle true: 出現できる false: 出現できない
-	void SetIsCreateParticle(bool _isCreateParticle) {
-		isCreateParticle_ = _isCreateParticle;
-	}
+	void SetIsCreateParticle(bool _isCreateParticle);
 
-	void SetBlendMode(BlendMode _blendMode) {
-		blendMode_ = _blendMode;
-	}
+	void SetBlendMode(BlendMode _blendMode);
 
-	void SetStartSize(const Vector3& _size) {
-		mainModule_.SetSizeStartData(_size);
-	}
-	void SetStartSize(const Vector3& _size1, const Vector3& _size2) {
-		mainModule_.SetSizeStartData(std::make_pair(_size1, _size2));
-	}
+	void SetStartSize(const Vector3& _size);
+	void SetStartSize(const Vector3& _size1, const Vector3& _size2);
 
-	void SetStartRotate(const Vector3& _rotate) {
-		mainModule_.SetRotateStartData(_rotate);
-	}
-	void SetStartRotate(const Vector3& _rotate1, const Vector3& _rotate2) {
-		mainModule_.SetRotateStartData(std::make_pair(_rotate1, _rotate2));
-	}
+	void SetStartRotate(const Vector3& _rotate);
+	void SetStartRotate(const Vector3& _rotate1, const Vector3& _rotate2);
 
-	void SetStartColor(const Color& _color) {
-		mainModule_.SetColorStartData(_color);
-	}
-	void SetStartColor(const Color& _color1, const Color& _color2) {
-		mainModule_.SetColorStartData(std::make_pair(_color1, _color2));
-	}
+	void SetStartColor(const Color& _color);
+	void SetStartColor(const Color& _color1, const Color& _color2);
 
+	void SetStartSpeed(float _speed);
+	void SetStartSpeed(float _speed1, float _speed2);
 
 	/// @brief sphereのエミット形状を設定
 	/// @param _center 中心
@@ -216,17 +189,16 @@ public:
 
 	/// @brief メッシュパスを取得
 	/// @return メッシュパス
-	const std::string& GetMeshPath() const { return meshPath_; }
+	const std::string& GetMeshPath() const;
 
-	const std::string& GetTexturePath() const { return texturePath_; }
+	const std::string& GetTexturePath() const;
 
 	/// @brief エフェクト要素を取得
 	/// @return エフェクト要素のリスト
-	const std::vector<Element>& GetElements() const { return elements_; }
+	const std::vector<Element>& GetElements() const;
 
-	BlendMode GetBlendMode() const { return blendMode_; }
+	BlendMode GetBlendMode() const;
 
-
-	EffectMainModule* GetMainModule() { return &mainModule_; }
+	EffectMainModule* GetMainModule();
 
 };

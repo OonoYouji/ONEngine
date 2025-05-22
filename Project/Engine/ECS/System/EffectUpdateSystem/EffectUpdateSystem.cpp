@@ -71,12 +71,14 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							std::pair<Vector3, Vector3> size = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.sizeStartData_);
 							std::pair<Vector3, Vector3> rotate = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.rotateStartData_);
 							std::pair<Color, Color> color = effect->mainModule_.GetValue<Color>(effect->mainModule_.colorStartData_);
+							std::pair<float, float> speed = effect->mainModule_.GetValue<float>(effect->mainModule_.speedStartData_);
+							Vector3 emitPos = effect->emitShape_.GetEmitPosition();
 
 							effect->CreateElement(
 								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
 								Random::Vector3(size.first, size.second),
 								Random::Vector3(rotate.first, rotate.second),
-								Vector3::kUp,
+								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),
 								Random::Vector4(color.first, color.second)
 							);
 
@@ -103,12 +105,14 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							std::pair<Vector3, Vector3> size = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.sizeStartData_);
 							std::pair<Vector3, Vector3> rotate = effect->mainModule_.GetValue<Vector3>(effect->mainModule_.rotateStartData_);
 							std::pair<Color, Color> color = effect->mainModule_.GetValue<Color>(effect->mainModule_.colorStartData_);
+							std::pair<float, float> speed = effect->mainModule_.GetValue<float>(effect->mainModule_.speedStartData_);
+							Vector3 emitPos = effect->emitShape_.GetEmitPosition();
 
 							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+								effect->GetOwner()->GetWorldPosition() + emitPos,
 								Random::Vector3(size.first, size.second),
 								Random::Vector3(rotate.first, rotate.second),
-								Vector3::kUp,
+								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),
 								Random::Vector4(color.first, color.second)
 							);
 
@@ -147,6 +151,10 @@ void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _elemen
 
 	if (_effect->elementUpdateFunc_) {
 		_effect->elementUpdateFunc_(_element);
+	}
+
+	if (_element->velocity != Vector3::kZero) {
+		Console::Log("effect element velocity not zero");
 	}
 
 	_element->transform.position += _element->velocity * Time::DeltaTime();

@@ -49,6 +49,8 @@ public:
 
 	Vector3 GetEmitPosition();
 
+	Vector3 GetEmitDirection(const Vector3& _emitedPosition);
+
 private:
 	/// =================================================
 	/// private : objects
