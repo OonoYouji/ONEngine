@@ -9,7 +9,7 @@ void LaserEffect::Initialize() {
 	effect->SetMaxEffectCount(1024);
 	effect->SetMeshPath("Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj");
 	effect->SetTexturePath("Assets/Textures/circle.png");
-	effect->SetLifeLeftTime(2.0f);
+	effect->SetLifeLeftTime(0.5f);
 
 	effect->SetStartSpeed(100.0f);
 	effect->SetStartSize(Vector3::kOne);
@@ -22,6 +22,7 @@ void LaserEffect::Initialize() {
 		[this](Effect::Element* _element) {
 			Vector3& direction = variables_->Get<Vector3>("effectDirection");
 			_element->transform.position += Matrix4x4::Transform(direction, transform_->matWorld) * Time::DeltaTime();
+			_element->color.a -= 0.005f;
 		}
 	);
 

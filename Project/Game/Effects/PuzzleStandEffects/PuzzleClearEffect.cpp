@@ -18,8 +18,13 @@ void PuzzleClearEffect::Initialize() {
 	laser_->SetParent(this);
 	laser_->SetActive(false);
 
-	LaserHitEffect* laserHit = pEntityComponentSystem_->GenerateEntity<LaserHitEffect>();
+	hitEffects_[0] = pEntityComponentSystem_->GenerateEntity<LaserHitEffect>();
+	hitEffects_[1] = pEntityComponentSystem_->GenerateEntity<LaserExplosionEffect>();
 
+	for (auto& hitEffect : hitEffects_) {
+		hitEffect->SetParent(this);
+		hitEffect->SetActive(false);
+	}
 
 
 	/// 子オブジェクトを生成する
@@ -31,7 +36,8 @@ void PuzzleClearEffect::Initialize() {
 	cannon_->SetActive(false);
 
 
-	variables_->Add<bool>("isStart", false);
+	//variables_->Add<bool>("isStart", false);
+	//variables_->Add<float>("timeToImpact", 0.0f);
 }
 
 void PuzzleClearEffect::Update() {
@@ -58,6 +64,20 @@ void PuzzleClearEffect::Update() {
 	if (cannonAnimeTime > 2.0f) {
 		endCannonAnime = true;
 		laser_->SetActive(true);
+	}
+
+	if (endCannonAnime) {
+		float& timeToImpact = variables_->Get<float>("timeToImpact");
+		timeToImpact -= Time::DeltaTime();
+		if (timeToImpact <= 0.0f) {
+			Variables* laserVars = laser_->GetComponent<Variables>();
+			const Vector3& cannonDirection = laserVars->Get<Vector3>("effectDirection");
+			for (auto& hitEffect : hitEffects_) {
+				hitEffect->SetActive(true);
+				hitEffect->SetPosition(cannonDirection.Normalize() * (100.0f * 0.5f + 10.0f));
+				hitEffect->UpdateTransform();
+			}
+		}
 	}
 
 }

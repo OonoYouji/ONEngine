@@ -27,5 +27,7 @@ private:
 	class PuzzleClearEffectCannon* cannon_;
 	class LaserEffect* laser_;
 
+	class IEntity* hitEffects_[2];
+
 };
 

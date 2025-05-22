@@ -183,7 +183,7 @@ const std::string& IEntity::GetName() const {
 	return name_;
 }
 
-bool IEntity::GetIsActive() const {
+bool IEntity::GetActive() const {
 	return active_;
 }
 
@@ -208,7 +208,7 @@ void EntityComponentSystem::Initialize() {
 
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
-		if (!entity->GetIsActive()) {
+		if (!entity->GetActive()) {
 			continue;
 		}
 

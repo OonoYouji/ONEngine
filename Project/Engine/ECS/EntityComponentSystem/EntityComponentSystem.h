@@ -129,7 +129,7 @@ public:
 	/// @return string型の名前
 	const std::string& GetName() const;
 
-	bool GetIsActive() const;
+	bool GetActive() const;
 
 };
 
