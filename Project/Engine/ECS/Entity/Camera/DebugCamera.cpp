@@ -18,6 +18,14 @@ void DebugCamera::Initialize() {
 
 
 	isMoving_ = false;
+
+	UpdateTransform();
+	matView_ = transform_->GetMatWorld().Inverse();
+	matProjection_ = MakePerspectiveFovMatrix(
+		fovY_, 1280.0f / 720.0f,
+		nearClip_, farClip_
+	);
+	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 }
 
 void DebugCamera::Update() {

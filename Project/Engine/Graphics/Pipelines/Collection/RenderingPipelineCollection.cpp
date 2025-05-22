@@ -32,7 +32,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
-	//Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);

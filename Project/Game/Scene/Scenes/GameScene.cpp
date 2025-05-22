@@ -64,7 +64,9 @@ void GameScene::Initialize() {
 	camera->SetRotateX(std::numbers::pi_v<float> *0.1f);
 	player->SetCamera(camera);
 
-	//pEntityComponentSystem_->GenerateEntity<Skybox>();
+	Skybox* skybox = pEntityComponentSystem_->GenerateEntity<Skybox>();
+	skybox->SetScale(Vector3::kOne * 500.0f);
+
 	pEntityComponentSystem_->SetMainCamera(camera);
 	//pEntityComponentSystem_->GenerateEntity<KeyItem>();
 

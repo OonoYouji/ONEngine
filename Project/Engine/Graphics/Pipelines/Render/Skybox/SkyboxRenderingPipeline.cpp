@@ -28,7 +28,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(0, 128, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -72,45 +72,6 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 			}
 		}
 
-
-		///// vbv
-		//vertices_ = {
-		//	/// 右面
-		//	{ { -1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { 1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, 1.0f, 1.0f } },
-		//	{ { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-		//	/// 左面
-		//	{ { -1.0f, -1.0f, -1.0f, 1.0f } },
-		//	{ { -1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, -1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, 1.0f, 1.0f } },
-
-		//	/// 前面
-		//	{ { -1.0f, -1.0f, -1.0f, 1.0f } },
-		//	{ { 1.0f, -1.0f, -1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, -1.0f, 1.0f } },
-		//	{ { 1.0f, 1.0f, -1.0f, 1.0f } },
-
-		//	/// 後面
-		//	{ { 1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { -1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { 1.0f, 1.0f, 1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, 1.0f, 1.0f } },
-
-		//	/// 上面
-		//	{ { -1.0f, 1.0f, -1.0f, 1.0f } },
-		//	{ { 1.0f, 1.0f, -1.0f, 1.0f } },
-		//	{ { -1.0f, 1.0f, 1.0f, 1.0f } },
-		//	{ { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-		//	/// 下面
-		//	{ { -1.0f, -1.0f, -1.0f, 1.0f } },
-		//	{ { 1.0f, -1.0f, -1.0f, 1.0f } },
-		//	{ { -1.0f, -1.0f, 1.0f, 1.0f } },
-		//	{ { 1.0f, -1.0f, 1.0f, 1.0f } }
-		//};
 		// インデックス（CW）
 		indices_.insert(indices_.end(), { 0, 2, 3, 0, 3, 1 }); // -X
 		indices_.insert(indices_.end(), { 4, 5, 7, 4, 7, 6 }); // +X
@@ -118,26 +79,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		indices_.insert(indices_.end(), { 2, 6, 7, 2, 7, 3 }); // +Y
 		indices_.insert(indices_.end(), { 0, 4, 6, 0, 6, 2 }); // -Z
 		indices_.insert(indices_.end(), { 1, 3, 7, 1, 7, 5 }); // +Z
-		//indices_ = {
-		//	/// 右面
-		//	0, 1, 2,
-		//	2, 1, 3,
-		//	/// 左面
-		//	4, 5, 6,
-		//	6, 5, 7,
-		//	/// 前面
-		//	8, 9, 10,
-		//	10, 9, 11,
-		//	/// 後面
-		//	12, 13, 14,
-		//	14, 13, 15,
-		//	/// 上面
-		//	16, 17, 18,
-		//	18, 17, 19,
-		//	/// 下面
-		//	20, 21, 22,
-		//	22, 21, 23
-		//};
+
 
 
 

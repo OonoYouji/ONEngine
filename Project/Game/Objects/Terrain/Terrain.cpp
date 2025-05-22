@@ -81,6 +81,9 @@ void Terrain::Initialize() {
 	//CalculateMeshlet();
 	/// 頂点のinputを行う
 	//InputVertices();
+
+
+	transform_->position = Vector3(-500.0f, 0.0f, -500.0f);
 }
 
 void Terrain::Update() {
