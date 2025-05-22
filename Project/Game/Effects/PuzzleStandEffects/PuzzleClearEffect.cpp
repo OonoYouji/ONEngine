@@ -36,11 +36,19 @@ void PuzzleClearEffect::Initialize() {
 	cannon_->SetActive(false);
 
 
+	AddComponent<ToTerrainCollider>();
+
+
 	//variables_->Add<bool>("isStart", false);
 	//variables_->Add<float>("timeToImpact", 0.0f);
 }
 
 void PuzzleClearEffect::Update() {
+
+	if (Input::TriggerKey(DIK_R)) {
+		Reset();
+	}
+
 
 	bool& isStart = variables_->Get<bool>("isStart");
 
@@ -80,4 +88,17 @@ void PuzzleClearEffect::Update() {
 		}
 	}
 
+}
+
+void PuzzleClearEffect::Reset() {
+	laser_->SetActive(false);
+	cannon_->SetActive(false);
+	for (auto& hitEffect : hitEffects_) {
+		hitEffect->SetActive(false);
+	}
+	Variables* cannonVars = cannon_->GetComponent<Variables>();
+	cannonVars->Get<float>("animeTime") = 0.0f;
+	variables_->Get<bool>("isStart") = false;
+	variables_->Get<bool>("endCannonAnime") = false;
+	variables_->Get<float>("timeToImpact") = 2.0f;
 }

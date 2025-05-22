@@ -24,6 +24,7 @@ void Terrain::Initialize() {
 
 			size_t index = row * terrainWidth + col;
 			vertices_[index].position = Vector4(static_cast<float>(row), 0.0f, static_cast<float>(col), 1.0f);
+			vertices_[index].position -= Vector4(terrainWidth * 0.5f, 0.0f, terrainHeight * 0.5f, 0.0f);
 			vertices_[index].uv = Vector2(
 				static_cast<float>(row) / static_cast<float>(terrainWidth),
 				static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
@@ -68,7 +69,7 @@ void Terrain::Initialize() {
 	splattingTexPaths_[SNOW] = "Packages/Textures/Snow.jpg";
 
 	/// Octreeの生成
-	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
+	Vector3 center = Vector3::kZero;
 	Vector3 halfSize = Vector3(terrainSize_.x * 0.5f, 50.0f, terrainSize_.y * 0.5f);
 	octree_ = std::make_unique<TerrainQuadTree>(AABB{ center, halfSize });
 
@@ -82,31 +83,10 @@ void Terrain::Initialize() {
 	/// 頂点のinputを行う
 	//InputVertices();
 
-
-	transform_->position = Vector3(-500.0f, 0.0f, -500.0f);
 }
 
 void Terrain::Update() {
-	/*for (auto& chunk : chunks_) {
 
-
-		/// チャンクの描画
-		Vector3 chunkSize3 = Vector3(chunk.GetChunkSize().x, 50.0f, chunk.GetChunkSize().y);
-		Gizmo::DrawWireCube(
-			chunk.GetPosition() + chunkSize3 * 0.5f,
-			chunkSize3,
-			Color::kRed
-		);
-	}*/
-
-
-	//octree_->Draw(octree_.get(), Color::kBlack);
-
-	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
-		//meshRenderer->SetVertices(vertices_);
-		//meshRenderer->SetIndices(indices_);
-		//meshRenderer->SetIsBufferRecreate(true);
-	}
 }
 
 bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainCollider) {

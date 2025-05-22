@@ -3,6 +3,7 @@
 
 /// std
 #include <fstream>
+#include <filesystem>
 
 /// externals
 #include <imgui.h>
@@ -93,7 +94,6 @@ void TerrainEditor::RecalculateNormal() {
 
 }
 
-#include <filesystem> // For std::filesystem::create_directories
 
 void TerrainEditor::OutputVertices(const std::string& _filePath) {
 	// Ensure the directory exists
