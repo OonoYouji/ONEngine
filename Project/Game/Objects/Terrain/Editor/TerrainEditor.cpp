@@ -37,6 +37,21 @@ void TerrainEditor::Initialize() {
 }
 
 void TerrainEditor::Update() {
+
+
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_O)) {
+		OutputVertices("Packages/Jsons/Terrain/TerrainVertices.json");
+	} else if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_I)) {
+		pTerrain_->InputVertices();
+		editedVertices_.clear();
+		for (size_t i = 0; i < pTerrain_->GetVertices().size(); i++) {
+			editedVertices_.push_back(std::make_pair(i, &pTerrain_->GetVertices()[i]));
+		}
+		pTerrain_->editVertices_ = editedVertices_;
+	}
+
+
+
 	mousePosition_ = Input::GetImGuiImageMousePosition("Scene");
 	if (Input::TriggerKey(DIK_SPACE)) {
 		points_ = pTerrain_->vertices_;
@@ -58,6 +73,9 @@ void TerrainEditor::Update() {
 	}
 	if (Input::PressKey(DIK_B)) {
 		editMode_ = EDIT_MODE_SPLAT_BLEND;
+	}
+	if (Input::PressKey(DIK_N)) {
+		editMode_ = EDIT_MODE_NONE;
 	}
 
 	editFunctions_[editMode_]();
@@ -106,9 +124,8 @@ void TerrainEditor::OutputVertices(const std::string& _filePath) {
 
 	for (const auto& vertex : pTerrain_->GetVertices()) {
 		jsonVertices.push_back({
-			{ "position", { vertex.position.x, vertex.position.y, vertex.position.z } }
-			//{ "normal", { vertex.normal.x, vertex.normal.y, vertex.normal.z } },
-			//{ "uv", { vertex.uv.x, vertex.uv.y } }
+			{ "position", { vertex.position.x, vertex.position.y, vertex.position.z } },
+			{ "splatBlend", { vertex.splatBlend.x, vertex.splatBlend.y, vertex.splatBlend.z, vertex.splatBlend.w } }
 			});
 	}
 

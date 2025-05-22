@@ -57,12 +57,6 @@ void Terrain::Initialize() {
 	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
 
 
-	/// カスタムメッシュで地形の描画を行う
-	//CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
-	//meshRenderer->SetVertices(vertices_);
-	//meshRenderer->SetIndices(indices_);
-	//meshRenderer->SetIsBufferRecreate(true);
-
 	splattingTexPaths_[GRASS] = "Packages/Textures/Grass.jpg";
 	splattingTexPaths_[DIRT] = "Packages/Textures/Dirt.jpg";
 	splattingTexPaths_[ROCK] = "Packages/Textures/Rock.jpg";
@@ -116,6 +110,10 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	return false;
 }
 
+void Terrain::ClearEditVertices() {
+	editVertices_.clear();
+}
+
 void Terrain::InputVertices() {
 	const std::string&& filePath = "Packages/Jsons/Terrain/TerrainVertices.json";
 
@@ -132,13 +130,25 @@ void Terrain::InputVertices() {
 	/// 頂点の読み込み
 	for (size_t i = 0; i < jsonVertices.size(); ++i) {
 		const auto& vertexData = jsonVertices[i];
-		Mesh::VertexData vertex;
+		TerrainVertex vertex;
 		vertex.position = Vector4(
 			vertexData["position"][0].get<float>(),
 			vertexData["position"][1].get<float>(),
 			vertexData["position"][2].get<float>(),
 			1.0f
 		);
+
+		if (vertex.position.y != 0.0f) {
+			Console::Log(std::format("vertex[{}] position y is not 0.0f: {}", i, vertex.position.y));
+		}
+
+		vertex.splatBlend = Vector4(
+			vertexData["splatBlend"][0].get<float>(),
+			vertexData["splatBlend"][1].get<float>(),
+			vertexData["splatBlend"][2].get<float>(),
+			vertexData["splatBlend"][3].get<float>()
+		);
+
 		//vertex.normal = Vector3(
 		//	vertexData["normal"][0].get<float>(),
 		//	vertexData["normal"][1].get<float>(),
@@ -149,6 +159,7 @@ void Terrain::InputVertices() {
 		//	vertexData["uv"][1].get<float>()
 		//);
 		vertices_[i].position = vertex.position;
+		vertices_[i].splatBlend = vertex.splatBlend;
 	}
 
 }

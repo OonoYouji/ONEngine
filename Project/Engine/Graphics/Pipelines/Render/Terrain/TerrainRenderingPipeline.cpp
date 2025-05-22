@@ -124,6 +124,7 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 		for (auto& editV : pTerrain_->GetEditVertices()) {
 			vertexBuffer_.SetVertex(editV.first, *editV.second);
 		}
+		pTerrain_->ClearEditVertices();
 	}
 
 

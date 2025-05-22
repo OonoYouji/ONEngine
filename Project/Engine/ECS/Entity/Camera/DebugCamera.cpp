@@ -17,6 +17,7 @@ void DebugCamera::Initialize() {
 	farClip_ = 1000.0f;
 
 
+	isActive_ = false;
 	isMoving_ = false;
 
 	UpdateTransform();
@@ -31,6 +32,14 @@ void DebugCamera::Initialize() {
 void DebugCamera::Update() {
 #ifdef _DEBUG
 
+	if (Input::PressKey(DIK_LCONTROL) && Input::PressKey(DIK_C)) {
+		isActive_ = !isActive_;
+	}
+
+
+	if (!isActive_) {
+		return;
+	}
 
 
 	/// カメラが移動していないときだけ判定を取る
