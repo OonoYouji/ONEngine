@@ -96,7 +96,7 @@ void PuzzleClearEffect::Update() {
 			const Vector3& cannonDirection = laserVars->Get<Vector3>("effectDirection");
 			for (auto& hitEffect : hitEffects_) {
 				hitEffect->SetActive(true);
-				hitEffect->SetPosition(cannonDirection.Normalize() * (100.0f * 0.5f + 10.0f));
+				hitEffect->SetPosition(cannonDirection.Normalize() * (100.0f * 0.5f + 10.0f) + Vector3(0, 1.2f, 0));
 				hitEffect->UpdateTransform();
 			}
 		}
@@ -119,5 +119,5 @@ void PuzzleClearEffect::Reset() {
 	cannonVars->Get<float>("animeTime") = 0.0f;
 	variables_->Get<bool>("isStart") = false;
 	variables_->Get<bool>("endCannonAnime") = false;
-	variables_->Get<float>("timeToImpact") = 2.0f;
+	variables_->Get<float>("timeToImpact") = 0.5f;
 }
