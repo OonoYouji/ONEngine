@@ -45,6 +45,7 @@ public:
 	
 	/// @brief post processの実行
 	void Execute(
+		const std::string& _textureName,
 		class DxCommand* _dxCommand, 
 		class GraphicsResourceCollection* _resourceCollection,
 		class EntityComponentSystem* _pEntityComponentSystem

@@ -58,6 +58,8 @@ public:
 
 	bool Collision(Transform* _transform, class ToTerrainCollider* _toTerrainCollider); ///< 当たり判定を取る
 
+	void ClearEditVertices();
+
 private:
 	/// ===================================================
 	/// private : methods

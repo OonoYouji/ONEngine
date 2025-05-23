@@ -107,8 +107,8 @@
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|X64'">
-    <OutDir>Bin\Desktop_2022\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>Bin\Desktop_2022\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</OutDir>
+    <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <TargetName>DirectXMesh</TargetName>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>

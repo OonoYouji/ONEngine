@@ -2,6 +2,7 @@
 
 /// std
 #include <memory>
+#include <string>
 
 /// engine
 #include "Engine/Graphics/Shader/ComputePipeline.h"
@@ -25,6 +26,7 @@ public:
 
 	/// @brief post processの実行
 	virtual void Execute(
+		const std::string& _textureName,
 		class DxCommand* _dxCommand, 
 		class GraphicsResourceCollection* _resourceCollection,
 		class EntityComponentSystem* _pEntityComponentSystem

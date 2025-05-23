@@ -32,7 +32,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
-	//Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
@@ -55,8 +55,8 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 }
 
 
-void RenderingPipelineCollection::ExecutePostProcess() {
+void RenderingPipelineCollection::ExecutePostProcess(const std::string& _sceneTextureName) {
 	for (auto& postProcess : postProcesses_) {
-		postProcess->Execute(dxManager_->GetDxCommand(), graphicsResourceCollection_, pEntityComponentSystem_);
+		postProcess->Execute(_sceneTextureName, dxManager_->GetDxCommand(), graphicsResourceCollection_, pEntityComponentSystem_);
 	}
 }

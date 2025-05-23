@@ -59,7 +59,7 @@ void PostProcessLighting::Initialize(ShaderCompiler* _shaderCompiler, DxManager*
 
 }
 
-void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
+void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
@@ -110,10 +110,17 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 
 		//auto& textures = _resourceCollection->GetTextures();
 
-		textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
-		textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
-		textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
-		textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
+		if (_textureName == "scene") {
+			textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
+			textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
+			textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
+		} else {
+			textureIndices_[1] = _resourceCollection->GetTextureIndex("debugWorldPosition");
+			textureIndices_[2] = _resourceCollection->GetTextureIndex("debugNormalize");
+			textureIndices_[3] = _resourceCollection->GetTextureIndex("debugFlags");
+		}
+
+		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
 		textureIndices_[4] = _resourceCollection->GetTextureIndex("Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
@@ -134,8 +141,8 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_SOURCE
-	);	
-	
+	);
+
 	CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
@@ -151,8 +158,8 @@ void PostProcessLighting::Execute(DxCommand* _dxCommand, GraphicsResourceCollect
 		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
 		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get()
 	);
-	
-	
+
+
 	/// resource barrier
 	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),

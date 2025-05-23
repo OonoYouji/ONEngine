@@ -119,6 +119,8 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -158,6 +160,9 @@
     <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Editor\EditorManager.h" />
@@ -291,6 +296,11 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

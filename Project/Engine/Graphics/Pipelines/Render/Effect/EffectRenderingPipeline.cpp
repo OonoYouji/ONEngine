@@ -21,8 +21,8 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// shader compile
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/Mesh/Mesh.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Mesh/Mesh.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"Packages/Shader/Render/Effect/Effect.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"Packages/Shader/Render/Effect/Effect.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		std::array<std::function<D3D12_BLEND_DESC()>, 5> blendModeFuncs{
 			BlendMode::Normal,

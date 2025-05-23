@@ -136,7 +136,7 @@ void Console::OutputLogToFile(const std::string& _directory) {
 	/// ファイルを開く
 	std::ofstream file(_directory + fileName, std::ios::trunc);
 	if (!file.is_open()) {
-		std::filesystem::create_directory(_directory);
+		std::filesystem::create_directories(_directory);
 	}
 
 	file << gLogData.message;

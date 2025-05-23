@@ -23,7 +23,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	bool active_;
+	bool isActive_;
 
 	bool isMoving_; ///< 移動中か
 

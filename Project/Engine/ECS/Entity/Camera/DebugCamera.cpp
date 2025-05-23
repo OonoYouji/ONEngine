@@ -4,7 +4,11 @@
 #include "Engine/Core/Utility/Utility.h"
 
 DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
-DebugCamera::~DebugCamera() {}
+DebugCamera::~DebugCamera() {
+	variables_->Get<Vector3>("startPos") = transform_->position;
+	variables_->Get<Vector3>("startRot") = transform_->rotate;
+	variables_->SaveJson("./Assets/Jsons/" + GetName() + ".json");
+}
 
 void DebugCamera::Initialize() {
 
@@ -17,10 +21,35 @@ void DebugCamera::Initialize() {
 	farClip_ = 1000.0f;
 
 
+	isActive_ = true;
 	isMoving_ = false;
+
+	transform_->position = variables_->Get<Vector3>("startPos");
+	transform_->rotate = variables_->Get<Vector3>("startRot");
+
+
+	UpdateTransform();
+	matView_ = transform_->GetMatWorld().Inverse();
+	matProjection_ = MakePerspectiveFovMatrix(
+		fovY_, 1280.0f / 720.0f,
+		nearClip_, farClip_
+	);
+	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
+
 }
 
 void DebugCamera::Update() {
+#ifdef _DEBUG
+
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_C)) {
+		isActive_ = !isActive_;
+	}
+
+
+	if (!isActive_) {
+		return;
+	}
+
 
 	/// カメラが移動していないときだけ判定を取る
 	if (!isMoving_) {
@@ -53,7 +82,7 @@ void DebugCamera::Update() {
 
 		velocity = Matrix4x4::Transform(velocity, Matrix4x4::MakeRotate(transform_->rotate));
 		transform_->position += velocity * 10.0f;
-		
+
 		const Vector2& move = Input::GetMouseVelocity();
 		transform_->rotate.y += move.x * 0.01f;
 		transform_->rotate.x += move.y * 0.01f;
@@ -67,5 +96,6 @@ void DebugCamera::Update() {
 		);
 		viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 	}
+#endif // _DEBUG
 
 }

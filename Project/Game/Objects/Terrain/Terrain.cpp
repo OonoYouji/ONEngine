@@ -24,6 +24,7 @@ void Terrain::Initialize() {
 
 			size_t index = row * terrainWidth + col;
 			vertices_[index].position = Vector4(static_cast<float>(row), 0.0f, static_cast<float>(col), 1.0f);
+			vertices_[index].position -= Vector4(terrainWidth * 0.5f, 0.0f, terrainHeight * 0.5f, 0.0f);
 			vertices_[index].uv = Vector2(
 				static_cast<float>(row) / static_cast<float>(terrainWidth),
 				static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
@@ -56,19 +57,13 @@ void Terrain::Initialize() {
 	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
 
 
-	/// カスタムメッシュで地形の描画を行う
-	//CustomMeshRenderer* meshRenderer = AddComponent<CustomMeshRenderer>();
-	//meshRenderer->SetVertices(vertices_);
-	//meshRenderer->SetIndices(indices_);
-	//meshRenderer->SetIsBufferRecreate(true);
-
 	splattingTexPaths_[GRASS] = "Packages/Textures/Grass.jpg";
 	splattingTexPaths_[DIRT] = "Packages/Textures/Dirt.jpg";
 	splattingTexPaths_[ROCK] = "Packages/Textures/Rock.jpg";
 	splattingTexPaths_[SNOW] = "Packages/Textures/Snow.jpg";
 
 	/// Octreeの生成
-	Vector3 center = Vector3(terrainSize_.x * 0.5f, 0.0f, terrainSize_.y * 0.5f);
+	Vector3 center = Vector3::kZero;
 	Vector3 halfSize = Vector3(terrainSize_.x * 0.5f, 50.0f, terrainSize_.y * 0.5f);
 	octree_ = std::make_unique<TerrainQuadTree>(AABB{ center, halfSize });
 
@@ -81,29 +76,11 @@ void Terrain::Initialize() {
 	//CalculateMeshlet();
 	/// 頂点のinputを行う
 	//InputVertices();
+
 }
 
 void Terrain::Update() {
-	/*for (auto& chunk : chunks_) {
 
-
-		/// チャンクの描画
-		Vector3 chunkSize3 = Vector3(chunk.GetChunkSize().x, 50.0f, chunk.GetChunkSize().y);
-		Gizmo::DrawWireCube(
-			chunk.GetPosition() + chunkSize3 * 0.5f,
-			chunkSize3,
-			Color::kRed
-		);
-	}*/
-
-
-	//octree_->Draw(octree_.get(), Color::kBlack);
-
-	if (CustomMeshRenderer* meshRenderer = GetComponent<CustomMeshRenderer>()) {
-		//meshRenderer->SetVertices(vertices_);
-		//meshRenderer->SetIndices(indices_);
-		//meshRenderer->SetIsBufferRecreate(true);
-	}
 }
 
 bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainCollider) {
@@ -133,6 +110,10 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 	return false;
 }
 
+void Terrain::ClearEditVertices() {
+	editVertices_.clear();
+}
+
 void Terrain::InputVertices() {
 	const std::string&& filePath = "Packages/Jsons/Terrain/TerrainVertices.json";
 
@@ -149,23 +130,23 @@ void Terrain::InputVertices() {
 	/// 頂点の読み込み
 	for (size_t i = 0; i < jsonVertices.size(); ++i) {
 		const auto& vertexData = jsonVertices[i];
-		Mesh::VertexData vertex;
+		TerrainVertex vertex;
 		vertex.position = Vector4(
 			vertexData["position"][0].get<float>(),
 			vertexData["position"][1].get<float>(),
 			vertexData["position"][2].get<float>(),
 			1.0f
 		);
-		//vertex.normal = Vector3(
-		//	vertexData["normal"][0].get<float>(),
-		//	vertexData["normal"][1].get<float>(),
-		//	vertexData["normal"][2].get<float>()
-		//);
-		//vertex.uv = Vector2(
-		//	vertexData["uv"][0].get<float>(),
-		//	vertexData["uv"][1].get<float>()
-		//);
+
+		vertex.splatBlend = Vector4(
+			vertexData["splatBlend"][0].get<float>(),
+			vertexData["splatBlend"][1].get<float>(),
+			vertexData["splatBlend"][2].get<float>(),
+			vertexData["splatBlend"][3].get<float>()
+		);
+
 		vertices_[i].position = vertex.position;
+		vertices_[i].splatBlend = vertex.splatBlend;
 	}
 
 }

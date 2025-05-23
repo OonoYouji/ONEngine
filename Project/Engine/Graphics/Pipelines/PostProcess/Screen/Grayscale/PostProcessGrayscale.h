@@ -18,6 +18,7 @@ public:
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 
 	void Execute(
+		const std::string& _textureName,
 		class DxCommand* _dxCommand,
 		class GraphicsResourceCollection* _resourceCollection,
 		class EntityComponentSystem* _entityComponentSystem

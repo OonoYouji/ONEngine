@@ -16,8 +16,8 @@ Effect::Effect() {
 void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale    = Vector3::kOne;
-	element.transform.rotate   = Vector3::kZero;
+	element.transform.scale = Vector3::kOne;
+	element.transform.rotate = Vector3::kZero;
 	element.transform.Update();
 
 	element.color = _color;
@@ -29,8 +29,8 @@ void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
-	element.transform.scale    = Vector3::kOne;
-	element.transform.rotate   = Vector3::kZero;
+	element.transform.scale = Vector3::kOne;
+	element.transform.rotate = Vector3::kZero;
 	element.transform.Update();
 
 	element.color = _color;
@@ -48,8 +48,19 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, cons
 
 	element.color = _color;
 	element.lifeTime = mainModule_.lifeLeftTime_;
-	element.velocity = _velocity * mainModule_.GetStartSpeed();
+	element.velocity = _velocity;
 	elements_.push_back(element);
+}
+
+void Effect::RemoveElement(size_t _index) {
+	if (_index < elements_.size()) {
+		elements_.erase(elements_.begin() + _index);
+	}
+}
+
+void Effect::SetMaxEffectCount(size_t _maxCount) {
+	maxEffectCount_ = _maxCount;
+	elements_.reserve(maxEffectCount_);
 }
 
 void Effect::SetEmitTypeDistance(float _interval, size_t _emitInstanceCount) {
@@ -65,6 +76,58 @@ void Effect::SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCoun
 	emitInstanceCount_ = _emitInstanceCount;
 }
 
+void Effect::SetLifeLeftTime(float _time) {
+	mainModule_.lifeLeftTime_ = _time;
+}
+
+void Effect::SetElementUpdateFunc(std::function<void(Element*)> _func) {
+	elementUpdateFunc_ = _func;
+}
+
+void Effect::SetUseBillboard(bool _use) {
+	useBillboard_ = _use;
+}
+
+void Effect::SetIsCreateParticle(bool _isCreateParticle) {
+	isCreateParticle_ = _isCreateParticle;
+}
+
+void Effect::SetBlendMode(BlendMode _blendMode) {
+	blendMode_ = _blendMode;
+}
+
+void Effect::SetStartSize(const Vector3& _size) {
+	mainModule_.SetSizeStartData(_size);
+}
+
+void Effect::SetStartSize(const Vector3& _size1, const Vector3& _size2) {
+	mainModule_.SetSizeStartData(std::make_pair(_size1, _size2));
+}
+
+void Effect::SetStartRotate(const Vector3& _rotate) {
+	mainModule_.SetRotateStartData(_rotate);
+}
+
+void Effect::SetStartRotate(const Vector3& _rotate1, const Vector3& _rotate2) {
+	mainModule_.SetRotateStartData(std::make_pair(_rotate1, _rotate2));
+}
+
+void Effect::SetStartColor(const Color& _color) {
+	mainModule_.SetColorStartData(_color);
+}
+
+void Effect::SetStartColor(const Color& _color1, const Color& _color2) {
+	mainModule_.SetColorStartData(std::make_pair(_color1, _color2));
+}
+
+void Effect::SetStartSpeed(float _speed) {
+	mainModule_.SetSpeedStartData(_speed);
+}
+
+void Effect::SetStartSpeed(float _speed1, float _speed2) {
+	mainModule_.SetSpeedStartData(std::make_pair(_speed1, _speed2));
+}
+
 void Effect::SetEmitShape(const Vector3& _center, float _radius) {
 	emitShape_.SetShapeType(EffectEmitShape::ShapeType::Sphere);
 	emitShape_.SetSphere(_center, _radius);
@@ -78,4 +141,24 @@ void Effect::SetEmitShape(const Vector3& _center, const Vector3& _size) {
 void Effect::SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height) {
 	emitShape_.SetShapeType(EffectEmitShape::ShapeType::Cone);
 	emitShape_.SetCone(_apex, _angle, _radius, _height);
+}
+
+const std::string& Effect::GetMeshPath() const {
+	return meshPath_;
+}
+
+const std::string& Effect::GetTexturePath() const {
+	return texturePath_;
+}
+
+const std::vector<Effect::Element>& Effect::GetElements() const {
+	return elements_;
+}
+
+Effect::BlendMode Effect::GetBlendMode() const {
+	return blendMode_;
+}
+
+EffectMainModule* Effect::GetMainModule() {
+	return &mainModule_;
 }
