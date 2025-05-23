@@ -138,10 +138,6 @@ void Terrain::InputVertices() {
 			1.0f
 		);
 
-		if (vertex.position.y != 0.0f) {
-			Console::Log(std::format("vertex[{}] position y is not 0.0f: {}", i, vertex.position.y));
-		}
-
 		vertex.splatBlend = Vector4(
 			vertexData["splatBlend"][0].get<float>(),
 			vertexData["splatBlend"][1].get<float>(),
@@ -149,15 +145,6 @@ void Terrain::InputVertices() {
 			vertexData["splatBlend"][3].get<float>()
 		);
 
-		//vertex.normal = Vector3(
-		//	vertexData["normal"][0].get<float>(),
-		//	vertexData["normal"][1].get<float>(),
-		//	vertexData["normal"][2].get<float>()
-		//);
-		//vertex.uv = Vector2(
-		//	vertexData["uv"][0].get<float>(),
-		//	vertexData["uv"][1].get<float>()
-		//);
 		vertices_[i].position = vertex.position;
 		vertices_[i].splatBlend = vertex.splatBlend;
 	}

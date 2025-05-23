@@ -14,9 +14,13 @@ PuzzleClearEffect::~PuzzleClearEffect() {}
 void PuzzleClearEffect::Initialize() {
 
 	///// エフェクトの生成
-	laser_ = pEntityComponentSystem_->GenerateEntity<LaserEffect>();
-	laser_->SetParent(this);
-	laser_->SetActive(false);
+	laserEffects_[0] = pEntityComponentSystem_->GenerateEntity<LaserEffect>();
+	laserEffects_[1] = pEntityComponentSystem_->GenerateEntity<LaserShootEffect>();
+
+	for (auto& laserEffect : laserEffects_) {
+		laserEffect->SetParent(this);
+		laserEffect->SetActive(false);
+	}
 
 	hitEffects_[0] = pEntityComponentSystem_->GenerateEntity<LaserHitEffect>();
 	hitEffects_[1] = pEntityComponentSystem_->GenerateEntity<LaserExplosionEffect>();
@@ -58,7 +62,10 @@ void PuzzleClearEffect::Update() {
 			cannon_->SetActive(true);
 		}
 		cannon_->UpdateTransform(); /// 座標が更新されないと困るので
-		laser_->UpdateTransform();
+
+		for (auto& laserEffect : laserEffects_) {
+			laserEffect->UpdateTransform();
+		}
 		return;
 	}
 
@@ -71,14 +78,21 @@ void PuzzleClearEffect::Update() {
 
 	if (cannonAnimeTime > 2.0f) {
 		endCannonAnime = true;
-		laser_->SetActive(true);
+		
+		laserEffects_[0]->SetActive(true);
+		IEntity* shootEffect = laserEffects_[1];
+		Variables* vars = shootEffect->GetComponent<Variables>();
+		if (vars->Get<float>("animeTime") < 0.5f) {
+			shootEffect->SetActive(true);
+		}
+
 	}
 
 	if (endCannonAnime) {
 		float& timeToImpact = variables_->Get<float>("timeToImpact");
 		timeToImpact -= Time::DeltaTime();
 		if (timeToImpact <= 0.0f) {
-			Variables* laserVars = laser_->GetComponent<Variables>();
+			Variables* laserVars = laserEffects_[0]->GetComponent<Variables>();
 			const Vector3& cannonDirection = laserVars->Get<Vector3>("effectDirection");
 			for (auto& hitEffect : hitEffects_) {
 				hitEffect->SetActive(true);
@@ -91,7 +105,12 @@ void PuzzleClearEffect::Update() {
 }
 
 void PuzzleClearEffect::Reset() {
-	laser_->SetActive(false);
+	Variables* shootVars = laserEffects_[1]->GetComponent<Variables>();
+	shootVars->Get<float>("animeTime") = 0.0f;
+
+	for (auto& laserEffect : laserEffects_) {
+		laserEffect->SetActive(false);
+	}
 	cannon_->SetActive(false);
 	for (auto& hitEffect : hitEffects_) {
 		hitEffect->SetActive(false);

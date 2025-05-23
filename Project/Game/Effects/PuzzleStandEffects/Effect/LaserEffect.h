@@ -11,3 +11,11 @@ public:
 	void Update() override;
 };
 
+class LaserShootEffect : public IEntity {
+public:
+	LaserShootEffect() = default;
+	~LaserShootEffect() override = default;
+	
+	void Initialize() override;
+	void Update() override;
+};

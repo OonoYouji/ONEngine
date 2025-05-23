@@ -17,7 +17,7 @@ void DebugCamera::Initialize() {
 	farClip_ = 1000.0f;
 
 
-	isActive_ = false;
+	isActive_ = true;
 	isMoving_ = false;
 
 	UpdateTransform();
