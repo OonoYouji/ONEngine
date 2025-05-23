@@ -163,6 +163,7 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Editor\EditorManager.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
+    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

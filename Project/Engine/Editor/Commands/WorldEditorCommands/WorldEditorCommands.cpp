@@ -1,5 +1,10 @@
 #include "WorldEditorCommands.h"
 
+/// std
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -51,7 +56,7 @@ EDITOR_STATE EntityRenameCommand::Execute() {
 		pEntity_->SetName(newName_);
 
 		//if (Input::TriggerKey(DIK_RETURN)) {
-			result = EDITOR_STATE_FINISH;
+		result = EDITOR_STATE_FINISH;
 		//}
 
 
@@ -79,3 +84,67 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 }
 
 
+/// ///////////////////////////////////////////////////
+/// シーンにあるオブジェクトから新しいクラスを作る
+/// ///////////////////////////////////////////////////
+
+CreateNewEntityClassCommand::CreateNewEntityClassCommand(IEntity* _entity, const std::string& _outputFilePath)
+	: pEntity_(_entity) {
+	sourceClassPath_ = "SourceEntity";
+	sourceClassName_ = "SourceEntity";
+	outputFilePath_ = _outputFilePath;
+}
+
+EDITOR_STATE CreateNewEntityClassCommand::Execute() {
+
+	CreateNewClassFile(sourceClassPath_ + ".h", outputFilePath_ + ".h", pEntity_->GetName() + ".h");
+	CreateNewClassFile(sourceClassPath_ + ".cpp", outputFilePath_ + "cpp", pEntity_->GetName() + ".cpp");
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE CreateNewEntityClassCommand::Undo() {
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+std::string CreateNewEntityClassCommand::ReplaceAll(const std::string& _str, const std::string& _from, const std::string& _to) {
+	std::string result = _str;
+	size_t start_pos = 0;
+	while ((start_pos = result.find(_from, start_pos)) != std::string::npos) {
+		result.replace(start_pos, _from.length(), _to);
+		start_pos += _to.length(); // `to` の長さ分進める
+	}
+	return result;;
+}
+
+EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& _srcFilePath, const std::string& _outputFileName, const std::string& _newClassName) {
+
+	//const std::string outputFilePath = "Game/Entity/" + _newClassName;
+
+	// ファイルを読み込む
+	std::ifstream inputFile(_srcFilePath);
+	if (!inputFile) {
+		Console::Log("ファイルを開けません: " + _srcFilePath);
+		return EDITOR_STATE_FAILED;
+	}
+
+	std::stringstream buffer;
+	buffer << inputFile.rdbuf(); // ファイル全体を読み込む
+	std::string content = buffer.str();
+
+	inputFile.close();
+
+	// 置き換える
+	content = ReplaceAll(content, sourceClassName_, pEntity_->GetName());
+
+	// 新しいファイルに書き込む
+	std::ofstream outputFile(_outputFileName);
+	if (!outputFile) {
+		Console::Log("ファイルを書き込めません: " + _outputFileName);
+		return EDITOR_STATE_FAILED;
+	}
+
+	outputFile << content;
+	outputFile.close();
+
+}
