@@ -4,7 +4,11 @@
 #include "Engine/Core/Utility/Utility.h"
 
 DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
-DebugCamera::~DebugCamera() {}
+DebugCamera::~DebugCamera() {
+	variables_->Get<Vector3>("startPos") = transform_->position;
+	variables_->Get<Vector3>("startRot") = transform_->rotate;
+	variables_->SaveJson("./Assets/Jsons/" + GetName() + ".json");
+}
 
 void DebugCamera::Initialize() {
 
@@ -20,6 +24,10 @@ void DebugCamera::Initialize() {
 	isActive_ = true;
 	isMoving_ = false;
 
+	transform_->position = variables_->Get<Vector3>("startPos");
+	transform_->rotate = variables_->Get<Vector3>("startRot");
+
+
 	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
 	matProjection_ = MakePerspectiveFovMatrix(
@@ -27,6 +35,7 @@ void DebugCamera::Initialize() {
 		nearClip_, farClip_
 	);
 	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
+
 }
 
 void DebugCamera::Update() {
