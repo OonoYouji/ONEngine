@@ -68,7 +68,9 @@ void GameScene::Initialize() {
 	skybox->SetScale(Vector3::kOne * 500.0f);
 
 	pEntityComponentSystem_->SetMainCamera(camera);
-	pEntityComponentSystem_->GenerateEntity<KeyItem>();
+	KeyItem* keyItem = pEntityComponentSystem_->GenerateEntity<KeyItem>();
+	keyItem->SetPosition(Vector3(-20, 0, 0));
+	keyItem->UpdateTransform();
 
 	terrainEditor_ = std::make_unique<TerrainEditor>(
 		pEntityComponentSystem_->GenerateEntity<Terrain>(),

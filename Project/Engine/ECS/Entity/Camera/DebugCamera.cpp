@@ -41,7 +41,7 @@ void DebugCamera::Initialize() {
 void DebugCamera::Update() {
 #ifdef _DEBUG
 
-	if (Input::PressKey(DIK_LCONTROL) && Input::PressKey(DIK_C)) {
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_C)) {
 		isActive_ = !isActive_;
 	}
 
