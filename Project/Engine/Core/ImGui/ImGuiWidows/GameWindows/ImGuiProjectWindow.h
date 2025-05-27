@@ -48,10 +48,6 @@ private:
 
 
 
-	/// @brief プロジェクトの読み込み
-	/// @param _path 読み込むプロジェクトのパス
-	void LoadProject(const std::string& _path);
-
 	/// @brief フォルダの読み込み
 	/// @param _path 読み込むフォルダのパス
 	void LoadFolder(const std::string& _path, std::shared_ptr<Folder> _folder);
@@ -70,7 +66,9 @@ private:
 	/// private : objects
 	/// ===================================================
 	
-	std::shared_ptr<Folder> rootFolder_;
+	std::shared_ptr<Folder> assetsRootFolder_;
+	std::shared_ptr<Folder> packagesRootFolder_;
+	std::shared_ptr<Folder> gameRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
 	uint32_t selectedItemPtr_ = 0;
 

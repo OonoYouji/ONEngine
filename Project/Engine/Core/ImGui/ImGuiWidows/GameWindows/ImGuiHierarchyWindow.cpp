@@ -32,6 +32,14 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 
 
 	auto PopupWindow = [&]() {
+
+		// ドラッグの開始
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+			ImGui::SetDragDropPayload("ENTITY_HIERARCHY", &_entity, sizeof(IEntity*));
+			ImGui::TextUnformatted(entityName_.c_str());
+			ImGui::EndDragDropSource();
+		}
+
 		/// 右クリックしたときのメニューの表示
 		if (ImGui::BeginPopupContextItem(entityName_.c_str())) {
 			if (ImGui::MenuItem("rename")) {
@@ -40,6 +48,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 			ImGui::EndPopup();
 		}
 		};
+
 
 
 	/// 子オブジェクトの表示
@@ -115,32 +124,3 @@ void ImGuiHierarchyWindow::Hierarchy() {
 
 	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
 }
-
-//void ImGuiHierarchyWindow::DrawChildren(IEntity* _entity) {
-//	for (auto& child : _entity->GetChildren()) {
-//		entityName_ = typeid(*child).name();
-//		entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(child));
-//		if (entityName_.find(kClassPrefix) == 0) {
-//			entityName_ = entityName_.substr(kClassPrefix.length());
-//		}
-//
-//		ImGui::Indent();
-//		if (child->GetChildren().empty()) {
-//			// 子がいない場合はSelectableで選択可能にする  
-//			if (ImGui::Selectable(entityName_.c_str(), child == selectedEntity_)) {
-//				selectedEntity_ = child;
-//			}
-//		} else {
-//			// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
-//			if (ImGui::TreeNodeEx(entityName_.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth)) {
-//				if (ImGui::Selectable(entityName_.c_str(), child == selectedEntity_)) {
-//					selectedEntity_ = child;
-//				}
-//				DrawChildren(child);
-//				ImGui::TreePop();
-//			}
-//		}
-//
-//		ImGui::Unindent();
-//	}
-//}

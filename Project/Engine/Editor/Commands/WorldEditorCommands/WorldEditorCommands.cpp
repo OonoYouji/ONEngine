@@ -55,15 +55,11 @@ EDITOR_STATE EntityRenameCommand::Execute() {
 		newName_ += "_Renamed";
 		pEntity_->SetName(newName_);
 
-		//if (Input::TriggerKey(DIK_RETURN)) {
 		result = EDITOR_STATE_FINISH;
-		//}
-
 
 	} else if (pEntity_ == nullptr) {
 		result = EDITOR_STATE_FAILED;
 		Console::Log("EntityRenameCommand : Entity is nullptr");
-
 
 	} else {
 		result = EDITOR_STATE_FAILED;
@@ -119,8 +115,6 @@ std::string CreateNewEntityClassCommand::ReplaceAll(const std::string& _str, con
 
 EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& _srcFilePath, const std::string& _outputFileName, const std::string& _newClassName) {
 
-	//const std::string outputFilePath = "Game/Entity/" + _newClassName;
-
 	// ファイルを読み込む
 	std::ifstream inputFile(_srcFilePath);
 	if (!inputFile) {
@@ -146,5 +140,4 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 
 	outputFile << content;
 	outputFile.close();
-
 }
