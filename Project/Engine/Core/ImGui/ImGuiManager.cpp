@@ -14,7 +14,7 @@
 
 #pragma region glyphRangesJapanease
 namespace {
-	static const ImWchar gGlyphRangesJapanese[] = {
+	const ImWchar gGlyphRangesJapanese[] = {
 		0x0020, 0x007E, 0x00A2, 0x00A3, 0x00A7, 0x00A8, 0x00AC, 0x00AC, 0x00B0, 0x00B1, 0x00B4, 0x00B4, 0x00B6, 0x00B6, 0x00D7, 0x00D7,
 		0x00F7, 0x00F7, 0x0391, 0x03A1, 0x03A3, 0x03A9, 0x03B1, 0x03C1, 0x03C3, 0x03C9, 0x0401, 0x0401, 0x0410, 0x044F, 0x0451, 0x0451,
 		0x2010, 0x2010, 0x2015, 0x2016, 0x2018, 0x2019, 0x201C, 0x201D, 0x2020, 0x2021, 0x2025, 0x2026, 0x2030, 0x2030, 0x2032, 0x2033,
@@ -566,7 +566,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080);
-	//imGuiIO.MouseDoubleClickTime = 1.5f;
+	imGuiIO.MouseDoubleClickTime = 1.f;
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
@@ -585,30 +585,19 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
-	/// debug windowの生成
 #ifdef _DEBUG
-
-
+	/// debug windowの生成
 	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
 	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
-
 #endif // _DEBUG
-
-
-	//startImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/Start.png")->GetSRVGPUHandle().ptr);
-	//endImage_ = ImTextureID(resourceCollection_->GetTexture("Assets/Textures/Engine/End.png")->GetSRVGPUHandle().ptr);
-
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
 		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_
 	);
-
-	//ImGui::DockSpaceOverViewport(ImGuiID(), ImGui::GetMainViewport());
-
 }
 
 void ImGuiManager::Update() {

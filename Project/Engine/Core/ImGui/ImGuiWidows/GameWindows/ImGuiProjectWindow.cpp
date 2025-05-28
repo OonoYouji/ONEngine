@@ -26,20 +26,20 @@ void ImGuiProjectWindow::ImGuiFunc() {
 
 	ImGui::Begin("test");
 
-	if (ImGui::Selectable("laksjd")) {
+	static bool isDoubleClicked = false;
+	ImGui::Selectable("セレクト", isDoubleClicked, ImGuiSelectableFlags_AllowDoubleClick);
+	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+		isDoubleClicked = !isDoubleClicked;
 	}
 
-	if (ImGui::IsItemHovered()) {
-		ImGui::Text("is item hovered");
-		static bool isDoubleClicked = false;
-		if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			isDoubleClicked = true;
-		}
-
-		if (isDoubleClicked) {
-			ImGui::Text("double click");
-		}
+	if (isDoubleClicked) {
+		ImGui::Text("select!");
+	} else {
+		ImGui::Text("not select!");
 	}
+	ImGui::Text(ImGui::GetVersion());
+	ImGui::Text(std::to_string(ImGui::GetIO().DeltaTime).c_str());
+
 
 	ImGui::End();
 
