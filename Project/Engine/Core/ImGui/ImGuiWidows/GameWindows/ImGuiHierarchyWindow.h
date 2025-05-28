@@ -16,7 +16,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(class EntityComponentSystem* _pEntityComponentSystem, class ImGuiInspectorWindow* _inspectorWindow);
+	ImGuiHierarchyWindow(class EntityComponentSystem* _pEntityComponentSystem, class EditorManager* _editorManager, class ImGuiInspectorWindow* _inspectorWindow);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ImGuiFunc() override;
@@ -27,6 +27,10 @@ private:
 	/// ===================================================
 		
 	void DrawEntityHierarchy(class IEntity* _entity);
+
+	void MenuBar();
+
+	void Hierarchy();
 
 private:
 	/// ===================================================
@@ -40,6 +44,7 @@ private:
 
 
 	class EntityComponentSystem* pEntityComponentSystem_ = nullptr;
+	class EditorManager* pEditorManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 	class IEntity* selectedEntity_ = nullptr;
 };

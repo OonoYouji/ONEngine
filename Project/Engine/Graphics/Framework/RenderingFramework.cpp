@@ -90,6 +90,7 @@ void RenderingFramework::Draw() {
 		for (auto& renderTexture : debugRenderTextures_) {
 			renderTexture->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
 		}
+		renderingPipelineCollection_->ExecutePostProcess("debugScene");
 	}
 
 	{	/// Game Camera Rendering
@@ -112,11 +113,10 @@ void RenderingFramework::Draw() {
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
 
 	/// post processの実行
-	renderingPipelineCollection_->ExecutePostProcess();
+	renderingPipelineCollection_->ExecutePostProcess("scene");
 
 	windowManager_->MainWindowPreDraw();
 	imGuiManager_->Draw();
-	//copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());
 	windowManager_->MainWindowPostDraw();
 
 #else
@@ -140,7 +140,7 @@ void RenderingFramework::Draw() {
 	releaseBuildSubWindow_->PostDraw();
 
 	/// post processの実行
-	renderingPipelineCollection_->ExecutePostProcess();
+	renderingPipelineCollection_->ExecutePostProcess("scene");
 
 	windowManager_->MainWindowPreDraw();
 	copyImagePipeline_->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, pEntityComponentSystem_->GetMainCamera2D());

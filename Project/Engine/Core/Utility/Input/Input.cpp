@@ -45,11 +45,11 @@ bool Input::ReleaseMouse(int _button) {
 	return !gInputSystem_->mouse_->state_.rgbButtons[_button] && gInputSystem_->keyboard_->preKeys_[_button];
 }
 
-Vector2 Input::GetMousePosition() {
+const Vector2& Input::GetMousePosition() {
 	return gInputSystem_->mouse_->position_;
 }
 
-Vector2 Input::GetMouseVelocity() {
+const Vector2& Input::GetMouseVelocity() {
 	return gInputSystem_->mouse_->velocity_;
 }
 

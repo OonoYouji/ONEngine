@@ -23,6 +23,7 @@ void Player::Initialize() {
 
 	AddComponent<ToTerrainCollider>();
 
+	//transform_->position = Vec3(500.0f, 0.0f, 500.0f);
 }
 
 void Player::Update() {

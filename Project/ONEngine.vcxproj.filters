@@ -132,6 +132,17 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
+    <ClCompile Include="Engine\Editor\EditorManager.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -260,5 +271,16 @@
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
+    <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
+    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
+    <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
+    <ClInclude Include="Engine\Editor\EditorManager.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
+    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
   </ItemGroup>
 </Project>

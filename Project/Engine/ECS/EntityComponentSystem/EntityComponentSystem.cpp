@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Camera/DebugCamera.h"
 #include "../Component/Component.h"
 #include "AddECSSystemFunction.h"
 
@@ -111,6 +112,14 @@ void IEntity::RemoveParent() {
 	}
 }
 
+void IEntity::SetName(const std::string& _name) {
+	name_ = _name;
+}
+
+void IEntity::SetActive(bool _active) {
+	active_ = _active;
+}
+
 const Vector3& IEntity::GetLocalPosition() const {
 	return transform_->position;
 }
@@ -174,6 +183,10 @@ const std::string& IEntity::GetName() const {
 	return name_;
 }
 
+bool IEntity::GetActive() const {
+	return active_;
+}
+
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
@@ -181,9 +194,11 @@ EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize() {
 
+	pDxDevice_ = pDxManager_->GetDxDevice();
+
 	entities_.reserve(256);
 
-	Camera* debugCamera = GenerateCamera();
+	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetDebugCamera(debugCamera);
@@ -193,6 +208,10 @@ void EntityComponentSystem::Initialize() {
 
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
+		if (!entity->GetActive()) {
+			continue;
+		}
+
 		entity->Update();
 		entity->UpdateTransform();
 	}

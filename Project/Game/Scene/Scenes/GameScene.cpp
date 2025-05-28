@@ -14,6 +14,7 @@
 #include "Game/Objects/Terrain/Terrain.h"
 #include "Game/Entity/Player/Player.h"
 #include "Game/Objects/KeyItem/KeyItem.h"
+#include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
 
 GameScene::GameScene() {
 	loadResourcePaths_ = {
@@ -28,6 +29,10 @@ GameScene::GameScene() {
 		"Assets/Models/entity/player.obj",
 		"Assets/Models/objects/statue/statue.obj",
 		"Assets/Models/objects/sideToPlane/sideToPlane.obj",
+		"Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
+		"Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj",
+		"Assets/Models/objects/PuzzleClearEffect/CannonStand.obj",
+		"Assets/Models/objects/PuzzleClearEffect/Cannon.obj",
 
 		"Assets/Textures/circle.png",
 		"Assets/Textures/gradation.png",
@@ -59,9 +64,13 @@ void GameScene::Initialize() {
 	camera->SetRotateX(std::numbers::pi_v<float> *0.1f);
 	player->SetCamera(camera);
 
-	pEntityComponentSystem_->GenerateEntity<Skybox>();
+	Skybox* skybox = pEntityComponentSystem_->GenerateEntity<Skybox>();
+	skybox->SetScale(Vector3::kOne * 500.0f);
+
 	pEntityComponentSystem_->SetMainCamera(camera);
-	//pEntityComponentSystem_->GenerateEntity<KeyItem>();
+	KeyItem* keyItem = pEntityComponentSystem_->GenerateEntity<KeyItem>();
+	keyItem->SetPosition(Vector3(-20, 0, 0));
+	keyItem->UpdateTransform();
 
 	terrainEditor_ = std::make_unique<TerrainEditor>(
 		pEntityComponentSystem_->GenerateEntity<Terrain>(),
@@ -69,6 +78,7 @@ void GameScene::Initialize() {
 	);
 	terrainEditor_->Initialize();
 
+	pEntityComponentSystem_->GenerateEntity<PuzzleClearEffect>();
 
 }
 

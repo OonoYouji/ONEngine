@@ -27,12 +27,12 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void PostProcessGrayscale::Execute(DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
 	auto& textures = _resourceCollection->GetTextures();
-	textureIndices_[0] = _resourceCollection->GetTextureIndex("scene");
+	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
 	textureIndices_[1] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 	{

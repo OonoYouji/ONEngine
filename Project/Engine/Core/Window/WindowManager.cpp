@@ -18,7 +18,7 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 	}
 #endif // _DEBUG
 
-	switch(_msg) {
+	switch (_msg) {
 	case WM_CLOSE:
 		DestroyWindow(_hwnd);
 		return 0;
@@ -37,7 +37,7 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 	}
 #endif // _DEBUG
 
-	switch(_msg) {
+	switch (_msg) {
 	case WM_CLOSE:
 	case WM_DESTROY: /// window破棄
 		DestroyWindow(_hwnd);
@@ -49,9 +49,8 @@ LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPAR
 
 
 
-WindowManager::WindowManager(DxManager* _dxManager) 
-	: dxManager_(_dxManager) {
-}
+WindowManager::WindowManager(DxManager* _dxManager)
+	: dxManager_(_dxManager) {}
 
 WindowManager::~WindowManager() {}
 
@@ -72,8 +71,8 @@ void WindowManager::Finalize() {
 void WindowManager::Update() {
 
 	/// windowの更新
-	for(auto itr = windows_.begin(); itr != windows_.end();) {
-		if(!(*itr)->IsOpenWindow() && (*itr).get() != pMainWindow_) {
+	for (auto itr = windows_.begin(); itr != windows_.end();) {
+		if (!(*itr)->IsOpenWindow() && (*itr).get() != pMainWindow_) {
 			itr = windows_.erase(itr);
 		} else {
 			++itr;
@@ -126,7 +125,7 @@ void WindowManager::PostDrawAll() {
 }
 
 void WindowManager::PresentAll() {
-	for(auto& window : windows_) {
+	for (auto& window : windows_) {
 		window->Present();
 	}
 }
@@ -135,7 +134,7 @@ void WindowManager::PresentAll() {
 
 Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
-	
+
 	/// game windowを作成して表示する
 	CreateGameWindow(_windowName.c_str(), _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME), newWindow.get(), _windowType);
 	newWindow->Initialize(_windowName, _windowSize, dxManager_);
@@ -144,7 +143,7 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	Window* resultPtr = newWindow.get();
 
 	windows_.push_back(std::move(newWindow));
-	if(_windowType == WindowType::Main) {
+	if (_windowType == WindowType::Main) {
 		pMainWindow_ = resultPtr;
 	}
 
@@ -158,15 +157,15 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 	_windowPtr->windowStyle_ = _windowStyle;
 
 	/// windowの設定
-	if(_windowType == WindowType::Main) {
+	if (_windowType == WindowType::Main) {
 		_windowPtr->windowClass_.lpfnWndProc = MainWindowProc;
 	} else {
 		_windowPtr->windowClass_.lpfnWndProc = SubWindowProc;
 	}
 
 	_windowPtr->windowClass_.lpszClassName = _title;
-	_windowPtr->windowClass_.hInstance     = GetModuleHandle(nullptr);
-	_windowPtr->windowClass_.hCursor       = LoadCursor(nullptr, IDC_ARROW);
+	_windowPtr->windowClass_.hInstance = GetModuleHandle(nullptr);
+	_windowPtr->windowClass_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
 	RegisterClass(&_windowPtr->windowClass_);
 
@@ -194,13 +193,13 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 }
 
 void WindowManager::UpdateMainWindow() {
-	if(PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
+	if (PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
 		TranslateMessage(&pMainWindow_->msg_);
 		DispatchMessage(&pMainWindow_->msg_);
 	}
 
 	/// 終了メッセージ
-	if(pMainWindow_->msg_.message == WM_QUIT) {
+	if (pMainWindow_->msg_.message == WM_QUIT) {
 		isProcessEnd_ = true;
 		pMainWindow_->processMessage_ = true;
 		return;

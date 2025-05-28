@@ -10,6 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Graphics/Framework/RenderingFramework.h"
+#include "Engine/Editor/EditorManager.h"
 #include "GameFrameworkConfig.h"
 
 
@@ -45,12 +46,10 @@ private:
 	std::unique_ptr<SceneManager>          sceneManager_          = nullptr;
 	std::unique_ptr<EntityComponentSystem> entityComponentSystem_ = nullptr;
 
-#ifdef _DEBUG
-#endif // _DEBUG
 	std::unique_ptr<ImGuiManager>          imGuiManager_     = nullptr;
+	std::unique_ptr<EditorManager>         editorManager_ = nullptr;
 
-
-	std::unique_ptr<RenderingFramework> renderingFramework_;
+	std::unique_ptr<RenderingFramework>    renderingFramework_;
 
 };
 

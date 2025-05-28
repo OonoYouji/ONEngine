@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiGameWindow(class EntityComponentSystem* _pEntityComponentSystem, class GraphicsResourceCollection* _resourceCollection);
+	ImGuiGameWindow(class EntityComponentSystem* _pEntityComponentSystem, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiGameWindow() {}
 
 	/// @brief imgui windowの描画処理

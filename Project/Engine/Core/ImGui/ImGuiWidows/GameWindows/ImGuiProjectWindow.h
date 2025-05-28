@@ -18,6 +18,7 @@ class ImGuiProjectWindow : public IImGuiChildWindow {
 	};
 
 	struct Folder {
+		std::string path; ///< フォルダのパス
 		std::string name;
 		std::vector<std::shared_ptr<Folder>> folders;
 		std::vector<File> files;
@@ -29,7 +30,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow();
+	ImGuiProjectWindow(class EditorManager* _editorManager);
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -48,10 +49,6 @@ private:
 
 
 
-	/// @brief プロジェクトの読み込み
-	/// @param _path 読み込むプロジェクトのパス
-	void LoadProject(const std::string& _path);
-
 	/// @brief フォルダの読み込み
 	/// @param _path 読み込むフォルダのパス
 	void LoadFolder(const std::string& _path, std::shared_ptr<Folder> _folder);
@@ -60,6 +57,7 @@ private:
 	/// @brief フォルダーの描画
 	/// @param _folder 描画するフォルダ
 	void DrawFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth);
+	void DrawGameFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth);
 
 	/// @brief フォルダーの中身を描画
 	/// @param _folder 表示するフォルダ
@@ -70,9 +68,14 @@ private:
 	/// private : objects
 	/// ===================================================
 	
-	std::shared_ptr<Folder> rootFolder_;
+	class EditorManager* pEditorManager_; ///< エディターマネージャーへのポインタ
+
+	std::shared_ptr<Folder> assetsRootFolder_;
+	std::shared_ptr<Folder> packagesRootFolder_;
+	std::shared_ptr<Folder> gameRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
 	uint32_t selectedItemPtr_ = 0;
+	bool isGameFolder_ = false; // ゲームファイルを選択しているかどうか
 
 };
 

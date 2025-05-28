@@ -29,7 +29,7 @@ EffectEmitShape::EffectEmitShape(const EffectEmitShape& _shape) {
 	switch (shapeType_) {
 	case ShapeType::Sphere:   sphere_ = _shape.sphere_;     break;
 	case ShapeType::Cube:     cube_ = _shape.cube_;         break;
-	//case ShapeType::Cylinder: cylinder_ = _shape.cylinder_; break;
+		//case ShapeType::Cylinder: cylinder_ = _shape.cylinder_; break;
 	case ShapeType::Cone:     cone_ = _shape.cone_;         break;
 	}
 }
@@ -58,18 +58,6 @@ Vector3 EffectEmitShape::GetEmitPosition() {
 			Random::Float(-cube_.size.z, cube_.size.z)
 		);
 	}
-
-	//case ShapeType::Cylinder:
-	//{
-	//	float theta = Random::Float(0.0f, 2.0f * std::numbers::pi_v<float>);
-	//	float r = Random::Float(0.0f, cylinder_.radius);
-	//	return cylinder_.center + Vector3(
-	//		r * std::cos(theta),
-	//		Random::Float(0.0f, cylinder_.height),
-	//		r * std::sin(theta)
-	//	);
-	//}
-
 	case ShapeType::Cone:
 	{
 		float theta = Random::Float(0.0f, 2.0f * std::numbers::pi_v<float>);
@@ -86,4 +74,22 @@ Vector3 EffectEmitShape::GetEmitPosition() {
 	}
 
 	return Vector3();
+}
+
+Vector3 EffectEmitShape::GetEmitDirection(const Vector3& _emitedPosition) {
+	Vector3 direction = Vec3::kZero;
+	/// 形状ごとに発生方向を取得する
+	switch (shapeType_) {
+	case ShapeType::Sphere:
+		direction = _emitedPosition - sphere_.center;
+		break;
+	case ShapeType::Cube:
+		direction = _emitedPosition - cube_.center;
+		break;
+	case ShapeType::Cone:
+		direction = _emitedPosition - cone_.center;
+		break;
+	};
+
+	return direction.Normalize();
 }

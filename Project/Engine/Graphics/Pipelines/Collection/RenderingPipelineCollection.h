@@ -41,7 +41,7 @@ public:
 	void DrawEntities(class Camera* _3dCamera, class Camera* _2dCamera);
 
 	/// @brief post processの実行
-	void ExecutePostProcess();
+	void ExecutePostProcess(const std::string& _sceneTextureName);
 
 private:
 
