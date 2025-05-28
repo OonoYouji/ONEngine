@@ -561,12 +561,13 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui::CreateContext();
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
-	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_NavEnableKeyboard;
+	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080);
-	imGuiIO.MouseDoubleClickTime = 1.f;
+	//imGuiIO.MouseDoubleClickTime = 1.f;
+
 
 	ImGui_ImplDX12_InvalidateDeviceObjects();
 	ImGui_ImplDX12_CreateDeviceObjects();
@@ -602,6 +603,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
+	ImGui::GetIO().DeltaTime = Time::DeltaTime();
 
 	imGuiWindowCollection_->Update();
 }
