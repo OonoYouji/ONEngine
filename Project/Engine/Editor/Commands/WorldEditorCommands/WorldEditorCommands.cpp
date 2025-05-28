@@ -86,15 +86,20 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 
 CreateNewEntityClassCommand::CreateNewEntityClassCommand(IEntity* _entity, const std::string& _outputFilePath)
 	: pEntity_(_entity) {
-	sourceClassPath_ = "SourceEntity";
+	pEntity_ = _entity;
+	sourceClassPath_ = "Engine/Editor/Commands/WorldEditorCommands/SourceEntity";
 	sourceClassName_ = "SourceEntity";
 	outputFilePath_ = _outputFilePath;
 }
 
 EDITOR_STATE CreateNewEntityClassCommand::Execute() {
+	if (pEntity_->GetName().empty()) {
+		Console::Log("CreateNewEntityClassCommand : Entity name is empty");
+		return EDITOR_STATE_FAILED;
+	}
 
-	CreateNewClassFile(sourceClassPath_ + ".h", outputFilePath_ + ".h", pEntity_->GetName() + ".h");
-	CreateNewClassFile(sourceClassPath_ + ".cpp", outputFilePath_ + "cpp", pEntity_->GetName() + ".cpp");
+	CreateNewClassFile(sourceClassPath_ + ".h", outputFilePath_, pEntity_->GetName() + ".h");
+	CreateNewClassFile(sourceClassPath_ + ".cpp", outputFilePath_, pEntity_->GetName() + ".cpp");
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
@@ -132,7 +137,7 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 	content = ReplaceAll(content, sourceClassName_, pEntity_->GetName());
 
 	// 新しいファイルに書き込む
-	std::ofstream outputFile(_outputFileName);
+	std::ofstream outputFile(_outputFileName + "/" + _newClassName);
 	if (!outputFile) {
 		Console::Log("ファイルを書き込めません: " + _outputFileName);
 		return EDITOR_STATE_FAILED;

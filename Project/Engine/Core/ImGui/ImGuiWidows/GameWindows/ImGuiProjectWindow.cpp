@@ -90,7 +90,7 @@ void ImGuiProjectWindow::SelectFileView() {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY");
 			if (payload) {
 				IEntity* entity = static_cast<IEntity*>(payload->Data);
-				pEditorManager_->ExecuteCommand<CreateNewEntityClassCommand>(entity, selectedFolder_->name);
+				pEditorManager_->ExecuteCommand<CreateNewEntityClassCommand>(entity, selectedFolder_->path);
 			}
 		} else {
 			Console::Log("Cannot drop entity to this folder. Please select Game folder.");
@@ -106,13 +106,17 @@ void ImGuiProjectWindow::SelectFileView() {
 }
 
 void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Folder> _folder) {
+
+	_folder->path = _path;
+
 	for (const auto& entry : std::filesystem::directory_iterator(_path)) {
 		if (entry.is_directory()) {
 
 			auto subFolder = std::make_shared<Folder>();
+			subFolder->path = entry.path().string();
 			subFolder->name = entry.path().filename().string();
 			_folder->folders.push_back(subFolder);
-			LoadFolder(entry.path().string(), subFolder);
+			LoadFolder(subFolder->path, subFolder);
 
 		} else if (entry.is_regular_file()) {
 

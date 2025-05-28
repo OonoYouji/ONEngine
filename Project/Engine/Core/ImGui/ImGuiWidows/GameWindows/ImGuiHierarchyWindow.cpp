@@ -35,7 +35,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 
 		// ドラッグの開始
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-			ImGui::SetDragDropPayload("ENTITY_HIERARCHY", _entity, sizeof(IEntity*));
+			ImGui::SetDragDropPayload("ENTITY_HIERARCHY", _entity, sizeof(IEntity));
 			ImGui::TextUnformatted(entityName_.c_str());
 			ImGui::EndDragDropSource();
 		}

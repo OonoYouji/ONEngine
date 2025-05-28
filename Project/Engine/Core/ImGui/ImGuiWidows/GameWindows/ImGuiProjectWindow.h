@@ -18,6 +18,7 @@ class ImGuiProjectWindow : public IImGuiChildWindow {
 	};
 
 	struct Folder {
+		std::string path; ///< フォルダのパス
 		std::string name;
 		std::vector<std::shared_ptr<Folder>> folders;
 		std::vector<File> files;

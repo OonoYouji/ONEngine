@@ -96,7 +96,7 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires 
 
 template<typename T, typename ...Args>
 inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCommand<T> {
-	auto command = CloneCommand<T>(_args...);
+	std::unique_ptr<T> command = std::make_unique<T>(_args...);
 	if (command->Execute() == EDITOR_STATE_RUNNING) {
 		runningCommand_ = command.get();
 	}
