@@ -1,12 +1,19 @@
 #include "ImGuiProjectWindow.h"
 
-/// stl
+/// std
 #include <filesystem>
 
 /// external
 #include <imgui.h>
 
-ImGuiProjectWindow::ImGuiProjectWindow() {
+/// engine
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Editor/EditorManager.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+
+ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
+	: pEditorManager_(_editorManager) {
+
 	assetsRootFolder_ = std::make_shared<Folder>();
 	assetsRootFolder_->name = "Assets";
 	LoadFolder("./Assets", assetsRootFolder_);
@@ -19,31 +26,11 @@ ImGuiProjectWindow::ImGuiProjectWindow() {
 	gameRootFolder_->name = "Game";
 	LoadFolder("./Game", gameRootFolder_);
 
-	selectedFolder_ = assetsRootFolder_;
+	selectedFolder_ = gameRootFolder_;
+	isGameFolder_ = true;
 }
 
 void ImGuiProjectWindow::ImGuiFunc() {
-
-	ImGui::Begin("test");
-
-	static bool isDoubleClicked = false;
-	ImGui::Selectable("セレクト", isDoubleClicked, ImGuiSelectableFlags_AllowDoubleClick);
-	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-		isDoubleClicked = !isDoubleClicked;
-	}
-
-	if (isDoubleClicked) {
-		ImGui::Text("select!");
-	} else {
-		ImGui::Text("not select!");
-	}
-	ImGui::Text(ImGui::GetVersion());
-	ImGui::Text(std::to_string(ImGui::GetIO().DeltaTime).c_str());
-
-
-	ImGui::End();
-
-
 	if (!ImGui::Begin("Project")) {
 		ImGui::End();
 		return;
@@ -79,7 +66,7 @@ void ImGuiProjectWindow::Hierarchy() {
 	ImGui::BeginChild("Hierarchy", ImVec2(0, -FLT_MIN), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	/// root folderを再帰的に描画
-	DrawFolderHierarchy(gameRootFolder_, 0);
+	DrawGameFolderHierarchy(gameRootFolder_, 0);
 	DrawFolderHierarchy(assetsRootFolder_, 0);
 	DrawFolderHierarchy(packagesRootFolder_, 0);
 
@@ -88,8 +75,32 @@ void ImGuiProjectWindow::Hierarchy() {
 
 void ImGuiProjectWindow::SelectFileView() {
 	ImGui::BeginChild("SelectFileView", ImVec2(0, -FLT_MIN), true, ImGuiWindowFlags_HorizontalScrollbar);
-
 	DrawFolder(selectedFolder_);
+
+	/// ドラッグ先の領域を設定
+	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
+	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());
+
+	/// ドロップされたファイルの処理
+	/// Gameフォルダかチェック、違う場合は警告を出して無視
+	if (ImGui::BeginDragDropTarget()) {
+		ImGui::Text("Drop files here");
+
+		if (isGameFolder_) {
+			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY");
+			if (payload) {
+				IEntity* entity = static_cast<IEntity*>(payload->Data);
+				pEditorManager_->ExecuteCommand<CreateNewEntityClassCommand>(entity, selectedFolder_->name);
+			}
+		} else {
+			Console::Log("Cannot drop entity to this folder. Please select Game folder.");
+		}
+
+
+		ImGui::EndDragDropTarget();
+	}
+
+
 
 	ImGui::EndChild();
 }
@@ -127,6 +138,7 @@ void ImGuiProjectWindow::DrawFolderHierarchy(std::shared_ptr<Folder> _folder, si
 	bool nodeOpen = ImGui::TreeNodeEx(_folder->name.c_str(), nodeFlags);
 	if (ImGui::IsItemClicked()) {
 		selectedFolder_ = _folder;
+		isGameFolder_ = false;
 	}
 
 	if (nodeOpen && !(_folder->folders.empty())) {
@@ -137,20 +149,42 @@ void ImGuiProjectWindow::DrawFolderHierarchy(std::shared_ptr<Folder> _folder, si
 	}
 }
 
+void ImGuiProjectWindow::DrawGameFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth) {
+	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+	ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+	if (selectedFolder_ == _folder) {
+		nodeFlags |= ImGuiTreeNodeFlags_Selected;
+	}
+
+	if (_folder->folders.empty()) {
+		nodeFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+	}
+
+	bool nodeOpen = ImGui::TreeNodeEx(_folder->name.c_str(), nodeFlags);
+	if (ImGui::IsItemClicked()) {
+		selectedFolder_ = _folder;
+		isGameFolder_ = true;
+	}
+
+	if (nodeOpen && !(_folder->folders.empty())) {
+		for (const auto& subFolder : _folder->folders) {
+			DrawGameFolderHierarchy(subFolder, _depth + 1);
+		}
+		ImGui::TreePop();
+	}
+}
+
 void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 	for (const auto& subFolder : _folder->folders) {
 		uint32_t ptr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(subFolder.get()));
 
-		// 通常クリック時の処理（必要なら）
-		if (ImGui::Selectable(subFolder->name.c_str(), ptr == selectedItemPtr_)) {
-		}
-
 		/// ダブルクリックで選択
+		ImGui::Selectable(subFolder->name.c_str(), ptr == selectedItemPtr_);
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			selectedItemPtr_ = ptr;
 			selectedFolder_ = subFolder;
 		}
-
 	}
 
 	for (const auto& file : _folder->files) {
@@ -161,4 +195,5 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 			/// TODO: inspectorに表示
 		}
 	}
+
 }

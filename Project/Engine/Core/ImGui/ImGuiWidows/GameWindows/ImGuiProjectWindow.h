@@ -29,7 +29,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow();
+	ImGuiProjectWindow(class EditorManager* _editorManager);
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -56,6 +56,7 @@ private:
 	/// @brief フォルダーの描画
 	/// @param _folder 描画するフォルダ
 	void DrawFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth);
+	void DrawGameFolderHierarchy(std::shared_ptr<Folder> _folder, size_t _depth);
 
 	/// @brief フォルダーの中身を描画
 	/// @param _folder 表示するフォルダ
@@ -66,11 +67,14 @@ private:
 	/// private : objects
 	/// ===================================================
 	
+	class EditorManager* pEditorManager_; ///< エディターマネージャーへのポインタ
+
 	std::shared_ptr<Folder> assetsRootFolder_;
 	std::shared_ptr<Folder> packagesRootFolder_;
 	std::shared_ptr<Folder> gameRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
 	uint32_t selectedItemPtr_ = 0;
+	bool isGameFolder_ = false; // ゲームファイルを選択しているかどうか
 
 };
 
