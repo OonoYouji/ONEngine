@@ -187,11 +187,12 @@ public:
 	/// @param _height coneの高さ
 	void SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height);
 
-	/// @brief メッシュパスを取得
-	/// @return メッシュパス
-	const std::string& GetMeshPath() const;
 
+	bool IsCreateParticle() const;
+	size_t GetMaxEffectCount() const;
+	const std::string& GetMeshPath() const;
 	const std::string& GetTexturePath() const;
+
 
 	/// @brief エフェクト要素を取得
 	/// @return エフェクト要素のリスト
@@ -200,5 +201,15 @@ public:
 	BlendMode GetBlendMode() const;
 
 	EffectMainModule* GetMainModule();
+	const EffectMainModule& GetMainModule() const;
+
+	EffectEmitShape* GetEmitShape();
+	const EffectEmitShape& GetEmitShape() const;
+
+	int GetEmitType() const;
+
+	const DistanceEmitData& GetDistanceEmitData() const;
+	const TimeEmitData& GetTimeEmitData() const;
+	size_t GetEmitInstanceCount() const;
 
 };

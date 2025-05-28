@@ -79,7 +79,6 @@
     <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
@@ -143,6 +142,8 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -230,7 +231,6 @@
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
     <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
-    <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
@@ -282,5 +282,7 @@
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
+    <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
+    <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
   </ItemGroup>
 </Project>

@@ -143,6 +143,14 @@ void Effect::SetEmitShape(const Vector3& _apex, float _angle, float _radius, flo
 	emitShape_.SetCone(_apex, _angle, _radius, _height);
 }
 
+bool Effect::IsCreateParticle() const {
+	return isCreateParticle_;
+}
+
+size_t Effect::GetMaxEffectCount() const {
+	return maxEffectCount_;
+}
+
 const std::string& Effect::GetMeshPath() const {
 	return meshPath_;
 }
@@ -161,4 +169,32 @@ Effect::BlendMode Effect::GetBlendMode() const {
 
 EffectMainModule* Effect::GetMainModule() {
 	return &mainModule_;
+}
+
+const EffectMainModule& Effect::GetMainModule() const {
+	return mainModule_;
+}
+
+EffectEmitShape* Effect::GetEmitShape() {
+	return &emitShape_;
+}
+
+const EffectEmitShape& Effect::GetEmitShape() const {
+	return emitShape_;
+}
+
+int Effect::GetEmitType() const {
+	return static_cast<int>(emitType_);
+}
+
+const Effect::DistanceEmitData& Effect::GetDistanceEmitData() const {
+	return distanceEmitData_;
+}
+
+const Effect::TimeEmitData& Effect::GetTimeEmitData() const {
+	return timeEmitData_;
+}
+
+size_t Effect::GetEmitInstanceCount() const {
+	return emitInstanceCount_;
 }
