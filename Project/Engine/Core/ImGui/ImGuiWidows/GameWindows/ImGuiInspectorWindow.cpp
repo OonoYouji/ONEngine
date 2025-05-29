@@ -7,6 +7,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "../../Math/ImGuiMath.h"
+#include "Engine/Editor/EditorManager.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+
 
 enum SelectedType {
 	kNone,
@@ -14,8 +17,8 @@ enum SelectedType {
 	kResource
 };
 
-
-ImGuiInspectorWindow::ImGuiInspectorWindow() {
+ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager) 
+	: pEditorManager_(_editorManager) {
 
 
 	RegisterComponentDebugFunc(typeid(Transform).hash_code(),          [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
@@ -35,6 +38,17 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 	inspectorFunctions_.emplace_back(
 		[this]() {
 			IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+
+			if (ImGui::BeginMenuBar()) {
+				if (ImGui::BeginMenu("File")) {
+					if (ImGui::MenuItem("Save")) {
+						pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
+					}
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenuBar();
+			}
+
 
 			for (auto& component : entity->GetComponents()) {
 				std::string componentName = typeid(*component.second).name();
@@ -57,11 +71,14 @@ ImGuiInspectorWindow::ImGuiInspectorWindow() {
 }
 
 
+
 void ImGuiInspectorWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Inspector")) {
+	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
+
+
 
 	SelectedType selectedType = kNone;
 	if (reinterpret_cast<IEntity*>(selectedPointer_)) {

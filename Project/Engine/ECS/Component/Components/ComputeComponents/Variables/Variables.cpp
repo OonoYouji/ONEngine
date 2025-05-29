@@ -13,44 +13,44 @@ using json = nlohmann::json;
 
 namespace {
 
-	/// ==================================================
-	/// vector4 json
-	/// ==================================================
-	void from_json(const json& j, Vec4& v) {
-		v.x = j.at("x").get<float>();
-		v.y = j.at("y").get<float>();
-		v.z = j.at("z").get<float>();
-		v.w = j.at("w").get<float>();
-	}
+	///// ==================================================
+	///// vector4 json
+	///// ==================================================
+	//void from_json(const json& j, Vec4& v) {
+	//	v.x = j.at("x").get<float>();
+	//	v.y = j.at("y").get<float>();
+	//	v.z = j.at("z").get<float>();
+	//	v.w = j.at("w").get<float>();
+	//}
 
-	void to_json(json& j, const Vec4& v) {
-		j = json{ { "x", v.x }, { "y", v.y }, { "z", v.z }, { "w", v.w } };
-	}
+	//void to_json(json& j, const Vec4& v) {
+	//	j = json{ { "x", v.x }, { "y", v.y }, { "z", v.z }, { "w", v.w } };
+	//}
 
-	/// ==================================================
-	/// vector3 json
-	/// ==================================================
-	void from_json(const json& j, Vec3& v) {
-		v.x = j.at("x").get<float>();
-		v.y = j.at("y").get<float>();
-		v.z = j.at("z").get<float>();
-	}
+	///// ==================================================
+	///// vector3 json
+	///// ==================================================
+	//void from_json(const json& j, Vec3& v) {
+	//	v.x = j.at("x").get<float>();
+	//	v.y = j.at("y").get<float>();
+	//	v.z = j.at("z").get<float>();
+	//}
 
-	void to_json(json& j, const Vec3& v) {
-		j = json{ { "x", v.x }, { "y", v.y }, { "z", v.z } };
-	}
+	//void to_json(json& j, const Vec3& v) {
+	//	j = json{ { "x", v.x }, { "y", v.y }, { "z", v.z } };
+	//}
 
-	/// ==================================================
-	/// vector2 json
-	/// ==================================================
-	void from_json(const json& j, Vec2& v) {
-		v.x = j.at("x").get<float>();
-		v.y = j.at("y").get<float>();
-	}
+	///// ==================================================
+	///// vector2 json
+	///// ==================================================
+	//void from_json(const json& j, Vec2& v) {
+	//	v.x = j.at("x").get<float>();
+	//	v.y = j.at("y").get<float>();
+	//}
 
-	void to_json(json& j, const Vec2& v) {
-		j = json{ { "x", v.x }, { "y", v.y } };
-	}
+	//void to_json(json& j, const Vec2& v) {
+	//	j = json{ { "x", v.x }, { "y", v.y } };
+	//}
 
 }
 

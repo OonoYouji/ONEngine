@@ -16,7 +16,18 @@ public:
 	/// @return ownerのentity
 	IEntity* GetOwner() const { return owner_; }
 
+public:
+	/// ===========================================
+	/// public : objects
+	/// ===========================================
+
+	bool enable = true; ///< コンポーネントが有効かどうか
+
 protected:
+	/// ===========================================
+	/// protected : objects
+	/// ===========================================
+
 	class IEntity* owner_ = nullptr;
 };
 

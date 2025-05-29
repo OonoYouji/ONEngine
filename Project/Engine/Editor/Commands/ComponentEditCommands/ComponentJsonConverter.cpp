@@ -17,6 +17,15 @@ namespace {
 
 		JsonConverter() {
 			Register<Transform>();
+			Register<DirectionalLight>();
+			Register<AudioSource>();
+			Register<Effect>();
+			Register<SpriteRenderer>();
+			Register<CustomMeshRenderer>();
+			Register<MeshRenderer>();
+			Register<Line2DRenderer>();
+			Register<Line3DRenderer>();
+			Register<ToTerrainCollider>();
 		}
 
 		template <typename T>
@@ -36,6 +45,7 @@ namespace {
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 	auto it = jsonConverter.converters_.find(typeid(*_component).hash_code());
 	if (it == jsonConverter.converters_.end()) {
+		return nlohmann::json{};
 	}
 
 	return it->second(_component);
@@ -136,15 +146,27 @@ void to_json(nlohmann::json& _j, const AudioSource& _a) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Variables& _v) {}
-void to_json(nlohmann::json& _j, const Variables& _v) {}
+void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {}
+void to_json([[maybe_unused]] nlohmann::json& _j, [[maybe_unused]] const Variables& _v) {}
 
 void from_json(const nlohmann::json& _j, Effect& _e) {
-
+	_e.enable = _j.at("enable").get<bool>();
+	_e.SetIsCreateParticle(_j.at("isCreateParticle").get<bool>());
+	_e.SetMeshPath(_j.at("meshPath").get<std::string>());
+	_e.SetTexturePath(_j.at("texturePath").get<std::string>());
+	_e.SetMainModule(_j.at("mainModule").get<EffectMainModule>());
+	_e.SetEmitShape(_j.at("emitShape").get<EffectEmitShape>());
+	_e.SetEmitType(static_cast<Effect::EmitType>(_j.at("emitType").get<int>()));
+	_e.SetEmitTypeDistance(_j.at("distanceEmitData").get<Effect::DistanceEmitData>());
+	_e.SetEmitTypeTime(_j.at("timeEmitData").get<Effect::TimeEmitData>());
+	_e.SetMaxEffectCount(_j.at("maxEffectCount").get<size_t>());
+	_e.SetEmitInstanceCount(_j.at("emitInstanceCount").get<size_t>());
+	_e.SetBlendMode(static_cast<Effect::BlendMode>(_j.at("blendMode").get<int>()));
 }
 
 void to_json(nlohmann::json& _j, const Effect& _e) {
 	_j = nlohmann::json{
+		{ "enable", _e.enable },
 		{ "isCreateParticle", _e.IsCreateParticle() },
 		{ "meshPath", _e.GetMeshPath() },
 		{ "texturePath", _e.GetTexturePath() },
@@ -159,38 +181,187 @@ void to_json(nlohmann::json& _j, const Effect& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Effect::DistanceEmitData& _e) {}
+void from_json(const nlohmann::json& _j, Effect::DistanceEmitData& _e) {
+	_e.emitDistance = _j.at("emitDistance").get<float>();
+	_e.emitInterval = _j.at("emitInterval").get<float>();
+}
 
-void to_json(nlohmann::json& _j, const Effect::DistanceEmitData& _e) {}
+void to_json(nlohmann::json& _j, const Effect::DistanceEmitData& _e) {
+	_j = nlohmann::json{
+		{ "emitDistance", _e.emitDistance },
+		{ "emitInterval", _e.emitInterval }
+	};
+}
 
-void from_json(const nlohmann::json& _j, Effect::TimeEmitData& _e) {}
+void from_json(const nlohmann::json& _j, Effect::TimeEmitData& _e) {
+	_e.emitTime = _j.at("emitTime").get<float>();
+	_e.emitInterval = _j.at("emitInterval").get<float>();
+}
 
-void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {}
+void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
+	_j = nlohmann::json{
+		{ "emitTime", _e.emitTime },
+		{ "emitInterval", _e.emitInterval }
+	};
+}
 
-void from_json(const nlohmann::json& _j, EffectMainModule& _e) {}
+void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
+	_e.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
+	_e.SetStartSpeed(_j.at("startSpeed").get<float>());
+	_e.SetSpeedStartData(_j.at("startSpeed").get<std::pair<float, float>>());
+	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vec3, Vec3>>());
+	_e.SetRotateStartData(_j.at("startRotate").get<std::pair<Vec3, Vec3>>());
+	_e.SetColorStartData(_j.at("startColor").get<std::pair<Color, Color>>());
+	_e.SetGravityModifier(_j.at("gravityModifier").get<float>());
+}
 
-void to_json(nlohmann::json& _j, const EffectMainModule& _e) {}
+void to_json(nlohmann::json& _j, const EffectMainModule& _e) {
+	_j = nlohmann::json{
+		{ "lifeLeftTime", _e.GetLifeLeftTime() },
+		{ "startSpeed", _e.GetStartSpeed() },
+		{ "startSize", _e.GetSizeStartData() },
+		{ "startRotate", _e.GetRotateStartData() },
+		{ "startColor", _e.GetColorStartData() },
+		{ "gravityModifier", _e.GetGravityModifier() }
+	};
+}
 
-void from_json(const nlohmann::json& _j, EffectEmitShape& _e) {}
+void from_json(const nlohmann::json& _j, EffectEmitShape& _e) {
+	int type = _j.at("type").get<int>();
+	switch (type) {
+	case static_cast<int>(EffectEmitShape::ShapeType::Sphere):
+		_e.SetSphere(_j.at("sphere").get<EffectEmitShape::Sphere>());
+		break;
+	case static_cast<int>(EffectEmitShape::ShapeType::Cube):
+		_e.SetCube(_j.at("cube").get<EffectEmitShape::Cube>());
+		break;
+	case static_cast<int>(EffectEmitShape::ShapeType::Cone):
+		_e.SetCone(_j.at("cone").get<EffectEmitShape::Cone>());
+		break;
+	default:
+		break;
+	}
+}
 
-void to_json(nlohmann::json& _j, const EffectEmitShape& _e) {}
+void to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
+	_j = nlohmann::json{
+		{ "type", static_cast<int>(_e.GetType()) },
+		{ "sphere", _e.GetSphere() },
+		{ "cube", _e.GetCube() },
+		{ "cone", _e.GetCone() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e) {
+	_e.center = _j.at("center").get<Vec3>();
+	_e.radius = _j.at("radius").get<float>();
+}
+void to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
+	_j = nlohmann::json{
+		{ "center", _e.center },
+		{ "radius", _e.radius }
+	};
+}
+
+void from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e) {
+	_e.center = _j.at("center").get<Vec3>();
+	_e.size = _j.at("size").get<Vec3>();
+}
+void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
+	_j = nlohmann::json{
+		{ "center", _e.center },
+		{ "size", _e.size }
+	};
+}
+
+void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e) {
+	_e.center = _j.at("center").get<Vec3>();
+	_e.angle = _j.at("angle").get<float>();
+	_e.radius = _j.at("radius").get<float>();
+	_e.height = _j.at("height").get<float>();
+}
+void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
+	_j = nlohmann::json{
+		{ "center", _e.center },
+		{ "angle", _e.angle },
+		{ "radius", _e.radius },
+		{ "height", _e.height }
+	};
+}
+
+void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
+	_m.enable = _j.at("enable").get<bool>();
+	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
+	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
+	_m.SetColor(_j.at("color").get<Vec4>());
+}
+void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
+	_j = nlohmann::json{
+		{ "enable", _m.enable },
+		{ "meshPath", _m.GetMeshPath() },
+		{ "texturePath", _m.GetTexturePath() },
+		{ "color", _m.GetColor() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
+	_m.enable = _j.at("enable").get<bool>();
+	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
+	_m.SetColor(_j.at("color").get<Color>());
+}
+void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
+	_j = nlohmann::json{
+		{ "enable", _m.enable },
+		{ "texturePath", _m.GetTexturePath() },
+		{ "color", _m.GetColor() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
+	_s.enable = _j.at("enable").get<bool>();
+	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
+}
+
+void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
+	_j = nlohmann::json{
+		{ "enable", _s.enable },
+		{ "texturePath", _s.GetTexturePath() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
+	_l.enable = _j.at("enable").get<bool>();
+}
+
+void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
+	_j = nlohmann::json{
+		{ "enable", _l.enable }
+	};
+}
+
+void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
+	_l.enable = _j.at("enable").get<bool>();
+}
+
+void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
+	_j = nlohmann::json{
+		{ "enable", _l.enable }
+	};
+}
+
+void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
+	_c.enable = _j.at("enable").get<bool>();
+}
+
+void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
+	_j = nlohmann::json{
+		{ "enable", _c.enable }
+	};
+}
 
 
-//void from_json(const nlohmann::json& _j, EffectMainModule& _m) {
-//	_m.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
-//	_m.SetSizeStartData(_j.at("startSize").get<Vec3>());
-//	_m.startRotate_ = _j.at("startRotate").get<Vec3>();
-//	_m.startColor_ = _j.at("startColor").get<Color>();
-//	_m.startSpeed_ = _j.at("startSpeed").get<float>();
-//}
-//
-//void to_json(nlohmann::json& _j, const EffectMainModule& _m) {
-//	_j = nlohmann::json{
-//		{ "lifeLeftTime", _m.lifeLeftTime_ },
-//		{ "startSize", _m.startSize_ },
-//		{ "startRotate", _m.startRotate_ },
-//		{ "startColor", _m.startColor_ },
-//		{ "startSpeed", _m.startSpeed_ }
-//	};
-//}
-//
+
+
+
+
+

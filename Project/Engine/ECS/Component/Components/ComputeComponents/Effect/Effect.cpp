@@ -58,6 +58,18 @@ void Effect::RemoveElement(size_t _index) {
 	}
 }
 
+void Effect::SetMainModule(const EffectMainModule& _module) {
+	mainModule_ = _module;
+}
+
+void Effect::SetEmitShape(const EffectEmitShape& _shape) {
+	emitShape_ = _shape;
+}
+
+void Effect::SetEmitType(EmitType _type) {
+	emitType_ = _type;
+}
+
 void Effect::SetMaxEffectCount(size_t _maxCount) {
 	maxEffectCount_ = _maxCount;
 	elements_.reserve(maxEffectCount_);
@@ -70,9 +82,21 @@ void Effect::SetEmitTypeDistance(float _interval, size_t _emitInstanceCount) {
 	emitInstanceCount_ = _emitInstanceCount;
 }
 
+void Effect::SetEmitTypeDistance(const DistanceEmitData& _data) {
+	distanceEmitData_ = _data;
+}
+
 void Effect::SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount) {
 	emitType_ = EmitType::Time;
 	timeEmitData_ = _data;
+	emitInstanceCount_ = _emitInstanceCount;
+}
+
+void Effect::SetEmitTypeTime(const TimeEmitData& _data) {
+	timeEmitData_ = _data;
+}
+
+void Effect::SetEmitInstanceCount(size_t _emitInstanceCount) {
 	emitInstanceCount_ = _emitInstanceCount;
 }
 

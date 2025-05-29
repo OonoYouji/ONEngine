@@ -20,7 +20,7 @@ ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem,
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// ここでwindowを生成する
-	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>());
+	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>(_editorManager));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiHierarchyWindow>(_pEntityComponentSystem, _editorManager, static_cast<ImGuiInspectorWindow*>(inspector)));

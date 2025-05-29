@@ -127,6 +127,11 @@ public:
 	/// @param _path テクスチャパス  
 	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
 
+	void SetMainModule(const EffectMainModule& _module);
+	void SetEmitShape(const EffectEmitShape& _shape);
+
+	void SetEmitType(EmitType _type);
+
 	/// @brief 最大エフェクト数を設定  
 	/// @param _maxCount 最大エフェクト数  
 	void SetMaxEffectCount(size_t _maxCount);
@@ -135,10 +140,14 @@ public:
 	/// @param _interval エミット間隔  
 	/// @param _emitInstanceCount エミットごとのインスタンス数  
 	void SetEmitTypeDistance(float _interval, size_t _emitInstanceCount);
+	void SetEmitTypeDistance(const DistanceEmitData& _data);
 
 	/// @brief 時間でのエミットタイプを設定  
 	/// @param _data 時間エミットデータ  
 	void SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount);
+	void SetEmitTypeTime(const TimeEmitData& _data);
+
+	void SetEmitInstanceCount(size_t _emitInstanceCount);
 
 	/// @brief 残り寿命を設定  
 	/// @param _time 残り寿命  
@@ -186,6 +195,8 @@ public:
 	/// @param _radius coneの半径
 	/// @param _height coneの高さ
 	void SetEmitShape(const Vector3& _apex, float _angle, float _radius, float _height);
+
+
 
 
 	bool IsCreateParticle() const;

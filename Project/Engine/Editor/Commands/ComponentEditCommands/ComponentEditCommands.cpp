@@ -1,5 +1,8 @@
 #include "ComponentEditCommands.h"
 
+/// std
+#include <fstream>
+
 /// external
 #include <nlohmann/json.hpp>
 
@@ -43,7 +46,18 @@ EDITOR_STATE EntityDataOutputCommand::Execute() {
 		jsonData.push_back(ComponentJsonConverter::ToJson(component.second));
 	}
 
-	return EDITOR_STATE();
+	const std::string _path = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
+
+	std::filesystem::path path(_path);
+	std::filesystem::create_directories(path.parent_path());
+
+	std::ofstream ofs(_path);
+	if (!ofs) {
+		throw std::runtime_error("ファイルを開けませんでした: " + _path);
+	}
+	ofs << jsonData.dump(4);
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
 EDITOR_STATE EntityDataOutputCommand::Undo() {

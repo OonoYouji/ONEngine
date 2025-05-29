@@ -93,3 +93,67 @@ Vector3 EffectEmitShape::GetEmitDirection(const Vector3& _emitedPosition) {
 
 	return direction.Normalize();
 }
+
+void EffectEmitShape::SetShapeType(ShapeType _type) {
+	shapeType_ = _type;
+}
+
+void EffectEmitShape::SetSphere(const Vector3& _center, float _radius) {
+	shapeType_ = ShapeType::Sphere;
+	sphere_.center = _center;
+	sphere_.radius = _radius;
+}
+
+void EffectEmitShape::SetSphere(const Sphere& _sphere) {
+	shapeType_ = ShapeType::Sphere;
+	sphere_ = _sphere;
+}
+
+void EffectEmitShape::SetCube(const Vector3& _center, const Vector3& _size) {
+	shapeType_ = ShapeType::Cube;
+	cube_.center = _center;
+	cube_.size = _size;
+}
+
+void EffectEmitShape::SetCube(const Cube& _cube) {
+	shapeType_ = ShapeType::Cube;
+	cube_ = _cube;
+}
+
+void EffectEmitShape::SetCone(const Vector3& _center, float _angle, float _radius, float _height) {
+	shapeType_ = ShapeType::Cone;
+	cone_.center = _center;
+	cone_.angle = _angle;
+	cone_.radius = _radius;
+	cone_.height = _height;
+}
+
+void EffectEmitShape::SetCone(const Cone& _cone) {
+	shapeType_ = ShapeType::Cone;
+	cone_ = _cone;
+}
+
+Vector3 EffectEmitShape::GetCenter() const {
+	switch (shapeType_) {
+	case ShapeType::Cube: return cube_.center;
+	case ShapeType::Cone: return cone_.center;
+	default: return Vector3::kZero;
+	}
+}
+
+EffectEmitShape::ShapeType EffectEmitShape::GetType() const {
+	return shapeType_;
+}
+
+EffectEmitShape::Sphere EffectEmitShape::GetSphere() const {
+	return sphere_;
+}
+
+EffectEmitShape::Cube EffectEmitShape::GetCube() const {
+	return cube_;
+}
+
+EffectEmitShape::Cone EffectEmitShape::GetCone() const {
+	return cone_;
+}
+
