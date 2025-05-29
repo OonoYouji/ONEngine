@@ -14,6 +14,7 @@
 /// /////////////////////////////////////////////////////
 namespace ComponentJsonConverter {
 	nlohmann::json ToJson(const IComponent* _component);
+	void FromJson(const nlohmann::json& _j, IComponent* _component);
 };
 
 

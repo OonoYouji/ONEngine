@@ -6,7 +6,12 @@
 /// ///////////////////////////////////////////////////
 /// Componentの配列のinterfaceクラス
 /// ///////////////////////////////////////////////////
-class IComponentArray {};
+class IComponentArray {
+	friend class EntityComponentSystem;
+protected:
+	std::vector<size_t> usedIndices_;    ///< 使用中のインデックスのリスト
+	std::vector<size_t> removedIndices_; ///< 削除されたインデックスのリスト
+};
 
 
 /// ///////////////////////////////////////////////////
@@ -34,8 +39,8 @@ private:
 	/// ===================================================
 
 	std::vector<Comp>   components_;
-	std::vector<size_t> usedIndices_;    ///< 使用中のインデックスのリスト
-	std::vector<size_t> removedIndices_; ///< 削除されたインデックスのリスト
+	//std::vector<size_t> usedIndices_;    ///< 使用中のインデックスのリスト
+	//std::vector<size_t> removedIndices_; ///< 削除されたインデックスのリスト
 	//size_t              nextFreeIndex_ = 0; ///< 次に空いているインデックス
 };
 

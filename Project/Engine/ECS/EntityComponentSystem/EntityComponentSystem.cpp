@@ -20,6 +20,11 @@ void IEntity::CommonInitialize() {
 	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
+IComponent* IEntity::AddComponent(const std::string& _name) {
+	pEntityComponentSystem_->AddComponent(_name);
+	return nullptr;
+}
+
 void IEntity::UpdateTransform() {
 	transform_->matWorld = Matrix4x4::MakeAffine(transform_->scale, transform_->rotate, transform_->position);
 
@@ -243,6 +248,16 @@ Camera* EntityComponentSystem::GenerateCamera() {
 	cameras_.push_back(cameraPtr);
 
 	return cameraPtr;
+}
+
+IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
+	size_t hash = GetComponentHash(_name);
+
+	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
+		return nullptr;
+	}
+
+	return componentFactoryMap_[hash]();
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {

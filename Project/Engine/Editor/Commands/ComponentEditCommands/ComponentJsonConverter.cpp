@@ -33,10 +33,17 @@ namespace {
 			converters_[typeid(T).hash_code()] = [](const IComponent* _component) {
 				return *static_cast<const T*>(_component);
 				};
+
+			fromJsonConverters_[typeid(T).hash_code()] = [this](IComponent* _component, const nlohmann::json& _j) {
+				*_component = _j.get<T>();
+				};
 		}
 
 		using Converter = std::function<nlohmann::json(const IComponent*)>;
+		using FromJsonConverter = std::function<void(IComponent*, const nlohmann::json&)>;
 		std::unordered_map<size_t, Converter> converters_;
+		std::unordered_map<size_t, FromJsonConverter> fromJsonConverters_;
+
 	};
 
 	JsonConverter jsonConverter;
@@ -49,6 +56,18 @@ nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 	}
 
 	return it->second(_component);
+}
+
+void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
+	const std::string& name = typeid(*_component).name();
+	auto it = jsonConverter.fromJsonConverters_.find(typeid(*_component).hash_code());
+
+	if (it == jsonConverter.fromJsonConverters_.end()) {
+		Console::Log("ComponentJsonConverter: " + name + "の変換関数が登録されていません。");
+		return;
+	}
+
+	it->second(_component, _j);
 }
 
 
@@ -112,6 +131,8 @@ void from_json(const nlohmann::json& _j, Transform& _t) {
 
 void to_json(nlohmann::json& _j, const Transform& _t) {
 	_j = nlohmann::json{
+		{ "type", "Transform" },
+		{ "enable", _t.enable },
 		{ "position", _t.position },
 		{ "rotate", _t.rotate },
 		{ "scale", _t.scale }
@@ -126,6 +147,8 @@ void from_json(const nlohmann::json& _j, DirectionalLight& _l) {
 
 void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 	_j = nlohmann::json{
+		{ "type", "DirectionalLight" },
+		{ "enable", _l.enable },
 		{ "intensity", _l.GetIntensity() },
 		{ "direction", _l.GetDirection() },
 		{ "color", _l.GetColor() }
@@ -140,6 +163,8 @@ void from_json(const nlohmann::json& _j, AudioSource& _a) {
 
 void to_json(nlohmann::json& _j, const AudioSource& _a) {
 	_j = nlohmann::json{
+		{ "type", "AudioSource" },
+		{ "enable", _a.enable },
 		{ "volume", _a.GetVolume() },
 		{ "pitch", _a.GetPitch() },
 		{ "path", _a.GetAudioPath() }
@@ -166,6 +191,7 @@ void from_json(const nlohmann::json& _j, Effect& _e) {
 
 void to_json(nlohmann::json& _j, const Effect& _e) {
 	_j = nlohmann::json{
+		{ "type", "Effect" },
 		{ "enable", _e.enable },
 		{ "isCreateParticle", _e.IsCreateParticle() },
 		{ "meshPath", _e.GetMeshPath() },
@@ -297,6 +323,7 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 }
 void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 	_j = nlohmann::json{
+		{ "type", "MeshRenderer" },
 		{ "enable", _m.enable },
 		{ "meshPath", _m.GetMeshPath() },
 		{ "texturePath", _m.GetTexturePath() },
@@ -311,6 +338,7 @@ void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
 }
 void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 	_j = nlohmann::json{
+		{ "type", "CustomMeshRenderer" },
 		{ "enable", _m.enable },
 		{ "texturePath", _m.GetTexturePath() },
 		{ "color", _m.GetColor() }
@@ -324,6 +352,7 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
 
 void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
 	_j = nlohmann::json{
+		{ "type", "SpriteRenderer" },
 		{ "enable", _s.enable },
 		{ "texturePath", _s.GetTexturePath() }
 	};
@@ -335,6 +364,7 @@ void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
 
 void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
 	_j = nlohmann::json{
+		{ "type", "Line2DRenderer" },
 		{ "enable", _l.enable }
 	};
 }
@@ -345,6 +375,7 @@ void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
 
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 	_j = nlohmann::json{
+		{ "type", "Line3DRenderer" },
 		{ "enable", _l.enable }
 	};
 }
@@ -355,6 +386,7 @@ void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
 
 void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
 	_j = nlohmann::json{
+		{ "type", "ToTerrainCollider" },
 		{ "enable", _c.enable }
 	};
 }

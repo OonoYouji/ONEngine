@@ -2,6 +2,7 @@
 
 /// std
 #include <typeindex>
+#include <string>
 
 /// engine
 #include "../Interface/IEditorCommand.h"
@@ -51,6 +52,31 @@ private:
 	/// ================================================
 
 	class IEntity* pEntity_ = nullptr;
-	//std::string outputData_ = "";
+	std::string outputFilePath_;
 
+};
+
+/// ///////////////////////////////////////////////
+/// エンティティのデータ入力コマンド
+/// ///////////////////////////////////////////////
+class EntityDataInputCommand : public IEditorCommand {
+public:
+	/// ================================================
+	/// public : methods
+	/// ================================================
+	
+	EntityDataInputCommand(class IEntity* _entity, const std::string& _filePath);
+	~EntityDataInputCommand() override = default;
+	
+	/// @brief コマンドの実行
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	/// ================================================
+	/// private : objects
+	/// ================================================
+	class IEntity* pEntity_ = nullptr;
+	std::string inputFilePath_;
+	//nlohmann::json inputData_;
 };

@@ -17,21 +17,21 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager) 
+ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
 
-	RegisterComponentDebugFunc(typeid(Transform).hash_code(),          [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
-	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(),   [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
-	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(),        [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Variables).hash_code(),          [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Effect).hash_code(),             [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(),       [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component));});
-	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component));});
-	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(ToTerrainCollider).hash_code(),  [&]( [[maybe_unused]] IComponent* _component) { });
+	RegisterComponentDebugFunc(typeid(Transform).hash_code(), [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
+	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(), [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
+	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(), [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
+	RegisterComponentDebugFunc(typeid(Variables).hash_code(), [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
+	RegisterComponentDebugFunc(typeid(Effect).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(), [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
+	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
+	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(typeid(ToTerrainCollider).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
 
 
 	inspectorFunctions_.emplace_back([]() {});
@@ -57,7 +57,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 					componentName = componentName.substr(6);
 				}
 
-				
+
 				/// component debug
 				ImGui::Separator();
 				if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -66,6 +66,21 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 					ImGui::TreePop();
 				}
 			}
+
+
+			ImGui::Separator();
+			for (int i = 0; i < 4; ++i) {
+				ImGui::Indent();
+			}
+
+			if (ImGui::Button("Add Component")) {
+				//pEditorManager_->OpenComponentAddWindow(entity);
+			}
+			
+			for (int i = 0; i < 4; ++i) {
+				ImGui::Unindent();
+			}
+
 		}
 	);
 }

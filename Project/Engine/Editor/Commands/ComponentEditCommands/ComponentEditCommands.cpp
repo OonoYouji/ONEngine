@@ -36,31 +36,66 @@ EDITOR_STATE ComponentEditCommands::Undo() {
 
 EntityDataOutputCommand::EntityDataOutputCommand(IEntity* _entity) {
 	pEntity_ = _entity;
+	outputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
 }
 
 EDITOR_STATE EntityDataOutputCommand::Execute() {
-
 	nlohmann::json jsonData;
-
 	for (auto& component : pEntity_->GetComponents()) {
 		jsonData.push_back(ComponentJsonConverter::ToJson(component.second));
 	}
 
-	const std::string _path = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
-
-	std::filesystem::path path(_path);
+	std::filesystem::path path(outputFilePath_);
 	std::filesystem::create_directories(path.parent_path());
 
-	std::ofstream ofs(_path);
+	std::ofstream ofs(outputFilePath_);
 	if (!ofs) {
-		throw std::runtime_error("ファイルを開けませんでした: " + _path);
+		Console::Log("ファイルを開けませんでした: " + outputFilePath_);
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
 	}
+
 	ofs << jsonData.dump(4);
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
 EDITOR_STATE EntityDataOutputCommand::Undo() {
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EntityDataInputCommand::EntityDataInputCommand(IEntity* _entity, const std::string& _filePath) {
+
+}
+
+EDITOR_STATE EntityDataInputCommand::Execute() {
+
+	/// fileを開く
+	std::ifstream ifs(inputFilePath_);
+	if (!ifs) {
+		Console::Log("ファイルを開けませんでした: " + inputFilePath_);
+		return EDITOR_STATE();
+	}
+
+
+	/// jsonを読み込む
+	nlohmann::json jsonData;
+	ifs >> jsonData;
+
+	/// コンポーネントを追加
+	for (const auto& componentJson : jsonData) {
+		const std::string componentType = componentJson.at("type").get<std::string>();
+		pEntity_->AddComponent(componentType);
+		//IComponent* component = ComponentJsonConverter::FromJson(componentJson);
+	/*	if (component) {
+			pEntity_->AddComponent(component);
+		} else {
+			Console::Log("コンポーネントの変換に失敗しました: " + componentJson.dump());
+		}*/
+	}
+
 	return EDITOR_STATE();
 }
 
+EDITOR_STATE EntityDataInputCommand::Undo() {
+	return EDITOR_STATE();
+}

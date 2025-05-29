@@ -13,6 +13,7 @@
 
 /// editor
 #include "Commands/Interface/IEditorCommand.h"
+#include "Engine/Core/Utility/Utility.h"
 
 /// @brief コマンドの生成関数
 using Creator = std::function<std::unique_ptr<IEditorCommand>(const std::vector<std::any>&)>;
@@ -102,6 +103,7 @@ inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCom
 	}
 
 	commandStack_.push_back(std::move(command));
+	Console::Log("Command Executed: " + std::string(typeid(T).name()));
 
 	/// redoスタックにコマンドがあればクリアする
 	if (redoStack_.size() > 0) {
