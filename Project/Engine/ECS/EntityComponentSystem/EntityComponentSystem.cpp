@@ -21,8 +21,12 @@ void IEntity::CommonInitialize() {
 }
 
 IComponent* IEntity::AddComponent(const std::string& _name) {
-	pEntityComponentSystem_->AddComponent(_name);
-	return nullptr;
+	/// component の生成, 追加
+	IComponent* component = pEntityComponentSystem_->AddComponent(_name);
+	component->SetOwner(this);
+	components_[GetComponentHash(_name)] = component;
+
+	return component;
 }
 
 void IEntity::UpdateTransform() {
@@ -316,3 +320,6 @@ Camera* EntityComponentSystem::GetDebugCamera() {
 	return debugCamera_;
 }
 
+size_t GetComponentHash(const std::string& _name) {
+	return std::hash<std::string>()(_name);
+}

@@ -21,17 +21,17 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
 
-	RegisterComponentDebugFunc(typeid(Transform).hash_code(), [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
-	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(), [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
-	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(), [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Variables).hash_code(), [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Effect).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(), [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
-	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
-	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponentDebugFunc(typeid(ToTerrainCollider).hash_code(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(GetComponentHash<Transform>(), [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<DirectionalLight>(), [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<AudioSource>(), [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<Variables>(), [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<Effect>(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(GetComponentHash<MeshRenderer>(), [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<CustomMeshRenderer>(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
+	RegisterComponentDebugFunc(GetComponentHash<SpriteRenderer>(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(GetComponentHash<Line2DRenderer>(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(GetComponentHash<Line3DRenderer>(), [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponentDebugFunc(GetComponentHash<ToTerrainCollider>(), [&]([[maybe_unused]] IComponent* _component) {});
 
 
 	inspectorFunctions_.emplace_back([]() {});
@@ -44,8 +44,14 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 					if (ImGui::MenuItem("Save")) {
 						pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
 					}
+				
+					if (ImGui::MenuItem("Loas")) {
+						pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity, "");
+					}
+
 					ImGui::EndMenu();
 				}
+
 				ImGui::EndMenuBar();
 			}
 

@@ -17,6 +17,7 @@ namespace {
 
 		JsonConverter() {
 			Register<Transform>();
+			Register<Variables>();
 			Register<DirectionalLight>();
 			Register<AudioSource>();
 			Register<Effect>();
@@ -35,7 +36,7 @@ namespace {
 				};
 
 			fromJsonConverters_[typeid(T).hash_code()] = [this](IComponent* _component, const nlohmann::json& _j) {
-				*_component = _j.get<T>();
+				*static_cast<T*>(_component) = _j.get<T>();
 				};
 		}
 
@@ -171,8 +172,15 @@ void to_json(nlohmann::json& _j, const AudioSource& _a) {
 	};
 }
 
-void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {}
-void to_json([[maybe_unused]] nlohmann::json& _j, [[maybe_unused]] const Variables& _v) {}
+void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
+
+}
+void to_json(nlohmann::json& _j, const Variables& _v) {
+	_j = nlohmann::json{
+		{ "type", "Variables" },
+		// 変数の内容はここで定義する必要があります
+	};
+}
 
 void from_json(const nlohmann::json& _j, Effect& _e) {
 	_e.enable = _j.at("enable").get<bool>();

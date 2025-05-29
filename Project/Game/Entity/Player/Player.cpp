@@ -14,14 +14,14 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
+	/*MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
 	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
-	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");
+	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");*/
 
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
 
-	AddComponent<ToTerrainCollider>();
+	//AddComponent<ToTerrainCollider>();
 
 	//transform_->position = Vec3(500.0f, 0.0f, 500.0f);
 }
@@ -74,10 +74,13 @@ void Player::Update() {
 
 
 	/// 地面に着地したら
-	if (GetComponent<ToTerrainCollider>()->GetIsCollided()) {
-		//transform_->position.y = 0.0f;
-		jumpPower = 0.0f;
-		onGround = true;
+	if (ToTerrainCollider* collider = GetComponent<ToTerrainCollider>()) {
+		if (collider->GetIsCollided()) {
+
+			//transform_->position.y = 0.0f;
+			jumpPower = 0.0f;
+			onGround = true;
+		}
 	}
 
 

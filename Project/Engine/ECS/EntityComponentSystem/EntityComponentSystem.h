@@ -256,23 +256,20 @@ public:
 };
 
 
+/// //////////////////////////////////////////////
+/// Componentのハッシュ値を取得する関数
+/// //////////////////////////////////////////////
 
-namespace {
+size_t GetComponentHash(const std::string& _name);
 
-	size_t GetComponentHash(const std::string& _name) {
-		return std::hash<std::string>()(_name);
+template <typename T>
+size_t GetComponentHash() {
+	std::string name = typeid(T).name();
+	if (name.find("class ") == 0) {
+		name = name.substr(6);
 	}
 
-	template <typename T>
-	size_t GetComponentHash() {
-		std::string name = typeid(T).name();
-		if (name.find("class ") == 0) {
-			name = name.substr(6);
-		}
-
-		return GetComponentHash(name);
-	}
-
+	return GetComponentHash(name);
 }
 
 

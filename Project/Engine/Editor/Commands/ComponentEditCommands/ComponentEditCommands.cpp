@@ -63,8 +63,9 @@ EDITOR_STATE EntityDataOutputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-EntityDataInputCommand::EntityDataInputCommand(IEntity* _entity, const std::string& _filePath) {
-
+EntityDataInputCommand::EntityDataInputCommand(IEntity* _entity, const std::string& _filePath)
+	: pEntity_(_entity) {
+	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
 }
 
 EDITOR_STATE EntityDataInputCommand::Execute() {
@@ -73,7 +74,7 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 	std::ifstream ifs(inputFilePath_);
 	if (!ifs) {
 		Console::Log("ファイルを開けませんでした: " + inputFilePath_);
-		return EDITOR_STATE();
+		return EDITOR_STATE::EDITOR_STATE_FAILED;
 	}
 
 
@@ -84,16 +85,16 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 	/// コンポーネントを追加
 	for (const auto& componentJson : jsonData) {
 		const std::string componentType = componentJson.at("type").get<std::string>();
-		pEntity_->AddComponent(componentType);
-		//IComponent* component = ComponentJsonConverter::FromJson(componentJson);
-	/*	if (component) {
-			pEntity_->AddComponent(component);
+		IComponent* comp = pEntity_->AddComponent(componentType);
+		if (comp) {
+			ComponentJsonConverter::FromJson(componentJson, comp);
+			comp->SetOwner(pEntity_);
 		} else {
-			Console::Log("コンポーネントの変換に失敗しました: " + componentJson.dump());
-		}*/
+			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
+		}
 	}
 
-	return EDITOR_STATE();
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
 EDITOR_STATE EntityDataInputCommand::Undo() {
