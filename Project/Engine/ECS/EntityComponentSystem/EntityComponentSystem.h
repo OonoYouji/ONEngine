@@ -11,6 +11,7 @@
 #include "../Component/Components/ComputeComponents/Transform/Transform.h"
 #include "../Component/Components/ComputeComponents/Variables/Variables.h"
 #include "../System/Interface/ECSISystem.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
 class Camera;
 class Camera2D;
@@ -154,7 +155,7 @@ public:
 	EntityComponentSystem(class DxManager* _pDxManager);
 	~EntityComponentSystem();
 
-	void Initialize(class EditorManager* _editorManager);
+	void Initialize();
 	void Update();
 
 
@@ -205,7 +206,6 @@ private:
 
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
-	class EditorManager* pEditorManager_;
 
 	/// ----- entity ----- ///
 	std::vector<std::unique_ptr<IEntity>> entities_;
@@ -223,7 +223,7 @@ private:
 	/// ----- system ----- ///
 	std::vector<std::unique_ptr<ECSISystem>> systemMap_;
 
-
+	EntityDataInputCommand componentInputCommand_;
 public:
 	/// ===================================================
 	/// public : accessor

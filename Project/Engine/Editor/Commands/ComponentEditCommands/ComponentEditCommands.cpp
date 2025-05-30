@@ -103,6 +103,11 @@ EDITOR_STATE EntityDataInputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+void EntityDataInputCommand::SetEntity(IEntity* _entity) {
+	pEntity_ = _entity;
+	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
+}
+
 AddComponentCommand::AddComponentCommand(IEntity* _entity, const std::string& _componentName) {
 	pEntity_ = _entity;
 	componentName_ = _componentName;

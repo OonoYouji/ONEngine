@@ -216,10 +216,9 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager){}
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize(EditorManager* _editorManager) {
+void EntityComponentSystem::Initialize() {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
-	pEditorManager_ = _editorManager;
 
 	entities_.reserve(256);
 
@@ -285,7 +284,8 @@ IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 }
 
 void EntityComponentSystem::LoadComponent(IEntity* _entity) {
-	pEditorManager_->ExecuteCommand<EntityDataInputCommand>(_entity);
+	componentInputCommand_.SetEntity(_entity);
+	componentInputCommand_.Execute();
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {
