@@ -284,5 +284,6 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
   </ItemGroup>
 </Project>

@@ -27,14 +27,6 @@ EditorManager::EditorManager(EntityComponentSystem* _ecs)
 EditorManager::~EditorManager() {}
 
 void EditorManager::Initialize() {
-	//RegisterCommand<CreateGameObjectCommand>();
-
-	//std::unique_ptr<CreateGameObjectCommand> command = CloneCommand<CreateGameObjectCommand>(pECS_);
-	//ExecuteCommand<LogCommand>();
-	//Undo();
-	//Redo();
-
-	//CreateCommand<CreateGameObjectCommand>(pECS_);
 	runningCommand_ = nullptr;
 }
 
@@ -49,7 +41,7 @@ void EditorManager::Update() {
 		}
 
 	} else {
-
+#ifdef _DEBUG
 		// undo, redo を行う
 		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
 			Undo();
@@ -58,6 +50,7 @@ void EditorManager::Update() {
 		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
 			Redo();
 		}
+#endif // _DEBUG
 	}
 
 }

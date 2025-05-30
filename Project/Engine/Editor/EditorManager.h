@@ -98,12 +98,17 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires 
 template<typename T, typename ...Args>
 inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCommand<T> {
 	std::unique_ptr<T> command = std::make_unique<T>(_args...);
-	if (command->Execute() == EDITOR_STATE_RUNNING) {
+	EDITOR_STATE state = command->Execute();
+	if (state == EDITOR_STATE_RUNNING) {
 		runningCommand_ = command.get();
 	}
 
 	commandStack_.push_back(std::move(command));
-	Console::Log("Command Executed: " + std::string(typeid(T).name()));
+	if (state == EDITOR_STATE_FINISH) {
+		Console::Log("Command Executed: " + std::string(typeid(T).name()));
+	} else {
+		Console::Log("Command Failed: " + std::string(typeid(T).name()));
+	}
 
 	/// redoスタックにコマンドがあればクリアする
 	if (redoStack_.size() > 0) {

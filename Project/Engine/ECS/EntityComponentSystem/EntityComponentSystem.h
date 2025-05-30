@@ -152,7 +152,7 @@ public:
 	EntityComponentSystem(class DxManager* _pDxManager);
 	~EntityComponentSystem();
 
-	void Initialize();
+	void Initialize(class EditorManager* _editorManager);
 	void Update();
 
 
@@ -186,6 +186,10 @@ public:
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	void LoadComponent(IEntity* _entity);
+
+	template<typename Comp>
+	void RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp>;
 
 
 	/// ----- system ----- ///
@@ -198,8 +202,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class DxManager* pDxManager_ = nullptr;
-	class DxDevice* pDxDevice_ = nullptr;
+	class DxManager* pDxManager_;
+	class DxDevice* pDxDevice_;
+	class EditorManager* pEditorManager_;
 
 	/// ----- entity ----- ///
 	std::vector<std::unique_ptr<IEntity>> entities_;
@@ -339,25 +344,7 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 	size_t hash = GetComponentHash<Comp>();
 
 	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
-		componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
-		componentFactoryMap_[hash] = [this, hash]() -> IComponent* {
-			ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
-
-			if (compArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
-				size_t index = compArray->removedIndices_.back();
-				compArray->removedIndices_.pop_back();
-				compArray->usedIndices_.push_back(index);
-				compArray->components_[index] = Comp(); ///< 今までのデータを上書き
-
-				return &compArray->components_[index];
-			}
-
-			compArray->components_.emplace_back();
-			size_t index = compArray->components_.size() - 1;
-			compArray->usedIndices_.push_back(index);
-
-			return &compArray->components_[index];
-			};
+		RegisterComponentFactory<Comp>();
 	}
 
 	return static_cast<Comp*>(componentFactoryMap_[hash]());
@@ -375,6 +362,32 @@ inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
+}
+
+template<typename Comp>
+inline void EntityComponentSystem::RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp> {
+	size_t hash = GetComponentHash<Comp>();
+
+	componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
+	componentFactoryMap_[hash] = [this, hash]() -> IComponent* {
+		ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+
+
+		if (compArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
+			size_t index = compArray->removedIndices_.back();
+			compArray->removedIndices_.pop_back();
+			compArray->usedIndices_.push_back(index);
+			compArray->components_[index] = Comp(); ///< 今までのデータを上書き
+
+			return &compArray->components_[index];
+		}
+
+		compArray->components_.emplace_back();
+		size_t index = compArray->components_.size() - 1;
+		compArray->usedIndices_.push_back(index);
+
+		return &compArray->components_[index];
+		};
 }
 
 template<typename T, typename ...Args>
