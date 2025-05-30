@@ -5,9 +5,10 @@
 
 DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
 DebugCamera::~DebugCamera() {
-	variables_->Get<Vector3>("startPos") = transform_->position;
-	variables_->Get<Vector3>("startRot") = transform_->rotate;
-	variables_->SaveJson("./Assets/Jsons/" + GetName() + ".json");
+	//variables_ = GetComponent<Variables>();
+	//variables_->Get<Vector3>("startPos") = transform_->position;
+	//variables_->Get<Vector3>("startRot") = transform_->rotate;
+	//variables_->SaveJson("./Assets/Jsons/" + GetName() + ".json");
 }
 
 void DebugCamera::Initialize() {

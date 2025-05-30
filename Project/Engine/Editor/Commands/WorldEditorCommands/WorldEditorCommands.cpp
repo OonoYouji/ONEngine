@@ -145,4 +145,6 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 
 	outputFile << content;
 	outputFile.close();
+
+	return EDITOR_STATE_FINISH;
 }

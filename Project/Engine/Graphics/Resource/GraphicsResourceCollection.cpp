@@ -34,7 +34,6 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 
 	LoadResources(texturePaths);
 
-
 	/// primitive meshを作成
 	PrimitiveMeshCreator primitiveMeshCreator(this, _dxManager->GetDxDevice());
 }
@@ -138,5 +137,9 @@ const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePa
 }
 
 size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filePath) const {
+	if (_filePath == "") {
+		return 0;
+	}
+
 	return textureIndices_.at(_filePath);
 }

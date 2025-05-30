@@ -7,6 +7,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "../../Math/ImGuiMath.h"
+#include "Engine/Editor/EditorManager.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+
 
 enum SelectedType {
 	kNone,
@@ -14,51 +17,31 @@ enum SelectedType {
 	kResource
 };
 
-
-ImGuiInspectorWindow::ImGuiInspectorWindow() {
-
-
-	RegisterComponentDebugFunc(typeid(Transform).hash_code(),          [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
-	RegisterComponentDebugFunc(typeid(DirectionalLight).hash_code(),   [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
-	RegisterComponentDebugFunc(typeid(AudioSource).hash_code(),        [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Variables).hash_code(),          [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
-	RegisterComponentDebugFunc(typeid(Effect).hash_code(),             [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(MeshRenderer).hash_code(),       [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component));});
-	RegisterComponentDebugFunc(typeid(CustomMeshRenderer).hash_code(), [&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component));});
-	RegisterComponentDebugFunc(typeid(SpriteRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(Line2DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(Line3DRenderer).hash_code(),     [&]( [[maybe_unused]] IComponent* _component) { });
-	RegisterComponentDebugFunc(typeid(ToTerrainCollider).hash_code(),  [&]( [[maybe_unused]] IComponent* _component) { });
+ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
+	: pEditorManager_(_editorManager) {
 
 
+	RegisterComponent<Transform>(         [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
+	RegisterComponent<DirectionalLight>(  [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
+	RegisterComponent<AudioSource>(       [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
+	RegisterComponent<Variables>(         [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
+	RegisterComponent<Effect>(            [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<MeshRenderer>(      [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
+	RegisterComponent<SpriteRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<Line2DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<Line3DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<ToTerrainCollider>( [&]([[maybe_unused]] IComponent* _component) {});
+
+
+	/// 関数を登録
 	inspectorFunctions_.emplace_back([]() {});
-	inspectorFunctions_.emplace_back(
-		[this]() {
-			IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
 
-			for (auto& component : entity->GetComponents()) {
-				std::string componentName = typeid(*component.second).name();
-				componentName += "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
-				if (componentName.find("class ") == 0) {
-					componentName = componentName.substr(6);
-				}
-
-				
-				/// component debug
-				ImGui::Separator();
-				if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-					componentDebugFuncs_[component.first](component.second);
-
-					ImGui::TreePop();
-				}
-			}
-		}
-	);
 }
 
-
 void ImGuiInspectorWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Inspector")) {
+	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -71,4 +54,88 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 	inspectorFunctions_[selectedType]();
 
 	ImGui::End();
+}
+
+
+void ImGuiInspectorWindow::EntityInspector() {
+	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+
+	/// ----------------------------
+	/// 適当な編集の機能
+	/// ----------------------------
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("File")) {
+			if (ImGui::MenuItem("Save")) {
+				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
+			}
+
+			if (ImGui::MenuItem("Load")) {
+				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
+
+	/// ----------------------------
+	/// componentのデバッグ
+	/// ----------------------------
+	for (auto& component : entity->GetComponents()) {
+		std::string componentName = typeid(*component.second).name();
+		//if (componentName == "") {
+		//	continue;
+		//}
+
+		componentName += "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
+		if (componentName.find("class ") == 0) {
+			componentName = componentName.substr(6);
+		}
+
+		/// component debug
+		ImGui::Separator();
+		if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+			componentDebugFuncs_[component.first](component.second);
+
+			ImGui::TreePop();
+		}
+	}
+
+
+	/// ----------------------------
+	/// componentの追加
+	/// ----------------------------
+	ImGui::Separator();
+	for (int i = 0; i < 4; ++i) {
+		ImGui::Indent();
+	}
+
+	if (ImGui::Button("Add Component")) {
+		ImGui::OpenPopup("AddComponent");
+	}
+
+	for (int i = 0; i < 4; ++i) {
+		ImGui::Unindent();
+	}
+
+
+	/// popup window
+	if (ImGui::BeginPopup("AddComponent", ImGuiWindowFlags_AlwaysVerticalScrollbar)) {
+
+		ImVec2 buttonSize = ImVec2(128.f, 0.f);
+		for (const auto& name : componentNames_) {
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+			if (ImGui::Button(name.second.c_str(), buttonSize)) {
+				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name.second);
+			}
+
+			ImGui::PopStyleColor();
+		}
+
+		ImGui::EndPopup();
+	}
+
+
 }

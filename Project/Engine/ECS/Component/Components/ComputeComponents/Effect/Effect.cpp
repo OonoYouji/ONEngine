@@ -58,6 +58,18 @@ void Effect::RemoveElement(size_t _index) {
 	}
 }
 
+void Effect::SetMainModule(const EffectMainModule& _module) {
+	mainModule_ = _module;
+}
+
+void Effect::SetEmitShape(const EffectEmitShape& _shape) {
+	emitShape_ = _shape;
+}
+
+void Effect::SetEmitType(EmitType _type) {
+	emitType_ = _type;
+}
+
 void Effect::SetMaxEffectCount(size_t _maxCount) {
 	maxEffectCount_ = _maxCount;
 	elements_.reserve(maxEffectCount_);
@@ -70,9 +82,21 @@ void Effect::SetEmitTypeDistance(float _interval, size_t _emitInstanceCount) {
 	emitInstanceCount_ = _emitInstanceCount;
 }
 
+void Effect::SetEmitTypeDistance(const DistanceEmitData& _data) {
+	distanceEmitData_ = _data;
+}
+
 void Effect::SetEmitTypeTime(const TimeEmitData& _data, size_t _emitInstanceCount) {
 	emitType_ = EmitType::Time;
 	timeEmitData_ = _data;
+	emitInstanceCount_ = _emitInstanceCount;
+}
+
+void Effect::SetEmitTypeTime(const TimeEmitData& _data) {
+	timeEmitData_ = _data;
+}
+
+void Effect::SetEmitInstanceCount(size_t _emitInstanceCount) {
 	emitInstanceCount_ = _emitInstanceCount;
 }
 
@@ -143,6 +167,14 @@ void Effect::SetEmitShape(const Vector3& _apex, float _angle, float _radius, flo
 	emitShape_.SetCone(_apex, _angle, _radius, _height);
 }
 
+bool Effect::IsCreateParticle() const {
+	return isCreateParticle_;
+}
+
+size_t Effect::GetMaxEffectCount() const {
+	return maxEffectCount_;
+}
+
 const std::string& Effect::GetMeshPath() const {
 	return meshPath_;
 }
@@ -161,4 +193,32 @@ Effect::BlendMode Effect::GetBlendMode() const {
 
 EffectMainModule* Effect::GetMainModule() {
 	return &mainModule_;
+}
+
+const EffectMainModule& Effect::GetMainModule() const {
+	return mainModule_;
+}
+
+EffectEmitShape* Effect::GetEmitShape() {
+	return &emitShape_;
+}
+
+const EffectEmitShape& Effect::GetEmitShape() const {
+	return emitShape_;
+}
+
+int Effect::GetEmitType() const {
+	return static_cast<int>(emitType_);
+}
+
+const Effect::DistanceEmitData& Effect::GetDistanceEmitData() const {
+	return distanceEmitData_;
+}
+
+const Effect::TimeEmitData& Effect::GetTimeEmitData() const {
+	return timeEmitData_;
+}
+
+size_t Effect::GetEmitInstanceCount() const {
+	return emitInstanceCount_;
 }

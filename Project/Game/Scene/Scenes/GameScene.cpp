@@ -16,6 +16,8 @@
 #include "Game/Objects/KeyItem/KeyItem.h"
 #include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
 
+#include "Game/Objects/EmptyEntity_Renamed.h"
+
 GameScene::GameScene() {
 	loadResourcePaths_ = {
 		"Assets/Models/primitive/cube.obj",
@@ -54,6 +56,8 @@ void GameScene::Initialize() {
 #ifdef _DEBUG
 	//pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG
+
+	pEntityComponentSystem_->GenerateEntity<EmptyEntity_Renamed>();
 	pEntityComponentSystem_->GenerateEntity<DirectionalLightObject>();
 
 	//pEntityComponentSystem_->GenerateEntity<GameController>();

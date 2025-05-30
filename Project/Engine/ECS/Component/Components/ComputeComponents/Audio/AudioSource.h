@@ -48,15 +48,15 @@ public:
 
 	/// @brief 音量の取得
 	/// @return 音量
-	float GetVolume() { return volume_; }
+	float GetVolume() const { return volume_; }
 
 	/// @brief 音の高さの取得
 	/// @return 音の高さ
-	float GetPitch() { return pitch_; }
+	float GetPitch() const { return pitch_; }
 
 	/// @brief 音源のパスの取得
 	/// @return 音源のパス
-	const std::string& GetAudioPath() { return path_; }
+	const std::string& GetAudioPath() const { return path_; }
 
 };
 

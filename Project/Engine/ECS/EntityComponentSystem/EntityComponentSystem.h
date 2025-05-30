@@ -43,11 +43,18 @@ public:
 	template <class T>
 	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
 
+	/// @brief stringから component を追加する
+	/// @param _name componentの名前
+	/// @return 追加した component のポインタ
+	IComponent* AddComponent(const std::string& _name);
+
 	/// @brief component の取得
 	/// @tparam T ゲットする component の型
 	/// @return component のポインタ
 	template <class T>
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
+
+	void RemoveComponentAll();
 
 	void UpdateTransform();
 
@@ -147,7 +154,7 @@ public:
 	EntityComponentSystem(class DxManager* _pDxManager);
 	~EntityComponentSystem();
 
-	void Initialize();
+	void Initialize(class EditorManager* _editorManager);
 	void Update();
 
 
@@ -173,13 +180,18 @@ public:
 	template<typename Comp>
 	Comp* AddComponent() requires std::is_base_of_v<IComponent, Comp>;
 
+	IComponent* AddComponent(const std::string& _name);
+
 	template<typename Comp>
 	Comp* GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	void LoadComponent(IEntity* _entity);
 
+	template<typename Comp>
+	void RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp>;
 
 	/// ----- system ----- ///
 
@@ -191,8 +203,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class DxManager* pDxManager_ = nullptr;
-	class DxDevice* pDxDevice_ = nullptr;
+	class DxManager* pDxManager_;
+	class DxDevice* pDxDevice_;
+	class EditorManager* pEditorManager_;
 
 	/// ----- entity ----- ///
 	std::vector<std::unique_ptr<IEntity>> entities_;
@@ -203,6 +216,9 @@ private:
 
 	/// ----- component ----- ///
 	std::unordered_map<size_t, std::unique_ptr<IComponentArray>> componentArrayMap_;
+
+	using ComponentFunc = std::function<IComponent* ()>;
+	std::unordered_map<size_t, ComponentFunc> componentFactoryMap_; ///< コンポーネントのファクトリマップ
 
 	/// ----- system ----- ///
 	std::vector<std::unique_ptr<ECSISystem>> systemMap_;
@@ -246,8 +262,21 @@ public:
 };
 
 
+/// //////////////////////////////////////////////
+/// Componentのハッシュ値を取得する関数
+/// //////////////////////////////////////////////
 
+size_t GetComponentHash(const std::string& _name);
 
+template <typename T>
+size_t GetComponentHash() {
+	std::string name = typeid(T).name();
+	if (name.find("class ") == 0) {
+		name = name.substr(6);
+	}
+
+	return GetComponentHash(name);
+}
 
 
 /// ===================================================
@@ -257,7 +286,7 @@ public:
 template<class T>
 inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 
-	size_t hash = typeid(T).hash_code();
+	size_t hash = GetComponentHash<T>();
 	auto it = components_.find(hash);
 	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
 		return static_cast<T*>(it->second);
@@ -273,7 +302,7 @@ inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
 
 template<class T>
 inline T* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, T> {
-	auto it = components_.find(typeid(T).hash_code());
+	auto it = components_.find(GetComponentHash<T>());
 	if (it != components_.end()) {
 		return dynamic_cast<T*>(it->second);
 	}
@@ -313,45 +342,53 @@ inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Cam
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
-	size_t hash = typeid(Comp).hash_code();
+	size_t hash = GetComponentHash<Comp>();
 
 	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
-		componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
+		RegisterComponentFactory<Comp>();
 	}
 
-	{	/// componentを追加する
-
-		ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
-
-		if (componentArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
-			size_t index = componentArray->removedIndices_.back();
-			componentArray->removedIndices_.pop_back();
-			componentArray->usedIndices_.push_back(index);
-			componentArray->components_[index] = Comp(); ///< 今までのデータを上書き
-
-			return &componentArray->components_[index];
-		}
-
-		componentArray->components_.emplace_back();
-		size_t index = componentArray->components_.size() - 1;
-		componentArray->usedIndices_.push_back(index);
-
-		return &componentArray->components_[index];
-	}
+	return static_cast<Comp*>(componentFactoryMap_[hash]());
 }
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	size_t hash = typeid(Comp).hash_code();
+	size_t hash = GetComponentHash<Comp>();
 	return &componentArrayMap_[hash]->components_[_index];
 }
 
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	size_t hash = typeid(Comp).hash_code();
+	size_t hash = GetComponentHash<Comp>();
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
+}
+
+template<typename Comp>
+inline void EntityComponentSystem::RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp> {
+	size_t hash = GetComponentHash<Comp>();
+	
+	componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
+	componentFactoryMap_[hash] = [this, hash]() -> IComponent* {
+		ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
+
+
+		if (compArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
+			size_t index = compArray->removedIndices_.back();
+			compArray->removedIndices_.pop_back();
+			compArray->usedIndices_.push_back(index);
+			compArray->components_[index] = Comp(); ///< 今までのデータを上書き
+
+			return &compArray->components_[index];
+		}
+
+		compArray->components_.emplace_back();
+		size_t index = compArray->components_.size() - 1;
+		compArray->usedIndices_.push_back(index);
+
+		return &compArray->components_[index];
+		};
 }
 
 template<typename T, typename ...Args>

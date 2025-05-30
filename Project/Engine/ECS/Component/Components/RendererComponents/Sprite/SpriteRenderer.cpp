@@ -1,4 +1,6 @@
 #include "SpriteRenderer.h"
 
-SpriteRenderer::SpriteRenderer() {}
+SpriteRenderer::SpriteRenderer() {
+	texturePath_ = "Packages/Textures/white.png";
+}
 SpriteRenderer::~SpriteRenderer() {}

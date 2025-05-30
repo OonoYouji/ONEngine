@@ -7,17 +7,46 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 #include "Engine/ECS/Entity/Camera/DebugCamera.h"
+#include "Engine/Editor/EditorManager.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "../Component/Component.h"
 #include "AddECSSystemFunction.h"
+#include "AddECSComponentFactoryFunction.h"
 
 IEntity::IEntity() {}
 
 void IEntity::CommonInitialize() {
-	transform_ = AddComponent<Transform>();
-	variables_ = AddComponent<Variables>();
 	name_ = typeid(*this).name();
 	name_.erase(0, 6);
+	pEntityComponentSystem_->LoadComponent(this);
+
+	transform_ = AddComponent<Transform>();
+	variables_ = AddComponent<Variables>();
 	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
+}
+
+IComponent* IEntity::AddComponent(const std::string& _name) {
+
+	size_t hash = GetComponentHash(_name);
+	auto it = components_.find(hash);
+	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
+		return it->second;
+	}
+
+	/// component の生成, 追加
+	IComponent* component = pEntityComponentSystem_->AddComponent(_name);
+	if (!component) {
+		return nullptr;
+	}
+
+	component->SetOwner(this);
+	components_[hash] = component;
+
+	return component;
+}
+
+void IEntity::RemoveComponentAll() {
+	
 }
 
 void IEntity::UpdateTransform() {
@@ -141,12 +170,6 @@ Vector3 IEntity::GetWorldRotate() {
 		return transform_->rotate;
 	}
 
-	// 親のワールド行列を取得  
-	//const Matrix4x4& parentWorldMatrix = parent_->transform_->GetMatWorld();
-
-	// 親の回転を抽出  
-	//Vector3 parentRotation = parent_->GetWorldRotate();
-
 	// 自身のローカル回転を加算  
 	return parent_->GetWorldRotate() + transform_->rotate;
 }
@@ -189,22 +212,28 @@ bool IEntity::GetActive() const {
 
 
 
-EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager) : pDxManager_(_pDxManager) {}
+EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
+	: pDxManager_(_pDxManager){}
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize() {
+void EntityComponentSystem::Initialize(EditorManager* _editorManager) {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
+	pEditorManager_ = _editorManager;
 
 	entities_.reserve(256);
+
+	AddECSSystemFunction(this, pDxManager_);
+	AddComponentFactoryFunction(this);
+
 
 	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetDebugCamera(debugCamera);
 
-	AddECSSystemFunction(this, pDxManager_);
 }
+
 
 void EntityComponentSystem::Update() {
 	for (auto& entity : entities_) {
@@ -243,6 +272,20 @@ Camera* EntityComponentSystem::GenerateCamera() {
 	cameras_.push_back(cameraPtr);
 
 	return cameraPtr;
+}
+
+IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
+	size_t hash = GetComponentHash(_name);
+
+	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
+		return nullptr;
+	}
+
+	return componentFactoryMap_[hash]();
+}
+
+void EntityComponentSystem::LoadComponent(IEntity* _entity) {
+	pEditorManager_->ExecuteCommand<EntityDataInputCommand>(_entity);
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {
@@ -301,3 +344,6 @@ Camera* EntityComponentSystem::GetDebugCamera() {
 	return debugCamera_;
 }
 
+size_t GetComponentHash(const std::string& _name) {
+	return std::hash<std::string>()(_name);
+}
