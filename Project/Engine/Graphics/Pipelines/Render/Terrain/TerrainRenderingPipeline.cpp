@@ -156,7 +156,7 @@ void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem
 	command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	command->DrawIndexedInstanced(
-		indexBuffer_.GetIndices().size(),
+		static_cast<UINT>(indexBuffer_.GetIndices().size()),
 		1, 0, 0, 0
 	);
 

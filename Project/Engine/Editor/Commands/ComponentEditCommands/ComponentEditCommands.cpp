@@ -63,8 +63,7 @@ EDITOR_STATE EntityDataOutputCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
-EntityDataInputCommand::EntityDataInputCommand(IEntity* _entity, const std::string& _filePath)
-	: pEntity_(_entity) {
+EntityDataInputCommand::EntityDataInputCommand(IEntity* _entity) : pEntity_(_entity) {
 	inputFilePath_ = "Assets/Jsons/" + pEntity_->GetName() + "Components.json";
 }
 
@@ -98,5 +97,32 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 }
 
 EDITOR_STATE EntityDataInputCommand::Undo() {
-	return EDITOR_STATE();
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+AddComponentCommand::AddComponentCommand(IEntity* _entity, const std::string& _componentName) {
+	pEntity_ = _entity;
+	componentName_ = _componentName;
+}
+
+EDITOR_STATE AddComponentCommand::Execute() {
+
+	IComponent* component = pEntity_->AddComponent(componentName_);
+	if (!component) {
+		Console::Log("AddComponentCommand: コンポーネントの追加に失敗しました: " + componentName_);
+		return EDITOR_STATE_FAILED;
+	}
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE AddComponentCommand::Undo() {
+
+	if (!pEntity_) {
+		Console::Log("AddComponentCommand: Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
+
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }

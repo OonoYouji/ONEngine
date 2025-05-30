@@ -45,8 +45,8 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 						pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
 					}
 				
-					if (ImGui::MenuItem("Loas")) {
-						pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity, "");
+					if (ImGui::MenuItem("Load")) {
+						pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity);
 					}
 
 					ImGui::EndMenu();
