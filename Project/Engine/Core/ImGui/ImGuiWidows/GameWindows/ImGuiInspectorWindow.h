@@ -3,6 +3,7 @@
 /// std
 #include <vector>
 #include <functional>
+#include <map>
 
 /// engine
 #include "../Collection/ImGuiWindowCollection.h"
@@ -26,12 +27,13 @@ public:
 	/// @param _pointer 表示したい物のポインタ(整数型)
 	void SetSelectedEntity(std::uintptr_t _pointer) { selectedPointer_ = _pointer; }
 
-	/// @brief componentのデバッグ表示関数を登録する
-	/// @param _hash 登録するcomponentのハッシュ値
-	/// @param _func デバッグ処理の関数ポインタ
-	void RegisterComponentDebugFunc(size_t _hash, std::function<void(class IComponent*)> _func) {
-		componentDebugFuncs_.emplace(_hash, _func);
-	}
+	template<typename T>
+	void RegisterComponent(std::function<void(class IComponent*)> _func);
+
+
+	void EntityInspector();
+
+
 
 private:
 	/// ===================================================
@@ -46,5 +48,22 @@ private:
 	class IComponent* selectedComponent_ = nullptr; ///< 選択したcomponentのポインタ
 
 	std::unordered_map<size_t, std::function<void(class IComponent*)>> componentDebugFuncs_;
+
+	/* ----- add component ----- */
+
+	std::map<size_t, std::string> componentNames_;
+
 };
 
+template<typename T>
+inline void ImGuiInspectorWindow::RegisterComponent(std::function<void(class IComponent*)> _func) {
+	/// hash計算
+	std::string name = typeid(T).name();
+	if (name.find("class ") == 0) {
+		name = name.substr(6);
+	}
+	size_t hash = std::hash<std::string>()(name);
+
+	componentDebugFuncs_[hash] = _func;
+	componentNames_[hash] = name;
+}

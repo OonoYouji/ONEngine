@@ -5,6 +5,7 @@
 
 /// external
 #include <nlohmann/json.hpp>
+#include <imgui.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -81,6 +82,8 @@ EDITOR_STATE EntityDataInputCommand::Execute() {
 	nlohmann::json jsonData;
 	ifs >> jsonData;
 
+	//pEntity_.
+
 	/// コンポーネントを追加
 	for (const auto& componentJson : jsonData) {
 		const std::string componentType = componentJson.at("type").get<std::string>();
@@ -106,6 +109,10 @@ AddComponentCommand::AddComponentCommand(IEntity* _entity, const std::string& _c
 }
 
 EDITOR_STATE AddComponentCommand::Execute() {
+	if (!pEntity_) {
+		Console::Log("AddComponentCommand: Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
 
 	IComponent* component = pEntity_->AddComponent(componentName_);
 	if (!component) {
@@ -117,12 +124,6 @@ EDITOR_STATE AddComponentCommand::Execute() {
 }
 
 EDITOR_STATE AddComponentCommand::Undo() {
-
-	if (!pEntity_) {
-		Console::Log("AddComponentCommand: Entity is nullptr");
-		return EDITOR_STATE_FAILED;
-	}
-
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
