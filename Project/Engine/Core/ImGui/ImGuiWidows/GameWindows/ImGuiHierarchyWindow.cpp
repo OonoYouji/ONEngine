@@ -15,6 +15,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityCompon
 	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager), pInspectorWindow_(_inspectorWindow) {
 
 	newName_.reserve(1024);
+	isNodeOpen_ = false;
 }
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
@@ -66,16 +67,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 	/// 子オブジェクトの表示
 	if (_entity->GetChildren().empty()) {
 		if (renameEntity_ && renameEntity_ == _entity) {
-
-			if (ImGuiInputText("##rename", &newName_, ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_EnterReturnsTrue)) {
-				pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
-				renameEntity_ = nullptr;
-			}
-
-			// フォーカスが外れたらリネームキャンセル
-			if (Input::TriggerMouse(Mouse::Right) || Input::TriggerKey(DIK_ESCAPE)) {
-				renameEntity_ = nullptr;
-			}
+			EntityRename(_entity);
 
 		} else {
 
@@ -89,16 +81,35 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 		PopupWindow();
 
 	} else {
+		//static bool nodeOpen = false;
+		//isNodeOpen_ = true;
+
+		ImGuiTreeNodeFlags nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow;
+		std::string name = "##";
+		if (renameEntity_ && renameEntity_ == _entity) {
+			name += entityName_;
+		} else {
+			nodeFlags |= ImGuiTreeNodeFlags_SpanFullWidth;
+			name = entityName_;
+		}
+
+
 		// 子がいる場合はTreeNodeを使用して階層構造を開閉可能にする  
-		bool nodeOpen = ImGui::TreeNodeEx(entityName_.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth);
+		isNodeOpen_ = ImGui::TreeNodeEx(name.c_str(), nodeFlags);
 		if (ImGui::IsItemClicked()) {
 			selectedEntity_ = _entity;
 		}
 
+		if (renameEntity_ && renameEntity_ == _entity) {
+			ImGui::SameLine();
+			EntityRename(_entity);
+		}
+
+
 		/// 右クリックしたときのメニューの表示
 		PopupWindow();
 
-		if (nodeOpen) {
+		if (isNodeOpen_) {
 
 			ImGui::Indent();
 			for (auto& child : _entity->GetChildren()) {
@@ -150,4 +161,17 @@ void ImGuiHierarchyWindow::Hierarchy() {
 	}
 
 	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+}
+
+void ImGuiHierarchyWindow::EntityRename(IEntity* _entity) {
+
+	if (ImGuiInputText("##rename", &newName_, ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_EnterReturnsTrue)) {
+		pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
+		renameEntity_ = nullptr;
+	}
+
+	// フォーカスが外れたらリネームキャンセル
+	if (Input::TriggerMouse(Mouse::Right) || Input::TriggerKey(DIK_ESCAPE)) {
+		renameEntity_ = nullptr;
+	}
 }

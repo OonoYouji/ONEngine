@@ -32,6 +32,8 @@ private:
 
 	void Hierarchy();
 
+	void EntityRename(class IEntity* _entity);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -48,6 +50,8 @@ private:
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 	class IEntity* selectedEntity_ = nullptr;
 
+	/* ----- hierarchy ----- */
+	bool isNodeOpen_;
 
 	/* ----- rename ----- */
 	std::string newName_ = "";
