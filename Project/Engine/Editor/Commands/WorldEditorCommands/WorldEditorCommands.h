@@ -70,3 +70,31 @@ private:
 	std::string outputFilePath_;
 
 };
+
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティを削除するコマンド
+/// ///////////////////////////////////////////////////
+class DeleteEntityCommand : public IEditorCommand {
+public:
+	/// =========================================
+	/// public : methods
+	/// =========================================
+
+	DeleteEntityCommand(class EntityComponentSystem* _ecs, class IEntity* _entity);
+	~DeleteEntityCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	/// =========================================
+	/// private : objects
+	/// =========================================
+
+	class EntityComponentSystem* pECS_;
+	class IEntity* pEntity_;
+
+
+};

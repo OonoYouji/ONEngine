@@ -46,7 +46,7 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 }
 
 void IEntity::RemoveComponentAll() {
-	
+
 }
 
 void IEntity::UpdateTransform() {
@@ -213,7 +213,7 @@ bool IEntity::GetActive() const {
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
-	: pDxManager_(_pDxManager){}
+	: pDxManager_(_pDxManager) {}
 EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize() {
@@ -250,6 +250,13 @@ void EntityComponentSystem::Update() {
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity) {
+
+	/// 親子関係の解除
+	_entity->RemoveParent();
+	for (auto& child : _entity->GetChildren()) {
+		child->RemoveParent();
+	}
+
 	/// entityの削除
 	auto itr = std::remove_if(entities_.begin(), entities_.end(),
 		[_entity](const std::unique_ptr<IEntity>& entity) {

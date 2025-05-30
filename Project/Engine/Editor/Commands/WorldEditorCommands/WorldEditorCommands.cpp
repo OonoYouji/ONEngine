@@ -140,3 +140,26 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 
 	return EDITOR_STATE_FINISH;
 }
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティを削除するコマンド
+/// ///////////////////////////////////////////////////
+
+DeleteEntityCommand::DeleteEntityCommand(EntityComponentSystem* _ecs, IEntity* _entity) 
+	: pECS_(_ecs), pEntity_(_entity) {}
+
+EDITOR_STATE DeleteEntityCommand::Execute() {
+	if (!pECS_ || !pEntity_) {
+		Console::Log("DeleteEntityCommand : ECS or Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
+
+	pECS_->RemoveEntity(pEntity_);
+
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE DeleteEntityCommand::Undo() {
+	return EDITOR_STATE_FINISH;
+}

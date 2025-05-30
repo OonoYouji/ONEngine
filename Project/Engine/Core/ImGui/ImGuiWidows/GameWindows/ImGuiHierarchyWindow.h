@@ -34,6 +34,8 @@ private:
 
 	void EntityRename(class IEntity* _entity);
 
+	void EntityDebug(class IEntity* _entity);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -52,6 +54,7 @@ private:
 
 	/* ----- hierarchy ----- */
 	bool isNodeOpen_;
+	std::string selectedEntityName_ = "empty"; ///< 選択しているエンティティの名前
 
 	/* ----- rename ----- */
 	std::string newName_ = "";
