@@ -14,29 +14,17 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	/*MeshRenderer* meshRenderer = AddComponent<MeshRenderer>();
-	meshRenderer->SetMeshPath("Assets/Models/entity/player.obj");
-	meshRenderer->SetTexturePath("Packages/Textures/uvChecker.png");*/
-
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
-
-	//AddComponent<ToTerrainCollider>();
-
-	//transform_->position = Vec3(500.0f, 0.0f, 500.0f);
 }
 
 void Player::Update() {
-
-
-
 
 	Vec3& velo = variables_->Get<Vec3>("velocity");
 	float& jumpPower = variables_->Get<float>("jumpPower");
 	float& speed = variables_->Get<float>("speed");
 	float& gravity = variables_->Get<float>("gravity");
 	bool& onGround = variables_->Get<bool>("onGround");
-
 
 	if (Input::TriggerKey(DIK_R)) {
 		transform_->position.y = 0.0f;
@@ -76,7 +64,6 @@ void Player::Update() {
 	/// 地面に着地したら
 	if (ToTerrainCollider* collider = GetComponent<ToTerrainCollider>()) {
 		if (collider->GetIsCollided()) {
-
 			//transform_->position.y = 0.0f;
 			jumpPower = 0.0f;
 			onGround = true;
@@ -88,9 +75,5 @@ void Player::Update() {
 		pCamera_->SetPosition(variables_->Get<Vec3>("cameraOffset"));
 	}
 
-
-	/*Gizmo::DrawWireSphere(transform_->position, 10.0f, Color::kRed);
-	Gizmo::DrawWireCube(transform_->position, Vec3::kOne * 10, Color::kGreen);
-	Gizmo::DrawRay(transform_->position, velo * 10.0f, Color::kBlue);*/
 }
 
