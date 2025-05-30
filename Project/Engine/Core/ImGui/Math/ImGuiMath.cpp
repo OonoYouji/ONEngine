@@ -19,11 +19,9 @@ namespace {
 }	/// unnamed namespace
 
 
-void ImGuiInputText(const char* _label, std::string* _text) {
-	ImGui::InputText(
-		_label,
-		(*_text).data(), (*_text).capacity(),
-		ImGuiInputTextFlags_CallbackAlways,
+bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
+	return ImGui::InputText(
+		_label, (*_text).data(), (*_text).capacity(), _flags,
 		[](ImGuiInputTextCallbackData* _data) {
 			auto* str = static_cast<std::string*>(_data->UserData);
 			str->assign(_data->Buf, _data->BufTextLen);

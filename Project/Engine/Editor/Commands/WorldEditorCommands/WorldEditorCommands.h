@@ -34,7 +34,7 @@ private:
 /// ///////////////////////////////////////////////////
 class EntityRenameCommand : public IEditorCommand {
 public:
-	EntityRenameCommand(class IEntity* _entity);
+	EntityRenameCommand(class IEntity* _entity, const std::string& _newName);
 	~EntityRenameCommand() = default;
 
 	EDITOR_STATE Execute() override;

@@ -4,13 +4,18 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "ImGuiInspectorWindow.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
+
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, ImGuiInspectorWindow* _inspectorWindow)
-	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager), pInspectorWindow_(_inspectorWindow) {}
+	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager), pInspectorWindow_(_inspectorWindow) {
+
+	newName_.reserve(1024);
+}
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_MenuBar)) {
@@ -30,6 +35,11 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 	entityName_ = _entity->GetName();
 	entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(_entity));
 
+	/// 現在選択しているエンティティと違う場合はリネームをキャンセルする
+	if (renameEntity_ != _entity) {
+		//renameEntity_ = nullptr;
+	}
+
 
 	auto PopupWindow = [&]() {
 
@@ -43,7 +53,9 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 		/// 右クリックしたときのメニューの表示
 		if (ImGui::BeginPopupContextItem(entityName_.c_str())) {
 			if (ImGui::MenuItem("rename")) {
-				pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity);
+				newName_ = _entity->GetName();
+				renameEntity_ = _entity;
+				//pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
 			}
 			ImGui::EndPopup();
 		}
@@ -53,9 +65,24 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 
 	/// 子オブジェクトの表示
 	if (_entity->GetChildren().empty()) {
-		// 子がいない場合はSelectableで選択可能にする  
-		if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
-			selectedEntity_ = _entity;
+		if (renameEntity_ && renameEntity_ == _entity) {
+
+			if (ImGuiInputText("##rename", &newName_, ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_EnterReturnsTrue)) {
+				pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
+				renameEntity_ = nullptr;
+			}
+
+			// フォーカスが外れたらリネームキャンセル
+			if (Input::TriggerMouse(Mouse::Right) || Input::TriggerKey(DIK_ESCAPE)) {
+				renameEntity_ = nullptr;
+			}
+
+		} else {
+
+			// 子がいない場合はSelectableで選択可能にする  
+			if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
+				selectedEntity_ = _entity;
+			}
 		}
 
 		/// 右クリックしたときのメニューの表示

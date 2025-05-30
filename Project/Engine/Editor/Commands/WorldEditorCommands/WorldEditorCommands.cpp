@@ -9,6 +9,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/EmptyEntity/EmptyEntity.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
@@ -41,31 +42,22 @@ EDITOR_STATE CreateGameObjectCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// オブジェクトの名前変更コマンド
 /// ///////////////////////////////////////////////////
-EntityRenameCommand::EntityRenameCommand(IEntity* _entity)
-	: pEntity_(_entity) {}
+EntityRenameCommand::EntityRenameCommand(IEntity* _entity, const std::string& _newName)
+	: pEntity_(_entity) {
+	oldName_ = pEntity_->GetName();
+	newName_ = _newName;
+}
 
 EDITOR_STATE EntityRenameCommand::Execute() {
-	EDITOR_STATE result = EDITOR_STATE_RUNNING;
 
-	if (pEntity_) {
-
-		// 変更前の名前を保存
-		oldName_ = pEntity_->GetName();
-		newName_ = oldName_;
-		newName_ += "_Renamed";
-		pEntity_->SetName(newName_);
-
-		result = EDITOR_STATE_FINISH;
-
-	} else if (pEntity_ == nullptr) {
-		result = EDITOR_STATE_FAILED;
+	if (pEntity_ == nullptr) {
 		Console::Log("EntityRenameCommand : Entity is nullptr");
-
-	} else {
-		result = EDITOR_STATE_FAILED;
+		return EDITOR_STATE_RUNNING;
 	}
 
-	return result;
+	pEntity_->SetName(newName_);
+
+	return EDITOR_STATE_FINISH;
 }
 
 EDITOR_STATE EntityRenameCommand::Undo() {

@@ -47,4 +47,10 @@ private:
 	class EditorManager* pEditorManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 	class IEntity* selectedEntity_ = nullptr;
+
+
+	/* ----- rename ----- */
+	std::string newName_ = "";
+	IEntity* renameEntity_;
+
 };
