@@ -16,15 +16,23 @@
 IEntity::IEntity() {}
 
 void IEntity::CommonInitialize() {
-	transform_ = AddComponent<Transform>();
-	variables_ = AddComponent<Variables>();
 	name_ = typeid(*this).name();
 	name_.erase(0, 6);
-	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 	pEntityComponentSystem_->LoadComponent(this);
+
+	transform_ = AddComponent<Transform>();
+	variables_ = AddComponent<Variables>();
+	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
 IComponent* IEntity::AddComponent(const std::string& _name) {
+
+	size_t hash = GetComponentHash(_name);
+	auto it = components_.find(hash);
+	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
+		return it->second;
+	}
+
 	/// component の生成, 追加
 	IComponent* component = pEntityComponentSystem_->AddComponent(_name);
 	if (!component) {
@@ -32,9 +40,13 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	}
 
 	component->SetOwner(this);
-	components_[GetComponentHash(_name)] = component;
+	components_[hash] = component;
 
 	return component;
+}
+
+void IEntity::RemoveComponentAll() {
+	
 }
 
 void IEntity::UpdateTransform() {
@@ -211,13 +223,15 @@ void EntityComponentSystem::Initialize(EditorManager* _editorManager) {
 
 	entities_.reserve(256);
 
+	AddECSSystemFunction(this, pDxManager_);
+	AddComponentFactoryFunction(this);
+
+
 	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetDebugCamera(debugCamera);
 
-	AddECSSystemFunction(this, pDxManager_);
-	AddComponentFactoryFunction(this);
 }
 
 

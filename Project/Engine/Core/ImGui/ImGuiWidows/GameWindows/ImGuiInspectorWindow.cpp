@@ -85,6 +85,10 @@ void ImGuiInspectorWindow::EntityInspector() {
 	/// ----------------------------
 	for (auto& component : entity->GetComponents()) {
 		std::string componentName = typeid(*component.second).name();
+		//if (componentName == "") {
+		//	continue;
+		//}
+
 		componentName += "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 		if (componentName.find("class ") == 0) {
 			componentName = componentName.substr(6);

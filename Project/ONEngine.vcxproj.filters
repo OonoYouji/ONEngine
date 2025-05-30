@@ -134,7 +134,6 @@
     <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\EditorManager.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
@@ -144,6 +143,7 @@
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -274,7 +274,6 @@
     <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
-    <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
     <ClInclude Include="Engine\Editor\EditorManager.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
     <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
@@ -285,5 +284,6 @@
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
+    <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
   </ItemGroup>
 </Project>

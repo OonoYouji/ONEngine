@@ -54,6 +54,8 @@ public:
 	template <class T>
 	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
 
+	void RemoveComponentAll();
+
 	void UpdateTransform();
 
 protected:
@@ -190,7 +192,6 @@ public:
 
 	template<typename Comp>
 	void RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp>;
-
 
 	/// ----- system ----- ///
 
@@ -352,13 +353,13 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	size_t hash = typeid(Comp).hash_code();
+	size_t hash = GetComponentHash<Comp>();
 	return &componentArrayMap_[hash]->components_[_index];
 }
 
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	size_t hash = typeid(Comp).hash_code();
+	size_t hash = GetComponentHash<Comp>();
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
@@ -367,7 +368,7 @@ inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::
 template<typename Comp>
 inline void EntityComponentSystem::RegisterComponentFactory() requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = GetComponentHash<Comp>();
-
+	
 	componentArrayMap_[hash] = std::make_unique<ComponentArray<Comp>>();
 	componentFactoryMap_[hash] = [this, hash]() -> IComponent* {
 		ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(componentArrayMap_[hash].get());
