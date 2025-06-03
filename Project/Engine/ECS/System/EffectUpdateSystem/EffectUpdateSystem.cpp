@@ -23,6 +23,11 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 	}
 
 	mainCamera_ = _pEntityComponentSystem->GetMainCamera();
+	if (!mainCamera_) {
+		Console::Log("EffectUpdateSystem::Update: main camera is null");
+		return;
+	}
+
 	matBillboard_ = Matrix4x4::MakeRotate(mainCamera_->GetWorldRotate());
 	//matBillboard_.m[3][0] = 0.0f;
 	//matBillboard_.m[3][1] = 0.0f;

@@ -45,6 +45,11 @@ void RenderingPipelineCollection::Initialize() {
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
+	if (!_3dCamera || !_2dCamera) {
+		Console::Log("RenderingPipelineCollection::DrawEntities: Camera is null");
+		return;
+	}
+
 	for (auto& renderer : renderer3ds_) {
 		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
 	}
