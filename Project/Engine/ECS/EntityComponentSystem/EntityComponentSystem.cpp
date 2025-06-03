@@ -46,7 +46,7 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 }
 
 void IEntity::RemoveComponentAll() {
-	
+
 }
 
 void IEntity::UpdateTransform() {
@@ -213,13 +213,12 @@ bool IEntity::GetActive() const {
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
-	: pDxManager_(_pDxManager){}
+	: pDxManager_(_pDxManager) {}
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize(EditorManager* _editorManager) {
+void EntityComponentSystem::Initialize() {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
-	pEditorManager_ = _editorManager;
 
 	entities_.reserve(256);
 
@@ -250,7 +249,20 @@ void EntityComponentSystem::Update() {
 	}
 }
 
-void EntityComponentSystem::RemoveEntity(IEntity* _entity) {
+void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
+
+	/// 親子関係の解除
+	_entity->RemoveParent();
+	if (_deleteChildren) {
+		for (auto& child : _entity->GetChildren()) {
+			RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
+		}
+	} else {
+		for (auto& child : _entity->GetChildren()) {
+			child->RemoveParent();
+		}
+	}
+
 	/// entityの削除
 	auto itr = std::remove_if(entities_.begin(), entities_.end(),
 		[_entity](const std::unique_ptr<IEntity>& entity) {
@@ -285,7 +297,8 @@ IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 }
 
 void EntityComponentSystem::LoadComponent(IEntity* _entity) {
-	pEditorManager_->ExecuteCommand<EntityDataInputCommand>(_entity);
+	componentInputCommand_.SetEntity(_entity);
+	componentInputCommand_.Execute();
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {

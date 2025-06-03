@@ -144,6 +144,7 @@
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
+    <ClCompile Include="Game\Objects\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -285,5 +286,6 @@
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
     <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
+    <ClInclude Include="Game\Objects\Enemy.h" />
   </ItemGroup>
 </Project>

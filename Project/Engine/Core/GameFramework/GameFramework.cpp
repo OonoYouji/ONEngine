@@ -46,8 +46,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
-	editorManager_->Initialize();
-	entityComponentSystem_->Initialize(editorManager_.get());
+	entityComponentSystem_->Initialize();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
@@ -57,6 +56,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
+	editorManager_->Initialize();
 #endif // _DEBUG
 
 
@@ -74,10 +74,9 @@ void GameFramework::Run() {
 		Time::Update();
 
 		windowManager_->Update();
-		editorManager_->Update();
 #ifdef _DEBUG
 		imGuiManager_->Update();
-		//editorManager_->Update();
+		editorManager_->Update();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
 		//if (imGuiManager_->GetIsGameDebug()) {

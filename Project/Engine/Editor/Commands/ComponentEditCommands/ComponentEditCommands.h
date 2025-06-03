@@ -65,12 +65,15 @@ public:
 	/// public : methods
 	/// ================================================
 	
+	EntityDataInputCommand() = default;
 	EntityDataInputCommand(class IEntity* _entity);
 	~EntityDataInputCommand() override = default;
 	
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
+
+	void SetEntity(IEntity* _entity);
 
 private:
 	/// ================================================

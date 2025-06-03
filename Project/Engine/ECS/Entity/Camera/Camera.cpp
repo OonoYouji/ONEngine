@@ -27,7 +27,11 @@ Camera::Camera(DxDevice* _dxDevice) {
 	));
 }
 
-Camera::~Camera() {}
+Camera::~Camera() {
+	if (pEntityComponentSystem_->GetMainCamera() == this) {
+		pEntityComponentSystem_->SetMainCamera(nullptr);
+	}
+}
 
 
 void Camera::Initialize() {

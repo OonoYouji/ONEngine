@@ -10,7 +10,7 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
-void ImGuiInputText(const char* _label, std::string* _text);
+bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = ImGuiInputTextFlags_CallbackAlways);
 
 bool ImGuiColorEdit(const char* _label, Vector4* _color);
 

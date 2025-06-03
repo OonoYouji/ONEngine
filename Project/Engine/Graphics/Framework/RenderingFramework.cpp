@@ -103,6 +103,7 @@ void RenderingFramework::Draw() {
 			renderTextures_
 		);
 
+
 		renderingPipelineCollection_->DrawEntities(pEntityComponentSystem_->GetMainCamera(), pEntityComponentSystem_->GetMainCamera2D());
 
 		for (auto& renderTexture : renderTextures_) {

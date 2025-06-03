@@ -32,6 +32,10 @@ private:
 
 	void Hierarchy();
 
+	void EntityRename(class IEntity* _entity);
+
+	void EntityDebug(class IEntity* _entity);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -47,4 +51,13 @@ private:
 	class EditorManager* pEditorManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 	class IEntity* selectedEntity_ = nullptr;
+
+	/* ----- hierarchy ----- */
+	bool isNodeOpen_;
+	std::string selectedEntityName_ = "empty"; ///< 選択しているエンティティの名前
+
+	/* ----- rename ----- */
+	std::string newName_ = "";
+	IEntity* renameEntity_;
+
 };

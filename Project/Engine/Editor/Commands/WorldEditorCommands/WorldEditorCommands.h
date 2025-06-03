@@ -34,7 +34,7 @@ private:
 /// ///////////////////////////////////////////////////
 class EntityRenameCommand : public IEditorCommand {
 public:
-	EntityRenameCommand(class IEntity* _entity);
+	EntityRenameCommand(class IEntity* _entity, const std::string& _newName);
 	~EntityRenameCommand() = default;
 
 	EDITOR_STATE Execute() override;
@@ -68,5 +68,33 @@ private:
 	std::string sourceClassPath_;
 	std::string sourceClassName_;
 	std::string outputFilePath_;
+
+};
+
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティを削除するコマンド
+/// ///////////////////////////////////////////////////
+class DeleteEntityCommand : public IEditorCommand {
+public:
+	/// =========================================
+	/// public : methods
+	/// =========================================
+
+	DeleteEntityCommand(class EntityComponentSystem* _ecs, class IEntity* _entity);
+	~DeleteEntityCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	/// =========================================
+	/// private : objects
+	/// =========================================
+
+	class EntityComponentSystem* pECS_;
+	class IEntity* pEntity_;
+
 
 };
