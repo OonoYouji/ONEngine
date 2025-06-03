@@ -249,12 +249,18 @@ void EntityComponentSystem::Update() {
 	}
 }
 
-void EntityComponentSystem::RemoveEntity(IEntity* _entity) {
+void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 	/// 親子関係の解除
 	_entity->RemoveParent();
-	for (auto& child : _entity->GetChildren()) {
-		child->RemoveParent();
+	if (_deleteChildren) {
+		for (auto& child : _entity->GetChildren()) {
+			RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
+		}
+	} else {
+		for (auto& child : _entity->GetChildren()) {
+			child->RemoveParent();
+		}
 	}
 
 	/// entityの削除

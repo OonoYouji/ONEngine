@@ -164,7 +164,7 @@ public:
 	template<typename T>
 	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
 
-	void RemoveEntity(IEntity* _entity);
+	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities() const { return entities_; }
 
