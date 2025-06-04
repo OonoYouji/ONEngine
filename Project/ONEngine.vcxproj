@@ -66,6 +66,7 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Factory\EntityFactory.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
     <ClInclude Include="Engine\ECS\Entity\Factory\EntityFactory.h" />
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
+    <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />

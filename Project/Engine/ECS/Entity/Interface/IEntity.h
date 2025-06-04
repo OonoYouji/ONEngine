@@ -55,6 +55,7 @@ protected:
 	class EntityComponentSystem* pEntityComponentSystem_;
 
 	bool active_ = true; ///< true のときは更新する
+	uint32_t id_ = 0; ///< entityのID
 
 private:
 
@@ -117,6 +118,8 @@ public:
 	const std::string& GetName() const;
 
 	bool GetActive() const;
+
+	uint32_t GetId() const;
 
 };
 

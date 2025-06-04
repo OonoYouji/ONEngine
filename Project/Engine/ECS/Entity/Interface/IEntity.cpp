@@ -13,6 +13,8 @@ void IEntity::CommonInitialize() {
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
 	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
+
+	id_ = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(this));
 }
 
 IComponent* IEntity::AddComponent(const std::string& _name) {
@@ -198,4 +200,8 @@ const std::string& IEntity::GetName() const {
 
 bool IEntity::GetActive() const {
 	return active_;
+}
+
+uint32_t IEntity::GetId() const {
+	return id_;
 }

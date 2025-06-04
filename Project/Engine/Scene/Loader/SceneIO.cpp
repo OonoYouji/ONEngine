@@ -8,9 +8,9 @@
 #include <nlohmann/json.hpp>
 
 /// engine
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-
 
 SceneIO::SceneIO(EntityComponentSystem* _ecs)
 	: pECS_(_ecs) {
@@ -34,13 +34,9 @@ void SceneIO::Output(IScene* _scene) {
 
 	auto& entities = pECS_->GetEntities();
 	for (auto& entity : entities) {
-		nlohmann::json entityJson = nlohmann::json::object();
-		entityJson["name"] = entity->GetName();
-
-		// ここでコンポーネントの情報を追加する
-		auto& components = entity->GetComponents();
-		for (const auto& component : components) {
-			entityJson["components"].push_back(ComponentJsonConverter::ToJson(component.second));
+		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
+		if (entityJson.empty()) {
+			continue; // エンティティの情報が空ならスキップ
 		}
 
 		outputJson["entities"].push_back(entityJson);
@@ -77,12 +73,12 @@ void SceneIO::Input(IScene* _scene) {
 	inputFile >> inputJson;
 	inputFile.close();
 
+	std::vector<IEntity*> loadedEntities;
 
 	/// 実際にシーンに変換する
 	for (const auto& entity : inputJson["entities"]) {
 		std::string entityName = entity["name"];
-		auto newEntity = pECS_->GenerateEntity(entityName);
-
+		loadedEntities.push_back(pECS_->GenerateEntity(entityName));
 	}
 
 
