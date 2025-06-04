@@ -11,7 +11,7 @@
 /// Componentの配列のinterfaceクラス
 /// ///////////////////////////////////////////////////
 class IComponentArray {
-	friend class EntityComponentSystem;
+	friend class ComponentCollection;
 public:
 
 	virtual ~IComponentArray() = default;
@@ -31,7 +31,7 @@ protected:
 /// ///////////////////////////////////////////////////
 template <typename Comp> requires std::is_base_of_v<IComponent, Comp>
 class ComponentArray final : public IComponentArray {
-	friend class EntityComponentSystem;
+	friend class ComponentCollection;
 public:
 	/// ===================================================
 	/// public : methods

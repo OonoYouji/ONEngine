@@ -8,7 +8,7 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/EmptyEntity/EmptyEntity.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
 /// ///////////////////////////////////////////////////

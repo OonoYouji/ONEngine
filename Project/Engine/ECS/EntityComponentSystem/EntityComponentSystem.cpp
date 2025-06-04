@@ -5,212 +5,15 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
-#include "Engine/ECS/Entity/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/EntityFactory/EntityFactory.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+
+/// ecs
 #include "../Component/Component.h"
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
 
-IEntity::IEntity() {}
-
-void IEntity::CommonInitialize() {
-	name_ = typeid(*this).name();
-	name_.erase(0, 6);
-	pEntityComponentSystem_->LoadComponent(this);
-
-	transform_ = AddComponent<Transform>();
-	variables_ = AddComponent<Variables>();
-	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
-}
-
-IComponent* IEntity::AddComponent(const std::string& _name) {
-
-	size_t hash = GetComponentHash(_name);
-	auto it = components_.find(hash);
-	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
-		return it->second;
-	}
-
-	/// component の生成, 追加
-	IComponent* component = pEntityComponentSystem_->AddComponent(_name);
-	if (!component) {
-		return nullptr;
-	}
-
-	component->SetOwner(this);
-	components_[hash] = component;
-
-	return component;
-}
-
-void IEntity::RemoveComponentAll() {
-
-}
-
-void IEntity::UpdateTransform() {
-	transform_->matWorld = Matrix4x4::MakeAffine(transform_->scale, transform_->rotate, transform_->position);
-
-	if (parent_) {
-
-		if ((transform_->matrixCalcFlags & Transform::kAll) == Transform::kAll) {
-			transform_->matWorld *= parent_->transform_->GetMatWorld();
-			return;
-		}
-
-		Matrix4x4 matCancel = Matrix4x4::kIdentity;
-		if (transform_->matrixCalcFlags & Transform::kScale) {
-			matCancel = Matrix4x4::MakeScale(parent_->transform_->scale);
-		}
-
-		if (transform_->matrixCalcFlags & Transform::kRotate) {
-			matCancel *= Matrix4x4::MakeRotate(parent_->transform_->rotate);
-		}
-
-		if (transform_->matrixCalcFlags & Transform::kPosition) {
-			matCancel *= Matrix4x4::MakeTranslate(parent_->transform_->position);
-		}
-
-		transform_->matWorld *= matCancel;
-	}
-}
-
-void IEntity::SetPosition(const Vector3& _v) {
-	transform_->position = _v;
-}
-
-void IEntity::SetPositionX(float _x) {
-	transform_->position.x = _x;
-}
-
-void IEntity::SetPositionY(float _y) {
-	transform_->position.y = _y;
-}
-
-void IEntity::SetPositionZ(float _z) {
-	transform_->position.z = _z;
-}
-
-void IEntity::SetRotate(const Vector3& _v) {
-	transform_->rotate = _v;
-}
-
-void IEntity::SetRotateX(float _x) {
-	transform_->rotate.x = _x;
-}
-
-void IEntity::SetRotateY(float _y) {
-	transform_->rotate.y = _y;
-}
-
-void IEntity::SetRotateZ(float _z) {
-	transform_->rotate.z = _z;
-}
-
-void IEntity::SetScale(const Vector3& _v) {
-	transform_->scale = _v;
-}
-
-void IEntity::SetScaleX(float _x) {
-	transform_->scale.x = _x;
-}
-
-void IEntity::SetScaleY(float _y) {
-	transform_->scale.y = _y;
-}
-
-void IEntity::SetScaleZ(float _z) {
-	transform_->scale.z = _z;
-}
-
-void IEntity::SetParent(IEntity* _parent) {
-	_parent->children_.push_back(this);
-	parent_ = _parent;
-}
-
-void IEntity::RemoveParent() {
-	if (parent_) {
-		auto itr = std::remove_if(parent_->children_.begin(), parent_->children_.end(),
-			[this](IEntity* child) {
-				return child == this;
-			}
-		);
-		parent_->children_.erase(itr, parent_->children_.end());
-		parent_ = nullptr;
-	}
-}
-
-void IEntity::SetName(const std::string& _name) {
-	name_ = _name;
-}
-
-void IEntity::SetActive(bool _active) {
-	active_ = _active;
-}
-
-const Vector3& IEntity::GetLocalPosition() const {
-	return transform_->position;
-}
-
-const Vector3& IEntity::GetLocalRotate() const {
-	return transform_->rotate;
-}
-
-const Vector3& IEntity::GetLocalScale() const {
-	return transform_->scale;
-}
-
-Vector3 IEntity::GetWorldPosition() {
-	return Matrix4x4::Transform(GetLocalPosition(), transform_->GetMatWorld());
-}
-
-Vector3 IEntity::GetWorldRotate() {
-	if (!parent_) {
-		return transform_->rotate;
-	}
-
-	// 自身のローカル回転を加算  
-	return parent_->GetWorldRotate() + transform_->rotate;
-}
-
-Vector3 IEntity::GetWorldScale() {
-	return Vector3();
-}
-
-Transform* IEntity::GetTransform() const {
-	return transform_;
-}
-
-const IEntity* IEntity::GetParent() const {
-	return parent_;
-}
-
-IEntity* IEntity::GetParent() {
-	return parent_;
-}
-
-const std::vector<IEntity*>& IEntity::GetChildren() const {
-	return children_;
-}
-
-IEntity* IEntity::GetChild(size_t _index) {
-	return children_[_index];
-}
-
-const std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() const {
-	return components_;
-}
-
-const std::string& IEntity::GetName() const {
-	return name_;
-}
-
-bool IEntity::GetActive() const {
-	return active_;
-}
-
+#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
@@ -221,12 +24,12 @@ void EntityComponentSystem::Initialize() {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	entities_.reserve(256);
+	entityCollection_ = std::make_unique<EntityCollection>(this, pDxManager_);
+	componentCollection_ = std::make_unique<ComponentCollection>();
+
 
 	AddECSSystemFunction(this, pDxManager_);
-	AddComponentFactoryFunction(this);
-
-	entityFactory_ = std::make_unique<EntityFactory>(this);
+	AddComponentFactoryFunction(componentCollection_.get());
 
 	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
@@ -237,14 +40,8 @@ void EntityComponentSystem::Initialize() {
 
 
 void EntityComponentSystem::Update() {
-	for (auto& entity : entities_) {
-		if (!entity->GetActive()) {
-			continue;
-		}
 
-		entity->Update();
-		entity->UpdateTransform();
-	}
+	entityCollection_->UpdateEntities();
 
 	for (auto& system : systemMap_) {
 		system->Update(this);
@@ -252,64 +49,19 @@ void EntityComponentSystem::Update() {
 }
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name) {
-	/// 名前が空の場合はエラーを出力
-	if (_name.empty()) {
-		Console::Log("EntityComponentSystem: Entity name is empty.");
-		return nullptr;
-	}
-
-	/// 名前からクラスを探索
-	std::unique_ptr<IEntity> entity = std::move(entityFactory_->Generate(_name));
-	entities_.push_back(std::move(entity));
-
-	return entity.get();
+	return entityCollection_->GenerateEntity(_name);
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
-
-	/// 親子関係の解除
-	_entity->RemoveParent();
-	if (_deleteChildren) {
-		for (auto& child : _entity->GetChildren()) {
-			RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
-		}
-	} else {
-		for (auto& child : _entity->GetChildren()) {
-			child->RemoveParent();
-		}
-	}
-
-	/// entityの削除
-	auto itr = std::remove_if(entities_.begin(), entities_.end(),
-		[_entity](const std::unique_ptr<IEntity>& entity) {
-			return entity.get() == _entity;
-		}
-	);
-
-	entities_.erase(itr, entities_.end());
+	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
 }
 
 Camera* EntityComponentSystem::GenerateCamera() {
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
-	camera->pEntityComponentSystem_ = this;
-	camera->CommonInitialize();
-	camera->Initialize();
-
-	Camera* cameraPtr = camera.get();
-	entities_.push_back(std::move(camera));
-	cameras_.push_back(cameraPtr);
-
-	return cameraPtr;
+	return entityCollection_->GenerateCamera();
 }
 
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
-	size_t hash = GetComponentHash(_name);
-
-	if (componentArrayMap_.find(hash) == componentArrayMap_.end()) {
-		return nullptr;
-	}
-
-	return componentFactoryMap_[hash]();
+	return componentCollection_->AddComponent(_name);
 }
 
 void EntityComponentSystem::LoadComponent(IEntity* _entity) {
@@ -318,61 +70,58 @@ void EntityComponentSystem::LoadComponent(IEntity* _entity) {
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {
-	mainCamera_ = _camera;
+	entityCollection_->SetMainCamera(_camera);
 }
 
 void EntityComponentSystem::SetMainCamera(size_t _index) {
-	mainCamera_ = cameras_[_index];
+	entityCollection_->SetMainCamera(_index);
 }
 
 void EntityComponentSystem::SetMainCamera2D(Camera* _camera) {
-	mainCamera2D_ = _camera;
+	entityCollection_->SetMainCamera2D(_camera);
 }
 
 void EntityComponentSystem::SetMainCamera2D(size_t _index) {
-	mainCamera2D_ = cameras_[_index];
+	entityCollection_->SetMainCamera2D(_index);
 }
 
 void EntityComponentSystem::SetDebugCamera(Camera* _camera) {
-	debugCamera_ = _camera;
+	entityCollection_->SetDebugCamera(_camera);
 }
 
 void EntityComponentSystem::SetDebugCamera(size_t _index) {
-	debugCamera_ = cameras_[_index];
+	entityCollection_->SetDebugCamera(_index);
 }
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
-	return entities_;
+	return entityCollection_->GetEntities();
 }
 
 const std::vector<Camera*>& EntityComponentSystem::GetCameras() {
-	return cameras_;
+	return entityCollection_->GetCameras();
 }
 
 const Camera* EntityComponentSystem::GetMainCamera() const {
-	return mainCamera_;
+	return entityCollection_->GetMainCamera();
 }
 
 Camera* EntityComponentSystem::GetMainCamera() {
-	return mainCamera_;
+	return entityCollection_->GetMainCamera();
 }
 
 const Camera* EntityComponentSystem::GetMainCamera2D() const {
-	return mainCamera2D_;
+	return entityCollection_->GetMainCamera2D();
 }
 
 Camera* EntityComponentSystem::GetMainCamera2D() {
-	return mainCamera2D_;
+	return entityCollection_->GetMainCamera2D();
 }
 
 const Camera* EntityComponentSystem::GetDebugCamera() const {
-	return debugCamera_;
+	return entityCollection_->GetDebugCamera();
 }
 
 Camera* EntityComponentSystem::GetDebugCamera() {
-	return debugCamera_;
+	return entityCollection_->GetDebugCamera();
 }
 
-size_t GetComponentHash(const std::string& _name) {
-	return std::hash<std::string>()(_name);
-}

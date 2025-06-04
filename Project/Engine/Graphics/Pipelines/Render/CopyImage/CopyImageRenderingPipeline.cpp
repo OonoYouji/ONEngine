@@ -38,21 +38,21 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 		pipeline_->SetRTVNum(1);
 		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-		
+
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
 	}
 
 }
 
-void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
+void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
 	/// settings
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	
+
 	auto& textures = pResourceCollection_->GetTextures();
 	size_t index = pResourceCollection_->GetTextureIndex("scene");
 

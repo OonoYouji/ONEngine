@@ -2,19 +2,20 @@
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
-inline void AddComponentFactoryFunction(EntityComponentSystem* _ecs) {
-	_ecs->RegisterComponentFactory<Transform>();
-	_ecs->RegisterComponentFactory<DirectionalLight>();
-	_ecs->RegisterComponentFactory<AudioSource>();
-	_ecs->RegisterComponentFactory<Variables>();
-	_ecs->RegisterComponentFactory<Effect>();
+inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
+	_compCollection->RegisterComponentFactory<Transform>();
+	_compCollection->RegisterComponentFactory<DirectionalLight>();
+	_compCollection->RegisterComponentFactory<AudioSource>();
+	_compCollection->RegisterComponentFactory<Variables>();
+	_compCollection->RegisterComponentFactory<Effect>();
 
-	_ecs->RegisterComponentFactory<MeshRenderer>();
-	_ecs->RegisterComponentFactory<CustomMeshRenderer>();
-	_ecs->RegisterComponentFactory<SpriteRenderer>();
-	_ecs->RegisterComponentFactory<Line2DRenderer>();
-	_ecs->RegisterComponentFactory<Line3DRenderer>();
+	_compCollection->RegisterComponentFactory<MeshRenderer>();
+	_compCollection->RegisterComponentFactory<CustomMeshRenderer>();
+	_compCollection->RegisterComponentFactory<SpriteRenderer>();
+	_compCollection->RegisterComponentFactory<Line2DRenderer>();
+	_compCollection->RegisterComponentFactory<Line3DRenderer>();
 
-	_ecs->RegisterComponentFactory<ToTerrainCollider>();
+	_compCollection->RegisterComponentFactory<ToTerrainCollider>();
 }
