@@ -63,6 +63,7 @@
     <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EntityFactory\EntityFactory.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
+    <ClInclude Include="Engine\ECS\Entity\EntityFactory\EntityFactory.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />

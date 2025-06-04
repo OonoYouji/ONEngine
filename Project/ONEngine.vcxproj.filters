@@ -146,6 +146,7 @@
     <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EntityFactory\EntityFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -289,5 +290,6 @@
     <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
+    <ClInclude Include="Engine\ECS\Entity\EntityFactory\EntityFactory.h" />
   </ItemGroup>
 </Project>

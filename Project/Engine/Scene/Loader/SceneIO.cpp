@@ -66,4 +66,25 @@ void SceneIO::Output(IScene* _scene) {
 void SceneIO::Input(IScene* _scene) {
 	/* jsonを読み込んでsceneに変換する */
 
+	std::ifstream inputFile(fileDirectory_ + fileName_);
+	if (!inputFile.is_open()) {
+		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + fileName_);
+		return;
+	}
+
+	/// json形式に変換
+	nlohmann::json inputJson;
+	inputFile >> inputJson;
+	inputFile.close();
+
+
+	/// 実際にシーンに変換する
+	for (const auto& entity : inputJson["entities"]) {
+		std::string entityName = entity["name"];
+		auto newEntity = pECS_->GenerateEntity(entityName);
+
+	}
+
+
+
 }

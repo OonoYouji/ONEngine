@@ -249,6 +249,19 @@ void EntityComponentSystem::Update() {
 	}
 }
 
+IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name) {
+	/// 名前が空の場合はエラーを出力
+	if (_name.empty()) {
+		Console::Log("EntityComponentSystem: Entity name is empty.");
+		return nullptr;
+	}
+
+	/// 名前からクラスを探索
+
+
+	return nullptr;
+}
+
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 	/// 親子関係の解除
