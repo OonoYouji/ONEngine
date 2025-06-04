@@ -34,6 +34,9 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene();
+
+	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
+
 }
 
 void SceneManager::Update() {
@@ -45,6 +48,10 @@ void SceneManager::Update() {
 
 	/// 現在のシーンの更新処理
 	currentScene_->Update();
+
+	if (Input::TriggerKey(DIK_U)) {
+		sceneIO_->Output(currentScene_.get());
+	}
 
 }
 

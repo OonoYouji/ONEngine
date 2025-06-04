@@ -8,6 +8,7 @@
 /// engine
 #include "IScene.h"
 #include "ISceneFactory.h"
+#include "Loader/SceneIO.h"
 
 
 /// ===================================================
@@ -57,6 +58,7 @@ private:
 
 	std::unique_ptr<ISceneFactory>    sceneFactory_               = nullptr;
 
+	std::unique_ptr<SceneIO>          sceneIO_ = nullptr;
 
 public:
 
