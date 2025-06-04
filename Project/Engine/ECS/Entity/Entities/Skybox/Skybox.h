@@ -4,7 +4,7 @@
 #include <vector>
 
 /// engine
-#include "../../EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Interface/IEntity.h"
 
 /// //////////////////////////////////////////////////
 /// スカイボックス

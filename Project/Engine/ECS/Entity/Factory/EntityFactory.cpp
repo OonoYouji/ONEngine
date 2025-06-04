@@ -1,8 +1,6 @@
 #include "EntityFactory.h"
 
-EntityFactory::EntityFactory(EntityComponentSystem* _ecs)
-	: pECS_(_ecs) {}
-
+EntityFactory::EntityFactory() {}
 EntityFactory::~EntityFactory() {}
 
 void EntityFactory::Register(const std::string& _entityName, GenerateFunc _generateFunc) {

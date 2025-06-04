@@ -5,7 +5,7 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 /// game 
 #include "Game/Effects/PlaneEffects/PlayerMoveEffect.h"

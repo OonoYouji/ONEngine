@@ -3,12 +3,12 @@
 /// std
 #include <functional>
 #include <unordered_map>
+#include <string>
+#include <memory>
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "../Interface/IEntity.h"
 
-//using GenerateFunc = std::function<IEntity* (void)>;
-class IEntity;
 using GenerateFunc = std::function<std::unique_ptr<IEntity>(void)>;
 
 /// ///////////////////////////////////////////////////
@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EntityFactory(class EntityComponentSystem* _ecs);
+	EntityFactory();
 	~EntityFactory();
 
 	void Register(const std::string& _entityName, GenerateFunc _generateFunc);
@@ -32,7 +32,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pECS_ = nullptr;
+	//class EntityComponentSystem* pECS_ = nullptr;
 
 	std::unordered_map<std::string, GenerateFunc> factoryMap_;
 

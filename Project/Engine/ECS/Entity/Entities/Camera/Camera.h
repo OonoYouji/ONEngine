@@ -5,7 +5,7 @@
 
 /// engine
 //#include "../Interface/IEntity.h"
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Interface/IEntity.h"
 
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
