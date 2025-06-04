@@ -7,6 +7,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Camera/Camera.h"
 #include "Engine/ECS/Entity/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/EntityFactory/EntityFactory.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "../Component/Component.h"
@@ -225,6 +226,7 @@ void EntityComponentSystem::Initialize() {
 	AddECSSystemFunction(this, pDxManager_);
 	AddComponentFactoryFunction(this);
 
+	entityFactory_ = std::make_unique<EntityFactory>(this);
 
 	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
@@ -257,9 +259,10 @@ IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name) {
 	}
 
 	/// 名前からクラスを探索
+	std::unique_ptr<IEntity> entity = std::move(entityFactory_->Generate(_name));
+	entities_.push_back(std::move(entity));
 
-
-	return nullptr;
+	return entity.get();
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {

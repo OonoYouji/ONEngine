@@ -6,6 +6,7 @@
 #include <string>
 
 /// engine
+//#include "../Entity/EntityFactory/EntityFactory.h"
 #include "../Component/ComponentArray/ComponentArray.h"
 #include "../Component/Components/Interface/IComponent.h"
 #include "../Component/Components/ComputeComponents/Transform/Transform.h"
@@ -210,6 +211,9 @@ private:
 	class DxDevice* pDxDevice_;
 
 	/// ----- entity ----- ///
+
+	std::unique_ptr<class EntityFactory> entityFactory_;
+
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*> cameras_;
 	Camera* mainCamera_ = nullptr;
