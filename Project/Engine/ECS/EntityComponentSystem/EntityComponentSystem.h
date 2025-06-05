@@ -31,6 +31,7 @@ public:
 	void Update();
 
 
+
 	/// ----- entity ----- ///
 
 	template<typename T>
@@ -47,6 +48,8 @@ public:
 	template<typename T>
 	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
 
+	void RemoveEntityAll();
+
 
 	/// ----- component ----- ///
 
@@ -61,7 +64,11 @@ public:
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	void RemoveComponent(size_t _hash, size_t _id);
+
 	void LoadComponent(IEntity* _entity);
+
+	void RemoveComponentAll(IEntity* _entity);
 
 	/// ----- system ----- ///
 

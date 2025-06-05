@@ -40,6 +40,8 @@ public:
 	ComponentArray();
 	~ComponentArray() override = default;
 
+	Comp* AddComponent();
+
 	void RemoveComponent(size_t _index) override;
 	size_t GetComponentIndex(IComponent* _component) override;
 
@@ -48,6 +50,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	/// first: コンポーネントのID, second: インデックス
+	std::unordered_map<size_t, size_t> indexMap_; ///< コンポーネントのIDとインデックスのマップ
 	std::vector<Comp> components_;
 };
 
@@ -57,15 +61,44 @@ inline ComponentArray<Comp>::ComponentArray() {
 }
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
-inline void ComponentArray<Comp>::RemoveComponent(size_t _index) {
-	if (_index < components_.size()) {
+inline Comp* ComponentArray<Comp>::AddComponent() {
+
+	///< 削除されたインデックスがある場合
+	if (removedIndices_.size() > 0) { 
+		size_t index = removedIndices_.back();
+		removedIndices_.pop_back();
+		usedIndices_.push_back(index);
+
+		components_[index] = Comp(); ///< 今までのデータを上書き
+		components_[index].id = static_cast<uint32_t>(index); ///< IDを設定
+
+		///< IDとインデックスのマップを更新
+		indexMap_[components_[index].id] = index; 
+
+		return &components_[index];
+	}
+
+	components_.emplace_back();
+	size_t index = components_.size() - 1;
+	usedIndices_.push_back(index);
+
+	components_[index].id = static_cast<uint32_t>(index); ///< IDを設定
+
+	///< IDとインデックスのマップを更新
+	indexMap_[components_[index].id] = index;
+
+	return &components_[index];
+}
+
+template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
+	if (_id < components_.size()) {
 		Console::Log("ComponentArray: RemoveComponent failed, index out of range.");
 		return;
 	}
 
-	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _index), usedIndices_.end());
-	removedIndices_.push_back(_index);
-	//components_[_index] = Comp(); ///< コンポーネントを初期化
+	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _id), usedIndices_.end());
+	removedIndices_.push_back(_id);
 }
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>

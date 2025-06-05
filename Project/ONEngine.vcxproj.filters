@@ -300,5 +300,6 @@
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
+    <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
   </ItemGroup>
 </Project>

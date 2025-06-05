@@ -37,8 +37,24 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	return component;
 }
 
-void IEntity::RemoveComponentAll() {
+void IEntity::RemoveComponent(const std::string& _compName) {
+	size_t hash = GetComponentHash(_compName);
+	auto it = components_.find(hash);
+	if (it != components_.end()) {
+		pEntityComponentSystem_->RemoveComponent(hash, it->second->id); ///< コンポーネントを削除
+		components_.erase(it); ///< コンポーネントのマップから削除
+	}
 
+	if (_compName == "Transform") {
+		transform_ = nullptr; ///< Transformコンポーネントを削除した場合はnullptrに設定
+	} else if (_compName == "Variables") {
+		variables_ = nullptr; ///< Variablesコンポーネントを削除した場合はnullptrに設定
+	}
+}
+
+void IEntity::RemoveComponentAll() {
+	pEntityComponentSystem_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
+	components_.clear();
 }
 
 void IEntity::UpdateTransform() {

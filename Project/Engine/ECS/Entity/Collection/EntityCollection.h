@@ -28,7 +28,7 @@ public:
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
-
+	void RemoveEntityAll();
 
 
 	/// @brief 全エンティティを更新

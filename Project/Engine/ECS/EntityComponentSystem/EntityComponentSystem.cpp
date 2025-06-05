@@ -60,13 +60,25 @@ Camera* EntityComponentSystem::GenerateCamera() {
 	return entityCollection_->GenerateCamera();
 }
 
+void EntityComponentSystem::RemoveEntityAll() {
+	entityCollection_->RemoveEntityAll();
+}
+
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 	return componentCollection_->AddComponent(_name);
+}
+
+void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
+	componentCollection_->RemoveComponent(_hash, _id);
 }
 
 void EntityComponentSystem::LoadComponent(IEntity* _entity) {
 	componentInputCommand_.SetEntity(_entity);
 	componentInputCommand_.Execute();
+}
+
+void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
+	componentCollection_->RemoveComponentAll(_entity);
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {

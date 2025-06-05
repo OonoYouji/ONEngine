@@ -16,6 +16,9 @@ Player::~Player() {}
 void Player::Initialize() {
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
+
+	//RemoveComponent<Transform>();
+	//RemoveComponentAll();
 }
 
 void Player::Update() {

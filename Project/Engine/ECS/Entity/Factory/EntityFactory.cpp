@@ -1,6 +1,10 @@
 #include "EntityFactory.h"
 
-EntityFactory::EntityFactory() {}
+#include "AddEntityFactory.h"
+
+EntityFactory::EntityFactory(DxDevice* _dxDevice) {
+	AddEntityFactory(this, _dxDevice);
+}
 EntityFactory::~EntityFactory() {}
 
 void EntityFactory::Register(const std::string& _entityName, GenerateFunc _generateFunc) {

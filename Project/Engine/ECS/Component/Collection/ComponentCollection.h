@@ -3,27 +3,55 @@
 #include "../Array/ComponentArray.h"
 #include "ComponentHash.h"
 
+/// //////////////////////////////////////////////
+/// Componentのコレクションクラス
+/// //////////////////////////////////////////////
 class ComponentCollection {
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
 
 	ComponentCollection();
 	~ComponentCollection();
 
+
+	/// @brief Componentのファクトリを登録する
+	/// @tparam Comp Componentの型
 	template<typename Comp>
 	void RegisterComponentFactory();
 
+	/// @brief 新規Componentを追加する
+	/// @tparam Comp Componentの型
+	/// @return 追加されたComponentのポインタ、失敗したら nullptr
 	template<typename Comp>
 	Comp* AddComponent() requires std::is_base_of_v<IComponent, Comp>;
 
+	/// @brief 新規Componentを追加する
+	/// @param _name Componentの名前
+	/// @return 追加されたComponentのポインタ、失敗したら nullptr
 	IComponent* AddComponent(const std::string& _name);
 
+	/// @brief Componentを取得する
+	/// @tparam Comp Componentの型
+	/// @param _index Arrayのインデックス
+	/// @return Componentのポインタ、失敗したら nullptr
 	template<typename Comp>
 	Comp* GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
 	template<typename Comp>
 	void RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp>;
 
+	void RemoveComponent(size_t _hash, size_t _id);
+
+	void RemoveComponentAll(class IEntity* _entity);
+
+
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
 	std::unordered_map<size_t, std::unique_ptr<IComponentArray>> arrayMap_;
 	std::unordered_map<size_t, std::function<IComponent* ()>> factoryMap_;
 };
@@ -42,19 +70,7 @@ inline void ComponentCollection::RegisterComponentFactory() {
 
 	factoryMap_[hash] = [this, hash]() -> IComponent* {
 		ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
-		if (compArray->removedIndices_.size() > 0) { ///< 削除されたインデックスがある場合
-			size_t index = compArray->removedIndices_.back();
-			compArray->removedIndices_.pop_back();
-			compArray->usedIndices_.push_back(index);
-			compArray->components_[index] = Comp(); ///< 今までのデータを上書き
-			return &compArray->components_[index];
-		}
-
-		compArray->components_.emplace_back();
-		size_t index = compArray->components_.size() - 1;
-		compArray->usedIndices_.push_back(index);
-		
-		return &compArray->components_[index];
+		return compArray->AddComponent();
 	};
 }
 

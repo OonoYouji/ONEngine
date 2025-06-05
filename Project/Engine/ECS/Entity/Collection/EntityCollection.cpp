@@ -15,7 +15,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	factory_ = std::make_unique<EntityFactory>();
+	factory_ = std::make_unique<EntityFactory>(pDxDevice_);
 	entities_.reserve(256);
 }
 
@@ -67,6 +67,22 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	);
 
 	entities_.erase(itr, entities_.end());
+}
+
+void EntityCollection::RemoveEntityAll() {
+	for (auto& entity : entities_) {
+		entity->RemoveParent(); ///< 親子関係の解除
+	}
+
+	for (auto& entity : entities_) {
+		entity->RemoveComponentAll(); ///< コンポーネントの削除
+	}
+
+	entities_.clear();
+	cameras_.clear();
+	mainCamera_ = nullptr;
+	mainCamera2D_ = nullptr;
+	debugCamera_ = nullptr;
 }
 
 

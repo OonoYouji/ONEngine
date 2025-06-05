@@ -178,6 +178,7 @@
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
     <ClInclude Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.h" />
+    <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\EditorManager.h" />

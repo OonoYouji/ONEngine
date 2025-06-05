@@ -22,6 +22,8 @@ public:
 	void Output(IScene* _scene);
 	void Input(IScene* _scene);
 
+	void LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity);
+
 private:
 	/// ==================================================
 	/// private : objects

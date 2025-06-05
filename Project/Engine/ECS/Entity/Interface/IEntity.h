@@ -24,8 +24,8 @@ public:
 	/// @brief component の追加
 	/// @tparam T 追加する component の型
 	/// @return 追加した component のポインタ
-	template <class T>
-	T* AddComponent() requires std::is_base_of_v<IComponent, T>;
+	template <class Comp>
+	Comp* AddComponent() requires std::is_base_of_v<IComponent, Comp>;
 
 	/// @brief stringから component を追加する
 	/// @param _name componentの名前
@@ -35,8 +35,13 @@ public:
 	/// @brief component の取得
 	/// @tparam T ゲットする component の型
 	/// @return component のポインタ
-	template <class T>
-	T* GetComponent() const requires std::is_base_of_v<IComponent, T>;
+	template <class Comp>
+	Comp* GetComponent() const requires std::is_base_of_v<IComponent, Comp>;
+
+	template <typename Comp>
+	void RemoveComponent() requires std::is_base_of_v<IComponent, Comp>;
+
+	void RemoveComponent(const std::string& _compName);
 
 	void RemoveComponentAll();
 
@@ -123,20 +128,30 @@ public:
 
 };
 
-template<class T>
-inline T* IEntity::AddComponent() requires std::is_base_of_v<IComponent, T> {
-	std::string name = typeid(T).name();
+template<class Comp>
+inline Comp* IEntity::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
+	std::string name = typeid(Comp).name();
 	if (name.find("class ") == 0) {
 		name = name.substr(6);
 	}
-	return static_cast<T*>(AddComponent(name));
+	return static_cast<Comp*>(AddComponent(name));
 }
 
-template<class T>
-inline T* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, T> {
-	auto it = components_.find(GetComponentHash<T>());
+template<class Comp>
+inline Comp* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, Comp> {
+	auto it = components_.find(GetComponentHash<Comp>());
 	if (it != components_.end()) {
-		return dynamic_cast<T*>(it->second);
+		return dynamic_cast<Comp*>(it->second);
 	}
 	return nullptr;
+}
+
+template<typename Comp>
+inline void IEntity::RemoveComponent() requires std::is_base_of_v<IComponent, Comp> {
+	std::string name = typeid(Comp).name();
+	if (name.find("class ") == 0) {
+		name = name.substr(6);
+	}
+
+	RemoveComponent(name);
 }

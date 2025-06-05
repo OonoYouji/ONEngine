@@ -20,7 +20,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	EntityFactory();
+	EntityFactory(class DxDevice* _dxDevice);
 	~EntityFactory();
 
 	void Register(const std::string& _entityName, GenerateFunc _generateFunc);
