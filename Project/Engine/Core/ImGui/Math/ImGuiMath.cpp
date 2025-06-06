@@ -284,11 +284,34 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 
 	/// param get
 	Vec4 color = _meshRenderer->GetColor();
+	std::string meshPath = _meshRenderer->GetMeshPath();
 
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_meshRenderer->SetColor(color);
 	}
+
+
+	/// meshの変更
+	ImGui::InputText(std::string("##" + meshPath).c_str(), meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Mesh")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				if (path.find(".obj") != std::string::npos
+					|| path.find(".gltf") != std::string::npos) {
+					_meshRenderer->SetMeshPath(path);
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+
 }
 
 void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {

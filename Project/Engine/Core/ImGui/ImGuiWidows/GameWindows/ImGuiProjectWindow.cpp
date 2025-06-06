@@ -102,7 +102,15 @@ void ImGuiProjectWindow::SelectFileView() {
 
 
 
+
+
 	ImGui::EndChild();
+}
+
+std::string ImGuiProjectWindow::NormalizePath(const std::string& _path) const {
+	std::string result = _path;
+	std::replace(result.begin(), result.end(), '\\', '/'); // WindowsのパスをUnixスタイルに変換
+	return result;
 }
 
 void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Folder> _folder) {
@@ -113,15 +121,18 @@ void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Fo
 		if (entry.is_directory()) {
 
 			auto subFolder = std::make_shared<Folder>();
-			subFolder->path = entry.path().string();
-			subFolder->name = entry.path().filename().string();
+			subFolder->path = NormalizePath(entry.path().string());
+			subFolder->name = NormalizePath(entry.path().filename().string());
+
+
 			_folder->folders.push_back(subFolder);
 			LoadFolder(subFolder->path, subFolder);
 
 		} else if (entry.is_regular_file()) {
 
 			File file;
-			file.name = entry.path().filename().string();
+			file.path = NormalizePath(entry.path().string());
+			file.name = NormalizePath(entry.path().filename().string());
 			_folder->files.push_back(file);
 		}
 	}
@@ -191,13 +202,25 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 		}
 	}
 
-	for (const auto& file : _folder->files) {
+	for (auto& file : _folder->files) {
 		uint32_t ptr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&file));
 		if (ImGui::Selectable(file.name.c_str(), ptr == selectedItemPtr_)) {
 			selectedItemPtr_ = ptr;
-
+			selectedFile_ = &file; // 選択されたファイルを保存
 			/// TODO: inspectorに表示
 		}
 	}
 
+
+
+	/// ファイルを持ち始める
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+		ImGui::Text("Mesh Data");
+		if (selectedFile_) {
+			const char* cstr = selectedFile_->path.c_str();
+			ImGui::SetDragDropPayload("Mesh", cstr, strlen(cstr) + 1);
+		}
+
+		ImGui::EndDragDropSource();
+	}
 }

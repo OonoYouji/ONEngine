@@ -605,38 +605,6 @@ void ImGuiManager::Update() {
 	ImGui::NewFrame();
 	ImGui::GetIO().DeltaTime = Time::DeltaTime();
 
-	/*ImGui::Begin("test");
-
-	struct TestPayload {
-		float value[4];
-	};
-
-	static TestPayload testPayload;
-	ImGui::Selectable("Drag me", false, ImGuiSelectableFlags_DontClosePopups);
-	if (ImGui::BeginDragDropSource()) {
-		TestPayload payload;
-		ImGui::SetDragDropPayload("DND_DEMO_CELL", &payload, sizeof(TestPayload));
-		ImGui::EndDragDropSource();
-	}
-
-
-	if (ImGui::BeginChild("drag here", ImVec2(320, 240))) {
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL");
-			if (payload) {
-				const TestPayload* data = (const TestPayload*)payload->Data;
-				testPayload = *data;
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::EndChild();
-	}
-
-
-	ImGui::End();*/
-
-
 	imGuiWindowCollection_->Update();
 }
 
