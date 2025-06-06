@@ -209,18 +209,18 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 			selectedFile_ = &file; // 選択されたファイルを保存
 			/// TODO: inspectorに表示
 		}
-	}
 
 
+		/// ファイルを持ち始める
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+			const char* cstr = file.path.c_str();
+			ImGui::Text(cstr);
+			ImGui::SetDragDropPayload("AssetData", cstr, strlen(cstr) + 1);
 
-	/// ファイルを持ち始める
-	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-		ImGui::Text("Mesh Data");
-		if (selectedFile_) {
-			const char* cstr = selectedFile_->path.c_str();
-			ImGui::SetDragDropPayload("Mesh", cstr, strlen(cstr) + 1);
+			ImGui::EndDragDropSource();
 		}
-
-		ImGui::EndDragDropSource();
 	}
+
+
+
 }

@@ -57,10 +57,10 @@ void Terrain::Initialize() {
 	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
 
 
-	splattingTexPaths_[GRASS] = "Packages/Textures/Grass.jpg";
-	splattingTexPaths_[DIRT] = "Packages/Textures/Dirt.jpg";
-	splattingTexPaths_[ROCK] = "Packages/Textures/Rock.jpg";
-	splattingTexPaths_[SNOW] = "Packages/Textures/Snow.jpg";
+	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";
+	splattingTexPaths_[DIRT] = "./Packages/Textures/Dirt.jpg";
+	splattingTexPaths_[ROCK] = "./Packages/Textures/Rock.jpg";
+	splattingTexPaths_[SNOW] = "./Packages/Textures/Snow.jpg";
 
 	/// Octreeの生成
 	Vector3 center = Vector3::kZero;

@@ -7,7 +7,7 @@ Skybox::Skybox() {}
 Skybox::~Skybox() {}
 
 void Skybox::Initialize() {
-	SetTexturePath("Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
+	SetTexturePath("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 	transform_->scale = Vec3::kOne * 30.0f;
 }
 

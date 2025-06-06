@@ -285,6 +285,7 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 	/// param get
 	Vec4 color = _meshRenderer->GetColor();
 	std::string meshPath = _meshRenderer->GetMeshPath();
+	std::string texturePath = _meshRenderer->GetTexturePath();
 
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
@@ -292,11 +293,14 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 	}
 
 
-	/// meshの変更
-	ImGui::InputText(std::string("##" + meshPath).c_str(), meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	ImGui::Spacing();
 
+
+	/// meshの変更
+	ImGui::Text("mesh path");
+	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
 	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Mesh")) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if (payload->Data) {
 				const char* droppedPath = static_cast<const char*>(payload->Data);
 				std::string path = std::string(droppedPath);
@@ -304,6 +308,10 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 				if (path.find(".obj") != std::string::npos
 					|| path.find(".gltf") != std::string::npos) {
 					_meshRenderer->SetMeshPath(path);
+
+					Console::Log(std::format("Mesh path set to: {}", path));
+				} else {
+					Console::Log("Invalid mesh format. Please use .obj or .gltf.");
 				}
 			}
 		}
@@ -311,6 +319,29 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 	}
 
 
+	/// textureの変更
+	ImGui::Text("texture path");
+	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				if (path.find(".png") != std::string::npos
+					|| path.find(".jpg") != std::string::npos
+					|| path.find(".jpeg") != std::string::npos) {
+					_meshRenderer->SetTexturePath(path);
+
+					Console::Log(std::format("Texture path set to: {}", path));
+				} else {
+					Console::Log("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+				}
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
 
 }
 
