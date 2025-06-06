@@ -86,6 +86,7 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
+    <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
