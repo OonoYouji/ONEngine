@@ -108,6 +108,19 @@ bool CollisionCheck::CubeVsSphere(const Vector3& _cubePosition, const Vector3& _
 	return false;
 }
 
+bool CollisionCheck::CubeVsCapsule(const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius) {
+	Vector3 capsulePoint, boxPoint;
+	CollisionMath::ClosestPointsSegmentAABB(
+		_capsuleStart, _capsuleEnd,
+		_cubePosition - _cubeSize / 2.0f, _cubePosition + _cubeSize / 2.0f,
+		capsulePoint, boxPoint
+	);
+	
+	float distance = Vector3::Length(capsulePoint - boxPoint);
+
+	return distance < _capsuleRadius;
+}
+
 bool CollisionCheck::SphereVsSphere(const Vector3& _sphere1Center, float _sphere1Radius, const Vector3& _sphere2Center, float _sphere2Radius) {
 	float distance = Vector3::Length(_sphere1Center - _sphere2Center);
 	if (distance <= _sphere1Radius + _sphere2Radius) {
@@ -115,4 +128,78 @@ bool CollisionCheck::SphereVsSphere(const Vector3& _sphere1Center, float _sphere
 	}
 
 	return false;
+}
+
+bool CollisionCheck::SphereVsCapsule(const Vector3& _sphereCenter, float _sphereRadius, const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius) {
+	/// 最近接点を求める
+	Vector3 capsuleDirection = _capsuleEnd - _capsuleStart;
+	float capsuleLength = Vector3::Length(capsuleDirection);
+
+	if (capsuleLength == 0.0f) {
+		/// カプセルの長さが0の場合、カプセルは点として扱う
+		return SphereVsSphere(
+			_sphereCenter, _sphereRadius,
+			_capsuleStart, _capsuleRadius
+		);
+	}
+
+	Vector3 dir = capsuleDirection * (1.0f / capsuleLength);
+	float t = Vector3::Dot(_sphereCenter - _capsuleStart, dir);
+	if (t < 0.0f) {
+		/// 球の中心がカプセルの始点より前にある場合
+		t = 0.0f;
+	} else if (t > capsuleLength) {
+		/// 球の中心がカプセルの終点より後ろにある場合
+		t = capsuleLength;
+	}
+
+	Vector3 closestPoint = _capsuleStart + dir * t;
+	float distance = Vector3::Length(_sphereCenter - closestPoint);
+	return distance < (_sphereRadius + _capsuleRadius);
+}
+
+Vec3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& _aabbMin, const Vector3& _aabbMax) {
+	return {
+		std::max(_aabbMin.x, std::min(_point.x, _aabbMax.x)),
+		std::max(_aabbMin.y, std::min(_point.y, _aabbMax.y)),
+		std::max(_aabbMin.z, std::min(_point.z, _aabbMax.z))
+	};
+}
+
+void CollisionMath::ClosestPointsSegmentAABB(const Vector3& _lineStart, const Vector3& _lineEnd, const Vector3& _aabbMin, const Vector3& _aabbMax, Vector3& _outSegmentPoint, Vector3& _outAABBPoint) {
+	Vector3 segmentDirection = _lineEnd - _lineStart;
+	float segmentLength = Vector3::Length(segmentDirection);
+
+	if (segmentLength == 0.0f) {
+		_outSegmentPoint = _lineStart;
+		_outAABBPoint = ClosestPointOnAABB(_lineStart, _aabbMin, _aabbMax);
+		return;
+	}
+
+	Vector3 dir = segmentDirection * (1.0f / segmentLength);
+
+	float t = 0.0f;
+	Vector3 closest = _lineStart;
+
+
+	for (int i = 0; i < 3; ++i) {
+		float segStart = (&_lineStart.x)[i];
+		float segEnd = (&_lineEnd.x)[i];
+		float aabbMin = (&_aabbMin.x)[i];
+		float aabbMax = (&_aabbMax.x)[i];
+
+		float segDelta = segEnd - segStart;
+
+		if (segStart < aabbMin && segDelta > 0.0f) {
+			t = std::max(t, (aabbMin - segStart) / segDelta);
+		} else if (segStart > aabbMax && segDelta < 0.0f) {
+			t = std::max(t, (aabbMax - segStart) / segDelta);
+		}
+	}
+
+
+	t = std::clamp(t, 0.0f, 1.0f);
+	_outSegmentPoint = _lineStart + segmentDirection * t;
+	_outAABBPoint = ClosestPointOnAABB(_outSegmentPoint, _aabbMin, _aabbMax);
+
 }

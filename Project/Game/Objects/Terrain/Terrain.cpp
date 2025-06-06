@@ -88,8 +88,8 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 
 	/// 最近接点から地形との当たり判定を取る
 	std::vector<std::pair<size_t, TerrainVertex*>> hitPoints;
-	octree_->QuerySphere(
-		_transform->GetPosition(), 1.0f, &hitPoints
+	octree_->QueryCapsule(
+		_toTerrainCollider->GetPrevPosition(), _transform->GetPosition(), 1.0f, &hitPoints
 	);
 
 	/// 衝突している点に位置を合わせる
@@ -100,8 +100,10 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 			average += Vector3(v.x, v.y, v.z);
 		}
 		average /= static_cast<float>(hitPoints.size());
-		//_transform->SetPosition(average);
-		_transform->SetPositionY(average.y);
+		if (_transform->GetPosition().y < average.y) {
+			_transform->SetPositionY(average.y);
+		}
+
 		_toTerrainCollider->SetIsCollided(true);
 		return true;
 	}

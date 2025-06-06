@@ -45,6 +45,8 @@ public:
 	void RemoveComponent(size_t _index) override;
 	size_t GetComponentIndex(IComponent* _component) override;
 
+	std::vector<Comp*>& GetUsedComponents();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -53,6 +55,7 @@ private:
 	/// first: コンポーネントのID, second: インデックス
 	std::unordered_map<size_t, size_t> indexMap_; ///< コンポーネントのIDとインデックスのマップ
 	std::vector<Comp> components_;
+	std::vector<Comp*> usedComponents_; ///< 使用中のコンポーネントのリスト
 };
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
@@ -64,7 +67,7 @@ template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline Comp* ComponentArray<Comp>::AddComponent() {
 
 	///< 削除されたインデックスがある場合
-	if (removedIndices_.size() > 0) { 
+	if (removedIndices_.size() > 0) {
 		size_t index = removedIndices_.back();
 		removedIndices_.pop_back();
 		usedIndices_.push_back(index);
@@ -73,8 +76,9 @@ inline Comp* ComponentArray<Comp>::AddComponent() {
 		components_[index].id = static_cast<uint32_t>(index); ///< IDを設定
 
 		///< IDとインデックスのマップを更新
-		indexMap_[components_[index].id] = index; 
+		indexMap_[components_[index].id] = index;
 
+		usedComponents_.push_back(&components_[index]); ///< 使用中のコンポーネントリストに追加
 		return &components_[index];
 	}
 
@@ -87,6 +91,7 @@ inline Comp* ComponentArray<Comp>::AddComponent() {
 	///< IDとインデックスのマップを更新
 	indexMap_[components_[index].id] = index;
 
+	usedComponents_.push_back(&components_[index]); ///< 使用中のコンポーネントリストに追加
 	return &components_[index];
 }
 
@@ -99,6 +104,7 @@ inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
 
 	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _id), usedIndices_.end());
 	removedIndices_.push_back(_id);
+	usedComponents_.erase(std::remove(usedComponents_.begin(), usedComponents_.end(), &components_[_id]), usedComponents_.end());
 }
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
@@ -114,3 +120,7 @@ inline size_t ComponentArray<Comp>::GetComponentIndex(IComponent* _component) {
 	return 0;
 }
 
+template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+inline std::vector<Comp*>& ComponentArray<Comp>::GetUsedComponents() {
+	return usedComponents_;
+}

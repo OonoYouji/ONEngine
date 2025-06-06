@@ -70,6 +70,12 @@ public:
 
 	void RemoveComponentAll(IEntity* _entity);
 
+
+	template<typename Comp>
+	ComponentArray<Comp>* GetComponentArray() requires std::is_base_of_v<IComponent, Comp>;
+
+
+
 	/// ----- system ----- ///
 
 	template<typename T, typename... Args>
@@ -159,6 +165,11 @@ inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	return componentCollection_->RemoveComponent<Comp>(_index);
+}
+
+template<typename Comp>
+inline ComponentArray<Comp>* EntityComponentSystem::GetComponentArray() requires std::is_base_of_v<IComponent, Comp> {
+	return componentCollection_->GetComponentArray<Comp>();
 }
 
 template<typename T, typename ...Args>

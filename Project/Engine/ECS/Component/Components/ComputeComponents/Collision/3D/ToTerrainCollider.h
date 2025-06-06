@@ -2,11 +2,13 @@
 
 /// engine
 #include "../../../Interface/IComponent.h"
+#include "Engine/Core/Utility/Utility.h"
 
 /// ///////////////////////////////////////////////////
 /// 地形との当たり判定に使用するコンポーネント
 /// ///////////////////////////////////////////////////
 class ToTerrainCollider : public IComponent {
+	friend class TerrainCollisionSystem;
 public:
 	/// ===================================================
 	/// public : methods
@@ -22,16 +24,17 @@ private:
 
 	bool isCollided_ = false; ///< 地形と衝突しているか
 
+	Vector3 prevPosition_;
 
 public:
 	/// ===================================================
 	/// public : accessors
 	/// ===================================================
 
-	void SetIsCollided(bool _isCollided) { isCollided_ = _isCollided; }
+	void SetIsCollided(bool _isCollided);
 
+	bool GetIsCollided() const;
 
-	bool GetIsCollided() const { return isCollided_; }
-
+	const Vector3& GetPrevPosition() const;
 };
 
