@@ -15,9 +15,9 @@ using GenerateFunc = std::function<std::unique_ptr<IEntity>(void)>;
 */
 
 
-static void AddEntityFactory(EntityFactory* _factory, class DxDevice* _dxDevice) {
-	_factory->Register("Camera", [&]() { return std::make_unique<Camera>(_dxDevice); });
-	_factory->Register("DebugCamera", [&]() { return std::make_unique<DebugCamera>(_dxDevice); });
+inline void AddEntityFactory(EntityFactory* _factory, class DxDevice* _dxDevice) {
+	_factory->Register("Camera", [_dxDevice]() { return std::make_unique<Camera>(_dxDevice); });
+	_factory->Register("DebugCamera", [_dxDevice]() { return std::make_unique<DebugCamera>(_dxDevice); });
 	_factory->Register("DemoEntity", []() { return std::make_unique<DemoEntity>(); });
 	_factory->Register("EmptyEntity", []() { return std::make_unique<EmptyEntity>(); });
 	_factory->Register("Grid", []() { return std::make_unique<Grid>(); });

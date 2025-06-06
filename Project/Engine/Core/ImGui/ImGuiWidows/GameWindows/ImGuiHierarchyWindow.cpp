@@ -176,6 +176,12 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 		if (ImGui::MenuItem("delete")) {
 			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEntityComponentSystem_, _entity);
 			renameEntity_ = nullptr; // 名前変更モードを解除
+
+			/// 選択中ならInspectorの選択を解除
+			if (selectedEntity_ == _entity) {
+				selectedEntity_ = nullptr;
+				//pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
+			}
 		}
 
 		ImGui::EndPopup();

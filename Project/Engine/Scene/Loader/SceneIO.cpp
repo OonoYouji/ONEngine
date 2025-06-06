@@ -90,16 +90,11 @@ void SceneIO::Input(IScene* _scene) {
 		uint32_t entityId = entityJson["id"];
 
 		IEntity* entity = pECS_->GenerateEntity(entityName);
-		LoadEntity(entityJson, entity);
-
-		entityMap[entityId] = entity;
+		if (entity) {
+			LoadEntity(entityJson, entity);
+			entityMap[entityId] = entity;
+		}
 	}
-
-
-	///// 親子関係を設定する
-	//for (auto& entity : entityMap) {
-
-	//}
 
 }
 
@@ -112,6 +107,12 @@ void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
 		if (comp) {
 			ComponentJsonConverter::FromJson(componentJson, comp);
 			comp->SetOwner(_entity);
+
+			if (componentType == "Variables") {
+				Variables* vars = static_cast<Variables*>(comp);
+				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
+			}
+
 		} else {
 			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
 		}
