@@ -20,4 +20,23 @@ void Puzzle::Initialize() {
 
 void Puzzle::Update() {
 
+	float& toPlayerRadius = variables_->Get<float>("toPlayerRadius");
+
+
+	Gizmo::DrawWireSphere(
+		GetPosition(), toPlayerRadius, Vector4(1.0f, 0.0f, 0.0f, 1.0f)
+	);
+
+	MeshRenderer* meshRenderer = GetComponent<MeshRenderer>();
+	if (meshRenderer) {
+		meshRenderer->SetColor(Color::kWhite);
+	}
+
+	if (CollisionCheck::SphereVsSphere(
+		player_->GetPosition(), 1.0f,
+		GetPosition(), toPlayerRadius)) {
+
+		meshRenderer->SetColor(Color::kRed);
+	}
+
 }

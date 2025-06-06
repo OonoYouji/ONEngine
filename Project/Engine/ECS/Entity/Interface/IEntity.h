@@ -106,9 +106,9 @@ public:
 	const Vector3& GetLocalRotate() const;
 	const Vector3& GetLocalScale() const;
 
-	Vector3 GetWorldPosition();
-	Vector3 GetWorldRotate();
-	Vector3 GetWorldScale();
+	Vector3 GetPosition();
+	Vector3 GetRotate();
+	Vector3 GetScale();
 
 	Transform* GetTransform() const;
 
