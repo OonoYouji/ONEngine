@@ -28,7 +28,7 @@
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
@@ -37,7 +37,7 @@
     <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Demo\DemoEntity.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Demo\DemoEntity.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
@@ -47,7 +47,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Grid\Grid.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Grid\Grid.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
@@ -74,7 +74,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\ComponentArray\ComponentArray.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Array\ComponentArray.cpp" />
     <ClCompile Include="Engine\ECS\System\Interface\ECSISystem.cpp" />
     <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
     <ClCompile Include="Game\Entity\Player\Player.cpp" />
@@ -107,7 +107,7 @@
     <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Light\DirectionalLightObject.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
@@ -127,11 +127,11 @@
     <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
     <ClCompile Include="Engine\Editor\EditorManager.cpp" />
@@ -143,8 +143,14 @@
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
+    <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Factory\EntityFactory.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -179,7 +185,7 @@
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
-    <ClInclude Include="Engine\ECS\Entity\Camera\Camera.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Components\Interface\IComponent.h" />
@@ -188,7 +194,7 @@
     <ClInclude Include="Engine\Graphics\Resource\GraphicsResourceCollection.h" />
     <ClInclude Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
-    <ClInclude Include="Engine\ECS\Entity\Demo\DemoEntity.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Demo\DemoEntity.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
@@ -198,7 +204,7 @@
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
-    <ClInclude Include="Engine\ECS\Entity\Grid\Grid.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Grid\Grid.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
@@ -226,7 +232,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
-    <ClInclude Include="Engine\ECS\Component\ComponentArray\ComponentArray.h" />
+    <ClInclude Include="Engine\ECS\Component\Array\ComponentArray.h" />
     <ClInclude Include="Engine\ECS\System\Interface\ECSISystem.h" />
     <ClInclude Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.h" />
@@ -262,17 +268,17 @@
     <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
-    <ClInclude Include="Engine\ECS\Entity\Light\DirectionalLightObject.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
-    <ClInclude Include="Engine\ECS\Entity\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
-    <ClInclude Include="Engine\ECS\Entity\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
     <ClInclude Include="Engine\Editor\EditorManager.h" />
@@ -285,7 +291,15 @@
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
-    <ClInclude Include="Engine\ECS\Entity\EmptyEntity\EmptyEntity.h" />
+    <ClInclude Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
+    <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
+    <ClInclude Include="Engine\ECS\Entity\Factory\EntityFactory.h" />
+    <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
+    <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
+    <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
+    <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
+    <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
+    <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 #include "Scene/Factory/SceneFactory.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
@@ -34,6 +34,9 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene();
+
+	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
+
 }
 
 void SceneManager::Update() {
@@ -45,6 +48,13 @@ void SceneManager::Update() {
 
 	/// 現在のシーンの更新処理
 	currentScene_->Update();
+
+	if (Input::TriggerKey(DIK_U)) {
+		sceneIO_->Output(currentScene_.get());
+	} else if (Input::TriggerKey(DIK_I)) {
+		pEntityComponentSystem_->RemoveEntityAll();
+		sceneIO_->Input(currentScene_.get());
+	}
 
 }
 

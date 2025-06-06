@@ -1,20 +1,24 @@
 #pragma once
 
+/// std
+#include <cstdint>
+
 
 /// ===================================================
 /// 全てのコンポーネントの基底クラス
 /// ===================================================
 class IComponent {
+	friend class ComponentCollection;
 public:
-	virtual ~IComponent() {}
+	virtual ~IComponent() = default;
 
 	/// @brief このcomponentのownerを設定
 	/// @param _owner オーナーとなるentity
-	void SetOwner(class IEntity* _owner) { owner_ = _owner; }
+	void SetOwner(class IEntity* _owner);
 
 	/// @brief ownerの取得
 	/// @return ownerのentity
-	IEntity* GetOwner() const { return owner_; }
+	IEntity* GetOwner() const;
 
 public:
 	/// ===========================================
@@ -22,6 +26,7 @@ public:
 	/// ===========================================
 
 	bool enable = true; ///< コンポーネントが有効かどうか
+	uint32_t id;
 
 protected:
 	/// ===========================================

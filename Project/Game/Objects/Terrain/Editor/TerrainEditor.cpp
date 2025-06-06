@@ -11,7 +11,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Component.h"
 
 
@@ -336,6 +336,10 @@ void TerrainEditor::EditSplatBlend() {
 Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition) const {
 	/// カメラのビュー行列とプロジェクション行列を取得  
 	Camera* mainCamera = pECS_->GetDebugCamera();
+	if (!mainCamera) {
+		Console::Log("TerrainEditor::CalculateMouseRayDirection: Main camera is null");
+		return Vector3::kZero;
+	}
 
 	const Matrix4x4& viewMatrix = mainCamera->GetViewMatrix();
 	const Matrix4x4& projectionMatrix = mainCamera->GetProjectionMatrix();
@@ -366,6 +370,10 @@ Vector3 TerrainEditor::CalculateMouseRayDirection(const Vector2& _mousePosition)
 Vector3 TerrainEditor::CalculateMouseNearPoint(const Vector2& _mousePosition) const {
 	/// カメラのビュー行列とプロジェクション行列を取得  
 	Camera* mainCamera = pECS_->GetDebugCamera();
+	if (!mainCamera) {
+		Console::Log("TerrainEditor::CalculateMouseNearPoint: Main camera is null");
+		return Vector3::kZero;
+	}
 
 	const Matrix4x4& viewMatrix = mainCamera->GetViewMatrix();
 	const Matrix4x4& projectionMatrix = mainCamera->GetProjectionMatrix();
@@ -389,6 +397,10 @@ Vector3 TerrainEditor::CalculateMouseNearPoint(const Vector2& _mousePosition) co
 Vector3 TerrainEditor::CalculateMouseFarPoint(const Vector2& _mousePosition) const {
 	/// カメラのビュー行列とプロジェクション行列を取得  
 	Camera* mainCamera = pECS_->GetDebugCamera();
+	if (!mainCamera) {
+		Console::Log("TerrainEditor::CalculateMouseFarPoint: Main camera is null");
+		return Vector3::kZero;
+	}
 
 	const Matrix4x4& viewMatrix = mainCamera->GetViewMatrix();
 	const Matrix4x4& projectionMatrix = mainCamera->GetProjectionMatrix();

@@ -59,6 +59,9 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 
 void ImGuiInspectorWindow::EntityInspector() {
 	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+	if (!dynamic_cast<IEntity*>(entity)) {
+		return;
+	}
 
 	/// ----------------------------
 	/// 適当な編集の機能

@@ -5,7 +5,7 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 /// game 
 #include "Game/Effects/PlaneEffects/PlayerMoveEffect.h"
@@ -16,6 +16,9 @@ Player::~Player() {}
 void Player::Initialize() {
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
+
+	//RemoveComponent<Transform>();
+	//RemoveComponentAll();
 }
 
 void Player::Update() {

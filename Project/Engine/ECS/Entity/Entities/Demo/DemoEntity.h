@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Interface/IEntity.h"
 //#include "../Interface/IEntity.h"
 
 /// ===================================================

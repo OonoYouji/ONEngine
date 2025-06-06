@@ -7,7 +7,7 @@
 /// engine
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Component.h"
 
 

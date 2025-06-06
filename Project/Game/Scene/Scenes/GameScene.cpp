@@ -4,11 +4,11 @@
 #include <numbers>
 
 /// engine
-#include "Engine/ECS/Entity/Demo/DemoEntity.h"
-#include "Engine/ECS/Entity/Grid/Grid.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
-#include "Engine/ECS/Entity/Light/DirectionalLightObject.h"
-#include "Engine/ECS/Entity/Skybox/Skybox.h"
+#include "Engine/ECS/Entity/Entities/Demo/DemoEntity.h"
+#include "Engine/ECS/Entity/Entities/Grid/Grid.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Light/DirectionalLightObject.h"
+#include "Engine/ECS/Entity/Entities/Skybox/Skybox.h"
 
 /// user
 #include "Game/Objects/Terrain/Terrain.h"

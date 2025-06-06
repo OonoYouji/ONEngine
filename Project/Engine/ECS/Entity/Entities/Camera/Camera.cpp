@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
-
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 
 namespace {
@@ -30,6 +30,14 @@ Camera::Camera(DxDevice* _dxDevice) {
 Camera::~Camera() {
 	if (pEntityComponentSystem_->GetMainCamera() == this) {
 		pEntityComponentSystem_->SetMainCamera(nullptr);
+	}
+
+	if (pEntityComponentSystem_->GetMainCamera2D() == this) {
+		pEntityComponentSystem_->SetMainCamera2D(nullptr);
+	}
+
+	if (pEntityComponentSystem_->GetDebugCamera() == this) {
+		pEntityComponentSystem_->SetDebugCamera(nullptr);
 	}
 }
 
