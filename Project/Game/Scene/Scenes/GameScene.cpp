@@ -15,6 +15,7 @@
 #include "Game/Entity/Player/Player.h"
 #include "Game/Objects/KeyItem/KeyItem.h"
 #include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
+#include "Game/Objects/Puzzle/Puzzle.h"
 
 //#include "Game/Objects/Enemy.h"
 
@@ -84,6 +85,9 @@ void GameScene::Initialize() {
 
 	pEntityComponentSystem_->GenerateEntity<PuzzleClearEffect>();
 
+
+	/// puzzle
+	pEntityComponentSystem_->GenerateEntity<Puzzle>();
 }
 
 void GameScene::Update() {

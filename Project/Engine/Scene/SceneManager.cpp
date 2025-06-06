@@ -49,12 +49,12 @@ void SceneManager::Update() {
 	/// 現在のシーンの更新処理
 	currentScene_->Update();
 
-	if (Input::TriggerKey(DIK_U)) {
-		sceneIO_->Output(currentScene_.get());
-	} else if (Input::TriggerKey(DIK_I)) {
-		pEntityComponentSystem_->RemoveEntityAll();
-		sceneIO_->Input(currentScene_.get());
-	}
+	//if (Input::TriggerKey(DIK_U)) {
+	//	sceneIO_->Output(currentScene_.get());
+	//} else if (Input::TriggerKey(DIK_I)) {
+	//	pEntityComponentSystem_->RemoveEntityAll();
+	//	sceneIO_->Input(currentScene_.get());
+	//}
 
 }
 

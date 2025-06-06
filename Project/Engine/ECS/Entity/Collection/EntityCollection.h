@@ -30,6 +30,8 @@ public:
 
 	void RemoveEntityAll();
 
+	template <typename T>
+	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
 
 	/// @brief 全エンティティを更新
 	void UpdateEntities();
@@ -106,4 +108,14 @@ inline T* EntityCollection::GenerateCamera() requires std::is_base_of_v<Camera, 
 	entities_.push_back(std::move(camera));
 	cameras_.push_back(cameraPtr);
 	return cameraPtr;
+}
+
+template<typename T>
+inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> {
+	for (const auto& entity : entities_) {
+		if (T* found = dynamic_cast<T*>(entity.get())) {
+			return found;
+		}
+	}
+	return nullptr;
 }
