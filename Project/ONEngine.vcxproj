@@ -131,6 +131,7 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
+    <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
+    <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -1,7 +1,7 @@
 #include "SceneFactory.h"
 
 #include "../Scenes/GameScene.h"
-
+#include "../Scenes/LoadLevelTestScene.h"
 
 SceneFactory::SceneFactory() {}
 SceneFactory::~SceneFactory() {}
@@ -13,4 +13,5 @@ void SceneFactory::Initialize() {
 
 	/// シーンの登録
 	RegisterScene<GameScene>("Game");
+	RegisterScene<LoadLevelTestScene>("LoadLevelTest");
 }
