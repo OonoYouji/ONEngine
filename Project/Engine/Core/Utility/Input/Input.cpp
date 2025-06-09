@@ -45,6 +45,28 @@ bool Input::ReleaseMouse(int _button) {
 	return !gInputSystem_->mouse_->state_.rgbButtons[_button] && gInputSystem_->keyboard_->preKeys_[_button];
 }
 
+bool Input::PressGamepad(int _button) {
+	return (gInputSystem_->gamepad_->state_.Gamepad.wButtons & static_cast<WORD>(_button)) != 0;
+}
+
+bool Input::TriggerGamepad(int _button) {
+	return PressGamepad(_button) && (gInputSystem_->gamepad_->prevState_.Gamepad.wButtons & static_cast<WORD>(_button)) == 0;
+}
+
+bool Input::ReleaseGamepad(int _button) {
+	return !PressGamepad(_button) && (gInputSystem_->gamepad_->prevState_.Gamepad.wButtons & static_cast<WORD>(_button)) != 0;
+}
+
+Vector2 Input::GetGamepadLeftThumb() {
+	return gInputSystem_->gamepad_->state_.Gamepad.sThumbLX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbLY != 0
+		? Vector2(
+			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE,
+			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
+		)
+		: Vector2();
+	return Vector2();
+}
+
 const Vector2& Input::GetMousePosition() {
 	return gInputSystem_->mouse_->position_;
 }
