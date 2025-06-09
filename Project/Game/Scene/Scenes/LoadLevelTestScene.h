@@ -9,7 +9,7 @@
 class LoadLevelTestScene : public IScene {
 public:
 
-	LoadLevelTestScene() = default;
+	LoadLevelTestScene();
 	~LoadLevelTestScene() = default;
 
 	void Initialize() override;
