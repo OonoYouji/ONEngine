@@ -43,6 +43,7 @@ public:
 	static bool ReleaseGamepad(int _button);
 
 	static Vector2 GetGamepadLeftThumb();
+	static Vector2 GetGamepadRightThumb();
 
 };
 

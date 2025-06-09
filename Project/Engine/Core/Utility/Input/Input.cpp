@@ -58,13 +58,27 @@ bool Input::ReleaseGamepad(int _button) {
 }
 
 Vector2 Input::GetGamepadLeftThumb() {
-	return gInputSystem_->gamepad_->state_.Gamepad.sThumbLX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbLY != 0
-		? Vector2(
+
+	if (gInputSystem_->gamepad_->state_.Gamepad.sThumbLX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbLY != 0) {
+		return Vector2(
 			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE,
 			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
-		)
-		: Vector2();
-	return Vector2();
+		);
+	}
+
+	return Vector2::kZero;
+}
+
+Vector2 Input::GetGamepadRightThumb() {
+
+	if (gInputSystem_->gamepad_->state_.Gamepad.sThumbRX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbRY != 0) {
+		return Vector2(
+			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbRX) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE,
+			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbRY) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE
+		);
+	}
+
+	return Vector2::kZero;
 }
 
 const Vector2& Input::GetMousePosition() {

@@ -16,6 +16,8 @@ namespace {
 
 	float rotateSpeed = std::numbers::pi_v<float> / 100.0f;
 
+	std::string variableName = "";
+
 }	/// unnamed namespace
 
 
@@ -156,9 +158,12 @@ void VariablesDebug(Variables* _variables) {
 	}
 
 	{	/// 新規変数の追加
+		if (variableName.capacity() < 128) {
+			variableName.reserve(128);
+		}
+
 		ImGui::SetNextItemWidth(128.0f);
-		static std::string varName;
-		ImGuiInputText("##name", &varName);
+		ImGuiInputText("##name", &variableName);
 
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(80.0f);
@@ -168,29 +173,29 @@ void VariablesDebug(Variables* _variables) {
 
 		/// 追加
 		if (ImGui::Button("add")) {
-			if (!_variables->Has(varName)) {
-				if (!varName.empty()) {
+			if (!_variables->Has(variableName)) {
+				if (!variableName.empty()) {
 					switch (type) {
 					case 0:
-						_variables->Add<int>(varName, 0);
+						_variables->Add<int>(variableName, 0);
 						break;
 					case 1:
-						_variables->Add<float>(varName, 0.0f);
+						_variables->Add<float>(variableName, 0.0f);
 						break;
 					case 2:
-						_variables->Add<bool>(varName, false);
+						_variables->Add<bool>(variableName, false);
 						break;
 					case 3:
-						_variables->Add<std::string>(varName, "");
+						_variables->Add<std::string>(variableName, "");
 						break;
 					case 4:
-						_variables->Add<Vec2>(varName, Vec2());
+						_variables->Add<Vec2>(variableName, Vec2());
 						break;
 					case 5:
-						_variables->Add<Vec3>(varName, Vec3());
+						_variables->Add<Vec3>(variableName, Vec3());
 						break;
 					case 6:
-						_variables->Add<Vec4>(varName, Vec4());
+						_variables->Add<Vec4>(variableName, Vec4());
 						break;
 					}
 				}
@@ -201,7 +206,7 @@ void VariablesDebug(Variables* _variables) {
 
 		/// 削除
 		if (ImGui::Button("remove")) {
-			_variables->Remove(varName);
+			_variables->Remove(variableName);
 		}
 
 
