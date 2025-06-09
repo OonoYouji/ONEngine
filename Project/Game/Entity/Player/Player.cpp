@@ -54,6 +54,19 @@ void Player::Update() {
 		}
 	}
 
+
+	/// 回転
+	Vector3& cameraRotate = variables_->Get<Vector3>("cameraRotate");
+	float& cameraRotateRatio = variables_->Get<float>("cameraRotateRatio");
+
+	/// カメラの回転
+	Vector2 gamepadRightThumb = Input::GetGamepadRightThumb();
+	if (gamepadRightThumb.x != 0.0f || gamepadRightThumb.y != 0.0f) {
+		transform_->rotate.y += gamepadRightThumb.x * cameraRotateRatio;
+		cameraRotate.x += gamepadRightThumb.y * cameraRotateRatio;
+	}
+
+
 	velo = velo.Normalize() * speed;
 	velo.y = jumpPower;
 	velo = Matrix4x4::Transform(velo, Matrix4x4::MakeRotateY(transform_->rotate.y));
@@ -80,20 +93,8 @@ void Player::Update() {
 
 	if (pCamera_) {
 
-		Vector3& cameraOffset = variables_->Get<Vector3>("cameraOffset");
-		Vector3& cameraRotate = variables_->Get<Vector3>("cameraRotate");
-		float& cameraRotateRatio = variables_->Get<float>("cameraRotateRatio");
 
-		/// カメラの回転
-		Vector2 gamepadRightThumb = Input::GetGamepadRightThumb();
-		if (gamepadRightThumb.x != 0.0f || gamepadRightThumb.y != 0.0f) {
-			cameraRotate.y += gamepadRightThumb.x * cameraRotateRatio;
-			cameraRotate.x += gamepadRightThumb.y * cameraRotateRatio;
-		}
-
-		Matrix4x4 matRotate = Matrix4x4::MakeRotate(cameraRotate);
-		pCamera_->SetPosition(Matrix4x4::Transform(cameraOffset, matRotate));
-		pCamera_->SetRotate(cameraRotate);
+		pCamera_->SetPosition(variables_->Get<Vector3>("cameraOffset"));
 	}
 
 }
