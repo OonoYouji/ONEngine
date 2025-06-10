@@ -4,9 +4,6 @@
 #include <fstream>
 #include <numbers>
 
-/// external
-#include <nlohmann/json.hpp>
-
 /// engine
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
@@ -20,7 +17,7 @@ LoadLevelTestScene::LoadLevelTestScene() {
 }
 
 void LoadLevelTestScene::Initialize() {
-	
+
 	pEntityComponentSystem_->RemoveEntityAll();
 	pEntityComponentSystem_->GenerateEntity<Grid>();
 
@@ -59,68 +56,83 @@ void LoadLevelTestScene::LoadLevel(const std::string& _levelName) {
 	file >> jsonData;
 
 	for (const auto& objectData : jsonData["objects"]) {
-		/// エンティティの名前を取得
-		std::string objectName = objectData["name"].get<std::string>();
-		/// エンティティのタイプを取得
-		std::string objectType = objectData["type"].get<std::string>();
+		LoadEntity(objectData);
+	}
 
-		if (!objectData.contains("transform") || objectData["transform"].is_null()) {
-			Console::Log("transform not found");
-			continue;
-		}
+}
 
-		nlohmann::json transformData = objectData["transform"];
-		Vec3 position = transformData["translation"].get<Vec3>();
-		Vec3 rotate = transformData["rotation"].get<Vec3>();
-		Vec3 scale = transformData["scale"].get<Vec3>();
+IEntity* LoadLevelTestScene::LoadEntity(const nlohmann::json& _entityData) {
+	/// エンティティの名前を取得
+	std::string objectName = _entityData["name"].get<std::string>();
+	/// エンティティのタイプを取得
+	std::string objectType = _entityData["type"].get<std::string>();
 
-		/// 座標軸を変換する
-		float posY = position.z;
-		position.z = position.y;
-		position.y = posY;
+	if (!_entityData.contains("transform") || _entityData["transform"].is_null()) {
+		Console::Log("transform not found");
+		return nullptr;
+	}
 
-		/// 回転を変換する
-		// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
-		rotate = -rotate;
-		rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f; 
-		float rotateY = rotate.z;
-		rotate.z = rotate.y;
-		rotate.y = rotateY;
+	nlohmann::json transformData = _entityData["transform"];
+	Vec3 position = transformData["translation"].get<Vec3>();
+	Vec3 rotate = transformData["rotation"].get<Vec3>();
+	Vec3 scale = transformData["scale"].get<Vec3>();
 
-		/// スケールを変換する
-		float scaleY = scale.z;
-		scale.z = scale.y;
-		scale.y = scaleY;
+	/// 座標軸を変換する
+	float posY = position.z;
+	position.z = position.y;
+	position.y = posY;
 
-		IEntity* entity = nullptr;
-		/// エンティティを生成&SRTを設定
-		if (objectType == "CAMERA") {
-			entity = pEntityComponentSystem_->GenerateCamera();
-			pEntityComponentSystem_->SetMainCamera(static_cast<Camera*>(entity));
-		} else {
-			entity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
-		}
+	/// 回転を変換する
+	// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
+	rotate = -rotate;
+	rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
+	float rotateY = rotate.z;
+	rotate.z = rotate.y;
+	rotate.y = rotateY;
 
-		if (!entity) {
-			Console::Log("Failed to create entity for object: " + objectName);
-			continue;
-		}
+	/// スケールを変換する
+	float scaleY = scale.z;
+	scale.z = scale.y;
+	scale.y = scaleY;
 
-		entity->SetPosition(position);
-		entity->SetRotate(rotate);
-		entity->SetScale(scale);
-		entity->UpdateTransform();
-		entity->SetName(objectName);
+	IEntity* entity = nullptr;
+	/// エンティティを生成&SRTを設定
+	if (objectType == "CAMERA") {
+		entity = pEntityComponentSystem_->GenerateCamera();
+		pEntityComponentSystem_->SetMainCamera(static_cast<Camera*>(entity));
+	} else {
+		entity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+	}
 
-		if (objectType == "MESH") {
-			MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
-			meshRenderer->SetMeshPath(objectData["mesh"].get<std::string>());
-		} else if (objectType == "LIGHT") {
-			entity->AddComponent<DirectionalLight>();
-		} else {
-			Console::Log("Unknown object type: " + objectType);
-			continue;
+	if (!entity) {
+		Console::Log("Failed to create entity for object: " + objectName);
+		return nullptr;
+	}
+
+	entity->SetPosition(position);
+	entity->SetRotate(rotate);
+	entity->SetScale(scale);
+	entity->UpdateTransform();
+	entity->SetName(objectName);
+
+	if (_entityData.contains("children")) {
+		for (auto& childData : _entityData["children"]) {
+			/// 子エンティティを再帰的に読み込む
+			if (IEntity* child = LoadEntity(childData)) {
+				child->SetParent(entity);
+			}
 		}
 	}
 
+	if (objectType == "MESH") {
+		MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
+		meshRenderer->SetMeshPath(_entityData["mesh"].get<std::string>());
+	} else if (objectType == "LIGHT") {
+		entity->AddComponent<DirectionalLight>();
+	} else {
+		Console::Log("Unknown object type: " + objectType);
+		return nullptr;
+	}
+
+	return entity;
 }

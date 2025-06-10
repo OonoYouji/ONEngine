@@ -219,6 +219,22 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 
 			ImGui::EndDragDropSource();
 		}
+
+		/// 右クリックの動作
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			ImGui::OpenPopup(file.name.c_str());
+		}
+
+		if (ImGui::BeginPopupContextItem(file.name.c_str())) {
+
+			if (ImGui::MenuItem("エクスプローラーで開く")) {
+				std::filesystem::path p = file.path;
+				std::string folder = std::filesystem::absolute(p.parent_path()).string();
+				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+			}
+
+			ImGui::EndPopup();
+		}
 	}
 
 

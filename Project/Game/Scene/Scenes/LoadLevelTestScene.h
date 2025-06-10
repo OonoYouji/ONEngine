@@ -1,5 +1,8 @@
 #pragma once
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "Engine/Scene/IScene.h"
 
@@ -18,6 +21,8 @@ public:
 private:
 
 	void LoadLevel(const std::string& _levelName);
+
+	IEntity* LoadEntity(const nlohmann::json& _entityData);
 
 };
 
