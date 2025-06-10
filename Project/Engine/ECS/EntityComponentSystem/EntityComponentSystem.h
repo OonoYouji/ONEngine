@@ -53,6 +53,9 @@ public:
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
 
+	void AddDoNotDestroyEntity(IEntity* _entity);
+	void RemoveDoNotDestroyEntity(IEntity* _entity);
+
 
 	/// ----- component ----- ///
 

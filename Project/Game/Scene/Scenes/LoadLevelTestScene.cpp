@@ -2,6 +2,7 @@
 
 /// std
 #include <fstream>
+#include <numbers>
 
 /// external
 #include <nlohmann/json.hpp>
@@ -10,6 +11,7 @@
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 #include "Engine/ECS/Entity/Entities/Grid/Grid.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 LoadLevelTestScene::LoadLevelTestScene() {
 	loadResourcePaths_ = {
@@ -18,7 +20,8 @@ LoadLevelTestScene::LoadLevelTestScene() {
 }
 
 void LoadLevelTestScene::Initialize() {
-
+	
+	pEntityComponentSystem_->RemoveEntityAll();
 	pEntityComponentSystem_->GenerateEntity<Grid>();
 
 	LoadLevel("Assets/Levels/scene.json");
@@ -60,7 +63,7 @@ void LoadLevelTestScene::LoadLevel(const std::string& _levelName) {
 		std::string objectName = objectData["name"].get<std::string>();
 		/// エンティティのタイプを取得
 		std::string objectType = objectData["type"].get<std::string>();
-		
+
 		if (!objectData.contains("transform") || objectData["transform"].is_null()) {
 			Console::Log("transform not found");
 			continue;
@@ -68,21 +71,39 @@ void LoadLevelTestScene::LoadLevel(const std::string& _levelName) {
 
 		nlohmann::json transformData = objectData["transform"];
 		Vec3 position = transformData["translation"].get<Vec3>();
-		Vec3 rotate   = transformData["rotation"].get<Vec3>();
-		Vec3 scale    = transformData["scale"].get<Vec3>();
+		Vec3 rotate = transformData["rotation"].get<Vec3>();
+		Vec3 scale = transformData["scale"].get<Vec3>();
 
+		rotate *= std::numbers::pi / 180.0f; // Convert degrees to radians
+
+		IEntity* entity = nullptr;
 		/// エンティティを生成&SRTを設定
-		EmptyEntity* entity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+		if (objectType == "CAMERA") {
+			entity = pEntityComponentSystem_->GenerateCamera();
+			pEntityComponentSystem_->SetMainCamera(static_cast<Camera*>(entity));
+		} else {
+			entity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+		}
+
+		if (!entity) {
+			Console::Log("Failed to create entity for object: " + objectName);
+			continue;
+		}
+
 		entity->SetPosition(position);
 		entity->SetRotate(rotate);
 		entity->SetScale(scale);
 		entity->UpdateTransform();
-
 		entity->SetName(objectName);
 
 		if (objectType == "MESH") {
 			MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
 			meshRenderer->SetMeshPath(objectData["mesh"].get<std::string>());
+		} else if (objectType == "LIGHT") {
+			entity->AddComponent<DirectionalLight>();
+		} else {
+			Console::Log("Unknown object type: " + objectType);
+			continue;
 		}
 	}
 

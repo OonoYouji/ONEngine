@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
 DebugCamera::~DebugCamera() {
@@ -12,6 +13,7 @@ DebugCamera::~DebugCamera() {
 }
 
 void DebugCamera::Initialize() {
+	pEntityComponentSystem_->AddDoNotDestroyEntity(this);
 
 	transform_->position = { 0.0f, 0.0f, -10.0f };
 	transform_->scale = Vector3::kOne;
