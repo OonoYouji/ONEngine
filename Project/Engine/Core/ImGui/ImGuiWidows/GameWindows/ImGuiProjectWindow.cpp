@@ -244,14 +244,12 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 		if (ImGui::BeginPopupContextItem(file.name.c_str())) {
 
 			if (ImGui::MenuItem("エクスプローラーで開く")) {
-				std::string folder = std::filesystem::absolute(file.path).string();
+				std::string folder = std::filesystem::absolute(file.path).parent_path().string();
 				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
 			}
 
 			ImGui::EndPopup();
 		}
 	}
-
-
 
 }
