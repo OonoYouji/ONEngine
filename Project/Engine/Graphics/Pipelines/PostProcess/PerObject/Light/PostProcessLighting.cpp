@@ -121,7 +121,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		}
 
 		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
-		textureIndices_[4] = _resourceCollection->GetTextureIndex("Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
+		textureIndices_[4] = _resourceCollection->GetTextureIndex("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 		for (uint32_t index = 0; index < 5; ++index) {

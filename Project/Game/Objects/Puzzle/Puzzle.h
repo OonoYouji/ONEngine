@@ -22,5 +22,7 @@ private:
 	/// private : objects
 	/// =========================================
 
+	class Player* player_ = nullptr;
+
 };
 

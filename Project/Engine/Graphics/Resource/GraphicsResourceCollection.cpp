@@ -17,7 +17,7 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 
 	/// Packages内のファイルがすべて読み込む
 	std::vector<std::string> texturePaths;
-	for (const auto& entry : std::filesystem::directory_iterator("Packages/Textures")) {
+	for (const auto& entry : std::filesystem::directory_iterator("./Packages/Textures")) {
 		if (entry.is_regular_file()) {
 			std::string path = entry.path().string();
 			

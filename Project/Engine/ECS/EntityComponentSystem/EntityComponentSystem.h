@@ -50,6 +50,12 @@ public:
 
 	void RemoveEntityAll();
 
+	template <typename T>
+	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+
+	void AddDoNotDestroyEntity(IEntity* _entity);
+	void RemoveDoNotDestroyEntity(IEntity* _entity);
+
 
 	/// ----- component ----- ///
 
@@ -150,6 +156,11 @@ inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEn
 template<typename T>
 inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Camera, T> {
 	return entityCollection_->GenerateCamera<T>();
+}
+
+template<typename T>
+inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity, T> {
+	return entityCollection_->FindEntity<T>();
 }
 
 template<typename Comp>

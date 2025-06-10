@@ -33,7 +33,7 @@ ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem,
 void ImGuiGameWindow::ImGuiFunc() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(1280, 700), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(1920.0f, 1080.0f), ImGuiCond_Appearing);
 	if (!ImGui::Begin("Game", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;

@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Gizmo.h"
-#include "Engine/ECS/Entity/Camera/Camera.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 GizmoRenderingPipeline::GizmoRenderingPipeline() {}
 
@@ -151,8 +151,8 @@ std::vector<GizmoRenderingPipeline::VertexData> GizmoRenderingPipeline::GetSpher
 			float angle0 = i * deltaAngle;
 			float angle1 = (i + 1) * deltaAngle;
 
-			Vector3 dir0 = _axis1 * std::cos(angle0) + _axis2 * std::sin(angle0);
-			Vector3 dir1 = _axis1 * std::cos(angle1) + _axis2 * std::sin(angle1);
+			Vector3 dir0 = Vector3::Normalize(_axis1 * std::cos(angle0) + _axis2 * std::sin(angle0));
+			Vector3 dir1 = Vector3::Normalize(_axis1 * std::cos(angle1) + _axis2 * std::sin(angle1));
 
 			VertexData v0;
 			v0.position = Vector4(_center + dir0 * _radius, 1.0f);

@@ -565,7 +565,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
-	imGuiIO.DisplaySize = ImVec2(1920, 1080);
+	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
 	//imGuiIO.MouseDoubleClickTime = 1.f;
 
 
@@ -588,7 +588,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 #ifdef _DEBUG
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1920, 1080), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
@@ -603,39 +603,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
-	ImGui::GetIO().DeltaTime = Time::DeltaTime();
-
-	/*ImGui::Begin("test");
-
-	struct TestPayload {
-		float value[4];
-	};
-
-	static TestPayload testPayload;
-	ImGui::Selectable("Drag me", false, ImGuiSelectableFlags_DontClosePopups);
-	if (ImGui::BeginDragDropSource()) {
-		TestPayload payload;
-		ImGui::SetDragDropPayload("DND_DEMO_CELL", &payload, sizeof(TestPayload));
-		ImGui::EndDragDropSource();
-	}
-
-
-	if (ImGui::BeginChild("drag here", ImVec2(320, 240))) {
-		if (ImGui::BeginDragDropTarget()) {
-			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_CELL");
-			if (payload) {
-				const TestPayload* data = (const TestPayload*)payload->Data;
-				testPayload = *data;
-			}
-			ImGui::EndDragDropTarget();
-		}
-
-		ImGui::EndChild();
-	}
-
-
-	ImGui::End();*/
-
+	ImGui::GetIO().DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }

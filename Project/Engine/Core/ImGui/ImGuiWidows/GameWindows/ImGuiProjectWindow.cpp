@@ -102,7 +102,15 @@ void ImGuiProjectWindow::SelectFileView() {
 
 
 
+
+
 	ImGui::EndChild();
+}
+
+std::string ImGuiProjectWindow::NormalizePath(const std::string& _path) const {
+	std::string result = _path;
+	std::replace(result.begin(), result.end(), '\\', '/'); // WindowsのパスをUnixスタイルに変換
+	return result;
 }
 
 void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Folder> _folder) {
@@ -113,15 +121,18 @@ void ImGuiProjectWindow::LoadFolder(const std::string& _path, std::shared_ptr<Fo
 		if (entry.is_directory()) {
 
 			auto subFolder = std::make_shared<Folder>();
-			subFolder->path = entry.path().string();
-			subFolder->name = entry.path().filename().string();
+			subFolder->path = NormalizePath(entry.path().string());
+			subFolder->name = NormalizePath(entry.path().filename().string());
+
+
 			_folder->folders.push_back(subFolder);
 			LoadFolder(subFolder->path, subFolder);
 
 		} else if (entry.is_regular_file()) {
 
 			File file;
-			file.name = entry.path().filename().string();
+			file.path = NormalizePath(entry.path().string());
+			file.name = NormalizePath(entry.path().filename().string());
 			_folder->files.push_back(file);
 		}
 	}
@@ -189,14 +200,63 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 			selectedItemPtr_ = ptr;
 			selectedFolder_ = subFolder;
 		}
+
+		/// 右クリックの動作
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			ImGui::OpenPopup(subFolder->name.c_str());
+		}
+
+		/// ポップアップメニューの表示
+		if (ImGui::BeginPopupContextWindow(subFolder->name.c_str())) {
+
+			if (ImGui::MenuItem("エクスプローラーで開く")) {
+				std::string folder = std::filesystem::absolute(subFolder->path).string();
+				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+			}
+
+			ImGui::EndPopup();
+		}
 	}
 
-	for (const auto& file : _folder->files) {
+	for (auto& file : _folder->files) {
 		uint32_t ptr = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(&file));
 		if (ImGui::Selectable(file.name.c_str(), ptr == selectedItemPtr_)) {
 			selectedItemPtr_ = ptr;
-
+			selectedFile_ = &file; // 選択されたファイルを保存
 			/// TODO: inspectorに表示
+		}
+
+
+		/// ファイルを持ち始める
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+			const char* cstr = file.path.c_str();
+			ImGui::Text(cstr);
+			ImGui::SetDragDropPayload("AssetData", cstr, strlen(cstr) + 1);
+
+			ImGui::EndDragDropSource();
+		}
+
+
+		/// ダブルクリックで選択、ファイルを開く
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			std::string folder = std::filesystem::absolute(file.path).string();
+			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+		}
+
+
+		/// 右クリックの動作
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			ImGui::OpenPopup(file.name.c_str());
+		}
+
+		if (ImGui::BeginPopupContextItem(file.name.c_str())) {
+
+			if (ImGui::MenuItem("エクスプローラーで開く")) {
+				std::string folder = std::filesystem::absolute(file.path).parent_path().string();
+				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+			}
+
+			ImGui::EndPopup();
 		}
 	}
 

@@ -15,32 +15,31 @@
 #include "Game/Entity/Player/Player.h"
 #include "Game/Objects/KeyItem/KeyItem.h"
 #include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
+#include "Game/Objects/Puzzle/Puzzle.h"
 
 //#include "Game/Objects/Enemy.h"
 
 GameScene::GameScene() {
 	loadResourcePaths_ = {
-		"Assets/Models/primitive/cube.obj",
-		"Assets/Models/primitive/sphere.obj",
-		"Assets/Models/primitive/plane.obj",
-		"Assets/Models/primitive/cylinder.obj",
-		"Assets/Models/primitive/frontToPlane.obj",
-		"Assets/Models/primitive/tube.obj",
-
-		"Assets/Models/multiMeshTest/test.obj",
-		"Assets/Models/entity/player.obj",
-		"Assets/Models/objects/statue/statue.obj",
-		"Assets/Models/objects/sideToPlane/sideToPlane.obj",
-		"Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
-		"Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj",
-		"Assets/Models/objects/PuzzleClearEffect/CannonStand.obj",
-		"Assets/Models/objects/PuzzleClearEffect/Cannon.obj",
-
-		"Assets/Textures/circle.png",
-		"Assets/Textures/gradation.png",
-		"Assets/Textures/ring.png",
-		"Assets/Textures/gradationLine.png",
-		"Assets/Textures/smoke.png",
+		"./Assets/Models/primitive/cube.obj",
+		"./Assets/Models/primitive/sphere.obj",
+		"./Assets/Models/primitive/plane.obj",
+		"./Assets/Models/primitive/cylinder.obj",
+		"./Assets/Models/primitive/frontToPlane.obj",
+		"./Assets/Models/primitive/tube.obj",
+		"./Assets/Models/multiMeshTest/test.obj",
+		"./Assets/Models/entity/player.obj",
+		"./Assets/Models/objects/statue/statue.obj",
+		"./Assets/Models/objects/sideToPlane/sideToPlane.obj",
+		"./Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
+		"./Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj",
+		"./Assets/Models/objects/PuzzleClearEffect/CannonStand.obj",
+		"./Assets/Models/objects/PuzzleClearEffect/Cannon.obj",
+		"./Assets/Textures/circle.png",
+		"./Assets/Textures/gradation.png",
+		"./Assets/Textures/ring.png",
+		"./Assets/Textures/gradationLine.png",
+		"./Assets/Textures/smoke.png",
 	};
 
 	//unloadResourcePaths_ = {
@@ -84,6 +83,9 @@ void GameScene::Initialize() {
 
 	pEntityComponentSystem_->GenerateEntity<PuzzleClearEffect>();
 
+
+	/// puzzle
+	pEntityComponentSystem_->GenerateEntity<Puzzle>();
 }
 
 void GameScene::Update() {

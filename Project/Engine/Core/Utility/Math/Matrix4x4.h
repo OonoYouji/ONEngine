@@ -173,7 +173,9 @@ inline Matrix4x4 operator*(const Matrix4x4& _m1, const Matrix4x4& _m2) {
 	return Convert(Convert(_m1) * Convert(_m2));
 }
 
-
+inline Vector3 operator*(const Vector3& _v, const Matrix4x4& _m) {
+	return Matrix4x4::Transform(_v, _m);
+}
 
 /// ===================================================
 /// public : operators

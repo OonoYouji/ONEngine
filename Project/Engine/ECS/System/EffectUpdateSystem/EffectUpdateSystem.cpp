@@ -28,7 +28,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 		return;
 	}
 
-	matBillboard_ = Matrix4x4::MakeRotate(mainCamera_->GetWorldRotate());
+	matBillboard_ = Matrix4x4::MakeRotate(mainCamera_->GetRotate());
 	//matBillboard_.m[3][0] = 0.0f;
 	//matBillboard_.m[3][1] = 0.0f;
 	//matBillboard_.m[3][2] = 0.0f;
@@ -61,7 +61,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 
 				Effect::DistanceEmitData& data = effect->distanceEmitData_;
 				data.currentPosition = data.nextPosition;
-				data.nextPosition = effect->owner_->GetWorldPosition();
+				data.nextPosition = effect->owner_->GetPosition();
 
 				data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
 				data.emitInterval -= data.moveLength;
@@ -80,7 +80,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							Vector3 emitPos = effect->emitShape_.GetEmitPosition();
 
 							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition() + effect->emitShape_.GetEmitPosition(),
+								effect->GetOwner()->GetPosition() + effect->emitShape_.GetEmitPosition(),
 								Random::Vector3(size.first, size.second),
 								Random::Vector3(rotate.first, rotate.second),
 								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),
@@ -114,7 +114,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 							Vector3 emitPos = effect->emitShape_.GetEmitPosition();
 
 							effect->CreateElement(
-								effect->GetOwner()->GetWorldPosition() + emitPos,
+								effect->GetOwner()->GetPosition() + emitPos,
 								Random::Vector3(size.first, size.second),
 								Random::Vector3(rotate.first, rotate.second),
 								effect->emitShape_.GetEmitDirection(emitPos) * Random::Float(speed.first, speed.second),

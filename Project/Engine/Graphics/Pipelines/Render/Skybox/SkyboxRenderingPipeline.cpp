@@ -68,7 +68,12 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		for (int x = -1; x <= 1; x += 2) {
 			for (int y = -1; y <= 1; y += 2) {
 				for (int z = -1; z <= 1; z += 2) {
-					vertices_.push_back(VSInput(Vector4(x, y, z, 1.0f)));
+					vertices_.push_back(VSInput(Vector4(
+						static_cast<float>(x),
+						static_cast<float>(y), 
+						static_cast<float>(z), 
+						1.0f
+					)));
 				}
 			}
 		}
