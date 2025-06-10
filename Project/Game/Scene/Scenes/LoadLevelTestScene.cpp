@@ -19,7 +19,8 @@ LoadLevelTestScene::LoadLevelTestScene() {
 void LoadLevelTestScene::Initialize() {
 
 	pEntityComponentSystem_->RemoveEntityAll();
-	pEntityComponentSystem_->GenerateEntity<Grid>();
+	Grid* grid = pEntityComponentSystem_->GenerateEntity<Grid>();
+	pEntityComponentSystem_->AddDoNotDestroyEntity(grid);
 
 	loadSceneCommand_ = std::make_unique<LoadSceneCommand>(pEntityComponentSystem_, "./Assets/Levels/scene.json");
 	loadSceneCommand_->Execute();

@@ -136,9 +136,10 @@ void ImGuiHierarchyWindow::MenuBar() {
 	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
 		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			//std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
 			// action
-			//pEditorManager_->ExecuteCommand<LoadLevelCommand>(pEntityComponentSystem_);
+			pEntityComponentSystem_->RemoveEntityAll();
+			pEditorManager_->ExecuteCommand<LoadSceneCommand>(pEntityComponentSystem_, filePathName);
 		}
 
 		// close
