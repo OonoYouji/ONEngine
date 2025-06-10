@@ -200,6 +200,22 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 			selectedItemPtr_ = ptr;
 			selectedFolder_ = subFolder;
 		}
+
+		/// 右クリックの動作
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			ImGui::OpenPopup(subFolder->name.c_str());
+		}
+
+		/// ポップアップメニューの表示
+		if (ImGui::BeginPopupContextWindow(subFolder->name.c_str())) {
+			
+			if (ImGui::MenuItem("エクスプローラーで開く")) {
+				std::string folder = std::filesystem::absolute(subFolder->path).string();
+				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+			}
+			
+			ImGui::EndPopup();
+		}
 	}
 
 	for (auto& file : _folder->files) {
@@ -228,8 +244,7 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 		if (ImGui::BeginPopupContextItem(file.name.c_str())) {
 
 			if (ImGui::MenuItem("エクスプローラーで開く")) {
-				std::filesystem::path p = file.path;
-				std::string folder = std::filesystem::absolute(p.parent_path()).string();
+				std::string folder = std::filesystem::absolute(file.path).string();
 				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
 			}
 
