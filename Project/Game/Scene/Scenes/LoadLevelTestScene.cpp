@@ -82,7 +82,7 @@ void LoadLevelTestScene::LoadLevel(const std::string& _levelName) {
 
 		if (objectType == "MESH") {
 			MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
-			//meshRenderer->SetMesh(objectData["mesh"].get<std::string>());
+			meshRenderer->SetMeshPath(objectData["mesh"].get<std::string>());
 		}
 	}
 

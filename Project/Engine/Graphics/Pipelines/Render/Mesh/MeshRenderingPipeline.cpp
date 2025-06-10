@@ -104,7 +104,16 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 	std::list<CustomMeshRenderer*> customRenderers;
 	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
+
 		if (meshRenderer) {
+
+			/// meshが読み込まれていなければ、デフォルトのメッシュを使用
+			if (!resourceCollection_->GetModel(meshRenderer->GetMeshPath())) {
+				Console::Log("Mesh not found: " + meshRenderer->GetMeshPath());
+				rendererPerMesh["./Assets/Models/primitive/cube.obj"].push_back(meshRenderer);
+				continue; ///< meshが読み込まれていなければスキップ
+			}
+
 			rendererPerMesh[meshRenderer->GetMeshPath()].push_back(meshRenderer);
 		}
 
