@@ -603,7 +603,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
-	ImGui::GetIO().DeltaTime = Time::DeltaTime();
+	ImGui::GetIO().DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }

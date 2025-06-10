@@ -22,7 +22,9 @@ public:
 	/// =======================================================
 
 	static float DeltaTime();
-
+	static float UnscaledDeltaTime();
+	static float TimeScale();
+	static void SetTimeScale(float _timeScale);
 };
 
 

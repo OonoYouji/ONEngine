@@ -21,9 +21,11 @@ namespace {
 		/// public : methods
 		/// =======================================================
 
-		TimeController() {}
+		TimeController() {
+			timeScale_ = 1.0f;
+		}
 		~TimeController() {}
-		
+
 		void Update();
 
 
@@ -33,7 +35,10 @@ namespace {
 		/// private : objects
 		/// =======================================================
 
-		float                                          deltaTime_;
+		float deltaTime_;
+		float unscaledDeltaTime_;
+		float timeScale_;
+
 		std::chrono::high_resolution_clock::time_point time_;
 	};
 
@@ -47,8 +52,8 @@ namespace {
 		std::chrono::duration<float, std::milli> duration = end - time_;
 		time_ = std::chrono::high_resolution_clock::now();
 
-		deltaTime_ = duration.count() / 1000.0f;  ///< 秒に変換
-		//deltaTime_ = std::min(deltaTime_, 1.0f / 60.0f); ///< 0.05秒以上は無視
+		unscaledDeltaTime_ = duration.count() / 1000.0f;  ///< 秒に変換
+		deltaTime_ = unscaledDeltaTime_ * timeScale_;  ///< 時間のスケールを適用
 	}
 
 
@@ -76,5 +81,17 @@ void Time::Update() {
 
 float Time::DeltaTime() {
 	return gTimeController->deltaTime_;
+}
+
+float Time::UnscaledDeltaTime() {
+	return gTimeController->unscaledDeltaTime_;
+}
+
+float Time::TimeScale() {
+	return gTimeController->timeScale_;
+}
+
+void Time::SetTimeScale(float _timeScale) {
+	gTimeController->timeScale_ = _timeScale;
 }
 
