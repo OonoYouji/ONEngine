@@ -74,7 +74,23 @@ void LoadLevelTestScene::LoadLevel(const std::string& _levelName) {
 		Vec3 rotate = transformData["rotation"].get<Vec3>();
 		Vec3 scale = transformData["scale"].get<Vec3>();
 
-		rotate *= std::numbers::pi / 180.0f; // Convert degrees to radians
+		/// 座標軸を変換する
+		float posY = position.z;
+		position.z = position.y;
+		position.y = posY;
+
+		/// 回転を変換する
+		// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
+		rotate = -rotate;
+		rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f; 
+		float rotateY = rotate.z;
+		rotate.z = rotate.y;
+		rotate.y = rotateY;
+
+		/// スケールを変換する
+		float scaleY = scale.z;
+		scale.z = scale.y;
+		scale.y = scaleY;
 
 		IEntity* entity = nullptr;
 		/// エンティティを生成&SRTを設定
