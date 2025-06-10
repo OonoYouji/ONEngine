@@ -276,12 +276,6 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 			/// 子エンティティを再帰的に読み込む
 			if (IEntity* child = LoadEntity(childData)) {
 				child->SetParent(entity);
-
-				/*/// 子のSRTを親のSRTのローカルに合わせる
-				Matrix4x4 parentMatrix = entity->GetTransform()->GetMatWorld();
-				child->SetPosition(child->GetPosition() * parentMatrix);
-				child->SetRotate(child->GetRotate() * parentMatrix);
-				child->SetScale(child->GetScale() * parentMatrix);*/
 			}
 		}
 	}
