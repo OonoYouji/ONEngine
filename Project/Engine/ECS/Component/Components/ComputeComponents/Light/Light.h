@@ -15,7 +15,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	DirectionalLight() {}
+	DirectionalLight();
 	~DirectionalLight() {}
 
 private:

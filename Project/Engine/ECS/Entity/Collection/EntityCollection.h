@@ -40,6 +40,9 @@ public:
 	/// @param _entity 更新したいエンティティ
 	void UpdateEntity(IEntity* _entity);
 
+	void AddDoNotDestroyEntity(IEntity* _entity);
+	void RemoveDoNotDestroyEntity(IEntity* _entity);
+
 private:
 
 	class EntityComponentSystem* pECS_;
@@ -49,6 +52,7 @@ private:
 	std::unique_ptr<EntityFactory> factory_;
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*> cameras_;
+	std::vector<IEntity*> doNotDestroyEntities_;
 
 	Camera* mainCamera_ = nullptr;
 	Camera* mainCamera2D_ = nullptr;
