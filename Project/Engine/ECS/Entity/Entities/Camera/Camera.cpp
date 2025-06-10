@@ -89,7 +89,7 @@ void Camera::Update() {
 
 	if (cameraType_ == static_cast<int>(CameraType::Type3D)) { ///!< 3Dカメラの場合
 		matProjection_ = MakePerspectiveFovMatrix(
-			fovY_, 1280.0f / 720.0f,
+			fovY_, 1920.0f / 1080.0f,
 			nearClip_, farClip_
 		);
 	}
@@ -130,9 +130,12 @@ Matrix4x4 Camera::MakeOrthographicMatrix(float _left, float _right, float _botto
 void Camera::SetCameraType(int _cameraType) {
 	if (_cameraType != cameraType_) {
 
+		float widthHalf = 1920.0f / 2.0f;
+		float heightHalf = 1080.0f / 2.0f;
+
 		if (_cameraType == static_cast<int>(CameraType::Type2D)) {
 			matProjection_ = MakeOrthographicMatrix(
-				-640.0f, 640.0f, -360.0f, 360.0f, 0.1f, 1.0f
+				-widthHalf, widthHalf, -heightHalf, heightHalf, 0.1f, 1.0f
 			);
 		}
 

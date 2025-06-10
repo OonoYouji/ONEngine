@@ -193,6 +193,8 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 }
 
 void WindowManager::UpdateMainWindow() {
+	pMainWindow_->Update();
+
 	if (PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
 		TranslateMessage(&pMainWindow_->msg_);
 		DispatchMessage(&pMainWindow_->msg_);

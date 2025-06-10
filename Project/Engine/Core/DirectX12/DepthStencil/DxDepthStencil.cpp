@@ -14,8 +14,8 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 	
 	{
 		D3D12_RESOURCE_DESC desc{};
-		desc.Width                                = 1280;
-		desc.Height                               = 720;
+		desc.Width                                = 1980;
+		desc.Height                               = 1080;
 		desc.MipLevels                            = 1;
 		desc.DepthOrArraySize                     = 1;
 		desc.Format                               = DXGI_FORMAT_D32_FLOAT;

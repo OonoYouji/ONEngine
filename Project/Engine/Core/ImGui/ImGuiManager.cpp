@@ -565,7 +565,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
-	imGuiIO.DisplaySize = ImVec2(1920, 1080);
+	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
 	//imGuiIO.MouseDoubleClickTime = 1.f;
 
 
@@ -588,7 +588,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 #ifdef _DEBUG
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1920, 1080), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
