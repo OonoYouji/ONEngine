@@ -1,10 +1,8 @@
 #pragma once
 
-/// externals
-#include <nlohmann/json.hpp>
-
 /// engine
 #include "Engine/Scene/IScene.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 /// ///////////////////////////////////////////////////
 /// シーンのロードレベルテスト
@@ -19,10 +17,6 @@ public:
 	void Update() override;
 
 private:
-
-	void LoadLevel(const std::string& _levelName);
-
-	IEntity* LoadEntity(const nlohmann::json& _entityData);
-
+	std::unique_ptr<LoadSceneCommand> loadSceneCommand_;
 };
 
