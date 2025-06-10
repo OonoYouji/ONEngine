@@ -105,7 +105,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 
-		if (meshRenderer) {
+		if (meshRenderer && meshRenderer->enable) {
 
 			/// meshが読み込まれていなければ、デフォルトのメッシュを使用
 			if (!resourceCollection_->GetModel(meshRenderer->GetMeshPath())) {
@@ -118,7 +118,7 @@ void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _
 		}
 
 		CustomMeshRenderer*&& customMeshRenderer = entity->GetComponent<CustomMeshRenderer>();
-		if (customMeshRenderer) {
+		if (customMeshRenderer && customMeshRenderer->enable) {
 			customRenderers.push_back(customMeshRenderer);
 		}
 	}

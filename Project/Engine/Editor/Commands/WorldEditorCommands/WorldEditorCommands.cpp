@@ -239,9 +239,7 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 	position.y = posY;
 
 	/// 回転を変換する
-	// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
 	rotate = -rotate;
-	rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
 	float rotateY = rotate.z;
 	rotate.z = rotate.y;
 	rotate.y = rotateY;
@@ -256,6 +254,8 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 	if (objectType == "CAMERA") {
 		entity = pECS_->GenerateCamera();
 		pECS_->SetMainCamera(static_cast<Camera*>(entity));
+		// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
+		rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
 	} else {
 		entity = pECS_->GenerateEntity<EmptyEntity>();
 	}
@@ -276,19 +276,24 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 			/// 子エンティティを再帰的に読み込む
 			if (IEntity* child = LoadEntity(childData)) {
 				child->SetParent(entity);
+
+				/*/// 子のSRTを親のSRTのローカルに合わせる
+				Matrix4x4 parentMatrix = entity->GetTransform()->GetMatWorld();
+				child->SetPosition(child->GetPosition() * parentMatrix);
+				child->SetRotate(child->GetRotate() * parentMatrix);
+				child->SetScale(child->GetScale() * parentMatrix);*/
 			}
 		}
 	}
 
-	if (objectType == "MESH") {
+	if (_entityData.contains("file_name")) {
 		MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
-		meshRenderer->SetMeshPath(_entityData["mesh"].get<std::string>());
-	} else if (objectType == "LIGHT") {
-		entity->AddComponent<DirectionalLight>();
-	} else {
-		Console::Log("Unknown object type: " + objectType);
-		return nullptr;
+		meshRenderer->SetMeshPath(_entityData["file_name"].get<std::string>());
 	}
+
+	if (objectType == "LIGHT") {
+		entity->AddComponent<DirectionalLight>();
+	} 
 
 	return entity;
 }

@@ -13,6 +13,7 @@
 LoadLevelTestScene::LoadLevelTestScene() {
 	loadResourcePaths_ = {
 		"./Assets/Models/primitive/cube.obj",
+		"./Assets/Models/primitive/plane.obj",
 	};
 }
 

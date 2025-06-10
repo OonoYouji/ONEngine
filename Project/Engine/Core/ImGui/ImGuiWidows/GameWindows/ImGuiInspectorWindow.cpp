@@ -92,6 +92,13 @@ void ImGuiInspectorWindow::EntityInspector() {
 		//	continue;
 		//}
 
+		/// チェックボックスでenable/disableを切り替え
+		if (ImGui::Checkbox(("##" + componentName).c_str(), &component.second->enable)) {
+			//pEditorManager_->ExecuteCommand<EnableComponentCommand>(entity, component.second, isEnabled);
+		}
+
+		ImGui::SameLine();
+
 		componentName += "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 		if (componentName.find("class ") == 0) {
 			componentName = componentName.substr(6);
@@ -99,6 +106,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		/// component debug
 		ImGui::Separator();
+		ImGui::SameLine();
 		if (ImGui::TreeNodeEx(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 			componentDebugFuncs_[component.first](component.second);
 
