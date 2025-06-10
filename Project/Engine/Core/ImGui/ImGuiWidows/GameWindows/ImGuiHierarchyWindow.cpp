@@ -2,6 +2,7 @@
 
 /// external
 #include <imgui.h>
+#include <dialog/ImGuiFileDialog.h>
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
@@ -101,26 +102,49 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
 void ImGuiHierarchyWindow::MenuBar() {
 
 	/// 早期リターン
-	if (!ImGui::BeginMenuBar()) {
-		return;
-	}
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("+")) {
 
-	if (!ImGui::BeginMenu("+")) {
-		ImGui::EndMenuBar();
-		return;
-	}
+			/// メニューの表示
+			if (ImGui::BeginMenu("create")) {
+				if (ImGui::MenuItem("create empty object")) {
+					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_);
+				}
 
-	/// メニューの表示
-	if (ImGui::BeginMenu("create")) {
-		if (ImGui::MenuItem("create empty object")) {
-			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_);
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("load scene")) {
+				// open Dialog Simple
+				if (ImGui::MenuItem("open explorer")) {
+					IGFD::FileDialogConfig config;
+					config.path = "./Assets/Levels";
+					ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenu();
 		}
 
-		ImGui::EndMenu();
+		ImGui::EndMenuBar();
 	}
 
-	ImGui::EndMenu();
-	ImGui::EndMenuBar();
+
+	// display
+	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
+		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+			// action
+			//pEditorManager_->ExecuteCommand<LoadLevelCommand>(pEntityComponentSystem_);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
 }
 
 void ImGuiHierarchyWindow::Hierarchy() {
