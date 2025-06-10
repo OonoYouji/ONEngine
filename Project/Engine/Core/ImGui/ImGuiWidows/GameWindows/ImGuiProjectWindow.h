@@ -14,6 +14,7 @@ class ImGuiProjectWindow : public IImGuiChildWindow {
 	/// ===================================================
 
 	struct File {
+		std::string path;
 		std::string name;
 	};
 
@@ -47,7 +48,7 @@ private:
 	/// @brief プロジェクトのファイル表示
 	void SelectFileView();
 
-
+	std::string NormalizePath(const std::string& _path) const;
 
 	/// @brief フォルダの読み込み
 	/// @param _path 読み込むフォルダのパス
@@ -74,6 +75,7 @@ private:
 	std::shared_ptr<Folder> packagesRootFolder_;
 	std::shared_ptr<Folder> gameRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
+	File* selectedFile_ = nullptr; ///< 選択されているファイル
 	uint32_t selectedItemPtr_ = 0;
 	bool isGameFolder_ = false; // ゲームファイルを選択しているかどうか
 

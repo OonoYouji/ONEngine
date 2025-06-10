@@ -17,7 +17,7 @@ bool AABB::Intersects(const AABB& _range) const {
 }
 
 TerrainQuadTree::TerrainQuadTree(const AABB& _aabb)
-	/*: boundary_(_aabb) */{
+/*: boundary_(_aabb) */ {
 	boundary_.reset(new AABB(_aabb));
 }
 
@@ -111,6 +111,39 @@ void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::ve
 	if (divided_) {
 		for (const auto& child : children_) {
 			child->QuerySphere(_center, _radius, _result);
+		}
+	}
+}
+
+void TerrainQuadTree::QueryCapsule(const Vector3& _start, const Vector3& _end, float _radius, std::vector<std::pair<size_t, TerrainVertex*>>* _result) {
+	/* カプセルと衝突している点を探索する */
+
+	/// AABBの範囲外なら何もしない
+	if (!CollisionCheck::CubeVsCapsule(
+		boundary_->center, boundary_->halfSize * 2.0f,
+		_start, _end, _radius)) {
+		return;
+	}
+
+	/// AABBの範囲内にある頂点を取得
+	for (const auto& vertex : terrainVertices_) {
+		const Vector4& v = vertex.second->position;
+		if (CollisionCheck::SphereVsCapsule(
+			Vector3(v.x, v.y, v.z), 0.5f,
+			_start, _end, _radius)) {
+
+			_result->push_back(vertex);
+
+			Gizmo::DrawWireSphere(
+				Vector3(v.x, v.y, v.z), 0.5f,
+				Color::kGreen
+			);
+		}
+	}
+
+	if (divided_) {
+		for (const auto& child : children_) {
+			child->QueryCapsule(_start, _end, _radius, _result);
 		}
 	}
 }

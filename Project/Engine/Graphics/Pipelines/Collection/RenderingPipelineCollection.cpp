@@ -45,17 +45,20 @@ void RenderingPipelineCollection::Initialize() {
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
-	if (!_3dCamera || !_2dCamera) {
-		Console::Log("RenderingPipelineCollection::DrawEntities: Camera is null");
-		return;
+	if (_3dCamera) {
+		for (auto& renderer : renderer3ds_) {
+			renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
+		}
+	} else {
+		Console::Log("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	for (auto& renderer : renderer3ds_) {
-		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
-	}
-
-	for (auto& renderer : renderer2ds_) {
-		renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _2dCamera);
+	if (_2dCamera) {
+		for (auto& renderer : renderer2ds_) {
+			renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _2dCamera);
+		}
+	} else {
+		Console::Log("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
 	}
 }
 

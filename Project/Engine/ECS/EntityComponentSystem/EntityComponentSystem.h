@@ -50,6 +50,12 @@ public:
 
 	void RemoveEntityAll();
 
+	template <typename T>
+	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+
+	void AddDoNotDestroyEntity(IEntity* _entity);
+	void RemoveDoNotDestroyEntity(IEntity* _entity);
+
 
 	/// ----- component ----- ///
 
@@ -69,6 +75,12 @@ public:
 	void LoadComponent(IEntity* _entity);
 
 	void RemoveComponentAll(IEntity* _entity);
+
+
+	template<typename Comp>
+	ComponentArray<Comp>* GetComponentArray() requires std::is_base_of_v<IComponent, Comp>;
+
+
 
 	/// ----- system ----- ///
 
@@ -146,6 +158,11 @@ inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Cam
 	return entityCollection_->GenerateCamera<T>();
 }
 
+template<typename T>
+inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity, T> {
+	return entityCollection_->FindEntity<T>();
+}
+
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
 	return componentCollection_->AddComponent<Comp>();
@@ -159,6 +176,11 @@ inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is
 template<typename Comp>
 inline void EntityComponentSystem::RemoveComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	return componentCollection_->RemoveComponent<Comp>(_index);
+}
+
+template<typename Comp>
+inline ComponentArray<Comp>* EntityComponentSystem::GetComponentArray() requires std::is_base_of_v<IComponent, Comp> {
+	return componentCollection_->GetComponentArray<Comp>();
 }
 
 template<typename T, typename ...Args>

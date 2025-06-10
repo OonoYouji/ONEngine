@@ -30,6 +30,8 @@ public:
 
 	void RemoveEntityAll();
 
+	template <typename T>
+	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
 
 	/// @brief 全エンティティを更新
 	void UpdateEntities();
@@ -37,6 +39,9 @@ public:
 	/// @brief 引数のエンティティの更新(子も同時に
 	/// @param _entity 更新したいエンティティ
 	void UpdateEntity(IEntity* _entity);
+
+	void AddDoNotDestroyEntity(IEntity* _entity);
+	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
 private:
 
@@ -47,6 +52,7 @@ private:
 	std::unique_ptr<EntityFactory> factory_;
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*> cameras_;
+	std::vector<IEntity*> doNotDestroyEntities_;
 
 	Camera* mainCamera_ = nullptr;
 	Camera* mainCamera2D_ = nullptr;
@@ -106,4 +112,14 @@ inline T* EntityCollection::GenerateCamera() requires std::is_base_of_v<Camera, 
 	entities_.push_back(std::move(camera));
 	cameras_.push_back(cameraPtr);
 	return cameraPtr;
+}
+
+template<typename T>
+inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> {
+	for (const auto& entity : entities_) {
+		if (T* found = dynamic_cast<T*>(entity.get())) {
+			return found;
+		}
+	}
+	return nullptr;
 }

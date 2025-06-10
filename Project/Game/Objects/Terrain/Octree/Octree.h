@@ -78,6 +78,13 @@ public:
 	/// @param _result 衝突している頂点のポインタを格納する配列
 	void QuerySphere(const Vector3& _center, float _radius, std::vector<std::pair<size_t, TerrainVertex*>>* _result);
 
+	/// @brief terrainVertices_の中から、指定したカプセルに衝突している頂点を取得する
+	/// @param _start カプセルの始点
+	/// @param _end カプセルの終点
+	/// @param _radius カプセルの半径
+	/// @param _result 衝突している頂点のポインタを格納する配列
+	void QueryCapsule(const Vector3& _start, const Vector3& _end, float _radius, std::vector<std::pair<size_t, TerrainVertex*>>* _result);
+
 	void Draw(TerrainQuadTree* _octree, const Vector4& _color, size_t _depth = 1) const;
 
 private:
@@ -88,7 +95,7 @@ private:
 	std::unique_ptr<AABB> boundary_;        ///< 範囲
 	bool divided_ = false; ///< 分割されているかどうか
 	std::vector<std::pair<size_t, TerrainVertex*>> terrainVertices_;
-	
+
 
 
 	std::array<std::unique_ptr<TerrainQuadTree>, 4> children_; ///< 子ノード

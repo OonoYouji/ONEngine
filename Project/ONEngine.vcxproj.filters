@@ -151,6 +151,9 @@
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
+    <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
+    <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -301,5 +304,8 @@
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
     <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
+    <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
+    <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
+    <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
   </ItemGroup>
 </Project>

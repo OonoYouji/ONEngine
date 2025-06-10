@@ -57,10 +57,10 @@ void Terrain::Initialize() {
 	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
 
 
-	splattingTexPaths_[GRASS] = "Packages/Textures/Grass.jpg";
-	splattingTexPaths_[DIRT] = "Packages/Textures/Dirt.jpg";
-	splattingTexPaths_[ROCK] = "Packages/Textures/Rock.jpg";
-	splattingTexPaths_[SNOW] = "Packages/Textures/Snow.jpg";
+	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";
+	splattingTexPaths_[DIRT] = "./Packages/Textures/Dirt.jpg";
+	splattingTexPaths_[ROCK] = "./Packages/Textures/Rock.jpg";
+	splattingTexPaths_[SNOW] = "./Packages/Textures/Snow.jpg";
 
 	/// Octreeの生成
 	Vector3 center = Vector3::kZero;
@@ -88,8 +88,8 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 
 	/// 最近接点から地形との当たり判定を取る
 	std::vector<std::pair<size_t, TerrainVertex*>> hitPoints;
-	octree_->QuerySphere(
-		_transform->GetPosition(), 1.0f, &hitPoints
+	octree_->QueryCapsule(
+		_toTerrainCollider->GetPrevPosition(), _transform->GetPosition(), 1.0f, &hitPoints
 	);
 
 	/// 衝突している点に位置を合わせる
@@ -100,8 +100,10 @@ bool Terrain::Collision(Transform* _transform, ToTerrainCollider* _toTerrainColl
 			average += Vector3(v.x, v.y, v.z);
 		}
 		average /= static_cast<float>(hitPoints.size());
-		//_transform->SetPosition(average);
-		_transform->SetPositionY(average.y);
+		if (_transform->GetPosition().y < average.y) {
+			_transform->SetPositionY(average.y);
+		}
+
 		_toTerrainCollider->SetIsCollided(true);
 		return true;
 	}

@@ -57,11 +57,35 @@ namespace CollisionCheck {
 		const Vector3& _sphereCenter, float _sphereRadius
 	);
 
+	bool CubeVsCapsule(
+		const Vector3& _cubePosition, const Vector3& _cubeSize,
+		const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius
+	);
+
+
 	bool SphereVsSphere(
 		const Vector3& _sphere1Center, float _sphere1Radius,
 		const Vector3& _sphere2Center, float _sphere2Radius
 	);
 
+	bool SphereVsCapsule(
+		const Vector3& _sphereCenter, float _sphereRadius,
+		const Vector3& _capsuleStart, const Vector3& _capsuleEnd, float _capsuleRadius
+	);
+
 
 }
 
+
+
+namespace CollisionMath {
+
+	Vec3 ClosestPointOnAABB(const Vector3& point, const Vector3& _aabbMin, const Vector3& _aabbMax);
+
+	void ClosestPointsSegmentAABB(
+		const Vector3& _lineStart, const Vector3& _lineEnd,
+		const Vector3& _aabbMin, const Vector3& _aabbMax,
+		Vector3& _outSegmentPoint, Vector3& _outAABBPoint
+	);
+
+}

@@ -38,7 +38,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->Initialize();
 	/// main windowの生成
 #ifdef _DEBUG
-	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Main);
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1920.0f, 1080.0f), WindowManager::WindowType::Main);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG

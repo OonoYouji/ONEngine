@@ -16,6 +16,8 @@ namespace {
 
 	float rotateSpeed = std::numbers::pi_v<float> / 100.0f;
 
+	std::string variableName = "";
+
 }	/// unnamed namespace
 
 
@@ -156,9 +158,12 @@ void VariablesDebug(Variables* _variables) {
 	}
 
 	{	/// 新規変数の追加
+		if (variableName.capacity() < 128) {
+			variableName.reserve(128);
+		}
+
 		ImGui::SetNextItemWidth(128.0f);
-		static std::string varName;
-		ImGuiInputText("##name", &varName);
+		ImGuiInputText("##name", &variableName);
 
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(80.0f);
@@ -168,29 +173,29 @@ void VariablesDebug(Variables* _variables) {
 
 		/// 追加
 		if (ImGui::Button("add")) {
-			if (!_variables->Has(varName)) {
-				if (!varName.empty()) {
+			if (!_variables->Has(variableName)) {
+				if (!variableName.empty()) {
 					switch (type) {
 					case 0:
-						_variables->Add<int>(varName, 0);
+						_variables->Add<int>(variableName, 0);
 						break;
 					case 1:
-						_variables->Add<float>(varName, 0.0f);
+						_variables->Add<float>(variableName, 0.0f);
 						break;
 					case 2:
-						_variables->Add<bool>(varName, false);
+						_variables->Add<bool>(variableName, false);
 						break;
 					case 3:
-						_variables->Add<std::string>(varName, "");
+						_variables->Add<std::string>(variableName, "");
 						break;
 					case 4:
-						_variables->Add<Vec2>(varName, Vec2());
+						_variables->Add<Vec2>(variableName, Vec2());
 						break;
 					case 5:
-						_variables->Add<Vec3>(varName, Vec3());
+						_variables->Add<Vec3>(variableName, Vec3());
 						break;
 					case 6:
-						_variables->Add<Vec4>(varName, Vec4());
+						_variables->Add<Vec4>(variableName, Vec4());
 						break;
 					}
 				}
@@ -201,7 +206,7 @@ void VariablesDebug(Variables* _variables) {
 
 		/// 削除
 		if (ImGui::Button("remove")) {
-			_variables->Remove(varName);
+			_variables->Remove(variableName);
 		}
 
 
@@ -284,11 +289,65 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 
 	/// param get
 	Vec4 color = _meshRenderer->GetColor();
+	std::string meshPath = _meshRenderer->GetMeshPath();
+	std::string texturePath = _meshRenderer->GetTexturePath();
 
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_meshRenderer->SetColor(color);
 	}
+
+
+	ImGui::Spacing();
+
+
+	/// meshの変更
+	ImGui::Text("mesh path");
+	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				if (path.find(".obj") != std::string::npos
+					|| path.find(".gltf") != std::string::npos) {
+					_meshRenderer->SetMeshPath(path);
+
+					Console::Log(std::format("Mesh path set to: {}", path));
+				} else {
+					Console::Log("Invalid mesh format. Please use .obj or .gltf.");
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+	/// textureの変更
+	ImGui::Text("texture path");
+	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				if (path.find(".png") != std::string::npos
+					|| path.find(".jpg") != std::string::npos
+					|| path.find(".jpeg") != std::string::npos) {
+					_meshRenderer->SetTexturePath(path);
+
+					Console::Log(std::format("Texture path set to: {}", path));
+				} else {
+					Console::Log("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+				}
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
 }
 
 void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {

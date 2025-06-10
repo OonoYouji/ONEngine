@@ -47,6 +47,9 @@ public:
 	void RemoveComponentAll(class IEntity* _entity);
 
 
+	template <typename Comp>
+	ComponentArray<Comp>* GetComponentArray() requires std::is_base_of_v<IComponent, Comp>;
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -71,7 +74,7 @@ inline void ComponentCollection::RegisterComponentFactory() {
 	factoryMap_[hash] = [this, hash]() -> IComponent* {
 		ComponentArray<Comp>* compArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
 		return compArray->AddComponent();
-	};
+		};
 }
 
 template<typename Comp>
@@ -95,4 +98,13 @@ inline void ComponentCollection::RemoveComponent(size_t _index) requires std::is
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
+}
+
+template<typename Comp>
+inline ComponentArray<Comp>* ComponentCollection::GetComponentArray() requires std::is_base_of_v<IComponent, Comp> {
+	size_t hash = GetComponentHash<Comp>();
+	if (arrayMap_.find(hash) != arrayMap_.end()) {
+		return static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
+	}
+	return nullptr;
 }

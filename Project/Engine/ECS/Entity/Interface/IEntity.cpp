@@ -169,21 +169,21 @@ const Vector3& IEntity::GetLocalScale() const {
 	return transform_->scale;
 }
 
-Vector3 IEntity::GetWorldPosition() {
-	return Matrix4x4::Transform(GetLocalPosition(), transform_->GetMatWorld());
+Vector3 IEntity::GetPosition() {
+	return Matrix4x4::Transform(Vector3::kZero, transform_->GetMatWorld());
 }
 
-Vector3 IEntity::GetWorldRotate() {
+Vector3 IEntity::GetRotate() {
 	if (!parent_) {
 		return transform_->rotate;
 	}
 
 	// 自身のローカル回転を加算  
-	return parent_->GetWorldRotate() + transform_->rotate;
+	return parent_->GetRotate() + transform_->rotate;
 }
 
-Vector3 IEntity::GetWorldScale() {
-	return Vector3();
+Vector3 IEntity::GetScale() {
+	return transform_->scale;
 }
 
 Transform* IEntity::GetTransform() const {

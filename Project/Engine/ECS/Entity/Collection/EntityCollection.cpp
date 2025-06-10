@@ -70,19 +70,59 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 }
 
 void EntityCollection::RemoveEntityAll() {
+
+	std::list<IEntity*> destoryEntities;
 	for (auto& entity : entities_) {
+		if (std::find(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), entity.get()) == doNotDestroyEntities_.end()) {
+			destoryEntities.push_back(entity.get());
+		}
+	}
+
+
+	for (auto& entity : destoryEntities) {
 		entity->RemoveParent(); ///< 親子関係の解除
 	}
 
-	for (auto& entity : entities_) {
+	for (auto& entity : destoryEntities) {
 		entity->RemoveComponentAll(); ///< コンポーネントの削除
 	}
 
-	entities_.clear();
-	cameras_.clear();
-	mainCamera_ = nullptr;
-	mainCamera2D_ = nullptr;
-	debugCamera_ = nullptr;
+	for (auto& entity : destoryEntities) {
+		/// エンティティの削除
+		auto entityItr = std::remove_if(entities_.begin(), entities_.end(),
+			[entity](const std::unique_ptr<IEntity>& e) {
+				return e.get() == entity;
+			}
+		);
+
+		if (entityItr != entities_.end()) {
+			entities_.erase(entityItr, entities_.end());
+		}
+
+
+		/// カメラの削除
+		auto cameraItr = std::remove_if(cameras_.begin(), cameras_.end(),
+			[entity](Camera* camera) {
+				return camera == entity;
+			}
+		);
+
+		if (cameraItr != cameras_.end()) {
+
+			/// mainのカメラなら nullptr に設定
+			Camera* camera = *cameraItr;
+			if (camera == mainCamera_) {
+				mainCamera_ = nullptr;
+			} else if (camera == mainCamera2D_) {
+				mainCamera2D_ = nullptr;
+			} else if (camera == debugCamera_) {
+				debugCamera_ = nullptr;
+			}
+
+			cameras_.erase(cameraItr, cameras_.end());
+		}
+	}
+
 }
 
 
@@ -110,6 +150,26 @@ void EntityCollection::UpdateEntity(IEntity* _entity) {
 
 	for (auto& child : _entity->GetChildren()) {
 		UpdateEntity(child);
+	}
+}
+
+void EntityCollection::AddDoNotDestroyEntity(IEntity* _entity) {
+	if (_entity == nullptr) {
+		return;
+	}
+
+	/// 既に存在する場合は追加しない
+	if (std::find(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), _entity) != doNotDestroyEntities_.end()) {
+		return;
+	}
+
+	doNotDestroyEntities_.push_back(_entity);
+}
+
+void EntityCollection::RemoveDoNotDestroyEntity(IEntity* _entity) {
+	auto itr = std::remove(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), _entity);
+	if (itr != doNotDestroyEntities_.end()) {
+		doNotDestroyEntities_.erase(itr);
 	}
 }
 

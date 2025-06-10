@@ -17,8 +17,6 @@ void Player::Initialize() {
 	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
 	walkEffect->SetParent(this);
 
-	//RemoveComponent<Transform>();
-	//RemoveComponentAll();
 }
 
 void Player::Update() {
@@ -42,13 +40,32 @@ void Player::Update() {
 	if (Input::PressKey(DIK_A)) { velo.x -= 1.0f; }
 	if (Input::PressKey(DIK_D)) { velo.x += 1.0f; }
 
+	Vector2 gamepadLeftThumb = Input::GetGamepadLeftThumb();
+	if (gamepadLeftThumb.x != 0.0f || gamepadLeftThumb.y != 0.0f) {
+		velo.x += gamepadLeftThumb.x;
+		velo.z += gamepadLeftThumb.y;
+	}
+
 	/// 上下移動
-	if (Input::PressKey(DIK_SPACE)) {
+	if (Input::PressKey(DIK_SPACE) || Input::PressGamepad(Gamepad::A)) {
 		if (onGround) {
 			jumpPower = variables_->Get<float>("startJumpPower");
 			onGround = false;
 		}
 	}
+
+
+	/// 回転
+	Vector3& cameraRotate = variables_->Get<Vector3>("cameraRotate");
+	float& cameraRotateRatio = variables_->Get<float>("cameraRotateRatio");
+
+	/// カメラの回転
+	Vector2 gamepadRightThumb = Input::GetGamepadRightThumb();
+	if (gamepadRightThumb.x != 0.0f || gamepadRightThumb.y != 0.0f) {
+		transform_->rotate.y += gamepadRightThumb.x * cameraRotateRatio;
+		cameraRotate.x += gamepadRightThumb.y * cameraRotateRatio;
+	}
+
 
 	velo = velo.Normalize() * speed;
 	velo.y = jumpPower;
@@ -75,7 +92,9 @@ void Player::Update() {
 
 
 	if (pCamera_) {
-		pCamera_->SetPosition(variables_->Get<Vec3>("cameraOffset"));
+
+
+		pCamera_->SetPosition(variables_->Get<Vector3>("cameraOffset"));
 	}
 
 }

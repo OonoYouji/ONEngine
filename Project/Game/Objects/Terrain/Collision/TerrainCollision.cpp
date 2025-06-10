@@ -16,20 +16,22 @@ void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs) {
 	}
 
 
-
 	/// 当たり判定を取る、とりあえず全てのentityと当たり判定を取る
 	for (auto& entity : _ecs->GetEntities()) {
 		if (entity->GetName() == "Terrain") { continue; } ///< terrainは除外
 		/// transformの取得
 		Transform* transform = entity->GetComponent<Transform>();
 		ToTerrainCollider* toTerrainCollider = entity->GetComponent<ToTerrainCollider>();
-		
-		if (!transform || !toTerrainCollider) { 
-			continue; 
+
+		if (!transform || !toTerrainCollider) {
+			continue;
 		}
 
 		/// 当たり判定を取る
 		pTerrain_->Collision(transform, toTerrainCollider);
+
+		/// prevPositionの更新
+		toTerrainCollider->prevPosition_ = transform->GetPosition();
 	}
 
 }

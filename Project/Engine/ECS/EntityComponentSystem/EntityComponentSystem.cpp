@@ -64,6 +64,14 @@ void EntityComponentSystem::RemoveEntityAll() {
 	entityCollection_->RemoveEntityAll();
 }
 
+void EntityComponentSystem::AddDoNotDestroyEntity(IEntity* _entity) {
+	entityCollection_->AddDoNotDestroyEntity(_entity);
+}
+
+void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
+	entityCollection_->RemoveDoNotDestroyEntity(_entity);
+}
+
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 	return componentCollection_->AddComponent(_name);
 }

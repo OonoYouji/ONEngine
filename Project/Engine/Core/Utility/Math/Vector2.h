@@ -36,7 +36,7 @@ public:
 	static const Vector2 kLeft;		//- (-1,  0 )
 	static const Vector2 kRight;	//- ( 1,  0 )
 	static const Vector2 kOne;		//- ( 1,  1 )
-
+	static const Vector2 kZero;		//- ( 0,  0 )
 
 public:
 

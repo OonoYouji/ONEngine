@@ -21,7 +21,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 	/// render texture resourceの作成
 	renderTextureResource.CreateRenderTextureResource(
-		dxDevice, Vector2(1280.0f, 720.0f), _format, _clearColor
+		dxDevice, Vector2(1920.0f, 1080.0f), _format, _clearColor
 	);
 
 	uint32_t rtvHeapIndex = dxRTVHeap->Allocate();
@@ -122,7 +122,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 
 	/// UAV texture resourceの作成
 	uavTextureResource.CreateUAVTextureResource(
-		dxDevice, Vector2(1280.0f, 720.0f), DXGI_FORMAT_R8G8B8A8_UNORM
+		dxDevice, Vector2(1920.0f, 1080.0f), DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 
 	texture_->CreateEmptyUAVHandle();
