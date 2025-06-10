@@ -45,6 +45,8 @@ public:
 	/// </summary>
 	void PostDraw();
 
+	void Update();
+
 	/// <summary>
 	/// front bufferとback bufferの交換
 	/// </summary>
@@ -55,6 +57,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	bool IsOpenWindow();
+
+	void ToggleFullScreen();
 
 private:
 
@@ -67,6 +71,7 @@ private:
 
 	WNDCLASS                     windowClass_;
 	RECT                         wrc_;
+	RECT                         fullscreenRect_;
 	HWND                         hwnd_;
 	MSG                          msg_;
 	UINT                         windowStyle_;
@@ -74,8 +79,9 @@ private:
 	UINT                         processMessage_;
 
 	std::unique_ptr<DxSwapChain> dxSwapChain_;
-	class DxManager*             pDxManager_;
+	class DxManager* pDxManager_;
 
+	bool isFullScreen_ = false;
 
 public:
 
@@ -106,9 +112,9 @@ public:
 	const Vec2& GetWindowSize() const { return windowSize_; }
 
 private:
-	Window(const Window&)             = delete;
-	Window(Window&&)                  = delete;
+	Window(const Window&) = delete;
+	Window(Window&&) = delete;
 	Window& operator= (const Window&) = delete;
-	Window& operator= (Window&&)      = delete;
+	Window& operator= (Window&&) = delete;
 };
 
