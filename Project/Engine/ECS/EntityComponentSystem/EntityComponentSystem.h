@@ -56,6 +56,8 @@ public:
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
+	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
+
 
 	/// ----- component ----- ///
 

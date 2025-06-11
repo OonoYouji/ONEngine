@@ -72,6 +72,10 @@ void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
 	entityCollection_->RemoveDoNotDestroyEntity(_entity);
 }
 
+void EntityComponentSystem::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
+	entityCollection_->SetFactoryRegisterFunc(_func);
+}
+
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 	return componentCollection_->AddComponent(_name);
 }

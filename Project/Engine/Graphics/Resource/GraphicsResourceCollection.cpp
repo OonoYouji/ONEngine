@@ -1,5 +1,8 @@
 #include "GraphicsResourceCollection.h"
 
+/// std
+#include <filesystem>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Creator/PrimitiveMeshCreator.h"
@@ -8,7 +11,6 @@
 GraphicsResourceCollection::GraphicsResourceCollection() {}
 GraphicsResourceCollection::~GraphicsResourceCollection() {}
 
-#include <filesystem>
 
 void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
@@ -17,23 +19,8 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	textures_.resize(32);
 
 	/// Packages内のファイルがすべて読み込む
-	std::vector<std::string> texturePaths;
-	for (const auto& entry : std::filesystem::directory_iterator("./Packages/Textures")) {
-		if (entry.is_regular_file()) {
-			std::string path = entry.path().string();
-			
-			/// パスの中にある "\\" を "/" に置き換える
-			std::replace(path.begin(), path.end(), '\\', '/');
-			
-			if (path.find(".png") != std::string::npos 
-				|| path.find(".jpg") != std::string::npos
-				|| path.find(".dds") != std::string::npos) {
-				texturePaths.push_back(path);
-			}
-		}
-	}
-
-	LoadResources(texturePaths);
+	LoadResources(GetResourceFilePaths("./Packages/"));
+	LoadResources(GetResourceFilePaths("./Assets/"));
 
 	/// primitive meshを作成
 	PrimitiveMeshCreator primitiveMeshCreator(this, _dxManager->GetDxDevice());
@@ -117,6 +104,30 @@ void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::uni
 void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
 	textureIndices_[_filePath] = textureIndices_.size();
 	textures_[textureIndices_[_filePath]] = std::move(_texture);
+}
+
+std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
+	std::vector<std::string> texturePaths;
+
+
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
+		if (entry.is_regular_file()) {
+			std::string path = entry.path().string();
+
+			// パスの中にある "\\" を "/" に置き換える
+			std::replace(path.begin(), path.end(), '\\', '/');
+
+			if (path.find(".png") != std::string::npos
+				|| path.find(".jpg") != std::string::npos
+				|| path.find(".dds") != std::string::npos
+				|| path.find(".obj") != std::string::npos
+				|| path.find(".gltf") != std::string::npos) {
+				texturePaths.push_back(path);
+			}
+		}
+	}
+	
+	return texturePaths;
 }
 
 const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {

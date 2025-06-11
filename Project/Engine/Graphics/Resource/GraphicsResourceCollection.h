@@ -65,6 +65,9 @@ public:
 	/// @param _texture 追加する texture
 	void AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture);
 
+
+	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
+
 private:
 
 	/// ===================================================

@@ -25,6 +25,43 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
+	/*/// ドラッグ先の領域を設定
+	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
+	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
+
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				if (path.find(".cpp") != std::string::npos
+					|| path.find(".h") != std::string::npos) {
+
+					/// pathの文字列をentity名に変換する処理
+					std::string str = path;
+					size_t pos = str.find_last_of('.');
+					if (pos != std::string::npos) {
+						str.erase(pos);
+					}
+
+					pos = str.find_last_of('/');
+					if (pos != std::string::npos) {
+						str.erase(0, pos + 1);
+					}
+
+					pEntityComponentSystem_->GenerateEntity(str);
+					Console::Log(std::format("entity name set to: {}", str));
+				} else {
+					Console::Log("Invalid entity format. Please use .cpp, or .h.");
+				}
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+
 	MenuBar();
 
 	/// ヒエラルキーの表示

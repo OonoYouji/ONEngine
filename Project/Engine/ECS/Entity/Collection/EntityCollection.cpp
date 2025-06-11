@@ -173,6 +173,13 @@ void EntityCollection::RemoveDoNotDestroyEntity(IEntity* _entity) {
 	}
 }
 
+void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
+	factoryRegisterFunc_ = _func;
+	if (factoryRegisterFunc_) {
+		factoryRegisterFunc_(factory_.get());
+	}
+}
+
 
 
 void EntityCollection::SetMainCamera(Camera* _camera) {

@@ -52,6 +52,18 @@ GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
+	/// このゲームで使用するエンティティをファクトリーに登録
+	pEntityComponentSystem_->SetFactoryRegisterFunc(
+		[&](EntityFactory* _factory) {
+			_factory->Register("Player", []() { return std::make_unique<Player>(); });
+			_factory->Register("Terrain", []() { return std::make_unique<Terrain>(); });
+			_factory->Register("KeyItem", []() { return std::make_unique<KeyItem>(); });
+			_factory->Register("PuzzleClearEffect", []() { return std::make_unique<PuzzleClearEffect>(); });
+			_factory->Register("Puzzle", []() { return std::make_unique<Puzzle>(); });
+		}
+	);
+
+
 #ifdef _DEBUG
 	//pEntityComponentSystem_->GenerateEntity<Grid>();
 #endif // _DEBUG

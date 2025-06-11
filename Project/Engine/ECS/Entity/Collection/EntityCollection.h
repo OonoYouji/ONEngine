@@ -43,6 +43,8 @@ public:
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
+	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
+
 private:
 
 	class EntityComponentSystem* pECS_;
@@ -58,7 +60,7 @@ private:
 	Camera* mainCamera2D_ = nullptr;
 	Camera* debugCamera_ = nullptr;
 
-
+	std::function<void(EntityFactory*)> factoryRegisterFunc_;
 
 public:
 
@@ -91,12 +93,27 @@ public:
 
 template<typename T>
 inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
-	std::unique_ptr<T> entity = std::make_unique<T>();
+
+	std::string name = typeid(T).name();
+	if (name.find("class ") == 0) {
+		name = name.substr(6); // Remove "class " prefix
+	}
+
+	std::unique_ptr<IEntity> entity = factory_->Generate(name);
+	if (!entity) {
+		factory_->Register(name, []() { return std::make_unique<T>(); });
+		entity = factory_->Generate(name);
+		if (!entity) {
+			Console::Log(std::format("Failed to generate entity of type: {}", name));
+			return nullptr;
+		}
+	}
+
 	entity->pEntityComponentSystem_ = pECS_;
 	entity->CommonInitialize();
 	entity->Initialize();
 
-	T* entityPtr = entity.get();
+	T* entityPtr = static_cast<T*>(entity.get());
 	entities_.push_back(std::move(entity));
 
 	return entityPtr;
