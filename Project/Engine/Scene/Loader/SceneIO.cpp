@@ -96,6 +96,23 @@ void SceneIO::Input(IScene* _scene) {
 		}
 	}
 
+
+	/// エンティティの親子関係を設定
+	for (const auto& entityJson : inputJson["entities"]) {
+		uint32_t entityId = entityJson["id"];
+		if (entityMap.find(entityId) == entityMap.end()) {
+			continue; // エンティティが見つからない場合はスキップ
+		}
+
+		IEntity* entity = entityMap[entityId];
+		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
+			uint32_t parentId = entityJson["parent"];
+			if (entityMap.find(parentId) != entityMap.end()) {
+				entity->SetParent(entityMap[parentId]);
+			}
+		}
+	}
+
 }
 
 void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {

@@ -24,10 +24,11 @@ EntityCollection::~EntityCollection() {}
 IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
-		entity->pEntityComponentSystem_ = pECS_;
-		entity->CommonInitialize();
-		entity->Initialize();
 		entities_.emplace_back(std::move(entity));
+		IEntity* entityPtr = entities_.back().get();
+		entityPtr->pEntityComponentSystem_ = pECS_;
+		entityPtr->CommonInitialize();
+		entityPtr->Initialize();
 		return entities_.back().get();
 	}
 	return nullptr;
@@ -66,7 +67,9 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 		}
 	);
 
-	entities_.erase(itr, entities_.end());
+	if (itr != entities_.end()) {
+		entities_.erase(itr, entities_.end());
+	}
 }
 
 void EntityCollection::RemoveEntityAll() {

@@ -241,7 +241,6 @@ void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
 
 void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 	_e.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
-	_e.SetStartSpeed(_j.at("startSpeed").get<float>());
 	_e.SetSpeedStartData(_j.at("startSpeed").get<std::pair<float, float>>());
 	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vec3, Vec3>>());
 	_e.SetRotateStartData(_j.at("startRotate").get<std::pair<Vec3, Vec3>>());
@@ -252,7 +251,7 @@ void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 void to_json(nlohmann::json& _j, const EffectMainModule& _e) {
 	_j = nlohmann::json{
 		{ "lifeLeftTime", _e.GetLifeLeftTime() },
-		{ "startSpeed", _e.GetStartSpeed() },
+		{ "startSpeed", _e.GetSpeedStartData() },
 		{ "startSize", _e.GetSizeStartData() },
 		{ "startRotate", _e.GetRotateStartData() },
 		{ "startColor", _e.GetColorStartData() },

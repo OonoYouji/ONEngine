@@ -47,7 +47,7 @@ public:
 
 	void UpdateTransform();
 
-
+	void Destroy();
 
 protected:
 

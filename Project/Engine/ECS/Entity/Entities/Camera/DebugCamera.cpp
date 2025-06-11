@@ -13,6 +13,13 @@ DebugCamera::~DebugCamera() {
 }
 
 void DebugCamera::Initialize() {
+
+	DebugCamera* debugCamera = pEntityComponentSystem_->FindEntity<DebugCamera>();
+	if (debugCamera && debugCamera != this) {
+		Destroy();
+		return;
+	}
+
 	pEntityComponentSystem_->AddDoNotDestroyEntity(this);
 
 	transform_->position = { 0.0f, 0.0f, -10.0f };

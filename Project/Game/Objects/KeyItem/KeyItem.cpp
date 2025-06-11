@@ -11,17 +11,17 @@ KeyItem::KeyItem() {}
 KeyItem::~KeyItem() {}
 
 void KeyItem::Initialize() {
-	MeshRenderer* renderer = AddComponent<MeshRenderer>();
-	renderer->SetMeshPath("Assets/Models/objects/statue/statue.obj");
-	renderer->SetTexturePath("Packages/Textures/white.png");
-	renderer->SetColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
+	//MeshRenderer* renderer = AddComponent<MeshRenderer>();
+	//renderer->SetMeshPath("Assets/Models/objects/statue/statue.obj");
+	//renderer->SetTexturePath("Packages/Textures/white.png");
+	//renderer->SetColor(Color(1.0f, 1.0f, 1.0f, 0.5f));
 
-	KeyItemRipplesEffect* ripplesEffect = pEntityComponentSystem_->GenerateEntity<KeyItemRipplesEffect>();
-	ripplesEffect->SetParent(this);
+	//KeyItemRipplesEffect* ripplesEffect = pEntityComponentSystem_->GenerateEntity<KeyItemRipplesEffect>();
+	//ripplesEffect->SetParent(this);
 
-	KeyItemRiseParticle* riseParticle = pEntityComponentSystem_->GenerateEntity<KeyItemRiseParticle>();
-	riseParticle->SetParent(this);
-	
+	//KeyItemRiseParticle* riseParticle = pEntityComponentSystem_->GenerateEntity<KeyItemRiseParticle>();
+	//riseParticle->SetParent(this);
+	//
 
 	transform_->position.y = 1.0f;
 

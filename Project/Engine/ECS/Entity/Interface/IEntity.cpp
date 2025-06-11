@@ -84,6 +84,10 @@ void IEntity::UpdateTransform() {
 	}
 }
 
+void IEntity::Destroy() {
+	pEntityComponentSystem_->RemoveEntity(this);
+}
+
 void IEntity::SetPosition(const Vector3& _v) {
 	transform_->position = _v;
 }

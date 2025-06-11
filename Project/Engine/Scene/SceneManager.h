@@ -35,6 +35,7 @@ public:
 	void SetNextScene(const std::string& _sceneName);
 
 	void SaveCurrentScene();
+	void LoadScene(const std::string& _sceneName);
 
 private:
 

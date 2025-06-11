@@ -109,12 +109,14 @@ inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity,
 		}
 	}
 
-	entity->pEntityComponentSystem_ = pECS_;
-	entity->CommonInitialize();
-	entity->Initialize();
-
 	T* entityPtr = static_cast<T*>(entity.get());
 	entities_.push_back(std::move(entity));
+
+	entityPtr->pEntityComponentSystem_ = pECS_;
+	entityPtr->CommonInitialize();
+	entityPtr->Initialize();
+
+	
 
 	return entityPtr;
 }

@@ -37,6 +37,10 @@ void TerrainEditor::Initialize() {
 }
 
 void TerrainEditor::Update() {
+	if (!pTerrain_) {
+		return;
+	}
+
 
 
 	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_O)) {

@@ -31,11 +31,12 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
 
+	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
+
 
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene();
 
-	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
 
 }
 
@@ -48,13 +49,6 @@ void SceneManager::Update() {
 
 	/// 現在のシーンの更新処理
 	currentScene_->Update();
-
-	//if (Input::TriggerKey(DIK_U)) {
-	//	sceneIO_->Output(currentScene_.get());
-	//} else if (Input::TriggerKey(DIK_I)) {
-	//	pEntityComponentSystem_->RemoveEntityAll();
-	//	sceneIO_->Input(currentScene_.get());
-	//}
 
 }
 
@@ -71,8 +65,20 @@ void SceneManager::SaveCurrentScene() {
 	sceneIO_->Output(currentScene_.get());
 }
 
+void SceneManager::LoadScene(const std::string& _sceneName) {
+	SetNextScene(_sceneName);
+	if (nextScene_ == nullptr) {
+		Console::Log("Failed to load scene: " + _sceneName);
+		return;
+	}
+
+	MoveNextToCurrentScene();
+}
+
 void SceneManager::MoveNextToCurrentScene() {
 	currentScene_ = std::move(nextScene_);
+
+	pEntityComponentSystem_->RemoveEntityAll();
 
 	/// resourceの読み込み、解放をここで行う
 	pGraphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
@@ -83,6 +89,7 @@ void SceneManager::MoveNextToCurrentScene() {
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
 
+	sceneIO_->Input(currentScene_.get());
 	nextScene_ = nullptr;
 }
 

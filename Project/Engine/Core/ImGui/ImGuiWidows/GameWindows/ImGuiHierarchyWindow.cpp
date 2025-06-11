@@ -166,7 +166,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 				// open Dialog Simple
 				if (ImGui::MenuItem("open explorer")) {
 					IGFD::FileDialogConfig config;
-					config.path = "./Assets/Levels";
+					config.path = "./Assets/Scene";
 					ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
 				}
 
@@ -184,10 +184,19 @@ void ImGuiHierarchyWindow::MenuBar() {
 	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
 		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			//std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+			size_t pos = filePathName.find_last_of("\\");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(pos + 1); // パスを除去
+			}
+
+			pos = filePathName.find_last_of(".");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(0, pos); // 拡張子を除去
+			}
+
 			// action
-			pEntityComponentSystem_->RemoveEntityAll();
-			pEditorManager_->ExecuteCommand<LoadSceneCommand>(pEntityComponentSystem_, filePathName);
+			pSceneManager_->LoadScene(filePathName);
 		}
 
 		// close
