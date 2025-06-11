@@ -11,7 +11,11 @@
 #include "../GameWindows/ImGuiHierarchyWindow.h"
 #include "../GameWindows/ImGuiConsoleWindow.h"
 
-ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager) {
+ImGuiGameWindow::ImGuiGameWindow(
+	EntityComponentSystem* _entityComponentSystem,
+	GraphicsResourceCollection* _resourceCollection,
+	EditorManager* _editorManager,
+	SceneManager* _sceneManager) {
 
 	/// windowの設定
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
@@ -23,7 +27,7 @@ ImGuiGameWindow::ImGuiGameWindow(EntityComponentSystem* _pEntityComponentSystem,
 	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>(_editorManager));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_resourceCollection));
-	AddChild(std::make_unique<ImGuiHierarchyWindow>(_pEntityComponentSystem, _editorManager, static_cast<ImGuiInspectorWindow*>(inspector)));
+	AddChild(std::make_unique<ImGuiHierarchyWindow>(_entityComponentSystem, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }

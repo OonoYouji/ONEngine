@@ -42,7 +42,7 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 void SceneManager::Update() {
 
 	/// 次のシーンが設定されていたら、シーンを切り替える
-	if(nextScene_ != nullptr) {
+	if (nextScene_ != nullptr) {
 		MoveNextToCurrentScene();
 	}
 
@@ -62,9 +62,18 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = sceneFactory_->CreateScene(_sceneName);
 }
 
+void SceneManager::SaveCurrentScene() {
+	if (currentScene_ == nullptr) {
+		Console::Log("No current scene to save.");
+		return;
+	}
+
+	sceneIO_->Output(currentScene_.get());
+}
+
 void SceneManager::MoveNextToCurrentScene() {
 	currentScene_ = std::move(nextScene_);
-	
+
 	/// resourceの読み込み、解放をここで行う
 	pGraphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
 	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);

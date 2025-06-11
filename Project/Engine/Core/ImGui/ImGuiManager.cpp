@@ -536,8 +536,9 @@ namespace {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager)
-	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager) {}
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
+	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
+	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {
 #ifdef _DEBUG
@@ -597,7 +598,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 #endif // _DEBUG
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
-		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_
+		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_, pSceneManager_
 	);
 }
 

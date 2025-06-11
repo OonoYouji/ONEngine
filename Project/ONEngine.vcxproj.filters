@@ -154,6 +154,7 @@
     <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
     <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -307,5 +308,6 @@
     <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject.h" />
   </ItemGroup>
 </Project>

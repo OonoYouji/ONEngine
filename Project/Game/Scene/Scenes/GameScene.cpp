@@ -16,6 +16,7 @@
 #include "Game/Objects/KeyItem/KeyItem.h"
 #include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
 #include "Game/Objects/Puzzle/Puzzle.h"
+#include "Game/Objects/BackgroundObject.h"
 
 //#include "Game/Objects/Enemy.h"
 
@@ -52,14 +53,10 @@ GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
-	/// このゲームで使用するエンティティをファクトリーに登録
+	/// このゲームで使用するエンティティをファクトリーに登録、一度GenerateEntity<T>()を呼び出すことでも登録される
 	pEntityComponentSystem_->SetFactoryRegisterFunc(
 		[&](EntityFactory* _factory) {
-			_factory->Register("Player", []() { return std::make_unique<Player>(); });
-			_factory->Register("Terrain", []() { return std::make_unique<Terrain>(); });
-			_factory->Register("KeyItem", []() { return std::make_unique<KeyItem>(); });
-			_factory->Register("PuzzleClearEffect", []() { return std::make_unique<PuzzleClearEffect>(); });
-			_factory->Register("Puzzle", []() { return std::make_unique<Puzzle>(); });
+			_factory->Register("BackgroundObject", []() { return std::make_unique<BackgroundObject>(); });
 		}
 	);
 

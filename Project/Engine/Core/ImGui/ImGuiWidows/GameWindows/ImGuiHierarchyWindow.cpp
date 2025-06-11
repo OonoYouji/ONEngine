@@ -8,12 +8,18 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
+#include "Engine/Scene/SceneManager.h"
 #include "ImGuiInspectorWindow.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
-ImGuiHierarchyWindow::ImGuiHierarchyWindow(EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, ImGuiInspectorWindow* _inspectorWindow)
-	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager), pInspectorWindow_(_inspectorWindow) {
+ImGuiHierarchyWindow::ImGuiHierarchyWindow(
+	EntityComponentSystem* _pEntityComponentSystem,
+	EditorManager* _editorManager, 
+	SceneManager* _sceneManager,
+	ImGuiInspectorWindow* _inspectorWindow)
+	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager),
+	pSceneManager_(_sceneManager), pInspectorWindow_(_inspectorWindow) {
 
 	newName_.reserve(1024);
 	isNodeOpen_ = false;
@@ -149,6 +155,11 @@ void ImGuiHierarchyWindow::MenuBar() {
 				}
 
 				ImGui::EndMenu();
+			}
+
+
+			if (ImGui::MenuItem("save scene")) {
+				pSceneManager_->SaveCurrentScene();
 			}
 
 			if (ImGui::BeginMenu("load scene")) {
