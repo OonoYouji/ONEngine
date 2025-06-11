@@ -377,12 +377,29 @@ void EffectDebug(Effect* _effect) {
 		} else {
 
 			/// param get
-			/*std::pair<float, float> speed = mainModule->GetSpeedStartData();
-			std::pair<Vec3, Vec3> size = mainModule->GetSpeedStartData();
-			std::pair<Vec3, Vec3> rotate = mainModule->GetSpeedStartData();
-			std::pair<Vec4, Vec4> color = mainModule->GetSpeedStartData();
-			float lifeTime = mainModule->GetLifeTime();*/
+			std::pair<float, float> speed = mainModule->GetSpeedStartData();
+			std::pair<Vec3, Vec3> size = mainModule->GetSizeStartData();
+			std::pair<Vec3, Vec3> rotate = mainModule->GetRotateStartData();
+			std::pair<Vec4, Vec4> color = mainModule->GetColorStartData();
 
+			/// スピードの編集
+			ImGui::DragFloat("first speed", &speed.first, 0.1f, 0.0f, FLT_MAX);
+			ImGui::DragFloat("second speed", &speed.second, 0.1f, 0.0f, FLT_MAX);
+			ImGui::Spacing();
+
+			/// サイズの編集
+			ImGui::DragFloat3("first size", &size.first.x, 0.1f, 0.0f, FLT_MAX);
+			ImGui::DragFloat3("second size", &size.second.x, 0.1f, 0.0f, FLT_MAX);
+			ImGui::Spacing();
+
+			/// 回転の編集
+			ImGui::DragFloat3("first rotate", &rotate.first.x, 0.1f);
+			ImGui::DragFloat3("second rotate", &rotate.second.x, 0.1f);
+			ImGui::Spacing();
+
+			/// 色の編集
+			ImGui::ColorEdit4("first color", &color.first.x);
+			ImGui::ColorEdit4("second color", &color.second.x);
 
 		}
 

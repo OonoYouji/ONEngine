@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Creator/PrimitiveMeshCreator.h"
+#include "Engine/Core/Utility/Utility.h"
 
 GraphicsResourceCollection::GraphicsResourceCollection() {}
 GraphicsResourceCollection::~GraphicsResourceCollection() {}
@@ -139,6 +140,11 @@ const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePa
 size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filePath) const {
 	if (_filePath == "") {
 		return 0;
+	}
+
+	if (textureIndices_.contains(_filePath) == false) {
+		Console::Log("Texture not found: " + _filePath);
+		return 0; // デフォルトのインデックスを返す
 	}
 
 	return textureIndices_.at(_filePath);

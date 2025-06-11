@@ -25,7 +25,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<DirectionalLight>(  [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>(       [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>(         [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
-	RegisterComponent<Effect>(            [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<Effect>(            [&](IComponent* _component) { EffectDebug(reinterpret_cast<Effect*>(_component));});
 	RegisterComponent<MeshRenderer>(      [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
