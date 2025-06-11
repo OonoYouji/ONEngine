@@ -11,6 +11,7 @@
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Graphics/Framework/RenderingFramework.h"
 #include "Engine/Editor/EditorManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
 #include "GameFrameworkConfig.h"
 
 
@@ -50,6 +51,8 @@ private:
 	std::unique_ptr<EditorManager>         editorManager_ = nullptr;
 
 	std::unique_ptr<RenderingFramework>    renderingFramework_;
+
+	std::unique_ptr<MonoScriptEngine>      monoScriptEngine_ = nullptr;
 
 };
 

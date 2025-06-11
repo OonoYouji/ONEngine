@@ -155,7 +155,7 @@
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
     <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
-    <ClCompile Include="Engine\Script\CSharpScript.cpp" />
+    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -310,6 +310,6 @@
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
     <ClInclude Include="Game\Objects\BackgroundObject.h" />
-    <ClInclude Include="Engine\Script\CSharpScript.h" />
+    <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
   </ItemGroup>
 </Project>

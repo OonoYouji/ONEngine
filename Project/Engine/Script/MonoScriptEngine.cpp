@@ -1,16 +1,16 @@
-#include "CSharpScript.h"
+#include "MonoScriptEngine.h"
 
 #include "Engine/Core/Utility/Utility.h"
 
-CSharpScript::CSharpScript() {}
-CSharpScript::~CSharpScript() {
+MonoScriptEngine::MonoScriptEngine() {}
+MonoScriptEngine::~MonoScriptEngine() {
 	if (domain) {
 		mono_jit_cleanup(domain);
 		domain = nullptr;
 	}
 }
 
-void CSharpScript::Initialize() {
+void MonoScriptEngine::Initialize() {
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
 	domain = mono_jit_init("MyDomain");
 	if (!domain) {

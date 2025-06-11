@@ -22,7 +22,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Script\CSharpScript.cpp" />
+    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
@@ -179,7 +179,7 @@
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Script\CSharpScript.h" />
+    <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />

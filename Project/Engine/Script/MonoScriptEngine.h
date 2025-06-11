@@ -4,11 +4,11 @@
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/debug-helpers.h"
 
-class CSharpScript {
+class MonoScriptEngine {
 public:
 
-	CSharpScript();
-	~CSharpScript();
+	MonoScriptEngine();
+	~MonoScriptEngine();
 
 	void Initialize();
 
