@@ -22,6 +22,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
@@ -392,7 +394,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;$(ProjectDir)Externals/mono/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -420,13 +422,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;$(ProjectDir)Externals/mono/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
 xcopy /Y /I /E "$(ProjectDir)Assets" "$(OutDir)Assets"
-xcopy /Y /I /E "$(ProjectDir)Packages" "$(OutDir)Packages"</Command>
+xcopy /Y /I /E "$(ProjectDir)Packages" "$(OutDir)Packages"
+xcopy /Y /I "$(ProjectDir)Externals\mono\mono-2.0-sgen.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
