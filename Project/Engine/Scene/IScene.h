@@ -19,6 +19,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
+	IScene(class EntityComponentSystem* _entityComponentSystem);
 	virtual ~IScene() = default;
 
 	/// @brief シーンの初期化

@@ -16,7 +16,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GameScene();
+	GameScene(class EntityComponentSystem* _entityComponentSystem);
 	~GameScene();
 
 	void Initialize() override;

@@ -53,7 +53,7 @@ void SceneManager::Update() {
 }
 
 void SceneManager::SetNextScene(const std::string& _sceneName) {
-	nextScene_ = sceneFactory_->CreateScene(_sceneName);
+	nextScene_ = sceneFactory_->CreateScene(_sceneName, pEntityComponentSystem_);
 }
 
 void SceneManager::SaveCurrentScene() {
@@ -85,11 +85,11 @@ void SceneManager::MoveNextToCurrentScene() {
 	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
+	sceneIO_->Input(currentScene_.get());
 	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
 
-	sceneIO_->Input(currentScene_.get());
 	nextScene_ = nullptr;
 }
 

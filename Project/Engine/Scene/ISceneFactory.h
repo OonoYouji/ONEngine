@@ -8,9 +8,9 @@
 
 /// engine
 #include "IScene.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-
-using SceneCreator = std::function<std::unique_ptr<IScene>()>;
+using SceneCreator = std::function<std::unique_ptr<IScene>(EntityComponentSystem*)>;
 
 
 /// ===================================================
@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="_sceneName"> 登録したシーンの名前 </param>
 	/// <returns> return : 成功したら生成したオブジェクト、 失敗したらnullptr</returns>
-	std::unique_ptr<IScene> CreateScene(const std::string& _sceneName);
+	std::unique_ptr<IScene> CreateScene(const std::string& _sceneName, EntityComponentSystem* _ecs);
 
 private:
 	
@@ -76,5 +76,5 @@ public:
 
 template <typename T, typename std::enable_if<std::is_base_of<IScene, T>::value>::type*>
 inline void ISceneFactory::RegisterScene(const std::string& _sceneName) {
-	sceneCreatorMap_[_sceneName] = []() { return std::make_unique<T>(); };
+	sceneCreatorMap_[_sceneName] = [](EntityComponentSystem* _ecs) { return std::make_unique<T>(_ecs); };
 }

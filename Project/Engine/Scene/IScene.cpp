@@ -3,6 +3,9 @@
 /// engine
 #include "SceneManager.h"
 
+IScene::IScene(EntityComponentSystem* _entityComponentSystem)
+	: pEntityComponentSystem_(_entityComponentSystem) {}
+
 void IScene::SetSceneManagerPtr(SceneManager* _sceneManager) {
 	pSceneManager_ = _sceneManager;
 }

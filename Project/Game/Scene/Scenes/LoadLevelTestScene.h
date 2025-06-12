@@ -10,7 +10,7 @@
 class LoadLevelTestScene : public IScene {
 public:
 
-	LoadLevelTestScene();
+	LoadLevelTestScene(class EntityComponentSystem* _entityComponentSystem);
 	~LoadLevelTestScene() = default;
 
 	void Initialize() override;

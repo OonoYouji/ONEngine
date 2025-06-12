@@ -30,11 +30,8 @@
 
 //#include "Game/Objects/Enemy.h"
 
-GameScene::GameScene() {}
-GameScene::~GameScene() {}
-
-
-void GameScene::Initialize() {
+GameScene::GameScene(EntityComponentSystem* _entityComponentSystem)
+	: IScene(_entityComponentSystem) {
 
 	/// このゲームで使用するエンティティをファクトリーに登録、一度GenerateEntity<T>()を呼び出すことでも登録される
 	pEntityComponentSystem_->SetFactoryRegisterFunc(
@@ -49,7 +46,7 @@ void GameScene::Initialize() {
 			_factory->Register("PuzzleClearEffect", []() { return std::make_unique<PuzzleClearEffect>(); });
 
 			_factory->Register("Player", []() { return std::make_unique<Player>(); });
-			
+
 			_factory->Register("BackgroundObject", []() { return std::make_unique<BackgroundObject>(); });
 			_factory->Register("Enemy", []() { return std::make_unique<Enemy>(); });
 			_factory->Register("KeyItem", []() { return std::make_unique<KeyItem>(); });
@@ -58,53 +55,22 @@ void GameScene::Initialize() {
 		}
 	);
 
-//
-//	/// このゲームで使用するエンティティをファクトリーに登録、一度GenerateEntity<T>()を呼び出すことでも登録される
-//	pEntityComponentSystem_->SetFactoryRegisterFunc(
-//		[&](EntityFactory* _factory) {
-//			_factory->Register("BackgroundObject", []() { return std::make_unique<BackgroundObject>(); });
-//		}
-//	);
-//
-//
-//#ifdef _DEBUG
-//	//pEntityComponentSystem_->GenerateEntity<Grid>();
-//#endif // _DEBUG
-//
-//	//pEntityComponentSystem_->GenerateEntity<Enemy>();
-//	pEntityComponentSystem_->GenerateEntity<DirectionalLightObject>();
-//
-//	//pEntityComponentSystem_->GenerateEntity<GameController>();
-//	Player* player = pEntityComponentSystem_->GenerateEntity<Player>();
-//	Camera* camera = pEntityComponentSystem_->GenerateCamera();
-//	camera->SetParent(player);
-//	camera->SetPosition(Vector3(0, 1.8f, -2.5f));
-//	camera->SetRotateX(std::numbers::pi_v<float> *0.1f);
-//	player->SetCamera(camera);
-//
-//	Skybox* skybox = pEntityComponentSystem_->GenerateEntity<Skybox>();
-//	skybox->SetScale(Vector3::kOne * 500.0f);
-//
-//	pEntityComponentSystem_->SetMainCamera(camera);
-//	KeyItem* keyItem = pEntityComponentSystem_->GenerateEntity<KeyItem>();
-//	keyItem->SetPosition(Vector3(-20, 0, 0));
-//	keyItem->UpdateTransform();
-//
-	//terrainEditor_ = std::make_unique<TerrainEditor>(
-	//	pEntityComponentSystem_->FindEntity<Terrain>(),
-	//	pEntityComponentSystem_
-	//);
-	//terrainEditor_->Initialize();
-//
-//	pEntityComponentSystem_->GenerateEntity<PuzzleClearEffect>();
-//
-//
-//	/// puzzle
-//	pEntityComponentSystem_->GenerateEntity<Puzzle>();
+}
+GameScene::~GameScene() {}
+
+
+void GameScene::Initialize() {
+
+	terrainEditor_ = std::make_unique<TerrainEditor>(
+		pEntityComponentSystem_->FindEntity<Terrain>(),
+		pEntityComponentSystem_
+	);
+	terrainEditor_->Initialize();
 }
 
 void GameScene::Update() {
 #ifdef _DEBUG
+	terrainEditor_->Update();
 #endif // _DEBUG
 
 }
