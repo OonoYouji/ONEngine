@@ -5,10 +5,12 @@
 
 /// engine
 #include "Engine/ECS/Entity/Entities/Demo/DemoEntity.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 #include "Engine/ECS/Entity/Entities/Grid/Grid.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Entity/Entities/Light/DirectionalLightObject.h"
 #include "Engine/ECS/Entity/Entities/Skybox/Skybox.h"
+#include "Engine/ECS/Component/Component.h"
 
 /// user: 全てのゲームオブジェクト
 #include "Game/Effects/KeyItemEffects/KeyItemRipplesEffect.h"
@@ -66,6 +68,31 @@ void GameScene::Initialize() {
 		pEntityComponentSystem_
 	);
 	terrainEditor_->Initialize();
+
+
+	/// 草を生やす
+	//EmptyEntity* emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+
+	//int num = 10;
+	//for (size_t i = 0; i < num; i++) {
+	//	for (size_t j = 0; j < num; j++) {
+	//		auto grass = pEntityComponentSystem_->GenerateEntity<BackgroundObject>();
+	//		grass->SetPosition(Vector3(i * 20, 0.0f, j * 20) + Random::Vector3(-Vec3::kOne * 10, Vec3::kOne * 10.0f));
+	//		grass->SetPositionY(0.0f);
+	//		grass->SetRotateY(Random::Float(0, 3));
+	//		grass->SetScale(Vector3::kOne * Random::Float(1, 3));
+
+	//		MeshRenderer* meshRenderer = grass->GetComponent<MeshRenderer>();
+	//		if (meshRenderer) {
+	//			int randomValue = rand() % 3 + 1;
+	//			meshRenderer->SetMeshPath("./Packages/Models/BackgroundObjects/Tree" + std::to_string(randomValue) + ".obj");
+	//		}
+
+	//		grass->SetParent(emptyEntity);
+	//	}
+	//}
+
+
 }
 
 void GameScene::Update() {

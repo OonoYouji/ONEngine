@@ -14,7 +14,7 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-
+	pCamera_ = pEntityComponentSystem_->GetMainCamera();
 }
 
 void Player::Update() {
@@ -32,12 +32,6 @@ void Player::Update() {
 
 	velo = Vec3::kZero;
 
-	/// 横移動
-	if (Input::PressKey(DIK_W)) { velo.z += 1.0f; }
-	if (Input::PressKey(DIK_S)) { velo.z -= 1.0f; }
-	if (Input::PressKey(DIK_A)) { velo.x -= 1.0f; }
-	if (Input::PressKey(DIK_D)) { velo.x += 1.0f; }
-
 	Vector2 gamepadLeftThumb = Input::GetGamepadLeftThumb();
 	if (gamepadLeftThumb.x != 0.0f || gamepadLeftThumb.y != 0.0f) {
 		velo.x += gamepadLeftThumb.x;
@@ -45,7 +39,7 @@ void Player::Update() {
 	}
 
 	/// 上下移動
-	if (Input::PressKey(DIK_SPACE) || Input::PressGamepad(Gamepad::A)) {
+	if (Input::PressGamepad(Gamepad::A)) {
 		if (onGround) {
 			jumpPower = variables_->Get<float>("startJumpPower");
 			onGround = false;
