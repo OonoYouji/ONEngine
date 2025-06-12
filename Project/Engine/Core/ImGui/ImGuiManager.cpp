@@ -567,6 +567,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
+	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	//imGuiIO.MouseDrawCursor = true; ///< マウスカーソルを表示するかどうか
 	//imGuiIO.MouseDoubleClickTime = 1.f;
 
 

@@ -14,7 +14,13 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	pCamera_ = pEntityComponentSystem_->GetMainCamera();
+	//pCamera_ = pEntityComponentSystem_->GenerateCamera<Camera>();
+	//if (pCamera_) {
+	//	pCamera_->SetParent(this);
+	//	pEntityComponentSystem_->SetMainCamera(pCamera_);
+	//}
+	
+
 }
 
 void Player::Update() {

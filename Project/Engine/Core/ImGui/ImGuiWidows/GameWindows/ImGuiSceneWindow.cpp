@@ -16,23 +16,34 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	const auto& textures = resourceCollection_->GetTextures();
 	auto texture = textures[resourceCollection_->GetTextureIndex("debugScene")].get();
 
-	ImVec2 windowSize = ImGui::GetContentRegionAvail();
+	// 最初に空き領域を取得
+	ImVec2 availRegion = ImGui::GetContentRegionAvail();
+
+	// アスペクト比に合わせてサイズ調整
 	float aspectRatio = 16.0f / 9.0f;
-	if (windowSize.x / windowSize.y > aspectRatio) {
-		windowSize.x = windowSize.y * aspectRatio;
+	ImVec2 imageSize = availRegion;
+	if (imageSize.x / imageSize.y > aspectRatio) {
+		imageSize.x = imageSize.y * aspectRatio;
 	} else {
-		windowSize.y = windowSize.x / aspectRatio;
+		imageSize.y = imageSize.x / aspectRatio;
 	}
-	
+
+	// 位置計算（注意：availRegion を使う）
 	ImVec2 windowPos = ImGui::GetCursorScreenPos();
 	ImVec2 imagePos = windowPos;
-	imagePos.x += (ImGui::GetContentRegionAvail().x - windowSize.x) * 0.5f;
-	imagePos.y += (ImGui::GetContentRegionAvail().y - windowSize.y) * 0.5f;
-	
-	ImGui::SetCursorScreenPos(imagePos);
-	ImGui::Image(ImTextureID(texture->GetSRVGPUHandle().ptr), windowSize);
+	imagePos.x += (availRegion.x - imageSize.x) * 0.5f;
+	imagePos.y += (availRegion.y - imageSize.y) * 0.5f;
 
-	pImGuiManager_->AddSceneImageInfo("Scene", ImGuiSceneImageInfo{ imagePos, windowSize });
+	// カーソル位置をセットし描画
+	ImGui::SetCursorScreenPos(imagePos);
+	ImGui::Image(ImTextureID(texture->GetSRVGPUHandle().ptr), imageSize);
+
+	ImVec2 windowSize = ImGui::GetWindowSize();
+	ImGui::Text("Window Size: %.1f x %.1f", windowSize.x, windowSize.y);
+
+	// 情報保存
+	pImGuiManager_->AddSceneImageInfo("Scene", ImGuiSceneImageInfo{ imagePos, imageSize });
 
 	ImGui::End();
+
 }

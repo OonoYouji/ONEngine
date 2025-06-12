@@ -60,7 +60,6 @@ GameScene::GameScene(EntityComponentSystem* _entityComponentSystem)
 }
 GameScene::~GameScene() {}
 
-
 void GameScene::Initialize() {
 
 	terrainEditor_ = std::make_unique<TerrainEditor>(
