@@ -25,8 +25,10 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
+
 		IEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
+		entityPtr->id_ = NewEntityID();
 		entityPtr->CommonInitialize();
 		entityPtr->Initialize();
 		return entities_.back().get();
@@ -37,6 +39,7 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
 	camera->pEntityComponentSystem_ = pECS_;
+	camera->id_ = NewEntityID();
 	camera->CommonInitialize();
 	camera->Initialize();
 
@@ -48,6 +51,29 @@ Camera* EntityCollection::GenerateCamera() {
 }
 
 void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
+
+	/// 破棄可能かチェック
+	if (_entity == nullptr) {
+		return;
+	}
+
+	auto doNotDestroyEntityItr = std::find_if(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(),
+		[&_entity](IEntity* entity) {
+			return entity == _entity;
+		}
+	);
+
+	if (doNotDestroyEntityItr != doNotDestroyEntities_.end()) {
+		Console::Log("Cannot remove entity: " + _entity->GetName() + " because it is marked as do not destroy.");
+		return;
+	}
+
+
+	/// entityのidをチェック
+	size_t id = _entity->id_;
+	usedEntityIDs_.erase(std::remove(usedEntityIDs_.begin(), usedEntityIDs_.end(), id), usedEntityIDs_.end());
+	removedEntityIDs_.push_back(id);
+
 	/// 親子関係の解除
 	_entity->RemoveParent();
 	if (_deleteChildren) {
@@ -61,71 +87,43 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	}
 
 	/// entityの削除
-	auto itr = std::remove_if(entities_.begin(), entities_.end(),
+	auto entityItr = std::remove_if(entities_.begin(), entities_.end(),
 		[_entity](const std::unique_ptr<IEntity>& entity) {
 			return entity.get() == _entity;
 		}
 	);
 
-	if (itr != entities_.end()) {
-		entities_.erase(itr, entities_.end());
+	if (entityItr != entities_.end()) {
+		entities_.erase(entityItr, entities_.end());
 	}
+
+
+	/// カメラの削除
+	auto cameraItr = std::remove_if(cameras_.begin(), cameras_.end(),
+		[_entity](Camera* camera) {
+			return camera == _entity;
+		}
+	);
+
+	if (cameraItr != cameras_.end()) {
+		/// mainのカメラなら nullptr に設定
+		Camera* camera = *cameraItr;
+		if (camera == mainCamera_) {
+			mainCamera_ = nullptr;
+		} else if (camera == mainCamera2D_) {
+			mainCamera2D_ = nullptr;
+		} else if (camera == debugCamera_) {
+			debugCamera_ = nullptr;
+		}
+		cameras_.erase(cameraItr, cameras_.end());
+	}
+
 }
 
 void EntityCollection::RemoveEntityAll() {
-
-	std::list<IEntity*> destoryEntities;
 	for (auto& entity : entities_) {
-		if (std::find(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), entity.get()) == doNotDestroyEntities_.end()) {
-			destoryEntities.push_back(entity.get());
-		}
+		RemoveEntity(entity.get(), true);
 	}
-
-
-	for (auto& entity : destoryEntities) {
-		entity->RemoveParent(); ///< 親子関係の解除
-	}
-
-	for (auto& entity : destoryEntities) {
-		entity->RemoveComponentAll(); ///< コンポーネントの削除
-	}
-
-	for (auto& entity : destoryEntities) {
-		/// エンティティの削除
-		auto entityItr = std::remove_if(entities_.begin(), entities_.end(),
-			[entity](const std::unique_ptr<IEntity>& e) {
-				return e.get() == entity;
-			}
-		);
-
-		if (entityItr != entities_.end()) {
-			entities_.erase(entityItr, entities_.end());
-		}
-
-
-		/// カメラの削除
-		auto cameraItr = std::remove_if(cameras_.begin(), cameras_.end(),
-			[entity](Camera* camera) {
-				return camera == entity;
-			}
-		);
-
-		if (cameraItr != cameras_.end()) {
-
-			/// mainのカメラなら nullptr に設定
-			Camera* camera = *cameraItr;
-			if (camera == mainCamera_) {
-				mainCamera_ = nullptr;
-			} else if (camera == mainCamera2D_) {
-				mainCamera2D_ = nullptr;
-			} else if (camera == debugCamera_) {
-				debugCamera_ = nullptr;
-			}
-
-			cameras_.erase(cameraItr, cameras_.end());
-		}
-	}
-
 }
 
 
@@ -181,6 +179,21 @@ void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)
 	if (factoryRegisterFunc_) {
 		factoryRegisterFunc_(factory_.get());
 	}
+}
+
+size_t EntityCollection::NewEntityID() {
+	size_t resultId = 0;
+
+	if (removedEntityIDs_.size() > 0) {
+		resultId = removedEntityIDs_.front();
+		removedEntityIDs_.pop_front();
+		usedEntityIDs_.push_back(resultId);
+	} else {
+		resultId = usedEntityIDs_.size();
+		usedEntityIDs_.push_back(resultId);
+	}
+
+	return resultId;
 }
 
 
