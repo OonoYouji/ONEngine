@@ -17,6 +17,7 @@ void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
 /// ///////////////////////////////////////////////////
 class Script : public IComponent {
 	friend class MonoScriptEngine;
+	friend class ScriptUpdateSystem;
 public:
 	/// ===================================================
 	/// public : methods

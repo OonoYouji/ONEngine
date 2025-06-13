@@ -32,6 +32,10 @@ void MonoScriptEngine::Initialize() {
 		Console::Log("Failed to get image from assembly");
 		return;
 	}
+
+
+	/// 関数を登録
+	RegisterFunctions();
 }
 
 void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptName) {
@@ -83,4 +87,8 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	_script->instance_ = obj;
 	_script->initMethod_ = initMethod;
 	_script->updateMethod_ = updateMethod;
+}
+
+void MonoScriptEngine::RegisterFunctions() {
+
 }

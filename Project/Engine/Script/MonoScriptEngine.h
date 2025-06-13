@@ -24,6 +24,7 @@ public:
 
 	void MakeScript(class Script* _script, const std::string& _scriptName);
 
+	void RegisterFunctions();
 private:
 	/// ===================================================
 	/// private : objects
