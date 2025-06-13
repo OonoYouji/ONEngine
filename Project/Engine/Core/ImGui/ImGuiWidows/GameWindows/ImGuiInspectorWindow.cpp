@@ -32,6 +32,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<Line2DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line3DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<ToTerrainCollider>( [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<Script>(            [&]([[maybe_unused]] IComponent* _component) {});
 
 
 	/// 関数を登録

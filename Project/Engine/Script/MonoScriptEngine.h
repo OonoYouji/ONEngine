@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <string>
+
+/// externals
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/debug-helpers.h"
@@ -18,13 +22,15 @@ public:
 
 	void Initialize();
 
+	void MakeScript(class Script* _script, const std::string& _scriptName);
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	MonoDomain* domain;
-	MonoImage* image;
-	MonoAssembly* assembly = nullptr;
+	MonoDomain* domain_;
+	MonoImage* image_;
+	MonoAssembly* assembly_ = nullptr;
 };
 

@@ -177,6 +177,7 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
@@ -332,6 +333,7 @@
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

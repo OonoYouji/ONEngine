@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
-
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -51,6 +51,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 
 	monoScriptEngine_->Initialize();
+	SetMonoScriptEnginePtr(monoScriptEngine_.get());
+
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 

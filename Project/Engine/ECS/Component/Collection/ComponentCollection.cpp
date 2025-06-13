@@ -1,8 +1,13 @@
 #include "ComponentCollection.h"
 
+/// engine
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "../Component.h"
 
-ComponentCollection::ComponentCollection() {}
+ComponentCollection::ComponentCollection() {
+	RegisterComponentFactory<Script>();
+	RegisterComponentFactory<Transform>();
+}
 
 ComponentCollection::~ComponentCollection() {}
 
@@ -10,7 +15,7 @@ IComponent* ComponentCollection::AddComponent(const std::string& _name) {
 	size_t hash = GetComponentHash(_name);
 
 	if (arrayMap_.find(hash) == arrayMap_.end()) {
-		//RegisterComponentFactory<Comp>();
+		//RegisterComponentFactory();
 		return nullptr;
 	}
 

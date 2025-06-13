@@ -20,6 +20,8 @@ void Player::Initialize() {
 	//	pEntityComponentSystem_->SetMainCamera(pCamera_);
 	//}
 	
+	Script* script = AddComponent<Script>();
+	script->SetScript("Player");
 
 }
 
