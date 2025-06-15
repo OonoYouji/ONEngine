@@ -156,4 +156,3 @@ public:
 	const Matrix4x4& GetMatWorld() const { return matWorld; }
 
 };
-

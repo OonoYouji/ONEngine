@@ -2,10 +2,38 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Component.h"
+
+namespace {
+
+	EntityComponentSystem* gECS = nullptr;
 
 
-MonoScriptEngine::MonoScriptEngine() {}
+	Transform* InternalGetTransform(int _id) {
+		return gECS->GetComponent<Transform>(_id);
+	}
+
+	void InternalSetTransform(int _id, Transform* _transform) {
+		if (!_transform) {
+			Console::Log("Transform pointer is null");
+			return;
+		}
+		Transform* transform = gECS->GetComponent<Transform>(_id);
+		if (transform) {
+			*transform = *_transform; /// 変数のコピー
+		} else {
+			Console::Log("Transform not found for entity ID: " + std::to_string(_id));
+		}
+	}
+
+}
+
+
+
+MonoScriptEngine::MonoScriptEngine(EntityComponentSystem* _ecs) {
+	gECS = _ecs;
+}
 MonoScriptEngine::~MonoScriptEngine() {
 	if (domain_) {
 		mono_jit_cleanup(domain_);
@@ -58,7 +86,7 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	/// 先に定義しておく
 	MonoMethodDesc* desc = nullptr;
 
-	/// Updateメソッドを取得
+	/// Initializeメソッドを取得
 	desc = mono_method_desc_new(":Initialize()", false);
 	MonoMethod* initMethod = mono_method_desc_search_in_class(desc, monoClass);
 	mono_method_desc_free(desc);
@@ -90,5 +118,6 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 }
 
 void MonoScriptEngine::RegisterFunctions() {
-
+	mono_add_internal_call("MonoBehavior::InternalGetTransform", (void*)InternalGetTransform);
+	mono_add_internal_call("MonoBehavior::InternalSetTransform", (void*)InternalSetTransform);
 }

@@ -17,7 +17,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MonoScriptEngine();
+	MonoScriptEngine(class EntityComponentSystem* _ecs);
 	~MonoScriptEngine();
 
 	void Initialize();

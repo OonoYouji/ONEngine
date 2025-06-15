@@ -42,10 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripts\Enemy.cs" />
-    <Compile Include="Scripts\MonoBehavior.cs" />
-    <Compile Include="Scripts\Player.cs" />
-    <Compile Include="Scripts\Vec3.cs" />
+    <Compile Include="Scripts\Engine\Math\Matrix4x4.cs" />
+    <Compile Include="Scripts\Engine\Transform.cs" />
+    <Compile Include="Scripts\Game\Enemy.cs" />
+    <Compile Include="Scripts\Engine\MonoBehavior.cs" />
+    <Compile Include="Scripts\Game\Player.cs" />
+    <Compile Include="Scripts\Engine\Math\Vector3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
