@@ -28,7 +28,11 @@ public:
 
 	void SetScript(const std::string& _scriptName);
 
+	const std::string& GetScriptName() const;
+
 private:
+	std::string scriptName_;
+
 	MonoClass* monoClass_;
 	MonoObject* instance_;
 

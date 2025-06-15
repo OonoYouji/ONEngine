@@ -35,5 +35,7 @@ void CustomMeshRendererDebug(class CustomMeshRenderer* _customMeshRenderer);
 
 void EffectDebug(class Effect* _effect);
 
+void ScriptDebug(class Script* _script);
+
 
 void ValueImGui(class Variables* _variables, const std::string& _label, const std::string& _name, size_t _type);

@@ -8,8 +8,10 @@
 #include "../System/MeshBufferRecreate/MeshBufferRecreate.h"
 #include "../System/EffectUpdateSystem/EffectUpdateSystem.h"
 #include "Game/Objects/Terrain/Collision/TerrainCollision.h"
+#include "../System/ScriptUpdateSystem/ScriptUpdateSystem.h"
 
 inline void AddECSSystemFunction(EntityComponentSystem* _ecs, DxManager* _pDxManager) {
+	_ecs->AddSystem<ScriptUpdateSystem>();
 	_ecs->AddSystem<TerrainCollisionSystem>();
 	_ecs->AddSystem<MeshBufferRecreate>(_pDxManager->GetDxDevice());
 	_ecs->AddSystem<EffectUpdateSystem>();

@@ -408,6 +408,20 @@ void EffectDebug(Effect* _effect) {
 
 }
 
+void ScriptDebug(Script* _script) {
+	if (!_script) {
+		return;
+	}
+
+	ImGui::Text(_script->GetScriptName().c_str());
+	//if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+	//	std::string path = "./Assets/Scripts/" + _script->GetScriptName() + ".cs";
+	//	std::string folder = std::filesystem::absolute(path).string();
+	//	ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+	//}
+
+}
+
 void ValueImGui(Variables* _variables, const std::string& _label, const std::string& _name, size_t _type) {
 	{
 		switch (_type) {

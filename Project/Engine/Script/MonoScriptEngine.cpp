@@ -21,7 +21,7 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-	assembly_ = mono_domain_assembly_open(domain_, "./Assets/Scripts/CSharpLibrary.dll");
+	assembly_ = mono_domain_assembly_open(domain_, "./Packages/Scripts/CSharpLibrary.dll");
 	if (!assembly_) {
 		Console::Log("Failed to load CSharpLibrary.dll");
 		return;

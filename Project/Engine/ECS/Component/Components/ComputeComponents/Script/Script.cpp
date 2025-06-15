@@ -20,6 +20,13 @@ Script::Script() {}
 Script::~Script() {}
 
 void Script::SetScript(const std::string& _scriptName) {
-	gMonoScriptEngine->MakeScript(this, _scriptName);
+	if (scriptName_ != _scriptName) {
+		scriptName_ = _scriptName;
+		gMonoScriptEngine->MakeScript(this, _scriptName);
+	}
+}
+
+const std::string& Script::GetScriptName() const {
+	return scriptName_;
 }
 
