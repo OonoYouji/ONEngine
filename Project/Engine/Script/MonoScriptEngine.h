@@ -25,6 +25,9 @@ public:
 	void MakeScript(class Script* _script, const std::string& _scriptName);
 
 	void RegisterFunctions();
+
+	void HotReload();
+
 private:
 	/// ===================================================
 	/// private : objects

@@ -23,10 +23,9 @@ public class Player : MonoBehavior {
 
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
-		//pos.x = Mathf.Sin(time) * 10f;
-		//pos.z = Mathf.Cos(time) * 10f;
+		float speed = 0.1f;
 
-		if(Input.PressKey(DIK.DIK_W)) {
+		if (Input.PressKey(DIK.DIK_W)) {
 			velocity.z += 0.1f;
 		}
 
@@ -42,7 +41,13 @@ public class Player : MonoBehavior {
 			velocity.x += 0.1f;
 		}
 
-		t.position = velocity;
+		if(Input.PressKey(DIK.DIK_LSHIFT)) {
+			speed = 0.2f;
+		}
+
+		velocity = velocity.Normalized() * speed;
+
+		t.position += velocity;
 
 		// 元のtransformを更新
 		transform = t;

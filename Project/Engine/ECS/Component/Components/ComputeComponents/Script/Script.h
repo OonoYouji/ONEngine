@@ -11,6 +11,7 @@
 
 void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
 
+MonoScriptEngine* GetMonoScriptEnginePtr();
 
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント

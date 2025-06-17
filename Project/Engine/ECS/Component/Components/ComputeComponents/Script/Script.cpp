@@ -15,6 +15,10 @@ void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
 	}
 }
 
+MonoScriptEngine* GetMonoScriptEnginePtr() {
+	return gMonoScriptEngine;
+}
+
 
 Script::Script() {}
 Script::~Script() {}

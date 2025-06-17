@@ -22,10 +22,10 @@ namespace {
 		Transform* transform = gECS->GetComponent<Transform>(_id);
 		if (transform) {
 
-			transform->enable   = _transform->enable;
+			transform->enable = _transform->enable;
 			transform->position = _transform->position;
-			transform->rotate   = _transform->rotate;
-			transform->scale    = _transform->scale;
+			transform->rotate = _transform->rotate;
+			transform->scale = _transform->scale;
 
 			//*transform = *_transform; /// 変数のコピー
 		} else {
@@ -128,4 +128,37 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("MonoBehavior::InternalGetTransform", (void*)InternalGetTransform);
 	mono_add_internal_call("MonoBehavior::InternalSetTransform", (void*)InternalSetTransform);
+
+	/// 他のクラスの関数も登録
+	Input::RegisterMonoFunctions();
+
+}
+
+void MonoScriptEngine::HotReload() {
+	// 旧ドメインを保持しておく
+	MonoDomain* oldDomain = domain_;
+
+	// 新ドメインを作成
+	domain_ = mono_domain_create_appdomain((char*)"ReloadedDomain", nullptr);
+	mono_domain_set(domain_, true);
+
+	// DLL読み込み
+	assembly_ = mono_domain_assembly_open(domain_, "./Packages/Scripts/CSharpLibrary.dll");
+	if (!assembly_) {
+		Console::Log("Failed to load assembly in new domain");
+		mono_domain_set(oldDomain, true);
+		mono_domain_unload(domain_);
+		domain_ = oldDomain;
+		return;
+	}
+
+	image_ = mono_assembly_get_image(assembly_);
+	RegisterFunctions();
+
+	// 古いドメインを破棄（安全にやるなら後でタイミング管理して）
+	if (oldDomain != mono_get_root_domain()) {
+		mono_domain_unload(oldDomain);
+	}
+
+	Console::Log("Reloaded assembly successfully in new domain.");
 }

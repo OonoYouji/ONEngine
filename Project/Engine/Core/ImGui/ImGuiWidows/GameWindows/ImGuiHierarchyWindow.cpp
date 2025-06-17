@@ -15,7 +15,7 @@
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	EntityComponentSystem* _pEntityComponentSystem,
-	EditorManager* _editorManager, 
+	EditorManager* _editorManager,
 	SceneManager* _sceneManager,
 	ImGuiInspectorWindow* _inspectorWindow)
 	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager),
@@ -168,6 +168,16 @@ void ImGuiHierarchyWindow::MenuBar() {
 					IGFD::FileDialogConfig config;
 					config.path = "./Assets/Scene";
 					ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
+				}
+
+				ImGui::EndMenu();
+			}
+
+
+			if (ImGui::BeginMenu("scripts")) {
+
+				if (ImGui::MenuItem("hot reload")) {
+					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pEntityComponentSystem_);
 				}
 
 				ImGui::EndMenu();

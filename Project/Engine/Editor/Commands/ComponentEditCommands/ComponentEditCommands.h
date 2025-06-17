@@ -110,3 +110,26 @@ private:
 	//std::type_index componentTypeIndex_; ///< コンポーネントの型情報
 
 };
+
+
+/// ///////////////////////////////////////////////
+/// Scriptの再読み込み
+/// ///////////////////////////////////////////////
+class ReloadAllScriptsCommand : public IEditorCommand {
+public:
+	/// ================================================
+	/// public : methods
+	/// ================================================
+
+	ReloadAllScriptsCommand(class EntityComponentSystem* _ecs);
+	~ReloadAllScriptsCommand() override = default;
+	/// @brief コマンドの実行
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	/// ================================================
+	/// private : objects
+	/// ================================================
+	class EntityComponentSystem* pECS_ = nullptr;
+};

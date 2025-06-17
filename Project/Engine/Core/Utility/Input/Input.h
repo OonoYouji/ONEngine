@@ -10,10 +10,13 @@
 /// ===================================================
 class Input final {
 	friend class GameFramework;
+	friend class MonoScriptEngine;
 
 	static void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imguiManager);
 	static void Update();
 	static void Finalize();
+
+	static void RegisterMonoFunctions();
 
 public:
 
