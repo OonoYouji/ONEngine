@@ -4,7 +4,17 @@ using System.Runtime.InteropServices;
 
 public class MonoBehavior {
 
+	private bool initialized = false;
 	internal int entityId = -1;
+
+
+	public void InternalInitialize(int _entityId) {
+		if(!initialized) {
+			this.entityId = _entityId;
+			Initialize();
+			initialized = true;
+		}
+	}
 
 	public virtual void Initialize() {}
 	public virtual void Update() {}
