@@ -26,6 +26,7 @@ public:
 	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
 	void Update();
 
+	void RegisterMonoFunctions();
 
 private:
 

@@ -22,13 +22,27 @@ public class Player : MonoBehavior {
 		Transform t = transform;
 
 		/// 位置を更新
-		Vector3 pos = t.position;
-		pos.x = Mathf.Sin(time) * 10f;
-		pos.z = Mathf.Cos(time) * 10f;
+		Vector3 velocity = new Vector3();
+		//pos.x = Mathf.Sin(time) * 10f;
+		//pos.z = Mathf.Cos(time) * 10f;
 
+		if(Input.PressKey(DIK.DIK_W)) {
+			velocity.z += 0.1f;
+		}
 
-		//t.position += new Vector3(0, 0, 1f) * 2f;
-		t.position = pos;
+		if (Input.PressKey(DIK.DIK_S)) {
+			velocity.z -= 0.1f;
+		}
+
+		if (Input.PressKey(DIK.DIK_A)) {
+			velocity.x -= 0.1f;
+		}
+
+		if (Input.PressKey(DIK.DIK_D)) {
+			velocity.x += 0.1f;
+		}
+
+		t.position = velocity;
 
 		// 元のtransformを更新
 		transform = t;

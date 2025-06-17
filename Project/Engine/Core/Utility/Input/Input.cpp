@@ -10,6 +10,7 @@ namespace {
 void Input::Initialize(WindowManager* _windowManager, ImGuiManager* _imguiManager) {
 	gInputSystem_ = std::make_unique<InputSystem>();
 	gInputSystem_->Initialize(_windowManager, _imguiManager);
+	gInputSystem_->RegisterMonoFunctions();
 }
 
 void Input::Update() {

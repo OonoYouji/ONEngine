@@ -42,14 +42,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripts\Engine\Core\Input\Gamepad.cs" />
+    <Compile Include="Scripts\Engine\Core\Input\Input.cs" />
+    <Compile Include="Scripts\Engine\Core\Input\KeyCode.cs" />
     <Compile Include="Scripts\Engine\GameObject\GameObject.cs" />
-    <Compile Include="Scripts\Engine\Math\Mathf.cs" />
-    <Compile Include="Scripts\Engine\Math\Matrix4x4.cs" />
+    <Compile Include="Scripts\Engine\Core\Math\Mathf.cs" />
+    <Compile Include="Scripts\Engine\Core\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Transform.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\Player.cs" />
-    <Compile Include="Scripts\Engine\Math\Vector3.cs" />
+    <Compile Include="Scripts\Engine\Core\Math\Vector3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -44,14 +44,14 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
 
+	monoScriptEngine_->Initialize();
+	SetMonoScriptEnginePtr(monoScriptEngine_.get());
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
 	entityComponentSystem_->Initialize();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 
-	monoScriptEngine_->Initialize();
-	SetMonoScriptEnginePtr(monoScriptEngine_.get());
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
