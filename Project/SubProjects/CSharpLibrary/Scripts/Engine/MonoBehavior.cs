@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 public class MonoBehavior {
 
-	public int entityId;
+	internal int entityId = -1;
 
 	public virtual void Initialize() {}
 	public virtual void Update() {}
@@ -16,6 +16,19 @@ public class MonoBehavior {
 		}
 		set {
 			InternalSetTransform(entityId, ref value);
+		}
+	}
+
+
+	public int EntityId {
+		get {
+			if (entityId == -1) {
+				entityId = InternalGetEntityId();
+			}
+			return entityId;
+		}
+		set {
+			entityId = value;
 		}
 	}
 

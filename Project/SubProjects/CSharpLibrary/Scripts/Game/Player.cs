@@ -2,16 +2,35 @@
 
 public class Player : MonoBehavior {
 
+	float time = 0.0f;
+
+
 	public override void Initialize() {
 		entityId = 5;
-		//entityId = Internal_GetEntityId(typeof(Player));
 	}
 
 	public override void Update() {
-		//Debug.WriteLine("Player Update");
+		Move();
+	}
+
+
+	void Move() {
+
+		time += 1f / 60f;
+
 
 		Transform t = transform;
-		t.position += Vector3.forward;
+
+		/// 位置を更新
+		Vector3 pos = t.position;
+		pos.x = Mathf.Sin(time) * 10f;
+		pos.z = Mathf.Cos(time) * 10f;
+
+
+		//t.position += new Vector3(0, 0, 1f) * 2f;
+		t.position = pos;
+
+		// 元のtransformを更新
 		transform = t;
 	}
 

@@ -398,6 +398,23 @@ void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
 	};
 }
 
+void from_json(const nlohmann::json& _j, Script& _s) {
+	_s.enable = _j.at("enable").get<bool>();
+	if (_j.contains("scriptName")) {
+		_s.SetScript(_j.at("scriptName").get<std::string>());
+	} else {
+		Console::Log("Script component JSON does not contain 'scriptName'.");
+	}
+}
+
+void to_json(nlohmann::json& _j, const Script& _s) {
+	_j = nlohmann::json{
+		{ "type", "Script" },
+		{ "enable", _s.enable },
+		{ "scriptName", _s.GetScriptName() }
+	};
+}
+
 
 
 

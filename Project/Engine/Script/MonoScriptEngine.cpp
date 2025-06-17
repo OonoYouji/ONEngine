@@ -21,7 +21,13 @@ namespace {
 		}
 		Transform* transform = gECS->GetComponent<Transform>(_id);
 		if (transform) {
-			*transform = *_transform; /// 変数のコピー
+
+			transform->enable   = _transform->enable;
+			transform->position = _transform->position;
+			transform->rotate   = _transform->rotate;
+			transform->scale    = _transform->scale;
+
+			//*transform = *_transform; /// 変数のコピー
 		} else {
 			Console::Log("Transform not found for entity ID: " + std::to_string(_id));
 		}
@@ -82,6 +88,7 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	/// クラスのインスタンスを生成
 	MonoObject* obj = mono_object_new(domain_, monoClass);
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
+	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
 	/// 先に定義しておく
 	MonoMethodDesc* desc = nullptr;
@@ -111,6 +118,7 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 
 
 	/// スクリプトのメンバ変数に設定
+	_script->gcHandle_ = gcHandle;
 	_script->monoClass_ = monoClass;
 	_script->instance_ = obj;
 	_script->initMethod_ = initMethod;

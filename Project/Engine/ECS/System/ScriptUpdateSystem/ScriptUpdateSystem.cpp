@@ -20,10 +20,15 @@ void ScriptUpdateSystem::Update(EntityComponentSystem* _entityComponentSystem) {
 		}
 	}
 
-
+	MonoObject* exception = nullptr;
 	for (auto& script : scripts) {
 		if (script->updateMethod_) {
-			mono_runtime_invoke(script->updateMethod_, script->instance_, nullptr, nullptr);
+			mono_runtime_invoke(script->updateMethod_, script->instance_, nullptr, &exception);
+		}
+
+		if (exception) {
+			Console::Log("Exception occurred in Initialize()");
+			// さらに mono_print_unhandled_exception などで例外を表示可能
 		}
 	}
 }

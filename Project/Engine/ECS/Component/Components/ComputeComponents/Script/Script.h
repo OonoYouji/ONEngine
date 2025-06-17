@@ -33,6 +33,7 @@ public:
 private:
 	std::string scriptName_;
 
+	uint32_t gcHandle_;
 	MonoClass* monoClass_;
 	MonoObject* instance_;
 

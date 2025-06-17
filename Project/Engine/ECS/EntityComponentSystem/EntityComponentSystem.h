@@ -172,7 +172,13 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	return componentCollection_->GetComponent<Comp>(_index);
+
+	IEntity* entity = entityCollection_->GetEntities()[_index].get();
+	if (entity) {
+		return entity->GetComponent<Comp>();
+	}
+
+	return nullptr;
 }
 
 template<typename Comp>

@@ -107,3 +107,7 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l);
 // ToTerrainCollider
 void from_json(const nlohmann::json& _j, ToTerrainCollider& _c);
 void to_json(nlohmann::json& _j, const ToTerrainCollider& _c);
+
+// Script
+void from_json(const nlohmann::json& _j, Script& _s);
+void to_json(nlohmann::json& _j, const Script& _s);

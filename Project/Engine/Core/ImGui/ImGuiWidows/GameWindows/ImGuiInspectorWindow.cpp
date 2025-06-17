@@ -94,8 +94,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 		//}
 
 		/// チェックボックスでenable/disableを切り替え
-		if (ImGui::Checkbox(("##" + componentName).c_str(), &component.second->enable)) {
-			//pEditorManager_->ExecuteCommand<EnableComponentCommand>(entity, component.second, isEnabled);
+		bool enabled = component.second->enable;
+		if (ImGui::Checkbox(("##" + componentName).c_str(), &enabled)) {
+			component.second->enable = enabled;
 		}
 
 		ImGui::SameLine();

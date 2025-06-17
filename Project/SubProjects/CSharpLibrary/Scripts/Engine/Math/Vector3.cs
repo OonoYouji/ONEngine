@@ -24,12 +24,12 @@ public struct Vector3 {
 	/// methods
 	/// =================================
 
-	public float length() {
+	public float Length() {
 		return (float)System.Math.Sqrt(x * x + y * y + z * z);
 	}
 
-	public Vector3 normalized() {
-		float length = this.length();
+	public Vector3 Normalized() {
+		float length = this.Length();
 		if (length == 0.0f) return zero;
 		return new Vector3(x / length, y / length, z / length);
 	}
