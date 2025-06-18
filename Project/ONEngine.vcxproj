@@ -87,6 +87,7 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
+    <ClCompile Include="Game\Entity\TestEntity\TestEntity.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
     <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
@@ -177,6 +178,8 @@
     <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
+    <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
@@ -242,6 +245,7 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
+    <ClInclude Include="Game\Entity\TestEntity\TestEntity.h" />
     <ClInclude Include="Game\Objects\BackgroundObject.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
     <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
@@ -332,6 +336,8 @@
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
+    <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

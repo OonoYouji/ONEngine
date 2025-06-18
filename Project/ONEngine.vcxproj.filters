@@ -156,6 +156,9 @@
     <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
     <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
+    <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
+    <ClCompile Include="Game\Entity\TestEntity\TestEntity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -311,5 +314,8 @@
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
     <ClInclude Include="Game\Objects\BackgroundObject.h" />
     <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
+    <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
+    <ClInclude Include="Game\Entity\TestEntity\TestEntity.h" />
   </ItemGroup>
 </Project>

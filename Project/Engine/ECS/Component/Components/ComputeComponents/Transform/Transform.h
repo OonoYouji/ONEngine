@@ -60,26 +60,12 @@ public:
 
 	int       matrixCalcFlags = kAll;
 
-private:
-
-	/// ===============================================
-	/// private : objects
-	/// ===============================================
-
-	//Transform* parent_          = nullptr;
-
 
 public:
 
 	/// ===============================================
 	/// public : accessor
 	/// ===============================================
-
-	/// @brief 親のセット
-	/// @param _parent 親のtransform
-	//void SetParent(Transform* _parent) { parent_ = _parent; }
-
-
 
 	/// @brief positionのセット
 	/// @param _v position
@@ -156,4 +142,3 @@ public:
 	const Matrix4x4& GetMatWorld() const { return matWorld; }
 
 };
-

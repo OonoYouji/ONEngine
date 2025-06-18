@@ -23,6 +23,7 @@
 #include "Game/Effects/PuzzleStandEffects/PuzzleClearEffect.h"
 
 #include "Game/Entity/Player/Player.h"
+#include "Game/Entity/TestEntity/TestEntity.h"
 
 #include "Game/Objects/BackgroundObject.h"
 #include "Game/Objects/Enemy.h"
@@ -48,6 +49,7 @@ GameScene::GameScene(EntityComponentSystem* _entityComponentSystem)
 			_factory->Register("PuzzleClearEffect", []() { return std::make_unique<PuzzleClearEffect>(); });
 
 			_factory->Register("Player", []() { return std::make_unique<Player>(); });
+			_factory->Register("TestEntity", []() { return std::make_unique<TestEntity>(); });
 
 			_factory->Register("BackgroundObject", []() { return std::make_unique<BackgroundObject>(); });
 			_factory->Register("Enemy", []() { return std::make_unique<Enemy>(); });
