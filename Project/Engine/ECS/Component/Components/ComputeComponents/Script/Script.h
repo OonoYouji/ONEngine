@@ -29,6 +29,8 @@ public:
 
 	void SetScript(const std::string& _scriptName);
 
+	void ResetScript();
+
 	const std::string& GetScriptName() const;
 
 private:

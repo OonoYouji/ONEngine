@@ -55,4 +55,7 @@
     <Compile Include="Scripts\Engine\Core\Math\Vector3.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>call "$(ProjectDir)RenameDll.bat"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -1,5 +1,13 @@
 #include "MonoScriptEngine.h"
 
+/// std
+#include <regex>
+
+/// external
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/debug-helpers.h>
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -48,14 +56,29 @@ MonoScriptEngine::~MonoScriptEngine() {
 }
 
 void MonoScriptEngine::Initialize() {
+	// Monoのデバッグ機能を有効化
+	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
-	domain_ = mono_jit_init("MyDomain");
+
+	// JIT初期化をデバッグ対応で行う（mono_jit_init_version＋debug domain作成）
+	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
 	}
 
-	assembly_ = mono_domain_assembly_open(domain_, "./Packages/Scripts/CSharpLibrary.dll");
+	// デバッグ用ドメインを作成
+	mono_debug_domain_create(domain_);
+
+	// DLL名を自動検索
+	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
+	if (!latestDll.has_value()) {
+		Console::Log("Failed to find latest assembly DLL.");
+		return;
+	}
+
+	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
 		Console::Log("Failed to load CSharpLibrary.dll");
 		return;
@@ -67,8 +90,7 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-
-	/// 関数を登録
+	// 関数登録など通常処理
 	RegisterFunctions();
 }
 
@@ -135,17 +157,24 @@ void MonoScriptEngine::RegisterFunctions() {
 }
 
 void MonoScriptEngine::HotReload() {
-	// 旧ドメインを保持しておく
 	MonoDomain* oldDomain = domain_;
 
-	// 新ドメインを作成
 	domain_ = mono_domain_create_appdomain((char*)"ReloadedDomain", nullptr);
 	mono_domain_set(domain_, true);
 
-	// DLL読み込み
-	assembly_ = mono_domain_assembly_open(domain_, "./Packages/Scripts/CSharpLibrary.dll");
+	// DLL名を自動検索
+	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
+	if (!latestDll.has_value()) {
+		Console::Log("Failed to find latest assembly DLL.");
+		mono_domain_set(oldDomain, true);
+		mono_domain_unload(domain_);
+		domain_ = oldDomain;
+		return;
+	}
+
+	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load assembly in new domain");
+		Console::Log("Failed to load assembly: " + *latestDll);
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -155,10 +184,29 @@ void MonoScriptEngine::HotReload() {
 	image_ = mono_assembly_get_image(assembly_);
 	RegisterFunctions();
 
-	// 古いドメインを破棄（安全にやるなら後でタイミング管理して）
 	if (oldDomain != mono_get_root_domain()) {
 		mono_domain_unload(oldDomain);
 	}
 
-	Console::Log("Reloaded assembly successfully in new domain.");
+	Console::Log("Reloaded assembly: " + *latestDll);
+}
+
+std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _dirPath, const std::string& _baseName) {
+	std::regex pattern(_baseName + R"(_\d{8}_\d{6}\.dll)");
+	std::optional<std::string> latestFile;
+	std::chrono::file_clock::time_point latestTime;
+
+	for (const auto& entry : std::filesystem::directory_iterator(_dirPath)) {
+		if (!entry.is_regular_file()) continue;
+
+		std::string filename = entry.path().filename().string();
+		if (!std::regex_match(filename, pattern)) continue;
+
+		auto ftime = std::filesystem::last_write_time(entry);
+		if (!latestFile || ftime > latestTime) {
+			latestFile = entry.path().string();
+			latestTime = ftime;
+		}
+	}
+	return latestFile;
 }

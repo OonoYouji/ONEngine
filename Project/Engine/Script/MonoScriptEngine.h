@@ -2,6 +2,7 @@
 
 /// std
 #include <string>
+#include <optional>
 
 /// externals
 #include "mono/jit/jit.h"
@@ -27,6 +28,8 @@ public:
 	void RegisterFunctions();
 
 	void HotReload();
+
+	std::optional<std::string> FindLatestDll(const std::string& _dirPath, const std::string& _baseName);
 
 private:
 	/// ===================================================

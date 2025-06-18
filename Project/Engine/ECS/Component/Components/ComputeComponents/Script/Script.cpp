@@ -30,6 +30,10 @@ void Script::SetScript(const std::string& _scriptName) {
 	}
 }
 
+void Script::ResetScript() {
+	gMonoScriptEngine->MakeScript(this, scriptName_);
+}
+
 const std::string& Script::GetScriptName() const {
 	return scriptName_;
 }

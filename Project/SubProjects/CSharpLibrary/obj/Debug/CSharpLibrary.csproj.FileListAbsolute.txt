@@ -6,9 +6,9 @@ C:\Users\k023g\source\repos\2024_PG3\Externals\CSharpLibrary\obj\Debug\CSharpLib
 C:\Users\k023g\source\repos\2024_PG3\Externals\CSharpLibrary\obj\Debug\CSharpLibrary.pdb
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Assets\Scripts\CSharpLibrary.dll
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Assets\Scripts\CSharpLibrary.pdb
+C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Packages\Scripts\CSharpLibrary.dll
+C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Packages\Scripts\CSharpLibrary.pdb
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.csproj.AssemblyReference.cache
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.csproj.CoreCompileInputs.cache
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.dll
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.pdb
-C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Packages\Scripts\CSharpLibrary.dll
-C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\Packages\Scripts\CSharpLibrary.pdb

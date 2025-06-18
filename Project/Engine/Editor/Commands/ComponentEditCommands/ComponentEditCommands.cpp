@@ -144,16 +144,16 @@ ReloadAllScriptsCommand::ReloadAllScriptsCommand(EntityComponentSystem* _ecs)
 
 EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
-	//std::list<Script*> scripts;
-	//for (auto& entity : pECS_->GetEntities()) {
-	//	Script* script = entity->GetComponent<Script>();
-	//	if (script) {
-	//		scripts.push_back(script);
-	//	}
-	//}
-
 	GetMonoScriptEnginePtr()->HotReload();
+	
+	for (auto& entity : pECS_->GetEntities()) {
+		Script* script = entity->GetComponent<Script>();
+		if (script) {
+			script->ResetScript();
+		}
+	}
 
+	
 	return EDITOR_STATE_FINISH;
 }
 
