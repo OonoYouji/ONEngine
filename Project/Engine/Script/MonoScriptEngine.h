@@ -36,6 +36,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::string currentDllPath_;
+
 	MonoDomain* domain_;
 	MonoImage* image_;
 	MonoAssembly* assembly_ = nullptr;

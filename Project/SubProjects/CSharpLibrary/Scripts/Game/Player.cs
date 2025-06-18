@@ -6,6 +6,9 @@ public class Player : MonoBehavior {
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
+	float moveSpeed = 64f; // 移動速度
+	float dushSpeed = 120f; // ダッシュ速度
+
 	public override void Initialize() {
 		entityId = 5;
 		time = 1f / 60f;
@@ -22,7 +25,6 @@ public class Player : MonoBehavior {
 
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
-		float speed = 5.0f;
 
 		if (Input.PressKey(DIK.DIK_W)) {
 			velocity.z += 0.1f;
@@ -40,8 +42,9 @@ public class Player : MonoBehavior {
 			velocity.x += 0.1f;
 		}
 
+		float speed = moveSpeed;
 		if (Input.PressKey(DIK.DIK_LSHIFT)) {
-			speed = 15.0f;
+			speed = dushSpeed; // ダッシュ
 		}
 
 		velocity = velocity.Normalized() * (speed * time);
@@ -55,23 +58,21 @@ public class Player : MonoBehavior {
 
 	void Jump() {
 		if (Input.TriggerKey(DIK.DIK_SPACE)) {
-			Transform t = transform;
-			if (t.position.y <= 0.0f) {
-				height = jumpPower;
-			}
+			height = jumpPower;
 		}
 
 
-		if(height > 0.0f) {
-			Transform t = transform;
-			t.position.y += height * time;
+		if (height > 0.0f) {
 			height -= 9.8f * time; // 重力
-			if (t.position.y < 0.0f) {
-				t.position.y = 0.0f;
-				height = 0.0f;
-			}
-			transform = t;
+			//if (height < 0.0f) {
+			//	height = 0.0f;
+			//}
 		}
+
+		Transform t = transform;
+		t.position.y = height;
+
+		transform = t;
 
 	}
 

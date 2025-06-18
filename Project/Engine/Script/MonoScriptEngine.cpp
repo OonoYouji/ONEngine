@@ -65,8 +65,8 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-
-	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
+	currentDllPath_ = *latestDll; // 最新のDLLパスを保存
+	assembly_ = mono_domain_assembly_open(domain_, currentDllPath_.c_str());
 	if (!assembly_) {
 		Console::Log("Failed to load CSharpLibrary.dll");
 		return;
@@ -147,11 +147,11 @@ void MonoScriptEngine::RegisterFunctions() {
 
 void MonoScriptEngine::HotReload() {
 	MonoDomain* oldDomain = domain_;
+	std::string oldDllPath = currentDllPath_; // 今読み込んでるDLLのパスを保存
 
 	domain_ = mono_domain_create_appdomain((char*)"ReloadedDomain", nullptr);
 	mono_domain_set(domain_, true);
 
-	// DLL名を自動検索
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
 		Console::Log("Failed to find latest assembly DLL.");
@@ -163,7 +163,7 @@ void MonoScriptEngine::HotReload() {
 
 	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load assembly: " + *latestDll);
+		Console::Log("Failed to load assembly in new domain");
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -177,7 +177,20 @@ void MonoScriptEngine::HotReload() {
 		mono_domain_unload(oldDomain);
 	}
 
-	Console::Log("Reloaded assembly: " + *latestDll);
+	// DLL削除
+	if (!oldDllPath.empty() && std::filesystem::exists(oldDllPath)) {
+		std::error_code ec;
+		std::filesystem::remove(oldDllPath, ec);
+		if (ec) {
+			Console::Log("Failed to delete old DLL: " + ec.message());
+		} else {
+			Console::Log("Old DLL deleted: " + oldDllPath);
+		}
+	}
+
+	currentDllPath_ = *latestDll;
+
+	Console::Log("Reloaded assembly successfully in new domain.");
 }
 
 std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _dirPath, const std::string& _baseName) {
