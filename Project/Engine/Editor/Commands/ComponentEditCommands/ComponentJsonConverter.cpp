@@ -21,6 +21,7 @@ namespace {
 			Register<DirectionalLight>();
 			Register<AudioSource>();
 			Register<Effect>();
+			Register<Script>();
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();

@@ -49,6 +49,7 @@
     <Compile Include="Scripts\Engine\Core\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\GameObject\Entity.cs" />
     <Compile Include="Scripts\Engine\GameObject\EntityManager.cs" />
+    <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Transform.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />

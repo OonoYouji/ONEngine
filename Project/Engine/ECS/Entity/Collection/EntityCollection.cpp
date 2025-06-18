@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 /// entity
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"

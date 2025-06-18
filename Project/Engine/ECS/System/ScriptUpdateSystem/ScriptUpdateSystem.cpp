@@ -20,9 +20,9 @@ void ScriptUpdateSystem::Update(EntityComponentSystem* _entityComponentSystem) {
 		}
 	}
 
-	for (auto& script : scripts) {
-		if (script->updateMethod_) {
-			mono_runtime_invoke(script->updateMethod_, script->instance_, nullptr, nullptr);
-		}
-	}
+	//for (auto& script : scripts) {
+	//	if (script->updateMethod_) {
+	//		mono_runtime_invoke(script->updateMethod_, script->instance_, nullptr, nullptr);
+	//	}
+	//}
 }

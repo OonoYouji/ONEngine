@@ -64,11 +64,13 @@ GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
-	terrainEditor_ = std::make_unique<TerrainEditor>(
-		pEntityComponentSystem_->FindEntity<Terrain>(),
-		pEntityComponentSystem_
-	);
-	terrainEditor_->Initialize();
+	pEntityComponentSystem_->GenerateEntity<Grid>();
+
+	//terrainEditor_ = std::make_unique<TerrainEditor>(
+	//	pEntityComponentSystem_->FindEntity<Terrain>(),
+	//	pEntityComponentSystem_
+	//);
+	//terrainEditor_->Initialize();
 
 
 	/// 草を生やす
@@ -98,7 +100,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 #ifdef _DEBUG
-	terrainEditor_->Update();
+	//terrainEditor_->Update();
 #endif // _DEBUG
 
 }

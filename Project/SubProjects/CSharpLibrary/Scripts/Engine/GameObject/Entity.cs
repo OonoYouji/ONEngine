@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 
 public class Entity {
 
-	//private UInt64 padding; // 64bit align, virtual destructor
-
+	private UInt64 padding; // 64bit align, virtual destructor
 
 	public Transform transform {
 		get {
