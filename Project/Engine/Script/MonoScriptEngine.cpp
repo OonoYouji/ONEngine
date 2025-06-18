@@ -3,11 +3,6 @@
 /// std
 #include <regex>
 
-/// external
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/debug-helpers.h>
-
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -56,20 +51,12 @@ MonoScriptEngine::~MonoScriptEngine() {
 }
 
 void MonoScriptEngine::Initialize() {
-	// Monoのデバッグ機能を有効化
-	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
-
-	// JIT初期化をデバッグ対応で行う（mono_jit_init_version＋debug domain作成）
-	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
+	domain_ = mono_jit_init("MyDomain");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
 	}
-
-	// デバッグ用ドメインを作成
-	mono_debug_domain_create(domain_);
 
 	// DLL名を自動検索
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
@@ -77,6 +64,7 @@ void MonoScriptEngine::Initialize() {
 		Console::Log("Failed to find latest assembly DLL.");
 		return;
 	}
+
 
 	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
@@ -90,7 +78,8 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-	// 関数登録など通常処理
+
+	/// 関数を登録
 	RegisterFunctions();
 }
 
