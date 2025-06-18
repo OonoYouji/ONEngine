@@ -4,6 +4,20 @@ using System.Runtime.InteropServices;
 
 public class MonoBehavior {
 
+	public Entity entity {
+		get; internal set;
+	}
+
+	public Transform transform {
+		get {
+			return entity.transform;
+		}
+		set {
+			entity.transform = value;
+		} 
+	}
+
+
 	private bool initialized = false;
 	internal int entityId = -1;
 
@@ -18,17 +32,6 @@ public class MonoBehavior {
 
 	public virtual void Initialize() {}
 	public virtual void Update() {}
-
-	public Transform transform {
-		get {
-			IntPtr ptr = InternalGetTransform(entityId);
-			return Marshal.PtrToStructure<Transform>(ptr);
-		}
-		set {
-			InternalSetTransform(entityId, ref value);
-		}
-	}
-
 
 	public int EntityId {
 		get {
@@ -46,11 +49,6 @@ public class MonoBehavior {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	private static extern int InternalGetEntityId();
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern IntPtr InternalGetTransform(int _entityId);
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern void InternalSetTransform(int _entityId, ref Transform _transform);
 
 
 }

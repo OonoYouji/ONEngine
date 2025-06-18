@@ -45,9 +45,10 @@
     <Compile Include="Scripts\Engine\Core\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Input\Input.cs" />
     <Compile Include="Scripts\Engine\Core\Input\KeyCode.cs" />
-    <Compile Include="Scripts\Engine\GameObject\GameObject.cs" />
     <Compile Include="Scripts\Engine\Core\Math\Mathf.cs" />
     <Compile Include="Scripts\Engine\Core\Math\Matrix4x4.cs" />
+    <Compile Include="Scripts\Engine\GameObject\Entity.cs" />
+    <Compile Include="Scripts\Engine\GameObject\EntityManager.cs" />
     <Compile Include="Scripts\Engine\Transform.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />

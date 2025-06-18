@@ -137,8 +137,8 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 }
 
 void MonoScriptEngine::RegisterFunctions() {
-	mono_add_internal_call("MonoBehavior::InternalGetTransform", (void*)InternalGetTransform);
-	mono_add_internal_call("MonoBehavior::InternalSetTransform", (void*)InternalSetTransform);
+	mono_add_internal_call("Entity::InternalGetTransform", (void*)InternalGetTransform);
+	mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
 
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();

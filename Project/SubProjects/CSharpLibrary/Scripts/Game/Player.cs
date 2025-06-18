@@ -8,8 +8,12 @@ public class Player : MonoBehavior {
 
 	float moveSpeed = 64f; // 移動速度
 	float dushSpeed = 120f; // ダッシュ速度
+	//public void Attach(GameObject gameObject) {
+
+	//}
 
 	public override void Initialize() {
+		// entityId = Find("Player");
 		entityId = 5;
 		time = 1f / 60f;
 	}
