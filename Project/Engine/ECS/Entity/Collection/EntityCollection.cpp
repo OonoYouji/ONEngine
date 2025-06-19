@@ -35,16 +35,6 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 		entityPtr->CommonInitialize();
 		entityPtr->Initialize();
 		
-		
-		/// c#側に登録する
-		MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
-		if (!monoEngine) {
-			Console::Log("MonoScriptEngine is not initialized.");
-			return nullptr;
-		}
-
-		monoEngine->RegisterEntity(entityPtr);
-
 		return entities_.back().get();
 	}
 	return nullptr;

@@ -29,7 +29,7 @@ public:
 
 	void MakeScript(class Script* _script, const std::string& _scriptName);
 
-	void RegisterEntity(class IEntity* _entity);
+	//void RegisterEntity(class Script* _script, const std::string& _csName);
 
 	void RegisterFunctions();
 

@@ -105,10 +105,6 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 		return;
 	}
 
-	if (initMethod && obj) {
-		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
-	}
-
 
 	/// スクリプトのメンバ変数に設定
 	_script->gcHandle_ = gcHandle;
@@ -116,26 +112,33 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	_script->instance_ = obj;
 	_script->initMethod_ = initMethod;
 	_script->updateMethod_ = updateMethod;
-}
 
-void MonoScriptEngine::RegisterEntity(IEntity* _entity) {
-	/// 
+	///// c#側のEntityのidを設定
+	//MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
+	//uint32_t id = _script->GetOwner()->GetId();
+	//mono_field_set_value(_script->instance_, field, &id);
 
-	MonoClass* monoClass = mono_class_from_name(image_, "", _entity->GetName().c_str());
-	if (!monoClass) {
-		Console::Log("Failed to find class: " + _entity->GetName());
-		return;
+
+	/// 初期化の呼び出し
+	if (initMethod && obj) {
+		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
 	}
 
-	MonoObject* instance = mono_object_new(domain_, monoClass);
-	mono_runtime_object_init(instance); /// クラスの初期化、コンストラクタをイメージ
-
-	/// c#側のEntityのnativeHandleを設定
-	MonoClassField* field = mono_class_get_field_from_name(monoClass, "nativeHandle");
-	mono_field_set_value(instance, field, &_entity);
+	if (updateMethod && obj) {
+		mono_runtime_invoke(updateMethod, obj, nullptr, nullptr);
+	}
 
 
 }
+
+//void MonoScriptEngine::RegisterEntity(Script* _script) {
+//
+//	/// c#側のEntityのidを設定
+//	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
+//	uint32_t id = _script->GetOwner()->GetId();
+//	mono_field_set_value(_script->instance_, field, &id);
+//
+//}
 
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録

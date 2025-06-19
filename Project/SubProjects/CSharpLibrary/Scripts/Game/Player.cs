@@ -15,17 +15,19 @@ public class Player : MonoBehavior {
 
 	public override void Initialize() {
 		// entityId = Find("Player");
-		entityId = 5;
+		//entityId = 5;
 		time = 1f / 60f;
+
+		//Update();
 	}
 
 	public override void Update() {
-		Move();
-		Jump();
+		//Move();
+		//Jump();
 	}
 
 
-	void Move() {
+	public void Move() {
 		Transform t = transform;
 
 		/// 位置を更新
