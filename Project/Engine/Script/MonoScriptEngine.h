@@ -9,6 +9,10 @@
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/debug-helpers.h"
 
+void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
+MonoScriptEngine* GetMonoScriptEnginePtr();
+
+
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
@@ -24,6 +28,8 @@ public:
 	void Initialize();
 
 	void MakeScript(class Script* _script, const std::string& _scriptName);
+
+	void RegisterEntity(class IEntity* _entity);
 
 	void RegisterFunctions();
 
@@ -41,5 +47,15 @@ private:
 	MonoDomain* domain_;
 	MonoImage* image_;
 	MonoAssembly* assembly_ = nullptr;
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	MonoDomain* Domain() const;
+	MonoImage* Image() const;
+	MonoAssembly* Assembly() const;
+
 };
 

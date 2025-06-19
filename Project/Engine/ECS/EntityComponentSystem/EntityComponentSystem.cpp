@@ -15,6 +15,18 @@
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 
+namespace {
+	EntityComponentSystem* gECS = nullptr;
+}
+
+void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs) {
+	gECS = _ecs;
+}
+
+EntityComponentSystem* GetEntityComponentSystemPtr() {
+	return gECS;
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -119,6 +131,14 @@ void EntityComponentSystem::SetDebugCamera(size_t _index) {
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
+}
+
+IEntity* EntityComponentSystem::GetEntity(size_t _index) {
+	if (_index < entityCollection_->GetEntities().size()) {
+		return entityCollection_->GetEntities()[_index].get();
+	}
+
+	return nullptr;
 }
 
 const std::vector<Camera*>& EntityComponentSystem::GetCameras() {

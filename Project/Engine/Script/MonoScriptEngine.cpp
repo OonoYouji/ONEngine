@@ -11,33 +11,43 @@
 namespace {
 
 	EntityComponentSystem* gECS = nullptr;
+	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
+	//Transform* InternalGetTransform(int _id) {
+	//	return gECS->GetComponent<Transform>(_id);
+	//}
 
-	Transform* InternalGetTransform(int _id) {
-		return gECS->GetComponent<Transform>(_id);
-	}
+	//void InternalSetTransform(int _id, Transform* _transform) {
+	//	if (!_transform) {
+	//		Console::Log("Transform pointer is null");
+	//		return;
+	//	}
+	//	Transform* transform = gECS->GetComponent<Transform>(_id);
+	//	if (transform) {
 
-	void InternalSetTransform(int _id, Transform* _transform) {
-		if (!_transform) {
-			Console::Log("Transform pointer is null");
-			return;
-		}
-		Transform* transform = gECS->GetComponent<Transform>(_id);
-		if (transform) {
+	//		transform->enable = _transform->enable;
+	//		transform->position = _transform->position;
+	//		transform->rotate = _transform->rotate;
+	//		transform->scale = _transform->scale;
 
-			transform->enable = _transform->enable;
-			transform->position = _transform->position;
-			transform->rotate = _transform->rotate;
-			transform->scale = _transform->scale;
-
-			//*transform = *_transform; /// 変数のコピー
-		} else {
-			Console::Log("Transform not found for entity ID: " + std::to_string(_id));
-		}
-	}
+	//		//*transform = *_transform; /// 変数のコピー
+	//	} else {
+	//		Console::Log("Transform not found for entity ID: " + std::to_string(_id));
+	//	}
+	//}
 
 }
 
+void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
+	gMonoScriptEngine = _engine;
+	if (!gMonoScriptEngine) {
+		Console::Log("MonoScriptEngine pointer is null");
+	}
+}
+
+MonoScriptEngine* GetMonoScriptEnginePtr() {
+	return gMonoScriptEngine;
+}
 
 
 MonoScriptEngine::MonoScriptEngine(EntityComponentSystem* _ecs) {
@@ -136,10 +146,39 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	_script->updateMethod_ = updateMethod;
 }
 
-void MonoScriptEngine::RegisterFunctions() {
-	mono_add_internal_call("Entity::InternalGetTransform", (void*)InternalGetTransform);
-	mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
+void MonoScriptEngine::RegisterEntity(IEntity* _entity) {
+	/// 
 
+	MonoClass* monoClass = mono_class_from_name(image_, "", _entity->GetName().c_str());
+	if (!monoClass) {
+		Console::Log("Failed to find class: " + _entity->GetName());
+		return;
+	}
+
+	MonoObject* instance = mono_object_new(domain_, monoClass);
+	mono_runtime_object_init(instance); /// クラスの初期化、コンストラクタをイメージ
+
+	/// c#側のEntityのnativeHandleを設定
+	MonoClassField* field = mono_class_get_field_from_name(monoClass, "nativeHandle");
+	mono_field_set_value(instance, field, &_entity);
+
+
+}
+
+void MonoScriptEngine::RegisterFunctions() {
+	/// 関数の登録
+
+	/// transformの get set
+	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
+	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
+	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
+	mono_add_internal_call("Transform::InternalGetScale", (void*)InternalGetScale);
+	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
+	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
+	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
+
+	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
+	//MonoObject* InternalGetTransform(uint32_t _entityId);
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
 
@@ -211,4 +250,16 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 		}
 	}
 	return latestFile;
+}
+
+MonoDomain* MonoScriptEngine::Domain() const {
+	return domain_;
+}
+
+MonoImage* MonoScriptEngine::Image() const {
+	return image_;
+}
+
+MonoAssembly* MonoScriptEngine::Assembly() const {
+	return assembly_;
 }

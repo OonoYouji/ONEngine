@@ -9,9 +9,6 @@
 /// engine
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
 
-void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
-
-MonoScriptEngine* GetMonoScriptEnginePtr();
 
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント

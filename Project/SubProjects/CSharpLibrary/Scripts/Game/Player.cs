@@ -74,7 +74,9 @@ public class Player : MonoBehavior {
 		}
 
 		Transform t = transform;
-		t.position.y = height;
+		Vector3 position = t.position;
+		position.y = height;
+		t.position = position;
 
 		transform = t;
 

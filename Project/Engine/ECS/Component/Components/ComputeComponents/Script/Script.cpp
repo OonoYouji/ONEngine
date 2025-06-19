@@ -4,21 +4,6 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-namespace {
-	MonoScriptEngine* gMonoScriptEngine = nullptr;
-}
-
-void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
-	gMonoScriptEngine = _engine;
-	if (!gMonoScriptEngine) {
-		Console::Log("MonoScriptEngine pointer is null");
-	}
-}
-
-MonoScriptEngine* GetMonoScriptEnginePtr() {
-	return gMonoScriptEngine;
-}
-
 
 Script::Script() {}
 Script::~Script() {}
@@ -26,12 +11,12 @@ Script::~Script() {}
 void Script::SetScript(const std::string& _scriptName) {
 	if (scriptName_ != _scriptName) {
 		scriptName_ = _scriptName;
-		gMonoScriptEngine->MakeScript(this, _scriptName);
+		GetMonoScriptEnginePtr()->MakeScript(this, _scriptName);
 	}
 }
 
 void Script::ResetScript() {
-	gMonoScriptEngine->MakeScript(this, scriptName_);
+	GetMonoScriptEnginePtr()->MakeScript(this, scriptName_);
 }
 
 const std::string& Script::GetScriptName() const {

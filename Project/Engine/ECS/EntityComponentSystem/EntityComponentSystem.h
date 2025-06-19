@@ -15,6 +15,10 @@
 class Camera;
 class Camera2D;
 
+void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs);
+EntityComponentSystem* GetEntityComponentSystemPtr();
+
+
 /// ///////////////////////////////////////////////////
 /// ECSの基盤クラス
 /// ///////////////////////////////////////////////////
@@ -126,6 +130,8 @@ public:
 	/// @brief entities の取得
 	/// @return entities
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities();
+
+	IEntity* GetEntity(size_t _index);
 
 	/// @brief cameras の取得
 	/// @return cameras

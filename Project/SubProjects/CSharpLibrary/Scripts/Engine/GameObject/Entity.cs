@@ -5,20 +5,28 @@ using System.Runtime.InteropServices;
 
 public class Entity {
 
-	private UInt64 padding; // 64bit align, virtual destructor
+	/// =========================================
+	/// objects
+	/// =========================================
 
-	public Transform transform {
-		get {
-			IntPtr ptr = InternalGetTransform(entityId);
-			return Marshal.PtrToStructure<Transform>(ptr);
-		}
-		set {
-			InternalSetTransform(entityId, ref value);
-		}
-	}
+	private Transform _transform;
 
 	int entityId;
 	string name;
+
+	/// =========================================
+	/// methods
+	/// =========================================
+
+	public Entity(uint _id) {
+		entityId = (int)_id;
+		name = "Entity_" + entityId.ToString();
+		_transform = Transform.GetTransform(_id);
+	}
+
+	public Transform transform => _transform;
+
+
 
 	//private Dictionary<Type, MonoBehavior> components = new Dictionary<Type, MonoBehavior>();
 	//public int EntityId { get; private set; }
@@ -43,11 +51,5 @@ public class Entity {
 	//	return component;
 	//}
 
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern IntPtr InternalGetTransform(int _entityId);
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern void InternalSetTransform(int _entityId, ref Transform _transform);
 
 }

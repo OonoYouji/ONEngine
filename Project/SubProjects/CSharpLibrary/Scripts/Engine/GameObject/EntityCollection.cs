@@ -1,8 +1,13 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
-public class EntityManager {
+public class EntityCollection {
 
-	Entity[] gameObjects;
+	List<Entity> entities = new List<Entity>();
+
+	void Initialize() {
+		
+	}
 
 	//static public Entity GenerateEntity(Entity _src) {
 	//	//Entity newEntity = Internal

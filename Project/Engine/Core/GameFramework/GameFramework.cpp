@@ -31,6 +31,11 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
 	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
 
+	/// ポインタを保持
+	SetMonoScriptEnginePtr(monoScriptEngine_.get());
+	SetEntityComponentSystemPtr(entityComponentSystem_.get());
+
+
 	/// 各クラスの初期化を行う
 
 	/// directX12の初期化
@@ -45,7 +50,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 #endif // _DEBUG
 
 	monoScriptEngine_->Initialize();
-	SetMonoScriptEnginePtr(monoScriptEngine_.get());
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
