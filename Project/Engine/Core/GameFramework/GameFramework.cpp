@@ -26,7 +26,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	renderingFramework_ = std::make_unique<RenderingFramework>();
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
 	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
-	monoScriptEngine_ = std::make_unique<MonoScriptEngine>(entityComponentSystem_.get());
+	monoScriptEngine_ = std::make_unique<MonoScriptEngine>();
 
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
 	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());

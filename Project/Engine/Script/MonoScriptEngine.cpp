@@ -9,33 +9,7 @@
 #include "Engine/ECS/Component/Component.h"
 
 namespace {
-
-	EntityComponentSystem* gECS = nullptr;
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
-
-	//Transform* InternalGetTransform(int _id) {
-	//	return gECS->GetComponent<Transform>(_id);
-	//}
-
-	//void InternalSetTransform(int _id, Transform* _transform) {
-	//	if (!_transform) {
-	//		Console::Log("Transform pointer is null");
-	//		return;
-	//	}
-	//	Transform* transform = gECS->GetComponent<Transform>(_id);
-	//	if (transform) {
-
-	//		transform->enable = _transform->enable;
-	//		transform->position = _transform->position;
-	//		transform->rotate = _transform->rotate;
-	//		transform->scale = _transform->scale;
-
-	//		//*transform = *_transform; /// 変数のコピー
-	//	} else {
-	//		Console::Log("Transform not found for entity ID: " + std::to_string(_id));
-	//	}
-	//}
-
 }
 
 void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
@@ -50,9 +24,7 @@ MonoScriptEngine* GetMonoScriptEnginePtr() {
 }
 
 
-MonoScriptEngine::MonoScriptEngine(EntityComponentSystem* _ecs) {
-	gECS = _ecs;
-}
+MonoScriptEngine::MonoScriptEngine() {}
 MonoScriptEngine::~MonoScriptEngine() {
 	if (domain_) {
 		mono_jit_cleanup(domain_);
@@ -176,6 +148,9 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
 	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
 	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
+
+	/// component
+	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
 
 	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
 	//MonoObject* InternalGetTransform(uint32_t _entityId);

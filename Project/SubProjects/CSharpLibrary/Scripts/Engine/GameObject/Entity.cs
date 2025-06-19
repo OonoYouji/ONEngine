@@ -10,8 +10,9 @@ public class Entity {
 	/// =========================================
 
 	private Transform _transform;
+	private Dictionary<Type, Component> components;
 
-	int entityId;
+	uint entityId;
 	string name;
 
 	/// =========================================
@@ -19,7 +20,7 @@ public class Entity {
 	/// =========================================
 
 	public Entity(uint _id) {
-		entityId = (int)_id;
+		entityId = _id;
 		name = "Entity_" + entityId.ToString();
 		_transform = Transform.GetTransform(_id);
 	}
@@ -27,29 +28,38 @@ public class Entity {
 	public Transform transform => _transform;
 
 
+	/// ------------------------------------------
+	/// components
+	/// ------------------------------------------
 
-	//private Dictionary<Type, MonoBehavior> components = new Dictionary<Type, MonoBehavior>();
-	//public int EntityId { get; private set; }
+	public T AddComponent<T>() where T : Component {
 
-	//public Entity(Entity _gameObject) {
-	//	//EntityId = _gameObject.EntityId;
-	//	foreach (var component in _gameObject.components) {
-	//		MonoBehavior newComponent = (MonoBehavior)Activator.CreateInstance(component.Key);
-	//		newComponent.InternalInitialize(EntityId);
-	//		components[component.Key] = newComponent;
-	//	}
-	//}
+		/// すでにコンポーネントが存在する場合はそれを返す
+		if (components.TryGetValue(typeof(T), out var c)) {
+			return c as T;
+		}
 
-	//public Entity(int entityId) {
-	//	EntityId = entityId;
-	//}
+		/// コンポーネントを作る
+		string typeName = typeof(T).Name;
+		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
 
-	//public T AddComponent<T>() where T : MonoBehavior, new() {
-	//	T component = new T();
-	//	component.InternalInitialize(EntityId);
-	//	components[typeof(T)] = component;
-	//	return component;
-	//}
+		T comp = Activator.CreateInstance<T>();
+		comp.nativeHandle = nativeHandle;
+		components[typeof(T)] = comp;
+		return comp;
+	}
+
+	public T GetComponent<T>() where T : Component {
+		if(components.TryGetValue(typeof(T), out var comp)) {
+			return comp as T;
+		}
+
+		return null;
+	}
+
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern ulong InternalAddComponent<T>(uint _entityId, string _compTypeName);
 
 
 }

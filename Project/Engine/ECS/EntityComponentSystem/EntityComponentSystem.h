@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 
+/// externals
+#include "mono/jit/jit.h"
+
 /// engine
 #include "../Entity/Collection/EntityCollection.h"
 #include "../Component/Collection/ComponentCollection.h"
@@ -202,3 +205,10 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 	systemMap_.push_back(std::make_unique<T>(args...));
 }
 
+
+/// =============================================
+/// monoを使ったC#スクリプトエンジンのコンポーネント
+/// =============================================
+
+
+uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);

@@ -13,7 +13,7 @@ public class MonoBehavior {
 			return entity.transform;
 		}
 		set {
-			entity.transform = value;
+			//entity.transform = value;
 		} 
 	}
 
