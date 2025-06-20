@@ -33,7 +33,19 @@ MonoScriptEngine::~MonoScriptEngine() {
 }
 
 void MonoScriptEngine::Initialize() {
+
+	//mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
+
+	//const char* options[] = {
+	//	"--debug", // PDB を使いたい場合
+	//	"--debugger-agent=transport=dt_socket,server=y,address=127.0.0.1:55555,suspend=n"
+	//};
+	//mono_jit_parse_options(2, (char**)options);
+	////mono_config_parse(nullptr); // "mono/etc/mono/config" を自動的に使う
+
+
 	domain_ = mono_jit_init("MyDomain");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
@@ -87,7 +99,7 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	MonoMethodDesc* desc = nullptr;
 
 	/// Initializeメソッドを取得
-	desc = mono_method_desc_new(":Initialize()", false);
+	desc = mono_method_desc_new(":InternalInitialize()", false);
 	MonoMethod* initMethod = mono_method_desc_search_in_class(desc, monoClass);
 	mono_method_desc_free(desc);
 	if (!initMethod) {
@@ -113,10 +125,10 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	_script->initMethod_ = initMethod;
 	_script->updateMethod_ = updateMethod;
 
-	///// c#側のEntityのidを設定
-	//MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
-	//uint32_t id = _script->GetOwner()->GetId();
-	//mono_field_set_value(_script->instance_, field, &id);
+	/// c#側のEntityのidを設定
+	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
+	uint32_t id = _script->GetOwner()->GetId();
+	mono_field_set_value(_script->instance_, field, &id);
 
 
 	/// 初期化の呼び出し
@@ -124,9 +136,9 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
 	}
 
-	if (updateMethod && obj) {
-		mono_runtime_invoke(updateMethod, obj, nullptr, nullptr);
-	}
+	//if (updateMethod && obj) {
+	//	mono_runtime_invoke(updateMethod, obj, nullptr, nullptr);
+	//}
 
 
 }

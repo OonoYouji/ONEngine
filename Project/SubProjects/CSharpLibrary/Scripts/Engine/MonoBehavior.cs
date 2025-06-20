@@ -22,11 +22,15 @@ public class MonoBehavior {
 	internal int entityId = -1;
 
 
-	public void InternalInitialize(int _entityId) {
+	public void InternalInitialize(uint _entityId) {
 		if(!initialized) {
-			this.entityId = _entityId;
+			this.entityId = (int)_entityId;
 			Initialize();
 			initialized = true;
+
+			entity = new Entity(_entityId);
+			transform = entity.transform;
+
 		}
 	}
 

@@ -22,7 +22,7 @@ public class Entity {
 	public Entity(uint _id) {
 		entityId = _id;
 		name = "Entity_" + entityId.ToString();
-		_transform = Transform.GetTransform(_id);
+		_transform = AddComponent<Transform>();
 	}
 
 	public Transform transform => _transform;
