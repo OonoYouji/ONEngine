@@ -3,6 +3,9 @@
 /// std
 #include <regex>
 
+/// externals
+//#include "mono/metadata/debug-mono-symfile.h"
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -10,6 +13,11 @@
 
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
+
+	void LogCallback(const char* log_domain, const char* log_level, const char* message, mono_bool fatal, void* user_data) {
+		Console::Log(std::string("[") + log_domain + "][" + log_level + "] " + message + (fatal ? " (fatal)" : ""));
+	}
+
 }
 
 void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
@@ -34,32 +42,36 @@ MonoScriptEngine::~MonoScriptEngine() {
 
 void MonoScriptEngine::Initialize() {
 
-	//mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+	mono_trace_set_level_string("debug");
+	mono_trace_set_log_handler(LogCallback, nullptr);
 
+	// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
+	// Mono のデバッグ用初期化
+	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 
-	//const char* options[] = {
-	//	"--debug", // PDB を使いたい場合
-	//	"--debugger-agent=transport=dt_socket,server=y,address=127.0.0.1:55555,suspend=n"
-	//};
-	//mono_jit_parse_options(2, (char**)options);
-	////mono_config_parse(nullptr); // "mono/etc/mono/config" を自動的に使う
+	// JIT オプションを渡す
+	char* options[] = { const_cast<char*>("--debug") };
+	mono_jit_parse_options(1, options);
 
-
-	domain_ = mono_jit_init("MyDomain");
+	// JIT初期化（バージョン付きのほうが推奨）
+	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
 	}
 
-	// DLL名を自動検索
+	// デバッグドメイン作成
+	mono_debug_domain_create(domain_);
+
+	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
 		Console::Log("Failed to find latest assembly DLL.");
 		return;
 	}
 
-	currentDllPath_ = *latestDll; // 最新のDLLパスを保存
+	currentDllPath_ = *latestDll;
 	assembly_ = mono_domain_assembly_open(domain_, currentDllPath_.c_str());
 	if (!assembly_) {
 		Console::Log("Failed to load CSharpLibrary.dll");
@@ -72,10 +84,9 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-
-	/// 関数を登録
 	RegisterFunctions();
 }
+
 
 void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptName) {
 	if (!_script) {
@@ -223,24 +234,30 @@ void MonoScriptEngine::HotReload() {
 }
 
 std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _dirPath, const std::string& _baseName) {
-	std::regex pattern(_baseName + R"(_\d{8}_\d{6}\.dll)");
+	std::regex pattern(_baseName + R"(_(\d{8})_(\d{6})\.dll)");
 	std::optional<std::string> latestFile;
-	std::chrono::file_clock::time_point latestTime;
+	std::string latestTimestamp;
 
 	for (const auto& entry : std::filesystem::directory_iterator(_dirPath)) {
 		if (!entry.is_regular_file()) continue;
 
 		std::string filename = entry.path().filename().string();
-		if (!std::regex_match(filename, pattern)) continue;
+		std::smatch match;
+		if (!std::regex_match(filename, match, pattern)) continue;
 
-		auto ftime = std::filesystem::last_write_time(entry);
-		if (!latestFile || ftime > latestTime) {
+		// match[1] → 日付（YYYYMMDD）、match[2] → 時刻（HHMMSS）
+		std::string timestamp = match[1].str() + match[2].str(); // "yyyyMMddHHmmss"
+
+		if (!latestFile || timestamp > latestTimestamp) {
 			latestFile = entry.path().string();
-			latestTime = ftime;
+			latestTimestamp = timestamp;
 		}
 	}
+
 	return latestFile;
 }
+
+
 
 MonoDomain* MonoScriptEngine::Domain() const {
 	return domain_;
