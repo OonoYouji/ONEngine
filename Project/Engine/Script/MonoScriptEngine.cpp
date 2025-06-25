@@ -50,9 +50,9 @@ void MonoScriptEngine::Initialize() {
 	// Mono のデバッグ用初期化
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 
-	// JIT オプションを渡す
-	char* options[] = { const_cast<char*>("--debug") };
-	mono_jit_parse_options(1, options);
+	//// JIT オプションを渡す
+	//char* options[] = { const_cast<char*>("--debug") };
+	//mono_jit_parse_options(1, options);
 
 	// JIT初期化（バージョン付きのほうが推奨）
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
