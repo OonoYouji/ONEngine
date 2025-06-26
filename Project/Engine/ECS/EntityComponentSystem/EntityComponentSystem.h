@@ -44,7 +44,7 @@ public:
 	template<typename T>
 	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
 
-	IEntity* GenerateEntity(const std::string& _name);
+	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
@@ -59,6 +59,9 @@ public:
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+	
+	template <typename T>
+	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
@@ -172,6 +175,11 @@ inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Cam
 template<typename T>
 inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity, T> {
 	return entityCollection_->FindEntity<T>();
+}
+
+template<typename T>
+inline std::vector<T*> EntityComponentSystem::FindEntities() requires std::is_base_of_v<IEntity, T> {
+	return entityCollection_->FindEntities<T>();
 }
 
 template<typename Comp>

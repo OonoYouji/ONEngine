@@ -20,7 +20,7 @@ public:
 
 	template<typename T>
 	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
-	IEntity* GenerateEntity(const std::string& _name);
+	IEntity* GenerateEntity(const std::string& _name, bool _isInit);
 
 
 	template<typename T>
@@ -34,6 +34,9 @@ public:
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+	
+	template <typename T>
+	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
 	/// @brief 全エンティティを更新
 	void UpdateEntities();
@@ -109,10 +112,10 @@ inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity,
 		name = name.substr(6); // Remove "class " prefix
 	}
 
-	IEntity* entity = GenerateEntity(name);
+	IEntity* entity = GenerateEntity(name, true);
 	if (!entity) {
 		factory_->Register(name, []() { return std::make_unique<T>(); });
-		entity = GenerateEntity(name);
+		entity = GenerateEntity(name, true);
 		if (!entity) {
 			Console::Log(std::format("Failed to generate entity of type: {}", name));
 		}
@@ -142,4 +145,16 @@ inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> 
 		}
 	}
 	return nullptr;
+}
+
+template<typename T>
+inline std::vector<T*> EntityCollection::FindEntities() requires std::is_base_of_v<IEntity, T> {
+	std::vector<T*> foundEntities;
+	for (const auto& entity : entities_) {
+		if (T* found = dynamic_cast<T*>(entity.get())) {
+			foundEntities.push_back(found);
+		}
+	}
+
+	return foundEntities;
 }

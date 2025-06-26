@@ -23,7 +23,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
+IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -33,7 +33,9 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 		entityPtr->pEntityComponentSystem_ = pECS_;
 		entityPtr->id_ = NewEntityID();
 		entityPtr->CommonInitialize();
-		entityPtr->Initialize();
+		if (_isInit) {
+			entityPtr->Initialize();
+		}
 		
 		return entities_.back().get();
 	}

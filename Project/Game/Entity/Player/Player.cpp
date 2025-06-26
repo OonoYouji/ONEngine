@@ -14,11 +14,27 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	//pCamera_ = pEntityComponentSystem_->GenerateCamera<Camera>();
-	//if (pCamera_) {
-	//	pCamera_->SetParent(this);
-	//	pEntityComponentSystem_->SetMainCamera(pCamera_);
+
+	//auto cameras = pEntityComponentSystem_->FindEntities<Camera>();
+	//for (auto& camera : cameras) {
+	//	if (camera->GetCameraType() == static_cast<int>(CameraType::Type3D)
+	//		&& camera->GetName() != "DebugCamera") {
+	//		pCamera_ = camera;
+	//		break;
+	//	}
 	//}
+
+	for (auto& child : GetChildren()) {
+		if (Camera* camera = dynamic_cast<Camera*>(child)) {
+			pCamera_ = camera;
+			break;
+		}
+	}
+
+	if (pCamera_) {
+		//pCamera_->SetParent(this);
+		pEntityComponentSystem_->SetMainCamera(pCamera_);
+	}
 	
 	Script* script = AddComponent<Script>();
 	script->AddScript("Player");

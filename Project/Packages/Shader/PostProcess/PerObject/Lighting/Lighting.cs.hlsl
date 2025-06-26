@@ -26,7 +26,7 @@ SamplerState textureSampler : register(s0);
 [numthreads(16, 16, 1)]
 void main(uint3 dispatchId : SV_DispatchThreadID) {
 
-	float2 texCoord = float2(dispatchId.x / 1280.0f, dispatchId.y / 720.0f);
+	float2 texCoord = float2(dispatchId.x / 1920.0f, dispatchId.y / 1080.0f);
 	float4 color = colorTex.Sample(textureSampler, texCoord);
 	float4 flags = flagsTex.Sample(textureSampler, texCoord);
 
