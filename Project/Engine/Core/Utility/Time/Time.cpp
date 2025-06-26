@@ -38,6 +38,7 @@ namespace {
 		float deltaTime_;
 		float unscaledDeltaTime_;
 		float timeScale_;
+		float gameTime_;
 
 		std::chrono::high_resolution_clock::time_point time_;
 	};
@@ -54,6 +55,8 @@ namespace {
 
 		unscaledDeltaTime_ = duration.count() / 1000.0f;  ///< 秒に変換
 		deltaTime_ = unscaledDeltaTime_ * timeScale_;  ///< 時間のスケールを適用
+
+		gameTime_ += deltaTime_;
 	}
 
 
@@ -77,6 +80,10 @@ void Time::Finalize() {
 
 void Time::Update() {
 	gTimeController->Update();
+}
+
+float Time::GetTime() {
+	return gTimeController->gameTime_;
 }
 
 float Time::DeltaTime() {

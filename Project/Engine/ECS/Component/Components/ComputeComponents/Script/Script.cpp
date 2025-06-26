@@ -4,21 +4,6 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-namespace {
-	MonoScriptEngine* gMonoScriptEngine = nullptr;
-}
-
-void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
-	gMonoScriptEngine = _engine;
-	if (!gMonoScriptEngine) {
-		Console::Log("MonoScriptEngine pointer is null");
-	}
-}
-
-MonoScriptEngine* GetMonoScriptEnginePtr() {
-	return gMonoScriptEngine;
-}
-
 
 Script::Script() {}
 Script::~Script() {}
@@ -33,7 +18,7 @@ void Script::AddScript(const std::string& _scriptName) {
 	}
 
 	ScriptData scriptData;
-	gMonoScriptEngine->MakeScript(&scriptData, _scriptName);
+	GetMonoScriptEnginePtr()->MakeScript(this, &scriptData, _scriptName);
 	scriptDataList_.push_back(std::move(scriptData));
 }
 
@@ -64,7 +49,7 @@ void Script::RemoveScript(const std::string& _scriptName) {
 
 void Script::ResetScripts() {
 	for (auto& script : scriptDataList_) {
-		gMonoScriptEngine->MakeScript(&script, script.scriptName);
+		GetMonoScriptEnginePtr()->MakeScript(this, &script, script.scriptName);
 	}
 }
 
@@ -101,7 +86,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 
 
-	/// スクリプトのリストを表示
+	/// �X�N���v�g�̃��X�g��\��
 	std::string ptrLable;
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
 	for (auto& script : scriptList) {
@@ -110,7 +95,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		/// 
 		ImGui::Checkbox(ptrLable.c_str(), &script.enable);
 
-		/// 次に表示するテキストの色を変更する
+		/// ���ɕ\������e�L�X�g�̐F��ύX����
 		if (script.enable) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 		}

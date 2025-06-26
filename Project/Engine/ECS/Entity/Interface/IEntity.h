@@ -124,7 +124,8 @@ public:
 
 	bool GetActive() const;
 
-	size_t GetId() const;
+	const size_t& GetId() const;
+	size_t* GetIdPtr();
 
 };
 

@@ -3,6 +3,10 @@
 /// std
 #include <memory>
 
+/// externals
+#include <jit/jit.h>
+#include <metadata/class.h>
+
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
@@ -142,3 +146,16 @@ public:
 	const Matrix4x4& GetMatWorld() const { return matWorld; }
 
 };
+
+
+/// =================================================
+/// mono からのTransform取得用関数
+/// =================================================
+
+MonoObject* InternalGetTransform(uint32_t _entityId);
+void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z);
+void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z);
+void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z);

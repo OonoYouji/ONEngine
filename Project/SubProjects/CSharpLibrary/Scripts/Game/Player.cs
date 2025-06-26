@@ -1,21 +1,20 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
+
+
 
 public class Player : MonoBehavior {
 
-	float time = 0.0f;
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
 	float moveSpeed = 64f; // 移動速度
 	float dushSpeed = 120f; // ダッシュ速度
-	//public void Attach(GameObject gameObject) {
-
-	//}
 
 	public override void Initialize() {
-		// entityId = Find("Player");
-		entityId = 5;
-		time = 1f / 60f;
+
 	}
 
 	public override void Update() {
@@ -24,34 +23,34 @@ public class Player : MonoBehavior {
 	}
 
 
-	void Move() {
+	public void Move() {
 		Transform t = transform;
 
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
 
-		if (Input.PressKey(DIK.DIK_W)) {
+		if (Input.PressKey(KeyCode.W)) {
 			velocity.z += 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_S)) {
+		if (Input.PressKey(KeyCode.S)) {
 			velocity.z -= 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_A)) {
+		if (Input.PressKey(KeyCode.A)) {
 			velocity.x -= 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_D)) {
+		if (Input.PressKey(KeyCode.D)) {
 			velocity.x += 0.1f;
 		}
 
 		float speed = moveSpeed;
-		if (Input.PressKey(DIK.DIK_LSHIFT)) {
+		if (Input.PressKey(KeyCode.LeftShift)) {
 			speed = dushSpeed; // ダッシュ
 		}
 
-		velocity = velocity.Normalized() * (speed * time);
+		velocity = velocity.Normalized() * (speed * Time.deltaTime);
 
 		t.position += velocity;
 
@@ -61,20 +60,22 @@ public class Player : MonoBehavior {
 
 
 	void Jump() {
-		if (Input.TriggerKey(DIK.DIK_SPACE)) {
+		if (Input.TriggerKey(KeyCode.Space)) {
 			height = jumpPower;
 		}
 
 
 		if (height > 0.0f) {
-			height -= 9.8f * time; // 重力
-			//if (height < 0.0f) {
-			//	height = 0.0f;
-			//}
+			height -= 9.8f * Time.deltaTime; // 重力
+								   //if (height < 0.0f) {
+								   //	height = 0.0f;
+								   //}
 		}
 
 		Transform t = transform;
-		t.position.y = height;
+		Vector3 position = t.position;
+		position.y = height;
+		t.position = position;
 
 		transform = t;
 

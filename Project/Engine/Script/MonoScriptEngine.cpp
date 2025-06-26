@@ -3,46 +3,54 @@
 /// std
 #include <regex>
 
+/// externals
+//#include <metadata/debug-mono-symfile.h>
+#include <metadata/mono-config.h>
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 
 namespace {
+	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
-	EntityComponentSystem* gECS = nullptr;
-
-
-	Transform* InternalGetTransform(int _id) {
-		return gECS->GetComponent<Transform>(_id);
+	void LogCallback(const char* log_domain, const char* log_level, const char* message, mono_bool fatal, void* user_data) {
+		Console::Log(std::string("[") + log_domain + "][" + log_level + "] " + message + (fatal ? " (fatal)" : ""));
 	}
 
-	void InternalSetTransform(int _id, Transform* _transform) {
-		if (!_transform) {
-			Console::Log("Transform pointer is null");
-			return;
+	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
+		while (_class) {
+			MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
+			if (method)
+				return method;
+			_class = mono_class_get_parent(_class);
 		}
-		Transform* transform = gECS->GetComponent<Transform>(_id);
-		if (transform) {
+		return nullptr;
+	}
 
-			transform->enable = _transform->enable;
-			transform->position = _transform->position;
-			transform->rotate = _transform->rotate;
-			transform->scale = _transform->scale;
-
-			//*transform = *_transform; /// 変数のコピー
-		} else {
-			Console::Log("Transform not found for entity ID: " + std::to_string(_id));
-		}
+	void ConsoleLog(MonoString* _msg) {
+		// MonoString* -> const char* 変換
+		char* cstr = mono_string_to_utf8(_msg);
+		Console::Log(cstr);
+		mono_free(cstr);
 	}
 
 }
 
-
-
-MonoScriptEngine::MonoScriptEngine(EntityComponentSystem* _ecs) {
-	gECS = _ecs;
+void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
+	gMonoScriptEngine = _engine;
+	if (!gMonoScriptEngine) {
+		Console::Log("MonoScriptEngine pointer is null");
+	}
 }
+
+MonoScriptEngine* GetMonoScriptEnginePtr() {
+	return gMonoScriptEngine;
+}
+
+
+MonoScriptEngine::MonoScriptEngine() {}
 MonoScriptEngine::~MonoScriptEngine() {
 	if (domain_) {
 		mono_jit_cleanup(domain_);
@@ -51,21 +59,43 @@ MonoScriptEngine::~MonoScriptEngine() {
 }
 
 void MonoScriptEngine::Initialize() {
+
+	mono_trace_set_level_string("debug");
+	mono_trace_set_log_handler(LogCallback, nullptr);
+
+	// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
-	domain_ = mono_jit_init("MyDomain");
+
+	mono_config_parse(nullptr);
+	// debugサポートの初期化
+	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
+
+	// デバッグオプションを渡す
+	const char* options[] = {
+		"--soft-breakpoints"   // ソフトブレークポイントを有効にする
+		//"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
+	};
+	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
+
+
+	// JIT初期化
+	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
 	}
 
-	// DLL名を自動検索
+	mono_debug_domain_create(domain_);
+
+
+	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
 		Console::Log("Failed to find latest assembly DLL.");
 		return;
 	}
 
-	currentDllPath_ = *latestDll; // 最新のDLLパスを保存
+	currentDllPath_ = *latestDll;
 	assembly_ = mono_domain_assembly_open(domain_, currentDllPath_.c_str());
 	if (!assembly_) {
 		Console::Log("Failed to load CSharpLibrary.dll");
@@ -73,17 +103,16 @@ void MonoScriptEngine::Initialize() {
 	}
 
 	image_ = mono_assembly_get_image(assembly_);
+	//mono_debug_open_image();
 	if (!image_) {
 		Console::Log("Failed to get image from assembly");
 		return;
 	}
 
-
-	/// 関数を登録
 	RegisterFunctions();
 }
 
-void MonoScriptEngine::MakeScript(Script::ScriptData* _script, const std::string& _scriptName) {
+void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
 	if (!_script) {
 		Console::Log("Script pointer is null");
 		return;
@@ -101,44 +130,22 @@ void MonoScriptEngine::MakeScript(Script::ScriptData* _script, const std::string
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
 	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
-	/// 先に定義しておく
-	MonoMethodDesc* desc = nullptr;
-
 	/// Initializeメソッドを取得
-	desc = mono_method_desc_new(":Initialize()", false);
-	MonoMethod* initMethod = mono_method_desc_search_in_class(desc, monoClass);
-	mono_method_desc_free(desc);
+	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
 	if (!initMethod) {
 		Console::Log("Failed to find method Initialize in class: " + _scriptName);
-		return;
+		//return;
 	}
 
 	/// Updateメソッドを取得
-	desc = mono_method_desc_new(":Update()", false);
-	MonoMethod* updateMethod = mono_method_desc_search_in_class(desc, monoClass);
-	mono_method_desc_free(desc);
-
+	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
 		Console::Log("Failed to find method Update in class: " + _scriptName);
 		return;
 	}
 
 	if (initMethod && obj) {
-		MonoObject* exc = nullptr;  ///< 例外オブジェクト
-
-		mono_runtime_invoke(initMethod, obj, nullptr, &exc);
-
-		if (exc) {
-			MonoString* monoStr = mono_object_to_string(exc, nullptr);
-			if (monoStr) {
-				char* message = mono_string_to_utf8(monoStr);
-				Console::Log(std::string("Mono Exception: ") + message);
-				mono_free(message);
-			} else {
-				Console::Log("Mono Exception occurred, but message is null.");
-			}
-		}
-
+		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
 	}
 
 
@@ -149,12 +156,62 @@ void MonoScriptEngine::MakeScript(Script::ScriptData* _script, const std::string
 	_script->instance = obj;
 	_script->initMethod = initMethod;
 	_script->updateMethod = updateMethod;
+
+	/// c#側のEntityのidを設定
+	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass, "entityId");
+	uint32_t id = _comp->GetOwner()->GetId();
+	mono_field_set_value(_script->instance, field, &id);
+
+
+	/// 初期化の呼び出し
+	if (initMethod && obj) {
+		IEntity* owner = _comp->GetOwner();
+		uint32_t id = owner->GetId();
+		void* args[1];
+		args[0] = &id;
+
+		MonoObject* exc = nullptr;
+		mono_runtime_invoke(initMethod, obj, args, &exc);
+
+		if (exc) {
+			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+			Console::Log(std::string("Exception thrown: ") + err);
+			mono_free(err);
+		}
+
+	}
+
+
 }
 
-void MonoScriptEngine::RegisterFunctions() {
-	mono_add_internal_call("Entity::InternalGetTransform", (void*)InternalGetTransform);
-	mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
 
+void MonoScriptEngine::RegisterFunctions() {
+	/// 関数の登録
+
+	/// transformの get set
+	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
+	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
+	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
+	mono_add_internal_call("Transform::InternalGetScale", (void*)InternalGetScale);
+	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
+	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
+	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
+
+	/// component
+	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+
+	/// log
+	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
+
+	/// time
+	mono_add_internal_call("Time::InternalGetDeltaTime", (void*)Time::DeltaTime);
+	mono_add_internal_call("Time::InternalGetTime", (void*)Time::GetTime);
+	mono_add_internal_call("Time::InternalGetUnscaledDeltaTime", (void*)Time::UnscaledDeltaTime);
+	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
+	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
+
+	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
+	//MonoObject* InternalGetTransform(uint32_t _entityId);
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
 
@@ -209,21 +266,39 @@ void MonoScriptEngine::HotReload() {
 }
 
 std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _dirPath, const std::string& _baseName) {
-	std::regex pattern(_baseName + R"(_\d{8}_\d{6}\.dll)");
+	std::regex pattern(_baseName + R"(_(\d{8})_(\d{6})\.dll)");
 	std::optional<std::string> latestFile;
-	std::chrono::file_clock::time_point latestTime;
+	std::string latestTimestamp;
 
 	for (const auto& entry : std::filesystem::directory_iterator(_dirPath)) {
 		if (!entry.is_regular_file()) continue;
 
 		std::string filename = entry.path().filename().string();
-		if (!std::regex_match(filename, pattern)) continue;
+		std::smatch match;
+		if (!std::regex_match(filename, match, pattern)) continue;
 
-		auto ftime = std::filesystem::last_write_time(entry);
-		if (!latestFile || ftime > latestTime) {
+		// match[1] → 日付（YYYYMMDD）、match[2] → 時刻（HHMMSS）
+		std::string timestamp = match[1].str() + match[2].str(); // "yyyyMMddHHmmss"
+
+		if (!latestFile || timestamp > latestTimestamp) {
 			latestFile = entry.path().string();
-			latestTime = ftime;
+			latestTimestamp = timestamp;
 		}
 	}
+
 	return latestFile;
+}
+
+
+
+MonoDomain* MonoScriptEngine::Domain() const {
+	return domain_;
+}
+
+MonoImage* MonoScriptEngine::Image() const {
+	return image_;
+}
+
+MonoAssembly* MonoScriptEngine::Assembly() const {
+	return assembly_;
 }

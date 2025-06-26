@@ -5,9 +5,15 @@
 #include <optional>
 
 /// externals
-#include "mono/jit/jit.h"
-#include "mono/metadata/assembly.h"
-#include "mono/metadata/debug-helpers.h"
+#include <jit/jit.h>
+#include <metadata/assembly.h>
+#include <metadata/mono-debug.h>
+#include <metadata/debug-helpers.h>
+#include <utils/mono-logger.h>
+
+void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
+MonoScriptEngine* GetMonoScriptEnginePtr();
+
 
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
@@ -21,12 +27,14 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	MonoScriptEngine(class EntityComponentSystem* _ecs);
+	MonoScriptEngine();
 	~MonoScriptEngine();
 
 	void Initialize();
 
-	void MakeScript(Script::ScriptData* _script, const std::string& _scriptName);
+	void MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName);
+
+	//void RegisterEntity(class Script* _script, const std::string& _csName);
 
 	void RegisterFunctions();
 
@@ -44,5 +52,15 @@ private:
 	MonoDomain* domain_;
 	MonoImage* image_;
 	MonoAssembly* assembly_ = nullptr;
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	MonoDomain* Domain() const;
+	MonoImage* Image() const;
+	MonoAssembly* Assembly() const;
+
 };
 
