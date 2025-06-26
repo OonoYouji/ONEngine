@@ -109,6 +109,21 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		ImGui::InputText((ptrLable + "name").c_str(), script.scriptName.data(), ImGuiInputTextFlags_ReadOnly);
 
+		/// popupでスクリプトの削除などの操作を行う
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			ImGui::OpenPopup("##open");
+		}
+
+		/// 右クリックしたときのメニューの表示
+		if (ImGui::BeginPopupContextItem("##popup")) {
+			if (ImGui::MenuItem("delete")) {
+				_script->RemoveScript(script.scriptName);
+			}
+
+			ImGui::EndPopup();
+		}
+
+
 		if (!script.enable) {
 			ImGui::PopStyleColor(1);
 		}
@@ -145,5 +160,10 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		}
 		ImGui::EndDragDropTarget();
 	}
+
+
+
+
+	
 
 }
