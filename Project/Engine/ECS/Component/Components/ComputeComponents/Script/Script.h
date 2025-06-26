@@ -4,14 +4,11 @@
 #include <string>
 
 /// externals
-#include "mono/jit/jit.h"
+#include <jit/jit.h>
 
 /// engine
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
 
-void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
-
-MonoScriptEngine* GetMonoScriptEnginePtr();
 
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント

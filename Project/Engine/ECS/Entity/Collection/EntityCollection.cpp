@@ -2,6 +2,8 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 /// entity
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
@@ -26,11 +28,13 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
 
+		/// 初期化
 		IEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
 		entityPtr->id_ = NewEntityID();
 		entityPtr->CommonInitialize();
 		entityPtr->Initialize();
+		
 		return entities_.back().get();
 	}
 	return nullptr;

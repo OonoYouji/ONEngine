@@ -5,50 +5,62 @@ using System.Runtime.InteropServices;
 
 public class Entity {
 
-	//private UInt64 padding; // 64bit align, virtual destructor
+	/// =========================================
+	/// objects
+	/// =========================================
 
+	private Transform _transform;
+	private Dictionary<Type, Component> components = new Dictionary<Type, Component>();
 
-	public Transform transform {
-		get {
-			IntPtr ptr = InternalGetTransform(entityId);
-			return Marshal.PtrToStructure<Transform>(ptr);
-		}
-		set {
-			InternalSetTransform(entityId, ref value);
-		}
-	}
-
-	int entityId;
+	uint entityId;
 	string name;
 
-	//private Dictionary<Type, MonoBehavior> components = new Dictionary<Type, MonoBehavior>();
-	//public int EntityId { get; private set; }
+	/// =========================================
+	/// methods
+	/// =========================================
 
-	//public Entity(Entity _gameObject) {
-	//	//EntityId = _gameObject.EntityId;
-	//	foreach (var component in _gameObject.components) {
-	//		MonoBehavior newComponent = (MonoBehavior)Activator.CreateInstance(component.Key);
-	//		newComponent.InternalInitialize(EntityId);
-	//		components[component.Key] = newComponent;
-	//	}
-	//}
+	public Entity(uint _id) {
+		entityId = _id;
+		name = "Entity_" + entityId.ToString();
+		_transform = AddComponent<Transform>();
+		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
+	}
 
-	//public Entity(int entityId) {
-	//	EntityId = entityId;
-	//}
+	public Transform transform => _transform;
 
-	//public T AddComponent<T>() where T : MonoBehavior, new() {
-	//	T component = new T();
-	//	component.InternalInitialize(EntityId);
-	//	components[typeof(T)] = component;
-	//	return component;
-	//}
+
+	/// ------------------------------------------
+	/// components
+	/// ------------------------------------------
+
+	public T AddComponent<T>() where T : Component {
+
+		/// コンポーネントを作る
+		string typeName = typeof(T).Name;
+		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
+
+		/// すでにコンポーネントが存在する場合はそれを返す
+		if (components.TryGetValue(typeof(T), out var c)) {
+			return c as T;
+		}
+
+		T comp = Activator.CreateInstance<T>();
+		comp.nativeHandle = nativeHandle;
+		components[typeof(T)] = comp;
+		return comp;
+	}
+
+	public T GetComponent<T>() where T : Component {
+		if(components.TryGetValue(typeof(T), out var comp)) {
+			return comp as T;
+		}
+
+		return null;
+	}
 
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern IntPtr InternalGetTransform(int _entityId);
+	static extern ulong InternalAddComponent<T>(uint _entityId, string _compTypeName);
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern void InternalSetTransform(int _entityId, ref Transform _transform);
 
 }

@@ -85,7 +85,7 @@ void SceneManager::MoveNextToCurrentScene() {
 	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
-	sceneIO_->Input(currentScene_.get());
+	//sceneIO_->Input(currentScene_.get());
 	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();

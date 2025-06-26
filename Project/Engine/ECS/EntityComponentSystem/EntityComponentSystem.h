@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 
+/// externals
+#include <jit/jit.h>
+
 /// engine
 #include "../Entity/Collection/EntityCollection.h"
 #include "../Component/Collection/ComponentCollection.h"
@@ -14,6 +17,10 @@
 
 class Camera;
 class Camera2D;
+
+void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs);
+EntityComponentSystem* GetEntityComponentSystemPtr();
+
 
 /// ///////////////////////////////////////////////////
 /// ECSの基盤クラス
@@ -127,6 +134,8 @@ public:
 	/// @return entities
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities();
 
+	IEntity* GetEntity(size_t _index);
+
 	/// @brief cameras の取得
 	/// @return cameras
 	const std::vector<Camera*>& GetCameras();
@@ -196,3 +205,10 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 	systemMap_.push_back(std::make_unique<T>(args...));
 }
 
+
+/// =============================================
+/// monoを使ったC#スクリプトエンジンのコンポーネント
+/// =============================================
+
+
+uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);

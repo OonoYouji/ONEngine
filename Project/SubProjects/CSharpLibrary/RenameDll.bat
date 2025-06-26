@@ -6,36 +6,39 @@ set OUTPUT_DIR=..\..\Packages\Scripts
 
 REM 元のDLL名
 set ORIGINAL_DLL=CSharpLibrary.dll
+set ORIGINAL_PDB=CSharpLibrary.pdb
 
 REM 日付と時刻を取得してフォーマット yyyyMMdd_HHmmss
-for /f "tokens=1-3 delims=/- " %%a in ('date /t') do (
-  set MM=%%a
-  set DD=%%b
-  set YY=%%c
+for /f "tokens=1-3 delims=/.- " %%a in ('date /t') do (
+  set YY=%%a
+  set MM=%%b
+  set DD=%%c
 )
 
-for /f "tokens=1-2 delims=:." %%a in ('time /t') do (
-  set HH=%%a
-  set Min=%%b
+REM 遅延展開で年を修正
+set YY=!YY!
+if not "!YY:~0,2!"=="20" (
+  set YY=20!YY!
 )
 
-REM 秒を取得
-for /f "tokens=1 delims=." %%a in ("%TIME%") do set Sec=%%a
-set Sec=%Sec:~6,2%
+REM 時刻の取得（ゼロ埋め済み）
+for /f %%a in ('powershell -Command "Get-Date -Format \"HHmmss\""') do set TIMESTR=%%a
 
-REM 先頭に0がついていない場合の補正（例：8→08）
-if 1%HH% LSS 110 set HH=0%HH%
-if 1%Min% LSS 110 set Min=0%Min%
-if 1%Sec% LSS 110 set Sec=0%Sec%
+REM yyyyMMdd_HHmmss 形式に組み立て
+set TIMESTAMP=!YY!!MM!!DD!_!TIMESTR!
 
-REM Windowsの日付フォーマットが異なるケースがあるので注意
-REM yyyyMMdd_HHmmss 形式でセット
-set TIMESTAMP=%YY%%MM%%DD%_%HH%%Min%%Sec%
-
-REM 新しいDLL名
-set RENAMED_DLL=CSharpLibrary_%TIMESTAMP%.dll
+REM 新しいDLL名・PDB名
+set RENAMED_DLL=CSharpLibrary_!TIMESTAMP!.dll
+set RENAMED_PDB=CSharpLibrary_!TIMESTAMP!.pdb
 
 echo Renaming %OUTPUT_DIR%\%ORIGINAL_DLL% to %OUTPUT_DIR%\%RENAMED_DLL%
 move /Y "%OUTPUT_DIR%\%ORIGINAL_DLL%" "%OUTPUT_DIR%\%RENAMED_DLL%"
+
+if exist "%OUTPUT_DIR%\%ORIGINAL_PDB%" (
+    echo Renaming %OUTPUT_DIR%\%ORIGINAL_PDB% to %OUTPUT_DIR%\%RENAMED_PDB%
+    move /Y "%OUTPUT_DIR%\%ORIGINAL_PDB%" "%OUTPUT_DIR%\%RENAMED_PDB%"
+) else (
+    echo PDB file not found: %OUTPUT_DIR%\%ORIGINAL_PDB%
+)
 
 endlocal

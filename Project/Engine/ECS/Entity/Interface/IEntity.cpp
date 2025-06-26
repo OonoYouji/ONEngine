@@ -220,6 +220,10 @@ bool IEntity::GetActive() const {
 	return active_;
 }
 
-size_t IEntity::GetId() const {
+const size_t& IEntity::GetId() const {
 	return id_;
+}
+
+size_t* IEntity::GetIdPtr() {
+	return &id_;
 }
