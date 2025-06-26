@@ -150,9 +150,18 @@ const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities(
 	return entityCollection_->GetEntities();
 }
 
-IEntity* EntityComponentSystem::GetEntity(size_t _index) {
-	if (_index < entityCollection_->GetEntities().size()) {
-		return entityCollection_->GetEntities()[_index].get();
+IEntity* EntityComponentSystem::GetEntity(size_t _id) {
+	if (_id < entityCollection_->GetEntities().size()) {
+		/// idを検索
+		auto itr = std::find_if(
+			entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
+			[_id](const std::unique_ptr<IEntity>& entity) {
+				return entity->GetId() == _id;
+			}
+		);
+
+
+		return (*itr).get();
 	}
 
 	return nullptr;

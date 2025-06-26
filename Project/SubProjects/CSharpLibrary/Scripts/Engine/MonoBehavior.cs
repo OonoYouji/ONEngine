@@ -42,8 +42,7 @@ public class MonoBehavior {
 			initialized = true;
 
 			entity = new Entity(_entityId);
-			//transform = entity.transform;
-
+			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
 		}
 	}
 

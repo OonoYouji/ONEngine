@@ -19,7 +19,7 @@ public class Player : MonoBehavior {
 
 	public override void Update() {
 		Move();
-		Jump();
+		//Jump();
 	}
 
 
