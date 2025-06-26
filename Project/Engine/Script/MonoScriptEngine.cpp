@@ -83,7 +83,7 @@ void MonoScriptEngine::Initialize() {
 	RegisterFunctions();
 }
 
-void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptName) {
+void MonoScriptEngine::MakeScript(Script::ScriptData* _script, const std::string& _scriptName) {
 	if (!_script) {
 		Console::Log("Script pointer is null");
 		return;
@@ -124,16 +124,31 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	}
 
 	if (initMethod && obj) {
-		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
+		MonoObject* exc = nullptr;  ///< 例外オブジェクト
+
+		mono_runtime_invoke(initMethod, obj, nullptr, &exc);
+
+		if (exc) {
+			MonoString* monoStr = mono_object_to_string(exc, nullptr);
+			if (monoStr) {
+				char* message = mono_string_to_utf8(monoStr);
+				Console::Log(std::string("Mono Exception: ") + message);
+				mono_free(message);
+			} else {
+				Console::Log("Mono Exception occurred, but message is null.");
+			}
+		}
+
 	}
 
 
 	/// スクリプトのメンバ変数に設定
-	_script->gcHandle_ = gcHandle;
-	_script->monoClass_ = monoClass;
-	_script->instance_ = obj;
-	_script->initMethod_ = initMethod;
-	_script->updateMethod_ = updateMethod;
+	_script->scriptName = _scriptName;
+	_script->gcHandle = gcHandle;
+	_script->monoClass = monoClass;
+	_script->instance = obj;
+	_script->initMethod = initMethod;
+	_script->updateMethod = updateMethod;
 }
 
 void MonoScriptEngine::RegisterFunctions() {

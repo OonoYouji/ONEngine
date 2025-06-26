@@ -21,7 +21,7 @@ void Player::Initialize() {
 	//}
 	
 	Script* script = AddComponent<Script>();
-	script->SetScript("Player");
+	script->AddScript("Player");
 
 }
 

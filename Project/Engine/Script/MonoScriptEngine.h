@@ -9,6 +9,9 @@
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/debug-helpers.h"
 
+/// engine
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
@@ -23,7 +26,7 @@ public:
 
 	void Initialize();
 
-	void MakeScript(class Script* _script, const std::string& _scriptName);
+	void MakeScript(Script::ScriptData* _script, const std::string& _scriptName);
 
 	void RegisterFunctions();
 

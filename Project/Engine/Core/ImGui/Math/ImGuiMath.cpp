@@ -413,12 +413,14 @@ void ScriptDebug(Script* _script) {
 		return;
 	}
 
-	ImGui::Text(_script->GetScriptName().c_str());
-	//if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-	//	std::string path = "./Assets/Scripts/" + _script->GetScriptName() + ".cs";
-	//	std::string folder = std::filesystem::absolute(path).string();
-	//	ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
-	//}
+	std::string ptrLable = "##ScriptData" + std::to_string(reinterpret_cast<uintptr_t>(_script));
+	auto& scriptDataList = _script->GetScriptDataList();
+	for (auto& script : scriptDataList) {
+		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
+		if (ImGui::Checkbox(ptrLable.c_str(), &script.enable)) {
+
+		}
+	}
 
 }
 
