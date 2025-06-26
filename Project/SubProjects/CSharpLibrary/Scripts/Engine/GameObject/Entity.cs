@@ -10,7 +10,7 @@ public class Entity {
 	/// =========================================
 
 	private Transform _transform;
-	private Dictionary<Type, Component> components;
+	private Dictionary<Type, Component> components = new Dictionary<Type, Component>();
 
 	uint entityId;
 	string name;
@@ -23,6 +23,7 @@ public class Entity {
 		entityId = _id;
 		name = "Entity_" + entityId.ToString();
 		_transform = AddComponent<Transform>();
+		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
 	}
 
 	public Transform transform => _transform;
@@ -34,14 +35,14 @@ public class Entity {
 
 	public T AddComponent<T>() where T : Component {
 
+		/// コンポーネントを作る
+		string typeName = typeof(T).Name;
+		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
+
 		/// すでにコンポーネントが存在する場合はそれを返す
 		if (components.TryGetValue(typeof(T), out var c)) {
 			return c as T;
 		}
-
-		/// コンポーネントを作る
-		string typeName = typeof(T).Name;
-		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;

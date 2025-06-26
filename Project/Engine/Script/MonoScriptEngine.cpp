@@ -5,6 +5,7 @@
 
 /// externals
 //#include <metadata/debug-mono-symfile.h>
+#include <metadata/mono-config.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -16,6 +17,23 @@ namespace {
 
 	void LogCallback(const char* log_domain, const char* log_level, const char* message, mono_bool fatal, void* user_data) {
 		Console::Log(std::string("[") + log_domain + "][" + log_level + "] " + message + (fatal ? " (fatal)" : ""));
+	}
+
+	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
+		while (_class) {
+			MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
+			if (method)
+				return method;
+			_class = mono_class_get_parent(_class);
+		}
+		return nullptr;
+	}
+
+	void ConsoleLog(MonoString* _msg) {
+		// MonoString* -> const char* 変換
+		char* cstr = mono_string_to_utf8(_msg);
+		Console::Log(cstr);
+		mono_free(cstr);
 	}
 
 }
@@ -47,15 +65,18 @@ void MonoScriptEngine::Initialize() {
 
 	// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
+
+	mono_config_parse(nullptr);
 	// debugサポートの初期化
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 
 	// デバッグオプションを渡す
 	const char* options[] = {
-		"--soft-breakpoints",   // ソフトブレークポイントを有効にする
-		"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
+		"--soft-breakpoints"   // ソフトブレークポイントを有効にする
+		//"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
 	};
 	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
+
 
 	// JIT初期化
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
@@ -110,26 +131,18 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
 	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
-	/// 先に定義しておく
-	MonoMethodDesc* desc = nullptr;
-
 	/// Initializeメソッドを取得
-	desc = mono_method_desc_new(":InternalInitialize()", false);
-	MonoMethod* initMethod = mono_method_desc_search_in_class(desc, monoClass);
-	mono_method_desc_free(desc);
+	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
 	if (!initMethod) {
 		Console::Log("Failed to find method Initialize in class: " + _scriptName);
-		return;
+		//return;
 	}
 
 	/// Updateメソッドを取得
-	desc = mono_method_desc_new(":Update()", false);
-	MonoMethod* updateMethod = mono_method_desc_search_in_class(desc, monoClass);
-	mono_method_desc_free(desc);
-
+	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
 		Console::Log("Failed to find method Update in class: " + _scriptName);
-		return;
+		//return;
 	}
 
 
@@ -148,7 +161,20 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 
 	/// 初期化の呼び出し
 	if (initMethod && obj) {
-		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
+		IEntity* owner = _script->GetOwner();
+		uint32_t id = owner->GetId();
+		void* args[1];
+		args[0] = &id;
+
+		MonoObject* exc = nullptr;
+		mono_runtime_invoke(initMethod, obj, args, &exc);
+
+		if (exc) {
+			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+			Console::Log(std::string("Exception thrown: ") + err);
+			mono_free(err);
+		}
+
 	}
 
 	//if (updateMethod && obj) {
@@ -181,6 +207,9 @@ void MonoScriptEngine::RegisterFunctions() {
 
 	/// component
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+
+	/// log
+	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
 
 	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
 	//MonoObject* InternalGetTransform(uint32_t _entityId);

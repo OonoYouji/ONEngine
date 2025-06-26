@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
+
+
 
 public class Player : MonoBehavior {
 
@@ -9,9 +13,6 @@ public class Player : MonoBehavior {
 
 	float moveSpeed = 64f; // 移動速度
 	float dushSpeed = 120f; // ダッシュ速度
-	//public void Attach(GameObject gameObject) {
-
-	//}
 
 	public override void Initialize() {
 		// entityId = Find("Player");
@@ -71,9 +72,9 @@ public class Player : MonoBehavior {
 
 		if (height > 0.0f) {
 			height -= 9.8f * time; // 重力
-			//if (height < 0.0f) {
-			//	height = 0.0f;
-			//}
+								   //if (height < 0.0f) {
+								   //	height = 0.0f;
+								   //}
 		}
 
 		Transform t = transform;

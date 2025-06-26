@@ -290,4 +290,7 @@
     <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
+  </ItemGroup>
 </Project>

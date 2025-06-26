@@ -311,6 +311,9 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
     <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

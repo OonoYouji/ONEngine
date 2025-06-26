@@ -70,6 +70,11 @@ void GameScene::Initialize() {
 	Script* script = emptyEntity->AddComponent<Script>();
 	script->SetScript("Player");
 	emptyEntity->AddComponent<MeshRenderer>();
+	
+	emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+	script = emptyEntity->AddComponent<Script>();
+	script->SetScript("Player");
+	emptyEntity->AddComponent<MeshRenderer>();
 
 	//terrainEditor_ = std::make_unique<TerrainEditor>(
 	//	pEntityComponentSystem_->FindEntity<Terrain>(),
