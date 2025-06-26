@@ -47,19 +47,19 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 		}
 	}
 
-	if (!pEntityComponentSystem_->GetMainCamera()) {
-		Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
-		mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
-		mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-		mainCamera->SetCameraType(static_cast<int>(CameraType::Type3D));
-		pEntityComponentSystem_->SetMainCamera(mainCamera);
-	}
+	//if (!pEntityComponentSystem_->GetMainCamera()) {
+	//	Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
+	//	mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
+	//	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	//	mainCamera->SetCameraType(static_cast<int>(CameraType::Type3D));
+	//	pEntityComponentSystem_->SetMainCamera(mainCamera);
+	//}
 
-	if (!pEntityComponentSystem_->GetMainCamera2D()) {
-		Camera* mainCamera2D = pEntityComponentSystem_->GenerateCamera();
-		mainCamera2D->SetCameraType(static_cast<int>(CameraType::Type2D));
-		pEntityComponentSystem_->SetMainCamera2D(mainCamera2D);
-	}
+	//if (!pEntityComponentSystem_->GetMainCamera2D()) {
+	//	Camera* mainCamera2D = pEntityComponentSystem_->GenerateCamera();
+	//	mainCamera2D->SetCameraType(static_cast<int>(CameraType::Type2D));
+	//	pEntityComponentSystem_->SetMainCamera2D(mainCamera2D);
+	//}
 
 }
 

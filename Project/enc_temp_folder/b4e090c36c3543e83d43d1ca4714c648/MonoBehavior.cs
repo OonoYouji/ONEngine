@@ -62,9 +62,6 @@ public class MonoBehavior {
 	}
 
 
-
-	
-
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	private static extern int InternalGetEntityId();
 
