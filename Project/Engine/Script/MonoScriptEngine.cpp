@@ -134,18 +134,12 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
 	if (!initMethod) {
 		Console::Log("Failed to find method Initialize in class: " + _scriptName);
-		//return;
 	}
 
 	/// Updateメソッドを取得
 	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
 		Console::Log("Failed to find method Update in class: " + _scriptName);
-		return;
-	}
-
-	if (initMethod && obj) {
-		mono_runtime_invoke(initMethod, obj, nullptr, nullptr);
 	}
 
 
