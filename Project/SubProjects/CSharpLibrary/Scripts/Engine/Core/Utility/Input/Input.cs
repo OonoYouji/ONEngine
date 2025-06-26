@@ -2,15 +2,15 @@
 
 static public class Input {
 
-	static public bool TriggerKey(DIK keyCode) {
+	static public bool TriggerKey(KeyCode keyCode) {
 		return InternalTriggerKey((int)keyCode);
 	}
 
-	static public bool PressKey(DIK keyCode) {
+	static public bool PressKey(KeyCode keyCode) {
 		return InternalPressKey((int)keyCode);
 	}
 
-	static public bool ReleaseKey(DIK keyCode) {
+	static public bool ReleaseKey(KeyCode keyCode) {
 		return InternalReleaseKey((int)keyCode);
 	}
 

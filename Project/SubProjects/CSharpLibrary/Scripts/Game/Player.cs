@@ -29,24 +29,24 @@ public class Player : MonoBehavior {
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
 
-		if (Input.PressKey(DIK.DIK_W)) {
+		if (Input.PressKey(KeyCode.W)) {
 			velocity.z += 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_S)) {
+		if (Input.PressKey(KeyCode.S)) {
 			velocity.z -= 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_A)) {
+		if (Input.PressKey(KeyCode.A)) {
 			velocity.x -= 0.1f;
 		}
 
-		if (Input.PressKey(DIK.DIK_D)) {
+		if (Input.PressKey(KeyCode.D)) {
 			velocity.x += 0.1f;
 		}
 
 		float speed = moveSpeed;
-		if (Input.PressKey(DIK.DIK_LSHIFT)) {
+		if (Input.PressKey(KeyCode.LeftShift)) {
 			speed = dushSpeed; // ダッシュ
 		}
 
@@ -60,7 +60,7 @@ public class Player : MonoBehavior {
 
 
 	void Jump() {
-		if (Input.TriggerKey(DIK.DIK_SPACE)) {
+		if (Input.TriggerKey(KeyCode.Space)) {
 			height = jumpPower;
 		}
 
