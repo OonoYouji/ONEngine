@@ -16,15 +16,6 @@ SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-	Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
-	mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
-	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	mainCamera->SetCameraType(static_cast<int>(CameraType::Type3D));
-	pEntityComponentSystem_->SetMainCamera(mainCamera);
-
-	Camera* mainCamera2D = pEntityComponentSystem_->GenerateCamera();
-	mainCamera2D->SetCameraType(static_cast<int>(CameraType::Type2D));
-	pEntityComponentSystem_->SetMainCamera2D(mainCamera2D);
 
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
@@ -37,6 +28,38 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene();
 
+
+	/// カメラを設定する
+	auto cameras = pEntityComponentSystem_->FindEntities<Camera>();
+	for (auto& camera : cameras) {
+		if (camera->GetName() == "DebugCamera") {
+			continue;
+		}
+
+		if (camera->GetCameraType() == static_cast<int>(CameraType::Type3D)) {
+			pEntityComponentSystem_->SetMainCamera(camera);
+			break;
+		}
+
+		if (camera->GetCameraType() == static_cast<int>(CameraType::Type2D)) {
+			pEntityComponentSystem_->SetMainCamera2D(camera);
+			break;
+		}
+	}
+
+	if (!pEntityComponentSystem_->GetMainCamera()) {
+		Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
+		mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
+		mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+		mainCamera->SetCameraType(static_cast<int>(CameraType::Type3D));
+		pEntityComponentSystem_->SetMainCamera(mainCamera);
+	}
+
+	if (!pEntityComponentSystem_->GetMainCamera2D()) {
+		Camera* mainCamera2D = pEntityComponentSystem_->GenerateCamera();
+		mainCamera2D->SetCameraType(static_cast<int>(CameraType::Type2D));
+		pEntityComponentSystem_->SetMainCamera2D(mainCamera2D);
+	}
 
 }
 

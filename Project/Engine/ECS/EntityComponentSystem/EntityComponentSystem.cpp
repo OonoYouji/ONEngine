@@ -77,8 +77,8 @@ void EntityComponentSystem::Update() {
 	}
 }
 
-IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name) {
-	return entityCollection_->GenerateEntity(_name);
+IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
+	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {

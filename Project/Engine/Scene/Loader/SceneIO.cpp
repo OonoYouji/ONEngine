@@ -89,7 +89,7 @@ void SceneIO::Input(IScene* _scene) {
 		std::string entityName = entityJson["name"];
 		uint32_t entityId = entityJson["id"];
 
-		IEntity* entity = pECS_->GenerateEntity(entityName);
+		IEntity* entity = pECS_->GenerateEntity(entityName, false);
 		if (entity) {
 			LoadEntity(entityJson, entity);
 			entityMap[entityId] = entity;
@@ -110,6 +110,15 @@ void SceneIO::Input(IScene* _scene) {
 			if (entityMap.find(parentId) != entityMap.end()) {
 				entity->SetParent(entityMap[parentId]);
 			}
+		}
+	}
+
+
+	/// 全てのエンティティを初期化
+	for (const auto& entityPair : entityMap) {
+		IEntity* entity = entityPair.second;
+		if (entity) {
+			entity->Initialize();
 		}
 	}
 
