@@ -85,30 +85,65 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	}
 
 
-
-	/// �X�N���v�g�̃��X�g��\��
 	std::string ptrLable;
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
 	for (auto& script : scriptList) {
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
-
-		/// 
+	
+		ImGui::Spacing();
+		ImGui::SameLine();
+		
+		/// 有効/無効のチェックボックス
 		ImGui::Checkbox(ptrLable.c_str(), &script.enable);
 
-		/// ���ɕ\������e�L�X�g�̐F��ύX����
-		if (script.enable) {
+		ImGui::SameLine();
+		ImGui::Spacing();
+		ImGui::SameLine();
+
+
+
+		/// 有効/無効に応じてテキストの色を変える
+		if (!script.enable) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 		}
 
 		ImGui::InputText((ptrLable + "name").c_str(), script.scriptName.data(), ImGuiInputTextFlags_ReadOnly);
 
-		if (script.enable) {
-			ImGui::PopStyleColor(ImGuiCol_Text);
+		if (!script.enable) {
+			ImGui::PopStyleColor(1);
 		}
-
-
 	}
 
+	/// 現在のwindowのサイズを得る
+	ImVec2 windowSize = ImGui::GetWindowSize();
 
+	ImGui::InvisibleButton("##DropTarget", ImVec2(windowSize.x, 32.0f));
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			const char* droppedPath = static_cast<const char*>(payload->Data);
+			std::string name = std::string(droppedPath);
+
+			if (name.find(".cs") != std::string::npos) {
+				/// フルパスをファイル名に変更
+				size_t lastSlash = name.find_last_of("/\\");
+				if (lastSlash != std::string::npos) {
+					name = name.substr(lastSlash + 1);
+				}
+
+				/// .csを除去
+				if (name.find(".cs") != std::string::npos) {
+					name = name.substr(0, name.find(".cs"));
+				}
+
+				_script->AddScript(name);
+
+				Console::Log(std::format("Script set to: {}", name));
+			} else {
+				Console::Log("Invalid script format. Please use .cs");
+			}
+
+		}
+		ImGui::EndDragDropTarget();
+	}
 
 }

@@ -408,22 +408,6 @@ void EffectDebug(Effect* _effect) {
 
 }
 
-void ScriptDebug(Script* _script) {
-	if (!_script) {
-		return;
-	}
-
-	std::string ptrLable = "##ScriptData" + std::to_string(reinterpret_cast<uintptr_t>(_script));
-	auto& scriptDataList = _script->GetScriptDataList();
-	for (auto& script : scriptDataList) {
-		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
-		if (ImGui::Checkbox(ptrLable.c_str(), &script.enable)) {
-
-		}
-	}
-
-}
-
 void ValueImGui(Variables* _variables, const std::string& _label, const std::string& _name, size_t _type) {
 	{
 		switch (_type) {

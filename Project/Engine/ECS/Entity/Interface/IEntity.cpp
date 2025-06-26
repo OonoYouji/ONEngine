@@ -3,7 +3,9 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
-IEntity::IEntity() {}
+IEntity::IEntity() {
+	parent_ = nullptr;
+}
 
 void IEntity::CommonInitialize() {
 	name_ = typeid(*this).name();
@@ -20,6 +22,7 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	size_t hash = GetComponentHash(_name);
 	auto it = components_.find(hash);
 	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
+		it->second->SetOwner(this);
 		return it->second;
 	}
 

@@ -39,7 +39,7 @@ namespace {
 				};
 
 			fromJsonConverters_[typeName] = [this](IComponent* _component, const nlohmann::json& _j) {
-				*static_cast<T*>(_component) = _j.get<T>();
+ 				*static_cast<T*>(_component) = _j.get<T>();
 				};
 		}
 
@@ -408,16 +408,16 @@ void from_json(const nlohmann::json& _j, Script& _s) {
 	_s.enable = _j.at("enable").get<int>();
 	if (_j.contains("scriptName")) {
 
-		/// スクリプト名が文字列または配列であることを確認
-		if (_j["scriptName"].is_string()) {
-			_s.AddScript(_j.at("scriptName").get<std::string>());
-		} else if (_j["scriptName"].is_array()) {
+		///// スクリプト名が文字列または配列であることを確認
+		//if (_j["scriptName"].is_string()) {
+		//	_s.AddScript(_j.at("scriptName").get<std::string>());
+		//} else if (_j["scriptName"].is_array()) {
 
-			/// 配列の場合、各スクリプト名を追加
-			for (const auto& name : _j.at("scriptName")) {
-				_s.AddScript(name.get<std::string>());
-			}
-		}
+		//	/// 配列の場合、各スクリプト名を追加
+		//	for (const auto& name : _j.at("scriptName")) {
+		//		_s.AddScript(name.get<std::string>());
+		//	}
+		//}
 
 	} else {
 		Console::Log("Script component JSON does not contain 'scriptName'.");
