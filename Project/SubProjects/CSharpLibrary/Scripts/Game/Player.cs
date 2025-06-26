@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 
 public class Player : MonoBehavior {
 
-	float time = 0.0f;
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
@@ -15,11 +14,7 @@ public class Player : MonoBehavior {
 	float dushSpeed = 120f; // ダッシュ速度
 
 	public override void Initialize() {
-		// entityId = Find("Player");
-		//entityId = 5;
-		time = 1f / 60f;
 
-		//Update();
 	}
 
 	public override void Update() {
@@ -55,7 +50,7 @@ public class Player : MonoBehavior {
 			speed = dushSpeed; // ダッシュ
 		}
 
-		velocity = velocity.Normalized() * (speed * time);
+		velocity = velocity.Normalized() * (speed * Time.deltaTime);
 
 		t.position += velocity;
 
@@ -71,7 +66,7 @@ public class Player : MonoBehavior {
 
 
 		if (height > 0.0f) {
-			height -= 9.8f * time; // 重力
+			height -= 9.8f * Time.deltaTime; // 重力
 								   //if (height < 0.0f) {
 								   //	height = 0.0f;
 								   //}

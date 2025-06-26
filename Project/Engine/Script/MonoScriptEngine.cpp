@@ -211,6 +211,13 @@ void MonoScriptEngine::RegisterFunctions() {
 	/// log
 	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
 
+	/// time
+	mono_add_internal_call("Time::InternalGetDeltaTime", (void*)Time::DeltaTime);
+	mono_add_internal_call("Time::InternalGetTime", (void*)Time::GetTime);
+	mono_add_internal_call("Time::InternalGetUnscaledDeltaTime", (void*)Time::UnscaledDeltaTime);
+	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
+	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
+
 	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
 	//MonoObject* InternalGetTransform(uint32_t _entityId);
 	/// 他のクラスの関数も登録
