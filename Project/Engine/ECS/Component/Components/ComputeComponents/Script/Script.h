@@ -3,6 +3,7 @@
 /// std
 #include <string>
 #include <vector>
+#include <array>
 
 /// externals
 #include <jit/jit.h>
@@ -26,6 +27,9 @@ public:
 		uint32_t gcHandle = 0;
 		MonoMethod* initMethod = nullptr;
 		MonoMethod* updateMethod = nullptr;
+
+		std::array<MonoMethod*, 3> collisionEventMethods = {};
+
 		bool enable = true;  ///< スクリプトの有効/無効フラグ
 	};
 

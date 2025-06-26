@@ -143,6 +143,11 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	}
 
 
+	/// collision イベントメソッドを取得
+	_script->collisionEventMethods[0] = FindMethodInClassOrParents(monoClass, "OnCollisionEnter", 1);
+	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
+	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
+
 	/// スクリプトのメンバ変数に設定
 	_script->scriptName = _scriptName;
 	_script->gcHandle = gcHandle;
