@@ -6,7 +6,7 @@
 #include <string>
 
 /// externals
-#include "mono/jit/jit.h"
+#include <jit/jit.h>
 
 /// engine
 #include "../Entity/Collection/EntityCollection.h"

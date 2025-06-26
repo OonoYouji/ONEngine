@@ -5,12 +5,11 @@
 #include <optional>
 
 /// externals
-#include "mono/jit/jit.h"
-#include "mono/metadata/assembly.h"
-#include "mono/metadata/mono-debug.h"
-#include "mono/metadata/debug-helpers.h"
-//#include "mono/metadata/debug-mono-symfile.h"
-#include "mono/utils/mono-logger.h"
+#include <jit/jit.h>
+#include <metadata/assembly.h>
+#include <metadata/mono-debug.h>
+#include <metadata/debug-helpers.h>
+#include <utils/mono-logger.h>
 
 void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
 MonoScriptEngine* GetMonoScriptEnginePtr();

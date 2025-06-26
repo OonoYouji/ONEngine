@@ -4,7 +4,7 @@
 #include <regex>
 
 /// externals
-//#include "mono/metadata/debug-mono-symfile.h"
+//#include <metadata/debug-mono-symfile.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -47,22 +47,25 @@ void MonoScriptEngine::Initialize() {
 
 	// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
-	// Mono のデバッグ用初期化
+	// debugサポートの初期化
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 
-	//// JIT オプションを渡す
-	//char* options[] = { const_cast<char*>("--debug") };
-	//mono_jit_parse_options(1, options);
+	// デバッグオプションを渡す
+	const char* options[] = {
+		"--soft-breakpoints",   // ソフトブレークポイントを有効にする
+		"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
+	};
+	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
 
-	// JIT初期化（バージョン付きのほうが推奨）
+	// JIT初期化
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
 	}
 
-	// デバッグドメイン作成
 	mono_debug_domain_create(domain_);
+
 
 	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
@@ -79,6 +82,7 @@ void MonoScriptEngine::Initialize() {
 	}
 
 	image_ = mono_assembly_get_image(assembly_);
+	//mono_debug_open_image();
 	if (!image_) {
 		Console::Log("Failed to get image from assembly");
 		return;

@@ -365,7 +365,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

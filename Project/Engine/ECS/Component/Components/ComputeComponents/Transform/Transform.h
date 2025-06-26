@@ -4,8 +4,8 @@
 #include <memory>
 
 /// externals
-#include "mono/jit/jit.h"
-#include "mono/metadata/class.h"
+#include <jit/jit.h>
+#include <metadata/class.h>
 
 /// engine
 #include "../../Interface/IComponent.h"
