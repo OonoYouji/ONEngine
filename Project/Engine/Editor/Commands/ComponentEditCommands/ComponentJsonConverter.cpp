@@ -32,19 +32,21 @@ namespace {
 
 		template <typename T>
 		void Register() {
-			converters_[typeid(T).hash_code()] = [](const IComponent* _component) {
+			std::string typeName = typeid(T).name();
+
+			converters_[typeName] = [](const IComponent* _component) {
 				return *static_cast<const T*>(_component);
 				};
 
-			fromJsonConverters_[typeid(T).hash_code()] = [this](IComponent* _component, const nlohmann::json& _j) {
+			fromJsonConverters_[typeName] = [this](IComponent* _component, const nlohmann::json& _j) {
 				*static_cast<T*>(_component) = _j.get<T>();
 				};
 		}
 
 		using Converter = std::function<nlohmann::json(const IComponent*)>;
 		using FromJsonConverter = std::function<void(IComponent*, const nlohmann::json&)>;
-		std::unordered_map<size_t, Converter> converters_;
-		std::unordered_map<size_t, FromJsonConverter> fromJsonConverters_;
+		std::unordered_map<std::string, Converter> converters_;
+		std::unordered_map<std::string, FromJsonConverter> fromJsonConverters_;
 
 	};
 
@@ -52,7 +54,8 @@ namespace {
 }
 
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
-	auto it = jsonConverter.converters_.find(typeid(*_component).hash_code());
+	std::string name = typeid(*_component).name();
+	auto it = jsonConverter.converters_.find(name);
 	if (it == jsonConverter.converters_.end()) {
 		return nlohmann::json{};
 	}
@@ -62,7 +65,7 @@ nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 
 void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
 	const std::string& name = typeid(*_component).name();
-	auto it = jsonConverter.fromJsonConverters_.find(typeid(*_component).hash_code());
+	auto it = jsonConverter.fromJsonConverters_.find(name);
 
 	if (it == jsonConverter.fromJsonConverters_.end()) {
 		Console::Log("ComponentJsonConverter: " + name + "の変換関数が登録されていません。");
@@ -324,7 +327,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 }
 
 void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<bool>();
+	_m.enable = _j.at("enable").get<int>();
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Vec4>());
@@ -378,7 +381,9 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
 }
 
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
-	_l.enable = _j.at("enable").get<bool>();
+	if (!_j.contains("enable")) {
+		_l.enable = _j.at("enable").get<bool>();
+	}
 }
 
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {

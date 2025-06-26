@@ -145,6 +145,20 @@
     <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
+    <ClCompile Include="Game\Entity\Player\Player.cpp" />
+    <ClCompile Include="Game\Entity\TestEntity\TestEntity.cpp" />
+    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
+    <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
+    <ClCompile Include="Game\Objects\Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -289,5 +303,19 @@
     <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
     <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
+    <ClInclude Include="Game\Entity\Player\Player.h" />
+    <ClInclude Include="Game\Entity\TestEntity\TestEntity.h" />
+    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
+    <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject.h" />
+    <ClInclude Include="Game\Objects\Enemy.h" />
   </ItemGroup>
 </Project>

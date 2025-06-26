@@ -25,6 +25,10 @@ ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
 	gameRootFolder_ = std::make_shared<Folder>();
 	gameRootFolder_->name = "Game";
 	LoadFolder("./Game", gameRootFolder_);
+	
+	engineRootFolder_ = std::make_shared<Folder>();
+	engineRootFolder_->name = "Engine";
+	LoadFolder("./Engine/ECS/Entity/Entities", engineRootFolder_);
 
 	selectedFolder_ = gameRootFolder_;
 	isGameFolder_ = true;
@@ -67,6 +71,7 @@ void ImGuiProjectWindow::Hierarchy() {
 
 	/// root folderを再帰的に描画
 	DrawGameFolderHierarchy(gameRootFolder_, 0);
+	DrawFolderHierarchy(engineRootFolder_, 0);
 	DrawFolderHierarchy(assetsRootFolder_, 0);
 	DrawFolderHierarchy(packagesRootFolder_, 0);
 
