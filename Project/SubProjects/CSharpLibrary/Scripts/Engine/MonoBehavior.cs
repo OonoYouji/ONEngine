@@ -3,16 +3,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 
-public static class Log {
-	static public void WriteLine(string message) {
-		InternalConsoleLog(message);
-	}
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalConsoleLog(string s);
-}
-
-
 public class MonoBehavior {
 
 	public Entity entity {
@@ -62,8 +52,18 @@ public class MonoBehavior {
 	}
 
 
+	public virtual void OnCollisionEnter(Entity collision) {
+		// Override this method to handle collision events
+	}
 
-	
+	public virtual void OnCollisionExit(Entity collision) {
+		// Override this method to handle collision exit events
+	}
+
+	public virtual void OnCollisionStay(Entity collision) {
+		// Override this method to handle collision stay events
+	}
+
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	private static extern int InternalGetEntityId();

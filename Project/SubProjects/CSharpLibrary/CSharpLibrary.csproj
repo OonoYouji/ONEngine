@@ -45,6 +45,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Input.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\KeyCode.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Log\Log.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
@@ -58,6 +59,10 @@
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\Player.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
+    <Compile Include="Scripts\Game\Puzzle.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\Engine\Collision\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
