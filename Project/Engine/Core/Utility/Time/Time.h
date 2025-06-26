@@ -21,8 +21,10 @@ public:
 	/// public : methods
 	/// =======================================================
 
+	static float GetTime();
 	static float DeltaTime();
 	static float UnscaledDeltaTime();
+
 	static float TimeScale();
 	static void SetTimeScale(float _timeScale);
 };

@@ -15,6 +15,35 @@
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 
+namespace {
+	EntityComponentSystem* gECS = nullptr;
+}
+
+void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs) {
+	gECS = _ecs;
+}
+
+EntityComponentSystem* GetEntityComponentSystemPtr() {
+	return gECS;
+}
+
+uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName) {
+	std::string typeName = mono_string_to_utf8(_monoTypeName);
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	IComponent* component = entity->AddComponent(typeName);
+	if (!component) {
+		Console::Log("Failed to add component: " + typeName);
+		return 0;
+	}
+
+	return reinterpret_cast<uint64_t>(component);
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -119,6 +148,14 @@ void EntityComponentSystem::SetDebugCamera(size_t _index) {
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
+}
+
+IEntity* EntityComponentSystem::GetEntity(size_t _index) {
+	if (_index < entityCollection_->GetEntities().size()) {
+		return entityCollection_->GetEntities()[_index].get();
+	}
+
+	return nullptr;
 }
 
 const std::vector<Camera*>& EntityComponentSystem::GetCameras() {

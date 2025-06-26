@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
-
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -31,6 +31,11 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
 	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
 
+	/// ポインタを保持
+	SetMonoScriptEnginePtr(monoScriptEngine_.get());
+	SetEntityComponentSystemPtr(entityComponentSystem_.get());
+
+
 	/// 各クラスの初期化を行う
 
 	/// directX12の初期化
@@ -44,13 +49,14 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
 
+	monoScriptEngine_->Initialize();
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
 	entityComponentSystem_->Initialize();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
 
-	monoScriptEngine_->Initialize();
+
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 

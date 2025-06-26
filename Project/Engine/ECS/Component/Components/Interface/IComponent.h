@@ -25,7 +25,7 @@ public:
 	/// public : objects
 	/// ===========================================
 
-	bool enable = true; ///< コンポーネントが有効かどうか
+	int enable = true; ///< コンポーネントが有効かどうか
 	uint32_t id;
 
 protected:

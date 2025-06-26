@@ -89,7 +89,9 @@ inline Comp* ComponentCollection::AddComponent() requires std::is_base_of_v<ICom
 template<typename Comp>
 inline Comp* ComponentCollection::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 	size_t hash = GetComponentHash<Comp>();
-	return &arrayMap_[hash]->components_[_index];
+	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
+
+	return &componentArray->components_[_index];
 }
 
 template<typename Comp>

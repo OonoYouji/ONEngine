@@ -1,9 +1,11 @@
 #pragma once
 
+/// std
 #include <unordered_map>
 #include <vector>
 #include <memory>
 #include <string>
+#include <deque>
 
 #include "../Factory/EntityFactory.h"
 
@@ -45,6 +47,8 @@ public:
 
 	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
 
+	size_t NewEntityID();
+
 private:
 
 	class EntityComponentSystem* pECS_;
@@ -52,6 +56,12 @@ private:
 	class DxDevice* pDxDevice_;
 
 	std::unique_ptr<EntityFactory> factory_;
+
+	/// entityのIDを管理するためのdeque
+	std::deque<size_t> usedEntityIDs_;
+	std::deque<size_t> removedEntityIDs_;
+
+	/// entityの本体を持つ配列
 	std::vector<std::unique_ptr<IEntity>> entities_;
 	std::vector<Camera*> cameras_;
 	std::vector<IEntity*> doNotDestroyEntities_;
@@ -99,32 +109,23 @@ inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity,
 		name = name.substr(6); // Remove "class " prefix
 	}
 
-	std::unique_ptr<IEntity> entity = factory_->Generate(name);
+	IEntity* entity = GenerateEntity(name);
 	if (!entity) {
 		factory_->Register(name, []() { return std::make_unique<T>(); });
-		entity = factory_->Generate(name);
+		entity = GenerateEntity(name);
 		if (!entity) {
 			Console::Log(std::format("Failed to generate entity of type: {}", name));
-			return nullptr;
 		}
 	}
 
-	T* entityPtr = static_cast<T*>(entity.get());
-	entities_.push_back(std::move(entity));
-
-	entityPtr->pEntityComponentSystem_ = pECS_;
-	entityPtr->CommonInitialize();
-	entityPtr->Initialize();
-
-	
-
-	return entityPtr;
+	return static_cast<T*>(entity);
 }
 
 template<typename T>
 inline T* EntityCollection::GenerateCamera() requires std::is_base_of_v<Camera, T> {
 	std::unique_ptr<T> camera = std::make_unique<T>(pDxDevice_);
 	camera->pEntityComponentSystem_ = pECS_;
+	camera->id_ = NewEntityID();
 	camera->CommonInitialize();
 	camera->Initialize();
 	T* cameraPtr = camera.get();

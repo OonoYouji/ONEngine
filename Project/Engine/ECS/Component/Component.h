@@ -10,6 +10,7 @@
 #include "Components/ComputeComponents/Audio/AudioSource.h"
 #include "Components/ComputeComponents/Variables/Variables.h"
 #include "Components/ComputeComponents/Effect/Effect.h"
+#include "Components/ComputeComponents/Script/Script.h"
 
 /// renderer
 #include "Components/RendererComponents/Mesh/MeshRenderer.h"

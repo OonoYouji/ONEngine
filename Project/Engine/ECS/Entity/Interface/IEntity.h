@@ -60,7 +60,7 @@ protected:
 	class EntityComponentSystem* pEntityComponentSystem_;
 
 	bool active_ = true; ///< true のときは更新する
-	uint32_t id_ = 0; ///< entityのID
+	size_t id_ = 0; ///< entityのID
 
 private:
 
@@ -124,7 +124,8 @@ public:
 
 	bool GetActive() const;
 
-	uint32_t GetId() const;
+	const size_t& GetId() const;
+	size_t* GetIdPtr();
 
 };
 
