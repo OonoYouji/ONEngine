@@ -71,41 +71,41 @@ void GameScene::Initialize() {
 	//script->SetScript("Player");
 	//emptyEntity->AddComponent<MeshRenderer>();
 
-	//terrainEditor_ = std::make_unique<TerrainEditor>(
-	//	pEntityComponentSystem_->FindEntity<Terrain>(),
-	//	pEntityComponentSystem_
-	//);
-	//terrainEditor_->Initialize();
+	terrainEditor_ = std::make_unique<TerrainEditor>(
+		pEntityComponentSystem_->FindEntity<Terrain>(),
+		pEntityComponentSystem_
+	);
+	terrainEditor_->Initialize();
 
 
-	/// 草を生やす
-	EmptyEntity* emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
+	///// 草を生やす
+	//EmptyEntity* emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
 
-	int num = 10;
-	for (size_t i = 0; i < num; i++) {
-		for (size_t j = 0; j < num; j++) {
-			auto grass = pEntityComponentSystem_->GenerateEntity<BackgroundObject>();
-			grass->SetPosition(Vector3(i * 20, 0.0f, j * 20) + Random::Vector3(-Vec3::kOne * 10, Vec3::kOne * 10.0f));
-			grass->SetPositionY(0.0f);
-			grass->SetRotateY(Random::Float(0, 3));
-			grass->SetScale(Vector3::kOne * Random::Float(1, 3));
+	//int num = 10;
+	//for (size_t i = 0; i < num; i++) {
+	//	for (size_t j = 0; j < num; j++) {
+	//		auto grass = pEntityComponentSystem_->GenerateEntity<BackgroundObject>();
+	//		grass->SetPosition(Vector3(i * 20, 0.0f, j * 20) + Random::Vector3(-Vec3::kOne * 10, Vec3::kOne * 10.0f));
+	//		grass->SetPositionY(0.0f);
+	//		grass->SetRotateY(Random::Float(0, 3));
+	//		grass->SetScale(Vector3::kOne * Random::Float(1, 3));
 
-			MeshRenderer* meshRenderer = grass->GetComponent<MeshRenderer>();
-			if (meshRenderer) {
-				int randomValue = rand() % 3 + 1;
-				meshRenderer->SetMeshPath("./Packages/Models/BackgroundObjects/Tree" + std::to_string(randomValue) + ".obj");
-			}
+	//		MeshRenderer* meshRenderer = grass->GetComponent<MeshRenderer>();
+	//		if (meshRenderer) {
+	//			int randomValue = rand() % 3 + 1;
+	//			meshRenderer->SetMeshPath("./Packages/Models/BackgroundObjects/Tree" + std::to_string(randomValue) + ".obj");
+	//		}
 
-			grass->SetParent(emptyEntity);
-		}
-	}
+	//		grass->SetParent(emptyEntity);
+	//	}
+	//}
 
 
 }
 
 void GameScene::Update() {
 #ifdef _DEBUG
-	//terrainEditor_->Update();
+	terrainEditor_->Update();
 #endif // _DEBUG
 
 }

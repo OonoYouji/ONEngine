@@ -187,7 +187,7 @@ void to_json(nlohmann::json& _j, const Variables& _v) {
 }
 
 void from_json(const nlohmann::json& _j, Effect& _e) {
-	_e.enable = _j.at("enable").get<bool>();
+	_e.enable = _j.at("enable").get<int>();
 	_e.SetIsCreateParticle(_j.at("isCreateParticle").get<bool>());
 	_e.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_e.SetTexturePath(_j.at("texturePath").get<std::string>());
@@ -343,7 +343,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 }
 
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<bool>();
+	_m.enable = _j.at("enable").get<int>();
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Color>());
 }
@@ -357,7 +357,7 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 }
 
 void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
-	_s.enable = _j.at("enable").get<bool>();
+	_s.enable = _j.at("enable").get<int>();
 	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
 }
 
@@ -370,7 +370,7 @@ void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
 }
 
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
-	_l.enable = _j.at("enable").get<bool>();
+	_l.enable = _j.at("enable").get<int>();
 }
 
 void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
@@ -382,7 +382,7 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
 
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
 	if (!_j.contains("enable")) {
-		_l.enable = _j.at("enable").get<bool>();
+		_l.enable = _j.at("enable").get<int>();
 	}
 }
 
@@ -394,7 +394,7 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 }
 
 void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
-	_c.enable = _j.at("enable").get<bool>();
+	_c.enable = _j.at("enable").get<int>();
 }
 
 void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
@@ -405,7 +405,7 @@ void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
 }
 
 void from_json(const nlohmann::json& _j, Script& _s) {
-	_s.enable = _j.at("enable").get<bool>();
+	_s.enable = _j.at("enable").get<int>();
 	if (_j.contains("scriptName")) {
 		_s.SetScript(_j.at("scriptName").get<std::string>());
 	} else {
