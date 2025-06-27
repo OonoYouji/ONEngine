@@ -163,6 +163,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
     <ClCompile Include="Engine\ECS\System\CollisionSystem\CollisionSystem.cpp" />
+    <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />
     <ClInclude Include="Engine\ECS\System\CollisionSystem\CollisionSystem.h" />
+    <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

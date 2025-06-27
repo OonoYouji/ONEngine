@@ -15,7 +15,7 @@ public class Puzzle : MonoBehavior {
 
 	public override void OnCollisionEnter(Entity collision) {
 		// パズルが他のエンティティと衝突したときの処理
-		Log.WriteLine("collided:" + collision.name);
+		//Log.WriteLine("collided:" + collision.name);
 	}
 
 

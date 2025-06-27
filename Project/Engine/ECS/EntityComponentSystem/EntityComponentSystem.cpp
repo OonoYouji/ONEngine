@@ -44,6 +44,21 @@ uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
+uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName) {
+	/// idからentityを取得
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	/// componentを取得
+	std::string typeName = mono_string_to_utf8(_monoTypeName);
+	IComponent* component = entity->GetComponent(typeName);
+
+	return reinterpret_cast<uint64_t>(component);
+}
+
 MonoString* InternalGetName(uint32_t _entityId) {
 	IEntity* entity = gECS->GetEntity(_entityId);
 	if (!entity) {

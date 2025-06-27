@@ -9,10 +9,19 @@ class MeshRenderer : Component {
 
 	public string meshName {
 		get {
-			return InternalGetMeshName(entity.Id);
+			return InternalGetMeshName(nativeHandle);
 		}
 		set {
-			InternalSetMeshName(entity.Id, value);
+			InternalSetMeshName(nativeHandle, value);
+		}
+	}
+
+	public Vector4 color {
+		get {
+			return InternalGetColor(nativeHandle);
+		}
+		set {
+			InternalSetColor(nativeHandle, value);
 		}
 	}
 
@@ -22,16 +31,16 @@ class MeshRenderer : Component {
 	/// -------------------------------------------
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern string InternalGetMeshName(uint _entityId);
+	static extern string InternalGetMeshName(ulong _nativeHandle);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetMeshName(uint _entityId, string _meshName);
+	static extern void InternalSetMeshName(ulong _nativeHandle, string _meshName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern Vector4 InternalGetColor(uint _entityId);
+	static extern Vector4 InternalGetColor(ulong _nativeHandle);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetColor(uint _entityId, Vector4 _color);
+	static extern void InternalSetColor(ulong _nativeHandle, Vector4 _color);
 
 
 }

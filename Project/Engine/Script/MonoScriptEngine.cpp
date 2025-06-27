@@ -12,6 +12,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 
+#include "InternalCalls/AddComponentInternalCalls.h"
+
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
@@ -182,17 +184,11 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録
 
-	/// transform
-	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
-	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
-	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
-	mono_add_internal_call("Transform::InternalGetScale", (void*)InternalGetScale);
-	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
-	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
-	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
+	AddComponentInternalCalls();
 
 	/// entity
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
 	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
 	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
 
@@ -206,8 +202,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
 
-	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
-	//MonoObject* InternalGetTransform(uint32_t _entityId);
+
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
 

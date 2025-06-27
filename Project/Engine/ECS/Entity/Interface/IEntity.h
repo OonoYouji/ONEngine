@@ -38,6 +38,8 @@ public:
 	template <class Comp>
 	Comp* GetComponent() const requires std::is_base_of_v<IComponent, Comp>;
 
+	IComponent* GetComponent(const std::string& _compName) const;
+
 	template <typename Comp>
 	void RemoveComponent() requires std::is_base_of_v<IComponent, Comp>;
 

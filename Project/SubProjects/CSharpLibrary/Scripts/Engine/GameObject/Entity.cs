@@ -10,7 +10,7 @@ public class Entity {
 	/// =========================================
 
 	private Transform _transform;
-	private Dictionary<Type, Component> components = new Dictionary<Type, Component>();
+	Dictionary<string, Component> _components = new Dictionary<string, Component>();
 
 	uint entityId;
 
@@ -48,29 +48,28 @@ public class Entity {
 	/// ------------------------------------------
 
 	public T AddComponent<T>() where T : Component {
-
 		/// コンポーネントを作る
 		string typeName = typeof(T).Name;
 		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
 
-		/// すでにコンポーネントが存在する場合はそれを返す
-		if (components.TryGetValue(typeof(T), out var c)) {
-			return c as T;
-		}
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;
-		components[typeof(T)] = comp;
+		_components[typeName] = comp;
 		return comp;
 	}
 
 	public T GetComponent<T>() where T : Component {
-		if(components.TryGetValue(typeof(T), out var comp)) {
-			return comp as T;
-		}
+		/// コンポーネントを得る
+		string typeName = typeof(T).Name;
+		ulong nativeHandle = InternalGetComponent<T>(entityId, typeName);
 
-		return null;
+		T comp = Activator.CreateInstance<T>();
+		comp.nativeHandle = nativeHandle;
+		comp.entity = this;
+		_components[typeName] = comp;
+		return comp;
 	}
 
 
@@ -80,6 +79,9 @@ public class Entity {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern ulong InternalAddComponent<T>(uint _entityId, string _compTypeName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern ulong InternalGetComponent<T>(uint _entityId, string _compTypeName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern string InternalGetName(uint _entityId);

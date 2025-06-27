@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
-public class Vector4 {
+[StructLayout(LayoutKind.Sequential)]
+public struct Vector4 {
 	public float x, y, z, w;
 
 	public Vector4(float _x, float _y, float _z, float _w) {
@@ -13,14 +11,6 @@ public class Vector4 {
 		z = _z;
 		w = _w;
 	}
-
-	public Vector4() {
-		x = 0.0f;
-		y = 0.0f;
-		z = 0.0f;
-		w = 0.0f;
-	}
-
 
 	/// -----------------------------------------------
 	/// public methods

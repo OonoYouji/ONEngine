@@ -38,6 +38,21 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	return component;
 }
 
+IComponent* IEntity::GetComponent(const std::string& _compName) const {
+
+	/// stringをhashに変換
+	size_t hash = GetComponentHash(_compName);
+
+	/// hashからコンポーネントを取得
+	auto itr = components_.find(hash);
+	if (itr != components_.end()) {
+		return itr->second;
+	}
+
+	/// コンポーネントが見つからない場合はnullptrを返す
+	return nullptr;
+}
+
 void IEntity::RemoveComponent(const std::string& _compName) {
 	size_t hash = GetComponentHash(_compName);
 	auto it = components_.find(hash);
