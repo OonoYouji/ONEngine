@@ -27,7 +27,7 @@ public class Entity {
 	}
 
 	public Transform transform => _transform;
-
+	public uint Id => entityId;
 
 	/// ------------------------------------------
 	/// components

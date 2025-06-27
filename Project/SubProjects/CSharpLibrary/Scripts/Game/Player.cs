@@ -78,4 +78,10 @@ public class Player : MonoBehavior {
 	}
 
 
+	public override void OnCollisionEnter(Entity collision) {
+		transform.position = new Vector3(10f, 0.0f, 0f);
+		Log.WriteLine("Player collided with: " + collision.Id);
+	}
+
+
 }

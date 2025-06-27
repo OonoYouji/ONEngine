@@ -133,10 +133,15 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 		if (entityA && entityB) {
 			/// 衝突イベントの実行
 			std::array<Script*, 2> scripts;
+			std::array<IEntity*, 2> entities = { entityA, entityB };
 			scripts[0] = entityA->GetComponent<Script>();
 			scripts[1] = entityB->GetComponent<Script>();
 
 			for (size_t i = 0; i < 2; i++) {
+				if (!scripts[i]) {
+					continue; // スクリプトがない場合はスキップ
+				}
+
 				auto& data = scripts[i]->GetScriptDataList();
 				for (auto& script : data) {
 
@@ -144,7 +149,7 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 
 					/// 引数の準備
 					void* params[1];
-					params[0] = scripts[(i + 1) % 2]->GetOwner(); /// 衝突しているもう一方のオブジェクトを渡す
+					params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
 					/// 関数の実行
 					mono_runtime_invoke(script.collisionEventMethods[0], script.instance, params, &exc);
@@ -170,6 +175,8 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 	}
 
 
+
+	collisionPairs_.clear(); ///< 衝突ペアをクリア
 }
 
 
