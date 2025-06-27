@@ -13,9 +13,6 @@ public class MonoBehavior {
 		get {
 			return entity.transform;
 		}
-		set {
-			//entity.transform = value;
-		}
 	}
 
 	private bool initialized = false;
@@ -36,10 +33,6 @@ public class MonoBehavior {
 	public virtual void OnCollisionEnter(Entity collision) { }
 	public virtual void OnCollisionExit(Entity collision) { }
 	public virtual void OnCollisionStay(Entity collision) { }
-
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern int InternalGetEntityId();
 
 
 

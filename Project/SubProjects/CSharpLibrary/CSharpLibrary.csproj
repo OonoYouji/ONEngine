@@ -48,6 +48,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Log\Log.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\GameObject\Component.cs" />

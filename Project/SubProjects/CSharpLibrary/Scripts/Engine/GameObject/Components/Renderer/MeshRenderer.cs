@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 class MeshRenderer : Component {
 
-	public string meshName {
+	public string meshPath {
 		get {
 			return InternalGetMeshName(nativeHandle);
 		}

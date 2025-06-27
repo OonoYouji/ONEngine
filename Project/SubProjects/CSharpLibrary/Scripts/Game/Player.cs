@@ -29,11 +29,11 @@ public class Player : MonoBehavior {
 
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
+	
+		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.LeftThumb);
 
-		if (Input.PressKey(KeyCode.W)) { velocity.z += 0.1f; }
-		if (Input.PressKey(KeyCode.S)) { velocity.z -= 0.1f; }
-		if (Input.PressKey(KeyCode.A)) { velocity.x -= 0.1f; }
-		if (Input.PressKey(KeyCode.D)) { velocity.x += 0.1f; }
+		velocity.x = gamepadAxis.x;
+		velocity.z = gamepadAxis.y;
 
 		float speed = moveSpeed;
 		if (Input.PressKey(KeyCode.LeftShift)) {
@@ -44,8 +44,6 @@ public class Player : MonoBehavior {
 
 		t.position += velocity;
 
-		// 元のtransformを更新
-		transform = t;
 	}
 
 
@@ -64,7 +62,6 @@ public class Player : MonoBehavior {
 		position.y = height;
 		t.position = position;
 
-		transform = t;
 	}
 
 

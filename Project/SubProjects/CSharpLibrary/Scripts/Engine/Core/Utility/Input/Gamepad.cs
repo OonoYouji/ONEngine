@@ -17,3 +17,8 @@ public enum Gamepad {
 	X = 0x4000,
 	Y = 0x8000
 }
+
+public enum GamepadAxis {
+	LeftThumb = 0,
+	RightThumb = 1,
+}
