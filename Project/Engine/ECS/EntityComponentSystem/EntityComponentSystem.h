@@ -225,3 +225,7 @@ uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName);
 MonoString* InternalGetName(uint32_t _entityId);
 
 void InternalSetName(uint32_t _entityId, MonoString* _name);
+
+uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
+
+bool InternalContainsEntity(uint32_t _entityId);

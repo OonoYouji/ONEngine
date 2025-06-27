@@ -11,6 +11,7 @@ public class Player : MonoBehavior {
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
+	bool isDushing = false; // ダッシュ中かどうか
 	float moveSpeed = 16f; // 移動速度
 	float dushSpeed = 32f; // ダッシュ速度
 
@@ -21,6 +22,8 @@ public class Player : MonoBehavior {
 	public override void Update() {
 		Move();
 		Jump();
+
+		CameraFollow();
 	}
 
 
@@ -29,16 +32,16 @@ public class Player : MonoBehavior {
 
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
-	
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.LeftThumb);
-
 		velocity.x = gamepadAxis.x;
 		velocity.z = gamepadAxis.y;
 
-		float speed = moveSpeed;
-		if (Input.PressKey(KeyCode.LeftShift)) {
-			speed = dushSpeed; // ダッシュ
+		if (Input.TriggerGamepad(Gamepad.LeftThumb)) {
+			isDushing = !isDushing; // ダッシュのトグル
 		}
+
+		/// 移動速度
+		float speed = isDushing ? dushSpeed : moveSpeed;
 
 		velocity = velocity.Normalized() * (speed * Time.deltaTime);
 
@@ -61,6 +64,21 @@ public class Player : MonoBehavior {
 		Vector3 position = t.position;
 		position.y = height;
 		t.position = position;
+
+	}
+
+
+	void CameraFollow() {
+		/// カメラの位置をプレイヤーの位置に合わせる
+		Transform cT = entity.GetChild(0).transform;
+		//cT.position = new Vector3(transform.position.x, transform.position.y + 5.0f, transform.position.z - 10.0f);
+
+		/// 入力
+		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
+		Vector3 cameraRotate = cT.rotate;
+		cameraRotate.y += gamepadAxis.x * 0.1f; // X軸の回転
+		cameraRotate.x += gamepadAxis.y * 0.1f; // Y軸の回転
+		cT.rotate = cameraRotate;
 
 	}
 

@@ -33,8 +33,8 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<Line3DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<ToTerrainCollider>( [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Script>(            [&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
-	RegisterComponent<SphereCollider>(    [&](IComponent* _component) { });
-	RegisterComponent<BoxCollider>(       [&](IComponent* _component) { });
+	RegisterComponent<SphereCollider>(    [&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component));});
+	RegisterComponent<BoxCollider>(       [&]([[maybe_unused]] IComponent* _component) { });
 
 
 	/// 関数を登録

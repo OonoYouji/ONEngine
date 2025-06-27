@@ -17,7 +17,7 @@ public class Entity {
 	public Transform transform => _transform;
 	public uint Id {
 		get {
-			return entityId;
+			return entityId; 
 		}
 	}
 
@@ -41,6 +41,13 @@ public class Entity {
 		_transform = AddComponent<Transform>();
 		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
 	}
+
+
+	public Entity GetChild(uint _index) {
+		uint childId = InternalGetChildId(entityId, _index);
+		return EntityCollection.GetEntity(childId);
+	}
+
 
 
 	/// ------------------------------------------
@@ -89,5 +96,7 @@ public class Entity {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetName(uint _entityId, string _name);
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern uint InternalGetChildId(uint _entityId, uint _childIndex);
 
 }

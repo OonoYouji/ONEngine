@@ -170,7 +170,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	/// 初期化の呼び出し
 	if (initMethod && obj) {
 		IEntity* owner = _comp->GetOwner();
-		uint32_t id = owner->GetId();
+		uint32_t id = static_cast<uint32_t>(owner->GetId());
 		void* args[1];
 		args[0] = &id;
 
@@ -199,6 +199,8 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
 	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
 	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
+	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
+	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 
 	/// log
 	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);

@@ -82,6 +82,32 @@ void InternalSetName(uint32_t _entityId, MonoString* _name) {
 	entity->SetName(name);
 }
 
+uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	const auto& children = entity->GetChildren();
+	if (_childIndex >= children.size()) {
+		Console::Log("Child index out of range for entity ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	IEntity* child = children[_childIndex];
+	return static_cast<uint32_t>(child->GetId());
+}
+
+bool InternalContainsEntity(uint32_t _entityId) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (entity) {
+		return true;
+	}
+
+	return false;
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}

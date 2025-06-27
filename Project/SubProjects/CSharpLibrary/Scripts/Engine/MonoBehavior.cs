@@ -22,7 +22,7 @@ public class MonoBehavior {
 			Initialize();
 			initialized = true;
 
-			entity = new Entity(_entityId);
+			entity = EntityCollection.GetEntity(_entityId);
 			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
 		}
 	}
