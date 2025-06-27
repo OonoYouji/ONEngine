@@ -8,8 +8,8 @@ public class Component {
 
 	public int enable; /// 0 = disabled, 1 = enabled
 	public ulong nativeHandle; /// 
-
-
+	public Entity entity;
+	
 	/// ========================================
 	/// c++ internal methods
 	/// ========================================

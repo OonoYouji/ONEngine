@@ -60,6 +60,7 @@ public class Entity {
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
+		comp.entity = this;
 		components[typeof(T)] = comp;
 		return comp;
 	}
