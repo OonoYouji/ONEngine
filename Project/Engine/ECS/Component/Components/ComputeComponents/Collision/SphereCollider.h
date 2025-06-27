@@ -33,3 +33,9 @@ public:
 
 };
 
+
+namespace COMP_DEBUG {
+	/// @brief SphereColliderのデバッグ表示
+	/// @param _collider SphereColliderのポインタ
+	void SphereColliderDebug(SphereCollider* _collider);
+}

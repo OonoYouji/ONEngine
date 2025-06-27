@@ -19,7 +19,7 @@ public class Player : MonoBehavior {
 
 	public override void Update() {
 		Move();
-		//Jump();
+		Jump();
 	}
 
 
@@ -67,9 +67,6 @@ public class Player : MonoBehavior {
 
 		if (height > 0.0f) {
 			height -= 9.8f * Time.deltaTime; // 重力
-								   //if (height < 0.0f) {
-								   //	height = 0.0f;
-								   //}
 		}
 
 		Transform t = transform;
@@ -78,7 +75,6 @@ public class Player : MonoBehavior {
 		t.position = position;
 
 		transform = t;
-
 	}
 
 

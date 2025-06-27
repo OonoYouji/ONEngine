@@ -1,12 +1,23 @@
 #include "CollisionSystem.h"
 
-/// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+/// std
+#include <unordered_map>
+#include <utility>
 
-/// collider
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
+/// engine
+#include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Component.h"
+
+
+namespace std {
+	template <>
+	struct hash<std::pair<int, int>> {
+		std::size_t operator()(const std::pair<int, int>& p) const {
+			return std::hash<int>()(p.first) ^ (std::hash<int>()(p.second) << 1);
+		}
+	};
+}
 
 
 CollisionSystem::CollisionSystem() {
@@ -28,7 +39,7 @@ CollisionSystem::CollisionSystem() {
 			_pair.second->GetComponent<BoxCollider>()
 		);
 		};
-	
+
 	collisionCheckMap_[boxCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair) -> bool {
 		return CheckMethod::CollisionCheckSphereVsBox(
 			_pair.first->GetComponent<SphereCollider>(),
@@ -67,7 +78,8 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 	}
 
 
-	std::unordered_map<std::string, int> collisionFrameMap; ///< 衝突計算をしたフレームを記録するマップ
+	using EntityPair = std::pair<int, int>;
+	std::unordered_map<EntityPair, int> collisionFrameMap; ///< 衝突計算をしたフレームを記録するマップ
 
 	/// 衝突判定
 	for (auto& a : colliders) {
@@ -79,13 +91,24 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 			}
 
 			/// このフレームないで衝突計算をしているかチェック
-			std::string str = typeid(*a).name() + std::string("Vs") + typeid(*b).name();
-			if (collisionFrameMap[str] == 0) {
-				++collisionFrameMap[str]; // 衝突計算をしたフレームを記録
+			std::string collisionType = typeid(*a).name() + std::string("Vs") + typeid(*b).name();
+			EntityPair pairKey = std::make_pair(a->GetOwner()->GetId(), b->GetOwner()->GetId());
+
+			bool notContains = false; /// mapがペアを持っていないかどうか
+			if (!collisionFrameMap.contains(pairKey)) {
+				/// 逆順のないかチェック
+				pairKey = std::make_pair(b->GetOwner()->GetId(), a->GetOwner()->GetId());
+				if (!collisionFrameMap.contains(pairKey)) {
+					notContains = true;
+				}
+			}
+
+			if (notContains) {
+				++collisionFrameMap[pairKey]; // 衝突計算をしたフレームを記録
 
 				/// 衝突計算を行う
 				CollisionPair pair(a->GetOwner(), b->GetOwner());
-				auto it = collisionCheckMap_.find(str);
+				auto it = collisionCheckMap_.find(collisionType);
 				if (it != collisionCheckMap_.end()) {
 					bool isCollided = it->second(pair);
 					if (isCollided) {
@@ -96,6 +119,52 @@ void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
 					// 衝突計算が登録されていない場合の処理（必要に応じて）
 				}
 			}
+
+		}
+	}
+
+
+
+	/// call back関数の実行
+	for (auto& pair : collisionPairs_) {
+		IEntity* entityA = pair.first;
+		IEntity* entityB = pair.second;
+		/// 衝突している場合の処理
+		if (entityA && entityB) {
+			/// 衝突イベントの実行
+			std::array<Script*, 2> scripts;
+			scripts[0] = entityA->GetComponent<Script>();
+			scripts[1] = entityB->GetComponent<Script>();
+
+			for (size_t i = 0; i < 2; i++) {
+				auto& data = scripts[i]->GetScriptDataList();
+				for (auto& script : data) {
+
+					MonoObject* exc = nullptr;
+
+					/// 引数の準備
+					void* params[1];
+					params[0] = scripts[(i + 1) % 2]->GetOwner(); /// 衝突しているもう一方のオブジェクトを渡す
+
+					/// 関数の実行
+					mono_runtime_invoke(script.collisionEventMethods[0], script.instance, params, &exc);
+
+					/// 例外が発生した場合の処理
+					if (exc) {
+						MonoString* monoStr = mono_object_to_string(exc, nullptr);
+						if (monoStr) {
+							char* message = mono_string_to_utf8(monoStr);
+							Console::Log(std::string("Mono Exception: ") + message);
+							mono_free(message);
+						} else {
+							Console::Log("Mono Exception occurred, but message is null.");
+						}
+					}
+
+				}
+			}
+
+
 
 		}
 	}

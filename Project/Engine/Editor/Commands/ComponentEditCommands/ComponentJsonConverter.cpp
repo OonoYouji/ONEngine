@@ -16,18 +16,26 @@ namespace {
 	public:
 
 		JsonConverter() {
+
+			/// compute
 			Register<Transform>();
 			Register<Variables>();
 			Register<DirectionalLight>();
 			Register<AudioSource>();
 			Register<Effect>();
 			Register<Script>();
+
+			/// renderer
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
+
+			/// collision
 			Register<ToTerrainCollider>();
+			Register<SphereCollider>();
+			Register<BoxCollider>();
 		}
 
 		template <typename T>
@@ -429,6 +437,32 @@ void to_json(nlohmann::json& _j, const Script& _s) {
 		{ "type", "Script" },
 		{ "enable", _s.enable },
 		{ "scriptName", _s.GetScriptNames() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SphereCollider& _s) {
+	_s.enable = _j.at("enable").get<int>();
+	_s.SetRadius(_j.at("radius").get<float>());
+}
+
+void to_json(nlohmann::json& _j, const SphereCollider& _s) {
+	_j = nlohmann::json{
+		{ "type", "SphereCollider" },
+		{ "enable", _s.enable },
+		{ "radius", _s.GetRadius() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, BoxCollider& _b) {
+	_b.enable = _j.at("enable").get<int>();
+	_b.SetSize(_j.at("size").get<Vec3>());
+}
+
+void to_json(nlohmann::json& _j, const BoxCollider& _b) {
+	_j = nlohmann::json{
+		{ "type", "BoxCollider" },
+		{ "enable", _b.enable },
+		{ "size", _b.GetSize() }
 	};
 }
 
