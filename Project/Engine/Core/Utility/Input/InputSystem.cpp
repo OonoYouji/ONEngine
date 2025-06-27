@@ -56,17 +56,6 @@ void InputSystem::RegisterMonoFunctions() {
 	mono_add_internal_call("Input::InternalGetGamepadThumb", (void*)InternalGetGamepadThumb);
 }
 
-Vector2 InternalGetGamepadThumb(int32_t _axisIndex) {
-	switch (_axisIndex) {
-	case 0: // Left
-		return Input::GetGamepadLeftThumb();
-	case 1: // Right
-		return Input::GetGamepadRightThumb();
-	}
-
-	return Vector2::kZero;
-}
-
 void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 	Vector2 v = {};
 	switch (_axisIndex) {
