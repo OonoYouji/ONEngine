@@ -74,6 +74,7 @@ private:
 	std::vector<IEntity*> children_;
 	IEntity* parent_;
 	std::string name_;
+	std::string className_;
 
 public:
 
@@ -123,6 +124,7 @@ public:
 	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
 
 	const std::string& GetName() const;
+	const std::string& GetEntityClassName() const;
 
 	bool GetActive() const;
 

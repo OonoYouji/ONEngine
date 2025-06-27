@@ -11,8 +11,8 @@ public class Player : MonoBehavior {
 	float height = 0.0f;
 	float jumpPower = 5.0f;
 
-	float moveSpeed = 64f; // 移動速度
-	float dushSpeed = 120f; // ダッシュ速度
+	float moveSpeed = 16f; // 移動速度
+	float dushSpeed = 32f; // ダッシュ速度
 
 	public override void Initialize() {
 

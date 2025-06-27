@@ -2,14 +2,17 @@
 
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 IEntity::IEntity() {
 	parent_ = nullptr;
 }
 
 void IEntity::CommonInitialize() {
-	name_ = typeid(*this).name();
-	name_.erase(0, 6);
+	className_ = typeid(*this).name();
+	className_.erase(0, 6);
+	name_ = className_;
+
 	pEntityComponentSystem_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
@@ -232,6 +235,10 @@ const std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() const {
 
 const std::string& IEntity::GetName() const {
 	return name_;
+}
+
+const std::string& IEntity::GetEntityClassName() const {
+	return className_;
 }
 
 bool IEntity::GetActive() const {

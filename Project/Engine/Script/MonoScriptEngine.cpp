@@ -115,10 +115,20 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
+
 	if (!_script) {
 		Console::Log("Script pointer is null");
 		return;
 	}
+
+	_script->scriptName = _scriptName;
+
+
+	/// ownerがなければ今後の処理ができないので、早期リターン
+	if (!_comp->GetOwner()) {
+		return;
+	}
+
 
 	/// MonoImageから指定されたクラスを取得(namespaceは""で省略)
 	MonoClass* monoClass = mono_class_from_name(image_, "", _scriptName.c_str());
@@ -150,8 +160,6 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
 	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
 
-	/// スクリプトのメンバ変数に設定
-	_script->scriptName = _scriptName;
 	_script->gcHandle = gcHandle;
 	_script->monoClass = monoClass;
 	_script->instance = obj;
