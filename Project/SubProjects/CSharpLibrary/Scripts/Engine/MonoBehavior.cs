@@ -15,19 +15,13 @@ public class MonoBehavior {
 		}
 		set {
 			//entity.transform = value;
-		} 
+		}
 	}
 
-
 	private bool initialized = false;
-	internal int entityId = -1;
-
 
 	public void InternalInitialize(uint _entityId) {
-	
-
 		if (!initialized) {
-			this.entityId = (int)_entityId;
 			Initialize();
 			initialized = true;
 
@@ -36,33 +30,12 @@ public class MonoBehavior {
 		}
 	}
 
-	public virtual void Initialize() {}
-	public virtual void Update() {}
+	public virtual void Initialize() { }
+	public virtual void Update() { }
 
-	public int EntityId {
-		get {
-			if (entityId == -1) {
-				entityId = InternalGetEntityId();
-			}
-			return entityId;
-		}
-		set {
-			entityId = value;
-		}
-	}
-
-
-	public virtual void OnCollisionEnter(Entity collision) {
-		// Override this method to handle collision events
-	}
-
-	public virtual void OnCollisionExit(Entity collision) {
-		// Override this method to handle collision exit events
-	}
-
-	public virtual void OnCollisionStay(Entity collision) {
-		// Override this method to handle collision stay events
-	}
+	public virtual void OnCollisionEnter(Entity collision) { }
+	public virtual void OnCollisionExit(Entity collision) { }
+	public virtual void OnCollisionStay(Entity collision) { }
 
 
 	[MethodImpl(MethodImplOptions.InternalCall)]

@@ -13,7 +13,24 @@ public class Entity {
 	private Dictionary<Type, Component> components = new Dictionary<Type, Component>();
 
 	uint entityId;
-	string name;
+
+	public Transform transform => _transform;
+	public uint Id {
+		get {
+			return entityId;
+		}
+	}
+
+	public string name {
+		get {
+			return InternalGetName(entityId);
+		}
+		set {
+			InternalSetName(entityId, value);
+		}
+	}
+
+
 
 	/// =========================================
 	/// methods
@@ -21,13 +38,10 @@ public class Entity {
 
 	public Entity(uint _id) {
 		entityId = _id;
-		name = "Entity_" + entityId.ToString();
 		_transform = AddComponent<Transform>();
 		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
 	}
 
-	public Transform transform => _transform;
-	public uint Id => entityId;
 
 	/// ------------------------------------------
 	/// components
@@ -59,8 +73,18 @@ public class Entity {
 	}
 
 
+	/// ------------------------------------------
+	/// internal methods
+	/// ------------------------------------------
+
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern ulong InternalAddComponent<T>(uint _entityId, string _compTypeName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern string InternalGetName(uint _entityId);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetName(uint _entityId, string _name);
 
 
 }

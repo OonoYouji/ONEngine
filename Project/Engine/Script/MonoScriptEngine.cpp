@@ -156,11 +156,6 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	_script->initMethod = initMethod;
 	_script->updateMethod = updateMethod;
 
-	/// c#側のEntityのidを設定
-	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass, "entityId");
-	uint32_t id = _comp->GetOwner()->GetId();
-	mono_field_set_value(_script->instance, field, &id);
-
 
 	/// 初期化の呼び出し
 	if (initMethod && obj) {
@@ -187,7 +182,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録
 
-	/// transformの get set
+	/// transform
 	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
 	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
 	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
@@ -196,8 +191,10 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
 	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
 
-	/// component
+	/// entity
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
+	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
 
 	/// log
 	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);

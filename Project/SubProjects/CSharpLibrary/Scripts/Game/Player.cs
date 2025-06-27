@@ -29,21 +29,10 @@ public class Player : MonoBehavior {
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
 
-		if (Input.PressKey(KeyCode.W)) {
-			velocity.z += 0.1f;
-		}
-
-		if (Input.PressKey(KeyCode.S)) {
-			velocity.z -= 0.1f;
-		}
-
-		if (Input.PressKey(KeyCode.A)) {
-			velocity.x -= 0.1f;
-		}
-
-		if (Input.PressKey(KeyCode.D)) {
-			velocity.x += 0.1f;
-		}
+		if (Input.PressKey(KeyCode.W)) { velocity.z += 0.1f; }
+		if (Input.PressKey(KeyCode.S)) { velocity.z -= 0.1f; }
+		if (Input.PressKey(KeyCode.A)) { velocity.x -= 0.1f; }
+		if (Input.PressKey(KeyCode.D)) { velocity.x += 0.1f; }
 
 		float speed = moveSpeed;
 		if (Input.PressKey(KeyCode.LeftShift)) {
@@ -80,7 +69,8 @@ public class Player : MonoBehavior {
 
 	public override void OnCollisionEnter(Entity collision) {
 		transform.position = new Vector3(10f, 0.0f, 0f);
-		Log.WriteLine("Player collided with: " + collision.Id);
+		//Log.WriteLine("Player collided with: " + collision.Id);
+
 	}
 
 

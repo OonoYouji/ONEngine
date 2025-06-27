@@ -220,3 +220,7 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 
 
 uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);
+
+MonoString* InternalGetName(uint32_t _entityId);
+
+void InternalSetName(uint32_t _entityId, MonoString* _name);

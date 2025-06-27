@@ -44,6 +44,29 @@ uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
+MonoString* InternalGetName(uint32_t _entityId) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return nullptr;
+	}
+
+	std::string name = entity->GetName();
+	return mono_string_new(mono_domain_get(), name.c_str());
+}
+
+void InternalSetName(uint32_t _entityId, MonoString* _name) {
+	std::string name = mono_string_to_utf8(_name);
+	IEntity* entity = gECS->GetEntity(_entityId);
+
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	entity->SetName(name);
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -151,16 +174,15 @@ const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities(
 }
 
 IEntity* EntityComponentSystem::GetEntity(size_t _id) {
-	if (_id < entityCollection_->GetEntities().size()) {
-		/// idを検索
-		auto itr = std::find_if(
-			entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
-			[_id](const std::unique_ptr<IEntity>& entity) {
-				return entity->GetId() == _id;
-			}
-		);
+	/// idを検索
+	auto itr = std::find_if(
+		entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
+		[_id](const std::unique_ptr<IEntity>& entity) {
+			return entity->GetId() == _id;
+		}
+	);
 
-
+	if (itr != entityCollection_->GetEntities().end()) {
 		return (*itr).get();
 	}
 
