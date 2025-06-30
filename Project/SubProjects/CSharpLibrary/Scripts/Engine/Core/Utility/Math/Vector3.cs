@@ -133,5 +133,9 @@ public struct Vector3 {
 		return new Vector3(a.x / scalar, a.y / scalar, a.z / scalar);
 	}
 
+	static public Vector3 operator -(Vector3 v) {
+		return new Vector3(-v.x, -v.y, -v.z);
+	}
+
 }
 

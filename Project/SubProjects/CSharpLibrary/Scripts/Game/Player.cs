@@ -9,7 +9,9 @@ public class Player : MonoBehavior {
 	float moveSpeed = 16f; // 移動速度
 	float dushSpeed = 32f; // ダッシュ速度
 
-	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, -5.0f); // カメラのオフセット
+	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
+	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
+
 
 	public override void Initialize() {
 
@@ -19,7 +21,7 @@ public class Player : MonoBehavior {
 		Move();
 		Jump();
 
-		//CameraFollow();
+		CameraFollow();
 	}
 
 
@@ -40,6 +42,13 @@ public class Player : MonoBehavior {
 		float speed = isDushing ? dushSpeed : moveSpeed;
 
 		velocity = velocity.Normalized() * (speed * Time.deltaTime);
+
+		/// カメラの回転に合わせて移動する
+		Transform cT = entity.GetChild(0).transform;
+		if (cT != null) {
+			Matrix4x4 matCameraRotate = Matrix4x4.Rotate(cT.rotate);
+			velocity = Matrix4x4.Transform(matCameraRotate, velocity);
+		}
 
 		t.position += velocity;
 
@@ -69,30 +78,24 @@ public class Player : MonoBehavior {
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
 
 		/// 回転角 θ φ
-		cameraOffset.x -= gamepadAxis.y * 0.1f * Time.deltaTime; // X軸の回転
-		cameraOffset.y += gamepadAxis.x * 0.1f * Time.deltaTime; // Y軸の回転
+		sphericalCoord.x += gamepadAxis.y * 0.75f * Time.deltaTime; // X軸の回転
+		sphericalCoord.y += gamepadAxis.x * Time.deltaTime; // Y軸の回転
 
 		/// 距離 r
-		float distance = cameraOffset.z; // カメラとプレイヤーの距離
-
+		float distance = sphericalCoord.z; // カメラとプレイヤーの距離
 
 		/// カメラの位置を計算
 		Transform cT = entity.GetChild(0).transform;
 		Vector3 cPos = cT.position;
 		Vector3 cRot = cT.rotate;
 
-		cPos.x = distance * Mathf.Sin(cameraOffset.y) * Mathf.Cos(cameraOffset.x);
-		cPos.y = distance * Mathf.Sin(cameraOffset.x);
-		cPos.z = distance * Mathf.Cos(cameraOffset.y) * Mathf.Cos(cameraOffset.x);
+		cPos.x = distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
+		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
+		cPos.z = distance * Mathf.Cos(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 
-		//string log1 = "Camera Position" + Vector3.ToSimpleString(cPos);
-		string log2 = "Player Position" + Vector3.ToSimpleString(transform.position);
+		cRot = LookAt(-cPos); // カメラの向きをプレイヤーに向ける
 
-
-		/// 
-		cRot = Vector3.LookAt(cPos, transform.position); // プレイヤーを向くようにカメラの回転を設定
-
-		cT.position = cPos; // プレイヤーの位置にオフセットを加える
+		cT.position = cPos + cameraOffset; // プレイヤーの位置にオフセットを加える
 		cT.rotate = cRot;
 	}
 
@@ -109,5 +112,14 @@ public class Player : MonoBehavior {
 
 	}
 
+
+	Vector3 LookAt(Vector3 dir) {
+		dir = Vector3.Normalize(dir);
+
+		float pitch = Mathf.Asin(-dir.y);
+		float yaw = Mathf.Atan2(dir.x, dir.z);
+
+		return new Vector3(pitch, yaw, 0f);
+	}
 
 }

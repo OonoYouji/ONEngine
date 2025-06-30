@@ -12,6 +12,23 @@
 		return (float)System.Math.Atan2(y, x);
 	}
 
+	static public float Asin(float f) {
+		return (float)System.Math.Asin(f);
+	}
+
+	static public float Acos(float f) {
+		return (float)System.Math.Acos(f);
+	}
+
+	static public float Tan(float f) {
+		return (float)System.Math.Tan(f);
+	}
+
+	static public float Abs(float f) {
+		return (float)System.Math.Abs(f);
+	}
+
+
 	static public float Sqrt(float f) {
 		return (float)System.Math.Sqrt(f);
 	}
