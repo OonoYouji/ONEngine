@@ -4,9 +4,7 @@
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-#ifdef _DEBUG
 	Console console;
-#endif // _DEBUG
 
 	std::unique_ptr<GameFramework> gameFramework = std::make_unique<GameFramework>();
 	gameFramework->Initialize(GameFrameworkConfig{
