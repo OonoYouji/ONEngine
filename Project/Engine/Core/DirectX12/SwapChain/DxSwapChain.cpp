@@ -25,7 +25,8 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 	pDxManager_ = _dxManager;
 	pWindow_    = _window;
 
-
+	Vector2 size = pWindow_->GetWindowSize();
+	size = { 1920.f, 1080.0f };
 
 	{
 		/// ---------------------------------------------------
@@ -35,8 +36,8 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		HRESULT result = S_FALSE;
 
 		DXGI_SWAP_CHAIN_DESC1 desc{};
-		desc.Width            = static_cast<UINT>(pWindow_->GetWindowSize().x);
-		desc.Height           = static_cast<UINT>(pWindow_->GetWindowSize().y);
+		desc.Width            = static_cast<UINT>(size.x);
+		desc.Height           = static_cast<UINT>(size.y);
 		desc.Format           = DXGI_FORMAT_R8G8B8A8_UNORM;
 		desc.SampleDesc.Count = 1;
 		desc.BufferUsage      = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -89,17 +90,17 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		/// view port, sicssor rect の初期化
 		/// ---------------------------------------------------
 
-		viewprot_.Width     = pWindow_->GetWindowSize().x;
-		viewprot_.Height    = pWindow_->GetWindowSize().y;
+		viewprot_.Width     = size.x;
+		viewprot_.Height    = size.y;
 		viewprot_.TopLeftX  = 0.0f;
 		viewprot_.TopLeftY  = 0.0f;
 		viewprot_.MinDepth  = 0.0f;
 		viewprot_.MaxDepth  = 1.0f;
 
 		sicssorRect_.left   = 0;
-		sicssorRect_.right  = static_cast<LONG>(pWindow_->GetWindowSize().x);
+		sicssorRect_.right  = static_cast<LONG>(size.x);
 		sicssorRect_.top    = 0;
-		sicssorRect_.bottom = static_cast<LONG>(pWindow_->GetWindowSize().y);
+		sicssorRect_.bottom = static_cast<LONG>(size.y);
 	}
 
 	Console::Log("dx swap chain create success!!");

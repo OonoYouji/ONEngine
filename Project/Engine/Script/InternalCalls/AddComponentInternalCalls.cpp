@@ -11,9 +11,11 @@ void AddComponentInternalCalls() {
 	/// transform
 	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
 	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
+	mono_add_internal_call("Transform::InternalGetLocalPosition", (void*)InternalGetLocalPosition);
 	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
 	mono_add_internal_call("Transform::InternalGetScale", (void*)InternalGetScale);
 	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
+	mono_add_internal_call("Transform::InternalSetLocalPosition", (void*)InternalSetLocalPosition);
 	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
 	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
 

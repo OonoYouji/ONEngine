@@ -55,6 +55,20 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 		return;
 	}
 
+	Vector3 position = Matrix4x4::Transform({}, transform->matWorld);
+
+	if (_x) { *_x = position.x; }
+	if (_y) { *_y = position.y; }
+	if (_z) { *_z = position.z; }
+}
+
+void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
+	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
+	if (!transform) {
+		Console::Log("Transform pointer is null");
+		return;
+	}
+
 	if (_x) { *_x = transform->position.x; }
 	if (_y) { *_y = transform->position.y; }
 	if (_z) { *_z = transform->position.z; }
@@ -85,6 +99,19 @@ void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 }
 
 void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
+	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
+	if (!transform) {
+		Console::Log("Transform pointer is null");
+		return;
+	}
+
+	transform->position.x = _x;
+	transform->position.y = _y;
+	transform->position.z = _z;
+	transform->Update(); // 更新を呼び出す
+}
+
+void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
 		Console::Log("Transform pointer is null");

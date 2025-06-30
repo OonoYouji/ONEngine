@@ -1,10 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Xml;
-
-
+﻿
 
 public class Player : MonoBehavior {
 
@@ -15,6 +9,8 @@ public class Player : MonoBehavior {
 	float moveSpeed = 16f; // 移動速度
 	float dushSpeed = 32f; // ダッシュ速度
 
+	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, -5.0f); // カメラのオフセット
+
 	public override void Initialize() {
 
 	}
@@ -23,7 +19,7 @@ public class Player : MonoBehavior {
 		Move();
 		Jump();
 
-		CameraFollow();
+		//CameraFollow();
 	}
 
 
@@ -55,7 +51,6 @@ public class Player : MonoBehavior {
 			height = jumpPower;
 		}
 
-
 		if (height > 0.0f) {
 			height -= 9.8f * Time.deltaTime; // 重力
 		}
@@ -69,17 +64,36 @@ public class Player : MonoBehavior {
 
 
 	void CameraFollow() {
-		/// カメラの位置をプレイヤーの位置に合わせる
-		Transform cT = entity.GetChild(0).transform;
-		//cT.position = new Vector3(transform.position.x, transform.position.y + 5.0f, transform.position.z - 10.0f);
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
-		Vector3 cameraRotate = cT.rotate;
-		cameraRotate.y += gamepadAxis.x * 0.1f; // X軸の回転
-		cameraRotate.x += gamepadAxis.y * 0.1f; // Y軸の回転
-		cT.rotate = cameraRotate;
 
+		/// 回転角 θ φ
+		cameraOffset.x -= gamepadAxis.y * 0.1f * Time.deltaTime; // X軸の回転
+		cameraOffset.y += gamepadAxis.x * 0.1f * Time.deltaTime; // Y軸の回転
+
+		/// 距離 r
+		float distance = cameraOffset.z; // カメラとプレイヤーの距離
+
+
+		/// カメラの位置を計算
+		Transform cT = entity.GetChild(0).transform;
+		Vector3 cPos = cT.position;
+		Vector3 cRot = cT.rotate;
+
+		cPos.x = distance * Mathf.Sin(cameraOffset.y) * Mathf.Cos(cameraOffset.x);
+		cPos.y = distance * Mathf.Sin(cameraOffset.x);
+		cPos.z = distance * Mathf.Cos(cameraOffset.y) * Mathf.Cos(cameraOffset.x);
+
+		//string log1 = "Camera Position" + Vector3.ToSimpleString(cPos);
+		string log2 = "Player Position" + Vector3.ToSimpleString(transform.position);
+
+
+		/// 
+		cRot = Vector3.LookAt(cPos, transform.position); // プレイヤーを向くようにカメラの回転を設定
+
+		cT.position = cPos; // プレイヤーの位置にオフセットを加える
+		cT.rotate = cRot;
 	}
 
 

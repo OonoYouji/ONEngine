@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Vector3 {
@@ -8,16 +9,16 @@ public struct Vector3 {
 	/// constructor
 	/// =================================
 
-	public Vector3(float x = 0.0f, float y = 0.0f, float z = 0.0f) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public Vector3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) {
+		this.x = _x;
+		this.y = _y;
+		this.z = _z;
 	}
 
-	public Vector3(Vector3 other) {
-		this.x = other.x;
-		this.y = other.y;
-		this.z = other.z;
+	public Vector3(Vector3 _other) {
+		this.x = _other.x;
+		this.y = _other.y;
+		this.z = _other.z;
 	}
 
 	/// =================================
@@ -32,6 +33,46 @@ public struct Vector3 {
 		float length = this.Length();
 		if (length == 0.0f) return zero;
 		return new Vector3(x / length, y / length, z / length);
+	}
+
+	/// =================================
+	/// static methods
+	/// =================================
+
+	static public float Length(Vector3 _v) {
+		return _v.Length();
+	}
+
+	static public Vector3 Normalize(Vector3 _v) {
+		return _v.Normalized();
+	}
+
+	static public string ToSimpleString(Vector3 _v) {
+		return "(" + _v.x + ", " + _v.y + ", " + _v.z + ")";
+	}
+
+
+
+	//public override string ToString() {
+	//	string result = "(";
+	//	result += x.ToString() + ", ";
+	//	result += y.ToString() + ", ";
+	//	result += z.ToString() + ")";
+
+	//	return result;
+	//}
+
+	static public Vector3 LookAt(Vector3 from, Vector3 to) {
+		Vector3 dir = to - from;
+		float yaw = Mathf.Atan2(dir.x, dir.z);
+		float pitch = Mathf.Atan2(-dir.y, Mathf.Sqrt(dir.x * dir.x + dir.z * dir.z));
+
+		// roll（Z軸回転）は方向ベクトルからは求まらない（必要なら補助情報がいる）
+		return new Vector3(
+			pitch * Mathf.Rad2Deg,
+			yaw * Mathf.Rad2Deg,
+			0f
+		);
 	}
 
 

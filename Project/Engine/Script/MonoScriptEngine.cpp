@@ -66,7 +66,7 @@ void MonoScriptEngine::Initialize() {
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
 	// Mono の検索パス設定（必ず先）
-	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
+	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 
 	mono_config_parse(nullptr);
 	// debugサポートの初期化
