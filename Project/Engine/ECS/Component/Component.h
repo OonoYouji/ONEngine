@@ -22,5 +22,5 @@
 /// collision
 #include "Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
 #include "Components/ComputeComponents/Collision/3D/ToTerrainCollider.h"
-#include "Components/ComputeComponents/Collider/SphereCollider.h"
-#include "Components/ComputeComponents/Collider/BoxCollider.h"
+#include "Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Components/ComputeComponents/Collision/BoxCollider.h"

@@ -16,18 +16,26 @@ namespace {
 	public:
 
 		JsonConverter() {
+
+			/// compute
 			Register<Transform>();
 			Register<Variables>();
 			Register<DirectionalLight>();
 			Register<AudioSource>();
 			Register<Effect>();
 			Register<Script>();
+
+			/// renderer
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
+
+			/// collision
 			Register<ToTerrainCollider>();
+			Register<SphereCollider>();
+			Register<BoxCollider>();
 		}
 
 		template <typename T>
@@ -39,7 +47,7 @@ namespace {
 				};
 
 			fromJsonConverters_[typeName] = [this](IComponent* _component, const nlohmann::json& _j) {
-				*static_cast<T*>(_component) = _j.get<T>();
+ 				*static_cast<T*>(_component) = _j.get<T>();
 				};
 		}
 
@@ -407,7 +415,18 @@ void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
 void from_json(const nlohmann::json& _j, Script& _s) {
 	_s.enable = _j.at("enable").get<int>();
 	if (_j.contains("scriptName")) {
-		_s.SetScript(_j.at("scriptName").get<std::string>());
+
+		/// スクリプト名が文字列または配列であることを確認
+		if (_j["scriptName"].is_string()) {
+			_s.AddScript(_j.at("scriptName").get<std::string>());
+		} else if (_j["scriptName"].is_array()) {
+
+			/// 配列の場合、各スクリプト名を追加
+			for (const auto& name : _j.at("scriptName")) {
+				_s.AddScript(name.get<std::string>());
+			}
+		}
+
 	} else {
 		Console::Log("Script component JSON does not contain 'scriptName'.");
 	}
@@ -417,7 +436,33 @@ void to_json(nlohmann::json& _j, const Script& _s) {
 	_j = nlohmann::json{
 		{ "type", "Script" },
 		{ "enable", _s.enable },
-		{ "scriptName", _s.GetScriptName() }
+		{ "scriptName", _s.GetScriptNames() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SphereCollider& _s) {
+	_s.enable = _j.at("enable").get<int>();
+	_s.SetRadius(_j.at("radius").get<float>());
+}
+
+void to_json(nlohmann::json& _j, const SphereCollider& _s) {
+	_j = nlohmann::json{
+		{ "type", "SphereCollider" },
+		{ "enable", _s.enable },
+		{ "radius", _s.GetRadius() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, BoxCollider& _b) {
+	_b.enable = _j.at("enable").get<int>();
+	_b.SetSize(_j.at("size").get<Vec3>());
+}
+
+void to_json(nlohmann::json& _j, const BoxCollider& _b) {
+	_j = nlohmann::json{
+		{ "type", "BoxCollider" },
+		{ "enable", _b.enable },
+		{ "size", _b.GetSize() }
 	};
 }
 

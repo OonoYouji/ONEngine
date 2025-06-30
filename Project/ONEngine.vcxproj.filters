@@ -159,10 +159,11 @@
     <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
     <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collider\ICollider.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collider\SphereCollider.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collider\BoxCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
     <ClCompile Include="Engine\ECS\System\CollisionSystem\CollisionSystem.cpp" />
+    <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -321,9 +322,13 @@
     <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
     <ClInclude Include="Game\Objects\BackgroundObject.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
-    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collider\ICollider.h" />
-    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collider\SphereCollider.h" />
-    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collider\BoxCollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />
     <ClInclude Include="Engine\ECS\System\CollisionSystem\CollisionSystem.h" />
+    <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
   </ItemGroup>
 </Project>

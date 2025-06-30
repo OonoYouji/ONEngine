@@ -111,3 +111,11 @@ void to_json(nlohmann::json& _j, const ToTerrainCollider& _c);
 // Script
 void from_json(const nlohmann::json& _j, Script& _s);
 void to_json(nlohmann::json& _j, const Script& _s);
+
+// SphereCollider
+void from_json(const nlohmann::json& _j, SphereCollider& _s);
+void to_json(nlohmann::json& _j, const SphereCollider& _s);
+
+// BoxCollider
+void from_json(const nlohmann::json& _j, BoxCollider& _b);
+void to_json(nlohmann::json& _j, const BoxCollider& _b);

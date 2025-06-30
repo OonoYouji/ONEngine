@@ -8,6 +8,7 @@ nlohmann::json EntityJsonConverter::ToJson(const IEntity* _entity) {
 		return nlohmann::json();
 	}
 	nlohmann::json entityJson = nlohmann::json::object();
+	entityJson["className"] = _entity->GetEntityClassName();
 	entityJson["name"] = _entity->GetName();
 	entityJson["id"] = _entity->GetId();
 

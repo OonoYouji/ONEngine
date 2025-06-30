@@ -15,6 +15,17 @@ public class Transform : Component {
 		}
 	}
 
+	public Vector3 localPosition {
+		get {
+			float _x, _y, _z;
+			InternalGetLocalPosition(nativeHandle, out _x, out _y, out _z);
+			return new Vector3(_x, _y, _z);
+		}
+		set {
+			InternalSetLocalPosition(nativeHandle, value.x, value.y, value.z);
+		}
+	}
+
 	public Vector3 rotate {
 		get {
 			float _x, _y, _z;
@@ -65,6 +76,9 @@ public class Transform : Component {
 	static extern void InternalGetPosition(ulong _nativeHandle, out float _x, out float _y, out float _z);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetLocalPosition(ulong _nativeHandle, out float _x, out float _y, out float _z);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetRotate(ulong _nativeHandle, out float _x, out float _y, out float _z);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
@@ -72,6 +86,9 @@ public class Transform : Component {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetPosition(ulong _nativeHandle, float _x, float _y, float _z);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetLocalPosition(ulong _nativeHandle, float _x, float _y, float _z);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetRotate(ulong _nativeHandle, float _x, float _y, float _z);

@@ -15,15 +15,6 @@ Player::~Player() {}
 
 void Player::Initialize() {
 
-	//auto cameras = pEntityComponentSystem_->FindEntities<Camera>();
-	//for (auto& camera : cameras) {
-	//	if (camera->GetCameraType() == static_cast<int>(CameraType::Type3D)
-	//		&& camera->GetName() != "DebugCamera") {
-	//		pCamera_ = camera;
-	//		break;
-	//	}
-	//}
-
 	for (auto& child : GetChildren()) {
 		if (Camera* camera = dynamic_cast<Camera*>(child)) {
 			pCamera_ = camera;
@@ -32,12 +23,11 @@ void Player::Initialize() {
 	}
 
 	if (pCamera_) {
-		//pCamera_->SetParent(this);
 		pEntityComponentSystem_->SetMainCamera(pCamera_);
 	}
 	
 	Script* script = AddComponent<Script>();
-	script->SetScript("Player");
+	script->AddScript("Player");
 
 }
 
