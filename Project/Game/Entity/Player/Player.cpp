@@ -14,88 +14,94 @@ Player::Player() {}
 Player::~Player() {}
 
 void Player::Initialize() {
-	PlayerMoveEffect* walkEffect = pEntityComponentSystem_->GenerateEntity<PlayerMoveEffect>();
-	walkEffect->SetParent(this);
+
+	for (auto& child : GetChildren()) {
+		if (Camera* camera = dynamic_cast<Camera*>(child)) {
+			pCamera_ = camera;
+			break;
+		}
+	}
+
+	if (pCamera_) {
+		pEntityComponentSystem_->SetMainCamera(pCamera_);
+	}
+	
+	Script* script = AddComponent<Script>();
+	script->AddScript("Player");
 
 }
 
 void Player::Update() {
 
-	Vec3& velo = variables_->Get<Vec3>("velocity");
-	float& jumpPower = variables_->Get<float>("jumpPower");
-	float& speed = variables_->Get<float>("speed");
-	float& gravity = variables_->Get<float>("gravity");
-	bool& onGround = variables_->Get<bool>("onGround");
+	//Vec3& velo = variables_->Get<Vec3>("velocity");
+	//float& jumpPower = variables_->Get<float>("jumpPower");
+	//float& speed = variables_->Get<float>("speed");
+	//float& gravity = variables_->Get<float>("gravity");
+	//bool& onGround = variables_->Get<bool>("onGround");
 
-	if (Input::TriggerKey(DIK_R)) {
-		transform_->position.y = 0.0f;
-		jumpPower = 0.0f;
-	}
+	//if (Input::TriggerKey(DIK_R)) {
+	//	transform_->position.y = 0.0f;
+	//	jumpPower = 0.0f;
+	//}
 
-	velo = Vec3::kZero;
+	//velo = Vec3::kZero;
 
-	/// 横移動
-	if (Input::PressKey(DIK_W)) { velo.z += 1.0f; }
-	if (Input::PressKey(DIK_S)) { velo.z -= 1.0f; }
-	if (Input::PressKey(DIK_A)) { velo.x -= 1.0f; }
-	if (Input::PressKey(DIK_D)) { velo.x += 1.0f; }
+	//Vector2 gamepadLeftThumb = Input::GetGamepadLeftThumb();
+	//if (gamepadLeftThumb.x != 0.0f || gamepadLeftThumb.y != 0.0f) {
+	//	velo.x += gamepadLeftThumb.x;
+	//	velo.z += gamepadLeftThumb.y;
+	//}
 
-	Vector2 gamepadLeftThumb = Input::GetGamepadLeftThumb();
-	if (gamepadLeftThumb.x != 0.0f || gamepadLeftThumb.y != 0.0f) {
-		velo.x += gamepadLeftThumb.x;
-		velo.z += gamepadLeftThumb.y;
-	}
-
-	/// 上下移動
-	if (Input::PressKey(DIK_SPACE) || Input::PressGamepad(Gamepad::A)) {
-		if (onGround) {
-			jumpPower = variables_->Get<float>("startJumpPower");
-			onGround = false;
-		}
-	}
+	///// 上下移動
+	//if (Input::PressGamepad(Gamepad::A)) {
+	//	if (onGround) {
+	//		jumpPower = variables_->Get<float>("startJumpPower");
+	//		onGround = false;
+	//	}
+	//}
 
 
-	/// 回転
-	Vector3& cameraRotate = variables_->Get<Vector3>("cameraRotate");
-	float& cameraRotateRatio = variables_->Get<float>("cameraRotateRatio");
+	///// 回転
+	//Vector3& cameraRotate = variables_->Get<Vector3>("cameraRotate");
+	//float& cameraRotateRatio = variables_->Get<float>("cameraRotateRatio");
 
-	/// カメラの回転
-	Vector2 gamepadRightThumb = Input::GetGamepadRightThumb();
-	if (gamepadRightThumb.x != 0.0f || gamepadRightThumb.y != 0.0f) {
-		transform_->rotate.y += gamepadRightThumb.x * cameraRotateRatio;
-		cameraRotate.x += gamepadRightThumb.y * cameraRotateRatio;
-	}
-
-
-	velo = velo.Normalize() * speed;
-	velo.y = jumpPower;
-	velo = Matrix4x4::Transform(velo, Matrix4x4::MakeRotateY(transform_->rotate.y));
-
-	/// ジャンプ力の減衰
-	jumpPower -= gravity * Time::DeltaTime();
-
-	/// 移動
-	if (velo != Vector3::kZero) {
-		/// 移動
-		transform_->position += velo;
-	}
+	///// カメラの回転
+	//Vector2 gamepadRightThumb = Input::GetGamepadRightThumb();
+	//if (gamepadRightThumb.x != 0.0f || gamepadRightThumb.y != 0.0f) {
+	//	transform_->rotate.y += gamepadRightThumb.x * cameraRotateRatio;
+	//	cameraRotate.x += gamepadRightThumb.y * cameraRotateRatio;
+	//}
 
 
-	/// 地面に着地したら
-	if (ToTerrainCollider* collider = GetComponent<ToTerrainCollider>()) {
-		if (collider->GetIsCollided()) {
-			//transform_->position.y = 0.0f;
-			jumpPower = 0.0f;
-			onGround = true;
-		}
-	}
+	//velo = velo.Normalize() * speed;
+	//velo.y = jumpPower;
+	//velo = Matrix4x4::Transform(velo, Matrix4x4::MakeRotateY(transform_->rotate.y));
+
+	///// ジャンプ力の減衰
+	//jumpPower -= gravity * Time::DeltaTime();
+
+	///// 移動
+	//if (velo != Vector3::kZero) {
+	//	/// 移動
+	//	transform_->position += velo;
+	//}
 
 
-	if (pCamera_) {
+	///// 地面に着地したら
+	//if (ToTerrainCollider* collider = GetComponent<ToTerrainCollider>()) {
+	//	if (collider->GetIsCollided()) {
+	//		//transform_->position.y = 0.0f;
+	//		jumpPower = 0.0f;
+	//		onGround = true;
+	//	}
+	//}
 
 
-		pCamera_->SetPosition(variables_->Get<Vector3>("cameraOffset"));
-	}
+	//if (pCamera_) {
+
+
+	//	pCamera_->SetPosition(variables_->Get<Vector3>("cameraOffset"));
+	//}
 
 }
 

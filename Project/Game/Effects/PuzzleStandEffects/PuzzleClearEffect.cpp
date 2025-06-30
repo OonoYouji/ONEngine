@@ -13,41 +13,41 @@ PuzzleClearEffect::~PuzzleClearEffect() {}
 
 void PuzzleClearEffect::Initialize() {
 
-	///// エフェクトの生成
-	laserEffects_[0] = pEntityComponentSystem_->GenerateEntity<LaserEffect>();
-	laserEffects_[1] = pEntityComponentSystem_->GenerateEntity<LaserShootEffect>();
+	/////// エフェクトの生成
+	//laserEffects_[0] = pEntityComponentSystem_->FindEntity<LaserEffect>();
+	//laserEffects_[1] = pEntityComponentSystem_->FindEntity<LaserShootEffect>();
 
-	for (auto& laserEffect : laserEffects_) {
-		laserEffect->SetParent(this);
-		laserEffect->SetActive(false);
-	}
+	//for (auto& laserEffect : laserEffects_) {
+	//	laserEffect->SetParent(this);
+	//	laserEffect->SetActive(false);
+	//}
 
-	hitEffects_[0] = pEntityComponentSystem_->GenerateEntity<LaserHitEffect>();
-	hitEffects_[1] = pEntityComponentSystem_->GenerateEntity<LaserExplosionEffect>();
+	//hitEffects_[0] = pEntityComponentSystem_->FindEntity<LaserHitEffect>();
+	//hitEffects_[1] = pEntityComponentSystem_->FindEntity<LaserExplosionEffect>();
 
-	for (auto& hitEffect : hitEffects_) {
-		hitEffect->SetParent(this);
-		hitEffect->SetActive(false);
-	}
+	//for (auto& hitEffect : hitEffects_) {
+	//	hitEffect->SetParent(this);
+	//	hitEffect->SetActive(false);
+	//}
 
 
-	/// 子オブジェクトを生成する
-	PuzzleClearEffectCannonStand* cannonStand = pEntityComponentSystem_->GenerateEntity<PuzzleClearEffectCannonStand>();
-	cannonStand->SetParent(this);
+	///// 子オブジェクトを生成する
+	//PuzzleClearEffectCannonStand* cannonStand = pEntityComponentSystem_->FindEntity<PuzzleClearEffectCannonStand>();
+	//cannonStand->SetParent(this);
 
-	cannon_ = pEntityComponentSystem_->GenerateEntity<PuzzleClearEffectCannon>();
-	cannon_->SetParent(this);
-	cannon_->SetActive(false);
+	//cannon_ = pEntityComponentSystem_->GenerateEntity<PuzzleClearEffectCannon>();
+	//cannon_->SetParent(this);
+	//cannon_->SetActive(false);
 
 
 	AddComponent<ToTerrainCollider>();
 
-
-	//variables_->Add<bool>("isStart", false);
-	//variables_->Add<float>("timeToImpact", 0.0f);
 }
 
 void PuzzleClearEffect::Update() {
+	if (!cannon_) {
+		return;
+	}
 
 	if (Input::TriggerKey(DIK_R)) {
 		Reset();

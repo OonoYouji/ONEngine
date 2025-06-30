@@ -10,7 +10,9 @@
 #include "Engine/ECS/Entity/Entities/Grid/Grid.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
-LoadLevelTestScene::LoadLevelTestScene() {
+LoadLevelTestScene::LoadLevelTestScene(EntityComponentSystem* _entityComponentSystem)
+	: IScene(_entityComponentSystem) {
+
 	loadResourcePaths_ = {
 		"./Assets/Models/primitive/cube.obj",
 		"./Assets/Models/primitive/plane.obj",

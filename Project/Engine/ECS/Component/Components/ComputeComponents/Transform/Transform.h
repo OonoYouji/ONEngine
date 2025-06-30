@@ -3,6 +3,10 @@
 /// std
 #include <memory>
 
+/// externals
+#include <jit/jit.h>
+#include <metadata/class.h>
+
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
@@ -60,26 +64,12 @@ public:
 
 	int       matrixCalcFlags = kAll;
 
-private:
-
-	/// ===============================================
-	/// private : objects
-	/// ===============================================
-
-	//Transform* parent_          = nullptr;
-
 
 public:
 
 	/// ===============================================
 	/// public : accessor
 	/// ===============================================
-
-	/// @brief 親のセット
-	/// @param _parent 親のtransform
-	//void SetParent(Transform* _parent) { parent_ = _parent; }
-
-
 
 	/// @brief positionのセット
 	/// @param _v position
@@ -157,3 +147,17 @@ public:
 
 };
 
+
+/// =================================================
+/// mono からのTransform取得用関数
+/// =================================================
+
+MonoObject* InternalGetTransform(uint32_t _entityId);
+void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalGetScale(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
+void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z);
+void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z);
+void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z);
+void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z);

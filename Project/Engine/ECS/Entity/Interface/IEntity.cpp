@@ -2,19 +2,22 @@
 
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
-IEntity::IEntity() {}
+IEntity::IEntity() {
+	parent_ = nullptr;
+}
 
 void IEntity::CommonInitialize() {
-	name_ = typeid(*this).name();
-	name_.erase(0, 6);
+	className_ = typeid(*this).name();
+	className_.erase(0, 6);
+	name_ = className_;
+
 	pEntityComponentSystem_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
 	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
-
-	id_ = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(this));
 }
 
 IComponent* IEntity::AddComponent(const std::string& _name) {
@@ -22,6 +25,7 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	size_t hash = GetComponentHash(_name);
 	auto it = components_.find(hash);
 	if (it != components_.end()) { ///< すでに同じコンポーネントが存在している場合
+		it->second->SetOwner(this);
 		return it->second;
 	}
 
@@ -35,6 +39,21 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	components_[hash] = component;
 
 	return component;
+}
+
+IComponent* IEntity::GetComponent(const std::string& _compName) const {
+
+	/// stringをhashに変換
+	size_t hash = GetComponentHash(_compName);
+
+	/// hashからコンポーネントを取得
+	auto itr = components_.find(hash);
+	if (itr != components_.end()) {
+		return itr->second;
+	}
+
+	/// コンポーネントが見つからない場合はnullptrを返す
+	return nullptr;
 }
 
 void IEntity::RemoveComponent(const std::string& _compName) {
@@ -82,6 +101,10 @@ void IEntity::UpdateTransform() {
 
 		transform_->matWorld *= matCancel;
 	}
+}
+
+void IEntity::Destroy() {
+	pEntityComponentSystem_->RemoveEntity(this);
 }
 
 void IEntity::SetPosition(const Vector3& _v) {
@@ -214,10 +237,18 @@ const std::string& IEntity::GetName() const {
 	return name_;
 }
 
+const std::string& IEntity::GetEntityClassName() const {
+	return className_;
+}
+
 bool IEntity::GetActive() const {
 	return active_;
 }
 
-uint32_t IEntity::GetId() const {
+const size_t& IEntity::GetId() const {
 	return id_;
+}
+
+size_t* IEntity::GetIdPtr() {
+	return &id_;
 }

@@ -536,8 +536,9 @@ namespace {
 #pragma endregion
 
 
-ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager)
-	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager) {}
+ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager, EntityComponentSystem* _pEntityComponentSystem, EditorManager* _editorManager, SceneManager* _sceneManager)
+	: dxManager_(_dxManager), windowManager_(_windowManager), pEntityComponentSystem_(_pEntityComponentSystem),
+	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {
 #ifdef _DEBUG
@@ -566,6 +567,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
+	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	//imGuiIO.MouseDrawCursor = true; ///< マウスカーソルを表示するかどうか
 	//imGuiIO.MouseDoubleClickTime = 1.f;
 
 
@@ -597,7 +600,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 #endif // _DEBUG
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
-		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_
+		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_, pSceneManager_
 	);
 }
 

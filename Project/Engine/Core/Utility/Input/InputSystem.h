@@ -26,6 +26,7 @@ public:
 	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
 	void Update();
 
+	void RegisterMonoFunctions();
 
 private:
 
@@ -38,6 +39,7 @@ private:
 	std::unique_ptr<Mouse>    mouse_;
 	std::unique_ptr<Gamepad>  gamepad_;
 
-	class WindowManager*      windowManager_ = nullptr;
+	class WindowManager* windowManager_ = nullptr;
 };
 
+void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);

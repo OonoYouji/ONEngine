@@ -14,11 +14,16 @@
 /// ///////////////////////////////////////////////////
 /// ImGuiWindowCollection
 /// ///////////////////////////////////////////////////
-ImGuiWindowCollection::ImGuiWindowCollection(EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _resourceCollection, ImGuiManager* _imGuiManager, EditorManager* _editorManager)
+ImGuiWindowCollection::ImGuiWindowCollection(
+	EntityComponentSystem* _pEntityComponentSystem,
+	GraphicsResourceCollection* _resourceCollection,
+	ImGuiManager* _imGuiManager,
+	EditorManager* _editorManager,
+	SceneManager* _sceneManager)
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
-	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_pEntityComponentSystem, _resourceCollection, _editorManager));
+	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_pEntityComponentSystem, _resourceCollection, _editorManager, _sceneManager));
 	AddParentWindow("Edit", std::make_unique<ImGuiEditorWindow>());
 
 }

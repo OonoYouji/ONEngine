@@ -10,6 +10,7 @@
 #include "Components/ComputeComponents/Audio/AudioSource.h"
 #include "Components/ComputeComponents/Variables/Variables.h"
 #include "Components/ComputeComponents/Effect/Effect.h"
+#include "Components/ComputeComponents/Script/Script.h"
 
 /// renderer
 #include "Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -21,3 +22,5 @@
 /// collision
 #include "Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
 #include "Components/ComputeComponents/Collision/3D/ToTerrainCollider.h"
+#include "Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Components/ComputeComponents/Collision/BoxCollider.h"

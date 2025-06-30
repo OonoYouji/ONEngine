@@ -89,6 +89,18 @@ bool CollisionCheck::RayVsCube(const Vector3& _rayStartPosition, const Vector3& 
 	return false;
 }
 
+bool CollisionCheck::CubeVsCube(const Vector3& _cube1Position, const Vector3& _cube1Size, const Vector3& _cube2Position, const Vector3& _cube2Size) {
+	Vector3&& aMin = (_cube1Position - _cube1Size / 2.0f);
+	Vector3&& aMax = (_cube1Position + _cube1Size / 2.0f);
+	Vector3&& bMin = (_cube2Position - _cube2Size / 2.0f);
+	Vector3&& bMax = (_cube2Position + _cube2Size / 2.0f);
+
+	if (!(aMin.x <= bMax.x && aMax.x >= bMin.x)) { return false; }
+	if (!(aMin.y <= bMax.y && aMax.y >= bMin.y)) { return false; }
+	if (!(aMin.z <= bMax.z && aMax.z >= bMin.z)) { return false; }
+	return true;
+}
+
 bool CollisionCheck::CubeVsSphere(const Vector3& _cubePosition, const Vector3& _cubeSize, const Vector3& _sphereCenter, float _sphereRadius) {
 
 	Vector3&& cubeMin = _cubePosition - _cubeSize / 2.0f;

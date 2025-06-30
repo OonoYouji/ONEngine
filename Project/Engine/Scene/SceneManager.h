@@ -34,6 +34,8 @@ public:
 	/// @param _sceneName 次のシーンの名前
 	void SetNextScene(const std::string& _sceneName);
 
+	void SaveCurrentScene();
+	void LoadScene(const std::string& _sceneName);
 
 private:
 

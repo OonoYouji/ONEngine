@@ -1,9 +1,14 @@
 #include "InputSystem.h"
 
+/// externals
+#include <mono/jit/jit.h>
+
 /// engine
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
+#include "Input.h"
+
 
 InputSystem::InputSystem() {}
 InputSystem::~InputSystem() {}
@@ -38,4 +43,30 @@ void InputSystem::Update() {
 	mouse_->Update(windowManager_->GetActiveWindow());
 	gamepad_->Update(windowManager_->GetActiveWindow());
 
+}
+
+void InputSystem::RegisterMonoFunctions() {
+	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
+	mono_add_internal_call("Input::InternalPressKey", (void*)Input::PressKey);
+	mono_add_internal_call("Input::InternalReleaseKey", (void*)Input::ReleaseKey);
+
+	mono_add_internal_call("Input::InternalTriggerGamepad", (void*)Input::TriggerGamepad);
+	mono_add_internal_call("Input::InternalPressGamepad", (void*)Input::PressGamepad);
+	mono_add_internal_call("Input::InternalReleaseGamepad", (void*)Input::ReleaseGamepad);
+	mono_add_internal_call("Input::InternalGetGamepadThumb", (void*)InternalGetGamepadThumb);
+}
+
+void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
+	Vector2 v = {};
+	switch (_axisIndex) {
+	case 0: // Left
+		v = Input::GetGamepadLeftThumb();
+		break;
+	case 1: // Right
+		v = Input::GetGamepadRightThumb();
+		break;
+	}
+
+	*_x = v.x;
+	*_y = v.y;
 }

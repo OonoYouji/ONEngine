@@ -38,6 +38,8 @@ public:
 	template <class Comp>
 	Comp* GetComponent() const requires std::is_base_of_v<IComponent, Comp>;
 
+	IComponent* GetComponent(const std::string& _compName) const;
+
 	template <typename Comp>
 	void RemoveComponent() requires std::is_base_of_v<IComponent, Comp>;
 
@@ -47,7 +49,7 @@ public:
 
 	void UpdateTransform();
 
-
+	void Destroy();
 
 protected:
 
@@ -60,7 +62,7 @@ protected:
 	class EntityComponentSystem* pEntityComponentSystem_;
 
 	bool active_ = true; ///< true のときは更新する
-	uint32_t id_ = 0; ///< entityのID
+	size_t id_ = 0; ///< entityのID
 
 private:
 
@@ -72,6 +74,7 @@ private:
 	std::vector<IEntity*> children_;
 	IEntity* parent_;
 	std::string name_;
+	std::string className_;
 
 public:
 
@@ -121,10 +124,12 @@ public:
 	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
 
 	const std::string& GetName() const;
+	const std::string& GetEntityClassName() const;
 
 	bool GetActive() const;
 
-	uint32_t GetId() const;
+	const size_t& GetId() const;
+	size_t* GetIdPtr();
 
 };
 

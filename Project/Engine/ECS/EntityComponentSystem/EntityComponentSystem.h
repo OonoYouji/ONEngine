@@ -5,6 +5,9 @@
 #include <memory>
 #include <string>
 
+/// externals
+#include <jit/jit.h>
+
 /// engine
 #include "../Entity/Collection/EntityCollection.h"
 #include "../Component/Collection/ComponentCollection.h"
@@ -14,6 +17,10 @@
 
 class Camera;
 class Camera2D;
+
+void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs);
+EntityComponentSystem* GetEntityComponentSystemPtr();
+
 
 /// ///////////////////////////////////////////////////
 /// ECSの基盤クラス
@@ -37,7 +44,7 @@ public:
 	template<typename T>
 	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
 
-	IEntity* GenerateEntity(const std::string& _name);
+	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
@@ -52,9 +59,14 @@ public:
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+	
+	template <typename T>
+	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
+
+	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
 
 
 	/// ----- component ----- ///
@@ -125,6 +137,8 @@ public:
 	/// @return entities
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities();
 
+	IEntity* GetEntity(size_t _index);
+
 	/// @brief cameras の取得
 	/// @return cameras
 	const std::vector<Camera*>& GetCameras();
@@ -163,6 +177,11 @@ inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity
 	return entityCollection_->FindEntity<T>();
 }
 
+template<typename T>
+inline std::vector<T*> EntityComponentSystem::FindEntities() requires std::is_base_of_v<IEntity, T> {
+	return entityCollection_->FindEntities<T>();
+}
+
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
 	return componentCollection_->AddComponent<Comp>();
@@ -170,7 +189,13 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
-	return componentCollection_->GetComponent<Comp>(_index);
+
+	IEntity* entity = entityCollection_->GetEntities()[_index].get();
+	if (entity) {
+		return entity->GetComponent<Comp>();
+	}
+
+	return nullptr;
 }
 
 template<typename Comp>
@@ -188,3 +213,19 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 	systemMap_.push_back(std::make_unique<T>(args...));
 }
 
+
+/// =============================================
+/// monoを使ったC#スクリプトエンジンのコンポーネント
+/// =============================================
+
+
+uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);
+uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName);
+
+MonoString* InternalGetName(uint32_t _entityId);
+
+void InternalSetName(uint32_t _entityId, MonoString* _name);
+
+uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
+
+bool InternalContainsEntity(uint32_t _entityId);

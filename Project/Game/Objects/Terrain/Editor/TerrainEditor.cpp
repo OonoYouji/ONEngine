@@ -18,6 +18,10 @@
 TerrainEditor::TerrainEditor(Terrain* _terrain, EntityComponentSystem* _ecs)
 	: pTerrain_(_terrain), pECS_(_ecs) {
 
+	if (!pTerrain_) {
+		pTerrain_ = pECS_->FindEntity<Terrain>();
+	}
+
 	Assert(pTerrain_ != nullptr, "TerrainEditor::Initialize: pTerrain_ is null");
 	Assert(pECS_ != nullptr, "TerrainEditor::Initialize: pECS_ is null");
 }
@@ -37,6 +41,10 @@ void TerrainEditor::Initialize() {
 }
 
 void TerrainEditor::Update() {
+	if (!pTerrain_) {
+		return;
+	}
+
 
 
 	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_O)) {

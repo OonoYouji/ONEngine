@@ -1,5 +1,8 @@
 #pragma once
 
+/// externals
+#include <mono/jit/jit.h>
+
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Pipelines/Render/Mesh/MeshRenderingPipeline.h"
@@ -61,3 +64,12 @@ public:
 
 };
 
+
+/// ===================================================
+/// csで使用するための関数群
+/// ===================================================
+
+MonoString* InternalGetMeshName(uint64_t _nativeHandle);
+void InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName);
+Vector4 InternalGetMeshColor(uint64_t _nativeHandle);
+void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color);

@@ -132,7 +132,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	}
 
 
-	command->Dispatch(1280 / 16, 720 / 16, 1);
+	command->Dispatch(1920 / 16, 1080 / 16, 1);
 
 	/// 大本のsceneテクスチャに結果をコピー
 

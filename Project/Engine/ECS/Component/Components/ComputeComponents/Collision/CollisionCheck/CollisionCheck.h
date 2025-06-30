@@ -51,6 +51,10 @@ namespace CollisionCheck {
 		const Vector3& _cubePosition, const Vector3& _cubeSize
 	);
 
+	bool CubeVsCube(
+		const Vector3& _cube1Position, const Vector3& _cube1Size,
+		const Vector3& _cube2Position, const Vector3& _cube2Size
+	);
 
 	bool CubeVsSphere(
 		const Vector3& _cubePosition, const Vector3& _cubeSize,

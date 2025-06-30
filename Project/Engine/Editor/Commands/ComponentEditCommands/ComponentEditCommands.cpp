@@ -11,6 +11,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Script/MonoScriptEngine.h"
 #include "ComponentJsonConverter.h"
 
 
@@ -131,4 +132,31 @@ EDITOR_STATE AddComponentCommand::Execute() {
 EDITOR_STATE AddComponentCommand::Undo() {
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+
+/// ////////////////////////////////////////////////
+/// ReloadAllScriptsCommand
+/// ////////////////////////////////////////////////
+
+ReloadAllScriptsCommand::ReloadAllScriptsCommand(EntityComponentSystem* _ecs)
+	: pECS_(_ecs) {}
+
+EDITOR_STATE ReloadAllScriptsCommand::Execute() {
+
+	GetMonoScriptEnginePtr()->HotReload();
+	
+	for (auto& entity : pECS_->GetEntities()) {
+		Script* script = entity->GetComponent<Script>();
+		if (script) {
+			script->ResetScripts();
+		}
+	}
+
+	
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE ReloadAllScriptsCommand::Undo() {
+	return EDITOR_STATE_FINISH;
 }

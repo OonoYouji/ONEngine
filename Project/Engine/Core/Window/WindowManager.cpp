@@ -20,10 +20,9 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 
 	switch (_msg) {
 	case WM_CLOSE:
-		DestroyWindow(_hwnd);
+		PostQuitMessage(0);
 		return 0;
 	case WM_DESTROY: /// window破棄
-		PostQuitMessage(0);
 		return 0;
 	}
 

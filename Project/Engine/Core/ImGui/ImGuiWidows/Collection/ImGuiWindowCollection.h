@@ -19,7 +19,8 @@ public:
 		class EntityComponentSystem* _pEntityComponentSystem,
 		class GraphicsResourceCollection* _resourceCollection,
 		class ImGuiManager* _imGuiManager,
-		class EditorManager* _editorManager
+		class EditorManager* _editorManager,
+		class SceneManager* _sceneManager
 	);
 	~ImGuiWindowCollection();
 

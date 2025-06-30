@@ -16,34 +16,45 @@ namespace {
 	public:
 
 		JsonConverter() {
+
+			/// compute
 			Register<Transform>();
 			Register<Variables>();
 			Register<DirectionalLight>();
 			Register<AudioSource>();
 			Register<Effect>();
+			Register<Script>();
+
+			/// renderer
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
+
+			/// collision
 			Register<ToTerrainCollider>();
+			Register<SphereCollider>();
+			Register<BoxCollider>();
 		}
 
 		template <typename T>
 		void Register() {
-			converters_[typeid(T).hash_code()] = [](const IComponent* _component) {
+			std::string typeName = typeid(T).name();
+
+			converters_[typeName] = [](const IComponent* _component) {
 				return *static_cast<const T*>(_component);
 				};
 
-			fromJsonConverters_[typeid(T).hash_code()] = [this](IComponent* _component, const nlohmann::json& _j) {
-				*static_cast<T*>(_component) = _j.get<T>();
+			fromJsonConverters_[typeName] = [this](IComponent* _component, const nlohmann::json& _j) {
+ 				*static_cast<T*>(_component) = _j.get<T>();
 				};
 		}
 
 		using Converter = std::function<nlohmann::json(const IComponent*)>;
 		using FromJsonConverter = std::function<void(IComponent*, const nlohmann::json&)>;
-		std::unordered_map<size_t, Converter> converters_;
-		std::unordered_map<size_t, FromJsonConverter> fromJsonConverters_;
+		std::unordered_map<std::string, Converter> converters_;
+		std::unordered_map<std::string, FromJsonConverter> fromJsonConverters_;
 
 	};
 
@@ -51,7 +62,8 @@ namespace {
 }
 
 nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
-	auto it = jsonConverter.converters_.find(typeid(*_component).hash_code());
+	std::string name = typeid(*_component).name();
+	auto it = jsonConverter.converters_.find(name);
 	if (it == jsonConverter.converters_.end()) {
 		return nlohmann::json{};
 	}
@@ -61,7 +73,7 @@ nlohmann::json ComponentJsonConverter::ToJson(const IComponent* _component) {
 
 void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _component) {
 	const std::string& name = typeid(*_component).name();
-	auto it = jsonConverter.fromJsonConverters_.find(typeid(*_component).hash_code());
+	auto it = jsonConverter.fromJsonConverters_.find(name);
 
 	if (it == jsonConverter.fromJsonConverters_.end()) {
 		Console::Log("ComponentJsonConverter: " + name + "の変換関数が登録されていません。");
@@ -183,7 +195,7 @@ void to_json(nlohmann::json& _j, const Variables& _v) {
 }
 
 void from_json(const nlohmann::json& _j, Effect& _e) {
-	_e.enable = _j.at("enable").get<bool>();
+	_e.enable = _j.at("enable").get<int>();
 	_e.SetIsCreateParticle(_j.at("isCreateParticle").get<bool>());
 	_e.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_e.SetTexturePath(_j.at("texturePath").get<std::string>());
@@ -241,7 +253,6 @@ void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
 
 void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 	_e.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
-	_e.SetStartSpeed(_j.at("startSpeed").get<float>());
 	_e.SetSpeedStartData(_j.at("startSpeed").get<std::pair<float, float>>());
 	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vec3, Vec3>>());
 	_e.SetRotateStartData(_j.at("startRotate").get<std::pair<Vec3, Vec3>>());
@@ -252,7 +263,7 @@ void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 void to_json(nlohmann::json& _j, const EffectMainModule& _e) {
 	_j = nlohmann::json{
 		{ "lifeLeftTime", _e.GetLifeLeftTime() },
-		{ "startSpeed", _e.GetStartSpeed() },
+		{ "startSpeed", _e.GetSpeedStartData() },
 		{ "startSize", _e.GetSizeStartData() },
 		{ "startRotate", _e.GetRotateStartData() },
 		{ "startColor", _e.GetColorStartData() },
@@ -324,7 +335,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 }
 
 void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<bool>();
+	_m.enable = _j.at("enable").get<int>();
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Vec4>());
@@ -340,7 +351,7 @@ void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
 }
 
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<bool>();
+	_m.enable = _j.at("enable").get<int>();
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Color>());
 }
@@ -354,7 +365,7 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 }
 
 void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
-	_s.enable = _j.at("enable").get<bool>();
+	_s.enable = _j.at("enable").get<int>();
 	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
 }
 
@@ -367,7 +378,7 @@ void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
 }
 
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
-	_l.enable = _j.at("enable").get<bool>();
+	_l.enable = _j.at("enable").get<int>();
 }
 
 void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
@@ -378,7 +389,9 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l) {
 }
 
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l) {
-	_l.enable = _j.at("enable").get<bool>();
+	if (!_j.contains("enable")) {
+		_l.enable = _j.at("enable").get<int>();
+	}
 }
 
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
@@ -389,13 +402,67 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 }
 
 void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
-	_c.enable = _j.at("enable").get<bool>();
+	_c.enable = _j.at("enable").get<int>();
 }
 
 void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
 	_j = nlohmann::json{
 		{ "type", "ToTerrainCollider" },
 		{ "enable", _c.enable }
+	};
+}
+
+void from_json(const nlohmann::json& _j, Script& _s) {
+	_s.enable = _j.at("enable").get<int>();
+	if (_j.contains("scriptName")) {
+
+		/// スクリプト名が文字列または配列であることを確認
+		if (_j["scriptName"].is_string()) {
+			_s.AddScript(_j.at("scriptName").get<std::string>());
+		} else if (_j["scriptName"].is_array()) {
+
+			/// 配列の場合、各スクリプト名を追加
+			for (const auto& name : _j.at("scriptName")) {
+				_s.AddScript(name.get<std::string>());
+			}
+		}
+
+	} else {
+		Console::Log("Script component JSON does not contain 'scriptName'.");
+	}
+}
+
+void to_json(nlohmann::json& _j, const Script& _s) {
+	_j = nlohmann::json{
+		{ "type", "Script" },
+		{ "enable", _s.enable },
+		{ "scriptName", _s.GetScriptNames() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SphereCollider& _s) {
+	_s.enable = _j.at("enable").get<int>();
+	_s.SetRadius(_j.at("radius").get<float>());
+}
+
+void to_json(nlohmann::json& _j, const SphereCollider& _s) {
+	_j = nlohmann::json{
+		{ "type", "SphereCollider" },
+		{ "enable", _s.enable },
+		{ "radius", _s.GetRadius() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, BoxCollider& _b) {
+	_b.enable = _j.at("enable").get<int>();
+	_b.SetSize(_j.at("size").get<Vec3>());
+}
+
+void to_json(nlohmann::json& _j, const BoxCollider& _b) {
+	_j = nlohmann::json{
+		{ "type", "BoxCollider" },
+		{ "enable", _b.enable },
+		{ "size", _b.GetSize() }
 	};
 }
 

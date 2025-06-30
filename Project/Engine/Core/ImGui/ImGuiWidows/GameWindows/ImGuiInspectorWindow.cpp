@@ -21,17 +21,20 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
 
-	RegisterComponent<Transform>(         [&](IComponent* _component) { TransformDebug(reinterpret_cast<Transform*>(_component)); });
-	RegisterComponent<DirectionalLight>(  [&](IComponent* _component) { DirectionalLightDebug(reinterpret_cast<DirectionalLight*>(_component)); });
-	RegisterComponent<AudioSource>(       [&](IComponent* _component) { AudioSourceDebug(reinterpret_cast<AudioSource*>(_component)); });
-	RegisterComponent<Variables>(         [&](IComponent* _component) { VariablesDebug(reinterpret_cast<Variables*>(_component)); });
-	RegisterComponent<Effect>(            [&](IComponent* _component) { EffectDebug(reinterpret_cast<Effect*>(_component));});
-	RegisterComponent<MeshRenderer>(      [&](IComponent* _component) { MeshRendererDebug(reinterpret_cast<MeshRenderer*>(_component)); });
-	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(reinterpret_cast<CustomMeshRenderer*>(_component)); });
+	RegisterComponent<Transform>(         [&](IComponent* _component) { TransformDebug(static_cast<Transform*>(_component)); });
+	RegisterComponent<DirectionalLight>(  [&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
+	RegisterComponent<AudioSource>(       [&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
+	RegisterComponent<Variables>(         [&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
+	RegisterComponent<Effect>(            [&](IComponent* _component) { EffectDebug(static_cast<Effect*>(_component));});
+	RegisterComponent<MeshRenderer>(      [&](IComponent* _component) { MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line3DRenderer>(    [&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<ToTerrainCollider>( [&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<Script>(            [&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
+	RegisterComponent<SphereCollider>(    [&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component));});
+	RegisterComponent<BoxCollider>(       [&]([[maybe_unused]] IComponent* _component) { });
 
 
 	/// 関数を登録
@@ -93,8 +96,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 		//}
 
 		/// チェックボックスでenable/disableを切り替え
-		if (ImGui::Checkbox(("##" + componentName).c_str(), &component.second->enable)) {
-			//pEditorManager_->ExecuteCommand<EnableComponentCommand>(entity, component.second, isEnabled);
+		bool enabled = component.second->enable;
+		if (ImGui::Checkbox(("##" + componentName).c_str(), &enabled)) {
+			component.second->enable = enabled;
 		}
 
 		ImGui::SameLine();

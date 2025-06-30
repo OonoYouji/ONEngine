@@ -22,6 +22,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
+    <ClCompile Include="Engine\ECS\System\CollisionSystem\CollisionSystem.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
+    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
@@ -86,8 +90,25 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
+    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
+    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
+    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
+    <ClCompile Include="Game\Entity\Player\Player.cpp" />
+    <ClCompile Include="Game\Entity\TestEntity\TestEntity.cpp" />
+    <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
     <ClCompile Include="Game\Objects\Enemy.cpp" />
+    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
     <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
+    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -120,18 +141,14 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
-    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
-    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
-    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
     <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -151,32 +168,29 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.cpp" />
-    <ClCompile Include="Game\Entity\Player\Player.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
+    <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
+    <ClInclude Include="Engine\ECS\System\CollisionSystem\CollisionSystem.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />
+    <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
@@ -239,8 +253,25 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
+    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
+    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
+    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
+    <ClInclude Include="Game\Entity\Player\Player.h" />
+    <ClInclude Include="Game\Entity\TestEntity\TestEntity.h" />
+    <ClInclude Include="Game\Objects\BackgroundObject.h" />
     <ClInclude Include="Game\Objects\Enemy.h" />
+    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
     <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
+    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
+    <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
+    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
+    <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
+    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
@@ -287,31 +318,21 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
-    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
-    <ClInclude Include="Game\Entity\Player\Player.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
-    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
-    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
-    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
-    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.h" />
-    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Gizmo.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
-    <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
-    <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
@@ -319,15 +340,17 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
     <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
+    <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -383,14 +406,14 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Debug</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -408,7 +431,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MinSpace</Optimization>
     </ClCompile>
@@ -418,13 +441,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /Y /I /E "$(ProjectDir)Assets" "$(OutDir)Assets"
-xcopy /Y /I /E "$(ProjectDir)Packages" "$(OutDir)Packages"</Command>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

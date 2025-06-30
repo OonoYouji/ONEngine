@@ -7,8 +7,8 @@ void LaserEffect::Initialize() {
 	Effect* effect = AddComponent<Effect>();
 	effect->SetBlendMode(Effect::BlendMode::Add);
 	effect->SetMaxEffectCount(1024);
-	effect->SetMeshPath("Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj");
-	effect->SetTexturePath("Assets/Textures/circle.png");
+	effect->SetMeshPath("./Assets/Models/objects/PuzzleClearEffect/PuzzleClearEffectLaser.obj");
+	effect->SetTexturePath("./Assets/Textures/circle.png");
 	effect->SetLifeLeftTime(0.5f);
 
 	effect->SetStartSpeed(100.0f);
@@ -38,8 +38,8 @@ void LaserEffect::Update() {
 
 void LaserShootEffect::Initialize() {
 	Effect* effect = AddComponent<Effect>();
-	effect->SetMeshPath("Assets/Models/primitive/plane.obj");
-	effect->SetTexturePath("Assets/Textures/ring.png");
+	effect->SetMeshPath("./Assets/Models/primitive/plane.obj");
+	effect->SetTexturePath("./Assets/Textures/ring.png");
 
 	effect->SetEmitTypeTime({ .emitTime = 0.25f, .emitInterval = 0.0f }, 2);
 	effect->SetLifeLeftTime(1.0f);
@@ -66,11 +66,11 @@ void LaserShootEffect::Initialize() {
 
 void LaserShootEffect::Update() {
 
-	float& animeTime = variables_->Get<float>("animeTime");
+	/*float& animeTime = variables_->Get<float>("animeTime");
 	animeTime += Time::DeltaTime();
 
 	if (animeTime > 0.5f) {
 		SetActive(false);
-	}
+	}*/
 
 }
