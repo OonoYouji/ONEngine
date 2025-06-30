@@ -22,6 +22,10 @@ public class Player : MonoBehavior {
 		//Jump();
 
 		CameraFollow();
+
+
+		Transform t = transform;
+		t.position += Vector3.down * 0.98f;
 	}
 
 
