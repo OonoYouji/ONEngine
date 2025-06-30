@@ -8,7 +8,6 @@
 #include <filesystem>
 #include <chrono>
 
-
 namespace {
 
 	/// @brief 現在の年月日時間をstringで取得する
@@ -95,6 +94,23 @@ std::wstring ConvertString(const std::string& _str) {
 	MultiByteToWideChar(CP_UTF8, 0, _str.data(), static_cast<int>(_str.size()), result.data(), sizeNeeded);
 	return result;
 }
+
+
+
+std::string ConvertTCHARToString(const TCHAR* tstr) {
+#ifdef UNICODE
+	// TCHAR == wchar_t
+	int len = WideCharToMultiByte(CP_UTF8, 0, tstr, -1, nullptr, 0, nullptr, nullptr);
+	if (len == 0) return "";
+
+	std::string result(len - 1, 0); // -1 to remove null terminator
+	WideCharToMultiByte(CP_UTF8, 0, tstr, -1, result.data(), len, nullptr, nullptr);
+	return result;
+#else
+	return std::string(tstr); // もともと char* ならそのまま
+#endif
+}
+
 
 
 

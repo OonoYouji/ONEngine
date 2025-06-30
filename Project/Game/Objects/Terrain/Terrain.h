@@ -60,12 +60,13 @@ public:
 
 	void ClearEditVertices();
 
+	void InputVertices();
+
+
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-
-	void InputVertices();
 
 	void CalculateMeshlet(); ///< 頂点の計算
 

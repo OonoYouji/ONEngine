@@ -2,6 +2,7 @@
 
 /// directx
 #include <DirectX-Headers/include/directx/d3dx12_pipeline_state_stream.h>
+#include <comdef.h>
 
 /// engine
 #include "Engine/Core/DirectX12/Device/DxDevice.h"
@@ -17,11 +18,11 @@ void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 	/// root signatureとpipeline state objectを生成する
 	CreateRootSignature(_dxDevice);
 
-	if (pShader_->GetMS() != nullptr) {
-		CreateMeshPipelineStateObject(_dxDevice);
-	} else {
+	//if (pShader_->GetMS() != nullptr) {
+		//CreateMeshPipelineStateObject(_dxDevice);
+	//} else {
 		CreatePipelineStateObject(_dxDevice);
-	}
+	//}
 }
 
 
@@ -230,7 +231,12 @@ void GraphicsPipeline::CreatePipelineStateObject(DxDevice* _dxDevice) {
 		&desc, IID_PPV_ARGS(&pipelineState_)
 	);
 
-	Assert(SUCCEEDED(result), "error...");
+	if (FAILED(result)) {
+		_com_error err(result);
+		Console::Log("[error] " + ConvertTCHARToString(err.ErrorMessage()));
+
+		Assert(false, "CreateGraphicsPipelineState failed");
+	}
 }
 
 void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {

@@ -66,12 +66,14 @@ void GameScene::Initialize() {
 
 	//pEntityComponentSystem_->GenerateEntity<Grid>();
 
+	Terrain* terrain = pEntityComponentSystem_->FindEntity<Terrain>();
+
 	terrainEditor_ = std::make_unique<TerrainEditor>(
-		pEntityComponentSystem_->FindEntity<Terrain>(),
-		pEntityComponentSystem_
+		terrain, pEntityComponentSystem_
 	);
 	terrainEditor_->Initialize();
 
+	//terrain->InputVertices();
 
 	///// 草を生やす
 	//EmptyEntity* emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();

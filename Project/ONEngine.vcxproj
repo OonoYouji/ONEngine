@@ -417,7 +417,10 @@
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"</Command>
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
+xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
+xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -444,7 +447,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalDependencies>assimp-vc143-mt.lib;$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"</Command>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
+xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
+xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

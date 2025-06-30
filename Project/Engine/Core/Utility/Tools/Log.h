@@ -2,6 +2,7 @@
 
 /// std
 #include <format>
+#include <tchar.h>
 
 /// ////////////////////////////////////////////////
 /// Console Log
@@ -31,3 +32,4 @@ public:
 
 std::string ConvertString(const std::wstring& _wstr);
 std::wstring ConvertString(const std::string& _str);
+std::string ConvertTCHARToString(const TCHAR* _tstr);
