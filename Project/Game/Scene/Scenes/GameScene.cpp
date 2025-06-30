@@ -73,7 +73,7 @@ void GameScene::Initialize() {
 	);
 	terrainEditor_->Initialize();
 
-	//terrain->InputVertices();
+	terrain->InputVertices();
 
 	///// 草を生やす
 	//EmptyEntity* emptyEntity = pEntityComponentSystem_->GenerateEntity<EmptyEntity>();
