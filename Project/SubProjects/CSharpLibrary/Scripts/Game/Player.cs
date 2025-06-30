@@ -19,7 +19,7 @@ public class Player : MonoBehavior {
 
 	public override void Update() {
 		Move();
-		Jump();
+		//Jump();
 
 		CameraFollow();
 	}
@@ -46,7 +46,7 @@ public class Player : MonoBehavior {
 		/// カメラの回転に合わせて移動する
 		Transform cT = entity.GetChild(0).transform;
 		if (cT != null) {
-			Matrix4x4 matCameraRotate = Matrix4x4.Rotate(cT.rotate);
+			Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
 			velocity = Matrix4x4.Transform(matCameraRotate, velocity);
 		}
 
