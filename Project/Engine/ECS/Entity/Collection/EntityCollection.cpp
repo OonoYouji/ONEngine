@@ -23,7 +23,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
+IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -33,8 +33,10 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name) {
 		entityPtr->pEntityComponentSystem_ = pECS_;
 		entityPtr->id_ = NewEntityID();
 		entityPtr->CommonInitialize();
-		entityPtr->Initialize();
-		
+		if (_isInit) {
+			entityPtr->Initialize();
+		}
+
 		return entities_.back().get();
 	}
 	return nullptr;
@@ -56,11 +58,13 @@ Camera* EntityCollection::GenerateCamera() {
 
 void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
-	/// 破棄可能かチェック
 	if (_entity == nullptr) {
 		return;
 	}
 
+	/// ------------------------------
+	/// 破棄可能かチェック
+	/// ------------------------------
 	auto doNotDestroyEntityItr = std::find_if(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(),
 		[&_entity](IEntity* entity) {
 			return entity == _entity;
@@ -73,6 +77,10 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	}
 
 
+	/// ------------------------------
+	/// 実際に破棄する
+	/// ------------------------------
+
 	/// entityのidをチェック
 	size_t id = _entity->id_;
 	usedEntityIDs_.erase(std::remove(usedEntityIDs_.begin(), usedEntityIDs_.end(), id), usedEntityIDs_.end());
@@ -81,8 +89,11 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 親子関係の解除
 	_entity->RemoveParent();
 	if (_deleteChildren) {
-		for (auto& child : _entity->GetChildren()) {
-			RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
+
+		if (_entity->GetChildren().size() > 0) {
+			for (auto& child : _entity->GetChildren()) {
+				RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
+			}
 		}
 	} else {
 		for (auto& child : _entity->GetChildren()) {

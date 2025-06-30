@@ -2,11 +2,28 @@
 
 public class Enemy : MonoBehavior {
 
+	float hp;
+	bool isAlive;
+
 	public override void Initialize() {
-		Console.WriteLine("Enemy.Init() called!");
+		hp = 100f;
+		isAlive = true;
 	}
 
 	public override void Update() {
-		Console.WriteLine("Enemy.Update() called!");
+
+		if (hp <= 0f) {
+			isAlive = false;
+			Log.WriteLine("Enemy defeated." + entity.Id);
+			return;
+		}
 	}
+
+
+	public bool IsAlive { 
+		get {
+			return isAlive;
+		}
+	}
+
 }

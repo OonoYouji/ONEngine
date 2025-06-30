@@ -38,7 +38,7 @@ namespace {
 		float deltaTime_;
 		float unscaledDeltaTime_;
 		float timeScale_;
-		float gameTime_;
+		float gameTime_ = 0.0f;
 
 		std::chrono::high_resolution_clock::time_point time_;
 	};

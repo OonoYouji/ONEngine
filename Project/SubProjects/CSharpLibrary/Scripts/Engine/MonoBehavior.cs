@@ -3,16 +3,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.IO;
 
-public static class Log {
-	static public void WriteLine(string message) {
-		InternalConsoleLog(message);
-	}
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalConsoleLog(string s);
-}
-
-
 public class MonoBehavior {
 
 	public Entity entity {
@@ -23,48 +13,26 @@ public class MonoBehavior {
 		get {
 			return entity.transform;
 		}
-		set {
-			//entity.transform = value;
-		} 
 	}
 
-
 	private bool initialized = false;
-	internal int entityId = -1;
-
 
 	public void InternalInitialize(uint _entityId) {
-	
-
 		if (!initialized) {
-			this.entityId = (int)_entityId;
 			Initialize();
 			initialized = true;
 
-			entity = new Entity(_entityId);
-			//transform = entity.transform;
-
+			entity = EntityCollection.GetEntity(_entityId);
+			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
 		}
 	}
 
-	public virtual void Initialize() {}
-	public virtual void Update() {}
+	public virtual void Initialize() { }
+	public virtual void Update() { }
 
-	public int EntityId {
-		get {
-			if (entityId == -1) {
-				entityId = InternalGetEntityId();
-			}
-			return entityId;
-		}
-		set {
-			entityId = value;
-		}
-	}
-
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	private static extern int InternalGetEntityId();
+	public virtual void OnCollisionEnter(Entity collision) { }
+	public virtual void OnCollisionExit(Entity collision) { }
+	public virtual void OnCollisionStay(Entity collision) { }
 
 
 

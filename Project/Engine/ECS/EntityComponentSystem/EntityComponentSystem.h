@@ -44,7 +44,7 @@ public:
 	template<typename T>
 	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
 
-	IEntity* GenerateEntity(const std::string& _name);
+	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
@@ -59,6 +59,9 @@ public:
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
+	
+	template <typename T>
+	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
@@ -174,6 +177,11 @@ inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity
 	return entityCollection_->FindEntity<T>();
 }
 
+template<typename T>
+inline std::vector<T*> EntityComponentSystem::FindEntities() requires std::is_base_of_v<IEntity, T> {
+	return entityCollection_->FindEntities<T>();
+}
+
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
 	return componentCollection_->AddComponent<Comp>();
@@ -212,3 +220,12 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 
 
 uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);
+uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName);
+
+MonoString* InternalGetName(uint32_t _entityId);
+
+void InternalSetName(uint32_t _entityId, MonoString* _name);
+
+uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
+
+bool InternalContainsEntity(uint32_t _entityId);

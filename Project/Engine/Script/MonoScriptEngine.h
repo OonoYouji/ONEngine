@@ -15,6 +15,9 @@ void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
 MonoScriptEngine* GetMonoScriptEnginePtr();
 
 
+/// engine
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
@@ -29,7 +32,7 @@ public:
 
 	void Initialize();
 
-	void MakeScript(class Script* _script, const std::string& _scriptName);
+	void MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName);
 
 	//void RegisterEntity(class Script* _script, const std::string& _csName);
 

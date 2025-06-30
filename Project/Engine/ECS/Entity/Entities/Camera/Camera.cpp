@@ -43,11 +43,6 @@ Camera::~Camera() {
 
 
 void Camera::Initialize() {
-
-	transform_->position = { 0.0f, 0.0f, -10.0f };
-	transform_->scale = Vector3::kOne;
-	transform_->rotate = Vector3::kZero;
-
 	fovY_ = 0.7f;
 	nearClip_ = 0.1f;
 	farClip_ = 1000.0f;

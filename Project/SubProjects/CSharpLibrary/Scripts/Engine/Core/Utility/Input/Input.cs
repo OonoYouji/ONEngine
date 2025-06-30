@@ -27,6 +27,13 @@ static public class Input {
 		return InternalReleaseGamepad((int)gamepad);
 	}
 
+	static public Vector2 GamepadThumb(GamepadAxis axis) {
+		int axisIndex = (int)axis;
+		Log.WriteLine("GamepadThumb: " + axisIndex);
+		Vector2 output;
+		InternalGetGamepadThumb(axisIndex, out output.x, out output.y);
+		return output;
+	}
 
 
 	/// ==================================
@@ -38,7 +45,7 @@ static public class Input {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static private extern bool InternalPressKey(int dik);
-	
+
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static private extern bool InternalReleaseKey(int dik);
 
@@ -51,6 +58,9 @@ static public class Input {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static private extern bool InternalReleaseGamepad(int gamepad);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetGamepadThumb(int axisIndex, out float _x, out float _y);
 
 
 }

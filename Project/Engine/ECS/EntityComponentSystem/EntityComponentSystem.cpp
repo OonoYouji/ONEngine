@@ -44,6 +44,70 @@ uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
+uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName) {
+	/// idからentityを取得
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	/// componentを取得
+	std::string typeName = mono_string_to_utf8(_monoTypeName);
+	IComponent* component = entity->GetComponent(typeName);
+
+	return reinterpret_cast<uint64_t>(component);
+}
+
+MonoString* InternalGetName(uint32_t _entityId) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return nullptr;
+	}
+
+	std::string name = entity->GetName();
+	return mono_string_new(mono_domain_get(), name.c_str());
+}
+
+void InternalSetName(uint32_t _entityId, MonoString* _name) {
+	std::string name = mono_string_to_utf8(_name);
+	IEntity* entity = gECS->GetEntity(_entityId);
+
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	entity->SetName(name);
+}
+
+uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	const auto& children = entity->GetChildren();
+	if (_childIndex >= children.size()) {
+		Console::Log("Child index out of range for entity ID: " + std::to_string(_entityId));
+		return 0;
+	}
+
+	IEntity* child = children[_childIndex];
+	return static_cast<uint32_t>(child->GetId());
+}
+
+bool InternalContainsEntity(uint32_t _entityId) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (entity) {
+		return true;
+	}
+
+	return false;
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -77,8 +141,8 @@ void EntityComponentSystem::Update() {
 	}
 }
 
-IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name) {
-	return entityCollection_->GenerateEntity(_name);
+IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
+	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
@@ -150,9 +214,17 @@ const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities(
 	return entityCollection_->GetEntities();
 }
 
-IEntity* EntityComponentSystem::GetEntity(size_t _index) {
-	if (_index < entityCollection_->GetEntities().size()) {
-		return entityCollection_->GetEntities()[_index].get();
+IEntity* EntityComponentSystem::GetEntity(size_t _id) {
+	/// idを検索
+	auto itr = std::find_if(
+		entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
+		[_id](const std::unique_ptr<IEntity>& entity) {
+			return entity->GetId() == _id;
+		}
+	);
+
+	if (itr != entityCollection_->GetEntities().end()) {
+		return (*itr).get();
 	}
 
 	return nullptr;

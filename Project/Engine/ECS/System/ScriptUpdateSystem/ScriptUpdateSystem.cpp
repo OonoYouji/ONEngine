@@ -20,18 +20,36 @@ void ScriptUpdateSystem::Update(EntityComponentSystem* _entityComponentSystem) {
 		}
 	}
 
-	for (auto& script : scripts) {
-		if (script->updateMethod_ && script->instance_) {
+	for (auto& scriptComp : scripts) {
+		for (auto& script : scriptComp->scriptDataList_) {
 
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(script->updateMethod_, script->instance_, nullptr, &exc);
-
-			if (exc) {
-				MonoString* excMessage = mono_object_to_string(exc, nullptr);
-				const char* message = mono_string_to_utf8(excMessage);
-				Console::Log("Script Update Error: " + std::string(message));
-				mono_free((void*)message);
+			/// スクリプトが有効でなければスキップ
+			if (!script.enable) {
+				continue;
 			}
+
+			if (script.updateMethod && script.instance) {
+				/// exceptionをキャッチするためのポインタ
+				MonoObject* exc = nullptr;
+
+				/// updateメソッドを呼び出す
+				mono_runtime_invoke(script.updateMethod, script.instance, nullptr, &exc);
+
+				/// 例外が発生したらここで出力
+				if (exc) {
+					MonoString* monoStr = mono_object_to_string(exc, nullptr);
+					if (monoStr) {
+						char* message = mono_string_to_utf8(monoStr);
+						Console::Log(std::string("Mono Exception: ") + message);
+						mono_free(message);
+					} else {
+						Console::Log("Mono Exception occurred, but message is null.");
+					}
+				}
+
+			}
+
 		}
+
 	}
 }

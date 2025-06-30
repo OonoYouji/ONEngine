@@ -12,6 +12,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 
+#include "InternalCalls/AddComponentInternalCalls.h"
+
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
@@ -64,7 +66,7 @@ void MonoScriptEngine::Initialize() {
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
 	// Mono の検索パス設定（必ず先）
-	mono_set_dirs("./Externals/mono/lib", "./Externals/mono/etc");
+	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 
 	mono_config_parse(nullptr);
 	// debugサポートの初期化
@@ -112,12 +114,21 @@ void MonoScriptEngine::Initialize() {
 	RegisterFunctions();
 }
 
+void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
 
-void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptName) {
 	if (!_script) {
 		Console::Log("Script pointer is null");
 		return;
 	}
+
+	_script->scriptName = _scriptName;
+
+
+	/// ownerがなければ今後の処理ができないので、早期リターン
+	if (!_comp->GetOwner()) {
+		return;
+	}
+
 
 	/// MonoImageから指定されたクラスを取得(namespaceは""で省略)
 	MonoClass* monoClass = mono_class_from_name(image_, "", _scriptName.c_str());
@@ -135,34 +146,31 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
 	if (!initMethod) {
 		Console::Log("Failed to find method Initialize in class: " + _scriptName);
-		//return;
 	}
 
 	/// Updateメソッドを取得
 	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
 		Console::Log("Failed to find method Update in class: " + _scriptName);
-		//return;
 	}
 
 
-	/// スクリプトのメンバ変数に設定
-	_script->gcHandle_ = gcHandle;
-	_script->monoClass_ = monoClass;
-	_script->instance_ = obj;
-	_script->initMethod_ = initMethod;
-	_script->updateMethod_ = updateMethod;
+	/// collision イベントメソッドを取得
+	_script->collisionEventMethods[0] = FindMethodInClassOrParents(monoClass, "OnCollisionEnter", 1);
+	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
+	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
 
-	/// c#側のEntityのidを設定
-	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
-	uint32_t id = _script->GetOwner()->GetId();
-	mono_field_set_value(_script->instance_, field, &id);
+	_script->gcHandle = gcHandle;
+	_script->monoClass = monoClass;
+	_script->instance = obj;
+	_script->initMethod = initMethod;
+	_script->updateMethod = updateMethod;
 
 
 	/// 初期化の呼び出し
 	if (initMethod && obj) {
-		IEntity* owner = _script->GetOwner();
-		uint32_t id = owner->GetId();
+		IEntity* owner = _comp->GetOwner();
+		uint32_t id = static_cast<uint32_t>(owner->GetId());
 		void* args[1];
 		args[0] = &id;
 
@@ -177,36 +185,22 @@ void MonoScriptEngine::MakeScript(Script* _script, const std::string& _scriptNam
 
 	}
 
-	//if (updateMethod && obj) {
-	//	mono_runtime_invoke(updateMethod, obj, nullptr, nullptr);
-	//}
-
 
 }
 
-//void MonoScriptEngine::RegisterEntity(Script* _script) {
-//
-//	/// c#側のEntityのidを設定
-//	MonoClassField* field = mono_class_get_field_from_name(_script->monoClass_, "entityId");
-//	uint32_t id = _script->GetOwner()->GetId();
-//	mono_field_set_value(_script->instance_, field, &id);
-//
-//}
 
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録
 
-	/// transformの get set
-	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
-	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
-	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
-	mono_add_internal_call("Transform::InternalGetScale", (void*)InternalGetScale);
-	mono_add_internal_call("Transform::InternalSetPosition", (void*)InternalSetPosition);
-	mono_add_internal_call("Transform::InternalSetRotate", (void*)InternalSetRotate);
-	mono_add_internal_call("Transform::InternalSetScale", (void*)InternalSetScale);
+	AddComponentInternalCalls();
 
-	/// component
+	/// entity
 	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
+	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
+	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
+	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
+	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 
 	/// log
 	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
@@ -218,8 +212,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
 
-	//mono_add_internal_call("Entity::InternalSetTransform", (void*)InternalSetTransform);
-	//MonoObject* InternalGetTransform(uint32_t _entityId);
+
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
 

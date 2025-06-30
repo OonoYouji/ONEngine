@@ -39,6 +39,7 @@ private:
 	std::unique_ptr<Mouse>    mouse_;
 	std::unique_ptr<Gamepad>  gamepad_;
 
-	class WindowManager*      windowManager_ = nullptr;
+	class WindowManager* windowManager_ = nullptr;
 };
 
+void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);

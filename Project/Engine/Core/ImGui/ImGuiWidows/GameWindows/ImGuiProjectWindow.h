@@ -74,6 +74,8 @@ private:
 	std::shared_ptr<Folder> assetsRootFolder_;
 	std::shared_ptr<Folder> packagesRootFolder_;
 	std::shared_ptr<Folder> gameRootFolder_;
+	std::shared_ptr<Folder> engineRootFolder_;
+	std::shared_ptr<Folder> scriptRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
 	File* selectedFile_ = nullptr; ///< 選択されているファイル
 	uint32_t selectedItemPtr_ = 0;

@@ -149,7 +149,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 	for (auto& entity : pECS_->GetEntities()) {
 		Script* script = entity->GetComponent<Script>();
 		if (script) {
-			script->ResetScript();
+			script->ResetScripts();
 		}
 	}
 
