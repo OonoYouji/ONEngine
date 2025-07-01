@@ -120,13 +120,6 @@ void SceneIO::Input(IScene* _scene) {
 	for (const auto& entityPair : entityMap) {
 		IEntity* entity = entityPair.second;
 		if (entity) {
-
-			/// scriptのコンポーネントのリセット
-			Script* sc = entity->GetComponent<Script>();
-			if (sc) {
-				sc->ResetScripts();
-			}
-			
 			entity->Initialize();
 		}
 	}

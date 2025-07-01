@@ -17,7 +17,7 @@ public class MonoBehavior {
 
 	private bool initialized = false;
 
-	public void InternalInitialize(uint _entityId) {
+	public void InternalInitialize(int _entityId) {
 		if (!initialized) {
 			Initialize();
 			initialized = true;

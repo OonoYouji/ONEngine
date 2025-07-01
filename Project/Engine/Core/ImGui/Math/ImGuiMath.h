@@ -12,6 +12,8 @@
 
 bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = ImGuiInputTextFlags_CallbackAlways);
 
+void ImGuiInputTextReadOnly(const char* _label, const std::string& _text);
+
 bool ImGuiColorEdit(const char* _label, Vector4* _color);
 
 

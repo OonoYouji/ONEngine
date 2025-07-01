@@ -12,10 +12,11 @@ public class Entity {
 	private Transform _transform;
 	Dictionary<string, Component> _components = new Dictionary<string, Component>();
 
-	uint entityId;
+	int entityId;
+	int parentId = -1; // 親のID
 
 	public Transform transform => _transform;
-	public uint Id {
+	public int Id {
 		get {
 			return entityId; 
 		}
@@ -31,12 +32,22 @@ public class Entity {
 	}
 
 
+	public Entity parent {
+		get {
+
+			return null; 
+		}
+		set {
+
+		}
+	}
+
 
 	/// =========================================
 	/// methods
 	/// =========================================
 
-	public Entity(uint _id) {
+	public Entity(int _id) {
 		entityId = _id;
 		_transform = AddComponent<Transform>();
 		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
@@ -44,7 +55,7 @@ public class Entity {
 
 
 	public Entity GetChild(uint _index) {
-		uint childId = InternalGetChildId(entityId, _index);
+		int childId = InternalGetChildId(entityId, _index);
 		return EntityCollection.GetEntity(childId);
 	}
 
@@ -85,18 +96,18 @@ public class Entity {
 	/// ------------------------------------------
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern ulong InternalAddComponent<T>(uint _entityId, string _compTypeName);
+	static extern ulong InternalAddComponent<T>(int _entityId, string _compTypeName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern ulong InternalGetComponent<T>(uint _entityId, string _compTypeName);
+	static extern ulong InternalGetComponent<T>(int _entityId, string _compTypeName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern string InternalGetName(uint _entityId);
+	static extern string InternalGetName(int _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetName(uint _entityId, string _name);
+	static extern void InternalSetName(int _entityId, string _name);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern uint InternalGetChildId(uint _entityId, uint _childIndex);
+	static extern int InternalGetChildId(int _entityId, uint _childIndex);
 
 }

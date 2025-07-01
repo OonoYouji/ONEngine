@@ -259,10 +259,8 @@ bool IEntity::GetActive() const {
 	return active_;
 }
 
-const size_t& IEntity::GetId() const {
+int32_t IEntity::GetId() const {
 	return id_;
 }
 
-size_t* IEntity::GetIdPtr() {
-	return &id_;
-}
+

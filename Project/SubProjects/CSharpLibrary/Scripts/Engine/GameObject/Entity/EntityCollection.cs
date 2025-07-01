@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 static public class EntityCollection {
 
-	static Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>();
+	static Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
 
-	static public Entity GetEntity(uint _id) {
+	static public Entity GetEntity(int _id) {
 		/// 既にコンテナないにあるかチェック
 		if(entities.ContainsKey(_id)) {
 			return entities[_id];
@@ -32,19 +32,19 @@ static public class EntityCollection {
 	}
 
 	static public Entity CreateEntity(string _prefabName) {
-		uint id = InternalCreateEntity(_prefabName);
+		int id = InternalCreateEntity(_prefabName);
 		return GetEntity(id);
 	}
 
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern bool InternalContainsEntity(uint _entityId);
+	static extern bool InternalContainsEntity(int _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern uint InternalGetEntityId(string _name);
+	static extern int InternalGetEntityId(string _name);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern uint InternalCreateEntity(string _prefabName);
+	static extern int InternalCreateEntity(string _prefabName);
 
 
 }

@@ -32,6 +32,13 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 	);
 }
 
+void ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
+	char buffer[256];
+	strncpy_s(buffer, _text.c_str(), sizeof(buffer));
+	buffer[sizeof(buffer) - 1] = '\0';
+	ImGui::InputText(_label, buffer, sizeof(buffer), ImGuiInputTextFlags_ReadOnly);
+}
+
 bool ImGuiColorEdit(const char* _label, Vector4* _color) {
 
 	bool result = false;

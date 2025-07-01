@@ -28,7 +28,8 @@ public class Puzzle : MonoBehavior {
 
 		foreach (var row in map) {
 			foreach (var cell in row) {
-				Log.WriteLine("Cell: " + cell);
+				Entity entity = EntityCollection.CreateEntity("Block");
+				//entity.parent = entity;
 			}
 		}
 
@@ -67,10 +68,10 @@ public class Puzzle : MonoBehavior {
 
 	public override void OnCollisionStay(Entity collision) {
 
-		///// 衝突相手がプレイヤーでない場合は何もしない
-		//if (collision.name != "Player") {
-		//	return;
-		//}
+		/// 衝突相手がプレイヤーでない場合は何もしない
+		if (collision.name != "Player") {
+			return;
+		}
 
 		/// 
 		if (Input.TriggerGamepad(Gamepad.A)) {

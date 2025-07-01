@@ -30,7 +30,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit) {
+IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -38,7 +38,7 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit
 		/// 初期化
 		IEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
-		entityPtr->id_ = NewEntityID();
+		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->CommonInitialize();
 		if (_isInit) {
 			entityPtr->Initialize();
@@ -52,7 +52,7 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
 	camera->pEntityComponentSystem_ = pECS_;
-	camera->id_ = NewEntityID();
+	camera->id_ = NewEntityID(false);
 	camera->CommonInitialize();
 	camera->Initialize();
 
@@ -89,9 +89,20 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// ------------------------------
 
 	/// entityのidをチェック
-	size_t id = _entity->id_;
-	usedEntityIDs_.erase(std::remove(usedEntityIDs_.begin(), usedEntityIDs_.end(), id), usedEntityIDs_.end());
-	removedEntityIDs_.push_back(id);
+	int32_t id = _entity->id_;
+
+	if (id > 0) {
+		/// 初期化時のidから削除
+		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), id), initEntityIDs_.usedIds.end());
+		initEntityIDs_.removedIds.push_back(id);
+	} else if (id < 0) {
+		/// 実行時のidから削除
+		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), id), runtimeEntityIDs_.usedIds.end());
+		runtimeEntityIDs_.removedIds.push_back(id);
+	} else {
+		Console::Log("Invalid entity ID: " + std::to_string(id));
+		return;
+	}
 
 	/// 親子関係の解除
 	_entity->RemoveParent();
@@ -203,16 +214,34 @@ void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)
 	}
 }
 
-size_t EntityCollection::NewEntityID() {
-	size_t resultId = 0;
+int32_t EntityCollection::NewEntityID(bool _isRuntime) {
+	int32_t resultId = 0;
 
-	if (removedEntityIDs_.size() > 0) {
-		resultId = removedEntityIDs_.front();
-		removedEntityIDs_.pop_front();
-		usedEntityIDs_.push_back(resultId);
+	if (_isRuntime) {
+		/* --- 実行時 --- */
+
+		// 削除されたIDがあればそれを使用
+		if (runtimeEntityIDs_.removedIds.size() > 0) {
+			resultId = runtimeEntityIDs_.removedIds.front();
+			runtimeEntityIDs_.removedIds.pop_front();
+			runtimeEntityIDs_.usedIds.push_back(resultId);
+		} else {
+			// なければ新しいIDを生成
+			resultId = static_cast<int32_t>(runtimeEntityIDs_.usedIds.size() + 1) * -1;
+			runtimeEntityIDs_.usedIds.push_back(resultId);
+		}
+
+
 	} else {
-		resultId = usedEntityIDs_.size();
-		usedEntityIDs_.push_back(resultId);
+		/* --- 初期化時 --- */
+		if (initEntityIDs_.removedIds.size() > 0) {
+			resultId = initEntityIDs_.removedIds.front();
+			initEntityIDs_.removedIds.pop_front();
+			initEntityIDs_.usedIds.push_back(resultId);
+		} else {
+			resultId = initEntityIDs_.usedIds.size() + 1;
+			initEntityIDs_.usedIds.push_back(resultId);
+		}
 	}
 
 	return resultId;
@@ -265,7 +294,7 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	EmptyEntity* entity = GenerateEntity<EmptyEntity>();
+	EmptyEntity* entity = GenerateEntity<EmptyEntity>(true);
 	if (entity) {
 		entity->SetName(_prefabName + "(Clone)");
 		entity->SetPrefabName(_prefabName);
