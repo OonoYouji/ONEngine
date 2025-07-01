@@ -1,13 +1,18 @@
 #include "EntityCollection.h"
 
+/// std
+#include <fstream>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// entity
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -19,6 +24,8 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 	factory_ = std::make_unique<EntityFactory>(pDxDevice_);
 	entities_.reserve(256);
+
+	LoadPrefabAll();
 }
 
 EntityCollection::~EntityCollection() {}
@@ -214,11 +221,61 @@ size_t EntityCollection::NewEntityID() {
 uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	for (auto& entity : entities_) {
 		if (entity->name_ == _name) {
-			return entity->GetId();
+			return static_cast<uint32_t>(entity->GetId());
 		}
 	}
 
 	return 0;
+}
+
+void EntityCollection::LoadPrefabAll() {
+	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
+	std::string prefabPath = "./Assets/Prefabs/";
+
+	/// directoryがあるのかチェック
+	if (!std::filesystem::exists(prefabPath)) {
+		Console::Log("Prefab directory does not exist: " + prefabPath);
+		return;
+	}
+
+	/// directoryを探索
+	for (const auto& entry : std::filesystem::directory_iterator(prefabPath)) {
+
+		/// JSONファイルのみを対象とする
+		if (entry.is_regular_file() && entry.path().extension() == ".json") {
+
+			/// pathをPrefabに渡して終了
+			std::string prefabName = entry.path().stem().string();
+			prefabs_[prefabName] = std::make_unique<EntityPrefab>(entry.path().string());
+		}
+	}
+
+
+}
+
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, const std::string& _entityName) {
+	/// prefabが存在するかチェック
+	auto prefabItr = prefabs_.find(_prefabName);
+	if (prefabItr == prefabs_.end()) {
+		Console::Log("Prefab not found: " + _prefabName);
+		return 0;
+	}
+
+	/// prefabを取得
+	EntityPrefab* prefab = prefabItr->second.get();
+
+	/// entityを生成する
+	EmptyEntity* entity = GenerateEntity<EmptyEntity>();
+	if (entity) {
+		entity->SetName(_prefabName + "(Clone)");
+		entity->SetPrefabName(_prefabName);
+
+		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
+
+		return entity;
+	}
+
+	return nullptr;
 }
 
 

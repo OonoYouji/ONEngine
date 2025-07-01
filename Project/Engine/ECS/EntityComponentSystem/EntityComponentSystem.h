@@ -46,6 +46,8 @@ public:
 
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isInit = true);
+
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
 	/// @brief 新しい camera を生成する
@@ -232,3 +234,4 @@ uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
 
 bool InternalContainsEntity(uint32_t _entityId);
 uint32_t InternalGetEntityId(MonoString* _name);
+uint32_t InternalCreateEntity(MonoString* _name);

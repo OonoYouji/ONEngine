@@ -26,6 +26,11 @@ public class Player : MonoBehavior {
 
 		Transform t = transform;
 		t.position += Vector3.down * 0.98f;
+
+		if(Input.TriggerKey(KeyCode.Space)) {
+			Entity puzzle = EntityCollection.CreateEntity("PuzzleStand");
+		}
+
 	}
 
 

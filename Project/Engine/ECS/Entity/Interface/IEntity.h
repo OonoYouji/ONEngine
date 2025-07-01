@@ -75,6 +75,7 @@ private:
 	IEntity* parent_;
 	std::string name_;
 	std::string className_;
+	std::string prefabName_;
 
 public:
 
@@ -101,6 +102,7 @@ public:
 	void RemoveParent();
 
 	void SetName(const std::string& _name);
+	void SetPrefabName(const std::string& _name);
 
 	void SetActive(bool _active);
 
@@ -125,6 +127,9 @@ public:
 
 	const std::string& GetName() const;
 	const std::string& GetEntityClassName() const;
+
+	const std::string& GetPrefabName() const;
+	bool ContainsPrefab() const;
 
 	bool GetActive() const;
 

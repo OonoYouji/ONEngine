@@ -67,10 +67,10 @@ public class Puzzle : MonoBehavior {
 
 	public override void OnCollisionStay(Entity collision) {
 
-		/// 衝突相手がプレイヤーでない場合は何もしない
-		if (collision.name != "Player") {
-			return;
-		}
+		///// 衝突相手がプレイヤーでない場合は何もしない
+		//if (collision.name != "Player") {
+		//	return;
+		//}
 
 		/// 
 		if (Input.TriggerGamepad(Gamepad.A)) {

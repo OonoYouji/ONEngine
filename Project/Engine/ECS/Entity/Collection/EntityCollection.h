@@ -8,6 +8,7 @@
 #include <deque>
 
 #include "../Factory/EntityFactory.h"
+#include "../Prefab/EntityPrefab.h"
 
 class Camera;
 
@@ -54,6 +55,11 @@ public:
 
 	uint32_t GetEntityId(const std::string& _name);
 
+	/* ----- prefab ----- */
+
+	void LoadPrefabAll();
+
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, const std::string& _entityName = "");
 
 private:
 
@@ -77,6 +83,10 @@ private:
 	Camera* debugCamera_ = nullptr;
 
 	std::function<void(EntityFactory*)> factoryRegisterFunc_;
+
+
+	/// prefab
+	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
 
 public:
 

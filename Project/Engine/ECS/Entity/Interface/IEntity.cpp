@@ -12,6 +12,7 @@ void IEntity::CommonInitialize() {
 	className_ = typeid(*this).name();
 	className_.erase(0, 6);
 	name_ = className_;
+	prefabName_ = "";
 
 	pEntityComponentSystem_->LoadComponent(this);
 
@@ -176,6 +177,10 @@ void IEntity::SetName(const std::string& _name) {
 	name_ = _name;
 }
 
+void IEntity::SetPrefabName(const std::string& _name) {
+	prefabName_ = _name;
+}
+
 void IEntity::SetActive(bool _active) {
 	active_ = _active;
 }
@@ -239,6 +244,15 @@ const std::string& IEntity::GetName() const {
 
 const std::string& IEntity::GetEntityClassName() const {
 	return className_;
+}
+
+const std::string& IEntity::GetPrefabName() const {
+	return prefabName_;
+}
+
+bool IEntity::ContainsPrefab() const {
+	/// 空文字列でないかチェック
+	return prefabName_ != "";
 }
 
 bool IEntity::GetActive() const {

@@ -31,11 +31,20 @@ static public class EntityCollection {
 		return GetEntity(InternalGetEntityId(_name));
 	}
 
+	static public Entity CreateEntity(string _prefabName) {
+		uint id = InternalCreateEntity(_prefabName);
+		return GetEntity(id);
+	}
+
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalContainsEntity(uint _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern uint InternalGetEntityId(string _name);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern uint InternalCreateEntity(string _prefabName);
+
 
 }

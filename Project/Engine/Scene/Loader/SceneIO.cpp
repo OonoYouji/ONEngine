@@ -86,14 +86,14 @@ void SceneIO::Input(IScene* _scene) {
 
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
-		std::string entityClassName = entityJson["className"];
-		std::string entityName = entityJson["name"];
+		const std::string& entityClassName = entityJson["className"];
+		const std::string& entityName = entityJson["name"];
 		uint32_t entityId = entityJson["id"];
 
 		IEntity* entity = pECS_->GenerateEntity(entityClassName, false);
 		if (entity) {
 			entity->SetName(entityName);
-			LoadEntity(entityJson, entity);
+			EntityJsonConverter::FromJson(entityJson, entity);
 			entityMap[entityId] = entity;
 		}
 	}
@@ -152,6 +152,5 @@ void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
 			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
 		}
 	}
-
 
 }

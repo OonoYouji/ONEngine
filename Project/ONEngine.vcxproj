@@ -71,6 +71,7 @@
     <ClCompile Include="Engine\ECS\Entity\Factory\EntityFactory.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
@@ -249,6 +250,7 @@
     <ClInclude Include="Engine\ECS\Entity\Factory\EntityFactory.h" />
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
+    <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefab.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
@@ -449,9 +451,7 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
-xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
-xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

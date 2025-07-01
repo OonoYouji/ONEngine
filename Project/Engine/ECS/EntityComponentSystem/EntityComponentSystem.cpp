@@ -113,6 +113,17 @@ uint32_t InternalGetEntityId(MonoString* _name) {
 	return gECS->GetEntityId(name);
 }
 
+uint32_t InternalCreateEntity(MonoString* _name) {
+	/// prefabを検索
+ 	std::string name = mono_string_to_utf8(_name);
+	IEntity* entity = gECS->GenerateEntityFromPrefab(name);
+	if (entity) {
+		return static_cast<uint32_t>(entity->GetId());
+	}
+
+	return 0;
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -148,6 +159,10 @@ void EntityComponentSystem::Update() {
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
 	return entityCollection_->GenerateEntity(_name, _isInit);
+}
+
+IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isInit) {
+	return entityCollection_->GenerateEntityFromPrefab(_prefabName);
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {

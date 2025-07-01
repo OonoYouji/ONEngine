@@ -100,7 +100,7 @@ void ImGuiProjectWindow::SelectFileView() {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY");
 			if (payload) {
 				IEntity* entity = static_cast<IEntity*>(payload->Data);
-				pEditorManager_->ExecuteCommand<CreateNewEntityClassCommand>(entity, selectedFolder_->path);
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
 			}
 		} else {
 			Console::Log("Cannot drop entity to this folder. Please select Game folder.");
