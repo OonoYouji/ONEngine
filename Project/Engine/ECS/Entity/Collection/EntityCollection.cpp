@@ -211,6 +211,16 @@ size_t EntityCollection::NewEntityID() {
 	return resultId;
 }
 
+uint32_t EntityCollection::GetEntityId(const std::string& _name) {
+	for (auto& entity : entities_) {
+		if (entity->name_ == _name) {
+			return entity->GetId();
+		}
+	}
+
+	return 0;
+}
+
 
 
 void EntityCollection::SetMainCamera(Camera* _camera) {

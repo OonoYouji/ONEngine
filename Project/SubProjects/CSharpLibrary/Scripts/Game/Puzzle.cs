@@ -8,6 +8,8 @@ public class Puzzle : MonoBehavior {
 
 	bool isStartPuzzle = false; // パズルが開始されているかどうか
 
+	//Entity blockPrefab = new Block(0,0);
+
 	int[][] map;
 
 	public override void Initialize() {

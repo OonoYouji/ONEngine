@@ -9,16 +9,16 @@ static public class EntityCollection {
 
 	static Dictionary<uint, Entity> entities = new Dictionary<uint, Entity>();
 
-	static public Entity GetEntity(uint id) {
+	static public Entity GetEntity(uint _id) {
 		/// 既にコンテナないにあるかチェック
-		if(entities.ContainsKey(id)) {
-			return entities[id];
+		if(entities.ContainsKey(_id)) {
+			return entities[_id];
 		}
 
 		/// なかった場合一度c++側に確認、あったら新しくコンテナに加える
-		if(InternalContainsEntity(id)) {
-			Entity entity = new Entity(id);
-			entities.Add(id, entity);
+		if(InternalContainsEntity(_id)) {
+			Entity entity = new Entity(_id);
+			entities.Add(_id, entity);
 			return entity;
 		}
 
@@ -26,9 +26,16 @@ static public class EntityCollection {
 		return null;
 	}
 
+	static public Entity FindEntity(string _name) {
+		/// entityの名前からEntityを探索する
+		return GetEntity(InternalGetEntityId(_name));
+	}
 
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern bool InternalContainsEntity(uint _entityId);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern uint InternalGetEntityId(string _name);
 
 }

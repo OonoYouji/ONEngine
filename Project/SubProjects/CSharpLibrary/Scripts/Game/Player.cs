@@ -19,7 +19,7 @@ public class Player : MonoBehavior {
 
 	public override void Update() {
 		Move();
-		//Jump();
+		Jump();
 
 		CameraFollow();
 
@@ -64,9 +64,7 @@ public class Player : MonoBehavior {
 			height = jumpPower;
 		}
 
-		if (height > 0.0f) {
-			height -= 9.8f * Time.deltaTime; // 重力
-		}
+		height -= 9.8f * Time.deltaTime; // 重力
 
 		Transform t = transform;
 		Vector3 position = t.position;

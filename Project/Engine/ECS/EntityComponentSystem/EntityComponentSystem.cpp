@@ -108,6 +108,11 @@ bool InternalContainsEntity(uint32_t _entityId) {
 	return false;
 }
 
+uint32_t InternalGetEntityId(MonoString* _name) {
+	std::string name = mono_string_to_utf8(_name);
+	return gECS->GetEntityId(name);
+}
+
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
@@ -167,6 +172,10 @@ void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
 
 void EntityComponentSystem::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
 	entityCollection_->SetFactoryRegisterFunc(_func);
+}
+
+uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
+	return entityCollection_->GetEntityId(_name);
 }
 
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {

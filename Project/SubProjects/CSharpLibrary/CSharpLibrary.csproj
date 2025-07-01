@@ -59,6 +59,7 @@
     <Compile Include="Scripts\Engine\GameObject\Entity\EntityUtility.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Transform.cs" />
+    <Compile Include="Scripts\Game\Block.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\Player.cs" />

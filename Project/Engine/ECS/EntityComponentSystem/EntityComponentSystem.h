@@ -68,6 +68,8 @@ public:
 
 	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
 
+	uint32_t GetEntityId(const std::string& _name);
+
 
 	/// ----- component ----- ///
 
@@ -229,3 +231,4 @@ void InternalSetName(uint32_t _entityId, MonoString* _name);
 uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
 
 bool InternalContainsEntity(uint32_t _entityId);
+uint32_t InternalGetEntityId(MonoString* _name);

@@ -52,6 +52,9 @@ public:
 
 	size_t NewEntityID();
 
+	uint32_t GetEntityId(const std::string& _name);
+
+
 private:
 
 	class EntityComponentSystem* pECS_;
