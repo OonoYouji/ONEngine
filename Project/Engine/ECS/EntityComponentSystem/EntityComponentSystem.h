@@ -223,15 +223,15 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 /// =============================================
 
 
-uint64_t InternalAddComponent(uint32_t _entityId, MonoString* _monoTypeName);
-uint64_t InternalGetComponent(uint32_t _entityId, MonoString* _monoTypeName);
+uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
+uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);
+MonoString* InternalGetName(int32_t _entityId);
+void InternalSetName(int32_t _entityId, MonoString* _name);
+int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex);
+int32_t InternalGetParentId(int32_t _entityId);
+void InternalSetParent(int32_t _entityId, int32_t _parentId);
 
-MonoString* InternalGetName(uint32_t _entityId);
 
-void InternalSetName(uint32_t _entityId, MonoString* _name);
-
-uint32_t InternalGetChildId(uint32_t _entityId, uint32_t _childIndex);
-
-bool InternalContainsEntity(uint32_t _entityId);
-uint32_t InternalGetEntityId(MonoString* _name);
-uint32_t InternalCreateEntity(MonoString* _name);
+bool InternalContainsEntity(int32_t _entityId);
+int32_t InternalGetEntityId(MonoString* _name);
+int32_t InternalCreateEntity(MonoString* _name);

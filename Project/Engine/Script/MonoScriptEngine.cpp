@@ -200,6 +200,9 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
 	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
 	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
+	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
+	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
+
 	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
 	mono_add_internal_call("EntityCollection::InternalCreateEntity", (void*)InternalCreateEntity);

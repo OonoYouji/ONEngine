@@ -18,7 +18,7 @@ public class Entity {
 	public Transform transform => _transform;
 	public int Id {
 		get {
-			return entityId; 
+			return entityId;
 		}
 	}
 
@@ -34,11 +34,15 @@ public class Entity {
 
 	public Entity parent {
 		get {
-
-			return null; 
+			int parentId = InternalGetParentId(entityId);
+			return EntityCollection.GetEntity(parentId);
 		}
 		set {
-
+			if(value == null) {
+				Log.WriteLine("Cannot set parent to null. Entity ID: " + Id);
+				return;
+			}
+			InternalSetParent(Id, value.Id);
 		}
 	}
 
@@ -50,7 +54,7 @@ public class Entity {
 	public Entity(int _id) {
 		entityId = _id;
 		_transform = AddComponent<Transform>();
-		Log.WriteLine("Entity created: " + name + " (ID: " + entityId + ")");
+		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId + ")");
 	}
 
 
@@ -109,5 +113,11 @@ public class Entity {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern int InternalGetChildId(int _entityId, uint _childIndex);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern int InternalGetParentId(int _entityId);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetParent(int _entityId, int _parentId);
 
 }

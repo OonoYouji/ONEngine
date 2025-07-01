@@ -16,8 +16,8 @@ public class Puzzle : MonoBehavior {
 
 		/*
 		 [ mapのデータ詳細 ]
-			0: 白
-			1: 黒
+			0: 黒
+			1: 白
 		*/
 
 		map = new int[][] {
@@ -26,13 +26,38 @@ public class Puzzle : MonoBehavior {
 			new int[] { 0, 1, 0 }
 		};
 
-		foreach (var row in map) {
-			foreach (var cell in row) {
-				Entity entity = EntityCollection.CreateEntity("Block");
-				//entity.parent = entity;
+		//Log.WriteLine("this Id: " + this.entity.Id);
+		for (int i = 0; i < map.Length; i++) {
+			for (int j = 0; j < map[i].Length; j++) {
+				Log.WriteLine("map[" + i + "][" + j + "] = " + map[i][j]);
+
+
+				Entity block = EntityCollection.CreateEntity("Block");
+				if (block == null) {
+					continue;
+				}
+
+				/// blockの初期化
+
+				block.parent = this.entity;
+				Transform t = block.transform;
+
+				/// blockのindexで位置を決定
+
+				t.position = new Vector3(i, 2f, j);
+
+				MeshRenderer mr = block.GetComponent<MeshRenderer>();
+				if(mr != null) {
+					/// 色を黒か白に設定
+					Vector4 color = Vector4.one * map[i][j]; // 1なら白、0なら黒
+					color.w = 1f;
+
+					mr.color = color;
+				}
+
+
 			}
 		}
-
 	}
 
 	public override void Update() {
