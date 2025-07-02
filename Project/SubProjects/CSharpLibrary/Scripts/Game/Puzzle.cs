@@ -10,10 +10,12 @@ public class Puzzle : MonoBehavior {
 
 	//Entity blockPrefab = new Block(0,0);
 
+	[SerializeField] float blockSpace = 0.22f; // ブロック間のスペース 0.22f
+	[SerializeField] float blockHeight = 2f; // ブロックの高さ 2f
 	int[][] map;
+	List<List<Entity>> blocks;
 
 	public override void Initialize() {
-
 		/*
 		 [ mapのデータ詳細 ]
 			0: 黒
@@ -25,6 +27,9 @@ public class Puzzle : MonoBehavior {
 			new int[] { 0, 1, 0 },
 			new int[] { 0, 1, 0 }
 		};
+
+		blocks = new List<List<Entity>>();
+
 
 		//Log.WriteLine("this Id: " + this.entity.Id);
 		for (int i = 0; i < map.Length; i++) {
@@ -44,10 +49,10 @@ public class Puzzle : MonoBehavior {
 
 				/// blockのindexで位置を決定
 
-				t.position = new Vector3(i, 2f, j);
+				t.position = new Vector3(i, blockHeight, j);
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
-				if(mr != null) {
+				if (mr != null) {
 					/// 色を黒か白に設定
 					Vector4 color = Vector4.one * map[i][j]; // 1なら白、0なら黒
 					color.w = 1f;
@@ -56,11 +61,31 @@ public class Puzzle : MonoBehavior {
 				}
 
 
+				if (blocks.Count <= i) {
+					blocks.Add(new List<Entity>());
+				}
+
+				blocks[i].Add(block); // ブロックをリストに追加
+
+
 			}
 		}
+
+
 	}
 
 	public override void Update() {
+
+		for (int i = 0; i < blocks.Count; i++) {
+			for (int j = 0; j < blocks[i].Count; j++) {
+				Entity block = blocks[i][j];
+				if (block == null) {
+					continue;
+				}
+				Transform t = block.transform;
+				t.position = new Vector3(i * blockSpace, blockHeight, j * blockSpace);
+			}
+		}
 
 		/// パズルが開始されていない場合は何もしない
 		if (!isStartPuzzle) {

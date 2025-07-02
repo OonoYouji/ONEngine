@@ -109,7 +109,8 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	if (_deleteChildren) {
 
 		if (_entity->GetChildren().size() > 0) {
-			for (auto& child : _entity->GetChildren()) {
+			auto children = _entity->GetChildren();
+			for (auto& child : children) {
 				RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
 			}
 		}
@@ -154,9 +155,19 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 }
 
 void EntityCollection::RemoveEntityAll() {
-	for (auto& entity : entities_) {
-		RemoveEntity(entity.get(), true);
+	std::vector<IEntity*> toRemove;
+	toRemove.reserve(entities_.size()); // 最適化
+
+	for (const auto& entity : entities_) {
+		toRemove.push_back(entity.get()); // ポインタだけをコピー
 	}
+
+	for (auto& entity : toRemove) {
+		if (!entity->GetParent()) {
+			RemoveEntity(entity, true); ///< 全てのエンティティを削除する
+		}
+	}
+
 }
 
 

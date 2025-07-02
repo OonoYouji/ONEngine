@@ -72,5 +72,7 @@ public:
 	/// @param _sceneFactory シーンファクトリーのインスタンス
 	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
 
+	const std::string& GetCurrentSceneName() const;
+
 };
 

@@ -16,7 +16,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GameScene(class EntityComponentSystem* _entityComponentSystem);
+	GameScene(class EntityComponentSystem* _entityComponentSystem, const std::string& _name);
 	~GameScene();
 
 	void Initialize() override;

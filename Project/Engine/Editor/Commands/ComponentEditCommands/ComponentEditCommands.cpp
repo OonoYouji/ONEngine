@@ -11,6 +11,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "ComponentJsonConverter.h"
 
@@ -139,13 +140,16 @@ EDITOR_STATE AddComponentCommand::Undo() {
 /// ReloadAllScriptsCommand
 /// ////////////////////////////////////////////////
 
-ReloadAllScriptsCommand::ReloadAllScriptsCommand(EntityComponentSystem* _ecs)
-	: pECS_(_ecs) {}
+ReloadAllScriptsCommand::ReloadAllScriptsCommand(EntityComponentSystem* _ecs, SceneManager* _sceneManager)
+	: pECS_(_ecs), pSceneManager_(_sceneManager) {}
 
 EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
+	/// シーンを読み直す
+	pSceneManager_->SetNextScene(pSceneManager_->GetCurrentSceneName());
+
 	GetMonoScriptEnginePtr()->HotReload();
-	
+
 	for (auto& entity : pECS_->GetEntities()) {
 		Script* script = entity->GetComponent<Script>();
 		if (script) {
@@ -153,7 +157,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 		}
 	}
 
-	
+
 	return EDITOR_STATE_FINISH;
 }
 

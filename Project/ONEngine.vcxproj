@@ -134,8 +134,8 @@
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
-    <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -317,11 +317,11 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
-    <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
     <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

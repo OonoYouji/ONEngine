@@ -177,7 +177,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 			if (ImGui::BeginMenu("scripts")) {
 
 				if (ImGui::MenuItem("hot reload")) {
-					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pEntityComponentSystem_);
+					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pEntityComponentSystem_, pSceneManager_);
 				}
 
 				ImGui::EndMenu();

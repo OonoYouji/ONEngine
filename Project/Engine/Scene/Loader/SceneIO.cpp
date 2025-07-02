@@ -34,6 +34,12 @@ void SceneIO::Output(IScene* _scene) {
 
 	auto& entities = pECS_->GetEntities();
 	for (auto& entity : entities) {
+		/// マイナスIDはruntimeに生成されたエンティティなのでスキップ
+		if (entity->GetId() < 0) {
+			continue;
+		}
+
+
 		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
 		if (entityJson.empty()) {
 			continue; // エンティティの情報が空ならスキップ

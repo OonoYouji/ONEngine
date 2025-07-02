@@ -90,29 +90,28 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _entityComponentSystem, Camera* _camera) {
 
-
 	/// 地形を取得
+	//if (pTerrain_ == nullptr) {
+	Terrain* prevTerrain_ = pTerrain_;
+	for (auto& entity : _entityComponentSystem->GetEntities()) {
+		if (entity->GetName() == "Terrain") {
+			pTerrain_ = static_cast<Terrain*>(entity.get());
+			break;
+		}
+	}
+
+	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {
+		return;
+	}
 
-		for (auto& entity : _entityComponentSystem->GetEntities()) {
-
-			if (entity->GetName() == "Terrain") {
-				pTerrain_ = static_cast<Terrain*>(entity.get());
-				break;
-			}
-		}
-
-		/// 見つかんなかったらreturn
-		if (pTerrain_ == nullptr) {
-			return;
-		}
-
+	/// prevと違うterrainならmapする
+	if (prevTerrain_ != pTerrain_) {
 		indexBuffer_.SetIndices(pTerrain_->GetIndices());
 		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
 
 		indexBuffer_.Map();
 		vertexBuffer_.Map();
-
 	}
 
 

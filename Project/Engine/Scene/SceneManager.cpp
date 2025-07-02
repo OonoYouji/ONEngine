@@ -121,4 +121,11 @@ void SceneManager::SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory
 	sceneFactory_ = std::move(_sceneFactory);
 }
 
+const std::string& SceneManager::GetCurrentSceneName() const {
+	if (currentScene_) {
+		return currentScene_->GetSceneName();
+	}
+	return "empty";
+}
+
 

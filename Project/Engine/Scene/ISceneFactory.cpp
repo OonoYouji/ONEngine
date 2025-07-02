@@ -6,7 +6,7 @@ std::unique_ptr<IScene> ISceneFactory::CreateScene(const std::string& _sceneName
 		return nullptr;
 	}
 
-	return std::move(itr->second(_ecs));
+	return std::move(itr->second(_ecs, _sceneName));
 }
 
 void ISceneFactory::SetStartupSceneName(const std::string& _sceneName) {

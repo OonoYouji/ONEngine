@@ -33,8 +33,8 @@
 //
 //#include "Game/Objects/Enemy.h"
 
-GameScene::GameScene(EntityComponentSystem* _entityComponentSystem)
-	: IScene(_entityComponentSystem) {
+GameScene::GameScene(EntityComponentSystem* _entityComponentSystem, const std::string& _name)
+	: IScene(_entityComponentSystem, _name) {
 
 	// このゲームで使用するエンティティをファクトリーに登録、一度GenerateEntity<T>()を呼び出すことでも登録される
 	pEntityComponentSystem_->SetFactoryRegisterFunc(

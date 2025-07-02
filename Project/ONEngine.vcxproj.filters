@@ -136,7 +136,6 @@
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
-    <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
     <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
@@ -151,6 +150,7 @@
     <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -285,7 +285,6 @@
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
     <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
-    <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
     <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
     <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
@@ -301,6 +300,7 @@
     <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
     <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

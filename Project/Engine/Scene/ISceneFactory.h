@@ -10,7 +10,7 @@
 #include "IScene.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-using SceneCreator = std::function<std::unique_ptr<IScene>(EntityComponentSystem*)>;
+using SceneCreator = std::function<std::unique_ptr<IScene>(EntityComponentSystem*, const std::string&)>;
 
 
 /// ===================================================
@@ -76,5 +76,5 @@ public:
 
 template <typename T, typename std::enable_if<std::is_base_of<IScene, T>::value>::type*>
 inline void ISceneFactory::RegisterScene(const std::string& _sceneName) {
-	sceneCreatorMap_[_sceneName] = [](EntityComponentSystem* _ecs) { return std::make_unique<T>(_ecs); };
+	sceneCreatorMap_[_sceneName] = [](EntityComponentSystem* _ecs, const std::string& _name) { return std::make_unique<T>(_ecs, _name); };
 }
