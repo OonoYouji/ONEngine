@@ -11,7 +11,7 @@
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
-
+#include "Engine/Core/Utility/Input/Input.h"
 
 #pragma region glyphRangesJapanease
 namespace {
@@ -574,7 +574,6 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
 	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 
-
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
 		dxManager_->GetDxDevice()->GetDevice(),
@@ -606,7 +605,14 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
-	ImGui::GetIO().DeltaTime = Time::UnscaledDeltaTime();
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	UpdateMousePosition(
+		windowManager_->GetMainWindow()->GetHwnd(),
+		{ 1920.0f, 1080.0f }
+	);
+	io.DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }
@@ -621,6 +627,32 @@ void ImGuiManager::Draw() {
 
 void ImGuiManager::AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
 	sceneImageInfos_[_name] = _info;
+}
+
+void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize) {
+	POINT point;
+	GetCursorPos(&point);
+
+	ScreenToClient(_winHwnd, &point);
+
+	RECT clientRect;
+	GetClientRect(_winHwnd, &clientRect);
+
+	Vector2 clientSize = {
+		static_cast<float>(clientRect.right - clientRect.left),
+		static_cast<float>(clientRect.bottom - clientRect.top)
+	};
+
+	/// 補正
+	Vector2 scale = _renderTargetSize / clientSize;
+
+	Vector2 corrected = {
+		point.x * scale.x,
+		point.y * scale.y
+	};
+
+	ImGui::GetIO().AddMousePosEvent(corrected.x, corrected.y);
+
 }
 
 void ImGuiManager::OutputImGuiStyle(const std::string& _fileName) const {

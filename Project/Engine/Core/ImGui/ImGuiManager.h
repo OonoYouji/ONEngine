@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 /// std
 #include <functional>
 #include <vector>
@@ -12,7 +14,7 @@
 /// engine
 #include "ImGuiWidows/Collection/ImGuiWindowCollection.h"
 #include "Math/ImGuiSceneImageInfo.h"
-
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
@@ -32,8 +34,9 @@ public:
 
 	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info);
 
-	void OutputImGuiStyle(const std::string& _fileName) const;
+	void UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize);
 
+	void OutputImGuiStyle(const std::string& _fileName) const;
 	void InputImGuiStyle(const std::string& _fileName) const;
 
 private:
