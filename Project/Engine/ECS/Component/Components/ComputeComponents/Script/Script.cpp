@@ -94,9 +94,6 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	for (auto& script : scriptList) {
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
 
-		float indentValue = 34.0f;
-		ImGui::Indent(indentValue);
-
 		/// 有効/無効のチェックボックス
 		ImGui::Checkbox(ptrLable.c_str(), &script.enable);
 
@@ -158,8 +155,6 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		if (!script.enable) {
 			ImGui::PopStyleColor(1);
 		}
-
-		ImGui::Unindent(indentValue);
 
 	}
 

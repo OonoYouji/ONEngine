@@ -222,3 +222,108 @@ const Effect::TimeEmitData& Effect::GetTimeEmitData() const {
 size_t Effect::GetEmitInstanceCount() const {
 	return emitInstanceCount_;
 }
+
+void COMP_DEBUG::EffectDebug(Effect* _effect) {
+	if (!_effect) {
+		return;
+	}
+
+	ImGui::Indent(4);
+
+	/// main module 
+	if (ImGui::CollapsingHeader("main module")) {
+		EffectMainModule* mainModule = _effect->GetMainModule();
+		if (!mainModule) {
+			ImGui::Text("no main module");
+		} else {
+
+			/// param get
+			std::pair<float, float> speed = mainModule->GetSpeedStartData();
+			std::pair<Vec3, Vec3> size = mainModule->GetSizeStartData();
+			std::pair<Vec3, Vec3> rotate = mainModule->GetRotateStartData();
+			std::pair<Color, Color> color = mainModule->GetColorStartData();
+
+			/// スピードの編集
+			ImGui::DragFloat("first speed", &speed.first, 0.1f, 0.0f, FLT_MAX);
+			ImGui::DragFloat("second speed", &speed.second, 0.1f, 0.0f, FLT_MAX);
+			ImGui::Spacing();
+
+			/// サイズの編集
+			ImGui::DragFloat3("first size", &size.first.x, 0.1f, 0.0f, FLT_MAX);
+			ImGui::DragFloat3("second size", &size.second.x, 0.1f, 0.0f, FLT_MAX);
+			ImGui::Spacing();
+
+			/// 回転の編集
+			ImGui::DragFloat3("first rotate", &rotate.first.x, 0.1f);
+			ImGui::DragFloat3("second rotate", &rotate.second.x, 0.1f);
+			ImGui::Spacing();
+
+			/// 色の編集
+			ImGui::ColorEdit4("first color", &color.first.r);
+			ImGui::ColorEdit4("second color", &color.second.r);
+
+
+			/// 編集したら値のセット
+			mainModule->SetSpeedStartData(speed);
+			mainModule->SetSizeStartData(size);
+			mainModule->SetRotateStartData(rotate);
+			mainModule->SetColorStartData(color);
+
+
+		}
+
+	}
+
+	/// emit shape
+	if (ImGui::CollapsingHeader("shape")) {
+		EffectEmitShape* emitShape = _effect->GetEmitShape();
+		if (emitShape) {
+
+			/// 形状の選択
+			const char* shapeTypes[] = { "Sphere", "Cube", "Cone" };
+			int shapeType = static_cast<int>(emitShape->GetType());
+			if (ImGui::Combo("shape type", &shapeType, shapeTypes, IM_ARRAYSIZE(shapeTypes))) {
+				emitShape->SetShapeType(static_cast<EffectEmitShape::ShapeType>(shapeType));
+			}
+			ImGui::Spacing();
+
+			/// 形状ごとのパラメータの編集
+			switch (emitShape->GetType()) {
+			case EffectEmitShape::ShapeType::Sphere:
+			{
+				EffectEmitShape::Sphere sphere = emitShape->GetSphere();
+				ImGui::DragFloat3("center", &sphere.center.x, 0.1f);
+				ImGui::DragFloat("radius", &sphere.radius, 0.1f, 0.0f, FLT_MAX);
+				emitShape->SetSphere(sphere);
+				break;
+			}
+			case EffectEmitShape::ShapeType::Cube:
+			{
+				EffectEmitShape::Cube cube = emitShape->GetCube();
+				ImGui::DragFloat3("center", &cube.center.x, 0.1f);
+				ImGui::DragFloat3("size", &cube.size.x, 0.1f, 0.0f, FLT_MAX);
+				emitShape->SetCube(cube);
+				break;
+			}
+			case EffectEmitShape::ShapeType::Cone:
+			{
+				EffectEmitShape::Cone cone = emitShape->GetCone();
+				ImGui::DragFloat3("apex", &cone.center.x, 0.1f);
+				ImGui::DragFloat("angle", &cone.angle, 0.1f, 0.0f, 180.0f);
+				ImGui::DragFloat("radius", &cone.radius, 0.1f, 0.0f, FLT_MAX);
+				ImGui::DragFloat("height", &cone.height, 0.1f, 0.0f, FLT_MAX);
+				emitShape->SetCone(cone);
+				break;
+			}
+			default:
+				ImGui::Text("Unknown shape type");
+				break;
+			}
+
+
+		}
+
+	}
+
+	ImGui::Unindent(4);
+}

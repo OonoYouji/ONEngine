@@ -26,7 +26,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
-	RegisterComponent<Effect>([&](IComponent* _component) { EffectDebug(static_cast<Effect*>(_component)); });
+	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
 
 	/// renderer
@@ -123,7 +123,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 		ImGui::Separator();
 		ImGui::SameLine();
 		if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::Indent(34.0f);
 			componentDebugFuncs_[component.first](component.second);
+			ImGui::Unindent(34.0f);
 		}
 
 		if (!enabled) {
