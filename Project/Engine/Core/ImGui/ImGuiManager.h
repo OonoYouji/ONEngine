@@ -30,9 +30,11 @@ public:
 	void Update();
 	void Draw();
 
-	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
-		sceneImageInfos_[_name] = _info;
-	}
+	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info);
+
+	void OutputImGuiStyle(const std::string& _fileName) const;
+
+	void InputImGuiStyle(const std::string& _fileName) const;
 
 private:
 	/// ===================================================
@@ -61,26 +63,20 @@ public:
 
 	/// @brief imgui windowを設定する
 	/// @param _window Window
-	void SetImGuiWindow(Window* _window) { imGuiWindow_ = _window; }
+	void SetImGuiWindow(Window* _window);
 
 
 
 	/// @brief gameをdebugするかのフラグ 
 	/// @return 
-	bool GetIsGameDebug() const { return isGameDebug_; }
+	bool GetIsGameDebug() const;
+	void SetIsGameDebug(bool _isGameDebug);
 
 	/// @brief game debug windowを取得する
 	/// @return　Window
-	class Window* GetDebugGameWindow() const { return debugGameWindow_; }
+	class Window* GetDebugGameWindow() const;
 
-	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const {
-		auto it = sceneImageInfos_.find(_name);
-		if (it != sceneImageInfos_.end()) {
-			return it->second;
-		}
-
-		return {};
-	}
+	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const;
 };
 
 

@@ -88,10 +88,10 @@ void GameFramework::Run() {
 		editorManager_->Update();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		//if (imGuiManager_->GetIsGameDebug()) {
-		sceneManager_->Update();
-		entityComponentSystem_->Update();
-		//}
+		if (imGuiManager_->GetIsGameDebug()) {
+			sceneManager_->Update();
+			entityComponentSystem_->Update();
+		}
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();

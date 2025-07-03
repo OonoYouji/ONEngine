@@ -6,7 +6,7 @@
 #include <map>
 
 /// engine
-#include "../Collection/ImGuiWindowCollection.h"
+#include "../../Collection/ImGuiWindowCollection.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow

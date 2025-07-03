@@ -1,20 +1,16 @@
 #pragma once
 
 /// engine
-#include "Collection/ImGuiWindowCollection.h"	
+#include "../Collection/ImGuiWindowCollection.h"
 
-/// ///////////////////////////////////////////////////
-/// エディターウィンドウ
-/// ///////////////////////////////////////////////////
-class ImGuiEditorWindow : public IImGuiParentWindow {
+class ImGuiFileWindow : public IImGuiParentWindow {
 public:
 	/// ===================================================
-	/// public : methods   
+	/// public : methods
 	/// ===================================================
-
-	ImGuiEditorWindow();
-	~ImGuiEditorWindow() {}
-
+	ImGuiFileWindow();
+	~ImGuiFileWindow() {}
+	/// @brief imgui windowの描画処理
 	void ImGuiFunc() override;
 
 private:

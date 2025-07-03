@@ -14,6 +14,10 @@ void ImGuiGameSceneWindow::ImGuiFunc() {
 		return;
 	}
 
+	/// ---------------------------------------
+	/// Sceneを描画する
+	/// ---------------------------------------
+
 	const auto& textures = resourceCollection_->GetTextures();
 	auto texture = textures[resourceCollection_->GetTextureIndex("scene")].get();
 

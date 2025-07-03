@@ -560,6 +560,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	InputImGuiStyle("./imgui_style.json");
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
@@ -568,14 +570,8 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatRate = 12.0f;
 	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
 	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	//imGuiIO.MouseDrawCursor = true; ///< マウスカーソルを表示するかどうか
-	//imGuiIO.MouseDoubleClickTime = 1.f;
 
 
-	ImGui_ImplDX12_InvalidateDeviceObjects();
-	ImGui_ImplDX12_CreateDeviceObjects();
-
-	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
 		dxManager_->GetDxDevice()->GetDevice(),
@@ -617,5 +613,69 @@ void ImGuiManager::Draw() {
 		ImGui::GetDrawData(),
 		dxManager_->GetDxCommand()->GetCommandList()
 	);
+}
+
+void ImGuiManager::AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
+	sceneImageInfos_[_name] = _info;
+}
+
+void ImGuiManager::OutputImGuiStyle(const std::string& _fileName) const {
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	std::ofstream file(_fileName);
+	if (!file.is_open()) return;
+
+	for (int i = 0; i < ImGuiCol_COUNT; ++i) {
+		ImVec4 col = style.Colors[i];
+		file << "Color" << i << "=" << col.x << "," << col.y << "," << col.z << "," << col.w << "\n";
+	}
+	// 必要に応じてstyle.FramePaddingなども書き出す
+	file.close();
+}
+
+void ImGuiManager::InputImGuiStyle(const std::string& _fileName) const {
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	std::ifstream file(_fileName);
+	if (!file.is_open()) return;
+
+	std::string line;
+	while (std::getline(file, line)) {
+		if (line.rfind("Color", 0) == 0) {
+			int index;
+			float x, y, z, w;
+			if (sscanf_s(line.c_str(), "Color%d=%f,%f,%f,%f", &index, &x, &y, &z, &w) == 5) {
+				if (index >= 0 && index < ImGuiCol_COUNT) {
+					style.Colors[index] = ImVec4(x, y, z, w);
+				}
+			}
+		}
+	}
+	file.close();
+}
+
+void ImGuiManager::SetImGuiWindow(Window* _window) {
+	imGuiWindow_ = _window;
+}
+
+bool ImGuiManager::GetIsGameDebug() const {
+	return isGameDebug_;
+}
+
+void ImGuiManager::SetIsGameDebug(bool _isGameDebug) {
+	isGameDebug_ = _isGameDebug;
+}
+
+Window* ImGuiManager::GetDebugGameWindow() const {
+	return debugGameWindow_;
+}
+
+const ImGuiSceneImageInfo& ImGuiManager::GetSceneImageInfo(const std::string& _name) const {
+	auto it = sceneImageInfos_.find(_name);
+	if (it != sceneImageInfos_.end()) {
+		return it->second;
+	}
+
+	return {};
 }
 

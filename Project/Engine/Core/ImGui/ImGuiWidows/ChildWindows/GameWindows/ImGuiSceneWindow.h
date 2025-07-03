@@ -1,18 +1,20 @@
 #pragma once
+
 /// engine
-#include "../Collection/ImGuiWindowCollection.h"
+#include "../../Collection/ImGuiWindowCollection.h"
 
 /// ///////////////////////////////////////////////////
-/// ImGuiGameWindow
+/// ImGuiSceneWindow
 /// ///////////////////////////////////////////////////
-class ImGuiConsoleWindow : public IImGuiChildWindow {
+class ImGuiSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiConsoleWindow() {}
-	~ImGuiConsoleWindow() {}
-
+	
+	ImGuiSceneWindow(class GraphicsResourceCollection* _graphicsResourceCollection) : resourceCollection_(_graphicsResourceCollection){}
+	~ImGuiSceneWindow() {}
+	
 	/// @brief imgui windowの描画処理
 	void ImGuiFunc() override;
 
@@ -20,6 +22,8 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
+
+	class GraphicsResourceCollection* resourceCollection_ = nullptr;
 
 };
 

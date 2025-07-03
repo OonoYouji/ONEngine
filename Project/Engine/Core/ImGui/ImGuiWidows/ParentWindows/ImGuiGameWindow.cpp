@@ -4,12 +4,12 @@
 #include <imgui.h>
 
 /// engine
-#include "../GameWindows/ImGuiProjectWindow.h"
-#include "../GameWindows/ImGuiGameSceneWindow.h"
-#include "../GameWindows/ImGuiSceneWindow.h"
-#include "../GameWindows/ImGuiInspectorWindow.h"
-#include "../GameWindows/ImGuiHierarchyWindow.h"
-#include "../GameWindows/ImGuiConsoleWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiGameSceneWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiSceneWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiHierarchyWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(
 	EntityComponentSystem* _entityComponentSystem,

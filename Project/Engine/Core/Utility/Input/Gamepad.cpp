@@ -34,7 +34,7 @@ void Gamepad::Initialize(IDirectInput8* _directInput, WindowManager* _windowMana
 	Assert(SUCCEEDED(hr), "ゲームパッドデバイスの生成に失敗しました");
 }
 
-void Gamepad::Update(Window* _window) {
+void Gamepad::Update(Window* ) {
 
 	/// 前フレームの状態を保存
 	prevState_ = state_;

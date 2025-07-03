@@ -250,7 +250,7 @@ int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 			initEntityIDs_.removedIds.pop_front();
 			initEntityIDs_.usedIds.push_back(resultId);
 		} else {
-			resultId = initEntityIDs_.usedIds.size() + 1;
+			resultId = static_cast<int32_t>(initEntityIDs_.usedIds.size()) + 1;
 			initEntityIDs_.usedIds.push_back(resultId);
 		}
 	}

@@ -58,14 +58,14 @@
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
@@ -78,7 +78,7 @@
     <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
@@ -151,6 +151,8 @@
     <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -216,14 +218,14 @@
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
@@ -238,7 +240,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
@@ -301,6 +303,8 @@
     <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
     <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
