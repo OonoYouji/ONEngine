@@ -19,33 +19,44 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	const auto& textures = resourceCollection_->GetTextures();
 	Texture* texture = textures[resourceCollection_->GetTextureIndex("debugScene")].get();
 
+	/// ----------------------------------------
+	/// ゲームの開始、停止、ポーズボタンの描画
+	/// ----------------------------------------
+
 	std::array<Texture*, 3> buttons = {
 		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/stop.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")].get()
+		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")].get(),
+		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/skip.png")].get()
 	};
 
-
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
-
-	if (!pImGuiManager_->GetIsGameDebug()) {
-		if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
-			// デバッグモードを開始
-			pImGuiManager_->SetIsGameDebug(true);
-		}
-
-		ImGui::SameLine();
+	bool isGameDebug = pImGuiManager_->GetIsGameDebug();
+	if (isGameDebug) {
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
-	bool isStop = false;
-	isStop |= ImGui::ImageButton("##stop", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize);
+	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
+		// デバッグモードを開始
+		pImGuiManager_->SetIsGameDebug(!isGameDebug);
+	}
 	ImGui::SameLine();
-	isStop |= ImGui::ImageButton("##pause", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize);
 
-	if (isStop) {
+	if (isGameDebug) {
+		ImGui::PopStyleColor(1);
+	}
+
+	/// 一時停止ボタン
+	if (ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを停止
 		pImGuiManager_->SetIsGameDebug(false);
 	}
+	ImGui::SameLine();
+
+	/// 1frameスキップボタン
+	if (ImGui::ImageButton("##skip", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize)) {
+
+	}
+
 
 
 	ImGui::Separator();
