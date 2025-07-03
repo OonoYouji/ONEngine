@@ -33,7 +33,7 @@ public:
 
 	void EntityInspector();
 
-
+	class IEntity* GetSelectedEntity() const;
 
 private:
 	/// ===================================================

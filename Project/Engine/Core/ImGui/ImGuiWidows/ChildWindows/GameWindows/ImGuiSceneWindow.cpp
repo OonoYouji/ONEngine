@@ -5,10 +5,21 @@
 
 /// external
 #include <imgui.h>
+#include <ImGuizmo.h>
 
 /// engine
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
+#include "ImGuiInspectorWindow.h"
+
+ImGuiSceneWindow::ImGuiSceneWindow(GraphicsResourceCollection* _graphicsResourceCollection, EntityComponentSystem* _ecs, ImGuiInspectorWindow* _inspector)
+	: resourceCollection_(_graphicsResourceCollection), pECS_(_ecs), pInspector_(_inspector) {
+
+	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
+	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
+}
 
 void ImGuiSceneWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Scene")) {
@@ -90,6 +101,67 @@ void ImGuiSceneWindow::ImGuiFunc() {
 
 	// 情報保存
 	pImGuiManager_->AddSceneImageInfo("Scene", ImGuiSceneImageInfo{ imagePos, imageSize });
+
+
+
+
+	/// ----------------------------------------
+	/// gizmoの表示
+	/// ----------------------------------------
+
+	// 操作対象のゲット
+	IEntity* entity = pInspector_->GetSelectedEntity();
+	if (entity) {
+
+		ImGuizmo::SetOrthographic(false); // 透視投影
+		ImGuizmo::SetDrawlist();          // ImGuiの現在のDrawListに出力
+
+		// ウィンドウサイズに合わせて設定
+		ImGuizmo::SetRect(imagePos.x, imagePos.y, imageSize.x, imageSize.y);
+
+		/// 操作モードの選択
+		if (Input::TriggerKey(DIK_W)) {
+			manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 移動
+		} else if (Input::TriggerKey(DIK_E)) {
+			manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
+		} else if (Input::TriggerKey(DIK_R)) {
+			manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
+		}
+
+		/// モードの選択
+		if (Input::TriggerKey(DIK_1)) {
+			manipulateMode_ = ImGuizmo::MODE::WORLD; // ワールド座標
+		} else if (Input::TriggerKey(DIK_2)) {
+			manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
+		}
+
+
+		Transform* transform = entity->GetTransform();
+		/// 操作対象の行列
+		Matrix4x4 entityMatrix = transform->matWorld;
+
+		/// カメラの取得
+		Camera* camera = pECS_->GetDebugCamera();
+
+		ImGuizmo::Manipulate(
+			&camera->GetViewMatrix().m[0][0],
+			&camera->GetProjectionMatrix().m[0][0],
+			ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
+			ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
+			&entityMatrix.m[0][0]
+		);
+
+		/// 行列をSRTに分解、エンティティに適応
+		float translation[3], rotation[3], scale[3];
+		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
+		transform->SetPosition(Vector3(translation[0], translation[1], translation[2]));
+		transform->SetRotate(Vector3(rotation[0], rotation[1], rotation[2]));
+		transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
+
+		transform->Update();
+
+	}
+
 
 	ImGui::End();
 

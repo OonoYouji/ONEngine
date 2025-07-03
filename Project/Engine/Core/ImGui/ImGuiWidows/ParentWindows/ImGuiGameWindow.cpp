@@ -26,7 +26,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 	/// ここでwindowを生成する
 	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>(_editorManager));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
-	AddChild(std::make_unique<ImGuiSceneWindow>(_resourceCollection));
+	AddChild(std::make_unique<ImGuiSceneWindow>(_resourceCollection, _entityComponentSystem, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiHierarchyWindow>(_entityComponentSystem, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());

@@ -168,3 +168,12 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 
 }
+
+IEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
+	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+	if (dynamic_cast<IEntity*>(entity)) {
+		return entity;
+	}
+
+	return nullptr;
+}
