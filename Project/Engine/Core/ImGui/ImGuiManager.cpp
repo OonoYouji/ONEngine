@@ -560,8 +560,10 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
 	InputImGuiStyle("./imgui_style.json");
+	ImGuiStyle& imStyle = ImGui::GetStyle();
+	imStyle.FrameBorderSize = 0.5f;
+
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;

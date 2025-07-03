@@ -9,7 +9,8 @@
 #include "../System/EffectUpdateSystem/EffectUpdateSystem.h"
 #include "Game/Objects/Terrain/Collision/TerrainCollision.h"
 #include "../System/ScriptUpdateSystem/ScriptUpdateSystem.h"
-#include "../System/CollisionSystem/CollisionSystem.h"
+#include "../System/Collision/CollisionSystem.h"
+#include "../System/Collision/ColliderRenderQueueSystem.h"
 
 inline void AddECSSystemFunction(EntityComponentSystem* _ecs, DxManager* _pDxManager) {
 	_ecs->AddSystem<ScriptUpdateSystem>();
@@ -17,4 +18,5 @@ inline void AddECSSystemFunction(EntityComponentSystem* _ecs, DxManager* _pDxMan
 	_ecs->AddSystem<CollisionSystem>();
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<MeshBufferRecreate>(_pDxManager->GetDxDevice());
+	_ecs->AddSystem<ColliderRenderQueueSystem>();
 }

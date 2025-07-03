@@ -26,7 +26,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { EffectDebug(static_cast<Effect*>(_component)); });
-	RegisterComponent<MeshRenderer>([&](IComponent* _component) { MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
