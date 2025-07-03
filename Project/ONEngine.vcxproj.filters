@@ -307,6 +307,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
+    <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

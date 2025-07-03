@@ -11,6 +11,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "ImGuiInspectorWindow.h"
 
@@ -155,7 +156,9 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		float translation[3], rotation[3], scale[3];
 		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 		transform->SetPosition(Vector3(translation[0], translation[1], translation[2]));
-		transform->SetRotate(Vector3(rotation[0], rotation[1], rotation[2]));
+
+		Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
+		transform->SetRotate(eulerRotation);
 		transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
 
 		transform->Update();
