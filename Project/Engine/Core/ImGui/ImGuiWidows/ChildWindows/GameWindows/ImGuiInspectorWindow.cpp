@@ -21,20 +21,25 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
 
+	/// compute
 	RegisterComponent<Transform>([&](IComponent* _component) { TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { EffectDebug(static_cast<Effect*>(_component)); });
-	RegisterComponent<MeshRenderer>([&](IComponent* _component) { MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
+
+	/// renderer
+	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
+
+	/// collider
 	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
 	RegisterComponent<SphereCollider>([&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component)); });
-	RegisterComponent<BoxCollider>([&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<BoxCollider>([&](IComponent* _component) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_component)); });
 
 
 	/// 関数を登録
@@ -95,9 +100,6 @@ void ImGuiInspectorWindow::EntityInspector() {
 	/// ----------------------------
 	for (auto& component : entity->GetComponents()) {
 		std::string componentName = typeid(*component.second).name();
-		//if (componentName == "") {
-		//	continue;
-		//}
 
 		/// チェックボックスでenable/disableを切り替え
 		bool enabled = component.second->enable;
@@ -112,13 +114,22 @@ void ImGuiInspectorWindow::EntityInspector() {
 			componentName = componentName.substr(6);
 		}
 
+		/// アクティブ/非アクティブで表示を変える
+		if (!enabled) {
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0.75f, 0.75f, 1.0f)); // 白色
+		}
+
 		/// component debug
 		ImGui::Separator();
 		ImGui::SameLine();
 		if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 			componentDebugFuncs_[component.first](component.second);
-
 		}
+
+		if (!enabled) {
+			ImGui::PopStyleColor();
+		}
+
 	}
 
 

@@ -34,3 +34,10 @@ public:
 
 };
 
+
+namespace COMP_DEBUG {
+	/// @brief BoxColliderのデバッグ表示
+	/// @param _boxCollider 
+	void BoxColliderDebug(BoxCollider* _boxCollider);
+
+}	/// namespace COMP_DEBUG
