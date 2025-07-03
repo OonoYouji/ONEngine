@@ -44,7 +44,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->Initialize();
 	/// main windowの生成
 #ifdef _DEBUG
-	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1920.0f, 1080.0f), WindowManager::WindowType::Main, WS_POPUP | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU;);
+	UINT style = WS_OVERLAPPEDWINDOW;
+	style &= ~WS_THICKFRAME;
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1920.0f, 1080.0f), WindowManager::WindowType::Main, style);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
