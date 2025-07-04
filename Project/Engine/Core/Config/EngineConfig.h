@@ -10,7 +10,6 @@ namespace EngineConfig {
 
 namespace DebugConfig {
 	/// @brief デバッグ中かどうか
-	static bool isDebugging = false; 
-
+	extern bool isDebugging; 
 
 }
