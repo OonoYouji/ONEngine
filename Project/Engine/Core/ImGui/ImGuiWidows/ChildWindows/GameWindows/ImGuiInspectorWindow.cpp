@@ -35,6 +35,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
+	RegisterComponent<SkinMeshRenderer>([&](IComponent* _component) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_component)); });
 
 	/// collider
 	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});

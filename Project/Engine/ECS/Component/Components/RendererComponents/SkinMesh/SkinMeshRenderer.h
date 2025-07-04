@@ -15,7 +15,7 @@ public:
 	/// public : methods
 	/// =========================================
 
-	SkinMeshRenderer() = default;
+	SkinMeshRenderer();
 	~SkinMeshRenderer() override = default;
 
 private:
@@ -26,13 +26,30 @@ private:
 	std::string meshPath_;
 	std::string texturePath_;
 
-	//float animationSpeed_ = 1.0f; ///< アニメーションの速度
-	//float animationTime_ = 0.0f; ///< アニメーションの時間
-	//float duration_;
+	float animationTime_;
+	float duration_;
+
+public:
+	/// ==========================================
+	/// public : accessors
+	/// ==========================================
+
+	void SetMeshPath(const std::string& _path);
+	void SetTexturePath(const std::string& _path);
+
+	void SetAnimationTime(float _time);
+	void SetDuration(float _duration);
+
+	
+	const std::string& GetMeshPath() const;
+	const std::string& GetTexturePath() const;
+
+	float GetAnimationTime() const;
+	float GetDuration() const;
 
 };
 
 
-namespace DEBUG_COMP {
+namespace COMP_DEBUG {
 	void SkinMeshRendererDebug(SkinMeshRenderer* _smr);
 }

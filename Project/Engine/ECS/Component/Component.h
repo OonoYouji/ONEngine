@@ -15,6 +15,7 @@
 /// renderer
 #include "Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Components/RendererComponents/Primitive/Line3DRenderer.h"
