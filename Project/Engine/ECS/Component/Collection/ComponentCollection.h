@@ -1,5 +1,9 @@
 #pragma once
 
+/// std
+#include <unordered_map>
+#include <functional>
+
 #include "../Array/ComponentArray.h"
 #include "ComponentHash.h"
 

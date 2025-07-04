@@ -7,6 +7,7 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 
 
@@ -61,7 +62,6 @@ void ImGuiFile::ImGuiFunc() {
 		ImGui::PopStyleColor(1);
 		ImGui::EndPopup();
 	}
-
 
 	ImGui::End();
 }

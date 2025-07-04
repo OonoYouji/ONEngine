@@ -11,6 +11,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "ImGuiInspectorWindow.h"
@@ -42,14 +43,14 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
-	bool isGameDebug = pImGuiManager_->GetIsGameDebug();
+	bool isGameDebug = DebugConfig::isDebugging;
 	if (isGameDebug) {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを開始
-		pImGuiManager_->SetIsGameDebug(!isGameDebug);
+		DebugConfig::isDebugging = !isGameDebug;
 	}
 	ImGui::SameLine();
 
@@ -60,7 +61,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	/// 一時停止ボタン
 	if (ImGui::ImageButton("##pause", ImTextureID(buttons[1]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを停止
-		pImGuiManager_->SetIsGameDebug(false);
+		DebugConfig::isDebugging = false;
 	}
 	ImGui::SameLine();
 

@@ -22,6 +22,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
     <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />

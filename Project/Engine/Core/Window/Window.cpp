@@ -75,30 +75,55 @@ void Window::ToggleFullScreen() {
 	}
 
 	if (!isFullScreen_) {
-		// 元の状態を覚えておく
+
 		GetWindowRect(hwnd_, &wrc_);
 
-		// 仮想フルスクリーン化
-		SetWindowLong(
-			hwnd_, GWL_STYLE,
-			windowStyle_ & ~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME)
-		);
+		HMONITOR hMonitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO monitorInfo{};
+		monitorInfo.cbSize = sizeof(MONITORINFO);
+		GetMonitorInfoW(hMonitor, &monitorInfo);
 
-		HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
-		MONITORINFO info;
-		info.cbSize = sizeof(info);
-		GetMonitorInfo(monitor, &info);
-		fullscreenRect_.right = info.rcMonitor.right - info.rcMonitor.left;
-		fullscreenRect_.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
+		/// 境界線なしスタイルに変更
+		SetWindowLong(hwnd_, GWL_STYLE, WS_POPUP);
+		SetWindowLong(hwnd_, GWL_EXSTYLE, 0);
 
+		/// モニターサイズに合わせて最大化
 		SetWindowPos(
-			hwnd_, HWND_TOPMOST, 
-			fullscreenRect_.left, fullscreenRect_.top,
-			fullscreenRect_.right, fullscreenRect_.bottom, 
-			SWP_FRAMECHANGED | SWP_NOACTIVATE
+			hwnd_, HWND_TOP,
+			monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top,
+			monitorInfo.rcMonitor.right - monitorInfo.rcMonitor.left,
+			monitorInfo.rcMonitor.bottom - monitorInfo.rcMonitor.top,
+			SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_SHOWWINDOW
 		);
-		
-		ShowWindow(hwnd_, SW_MAXIMIZE);
+
+		ShowWindow(hwnd_, SW_NORMAL);
+		SetForegroundWindow(hwnd_);
+		SetFocus(hwnd_);
+
+		//// 元の状態を覚えておく
+		//GetWindowRect(hwnd_, &wrc_);
+
+		//// 仮想フルスクリーン化
+		//SetWindowLong(
+		//	hwnd_, GWL_STYLE,
+		//	windowStyle_ & ~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME)
+		//);
+
+		//HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
+		//MONITORINFO info;
+		//info.cbSize = sizeof(info);
+		//GetMonitorInfo(monitor, &info);
+		//fullscreenRect_.right = info.rcMonitor.right - info.rcMonitor.left;
+		//fullscreenRect_.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
+
+		//SetWindowPos(
+		//	hwnd_, HWND_TOPMOST, 
+		//	fullscreenRect_.left, fullscreenRect_.top,
+		//	fullscreenRect_.right, fullscreenRect_.bottom, 
+		//	SWP_FRAMECHANGED | SWP_NOACTIVATE
+		//);
+		//
+		//ShowWindow(hwnd_, SW_MAXIMIZE);
 
 	} else {
 		// 通常ウィンドウに戻す

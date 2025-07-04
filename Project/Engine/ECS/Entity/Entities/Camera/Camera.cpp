@@ -4,6 +4,7 @@
 #include <numbers>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
@@ -84,7 +85,7 @@ void Camera::Update() {
 
 	if (cameraType_ == static_cast<int>(CameraType::Type3D)) { ///!< 3Dカメラの場合
 		matProjection_ = MakePerspectiveFovMatrix(
-			fovY_, 1920.0f / 1080.0f,
+			fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
 			nearClip_, farClip_
 		);
 	}
@@ -125,8 +126,8 @@ Matrix4x4 Camera::MakeOrthographicMatrix(float _left, float _right, float _botto
 void Camera::SetCameraType(int _cameraType) {
 	if (_cameraType != cameraType_) {
 
-		float widthHalf = 1920.0f / 2.0f;
-		float heightHalf = 1080.0f / 2.0f;
+		float widthHalf = EngineConfig::kWindowSize.x / 2.0f;
+		float heightHalf = EngineConfig::kWindowSize.y / 2.0f;
 
 		if (_cameraType == static_cast<int>(CameraType::Type2D)) {
 			matProjection_ = MakeOrthographicMatrix(

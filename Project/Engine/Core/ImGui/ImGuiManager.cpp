@@ -9,9 +9,10 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
-
+#include "Engine/Core/Utility/Input/Input.h"
 
 #pragma region glyphRangesJapanease
 namespace {
@@ -571,9 +572,6 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
-	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
-	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-
 
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
@@ -588,9 +586,12 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
 #ifdef _DEBUG
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1920, 1080), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
@@ -606,7 +607,17 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
-	ImGui::GetIO().DeltaTime = Time::UnscaledDeltaTime();
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
+	UpdateMousePosition(
+		windowManager_->GetMainWindow()->GetHwnd(),
+		EngineConfig::kWindowSize
+	);
+	io.DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }
@@ -621,6 +632,30 @@ void ImGuiManager::Draw() {
 
 void ImGuiManager::AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
 	sceneImageInfos_[_name] = _info;
+}
+
+void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize) {
+	POINT point;
+	GetCursorPos(&point);
+
+	ScreenToClient(_winHwnd, &point);
+
+	RECT clientRect;
+	GetClientRect(_winHwnd, &clientRect);
+
+	Vector2 clientSize = {
+		static_cast<float>(clientRect.right - clientRect.left),
+		static_cast<float>(clientRect.bottom - clientRect.top)
+	};
+
+	/// 補正
+	Vector2 scale = _renderTargetSize / clientSize;
+	Vector2 corrected = {
+		point.x * scale.x,
+		point.y * scale.y
+	};
+
+	ImGui::GetIO().AddMousePosEvent(corrected.x, corrected.y);
 }
 
 void ImGuiManager::OutputImGuiStyle(const std::string& _fileName) const {
@@ -660,14 +695,6 @@ void ImGuiManager::InputImGuiStyle(const std::string& _fileName) const {
 
 void ImGuiManager::SetImGuiWindow(Window* _window) {
 	imGuiWindow_ = _window;
-}
-
-bool ImGuiManager::GetIsGameDebug() const {
-	return isGameDebug_;
-}
-
-void ImGuiManager::SetIsGameDebug(bool _isGameDebug) {
-	isGameDebug_ = _isGameDebug;
 }
 
 Window* ImGuiManager::GetDebugGameWindow() const {

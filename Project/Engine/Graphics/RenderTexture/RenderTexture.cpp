@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
@@ -21,7 +22,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 	/// render texture resourceの作成
 	renderTextureResource.CreateRenderTextureResource(
-		dxDevice, Vector2(1920.0f, 1080.0f), _format, _clearColor
+		dxDevice, EngineConfig::kWindowSize, _format, _clearColor
 	);
 
 	uint32_t rtvHeapIndex = dxRTVHeap->Allocate();
@@ -122,7 +123,7 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 
 	/// UAV texture resourceの作成
 	uavTextureResource.CreateUAVTextureResource(
-		dxDevice, Vector2(1920.0f, 1080.0f), DXGI_FORMAT_R8G8B8A8_UNORM
+		dxDevice, EngineConfig::kWindowSize, DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 
 	texture_->CreateEmptyUAVHandle();
@@ -148,12 +149,6 @@ void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManag
 	srvDesc.Texture2D.MipLevels = 1;
 
 	dxDevice->GetDevice()->CreateShaderResourceView(uavTextureResource.Get(), &srvDesc, texture_->GetSRVCPUHandle());
-
-	//uavTextureResource.CreateBarrier(
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-	//	D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-	//	_dxManager->GetDxCommand()
-	//);
 
 	/// command exe
 	_dxManager->GetDxCommand()->CommandExecute();

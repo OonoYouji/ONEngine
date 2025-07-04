@@ -1,6 +1,7 @@
 #include "DebugCamera.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
@@ -41,7 +42,7 @@ void DebugCamera::Initialize() {
 	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
 	matProjection_ = MakePerspectiveFovMatrix(
-		fovY_, 1920.0f / 1080.0f,
+		fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
 		nearClip_, farClip_
 	);
 	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));

@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiGameSceneWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiSceneWindow.h"
@@ -36,8 +37,8 @@ ImGuiGameWindow::ImGuiGameWindow(
 
 void ImGuiGameWindow::ImGuiFunc() {
 
-	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(1920.0f, 1080.0f), ImGuiCond_Appearing);
+	ImGui::SetNextWindowPos(ImVec2(0, 20));
+	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y));
 	if (!ImGui::Begin("Game", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;

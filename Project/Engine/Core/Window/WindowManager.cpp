@@ -11,6 +11,10 @@
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
 
+namespace {
+	WindowManager* gWindowManager = nullptr;
+}
+
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
 #ifdef _DEBUG
 	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
@@ -59,6 +63,7 @@ void WindowManager::Initialize() {
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	isProcessEnd_ = false;
+	gWindowManager = this;
 }
 
 void WindowManager::Finalize() {
@@ -131,11 +136,11 @@ void WindowManager::PresentAll() {
 
 
 
-Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType) {
+Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType, UINT _windowStyle) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
 
 	/// game windowを作成して表示する
-	CreateGameWindow(_windowName.c_str(), _windowSize, WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME), newWindow.get(), _windowType);
+	CreateGameWindow(_windowName.c_str(), _windowSize, _windowStyle, newWindow.get(), _windowType);
 	newWindow->Initialize(_windowName, _windowSize, dxManager_);
 
 	/// returnする用のpointer	

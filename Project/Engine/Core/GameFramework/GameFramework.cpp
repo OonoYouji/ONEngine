@@ -3,7 +3,9 @@
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -44,7 +46,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->Initialize();
 	/// main windowの生成
 #ifdef _DEBUG
-	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1920.0f, 1080.0f), WindowManager::WindowType::Main);
+	UINT style = WS_OVERLAPPEDWINDOW;
+	style &= ~WS_THICKFRAME;
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", EngineConfig::kWindowSize, WindowManager::WindowType::Main, style);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
@@ -88,7 +92,7 @@ void GameFramework::Run() {
 		editorManager_->Update();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		if (imGuiManager_->GetIsGameDebug()) {
+		if (DebugConfig::isDebugging) {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}

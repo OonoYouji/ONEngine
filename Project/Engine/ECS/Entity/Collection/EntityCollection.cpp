@@ -293,7 +293,7 @@ void EntityCollection::LoadPrefabAll() {
 
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, const std::string& _entityName) {
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
