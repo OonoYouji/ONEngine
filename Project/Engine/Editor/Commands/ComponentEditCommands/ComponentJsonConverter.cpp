@@ -29,6 +29,7 @@ namespace {
 			Register<SpriteRenderer>();
 			Register<CustomMeshRenderer>();
 			Register<MeshRenderer>();
+			Register<SkinMeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
 
@@ -137,6 +138,7 @@ void to_json(nlohmann::json& _j, const Color& _c) {
 }
 
 void from_json(const nlohmann::json& _j, Transform& _t) {
+	_t.enable = _j.at("enable").get<int>();
 	_t.position = _j.at("position").get<Vec3>();
 	//_t.rotate = _j.at("rotate").get<Quaternion>();
 	_t.scale = _j.at("scale").get<Vec3>();

@@ -8,18 +8,25 @@
 
 
 SkinMeshRenderer::SkinMeshRenderer() {
-	SetMeshPath("./Assets/Models/primitive/cube.obj");
+	SetMeshPath("./Packages/Models/Human/walk.gltf");
 	SetTexturePath("./Packages/Textures/white.png");
 	animationTime_ = 0.0f;
 	duration_ = 0.0f;
+	color_ = Color::kWhite;
+	isChangingMesh_ = true; /// 初期化時にメッシュを変更するフラグを立てる
 }
 
 void SkinMeshRenderer::SetMeshPath(const std::string& _path) {
+	isChangingMesh_ = true; 
 	meshPath_ = _path;
 }
 
 void SkinMeshRenderer::SetTexturePath(const std::string& _path) {
 	texturePath_ = _path;
+}
+
+void SkinMeshRenderer::SetColor(const Vector4& _color) {
+	color_ = _color;
 }
 
 void SkinMeshRenderer::SetAnimationTime(float _time) {
@@ -44,6 +51,10 @@ float SkinMeshRenderer::GetAnimationTime() const {
 
 float SkinMeshRenderer::GetDuration() const {
 	return duration_;
+}
+
+const Vector4& SkinMeshRenderer::GetColor() const {
+	return color_;
 }
 
 
@@ -126,4 +137,20 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 		ImGui::EndDragDropTarget();
 	}
 
+}
+
+void from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr) {
+	_smr.enable = _j.at("enable").get<int>();
+	_smr.SetMeshPath(_j.at("meshPath").get<std::string>());
+	_smr.SetTexturePath(_j.at("texturePath").get<std::string>());
+}
+
+void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
+	_j = nlohmann::json{
+		{ "type", "SkinMeshRenderer" },
+		{ "enable", _smr.enable },
+		{ "meshPath", _smr.GetMeshPath() },
+		{ "texturePath", _smr.GetTexturePath() },
+		//{ "color", _smr.GetColor() },
+	};
 }

@@ -14,7 +14,7 @@
 /// engine
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
-
+#include "../ResourceData/Skinning.h"
 
 /// ===================================================
 /// グラフィクスリソースのローダー
@@ -38,6 +38,10 @@ public:
 	/// @brief modelの読み込み (.obj)
 	/// @param _filePath .slnファイルからの相対パス
 	void LoadModelObj(const std::string& _filePath);
+
+	Node ReadNode(struct aiNode* _node);
+
+	void LoadAnimation(Model* _model, const std::string& _filePath);
 
 private:
 

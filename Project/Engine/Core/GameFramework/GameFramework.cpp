@@ -25,8 +25,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// 各クラスのインスタンスを生成する
 	dxManager_ = std::make_unique<DxManager>();
 	windowManager_ = std::make_unique<WindowManager>(dxManager_.get());
-	renderingFramework_ = std::make_unique<RenderingFramework>();
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
+	renderingFramework_ = std::make_unique<RenderingFramework>();
 	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
 	monoScriptEngine_ = std::make_unique<MonoScriptEngine>();
 
@@ -57,8 +57,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
-	entityComponentSystem_->Initialize();
 	renderingFramework_->Initialize(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get());
+	entityComponentSystem_->Initialize(renderingFramework_->GetResourceCollection());
 
 
 	/// scene managerの初期化

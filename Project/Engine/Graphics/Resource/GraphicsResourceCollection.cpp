@@ -143,6 +143,15 @@ const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) 
 	return nullptr;
 }
 
+Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) {
+	auto itr = models_.find(_filePath);
+	if (itr != models_.end()) {
+		return itr->second.get();
+	}
+
+	return nullptr;
+}
+
 const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePath) const {
 	auto itr = textureIndices_.find(_filePath);
 	if (itr != textureIndices_.end()) {

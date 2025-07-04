@@ -25,14 +25,30 @@ void Model::SetRootNode(const Node& _node) {
 	rootNode_ = _node;
 }
 
+void Model::SetAnimationDuration(float _duration) {
+	duration_ = _duration;
+}
+
 const Node& Model::GetRootNode() const {
 	return rootNode_;
 }
 
-const std::unordered_map<std::string, JointWeightData>& Model::GetSkinClusterData() const {
-	return skinClusters_;
+const std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() const {
+	return jointWeightData_;
 }
 
-std::unordered_map<std::string, JointWeightData>& Model::GetSkinClusterData() {
-	return skinClusters_;
+std::unordered_map<std::string, JointWeightData>& Model::GetJointWeightData() {
+	return jointWeightData_;
+}
+
+const std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() const {
+	return nodeAnimationMap_;
+}
+
+std::unordered_map<std::string, NodeAnimation>& Model::GetNodeAnimationMap() {
+	return nodeAnimationMap_;
+}
+
+float Model::GetAnimationDuration() const {
+	return duration_;
 }

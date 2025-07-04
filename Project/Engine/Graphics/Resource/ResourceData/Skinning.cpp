@@ -134,7 +134,7 @@ SkinCluster MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, Dx
 	); /// すべて単位行列で初期化
 
 
-	for (const auto& jointWeight : _model->GetSkinClusterData()) {
+	for (const auto& jointWeight : _model->GetJointWeightData()) {
 
 		/// jointWeight.firstにあるjoint名からskeletonに対象のjointがあるか探索
 		/// なければ次の処理

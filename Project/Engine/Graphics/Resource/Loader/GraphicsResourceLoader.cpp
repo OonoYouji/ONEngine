@@ -130,7 +130,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 			/// 格納領域の作成
 			aiBone* bone = mesh->mBones[boneIndex];
 			std::string      jointName = bone->mName.C_Str();
-			JointWeightData& jointWeightData = model->GetSkinClusterData()[jointName];
+			JointWeightData& jointWeightData = model->GetJointWeightData()[jointName];
 
 			/// mat bind pose inverseの計算
 			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
@@ -156,7 +156,9 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 		}
 
-
+		/// nodeの解析
+		model->SetRootNode(ReadNode(scene->mRootNode));
+		LoadAnimation(model.get(), _filePath);
 
 		/// mesh dataを作成
 		std::unique_ptr<Mesh> meshData = std::make_unique<Mesh>();
@@ -172,6 +174,109 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 	Console::Log("[Load Resource] type:Model, path:\"" + _filePath + "\"");
 	resourceCollection_->AddModel(_filePath, std::move(model));
 
+}
+
+Node GraphicsResourceLoader::ReadNode(aiNode* _node) {
+	Node result;
+
+	aiVector3D   position;
+	aiQuaternion rotate;
+	aiVector3D   scale;
+
+	_node->mTransformation.Decompose(scale, rotate, position);
+
+	result.transform.scale = { scale.x, scale.y, scale.z };
+	result.transform.rotate = { rotate.x, -rotate.y, -rotate.z, rotate.w };
+	result.transform.position = { -position.x, position.y, position.z };
+	result.transform.Update();
+
+	/// nodeから必要な値をゲット
+	result.name = _node->mName.C_Str();
+	result.children.resize(_node->mNumChildren);
+
+	/// childrenの解析
+	for (size_t childIndex = 0; childIndex < _node->mNumChildren; ++childIndex) {
+		result.children[childIndex] = ReadNode(_node->mChildren[childIndex]);
+	}
+
+	return result;
+}
+
+void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _filePath) {
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(_filePath.c_str(), 0);
+
+	///!< アニメーションが存在しない場合は何もしない
+	if (scene->mAnimations == 0) {
+		Console::Log("[warring] type:Animation, path:\"" + _filePath + "\"");
+		return; ///< アニメーションが存在しない場合は何もしない
+	}
+
+	/// 解析
+	aiAnimation* animationAssimp = scene->mAnimations[0];
+
+	float duration = _model->GetAnimationDuration();
+	std::unordered_map<std::string, NodeAnimation>& nodeAnimationMap = _model->GetNodeAnimationMap();
+
+	duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
+	_model->SetAnimationDuration(duration);
+
+	/// node animationの読み込み
+	for (uint32_t channelIndex = 0u; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+
+		/// node animationの解析用データを
+		aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+		NodeAnimation& nodeAnimation = nodeAnimationMap[nodeAnimationAssimp->mNodeName.C_Str()];
+
+		/// ---------------------------------------------------
+		/// translateの解析
+		/// ---------------------------------------------------
+		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+
+			/// keyの値を得る
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+			KeyFrameVector3 keyframe{
+				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+				.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+			};
+
+			nodeAnimation.translate.push_back(keyframe);
+		}
+
+
+		/// ---------------------------------------------------
+		/// rotateの解析
+		/// ---------------------------------------------------
+		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+
+			/// keyの値を得る
+			aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+			KeyFrameQuaternion keyframe{
+				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+				.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }
+			};
+
+			nodeAnimation.rotate.push_back(keyframe);
+		}
+
+
+		/// ---------------------------------------------------
+		/// scaleの解析
+		/// ---------------------------------------------------
+		for (uint32_t keyIndex = 0u; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+
+			/// keyの値を得る
+			aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+			KeyFrameVector3 keyframe{
+				.time = static_cast<float>(keyAssimp.mTime / animationAssimp->mTicksPerSecond),
+				.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z }
+			};
+
+			nodeAnimation.scale.push_back(keyframe);
+		}
+
+	}
 }
 
 DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string& _filePath) {
