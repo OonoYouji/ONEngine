@@ -141,7 +141,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 			matBindPoseAssimp.Decompose(scale, rotate, position);
 			Matrix4x4 matBindPose =
 				Matrix4x4::MakeScale({ scale.x, scale.y, scale.z })
-				* Matrix4x4::MakeRotateQuaternion(Quaternion::Normalize({ rotate.x, -rotate.y, -rotate.z, rotate.w }))
+				* Matrix4x4::MakeRotate(Quaternion::Normalize({ rotate.x, -rotate.y, -rotate.z, rotate.w }))
 				* Matrix4x4::MakeTranslate({ -position.x, position.y, position.z });
 
 			jointWeightData.matBindPoseInverse = matBindPose.Inverse();

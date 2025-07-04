@@ -25,7 +25,7 @@ void DebugCamera::Initialize() {
 
 	transform_->position = { 0.0f, 0.0f, -10.0f };
 	transform_->scale = Vector3::kOne;
-	transform_->rotate = Vector3::kZero;
+	//transform_->rotate = Vector3::kZero;
 
 	fovY_ = 0.7f;
 	nearClip_ = 0.1f;
@@ -36,7 +36,7 @@ void DebugCamera::Initialize() {
 	isMoving_ = false;
 
 	transform_->position = variables_->Get<Vector3>("startPos");
-	transform_->rotate = variables_->Get<Vector3>("startRot");
+	//transform_->rotate = variables_->Get<Vector3>("startRot");
 
 
 	UpdateTransform();
