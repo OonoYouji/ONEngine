@@ -32,3 +32,7 @@ const Node& Model::GetRootNode() const {
 const std::unordered_map<std::string, JointWeightData>& Model::GetSkinClusterData() const {
 	return skinClusters_;
 }
+
+std::unordered_map<std::string, JointWeightData>& Model::GetSkinClusterData() {
+	return skinClusters_;
+}

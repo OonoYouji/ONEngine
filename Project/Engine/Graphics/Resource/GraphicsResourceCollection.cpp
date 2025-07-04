@@ -35,7 +35,8 @@ void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _
 			|| path.find(".jpg") != std::string::npos
 			|| path.find(".dds") != std::string::npos) {
 			type = Type::texture;
-		} else if (path.find(".obj") != std::string::npos) {
+		} else if (path.find(".obj") != std::string::npos
+			|| path.find(".gltf") != std::string::npos) {
 			type = Type::model;
 		}
 
@@ -49,9 +50,12 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 	for (auto& path : _filePaths) {
 		Type type = Type::none;
 
-		if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+		if (path.find(".png") != std::string::npos
+			|| path.find(".jpg") != std::string::npos
+			|| path.find(".dds") != std::string::npos) {
 			type = Type::texture;
-		} else if (path.find(".obj") != std::string::npos) {
+		} else if (path.find(".obj") != std::string::npos
+			|| path.find(".gltf") != std::string::npos) {
 			type = Type::model;
 		}
 

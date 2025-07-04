@@ -124,6 +124,40 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		}
 
 
+		/// joint 解析
+		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+
+			/// 格納領域の作成
+			aiBone* bone = mesh->mBones[boneIndex];
+			std::string      jointName = bone->mName.C_Str();
+			JointWeightData& jointWeightData = model->GetSkinClusterData()[jointName];
+
+			/// mat bind pose inverseの計算
+			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
+			aiVector3D   position;
+			aiQuaternion rotate;
+			aiVector3D   scale;
+
+			matBindPoseAssimp.Decompose(scale, rotate, position);
+			Matrix4x4 matBindPose =
+				Matrix4x4::MakeScale({ scale.x, scale.y, scale.z })
+				* Matrix4x4::MakeRotateQuaternion(Quaternion::Normalize({ rotate.x, -rotate.y, -rotate.z, rotate.w }))
+				* Matrix4x4::MakeTranslate({ -position.x, position.y, position.z });
+
+			jointWeightData.matBindPoseInverse = matBindPose.Inverse();
+
+
+			/// weight情報を取り出す
+			for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; ++weightIndex) {
+				jointWeightData.vertexWeights.push_back(
+					{ bone->mWeights[weightIndex].mWeight, bone->mWeights[weightIndex].mVertexId }
+				);
+			}
+
+		}
+
+
+
 		/// mesh dataを作成
 		std::unique_ptr<Mesh> meshData = std::make_unique<Mesh>();
 		meshData->SetVertices(vertices);

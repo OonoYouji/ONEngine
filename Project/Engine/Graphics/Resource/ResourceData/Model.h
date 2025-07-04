@@ -73,5 +73,6 @@ public:
 	const Node& GetRootNode() const;
 
 	const std::unordered_map<std::string, JointWeightData>& GetSkinClusterData() const;
+	std::unordered_map<std::string, JointWeightData>& GetSkinClusterData();
 
 };
