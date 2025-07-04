@@ -53,8 +53,6 @@ private:
 	class Window* imGuiWindow_;
 	class Window* debugGameWindow_;
 
-	bool isGameDebug_ = false;
-
 	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
 	std::unordered_map<std::string, ImGuiSceneImageInfo> sceneImageInfos_ = {}; ///< imguiのシーンイメージ情報
@@ -67,13 +65,6 @@ public:
 	/// @brief imgui windowを設定する
 	/// @param _window Window
 	void SetImGuiWindow(Window* _window);
-
-
-
-	/// @brief gameをdebugするかのフラグ 
-	/// @return 
-	bool GetIsGameDebug() const;
-	void SetIsGameDebug(bool _isGameDebug);
 
 	/// @brief game debug windowを取得する
 	/// @return　Window

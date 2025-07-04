@@ -697,14 +697,6 @@ void ImGuiManager::SetImGuiWindow(Window* _window) {
 	imGuiWindow_ = _window;
 }
 
-bool ImGuiManager::GetIsGameDebug() const {
-	return isGameDebug_;
-}
-
-void ImGuiManager::SetIsGameDebug(bool _isGameDebug) {
-	isGameDebug_ = _isGameDebug;
-}
-
 Window* ImGuiManager::GetDebugGameWindow() const {
 	return debugGameWindow_;
 }

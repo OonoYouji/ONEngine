@@ -92,7 +92,7 @@ void GameFramework::Run() {
 		editorManager_->Update();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
-		if (imGuiManager_->GetIsGameDebug()) {
+		if (DebugConfig::isDebugging) {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
