@@ -155,6 +155,8 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
     <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -310,6 +312,8 @@
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Skinning.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

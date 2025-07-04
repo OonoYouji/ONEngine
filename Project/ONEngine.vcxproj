@@ -176,6 +176,8 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
     <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
@@ -331,6 +333,8 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Skinning.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

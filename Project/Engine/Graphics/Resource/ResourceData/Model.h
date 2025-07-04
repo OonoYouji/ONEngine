@@ -7,6 +7,7 @@
 
 /// engine
 #include "Mesh.h"
+#include "Skinning.h"
 
 /// ===================================================
 /// mesh描画クラス
@@ -41,6 +42,9 @@ private:
 	std::vector<std::unique_ptr<Mesh>> meshes_;
 	std::string                        path_;
 
+	Node rootNode_;
+	std::unordered_map<std::string, JointWeightData> skinClusters_;
+
 public:
 
 	/// ===================================================
@@ -57,10 +61,17 @@ public:
 
 	/// @brief meshの配列のゲッタ
 	/// @return meshの配列
-	const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const { return meshes_; }
+	const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const;
+	std::vector<std::unique_ptr<Mesh>>& GetMeshes();
 
 	/// @brief 読み込みに使用したファイルパスのゲッタ
 	/// @return pathの文字列
 	const std::string& GetPath() const { return path_; }
+
+
+	void SetRootNode(const Node& _node);
+	const Node& GetRootNode() const;
+
+	const std::unordered_map<std::string, JointWeightData>& GetSkinClusterData() const;
 
 };
