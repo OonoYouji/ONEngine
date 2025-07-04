@@ -38,7 +38,7 @@ VSOutput main(VSInput input) {
 	output.position = mul(skinned.position, matWVP);
 	output.worldPosition = mul(skinned.position, gTransform.matWorld);
 	output.uv = input.uv;
-	output.normal = normalize(mul(input.normal, (float3x3) gTransform.matWorld));
+	output.normal = normalize(mul(skinned.normal, (float3x3) gTransform.matWorld));
 	
 	return output;
 }

@@ -52,7 +52,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		pipeline_->AddDescriptorRange(0, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// Texture
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// 4: WellForGPU
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);  /// 5: Texture
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);  /// 5: Texture
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -87,13 +87,10 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
 		materialBuffer_ = std::make_unique<ConstantBuffer<Vector4>>();
 		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
-		wellForGPUBuffer_ = std::make_unique<StructuredBuffer<WellForGPU>>();
-
 
 		transformBuffer_->Create(_dxManager->GetDxDevice());
 		materialBuffer_->Create(_dxManager->GetDxDevice());
 		textureIdBuffer_->Create(_dxManager->GetDxDevice());
-		wellForGPUBuffer_->Create(1024, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 	}
 
@@ -132,6 +129,10 @@ void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSyste
 			continue; ///< 無効なコンポーネントはスキップ
 		}
 
+		if (!comp->skinCluster_) {
+			continue; ///< スキンクラスターが存在しない場合はスキップ
+		}
+
 		IEntity* entity = comp->GetOwner();
 		if (!entity) {
 			continue; /// エンティティが無効な場合はスキップ
@@ -143,20 +144,13 @@ void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSyste
 		/// Material Bind
 		materialBuffer_->SetMappedData(comp->GetColor());
 
-		/// WellForGPU Bind
-		auto wellForGPUMappedPalette = comp->skinCluster_.mappedPalette;
-		size_t index = 0;
-		for (auto& wellForGPU : wellForGPUMappedPalette) {
-			wellForGPUBuffer_->SetMappedData(index++, wellForGPU);
-		}
-
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
 		textureIdBuffer_->SetMappedData(textures[textureIndex]->GetSRVDescriptorIndex());
 
 		transformBuffer_->BindForGraphicsCommandList(commandList, TransformCBV);
 		materialBuffer_->BindForGraphicsCommandList(commandList, MaterialCBV);
-		wellForGPUBuffer_->BindToCommandList(WellForGPUSRV, commandList);
+		commandList->SetGraphicsRootDescriptorTable(WellForGPUSRV, comp->skinCluster_->paletteSRVHandle.second);
 		textureIdBuffer_->BindForGraphicsCommandList(commandList, TextureIdCBV);
 
 
@@ -164,7 +158,10 @@ void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSyste
 		Model* model = pGraphicsResourceCollection_->GetModel(comp->GetMeshPath());
 		for (auto& mesh : model->GetMeshes()) {
 			/// vbv, ibvのセット
-			commandList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+			D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+				mesh->GetVBV(), comp->skinCluster_->vbv
+			};
+			commandList->IASetVertexBuffers(0, 2, vbvs);
 			commandList->IASetIndexBuffer(&mesh->GetIBV());
 
 			/// 描画

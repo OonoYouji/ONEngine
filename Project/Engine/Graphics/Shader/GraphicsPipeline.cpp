@@ -165,8 +165,7 @@ void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	);
 
 	if (FAILED(hr)) {
-		Console::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
-		Assert(false, "error...");
+		Assert(false, reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
 	/// バイナリを元に生成

@@ -25,9 +25,7 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 		if (skinMesh->isChangingMesh_) {
 			Model* model = pResourceCollection_->GetModel(skinMesh->GetMeshPath());
 			Skeleton skeleton = MATH::CreateSkeleton(model->GetRootNode());
-
-			SkinCluster skinCluster;
-			skinCluster = MATH::CreateSkinCluster(skeleton, model, pDxManager_);
+			SkinCluster skinCluster = MATH::CreateSkinCluster(skeleton, model, pDxManager_);
 
 			skinMesh->skinCluster_ = std::move(skinCluster);
 			skinMesh->skeleton_ = std::move(skeleton);
@@ -37,25 +35,30 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 			skinMesh->isChangingMesh_ = false;
 		}
 
+
+		/// skin clusterがあるかチェック
+		if (!skinMesh->skinCluster_) {
+			continue;
+		}
+
+
 		skinMesh->animationTime_ += Time::DeltaTime();
 		skinMesh->animationTime_ = std::fmod(skinMesh->animationTime_, skinMesh->GetDuration());
 
 		Skeleton& skeleton = skinMesh->skeleton_;
-		SkinCluster& skinCluster = skinMesh->skinCluster_;
+		SkinCluster& skinCluster = skinMesh->skinCluster_.value();
+
 
 		/// ------------------------------------
 		/// スケルトンの更新
 		/// ------------------------------------
 		for (Joint& joint : skeleton.joints) {
 
-			joint.animationTime += Time::DeltaTime();
-			joint.animationTime = std::fmod(joint.animationTime, skinMesh->GetDuration());
-
 			NodeAnimation& rootAnimation = skinMesh->nodeAnimationMap_[joint.name];
 
-			if (!rootAnimation.translate.empty()) { joint.transform.position = MATH::CalculateValue(rootAnimation.translate, joint.animationTime); }
-			if (!rootAnimation.rotate.empty()) { joint.transform.rotate = MATH::CalculateValue(rootAnimation.rotate, joint.animationTime); }
-			if (!rootAnimation.scale.empty()) { joint.transform.scale = MATH::CalculateValue(rootAnimation.scale, joint.animationTime); }
+			if (!rootAnimation.translate.empty()) { joint.transform.position = MATH::CalculateValue(rootAnimation.translate, skinMesh->animationTime_); }
+			if (!rootAnimation.rotate.empty()) {    joint.transform.rotate   = MATH::CalculateValue(rootAnimation.rotate,    skinMesh->animationTime_); }
+			if (!rootAnimation.scale.empty()) {     joint.transform.scale    = MATH::CalculateValue(rootAnimation.scale,     skinMesh->animationTime_); }
 			joint.transform.Update();
 
 			joint.matSkeletonSpace = joint.transform.matWorld;

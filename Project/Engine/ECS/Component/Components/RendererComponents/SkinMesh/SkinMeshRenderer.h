@@ -39,7 +39,7 @@ private:
 	float duration_;
 
 	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
-	SkinCluster skinCluster_; ///< スキンアニメーションのデータ
+	std::optional<SkinCluster> skinCluster_; ///< スキンアニメーションのデータ
 	Skeleton skeleton_; ///< ボーンデータ
 	bool isChangingMesh_;
 

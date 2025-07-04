@@ -25,7 +25,6 @@ struct Joint {
 	std::vector<int32_t> children;
 	int32_t index;
 	std::optional<int32_t> parent;
-	float animationTime;
 };
 
 struct Node {

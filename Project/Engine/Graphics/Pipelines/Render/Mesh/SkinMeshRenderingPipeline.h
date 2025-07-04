@@ -45,7 +45,6 @@ private:
 
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
 	std::unique_ptr<ConstantBuffer<Vector4>> materialBuffer_;
-	std::unique_ptr<StructuredBuffer<WellForGPU>> wellForGPUBuffer_;
 	std::unique_ptr<ConstantBuffer<uint32_t>> textureIdBuffer_;
 
 };
