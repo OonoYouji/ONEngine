@@ -3,7 +3,8 @@
 /// externals
 #include <imgui.h>
 
-/// engine/child windows
+/// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "../ChildWindows/FileWindows/ImGuiFile.h"
 
 ImGuiFileWindow::ImGuiFileWindow() {
@@ -22,7 +23,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 void ImGuiFileWindow::ImGuiFunc() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
-	ImGui::SetNextWindowSize(ImVec2(1920.0f, 1080.0f), ImGuiCond_Appearing);
+	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x , EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
 	if (!ImGui::Begin("File", nullptr, imGuiFlags_)) {
 		ImGui::End();
 		return;

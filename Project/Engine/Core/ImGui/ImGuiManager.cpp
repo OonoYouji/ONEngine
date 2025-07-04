@@ -9,6 +9,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Input/Input.h"
@@ -572,14 +573,6 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.KeyRepeatDelay = 4.145f;
 	imGuiIO.KeyRepeatRate = 12.0f;
 
-	RECT rc;
-	GetClientRect(windowManager_->GetMainWindow()->GetHwnd(), &rc);
-	imGuiIO.DisplaySize = ImVec2(
-		static_cast<float>(rc.right - rc.left),
-		static_cast<float>(rc.bottom - rc.top)
-	);
-	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
 		dxManager_->GetDxDevice()->GetDevice(),
@@ -593,9 +586,12 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
 #ifdef _DEBUG
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1280, 720), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
@@ -614,9 +610,12 @@ void ImGuiManager::Update() {
 
 	ImGuiIO& io = ImGui::GetIO();
 
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
 	UpdateMousePosition(
 		windowManager_->GetMainWindow()->GetHwnd(),
-		{ 1920.0f, 1080.0f }
+		EngineConfig::kWindowSize
 	);
 	io.DeltaTime = Time::UnscaledDeltaTime();
 
@@ -651,14 +650,12 @@ void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTarg
 
 	/// 補正
 	Vector2 scale = _renderTargetSize / clientSize;
-
 	Vector2 corrected = {
 		point.x * scale.x,
 		point.y * scale.y
 	};
 
 	ImGui::GetIO().AddMousePosEvent(corrected.x, corrected.y);
-
 }
 
 void ImGuiManager::OutputImGuiStyle(const std::string& _fileName) const {

@@ -3,7 +3,9 @@
 /// engine
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Time/Time.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 
 GameFramework::GameFramework() {}
 GameFramework::~GameFramework() {
@@ -46,7 +48,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 #ifdef _DEBUG
 	UINT style = WS_OVERLAPPEDWINDOW;
 	style &= ~WS_THICKFRAME;
-	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", Vector2(1920.0f, 1080.0f), WindowManager::WindowType::Main, style);
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", EngineConfig::kWindowSize, WindowManager::WindowType::Main, style);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG

@@ -1,6 +1,7 @@
 #include "DxDepthStencil.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "../Device/DxDevice.h"
 #include "../DescriptorHeap/DxDSVHeap.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
@@ -14,8 +15,8 @@ void DxDepthStencil::Initialize(DxDevice* _dxDevice, DxDSVHeap* _dxDsvHeap) {
 	
 	{
 		D3D12_RESOURCE_DESC desc{};
-		desc.Width                                = 1980;
-		desc.Height                               = 1080;
+		desc.Width                                = static_cast<UINT64>(EngineConfig::kWindowSize.x);
+		desc.Height                               = static_cast<UINT64>(EngineConfig::kWindowSize.y);
 		desc.MipLevels                            = 1;
 		desc.DepthOrArraySize                     = 1;
 		desc.Format                               = DXGI_FORMAT_D32_FLOAT;

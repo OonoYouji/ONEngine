@@ -177,6 +177,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />

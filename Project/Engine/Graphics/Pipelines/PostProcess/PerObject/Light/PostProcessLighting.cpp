@@ -4,6 +4,7 @@
 #include <list>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -132,7 +133,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	}
 
 
-	command->Dispatch(1920 / 16, 1080 / 16, 1);
+	command->Dispatch(EngineConfig::kWindowSize.x / 16, EngineConfig::kWindowSize.y / 16, 1);
 
 	/// 大本のsceneテクスチャに結果をコピー
 
