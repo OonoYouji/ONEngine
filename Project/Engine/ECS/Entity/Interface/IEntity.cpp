@@ -242,6 +242,10 @@ const std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() const {
 	return components_;
 }
 
+std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() {
+	return components_;
+}
+
 const std::string& IEntity::GetName() const {
 	return name_;
 }

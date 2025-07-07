@@ -135,6 +135,39 @@ EDITOR_STATE AddComponentCommand::Undo() {
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
+RemoveComponentCommand::RemoveComponentCommand(IEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, IComponent*>::iterator* _resultItr)
+	: pEntity_(_entity), componentName_(_componentName), pIterator_(_resultItr) {}
+
+
+EDITOR_STATE RemoveComponentCommand::Execute() {
+
+	if (!pEntity_) {
+		Console::Log("[error] RemoveComponentCommand: Entity is nullptr");
+		return EDITOR_STATE_FAILED;
+	}
+
+	if (!pEntity_->GetComponent(componentName_)) {
+		Console::Log("[error] RemoveComponentCommand: コンポーネントが見つかりません: " + componentName_);
+		return EDITOR_STATE_FAILED;
+	}
+
+
+	if (pIterator_) {
+		*pIterator_ = pEntity_->GetComponents().find(GetComponentHash(componentName_));
+		(*pIterator_)++;
+	}
+
+	/// 削除
+	pEntity_->RemoveComponent(componentName_);
+
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE RemoveComponentCommand::Undo() {
+	return EDITOR_STATE_FINISH;
+}
+
+
 
 /// ////////////////////////////////////////////////
 /// ReloadAllScriptsCommand
@@ -164,3 +197,4 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 EDITOR_STATE ReloadAllScriptsCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
+

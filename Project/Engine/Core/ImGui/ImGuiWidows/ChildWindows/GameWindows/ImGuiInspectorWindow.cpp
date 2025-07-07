@@ -99,21 +99,25 @@ void ImGuiInspectorWindow::EntityInspector() {
 	/// ----------------------------
 	/// componentのデバッグ
 	/// ----------------------------
-	for (auto& component : entity->GetComponents()) {
+	for (auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
+		std::pair<size_t, IComponent*> component = *itr;
 		std::string componentName = typeid(*component.second).name();
+		if (componentName.find("class ") == 0) {
+			componentName = componentName.substr(6);
+		}
+
+		std::string lable = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
+
 
 		/// チェックボックスでenable/disableを切り替え
 		bool enabled = component.second->enable;
-		if (ImGui::Checkbox(("##" + componentName).c_str(), &enabled)) {
+		if (ImGui::Checkbox(("##" + lable).c_str(), &enabled)) {
 			component.second->enable = enabled;
 		}
 
 		ImGui::SameLine();
 
-		componentName += "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
-		if (componentName.find("class ") == 0) {
-			componentName = componentName.substr(6);
-		}
+	
 
 		/// アクティブ/非アクティブで表示を変える
 		if (!enabled) {
@@ -123,7 +127,12 @@ void ImGuiInspectorWindow::EntityInspector() {
 		/// component debug
 		ImGui::Separator();
 		ImGui::SameLine();
-		if (ImGui::CollapsingHeader(componentName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (ImGui::CollapsingHeader(lable.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+			/// 右クリックでポップアップメニューを開く
+			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+				ImGui::OpenPopup(lable.c_str());
+			}
+
 			ImGui::Indent(34.0f);
 			componentDebugFuncs_[component.first](component.second);
 			ImGui::Unindent(34.0f);
@@ -132,6 +141,31 @@ void ImGuiInspectorWindow::EntityInspector() {
 		if (!enabled) {
 			ImGui::PopStyleColor();
 		}
+
+
+		if (ImGui::BeginPopupContextItem(lable.c_str())) {
+			if (ImGui::MenuItem("delete")) {
+				auto resultItr = entity->GetComponents().begin();
+				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, componentName, &resultItr);
+				itr = resultItr; // イテレータを更新
+
+				/// endじゃないかチェック
+				if (itr == entity->GetComponents().end()) {
+					ImGui::EndPopup();
+					break; // もしendに到達したらループを抜ける
+				}
+
+			}
+
+			if (ImGui::MenuItem("reload")) {
+				//pEditorManager_->ExecuteCommand<ReloadComponentCommand>(entity, componentName);
+			}
+
+			ImGui::EndPopup();
+		}
+
+
+		++itr;
 
 	}
 

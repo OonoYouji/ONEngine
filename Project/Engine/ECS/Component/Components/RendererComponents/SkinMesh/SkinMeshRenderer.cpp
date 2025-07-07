@@ -12,12 +12,13 @@ SkinMeshRenderer::SkinMeshRenderer() {
 	SetTexturePath("./Packages/Textures/white.png");
 	animationTime_ = 0.0f;
 	duration_ = 0.0f;
+	animationScale_ = 1.0f;
 	color_ = Color::kWhite;
 	isChangingMesh_ = true; /// 初期化時にメッシュを変更するフラグを立てる
 }
 
 void SkinMeshRenderer::SetMeshPath(const std::string& _path) {
-	isChangingMesh_ = true; 
+	isChangingMesh_ = true;
 	meshPath_ = _path;
 }
 
@@ -41,6 +42,10 @@ void SkinMeshRenderer::SetDuration(float _duration) {
 	duration_ = _duration;
 }
 
+void SkinMeshRenderer::SetAnimationScale(float _scale) {
+	animationScale_ = _scale;
+}
+
 const std::string& SkinMeshRenderer::GetMeshPath() const {
 	return meshPath_;
 }
@@ -61,6 +66,10 @@ float SkinMeshRenderer::GetDuration() const {
 	return duration_;
 }
 
+float SkinMeshRenderer::GetAnimationScale() const {
+	return animationScale_;
+}
+
 const Vector4& SkinMeshRenderer::GetColor() const {
 	return color_;
 }
@@ -69,7 +78,7 @@ const Vector4& SkinMeshRenderer::GetColor() const {
 
 
 void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
-	if(_smr == nullptr) {
+	if (_smr == nullptr) {
 		return;
 	}
 
@@ -80,7 +89,7 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 	bool isPlaying = _smr->GetIsPlaying();
 	float animationTime = _smr->GetAnimationTime();
 	float duration = _smr->GetDuration();
-	
+
 
 	if (ImGui::Checkbox("is playing", &isPlaying)) {
 		_smr->SetIsPlaying(isPlaying);
@@ -167,4 +176,77 @@ void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
 		{ "texturePath", _smr.GetTexturePath() },
 		//{ "color", _smr.GetColor() },
 	};
+}
+
+
+/// ====================================================
+/// internal methods
+/// ====================================================
+
+SkinMeshRenderer* GetSkinMeshRenderer(uint64_t _nativeHandle) {
+	return reinterpret_cast<SkinMeshRenderer*>(_nativeHandle);
+}
+
+MonoString* InternalGetMeshPath(uint64_t _nativeHandle) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+
+	const std::string& meshPath = smr->GetMeshPath();
+	MonoString* monoMeshPath = mono_string_new(mono_domain_get(), meshPath.c_str());
+	return monoMeshPath;
+}
+
+void InternalSetMeshPath(uint64_t _nativeHandle, MonoString* _path) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	/// MonoStringからstd::stringに変換
+	char* pathChars = mono_string_to_utf8(_path);
+	std::string path(pathChars);
+	mono_free(pathChars);
+	smr->SetMeshPath(path);
+}
+
+MonoString* InternalGetTexturePath(uint64_t _nativeHandle) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+
+	const std::string& texturePath = smr->GetTexturePath();
+	MonoString* monoTexturePath = mono_string_new(mono_domain_get(), texturePath.c_str());
+	return monoTexturePath;
+}
+
+void InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	/// MonoStringからstd::stringに変換
+	char* pathChars = mono_string_to_utf8(_path);
+	std::string path(pathChars);
+	mono_free(pathChars);
+	smr->SetTexturePath(path);
+}
+
+bool InternalGetIsPlaying(uint64_t _nativeHandle) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	return smr->GetIsPlaying();
+}
+
+void InternalSetIsPlaying(uint64_t _nativeHandle, bool _isPlaying) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	smr->SetIsPlaying(_isPlaying);
+}
+
+float InternalGetAnimationTime(uint64_t _nativeHandle) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	return smr->GetAnimationTime();
+}
+
+void InternalSetAnimationTime(uint64_t _nativeHandle, float _time) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	smr->SetAnimationTime(_time);
+}
+
+float InternalGetAnimationScale(uint64_t _nativeHandle) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	return smr->GetAnimationScale();
+}
+
+void InternalSetAnimationScale(uint64_t _nativeHandle, float _scale) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	smr->SetAnimationScale(_scale);
 }

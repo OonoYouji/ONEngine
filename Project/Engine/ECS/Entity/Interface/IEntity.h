@@ -124,6 +124,7 @@ public:
 	IEntity* GetChild(size_t _index);
 
 	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
+	std::unordered_map<size_t, IComponent*>& GetComponents();
 
 	const std::string& GetName() const;
 	const std::string& GetEntityClassName() const;

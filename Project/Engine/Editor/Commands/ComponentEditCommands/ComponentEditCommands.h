@@ -3,6 +3,7 @@
 /// std
 #include <typeindex>
 #include <string>
+#include <unordered_map>
 
 /// engine
 #include "../Interface/IEditorCommand.h"
@@ -108,6 +109,28 @@ private:
 	class IEntity* pEntity_ = nullptr;
 	std::string componentName_;
 	//std::type_index componentTypeIndex_; ///< コンポーネントの型情報
+
+};
+
+
+/// ///////////////////////////////////////////////
+/// Componentの削除
+/// ///////////////////////////////////////////////
+class RemoveComponentCommand : public IEditorCommand {
+public:
+
+	RemoveComponentCommand(class IEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
+	~RemoveComponentCommand() override = default;
+
+	/// @brief コマンドの実行
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+
+	std::unordered_map<size_t, class IComponent*>::iterator* pIterator_;
+	class IEntity* pEntity_ = nullptr;
+	std::string componentName_;
 
 };
 
