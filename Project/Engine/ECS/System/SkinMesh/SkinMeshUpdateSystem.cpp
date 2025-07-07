@@ -11,15 +11,20 @@ SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResour
 
 void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 
-	ComponentArray<SkinMeshRenderer>* skinMeshArray = _ecs->GetComponentArray<SkinMeshRenderer>();
-	if (!skinMeshArray) {
-		return; ///< スキンメッシュのコンポーネントが存在しない場合は何もしない
+	std::vector<SkinMeshRenderer*> skinMeshRenderers;
+	for (auto& entity : _ecs->GetEntities()) {
+		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
+		if (skinMesh && skinMesh->enable) {
+			skinMeshRenderers.push_back(skinMesh);
+		}
 	}
 
-	for (auto& skinMesh : skinMeshArray->GetUsedComponents()) {
-		if (!skinMesh || !skinMesh->enable) {
-			continue; ///< スキンメッシュが無効な場合はスキップ
-		}
+	if (skinMeshRenderers.empty()) {
+		return; ///< 描画するスキンメッシュがない場合は何もしない
+	}
+
+
+	for (auto& skinMesh : skinMeshRenderers) {
 
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {

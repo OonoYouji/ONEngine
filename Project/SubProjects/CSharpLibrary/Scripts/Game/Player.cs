@@ -19,17 +19,17 @@ public class Player : MonoBehavior {
 
 	public override void Update() {
 		Move();
-		Jump();
+		//Jump();
 
 		CameraFollow();
 
 
-		Transform t = transform;
-		t.position += Vector3.down * 0.98f;
+		//Transform t = transform;
+		//t.position += Vector3.down * 0.98f;
 
-		if(Input.TriggerKey(KeyCode.Space)) {
-			Entity puzzle = EntityCollection.CreateEntity("PuzzleStand");
-		}
+		//if(Input.TriggerKey(KeyCode.Space)) {
+		//	Entity puzzle = EntityCollection.CreateEntity("PuzzleStand");
+		//}
 
 	}
 
@@ -53,14 +53,29 @@ public class Player : MonoBehavior {
 		velocity = velocity.Normalized() * (speed * Time.deltaTime);
 
 		/// カメラの回転に合わせて移動する
-		Transform cT = entity.GetChild(0).transform;
-		if (cT != null) {
-			Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
-			velocity = Matrix4x4.Transform(matCameraRotate, velocity);
+		if (entity.GetChild(0) != null) {
+
+			Transform cT = entity.GetChild(0).transform;
+			if (cT != null) {
+				Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
+				velocity = Matrix4x4.Transform(matCameraRotate, velocity);
+			}
 		}
 
 		t.position += velocity;
 
+
+		/// animationさせるかどうか
+		SkinMeshRenderer smr = entity.GetComponent<SkinMeshRenderer>();
+		if (smr != null) {
+			if (velocity.Length() > 0.01f) {
+				smr.isPlaying = true; // 動いているときはアニメーションを再生
+			} else {
+				smr.isPlaying = false; // 動いていないときはアニメーションを停止
+			}
+		} else {
+			Log.WriteLine("SkinMeshRenderer not found on entity: " + entity.name);
+		}
 	}
 
 
@@ -80,6 +95,10 @@ public class Player : MonoBehavior {
 
 
 	void CameraFollow() {
+		if(entity.GetChild(0) == null) {
+			return; // 子エンティティがない場合は何もしない
+		}
+
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);

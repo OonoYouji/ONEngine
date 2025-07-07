@@ -16,13 +16,22 @@ void ColliderRenderQueueSystem::Update(EntityComponentSystem* _ecs) {
 }
 
 void ColliderRenderQueueSystem::UpdateSphereCollider(EntityComponentSystem* _ecs) {
-	ComponentArray<SphereCollider>* sphereColliders = _ecs->GetComponentArray<SphereCollider>();
-	if (!sphereColliders) {
-		return; // SphereColliderが存在しない場合は何もしない
+
+	std::vector<SphereCollider*> sphereColliders;
+	for (auto& entity : _ecs->GetEntities()) {
+		SphereCollider* sphereCollider = entity->GetComponent<SphereCollider>();
+		if (sphereCollider && sphereCollider->enable) {
+			sphereColliders.push_back(sphereCollider);
+		}
 	}
 
+	if (sphereColliders.empty()) {
+		return; ///< 描画するスフィアコライダーがない場合は何もしない
+	}
+
+
 	/// gizmoを使って表示する
-	for (auto& sphereCollider : sphereColliders->GetUsedComponents()) {
+	for (auto& sphereCollider : sphereColliders) {
 		if (!sphereCollider) {
 			continue; // 無効なコライダーはスキップ
 		}
@@ -41,13 +50,21 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(EntityComponentSystem* _ecs
 }
 
 void ColliderRenderQueueSystem::UpdateBoxCollider(EntityComponentSystem* _ecs) {
-	ComponentArray<BoxCollider>* boxColliders = _ecs->GetComponentArray<BoxCollider>();
-	if (!boxColliders) {
-		return; // BoxColliderが存在しない場合は何もしない
+
+	std::vector<BoxCollider*> boxColliders;
+	for (auto& entity : _ecs->GetEntities()) {
+		BoxCollider* boxCollider = entity->GetComponent<BoxCollider>();
+		if (boxCollider && boxCollider->enable) {
+			boxColliders.push_back(boxCollider);
+		}
+	}
+
+	if( boxColliders.empty()) {
+		return; ///< 描画するボックスコライダーがない場合は何もしない
 	}
 
 	/// gizmoを使って表示する
-	for (auto& boxCollider : boxColliders->GetUsedComponents()) {
+	for (auto& boxCollider : boxColliders) {
 		if (!boxCollider) {
 			continue; // 無効なコライダーはスキップ
 		}

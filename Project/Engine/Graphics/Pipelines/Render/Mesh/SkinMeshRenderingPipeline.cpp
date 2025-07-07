@@ -99,17 +99,19 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _ecs, Camera* _camera) {
 
-	/// 描画するメッシュの取得
-	ComponentArray<SkinMeshRenderer>* skinMeshRenderers = _ecs->GetComponentArray<SkinMeshRenderer>();
-	if (!skinMeshRenderers) {
-		Console::Log("[warring] SkinMeshRenderingPipeline::Draw: SkinMeshRenderer component array is null");
-		return;
+
+	std::vector<SkinMeshRenderer*> skinMeshRenderers;
+	for (auto& entity : _ecs->GetEntities()) {
+		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
+		if (skinMesh && skinMesh->enable) {
+			skinMeshRenderers.push_back(skinMesh);
+		}
 	}
 
+	if (skinMeshRenderers.empty()) {
+		return; ///< 描画するスキンメッシュがない場合は何もしない
+	}
 
-	/// ==========================================================
-	/// TODO: インスタシング描画に対応する
-	/// ==========================================================
 
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
 
@@ -124,7 +126,7 @@ void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSyste
 
 
 	/// インスタンスごとの設定
-	for (auto& comp : skinMeshRenderers->GetUsedComponents()) {
+	for (auto& comp : skinMeshRenderers) {
 		if (!comp || !comp->enable) {
 			continue; ///< 無効なコンポーネントはスキップ
 		}

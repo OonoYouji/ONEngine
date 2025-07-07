@@ -10,9 +10,13 @@
 SkinMeshRenderer::SkinMeshRenderer() {
 	SetMeshPath("./Packages/Models/Human/walk.gltf");
 	SetTexturePath("./Packages/Textures/white.png");
+
+	isPlaying_ = true;
 	animationTime_ = 0.0f;
 	duration_ = 0.0f;
 	animationScale_ = 1.0f;
+
+
 	color_ = Color::kWhite;
 	isChangingMesh_ = true; /// 初期化時にメッシュを変更するフラグを立てる
 }
@@ -174,7 +178,8 @@ void to_json(nlohmann::json& _j, const SkinMeshRenderer& _smr) {
 		{ "enable", _smr.enable },
 		{ "meshPath", _smr.GetMeshPath() },
 		{ "texturePath", _smr.GetTexturePath() },
-		//{ "color", _smr.GetColor() },
+		{ "isPlaying", _smr.GetIsPlaying() },
+		{ "animationScale", _smr.GetAnimationScale() }
 	};
 }
 
