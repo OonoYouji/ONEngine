@@ -22,13 +22,9 @@ ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
 	packagesRootFolder_->name = "Packages";
 	LoadFolder("./Packages", packagesRootFolder_);
 
-	engineRootFolder_ = std::make_shared<Folder>();
-	engineRootFolder_->name = "Engine";
-	LoadFolder("./Engine/ECS/Entity/Entities", engineRootFolder_);
-
 	scriptRootFolder_ = std::make_shared<Folder>();
 	scriptRootFolder_->name = "Scripts";
-	LoadFolder("./SubProjects/CSharpLibrary/Scripts", scriptRootFolder_);
+	LoadFolder("./SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
 
 	selectedFolder_ = assetsRootFolder_;
 	isGameFolder_ = true;
@@ -70,7 +66,6 @@ void ImGuiProjectWindow::Hierarchy() {
 	ImGui::BeginChild("Hierarchy", ImVec2(0, -FLT_MIN), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	/// root folderを再帰的に描画
-	DrawFolderHierarchy(engineRootFolder_, 0);
 	DrawFolderHierarchy(scriptRootFolder_, 0);
 	DrawFolderHierarchy(assetsRootFolder_, 0);
 	DrawFolderHierarchy(packagesRootFolder_, 0);

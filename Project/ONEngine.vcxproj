@@ -140,6 +140,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabEditWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -339,6 +340,7 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Skinning.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabEditWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

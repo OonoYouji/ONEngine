@@ -9,7 +9,11 @@ namespace EngineConfig {
 }
 
 namespace DebugConfig {
+
+	static const Vector2 kDebugWindowSize = Vector2(16.0f, 9.0f) * 110.0f; // 120がmax
+
 	/// @brief デバッグ中かどうか
 	extern bool isDebugging; 
+
 
 }

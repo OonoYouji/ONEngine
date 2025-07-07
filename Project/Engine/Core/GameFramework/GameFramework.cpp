@@ -48,7 +48,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 #ifdef _DEBUG
 	UINT style = WS_OVERLAPPEDWINDOW;
 	style &= ~WS_THICKFRAME;
-	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", EngineConfig::kWindowSize, WindowManager::WindowType::Main, style);
+	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", DebugConfig::kDebugWindowSize, WindowManager::WindowType::Main, style);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // _DEBUG
