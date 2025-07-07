@@ -24,14 +24,17 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {
 			Model* model = pResourceCollection_->GetModel(skinMesh->GetMeshPath());
-			Skeleton skeleton = MATH::CreateSkeleton(model->GetRootNode());
-			SkinCluster skinCluster = MATH::CreateSkinCluster(skeleton, model, pDxManager_);
+			Skeleton skeleton = ANIME_MATH::CreateSkeleton(model->GetRootNode());
+			SkinCluster skinCluster = ANIME_MATH::CreateSkinCluster(skeleton, model, pDxManager_);
 
 			skinMesh->skinCluster_ = std::move(skinCluster);
 			skinMesh->skeleton_ = std::move(skeleton);
 
 			skinMesh->animationTime_ = 0.0f;
 			skinMesh->duration_ = model->GetAnimationDuration();
+		
+			skinMesh->nodeAnimationMap_ = model->GetNodeAnimationMap();
+			
 			skinMesh->isChangingMesh_ = false;
 		}
 
@@ -56,15 +59,19 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 
 			NodeAnimation& rootAnimation = skinMesh->nodeAnimationMap_[joint.name];
 
-			if (!rootAnimation.translate.empty()) { joint.transform.position = MATH::CalculateValue(rootAnimation.translate, skinMesh->animationTime_); }
-			if (!rootAnimation.rotate.empty()) {    joint.transform.rotate   = MATH::CalculateValue(rootAnimation.rotate,    skinMesh->animationTime_); }
-			if (!rootAnimation.scale.empty()) {     joint.transform.scale    = MATH::CalculateValue(rootAnimation.scale,     skinMesh->animationTime_); }
+			if (!rootAnimation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(rootAnimation.translate, skinMesh->animationTime_); }
+			if (!rootAnimation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(rootAnimation.rotate, skinMesh->animationTime_); }
+			if (!rootAnimation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(rootAnimation.scale, skinMesh->animationTime_); }
 			joint.transform.Update();
 
 			joint.matSkeletonSpace = joint.transform.matWorld;
 			if (joint.parent) {
 				joint.matSkeletonSpace *= skeleton.joints[*joint.parent].matSkeletonSpace;
 			}
+
+			Vector3 jointPosition = Matrix4x4::Transform(Vector3::kZero, joint.matSkeletonSpace * skinMesh->GetOwner()->GetTransform()->matWorld);
+			Gizmo::DrawWireSphere(jointPosition, 0.3f, Color::kRed);
+
 		}
 
 

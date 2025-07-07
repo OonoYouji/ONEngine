@@ -35,10 +35,6 @@ public:
 
 	Mesh();
 	~Mesh();
-	/*Mesh(const Mesh&) = delete;
-	Mesh(Mesh&&) = delete;
-	Mesh& operator=(const Mesh&) = delete;
-	Mesh& operator=(Mesh&&) = delete;*/
 
 	/// @brief vertex buffer, index bufferの作成
 	/// @param _dxDevice DxDeviceクラスへのポインタ

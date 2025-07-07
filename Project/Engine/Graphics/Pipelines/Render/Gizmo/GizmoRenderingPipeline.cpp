@@ -11,7 +11,7 @@
 GizmoRenderingPipeline::GizmoRenderingPipeline() {}
 
 void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
-	Gizmo::Initialize(1000); /// gizmoの初期化
+	Gizmo::Initialize(static_cast<size_t>(std::pow(2, 20))); /// gizmoの初期化
 
 	{	/// wire frame pipeline
 		Shader shader;

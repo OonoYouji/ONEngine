@@ -1,7 +1,7 @@
 struct VSInput {
 	float4 position : POSITION0;
-	float3 normal : NORMAL;
 	float2 uv : TEXCOORD0;
+	float3 normal : NORMAL0;
 	float4 weight : WEIGHT0;
 	int4 index : INDEX0;
 };
@@ -10,7 +10,7 @@ struct VSInput {
 struct VSOutput {
 	float4 position : SV_POSITION;
 	float4 worldPosition : POSITION0;
-	float3 normal : NORMAL;
+	float3 normal : NORMAL0;
 	float2 uv : TEXCOORD0;
 };
 

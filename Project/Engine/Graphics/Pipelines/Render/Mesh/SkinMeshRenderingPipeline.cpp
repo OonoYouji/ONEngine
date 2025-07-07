@@ -36,11 +36,11 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 			};
 		*/
 
+		pipeline_->AddInputElement("WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("INDEX", 0, DXGI_FORMAT_R32G32B32A32_SINT);
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
-		pipeline_->AddInputElement("WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		pipeline_->AddInputElement("INDEX", 0, DXGI_FORMAT_R32G32B32A32_SINT);
 
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// 0: ViewProjection

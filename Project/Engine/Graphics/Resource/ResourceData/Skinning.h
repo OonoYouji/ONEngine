@@ -91,7 +91,7 @@ struct Skeleton {
 class Model;
 class DxManager;
 
-namespace MATH {
+namespace ANIME_MATH {
 	Vector3 CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time);
 	Quaternion CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time);
 

@@ -5,7 +5,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Resource/ResourceData/Model.h"
 
-Vector3 MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
+Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
 	Assert(!_keyFrames.empty(), "keyframe empty...");
 
 	if (_keyFrames.size() == 1 || _time <= _keyFrames[0].time) {
@@ -24,7 +24,7 @@ Vector3 MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, flo
 	return _keyFrames.back().value;
 }
 
-Quaternion MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time) {
+Quaternion ANIME_MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrames, float _time) {
 	Assert(!_keyFrames.empty(), "keyframe empty...");
 
 	if (_keyFrames.size() == 1 || _time <= _keyFrames[0].time) {
@@ -43,7 +43,7 @@ Quaternion MATH::CalculateValue(const std::vector<KeyFrameQuaternion>& _keyFrame
 	return _keyFrames.back().value;
 }
 
-int32_t MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints) {
+int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _parent, std::vector<Joint>& _joints) {
 	Joint joint;
 
 	joint.name = _node.name;
@@ -61,7 +61,7 @@ int32_t MATH::CreateJoint(const Node& _node, const std::optional<int32_t>& _pare
 	return joint.index;
 }
 
-Skeleton MATH::CreateSkeleton(const Node& _rootNode) {
+Skeleton ANIME_MATH::CreateSkeleton(const Node& _rootNode) {
 	Skeleton result;
 	result.root = CreateJoint(_rootNode, {}, result.joints);
 
@@ -72,7 +72,7 @@ Skeleton MATH::CreateSkeleton(const Node& _rootNode) {
 	return result;
 }
 
-SkinCluster MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxManager) {
+SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _model, DxManager* _dxManager) {
 	SkinCluster result{};
 
 	DxDevice* dxDevice = _dxManager->GetDxDevice();
