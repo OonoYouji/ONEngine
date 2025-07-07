@@ -77,6 +77,8 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 
 void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
+	/// ファイルの拡張子を取得
+	std::string fileExtension = _filePath.substr(_filePath.find_last_of('.'));
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(_filePath, assimpLoadFlags_);
 
@@ -156,9 +158,11 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 		}
 
-		/// nodeの解析
-		model->SetRootNode(ReadNode(scene->mRootNode));
-		LoadAnimation(model.get(), _filePath);
+		if (fileExtension == ".gltf") {
+			/// nodeの解析
+			model->SetRootNode(ReadNode(scene->mRootNode));
+			LoadAnimation(model.get(), _filePath);
+		}
 
 		/// mesh dataを作成
 		std::unique_ptr<Mesh> meshData = std::make_unique<Mesh>();

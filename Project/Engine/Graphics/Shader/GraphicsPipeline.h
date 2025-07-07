@@ -40,7 +40,7 @@ public:
 	/// @param _semanticName   セマンティクスの名前
 	/// @param _semanticIndex  セマンティクスのインデックス
 	/// @param _format         フォーマットの種類
-	void AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format);
+	void AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format, UINT _inputSlot = 0u);
 
 	/// @brief constant buffer viewを追加する
 	/// @param _shaderVisibility shaderの種類

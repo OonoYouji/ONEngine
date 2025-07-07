@@ -73,7 +73,6 @@ private:
 
 	std::shared_ptr<Folder> assetsRootFolder_;
 	std::shared_ptr<Folder> packagesRootFolder_;
-	std::shared_ptr<Folder> gameRootFolder_;
 	std::shared_ptr<Folder> engineRootFolder_;
 	std::shared_ptr<Folder> scriptRootFolder_;
 	std::shared_ptr<Folder> selectedFolder_;
