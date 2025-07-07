@@ -2,6 +2,7 @@
 
 /// std
 #include <optional>
+#include <string>
 
 /// engine
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
@@ -39,6 +40,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::string name_;
+
 	DxResource                  dxResource_;
 
 	std::optional<Handle>       srvHandle_;
@@ -48,6 +51,8 @@ public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
+
+	void SetName(const std::string& _name);
 
 	/// @brief SRV handleを設定
 	/// @param _handle cpu, gpu handle

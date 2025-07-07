@@ -160,6 +160,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabEditWindow.cpp" />
+    <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -320,6 +321,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabEditWindow.h" />
+    <ClInclude Include="Engine\Graphics\RenderTexture\SceneRenderTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

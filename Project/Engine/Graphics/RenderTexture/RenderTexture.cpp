@@ -8,10 +8,13 @@
 void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
 	clearColor_ = _clearColor;
 
+	name_ = _name;
+
+
 	{	/// textureの作成
 		std::unique_ptr<Texture> rtvTexture = std::make_unique<Texture>();
 		texture_ = rtvTexture.get();
-		_resourceCollection->AddTexture(_name, std::move(rtvTexture));
+		_resourceCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を GraphicsResourceCollection に任せる
 	}
 
 	/// 必要なオブジェクトの取得
@@ -100,6 +103,10 @@ void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		_dxCommand
 	);
+}
+
+const std::string& RenderTexture::GetName() const {
+	return name_;
 }
 
 

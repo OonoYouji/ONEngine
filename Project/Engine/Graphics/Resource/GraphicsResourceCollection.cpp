@@ -106,6 +106,7 @@ void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::uni
 }
 
 void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
+	_texture->SetName(_filePath);
 	textureIndices_[_filePath] = textureIndices_.size();
 	textures_[textureIndices_[_filePath]] = std::move(_texture);
 }

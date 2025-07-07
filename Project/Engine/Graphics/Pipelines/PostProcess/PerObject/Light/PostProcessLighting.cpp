@@ -111,17 +111,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 		//auto& textures = _resourceCollection->GetTextures();
 
-		if (_textureName == "scene") {
-			textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
-			textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
-			textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
-		} else {
-			textureIndices_[1] = _resourceCollection->GetTextureIndex("debugWorldPosition");
-			textureIndices_[2] = _resourceCollection->GetTextureIndex("debugNormalize");
-			textureIndices_[3] = _resourceCollection->GetTextureIndex("debugFlags");
-		}
+		textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "WorldPosition");
+		textureIndices_[2] = _resourceCollection->GetTextureIndex(_textureName + "Normal");
+		textureIndices_[3] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
 
-		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
+		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
 		textureIndices_[4] = _resourceCollection->GetTextureIndex("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 

@@ -54,7 +54,7 @@ void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] En
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	auto& textures = pResourceCollection_->GetTextures();
-	size_t index = pResourceCollection_->GetTextureIndex("scene");
+	size_t index = pResourceCollection_->GetTextureIndex("sceneScene");
 
 	commandList->SetGraphicsRootDescriptorTable(0, textures[index]->GetSRVGPUHandle());
 

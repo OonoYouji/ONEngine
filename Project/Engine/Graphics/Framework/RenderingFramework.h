@@ -10,7 +10,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "Engine/Graphics/RenderTexture/RenderTexture.h"
+#include "Engine/Graphics/RenderTexture/SceneRenderTexture.h"
 #include "Engine/Graphics/Pipelines/Render/CopyImage/CopyImageRenderingPipeline.h"
 
 
@@ -43,9 +43,7 @@ private:
 	std::unique_ptr<ShaderCompiler>              shaderCompiler_;
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
-	std::vector<std::unique_ptr<RenderTexture>>  renderTextures_;
-	std::vector<std::unique_ptr<RenderTexture>>  debugRenderTextures_;
-
+	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
 	DxManager*                                   dxManager_        = nullptr;
 	WindowManager*                               windowManager_    = nullptr;
 	class EntityComponentSystem*                 pEntityComponentSystem_ = nullptr;
