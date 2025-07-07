@@ -6,6 +6,7 @@
 /// externals
 //#include <metadata/debug-mono-symfile.h>
 #include <metadata/mono-config.h>
+#include <mono/metadata/debug-helpers.h>
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
@@ -17,8 +18,8 @@
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
-	void LogCallback(const char* log_domain, const char* log_level, const char* message, mono_bool fatal, void* user_data) {
-		Console::Log(std::string("[") + log_domain + "][" + log_level + "] " + message + (fatal ? " (fatal)" : ""));
+	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void* _user_data) {
+		Console::Log(std::string("[") + _log_domain + "][" + _log_level + "] " + _message + (_fatal ? " (fatal)" : ""));
 	}
 
 	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
@@ -62,26 +63,22 @@ MonoScriptEngine::~MonoScriptEngine() {
 
 void MonoScriptEngine::Initialize() {
 
+	_putenv("MONO_ENV_OPTIONS=--debug");
+
 	mono_trace_set_level_string("debug");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
+	// versionの出力
+	Console::Log("Mono version: " + std::string(mono_get_runtime_build_info()));
+
 	// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
-
 	mono_config_parse(nullptr);
-	// debugサポートの初期化
+
+
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-
-	// デバッグオプションを渡す
-	const char* options[] = {
-		"--soft-breakpoints"   // ソフトブレークポイントを有効にする
-		//"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
-	};
-	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
-
-
 	// JIT初期化
-	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
+	domain_ = mono_jit_init("MyDomain");
 	if (!domain_) {
 		Console::Log("Failed to initialize Mono JIT");
 		return;
