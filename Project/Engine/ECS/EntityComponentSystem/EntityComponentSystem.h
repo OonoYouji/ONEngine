@@ -34,7 +34,7 @@ public:
 	EntityComponentSystem(class DxManager* _pDxManager);
 	~EntityComponentSystem();
 
-	void Initialize();
+	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
 	void Update();
 
 
@@ -108,6 +108,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class GraphicsResourceCollection* pGraphicsResourceCollection_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 

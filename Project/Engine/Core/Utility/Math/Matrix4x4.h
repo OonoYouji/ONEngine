@@ -60,7 +60,7 @@ public:
 	/// @return 回転行列
 	static Matrix4x4 MakeRotate(const Vector3& _v);
 
-	static Matrix4x4 MakeRotateQuaternion(const class Quaternion& _q);
+	static Matrix4x4 MakeRotate(const class Quaternion& _q);
 
 	/// @brief 平行移動行列の作成
 	/// @param _v 平行移動成分

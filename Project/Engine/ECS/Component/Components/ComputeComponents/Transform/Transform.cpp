@@ -8,14 +8,70 @@
 
 Transform::Transform() {
 	position = Vector3::kZero;
-	rotate = Vector3::kZero;
+	rotate = Quaternion::kIdentity;
 	scale = Vector3::kOne;
 }
 Transform::~Transform() {}
 
 
 void Transform::Update() {
-	matWorld = Matrix4x4::MakeAffine(scale, rotate, position);
+	matWorld = Matrix4x4::MakeScale(scale) * Matrix4x4::MakeRotate(rotate) * Matrix4x4::MakeTranslate(position);
+}
+
+void Transform::SetPosition(const Vector3& _v) {
+	position = _v;
+}
+
+void Transform::SetPositionX(float _x) {
+	position.x = _x;
+}
+
+void Transform::SetPositionY(float _y) {
+	position.y = _y;
+}
+
+void Transform::SetPositionZ(float _z) {
+	position.z = _z;
+}
+
+void Transform::SetRotate(const Vector3& _v) {
+	rotate = Quaternion::FromEuler(_v);
+}
+
+void Transform::SetRotate(const Quaternion& _q) {
+	rotate = _q;
+}
+
+void Transform::SetScale(const Vector3& _v) {
+	scale = _v;
+}
+
+void Transform::SetScaleX(float _x) {
+	scale.x = _x;
+}
+
+void Transform::SetScaleY(float _y) {
+	scale.y = _y;
+}
+
+void Transform::SetScaleZ(float _z) {
+	scale.z = _z;
+}
+
+const Vector3& Transform::GetPosition() const {
+	return position;
+}
+
+const Quaternion& Transform::GetRotate() const {
+	return rotate;
+}
+
+const Vector3& Transform::GetScale() const {
+	return scale;
+}
+
+const Matrix4x4& Transform::GetMatWorld() const {
+	return matWorld;
 }
 
 

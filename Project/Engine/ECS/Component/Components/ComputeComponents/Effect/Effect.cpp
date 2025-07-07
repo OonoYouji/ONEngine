@@ -20,7 +20,7 @@ void Effect::CreateElement(const Vector3& _position, const Color& _color) {
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale = Vector3::kOne;
-	element.transform.rotate = Vector3::kZero;
+	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 
 	element.color = _color;
@@ -33,7 +33,7 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _velocity, c
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale = Vector3::kOne;
-	element.transform.rotate = Vector3::kZero;
+	element.transform.rotate = Quaternion::kIdentity;
 	element.transform.Update();
 
 	element.color = _color;
@@ -46,7 +46,7 @@ void Effect::CreateElement(const Vector3& _position, const Vector3& _scale, cons
 	Element element;
 	element.transform.position = _position;
 	element.transform.scale = _scale;
-	element.transform.rotate = _rotate;
+	element.transform.rotate = Quaternion::FromEuler(_rotate);
 	element.transform.Update();
 
 	element.color = _color;

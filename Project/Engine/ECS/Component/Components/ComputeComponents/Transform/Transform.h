@@ -10,6 +10,7 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
+#include "Engine/Core/Utility/Math/Quaternion.h"
 #include "Engine/Core/Utility/Math/Vector3.h"
 
 
@@ -21,11 +22,11 @@ public:
 
 	/// @brief 親子付けしているTransformの行列計算フラグ
 	enum MatrixCalcFlag : int {
-		kNone     = 0,
+		kNone = 0,
 		kPosition = 1 << 0, ///< positionのみを子に反映
-		kRotate   = 1 << 1, ///< rotateのみを子に反映
-		kScale    = 1 << 2, ///< scaleのみを子に反映
-		kAll      = kPosition | kRotate | kScale
+		kRotate = 1 << 1, ///< rotateのみを子に反映
+		kScale = 1 << 2, ///< scaleのみを子に反映
+		kAll = kPosition | kRotate | kScale
 	};
 
 
@@ -41,7 +42,7 @@ public:
 
 
 public:
-	
+
 	/// ===============================================
 	/// public : methods
 	/// ===============================================
@@ -58,7 +59,7 @@ public:
 	/// ===============================================
 
 	Vector3   position;
-	Vector3   rotate;
+	Quaternion rotate;
 	Vector3   scale;
 	Matrix4x4 matWorld;
 
@@ -73,77 +74,56 @@ public:
 
 	/// @brief positionのセット
 	/// @param _v position
-	void SetPosition(const Vector3& _v) { position = _v; }
+	void SetPosition(const Vector3& _v);
 
 	/// @brief position x のセット
 	/// @param _x x座標
-	void SetPositionX(float _x) { position.x = _x; }
+	void SetPositionX(float _x);
 
 	/// @brief position y のセット
 	/// @param _y y座標
-	void SetPositionY(float _y) { position.y = _y; }
+	void SetPositionY(float _y);
 
 	/// @brief position z のセット
 	/// @param _z z座標
-	void SetPositionZ(float _z) { position.z = _z; }
-
-
+	void SetPositionZ(float _z);
 
 	/// @brief rotateのセット
 	/// @param _v rotate
-	void SetRotate(const Vector3& _v) { rotate = _v; }
-
-	/// @brief rotate x のセット
-	/// @param _x x軸回転
-	void SetRotateX(float _x) { rotate.x = _x; }
-
-	/// @brief rotate y のセット
-	/// @param _y y軸回転
-	void SetRotateY(float _y) { rotate.y = _y; }
-
-	/// @brief rotate z のセット
-	/// @param _z z軸回転
-	void SetRotateZ(float _z) { rotate.z = _z; }
-
-
+	void SetRotate(const Vector3& _v);
+	void SetRotate(const Quaternion& _q);
 
 	/// @brief scaleのセット
 	/// @param _v scale
-	void SetScale(const Vector3& _v) { scale = _v; }
+	void SetScale(const Vector3& _v);
 
 	/// @brief scale x のセット
 	/// @param _x x軸拡縮
-	void SetScaleX(float _x) { scale.x = _x; }
+	void SetScaleX(float _x);
 
 	/// @brief scale y のセット
 	/// @param _y y軸拡縮
-	void SetScaleY(float _y) { scale.y = _y; }
+	void SetScaleY(float _y);
 
 	/// @brief scale z のセット
 	/// @param _z z軸拡縮
-	void SetScaleZ(float _z) { scale.z = _z; }
-
-
-
-	/// @brief 親の取得
-	/// @return 親のtransform
-	//const Transform* GetParent() const { return parent_; }
+	void SetScaleZ(float _z);
 
 	/// @brief positionを得る
 	/// @return position 
-	const Vector3& GetPosition() const { return position; }
+	const Vector3& GetPosition() const;
 
 	/// @brief rotateを得る
 	/// @return rotate
-	const Vector3& GetRotate() const { return rotate; }
+	const Quaternion& GetRotate() const;
 
 	/// @brief scaleを得る
 	/// @return scale
-	const Vector3& GetScale() const { return scale; }
+	const Vector3& GetScale() const;
 
 	/// @brief world 行列を得る
 	/// @return world 行列
-	const Matrix4x4& GetMatWorld() const { return matWorld; }
+	const Matrix4x4& GetMatWorld() const;
 
 };
 

@@ -32,15 +32,16 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {}
 EntityComponentSystem::~EntityComponentSystem() {}
 
-void EntityComponentSystem::Initialize() {
+void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
 
+	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
 	entityCollection_ = std::make_unique<EntityCollection>(this, pDxManager_);
 	componentCollection_ = std::make_unique<ComponentCollection>();
 
 
-	AddECSSystemFunction(this, pDxManager_);
+	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
 	AddComponentFactoryFunction(componentCollection_.get());
 
 	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();

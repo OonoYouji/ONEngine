@@ -25,7 +25,7 @@ void DebugCamera::Initialize() {
 
 	transform_->position = { 0.0f, 0.0f, -10.0f };
 	transform_->scale = Vector3::kOne;
-	transform_->rotate = Vector3::kZero;
+	eulerAngles_ = Vector3::kZero;
 
 	fovY_ = 0.7f;
 	nearClip_ = 0.1f;
@@ -36,7 +36,7 @@ void DebugCamera::Initialize() {
 	isMoving_ = false;
 
 	transform_->position = variables_->Get<Vector3>("startPos");
-	transform_->rotate = variables_->Get<Vector3>("startRot");
+	//transform_->rotate = variables_->Get<Vector3>("startRot");
 
 
 	UpdateTransform();
@@ -95,9 +95,10 @@ void DebugCamera::Update() {
 		transform_->position += velocity * 10.0f;
 
 		const Vector2& move = Input::GetMouseVelocity();
-		transform_->rotate.y += move.x * 0.01f;
-		transform_->rotate.x += move.y * 0.01f;
+		eulerAngles_.y += move.x * 0.01f;
+		eulerAngles_.x += move.y * 0.01f;
 
+		transform_->rotate = Quaternion::FromEuler(eulerAngles_);
 		transform_->Update();
 
 		matView_ = transform_->GetMatWorld().Inverse();

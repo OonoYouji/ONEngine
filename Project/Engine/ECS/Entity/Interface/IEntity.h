@@ -89,9 +89,7 @@ public:
 	void SetPositionZ(float _z);
 
 	void SetRotate(const Vector3& _v);
-	void SetRotateX(float _x);
-	void SetRotateY(float _y);
-	void SetRotateZ(float _z);
+	void SetRotate(const Quaternion& _q);
 
 	void SetScale(const Vector3& _v);
 	void SetScaleX(float _x);
@@ -108,11 +106,13 @@ public:
 
 
 	const Vector3& GetLocalPosition() const;
-	const Vector3& GetLocalRotate() const;
+	Vector3 GetLocalRotate() const;
+	const Quaternion& GetLocalRotateQuaternion() const;
 	const Vector3& GetLocalScale() const;
 
 	Vector3 GetPosition();
 	Vector3 GetRotate();
+	Quaternion GetRotateQuaternion();
 	Vector3 GetScale();
 
 	Transform* GetTransform() const;

@@ -117,7 +117,7 @@ Matrix4x4 Matrix4x4::MakeRotate(const Vector3& _v) {
 	return result;
 }
 
-Matrix4x4 Matrix4x4::MakeRotateQuaternion(const Quaternion& _q) {
+Matrix4x4 Matrix4x4::MakeRotate(const Quaternion& _q) {
 	if (Quaternion::Length(_q) == 0.0f) {
 		return kIdentity;
 	}
