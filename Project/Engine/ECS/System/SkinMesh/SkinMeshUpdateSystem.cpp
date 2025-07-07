@@ -24,6 +24,14 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {
 			Model* model = pResourceCollection_->GetModel(skinMesh->GetMeshPath());
+			if (!model) {
+				//!< nullの場合は適当なメッセージを出力してスキップ
+				Console::Log("[error] SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());
+				skinMesh->isChangingMesh_ = false; ///< モデルが見つからない場合はメッシュ変更フラグを下げる
+				continue; ///< モデルが見つからない場合はスキップ
+			}
+
+
 			Skeleton skeleton = ANIME_MATH::CreateSkeleton(model->GetRootNode());
 			SkinCluster skinCluster = ANIME_MATH::CreateSkinCluster(skeleton, model, pDxManager_);
 
@@ -41,6 +49,10 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 
 		/// skin clusterがあるかチェック
 		if (!skinMesh->skinCluster_) {
+			continue;
+		}
+
+		if (!skinMesh->isPlaying_) {
 			continue;
 		}
 

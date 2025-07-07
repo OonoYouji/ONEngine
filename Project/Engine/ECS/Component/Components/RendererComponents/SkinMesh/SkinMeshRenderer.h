@@ -35,6 +35,7 @@ private:
 	std::string texturePath_;
 	Vector4 color_;
 
+	bool isPlaying_;
 	float animationTime_;
 	float duration_;
 
@@ -53,6 +54,7 @@ public:
 
 	void SetColor(const Vector4& _color);
 
+	void SetIsPlaying(bool _isPlaying);
 	void SetAnimationTime(float _time);
 	void SetDuration(float _duration);
 
@@ -62,6 +64,7 @@ public:
 
 	const Vector4& GetColor() const;
 
+	bool GetIsPlaying() const;
 	float GetAnimationTime() const;
 	float GetDuration() const;
 };

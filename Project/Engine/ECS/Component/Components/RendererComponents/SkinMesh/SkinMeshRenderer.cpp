@@ -29,6 +29,10 @@ void SkinMeshRenderer::SetColor(const Vector4& _color) {
 	color_ = _color;
 }
 
+void SkinMeshRenderer::SetIsPlaying(bool _isPlaying) {
+	isPlaying_ = _isPlaying;
+}
+
 void SkinMeshRenderer::SetAnimationTime(float _time) {
 	animationTime_ = _time;
 }
@@ -43,6 +47,10 @@ const std::string& SkinMeshRenderer::GetMeshPath() const {
 
 const std::string& SkinMeshRenderer::GetTexturePath() const {
 	return texturePath_;
+}
+
+bool SkinMeshRenderer::GetIsPlaying() const {
+	return isPlaying_;
 }
 
 float SkinMeshRenderer::GetAnimationTime() const {
@@ -69,8 +77,14 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 	std::string meshPath = _smr->GetMeshPath();
 	std::string texturePath = _smr->GetTexturePath();
 
+	bool isPlaying = _smr->GetIsPlaying();
 	float animationTime = _smr->GetAnimationTime();
 	float duration = _smr->GetDuration();
+	
+
+	if (ImGui::Checkbox("is playing", &isPlaying)) {
+		_smr->SetIsPlaying(isPlaying);
+	}
 
 	/// edit
 	if (ImGui::DragFloat("animation time", &animationTime, 0.01f, 0.0f, duration)) {

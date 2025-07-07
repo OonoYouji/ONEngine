@@ -102,16 +102,6 @@ SkinCluster ANIME_MATH::CreateSkinCluster(const Skeleton& _skeleton, Model* _mod
 	pDevice->CreateShaderResourceView(result.paletteResource.Get(), &paletteSRVDesc, result.paletteSRVHandle.first);
 
 
-
-	/// influence resource create
-
-	/*##########################################################
-		TODO : COMMENT
-		とりあえずmulti meshを考えないで先頭のmeshのみを使用するようにしたので
-		multi mesh対応は後ほど考える
-	##########################################################*/
-
-
 	/// resource create
 	Mesh* frontMesh = _model->GetMeshes().front().get();
 	result.influenceResource.CreateResource(dxDevice, sizeof(VertexInfluence) * frontMesh->GetVertices().size());
