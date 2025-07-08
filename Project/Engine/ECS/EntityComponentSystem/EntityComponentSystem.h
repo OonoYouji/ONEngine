@@ -109,7 +109,7 @@ public:
 
 	IEntity* GetGridEntity() const;
 	IEntity* GetPrefabEntity() const;
-	void GeneratePrefabEntity(const std::string& _name);
+	IEntity* GeneratePrefabEntity(const std::string& _name);
 
 
 private:

@@ -1,0 +1,58 @@
+{
+    "className": "Player",
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": -0.3755590319633484,
+                "y": 0.0,
+                "z": -7.283702850341797
+            },
+            "rotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "color": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "enable": 1,
+            "meshPath": "./Assets/Models/entity/player.obj",
+            "texturePath": "./Packages/Textures/uvChecker.png",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "radius": 1.0,
+            "type": "SphereCollider"
+        },
+        {
+            "enable": 1,
+            "type": "ToTerrainCollider"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Player"
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": 207,
+    "name": "Player",
+    "parent": null
+}

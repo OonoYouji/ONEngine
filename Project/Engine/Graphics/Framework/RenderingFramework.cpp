@@ -5,6 +5,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Core/Config/EngineConfig.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -66,10 +67,15 @@ void RenderingFramework::Draw() {
 #ifdef _DEBUG /// imguiの描画
 
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
-	
-	DrawDebug();
-	DrawScene();
-	DrawPrefab();
+
+	if (DebugConfig::selectedMode_ == DebugConfig::SELECTED_MODE_EDITOR) {
+
+		DrawPrefab();
+	} else {
+
+		DrawDebug();
+		DrawScene();
+	}
 
 	imGuiManager_->GetDebugGameWindow()->PostDraw();
 

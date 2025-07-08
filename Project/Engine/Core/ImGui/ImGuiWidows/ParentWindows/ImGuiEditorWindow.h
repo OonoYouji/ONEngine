@@ -12,7 +12,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiEditorWindow(class GraphicsResourceCollection* _resourceCollection);
+	ImGuiEditorWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiEditorWindow() {}
 
 	void ImGuiFunc() override;

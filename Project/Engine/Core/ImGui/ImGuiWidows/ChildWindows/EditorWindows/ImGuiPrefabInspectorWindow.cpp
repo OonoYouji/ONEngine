@@ -1,15 +1,12 @@
-#include "ImGuiInspectorWindow.h"
+#include "ImGuiPrefabInspectorWindow.h"
 
-/// std
-#include <format>
-
-/// external
+/// externels
 #include <imgui.h>
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/Component/Component.h"
-#include "../../../Math/ImGuiMath.h"
+#include "Engine/ECS/Entity/Interface/IEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
@@ -20,7 +17,7 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
+ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
 
@@ -52,8 +49,8 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 
 }
 
-void ImGuiInspectorWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
+void ImGuiPrefabInspectorWindow::ImGuiFunc() {
+	if (!ImGui::Begin("prefab inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -69,7 +66,7 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 }
 
 
-void ImGuiInspectorWindow::EntityInspector() {
+void ImGuiPrefabInspectorWindow::EntityInspector() {
 	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
 	if (!dynamic_cast<IEntity*>(entity)) {
 		return;
@@ -120,7 +117,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		ImGui::SameLine();
 
-	
+
 
 		/// アクティブ/非アクティブで表示を変える
 		if (!enabled) {
@@ -209,7 +206,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 }
 
-IEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
+IEntity* ImGuiPrefabInspectorWindow::GetSelectedEntity() const {
 	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
 	if (dynamic_cast<IEntity*>(entity)) {
 		return entity;

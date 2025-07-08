@@ -10,7 +10,7 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
-bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = ImGuiInputTextFlags_CallbackCharFilter);
+bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 
 void ImGuiInputTextReadOnly(const char* _label, const std::string& _text);
 

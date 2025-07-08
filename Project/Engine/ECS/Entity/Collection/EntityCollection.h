@@ -67,6 +67,7 @@ public:
 	void LoadPrefabAll();
 
 	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName);
+	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
 

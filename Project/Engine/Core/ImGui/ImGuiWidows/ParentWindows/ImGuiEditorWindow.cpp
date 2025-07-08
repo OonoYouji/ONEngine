@@ -5,17 +5,22 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
-#include "../ChildWindows/EditorWindows/ImGuiPrefabEditWindow.h"
+#include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
+#include "../ChildWindows/EditorWindows/ImGuiPrefabInspectorWindow.h"
+#include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
 
-ImGuiEditorWindow::ImGuiEditorWindow(GraphicsResourceCollection* _resourceCollection) {
+ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-
 	/// 子windowの追加
-	AddChild(std::make_unique<ImGuiPrefabEditWindow>(_resourceCollection));
+	ImGuiPrefabInspectorWindow* inspector = static_cast<ImGuiPrefabInspectorWindow*>(
+		AddChild(std::make_unique<ImGuiPrefabInspectorWindow>(_editorManager)));
+
+	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _resourceCollection));
+	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, inspector));
 }
 
 

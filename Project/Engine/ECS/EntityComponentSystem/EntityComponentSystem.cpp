@@ -7,6 +7,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// ecs
 #include "../Component/Component.h"
@@ -15,6 +16,7 @@
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/ECS/Entity/Entities/Grid/Grid.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
 namespace {
 	EntityComponentSystem* gECS = nullptr;
@@ -130,12 +132,33 @@ IEntity* EntityComponentSystem::GetPrefabEntity() const {
 	return prefabEntity_.get();
 }
 
-void EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
-	const std::string& fileExtension = ".prefab";
+IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 
-	/// 
+	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
 
+	/// prefabが存在するかチェック
+	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
+	if (!prefab) {
+		return nullptr;
+	}
 
+	/// entityを生成する
+	std::unique_ptr<IEntity> entity = entityCollection_->GetFactory()->Generate("EmptyEntity");
+	entity->pEntityComponentSystem_ = this;
+	entity->id_ = entityCollection_->NewEntityID(false);
+	entity->CommonInitialize();
+
+	if (entity) {
+		entity->SetName(prefabName);
+		entity->SetPrefabName(prefabName);
+
+		EntityJsonConverter::FromJson(prefab->GetJson(), entity.get());
+
+		entity->Initialize();
+	}
+
+	prefabEntity_ = std::move(entity);
+	return prefabEntity_.get();
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {

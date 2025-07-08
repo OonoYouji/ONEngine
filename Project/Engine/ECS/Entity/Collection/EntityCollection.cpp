@@ -272,22 +272,16 @@ void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
 
-	/// directoryがあるのかチェック
-	if (!std::filesystem::exists(prefabPath)) {
-		Console::Log("Prefab directory does not exist: " + prefabPath);
+	std::vector<File> prefabFiles = Mathf::FindFiles(prefabPath, ".prefab");
+
+	if (prefabFiles.empty()) {
+		Console::Log("No prefab files found in: " + prefabPath);
 		return;
 	}
 
 	/// directoryを探索
-	for (const auto& entry : std::filesystem::directory_iterator(prefabPath)) {
-
-		/// JSONファイルのみを対象とする
-		if (entry.is_regular_file() && entry.path().extension() == ".json") {
-
-			/// pathをPrefabに渡して終了
-			std::string prefabName = entry.path().stem().string();
-			prefabs_[prefabName] = std::make_unique<EntityPrefab>(entry.path().string());
-		}
+	for (const auto& file : prefabFiles) {
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 	}
 
 
@@ -313,6 +307,14 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
 
 		return entity;
+	}
+
+	return nullptr;
+}
+
+EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
+	if (prefabs_.contains(_fileName)) {
+		return prefabs_[_fileName].get();
 	}
 
 	return nullptr;
