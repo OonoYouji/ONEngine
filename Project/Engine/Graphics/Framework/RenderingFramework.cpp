@@ -72,7 +72,6 @@ void RenderingFramework::Draw() {
 		renderTex->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
 		renderTex->SetRenderTarget(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
 
-
 		Camera* camera = pEntityComponentSystem_->GetMainCamera();
 		if (renderTex->GetName() != "scene") {
 			camera = pEntityComponentSystem_->GetDebugCamera();

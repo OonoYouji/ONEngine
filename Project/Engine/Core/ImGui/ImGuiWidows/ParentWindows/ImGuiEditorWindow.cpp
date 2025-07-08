@@ -7,7 +7,7 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabEditWindow.h"
 
-ImGuiEditorWindow::ImGuiEditorWindow() {
+ImGuiEditorWindow::ImGuiEditorWindow(GraphicsResourceCollection* _resourceCollection) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
@@ -15,7 +15,7 @@ ImGuiEditorWindow::ImGuiEditorWindow() {
 
 
 	/// 子windowの追加
-	AddChild(std::make_unique<ImGuiPrefabEditWindow>());
+	AddChild(std::make_unique<ImGuiPrefabEditWindow>(_resourceCollection));
 }
 
 

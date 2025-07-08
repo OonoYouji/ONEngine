@@ -12,7 +12,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabEditWindow();
+	ImGuiPrefabEditWindow(class GraphicsResourceCollection* _resourceCollection);
 	~ImGuiPrefabEditWindow() {}
 
 	void ImGuiFunc() override;
@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// =====================================================
 
-
+	class GraphicsResourceCollection* pResourceCollection_ = nullptr;
 
 
 };
