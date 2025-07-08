@@ -47,10 +47,15 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
 	AddComponentFactoryFunction(componentCollection_.get());
 
-	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
-	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
-	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	SetDebugCamera(debugCamera);
+	//DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
+	//debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
+	//debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
+	////SetDebugCamera(debugCamera);
+
+	debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
+	debugCamera_->pEntityComponentSystem_ = this;
+	debugCamera_->CommonInitialize();
+	debugCamera_->Initialize();
 
 	/// gridの初期化
 	gridEntity_ = entityCollection_->GetFactory()->Generate("Grid");
@@ -69,6 +74,14 @@ void EntityComponentSystem::Update() {
 	for (auto& system : systemMap_) {
 		system->Update(this);
 	}
+}
+
+void EntityComponentSystem::DebuggingUpdate() {
+	debugCamera_->Update();
+	debugCamera_->UpdateTransform();
+
+	gridEntity_->Update();
+	gridEntity_->UpdateTransform();
 }
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
@@ -177,14 +190,6 @@ void EntityComponentSystem::SetMainCamera2D(size_t _index) {
 	entityCollection_->SetMainCamera2D(_index);
 }
 
-void EntityComponentSystem::SetDebugCamera(Camera* _camera) {
-	entityCollection_->SetDebugCamera(_camera);
-}
-
-void EntityComponentSystem::SetDebugCamera(size_t _index) {
-	entityCollection_->SetDebugCamera(_index);
-}
-
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
 }
@@ -226,11 +231,11 @@ Camera* EntityComponentSystem::GetMainCamera2D() {
 }
 
 const Camera* EntityComponentSystem::GetDebugCamera() const {
-	return entityCollection_->GetDebugCamera();
+	return static_cast<Camera*>(debugCamera_.get());
 }
 
 Camera* EntityComponentSystem::GetDebugCamera() {
-	return entityCollection_->GetDebugCamera();
+	return static_cast<Camera*>(debugCamera_.get());
 }
 
 

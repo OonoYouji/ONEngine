@@ -37,7 +37,7 @@ void DebugCamera::Initialize() {
 
 	transform_->position = variables_->Get<Vector3>("startPos");
 	//transform_->rotate = variables_->Get<Vector3>("startRot");
-
+	moveSpeed_ = 0.05f; /// 初期値
 
 	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
@@ -88,13 +88,34 @@ void DebugCamera::Update() {
 	}
 
 
+	/// 移動速度の切り替え
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_MINUS)) {
+		/// 移動速度を下げる
+		moveSpeed_ *= 0.5f;
+		if (moveSpeed_ < 0.001f) {
+			moveSpeed_ = 0.001f; // 最小値を設定
+		}
+		Console::Log("[debug] debug camera move speed : " + std::to_string(moveSpeed_));
+	}
+
+	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_EQUALS)) {
+		/// 移動速度を上げる
+		moveSpeed_ *= 2.0f;
+		if (moveSpeed_ > 1.0f) {
+			moveSpeed_ = 1.0f; // 最大値を設定
+		}
+		Console::Log("[debug] debug camera move speed : " + std::to_string(moveSpeed_));
+	}
+
+
+
 	isMoving_ = false;
 	if (Input::PressMouse(Mouse::Right)) {
 		isMoving_ = true;
 
-		float speed = 0.1f;
+		float speed = moveSpeed_;
 		if (Input::PressKey(DIK_LSHIFT)) {
-			speed *= 5.0f;
+			speed *= 2.0f;
 		}
 
 

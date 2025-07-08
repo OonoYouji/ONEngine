@@ -31,13 +31,13 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 	/// オブジェクトの正面にカメラを配置
 	if (Input::TriggerKey(DIK_F)) {
 
-		float length = 2.0f; /// オブジェクトとカメラの距離
+		Vector3 dir = Vector3(0.0f, 2.0f, -6.5f).Normalize();
+		float length = 6.0f; /// オブジェクトとカメラの距離
 
-		Camera* camera = pECS_->GetDebugCamera();
-		if (camera) {
-			camera->SetPosition((Vector3::kBack * length));
-			camera->SetRotate(Vector3(0.0f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
-			camera->UpdateTransform();
+		if (debugCamera) {
+			debugCamera->SetPosition(dir * length);
+			debugCamera->SetRotate(Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
+			debugCamera->UpdateViewProjection();
 		}
 
 	}

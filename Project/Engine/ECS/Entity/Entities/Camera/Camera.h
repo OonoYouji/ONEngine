@@ -31,7 +31,7 @@ public:
 
 	void Initialize() override;
 	void Update()     override;
-
+	void UpdateViewProjection();
 
 protected:
 

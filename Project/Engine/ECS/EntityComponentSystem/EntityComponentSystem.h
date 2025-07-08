@@ -37,6 +37,8 @@ public:
 	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
 	void Update();
 
+	void DebuggingUpdate();
+
 
 
 	/// ----- entity ----- ///
@@ -132,7 +134,8 @@ private:
 	EntityDataInputCommand componentInputCommand_;
 
 
-	/// ----- prefab ----- ///
+	/// ----- editor ----- ///
+	std::unique_ptr<IEntity> debugCamera_;
 	std::unique_ptr<IEntity> gridEntity_;
 	std::unique_ptr<IEntity> prefabEntity_;
 
@@ -147,11 +150,6 @@ public:
 
 	void SetMainCamera2D(Camera* _camera);
 	void SetMainCamera2D(size_t _index);
-
-	void SetDebugCamera(Camera* _camera);
-	void SetDebugCamera(size_t _index);
-
-
 
 	/// @brief entities の取得
 	/// @return entities

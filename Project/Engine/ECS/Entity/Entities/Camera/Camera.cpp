@@ -37,9 +37,9 @@ Camera::~Camera() {
 		pEntityComponentSystem_->SetMainCamera2D(nullptr);
 	}
 
-	if (pEntityComponentSystem_->GetDebugCamera() == this) {
-		pEntityComponentSystem_->SetDebugCamera(nullptr);
-	}
+	//if (pEntityComponentSystem_->GetDebugCamera() == this) {
+	//	pEntityComponentSystem_->SetDebugCamera(nullptr);
+	//}
 }
 
 
@@ -50,6 +50,11 @@ void Camera::Initialize() {
 }
 
 void Camera::Update() {
+
+	UpdateViewProjection();
+}
+
+void Camera::UpdateViewProjection() {
 
 	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
