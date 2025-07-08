@@ -58,18 +58,33 @@ void DebugCamera::Update() {
 
 
 	if (!isActive_) {
+		UpdateTransform();
 		return;
 	}
 
 
 	/// カメラが移動していないときだけ判定を取る
 	if (!isMoving_) {
+		bool isMouseOnScene = true;
+		bool isMouseOnPrefab = true;
+
 		/// マウスがSceneウィンドウ内にあるか
-		const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
+		Vector2&& mousePosition = Input::GetImGuiImageMousePosition("Scene");
 		if (mousePosition.x < 0.0f || mousePosition.x > 1280.0f ||
 			mousePosition.y < 0.0f || mousePosition.y > 720.0f) {
+			isMouseOnScene = false;
+		}
+
+		mousePosition = Input::GetImGuiImageMousePosition("Prefab");
+		if (mousePosition.x < 0.0f || mousePosition.x > 1280.0f ||
+			mousePosition.y < 0.0f || mousePosition.y > 720.0f) {
+			isMouseOnPrefab = false;
+		}
+
+		if (!isMouseOnScene && !isMouseOnPrefab) {
 			return;
 		}
+
 	}
 
 

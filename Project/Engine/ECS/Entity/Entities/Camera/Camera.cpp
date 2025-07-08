@@ -50,36 +50,7 @@ void Camera::Initialize() {
 }
 
 void Camera::Update() {
-	//static bool isActive = true;
-	//if (Input::TriggerKey(DIK_TAB)) {
-	//	isActive = !isActive;
-	//}
 
-	//if (!isActive) { return; }
-
-	//Vector3 velocity = Vector3::kZero;
-
-	//if (Input::PressKey(DIK_W)) { velocity.z += 0.1f; }
-	//if (Input::PressKey(DIK_S)) { velocity.z -= 0.1f; }
-	//if (Input::PressKey(DIK_A)) { velocity.x -= 0.1f; }
-	//if (Input::PressKey(DIK_D)) { velocity.x += 0.1f; }
-
-	//velocity = Matrix4x4::Transform(velocity, Matrix4x4::MakeRotateY(transform_->rotate.y));
-
-	//if (Input::PressKey(DIK_SPACE)) { velocity.y += 0.1f; }
-	//if (Input::PressKey(DIK_LSHIFT)) { velocity.y -= 0.1f; }
-
-
-	//const float speed = std::numbers::pi_v<float> / 100.0f;
-	//if (Input::PressKey(DIK_UP)) { transform_->rotate.x -= speed; }
-	//if (Input::PressKey(DIK_DOWN)) { transform_->rotate.x += speed; }
-	//if (Input::PressKey(DIK_LEFT)) { transform_->rotate.y -= speed; }
-	//if (Input::PressKey(DIK_RIGHT)) { transform_->rotate.y += speed; }
-
-	//transform_->position += velocity * 10.0f;
-
-
-	//transform_->Update();
 	UpdateTransform();
 	matView_ = transform_->GetMatWorld().Inverse();
 
