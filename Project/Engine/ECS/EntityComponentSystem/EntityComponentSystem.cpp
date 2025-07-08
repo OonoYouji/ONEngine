@@ -14,6 +14,7 @@
 #include "AddECSComponentFactoryFunction.h"
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/Entities/Grid/Grid.h"
 
 namespace {
 	EntityComponentSystem* gECS = nullptr;
@@ -48,6 +49,13 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
 	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
 	SetDebugCamera(debugCamera);
+
+	/// gridの初期化
+	gridEntity_ = entityCollection_->GetFactory()->Generate("Grid");
+	gridEntity_->pEntityComponentSystem_ = this;
+	gridEntity_->CommonInitialize();
+	gridEntity_->Initialize();
+
 
 }
 
@@ -112,6 +120,22 @@ void EntityComponentSystem::LoadComponent(IEntity* _entity) {
 
 void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
+}
+
+IEntity* EntityComponentSystem::GetGridEntity() const {
+	return gridEntity_.get();
+}
+
+IEntity* EntityComponentSystem::GetPrefabEntity() const {
+	return prefabEntity_.get();
+}
+
+void EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
+	const std::string& fileExtension = ".prefab";
+
+	/// 
+
+
 }
 
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {

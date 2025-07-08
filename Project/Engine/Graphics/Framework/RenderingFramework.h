@@ -18,6 +18,14 @@
 /// 描画のフレームワーククラス
 /// ===================================================
 class RenderingFramework final {
+
+	enum RENDER_TEXTURE_TYPE {
+		RENDER_TEXTURE_SCENE,  ///< シーンの描画用
+		RENDER_TEXTURE_DEBUG,  ///< デバッグ用
+		RENDER_TEXTURE_PREFAB, ///< Prefabの描画用
+		RENDER_TEXTURE_COUNT,  ///< レンダーテクスチャの数
+	};
+
 public:
 
 	/// ===================================================
@@ -32,6 +40,11 @@ public:
 
 	/// @brief 作成された順番に描画を行う
 	void Draw();
+
+
+	void DrawScene();
+	void DrawDebug();
+	void DrawPrefab();
 
 
 private:

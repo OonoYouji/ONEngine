@@ -103,6 +103,15 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
+
+
+	/// ----- prefab ----- ///
+
+	IEntity* GetGridEntity() const;
+	IEntity* GetPrefabEntity() const;
+	void GeneratePrefabEntity(const std::string& _name);
+
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -121,6 +130,12 @@ private:
 
 	/// ----- command ----- ///
 	EntityDataInputCommand componentInputCommand_;
+
+
+	/// ----- prefab ----- ///
+	std::unique_ptr<IEntity> gridEntity_;
+	std::unique_ptr<IEntity> prefabEntity_;
+
 
 public:
 	/// ===================================================

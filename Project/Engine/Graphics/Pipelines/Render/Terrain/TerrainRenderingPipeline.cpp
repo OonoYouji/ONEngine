@@ -88,14 +88,14 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _entityComponentSystem, Camera* _camera) {
+void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
-	//if (pTerrain_ == nullptr) {
 	Terrain* prevTerrain_ = pTerrain_;
-	for (auto& entity : _entityComponentSystem->GetEntities()) {
+	pTerrain_ = nullptr;
+	for (auto& entity : _entities) {
 		if (entity->GetName() == "Terrain") {
-			pTerrain_ = static_cast<Terrain*>(entity.get());
+			pTerrain_ = static_cast<Terrain*>(entity);
 			break;
 		}
 	}

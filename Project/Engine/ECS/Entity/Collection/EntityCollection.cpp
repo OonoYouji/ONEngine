@@ -376,3 +376,7 @@ Camera* EntityCollection::GetDebugCamera() {
 	return debugCamera_;
 }
 
+EntityFactory* EntityCollection::GetFactory() {
+	return factory_.get();
+}
+

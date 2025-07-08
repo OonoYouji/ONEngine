@@ -88,12 +88,12 @@ void MeshShaderTest::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxM
 
 }
 
-void MeshShaderTest::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, [[maybe_unused]] Camera* _camera) {
+void MeshShaderTest::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	Terrain* terrain = nullptr;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		if (entity->GetName() == "Terrain") {
-			terrain = static_cast<Terrain*>(entity.get());
+			terrain = static_cast<Terrain*>(entity);
 			break;
 		}
 	}

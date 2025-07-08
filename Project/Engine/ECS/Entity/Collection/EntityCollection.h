@@ -31,7 +31,6 @@ public:
 	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
 
-
 	template<typename T>
 	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
 	Camera* GenerateCamera();
@@ -43,7 +42,7 @@ public:
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-	
+
 	template <typename T>
 	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
@@ -120,7 +119,7 @@ public:
 	const Camera* GetDebugCamera() const;
 	Camera* GetDebugCamera();
 
-
+	EntityFactory* GetFactory();
 
 };
 

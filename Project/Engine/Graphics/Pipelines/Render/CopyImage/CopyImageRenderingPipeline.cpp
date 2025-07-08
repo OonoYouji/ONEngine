@@ -45,7 +45,8 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 }
 
-void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, [[maybe_unused]] Camera* _camera) {
+
+void CopyImageRenderingPipeline::Draw([[maybe_unused]] const std::vector<IEntity*>& _entities, [[maybe_unused]] Camera* _camera, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
