@@ -1,5 +1,5 @@
 {
-    "className": "Player",
+    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
@@ -9,6 +9,7 @@
                 "z": -7.283702850341797
             },
             "rotate": {
+                "w": 1.0,
                 "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
@@ -21,19 +22,15 @@
             "type": "Transform"
         },
         {
-            "type": "Variables"
+            "animationScale": 1.0,
+            "enable": 1,
+            "isPlaying": true,
+            "meshPath": "./Packages/Models/Human/walk.gltf",
+            "texturePath": "./Packages/Textures/white.png",
+            "type": "SkinMeshRenderer"
         },
         {
-            "color": {
-                "w": 1.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "enable": 1,
-            "meshPath": "./Assets/Models/entity/player.obj",
-            "texturePath": "./Packages/Textures/uvChecker.png",
-            "type": "MeshRenderer"
+            "type": "Variables"
         },
         {
             "enable": 1,
@@ -52,7 +49,7 @@
             "type": "Script"
         }
     ],
-    "id": 207,
+    "id": 11,
     "name": "Player",
     "parent": null
 }

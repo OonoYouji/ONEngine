@@ -122,16 +122,6 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color) {
 	return result;
 }
 
-void TransformDebug(Transform* _transform) {
-	if (!_transform) {
-		return;
-	}
-
-	ImGui::DragFloat3("position", &_transform->position.x, 0.1f);
-	ImGui::DragFloat3("rotate", &_transform->rotate.x, rotateSpeed);
-	ImGui::DragFloat3("scale", &_transform->scale.x, 0.1f);
-}
-
 void DirectionalLightDebug(DirectionalLight* _light) {
 	if (!_light) {
 		return;

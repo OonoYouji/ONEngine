@@ -5,7 +5,9 @@
 #include <dialog/ImGuiFileDialog.h>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Scene/SceneManager.h"
@@ -41,22 +43,16 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 				const char* droppedPath = static_cast<const char*>(payload->Data);
 				std::string path = std::string(droppedPath);
 
-				if (path.find(".cpp") != std::string::npos
-					|| path.find(".h") != std::string::npos) {
+				if (path.find(".prefab") != std::string::npos) {
 
 					/// pathの文字列をentity名に変換する処理
 					std::string str = path;
-					size_t pos = str.find_last_of('.');
-					if (pos != std::string::npos) {
-						str.erase(pos);
-					}
-
-					pos = str.find_last_of('/');
+					size_t pos = str.find_last_of('/');
 					if (pos != std::string::npos) {
 						str.erase(0, pos + 1);
 					}
 
-					pEntityComponentSystem_->GenerateEntity(str);
+					pEntityComponentSystem_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("Invalid entity format. Please use .cpp, or .h.");

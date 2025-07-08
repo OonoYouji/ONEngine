@@ -7,7 +7,7 @@ public class Player : MonoBehavior {
 
 	bool isDushing = false; // ダッシュ中かどうか
 	float moveSpeed = 16f; // 移動速度
-	float dushSpeed = 32f; // ダッシュ速度
+	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
 	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
 	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）

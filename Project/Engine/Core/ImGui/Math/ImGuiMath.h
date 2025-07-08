@@ -21,10 +21,6 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color);
 /// componentのデバッグ表示関数を定義
 /// //////////////////////////////////////////////
 
-/// @brief tranfsorm のデバッグ表示
-/// @param _transform 
-void TransformDebug(class Transform* _transform);
-
 void DirectionalLightDebug(class DirectionalLight* _light);
 
 void AudioSourceDebug(class AudioSource* _audioSource);

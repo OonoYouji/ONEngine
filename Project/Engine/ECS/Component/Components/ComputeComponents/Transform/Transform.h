@@ -128,6 +128,11 @@ public:
 };
 
 
+namespace COMP_DEBUG {
+	void TransformDebug(Transform* _transform);
+}
+
+
 /// =================================================
 /// mono からのTransform取得用関数
 /// =================================================

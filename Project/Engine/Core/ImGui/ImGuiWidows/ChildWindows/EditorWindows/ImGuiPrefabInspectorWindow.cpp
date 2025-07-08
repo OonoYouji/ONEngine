@@ -9,6 +9,7 @@
 #include "Engine/ECS/Entity/Interface/IEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
 enum SelectedType {
@@ -22,7 +23,7 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EditorManager* _editorMan
 
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _component) { TransformDebug(static_cast<Transform*>(_component)); });
+	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
@@ -78,17 +79,17 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Save")) {
-				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
 			}
-
-			if (ImGui::MenuItem("Load")) {
-				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity);
-			}
-
+		
 			ImGui::EndMenu();
 		}
 
 		ImGui::EndMenuBar();
+	}
+
+	if (!entity->GetPrefabName().empty()) {
+		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
 	}
 
 

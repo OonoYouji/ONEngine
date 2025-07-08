@@ -25,7 +25,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _component) { TransformDebug(static_cast<Transform*>(_component)); });
+	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
@@ -94,6 +94,11 @@ void ImGuiInspectorWindow::EntityInspector() {
 		ImGui::EndMenuBar();
 	}
 
+	if (!entity->GetPrefabName().empty()) {
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
+		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
+		ImGui::PopStyleColor();
+	}
 
 	ImGuiInputTextReadOnly("entity name", entity->GetName());
 	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(entity->GetId()));
@@ -120,7 +125,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		ImGui::SameLine();
 
-	
+
 
 		/// アクティブ/非アクティブで表示を変える
 		if (!enabled) {

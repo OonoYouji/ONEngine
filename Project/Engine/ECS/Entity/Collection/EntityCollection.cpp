@@ -287,7 +287,7 @@ void EntityCollection::LoadPrefabAll() {
 
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName) {
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -299,9 +299,15 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	EmptyEntity* entity = GenerateEntity<EmptyEntity>(true);
+	EmptyEntity* entity = GenerateEntity<EmptyEntity>(_isRuntime);
 	if (entity) {
-		entity->SetName(_prefabName + "(Clone)");
+		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
+
+		if (_isRuntime) {
+			entity->SetName(name + "(Clone)");
+		} else {
+			entity->SetName(name);
+		}
 		entity->SetPrefabName(_prefabName);
 
 		EntityJsonConverter::FromJson(prefab->GetJson(), entity);

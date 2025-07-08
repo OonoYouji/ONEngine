@@ -1,5 +1,7 @@
 #include "Transform.h"
 
+/// externals
+#include <imgui.h>
 
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -206,3 +208,19 @@ void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	transform->Update(); // 更新を呼び出す
 }
 
+void COMP_DEBUG::TransformDebug(Transform* _transform) {
+	if (!_transform) {
+		return;
+	}
+
+	bool isEdit = false;
+
+	isEdit |= ImGui::DragFloat3("position", &_transform->position.x, 0.1f);
+	isEdit |= ImGui::DragFloat3("rotate", &_transform->rotate.x, Mathf::PI / 12.0f);
+	isEdit |= ImGui::DragFloat3("scale", &_transform->scale.x, 0.1f);
+
+	if (isEdit) {
+		_transform->Update();
+	}
+
+}

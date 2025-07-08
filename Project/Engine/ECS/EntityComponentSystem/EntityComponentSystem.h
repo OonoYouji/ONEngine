@@ -48,7 +48,7 @@ public:
 
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isInit = true);
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
