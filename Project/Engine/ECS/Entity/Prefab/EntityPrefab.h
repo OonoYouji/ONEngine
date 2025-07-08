@@ -20,6 +20,9 @@ public:
 	EntityPrefab(const std::string& _path);
 	~EntityPrefab();
 
+
+	void Reload();
+
 private:
 	/// ===================================================
 	/// private : objects

@@ -17,10 +17,10 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResour
 
 	/// 子windowの追加
 	ImGuiPrefabInspectorWindow* inspector = static_cast<ImGuiPrefabInspectorWindow*>(
-		AddChild(std::make_unique<ImGuiPrefabInspectorWindow>(_editorManager)));
+		AddChild(std::make_unique<ImGuiPrefabInspectorWindow>(_ecs, _editorManager)));
 
 	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _resourceCollection));
-	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, inspector));
+	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _resourceCollection, inspector));
 }
 
 

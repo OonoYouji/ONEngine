@@ -26,6 +26,10 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 		debugCamera->Update();
 	}
 
+	IEntity* prefabEntity = pECS_->GetPrefabEntity();
+	if (prefabEntity) {
+		/// TODO: ここにSystemの更新処理を追加する
+	}
 
 
 	/// オブジェクトの正面にカメラを配置

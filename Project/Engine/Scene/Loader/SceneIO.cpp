@@ -92,14 +92,27 @@ void SceneIO::Input(IScene* _scene) {
 
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
+		const std::string& prefabName = entityJson["prefabName"];
 		const std::string& entityClassName = entityJson["className"];
 		const std::string& entityName = entityJson["name"];
 		uint32_t entityId = entityJson["id"];
 
-		IEntity* entity = pECS_->GenerateEntity(entityClassName, false);
+		IEntity* entity = nullptr;
+		if (!prefabName.empty()) {
+			std::string prefabName = entityJson["prefabName"];
+			entity = pECS_->GenerateEntityFromPrefab(prefabName, false);
+		} else {
+			entity = pECS_->GenerateEntity(entityClassName, false);
+		}
+
 		if (entity) {
+			entity->SetPrefabName(prefabName);
 			entity->SetName(entityName);
-			EntityJsonConverter::FromJson(entityJson, entity);
+
+			/// prefabがないならシーンに保存されたjsonからエンティティを復元
+			if (prefabName.empty()) {
+				EntityJsonConverter::FromJson(entityJson, entity);
+			}
 			entityMap[entityId] = entity;
 		}
 	}

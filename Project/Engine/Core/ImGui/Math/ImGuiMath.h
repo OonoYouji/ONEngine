@@ -10,6 +10,15 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
+namespace ImMathf {
+
+	ImVec4 ToImVec4(const Vector4& _vec);
+	ImVec2 ToImVec2(const Vector2& _vec);
+
+	bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
+}
+
+
 bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 
 void ImGuiInputTextReadOnly(const char* _label, const std::string& _text);

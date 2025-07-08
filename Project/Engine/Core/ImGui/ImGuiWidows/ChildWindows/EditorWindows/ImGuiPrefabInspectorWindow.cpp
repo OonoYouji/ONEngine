@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
 #include "Engine/Editor/EditorManager.h"
@@ -18,9 +19,8 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EditorManager* _editorManager)
-	: pEditorManager_(_editorManager) {
-
+ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
+	: pECS_(_ecs), pEditorManager_(_editorManager) {
 
 	/// compute
 	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
@@ -77,12 +77,9 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 	/// 適当な編集の機能
 	/// ----------------------------
 	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("File")) {
-			if (ImGui::MenuItem("Save")) {
-				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
-			}
-		
-			ImGui::EndMenu();
+		if (ImGui::MenuItem("Apply")) {
+			pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
+			pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
 		}
 
 		ImGui::EndMenuBar();

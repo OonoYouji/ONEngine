@@ -48,7 +48,7 @@ public:
 
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true, bool _isInit = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
@@ -109,6 +109,7 @@ public:
 
 	/// ----- prefab ----- ///
 
+	void ReloadPrefab(const std::string& _prefabName);
 	IEntity* GetGridEntity() const;
 	IEntity* GetPrefabEntity() const;
 	IEntity* GeneratePrefabEntity(const std::string& _name);

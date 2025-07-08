@@ -149,6 +149,14 @@ void Console::Log(const std::wstring& _message) {
 	OutputDebugStringA(gMessage.c_str());
 }
 
+void Console::LogError(const std::string& _message) {
+	Log("[error] " + _message);
+}
+
+void Console::LogWarning(const std::string& _message) {
+	Log("[warning] " + _message);
+}
+
 void Console::OutputLogToFile(const std::string& _directory) {
 
 	std::string fileName = "/log" + GetCurrentDateTimeString() + ".md";

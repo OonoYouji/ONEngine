@@ -37,6 +37,8 @@ public:
 	void SaveCurrentScene();
 	void LoadScene(const std::string& _sceneName);
 
+	void ReloadScene();
+
 private:
 
 	/// ===================================================

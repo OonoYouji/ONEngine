@@ -27,9 +27,9 @@
         {
             "color": {
                 "w": 1.0,
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.9824945330619812,
+                "y": 0.0,
+                "z": 0.0
             },
             "enable": 1,
             "meshPath": "./Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
@@ -49,7 +49,8 @@
             "type": "SphereCollider"
         }
     ],
-    "id": 11,
+    "id": 7,
     "name": "PuzzleStand",
-    "parent": null
+    "parent": null,
+    "prefabName": "PuzzleStand"
 }

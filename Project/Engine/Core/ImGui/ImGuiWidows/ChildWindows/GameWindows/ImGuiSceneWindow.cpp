@@ -8,20 +8,23 @@
 #include <ImGuizmo.h>
 
 /// engine
-#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Scene/SceneManager.h"
+
 #include "ImGuiInspectorWindow.h"
 
-ImGuiSceneWindow::ImGuiSceneWindow(GraphicsResourceCollection* _graphicsResourceCollection, EntityComponentSystem* _ecs, ImGuiInspectorWindow* _inspector)
-	: resourceCollection_(_graphicsResourceCollection), pECS_(_ecs), pInspector_(_inspector) {
+ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _graphicsResourceCollection, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
+	: pECS_(_ecs), resourceCollection_(_graphicsResourceCollection), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
 	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
 }
+
 
 void ImGuiSceneWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Scene")) {
@@ -51,6 +54,13 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		// デバッグモードを開始
 		DebugConfig::isDebugging = !isGameDebug;
+
+		//!< 更新処理を停止した場合の処理
+		if (!DebugConfig::isDebugging) {
+			pSceneManager_->ReloadScene();
+			pInspector_->SetSelectedEntity(0);
+		}
+
 	}
 	ImGui::SameLine();
 

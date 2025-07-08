@@ -7,11 +7,10 @@
 void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs) {
 
 	/// terrainがまだ取得できていなければ terrainの取得 
-	if (!pTerrain_) {
-		for (auto& entity : _ecs->GetEntities()) {
-			if (entity->GetName() == "Terrain") {
-				pTerrain_ = dynamic_cast<Terrain*>(entity.get());
-			}
+	pTerrain_ = nullptr;
+	for (auto& entity : _ecs->GetEntities()) {
+		if (entity->GetName() == "Terrain") {
+			pTerrain_ = dynamic_cast<Terrain*>(entity.get());
 		}
 	}
 

@@ -21,6 +21,41 @@ namespace {
 }	/// unnamed namespace
 
 
+ImVec4 ImMathf::ToImVec4(const Vector4& _vec) {
+	return ImVec4(_vec.x, _vec.y, _vec.z, _vec.w);
+}
+
+ImVec2 ImMathf::ToImVec2(const Vector2& _vec) {
+	return ImVec2(_vec.x, _vec.y);
+}
+
+bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
+	if (!_text) {
+		return false; // nullptr check
+	}
+
+	_flags |= ImGuiInputTextFlags_CallbackResize;
+
+	struct CallbackUserData {
+		std::string* text;
+	};
+
+	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
+		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
+			auto* user = static_cast<CallbackUserData*>(data->UserData);
+			user->text->resize(data->BufTextLen);   // ← 入力が減っても size が追従する！
+			data->Buf = user->text->data();
+		}
+		return 0;
+		};
+
+	CallbackUserData userData = { _text };
+	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,
+		callback, &userData
+	);
+}
+
+
 bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {
 		return false; // nullptr check
@@ -41,20 +76,10 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 		return 0;
 	};
 
-	
 	CallbackUserData userData = { _text };
 	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,
 		callback, &userData
 	);
-
-	//return ImGui::InputText(
-	//	_label, (*_text).data(), (*_text).capacity(), _flags,
-	//	[](ImGuiInputTextCallbackData* _data) {
-	//		auto* str = static_cast<std::string*>(_data->UserData);
-	//		str->assign(_data->Buf, _data->BufTextLen);
-	//		return 0;
-	//	}, _text
-	//);
 }
 
 void ImGuiInputTextReadOnly(const char* _label, const std::string& _text) {
@@ -457,3 +482,5 @@ void ValueImGui(Variables* _variables, const std::string& _label, const std::str
 		}
 	}
 }
+
+

@@ -283,11 +283,29 @@ void EntityCollection::LoadPrefabAll() {
 	for (const auto& file : prefabFiles) {
 		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 	}
-
-
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
+	auto itr = prefabs_.find(_prefabName);
+	if (itr == prefabs_.end()) {
+		/// もう一度Fileを探索して確認
+		auto files = Mathf::FindFiles("./Assets/Prefabs", _prefabName);
+		if (files.empty()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return;
+		}
+		
+		///!< 複数あった場合は最初に見つかったものを使用する
+		File& file = files.front();
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
+
+	}
+
+	/// prefabを再読み込み
+	itr->second->Reload();
+}
+
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -311,6 +329,10 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 		entity->SetPrefabName(_prefabName);
 
 		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
+
+		if (_isInit) {
+			//entity->Initialize();
+		}
 
 		return entity;
 	}

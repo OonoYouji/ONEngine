@@ -16,7 +16,7 @@ public:
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabInspectorWindow(class EditorManager* _editorManager);
+	ImGuiPrefabInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager);
 	~ImGuiPrefabInspectorWindow() override = default;
 
 	/// @brief imgui windowの描画処理
@@ -39,7 +39,9 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	class EntityComponentSystem* pECS_;
 	class EditorManager* pEditorManager_;
+
 
 	std::uintptr_t selectedPointer_; ///< 選択したポインタ
 

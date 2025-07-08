@@ -55,7 +55,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 					pEntityComponentSystem_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
-					Console::Log("Invalid entity format. Please use .cpp, or .h.");
+					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
 				}
 			}
 		}
@@ -225,7 +225,17 @@ void ImGuiHierarchyWindow::Hierarchy() {
 		DrawEntityHierarchy(entity);
 	}
 
-	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+	bool hasValidSelection = false;
+	for (auto& entity : entityList_) {
+		if (entity == selectedEntity_) {
+			hasValidSelection = true;
+			break;
+		}
+	}
+
+	if (hasValidSelection) {
+		pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+	}
 }
 
 void ImGuiHierarchyWindow::EntityRename(IEntity* _entity) {

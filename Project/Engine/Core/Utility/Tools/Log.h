@@ -14,6 +14,8 @@ public:
 
 	static void Log(const std::string& _message);
 	static void Log(const std::wstring& _message);
+	static void LogError(const std::string& _message);
+	static void LogWarning(const std::string& _message);
 
 
 	/// @brief logをfileに出力する

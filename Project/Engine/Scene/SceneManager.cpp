@@ -47,20 +47,6 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 		}
 	}
 
-	//if (!pEntityComponentSystem_->GetMainCamera()) {
-	//	Camera* mainCamera = pEntityComponentSystem_->GenerateCamera();
-	//	mainCamera->SetPosition(Vector3(477.0f, 474.0f, -400.0f));
-	//	mainCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	//	mainCamera->SetCameraType(static_cast<int>(CameraType::Type3D));
-	//	pEntityComponentSystem_->SetMainCamera(mainCamera);
-	//}
-
-	//if (!pEntityComponentSystem_->GetMainCamera2D()) {
-	//	Camera* mainCamera2D = pEntityComponentSystem_->GenerateCamera();
-	//	mainCamera2D->SetCameraType(static_cast<int>(CameraType::Type2D));
-	//	pEntityComponentSystem_->SetMainCamera2D(mainCamera2D);
-	//}
-
 }
 
 void SceneManager::Update() {
@@ -95,6 +81,20 @@ void SceneManager::LoadScene(const std::string& _sceneName) {
 		return;
 	}
 
+	MoveNextToCurrentScene();
+}
+
+void SceneManager::ReloadScene() {
+	if (currentScene_ == nullptr) {
+		Console::LogError("No current scene to reload.");
+		return;
+	}
+	/// 現在のシーンを再読み込み
+	SetNextScene(currentScene_->GetSceneName());
+	if (nextScene_ == nullptr) {
+		Console::LogError("Failed to reload scene: " + currentScene_->GetSceneName());
+		return;
+	}
 	MoveNextToCurrentScene();
 }
 
