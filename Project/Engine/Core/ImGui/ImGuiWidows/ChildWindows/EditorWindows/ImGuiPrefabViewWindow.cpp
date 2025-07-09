@@ -28,7 +28,12 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 
 	IEntity* prefabEntity = pECS_->GetPrefabEntity();
 	if (prefabEntity) {
-		/// TODO: ここにSystemの更新処理を追加する
+		prefabEntity->Update();
+		prefabEntity->UpdateTransform();
+
+		pECS_->UpdateSystems({ prefabEntity });
+
+		prefabEntity->UpdateTransform();
 	}
 
 

@@ -278,7 +278,7 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
 				selectedEntity_ = nullptr;
-				//pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
+				pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
 			}
 		}
 

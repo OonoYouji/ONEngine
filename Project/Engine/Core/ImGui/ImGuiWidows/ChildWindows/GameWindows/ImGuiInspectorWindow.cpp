@@ -12,6 +12,7 @@
 #include "../../../Math/ImGuiMath.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
 enum SelectedType {
@@ -20,8 +21,8 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
-	: pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
+	: pECS_(_ecs), pEditorManager_(_editorManager) {
 
 
 	/// compute
@@ -51,6 +52,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
 
 }
+
 
 void ImGuiInspectorWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
@@ -89,6 +91,18 @@ void ImGuiInspectorWindow::EntityInspector() {
 			}
 
 			ImGui::EndMenu();
+		}
+
+		if (ImGui::MenuItem("Apply Prefab")) {
+
+			if (!entity->GetPrefabName().empty()) {
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
+				pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
+				//pEditorManager_->ExecuteCommand<ApplyPrefabCommand>(entity);
+			} else {
+				Console::LogError("This entity is not a prefab instance.");
+			}
+
 		}
 
 		ImGui::EndMenuBar();

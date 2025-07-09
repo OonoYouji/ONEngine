@@ -107,6 +107,7 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
+	void UpdateSystems(const std::vector<IEntity*>& _entities);
 
 
 	/// ----- prefab ----- ///
@@ -239,6 +240,7 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 /// monoを使ったC#スクリプトエンジンのコンポーネント
 /// =============================================
 
+IEntity* GetEntityById(int32_t _entityId);
 
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);
@@ -252,3 +254,4 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId);
 bool InternalContainsEntity(int32_t _entityId);
 int32_t InternalGetEntityId(MonoString* _name);
 int32_t InternalCreateEntity(MonoString* _name);
+bool InternalContainsPrefabEntity(int32_t _entityId);

@@ -15,6 +15,12 @@ void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs, const std::vect
 	}
 
 
+	if (!pTerrain_) {
+		Console::LogError("Terrain not found in TerrainCollisionSystem.");
+		return;
+	}
+
+
 	/// 当たり判定を取る、とりあえず全てのentityと当たり判定を取る
 	for (auto& entity : _entities) {
 		if (entity->GetName() == "Terrain") { continue; } ///< terrainは除外

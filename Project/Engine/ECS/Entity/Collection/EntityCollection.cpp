@@ -88,21 +88,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 実際に破棄する
 	/// ------------------------------
 
-	/// entityのidをチェック
-	int32_t id = _entity->id_;
-
-	if (id > 0) {
-		/// 初期化時のidから削除
-		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), id), initEntityIDs_.usedIds.end());
-		initEntityIDs_.removedIds.push_back(id);
-	} else if (id < 0) {
-		/// 実行時のidから削除
-		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), id), runtimeEntityIDs_.usedIds.end());
-		runtimeEntityIDs_.removedIds.push_back(id);
-	} else {
-		Console::Log("Invalid entity ID: " + std::to_string(id));
-		return;
-	}
+	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
 	_entity->RemoveParent();
@@ -152,6 +138,21 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 		cameras_.erase(cameraItr, cameras_.end());
 	}
 
+}
+
+void EntityCollection::RemoveEntityId(int32_t _id) {
+	if (_id > 0) {
+		/// 初期化時のidから削除
+		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), _id), initEntityIDs_.usedIds.end());
+		initEntityIDs_.removedIds.push_back(_id);
+	} else if (_id < 0) {
+		/// 実行時のidから削除
+		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), _id), runtimeEntityIDs_.usedIds.end());
+		runtimeEntityIDs_.removedIds.push_back(_id);
+	} else {
+		Console::Log("Invalid entity ID: " + std::to_string(_id));
+		return;
+	}
 }
 
 void EntityCollection::RemoveEntityAll() {

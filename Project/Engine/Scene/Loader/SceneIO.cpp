@@ -29,7 +29,71 @@ void SceneIO::Output(IScene* _scene) {
 	}
 
 	fileName_ = type + ".json";
+	SaveScene(fileName_);
 
+}
+
+void SceneIO::Input(IScene* _scene) {
+	/* jsonを読み込んでsceneに変換する */
+
+	std::string type = typeid(*_scene).name();
+	// "class "をstringから排除
+	if (type.find("class ") == 0) {
+		type = type.substr(6);
+	}
+
+	fileName_ = type + ".json";
+	LoadScene(fileName_);
+
+}
+
+void SceneIO::OutputTemporary(IScene* _scene) {
+	/* 一時的なシーンのjsonを保存する */
+
+	std::string type = typeid(*_scene).name();
+	// "class "をstringから排除
+	if (type.find("class ") == 0) {
+		type = type.substr(6);
+	}
+	fileName_ = type + "_temp.json";
+	SaveScene(fileName_);
+
+}
+
+void SceneIO::InputTemporary(IScene* _scene) {
+	std::string type = typeid(*_scene).name();
+	// "class "をstringから排除
+	if (type.find("class ") == 0) {
+		type = type.substr(6);
+	}
+	fileName_ = type + "_temp.json";
+	LoadScene(fileName_);
+
+}
+
+void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
+
+	/// コンポーネントを追加
+	for (const auto& componentJson : _entityJson["components"]) {
+		const std::string componentType = componentJson.at("type").get<std::string>();
+		IComponent* comp = _entity->AddComponent(componentType);
+		if (comp) {
+			ComponentJsonConverter::FromJson(componentJson, comp);
+			comp->SetOwner(_entity);
+
+			if (componentType == "Variables") {
+				Variables* vars = static_cast<Variables*>(comp);
+				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
+			}
+
+		} else {
+			Console::LogError("コンポーネントの追加に失敗しました: " + componentType);
+		}
+	}
+
+}
+
+void SceneIO::SaveScene(const std::string& _filename) {
 	nlohmann::json outputJson = nlohmann::json::object();
 
 	auto& entities = pECS_->GetEntities();
@@ -50,36 +114,25 @@ void SceneIO::Output(IScene* _scene) {
 
 
 	/// ファイルが無かったら生成する
-	if (!std::filesystem::exists(fileDirectory_ + fileName_)) {
+	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
 		std::filesystem::create_directories(fileDirectory_);
 	}
 
 
-	std::ofstream outputFile(fileDirectory_ + fileName_);
+	std::ofstream outputFile(fileDirectory_ + _filename);
 	if (!outputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + fileName_);
+		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
 	}
 
 	outputFile << outputJson.dump(4);
 	outputFile.close();
-
 }
 
-void SceneIO::Input(IScene* _scene) {
-	/* jsonを読み込んでsceneに変換する */
+void SceneIO::LoadScene(const std::string& _filename) {
 
-	std::string type = typeid(*_scene).name();
-	// "class "をstringから排除
-	if (type.find("class ") == 0) {
-		type = type.substr(6);
-	}
-
-	fileName_ = type + ".json";
-
-
-	std::ifstream inputFile(fileDirectory_ + fileName_);
+	std::ifstream inputFile(fileDirectory_ + _filename);
 	if (!inputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + fileName_);
+		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
 		return;
 	}
 
@@ -124,7 +177,7 @@ void SceneIO::Input(IScene* _scene) {
 		if (entityMap.find(entityId) == entityMap.end()) {
 			continue; // エンティティが見つからない場合はスキップ
 		}
-		
+
 		IEntity* entity = entityMap[entityId];
 		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
 			int32_t parentId = entityJson["parent"];
@@ -142,27 +195,4 @@ void SceneIO::Input(IScene* _scene) {
 			entity->Initialize();
 		}
 	}
-
-}
-
-void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
-
-	/// コンポーネントを追加
-	for (const auto& componentJson : _entityJson["components"]) {
-		const std::string componentType = componentJson.at("type").get<std::string>();
-		IComponent* comp = _entity->AddComponent(componentType);
-		if (comp) {
-			ComponentJsonConverter::FromJson(componentJson, comp);
-			comp->SetOwner(_entity);
-
-			if (componentType == "Variables") {
-				Variables* vars = static_cast<Variables*>(comp);
-				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
-			}
-
-		} else {
-			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
-		}
-	}
-
 }

@@ -9,6 +9,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "ImGuiPrefabInspectorWindow.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiPrefabInspectorWindow* _inspector)
 	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pInspector_(_inspector) {
@@ -51,7 +52,6 @@ void ImGuiPrefabFileWindow::ImGuiFunc() {
 		ImGui::Selectable(file.second.c_str());
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
-			// ここでPrefabをロードする処理を追加することができます
 
 			IEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
 			pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));

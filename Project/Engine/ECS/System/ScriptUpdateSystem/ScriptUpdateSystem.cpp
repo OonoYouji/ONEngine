@@ -28,8 +28,16 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 				continue;
 			}
 
+			/// クラスが同じかチェック
+			MonoClass* instanceClass = mono_object_get_class(script.instance);
+			MonoClass* methodClass = mono_method_get_class(script.updateMethod);
+			if (instanceClass != methodClass) {
+				Console::LogError("ScriptUpdateSystem: Instance class does not match method class for script: " + script.scriptName);
+				continue;
+			}
+
 			if (script.updateMethod && script.instance) {
-				/// exceptionをキャッチするためのポインタ
+				/// 例外をキャッチするためのポインタ
 				MonoObject* exc = nullptr;
 
 				/// updateメソッドを呼び出す
@@ -40,10 +48,10 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 					MonoString* monoStr = mono_object_to_string(exc, nullptr);
 					if (monoStr) {
 						char* message = mono_string_to_utf8(monoStr);
-						Console::Log(std::string("Mono Exception: ") + message);
+						Console::LogError(std::string("Mono Exception: ") + message);
 						mono_free(message);
 					} else {
-						Console::Log("Mono Exception occurred, but message is null.");
+						Console::LogError("Mono Exception occurred, but message is null.");
 					}
 				}
 

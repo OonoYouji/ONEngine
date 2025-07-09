@@ -56,9 +56,12 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		DebugConfig::isDebugging = !isGameDebug;
 
 		//!< 更新処理を停止した場合の処理
-		if (!DebugConfig::isDebugging) {
-			pSceneManager_->ReloadScene();
+		if (DebugConfig::isDebugging) {
+			pSceneManager_->SaveCurrentSceneTemporary();
+		} else {
+			pSceneManager_->ReloadScene(true);
 			pInspector_->SetSelectedEntity(0);
+
 		}
 
 	}

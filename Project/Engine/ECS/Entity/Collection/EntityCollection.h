@@ -37,6 +37,7 @@ public:
 
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
+	void RemoveEntityId(int32_t _id);
 
 	void RemoveEntityAll();
 

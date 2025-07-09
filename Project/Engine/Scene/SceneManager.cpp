@@ -26,7 +26,7 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 	SetNextScene(sceneFactory_->GetStartupSceneName());
-	MoveNextToCurrentScene();
+	MoveNextToCurrentScene(false);
 
 
 	/// カメラを設定する
@@ -53,7 +53,7 @@ void SceneManager::Update() {
 
 	/// 次のシーンが設定されていたら、シーンを切り替える
 	if (nextScene_ != nullptr) {
-		MoveNextToCurrentScene();
+		MoveNextToCurrentScene(false);
 	}
 
 	/// 現在のシーンの更新処理
@@ -74,6 +74,15 @@ void SceneManager::SaveCurrentScene() {
 	sceneIO_->Output(currentScene_.get());
 }
 
+void SceneManager::SaveCurrentSceneTemporary() {
+	if (currentScene_ == nullptr) {
+		Console::Log("No current scene to save temporarily.");
+		return;
+	}
+
+	sceneIO_->OutputTemporary(currentScene_.get());
+}
+
 void SceneManager::LoadScene(const std::string& _sceneName) {
 	SetNextScene(_sceneName);
 	if (nextScene_ == nullptr) {
@@ -81,10 +90,10 @@ void SceneManager::LoadScene(const std::string& _sceneName) {
 		return;
 	}
 
-	MoveNextToCurrentScene();
+	MoveNextToCurrentScene(false);
 }
 
-void SceneManager::ReloadScene() {
+void SceneManager::ReloadScene(bool _isTemporary) {
 	if (currentScene_ == nullptr) {
 		Console::LogError("No current scene to reload.");
 		return;
@@ -95,10 +104,10 @@ void SceneManager::ReloadScene() {
 		Console::LogError("Failed to reload scene: " + currentScene_->GetSceneName());
 		return;
 	}
-	MoveNextToCurrentScene();
+	MoveNextToCurrentScene(_isTemporary);
 }
 
-void SceneManager::MoveNextToCurrentScene() {
+void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	currentScene_ = std::move(nextScene_);
 
 	pEntityComponentSystem_->RemoveEntityAll();
@@ -108,7 +117,12 @@ void SceneManager::MoveNextToCurrentScene() {
 	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
-	sceneIO_->Input(currentScene_.get());
+	if (_isTemporary) {
+		sceneIO_->InputTemporary(currentScene_.get());
+	} else {
+		sceneIO_->Input(currentScene_.get());
+	}
+
 	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();

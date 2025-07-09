@@ -6,7 +6,7 @@ public class Player : MonoBehavior {
 	float jumpPower = 5.0f;
 
 	bool isDushing = false; // ダッシュ中かどうか
-	float moveSpeed = 16f; // 移動速度
+	[SerializeField] float moveSpeed = 16f; // 移動速度
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
 	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
@@ -68,10 +68,11 @@ public class Player : MonoBehavior {
 		/// animationさせるかどうか
 		SkinMeshRenderer smr = entity.GetComponent<SkinMeshRenderer>();
 		if (smr != null) {
+				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			if (velocity.Length() > 0.01f) {
 				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			} else {
-				smr.isPlaying = false; // 動いていないときはアニメーションを停止
+				//smr.isPlaying = false; // 動いていないときはアニメーションを停止
 			}
 		} else {
 			Log.WriteLine("SkinMeshRenderer not found on entity: " + entity.name);
@@ -113,7 +114,7 @@ public class Player : MonoBehavior {
 		/// カメラの位置を計算
 		Transform cT = entity.GetChild(0).transform;
 		Vector3 cPos = cT.position;
-		Vector3 cRot = cT.rotate;
+		Vector3 cRot = cT.rotate.ToEuler();
 
 		cPos.x = distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
@@ -122,7 +123,7 @@ public class Player : MonoBehavior {
 		cRot = LookAt(-cPos); // カメラの向きをプレイヤーに向ける
 
 		cT.position = cPos + cameraOffset; // プレイヤーの位置にオフセットを加える
-		cT.rotate = cRot;
+		cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
 

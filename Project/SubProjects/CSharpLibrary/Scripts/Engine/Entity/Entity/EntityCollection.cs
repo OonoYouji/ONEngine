@@ -22,6 +22,13 @@ static public class EntityCollection {
 			return entity;
 		}
 
+		/// 最終チェック、デバッグ用のPrefabEntityではないかチェック
+		if(InternalContainsPrefabEntity(_id)) {
+			Entity entity = new Entity(_id);
+			entities.Add(_id, entity);
+			return entity;
+		}
+
 		/// それでも無かったらnullを返す
 		return null;
 	}
@@ -46,5 +53,7 @@ static public class EntityCollection {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern int InternalCreateEntity(string _prefabName);
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalContainsPrefabEntity(int _entityId);
 
 }

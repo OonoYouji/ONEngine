@@ -35,9 +35,11 @@ public:
 	void SetNextScene(const std::string& _sceneName);
 
 	void SaveCurrentScene();
+	void SaveCurrentSceneTemporary();
+
 	void LoadScene(const std::string& _sceneName);
 
-	void ReloadScene();
+	void ReloadScene(bool _isTemporary);
 
 private:
 
@@ -45,7 +47,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	void MoveNextToCurrentScene();
+	void MoveNextToCurrentScene(bool _isTemporary);
 
 
 private:
