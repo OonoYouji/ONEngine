@@ -10,10 +10,10 @@
 ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
-void ScriptUpdateSystem::Update(EntityComponentSystem* _entityComponentSystem) {
+void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	std::list<Script*> scripts;
-	for (auto& entity : _entityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		Script* script = entity->GetComponent<Script>();
 		if (script) {
 			scripts.push_back(script);

@@ -1,5 +1,8 @@
 #pragma once
 
+/// std
+#include <vector>
+
 /// //////////////////////////////////////////////////
 /// ECSのSystemのinterfaceクラス
 /// //////////////////////////////////////////////////
@@ -8,6 +11,8 @@ public:
 
 	virtual ~ECSISystem() {}
 
-	virtual void Update(class EntityComponentSystem* _pEntityComponentSystem) = 0;
+	virtual void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) = 0;
+
 };
+
 

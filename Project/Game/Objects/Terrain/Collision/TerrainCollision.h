@@ -14,7 +14,7 @@ public:
 	TerrainCollisionSystem() = default;
 	~TerrainCollisionSystem() = default;
 
-	void Update(class EntityComponentSystem* _pEntityComponentSystem);
+	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
 private:
 	/// =========================================

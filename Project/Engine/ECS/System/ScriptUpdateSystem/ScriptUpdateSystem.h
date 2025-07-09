@@ -15,7 +15,7 @@ public:
 	ScriptUpdateSystem();
 	~ScriptUpdateSystem() override;
 
-	void Update(class EntityComponentSystem* _entityComponentSystem) override;
+	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
 private:
 	/// ===================================================

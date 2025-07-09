@@ -4,19 +4,19 @@
 #include "../Terrain.h"
 #include "Engine/ECS/Component/Component.h"
 
-void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs) {
+void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// terrainがまだ取得できていなければ terrainの取得 
 	pTerrain_ = nullptr;
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		if (entity->GetName() == "Terrain") {
-			pTerrain_ = dynamic_cast<Terrain*>(entity.get());
+			pTerrain_ = dynamic_cast<Terrain*>(entity);
 		}
 	}
 
 
 	/// 当たり判定を取る、とりあえず全てのentityと当たり判定を取る
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		if (entity->GetName() == "Terrain") { continue; } ///< terrainは除外
 		/// transformの取得
 		Transform* transform = entity->GetComponent<Transform>();
@@ -34,3 +34,4 @@ void TerrainCollisionSystem::Update(EntityComponentSystem* _ecs) {
 	}
 
 }
+

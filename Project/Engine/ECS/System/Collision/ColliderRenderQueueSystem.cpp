@@ -10,15 +10,16 @@ ColliderRenderQueueSystem::ColliderRenderQueueSystem() {
 
 }
 
-void ColliderRenderQueueSystem::Update(EntityComponentSystem* _ecs) {
-	UpdateSphereCollider(_ecs);
-	UpdateBoxCollider(_ecs);
+void ColliderRenderQueueSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+	UpdateSphereCollider(_entities);
+	UpdateBoxCollider(_entities);
 }
 
-void ColliderRenderQueueSystem::UpdateSphereCollider(EntityComponentSystem* _ecs) {
+
+void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class IEntity*>& _entities) {
 
 	std::vector<SphereCollider*> sphereColliders;
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		SphereCollider* sphereCollider = entity->GetComponent<SphereCollider>();
 		if (sphereCollider && sphereCollider->enable) {
 			sphereColliders.push_back(sphereCollider);
@@ -49,10 +50,10 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(EntityComponentSystem* _ecs
 
 }
 
-void ColliderRenderQueueSystem::UpdateBoxCollider(EntityComponentSystem* _ecs) {
+void ColliderRenderQueueSystem::UpdateBoxCollider(const std::vector<class IEntity*>& _entities) {
 
 	std::vector<BoxCollider*> boxColliders;
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		BoxCollider* boxCollider = entity->GetComponent<BoxCollider>();
 		if (boxCollider && boxCollider->enable) {
 			boxColliders.push_back(boxCollider);

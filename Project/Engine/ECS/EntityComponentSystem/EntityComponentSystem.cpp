@@ -71,8 +71,10 @@ void EntityComponentSystem::Update() {
 
 	entityCollection_->UpdateEntities();
 
-	for (auto& system : systemMap_) {
-		system->Update(this);
+
+	auto entities = GetActiveEntities();
+	for (auto& system : systems_) {
+		system->Update(this, entities);
 	}
 }
 
@@ -118,6 +120,19 @@ void EntityComponentSystem::SetFactoryRegisterFunc(std::function<void(EntityFact
 
 uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
 	return entityCollection_->GetEntityId(_name);
+}
+
+std::vector<IEntity*> EntityComponentSystem::GetActiveEntities() const {
+	std::vector<IEntity*> result;
+	result.reserve(entityCollection_->GetEntities().size());
+
+	for (const auto& entity : entityCollection_->GetEntities()) {
+		if (entity->GetActive()) {
+			result.push_back(entity.get());
+		}
+	}
+
+	return result;
 }
 
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {

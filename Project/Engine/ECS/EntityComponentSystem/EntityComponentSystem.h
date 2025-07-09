@@ -74,6 +74,8 @@ public:
 
 	uint32_t GetEntityId(const std::string& _name);
 
+	std::vector<IEntity*> GetActiveEntities() const;
+
 
 	/// ----- component ----- ///
 
@@ -128,7 +130,7 @@ private:
 	std::unique_ptr<ComponentCollection> componentCollection_;
 
 	/// ----- system ----- ///
-	std::vector<std::unique_ptr<ECSISystem>> systemMap_;
+	std::vector<std::unique_ptr<ECSISystem>> systems_;
 
 
 	/// ----- command ----- ///
@@ -229,7 +231,7 @@ inline ComponentArray<Comp>* EntityComponentSystem::GetComponentArray() requires
 
 template<typename T, typename ...Args>
 inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base_of_v<ECSISystem, T> {
-	systemMap_.push_back(std::make_unique<T>(args...));
+	systems_.push_back(std::make_unique<T>(args...));
 }
 
 

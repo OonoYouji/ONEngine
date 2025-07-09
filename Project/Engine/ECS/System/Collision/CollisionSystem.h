@@ -18,8 +18,7 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	// Update method to handle collision logic
-	void Update(class EntityComponentSystem* _pEntityComponentSystem) override;
+	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities);
 
 private:
 	/// =======================================

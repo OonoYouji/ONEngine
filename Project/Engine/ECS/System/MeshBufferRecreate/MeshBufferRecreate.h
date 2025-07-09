@@ -14,7 +14,7 @@ public:
 	MeshBufferRecreate(class DxDevice* _pDxDevice);
 	~MeshBufferRecreate() = default;
 
-	void Update(EntityComponentSystem* _pEntityComponentSystem) override;
+	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
 
 private:
