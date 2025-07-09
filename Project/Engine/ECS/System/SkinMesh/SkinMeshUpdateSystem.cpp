@@ -9,10 +9,10 @@
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
 	: pDxManager_(_dxManager), pResourceCollection_(_resourceCollection) {}
 
-void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
+void SkinMeshUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
 		if (skinMesh && skinMesh->enable) {
 			skinMeshRenderers.push_back(skinMesh);
@@ -45,9 +45,9 @@ void SkinMeshUpdateSystem::Update(EntityComponentSystem* _ecs) {
 
 			skinMesh->animationTime_ = 0.0f;
 			skinMesh->duration_ = model->GetAnimationDuration();
-		
+
 			skinMesh->nodeAnimationMap_ = model->GetNodeAnimationMap();
-			
+
 			skinMesh->isChangingMesh_ = false;
 		}
 

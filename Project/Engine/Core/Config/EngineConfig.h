@@ -14,6 +14,13 @@ namespace DebugConfig {
 
 	/// @brief デバッグ中かどうか
 	extern bool isDebugging; 
+	
 
+	enum SELECTED_MODE {
+		SELECTED_MODE_FILE,
+		SELECTED_MODE_GAME,
+		SELECTED_MODE_EDITOR,
+	};
+	extern int selectedMode_; ///< 選択中のデバッグウィンドウ
 
 }

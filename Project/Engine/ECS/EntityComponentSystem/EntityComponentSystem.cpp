@@ -7,6 +7,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// ecs
 #include "../Component/Component.h"
@@ -14,6 +15,8 @@
 #include "AddECSComponentFactoryFunction.h"
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/Entities/Grid/Grid.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
 namespace {
 	EntityComponentSystem* gECS = nullptr;
@@ -44,10 +47,18 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
 	AddComponentFactoryFunction(componentCollection_.get());
 
-	DebugCamera* debugCamera = GenerateCamera<DebugCamera>();
-	debugCamera->SetPosition(Vector3(0.0f, 20.0f, -25.0f));
-	debugCamera->SetRotate(Vector3(std::numbers::pi_v<float> / 5.0f, 0.0f, 0.0f));
-	SetDebugCamera(debugCamera);
+
+	debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
+	debugCamera_->pEntityComponentSystem_ = this;
+	debugCamera_->CommonInitialize();
+	debugCamera_->Initialize();
+
+	/// gridの初期化
+	gridEntity_ = entityCollection_->GetFactory()->Generate("Grid");
+	gridEntity_->pEntityComponentSystem_ = this;
+	gridEntity_->CommonInitialize();
+	gridEntity_->Initialize();
+
 
 }
 
@@ -56,17 +67,25 @@ void EntityComponentSystem::Update() {
 
 	entityCollection_->UpdateEntities();
 
-	for (auto& system : systemMap_) {
-		system->Update(this);
-	}
+
+	auto entities = GetActiveEntities();
+	UpdateSystems(entities);
+}
+
+void EntityComponentSystem::DebuggingUpdate() {
+	debugCamera_->Update();
+	debugCamera_->UpdateTransform();
+
+	gridEntity_->Update();
+	gridEntity_->UpdateTransform();
 }
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
 	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
-IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isInit) {
-	return entityCollection_->GenerateEntityFromPrefab(_prefabName);
+IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
+	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
 }
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
@@ -97,6 +116,19 @@ uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
 	return entityCollection_->GetEntityId(_name);
 }
 
+std::vector<IEntity*> EntityComponentSystem::GetActiveEntities() const {
+	std::vector<IEntity*> result;
+	result.reserve(entityCollection_->GetEntities().size());
+
+	for (const auto& entity : entityCollection_->GetEntities()) {
+		if (entity->GetActive()) {
+			result.push_back(entity.get());
+		}
+	}
+
+	return result;
+}
+
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 	return componentCollection_->AddComponent(_name);
 }
@@ -114,6 +146,70 @@ void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
 }
 
+void EntityComponentSystem::UpdateSystems(const std::vector<IEntity*>& _entities) {
+	for (auto& system : systems_) {
+		system->Update(this, _entities);
+	}
+}
+
+void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
+	entityCollection_->ReloadPrefab(_prefabName);
+}
+
+IEntity* EntityComponentSystem::GetGridEntity() const {
+	return gridEntity_.get();
+}
+
+IEntity* EntityComponentSystem::GetPrefabEntity() const {
+	return prefabEntity_.get();
+}
+
+IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
+
+	/// 同じエンティティが生成されているかチェック
+	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
+		return prefabEntity_.get();
+	}
+
+
+
+	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
+
+	/// prefabが存在するかチェック
+	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
+	if (!prefab) {
+		return nullptr;
+	}
+
+	/// entityを生成する
+	std::unique_ptr<IEntity> entity = entityCollection_->GetFactory()->Generate("EmptyEntity");
+
+	/// 違うエンティティが生成されている場合は削除して生成
+	if (prefabEntity_) {
+		prefabEntity_->RemoveComponentAll();
+		entityCollection_->RemoveEntityId(prefabEntity_->GetId());
+	}
+
+	prefabEntity_ = std::move(entity);
+
+
+	if (prefabEntity_) {
+		prefabEntity_->pEntityComponentSystem_ = this;
+		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
+		prefabEntity_->CommonInitialize();
+
+		prefabEntity_->SetName(prefabName);
+		prefabEntity_->SetPrefabName(_name);
+
+		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
+
+		prefabEntity_->Initialize();
+	}
+
+
+	return prefabEntity_.get();
+}
+
 void EntityComponentSystem::SetMainCamera(Camera* _camera) {
 	entityCollection_->SetMainCamera(_camera);
 }
@@ -128,14 +224,6 @@ void EntityComponentSystem::SetMainCamera2D(Camera* _camera) {
 
 void EntityComponentSystem::SetMainCamera2D(size_t _index) {
 	entityCollection_->SetMainCamera2D(_index);
-}
-
-void EntityComponentSystem::SetDebugCamera(Camera* _camera) {
-	entityCollection_->SetDebugCamera(_camera);
-}
-
-void EntityComponentSystem::SetDebugCamera(size_t _index) {
-	entityCollection_->SetDebugCamera(_index);
 }
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
@@ -179,11 +267,11 @@ Camera* EntityComponentSystem::GetMainCamera2D() {
 }
 
 const Camera* EntityComponentSystem::GetDebugCamera() const {
-	return entityCollection_->GetDebugCamera();
+	return static_cast<Camera*>(debugCamera_.get());
 }
 
 Camera* EntityComponentSystem::GetDebugCamera() {
-	return entityCollection_->GetDebugCamera();
+	return static_cast<Camera*>(debugCamera_.get());
 }
 
 
@@ -192,9 +280,27 @@ Camera* EntityComponentSystem::GetDebugCamera() {
 /// internal methods
 /// ====================================================
 
+IEntity* GetEntityById(int32_t _entityId) {
+	IEntity* entity = gECS->GetEntity(_entityId);
+	if (!entity) {
+		/// prefab entityじゃないかチェック
+		if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
+			entity = gECS->GetPrefabEntity();
+		}
+
+		/// それでも違ったらエラーを出力
+		if (!entity) {
+			Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+			return nullptr;
+		}
+	}
+
+	return entity;
+}
+
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -211,7 +317,7 @@ uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	/// idからentityを取得
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -225,7 +331,7 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 }
 
 MonoString* InternalGetName(int32_t _entityId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
@@ -237,7 +343,7 @@ MonoString* InternalGetName(int32_t _entityId) {
 
 void InternalSetName(int32_t _entityId, MonoString* _name) {
 	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
@@ -248,7 +354,7 @@ void InternalSetName(int32_t _entityId, MonoString* _name) {
 }
 
 int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -265,7 +371,7 @@ int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
 }
 
 int32_t InternalGetParentId(int32_t _entityId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -280,18 +386,18 @@ int32_t InternalGetParentId(int32_t _entityId) {
 }
 
 void InternalSetParent(int32_t _entityId, int32_t _parentId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
-	IEntity* parent = gECS->GetEntity(_parentId);
+	IEntity* entity = GetEntityById(_entityId);
+	IEntity* parent = GetEntityById(_parentId);
 
 	/// nullptr チェック
 	if (!entity || !parent) {
-		Console::Log("Entity or parent not found for IDs: " + std::to_string(_entityId) + ", " + std::to_string(_parentId));
+		Console::LogError("Entity or parent not found for IDs: " + std::to_string(_entityId) + ", " + std::to_string(_parentId));
 		return;
 	}
 
 	/// idが同じ場合は何もしない
 	if (entity->GetId() == parent->GetId()) {
-		Console::Log("Cannot set entity as its own parent: " + std::to_string(_entityId));
+		Console::LogError("Cannot set entity as its own parent: " + std::to_string(_entityId));
 		return;
 	}
 
@@ -305,7 +411,7 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 }
 
 bool InternalContainsEntity(int32_t _entityId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
+	IEntity* entity = GetEntityById(_entityId);
 	if (entity) {
 		return true;
 	}
@@ -321,11 +427,25 @@ int32_t InternalGetEntityId(MonoString* _name) {
 int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
 	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = gECS->GenerateEntityFromPrefab(name);
-	if (entity) {
-		return entity->GetId();
+	IEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
+	if (!entity) {
+		entity = gECS->GenerateEntity(name);
+		if (!entity) {
+			return 0;
+		}
 	}
 
-	return 0;
+	return entity->GetId();
+}
+
+bool InternalContainsPrefabEntity(int32_t _entityId) {
+	IEntity* entity = gECS->GetPrefabEntity();
+	if (entity) {
+		if (entity->GetId() == _entityId) {
+			return true;
+		}
+	}
+
+	return false;
 }
 

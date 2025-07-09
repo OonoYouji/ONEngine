@@ -37,6 +37,8 @@ public:
 	/// @brief imgui windowの描画処理
 	void ImGuiFunc() override;
 
+	void SetWindowName(const std::string& _name);
+
 private:
 	/// ===================================================
 	/// private : methods
@@ -78,6 +80,8 @@ private:
 	File* selectedFile_ = nullptr; ///< 選択されているファイル
 	uint32_t selectedItemPtr_ = 0;
 	bool isGameFolder_ = false; // ゲームファイルを選択しているかどうか
+
+	std::string winName_;
 
 };
 

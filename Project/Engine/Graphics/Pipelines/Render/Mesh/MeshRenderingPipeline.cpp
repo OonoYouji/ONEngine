@@ -96,13 +96,12 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 }
 
-
-void MeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
+void MeshRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
 	std::list<CustomMeshRenderer*> customRenderers;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		MeshRenderer*&& meshRenderer = entity->GetComponent<MeshRenderer>();
 
 		if (meshRenderer && meshRenderer->enable) {

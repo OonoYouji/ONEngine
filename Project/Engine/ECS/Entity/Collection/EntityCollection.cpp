@@ -88,21 +88,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 実際に破棄する
 	/// ------------------------------
 
-	/// entityのidをチェック
-	int32_t id = _entity->id_;
-
-	if (id > 0) {
-		/// 初期化時のidから削除
-		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), id), initEntityIDs_.usedIds.end());
-		initEntityIDs_.removedIds.push_back(id);
-	} else if (id < 0) {
-		/// 実行時のidから削除
-		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), id), runtimeEntityIDs_.usedIds.end());
-		runtimeEntityIDs_.removedIds.push_back(id);
-	} else {
-		Console::Log("Invalid entity ID: " + std::to_string(id));
-		return;
-	}
+	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
 	_entity->RemoveParent();
@@ -152,6 +138,21 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 		cameras_.erase(cameraItr, cameras_.end());
 	}
 
+}
+
+void EntityCollection::RemoveEntityId(int32_t _id) {
+	if (_id > 0) {
+		/// 初期化時のidから削除
+		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), _id), initEntityIDs_.usedIds.end());
+		initEntityIDs_.removedIds.push_back(_id);
+	} else if (_id < 0) {
+		/// 実行時のidから削除
+		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), _id), runtimeEntityIDs_.usedIds.end());
+		runtimeEntityIDs_.removedIds.push_back(_id);
+	} else {
+		Console::Log("Invalid entity ID: " + std::to_string(_id));
+		return;
+	}
 }
 
 void EntityCollection::RemoveEntityAll() {
@@ -272,28 +273,40 @@ void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
 
-	/// directoryがあるのかチェック
-	if (!std::filesystem::exists(prefabPath)) {
-		Console::Log("Prefab directory does not exist: " + prefabPath);
+	std::vector<File> prefabFiles = Mathf::FindFiles(prefabPath, ".prefab");
+
+	if (prefabFiles.empty()) {
+		Console::Log("No prefab files found in: " + prefabPath);
 		return;
 	}
 
 	/// directoryを探索
-	for (const auto& entry : std::filesystem::directory_iterator(prefabPath)) {
-
-		/// JSONファイルのみを対象とする
-		if (entry.is_regular_file() && entry.path().extension() == ".json") {
-
-			/// pathをPrefabに渡して終了
-			std::string prefabName = entry.path().stem().string();
-			prefabs_[prefabName] = std::make_unique<EntityPrefab>(entry.path().string());
-		}
+	for (const auto& file : prefabFiles) {
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 	}
-
-
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName) {
+void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
+	auto itr = prefabs_.find(_prefabName);
+	if (itr == prefabs_.end()) {
+		/// もう一度Fileを探索して確認
+		auto files = Mathf::FindFiles("./Assets/Prefabs", _prefabName);
+		if (files.empty()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return;
+		}
+		
+		///!< 複数あった場合は最初に見つかったものを使用する
+		File& file = files.front();
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
+
+	}
+
+	/// prefabを再読み込み
+	itr->second->Reload();
+}
+
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -305,14 +318,32 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	EmptyEntity* entity = GenerateEntity<EmptyEntity>(true);
+	EmptyEntity* entity = GenerateEntity<EmptyEntity>(_isRuntime);
 	if (entity) {
-		entity->SetName(_prefabName + "(Clone)");
+		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
+
+		if (_isRuntime) {
+			entity->SetName(name + "(Clone)");
+		} else {
+			entity->SetName(name);
+		}
 		entity->SetPrefabName(_prefabName);
 
 		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
 
+		if (_isInit) {
+			//entity->Initialize();
+		}
+
 		return entity;
+	}
+
+	return nullptr;
+}
+
+EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
+	if (prefabs_.contains(_fileName)) {
+		return prefabs_[_fileName].get();
 	}
 
 	return nullptr;
@@ -374,5 +405,9 @@ const Camera* EntityCollection::GetDebugCamera() const {
 
 Camera* EntityCollection::GetDebugCamera() {
 	return debugCamera_;
+}
+
+EntityFactory* EntityCollection::GetFactory() {
+	return factory_.get();
 }
 

@@ -87,6 +87,11 @@ public class Entity {
 		string typeName = typeof(T).Name;
 		ulong nativeHandle = InternalGetComponent<T>(entityId, typeName);
 
+		if(nativeHandle == 0) {
+			Log.WriteLine("Component not found: " + typeName + " (Entity ID: " + entityId + ")");
+			return null;
+		}
+
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;

@@ -6,24 +6,26 @@
 /// //////////////////////////////////////////////////////
 /// Prefab編集用のimgui window
 /// //////////////////////////////////////////////////////
-class ImGuiPrefabEditWindow : public IImGuiChildWindow {
+class ImGuiPrefabViewWindow : public IImGuiChildWindow {
 public:
 	/// =====================================================
 	/// public : methods
 	/// =====================================================
 
-	ImGuiPrefabEditWindow();
-	~ImGuiPrefabEditWindow() {}
+	ImGuiPrefabViewWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection);
+	~ImGuiPrefabViewWindow() {}
 
 	void ImGuiFunc() override;
 
+	void RenderView();
 
 private:
 	/// =====================================================
 	/// private : objects
 	/// =====================================================
 
-
+	class EntityComponentSystem* pECS_;
+	class GraphicsResourceCollection* pResourceCollection_;
 
 
 };

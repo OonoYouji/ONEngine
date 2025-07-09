@@ -17,7 +17,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(class EditorManager* _editorManager);
+	ImGuiInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -39,7 +39,8 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-
+	
+	class EntityComponentSystem* pECS_;
 	class EditorManager* pEditorManager_;
 
 	std::uintptr_t selectedPointer_; ///< 選択したポインタ

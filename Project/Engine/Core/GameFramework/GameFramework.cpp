@@ -88,8 +88,9 @@ void GameFramework::Run() {
 
 		windowManager_->Update();
 #ifdef _DEBUG
-		imGuiManager_->Update();
 		editorManager_->Update();
+		imGuiManager_->Update();
+		entityComponentSystem_->DebuggingUpdate();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
 		if (DebugConfig::isDebugging) {

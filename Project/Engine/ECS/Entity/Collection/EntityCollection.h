@@ -31,19 +31,19 @@ public:
 	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
 
-
 	template<typename T>
 	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
 	Camera* GenerateCamera();
 
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
+	void RemoveEntityId(int32_t _id);
 
 	void RemoveEntityAll();
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-	
+
 	template <typename T>
 	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
@@ -66,8 +66,10 @@ public:
 	/* ----- prefab ----- */
 
 	void LoadPrefabAll();
+	void ReloadPrefab(const std::string& _prefabName);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName);
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true, bool _isInit = true);
+	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
 
@@ -120,7 +122,7 @@ public:
 	const Camera* GetDebugCamera() const;
 	Camera* GetDebugCamera();
 
-
+	EntityFactory* GetFactory();
 
 };
 

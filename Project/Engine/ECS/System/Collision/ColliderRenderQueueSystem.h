@@ -15,10 +15,10 @@ public:
 	ColliderRenderQueueSystem();
 	~ColliderRenderQueueSystem() override = default;
 
-	void Update(class EntityComponentSystem* _ecs) override;
+	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
-	void UpdateSphereCollider(class EntityComponentSystem* _ecs);
-	void UpdateBoxCollider(class EntityComponentSystem* _ecs);
+	void UpdateSphereCollider(const std::vector<class IEntity*>& _entities);
+	void UpdateBoxCollider(const std::vector<class IEntity*>& _entities);
 
 };
 

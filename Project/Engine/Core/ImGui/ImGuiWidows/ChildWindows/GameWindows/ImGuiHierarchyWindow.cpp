@@ -5,7 +5,9 @@
 #include <dialog/ImGuiFileDialog.h>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Scene/SceneManager.h"
@@ -41,25 +43,19 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 				const char* droppedPath = static_cast<const char*>(payload->Data);
 				std::string path = std::string(droppedPath);
 
-				if (path.find(".cpp") != std::string::npos
-					|| path.find(".h") != std::string::npos) {
+				if (path.find(".prefab") != std::string::npos) {
 
 					/// pathの文字列をentity名に変換する処理
 					std::string str = path;
-					size_t pos = str.find_last_of('.');
-					if (pos != std::string::npos) {
-						str.erase(pos);
-					}
-
-					pos = str.find_last_of('/');
+					size_t pos = str.find_last_of('/');
 					if (pos != std::string::npos) {
 						str.erase(0, pos + 1);
 					}
 
-					pEntityComponentSystem_->GenerateEntity(str);
+					pEntityComponentSystem_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
-					Console::Log("Invalid entity format. Please use .cpp, or .h.");
+					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
 				}
 			}
 		}
@@ -229,7 +225,17 @@ void ImGuiHierarchyWindow::Hierarchy() {
 		DrawEntityHierarchy(entity);
 	}
 
-	pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+	bool hasValidSelection = false;
+	for (auto& entity : entityList_) {
+		if (entity == selectedEntity_) {
+			hasValidSelection = true;
+			break;
+		}
+	}
+
+	if (hasValidSelection) {
+		pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+	}
 }
 
 void ImGuiHierarchyWindow::EntityRename(IEntity* _entity) {
@@ -272,7 +278,7 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 			/// 選択中ならInspectorの選択を解除
 			if (selectedEntity_ == _entity) {
 				selectedEntity_ = nullptr;
-				//pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
+				pInspectorWindow_->SetSelectedEntity(0); // 選択を解除
 			}
 		}
 

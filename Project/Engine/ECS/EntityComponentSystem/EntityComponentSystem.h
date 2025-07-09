@@ -37,6 +37,8 @@ public:
 	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
 	void Update();
 
+	void DebuggingUpdate();
+
 
 
 	/// ----- entity ----- ///
@@ -46,7 +48,7 @@ public:
 
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isInit = true);
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true, bool _isInit = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 
@@ -71,6 +73,8 @@ public:
 	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
 
 	uint32_t GetEntityId(const std::string& _name);
+
+	std::vector<IEntity*> GetActiveEntities() const;
 
 
 	/// ----- component ----- ///
@@ -103,6 +107,17 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
+	void UpdateSystems(const std::vector<IEntity*>& _entities);
+
+
+	/// ----- prefab ----- ///
+
+	void ReloadPrefab(const std::string& _prefabName);
+	IEntity* GetGridEntity() const;
+	IEntity* GetPrefabEntity() const;
+	IEntity* GeneratePrefabEntity(const std::string& _name);
+
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -116,11 +131,18 @@ private:
 	std::unique_ptr<ComponentCollection> componentCollection_;
 
 	/// ----- system ----- ///
-	std::vector<std::unique_ptr<ECSISystem>> systemMap_;
+	std::vector<std::unique_ptr<ECSISystem>> systems_;
 
 
 	/// ----- command ----- ///
 	EntityDataInputCommand componentInputCommand_;
+
+
+	/// ----- editor ----- ///
+	std::unique_ptr<IEntity> debugCamera_;
+	std::unique_ptr<IEntity> gridEntity_;
+	std::unique_ptr<IEntity> prefabEntity_;
+
 
 public:
 	/// ===================================================
@@ -132,11 +154,6 @@ public:
 
 	void SetMainCamera2D(Camera* _camera);
 	void SetMainCamera2D(size_t _index);
-
-	void SetDebugCamera(Camera* _camera);
-	void SetDebugCamera(size_t _index);
-
-
 
 	/// @brief entities の取得
 	/// @return entities
@@ -215,7 +232,7 @@ inline ComponentArray<Comp>* EntityComponentSystem::GetComponentArray() requires
 
 template<typename T, typename ...Args>
 inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base_of_v<ECSISystem, T> {
-	systemMap_.push_back(std::make_unique<T>(args...));
+	systems_.push_back(std::make_unique<T>(args...));
 }
 
 
@@ -223,6 +240,7 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 /// monoを使ったC#スクリプトエンジンのコンポーネント
 /// =============================================
 
+IEntity* GetEntityById(int32_t _entityId);
 
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);
@@ -236,3 +254,4 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId);
 bool InternalContainsEntity(int32_t _entityId);
 int32_t InternalGetEntityId(MonoString* _name);
 int32_t InternalCreateEntity(MonoString* _name);
+bool InternalContainsPrefabEntity(int32_t _entityId);

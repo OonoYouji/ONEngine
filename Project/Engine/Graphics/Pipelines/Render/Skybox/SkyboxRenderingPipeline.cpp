@@ -121,13 +121,12 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
-
+void SkyboxRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	Skybox* skybox = nullptr;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		if (entity->GetName() == "Skybox") {
-			skybox = static_cast<Skybox*>(entity.get());
+			skybox = static_cast<Skybox*>(entity);
 			break;
 		}
 	}

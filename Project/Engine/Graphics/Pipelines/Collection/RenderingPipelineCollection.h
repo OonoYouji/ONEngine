@@ -40,6 +40,8 @@ public:
 	/// @brief すべてのEntityを描画する
 	void DrawEntities(class Camera* _3dCamera, class Camera* _2dCamera);
 
+	void DrawSelectedPrefab(class Camera* _3dCamera, class Camera* _2dCamera);
+
 	/// @brief post processの実行
 	void ExecutePostProcess(const std::string& _sceneTextureName);
 
@@ -53,6 +55,8 @@ private:
 	DxManager*                        dxManager_                  = nullptr;
 	class EntityComponentSystem*      pEntityComponentSystem_     = nullptr;
 	class GraphicsResourceCollection* graphicsResourceCollection_ = nullptr;
+
+	std::unique_ptr<IRenderingPipeline> prefabRenderingPipeline_;
 
 	std::vector<std::unique_ptr<IRenderingPipeline>>   renderer3ds_;
 	std::vector<std::unique_ptr<IRenderingPipeline>>   renderer2ds_;

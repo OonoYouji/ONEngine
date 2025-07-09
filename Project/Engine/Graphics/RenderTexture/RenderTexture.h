@@ -47,16 +47,21 @@ public:
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
 	void CreateBarrierPixelShaderResource(class DxCommand* _dxCommand);
 
+	/// @brief RenderTextureの名前を取得
+	/// @return std::string RenderTextureの名前
+	const std::string& GetName() const;
+
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
 
-	//std::unique_ptr<Texture> texture_; /// 書き込み先のテクスチャ
+	std::string name_;
+	Vector4 clearColor_;
+
 	Handle rtvHandle_;
 	Texture* texture_ = nullptr;
 
-	Vector4 clearColor_;
 
 };
 

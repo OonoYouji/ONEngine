@@ -570,8 +570,10 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
-	imGuiIO.KeyRepeatDelay = 4.145f;
-	imGuiIO.KeyRepeatRate = 12.0f;
+	//imGuiIO.KeyRepeatDelay = 4.145f;
+	//imGuiIO.KeyRepeatRate = 12.0f;
+	imGuiIO.KeyRepeatDelay = 0.25f;
+	imGuiIO.KeyRepeatRate = 0.05f;
 
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(

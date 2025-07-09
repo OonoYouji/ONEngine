@@ -106,13 +106,13 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void EffectRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, Camera* _camera) {
+
+void EffectRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	std::unordered_map<size_t, std::unordered_map<std::string, std::list<Effect*>>> blendMeshEffectMap;
 
 	/// mesh と transform の対応付け
-	//std::unordered_map<std::string, std::list<Effect*>> effectPerMesh;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		Effect*&& effect = entity->GetComponent<Effect>();
 		if (effect) {
 			blendMeshEffectMap[static_cast<size_t>(effect->GetBlendMode())][effect->GetMeshPath()].push_back(effect);

@@ -1,5 +1,8 @@
 #include "ImGuiInspectorWindow.h"
 
+/// std
+#include <format>
+
 /// external
 #include <imgui.h>
 
@@ -9,6 +12,7 @@
 #include "../../../Math/ImGuiMath.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
+#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
 enum SelectedType {
@@ -17,12 +21,12 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
-	: pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
+	: pECS_(_ecs), pEditorManager_(_editorManager) {
 
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _component) { TransformDebug(static_cast<Transform*>(_component)); });
+	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
 	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
@@ -48,6 +52,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EditorManager* _editorManager)
 	inspectorFunctions_.emplace_back([this]() { EntityInspector(); });
 
 }
+
 
 void ImGuiInspectorWindow::ImGuiFunc() {
 	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
@@ -88,9 +93,26 @@ void ImGuiInspectorWindow::EntityInspector() {
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::MenuItem("Apply Prefab")) {
+
+			if (!entity->GetPrefabName().empty()) {
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
+				pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
+				//pEditorManager_->ExecuteCommand<ApplyPrefabCommand>(entity);
+			} else {
+				Console::LogError("This entity is not a prefab instance.");
+			}
+
+		}
+
 		ImGui::EndMenuBar();
 	}
 
+	if (!entity->GetPrefabName().empty()) {
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
+		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
+		ImGui::PopStyleColor();
+	}
 
 	ImGuiInputTextReadOnly("entity name", entity->GetName());
 	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(entity->GetId()));
@@ -106,18 +128,18 @@ void ImGuiInspectorWindow::EntityInspector() {
 			componentName = componentName.substr(6);
 		}
 
-		std::string lable = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
+		std::string label = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 
 
 		/// チェックボックスでenable/disableを切り替え
 		bool enabled = component.second->enable;
-		if (ImGui::Checkbox(("##" + lable).c_str(), &enabled)) {
+		if (ImGui::Checkbox(("##" + label).c_str(), &enabled)) {
 			component.second->enable = enabled;
 		}
 
 		ImGui::SameLine();
 
-	
+
 
 		/// アクティブ/非アクティブで表示を変える
 		if (!enabled) {
@@ -127,10 +149,10 @@ void ImGuiInspectorWindow::EntityInspector() {
 		/// component debug
 		ImGui::Separator();
 		ImGui::SameLine();
-		if (ImGui::CollapsingHeader(lable.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 			/// 右クリックでポップアップメニューを開く
 			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-				ImGui::OpenPopup(lable.c_str());
+				ImGui::OpenPopup(label.c_str());
 			}
 
 			ImGui::Indent(34.0f);
@@ -143,7 +165,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 		}
 
 
-		if (ImGui::BeginPopupContextItem(lable.c_str())) {
+		if (ImGui::BeginPopupContextItem(label.c_str())) {
 			if (ImGui::MenuItem("delete")) {
 				auto resultItr = entity->GetComponents().begin();
 				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, componentName, &resultItr);
@@ -207,6 +229,10 @@ void ImGuiInspectorWindow::EntityInspector() {
 }
 
 IEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
+	if (selectedPointer_ == 0) {
+		return nullptr;
+	}
+
 	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
 	if (dynamic_cast<IEntity*>(entity)) {
 		return entity;

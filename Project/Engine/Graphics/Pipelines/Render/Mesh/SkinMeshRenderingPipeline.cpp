@@ -97,11 +97,10 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void SkinMeshRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _ecs, Camera* _camera) {
-
+void SkinMeshRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
-	for (auto& entity : _ecs->GetEntities()) {
+	for (auto& entity : _entities) {
 		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
 		if (skinMesh && skinMesh->enable) {
 			skinMeshRenderers.push_back(skinMesh);

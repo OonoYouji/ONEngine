@@ -26,14 +26,14 @@ public class Transform : Component {
 		}
 	}
 
-	public Vector3 rotate {
+	public Quaternion rotate {
 		get {
-			float _x, _y, _z;
-			InternalGetRotate(nativeHandle, out _x, out _y, out _z);
-			return new Vector3(_x, _y, _z);
+			float _x, _y, _z, _w;
+			InternalGetRotate(nativeHandle, out _x, out _y, out _z, out _w);
+			return new Quaternion(_x, _y, _z, _w);
 		}
 		set {
-			InternalSetRotate(nativeHandle, value.x, value.y, value.z);
+			InternalSetRotate(nativeHandle, value.x, value.y, value.z, value.w);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Transform : Component {
 	static extern void InternalGetLocalPosition(ulong _nativeHandle, out float _x, out float _y, out float _z);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalGetRotate(ulong _nativeHandle, out float _x, out float _y, out float _z);
+	static extern void InternalGetRotate(ulong _nativeHandle, out float _x, out float _y, out float _z, out float _w);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetScale(ulong _nativeHandle, out float _x, out float _y, out float _z);
@@ -91,7 +91,7 @@ public class Transform : Component {
 	static extern void InternalSetLocalPosition(ulong _nativeHandle, float _x, float _y, float _z);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetRotate(ulong _nativeHandle, float _x, float _y, float _z);
+	static extern void InternalSetRotate(ulong _nativeHandle, float _x, float _y, float _z, float _w);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetScale(ulong _nativeHandle, float _x, float _y, float _z);

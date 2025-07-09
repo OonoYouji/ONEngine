@@ -92,7 +92,7 @@ void WindowManager::Update() {
 			continue;
 		}
 
-		if (PeekMessage(&window->msg_, nullptr, 0, 0, PM_REMOVE)) {
+		while (PeekMessage(&window->msg_, nullptr, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&window->msg_);
 			DispatchMessage(&window->msg_);
 		}
@@ -199,7 +199,11 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 void WindowManager::UpdateMainWindow() {
 	pMainWindow_->Update();
 
-	if (PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
+	while (PeekMessage(&pMainWindow_->msg_, nullptr, 0, 0, PM_REMOVE)) {
+		if (pMainWindow_->msg_.message == WM_QUIT) {
+			break;
+		}
+
 		TranslateMessage(&pMainWindow_->msg_);
 		DispatchMessage(&pMainWindow_->msg_);
 	}

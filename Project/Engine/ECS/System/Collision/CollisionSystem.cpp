@@ -56,11 +56,11 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
+void CollisionSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// colliderを集める
 	std::vector<ICollider*> colliders;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 
 		/// sphere collider check
 		SphereCollider* sphereCollider = entity->GetComponent<SphereCollider>();

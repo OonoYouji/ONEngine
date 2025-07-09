@@ -301,7 +301,7 @@ CreatePrefabCommand::CreatePrefabCommand(IEntity* _entity)
 	}
 
 	/// プレハブのパスを設定
-	prefabName_ = pEntity_->GetName() + ".json";
+	prefabName_ = pEntity_->GetName() + ".prefab";
 }
 
 EDITOR_STATE CreatePrefabCommand::Execute() {
