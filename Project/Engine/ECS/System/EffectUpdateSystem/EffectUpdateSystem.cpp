@@ -10,19 +10,18 @@
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Component.h"
 
-
-void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) {
+void EffectUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// エフェクトコンポーネントを持つエンティティを取得
 	std::list<Effect*> effectList;
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		auto effect = entity->GetComponent<Effect>();
 		if (effect) {
 			effectList.push_back(effect);
 		}
 	}
 
-	mainCamera_ = _pEntityComponentSystem->GetMainCamera();
+	mainCamera_ = _ecs->GetMainCamera();
 	if (!mainCamera_) {
 		Console::Log("EffectUpdateSystem::Update: main camera is null");
 		return;
@@ -151,6 +150,7 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _pEntityComponentSystem) 
 	}
 
 }
+
 
 void EffectUpdateSystem::UpdateElement(Effect* _effect, Effect::Element* _element) {
 

@@ -12,6 +12,7 @@ void IEntity::CommonInitialize() {
 	className_ = typeid(*this).name();
 	className_.erase(0, 6);
 	name_ = className_;
+	prefabName_ = "";
 
 	pEntityComponentSystem_->LoadComponent(this);
 
@@ -77,7 +78,7 @@ void IEntity::RemoveComponentAll() {
 }
 
 void IEntity::UpdateTransform() {
-	transform_->matWorld = Matrix4x4::MakeAffine(transform_->scale, transform_->rotate, transform_->position);
+	transform_->Update();
 
 	if (parent_) {
 
@@ -124,19 +125,11 @@ void IEntity::SetPositionZ(float _z) {
 }
 
 void IEntity::SetRotate(const Vector3& _v) {
-	transform_->rotate = _v;
+	transform_->rotate = Quaternion::FromEuler(_v);
 }
 
-void IEntity::SetRotateX(float _x) {
-	transform_->rotate.x = _x;
-}
-
-void IEntity::SetRotateY(float _y) {
-	transform_->rotate.y = _y;
-}
-
-void IEntity::SetRotateZ(float _z) {
-	transform_->rotate.z = _z;
+void IEntity::SetRotate(const Quaternion& _q) {
+	transform_->rotate = _q;
 }
 
 void IEntity::SetScale(const Vector3& _v) {
@@ -176,6 +169,10 @@ void IEntity::SetName(const std::string& _name) {
 	name_ = _name;
 }
 
+void IEntity::SetPrefabName(const std::string& _name) {
+	prefabName_ = _name;
+}
+
 void IEntity::SetActive(bool _active) {
 	active_ = _active;
 }
@@ -184,7 +181,11 @@ const Vector3& IEntity::GetLocalPosition() const {
 	return transform_->position;
 }
 
-const Vector3& IEntity::GetLocalRotate() const {
+Vector3 IEntity::GetLocalRotate() const {
+	return Quaternion::ToEuler(transform_->rotate);
+}
+
+const Quaternion& IEntity::GetLocalRotateQuaternion() const {
 	return transform_->rotate;
 }
 
@@ -198,11 +199,19 @@ Vector3 IEntity::GetPosition() {
 
 Vector3 IEntity::GetRotate() {
 	if (!parent_) {
-		return transform_->rotate;
+		return Quaternion::ToEuler(transform_->rotate);
 	}
 
 	// 自身のローカル回転を加算  
-	return parent_->GetRotate() + transform_->rotate;
+	return Quaternion::ToEuler(parent_->GetRotateQuaternion() * transform_->rotate);
+}
+
+Quaternion IEntity::GetRotateQuaternion() {
+	if (!parent_) {
+		return transform_->rotate;
+	}
+
+	return parent_->GetRotateQuaternion() * transform_->rotate;
 }
 
 Vector3 IEntity::GetScale() {
@@ -233,6 +242,10 @@ const std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() const {
 	return components_;
 }
 
+std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() {
+	return components_;
+}
+
 const std::string& IEntity::GetName() const {
 	return name_;
 }
@@ -241,14 +254,21 @@ const std::string& IEntity::GetEntityClassName() const {
 	return className_;
 }
 
+const std::string& IEntity::GetPrefabName() const {
+	return prefabName_;
+}
+
+bool IEntity::ContainsPrefab() const {
+	/// 空文字列でないかチェック
+	return prefabName_ != "";
+}
+
 bool IEntity::GetActive() const {
 	return active_;
 }
 
-const size_t& IEntity::GetId() const {
+int32_t IEntity::GetId() const {
 	return id_;
 }
 
-size_t* IEntity::GetIdPtr() {
-	return &id_;
-}
+

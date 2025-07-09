@@ -1,13 +1,18 @@
 #include "EntityCollection.h"
 
+/// std
+#include <fstream>
+
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// entity
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -19,11 +24,13 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 	factory_ = std::make_unique<EntityFactory>(pDxDevice_);
 	entities_.reserve(256);
+
+	LoadPrefabAll();
 }
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit) {
+IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
 	auto entity = factory_->Generate(_name);
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -31,7 +38,7 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit
 		/// 初期化
 		IEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
-		entityPtr->id_ = NewEntityID();
+		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->CommonInitialize();
 		if (_isInit) {
 			entityPtr->Initialize();
@@ -45,7 +52,7 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit
 Camera* EntityCollection::GenerateCamera() {
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
 	camera->pEntityComponentSystem_ = pECS_;
-	camera->id_ = NewEntityID();
+	camera->id_ = NewEntityID(false);
 	camera->CommonInitialize();
 	camera->Initialize();
 
@@ -81,17 +88,15 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 実際に破棄する
 	/// ------------------------------
 
-	/// entityのidをチェック
-	size_t id = _entity->id_;
-	usedEntityIDs_.erase(std::remove(usedEntityIDs_.begin(), usedEntityIDs_.end(), id), usedEntityIDs_.end());
-	removedEntityIDs_.push_back(id);
+	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
 	_entity->RemoveParent();
 	if (_deleteChildren) {
 
 		if (_entity->GetChildren().size() > 0) {
-			for (auto& child : _entity->GetChildren()) {
+			auto children = _entity->GetChildren();
+			for (auto& child : children) {
 				RemoveEntity(child, _deleteChildren); ///< 子供の親子関係を解除した後に再帰的に削除
 			}
 		}
@@ -135,10 +140,35 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 }
 
-void EntityCollection::RemoveEntityAll() {
-	for (auto& entity : entities_) {
-		RemoveEntity(entity.get(), true);
+void EntityCollection::RemoveEntityId(int32_t _id) {
+	if (_id > 0) {
+		/// 初期化時のidから削除
+		initEntityIDs_.usedIds.erase(std::remove(initEntityIDs_.usedIds.begin(), initEntityIDs_.usedIds.end(), _id), initEntityIDs_.usedIds.end());
+		initEntityIDs_.removedIds.push_back(_id);
+	} else if (_id < 0) {
+		/// 実行時のidから削除
+		runtimeEntityIDs_.usedIds.erase(std::remove(runtimeEntityIDs_.usedIds.begin(), runtimeEntityIDs_.usedIds.end(), _id), runtimeEntityIDs_.usedIds.end());
+		runtimeEntityIDs_.removedIds.push_back(_id);
+	} else {
+		Console::Log("Invalid entity ID: " + std::to_string(_id));
+		return;
 	}
+}
+
+void EntityCollection::RemoveEntityAll() {
+	std::vector<IEntity*> toRemove;
+	toRemove.reserve(entities_.size()); // 最適化
+
+	for (const auto& entity : entities_) {
+		toRemove.push_back(entity.get()); // ポインタだけをコピー
+	}
+
+	for (auto& entity : toRemove) {
+		if (!entity->GetParent()) {
+			RemoveEntity(entity, true); ///< 全てのエンティティを削除する
+		}
+	}
+
 }
 
 
@@ -196,19 +226,127 @@ void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)
 	}
 }
 
-size_t EntityCollection::NewEntityID() {
-	size_t resultId = 0;
+int32_t EntityCollection::NewEntityID(bool _isRuntime) {
+	int32_t resultId = 0;
 
-	if (removedEntityIDs_.size() > 0) {
-		resultId = removedEntityIDs_.front();
-		removedEntityIDs_.pop_front();
-		usedEntityIDs_.push_back(resultId);
+	if (_isRuntime) {
+		/* --- 実行時 --- */
+
+		// 削除されたIDがあればそれを使用
+		if (runtimeEntityIDs_.removedIds.size() > 0) {
+			resultId = runtimeEntityIDs_.removedIds.front();
+			runtimeEntityIDs_.removedIds.pop_front();
+			runtimeEntityIDs_.usedIds.push_back(resultId);
+		} else {
+			// なければ新しいIDを生成
+			resultId = static_cast<int32_t>(runtimeEntityIDs_.usedIds.size() + 1) * -1;
+			runtimeEntityIDs_.usedIds.push_back(resultId);
+		}
+
+
 	} else {
-		resultId = usedEntityIDs_.size();
-		usedEntityIDs_.push_back(resultId);
+		/* --- 初期化時 --- */
+		if (initEntityIDs_.removedIds.size() > 0) {
+			resultId = initEntityIDs_.removedIds.front();
+			initEntityIDs_.removedIds.pop_front();
+			initEntityIDs_.usedIds.push_back(resultId);
+		} else {
+			resultId = static_cast<int32_t>(initEntityIDs_.usedIds.size()) + 1;
+			initEntityIDs_.usedIds.push_back(resultId);
+		}
 	}
 
 	return resultId;
+}
+
+uint32_t EntityCollection::GetEntityId(const std::string& _name) {
+	for (auto& entity : entities_) {
+		if (entity->name_ == _name) {
+			return static_cast<uint32_t>(entity->GetId());
+		}
+	}
+
+	return 0;
+}
+
+void EntityCollection::LoadPrefabAll() {
+	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
+	std::string prefabPath = "./Assets/Prefabs/";
+
+	std::vector<File> prefabFiles = Mathf::FindFiles(prefabPath, ".prefab");
+
+	if (prefabFiles.empty()) {
+		Console::Log("No prefab files found in: " + prefabPath);
+		return;
+	}
+
+	/// directoryを探索
+	for (const auto& file : prefabFiles) {
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
+	}
+}
+
+void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
+	auto itr = prefabs_.find(_prefabName);
+	if (itr == prefabs_.end()) {
+		/// もう一度Fileを探索して確認
+		auto files = Mathf::FindFiles("./Assets/Prefabs", _prefabName);
+		if (files.empty()) {
+			Console::LogError("Prefab not found: " + _prefabName);
+			return;
+		}
+		
+		///!< 複数あった場合は最初に見つかったものを使用する
+		File& file = files.front();
+		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
+
+	}
+
+	/// prefabを再読み込み
+	itr->second->Reload();
+}
+
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
+	/// prefabが存在するかチェック
+	auto prefabItr = prefabs_.find(_prefabName);
+	if (prefabItr == prefabs_.end()) {
+		Console::Log("Prefab not found: " + _prefabName);
+		return 0;
+	}
+
+	/// prefabを取得
+	EntityPrefab* prefab = prefabItr->second.get();
+
+	/// entityを生成する
+	EmptyEntity* entity = GenerateEntity<EmptyEntity>(_isRuntime);
+	if (entity) {
+		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
+
+		if (_isRuntime) {
+			entity->SetName(name + "(Clone)");
+		} else {
+			entity->SetName(name);
+		}
+		entity->SetPrefabName(_prefabName);
+
+		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
+
+		if (_isInit) {
+			//entity->Initialize();
+		}
+
+		return entity;
+	}
+
+	return nullptr;
+}
+
+EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
+	if (prefabs_.contains(_fileName)) {
+		return prefabs_[_fileName].get();
+	}
+
+	return nullptr;
 }
 
 
@@ -267,5 +405,9 @@ const Camera* EntityCollection::GetDebugCamera() const {
 
 Camera* EntityCollection::GetDebugCamera() {
 	return debugCamera_;
+}
+
+EntityFactory* EntityCollection::GetFactory() {
+	return factory_.get();
 }
 

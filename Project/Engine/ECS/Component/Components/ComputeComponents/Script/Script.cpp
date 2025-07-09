@@ -3,6 +3,10 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/Core/ImGui/Math/ImGuiShowField.h"
+
+using namespace CSGui;
+
 
 
 Script::Script() {}
@@ -89,10 +93,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
 	for (auto& script : scriptList) {
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
-	
-		ImGui::Spacing();
-		ImGui::SameLine();
-		
+
 		/// 有効/無効のチェックボックス
 		ImGui::Checkbox(ptrLable.c_str(), &script.enable);
 
@@ -101,32 +102,60 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		ImGui::SameLine();
 
 
-
 		/// 有効/無効に応じてテキストの色を変える
 		if (!script.enable) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 		}
 
-		ImGui::InputText((ptrLable + "name").c_str(), script.scriptName.data(), ImGuiInputTextFlags_ReadOnly);
 
-		/// popupでスクリプトの削除などの操作を行う
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			ImGui::OpenPopup("##open");
-		}
+		if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
 
-		/// 右クリックしたときのメニューの表示
-		if (ImGui::BeginPopupContextItem("##popup")) {
-			if (ImGui::MenuItem("delete")) {
-				_script->RemoveScript(script.scriptName);
+			/// popupでスクリプトの削除などの操作を行う
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+				ImGui::OpenPopup("##open");
 			}
 
-			ImGui::EndPopup();
-		}
+			/// 右クリックしたときのメニューの表示
+			if (ImGui::BeginPopupContextItem("##popup")) {
+				if (ImGui::MenuItem("delete")) {
+					_script->RemoveScript(script.scriptName);
+				}
 
+				ImGui::EndPopup();
+			}
+
+
+			/// ------------------------------------------------------------------
+			/// スクリプト内の[SerializeField]など表示
+			/// ------------------------------------------------------------------
+
+			MonoClass* monoClass = mono_object_get_class(script.instance);
+			MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
+			MonoClassField* field = nullptr;
+			void* iter = nullptr;
+
+			while ((field = mono_class_get_fields(monoClass, &iter))) {
+				const char* fieldName = mono_field_get_name(field);
+
+				MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
+				if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
+					// 値の取得
+					MonoType* fieldType = mono_field_get_type(field);
+					int type = mono_type_get_type(fieldType);
+
+					ShowFiled(type, script.instance, field, fieldName);
+
+				}
+
+			}
+
+
+		}
 
 		if (!script.enable) {
 			ImGui::PopStyleColor(1);
 		}
+
 	}
 
 	/// 現在のwindowのサイズを得る
@@ -164,6 +193,6 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 
 
-	
+
 
 }

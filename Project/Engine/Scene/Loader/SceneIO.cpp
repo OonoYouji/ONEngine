@@ -29,33 +29,7 @@ void SceneIO::Output(IScene* _scene) {
 	}
 
 	fileName_ = type + ".json";
-
-	nlohmann::json outputJson = nlohmann::json::object();
-
-	auto& entities = pECS_->GetEntities();
-	for (auto& entity : entities) {
-		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
-		if (entityJson.empty()) {
-			continue; // エンティティの情報が空ならスキップ
-		}
-
-		outputJson["entities"].push_back(entityJson);
-	}
-
-
-	/// ファイルが無かったら生成する
-	if (!std::filesystem::exists(fileDirectory_ + fileName_)) {
-		std::filesystem::create_directories(fileDirectory_);
-	}
-
-
-	std::ofstream outputFile(fileDirectory_ + fileName_);
-	if (!outputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + fileName_);
-	}
-
-	outputFile << outputJson.dump(4);
-	outputFile.close();
+	SaveScene(fileName_);
 
 }
 
@@ -69,67 +43,31 @@ void SceneIO::Input(IScene* _scene) {
 	}
 
 	fileName_ = type + ".json";
+	LoadScene(fileName_);
 
+}
 
-	std::ifstream inputFile(fileDirectory_ + fileName_);
-	if (!inputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + fileName_);
-		return;
+void SceneIO::OutputTemporary(IScene* _scene) {
+	/* 一時的なシーンのjsonを保存する */
+
+	std::string type = typeid(*_scene).name();
+	// "class "をstringから排除
+	if (type.find("class ") == 0) {
+		type = type.substr(6);
 	}
+	fileName_ = type + "_temp.json";
+	SaveScene(fileName_);
 
-	/// json形式に変換
-	nlohmann::json inputJson;
-	inputFile >> inputJson;
-	inputFile.close();
+}
 
-	std::unordered_map<uint32_t, IEntity*> entityMap;
-
-	/// 実際にシーンに変換する
-	for (const auto& entityJson : inputJson["entities"]) {
-		std::string entityClassName = entityJson["className"];
-		std::string entityName = entityJson["name"];
-		uint32_t entityId = entityJson["id"];
-
-		IEntity* entity = pECS_->GenerateEntity(entityClassName, false);
-		if (entity) {
-			entity->SetName(entityName);
-			LoadEntity(entityJson, entity);
-			entityMap[entityId] = entity;
-		}
+void SceneIO::InputTemporary(IScene* _scene) {
+	std::string type = typeid(*_scene).name();
+	// "class "をstringから排除
+	if (type.find("class ") == 0) {
+		type = type.substr(6);
 	}
-
-
-	/// エンティティの親子関係を設定
-	for (const auto& entityJson : inputJson["entities"]) {
-		uint32_t entityId = entityJson["id"];
-		if (entityMap.find(entityId) == entityMap.end()) {
-			continue; // エンティティが見つからない場合はスキップ
-		}
-
-		IEntity* entity = entityMap[entityId];
-		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
-			uint32_t parentId = entityJson["parent"];
-			if (entityMap.find(parentId) != entityMap.end()) {
-				entity->SetParent(entityMap[parentId]);
-			}
-		}
-	}
-
-
-	/// 全てのエンティティを初期化
-	for (const auto& entityPair : entityMap) {
-		IEntity* entity = entityPair.second;
-		if (entity) {
-
-			/// scriptのコンポーネントのリセット
-			Script* sc = entity->GetComponent<Script>();
-			if (sc) {
-				sc->ResetScripts();
-			}
-			
-			entity->Initialize();
-		}
-	}
+	fileName_ = type + "_temp.json";
+	LoadScene(fileName_);
 
 }
 
@@ -149,9 +87,112 @@ void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
 			}
 
 		} else {
-			Console::Log("コンポーネントの追加に失敗しました: " + componentType);
+			Console::LogError("コンポーネントの追加に失敗しました: " + componentType);
+		}
+	}
+
+}
+
+void SceneIO::SaveScene(const std::string& _filename) {
+	nlohmann::json outputJson = nlohmann::json::object();
+
+	auto& entities = pECS_->GetEntities();
+	for (auto& entity : entities) {
+		/// マイナスIDはruntimeに生成されたエンティティなのでスキップ
+		if (entity->GetId() < 0) {
+			continue;
+		}
+
+
+		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
+		if (entityJson.empty()) {
+			continue; // エンティティの情報が空ならスキップ
+		}
+
+		outputJson["entities"].push_back(entityJson);
+	}
+
+
+	/// ファイルが無かったら生成する
+	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
+		std::filesystem::create_directories(fileDirectory_);
+	}
+
+
+	std::ofstream outputFile(fileDirectory_ + _filename);
+	if (!outputFile.is_open()) {
+		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+	}
+
+	outputFile << outputJson.dump(4);
+	outputFile.close();
+}
+
+void SceneIO::LoadScene(const std::string& _filename) {
+
+	std::ifstream inputFile(fileDirectory_ + _filename);
+	if (!inputFile.is_open()) {
+		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+		return;
+	}
+
+	/// json形式に変換
+	nlohmann::json inputJson;
+	inputFile >> inputJson;
+	inputFile.close();
+
+	std::unordered_map<uint32_t, IEntity*> entityMap;
+
+	/// 実際にシーンに変換する
+	for (const auto& entityJson : inputJson["entities"]) {
+		const std::string& prefabName = entityJson["prefabName"];
+		const std::string& entityClassName = entityJson["className"];
+		const std::string& entityName = entityJson["name"];
+		uint32_t entityId = entityJson["id"];
+
+		IEntity* entity = nullptr;
+		if (!prefabName.empty()) {
+			std::string prefabName = entityJson["prefabName"];
+			entity = pECS_->GenerateEntityFromPrefab(prefabName, false);
+		} else {
+			entity = pECS_->GenerateEntity(entityClassName, false);
+		}
+
+		if (entity) {
+			entity->SetPrefabName(prefabName);
+			entity->SetName(entityName);
+
+			/// prefabがないならシーンに保存されたjsonからエンティティを復元
+			if (prefabName.empty()) {
+				EntityJsonConverter::FromJson(entityJson, entity);
+			}
+			entityMap[entityId] = entity;
 		}
 	}
 
 
+	/// エンティティの親子関係を設定
+	for (const auto& entityJson : inputJson["entities"]) {
+		int32_t entityId = entityJson["id"];
+		if (entityMap.find(entityId) == entityMap.end()) {
+			continue; // エンティティが見つからない場合はスキップ
+		}
+
+		IEntity* entity = entityMap[entityId];
+		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
+			int32_t parentId = entityJson["parent"];
+			if (entityMap.find(parentId) != entityMap.end()) {
+				entity->SetParent(entityMap[parentId]);
+			}
+		}
+	}
+
+
+	/// 全てのエンティティを初期化
+	for (const auto& entityPair : entityMap) {
+		IEntity* entity = entityPair.second;
+		if (entity) {
+			entity->Initialize();
+		}
+	}
 }

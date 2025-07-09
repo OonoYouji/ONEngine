@@ -35,7 +35,8 @@ void GraphicsResourceCollection::LoadResources(const std::vector<std::string>& _
 			|| path.find(".jpg") != std::string::npos
 			|| path.find(".dds") != std::string::npos) {
 			type = Type::texture;
-		} else if (path.find(".obj") != std::string::npos) {
+		} else if (path.find(".obj") != std::string::npos
+			|| path.find(".gltf") != std::string::npos) {
 			type = Type::model;
 		}
 
@@ -49,9 +50,12 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 	for (auto& path : _filePaths) {
 		Type type = Type::none;
 
-		if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+		if (path.find(".png") != std::string::npos
+			|| path.find(".jpg") != std::string::npos
+			|| path.find(".dds") != std::string::npos) {
 			type = Type::texture;
-		} else if (path.find(".obj") != std::string::npos) {
+		} else if (path.find(".obj") != std::string::npos
+			|| path.find(".gltf") != std::string::npos) {
 			type = Type::model;
 		}
 
@@ -102,6 +106,7 @@ void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::uni
 }
 
 void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
+	_texture->SetName(_filePath);
 	textureIndices_[_filePath] = textureIndices_.size();
 	textures_[textureIndices_[_filePath]] = std::move(_texture);
 }
@@ -131,6 +136,15 @@ std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const 
 }
 
 const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {
+	auto itr = models_.find(_filePath);
+	if (itr != models_.end()) {
+		return itr->second.get();
+	}
+
+	return nullptr;
+}
+
+Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) {
 	auto itr = models_.find(_filePath);
 	if (itr != models_.end()) {
 		return itr->second.get();

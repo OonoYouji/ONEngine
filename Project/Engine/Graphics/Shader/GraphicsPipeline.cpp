@@ -30,12 +30,13 @@ void GraphicsPipeline::SetShader(Shader* _shader) {
 	pShader_ = _shader;
 }
 
-void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format) {
+void GraphicsPipeline::AddInputElement(const std::string& _semanticName, uint32_t _semanticIndex, DXGI_FORMAT _format, UINT _inputSlot) {
 	D3D12_INPUT_ELEMENT_DESC element = {};
 	element.SemanticName = _semanticName.c_str();
 	element.SemanticIndex = _semanticIndex;
 	element.Format = _format;
 	element.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	element.InputSlot = _inputSlot;
 
 	inputElements_.push_back(element);
 	semanticNames_.push_back(_semanticName);
@@ -165,8 +166,7 @@ void GraphicsPipeline::CreateRootSignature(DxDevice* _dxDevice) {
 	);
 
 	if (FAILED(hr)) {
-		Console::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
-		Assert(false, "error...");
+		Assert(false, reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 	}
 
 	/// バイナリを元に生成

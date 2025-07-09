@@ -65,6 +65,14 @@ public:
 };
 
 
+namespace COMP_DEBUG {
+
+	/// @brief MeshRendererのデバッグ表示
+	void MeshRendererDebug(MeshRenderer* _mr);
+
+}
+
+
 /// ===================================================
 /// csで使用するための関数群
 /// ===================================================

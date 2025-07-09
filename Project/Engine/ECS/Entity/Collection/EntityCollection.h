@@ -8,20 +8,28 @@
 #include <deque>
 
 #include "../Factory/EntityFactory.h"
+#include "../Prefab/EntityPrefab.h"
 
 class Camera;
 
 
 class EntityCollection final {
+
+	/// @brief EntityIdの管理用コンテナ
+	struct IdContainer {
+		std::deque<int32_t> usedIds;    ///< 使用中のID
+		std::deque<int32_t> removedIds; ///< 削除されたID
+	};
+
+
 public:
 
 	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
 	~EntityCollection();
 
 	template<typename T>
-	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
-	IEntity* GenerateEntity(const std::string& _name, bool _isInit);
-
+	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
+	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
 
 	template<typename T>
 	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
@@ -29,12 +37,13 @@ public:
 
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
+	void RemoveEntityId(int32_t _id);
 
 	void RemoveEntityAll();
 
 	template <typename T>
 	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-	
+
 	template <typename T>
 	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
 
@@ -50,7 +59,17 @@ public:
 
 	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
 
-	size_t NewEntityID();
+	int32_t NewEntityID(bool _isRuntime);
+
+	uint32_t GetEntityId(const std::string& _name);
+
+	/* ----- prefab ----- */
+
+	void LoadPrefabAll();
+	void ReloadPrefab(const std::string& _prefabName);
+
+	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true, bool _isInit = true);
+	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
 
@@ -61,8 +80,8 @@ private:
 	std::unique_ptr<EntityFactory> factory_;
 
 	/// entityのIDを管理するためのdeque
-	std::deque<size_t> usedEntityIDs_;
-	std::deque<size_t> removedEntityIDs_;
+	IdContainer initEntityIDs_;
+	IdContainer runtimeEntityIDs_;
 
 	/// entityの本体を持つ配列
 	std::vector<std::unique_ptr<IEntity>> entities_;
@@ -74,6 +93,10 @@ private:
 	Camera* debugCamera_ = nullptr;
 
 	std::function<void(EntityFactory*)> factoryRegisterFunc_;
+
+
+	/// prefab
+	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
 
 public:
 
@@ -99,23 +122,23 @@ public:
 	const Camera* GetDebugCamera() const;
 	Camera* GetDebugCamera();
 
-
+	EntityFactory* GetFactory();
 
 };
 
 
 template<typename T>
-inline T* EntityCollection::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
+inline T* EntityCollection::GenerateEntity(bool _isRuntime) requires std::is_base_of_v<IEntity, T> {
 
 	std::string name = typeid(T).name();
 	if (name.find("class ") == 0) {
 		name = name.substr(6); // Remove "class " prefix
 	}
 
-	IEntity* entity = GenerateEntity(name, true);
+	IEntity* entity = GenerateEntity(name, true, _isRuntime);
 	if (!entity) {
 		factory_->Register(name, []() { return std::make_unique<T>(); });
-		entity = GenerateEntity(name, true);
+		entity = GenerateEntity(name, true, _isRuntime);
 		if (!entity) {
 			Console::Log(std::format("Failed to generate entity of type: {}", name));
 		}
@@ -128,7 +151,7 @@ template<typename T>
 inline T* EntityCollection::GenerateCamera() requires std::is_base_of_v<Camera, T> {
 	std::unique_ptr<T> camera = std::make_unique<T>(pDxDevice_);
 	camera->pEntityComponentSystem_ = pECS_;
-	camera->id_ = NewEntityID();
+	camera->id_ = NewEntityID(false);
 	camera->CommonInitialize();
 	camera->Initialize();
 	T* cameraPtr = camera.get();

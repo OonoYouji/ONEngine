@@ -7,6 +7,7 @@
 /// lib
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/Core/Utility/Tools/Log.h"
+#include "Engine/Core/Config/EngineConfig.h"
 
 
 DxSwapChain::DxSwapChain() {}
@@ -25,8 +26,7 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 	pDxManager_ = _dxManager;
 	pWindow_    = _window;
 
-	Vector2 size = pWindow_->GetWindowSize();
-	size = { 1920.f, 1080.0f };
+	const Vector2& size = EngineConfig::kWindowSize;
 
 	{
 		/// ---------------------------------------------------

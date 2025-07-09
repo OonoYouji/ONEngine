@@ -92,6 +92,7 @@ public:
 	/// @param _filePath .slnファイルからの相対パス
 	/// @return modelのポインタ
 	const Model* GetModel(const std::string& _filePath) const;
+	Model* GetModel(const std::string& _filePath);
 
 	/// @brief textureの取得
 	/// @param _filePath .slnファイルからの相対パス

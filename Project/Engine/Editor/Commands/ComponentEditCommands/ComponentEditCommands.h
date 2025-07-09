@@ -3,6 +3,7 @@
 /// std
 #include <typeindex>
 #include <string>
+#include <unordered_map>
 
 /// engine
 #include "../Interface/IEditorCommand.h"
@@ -113,6 +114,28 @@ private:
 
 
 /// ///////////////////////////////////////////////
+/// Componentの削除
+/// ///////////////////////////////////////////////
+class RemoveComponentCommand : public IEditorCommand {
+public:
+
+	RemoveComponentCommand(class IEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
+	~RemoveComponentCommand() override = default;
+
+	/// @brief コマンドの実行
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+
+	std::unordered_map<size_t, class IComponent*>::iterator* pIterator_;
+	class IEntity* pEntity_ = nullptr;
+	std::string componentName_;
+
+};
+
+
+/// ///////////////////////////////////////////////
 /// Scriptの再読み込み
 /// ///////////////////////////////////////////////
 class ReloadAllScriptsCommand : public IEditorCommand {
@@ -121,7 +144,7 @@ public:
 	/// public : methods
 	/// ================================================
 
-	ReloadAllScriptsCommand(class EntityComponentSystem* _ecs);
+	ReloadAllScriptsCommand(class EntityComponentSystem* _ecs, class SceneManager* _sceneManager);
 	~ReloadAllScriptsCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
@@ -132,4 +155,5 @@ private:
 	/// private : objects
 	/// ================================================
 	class EntityComponentSystem* pECS_ = nullptr;
+	class SceneManager* pSceneManager_ = nullptr;
 };

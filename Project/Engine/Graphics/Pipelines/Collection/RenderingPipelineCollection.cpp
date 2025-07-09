@@ -7,6 +7,7 @@
 
 /// pipelines
 #include "../Render/Mesh/MeshRenderingPipeline.h"
+#include "../Render/Mesh/SkinMeshRenderingPipeline.h"
 #include "../Render/Effect/EffectRenderingPipeline.h"
 #include "../Render/Primitive/Line2DRenderingPipeline.h"
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
@@ -36,6 +37,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
@@ -45,20 +47,57 @@ void RenderingPipelineCollection::Initialize() {
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
+
+	std::vector<IEntity*> entities;
+	entities.reserve(pEntityComponentSystem_->GetEntities().size());
+	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
+		if (entity.get() && entity->GetActive()) {
+			entities.push_back(entity.get());
+		}
+	}
+
+
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _3dCamera);
+			renderer->Draw(entities, _3dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
 	if (_2dCamera) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(dxManager_->GetDxCommand(), pEntityComponentSystem_, _2dCamera);
+			renderer->Draw(entities, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+	}
+}
+
+void RenderingPipelineCollection::DrawSelectedPrefab(Camera* _3dCamera, Camera* _2dCamera) {
+
+	std::vector<IEntity*> entities;
+	entities.push_back(pEntityComponentSystem_->GetGridEntity());
+	IEntity* prefabEntity = pEntityComponentSystem_->GetPrefabEntity();
+	if (prefabEntity) {
+		entities.push_back(prefabEntity);
+	}
+
+
+	if (_3dCamera) {
+		for (auto& renderer : renderer3ds_) {
+			renderer->Draw(entities, _3dCamera, dxManager_->GetDxCommand());
+		}
+	} else {
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+	}
+
+	if (_2dCamera) {
+		for (auto& renderer : renderer2ds_) {
+			renderer->Draw(entities, _2dCamera, dxManager_->GetDxCommand());
+		}
+	} else {
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
 	}
 }
 

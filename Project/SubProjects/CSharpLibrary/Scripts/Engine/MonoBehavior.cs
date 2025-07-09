@@ -17,13 +17,14 @@ public class MonoBehavior {
 
 	private bool initialized = false;
 
-	public void InternalInitialize(uint _entityId) {
+	public void InternalInitialize(int _entityId) {
 		if (!initialized) {
-			Initialize();
 			initialized = true;
-
 			entity = EntityCollection.GetEntity(_entityId);
 			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
+
+
+			Initialize();
 		}
 	}
 

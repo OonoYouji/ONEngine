@@ -45,7 +45,8 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 }
 
-void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _pEntityComponentSystem, [[maybe_unused]] Camera* _camera) {
+
+void CopyImageRenderingPipeline::Draw([[maybe_unused]] const std::vector<IEntity*>& _entities, [[maybe_unused]] Camera* _camera, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
@@ -54,7 +55,7 @@ void CopyImageRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] En
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	auto& textures = pResourceCollection_->GetTextures();
-	size_t index = pResourceCollection_->GetTextureIndex("scene");
+	size_t index = pResourceCollection_->GetTextureIndex("sceneScene");
 
 	commandList->SetGraphicsRootDescriptorTable(0, textures[index]->GetSRVGPUHandle());
 

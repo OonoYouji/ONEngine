@@ -2,8 +2,15 @@
 
 #include <DirectXMath.h>
 
+/// std
+#include <numbers>
+#include <cmath>
+
 
 using namespace DirectX;
+
+
+const Quaternion Quaternion::kIdentity = Quaternion(0.0f, 0.0f, 0.0f, 1.0f); ///< 単位クォータニオン
 
 
 Quaternion::Quaternion() {
@@ -73,7 +80,7 @@ Quaternion Quaternion::MakeFromAxis(const Vec3& _axis, float _theta) {
 }
 
 Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vec3& _axis, float _theta) {
-	return Matrix4x4::MakeRotateQuaternion(MakeFromAxis(_axis, _theta));
+	return Matrix4x4::MakeRotate(MakeFromAxis(_axis, _theta));
 }
 
 Quaternion Quaternion::LockAt(const Vec3& _position, const Vec3& _target, const Vec3& _up) {
@@ -178,6 +185,51 @@ Quaternion Quaternion::Slerp(const Quaternion& _start, const Quaternion& _end, f
 		(s1 * _start.w) + (s2 * q2Copy.w)
 	};
 	return result;
+}
+
+Quaternion Quaternion::FromEuler(const Vector3& _euler) {
+	float pitch = _euler.x * 0.5f; // X回転
+	float yaw = _euler.y * 0.5f; // Y回転
+	float roll = _euler.z * 0.5f; // Z回転
+
+	float sinPitch = std::sin(pitch);
+	float cosPitch = std::cos(pitch);
+	float sinYaw = std::sin(yaw);
+	float cosYaw = std::cos(yaw);
+	float sinRoll = std::sin(roll);
+	float cosRoll = std::cos(roll);
+
+	Quaternion q;
+	q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+	q.x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
+	q.y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+	q.z = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
+
+	return q;
+}
+
+Vector3 Quaternion::ToEuler(const Quaternion& _q) {
+	Vector3 euler;
+
+	// Pitch (X軸)
+	float sinp = 2.0f * (_q.w * _q.x + _q.y * _q.z);
+	float cosp = 1.0f - 2.0f * (_q.x * _q.x + _q.y * _q.y);
+	euler.x = std::atan2(sinp, cosp);
+
+	// Yaw (Y軸)
+	float siny = 2.0f * (_q.w * _q.y - _q.z * _q.x);
+	if (std::abs(siny) >= 1.0f) {
+		euler.y = std::copysign(std::numbers::pi_v<float> / 2.0f, siny); // クランプ
+	} else {
+		euler.y = std::asin(siny);
+	}
+
+	// Roll (Z軸)
+	float sinr = 2.0f * (_q.w * _q.z + _q.x * _q.y);
+	float cosr = 1.0f - 2.0f * (_q.y * _q.y + _q.z * _q.z);
+	euler.z = std::atan2(sinr, cosr);
+
+	return euler;
 }
 
 

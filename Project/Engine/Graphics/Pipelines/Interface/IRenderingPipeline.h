@@ -28,8 +28,7 @@ public:
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	virtual void Draw(DxCommand* _dxCommand, class EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) = 0;
-
+	virtual void Draw(const std::vector<class IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) = 0;
 
 protected:
 

@@ -12,3 +12,9 @@ C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.csproj.CoreCompileInputs.cache
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.dll
 C:\Users\k023g\source\repos\2023_CG2\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.pdb
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\CSharpLibrary.dll
+C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\CSharpLibrary.pdb
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.csproj.AssemblyReference.cache
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.dll
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\Debug\CSharpLibrary.pdb

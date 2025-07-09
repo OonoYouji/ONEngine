@@ -16,8 +16,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Externals\imgui\im
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXMesh", "Externals\DirectXMesh\DirectXMesh_Desktop_2022.vcxproj", "{6857F086-F6FE-4150-9ED7-7446F1C1C220}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpLibrary", "SubProjects\CSharpLibrary\CSharpLibrary.csproj", "{D7602785-0DA1-4C00-A6FB-C8224F98E474}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,24 +101,6 @@ Global
 		{6857F086-F6FE-4150-9ED7-7446F1C1C220}.Release|x64.Build.0 = Release|x64
 		{6857F086-F6FE-4150-9ED7-7446F1C1C220}.Release|x86.ActiveCfg = Release|Win32
 		{6857F086-F6FE-4150-9ED7-7446F1C1C220}.Release|x86.Build.0 = Release|Win32
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|x64.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Debug|x86.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|Any CPU.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|Any CPU.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|x64.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|x64.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|x86.ActiveCfg = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Profile|x86.Build.0 = Debug|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|x64.ActiveCfg = Release|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|x64.Build.0 = Release|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|x86.ActiveCfg = Release|Any CPU
-		{D7602785-0DA1-4C00-A6FB-C8224F98E474}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

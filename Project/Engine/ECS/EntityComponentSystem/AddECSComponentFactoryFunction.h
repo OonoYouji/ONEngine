@@ -15,6 +15,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();
 	_compCollection->RegisterComponentFactory<CustomMeshRenderer>();
+	_compCollection->RegisterComponentFactory<SkinMeshRenderer>();
 	_compCollection->RegisterComponentFactory<SpriteRenderer>();
 	_compCollection->RegisterComponentFactory<Line2DRenderer>();
 	_compCollection->RegisterComponentFactory<Line3DRenderer>();

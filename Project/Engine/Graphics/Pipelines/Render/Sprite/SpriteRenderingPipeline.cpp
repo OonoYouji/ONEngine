@@ -120,10 +120,10 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void SpriteRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _pEntityComponentSystem, class Camera* _camera) {
+void SpriteRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// entityから sprite renderer を集める
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 		SpriteRenderer*&& spriteRenderer = entity->GetComponent<SpriteRenderer>();
 		if (spriteRenderer) {
 			renderers_.push_back(spriteRenderer);

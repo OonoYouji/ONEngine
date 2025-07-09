@@ -1,11 +1,13 @@
 #include "MeshRenderer.h"
 
 /// engine
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
+
 MeshRenderer::MeshRenderer() {
-	SetMeshPath("./Assets/Models/primitive/cube.obj");
+	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
 }
 
@@ -55,4 +57,79 @@ void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 	} else {
 		Console::Log("MeshRenderer pointer is null");
 	}
+}
+
+void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
+	if (!_mr) {
+		return;
+	}
+
+	/// param get
+	Vec4 color = _mr->GetColor();
+	std::string meshPath = _mr->GetMeshPath();
+	std::string texturePath = _mr->GetTexturePath();
+
+	/// edit
+	if (ImGuiColorEdit("color", &color)) {
+		_mr->SetColor(color);
+	}
+
+
+	ImGui::Spacing();
+
+
+	/// meshの変更
+	ImGui::Text("mesh path");
+	ImGui::InputText("##mesh", meshPath.data(), meshPath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+
+			/// ペイロードが存在する場合
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				/// メッシュのパスが有効な形式か確認
+				if (path.find(".obj") != std::string::npos
+					|| path.find(".gltf") != std::string::npos) {
+					_mr->SetMeshPath(path);
+
+					Console::Log(std::format("Mesh path set to: {}", path));
+				} else {
+					Console::LogError("Invalid mesh format. Please use .obj or .gltf.");
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
+	/// textureの変更
+	ImGui::Text("texture path");
+	ImGui::InputText("##texture", texturePath.data(), texturePath.capacity(), ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+
+			/// ペイロードが存在する場合
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				std::string path = std::string(droppedPath);
+
+				/// テクスチャのパスが有効な形式か確認
+				if (path.find(".png") != std::string::npos
+					|| path.find(".jpg") != std::string::npos
+					|| path.find(".jpeg") != std::string::npos) {
+					_mr->SetTexturePath(path);
+
+					Console::Log(std::format("Texture path set to: {}", path));
+				} else {
+					Console::LogError("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+				}
+			}
+		}
+
+		ImGui::EndDragDropTarget();
+	}
+
+
 }

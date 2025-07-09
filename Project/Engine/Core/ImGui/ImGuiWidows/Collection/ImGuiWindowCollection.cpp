@@ -4,11 +4,11 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "../ImGuiMainWindow.h"
-
-#include "../GameWindows/ImGuiGameWindow.h"
-#include "../ImGuiEditorWindow.h"
-#include "../ImGuiEditorWindow.h"
+#include "../ParentWindows/ImGuiGameWindow.h"
+#include "../ParentWindows/ImGuiEditorWindow.h"
+#include "../ParentWindows/ImGuiFileWindow.h"
 
 
 /// ///////////////////////////////////////////////////
@@ -23,9 +23,12 @@ ImGuiWindowCollection::ImGuiWindowCollection(
 	: pImGuiManager_(_imGuiManager) {
 
 	/// ここでwindowを生成する
+	AddParentWindow("File", std::make_unique<ImGuiFileWindow>());
 	AddParentWindow("Game", std::make_unique<ImGuiGameWindow>(_pEntityComponentSystem, _resourceCollection, _editorManager, _sceneManager));
-	AddParentWindow("Edit", std::make_unique<ImGuiEditorWindow>());
+	AddParentWindow("Edit", std::make_unique<ImGuiEditorWindow>(_pEntityComponentSystem, _resourceCollection, _editorManager));
 
+	// game windowで開始
+	selectedMenuIndex_ = 1;
 }
 
 ImGuiWindowCollection::~ImGuiWindowCollection() {}
@@ -35,6 +38,7 @@ void ImGuiWindowCollection::Update() {
 	MainMenuUpdate();
 
 	parentWindows_[selectedMenuIndex_]->ImGuiFunc();
+	DebugConfig::selectedMode_ = selectedMenuIndex_;
 
 }
 

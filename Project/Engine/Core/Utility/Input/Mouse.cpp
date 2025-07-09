@@ -2,6 +2,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Tools/Assert.h"
+#include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 
 void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, ImGuiManager* _imGuiManager) {

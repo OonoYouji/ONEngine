@@ -24,8 +24,10 @@ private:
 	/// ===================================================
 
 	bool isActive_;
-
 	bool isMoving_; ///< 移動中か
+
+	float moveSpeed_;
+	Vector3 eulerAngles_; ///< カメラの回転角度
 
 };
 

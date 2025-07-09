@@ -4,6 +4,7 @@
 #include <list>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -110,17 +111,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 		//auto& textures = _resourceCollection->GetTextures();
 
-		if (_textureName == "scene") {
-			textureIndices_[1] = _resourceCollection->GetTextureIndex("worldPosition");
-			textureIndices_[2] = _resourceCollection->GetTextureIndex("normal");
-			textureIndices_[3] = _resourceCollection->GetTextureIndex("flags");
-		} else {
-			textureIndices_[1] = _resourceCollection->GetTextureIndex("debugWorldPosition");
-			textureIndices_[2] = _resourceCollection->GetTextureIndex("debugNormalize");
-			textureIndices_[3] = _resourceCollection->GetTextureIndex("debugFlags");
-		}
+		textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "WorldPosition");
+		textureIndices_[2] = _resourceCollection->GetTextureIndex(_textureName + "Normal");
+		textureIndices_[3] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
 
-		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
+		textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
 		textureIndices_[4] = _resourceCollection->GetTextureIndex("./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds");
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
@@ -132,7 +127,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	}
 
 
-	command->Dispatch(1920 / 16, 1080 / 16, 1);
+	command->Dispatch(EngineConfig::kWindowSize.x / 16, EngineConfig::kWindowSize.y / 16, 1);
 
 	/// 大本のsceneテクスチャに結果をコピー
 

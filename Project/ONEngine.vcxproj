@@ -22,8 +22,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
+    <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
     <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
-    <ClCompile Include="Engine\ECS\System\CollisionSystem\CollisionSystem.cpp" />
+    <ClCompile Include="Engine\ECS\System\Collision\CollisionSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
     <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
@@ -50,7 +54,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
@@ -71,6 +75,7 @@
     <ClCompile Include="Engine\ECS\Entity\Factory\EntityFactory.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
@@ -90,20 +95,6 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
-    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.cpp" />
-    <ClCompile Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.cpp" />
-    <ClCompile Include="Game\Effects\PlaneEffects\PlayerMoveEffect.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.cpp" />
-    <ClCompile Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.cpp" />
-    <ClCompile Include="Game\Entity\Player\Player.cpp" />
-    <ClCompile Include="Game\Entity\TestEntity\TestEntity.cpp" />
-    <ClCompile Include="Game\Objects\BackgroundObject.cpp" />
-    <ClCompile Include="Game\Objects\Enemy.cpp" />
-    <ClCompile Include="Game\Objects\KeyItem\KeyItem.cpp" />
-    <ClCompile Include="Game\Objects\Puzzle\Puzzle.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
     <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
@@ -132,23 +123,27 @@
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
-    <ClCompile Include="Game\Scene\Scenes\LoadLevelTestScene.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp" />
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -185,10 +180,19 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
     <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
+    <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
+    <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
+    <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
     <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
-    <ClInclude Include="Engine\ECS\System\CollisionSystem\CollisionSystem.h" />
+    <ClInclude Include="Engine\ECS\System\Collision\CollisionSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />
     <ClInclude Include="Engine\Script\MonoScriptEngine.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
@@ -222,7 +226,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Component.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiHierarchyWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
@@ -249,24 +253,11 @@
     <ClInclude Include="Engine\ECS\Entity\Factory\EntityFactory.h" />
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
+    <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefab.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
-    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRipplesEffect.h" />
-    <ClInclude Include="Game\Effects\KeyItemEffects\KeyItemRiseParticle.h" />
-    <ClInclude Include="Game\Effects\PlaneEffects\PlayerMoveEffect.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannon.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Cannon\PuzzleClearEffectCannonStand.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserEffect.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\Effect\LaserHitEffect.h" />
-    <ClInclude Include="Game\Effects\PuzzleStandEffects\PuzzleClearEffect.h" />
-    <ClInclude Include="Game\Entity\Player\Player.h" />
-    <ClInclude Include="Game\Entity\TestEntity\TestEntity.h" />
-    <ClInclude Include="Game\Objects\BackgroundObject.h" />
-    <ClInclude Include="Game\Objects\Enemy.h" />
-    <ClInclude Include="Game\Objects\KeyItem\KeyItem.h" />
-    <ClInclude Include="Game\Objects\Puzzle\Puzzle.h" />
     <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
     <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
     <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
@@ -313,18 +304,18 @@
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiProjectWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiInspectorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiEditorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiGameWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\GameWindows\ImGuiConsoleWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
@@ -343,11 +334,20 @@
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
-    <ClInclude Include="Game\Scene\Scenes\LoadLevelTestScene.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />
     <ClInclude Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.h" />
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\Skinning.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.h" />
+    <ClInclude Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.h" />
+    <ClInclude Include="Engine\Graphics\RenderTexture\SceneRenderTexture.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h" />
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
@@ -418,9 +418,7 @@
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
-xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
-xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

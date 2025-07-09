@@ -62,7 +62,7 @@ protected:
 	class EntityComponentSystem* pEntityComponentSystem_;
 
 	bool active_ = true; ///< true のときは更新する
-	size_t id_ = 0; ///< entityのID
+	int32_t id_ = 0; ///< entityのID
 
 private:
 
@@ -75,6 +75,7 @@ private:
 	IEntity* parent_;
 	std::string name_;
 	std::string className_;
+	std::string prefabName_;
 
 public:
 
@@ -88,9 +89,7 @@ public:
 	void SetPositionZ(float _z);
 
 	void SetRotate(const Vector3& _v);
-	void SetRotateX(float _x);
-	void SetRotateY(float _y);
-	void SetRotateZ(float _z);
+	void SetRotate(const Quaternion& _q);
 
 	void SetScale(const Vector3& _v);
 	void SetScaleX(float _x);
@@ -101,16 +100,19 @@ public:
 	void RemoveParent();
 
 	void SetName(const std::string& _name);
+	void SetPrefabName(const std::string& _name);
 
 	void SetActive(bool _active);
 
 
 	const Vector3& GetLocalPosition() const;
-	const Vector3& GetLocalRotate() const;
+	Vector3 GetLocalRotate() const;
+	const Quaternion& GetLocalRotateQuaternion() const;
 	const Vector3& GetLocalScale() const;
 
 	Vector3 GetPosition();
 	Vector3 GetRotate();
+	Quaternion GetRotateQuaternion();
 	Vector3 GetScale();
 
 	Transform* GetTransform() const;
@@ -122,14 +124,17 @@ public:
 	IEntity* GetChild(size_t _index);
 
 	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
+	std::unordered_map<size_t, IComponent*>& GetComponents();
 
 	const std::string& GetName() const;
 	const std::string& GetEntityClassName() const;
 
+	const std::string& GetPrefabName() const;
+	bool ContainsPrefab() const;
+
 	bool GetActive() const;
 
-	const size_t& GetId() const;
-	size_t* GetIdPtr();
+	int32_t GetId() const;
 
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 /// std
 #include <functional>
 #include <vector>
@@ -12,7 +14,7 @@
 /// engine
 #include "ImGuiWidows/Collection/ImGuiWindowCollection.h"
 #include "Math/ImGuiSceneImageInfo.h"
-
+#include "Engine/Core/Utility/Math/Vector2.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiManager
@@ -30,9 +32,12 @@ public:
 	void Update();
 	void Draw();
 
-	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
-		sceneImageInfos_[_name] = _info;
-	}
+	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info);
+
+	void UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize);
+
+	void OutputImGuiStyle(const std::string& _fileName) const;
+	void InputImGuiStyle(const std::string& _fileName) const;
 
 private:
 	/// ===================================================
@@ -48,8 +53,6 @@ private:
 	class Window* imGuiWindow_;
 	class Window* debugGameWindow_;
 
-	bool isGameDebug_ = false;
-
 	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
 	std::unordered_map<std::string, ImGuiSceneImageInfo> sceneImageInfos_ = {}; ///< imguiのシーンイメージ情報
@@ -61,26 +64,13 @@ public:
 
 	/// @brief imgui windowを設定する
 	/// @param _window Window
-	void SetImGuiWindow(Window* _window) { imGuiWindow_ = _window; }
-
-
-
-	/// @brief gameをdebugするかのフラグ 
-	/// @return 
-	bool GetIsGameDebug() const { return isGameDebug_; }
+	void SetImGuiWindow(Window* _window);
 
 	/// @brief game debug windowを取得する
 	/// @return　Window
-	class Window* GetDebugGameWindow() const { return debugGameWindow_; }
+	class Window* GetDebugGameWindow() const;
 
-	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const {
-		auto it = sceneImageInfos_.find(_name);
-		if (it != sceneImageInfos_.end()) {
-			return it->second;
-		}
-
-		return {};
-	}
+	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const;
 };
 
 

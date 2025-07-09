@@ -32,6 +32,8 @@ public:
 
 	float x, y, z, w;
 
+	static const Quaternion kIdentity; ///< 単位クォータニオン
+
 	/// ===================================================
 	/// public : static methods
 	/// ===================================================
@@ -90,6 +92,9 @@ public:
 	/// @param _t 補間係数
 	/// @return 補間されたクォータニオン
 	static Quaternion Slerp(const Quaternion& _start, const Quaternion& _end, float _t);
+
+	static Quaternion FromEuler(const Vector3& _euler);
+	static Vector3 ToEuler(const Quaternion& _q);
 
 	/// ===================================================
 	/// public : methods

@@ -13,7 +13,7 @@ void DemoEntity::Initialize() {
 	//transform_->position.y = 3;
 
 	MeshRenderer* mesh = AddComponent<MeshRenderer>();
-	mesh->SetMeshPath("Assets/Models/primitive/sphere.obj");
+	mesh->SetMeshPath("Packages/Models/primitive/sphere.obj");
 	mesh->SetTexturePath("Packages/Textures/white.png");
 }
 

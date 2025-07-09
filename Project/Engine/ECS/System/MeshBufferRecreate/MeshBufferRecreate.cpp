@@ -6,9 +6,9 @@
 
 MeshBufferRecreate::MeshBufferRecreate(DxDevice* _pDxDevice) : pDxDevice_(_pDxDevice) {}
 
-void MeshBufferRecreate::Update(EntityComponentSystem* _pEntityComponentSystem) {
+void MeshBufferRecreate::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
-	for (auto& entity : _pEntityComponentSystem->GetEntities()) {
+	for (auto& entity : _entities) {
 
 		CustomMeshRenderer* meshRenderer = entity->GetComponent<CustomMeshRenderer>();
 

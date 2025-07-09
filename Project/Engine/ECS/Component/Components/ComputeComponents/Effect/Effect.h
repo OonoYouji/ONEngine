@@ -224,3 +224,10 @@ public:
 	size_t GetEmitInstanceCount() const;
 
 };
+
+
+namespace COMP_DEBUG {
+	/// @brief Effectのデバッグ関数
+	/// @param _effect デバッグするEffect
+	void EffectDebug(Effect* _effect);
+} 

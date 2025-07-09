@@ -13,6 +13,7 @@
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+#include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
@@ -290,4 +291,52 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 	} 
 
 	return entity;
+}
+
+CreatePrefabCommand::CreatePrefabCommand(IEntity* _entity) 
+	: pEntity_(_entity) {
+	if (pEntity_ == nullptr) {
+		Console::Log("CreatePrefabCommand : Entity is nullptr");
+		return;
+	}
+
+	/// プレハブのパスを設定
+	prefabName_ = pEntity_->GetName() + ".prefab";
+}
+
+EDITOR_STATE CreatePrefabCommand::Execute() {
+
+	/// ディレクトリがあるのかチェック
+	if (!std::filesystem::exists(prefabPath_)) {
+		std::filesystem::create_directories(prefabPath_);
+	}
+
+
+	/// jsonに変換
+	nlohmann::json entityJson = EntityJsonConverter::ToJson(pEntity_);
+
+	/// jsonが空ならログを残して終了
+	if (entityJson.empty()) {
+		Console::Log("CreatePrefabCommand : EntityJson is empty");
+		return EDITOR_STATE_FAILED;
+	}
+
+
+	/// ファイルに出力
+	std::string prefabPath = "./Assets/Prefabs/" + prefabName_;
+	std::ofstream outputFile(prefabPath);
+	if (!outputFile.is_open()) {
+		Console::Log("CreatePrefabCommand : Failed to open prefab file: " + prefabPath);
+		return EDITOR_STATE_FAILED;
+	}
+
+	outputFile << entityJson.dump(4);
+	outputFile.close();
+	Console::Log("Prefab created: " + prefabPath);
+
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE CreatePrefabCommand::Undo() {
+	return EDITOR_STATE_FINISH;
 }

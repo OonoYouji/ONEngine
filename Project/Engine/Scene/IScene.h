@@ -19,7 +19,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	IScene(class EntityComponentSystem* _entityComponentSystem);
+	IScene(class EntityComponentSystem* _entityComponentSystem, const std::string& _name);
 	virtual ~IScene() = default;
 
 	/// @brief シーンの初期化
@@ -53,6 +53,7 @@ protected:
 	std::vector<std::string> loadResourcePaths_;
 	std::vector<std::string> unloadResourcePaths_;
 
+	std::string sceneName_; ///< シーンの名前
 
 public:
 
@@ -62,16 +63,13 @@ public:
 
 	/// @brief このシーンに切り替わるときに読み込むリソースのパスを取得する
 	/// @return リソースのパス配列
-	const std::vector<std::string>& GetLoadResourcePaths() const {
-		return loadResourcePaths_;
-	}
+	const std::vector<std::string>& GetLoadResourcePaths() const;
 
 	/// @brief このシーンに切り替わるときにアンロードするリソースのパスを取得する
 	/// @return リソースのパス配列
-	const std::vector<std::string>& GetUnloadResourcePaths() const {
-		return unloadResourcePaths_;
-	}
+	const std::vector<std::string>& GetUnloadResourcePaths() const;
 
+	const std::string& GetSceneName() const;
 
 private:
 

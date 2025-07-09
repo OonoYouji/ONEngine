@@ -88,31 +88,30 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void TerrainRenderingPipeline::Draw(DxCommand* _dxCommand, EntityComponentSystem* _entityComponentSystem, Camera* _camera) {
-
+void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
+	Terrain* prevTerrain_ = pTerrain_;
+	pTerrain_ = nullptr;
+	for (auto& entity : _entities) {
+		if (entity->GetName() == "Terrain") {
+			pTerrain_ = static_cast<Terrain*>(entity);
+			break;
+		}
+	}
+
+	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {
+		return;
+	}
 
-		for (auto& entity : _entityComponentSystem->GetEntities()) {
-
-			if (entity->GetName() == "Terrain") {
-				pTerrain_ = static_cast<Terrain*>(entity.get());
-				break;
-			}
-		}
-
-		/// 見つかんなかったらreturn
-		if (pTerrain_ == nullptr) {
-			return;
-		}
-
+	/// prevと違うterrainならmapする
+	if (prevTerrain_ != pTerrain_) {
 		indexBuffer_.SetIndices(pTerrain_->GetIndices());
 		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
 
 		indexBuffer_.Map();
 		vertexBuffer_.Map();
-
 	}
 
 

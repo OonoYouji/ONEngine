@@ -11,7 +11,7 @@
 GizmoRenderingPipeline::GizmoRenderingPipeline() {}
 
 void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
-	Gizmo::Initialize(1000); /// gizmoの初期化
+	Gizmo::Initialize(static_cast<size_t>(std::pow(2, 20))); /// gizmoの初期化
 
 	{	/// wire frame pipeline
 		Shader shader;
@@ -78,7 +78,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(DxCommand* _dxCommand, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem, Camera* _camera) {
+void GizmoRenderingPipeline::Draw([[maybe_unused]] const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// ---------------------------------------------------
 	/// wire描画を行う

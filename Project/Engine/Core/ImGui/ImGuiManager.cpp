@@ -4,13 +4,15 @@
 #include <imgui_impl_dx12.h>
 #include <imgui_impl_win32.h>
 #include <dialog/ImGuiFileDialog.h>
+#include <ImGuizmo.h>
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Window/WindowManager.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/Utility/Time/Time.h"
-
+#include "Engine/Core/Utility/Input/Input.h"
 
 #pragma region glyphRangesJapanease
 namespace {
@@ -560,22 +562,19 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
+	InputImGuiStyle("./imgui_style.json");
+	ImGuiStyle& imStyle = ImGui::GetStyle();
+	imStyle.FrameBorderSize = 0.5f;
+
 
 	ImGuiIO& imGuiIO = ImGui::GetIO();
 	imGuiIO.ConfigFlags = ImGuiConfigFlags_DockingEnable;
 	imGuiIO.Fonts->AddFontFromFileTTF("./Assets/Fonts/MPLUSRounded1c-Black.ttf", 16.0f, nullptr, gGlyphRangesJapanese);
-	imGuiIO.KeyRepeatDelay = 4.145f;
-	imGuiIO.KeyRepeatRate = 12.0f;
-	imGuiIO.DisplaySize = ImVec2(1920, 1080.0f);
-	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	//imGuiIO.MouseDrawCursor = true; ///< マウスカーソルを表示するかどうか
-	//imGuiIO.MouseDoubleClickTime = 1.f;
+	//imGuiIO.KeyRepeatDelay = 4.145f;
+	//imGuiIO.KeyRepeatRate = 12.0f;
+	imGuiIO.KeyRepeatDelay = 0.25f;
+	imGuiIO.KeyRepeatRate = 0.05f;
 
-
-	ImGui_ImplDX12_InvalidateDeviceObjects();
-	ImGui_ImplDX12_CreateDeviceObjects();
-
-	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(windowManager_->GetMainWindow()->GetHwnd());
 	ImGui_ImplDX12_Init(
 		dxManager_->GetDxDevice()->GetDevice(),
@@ -589,9 +588,12 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 
+	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
 #ifdef _DEBUG
 	/// debug windowの生成
-	debugGameWindow_ = windowManager_->GenerateWindow(L"game", Vec2(1920, 1080), WindowManager::WindowType::Sub);
+	debugGameWindow_ = windowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
 
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
@@ -606,7 +608,18 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 void ImGuiManager::Update() {
 	ImGui::NewFrame();
-	ImGui::GetIO().DeltaTime = Time::UnscaledDeltaTime();
+	ImGuizmo::BeginFrame();
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
+
+	UpdateMousePosition(
+		windowManager_->GetMainWindow()->GetHwnd(),
+		EngineConfig::kWindowSize
+	);
+	io.DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();
 }
@@ -617,5 +630,85 @@ void ImGuiManager::Draw() {
 		ImGui::GetDrawData(),
 		dxManager_->GetDxCommand()->GetCommandList()
 	);
+}
+
+void ImGuiManager::AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info) {
+	sceneImageInfos_[_name] = _info;
+}
+
+void ImGuiManager::UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize) {
+	POINT point;
+	GetCursorPos(&point);
+
+	ScreenToClient(_winHwnd, &point);
+
+	RECT clientRect;
+	GetClientRect(_winHwnd, &clientRect);
+
+	Vector2 clientSize = {
+		static_cast<float>(clientRect.right - clientRect.left),
+		static_cast<float>(clientRect.bottom - clientRect.top)
+	};
+
+	/// 補正
+	Vector2 scale = _renderTargetSize / clientSize;
+	Vector2 corrected = {
+		point.x * scale.x,
+		point.y * scale.y
+	};
+
+	ImGui::GetIO().AddMousePosEvent(corrected.x, corrected.y);
+}
+
+void ImGuiManager::OutputImGuiStyle(const std::string& _fileName) const {
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	std::ofstream file(_fileName);
+	if (!file.is_open()) return;
+
+	for (int i = 0; i < ImGuiCol_COUNT; ++i) {
+		ImVec4 col = style.Colors[i];
+		file << "Color" << i << "=" << col.x << "," << col.y << "," << col.z << "," << col.w << "\n";
+	}
+	// 必要に応じてstyle.FramePaddingなども書き出す
+	file.close();
+}
+
+void ImGuiManager::InputImGuiStyle(const std::string& _fileName) const {
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	std::ifstream file(_fileName);
+	if (!file.is_open()) return;
+
+	std::string line;
+	while (std::getline(file, line)) {
+		if (line.rfind("Color", 0) == 0) {
+			int index;
+			float x, y, z, w;
+			if (sscanf_s(line.c_str(), "Color%d=%f,%f,%f,%f", &index, &x, &y, &z, &w) == 5) {
+				if (index >= 0 && index < ImGuiCol_COUNT) {
+					style.Colors[index] = ImVec4(x, y, z, w);
+				}
+			}
+		}
+	}
+	file.close();
+}
+
+void ImGuiManager::SetImGuiWindow(Window* _window) {
+	imGuiWindow_ = _window;
+}
+
+Window* ImGuiManager::GetDebugGameWindow() const {
+	return debugGameWindow_;
+}
+
+const ImGuiSceneImageInfo& ImGuiManager::GetSceneImageInfo(const std::string& _name) const {
+	auto it = sceneImageInfos_.find(_name);
+	if (it != sceneImageInfos_.end()) {
+		return it->second;
+	}
+
+	return {};
 }
 

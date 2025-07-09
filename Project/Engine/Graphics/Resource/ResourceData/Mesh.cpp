@@ -43,9 +43,7 @@ void Mesh::IndexBufferMapping() {
 }
 
 void Mesh::MemcpyVertexData() {
-	//mappingVertexData_ = vertices_.data();
 	if (mappingVertexData_) {
-
 		std::memcpy(mappingVertexData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 	}
 }

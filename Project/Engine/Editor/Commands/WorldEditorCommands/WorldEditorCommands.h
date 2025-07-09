@@ -75,6 +75,23 @@ private:
 };
 
 
+/// ///////////////////////////////////////////////////
+/// プレハブを作成するコマンド
+/// ///////////////////////////////////////////////////
+class CreatePrefabCommand : public IEditorCommand {
+public:
+	CreatePrefabCommand(class IEntity* _entity);
+	~CreatePrefabCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+
+private:
+	class IEntity* pEntity_ = nullptr;
+	std::string prefabPath_ = "./Assets/Prefabs/";
+	std::string prefabName_ = "NewPrefab.json";
+};
+
 
 /// ///////////////////////////////////////////////////
 /// エンティティを削除するコマンド

@@ -10,7 +10,18 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 
 
-bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = ImGuiInputTextFlags_CallbackAlways);
+namespace ImMathf {
+
+	ImVec4 ToImVec4(const Vector4& _vec);
+	ImVec2 ToImVec2(const Vector2& _vec);
+
+	bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
+}
+
+
+bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
+
+void ImGuiInputTextReadOnly(const char* _label, const std::string& _text);
 
 bool ImGuiColorEdit(const char* _label, Vector4* _color);
 
@@ -18,10 +29,6 @@ bool ImGuiColorEdit(const char* _label, Vector4* _color);
 /// //////////////////////////////////////////////
 /// componentのデバッグ表示関数を定義
 /// //////////////////////////////////////////////
-
-/// @brief tranfsorm のデバッグ表示
-/// @param _transform 
-void TransformDebug(class Transform* _transform);
 
 void DirectionalLightDebug(class DirectionalLight* _light);
 
