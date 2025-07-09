@@ -85,6 +85,8 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 		ImGui::EndMenuBar();
 	}
 
+
+
 	if (!entity->GetPrefabName().empty()) {
 		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
 	}

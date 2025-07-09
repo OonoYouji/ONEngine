@@ -7,7 +7,7 @@
 
 
 MeshRenderer::MeshRenderer() {
-	SetMeshPath("./Assets/Models/primitive/cube.obj");
+	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
 }
 
@@ -96,7 +96,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 
 					Console::Log(std::format("Mesh path set to: {}", path));
 				} else {
-					Console::Log("Invalid mesh format. Please use .obj or .gltf.");
+					Console::LogError("Invalid mesh format. Please use .obj or .gltf.");
 				}
 			}
 		}
@@ -123,7 +123,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 
 					Console::Log(std::format("Texture path set to: {}", path));
 				} else {
-					Console::Log("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+					Console::LogError("Invalid texture format. Please use .png, .jpg, or .jpeg.");
 				}
 			}
 		}

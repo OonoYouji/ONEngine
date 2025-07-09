@@ -5,15 +5,21 @@
 
 /// engine
 #include "Engine/Core/Utility/Math/Vector4.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
 Effect::Effect() {
 	isCreateParticle_ = true;
 	emitInstanceCount_ = 10;
-	//emittedElementColor_ = Vector4::kWhite;
-	/*startData_.size = Vector3::kOne;
-	startData_.rotate = Vector3::kZero;
-	startData_.color.first = Vector4::kWhite;
-	startData_.color.second = Vector4::kWhite;*/
+
+	SetTexturePath("./Packages/Textures/Effects/Particle.png");
+	SetMeshPath("./Packages/Models/primitive/frontToPlane.obj");
+	SetMaxEffectCount(1000); // 初期の最大エフェクト数を設定
+
+	SetStartColor(Color::kWhite, Color::kWhite);
+	SetStartSize(Vector3::kOne, Vector3::kOne);
+	SetStartRotate(Vector3::kZero, Vector3::kZero);
+	SetStartSpeed(1.0f, 1.0f);
+
 }
 
 void Effect::CreateElement(const Vector3& _position, const Color& _color) {
@@ -232,6 +238,68 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 	}
 
 	ImGui::Indent(4);
+
+	if (ImGui::CollapsingHeader("Base")) {
+
+		/// ---------------------------------------------------------
+		/// テクスチャとメッシュのパスを設定
+		/// ---------------------------------------------------------
+
+		std::string texturePath = _effect->GetTexturePath();
+		std::string meshPath = _effect->GetMeshPath();
+
+		ImGui::Text("mesh path");
+		ImMathf::InputText("##mesh path", &meshPath, ImGuiInputTextFlags_EnterReturnsTrue);
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+
+				/// ペイロードが存在する場合
+				if (payload->Data) {
+					const char* droppedPath = static_cast<const char*>(payload->Data);
+					std::string path = std::string(droppedPath);
+
+					/// メッシュのパスが有効な形式か確認
+					if (path.find(".obj") != std::string::npos
+						|| path.find(".gltf") != std::string::npos) {
+						_effect->SetMeshPath(path);
+
+						Console::Log(std::format("Mesh path set to: {}", path));
+					} else {
+						Console::LogError("Invalid mesh format. Please use .obj or .gltf.");
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+
+		/// texture path
+		ImGui::Text("texture path");
+		ImMathf::InputText("##texture path", &texturePath, ImGuiInputTextFlags_EnterReturnsTrue);
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+
+				/// ペイロードが存在する場合
+				if (payload->Data) {
+					const char* droppedPath = static_cast<const char*>(payload->Data);
+					std::string path = std::string(droppedPath);
+
+					/// テクスチャのパスが有効な形式か確認
+					if (path.find(".png") != std::string::npos
+						|| path.find(".jpg") != std::string::npos
+						|| path.find(".jpeg") != std::string::npos) {
+						_effect->SetTexturePath(path);
+
+						Console::Log(std::format("Texture path set to: {}", path));
+					} else {
+						Console::LogError("Invalid texture format. Please use .png, .jpg, or .jpeg.");
+					}
+				}
+			}
+
+			ImGui::EndDragDropTarget();
+		}
+
+	}
 
 	/// main module 
 	if (ImGui::CollapsingHeader("main module")) {
