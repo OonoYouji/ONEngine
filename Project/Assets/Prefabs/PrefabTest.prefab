@@ -15,21 +15,14 @@
                 "z": 0.0
             },
             "scale": {
-                "x": -0.39436987042427063,
-                "y": -0.39436987042427063,
-                "z": -0.39436987042427063
+                "x": -0.8468655347824097,
+                "y": -0.8468655347824097,
+                "z": -0.8468655347824097
             },
             "type": "Transform"
         },
         {
             "type": "Variables"
-        },
-        {
-            "enable": 1,
-            "scriptName": [
-                "PrefabTest"
-            ],
-            "type": "Script"
         },
         {
             "blendMode": 0,
@@ -130,6 +123,13 @@
             "type": "Effect"
         },
         {
+            "enable": 1,
+            "scriptName": [
+                "PrefabTest"
+            ],
+            "type": "Script"
+        },
+        {
             "color": {
                 "w": 1.0,
                 "x": 1.0,
@@ -137,7 +137,7 @@
                 "z": 1.0
             },
             "enable": 1,
-            "meshPath": "./Assets/Models/primitive/cube.obj",
+            "meshPath": "./Packages/Models/primitive/cube.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         }

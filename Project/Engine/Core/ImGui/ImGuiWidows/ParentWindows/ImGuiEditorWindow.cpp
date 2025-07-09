@@ -8,6 +8,7 @@
 #include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabInspectorWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 
 ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
@@ -21,11 +22,16 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResour
 
 	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _resourceCollection, inspector));
 	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _resourceCollection));
+	ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
+		AddChild(std::make_unique<ImGuiProjectWindow>(_editorManager)));
+
+	project->SetWindowName("Prefab Project");
+
 }
 
 
 void ImGuiEditorWindow::ImGuiFunc() {
-	
+
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y), ImGuiCond_Appearing);
 	if (!ImGui::Begin("Editor", nullptr, imGuiFlags_)) {

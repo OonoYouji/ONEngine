@@ -28,10 +28,12 @@ ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
 
 	selectedFolder_ = assetsRootFolder_;
 	isGameFolder_ = true;
+
+	winName_ = "Project";
 }
 
 void ImGuiProjectWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Project")) {
+	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;
 	}
@@ -61,9 +63,13 @@ void ImGuiProjectWindow::ImGuiFunc() {
 	ImGui::End();
 }
 
+void ImGuiProjectWindow::SetWindowName(const std::string& _name) {
+	winName_ = _name;
+}
+
 
 void ImGuiProjectWindow::Hierarchy() {
-	ImGui::BeginChild("Hierarchy", ImVec2(0, -FLT_MIN), true, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("Project", ImVec2(0, -FLT_MIN), true, ImGuiWindowFlags_HorizontalScrollbar);
 
 	/// root folderを再帰的に描画
 	DrawFolderHierarchy(scriptRootFolder_, 0);
