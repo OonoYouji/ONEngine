@@ -20,7 +20,5 @@ public class PrefabTest : MonoBehavior {
 
 		Transform t = transform;
 		t.scale = Vector3.one * Mathf.Sin(Time.time);
-		//t.rotate *= Quaternion.FromEuler(oneRotateValue * Time.deltaTime);
-		//t.rotate = t.rotate.Normalized();
 	}
 }

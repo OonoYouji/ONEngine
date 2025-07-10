@@ -20,51 +20,17 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 		}
 	}
 
+	/// 更新関数の呼びだし
 	for (auto& scriptComp : scripts) {
-		for (auto& script : scriptComp->scriptDataList_) {
+		/// Updateメソッドの呼び出し
+		scriptComp->CallUpdateMethodAll();
+	}
 
-			/// スクリプトが有効でなければスキップ
-			if (!script.enable) {
-				continue;
-			}
-
-			/// instanceの中身が壊れていないかチェック
-			if (!script.instance->vtable) {
-				Console::LogError("ScriptUpdateSystem: InstanceVtable is null for script: " + script.scriptName);
-				continue;
-			}
-
-
-			/// クラスが同じかチェック
-			MonoClass* instanceClass = mono_object_get_class(script.instance);
-			MonoClass* methodClass = mono_method_get_class(script.updateMethod);
-			if (instanceClass != methodClass) {
-				Console::LogError("ScriptUpdateSystem: Instance class does not match method class for script: " + script.scriptName);
-				continue;
-			}
-
-			if (script.updateMethod && script.instance) {
-				/// 例外をキャッチするためのポインタ
-				MonoObject* exc = nullptr;
-
-				/// updateメソッドを呼び出す
-				mono_runtime_invoke(script.updateMethod, script.instance, nullptr, &exc);
-
-				/// 例外が発生したらここで出力
-				if (exc) {
-					MonoString* monoStr = mono_object_to_string(exc, nullptr);
-					if (monoStr) {
-						char* message = mono_string_to_utf8(monoStr);
-						Console::LogError(std::string("Mono Exception: ") + message);
-						mono_free(message);
-					} else {
-						Console::LogError("Mono Exception occurred, but message is null.");
-					}
-				}
-
-			}
-
+	/// 行列の更新
+	for (auto& script : scripts) {
+		IEntity* entity = script->GetOwner();
+		if (entity) {
+			entity->UpdateTransform();
 		}
-
 	}
 }

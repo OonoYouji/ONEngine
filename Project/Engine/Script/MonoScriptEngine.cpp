@@ -22,16 +22,6 @@ namespace {
 		Console::Log(std::string("[") + _log_domain + "][" + _log_level + "] " + _message + (_fatal ? " (fatal)" : ""));
 	}
 
-	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
-		while (_class) {
-			MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
-			if (method)
-				return method;
-			_class = mono_class_get_parent(_class);
-		}
-		return nullptr;
-	}
-
 	void ConsoleLog(MonoString* _msg) {
 		// MonoString* -> const char* 変換
 		char* cstr = mono_string_to_utf8(_msg);
@@ -44,7 +34,7 @@ namespace {
 void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
 	gMonoScriptEngine = _engine;
 	if (!gMonoScriptEngine) {
-		Console::Log("MonoScriptEngine pointer is null");
+		Console::LogWarning("MonoScriptEngine pointer is null");
 	}
 }
 
@@ -90,21 +80,21 @@ void MonoScriptEngine::Initialize() {
 	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
-		Console::Log("Failed to find latest assembly DLL.");
+		Console::LogError("Failed to find latest assembly DLL.");
 		return;
 	}
 
 	currentDllPath_ = *latestDll;
 	assembly_ = mono_domain_assembly_open(domain_, currentDllPath_.c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load CSharpLibrary.dll");
+		Console::LogError("Failed to load CSharpLibrary.dll");
 		return;
 	}
 
 	image_ = mono_assembly_get_image(assembly_);
 	//mono_debug_open_image();
 	if (!image_) {
-		Console::Log("Failed to get image from assembly");
+		Console::LogError("Failed to get image from assembly");
 		return;
 	}
 
@@ -112,9 +102,8 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
-
 	if (!_script) {
-		Console::Log("Script pointer is null");
+		Console::LogWarning("Script pointer is null");
 		return;
 	}
 
@@ -123,6 +112,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 	/// ownerがなければ今後の処理ができないので、早期リターン
 	if (!_comp->GetOwner()) {
+		Console::LogError("Script owner is null. Cannot create script instance.");
 		return;
 	}
 
@@ -130,7 +120,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	/// MonoImageから指定されたクラスを取得(namespaceは""で省略)
 	MonoClass* monoClass = mono_class_from_name(image_, "", _scriptName.c_str());
 	if (!monoClass) {
-		Console::Log("Failed to find class: " + _scriptName);
+		Console::LogError("Failed to find class: " + _scriptName);
 		return;
 	}
 
@@ -139,16 +129,23 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
 	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
+
+	/// InternalInitialize( Awake(内部で呼んでいる) )メソッドを取得
+	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	if (!internalInitMethod) {
+		Console::LogError("Failed to find method InternalInitialize in class: " + _scriptName);
+	}
+
 	/// Initializeメソッドを取得
-	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "Initialize", 0);
 	if (!initMethod) {
-		Console::Log("Failed to find method Initialize in class: " + _scriptName);
+		Console::LogError("Failed to find method Initialize in class: " + _scriptName);
 	}
 
 	/// Updateメソッドを取得
 	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
-		Console::Log("Failed to find method Update in class: " + _scriptName);
+		Console::LogError("Failed to find method Update in class: " + _scriptName);
 	}
 
 
@@ -157,32 +154,18 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
 	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
 
+	for (auto& method : _script->collisionEventMethods) {
+		if (!method) {
+			Console::LogError("Failed to find collision event method in class: " + _scriptName);
+		}
+	}
+
 	_script->gcHandle = gcHandle;
 	_script->monoClass = monoClass;
 	_script->instance = obj;
+	_script->internalInitMethod = internalInitMethod;
 	_script->initMethod = initMethod;
 	_script->updateMethod = updateMethod;
-
-
-	/// 初期化の呼び出し
-	if (initMethod && obj) {
-		IEntity* owner = _comp->GetOwner();
-		int32_t id = static_cast<int32_t>(owner->GetId());
-		void* args[1];
-		args[0] = &id;
-
-		MonoObject* exc = nullptr;
-		mono_runtime_invoke(initMethod, obj, args, &exc);
-
-		if (exc) {
-			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-			Console::Log(std::string("Exception thrown: ") + err);
-			mono_free(err);
-		}
-
-	}
-
-
 }
 
 
@@ -199,6 +182,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
 	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
 	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
+	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
 
 	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
@@ -214,8 +198,6 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetUnscaledDeltaTime", (void*)Time::UnscaledDeltaTime);
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
-
-	//mono_add_internal_call("FileSystem::LoadCSV", (void*)Mathf::LoadCSV);
 
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
@@ -292,6 +274,16 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 	}
 
 	return latestFile;
+}
+
+MonoMethod* MonoScriptEngine::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
+	while (_class) {
+		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
+		if (method)
+			return method;
+		_class = mono_class_get_parent(_class);
+	}
+	return nullptr;
 }
 
 

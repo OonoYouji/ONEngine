@@ -25,6 +25,7 @@ public:
 		MonoObject* instance = nullptr;
 		MonoClass* monoClass = nullptr;
 		uint32_t gcHandle = 0;
+		MonoMethod* internalInitMethod = nullptr;
 		MonoMethod* initMethod = nullptr;
 		MonoMethod* updateMethod = nullptr;
 
@@ -52,6 +53,10 @@ public:
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+
+	void CallAwakeMethodAll();
+	void CallInitMethodAll();
+	void CallUpdateMethodAll();
 
 private:
 	/// ===================================================

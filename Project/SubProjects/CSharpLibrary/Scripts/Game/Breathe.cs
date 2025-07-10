@@ -1,8 +1,11 @@
 ﻿
 public class Breathe : MonoBehavior {
 
+	public Vector3 defaultScale = Vector3.one; // デフォルトのスケール
+
 	public override void Initialize() {
 		Log.WriteLine("Breathe initialized.");
+		defaultScale = transform.scale; // 初期スケールを保存
 	}
 
 	public override void Update() {
@@ -13,8 +16,7 @@ public class Breathe : MonoBehavior {
 		}
 
 		Transform t = transform;
-		// Mathf.Sin(...)を 0~1 の範囲に変換
-		t.scale = Vector3.one * (Mathf.Sin(Time.time) * 0.5f + 0.5f);
+		t.scale = defaultScale * Mathf.Clamp(Mathf.Sin(Time.time) * 0.5f + 0.5f, 0.2f, 1f);
 	}
 
 }

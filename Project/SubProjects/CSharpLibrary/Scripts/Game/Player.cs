@@ -18,10 +18,10 @@ public class Player : MonoBehavior {
 	}
 
 	public override void Update() {
-		Move();
+		//Move();
 		//Jump();
 
-		CameraFollow();
+		//CameraFollow();
 
 
 		//Transform t = transform;

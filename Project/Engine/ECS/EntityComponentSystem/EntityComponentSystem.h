@@ -249,7 +249,7 @@ void InternalSetName(int32_t _entityId, MonoString* _name);
 int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex);
 int32_t InternalGetParentId(int32_t _entityId);
 void InternalSetParent(int32_t _entityId, int32_t _parentId);
-
+void InternalAddScript(int32_t _entityId, MonoString* _scriptName);
 
 bool InternalContainsEntity(int32_t _entityId);
 int32_t InternalGetEntityId(MonoString* _name);

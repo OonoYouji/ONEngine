@@ -89,6 +89,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
     <Compile Include="Scripts\Game\Puzzle.cs" />
+    <Compile Include="Scripts\Game\PuzzleBlockData.cs" />
     <Compile Include="Scripts\Game\PuzzlePlayer.cs" />
   </ItemGroup>
   <ItemGroup>

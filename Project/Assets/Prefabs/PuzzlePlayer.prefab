@@ -15,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.20000000298023224,
+                "y": 0.20000000298023224,
+                "z": 0.20000000298023224
             },
             "type": "Transform"
         },
@@ -32,7 +32,7 @@
                 "z": 1.0
             },
             "enable": 1,
-            "meshPath": "./Packages/Models/Human/walk.gltf",
+            "meshPath": "./Assets/Models/objects/statue/statue.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
@@ -45,7 +45,7 @@
             "type": "Script"
         }
     ],
-    "id": -22,
+    "id": -1,
     "name": "PuzzlePlayer",
     "parent": null,
     "prefabName": "PuzzlePlayer.prefab"

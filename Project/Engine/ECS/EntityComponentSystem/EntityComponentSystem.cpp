@@ -410,6 +410,19 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 	entity->SetParent(parent);
 }
 
+void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
+	std::string scriptName = mono_string_to_utf8(_scriptName);
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	/// スクリプトを追加
+	Script* script = entity->AddComponent<Script>();
+	script->AddScript(scriptName);
+}
+
 bool InternalContainsEntity(int32_t _entityId) {
 	IEntity* entity = GetEntityById(_entityId);
 	if (entity) {

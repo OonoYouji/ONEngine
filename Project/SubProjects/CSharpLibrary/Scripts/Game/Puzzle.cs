@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 public class Puzzle : MonoBehavior {
 
+	PuzzleBlockData blockData;
+
+
 	bool isStartPuzzle = false; // パズルが開始されているかどうか
 
-
-	[SerializeField] float blockSpace = 0.22f; // ブロック間のスペース 0.22f
-	[SerializeField] float blockHeight = 2f; // ブロックの高さ 2f
 	List<List<int>> mapData;
 	List<List<Entity>> blocks;
 	Vector3 blockPosOffset; // ブロックの位置オフセット
@@ -22,16 +22,40 @@ public class Puzzle : MonoBehavior {
 			1: 白
 		*/
 
+		blockData.height = 2f; // ブロックの高さを設定
+		blockData.blockSpace = 0.22f; // ブロックのアドレスを初期化
+
+
+		/// ----------------------------------------
+		/// プレイヤーの配置
+		/// ----------------------------------------
+
 		Vector2 playerAddress = new Vector2(1, 1);
 		Entity player = EntityCollection.CreateEntity("PuzzlePlayer");
 		if (player != null) {
+
+			/// 座標設定
 			Transform t = player.transform;
 			t.position = new Vector3(
-				playerAddress.x * blockSpace,
+				playerAddress.x * blockData.blockSpace,
 				0f,
-				playerAddress.y * blockSpace
+				playerAddress.y * blockData.blockSpace
 			);
+
+			/// スクリプトの値設定
+			PuzzlePlayer puzzlePlayer = player.GetScript<PuzzlePlayer>();
+			if (puzzlePlayer != null) {
+				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
+				puzzlePlayer.blockData.height = blockData.height; // プレイヤーの高さを設定
+				puzzlePlayer.blockData.blockSpace = blockData.blockSpace; // プレイヤーの高さを設定
+				puzzlePlayer.isIdle = false;
+			} else {
+				Log.WriteLine("PuzzlePlayer script not found on player entity.");
+			}
+
+			player.parent = this.entity; // プレイヤーをPuzzleの子にする
 		}
+
 
 
 
@@ -47,9 +71,9 @@ public class Puzzle : MonoBehavior {
 
 		Vector2 mapSize = new Vector2(mapData.Count, mapData[0].Count);
 		blockPosOffset = new Vector3(
-			-(mapSize.x - 1) * blockSpace / 2f,
+			-(mapSize.x - 1) * blockData.blockSpace / 2f,
 			0f,
-			-(mapSize.y - 1) * blockSpace / 2f
+			-(mapSize.y - 1) * blockData.blockSpace / 2f
 		);
 
 		//Log.WriteLine("this Id: " + this.entity.Id);
@@ -70,7 +94,7 @@ public class Puzzle : MonoBehavior {
 
 				/// blockのindexで位置を決定
 
-				t.position = new Vector3(i, blockHeight, j);
+				t.position = new Vector3(i, blockData.height, j);
 				t.position -= blockPosOffset;
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
@@ -105,7 +129,7 @@ public class Puzzle : MonoBehavior {
 					continue;
 				}
 				Transform t = block.transform;
-				t.position = new Vector3(i * blockSpace, blockHeight, j * blockSpace);
+				t.position = new Vector3(i * blockData.blockSpace, blockData.height, j * blockData.blockSpace);
 				t.position += blockPosOffset;
 			}
 		}

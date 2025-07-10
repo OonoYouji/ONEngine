@@ -18,6 +18,8 @@ public:
 	/// @brief imgui windowの描画処理
 	void ImGuiFunc() override;
 
+	void SetGamePlay(bool _isGamePlay);
+
 private:
 	/// ===================================================
 	/// private : methods

@@ -23,8 +23,9 @@ public class MonoBehavior {
 			entity = EntityCollection.GetEntity(_entityId);
 			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
 
+			entity.AddScript(this);
 
-			Initialize();
+			Awake();
 		}
 	}
 

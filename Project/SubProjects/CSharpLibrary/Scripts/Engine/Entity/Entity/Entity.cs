@@ -9,32 +9,33 @@ public class Entity {
 	/// objects
 	/// =========================================
 
-	private Transform _transform;
-	Dictionary<string, Component> _components = new Dictionary<string, Component>();
+	Transform transform_;
+	Dictionary<string, Component> components_ = new Dictionary<string, Component>();
+	Dictionary<string, MonoBehavior> scripts_ = new Dictionary<string, MonoBehavior>();
 
-	int entityId;
-	int parentId = -1; // 親のID
+	int entityId_;
+	int parentId_ = -1; // 親のID
 
-	public Transform transform => _transform;
+	public Transform transform => transform_;
 	public int Id {
 		get {
-			return entityId;
+			return entityId_;
 		}
 	}
 
 	public string name {
 		get {
-			return InternalGetName(entityId);
+			return InternalGetName(entityId_);
 		}
 		set {
-			InternalSetName(entityId, value);
+			InternalSetName(entityId_, value);
 		}
 	}
 
 
 	public Entity parent {
 		get {
-			int parentId = InternalGetParentId(entityId);
+			int parentId = InternalGetParentId(entityId_);
 			return EntityCollection.GetEntity(parentId);
 		}
 		set {
@@ -52,14 +53,14 @@ public class Entity {
 	/// =========================================
 
 	public Entity(int _id) {
-		entityId = _id;
-		_transform = AddComponent<Transform>();
-		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId + ")");
+		entityId_ = _id;
+		transform_ = AddComponent<Transform>();
+		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId_ + ")");
 	}
 
 
 	public Entity GetChild(uint _index) {
-		int childId = InternalGetChildId(entityId, _index);
+		int childId = InternalGetChildId(entityId_, _index);
 		return EntityCollection.GetEntity(childId);
 	}
 
@@ -72,32 +73,85 @@ public class Entity {
 	public T AddComponent<T>() where T : Component {
 		/// コンポーネントを作る
 		string typeName = typeof(T).Name;
-		ulong nativeHandle = InternalAddComponent<T>(entityId, typeName);
+		ulong nativeHandle = InternalAddComponent<T>(entityId_, typeName);
 
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;
-		_components[typeName] = comp;
+		components_[typeName] = comp;
 		return comp;
 	}
 
 	public T GetComponent<T>() where T : Component {
 		/// コンポーネントを得る
 		string typeName = typeof(T).Name;
-		ulong nativeHandle = InternalGetComponent<T>(entityId, typeName);
+		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName);
 
 		if(nativeHandle == 0) {
-			Log.WriteLine("Component not found: " + typeName + " (Entity ID: " + entityId + ")");
+			Log.WriteLine("Component not found: " + typeName + " (Entity ID: " + entityId_ + ")");
 			return null;
 		}
 
 		T comp = Activator.CreateInstance<T>();
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;
-		_components[typeName] = comp;
+		components_[typeName] = comp;
 		return comp;
 	}
+
+
+	public T GetScript<T>() where T : MonoBehavior {
+		/// スクリプトを得る
+		string typeName = typeof(T).Name;
+		if (scripts_.ContainsKey(typeName)) {
+			/// あったので返す
+			return (T)scripts_[typeName];
+		}
+
+		/// なかったのでnullを返す
+		return null;
+	}
+
+	public T AddScript<T>() where T : MonoBehavior {
+
+		/// スクリプトを得る
+		string typeName = typeof(T).Name;
+		if (scripts_.ContainsKey(typeName)) {
+			/// あったので返す
+			return (T)scripts_[typeName];
+		}
+
+		/// なかったので新しく作る
+		T script = Activator.CreateInstance<T>();
+		script.InternalInitialize(entityId_);
+		scripts_[typeName] = script;
+
+		/// c++側でもスクリプトを追加
+		InternalAddScript(entityId_, typeName);
+
+		return (T)scripts_[typeName];
+	}
+
+	public MonoBehavior AddScript(MonoBehavior mb) {
+		string scriptName = mb.GetType().Name;
+
+		/// スクリプトを得る
+		if (scripts_.ContainsKey(scriptName)) {
+			/// あったので返す
+			return scripts_[scriptName];
+		}
+
+		/// なかったので新しく作る
+		scripts_[scriptName] = mb;
+
+		/// c++側でもスクリプトを追加
+		InternalAddScript(entityId_, scriptName);
+
+		return mb;
+	}
+
+
 
 
 	/// ------------------------------------------
@@ -124,5 +178,8 @@ public class Entity {
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetParent(int _entityId, int _parentId);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalAddScript(int _entityId, string _scriptName);
 
 }
