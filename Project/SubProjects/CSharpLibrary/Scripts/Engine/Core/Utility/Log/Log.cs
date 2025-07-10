@@ -2,7 +2,7 @@
 
 public static class Log {
 	static public void WriteLine(string message) {
-		InternalConsoleLog(message);
+		InternalConsoleLog("[script] " + message);
 	}
 
 	[MethodImpl(MethodImplOptions.InternalCall)]

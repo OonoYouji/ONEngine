@@ -68,11 +68,10 @@ public class Player : MonoBehavior {
 		/// animationさせるかどうか
 		SkinMeshRenderer smr = entity.GetComponent<SkinMeshRenderer>();
 		if (smr != null) {
-				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			if (velocity.Length() > 0.01f) {
 				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			} else {
-				//smr.isPlaying = false; // 動いていないときはアニメーションを停止
+				smr.isPlaying = false; // 動いていないときはアニメーションを停止
 			}
 		} else {
 			Log.WriteLine("SkinMeshRenderer not found on entity: " + entity.name);

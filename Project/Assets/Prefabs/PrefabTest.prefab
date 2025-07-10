@@ -25,6 +25,13 @@
             "type": "Variables"
         },
         {
+            "enable": 1,
+            "scriptName": [
+                "Breathe"
+            ],
+            "type": "Script"
+        },
+        {
             "blendMode": 0,
             "distanceEmitData": {
                 "emitDistance": -431602080.0,
@@ -123,13 +130,6 @@
             "type": "Effect"
         },
         {
-            "enable": 1,
-            "scriptName": [
-                "PrefabTest"
-            ],
-            "type": "Script"
-        },
-        {
             "color": {
                 "w": 1.0,
                 "x": 1.0,
@@ -142,7 +142,7 @@
             "type": "MeshRenderer"
         }
     ],
-    "id": -10,
+    "id": -22,
     "name": "PrefabTest",
     "parent": null,
     "prefabName": "PrefabTest.prefab"

@@ -110,25 +110,11 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
 
-			/// popupでスクリプトの削除などの操作を行う
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-				ImGui::OpenPopup("##open");
-			}
-
-			/// 右クリックしたときのメニューの表示
-			if (ImGui::BeginPopupContextItem("##popup")) {
-				if (ImGui::MenuItem("delete")) {
-					_script->RemoveScript(script.scriptName);
-				}
-
-				ImGui::EndPopup();
-			}
 
 
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
-
 			MonoClass* monoClass = mono_object_get_class(script.instance);
 			MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
 			MonoClassField* field = nullptr;
@@ -144,13 +130,28 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 					int type = mono_type_get_type(fieldType);
 
 					ShowFiled(type, script.instance, field, fieldName);
-
 				}
 
 			}
 
-
 		}
+
+
+		/// popupでスクリプトの削除などの操作を行う
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			ImGui::OpenPopup("##open");
+		}
+
+		/// 右クリックしたときのメニューの表示
+		if (ImGui::BeginPopupContextItem("##popup")) {
+			if (ImGui::MenuItem("delete")) {
+				_script->RemoveScript(script.scriptName);
+			}
+
+			ImGui::EndPopup();
+		}
+
+
 
 		if (!script.enable) {
 			ImGui::PopStyleColor(1);

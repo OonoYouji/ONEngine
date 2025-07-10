@@ -215,6 +215,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
 
+	//mono_add_internal_call("FileSystem::LoadCSV", (void*)Mathf::LoadCSV);
 
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();

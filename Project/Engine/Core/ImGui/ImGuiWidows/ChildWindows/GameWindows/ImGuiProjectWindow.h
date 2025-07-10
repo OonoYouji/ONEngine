@@ -39,6 +39,8 @@ public:
 
 	void SetWindowName(const std::string& _name);
 
+	void ReloadProject();
+
 private:
 	/// ===================================================
 	/// private : methods

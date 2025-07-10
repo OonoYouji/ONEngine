@@ -226,8 +226,8 @@ void ImGuiHierarchyWindow::Hierarchy() {
 	}
 
 	bool hasValidSelection = false;
-	for (auto& entity : entityList_) {
-		if (entity == selectedEntity_) {
+	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
+		if (entity.get() == selectedEntity_) {
 			hasValidSelection = true;
 			break;
 		}

@@ -9,6 +9,7 @@
                 "z": 0.0
             },
             "rotate": {
+                "w": 1.0,
                 "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
@@ -31,12 +32,13 @@
                 "z": 0.0
             },
             "enable": 1,
-            "meshPath": "./Assets/Models/primitive/cube.obj",
+            "meshPath": "./Packages/Models/primitive/cube.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         }
     ],
-    "id": -1,
+    "id": -21,
     "name": "Block",
-    "parent": 11
+    "parent": null,
+    "prefabName": "Block.prefab"
 }

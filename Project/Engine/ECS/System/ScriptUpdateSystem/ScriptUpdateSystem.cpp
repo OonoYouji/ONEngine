@@ -28,6 +28,13 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 				continue;
 			}
 
+			/// instanceの中身が壊れていないかチェック
+			if (!script.instance->vtable) {
+				Console::LogError("ScriptUpdateSystem: InstanceVtable is null for script: " + script.scriptName);
+				continue;
+			}
+
+
 			/// クラスが同じかチェック
 			MonoClass* instanceClass = mono_object_get_class(script.instance);
 			MonoClass* methodClass = mono_method_get_class(script.updateMethod);

@@ -8,12 +8,12 @@ public class Puzzle : MonoBehavior {
 
 	bool isStartPuzzle = false; // パズルが開始されているかどうか
 
-	//Entity blockPrefab = new Block(0,0);
 
 	[SerializeField] float blockSpace = 0.22f; // ブロック間のスペース 0.22f
 	[SerializeField] float blockHeight = 2f; // ブロックの高さ 2f
-	int[][] map;
+	List<List<int>> mapData;
 	List<List<Entity>> blocks;
+	Vector3 blockPosOffset; // ブロックの位置オフセット
 
 	public override void Initialize() {
 		/*
@@ -22,19 +22,40 @@ public class Puzzle : MonoBehavior {
 			1: 白
 		*/
 
-		map = new int[][] {
-			new int[] { 0, 1, 0 },
-			new int[] { 0, 1, 0 },
-			new int[] { 0, 1, 0 }
+		Vector2 playerAddress = new Vector2(1, 1);
+		Entity player = EntityCollection.CreateEntity("PuzzlePlayer");
+		if (player != null) {
+			Transform t = player.transform;
+			t.position = new Vector3(
+				playerAddress.x * blockSpace,
+				0f,
+				playerAddress.y * blockSpace
+			);
+		}
+
+
+
+		mapData = new List<List<int>> {
+			new List<int> { 0, 1, 0, 1, 0 },
+			new List<int> { 1, 0, 1, 0, 1 },
+			new List<int> { 0, 1, 0, 1, 0 },
+			new List<int> { 1, 0, 1, 0, 1 },
 		};
+
 
 		blocks = new List<List<Entity>>();
 
+		Vector2 mapSize = new Vector2(mapData.Count, mapData[0].Count);
+		blockPosOffset = new Vector3(
+			-(mapSize.x - 1) * blockSpace / 2f,
+			0f,
+			-(mapSize.y - 1) * blockSpace / 2f
+		);
 
 		//Log.WriteLine("this Id: " + this.entity.Id);
-		for (int i = 0; i < map.Length; i++) {
-			for (int j = 0; j < map[i].Length; j++) {
-				Log.WriteLine("map[" + i + "][" + j + "] = " + map[i][j]);
+		for (int i = 0; i < mapData.Count; i++) {
+			for (int j = 0; j < mapData[i].Count; j++) {
+				Log.WriteLine("map[" + i + "][" + j + "] = " + mapData[i][j]);
 
 
 				Entity block = EntityCollection.CreateEntity("Block");
@@ -50,11 +71,12 @@ public class Puzzle : MonoBehavior {
 				/// blockのindexで位置を決定
 
 				t.position = new Vector3(i, blockHeight, j);
+				t.position -= blockPosOffset;
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
 				if (mr != null) {
 					/// 色を黒か白に設定
-					Vector4 color = Vector4.one * map[i][j]; // 1なら白、0なら黒
+					Vector4 color = Vector4.one * mapData[i][j]; // 1なら白、0なら黒
 					color.w = 1f;
 
 					mr.color = color;
@@ -84,6 +106,7 @@ public class Puzzle : MonoBehavior {
 				}
 				Transform t = block.transform;
 				t.position = new Vector3(i * blockSpace, blockHeight, j * blockSpace);
+				t.position += blockPosOffset;
 			}
 		}
 

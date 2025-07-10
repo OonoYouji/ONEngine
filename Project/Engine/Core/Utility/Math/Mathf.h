@@ -18,10 +18,13 @@ namespace Mathf {
 	/// ----- ファイル ----- ///
 
 	std::vector<File> FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension);
+	File FindFile(const std::string& _fileDirectory, const std::string& _filename);
 	
 	void ReplaceAll(std::string* _str, const std::string& _from, const std::string& _to);
 
 	std::string FileNameWithoutExtension(const std::string& _filename);
+
+	std::vector<std::vector<int>> LoadCSV(const std::string& _filePath);
 
 }
 

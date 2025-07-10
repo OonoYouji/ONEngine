@@ -290,16 +290,17 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	auto itr = prefabs_.find(_prefabName);
 	if (itr == prefabs_.end()) {
 		/// もう一度Fileを探索して確認
-		auto files = Mathf::FindFiles("./Assets/Prefabs", _prefabName);
-		if (files.empty()) {
-			Console::LogError("Prefab not found: " + _prefabName);
+		File file = Mathf::FindFile("./Assets/Prefabs/", _prefabName);
+	
+		if (file.first.empty()) {
+			Console::LogWarning("Prefab not found: " + _prefabName);
 			return;
 		}
-		
+
 		///!< 複数あった場合は最初に見つかったものを使用する
-		File& file = files.front();
 		prefabs_[file.second] = std::make_unique<EntityPrefab>(file.first);
 
+		itr = prefabs_.find(_prefabName);
 	}
 
 	/// prefabを再読み込み

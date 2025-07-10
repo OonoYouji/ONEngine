@@ -28,6 +28,7 @@ public class MonoBehavior {
 		}
 	}
 
+	public virtual void Awake() { }
 	public virtual void Initialize() { }
 	public virtual void Update() { }
 

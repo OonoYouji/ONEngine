@@ -14,20 +14,8 @@
 ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
 	: pEditorManager_(_editorManager) {
 
-	assetsRootFolder_ = std::make_shared<Folder>();
-	assetsRootFolder_->name = "Assets";
-	LoadFolder("./Assets", assetsRootFolder_);
-
-	packagesRootFolder_ = std::make_shared<Folder>();
-	packagesRootFolder_->name = "Packages";
-	LoadFolder("./Packages", packagesRootFolder_);
-
-	scriptRootFolder_ = std::make_shared<Folder>();
-	scriptRootFolder_->name = "Scripts";
-	LoadFolder("./SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
-
-	selectedFolder_ = assetsRootFolder_;
-	isGameFolder_ = true;
+	// reloadといいつつも普通に読み込み
+	ReloadProject();
 
 	winName_ = "Project";
 }
@@ -36,6 +24,10 @@ void ImGuiProjectWindow::ImGuiFunc() {
 	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;
+	}
+
+	if (ImGui::Button("reload project")) {
+		ReloadProject();
 	}
 
 	// 2列のテーブルを作成
@@ -65,6 +57,23 @@ void ImGuiProjectWindow::ImGuiFunc() {
 
 void ImGuiProjectWindow::SetWindowName(const std::string& _name) {
 	winName_ = _name;
+}
+
+void ImGuiProjectWindow::ReloadProject() {
+	assetsRootFolder_ = std::make_shared<Folder>();
+	assetsRootFolder_->name = "Assets";
+	LoadFolder("./Assets", assetsRootFolder_);
+
+	packagesRootFolder_ = std::make_shared<Folder>();
+	packagesRootFolder_->name = "Packages";
+	LoadFolder("./Packages", packagesRootFolder_);
+
+	scriptRootFolder_ = std::make_shared<Folder>();
+	scriptRootFolder_->name = "Scripts";
+	LoadFolder("./SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
+
+	selectedFolder_ = assetsRootFolder_;
+	isGameFolder_ = true;
 }
 
 
