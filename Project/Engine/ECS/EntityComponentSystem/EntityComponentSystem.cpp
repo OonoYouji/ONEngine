@@ -462,3 +462,15 @@ bool InternalContainsPrefabEntity(int32_t _entityId) {
 	return false;
 }
 
+void InternalDestroyEntity(int32_t _entityId) {
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	gECS->RemoveEntity(entity, true);
+	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
+
+}
+

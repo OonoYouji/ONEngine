@@ -16,6 +16,7 @@
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Scene/SceneManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 #include "ImGuiInspectorWindow.h"
 
@@ -192,6 +193,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 			}
 		}
 
+		GetMonoScriptEnginePtr()->ResetCS();
 		for (auto& script : scripts) {
 			script->ResetScripts(); // スクリプトのリセット
 		}

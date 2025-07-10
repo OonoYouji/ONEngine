@@ -255,3 +255,4 @@ bool InternalContainsEntity(int32_t _entityId);
 int32_t InternalGetEntityId(MonoString* _name);
 int32_t InternalCreateEntity(MonoString* _name);
 bool InternalContainsPrefabEntity(int32_t _entityId);
+void InternalDestroyEntity(int32_t _entityId);

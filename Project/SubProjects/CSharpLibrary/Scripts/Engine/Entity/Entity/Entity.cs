@@ -69,6 +69,16 @@ public class Entity {
 	}
 
 
+	public void Destroy() {
+		/// Entityを削除
+		Log.WriteLine("Destroying Entity: " + name + " (ID: " + entityId_ + ")");
+		EntityCollection.DestroyEntity(entityId_);
+		entityId_ = 0; // IDを無効化
+		transform = null;
+		components_.Clear();
+		scripts_.Clear();
+	}
+
 
 	/// ------------------------------------------
 	/// components

@@ -32,12 +32,19 @@
                 "z": 0.0
             },
             "enable": 1,
-            "meshPath": "./Packages/Models/primitive/cube.obj",
+            "meshPath": "./Assets/Models/objects/statue/statue.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Breathe"
+            ],
+            "type": "Script"
         }
     ],
-    "id": -21,
+    "id": -1,
     "name": "Block",
     "parent": null,
     "prefabName": "Block.prefab"

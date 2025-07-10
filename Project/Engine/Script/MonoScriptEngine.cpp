@@ -197,6 +197,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
 	mono_add_internal_call("EntityCollection::InternalCreateEntity", (void*)InternalCreateEntity);
 	mono_add_internal_call("EntityCollection::InternalContainsPrefabEntity", (void*)InternalContainsPrefabEntity);
+	mono_add_internal_call("EntityCollection::InternalDestroyEntity", (void*)InternalDestroyEntity);
 
 	/// log
 	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
@@ -283,6 +284,32 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 	}
 
 	return latestFile;
+}
+
+void MonoScriptEngine::ResetCS() {
+	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityCollection");
+	if (!monoClass) {
+		Console::LogError("Failed to find class: EntityCollection");
+		return;
+	}
+
+	MonoMethod* method = mono_class_get_method_from_name(monoClass, "DeleteEntityAll", 0);
+	if (!method) {
+		Console::LogError("Failed to find method: DeleteEntityAll");
+		return;
+	}
+
+
+	/// 関数を呼び出す
+	MonoObject* exc = nullptr;
+	mono_runtime_invoke(method, nullptr, nullptr, &exc);
+
+	if (exc) {
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown: ") + err);
+		mono_free(err);
+	}
+
 }
 
 MonoMethod* MonoScriptEngine::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
