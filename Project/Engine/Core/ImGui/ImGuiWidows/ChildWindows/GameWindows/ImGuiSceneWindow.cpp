@@ -182,6 +182,9 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		//!< ゲームの開始処理
 		pSceneManager_->SaveCurrentSceneTemporary();
 
+		pSceneManager_->ReloadScene(true);
+		pInspector_->SetSelectedEntity(0);
+
 		std::list<Script*> scripts;
 		for (auto& entity : pECS_->GetEntities()) {
 			if (Script* script = entity->GetComponent<Script>()) {
@@ -190,12 +193,16 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		}
 
 		for (auto& script : scripts) {
-			script->CallAwakeMethodAll(); // Awakeメソッドの呼び出し
+			script->ResetScripts(); // スクリプトのリセット
 		}
 
-		for (auto& script : scripts) {
-			script->CallInitMethodAll();   // Initメソッドの呼び出し
-		}
+		//for (auto& script : scripts) {
+		//	script->CallAwakeMethodAll(); // Awakeメソッドの呼び出し
+		//}
+
+		//for (auto& script : scripts) {
+		//	script->CallInitMethodAll();   // Initメソッドの呼び出し
+		//}
 
 
 	} else {

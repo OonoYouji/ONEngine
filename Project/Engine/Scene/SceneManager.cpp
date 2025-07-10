@@ -83,6 +83,10 @@ void SceneManager::SaveCurrentSceneTemporary() {
 	sceneIO_->OutputTemporary(currentScene_.get());
 }
 
+void SceneManager::StartCurrentScene() {
+
+}
+
 void SceneManager::LoadScene(const std::string& _sceneName) {
 	SetNextScene(_sceneName);
 	if (nextScene_ == nullptr) {

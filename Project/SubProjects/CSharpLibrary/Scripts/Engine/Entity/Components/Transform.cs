@@ -48,13 +48,6 @@ public class Transform : Component {
 		}
 	}
 
-	//public Matrix4x4 matrix {
-	//	get {
-	//		Matrix4x4 _matrix = new Matrix4x4();
-	//		_matrix.SetTRS(position, rotate, scale);
-	//		return _matrix;
-	//	}
-	//}
 
 	/// ========================================
 	/// static methods

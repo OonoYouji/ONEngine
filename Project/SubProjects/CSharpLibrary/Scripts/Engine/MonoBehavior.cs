@@ -11,6 +11,11 @@ public class MonoBehavior {
 
 	public Transform transform {
 		get {
+			if(entity == null) {
+				Log.WriteLine("[error] Entity is not initialized. Please call InternalInitialize first.");
+				return null;
+			}
+
 			return entity.transform;
 		}
 	}
@@ -21,7 +26,7 @@ public class MonoBehavior {
 		if (!initialized) {
 			initialized = true;
 			entity = EntityCollection.GetEntity(_entityId);
-			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
+			Log.WriteLine("Initializing MonoBehavior for Entity ID: " + _entityId + "Entity Name " + entity.name);
 
 			entity.AddScript(this);
 

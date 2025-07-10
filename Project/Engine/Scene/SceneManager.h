@@ -37,6 +37,8 @@ public:
 	void SaveCurrentScene();
 	void SaveCurrentSceneTemporary();
 
+	void StartCurrentScene();
+
 	void LoadScene(const std::string& _sceneName);
 
 	void ReloadScene(bool _isTemporary);

@@ -70,7 +70,7 @@ void MonoScriptEngine::Initialize() {
 	// JIT初期化
 	domain_ = mono_jit_init("MyDomain");
 	if (!domain_) {
-		Console::Log("Failed to initialize Mono JIT");
+		Console::LogError("Failed to initialize Mono JIT");
 		return;
 	}
 
@@ -102,6 +102,8 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
+	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + _scriptName + "\", script name: \"" + _scriptName + "\"");
+
 	if (!_script) {
 		Console::LogWarning("Script pointer is null");
 		return;
@@ -127,6 +129,11 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	/// クラスのインスタンスを生成
 	MonoObject* obj = mono_object_new(domain_, monoClass);
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
+	if (!obj) {
+		Console::LogError("Failed to create instance of class: " + _scriptName);
+		return;
+	}
+
 	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
 
@@ -166,6 +173,8 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	_script->internalInitMethod = internalInitMethod;
 	_script->initMethod = initMethod;
 	_script->updateMethod = updateMethod;
+	_script->isCalledAwake = false;
+	_script->isCalledInit = false;
 }
 
 
@@ -213,7 +222,7 @@ void MonoScriptEngine::HotReload() {
 
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
-		Console::Log("Failed to find latest assembly DLL.");
+		Console::LogError("Failed to find latest assembly DLL.");
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -222,7 +231,7 @@ void MonoScriptEngine::HotReload() {
 
 	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load assembly in new domain");
+		Console::LogError("Failed to load assembly in new domain");
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -241,7 +250,7 @@ void MonoScriptEngine::HotReload() {
 		std::error_code ec;
 		std::filesystem::remove(oldDllPath, ec);
 		if (ec) {
-			Console::Log("Failed to delete old DLL: " + ec.message());
+			Console::LogError("Failed to delete old DLL: " + ec.message());
 		} else {
 			Console::Log("Old DLL deleted: " + oldDllPath);
 		}
@@ -285,8 +294,6 @@ MonoMethod* MonoScriptEngine::FindMethodInClassOrParents(MonoClass* _class, cons
 	}
 	return nullptr;
 }
-
-
 
 MonoDomain* MonoScriptEngine::Domain() const {
 	return domain_;

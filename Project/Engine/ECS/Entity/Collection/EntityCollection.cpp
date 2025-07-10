@@ -291,7 +291,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	if (itr == prefabs_.end()) {
 		/// もう一度Fileを探索して確認
 		File file = Mathf::FindFile("./Assets/Prefabs/", _prefabName);
-	
+
 		if (file.first.empty()) {
 			Console::LogWarning("Prefab not found: " + _prefabName);
 			return;
@@ -331,10 +331,6 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 		entity->SetPrefabName(_prefabName);
 
 		EntityJsonConverter::FromJson(prefab->GetJson(), entity);
-
-		if (_isInit) {
-			//entity->Initialize();
-		}
 
 		return entity;
 	}

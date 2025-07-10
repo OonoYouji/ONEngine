@@ -20,9 +20,18 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 		}
 	}
 
+	/// コンストラクタの呼びだし (内部でフラグで呼び出すか管理している)
+	for (auto& scriptComp : scripts) {
+		scriptComp->CallAwakeMethodAll();
+	}
+	
+	/// 初期化関数の呼びだし (内部でフラグで呼び出すか管理している)
+	for (auto& scriptComp : scripts) {
+		scriptComp->CallInitMethodAll();
+	}
+	
 	/// 更新関数の呼びだし
 	for (auto& scriptComp : scripts) {
-		/// Updateメソッドの呼び出し
 		scriptComp->CallUpdateMethodAll();
 	}
 

@@ -29,6 +29,8 @@ static public class EntityCollection {
 			return entity;
 		}
 
+		Log.WriteLine("[error] Entity not found: " + _id);
+
 		/// それでも無かったらnullを返す
 		return null;
 	}

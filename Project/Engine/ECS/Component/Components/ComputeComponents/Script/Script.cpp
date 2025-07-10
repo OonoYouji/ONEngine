@@ -85,6 +85,7 @@ std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 }
 
 void Script::CallAwakeMethodAll() {
+	Console::Log("Script::CallAwakeMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
 
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
@@ -92,17 +93,24 @@ void Script::CallAwakeMethodAll() {
 			continue;
 		}
 
+		///< Initメソッドは一度だけ呼び出す
+		if (script.isCalledAwake) {
+			continue;
+		} else {
+			script.isCalledAwake = true;
+		}
+
 		if (!script.internalInitMethod || !script.instance) {
 			Console::LogError("Script::CallAwakeMethodAll Script is invalid or has no internalInitMethod");
 			continue;
 		}
 
-		/// 関数を呼び出す
 
+		/// 関数を呼び出す
 		/// 引数の準備、(entity id)
 		void* args[1];
-		int32_t id = static_cast<int32_t>(GetOwner()->GetId());
-		args[0] = &id;
+		int32_t entityId = static_cast<int32_t>(GetOwner()->GetId());
+		args[0] = &entityId;
 
 		/// 例外のチェック用
 		MonoObject* exc = nullptr;
@@ -121,20 +129,27 @@ void Script::CallAwakeMethodAll() {
 }
 
 void Script::CallInitMethodAll() {
+	Console::Log("Script::CallInitMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
 
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
-			Console::Log("Script::CallAwakeMethodAll Script is disabled");
+			Console::Log("Script::CallInitMethodAll Script is disabled");
 			continue;
 		}
 
+		///< Initメソッドは一度だけ呼び出す
+		if (script.isCalledInit) {
+			continue;
+		} else {
+			script.isCalledInit = true;
+		}
+
 		if (!script.initMethod || !script.instance) {
-			Console::LogError("Script::CallAwakeMethodAll Script is invalid or has no initMethod");
+			Console::LogError("Script::CallInitMethodAll Script is invalid or has no initMethod");
 			continue;
 		}
 
 		/// 関数を呼び出す
-		
 		/// 例外のチェック用
 		MonoObject* exc = nullptr;
 
@@ -153,20 +168,25 @@ void Script::CallInitMethodAll() {
 }
 
 void Script::CallUpdateMethodAll() {
+	Console::Log("Script::CallUpdateMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
 
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
-			Console::Log("Script::CallAwakeMethodAll Script is disabled");
+			Console::Log("Script::CallUpdateMethodAll Script is disabled");
 			continue;
 		}
 
 		if (!script.updateMethod || !script.instance) {
-			Console::LogError("Script::CallAwakeMethodAll Script is invalid or has no updateMethod");
+			Console::LogError("Script::CallUpdateMethodAll Script is invalid or has no updateMethod");
 			continue;
 		}
 
-		/// 関数を呼び出す
+		const char* methodName = mono_method_get_name(script.updateMethod);
+		const char* className = mono_class_get_name(mono_method_get_class(script.updateMethod));
+		Console::Log("Method found: " + std::string(className) + "::" + methodName);
 
+
+		/// 関数を呼び出す
 		/// 例外のチェック用
 		MonoObject* exc = nullptr;
 

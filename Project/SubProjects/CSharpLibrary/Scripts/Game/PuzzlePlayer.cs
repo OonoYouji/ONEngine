@@ -15,19 +15,20 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public override void Update() {
-
-		if(!isIdle) {
+		if (!isIdle) {
 			Move();
 		}
 
 
 		/// 座標更新
 		Transform t = transform;
-		t.position = new Vector3(
-			blockData.address.x * 1.0f,
-			blockData.height,
-			blockData.address.y * 1.0f
-		);
+		if (t != null) {
+			t.position = new Vector3(
+				blockData.address.x * 1.0f,
+				blockData.height,
+				blockData.address.y * 1.0f
+			);
+		}
 
 	}
 

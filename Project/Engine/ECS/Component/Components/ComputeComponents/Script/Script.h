@@ -32,6 +32,10 @@ public:
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
 
 		bool enable = true;  ///< スクリプトの有効/無効フラグ
+
+		/// update system用
+		bool isCalledAwake = false;
+		bool isCalledInit = false;
 	};
 
 

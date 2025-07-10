@@ -5,18 +5,28 @@ using System.Runtime.InteropServices;
 
 public class Entity {
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	public Entity(int _id) {
+		entityId_ = _id;
+		transform = AddComponent<Transform>();
+		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId_ + ")");
+	}
+
+
+
 	/// =========================================
 	/// objects
 	/// =========================================
 
-	Transform transform_;
 	Dictionary<string, Component> components_ = new Dictionary<string, Component>();
 	Dictionary<string, MonoBehavior> scripts_ = new Dictionary<string, MonoBehavior>();
 
 	int entityId_;
 	int parentId_ = -1; // 親のID
 
-	public Transform transform => transform_;
+	public Transform transform;
 	public int Id {
 		get {
 			return entityId_;
@@ -39,7 +49,7 @@ public class Entity {
 			return EntityCollection.GetEntity(parentId);
 		}
 		set {
-			if(value == null) {
+			if (value == null) {
 				Log.WriteLine("Cannot set parent to null. Entity ID: " + Id);
 				return;
 			}
@@ -51,12 +61,6 @@ public class Entity {
 	/// =========================================
 	/// methods
 	/// =========================================
-
-	public Entity(int _id) {
-		entityId_ = _id;
-		transform_ = AddComponent<Transform>();
-		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId_ + ")");
-	}
 
 
 	public Entity GetChild(uint _index) {
@@ -80,6 +84,15 @@ public class Entity {
 		comp.nativeHandle = nativeHandle;
 		comp.entity = this;
 		components_[typeName] = comp;
+
+
+		if (comp == null) {
+			Log.WriteLine("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
+		} else {
+			Log.WriteLine("AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
+			Log.WriteLine("Component added: " + typeName + " (Entity ID: " + entityId_ + ")");
+		}
+
 		return comp;
 	}
 
@@ -88,7 +101,7 @@ public class Entity {
 		string typeName = typeof(T).Name;
 		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName);
 
-		if(nativeHandle == 0) {
+		if (nativeHandle == 0) {
 			Log.WriteLine("Component not found: " + typeName + " (Entity ID: " + entityId_ + ")");
 			return null;
 		}
@@ -138,12 +151,14 @@ public class Entity {
 
 		/// スクリプトを得る
 		if (scripts_.ContainsKey(scriptName)) {
+			Log.WriteLine("Script already exists: " + scriptName + " (Entity ID: " + entityId_ + ")");
 			/// あったので返す
 			return scripts_[scriptName];
 		}
 
 		/// なかったので新しく作る
 		scripts_[scriptName] = mb;
+		Log.WriteLine("Adding script: \"" + scriptName + "\" to Entity ID: " + entityId_);
 
 		/// c++側でもスクリプトを追加
 		InternalAddScript(entityId_, scriptName);

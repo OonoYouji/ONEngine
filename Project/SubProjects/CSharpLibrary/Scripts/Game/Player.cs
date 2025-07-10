@@ -13,11 +13,16 @@ public class Player : MonoBehavior {
 	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
 
 
-	public override void Initialize() {
+	public override void Awake() {
+		Log.WriteLine("Player script initialized.");
+	}
 
+	public override void Initialize() {
+		Log.WriteLine("Player script initialized in Initialize method.");
 	}
 
 	public override void Update() {
+		Log.WriteLine("Player Update called.");
 		//Move();
 		//Jump();
 
@@ -34,7 +39,7 @@ public class Player : MonoBehavior {
 	}
 
 
-	public void Move() {
+	void Move() {
 		Transform t = transform;
 
 		/// 位置を更新
