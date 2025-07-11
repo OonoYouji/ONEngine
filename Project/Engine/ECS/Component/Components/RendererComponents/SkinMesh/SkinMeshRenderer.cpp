@@ -74,6 +74,10 @@ float SkinMeshRenderer::GetAnimationScale() const {
 	return animationScale_;
 }
 
+const Skeleton& SkinMeshRenderer::GetSkeleton() const {
+	return skeleton_;
+}
+
 const Vector4& SkinMeshRenderer::GetColor() const {
 	return color_;
 }

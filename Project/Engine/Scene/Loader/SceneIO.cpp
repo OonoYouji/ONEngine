@@ -152,8 +152,8 @@ void SceneIO::LoadScene(const std::string& _filename) {
 
 		IEntity* entity = nullptr;
 		if (!prefabName.empty()) {
-			std::string prefabName = entityJson["prefabName"];
-			entity = pECS_->GenerateEntityFromPrefab(prefabName, false);
+			std::string jsonPrefabName = entityJson["prefabName"];
+			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
 			entity = pECS_->GenerateEntity(entityClassName, false);
 		}

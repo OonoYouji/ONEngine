@@ -29,7 +29,7 @@ static public class EntityCollection {
 			return entity;
 		}
 
-		Log.WriteLine("[error] Entity not found: " + _id);
+		Debug.LogError("Entity not found for deletion: " + _id);
 
 		/// それでも無かったらnullを返す
 		return null;
@@ -56,17 +56,17 @@ static public class EntityCollection {
 	static public void DestroyEntity(int _entityId) {
 		/// Entityを削除
 		if (entities.ContainsKey(_entityId)) {
-			Log.WriteLine("Destroying Entity ID: " + _entityId + " Name: " + entities[_entityId].name);
+			Debug.LogInfo("Destroying Entity ID: " + _entityId + " Name: " + entities[_entityId].name);
 			entities[_entityId].Destroy();
 			entities.Remove(_entityId);
 		} else {
-			Log.WriteLine("[error] Entity not found for deletion: " + _entityId);
+			Debug.LogError("Entity not found for deletion: " + _entityId);
 		}
 	}
 
 	static public void DestroyEntity(Entity _entity) {
 		if (_entity == null) {
-			Log.WriteLine("[error] Cannot destroy null entity.");
+			Debug.LogError("Cannot destroy null entity.");
 			return;
 		}
 		DestroyEntity(_entity.Id);
@@ -78,8 +78,13 @@ static public class EntityCollection {
 		if (entity != null) {
 			DestroyEntity(entity.Id);
 		} else {
-			Log.WriteLine("[error] Entity not found for deletion by name: " + _name);
+			Debug.LogError("Entity not found for deletion by name: " + _name);
 		}
+	}
+
+
+	static public int EntityCount() {
+		return entities.Count;
 	}
 
 

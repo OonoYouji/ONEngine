@@ -307,7 +307,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	itr->second->Reload();
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
+IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {

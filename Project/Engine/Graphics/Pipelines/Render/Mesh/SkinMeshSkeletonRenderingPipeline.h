@@ -1,43 +1,30 @@
 #pragma once
 
-/// std
-#include <unordered_map>
-#include <list>
-
 /// engine
-#include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
-#include "GizmoPrimitiveVertices.h"
+#include "../../Interface/IRenderingPipeline.h"
+#include "../Gizmo/GizmoPrimitiveVertices.h"
 
 /// ///////////////////////////////////////////////////
-/// gizmoの表示pipeline
+/// SkinMeshの骨を描画するレンダリングパイプライン
 /// ///////////////////////////////////////////////////
-class GizmoRenderingPipeline : public IRenderingPipeline {
-private:
-
-	enum {
-		Solid,
-		Wire,
-	};
-
+class SkinMeshSkeletonRenderingPipeline : public IRenderingPipeline{
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	GizmoRenderingPipeline();
-	~GizmoRenderingPipeline() = default;
+	SkinMeshSkeletonRenderingPipeline();
+	~SkinMeshSkeletonRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Draw(const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(const std::vector<class IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-
-	/// solid, wire frame の描画pipeline
-	std::unordered_map<size_t, std::unique_ptr<GraphicsPipeline>> pipelines_;
 
 	size_t maxVertexNum_; ///< 最大ライン数
 

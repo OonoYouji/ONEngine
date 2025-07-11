@@ -14,15 +14,17 @@ ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
 void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
-
+#ifdef _DEBUG
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
 		size_t usedSize = mono_gc_get_used_size();
 
-		Console::Log("[debug] GC Heap Size : " + std::to_string(heapSize / 1024) + "KB");
-		Console::Log("[debug] GC Used Size : " + std::to_string(usedSize / 1024) + "KB");
+		Console::LogInfo("[mono] GC Heap Size : " + std::to_string(heapSize / 1024) + "KB");
+		Console::LogInfo("[mono] GC Used Size : " + std::to_string(usedSize / 1024) + "KB");
 	}
+#endif // _DEBUG
 
+	
 	pScripts_.clear();
 	for (auto& entity : _entities) {
 		/// 親がいるなら無視(親から再帰的に処理するので

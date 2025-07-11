@@ -8,6 +8,7 @@
 /// pipelines
 #include "../Render/Mesh/MeshRenderingPipeline.h"
 #include "../Render/Mesh/SkinMeshRenderingPipeline.h"
+#include "../Render/Mesh/SkinMeshSkeletonRenderingPipeline.h"
 #include "../Render/Effect/EffectRenderingPipeline.h"
 #include "../Render/Primitive/Line2DRenderingPipeline.h"
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
@@ -38,6 +39,7 @@ void RenderingPipelineCollection::Initialize() {
 	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 

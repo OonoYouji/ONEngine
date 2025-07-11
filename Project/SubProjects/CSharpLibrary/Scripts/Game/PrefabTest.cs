@@ -4,17 +4,17 @@ public class PrefabTest : MonoBehavior {
 	Vector3 oneRotateValue = new Vector3(0.0f, 0.01f, 0.0f);
 
 	public override void Initialize() {
-		Log.WriteLine("PrefabTest initialized.");
+		Debug.Log("PrefabTest initialized.");
 
 		//MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 
 	}
 
 	public override void Update() {
-		Log.WriteLine("PrefabTest Update called.");
-
+		Debug.Log("PrefabTest Update called.");
+			
 		if(transform == null) {
-			Log.WriteLine("Transform is null in PrefabTest.");
+			Debug.Log("Transform is null in PrefabTest.");
 			return;
 		}
 
