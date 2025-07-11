@@ -205,4 +205,47 @@ Matrix4x4 Matrix4x4::Inverse() const {
 	return MakeInverse(*this);
 }
 
+Vector3 Matrix4x4::ExtractScale() const {
+	/// 3x3に変換
+	float m[3][3] = {
+		{ m[0][0], m[0][1], m[0][2] },
+		{ m[1][0], m[1][1], m[1][2] },
+		{ m[2][0], m[2][1], m[2][2] }
+	};
+
+	/// スケール成分を計算
+	float scale[3];
+	for (size_t i = 0; i < 3; i++) {
+		scale[i] = std::sqrt(m[i][0] * m[i][0] + m[i][1] * m[i][1] + m[i][2] * m[i][2]);
+	}
+
+	return Vector3(scale[0], scale[1], scale[2]);
+}
+
+Quaternion Matrix4x4::ExtractRotation() const {
+	Matrix4x4 matrix = *this;
+	Vector3 scale = matrix.ExtractScale();
+	/// スケールを除去
+	matrix.m[0][0] /= scale.x;
+	matrix.m[0][1] /= scale.x;
+	matrix.m[0][2] /= scale.x;
+	matrix.m[1][0] /= scale.y;
+	matrix.m[1][1] /= scale.y;
+	matrix.m[1][2] /= scale.y;
+	matrix.m[2][0] /= scale.z;
+	matrix.m[2][1] /= scale.z;
+	matrix.m[2][2] /= scale.z;
+
+	/// 回転成分を抽出
+	return Quaternion::FromRotationMatrix(matrix);
+}
+
+Vector3 Matrix4x4::ExtractTranslation() const {
+	return Vector3(
+		m[3][0],
+		m[3][1],
+		m[3][2]
+	);
+}
+
 

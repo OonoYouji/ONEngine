@@ -53,6 +53,21 @@ public class SkinMeshRenderer : Component {
 		}
 	}
 
+
+	public TransformData GetJointTransform(string jointName) {
+		Vector3 scale;
+		Quaternion rotation;
+		Vector3 translation;
+		InternalGetJointTransform(nativeHandle, jointName, out scale, out rotation, out translation);
+
+		TransformData jointTransform = new TransformData();
+		jointTransform.scale = scale;
+		jointTransform.rotate = rotation;
+		jointTransform.position = translation;
+
+		return jointTransform;
+	}
+
 	/// MeshPathのAccessor
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern string InternalGetMeshName(ulong _nativeHandle);
@@ -83,6 +98,9 @@ public class SkinMeshRenderer : Component {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetAnimationScale(ulong _nativeHandle, float _animationScale);
 
+	/// JointTransformを取得
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetJointTransform(ulong _nativeHandle, string jointName, out Vector3 _s, out Quaternion _q, out Vector3 _t);
 
 
 }

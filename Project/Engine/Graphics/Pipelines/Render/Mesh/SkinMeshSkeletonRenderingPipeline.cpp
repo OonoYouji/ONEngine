@@ -111,7 +111,7 @@ void SkinMeshSkeletonRenderingPipeline::Draw(const std::vector<class IEntity*>& 
 			vertices_.insert(vertices_.end(), sphereVertices.begin(), sphereVertices.end());
 
 			/// Rectの頂点データを取得
-			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, Vector2::kOne * (2.0f * scale));
+			auto rectVertices = GetRectVertices(thisWorldMatrix, Color::kGreen, Vector2::kOne * (400.0f * scale));
 			vertices_.insert(vertices_.end(), rectVertices.begin(), rectVertices.end());
 
 

@@ -63,7 +63,8 @@ bool Input::ReleaseGamepad(int _button) {
 
 Vector2 Input::GetGamepadLeftThumb() {
 
-	if (gInputSystem_->gamepad_->state_.Gamepad.sThumbLX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbLY != 0) {
+	if (std::abs(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) != 8000 
+		|| std::abs(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) != 8000) {
 		return Vector2(
 			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE,
 			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE

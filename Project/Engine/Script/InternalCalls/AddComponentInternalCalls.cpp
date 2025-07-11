@@ -36,5 +36,6 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationTime", (void*)InternalSetAnimationTime);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetAnimationScale", (void*)InternalGetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
+	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
 }

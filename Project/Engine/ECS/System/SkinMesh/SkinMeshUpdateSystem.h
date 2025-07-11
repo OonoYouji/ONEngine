@@ -2,6 +2,7 @@
 
 /// engine
 #include "../Interface/ECSISystem.h"
+#include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 
 /// /////////////////////////////////////////////
 /// スキンメッシュの更新システム
@@ -14,6 +15,8 @@ public:
 
 	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
+	void UpdateSkeleton(class SkinMeshRenderer* _smr);
+	void UpdateSkinCluster(class SkinMeshRenderer* _smr);
 
 private:
 	/// =========================================
