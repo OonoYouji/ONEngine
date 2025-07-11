@@ -116,7 +116,8 @@ void Script::CallAwakeMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		mono_runtime_invoke(script.internalInitMethod, script.instance, args, &exc);
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		mono_runtime_invoke(script.internalInitMethod, safeObj, args, &exc);
 
 		/// 例外が発生したら処理
 		if (exc) {
@@ -154,7 +155,8 @@ void Script::CallInitMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		mono_runtime_invoke(script.initMethod, script.instance, nullptr, &exc);
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		mono_runtime_invoke(script.initMethod, safeObj, nullptr, &exc);
 
 		/// 例外が発生したら処理
 		if (exc) {
@@ -186,7 +188,8 @@ void Script::CallUpdateMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		mono_runtime_invoke(script.updateMethod, script.instance, nullptr, &exc);
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
 
 		/// 例外が発生したら処理
 		if (exc) {
