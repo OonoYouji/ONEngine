@@ -36,10 +36,6 @@ Camera::~Camera() {
 	if (pEntityComponentSystem_->GetMainCamera2D() == this) {
 		pEntityComponentSystem_->SetMainCamera2D(nullptr);
 	}
-
-	//if (pEntityComponentSystem_->GetDebugCamera() == this) {
-	//	pEntityComponentSystem_->SetDebugCamera(nullptr);
-	//}
 }
 
 
@@ -47,6 +43,8 @@ void Camera::Initialize() {
 	fovY_ = 0.7f;
 	nearClip_ = 0.1f;
 	farClip_ = 1000.0f;
+
+	pEntityComponentSystem_->SetMainCamera(this);
 }
 
 void Camera::Update() {

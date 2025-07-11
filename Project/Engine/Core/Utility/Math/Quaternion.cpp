@@ -232,6 +232,43 @@ Vector3 Quaternion::ToEuler(const Quaternion& _q) {
 	return euler;
 }
 
+Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& _m) {
+	Quaternion q;
+
+	float trace = _m.m[0][0] + _m.m[1][1] + _m.m[2][2];
+	if (trace > 0.0f) {
+		float s = std::sqrt(trace + 1.0f) * 2.0f; // S=4*qw
+		q.w = 0.25f * s;
+		q.x = (_m.m[2][1] - _m.m[1][2]) / s;
+		q.y = (_m.m[0][2] - _m.m[2][0]) / s;
+		q.z = (_m.m[1][0] - _m.m[0][1]) / s;
+	} else {
+		if (_m.m[0][0] > _m.m[1][1] && _m.m[0][0] > _m.m[2][2]) {
+			float s = std::sqrt(1.0f + _m.m[0][0] - _m.m[1][1] - _m.m[2][2]) * 2.0f; // S=4*qx
+			q.w = (_m.m[2][1] - _m.m[1][2]) / s;
+			q.x = 0.25f * s;
+			q.y = (_m.m[0][1] + _m.m[1][0]) / s;
+			q.z = (_m.m[0][2] + _m.m[2][0]) / s;
+		} else if (_m.m[1][1] > _m.m[2][2]) {
+			float s = std::sqrt(1.0f + _m.m[1][1] - _m.m[0][0] - _m.m[2][2]) * 2.0f; // S=4*qy
+			q.w = (_m.m[0][2] - _m.m[2][0]) / s;
+			q.x = (_m.m[0][1] + _m.m[1][0]) / s;
+			q.y = 0.25f * s;
+			q.z = (_m.m[1][2] + _m.m[2][1]) / s;
+		} else {
+			float s = std::sqrt(1.0f + _m.m[2][2] - _m.m[0][0] - _m.m[1][1]) * 2.0f; // S=4*qz
+			q.w = (_m.m[1][0] - _m.m[0][1]) / s;
+			q.x = (_m.m[0][2] + _m.m[2][0]) / s;
+			q.y = (_m.m[1][2] + _m.m[2][1]) / s;
+			q.z = 0.25f * s;
+		}
+	}
+
+	q = Normalize(q); // 正規化
+
+	return q;
+}
+
 
 
 Quaternion Quaternion::Inverse() const {

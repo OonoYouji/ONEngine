@@ -3,7 +3,6 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
-#include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
@@ -49,6 +48,9 @@ void SkinMeshUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, 
 			skinMesh->nodeAnimationMap_ = model->GetNodeAnimationMap();
 
 			skinMesh->isChangingMesh_ = false;
+
+			UpdateSkeleton(skinMesh);
+			UpdateSkinCluster(skinMesh);
 		}
 
 
@@ -65,51 +67,59 @@ void SkinMeshUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, 
 		skinMesh->animationTime_ += Time::DeltaTime();
 		skinMesh->animationTime_ = std::fmod(skinMesh->animationTime_, skinMesh->GetDuration());
 
-		Skeleton& skeleton = skinMesh->skeleton_;
-		SkinCluster& skinCluster = skinMesh->skinCluster_.value();
-
-
-		/// ------------------------------------
-		/// スケルトンの更新
-		/// ------------------------------------
-		for (Joint& joint : skeleton.joints) {
-
-			NodeAnimation& rootAnimation = skinMesh->nodeAnimationMap_[joint.name];
-
-			if (!rootAnimation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(rootAnimation.translate, skinMesh->animationTime_); }
-			if (!rootAnimation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(rootAnimation.rotate, skinMesh->animationTime_); }
-			if (!rootAnimation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(rootAnimation.scale, skinMesh->animationTime_); }
-			joint.transform.Update();
-
-			joint.matSkeletonSpace = joint.transform.matWorld;
-			if (joint.parent) {
-				joint.matSkeletonSpace *= skeleton.joints[*joint.parent].matSkeletonSpace;
-			}
-
-		}
-
-
-		/// ------------------------------------
-		/// スキンクラスターの更新
-		/// ------------------------------------
-		for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
-
-			if (jointIndex >= skinCluster.matBindPoseInverseArray.size()) {
-				Console::Log("[warring] SkinMeshUpdateSystem::Update: jointIndex out of range for matBindPoseInverseArray");
-				continue; ///< 範囲外の場合はスキップ
-			}
-
-			skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
-				skinCluster.matBindPoseInverseArray[jointIndex] * skeleton.joints[jointIndex].matSkeletonSpace;
-
-			skinCluster.mappedPalette[jointIndex].matSkeletonSpaceInverseTranspose =
-				Matrix4x4::MakeTranspose(Matrix4x4::MakeInverse(skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
-
-		}
-
-
+		UpdateSkeleton(skinMesh);
+		UpdateSkinCluster(skinMesh);
 
 	}
 
+
+}
+
+void SkinMeshUpdateSystem::UpdateSkeleton(SkinMeshRenderer* _smr) {
+	Skeleton& skeleton = _smr->skeleton_;
+
+	/// ------------------------------------
+	/// スケルトンの更新
+	/// ------------------------------------
+	for (Joint& joint : skeleton.joints) {
+
+		NodeAnimation& rootAnimation = _smr->nodeAnimationMap_[joint.name];
+
+		if (!rootAnimation.translate.empty()) { joint.transform.position = ANIME_MATH::CalculateValue(rootAnimation.translate, _smr->animationTime_); }
+		if (!rootAnimation.rotate.empty()) { joint.transform.rotate = ANIME_MATH::CalculateValue(rootAnimation.rotate, _smr->animationTime_); }
+		if (!rootAnimation.scale.empty()) { joint.transform.scale = ANIME_MATH::CalculateValue(rootAnimation.scale, _smr->animationTime_); }
+		joint.transform.Update();
+
+		joint.matSkeletonSpace = joint.transform.matWorld;
+		if (joint.parent) {
+			joint.matSkeletonSpace *= skeleton.joints[*joint.parent].matSkeletonSpace;
+		}
+
+		joint.matWorld = joint.matSkeletonSpace * _smr->GetOwner()->GetTransform()->matWorld;
+	}
+}
+
+void SkinMeshUpdateSystem::UpdateSkinCluster(SkinMeshRenderer* _smr) {
+	Skeleton& skeleton = _smr->skeleton_;
+	SkinCluster& skinCluster = _smr->skinCluster_.value();
+
+
+	/// ------------------------------------
+	/// スキンクラスターの更新
+	/// ------------------------------------
+	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
+
+		if (jointIndex >= skinCluster.matBindPoseInverseArray.size()) {
+			Console::Log("[warring] SkinMeshUpdateSystem::Update: jointIndex out of range for matBindPoseInverseArray");
+			continue; ///< 範囲外の場合はスキップ
+		}
+
+		skinCluster.mappedPalette[jointIndex].matSkeletonSpace =
+			skinCluster.matBindPoseInverseArray[jointIndex] * skeleton.joints[jointIndex].matSkeletonSpace;
+
+		skinCluster.mappedPalette[jointIndex].matSkeletonSpaceInverseTranspose =
+			Matrix4x4::MakeTranspose(Matrix4x4::MakeInverse(skinCluster.mappedPalette[jointIndex].matSkeletonSpace));
+
+	}
 
 }

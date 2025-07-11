@@ -81,6 +81,7 @@
     <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Transform.cs" />
+    <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
     <Compile Include="Scripts\Game\Block.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />

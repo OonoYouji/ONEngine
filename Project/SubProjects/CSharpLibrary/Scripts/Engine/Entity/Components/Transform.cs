@@ -2,6 +2,12 @@
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
+public class TransformData {
+	public Vector3 position;
+	public Quaternion rotate;
+	public Vector3 scale;
+}
+
 public class Transform : Component {
 
 	public Vector3 position {

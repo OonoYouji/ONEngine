@@ -103,7 +103,9 @@ public:
 	/// @return 逆行列
 	Matrix4x4 Inverse() const;
 
-
+	Vector3 ExtractScale() const; ///< スケール成分の抽出
+	Quaternion ExtractRotation() const; ///< 回転成分の抽出
+	Vector3 ExtractTranslation() const; ///< 平行移動成分の抽出
 
 	/// ===================================================
 	/// public : static objects
