@@ -8,6 +8,7 @@
 #include <metadata/mono-config.h>
 #include <mono/metadata/debug-helpers.h>
 
+
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -15,21 +16,20 @@
 
 #include "InternalCalls/AddComponentInternalCalls.h"
 
+//#pragma comment(lib, "mono-debug.lib")
+
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
 	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void* _user_data) {
-		Console::Log(std::string("[") + _log_domain + "][" + _log_level + "] " + _message + (_fatal ? " (fatal)" : ""));
-	}
+		const char* domain = _log_domain ? _log_domain : "null";
+		const char* level = _log_level ? _log_level : "null";
+		const char* message = _message ? _message : "null";
 
-	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
-		while (_class) {
-			MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
-			if (method)
-				return method;
-			_class = mono_class_get_parent(_class);
-		}
-		return nullptr;
+		std::string log = "[" + std::string(domain) + "][" + std::string(level) + "] " + message;
+		if (_fatal) log += " (fatal)";
+
+		Console::Log(log);
 	}
 
 	void ConsoleLog(MonoString* _msg) {
@@ -44,7 +44,7 @@ namespace {
 void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
 	gMonoScriptEngine = _engine;
 	if (!gMonoScriptEngine) {
-		Console::Log("MonoScriptEngine pointer is null");
+		Console::LogWarning("MonoScriptEngine pointer is null");
 	}
 }
 
@@ -80,7 +80,7 @@ void MonoScriptEngine::Initialize() {
 	// JIT初期化
 	domain_ = mono_jit_init("MyDomain");
 	if (!domain_) {
-		Console::Log("Failed to initialize Mono JIT");
+		Console::LogError("Failed to initialize Mono JIT");
 		return;
 	}
 
@@ -90,21 +90,21 @@ void MonoScriptEngine::Initialize() {
 	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
-		Console::Log("Failed to find latest assembly DLL.");
+		Console::LogError("Failed to find latest assembly DLL.");
 		return;
 	}
 
 	currentDllPath_ = *latestDll;
 	assembly_ = mono_domain_assembly_open(domain_, currentDllPath_.c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load CSharpLibrary.dll");
+		Console::LogError("Failed to load CSharpLibrary.dll");
 		return;
 	}
 
 	image_ = mono_assembly_get_image(assembly_);
 	//mono_debug_open_image();
 	if (!image_) {
-		Console::Log("Failed to get image from assembly");
+		Console::LogError("Failed to get image from assembly");
 		return;
 	}
 
@@ -112,9 +112,10 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
+	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + _scriptName + "\", script name: \"" + _scriptName + "\"");
 
 	if (!_script) {
-		Console::Log("Script pointer is null");
+		Console::LogWarning("Script pointer is null");
 		return;
 	}
 
@@ -123,6 +124,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 	/// ownerがなければ今後の処理ができないので、早期リターン
 	if (!_comp->GetOwner()) {
+		Console::LogError("Script owner is null. Cannot create script instance.");
 		return;
 	}
 
@@ -130,25 +132,37 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	/// MonoImageから指定されたクラスを取得(namespaceは""で省略)
 	MonoClass* monoClass = mono_class_from_name(image_, "", _scriptName.c_str());
 	if (!monoClass) {
-		Console::Log("Failed to find class: " + _scriptName);
+		Console::LogError("Failed to find class: " + _scriptName);
 		return;
 	}
 
 	/// クラスのインスタンスを生成
 	MonoObject* obj = mono_object_new(domain_, monoClass);
 	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
+	if (!obj) {
+		Console::LogError("Failed to create instance of class: " + _scriptName);
+		return;
+	}
+
 	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
 
+
+	/// InternalInitialize( Awake(内部で呼んでいる) )メソッドを取得
+	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	if (!internalInitMethod) {
+		Console::LogError("Failed to find method InternalInitialize in class: " + _scriptName);
+	}
+
 	/// Initializeメソッドを取得
-	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "Initialize", 0);
 	if (!initMethod) {
-		Console::Log("Failed to find method Initialize in class: " + _scriptName);
+		Console::LogError("Failed to find method Initialize in class: " + _scriptName);
 	}
 
 	/// Updateメソッドを取得
 	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
 	if (!updateMethod) {
-		Console::Log("Failed to find method Update in class: " + _scriptName);
+		Console::LogError("Failed to find method Update in class: " + _scriptName);
 	}
 
 
@@ -157,32 +171,20 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
 	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
 
+	for (auto& method : _script->collisionEventMethods) {
+		if (!method) {
+			Console::LogError("Failed to find collision event method in class: " + _scriptName);
+		}
+	}
+
 	_script->gcHandle = gcHandle;
 	_script->monoClass = monoClass;
 	_script->instance = obj;
+	_script->internalInitMethod = internalInitMethod;
 	_script->initMethod = initMethod;
 	_script->updateMethod = updateMethod;
-
-
-	/// 初期化の呼び出し
-	if (initMethod && obj) {
-		IEntity* owner = _comp->GetOwner();
-		int32_t id = static_cast<int32_t>(owner->GetId());
-		void* args[1];
-		args[0] = &id;
-
-		MonoObject* exc = nullptr;
-		mono_runtime_invoke(initMethod, obj, args, &exc);
-
-		if (exc) {
-			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-			Console::Log(std::string("Exception thrown: ") + err);
-			mono_free(err);
-		}
-
-	}
-
-
+	_script->isCalledAwake = false;
+	_script->isCalledInit = false;
 }
 
 
@@ -199,14 +201,16 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
 	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
 	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
+	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
 
 	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
 	mono_add_internal_call("EntityCollection::InternalCreateEntity", (void*)InternalCreateEntity);
 	mono_add_internal_call("EntityCollection::InternalContainsPrefabEntity", (void*)InternalContainsPrefabEntity);
+	mono_add_internal_call("EntityCollection::InternalDestroyEntity", (void*)InternalDestroyEntity);
 
 	/// log
-	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
+	mono_add_internal_call("Debug::InternalConsoleLog", (void*)ConsoleLog);
 
 	/// time
 	mono_add_internal_call("Time::InternalGetDeltaTime", (void*)Time::DeltaTime);
@@ -214,7 +218,6 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetUnscaledDeltaTime", (void*)Time::UnscaledDeltaTime);
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
-
 
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
@@ -230,7 +233,7 @@ void MonoScriptEngine::HotReload() {
 
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
-		Console::Log("Failed to find latest assembly DLL.");
+		Console::LogError("Failed to find latest assembly DLL.");
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -239,7 +242,7 @@ void MonoScriptEngine::HotReload() {
 
 	assembly_ = mono_domain_assembly_open(domain_, latestDll->c_str());
 	if (!assembly_) {
-		Console::Log("Failed to load assembly in new domain");
+		Console::LogError("Failed to load assembly in new domain");
 		mono_domain_set(oldDomain, true);
 		mono_domain_unload(domain_);
 		domain_ = oldDomain;
@@ -258,7 +261,7 @@ void MonoScriptEngine::HotReload() {
 		std::error_code ec;
 		std::filesystem::remove(oldDllPath, ec);
 		if (ec) {
-			Console::Log("Failed to delete old DLL: " + ec.message());
+			Console::LogError("Failed to delete old DLL: " + ec.message());
 		} else {
 			Console::Log("Old DLL deleted: " + oldDllPath);
 		}
@@ -293,7 +296,41 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 	return latestFile;
 }
 
+void MonoScriptEngine::ResetCS() {
+	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityCollection");
+	if (!monoClass) {
+		Console::LogError("Failed to find class: EntityCollection");
+		return;
+	}
 
+	MonoMethod* method = mono_class_get_method_from_name(monoClass, "DeleteEntityAll", 0);
+	if (!method) {
+		Console::LogError("Failed to find method: DeleteEntityAll");
+		return;
+	}
+
+
+	/// 関数を呼び出す
+	MonoObject* exc = nullptr;
+	mono_runtime_invoke(method, nullptr, nullptr, &exc);
+
+	if (exc) {
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown: ") + err);
+		mono_free(err);
+	}
+
+}
+
+MonoMethod* MonoScriptEngine::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
+	while (_class) {
+		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
+		if (method)
+			return method;
+		_class = mono_class_get_parent(_class);
+	}
+	return nullptr;
+}
 
 MonoDomain* MonoScriptEngine::Domain() const {
 	return domain_;

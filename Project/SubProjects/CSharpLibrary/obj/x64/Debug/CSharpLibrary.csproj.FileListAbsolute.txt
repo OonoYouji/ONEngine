@@ -1,0 +1,6 @@
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\bin\x64\Debug\CSharpLibrary.dll
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\bin\x64\Debug\CSharpLibrary.pdb
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Debug\CSharpLibrary.csproj.AssemblyReference.cache
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Debug\CSharpLibrary.csproj.CoreCompileInputs.cache
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Debug\CSharpLibrary.dll
+C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Debug\CSharpLibrary.pdb

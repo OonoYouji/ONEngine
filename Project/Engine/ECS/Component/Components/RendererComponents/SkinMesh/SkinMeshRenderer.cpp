@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
 SkinMeshRenderer::SkinMeshRenderer() {
 	SetMeshPath("./Packages/Models/Human/walk.gltf");
@@ -72,6 +72,10 @@ float SkinMeshRenderer::GetDuration() const {
 
 float SkinMeshRenderer::GetAnimationScale() const {
 	return animationScale_;
+}
+
+const Skeleton& SkinMeshRenderer::GetSkeleton() const {
+	return skeleton_;
 }
 
 const Vector4& SkinMeshRenderer::GetColor() const {
@@ -164,6 +168,26 @@ void COMP_DEBUG::SkinMeshRendererDebug(SkinMeshRenderer* _smr) {
 		ImGui::EndDragDropTarget();
 	}
 
+
+	ImGui::Indent();
+	
+	if (ImGui::CollapsingHeader("joints")) {
+
+		for (const auto& jointIndex : _smr->GetSkeleton().jointMap) {
+			/// ジョイント名を表示
+			const Joint& joint = _smr->GetSkeleton().joints[jointIndex.second];
+
+			std::string pointerName = joint.name;
+			ImMathf::InputText(std::string("##" + pointerName).c_str(), &pointerName, ImGuiInputTextFlags_ReadOnly);
+
+			/// 最後に次のジョイントの間隔を空ける
+			ImGui::Spacing();
+		}
+	}
+
+	ImGui::Unindent();
+
+
 }
 
 void from_json(const nlohmann::json& _j, SkinMeshRenderer& _smr) {
@@ -254,4 +278,40 @@ float InternalGetAnimationScale(uint64_t _nativeHandle) {
 void InternalSetAnimationScale(uint64_t _nativeHandle, float _scale) {
 	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
 	smr->SetAnimationScale(_scale);
+}
+
+void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, Vector3* _outScale, Quaternion* _outRotation, Vector3* _outPosition) {
+	SkinMeshRenderer* smr = GetSkinMeshRenderer(_nativeHandle);
+	if (!smr) {
+		Console::LogError("SkinMeshRenderer::InternalGetJointTransform: SkinMeshRenderer is null.");
+		return; ///< SkinMeshRendererがnullの場合は何もしない
+	}
+
+	/// MonoStringからstd::stringに変換
+	char* jointNameChars = mono_string_to_utf8(_jointName);
+	std::string jointName(jointNameChars);
+	mono_free(jointNameChars);
+
+	/// ジョイントのトランスフォームを取得
+	if (smr->GetSkeleton().jointMap.contains(jointName) == false) {
+		Console::LogError(std::format("SkinMeshRenderer::InternalGetJointTransform: Joint '{}' not found in skeleton.", jointName));
+		return; ///< ジョイントが見つからない場合は何もしない
+	}
+
+	int32_t jointIndex = smr->GetSkeleton().jointMap.at(jointName);
+	const Matrix4x4& matWorld = smr->GetSkeleton().joints[jointIndex].matWorld;
+
+
+	/// 出力パラメータに値を設定
+	if (_outScale) {
+		*_outScale = matWorld.ExtractScale();
+	}
+	if (_outRotation) {
+		*_outRotation = matWorld.ExtractRotation();
+	}
+	if (_outPosition) {
+		*_outPosition = matWorld.ExtractTranslation();
+	}
+
+
 }

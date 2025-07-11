@@ -9,7 +9,6 @@
 void AddComponentInternalCalls() {
 
 	/// transform
-	mono_add_internal_call("Transform::InternalGetTransform", (void*)InternalGetTransform);
 	mono_add_internal_call("Transform::InternalGetPosition", (void*)InternalGetPosition);
 	mono_add_internal_call("Transform::InternalGetLocalPosition", (void*)InternalGetLocalPosition);
 	mono_add_internal_call("Transform::InternalGetRotate", (void*)InternalGetRotate);
@@ -37,5 +36,6 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationTime", (void*)InternalSetAnimationTime);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetAnimationScale", (void*)InternalGetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
+	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
 }

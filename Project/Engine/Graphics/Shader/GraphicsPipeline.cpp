@@ -372,3 +372,19 @@ D3D12_BLEND_DESC BlendMode::Screen() {
 	return blendDesc;
 }
 
+D3D12_BLEND_DESC BlendMode::None() {
+	D3D12_BLEND_DESC blendDesc = {};
+
+	D3D12_RENDER_TARGET_BLEND_DESC rtBlend = {};
+	rtBlend.BlendEnable = FALSE;   // ブレンド無効
+	rtBlend.LogicOpEnable = FALSE; // 論理演算も無効
+	rtBlend.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+
+	for (size_t i = 0; i < 8; i++) {
+		blendDesc.RenderTarget[i] = rtBlend;
+	}
+
+	return blendDesc;
+}
+

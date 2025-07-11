@@ -9,6 +9,7 @@
                 "z": 0.0
             },
             "rotate": {
+                "w": 1.0,
                 "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
@@ -31,12 +32,20 @@
                 "z": 0.0
             },
             "enable": 1,
-            "meshPath": "./Assets/Models/primitive/cube.obj",
+            "meshPath": "./Assets/Models/objects/statue/statue.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Breathe"
+            ],
+            "type": "Script"
         }
     ],
     "id": -1,
     "name": "Block",
-    "parent": 11
+    "parent": null,
+    "prefabName": "Block.prefab"
 }

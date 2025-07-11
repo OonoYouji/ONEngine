@@ -25,12 +25,17 @@ public:
 		MonoObject* instance = nullptr;
 		MonoClass* monoClass = nullptr;
 		uint32_t gcHandle = 0;
+		MonoMethod* internalInitMethod = nullptr;
 		MonoMethod* initMethod = nullptr;
 		MonoMethod* updateMethod = nullptr;
 
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
 
 		bool enable = true;  ///< スクリプトの有効/無効フラグ
+
+		/// update system用
+		bool isCalledAwake = false;
+		bool isCalledInit = false;
 	};
 
 
@@ -46,12 +51,17 @@ public:
 	void RemoveScript(const std::string& _scriptName);
 
 	void ResetScripts();
+	void ReleaseGCHandle();
 
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+
+	void CallAwakeMethodAll();
+	void CallInitMethodAll();
+	void CallUpdateMethodAll();
 
 private:
 	/// ===================================================

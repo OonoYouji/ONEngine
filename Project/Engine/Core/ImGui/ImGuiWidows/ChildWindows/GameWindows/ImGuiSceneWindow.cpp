@@ -13,8 +13,10 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Component/Component.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Scene/SceneManager.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 #include "ImGuiInspectorWindow.h"
 
@@ -52,18 +54,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	}
 
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
-		// デバッグモードを開始
-		DebugConfig::isDebugging = !isGameDebug;
-
-		//!< 更新処理を停止した場合の処理
-		if (DebugConfig::isDebugging) {
-			pSceneManager_->SaveCurrentSceneTemporary();
-		} else {
-			pSceneManager_->ReloadScene(true);
-			pInspector_->SetSelectedEntity(0);
-
-		}
-
+		SetGamePlay(!isGameDebug); // ゲームプレイの開始/停止
 	}
 	ImGui::SameLine();
 
@@ -183,3 +174,37 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	ImGui::End();
 
 }
+
+void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
+	// デバッグモードを開始
+	DebugConfig::isDebugging = _isGamePlay;
+
+	if (DebugConfig::isDebugging) {
+		//!< ゲームの開始処理
+		pSceneManager_->SaveCurrentSceneTemporary();
+
+
+		std::list<Script*> scripts;
+		for (auto& entity : pECS_->GetEntities()) {
+			if (Script* script = entity->GetComponent<Script>()) {
+				scripts.push_back(script);
+			}
+		}
+
+		GetMonoScriptEnginePtr()->ResetCS();
+		for (auto& script : scripts) {
+			script->ResetScripts(); // スクリプトのリセット
+		}
+
+		pSceneManager_->ReloadScene(true);
+		pInspector_->SetSelectedEntity(0);
+
+	} else {
+		//!< 更新処理を停止した場合の処理
+		pSceneManager_->ReloadScene(true);
+		pInspector_->SetSelectedEntity(0);
+
+	}
+
+}
+

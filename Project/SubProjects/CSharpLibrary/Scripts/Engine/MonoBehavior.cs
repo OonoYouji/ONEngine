@@ -11,6 +11,16 @@ public class MonoBehavior {
 
 	public Transform transform {
 		get {
+			if(entity == null) {
+				Debug.Log("[error] Entity is not initialized. Please call InternalInitialize first.");
+				return null;
+			}
+
+			if (entity.transform == null) {
+				Debug.Log("[error] Transform component is not initialized for Entity ID: " + entity.Id);
+				return null;
+			}
+
 			return entity.transform;
 		}
 	}
@@ -18,16 +28,23 @@ public class MonoBehavior {
 	private bool initialized = false;
 
 	public void InternalInitialize(int _entityId) {
+		if(initialized) {
+			Debug.Log("[error] MonoBehavior is already initialized for Entity ID: " + _entityId);
+			return;
+		}
+
 		if (!initialized) {
 			initialized = true;
 			entity = EntityCollection.GetEntity(_entityId);
-			Log.WriteLine("MonoBehavior initialized for Entity ID: " + _entityId);
+			Debug.Log("Initializing MonoBehavior for Entity ID: " + _entityId + "Entity Name " + entity.name);
 
+			entity.AddScript(this);
 
-			Initialize();
+			Awake();
 		}
 	}
 
+	public virtual void Awake() { }
 	public virtual void Initialize() { }
 	public virtual void Update() { }
 

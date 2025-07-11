@@ -34,22 +34,23 @@
         },
         {
             "enable": 1,
-            "type": "ToTerrainCollider"
-        },
-        {
-            "enable": 1,
             "radius": 1.0,
             "type": "SphereCollider"
         },
         {
             "enable": 1,
+            "type": "ToTerrainCollider"
+        },
+        {
+            "enable": 1,
             "scriptName": [
-                "Player"
+                "Player",
+                "AttachObjectToJoint"
             ],
             "type": "Script"
         }
     ],
-    "id": -10,
+    "id": -1,
     "name": "Player",
     "parent": null,
     "prefabName": "Player.prefab"

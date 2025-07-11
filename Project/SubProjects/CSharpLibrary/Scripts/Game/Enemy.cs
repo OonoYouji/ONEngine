@@ -14,7 +14,7 @@ public class Enemy : MonoBehavior {
 
 		if (hp <= 0f) {
 			isAlive = false;
-			Log.WriteLine("Enemy defeated." + entity.Id);
+			Debug.Log("Enemy defeated." + entity.Id);
 			return;
 		}
 	}

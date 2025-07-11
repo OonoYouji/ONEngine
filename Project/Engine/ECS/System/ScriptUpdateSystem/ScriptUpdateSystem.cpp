@@ -3,6 +3,9 @@
 /// std
 #include <list>
 
+/// external
+#include <mono/metadata/mono-gc.h>
+
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
@@ -11,53 +14,69 @@ ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
 void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+#ifdef _DEBUG
+	{	/// debug monoのヒープの状態を出力
+		size_t heapSize = mono_gc_get_heap_size();
+		size_t usedSize = mono_gc_get_used_size();
 
-	std::list<Script*> scripts;
+		Console::LogInfo("[mono] GC Heap Size : " + std::to_string(heapSize / 1024) + "KB");
+		Console::LogInfo("[mono] GC Used Size : " + std::to_string(usedSize / 1024) + "KB");
+	}
+#endif // _DEBUG
+
+	
+	pScripts_.clear();
 	for (auto& entity : _entities) {
-		Script* script = entity->GetComponent<Script>();
-		if (script) {
-			scripts.push_back(script);
+		/// 親がいるなら無視(親から再帰的に処理するので
+		if (entity->GetParent()) {
+			continue;
+		}
+
+		RecursivePushBackScript(entity);
+	}
+
+	/// コンストラクタの呼びだし (内部でフラグで呼び出すか管理している)
+	for (auto& scriptComp : pScripts_) {
+		scriptComp->CallAwakeMethodAll();
+	}
+
+	/// 初期化関数の呼びだし (内部でフラグで呼び出すか管理している)
+	for (auto& scriptComp : pScripts_) {
+		scriptComp->CallInitMethodAll();
+	}
+
+	/// 更新関数の呼びだし
+	for (auto& scriptComp : pScripts_) {
+		scriptComp->CallUpdateMethodAll();
+	}
+
+	/// 行列の更新
+	for (auto& script : pScripts_) {
+		IEntity* entity = script->GetOwner();
+		if (entity) {
+			entity->UpdateTransform();
+		}
+	}
+}
+
+void ScriptUpdateSystem::RecursivePushBackScript(IEntity* _entity) {
+
+	if (_entity) {
+
+		/// エンティティが非アクティブなら無視、(子オブジェクトも更新しない)
+		if (!_entity->GetActive()) {
+			return;
+		}
+
+		Script* script = _entity->GetComponent<Script>();
+		if (script && script->enable) {
+			pScripts_.push_back(script);
+		}
+
+		/// 自身の子エンティティから再帰的に得る
+		for (auto& child : _entity->GetChildren()) {
+			RecursivePushBackScript(child);
 		}
 	}
 
-	for (auto& scriptComp : scripts) {
-		for (auto& script : scriptComp->scriptDataList_) {
-
-			/// スクリプトが有効でなければスキップ
-			if (!script.enable) {
-				continue;
-			}
-
-			/// クラスが同じかチェック
-			MonoClass* instanceClass = mono_object_get_class(script.instance);
-			MonoClass* methodClass = mono_method_get_class(script.updateMethod);
-			if (instanceClass != methodClass) {
-				Console::LogError("ScriptUpdateSystem: Instance class does not match method class for script: " + script.scriptName);
-				continue;
-			}
-
-			if (script.updateMethod && script.instance) {
-				/// 例外をキャッチするためのポインタ
-				MonoObject* exc = nullptr;
-
-				/// updateメソッドを呼び出す
-				mono_runtime_invoke(script.updateMethod, script.instance, nullptr, &exc);
-
-				/// 例外が発生したらここで出力
-				if (exc) {
-					MonoString* monoStr = mono_object_to_string(exc, nullptr);
-					if (monoStr) {
-						char* message = mono_string_to_utf8(monoStr);
-						Console::LogError(std::string("Mono Exception: ") + message);
-						mono_free(message);
-					} else {
-						Console::LogError("Mono Exception occurred, but message is null.");
-					}
-				}
-
-			}
-
-		}
-
-	}
 }

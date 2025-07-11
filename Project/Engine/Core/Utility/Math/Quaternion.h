@@ -96,6 +96,8 @@ public:
 	static Quaternion FromEuler(const Vector3& _euler);
 	static Vector3 ToEuler(const Quaternion& _q);
 
+	static Quaternion FromRotationMatrix(const Matrix4x4& _m);
+
 	/// ===================================================
 	/// public : methods
 	/// ===================================================

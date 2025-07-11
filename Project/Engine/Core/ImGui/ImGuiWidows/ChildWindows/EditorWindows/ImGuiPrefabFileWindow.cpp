@@ -73,6 +73,12 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 		/// ファイルの再読み込み
 		files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
+
+		for (auto& file : files_) {
+			/// ファイル名の置換
+			pECS_->ReloadPrefab(file.second);
+		}
+
 	}
 
 }

@@ -21,6 +21,7 @@
 struct Joint {
 	Transform transform;
 	Matrix4x4 matSkeletonSpace;
+	Matrix4x4 matWorld;
 	std::string name;
 	std::vector<int32_t> children;
 	int32_t index;

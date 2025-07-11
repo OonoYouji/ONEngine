@@ -73,7 +73,8 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 
 void ImGuiInspectorWindow::EntityInspector() {
 	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (!dynamic_cast<IEntity*>(entity)) {
+	uint64_t pointerValue = reinterpret_cast<uint64_t>(entity->GetTransform());
+	if (pointerValue == 0xdddddddddddddddd) {
 		return;
 	}
 

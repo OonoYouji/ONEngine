@@ -81,31 +81,6 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// mono からのTransform取得用関数
 /// ===================================================
 
-MonoObject* InternalGetTransform(uint32_t _entityId) {
-	EntityComponentSystem* ecs = GetEntityComponentSystemPtr();
-	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
-
-	IEntity* e = ecs->GetEntity(_entityId);
-	if (!e) {
-		return nullptr;
-	}
-
-	Transform* t = e->GetTransform(); // transform_ メンバを取得
-	if (!t) {
-		return nullptr;
-	}
-
-	MonoClass* cls = mono_class_from_name(monoEngine->Image(), "", "Transform");
-	MonoObject* obj = mono_object_new(mono_domain_get(), cls);
-	mono_runtime_object_init(obj);
-
-	uint64_t ptrVal = reinterpret_cast<uint64_t>(t);
-	MonoClassField* handleField = mono_class_get_field_from_name(cls, "nativeHandle");
-	mono_field_set_value(obj, handleField, &ptrVal);
-
-	return obj;
-}
-
 void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {

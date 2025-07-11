@@ -2,6 +2,12 @@
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
+public class TransformData {
+	public Vector3 position;
+	public Quaternion rotate;
+	public Vector3 scale;
+}
+
 public class Transform : Component {
 
 	public Vector3 position {
@@ -48,29 +54,9 @@ public class Transform : Component {
 		}
 	}
 
-	//public Matrix4x4 matrix {
-	//	get {
-	//		Matrix4x4 _matrix = new Matrix4x4();
-	//		_matrix.SetTRS(position, rotate, scale);
-	//		return _matrix;
-	//	}
-	//}
-
-	/// ========================================
-	/// static methods
-	/// ========================================
-
-	static public Transform GetTransform(uint _entityId) {
-		return InternalGetTransform(_entityId);
-	}
-
-
 	/// ========================================
 	/// c++ internal methods
 	/// ========================================
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern Transform InternalGetTransform(uint _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetPosition(ulong _nativeHandle, out float _x, out float _y, out float _z);

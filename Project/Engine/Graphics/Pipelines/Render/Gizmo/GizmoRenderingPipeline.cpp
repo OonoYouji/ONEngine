@@ -8,6 +8,8 @@
 #include "Engine/Core/Utility/Tools/Gizmo.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
+using namespace GizmoPrimitive;
+
 GizmoRenderingPipeline::GizmoRenderingPipeline() {}
 
 void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -16,8 +18,8 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	{	/// wire frame pipeline
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Assets/Shader/Line/Line3D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Line/Line3D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"./Packages/Shader/Render/Line/Line3D.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"./Packages/Shader/Render/Line/Line3D.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipelines_[Wire] = std::make_unique<GraphicsPipeline>();
 		auto pipeline = pipelines_[Wire].get();
@@ -50,16 +52,6 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		/// create pipeline
 		pipeline->CreatePipeline(_dxManager->GetDxDevice());
 	}
-
-
-	//{	/// solid pipeline create
-
-	//	Shader shader;
-	//	shader.Initialize(_shaderCompiler);
-
-
-
-	//}
 
 
 	{
@@ -140,78 +132,5 @@ void GizmoRenderingPipeline::Draw([[maybe_unused]] const std::vector<IEntity*>& 
 	/// 描画データのクリア
 	Gizmo::Reset();
 	vertices_.clear();
-}
-
-std::vector<GizmoRenderingPipeline::VertexData> GizmoRenderingPipeline::GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment) {
-	const float deltaAngle = 2.0f * std::numbers::pi_v<float> / _segment;
-	std::vector<VertexData> outVertices;
-
-	auto addCircle = [&](const Vector3& _axis1, const Vector3& _axis2) {
-		for (int i = 0; i < _segment; ++i) {
-			float angle0 = i * deltaAngle;
-			float angle1 = (i + 1) * deltaAngle;
-
-			Vector3 dir0 = Vector3::Normalize(_axis1 * std::cos(angle0) + _axis2 * std::sin(angle0));
-			Vector3 dir1 = Vector3::Normalize(_axis1 * std::cos(angle1) + _axis2 * std::sin(angle1));
-
-			VertexData v0;
-			v0.position = Vector4(_center + dir0 * _radius, 1.0f);
-			v0.color = _color;
-
-			VertexData v1;
-			v1.position = Vector4(_center + dir1 * _radius, 1.0f);
-			v1.color = _color;
-
-			outVertices.push_back(v0);
-			outVertices.push_back(v1);
-		}
-		};
-
-	// XY平面
-	addCircle(Vector3::kRight, Vector3::kUp);
-	// YZ平面
-	addCircle(Vector3::kUp, Vector3::kFront);
-	// ZX平面
-	addCircle(Vector3::kFront, Vector3::kRight);
-
-	return outVertices;
-}
-
-std::vector<GizmoRenderingPipeline::VertexData> GizmoRenderingPipeline::GetCubeVertices(const Vector3& _center, const Vector3& _size, const Vector4& _color) {
-	Vector3 halfSize = _size * 0.5f;
-	std::vector<VertexData> outVertices;
-
-	// 立方体の8頂点
-	Vector3 vertices[8] = {
-		_center + Vector3(-halfSize.x, -halfSize.y, -halfSize.z), // 0
-		_center + Vector3(halfSize.x, -halfSize.y, -halfSize.z), // 1
-		_center + Vector3(halfSize.x, halfSize.y, -halfSize.z), // 2
-		_center + Vector3(-halfSize.x, halfSize.y, -halfSize.z), // 3
-		_center + Vector3(-halfSize.x, -halfSize.y, halfSize.z), // 4
-		_center + Vector3(halfSize.x, -halfSize.y, halfSize.z), // 5
-		_center + Vector3(halfSize.x, halfSize.y, halfSize.z), // 6
-		_center + Vector3(-halfSize.x, halfSize.y, halfSize.z)  // 7
-	};
-
-	// 線を引く頂点のペアリスト
-	int indices[] = {
-		0, 1, 1, 2, 2, 3, 3, 0, // 底面
-		4, 5, 5, 6, 6, 7, 7, 4, // 上面
-		0, 4, 1, 5, 2, 6, 3, 7  // 側面
-	};
-
-	VertexData v0, v1;
-	for (int i = 0; i < sizeof(indices) / sizeof(int); i += 2) {
-		v0.position = Vector4(vertices[indices[i + 0]], 1.0f);
-		v0.color = _color;
-
-		v1.position = Vector4(vertices[indices[i + 1]], 1.0f);
-		v1.color = _color;
-
-		outVertices.push_back(v0);
-		outVertices.push_back(v1);
-	}
-
-	return outVertices;
 }
 

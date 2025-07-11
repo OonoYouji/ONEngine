@@ -84,7 +84,7 @@ IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _i
 	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
-IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
+IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
 }
 
@@ -330,15 +330,14 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-MonoString* InternalGetName(int32_t _entityId) {
+const char* InternalGetName(int32_t _entityId) {
 	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
 	}
 
-	std::string name = entity->GetName();
-	return mono_string_new(mono_domain_get(), name.c_str());
+	return entity->GetName().c_str();
 }
 
 void InternalSetName(int32_t _entityId, MonoString* _name) {
@@ -410,6 +409,19 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 	entity->SetParent(parent);
 }
 
+void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
+	std::string scriptName = mono_string_to_utf8(_scriptName);
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	/// スクリプトを追加
+	Script* script = entity->AddComponent<Script>();
+	script->AddScript(scriptName);
+}
+
 bool InternalContainsEntity(int32_t _entityId) {
 	IEntity* entity = GetEntityById(_entityId);
 	if (entity) {
@@ -447,5 +459,17 @@ bool InternalContainsPrefabEntity(int32_t _entityId) {
 	}
 
 	return false;
+}
+
+void InternalDestroyEntity(int32_t _entityId) {
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
+
+	gECS->RemoveEntity(entity, true);
+	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
+
 }
 

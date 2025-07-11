@@ -1,0 +1,52 @@
+{
+    "className": "EmptyEntity",
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 0.20000000298023224,
+                "y": 0.20000000298023224,
+                "z": 0.20000000298023224
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "enable": 1,
+            "meshPath": "./Assets/Models/objects/statue/statue.obj",
+            "texturePath": "./Packages/Textures/white.png",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Breathe",
+                "PuzzlePlayer"
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": -1,
+    "name": "PuzzlePlayer",
+    "parent": null,
+    "prefabName": "PuzzlePlayer.prefab"
+}

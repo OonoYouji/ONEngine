@@ -162,4 +162,5 @@ namespace BlendMode {
 	D3D12_BLEND_DESC Subtract();
 	D3D12_BLEND_DESC Multiply();
 	D3D12_BLEND_DESC Screen();
+	D3D12_BLEND_DESC None();
 }

@@ -42,6 +42,12 @@ public:
 
 	std::optional<std::string> FindLatestDll(const std::string& _dirPath, const std::string& _baseName);
 
+	void ResetCS();
+
+private:
+
+	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount);
+
 private:
 	/// ===================================================
 	/// private : objects

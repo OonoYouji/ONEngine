@@ -71,6 +71,9 @@ public:
 	float GetAnimationTime() const;
 	float GetDuration() const;
 	float GetAnimationScale() const;
+
+	const Skeleton& GetSkeleton() const;
+
 };
 
 
@@ -102,3 +105,5 @@ void InternalSetAnimationTime(uint64_t _nativeHandle, float _time);
 
 float InternalGetAnimationScale(uint64_t _nativeHandle);
 void InternalSetAnimationScale(uint64_t _nativeHandle, float _scale);
+
+void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, Vector3* _outScale, Quaternion* _outRotation, Vector3* _outPosition);

@@ -7,18 +7,13 @@
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
-#include "Engine/Core/Utility/Utility.h"
+#include "GizmoPrimitiveVertices.h"
 
 /// ///////////////////////////////////////////////////
 /// gizmoの表示pipeline
 /// ///////////////////////////////////////////////////
 class GizmoRenderingPipeline : public IRenderingPipeline {
 private:
-
-	struct VertexData {
-		Vector4 position;
-		Vector4 color;
-	};
 
 	enum {
 		Solid,
@@ -38,14 +33,6 @@ public:
 
 private:
 	/// ===================================================
-	/// private : methods
-	/// ===================================================
-
-	std::vector<VertexData> GetSphereVertices(const Vector3& _center, float _radius, const Vector4& _color, size_t _segment = 24);
-	std::vector<VertexData> GetCubeVertices(const Vector3& _center, const Vector3& _size, const Vector4& _color);
-
-private:
-	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
@@ -56,8 +43,8 @@ private:
 
 	DxResource vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbv_;
-	VertexData* mappingData_;
-	std::vector<VertexData> vertices_;
+	GizmoPrimitive::VertexData* mappingData_;
+	std::vector<GizmoPrimitive::VertexData> vertices_;
 
 };
 

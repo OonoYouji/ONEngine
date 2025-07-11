@@ -1,4 +1,7 @@
-﻿
+﻿using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.InteropServices;
+using System.IO;
 
 public class Player : MonoBehavior {
 
@@ -11,30 +14,41 @@ public class Player : MonoBehavior {
 
 	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
 	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
-
+	Entity camera;
 
 	public override void Initialize() {
+
+		
+
+		Entity block = EntityCollection.CreateEntity("ArmItem");
+		if (block != null) {
+			AttachObjectToJoint attachScript = entity.GetScript<AttachObjectToJoint>();
+			if (attachScript != null) {
+				attachScript.attachedEntity = block;
+				attachScript.jointName = "mixamorig:LeftHand"; // アタッチするジョイント名を指定
+			}
+		}
 
 	}
 
 	public override void Update() {
+		camera = EntityCollection.FindEntity("Camera"); // カメラエンティティを取得
+		if (camera == null) {
+			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
+		}
+
 		Move();
 		//Jump();
 
 		CameraFollow();
+		transform.scale = Vector3.one / 100f; // スケールを小さくする
 
-
-		//Transform t = transform;
-		//t.position += Vector3.down * 0.98f;
-
-		//if(Input.TriggerKey(KeyCode.Space)) {
-		//	Entity puzzle = EntityCollection.CreateEntity("PuzzleStand");
-		//}
+	
 
 	}
 
 
-	public void Move() {
+	void Move() {
 		Transform t = transform;
 
 		/// 位置を更新
@@ -53,9 +67,9 @@ public class Player : MonoBehavior {
 		velocity = velocity.Normalized() * (speed * Time.deltaTime);
 
 		/// カメラの回転に合わせて移動する
-		if (entity.GetChild(0) != null) {
+		if (camera != null) {
 
-			Transform cT = entity.GetChild(0).transform;
+			Transform cT = camera.transform;
 			if (cT != null) {
 				Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
 				velocity = Matrix4x4.Transform(matCameraRotate, velocity);
@@ -68,14 +82,13 @@ public class Player : MonoBehavior {
 		/// animationさせるかどうか
 		SkinMeshRenderer smr = entity.GetComponent<SkinMeshRenderer>();
 		if (smr != null) {
-				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			if (velocity.Length() > 0.01f) {
 				smr.isPlaying = true; // 動いているときはアニメーションを再生
 			} else {
-				//smr.isPlaying = false; // 動いていないときはアニメーションを停止
+				smr.isPlaying = false; // 動いていないときはアニメーションを停止
 			}
 		} else {
-			Log.WriteLine("SkinMeshRenderer not found on entity: " + entity.name);
+			Debug.Log("SkinMeshRenderer not found on entity: " + entity.name);
 		}
 	}
 
@@ -96,10 +109,11 @@ public class Player : MonoBehavior {
 
 
 	void CameraFollow() {
-		if(entity.GetChild(0) == null) {
+		if (camera == null) {
 			return; // 子エンティティがない場合は何もしない
 		}
 
+		Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
@@ -112,7 +126,7 @@ public class Player : MonoBehavior {
 		float distance = sphericalCoord.z; // カメラとプレイヤーの距離
 
 		/// カメラの位置を計算
-		Transform cT = entity.GetChild(0).transform;
+		Transform cT = camera.transform;
 		Vector3 cPos = cT.position;
 		Vector3 cRot = cT.rotate.ToEuler();
 
@@ -120,10 +134,10 @@ public class Player : MonoBehavior {
 		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
 		cPos.z = distance * Mathf.Cos(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 
-		cRot = LookAt(-cPos); // カメラの向きをプレイヤーに向ける
+		//cRot = LookAt(transform.position - cPos); // カメラの向きをプレイヤーに向ける
 
-		cT.position = cPos + cameraOffset; // プレイヤーの位置にオフセットを加える
-		cT.rotate = Quaternion.FromEuler(cRot);
+		cT.position = this.transform.position + new Vector3(0, 1.0f, -2.0f); // プレイヤーの位置にオフセットを加える
+		//cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
 
@@ -131,7 +145,7 @@ public class Player : MonoBehavior {
 
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr == null) {
-			Log.WriteLine("Collision with non-mesh object: " + collision.name);
+			Debug.Log("Collision with non-mesh object: " + collision.name);
 			return; // メッシュレンダラーがない場合は何もしない
 		}
 
