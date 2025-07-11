@@ -15,7 +15,7 @@
 
 #include "InternalCalls/AddComponentInternalCalls.h"
 
-#pragma comment(lib, "mono-debug.lib")
+//#pragma comment(lib, "mono-debug.lib")
 
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
