@@ -48,22 +48,9 @@ public class Transform : Component {
 		}
 	}
 
-
-	/// ========================================
-	/// static methods
-	/// ========================================
-
-	static public Transform GetTransform(uint _entityId) {
-		return InternalGetTransform(_entityId);
-	}
-
-
 	/// ========================================
 	/// c++ internal methods
 	/// ========================================
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern Transform InternalGetTransform(uint _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetPosition(ulong _nativeHandle, out float _x, out float _y, out float _z);

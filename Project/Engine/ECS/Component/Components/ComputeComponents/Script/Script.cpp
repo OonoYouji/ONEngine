@@ -181,11 +181,6 @@ void Script::CallUpdateMethodAll() {
 			continue;
 		}
 
-		const char* methodName = mono_method_get_name(script.updateMethod);
-		const char* className = mono_class_get_name(mono_method_get_class(script.updateMethod));
-		Console::Log("Method found: " + std::string(className) + "::" + methodName);
-
-
 		/// 関数を呼び出す
 		/// 例外のチェック用
 		MonoObject* exc = nullptr;

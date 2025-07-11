@@ -137,7 +137,6 @@ namespace COMP_DEBUG {
 /// mono からのTransform取得用関数
 /// =================================================
 
-MonoObject* InternalGetTransform(uint32_t _entityId);
 void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
 void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
 void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w);

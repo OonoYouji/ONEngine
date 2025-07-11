@@ -34,8 +34,10 @@ void InternalSetMeshName(uint64_t _nativeHandle, MonoString* _meshName) {
 	}
 
 	/// stringに変換&設定
-	std::string meshName = mono_string_to_utf8(_meshName);
-	renderer->SetMeshPath(meshName);
+	char* meshName = mono_string_to_utf8(_meshName);
+	std::string meshNameStr(meshName);
+	renderer->SetMeshPath(meshNameStr);
+	mono_free(meshName);
 }
 
 Vector4 InternalGetMeshColor(uint64_t _nativeHandle) {

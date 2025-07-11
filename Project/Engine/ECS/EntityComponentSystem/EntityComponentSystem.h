@@ -244,7 +244,7 @@ IEntity* GetEntityById(int32_t _entityId);
 
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);
-MonoString* InternalGetName(int32_t _entityId);
+const char* InternalGetName(int32_t _entityId);
 void InternalSetName(int32_t _entityId, MonoString* _name);
 int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex);
 int32_t InternalGetParentId(int32_t _entityId);

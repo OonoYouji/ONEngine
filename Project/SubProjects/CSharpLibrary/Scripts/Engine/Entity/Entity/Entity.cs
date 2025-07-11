@@ -35,7 +35,13 @@ public class Entity {
 
 	public string name {
 		get {
-			return InternalGetName(entityId_);
+			IntPtr namePtr = InternalGetName(entityId_);
+			if (namePtr == IntPtr.Zero) {
+				Log.WriteLine("[error] Entity name is null for ID: " + entityId_);
+				return "UnnamedEntity";
+			}
+			string name = Marshal.PtrToStringAnsi(namePtr);
+			return name;
 		}
 		set {
 			InternalSetName(entityId_, value);
@@ -190,7 +196,7 @@ public class Entity {
 	static extern ulong InternalGetComponent<T>(int _entityId, string _compTypeName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern string InternalGetName(int _entityId);
+	static extern IntPtr InternalGetName(int _entityId);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetName(int _entityId, string _name);

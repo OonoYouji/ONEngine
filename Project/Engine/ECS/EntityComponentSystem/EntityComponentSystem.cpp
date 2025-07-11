@@ -330,15 +330,14 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-MonoString* InternalGetName(int32_t _entityId) {
+const char* InternalGetName(int32_t _entityId) {
 	IEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
 	}
 
-	std::string name = entity->GetName();
-	return mono_string_new(mono_domain_get(), name.c_str());
+	return entity->GetName().c_str();
 }
 
 void InternalSetName(int32_t _entityId, MonoString* _name) {

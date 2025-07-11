@@ -19,7 +19,14 @@ namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
 	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void* _user_data) {
-		Console::Log(std::string("[") + _log_domain + "][" + _log_level + "] " + _message + (_fatal ? " (fatal)" : ""));
+		const char* domain = _log_domain ? _log_domain : "null";
+		const char* level = _log_level ? _log_level : "null";
+		const char* message = _message ? _message : "null";
+
+		std::string log = "[" + std::string(domain) + "][" + std::string(level) + "] " + message;
+		if (_fatal) log += " (fatal)";
+
+		Console::Log(log);
 	}
 
 	void ConsoleLog(MonoString* _msg) {
