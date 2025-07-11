@@ -71,6 +71,9 @@ public:
 	float GetAnimationTime() const;
 	float GetDuration() const;
 	float GetAnimationScale() const;
+
+	const Skeleton& GetSkeleton() const;
+
 };
 
 

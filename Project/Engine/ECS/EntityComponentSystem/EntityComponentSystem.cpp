@@ -84,7 +84,7 @@ IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _i
 	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
-IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime, bool _isInit) {
+IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
 }
 

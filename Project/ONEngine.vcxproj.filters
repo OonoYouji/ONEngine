@@ -164,6 +164,9 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.h" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -327,6 +330,7 @@
     <ClInclude Include="Engine\Graphics\RenderTexture\SceneRenderTexture.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

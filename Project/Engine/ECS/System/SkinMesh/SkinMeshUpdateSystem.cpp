@@ -86,9 +86,6 @@ void SkinMeshUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, 
 				joint.matSkeletonSpace *= skeleton.joints[*joint.parent].matSkeletonSpace;
 			}
 
-			Vector3 jointPosition = Matrix4x4::Transform(Vector3::kZero, joint.matSkeletonSpace * skinMesh->GetOwner()->GetTransform()->matWorld);
-			Gizmo::DrawWireSphere(jointPosition, 0.3f, Color::kRed);
-
 		}
 
 
