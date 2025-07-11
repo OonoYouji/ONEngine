@@ -66,7 +66,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Input.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\KeyCode.cs" />
-    <Compile Include="Scripts\Engine\Core\Utility\Log\Log.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Log\Debug.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Quaternion.cs" />

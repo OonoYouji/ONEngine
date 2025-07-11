@@ -11,7 +11,7 @@ public class Entity {
 	public Entity(int _id) {
 		entityId_ = _id;
 		transform = AddComponent<Transform>();
-		Log.WriteLine("Entity created: [" + name + "] (ID: " + entityId_ + ")");
+		Debug.Log("Entity created: [" + name + "] (ID: " + entityId_ + ")");
 	}
 
 
@@ -37,7 +37,7 @@ public class Entity {
 		get {
 			IntPtr namePtr = InternalGetName(entityId_);
 			if (namePtr == IntPtr.Zero) {
-				Log.WriteLine("[error] Entity name is null for ID: " + entityId_);
+				Debug.Log("[error] Entity name is null for ID: " + entityId_);
 				return "UnnamedEntity";
 			}
 			string name = Marshal.PtrToStringAnsi(namePtr);
@@ -56,7 +56,7 @@ public class Entity {
 		}
 		set {
 			if (value == null) {
-				Log.WriteLine("Cannot set parent to null. Entity ID: " + Id);
+				Debug.Log("Cannot set parent to null. Entity ID: " + Id);
 				return;
 			}
 			InternalSetParent(Id, value.Id);
@@ -77,7 +77,7 @@ public class Entity {
 
 	public void Destroy() {
 		/// Entityを削除
-		Log.WriteLine("Destroying Entity: " + name + " (ID: " + entityId_ + ")");
+		Debug.Log("Destroying Entity: " + name + " (ID: " + entityId_ + ")");
 		EntityCollection.DestroyEntity(entityId_);
 		entityId_ = 0; // IDを無効化
 		transform = null;
@@ -103,10 +103,10 @@ public class Entity {
 
 
 		if (comp == null) {
-			Log.WriteLine("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
+			Debug.LogError("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
 		} else {
-			Log.WriteLine("AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
-			Log.WriteLine("Component added: " + typeName + " (Entity ID: " + entityId_ + ")");
+			Debug.Log("AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
+			Debug.Log("Component added: " + typeName + " (Entity ID: " + entityId_ + ")");
 		}
 
 		return comp;
@@ -118,7 +118,7 @@ public class Entity {
 		ulong nativeHandle = InternalGetComponent<T>(entityId_, typeName);
 
 		if (nativeHandle == 0) {
-			Log.WriteLine("Component not found: " + typeName + " (Entity ID: " + entityId_ + ")");
+			Debug.LogError("Component not found: " + typeName + " (Entity ID: " + entityId_ + ")");
 			return null;
 		}
 
@@ -167,14 +167,14 @@ public class Entity {
 
 		/// スクリプトを得る
 		if (scripts_.ContainsKey(scriptName)) {
-			Log.WriteLine("Script already exists: " + scriptName + " (Entity ID: " + entityId_ + ")");
+			Debug.Log("Script already exists: " + scriptName + " (Entity ID: " + entityId_ + ")");
 			/// あったので返す
 			return scripts_[scriptName];
 		}
 
 		/// なかったので新しく作る
 		scripts_[scriptName] = mb;
-		Log.WriteLine("Adding script: \"" + scriptName + "\" to Entity ID: " + entityId_);
+		Debug.Log("Adding script: \"" + scriptName + "\" to Entity ID: " + entityId_);
 
 		/// c++側でもスクリプトを追加
 		InternalAddScript(entityId_, scriptName);

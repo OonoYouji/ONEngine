@@ -1,4 +1,7 @@
-﻿
+﻿using System.Runtime.CompilerServices;
+using System;
+using System.Runtime.InteropServices;
+using System.IO;
 
 public class Player : MonoBehavior {
 
@@ -14,15 +17,17 @@ public class Player : MonoBehavior {
 
 
 	public override void Awake() {
-		Log.WriteLine("Player script initialized.");
+		Debug.Log("Player script initialized.");
 	}
 
 	public override void Initialize() {
-		Log.WriteLine("Player script initialized in Initialize method.");
+		Debug.Log("Player script initialized in Initialize method.");
 	}
 
 	public override void Update() {
-		Log.WriteLine("Player Update called.");
+		Debug.Log("Player Update called.");
+		Debug.LogInfo("Entity Count :" + EntityCollection.EntityCount());
+
 		//Move();
 		//Jump();
 
@@ -79,7 +84,7 @@ public class Player : MonoBehavior {
 				smr.isPlaying = false; // 動いていないときはアニメーションを停止
 			}
 		} else {
-			Log.WriteLine("SkinMeshRenderer not found on entity: " + entity.name);
+			Debug.Log("SkinMeshRenderer not found on entity: " + entity.name);
 		}
 	}
 
@@ -135,7 +140,7 @@ public class Player : MonoBehavior {
 
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr == null) {
-			Log.WriteLine("Collision with non-mesh object: " + collision.name);
+			Debug.Log("Collision with non-mesh object: " + collision.name);
 			return; // メッシュレンダラーがない場合は何もしない
 		}
 

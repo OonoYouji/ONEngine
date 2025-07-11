@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 public class Puzzle : MonoBehavior {
 
 	PuzzleBlockData blockData;
-
-
 	bool isStartPuzzle = false; // パズルが開始されているかどうか
 
 	List<List<int>> mapData;
@@ -50,7 +48,7 @@ public class Puzzle : MonoBehavior {
 				puzzlePlayer.blockData.blockSpace = blockData.blockSpace; // プレイヤーの高さを設定
 				puzzlePlayer.isIdle = false;
 			} else {
-				Log.WriteLine("PuzzlePlayer script not found on player entity.");
+				Debug.Log("PuzzlePlayer script not found on player entity.");
 			}
 
 			player.parent = this.entity; // プレイヤーをPuzzleの子にする
@@ -79,7 +77,7 @@ public class Puzzle : MonoBehavior {
 		//Log.WriteLine("this Id: " + this.entity.Id);
 		for (int i = 0; i < mapData.Count; i++) {
 			for (int j = 0; j < mapData[i].Count; j++) {
-				Log.WriteLine("map[" + i + "][" + j + "] = " + mapData[i][j]);
+				Debug.Log("map[" + i + "][" + j + "] = " + mapData[i][j]);
 
 
 				Entity block = EntityCollection.CreateEntity("Block");
@@ -151,7 +149,7 @@ public class Puzzle : MonoBehavior {
 		if (Input.TriggerGamepad(Gamepad.B)) {
 			/// パズルを終了する
 			isStartPuzzle = false;
-			Log.WriteLine("Puzzle ended.");
+			Debug.Log("Puzzle ended.");
 		}
 
 		/// パズルのロジックをここに記述

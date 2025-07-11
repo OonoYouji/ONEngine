@@ -149,6 +149,10 @@ void Console::Log(const std::wstring& _message) {
 	OutputDebugStringA(gMessage.c_str());
 }
 
+void Console::LogInfo(const std::string& _message) {
+	Log("[info] " + _message);
+}
+
 void Console::LogError(const std::string& _message) {
 	Log("[error] " + _message);
 }

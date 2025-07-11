@@ -11,7 +11,9 @@ using namespace CSGui;
 
 
 Script::Script() {}
-Script::~Script() {}
+Script::~Script() {
+	ReleaseGCHandle();
+}
 
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
@@ -53,8 +55,19 @@ void Script::RemoveScript(const std::string& _scriptName) {
 }
 
 void Script::ResetScripts() {
+	ReleaseGCHandle();
 	for (auto& script : scriptDataList_) {
 		GetMonoScriptEnginePtr()->MakeScript(this, &script, script.scriptName);
+	}
+}
+
+void Script::ReleaseGCHandle() {
+	for (auto& script : scriptDataList_) {
+		if (script.gcHandle != 0) {
+			Console::LogInfo("released gcHandle [" + std::to_string(script.gcHandle) + "]");
+			mono_gchandle_free(script.gcHandle);
+			script.gcHandle = 0;
+		}
 	}
 }
 
@@ -100,7 +113,8 @@ void Script::CallAwakeMethodAll() {
 			script.isCalledAwake = true;
 		}
 
-		if (!script.internalInitMethod || !script.instance) {
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		if (!script.internalInitMethod || !safeObj) {
 			Console::LogError("Script::CallAwakeMethodAll Script is invalid or has no internalInitMethod");
 			continue;
 		}
@@ -116,7 +130,6 @@ void Script::CallAwakeMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 		mono_runtime_invoke(script.internalInitMethod, safeObj, args, &exc);
 
 		/// 例外が発生したら処理
@@ -145,7 +158,8 @@ void Script::CallInitMethodAll() {
 			script.isCalledInit = true;
 		}
 
-		if (!script.initMethod || !script.instance) {
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		if (!script.initMethod || !safeObj) {
 			Console::LogError("Script::CallInitMethodAll Script is invalid or has no initMethod");
 			continue;
 		}
@@ -155,7 +169,6 @@ void Script::CallInitMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 		mono_runtime_invoke(script.initMethod, safeObj, nullptr, &exc);
 
 		/// 例外が発生したら処理
@@ -178,7 +191,9 @@ void Script::CallUpdateMethodAll() {
 			continue;
 		}
 
-		if (!script.updateMethod || !script.instance) {
+		/// gcHandle経由でMonoObjectを取得
+		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		if (!script.updateMethod || !safeObj) {
 			Console::LogError("Script::CallUpdateMethodAll Script is invalid or has no updateMethod");
 			continue;
 		}
@@ -188,7 +203,6 @@ void Script::CallUpdateMethodAll() {
 		MonoObject* exc = nullptr;
 
 		/// 実行
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 		mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
 
 		/// 例外が発生したら処理
@@ -234,7 +248,8 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
-			MonoClass* monoClass = mono_object_get_class(script.instance);
+			MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+			MonoClass* monoClass = mono_object_get_class(safeObj);
 			MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
 			MonoClassField* field = nullptr;
 			void* iter = nullptr;

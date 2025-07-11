@@ -15,6 +15,8 @@
 
 #include "InternalCalls/AddComponentInternalCalls.h"
 
+#pragma comment(lib, "mono-debug.lib")
+
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
@@ -207,7 +209,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("EntityCollection::InternalDestroyEntity", (void*)InternalDestroyEntity);
 
 	/// log
-	mono_add_internal_call("Log::InternalConsoleLog", (void*)ConsoleLog);
+	mono_add_internal_call("Debug::InternalConsoleLog", (void*)ConsoleLog);
 
 	/// time
 	mono_add_internal_call("Time::InternalGetDeltaTime", (void*)Time::DeltaTime);

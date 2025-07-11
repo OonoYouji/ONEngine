@@ -51,6 +51,7 @@ public:
 	void RemoveScript(const std::string& _scriptName);
 
 	void ResetScripts();
+	void ReleaseGCHandle();
 
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
