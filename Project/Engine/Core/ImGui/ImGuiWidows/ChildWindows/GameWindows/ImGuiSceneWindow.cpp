@@ -67,12 +67,12 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		// デバッグモードを停止
 		DebugConfig::isDebugging = false;
 	}
-	ImGui::SameLine();
+	//ImGui::SameLine();
 
-	/// 1frameスキップボタン
-	if (ImGui::ImageButton("##skip", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize)) {
+	///// 1frameスキップボタン
+	//if (ImGui::ImageButton("##skip", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize)) {
 
-	}
+	//}
 
 
 
@@ -176,7 +176,6 @@ void ImGuiSceneWindow::ImGuiFunc() {
 }
 
 void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
-	// デバッグモードを開始
 	DebugConfig::isDebugging = _isGamePlay;
 
 	if (DebugConfig::isDebugging) {

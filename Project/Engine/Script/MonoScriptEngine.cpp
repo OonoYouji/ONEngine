@@ -112,7 +112,9 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
-	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + _scriptName + "\", script name: \"" + _scriptName + "\"");
+	IEntity* owner = _comp->GetOwner();
+	const std::string ownerName = owner ? owner->GetName() : "\"owner is empty\"";
+	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + ownerName + "\", script name: \"" + _scriptName + "\"");
 
 	if (!_script) {
 		Console::LogWarning("Script pointer is null");
@@ -123,7 +125,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 
 	/// ownerがなければ今後の処理ができないので、早期リターン
-	if (!_comp->GetOwner()) {
+	if (!owner) {
 		Console::LogError("Script owner is null. Cannot create script instance.");
 		return;
 	}

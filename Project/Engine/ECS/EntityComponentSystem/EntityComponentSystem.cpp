@@ -417,9 +417,11 @@ void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 		return;
 	}
 
-	/// スクリプトを追加
+	/// 追加されていなければスクリプトを追加
 	Script* script = entity->AddComponent<Script>();
-	script->AddScript(scriptName);
+	if (!script->Contains(scriptName)) {
+		script->AddScript(scriptName);
+	}
 }
 
 bool InternalContainsEntity(int32_t _entityId) {

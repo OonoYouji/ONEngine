@@ -19,14 +19,30 @@ void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
 	for (auto& script : scriptDataList_) {
 		if (script.scriptName == _scriptName) {
-			Console::Log("Script is already attached: " + _scriptName);
-			return;  ///< すでにアタッチされているので何もしない
+			
+			/// 生成済みのGCHandleを解放
+			ReleaseGCHandle(&script);
+			
+			/// アタッチされている場合は再生成する
+			GetMonoScriptEnginePtr()->MakeScript(this, &script, _scriptName);
+			return;
 		}
 	}
 
 	ScriptData scriptData;
 	GetMonoScriptEnginePtr()->MakeScript(this, &scriptData, _scriptName);
 	scriptDataList_.push_back(std::move(scriptData));
+}
+
+bool Script::Contains(const std::string& _scriptName) const {
+	for (const auto& sdata : scriptDataList_) {
+		if (sdata.scriptName == _scriptName) {
+			/// 同一のものを見つけた
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Script::RemoveScript(const std::string& _scriptName) {
@@ -63,11 +79,20 @@ void Script::ResetScripts() {
 
 void Script::ReleaseGCHandle() {
 	for (auto& script : scriptDataList_) {
-		if (script.gcHandle != 0) {
-			Console::LogInfo("released gcHandle [" + std::to_string(script.gcHandle) + "]");
-			mono_gchandle_free(script.gcHandle);
-			script.gcHandle = 0;
-		}
+		ReleaseGCHandle(&script);
+	}
+}
+
+void Script::ReleaseGCHandle(ScriptData* _releaseScript) {
+	if (!_releaseScript) {
+		Console::LogError("ScriptData pointer is null in ReleaseGCHandle");
+		return;
+	}
+
+	if (_releaseScript->gcHandle != 0) {
+		Console::LogInfo("released gcHandle [" + std::to_string(_releaseScript->gcHandle) + "]");
+		mono_gchandle_free(_releaseScript->gcHandle);
+		_releaseScript->gcHandle = 0;
 	}
 }
 

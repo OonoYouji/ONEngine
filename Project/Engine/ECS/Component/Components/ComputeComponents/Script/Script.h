@@ -47,11 +47,13 @@ public:
 	Script();
 	~Script() override;
 
+	bool Contains(const std::string& _scriptName) const;
 	void AddScript(const std::string& _scriptName);
 	void RemoveScript(const std::string& _scriptName);
 
 	void ResetScripts();
 	void ReleaseGCHandle();
+	void ReleaseGCHandle(ScriptData* _releaseScript);
 
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
