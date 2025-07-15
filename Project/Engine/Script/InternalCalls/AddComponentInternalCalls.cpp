@@ -6,6 +6,9 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 
+
+using namespace MONO_INTENRAL_METHOD;
+
 void AddComponentInternalCalls() {
 
 	/// transform
@@ -37,5 +40,11 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalGetAnimationScale", (void*)InternalGetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
+
+
+	/// script (MonoBehavior)
+	mono_add_internal_call("MonoBehavior::InternalSetEnable", (void*)InternalSetEnable);
+	mono_add_internal_call("MonoBehavior::InternalGetEnable", (void*)InternalGetEnable);
+
 
 }

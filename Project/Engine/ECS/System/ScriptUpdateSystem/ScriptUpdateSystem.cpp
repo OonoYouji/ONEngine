@@ -45,7 +45,7 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 		scriptComp->CallInitMethodAll();
 	}
 
-	/// 更新関数の呼びだし
+	/// 更新関数の呼びだし (内部で初期化などを行ったか確認して処理する)
 	for (auto& scriptComp : pScripts_) {
 		scriptComp->CallUpdateMethodAll();
 	}

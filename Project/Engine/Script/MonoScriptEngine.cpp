@@ -16,7 +16,7 @@
 
 #include "InternalCalls/AddComponentInternalCalls.h"
 
-//#pragma comment(lib, "mono-debug.lib")
+//#pragma comment(lib, "./Packages/Scripts/lib/libmono-dbg.a")
 
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
@@ -150,7 +150,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 
 	/// InternalInitialize( Awake(内部で呼んでいる) )メソッドを取得
-	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 2);
 	if (!internalInitMethod) {
 		Console::LogError("Failed to find method InternalInitialize in class: " + _scriptName);
 	}

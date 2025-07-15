@@ -105,8 +105,7 @@ public class Entity {
 		if (comp == null) {
 			Debug.LogError("Failed to create component: " + typeName + " (Entity ID: " + entityId_ + ")");
 		} else {
-			Debug.Log("AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
-			Debug.Log("Component added: " + typeName + " (Entity ID: " + entityId_ + ")");
+			Debug.Log(name + "(" + Id + ")"+ "->AddComponent<" + typeName + ">(): pointer:" + nativeHandle);
 		}
 
 		return comp;
@@ -131,6 +130,8 @@ public class Entity {
 
 
 	public T GetScript<T>() where T : MonoBehavior {
+		Debug.LogInfo("GetScript<" + typeof(T).Name + ">() called for Entity ID: " + entityId_);
+
 		/// スクリプトを得る
 		string typeName = typeof(T).Name;
 		if (scripts_.ContainsKey(typeName)) {
@@ -143,6 +144,7 @@ public class Entity {
 	}
 
 	public T AddScript<T>() where T : MonoBehavior {
+		Debug.LogInfo("Adding script: " + typeof(T).Name + " to Entity ID: " + entityId_);
 
 		/// スクリプトを得る
 		string typeName = typeof(T).Name;
@@ -153,7 +155,7 @@ public class Entity {
 
 		/// なかったので新しく作る
 		T script = Activator.CreateInstance<T>();
-		script.InternalInitialize(entityId_);
+		script.InternalInitialize(entityId_, typeName);
 		scripts_[typeName] = script;
 
 		/// c++側でもスクリプトを追加

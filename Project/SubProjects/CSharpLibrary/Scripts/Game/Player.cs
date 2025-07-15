@@ -18,7 +18,9 @@ public class Player : MonoBehavior {
 
 	public override void Initialize() {
 
-		
+		if(entity == null) {
+			Debug.LogError("Player Initialize called but entity is null.");
+		}
 
 		Entity block = EntityCollection.CreateEntity("ArmItem");
 		if (block != null) {
@@ -42,8 +44,6 @@ public class Player : MonoBehavior {
 
 		CameraFollow();
 		transform.scale = Vector3.one / 100f; // スケールを小さくする
-
-	
 
 	}
 

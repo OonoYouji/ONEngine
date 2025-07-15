@@ -182,6 +182,9 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		//!< ゲームの開始処理
 		pSceneManager_->SaveCurrentSceneTemporary();
 
+		pSceneManager_->ReloadScene(true);
+		pInspector_->SetSelectedEntity(0);
+
 
 		std::list<Script*> scripts;
 		for (auto& entity : pECS_->GetEntities()) {
@@ -192,11 +195,12 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 
 		GetMonoScriptEnginePtr()->ResetCS();
 		for (auto& script : scripts) {
-			script->ResetScripts(); // スクリプトのリセット
+			script->ReleaseGCHandles(); // スクリプトのリセット
 		}
 
-		pSceneManager_->ReloadScene(true);
-		pInspector_->SetSelectedEntity(0);
+		for (auto& script : scripts) {
+			script->ResetScripts(); // スクリプトのリセット
+		}
 
 	} else {
 		//!< 更新処理を停止した場合の処理

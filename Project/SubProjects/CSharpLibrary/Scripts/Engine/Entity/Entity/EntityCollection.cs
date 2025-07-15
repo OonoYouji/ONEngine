@@ -17,6 +17,8 @@ static public class EntityCollection {
 
 		/// なかった場合一度c++側に確認、あったら新しくコンテナに加える
 		if (InternalContainsEntity(_id)) {
+			Debug.LogInfo("Entity found in C++ for ID: " + _id + ", adding to collection.");
+
 			Entity entity = new Entity(_id);
 			entities.Add(_id, entity);
 			return entity;
@@ -24,6 +26,8 @@ static public class EntityCollection {
 
 		/// 最終チェック、デバッグ用のPrefabEntityではないかチェック
 		if (InternalContainsPrefabEntity(_id)) {
+			Debug.LogInfo("PrefabEntity found in C++ for ID: " + _id + ", adding to collection.");
+
 			Entity entity = new Entity(_id);
 			entities.Add(_id, entity);
 			return entity;
@@ -42,7 +46,19 @@ static public class EntityCollection {
 
 	static public Entity CreateEntity(string _prefabName) {
 		int id = InternalCreateEntity(_prefabName);
-		return GetEntity(id);
+		Debug.Log("Creating Entity: " + _prefabName + " with ID: " + id);
+		if (id == 0) {
+			Debug.LogError("Failed to create entity with prefab name: " + _prefabName);
+			return null;
+		}
+
+		Entity entity = GetEntity(id);
+		if (entity == null) {
+			Debug.LogError("Failed to retrieve entity after creation: " + _prefabName + " with ID: " + id);
+			return null;
+		}
+
+		return entity;
 	}
 
 	static public void DeleteEntityAll() {

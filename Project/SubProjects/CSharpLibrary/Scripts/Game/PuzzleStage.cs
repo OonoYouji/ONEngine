@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Puzzle : MonoBehavior {
+public class PuzzleStage : MonoBehavior {
 
 	PuzzleBlockData blockData;
 	bool isStartPuzzle = false; // パズルが開始されているかどうか
@@ -28,7 +28,7 @@ public class Puzzle : MonoBehavior {
 		/// プレイヤーの配置
 		/// ----------------------------------------
 
-		Vector2 playerAddress = new Vector2(1, 1);
+		Vector2Int playerAddress = new Vector2Int(1, 1);
 		Entity player = EntityCollection.CreateEntity("PuzzlePlayer");
 		if (player != null) {
 
@@ -149,32 +149,62 @@ public class Puzzle : MonoBehavior {
 		if (Input.TriggerGamepad(Gamepad.B)) {
 			/// パズルを終了する
 			isStartPuzzle = false;
+
+			/// 他のエンティティの更新を停止
+			SetPuzzleEnable(false);
 			Debug.Log("Puzzle ended.");
 		}
 
-		/// パズルのロジックをここに記述
+
 
 
 	}
 
 
-	public override void OnCollisionEnter(Entity collision) {
+	void SetPuzzleEnable(bool _enable) {
+		/// ブロックの更新を有効/無効にする
+		for (int r = 0; r < blocks.Count; ++r) {
+			for (int c = 0; c < blocks[r].Count; ++c) {
+				if (blocks[r][c] != null) {
+
+					Block block = blocks[r][c].GetScript<Block>();
+					if(block != null) {
+						block.enable = _enable;
+					}
+
+				}
+			}
+		}
 	}
 
-	public override void OnCollisionStay(Entity collision) {
 
-		/// 衝突相手がプレイヤーでない場合は何もしない
-		if (collision.name != "Player") {
-			return;
+
+	/// <summary>
+	/// プレイヤーが移動可能かどうかをチェックする
+	/// </summary>
+	/// <param name="_currentAddress"> 移動前のアドレス      </param>
+	/// <param name="_moveDir">        移動方向の単位ベクトル </param>
+	/// <returns> 移動可能かチェック </returns>
+	public bool CheckPlayerMoving(Vector2Int _currentAddress, Vector2Int _moveDir) {
+
+		/// 移動しないなら false
+		if (_moveDir == Vector2Int.zero) {
+			return false;
 		}
 
-		/// 
-		if (Input.TriggerGamepad(Gamepad.A)) {
-			isStartPuzzle = true;
+		/// 移動方向が範囲外なら false
+		Vector2Int newAddress = _currentAddress + _moveDir;
+		if (newAddress.x < 0 || newAddress.x >= mapData.Count
+			|| newAddress.y < 0 || newAddress.y >= mapData[0].Count) {
+			return false;
 		}
 
+		/// 移動方向が自身と同じ色なら false
+		if (mapData[newAddress.x][newAddress.y] == mapData[_currentAddress.x][_currentAddress.y]) {
+			return false;
+		}
+
+		return true;
 	}
-
-
 
 }

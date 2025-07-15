@@ -34,15 +34,16 @@ public class PuzzlePlayer : MonoBehavior {
 
 	void Move() {
 
-		Vector2 gamepadAxis = new Vector2();
-		if (Input.TriggerGamepad(Gamepad.DPadUp)) { gamepadAxis.y -= 1f; }
-		if (Input.TriggerGamepad(Gamepad.DPadDown)) { gamepadAxis.y += 1f; }
-		if (Input.TriggerGamepad(Gamepad.DPadLeft)) { gamepadAxis.x -= 1f; }
-		if (Input.TriggerGamepad(Gamepad.DPadRight)) { gamepadAxis.x += 1f; }
+		Vector2Int gamepadAxis = new Vector2Int();
+		if (Input.TriggerGamepad(Gamepad.DPadUp)) { gamepadAxis.y -= 1; }
+		if (Input.TriggerGamepad(Gamepad.DPadDown)) { gamepadAxis.y += 1; }
+		if (Input.TriggerGamepad(Gamepad.DPadLeft)) { gamepadAxis.x -= 1; }
+		if (Input.TriggerGamepad(Gamepad.DPadRight)) { gamepadAxis.x += 1; }
 
 		blockData.address += gamepadAxis;
 
 	}
+
 
 
 }

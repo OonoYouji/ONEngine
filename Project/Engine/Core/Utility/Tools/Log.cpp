@@ -144,7 +144,6 @@ void Console::Log(const std::wstring& _message) {
 	}
 	gMessage = formattedMessage;
 
-	//gMessage = GetCurrentTimeStrinConvertString(_message)g() + ConvertString(_message) + "\n";
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
 }

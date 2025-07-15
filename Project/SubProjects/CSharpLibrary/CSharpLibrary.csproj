@@ -71,6 +71,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Quaternion.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2Int.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Component.cs" />
@@ -86,10 +87,11 @@
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
+    <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />
     <Compile Include="Scripts\Game\Player.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
-    <Compile Include="Scripts\Game\Puzzle.cs" />
+    <Compile Include="Scripts\Game\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\PuzzleBlockData.cs" />
     <Compile Include="Scripts\Game\PuzzlePlayer.cs" />
   </ItemGroup>

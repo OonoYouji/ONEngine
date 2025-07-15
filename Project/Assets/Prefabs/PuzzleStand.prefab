@@ -39,7 +39,7 @@
         {
             "enable": 1,
             "scriptName": [
-                "Puzzle"
+                "PuzzleStage"
             ],
             "type": "Script"
         },
@@ -49,8 +49,8 @@
             "type": "SphereCollider"
         }
     ],
-    "id": 7,
+    "id": -1,
     "name": "PuzzleStand",
     "parent": null,
-    "prefabName": "PuzzleStand"
+    "prefabName": "PuzzleStand.prefab"
 }
