@@ -193,13 +193,12 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 			}
 		}
 
-		GetMonoScriptEnginePtr()->ResetCS();
-		for (auto& script : scripts) {
-			script->ReleaseGCHandles(); // スクリプトのリセット
-		}
+		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
+		GetMonoScriptEnginePtr()->HotReload();
 
+		/// スクリプトの初期化
 		for (auto& script : scripts) {
-			script->ResetScripts(); // スクリプトのリセット
+			script->ResetScripts();
 		}
 
 	} else {

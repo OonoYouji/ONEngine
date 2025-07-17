@@ -47,6 +47,8 @@ public class PuzzleStage : MonoBehavior {
 				puzzlePlayer.blockData.height = blockData.height; // プレイヤーの高さを設定
 				puzzlePlayer.blockData.blockSpace = blockData.blockSpace; // プレイヤーの高さを設定
 				puzzlePlayer.isIdle = false;
+
+				Debug.Log("player blockSpace " + puzzlePlayer.blockData.blockSpace);
 			} else {
 				Debug.Log("PuzzlePlayer script not found on player entity.");
 			}

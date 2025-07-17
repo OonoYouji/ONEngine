@@ -65,6 +65,14 @@ void MonoScriptEngine::Initialize() {
 
 	_putenv("MONO_ENV_OPTIONS=--debug");
 
+	// デバッグオプションを設定
+	//const char* options[] = {
+	//	"--debug", // デバッグ用
+	//	"--soft-breakpoints", // ブレークポイントを効かせる
+	//	"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
+	//};
+	//mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
+
 	mono_trace_set_level_string("debug");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
@@ -204,6 +212,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
 	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
 	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
+	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
 
 	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
@@ -256,17 +265,6 @@ void MonoScriptEngine::HotReload() {
 
 	if (oldDomain != mono_get_root_domain()) {
 		mono_domain_unload(oldDomain);
-	}
-
-	// DLL削除
-	if (!oldDllPath.empty() && std::filesystem::exists(oldDllPath)) {
-		std::error_code ec;
-		std::filesystem::remove(oldDllPath, ec);
-		if (ec) {
-			Console::LogError("Failed to delete old DLL: " + ec.message());
-		} else {
-			Console::Log("Old DLL deleted: " + oldDllPath);
-		}
 	}
 
 	currentDllPath_ = *latestDll;

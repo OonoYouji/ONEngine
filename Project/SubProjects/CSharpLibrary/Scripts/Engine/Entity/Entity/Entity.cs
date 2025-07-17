@@ -139,6 +139,16 @@ public class Entity {
 			return (T)scripts_[typeName];
 		}
 
+		if (InternalGetScript(entityId_, typeName)) {
+			// まだスクリプトリストに追加されていないので追加
+			//T script = Activator.CreateInstance<T>();
+			//script.InternalInitialize(entityId_, typeName);
+			//scripts_[typeName] = script;
+			//return (T)scripts_[typeName];
+			Debug.LogInfo(" internal get script Fount it");
+		}
+
+		Debug.LogWarning("GetScript<" + typeof(T).Name + ">(); did not exist.");
 		/// なかったのでnullを返す
 		return null;
 	}
@@ -215,4 +225,6 @@ public class Entity {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalAddScript(int _entityId, string _scriptName);
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalGetScript(int _entityId, string _scriptName);
 }

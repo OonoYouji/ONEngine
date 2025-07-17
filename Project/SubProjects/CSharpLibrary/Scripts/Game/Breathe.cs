@@ -19,6 +19,9 @@ public class Breathe : MonoBehavior {
 		Transform t = transform;
 		scale = defaultScale * Mathf.Clamp(Mathf.Sin(Time.time) * 0.5f + 0.5f, 0.2f, 1f);
 		t.scale = scale;
+		//t.rotate = Quaternion.FromEuler(
+		//	new Vector3(0, Mathf.Sin(Time.time), 0)
+		//	);
 	}
 
 }

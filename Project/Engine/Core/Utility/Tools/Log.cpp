@@ -53,6 +53,7 @@ namespace {
 
 	LogData gLogData;
 	std::string gMessage;
+	std::vector<std::string> gMessages_;
 
 } /// namespace
 
@@ -130,6 +131,7 @@ void Console::Log(const std::string& _message) {
 		formattedMessage += GetCurrentTimeString() + line + "\n";
 	}
 	gMessage = formattedMessage;
+	gMessages_.push_back(gMessage);
 
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
@@ -143,6 +145,7 @@ void Console::Log(const std::wstring& _message) {
 		formattedMessage += GetCurrentTimeString() + line + "\n";
 	}
 	gMessage = formattedMessage;
+	gMessages_.push_back(gMessage);
 
 	gLogData.message += gMessage;
 	OutputDebugStringA(gMessage.c_str());
@@ -180,4 +183,8 @@ const std::string& Console::GetCurrentLog() {
 
 const std::string& Console::GetAllLogs() {
 	return gLogData.message;
+}
+
+const std::vector<std::string>& Console::GetLogVector() {
+	return gMessages_;
 }

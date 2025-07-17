@@ -89,5 +89,5 @@ namespace MONO_INTENRAL_METHOD {
 
 	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable);
 	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName);
-
+	
 }

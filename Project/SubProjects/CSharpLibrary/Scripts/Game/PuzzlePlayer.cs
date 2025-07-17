@@ -15,8 +15,8 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public override void Update() {
-		if (!isIdle) {
 			Move();
+		if (!isIdle) {
 		}
 
 
@@ -24,9 +24,9 @@ public class PuzzlePlayer : MonoBehavior {
 		Transform t = transform;
 		if (t != null) {
 			t.position = new Vector3(
-				blockData.address.x * 1.0f,
+				blockData.address.x * blockData.blockSpace,
 				blockData.height,
-				blockData.address.y * 1.0f
+				blockData.address.y * blockData.blockSpace
 			);
 		}
 
@@ -42,6 +42,9 @@ public class PuzzlePlayer : MonoBehavior {
 
 		blockData.address += gamepadAxis;
 
+		Debug.Log("player address.x" + blockData.address.x);
+		Debug.Log("player address.y" + blockData.address.y);
+		Debug.Log("player blockSpace" + blockData.blockSpace);
 	}
 
 

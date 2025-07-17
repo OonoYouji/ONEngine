@@ -462,3 +462,4 @@ bool MONO_INTENRAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _scr
 
 	return isEnabled;
 }
+

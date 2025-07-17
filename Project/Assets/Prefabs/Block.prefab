@@ -15,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 0.10000000149011612,
-                "y": 0.10000000149011612,
-                "z": 0.10000000149011612
+                "x": 0.07696777582168579,
+                "y": 0.07696777582168579,
+                "z": 0.07696777582168579
             },
             "type": "Transform"
         },
@@ -32,7 +32,7 @@
                 "z": 0.0
             },
             "enable": 1,
-            "meshPath": "./Assets/Models/objects/statue/statue.obj",
+            "meshPath": "./Packages/Models/primitive/cube.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
@@ -44,7 +44,7 @@
             "type": "Script"
         }
     ],
-    "id": -1,
+    "id": -2,
     "name": "Block",
     "parent": null,
     "prefabName": "Block.prefab"

@@ -130,6 +130,7 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
 	currentScene_->SetSceneManagerPtr(this);
 	currentScene_->Initialize();
+	Time::ResetTime();
 
 	nextScene_ = nullptr;
 }
