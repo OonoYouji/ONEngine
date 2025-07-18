@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /c/mono/install/debug/bin/pedump $MONO_OPTIONS --verify metadata,code "$@"

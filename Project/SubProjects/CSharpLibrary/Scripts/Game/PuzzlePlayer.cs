@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 public class PuzzlePlayer : MonoBehavior {
-
+	
 	public PuzzleBlockData blockData; // ブロックデータ
 
 	public bool isIdle = true;
