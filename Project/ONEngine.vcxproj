@@ -196,6 +196,7 @@
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
     <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
     <ClInclude Include="Engine\ECS\System\Collision\CollisionSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />

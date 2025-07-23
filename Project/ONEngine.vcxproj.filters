@@ -333,6 +333,7 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
