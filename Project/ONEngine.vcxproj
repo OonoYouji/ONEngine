@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
+    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
@@ -191,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
+    <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
