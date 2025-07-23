@@ -3,6 +3,10 @@
 /// std
 #include <cstdint>
 
+/// engine
+#include "Engine/Core/Utility/Math/Vector4.h"
+
+/// @brief ポストエフェクトの適用
 enum PostEffectFlags_ {
 	PostEffectFlags_None      = 0,      ///< なし
 	PostEffectFlags_Lighting  = 1 << 0, ///< ライティング
@@ -13,5 +17,6 @@ enum PostEffectFlags_ {
 
 
 struct Material {
-	uint32_t postEffectFlags; ///< マテリアルID
+	uint32_t postEffectFlags; ///< ポストエフェクトのフラグ
+	Vector4  color; ///< 色
 };
