@@ -45,6 +45,7 @@ public class Player : MonoBehavior {
 		CameraFollow();
 		transform.scale = Vector3.one / 100f; // スケールを小さくする
 
+
 	}
 
 

@@ -19,8 +19,8 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
 
-		shader.CompileShader(L"Assets/Shader/Sprite/Sprite.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"Assets/Shader/Sprite/Sprite.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"Packages/Shader/Render/Sprite/Sprite.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"Packages/Shader/Render/Sprite/Sprite.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		pipeline_->SetShader(&shader);

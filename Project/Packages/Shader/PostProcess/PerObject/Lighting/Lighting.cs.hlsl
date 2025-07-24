@@ -1,4 +1,5 @@
 #include "../../../ConstantBufferData/ViewProjection.hlsli"
+#include "../../../ConstantBufferData/Material.hlsli"
 
 struct DirectionalLight {
 	float4 position;
@@ -31,7 +32,7 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 	float4 flags = flagsTex.Sample(textureSampler, texCoord);
 
 	/// ライティング処理なし
-	if (flags.x != 1) {
+	if (!IsPostEffectEnabled((int) flags.x, PostEffectFlags_Lighting)) {
 		outputTex[dispatchId.xy] = color;
 		return;
 	}

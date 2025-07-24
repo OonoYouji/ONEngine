@@ -25,6 +25,14 @@ class MeshRenderer : Component {
 		}
 	}
 
+	public uint postEffectFlags {
+		get {
+			return InternalGetPostEffectFlags(nativeHandle);
+		}
+		set {
+			InternalSetPostEffectFlags(nativeHandle, value);
+		}
+	}
 
 	/// -------------------------------------------
 	/// internal methods
@@ -42,5 +50,10 @@ class MeshRenderer : Component {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetColor(ulong _nativeHandle, Vector4 _color);
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern uint InternalGetPostEffectFlags(ulong _nativeHandle);
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetPostEffectFlags(ulong _nativeHandle, uint _flags);
 
 }

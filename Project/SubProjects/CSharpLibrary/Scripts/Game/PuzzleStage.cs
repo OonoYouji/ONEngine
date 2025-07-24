@@ -17,9 +17,8 @@ public class PuzzleStage : MonoBehavior {
 	private Entity activePlayer_; // 
 
 	[SerializeField] private float blockSpace;
-	
+
 	public override void Initialize() {
-		
 		Entity mapchip = EntityCollection.CreateEntity("Mapchip");
 		if (mapchip != null) {
 			Mapchip mapchipScript = mapchip.GetScript<Mapchip>();
@@ -39,10 +38,22 @@ public class PuzzleStage : MonoBehavior {
 		blockSpace = 0.22f;
 	}
 
+	private bool toggleFlag = false;
+
 	public override void Update() {
+		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
+		if (mr != null) {
+			toggleFlag = !toggleFlag;
+			if (toggleFlag) {
+				mr.postEffectFlags = (uint)(PostEffectFlags.Grayscale | PostEffectFlags.Lighting);
+			} else {
+				// mr.postEffectFlags = (uint)PostEffectFlags.Lighting;
+			}
+		}
+
 		blockSpace = 0.22f;
 		blockData_.blockSpace = blockSpace;
-		
+
 		int width = blocks_[0].Count;
 		int height = blocks_.Count;
 		blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
@@ -66,7 +77,7 @@ public class PuzzleStage : MonoBehavior {
 		if (activePlayer_ != null && activePlayer_.transform != null) {
 			PuzzlePlayer pp = activePlayer_.GetScript<PuzzlePlayer>();
 			pp.UpdatePosition();
-			
+
 			Transform playerTransform = activePlayer_.transform;
 			playerTransform.position -= blockPosOffset_;
 			Debug.Log(" ----- Player Position Setting ----- ");
@@ -261,8 +272,8 @@ public class PuzzleStage : MonoBehavior {
 
 		/// 移動方向が範囲外なら false
 		Vector2Int newAddress = _currentAddress + _moveDir;
-		if (newAddress.x < 0 || newAddress.x >= mapData_[0].Count ||
-		    newAddress.y < 0 || newAddress.y >= mapData_.Count) {
+		if (newAddress.x < 0 || newAddress.x >= mapData_[0].Count || newAddress.y < 0
+		    || newAddress.y >= mapData_.Count) {
 			return false;
 		}
 

@@ -83,6 +83,7 @@
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\SkinMeshRenderer.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
+    <Compile Include="Scripts\Engine\Graphics\Material.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />

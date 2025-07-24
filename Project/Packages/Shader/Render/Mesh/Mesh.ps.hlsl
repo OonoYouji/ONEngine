@@ -1,6 +1,10 @@
 #include "Mesh.hlsli"
 
-#include "../ConstantBufferData/Material.hlsli"
+
+struct Material {
+	int postEffectFlags;
+	float4 color;
+};
 
 struct TextureId {
 	uint id;
@@ -15,12 +19,12 @@ PSOutput main(VSOutput input) {
 	PSOutput output;
 
 	float4 textureColor = textures[textureIds[input.instanceId].id].Sample(textureSampler, input.uv);
-	float4 materialColor = materials[input.instanceId].color;
+	Material material = materials[input.instanceId];
 	
-	output.color = textureColor * materialColor;
+	output.color = textureColor * material.color;
 	output.worldPosition = input.worldPosition;
 	output.normal = float4(input.normal, 1.0f);
-	output.flags = float4(1, 0, 1, 1);
+	output.flags = float4(material.postEffectFlags, 0, 1, 1);
 
 	if (output.color.a == 0.0f) { ///< alpha == 0.0f ? pixel discard
 		discard;

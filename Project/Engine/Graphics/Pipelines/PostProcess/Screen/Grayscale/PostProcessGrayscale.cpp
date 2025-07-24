@@ -1,6 +1,7 @@
 #include "PostProcessGrayscale.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
@@ -16,9 +17,11 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
@@ -32,14 +35,21 @@ void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _
 
 	auto command = _dxCommand->GetCommandList();
 	auto& textures = _resourceCollection->GetTextures();
-	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName);
-	textureIndices_[1] = _resourceCollection->GetTextureIndex("postProcessResult");
+	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
+	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
+	textureIndices_[2] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 	{
 		command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]]->GetSRVGPUHandle());
-		command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetUAVGPUHandle());
+		command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetSRVGPUHandle());
+		command->SetComputeRootDescriptorTable(2, textures[textureIndices_[2]]->GetUAVGPUHandle());
 
-		command->Dispatch(1280 / 16, 720 / 16, 1);
+		command->Dispatch(
+			static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
+			static_cast<UINT>(EngineConfig::kWindowSize.y) / 16,
+			1
+		);
+
 	}
 
 
@@ -47,7 +57,7 @@ void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _
 
 	/// resource barrier
 	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[1]]->GetDxResource().Get(),
+		textures[textureIndices_[2]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_SOURCE
 	);
@@ -65,13 +75,13 @@ void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _
 	/// copy
 	command->CopyResource(
 		textures[textureIndices_[0]]->GetDxResource().Get(),
-		textures[textureIndices_[1]]->GetDxResource().Get()
+		textures[textureIndices_[2]]->GetDxResource().Get()
 	);
 
 
 	/// resource barrier
 	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[1]]->GetDxResource().Get(),
+		textures[textureIndices_[2]]->GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_COPY_SOURCE,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);

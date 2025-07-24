@@ -22,8 +22,8 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		/// shader compile
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"./Assets/Shader/Mesh/Mesh.vs.hlsl", L"vs_6_0", Shader::Type::vs);
-		shader.CompileShader(L"./Assets/Shader/Mesh/Mesh.ps.hlsl", L"ps_6_0", Shader::Type::ps);
+		shader.CompileShader(L"./Packages/Shader/Render/Mesh/Mesh.vs.hlsl", L"vs_6_0", Shader::Type::vs);
+		shader.CompileShader(L"./Packages/Shader/Render/Mesh/Mesh.ps.hlsl", L"ps_6_0", Shader::Type::ps);
 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		pipeline_->SetShader(&shader);
@@ -61,11 +61,6 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
@@ -77,7 +72,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
-		materialBuffer = std::make_unique<StructuredBuffer<Vector4>>();
+		materialBuffer = std::make_unique<StructuredBuffer<Material>>();
 		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
@@ -154,7 +149,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 			/// materialのセット
 			materialBuffer->SetMappedData(
 				transformIndex_,
-				renderer->GetColor()
+				renderer->GetMaterial()
 			);
 
 			/// texture id のセット
@@ -213,7 +208,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		/// materialのセット
 		materialBuffer->SetMappedData(
 			transformIndex_,
-			renderer->GetColor()
+			renderer->GetMaterial()
 		);
 
 		/// texture id のセット

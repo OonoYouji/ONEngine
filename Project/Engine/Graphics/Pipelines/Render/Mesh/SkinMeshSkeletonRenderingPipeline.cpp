@@ -40,13 +40,6 @@ void SkinMeshSkeletonRenderingPipeline::Initialize(ShaderCompiler* _shaderCompil
 		depthStencilDesc.StencilEnable = FALSE;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
-
-		/// create pipeline_
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
 	}

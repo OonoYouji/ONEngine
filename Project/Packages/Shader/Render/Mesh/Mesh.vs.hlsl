@@ -1,7 +1,7 @@
 #include "Mesh.hlsli"
 
-#include "../ConstantBufferData/Transform.hlsli"
-#include "../ConstantBufferData/ViewProjection.hlsli"
+#include "../../ConstantBufferData/Transform.hlsli"
+#include "../../ConstantBufferData/ViewProjection.hlsli"
 
 struct InstanceOffset {
 	uint offset;

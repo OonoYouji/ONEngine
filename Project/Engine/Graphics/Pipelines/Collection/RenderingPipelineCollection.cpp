@@ -36,7 +36,6 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
-	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
@@ -45,7 +44,7 @@ void RenderingPipelineCollection::Initialize() {
 
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
-	//GeneratePostProcessPipeline<PostProcessGrayscale>();
+	GeneratePostProcessPipeline<PostProcessGrayscale>();
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {

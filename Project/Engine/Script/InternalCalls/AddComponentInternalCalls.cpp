@@ -26,6 +26,8 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("MeshRenderer::InternalSetMeshName", (void*)InternalSetMeshName);
 	mono_add_internal_call("MeshRenderer::InternalGetColor", (void*)InternalGetMeshColor);
 	mono_add_internal_call("MeshRenderer::InternalSetColor", (void*)InternalSetMeshColor);
+	mono_add_internal_call("MeshRenderer::InternalGetPostEffectFlags", (void*)InternalGetPostEffectFlags);
+	mono_add_internal_call("MeshRenderer::InternalSetPostEffectFlags", (void*)InternalSetPostEffectFlags);
 
 
 	/// skin mesh renderer
