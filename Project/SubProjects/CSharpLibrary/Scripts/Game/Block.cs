@@ -19,7 +19,6 @@ public class Block : MonoBehavior {
 	}
 
 	public override void Update() {
-
 	}
 
 

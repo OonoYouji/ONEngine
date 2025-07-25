@@ -54,6 +54,12 @@ public:
 	/// @param _type 読み込むリソースの種類
 	void Load(const std::string& _filePath, Type _type);
 
+	/// @brief リソースのホットリロード
+	/// @param _filePath 対象のファイルパス
+	void HotReload(const std::string& _filePath);
+
+	/// @brief すべてのリソースをホットリロード
+	void HotReloadAll();
 
 	/// @brief 新しい model の追加
 	/// @param _filePath unordered_mapのキー

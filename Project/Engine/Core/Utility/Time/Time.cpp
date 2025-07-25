@@ -82,6 +82,10 @@ void Time::Update() {
 	gTimeController->Update();
 }
 
+void Time::ResetTime() {
+	gTimeController->gameTime_ = 0.0f;
+}
+
 float Time::GetTime() {
 	return gTimeController->gameTime_;
 }

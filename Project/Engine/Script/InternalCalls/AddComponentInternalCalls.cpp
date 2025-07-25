@@ -6,6 +6,9 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 
+
+using namespace MONO_INTENRAL_METHOD;
+
 void AddComponentInternalCalls() {
 
 	/// transform
@@ -23,6 +26,8 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("MeshRenderer::InternalSetMeshName", (void*)InternalSetMeshName);
 	mono_add_internal_call("MeshRenderer::InternalGetColor", (void*)InternalGetMeshColor);
 	mono_add_internal_call("MeshRenderer::InternalSetColor", (void*)InternalSetMeshColor);
+	mono_add_internal_call("MeshRenderer::InternalGetPostEffectFlags", (void*)InternalGetPostEffectFlags);
+	mono_add_internal_call("MeshRenderer::InternalSetPostEffectFlags", (void*)InternalSetPostEffectFlags);
 
 
 	/// skin mesh renderer
@@ -37,5 +42,11 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalGetAnimationScale", (void*)InternalGetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
+
+
+	/// script (MonoBehavior)
+	mono_add_internal_call("MonoBehavior::InternalSetEnable", (void*)InternalSetEnable);
+	mono_add_internal_call("MonoBehavior::InternalGetEnable", (void*)InternalGetEnable);
+
 
 }

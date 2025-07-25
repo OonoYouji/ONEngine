@@ -47,17 +47,22 @@ public:
 	Script();
 	~Script() override;
 
+	bool Contains(const std::string& _scriptName) const;
 	void AddScript(const std::string& _scriptName);
 	void RemoveScript(const std::string& _scriptName);
 
 	void ResetScripts();
-	void ReleaseGCHandle();
+	void ReleaseGCHandles();
+	void ReleaseGCHandle(ScriptData* _releaseScript);
 
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+
+	void SetEnable(const std::string& _scriptName, bool _enable);
+	bool GetEnable(const std::string& _scriptName);
 
 	void CallAwakeMethodAll();
 	void CallInitMethodAll();
@@ -74,4 +79,15 @@ private:
 
 namespace COMP_DEBUG {
 	void ScriptDebug(Script* _script);
+}
+
+/// ///////////////////////////////////////////////////
+/// mono用　internal methods
+/// ///////////////////////////////////////////////////
+
+namespace MONO_INTENRAL_METHOD {
+
+	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable);
+	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName);
+	
 }

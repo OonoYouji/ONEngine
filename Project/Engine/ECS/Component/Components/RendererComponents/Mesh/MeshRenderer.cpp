@@ -9,9 +9,47 @@
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
+	material_.color = Vector4::kWhite;
+	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
 MeshRenderer::~MeshRenderer() {}
+
+void MeshRenderer::SetMeshPath(const std::string& _path) {
+	meshPath_ = _path;
+}
+
+void MeshRenderer::SetTexturePath(const std::string& _path) {
+	texturePath_ = _path;
+}
+
+void MeshRenderer::SetColor(const Vector4& _color) {
+	material_.color = _color;
+}
+
+void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
+	material_.postEffectFlags = _flags;
+}
+
+const std::string& MeshRenderer::GetMeshPath() const {
+	return meshPath_;
+}
+
+const std::string& MeshRenderer::GetTexturePath() const {
+	return texturePath_;
+}
+
+const Vector4& MeshRenderer::GetColor() const {
+	return material_.color;
+}
+
+const Material& MeshRenderer::GetMaterial() const {
+	return material_;
+}
+
+uint32_t MeshRenderer::GetPostEffectFlags() const {
+	return material_.postEffectFlags;
+}
 
 
 MonoString* InternalGetMeshName(uint64_t _nativeHandle) {
@@ -58,6 +96,26 @@ void InternalSetMeshColor(uint64_t _nativeHandle, Vector4 _color) {
 		renderer->SetColor(_color);
 	} else {
 		Console::Log("MeshRenderer pointer is null");
+	}
+}
+
+uint32_t InternalGetPostEffectFlags(uint64_t _nativeHandle) {
+	/// ptrから MeshRenderer を取得
+	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
+	if (!renderer) {
+		Console::LogError("MeshRenderer pointer is null");
+		return PostEffectFlags_None;
+	}
+	return renderer->GetPostEffectFlags();
+}
+
+void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
+	/// ptrから MeshRenderer を取得
+	MeshRenderer* renderer = reinterpret_cast<MeshRenderer*>(_nativeHandle);
+	if (renderer) {
+		renderer->SetPostEffectFlags(_flags);
+	} else {
+		Console::LogError("MeshRenderer pointer is null");
 	}
 }
 

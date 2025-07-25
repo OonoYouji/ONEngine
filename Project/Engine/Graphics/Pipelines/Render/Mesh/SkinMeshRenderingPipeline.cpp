@@ -70,12 +70,6 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 
-		pipeline_->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
-		pipeline_->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
-
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
 

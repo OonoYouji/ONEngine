@@ -10,9 +10,10 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
-	: pEditorManager_(_editorManager) {
+ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _graphicsResourceCollection, EditorManager* _editorManager)
+	: pGraphicsResourceCollection_(_graphicsResourceCollection), pEditorManager_(_editorManager) {
 
 	// reloadといいつつも普通に読み込み
 	ReloadProject();
@@ -20,14 +21,21 @@ ImGuiProjectWindow::ImGuiProjectWindow(EditorManager* _editorManager)
 	winName_ = "Project";
 }
 
+
 void ImGuiProjectWindow::ImGuiFunc() {
 	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;
 	}
 
-	if (ImGui::Button("reload project")) {
+	if (ImGui::Button("ReloadProject")) {
 		ReloadProject();
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("HotReload Resource")) {
+		//pEditorManager_->ExecuteCommand<HotReloadResourceCommand>();
 	}
 
 	// 2列のテーブルを作成
@@ -74,6 +82,10 @@ void ImGuiProjectWindow::ReloadProject() {
 
 	selectedFolder_ = assetsRootFolder_;
 	isGameFolder_ = true;
+
+	/// フォルダ内のリソースを読み込む
+	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Assets/"));
+	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Packages/"));
 }
 
 

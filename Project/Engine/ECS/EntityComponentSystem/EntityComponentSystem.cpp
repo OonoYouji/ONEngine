@@ -417,9 +417,37 @@ void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 		return;
 	}
 
-	/// スクリプトを追加
+	/// 追加されていなければスクリプトを追加
 	Script* script = entity->AddComponent<Script>();
-	script->AddScript(scriptName);
+	if (!script->Contains(scriptName)) {
+		script->AddScript(scriptName);
+	}
+}
+
+
+bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return false;
+	}
+
+	Script* script = entity->GetComponent<Script>();
+	if (!script) {
+		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
+		return false;
+	}
+
+	char* cstr = mono_string_to_utf8(_scriptName);
+	std::string scriptName(cstr);
+	mono_free(cstr);
+
+	if (script->Contains(scriptName)) {
+		Console::Log(std::format("Script {} found for Entity ID: {}", scriptName, _entityId));
+		return true;
+	}
+
+	return false;
 }
 
 bool InternalContainsEntity(int32_t _entityId) {
@@ -445,6 +473,13 @@ int32_t InternalCreateEntity(MonoString* _name) {
 		if (!entity) {
 			return 0;
 		}
+	}
+
+	Script* script = entity->GetComponent<Script>();
+	if (script) {
+		/// スクリプトの初期化を行う
+		script->CallAwakeMethodAll();
+		script->CallInitMethodAll();
 	}
 
 	return entity->GetId();

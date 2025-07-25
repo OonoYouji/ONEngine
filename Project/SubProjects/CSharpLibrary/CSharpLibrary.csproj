@@ -50,6 +50,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -71,6 +74,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Quaternion.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2Int.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Component.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\SkinMeshRenderer.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
+    <Compile Include="Scripts\Engine\Graphics\Material.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
@@ -86,18 +91,26 @@
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
+    <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />
+    <Compile Include="Scripts\Game\Mapchip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\Game\Player.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
-    <Compile Include="Scripts\Game\Puzzle.cs" />
+    <Compile Include="Scripts\Game\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\PuzzleBlockData.cs" />
     <Compile Include="Scripts\Game\PuzzlePlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\Engine\Collision\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)RenameDll.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)RenameDll.bat"
+call "$(ProjectDir)KeepLatest.bat"</PostBuildEvent>
   </PropertyGroup>
 </Project>

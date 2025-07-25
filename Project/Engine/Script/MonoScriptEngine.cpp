@@ -11,12 +11,13 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Core/Utility/FileSystem/FileSsytem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 
 #include "InternalCalls/AddComponentInternalCalls.h"
 
-//#pragma comment(lib, "mono-debug.lib")
+//#pragma comment(lib, "./Packages/Scripts/lib/libmono-dbg.a")
 
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
@@ -65,6 +66,14 @@ void MonoScriptEngine::Initialize() {
 
 	_putenv("MONO_ENV_OPTIONS=--debug");
 
+	// デバッグオプションを設定
+	//const char* options[] = {
+	//	"--debug", // デバッグ用
+	//	"--soft-breakpoints", // ブレークポイントを効かせる
+	//	"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
+	//};
+	//mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
+
 	mono_trace_set_level_string("debug");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
@@ -112,7 +121,9 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
-	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + _scriptName + "\", script name: \"" + _scriptName + "\"");
+	IEntity* owner = _comp->GetOwner();
+	const std::string ownerName = owner ? owner->GetName() : "\"owner is empty\"";
+	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + ownerName + "\", script name: \"" + _scriptName + "\"");
 
 	if (!_script) {
 		Console::LogWarning("Script pointer is null");
@@ -123,7 +134,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 
 	/// ownerがなければ今後の処理ができないので、早期リターン
-	if (!_comp->GetOwner()) {
+	if (!owner) {
 		Console::LogError("Script owner is null. Cannot create script instance.");
 		return;
 	}
@@ -148,7 +159,7 @@ void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, co
 
 
 	/// InternalInitialize( Awake(内部で呼んでいる) )メソッドを取得
-	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 1);
+	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 2);
 	if (!internalInitMethod) {
 		Console::LogError("Failed to find method InternalInitialize in class: " + _scriptName);
 	}
@@ -202,6 +213,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
 	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
 	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
+	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
 
 	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
 	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
@@ -218,6 +230,8 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetUnscaledDeltaTime", (void*)Time::UnscaledDeltaTime);
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
+
+	mono_add_internal_call("Mathf::LoadFile", (void*)MONO_INTENRAL_METHOD::LoadFile);
 
 	/// 他のクラスの関数も登録
 	Input::RegisterMonoFunctions();
@@ -254,17 +268,6 @@ void MonoScriptEngine::HotReload() {
 
 	if (oldDomain != mono_get_root_domain()) {
 		mono_domain_unload(oldDomain);
-	}
-
-	// DLL削除
-	if (!oldDllPath.empty() && std::filesystem::exists(oldDllPath)) {
-		std::error_code ec;
-		std::filesystem::remove(oldDllPath, ec);
-		if (ec) {
-			Console::LogError("Failed to delete old DLL: " + ec.message());
-		} else {
-			Console::Log("Old DLL deleted: " + oldDllPath);
-		}
 	}
 
 	currentDllPath_ = *latestDll;

@@ -127,7 +127,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	}
 
 
-	command->Dispatch(EngineConfig::kWindowSize.x / 16, EngineConfig::kWindowSize.y / 16, 1);
+	command->Dispatch(
+		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
+		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16, 
+		1
+	);
 
 	/// 大本のsceneテクスチャに結果をコピー
 

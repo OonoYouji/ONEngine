@@ -53,5 +53,7 @@ private:
 	
 	XINPUT_STATE state_;
 	XINPUT_STATE prevState_;
+
+	int stickDeadZone_ = 8000; // スティックのデッドゾーン
 };
 

@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
+    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
@@ -188,12 +189,18 @@
     <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
+    <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
+    <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
     <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
     <ClInclude Include="Engine\ECS\System\Collision\CollisionSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.h" />
@@ -352,6 +359,10 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
@@ -422,7 +433,9 @@
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"</Command>
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
+xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
+xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -108,9 +108,13 @@ public struct Vector2 {
 		return new Vector2(a / b.x, a / b.y);
 	}
 
+	static public bool operator ==(Vector2 a, Vector2 b) {
+		return a.x == b.x && a.y == b.y;
+	}
 
-
-
+	static public bool operator !=(Vector2 a, Vector2 b) {
+		return !(a == b);
+	}
 
 
 }

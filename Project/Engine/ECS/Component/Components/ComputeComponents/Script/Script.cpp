@@ -5,6 +5,7 @@
 #include "Engine/Core/ImGui/Math/ImGuiShowField.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 using namespace CSGui;
 
@@ -12,21 +13,37 @@ using namespace CSGui;
 
 Script::Script() {}
 Script::~Script() {
-	ReleaseGCHandle();
+	ReleaseGCHandles();
 }
 
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
 	for (auto& script : scriptDataList_) {
 		if (script.scriptName == _scriptName) {
-			Console::Log("Script is already attached: " + _scriptName);
-			return;  ///< すでにアタッチされているので何もしない
+
+			/// 生成済みのGCHandleを解放
+			ReleaseGCHandle(&script);
+
+			/// アタッチされている場合は再生成する
+			GetMonoScriptEnginePtr()->MakeScript(this, &script, _scriptName);
+			return;
 		}
 	}
 
 	ScriptData scriptData;
 	GetMonoScriptEnginePtr()->MakeScript(this, &scriptData, _scriptName);
 	scriptDataList_.push_back(std::move(scriptData));
+}
+
+bool Script::Contains(const std::string& _scriptName) const {
+	for (const auto& sdata : scriptDataList_) {
+		if (sdata.scriptName == _scriptName) {
+			/// 同一のものを見つけた
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Script::RemoveScript(const std::string& _scriptName) {
@@ -55,19 +72,28 @@ void Script::RemoveScript(const std::string& _scriptName) {
 }
 
 void Script::ResetScripts() {
-	ReleaseGCHandle();
+	ReleaseGCHandles();
 	for (auto& script : scriptDataList_) {
 		GetMonoScriptEnginePtr()->MakeScript(this, &script, script.scriptName);
 	}
 }
 
-void Script::ReleaseGCHandle() {
+void Script::ReleaseGCHandles() {
 	for (auto& script : scriptDataList_) {
-		if (script.gcHandle != 0) {
-			Console::LogInfo("released gcHandle [" + std::to_string(script.gcHandle) + "]");
-			mono_gchandle_free(script.gcHandle);
-			script.gcHandle = 0;
-		}
+		ReleaseGCHandle(&script);
+	}
+}
+
+void Script::ReleaseGCHandle(ScriptData* _releaseScript) {
+	if (!_releaseScript) {
+		Console::LogError("ScriptData pointer is null in ReleaseGCHandle");
+		return;
+	}
+
+	if (_releaseScript->gcHandle != 0) {
+		Console::LogInfo("released gcHandle [" + std::to_string(_releaseScript->gcHandle) + "]");
+		mono_gchandle_free(_releaseScript->gcHandle);
+		_releaseScript->gcHandle = 0;
 	}
 }
 
@@ -97,9 +123,34 @@ std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 	return scriptDataList_;
 }
 
-void Script::CallAwakeMethodAll() {
-	Console::Log("Script::CallAwakeMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
+void Script::SetEnable(const std::string& _scriptName, bool _enable) {
+	/// スクリプト名が一致するものを探す
+	for (auto& script : scriptDataList_) {
+		if (script.scriptName == _scriptName) {
+			script.enable = _enable;
+			Console::Log("Script " + _scriptName + " enable set to " + std::to_string(_enable));
+			return;
+		}
+	}
 
+
+	/// 見つからなかった場合
+	Console::LogWarning("Script " + _scriptName + " not found, cannot set enable state.");
+}
+
+bool Script::GetEnable(const std::string& _scriptName) {
+	/// スクリプト名が一致するものを探す
+	for (const auto& script : scriptDataList_) {
+		if (script.scriptName == _scriptName) {
+			return script.enable;
+		}
+	}
+
+	/// 見つからなかった場合
+	return false;
+}
+
+void Script::CallAwakeMethodAll() {
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
 			Console::Log("Script::CallAwakeMethodAll Script is disabled");
@@ -113,23 +164,35 @@ void Script::CallAwakeMethodAll() {
 			script.isCalledAwake = true;
 		}
 
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+
+		MonoObject* safeObj = nullptr;
+		if (script.gcHandle != 0) {
+			safeObj = mono_gchandle_get_target(script.gcHandle);
+		}
+
 		if (!script.internalInitMethod || !safeObj) {
-			Console::LogError("Script::CallAwakeMethodAll Script is invalid or has no internalInitMethod");
+			Console::LogError(
+				"Script::CallAwakeMethodAll Script is invalid or has no internalInitMethod. owner:" + GetOwner()->GetName() + "\", " +
+				"script name:\"" + script.scriptName + "\""
+			);
 			continue;
 		}
 
+		/// ログに出す
+		Console::Log(
+			"called script awake, owner:\"" + GetOwner()->GetName() + "\", " +
+			"script name:\"" + script.scriptName + "\""
+		);
 
 		/// 関数を呼び出す
 		/// 引数の準備、(entity id)
-		void* args[1];
+		void* args[2];
 		int32_t entityId = static_cast<int32_t>(GetOwner()->GetId());
 		args[0] = &entityId;
+		args[1] = mono_string_new(mono_domain_get(), script.scriptName.c_str());
 
-		/// 例外のチェック用
+		/// 実行。 exc:例外のチェック用
 		MonoObject* exc = nullptr;
-
-		/// 実行
 		mono_runtime_invoke(script.internalInitMethod, safeObj, args, &exc);
 
 		/// 例外が発生したら処理
@@ -143,11 +206,9 @@ void Script::CallAwakeMethodAll() {
 }
 
 void Script::CallInitMethodAll() {
-	Console::Log("Script::CallInitMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
-
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
-			Console::Log("Script::CallInitMethodAll Script is disabled");
+			Console::Log("Script::CallInitMethodAll Script is disabled. owner:" + GetOwner()->GetName() + ", script name:" + script.scriptName);
 			continue;
 		}
 
@@ -158,18 +219,26 @@ void Script::CallInitMethodAll() {
 			script.isCalledInit = true;
 		}
 
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		MonoObject* safeObj = nullptr;
+		if (script.gcHandle != 0) {
+			safeObj = mono_gchandle_get_target(script.gcHandle);
+		}
+
 		if (!script.initMethod || !safeObj) {
 			Console::LogError("Script::CallInitMethodAll Script is invalid or has no initMethod");
 			continue;
 		}
 
-		/// 関数を呼び出す
-		/// 例外のチェック用
-		MonoObject* exc = nullptr;
+		/// ログに出す
+		Console::Log(
+			"called script initialize, owner:\"" + GetOwner()->GetName() + "\", " +
+			"script name:\"" + script.scriptName + "\""
+		);
 
-		/// 実行
+		/// 関数を呼び出す。 exc:例外のチェック用
+		MonoObject* exc = nullptr;
 		mono_runtime_invoke(script.initMethod, safeObj, nullptr, &exc);
+
 
 		/// 例外が発生したら処理
 		if (exc) {
@@ -183,35 +252,52 @@ void Script::CallInitMethodAll() {
 }
 
 void Script::CallUpdateMethodAll() {
-	Console::Log("Script::CallUpdateMethodAll called, owner:\"" + GetOwner()->GetName() + "\"");
 
 	for (auto& script : scriptDataList_) {
+		/// 初期化済みか確認
+		if (!script.isCalledAwake || !script.isCalledInit) {
+			continue;
+		}
+
+
 		if (!script.enable) {
 			Console::Log("Script::CallUpdateMethodAll Script is disabled");
 			continue;
 		}
 
 		/// gcHandle経由でMonoObjectを取得
-		MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+		MonoObject* safeObj = nullptr;
+		if (script.gcHandle != 0) {
+			safeObj = mono_gchandle_get_target(script.gcHandle);
+		}
+
 		if (!script.updateMethod || !safeObj) {
 			Console::LogError("Script::CallUpdateMethodAll Script is invalid or has no updateMethod");
 			continue;
 		}
 
-		/// 関数を呼び出す
-		/// 例外のチェック用
-		MonoObject* exc = nullptr;
+		/// ログに出す
+		Console::Log(
+			"called script update, owner:\"" + GetOwner()->GetName() + "\", " +
+			"script name:\"" + script.scriptName + "\""
+		);
 
-		/// 実行
-		mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
+		try {
 
-		/// 例外が発生したら処理
-		if (exc) {
-			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-			Console::LogWarning(std::string("Exception thrown in Update: ") + err);
-			mono_free(err);
+			/// 関数を呼び出す。 exc:例外のチェック用
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
+
+			/// 例外が発生したら処理
+			if (exc) {
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogWarning(std::string("Exception thrown in Update: ") + err);
+				mono_free(err);
+			}
+
+		} catch (const std::exception& _exc) {
+			Console::Log(_exc.what());
 		}
-
 	}
 
 }
@@ -248,7 +334,12 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
-			MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+
+			MonoObject* safeObj = nullptr;
+			if (script.gcHandle != 0) {
+				safeObj = mono_gchandle_get_target(script.gcHandle);
+			}
+
 			MonoClass* monoClass = mono_object_get_class(safeObj);
 			MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
 			MonoClassField* field = nullptr;
@@ -326,8 +417,54 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 	}
 
 
+}
 
+void MONO_INTENRAL_METHOD::InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable) {
+	/// Entityを取得
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return;
+	}
 
+	/// EntityからScriptコンポーネントを取得
+	Script* script = entity->GetComponent<Script>();
+	if (!script) {
+		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
+	}
 
+	/// スクリプト名をUTF-8に変換
+	std::string scriptName = mono_string_to_utf8(_scriptName);
+	/// スクリプトを有効/無効に設定
+	script->SetEnable(scriptName, _enable);
+	Console::Log(std::format("Script {} set to {} for Entity ID: {}", scriptName, _enable ? "enabled" : "disabled", _entityId));
 
 }
+
+bool MONO_INTENRAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _scriptName) {
+	/// Entityを取得
+	IEntity* entity = GetEntityById(_entityId);
+	if (!entity) {
+		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+		return false;
+	}
+
+	/// EntityからScriptコンポーネントを取得
+	Script* script = entity->GetComponent<Script>();
+	if (!script) {
+		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
+		return false;
+	}
+
+	/// スクリプト名をUTF-8に変換
+	char* cstr = mono_string_to_utf8(_scriptName);
+	std::string scriptName(cstr);
+	/// スクリプトの有効/無効を取得
+	bool isEnabled = script->GetEnable(scriptName);
+	Console::Log(std::format("Script {} is {} for Entity ID: {}", scriptName, isEnabled ? "enabled" : "disabled", _entityId));
+
+	mono_free(cstr);
+
+	return isEnabled;
+}
+

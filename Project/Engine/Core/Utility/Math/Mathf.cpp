@@ -114,7 +114,7 @@ std::vector<std::vector<int>> Mathf::LoadCSV(const std::string& _filePath) {
 			try {
 				int value = std::stoi(cell);
 				row.push_back(value);
-			} catch (const std::invalid_argument& e) {
+			} catch (const std::invalid_argument&) {
 				Console::LogError("Mathf::LoadCSV: Invalid integer in file " + _filePath + ": " + cell);
 			}
 		}

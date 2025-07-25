@@ -62,12 +62,12 @@ bool Input::ReleaseGamepad(int _button) {
 }
 
 Vector2 Input::GetGamepadLeftThumb() {
-
-	if (std::abs(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) != 8000 
-		|| std::abs(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) != 8000) {
+	Gamepad* gamepad = gInputSystem_->gamepad_.get();
+	if (std::abs(gamepad->state_.Gamepad.sThumbLX) != gamepad->stickDeadZone_
+		|| std::abs(gamepad->state_.Gamepad.sThumbLY) != gamepad->stickDeadZone_) {
 		return Vector2(
-			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLX) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE,
-			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbLY) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
+			static_cast<float>(gamepad->state_.Gamepad.sThumbLX) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE,
+			static_cast<float>(gamepad->state_.Gamepad.sThumbLY) / XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE
 		);
 	}
 
@@ -75,11 +75,12 @@ Vector2 Input::GetGamepadLeftThumb() {
 }
 
 Vector2 Input::GetGamepadRightThumb() {
-
-	if (gInputSystem_->gamepad_->state_.Gamepad.sThumbRX != 0 || gInputSystem_->gamepad_->state_.Gamepad.sThumbRY != 0) {
+	Gamepad* gamepad = gInputSystem_->gamepad_.get();
+	if (std::abs(gamepad->state_.Gamepad.sThumbRX) != gamepad->stickDeadZone_
+		|| std::abs(gamepad->state_.Gamepad.sThumbRY) != gamepad->stickDeadZone_) {
 		return Vector2(
-			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbRX) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE,
-			static_cast<float>(gInputSystem_->gamepad_->state_.Gamepad.sThumbRY) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE
+			static_cast<float>(gamepad->state_.Gamepad.sThumbRX) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE,
+			static_cast<float>(gamepad->state_.Gamepad.sThumbRY) / XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE
 		);
 	}
 

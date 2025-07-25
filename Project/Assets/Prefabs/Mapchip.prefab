@@ -1,0 +1,39 @@
+{
+    "className": "EmptyEntity",
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Mapchip"
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": -17,
+    "name": "Mapchip",
+    "parent": null,
+    "prefabName": "Mapchip.prefab"
+}

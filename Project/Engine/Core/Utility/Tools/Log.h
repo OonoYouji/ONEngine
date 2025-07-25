@@ -1,6 +1,7 @@
 #pragma once
 
 /// std
+#include <vector>
 #include <format>
 #include <tchar.h>
 
@@ -25,6 +26,7 @@ public:
 
 	static const std::string& GetCurrentLog();
 	static const std::string& GetAllLogs();
+	static const std::vector<std::string>& GetLogVector();
 };
 
 

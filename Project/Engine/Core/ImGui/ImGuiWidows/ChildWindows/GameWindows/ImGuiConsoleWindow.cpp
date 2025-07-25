@@ -32,7 +32,26 @@ void ImGuiConsoleWindow::ImGuiFunc() {
 	if (ImGui::BeginPopupContextItem("LogPopup")) {
 		ImGui::Text("All Logs:");
 		ImGui::Separator();
-		ImGui::Text(Console::GetAllLogs().c_str());
+
+		logCounts_.clear();
+		for (const auto& message : Console::GetLogVector()) {
+			if (indices_.contains(message)) {
+				logCounts_[message]++;
+			} else {
+				indices_[message] = logs_.size();
+				logs_.push_back(message);
+				logCounts_[message]++;
+			}
+		}
+
+		for (const auto& log : logs_) {
+			ImGui::Text("count: %d", logCounts_[log]);
+			ImGui::SameLine();
+			ImGui::Spacing();
+			ImGui::SameLine();
+			ImGui::Text(log.c_str());
+		}
+
 		ImGui::EndPopup();
 	}
 

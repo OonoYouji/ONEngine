@@ -62,16 +62,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 			pipeline->Add32BitConstant(D3D12_SHADER_VISIBILITY_VERTEX, 1);        ///< instance id: 5
 
-
 			pipeline->SetBlendDesc(blendModeFuncs[i]());
-
-			//D3D12_RASTERIZER_DESC rasterDesc = {};
-			//rasterDesc.DepthBias = 10;            // 単位：整数値
-			//rasterDesc.DepthBiasClamp = 0.0f;      // 最大のバイアス
-			//rasterDesc.SlopeScaledDepthBias = 1.0f;// 傾きによる追加バイアス
-			//rasterDesc.FillMode = D3D12_FILL_MODE_SOLID;
-			//rasterDesc.CullMode = D3D12_CULL_MODE_NONE;
-			//pipeline->SetRasterizerDesc(rasterDesc);
 
 			D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 			depthStencilDesc.DepthEnable = TRUE;
@@ -79,14 +70,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			pipeline->SetDepthStencilDesc(depthStencilDesc);
 
-			pipeline->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-			pipeline->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-			pipeline->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
-			pipeline->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
-			pipeline->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
-
 			pipeline->CreatePipeline(_dxManager->GetDxDevice());
-
 
 		}
 	}

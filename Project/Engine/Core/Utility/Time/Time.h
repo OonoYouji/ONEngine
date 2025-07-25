@@ -21,6 +21,8 @@ public:
 	/// public : methods
 	/// =======================================================
 
+	static void ResetTime();
+
 	static float GetTime();
 	static float DeltaTime();
 	static float UnscaledDeltaTime();

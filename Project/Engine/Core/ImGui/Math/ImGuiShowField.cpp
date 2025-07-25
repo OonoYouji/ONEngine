@@ -127,7 +127,7 @@ void CSGui::StructGui::Register() {
 }
 
 
-void CSGui::Vector2Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
+void CSGui::Vector2Field::Draw(MonoObject*, MonoClassField*, const char*) {
 
 	//void* structData = nullptr;
 	//mono_field_get_value(_obj, _field, &structData);

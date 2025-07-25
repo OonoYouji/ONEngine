@@ -5,13 +5,23 @@ using System.IO;
 
 public class MonoBehavior {
 
+	string name;
+	public bool enable {
+		get {
+			return InternalGetEnable(entity.Id, name);
+		}
+		set {
+			InternalSetEnable(entity.Id, name, value);
+		}
+	}
+
 	public Entity entity {
 		get; internal set;
 	}
 
 	public Transform transform {
 		get {
-			if(entity == null) {
+			if (entity == null) {
 				Debug.Log("[error] Entity is not initialized. Please call InternalInitialize first.");
 				return null;
 			}
@@ -25,18 +35,22 @@ public class MonoBehavior {
 		}
 	}
 
-	private bool initialized = false;
 
-	public void InternalInitialize(int _entityId) {
-		if(initialized) {
-			Debug.Log("[error] MonoBehavior is already initialized for Entity ID: " + _entityId);
+
+	private bool initialized = false;
+	public void InternalInitialize(int _entityId, string _name) {
+		if (initialized) {
+			Debug.LogError("MonoBehavior is already initialized for Entity ID: " + _entityId);
 			return;
 		}
 
 		if (!initialized) {
 			initialized = true;
+
+			name = _name;
+			Debug.Log("Initializing MonoBehavior: " + name + " for Entity ID: " + _entityId);
+
 			entity = EntityCollection.GetEntity(_entityId);
-			Debug.Log("Initializing MonoBehavior for Entity ID: " + _entityId + "Entity Name " + entity.name);
 
 			entity.AddScript(this);
 
@@ -44,14 +58,20 @@ public class MonoBehavior {
 		}
 	}
 
-	public virtual void Awake() { }
-	public virtual void Initialize() { }
-	public virtual void Update() { }
+	public virtual void Awake() { Debug.Log("called awake method. owner:" + entity.name + ", script name:" + name); }
+	public virtual void Initialize() { Debug.Log("called initialize method. owner:" + entity.name + ", script name:" + name); }
+	public virtual void Update() { Debug.Log("called update method. owner:" + entity.name + ", script name:" + name); }
 
 	public virtual void OnCollisionEnter(Entity collision) { }
 	public virtual void OnCollisionExit(Entity collision) { }
 	public virtual void OnCollisionStay(Entity collision) { }
 
 
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalGetEnable(int _entityId, string _scriptName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable);
 
 }

@@ -1,4 +1,5 @@
 #include "../../../ConstantBufferData/ViewProjection.hlsli"
+#include "../../../ConstantBufferData/Material.hlsli"
 
 struct DirectionalLight {
 	float4 position;
@@ -7,12 +8,9 @@ struct DirectionalLight {
 	float intensity;
 };
 
-//StructuredBuffer<DirectionalLight> lights : register(t0);
 ConstantBuffer<DirectionalLight> light : register(b0);
 ConstantBuffer<Camera> camera : register(b1);
 
-
-/// texture
 Texture2D<float4> colorTex : register(t0);
 Texture2D<float4> positionTex : register(t1);
 Texture2D<float4> normalTex : register(t2);
@@ -31,7 +29,7 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 	float4 flags = flagsTex.Sample(textureSampler, texCoord);
 
 	/// ライティング処理なし
-	if (flags.x != 1) {
+	if (!IsPostEffectEnabled((int) flags.x, PostEffectFlags_Lighting)) {
 		outputTex[dispatchId.xy] = color;
 		return;
 	}

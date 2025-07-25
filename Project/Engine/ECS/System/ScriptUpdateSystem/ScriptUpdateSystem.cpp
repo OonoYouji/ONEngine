@@ -35,17 +35,17 @@ void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, co
 		RecursivePushBackScript(entity);
 	}
 
-	/// コンストラクタの呼びだし (内部でフラグで呼び出すか管理している)
+	/// コンストラクタの呼びだし (内部のフラグで呼び出すか管理している)
 	for (auto& scriptComp : pScripts_) {
 		scriptComp->CallAwakeMethodAll();
 	}
 
-	/// 初期化関数の呼びだし (内部でフラグで呼び出すか管理している)
+	/// 初期化関数の呼びだし (内部のフラグで呼び出すか管理している)
 	for (auto& scriptComp : pScripts_) {
 		scriptComp->CallInitMethodAll();
 	}
 
-	/// 更新関数の呼びだし
+	/// 更新関数の呼びだし (内部で初期化などを行ったか確認して処理する)
 	for (auto& scriptComp : pScripts_) {
 		scriptComp->CallUpdateMethodAll();
 	}

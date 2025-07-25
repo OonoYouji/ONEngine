@@ -12,6 +12,7 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "Engine/Graphics/Resource/ResourceData/Texture.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"
 
@@ -69,7 +70,7 @@ private:
 
 	class GraphicsResourceCollection*            resourceCollection_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<StructuredBuffer<Vector4>>   materialBuffer;
+	std::unique_ptr<StructuredBuffer<Material>>  materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
 	
 	size_t transformIndex_;

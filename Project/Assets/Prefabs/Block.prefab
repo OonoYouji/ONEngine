@@ -4,7 +4,7 @@
         {
             "enable": 1,
             "position": {
-                "x": -4.699999809265137,
+                "x": 0.0,
                 "y": 0.0,
                 "z": 0.0
             },
@@ -32,19 +32,17 @@
                 "z": 0.0
             },
             "enable": 1,
-            "meshPath": "./Assets/Models/objects/statue/statue.obj",
+            "meshPath": "./Packages/Models/primitive/cube.obj",
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
         {
             "enable": 1,
-            "scriptName": [
-                "Breathe"
-            ],
+            "scriptName": [],
             "type": "Script"
         }
     ],
-    "id": -1,
+    "id": -3,
     "name": "Block",
     "parent": null,
     "prefabName": "Block.prefab"

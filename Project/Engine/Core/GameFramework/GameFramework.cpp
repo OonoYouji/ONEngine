@@ -61,6 +61,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityComponentSystem_->Initialize(renderingFramework_->GetResourceCollection());
 
 
+	/// timeの初期化
+	Time::Initialize();
+
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 
@@ -73,8 +76,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 #endif // _DEBUG
 
 
-	/// timeの初期化
-	Time::Initialize();
 }
 
 void GameFramework::Run() {
