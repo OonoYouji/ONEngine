@@ -47,3 +47,6 @@ protected:
 /// ===================================================
 using PerObjectPostProcess = IPostProcessPipeline;
 using ScreenPostProcess = IPostProcessPipeline;
+
+
+void CopyResource(ID3D12Resource* _src, ID3D12Resource* _dst, ID3D12GraphicsCommandList6* _cmdList);

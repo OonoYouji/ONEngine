@@ -38,17 +38,11 @@ public class PuzzleStage : MonoBehavior {
 		blockSpace = 0.22f;
 	}
 
-	private bool toggleFlag = false;
 
 	public override void Update() {
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr != null) {
-			toggleFlag = !toggleFlag;
-			if (toggleFlag) {
-				mr.postEffectFlags = (uint)(PostEffectFlags.Grayscale | PostEffectFlags.Lighting);
-			} else {
-				// mr.postEffectFlags = (uint)PostEffectFlags.Lighting;
-			}
+			mr.postEffectFlags = (uint)(PostEffectFlags.Grayscale | PostEffectFlags.Lighting);
 		}
 
 		blockSpace = 0.22f;

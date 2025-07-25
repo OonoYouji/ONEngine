@@ -7,9 +7,9 @@
 #include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
 
 /// ///////////////////////////////////////////////////
-/// グレースケール処理
+/// オブジェクト単位でのグレースケール処理
 /// ///////////////////////////////////////////////////
-class PostProcessGrayscale : public ScreenPostProcess {
+class PostProcessGrayscalePerObject : public PerObjectPostProcess {
 public:
 	/// ===================================================
 	/// public : methods
@@ -29,6 +29,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::array<size_t, 2> textureIndices_;
+	std::array<size_t, 3> textureIndices_;
 };
 

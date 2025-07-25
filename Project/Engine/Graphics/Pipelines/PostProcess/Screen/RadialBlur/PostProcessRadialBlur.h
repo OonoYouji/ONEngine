@@ -7,13 +7,16 @@
 #include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
 
 /// ///////////////////////////////////////////////////
-/// グレースケール処理
+/// ラジアルブラー処理
 /// ///////////////////////////////////////////////////
-class PostProcessGrayscale : public ScreenPostProcess {
+class PostProcessRadialBlur : public ScreenPostProcess {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
+
+	PostProcessRadialBlur();
+	~PostProcessRadialBlur() override;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 
@@ -24,11 +27,12 @@ public:
 		class EntityComponentSystem* _entityComponentSystem
 	) override;
 
+
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::array<size_t, 2> textureIndices_;
+	std::array<size_t, 3> textureIndices_; ///< テクスチャのインデックス
 };
 

@@ -1,22 +1,25 @@
 #pragma once
 
 /// std
+#include <memory>
 #include <array>
 
 /// engine
-#include "Engine/Graphics/Pipelines/Interface/IPostProcessPipeline.h"
+#include "../../../Interface/IPostProcessPipeline.h"
 
 /// ///////////////////////////////////////////////////
-/// グレースケール処理
+/// オブジェクト毎のガウスブラー処理
 /// ///////////////////////////////////////////////////
-class PostProcessGrayscale : public ScreenPostProcess {
+class PostProcessGaussianBlurPerObject : public PerObjectPostProcess {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
+	PostProcessGaussianBlurPerObject() = default;
+	~PostProcessGaussianBlurPerObject() override = default;
 
+	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
 	void Execute(
 		const std::string& _textureName,
 		class DxCommand* _dxCommand,
@@ -28,7 +31,8 @@ private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+	
+	std::array<size_t, 2> textureIndices_; ///< テクスチャのインデックス
 
-	std::array<size_t, 2> textureIndices_;
 };
 
