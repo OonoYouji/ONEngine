@@ -48,7 +48,7 @@ void RenderingPipelineCollection::Initialize() {
 	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
-	GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
+	//GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
 
 	/// post process - screen
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
