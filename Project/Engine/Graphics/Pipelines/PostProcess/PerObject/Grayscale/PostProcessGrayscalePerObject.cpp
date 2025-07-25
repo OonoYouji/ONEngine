@@ -1,4 +1,4 @@
-#include "PostProcessGrayscale.h"
+#include "PostProcessGrayscalePerObject.h"
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
 	{
 		Shader shader;
@@ -30,7 +30,7 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 
 }
 
-void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();

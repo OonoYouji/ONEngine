@@ -8,12 +8,9 @@ struct DirectionalLight {
 	float intensity;
 };
 
-//StructuredBuffer<DirectionalLight> lights : register(t0);
 ConstantBuffer<DirectionalLight> light : register(b0);
 ConstantBuffer<Camera> camera : register(b1);
 
-
-/// texture
 Texture2D<float4> colorTex : register(t0);
 Texture2D<float4> positionTex : register(t1);
 Texture2D<float4> normalTex : register(t2);

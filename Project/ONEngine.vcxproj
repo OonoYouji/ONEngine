@@ -189,6 +189,8 @@
     <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
@@ -355,6 +357,8 @@
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

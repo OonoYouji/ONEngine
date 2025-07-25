@@ -168,6 +168,8 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.h" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp" />
     <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -334,6 +336,8 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

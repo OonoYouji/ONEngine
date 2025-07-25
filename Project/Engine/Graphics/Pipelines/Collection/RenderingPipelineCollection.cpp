@@ -21,6 +21,7 @@
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
+#include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _graphicsResourceCollection)
 	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
@@ -45,6 +46,7 @@ void RenderingPipelineCollection::Initialize() {
 	/// post process
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
+	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
