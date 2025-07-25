@@ -5,6 +5,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
@@ -17,31 +18,41 @@ void PostProcessGrayscale::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
-		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1);
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2);
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
-
 
 	}
 
 }
 
 void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, [[maybe_unused]] EntityComponentSystem* _entityComponentSystem) {
+
+	/// 
+	ScreenPostEffectTag* tag = nullptr;
+	for (auto& entity : _entityComponentSystem->GetEntities()) {
+		tag = entity->GetComponent<ScreenPostEffectTag>();
+		if (tag) {
+			break;
+		}
+	}
+	
+	if (!tag || !tag->GetPostEffectEnable(PostEffectType_Grayscale)) {
+		return; // グレースケールエフェクトが無効な場合は何もしない
+	}
+
+
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	auto command = _dxCommand->GetCommandList();
 	auto& textures = _resourceCollection->GetTextures();
 	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
-	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
-	textureIndices_[2] = _resourceCollection->GetTextureIndex("postProcessResult");
+	textureIndices_[1] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]]->GetSRVGPUHandle());
-	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetSRVGPUHandle());
-	command->SetComputeRootDescriptorTable(2, textures[textureIndices_[2]]->GetUAVGPUHandle());
+	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetUAVGPUHandle());
 
 	command->Dispatch(
 		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
@@ -52,7 +63,7 @@ void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _
 
 	/// 大本のsceneテクスチャに結果をコピー
 	CopyResource(
-		textures[textureIndices_[2]]->GetDxResource().Get(),
+		textures[textureIndices_[1]]->GetDxResource().Get(),
 		textures[textureIndices_[0]]->GetDxResource().Get(),
 		command
 	);

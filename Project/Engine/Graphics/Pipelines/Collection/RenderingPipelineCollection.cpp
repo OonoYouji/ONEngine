@@ -20,6 +20,7 @@
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
+#include "../PostProcess/PerObject/Grayscale/PostProcessGrayscalePerObject.h"
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 
@@ -43,8 +44,11 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
-	/// post process
+	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
+	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
+
+	/// post process - screen
 	GeneratePostProcessPipeline<PostProcessGrayscale>();
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }

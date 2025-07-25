@@ -170,6 +170,7 @@
     <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -338,6 +339,7 @@
     <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

@@ -19,6 +19,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<SpriteRenderer>();
 	_compCollection->RegisterComponentFactory<Line2DRenderer>();
 	_compCollection->RegisterComponentFactory<Line3DRenderer>();
+	_compCollection->RegisterComponentFactory<ScreenPostEffectTag>();
 
 	/// collider
 	_compCollection->RegisterComponentFactory<ToTerrainCollider>();

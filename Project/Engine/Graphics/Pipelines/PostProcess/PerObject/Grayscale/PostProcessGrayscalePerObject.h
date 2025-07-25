@@ -9,7 +9,7 @@
 /// ///////////////////////////////////////////////////
 /// オブジェクト単位でのグレースケール処理
 /// ///////////////////////////////////////////////////
-class PostProcessGrayscalePerObject : public ScreenPostProcess {
+class PostProcessGrayscalePerObject : public PerObjectPostProcess {
 public:
 	/// ===================================================
 	/// public : methods

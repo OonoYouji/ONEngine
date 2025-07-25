@@ -11,7 +11,7 @@ void PostProcessGrayscalePerObject::Initialize(ShaderCompiler* _shaderCompiler, 
 	{
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
-		shader.CompileShader(L"Packages/Shader/PostProcess/Screen/Grayscale/Grayscale.cs.hlsl", L"cs_6_6", Shader::Type::cs);
+		shader.CompileShader(L"Packages/Shader/PostProcess/PerObject/Grayscale/Grayscale.cs.hlsl", L"cs_6_6", Shader::Type::cs);
 
 		pipeline_ = std::make_unique<ComputePipeline>();
 		pipeline_->SetShader(&shader);

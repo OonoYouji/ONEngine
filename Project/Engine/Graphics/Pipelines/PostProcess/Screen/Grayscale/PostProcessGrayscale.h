@@ -29,6 +29,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::array<size_t, 3> textureIndices_;
+	std::array<size_t, 2> textureIndices_;
 };
 

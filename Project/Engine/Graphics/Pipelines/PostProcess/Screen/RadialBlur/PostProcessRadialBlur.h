@@ -9,7 +9,7 @@
 /// ///////////////////////////////////////////////////
 /// ラジアルブラー処理
 /// ///////////////////////////////////////////////////
-class PostProcessRadialBlur : public IPostProcessPipeline {
+class PostProcessRadialBlur : public ScreenPostProcess {
 public:
 	/// ===================================================
 	/// public : methods
