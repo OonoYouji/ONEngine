@@ -1,5 +1,8 @@
 #include "MeshRenderer.h"
 
+/// std
+#include <format>
+
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
@@ -189,6 +192,25 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 		}
 
 		ImGui::EndDragDropTarget();
+	}
+
+
+	/// materialの設定
+	const std::string labels[2] = {
+		"Lighting", 
+		"Grayscale",
+	};
+
+	for (size_t i = 0; i < 2; i++) {
+		int bit = 1 << (i);
+		bool isChecked = (_mr->GetPostEffectFlags() & bit) != 0;
+		if (ImGui::Checkbox(labels[i].c_str(), &isChecked)) {
+			if (isChecked) {
+				_mr->SetPostEffectFlags(_mr->GetPostEffectFlags() | bit);
+			} else {
+				_mr->SetPostEffectFlags(_mr->GetPostEffectFlags() & ~bit);
+			}
+		}
 	}
 
 
