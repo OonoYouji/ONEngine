@@ -12,13 +12,18 @@
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Shader.h"
 
+enum RTVFormat {
+	RTVFormat_Color         = DXGI_FORMAT_R8G8B8A8_UNORM,     ///< 色
+	RTVFormat_WorldPosition = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< ワールド座標
+	RTVFormat_Normal        = DXGI_FORMAT_R16G16B16A16_FLOAT, ///< 法線
+	RTVFormat_Flags         = DXGI_FORMAT_R32G32B32A32_FLOAT      ///< フラグ
+};
 
 /// ===================================================
 /// グラフィクス用	pipeline
 /// ===================================================
 class GraphicsPipeline {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -110,7 +115,6 @@ public:
 	void SetPipelineStateForCommandList(class DxCommand* _dxCommand);
 
 private:
-
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
@@ -125,7 +129,6 @@ private:
 
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================

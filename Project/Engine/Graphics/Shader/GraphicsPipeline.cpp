@@ -11,7 +11,13 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 
 
-GraphicsPipeline::GraphicsPipeline() {}
+GraphicsPipeline::GraphicsPipeline() {
+	SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Color), 0);
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), 1);
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Normal), 2);
+	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Flags), 3);
+}
 GraphicsPipeline::~GraphicsPipeline() {}
 
 void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {

@@ -475,6 +475,13 @@ int32_t InternalCreateEntity(MonoString* _name) {
 		}
 	}
 
+	Script* script = entity->GetComponent<Script>();
+	if (script) {
+		/// スクリプトの初期化を行う
+		script->CallAwakeMethodAll();
+		script->CallInitMethodAll();
+	}
+
 	return entity->GetId();
 }
 

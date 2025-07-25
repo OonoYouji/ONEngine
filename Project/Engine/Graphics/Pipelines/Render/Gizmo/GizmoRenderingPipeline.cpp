@@ -43,12 +43,6 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline->SetDepthStencilDesc(depthStencilDesc);
 
-		pipeline->SetRTVNum(4); /// 色、ワールド座標、法線、フラグ
-		pipeline->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-		pipeline->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 1);
-		pipeline->SetRTVFormat(DXGI_FORMAT_R16G16B16A16_FLOAT, 2);
-		pipeline->SetRTVFormat(DXGI_FORMAT_R8G8B8A8_UNORM, 3);
-
 		/// create pipeline
 		pipeline->CreatePipeline(_dxManager->GetDxDevice());
 	}

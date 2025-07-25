@@ -1,4 +1,6 @@
-﻿struct Mathf {
+﻿using System.Runtime.CompilerServices;
+
+struct Mathf {
 
 	/// ------------------------------------------
 	/// 基礎計算
@@ -95,5 +97,14 @@
 			return Mathf.PI / 180.0f;
 		}
 	}
+
+
+	/// --------------------------------------------
+	/// ファイル探索
+	/// --------------------------------------------
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static public extern string LoadFile(string _path);
+
 
 }

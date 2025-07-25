@@ -101,6 +101,33 @@ void GraphicsResourceCollection::Load(const std::string& _filePath, Type _type) 
 
 }
 
+void GraphicsResourceCollection::HotReload(const std::string& _filePath) {
+	/// ファイルの拡張子を取得
+	const std::string extension = Mathf::FileNameWithoutExtension(_filePath);
+
+	/// 拡張子が .obj または .gltf の場合
+	if (extension == "obj" || extension == "gltf") {
+		/// モデルの再読み込み
+		resourceLoader_->LoadModelObj(_filePath);
+	} else if (extension == "png" || extension == "jpg" || extension == "dds") {
+		/// テクスチャの再読み込み
+		resourceLoader_->LoadTexture(_filePath);
+	} else {
+		Console::LogWarning("Unsupported file type for hot reload: " + _filePath);
+	}
+
+}
+
+void GraphicsResourceCollection::HotReloadAll() {
+	for (const auto& model : models_) {
+		resourceLoader_->LoadModelObj(model.first);
+	}
+
+	for (const auto& texture : textureIndices_) {
+		resourceLoader_->LoadTexture(texture.first);
+	}
+}
+
 void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model> _model) {
 	models_[_filePath] = std::move(_model);
 }
@@ -131,7 +158,7 @@ std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const 
 			}
 		}
 	}
-	
+
 	return texturePaths;
 }
 

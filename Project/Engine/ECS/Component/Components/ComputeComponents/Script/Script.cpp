@@ -282,17 +282,22 @@ void Script::CallUpdateMethodAll() {
 			"script name:\"" + script.scriptName + "\""
 		);
 
-		/// 関数を呼び出す。 exc:例外のチェック用
-		MonoObject* exc = nullptr;
-		mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
+		try {
 
-		/// 例外が発生したら処理
-		if (exc) {
-			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-			Console::LogWarning(std::string("Exception thrown in Update: ") + err);
-			mono_free(err);
+			/// 関数を呼び出す。 exc:例外のチェック用
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(script.updateMethod, safeObj, nullptr, &exc);
+
+			/// 例外が発生したら処理
+			if (exc) {
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogWarning(std::string("Exception thrown in Update: ") + err);
+				mono_free(err);
+			}
+
+		} catch (const std::exception& _exc) {
+			Console::Log(_exc.what());
 		}
-
 	}
 
 }

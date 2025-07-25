@@ -33,6 +33,9 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, IEntity* _entity
 
 	/// コンポーネントを追加
 	for (const auto& componentJson : _json["components"]) {
+		if (!componentJson.contains("type")) {
+			continue;
+		}
 		const std::string componentType = componentJson.at("type").get<std::string>();
 		IComponent* comp = _entity->AddComponent(componentType);
 		if (comp) {

@@ -1,5 +1,8 @@
 #include "SceneRenderTexture.h"
 
+/// engine
+#include "Engine/Graphics/Shader/GraphicsPipeline.h"
+
 SceneRenderTexture::SceneRenderTexture() {
 	name_ = "";
 	clearColor_ = Vector4(0.1f, 0.25f, 0.5f, 1.0f);
@@ -23,10 +26,10 @@ void SceneRenderTexture::Initialize(
 			renderTexture = std::make_unique<RenderTexture>();
 		}
 
-		renderTextures_[0]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM,     clearColor_, name_ + "Scene",         _dxManager, _graphicsResourceCollection);
-		renderTextures_[1]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, clearColor_, name_ + "WorldPosition", _dxManager, _graphicsResourceCollection);
-		renderTextures_[2]->Initialize(DXGI_FORMAT_R16G16B16A16_FLOAT, clearColor_, name_ + "Normal",        _dxManager, _graphicsResourceCollection);
-		renderTextures_[3]->Initialize(DXGI_FORMAT_R8G8B8A8_UNORM,     {},          name_ + "Flags",         _dxManager, _graphicsResourceCollection);
+		renderTextures_[0]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Color),         clearColor_, name_ + "Scene",         _dxManager, _graphicsResourceCollection);
+		renderTextures_[1]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), clearColor_, name_ + "WorldPosition", _dxManager, _graphicsResourceCollection);
+		renderTextures_[2]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Normal),        clearColor_, name_ + "Normal",        _dxManager, _graphicsResourceCollection);
+		renderTextures_[3]->Initialize(static_cast<DXGI_FORMAT>(RTVFormat_Flags),         {},          name_ + "Flags",         _dxManager, _graphicsResourceCollection);
 	}
 
 }

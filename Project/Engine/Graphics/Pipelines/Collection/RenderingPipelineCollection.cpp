@@ -20,7 +20,10 @@
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
+#include "../PostProcess/PerObject/Grayscale/PostProcessGrayscalePerObject.h"
+#include "../PostProcess/PerObject/Blur/PostProcessGaussianBlurPerObject.h"
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
+#include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _graphicsResourceCollection)
 	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
@@ -36,16 +39,20 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
-	//Generate3DRenderingPipeline<MeshShaderTest>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
-	/// post process
+	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
-	//GeneratePostProcessPipeline<PostProcessGrayscale>();
+	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
+	//GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
+
+	/// post process - screen
+	GeneratePostProcessPipeline<PostProcessGrayscale>();
+	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }
 
 void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {

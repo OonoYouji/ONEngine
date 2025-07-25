@@ -29,7 +29,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
 	AddChild(std::make_unique<ImGuiHierarchyWindow>(_ecs, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _resourceCollection, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
-	AddChild(std::make_unique<ImGuiProjectWindow>(_editorManager));
+	AddChild(std::make_unique<ImGuiProjectWindow>(_resourceCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }
 

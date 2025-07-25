@@ -19,6 +19,7 @@
 #include "Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Components/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 /// collision
 #include "Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"

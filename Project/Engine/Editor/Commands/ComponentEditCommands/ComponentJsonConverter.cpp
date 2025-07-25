@@ -32,6 +32,7 @@ namespace {
 			Register<SkinMeshRenderer>();
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
+			Register<ScreenPostEffectTag>();
 
 			/// collision
 			Register<ToTerrainCollider>();
