@@ -9,16 +9,17 @@ public class PuzzleStage : MonoBehavior {
 	private bool isStartPuzzle_ = false; // パズルが開始されているかどうか
 
 	private List<List<int>> mapData_;
-
 	private List<List<Entity>> blocks_;
 
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
-	private List<Entity> players_; // 配置されているPlayer
 	private Entity activePlayer_; // 
 
 	[SerializeField] private float blockSpace;
+	PuzzleCommandStacker puzzleCommandStacker_;
 
 	public override void Initialize() {
+		puzzleCommandStacker_ = new  PuzzleCommandStacker();
+		
 		Entity mapchip = EntityCollection.CreateEntity("Mapchip");
 		if (mapchip != null) {
 			Mapchip mapchipScript = mapchip.GetScript<Mapchip>();
@@ -192,8 +193,6 @@ public class PuzzleStage : MonoBehavior {
 			Debug.LogError("activePlayer_ is null");
 		}
 
-		/* ----- プレイヤーリスト ----- */
-		players_.Add(activePlayer_);
 	}
 
 

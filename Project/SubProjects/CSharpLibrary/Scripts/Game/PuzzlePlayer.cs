@@ -13,7 +13,12 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public override void Update() {
-
+		
+		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
+		if (mr != null) {
+			
+		}
+		
 	}
 
 	public void Move(Vector2Int _moveDir) {
@@ -34,4 +39,3 @@ public class PuzzlePlayer : MonoBehavior {
 
 	
 }
-

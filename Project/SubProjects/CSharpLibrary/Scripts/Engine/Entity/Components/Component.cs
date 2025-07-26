@@ -10,9 +10,4 @@ public class Component {
 	public ulong nativeHandle; /// 
 	public Entity entity;
 	
-	/// ========================================
-	/// c++ internal methods
-	/// ========================================
-
-
 }
