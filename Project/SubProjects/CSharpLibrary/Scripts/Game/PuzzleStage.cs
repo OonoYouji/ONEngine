@@ -318,11 +318,11 @@ public class PuzzleStage : MonoBehavior {
 			int subLenght = Mathf.Abs(_movedAddress.y - _currentAddress.y);
 
 			for (int i = 0; i < subLenght; i++) {
-				BlockType value = (BlockType)mapData_[_currentAddress.x + i][xAddress];
+				BlockType value = (BlockType)mapData_[_currentAddress.y + i][xAddress];
 				if (value == (int)BlockType.Black) {
-					mapData_[_currentAddress.x + i][xAddress] = (int)BlockType.White;
+					mapData_[_currentAddress.y + i][xAddress] = (int)BlockType.White;
 				} else {
-					mapData_[_currentAddress.x + i][xAddress] = (int)BlockType.Black;
+					mapData_[_currentAddress.y + i][xAddress] = (int)BlockType.Black;
 				}
 			}
 		}
