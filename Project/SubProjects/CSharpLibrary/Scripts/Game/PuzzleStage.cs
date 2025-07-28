@@ -17,6 +17,11 @@ public class PuzzleStage : MonoBehavior {
 	[SerializeField] private float blockSpace;
 	PuzzleCommandStacker puzzleCommandStacker_;
 
+	/// <summary>
+	/// 移動パラメータ
+	/// </summary>
+	private Vector2Int moveDir_;
+
 	public override void Initialize() {
 		puzzleCommandStacker_ = new PuzzleCommandStacker();
 
@@ -60,7 +65,7 @@ public class PuzzleStage : MonoBehavior {
 				Transform t = block.transform;
 				t.position = new Vector3(c * blockData_.blockSpace, blockData_.height, r * blockData_.blockSpace);
 				t.position -= blockPosOffset_;
-				
+
 				Block blockScript = block.GetScript<Block>();
 				if (blockScript) {
 					blockScript.blockData.type = mapData_[r][c];
@@ -131,32 +136,49 @@ public class PuzzleStage : MonoBehavior {
 
 		/* ----- プレイヤーの移動を行う ----- */
 
-		Vector2Int moveDir = Vector2Int.zero;
+		PuzzlePlayer player = activePlayer_.GetScript<PuzzlePlayer>();
+		if (player) {
+			if (player.blockData.type == (int)BlockType.Black) {
+				moveDir_ = Vector2Int.zero;
+			}
+		}
+
+		/// 移動方向の決定
 		if (Input.TriggerGamepad(Gamepad.DPadUp)) {
-			moveDir.y += 1;
+			moveDir_ = Vector2Int.up;
 		}
 
 		if (Input.TriggerGamepad(Gamepad.DPadDown)) {
-			moveDir.y -= 1;
+			moveDir_ = Vector2Int.down;
 		}
 
 		if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
-			moveDir.x -= 1;
+			moveDir_ = Vector2Int.left;
 		}
 
 		if (Input.TriggerGamepad(Gamepad.DPadRight)) {
-			moveDir.x += 1;
+			moveDir_ = Vector2Int.right;
 		}
 
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		if (!puzzlePlayer) {
+			return;
+		}
+
+
 		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
 		/// 新しいアドレスが移動出来る場所か確認
-		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir)) {
+		Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
+		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
 			/* ----- プレイヤーの移動を行う ----- */
-			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir;
+			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
 			Moved(beforeAddress, puzzlePlayer.blockData.address, puzzlePlayer.blockData.type);
+
+			puzzlePlayer.UpdateRotateY(moveDir_);
+		} else {
+			/// 移動できない場合の処理を追加
+			moveDir_ = Vector2Int.zero;
 		}
-		
 	}
 
 
@@ -186,6 +208,7 @@ public class PuzzleStage : MonoBehavior {
 				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
 				puzzlePlayer.blockData.height = blockData_.height; // プレイヤーの高さを設定
 				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
+				puzzlePlayer.blockData.type = (int)BlockType.White;
 				// puzzlePlayer.isIdle = false;
 
 				Debug.Log("activePlayer_ blockSpace " + puzzlePlayer.blockData.blockSpace);
@@ -197,17 +220,16 @@ public class PuzzleStage : MonoBehavior {
 		}
 	}
 
-
 	private void BlockDeploy() {
 		/* ----- ブロックの配置を行う ----- */
 
 		mapData_ = new List<List<int>> {
 			new List<int> { 0, 1, 0, 1, 0 },
 			new List<int> { 1, 0, 1, 0, 1 },
-			new List<int> { 0, 0, 0, 1, 0 },
-			new List<int> { 0, 0, 0, 0, 1 },
+			new List<int> { 1, 1, 1, 1, 0 },
+			new List<int> { 1, 1, 1, 0, 1 },
 		};
-		
+
 		mapData_.Reverse();
 
 		Debug.Log("----- BlockDeployed. -----");
@@ -235,7 +257,7 @@ public class PuzzleStage : MonoBehavior {
 					blockScript.blockData.blockSpace = blockData_.blockSpace;
 					blockScript.blockData.type = mapData_[r][c];
 				}
-				
+
 				block.parent = this.entity;
 				Transform t = block.transform;
 
@@ -265,13 +287,15 @@ public class PuzzleStage : MonoBehavior {
 	/// <summary>
 	/// プレイヤーが移動可能かどうかをチェックする
 	/// </summary>
-	/// <param name="_currentAddress"> 移動前のアドレス      </param>
-	/// <param name="_moveDir">        移動方向の単位ベクトル </param>
-	/// <returns> 移動可能かチェック </returns>
-	public bool CheckPlayerMoving(Vector2Int _currentAddress, Vector2Int _moveDir) {
+	private bool CheckPlayerMoving(Vector2Int _currentAddress, Vector2Int _moveDir) {
 		/// 移動しないなら false
 		if (_moveDir == Vector2Int.zero) {
 			return false;
+		}
+
+		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		if (!puzzlePlayer) {
+			return false; //!< スクリプトを取得出来ないならfalseを返す
 		}
 
 		/// 移動方向が範囲外なら false
@@ -282,7 +306,6 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		/// 移動方向が自身と違う色なら false
-		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
 		if (mapData_[newAddress.y][newAddress.x] != puzzlePlayer.blockData.type) {
 			return false;
 		}
@@ -295,9 +318,8 @@ public class PuzzleStage : MonoBehavior {
 	/// 移動後のmap dataの更新を行う
 	/// </summary>
 	public void Moved(Vector2Int _currentAddress, Vector2Int _movedAddress, int type) {
-		
 		/// x,zのどちらに移動したのか確認
-		
+
 		if (_currentAddress.x != _movedAddress.x) {
 			/// x軸に移動した
 			int yAddress = _currentAddress.y;
@@ -311,7 +333,6 @@ public class PuzzleStage : MonoBehavior {
 					mapData_[yAddress][_currentAddress.x + i] = (int)BlockType.Black;
 				}
 			}
-			
 		} else if (_currentAddress.y != _movedAddress.y) {
 			/// y軸に移動した
 			int xAddress = _currentAddress.x;
@@ -326,6 +347,5 @@ public class PuzzleStage : MonoBehavior {
 				}
 			}
 		}
-		
 	}
 }

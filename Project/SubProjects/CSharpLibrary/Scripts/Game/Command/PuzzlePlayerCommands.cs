@@ -15,7 +15,7 @@ namespace PuzzlePlayerCommands {
 
 			public override void Execute() {
 				beforeAddress = player.blockData.address;
-				player.Move(Vector2Int.right);
+				player.MoveBlack(Vector2Int.right);
 			}
 
 			public override void Undo() {
@@ -36,7 +36,7 @@ namespace PuzzlePlayerCommands {
 
 			public override void Execute() {
 				beforeAddress = player.blockData.address;
-				player.Move(Vector2Int.left);
+				player.MoveBlack(Vector2Int.left);
 			}
 
 			public override void Undo() {
@@ -57,7 +57,7 @@ namespace PuzzlePlayerCommands {
 
 			public override void Execute() {
 				beforeAddress = player.blockData.address;
-				player.Move(Vector2Int.up);
+				player.MoveBlack(Vector2Int.up);
 			}
 
 			public override void Undo() {
@@ -77,7 +77,7 @@ namespace PuzzlePlayerCommands {
 
 			public override void Execute() {
 				beforeAddress = player.blockData.address;
-				player.Move(Vector2Int.down);
+				player.MoveBlack(Vector2Int.down);
 			}
 
 			public override void Undo() {
