@@ -34,6 +34,10 @@ struct Mathf {
 		return (float)System.Math.Abs(f);
 	}
 
+	static public int Abs(int f) {
+		return (int)System.Math.Abs(f);
+	}
+
 	static public float Sqrt(float f) {
 		return (float)System.Math.Sqrt(f);
 	}

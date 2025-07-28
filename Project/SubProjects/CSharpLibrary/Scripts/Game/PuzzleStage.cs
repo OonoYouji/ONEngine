@@ -18,8 +18,8 @@ public class PuzzleStage : MonoBehavior {
 	PuzzleCommandStacker puzzleCommandStacker_;
 
 	public override void Initialize() {
-		puzzleCommandStacker_ = new  PuzzleCommandStacker();
-		
+		puzzleCommandStacker_ = new PuzzleCommandStacker();
+
 		Entity mapchip = EntityCollection.CreateEntity("Mapchip");
 		if (mapchip != null) {
 			Mapchip mapchipScript = mapchip.GetScript<Mapchip>();
@@ -30,7 +30,6 @@ public class PuzzleStage : MonoBehavior {
 
 		blockData_.height = 2f; // ブロックの高さを設定
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
-		Debug.Log("----- Initialize:" + (int)blockData_.blockSpace);
 
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
@@ -41,11 +40,6 @@ public class PuzzleStage : MonoBehavior {
 
 
 	public override void Update() {
-		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-		if (mr != null) {
-			mr.postEffectFlags = (uint)(PostEffectFlags.Grayscale | PostEffectFlags.Lighting);
-		}
-
 		blockSpace = 0.22f;
 		blockData_.blockSpace = blockSpace;
 
@@ -56,16 +50,22 @@ public class PuzzleStage : MonoBehavior {
 		Debug.Log("---:" + width);
 		Debug.Log("---:" + height);
 
-		for (int i = 0; i < blocks_.Count; i++) {
-			for (int j = 0; j < blocks_[i].Count; j++) {
-				Entity block = blocks_[i][j];
+		for (int r = 0; r < blocks_.Count; r++) {
+			for (int c = 0; c < blocks_[r].Count; c++) {
+				Entity block = blocks_[r][c];
 				if (block == null) {
 					continue;
 				}
 
 				Transform t = block.transform;
-				t.position = new Vector3(j * blockData_.blockSpace, blockData_.height, i * blockData_.blockSpace);
+				t.position = new Vector3(c * blockData_.blockSpace, blockData_.height, r * blockData_.blockSpace);
 				t.position -= blockPosOffset_;
+				
+				Block blockScript = block.GetScript<Block>();
+				if (blockScript) {
+					blockScript.blockData.type = mapData_[r][c];
+					Debug.LogInfo("-----: block type setting");
+				}
 			}
 		}
 
@@ -149,11 +149,14 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
 		/// 新しいアドレスが移動出来る場所か確認
 		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir)) {
 			/* ----- プレイヤーの移動を行う ----- */
 			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir;
+			Moved(beforeAddress, puzzlePlayer.blockData.address, puzzlePlayer.blockData.type);
 		}
+		
 	}
 
 
@@ -192,7 +195,6 @@ public class PuzzleStage : MonoBehavior {
 		} else {
 			Debug.LogError("activePlayer_ is null");
 		}
-
 	}
 
 
@@ -202,9 +204,11 @@ public class PuzzleStage : MonoBehavior {
 		mapData_ = new List<List<int>> {
 			new List<int> { 0, 1, 0, 1, 0 },
 			new List<int> { 1, 0, 1, 0, 1 },
-			new List<int> { 0, 1, 0, 1, 0 },
-			new List<int> { 1, 0, 1, 0, 1 },
+			new List<int> { 0, 0, 0, 1, 0 },
+			new List<int> { 0, 0, 0, 0, 1 },
 		};
+		
+		mapData_.Reverse();
 
 		Debug.Log("----- BlockDeployed. -----");
 
@@ -213,9 +217,9 @@ public class PuzzleStage : MonoBehavior {
 
 		Vector2 mapSize = new Vector2(mapData_.Count, mapData_[0].Count);
 
-		for (int i = 0; i < mapData_.Count; i++) {
-			for (int j = 0; j < mapData_[i].Count; j++) {
-				Debug.Log("map[" + i + "][" + j + "] = " + mapData_[i][j]);
+		for (int r = 0; r < mapData_.Count; r++) {
+			for (int c = 0; c < mapData_[r].Count; c++) {
+				Debug.Log("map[" + r + "][" + c + "] = " + mapData_[r][c]);
 
 
 				Entity block = EntityCollection.CreateEntity("Block");
@@ -224,28 +228,35 @@ public class PuzzleStage : MonoBehavior {
 				}
 
 				/// blockの初期化
-
+				Block blockScript = block.GetScript<Block>();
+				if (blockScript) {
+					blockScript.blockData.address = new Vector2Int(r, c);
+					blockScript.blockData.height = blockData_.height;
+					blockScript.blockData.blockSpace = blockData_.blockSpace;
+					blockScript.blockData.type = mapData_[r][c];
+				}
+				
 				block.parent = this.entity;
 				Transform t = block.transform;
 
 				/// blockのindexで位置を決定
-				t.position = new Vector3(i, blockData_.height, j);
+				t.position = new Vector3(r, blockData_.height, c);
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
 				if (mr != null) {
 					/// 色を黒か白に設定
-					Vector4 color = Vector4.one * mapData_[i][j]; // 1なら白、0なら黒
+					Vector4 color = Vector4.one * mapData_[r][c]; // 1なら白、0なら黒
 					color.w = 1f;
 
 					mr.color = color;
 				}
 
 
-				if (blocks_.Count <= i) {
+				if (blocks_.Count <= r) {
 					blocks_.Add(new List<Entity>());
 				}
 
-				blocks_[i].Add(block); // ブロックをリストに追加
+				blocks_[r].Add(block); // ブロックをリストに追加
 			}
 		}
 	}
@@ -270,11 +281,51 @@ public class PuzzleStage : MonoBehavior {
 			return false;
 		}
 
-		/// 移動方向が自身と同じ色なら false
-		if (mapData_[newAddress.y][newAddress.x] == mapData_[_currentAddress.y][_currentAddress.x]) {
+		/// 移動方向が自身と違う色なら false
+		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		if (mapData_[newAddress.y][newAddress.x] != puzzlePlayer.blockData.type) {
 			return false;
 		}
 
 		return true;
+	}
+
+
+	/// <summary>
+	/// 移動後のmap dataの更新を行う
+	/// </summary>
+	public void Moved(Vector2Int _currentAddress, Vector2Int _movedAddress, int type) {
+		
+		/// x,zのどちらに移動したのか確認
+		
+		if (_currentAddress.x != _movedAddress.x) {
+			/// x軸に移動した
+			int yAddress = _currentAddress.y;
+			int subLenght = Mathf.Abs(_movedAddress.x - _currentAddress.x);
+
+			for (int i = 0; i < subLenght; i++) {
+				BlockType value = (BlockType)mapData_[yAddress][_currentAddress.x + i];
+				if (value == (int)BlockType.Black) {
+					mapData_[yAddress][_currentAddress.x + i] = (int)BlockType.White;
+				} else {
+					mapData_[yAddress][_currentAddress.x + i] = (int)BlockType.Black;
+				}
+			}
+			
+		} else if (_currentAddress.y != _movedAddress.y) {
+			/// y軸に移動した
+			int xAddress = _currentAddress.x;
+			int subLenght = Mathf.Abs(_movedAddress.y - _currentAddress.y);
+
+			for (int i = 0; i < subLenght; i++) {
+				BlockType value = (BlockType)mapData_[_currentAddress.x + i][xAddress];
+				if (value == (int)BlockType.Black) {
+					mapData_[_currentAddress.x + i][xAddress] = (int)BlockType.White;
+				} else {
+					mapData_[_currentAddress.x + i][xAddress] = (int)BlockType.Black;
+				}
+			}
+		}
+		
 	}
 }

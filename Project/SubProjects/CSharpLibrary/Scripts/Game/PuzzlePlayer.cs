@@ -13,12 +13,7 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public override void Update() {
-		
-		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-		if (mr != null) {
-			
-		}
-		
+		UpdateColor();
 	}
 
 	public void Move(Vector2Int _moveDir) {
@@ -34,6 +29,19 @@ public class PuzzlePlayer : MonoBehavior {
 				blockData.height,
 				blockData.address.y * blockData.blockSpace
 			);
+		}
+	}
+
+	public void UpdateColor() {
+		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
+		if (mr) {
+			Vector4 color = Vector4.one;
+			if (blockData.type == (int)BlockType.Black) {
+				float value = 0.2f;
+				color = new Vector4(value, value, value, 1);
+			}
+			
+			mr.color = color;
 		}
 	}
 

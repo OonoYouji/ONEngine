@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 public class Component {
-
-	public int enable; /// 0 = disabled, 1 = enabled
-	public ulong nativeHandle; /// 
+	public int enable;
+	/// 0 = disabled, 1 = enabled
+	public ulong nativeHandle;
 	public Entity entity;
-	
+
+	public static implicit operator bool(Component _component) {
+		return _component != null;
+	}
 }
