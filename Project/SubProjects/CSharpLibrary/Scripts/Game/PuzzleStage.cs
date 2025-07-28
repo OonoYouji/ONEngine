@@ -31,7 +31,7 @@ public class PuzzleStage : MonoBehavior {
 		if (mapchip_ != null) {
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage1.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage3.json");
 			}
 		}
 
@@ -208,9 +208,6 @@ public class PuzzleStage : MonoBehavior {
 
 
 		blocks_ = new List<Entity>();
-		// blocks_ = new List<List<Entity>>();
-
-		Vector2 mapSize = new Vector2(mapData_.Count, mapData_[0].Count);
 
 		for (int r = 0; r < mapData_.Count; r++) {
 			for (int c = 0; c < mapData_[r].Count; c++) {
@@ -238,7 +235,6 @@ public class PuzzleStage : MonoBehavior {
 					int type = mapData_[r][c];
 					if (type > 0) {
 						type = mapData_[r][c] % 10;
-						Debug.LogInfo("===================: block type is 0 over " + type);
 					}
 
 					blockScript.blockData.type = type; /// 一桁目がtype
@@ -258,11 +254,6 @@ public class PuzzleStage : MonoBehavior {
 
 					mr.color = color;
 				}
-
-
-				// if (blocks_.Count <= r) {
-				// 	blocks_.Add(new List<Entity>());
-				// }
 
 				blocks_.Add(block); // ブロックをリストに追加
 			}
@@ -294,7 +285,11 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		/// 移動方向が自身と違う色なら false
-		if (mapData_[newAddress.y][newAddress.x] != puzzlePlayer.blockData.type) {
+		if (!CheckIsBlock(mapData_[newAddress.y][newAddress.x])) {
+			return false;
+		}
+
+		if (mapData_[newAddress.y][newAddress.x] % 10 != puzzlePlayer.blockData.type) {
 			return false;
 		}
 
