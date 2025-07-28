@@ -1,0 +1,44 @@
+{
+    "className": "EmptyEntity",
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "enable": 1,
+            "meshPath": "./Assets/Models/entity/puzzle/GoalBlock.obj",
+            "texturePath": "./Packages/Textures/white.png",
+            "type": "MeshRenderer"
+        }
+    ],
+    "id": -1,
+    "name": "Goal",
+    "parent": null,
+    "prefabName": "Goal.prefab"
+}

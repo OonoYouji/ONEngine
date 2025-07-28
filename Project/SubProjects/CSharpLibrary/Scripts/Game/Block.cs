@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 public class Block : MonoBehavior {
 	public PuzzleBlockData blockData;
 	Entity playerPtr;
+	[SerializeField] private int type;
 
 	public override void Initialize() {
 		playerPtr = EntityCollection.FindEntity("Player");
 	}
 
 	public override void Update() {
+		type = blockData.type;
+		Debug.Log("============: type " + blockData.type);
 		UpdateColor();
 	}
 

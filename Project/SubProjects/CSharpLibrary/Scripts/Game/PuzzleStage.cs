@@ -9,12 +9,14 @@ public class PuzzleStage : MonoBehavior {
 	private bool isStartPuzzle_ = false; // パズルが開始されているかどうか
 
 	private List<List<int>> mapData_;
-	private List<List<Entity>> blocks_;
+
+	// private List<List<Entity>> blocks_;
+	private List<Entity> blocks_;
 
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
+	private Entity mapchip_;
 
-	[SerializeField] private float blockSpace;
 	PuzzleCommandStacker puzzleCommandStacker_;
 
 	/// <summary>
@@ -25,9 +27,9 @@ public class PuzzleStage : MonoBehavior {
 	public override void Initialize() {
 		puzzleCommandStacker_ = new PuzzleCommandStacker();
 
-		Entity mapchip = EntityCollection.CreateEntity("Mapchip");
-		if (mapchip != null) {
-			Mapchip mapchipScript = mapchip.GetScript<Mapchip>();
+		mapchip_ = EntityCollection.CreateEntity("Mapchip");
+		if (mapchip_ != null) {
+			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
 				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage1.json");
 			}
@@ -40,37 +42,32 @@ public class PuzzleStage : MonoBehavior {
 		PlayerDeploy(); // プレイヤー配置
 
 		blockPosOffset_ = new Vector3(1f, -1f, 1f);
-		blockSpace = 0.22f;
+		blockData_.blockSpace = 0.22f;
 	}
 
 
 	public override void Update() {
-		blockSpace = 0.22f;
-		blockData_.blockSpace = blockSpace;
-
-		int width = blocks_[0].Count;
-		int height = blocks_.Count;
+		int width = mapData_[0].Count;
+		int height = mapData_.Count;
 		blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
-		Debug.Log("---:" + (int)blockData_.blockSpace);
-		Debug.Log("---:" + width);
-		Debug.Log("---:" + height);
 
-		for (int r = 0; r < blocks_.Count; r++) {
-			for (int c = 0; c < blocks_[r].Count; c++) {
-				Entity block = blocks_[r][c];
-				if (block == null) {
-					continue;
-				}
+
+		for (int i = 0; i < blocks_.Count; i++) {
+			Entity block = blocks_[i];
+			if (block == null) {
+				continue;
+			}
+
+			Block blockScript = block.GetScript<Block>();
+			if (blockScript) {
+				Vector2Int address = blockScript.blockData.address;
+
+				blockScript.blockData.type = mapData_[address.y][address.x] % 10;
 
 				Transform t = block.transform;
-				t.position = new Vector3(c * blockData_.blockSpace, blockData_.height, r * blockData_.blockSpace);
+				t.position = new Vector3(address.x * blockData_.blockSpace, blockData_.height,
+					address.y * blockData_.blockSpace);
 				t.position -= blockPosOffset_;
-
-				Block blockScript = block.GetScript<Block>();
-				if (blockScript) {
-					blockScript.blockData.type = mapData_[r][c];
-					Debug.LogInfo("-----: block type setting");
-				}
 			}
 		}
 
@@ -80,9 +77,6 @@ public class PuzzleStage : MonoBehavior {
 
 			Transform playerTransform = activePlayer_.transform;
 			playerTransform.position -= blockPosOffset_;
-			Debug.Log(" ----- Player Position Setting ----- ");
-			Debug.Log("---:" + (int)blockPosOffset_.x);
-			Debug.Log("---:" + (int)blockPosOffset_.y);
 		}
 
 
@@ -106,23 +100,7 @@ public class PuzzleStage : MonoBehavior {
 			isStartPuzzle_ = false;
 
 			/// 他のエンティティの更新を停止
-			SetPuzzleEnable(false);
 			Debug.Log("Puzzle ended.");
-		}
-	}
-
-
-	void SetPuzzleEnable(bool _enable) {
-		/// ブロックの更新を有効/無効にする
-		for (int r = 0; r < blocks_.Count; ++r) {
-			for (int c = 0; c < blocks_[r].Count; ++c) {
-				if (blocks_[r][c] != null) {
-					Block block = blocks_[r][c].GetScript<Block>();
-					if (block != null) {
-						block.enable = _enable;
-					}
-				}
-			}
 		}
 	}
 
@@ -223,19 +201,14 @@ public class PuzzleStage : MonoBehavior {
 	private void BlockDeploy() {
 		/* ----- ブロックの配置を行う ----- */
 
-		mapData_ = new List<List<int>> {
-			new List<int> { 0, 1, 0, 1, 0 },
-			new List<int> { 1, 0, 1, 0, 1 },
-			new List<int> { 1, 1, 1, 1, 0 },
-			new List<int> { 1, 1, 1, 0, 1 },
-		};
-
-		mapData_.Reverse();
+		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		mapData_ = mapchipScript.GetStartMapData();
 
 		Debug.Log("----- BlockDeployed. -----");
 
 
-		blocks_ = new List<List<Entity>>();
+		blocks_ = new List<Entity>();
+		// blocks_ = new List<List<Entity>>();
 
 		Vector2 mapSize = new Vector2(mapData_.Count, mapData_[0].Count);
 
@@ -243,6 +216,12 @@ public class PuzzleStage : MonoBehavior {
 			for (int c = 0; c < mapData_[r].Count; c++) {
 				Debug.Log("map[" + r + "][" + c + "] = " + mapData_[r][c]);
 
+				/// マップデータがブロックでは無ければ配置しない
+				int mapValue = mapData_[r][c];
+				if (!CheckIsBlock(mapValue)) {
+					Debug.LogWarning("=====: did not block.  mapValue: " + mapValue);
+					continue;
+				}
 
 				Entity block = EntityCollection.CreateEntity("Block");
 				if (block == null) {
@@ -252,17 +231,24 @@ public class PuzzleStage : MonoBehavior {
 				/// blockの初期化
 				Block blockScript = block.GetScript<Block>();
 				if (blockScript) {
-					blockScript.blockData.address = new Vector2Int(r, c);
+					blockScript.blockData.address = new Vector2Int(c, r);
 					blockScript.blockData.height = blockData_.height;
 					blockScript.blockData.blockSpace = blockData_.blockSpace;
-					blockScript.blockData.type = mapData_[r][c];
+
+					int type = mapData_[r][c];
+					if (type > 0) {
+						type = mapData_[r][c] % 10;
+						Debug.LogInfo("===================: block type is 0 over " + type);
+					}
+
+					blockScript.blockData.type = type; /// 一桁目がtype
 				}
 
 				block.parent = this.entity;
 				Transform t = block.transform;
 
 				/// blockのindexで位置を決定
-				t.position = new Vector3(r, blockData_.height, c);
+				t.position = new Vector3(c, blockData_.height, r);
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
 				if (mr != null) {
@@ -274,13 +260,15 @@ public class PuzzleStage : MonoBehavior {
 				}
 
 
-				if (blocks_.Count <= r) {
-					blocks_.Add(new List<Entity>());
-				}
+				// if (blocks_.Count <= r) {
+				// 	blocks_.Add(new List<Entity>());
+				// }
 
-				blocks_[r].Add(block); // ブロックをリストに追加
+				blocks_.Add(block); // ブロックをリストに追加
 			}
 		}
+
+		Debug.Log("----- BlockDeployed. ended -----");
 	}
 
 
@@ -347,5 +335,14 @@ public class PuzzleStage : MonoBehavior {
 				}
 			}
 		}
+	}
+
+
+	private bool CheckIsBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
+			return true;
+		}
+
+		return false;
 	}
 }

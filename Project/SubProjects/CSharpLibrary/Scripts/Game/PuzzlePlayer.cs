@@ -12,15 +12,19 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public override void Update() {
+		if (Input.TriggerGamepad(Gamepad.A)) {
+			if (blockData.type == (int)BlockType.Black) {
+				blockData.type = (int)BlockType.White;
+			} else {
+				blockData.type = (int)BlockType.Black;
+			}
+		}
+		
 		UpdateColor();
 	}
 
-	public void MoveBlack(Vector2Int _moveDir) {
+	public void Move(Vector2Int _moveDir) {
 		blockData.address += _moveDir;
-	}
-
-	public void MoveWhite(Vector2Int _movedAddress) {
-		blockData.address = _movedAddress;
 	}
 
 	public void UpdatePosition() {
