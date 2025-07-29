@@ -42,6 +42,14 @@ struct Mathf {
 		return (float)System.Math.Sqrt(f);
 	}
 
+	static public float Pow(float f, float p) {
+		return  (float)System.Math.Pow(f, p);
+	}
+
+	static public int Pow(int f, float p) {
+		return (int)System.Math.Pow(f, p);
+	}
+
 	/// --------------------------------------------
 	/// 便利な計算
 	/// --------------------------------------------
@@ -88,6 +96,9 @@ struct Mathf {
 		return Mathf.Abs(value) * Mathf.Sign(sign);
 	}
 
+	static public int GetDigit(int number, int digit) {
+		return Mathf.Abs((number / Mathf.Pow(10, digit - 1)) % 10);
+	}
 
 
 	/// --------------------------------------------

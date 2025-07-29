@@ -6,20 +6,27 @@ using System.Threading.Tasks;
 
 public class PuzzlePlayer : MonoBehavior {
 	public PuzzleBlockData blockData; // ブロックデータ
-
+	public Flag isGoaled;
+	
+	
 	public override void Initialize() {
 		// 初期化処理
+		isGoaled.Set(false);
 	}
 
 	public override void Update() {
-		if (Input.TriggerGamepad(Gamepad.A)) {
-			if (blockData.type == (int)BlockType.Black) {
-				blockData.type = (int)BlockType.White;
-			} else {
-				blockData.type = (int)BlockType.Black;
-			}
+		isGoaled.Update();
+
+		if (isGoaled.Trigger()) {
+			EntityCollection.CreateEntity("Block");
 		}
 		
+		/// MAPDATAより、Playerは 100 or 101なので
+		blockData.type = blockData.mapValue % 100 % 10;
+		Debug.Log("//////////////////////////////////////////////////////");
+		Debug.Log("type: " + blockData.type);
+		Debug.Log("//////////////////////////////////////////////////////");
+
 		UpdateColor();
 	}
 
@@ -28,6 +35,7 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public void UpdatePosition() {
+		
 		/// 座標更新
 		Transform t = transform;
 		if (t != null) {
@@ -70,6 +78,5 @@ public class PuzzlePlayer : MonoBehavior {
 		Quaternion rotate = transform.rotate;
 		rotate = Quaternion.MakeFromAxis(Vector3.up, rotateY);
 		transform.rotate = rotate;
-
 	}
 }

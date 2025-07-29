@@ -6,14 +6,28 @@ using System.Threading.Tasks;
 
 public class Block : MonoBehavior {
 	public PuzzleBlockData blockData;
-	Entity playerPtr;
+	public PuzzlePlayer playerPtr;
+
+	[SerializeField] private int value;
+	[SerializeField] private int type;
 
 	public override void Initialize() {
-		playerPtr = EntityCollection.FindEntity("Player");
+		// playerPtr = EntityCollection.FindEntity("Player");
 	}
 
 	public override void Update() {
+		// MAPDATAから、ブロックは 10 or 11なので一桁目だけ見て色を判断
+		if (blockData.mapValue != 0) {
+			blockData.type = blockData.mapValue % 10;
+		}
+
 		transform.scale = Vector3.one * 0.1f;
+
+		type = blockData.type;
+		value = blockData.mapValue;
+		
+		Debug.Log("===========: type " + blockData.type + " value " + blockData.mapValue);
+
 		UpdateColor();
 	}
 
@@ -24,7 +38,7 @@ public class Block : MonoBehavior {
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr) {
 			Vector4 color = Vector4.one;
-			if (blockData.type == (int)MAPDATA.BLOCK_BLACK) {
+			if (blockData.type == (int)BlockType.Black) {
 				float value = 0.2f;
 				color = new Vector4(value, value, value, 1);
 			}
