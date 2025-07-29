@@ -7,10 +7,10 @@ using Newtonsoft.Json.Linq;
 public enum MAPDATA : int {
 	BLOCK_WHTIE = 10,
 	BLOCK_BLACK = 11,
-	GOAL_WHITE = 41,
-	GOAL_BLACK = 42,
-	PLAYER_WHITE = 101,
-	PLAYER_BLACK = 102,
+	GOAL_WHITE = 40,
+	GOAL_BLACK = 41,
+	PLAYER_WHITE = 100,
+	PLAYER_BLACK = 101,
 }
 
 namespace Stage {

@@ -13,7 +13,7 @@ public class Block : MonoBehavior {
 	}
 
 	public override void Update() {
-		Debug.Log("============: type " + blockData.type);
+		transform.scale = Vector3.one * 0.1f;
 		UpdateColor();
 	}
 
@@ -24,15 +24,14 @@ public class Block : MonoBehavior {
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr) {
 			Vector4 color = Vector4.one;
-			if (blockData.type == (int)BlockType.Black) {
+			if (blockData.type == (int)MAPDATA.BLOCK_BLACK) {
 				float value = 0.2f;
 				color = new Vector4(value, value, value, 1);
 			}
-			
+
 			mr.color = color;
 		} else {
 			Debug.LogWarning("-----: block color not setting");
 		}
-		
 	}
 }

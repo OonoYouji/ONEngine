@@ -62,7 +62,7 @@ public class PuzzleStage : MonoBehavior {
 			if (blockScript) {
 				Vector2Int address = blockScript.blockData.address;
 
-				blockScript.blockData.type = mapData_[address.y][address.x] % 10;
+				blockScript.blockData.type = mapData_[address.y][address.x];
 
 				Transform t = block.transform;
 				t.position = new Vector3(address.x * blockData_.blockSpace, blockData_.height,
@@ -150,7 +150,7 @@ public class PuzzleStage : MonoBehavior {
 		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
 			/* ----- プレイヤーの移動を行う ----- */
 			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
-			Moved(beforeAddress, puzzlePlayer.blockData.address, puzzlePlayer.blockData.type);
+			Moved(beforeAddress, puzzlePlayer.blockData.address);
 
 			puzzlePlayer.UpdateRotateY(moveDir_);
 		} else {
@@ -214,13 +214,14 @@ public class PuzzleStage : MonoBehavior {
 				Debug.Log("map[" + r + "][" + c + "] = " + mapData_[r][c]);
 
 				/// マップデータがブロックでは無ければ配置しない
+				Entity block = null;
 				int mapValue = mapData_[r][c];
-				if (!CheckIsBlock(mapValue)) {
-					Debug.LogWarning("=====: did not block.  mapValue: " + mapValue);
-					continue;
+				if (CheckIsBlock(mapValue)) {
+					block = EntityCollection.CreateEntity("Block");
+				} else if (CheckIsGoal(mapValue)) {
+					block = EntityCollection.CreateEntity("Goal");
 				}
 
-				Entity block = EntityCollection.CreateEntity("Block");
 				if (block == null) {
 					continue;
 				}
@@ -231,13 +232,7 @@ public class PuzzleStage : MonoBehavior {
 					blockScript.blockData.address = new Vector2Int(c, r);
 					blockScript.blockData.height = blockData_.height;
 					blockScript.blockData.blockSpace = blockData_.blockSpace;
-
-					int type = mapData_[r][c];
-					if (type > 0) {
-						type = mapData_[r][c] % 10;
-					}
-
-					blockScript.blockData.type = type; /// 一桁目がtype
+					blockScript.blockData.type = mapValue;
 				}
 
 				block.parent = this.entity;
@@ -284,11 +279,12 @@ public class PuzzleStage : MonoBehavior {
 			return false;
 		}
 
-		/// 移動方向が自身と違う色なら false
+		/// 移動方向がブロックじゃないなら
 		if (!CheckIsBlock(mapData_[newAddress.y][newAddress.x])) {
 			return false;
 		}
 
+		/// 移動方向が自身と違う色なら false
 		if (mapData_[newAddress.y][newAddress.x] % 10 != puzzlePlayer.blockData.type) {
 			return false;
 		}
@@ -300,7 +296,7 @@ public class PuzzleStage : MonoBehavior {
 	/// <summary>
 	/// 移動後のmap dataの更新を行う
 	/// </summary>
-	public void Moved(Vector2Int _currentAddress, Vector2Int _movedAddress, int type) {
+	public void Moved(Vector2Int _currentAddress, Vector2Int _movedAddress) {
 		/// x,zのどちらに移動したのか確認
 
 		if (_currentAddress.x != _movedAddress.x) {
@@ -309,11 +305,11 @@ public class PuzzleStage : MonoBehavior {
 			int subLenght = Mathf.Abs(_movedAddress.x - _currentAddress.x);
 
 			for (int i = 0; i < subLenght; i++) {
-				BlockType value = (BlockType)mapData_[yAddress][_currentAddress.x + i];
-				if (value == (int)BlockType.Black) {
-					mapData_[yAddress][_currentAddress.x + i] = (int)BlockType.White;
+				int value = mapData_[yAddress][_currentAddress.x + i];
+				if (value == (int)MAPDATA.BLOCK_BLACK) {
+					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_WHTIE;
 				} else {
-					mapData_[yAddress][_currentAddress.x + i] = (int)BlockType.Black;
+					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}
 		} else if (_currentAddress.y != _movedAddress.y) {
@@ -322,11 +318,11 @@ public class PuzzleStage : MonoBehavior {
 			int subLenght = Mathf.Abs(_movedAddress.y - _currentAddress.y);
 
 			for (int i = 0; i < subLenght; i++) {
-				BlockType value = (BlockType)mapData_[_currentAddress.y + i][xAddress];
-				if (value == (int)BlockType.Black) {
-					mapData_[_currentAddress.y + i][xAddress] = (int)BlockType.White;
+				int value = mapData_[_currentAddress.y + i][xAddress];
+				if (value == (int)MAPDATA.BLOCK_BLACK) {
+					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_WHTIE;
 				} else {
-					mapData_[_currentAddress.y + i][xAddress] = (int)BlockType.Black;
+					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}
 		}
@@ -338,6 +334,20 @@ public class PuzzleStage : MonoBehavior {
 			return true;
 		}
 
+		return false;
+	}
+
+	private bool CheckIsGoal(int _mapValue) {
+		Debug.Log("------------------------------------------");
+
+		if (_mapValue == (int)MAPDATA.GOAL_BLACK || _mapValue == (int)MAPDATA.GOAL_WHITE) {
+			Debug.Log("return true;");
+			Debug.Log("------------------------------------------");
+			return true;
+		}
+
+		Debug.Log("return false;");
+		Debug.Log("------------------------------------------");
 		return false;
 	}
 }
