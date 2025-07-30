@@ -93,9 +93,7 @@ public class PuzzleStage : MonoBehavior {
 				}
 
 				Transform t = block.transform;
-				t.position = new Vector3(
-					address.x * blockData_.blockSpace, 
-					blockScript.blockData.height,
+				t.position = new Vector3(address.x * blockData_.blockSpace, blockScript.blockData.height,
 					address.y * blockData_.blockSpace);
 				t.position -= blockPosOffset_;
 			}
@@ -324,10 +322,10 @@ public class PuzzleStage : MonoBehavior {
 			int subLenght = Mathf.Abs(_movedAddress.x - _currentAddress.x);
 
 			for (int i = 0; i < subLenght; i++) {
-				int type = Mathf.GetDigit(mapData_[yAddress][_currentAddress.x + i], 1);
-				if (type == (int)BlockType.Black) {
+				int value = mapData_[yAddress][_currentAddress.x + i];
+				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_WHTIE;
-				} else {
+				} else if (value == (int)MAPDATA.BLOCK_WHTIE) {
 					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}
@@ -340,7 +338,7 @@ public class PuzzleStage : MonoBehavior {
 				int value = mapData_[_currentAddress.y + i][xAddress];
 				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_WHTIE;
-				} else {
+				} else if (value == (int)MAPDATA.BLOCK_WHTIE) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}
