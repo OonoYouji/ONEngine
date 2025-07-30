@@ -2,10 +2,13 @@
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
+
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
-#include "Engine/Core/Utility/Utility.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
+
 #include "Game/Objects/Terrain/Terrain.h"
 
 
@@ -21,6 +24,7 @@ public:
 	enum ROOT_PARAM {
 		ROOT_PARAM_VIEW_PROJECTION,
 		ROOT_PARAM_TRANSFORM,
+		ROOT_PARAM_MATERIAL,
 		ROOT_PARAM_TEX_GRASS,
 		ROOT_PARAM_TEX_DIRT,
 		ROOT_PARAM_TEX_ROCK,
@@ -49,6 +53,7 @@ private:
 	class Terrain* pTerrain_ = nullptr;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
+	ConstantBuffer<Material> materialBuffer_;
 
 	IndexBuffer indexBuffer_;
 	VertexBuffer<TerrainVertex> vertexBuffer_;

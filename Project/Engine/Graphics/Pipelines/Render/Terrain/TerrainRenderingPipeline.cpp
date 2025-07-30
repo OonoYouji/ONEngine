@@ -41,6 +41,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// ROOT_PARAM_TRANSFORM
 
 		/// ps
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// ROOT_PARAM_MATERIAL
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// grass
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// dirt
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// rock
@@ -75,6 +76,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 	{ /// buffer
 
 		transformBuffer_.Create(_dxManager->GetDxDevice());
+		materialBuffer_.Create(_dxManager->GetDxDevice());
 		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
 		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
@@ -120,12 +122,20 @@ void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Came
 	}
 
 
+	/// bufferの値を更新
+	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->GetMatWorld());
+	materialBuffer_.SetMappedData(
+		Material(Vector4::kWhite, 1, pTerrain_->GetId())
+	);
+
+
 	/// 描画する
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto command = _dxCommand->GetCommandList();
 
 	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
 	transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
+	materialBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_MATERIAL);
 
 	/// texs
 	const auto& textures = pResourceCollection_->GetTextures();
@@ -141,7 +151,7 @@ void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Came
 
 
 
-	/// vbv ivb setting
+	/// vbv ibv setting
 	vertexBuffer_.BindForCommandList(command);
 	indexBuffer_.BindForCommandList(command);
 

@@ -2,6 +2,7 @@
 struct Material {
 	float4 color;
 	int postEffectFlags;
+	int entityId;
 };
 
 static const int PostEffectFlags_None      = 0;

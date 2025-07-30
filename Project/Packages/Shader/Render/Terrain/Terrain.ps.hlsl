@@ -1,5 +1,9 @@
 #include "Terrain.hlsli"
 
+#include "../../ConstantBufferData/Material.hlsli"
+
+ConstantBuffer<Material> material : register(b0);
+
 Texture2D<float4> texGrass : register(t0);
 Texture2D<float4> texDirt : register(t1);
 Texture2D<float4> texRock : register(t2);
@@ -12,6 +16,7 @@ static const float3x3 uvTransform = float3x3(
 	0, 100, 0,
 	0, 0, 1
 );
+
 
 
 PSOutput main(VSOutput input) {
@@ -33,7 +38,7 @@ PSOutput main(VSOutput input) {
 	
 	output.normal = float4(input.normal, 1);
 	output.wPosition = input.wPosition;
-	output.flags = float4(1, 0, 0, 0);
+	output.flags = float4(material.postEffectFlags, material.entityId, 0, 0);
 	
 	return output;
 }
