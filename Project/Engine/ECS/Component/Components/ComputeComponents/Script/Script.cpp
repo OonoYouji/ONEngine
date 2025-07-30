@@ -5,6 +5,7 @@
 #include "Engine/Core/ImGui/Math/ImGuiShowField.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 using namespace CSGui;
@@ -151,6 +152,14 @@ bool Script::GetEnable(const std::string& _scriptName) {
 }
 
 void Script::CallAwakeMethodAll() {
+	/// Variables Componentから値を取得して、スクリプトに適用する
+	Variables* variables = GetOwner()->GetComponent<Variables>();
+	if (variables) {
+		variables->SetScriptVariables();
+	} else {
+		Console::LogWarning("Script::CallAwakeMethodAll Variables component not found.");
+	}
+
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
 			Console::Log("Script::CallAwakeMethodAll Script is disabled");

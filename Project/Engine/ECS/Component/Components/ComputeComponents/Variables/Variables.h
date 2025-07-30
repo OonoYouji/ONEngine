@@ -52,15 +52,17 @@ public:
 			variables.emplace_back(_value);
 		}
 
-		template <typename T = Var>
+		template <typename T>
 		T& Get(const std::string& _name) {
 			return std::get<T>(variables[keyMap_.at(_name)]);
 		}
 
-		template <typename T = Var>
+		template <typename T>
 		const T& Get(const std::string& _name) const {
 			return std::get<T>(variables[keyMap_.at(_name)]);
 		}
+
+		const Var& Get(const std::string& _name) const;
 
 		bool Has(const std::string& _name) const;
 
@@ -81,6 +83,7 @@ public:
 	/// @param _path 保存するjsonファイルのパス
 	void SaveJson(const std::string& _path);
 
+	void SetScriptVariables();
 
 	size_t AddGroup(const std::string& _name);
 

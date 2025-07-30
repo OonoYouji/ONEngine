@@ -194,6 +194,75 @@ void Variables::SaveJson(const std::string& _path) {
 	ofs << json.dump(4);
 }
 
+void Variables::SetScriptVariables() {
+	/* ----- スクリプトに対して変数の値を適用する ----- */
+
+	IEntity* owner = GetOwner();
+	if (!owner) {
+		Console::LogError("Variables::SetScriptVariables();  owner is nullptr...");
+		return;
+	}
+
+	Script* script = owner->GetComponent<Script>();
+	if (!script) {
+		Console::LogError("Variables::SetScriptVariables();  owner has no Script component...");
+		return;
+	}
+
+
+	/// 適用の処理
+	for (auto& data : script->GetScriptDataList()) {
+
+		/// 対象のスクリプトのデータを持っているかチェック
+		if (!HasGroup(data.scriptName)) {
+			continue;
+		}
+
+		Group& group = groups_[groupKeyMap_.at(data.scriptName)];
+
+
+		/// C#側のオブジェクトを取得
+		MonoObject* safeObj = nullptr;
+		if (data.gcHandle != 0) {
+			safeObj = mono_gchandle_get_target(data.gcHandle);
+		}
+
+		MonoClass* monoClass = mono_object_get_class(safeObj);
+		MonoClassField* field = nullptr;
+		void* iter = nullptr;
+
+		while ((field = mono_class_get_fields(monoClass, &iter))) {
+			const char* fieldName = mono_field_get_name(field);
+			if (!group.Has(fieldName)) {
+				continue;
+			}
+
+			auto& value = group.Get(fieldName);
+
+			if (std::holds_alternative<int>(value)) {
+				/// int
+				int val = std::get<int>(value);
+				mono_field_set_value(safeObj, field, &val);
+			} else if (std::holds_alternative<float>(value)) {
+				/// float
+				float val = std::get<float>(value);
+				mono_field_set_value(safeObj, field, &val);
+			} else if (std::holds_alternative<bool>(value)) {
+				/// bool
+				bool val = std::get<bool>(value);
+				mono_field_set_value(safeObj, field, &val);
+			} else if (std::holds_alternative<std::string>(value)) {
+				/// string
+				const std::string& str = std::get<std::string>(value);
+				MonoString* monoStr = mono_string_new(mono_domain_get(), str.c_str());
+				mono_field_set_value(safeObj, field, monoStr);
+			}
+		}
+
+	}
+
+}
+
 size_t Variables::AddGroup(const std::string& _name) {
 
 	/// 同じ名前のグループがあるかチェック
@@ -323,6 +392,10 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
+}
+
+const Variables::Var& Variables::Group::Get(const std::string& _name) const {
+	return variables[keyMap_.at(_name)];
 }
 
 bool Variables::Group::Has(const std::string& _name) const {
