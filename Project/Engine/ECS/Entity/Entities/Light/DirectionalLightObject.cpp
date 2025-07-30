@@ -13,11 +13,11 @@ void DirectionalLightObject::Initialize() {
 
 void DirectionalLightObject::Update() {
 
-	Vector3& direction = variables_->Get<Vector3>("direction");
-	direction = Vector3::Normalize(direction);
+	//Vector3& direction = variables_->Get<Vector3>("direction");
+	//direction = Vector3::Normalize(direction);
 
-	/// DirectionalLightの更新
-	if (DirectionalLight* directionalLight = GetComponent<DirectionalLight>()) {
-		directionalLight->SetDirection(direction);
-	}
+	///// DirectionalLightの更新
+	//if (DirectionalLight* directionalLight = GetComponent<DirectionalLight>()) {
+	//	directionalLight->SetDirection(direction);
+	//}
 }
