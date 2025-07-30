@@ -210,17 +210,24 @@ void TerrainEditor::EditTerrainVertex() {
 
 		Gizmo::DrawWireSphere(
 			Vector3(closestPoint->position.x, closestPoint->position.y, closestPoint->position.z) / closestPoint->position.w,
-			editRadius_
+			editRadius_, Vector4::kGreen
 		);
 
 	}
 
 
 	/// 衝突している点を上げる
-	if (Input::PressMouse(Mouse::Left) || Input::PressKey(DIK_RETURN)) {
+	if (Input::PressMouse(Mouse::Left)) {
+		float value = 0.1f;
+
+		/// Shiftキーが押されている場合は下げる
+		if (Input::PressKey(DIK_LSHIFT)) {
+			value *= -1.0f;
+		}
+
 		for (auto& point : editedVertices_) {
 			Vector4& v = point.second->position;
-			v.y += 0.1f;
+			v.y += value;
 		}
 		RecalculateNormal();
 	}
