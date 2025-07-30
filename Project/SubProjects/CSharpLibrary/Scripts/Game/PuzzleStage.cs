@@ -58,7 +58,113 @@ public class PuzzleStage : MonoBehavior {
 		Game();
 	}
 
+	
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	/// 初期化に使用する関数
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
 
+	private void PlayerDeploy() {
+		/* ----- プレイヤーの配置 ----- */
+
+		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		if (!mapchipScript) {
+			return;
+		}
+
+		Stage.Player startPlayer = mapchipScript.GetPlayer();
+		Vector2Int playerAddress = new Vector2Int(startPlayer.column, startPlayer.row);
+
+		activePlayer_ = EntityCollection.CreateEntity("PuzzlePlayer");
+		if (activePlayer_ != null) {
+			activePlayer_.parent = this.entity; // プレイヤーをPuzzleの子にする
+			if (activePlayer_.parent != null) {
+				Debug.LogInfo("player parent setting");
+			} else {
+				Debug.Log("player parent not set");
+			}
+
+			/// 座標設定
+			Transform t = activePlayer_.transform;
+			t.position = new Vector3(playerAddress.x * blockData_.blockSpace, 0f,
+				playerAddress.y * blockData_.blockSpace);
+
+			/// スクリプトの値設定
+			PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+			if (puzzlePlayer != null) {
+				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
+				puzzlePlayer.blockData.height = blockData_.height; // プレイヤーの高さを設定
+				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
+
+				if (startPlayer.type == (int)BlockType.Black) {
+					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_BLACK;
+				} else {
+					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_WHITE;
+				}
+			}
+		}
+	}
+
+	private void BlockDeploy() {
+		/* ----- ブロックの配置を行う ----- */
+
+		Debug.Log("----- BlockDeployed. -----");
+
+
+		blocks_ = new List<Entity>();
+
+		for (int r = 0; r < mapData_.Count; r++) {
+			for (int c = 0; c < mapData_[r].Count; c++) {
+				Debug.Log("map[" + r + "][" + c + "] = " + mapData_[r][c]);
+
+				/// マップデータがブロックでは無ければ配置しない
+				Entity block = null;
+				int mapValue = mapData_[r][c];
+				if (CheckIsBlock(mapValue)) {
+					block = EntityCollection.CreateEntity("Block");
+				} else if (CheckIsGoal(mapValue)) {
+					block = EntityCollection.CreateEntity("Goal");
+				}
+
+				if (block == null) {
+					continue;
+				}
+
+				/// blockの初期化
+				Block blockScript = block.GetScript<Block>();
+				if (blockScript) {
+					blockScript.blockData.address = new Vector2Int(c, r);
+					blockScript.blockData.height = blockData_.height;
+					blockScript.blockData.blockSpace = blockData_.blockSpace;
+					blockScript.blockData.mapValue = mapValue;
+				}
+
+				block.parent = this.entity;
+				Transform t = block.transform;
+
+				/// blockのindexで位置を決定
+				t.position = new Vector3(c, blockData_.height, r);
+
+				MeshRenderer mr = block.GetComponent<MeshRenderer>();
+				if (mr != null) {
+					/// 色を黒か白に設定
+					Vector4 color = Vector4.one * mapData_[r][c]; // 1なら白、0なら黒
+					color.w = 1f;
+
+					mr.color = color;
+				}
+
+				blocks_.Add(block); // ブロックをリストに追加
+			}
+		}
+
+		Debug.Log("----- BlockDeployed. ended -----");
+	}
+
+
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	/// 更新に使用する関数
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	
 	void Game() {
 		int width = mapData_[0].Count;
 		int height = mapData_.Count;
@@ -175,105 +281,6 @@ public class PuzzleStage : MonoBehavior {
 			moveDir_ = Vector2Int.zero;
 		}
 	}
-
-
-	private void PlayerDeploy() {
-		/* ----- プレイヤーの配置 ----- */
-
-		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
-		if (!mapchipScript) {
-			return;
-		}
-
-		Stage.Player startPlayer = mapchipScript.GetPlayer();
-		Vector2Int playerAddress = new Vector2Int(startPlayer.column, startPlayer.row);
-
-		activePlayer_ = EntityCollection.CreateEntity("PuzzlePlayer");
-		if (activePlayer_ != null) {
-			activePlayer_.parent = this.entity; // プレイヤーをPuzzleの子にする
-			if (activePlayer_.parent != null) {
-				Debug.LogInfo("player parent setting");
-			} else {
-				Debug.Log("player parent not set");
-			}
-
-			/// 座標設定
-			Transform t = activePlayer_.transform;
-			t.position = new Vector3(playerAddress.x * blockData_.blockSpace, 0f,
-				playerAddress.y * blockData_.blockSpace);
-
-			/// スクリプトの値設定
-			PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-			if (puzzlePlayer != null) {
-				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
-				puzzlePlayer.blockData.height = blockData_.height; // プレイヤーの高さを設定
-				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
-
-				if (startPlayer.type == (int)BlockType.Black) {
-					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_BLACK;
-				} else {
-					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_WHITE;
-				}
-			}
-		}
-	}
-
-	private void BlockDeploy() {
-		/* ----- ブロックの配置を行う ----- */
-
-		Debug.Log("----- BlockDeployed. -----");
-
-
-		blocks_ = new List<Entity>();
-
-		for (int r = 0; r < mapData_.Count; r++) {
-			for (int c = 0; c < mapData_[r].Count; c++) {
-				Debug.Log("map[" + r + "][" + c + "] = " + mapData_[r][c]);
-
-				/// マップデータがブロックでは無ければ配置しない
-				Entity block = null;
-				int mapValue = mapData_[r][c];
-				if (CheckIsBlock(mapValue)) {
-					block = EntityCollection.CreateEntity("Block");
-				} else if (CheckIsGoal(mapValue)) {
-					block = EntityCollection.CreateEntity("Goal");
-				}
-
-				if (block == null) {
-					continue;
-				}
-
-				/// blockの初期化
-				Block blockScript = block.GetScript<Block>();
-				if (blockScript) {
-					blockScript.blockData.address = new Vector2Int(c, r);
-					blockScript.blockData.height = blockData_.height;
-					blockScript.blockData.blockSpace = blockData_.blockSpace;
-					blockScript.blockData.mapValue = mapValue;
-				}
-
-				block.parent = this.entity;
-				Transform t = block.transform;
-
-				/// blockのindexで位置を決定
-				t.position = new Vector3(c, blockData_.height, r);
-
-				MeshRenderer mr = block.GetComponent<MeshRenderer>();
-				if (mr != null) {
-					/// 色を黒か白に設定
-					Vector4 color = Vector4.one * mapData_[r][c]; // 1なら白、0なら黒
-					color.w = 1f;
-
-					mr.color = color;
-				}
-
-				blocks_.Add(block); // ブロックをリストに追加
-			}
-		}
-
-		Debug.Log("----- BlockDeployed. ended -----");
-	}
-
 
 	/// <summary>
 	/// プレイヤーが移動可能かどうかをチェックする
