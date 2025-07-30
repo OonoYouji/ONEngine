@@ -87,7 +87,7 @@ void MonoScriptEngine::Initialize() {
 
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 	// JIT初期化
-	domain_ = mono_jit_init("MyDomain");
+	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::LogError("Failed to initialize Mono JIT");
 		return;

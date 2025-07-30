@@ -27,9 +27,9 @@
         {
             "color": {
                 "w": 1.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 0.20000000298023224,
+                "y": 0.20000000298023224,
+                "z": 0.20000000298023224
             },
             "enable": 1,
             "meshPath": "./Packages/Models/primitive/cube.obj",
@@ -38,11 +38,13 @@
         },
         {
             "enable": 1,
-            "scriptName": [],
+            "scriptName": [
+                "Block"
+            ],
             "type": "Script"
         }
     ],
-    "id": -3,
+    "id": -7,
     "name": "Block",
     "parent": null,
     "prefabName": "Block.prefab"

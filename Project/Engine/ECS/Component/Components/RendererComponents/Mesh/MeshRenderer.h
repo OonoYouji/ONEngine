@@ -53,6 +53,8 @@ public:
 	/// @param _flags ポストエフェクトのフラグ
 	void SetPostEffectFlags(uint32_t _flags);
 
+	void SetMaterialEntityId();
+
 	/// @brief 描画するmeshの file pathを取得
 	/// @return .slnからの相対パス
 	const std::string& GetMeshPath() const;

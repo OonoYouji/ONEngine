@@ -34,8 +34,20 @@ struct Mathf {
 		return (float)System.Math.Abs(f);
 	}
 
+	static public int Abs(int f) {
+		return (int)System.Math.Abs(f);
+	}
+
 	static public float Sqrt(float f) {
 		return (float)System.Math.Sqrt(f);
+	}
+
+	static public float Pow(float f, float p) {
+		return  (float)System.Math.Pow(f, p);
+	}
+
+	static public int Pow(int f, float p) {
+		return (int)System.Math.Pow(f, p);
 	}
 
 	/// --------------------------------------------
@@ -70,10 +82,23 @@ struct Mathf {
 		}
 	}
 
+	static public int Sign(int value) {
+		if (value < 0) {
+			return -1;
+		} else if (value > 0) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
 	static public float CopySign(float value, float sign) {
 		return Mathf.Abs(value) * Mathf.Sign(sign);
 	}
 
+	static public int GetDigit(int number, int digit) {
+		return Mathf.Abs((number / Mathf.Pow(10, digit - 1)) % 10);
+	}
 
 
 	/// --------------------------------------------

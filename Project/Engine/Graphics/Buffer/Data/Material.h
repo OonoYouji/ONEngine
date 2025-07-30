@@ -17,6 +17,7 @@ enum PostEffectFlags_ {
 
 
 struct Material {
-	uint32_t postEffectFlags; ///< ポストエフェクトのフラグ
 	Vector4  color; ///< 色
+	uint32_t postEffectFlags; ///< ポストエフェクトのフラグ
+	int32_t  entityId;
 };

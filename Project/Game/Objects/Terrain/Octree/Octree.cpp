@@ -103,7 +103,7 @@ void TerrainQuadTree::QuerySphere(const Vector3& _center, float _radius, std::ve
 
 			Gizmo::DrawWireSphere(
 				Vector3(v.x, v.y, v.z), 0.5f,
-				Color::kGreen
+				Color::kRed
 			);
 		}
 	}

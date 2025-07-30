@@ -607,18 +607,18 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 }
 
 void ImGuiManager::Update() {
-	ImGui::NewFrame();
-	ImGuizmo::BeginFrame();
-
-	ImGuiIO& io = ImGui::GetIO();
-
-	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
-	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
 
 	UpdateMousePosition(
 		windowManager_->GetMainWindow()->GetHwnd(),
 		EngineConfig::kWindowSize
 	);
+
+	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
 	io.DeltaTime = Time::UnscaledDeltaTime();
 
 	imGuiWindowCollection_->Update();

@@ -66,6 +66,10 @@ public class MonoBehavior {
 	public virtual void OnCollisionExit(Entity collision) { }
 	public virtual void OnCollisionStay(Entity collision) { }
 
+	
+	public static implicit operator bool(MonoBehavior _monoBehavior) {
+		return _monoBehavior != null;
+	}
 
 
 	[MethodImpl(MethodImplOptions.InternalCall)]

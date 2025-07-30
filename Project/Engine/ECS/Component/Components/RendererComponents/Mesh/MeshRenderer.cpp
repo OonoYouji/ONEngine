@@ -14,6 +14,9 @@ MeshRenderer::MeshRenderer() {
 	SetTexturePath("./Packages/Textures/white.png");
 	material_.color = Vector4::kWhite;
 	material_.postEffectFlags = PostEffectFlags_Lighting;
+	if (GetOwner()) {
+		material_.entityId = GetOwner()->GetId();
+	}
 }
 
 MeshRenderer::~MeshRenderer() {}
@@ -32,6 +35,13 @@ void MeshRenderer::SetColor(const Vector4& _color) {
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
 	material_.postEffectFlags = _flags;
+}
+
+void MeshRenderer::SetMaterialEntityId() {
+	IEntity* owner = GetOwner();
+	if (owner) {
+		material_.entityId = owner->GetId();
+	}
 }
 
 const std::string& MeshRenderer::GetMeshPath() const {
@@ -197,7 +207,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 
 	/// materialの設定
 	const std::string labels[2] = {
-		"Lighting", 
+		"Lighting",
 		"Grayscale",
 	};
 

@@ -147,6 +147,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		for (auto& renderer : renderers) {
 
 			/// materialのセット
+			renderer->SetMaterialEntityId();
 			materialBuffer->SetMappedData(
 				transformIndex_,
 				renderer->GetMaterial()
