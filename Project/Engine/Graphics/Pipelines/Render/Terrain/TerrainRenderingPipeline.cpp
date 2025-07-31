@@ -90,12 +90,15 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	/// 地形を取得
 	Terrain* prevTerrain_ = pTerrain_;
 	pTerrain_ = nullptr;
-	for (auto& entity : _entities) {
-		if (Terrain* terrain = entity->GetComponent<Terrain>()) {
+
+	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	/// 一旦先頭にあるTerrainのみ描画する
+	for (auto& terrain : terrainArray->GetUsedComponents()) {
+		if (terrain->GetOwner()) {
 			pTerrain_ = terrain;
-			break; /// 最初に見つかったterrainを使用
 		}
 	}
+
 
 	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {

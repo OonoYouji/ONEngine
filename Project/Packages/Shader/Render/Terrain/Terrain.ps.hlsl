@@ -38,7 +38,7 @@ PSOutput main(VSOutput input) {
 	
 	output.normal = float4(input.normal, 1);
 	output.wPosition = input.wPosition;
-	output.flags = float4(material.postEffectFlags, material.entityId, 0, 0);
+	output.flags = float4(material.postEffectFlags, material.entityId, 0, 1);
 	
 	return output;
 }

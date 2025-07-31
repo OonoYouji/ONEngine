@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 #include "Engine/Graphics/Resource/ResourceData/Skinning.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン
@@ -44,7 +45,7 @@ private:
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<ConstantBuffer<Vector4>> materialBuffer_;
+	std::unique_ptr<ConstantBuffer<Material>> materialBuffer_;
 	std::unique_ptr<ConstantBuffer<uint32_t>> textureIdBuffer_;
 
 };

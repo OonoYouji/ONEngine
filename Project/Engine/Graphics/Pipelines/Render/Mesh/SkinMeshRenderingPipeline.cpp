@@ -79,7 +79,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		/// Buffer
 
 		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
-		materialBuffer_ = std::make_unique<ConstantBuffer<Vector4>>();
+		materialBuffer_ = std::make_unique<ConstantBuffer<Material>>();
 		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
 
 		transformBuffer_->Create(_dxManager->GetDxDevice());
@@ -137,7 +137,7 @@ void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const st
 		transformBuffer_->SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_->SetMappedData(comp->GetColor());
+		materialBuffer_->SetMappedData(Material(comp->GetColor(), 1, comp->GetOwner()->GetId()));
 
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
