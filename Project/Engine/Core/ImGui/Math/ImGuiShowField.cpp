@@ -47,9 +47,7 @@ void CSGui::ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const
 void CSGui::IntField::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
 	int value = 0;
 	mono_field_get_value(_obj, _field, &value);
-
 	if (ImGui::DragInt(_name, &value)) {
-
 		/// 編集した値をセットする
 		mono_field_set_value(_obj, _field, &value);
 	}

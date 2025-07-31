@@ -15,11 +15,7 @@ public class Player : MonoBehavior {
 	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
 	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
 	Entity camera;
-
-	[SerializeField] private Vector2 vec2;
-	[SerializeField] private Vector3 vec3;
-	[SerializeField] private Vector4 vec4;
-
+	
 	public override void Initialize() {
 
 		if(entity == null) {
@@ -48,7 +44,6 @@ public class Player : MonoBehavior {
 
 		CameraFollow();
 		transform.scale = Vector3.one / 100f; // スケールを小さくする
-
 
 	}
 

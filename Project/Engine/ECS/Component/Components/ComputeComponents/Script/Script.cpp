@@ -152,14 +152,6 @@ bool Script::GetEnable(const std::string& _scriptName) {
 }
 
 void Script::CallAwakeMethodAll() {
-	/// Variables Componentから値を取得して、スクリプトに適用する
-	Variables* variables = GetOwner()->GetComponent<Variables>();
-	if (variables) {
-		variables->SetScriptVariables();
-	} else {
-		Console::LogWarning("Script::CallAwakeMethodAll Variables component not found.");
-	}
-
 	for (auto& script : scriptDataList_) {
 		if (!script.enable) {
 			Console::Log("Script::CallAwakeMethodAll Script is disabled");
@@ -173,6 +165,13 @@ void Script::CallAwakeMethodAll() {
 			script.isCalledAwake = true;
 		}
 
+		/// Variables Componentから値を取得して、スクリプトに適用する
+		Variables* variables = GetOwner()->GetComponent<Variables>();
+		if (variables) {
+			variables->SetScriptVariables(script.scriptName);
+		} else {
+			Console::LogWarning("Script::CallAwakeMethodAll Variables component not found.");
+		}
 
 		MonoObject* safeObj = nullptr;
 		if (script.gcHandle != 0) {
@@ -359,7 +358,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 					MonoType* fieldType = mono_field_get_type(field);
 					int type = mono_type_get_type(fieldType);
 
-					ShowFiled(type, script.instance, field, fieldName);
+					ShowFiled(type, safeObj, field, fieldName);
 				}
 
 			}

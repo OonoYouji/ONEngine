@@ -225,7 +225,7 @@ void Variables::SaveJson(const std::string& _path) {
 	ofs << json.dump(4);
 }
 
-void Variables::SetScriptVariables() {
+void Variables::SetScriptVariables(const std::string& _scriptName) {
 	/* ----- スクリプトに対して変数の値を適用する ----- */
 
 	IEntity* owner = GetOwner();
@@ -243,6 +243,10 @@ void Variables::SetScriptVariables() {
 
 	/// 適用の処理
 	for (auto& data : script->GetScriptDataList()) {
+		///!< 引数のスクリプト名と一致するかチェック
+		if (data.scriptName != _scriptName) {
+			continue;
+		}
 
 		/// 対象のスクリプトのデータを持っているかチェック
 		if (!HasGroup(data.scriptName)) {
@@ -288,8 +292,17 @@ void Variables::SetScriptVariables() {
 				MonoString* monoStr = mono_string_new(mono_domain_get(), str.c_str());
 				mono_field_set_value(safeObj, field, monoStr);
 			} else if (std::holds_alternative<Vector2>(value)) {
+				/// Vector2
+				Vector2 vec2 = std::get<Vector2>(value);
+				mono_field_set_value(safeObj, field, &vec2);
 			} else if (std::holds_alternative<Vector3>(value)) {
+				/// Vector3
+				Vector3 vec3 = std::get<Vector3>(value);
+				mono_field_set_value(safeObj, field, &vec3);
 			} else if (std::holds_alternative<Vector4>(value)) {
+				/// Vector4
+				Vector4 vec4 = std::get<Vector4>(value);
+				mono_field_set_value(safeObj, field, &vec4);
 			}
 		}
 

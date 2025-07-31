@@ -83,7 +83,7 @@ public:
 	/// @param _path 保存するjsonファイルのパス
 	void SaveJson(const std::string& _path);
 
-	void SetScriptVariables();
+	void SetScriptVariables(const std::string& _scriptName);
 
 	size_t AddGroup(const std::string& _name);
 
