@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
 
-#include "Game/Objects/Terrain/Terrain.h"
+//#include "Game/Objects/Terrain/Terrain.h"
 
 
 /// ////////////////////////////////////
@@ -50,13 +50,13 @@ private:
 	/// ====================================
 
 	class GraphicsResourceCollection* pResourceCollection_;
-	class Terrain* pTerrain_ = nullptr;
+	//class Terrain* pTerrain_ = nullptr;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 	ConstantBuffer<Material> materialBuffer_;
 
 	IndexBuffer indexBuffer_;
-	VertexBuffer<TerrainVertex> vertexBuffer_;
+	//VertexBuffer<TerrainVertex> vertexBuffer_;
 
 
 };

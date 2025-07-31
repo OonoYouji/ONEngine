@@ -98,12 +98,6 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
-    <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp" />
@@ -174,7 +168,6 @@
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
@@ -268,13 +261,6 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
-    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
-    <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
-    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
-    <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
-    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
-    <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
-    <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Assert.h" />
@@ -336,7 +322,6 @@
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
-    <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
     <ClInclude Include="Engine\ECS\Entity\Entities\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />

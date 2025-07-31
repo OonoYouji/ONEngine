@@ -77,7 +77,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 		transformBuffer_.Create(_dxManager->GetDxDevice());
 		materialBuffer_.Create(_dxManager->GetDxDevice());
-		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
+		//vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
 		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
@@ -85,82 +85,82 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
-	/// 地形を取得
-	Terrain* prevTerrain_ = pTerrain_;
-	pTerrain_ = nullptr;
-	for (auto& entity : _entities) {
-		if (entity->GetName() == "Terrain") {
-			pTerrain_ = static_cast<Terrain*>(entity);
-			break;
-		}
-	}
+	///// 地形を取得
+	//Terrain* prevTerrain_ = pTerrain_;
+	//pTerrain_ = nullptr;
+	//for (auto& entity : _entities) {
+	//	if (entity->GetName() == "Terrain") {
+	//		pTerrain_ = static_cast<Terrain*>(entity);
+	//		break;
+	//	}
+	//}
 
-	/// 見つかんなかったらreturn
-	if (pTerrain_ == nullptr) {
-		return;
-	}
+	///// 見つかんなかったらreturn
+	//if (pTerrain_ == nullptr) {
+	//	return;
+	//}
 
-	/// prevと違うterrainならmapする
-	if (prevTerrain_ != pTerrain_) {
-		indexBuffer_.SetIndices(pTerrain_->GetIndices());
-		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
+	///// prevと違うterrainならmapする
+	//if (prevTerrain_ != pTerrain_) {
+	//	indexBuffer_.SetIndices(pTerrain_->GetIndices());
+	//	vertexBuffer_.SetVertices(pTerrain_->GetVertices());
 
-		indexBuffer_.Map();
-		vertexBuffer_.Map();
-	}
-
-
-	/// value setting
-	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->matWorld);
-
-	/// 編集した頂点を更新する
-	if (!pTerrain_->GetEditVertices().empty()) {
-		for (auto& editV : pTerrain_->GetEditVertices()) {
-			vertexBuffer_.SetVertex(editV.first, *editV.second);
-		}
-		pTerrain_->ClearEditVertices();
-	}
+	//	indexBuffer_.Map();
+	//	vertexBuffer_.Map();
+	//}
 
 
-	/// bufferの値を更新
-	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->GetMatWorld());
-	materialBuffer_.SetMappedData(
-		Material(Vector4::kWhite, 1, pTerrain_->GetId())
-	);
+	///// value setting
+	//transformBuffer_.SetMappedData(pTerrain_->GetTransform()->matWorld);
+
+	///// 編集した頂点を更新する
+	//if (!pTerrain_->GetEditVertices().empty()) {
+	//	for (auto& editV : pTerrain_->GetEditVertices()) {
+	//		vertexBuffer_.SetVertex(editV.first, *editV.second);
+	//	}
+	//	pTerrain_->ClearEditVertices();
+	//}
 
 
-	/// 描画する
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	auto command = _dxCommand->GetCommandList();
-
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
-	transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
-	materialBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_MATERIAL);
-
-	/// texs
-	const auto& textures = pResourceCollection_->GetTextures();
-
-	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
-		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
-		size_t index = pResourceCollection_->GetTextureIndex(path);
-		command->SetGraphicsRootDescriptorTable(
-			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
-			textures[index]->GetSRVGPUHandle()
-		);
-	}
+	///// bufferの値を更新
+	//transformBuffer_.SetMappedData(pTerrain_->GetTransform()->GetMatWorld());
+	//materialBuffer_.SetMappedData(
+	//	Material(Vector4::kWhite, 1, pTerrain_->GetId())
+	//);
 
 
+	///// 描画する
+	//pipeline_->SetPipelineStateForCommandList(_dxCommand);
+	//auto command = _dxCommand->GetCommandList();
 
-	/// vbv ibv setting
-	vertexBuffer_.BindForCommandList(command);
-	indexBuffer_.BindForCommandList(command);
+	//_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
+	//transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
+	//materialBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_MATERIAL);
 
-	command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	///// texs
+	//const auto& textures = pResourceCollection_->GetTextures();
 
-	command->DrawIndexedInstanced(
-		static_cast<UINT>(indexBuffer_.GetIndices().size()),
-		1, 0, 0, 0
-	);
+	//for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
+	//	const std::string& path = pTerrain_->GetSplatTexPaths()[i];
+	//	size_t index = pResourceCollection_->GetTextureIndex(path);
+	//	command->SetGraphicsRootDescriptorTable(
+	//		static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
+	//		textures[index]->GetSRVGPUHandle()
+	//	);
+	//}
+
+
+
+	///// vbv ibv setting
+	//vertexBuffer_.BindForCommandList(command);
+	//indexBuffer_.BindForCommandList(command);
+
+	//command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//command->DrawIndexedInstanced(
+	//	static_cast<UINT>(indexBuffer_.GetIndices().size()),
+	//	1, 0, 0, 0
+	//);
 
 
 }
