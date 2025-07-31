@@ -29,7 +29,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
 	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
-	RegisterComponent<Variables>([&](IComponent* _component) { VariablesDebug(static_cast<Variables*>(_component)); });
+	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
 

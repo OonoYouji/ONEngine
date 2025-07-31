@@ -103,6 +103,9 @@ void SceneIO::SaveScene(const std::string& _filename) {
 			continue;
 		}
 
+		if (Variables* var = entity->GetComponent<Variables>()) {
+			var->SaveJson("./Assets/Jsons/" + entity->GetName() + ".json");
+		}
 
 		nlohmann::json entityJson = EntityJsonConverter::ToJson(entity.get());
 		if (entityJson.empty()) {
