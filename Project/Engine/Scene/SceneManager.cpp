@@ -50,47 +50,38 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 }
 
 void SceneManager::Update() {
-
 	/// 次のシーンが設定されていたら、シーンを切り替える
-	if (nextScene_ != nullptr) {
+	if (nextScene_.size()) {
 		MoveNextToCurrentScene(false);
 	}
-
-	/// 現在のシーンの更新処理
-	currentScene_->Update();
-
 }
 
 void SceneManager::SetNextScene(const std::string& _sceneName) {
-	nextScene_ = sceneFactory_->CreateScene(_sceneName, pEntityComponentSystem_);
+	nextScene_ = _sceneName;
 }
 
 void SceneManager::SaveCurrentScene() {
-	if (currentScene_ == nullptr) {
-		Console::Log("No current scene to save.");
+	if (currentScene_.empty()) {
+		Console::LogError("No current scene to save.");
 		return;
 	}
 
-	sceneIO_->Output(currentScene_.get());
+	sceneIO_->Output(currentScene_);
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
-	if (currentScene_ == nullptr) {
-		Console::Log("No current scene to save temporarily.");
+	if (currentScene_.empty()) {
+		Console::LogError("No current scene to save temporarily.");
 		return;
 	}
 
-	sceneIO_->OutputTemporary(currentScene_.get());
-}
-
-void SceneManager::StartCurrentScene() {
-
+	sceneIO_->OutputTemporary(currentScene_);
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
 	SetNextScene(_sceneName);
-	if (nextScene_ == nullptr) {
-		Console::Log("Failed to load scene: " + _sceneName);
+	if (nextScene_.empty()) {
+		Console::LogError("Failed to load scene: " + _sceneName);
 		return;
 	}
 
@@ -98,14 +89,14 @@ void SceneManager::LoadScene(const std::string& _sceneName) {
 }
 
 void SceneManager::ReloadScene(bool _isTemporary) {
-	if (currentScene_ == nullptr) {
+	if (currentScene_.empty()) {
 		Console::LogError("No current scene to reload.");
 		return;
 	}
 	/// 現在のシーンを再読み込み
-	SetNextScene(currentScene_->GetSceneName());
-	if (nextScene_ == nullptr) {
-		Console::LogError("Failed to reload scene: " + currentScene_->GetSceneName());
+	SetNextScene(currentScene_);
+	if (nextScene_.empty()) {
+		Console::LogError("Failed to reload scene: " + currentScene_);
 		return;
 	}
 	MoveNextToCurrentScene(_isTemporary);
@@ -113,26 +104,16 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	currentScene_ = std::move(nextScene_);
-
 	pEntityComponentSystem_->RemoveEntityAll();
-
-	/// resourceの読み込み、解放をここで行う
-	pGraphicsResourceCollection_->UnloadResources(currentScene_->unloadResourcePaths_);
-	pGraphicsResourceCollection_->LoadResources(currentScene_->loadResourcePaths_);
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_.get());
+		sceneIO_->InputTemporary(currentScene_);
 	} else {
-		sceneIO_->Input(currentScene_.get());
+		sceneIO_->Input(currentScene_);
 	}
 
-	currentScene_->SetEntityComponentSystem(pEntityComponentSystem_);
-	currentScene_->SetSceneManagerPtr(this);
-	currentScene_->Initialize();
 	Time::ResetTime();
-
-	nextScene_ = nullptr;
 }
 
 
@@ -141,10 +122,7 @@ void SceneManager::SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory
 }
 
 const std::string& SceneManager::GetCurrentSceneName() const {
-	if (currentScene_) {
-		return currentScene_->GetSceneName();
-	}
-	return "empty";
+	return currentScene_;
 }
 
 
