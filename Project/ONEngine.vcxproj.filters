@@ -165,6 +165,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -327,6 +328,8 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainVertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
