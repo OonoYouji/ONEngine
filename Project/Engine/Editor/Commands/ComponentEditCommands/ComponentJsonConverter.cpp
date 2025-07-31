@@ -5,6 +5,8 @@
 #include <typeindex>
 #include <functional>
 
+/// engine
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 
 /// //////////////////////////////////////////////////
@@ -24,6 +26,7 @@ namespace {
 			Register<AudioSource>();
 			Register<Effect>();
 			Register<Script>();
+			Register<Terrain>();
 
 			/// renderer
 			Register<SpriteRenderer>();

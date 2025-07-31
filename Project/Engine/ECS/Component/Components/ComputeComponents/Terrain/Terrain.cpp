@@ -85,3 +85,16 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
 
 
 }
+
+void from_json(const nlohmann::json& _j, Terrain& _t) {
+	if (_j.contains("enable")) {
+		_t.enable = _j.at("enable").get<int>();
+	}
+}
+
+void to_json(nlohmann::json& _j, const Terrain& _t) {
+	_j = nlohmann::json{
+		{ "type", "Terrain" },
+		{ "enable", _t.enable },
+	};
+}

@@ -5,6 +5,9 @@
 #include <array>
 #include <span>
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Utility.h"
@@ -101,3 +104,8 @@ public:
 namespace COMP_DEBUG {
 	void TerrainDebug(Terrain* _terrain);
 } // namespace COMP_DEBUG
+
+
+
+void from_json(const nlohmann::json& _j, Terrain& _t);
+void to_json(nlohmann::json& _j, const Terrain& _t);
