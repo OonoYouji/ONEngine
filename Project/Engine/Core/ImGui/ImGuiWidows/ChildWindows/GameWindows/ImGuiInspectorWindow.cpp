@@ -9,6 +9,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "../../../Math/ImGuiMath.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
@@ -32,6 +33,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
+	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });

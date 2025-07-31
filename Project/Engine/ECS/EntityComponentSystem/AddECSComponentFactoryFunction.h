@@ -2,6 +2,7 @@
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
 inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
@@ -11,6 +12,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<AudioSource>();
 	_compCollection->RegisterComponentFactory<Variables>();
 	_compCollection->RegisterComponentFactory<Effect>();
+	_compCollection->RegisterComponentFactory<Terrain>();
 
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();

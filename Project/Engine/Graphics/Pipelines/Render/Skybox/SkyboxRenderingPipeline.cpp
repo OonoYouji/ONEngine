@@ -115,7 +115,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	Skybox* skybox = nullptr;
 	for (auto& entity : _entities) {

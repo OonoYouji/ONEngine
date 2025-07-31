@@ -41,7 +41,7 @@ public:
 	/// @brief 描画処理
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	void Draw(const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
 
 
 private:

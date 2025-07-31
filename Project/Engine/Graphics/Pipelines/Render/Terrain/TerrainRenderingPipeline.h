@@ -8,9 +8,7 @@
 #include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
-
-//#include "Game/Objects/Terrain/Terrain.h"
-
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 /// ////////////////////////////////////
 /// Terrainの描画pipeline
@@ -42,7 +40,7 @@ public:
 	~TerrainRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Draw(const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ====================================
@@ -50,13 +48,13 @@ private:
 	/// ====================================
 
 	class GraphicsResourceCollection* pResourceCollection_;
-	//class Terrain* pTerrain_ = nullptr;
+	Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 	ConstantBuffer<Material> materialBuffer_;
 
 	IndexBuffer indexBuffer_;
-	//VertexBuffer<TerrainVertex> vertexBuffer_;
+	VertexBuffer<TerrainVertex> vertexBuffer_;
 
 
 };

@@ -16,7 +16,7 @@ public:
 	~CopyImageRenderingPipeline() = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Draw(const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ===================================================

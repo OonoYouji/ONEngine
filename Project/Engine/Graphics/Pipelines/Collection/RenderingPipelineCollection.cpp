@@ -14,7 +14,6 @@
 #include "../Render/Primitive/Line3DRenderingPipeline.h"
 #include "../Render/Sprite/SpriteRenderingPipeline.h"
 #include "../Render/Gizmo/GizmoRenderingPipeline.h"
-#include "../Render/MeshShaderTest/MeshShaderTest.h"
 #include "../Render/Skybox/SkyboxRenderingPipeline.h"
 #include "../Render/Terrain/TerrainRenderingPipeline.h"
 
@@ -68,7 +67,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(pEntityComponentSystem_, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
@@ -76,7 +75,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 
 	if (_2dCamera) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(pEntityComponentSystem_, entities, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
@@ -95,7 +94,7 @@ void RenderingPipelineCollection::DrawSelectedPrefab(Camera* _3dCamera, Camera* 
 
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(pEntityComponentSystem_, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
@@ -103,7 +102,7 @@ void RenderingPipelineCollection::DrawSelectedPrefab(Camera* _3dCamera, Camera* 
 
 	if (_2dCamera) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(pEntityComponentSystem_, entities, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
