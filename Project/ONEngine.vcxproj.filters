@@ -115,7 +115,6 @@
     <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
@@ -168,6 +167,7 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -277,7 +277,6 @@
     <ClInclude Include="Engine\ECS\Entity\Entities\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
@@ -334,6 +333,7 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainVertex.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

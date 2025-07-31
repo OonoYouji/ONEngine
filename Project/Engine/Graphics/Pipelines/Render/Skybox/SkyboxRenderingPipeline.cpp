@@ -4,8 +4,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Skybox/Skybox.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 
 
 SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -117,23 +117,29 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
-	Skybox* skybox = nullptr;
-	for (auto& entity : _entities) {
-		if (entity->GetName() == "Skybox") {
-			skybox = static_cast<Skybox*>(entity);
+	Skybox* pSkybox = nullptr;
+	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
+	if (!skyboxArray) {
+		return;
+	}
+
+	for (auto& skybox : skyboxArray->GetUsedComponents()) {
+		if (skybox && skybox->GetOwner()) {
+			pSkybox = skybox;
 			break;
 		}
 	}
 
-	if (!skybox) {
+
+	if (!pSkybox) {
 		return;
 	}
 
 	auto& textures = pResourceCollection_->GetTextures();
-	size_t texIndex = pResourceCollection_->GetTextureIndex(skybox->GetTexturePath());
+	size_t texIndex = pResourceCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());
 
 	texIndex_.SetMappedData(texIndex);
-	transformMatrix_.SetMappedData(skybox->GetTransform()->GetMatWorld());
+	transformMatrix_.SetMappedData(pSkybox->GetOwner()->GetTransform()->GetMatWorld());
 
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -150,8 +156,7 @@ void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 
 	commandList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
-		1,
-		0, 0, 0
+		1, 0, 0, 0
 	);
 
 
