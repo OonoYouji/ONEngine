@@ -50,20 +50,25 @@ void Variables::LoadJson(const std::string& _path) {
 		for (auto& [varKey, varValue] : groupValue.items()) {
 			/// 変数の型をチェックして追加
 			if (varValue.is_number_integer()) {
+				/// int
 				group.Add(varKey, varValue.get<int>());
 			} else if (varValue.is_number_float()) {
+				/// float
 				group.Add(varKey, varValue.get<float>());
 			} else if (varValue.is_boolean()) {
+				/// bool
 				group.Add(varKey, varValue.get<bool>());
 			} else if (varValue.is_string()) {
+				/// string
 				group.Add(varKey, varValue.get<std::string>());
 			} else if (varValue.is_array() && varValue.size() == 2) {
+
 				if (varValue[0].is_number_float() && varValue[1].is_number_float()) {
-					group.Add(varKey, Vec2(varValue[0].get<float>(), varValue[1].get<float>()));
+					group.Add(varKey, Vector2(varValue[0].get<float>(), varValue[1].get<float>()));
 				} else if (varValue[0].is_number_float() && varValue[1].is_number_float()) {
-					group.Add(varKey, Vec3(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>()));
+					group.Add(varKey, Vector3(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>()));
 				} else if (varValue[0].is_number_float() && varValue[1].is_number_float() && varValue[2].is_number_float() && varValue[3].is_number_float()) {
-					group.Add(varKey, Vec4(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>(), varValue[3].get<float>()));
+					group.Add(varKey, Vector4(varValue[0].get<float>(), varValue[1].get<float>(), varValue[2].get<float>(), varValue[3].get<float>()));
 				}
 			}
 		}
@@ -120,33 +125,59 @@ void Variables::SaveJson(const std::string& _path) {
 				int type = mono_type_get_type(fieldType);
 
 				switch (type) {
-				case MONO_TYPE_I4:
+				case MONO_TYPE_I4: /// int
 				{
 					int value = 0;
 					mono_field_get_value(safeObj, field, &value);
 					group.Add(fieldName, value);
 				}
 				break;
-				case MONO_TYPE_R4:
+				case MONO_TYPE_R4: /// float
 				{
 					float value = 0.0f;
 					mono_field_get_value(safeObj, field, &value);
 					group.Add(fieldName, value);
 				}
 				break;
-				case MONO_TYPE_BOOLEAN:
+				case MONO_TYPE_BOOLEAN: /// bool
 				{
 					bool value = false;
 					mono_field_get_value(safeObj, field, &value);
 					group.Add(fieldName, value);
 				}
 				break;
-				case MONO_TYPE_STRING:
+				case MONO_TYPE_STRING: /// string
 				{
 					MonoString* monoStr = nullptr;
 					mono_field_get_value(safeObj, field, &monoStr);
 					std::string value = mono_string_to_utf8(monoStr);
 					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_VALUETYPE: /// 構造体
+				{
+					MonoClass* fieldClass = mono_class_from_mono_type(fieldType);
+					const char* className = mono_class_get_name(fieldClass);
+
+					if (strcmp(className, "Vector2") == 0) {
+						// Vector2
+						Vector2 vec2;
+						mono_field_get_value(safeObj, field, &vec2);
+						group.Add(fieldName, vec2);
+
+					} else if (strcmp(className, "Vector3") == 0) {
+						// Vector3
+						Vector3 vec3;
+						mono_field_get_value(safeObj, field, &vec3);
+						group.Add(fieldName, vec3);
+
+					} else if (strcmp(className, "Vector4") == 0) {
+						// Vector4
+						Vector4 vec4;
+						mono_field_get_value(safeObj, field, &vec4);
+						group.Add(fieldName, vec4);
+
+					}
 				}
 				break;
 				}
@@ -172,11 +203,11 @@ void Variables::SaveJson(const std::string& _path) {
 					json[groupKey][varKey] = _arg;
 				} else if constexpr (std::is_same_v<T, std::string>) {
 					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vec2>) {
+				} else if constexpr (std::is_same_v<T, Vector2>) {
 					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vec3>) {
+				} else if constexpr (std::is_same_v<T, Vector3>) {
 					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vec4>) {
+				} else if constexpr (std::is_same_v<T, Vector4>) {
 					json[groupKey][varKey] = _arg;
 				}
 				}, groups_[value].variables[varValue]);
@@ -256,6 +287,9 @@ void Variables::SetScriptVariables() {
 				const std::string& str = std::get<std::string>(value);
 				MonoString* monoStr = mono_string_new(mono_domain_get(), str.c_str());
 				mono_field_set_value(safeObj, field, monoStr);
+			} else if (std::holds_alternative<Vector2>(value)) {
+			} else if (std::holds_alternative<Vector3>(value)) {
+			} else if (std::holds_alternative<Vector4>(value)) {
 			}
 		}
 
@@ -307,24 +341,23 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 
 	static std::string variableName;
 
-	{	/// 新規変数の追加
-		if (variableName.capacity() < 128) {
-			variableName.reserve(128);
-		}
+	//{	/// 新規変数の追加
+	//	if (variableName.capacity() < 128) {
+	//		variableName.reserve(128);
+	//	}
 
-		ImGui::SetNextItemWidth(128.0f);
-		ImGuiInputText("##name", &variableName);
+	//	ImGui::SetNextItemWidth(128.0f);
+	//	ImGuiInputText("##name", &variableName);
 
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(80.0f);
-		static int type = 0;
-		ImGui::Combo("##mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
-		ImGui::Spacing();
+	//	ImGui::SameLine();
+	//	ImGui::SetNextItemWidth(80.0f);
+	//	static int type = 0;
+	//	ImGui::Combo("##mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
+	//	ImGui::Spacing();
 
 
-		ImGui::SameLine();
-
-	}
+	//	ImGui::SameLine();
+	//}
 
 	ImGui::SeparatorText("");
 
@@ -338,9 +371,9 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 		//	variables.emplace_back(key, _variables->GetVariables()[index], "##{:p}" + std::to_string(reinterpret_cast<uintptr_t>(&_variables->GetVariables()[index])));
 		//}
 
-		if (variables.empty()) {
-			ImGui::Text("no variables...");
-		}
+		//if (variables.empty()) {
+		//	ImGui::Text("no variables...");
+		//}
 
 
 		for (auto& [name, variable, str] : variables) {

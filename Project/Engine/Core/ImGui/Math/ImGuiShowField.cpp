@@ -118,33 +118,43 @@ void CSGui::StructGui::Draw(MonoObject* _obj, MonoClassField* _field, [[maybe_un
 	}
 
 	/// フィールドドロワーが登録されている場合はそれを使用
-	itr->second->Draw(_obj, _field, name);
+	itr->second->Draw(_obj, _field, _name);
 }
 
 void CSGui::StructGui::Register() {
 	/// フィールドドロワーを登録する
 	fieldDrawers["Vector2"] = std::make_unique<Vector2Field>();
+	fieldDrawers["Vector3"] = std::make_unique<Vector3Field>();
+	fieldDrawers["Vector4"] = std::make_unique<Vector4Field>();
 }
 
 
-void CSGui::Vector2Field::Draw(MonoObject*, MonoClassField*, const char*) {
+void CSGui::Vector2Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
+	Vector2 structData;
+	mono_field_get_value(_obj, _field, &structData);
 
-	//void* structData = nullptr;
-	//mono_field_get_value(_obj, _field, &structData);
-	//if (!structData) {
-	//	return;
-	//}
-
-	//float* fdata = (float*)structData;
-	//float x = fdata[0];
-	//float y = fdata[1];
-
-	//if (ImGui::DragFloat2(_name, &x)) {
-	//	fdata[0] = x;
-	//	fdata[1] = y;
-	//	/// 編集した値をセットする
-	//	mono_field_set_value(_obj, _field, structData);
-	//}
-
+	if (ImGui::DragFloat2(_name, &structData.x)) {
+		/// 編集した値をセットする
+		mono_field_set_value(_obj, _field, &structData);
+	}
 }
 
+void CSGui::Vector3Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
+	Vector3 structData;
+	mono_field_get_value(_obj, _field, &structData);
+
+	if (ImGui::DragFloat3(_name, &structData.x)) {
+		/// 編集した値をセットする
+		mono_field_set_value(_obj, _field, &structData);
+	}
+}
+
+void CSGui::Vector4Field::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
+	Vector4 structData;
+	mono_field_get_value(_obj, _field, &structData);
+
+	if (ImGui::DragFloat4(_name, &structData.x)) {
+		/// 編集した値をセットする
+		mono_field_set_value(_obj, _field, &structData);
+	}
+}
