@@ -19,56 +19,27 @@ SceneIO::SceneIO(EntityComponentSystem* _ecs)
 }
 SceneIO::~SceneIO() {}
 
-void SceneIO::Output(IScene* _scene) {
+void SceneIO::Output(const std::string& _sceneName) {
 	/* sceneをjsonに保存する */
-
-	std::string type = typeid(*_scene).name();
-	// "class "をstringから排除
-	if (type.find("class ") == 0) {
-		type = type.substr(6);
-	}
-
-	fileName_ = type + ".json";
+	fileName_ = _sceneName + ".json";
 	SaveScene(fileName_);
-
 }
 
-void SceneIO::Input(IScene* _scene) {
+void SceneIO::Input(const std::string& _sceneName) {
 	/* jsonを読み込んでsceneに変換する */
-
-	std::string type = typeid(*_scene).name();
-	// "class "をstringから排除
-	if (type.find("class ") == 0) {
-		type = type.substr(6);
-	}
-
-	fileName_ = type + ".json";
+	fileName_ = _sceneName + ".json";
 	LoadScene(fileName_);
-
 }
 
-void SceneIO::OutputTemporary(IScene* _scene) {
+void SceneIO::OutputTemporary(const std::string& _sceneName) {
 	/* 一時的なシーンのjsonを保存する */
-
-	std::string type = typeid(*_scene).name();
-	// "class "をstringから排除
-	if (type.find("class ") == 0) {
-		type = type.substr(6);
-	}
-	fileName_ = type + "_temp.json";
+	fileName_ = _sceneName + "_temp.json";
 	SaveScene(fileName_);
-
 }
 
-void SceneIO::InputTemporary(IScene* _scene) {
-	std::string type = typeid(*_scene).name();
-	// "class "をstringから排除
-	if (type.find("class ") == 0) {
-		type = type.substr(6);
-	}
-	fileName_ = type + "_temp.json";
+void SceneIO::InputTemporary(const std::string& _sceneName) {
+	fileName_ = _sceneName + "_temp.json";
 	LoadScene(fileName_);
-
 }
 
 void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {

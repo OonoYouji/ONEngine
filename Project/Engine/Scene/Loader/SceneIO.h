@@ -19,10 +19,10 @@ public:
 	SceneIO(class EntityComponentSystem* _ecs);
 	~SceneIO();
 
-	void Output(IScene* _scene);
-	void Input(IScene* _scene);
-	void OutputTemporary(IScene* _scene);
-	void InputTemporary(IScene* _scene);
+	void Output(const std::string& _sceneName);
+	void Input(const std::string& _sceneName);
+	void OutputTemporary(const std::string& _sceneName);
+	void InputTemporary(const std::string& _sceneName);
 
 	void LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity);
 

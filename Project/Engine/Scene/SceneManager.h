@@ -16,7 +16,6 @@
 /// ===================================================
 class SceneManager final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -37,14 +36,10 @@ public:
 	void SaveCurrentScene();
 	void SaveCurrentSceneTemporary();
 
-	void StartCurrentScene();
-
 	void LoadScene(const std::string& _sceneName);
-
 	void ReloadScene(bool _isTemporary);
 
 private:
-
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
@@ -53,7 +48,6 @@ private:
 
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -61,15 +55,14 @@ private:
 	class EntityComponentSystem*      pEntityComponentSystem_      = nullptr;
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
-	std::unique_ptr<IScene>           currentScene_               = nullptr;
-	std::unique_ptr<IScene>           nextScene_                  = nullptr;
+	std::string currentScene_;
+	std::string nextScene_;
 
 	std::unique_ptr<ISceneFactory>    sceneFactory_               = nullptr;
-
 	std::unique_ptr<SceneIO>          sceneIO_ = nullptr;
 
-public:
 
+public:
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -79,6 +72,5 @@ public:
 	void SetSceneFactory(std::unique_ptr<ISceneFactory>& _sceneFactory);
 
 	const std::string& GetCurrentSceneName() const;
-
 };
 
