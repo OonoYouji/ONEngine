@@ -45,13 +45,13 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	/// windowの初期化
 	windowManager_->Initialize();
 	/// main windowの生成
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	UINT style = WS_OVERLAPPEDWINDOW;
 	style &= ~WS_THICKFRAME;
 	windowManager_->GenerateWindow(_startSetting.windowName + L" : debug mode", DebugConfig::kDebugWindowSize, WindowManager::WindowType::Main, style);
 #else
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 	monoScriptEngine_->Initialize();
 
@@ -68,12 +68,12 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
 
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
 	editorManager_->Initialize();
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 
 }
@@ -88,7 +88,7 @@ void GameFramework::Run() {
 		Time::Update();
 
 		windowManager_->Update();
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 		editorManager_->Update();
 		imGuiManager_->Update();
 		entityComponentSystem_->DebuggingUpdate();
@@ -101,7 +101,7 @@ void GameFramework::Run() {
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 		/// 描画処理
 		renderingFramework_->Draw();

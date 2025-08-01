@@ -39,9 +39,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	ComPtr<ID3D12Debug1> debugController_ = nullptr;
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 
 private:

@@ -116,11 +116,11 @@ std::string ConvertTCHARToString(const TCHAR* tstr) {
 
 
 Console::~Console() {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	OutputLogToFile("../Generated/Log");
 #else 
 	OutputLogToFile("./Log");
-#endif // _DEBUG
+#endif // DEBUG_MODE
 }
 
 void Console::Log(const std::string& _message) {

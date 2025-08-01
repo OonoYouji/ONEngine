@@ -2,10 +2,13 @@
 
 #include "Engine/Core/Utility/Math/Vector2.h"
 
+#if defined(_DEBUG) || defined(DEBUG_BUILD)
+#define DEBUG_MODE
+#endif
+
+
 namespace EngineConfig {
-
 	static const Vector2 kWindowSize = { 1920.0f, 1080.0f };
-
 }
 
 namespace DebugConfig {

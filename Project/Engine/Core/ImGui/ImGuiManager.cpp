@@ -543,11 +543,11 @@ ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager,
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-#endif // _DEBUG
+#endif // DEBUG_MODE
 }
 
 
@@ -591,7 +591,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	imGuiIO.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 	imGuiIO.DisplaySize = ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y);
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	/// debug windowの生成
 	debugGameWindow_ = windowManager_->GenerateWindow(L"game", EngineConfig::kWindowSize, WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(debugGameWindow_);
@@ -599,7 +599,7 @@ void ImGuiManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 	LONG style = GetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE);
 	style &= ~WS_SYSMENU; // システムメニュー（閉じるボタン含む）を無効化
 	SetWindowLong(debugGameWindow_->GetHwnd(), GWL_STYLE, style);
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 	imGuiWindowCollection_ = std::make_unique<ImGuiWindowCollection>(
 		pEntityComponentSystem_, resourceCollection_, this, pEditorManager_, pSceneManager_
