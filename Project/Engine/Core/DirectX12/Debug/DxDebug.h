@@ -6,6 +6,7 @@
 
 /// engine
 #include "../ComPtr/ComPtr.h"
+#include "Engine/Core/Config/EngineConfig.h"
 
 
 /// ===================================================

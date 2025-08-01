@@ -161,7 +161,10 @@ void EntityCollection::RemoveEntityAll() {
 	toRemove.reserve(entities_.size()); // 最適化
 
 	for (const auto& entity : entities_) {
-		toRemove.push_back(entity.get()); // ポインタだけをコピー
+		/// 親がいるエンティティは再帰的に処理されるのでここでは追加しない
+		if (!entity->GetParent()) {
+			toRemove.push_back(entity.get()); // ポインタだけをコピー
+		}
 	}
 
 	for (auto& entity : toRemove) {
