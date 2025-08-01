@@ -328,21 +328,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<int>();
-	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
-	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
-	_m.SetColor(_j.at("color").get<Vec4>());
-}
-void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
-	_j = nlohmann::json{
-		{ "type", "MeshRenderer" },
-		{ "enable", _m.enable },
-		{ "meshPath", _m.GetMeshPath() },
-		{ "texturePath", _m.GetTexturePath() },
-		{ "color", _m.GetColor() }
-	};
-}
+
 
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
 	_m.enable = _j.at("enable").get<int>();

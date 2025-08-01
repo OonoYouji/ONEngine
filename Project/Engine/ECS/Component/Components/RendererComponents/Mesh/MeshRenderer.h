@@ -2,6 +2,7 @@
 
 /// externals
 #include <mono/jit/jit.h>
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -77,12 +78,12 @@ public:
 
 
 namespace COMP_DEBUG {
-
 	/// @brief MeshRendererのデバッグ表示
 	void MeshRendererDebug(MeshRenderer* _mr);
-
 }
 
+void from_json(const nlohmann::json& _j, MeshRenderer& _mr);
+void to_json(nlohmann::json& _j, const MeshRenderer& _mr);
 
 /// ===================================================
 /// csで使用するための関数群

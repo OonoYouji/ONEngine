@@ -8,6 +8,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 
 PostProcessLighting::PostProcessLighting() {}
@@ -84,7 +85,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		/// set light data
 		directionalLightBufferData_->SetMappedData(
 			{
-				Vector4::Convert(directionalLights.front()->GetOwner()->GetLocalPosition()),
+				Vector4::Convert(directionalLights.front()->GetOwner()->GetPosition()),
 				directionalLights.front()->GetColor(),
 				directionalLights.front()->GetDirection(),
 				directionalLights.front()->GetIntensity()
@@ -92,7 +93,8 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		);
 		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
-		cameraBufferData_->SetMappedData({ Vector4::kZero });
+		Camera* camera = _pEntityComponentSystem->GetDebugCamera();
+		cameraBufferData_->SetMappedData({ Vector4(camera->GetPosition(), 1.0f) });
 		cameraBufferData_->BindForComputeCommandList(command, 1);
 	}
 
@@ -129,7 +131,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 	command->Dispatch(
 		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
-		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16, 
+		static_cast<UINT>(EngineConfig::kWindowSize.y) / 16,
 		1
 	);
 

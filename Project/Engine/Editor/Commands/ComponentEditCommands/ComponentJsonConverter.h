@@ -80,10 +80,6 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e);
 void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e);
 void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e);
 
-// MeshRenderer
-void from_json(const nlohmann::json& _j, MeshRenderer& _m);
-void to_json(nlohmann::json& _j, const MeshRenderer& _m);
-
 // CustomMeshRenderer
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m);
 void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m);
