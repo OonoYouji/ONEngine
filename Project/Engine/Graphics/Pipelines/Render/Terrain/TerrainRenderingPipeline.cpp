@@ -92,6 +92,10 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	pTerrain_ = nullptr;
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	if (!terrainArray) {
+		return;
+	}
+
 	/// 一旦先頭にあるTerrainのみ描画する
 	for (auto& terrain : terrainArray->GetUsedComponents()) {
 		if (terrain->GetOwner()) {

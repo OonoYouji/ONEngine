@@ -42,28 +42,6 @@ void SceneIO::InputTemporary(const std::string& _sceneName) {
 	LoadScene(fileName_);
 }
 
-void SceneIO::LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity) {
-
-	/// コンポーネントを追加
-	for (const auto& componentJson : _entityJson["components"]) {
-		const std::string componentType = componentJson.at("type").get<std::string>();
-		IComponent* comp = _entity->AddComponent(componentType);
-		if (comp) {
-			ComponentJsonConverter::FromJson(componentJson, comp);
-			comp->SetOwner(_entity);
-
-			if (componentType == "Variables") {
-				Variables* vars = static_cast<Variables*>(comp);
-				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
-			}
-
-		} else {
-			Console::LogError("コンポーネントの追加に失敗しました: " + componentType);
-		}
-	}
-
-}
-
 void SceneIO::SaveScene(const std::string& _filename) {
 	nlohmann::json outputJson = nlohmann::json::object();
 

@@ -33,10 +33,14 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, IEntity* _entity
 
 	/// コンポーネントを追加
 	for (const auto& componentJson : _json["components"]) {
+
+		/// jsonにtypeが無ければスキップ
 		if (!componentJson.contains("type")) {
 			continue;
 		}
+
 		const std::string componentType = componentJson.at("type").get<std::string>();
+
 		IComponent* comp = _entity->AddComponent(componentType);
 		if (comp) {
 			ComponentJsonConverter::FromJson(componentJson, comp);
@@ -45,9 +49,8 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, IEntity* _entity
 			if (componentType == "Variables") {
 				Variables* vars = static_cast<Variables*>(comp);
 				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
-			}
 
-			if (componentType == "Script") {
+			} else if (componentType == "Script") {
 				Script* script = static_cast<Script*>(comp);
 				script->ResetScripts(); 
 			}

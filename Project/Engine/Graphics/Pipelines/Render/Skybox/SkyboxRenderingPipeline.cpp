@@ -118,25 +118,17 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	Skybox* pSkybox = nullptr;
-	for (auto& entity : _entities) {
-		Skybox* skybox = entity->GetComponent<Skybox>();
-		if (skybox) {
+	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
+	if (!skyboxArray) {
+		return;
+	}
+
+	for (auto& skybox : skyboxArray->GetUsedComponents()) {
+		if (skybox && skybox->GetOwner()) {
 			pSkybox = skybox;
 			break;
 		}
 	}
-
-	//ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
-	//if (!skyboxArray) {
-	//	return;
-	//}
-
-	//for (auto& skybox : skyboxArray->GetUsedComponents()) {
-	//	if (skybox && skybox->GetOwner()) {
-	//		pSkybox = skybox;
-	//		break;
-	//	}
-	//}
 
 
 	if (!pSkybox) {
