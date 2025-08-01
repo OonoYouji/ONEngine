@@ -17,6 +17,7 @@ public class Player : MonoBehavior {
 	Entity camera;
 
 	[SerializeField] private int life;
+	[SerializeField] private float hp;
 
 	public override void Awake() {
 		Debug.LogInfo("===============================================");
