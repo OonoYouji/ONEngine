@@ -113,6 +113,10 @@ void Variables::SaveJson(const std::string& _path) {
 				safeObj = mono_gchandle_get_target(data.gcHandle);
 			}
 
+			if (!safeObj) {
+				continue; //!< 対象のスクリプトがない場合はスキップ
+			}
+
 			MonoClass* monoClass = mono_object_get_class(safeObj);
 			MonoClassField* field = nullptr;
 			void* iter = nullptr;

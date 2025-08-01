@@ -88,6 +88,9 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 実際に破棄する
 	/// ------------------------------
 
+	/// Componentの破棄
+	_entity->RemoveComponentAll();
+
 	RemoveEntityId(_entity->GetId());
 
 	/// 親子関係の解除
@@ -132,8 +135,6 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 			mainCamera_ = nullptr;
 		} else if (camera == mainCamera2D_) {
 			mainCamera2D_ = nullptr;
-		} else if (camera == debugCamera_) {
-			debugCamera_ = nullptr;
 		}
 		cameras_.erase(cameraItr, cameras_.end());
 	}

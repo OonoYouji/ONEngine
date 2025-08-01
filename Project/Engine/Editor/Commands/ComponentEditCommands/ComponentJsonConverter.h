@@ -48,10 +48,6 @@ void to_json(nlohmann::json& _j, const Color& _c);
 /// components
 /// //////////////////////////////////////////////////
 
-// Transform
-void from_json(const nlohmann::json& _j, Transform& _t);
-void to_json(nlohmann::json& _j, const Transform& _t);
-
 // DirectionalLight
 void from_json(const nlohmann::json& _j, DirectionalLight& _l);
 void to_json(nlohmann::json& _j, const DirectionalLight& _l);

@@ -64,8 +64,8 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 				for (int z = -1; z <= 1; z += 2) {
 					vertices_.push_back(VSInput(Vector4(
 						static_cast<float>(x),
-						static_cast<float>(y), 
-						static_cast<float>(z), 
+						static_cast<float>(y),
+						static_cast<float>(z),
 						1.0f
 					)));
 				}
@@ -95,7 +95,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// mapping
 		VSInput* mappingVertexData = nullptr;
 		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingVertexData));
-		std::memcpy(mappingVertexData, vertices_.data(), sizeof(VSInput)* vertices_.size());
+		std::memcpy(mappingVertexData, vertices_.data(), sizeof(VSInput) * vertices_.size());
 		vertexBuffer_.Get()->Unmap(0, nullptr);
 
 		/// index buffer
@@ -108,7 +108,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// mapping
 		uint32_t* mappingData = nullptr;
 		indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData));
-		std::memcpy(mappingData, indices_.data(), sizeof(uint32_t)* indices_.size());
+		std::memcpy(mappingData, indices_.data(), sizeof(uint32_t) * indices_.size());
 		indexBuffer_.Get()->Unmap(0, nullptr);
 
 
@@ -118,22 +118,32 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	Skybox* pSkybox = nullptr;
-	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
-	if (!skyboxArray) {
-		return;
-	}
-
-	for (auto& skybox : skyboxArray->GetUsedComponents()) {
-		if (skybox && skybox->GetOwner()) {
+	for (auto& entity : _entities) {
+		Skybox* skybox = entity->GetComponent<Skybox>();
+		if (skybox) {
 			pSkybox = skybox;
 			break;
 		}
 	}
 
+	//ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
+	//if (!skyboxArray) {
+	//	return;
+	//}
+
+	//for (auto& skybox : skyboxArray->GetUsedComponents()) {
+	//	if (skybox && skybox->GetOwner()) {
+	//		pSkybox = skybox;
+	//		break;
+	//	}
+	//}
+
 
 	if (!pSkybox) {
 		return;
 	}
+
+	//pSkybox->GetOwner()->UpdateTransform();
 
 	auto& textures = pResourceCollection_->GetTextures();
 	size_t texIndex = pResourceCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());

@@ -3,6 +3,9 @@
 /// std
 #include <string>
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
 
@@ -29,3 +32,11 @@ private:
 	std::string texturePath_;
 
 };
+
+
+namespace COMP_DEBUG {
+	void SkyboxDebug(const Skybox* _skybox);
+}
+
+void from_json(const nlohmann::json& _j, Skybox& _s);
+void to_json(nlohmann::json& _j, const Skybox& _s);

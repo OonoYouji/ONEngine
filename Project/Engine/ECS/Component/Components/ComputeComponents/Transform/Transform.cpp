@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
 
 Transform::Transform() {
@@ -200,4 +201,23 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 		_transform->Update();
 	}
 
+}
+
+
+void from_json(const nlohmann::json& _j, Transform& _t) {
+	_t.enable = _j.at("enable").get<int>();
+	_t.position = _j.at("position").get<Vector3>();
+	_t.rotate = _j.at("rotate").get<Quaternion>();
+	_t.scale = _j.at("scale").get<Vector3>();
+	_t.Update(); // 初期化時に更新を呼び出す
+}
+
+void to_json(nlohmann::json& _j, const Transform& _t) {
+	_j = nlohmann::json{
+		{ "type", "Transform" },
+		{ "enable", _t.enable },
+		{ "position", _t.position },
+		{ "rotate", _t.rotate },
+		{ "scale", _t.scale }
+	};
 }
