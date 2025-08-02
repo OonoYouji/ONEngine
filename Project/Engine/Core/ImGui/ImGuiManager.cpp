@@ -543,9 +543,11 @@ ImGuiManager::ImGuiManager(DxManager* _dxManager, WindowManager* _windowManager,
 	pEditorManager_(_editorManager), pSceneManager_(_sceneManager) {}
 
 ImGuiManager::~ImGuiManager() {
+#ifdef DEBUG_MODE
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+#endif // DEBUG_MODE
 }
 
 
