@@ -8,11 +8,7 @@
 #include "../Entities/EmptyEntity/EmptyEntity.h"
 #include "../Entities/Grid/Grid.h"
 #include "../Entities/Light/DirectionalLightObject.h"
-#include "../Entities/Skybox/Skybox.h"
 
-/*
-using GenerateFunc = std::function<std::unique_ptr<IEntity>(void)>;
-*/
 
 
 inline void AddEntityFactory(EntityFactory* _factory, class DxDevice* _dxDevice) {
@@ -22,6 +18,5 @@ inline void AddEntityFactory(EntityFactory* _factory, class DxDevice* _dxDevice)
 	_factory->Register("EmptyEntity", []() { return std::make_unique<EmptyEntity>(); });
 	_factory->Register("Grid", []() { return std::make_unique<Grid>(); });
 	_factory->Register("DirectionalLightObject", []() { return std::make_unique<DirectionalLightObject>(); });
-	_factory->Register("Skybox", []() { return std::make_unique<Skybox>();  });
 }
 

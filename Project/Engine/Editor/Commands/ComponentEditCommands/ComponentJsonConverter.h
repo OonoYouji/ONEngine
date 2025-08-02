@@ -48,10 +48,6 @@ void to_json(nlohmann::json& _j, const Color& _c);
 /// components
 /// //////////////////////////////////////////////////
 
-// Transform
-void from_json(const nlohmann::json& _j, Transform& _t);
-void to_json(nlohmann::json& _j, const Transform& _t);
-
 // DirectionalLight
 void from_json(const nlohmann::json& _j, DirectionalLight& _l);
 void to_json(nlohmann::json& _j, const DirectionalLight& _l);
@@ -83,10 +79,6 @@ void from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e);
 void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e);
 void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e);
 void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e);
-
-// MeshRenderer
-void from_json(const nlohmann::json& _j, MeshRenderer& _m);
-void to_json(nlohmann::json& _j, const MeshRenderer& _m);
 
 // CustomMeshRenderer
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m);

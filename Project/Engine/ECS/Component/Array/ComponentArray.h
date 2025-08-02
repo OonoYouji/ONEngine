@@ -17,8 +17,10 @@ public:
 
 	virtual ~IComponentArray() = default;
 
+	virtual IComponent* AddComponentUntyped() = 0;
 	virtual void RemoveComponent(size_t _index) = 0;
 	virtual size_t GetComponentIndex(IComponent* _component) = 0;
+	virtual size_t NewComponentId() = 0;
 
 protected:
 
@@ -43,8 +45,10 @@ public:
 
 	Comp* AddComponent();
 
+	IComponent* AddComponentUntyped() override;
 	void RemoveComponent(size_t _index) override;
 	size_t GetComponentIndex(IComponent* _component) override;
+	size_t NewComponentId() override;
 
 	std::vector<Comp*>& GetUsedComponents();
 
@@ -66,7 +70,12 @@ inline ComponentArray<Comp>::ComponentArray() {
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline Comp* ComponentArray<Comp>::AddComponent() {
+	Comp* comp = static_cast<Comp*>(AddComponentUntyped());
+	return comp;
+}
 
+template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+inline IComponent* ComponentArray<Comp>::AddComponentUntyped() {
 	///< 削除されたインデックスがある場合
 	if (removedIndices_.size() > 0) {
 		size_t index = removedIndices_.back();
@@ -84,7 +93,7 @@ inline Comp* ComponentArray<Comp>::AddComponent() {
 	}
 
 	components_.emplace_back();
-	size_t index = components_.size() - 1;
+	size_t index = NewComponentId();
 	usedIndices_.push_back(index);
 
 	components_[index].id = static_cast<uint32_t>(index); ///< IDを設定
@@ -98,13 +107,15 @@ inline Comp* ComponentArray<Comp>::AddComponent() {
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
 inline void ComponentArray<Comp>::RemoveComponent(size_t _id) {
-	if (_id < components_.size()) {
+	if (_id >= components_.size()) {
 		Console::Log("ComponentArray: RemoveComponent failed, index out of range.");
 		return;
 	}
 
 	usedIndices_.erase(std::remove(usedIndices_.begin(), usedIndices_.end(), _id), usedIndices_.end());
 	removedIndices_.push_back(_id);
+
+	components_[_id].SetOwner(nullptr); ///< コンポーネントのオーナーをnullptrに設定
 	usedComponents_.erase(std::remove(usedComponents_.begin(), usedComponents_.end(), &components_[_id]), usedComponents_.end());
 }
 
@@ -113,12 +124,17 @@ inline size_t ComponentArray<Comp>::GetComponentIndex(IComponent* _component) {
 
 	for (size_t i = 0; i < components_.size(); i++) {
 		const Comp& comp = components_[i];
-		if (comp.GetOwner() == _component->GetOwner()) {
+		if (comp.id == _component->id) {
 			return i;
 		}
 	}
 
 	return 0;
+}
+
+template<typename Comp> requires std::is_base_of_v<IComponent, Comp>
+inline size_t ComponentArray<Comp>::NewComponentId() {
+	return static_cast<size_t>(components_.size() - 1);
 }
 
 template<typename Comp> requires std::is_base_of_v<IComponent, Comp>

@@ -5,6 +5,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Develop|x64">
+      <Configuration>Develop</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -25,6 +29,7 @@
     <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
     <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp" />
@@ -98,12 +103,6 @@
     <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Chunk\TerrainChunk.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Collision\TerrainCollision.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Editor\TerrainEditor.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Octree\Octree.cpp" />
-    <ClCompile Include="Game\Objects\Terrain\Terrain.cpp" />
-    <ClCompile Include="Game\Scene\Scenes\GameScene.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp" />
@@ -147,6 +146,7 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp" />
+    <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
@@ -174,8 +174,6 @@
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Skybox\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
@@ -193,11 +191,15 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.cpp" />
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
     <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainVertex.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
@@ -268,13 +270,6 @@
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Gamepad.h" />
-    <ClInclude Include="Game\Objects\Terrain\Chunk\TerrainChunk.h" />
-    <ClInclude Include="Game\Objects\Terrain\Collision\TerrainCollision.h" />
-    <ClInclude Include="Game\Objects\Terrain\Editor\TerrainEditor.h" />
-    <ClInclude Include="Game\Objects\Terrain\Octree\Octree.h" />
-    <ClInclude Include="Game\Objects\Terrain\Terrain.h" />
-    <ClInclude Include="Game\Objects\Terrain\TerrainVertex.h" />
-    <ClInclude Include="Game\Scene\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Assert.h" />
@@ -336,8 +331,6 @@
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
-    <ClInclude Include="Engine\Graphics\Pipelines\Render\MeshShaderTest\MeshShaderTest.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
@@ -363,6 +356,9 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.h" />
+    <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.h" />
+    <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
@@ -388,6 +384,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -399,6 +402,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
@@ -406,6 +412,11 @@
     <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
+    <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
     <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
@@ -452,6 +463,37 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
       <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>MinSpace</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+copy "$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.dll" "$(TargetDir)mono-2.0-sgen.dll"
+xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
+xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>DEBUG_BUILD;_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

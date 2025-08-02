@@ -295,6 +295,10 @@ void InternalGetJointTransform(uint64_t _nativeHandle, MonoString* _jointName, V
 	/// ジョイントのトランスフォームを取得
 	if (smr->GetSkeleton().jointMap.contains(jointName) == false) {
 		Console::LogError(std::format("SkinMeshRenderer::InternalGetJointTransform: Joint '{}' not found in skeleton.", jointName));
+		*_outScale = Vector3::kOne; ///< ジョイントが見つからない場合はゼロベクトルを設定
+		*_outRotation = Quaternion::kIdentity; ///< ジョイントが見つからない場合は単位クォータニオンを設定
+		*_outPosition = Vector3::kZero; ///< ジョイントが見つからない場合はゼロベクトルを設定
+
 		return; ///< ジョイントが見つからない場合は何もしない
 	}
 

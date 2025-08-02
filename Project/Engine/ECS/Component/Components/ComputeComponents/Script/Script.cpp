@@ -5,6 +5,7 @@
 #include "Engine/Core/ImGui/Math/ImGuiShowField.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 using namespace CSGui;
@@ -164,6 +165,13 @@ void Script::CallAwakeMethodAll() {
 			script.isCalledAwake = true;
 		}
 
+		/// Variables Componentから値を取得して、スクリプトに適用する
+		Variables* variables = GetOwner()->GetComponent<Variables>();
+		if (variables) {
+			variables->SetScriptVariables(script.scriptName);
+		} else {
+			Console::LogWarning("Script::CallAwakeMethodAll Variables component not found.");
+		}
 
 		MonoObject* safeObj = nullptr;
 		if (script.gcHandle != 0) {
@@ -324,9 +332,6 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 
 		if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
-
-
-
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
@@ -336,23 +341,25 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 				safeObj = mono_gchandle_get_target(script.gcHandle);
 			}
 
-			MonoClass* monoClass = mono_object_get_class(safeObj);
-			MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
-			MonoClassField* field = nullptr;
-			void* iter = nullptr;
+			if (safeObj) {
+				MonoClass* monoClass = mono_object_get_class(safeObj);
+				MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
+				MonoClassField* field = nullptr;
+				void* iter = nullptr;
 
-			while ((field = mono_class_get_fields(monoClass, &iter))) {
-				const char* fieldName = mono_field_get_name(field);
+				while ((field = mono_class_get_fields(monoClass, &iter))) {
+					const char* fieldName = mono_field_get_name(field);
 
-				MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
-				if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
-					// 値の取得
-					MonoType* fieldType = mono_field_get_type(field);
-					int type = mono_type_get_type(fieldType);
+					MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
+					if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
+						// 値の取得
+						MonoType* fieldType = mono_field_get_type(field);
+						int type = mono_type_get_type(fieldType);
 
-					ShowFiled(type, script.instance, field, fieldName);
+						ShowFiled(type, safeObj, field, fieldName);
+					}
+
 				}
-
 			}
 
 		}

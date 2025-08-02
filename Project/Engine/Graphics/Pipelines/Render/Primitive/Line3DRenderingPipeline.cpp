@@ -74,7 +74,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void Line3DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// rendering dataの収集
 	for (auto& entity : _entities) {

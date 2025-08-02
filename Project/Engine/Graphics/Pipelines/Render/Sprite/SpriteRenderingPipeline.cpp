@@ -120,7 +120,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void SpriteRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SpriteRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// entityから sprite renderer を集める
 	for (auto& entity : _entities) {

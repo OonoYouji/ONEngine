@@ -15,11 +15,12 @@ IComponent* ComponentCollection::AddComponent(const std::string& _name) {
 	size_t hash = GetComponentHash(_name);
 
 	if (arrayMap_.find(hash) == arrayMap_.end()) {
-		//RegisterComponentFactory();
 		return nullptr;
 	}
 
-	return factoryMap_[hash]();
+	IComponent* comp = arrayMap_[hash]->AddComponentUntyped();
+
+	return comp;
 }
 
 void ComponentCollection::RemoveComponent(size_t _hash, size_t _id) {

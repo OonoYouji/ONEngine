@@ -4,8 +4,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Skybox/Skybox.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 
 
 SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -64,8 +64,8 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 				for (int z = -1; z <= 1; z += 2) {
 					vertices_.push_back(VSInput(Vector4(
 						static_cast<float>(x),
-						static_cast<float>(y), 
-						static_cast<float>(z), 
+						static_cast<float>(y),
+						static_cast<float>(z),
 						1.0f
 					)));
 				}
@@ -95,7 +95,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// mapping
 		VSInput* mappingVertexData = nullptr;
 		vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingVertexData));
-		std::memcpy(mappingVertexData, vertices_.data(), sizeof(VSInput)* vertices_.size());
+		std::memcpy(mappingVertexData, vertices_.data(), sizeof(VSInput) * vertices_.size());
 		vertexBuffer_.Get()->Unmap(0, nullptr);
 
 		/// index buffer
@@ -108,32 +108,40 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		/// mapping
 		uint32_t* mappingData = nullptr;
 		indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData));
-		std::memcpy(mappingData, indices_.data(), sizeof(uint32_t)* indices_.size());
+		std::memcpy(mappingData, indices_.data(), sizeof(uint32_t) * indices_.size());
 		indexBuffer_.Get()->Unmap(0, nullptr);
 
 
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
-	Skybox* skybox = nullptr;
-	for (auto& entity : _entities) {
-		if (entity->GetName() == "Skybox") {
-			skybox = static_cast<Skybox*>(entity);
+	Skybox* pSkybox = nullptr;
+	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
+	if (!skyboxArray) {
+		return;
+	}
+
+	for (auto& skybox : skyboxArray->GetUsedComponents()) {
+		if (skybox && skybox->GetOwner()) {
+			pSkybox = skybox;
 			break;
 		}
 	}
 
-	if (!skybox) {
+
+	if (!pSkybox) {
 		return;
 	}
 
+	//pSkybox->GetOwner()->UpdateTransform();
+
 	auto& textures = pResourceCollection_->GetTextures();
-	size_t texIndex = pResourceCollection_->GetTextureIndex(skybox->GetTexturePath());
+	size_t texIndex = pResourceCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());
 
 	texIndex_.SetMappedData(texIndex);
-	transformMatrix_.SetMappedData(skybox->GetTransform()->GetMatWorld());
+	transformMatrix_.SetMappedData(pSkybox->GetOwner()->GetTransform()->GetMatWorld());
 
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -150,8 +158,7 @@ void SkyboxRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camer
 
 	commandList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
-		1,
-		0, 0, 0
+		1, 0, 0, 0
 	);
 
 

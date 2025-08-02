@@ -10,6 +10,7 @@
 
 /// engine
 #include "Log.h"
+#include "Engine/Core/Config/EngineConfig.h"
 
 
 /// <summary>
@@ -38,11 +39,11 @@ inline void Assert(bool _condition, const char* _errorMessage, const std::source
 		MessageBoxA(nullptr, errorMsg.c_str(), "ONEngine Assertion", MB_OK | MB_ICONERROR);
 		Console::Log("[ASSERTION ERROR] " + errorMsg); // Log the last part if any
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 		Console::OutputLogToFile("../Generated/Log"); ///< 停止する前にログを出力する
 #else
 		Console::OutputLogToFile("./Log");
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 		__debugbreak();
 	}

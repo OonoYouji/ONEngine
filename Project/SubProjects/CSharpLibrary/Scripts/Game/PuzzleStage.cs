@@ -59,126 +59,9 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
-	void Game() {
-		int width = mapData_[0].Count;
-		int height = mapData_.Count;
-		blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
-
-		PuzzlePlayer puzzlePlayer = null;
-		if (activePlayer_ != null && activePlayer_.transform != null) {
-			puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-			puzzlePlayer.UpdatePosition();
-
-			Transform playerTransform = activePlayer_.transform;
-			playerTransform.position -= blockPosOffset_;
-		}
-
-		for (int i = 0; i < blocks_.Count; i++) {
-			Entity block = blocks_[i];
-			if (block == null) {
-				continue;
-			}
-
-			Block blockScript = block.GetScript<Block>();
-			if (blockScript) {
-				Vector2Int address = blockScript.blockData.address;
-
-				blockScript.blockData.mapValue = mapData_[address.y][address.x];
-				if (puzzlePlayer) {
-					if (blockScript.blockData.type == puzzlePlayer.blockData.type) {
-						blockScript.blockData.height = blockData_.height;
-					} else {
-						blockScript.blockData.height = blockData_.height - 0.05f;
-					}
-				}
-
-				Transform t = block.transform;
-				t.position = new Vector3(
-					address.x * blockData_.blockSpace, 
-					blockScript.blockData.height,
-					address.y * blockData_.blockSpace);
-				t.position -= blockPosOffset_;
-			}
-		}
-
-
-		/* パズルを行っているときの更新 */
-
-		UpdatePlayer();
-
-
-		if (CheckIsGoaled(puzzlePlayer)) {
-			puzzlePlayer.isGoaled.Set(true);
-		}
-
-		/// パズルを終了する
-		if (Input.TriggerGamepad(Gamepad.B)) {
-			/// パズルを終了する
-			isStartPuzzle_ = false;
-
-			/// 他のエンティティの更新を停止
-			Debug.Log("Puzzle ended.");
-		}
-	}
-
-
-	private void UpdatePlayer() {
-		/* ----- プレイヤーの更新 ----- */
-
-		if (activePlayer_ == null) {
-			return;
-		}
-
-		/* ----- プレイヤーの移動を行う ----- */
-
-		PuzzlePlayer player = activePlayer_.GetScript<PuzzlePlayer>();
-		if (player) {
-			if (player.blockData.type == (int)BlockType.Black) {
-				moveDir_ = Vector2Int.zero;
-			}
-		}
-
-		if (moveDir_ == Vector2Int.zero) {
-			/// 移動方向の決定
-			if (Input.TriggerGamepad(Gamepad.DPadUp)) {
-				moveDir_ = Vector2Int.up;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadDown)) {
-				moveDir_ = Vector2Int.down;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
-				moveDir_ = Vector2Int.left;
-			}
-
-			if (Input.TriggerGamepad(Gamepad.DPadRight)) {
-				moveDir_ = Vector2Int.right;
-			}
-		}
-
-		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-		if (!puzzlePlayer) {
-			return;
-		}
-
-
-		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
-		/// 新しいアドレスが移動出来る場所か確認
-		Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
-		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
-			/* ----- プレイヤーの移動を行う ----- */
-			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
-			Moved(beforeAddress, puzzlePlayer.blockData.address);
-
-			puzzlePlayer.UpdateRotateY(moveDir_);
-		} else {
-			/// 移動できない場合の処理を追加
-			moveDir_ = Vector2Int.zero;
-		}
-	}
-
-
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	/// 初期化に使用する関数
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	private void PlayerDeploy() {
 		/* ----- プレイヤーの配置 ----- */
 
@@ -277,6 +160,128 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	/// 更新に使用する関数
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	void Game() {
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+		}
+
+		PuzzlePlayer puzzlePlayer = null;
+		if (activePlayer_ != null && activePlayer_.transform != null) {
+			puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+			puzzlePlayer.UpdatePosition();
+
+			Transform playerTransform = activePlayer_.transform;
+			playerTransform.position -= blockPosOffset_;
+		}
+
+		for (int i = 0; i < blocks_.Count; i++) {
+			Entity block = blocks_[i];
+			if (block == null) {
+				continue;
+			}
+
+			Block blockScript = block.GetScript<Block>();
+			if (blockScript) {
+				Vector2Int address = blockScript.blockData.address;
+
+				blockScript.blockData.mapValue = mapData_[address.y][address.x];
+				if (puzzlePlayer) {
+					if (blockScript.blockData.type == puzzlePlayer.blockData.type) {
+						blockScript.blockData.height = blockData_.height;
+					} else {
+						blockScript.blockData.height = blockData_.height - 0.05f;
+					}
+				}
+
+				Transform t = block.transform;
+				t.position = new Vector3(address.x * blockData_.blockSpace, blockScript.blockData.height,
+					address.y * blockData_.blockSpace);
+				t.position -= blockPosOffset_;
+			}
+		}
+
+
+		/* パズルを行っているときの更新 */
+
+		UpdatePlayer();
+
+
+		if (CheckIsGoaled(puzzlePlayer)) {
+			puzzlePlayer.isGoaled.Set(true);
+		}
+
+		/// パズルを終了する
+		if (Input.TriggerGamepad(Gamepad.B)) {
+			/// パズルを終了する
+			isStartPuzzle_ = false;
+
+			/// 他のエンティティの更新を停止
+			Debug.Log("Puzzle ended.");
+		}
+	}
+
+
+	private void UpdatePlayer() {
+		/* ----- プレイヤーの更新 ----- */
+
+		if (activePlayer_ == null) {
+			return;
+		}
+
+		/* ----- プレイヤーの移動を行う ----- */
+
+		PuzzlePlayer player = activePlayer_.GetScript<PuzzlePlayer>();
+		if (player) {
+			if (player.blockData.type == (int)BlockType.Black) {
+				moveDir_ = Vector2Int.zero;
+			}
+		}
+
+		if (moveDir_ == Vector2Int.zero) {
+			/// 移動方向の決定
+			if (Input.TriggerGamepad(Gamepad.DPadUp)) {
+				moveDir_ = Vector2Int.up;
+			}
+
+			if (Input.TriggerGamepad(Gamepad.DPadDown)) {
+				moveDir_ = Vector2Int.down;
+			}
+
+			if (Input.TriggerGamepad(Gamepad.DPadLeft)) {
+				moveDir_ = Vector2Int.left;
+			}
+
+			if (Input.TriggerGamepad(Gamepad.DPadRight)) {
+				moveDir_ = Vector2Int.right;
+			}
+		}
+
+		PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		if (!puzzlePlayer) {
+			return;
+		}
+
+
+		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
+		/// 新しいアドレスが移動出来る場所か確認
+		Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
+		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
+			/* ----- プレイヤーの移動を行う ----- */
+			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
+			Moved(beforeAddress, puzzlePlayer.blockData.address);
+
+			puzzlePlayer.UpdateRotateY(moveDir_);
+		} else {
+			/// 移動できない場合の処理を追加
+			moveDir_ = Vector2Int.zero;
+		}
+	}
+
 	/// <summary>
 	/// プレイヤーが移動可能かどうかをチェックする
 	/// </summary>
@@ -324,10 +329,10 @@ public class PuzzleStage : MonoBehavior {
 			int subLenght = Mathf.Abs(_movedAddress.x - _currentAddress.x);
 
 			for (int i = 0; i < subLenght; i++) {
-				int type = Mathf.GetDigit(mapData_[yAddress][_currentAddress.x + i], 1);
-				if (type == (int)BlockType.Black) {
+				int value = mapData_[yAddress][_currentAddress.x + i];
+				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_WHTIE;
-				} else {
+				} else if (value == (int)MAPDATA.BLOCK_WHTIE) {
 					mapData_[yAddress][_currentAddress.x + i] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}
@@ -340,7 +345,7 @@ public class PuzzleStage : MonoBehavior {
 				int value = mapData_[_currentAddress.y + i][xAddress];
 				if (value == (int)MAPDATA.BLOCK_BLACK) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_WHTIE;
-				} else {
+				} else if (value == (int)MAPDATA.BLOCK_WHTIE) {
 					mapData_[_currentAddress.y + i][xAddress] = (int)MAPDATA.BLOCK_BLACK;
 				}
 			}

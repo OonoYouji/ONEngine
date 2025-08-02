@@ -81,19 +81,28 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
+	pTerrain_ = nullptr;
+
 }
 
-void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
 	Terrain* prevTerrain_ = pTerrain_;
 	pTerrain_ = nullptr;
-	for (auto& entity : _entities) {
-		if (entity->GetName() == "Terrain") {
-			pTerrain_ = static_cast<Terrain*>(entity);
-			break;
+
+	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	if (!terrainArray) {
+		return;
+	}
+
+	/// 一旦先頭にあるTerrainのみ描画する
+	for (auto& terrain : terrainArray->GetUsedComponents()) {
+		if (terrain->GetOwner()) {
+			pTerrain_ = terrain;
 		}
 	}
+
 
 	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {
@@ -111,21 +120,22 @@ void TerrainRenderingPipeline::Draw(const std::vector<IEntity*>& _entities, Came
 
 
 	/// value setting
-	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->matWorld);
+	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
+	transformBuffer_.SetMappedData(matWorld);
 
 	/// 編集した頂点を更新する
 	if (!pTerrain_->GetEditVertices().empty()) {
 		for (auto& editV : pTerrain_->GetEditVertices()) {
 			vertexBuffer_.SetVertex(editV.first, *editV.second);
 		}
-		pTerrain_->ClearEditVertices();
+		//pTerrain_->ClearEditVertices();
 	}
 
 
 	/// bufferの値を更新
-	transformBuffer_.SetMappedData(pTerrain_->GetTransform()->GetMatWorld());
+	transformBuffer_.SetMappedData(matWorld);
 	materialBuffer_.SetMappedData(
-		Material(Vector4::kWhite, 1, pTerrain_->GetId())
+		Material(Vector4::kWhite, 1, pTerrain_->GetOwner()->GetId())
 	);
 
 

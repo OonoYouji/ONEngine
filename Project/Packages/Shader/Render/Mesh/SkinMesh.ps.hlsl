@@ -20,7 +20,7 @@ PSOutput main(VSOutput input) {
 	output.color = textureColor * materialColor;
 	output.worldPosition = input.worldPosition;
 	output.normal = float4(input.normal, 1.0f);
-	output.flags = float4(1, 0, 1, 1);
+	output.flags = float4(material.postEffectFlags, material.entityId, 0, 1);
 
 	if (output.color.a == 0.0f) {
 		discard;

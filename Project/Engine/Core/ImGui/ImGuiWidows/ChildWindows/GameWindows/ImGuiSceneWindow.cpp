@@ -49,6 +49,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
 	bool isGameDebug = DebugConfig::isDebugging;
+
 	if (isGameDebug) {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}

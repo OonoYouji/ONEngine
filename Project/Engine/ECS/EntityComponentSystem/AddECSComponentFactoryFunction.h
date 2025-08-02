@@ -2,6 +2,8 @@
 
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
 inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
@@ -11,6 +13,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<AudioSource>();
 	_compCollection->RegisterComponentFactory<Variables>();
 	_compCollection->RegisterComponentFactory<Effect>();
+	_compCollection->RegisterComponentFactory<Terrain>();
 
 	/// renderer
 	_compCollection->RegisterComponentFactory<MeshRenderer>();
@@ -20,6 +23,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<Line2DRenderer>();
 	_compCollection->RegisterComponentFactory<Line3DRenderer>();
 	_compCollection->RegisterComponentFactory<ScreenPostEffectTag>();
+	_compCollection->RegisterComponentFactory<Skybox>();
 
 	/// collider
 	_compCollection->RegisterComponentFactory<ToTerrainCollider>();

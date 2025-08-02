@@ -69,5 +69,15 @@ namespace CSGui {
 	struct Vector2Field : public ImGuiShowField {
 		void Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) override;
 	};
+	
+	/// @brief Vector3をImGuiで表示するための構造体
+	struct Vector3Field : public ImGuiShowField {
+		void Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) override;
+	};
+	
+	/// @brief Vector4をImGuiで表示するための構造体
+	struct Vector4Field : public ImGuiShowField {
+		void Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) override;
+	};
 
 }
