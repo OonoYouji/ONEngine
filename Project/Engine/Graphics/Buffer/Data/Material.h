@@ -8,11 +8,10 @@
 
 /// @brief ポストエフェクトの適用
 enum PostEffectFlags_ {
-	PostEffectFlags_None = 0,      ///< なし
-	PostEffectFlags_Lighting = 1 << 0, ///< ライティング
-	PostEffectFlags_Grayscale = 1 << 1, ///< グレースケール
-	//PostEffectFlags_Bloom     = 1 << 2, ///< ブルーム
-	//PostEffectFlags_Outline   = 1 << 3, ///< アウトライン
+	PostEffectFlags_None                  = 0,      ///< なし
+	PostEffectFlags_Lighting              = 1 << 0, ///< ライティング
+	PostEffectFlags_Grayscale             = 1 << 1, ///< グレースケール
+	PostEffectFlags_EnvironmentReflection = 1 << 2, ///< 天球に合わせて環境反射を行う
 };
 
 

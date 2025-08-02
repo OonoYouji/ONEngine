@@ -58,11 +58,10 @@ public class PuzzleStage : MonoBehavior {
 		Game();
 	}
 
-	
+
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// 初期化に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
-
 	private void PlayerDeploy() {
 		/* ----- プレイヤーの配置 ----- */
 
@@ -164,11 +163,12 @@ public class PuzzleStage : MonoBehavior {
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// 更新に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
-	
 	void Game() {
-		int width = mapData_[0].Count;
-		int height = mapData_.Count;
-		blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+		}
 
 		PuzzlePlayer puzzlePlayer = null;
 		if (activePlayer_ != null && activePlayer_.transform != null) {

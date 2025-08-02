@@ -7,6 +7,7 @@
 
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 
 
 /// //////////////////////////////////////////////////
@@ -36,6 +37,7 @@ namespace {
 			Register<Line2DRenderer>();
 			Register<Line3DRenderer>();
 			Register<ScreenPostEffectTag>();
+			Register<Skybox>();
 
 			/// collision
 			Register<ToTerrainCollider>();
@@ -52,7 +54,9 @@ namespace {
 				};
 
 			fromJsonConverters_[typeName] = [this](IComponent* _component, const nlohmann::json& _j) {
+				uint32_t id = _component->id;
  				*static_cast<T*>(_component) = _j.get<T>();
+				_component->id = id;
 				};
 		}
 
@@ -141,22 +145,6 @@ void to_json(nlohmann::json& _j, const Color& _c) {
 	_j = nlohmann::json{ { "r", _c.r }, { "g", _c.g }, { "b", _c.b }, { "a", _c.a } };
 }
 
-void from_json(const nlohmann::json& _j, Transform& _t) {
-	_t.enable = _j.at("enable").get<int>();
-	_t.position = _j.at("position").get<Vec3>();
-	//_t.rotate = _j.at("rotate").get<Quaternion>();
-	_t.scale = _j.at("scale").get<Vec3>();
-}
-
-void to_json(nlohmann::json& _j, const Transform& _t) {
-	_j = nlohmann::json{
-		{ "type", "Transform" },
-		{ "enable", _t.enable },
-		{ "position", _t.position },
-		{ "rotate", _t.rotate },
-		{ "scale", _t.scale }
-	};
-}
 
 void from_json(const nlohmann::json& _j, DirectionalLight& _l) {
 	_l.SetIntensity(_j.at("intensity").get<float>());
@@ -340,21 +328,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
-	_m.enable = _j.at("enable").get<int>();
-	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
-	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
-	_m.SetColor(_j.at("color").get<Vec4>());
-}
-void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
-	_j = nlohmann::json{
-		{ "type", "MeshRenderer" },
-		{ "enable", _m.enable },
-		{ "meshPath", _m.GetMeshPath() },
-		{ "texturePath", _m.GetTexturePath() },
-		{ "color", _m.GetColor() }
-	};
-}
+
 
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m) {
 	_m.enable = _j.at("enable").get<int>();

@@ -10,6 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "../../../Math/ImGuiMath.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
@@ -43,6 +44,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<SkinMeshRenderer>([&](IComponent* _component) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_component)); });
 	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _component) { COMP_DEBUG::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_component)); });
+	RegisterComponent<Skybox>([&](IComponent* _component) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_component)); });
 
 	/// collider
 	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});

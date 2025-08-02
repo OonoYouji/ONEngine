@@ -6,6 +6,7 @@
 /// externals
 #include <jit/jit.h>
 #include <metadata/class.h>
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "../../Interface/IComponent.h"
@@ -131,6 +132,9 @@ public:
 namespace COMP_DEBUG {
 	void TransformDebug(Transform* _transform);
 }
+
+void from_json(const nlohmann::json& _j, Transform& _t);
+void to_json(nlohmann::json& _j, const Transform& _t);
 
 
 /// =================================================

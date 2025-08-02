@@ -50,7 +50,7 @@ void DebugCamera::Initialize() {
 }
 
 void DebugCamera::Update() {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 
 	if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_C)) {
 		isActive_ = !isActive_;
@@ -144,6 +144,6 @@ void DebugCamera::Update() {
 		);
 		viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 	}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 }

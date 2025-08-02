@@ -14,7 +14,7 @@ PSOutput main(VSOutput input) {
 	output.color = texColor;
 	output.worldPosition = input.worldPosition;
 	output.normal = float4(input.normal, 1.0f);
-	output.flags = float4(0, 0, 0, 0);
+	output.flags = float4(0, 0, 0, 1);
 	
 	return output;
 }

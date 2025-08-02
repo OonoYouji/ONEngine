@@ -7,7 +7,7 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Graphics/Pipelines/Collection/RenderingPipelineCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
@@ -206,12 +206,14 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 
 
 	/// materialの設定
-	const std::string labels[2] = {
-		"Lighting",
-		"Grayscale",
+	const size_t kMaxIndex = 3;
+	const std::string labels[kMaxIndex] = {
+		"Lighting: [ライティング]",
+		"Grayscale: [グレースケール]",
+		"EnvironmentReflection: [環境反射]",
 	};
 
-	for (size_t i = 0; i < 2; i++) {
+	for (size_t i = 0; i < kMaxIndex; i++) {
 		int bit = 1 << (i);
 		bool isChecked = (_mr->GetPostEffectFlags() & bit) != 0;
 		if (ImGui::Checkbox(labels[i].c_str(), &isChecked)) {
@@ -224,4 +226,30 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 	}
 
 
+}
+
+
+void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
+	if (_j.contains("enable")) {
+		_m.enable = _j.at("enable").get<int>();
+	}
+
+	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
+	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
+	_m.SetColor(_j.at("color").get<Vec4>());
+
+	if (_j.contains("postEffectFlags")) {
+		_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
+	}
+}
+
+void to_json(nlohmann::json& _j, const MeshRenderer& _m) {
+	_j = nlohmann::json{
+		{ "type", "MeshRenderer" },
+		{ "enable", _m.enable },
+		{ "meshPath", _m.GetMeshPath() },
+		{ "texturePath", _m.GetTexturePath() },
+		{ "color", _m.GetColor() },
+		{ "postEffectFlags", _m.GetPostEffectFlags() }
+	};
 }

@@ -6,7 +6,7 @@ DxDebug::DxDebug() {}
 DxDebug::~DxDebug() {}
 
 void DxDebug::Initialize(DxDevice* _dxDevice) {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	ComPtr<ID3D12InfoQueue> infoQueue;
 	if(SUCCEEDED(_dxDevice->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -26,15 +26,15 @@ void DxDebug::Initialize(DxDevice* _dxDevice) {
 		infoQueue->PushStorageFilter(&filter);
 		infoQueue.Reset();
 	}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 }
 
 
 void DxDebug::SetDebugLayer() {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	if(SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController_)))) {
 		debugController_->EnableDebugLayer();
 		debugController_->SetEnableGPUBasedValidation(TRUE);
 	}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 }

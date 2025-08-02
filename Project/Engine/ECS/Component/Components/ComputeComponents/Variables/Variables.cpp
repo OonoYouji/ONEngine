@@ -88,7 +88,45 @@ void Variables::SaveJson(const std::string& _path) {
 	}
 
 
-	Script* script = owner->GetComponent<Script>();
+	for (const auto& [groupKey, value] : groupKeyMap_) {
+		json[groupKey] = nlohmann::json::object();
+		for (const auto& [varKey, varValue] : groups_[value].keyMap_) {
+
+			std::visit([&json, &groupKey, &varKey](auto&& _arg) {
+				using T = std::decay_t<decltype(_arg)>;
+				if constexpr (std::is_same_v<T, int>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, float>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, bool>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, std::string>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, Vector2>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, Vector3>) {
+					json[groupKey][varKey] = _arg;
+				} else if constexpr (std::is_same_v<T, Vector4>) {
+					json[groupKey][varKey] = _arg;
+				}
+				}, groups_[value].variables[varValue]);
+		}
+	}
+
+
+	std::filesystem::path path(_path);
+	std::filesystem::create_directories(path.parent_path());
+
+	std::ofstream ofs(_path);
+	if (!ofs) {
+		throw std::runtime_error("ファイルを開けませんでした: " + _path);
+	}
+	ofs << json.dump(4);
+}
+
+void Variables::RegisterScriptVariables() {
+
+	Script* script = GetOwner()->GetComponent<Script>();
 	if (!script) {
 		Console::LogError("Variables::SaveJson();  owner has no Script component...");
 		return;
@@ -111,6 +149,10 @@ void Variables::SaveJson(const std::string& _path) {
 			MonoObject* safeObj = nullptr;
 			if (data.gcHandle != 0) {
 				safeObj = mono_gchandle_get_target(data.gcHandle);
+			}
+
+			if (!safeObj) {
+				continue; //!< 対象のスクリプトがない場合はスキップ
 			}
 
 			MonoClass* monoClass = mono_object_get_class(safeObj);
@@ -187,42 +229,6 @@ void Variables::SaveJson(const std::string& _path) {
 
 
 	}
-
-
-	for (const auto& [groupKey, value] : groupKeyMap_) {
-		json[groupKey] = nlohmann::json::object();
-		for (const auto& [varKey, varValue] : groups_[value].keyMap_) {
-
-			std::visit([&json, &groupKey, &varKey](auto&& _arg) {
-				using T = std::decay_t<decltype(_arg)>;
-				if constexpr (std::is_same_v<T, int>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, float>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, bool>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, std::string>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vector2>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vector3>) {
-					json[groupKey][varKey] = _arg;
-				} else if constexpr (std::is_same_v<T, Vector4>) {
-					json[groupKey][varKey] = _arg;
-				}
-				}, groups_[value].variables[varValue]);
-		}
-	}
-
-
-	std::filesystem::path path(_path);
-	std::filesystem::create_directories(path.parent_path());
-
-	std::ofstream ofs(_path);
-	if (!ofs) {
-		throw std::runtime_error("ファイルを開けませんでした: " + _path);
-	}
-	ofs << json.dump(4);
 }
 
 void Variables::SetScriptVariables(const std::string& _scriptName) {
@@ -240,6 +246,10 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 		return;
 	}
 
+	/// 一旦保存 (Cloneオブジェクト以外
+	if (owner->GetId() > 0) {
+		SaveJson("Assets/Jsons/" + owner->GetName() + ".json");
+	}
 
 	/// 適用の処理
 	for (auto& data : script->GetScriptDataList()) {
@@ -415,6 +425,7 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 	if (ImGui::Button("export")) {
 		std::string ownerName = _variables->GetOwner()->GetName();
 
+		_variables->RegisterScriptVariables();
 		_variables->SaveJson("Assets/Jsons/" + ownerName + ".json");
 	}
 

@@ -12,10 +12,19 @@ public class Player : MonoBehavior {
 	[SerializeField] float moveSpeed = 16f; // 移動速度
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
-	Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
-	Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
-	Entity camera; 
-	
+	[SerializeField] Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
+	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
+	Entity camera;
+
+	[SerializeField] private int life;
+	[SerializeField] private float hp;
+
+	public override void Awake() {
+		Debug.LogInfo("===============================================");
+		Debug.LogInfo("life: " + life);
+		Debug.LogInfo("===============================================");
+	}
+
 	public override void Initialize() {
 
 		if(entity == null) {

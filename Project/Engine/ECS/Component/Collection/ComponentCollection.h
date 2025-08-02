@@ -87,6 +87,10 @@ inline Comp* ComponentCollection::AddComponent() requires std::is_base_of_v<ICom
 	if (arrayMap_.find(hash) == arrayMap_.end()) {
 		RegisterComponentFactory<Comp>();
 	}
+
+	Comp* comp = static_cast<Comp*>(factoryMap_[hash]());
+	comp.id = arrayMap_[hash]->GetComponentIndex();
+
 	return static_cast<Comp*>(factoryMap_[hash]());
 }
 
@@ -104,6 +108,11 @@ inline void ComponentCollection::RemoveComponent(size_t _index) requires std::is
 	ComponentArray<Comp>* componentArray = static_cast<ComponentArray<Comp>*>(arrayMap_[hash].get());
 	componentArray->usedIndices_.erase(std::remove(componentArray->usedIndices_.begin(), componentArray->usedIndices_.end(), _index), componentArray->usedIndices_.end());
 	componentArray->removedIndices_.push_back(_index);
+
+	componentArray->usedComponents_.erase(std::remove(
+		componentArray->usedComponents_.begin(), componentArray->usedComponents_.end(),
+		&componentArray->components_[_index]), componentArray->usedComponents_.end()
+	);
 }
 
 template<typename Comp>

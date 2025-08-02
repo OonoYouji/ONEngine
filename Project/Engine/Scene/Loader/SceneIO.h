@@ -24,8 +24,6 @@ public:
 	void OutputTemporary(const std::string& _sceneName);
 	void InputTemporary(const std::string& _sceneName);
 
-	void LoadEntity(const nlohmann::json& _entityJson, IEntity* _entity);
-
 private:
 
 	void SaveScene(const std::string& _filename);

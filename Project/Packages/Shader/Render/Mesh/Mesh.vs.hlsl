@@ -20,7 +20,7 @@ VSOutput main(VSInput input, uint instanceId : SV_InstanceID) {
 
 	output.position      = mul(input.position, matWVP);
 	output.worldPosition = mul(input.position, (float4x4) transforms[instanceIndex].matWorld);
-	output.normal        = mul(input.normal, (float3x3) transforms[instanceIndex].matWorld);
+	output.normal        = normalize(mul(input.normal, (float3x3) transforms[instanceIndex].matWorld));
 	output.uv            = input.uv;
 	output.instanceId    = instanceIndex;
 	
