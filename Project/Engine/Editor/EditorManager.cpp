@@ -41,7 +41,7 @@ void EditorManager::Update() {
 		}
 
 	} else {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 		// undo, redo を行う
 		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Z)) {
 			Undo();
@@ -50,7 +50,7 @@ void EditorManager::Update() {
 		if (Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_Y)) {
 			Redo();
 		}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 	}
 
 }

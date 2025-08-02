@@ -26,8 +26,8 @@
 		}
 
 		Transform t = attachedEntity.transform;
-		t.position = jointTransform.position;
-		t.rotate = jointTransform.rotate;
+		// t.position = jointTransform.position;
+		// t.rotate = jointTransform.rotate;
 		//t.scale = jointTransform.scale;
 
 	}

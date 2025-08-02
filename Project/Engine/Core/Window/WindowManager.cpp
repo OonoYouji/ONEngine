@@ -16,11 +16,11 @@ namespace {
 }
 
 LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
 		return true;
 	}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 	switch (_msg) {
 	case WM_CLOSE:
@@ -34,11 +34,11 @@ LRESULT WindowManager::MainWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPA
 }
 
 LRESULT WindowManager::SubWindowProc(HWND _hwnd, UINT _msg, WPARAM _wparam, LPARAM _lparam) {
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	if (ImGui_ImplWin32_WndProcHandler(_hwnd, _msg, _wparam, _lparam)) {
 		return true;
 	}
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 	switch (_msg) {
 	case WM_CLOSE:

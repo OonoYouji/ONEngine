@@ -7,6 +7,7 @@
 /// engine
 #include "../Pipelines/Collection/RenderingPipelineCollection.h"
 #include "../Shader/ShaderCompiler.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h" 
 #include "Engine/Core/Window/WindowManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
@@ -62,14 +63,14 @@ private:
 	class EntityComponentSystem*                 pEntityComponentSystem_ = nullptr;
 
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	class ImGuiManager*                          imGuiManager_ = nullptr;
 #else
 
 	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 	Window* releaseBuildSubWindow_;
 
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 	//std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 
@@ -85,11 +86,11 @@ public:
 
 
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 	/// @brief ImGuiManagerへのポインタを設定
 	/// @param _imGuiManager ImGuiManagerへのポインタ
 	void SetImGuiManager(class ImGuiManager* _imGuiManager) { imGuiManager_ = _imGuiManager; }
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 };
 

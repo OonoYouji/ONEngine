@@ -5,7 +5,6 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Core/Config/EngineConfig.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -46,13 +45,13 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
 
 
-#ifdef _DEBUG
+#ifdef DEBUG_MODE
 #else
 	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
 	copyImagePipeline_->Initialize(shaderCompiler_.get(), dxManager_);
 	releaseBuildSubWindow_ = windowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
 	windowManager_->HideGameWindow(releaseBuildSubWindow_);
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 }
 
@@ -64,7 +63,7 @@ void RenderingFramework::Draw() {
 	);
 
 	/// 描画処理
-#ifdef _DEBUG /// imguiの描画
+#ifdef DEBUG_MODE /// imguiの描画
 	imGuiManager_->GetDebugGameWindow()->PreDraw();
 
 
@@ -93,7 +92,7 @@ void RenderingFramework::Draw() {
 	DrawScene();
 	windowManager_->MainWindowPostDraw();
 
-#endif // _DEBUG
+#endif // DEBUG_MODE
 
 
 	/// commandの実行
