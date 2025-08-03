@@ -6,7 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
+DebugCamera::DebugCamera() {}
 DebugCamera::~DebugCamera() {
 	//variables_ = GetComponent<Variables>();
 	//variables_->Get<Vector3>("startPos") = transform_->position;
@@ -28,9 +28,9 @@ void DebugCamera::Initialize() {
 	transform_->scale = Vector3::kOne;
 	eulerAngles_ = Vector3::kZero;
 
-	fovY_ = 0.7f;
-	nearClip_ = 0.1f;
-	farClip_ = 1000.0f;
+	//fovY_ = 0.7f;
+	//nearClip_ = 0.1f;
+	//farClip_ = 1000.0f;
 
 
 	isActive_ = true;
@@ -41,12 +41,12 @@ void DebugCamera::Initialize() {
 	moveSpeed_ = 0.05f; /// 初期値
 
 	UpdateTransform();
-	matView_ = transform_->GetMatWorld().Inverse();
-	matProjection_ = MakePerspectiveFovMatrix(
-		fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
-		nearClip_, farClip_
-	);
-	viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
+	//matView_ = transform_->GetMatWorld().Inverse();
+	//matProjection_ = MakePerspectiveFovMatrix(
+	//	fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
+	//	nearClip_, farClip_
+	//);
+	//viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 
 }
 
@@ -138,12 +138,12 @@ void DebugCamera::Update() {
 		transform_->rotate = Quaternion::FromEuler(eulerAngles_);
 		transform_->Update();
 
-		matView_ = transform_->GetMatWorld().Inverse();
-		matProjection_ = MakePerspectiveFovMatrix(
-			fovY_, 1280.0f / 720.0f,
-			nearClip_, farClip_
-		);
-		viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
+		//matView_ = transform_->GetMatWorld().Inverse();
+		//matProjection_ = MakePerspectiveFovMatrix(
+		//	fovY_, 1280.0f / 720.0f,
+		//	nearClip_, farClip_
+		//);
+		//viewProjection_->SetMappedData(ViewProjection(matView_ * matProjection_));
 	}
 #endif // DEBUG_MODE
 
