@@ -89,8 +89,7 @@ void RenderingFramework::Draw() {
 	releaseBuildSubWindow_->PostDraw();
 
 	windowManager_->MainWindowPreDraw();
-	DrawDebug();
-	DrawScene();
+	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), dxManager_->GetDxCommand());
 	windowManager_->MainWindowPostDraw();
 
 #endif // DEBUG_MODE
