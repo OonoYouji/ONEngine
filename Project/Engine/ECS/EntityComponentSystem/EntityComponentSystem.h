@@ -99,7 +99,8 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
-	void UpdateSystems(const std::vector<IEntity*>& _entities);
+	void RuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
+	void OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
 
 
 	/// ----- prefab ----- ///

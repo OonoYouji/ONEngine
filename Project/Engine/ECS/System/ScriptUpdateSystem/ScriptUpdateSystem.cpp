@@ -13,7 +13,7 @@
 ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
-void ScriptUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();

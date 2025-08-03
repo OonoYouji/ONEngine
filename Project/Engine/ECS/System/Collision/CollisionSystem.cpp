@@ -56,7 +56,7 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void CollisionSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// colliderを集める
 	std::vector<ICollider*> colliders;

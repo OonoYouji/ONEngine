@@ -85,7 +85,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
 	Terrain* prevTerrain_ = pTerrain_;

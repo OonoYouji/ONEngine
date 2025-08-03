@@ -18,7 +18,7 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities);
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities);
 
 private:
 	/// =======================================

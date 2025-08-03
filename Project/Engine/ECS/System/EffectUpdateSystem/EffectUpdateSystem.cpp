@@ -10,7 +10,7 @@
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-void EffectUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// エフェクトコンポーネントを持つエンティティを取得
 	std::list<Effect*> effectList;

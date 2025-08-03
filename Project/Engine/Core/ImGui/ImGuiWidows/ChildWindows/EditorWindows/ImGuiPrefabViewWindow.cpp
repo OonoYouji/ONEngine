@@ -32,7 +32,7 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 		prefabEntity->Update();
 		prefabEntity->UpdateTransform();
 
-		pECS_->UpdateSystems({ prefabEntity });
+		pECS_->RuntimeUpdateSystems({ prefabEntity });
 
 		prefabEntity->UpdateTransform();
 	}

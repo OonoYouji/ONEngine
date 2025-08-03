@@ -10,7 +10,7 @@ ColliderRenderQueueSystem::ColliderRenderQueueSystem() {
 
 }
 
-void ColliderRenderQueueSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void ColliderRenderQueueSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 	UpdateSphereCollider(_entities);
 	UpdateBoxCollider(_entities);
 }

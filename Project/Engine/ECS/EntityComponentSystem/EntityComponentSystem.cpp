@@ -64,12 +64,10 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-
 	entityCollection_->UpdateEntities();
 
-
 	auto entities = GetActiveEntities();
-	UpdateSystems(entities);
+	RuntimeUpdateSystems(entities);
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
@@ -142,9 +140,15 @@ void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
 }
 
-void EntityComponentSystem::UpdateSystems(const std::vector<IEntity*>& _entities) {
+void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
 	for (auto& system : systems_) {
-		system->Update(this, _entities);
+		system->RuntimeUpdate(this, _entities);
+	}
+}
+
+void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
+	for (auto& system : systems_) {
+		system->OutsideOfRuntimeUpdate(this, _entities);
 	}
 }
 

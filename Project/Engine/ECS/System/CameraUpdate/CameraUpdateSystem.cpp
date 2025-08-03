@@ -6,7 +6,7 @@
 
 CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {}
 
-void CameraUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<class IEntity*>&) {
+void CameraUpdateSystem::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>&) {
 	/// カメラのcomponentを集める
 
 	ComponentArray<CameraComponent>* cameraArray = _ecs->GetComponentArray<CameraComponent>();
@@ -47,4 +47,8 @@ void CameraUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<c
 		_ecs->SetMainCamera(pMainCamera_);
 	}
 
+}
+
+void CameraUpdateSystem::RuntimeUpdate(EntityComponentSystem*, const std::vector<class IEntity*>&) {
+	
 }
