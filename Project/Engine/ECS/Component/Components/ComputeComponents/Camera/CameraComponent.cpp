@@ -1,9 +1,15 @@
 #include "CameraComponent.h"
 
+/// externals
+#include <imgui.h>
+
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+
+#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+
 
 CameraComponent::CameraComponent() {
 	fovY_ = 0.7f; ///< デフォルトの視野角
@@ -22,7 +28,7 @@ void CameraComponent::UpdateViewProjection() {
 	entity->UpdateTransform(); /// transformの更新し忘れ防止
 	matView_ = entity->GetTransform()->GetMatWorld().Inverse();
 
-	if (cameraType_ == static_cast<int>(CameraType::Type3D)) { 
+	if (cameraType_ == static_cast<int>(CameraType::Type3D)) {
 		/// 3Dカメラの場合
 		matProjection_ = CameraMath::MakePerspectiveFovMatrix(
 			fovY_, EngineConfig::kWindowSize.x / EngineConfig::kWindowSize.y,
@@ -92,6 +98,10 @@ void CameraComponent::SetFarClip(float _farClip) {
 	farClip_ = _farClip;
 }
 
+void CameraComponent::SetCameraType(int _cameraType) {
+	cameraType_ = _cameraType;
+}
+
 bool CameraComponent::GetIsMainCamera() const {
 	return isMainCamera_;
 }
@@ -106,4 +116,71 @@ float CameraComponent::GetNearClip() const {
 
 float CameraComponent::GetFarClip() const {
 	return farClip_;
+}
+
+int CameraComponent::GetCameraType() const {
+	return cameraType_;
+}
+
+const ViewProjection& CameraComponent::GetViewProjection() const {
+	return viewProjection_.GetMappingData();
+}
+
+const Matrix4x4& CameraComponent::GetViewMatrix() const {
+	return matView_;
+}
+
+const Matrix4x4& CameraComponent::GetProjectionMatrix() const {
+	return matProjection_;
+}
+
+
+
+void from_json(const nlohmann::json& _j, CameraComponent& _c) {
+	_c.SetIsMainCamera(_j.value("isMainCamera", false));
+	_c.SetFovY(_j.value("fovY", 0.7f));
+	_c.SetNearClip(_j.value("nearClip", 0.1f));
+	_c.SetFarClip(_j.value("farClip", 1000.0f));
+}
+
+void to_json(nlohmann::json& _j, const CameraComponent& _c) {
+	_j = nlohmann::json{
+		{ "type", "Camera" },
+		{ "enable", _c.enable },
+		{ "fovY", _c.GetFovY() },
+		{ "nearClip", _c.GetNearClip() },
+		{ "farClip", _c.GetFarClip() },
+		{ "cameraType", _c.GetCameraType() },
+		{ "isMainCamera", _c.GetIsMainCamera() }
+	};
+}
+
+void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
+	if (!_camera) {
+		return; // カメラがnullptrの場合は何もしない
+	}
+
+	float fovY = _camera->GetFovY();
+	float nearClip = _camera->GetNearClip();
+	float farClip = _camera->GetFarClip();
+
+	/// param debug
+	if (ImGui::DragFloat("fovY", &fovY, 0.01f, 0.1f, 3.14f)) {
+		_camera->SetFovY(fovY);
+	}
+
+	if (ImGui::DragFloat("near clip", &nearClip, 0.01f, 0.01f, 100.0f)) {
+		_camera->SetNearClip(nearClip);
+	}
+
+	if (ImGui::DragFloat("far clip", &farClip, 0.01f, 100.0f, 10000.0f)) {
+		_camera->SetFarClip(farClip);
+	}
+
+	ImGui::Spacing();
+
+	if (ImGui::Button("main camera setting")) {
+		_camera->SetIsMainCamera(true);
+	}
+
 }

@@ -1,15 +1,18 @@
 #pragma once
 
+/// externals
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
-enum class CameraType {
-	None,
-	Type3D, ///< 3Dカメラ
-	Type2D, ///< 2Dカメラ
-};
+//enum class CameraType {
+//	None,
+//	Type3D, ///< 3Dカメラ
+//	Type2D, ///< 2Dカメラ
+//};
 
 /// ///////////////////////////////////////////////////
 /// カメラのコンポーネント
@@ -63,11 +66,18 @@ public:
 	void SetFovY(float _fovY);
 	void SetNearClip(float _nearClip);
 	void SetFarClip(float _farClip);
+	void SetCameraType(int _cameraType);
 
 	bool GetIsMainCamera() const;
 	float GetFovY() const;
 	float GetNearClip() const;
 	float GetFarClip() const;
+	int GetCameraType() const;
+
+	const ViewProjection& GetViewProjection() const;
+
+	const Matrix4x4& GetViewMatrix() const;
+	const Matrix4x4& GetProjectionMatrix() const;
 
 };
 
@@ -92,4 +102,12 @@ namespace CameraMath {
 	/// @return 平行投影行列
 	Matrix4x4 MakeOrthographicMatrix(float _left, float _right, float _bottom, float _top, float _znear, float _zfar);
 
+}
+
+
+void from_json(const nlohmann::json& _j, CameraComponent& _c);
+void to_json(nlohmann::json& _j, const CameraComponent& _c);
+
+namespace COMP_DEBUG {
+	void CameraDebug(CameraComponent* _camera);
 }
