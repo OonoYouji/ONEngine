@@ -1,6 +1,7 @@
 #include "RenderingPipelineCollection.h"
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -41,7 +42,9 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
+#ifdef DEBUG_MODE
 	Generate3DRenderingPipeline<SkinMeshSkeletonRenderingPipeline>();
+#endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
 
