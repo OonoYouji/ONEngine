@@ -92,10 +92,6 @@ void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren)
 	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
 }
 
-Camera* EntityComponentSystem::GenerateCamera() {
-	return entityCollection_->GenerateCamera();
-}
-
 void EntityComponentSystem::RemoveEntityAll() {
 	entityCollection_->RemoveEntityAll();
 }
@@ -210,21 +206,14 @@ IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 	return prefabEntity_.get();
 }
 
-void EntityComponentSystem::SetMainCamera(Camera* _camera) {
+void EntityComponentSystem::SetMainCamera(CameraComponent* _camera) {
 	entityCollection_->SetMainCamera(_camera);
 }
 
-void EntityComponentSystem::SetMainCamera(size_t _index) {
-	entityCollection_->SetMainCamera(_index);
-}
-
-void EntityComponentSystem::SetMainCamera2D(Camera* _camera) {
+void EntityComponentSystem::SetMainCamera2D(CameraComponent* _camera) {
 	entityCollection_->SetMainCamera2D(_camera);
 }
 
-void EntityComponentSystem::SetMainCamera2D(size_t _index) {
-	entityCollection_->SetMainCamera2D(_index);
-}
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
@@ -246,32 +235,28 @@ IEntity* EntityComponentSystem::GetEntity(size_t _id) {
 	return nullptr;
 }
 
-const std::vector<Camera*>& EntityComponentSystem::GetCameras() {
-	return entityCollection_->GetCameras();
-}
-
-const Camera* EntityComponentSystem::GetMainCamera() const {
+const CameraComponent* EntityComponentSystem::GetMainCamera() const {
 	return entityCollection_->GetMainCamera();
 }
 
-Camera* EntityComponentSystem::GetMainCamera() {
+CameraComponent* EntityComponentSystem::GetMainCamera() {
 	return entityCollection_->GetMainCamera();
 }
 
-const Camera* EntityComponentSystem::GetMainCamera2D() const {
+const CameraComponent* EntityComponentSystem::GetMainCamera2D() const {
 	return entityCollection_->GetMainCamera2D();
 }
 
-Camera* EntityComponentSystem::GetMainCamera2D() {
+CameraComponent* EntityComponentSystem::GetMainCamera2D() {
 	return entityCollection_->GetMainCamera2D();
 }
 
-const Camera* EntityComponentSystem::GetDebugCamera() const {
-	return static_cast<Camera*>(debugCamera_.get());
+const CameraComponent* EntityComponentSystem::GetDebugCamera() const {
+	return debugCamera_->GetComponent<CameraComponent>();
 }
 
-Camera* EntityComponentSystem::GetDebugCamera() {
-	return static_cast<Camera*>(debugCamera_.get());
+CameraComponent* EntityComponentSystem::GetDebugCamera() {
+	return debugCamera_->GetComponent<CameraComponent>();
 }
 
 

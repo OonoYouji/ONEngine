@@ -6,6 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 SkyboxRenderingPipeline::SkyboxRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -115,7 +116,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	Skybox* pSkybox = nullptr;
 	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
@@ -151,7 +152,7 @@ void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetIndexBuffer(&ibv_);
 
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 	transformMatrix_.BindForGraphicsCommandList(commandList, 1);
 	texIndex_.BindForGraphicsCommandList(commandList, 2);
 	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());

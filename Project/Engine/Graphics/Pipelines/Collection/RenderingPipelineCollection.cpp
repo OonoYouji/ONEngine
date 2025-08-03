@@ -3,6 +3,7 @@
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
 
 /// pipelines
@@ -54,7 +55,7 @@ void RenderingPipelineCollection::Initialize() {
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }
 
-void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCamera) {
+void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
 	std::vector<IEntity*> entities;
 	entities.reserve(pEntityComponentSystem_->GetEntities().size());
@@ -65,7 +66,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 	}
 
 
-	if (_3dCamera) {
+	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
 			renderer->Draw(pEntityComponentSystem_, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
@@ -73,7 +74,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
-	if (_2dCamera) {
+	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
 			renderer->Draw(pEntityComponentSystem_, entities, _2dCamera, dxManager_->GetDxCommand());
 		}
@@ -82,7 +83,7 @@ void RenderingPipelineCollection::DrawEntities(Camera* _3dCamera, Camera* _2dCam
 	}
 }
 
-void RenderingPipelineCollection::DrawSelectedPrefab(Camera* _3dCamera, Camera* _2dCamera) {
+void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
 	std::vector<IEntity*> entities;
 	entities.push_back(pEntityComponentSystem_->GetGridEntity());

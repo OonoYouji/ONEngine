@@ -5,6 +5,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -120,7 +121,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void SpriteRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SpriteRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// entityから sprite renderer を集める
 	for (auto& entity : _entities) {
@@ -154,7 +155,7 @@ void SpriteRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	commandList->IASetIndexBuffer(&ibv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0); ///< view projection
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0); ///< view projection
 
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();

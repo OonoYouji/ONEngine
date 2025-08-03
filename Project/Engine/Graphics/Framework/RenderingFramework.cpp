@@ -5,6 +5,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 RenderingFramework::RenderingFramework() {}
 RenderingFramework::~RenderingFramework() {}
@@ -102,7 +103,7 @@ void RenderingFramework::Draw() {
 }
 
 void RenderingFramework::DrawScene() {
-	Camera* camera = pEntityComponentSystem_->GetMainCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetMainCamera();
 	if (!camera) {
 		Console::Log("[error] RenderingFramework::DrawScene: Main Camera is null");
 		return;
@@ -119,7 +120,7 @@ void RenderingFramework::DrawScene() {
 }
 
 void RenderingFramework::DrawDebug() {
-	Camera* camera = pEntityComponentSystem_->GetDebugCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetDebugCamera();
 	if (!camera) {
 		Console::Log("[error] RenderingFramework::DrawDebug: Debug Camera is null");
 		return;
@@ -136,7 +137,7 @@ void RenderingFramework::DrawDebug() {
 }
 
 void RenderingFramework::DrawPrefab() {
-	Camera* camera = pEntityComponentSystem_->GetDebugCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetDebugCamera();
 
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_PREFAB].get();
 

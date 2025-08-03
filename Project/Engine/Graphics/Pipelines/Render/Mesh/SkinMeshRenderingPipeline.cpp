@@ -6,6 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
@@ -91,7 +92,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
 	for (auto& entity : _entities) {
@@ -112,7 +113,7 @@ void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const st
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	/// ViewProjection Bind
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, ViewProjectionCBV);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, ViewProjectionCBV);
 	/// Textures Bind
 	auto& textures = pGraphicsResourceCollection_->GetTextures();
 	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin())->GetSRVGPUHandle()); ///< Texture

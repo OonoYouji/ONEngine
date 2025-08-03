@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection)
 	: pECS_(_ecs), pResourceCollection_(_resourceCollection) {}
@@ -21,9 +22,9 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 
 
 	/// カメラの更新
-	Camera* debugCamera = pECS_->GetDebugCamera();
+	CameraComponent* debugCamera = pECS_->GetDebugCamera();
 	if (debugCamera) {
-		debugCamera->Update();
+		//debugCamera->Update();
 	}
 
 	IEntity* prefabEntity = pECS_->GetPrefabEntity();
@@ -44,9 +45,12 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 		float length = 6.0f; /// オブジェクトとカメラの距離
 
 		if (debugCamera) {
-			debugCamera->SetPosition(dir * length);
-			debugCamera->SetRotate(Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
-			debugCamera->UpdateViewProjection();
+			IEntity* cameraEntity = debugCamera->GetOwner();
+			if (cameraEntity) {
+				cameraEntity->SetPosition(dir * length);
+				cameraEntity->SetRotate(Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く
+				debugCamera->UpdateViewProjection();
+			}
 		}
 
 	}

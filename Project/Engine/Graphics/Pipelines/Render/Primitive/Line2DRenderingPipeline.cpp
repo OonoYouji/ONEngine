@@ -7,6 +7,7 @@
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 Line2DRenderingPipeline::Line2DRenderingPipeline() {}
@@ -15,7 +16,7 @@ Line2DRenderingPipeline::~Line2DRenderingPipeline() {}
 void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
 	{	/// pipelineの作成
-		
+
 		/// shaderをコンパイル
 		Shader shader;
 		shader.Initialize(_shaderCompiler);
@@ -68,13 +69,13 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappingData_));
 
 	vbv_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();
-	vbv_.SizeInBytes    = static_cast<UINT>(sizeof(VertexData) * kMaxVertexNum_);
-	vbv_.StrideInBytes  = static_cast<UINT>(sizeof(VertexData));
+	vbv_.SizeInBytes = static_cast<UINT>(sizeof(VertexData) * kMaxVertexNum_);
+	vbv_.StrideInBytes = static_cast<UINT>(sizeof(VertexData));
 
 }
 
-void Line2DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
-	
+void Line2DRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+
 	/// entityから描画データを取得
 	for (auto& entity : _entities) {
 		Line2DRenderer*&& lineRenderer = entity->GetComponent<Line2DRenderer>();
@@ -93,7 +94,7 @@ void Line2DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	for (RenderingData* renderingData : renderingDataList_) {
 		vertices_.insert(vertices_.end(), renderingData->vertices.begin(), renderingData->vertices.end());
 	}
-	
+
 	if (vertices_.size() > kMaxVertexNum_) { ///< 頂点データが最大数を超えたら超過分を消す
 		vertices_.resize(kMaxVertexNum_);
 	}
@@ -113,7 +114,7 @@ void Line2DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	/// buffer
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 	/// 描画
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);

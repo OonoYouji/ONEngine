@@ -37,7 +37,6 @@ private:
 
 	void MakeViewProjection(class DxDevice* _dxDevice);
 
-	bool IsMakeViewProjection() const;
 
 private:
 	/// ===================================================
@@ -68,13 +67,17 @@ public:
 	void SetFarClip(float _farClip);
 	void SetCameraType(int _cameraType);
 
+
 	bool GetIsMainCamera() const;
 	float GetFovY() const;
 	float GetNearClip() const;
 	float GetFarClip() const;
 	int GetCameraType() const;
 
+	bool IsMakeViewProjection() const;
+
 	const ViewProjection& GetViewProjection() const;
+	ConstantBuffer<ViewProjection>& GetViewProjectionBuffer();
 
 	const Matrix4x4& GetViewMatrix() const;
 	const Matrix4x4& GetProjectionMatrix() const;

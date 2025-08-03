@@ -53,9 +53,6 @@ void CameraComponent::MakeViewProjection(DxDevice* _dxDevice) {
 	));
 }
 
-bool CameraComponent::IsMakeViewProjection() const {
-	return viewProjection_.Get() != nullptr;
-}
 
 Matrix4x4 CameraMath::MakePerspectiveFovMatrix(float _fovY, float _aspectRatio, float _nearClip, float _farClip) {
 	return Matrix4x4(
@@ -124,8 +121,16 @@ int CameraComponent::GetCameraType() const {
 	return cameraType_;
 }
 
+bool CameraComponent::IsMakeViewProjection() const {
+	return viewProjection_.Get() != nullptr;
+}
+
 const ViewProjection& CameraComponent::GetViewProjection() const {
 	return viewProjection_.GetMappingData();
+}
+
+ConstantBuffer<ViewProjection>& CameraComponent::GetViewProjectionBuffer() {
+	return viewProjection_;
 }
 
 const Matrix4x4& CameraComponent::GetViewMatrix() const {

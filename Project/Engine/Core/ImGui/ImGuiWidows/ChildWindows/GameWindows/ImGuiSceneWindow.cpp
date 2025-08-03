@@ -14,6 +14,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
@@ -148,7 +149,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		Matrix4x4 entityMatrix = transform->matWorld;
 
 		/// カメラの取得
-		Camera* camera = pECS_->GetDebugCamera();
+		CameraComponent* camera = pECS_->GetDebugCamera();
 
 		ImGuizmo::Manipulate(
 			&camera->GetViewMatrix().m[0][0],

@@ -8,6 +8,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
@@ -31,21 +32,21 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	/// カメラを設定する
 	auto cameras = pEntityComponentSystem_->FindEntities<Camera>();
-	for (auto& camera : cameras) {
-		if (camera->GetName() == "DebugCamera") {
-			continue;
-		}
-
-		if (camera->GetCameraType() == static_cast<int>(CameraType::Type3D)) {
-			pEntityComponentSystem_->SetMainCamera(camera);
-			break;
-		}
-
-		if (camera->GetCameraType() == static_cast<int>(CameraType::Type2D)) {
-			pEntityComponentSystem_->SetMainCamera2D(camera);
-			break;
+	ComponentArray<CameraComponent>* cameraArray = pEntityComponentSystem_->GetComponentArray<CameraComponent>();
+	if (cameraArray) {
+		for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
+			/// componentがnullptrでないことを確認、main cameraかどうかを確認
+			if (cameraComponent && cameraComponent->GetIsMainCamera()) {
+				int type = cameraComponent->GetCameraType();
+				if (type == static_cast<int>(CameraType::Type3D)) {
+					pEntityComponentSystem_->SetMainCamera(cameraComponent);
+				} else if (type == static_cast<int>(CameraType::Type2D)) {
+					pEntityComponentSystem_->SetMainCamera2D(cameraComponent);
+				}
+			}
 		}
 	}
+
 
 }
 

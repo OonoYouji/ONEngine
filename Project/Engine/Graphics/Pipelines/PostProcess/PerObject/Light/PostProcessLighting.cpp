@@ -10,6 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 PostProcessLighting::PostProcessLighting() {}
 PostProcessLighting::~PostProcessLighting() {}
@@ -93,8 +94,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		);
 		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
-		Camera* camera = _pEntityComponentSystem->GetDebugCamera();
-		cameraBufferData_->SetMappedData({ Vector4(camera->GetPosition(), 1.0f) });
+		CameraComponent* camera = _pEntityComponentSystem->GetDebugCamera();
+		if (IEntity* entity = camera->GetOwner()) {
+			cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });
+		}
+
 		cameraBufferData_->BindForComputeCommandList(command, 1);
 	}
 
