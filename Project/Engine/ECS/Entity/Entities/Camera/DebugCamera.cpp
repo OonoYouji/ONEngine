@@ -4,6 +4,7 @@
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 DebugCamera::DebugCamera(DxDevice* _dxDevice) : Camera(_dxDevice) {}
 DebugCamera::~DebugCamera() {
@@ -14,13 +15,13 @@ DebugCamera::~DebugCamera() {
 }
 
 void DebugCamera::Initialize() {
-
 	DebugCamera* debugCamera = pEntityComponentSystem_->FindEntity<DebugCamera>();
 	if (debugCamera && debugCamera != this) {
 		Destroy();
 		return;
 	}
 
+	AddComponent<CameraComponent>();
 	pEntityComponentSystem_->AddDoNotDestroyEntity(this);
 
 	transform_->position = { 0.0f, 0.0f, -10.0f };

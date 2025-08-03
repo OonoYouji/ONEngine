@@ -12,10 +12,12 @@
 
 
 CameraComponent::CameraComponent() {
-	fovY_ = 0.7f; ///< デフォルトの視野角
-	nearClip_ = 0.1f; ///< デフォルトの最小描画距離
-	farClip_ = 1000.0f; ///< デフォルトの最大描画距離
-	cameraType_ = static_cast<int>(CameraType::Type3D); ///< デフォルトは3Dカメラ
+	/// デフォルト値を設定
+	SetFovY(0.7f);
+	SetNearClip(0.1f);
+	SetFarClip(1000.0f);
+	SetIsMainCamera(false);
+	SetCameraType(static_cast<int>(CameraType::Type3D));
 }
 CameraComponent::~CameraComponent() {}
 
@@ -145,7 +147,7 @@ void from_json(const nlohmann::json& _j, CameraComponent& _c) {
 
 void to_json(nlohmann::json& _j, const CameraComponent& _c) {
 	_j = nlohmann::json{
-		{ "type", "Camera" },
+		{ "type", "CameraComponent" },
 		{ "enable", _c.enable },
 		{ "fovY", _c.GetFovY() },
 		{ "nearClip", _c.GetNearClip() },
