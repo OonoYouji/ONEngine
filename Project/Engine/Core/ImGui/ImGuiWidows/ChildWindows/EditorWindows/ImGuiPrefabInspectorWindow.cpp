@@ -7,6 +7,9 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
@@ -22,6 +25,7 @@ enum SelectedType {
 ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
 	: pECS_(_ecs), pEditorManager_(_editorManager) {
 
+
 	/// compute
 	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
 	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
@@ -29,6 +33,8 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
+	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component)); });
+	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
@@ -37,6 +43,8 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<SkinMeshRenderer>([&](IComponent* _component) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_component)); });
+	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _component) { COMP_DEBUG::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_component)); });
+	RegisterComponent<Skybox>([&](IComponent* _component) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_component)); });
 
 	/// collider
 	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});
@@ -134,7 +142,9 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 			}
 
 			ImGui::Indent(34.0f);
-			componentDebugFuncs_[component.first](component.second);
+			if (componentDebugFuncs_.contains(component.first)) {
+				componentDebugFuncs_[component.first](component.second);
+			}
 			ImGui::Unindent(34.0f);
 		}
 

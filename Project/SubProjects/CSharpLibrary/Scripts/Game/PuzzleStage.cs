@@ -352,7 +352,6 @@ public class PuzzleStage : MonoBehavior {
 		}
 	}
 
-
 	private bool CheckIsBlock(int _mapValue) {
 		if (_mapValue == (int)MAPDATA.BLOCK_BLACK || _mapValue == (int)MAPDATA.BLOCK_WHTIE) {
 			return true;

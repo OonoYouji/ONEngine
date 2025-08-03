@@ -1,0 +1,48 @@
+{
+    "className": "EmptyEntity",
+    "components": [
+        {
+            "cameraType": 1,
+            "enable": 1,
+            "farClip": 1000.0,
+            "fovY": 0.699999988079071,
+            "isMainCamera": false,
+            "nearClip": 0.10000000149011612,
+            "type": "CameraComponent"
+        },
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 3.799999952316284,
+                "z": -3.684000015258789
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.22699999809265137,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "Camera"
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": -1,
+    "name": "Camera",
+    "parent": null,
+    "prefabName": "Camera.prefab"
+}

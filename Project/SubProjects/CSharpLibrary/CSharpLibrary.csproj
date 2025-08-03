@@ -90,6 +90,9 @@
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
     <Compile Include="Scripts\Game\Block.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
+    <Compile Include="Scripts\Game\Camera.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Scripts\Game\Command\PuzzleCommand.cs" />
     <Compile Include="Scripts\Game\Command\PuzzlePlayerCommands.cs">
       <SubType>Component</SubType>
