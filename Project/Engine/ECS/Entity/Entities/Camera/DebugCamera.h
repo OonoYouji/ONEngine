@@ -1,18 +1,18 @@
 #pragma once
 
 /// engine
-#include "Camera.h"
+#include "../../Interface/IEntity.h"
 
 /// ///////////////////////////////////////////////////
 /// デバッグカメラ
 /// ///////////////////////////////////////////////////
-class DebugCamera : public Camera {
+class DebugCamera : public IEntity {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	DebugCamera(class DxDevice* _dxDevice);
+	DebugCamera();
 	~DebugCamera();
 
 	void Initialize() override;

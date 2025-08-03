@@ -15,8 +15,7 @@
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
-class Camera;
-class Camera2D;
+class CameraComponent;
 
 void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs);
 EntityComponentSystem* GetEntityComponentSystemPtr();
@@ -51,13 +50,6 @@ public:
 	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
-
-	/// @brief 新しい camera を生成する
-	/// @return cameraへのポインタ
-	Camera* GenerateCamera();
-
-	template<typename T>
-	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
 
 	void RemoveEntityAll();
 
@@ -107,7 +99,8 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
-	void UpdateSystems(const std::vector<IEntity*>& _entities);
+	void RuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
+	void OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
 
 
 	/// ----- prefab ----- ///
@@ -149,11 +142,8 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	void SetMainCamera(Camera* _camera);
-	void SetMainCamera(size_t _index);
-
-	void SetMainCamera2D(Camera* _camera);
-	void SetMainCamera2D(size_t _index);
+	void SetMainCamera(CameraComponent* _camera);
+	void SetMainCamera2D(CameraComponent* _camera);
 
 	/// @brief entities の取得
 	/// @return entities
@@ -161,20 +151,16 @@ public:
 
 	IEntity* GetEntity(size_t _index);
 
-	/// @brief cameras の取得
-	/// @return cameras
-	const std::vector<Camera*>& GetCameras();
-
 	/// @brief main cameraの取得
 	/// @return Cameraクラスへのポインタ
-	const Camera* GetMainCamera() const;
-	Camera* GetMainCamera();
+	const CameraComponent* GetMainCamera() const;
+	CameraComponent* GetMainCamera();
 
-	const Camera* GetMainCamera2D() const;
-	Camera* GetMainCamera2D();
+	const CameraComponent* GetMainCamera2D() const;
+	CameraComponent* GetMainCamera2D();
 
-	const Camera* GetDebugCamera() const;
-	Camera* GetDebugCamera();
+	const CameraComponent* GetDebugCamera() const;
+	CameraComponent* GetDebugCamera();
 
 };
 
@@ -187,11 +173,6 @@ public:
 template<typename T>
 inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
 	return entityCollection_->GenerateEntity<T>();
-}
-
-template<typename T>
-inline T* EntityComponentSystem::GenerateCamera() requires std::is_base_of_v<Camera, T> {
-	return entityCollection_->GenerateCamera<T>();
 }
 
 template<typename T>

@@ -3,8 +3,8 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 Line3DRenderingPipeline::Line3DRenderingPipeline() {}
@@ -74,7 +74,7 @@ void Line3DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line3DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void Line3DRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// rendering dataの収集
 	for (auto& entity : _entities) {
@@ -100,7 +100,7 @@ void Line3DRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 
 	/// draw call

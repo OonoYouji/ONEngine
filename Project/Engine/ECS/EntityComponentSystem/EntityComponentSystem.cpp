@@ -64,12 +64,10 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-
 	entityCollection_->UpdateEntities();
 
-
 	auto entities = GetActiveEntities();
-	UpdateSystems(entities);
+	RuntimeUpdateSystems(entities);
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
@@ -90,10 +88,6 @@ IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _pre
 
 void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
-}
-
-Camera* EntityComponentSystem::GenerateCamera() {
-	return entityCollection_->GenerateCamera();
 }
 
 void EntityComponentSystem::RemoveEntityAll() {
@@ -146,9 +140,15 @@ void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
 }
 
-void EntityComponentSystem::UpdateSystems(const std::vector<IEntity*>& _entities) {
+void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
 	for (auto& system : systems_) {
-		system->Update(this, _entities);
+		system->RuntimeUpdate(this, _entities);
+	}
+}
+
+void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
+	for (auto& system : systems_) {
+		system->OutsideOfRuntimeUpdate(this, _entities);
 	}
 }
 
@@ -210,21 +210,14 @@ IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 	return prefabEntity_.get();
 }
 
-void EntityComponentSystem::SetMainCamera(Camera* _camera) {
+void EntityComponentSystem::SetMainCamera(CameraComponent* _camera) {
 	entityCollection_->SetMainCamera(_camera);
 }
 
-void EntityComponentSystem::SetMainCamera(size_t _index) {
-	entityCollection_->SetMainCamera(_index);
-}
-
-void EntityComponentSystem::SetMainCamera2D(Camera* _camera) {
+void EntityComponentSystem::SetMainCamera2D(CameraComponent* _camera) {
 	entityCollection_->SetMainCamera2D(_camera);
 }
 
-void EntityComponentSystem::SetMainCamera2D(size_t _index) {
-	entityCollection_->SetMainCamera2D(_index);
-}
 
 const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
@@ -246,32 +239,28 @@ IEntity* EntityComponentSystem::GetEntity(size_t _id) {
 	return nullptr;
 }
 
-const std::vector<Camera*>& EntityComponentSystem::GetCameras() {
-	return entityCollection_->GetCameras();
-}
-
-const Camera* EntityComponentSystem::GetMainCamera() const {
+const CameraComponent* EntityComponentSystem::GetMainCamera() const {
 	return entityCollection_->GetMainCamera();
 }
 
-Camera* EntityComponentSystem::GetMainCamera() {
+CameraComponent* EntityComponentSystem::GetMainCamera() {
 	return entityCollection_->GetMainCamera();
 }
 
-const Camera* EntityComponentSystem::GetMainCamera2D() const {
+const CameraComponent* EntityComponentSystem::GetMainCamera2D() const {
 	return entityCollection_->GetMainCamera2D();
 }
 
-Camera* EntityComponentSystem::GetMainCamera2D() {
+CameraComponent* EntityComponentSystem::GetMainCamera2D() {
 	return entityCollection_->GetMainCamera2D();
 }
 
-const Camera* EntityComponentSystem::GetDebugCamera() const {
-	return static_cast<Camera*>(debugCamera_.get());
+const CameraComponent* EntityComponentSystem::GetDebugCamera() const {
+	return debugCamera_->GetComponent<CameraComponent>();
 }
 
-Camera* EntityComponentSystem::GetDebugCamera() {
-	return static_cast<Camera*>(debugCamera_.get());
+CameraComponent* EntityComponentSystem::GetDebugCamera() {
+	return debugCamera_->GetComponent<CameraComponent>();
 }
 
 

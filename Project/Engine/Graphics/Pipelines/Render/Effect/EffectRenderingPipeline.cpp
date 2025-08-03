@@ -7,8 +7,8 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 EffectRenderingPipeline::EffectRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -91,7 +91,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void EffectRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::unordered_map<size_t, std::unordered_map<std::string, std::list<Effect*>>> blendMeshEffectMap;
 
@@ -121,7 +121,7 @@ void EffectRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 		pipelines_[blendMode]->SetPipelineStateForCommandList(_dxCommand);
 
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 		/// buffer dataのセット、先頭の texture gpu handle をセットする
 		auto& textures = pResourceCollection_->GetTextures();

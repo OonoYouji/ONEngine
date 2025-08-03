@@ -16,14 +16,14 @@ public:
 	EffectUpdateSystem() = default;
 	~EffectUpdateSystem() = default;
 
-	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
 private:
 	/// ==================================================
 	/// private : objects
 	/// ==================================================
 
-	class Camera* mainCamera_ = nullptr;
+	class CameraComponent* mainCamera_ = nullptr;
 	Matrix4x4 matBillboard_ = Matrix4x4::kIdentity; ///< ビルボード用の行列
 
 private:

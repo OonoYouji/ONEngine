@@ -6,7 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Gizmo.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 using namespace GizmoPrimitive;
 
@@ -64,7 +64,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class EntityComponentSystem* _ecs, [[maybe_unused]] const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void GizmoRenderingPipeline::Draw(class EntityComponentSystem*, [[maybe_unused]] const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// ---------------------------------------------------
 	/// wire描画を行う
@@ -118,7 +118,7 @@ void GizmoRenderingPipeline::Draw(class EntityComponentSystem* _ecs, [[maybe_unu
 
 	commandList->IASetVertexBuffers(0, 1, &vbv_);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(commandList, 0);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 	/// draw call
 	commandList->DrawInstanced(static_cast<UINT>(vertices_.size()), 1, 0, 0);

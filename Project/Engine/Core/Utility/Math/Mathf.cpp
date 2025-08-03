@@ -11,6 +11,10 @@
 namespace fs = std::filesystem;
 
 
+float Mathf::Cot(float _t) {
+	return 1.0f / std::tan(_t);
+}
+
 std::vector<File> Mathf::FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension) {
 	std::vector<File> result{};
 	// ディレクトリが存在するか確認

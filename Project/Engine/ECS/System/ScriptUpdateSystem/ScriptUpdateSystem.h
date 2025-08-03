@@ -18,7 +18,7 @@ public:
 	ScriptUpdateSystem();
 	~ScriptUpdateSystem() override;
 
-	void Update(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
 
 	void RecursivePushBackScript(class IEntity* _entity);
 

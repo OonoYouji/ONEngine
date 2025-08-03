@@ -10,6 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "../../../Math/ImGuiMath.h"
 #include "Engine/Editor/EditorManager.h"
@@ -35,6 +36,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
 	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component)); });
+	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
@@ -162,7 +164,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 			}
 
 			ImGui::Indent(34.0f);
-			componentDebugFuncs_[component.first](component.second);
+			if (componentDebugFuncs_.contains(component.first)) {
+				componentDebugFuncs_[component.first](component.second);
+			}
 			ImGui::Unindent(34.0f);
 		}
 

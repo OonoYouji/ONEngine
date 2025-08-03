@@ -18,7 +18,7 @@ public:
 	~SkinMeshSkeletonRenderingPipeline() override = default;
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Draw(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities, class Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 
 private:

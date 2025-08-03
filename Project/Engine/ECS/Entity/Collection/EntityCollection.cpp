@@ -10,7 +10,6 @@
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// entity
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
@@ -47,20 +46,6 @@ IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit
 		return entities_.back().get();
 	}
 	return nullptr;
-}
-
-Camera* EntityCollection::GenerateCamera() {
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(pDxManager_->GetDxDevice());
-	camera->pEntityComponentSystem_ = pECS_;
-	camera->id_ = NewEntityID(false);
-	camera->CommonInitialize();
-	camera->Initialize();
-
-	Camera* cameraPtr = camera.get();
-	entities_.push_back(std::move(camera));
-	cameras_.push_back(cameraPtr);
-
-	return cameraPtr;
 }
 
 void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
@@ -118,25 +103,6 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 	if (entityItr != entities_.end()) {
 		entities_.erase(entityItr, entities_.end());
-	}
-
-
-	/// カメラの削除
-	auto cameraItr = std::remove_if(cameras_.begin(), cameras_.end(),
-		[_entity](Camera* camera) {
-			return camera == _entity;
-		}
-	);
-
-	if (cameraItr != cameras_.end()) {
-		/// mainのカメラなら nullptr に設定
-		Camera* camera = *cameraItr;
-		if (camera == mainCamera_) {
-			mainCamera_ = nullptr;
-		} else if (camera == mainCamera2D_) {
-			mainCamera2D_ = nullptr;
-		}
-		cameras_.erase(cameraItr, cameras_.end());
 	}
 
 }
@@ -352,59 +318,35 @@ EntityPrefab* EntityCollection::GetPrefab(const std::string& _fileName) {
 
 
 
-void EntityCollection::SetMainCamera(Camera* _camera) {
+void EntityCollection::SetMainCamera(CameraComponent* _camera) {
 	mainCamera_ = _camera;
 }
 
-void EntityCollection::SetMainCamera(size_t _index) {
-	mainCamera_ = cameras_[_index];
-}
-
-void EntityCollection::SetMainCamera2D(Camera* _camera) {
+void EntityCollection::SetMainCamera2D(CameraComponent* _camera) {
 	mainCamera2D_ = _camera;
 }
 
-void EntityCollection::SetMainCamera2D(size_t _index) {
-	mainCamera2D_ = cameras_[_index];
-}
-
-void EntityCollection::SetDebugCamera(Camera* _camera) {
+void EntityCollection::SetDebugCamera(CameraComponent* _camera) {
 	debugCamera_ = _camera;
 }
 
-void EntityCollection::SetDebugCamera(size_t _index) {
-	debugCamera_ = cameras_[_index];
+CameraComponent* EntityCollection::GetMainCamera() {
+	return mainCamera_;
+}
+
+CameraComponent* EntityCollection::GetMainCamera2D() {
+	return mainCamera2D_;
 }
 
 const std::vector<std::unique_ptr<IEntity>>& EntityCollection::GetEntities() const {
 	return entities_;
 }
 
-const std::vector<Camera*>& EntityCollection::GetCameras() {
-	return cameras_;
-}
-
-const Camera* EntityCollection::GetMainCamera() const {
-	return mainCamera_;
-}
-
-Camera* EntityCollection::GetMainCamera() {
-	return mainCamera_;
-}
-
-const Camera* EntityCollection::GetMainCamera2D() const {
-	return mainCamera2D_;
-}
-
-Camera* EntityCollection::GetMainCamera2D() {
-	return mainCamera2D_;
-}
-
-const Camera* EntityCollection::GetDebugCamera() const {
+const CameraComponent* EntityCollection::GetDebugCamera() const {
 	return debugCamera_;
 }
 
-Camera* EntityCollection::GetDebugCamera() {
+CameraComponent* EntityCollection::GetDebugCamera() {
 	return debugCamera_;
 }
 

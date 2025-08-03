@@ -7,10 +7,10 @@
 /// engine
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-void EffectUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	/// エフェクトコンポーネントを持つエンティティを取得
 	std::list<Effect*> effectList;
@@ -27,7 +27,9 @@ void EffectUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<c
 		return;
 	}
 
-	matBillboard_ = Matrix4x4::MakeRotate(mainCamera_->GetRotate());
+	if (IEntity* entity = mainCamera_->GetOwner()) {
+		matBillboard_ = Matrix4x4::MakeRotate(entity->GetRotate());
+	}
 	//matBillboard_.m[3][0] = 0.0f;
 	//matBillboard_.m[3][1] = 0.0f;
 	//matBillboard_.m[3][2] = 0.0f;

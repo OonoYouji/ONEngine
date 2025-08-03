@@ -27,7 +27,6 @@
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
@@ -168,6 +167,8 @@
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.cpp" />
+    <ClCompile Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -201,7 +202,6 @@
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Components\Interface\IComponent.h" />
@@ -334,6 +334,8 @@
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.h" />
+    <ClInclude Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

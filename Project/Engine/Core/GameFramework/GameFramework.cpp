@@ -98,9 +98,12 @@ void GameFramework::Run() {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
+
+		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
+		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
 #endif // DEBUG_MODE
 
 		/// 描画処理

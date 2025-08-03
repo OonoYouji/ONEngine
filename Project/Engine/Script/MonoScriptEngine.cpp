@@ -22,7 +22,7 @@
 namespace {
 	MonoScriptEngine* gMonoScriptEngine = nullptr;
 
-	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void* _user_data) {
+	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void*) {
 		const char* domain = _log_domain ? _log_domain : "null";
 		const char* level = _log_level ? _log_level : "null";
 		const char* message = _message ? _message : "null";

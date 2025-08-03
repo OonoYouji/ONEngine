@@ -12,7 +12,6 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
@@ -46,7 +45,7 @@ public:
 	/// @param _dxManager DxManagerへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) override;
 
-	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) override;
+	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 

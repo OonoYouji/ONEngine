@@ -10,7 +10,7 @@
 #include "../Factory/EntityFactory.h"
 #include "../Prefab/EntityPrefab.h"
 
-class Camera;
+class CameraComponent;
 
 
 class EntityCollection final {
@@ -30,11 +30,6 @@ public:
 	template<typename T>
 	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
-
-	template<typename T>
-	T* GenerateCamera() requires std::is_base_of_v<Camera, T>;
-	Camera* GenerateCamera();
-
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
 	void RemoveEntityId(int32_t _id);
@@ -85,12 +80,11 @@ private:
 
 	/// entityの本体を持つ配列
 	std::vector<std::unique_ptr<IEntity>> entities_;
-	std::vector<Camera*> cameras_;
 	std::vector<IEntity*> doNotDestroyEntities_;
 
-	Camera* mainCamera_ = nullptr;
-	Camera* mainCamera2D_ = nullptr;
-	Camera* debugCamera_ = nullptr;
+	CameraComponent* debugCamera_ = nullptr;
+	CameraComponent* mainCamera_ = nullptr;
+	CameraComponent* mainCamera2D_ = nullptr;
 
 	std::function<void(EntityFactory*)> factoryRegisterFunc_;
 
@@ -100,27 +94,18 @@ private:
 
 public:
 
-	void SetMainCamera(Camera* _camera);
-	void SetMainCamera(size_t _index);
+	void SetMainCamera(CameraComponent* _CameraComponent);
+	void SetMainCamera2D(CameraComponent* _CameraComponent);
+	void SetDebugCamera(CameraComponent* _CameraComponent);
 
-	void SetMainCamera2D(Camera* _camera);
-	void SetMainCamera2D(size_t _index);
+	CameraComponent* GetMainCamera();
+	CameraComponent* GetMainCamera2D();
 
-	void SetDebugCamera(Camera* _camera);
-	void SetDebugCamera(size_t _index);
 
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities() const;
 
-	const std::vector<Camera*>& GetCameras();
-
-	const Camera* GetMainCamera() const;
-	Camera* GetMainCamera();
-
-	const Camera* GetMainCamera2D() const;
-	Camera* GetMainCamera2D();
-
-	const Camera* GetDebugCamera() const;
-	Camera* GetDebugCamera();
+	const CameraComponent* GetDebugCamera() const;
+	CameraComponent* GetDebugCamera();
 
 	EntityFactory* GetFactory();
 
@@ -145,19 +130,6 @@ inline T* EntityCollection::GenerateEntity(bool _isRuntime) requires std::is_bas
 	}
 
 	return static_cast<T*>(entity);
-}
-
-template<typename T>
-inline T* EntityCollection::GenerateCamera() requires std::is_base_of_v<Camera, T> {
-	std::unique_ptr<T> camera = std::make_unique<T>(pDxDevice_);
-	camera->pEntityComponentSystem_ = pECS_;
-	camera->id_ = NewEntityID(false);
-	camera->CommonInitialize();
-	camera->Initialize();
-	T* cameraPtr = camera.get();
-	entities_.push_back(std::move(camera));
-	cameras_.push_back(cameraPtr);
-	return cameraPtr;
 }
 
 template<typename T>

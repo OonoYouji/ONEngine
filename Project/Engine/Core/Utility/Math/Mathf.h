@@ -15,6 +15,8 @@ namespace Mathf {
 	static const float Rad2Deg = 180.0f / std::numbers::pi_v<float>;
 	static const float PI = std::numbers::pi_v<float>;
 
+	float Cot(float _t);
+
 	/// ----- ファイル ----- ///
 
 	std::vector<File> FindFiles(const std::string& _fileDirectory, const std::string& _fileExtension);

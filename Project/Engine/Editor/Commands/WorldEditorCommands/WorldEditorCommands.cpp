@@ -11,7 +11,6 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
@@ -253,10 +252,10 @@ IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
 	IEntity* entity = nullptr;
 	/// エンティティを生成&SRTを設定
 	if (objectType == "CAMERA") {
-		entity = pECS_->GenerateCamera();
-		pECS_->SetMainCamera(static_cast<Camera*>(entity));
-		// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
-		rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
+		//entity = pECS_->GenerateCamera();
+		//pECS_->SetMainCamera(static_cast<Camera*>(entity));
+		//// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
+		//rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
 	} else {
 		entity = pECS_->GenerateEntity<EmptyEntity>();
 	}

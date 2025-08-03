@@ -8,7 +8,7 @@
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
 	: pDxManager_(_dxManager), pResourceCollection_(_resourceCollection) {}
 
-void SkinMeshUpdateSystem::Update([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void SkinMeshUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
 	for (auto& entity : _entities) {

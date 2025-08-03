@@ -4,7 +4,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -85,7 +85,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 }
 
-void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, Camera* _camera, DxCommand* _dxCommand) {
+void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
 	Terrain* prevTerrain_ = pTerrain_;
@@ -143,7 +143,7 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto command = _dxCommand->GetCommandList();
 
-	_camera->GetViewProjectionBuffer()->BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
 	transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
 	materialBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_MATERIAL);
 
