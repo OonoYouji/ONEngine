@@ -7,7 +7,6 @@
 #include "Scene/Factory/SceneFactory.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
@@ -31,7 +30,6 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 
 	/// カメラを設定する
-	auto cameras = pEntityComponentSystem_->FindEntities<Camera>();
 	ComponentArray<CameraComponent>* cameraArray = pEntityComponentSystem_->GetComponentArray<CameraComponent>();
 	if (cameraArray) {
 		for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
