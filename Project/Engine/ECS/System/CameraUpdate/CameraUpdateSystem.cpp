@@ -43,5 +43,8 @@ void CameraUpdateSystem::Update(EntityComponentSystem* _ecs, const std::vector<c
 	}
 
 	/// ecsにmain cameraを設定
+	if (pMainCamera_) {
+		_ecs->SetMainCamera(pMainCamera_);
+	}
 
 }

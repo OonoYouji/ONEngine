@@ -27,7 +27,6 @@
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
@@ -203,7 +202,6 @@
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\StructuredBuffer.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Components\Interface\IComponent.h" />

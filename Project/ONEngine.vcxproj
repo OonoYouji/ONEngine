@@ -71,7 +71,6 @@
     <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\Demo\DemoEntity.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp" />
     <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp" />
@@ -249,7 +248,6 @@
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
     <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
     <ClInclude Include="Engine\ECS\Entity\Entities\Demo\DemoEntity.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\Camera.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
     <ClInclude Include="Engine\Core\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\Core\DirectX12\Debug\DxDebug.h" />

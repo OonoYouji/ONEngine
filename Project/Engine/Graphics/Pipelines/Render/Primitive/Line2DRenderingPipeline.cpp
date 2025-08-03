@@ -6,7 +6,6 @@
 #include "Engine/Core/Utility/Tools/Assert.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 

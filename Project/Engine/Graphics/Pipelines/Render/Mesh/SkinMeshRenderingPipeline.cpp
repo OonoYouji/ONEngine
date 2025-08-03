@@ -7,7 +7,6 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 

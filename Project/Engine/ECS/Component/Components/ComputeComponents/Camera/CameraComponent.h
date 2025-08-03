@@ -8,11 +8,11 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
-//enum class CameraType {
-//	None,
-//	Type3D, ///< 3Dカメラ
-//	Type2D, ///< 2Dカメラ
-//};
+enum class CameraType {
+	None,
+	Type3D, ///< 3Dカメラ
+	Type2D, ///< 2Dカメラ
+};
 
 /// ///////////////////////////////////////////////////
 /// カメラのコンポーネント

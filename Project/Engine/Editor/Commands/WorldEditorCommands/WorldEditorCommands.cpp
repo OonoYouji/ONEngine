@@ -11,7 +11,6 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 

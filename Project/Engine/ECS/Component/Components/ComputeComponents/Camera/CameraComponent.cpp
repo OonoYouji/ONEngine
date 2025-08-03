@@ -8,7 +8,6 @@
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
 
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 
 
 CameraComponent::CameraComponent() {

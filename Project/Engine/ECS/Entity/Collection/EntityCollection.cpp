@@ -10,7 +10,6 @@
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// entity
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 

@@ -6,7 +6,6 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Tools/Gizmo.h"
-#include "Engine/ECS/Entity/Entities/Camera/Camera.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 using namespace GizmoPrimitive;
