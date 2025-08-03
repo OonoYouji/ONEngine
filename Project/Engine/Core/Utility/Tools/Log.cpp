@@ -122,7 +122,7 @@ Console::~Console() {
 #ifdef DEBUG_MODE
 	OutputLogToFile("../Generated/Log");
 #else 
-	OutputLogToFile("./Log");
+	//OutputLogToFile("./Log");
 #endif // DEBUG_MODE
 }
 

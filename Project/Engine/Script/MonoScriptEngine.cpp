@@ -64,8 +64,8 @@ MonoScriptEngine::~MonoScriptEngine() {
 
 void MonoScriptEngine::Initialize() {
 
-	SetEnvironmentVariableA("PATH", "Externals\\mono\\bin;C:\\Windows\\System32");
-	SetEnvironmentVariableA("MONO_PATH", "Externals\\mono\\lib\\4.5");
+	SetEnvironmentVariableA("PATH", "Packages\\mono\\bin;C:\\Windows\\System32");
+	SetEnvironmentVariableA("MONO_PATH", "Packages\\mono\\lib\\4.5");
 
 	_putenv("MONO_ENV_OPTIONS=--debug");
 
