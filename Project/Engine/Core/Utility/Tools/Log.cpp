@@ -8,6 +8,9 @@
 #include <filesystem>
 #include <chrono>
 
+/// engine
+#include "Engine/Core/Config/EngineConfig.h"
+
 namespace {
 
 	/// @brief 現在の年月日時間をstringで取得する
