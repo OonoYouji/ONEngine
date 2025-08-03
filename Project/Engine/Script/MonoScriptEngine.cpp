@@ -64,7 +64,6 @@ MonoScriptEngine::~MonoScriptEngine() {
 
 void MonoScriptEngine::Initialize() {
 
-	// カレントディレクトリから相対パスを組み立てる例
 	SetEnvironmentVariableA("PATH", "Externals\\mono\\bin;C:\\Windows\\System32");
 	SetEnvironmentVariableA("MONO_PATH", "Externals\\mono\\lib\\4.5");
 
