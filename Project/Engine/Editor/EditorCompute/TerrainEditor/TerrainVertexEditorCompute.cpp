@@ -83,10 +83,25 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	byte |= (isRaiseTerrainButtonPressed << 0);
 	byte |= (isLowerTerrainButtonPressed << 1);
 
+	bool isEditModeTexture = Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_B);
+	bool isEditModeVertex  = Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_V);
+	if (isEditModeTexture) {
+		editMode_ = 1; // テクスチャ編集モード
+	} else if (isEditModeVertex) {
+		editMode_ = 0; // 頂点編集モード
+	}
+
+	if (Input::PressKey(DIK_LCONTROL)) {
+		if (Input::TriggerKey(DIK_0)) { editTextureIndex_ = 0; }
+		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 1; }
+		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 2; }
+		if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 3; }
+	}
+
 	inputInfo_.SetMappedData(
 		InputInfo{
 			Input::GetImGuiImageMousePosition("Scene"),
-			10.0f, 0.1f, byte
+			10.0f, 0.1f, byte, editMode_, editTextureIndex_
 		}
 	);
 
@@ -110,11 +125,6 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	cmdList->SetComputeRootDescriptorTable(SRV_POSITION_TEXTURE, positionTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(SRV_FLAG_TEXTURE, flagTexture->GetSRVGPUHandle());
 
-	//cmdList->Dispatch(
-	//	static_cast<UINT>(EngineConfig::kWindowSize.x / 16.0f),
-	//	static_cast<UINT>(EngineConfig::kWindowSize.y / 16.0f),
-	//	1
-	//);
 	const UINT threadGroupSize = 256;
 	cmdList->Dispatch(
 		(pTerrain->GetMaxVertexNum() + threadGroupSize - 1) / threadGroupSize,

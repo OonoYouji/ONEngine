@@ -8,6 +8,8 @@ struct InputInfo {
 	float brushRadius;
 	float brushStrength;
 	int pressKey;
+	int editMode;
+	int editTextureIndex;
 };
 
 ConstantBuffer<TerrainInfo> terrainInfo : register(b0);
@@ -42,15 +44,42 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float2 uv = inputInfo.position / float2(1280.0f, 720.0f); // マウス位置をUVに変換
 	float3 mousePosition = positionTexture.Sample(textureSampler, uv).xyz; // マウス位置
 
-	float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
-	if (distanceToBrush < inputInfo.brushRadius) {
-		float strength = inputInfo.brushStrength * (1.0f - (distanceToBrush / inputInfo.brushRadius)); // フェード
-		if (IsInput(INPUT_POSITIVE)) {
-			vertex.position.y += strength;
-		} else if (IsInput(INPUT_NEGATIVE)) {
-			vertex.position.y -= strength;
+
+	
+	if (inputInfo.editMode == 0) {
+		// ----- 頂点の編集 ----- //
+
+		float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
+		if (distanceToBrush < inputInfo.brushRadius) {
+			float strength = inputInfo.brushStrength * (1.0f - (distanceToBrush / inputInfo.brushRadius)); // フェード
+			if (IsInput(INPUT_POSITIVE)) {
+				vertex.position.y += strength;
+			} else if (IsInput(INPUT_NEGATIVE)) {
+				vertex.position.y -= strength;
+			}
+
+			vertices[index] = vertex;
 		}
 
-		vertices[index] = vertex;
+	} else if (inputInfo.editMode == 1) {
+		// ----- テクスチャの編集 ----- //
+		
+		float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
+		if (distanceToBrush < inputInfo.brushRadius) {
+			float strength = inputInfo.brushStrength * (1.0f - (distanceToBrush / inputInfo.brushRadius)); // フェード
+			float prevBlend = vertex.splatBlend[inputInfo.editTextureIndex];
+			if (IsInput(INPUT_POSITIVE)) {
+				prevBlend += strength;
+			} else if (IsInput(INPUT_NEGATIVE)) {
+				prevBlend -= strength;
+			}
+
+			vertex.splatBlend[inputInfo.editTextureIndex] = clamp(prevBlend, 0.0f, 1.0f);
+			vertices[index] = vertex;
+		}
+		
 	}
+	
+
+	
 }

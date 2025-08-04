@@ -20,6 +20,8 @@ class TerrainVertexEditorCompute : public IEditorCompute {
 		float brushSize;       ///< ブラシのサイズ
 		float brushStrength;   ///< ブラシの強さ
 		int pressKey;
+		int editMode;
+		int editTextureIndex;
 	};
 
 	enum RootParameter {
@@ -48,6 +50,9 @@ private:
 
 	ConstantBuffer<TerrainInfo> terrainInfo_;
 	ConstantBuffer<InputInfo> inputInfo_;
+
+	int editMode_ = 0; ///< 編集モード (0:頂点編集, 1:テクスチャ編集)
+	int editTextureIndex_ = 0; /// 0~3
 
 };
 
