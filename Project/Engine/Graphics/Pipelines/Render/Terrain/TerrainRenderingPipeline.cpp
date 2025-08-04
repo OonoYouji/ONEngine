@@ -32,6 +32,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
 		pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("INDEX", 0, DXGI_FORMAT_R32_SINT);
 
 
 		/// buffer

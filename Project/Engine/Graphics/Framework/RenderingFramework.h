@@ -47,6 +47,9 @@ public:
 	void DrawDebug();
 	void DrawPrefab();
 
+	void HeapBindToCommandList();
+
+	void DxCommandExeAndReset();
 
 private:
 
@@ -58,21 +61,18 @@ private:
 	std::unique_ptr<RenderingPipelineCollection> renderingPipelineCollection_;
 	std::unique_ptr<GraphicsResourceCollection>  resourceCollection_;
 	std::vector<std::unique_ptr<SceneRenderTexture>> renderTextures_;
-	DxManager*                                   dxManager_        = nullptr;
-	WindowManager*                               windowManager_    = nullptr;
+	DxManager*                                   pDxManager_        = nullptr;
+	WindowManager*                               pWindowManager_    = nullptr;
 	class EntityComponentSystem*                 pEntityComponentSystem_ = nullptr;
 
 
 #ifdef DEBUG_MODE
-	class ImGuiManager*                          imGuiManager_ = nullptr;
+	class ImGuiManager*                          pImGuiManager_ = nullptr;
 #else
-
 	std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 	Window* releaseBuildSubWindow_;
-
 #endif // DEBUG_MODE
 
-	//std::unique_ptr<CopyImageRenderingPipeline> copyImagePipeline_;
 
 public:
 
@@ -82,15 +82,16 @@ public:
 
 	/// @brief 描画に使用するリソースコレクションの取得
 	/// @return リソースのコレクションを返す
-	GraphicsResourceCollection* GetResourceCollection() const { return resourceCollection_.get(); }
+	GraphicsResourceCollection* GetResourceCollection() const;
 
 
 
 #ifdef DEBUG_MODE
 	/// @brief ImGuiManagerへのポインタを設定
 	/// @param _imGuiManager ImGuiManagerへのポインタ
-	void SetImGuiManager(class ImGuiManager* _imGuiManager) { imGuiManager_ = _imGuiManager; }
+	void SetImGuiManager(class ImGuiManager* _imGuiManager);
 #endif // DEBUG_MODE
 
+	ShaderCompiler* GetShaderCompiler() const;
 };
 

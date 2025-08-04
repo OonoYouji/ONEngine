@@ -18,6 +18,7 @@ Terrain::Terrain() {
 			);
 			vertices_[index].normal = Vector3(0.0f, 1.0f, 0.0f);
 			vertices_[index].splatBlend = Vector4(1.0f - vertices_[index].uv.x, 1.0f - vertices_[index].uv.y, 0.0f, 0.0f);
+			vertices_[index].index = static_cast<int>(index); ///< インデックスを設定
 		}
 	}
 

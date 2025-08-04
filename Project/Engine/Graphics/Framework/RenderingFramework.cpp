@@ -16,15 +16,15 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 	shaderCompiler_ = std::make_unique<ShaderCompiler>();
 	shaderCompiler_->Initialize();
 
-	dxManager_ = _dxManager;
-	windowManager_ = _windowManager;
+	pDxManager_ = _dxManager;
+	pWindowManager_ = _windowManager;
 	pEntityComponentSystem_ = _pEntityComponentSystem;
 
 	resourceCollection_ = std::make_unique<GraphicsResourceCollection>();
-	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), dxManager_, pEntityComponentSystem_, resourceCollection_.get());
+	renderingPipelineCollection_ = std::make_unique<RenderingPipelineCollection>(shaderCompiler_.get(), pDxManager_, pEntityComponentSystem_, resourceCollection_.get());
 
 	renderingPipelineCollection_->Initialize();
-	resourceCollection_->Initialize(dxManager_);
+	resourceCollection_->Initialize(pDxManager_);
 
 
 	const size_t kRenderTexCount = 3;
@@ -37,13 +37,13 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 		renderTextures_[i] = std::make_unique<SceneRenderTexture>();
 		renderTextures_[i]->Initialize(
 			renderTexNames[i], Vector4(0.1f, 0.25f, 0.5f, 1.0f),
-			dxManager_, resourceCollection_.get()
+			pDxManager_, resourceCollection_.get()
 		);
 	}
 
 
 	std::unique_ptr<UAVTexture> uavTexture = std::make_unique<UAVTexture>();
-	uavTexture->Initialize("postProcessResult", dxManager_, resourceCollection_.get());
+	uavTexture->Initialize("postProcessResult", pDxManager_, resourceCollection_.get());
 
 
 #ifdef DEBUG_MODE
@@ -57,15 +57,8 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 }
 
 void RenderingFramework::Draw() {
-
-	/// descriptor heapの設定
-	dxManager_->GetDxSRVHeap()->BindToCommandList(
-		dxManager_->GetDxCommand()->GetCommandList()
-	);
-
-	/// 描画処理
 #ifdef DEBUG_MODE /// imguiの描画
-	imGuiManager_->GetDebugGameWindow()->PreDraw();
+	pImGuiManager_->GetDebugGameWindow()->PreDraw();
 
 
 	if (DebugConfig::selectedMode_ == DebugConfig::SELECTED_MODE_EDITOR) {
@@ -77,11 +70,11 @@ void RenderingFramework::Draw() {
 		DrawScene();
 	}
 
-	imGuiManager_->GetDebugGameWindow()->PostDraw();
+	pImGuiManager_->GetDebugGameWindow()->PostDraw();
 
-	windowManager_->MainWindowPreDraw();
-	imGuiManager_->Draw();
-	windowManager_->MainWindowPostDraw();
+	pWindowManager_->MainWindowPreDraw();
+	pImGuiManager_->Draw();
+	pWindowManager_->MainWindowPostDraw();
 
 #else
 	releaseBuildSubWindow_->PreDraw();
@@ -91,14 +84,9 @@ void RenderingFramework::Draw() {
 	windowManager_->MainWindowPreDraw();
 	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), dxManager_->GetDxCommand());
 	windowManager_->MainWindowPostDraw();
-
 #endif // DEBUG_MODE
 
-
-	/// commandの実行
-	dxManager_->GetDxCommand()->CommandExecute();
-	windowManager_->PresentAll();
-	dxManager_->GetDxCommand()->CommandReset();
+	DxCommandExeAndReset();
 }
 
 void RenderingFramework::DrawScene() {
@@ -110,10 +98,10 @@ void RenderingFramework::DrawScene() {
 
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_SCENE].get();
 
-	renderTex->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	renderTex->SetRenderTarget(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
+	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
 	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetMainCamera2D());
-	renderTex->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
 }
@@ -127,10 +115,10 @@ void RenderingFramework::DrawDebug() {
 
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_DEBUG].get();
 
-	renderTex->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	renderTex->SetRenderTarget(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
+	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
 	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetMainCamera2D());
-	renderTex->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
 }
@@ -140,11 +128,39 @@ void RenderingFramework::DrawPrefab() {
 
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_PREFAB].get();
 
-	renderTex->CreateBarrierRenderTarget(dxManager_->GetDxCommand());
-	renderTex->SetRenderTarget(dxManager_->GetDxCommand(), dxManager_->GetDxDSVHeap());
+	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
+	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
 	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetMainCamera2D());
-	renderTex->CreateBarrierPixelShaderResource(dxManager_->GetDxCommand());
+	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
+}
+
+void RenderingFramework::HeapBindToCommandList() {
+	pDxManager_->GetDxSRVHeap()->BindToCommandList(
+		pDxManager_->GetDxCommand()->GetCommandList()
+	);
+}
+
+void RenderingFramework::DxCommandExeAndReset() {
+
+	/// commandの実行
+	pDxManager_->GetDxCommand()->CommandExecute();
+	pWindowManager_->PresentAll();
+	pDxManager_->GetDxCommand()->CommandReset();
+}
+
+GraphicsResourceCollection* RenderingFramework::GetResourceCollection() const {
+	return resourceCollection_.get();
+}
+
+#ifdef DEBUG_MODE
+void RenderingFramework::SetImGuiManager(ImGuiManager* _imGuiManager) {
+	pImGuiManager_ = _imGuiManager;
+}
+#endif // DEBUG_MODE
+
+ShaderCompiler* RenderingFramework::GetShaderCompiler() const {
+	return shaderCompiler_.get();
 }
 

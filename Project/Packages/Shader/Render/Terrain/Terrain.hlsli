@@ -3,6 +3,7 @@ struct VSInput {
 	float3 normal     : NORMAL0;
 	float2 uv         : TEXCOORD0;
 	float4 splatBlend : COLOR0;
+	int    index      : INDEX0;
 };
 
 struct VSOutput {
@@ -11,6 +12,7 @@ struct VSOutput {
 	float3 normal     : NORMAL0;
 	float2 uv         : TEXCOORD0;
 	float4 splatBlend : COLOR0;
+	int    index      : INDEX0;
 };
 
 struct PSOutput {

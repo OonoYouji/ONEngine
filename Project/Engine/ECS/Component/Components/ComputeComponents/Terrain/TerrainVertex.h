@@ -10,4 +10,5 @@ struct TerrainVertex {
 	Vector3 normal;
 	Vector2 uv;
 	Vector4 splatBlend;
+	int index;
 };

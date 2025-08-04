@@ -26,6 +26,7 @@ public:
 	/// @param _dxDevice デバイスオブジェクトへのポインタ
 	/// @param _sizeInByte バッファのサイズ（バイト単位）
 	void CreateResource(class DxDevice* _dxDevice, size_t _sizeInByte);
+	void CreateUAVResource(class DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte);
 
 	/// @brief resourceを作成する
 	/// @param _dxDevice デバイスオブジェクトへのポインタ

@@ -11,6 +11,7 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 #include "TerrainVertex.h"
 
@@ -54,17 +55,13 @@ private:
 	/// =========================================
 
 	/* ----- terrain ----- */
+	StructuredBuffer<TerrainVertex> rwVertices_;
 	std::vector<TerrainVertex> vertices_; ///< 頂点データ
 	std::vector<uint32_t> indices_; ///< インデックスデータ
 
 	std::span<std::span<TerrainVertex>> vertexSpan_; ///< 頂点データのスパン
 
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
-
-
-	/* ----- Octree ----- */
-
-	//std::unique_ptr<TerrainQuadTree> octree_; ///< Octreeのポインタ
 
 
 	/* ----- edit ----- */

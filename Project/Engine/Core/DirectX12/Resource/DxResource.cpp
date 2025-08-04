@@ -38,6 +38,39 @@ void DxResource::CreateResource(DxDevice* _dxDevice, size_t _sizeInByte) {
 	Assert(SUCCEEDED(result), "Resource creation failed.");
 }
 
+void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte) {
+	HRESULT result = S_FALSE;
+
+	CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
+	CD3DX12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(
+		_sizeInByte,
+		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS
+	);
+
+
+	// 1. Create on DEFAULT heap
+	_dxDevice->GetDevice()->CreateCommittedResource(
+		&heapProps,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_COMMON, // ← 初期状態は素直にCOMMON
+		nullptr,
+		IID_PPV_ARGS(&resource_)
+	);
+
+	// 2. Barrier to UNORDERED_ACCESS before dispatch
+	CD3DX12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		resource_.Get(),
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
+	_dxCommand->GetCommandList()->ResourceBarrier(1, &uavBarrier);
+
+	Assert(SUCCEEDED(result), "UAV Resource creation failed.");
+}
+
+
 void DxResource::CreateCommittedResource(DxDevice* _dxDevice, const D3D12_HEAP_PROPERTIES* _pHeapProperties, D3D12_HEAP_FLAGS _HeapFlags, const D3D12_RESOURCE_DESC* _pDesc, D3D12_RESOURCE_STATES _InitialResourceState, const D3D12_CLEAR_VALUE* _pOptimizedClearValue) {
 	_dxDevice->GetDevice()->CreateCommittedResource(
 		_pHeapProperties,

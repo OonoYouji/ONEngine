@@ -13,6 +13,7 @@
 
 /// editor
 #include "Commands/Interface/IEditorCommand.h"
+#include "EditorCompute/Interface/IEditorCompute.h"
 #include "Engine/Core/Utility/Utility.h"
 
 /// @brief コマンドの生成関数
@@ -21,9 +22,6 @@ using Creator = std::function<std::unique_ptr<IEditorCommand>(const std::vector<
 /// @brief 
 template <typename T>
 concept IsEditorCommand = std::is_base_of_v<IEditorCommand, T>;
-
-//template <typename... Args>
-//using Creator = std::function<std::unique_ptr<IEditorCommand>(Args...)>;
 
 
 /// /////////////////////////////////////////////////
@@ -38,9 +36,9 @@ public:
 	EditorManager(class EntityComponentSystem* _ecs);
 	~EditorManager();
 
-	void Initialize();
+	void Initialize(class DxManager* _dxManager, class ShaderCompiler* _shaderCompiler);
 
-	void Update();
+	void Update(class GraphicsResourceCollection* _grc);
 
 	/* ----- factory ----- */
 
@@ -56,17 +54,19 @@ public:
 	void Undo();
 	void Redo();
 
+	/* ----- editor compute ----- */
+
+	void AddEditorCompute(class DxManager* _dxManager, class ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
+
+
 private:
 	/// ==========================================
 	/// private : objects
 	/// ==========================================
 
 	/* ----- other class ----- */
-	class EntityComponentSystem* pECS_ = nullptr; ///< エンティティコンポーネントシステムへのポインタ
-
-	/* ----- factory ----- */
-	//std::unordered_map<std::string, Creator> commandFactoryMap_; ///< コマンドのファクトリマップ
-
+	class EntityComponentSystem* pECS_;
+	class DxManager* pDxManager_;
 
 	/* ----- container ----- */
 
@@ -75,6 +75,12 @@ private:
 	IEditorCommand* runningCommand_; ///< 現在実行中のコマンド
 	std::deque<std::unique_ptr<IEditorCommand>> commandStack_; ///< コマンドのスタック
 	std::deque<std::unique_ptr<IEditorCommand>> redoStack_; ///< コマンドのリドゥスタック
+
+
+	/* ----- editor compute ----- */
+
+	std::vector<std::unique_ptr<IEditorCompute>> editorComputes_;
+
 
 
 	/* ----- temp object ----- */
