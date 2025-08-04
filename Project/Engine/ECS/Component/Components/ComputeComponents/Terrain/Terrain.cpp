@@ -8,6 +8,12 @@ Terrain::Terrain() {
 	/// 頂点の生成
 	const size_t terrainWidth = static_cast<size_t>(terrainSize_.x);
 	const size_t terrainHeight = static_cast<size_t>(terrainSize_.y);
+
+	/// 頂点の数
+	maxVertexNum_ = static_cast<uint32_t>(terrainWidth * terrainHeight);
+	const size_t faceVerts = 6;
+	maxIndexNum_ = static_cast<uint32_t>((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
+
 	vertices_.resize(terrainWidth * terrainHeight);
 
 	for (size_t row = 0; row < terrainWidth; ++row) {
@@ -27,7 +33,6 @@ Terrain::Terrain() {
 
 
 	/// インデックスの生成
-	const size_t faceVerts = 6;
 	indices_.resize((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
 
 	for (size_t row = 0; row < terrainWidth - 1; ++row) {
@@ -84,12 +89,28 @@ StructuredBuffer<TerrainVertex>& Terrain::GetRwVertices() {
 	return rwVertices_;
 }
 
+StructuredBuffer<uint32_t>& Terrain::GetRwIndices() {
+	return rwIndices_;
+}
+
 void Terrain::SetIsCreated(bool _isCreated) {
 	isCreated_ = _isCreated;
 }
 
 bool Terrain::GetIsCreated() const {
 	return isCreated_;
+}
+
+uint32_t Terrain::GetMaxVertexNum() {
+	return maxVertexNum_;
+}
+
+uint32_t Terrain::GetMaxIndexNum() {
+	return maxIndexNum_;
+}
+
+const Vector2& Terrain::GetSize() const {
+	return terrainSize_;
 }
 
 

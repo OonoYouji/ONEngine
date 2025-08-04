@@ -48,6 +48,7 @@ private:
 	/// =========================================
 
 	StructuredBuffer<TerrainVertex> rwVertices_;
+	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreated_;
 
 	/* ----- terrain ----- */
@@ -58,6 +59,8 @@ private:
 
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 
+	uint32_t maxVertexNum_;
+	uint32_t maxIndexNum_;
 
 	/* ----- edit ----- */
 	std::vector<std::pair<size_t, TerrainVertex*>> editVertices_;
@@ -91,9 +94,15 @@ public:
 	/* ----- buffer ----- */
 
 	StructuredBuffer<TerrainVertex>& GetRwVertices();
+	StructuredBuffer<uint32_t>& GetRwIndices();
 
 	void SetIsCreated(bool _isCreated);
 	bool GetIsCreated() const;
+
+	uint32_t GetMaxVertexNum();
+	uint32_t GetMaxIndexNum();
+
+	const Vector2& GetSize() const;
 
 };
 

@@ -2,14 +2,21 @@
 
 /// engine
 #include "../Interface/IEditorCompute.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 /// //////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
 /// //////////////////////////////////////////
 class TerrainVertexCreator : public IEditorCompute {
 
+	struct TerrainSize {
+		uint32_t width, height;
+	};
+
 	enum {
+		CBV_TERRAIN_SIZE,
 		UAV_VERTICES,
+		UAV_INDICES,
 	};
 
 public:
@@ -29,6 +36,7 @@ private:
 	/// =========================================
 	
 	class DxManager* pDxManager_;
+	ConstantBuffer<TerrainSize> terrainSize_;
 
 };
 
