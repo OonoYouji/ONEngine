@@ -55,7 +55,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	}
 
 	/// 範囲内なら
-	Vertex vertex = vertices[index];
+	TerrainVertex vertex = vertices[index];
 	if (IsInput(INPUT_POSITIVE)) {
 		/// 押し上げ
 		vertex.position.y += inputInfo.brushStrength;

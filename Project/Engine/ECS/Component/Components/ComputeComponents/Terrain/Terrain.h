@@ -25,13 +25,6 @@ public:
 	/// public : sub class
 	/// =========================================
 
-	struct Triangle {
-		uint32_t i0 : 10;
-		uint32_t i1 : 10;
-		uint32_t i2 : 10;
-		uint32_t padding : 2; ///< パディング
-	};
-
 	enum SPLAT_TEX {
 		GRASS,
 		DIRT,
@@ -54,8 +47,10 @@ private:
 	/// private : objects
 	/// =========================================
 
-	/* ----- terrain ----- */
 	StructuredBuffer<TerrainVertex> rwVertices_;
+	bool isCreated_;
+
+	/* ----- terrain ----- */
 	std::vector<TerrainVertex> vertices_; ///< 頂点データ
 	std::vector<uint32_t> indices_; ///< インデックスデータ
 
@@ -92,6 +87,14 @@ public:
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
 	//TerrainQuadTree* GetQuadTree();
+
+	/* ----- buffer ----- */
+
+	StructuredBuffer<TerrainVertex>& GetRwVertices();
+
+	void SetIsCreated(bool _isCreated);
+	bool GetIsCreated() const;
+
 };
 
 

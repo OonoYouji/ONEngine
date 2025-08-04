@@ -1,5 +1,6 @@
 #include "Terrain.hlsli"
 
+
 RWStructuredBuffer<TerrainVertex> vertices : register(u0);
 
 [numthreads(16, 16, 1)]

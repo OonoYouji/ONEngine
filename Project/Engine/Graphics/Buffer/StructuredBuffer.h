@@ -70,7 +70,9 @@ inline StructuredBuffer<T>::StructuredBuffer() {}
 
 template<typename T>
 inline StructuredBuffer<T>::~StructuredBuffer() {
-	pDxSRVHeap_->Free(srvDescriptorIndex_);
+	if (pDxSRVHeap_) {
+		pDxSRVHeap_->Free(srvDescriptorIndex_);
+	}
 }
 
 

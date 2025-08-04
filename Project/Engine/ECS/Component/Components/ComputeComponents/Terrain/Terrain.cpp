@@ -2,6 +2,9 @@
 
 Terrain::Terrain() {
 
+	isCreated_ = false;
+
+
 	/// 頂点の生成
 	const size_t terrainWidth = static_cast<size_t>(terrainSize_.x);
 	const size_t terrainHeight = static_cast<size_t>(terrainSize_.y);
@@ -75,6 +78,18 @@ const std::vector<std::pair<size_t, TerrainVertex*>>& Terrain::GetEditVertices()
 
 const std::array<std::string, Terrain::SPLAT_TEX_COUNT>& Terrain::GetSplatTexPaths() const {
 	return splattingTexPaths_;
+}
+
+StructuredBuffer<TerrainVertex>& Terrain::GetRwVertices() {
+	return rwVertices_;
+}
+
+void Terrain::SetIsCreated(bool _isCreated) {
+	isCreated_ = _isCreated;
+}
+
+bool Terrain::GetIsCreated() const {
+	return isCreated_;
 }
 
 

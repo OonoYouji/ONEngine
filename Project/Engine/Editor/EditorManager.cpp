@@ -7,6 +7,7 @@
 
 /// editor compute
 #include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
+#include "EditorCompute/TerrainEditor/TerrainVertexCreator.h"
 
 class LogCommand : public IEditorCommand {
 public:
@@ -35,6 +36,7 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	runningCommand_ = nullptr;
 
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
 }
 
 void EditorManager::Update(GraphicsResourceCollection* _grc) {
