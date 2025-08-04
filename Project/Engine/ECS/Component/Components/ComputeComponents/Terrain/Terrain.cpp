@@ -16,20 +16,20 @@ Terrain::Terrain() {
 
 	vertices_.resize(terrainWidth * terrainHeight);
 
-	for (size_t row = 0; row < terrainWidth; ++row) {
-		for (size_t col = 0; col < terrainHeight; ++col) {
-			size_t index = row * terrainWidth + col;
-			vertices_[index].position = Vector4(static_cast<float>(row), 0.0f, static_cast<float>(col), 1.0f);
-			vertices_[index].position -= Vector4(terrainWidth * 0.5f, 0.0f, terrainHeight * 0.5f, 0.0f);
-			vertices_[index].uv = Vector2(
-				static_cast<float>(row) / static_cast<float>(terrainWidth),
-				static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
-			);
-			vertices_[index].normal = Vector3(0.0f, 1.0f, 0.0f);
-			vertices_[index].splatBlend = Vector4(1.0f - vertices_[index].uv.x, 1.0f - vertices_[index].uv.y, 0.0f, 0.0f);
-			vertices_[index].index = static_cast<int>(index); ///< インデックスを設定
-		}
-	}
+	//for (size_t row = 0; row < terrainWidth; ++row) {
+	//	for (size_t col = 0; col < terrainHeight; ++col) {
+	//		size_t index = row * terrainWidth + col;
+	//		vertices_[index].position = Vector4(static_cast<float>(row), 0.0f, static_cast<float>(col), 1.0f);
+	//		vertices_[index].position -= Vector4(terrainWidth * 0.5f, 0.0f, terrainHeight * 0.5f, 0.0f);
+	//		vertices_[index].uv = Vector2(
+	//			static_cast<float>(row) / static_cast<float>(terrainWidth),
+	//			static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
+	//		);
+	//		vertices_[index].normal = Vector3(0.0f, 1.0f, 0.0f);
+	//		vertices_[index].splatBlend = Vector4(1.0f - vertices_[index].uv.x, 1.0f - vertices_[index].uv.y, 0.0f, 0.0f);
+	//		vertices_[index].index = static_cast<int>(index); ///< インデックスを設定
+	//	}
+	//}
 
 
 	/// インデックスの生成

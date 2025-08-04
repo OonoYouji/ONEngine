@@ -112,6 +112,8 @@ void DxResource::CreateRenderTextureResource(DxDevice* _dxDevice, const Vector2&
 }
 
 void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _size, DXGI_FORMAT _format) {
+	currentState_ = D3D12_RESOURCE_STATE_UNORDERED_ACCESS;
+
 	CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		_format,
 		static_cast<UINT64>(_size.x),
@@ -127,7 +129,7 @@ void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _s
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		currentState_,
 		nullptr,
 		IID_PPV_ARGS(&resource_)
 	);
@@ -137,6 +139,20 @@ void DxResource::CreateUAVTextureResource(DxDevice* _dxDevice, const Vector2& _s
 
 void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
 	::CreateBarrier(resource_.Get(), _before, _after, _dxCommand);
+	currentState_ = _after;
+}
+
+void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxCommand) {
+	::CreateBarrier(resource_.Get(), currentState_, _after, _dxCommand);
+	currentState_ = _after;
+}
+
+ID3D12Resource* DxResource::Get() const {
+	return resource_.Get();
+}
+
+D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {
+	return currentState_;
 }
 
 
@@ -151,7 +167,7 @@ void CreateBarrier(ID3D12Resource* _resource, D3D12_RESOURCE_STATES _before, D3D
 	barrier.Transition.pResource = _resource;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = _before;
-	barrier.Transition.StateAfter = _after;
+	barrier.Transition.StateAfter  = _after;
 
 	_dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
 }

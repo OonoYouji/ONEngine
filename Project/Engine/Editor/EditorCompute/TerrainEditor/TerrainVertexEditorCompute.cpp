@@ -43,12 +43,6 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 		terrainInfo_.Create(_dxManager->GetDxDevice());
 		inputInfo_.Create(_dxManager->GetDxDevice());
 
-		const size_t kTerrainVertexCount = 1000;
-		vertices_.CreateUAV(
-			sizeof(TerrainVertex) * kTerrainVertexCount,
-			_dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap()
-		);
-
 	}
 }
 
@@ -75,6 +69,10 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
+	if (!pTerrain->GetIsCreated()) {
+		return;
+	}
+
 
 	/// bufferに値をセット
 	terrainInfo_.SetMappedData(TerrainInfo{ pTerrain->GetOwner()->GetId() });
@@ -87,8 +85,8 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 
 	inputInfo_.SetMappedData(
 		InputInfo{
-			Input::GetMousePosition(),
-			10.0f, 1.0f, byte
+			Input::GetImGuiImageMousePosition("Scene"),
+			10.0f, 0.1f, byte
 		}
 	);
 
@@ -103,19 +101,23 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	inputInfo_.BindForComputeCommandList(cmdList, CBV_INPUT_INFO);
 
 	/// UAV
-	vertices_.BindForComputeCommandList(UAV_VERTICES, cmdList);
+	pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
 
 	/// SRV
-	const Texture* positionTexture = _resourceCollection->GetTexture("sceneScene");
-	const Texture* flagTexture = _resourceCollection->GetTexture("sceneFlags");
+	const Texture* positionTexture = _resourceCollection->GetTexture("debugWorldPosition");
+	const Texture* flagTexture = _resourceCollection->GetTexture("debugFlags");
 
 	cmdList->SetComputeRootDescriptorTable(SRV_POSITION_TEXTURE, positionTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(SRV_FLAG_TEXTURE, flagTexture->GetSRVGPUHandle());
 
+	//cmdList->Dispatch(
+	//	static_cast<UINT>(EngineConfig::kWindowSize.x / 16.0f),
+	//	static_cast<UINT>(EngineConfig::kWindowSize.y / 16.0f),
+	//	1
+	//);
+	const UINT threadGroupSize = 256;
 	cmdList->Dispatch(
-		static_cast<UINT>(EngineConfig::kWindowSize.x / 16.0f),
-		static_cast<UINT>(EngineConfig::kWindowSize.y / 16.0f),
-		1
+		(pTerrain->GetMaxVertexNum() + threadGroupSize - 1) / threadGroupSize,
+		1, 1
 	);
-
 }

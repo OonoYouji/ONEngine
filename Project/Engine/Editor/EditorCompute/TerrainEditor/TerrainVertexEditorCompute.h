@@ -48,7 +48,6 @@ private:
 
 	ConstantBuffer<TerrainInfo> terrainInfo_;
 	ConstantBuffer<InputInfo> inputInfo_;
-	StructuredBuffer<TerrainVertex> vertices_; 
 
 };
 

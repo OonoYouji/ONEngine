@@ -47,9 +47,11 @@ private:
 	/// private : objects
 	/// =========================================
 
+	/* ----- buffer ----- */
 	StructuredBuffer<TerrainVertex> rwVertices_;
 	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreated_;
+
 
 	/* ----- terrain ----- */
 	std::vector<TerrainVertex> vertices_; ///< 頂点データ
@@ -66,9 +68,7 @@ private:
 	std::vector<std::pair<size_t, TerrainVertex*>> editVertices_;
 
 
-
 	/* ----- splatting ----- */
-
 	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
 
 

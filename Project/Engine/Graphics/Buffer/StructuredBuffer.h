@@ -38,6 +38,8 @@ public:
 
 	void SetMappedData(size_t _index, const T& _setValue);
 
+	DxResource& GetResource();
+
 private:
 
 	/// ===================================================
@@ -66,7 +68,9 @@ private:
 /// ===================================================
 
 template<typename T>
-inline StructuredBuffer<T>::StructuredBuffer() {}
+inline StructuredBuffer<T>::StructuredBuffer() {
+	pDxSRVHeap_ = nullptr;
+}
 
 template<typename T>
 inline StructuredBuffer<T>::~StructuredBuffer() {
@@ -161,4 +165,9 @@ template<typename T>
 inline void StructuredBuffer<T>::SetMappedData(size_t _index, const T& _setValue) {
 	Assert(_index < bufferSize_, "out of range");
 	mappedDataArray_[_index] = _setValue;
+}
+
+template<typename T>
+inline DxResource& StructuredBuffer<T>::GetResource() {
+	return bufferResource_;
 }

@@ -28,42 +28,29 @@ bool IsInput(int input) {
 	return (inputInfo.pressKey & input) != 0;
 }
 
+static const int vertexCount = 1000 * 1000;
 
-[numthreads(16, 16, 1)]
+[numthreads(256, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
-
-	float2 texUv = float2(DTid.x / 1920.0f, DTid.y / 1080.0f);
-	float4 flags = flagsTexture.Sample(textureSampler, texUv);
-
-	/// レンダリング位置が地形かどうか確認
-	if ((int) flags.y != terrainInfo.entityId) {
-		return; /// 違った
-	}
-	
-	/// マウスとの位置を計算
-	float4 position = positionTexture.Sample(textureSampler, texUv);
-	float4 mousePosition = positionTexture.Sample(textureSampler, inputInfo.position / float2(1920.0f, 1080.0f));
-	float length = distance(position.xyz, mousePosition.xyz);
-	if (length > inputInfo.brushRadius) {
-		return; /// マウス位置から離れすぎている
-	}
-	
-	
-	int index = (int) flags.z;
-	if (index >= 1000) {
+	uint index = DTid.x;
+	if (index >= vertexCount) {
 		return;
 	}
 
-	/// 範囲内なら
 	TerrainVertex vertex = vertices[index];
-	if (IsInput(INPUT_POSITIVE)) {
-		/// 押し上げ
-		vertex.position.y += inputInfo.brushStrength;
-	} else if (IsInput(INPUT_NEGATIVE)) {
-		/// 押し下げ
-		vertex.position.y -= inputInfo.brushStrength;
+	
+	float2 uv = inputInfo.position / float2(1280.0f, 720.0f); // マウス位置をUVに変換
+	float3 mousePosition = positionTexture.Sample(textureSampler, uv).xyz; // マウス位置
+
+	float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
+	if (distanceToBrush < inputInfo.brushRadius) {
+		float strength = inputInfo.brushStrength * (1.0f - (distanceToBrush / inputInfo.brushRadius)); // フェード
+		if (IsInput(INPUT_POSITIVE)) {
+			vertex.position.y += strength;
+		} else if (IsInput(INPUT_NEGATIVE)) {
+			vertex.position.y -= strength;
+		}
+
+		vertices[index] = vertex;
 	}
-	
-	vertices[index] = vertex;
-	
 }
