@@ -78,7 +78,6 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 		transformBuffer_.Create(_dxManager->GetDxDevice());
 		materialBuffer_.Create(_dxManager->GetDxDevice());
-		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
 		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
@@ -118,25 +117,14 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	/// prevと違うterrainならmapする
 	if (prevTerrain_ != pTerrain_) {
 		indexBuffer_.SetIndices(pTerrain_->GetIndices());
-		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
 
 		indexBuffer_.Map();
-		vertexBuffer_.Map();
 	}
 
 
 	/// value setting
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
-
-	/// 編集した頂点を更新する
-	if (!pTerrain_->GetEditVertices().empty()) {
-		for (auto& editV : pTerrain_->GetEditVertices()) {
-			vertexBuffer_.SetVertex(editV.first, *editV.second);
-		}
-		//pTerrain_->ClearEditVertices();
-	}
-
 
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);

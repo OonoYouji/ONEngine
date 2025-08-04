@@ -4,7 +4,6 @@ Terrain::Terrain() {
 
 	isCreated_ = false;
 
-
 	/// 頂点の生成
 	const size_t terrainWidth = static_cast<size_t>(terrainSize_.x);
 	const size_t terrainHeight = static_cast<size_t>(terrainSize_.y);
@@ -13,23 +12,6 @@ Terrain::Terrain() {
 	maxVertexNum_ = static_cast<uint32_t>(terrainWidth * terrainHeight);
 	const size_t faceVerts = 6;
 	maxIndexNum_ = static_cast<uint32_t>((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
-
-	vertices_.resize(terrainWidth * terrainHeight);
-
-	//for (size_t row = 0; row < terrainWidth; ++row) {
-	//	for (size_t col = 0; col < terrainHeight; ++col) {
-	//		size_t index = row * terrainWidth + col;
-	//		vertices_[index].position = Vector4(static_cast<float>(row), 0.0f, static_cast<float>(col), 1.0f);
-	//		vertices_[index].position -= Vector4(terrainWidth * 0.5f, 0.0f, terrainHeight * 0.5f, 0.0f);
-	//		vertices_[index].uv = Vector2(
-	//			static_cast<float>(row) / static_cast<float>(terrainWidth),
-	//			static_cast<float>(col) / static_cast<float>(terrainHeight) * -1.0f
-	//		);
-	//		vertices_[index].normal = Vector3(0.0f, 1.0f, 0.0f);
-	//		vertices_[index].splatBlend = Vector4(1.0f - vertices_[index].uv.x, 1.0f - vertices_[index].uv.y, 0.0f, 0.0f);
-	//		vertices_[index].index = static_cast<int>(index); ///< インデックスを設定
-	//	}
-	//}
 
 
 	/// インデックスの生成
@@ -49,10 +31,6 @@ Terrain::Terrain() {
 	}
 
 
-	/// spanに変換
-	vertexSpan_ = std::span<std::span<TerrainVertex>>(reinterpret_cast<std::span<TerrainVertex>*>(vertices_.data()), terrainWidth);
-
-
 	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";
 	splattingTexPaths_[DIRT] = "./Packages/Textures/Dirt.jpg";
 	splattingTexPaths_[ROCK] = "./Packages/Textures/Rock.jpg";
@@ -61,24 +39,8 @@ Terrain::Terrain() {
 }
 Terrain::~Terrain() {}
 
-const std::span<std::span<TerrainVertex>>& Terrain::GetVertexSpan() const {
-	return vertexSpan_;
-}
-
-const std::vector<TerrainVertex>& Terrain::GetVertices() const {
-	return vertices_;
-}
-
-std::vector<TerrainVertex>& Terrain::GetVertices() {
-	return vertices_;
-}
-
 const std::vector<uint32_t>& Terrain::GetIndices() const {
 	return indices_;
-}
-
-const std::vector<std::pair<size_t, TerrainVertex*>>& Terrain::GetEditVertices() {
-	return editVertices_;
 }
 
 const std::array<std::string, Terrain::SPLAT_TEX_COUNT>& Terrain::GetSplatTexPaths() const {

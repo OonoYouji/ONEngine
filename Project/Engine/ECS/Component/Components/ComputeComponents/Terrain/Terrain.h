@@ -54,19 +54,11 @@ private:
 
 
 	/* ----- terrain ----- */
-	std::vector<TerrainVertex> vertices_; ///< 頂点データ
 	std::vector<uint32_t> indices_; ///< インデックスデータ
 
-	std::span<std::span<TerrainVertex>> vertexSpan_; ///< 頂点データのスパン
-
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
-
 	uint32_t maxVertexNum_;
 	uint32_t maxIndexNum_;
-
-	/* ----- edit ----- */
-	std::vector<std::pair<size_t, TerrainVertex*>> editVertices_;
-
 
 	/* ----- splatting ----- */
 	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
@@ -77,19 +69,9 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	/// @brief 頂点を二次元配列化したものを取得する
-	/// @return 二次元配列にした頂点データのスパン
-	const std::span<std::span<TerrainVertex>>& GetVertexSpan() const;
-
-	const std::vector<TerrainVertex>& GetVertices() const;
-	std::vector<TerrainVertex>& GetVertices();
 	const std::vector<uint32_t>& GetIndices() const;
 
-	const std::vector<std::pair<size_t, TerrainVertex*>>& GetEditVertices();
-
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
-
-	//TerrainQuadTree* GetQuadTree();
 
 	/* ----- buffer ----- */
 

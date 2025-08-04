@@ -54,7 +54,6 @@ private:
 	ConstantBuffer<Material> materialBuffer_;
 
 	IndexBuffer indexBuffer_;
-	VertexBuffer<TerrainVertex> vertexBuffer_;
 
 
 };
