@@ -52,6 +52,9 @@ private:
 	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreated_;
 
+	/* ----- edit ----- */
+	float brushRadius_;
+	float brushStrength_;
 
 	/* ----- terrain ----- */
 	std::vector<uint32_t> indices_; ///< インデックスデータ
@@ -85,6 +88,14 @@ public:
 	uint32_t GetMaxIndexNum();
 
 	const Vector2& GetSize() const;
+
+	/* ----- edit ----- */
+
+	float GetBrushRadius() const;
+	void SetBrushRadius(float _radius);
+
+	float GetBrushStrength() const;
+	void SetBrushStrength(float _strength);
 
 };
 

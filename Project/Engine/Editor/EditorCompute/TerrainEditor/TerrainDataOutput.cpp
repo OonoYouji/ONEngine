@@ -36,7 +36,7 @@ void TerrainDataOutput::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _
 
 	{	/// buffer
 		terrainSize_.Create(_dxManager->GetDxDevice());
-		outputVertexTexture_.CreateUAVTexture(1000, 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		outputVertexTexture_.CreateUAVTexture(1000, 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap(), DXGI_FORMAT_R16G16B16A16_UNORM);
 		outputSplatBlendTexture_.CreateUAVTexture(1000, 1000, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 	}
 

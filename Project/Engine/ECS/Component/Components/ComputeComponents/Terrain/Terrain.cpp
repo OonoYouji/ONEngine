@@ -1,5 +1,8 @@
 #include "Terrain.h"
 
+/// externals
+#include <imgui.h>
+
 Terrain::Terrain() {
 
 	isCreated_ = false;
@@ -35,6 +38,10 @@ Terrain::Terrain() {
 	splattingTexPaths_[DIRT] = "./Packages/Textures/Dirt.jpg";
 	splattingTexPaths_[ROCK] = "./Packages/Textures/Rock.jpg";
 	splattingTexPaths_[SNOW] = "./Packages/Textures/Snow.jpg";
+
+
+	brushRadius_ = 10.0f;
+	brushStrength_ = 1.0f;
 
 }
 Terrain::~Terrain() {}
@@ -75,6 +82,22 @@ const Vector2& Terrain::GetSize() const {
 	return terrainSize_;
 }
 
+float Terrain::GetBrushRadius() const {
+	return brushRadius_;
+}
+
+void Terrain::SetBrushRadius(float _radius) {
+	brushRadius_ = _radius;
+}
+
+float Terrain::GetBrushStrength() const {
+	return brushStrength_;
+}
+
+void Terrain::SetBrushStrength(float _strength) {
+	brushStrength_ = _strength;
+}
+
 
 
 void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
@@ -82,7 +105,16 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
 		return;
 	}
 
+	float brushRadius = _terrain->GetBrushRadius();
+	float brushStrength = _terrain->GetBrushStrength();
 
+	if (ImGui::SliderFloat("brush radius", &brushRadius, 0.1f, 100.0f)) {
+		_terrain->SetBrushRadius(brushRadius);
+	}
+
+	if (ImGui::SliderFloat("brush strength", &brushStrength, 0.0f, 5.0f)) {
+		_terrain->SetBrushStrength(brushStrength);
+	}
 }
 
 void from_json(const nlohmann::json& _j, Terrain& _t) {

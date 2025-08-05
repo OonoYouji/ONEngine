@@ -14,6 +14,8 @@ class TerrainVertexCreator : public IEditorCompute {
 		CBV_TERRAIN_SIZE,
 		UAV_VERTICES,
 		UAV_INDICES,
+		SRV_VERTEX_TEXTURE,
+		SRV_SPLAT_BLEND_TEXTURE,
 	};
 
 public:

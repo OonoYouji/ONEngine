@@ -17,8 +17,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	uint index = y * terrainSize.terrainWidth + x;
 	TerrainVertex vertex = vertices[index];
 
-	float4 output = float4(0, 0, 0, 1);
-	output.y = vertex.position.y; // Y座標を出力
-	outputVertexTexture[int2(x, y)] = output;
+	float4 pos = float4(0, 0, 0, 1);
+
+	/// 高さを0~1に正規化
+	pos.y = NormalizeHeight(vertex.position.y);
+	
+	outputVertexTexture[int2(x, y)] = pos;
 	outputSplatBlendTexture[int2(x, y)] = vertex.splatBlend;
 }

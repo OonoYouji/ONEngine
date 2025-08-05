@@ -29,7 +29,7 @@ void Texture::CreateEmptyUAVHandle() {
 	uavHandle_.emplace(Handle());
 }
 
-void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
+void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat) {
 	// テクスチャディスクリプション
 	D3D12_RESOURCE_DESC texDesc = {};
 	texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -38,7 +38,7 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 	texDesc.Height = _height;
 	texDesc.DepthOrArraySize = 1;
 	texDesc.MipLevels = 1;
-	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	texDesc.Format = _dxgiFormat;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
@@ -52,7 +52,7 @@ void Texture::CreateUAVTexture(UINT _width, UINT _height, DxDevice* _dxDevice, D
 	);
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-	uavDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	uavDesc.Format = _dxgiFormat;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	uavDesc.Texture2D.MipSlice = 0;
 	uavDesc.Texture2D.PlaneSlice = 0;
@@ -121,7 +121,6 @@ void Texture::OutputTexture(const std::wstring& _filename, DxDevice* _dxDevice, 
 	DirectX::ScratchImage scratch;
 	scratch.InitializeFromImage(image);
 
-	// 5. 保存（GUID_ContainerFormatPngはwincodec.hに定義あり）
 	DirectX::SaveToWICFile(*scratch.GetImage(0, 0, 0),
 		DirectX::WIC_FLAGS_NONE,
 		GUID_ContainerFormatPng,

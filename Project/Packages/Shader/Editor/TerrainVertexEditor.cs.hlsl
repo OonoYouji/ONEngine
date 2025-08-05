@@ -58,6 +58,8 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 				vertex.position.y -= strength;
 			}
 
+			vertex.position.y = GetHeight(vertex.position.y);
+			
 			vertices[index] = vertex;
 		}
 

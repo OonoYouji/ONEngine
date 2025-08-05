@@ -10,9 +10,9 @@ ConstantBuffer<TerrainSize> terrainSize : register(b0);
 RWStructuredBuffer<TerrainVertex> vertices : register(u0);
 RWStructuredBuffer<Index> indices : register(u1);
 
-//Texture2D<float4> vertexTexture : register(t0);
-//Texture2D<float4> splatBlendTexture : register(t1);
-//SamplerState textureSampler : register(s0);
+Texture2D<float4> vertexTexture : register(t0);
+Texture2D<float4> splatBlendTexture : register(t1);
+SamplerState textureSampler : register(s0);
 
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
@@ -37,13 +37,15 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			1.0f
 		);
 
-		//float4 position = vertexTexture.SampleLevel(textureSampler, uv);
+		float4 position = vertexTexture.Sample(textureSampler, uv);
+		float4 blend = splatBlendTexture.Sample(textureSampler, uv);
 		
 		TerrainVertex v;
 		v.position = pos;
+		v.position.y = DenormalizeHeight(position.y);
 		v.uv = float2(uv.x, -uv.y);
 		v.normal = float3(0, 1, 0);
-		v.splatBlend = float4(1.0f - uv.x, 1.0f - uv.y, 0.0f, 0.0f);
+		v.splatBlend = blend;
 		v.index = vertexIndex;
 
 		vertices[vertexIndex] = v;

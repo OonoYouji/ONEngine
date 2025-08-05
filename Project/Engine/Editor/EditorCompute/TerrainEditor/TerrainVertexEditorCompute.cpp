@@ -73,6 +73,11 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
+	/// 押していないときは処理をしない
+	if (!Input::TriggerMouse(Mouse::Left)) {
+		return;
+	}
+
 	/// マウスが範囲外なら処理しない
 	const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
 	if (mousePosition.x < 0.0f || mousePosition.x > 1280.0f
@@ -103,7 +108,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	}
 
 	inputInfo_.SetMappedData(
-		InputInfo{ mousePosition, 10.0f, 0.1f, byte, editMode_, editTextureIndex_ }
+		InputInfo{ mousePosition, pTerrain->GetBrushRadius(), pTerrain->GetBrushStrength(), byte, editMode_, editTextureIndex_}
 	);
 
 
