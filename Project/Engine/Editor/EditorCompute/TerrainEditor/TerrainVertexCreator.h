@@ -3,15 +3,12 @@
 /// engine
 #include "../Interface/IEditorCompute.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "TerrainInfo.h"
 
 /// //////////////////////////////////////////
 /// 地形の頂点を生成するためのコンピュートシェーダー
 /// //////////////////////////////////////////
 class TerrainVertexCreator : public IEditorCompute {
-
-	struct TerrainSize {
-		uint32_t width, height;
-	};
 
 	enum {
 		CBV_TERRAIN_SIZE,

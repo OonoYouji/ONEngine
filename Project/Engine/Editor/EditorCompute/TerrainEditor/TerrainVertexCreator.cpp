@@ -71,9 +71,6 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		const uint32_t width = static_cast<uint32_t>(pTerrain->GetSize().x);
 		const uint32_t depth = static_cast<uint32_t>(pTerrain->GetSize().y);
 
-		SaveTextureToPNG(L"./Packages/Textures/Terrain/TerrainVertex.png", 1000, 1000, false);
-		SaveTextureToPNG(L"./Packages/Textures/Terrain/TerrainSplatBlend.png", 1000, 1000, false);
-
 		pTerrain->GetRwVertices().CreateUAV(
 			sizeof(TerrainVertex) * pTerrain->GetMaxVertexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()

@@ -96,10 +96,10 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		if (Input::TriggerKey(DIK_B)) { editMode_ = 1; }
 
 		/// 編集するテクスチャのインデックスの変更
-		if (Input::TriggerKey(DIK_0)) { editTextureIndex_ = 0; }
-		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 1; }
-		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 2; }
-		if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 3; }
+		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
+		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 1; }
+		if (Input::TriggerKey(DIK_3)) { editTextureIndex_ = 2; }
+		if (Input::TriggerKey(DIK_4)) { editTextureIndex_ = 3; }
 	}
 
 	inputInfo_.SetMappedData(

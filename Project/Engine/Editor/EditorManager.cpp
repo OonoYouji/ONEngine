@@ -6,8 +6,9 @@
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 /// editor compute
-#include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
+#include "EditorCompute/TerrainEditor/TerrainDataOutput.h"
 #include "EditorCompute/TerrainEditor/TerrainVertexCreator.h"
+#include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
 
 class LogCommand : public IEditorCommand {
 public:
@@ -35,8 +36,9 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	pDxManager_ = _dxm;
 	runningCommand_ = nullptr;
 
-	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
 }
 
 void EditorManager::Update(GraphicsResourceCollection* _grc) {

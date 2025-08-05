@@ -35,6 +35,10 @@ public:
 	void CreateEmptySRVHandle();
 	void CreateEmptyUAVHandle();
 
+	void CreateUAVTexture(UINT _width, UINT _height, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap);
+
+	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -43,6 +47,7 @@ private:
 	std::string name_;
 
 	DxResource                  dxResource_;
+	DxResource readbackTexture_;
 
 	std::optional<Handle>       srvHandle_;
 	std::optional<Handle>       uavHandle_;

@@ -4,14 +4,15 @@ struct Index {
 	uint value;
 };
 
-struct TerrainSize {
-	uint terrainWidth;
-	uint terrainHeight;
-};
+
 
 ConstantBuffer<TerrainSize> terrainSize : register(b0);
 RWStructuredBuffer<TerrainVertex> vertices : register(u0);
 RWStructuredBuffer<Index> indices : register(u1);
+
+//Texture2D<float4> vertexTexture : register(t0);
+//Texture2D<float4> splatBlendTexture : register(t1);
+//SamplerState textureSampler : register(s0);
 
 [numthreads(16, 16, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
@@ -36,6 +37,8 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			1.0f
 		);
 
+		//float4 position = vertexTexture.SampleLevel(textureSampler, uv);
+		
 		TerrainVertex v;
 		v.position = pos;
 		v.uv = float2(uv.x, -uv.y);
