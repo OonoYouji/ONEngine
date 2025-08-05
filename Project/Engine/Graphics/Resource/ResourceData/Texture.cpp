@@ -73,7 +73,7 @@ void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _heig
 
 	// ピクセルデータをコピー
 	const DirectX::Image* img = image.GetImage(0, 0, 0);
-	memcpy(img->pixels, pixelData.data(), slicePitch);
+	std::memcpy(img->pixels, pixelData.data(), slicePitch);
 
 	// PNG 形式で保存
 	hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS_NONE, GUID_ContainerFormatPng, _filename.c_str());
