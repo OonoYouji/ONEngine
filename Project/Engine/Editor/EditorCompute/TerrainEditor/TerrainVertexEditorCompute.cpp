@@ -73,6 +73,12 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
+	/// マウスが範囲外なら処理しない
+	const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
+	if (mousePosition.x < 0.0f || mousePosition.x > 1280.0f
+		|| mousePosition.y < 0.0f || mousePosition.y > 720.0f) {
+		return;
+	}
 
 	/// bufferに値をセット
 	terrainInfo_.SetMappedData(TerrainInfo{ pTerrain->GetOwner()->GetId() });
@@ -83,15 +89,13 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	byte |= (isRaiseTerrainButtonPressed << 0);
 	byte |= (isLowerTerrainButtonPressed << 1);
 
-	bool isEditModeTexture = Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_B);
-	bool isEditModeVertex  = Input::PressKey(DIK_LCONTROL) && Input::TriggerKey(DIK_V);
-	if (isEditModeTexture) {
-		editMode_ = 1; // テクスチャ編集モード
-	} else if (isEditModeVertex) {
-		editMode_ = 0; // 頂点編集モード
-	}
+	if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
 
-	if (Input::PressKey(DIK_LCONTROL)) {
+		/// 編集モードの変更
+		if (Input::TriggerKey(DIK_V)) { editMode_ = 0; }
+		if (Input::TriggerKey(DIK_B)) { editMode_ = 1; }
+
+		/// 編集するテクスチャのインデックスの変更
 		if (Input::TriggerKey(DIK_0)) { editTextureIndex_ = 0; }
 		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 1; }
 		if (Input::TriggerKey(DIK_2)) { editTextureIndex_ = 2; }
@@ -99,10 +103,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	}
 
 	inputInfo_.SetMappedData(
-		InputInfo{
-			Input::GetImGuiImageMousePosition("Scene"),
-			10.0f, 0.1f, byte, editMode_, editTextureIndex_
-		}
+		InputInfo{ mousePosition, 10.0f, 0.1f, byte, editMode_, editTextureIndex_ }
 	);
 
 

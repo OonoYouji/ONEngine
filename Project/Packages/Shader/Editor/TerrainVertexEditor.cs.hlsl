@@ -41,9 +41,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	TerrainVertex vertex = vertices[index];
 	
+
 	float2 uv = inputInfo.position / float2(1280.0f, 720.0f); // マウス位置をUVに変換
 	float3 mousePosition = positionTexture.Sample(textureSampler, uv).xyz; // マウス位置
-
 
 	
 	if (inputInfo.editMode == 0) {

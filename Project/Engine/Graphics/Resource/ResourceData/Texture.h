@@ -107,3 +107,6 @@ public:
 	/// @return DxResource
 	DxResource& GetDxResource() { return dxResource_; }
 };
+
+
+void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);

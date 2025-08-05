@@ -6,6 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
+#include "Engine/Graphics/Resource/ResourceData/Texture.h"
 
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
@@ -38,6 +39,7 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 		terrainSize_.Create(_dxManager->GetDxDevice());
 	}
 
+	
 }
 
 void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
@@ -66,6 +68,12 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 	if (!pTerrain->GetIsCreated()) {
 		pTerrain->SetIsCreated(true);
 
+		const uint32_t width = static_cast<uint32_t>(pTerrain->GetSize().x);
+		const uint32_t depth = static_cast<uint32_t>(pTerrain->GetSize().y);
+
+		SaveTextureToPNG(L"./Packages/Textures/Terrain/TerrainVertex.png", 1000, 1000, false);
+		SaveTextureToPNG(L"./Packages/Textures/Terrain/TerrainSplatBlend.png", 1000, 1000, false);
+
 		pTerrain->GetRwVertices().CreateUAV(
 			sizeof(TerrainVertex) * pTerrain->GetMaxVertexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
@@ -81,10 +89,7 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pipeline_->SetPipelineStateForCommandList(_dxCommand);
 		auto cmdList = _dxCommand->GetCommandList();
 
-		terrainSize_.SetMappedData(TerrainSize{
-			.width = static_cast<uint32_t>(pTerrain->GetSize().x),
-			.height = static_cast<uint32_t>(pTerrain->GetSize().x),
-			});
+		terrainSize_.SetMappedData(TerrainSize{width, depth});
 		terrainSize_.BindForComputeCommandList(cmdList, CBV_TERRAIN_SIZE);
 
 		pTerrain->GetRwVertices().BindForComputeCommandList(
