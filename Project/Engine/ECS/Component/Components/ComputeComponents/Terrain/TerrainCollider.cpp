@@ -4,9 +4,10 @@
 #include "Engine/ECS/Entity/Interface/IEntity.h"
 
 TerrainCollider::TerrainCollider() {
-	if (IEntity* entity = GetOwner()) {
-		pTerrain_ = entity->GetComponent<Terrain>();
-	}
+	pTerrain_ = nullptr;
+	//if (IEntity* entity = GetOwner()) {
+	//	pTerrain_ = entity->GetComponent<Terrain>();
+	//}
 }
 
 void TerrainCollider::CopyVertices() {
