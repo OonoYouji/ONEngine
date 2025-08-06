@@ -31,7 +31,7 @@ public class PuzzleStage : MonoBehavior {
 		if (mapchip_ != null) {
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage3.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage1.json");
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();

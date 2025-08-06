@@ -72,7 +72,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
-	editorManager_->Initialize();
+	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 #endif // DEBUG_MODE
 
 
@@ -87,9 +87,10 @@ void GameFramework::Run() {
 		Input::Update();
 		Time::Update();
 
+		renderingFramework_->HeapBindToCommandList();
 		windowManager_->Update();
 #ifdef DEBUG_MODE
-		editorManager_->Update();
+		editorManager_->Update(renderingFramework_->GetResourceCollection());
 		imGuiManager_->Update();
 		entityComponentSystem_->DebuggingUpdate();
 

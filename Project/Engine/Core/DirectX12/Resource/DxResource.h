@@ -26,6 +26,7 @@ public:
 	/// @param _dxDevice デバイスオブジェクトへのポインタ
 	/// @param _sizeInByte バッファのサイズ（バイト単位）
 	void CreateResource(class DxDevice* _dxDevice, size_t _sizeInByte);
+	void CreateUAVResource(class DxDevice* _dxDevice, class DxCommand* _dxCommand, size_t _sizeInByte);
 
 	/// @brief resourceを作成する
 	/// @param _dxDevice デバイスオブジェクトへのポインタ
@@ -70,7 +71,7 @@ public:
 	/// @param _after 変更後の状態
 	/// @param _dxCommand DxCommandのインスタンスへのポインタ
 	void CreateBarrier(D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
-
+	void CreateBarrier(D3D12_RESOURCE_STATES _after, class DxCommand* _dxCommand);
 
 private:
 
@@ -80,6 +81,8 @@ private:
 
 	ComPtr<ID3D12Resource> resource_ = nullptr;
 
+	D3D12_RESOURCE_STATES currentState_;
+
 public:
 
 	/// ===================================================
@@ -88,7 +91,9 @@ public:
 
 	/// @brief リソースオブジェクトを取得する
 	/// @return ID3D12Resourceオブジェクトへのポインタ
-	ID3D12Resource* Get() const { return resource_.Get(); }
+	ID3D12Resource* Get() const;
+
+	D3D12_RESOURCE_STATES GetCurrentState() const;
 
 };
 

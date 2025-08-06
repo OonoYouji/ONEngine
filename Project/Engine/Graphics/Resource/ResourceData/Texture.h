@@ -35,6 +35,10 @@ public:
 	void CreateEmptySRVHandle();
 	void CreateEmptyUAVHandle();
 
+	void CreateUAVTexture(UINT _width, UINT _height, class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, DXGI_FORMAT _dxgiFormat = DXGI_FORMAT_R32G32B32A32_FLOAT);
+
+	void OutputTexture(const std::wstring& _filename, class DxDevice* _dxDevice, class DxCommand* _dxCommand);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -43,6 +47,7 @@ private:
 	std::string name_;
 
 	DxResource                  dxResource_;
+	DxResource readbackTexture_;
 
 	std::optional<Handle>       srvHandle_;
 	std::optional<Handle>       uavHandle_;
@@ -107,3 +112,6 @@ public:
 	/// @return DxResource
 	DxResource& GetDxResource() { return dxResource_; }
 };
+
+
+void SaveTextureToPNG(const std::wstring& _filename, size_t _width, size_t _height, bool _overwrite);

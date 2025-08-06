@@ -70,7 +70,7 @@ public:
 	/// @return　Window
 	class Window* GetDebugGameWindow() const;
 
-	const ImGuiSceneImageInfo& GetSceneImageInfo(const std::string& _name) const;
+	const ImGuiSceneImageInfo* GetSceneImageInfo(const std::string& _name) const;
 };
 
 

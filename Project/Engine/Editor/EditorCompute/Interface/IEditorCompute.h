@@ -20,7 +20,7 @@ public:
 	virtual ~IEditorCompute() = default;
 
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
-	virtual void Draw(class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) = 0;
+	virtual void Execute(class EntityComponentSystem* _ecs, class DxCommand* _dxCommand, class GraphicsResourceCollection* _resourceCollection) = 0;
 
 
 protected:
@@ -28,7 +28,7 @@ protected:
 	/// protected : objects
 	/// =========================================
 
-	std::unique_ptr<ComputePipeline> computePipeline_;
+	std::unique_ptr<ComputePipeline> pipeline_;
 
 };
 

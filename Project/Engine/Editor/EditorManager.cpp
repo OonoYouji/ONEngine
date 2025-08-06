@@ -1,8 +1,14 @@
 #include "EditorManager.h"
 
 /// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+
+/// editor compute
+#include "EditorCompute/TerrainEditor/TerrainDataOutput.h"
+#include "EditorCompute/TerrainEditor/TerrainVertexCreator.h"
+#include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
 
 class LogCommand : public IEditorCommand {
 public:
@@ -26,11 +32,21 @@ EditorManager::EditorManager(EntityComponentSystem* _ecs)
 	: pECS_(_ecs) {}
 EditorManager::~EditorManager() {}
 
-void EditorManager::Initialize() {
+void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
+	pDxManager_ = _dxm;
 	runningCommand_ = nullptr;
+
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
 }
 
-void EditorManager::Update() {
+void EditorManager::Update(GraphicsResourceCollection* _grc) {
+
+	/// エディタのコマンドを実行する
+	for (auto& compute : editorComputes_) {
+		compute->Execute(pECS_, pDxManager_->GetDxCommand(), _grc);
+	}
 
 	if (runningCommand_) {
 		EDITOR_STATE state = runningCommand_->Execute();
@@ -80,4 +96,10 @@ void EditorManager::Redo() {
 	/// command stackに戻す
 	commandStack_.push_back(std::move(command));
 
+}
+
+void EditorManager::AddEditorCompute(DxManager* _dxManager, ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute) {
+	_compute->Initialize(_shaderCompiler, _dxManager);
+
+	editorComputes_.push_back(std::move(_compute));
 }

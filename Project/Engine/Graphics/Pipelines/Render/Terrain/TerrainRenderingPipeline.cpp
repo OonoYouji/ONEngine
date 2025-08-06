@@ -32,6 +32,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
 		pipeline_->AddInputElement("COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
+		pipeline_->AddInputElement("INDEX", 0, DXGI_FORMAT_R32_SINT);
 
 
 		/// buffer
@@ -73,16 +74,12 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 	}
 
 
-	{ /// buffer
-
+	{	/// buffer
 		transformBuffer_.Create(_dxManager->GetDxDevice());
 		materialBuffer_.Create(_dxManager->GetDxDevice());
-		vertexBuffer_.Create(1000 * 1000, _dxManager->GetDxDevice());
-		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
 	pTerrain_ = nullptr;
-
 }
 
 void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
@@ -109,28 +106,14 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 		return;
 	}
 
-	/// prevと違うterrainならmapする
-	if (prevTerrain_ != pTerrain_) {
-		indexBuffer_.SetIndices(pTerrain_->GetIndices());
-		vertexBuffer_.SetVertices(pTerrain_->GetVertices());
-
-		indexBuffer_.Map();
-		vertexBuffer_.Map();
+	/// terrainが生成されていないならreturn
+	if (!pTerrain_->GetIsCreated()) {
+		return;
 	}
-
 
 	/// value setting
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
-
-	/// 編集した頂点を更新する
-	if (!pTerrain_->GetEditVertices().empty()) {
-		for (auto& editV : pTerrain_->GetEditVertices()) {
-			vertexBuffer_.SetVertex(editV.first, *editV.second);
-		}
-		//pTerrain_->ClearEditVertices();
-	}
-
 
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);
@@ -141,11 +124,11 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 
 	/// 描画する
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-	auto command = _dxCommand->GetCommandList();
+	auto cmdList = _dxCommand->GetCommandList();
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(command, ROOT_PARAM_VIEW_PROJECTION);
-	transformBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_TRANSFORM);
-	materialBuffer_.BindForGraphicsCommandList(command, ROOT_PARAM_MATERIAL);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
+	transformBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
+	materialBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 
 	/// texs
 	const auto& textures = pResourceCollection_->GetTextures();
@@ -153,26 +136,68 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
 		size_t index = pResourceCollection_->GetTextureIndex(path);
-		command->SetGraphicsRootDescriptorTable(
+		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
 			textures[index]->GetSRVGPUHandle()
 		);
 	}
 
 
+	/// vbvとibvのリソースバリアーを変える
+
+	DxResource& vertexBuffer = pTerrain_->GetRwVertices().GetResource();
+	vertexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		_dxCommand
+	);
+
+	/// vbv setting
+	D3D12_VERTEX_BUFFER_VIEW vbv = {};
+	vbv.BufferLocation = vertexBuffer.Get()->GetGPUVirtualAddress();
+	vbv.StrideInBytes  = sizeof(TerrainVertex);
+	vbv.SizeInBytes    = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
+	cmdList->IASetVertexBuffers(0, 1, &vbv);
+
+
+	DxResource& indexBuffer = pTerrain_->GetRwIndices().GetResource();
+	indexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		_dxCommand
+	);
+
+	/// ibv setting
+	D3D12_INDEX_BUFFER_VIEW ibv = {};
+	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
+	ibv.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
+	ibv.Format         = DXGI_FORMAT_R32_UINT;
+	cmdList->IASetIndexBuffer(&ibv);
 
 	/// vbv ibv setting
-	vertexBuffer_.BindForCommandList(command);
-	indexBuffer_.BindForCommandList(command);
+	//indexBuffer_.BindForCommandList(cmdList);
 
-	command->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	command->DrawIndexedInstanced(
-		static_cast<UINT>(indexBuffer_.GetIndices().size()),
+	cmdList->DrawIndexedInstanced(
+		static_cast<UINT>(pTerrain_->GetMaxIndexNum()),
 		1, 0, 0, 0
 	);
 
 
+
+	/// 元の状態に戻す
+	vertexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+	/// 元の状態に戻す
+	indexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
 }
 
 

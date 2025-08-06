@@ -17,6 +17,7 @@ VSOutput main(VSInput input) {
 	output.normal     = mul(input.normal, (float3x3) transform.matWorld);
 	output.uv         = input.uv;
 	output.splatBlend = input.splatBlend;
+	output.index      = input.index;
 	
 	return output;
 }

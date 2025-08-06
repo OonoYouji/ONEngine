@@ -701,12 +701,12 @@ Window* ImGuiManager::GetDebugGameWindow() const {
 	return debugGameWindow_;
 }
 
-const ImGuiSceneImageInfo& ImGuiManager::GetSceneImageInfo(const std::string& _name) const {
+const ImGuiSceneImageInfo* ImGuiManager::GetSceneImageInfo(const std::string& _name) const {
 	auto it = sceneImageInfos_.find(_name);
 	if (it != sceneImageInfos_.end()) {
-		return it->second;
+		return &it->second;
 	}
 
-	return {};
+	return nullptr;
 }
 
