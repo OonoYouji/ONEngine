@@ -30,13 +30,14 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			y / (float) terrainSize.terrainHeight
 		);
 
-		float4 pos = float4(
-			(float) x - terrainSize.terrainWidth * 0.5f,
-			0.0f,
-			(float) y - terrainSize.terrainHeight * 0.5f,
-			1.0f
-		);
+		//float4 pos = float4(
+		//	(float) x - terrainSize.terrainWidth * 0.5f,
+		//	0.0f,
+		//	(float) y - terrainSize.terrainHeight * 0.5f,
+		//	1.0f
+		//);
 
+		float4 pos = float4((float) x, 0.0f, (float) y, 1.0f);
 		float4 position = vertexTexture.Sample(textureSampler, uv);
 		float4 blend = splatBlendTexture.Sample(textureSampler, uv);
 		

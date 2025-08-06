@@ -6,6 +6,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/Core/Utility/Utility.h"
 
 TerrainCollider::TerrainCollider() {
 	pTerrain_ = nullptr;
@@ -64,6 +65,7 @@ void TerrainCollider::CopyVertices(DxManager* _dxManager) {
 	const size_t width = static_cast<size_t>(pTerrain_->GetSize().x);
 	const size_t depth = static_cast<size_t>(pTerrain_->GetSize().y);
 
+	vertices_.clear();
 	for (size_t z = 0; z < depth; ++z) {
 		std::vector<TerrainVertex> row;
 		row.reserve(width);
@@ -75,6 +77,59 @@ void TerrainCollider::CopyVertices(DxManager* _dxManager) {
 
 	dxReadbackBuffer.Get()->Unmap(0, nullptr);
 
+}
+
+float TerrainCollider::GetHeight(const Vector3& _position) {
+
+	/// 条件が満たされない場合は0を返す
+	if (!pTerrain_) {
+		return 0;
+	}
+
+	if (!IsInsideTerrain(_position)) {
+		return 0;
+	}
+
+	if (vertices_.empty()) {
+		return 0;
+	}
+
+
+	/* ----- 座標をuvに変換→indexに変換→頂点座標をworld座標に変換→高さを取得 ----- */
+
+	/// 地形のローカル座標に変換
+	const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
+	Vector3 localPosition = Matrix4x4::Transform(_position, kMatInverse);
+
+	/// uv値に変換
+	Vector2 uv = Vector2(localPosition.x, localPosition.z) / pTerrain_->GetSize();
+	
+	/// indexに変換
+	size_t row = static_cast<size_t>(uv.y * pTerrain_->GetSize().y);
+	size_t col = static_cast<size_t>(uv.x * pTerrain_->GetSize().x);
+
+	TerrainVertex& vertex = vertices_[row][col];
+	
+	/// ローカル座標からワールド座標に変換
+	Vector3 vertexPosition = Matrix4x4::Transform(
+		Vector3(vertex.position.x, vertex.position.y, vertex.position.z),
+		pTerrain_->GetOwner()->GetTransform()->matWorld
+	);
+
+	return vertexPosition.y; // 高さを返す
+}
+
+bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {
+	const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
+	Vector3 localPosition = Matrix4x4::Transform(_position, kMatInverse);
+
+	/// 地形のローカル座標上で範囲外にいるかチェック
+	if (localPosition.x < 0.0f || localPosition.x > pTerrain_->GetSize().x ||
+		localPosition.z < 0.0f || localPosition.z > pTerrain_->GetSize().y) {
+		return false;
+	}
+
+	return true;
 }
 
 Terrain* TerrainCollider::GetTerrain() const {
@@ -116,6 +171,13 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 		_collider->SetIsVertexGenerationRequested(true);
 	}
 
+	static Vector3 testPos = {};
+	ImGui::DragFloat3("test pos", &testPos.x, 0.1f);
+	
+	float height = _collider->GetHeight(testPos);
+	ImGui::Text("height: %.2f", height);
+
+	Gizmo::DrawWireSphere({testPos.x, height, testPos.z}, 2.f, Color::kRed);
 
 }
 

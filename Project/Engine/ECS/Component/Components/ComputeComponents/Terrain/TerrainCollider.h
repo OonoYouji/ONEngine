@@ -28,6 +28,10 @@ public:
 	/// @brief 地形の頂点情報をコピーする
 	void CopyVertices(class DxManager* _dxManager);
 
+	float GetHeight(const Vector3& _position);
+
+	bool IsInsideTerrain(const Vector3& _position);
+
 private:
 	/// =========================================
 	/// private : objects
