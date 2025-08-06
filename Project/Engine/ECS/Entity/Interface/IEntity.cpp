@@ -110,6 +110,7 @@ void IEntity::Destroy() {
 
 void IEntity::SetPosition(const Vector3& _v) {
 	transform_->position = _v;
+	UpdateTransform();
 }
 
 void IEntity::SetPositionX(float _x) {

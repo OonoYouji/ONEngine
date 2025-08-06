@@ -82,6 +82,12 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// mono からのTransform取得用関数
 /// ===================================================
 
+void UpdateTransform(Transform* _transform) {
+	if (IEntity* entity = _transform->GetOwner()) {
+		entity->UpdateTransform();
+	}
+}
+
 void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
@@ -143,7 +149,7 @@ void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	transform->position.x = _x;
 	transform->position.y = _y;
 	transform->position.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
@@ -156,7 +162,7 @@ void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float 
 	transform->position.x = _x;
 	transform->position.y = _y;
 	transform->position.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
@@ -170,7 +176,7 @@ void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, flo
 	transform->rotate.y = _y;
 	transform->rotate.z = _z;
 	transform->rotate.w = _w;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
@@ -183,7 +189,7 @@ void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	transform->scale.x = _x;
 	transform->scale.y = _y;
 	transform->scale.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void COMP_DEBUG::TransformDebug(Transform* _transform) {

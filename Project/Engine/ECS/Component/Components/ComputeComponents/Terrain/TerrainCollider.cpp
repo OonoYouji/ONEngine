@@ -10,7 +10,7 @@
 
 TerrainCollider::TerrainCollider() {
 	pTerrain_ = nullptr;
-	isVertexGenerationRequested_ = false;
+	isVertexGenerationRequested_ = true;
 }
 
 void TerrainCollider::AttachTerrain() {
@@ -48,11 +48,14 @@ void TerrainCollider::CopyVertices(DxManager* _dxManager) {
 		);
 	}
 
-	DxResource& dxResource = pTerrain_->GetRwVertices().GetResource();
-
 	DxCommand* dxCommand = _dxManager->GetDxCommand();
 	auto cmdList = dxCommand->GetCommandList();
+
+	DxResource& dxResource = pTerrain_->GetRwVertices().GetResource();
+
+	dxResource.CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, dxCommand);
 	cmdList->CopyResource(dxReadbackBuffer.Get(), dxResource.Get());
+	dxResource.CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, dxCommand);
 
 	dxCommand->CommandExecute();
 	dxCommand->CommandReset();
@@ -142,6 +145,10 @@ const std::vector<std::vector<TerrainVertex>>& TerrainCollider::GetVertices() co
 
 std::vector<std::vector<TerrainVertex>>& TerrainCollider::GetVertices() {
 	return vertices_;
+}
+
+bool TerrainCollider::GetIsCreated() const {
+	return isCreated_;
 }
 
 void TerrainCollider::SetIsVertexGenerationRequested(bool _isRequested) {

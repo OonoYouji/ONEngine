@@ -22,8 +22,15 @@ void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(EntityComponentSyste
 		}
 
 		if (comp->isVertexGenerationRequested_) {
-			comp->isVertexGenerationRequested_ = false;
-			comp->CopyVertices(pDxManager_);
+			comp->AttachTerrain();
+			if (Terrain* terrain = comp->GetTerrain()) {
+				if (terrain->GetIsCreated()) {
+
+					comp->isVertexGenerationRequested_ = false;
+					comp->CopyVertices(pDxManager_);
+					comp->isCreated_ = true;
+				}
+			}
 		}
 	}
 

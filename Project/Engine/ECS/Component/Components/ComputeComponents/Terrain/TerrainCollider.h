@@ -32,6 +32,7 @@ public:
 
 	bool IsInsideTerrain(const Vector3& _position);
 
+
 private:
 	/// =========================================
 	/// private : objects
@@ -42,6 +43,8 @@ private:
 	std::vector<std::vector<TerrainVertex>> vertices_;
 
 	bool isVertexGenerationRequested_;
+
+	bool isCreated_;
 
 
 public:
@@ -54,10 +57,14 @@ public:
 	const std::vector<std::vector<TerrainVertex>>& GetVertices() const;
 	std::vector<std::vector<TerrainVertex>>& GetVertices();
 
+	bool GetIsCreated() const;
+
 
 	void SetIsVertexGenerationRequested(bool _isRequested);
 
 };
+
+
 
 namespace COMP_DEBUG {
 	void TerrainColliderDebug(TerrainCollider* _collider);

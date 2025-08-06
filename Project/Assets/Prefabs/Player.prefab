@@ -24,7 +24,7 @@
         {
             "animationScale": 1.0,
             "enable": 1,
-            "isPlaying": true,
+            "isPlaying": false,
             "meshPath": "./Packages/Models/Human/walk.gltf",
             "texturePath": "./Packages/Textures/white.png",
             "type": "SkinMeshRenderer"
@@ -39,10 +39,6 @@
         },
         {
             "enable": 1,
-            "type": "ToTerrainCollider"
-        },
-        {
-            "enable": 1,
             "scriptName": [
                 "Player",
                 "AttachObjectToJoint"
@@ -50,7 +46,7 @@
             "type": "Script"
         }
     ],
-    "id": -1,
+    "id": -5,
     "name": "Player",
     "parent": null,
     "prefabName": "Player.prefab"

@@ -54,6 +54,10 @@ public class Player : MonoBehavior {
 		// CameraFollow();
 		transform.scale = Vector3.one / 100f; // スケールを小さくする
 
+		float fallSpeed = 1.0f;
+		Vector3 pos = transform.position;
+		pos.y -= fallSpeed;
+		transform.position = pos;
 	}
 
 

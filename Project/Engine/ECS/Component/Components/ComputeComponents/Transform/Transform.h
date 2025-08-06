@@ -141,6 +141,8 @@ void to_json(nlohmann::json& _j, const Transform& _t);
 /// mono からのTransform取得用関数
 /// =================================================
 
+void UpdateTransform(Transform* _transform);
+
 void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
 void InternalGetLocalPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z);
 void InternalGetRotate(uint64_t _nativeHandle, float* _x, float* _y, float* _z, float* _w);
