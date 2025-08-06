@@ -7,6 +7,7 @@
 
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
@@ -29,6 +30,7 @@ namespace {
 			Register<Effect>();
 			Register<Script>();
 			Register<Terrain>();
+			Register<TerrainCollider>();
 			Register<CameraComponent>();
 
 			/// renderer

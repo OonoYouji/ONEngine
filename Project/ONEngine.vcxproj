@@ -196,6 +196,7 @@
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexCreator.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainDataOutput.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.h" />
@@ -366,6 +367,7 @@
     <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexCreator.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainDataOutput.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

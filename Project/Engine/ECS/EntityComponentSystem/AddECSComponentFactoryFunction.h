@@ -3,6 +3,7 @@
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
@@ -15,6 +16,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<Variables>();
 	_compCollection->RegisterComponentFactory<Effect>();
 	_compCollection->RegisterComponentFactory<Terrain>();
+	_compCollection->RegisterComponentFactory<TerrainCollider>();
 	_compCollection->RegisterComponentFactory<CameraComponent>();
 
 	/// renderer
