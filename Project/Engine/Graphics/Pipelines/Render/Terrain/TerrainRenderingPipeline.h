@@ -53,8 +53,5 @@ private:
 	ConstantBuffer<Matrix4x4> transformBuffer_;
 	ConstantBuffer<Material> materialBuffer_;
 
-	IndexBuffer indexBuffer_;
-
-
 };
 

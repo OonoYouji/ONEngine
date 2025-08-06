@@ -74,15 +74,12 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 	}
 
 
-	{ /// buffer
-
+	{	/// buffer
 		transformBuffer_.Create(_dxManager->GetDxDevice());
 		materialBuffer_.Create(_dxManager->GetDxDevice());
-		indexBuffer_.Create(999 * 1000 * 6, _dxManager->GetDxDevice());
 	}
 
 	pTerrain_ = nullptr;
-
 }
 
 void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
@@ -113,14 +110,6 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	if (!pTerrain_->GetIsCreated()) {
 		return;
 	}
-
-	/// prevと違うterrainならmapする
-	if (prevTerrain_ != pTerrain_) {
-		indexBuffer_.SetIndices(pTerrain_->GetIndices());
-
-		indexBuffer_.Map();
-	}
-
 
 	/// value setting
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
@@ -170,17 +159,28 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	vbv.SizeInBytes    = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
 	cmdList->IASetVertexBuffers(0, 1, &vbv);
 
+
+	DxResource& indexBuffer = pTerrain_->GetRwIndices().GetResource();
+	indexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
+		_dxCommand
+	);
+
 	/// ibv setting
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
-
+	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
+	ibv.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
+	ibv.Format         = DXGI_FORMAT_R32_UINT;
+	cmdList->IASetIndexBuffer(&ibv);
 
 	/// vbv ibv setting
-	indexBuffer_.BindForCommandList(cmdList);
+	//indexBuffer_.BindForCommandList(cmdList);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	cmdList->DrawIndexedInstanced(
-		static_cast<UINT>(indexBuffer_.GetIndices().size()),
+		static_cast<UINT>(pTerrain_->GetMaxIndexNum()),
 		1, 0, 0, 0
 	);
 
@@ -189,6 +189,12 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	/// 元の状態に戻す
 	vertexBuffer.CreateBarrier(
 		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		_dxCommand
+	);
+	/// 元の状態に戻す
+	indexBuffer.CreateBarrier(
+		D3D12_RESOURCE_STATE_INDEX_BUFFER,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		_dxCommand
 	);
