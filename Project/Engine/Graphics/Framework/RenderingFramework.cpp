@@ -49,9 +49,9 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 #ifdef DEBUG_MODE
 #else
 	copyImagePipeline_ = std::make_unique<CopyImageRenderingPipeline>(resourceCollection_.get());
-	copyImagePipeline_->Initialize(shaderCompiler_.get(), dxManager_);
-	releaseBuildSubWindow_ = windowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
-	windowManager_->HideGameWindow(releaseBuildSubWindow_);
+	copyImagePipeline_->Initialize(shaderCompiler_.get(), pDxManager_);
+	releaseBuildSubWindow_ = pWindowManager_->GenerateWindow(L"test", Vector2(1280.0f, 720.0f), WindowManager::WindowType::Sub);
+	pWindowManager_->HideGameWindow(releaseBuildSubWindow_);
 #endif // DEBUG_MODE
 
 }
@@ -81,9 +81,9 @@ void RenderingFramework::Draw() {
 	DrawScene();
 	releaseBuildSubWindow_->PostDraw();
 
-	windowManager_->MainWindowPreDraw();
-	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), dxManager_->GetDxCommand());
-	windowManager_->MainWindowPostDraw();
+	pWindowManager_->MainWindowPreDraw();
+	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), pDxManager_->GetDxCommand());
+	pWindowManager_->MainWindowPostDraw();
 #endif // DEBUG_MODE
 
 	DxCommandExeAndReset();
