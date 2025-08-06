@@ -54,7 +54,6 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
-
 	Terrain* pTerrain = nullptr;
 	for (auto& terrain : terrainArray->GetUsedComponents()) {
 		if (!terrain) {
@@ -73,10 +72,8 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
-	/// 押していないときは処理をしない
-	if (!Input::TriggerMouse(Mouse::Left)) {
-		return;
-	}
+
+
 
 	/// マウスが範囲外なら処理しない
 	const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
@@ -112,8 +109,15 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	);
 
 
-	/// pipelineの設定&実行
+	
+	/// 押していないときは処理をしない
+	if (!Input::TriggerMouse(Mouse::Left)) {
+		return;
+	}
 
+
+
+	/// pipelineの設定&実行
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto cmdList = _dxCommand->GetCommandList();
 

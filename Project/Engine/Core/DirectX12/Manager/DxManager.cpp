@@ -43,6 +43,12 @@ void DxManager::Initialize() {
 
 void DxManager::Finalize() {}
 
+void DxManager::HeapBindToCommandList() {
+	GetDxSRVHeap()->BindToCommandList(
+		GetDxCommand()->GetCommandList()
+	);
+}
+
 
 
 DxDevice* DxManager::GetDxDevice() const {

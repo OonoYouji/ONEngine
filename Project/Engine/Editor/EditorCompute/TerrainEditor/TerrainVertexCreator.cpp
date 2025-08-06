@@ -76,12 +76,12 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		pTerrain->SetIsCreated(true);
 
 		pTerrain->GetRwVertices().CreateUAV(
-			sizeof(TerrainVertex) * pTerrain->GetMaxVertexNum(),
+			pTerrain->GetMaxVertexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
 		);
 
 		pTerrain->GetRwIndices().CreateUAV(
-			sizeof(uint32_t) * pTerrain->GetMaxIndexNum(),
+			pTerrain->GetMaxIndexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
 		);
 

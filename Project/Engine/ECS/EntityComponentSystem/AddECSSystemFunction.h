@@ -12,8 +12,10 @@
 #include "../System/Collision/ColliderRenderQueueSystem.h"
 #include "../System/SkinMesh/SkinMeshUpdateSystem.h"
 #include "../System/CameraUpdate/CameraUpdateSystem.h"
+#include "../System/Terrain/TerrainColliderVertexGenerator.h"
 
 inline void AddECSSystemFunction(EntityComponentSystem* _ecs, DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection) {
+	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>();

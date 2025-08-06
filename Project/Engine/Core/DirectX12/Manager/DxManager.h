@@ -29,6 +29,8 @@ public:
 	void Initialize();
 	void Finalize();
 
+	void HeapBindToCommandList();
+
 private:
 
 	/// ===================================================
