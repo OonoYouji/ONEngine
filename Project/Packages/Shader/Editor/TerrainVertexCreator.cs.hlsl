@@ -63,15 +63,15 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 		// 1セル＝6 index なので書き込み開始位置を計算
 		uint indexStart = (y * (terrainSize.terrainWidth - 1) + x) * 6;
-
-		// 三角形1
+		
+		// 三角形1（CCW: i0 → i2 → i1）
 		indices[indexStart + 0].value = i0;
-		indices[indexStart + 1].value = i1;
-		indices[indexStart + 2].value = i2;
+		indices[indexStart + 1].value = i2;
+		indices[indexStart + 2].value = i1;
 
-		// 三角形2
+		// 三角形2（CCW: i2 → i3 → i1）
 		indices[indexStart + 3].value = i2;
-		indices[indexStart + 4].value = i1;
-		indices[indexStart + 5].value = i3;
+		indices[indexStart + 4].value = i3;
+		indices[indexStart + 5].value = i1;
 	}
 }

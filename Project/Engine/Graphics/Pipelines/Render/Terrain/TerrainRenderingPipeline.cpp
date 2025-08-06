@@ -61,7 +61,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;

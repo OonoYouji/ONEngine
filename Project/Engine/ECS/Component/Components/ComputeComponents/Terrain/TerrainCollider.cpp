@@ -48,7 +48,7 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 }
 
 void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
-	_c.enable = _j.value("enable", true);
+	_c.enable = _j.value("enable", 1);
 }
 
 void to_json(nlohmann::json& _j, const TerrainCollider& _c) {
