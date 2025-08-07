@@ -70,7 +70,7 @@ void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vec
 						/// 地形の下にいるなら押し上げる
 						if (height > spherePos.y) {
 							Vector3 newPos = sphere->GetPosition();
-							newPos.y = height; // 上に押し上げる
+							newPos.y = height + sphereCollider->GetRadius(); // 上に押し上げる
 							sphere->SetPosition(newPos);
 						}
 					}

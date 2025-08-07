@@ -51,7 +51,6 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	RegisterComponent<Skybox>([&](IComponent* _component) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_component)); });
 
 	/// collider
-	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<SphereCollider>([&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component)); });
 	RegisterComponent<BoxCollider>([&](IComponent* _component) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_component)); });
 

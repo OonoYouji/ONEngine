@@ -17,6 +17,7 @@ namespace Stage {
 	public class Root {
 		public Map map;
 		public Player player;
+		public Player subPlayer;
 		public Partition partition;
 	}
 

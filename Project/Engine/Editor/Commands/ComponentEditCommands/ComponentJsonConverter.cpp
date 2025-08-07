@@ -44,7 +44,6 @@ namespace {
 			Register<Skybox>();
 
 			/// collision
-			Register<ToTerrainCollider>();
 			Register<SphereCollider>();
 			Register<BoxCollider>();
 		}
@@ -382,17 +381,6 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 	_j = nlohmann::json{
 		{ "type", "Line3DRenderer" },
 		{ "enable", _l.enable }
-	};
-}
-
-void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
-	_c.enable = _j.at("enable").get<int>();
-}
-
-void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
-	_j = nlohmann::json{
-		{ "type", "ToTerrainCollider" },
-		{ "enable", _c.enable }
 	};
 }
 

@@ -8,10 +8,10 @@ public class PuzzleStage : MonoBehavior {
 	private PuzzleBlockData blockData_;
 	private bool isStartPuzzle_ = false; // パズルが開始されているかどうか
 
+	// マップの情報、ブロックリスト、プレイヤーリスト
 	private List<List<int>> mapData_;
-
-	// private List<List<Entity>> blocks_;
 	private List<Entity> blocks_;
+	private List<Entity> players_;
 
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
@@ -392,4 +392,15 @@ public class PuzzleStage : MonoBehavior {
 		BlockDeploy();
 		PlayerDeploy();
 	}
+
+
+
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	/// アクセッサ
+	/// ///////////////////////////////////////////////////////////////////////////////////////////
+
+	public List<List<int>> GetMapData() {
+		return mapData_;
+	}
+	
 }

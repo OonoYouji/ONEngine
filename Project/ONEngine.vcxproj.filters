@@ -93,7 +93,6 @@
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Entities\Light\DirectionalLightObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
@@ -277,7 +276,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Gizmo.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Primitive.h" />
-    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\3D\ToTerrainCollider.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.h" />
     <ClInclude Include="Engine\ECS\Entity\Entities\Light\DirectionalLightObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.h" />

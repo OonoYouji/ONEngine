@@ -178,14 +178,6 @@ void COMP_DEBUG::TerrainColliderDebug(TerrainCollider* _collider) {
 		_collider->SetIsVertexGenerationRequested(true);
 	}
 
-	static Vector3 testPos = {};
-	ImGui::DragFloat3("test pos", &testPos.x, 0.1f);
-	
-	float height = _collider->GetHeight(testPos);
-	ImGui::Text("height: %.2f", height);
-
-	Gizmo::DrawWireSphere({testPos.x, height, testPos.z}, 2.f, Color::kRed);
-
 }
 
 void from_json(const nlohmann::json& _j, TerrainCollider& _c) {
