@@ -46,7 +46,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float3 mousePosition = positionTexture.Sample(textureSampler, uv).xyz; // マウス位置
 
 	
-	if (inputInfo.editMode == 0) {
+	if (inputInfo.editMode == 1) {
 		// ----- 頂点の編集 ----- //
 
 		float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
@@ -63,7 +63,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			vertices[index] = vertex;
 		}
 
-	} else if (inputInfo.editMode == 1) {
+	} else if (inputInfo.editMode == 2) {
 		// ----- テクスチャの編集 ----- //
 		
 		float distanceToBrush = distance(vertex.position.xz, mousePosition.xz); // XZ平面で距離を測る
