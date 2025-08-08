@@ -74,6 +74,14 @@ void Variables::LoadJson(const std::string& _path) {
 		}
 	}
 
+
+	/// スクリプトの変数を登録
+	if (Script* script = GetOwner()->GetComponent<Script>()) {
+		for (const auto& data : script->GetScriptDataList()) {
+			SetScriptVariables(data.scriptName);
+		}
+	}
+
 }
 
 
@@ -131,6 +139,119 @@ void Variables::RegisterScriptVariables() {
 		Console::LogError("Variables::SaveJson();  owner has no Script component...");
 		return;
 	}
+
+	for (const auto& data : script->GetScriptDataList()) {
+		size_t groupIndex = 0;
+
+		/// 新規のグループを追加するか、既存のグループを取得する
+		if (!HasGroup(data.scriptName)) {
+			groupIndex = AddGroup(data.scriptName);
+		} else {
+			groupIndex = groupKeyMap_.at(data.scriptName);
+		}
+
+		/// スクリプトの変数をグループに追加
+		Group& group = groups_[groupIndex];
+
+		{
+			MonoObject* safeObj = nullptr;
+			if (data.gcHandle != 0) {
+				safeObj = mono_gchandle_get_target(data.gcHandle);
+			}
+
+			if (!safeObj) {
+				continue; //!< 対象のスクリプトがない場合はスキップ
+			}
+
+			MonoClass* monoClass = mono_object_get_class(safeObj);
+			MonoClassField* field = nullptr;
+			void* iter = nullptr;
+
+			while ((field = mono_class_get_fields(monoClass, &iter))) {
+				const char* fieldName = mono_field_get_name(field);
+
+				// SerializeFieldチェックを削除
+				MonoType* fieldType = mono_field_get_type(field);
+				int type = mono_type_get_type(fieldType);
+
+				/// 持っている変数ならスキップ
+				if (group.Has(fieldName)) {
+					continue;
+				}
+
+				switch (type) {
+				case MONO_TYPE_I4: /// int
+				{
+					int value = 0;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_R4: /// float
+				{
+					float value = 0.0f;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_BOOLEAN: /// bool
+				{
+					bool value = false;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_STRING: /// string
+				{
+					MonoString* monoStr = nullptr;
+					mono_field_get_value(safeObj, field, &monoStr);
+					std::string value = mono_string_to_utf8(monoStr);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_VALUETYPE: /// 構造体
+				{
+					MonoClass* fieldClass = mono_class_from_mono_type(fieldType);
+					const char* className = mono_class_get_name(fieldClass);
+
+					if (strcmp(className, "Vector2") == 0) {
+						// Vector2
+						Vector2 vec2;
+						mono_field_get_value(safeObj, field, &vec2);
+						group.Add(fieldName, vec2);
+
+					} else if (strcmp(className, "Vector3") == 0) {
+						// Vector3
+						Vector3 vec3;
+						mono_field_get_value(safeObj, field, &vec3);
+						group.Add(fieldName, vec3);
+
+					} else if (strcmp(className, "Vector4") == 0) {
+						// Vector4
+						Vector4 vec4;
+						mono_field_get_value(safeObj, field, &vec4);
+						group.Add(fieldName, vec4);
+
+					}
+				}
+				break;
+				}
+
+			}
+		}
+
+
+	}
+}
+
+void Variables::ReloadScriptVariables() {
+	Script* script = GetOwner()->GetComponent<Script>();
+	if (!script) {
+		return;
+	}
+
+	groupKeyMap_.clear();
+	groups_.clear();
 
 	for (const auto& data : script->GetScriptDataList()) {
 		size_t groupIndex = 0;
@@ -229,6 +350,7 @@ void Variables::RegisterScriptVariables() {
 
 
 	}
+
 }
 
 void Variables::SetScriptVariables(const std::string& _scriptName) {
@@ -425,7 +547,7 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 	if (ImGui::Button("export")) {
 		std::string ownerName = _variables->GetOwner()->GetName();
 
-		_variables->RegisterScriptVariables();
+		_variables->ReloadScriptVariables();
 		_variables->SaveJson("Assets/Jsons/" + ownerName + ".json");
 	}
 

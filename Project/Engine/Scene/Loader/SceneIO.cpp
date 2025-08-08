@@ -119,6 +119,9 @@ void SceneIO::LoadScene(const std::string& _filename) {
 				EntityJsonConverter::FromJson(entityJson, entity);
 			} else {
 				EntityJsonConverter::TransformFromJson(entityJson, entity);
+				if (Variables* vars = entity->GetComponent<Variables>()) {
+					vars->LoadJson("./Assets/Jsons/" + entityName + ".json");
+				}
 			}
 
 			entityMap[entityId] = entity;
