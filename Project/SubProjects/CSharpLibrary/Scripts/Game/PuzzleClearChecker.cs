@@ -2,16 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 public class PuzzleClearChecker : MonoBehavior {
 	private PuzzleStage puzzleStage_;
-
+	private List<Vector2Int> goalAddresses_ = new  List<Vector2Int>();
+	
 	public override void Initialize() {
 		puzzleStage_ = entity.GetScript<PuzzleStage>();
 		if (!puzzleStage_) {
 			Debug.LogWarning("===== puzzle stage is null");
 			return;
+		}
+		
+		/// ゴールのアドレスを確保
+		List<List<int>> mapData = puzzleStage_.GetMapData();
+		if (mapData == null || mapData.Count == 0) {
+			Debug.LogWarning("===== map data is null");
+			return;
+		}
+		
+		for (int y = 0; y < mapData.Count; y++) {
+			for (int x = 0; x < mapData[y].Count; x++) {
+				int value =  mapData[y][x];
+				if (CheckIsGoal(value)) {
+					goalAddresses_.Add(new Vector2Int(x, y));
+				}
+			}
 		}
 	}
 
@@ -27,20 +45,30 @@ public class PuzzleClearChecker : MonoBehavior {
 
 		List<Entity> players = puzzleStage_.GetPlayers();
 		bool isClear = false;
-		for (int i = 0; i < players.Count; i++) {
-			PuzzlePlayer pp = players[i].GetScript<PuzzlePlayer>();
-			if (!pp) {
+		for (int goalIndex = 0; goalIndex < goalAddresses_.Count; goalIndex++) {
+			Vector2Int goalAddress = goalAddresses_[goalIndex];
+
+			bool playerIsGoaled = false;
+			for (int playerIndex = 0; playerIndex < players.Count; playerIndex++) {
+				PuzzlePlayer pp = players[playerIndex].GetScript<PuzzlePlayer>();
+				Vector2Int playerAddress = pp.blockData.address;
+				if (goalAddress == playerAddress) {
+					/// ゴールしている
+					playerIsGoaled = true;
+					break;
+				}
+			}
+
+			/// ゴールしていないなら次をチェックしても無駄なので処理をやめる
+			if (!playerIsGoaled) {
 				break;
 			}
 
-			if (!CheckIsGoaled(pp)) {
-				break;
-			}
-
-			/// 全てのplayerを確認してokならクリア
-			if (i == players.Count - 1) {
+			/// 全てのゴールにゴールしている
+			if (goalIndex == goalAddresses_.Count - 1) {
 				isClear = true;
 			}
+			
 		}
 
 
