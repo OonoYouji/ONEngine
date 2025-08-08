@@ -49,7 +49,6 @@ public class PuzzleStage : MonoBehavior {
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
 		UpdateEntityPosition();
-
 	}
 
 
@@ -189,7 +188,6 @@ public class PuzzleStage : MonoBehavior {
 		/* パズルを行っているときの更新 */
 		UpdatePlayer();
 		UpdateEntityPosition();
-
 	}
 
 
@@ -210,6 +208,11 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		if (moveDir_ == Vector2Int.zero) {
+			/// 操作対象の切り替え
+			if (Input.TriggerGamepad(Gamepad.Y)) {
+				ActivePlayerChange();
+			}
+
 			/// 移動方向の決定
 			if (Input.TriggerGamepad(Gamepad.DPadUp)) {
 				moveDir_ = Vector2Int.up;
@@ -364,7 +367,7 @@ public class PuzzleStage : MonoBehavior {
 		/// ====================================================
 		/// このパズルのエンティティの座標を更新する
 		/// ====================================================
-		
+
 		for (int i = 0; i < players_.Count; ++i) {
 			Entity player = players_[i];
 			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
@@ -397,6 +400,21 @@ public class PuzzleStage : MonoBehavior {
 			}
 		}
 	}
+
+
+	private void ActivePlayerChange() {
+		/// ====================================================
+		/// 操作対象のプレイヤーを切り替える
+		/// ====================================================
+
+		for (int i = 0; i < players_.Count; ++i) {
+			if (activePlayer_ != players_[i]) {
+				activePlayer_ = players_[i];
+				break;
+			}
+		}
+	}
+
 
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// アクセッサ
