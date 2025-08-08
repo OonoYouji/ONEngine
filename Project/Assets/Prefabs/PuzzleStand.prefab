@@ -4,9 +4,9 @@
         {
             "enable": 1,
             "position": {
-                "x": 0.0,
-                "y": 11.743178367614746,
-                "z": 0.0
+                "x": -0.32999998331069946,
+                "y": 2.0,
+                "z": 0.2200000286102295
             },
             "rotate": {
                 "w": 1.0,
@@ -15,9 +15,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.10000000149011612,
+                "y": 0.10000000149011612,
+                "z": 0.10000000149011612
             },
             "type": "Transform"
         },
@@ -40,9 +40,9 @@
         {
             "enable": 1,
             "scriptName": [
-                "PuzzleStage",
+                "PuzzleStartController",
                 "PuzzleClearChecker",
-                "PuzzleStartController"
+                "PuzzleStage"
             ],
             "type": "Script"
         },
@@ -52,7 +52,7 @@
             "type": "SphereCollider"
         }
     ],
-    "id": -1,
+    "id": -3,
     "name": "PuzzleStand",
     "parent": null,
     "prefabName": "PuzzleStand.prefab"

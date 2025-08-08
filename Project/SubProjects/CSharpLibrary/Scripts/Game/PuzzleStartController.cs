@@ -20,12 +20,25 @@ public class PuzzleStartController : MonoBehavior {
 
 		/// このスクリプトは管理しないので削除しておく
 		thisScripts_.Remove(thisScripts_[thisIndex]);
+
+		ToggleScriptEnable();
 	}
 
 	public override void Update() {
 		Debug.Log("====================================================");
 		Debug.Log("this script count = " + thisScripts_.Count);
 		Debug.Log("====================================================");
+
+		if (Input.TriggerKey(KeyCode.J)) {
+			ToggleScriptEnable();
+		}
+		
+	}
+
+	private void ToggleScriptEnable() {
+		for (int i = 0; i < thisScripts_.Count; i++) {
+			thisScripts_[i].enable = !thisScripts_[i].enable;
+		}
 	}
 
 }

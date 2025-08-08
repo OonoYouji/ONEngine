@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 public class PuzzleStage : MonoBehavior {
 	private PuzzleBlockData blockData_;
-	private bool isStartPuzzle_ = false; // パズルが開始されているかどうか
 
 	// マップの情報、ブロックリスト、プレイヤーリスト
 	private List<List<int>> mapData_;
@@ -41,12 +40,16 @@ public class PuzzleStage : MonoBehavior {
 		blockData_.height = 2f; // ブロックの高さを設定
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
 
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+		}
 
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
+		UpdateEntityPosition();
 
-		blockPosOffset_ = new Vector3(1f, -1f, 1f);
-		blockData_.blockSpace = 0.22f;
 	}
 
 
@@ -183,62 +186,10 @@ public class PuzzleStage : MonoBehavior {
 			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
 		}
 
-
-		for (int i = 0; i < players_.Count; ++i) {
-			Entity player = players_[i];
-			Debug.Log("======================================================================");
-			Debug.Log("id=" + player.Id + "; name=" + player.name);
-			Debug.Log("======================================================================");
-
-			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
-			if (pp) {
-				pp.UpdatePosition(blockPosOffset_);
-			}
-		}
-
-		PuzzlePlayer activePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-		for (int i = 0; i < blocks_.Count; i++) {
-			Entity block = blocks_[i];
-			if (block == null) {
-				continue;
-			}
-
-			Block blockScript = block.GetScript<Block>();
-			if (blockScript) {
-				Vector2Int address = blockScript.blockData.address;
-
-				blockScript.blockData.mapValue = mapData_[address.y][address.x];
-				if (activePlayer) {
-					if (blockScript.blockData.type == activePlayer.blockData.type) {
-						blockScript.blockData.height = blockData_.height;
-					} else {
-						blockScript.blockData.height = blockData_.height - 0.05f;
-					}
-				}
-
-				blockScript.UpdatePosition(blockPosOffset_);
-			}
-		}
-
-
 		/* パズルを行っているときの更新 */
-		;
-
 		UpdatePlayer();
+		UpdateEntityPosition();
 
-		//
-		// if (CheckIsGoaled(activePlayer)) {
-		// 	activePlayer.isGoaled.Set(true);
-		// }
-
-		/// パズルを終了する
-		if (Input.TriggerGamepad(Gamepad.B)) {
-			/// パズルを終了する
-			isStartPuzzle_ = false;
-
-			/// 他のエンティティの更新を停止
-			Debug.Log("Puzzle ended.");
-		}
 	}
 
 
@@ -409,6 +360,43 @@ public class PuzzleStage : MonoBehavior {
 		PlayerDeploy();
 	}
 
+	private void UpdateEntityPosition() {
+		/// ====================================================
+		/// このパズルのエンティティの座標を更新する
+		/// ====================================================
+		
+		for (int i = 0; i < players_.Count; ++i) {
+			Entity player = players_[i];
+			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
+			if (pp) {
+				pp.UpdatePosition(blockPosOffset_);
+			}
+		}
+
+		PuzzlePlayer activePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		for (int i = 0; i < blocks_.Count; i++) {
+			Entity block = blocks_[i];
+			if (block == null) {
+				continue;
+			}
+
+			Block blockScript = block.GetScript<Block>();
+			if (blockScript) {
+				Vector2Int address = blockScript.blockData.address;
+
+				blockScript.blockData.mapValue = mapData_[address.y][address.x];
+				if (activePlayer) {
+					if (blockScript.blockData.type == activePlayer.blockData.type) {
+						blockScript.blockData.height = blockData_.height;
+					} else {
+						blockScript.blockData.height = blockData_.height - 0.05f;
+					}
+				}
+
+				blockScript.UpdatePosition(blockPosOffset_);
+			}
+		}
+	}
 
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// アクセッサ
