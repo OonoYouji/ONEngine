@@ -69,12 +69,6 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		// デバッグモードを停止
 		DebugConfig::isDebugging = false;
 	}
-	//ImGui::SameLine();
-
-	///// 1frameスキップボタン
-	//if (ImGui::ImageButton("##skip", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize)) {
-
-	//}
 
 
 
@@ -162,7 +156,14 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		/// 行列をSRTに分解、エンティティに適応
 		float translation[3], rotation[3], scale[3];
 		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
-		transform->SetPosition(Vector3(translation[0], translation[1], translation[2]));
+
+		Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
+		if (IEntity* entity = transform->GetOwner()) {
+			if (IEntity* parent = entity->GetParent()) {
+				translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+			}
+		}
+		transform->SetPosition(translationV);
 
 		Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
 		transform->SetRotate(eulerRotation);

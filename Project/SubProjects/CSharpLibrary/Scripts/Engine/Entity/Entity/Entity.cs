@@ -150,6 +150,15 @@ public class Entity {
 		return null;
 	}
 
+	public List<MonoBehavior> GetScripts() {
+		List<MonoBehavior> result = new List<MonoBehavior>();
+		foreach (var keyValuePair in scripts_) {
+			result.Add(keyValuePair.Value);
+		}
+		
+		return result;
+	}
+
 	public T AddScript<T>() where T : MonoBehavior {
 		Debug.LogInfo("Adding script: " + typeof(T).Name + " to Entity ID: " + entityId_);
 

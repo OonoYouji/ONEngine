@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 public class PuzzlePlayer : MonoBehavior {
 	public PuzzleBlockData blockData; // ブロックデータ
 	public Flag isGoaled;
-	
-	
+
+
 	public override void Initialize() {
 		// 初期化処理
 		isGoaled.Set(false);
@@ -20,7 +20,7 @@ public class PuzzlePlayer : MonoBehavior {
 		if (isGoaled.Trigger()) {
 			EntityCollection.CreateEntity("Block");
 		}
-		
+
 		/// MAPDATAより、Playerは 100 or 101なので
 		blockData.type = blockData.mapValue % 100 % 10;
 		Debug.Log("//////////////////////////////////////////////////////");
@@ -34,14 +34,19 @@ public class PuzzlePlayer : MonoBehavior {
 		blockData.address += _moveDir;
 	}
 
-	public void UpdatePosition() {
-		
+	public void UpdatePosition(Vector3 _offset) {
 		/// 座標更新
-		Transform t = transform;
-		if (t != null) {
-			t.position = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
-				blockData.address.y * blockData.blockSpace);
-		}
+		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
+			blockData.address.y * blockData.blockSpace);
+		newPos -= _offset;
+		transform.position = newPos;
+
+		Debug.Log("/////////////////////////////////////////////////////////");
+		Debug.Log("id=" + entity.Id + "; name=" + entity.name);
+		Debug.Log("pos: .x+" + newPos.x + "; .y=" + newPos.y + "; .z=" + newPos.z);
+		Debug.Log("block data: space=" + blockData.blockSpace + "; address.x=" + blockData.address.x + "; address.y="
+		          + blockData.address.y + "; height=" + blockData.height);
+		Debug.Log("/////////////////////////////////////////////////////////");
 	}
 
 	public void UpdateColor() {

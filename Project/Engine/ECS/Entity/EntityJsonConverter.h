@@ -10,5 +10,6 @@ namespace EntityJsonConverter {
 	nlohmann::json ToJson(const IEntity* _entity);
 
 	void FromJson(const nlohmann::json& _json, IEntity* _entity);
+	void TransformFromJson(const nlohmann::json& _json, IEntity* _entity);
 };
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ public class Block : MonoBehavior {
 
 		type = blockData.type;
 		value = blockData.mapValue;
-		
+
 		Debug.Log("===========: type " + blockData.type + " value " + blockData.mapValue);
 
 		UpdateColor();
@@ -47,5 +48,13 @@ public class Block : MonoBehavior {
 		} else {
 			Debug.LogWarning("-----: block color not setting");
 		}
+	}
+
+	public void UpdatePosition(Vector3 _offset) {
+		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
+			blockData.address.y * blockData.blockSpace);
+		newPos -= _offset;
+
+		transform.position = newPos;
 	}
 }

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 public class PuzzleStage : MonoBehavior {
 	private PuzzleBlockData blockData_;
-	private bool isStartPuzzle_ = false; // パズルが開始されているかどうか
 
 	// マップの情報、ブロックリスト、プレイヤーリスト
 	private List<List<int>> mapData_;
@@ -16,6 +15,7 @@ public class PuzzleStage : MonoBehavior {
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
 	private Entity mapchip_;
+	[SerializeField] private string stageFilepath_ = "stage1.json";
 
 	PuzzleCommandStacker puzzleCommandStacker_;
 
@@ -31,7 +31,7 @@ public class PuzzleStage : MonoBehavior {
 		if (mapchip_ != null) {
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage1.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
@@ -40,21 +40,20 @@ public class PuzzleStage : MonoBehavior {
 		blockData_.height = 2f; // ブロックの高さを設定
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
 
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+		}
 
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
+		UpdateEntityPosition();
 
-		blockPosOffset_ = new Vector3(1f, -1f, 1f);
-		blockData_.blockSpace = 0.22f;
 	}
 
 
 	public override void Update() {
-		/// パズルが開始されていない場合は何もしない
-		// if (!isStartPuzzle_) {
-		// 	return;
-		// }
-
 		Game();
 	}
 
@@ -70,37 +69,54 @@ public class PuzzleStage : MonoBehavior {
 			return;
 		}
 
-		Stage.Player startPlayer = mapchipScript.GetPlayer();
-		Vector2Int playerAddress = new Vector2Int(startPlayer.column, startPlayer.row);
+		List<Stage.Player> stagePlayers = new List<Stage.Player>();
+		stagePlayers.Add(mapchipScript.GetPlayer());
+		if (mapchipScript.GetSubPlayer() != null) {
+			stagePlayers.Add(mapchipScript.GetSubPlayer());
+		}
 
-		activePlayer_ = EntityCollection.CreateEntity("PuzzlePlayer");
-		if (activePlayer_ != null) {
-			activePlayer_.parent = this.entity; // プレイヤーをPuzzleの子にする
-			if (activePlayer_.parent != null) {
+		List<Vector2Int> playerAddresses = new List<Vector2Int>();
+		players_ = new List<Entity>();
+
+		for (int i = 0; i < stagePlayers.Count; i++) {
+			playerAddresses.Add(new Vector2Int(stagePlayers[i].column, stagePlayers[i].row));
+			players_.Add(EntityCollection.CreateEntity("PuzzlePlayer"));
+		}
+
+		for (int i = 0; i < players_.Count; i++) {
+			Entity player = players_[i];
+			Stage.Player stagePlayer = stagePlayers[i];
+
+			player.parent = this.entity; // プレイヤーをPuzzleの子にする
+			if (player.parent != null) {
 				Debug.LogInfo("player parent setting");
 			} else {
 				Debug.Log("player parent not set");
 			}
 
+			Vector2Int playerAddress = playerAddresses[i];
 			/// 座標設定
-			Transform t = activePlayer_.transform;
+			Transform t = player.transform;
 			t.position = new Vector3(playerAddress.x * blockData_.blockSpace, 0f,
 				playerAddress.y * blockData_.blockSpace);
 
 			/// スクリプトの値設定
-			PuzzlePlayer puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+			PuzzlePlayer puzzlePlayer = player.GetScript<PuzzlePlayer>();
 			if (puzzlePlayer != null) {
 				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
 				puzzlePlayer.blockData.height = blockData_.height; // プレイヤーの高さを設定
 				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
 
-				if (startPlayer.type == (int)BlockType.Black) {
+				if (stagePlayer.type == (int)BlockType.Black) {
 					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_BLACK;
 				} else {
 					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_WHITE;
 				}
 			}
 		}
+
+		/// アクティブなプレイヤーは最初のプレイヤーで
+		activePlayer_ = players_[0];
 	}
 
 	private void BlockDeploy() {
@@ -170,59 +186,10 @@ public class PuzzleStage : MonoBehavior {
 			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
 		}
 
-		PuzzlePlayer puzzlePlayer = null;
-		if (activePlayer_ != null && activePlayer_.transform != null) {
-			puzzlePlayer = activePlayer_.GetScript<PuzzlePlayer>();
-			puzzlePlayer.UpdatePosition();
-
-			Transform playerTransform = activePlayer_.transform;
-			playerTransform.position -= blockPosOffset_;
-		}
-
-		for (int i = 0; i < blocks_.Count; i++) {
-			Entity block = blocks_[i];
-			if (block == null) {
-				continue;
-			}
-
-			Block blockScript = block.GetScript<Block>();
-			if (blockScript) {
-				Vector2Int address = blockScript.blockData.address;
-
-				blockScript.blockData.mapValue = mapData_[address.y][address.x];
-				if (puzzlePlayer) {
-					if (blockScript.blockData.type == puzzlePlayer.blockData.type) {
-						blockScript.blockData.height = blockData_.height;
-					} else {
-						blockScript.blockData.height = blockData_.height - 0.05f;
-					}
-				}
-
-				Transform t = block.transform;
-				t.position = new Vector3(address.x * blockData_.blockSpace, blockScript.blockData.height,
-					address.y * blockData_.blockSpace);
-				t.position -= blockPosOffset_;
-			}
-		}
-
-
 		/* パズルを行っているときの更新 */
-
 		UpdatePlayer();
+		UpdateEntityPosition();
 
-
-		if (CheckIsGoaled(puzzlePlayer)) {
-			puzzlePlayer.isGoaled.Set(true);
-		}
-
-		/// パズルを終了する
-		if (Input.TriggerGamepad(Gamepad.B)) {
-			/// パズルを終了する
-			isStartPuzzle_ = false;
-
-			/// 他のエンティティの更新を停止
-			Debug.Log("Puzzle ended.");
-		}
 	}
 
 
@@ -393,14 +360,52 @@ public class PuzzleStage : MonoBehavior {
 		PlayerDeploy();
 	}
 
+	private void UpdateEntityPosition() {
+		/// ====================================================
+		/// このパズルのエンティティの座標を更新する
+		/// ====================================================
+		
+		for (int i = 0; i < players_.Count; ++i) {
+			Entity player = players_[i];
+			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
+			if (pp) {
+				pp.UpdatePosition(blockPosOffset_);
+			}
+		}
 
+		PuzzlePlayer activePlayer = activePlayer_.GetScript<PuzzlePlayer>();
+		for (int i = 0; i < blocks_.Count; i++) {
+			Entity block = blocks_[i];
+			if (block == null) {
+				continue;
+			}
+
+			Block blockScript = block.GetScript<Block>();
+			if (blockScript) {
+				Vector2Int address = blockScript.blockData.address;
+
+				blockScript.blockData.mapValue = mapData_[address.y][address.x];
+				if (activePlayer) {
+					if (blockScript.blockData.type == activePlayer.blockData.type) {
+						blockScript.blockData.height = blockData_.height;
+					} else {
+						blockScript.blockData.height = blockData_.height - 0.05f;
+					}
+				}
+
+				blockScript.UpdatePosition(blockPosOffset_);
+			}
+		}
+	}
 
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// アクセッサ
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
-
 	public List<List<int>> GetMapData() {
 		return mapData_;
 	}
-	
+
+	public List<Entity> GetPlayers() {
+		return players_;
+	}
 }

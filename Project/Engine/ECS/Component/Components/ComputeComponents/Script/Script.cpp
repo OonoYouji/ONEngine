@@ -152,13 +152,11 @@ bool Script::GetEnable(const std::string& _scriptName) {
 }
 
 void Script::CallAwakeMethodAll() {
-	for (auto& script : scriptDataList_) {
-		if (!script.enable) {
-			Console::Log("Script::CallAwakeMethodAll Script is disabled");
-			continue;
-		}
+	/// 生成処理は有効/無効関係なく呼び出す
 
-		///< Initメソッドは一度だけ呼び出す
+	for (auto& script : scriptDataList_) {
+
+		///< 生成メソッドは一度だけ呼び出す
 		if (script.isCalledAwake) {
 			continue;
 		} else {
@@ -214,11 +212,9 @@ void Script::CallAwakeMethodAll() {
 }
 
 void Script::CallInitMethodAll() {
+	/// 初期化は有効/無効関係なく呼び出す
+
 	for (auto& script : scriptDataList_) {
-		if (!script.enable) {
-			Console::Log("Script::CallInitMethodAll Script is disabled. owner:" + GetOwner()->GetName() + ", script name:" + script.scriptName);
-			continue;
-		}
 
 		///< Initメソッドは一度だけ呼び出す
 		if (script.isCalledInit) {
@@ -314,7 +310,9 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 	std::string ptrLable;
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
-	for (auto& script : scriptList) {
+	for (size_t i = 0; i < scriptList.size(); i++) {
+		auto& script = scriptList[i];
+
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
 
 		/// 有効/無効のチェックボックス
@@ -364,6 +362,25 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		}
 
+
+		/// スクリプトの順番を入れ替える処理
+		  // ---- ドラッグソース ----
+		if (ImGui::BeginDragDropSource()) {
+			ImGui::SetDragDropPayload("ScriptData", &i, sizeof(int)); // i番目のインデックスを送る
+			ImGui::Text("script name : %s", scriptList[i].scriptName.c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		// ---- ドラッグターゲット ----
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ScriptData")) {
+				int srcIndex = *(const int*)payload->Data;
+				if (srcIndex != i) {
+					std::swap(scriptList[srcIndex], scriptList[i]); // 要素の入れ替え
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		/// popupでスクリプトの削除などの操作を行う
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {

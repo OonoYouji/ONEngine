@@ -112,6 +112,7 @@
     <Compile Include="Scripts\Game\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\PuzzleBlockData.cs" />
     <Compile Include="Scripts\Game\PuzzlePlayer.cs" />
+    <Compile Include="Scripts\Game\PuzzleStartController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\Engine\Collision\" />

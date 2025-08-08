@@ -117,7 +117,10 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			/// prefabがないならシーンに保存されたjsonからエンティティを復元
 			if (prefabName.empty()) {
 				EntityJsonConverter::FromJson(entityJson, entity);
+			} else {
+				EntityJsonConverter::TransformFromJson(entityJson, entity);
 			}
+
 			entityMap[entityId] = entity;
 		}
 	}
