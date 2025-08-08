@@ -17,7 +17,7 @@ public class PuzzleClearChecker : MonoBehavior {
 			return;
 		}
 		
-
+		
 		
 	}
 	

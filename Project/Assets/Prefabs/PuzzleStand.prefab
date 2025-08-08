@@ -5,7 +5,7 @@
             "enable": 1,
             "position": {
                 "x": 0.0,
-                "y": 0.0,
+                "y": 11.743178367614746,
                 "z": 0.0
             },
             "rotate": {
@@ -33,13 +33,15 @@
             },
             "enable": 1,
             "meshPath": "./Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
+            "postEffectFlags": 1,
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
         {
             "enable": 1,
             "scriptName": [
-                "PuzzleStage"
+                "PuzzleStage",
+                "PuzzleClearChecker"
             ],
             "type": "Script"
         },

@@ -64,4 +64,8 @@ public class Mapchip : MonoBehavior {
 	public Stage.Player GetPlayer() {
 		return root_.player;
 	}
+
+	public Stage.Player GetSubPlayer() {
+		return root_.subPlayer;
+	}
 }
