@@ -87,18 +87,16 @@ void CSGui::BoolField::Draw(MonoObject* _obj, MonoClassField* _field, const char
 }
 
 void CSGui::StringField::Draw(MonoObject* _obj, MonoClassField* _field, const char* _name) {
-	// ① Mono string を取得
 	MonoString* monoStr = (MonoString*)mono_field_get_value_object(mono_domain_get(), _field, _obj);
-	if (!monoStr) return;
+	if (!monoStr) {
+		return;
+	}
 
-	// ② UTF-8 へ変換（リークしないよう dup する）
 	char* utf8 = mono_string_to_utf8(monoStr);
 	std::string value = utf8;
-	mono_free(utf8); // ← 解放を忘れずに！
+	mono_free(utf8);
 
-	// ③ ImGui で編集
 	if (ImGuiInputText(_name, &value, ImGuiInputTextFlags_EnterReturnsTrue)) {
-		// ④ 変更されたら MonoString を生成し、再セット
 		MonoString* newStr = mono_string_new(mono_domain_get(), value.c_str());
 		mono_field_set_value(_obj, _field, newStr);
 	}
