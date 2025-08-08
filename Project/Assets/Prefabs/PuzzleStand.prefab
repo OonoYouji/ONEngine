@@ -27,7 +27,7 @@
         {
             "color": {
                 "w": 1.0,
-                "x": 0.9824945330619812,
+                "x": 1.0,
                 "y": 0.0,
                 "z": 0.0
             },
@@ -41,7 +41,8 @@
             "enable": 1,
             "scriptName": [
                 "PuzzleStage",
-                "PuzzleClearChecker"
+                "PuzzleClearChecker",
+                "PuzzleStartController"
             ],
             "type": "Script"
         },

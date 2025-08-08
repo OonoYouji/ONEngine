@@ -416,4 +416,8 @@ public class PuzzleStage : MonoBehavior {
 	public List<List<int>> GetMapData() {
 		return mapData_;
 	}
+
+	public List<Entity> GetPlayers() {
+		return players_;
+	}
 }
