@@ -16,6 +16,7 @@ public class PuzzleStage : MonoBehavior {
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
 	private Entity mapchip_;
+	[SerializeField] private string stageFilepath_ = "stage1.json";	
 
 	PuzzleCommandStacker puzzleCommandStacker_;
 
@@ -31,7 +32,7 @@ public class PuzzleStage : MonoBehavior {
 		if (mapchip_ != null) {
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage1.json");
+				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
