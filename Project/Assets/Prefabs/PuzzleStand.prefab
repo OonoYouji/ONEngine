@@ -4,9 +4,9 @@
         {
             "enable": 1,
             "position": {
-                "x": -0.32999998331069946,
+                "x": -0.11000001430511475,
                 "y": 2.0,
-                "z": 0.2200000286102295
+                "z": 0.10999995470046997
             },
             "rotate": {
                 "w": 1.0,
@@ -41,8 +41,8 @@
             "enable": 1,
             "scriptName": [
                 "PuzzleStartController",
-                "PuzzleClearChecker",
-                "PuzzleStage"
+                "PuzzleStage",
+                "PuzzleClearChecker"
             ],
             "type": "Script"
         },
