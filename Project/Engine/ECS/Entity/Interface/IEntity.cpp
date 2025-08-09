@@ -150,6 +150,11 @@ void IEntity::SetScaleZ(float _z) {
 }
 
 void IEntity::SetParent(IEntity* _parent) {
+	/// 親子関係の解除
+	if (!_parent) {
+		RemoveParent();
+		return;
+	}
 	_parent->children_.push_back(this);
 	parent_ = _parent;
 }
@@ -229,6 +234,20 @@ const IEntity* IEntity::GetParent() const {
 
 IEntity* IEntity::GetParent() {
 	return parent_;
+}
+
+bool IEntity::RemoveChild(IEntity* _child) {
+	if (!_child) {
+		return false;
+	}
+	auto it = std::remove(children_.begin(), children_.end(), _child);
+	if (it != children_.end()) {
+		children_.erase(it, children_.end());
+		_child->RemoveParent();
+		return true;
+	}
+
+	return false;
 }
 
 const std::vector<IEntity*>& IEntity::GetChildren() const {

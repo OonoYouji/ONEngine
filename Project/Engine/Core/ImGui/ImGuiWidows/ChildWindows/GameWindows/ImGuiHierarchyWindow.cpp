@@ -33,6 +33,20 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
+	static char posLabel[] = "Position";
+	ImGui::InputText("##positionLabel", posLabel, IM_ARRAYSIZE(posLabel), ImGuiInputTextFlags_ReadOnly);
+	ImGui::SameLine();
+
+	static Vector3 position = Vector3::kZero;
+	ImGui::DragFloat3("##position", &position.x);
+	ImGui::SameLine();
+
+	if (ImGui::Button("📋")) {
+		char buf[128];
+		snprintf(buf, sizeof(buf), "%.3f, %.3f, %.3f", position.x, position.y, position.z);
+		ImGui::SetClipboardText(buf);
+	}
+
 	/*/// ドラッグ先の領域を設定
 	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
 	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
@@ -261,6 +275,18 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 		ImGui::EndDragDropSource();
 	}
 
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY")) {
+			IEntity* srcEntity = static_cast<IEntity*>(payload->Data);
+			if (srcEntity != _entity) {
+				srcEntity->RemoveParent();
+				srcEntity->SetParent(_entity);
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
 
 	/// -------------------------------------
 	/// 右クリックしたときのメニューの表示
@@ -286,10 +312,5 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 	}
 
 
-	/// 名前の変更モードに入る
-	if (Input::TriggerKey(DIK_F2)) {
-		// F2キーで名前変更モードに入る
-		newName_ = _entity->GetName();
-		renameEntity_ = _entity;
-	}
+
 }
