@@ -33,20 +33,6 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
-	static char posLabel[] = "Position";
-	ImGui::InputText("##positionLabel", posLabel, IM_ARRAYSIZE(posLabel), ImGuiInputTextFlags_ReadOnly);
-	ImGui::SameLine();
-
-	static Vector3 position = Vector3::kZero;
-	ImGui::DragFloat3("##position", &position.x);
-	ImGui::SameLine();
-
-	if (ImGui::Button("📋")) {
-		char buf[128];
-		snprintf(buf, sizeof(buf), "%.3f, %.3f, %.3f", position.x, position.y, position.z);
-		ImGui::SetClipboardText(buf);
-	}
-
 	/*/// ドラッグ先の領域を設定
 	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
 	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
