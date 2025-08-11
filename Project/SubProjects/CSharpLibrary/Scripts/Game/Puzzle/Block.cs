@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 public class Block : MonoBehavior {
 	public PuzzleBlockData blockData;
-	public PuzzlePlayer playerPtr;
 
-	[SerializeField] private int value;
-	[SerializeField] private int type;
+	/* ----- clear vars ----- */
+	private bool isStartClearAnimation_;
+	private float clearAnimationTime_;
 
 	public override void Initialize() {
-		// playerPtr = EntityCollection.FindEntity("Player");
+		transform.scale = Vector3.one * 0.1f;
 	}
 
 	public override void Update() {
@@ -22,14 +22,13 @@ public class Block : MonoBehavior {
 			blockData.type = blockData.mapValue % 10;
 		}
 
-		transform.scale = Vector3.one * 0.1f;
 
-		type = blockData.type;
-		value = blockData.mapValue;
-
-		Debug.Log("===========: type " + blockData.type + " value " + blockData.mapValue);
-
-		UpdateColor();
+		/// クリア演出
+		if (isStartClearAnimation_) {
+			UpdateClearEffect();
+		} else {
+			UpdateColor();
+		}
 	}
 
 	/// <summary>
@@ -56,5 +55,16 @@ public class Block : MonoBehavior {
 		newPos -= _offset;
 
 		transform.position = newPos;
+	}
+
+	public void StartClearEffect(PuzzlePlayer _player) {
+		isStartClearAnimation_ = true;
+	}
+
+	private void UpdateClearEffect() {
+		clearAnimationTime_ += Time.deltaTime;
+		/// _playerの色と自身の色を比較、色次第で別々の演出をする
+		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
+		mr.color = new Vector4(1, 0, 0, 1);
 	}
 }

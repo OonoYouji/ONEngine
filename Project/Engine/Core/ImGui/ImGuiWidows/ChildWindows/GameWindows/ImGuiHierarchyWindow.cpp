@@ -265,8 +265,8 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY")) {
 			IEntity* srcEntity = static_cast<IEntity*>(payload->Data);
 			if (srcEntity != _entity) {
-				srcEntity->RemoveParent();
-				srcEntity->SetParent(_entity);
+				//srcEntity->RemoveParent();
+				//srcEntity->SetParent(_entity);
 			}
 		}
 		ImGui::EndDragDropTarget();

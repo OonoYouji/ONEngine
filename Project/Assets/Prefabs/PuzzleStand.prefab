@@ -42,7 +42,8 @@
             "scriptName": [
                 "PuzzleStartController",
                 "PuzzleStage",
-                "PuzzleClearChecker"
+                "PuzzleClearChecker",
+                "PuzzleClearEffect"
             ],
             "type": "Script"
         },
@@ -52,7 +53,7 @@
             "type": "SphereCollider"
         }
     ],
-    "id": -3,
+    "id": -6,
     "name": "PuzzleStand",
     "parent": null,
     "prefabName": "PuzzleStand.prefab"

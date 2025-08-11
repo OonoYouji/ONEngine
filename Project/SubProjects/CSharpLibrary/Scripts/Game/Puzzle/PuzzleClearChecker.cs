@@ -8,13 +8,18 @@ using System.Threading.Tasks;
 public class PuzzleClearChecker : MonoBehavior {
 	private PuzzleStage puzzleStage_;
 	private List<Vector2Int> goalAddresses_ = new  List<Vector2Int>();
+	private bool isClear_;
+
+	public override void Awake() {
+		isClear_ = false;
+	}
 	
 	public override void Initialize() {
 		puzzleStage_ = entity.GetScript<PuzzleStage>();
 		if (!puzzleStage_) {
 			Debug.LogWarning("===== puzzle stage is null");
 			return;
-		}
+		} 
 		
 		/// ゴールのアドレスを確保
 		List<List<int>> mapData = puzzleStage_.GetMapData();
@@ -44,7 +49,6 @@ public class PuzzleClearChecker : MonoBehavior {
 		Debug.LogWarning("=========================================================");
 
 		List<Entity> players = puzzleStage_.GetPlayers();
-		bool isClear = false;
 		for (int goalIndex = 0; goalIndex < goalAddresses_.Count; goalIndex++) {
 			Vector2Int goalAddress = goalAddresses_[goalIndex];
 
@@ -66,7 +70,7 @@ public class PuzzleClearChecker : MonoBehavior {
 
 			/// 全てのゴールにゴールしている
 			if (goalIndex == goalAddresses_.Count - 1) {
-				isClear = true;
+				isClear_ = true;
 			}
 			
 		}
@@ -74,7 +78,7 @@ public class PuzzleClearChecker : MonoBehavior {
 
 		MeshRenderer mr = puzzleStage_.entity.GetComponent<MeshRenderer>();
 		if (mr) {
-			if (isClear) {
+			if (isClear_) {
 				mr.color = new Vector4(1, 1, 1, 1);
 				Debug.LogWarning("=========================================================");
 				Debug.LogWarning("puzzle stage cleared");
@@ -106,5 +110,10 @@ public class PuzzleClearChecker : MonoBehavior {
 		}
 
 		return false;
+	}
+
+
+	public bool GetIsClear() {
+		return isClear_;
 	}
 }

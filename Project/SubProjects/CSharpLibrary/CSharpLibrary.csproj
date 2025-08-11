@@ -88,7 +88,6 @@
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
-    <Compile Include="Scripts\Game\Block.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\Camera.cs">
       <SubType>Component</SubType>
@@ -100,19 +99,21 @@
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />
-    <Compile Include="Scripts\Game\Mapchip.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Scripts\Game\Player.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
-    <Compile Include="Scripts\Game\PuzzleClearChecker.cs">
+    <Compile Include="Scripts\Game\Puzzle\Block.cs" />
+    <Compile Include="Scripts\Game\Puzzle\Mapchip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Scripts\Game\PuzzleStage.cs" />
-    <Compile Include="Scripts\Game\PuzzleBlockData.cs" />
-    <Compile Include="Scripts\Game\PuzzlePlayer.cs" />
-    <Compile Include="Scripts\Game\PuzzleStartController.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleBlockData.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleClearChecker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Scripts\Game\Puzzle\PuzzleClearEffect.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzlePlayer.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleStage.cs" />
+    <Compile Include="Scripts\Game\Puzzle\PuzzleStartController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\Engine\Collision\" />
