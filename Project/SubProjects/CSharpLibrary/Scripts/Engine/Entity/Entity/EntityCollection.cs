@@ -7,12 +7,42 @@ using System.Threading.Tasks;
 
 static public class EntityCollection {
 
-	static Dictionary<int, Entity> entities = new Dictionary<int, Entity>();
+	/// entityのポインタを保持する変数
+	static private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
+	static private List<Entity> hierarchy_ = new List<Entity>();
 
+	static private void EntityCallUpdateMethods() {
+		/// リスト内のentitiesを更新する
+		foreach (Entity entity in hierarchy_) {
+			var scripts = entity.GetScripts();
+			for (int i = 0; i < scripts.Count; ++i) {
+				scripts[i].Update();
+			}
+		}	
+	}
+
+
+	static private void CalculationEntityHierarchy() {
+
+		for (int i = 0; i < entities_.Count; ++i) {
+			var entity = entities_[i];
+			if (entity.parent) {
+				continue;
+			}
+			
+		}
+		
+	}
+
+	static private void HierarchyPushBackChildren(Entity _entity) {
+		// for(_entity.GetChild())
+	}
+	
+	
 	static public Entity GetEntity(int _id) {
 		/// 既にコンテナないにあるかチェック
-		if (entities.ContainsKey(_id)) {
-			return entities[_id];
+		if (entities_.ContainsKey(_id)) {
+			return entities_[_id];
 		}
 
 		/// なかった場合一度c++側に確認、あったら新しくコンテナに加える
@@ -20,7 +50,7 @@ static public class EntityCollection {
 			Debug.LogInfo("Entity found in C++ for ID: " + _id + ", adding to collection.");
 
 			Entity entity = new Entity(_id);
-			entities.Add(_id, entity);
+			entities_.Add(_id, entity);
 			return entity;
 		}
 
@@ -29,7 +59,7 @@ static public class EntityCollection {
 			Debug.LogInfo("PrefabEntity found in C++ for ID: " + _id + ", adding to collection.");
 
 			Entity entity = new Entity(_id);
-			entities.Add(_id, entity);
+			entities_.Add(_id, entity);
 			return entity;
 		}
 
@@ -63,18 +93,18 @@ static public class EntityCollection {
 
 	static public void DeleteEntityAll() {
 		/// 全てのEntityを削除
-		foreach (var entity in entities.Values) {
+		foreach (var entity in entities_.Values) {
 			entity.Destroy();
 		}
-		entities.Clear();
+		entities_.Clear();
 	}
 
 	static public void DestroyEntity(int _entityId) {
 		/// Entityを削除
-		if (entities.ContainsKey(_entityId)) {
-			Debug.LogInfo("Destroying Entity ID: " + _entityId + " Name: " + entities[_entityId].name);
-			entities[_entityId].Destroy();
-			entities.Remove(_entityId);
+		if (entities_.ContainsKey(_entityId)) {
+			Debug.LogInfo("Destroying Entity ID: " + _entityId + " Name: " + entities_[_entityId].name);
+			entities_[_entityId].Destroy();
+			entities_.Remove(_entityId);
 		} else {
 			Debug.LogError("Entity not found for deletion: " + _entityId);
 		}
@@ -100,7 +130,7 @@ static public class EntityCollection {
 
 
 	static public int EntityCount() {
-		return entities.Count;
+		return entities_.Count;
 	}
 
 
