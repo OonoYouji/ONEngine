@@ -5,6 +5,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
+#include "Engine/Core/Utility/Math/Vector3.h"
 
 using ColliderCallBackFunc = std::function<void(class ICollider*)>;
 
@@ -18,6 +19,10 @@ public:
 	ICollider() = default;
 	~ICollider() override = default;
 
+	/// @brief 1frame前の座標を更新する
+	void UpdatePrevPosition();
+
+	const Vector3& GetPrevPosition() const;
 
 private:
 	/// ===================================================
@@ -28,6 +33,7 @@ private:
 	ColliderCallBackFunc onCollisionExitCallBackFunc_;
 	ColliderCallBackFunc onCollisionStayCallBackFunc_;
 
+	Vector3 prevPosition_;
 
 public:
 	/// ===================================================

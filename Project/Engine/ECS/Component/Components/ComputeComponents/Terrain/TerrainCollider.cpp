@@ -106,13 +106,13 @@ float TerrainCollider::GetHeight(const Vector3& _position) {
 
 	/// uv値に変換
 	Vector2 uv = Vector2(localPosition.x, localPosition.z) / pTerrain_->GetSize();
-	
+
 	/// indexに変換
 	size_t row = static_cast<size_t>(uv.y * pTerrain_->GetSize().y);
 	size_t col = static_cast<size_t>(uv.x * pTerrain_->GetSize().x);
 
 	TerrainVertex& vertex = vertices_[row][col];
-	
+
 	/// ローカル座標からワールド座標に変換
 	Vector3 vertexPosition = Matrix4x4::Transform(
 		Vector3(vertex.position.x, vertex.position.y, vertex.position.z),
@@ -120,6 +120,39 @@ float TerrainCollider::GetHeight(const Vector3& _position) {
 	);
 
 	return vertexPosition.y; // 高さを返す
+}
+
+Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
+	/// 地形のローカル座標に変換
+	const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
+	Vector3 localPosition = Matrix4x4::Transform(_position, kMatInverse);
+
+	/// uv値に変換
+	Vector2 uv = Vector2(localPosition.x, localPosition.z) / pTerrain_->GetSize();
+
+	/// indexに変換
+	size_t row = static_cast<size_t>(uv.y * pTerrain_->GetSize().y);
+	size_t col = static_cast<size_t>(uv.x * pTerrain_->GetSize().x);
+
+	TerrainVertex& vertex = vertices_[row][col];
+	// 範囲外ガード
+	if (row >= vertices_.size() || col >= vertices_[0].size()) {
+		return { 0.0f, 0.0f, 0.0f };
+	}
+
+	float h = vertices_[row][col].position.y;
+
+	// X方向の高さ差
+	float hL = (col > 0) ? vertices_[row][col - 1].position.y : h;
+	float hR = (col < vertices_[0].size() - 1) ? vertices_[row][col + 1].position.y : h;
+	float slopeX = std::atan((hR - hL) / (2.0f));
+
+	// Z方向の高さ差
+	float hD = (row > 0) ? vertices_[row - 1][col].position.y : h;
+	float hU = (row < vertices_.size() - 1) ? vertices_[row + 1][col].position.y : h;
+	float slopeZ = std::atan((hU - hD) / (2.0f));
+
+	return { std::abs(slopeX), 0.0f, std::abs(slopeZ) };
 }
 
 bool TerrainCollider::IsInsideTerrain(const Vector3& _position) {

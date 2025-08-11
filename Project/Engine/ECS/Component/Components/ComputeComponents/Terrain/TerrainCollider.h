@@ -30,6 +30,11 @@ public:
 
 	float GetHeight(const Vector3& _position);
 
+	/// @brief 引数座標の勾配を取得する
+	/// @param _position ワールド座標
+	/// @return 
+	Vector3 GetGradient(const Vector3& _position);
+
 	bool IsInsideTerrain(const Vector3& _position);
 
 

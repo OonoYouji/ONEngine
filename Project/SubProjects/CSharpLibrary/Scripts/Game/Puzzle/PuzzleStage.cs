@@ -29,6 +29,7 @@ public class PuzzleStage : MonoBehavior {
 
 		mapchip_ = EntityCollection.CreateEntity("Mapchip");
 		if (mapchip_ != null) {
+			mapchip_.parent = entity;
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
 				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
@@ -425,5 +426,13 @@ public class PuzzleStage : MonoBehavior {
 
 	public List<Entity> GetPlayers() {
 		return players_;
+	}
+
+	public PuzzlePlayer GetActivePlayer() {
+		return activePlayer_.GetScript<PuzzlePlayer>();
+	}
+
+	public List<Entity> GetBlocks() {
+		return blocks_;
 	}
 }

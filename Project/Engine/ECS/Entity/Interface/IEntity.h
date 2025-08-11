@@ -120,6 +120,7 @@ public:
 	const IEntity* GetParent() const;
 	IEntity* GetParent();
 
+	bool RemoveChild(IEntity* _child);
 	const std::vector<IEntity*>& GetChildren() const;
 	IEntity* GetChild(size_t _index);
 

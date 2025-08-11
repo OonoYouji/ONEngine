@@ -261,6 +261,18 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 		ImGui::EndDragDropSource();
 	}
 
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY")) {
+			IEntity* srcEntity = static_cast<IEntity*>(payload->Data);
+			if (srcEntity != _entity) {
+				//srcEntity->RemoveParent();
+				//srcEntity->SetParent(_entity);
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+
 
 	/// -------------------------------------
 	/// 右クリックしたときのメニューの表示
@@ -286,10 +298,5 @@ void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
 	}
 
 
-	/// 名前の変更モードに入る
-	if (Input::TriggerKey(DIK_F2)) {
-		// F2キーで名前変更モードに入る
-		newName_ = _entity->GetName();
-		renameEntity_ = _entity;
-	}
+
 }

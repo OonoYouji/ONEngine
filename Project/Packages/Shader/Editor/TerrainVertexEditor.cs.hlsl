@@ -25,12 +25,12 @@ SamplerState textureSampler : register(s0);
 static const int INPUT_POSITIVE = 1 << 0; // 押し上げに使用するキー入力フラグ
 static const int INPUT_NEGATIVE = 1 << 1; // 押し下げに使用するキー入力フラグ
 
+static const int vertexCount = 1000 * 1000;
+
 /// 引数のボタンが入力されているか
 bool IsInput(int input) {
 	return (inputInfo.pressKey & input) != 0;
 }
-
-static const int vertexCount = 1000 * 1000;
 
 [numthreads(256, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
@@ -59,7 +59,8 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			}
 
 			vertex.position.y = GetHeight(vertex.position.y);
-			
+			vertex.normal = CalculateNormal(index, vertices, 1000, 1000);
+	
 			vertices[index] = vertex;
 		}
 
@@ -83,5 +84,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	}
 	
 
-	
+	/// 法線は常に計算する
+	vertex.normal = CalculateNormal(index, vertices, 1000, 1000);
+	vertices[index] = vertex;
 }
