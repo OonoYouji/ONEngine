@@ -18,6 +18,7 @@
 #include "../Render/Gizmo/GizmoRenderingPipeline.h"
 #include "../Render/Skybox/SkyboxRenderingPipeline.h"
 #include "../Render/Terrain/TerrainRenderingPipeline.h"
+#include "../Render/Terrain/TerrainProceduralRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -40,6 +41,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 #ifdef DEBUG_MODE
