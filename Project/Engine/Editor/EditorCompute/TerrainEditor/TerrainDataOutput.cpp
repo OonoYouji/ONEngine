@@ -79,7 +79,7 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 	auto cmdList = _dxCommand->GetCommandList();
 
 	terrainSize_.BindForComputeCommandList(cmdList, CBV_TERRAIN_SIZE);
-	pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
+	pTerrain->GetRwVertices().UAVBindForComputeCommandList(UAV_VERTICES, cmdList);
 	cmdList->SetComputeRootDescriptorTable(UAV_OUTPUT_VERTEX_TEXTURE, outputVertexTexture_.GetUAVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(UAV_OUTPUT_SPLAT_BLEND_TEXTURE, outputSplatBlendTexture_.GetUAVGPUHandle());
 

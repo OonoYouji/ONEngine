@@ -158,8 +158,8 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
 		Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
-		if (IEntity* entity = transform->GetOwner()) {
-			if (IEntity* parent = entity->GetParent()) {
+		if (IEntity* owner = transform->GetOwner()) {
+			if (IEntity* parent = owner->GetParent()) {
 				translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
 			}
 		}

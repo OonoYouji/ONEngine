@@ -92,6 +92,7 @@ public:
 	/// @brief リソースオブジェクトを取得する
 	/// @return ID3D12Resourceオブジェクトへのポインタ
 	ID3D12Resource* Get() const;
+	ComPtr<ID3D12Resource>& GetComPtr();
 
 	D3D12_RESOURCE_STATES GetCurrentState() const;
 

@@ -2,21 +2,29 @@
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
+#include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Shader/ComputePipeline.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 /// ////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
 /// ////////////////////////////////////
 class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
+	/// @brief compute shader用root param index
 	enum CP_ROOT_PARAM {
 		CP_INSNTANCE_DATA,
 		CP_SRV_VERTEX_TEXTURE
 	};
 
+	/// @brief 
 	enum GP_ROOT_PARAM {
 		GP_CBV_VIEW_PROJECTION,
 		GP_SRV_INSNTANCE_DATA
+	};
+
+	struct InstanceData {
+		Matrix4x4 matWorld;
 	};
 
 public:
@@ -24,7 +32,7 @@ public:
 	/// public : methods
 	/// =====================================
 
-	TerrainProceduralRenderingPipeline();
+	TerrainProceduralRenderingPipeline(class GraphicsResourceCollection* _resourceCollection);
 	~TerrainProceduralRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -35,7 +43,10 @@ private:
 	/// private : objects
 	/// =====================================
 
-	std::unique_ptr<ComputePipeline> computePipeline_;
+	class GraphicsResourceCollection* pResourceCollection_;
+	class DxManager* pDxManager_;
 
+	std::unique_ptr<ComputePipeline> computePipeline_;
+	StructuredBuffer<InstanceData> instanceDataBuffer_;
 };
 

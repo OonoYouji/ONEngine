@@ -7,6 +7,7 @@
 /// std
 #include <cstdint>
 #include <span>
+#include <optional>
 
 /// engine
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
@@ -16,6 +17,12 @@
 #include "Engine/Core/DirectX12/DescriptorHeap/DxSRVHeap.h"
 #include "Engine/Core/Utility/Tools/Assert.h"
 
+struct Handle {
+	uint32_t heapIndex;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+};
+
 
 /// ===================================================
 /// ストラクチャードバッファ用クラス
@@ -23,7 +30,6 @@
 template <typename T>
 class StructuredBuffer final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -41,8 +47,13 @@ public:
 	uint32_t ReadCounter(DxCommand* _dxCommand);
 
 
-	void BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
-	void BindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
+	void SRVBindForGraphicsCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
+	void SRVBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
+
+	void UAVBindForGraphicsCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
+	void UAVBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
+
+	void AppendBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList);
 
 	void SetMappedData(size_t _index, const T& _setValue);
 
@@ -54,9 +65,9 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	uint32_t                    srvDescriptorIndex_;
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle_;
+	std::optional<Handle> srvHandle_;
+	std::optional<Handle> uavHandle_;
+	std::optional<Handle> appendHandle_;
 
 	DxResource                  bufferResource_;
 	T* mappedData_;
@@ -89,7 +100,18 @@ inline StructuredBuffer<T>::StructuredBuffer() {
 template<typename T>
 inline StructuredBuffer<T>::~StructuredBuffer() {
 	if (pDxSRVHeap_) {
-		pDxSRVHeap_->Free(srvDescriptorIndex_);
+
+		if (srvHandle_.has_value()) {
+			pDxSRVHeap_->Free(srvHandle_->heapIndex);
+		}
+
+		if (uavHandle_.has_value()) {
+			pDxSRVHeap_->Free(uavHandle_->heapIndex);
+		}
+
+		if (appendHandle_.has_value()) {
+			pDxSRVHeap_->Free(appendHandle_->heapIndex);
+		}
 	}
 }
 
@@ -117,12 +139,13 @@ inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, DxS
 
 	/// cpu, gpu handle initialize
 	pDxSRVHeap_ = _dxSRVHeap;
-	srvDescriptorIndex_ = pDxSRVHeap_->AllocateBuffer();
-	cpuHandle_ = pDxSRVHeap_->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_ = pDxSRVHeap_->GetGPUDescriptorHandel(srvDescriptorIndex_);
+	srvHandle_ = std::make_optional<Handle>();
+	srvHandle_->heapIndex = pDxSRVHeap_->AllocateBuffer();
+	srvHandle_->cpuHandle = pDxSRVHeap_->GetCPUDescriptorHandel(srvHandle_->heapIndex);
+	srvHandle_->gpuHandle = pDxSRVHeap_->GetGPUDescriptorHandel(srvHandle_->heapIndex);
 
 	/// resource create
-	_dxDevice->GetDevice()->CreateShaderResourceView(bufferResource_.Get(), &desc, cpuHandle_);
+	_dxDevice->GetDevice()->CreateShaderResourceView(bufferResource_.Get(), &desc, srvHandle_->cpuHandle);
 
 	/// mapping
 	bufferResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
@@ -152,12 +175,13 @@ inline void StructuredBuffer<T>::CreateUAV(uint32_t _size, DxDevice* _dxDevice, 
 
 	/// cpu, gpu handle initialize
 	pDxSRVHeap_ = _dxSRVHeap;
-	srvDescriptorIndex_ = pDxSRVHeap_->AllocateBuffer();
-	cpuHandle_ = pDxSRVHeap_->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_ = pDxSRVHeap_->GetGPUDescriptorHandel(srvDescriptorIndex_);
+	uavHandle_ = std::make_optional<Handle>();
+	uavHandle_->heapIndex = pDxSRVHeap_->AllocateBuffer();
+	uavHandle_->cpuHandle = pDxSRVHeap_->GetCPUDescriptorHandel(uavHandle_->heapIndex);
+	uavHandle_->gpuHandle = pDxSRVHeap_->GetGPUDescriptorHandel(uavHandle_->heapIndex);
 
 	/// resource create
-	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), nullptr, &desc, cpuHandle_);
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), nullptr, &desc, uavHandle_->cpuHandle);
 }
 
 template<typename T>
@@ -171,43 +195,40 @@ inline void StructuredBuffer<T>::CreateAppendBuffer(uint32_t _size, DxDevice* _d
 	bufferResource_.CreateUAVResource(_dxDevice, _dxCommand, totalSize_);
 
 	D3D12_RESOURCE_DESC counterDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT), D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
-	ThrowIfFailed(_dxDevice->GetDevice()->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&counterDesc,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		nullptr,
-		IID_PPV_ARGS(counterResource_.GetAddressOf())
-	));
+	CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
+	counterResource_.CreateCommittedResource(_dxDevice, &heapProperties, D3D12_HEAP_FLAG_NONE, &counterDesc, D3D12_RESOURCE_STATE_COMMON, nullptr);
+	counterResource_.CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, _dxCommand);
 
 	{	/// カウンタリセット用アップロードバッファを用意(0を1つ)
 		D3D12_RESOURCE_DESC uploadDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT));
-		ThrowIfFailed(_dxDevice->GetDevice()->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_PROPERTIES uploadHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+		_dxDevice->GetDevice()->CreateCommittedResource(
+			&uploadHeapProperties,
 			D3D12_HEAP_FLAG_NONE,
 			&uploadDesc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			IID_PPV_ARGS(counterResetResource_.GetAddressOf())
-		));
+			IID_PPV_ARGS(counterResetResource_.GetComPtr().GetAddressOf())
+		);
 
 		UINT* mapped = nullptr;
 		CD3DX12_RANGE readRange(0, 0);
-		ThrowIfFailed(counterResetResource_->Map(0, &readRange, reinterpret_cast<void**>(&mapped)));
+		counterResetResource_.Get()->Map(0, &readRange, reinterpret_cast<void**>(&mapped));
 		*mapped = 0;
-		counterResetResource_->Unmap(0, nullptr);
+		counterResetResource_.Get()->Unmap(0, nullptr);
 	}
 
 	{	/// カウンタ読み取り用リードバックバッファ(非同期読み込み用)
 		D3D12_RESOURCE_DESC readbackDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT));
-		ThrowIfFailed(_dxDevice->GetDevice()->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK),
+		D3D12_HEAP_PROPERTIES readbackHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK);
+		_dxDevice->GetDevice()->CreateCommittedResource(
+			&readbackHeapProperties,
 			D3D12_HEAP_FLAG_NONE,
 			&readbackDesc,
 			D3D12_RESOURCE_STATE_COPY_DEST,
 			nullptr,
-			IID_PPV_ARGS(readbackResource_.GetAddressOf())
-		));
+			IID_PPV_ARGS(readbackResource_.GetComPtr().GetAddressOf())
+		);
 	}
 
 	// UAVビュー作成（カウンタバッファをセット）
@@ -215,17 +236,18 @@ inline void StructuredBuffer<T>::CreateAppendBuffer(uint32_t _size, DxDevice* _d
 	desc.Format = DXGI_FORMAT_UNKNOWN;
 	desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 	desc.Buffer.FirstElement = 0;
-	desc.Buffer.NumElements = bufferSize_;
+	desc.Buffer.NumElements = static_cast<UINT>(bufferSize_);
 	desc.Buffer.StructureByteStride = static_cast<UINT>(structureSize_);
 	desc.Buffer.CounterOffsetInBytes = 0;
 	desc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
 	pDxSRVHeap_ = _dxSRVHeap;
-	srvDescriptorIndex_ = pDxSRVHeap_->AllocateBuffer();
-	cpuHandle_ = pDxSRVHeap_->GetCPUDescriptorHandel(srvDescriptorIndex_);
-	gpuHandle_ = pDxSRVHeap_->GetGPUDescriptorHandel(srvDescriptorIndex_);
+	appendHandle_ = std::make_optional<Handle>();
+	appendHandle_->heapIndex = pDxSRVHeap_->AllocateBuffer();
+	appendHandle_->cpuHandle = pDxSRVHeap_->GetCPUDescriptorHandel(appendHandle_->heapIndex);
+	appendHandle_->gpuHandle = pDxSRVHeap_->GetGPUDescriptorHandel(appendHandle_->heapIndex);
 
-	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), counterResource_.Get(), &desc, cpuHandle_);
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), counterResource_.Get(), &desc, appendHandle_->cpuHandle);
 }
 
 template<typename T>
@@ -257,21 +279,36 @@ inline uint32_t StructuredBuffer<T>::ReadCounter(DxCommand* _dxCommand) {
 	/// CPUでマップして読み取り
 	uint32_t* mapped = nullptr;
 	CD3DX12_RANGE readRange(0, sizeof(UINT));
-	ThrowIfFailed(readbackResource_->Map(0, &readRange, reinterpret_cast<void**>(&mapped)));
+	readbackResource_.Get()->Map(0, &readRange, reinterpret_cast<void**>(&mapped));
 	uint32_t count = *mapped;
-	readbackResource_->Unmap(0, nullptr);
+	readbackResource_.Get()->Unmap(0, nullptr);
 
 	return count;
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::BindToCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
-	_commandList->SetGraphicsRootDescriptorTable(_rootParameterIndex, gpuHandle_);
+inline void StructuredBuffer<T>::SRVBindForGraphicsCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetGraphicsRootDescriptorTable(_rootParameterIndex, srvHandle_->gpuHandle);
 }
 
 template<typename T>
-inline void StructuredBuffer<T>::BindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
-	_commandList->SetComputeRootDescriptorTable(_rootParameterIndex, gpuHandle_);
+inline void StructuredBuffer<T>::SRVBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetComputeRootDescriptorTable(_rootParameterIndex, srvHandle_->gpuHandle);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::UAVBindForGraphicsCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetGraphicsRootDescriptorTable(_rootParameterIndex, uavHandle_->gpuHandle);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::UAVBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetComputeRootDescriptorTable(_rootParameterIndex, uavHandle_->gpuHandle);
+}
+
+template<typename T>
+inline void StructuredBuffer<T>::AppendBindForComputeCommandList(UINT _rootParameterIndex, ID3D12GraphicsCommandList* _commandList) {
+	_commandList->SetComputeRootDescriptorTable(_rootParameterIndex, appendHandle_->gpuHandle);
 }
 
 template<typename T>
