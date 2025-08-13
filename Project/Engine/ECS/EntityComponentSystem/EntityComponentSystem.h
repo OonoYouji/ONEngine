@@ -53,8 +53,6 @@ public:
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
-	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
-
 	uint32_t GetEntityId(const std::string& _name);
 
 	std::vector<IEntity*> GetActiveEntities() const;

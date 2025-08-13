@@ -17,8 +17,8 @@ public:
 
 	void CommonInitialize();
 
-	virtual void Initialize() = 0;
-	virtual void Update() = 0;
+	void Initialize() {};
+	void Update() {};
 
 
 	/// @brief component の追加

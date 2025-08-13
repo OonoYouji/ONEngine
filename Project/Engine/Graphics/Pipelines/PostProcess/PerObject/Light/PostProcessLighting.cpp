@@ -94,8 +94,10 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
 		CameraComponent* camera = _pEntityComponentSystem->GetDebugCamera();
-		if (IEntity* entity = camera->GetOwner()) {
-			cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });
+		if (camera) {
+			if (IEntity* entity = camera->GetOwner()) {
+				cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });
+			}
 		}
 
 		cameraBufferData_->BindForComputeCommandList(command, 1);

@@ -41,11 +41,9 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
     <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\EditorManager.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Entities\Camera\DebugCamera.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
@@ -79,7 +77,6 @@
     <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Factory\EntityFactory.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
@@ -173,7 +170,6 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
-    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
     <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
@@ -217,12 +213,9 @@
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\EmptyEntity\EmptyEntity.h" />
-    <ClInclude Include="Engine\ECS\Entity\Factory\AddEntityFactory.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\EditorManager.h" />
-    <ClInclude Include="Engine\ECS\Entity\Entities\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ByteAddressBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\IndexBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer\VertexBuffer.h" />
@@ -266,7 +259,6 @@
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
-    <ClInclude Include="Engine\ECS\Entity\Factory\EntityFactory.h" />
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
     <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefab.h" />
@@ -336,7 +328,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
-    <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\SourceEntity.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
     <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.h" />

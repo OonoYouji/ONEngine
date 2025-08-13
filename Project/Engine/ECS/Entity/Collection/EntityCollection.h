@@ -7,7 +7,7 @@
 #include <string>
 #include <deque>
 
-#include "../Factory/EntityFactory.h"
+#include "../Interface/IEntity.h"
 #include "../Prefab/EntityPrefab.h"
 
 class CameraComponent;
@@ -52,8 +52,6 @@ public:
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
-	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
-
 	int32_t NewEntityID(bool _isRuntime);
 
 	uint32_t GetEntityId(const std::string& _name);
@@ -75,8 +73,6 @@ private:
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 
-	std::unique_ptr<EntityFactory> factory_;
-
 	/// entityのIDを管理するためのdeque
 	IdContainer initEntityIDs_;
 	IdContainer runtimeEntityIDs_;
@@ -88,8 +84,6 @@ private:
 	CameraComponent* debugCamera_ = nullptr;
 	CameraComponent* mainCamera_ = nullptr;
 	CameraComponent* mainCamera2D_ = nullptr;
-
-	std::function<void(EntityFactory*)> factoryRegisterFunc_;
 
 	/// prefab
 	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
@@ -103,12 +97,9 @@ public:
 	CameraComponent* GetMainCamera();
 	CameraComponent* GetMainCamera2D();
 
-
 	const std::vector<std::unique_ptr<IEntity>>& GetEntities() const;
 
 	const CameraComponent* GetDebugCamera() const;
 	CameraComponent* GetDebugCamera();
-
-	EntityFactory* GetFactory();
 
 };

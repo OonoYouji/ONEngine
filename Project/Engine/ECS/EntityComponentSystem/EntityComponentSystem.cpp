@@ -14,9 +14,6 @@
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
 
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-
 namespace {
 	EntityComponentSystem* gECS = nullptr;
 }
@@ -47,10 +44,10 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	AddComponentFactoryFunction(componentCollection_.get());
 
 
-	debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
-	debugCamera_->pEntityComponentSystem_ = this;
-	debugCamera_->CommonInitialize();
-	debugCamera_->Initialize();
+	//debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
+	//debugCamera_->pEntityComponentSystem_ = this;
+	//debugCamera_->CommonInitialize();
+	//debugCamera_->Initialize();
 
 }
 
@@ -63,8 +60,10 @@ void EntityComponentSystem::Update() {
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
-	debugCamera_->Update();
-	debugCamera_->UpdateTransform();
+	if (debugCamera_) {
+		debugCamera_->Update();
+		debugCamera_->UpdateTransform();
+	}
 }
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
@@ -89,10 +88,6 @@ void EntityComponentSystem::AddDoNotDestroyEntity(IEntity* _entity) {
 
 void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
 	entityCollection_->RemoveDoNotDestroyEntity(_entity);
-}
-
-void EntityComponentSystem::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
-	entityCollection_->SetFactoryRegisterFunc(_func);
 }
 
 uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
@@ -167,7 +162,7 @@ IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 	}
 
 	/// entityを生成する
-	std::unique_ptr<IEntity> entity = entityCollection_->GetFactory()->Generate("EmptyEntity");
+	std::unique_ptr<IEntity> entity = std::make_unique<IEntity>();
 
 	/// 違うエンティティが生成されている場合は削除して生成
 	if (prefabEntity_) {
@@ -241,10 +236,17 @@ CameraComponent* EntityComponentSystem::GetMainCamera2D() {
 }
 
 const CameraComponent* EntityComponentSystem::GetDebugCamera() const {
+	if (!debugCamera_) {
+		return nullptr;
+	}
+
 	return debugCamera_->GetComponent<CameraComponent>();
 }
 
 CameraComponent* EntityComponentSystem::GetDebugCamera() {
+	if (!debugCamera_) {
+		return nullptr;
+	}
 	return debugCamera_->GetComponent<CameraComponent>();
 }
 

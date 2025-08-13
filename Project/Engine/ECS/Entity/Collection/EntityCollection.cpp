@@ -9,10 +9,6 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
-/// entity
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
@@ -20,8 +16,6 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 	: pECS_(_ecs), pDxManager_(_dxManager) {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
-
-	factory_ = std::make_unique<EntityFactory>(pDxDevice_);
 	entities_.reserve(256);
 
 	LoadPrefabAll();
@@ -30,7 +24,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 EntityCollection::~EntityCollection() {}
 
 IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
-	auto entity = factory_->Generate(_name);
+	auto entity = std::make_unique<IEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
 
@@ -189,13 +183,6 @@ void EntityCollection::RemoveDoNotDestroyEntity(IEntity* _entity) {
 	}
 }
 
-void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
-	factoryRegisterFunc_ = _func;
-	if (factoryRegisterFunc_) {
-		factoryRegisterFunc_(factory_.get());
-	}
-}
-
 int32_t EntityCollection::NewEntityID(bool _isRuntime) {
 	int32_t resultId = 0;
 
@@ -350,7 +337,4 @@ CameraComponent* EntityCollection::GetDebugCamera() {
 	return debugCamera_;
 }
 
-EntityFactory* EntityCollection::GetFactory() {
-	return factory_.get();
-}
 
