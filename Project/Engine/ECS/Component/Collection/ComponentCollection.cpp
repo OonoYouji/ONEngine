@@ -1,7 +1,7 @@
 #include "ComponentCollection.h"
 
 /// engine
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "../Component.h"
 
 ComponentCollection::ComponentCollection() {

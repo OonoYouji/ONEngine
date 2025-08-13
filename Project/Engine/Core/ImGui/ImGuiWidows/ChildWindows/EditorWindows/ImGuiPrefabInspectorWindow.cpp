@@ -10,7 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"

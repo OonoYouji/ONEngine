@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 namespace EntityJsonConverter {
 	nlohmann::json ToJson(const GameEntity* _entity);

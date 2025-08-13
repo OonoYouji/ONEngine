@@ -1,7 +1,7 @@
 #include "ICollider.h"
 
 /// engine
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 void ICollider::UpdatePrevPosition() {
 	/// 前フレームの座標を更新する

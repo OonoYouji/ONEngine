@@ -7,7 +7,7 @@
 #include <string>
 #include <deque>
 
-#include "../Interface/IEntity.h"
+#include "../GameEntity/GameEntity.h"
 #include "../Prefab/EntityPrefab.h"
 
 class CameraComponent;

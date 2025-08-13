@@ -12,7 +12,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"

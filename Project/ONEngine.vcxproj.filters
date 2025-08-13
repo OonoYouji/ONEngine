@@ -119,7 +119,7 @@
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
     <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Interface\IEntity.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\GameEntity\GameEntity.cpp" />
     <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
@@ -283,7 +283,7 @@
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\AddECSComponentFactoryFunction.h" />
     <ClInclude Include="Engine\Scene\Loader\SceneIO.h" />
-    <ClInclude Include="Engine\ECS\Entity\Interface\IEntity.h" />
+    <ClInclude Include="Engine\ECS\Entity\GameEntity\GameEntity.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentCollection.h" />
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Component\Collection\ComponentHash.h" />

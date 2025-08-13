@@ -1,4 +1,4 @@
-#include "IEntity.h"
+#include "GameEntity.h"
 
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"

@@ -4,7 +4,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiShowField.h"
 #include "Engine/Script/MonoScriptEngine.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
