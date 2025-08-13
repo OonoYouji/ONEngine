@@ -127,7 +127,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	inputInfo_.BindForComputeCommandList(cmdList, CBV_INPUT_INFO);
 
 	/// UAV
-	pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
+	pTerrain->GetRwVertices().UAVBindForComputeCommandList(UAV_VERTICES, cmdList);
 
 	/// SRV
 	const Texture* positionTexture = _resourceCollection->GetTexture("debugWorldPosition");

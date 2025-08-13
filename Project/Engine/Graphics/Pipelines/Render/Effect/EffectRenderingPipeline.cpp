@@ -167,9 +167,9 @@ void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vect
 				}
 
 				/// 上でセットしたデータをバインド
-				materialBuffer->BindToCommandList(1, commandList);
-				textureIdBuffer_->BindToCommandList(2, commandList);
-				transformBuffer_->BindToCommandList(4, commandList);
+				materialBuffer->SRVBindForGraphicsCommandList(1, commandList);
+				textureIdBuffer_->SRVBindForGraphicsCommandList(2, commandList);
+				transformBuffer_->SRVBindForGraphicsCommandList(4, commandList);
 
 				/// 現在のinstance idをセット
 				commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);

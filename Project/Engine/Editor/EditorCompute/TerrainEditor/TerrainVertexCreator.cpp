@@ -96,8 +96,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		terrainSize_.SetMappedData(TerrainSize{ width, depth });
 		terrainSize_.BindForComputeCommandList(cmdList, CBV_TERRAIN_SIZE);
 
-		pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
-		pTerrain->GetRwIndices().BindForComputeCommandList(UAV_INDICES, cmdList);
+		pTerrain->GetRwVertices().UAVBindForComputeCommandList(UAV_VERTICES, cmdList);
+		pTerrain->GetRwIndices().UAVBindForComputeCommandList(UAV_INDICES, cmdList);
 
 		const Texture* vertexTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 		const Texture* blendTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");

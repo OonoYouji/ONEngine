@@ -134,7 +134,6 @@ Vector3 TerrainCollider::GetGradient(const Vector3& _position) {
 	size_t row = static_cast<size_t>(uv.y * pTerrain_->GetSize().y);
 	size_t col = static_cast<size_t>(uv.x * pTerrain_->GetSize().x);
 
-	TerrainVertex& vertex = vertices_[row][col];
 	// 範囲外ガード
 	if (row >= vertices_.size() || col >= vertices_[0].size()) {
 		return { 0.0f, 0.0f, 0.0f };

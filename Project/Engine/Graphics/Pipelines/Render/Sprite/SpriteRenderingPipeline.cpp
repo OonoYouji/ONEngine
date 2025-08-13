@@ -180,8 +180,8 @@ void SpriteRenderingPipeline::Draw(class EntityComponentSystem*, const std::vect
 		++transformIndex;
 	}
 
-	textureIDsBuffer_->BindToCommandList(1, commandList); ///< textureID
-	transformsBuffer_->BindToCommandList(3, commandList); ///< transform
+	textureIDsBuffer_->SRVBindForGraphicsCommandList(1, commandList); ///< textureID
+	transformsBuffer_->SRVBindForGraphicsCommandList(3, commandList); ///< transform
 
 
 	/// 描画

@@ -85,9 +85,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// 地形を取得
-	Terrain* prevTerrain_ = pTerrain_;
 	pTerrain_ = nullptr;
-
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		return;
@@ -99,7 +97,6 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 			pTerrain_ = terrain;
 		}
 	}
-
 
 	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {

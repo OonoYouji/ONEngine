@@ -201,7 +201,9 @@ public class Entity {
 	}
 
 
-
+	public static implicit operator bool(Entity _entity) {
+		return _entity != null;
+	}
 
 	/// ------------------------------------------
 	/// internal methods

@@ -147,6 +147,10 @@ ID3D12Resource* DxResource::Get() const {
 	return resource_.Get();
 }
 
+ComPtr<ID3D12Resource>& DxResource::GetComPtr() {
+	return resource_;
+}
+
 D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {
 	return currentState_;
 }

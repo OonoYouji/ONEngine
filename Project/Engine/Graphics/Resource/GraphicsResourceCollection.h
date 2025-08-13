@@ -9,6 +9,7 @@
 #include "ResourceData/Model.h"
 #include "ResourceData/Texture.h"
 
+static const uint32_t MAX_TEXTURE_COUNT = 128; ///< 最大テクスチャ数
 
 /// ===================================================
 /// グラフィクスリソースのコレクション
