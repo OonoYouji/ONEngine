@@ -34,12 +34,6 @@ public:
 
 	void RemoveEntityAll();
 
-	template <typename T>
-	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-
-	template <typename T>
-	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
-
 	/// @brief 全エンティティを更新
 	void UpdateEntities();
 
@@ -108,25 +102,3 @@ public:
 	EntityFactory* GetFactory();
 
 };
-
-template<typename T>
-inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> {
-	for (const auto& entity : entities_) {
-		if (T* found = dynamic_cast<T*>(entity.get())) {
-			return found;
-		}
-	}
-	return nullptr;
-}
-
-template<typename T>
-inline std::vector<T*> EntityCollection::FindEntities() requires std::is_base_of_v<IEntity, T> {
-	std::vector<T*> foundEntities;
-	for (const auto& entity : entities_) {
-		if (T* found = dynamic_cast<T*>(entity.get())) {
-			foundEntities.push_back(found);
-		}
-	}
-
-	return foundEntities;
-}

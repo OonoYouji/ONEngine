@@ -50,12 +50,6 @@ public:
 
 	void RemoveEntityAll();
 
-	template <typename T>
-	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-	
-	template <typename T>
-	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
-
 	void AddDoNotDestroyEntity(IEntity* _entity);
 	void RemoveDoNotDestroyEntity(IEntity* _entity);
 
@@ -164,16 +158,6 @@ public:
 /// ===================================================
 /// inline methods
 /// ===================================================
-
-template<typename T>
-inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity, T> {
-	return entityCollection_->FindEntity<T>();
-}
-
-template<typename T>
-inline std::vector<T*> EntityComponentSystem::FindEntities() requires std::is_base_of_v<IEntity, T> {
-	return entityCollection_->FindEntities<T>();
-}
 
 template<typename Comp>
 inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
