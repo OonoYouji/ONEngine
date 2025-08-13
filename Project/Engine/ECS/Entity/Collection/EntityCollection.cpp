@@ -289,7 +289,7 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	EmptyEntity* entity = GenerateEntity<EmptyEntity>(_isRuntime);
+	IEntity* entity = GenerateEntity("EmptyEntity", true, _isRuntime);
 	if (entity) {
 		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
 

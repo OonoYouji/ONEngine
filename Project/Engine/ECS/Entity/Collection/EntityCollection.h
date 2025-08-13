@@ -27,8 +27,6 @@ public:
 	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
 	~EntityCollection();
 
-	template<typename T>
-	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
 
 	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
@@ -110,27 +108,6 @@ public:
 	EntityFactory* GetFactory();
 
 };
-
-
-template<typename T>
-inline T* EntityCollection::GenerateEntity(bool _isRuntime) requires std::is_base_of_v<IEntity, T> {
-
-	std::string name = typeid(T).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6); // Remove "class " prefix
-	}
-
-	IEntity* entity = GenerateEntity(name, true, _isRuntime);
-	if (!entity) {
-		factory_->Register(name, []() { return std::make_unique<T>(); });
-		entity = GenerateEntity(name, true, _isRuntime);
-		if (!entity) {
-			Console::Log(std::format("Failed to generate entity of type: {}", name));
-		}
-	}
-
-	return static_cast<T*>(entity);
-}
 
 template<typename T>
 inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> {

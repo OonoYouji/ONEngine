@@ -118,22 +118,3 @@ private:
 
 
 };
-
-
-/// ///////////////////////////////////////////////////
-/// sceneを読み込むコマンド
-/// ///////////////////////////////////////////////////
-class LoadSceneCommand : public IEditorCommand {
-public:
-	LoadSceneCommand(class EntityComponentSystem* _ecs, const std::string& _scenePath);
-	~LoadSceneCommand() = default;
-	EDITOR_STATE Execute() override;
-	EDITOR_STATE Undo() override;
-
-	void LoadScene(const std::string& _scenePath);
-	class IEntity* LoadEntity(const nlohmann::json& _entityData);
-
-private:
-	class EntityComponentSystem* pECS_ = nullptr;
-	std::string scenePath_;
-};

@@ -42,9 +42,6 @@ public:
 
 	/// ----- entity ----- ///
 
-	template<typename T>
-	T* GenerateEntity() requires std::is_base_of_v<IEntity, T>;
-
 	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
 	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
@@ -167,11 +164,6 @@ public:
 /// ===================================================
 /// inline methods
 /// ===================================================
-
-template<typename T>
-inline T* EntityComponentSystem::GenerateEntity() requires std::is_base_of_v<IEntity, T> {
-	return entityCollection_->GenerateEntity<T>();
-}
 
 template<typename T>
 inline T* EntityComponentSystem::FindEntity() requires std::is_base_of_v<IEntity, T> {
