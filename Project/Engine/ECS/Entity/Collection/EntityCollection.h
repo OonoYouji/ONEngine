@@ -12,8 +12,14 @@
 
 class CameraComponent;
 
-
+/// ///////////////////////////////////////////
+/// Entityのコレクションクラス
+/// ///////////////////////////////////////////
 class EntityCollection final {
+private:
+	/// =========================================
+	/// private : sub classes
+	/// =========================================
 
 	/// @brief EntityIdの管理用コンテナ
 	struct IdContainer {
@@ -21,8 +27,10 @@ class EntityCollection final {
 		std::deque<int32_t> removedIds; ///< 削除されたID
 	};
 
-
 public:
+	/// =========================================
+	/// public : methods
+	/// =========================================
 
 	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
 	~EntityCollection();
@@ -59,6 +67,9 @@ public:
 	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
+	/// =========================================
+	/// private : objects
+	/// =========================================
 
 	class EntityComponentSystem* pECS_;
 	class DxManager* pDxManager_;
@@ -79,7 +90,6 @@ private:
 	CameraComponent* mainCamera2D_ = nullptr;
 
 	std::function<void(EntityFactory*)> factoryRegisterFunc_;
-
 
 	/// prefab
 	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
