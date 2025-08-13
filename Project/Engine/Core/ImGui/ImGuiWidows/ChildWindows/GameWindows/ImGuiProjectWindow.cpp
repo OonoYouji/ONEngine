@@ -116,7 +116,7 @@ void ImGuiProjectWindow::SelectFileView() {
 		if (isGameFolder_) {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY");
 			if (payload) {
-				IEntity* entity = static_cast<IEntity*>(payload->Data);
+				GameEntity* entity = static_cast<GameEntity*>(payload->Data);
 				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
 			}
 		} else {

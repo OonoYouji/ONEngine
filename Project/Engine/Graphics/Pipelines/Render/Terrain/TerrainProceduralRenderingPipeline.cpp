@@ -120,7 +120,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(EntityComponentSystem* _ecs, Ca
 	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
-void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray) {

@@ -4,11 +4,12 @@
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
-IEntity::IEntity() {
+GameEntity::GameEntity() {
 	parent_ = nullptr;
 }
+GameEntity::~GameEntity() {}
 
-void IEntity::CommonInitialize() {
+void GameEntity::CommonInitialize() {
 	className_ = typeid(*this).name();
 	className_.erase(0, 6);
 	name_ = className_;
@@ -21,7 +22,7 @@ void IEntity::CommonInitialize() {
 	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
-IComponent* IEntity::AddComponent(const std::string& _name) {
+IComponent* GameEntity::AddComponent(const std::string& _name) {
 
 	size_t hash = GetComponentHash(_name);
 	auto it = components_.find(hash);
@@ -42,7 +43,7 @@ IComponent* IEntity::AddComponent(const std::string& _name) {
 	return component;
 }
 
-IComponent* IEntity::GetComponent(const std::string& _compName) const {
+IComponent* GameEntity::GetComponent(const std::string& _compName) const {
 
 	/// stringをhashに変換
 	size_t hash = GetComponentHash(_compName);
@@ -57,7 +58,7 @@ IComponent* IEntity::GetComponent(const std::string& _compName) const {
 	return nullptr;
 }
 
-void IEntity::RemoveComponent(const std::string& _compName) {
+void GameEntity::RemoveComponent(const std::string& _compName) {
 	size_t hash = GetComponentHash(_compName);
 	auto it = components_.find(hash);
 	if (it != components_.end()) {
@@ -72,12 +73,12 @@ void IEntity::RemoveComponent(const std::string& _compName) {
 	}
 }
 
-void IEntity::RemoveComponentAll() {
+void GameEntity::RemoveComponentAll() {
 	pEntityComponentSystem_->RemoveComponentAll(this); ///< 全てのコンポーネントを削除
 	components_.clear();
 }
 
-void IEntity::UpdateTransform() {
+void GameEntity::UpdateTransform() {
 	transform_->Update();
 
 	if (parent_) {
@@ -104,52 +105,52 @@ void IEntity::UpdateTransform() {
 	}
 }
 
-void IEntity::Destroy() {
+void GameEntity::Destroy() {
 	pEntityComponentSystem_->RemoveEntity(this);
 }
 
-void IEntity::SetPosition(const Vector3& _v) {
+void GameEntity::SetPosition(const Vector3& _v) {
 	transform_->position = _v;
 	UpdateTransform();
 }
 
-void IEntity::SetPositionX(float _x) {
+void GameEntity::SetPositionX(float _x) {
 	transform_->position.x = _x;
 }
 
-void IEntity::SetPositionY(float _y) {
+void GameEntity::SetPositionY(float _y) {
 	transform_->position.y = _y;
 }
 
-void IEntity::SetPositionZ(float _z) {
+void GameEntity::SetPositionZ(float _z) {
 	transform_->position.z = _z;
 }
 
-void IEntity::SetRotate(const Vector3& _v) {
+void GameEntity::SetRotate(const Vector3& _v) {
 	transform_->rotate = Quaternion::FromEuler(_v);
 }
 
-void IEntity::SetRotate(const Quaternion& _q) {
+void GameEntity::SetRotate(const Quaternion& _q) {
 	transform_->rotate = _q;
 }
 
-void IEntity::SetScale(const Vector3& _v) {
+void GameEntity::SetScale(const Vector3& _v) {
 	transform_->scale = _v;
 }
 
-void IEntity::SetScaleX(float _x) {
+void GameEntity::SetScaleX(float _x) {
 	transform_->scale.x = _x;
 }
 
-void IEntity::SetScaleY(float _y) {
+void GameEntity::SetScaleY(float _y) {
 	transform_->scale.y = _y;
 }
 
-void IEntity::SetScaleZ(float _z) {
+void GameEntity::SetScaleZ(float _z) {
 	transform_->scale.z = _z;
 }
 
-void IEntity::SetParent(IEntity* _parent) {
+void GameEntity::SetParent(GameEntity* _parent) {
 	/// 親子関係の解除
 	if (!_parent) {
 		RemoveParent();
@@ -159,10 +160,10 @@ void IEntity::SetParent(IEntity* _parent) {
 	parent_ = _parent;
 }
 
-void IEntity::RemoveParent() {
+void GameEntity::RemoveParent() {
 	if (parent_) {
 		auto itr = std::remove_if(parent_->children_.begin(), parent_->children_.end(),
-			[this](IEntity* child) {
+			[this](GameEntity* child) {
 				return child == this;
 			}
 		);
@@ -171,39 +172,39 @@ void IEntity::RemoveParent() {
 	}
 }
 
-void IEntity::SetName(const std::string& _name) {
+void GameEntity::SetName(const std::string& _name) {
 	name_ = _name;
 }
 
-void IEntity::SetPrefabName(const std::string& _name) {
+void GameEntity::SetPrefabName(const std::string& _name) {
 	prefabName_ = _name;
 }
 
-void IEntity::SetActive(bool _active) {
+void GameEntity::SetActive(bool _active) {
 	active_ = _active;
 }
 
-const Vector3& IEntity::GetLocalPosition() const {
+const Vector3& GameEntity::GetLocalPosition() const {
 	return transform_->position;
 }
 
-Vector3 IEntity::GetLocalRotate() const {
+Vector3 GameEntity::GetLocalRotate() const {
 	return Quaternion::ToEuler(transform_->rotate);
 }
 
-const Quaternion& IEntity::GetLocalRotateQuaternion() const {
+const Quaternion& GameEntity::GetLocalRotateQuaternion() const {
 	return transform_->rotate;
 }
 
-const Vector3& IEntity::GetLocalScale() const {
+const Vector3& GameEntity::GetLocalScale() const {
 	return transform_->scale;
 }
 
-Vector3 IEntity::GetPosition() {
+Vector3 GameEntity::GetPosition() {
 	return Matrix4x4::Transform(Vector3::kZero, transform_->GetMatWorld());
 }
 
-Vector3 IEntity::GetRotate() {
+Vector3 GameEntity::GetRotate() {
 	if (!parent_) {
 		return Quaternion::ToEuler(transform_->rotate);
 	}
@@ -212,7 +213,7 @@ Vector3 IEntity::GetRotate() {
 	return Quaternion::ToEuler(parent_->GetRotateQuaternion() * transform_->rotate);
 }
 
-Quaternion IEntity::GetRotateQuaternion() {
+Quaternion GameEntity::GetRotateQuaternion() {
 	if (!parent_) {
 		return transform_->rotate;
 	}
@@ -220,23 +221,23 @@ Quaternion IEntity::GetRotateQuaternion() {
 	return parent_->GetRotateQuaternion() * transform_->rotate;
 }
 
-Vector3 IEntity::GetScale() {
+Vector3 GameEntity::GetScale() {
 	return transform_->scale;
 }
 
-Transform* IEntity::GetTransform() const {
+Transform* GameEntity::GetTransform() const {
 	return transform_;
 }
 
-const IEntity* IEntity::GetParent() const {
+const GameEntity* GameEntity::GetParent() const {
 	return parent_;
 }
 
-IEntity* IEntity::GetParent() {
+GameEntity* GameEntity::GetParent() {
 	return parent_;
 }
 
-bool IEntity::RemoveChild(IEntity* _child) {
+bool GameEntity::RemoveChild(GameEntity* _child) {
 	if (!_child) {
 		return false;
 	}
@@ -250,44 +251,44 @@ bool IEntity::RemoveChild(IEntity* _child) {
 	return false;
 }
 
-const std::vector<IEntity*>& IEntity::GetChildren() const {
+const std::vector<GameEntity*>& GameEntity::GetChildren() const {
 	return children_;
 }
 
-IEntity* IEntity::GetChild(size_t _index) {
+GameEntity* GameEntity::GetChild(size_t _index) {
 	return children_[_index];
 }
 
-const std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() const {
+const std::unordered_map<size_t, IComponent*>& GameEntity::GetComponents() const {
 	return components_;
 }
 
-std::unordered_map<size_t, IComponent*>& IEntity::GetComponents() {
+std::unordered_map<size_t, IComponent*>& GameEntity::GetComponents() {
 	return components_;
 }
 
-const std::string& IEntity::GetName() const {
+const std::string& GameEntity::GetName() const {
 	return name_;
 }
 
-const std::string& IEntity::GetEntityClassName() const {
+const std::string& GameEntity::GetEntityClassName() const {
 	return className_;
 }
 
-const std::string& IEntity::GetPrefabName() const {
+const std::string& GameEntity::GetPrefabName() const {
 	return prefabName_;
 }
 
-bool IEntity::ContainsPrefab() const {
+bool GameEntity::ContainsPrefab() const {
 	/// 空文字列でないかチェック
 	return prefabName_ != "";
 }
 
-bool IEntity::GetActive() const {
+bool GameEntity::GetActive() const {
 	return active_;
 }
 
-int32_t IEntity::GetId() const {
+int32_t GameEntity::GetId() const {
 	return id_;
 }
 

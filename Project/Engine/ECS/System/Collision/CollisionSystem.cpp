@@ -56,7 +56,7 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void CollisionSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
 
 	/// colliderを集める
 	std::vector<ICollider*> colliders;
@@ -127,13 +127,13 @@ void CollisionSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs
 
 	/// call back関数の実行
 	for (auto& pair : collisionPairs_) {
-		IEntity* entityA = pair.first;
-		IEntity* entityB = pair.second;
+		GameEntity* entityA = pair.first;
+		GameEntity* entityB = pair.second;
 		/// 衝突している場合の処理
 		if (entityA && entityB) {
 			/// 衝突イベントの実行
 			std::array<Script*, 2> scripts;
-			std::array<IEntity*, 2> entities = { entityA, entityB };
+			std::array<GameEntity*, 2> entities = { entityA, entityB };
 			scripts[0] = entityA->GetComponent<Script>();
 			scripts[1] = entityB->GetComponent<Script>();
 
@@ -186,8 +186,8 @@ bool CheckMethod::CollisionCheckSphereVsSphere(SphereCollider* _s1, SphereCollid
 		return false; // 型が一致しない場合は衝突なし
 	}
 
-	IEntity* e1 = _s1->GetOwner();
-	IEntity* e2 = _s2->GetOwner();
+	GameEntity* e1 = _s1->GetOwner();
+	GameEntity* e2 = _s2->GetOwner();
 
 	float distance = (e1->GetPosition() - e2->GetPosition()).Len();
 	return distance <= (_s1->GetRadius() + _s2->GetRadius());
@@ -197,8 +197,8 @@ bool CheckMethod::CollisionCheckSphereVsBox(SphereCollider* _s, BoxCollider* _b)
 	if (!_s || !_b) {
 		return false; // 型が一致しない場合は衝突なし
 	}
-	IEntity* e1 = _s->GetOwner();
-	IEntity* e2 = _b->GetOwner();
+	GameEntity* e1 = _s->GetOwner();
+	GameEntity* e2 = _b->GetOwner();
 	return CollisionCheck::CubeVsSphere(
 		e2->GetPosition(), _b->GetSize(),
 		e1->GetPosition(), _s->GetRadius()
@@ -209,8 +209,8 @@ bool CheckMethod::CollisionCheckBoxVsBox(BoxCollider* _b1, BoxCollider* _b2) {
 	if (!_b1 || !_b2) {
 		return false; // 型が一致しない場合は衝突なし
 	}
-	IEntity* e1 = _b1->GetOwner();
-	IEntity* e2 = _b2->GetOwner();
+	GameEntity* e1 = _b1->GetOwner();
+	GameEntity* e2 = _b2->GetOwner();
 	return CollisionCheck::CubeVsCube(
 		e1->GetPosition(), _b1->GetSize(),
 		e2->GetPosition(), _b2->GetSize()

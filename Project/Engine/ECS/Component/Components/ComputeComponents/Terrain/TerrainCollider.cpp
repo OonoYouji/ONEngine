@@ -14,7 +14,7 @@ TerrainCollider::TerrainCollider() {
 }
 
 void TerrainCollider::AttachTerrain() {
-	if (IEntity* entity = GetOwner()) {
+	if (GameEntity* entity = GetOwner()) {
 		pTerrain_ = entity->GetComponent<Terrain>();
 	}
 }

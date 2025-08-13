@@ -72,7 +72,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 	ImGui::End();
 }
 
-void ImGuiHierarchyWindow::DrawEntityHierarchy(IEntity* _entity) {
+void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 	entityName_ = _entity->GetName();
 	entityName_ += "##" + std::to_string(reinterpret_cast<uintptr_t>(_entity));
 
@@ -238,7 +238,7 @@ void ImGuiHierarchyWindow::Hierarchy() {
 	}
 }
 
-void ImGuiHierarchyWindow::EntityRename(IEntity* _entity) {
+void ImGuiHierarchyWindow::EntityRename(GameEntity* _entity) {
 
 	if (ImGuiInputText("##rename", &newName_, ImGuiInputTextFlags_CallbackAlways | ImGuiInputTextFlags_EnterReturnsTrue)) {
 		pEditorManager_->ExecuteCommand<EntityRenameCommand>(_entity, newName_);
@@ -251,19 +251,19 @@ void ImGuiHierarchyWindow::EntityRename(IEntity* _entity) {
 	}
 }
 
-void ImGuiHierarchyWindow::EntityDebug(IEntity* _entity) {
+void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 	/// -------------------------------------
 	// ドラッグの開始
 	/// -------------------------------------
 	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-		ImGui::SetDragDropPayload("ENTITY_HIERARCHY", _entity, sizeof(IEntity));
+		ImGui::SetDragDropPayload("ENTITY_HIERARCHY", _entity, sizeof(GameEntity));
 		ImGui::TextUnformatted(entityName_.c_str());
 		ImGui::EndDragDropSource();
 	}
 
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY")) {
-			IEntity* srcEntity = static_cast<IEntity*>(payload->Data);
+			GameEntity* srcEntity = static_cast<GameEntity*>(payload->Data);
 			if (srcEntity != _entity) {
 				//srcEntity->RemoveParent();
 				//srcEntity->SetParent(_entity);

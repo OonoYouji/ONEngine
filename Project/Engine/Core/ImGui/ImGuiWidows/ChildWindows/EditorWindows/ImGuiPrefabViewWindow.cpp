@@ -26,13 +26,10 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 		//debugCamera->Update();
 	}
 
-	IEntity* prefabEntity = pECS_->GetPrefabEntity();
+	GameEntity* prefabEntity = pECS_->GetPrefabEntity();
 	if (prefabEntity) {
-		prefabEntity->Update();
 		prefabEntity->UpdateTransform();
-
 		pECS_->RuntimeUpdateSystems({ prefabEntity });
-
 		prefabEntity->UpdateTransform();
 	}
 
@@ -44,7 +41,7 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 		float length = 6.0f; /// オブジェクトとカメラの距離
 
 		if (debugCamera) {
-			IEntity* cameraEntity = debugCamera->GetOwner();
+			GameEntity* cameraEntity = debugCamera->GetOwner();
 			if (cameraEntity) {
 				cameraEntity->SetPosition(dir * length);
 				cameraEntity->SetRotate(Vector3(0.05f, 0.0f, 0.0f)); /// オブジェクトの正面を向く

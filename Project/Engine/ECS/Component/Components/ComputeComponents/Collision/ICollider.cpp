@@ -5,7 +5,7 @@
 
 void ICollider::UpdatePrevPosition() {
 	/// 前フレームの座標を更新する
-	if (IEntity* owner = GetOwner()) {
+	if (GameEntity* owner = GetOwner()) {
 		prevPosition_ = owner->GetTransform()->GetPosition();
 	}
 }

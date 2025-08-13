@@ -89,7 +89,7 @@ void Variables::SaveJson(const std::string& _path) {
 	nlohmann::json json;
 
 	/// スクリプトごとにgroupを生成する
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (!owner) {
 		Console::LogError("Variables::SaveJson();  owner is nullptr...");
 		return;
@@ -356,7 +356,7 @@ void Variables::ReloadScriptVariables() {
 void Variables::SetScriptVariables(const std::string& _scriptName) {
 	/* ----- スクリプトに対して変数の値を適用する ----- */
 
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (!owner) {
 		Console::LogError("Variables::SetScriptVariables();  owner is nullptr...");
 		return;

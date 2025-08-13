@@ -81,7 +81,7 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
-	std::vector<IEntity*> entities;
+	std::vector<GameEntity*> entities;
 	entities.reserve(pEntityComponentSystem_->GetEntities().size());
 	for (auto& entity : pEntityComponentSystem_->GetEntities()) {
 		if (entity.get() && entity->GetActive()) {
@@ -110,8 +110,8 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
-	std::vector<IEntity*> entities;
-	IEntity* prefabEntity = pEntityComponentSystem_->GetPrefabEntity();
+	std::vector<GameEntity*> entities;
+	GameEntity* prefabEntity = pEntityComponentSystem_->GetPrefabEntity();
 	if (prefabEntity) {
 		entities.push_back(prefabEntity);
 	}

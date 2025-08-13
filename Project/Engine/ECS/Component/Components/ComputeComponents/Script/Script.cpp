@@ -441,7 +441,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 void MONO_INTENRAL_METHOD::InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable) {
 	/// Entityを取得
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return;
@@ -463,7 +463,7 @@ void MONO_INTENRAL_METHOD::InternalSetEnable(int32_t _entityId, MonoString* _scr
 
 bool MONO_INTENRAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _scriptName) {
 	/// Entityを取得
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;

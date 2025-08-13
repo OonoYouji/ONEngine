@@ -42,20 +42,20 @@ public:
 
 	/// ----- entity ----- ///
 
-	IEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
+	GameEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 
-	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
+	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);
 
 	void RemoveEntityAll();
 
-	void AddDoNotDestroyEntity(IEntity* _entity);
-	void RemoveDoNotDestroyEntity(IEntity* _entity);
+	void AddDoNotDestroyEntity(GameEntity* _entity);
+	void RemoveDoNotDestroyEntity(GameEntity* _entity);
 
 	uint32_t GetEntityId(const std::string& _name);
 
-	std::vector<IEntity*> GetActiveEntities() const;
+	std::vector<GameEntity*> GetActiveEntities() const;
 
 
 	/// ----- component ----- ///
@@ -73,9 +73,9 @@ public:
 
 	void RemoveComponent(size_t _hash, size_t _id);
 
-	void LoadComponent(IEntity* _entity);
+	void LoadComponent(GameEntity* _entity);
 
-	void RemoveComponentAll(IEntity* _entity);
+	void RemoveComponentAll(GameEntity* _entity);
 
 
 	template<typename Comp>
@@ -88,15 +88,15 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
-	void RuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
-	void OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities);
+	void RuntimeUpdateSystems(const std::vector<GameEntity*>& _entities);
+	void OutsideOfRuntimeUpdateSystems(const std::vector<GameEntity*>& _entities);
 
 
 	/// ----- prefab ----- ///
 
 	void ReloadPrefab(const std::string& _prefabName);
-	IEntity* GetPrefabEntity() const;
-	IEntity* GeneratePrefabEntity(const std::string& _name);
+	GameEntity* GetPrefabEntity() const;
+	GameEntity* GeneratePrefabEntity(const std::string& _name);
 
 
 private:
@@ -120,8 +120,8 @@ private:
 
 
 	/// ----- editor ----- ///
-	std::unique_ptr<IEntity> debugCamera_;
-	std::unique_ptr<IEntity> prefabEntity_;
+	std::unique_ptr<GameEntity> debugCamera_;
+	std::unique_ptr<GameEntity> prefabEntity_;
 
 
 public:
@@ -134,9 +134,9 @@ public:
 
 	/// @brief entities の取得
 	/// @return entities
-	const std::vector<std::unique_ptr<IEntity>>& GetEntities();
+	const std::vector<std::unique_ptr<GameEntity>>& GetEntities();
 
-	IEntity* GetEntity(size_t _index);
+	GameEntity* GetEntity(size_t _index);
 
 	/// @brief main cameraの取得
 	/// @return Cameraクラスへのポインタ
@@ -165,7 +165,7 @@ inline Comp* EntityComponentSystem::AddComponent() requires std::is_base_of_v<IC
 template<typename Comp>
 inline Comp* EntityComponentSystem::GetComponent(size_t _index) requires std::is_base_of_v<IComponent, Comp> {
 
-	IEntity* entity = entityCollection_->GetEntities()[_index].get();
+	GameEntity* entity = entityCollection_->GetEntities()[_index].get();
 	if (entity) {
 		return entity->GetComponent<Comp>();
 	}
@@ -193,7 +193,7 @@ inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base
 /// monoを使ったC#スクリプトエンジンのコンポーネント
 /// =============================================
 
-IEntity* GetEntityById(int32_t _entityId);
+GameEntity* GetEntityById(int32_t _entityId);
 
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);

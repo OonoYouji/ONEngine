@@ -112,7 +112,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	/// ----------------------------------------
 
 	// 操作対象のゲット
-	IEntity* entity = pInspector_->GetSelectedEntity();
+	GameEntity* entity = pInspector_->GetSelectedEntity();
 	if (entity) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
@@ -158,8 +158,8 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
 		Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
-		if (IEntity* owner = transform->GetOwner()) {
-			if (IEntity* parent = owner->GetParent()) {
+		if (GameEntity* owner = transform->GetOwner()) {
+			if (GameEntity* parent = owner->GetParent()) {
 				translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
 			}
 		}

@@ -16,7 +16,7 @@ public:
 	EffectUpdateSystem() = default;
 	~EffectUpdateSystem() = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) override;
 
 private:
 	/// ==================================================

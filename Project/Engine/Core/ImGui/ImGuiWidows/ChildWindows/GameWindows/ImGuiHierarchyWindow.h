@@ -26,15 +26,15 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	void DrawEntityHierarchy(class IEntity* _entity);
+	void DrawEntityHierarchy(class GameEntity* _entity);
 
 	void MenuBar();
 
 	void Hierarchy();
 
-	void EntityRename(class IEntity* _entity);
+	void EntityRename(class GameEntity* _entity);
 
-	void EntityDebug(class IEntity* _entity);
+	void EntityDebug(class GameEntity* _entity);
 
 private:
 	/// ===================================================
@@ -44,14 +44,14 @@ private:
 	std::string entityName_ = "empty";
 	const std::string kClassPrefix = "class ";
 
-	std::list<class IEntity*> entityList_;
+	std::list<class GameEntity*> entityList_;
 
 
 	class EntityComponentSystem* pEntityComponentSystem_ = nullptr;
 	class EditorManager* pEditorManager_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
-	class IEntity* selectedEntity_ = nullptr;
+	class GameEntity* selectedEntity_ = nullptr;
 
 	/* ----- hierarchy ----- */
 	bool isNodeOpen_;
@@ -59,6 +59,6 @@ private:
 
 	/* ----- rename ----- */
 	std::string newName_ = "";
-	IEntity* renameEntity_;
+	GameEntity* renameEntity_;
 
 };

@@ -124,7 +124,7 @@ void MonoScriptEngine::Initialize() {
 }
 
 void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
-	IEntity* owner = _comp->GetOwner();
+	GameEntity* owner = _comp->GetOwner();
 	const std::string ownerName = owner ? owner->GetName() : "\"owner is empty\"";
 	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + ownerName + "\", script name: \"" + _scriptName + "\"");
 

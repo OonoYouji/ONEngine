@@ -53,7 +53,7 @@ void ImGuiPrefabFileWindow::ImGuiFunc() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
-			IEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
+			GameEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
 			pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
 		}
 
@@ -105,7 +105,7 @@ void ImGuiPrefabFileWindow::AddPrefabButton() {
 				pECS_->ReloadPrefab(newPrefabName_);
 
 				/// Prefabを生成
-				IEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
+				GameEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
 				if (entity) {
 					Console::Log("Prefab created: " + newPrefabName_);
 					pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));

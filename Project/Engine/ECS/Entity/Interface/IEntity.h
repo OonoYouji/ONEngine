@@ -7,19 +7,15 @@
 /// ===================================================
 /// エンティティインターフェース
 /// ===================================================
-class IEntity {
+class GameEntity {
 	friend class EntityComponentSystem;
 	friend class EntityCollection;
 public:
 
-	IEntity();
-	virtual ~IEntity() {}
+	GameEntity();
+	~GameEntity();
 
 	void CommonInitialize();
-
-	void Initialize() {};
-	void Update() {};
-
 
 	/// @brief component の追加
 	/// @tparam T 追加する component の型
@@ -71,8 +67,8 @@ private:
 	/// ===================================================
 
 	std::unordered_map<size_t, IComponent*> components_;
-	std::vector<IEntity*> children_;
-	IEntity* parent_;
+	std::vector<GameEntity*> children_;
+	GameEntity* parent_;
 	std::string name_;
 	std::string className_;
 	std::string prefabName_;
@@ -96,7 +92,7 @@ public:
 	void SetScaleY(float _y);
 	void SetScaleZ(float _z);
 
-	void SetParent(IEntity* _parent);
+	void SetParent(GameEntity* _parent);
 	void RemoveParent();
 
 	void SetName(const std::string& _name);
@@ -117,12 +113,12 @@ public:
 
 	Transform* GetTransform() const;
 
-	const IEntity* GetParent() const;
-	IEntity* GetParent();
+	const GameEntity* GetParent() const;
+	GameEntity* GetParent();
 
-	bool RemoveChild(IEntity* _child);
-	const std::vector<IEntity*>& GetChildren() const;
-	IEntity* GetChild(size_t _index);
+	bool RemoveChild(GameEntity* _child);
+	const std::vector<GameEntity*>& GetChildren() const;
+	GameEntity* GetChild(size_t _index);
 
 	const std::unordered_map<size_t, IComponent*>& GetComponents() const;
 	std::unordered_map<size_t, IComponent*>& GetComponents();
@@ -140,7 +136,7 @@ public:
 };
 
 template<class Comp>
-inline Comp* IEntity::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
+inline Comp* GameEntity::AddComponent() requires std::is_base_of_v<IComponent, Comp> {
 	std::string name = typeid(Comp).name();
 	if (name.find("class ") == 0) {
 		name = name.substr(6);
@@ -149,7 +145,7 @@ inline Comp* IEntity::AddComponent() requires std::is_base_of_v<IComponent, Comp
 }
 
 template<class Comp>
-inline Comp* IEntity::GetComponent() const requires std::is_base_of_v<IComponent, Comp> {
+inline Comp* GameEntity::GetComponent() const requires std::is_base_of_v<IComponent, Comp> {
 	auto it = components_.find(GetComponentHash<Comp>());
 	if (it != components_.end()) {
 		return dynamic_cast<Comp*>(it->second);
@@ -158,7 +154,7 @@ inline Comp* IEntity::GetComponent() const requires std::is_base_of_v<IComponent
 }
 
 template<typename Comp>
-inline void IEntity::RemoveComponent() requires std::is_base_of_v<IComponent, Comp> {
+inline void GameEntity::RemoveComponent() requires std::is_base_of_v<IComponent, Comp> {
 	std::string name = typeid(Comp).name();
 	if (name.find("class ") == 0) {
 		name = name.substr(6);

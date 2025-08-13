@@ -13,7 +13,7 @@
 ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
-void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
@@ -52,14 +52,14 @@ void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _
 
 	/// 行列の更新
 	for (auto& script : pScripts_) {
-		IEntity* entity = script->GetOwner();
+		GameEntity* entity = script->GetOwner();
 		if (entity) {
 			entity->UpdateTransform();
 		}
 	}
 }
 
-void ScriptUpdateSystem::RecursivePushBackScript(IEntity* _entity) {
+void ScriptUpdateSystem::RecursivePushBackScript(GameEntity* _entity) {
 
 	if (_entity) {
 

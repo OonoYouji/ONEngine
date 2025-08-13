@@ -23,26 +23,23 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
-	auto entity = std::make_unique<IEntity>();
+GameEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
+	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
 
 		/// 初期化
-		IEntity* entityPtr = entities_.back().get();
+		GameEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->CommonInitialize();
-		if (_isInit) {
-			entityPtr->Initialize();
-		}
 
 		return entities_.back().get();
 	}
 	return nullptr;
 }
 
-void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
+void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 
 	if (_entity == nullptr) {
 		return;
@@ -52,7 +49,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 破棄可能かチェック
 	/// ------------------------------
 	auto doNotDestroyEntityItr = std::find_if(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(),
-		[&_entity](IEntity* entity) {
+		[&_entity](GameEntity* entity) {
 			return entity == _entity;
 		}
 	);
@@ -90,7 +87,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 	/// entityの削除
 	auto entityItr = std::remove_if(entities_.begin(), entities_.end(),
-		[_entity](const std::unique_ptr<IEntity>& entity) {
+		[_entity](const std::unique_ptr<GameEntity>& entity) {
 			return entity.get() == _entity;
 		}
 	);
@@ -117,7 +114,7 @@ void EntityCollection::RemoveEntityId(int32_t _id) {
 }
 
 void EntityCollection::RemoveEntityAll() {
-	std::vector<IEntity*> toRemove;
+	std::vector<GameEntity*> toRemove;
 	toRemove.reserve(entities_.size()); // 最適化
 
 	for (const auto& entity : entities_) {
@@ -135,35 +132,7 @@ void EntityCollection::RemoveEntityAll() {
 
 }
 
-
-void EntityCollection::UpdateEntities() {
-	for (auto& entity : entities_) {
-		if (entity->GetParent()) {
-			continue;
-		}
-
-		UpdateEntity(entity.get());
-	}
-}
-
-void EntityCollection::UpdateEntity(IEntity* _entity) {
-	if (!_entity) {
-		return;
-	}
-
-	if (!_entity->GetActive()) {
-		return;
-	}
-
-	_entity->Update();
-	_entity->UpdateTransform();
-
-	for (auto& child : _entity->GetChildren()) {
-		UpdateEntity(child);
-	}
-}
-
-void EntityCollection::AddDoNotDestroyEntity(IEntity* _entity) {
+void EntityCollection::AddDoNotDestroyEntity(GameEntity* _entity) {
 	if (_entity == nullptr) {
 		return;
 	}
@@ -176,7 +145,7 @@ void EntityCollection::AddDoNotDestroyEntity(IEntity* _entity) {
 	doNotDestroyEntities_.push_back(_entity);
 }
 
-void EntityCollection::RemoveDoNotDestroyEntity(IEntity* _entity) {
+void EntityCollection::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	auto itr = std::remove(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), _entity);
 	if (itr != doNotDestroyEntities_.end()) {
 		doNotDestroyEntities_.erase(itr);
@@ -264,7 +233,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	itr->second->Reload();
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -276,7 +245,7 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	IEntity* entity = GenerateEntity("EmptyEntity", true, _isRuntime);
+	GameEntity* entity = GenerateEntity("EmptyEntity", true, _isRuntime);
 	if (entity) {
 		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
 
@@ -325,7 +294,7 @@ CameraComponent* EntityCollection::GetMainCamera2D() {
 	return mainCamera2D_;
 }
 
-const std::vector<std::unique_ptr<IEntity>>& EntityCollection::GetEntities() const {
+const std::vector<std::unique_ptr<GameEntity>>& EntityCollection::GetEntities() const {
 	return entities_;
 }
 

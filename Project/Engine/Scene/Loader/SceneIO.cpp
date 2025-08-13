@@ -93,7 +93,7 @@ void SceneIO::LoadScene(const std::string& _filename) {
 	inputFile >> inputJson;
 	inputFile.close();
 
-	std::unordered_map<uint32_t, IEntity*> entityMap;
+	std::unordered_map<uint32_t, GameEntity*> entityMap;
 
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
@@ -102,7 +102,7 @@ void SceneIO::LoadScene(const std::string& _filename) {
 		const std::string& entityName = entityJson["name"];
 		uint32_t entityId = entityJson["id"];
 
-		IEntity* entity = nullptr;
+		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
 			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
@@ -136,7 +136,7 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			continue; // エンティティが見つからない場合はスキップ
 		}
 
-		IEntity* entity = entityMap[entityId];
+		GameEntity* entity = entityMap[entityId];
 		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
 			int32_t parentId = entityJson["parent"];
 			if (entityMap.find(parentId) != entityMap.end()) {
@@ -145,12 +145,4 @@ void SceneIO::LoadScene(const std::string& _filename) {
 		}
 	}
 
-
-	/// 全てのエンティティを初期化
-	for (const auto& entityPair : entityMap) {
-		IEntity* entity = entityPair.second;
-		if (entity) {
-			entity->Initialize();
-		}
-	}
 }

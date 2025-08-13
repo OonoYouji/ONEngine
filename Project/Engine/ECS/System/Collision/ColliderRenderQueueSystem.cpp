@@ -10,13 +10,13 @@ ColliderRenderQueueSystem::ColliderRenderQueueSystem() {
 
 }
 
-void ColliderRenderQueueSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void ColliderRenderQueueSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
 	UpdateSphereCollider(_entities);
 	UpdateBoxCollider(_entities);
 }
 
 
-void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class IEntity*>& _entities) {
+void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class GameEntity*>& _entities) {
 
 	std::vector<SphereCollider*> sphereColliders;
 	for (auto& entity : _entities) {
@@ -37,7 +37,7 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class IEn
 			continue; // 無効なコライダーはスキップ
 		}
 
-		IEntity* owner = sphereCollider->GetOwner();
+		GameEntity* owner = sphereCollider->GetOwner();
 		if (!owner) {
 			continue; // オーナーが無効な場合はスキップ
 		}
@@ -50,7 +50,7 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class IEn
 
 }
 
-void ColliderRenderQueueSystem::UpdateBoxCollider(const std::vector<class IEntity*>& _entities) {
+void ColliderRenderQueueSystem::UpdateBoxCollider(const std::vector<class GameEntity*>& _entities) {
 
 	std::vector<BoxCollider*> boxColliders;
 	for (auto& entity : _entities) {
@@ -69,7 +69,7 @@ void ColliderRenderQueueSystem::UpdateBoxCollider(const std::vector<class IEntit
 		if (!boxCollider) {
 			continue; // 無効なコライダーはスキップ
 		}
-		IEntity* owner = boxCollider->GetOwner();
+		GameEntity* owner = boxCollider->GetOwner();
 		if (!owner) {
 			continue; // オーナーが無効な場合はスキップ
 		}

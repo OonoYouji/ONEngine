@@ -95,7 +95,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 		CameraComponent* camera = _pEntityComponentSystem->GetDebugCamera();
 		if (camera) {
-			if (IEntity* entity = camera->GetOwner()) {
+			if (GameEntity* entity = camera->GetOwner()) {
 				cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });
 			}
 		}

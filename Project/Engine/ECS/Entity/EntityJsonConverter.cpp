@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
-nlohmann::json EntityJsonConverter::ToJson(const IEntity* _entity) {
+nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity) {
 	if (!_entity) {
 		return nlohmann::json();
 	}
@@ -29,7 +29,7 @@ nlohmann::json EntityJsonConverter::ToJson(const IEntity* _entity) {
 	return entityJson;
 }
 
-void EntityJsonConverter::FromJson(const nlohmann::json& _json, IEntity* _entity) {
+void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity) {
 
 	/// コンポーネントを追加
 	for (const auto& componentJson : _json["components"]) {
@@ -62,7 +62,7 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, IEntity* _entity
 	}
 }
 
-void EntityJsonConverter::TransformFromJson(const nlohmann::json& _json, IEntity* _entity) {
+void EntityJsonConverter::TransformFromJson(const nlohmann::json& _json, GameEntity* _entity) {
 	/// transformだけjsonから読み込む
 
 	/// コンポーネントを追加

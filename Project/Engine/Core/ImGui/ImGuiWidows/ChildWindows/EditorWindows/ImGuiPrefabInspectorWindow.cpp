@@ -64,7 +64,7 @@ void ImGuiPrefabInspectorWindow::ImGuiFunc() {
 	}
 
 	SelectedType selectedType = kNone;
-	if (reinterpret_cast<IEntity*>(selectedPointer_)) {
+	if (reinterpret_cast<GameEntity*>(selectedPointer_)) {
 		selectedType = kEntity;
 	}
 
@@ -75,8 +75,8 @@ void ImGuiPrefabInspectorWindow::ImGuiFunc() {
 
 
 void ImGuiPrefabInspectorWindow::EntityInspector() {
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (!dynamic_cast<IEntity*>(entity)) {
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
+	if (!dynamic_cast<GameEntity*>(entity)) {
 		return;
 	}
 
@@ -215,9 +215,9 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 
 }
 
-IEntity* ImGuiPrefabInspectorWindow::GetSelectedEntity() const {
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (dynamic_cast<IEntity*>(entity)) {
+GameEntity* ImGuiPrefabInspectorWindow::GetSelectedEntity() const {
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
+	if (dynamic_cast<GameEntity*>(entity)) {
 		return entity;
 	}
 

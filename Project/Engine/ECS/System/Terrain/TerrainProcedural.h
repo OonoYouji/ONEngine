@@ -20,8 +20,8 @@ public:
 	TerrainProcedural() = default;
 	~TerrainProcedural() override = default;
 
-	void OutsideOfRuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void OutsideOfRuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) override;
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) override;
 
 private:
 	/// ========================================

@@ -18,14 +18,14 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities);
+	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities);
 
 private:
 	/// =======================================
 	/// private : objects
 	/// =======================================
 
-	using CollisionPair = std::pair<class IEntity*, class IEntity*>;
+	using CollisionPair = std::pair<class GameEntity*, class GameEntity*>;
 
 	std::deque<CollisionPair> collisionPairs_; ///< Store pairs of colliding entities
 

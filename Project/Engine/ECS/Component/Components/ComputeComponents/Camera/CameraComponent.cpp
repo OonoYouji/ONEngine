@@ -21,7 +21,7 @@ CameraComponent::CameraComponent() {
 CameraComponent::~CameraComponent() {}
 
 void CameraComponent::UpdateViewProjection() {
-	IEntity* entity = GetOwner();
+	GameEntity* entity = GetOwner();
 	if (!entity) {
 		return; // エンティティが存在しない場合は何もしない
 	}

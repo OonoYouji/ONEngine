@@ -53,28 +53,25 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-	entityCollection_->UpdateEntities();
-
 	auto entities = GetActiveEntities();
 	RuntimeUpdateSystems(entities);
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
 	if (debugCamera_) {
-		debugCamera_->Update();
 		debugCamera_->UpdateTransform();
 	}
 }
 
-IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
+GameEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
 	return entityCollection_->GenerateEntity(_name, _isInit);
 }
 
-IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
 }
 
-void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
+void EntityComponentSystem::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
 }
 
@@ -82,11 +79,11 @@ void EntityComponentSystem::RemoveEntityAll() {
 	entityCollection_->RemoveEntityAll();
 }
 
-void EntityComponentSystem::AddDoNotDestroyEntity(IEntity* _entity) {
+void EntityComponentSystem::AddDoNotDestroyEntity(GameEntity* _entity) {
 	entityCollection_->AddDoNotDestroyEntity(_entity);
 }
 
-void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
+void EntityComponentSystem::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	entityCollection_->RemoveDoNotDestroyEntity(_entity);
 }
 
@@ -94,8 +91,8 @@ uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
 	return entityCollection_->GetEntityId(_name);
 }
 
-std::vector<IEntity*> EntityComponentSystem::GetActiveEntities() const {
-	std::vector<IEntity*> result;
+std::vector<GameEntity*> EntityComponentSystem::GetActiveEntities() const {
+	std::vector<GameEntity*> result;
 	result.reserve(entityCollection_->GetEntities().size());
 
 	for (const auto& entity : entityCollection_->GetEntities()) {
@@ -115,22 +112,22 @@ void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
 	componentCollection_->RemoveComponent(_hash, _id);
 }
 
-void EntityComponentSystem::LoadComponent(IEntity* _entity) {
+void EntityComponentSystem::LoadComponent(GameEntity* _entity) {
 	componentInputCommand_.SetEntity(_entity);
 	componentInputCommand_.Execute();
 }
 
-void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
+void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
 }
 
-void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
+void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<GameEntity*>& _entities) {
 	for (auto& system : systems_) {
 		system->RuntimeUpdate(this, _entities);
 	}
 }
 
-void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
+void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<GameEntity*>& _entities) {
 	for (auto& system : systems_) {
 		system->OutsideOfRuntimeUpdate(this, _entities);
 	}
@@ -140,11 +137,11 @@ void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 	entityCollection_->ReloadPrefab(_prefabName);
 }
 
-IEntity* EntityComponentSystem::GetPrefabEntity() const {
+GameEntity* EntityComponentSystem::GetPrefabEntity() const {
 	return prefabEntity_.get();
 }
 
-IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
+GameEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 
 	/// 同じエンティティが生成されているかチェック
 	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
@@ -162,7 +159,7 @@ IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 	}
 
 	/// entityを生成する
-	std::unique_ptr<IEntity> entity = std::make_unique<IEntity>();
+	std::unique_ptr<GameEntity> entity = std::make_unique<GameEntity>();
 
 	/// 違うエンティティが生成されている場合は削除して生成
 	if (prefabEntity_) {
@@ -182,8 +179,6 @@ IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
 		prefabEntity_->SetPrefabName(_name);
 
 		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
-
-		prefabEntity_->Initialize();
 	}
 
 
@@ -199,15 +194,15 @@ void EntityComponentSystem::SetMainCamera2D(CameraComponent* _camera) {
 }
 
 
-const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
+const std::vector<std::unique_ptr<GameEntity>>& EntityComponentSystem::GetEntities() {
 	return entityCollection_->GetEntities();
 }
 
-IEntity* EntityComponentSystem::GetEntity(size_t _id) {
+GameEntity* EntityComponentSystem::GetEntity(size_t _id) {
 	/// idを検索
 	auto itr = std::find_if(
 		entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
-		[_id](const std::unique_ptr<IEntity>& entity) {
+		[_id](const std::unique_ptr<GameEntity>& entity) {
 			return entity->GetId() == _id;
 		}
 	);
@@ -256,8 +251,8 @@ CameraComponent* EntityComponentSystem::GetDebugCamera() {
 /// internal methods
 /// ====================================================
 
-IEntity* GetEntityById(int32_t _entityId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
+GameEntity* GetEntityById(int32_t _entityId) {
+	GameEntity* entity = gECS->GetEntity(_entityId);
 	if (!entity) {
 		/// prefab entityじゃないかチェック
 		if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
@@ -276,7 +271,7 @@ IEntity* GetEntityById(int32_t _entityId) {
 
 uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -293,7 +288,7 @@ uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 
 uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	/// idからentityを取得
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -307,7 +302,7 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 }
 
 const char* InternalGetName(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
@@ -318,7 +313,7 @@ const char* InternalGetName(int32_t _entityId) {
 
 void InternalSetName(int32_t _entityId, MonoString* _name) {
 	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
@@ -329,7 +324,7 @@ void InternalSetName(int32_t _entityId, MonoString* _name) {
 }
 
 int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -341,18 +336,18 @@ int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
 		return 0;
 	}
 
-	IEntity* child = children[_childIndex];
+	GameEntity* child = children[_childIndex];
 	return child->GetId();
 }
 
 int32_t InternalGetParentId(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
 
-	IEntity* parent = entity->GetParent();
+	GameEntity* parent = entity->GetParent();
 	if (parent) {
 		return parent->GetId();
 	}
@@ -361,8 +356,8 @@ int32_t InternalGetParentId(int32_t _entityId) {
 }
 
 void InternalSetParent(int32_t _entityId, int32_t _parentId) {
-	IEntity* entity = GetEntityById(_entityId);
-	IEntity* parent = GetEntityById(_parentId);
+	GameEntity* entity = GetEntityById(_entityId);
+	GameEntity* parent = GetEntityById(_parentId);
 
 	/// nullptr チェック
 	if (!entity || !parent) {
@@ -387,7 +382,7 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 
 void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 	std::string scriptName = mono_string_to_utf8(_scriptName);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return;
@@ -402,7 +397,7 @@ void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 
 
 bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;
@@ -427,7 +422,7 @@ bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
 }
 
 bool InternalContainsEntity(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (entity) {
 		return true;
 	}
@@ -443,7 +438,7 @@ int32_t InternalGetEntityId(MonoString* _name) {
 int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
 	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
+	GameEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
 	if (!entity) {
 		entity = gECS->GenerateEntity(name);
 		if (!entity) {
@@ -462,7 +457,7 @@ int32_t InternalCreateEntity(MonoString* _name) {
 }
 
 bool InternalContainsPrefabEntity(int32_t _entityId) {
-	IEntity* entity = gECS->GetPrefabEntity();
+	GameEntity* entity = gECS->GetPrefabEntity();
 	if (entity) {
 		if (entity->GetId() == _entityId) {
 			return true;
@@ -473,7 +468,7 @@ bool InternalContainsPrefabEntity(int32_t _entityId) {
 }
 
 void InternalDestroyEntity(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return;

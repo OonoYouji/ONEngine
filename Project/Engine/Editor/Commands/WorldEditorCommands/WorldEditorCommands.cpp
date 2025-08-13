@@ -44,7 +44,7 @@ EDITOR_STATE CreateGameObjectCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// オブジェクトの名前変更コマンド
 /// ///////////////////////////////////////////////////
-EntityRenameCommand::EntityRenameCommand(IEntity* _entity, const std::string& _newName)
+EntityRenameCommand::EntityRenameCommand(GameEntity* _entity, const std::string& _newName)
 	: pEntity_(_entity) {
 	oldName_ = pEntity_->GetName();
 	newName_ = _newName;
@@ -78,7 +78,7 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 /// シーンにあるオブジェクトから新しいクラスを作る
 /// ///////////////////////////////////////////////////
 
-CreateNewEntityClassCommand::CreateNewEntityClassCommand(IEntity* _entity, const std::string& _outputFilePath)
+CreateNewEntityClassCommand::CreateNewEntityClassCommand(GameEntity* _entity, const std::string& _outputFilePath)
 	: pEntity_(_entity) {
 	pEntity_ = _entity;
 	sourceClassPath_ = "Engine/Editor/Commands/WorldEditorCommands/SourceEntity";
@@ -148,7 +148,7 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// エンティティを削除するコマンド
 /// ///////////////////////////////////////////////////
 
-DeleteEntityCommand::DeleteEntityCommand(EntityComponentSystem* _ecs, IEntity* _entity)
+DeleteEntityCommand::DeleteEntityCommand(EntityComponentSystem* _ecs, GameEntity* _entity)
 	: pECS_(_ecs), pEntity_(_entity) {}
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
@@ -170,7 +170,7 @@ EDITOR_STATE DeleteEntityCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// プレハブを作成するコマンド
 /// ///////////////////////////////////////////////////
-CreatePrefabCommand::CreatePrefabCommand(IEntity* _entity) 
+CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity) 
 	: pEntity_(_entity) {
 	if (pEntity_ == nullptr) {
 		Console::Log("CreatePrefabCommand : Entity is nullptr");
