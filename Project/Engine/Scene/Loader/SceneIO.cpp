@@ -98,7 +98,6 @@ void SceneIO::LoadScene(const std::string& _filename) {
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
 		const std::string& prefabName = entityJson["prefabName"];
-		const std::string& entityClassName = entityJson["className"];
 		const std::string& entityName = entityJson["name"];
 		uint32_t entityId = entityJson["id"];
 
@@ -107,7 +106,7 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			std::string jsonPrefabName = entityJson["prefabName"];
 			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
-			entity = pECS_->GenerateEntity(entityClassName, false);
+			entity = pECS_->GenerateEntity(false);
 		}
 
 		if (entity) {

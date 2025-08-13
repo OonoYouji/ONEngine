@@ -24,7 +24,7 @@ CreateGameObjectCommand::CreateGameObjectCommand(EntityComponentSystem* _ecs) {
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pECS_->GenerateEntity("EmptyEntity");
+	generatedEntity_ = pECS_->GenerateEntity(false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {

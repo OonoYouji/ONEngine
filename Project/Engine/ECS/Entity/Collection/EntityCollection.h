@@ -35,7 +35,7 @@ public:
 	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
 	~EntityCollection();
 
-	GameEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
+	GameEntity* GenerateEntity(bool _isRuntime = false);
 
 	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);
 	void RemoveEntityId(int32_t _id);

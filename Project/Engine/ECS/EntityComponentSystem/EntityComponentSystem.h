@@ -42,7 +42,7 @@ public:
 
 	/// ----- entity ----- ///
 
-	GameEntity* GenerateEntity(const std::string& _name, bool _isInit = true);
+	GameEntity* GenerateEntity(bool _isRuntime);
 
 	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 

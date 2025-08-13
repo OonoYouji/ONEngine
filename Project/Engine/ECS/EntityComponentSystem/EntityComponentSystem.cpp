@@ -63,8 +63,8 @@ void EntityComponentSystem::DebuggingUpdate() {
 	}
 }
 
-GameEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
-	return entityCollection_->GenerateEntity(_name, _isInit);
+GameEntity* EntityComponentSystem::GenerateEntity(bool _isRuntime) {
+	return entityCollection_->GenerateEntity(_isRuntime);
 }
 
 GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
@@ -440,7 +440,7 @@ int32_t InternalCreateEntity(MonoString* _name) {
 	std::string name = mono_string_to_utf8(_name);
 	GameEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
 	if (!entity) {
-		entity = gECS->GenerateEntity(name);
+		entity = gECS->GenerateEntity(true);
 		if (!entity) {
 			return 0;
 		}

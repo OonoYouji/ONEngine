@@ -23,7 +23,7 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-GameEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntity(bool _isRuntime) {
 	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
@@ -245,7 +245,7 @@ GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	GameEntity* entity = GenerateEntity("EmptyEntity", true, _isRuntime);
+	GameEntity* entity = GenerateEntity(_isRuntime);
 	if (entity) {
 		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
 

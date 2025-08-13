@@ -71,7 +71,6 @@ private:
 	std::vector<GameEntity*> children_;
 	GameEntity* parent_;
 	std::string name_;
-	std::string className_;
 	std::string prefabName_;
 
 public:
@@ -125,7 +124,6 @@ public:
 	std::unordered_map<size_t, IComponent*>& GetComponents();
 
 	const std::string& GetName() const;
-	const std::string& GetEntityClassName() const;
 
 	const std::string& GetPrefabName() const;
 	bool ContainsPrefab() const;

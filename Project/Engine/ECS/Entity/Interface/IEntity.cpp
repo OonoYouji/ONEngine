@@ -10,16 +10,15 @@ GameEntity::GameEntity() {
 GameEntity::~GameEntity() {}
 
 void GameEntity::Awake() {
-	className_ = typeid(*this).name();
-	className_.erase(0, 6);
-	name_ = className_;
+	name_ = typeid(*this).name();
+	name_.erase(0, 6);
 	prefabName_ = "";
 
 	pEntityComponentSystem_->LoadComponent(this);
 
 	transform_ = AddComponent<Transform>();
 	variables_ = AddComponent<Variables>();
-	variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
+	//variables_->LoadJson("./Assets/Jsons/" + name_ + ".json");
 }
 
 IComponent* GameEntity::AddComponent(const std::string& _name) {
@@ -269,10 +268,6 @@ std::unordered_map<size_t, IComponent*>& GameEntity::GetComponents() {
 
 const std::string& GameEntity::GetName() const {
 	return name_;
-}
-
-const std::string& GameEntity::GetEntityClassName() const {
-	return className_;
 }
 
 const std::string& GameEntity::GetPrefabName() const {
