@@ -52,11 +52,12 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		/// InputLayout
 		pipeline_->AddInputElement("POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT);
-		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 		pipeline_->AddInputElement("TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT);
+		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 		/// Buffer
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// GP_CBV_VIEW_PROJECTION
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// GP_CBV_TEXTURE_ID
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_INSNTANCE_DATA
 		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_TEXTURES
@@ -73,7 +74,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
@@ -83,6 +84,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 	{	/// buffer create
 		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap());
+		textureIdBuffer_.Create(_dxManager->GetDxDevice());
 		instanceCount_ = 0;
 	}
 }
@@ -178,6 +180,10 @@ void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const
 	/// vertex: instance data
 	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(GP_SRV_INSNTANCE_DATA, cmdList); // GP_SRV_INSNTANCE_DATA
 
+	/// pixel: texture id
+	uint32_t texId = pResourceCollection_->GetTextureIndex("./Packages/Textures/Terrain/grass.png");
+	textureIdBuffer_.SetMappedData({ texId });
+	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド
 	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin())->GetSRVGPUHandle());
 

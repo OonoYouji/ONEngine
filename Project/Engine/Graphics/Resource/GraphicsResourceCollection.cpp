@@ -16,7 +16,7 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<GraphicsResourceLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
-	textures_.resize(32);
+	textures_.resize(MAX_TEXTURE_COUNT);
 
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));

@@ -1,10 +1,14 @@
 #pragma once
 
+/// std
+#include <cstdint>
+
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Shader/ComputePipeline.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
 
 /// ////////////////////////////////////
 /// 地形に対してのプロシージャルレンダリングパイプライン
@@ -21,12 +25,17 @@ class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 	/// @brief 
 	enum GP_ROOT_PARAM {
 		GP_CBV_VIEW_PROJECTION,
+		GP_CBV_TEXTURE_ID,
 		GP_SRV_INSNTANCE_DATA,
 		GP_SRV_TEXTURES
 	};
 
 	struct InstanceData {
 		Matrix4x4 matWorld;
+	};
+
+	struct TextureId {
+		uint32_t value;
 	};
 
 public:
@@ -51,6 +60,7 @@ private:
 
 	std::unique_ptr<ComputePipeline> computePipeline_;
 	StructuredBuffer<InstanceData> instanceDataAppendBuffer_;
+	ConstantBuffer<TextureId> textureIdBuffer_;
 
 	uint32_t instanceCount_;
 
