@@ -207,22 +207,7 @@ void MonoScriptEngine::RegisterFunctions() {
 
 	AddComponentInternalCalls();
 
-	/// entity
-	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
-	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
-	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
-	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
-	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
-	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
-	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
-	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
-	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
-
-	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
-	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
-	mono_add_internal_call("EntityCollection::InternalCreateEntity", (void*)InternalCreateEntity);
-	mono_add_internal_call("EntityCollection::InternalContainsPrefabEntity", (void*)InternalContainsPrefabEntity);
-	mono_add_internal_call("EntityCollection::InternalDestroyEntity", (void*)InternalDestroyEntity);
+	AddEntityInternalCalls();
 
 	/// log
 	mono_add_internal_call("Debug::InternalConsoleLog", (void*)ConsoleLog);
@@ -237,7 +222,7 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Mathf::LoadFile", (void*)MONO_INTENRAL_METHOD::LoadFile);
 
 	/// 他のクラスの関数も登録
-	Input::RegisterMonoFunctions();
+	AddInputInternalCalls();
 
 }
 

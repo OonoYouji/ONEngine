@@ -85,7 +85,7 @@ public class Player : MonoBehavior {
 			Transform cT = camera.transform;
 			if (cT != null) {
 				Matrix4x4 matCameraRotate = Matrix4x4.RotateY(cT.rotate.y);
-				velocity = Matrix4x4.Transform(matCameraRotate, velocity);
+				velocity = Matrix4x4.Transform(velocity, matCameraRotate);
 			}
 		}
 

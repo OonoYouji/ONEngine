@@ -16,8 +16,6 @@ class Input final {
 	static void Update();
 	static void Finalize();
 
-	static void RegisterMonoFunctions();
-
 public:
 
 	/// ===================================================

@@ -69,6 +69,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Input.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\KeyCode.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Input\Mouse.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Log\Debug.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Flag.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Scripts\Engine\Entity\Components\ComponentCollection.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\SkinMeshRenderer.cs" />
+    <Compile Include="Scripts\Engine\Entity\Entity\Entities\DebugCamera.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
     <Compile Include="Scripts\Engine\Graphics\Material.cs" />
