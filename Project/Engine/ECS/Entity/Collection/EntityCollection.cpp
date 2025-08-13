@@ -32,7 +32,7 @@ GameEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isI
 		GameEntity* entityPtr = entities_.back().get();
 		entityPtr->pEntityComponentSystem_ = pECS_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
-		entityPtr->CommonInitialize();
+		entityPtr->Awake();
 
 		return entities_.back().get();
 	}

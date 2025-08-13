@@ -15,7 +15,8 @@ public:
 	GameEntity();
 	~GameEntity();
 
-	void CommonInitialize();
+	/// @brief GameEntityの生成時に行う処理
+	void Awake();
 
 	/// @brief component の追加
 	/// @tparam T 追加する component の型

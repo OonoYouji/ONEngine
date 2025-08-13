@@ -173,7 +173,7 @@ GameEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name
 	if (prefabEntity_) {
 		prefabEntity_->pEntityComponentSystem_ = this;
 		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
-		prefabEntity_->CommonInitialize();
+		prefabEntity_->Awake();
 
 		prefabEntity_->SetName(prefabName);
 		prefabEntity_->SetPrefabName(_name);

@@ -9,7 +9,7 @@ GameEntity::GameEntity() {
 }
 GameEntity::~GameEntity() {}
 
-void GameEntity::CommonInitialize() {
+void GameEntity::Awake() {
 	className_ = typeid(*this).name();
 	className_.erase(0, 6);
 	name_ = className_;
