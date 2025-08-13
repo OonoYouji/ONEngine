@@ -27,9 +27,11 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		/// Buffer
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); /// UAV_INSTANCE_DATA
 		computePipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_VERTEX_TEXTURE
+		computePipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_SPLAT_BLEND_TEXTURE
 
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); /// UAV_INSTANCE_DATA
 		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); /// SRV_VERTEX_TEXTURE
+		computePipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); /// SRV_SPLAT_BLEND_TEXTURE
 
 		computePipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_ALL, 0);
 
@@ -57,14 +59,17 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// GP_CBV_VIEW_PROJECTION
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_INSNTANCE_DATA
+		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// GP_SRV_TEXTURES
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 0); /// GP_SRV_INSNTANCE_DATA
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1); /// GP_SRV_TEXTURES
 
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// StaticSampler for textures
 
 		/// setting
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
@@ -77,11 +82,40 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 
 	{	/// buffer create
-
-		instanceDataBuffer_.Create(100, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
-		instanceDataBuffer_.CreateAppendBuffer(100, _dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap());
-
+		instanceDataAppendBuffer_.CreateAppendBuffer(static_cast<uint32_t>(std::pow(2, 24)), _dxManager->GetDxDevice(), _dxManager->GetDxCommand(), _dxManager->GetDxSRVHeap());
+		instanceCount_ = 0;
 	}
+}
+
+void TerrainProceduralRenderingPipeline::PreDraw(EntityComponentSystem* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+	auto cmdList = _dxCommand->GetCommandList();
+
+	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
+	instanceDataAppendBuffer_.AppendBindForComputeCommandList(CP_INSNTANCE_DATA, cmdList); // UAV_INSTANCE_DATA
+
+	const Texture* vertexTexture = pResourceCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+	const Texture* splatBlendTexture = pResourceCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+	cmdList->SetComputeRootDescriptorTable(CP_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
+	cmdList->SetComputeRootDescriptorTable(CP_SRV_SPLAT_BLEND_TEXTURE, splatBlendTexture->GetSRVGPUHandle());
+
+	const uint32_t threadGroupSize = 32;
+	cmdList->Dispatch(
+		(2000 + threadGroupSize - 1) / threadGroupSize,
+		(2000 + threadGroupSize - 1) / threadGroupSize,
+		1
+	);
+
+	D3D12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::UAV(instanceDataAppendBuffer_.GetResource().Get());
+	cmdList->ResourceBarrier(1, &uavBarrier);
+	instanceDataAppendBuffer_.GetCounterResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+
+	_dxCommand->CommandExecute();
+	_dxCommand->CommandReset();
+	_dxCommand->WaitForGpuComplete();
+
+	instanceCount_ = instanceDataAppendBuffer_.ReadCounter(_dxCommand);
+	pDxManager_->HeapBindToCommandList();
+	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
 void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
@@ -106,52 +140,48 @@ void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const
 	}
 
 
+	/* ----- pipeline の設定 & 起動 ----- */
+
 	auto cmdList = _dxCommand->GetCommandList();
 
-	static bool isFirst = true;
-	if (isFirst) {	/// compute shaderを起動する
-		isFirst = false;
-		computePipeline_->SetPipelineStateForCommandList(_dxCommand);
+	/// -----------------------------------------------
+	/// 必用なリソースの取得
+	/// -----------------------------------------------
 
-		instanceDataBuffer_.AppendBindForComputeCommandList(CP_INSNTANCE_DATA, cmdList); // UAV_INSTANCE_DATA
+	/// model
+	const Model* model = pResourceCollection_->GetModel("./Packages/Models/Terrain/grass.obj");
+	const D3D12_VERTEX_BUFFER_VIEW& vbv = model->GetMeshes().front()->GetVBV();
+	const D3D12_INDEX_BUFFER_VIEW&  ibv = model->GetMeshes().front()->GetIBV();
 
-		const Texture* vertexTexture = pResourceCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
-		cmdList->SetComputeRootDescriptorTable(CP_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
-
-		const uint32_t threadGroupSize = 16;
-		cmdList->Dispatch(
-			(1000 + threadGroupSize - 1) / threadGroupSize,
-			(1000 + threadGroupSize - 1) / threadGroupSize,
-			1
-		);
-	}
+	/// textures
+	auto& textures = pResourceCollection_->GetTextures();
 
 
-	{	/// 描画する
+	/// -----------------------------------------------
+	/// pipelineの設定
+	/// -----------------------------------------------
 
+	/// pipelineの設定
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-		// インスタンス数をGPUからCPUにコピー（例：ID3D12Resourceにカウンタをコピー）
-		uint32_t instanceCount = instanceDataBuffer_.ReadCounter(_dxCommand);
-		pDxManager_->HeapBindToCommandList();
+	/// vbv, ibvの設定
+	cmdList->IASetVertexBuffers(0, 1, &vbv);
+	cmdList->IASetIndexBuffer(&ibv);
 
-		/// 一旦適当なモデルを使用する
-		const Model* model = pResourceCollection_->GetModel("./Packages/Models/primitive/cube.obj");
+	/// 形状の設定
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		const D3D12_VERTEX_BUFFER_VIEW& vbv = model->GetMeshes().front()->GetVBV();
-		const D3D12_INDEX_BUFFER_VIEW& ibv = model->GetMeshes().front()->GetIBV();
+	/* ----- bufferの設定 ----- */
 
-		pipeline_->SetPipelineStateForCommandList(_dxCommand);
-		// 描画セットアップ
-		cmdList->IASetVertexBuffers(0, 1, &vbv);
-		cmdList->IASetIndexBuffer(&ibv);
-		cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	/// vertex: camera
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, GP_CBV_VIEW_PROJECTION);
+	/// vertex: instance data
+	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(GP_SRV_INSNTANCE_DATA, cmdList); // GP_SRV_INSNTANCE_DATA
 
-		// SRVとしてインスタンス行列バッファをルートシグネチャにセット
-		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, GP_CBV_VIEW_PROJECTION);
-		instanceDataBuffer_.SRVBindForGraphicsCommandList(GP_SRV_INSNTANCE_DATA, cmdList); // GP_SRV_INSNTANCE_DATA
+	/// pixel: テクスチャをバインド
+	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin())->GetSRVGPUHandle());
 
-		// 描画実行
-		cmdList->DrawIndexedInstanced(static_cast<UINT>(model->GetMeshes().front()->GetIndices().size()), instanceCount, 0, 0, 0);
-	}
+	// 描画実行
+	cmdList->DrawIndexedInstanced(static_cast<UINT>(model->GetMeshes().front()->GetIndices().size()), instanceCount_, 0, 0, 0);
 
 }

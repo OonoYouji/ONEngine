@@ -42,6 +42,7 @@ public:
 	/// @brief 作成された順番に描画を行う
 	void Draw();
 
+	void PreDraw();
 
 	void DrawScene();
 	void DrawDebug();

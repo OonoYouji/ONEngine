@@ -38,6 +38,7 @@ public:
 	void GeneratePostProcessPipeline(Args&&... _args) requires std::is_base_of_v<IPostProcessPipeline, T>;
 
 	/// @brief すべてのEntityを描画する
+	void PreDrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
 	void DrawEntities(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);
 
 	void DrawSelectedPrefab(class CameraComponent* _3dCamera, class CameraComponent* _2dCamera);

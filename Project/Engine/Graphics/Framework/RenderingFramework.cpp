@@ -57,15 +57,16 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 }
 
 void RenderingFramework::Draw() {
+
+	PreDraw();
+
 #ifdef DEBUG_MODE /// imguiの描画
 	pImGuiManager_->GetDebugGameWindow()->PreDraw();
 
 
 	if (DebugConfig::selectedMode_ == DebugConfig::SELECTED_MODE_EDITOR) {
-
 		DrawPrefab();
 	} else {
-
 		DrawDebug();
 		DrawScene();
 	}
@@ -87,6 +88,11 @@ void RenderingFramework::Draw() {
 #endif // DEBUG_MODE
 
 	DxCommandExeAndReset();
+}
+
+void RenderingFramework::PreDraw() {
+	CameraComponent* camera = pEntityComponentSystem_->GetMainCamera();
+	renderingPipelineCollection_->PreDrawEntities(camera, pEntityComponentSystem_->GetMainCamera2D());
 }
 
 void RenderingFramework::DrawScene() {

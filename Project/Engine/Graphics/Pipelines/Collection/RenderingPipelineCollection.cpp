@@ -60,6 +60,25 @@ void RenderingPipelineCollection::Initialize() {
 	GeneratePostProcessPipeline<PostProcessRadialBlur>();
 }
 
+void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+
+	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
+		for (auto& renderer : renderer3ds_) {
+			renderer->PreDraw(pEntityComponentSystem_, _3dCamera, dxManager_->GetDxCommand());
+		}
+	} else {
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+	}
+
+	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
+		for (auto& renderer : renderer2ds_) {
+			renderer->PreDraw(pEntityComponentSystem_, _2dCamera, dxManager_->GetDxCommand());
+		}
+	} else {
+		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+	}
+}
+
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
 	std::vector<IEntity*> entities;
@@ -75,6 +94,7 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 		for (auto& renderer : renderer3ds_) {
 			renderer->Draw(pEntityComponentSystem_, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
+
 	} else {
 		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}

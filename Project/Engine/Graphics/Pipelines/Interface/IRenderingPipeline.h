@@ -26,6 +26,8 @@ public:
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
 
+	virtual void PreDraw(class EntityComponentSystem* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand);
+
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ

@@ -29,7 +29,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
-		pipeline_->AddDescriptorRange(0, 128, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
