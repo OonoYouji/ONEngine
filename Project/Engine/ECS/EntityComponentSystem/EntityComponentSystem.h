@@ -106,7 +106,6 @@ public:
 	/// ----- prefab ----- ///
 
 	void ReloadPrefab(const std::string& _prefabName);
-	IEntity* GetGridEntity() const;
 	IEntity* GetPrefabEntity() const;
 	IEntity* GeneratePrefabEntity(const std::string& _name);
 
@@ -133,7 +132,6 @@ private:
 
 	/// ----- editor ----- ///
 	std::unique_ptr<IEntity> debugCamera_;
-	std::unique_ptr<IEntity> gridEntity_;
 	std::unique_ptr<IEntity> prefabEntity_;
 
 

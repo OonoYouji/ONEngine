@@ -111,10 +111,13 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
 	std::vector<IEntity*> entities;
-	entities.push_back(pEntityComponentSystem_->GetGridEntity());
 	IEntity* prefabEntity = pEntityComponentSystem_->GetPrefabEntity();
 	if (prefabEntity) {
 		entities.push_back(prefabEntity);
+	}
+
+	if (entities.empty()) {
+		return;
 	}
 
 

@@ -15,7 +15,6 @@
 #include "AddECSComponentFactoryFunction.h"
 
 #include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/Entities/Grid/Grid.h"
 #include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 
 namespace {
@@ -53,13 +52,6 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	debugCamera_->CommonInitialize();
 	debugCamera_->Initialize();
 
-	/// gridの初期化
-	gridEntity_ = entityCollection_->GetFactory()->Generate("Grid");
-	gridEntity_->pEntityComponentSystem_ = this;
-	gridEntity_->CommonInitialize();
-	gridEntity_->Initialize();
-
-
 }
 
 
@@ -73,9 +65,6 @@ void EntityComponentSystem::Update() {
 void EntityComponentSystem::DebuggingUpdate() {
 	debugCamera_->Update();
 	debugCamera_->UpdateTransform();
-
-	gridEntity_->Update();
-	gridEntity_->UpdateTransform();
 }
 
 IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
@@ -154,10 +143,6 @@ void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<IEnt
 
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
 	entityCollection_->ReloadPrefab(_prefabName);
-}
-
-IEntity* EntityComponentSystem::GetGridEntity() const {
-	return gridEntity_.get();
 }
 
 IEntity* EntityComponentSystem::GetPrefabEntity() const {
