@@ -82,6 +82,7 @@
     <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
     <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
     <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="Engine\ECS\Entity\Collection\EntityCollection.h" />
     <ClInclude Include="Engine\ECS\Entity\EntityJsonConverter.h" />
     <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefab.h" />
+    <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="Externals\meshoptimizer\src\meshoptimizer.h" />

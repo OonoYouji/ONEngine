@@ -11,8 +11,9 @@
 /// engine
 #include "ECSGroup.h"
 #include "../Entity/Collection/EntityCollection.h"
+#include "../Entity/Prefab/EntityPrefabCollection.h"
 #include "../Component/Collection/ComponentCollection.h"
-#include "../System/SystemCollection/SystemCollection.h"	
+#include "../System/SystemCollection/SystemCollection.h"
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
@@ -40,6 +41,10 @@ public:
 
 	void DebuggingUpdate();
 
+	/// ----- group  ----- ///
+
+	void MainCameraSetting();
+
 
 	/// ----- prefab ----- ///
 
@@ -53,21 +58,25 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<ECSGroup> ecsGroup_;
-
 	/// ----- other objects ----- ///
 	class GraphicsResourceCollection* pGraphicsResourceCollection_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 
+	/// ----- groups ----- ///
+	std::unique_ptr<ECSGroup> gameGroup_;
+	std::unique_ptr<ECSGroup> debugGroup_;
+
+	/// ----- prefab ----- ///
+	std::unique_ptr<EntityPrefabCollection> prefabCollection_;
 
 public:
 	/// ===================================================
 	/// public : accessor
 	/// ====================================================
 
-	ECSGroup* GetECSGroup() const;
-
+	ECSGroup* GetGameECSGroup() const;
+	ECSGroup* GetDebugECSGroup() const;
 
 };
 

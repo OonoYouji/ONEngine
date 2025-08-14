@@ -35,7 +35,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// ポインタを保持
 	SetMonoScriptEnginePtr(monoScriptEngine_.get());
-	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup());
+	SetEntityComponentSystemPtr(entityComponentSystem_->GetGameECSGroup());
 
 
 	/// 各クラスの初期化を行う

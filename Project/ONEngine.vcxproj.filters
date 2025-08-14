@@ -170,6 +170,7 @@
     <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp" />
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -337,6 +338,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SystemCollection\SystemCollection.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
+    <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

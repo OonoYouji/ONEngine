@@ -29,35 +29,76 @@ ECSGroup* GetEntityComponentSystemPtr() {
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
-	ecsGroup_ = std::make_unique<ECSGroup>(pDxManager_);
+
+	/// インスタンスの生成
+	gameGroup_ = std::make_unique<ECSGroup>(pDxManager_);
+	debugGroup_ = std::make_unique<ECSGroup>(pDxManager_);
+	prefabCollection_ = std::make_unique<EntityPrefabCollection>();
 }
 
 EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
 
+	/// ポインタの確保
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	ecsGroup_->Initialize();
-	GameECSGroupAddSystemFunction(ecsGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
+
+	/// ゲーム用ECSグループの初期化
+	gameGroup_->Initialize();
+	GameECSGroupAddSystemFunction(gameGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
+
+	/// デバッグ用ECSグループの初期化
+	debugGroup_->Initialize();
+	DebugECSGroupAddSystemFunction(debugGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
 
 }
 
 
 void EntityComponentSystem::Update() {
-	ecsGroup_->RuntimeUpdateSystems();
+	gameGroup_->RuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::OutsideOfUpdate() {
-	ecsGroup_->OutsideOfRuntimeUpdateSystems();
+	gameGroup_->OutsideOfRuntimeUpdateSystems();
 }
 
-void EntityComponentSystem::DebuggingUpdate() {
+void EntityComponentSystem::DebuggingUpdate() {}
+
+void EntityComponentSystem::MainCameraSetting() {
+	auto Setting = [&](ECSGroup* _group)
+		{
+			/// 初期化時のmain cameraを設定する
+			ComponentArray<CameraComponent>* cameraArray = _group->GetComponentArray<CameraComponent>();
+			if (cameraArray) {
+				for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
+					/// componentがnullptrでないことを確認、main cameraかどうかを確認
+					if (cameraComponent && cameraComponent->GetIsMainCamera()) {
+
+						int type = cameraComponent->GetCameraType();
+						if (type == static_cast<int>(CameraType::Type3D)) {
+							_group->SetMainCamera(cameraComponent);
+						} else if (type == static_cast<int>(CameraType::Type2D)) {
+							_group->SetMainCamera2D(cameraComponent);
+						}
+					}
+				}
+			}
+		};
+
+
+	Setting(gameGroup_.get());
+	Setting(debugGroup_.get());
+
 }
 
-ECSGroup* EntityComponentSystem::GetECSGroup() const {
-	return ecsGroup_.get();
+ECSGroup* EntityComponentSystem::GetGameECSGroup() const {
+	return gameGroup_.get();
+}
+
+ECSGroup* EntityComponentSystem::GetDebugECSGroup() const {
+	return debugGroup_.get();
 }
 
 /// ====================================================
@@ -67,6 +108,7 @@ ECSGroup* EntityComponentSystem::GetECSGroup() const {
 GameEntity* GetEntityById(int32_t _entityId) {
 	GameEntity* entity = gECSGroup->GetEntity(_entityId);
 	if (!entity) {
+
 		/// prefab entityじゃないかチェック
 		//if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
 		//	entity = gECS->GetPrefabEntity();

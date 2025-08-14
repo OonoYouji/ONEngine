@@ -50,7 +50,7 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 	}
 
 	/// 地形の component があるのかチェック
-	ComponentArray<Terrain>* terrainArray = _ecs->GetECSGroup()->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetGameECSGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		return;
 	}

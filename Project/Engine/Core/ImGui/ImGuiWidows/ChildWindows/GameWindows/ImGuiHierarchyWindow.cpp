@@ -52,7 +52,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 						str.erase(0, pos + 1);
 					}
 
-					pEntityComponentSystem_->GetECSGroup()->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
+					pEntityComponentSystem_->GetGameECSGroup()->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -147,7 +147,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 			/// メニューの表示
 			if (ImGui::BeginMenu("create")) {
 				if (ImGui::MenuItem("create empty object")) {
-					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_->GetECSGroup());
+					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_->GetGameECSGroup());
 				}
 
 				ImGui::EndMenu();
@@ -214,7 +214,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 void ImGuiHierarchyWindow::Hierarchy() {
 	/// entityの選択  
 	entityList_.clear();
-	for (auto& entity : pEntityComponentSystem_->GetECSGroup()->GetEntities()) {
+	for (auto& entity : pEntityComponentSystem_->GetGameECSGroup()->GetEntities()) {
 		if (!entity->GetParent()) { //!< 親がいない場合  
 			entityList_.push_back(entity.get());
 		}
@@ -226,7 +226,7 @@ void ImGuiHierarchyWindow::Hierarchy() {
 	}
 
 	bool hasValidSelection = false;
-	for (auto& entity : pEntityComponentSystem_->GetECSGroup()->GetEntities()) {
+	for (auto& entity : pEntityComponentSystem_->GetGameECSGroup()->GetEntities()) {
 		if (entity.get() == selectedEntity_) {
 			hasValidSelection = true;
 			break;
@@ -284,7 +284,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 		}
 
 		if (ImGui::MenuItem("delete")) {
-			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEntityComponentSystem_->GetECSGroup(), _entity);
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEntityComponentSystem_->GetGameECSGroup(), _entity);
 			renameEntity_ = nullptr; // 名前変更モードを解除
 
 			/// 選択中ならInspectorの選択を解除

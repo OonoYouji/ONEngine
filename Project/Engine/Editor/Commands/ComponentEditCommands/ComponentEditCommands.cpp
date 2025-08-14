@@ -183,7 +183,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
 	GetMonoScriptEnginePtr()->HotReload();
 
-	for (auto& entity : pECS_->GetECSGroup()->GetEntities()) {
+	for (auto& entity : pECS_->GetGameECSGroup()->GetEntities()) {
 		Script* script = entity->GetComponent<Script>();
 		if (script) {
 			script->ResetScripts();

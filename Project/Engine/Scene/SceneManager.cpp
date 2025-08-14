@@ -16,7 +16,6 @@ SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -24,28 +23,10 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
 
-
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene(false);
 
-
-	/// カメラを設定する
-	ComponentArray<CameraComponent>* cameraArray = pEntityComponentSystem_->GetECSGroup()->GetComponentArray<CameraComponent>();
-	if (cameraArray) {
-		for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
-			/// componentがnullptrでないことを確認、main cameraかどうかを確認
-			if (cameraComponent && cameraComponent->GetIsMainCamera()) {
-				int type = cameraComponent->GetCameraType();
-				if (type == static_cast<int>(CameraType::Type3D)) {
-					pEntityComponentSystem_->GetECSGroup()->SetMainCamera(cameraComponent);
-				} else if (type == static_cast<int>(CameraType::Type2D)) {
-					pEntityComponentSystem_->GetECSGroup()->SetMainCamera2D(cameraComponent);
-				}
-			}
-		}
-	}
-
-
+	pEntityComponentSystem_->MainCameraSetting();
 }
 
 void SceneManager::Update() {
@@ -103,7 +84,7 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	currentScene_ = std::move(nextScene_);
-	pEntityComponentSystem_->GetECSGroup()->RemoveEntityAll();
+	pEntityComponentSystem_->GetGameECSGroup()->RemoveEntityAll();
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {

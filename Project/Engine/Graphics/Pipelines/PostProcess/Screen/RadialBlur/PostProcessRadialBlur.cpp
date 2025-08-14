@@ -34,7 +34,7 @@ void PostProcessRadialBlur::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	ScreenPostEffectTag* tag = nullptr;
-	for (auto& entity : _entityComponentSystem->GetECSGroup()->GetEntities()) {
+	for (auto& entity : _entityComponentSystem->GetGameECSGroup()->GetEntities()) {
 		tag = entity->GetComponent<ScreenPostEffectTag>();
 		if (tag) {
 			break;
