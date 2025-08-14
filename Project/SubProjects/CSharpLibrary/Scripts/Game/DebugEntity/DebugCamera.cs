@@ -10,6 +10,7 @@ public class DebugCamera : MonoBehavior {
 	[SerializeField] private bool isMoving_;
 	[SerializeField] private float moveSpeed_;
 	[SerializeField] private Vector3 eulerAngles_;
+	[SerializeField] private Vector3 position_;
 
 	public override void Initialize() {
 		transform.position = new Vector3(0f, 0f, -10f);
@@ -57,7 +58,7 @@ public class DebugCamera : MonoBehavior {
 		/// 実際の移動処理
 		isMoving_ = false;
 		
-		Vector3 position = transform.position;
+		position_ = transform.position;
 		
 		if (Input.TriggerMouse(Mouse.Right)) {
 			isMoving_ = true;
@@ -76,8 +77,8 @@ public class DebugCamera : MonoBehavior {
 			if(Input.PressKey(KeyCode.Q)) { velocity.y -= speed; }
 
 			velocity = Matrix4x4.Transform(velocity, Matrix4x4.Rotate(transform.rotate));
-			position += velocity * 10f;
-			transform.position = position;
+			position_ += velocity * 10f;
+			transform.position = position_;
 
 			Vector2 mouseMove = Input.MouseVelocity();
 			eulerAngles_.x -= mouseMove.y * 0.01f;
@@ -87,7 +88,7 @@ public class DebugCamera : MonoBehavior {
 			
 		}
 		
-		transform.position = position;
+		transform.position = position_;
 		
 	}
 }
