@@ -16,7 +16,7 @@ public:
 	/// public : methods   
 	/// ===================================================
 
-	ImGuiHierarchyWindow(class EntityComponentSystem*, class EditorManager*, class SceneManager*, class ImGuiInspectorWindow*);
+	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*, class ImGuiInspectorWindow*);
 	~ImGuiHierarchyWindow() override = default;
 
 	void ImGuiFunc() override;
@@ -41,13 +41,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::string imGuiWindowName_ = "Hierarchy";
 	std::string entityName_ = "empty";
 	const std::string kClassPrefix = "class ";
 
 	std::list<class GameEntity*> entityList_;
 
 
-	class EntityComponentSystem* pEntityComponentSystem_ = nullptr;
+	class ECSGroup* pECSGroup_ = nullptr;
 	class EditorManager* pEditorManager_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;

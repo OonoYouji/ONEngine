@@ -75,6 +75,7 @@ public class DebugCamera : MonoBehavior {
 			velocity = Matrix4x4.Transform(velocity, Matrix4x4.Rotate(transform.rotate));
 			Vector3 position =  transform.position;
 			position += velocity * 10f;
+			transform.position = position;
 
 			Vector2 mouseMove = Input.MouseVelocity();
 			eulerAngles_.x -= mouseMove.y * 0.01f;

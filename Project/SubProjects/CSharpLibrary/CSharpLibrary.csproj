@@ -83,7 +83,6 @@
     <Compile Include="Scripts\Engine\Entity\Components\ComponentCollection.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\Entity\Components\Renderer\SkinMeshRenderer.cs" />
-    <Compile Include="Scripts\Engine\Entity\Entity\Entities\DebugCamera.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
     <Compile Include="Scripts\Engine\Graphics\Material.cs" />
@@ -98,6 +97,7 @@
     <Compile Include="Scripts\Game\Command\PuzzlePlayerCommands.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />

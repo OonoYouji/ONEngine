@@ -144,7 +144,7 @@ public:
 	/// public : methods
 	/// ================================================
 
-	ReloadAllScriptsCommand(class EntityComponentSystem* _ecs, class SceneManager* _sceneManager);
+	ReloadAllScriptsCommand(class ECSGroup* _ecs, class SceneManager* _sceneManager);
 	~ReloadAllScriptsCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
@@ -154,6 +154,6 @@ private:
 	/// ================================================
 	/// private : objects
 	/// ================================================
-	class EntityComponentSystem* pECS_ = nullptr;
+	class ECSGroup* pECSGroup_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 };

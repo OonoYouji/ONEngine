@@ -16,11 +16,12 @@
 
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(
-	EntityComponentSystem* _pEntityComponentSystem,
+	const std::string& _imGuiWindowName,
+	ECSGroup* _ecsGroup,
 	EditorManager* _editorManager,
 	SceneManager* _sceneManager,
 	ImGuiInspectorWindow* _inspectorWindow)
-	: pEntityComponentSystem_(_pEntityComponentSystem), pEditorManager_(_editorManager),
+	: imGuiWindowName_(_imGuiWindowName), pECSGroup_(_ecsGroup), pEditorManager_(_editorManager),
 	pSceneManager_(_sceneManager), pInspectorWindow_(_inspectorWindow) {
 
 	newName_.reserve(1024);
@@ -28,7 +29,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 }
 
 void ImGuiHierarchyWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Hierarchy", nullptr, ImGuiWindowFlags_MenuBar)) {
+	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -52,7 +53,7 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 						str.erase(0, pos + 1);
 					}
 
-					pEntityComponentSystem_->GetGameECSGroup()->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
+					pECSGroup_->GenerateEntityFromPrefab(str, DebugConfig::isDebugging);
 					Console::Log(std::format("entity name set to: {}", str));
 				} else {
 					Console::Log("[error] Invalid entity format. Please use \".prefab\"");
@@ -147,7 +148,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 			/// メニューの表示
 			if (ImGui::BeginMenu("create")) {
 				if (ImGui::MenuItem("create empty object")) {
-					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pEntityComponentSystem_->GetGameECSGroup());
+					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pECSGroup_);
 				}
 
 				ImGui::EndMenu();
@@ -173,7 +174,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 			if (ImGui::BeginMenu("scripts")) {
 
 				if (ImGui::MenuItem("hot reload")) {
-					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pEntityComponentSystem_, pSceneManager_);
+					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pECSGroup_, pSceneManager_);
 				}
 
 				ImGui::EndMenu();
@@ -214,7 +215,7 @@ void ImGuiHierarchyWindow::MenuBar() {
 void ImGuiHierarchyWindow::Hierarchy() {
 	/// entityの選択  
 	entityList_.clear();
-	for (auto& entity : pEntityComponentSystem_->GetGameECSGroup()->GetEntities()) {
+	for (auto& entity : pECSGroup_->GetEntities()) {
 		if (!entity->GetParent()) { //!< 親がいない場合  
 			entityList_.push_back(entity.get());
 		}
@@ -226,7 +227,7 @@ void ImGuiHierarchyWindow::Hierarchy() {
 	}
 
 	bool hasValidSelection = false;
-	for (auto& entity : pEntityComponentSystem_->GetGameECSGroup()->GetEntities()) {
+	for (auto& entity : pECSGroup_->GetEntities()) {
 		if (entity.get() == selectedEntity_) {
 			hasValidSelection = true;
 			break;
@@ -284,7 +285,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 		}
 
 		if (ImGui::MenuItem("delete")) {
-			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pEntityComponentSystem_->GetGameECSGroup(), _entity);
+			pEditorManager_->ExecuteCommand<DeleteEntityCommand>(pECSGroup_, _entity);
 			renameEntity_ = nullptr; // 名前変更モードを解除
 
 			/// 選択中ならInspectorの選択を解除

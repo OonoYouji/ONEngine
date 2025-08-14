@@ -113,7 +113,7 @@ void RenderingFramework::DrawScene() {
 }
 
 void RenderingFramework::DrawDebug() {
-	CameraComponent* camera = pEntityComponentSystem_->GetGameECSGroup()->GetDebugCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetDebugECSGroup()->GetMainCamera();
 	if (!camera) {
 		Console::Log("[error] RenderingFramework::DrawDebug: Debug Camera is null");
 		return;

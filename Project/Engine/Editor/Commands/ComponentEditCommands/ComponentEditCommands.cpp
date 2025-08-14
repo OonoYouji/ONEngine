@@ -173,8 +173,8 @@ EDITOR_STATE RemoveComponentCommand::Undo() {
 /// ReloadAllScriptsCommand
 /// ////////////////////////////////////////////////
 
-ReloadAllScriptsCommand::ReloadAllScriptsCommand(EntityComponentSystem* _ecs, SceneManager* _sceneManager)
-	: pECS_(_ecs), pSceneManager_(_sceneManager) {}
+ReloadAllScriptsCommand::ReloadAllScriptsCommand(ECSGroup* _ecs, SceneManager* _sceneManager)
+	: pECSGroup_(_ecs), pSceneManager_(_sceneManager) {}
 
 EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
@@ -183,7 +183,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
 	GetMonoScriptEnginePtr()->HotReload();
 
-	for (auto& entity : pECS_->GetGameECSGroup()->GetEntities()) {
+	for (auto& entity : pECSGroup_->GetEntities()) {
 		Script* script = entity->GetComponent<Script>();
 		if (script) {
 			script->ResetScripts();

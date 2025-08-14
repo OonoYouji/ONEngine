@@ -58,10 +58,12 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 void EntityComponentSystem::Update() {
 	gameGroup_->RuntimeUpdateSystems();
+	debugGroup_->RuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::OutsideOfUpdate() {
 	gameGroup_->OutsideOfRuntimeUpdateSystems();
+	debugGroup_->OutsideOfRuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {}
