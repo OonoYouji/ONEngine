@@ -362,24 +362,28 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		}
 
+		
+		/// スクリプトが2種類以上ないと入れ替える意味がない
+		if (scriptList.size() > 2) {
 
-		/// スクリプトの順番を入れ替える処理
-		// ---- ドラッグソース ----
-		if (ImGui::BeginDragDropSource()) {
-			ImGui::SetDragDropPayload("ScriptData", &i, sizeof(int)); // i番目のインデックスを送る
-			ImGui::Text("script name : %s", scriptList[i].scriptName.c_str());
-			ImGui::EndDragDropSource();
-		}
-
-		// ---- ドラッグターゲット ----
-		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ScriptData")) {
-				int srcIndex = *(const int*)payload->Data;
-				if (srcIndex != i) {
-					std::swap(scriptList[srcIndex], scriptList[i]); // 要素の入れ替え
-				}
+			/// スクリプトの順番を入れ替える処理
+			// ---- ドラッグソース ----
+			if (ImGui::BeginDragDropSource()) {
+				ImGui::SetDragDropPayload("ScriptData", &i, sizeof(int)); // i番目のインデックスを送る
+				ImGui::Text("script name : %s", scriptList[i].scriptName.c_str());
+				ImGui::EndDragDropSource();
 			}
-			ImGui::EndDragDropTarget();
+
+			// ---- ドラッグターゲット ----
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ScriptData")) {
+					int srcIndex = *(const int*)payload->Data;
+					if (srcIndex != i) {
+						std::swap(scriptList[srcIndex], scriptList[i]); // 要素の入れ替え
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
 		}
 
 		/// popupでスクリプトの削除などの操作を行う

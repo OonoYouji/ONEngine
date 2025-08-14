@@ -65,7 +65,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
-
+	LoadDebugJson();
 
 #ifdef DEBUG_MODE
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
@@ -116,4 +116,8 @@ void GameFramework::Run() {
 		}
 	}
 
+}
+
+void GameFramework::LoadDebugJson() {
+	sceneManager_->GetSceneIO()->Input("Debug", entityComponentSystem_->GetECSGroup("Debug"));
 }

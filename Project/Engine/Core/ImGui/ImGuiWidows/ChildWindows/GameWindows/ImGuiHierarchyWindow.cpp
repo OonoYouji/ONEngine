@@ -218,33 +218,36 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 
 void ImGuiHierarchyWindow::DrawHierarchy() {
 
-	ImGui::Text(pECSGroup_->GetGroupName().c_str());
+	if (ImGui::CollapsingHeader(pECSGroup_->GetGroupName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-	/// entityの選択  
-	entityList_.clear();
-	for (auto& entity : pECSGroup_->GetEntities()) {
-		if (!entity->GetParent()) { //!< 親がいない場合  
-			entityList_.push_back(entity.get());
+		/// entityの選択  
+		entityList_.clear();
+		for (auto& entity : pECSGroup_->GetEntities()) {
+			if (!entity->GetParent()) { //!< 親がいない場合  
+				entityList_.push_back(entity.get());
+			}
+		}
+
+		/// entityの表示  
+		for (auto& entity : entityList_) {
+			DrawEntityHierarchy(entity);
+		}
+
+		bool hasValidSelection = false;
+		for (auto& entity : pECSGroup_->GetEntities()) {
+			if (entity.get() == selectedEntity_) {
+				hasValidSelection = true;
+				break;
+			}
+		}
+
+		if (hasValidSelection) {
+			pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
 		}
 	}
 
-	/// entityの表示  
-	for (auto& entity : entityList_) {
-		DrawEntityHierarchy(entity);
-	}
-
-	bool hasValidSelection = false;
-	for (auto& entity : pECSGroup_->GetEntities()) {
-		if (entity.get() == selectedEntity_) {
-			hasValidSelection = true;
-			break;
-		}
-	}
-
-	if (hasValidSelection) {
-		pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
-	}
 }
+
 
 void ImGuiHierarchyWindow::EntityRename(GameEntity* _entity) {
 
