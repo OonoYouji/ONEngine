@@ -52,14 +52,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem*      pEntityComponentSystem_      = nullptr;
+	class EntityComponentSystem* pECS_ = nullptr;
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::string currentScene_;
 	std::string nextScene_;
 
-	std::unique_ptr<ISceneFactory>    sceneFactory_               = nullptr;
-	std::unique_ptr<SceneIO>          sceneIO_ = nullptr;
+	std::unique_ptr<ISceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<SceneIO> sceneIO_ = nullptr;
 
 
 public:

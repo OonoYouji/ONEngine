@@ -61,29 +61,32 @@ void RenderingPipelineCollection::Initialize() {
 }
 
 void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
+	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
 
 	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->PreDraw(pEntityComponentSystem_->GetGameECSGroup(), _3dCamera, dxManager_->GetDxCommand());
+			renderer->PreDraw(ecsGroup, _3dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
 	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->PreDraw(pEntityComponentSystem_->GetGameECSGroup(), _2dCamera, dxManager_->GetDxCommand());
+			renderer->PreDraw(ecsGroup, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
 	}
 }
 
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
 
+	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
+
 	std::vector<GameEntity*> entities;
-	entities.reserve(pEntityComponentSystem_->GetGameECSGroup()->GetEntities().size());
-	for (auto& entity : pEntityComponentSystem_->GetGameECSGroup()->GetEntities()) {
+	entities.reserve(ecsGroup->GetEntities().size());
+	for (auto& entity : ecsGroup->GetEntities()) {
 		if (entity.get() && entity->GetActive()) {
 			entities.push_back(entity.get());
 		}
@@ -92,19 +95,19 @@ void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, Camer
 
 	if (_3dCamera && _3dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(pEntityComponentSystem_->GetGameECSGroup(), entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
 
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
 	if (_2dCamera && _2dCamera->IsMakeViewProjection()) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(pEntityComponentSystem_->GetGameECSGroup(), entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, entities, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
 	}
 }
 
@@ -120,21 +123,23 @@ void RenderingPipelineCollection::DrawSelectedPrefab(CameraComponent* _3dCamera,
 		return;
 	}
 
+	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
+
 
 	if (_3dCamera) {
 		for (auto& renderer : renderer3ds_) {
-			renderer->Draw(pEntityComponentSystem_->GetGameECSGroup(), entities, _3dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, entities, _3dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 3D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 3D Camera is null");
 	}
 
 	if (_2dCamera) {
 		for (auto& renderer : renderer2ds_) {
-			renderer->Draw(pEntityComponentSystem_->GetGameECSGroup(), entities, _2dCamera, dxManager_->GetDxCommand());
+			renderer->Draw(ecsGroup, entities, _2dCamera, dxManager_->GetDxCommand());
 		}
 	} else {
-		Console::Log("[error] RenderingPipelineCollection::DrawEntities: 2D Camera is null");
+		Console::LogError("RenderingPipelineCollection::DrawEntities: 2D Camera is null");
 	}
 }
 

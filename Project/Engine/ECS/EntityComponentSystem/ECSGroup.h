@@ -26,7 +26,7 @@ public:
 	ECSGroup(class DxManager* _dxManager);
 	~ECSGroup();
 
-	void Initialize();
+	void Initialize(const std::string& _groupName);
 	void Update();
 
 
@@ -87,6 +87,9 @@ private:
 	/// public : objects
 	/// ===================================================
 
+	/// ----- parameters ----- ///
+	std::string groupName_;
+
 	/// ----- collections ----- ///
 	std::unique_ptr<EntityCollection> entityCollection_;
 	std::unique_ptr<ComponentCollection> componentCollection_;
@@ -117,9 +120,8 @@ public:
 	CameraComponent* GetMainCamera();
 	const CameraComponent* GetMainCamera2D() const;
 	CameraComponent* GetMainCamera2D();
-	const CameraComponent* GetDebugCamera() const;
-	CameraComponent* GetDebugCamera();
 
+	const std::string& GetGroupName() const;
 };
 
 /// ===================================================

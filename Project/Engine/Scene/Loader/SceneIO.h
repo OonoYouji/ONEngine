@@ -16,17 +16,21 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	SceneIO(class EntityComponentSystem* _ecs);
+	SceneIO(EntityComponentSystem* _ecs);
 	~SceneIO();
 
-	void Output(const std::string& _sceneName);
+	/// 入出力
+	void Output(const std::string& _sceneName, class ECSGroup* _ecsGroup);
 	void Input(const std::string& _sceneName);
-	void OutputTemporary(const std::string& _sceneName);
+	void OutputTemporary(const std::string& _sceneName, class ECSGroup* _ecsGroup);
 	void InputTemporary(const std::string& _sceneName);
 
 private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
 
-	void SaveScene(const std::string& _filename);
+	void SaveScene(const std::string& _filename, class ECSGroup* _ecsGroup);
 	void LoadScene(const std::string& _filename);
 
 private:
@@ -34,7 +38,7 @@ private:
 	/// private : objects
 	/// ==================================================
 
-	class EntityComponentSystem* pECS_;
+	EntityComponentSystem* pECS_; 
 	IScene* scene_;
 
 	std::string fileName_; // ioに使うファイル名

@@ -69,8 +69,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	auto& textures = _resourceCollection->GetTextures();
 
 	{	/// set constant buffers
+
+		ECSGroup* ecsGroup = _pEntityComponentSystem->GetCurrentGroup();
+
 		std::list<DirectionalLight*> directionalLights;
-		for (auto& entity : _pEntityComponentSystem->GetGameECSGroup()->GetEntities()) {
+		for (auto& entity : ecsGroup->GetEntities()) {
 			auto light = entity->GetComponent<DirectionalLight>();
 			if (light) {
 				directionalLights.push_back(light);
@@ -93,7 +96,7 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		);
 		directionalLightBufferData_->BindForComputeCommandList(command, 0);
 
-		CameraComponent* camera = _pEntityComponentSystem->GetGameECSGroup()->GetDebugCamera();
+		CameraComponent* camera = ecsGroup->GetMainCamera();
 		if (camera) {
 			if (GameEntity* entity = camera->GetOwner()) {
 				cameraBufferData_->SetMappedData({ Vector4(entity->GetPosition(), 1.0f) });

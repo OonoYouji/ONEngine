@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 public class DebugCamera : MonoBehavior {
 	/* ----- 移動に用いる変数群 ----- */
-	private bool isActive_;
-	private bool isMoving_;
-	private float moveSpeed_;
-	private Vector3 eulerAngles_;
+	[SerializeField] private bool isActive_;
+	[SerializeField] private bool isMoving_;
+	[SerializeField] private float moveSpeed_;
+	[SerializeField] private Vector3 eulerAngles_;
 
 	public override void Initialize() {
 		transform.position = new Vector3(0f, 0f, -10f);
@@ -56,6 +56,9 @@ public class DebugCamera : MonoBehavior {
 		
 		/// 実際の移動処理
 		isMoving_ = false;
+		
+		Vector3 position = transform.position;
+		
 		if (Input.TriggerMouse(Mouse.Right)) {
 			isMoving_ = true;
 
@@ -73,7 +76,6 @@ public class DebugCamera : MonoBehavior {
 			if(Input.PressKey(KeyCode.Q)) { velocity.y -= speed; }
 
 			velocity = Matrix4x4.Transform(velocity, Matrix4x4.Rotate(transform.rotate));
-			Vector3 position =  transform.position;
 			position += velocity * 10f;
 			transform.position = position;
 
@@ -84,6 +86,8 @@ public class DebugCamera : MonoBehavior {
 			transform.rotate = Quaternion.FromEuler(eulerAngles_);
 			
 		}
+		
+		transform.position = position;
 		
 	}
 }

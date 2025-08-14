@@ -15,24 +15,23 @@
 #include "AddECSComponentFactoryFunction.h"
 
 namespace {
-	ECSGroup* gECSGroup = nullptr;
+	ECSGroup* gGameGroup = nullptr;
+	ECSGroup* gDebugGroup = nullptr;
 }
 
-void SetEntityComponentSystemPtr(ECSGroup* _ecs) {
-	gECSGroup = _ecs;
+void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
+	gGameGroup = _gameGroup;
+	gDebugGroup = _debugGroup;
 }
 
 ECSGroup* GetEntityComponentSystemPtr() {
-	return gECSGroup;
+	return gGameGroup;
 }
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
 
-	/// インスタンスの生成
-	gameGroup_ = std::make_unique<ECSGroup>(pDxManager_);
-	debugGroup_ = std::make_unique<ECSGroup>(pDxManager_);
 	prefabCollection_ = std::make_unique<EntityPrefabCollection>();
 }
 
@@ -44,29 +43,65 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-
-	/// ゲーム用ECSグループの初期化
-	gameGroup_->Initialize();
-	GameECSGroupAddSystemFunction(gameGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
-
-	/// デバッグ用ECSグループの初期化
-	debugGroup_->Initialize();
-	DebugECSGroupAddSystemFunction(debugGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
+	{	/// デバッグ用のECSGroupを作成、 追加するシステムが違うのでAddGroupは使わない
+		currentGroupName_ = "Debug";
+		std::unique_ptr<ECSGroup> debugGroup = std::make_unique<ECSGroup>(pDxManager_);
+		debugGroup->Initialize(currentGroupName_);
+		DebugECSGroupAddSystemFunction(debugGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+		ecsGroups_[currentGroupName_] = std::move(debugGroup);
+	}
 
 }
 
 
 void EntityComponentSystem::Update() {
-	gameGroup_->RuntimeUpdateSystems();
-	debugGroup_->RuntimeUpdateSystems();
+	for (auto& group : ecsGroups_) {
+		group.second->RuntimeUpdateSystems();
+	}
 }
 
 void EntityComponentSystem::OutsideOfUpdate() {
-	gameGroup_->OutsideOfRuntimeUpdateSystems();
-	debugGroup_->OutsideOfRuntimeUpdateSystems();
+	for (auto& group : ecsGroups_) {
+		group.second->OutsideOfRuntimeUpdateSystems();
+	}
 }
 
 void EntityComponentSystem::DebuggingUpdate() {}
+
+void EntityComponentSystem::AddECSGroup(const std::string& _name) {
+	/// すでに存在する場合は何もしない
+	if (ecsGroups_.find(_name) != ecsGroups_.end()) {
+		Console::LogWarning("ECSGroup with name '" + _name + "' already exists.");
+		return;
+	}
+
+	/// 新しいECSグループを作成
+	std::unique_ptr<ECSGroup> newGroup = std::make_unique<ECSGroup>(pDxManager_);
+	newGroup->Initialize(_name);
+	GameECSGroupAddSystemFunction(newGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+	ecsGroups_[_name] = std::move(newGroup);
+}
+
+ECSGroup* EntityComponentSystem::GetECSGroup(const std::string& _name) const {
+	/// 指定された名前のECSグループが存在するかチェック
+	auto it = ecsGroups_.find(_name);
+	if (it != ecsGroups_.end()) {
+		return it->second.get();
+	}
+
+	Console::LogWarning("ECSGroup with name '" + _name + "' not found.");
+	return nullptr;
+}
+
+ECSGroup* EntityComponentSystem::GetCurrentGroup() const {
+	/// 現在のグループを取得する
+	if (ecsGroups_.empty()) {
+		Console::LogWarning("No ECSGroup available.");
+		return nullptr;
+	}
+
+	return ecsGroups_.at(currentGroupName_).get();
+}
 
 void EntityComponentSystem::MainCameraSetting() {
 	auto Setting = [&](ECSGroup* _group)
@@ -90,27 +125,28 @@ void EntityComponentSystem::MainCameraSetting() {
 		};
 
 
-	Setting(gameGroup_.get());
-	Setting(debugGroup_.get());
-
+	for (auto& group : ecsGroups_) {
+		Setting(group.second.get());
+	}
 }
 
-ECSGroup* EntityComponentSystem::GetGameECSGroup() const {
-	return gameGroup_.get();
+void EntityComponentSystem::SetCurrentGroupName(const std::string& _name) {
+	currentGroupName_ = _name;
 }
 
-ECSGroup* EntityComponentSystem::GetDebugECSGroup() const {
-	return debugGroup_.get();
+const std::string& EntityComponentSystem::GetCurrentGroupName() const {
+	return currentGroupName_;
 }
+
 
 /// ====================================================
 /// internal methods
 /// ====================================================
 
 GameEntity* GetEntityById(int32_t _entityId) {
-	GameEntity* entity = gECSGroup->GetEntity(_entityId);
+	GameEntity* entity = gGameGroup->GetEntity(_entityId);
 	if (!entity) {
-
+		entity = gDebugGroup->GetEntity(_entityId);
 		/// prefab entityじゃないかチェック
 		//if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
 		//	entity = gECS->GetPrefabEntity();
@@ -289,15 +325,15 @@ bool InternalContainsEntity(int32_t _entityId) {
 
 int32_t InternalGetEntityId(MonoString* _name) {
 	std::string name = mono_string_to_utf8(_name);
-	return gECSGroup->GetEntityId(name);
+	return gGameGroup->GetEntityId(name);
 }
 
 int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
 	std::string name = mono_string_to_utf8(_name);
-	GameEntity* entity = gECSGroup->GenerateEntityFromPrefab(name + ".prefab");
+	GameEntity* entity = gGameGroup->GenerateEntityFromPrefab(name + ".prefab");
 	if (!entity) {
-		entity = gECSGroup->GenerateEntity(true);
+		entity = gGameGroup->GenerateEntity(true);
 		if (!entity) {
 			return 0;
 		}
@@ -331,7 +367,7 @@ void InternalDestroyEntity(int32_t _entityId) {
 		return;
 	}
 
-	gECSGroup->RemoveEntity(entity, true);
+	gGameGroup->RemoveEntity(entity, true);
 	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
 }
 

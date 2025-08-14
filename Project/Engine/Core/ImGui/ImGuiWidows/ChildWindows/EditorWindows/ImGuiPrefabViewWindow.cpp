@@ -21,7 +21,7 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 
 
 	/// カメラの更新
-	CameraComponent* debugCamera = pECS_->GetGameECSGroup()->GetDebugCamera();
+	CameraComponent* debugCamera = pECS_->GetECSGroup("Debug")->GetMainCamera();
 	if (debugCamera) {
 		//debugCamera->Update();
 	}

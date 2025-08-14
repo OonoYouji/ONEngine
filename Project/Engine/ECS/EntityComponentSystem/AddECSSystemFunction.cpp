@@ -43,7 +43,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graph
 	/// 更新に使うsystem
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
-	_ecs->AddSystem<ScriptUpdateSystem>();
+	//_ecs->AddSystem<ScriptUpdateSystem>();
 	_ecs->AddSystem<EffectUpdateSystem>();
 
 	/// 衝突判定に使うsystem

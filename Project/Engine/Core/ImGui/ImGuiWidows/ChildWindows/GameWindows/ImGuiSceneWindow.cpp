@@ -143,7 +143,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		Matrix4x4 entityMatrix = transform->matWorld;
 
 		/// カメラの取得
-		CameraComponent* camera = pECS_->GetGameECSGroup()->GetDebugCamera();
+		CameraComponent* camera = pECS_->GetECSGroup("Debug")->GetMainCamera();
 		if (camera) {
 			ImGuizmo::Manipulate(
 				&camera->GetViewMatrix().m[0][0],
@@ -190,19 +190,27 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pInspector_->SetSelectedEntity(0);
 
 
-		std::list<Script*> scripts;
-		for (auto& entity : pECS_->GetGameECSGroup()->GetEntities()) {
-			if (Script* script = entity->GetComponent<Script>()) {
-				scripts.push_back(script);
-			}
-		}
+		ComponentArray<Script>* gameScripts = pECS_->GetECSGroup(pSceneManager_->GetCurrentSceneName())->GetComponentArray<Script>();
+		ComponentArray<Script>* debugScripts = pECS_->GetECSGroup("Debug")->GetComponentArray<Script>();
 
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		GetMonoScriptEnginePtr()->HotReload();
 
 		/// スクリプトの初期化
-		for (auto& script : scripts) {
-			script->ResetScripts();
+		if (gameScripts && gameScripts->GetUsedComponents().size() > 0) {
+			for (Script* script : gameScripts->GetUsedComponents()) {
+				if (script) {
+					script->ResetScripts();
+				}
+			}
+		}
+
+		if (debugScripts && debugScripts->GetUsedComponents().size() > 0) {
+			for (Script* script : debugScripts->GetUsedComponents()) {
+				if (script) {
+					script->ResetScripts();
+				}
+			}
 		}
 
 	} else {

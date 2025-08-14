@@ -35,7 +35,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// ポインタを保持
 	SetMonoScriptEnginePtr(monoScriptEngine_.get());
-	SetEntityComponentSystemPtr(entityComponentSystem_->GetGameECSGroup());
 
 
 	/// 各クラスの初期化を行う
@@ -75,6 +74,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 #endif // DEBUG_MODE
 
+	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
 }
 

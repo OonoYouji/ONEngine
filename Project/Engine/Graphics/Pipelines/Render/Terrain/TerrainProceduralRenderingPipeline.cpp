@@ -89,7 +89,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 	}
 }
 
-void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
 	auto cmdList = _dxCommand->GetCommandList();
 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -120,7 +120,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent
 	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
-void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray) {

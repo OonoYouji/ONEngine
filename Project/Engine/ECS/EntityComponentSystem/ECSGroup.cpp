@@ -12,7 +12,10 @@ ECSGroup::ECSGroup(DxManager* _dxManager) {
 
 ECSGroup::~ECSGroup() {}
 
-void ECSGroup::Initialize() {
+void ECSGroup::Initialize(const std::string& _groupName) {
+	/// このECSGroupの名前を決める
+	groupName_ = _groupName;
+
 	AddComponentFactoryFunction(componentCollection_.get());
 }
 
@@ -120,10 +123,6 @@ CameraComponent* ECSGroup::GetMainCamera2D() {
 	return entityCollection_->GetMainCamera2D();
 }
 
-const CameraComponent* ECSGroup::GetDebugCamera() const {
-	return nullptr;
-}
-
-CameraComponent* ECSGroup::GetDebugCamera() {
-	return nullptr;
+const std::string& ECSGroup::GetGroupName() const {
+	return groupName_;
 }

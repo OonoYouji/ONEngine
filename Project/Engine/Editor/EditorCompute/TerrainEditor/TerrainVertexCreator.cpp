@@ -50,7 +50,7 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 }
 
 void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
-	ComponentArray<Terrain>* terrainArray = _ecs->GetGameECSGroup()->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;

@@ -19,7 +19,7 @@
 
 class CameraComponent;
 
-void SetEntityComponentSystemPtr(ECSGroup* _ecs);
+void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup);
 ECSGroup* GetEntityComponentSystemPtr();
 
 
@@ -43,15 +43,19 @@ public:
 
 	/// ----- group  ----- ///
 
+	/// 追加
+	void AddECSGroup(const std::string& _name);
+
+	/// 取得
+	ECSGroup* GetECSGroup(const std::string& _name) const;
+	ECSGroup* GetCurrentGroup() const;
+
+	/// main cameraの設定
 	void MainCameraSetting();
 
-
-	/// ----- prefab ----- ///
-
-	//void ReloadPrefab(const std::string& _prefabName);
-	//GameEntity* GetPrefabEntity() const;
-	//GameEntity* GeneratePrefabEntity(const std::string& _name);
-
+	/// 現在のグループ
+	void SetCurrentGroupName(const std::string& _name);
+	const std::string& GetCurrentGroupName() const;
 
 private:
 	/// ===================================================
@@ -64,19 +68,11 @@ private:
 	class DxDevice* pDxDevice_;
 
 	/// ----- groups ----- ///
-	std::unique_ptr<ECSGroup> gameGroup_;
-	std::unique_ptr<ECSGroup> debugGroup_;
+	std::unordered_map<std::string, std::unique_ptr<ECSGroup>> ecsGroups_;
+	std::string currentGroupName_;
 
 	/// ----- prefab ----- ///
 	std::unique_ptr<EntityPrefabCollection> prefabCollection_;
-
-public:
-	/// ===================================================
-	/// public : accessor
-	/// ====================================================
-
-	ECSGroup* GetGameECSGroup() const;
-	ECSGroup* GetDebugECSGroup() const;
 
 };
 
