@@ -59,7 +59,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	
 	/// 拡縮
-	float scale = noiseValue * 0.2f;
+	float scale = noiseValue;
 
 	/// 回転量
 	float angle = Hash(seed + 1.0f) * 6.2831853f;

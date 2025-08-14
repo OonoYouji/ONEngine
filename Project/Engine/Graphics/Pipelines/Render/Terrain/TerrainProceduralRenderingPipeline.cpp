@@ -74,8 +74,8 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());

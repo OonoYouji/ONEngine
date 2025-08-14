@@ -11,6 +11,7 @@ public class DebugCamera : MonoBehavior {
 	[SerializeField] private float moveSpeed_;
 	[SerializeField] private Vector3 eulerAngles_;
 	[SerializeField] private Vector3 position_;
+	[SerializeField] private Vector3 velocity_;
 
 	public override void Initialize() {
 		transform.position = new Vector3(0f, 0f, -10f);
@@ -53,13 +54,15 @@ public class DebugCamera : MonoBehavior {
 				}
 			}
 		}
-		
-		
+
+
 		/// 実際の移動処理
 		isMoving_ = false;
-		
-		position_ = transform.position;
-		
+
+		if (transform) {
+			position_ = transform.position;
+		}
+
 		if (Input.TriggerMouse(Mouse.Right)) {
 			isMoving_ = true;
 
@@ -68,16 +71,33 @@ public class DebugCamera : MonoBehavior {
 				speed *= 2.0f;
 			}
 
-			Vector3 velocity = Vector3.zero;
-			if(Input.PressKey(KeyCode.W)) { velocity.z += speed; }
-			if(Input.PressKey(KeyCode.S)) { velocity.z -= speed; }
-			if(Input.PressKey(KeyCode.A)) { velocity.x -= speed; }
-			if(Input.PressKey(KeyCode.D)) { velocity.x += speed; }
-			if(Input.PressKey(KeyCode.E)) { velocity.y += speed; }
-			if(Input.PressKey(KeyCode.Q)) { velocity.y -= speed; }
+			velocity_ = new Vector3(0f, 0f, 0f);
+			if (Input.PressKey(KeyCode.W)) {
+				velocity_.z += speed;
+			}
 
-			velocity = Matrix4x4.Transform(velocity, Matrix4x4.Rotate(transform.rotate));
-			position_ += velocity * 10f;
+			if (Input.PressKey(KeyCode.S)) {
+				velocity_.z -= speed;
+			}
+
+			if (Input.PressKey(KeyCode.A)) {
+				velocity_.x -= speed;
+			}
+
+			if (Input.PressKey(KeyCode.D)) {
+				velocity_.x += speed;
+			}
+
+			if (Input.PressKey(KeyCode.E)) {
+				velocity_.y += speed;
+			}
+
+			if (Input.PressKey(KeyCode.Q)) {
+				velocity_.y -= speed;
+			}
+
+			velocity_ = Matrix4x4.Transform(velocity_, Matrix4x4.Rotate(transform.rotate));
+			position_ += velocity_ * 10f;
 			transform.position = position_;
 
 			Vector2 mouseMove = Input.MouseVelocity();
@@ -85,10 +105,11 @@ public class DebugCamera : MonoBehavior {
 			eulerAngles_.y += mouseMove.x * 0.01f;
 
 			transform.rotate = Quaternion.FromEuler(eulerAngles_);
-			
 		}
-		
-		transform.position = position_;
-		
+
+		Debug.Log("////////////////////////////////////////////////////////////");
+		Debug.Log("t pos.x=" + transform.position.x + ", pos.y=" + transform.position.y + ", pos.z="
+		          + transform.position.z);
+		Debug.Log("////////////////////////////////////////////////////////////");
 	}
 }
