@@ -15,15 +15,15 @@
 #include "AddECSComponentFactoryFunction.h"
 
 namespace {
-	ECSGroup* gECS = nullptr;
+	ECSGroup* gECSGroup = nullptr;
 }
 
 void SetEntityComponentSystemPtr(ECSGroup* _ecs) {
-	gECS = _ecs;
+	gECSGroup = _ecs;
 }
 
 ECSGroup* GetEntityComponentSystemPtr() {
-	return gECS;
+	return gECSGroup;
 }
 
 
@@ -39,14 +39,8 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-
 	ecsGroup_->Initialize();
 	GameECSGroupAddSystemFunction(ecsGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
-
-	//debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
-	//debugCamera_->pEntityComponentSystem_ = this;
-	//debugCamera_->CommonInitialize();
-	//debugCamera_->Initialize();
 
 }
 
@@ -60,119 +54,7 @@ void EntityComponentSystem::OutsideOfUpdate() {
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
-	if (debugCamera_) {
-		debugCamera_->UpdateTransform();
-	}
 }
-//
-//GameEntity* EntityComponentSystem::GenerateEntity(bool _isRuntime) {
-//	return entityCollection_->GenerateEntity(_isRuntime);
-//}
-//
-//GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
-//	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
-//}
-//
-//void EntityComponentSystem::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
-//	entityCollection_->RemoveEntity(_entity, _deleteChildren);
-//}
-//
-//void EntityComponentSystem::RemoveEntityAll() {
-//	entityCollection_->RemoveEntityAll();
-//}
-//
-//void EntityComponentSystem::AddDoNotDestroyEntity(GameEntity* _entity) {
-//	entityCollection_->AddDoNotDestroyEntity(_entity);
-//}
-//
-//void EntityComponentSystem::RemoveDoNotDestroyEntity(GameEntity* _entity) {
-//	entityCollection_->RemoveDoNotDestroyEntity(_entity);
-//}
-//
-//uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
-//	return entityCollection_->GetEntityId(_name);
-//}
-//
-//IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
-//	return componentCollection_->AddComponent(_name);
-//}
-//
-//void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
-//	componentCollection_->RemoveComponent(_hash, _id);
-//}
-//
-//void EntityComponentSystem::LoadComponent(GameEntity* _entity) {
-//	componentInputCommand_.SetEntity(_entity);
-//	componentInputCommand_.Execute();
-//}
-//
-//void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
-//	componentCollection_->RemoveComponentAll(_entity);
-//}
-//
-//void EntityComponentSystem::RuntimeUpdateSystems() {
-//	//for (auto& system : systems_) {
-//	//	system->RuntimeUpdate(this);
-//	//}
-//}
-//
-//void EntityComponentSystem::OutsideOfRuntimeUpdateSystems() {
-//	//for (auto& system : systems_) {
-//	//	system->OutsideOfRuntimeUpdate(this);
-//	//}
-//}
-//
-//void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
-//	//entityCollection_->ReloadPrefab(_prefabName);
-//}
-//
-//GameEntity* EntityComponentSystem::GetPrefabEntity() const {
-//	return prefabEntity_.get();
-//}
-//
-//GameEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
-//
-//	/// 同じエンティティが生成されているかチェック
-//	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
-//		return prefabEntity_.get();
-//	}
-//
-//
-//
-//	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
-//
-//	/// prefabが存在するかチェック
-//	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
-//	if (!prefab) {
-//		return nullptr;
-//	}
-//
-//	/// entityを生成する
-//	std::unique_ptr<GameEntity> entity = std::make_unique<GameEntity>();
-//
-//	/// 違うエンティティが生成されている場合は削除して生成
-//	if (prefabEntity_) {
-//		prefabEntity_->RemoveComponentAll();
-//		entityCollection_->RemoveEntityId(prefabEntity_->GetId());
-//	}
-//
-//	prefabEntity_ = std::move(entity);
-//
-//
-//	if (prefabEntity_) {
-//		prefabEntity_->pECSGroup_ = ecsGroup_.get();
-//		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
-//		prefabEntity_->Awake();
-//
-//		prefabEntity_->SetName(prefabName);
-//		prefabEntity_->SetPrefabName(_name);
-//
-//		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
-//	}
-//
-//
-//	return prefabEntity_.get();
-//}
 
 ECSGroup* EntityComponentSystem::GetECSGroup() const {
 	return ecsGroup_.get();
@@ -183,7 +65,7 @@ ECSGroup* EntityComponentSystem::GetECSGroup() const {
 /// ====================================================
 
 GameEntity* GetEntityById(int32_t _entityId) {
-	GameEntity* entity = gECS->GetEntity(_entityId);
+	GameEntity* entity = gECSGroup->GetEntity(_entityId);
 	if (!entity) {
 		/// prefab entityじゃないかチェック
 		//if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
@@ -363,15 +245,15 @@ bool InternalContainsEntity(int32_t _entityId) {
 
 int32_t InternalGetEntityId(MonoString* _name) {
 	std::string name = mono_string_to_utf8(_name);
-	return gECS->GetEntityId(name);
+	return gECSGroup->GetEntityId(name);
 }
 
 int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
 	std::string name = mono_string_to_utf8(_name);
-	GameEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
+	GameEntity* entity = gECSGroup->GenerateEntityFromPrefab(name + ".prefab");
 	if (!entity) {
-		entity = gECS->GenerateEntity(true);
+		entity = gECSGroup->GenerateEntity(true);
 		if (!entity) {
 			return 0;
 		}
@@ -405,7 +287,7 @@ void InternalDestroyEntity(int32_t _entityId) {
 		return;
 	}
 
-	gECS->RemoveEntity(entity, true);
+	gECSGroup->RemoveEntity(entity, true);
 	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
 }
 
