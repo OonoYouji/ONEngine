@@ -1,5 +1,8 @@
 #include "ECSGroup.h"
 
+/// engine
+#include "AddECSComponentFactoryFunction.h"
+
 ECSGroup::ECSGroup(DxManager* _dxManager) {
 	/// インスタンスの生成
 	entityCollection_ = std::make_unique<EntityCollection>(this, _dxManager);
@@ -10,6 +13,7 @@ ECSGroup::ECSGroup(DxManager* _dxManager) {
 ECSGroup::~ECSGroup() {}
 
 void ECSGroup::Initialize() {
+	AddComponentFactoryFunction(componentCollection_.get());
 }
 
 void ECSGroup::Update() {}

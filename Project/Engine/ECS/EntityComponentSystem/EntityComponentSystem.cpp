@@ -28,7 +28,10 @@ ECSGroup* GetEntityComponentSystemPtr() {
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
-	: pDxManager_(_pDxManager) {}
+	: pDxManager_(_pDxManager) {
+	ecsGroup_ = std::make_unique<ECSGroup>(pDxManager_);
+}
+
 EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
@@ -36,10 +39,9 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
 
-	ecsGroup_ = std::make_unique<ECSGroup>(pDxManager_);
 	ecsGroup_->Initialize();
+	GameECSGroupAddSystemFunction(ecsGroup_.get(), pDxManager_, pGraphicsResourceCollection_);
 
 	//debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
 	//debugCamera_->pEntityComponentSystem_ = this;
@@ -50,11 +52,11 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-	//RuntimeUpdateSystems();
+	ecsGroup_->RuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::OutsideOfUpdate() {
-	//OutsideOfRuntimeUpdateSystems();
+	ecsGroup_->OutsideOfRuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {

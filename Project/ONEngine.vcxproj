@@ -26,6 +26,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp" />
     <ClCompile Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.cpp" />
