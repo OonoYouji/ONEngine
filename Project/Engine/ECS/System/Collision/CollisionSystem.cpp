@@ -56,24 +56,29 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
+void CollisionSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
 
-	/// colliderを集める
-	std::vector<ICollider*> colliders;
-	for (auto& entity : _entities) {
+	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
+	ComponentArray<BoxCollider>*    boxColliderArray    = _ecs->GetComponentArray<BoxCollider>();
 
-		/// sphere collider check
-		SphereCollider* sphereCollider = entity->GetComponent<SphereCollider>();
-		if (sphereCollider) {
-			colliders.push_back(sphereCollider);
-			continue;
+	/// コライダーの配列
+	std::vector<ICollider*> colliders; 
+
+	/// sphere colliderを配列に格納する、インスタンスのnullチェックと有効フラグのチェックを行う
+	if (sphereColliderArray) {
+		for (auto& sphereCollider : sphereColliderArray->GetUsedComponents()) {
+			if (sphereCollider && sphereCollider->enable) {
+				colliders.push_back(sphereCollider);
+			}
 		}
+	}
 
-		/// box collider check
-		BoxCollider* boxCollider = entity->GetComponent<BoxCollider>();
-		if (boxCollider) {
-			colliders.push_back(boxCollider);
-			continue;
+	/// box colliderを配列に格納する、インスタンスのnullチェックと有効フラグのチェックを行う
+	if (boxColliderArray) {
+		for (auto& boxCollider : boxColliderArray->GetUsedComponents()) {
+			if (boxCollider && boxCollider->enable) {
+				colliders.push_back(boxCollider);
+			}
 		}
 	}
 

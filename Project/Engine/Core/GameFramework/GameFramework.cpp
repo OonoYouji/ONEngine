@@ -100,11 +100,11 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
+		entityComponentSystem_->OutsideOfRuntimeUpdateSystems();
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
+		entityComponentSystem_->OutsideOfRuntimeUpdateSystems();
 #endif // DEBUG_MODE
 
 		/// 描画処理

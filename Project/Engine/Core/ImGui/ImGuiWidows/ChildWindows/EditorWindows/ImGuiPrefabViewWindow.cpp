@@ -29,7 +29,7 @@ void ImGuiPrefabViewWindow::ImGuiFunc() {
 	GameEntity* prefabEntity = pECS_->GetPrefabEntity();
 	if (prefabEntity) {
 		prefabEntity->UpdateTransform();
-		pECS_->RuntimeUpdateSystems({ prefabEntity });
+		//pECS_->RuntimeUpdateSystems();
 		prefabEntity->UpdateTransform();
 	}
 

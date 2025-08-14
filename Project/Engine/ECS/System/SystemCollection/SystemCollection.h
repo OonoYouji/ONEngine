@@ -1,30 +1,33 @@
 #pragma once
 
+/// std
+#include <unordered_map>
+#include <memory>
+
 /// engine
 #include "../Interface/ECSISystem.h"
 
 /// ///////////////////////////////////////////////////
-/// カメラ更新システム
+/// ECSのシステムを管理するクラス
 /// ///////////////////////////////////////////////////
-class CameraUpdateSystem : public ECSISystem {
+class SystemCollection final {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	CameraUpdateSystem(class DxDevice* _dxDevice);
-	~CameraUpdateSystem() override = default;
+	SystemCollection() = default;
+	~SystemCollection() = default;
 
-	void OutsideOfRuntimeUpdate(class EntityComponentSystem* _ecs) override;
-	void RuntimeUpdate(class EntityComponentSystem* _ecs) override;
+	void Update(class EntityComponentSystem* _ecs);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-	
-	class DxDevice* pDxDevice_;
-	class CameraComponent* pMainCamera_;
+
+
+	std::vector<std::unique_ptr<ECSISystem>> systems_;
 
 };
 

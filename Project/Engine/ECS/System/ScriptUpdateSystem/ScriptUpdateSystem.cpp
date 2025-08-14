@@ -13,7 +13,7 @@
 ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
-void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
+void ScriptUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
@@ -24,9 +24,15 @@ void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _
 	}
 #endif // DEBUG_MODE
 
+	ComponentArray<Script>* scriptArray = _ecs->GetComponentArray<Script>();
+	if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
+		return;
+	}
 	
 	pScripts_.clear();
-	for (auto& entity : _entities) {
+	for (auto& script : scriptArray->GetUsedComponents()) {
+		GameEntity* entity = script->GetOwner();
+
 		/// 親がいるなら無視(親から再帰的に処理するので
 		if (entity->GetParent()) {
 			continue;

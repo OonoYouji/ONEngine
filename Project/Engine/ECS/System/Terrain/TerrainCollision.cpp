@@ -7,9 +7,9 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 
 
-void TerrainCollision::OutsideOfRuntimeUpdate(EntityComponentSystem*, const std::vector<class GameEntity*>&) {}
+void TerrainCollision::OutsideOfRuntimeUpdate(EntityComponentSystem*) {}
 
-void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class GameEntity*>&) {
+void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs) {
 
 	ComponentArray<TerrainCollider>* terrainColliderArray = _ecs->GetComponentArray<TerrainCollider>();
 	if (!terrainColliderArray) {

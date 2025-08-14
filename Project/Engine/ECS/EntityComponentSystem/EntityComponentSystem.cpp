@@ -53,8 +53,7 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-	auto entities = GetActiveEntities();
-	RuntimeUpdateSystems(entities);
+	RuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
@@ -91,19 +90,6 @@ uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
 	return entityCollection_->GetEntityId(_name);
 }
 
-std::vector<GameEntity*> EntityComponentSystem::GetActiveEntities() const {
-	std::vector<GameEntity*> result;
-	result.reserve(entityCollection_->GetEntities().size());
-
-	for (const auto& entity : entityCollection_->GetEntities()) {
-		if (entity->GetActive()) {
-			result.push_back(entity.get());
-		}
-	}
-
-	return result;
-}
-
 IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
 	return componentCollection_->AddComponent(_name);
 }
@@ -121,15 +107,15 @@ void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
 	componentCollection_->RemoveComponentAll(_entity);
 }
 
-void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<GameEntity*>& _entities) {
+void EntityComponentSystem::RuntimeUpdateSystems() {
 	for (auto& system : systems_) {
-		system->RuntimeUpdate(this, _entities);
+		system->RuntimeUpdate(this);
 	}
 }
 
-void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<GameEntity*>& _entities) {
+void EntityComponentSystem::OutsideOfRuntimeUpdateSystems() {
 	for (auto& system : systems_) {
-		system->OutsideOfRuntimeUpdate(this, _entities);
+		system->OutsideOfRuntimeUpdate(this);
 	}
 }
 

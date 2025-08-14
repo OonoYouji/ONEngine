@@ -55,9 +55,6 @@ public:
 
 	uint32_t GetEntityId(const std::string& _name);
 
-	std::vector<GameEntity*> GetActiveEntities() const;
-
-
 	/// ----- component ----- ///
 
 	template<typename Comp>
@@ -88,8 +85,8 @@ public:
 	template<typename T, typename... Args>
 	void AddSystem(Args... args) requires std::is_base_of_v<ECSISystem, T>;
 
-	void RuntimeUpdateSystems(const std::vector<GameEntity*>& _entities);
-	void OutsideOfRuntimeUpdateSystems(const std::vector<GameEntity*>& _entities);
+	void RuntimeUpdateSystems();
+	void OutsideOfRuntimeUpdateSystems();
 
 
 	/// ----- prefab ----- ///
@@ -104,6 +101,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	/* ----- other classes ----- */
 	class GraphicsResourceCollection* pGraphicsResourceCollection_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;

@@ -7,18 +7,14 @@
 /// engine
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Component/Component.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
+void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
 
-	/// エフェクトコンポーネントを持つエンティティを取得
-	std::list<Effect*> effectList;
-	for (auto& entity : _entities) {
-		auto effect = entity->GetComponent<Effect>();
-		if (effect) {
-			effectList.push_back(effect);
-		}
+	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
+	if (!effectArray || effectArray->GetUsedComponents().empty()) {
+		return; // エフェクトのコンポーネント配列が存在しない場合は何もしない
 	}
 
 	mainCamera_ = _ecs->GetMainCamera();
@@ -36,7 +32,7 @@ void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs, const std::v
 
 
 	/// エフェクトの更新処理
-	for (auto& effect : effectList) {
+	for (auto& effect : effectArray->GetUsedComponents()) {
 
 		/// エフェクトの要素を更新
 		for (auto& element : effect->elements_) {
@@ -138,7 +134,7 @@ void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs, const std::v
 	/// エフェクトの要素を削除
 	/// -------------------------------------
 
-	for (auto& effect : effectList) {
+	for (auto& effect : effectArray->GetUsedComponents()) {
 		if (effect->elements_.empty()) {
 			continue;
 		}

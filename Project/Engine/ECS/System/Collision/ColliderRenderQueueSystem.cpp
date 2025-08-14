@@ -1,38 +1,23 @@
 #include "ColliderRenderQueueSystem.h"
 
 /// engine
-#include "Engine/ECS/Component/Array/ComponentArray.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
-#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-ColliderRenderQueueSystem::ColliderRenderQueueSystem() {
+ColliderRenderQueueSystem::ColliderRenderQueueSystem() {}
 
+void ColliderRenderQueueSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+	UpdateSphereCollider(_ecs->GetComponentArray<SphereCollider>());
+	UpdateBoxCollider(_ecs->GetComponentArray<BoxCollider>());
 }
 
-void ColliderRenderQueueSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
-	UpdateSphereCollider(_entities);
-	UpdateBoxCollider(_entities);
-}
 
-
-void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class GameEntity*>& _entities) {
-
-	std::vector<SphereCollider*> sphereColliders;
-	for (auto& entity : _entities) {
-		SphereCollider* sphereCollider = entity->GetComponent<SphereCollider>();
-		if (sphereCollider && sphereCollider->enable) {
-			sphereColliders.push_back(sphereCollider);
-		}
-	}
-
-	if (sphereColliders.empty()) {
-		return; ///< 描画するスフィアコライダーがない場合は何もしない
+void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray) {
+	if (!_sphereColliderArray || _sphereColliderArray->GetUsedComponents().empty()) {
+		return;
 	}
 
 
-	/// gizmoを使って表示する
-	for (auto& sphereCollider : sphereColliders) {
+	for (auto& sphereCollider : _sphereColliderArray->GetUsedComponents()) {
 		if (!sphereCollider) {
 			continue; // 無効なコライダーはスキップ
 		}
@@ -50,22 +35,13 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(const std::vector<class Gam
 
 }
 
-void ColliderRenderQueueSystem::UpdateBoxCollider(const std::vector<class GameEntity*>& _entities) {
-
-	std::vector<BoxCollider*> boxColliders;
-	for (auto& entity : _entities) {
-		BoxCollider* boxCollider = entity->GetComponent<BoxCollider>();
-		if (boxCollider && boxCollider->enable) {
-			boxColliders.push_back(boxCollider);
-		}
-	}
-
-	if( boxColliders.empty()) {
-		return; ///< 描画するボックスコライダーがない場合は何もしない
+void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray) {
+	if (!_boxColliderArray || _boxColliderArray->GetUsedComponents().empty()) {
+		return;
 	}
 
 	/// gizmoを使って表示する
-	for (auto& boxCollider : boxColliders) {
+	for (auto& boxCollider : _boxColliderArray->GetUsedComponents()) {
 		if (!boxCollider) {
 			continue; // 無効なコライダーはスキップ
 		}

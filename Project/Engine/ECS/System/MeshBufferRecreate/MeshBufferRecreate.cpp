@@ -6,13 +6,15 @@
 
 MeshBufferRecreate::MeshBufferRecreate(DxDevice* _pDxDevice) : pDxDevice_(_pDxDevice) {}
 
-void MeshBufferRecreate::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class GameEntity*>& _entities) {
+void MeshBufferRecreate::RuntimeUpdate(EntityComponentSystem* _ecs) {
+	ComponentArray<CustomMeshRenderer>* meshRendererArray = _ecs->GetComponentArray<CustomMeshRenderer>();
+	if (!meshRendererArray || meshRendererArray->GetUsedComponents().empty()) {
+		return; // メッシュレンダラーが存在しない場合は何もしない
+	}
 
-	for (auto& entity : _entities) {
-
-		CustomMeshRenderer* meshRenderer = entity->GetComponent<CustomMeshRenderer>();
-
-		if (!meshRenderer) {
+	for (auto& meshRenderer : meshRendererArray->GetUsedComponents()) {
+		/// 以降の処理をしない条件。[ポインタの無効/インスタンスの無効化]
+		if (!meshRenderer || !meshRenderer->enable) {
 			continue;
 		}
 
