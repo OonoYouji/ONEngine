@@ -1,5 +1,7 @@
 #include "SystemCollection.h"
 
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
+
 void SystemCollection::AddSystem(std::unique_ptr<ECSISystem> _system) {
 	if (_system) {
 		systems_.emplace_back(std::move(_system));

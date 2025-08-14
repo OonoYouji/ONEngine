@@ -180,7 +180,7 @@ inline ComponentArray<Comp>* EntityComponentSystem::GetComponentArray() requires
 
 template<typename T, typename ...Args>
 inline void EntityComponentSystem::AddSystem(Args ...args) requires std::is_base_of_v<ECSISystem, T> {
-	systems_.push_back(std::make_unique<T>(args...));
+	//systems_.push_back(std::make_unique<T>(args...));
 }
 
 

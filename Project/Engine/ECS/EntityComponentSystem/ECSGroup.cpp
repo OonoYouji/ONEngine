@@ -1,17 +1,19 @@
 #include "ECSGroup.h"
 
-ECSGroup::ECSGroup() {}
+ECSGroup::ECSGroup(DxManager* _dxManager) {
+	/// インスタンスの生成
+	entityCollection_ = std::make_unique<EntityCollection>(nullptr, _dxManager);
+	componentCollection_ = std::make_unique<ComponentCollection>();
+	systemCollection_ = std::make_unique<SystemCollection>();
+}
+
 ECSGroup::~ECSGroup() {}
 
 void ECSGroup::Initialize() {
-	/// インスタンスの生成
-	entityCollection_    = std::make_unique<EntityCollection>();
-	componentCollection_ = std::make_unique<ComponentCollection>();
-	systemCollection_    = std::make_unique<SystemCollection>();
+
 }
 
-void ECSGroup::Update() {
-}
+void ECSGroup::Update() {}
 
 GameEntity* ECSGroup::GenerateEntity(bool _isRuntime) {
 	return entityCollection_->GenerateEntity(_isRuntime);

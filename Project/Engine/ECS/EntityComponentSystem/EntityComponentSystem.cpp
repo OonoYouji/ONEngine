@@ -108,15 +108,15 @@ void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
 }
 
 void EntityComponentSystem::RuntimeUpdateSystems() {
-	for (auto& system : systems_) {
-		system->RuntimeUpdate(this);
-	}
+	//for (auto& system : systems_) {
+	//	system->RuntimeUpdate(this);
+	//}
 }
 
 void EntityComponentSystem::OutsideOfRuntimeUpdateSystems() {
-	for (auto& system : systems_) {
-		system->OutsideOfRuntimeUpdate(this);
-	}
+	//for (auto& system : systems_) {
+	//	system->OutsideOfRuntimeUpdate(this);
+	//}
 }
 
 void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {

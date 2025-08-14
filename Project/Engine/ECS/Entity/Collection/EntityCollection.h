@@ -35,19 +35,25 @@ public:
 	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
 	~EntityCollection();
 
+	/// 生成
 	GameEntity* GenerateEntity(bool _isRuntime = false);
+	int32_t NewEntityID(bool _isRuntime);
 
+	/// 取得
+	uint32_t GetEntityId(const std::string& _name);
+	GameEntity* GetEntity(size_t _entityId);
+
+	/// 削除
 	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);
 	void RemoveEntityId(int32_t _id);
-
 	void RemoveEntityAll();
 
+	/// 非破棄エンティティの追加と削除
 	void AddDoNotDestroyEntity(GameEntity* _entity);
 	void RemoveDoNotDestroyEntity(GameEntity* _entity);
 
-	int32_t NewEntityID(bool _isRuntime);
 
-	uint32_t GetEntityId(const std::string& _name);
+
 
 	/* ----- prefab ----- */
 

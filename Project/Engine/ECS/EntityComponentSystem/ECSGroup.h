@@ -23,7 +23,7 @@ public:
 	/// public : methods
 	/// ====================================================
 
-	ECSGroup();
+	ECSGroup(class DxManager* _dxManager);
 	~ECSGroup();
 
 	void Initialize();

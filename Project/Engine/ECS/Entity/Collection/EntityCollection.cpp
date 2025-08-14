@@ -195,6 +195,23 @@ uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	return 0;
 }
 
+GameEntity* EntityCollection::GetEntity(size_t _entityId) {
+	/// idを検索
+	auto itr = std::find_if(
+		entities_.begin(), entities_.end(),
+		[_entityId](const std::unique_ptr<GameEntity>& entity) {
+			return entity->GetId() == _entityId;
+		}
+	);
+	
+	if (itr != entities_.end()) {
+		return (*itr).get();
+	}
+
+	Console::LogWarning("Entity not found for ID: " + std::to_string(_entityId));
+	return nullptr;
+}
+
 void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
