@@ -5,8 +5,8 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Develop|x64">
-      <Configuration>Develop</Configuration>
+    <ProjectConfiguration Include="Development|x64">
+      <Configuration>Development</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
@@ -26,176 +26,514 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp" />
-    <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp" />
-    <ClCompile Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.cpp" />
-    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
-    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.cpp" />
-    <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp" />
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Skybox\Skybox.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.h" />
-    <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
-    <ClCompile Include="Engine\ECS\System\Collision\CollisionSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp" />
-    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp" />
-    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
-    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
-    <ClCompile Include="Engine\Editor\EditorManager.cpp" />
-    <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp" />
-    <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Color.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
-    <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
-    <ClCompile Include="Engine\ECS\System\Interface\ECSISystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Array\ComponentArray.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp" />
-    <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp" />
-    <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Command\DxCommand.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Device\DxDevice.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp" />
-    <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.cpp" />
-    <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\indexcodec.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\indexgenerator.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\overdrawanalyzer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\overdrawoptimizer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\partition.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\quantization.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\simplifier.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\spatialorder.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\stripifier.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vcacheanalyzer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vcacheoptimizer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vertexcodec.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp" />
-    <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp" />
-    <ClCompile Include="Engine\Scene\IScene.cpp" />
-    <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Vector3.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Tools\Log.cpp" />
-    <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
-    <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
-    <ClCompile Include="Engine\ECS\Entity\GameEntity\GameEntity.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp" />
-    <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
-    <ClCompile Include="Engine\Core\Window\Window.cpp" />
-    <ClCompile Include="Engine\Scene\SceneManager.cpp" />
-    <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
-    <ClCompile Include="Engine\Graphics\Shader\Shader.cpp" />
-    <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp" />
-    <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
-    <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
-    <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp" />
-    <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
-    <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.cpp" />
-    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp" />
-    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexCreator.cpp" />
-    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainDataOutput.cpp" />
-    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainCollider.cpp" />
-    <ClCompile Include="Engine\ECS\System\Terrain\TerrainColliderVertexGenerator.cpp" />
-    <ClCompile Include="Engine\ECS\System\Terrain\TerrainCollision.cpp" />
-    <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp" />
+    <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Collision\CollisionSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\BoxCollider.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Script\MonoScriptEngine.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Collection\ComponentCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Buffer\ByteAddressBuffer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Buffer\IndexBuffer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\CopyImage\CopyImageRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Color.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Interface\ECSISystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Array\ComponentArray.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Command\DxCommand.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Device\DxDevice.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Entity\Collection\EntityCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Entity\EntityJsonConverter.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\allocator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\clusterizer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\indexcodec.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\indexgenerator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\overdrawanalyzer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\overdrawoptimizer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\partition.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\quantization.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\simplifier.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\spatialorder.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\stripifier.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vcacheanalyzer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vcacheoptimizer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vertexcodec.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vertexfilter.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vfetchanalyzer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Externals\meshoptimizer\src\vfetchoptimizer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Input\Gamepad.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\IScene.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\ISceneFactory.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Vector3.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Tools\Log.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shader\GraphicsPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\Interface\IComponent.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line2DRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\GraphicsResourceCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\Loader\GraphicsResourceLoader.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Input\Input.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Light\Light.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Entity\GameEntity\GameEntity.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\ICollider.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Window\WindowManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Window\Window.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneManager.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shader\Shader.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Shader\ShaderCompiler.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Mesh\MeshRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Time\Time.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\Math\Primitive.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\Grayscale\PostProcessGrayscale.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Skybox\SkyboxRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Loader\SceneIO.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Script\Script.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\ScriptUpdateSystem\ScriptUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\SphereCollider.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Blur\PostProcessGaussianBlurPerObject.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\Terrain.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexEditorCompute.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainVertexCreator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\TerrainDataOutput.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\TerrainCollider.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Terrain\TerrainColliderVertexGenerator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Terrain\TerrainCollision.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
@@ -389,7 +727,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -407,7 +745,7 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -421,7 +759,7 @@
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
     <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <IntDir>$(SolutionDir)../Generated/Obj/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../Generated/Outputs/$(Configuration)/</OutDir>
     <IncludePath>$(ProjectDir)../External/nlohmann;$(IncludePath)</IncludePath>
@@ -483,13 +821,13 @@ xcopy /E /Y /I "$(ProjectDir)Assets" "$(TargetDir)Assets"
 xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEBUG_BUILD;_WINDOWS;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEBUG_BUILD;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
@@ -497,6 +835,7 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
       <AdditionalIncludeDirectories>$(ProjectDir)Game;$(ProjectDir)Resources;$(ProjectDir)Lib;$(ProjectDir)ONEngine;$(ProjectDir)Externals/assimp/include;$(ProjectDir)Externals/imgui;$(ProjectDir)Externals/glib;$(ProjectDir)Externals/mono;$(ProjectDir)Externals/DirectXTex;$(ProjectDir)Externals;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -505,6 +844,7 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)Externals/assimp/lib/Release</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mt.lib;$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration />
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
