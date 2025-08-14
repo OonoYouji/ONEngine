@@ -168,6 +168,7 @@
     <ClCompile Include="Engine\ECS\System\Terrain\TerrainCollision.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp" />
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -334,6 +335,7 @@
     <ClInclude Include="Engine\ECS\System\Terrain\TerrainCollision.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SystemCollection\SystemCollection.h" />
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

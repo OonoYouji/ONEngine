@@ -19,13 +19,19 @@ public:
 	SystemCollection() = default;
 	~SystemCollection() = default;
 
-	void Update(class EntityComponentSystem* _ecs);
+	/// @brief 新規systemを追加する
+	void AddSystem(std::unique_ptr<ECSISystem> _system);
+
+	/// @brief runtime外の更新処理を行う (runtime中でも処理される)
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs);
+
+	/// @brief runtime中の更新処理を行う
+	void RuntimeUpdate(class ECSGroup* _ecs);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
-
 
 	std::vector<std::unique_ptr<ECSISystem>> systems_;
 

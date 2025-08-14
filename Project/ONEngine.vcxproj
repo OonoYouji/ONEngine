@@ -26,6 +26,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\EntityComponentSystem\ECSGroup.cpp" />
     <ClCompile Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.cpp" />
     <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
     <ClInclude Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.h" />
     <ClInclude Include="Engine\Core\Config\EngineConfig.h" />

@@ -71,7 +71,7 @@ GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _
 }
 
 void EntityComponentSystem::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
-	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
+	entityCollection_->RemoveEntity(_entity, _deleteChildren);
 }
 
 void EntityComponentSystem::RemoveEntityAll() {

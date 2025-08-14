@@ -11,7 +11,7 @@
 /// engine
 #include "../Entity/Collection/EntityCollection.h"
 #include "../Component/Collection/ComponentCollection.h"
-#include "../System/Interface/ECSISystem.h"
+#include "../System/SystemCollection/SystemCollection.h"	
 
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 
@@ -101,21 +101,18 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	/* ----- other classes ----- */
+	/// ----- other objects ----- ///
 	class GraphicsResourceCollection* pGraphicsResourceCollection_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 
+	/// ----- collections ----- ///
 	std::unique_ptr<EntityCollection> entityCollection_;
 	std::unique_ptr<ComponentCollection> componentCollection_;
-
-	/// ----- system ----- ///
-	std::vector<std::unique_ptr<ECSISystem>> systems_;
-
+	std::unique_ptr<SystemCollection> systemCollection_;
 
 	/// ----- command ----- ///
 	EntityDataInputCommand componentInputCommand_;
-
 
 	/// ----- editor ----- ///
 	std::unique_ptr<GameEntity> debugCamera_;
