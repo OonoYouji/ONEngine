@@ -1,0 +1,35 @@
+
+
+using System.Collections.Generic;
+
+static public class EntityComponentSystem {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// objects
+	///////////////////////////////////////////////////////////////////////////////////////////
+	
+	static private Dictionary<string, ECSGroup> groups = new Dictionary<string, ECSGroup>();
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
+	// methods
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	/// <summary>
+	/// 新規グループの追加
+	/// </summary>
+	static private void AddGroup(string _name) {
+		ECSGroup group = new ECSGroup(_name);
+		groups.Add(_name, group);;
+	}
+
+	/// <summary>
+	/// すべてのグループの更新を呼び出す
+	/// </summary>
+	static private void UpdateGroups() {
+		foreach (var group in groups.Values) {
+			group.UpdateEntities();
+		}
+	}
+	
+
+}

@@ -5,6 +5,28 @@ using System.Runtime.InteropServices;
 
 public class Entity {
 
+	/// =========================================
+	/// objects
+	/// =========================================
+
+	// transform
+	public Transform transform;
+	
+	// components, scripts
+	private Dictionary<string, Component> components_ = new Dictionary<string, Component>();
+	private Dictionary<string, MonoBehavior> scripts_ = new Dictionary<string, MonoBehavior>();
+
+	// id
+	private int entityId_;
+	private int parentId_ = 0; // 親のID
+
+	// ecs group name
+	private string ecsGroupName_;
+	
+	/// =========================================
+	/// methods
+	/// =========================================
+	
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -14,19 +36,17 @@ public class Entity {
 		Debug.Log("Entity created: [" + name + "] (ID: " + entityId_ + ")");
 	}
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	public Entity(int _id, string _ecsGroupName) {
+		entityId_ = _id;
+		ecsGroupName_ =  _ecsGroupName;
+		transform = AddComponent<Transform>();
+		Debug.Log("Entity created: [" + name + "] (ID: " + entityId_ + ")");
+	}
 
 
-	/// =========================================
-	/// objects
-	/// =========================================
-
-	Dictionary<string, Component> components_ = new Dictionary<string, Component>();
-	Dictionary<string, MonoBehavior> scripts_ = new Dictionary<string, MonoBehavior>();
-
-	int entityId_;
-	int parentId_ = -1; // 親のID
-
-	public Transform transform;
 	public int Id {
 		get {
 			return entityId_;
