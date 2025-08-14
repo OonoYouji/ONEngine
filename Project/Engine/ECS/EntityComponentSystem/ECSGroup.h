@@ -63,7 +63,8 @@ public:
 
 	/// 削除
 	template<ComponentType Comp>
-	void RemoveComponent(size_t _entityId);
+	void RemoveComponent(uint32_t _compId);
+	void RemoveComponent(size_t _hash, uint32_t _compId);
 	void RemoveComponentAll(GameEntity* _entity);
 
 	/// 読み込み
@@ -94,6 +95,31 @@ private:
 	/// ----- command ----- ///
 	EntityDataInputCommand componentInputCommand_;
 
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	/// ----- setter ----- ///
+
+	void SetMainCamera(CameraComponent* _camera);
+	void SetMainCamera2D(CameraComponent* _camera);
+
+
+	/// ----- getter ----- ///
+
+	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
+
+	GameEntity* GetEntity(size_t _id) const;
+
+	const CameraComponent* GetMainCamera() const;
+	CameraComponent* GetMainCamera();
+	const CameraComponent* GetMainCamera2D() const;
+	CameraComponent* GetMainCamera2D();
+	const CameraComponent* GetDebugCamera() const;
+	CameraComponent* GetDebugCamera();
+
 };
 
 /// ===================================================
@@ -121,11 +147,8 @@ inline ComponentArray<Comp>* ECSGroup::GetComponentArray() {
 }
 
 template<ComponentType Comp>
-inline void ECSGroup::RemoveComponent(size_t _entityId) {
-	GameEntity* entity = entityCollection_->GetEntity(_entityId);
-	if (entity) {
-		componentCollection_->RemoveComponent<Comp>(entity);
-	}
+inline void ECSGroup::RemoveComponent(uint32_t _compId) {
+	componentCollection_->RemoveComponent<Comp>(_compId);
 }
 
 template<SystemType Sys, typename ...Args>

@@ -56,7 +56,7 @@ protected:
 
 	Transform* transform_;
 	Variables* variables_;
-	class EntityComponentSystem* pEntityComponentSystem_;
+	class ECSGroup* pECSGroup_;
 
 	bool active_ = true; ///< true のときは更新する
 	int32_t id_ = 0; ///< entityのID

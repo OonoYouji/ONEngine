@@ -91,7 +91,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::unordered_map<size_t, std::unordered_map<std::string, std::list<Effect*>>> blendMeshEffectMap;
 

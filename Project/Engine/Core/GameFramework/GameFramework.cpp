@@ -35,7 +35,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// ポインタを保持
 	SetMonoScriptEnginePtr(monoScriptEngine_.get());
-	SetEntityComponentSystemPtr(entityComponentSystem_.get());
+	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup());
 
 
 	/// 各クラスの初期化を行う
@@ -100,11 +100,11 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems();
+		entityComponentSystem_->OutsideOfUpdate();
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems();
+		entityComponentSystem_->OutsideOfUpdate();
 #endif // DEBUG_MODE
 
 		/// 描画処理

@@ -1,3 +1,3 @@
 #include "IRenderingPipeline.h"
 
-void IRenderingPipeline::PreDraw(EntityComponentSystem*, CameraComponent*, DxCommand*) {}
+void IRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand*) {}

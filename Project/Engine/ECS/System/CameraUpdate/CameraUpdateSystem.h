@@ -15,8 +15,8 @@ public:
 	CameraUpdateSystem(class DxDevice* _dxDevice);
 	~CameraUpdateSystem() override = default;
 
-	void OutsideOfRuntimeUpdate(class EntityComponentSystem* _ecs) override;
-	void RuntimeUpdate(class EntityComponentSystem* _ecs) override;
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 private:
 	/// ===================================================

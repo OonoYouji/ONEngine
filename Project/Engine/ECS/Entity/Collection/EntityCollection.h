@@ -32,7 +32,7 @@ public:
 	/// public : methods
 	/// =========================================
 
-	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
+	EntityCollection(class ECSGroup* _ecsGroup, class DxManager* _dxManager);
 	~EntityCollection();
 
 	/// 生成
@@ -68,7 +68,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class EntityComponentSystem* pECS_;
+	class ECSGroup* pECSGroup_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
 

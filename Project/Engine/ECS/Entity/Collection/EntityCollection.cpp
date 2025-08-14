@@ -12,8 +12,8 @@
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxManager)
-	: pECS_(_ecs), pDxManager_(_dxManager) {
+EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxManager)
+	: pECSGroup_(_ecsGroup), pDxManager_(_dxManager) {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
 	entities_.reserve(256);
@@ -30,7 +30,7 @@ GameEntity* EntityCollection::GenerateEntity(bool _isRuntime) {
 
 		/// 初期化
 		GameEntity* entityPtr = entities_.back().get();
-		entityPtr->pEntityComponentSystem_ = pECS_;
+		entityPtr->pECSGroup_ = pECSGroup_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
 		entityPtr->Awake();
 

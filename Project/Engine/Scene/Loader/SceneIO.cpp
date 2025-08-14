@@ -45,7 +45,7 @@ void SceneIO::InputTemporary(const std::string& _sceneName) {
 void SceneIO::SaveScene(const std::string& _filename) {
 	nlohmann::json outputJson = nlohmann::json::object();
 
-	auto& entities = pECS_->GetEntities();
+	auto& entities = pECS_->GetECSGroup()->GetEntities();
 	for (auto& entity : entities) {
 		/// マイナスIDはruntimeに生成されたエンティティなのでスキップ
 		if (entity->GetId() < 0) {
@@ -104,9 +104,9 @@ void SceneIO::LoadScene(const std::string& _filename) {
 		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = pECS_->GetECSGroup()->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
-			entity = pECS_->GenerateEntity(false);
+			entity = pECS_->GetECSGroup()->GenerateEntity(false);
 		}
 
 		if (entity) {

@@ -2,7 +2,7 @@
 
 ECSGroup::ECSGroup(DxManager* _dxManager) {
 	/// インスタンスの生成
-	entityCollection_ = std::make_unique<EntityCollection>(nullptr, _dxManager);
+	entityCollection_ = std::make_unique<EntityCollection>(this, _dxManager);
 	componentCollection_ = std::make_unique<ComponentCollection>();
 	systemCollection_ = std::make_unique<SystemCollection>();
 }
@@ -10,7 +10,6 @@ ECSGroup::ECSGroup(DxManager* _dxManager) {
 ECSGroup::~ECSGroup() {}
 
 void ECSGroup::Initialize() {
-
 }
 
 void ECSGroup::Update() {}
@@ -60,6 +59,10 @@ IComponent* ECSGroup::AddComponent(const std::string& _compName) {
 	return componentCollection_->AddComponent(_compName);
 }
 
+void ECSGroup::RemoveComponent(size_t _hash, uint32_t _compId) {
+	componentCollection_->RemoveComponent(_hash, _compId);
+}
+
 void ECSGroup::RemoveComponentAll(GameEntity* _entity) {
 	if (_entity == nullptr) {
 		return;
@@ -79,4 +82,44 @@ void ECSGroup::OutsideOfRuntimeUpdateSystems() {
 
 void ECSGroup::RuntimeUpdateSystems() {
 	systemCollection_->RuntimeUpdate(this);
+}
+
+void ECSGroup::SetMainCamera(CameraComponent* _camera) {
+	entityCollection_->SetMainCamera(_camera);
+}
+
+void ECSGroup::SetMainCamera2D(CameraComponent* _camera) {
+	entityCollection_->SetMainCamera2D(_camera);
+}
+
+const std::vector<std::unique_ptr<GameEntity>>& ECSGroup::GetEntities() const {
+	return entityCollection_->GetEntities();
+}
+
+GameEntity* ECSGroup::GetEntity(size_t _id) const {
+	return entityCollection_->GetEntity(_id);
+}
+
+const CameraComponent* ECSGroup::GetMainCamera() const {
+	return entityCollection_->GetMainCamera();
+}
+
+CameraComponent* ECSGroup::GetMainCamera() {
+	return entityCollection_->GetMainCamera();
+}
+
+const CameraComponent* ECSGroup::GetMainCamera2D() const {
+	return entityCollection_->GetMainCamera2D();
+}
+
+CameraComponent* ECSGroup::GetMainCamera2D() {
+	return entityCollection_->GetMainCamera2D();
+}
+
+const CameraComponent* ECSGroup::GetDebugCamera() const {
+	return nullptr;
+}
+
+CameraComponent* ECSGroup::GetDebugCamera() {
+	return nullptr;
 }

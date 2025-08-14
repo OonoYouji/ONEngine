@@ -18,7 +18,7 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs);
+	void RuntimeUpdate(class ECSGroup* _ecs);
 
 private:
 	/// =======================================

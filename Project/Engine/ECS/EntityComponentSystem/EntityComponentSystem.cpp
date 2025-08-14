@@ -15,14 +15,14 @@
 #include "AddECSComponentFactoryFunction.h"
 
 namespace {
-	EntityComponentSystem* gECS = nullptr;
+	ECSGroup* gECS = nullptr;
 }
 
-void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs) {
+void SetEntityComponentSystemPtr(ECSGroup* _ecs) {
 	gECS = _ecs;
 }
 
-EntityComponentSystem* GetEntityComponentSystemPtr() {
+ECSGroup* GetEntityComponentSystemPtr() {
 	return gECS;
 }
 
@@ -36,13 +36,10 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	entityCollection_ = std::make_unique<EntityCollection>(this, pDxManager_);
-	componentCollection_ = std::make_unique<ComponentCollection>();
-
-
 	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
-	AddComponentFactoryFunction(componentCollection_.get());
 
+	ecsGroup_ = std::make_unique<ECSGroup>(pDxManager_);
+	ecsGroup_->Initialize();
 
 	//debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
 	//debugCamera_->pEntityComponentSystem_ = this;
@@ -53,7 +50,11 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 
 
 void EntityComponentSystem::Update() {
-	RuntimeUpdateSystems();
+	//RuntimeUpdateSystems();
+}
+
+void EntityComponentSystem::OutsideOfUpdate() {
+	//OutsideOfRuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
@@ -61,177 +62,119 @@ void EntityComponentSystem::DebuggingUpdate() {
 		debugCamera_->UpdateTransform();
 	}
 }
+//
+//GameEntity* EntityComponentSystem::GenerateEntity(bool _isRuntime) {
+//	return entityCollection_->GenerateEntity(_isRuntime);
+//}
+//
+//GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+//	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
+//}
+//
+//void EntityComponentSystem::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
+//	entityCollection_->RemoveEntity(_entity, _deleteChildren);
+//}
+//
+//void EntityComponentSystem::RemoveEntityAll() {
+//	entityCollection_->RemoveEntityAll();
+//}
+//
+//void EntityComponentSystem::AddDoNotDestroyEntity(GameEntity* _entity) {
+//	entityCollection_->AddDoNotDestroyEntity(_entity);
+//}
+//
+//void EntityComponentSystem::RemoveDoNotDestroyEntity(GameEntity* _entity) {
+//	entityCollection_->RemoveDoNotDestroyEntity(_entity);
+//}
+//
+//uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
+//	return entityCollection_->GetEntityId(_name);
+//}
+//
+//IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
+//	return componentCollection_->AddComponent(_name);
+//}
+//
+//void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
+//	componentCollection_->RemoveComponent(_hash, _id);
+//}
+//
+//void EntityComponentSystem::LoadComponent(GameEntity* _entity) {
+//	componentInputCommand_.SetEntity(_entity);
+//	componentInputCommand_.Execute();
+//}
+//
+//void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
+//	componentCollection_->RemoveComponentAll(_entity);
+//}
+//
+//void EntityComponentSystem::RuntimeUpdateSystems() {
+//	//for (auto& system : systems_) {
+//	//	system->RuntimeUpdate(this);
+//	//}
+//}
+//
+//void EntityComponentSystem::OutsideOfRuntimeUpdateSystems() {
+//	//for (auto& system : systems_) {
+//	//	system->OutsideOfRuntimeUpdate(this);
+//	//}
+//}
+//
+//void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
+//	//entityCollection_->ReloadPrefab(_prefabName);
+//}
+//
+//GameEntity* EntityComponentSystem::GetPrefabEntity() const {
+//	return prefabEntity_.get();
+//}
+//
+//GameEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
+//
+//	/// 同じエンティティが生成されているかチェック
+//	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
+//		return prefabEntity_.get();
+//	}
+//
+//
+//
+//	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
+//
+//	/// prefabが存在するかチェック
+//	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
+//	if (!prefab) {
+//		return nullptr;
+//	}
+//
+//	/// entityを生成する
+//	std::unique_ptr<GameEntity> entity = std::make_unique<GameEntity>();
+//
+//	/// 違うエンティティが生成されている場合は削除して生成
+//	if (prefabEntity_) {
+//		prefabEntity_->RemoveComponentAll();
+//		entityCollection_->RemoveEntityId(prefabEntity_->GetId());
+//	}
+//
+//	prefabEntity_ = std::move(entity);
+//
+//
+//	if (prefabEntity_) {
+//		prefabEntity_->pECSGroup_ = ecsGroup_.get();
+//		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
+//		prefabEntity_->Awake();
+//
+//		prefabEntity_->SetName(prefabName);
+//		prefabEntity_->SetPrefabName(_name);
+//
+//		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
+//	}
+//
+//
+//	return prefabEntity_.get();
+//}
 
-GameEntity* EntityComponentSystem::GenerateEntity(bool _isRuntime) {
-	return entityCollection_->GenerateEntity(_isRuntime);
+ECSGroup* EntityComponentSystem::GetECSGroup() const {
+	return ecsGroup_.get();
 }
-
-GameEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
-	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
-}
-
-void EntityComponentSystem::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
-	entityCollection_->RemoveEntity(_entity, _deleteChildren);
-}
-
-void EntityComponentSystem::RemoveEntityAll() {
-	entityCollection_->RemoveEntityAll();
-}
-
-void EntityComponentSystem::AddDoNotDestroyEntity(GameEntity* _entity) {
-	entityCollection_->AddDoNotDestroyEntity(_entity);
-}
-
-void EntityComponentSystem::RemoveDoNotDestroyEntity(GameEntity* _entity) {
-	entityCollection_->RemoveDoNotDestroyEntity(_entity);
-}
-
-uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
-	return entityCollection_->GetEntityId(_name);
-}
-
-IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
-	return componentCollection_->AddComponent(_name);
-}
-
-void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
-	componentCollection_->RemoveComponent(_hash, _id);
-}
-
-void EntityComponentSystem::LoadComponent(GameEntity* _entity) {
-	componentInputCommand_.SetEntity(_entity);
-	componentInputCommand_.Execute();
-}
-
-void EntityComponentSystem::RemoveComponentAll(GameEntity* _entity) {
-	componentCollection_->RemoveComponentAll(_entity);
-}
-
-void EntityComponentSystem::RuntimeUpdateSystems() {
-	//for (auto& system : systems_) {
-	//	system->RuntimeUpdate(this);
-	//}
-}
-
-void EntityComponentSystem::OutsideOfRuntimeUpdateSystems() {
-	//for (auto& system : systems_) {
-	//	system->OutsideOfRuntimeUpdate(this);
-	//}
-}
-
-void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
-	entityCollection_->ReloadPrefab(_prefabName);
-}
-
-GameEntity* EntityComponentSystem::GetPrefabEntity() const {
-	return prefabEntity_.get();
-}
-
-GameEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
-
-	/// 同じエンティティが生成されているかチェック
-	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
-		return prefabEntity_.get();
-	}
-
-
-
-	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
-
-	/// prefabが存在するかチェック
-	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
-	if (!prefab) {
-		return nullptr;
-	}
-
-	/// entityを生成する
-	std::unique_ptr<GameEntity> entity = std::make_unique<GameEntity>();
-
-	/// 違うエンティティが生成されている場合は削除して生成
-	if (prefabEntity_) {
-		prefabEntity_->RemoveComponentAll();
-		entityCollection_->RemoveEntityId(prefabEntity_->GetId());
-	}
-
-	prefabEntity_ = std::move(entity);
-
-
-	if (prefabEntity_) {
-		prefabEntity_->pEntityComponentSystem_ = this;
-		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
-		prefabEntity_->Awake();
-
-		prefabEntity_->SetName(prefabName);
-		prefabEntity_->SetPrefabName(_name);
-
-		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
-	}
-
-
-	return prefabEntity_.get();
-}
-
-void EntityComponentSystem::SetMainCamera(CameraComponent* _camera) {
-	entityCollection_->SetMainCamera(_camera);
-}
-
-void EntityComponentSystem::SetMainCamera2D(CameraComponent* _camera) {
-	entityCollection_->SetMainCamera2D(_camera);
-}
-
-
-const std::vector<std::unique_ptr<GameEntity>>& EntityComponentSystem::GetEntities() {
-	return entityCollection_->GetEntities();
-}
-
-GameEntity* EntityComponentSystem::GetEntity(size_t _id) {
-	/// idを検索
-	auto itr = std::find_if(
-		entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
-		[_id](const std::unique_ptr<GameEntity>& entity) {
-			return entity->GetId() == _id;
-		}
-	);
-
-	if (itr != entityCollection_->GetEntities().end()) {
-		return (*itr).get();
-	}
-
-	return nullptr;
-}
-
-const CameraComponent* EntityComponentSystem::GetMainCamera() const {
-	return entityCollection_->GetMainCamera();
-}
-
-CameraComponent* EntityComponentSystem::GetMainCamera() {
-	return entityCollection_->GetMainCamera();
-}
-
-const CameraComponent* EntityComponentSystem::GetMainCamera2D() const {
-	return entityCollection_->GetMainCamera2D();
-}
-
-CameraComponent* EntityComponentSystem::GetMainCamera2D() {
-	return entityCollection_->GetMainCamera2D();
-}
-
-const CameraComponent* EntityComponentSystem::GetDebugCamera() const {
-	if (!debugCamera_) {
-		return nullptr;
-	}
-
-	return debugCamera_->GetComponent<CameraComponent>();
-}
-
-CameraComponent* EntityComponentSystem::GetDebugCamera() {
-	if (!debugCamera_) {
-		return nullptr;
-	}
-	return debugCamera_->GetComponent<CameraComponent>();
-}
-
-
 
 /// ====================================================
 /// internal methods
@@ -241,9 +184,9 @@ GameEntity* GetEntityById(int32_t _entityId) {
 	GameEntity* entity = gECS->GetEntity(_entityId);
 	if (!entity) {
 		/// prefab entityじゃないかチェック
-		if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
-			entity = gECS->GetPrefabEntity();
-		}
+		//if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
+		//	entity = gECS->GetPrefabEntity();
+		//}
 
 		/// それでも違ったらエラーを出力
 		if (!entity) {
@@ -443,12 +386,12 @@ int32_t InternalCreateEntity(MonoString* _name) {
 }
 
 bool InternalContainsPrefabEntity(int32_t _entityId) {
-	GameEntity* entity = gECS->GetPrefabEntity();
-	if (entity) {
-		if (entity->GetId() == _entityId) {
-			return true;
-		}
-	}
+	//GameEntity* entity = gECS->GetPrefabEntity();
+	//if (entity) {
+	//	if (entity->GetId() == _entityId) {
+	//		return true;
+	//	}
+	//}
 
 	return false;
 }
@@ -462,6 +405,5 @@ void InternalDestroyEntity(int32_t _entityId) {
 
 	gECS->RemoveEntity(entity, true);
 	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
-
 }
 

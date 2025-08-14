@@ -91,7 +91,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
 	for (auto& entity : _entities) {

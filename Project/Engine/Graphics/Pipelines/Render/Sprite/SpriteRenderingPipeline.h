@@ -45,7 +45,7 @@ public:
 	/// @param _dxManager DxManagerへのポインタ
 	void Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) override;
 
-	void Draw(class EntityComponentSystem* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 

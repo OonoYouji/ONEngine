@@ -18,7 +18,7 @@ public:
 	ColliderRenderQueueSystem();
 	~ColliderRenderQueueSystem() override = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 	void UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray);
 	void UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray);

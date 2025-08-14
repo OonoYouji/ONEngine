@@ -10,7 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
-void EffectUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<Effect>* effectArray = _ecs->GetComponentArray<Effect>();
 	if (!effectArray || effectArray->GetUsedComponents().empty()) {

@@ -5,7 +5,7 @@
 
 ColliderRenderQueueSystem::ColliderRenderQueueSystem() {}
 
-void ColliderRenderQueueSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void ColliderRenderQueueSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	UpdateSphereCollider(_ecs->GetComponentArray<SphereCollider>());
 	UpdateBoxCollider(_ecs->GetComponentArray<BoxCollider>());
 }

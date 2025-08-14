@@ -6,7 +6,7 @@
 
 CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {}
 
-void CameraUpdateSystem::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs) {
+void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// カメラのcomponentを集める
 
 	ComponentArray<CameraComponent>* cameraArray = _ecs->GetComponentArray<CameraComponent>();
@@ -49,6 +49,6 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs) {
 
 }
 
-void CameraUpdateSystem::RuntimeUpdate(EntityComponentSystem*) {
+void CameraUpdateSystem::RuntimeUpdate(ECSGroup*) {
 	
 }

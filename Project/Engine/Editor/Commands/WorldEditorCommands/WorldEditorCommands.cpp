@@ -17,14 +17,14 @@
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 
-CreateGameObjectCommand::CreateGameObjectCommand(EntityComponentSystem* _ecs) {
-	pECS_ = _ecs;
+CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
+	pECSGroup_ = _ecs;
 }
 
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pECS_->GenerateEntity(false);
+	generatedEntity_ = pECSGroup_->GenerateEntity(false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
@@ -35,7 +35,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 }
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
-	pECS_->RemoveEntity(generatedEntity_);
+	pECSGroup_->RemoveEntity(generatedEntity_);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -148,16 +148,16 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// エンティティを削除するコマンド
 /// ///////////////////////////////////////////////////
 
-DeleteEntityCommand::DeleteEntityCommand(EntityComponentSystem* _ecs, GameEntity* _entity)
-	: pECS_(_ecs), pEntity_(_entity) {}
+DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
+	: pECSGroup_(_ecs), pEntity_(_entity) {}
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
-	if (!pECS_ || !pEntity_) {
+	if (!pECSGroup_ || !pEntity_) {
 		Console::Log("DeleteEntityCommand : ECS or Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 
-	pECS_->RemoveEntity(pEntity_);
+	pECSGroup_->RemoveEntity(pEntity_);
 
 	return EDITOR_STATE_FINISH;
 }

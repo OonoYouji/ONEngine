@@ -143,7 +143,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		Matrix4x4 entityMatrix = transform->matWorld;
 
 		/// カメラの取得
-		CameraComponent* camera = pECS_->GetDebugCamera();
+		CameraComponent* camera = pECS_->GetECSGroup()->GetDebugCamera();
 		if (camera) {
 			ImGuizmo::Manipulate(
 				&camera->GetViewMatrix().m[0][0],
@@ -191,7 +191,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 
 
 		std::list<Script*> scripts;
-		for (auto& entity : pECS_->GetEntities()) {
+		for (auto& entity : pECS_->GetECSGroup()->GetEntities()) {
 			if (Script* script = entity->GetComponent<Script>()) {
 				scripts.push_back(script);
 			}

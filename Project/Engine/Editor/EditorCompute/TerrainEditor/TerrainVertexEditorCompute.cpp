@@ -48,7 +48,7 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
 
-	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetECSGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;

@@ -18,7 +18,7 @@ public:
 	ScriptUpdateSystem();
 	~ScriptUpdateSystem() override;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 	void RecursivePushBackScript(class GameEntity* _entity);
 

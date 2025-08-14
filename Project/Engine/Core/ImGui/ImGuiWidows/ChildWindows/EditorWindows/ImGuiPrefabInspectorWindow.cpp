@@ -86,7 +86,7 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::MenuItem("Apply")) {
 			pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
-			pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
+			//pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
 		}
 
 		ImGui::EndMenuBar();

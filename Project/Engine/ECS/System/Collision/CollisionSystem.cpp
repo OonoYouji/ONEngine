@@ -56,7 +56,7 @@ CollisionSystem::CollisionSystem() {
 
 }
 
-void CollisionSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
 	ComponentArray<BoxCollider>*    boxColliderArray    = _ecs->GetComponentArray<BoxCollider>();

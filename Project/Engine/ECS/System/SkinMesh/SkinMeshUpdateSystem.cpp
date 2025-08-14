@@ -8,7 +8,7 @@
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
 	: pDxManager_(_dxManager), pResourceCollection_(_resourceCollection) {}
 
-void SkinMeshUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<SkinMeshRenderer>* skinMeshArray = _ecs->GetComponentArray<SkinMeshRenderer>();
 	if (!skinMeshArray || skinMeshArray->GetUsedComponents().empty()) {

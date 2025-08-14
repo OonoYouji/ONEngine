@@ -19,7 +19,7 @@ public:
 	/// public : methods
 	/// =========================================
 
-	CreateGameObjectCommand(class EntityComponentSystem* _ecs);
+	CreateGameObjectCommand(class ECSGroup* _ecs);
 	~CreateGameObjectCommand();
 
 	EDITOR_STATE Execute() override;
@@ -27,7 +27,7 @@ public:
 
 private:
 
-	class EntityComponentSystem* pECS_ = nullptr;
+	class ECSGroup* pECSGroup_ = nullptr;
 	class GameEntity* generatedEntity_ = nullptr;
 };
 
@@ -102,7 +102,7 @@ public:
 	/// public : methods
 	/// =========================================
 
-	DeleteEntityCommand(class EntityComponentSystem* _ecs, class GameEntity* _entity);
+	DeleteEntityCommand(class ECSGroup* _ecs, class GameEntity* _entity);
 	~DeleteEntityCommand() = default;
 
 	EDITOR_STATE Execute() override;
@@ -113,7 +113,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class EntityComponentSystem* pECS_;
+	class ECSGroup* pECSGroup_;
 	class GameEntity* pEntity_;
 
 

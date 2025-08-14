@@ -13,7 +13,7 @@
 ScriptUpdateSystem::ScriptUpdateSystem() {}
 ScriptUpdateSystem::~ScriptUpdateSystem() {}
 
-void ScriptUpdateSystem::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();

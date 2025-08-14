@@ -6,7 +6,7 @@
 
 MeshBufferRecreate::MeshBufferRecreate(DxDevice* _pDxDevice) : pDxDevice_(_pDxDevice) {}
 
-void MeshBufferRecreate::RuntimeUpdate(EntityComponentSystem* _ecs) {
+void MeshBufferRecreate::RuntimeUpdate(ECSGroup* _ecs) {
 	ComponentArray<CustomMeshRenderer>* meshRendererArray = _ecs->GetComponentArray<CustomMeshRenderer>();
 	if (!meshRendererArray || meshRendererArray->GetUsedComponents().empty()) {
 		return; // メッシュレンダラーが存在しない場合は何もしない

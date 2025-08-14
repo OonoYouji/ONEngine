@@ -1,3 +1,3 @@
 #include "ECSISystem.h"
 
-void ECSISystem::OutsideOfRuntimeUpdate(EntityComponentSystem*) {}
+void ECSISystem::OutsideOfRuntimeUpdate(ECSGroup*) {}

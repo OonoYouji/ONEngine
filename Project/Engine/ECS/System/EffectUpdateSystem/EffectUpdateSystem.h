@@ -16,7 +16,7 @@ public:
 	EffectUpdateSystem() = default;
 	~EffectUpdateSystem() = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 private:
 	/// ==================================================

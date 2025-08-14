@@ -47,8 +47,8 @@ public:
 	~TerrainProceduralRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void PreDraw(class EntityComponentSystem* _ecs, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
-	void Draw(class EntityComponentSystem* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
+	void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, class DxCommand* _dxCommand) override;
 
 private:
 	/// =====================================
