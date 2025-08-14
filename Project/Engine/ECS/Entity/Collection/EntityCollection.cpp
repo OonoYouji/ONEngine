@@ -299,10 +299,6 @@ void EntityCollection::SetMainCamera2D(CameraComponent* _camera) {
 	mainCamera2D_ = _camera;
 }
 
-void EntityCollection::SetDebugCamera(CameraComponent* _camera) {
-	debugCamera_ = _camera;
-}
-
 CameraComponent* EntityCollection::GetMainCamera() {
 	return mainCamera_;
 }
@@ -315,12 +311,5 @@ const std::vector<std::unique_ptr<GameEntity>>& EntityCollection::GetEntities() 
 	return entities_;
 }
 
-const CameraComponent* EntityCollection::GetDebugCamera() const {
-	return debugCamera_;
-}
-
-CameraComponent* EntityCollection::GetDebugCamera() {
-	return debugCamera_;
-}
 
 

@@ -80,7 +80,6 @@ private:
 	std::vector<std::unique_ptr<GameEntity>> entities_;
 	std::vector<GameEntity*> doNotDestroyEntities_;
 
-	CameraComponent* debugCamera_ = nullptr;
 	CameraComponent* mainCamera_ = nullptr;
 	CameraComponent* mainCamera2D_ = nullptr;
 
@@ -91,14 +90,10 @@ public:
 
 	void SetMainCamera(CameraComponent* _CameraComponent);
 	void SetMainCamera2D(CameraComponent* _CameraComponent);
-	void SetDebugCamera(CameraComponent* _CameraComponent);
 
 	CameraComponent* GetMainCamera();
 	CameraComponent* GetMainCamera2D();
 
 	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
-
-	const CameraComponent* GetDebugCamera() const;
-	CameraComponent* GetDebugCamera();
 
 };
