@@ -69,6 +69,7 @@ private:
 
 	/// ----- groups ----- ///
 	std::unordered_map<std::string, std::unique_ptr<ECSGroup>> ecsGroups_;
+	ECSGroup* debugGroup_ = nullptr;
 	std::string currentGroupName_;
 
 	/// ----- prefab ----- ///

@@ -26,19 +26,21 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	void PrefabDragAndDrop();
+	
 	void DrawEntityHierarchy(class GameEntity* _entity);
 
-	void MenuBar();
+	void DrawMenuBar();
 
-	void Hierarchy();
+	void DrawHierarchy();
 
 	void EntityRename(class GameEntity* _entity);
 
 	void EntityDebug(class GameEntity* _entity);
 
-private:
+protected:
 	/// ===================================================
-	/// private : objects
+	/// protected : objects
 	/// ===================================================
 
 	std::string imGuiWindowName_ = "Hierarchy";
@@ -61,5 +63,26 @@ private:
 	/* ----- rename ----- */
 	std::string newName_ = "";
 	GameEntity* renameEntity_;
+
+};
+
+
+
+/// ///////////////////////////////////////////////////
+/// 通常のシーンのhierarchyウィンドウ
+/// ///////////////////////////////////////////////////
+class ImGuiNormalHierarchyWindow : public ImGuiHierarchyWindow {
+public:
+	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
+	
+};
+
+
+/// ///////////////////////////////////////////////////
+/// debugシーンのhierarchyウィンドウ
+/// ///////////////////////////////////////////////////
+class ImGuiDebugHierarchyWindow : public ImGuiHierarchyWindow {
+public:
+	ImGuiDebugHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup* _ecsGroup, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
 
 };

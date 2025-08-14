@@ -38,6 +38,18 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
 	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
 
+	PrefabDragAndDrop();
+
+	DrawMenuBar();
+
+	/// ヒエラルキーの表示
+	DrawHierarchy();
+
+	ImGui::End();
+}
+
+void ImGuiHierarchyWindow::PrefabDragAndDrop() {
+
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
 			if (payload->Data) {
@@ -63,14 +75,6 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 
 		ImGui::EndDragDropTarget();
 	}
-
-
-	MenuBar();
-
-	/// ヒエラルキーの表示
-	Hierarchy();
-
-	ImGui::End();
 }
 
 void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
@@ -139,7 +143,7 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 	}
 }
 
-void ImGuiHierarchyWindow::MenuBar() {
+void ImGuiHierarchyWindow::DrawMenuBar() {
 
 	/// 早期リターン
 	if (ImGui::BeginMenuBar()) {
@@ -212,7 +216,10 @@ void ImGuiHierarchyWindow::MenuBar() {
 
 }
 
-void ImGuiHierarchyWindow::Hierarchy() {
+void ImGuiHierarchyWindow::DrawHierarchy() {
+
+	ImGui::Text(pECSGroup_->GetGroupName().c_str());
+
 	/// entityの選択  
 	entityList_.clear();
 	for (auto& entity : pECSGroup_->GetEntities()) {
@@ -301,3 +308,5 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 
 
 }
+
+

@@ -49,21 +49,20 @@ void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsReso
 		debugGroup->Initialize(currentGroupName_);
 		DebugECSGroupAddSystemFunction(debugGroup.get(), pDxManager_, pGraphicsResourceCollection_);
 		ecsGroups_[currentGroupName_] = std::move(debugGroup);
+		debugGroup_ = ecsGroups_[currentGroupName_].get();
 	}
 
 }
 
 
 void EntityComponentSystem::Update() {
-	for (auto& group : ecsGroups_) {
-		group.second->RuntimeUpdateSystems();
-	}
+	debugGroup_->RuntimeUpdateSystems();
+	GetCurrentGroup()->RuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::OutsideOfUpdate() {
-	for (auto& group : ecsGroups_) {
-		group.second->OutsideOfRuntimeUpdateSystems();
-	}
+	debugGroup_->OutsideOfRuntimeUpdateSystems();
+	GetCurrentGroup()->OutsideOfRuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {}
