@@ -534,6 +534,7 @@
     <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
@@ -702,6 +703,7 @@
     <ClInclude Include="Engine\ECS\System\Terrain\TerrainCollision.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainProceduralRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SystemCollection\SystemCollection.h" />
+    <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

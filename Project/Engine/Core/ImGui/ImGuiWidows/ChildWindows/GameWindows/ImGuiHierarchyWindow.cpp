@@ -3,6 +3,7 @@
 /// external
 #include <imgui.h>
 #include <dialog/ImGuiFileDialog.h>
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
@@ -149,40 +150,9 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("+")) {
 
-			/// メニューの表示
-			if (ImGui::BeginMenu("create")) {
-				if (ImGui::MenuItem("create empty object")) {
-					pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pECSGroup_);
-				}
-
-				ImGui::EndMenu();
-			}
-
-
-			if (ImGui::MenuItem("save scene")) {
-				pSceneManager_->SaveScene(pECSGroup_->GetGroupName(), pECSGroup_);
-			}
-
-			if (ImGui::BeginMenu("load scene")) {
-				// open Dialog Simple
-				if (ImGui::MenuItem("open explorer")) {
-					IGFD::FileDialogConfig config;
-					config.path = "./Assets/Scene";
-					ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
-				}
-
-				ImGui::EndMenu();
-			}
-
-
-			if (ImGui::BeginMenu("scripts")) {
-
-				if (ImGui::MenuItem("hot reload")) {
-					pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pECSGroup_, pSceneManager_);
-				}
-
-				ImGui::EndMenu();
-			}
+			DrawMenuEntity();
+			DrawMenuScene();
+			DrawMenuScript();
 
 			ImGui::EndMenu();
 		}
@@ -192,28 +162,58 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 
 
 	// display
-	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
-		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+	DrawDialog();
+	DrawSceneSaveDialog();
+}
 
-			size_t pos = filePathName.find_last_of("\\");
-			if (pos != std::string::npos) {
-				filePathName = filePathName.substr(pos + 1); // パスを除去
-			}
-
-			pos = filePathName.find_last_of(".");
-			if (pos != std::string::npos) {
-				filePathName = filePathName.substr(0, pos); // 拡張子を除去
-			}
-
-			// action
-			pSceneManager_->GetSceneIO()->Input(filePathName, pECSGroup_);
+void ImGuiHierarchyWindow::DrawMenuEntity() {
+	if (ImGui::BeginMenu("create")) {
+		if (ImGui::MenuItem("create empty object")) {
+			pEditorManager_->ExecuteCommand<CreateGameObjectCommand>(pECSGroup_);
 		}
 
-		// close
-		ImGuiFileDialog::Instance()->Close();
+		ImGui::EndMenu();
 	}
+}
 
+void ImGuiHierarchyWindow::DrawMenuScene() {
+	if (ImGui::BeginMenu("scene")) {
+
+		if (ImGui::MenuItem("create scene")) {
+			/// 新規のシーンファイルを作成する
+			IGFD::FileDialogConfig config;
+			config.path = "./Assets/Scene";
+			ImGuiFileDialog::Instance()->OpenDialog("save file dialog", "ファイル保存", ".json", config);
+		}
+
+		if (ImGui::MenuItem("save scene")) {
+			pSceneManager_->SaveScene(pECSGroup_->GetGroupName(), pECSGroup_);
+		}
+
+		if (ImGui::BeginMenu("load scene")) {
+			// open Dialog Simple
+			if (ImGui::MenuItem("open explorer")) {
+				IGFD::FileDialogConfig config;
+				config.path = "./Assets/Scene";
+				ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
+			}
+
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenu();
+	}
+}
+
+void ImGuiHierarchyWindow::DrawMenuScript() {
+	if (ImGui::BeginMenu("scripts")) {
+
+		if (ImGui::MenuItem("hot reload")) {
+			pEditorManager_->ExecuteCommand<ReloadAllScriptsCommand>(pECSGroup_, pSceneManager_);
+		}
+
+		ImGui::EndMenu();
+	}
 }
 
 void ImGuiHierarchyWindow::DrawHierarchy() {
@@ -312,6 +312,55 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 
 }
 
+void ImGuiHierarchyWindow::DrawDialog() {
+	// display
+	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
+		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+
+			size_t pos = filePathName.find_last_of("\\");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(pos + 1); // パスを除去
+			}
+
+			pos = filePathName.find_last_of(".");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(0, pos); // 拡張子を除去
+			}
+
+			// action
+			pECSGroup_->RemoveEntityAll();
+			pSceneManager_->GetSceneIO()->Input(filePathName, pECSGroup_);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+}
+
+void ImGuiHierarchyWindow::DrawSceneSaveDialog() {
+	if (ImGuiFileDialog::Instance()->Display("save file dialog")) {
+		if (ImGuiFileDialog::Instance()->IsOk()) {
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+			/// 空のJSONオブジェクト
+			nlohmann::json j = nlohmann::json::object();
+
+			/// ファイルの作成
+			std::ofstream ofs(filePathName, std::ios::out | std::ios::binary);
+			if (ofs) {
+				ofs << j.dump(4);
+				ofs.close();
+			} else {
+				Console::LogError("Failed to create file: " + filePathName);
+			}
+		}
+		ImGuiFileDialog::Instance()->Close();
+	}
+}
+
 
 /// /////////////////////////////////////////////////////////////////////////
 /// ImGuiNormalHierarchyWindow
@@ -336,11 +385,49 @@ void ImGuiNormalHierarchyWindow::ImGuiFunc() {
 
 	PrefabDragAndDrop();
 
-	DrawMenuBar();
+
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("+")) {
+			DrawMenuEntity();
+			DrawMenuScene();
+			DrawMenuScript();
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	DrawSceneDialog();
+	DrawSceneSaveDialog();
+
 
 	/// ヒエラルキーの表示
 	DrawHierarchy();
 
 	ImGui::End();
 
+}
+
+void ImGuiNormalHierarchyWindow::DrawSceneDialog() {
+	// display
+	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
+		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+
+			size_t pos = filePathName.find_last_of("\\");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(pos + 1); // パスを除去
+			}
+
+			pos = filePathName.find_last_of(".");
+			if (pos != std::string::npos) {
+				filePathName = filePathName.substr(0, pos); // 拡張子を除去
+			}
+
+			// action
+			pSceneManager_->LoadScene(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
 }

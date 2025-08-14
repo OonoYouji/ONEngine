@@ -9,7 +9,7 @@ SceneFactory::~SceneFactory() {}
 void SceneFactory::Initialize() {
 
 	/// 初期化時のシーン名を設定する
-	SetStartupSceneName("GameScene");
+	SetStartupSceneName("TitleScene");
 
 	/// シーンの登録
 	//RegisterScene<GameScene>("GameScene");

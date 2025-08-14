@@ -14,6 +14,7 @@
 #include "../System/CameraUpdate/CameraUpdateSystem.h"
 #include "../System/Terrain/TerrainColliderVertexGenerator.h"
 #include "../System/Terrain/TerrainCollision.h"
+#include "../System/Transform/TransformUpdateSystem.h"
 
 void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
 
@@ -25,6 +26,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graphi
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>();
 	_ecs->AddSystem<EffectUpdateSystem>();
+	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();
@@ -45,6 +47,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graph
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>();
 	_ecs->AddSystem<EffectUpdateSystem>();
+	_ecs->AddSystem<TransformUpdateSystem>();
 
 	/// 衝突判定に使うsystem
 	_ecs->AddSystem<TerrainCollision>();

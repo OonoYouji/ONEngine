@@ -30,13 +30,21 @@ protected:
 	
 	void DrawEntityHierarchy(class GameEntity* _entity);
 
+	/// ----- menu methods----- ///
 	void DrawMenuBar();
+	void DrawMenuEntity();
+	void DrawMenuScene();
+	void DrawMenuScript();
 
 	void DrawHierarchy();
 
 	void EntityRename(class GameEntity* _entity);
 
 	void EntityDebug(class GameEntity* _entity);
+
+	/// dialog
+	void DrawDialog();
+	void DrawSceneSaveDialog();
 
 protected:
 	/// ===================================================
@@ -73,19 +81,22 @@ protected:
 /// ///////////////////////////////////////////////////
 class ImGuiNormalHierarchyWindow : public ImGuiHierarchyWindow {
 public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
 	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
+	~ImGuiNormalHierarchyWindow() override = default;
 	
 	void ImGuiFunc() override;
+
+	/// ----- dialog ----- ///
+	void DrawSceneDialog();
+
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
+
 	class EntityComponentSystem* pECS_ = nullptr;
-};
-
-
-/// ///////////////////////////////////////////////////
-/// debugシーンのhierarchyウィンドウ
-/// ///////////////////////////////////////////////////
-class ImGuiDebugHierarchyWindow : public ImGuiHierarchyWindow {
-public:
-	ImGuiDebugHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup* _ecsGroup, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
-
 };
