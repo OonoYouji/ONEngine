@@ -160,7 +160,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 
 
 			if (ImGui::MenuItem("save scene")) {
-				pSceneManager_->SaveCurrentScene();
+				pSceneManager_->SaveScene(pECSGroup_->GetGroupName(), pECSGroup_);
 			}
 
 			if (ImGui::BeginMenu("load scene")) {
@@ -309,4 +309,30 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 
 }
 
+ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager, ImGuiInspectorWindow* _imguiInspectorWindow)
+	: ImGuiHierarchyWindow(_imGuiWindowName, _ecs->GetCurrentGroup(), _editorManager, _sceneManager, _imguiInspectorWindow) {
+	pECS_ = _ecs;
+}
 
+void ImGuiNormalHierarchyWindow::ImGuiFunc() {
+	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
+		ImGui::End();
+		return;
+	}
+
+	pECSGroup_ = pECS_->GetCurrentGroup();
+
+	/*/// ドラッグ先の領域を設定
+	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
+	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
+
+	PrefabDragAndDrop();
+
+	DrawMenuBar();
+
+	/// ヒエラルキーの表示
+	DrawHierarchy();
+
+	ImGui::End();
+
+}

@@ -65,7 +65,9 @@ void EntityComponentSystem::OutsideOfUpdate() {
 	GetCurrentGroup()->OutsideOfRuntimeUpdateSystems();
 }
 
-void EntityComponentSystem::DebuggingUpdate() {}
+void EntityComponentSystem::DebuggingUpdate() {
+	SetEntityComponentSystemPtr(GetCurrentGroup(), debugGroup_);
+}
 
 void EntityComponentSystem::AddECSGroup(const std::string& _name) {
 	/// すでに存在する場合は何もしない

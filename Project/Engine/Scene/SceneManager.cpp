@@ -40,13 +40,22 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = _sceneName;
 }
 
+void SceneManager::SaveScene(const std::string& _name, ECSGroup* _ecsGroup) {
+	if (_name.empty() || !_ecsGroup) {
+		Console::LogError("Invalid scene name or ECS group.");
+		return;
+	}
+
+	sceneIO_->Output(_name, _ecsGroup);
+}
+
 void SceneManager::SaveCurrentScene() {
 	if (currentScene_.empty()) {
 		Console::LogError("No current scene to save.");
 		return;
 	}
 
-	sceneIO_->Output(currentScene_, pECS_->GetECSGroup(currentScene_));
+	sceneIO_->Output(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
@@ -55,7 +64,7 @@ void SceneManager::SaveCurrentSceneTemporary() {
 		return;
 	}
 
-	sceneIO_->OutputTemporary(currentScene_, pECS_->GetECSGroup(currentScene_));
+	sceneIO_->OutputTemporary(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -83,7 +92,7 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 }
 
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
-	ECSGroup* gameSceneGroup = pECS_->GetECSGroup(currentScene_);
+	ECSGroup* gameSceneGroup = pECS_->GetCurrentGroup();
 	if (gameSceneGroup) {
 		gameSceneGroup->RemoveEntityAll();
 	}
@@ -93,11 +102,12 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
 		sceneIO_->InputTemporary(currentScene_);
+		pECS_->SetCurrentGroupName(currentScene_ + "_temp");
 	} else {
 		sceneIO_->Input(currentScene_);
+		pECS_->SetCurrentGroupName(currentScene_);
 	}
 
-	pECS_->SetCurrentGroupName(currentScene_);
 	Time::ResetTime();
 }
 

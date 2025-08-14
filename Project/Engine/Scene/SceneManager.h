@@ -33,6 +33,7 @@ public:
 	/// @param _sceneName 次のシーンの名前
 	void SetNextScene(const std::string& _sceneName);
 
+	void SaveScene(const std::string& _name, class ECSGroup* _ecsGroup);
 	void SaveCurrentScene();
 	void SaveCurrentSceneTemporary();
 

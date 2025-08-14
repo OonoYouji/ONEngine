@@ -21,9 +21,9 @@ public:
 
 	void ImGuiFunc() override;
 
-private:
+protected:
 	/// ===================================================
-	/// private : methods
+	/// protected : methods
 	/// ===================================================
 
 	void PrefabDragAndDrop();
@@ -75,6 +75,9 @@ class ImGuiNormalHierarchyWindow : public ImGuiHierarchyWindow {
 public:
 	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
 	
+	void ImGuiFunc() override;
+private:
+	class EntityComponentSystem* pECS_ = nullptr;
 };
 
 

@@ -190,7 +190,7 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pInspector_->SetSelectedEntity(0);
 
 
-		ComponentArray<Script>* gameScripts = pECS_->GetECSGroup(pSceneManager_->GetCurrentSceneName())->GetComponentArray<Script>();
+		ComponentArray<Script>* gameScripts = pECS_->GetCurrentGroup()->GetComponentArray<Script>();
 		ComponentArray<Script>* debugScripts = pECS_->GetECSGroup("Debug")->GetComponentArray<Script>();
 
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
