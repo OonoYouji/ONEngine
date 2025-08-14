@@ -91,22 +91,28 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 	MoveNextToCurrentScene(_isTemporary);
 }
 
+SceneIO* SceneManager::GetSceneIO() {
+	return sceneIO_.get();
+}
+
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
-	ECSGroup* gameSceneGroup = pECS_->GetCurrentGroup();
-	if (gameSceneGroup) {
-		gameSceneGroup->RemoveEntityAll();
+	ECSGroup* prevSceneGroup = pECS_->GetCurrentGroup();
+	if (prevSceneGroup) {
+		prevSceneGroup->RemoveEntityAll();
 	}
 
 	currentScene_ = std::move(nextScene_);
 
+	std::string sceneName = currentScene_;
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_);
-		pECS_->SetCurrentGroupName(currentScene_ + "_temp");
-	} else {
-		sceneIO_->Input(currentScene_);
-		pECS_->SetCurrentGroupName(currentScene_);
+		sceneName += "_temp";
 	}
+
+	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(sceneName);
+
+	sceneIO_->Input(sceneName, nextSceneGroup);
+	pECS_->SetCurrentGroupName(sceneName);
 
 	Time::ResetTime();
 }

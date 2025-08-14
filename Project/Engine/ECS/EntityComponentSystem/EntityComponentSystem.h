@@ -44,7 +44,7 @@ public:
 	/// ----- group  ----- ///
 
 	/// 追加
-	void AddECSGroup(const std::string& _name);
+	ECSGroup* AddECSGroup(const std::string& _name);
 
 	/// 取得
 	ECSGroup* GetECSGroup(const std::string& _name) const;

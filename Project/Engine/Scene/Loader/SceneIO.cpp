@@ -24,10 +24,10 @@ void SceneIO::Output(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	SaveScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::Input(const std::string& _sceneName) {
+void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* jsonを読み込んでsceneに変換する */
 	fileName_ = _sceneName + ".json";
-	LoadScene(fileName_);
+	LoadScene(fileName_, _ecsGroup);
 }
 
 void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
@@ -36,9 +36,9 @@ void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup
 	SaveScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::InputTemporary(const std::string& _sceneName) {
+void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	fileName_ = _sceneName + "_temp.json";
-	LoadScene(fileName_);
+	LoadScene(fileName_, _ecsGroup);
 }
 
 void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
@@ -79,7 +79,7 @@ void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	outputFile.close();
 }
 
-void SceneIO::LoadScene(const std::string& _filename) {
+void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 
 	std::ifstream inputFile(fileDirectory_ + _filename);
 	if (!inputFile.is_open()) {
@@ -95,8 +95,6 @@ void SceneIO::LoadScene(const std::string& _filename) {
 	std::unordered_map<uint32_t, GameEntity*> entityMap;
 
 	const std::string sceneName = Mathf::FileNameWithoutExtension(_filename);
-	pECS_->AddECSGroup(sceneName);
-	ECSGroup* ecsGroup = pECS_->GetECSGroup(sceneName);
 
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
@@ -107,9 +105,9 @@ void SceneIO::LoadScene(const std::string& _filename) {
 		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
-			entity = ecsGroup->GenerateEntity(false);
+			entity = _ecsGroup->GenerateEntity(false);
 		}
 
 		if (entity) {

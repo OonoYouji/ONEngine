@@ -69,11 +69,12 @@ void EntityComponentSystem::DebuggingUpdate() {
 	SetEntityComponentSystemPtr(GetCurrentGroup(), debugGroup_);
 }
 
-void EntityComponentSystem::AddECSGroup(const std::string& _name) {
+ECSGroup* EntityComponentSystem::AddECSGroup(const std::string& _name) {
 	/// すでに存在する場合は何もしない
-	if (ecsGroups_.find(_name) != ecsGroups_.end()) {
+	auto itr = ecsGroups_.find(_name);
+	if (itr != ecsGroups_.end()) {
 		Console::LogWarning("ECSGroup with name '" + _name + "' already exists.");
-		return;
+		return itr->second.get();
 	}
 
 	/// 新しいECSグループを作成
@@ -81,6 +82,7 @@ void EntityComponentSystem::AddECSGroup(const std::string& _name) {
 	newGroup->Initialize(_name);
 	GameECSGroupAddSystemFunction(newGroup.get(), pDxManager_, pGraphicsResourceCollection_);
 	ecsGroups_[_name] = std::move(newGroup);
+	return ecsGroups_[_name].get();
 }
 
 ECSGroup* EntityComponentSystem::GetECSGroup(const std::string& _name) const {

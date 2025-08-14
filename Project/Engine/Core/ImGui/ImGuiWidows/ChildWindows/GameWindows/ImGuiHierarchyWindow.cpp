@@ -207,7 +207,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 			}
 
 			// action
-			pSceneManager_->LoadScene(filePathName);
+			pSceneManager_->GetSceneIO()->Input(filePathName, pECSGroup_);
 		}
 
 		// close
@@ -315,7 +315,7 @@ void ImGuiHierarchyWindow::EntityDebug(GameEntity* _entity) {
 /// /////////////////////////////////////////////////////////////////////////
 
 ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, EntityComponentSystem* _ecs, EditorManager* _editorManager, SceneManager* _sceneManager, ImGuiInspectorWindow* _imguiInspectorWindow)
-	: ImGuiHierarchyWindow(_imGuiWindowName, _ecs->GetCurrentGroup(), _editorManager, _sceneManager, _imguiInspectorWindow) {
+	: ImGuiHierarchyWindow(_imGuiWindowName, nullptr, _editorManager, _sceneManager, _imguiInspectorWindow) {
 	pECS_ = _ecs;
 }
 

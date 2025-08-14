@@ -40,6 +40,8 @@ public:
 	void LoadScene(const std::string& _sceneName);
 	void ReloadScene(bool _isTemporary);
 
+	SceneIO* GetSceneIO();
+
 private:
 	/// ===================================================
 	/// private : methods
