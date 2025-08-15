@@ -156,9 +156,9 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 					void* params[1];
 					params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
-					/// 関数の実行
-					MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
-					mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
+					///// 関数の実行
+					//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+					//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
 
 					/// 例外が発生した場合の処理
 					if (exc) {

@@ -155,9 +155,9 @@ void Variables::RegisterScriptVariables() {
 
 		{
 			MonoObject* safeObj = nullptr;
-			if (data.gcHandle != 0) {
-				safeObj = mono_gchandle_get_target(data.gcHandle);
-			}
+			//if (data.gcHandle != 0) {
+			//	safeObj = mono_gchandle_get_target(data.gcHandle);
+			//}
 
 			if (!safeObj) {
 				continue; //!< 対象のスクリプトがない場合はスキップ
@@ -268,9 +268,9 @@ void Variables::ReloadScriptVariables() {
 
 		{
 			MonoObject* safeObj = nullptr;
-			if (data.gcHandle != 0) {
-				safeObj = mono_gchandle_get_target(data.gcHandle);
-			}
+			//if (data.gcHandle != 0) {
+			//	safeObj = mono_gchandle_get_target(data.gcHandle);
+			//}
 
 			if (!safeObj) {
 				continue; //!< 対象のスクリプトがない場合はスキップ
@@ -390,8 +390,12 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 
 		/// C#側のオブジェクトを取得
 		MonoObject* safeObj = nullptr;
-		if (data.gcHandle != 0) {
-			safeObj = mono_gchandle_get_target(data.gcHandle);
+		//if (data.gcHandle != 0) {
+		//	safeObj = mono_gchandle_get_target(data.gcHandle);
+		//}
+
+		if (!safeObj) {
+			continue;
 		}
 
 		MonoClass* monoClass = mono_object_get_class(safeObj);

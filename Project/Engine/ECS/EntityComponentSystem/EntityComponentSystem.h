@@ -22,7 +22,6 @@ class CameraComponent;
 void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup);
 ECSGroup* GetEntityComponentSystemPtr();
 
-
 /// ///////////////////////////////////////////////////
 /// ECSの基盤クラス
 /// ///////////////////////////////////////////////////
@@ -82,20 +81,29 @@ private:
 /// monoを使ったC#スクリプトエンジンのコンポーネント
 /// =============================================
 
-GameEntity* GetEntityById(int32_t _entityId);
 
-uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName);
-uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName);
-const char* InternalGetName(int32_t _entityId);
-void InternalSetName(int32_t _entityId, MonoString* _name);
-int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex);
-int32_t InternalGetParentId(int32_t _entityId);
-void InternalSetParent(int32_t _entityId, int32_t _parentId);
-void InternalAddScript(int32_t _entityId, MonoString* _scriptName);
-bool InternalGetScript(int32_t _entityId, MonoString* _scriptName);
+//bool InternalContainsEntity(int32_t _entityId);
+//int32_t InternalGetEntityId(MonoString* _name);
+//int32_t InternalCreateEntity(MonoString* _name);
+//bool InternalContainsPrefabEntity(int32_t _entityId);
+//void InternalDestroyEntity(int32_t _entityId);
 
-bool InternalContainsEntity(int32_t _entityId);
-int32_t InternalGetEntityId(MonoString* _name);
-int32_t InternalCreateEntity(MonoString* _name);
-bool InternalContainsPrefabEntity(int32_t _entityId);
-void InternalDestroyEntity(int32_t _entityId);
+
+namespace MONO_INTERNAL_METHOD {
+
+	/// エンティティのidからEntityを取得
+	GameEntity* GetEntityById(int32_t _entityId, const std::string& _groupName);
+
+	uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName);
+	uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName);
+	const char* InternalGetName(int32_t _entityId, MonoString* _groupName);
+	void InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName);
+	int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName);
+	int32_t InternalGetParentId(int32_t _entityId, MonoString* _groupName);
+	void InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName);
+	void InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
+	bool InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
+
+	void InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName);
+
+} // namespace MONO_INTERNAL_METHOD

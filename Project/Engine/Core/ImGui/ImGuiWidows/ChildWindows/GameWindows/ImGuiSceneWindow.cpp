@@ -55,6 +55,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
+	GetMonoScriptEnginePtr()->SetIsHotReloadRequest(false);
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		SetGamePlay(!isGameDebug); // ゲームプレイの開始/停止
 	}
@@ -196,22 +197,6 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		GetMonoScriptEnginePtr()->HotReload();
 
-		/// スクリプトの初期化
-		if (gameScripts && gameScripts->GetUsedComponents().size() > 0) {
-			for (Script* script : gameScripts->GetUsedComponents()) {
-				if (script) {
-					script->ResetScripts();
-				}
-			}
-		}
-
-		if (debugScripts && debugScripts->GetUsedComponents().size() > 0) {
-			for (Script* script : debugScripts->GetUsedComponents()) {
-				if (script) {
-					script->ResetScripts();
-				}
-			}
-		}
 
 	} else {
 		//!< 更新処理を停止した場合の処理

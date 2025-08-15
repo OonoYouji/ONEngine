@@ -123,88 +123,8 @@ void MonoScriptEngine::Initialize() {
 	RegisterFunctions();
 }
 
-void MonoScriptEngine::MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName) {
-	GameEntity* owner = _comp->GetOwner();
-	const std::string ownerName = owner ? owner->GetName() : "\"owner is empty\"";
-	Console::Log("MonoScriptEngine::MakeScript: component owner: \"" + ownerName + "\", script name: \"" + _scriptName + "\"");
-
-	if (!_script) {
-		Console::LogWarning("Script pointer is null");
-		return;
-	}
-
-	_script->scriptName = _scriptName;
-
-
-	/// ownerがなければ今後の処理ができないので、早期リターン
-	if (!owner) {
-		Console::LogError("Script owner is null. Cannot create script instance.");
-		return;
-	}
-
-
-	/// MonoImageから指定されたクラスを取得(namespaceは""で省略)
-	MonoClass* monoClass = mono_class_from_name(image_, "", _scriptName.c_str());
-	if (!monoClass) {
-		Console::LogError("Failed to find class: " + _scriptName);
-		return;
-	}
-
-	/// クラスのインスタンスを生成
-	MonoObject* obj = mono_object_new(domain_, monoClass);
-	mono_runtime_object_init(obj); /// クラスの初期化、コンストラクタをイメージ
-	if (!obj) {
-		Console::LogError("Failed to create instance of class: " + _scriptName);
-		return;
-	}
-
-	uint32_t gcHandle = mono_gchandle_new(obj, false); /// GCハンドルを取得（必要に応じて）
-
-
-	/// InternalInitialize( Awake(内部で呼んでいる) )メソッドを取得
-	MonoMethod* internalInitMethod = FindMethodInClassOrParents(monoClass, "InternalInitialize", 2);
-	if (!internalInitMethod) {
-		Console::LogError("Failed to find method InternalInitialize in class: " + _scriptName);
-	}
-
-	/// Initializeメソッドを取得
-	MonoMethod* initMethod = FindMethodInClassOrParents(monoClass, "Initialize", 0);
-	if (!initMethod) {
-		Console::LogError("Failed to find method Initialize in class: " + _scriptName);
-	}
-
-	/// Updateメソッドを取得
-	MonoMethod* updateMethod = FindMethodInClassOrParents(monoClass, "Update", 0);
-	if (!updateMethod) {
-		Console::LogError("Failed to find method Update in class: " + _scriptName);
-	}
-
-
-	/// collision イベントメソッドを取得
-	_script->collisionEventMethods[0] = FindMethodInClassOrParents(monoClass, "OnCollisionEnter", 1);
-	_script->collisionEventMethods[1] = FindMethodInClassOrParents(monoClass, "OnCollisionStay", 1);
-	_script->collisionEventMethods[2] = FindMethodInClassOrParents(monoClass, "OnCollisionExit", 1);
-
-	for (auto& method : _script->collisionEventMethods) {
-		if (!method) {
-			Console::LogError("Failed to find collision event method in class: " + _scriptName);
-		}
-	}
-
-	_script->gcHandle = gcHandle;
-	_script->monoClass = monoClass;
-	_script->instance = obj;
-	_script->internalInitMethod = internalInitMethod;
-	_script->initMethod = initMethod;
-	_script->updateMethod = updateMethod;
-	_script->isCalledAwake = false;
-	_script->isCalledInit = false;
-}
-
-
 void MonoScriptEngine::RegisterFunctions() {
 	/// 関数の登録
-
 	AddComponentInternalCalls();
 
 	AddEntityInternalCalls();
@@ -219,11 +139,10 @@ void MonoScriptEngine::RegisterFunctions() {
 	mono_add_internal_call("Time::InternalGetTimeScale", (void*)Time::TimeScale);
 	mono_add_internal_call("Time::InternalSetTimeScale", (void*)Time::SetTimeScale);
 
-	mono_add_internal_call("Mathf::LoadFile", (void*)MONO_INTENRAL_METHOD::LoadFile);
+	mono_add_internal_call("Mathf::LoadFile", (void*)MONO_INTERNAL_METHOD::LoadFile);
 
 	/// 他のクラスの関数も登録
 	AddInputInternalCalls();
-
 }
 
 void MonoScriptEngine::HotReload() {
@@ -260,6 +179,9 @@ void MonoScriptEngine::HotReload() {
 
 	currentDllPath_ = *latestDll;
 
+	/// ScriptUpdateSystemのスクリプトのリセットを要請
+	SetIsHotReloadRequest(true);
+
 	Console::Log("Reloaded assembly successfully in new domain.");
 }
 
@@ -288,9 +210,9 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 }
 
 void MonoScriptEngine::ResetCS() {
-	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityCollection");
+	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
 	if (!monoClass) {
-		Console::LogError("Failed to find class: EntityCollection");
+		Console::LogError("Failed to find class: EntityComponentSystem");
 		return;
 	}
 
@@ -313,15 +235,7 @@ void MonoScriptEngine::ResetCS() {
 
 }
 
-MonoMethod* MonoScriptEngine::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
-	while (_class) {
-		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
-		if (method)
-			return method;
-		_class = mono_class_get_parent(_class);
-	}
-	return nullptr;
-}
+
 
 MonoDomain* MonoScriptEngine::Domain() const {
 	return domain_;
@@ -333,4 +247,24 @@ MonoImage* MonoScriptEngine::Image() const {
 
 MonoAssembly* MonoScriptEngine::Assembly() const {
 	return assembly_;
+}
+
+void MonoScriptEngine::SetIsHotReloadRequest(bool _request) {
+	isHotReloadRequest_ = _request;
+}
+
+bool MonoScriptEngine::GetIsHotReloadRequest() const {
+	return isHotReloadRequest_;
+}
+
+
+
+MonoMethod* MonoScriptEngineUtils::FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount) {
+	while (_class) {
+		MonoMethod* method = mono_class_get_method_from_name(_class, _methodName, _paramCount);
+		if (method)
+			return method;
+		_class = mono_class_get_parent(_class);
+	}
+	return nullptr;
 }

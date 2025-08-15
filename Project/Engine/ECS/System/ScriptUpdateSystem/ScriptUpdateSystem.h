@@ -2,6 +2,11 @@
 
 /// std
 #include <list>
+#include <string>
+
+/// externals
+#include <mono/jit/jit.h>
+
 
 /// engine
 #include "../Interface/ECSISystem.h"
@@ -15,20 +20,26 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ScriptUpdateSystem();
+	ScriptUpdateSystem(class ECSGroup* _ecs);
 	~ScriptUpdateSystem() override;
 
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
-	void RecursivePushBackScript(class GameEntity* _entity);
+	/// 生成
+	void MakeScriptMethod(MonoImage* _image, const std::string& _ecsGroupName);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::list<class Script*> pScripts_;
+	MonoImage* pImage_;
 
+	MonoClass*  monoClass_;
+	uint32_t    gcHandle_;
+	MonoMethod* updateEntitiesMethod_;
+	MonoMethod* addEntityMethod_;
+	MonoMethod* addScriptMethod_;
 
 };
-

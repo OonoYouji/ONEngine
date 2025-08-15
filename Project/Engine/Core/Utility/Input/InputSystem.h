@@ -40,7 +40,7 @@ private:
 	class WindowManager* pWindowManager_ = nullptr;
 };
 
-namespace MONO_INTENRAL_METHOD {
+namespace MONO_INTERNAL_METHOD {
 	void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);
 	void InternalGetMouseVelocity(float* _x, float* _y);
 	void InternalGetMousePosition(float* _x, float* _y);

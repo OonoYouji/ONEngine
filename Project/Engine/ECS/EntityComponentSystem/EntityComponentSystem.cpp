@@ -17,6 +17,7 @@
 namespace {
 	ECSGroup* gGameGroup = nullptr;
 	ECSGroup* gDebugGroup = nullptr;
+	EntityComponentSystem* gECS = nullptr;
 }
 
 void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
@@ -32,6 +33,7 @@ ECSGroup* GetEntityComponentSystemPtr() {
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
 
+	gECS = this;
 	prefabCollection_ = std::make_unique<EntityPrefabCollection>();
 }
 
@@ -146,28 +148,20 @@ const std::string& EntityComponentSystem::GetCurrentGroupName() const {
 /// internal methods
 /// ====================================================
 
-GameEntity* GetEntityById(int32_t _entityId) {
-	GameEntity* entity = gGameGroup->GetEntity(_entityId);
-	if (!entity) {
-		entity = gDebugGroup->GetEntity(_entityId);
-		/// prefab entityじゃないかチェック
-		//if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
-		//	entity = gECS->GetPrefabEntity();
-		//}
-
-		/// それでも違ったらエラーを出力
-		if (!entity) {
-			Console::Log("Entity not found for ID: " + std::to_string(_entityId));
-			return nullptr;
-		}
+GameEntity* MONO_INTERNAL_METHOD::GetEntityById(int32_t _entityId, const std::string& _groupName) {
+	ECSGroup* ecsGroup = gECS->GetECSGroup(_groupName);
+	if (ecsGroup) {
+		return ecsGroup->GetEntity(_entityId);
 	}
 
-	return entity;
+	return nullptr;
 }
 
-uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
+uint64_t MONO_INTERNAL_METHOD::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
-	GameEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -182,9 +176,11 @@ uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
+uint64_t MONO_INTERNAL_METHOD::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+
 	/// idからentityを取得
-	GameEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -197,8 +193,9 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-const char* InternalGetName(int32_t _entityId) {
-	GameEntity* entity = GetEntityById(_entityId);
+const char* MONO_INTERNAL_METHOD::InternalGetName(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
@@ -207,9 +204,10 @@ const char* InternalGetName(int32_t _entityId) {
 	return entity->GetName().c_str();
 }
 
-void InternalSetName(int32_t _entityId, MonoString* _name) {
+void MONO_INTERNAL_METHOD::InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string name = mono_string_to_utf8(_name);
-	GameEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
@@ -219,8 +217,9 @@ void InternalSetName(int32_t _entityId, MonoString* _name) {
 	entity->SetName(name);
 }
 
-int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
-	GameEntity* entity = GetEntityById(_entityId);
+int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -236,8 +235,9 @@ int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
 	return child->GetId();
 }
 
-int32_t InternalGetParentId(int32_t _entityId) {
-	GameEntity* entity = GetEntityById(_entityId);
+int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -251,9 +251,10 @@ int32_t InternalGetParentId(int32_t _entityId) {
 	return 0;
 }
 
-void InternalSetParent(int32_t _entityId, int32_t _parentId) {
-	GameEntity* entity = GetEntityById(_entityId);
-	GameEntity* parent = GetEntityById(_parentId);
+void MONO_INTERNAL_METHOD::InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName) {
+	const std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
+	GameEntity* parent = GetEntityById(_parentId, groupName);
 
 	/// nullptr チェック
 	if (!entity || !parent) {
@@ -276,9 +277,10 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 	entity->SetParent(parent);
 }
 
-void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
+void MONO_INTERNAL_METHOD::InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string scriptName = mono_string_to_utf8(_scriptName);
-	GameEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return;
@@ -291,9 +293,9 @@ void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 	}
 }
 
-
-bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
-	GameEntity* entity = GetEntityById(_entityId);
+bool MONO_INTERNAL_METHOD::InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;
@@ -317,60 +319,21 @@ bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
 	return false;
 }
 
-bool InternalContainsEntity(int32_t _entityId) {
-	GameEntity* entity = GetEntityById(_entityId);
-	if (entity) {
-		return true;
-	}
+void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
 
-	return false;
-}
-
-int32_t InternalGetEntityId(MonoString* _name) {
-	std::string name = mono_string_to_utf8(_name);
-	return gGameGroup->GetEntityId(name);
-}
-
-int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
-	std::string name = mono_string_to_utf8(_name);
-	GameEntity* entity = gGameGroup->GenerateEntityFromPrefab(name + ".prefab");
+	std::string prefabName = mono_string_to_utf8(_prefabName);
+	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
 	if (!entity) {
-		entity = gGameGroup->GenerateEntity(true);
+		entity = group->GenerateEntity(true);
 		if (!entity) {
-			return 0;
+			return;
 		}
 	}
 
-	Script* script = entity->GetComponent<Script>();
-	if (script) {
-		/// スクリプトの初期化を行う
-		script->CallAwakeMethodAll();
-		script->CallInitMethodAll();
+	if (_entityId) {
+		*_entityId = entity->GetId();
 	}
-
-	return entity->GetId();
 }
-
-bool InternalContainsPrefabEntity(int32_t _entityId) {
-	//GameEntity* entity = gECS->GetPrefabEntity();
-	//if (entity) {
-	//	if (entity->GetId() == _entityId) {
-	//		return true;
-	//	}
-	//}
-
-	return false;
-}
-
-void InternalDestroyEntity(int32_t _entityId) {
-	GameEntity* entity = GetEntityById(_entityId);
-	if (!entity) {
-		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
-		return;
-	}
-
-	gGameGroup->RemoveEntity(entity, true);
-	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
-}
-

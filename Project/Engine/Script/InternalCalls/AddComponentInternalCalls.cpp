@@ -9,7 +9,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 
-using namespace MONO_INTENRAL_METHOD;
+using namespace MONO_INTERNAL_METHOD;
 
 void AddComponentInternalCalls() {
 
@@ -65,11 +65,8 @@ void AddEntityInternalCalls() {
 	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
 	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
 
-	mono_add_internal_call("EntityCollection::InternalContainsEntity", (void*)InternalContainsEntity);
-	mono_add_internal_call("EntityCollection::InternalGetEntityId", (void*)InternalGetEntityId);
-	mono_add_internal_call("EntityCollection::InternalCreateEntity", (void*)InternalCreateEntity);
-	mono_add_internal_call("EntityCollection::InternalContainsPrefabEntity", (void*)InternalContainsPrefabEntity);
-	mono_add_internal_call("EntityCollection::InternalDestroyEntity", (void*)InternalDestroyEntity);
+	mono_add_internal_call("ECSGroup::InternalCreateEntity", (void*)InternalCreateEntity);
+
 }
 
 void AddInputInternalCalls() {

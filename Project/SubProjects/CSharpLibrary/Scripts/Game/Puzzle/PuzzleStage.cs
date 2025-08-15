@@ -27,7 +27,7 @@ public class PuzzleStage : MonoBehavior {
 	public override void Initialize() {
 		puzzleCommandStacker_ = new PuzzleCommandStacker();
 
-		mapchip_ = EntityCollection.CreateEntity("Mapchip");
+		mapchip_ = ecsGroup.CreateEntity("Mapchip");
 		if (mapchip_ != null) {
 			mapchip_.parent = entity;
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
@@ -62,6 +62,8 @@ public class PuzzleStage : MonoBehavior {
 	/// 初期化に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	private void PlayerDeploy() {
+		Debug.Log("----- PlayerDeploy. -----");
+
 		/* ----- プレイヤーの配置 ----- */
 
 		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
@@ -80,7 +82,7 @@ public class PuzzleStage : MonoBehavior {
 
 		for (int i = 0; i < stagePlayers.Count; i++) {
 			playerAddresses.Add(new Vector2Int(stagePlayers[i].column, stagePlayers[i].row));
-			players_.Add(EntityCollection.CreateEntity("PuzzlePlayer"));
+			players_.Add(ecsGroup.CreateEntity("PuzzlePlayer"));
 		}
 
 		for (int i = 0; i < players_.Count; i++) {
@@ -117,6 +119,8 @@ public class PuzzleStage : MonoBehavior {
 
 		/// アクティブなプレイヤーは最初のプレイヤーで
 		activePlayer_ = players_[0];
+
+		Debug.Log("----- PlayerDeploy. ended -----");
 	}
 
 	private void BlockDeploy() {
@@ -135,9 +139,9 @@ public class PuzzleStage : MonoBehavior {
 				Entity block = null;
 				int mapValue = mapData_[r][c];
 				if (CheckIsBlock(mapValue)) {
-					block = EntityCollection.CreateEntity("Block");
+					block = ecsGroup.CreateEntity("Block");
 				} else if (CheckIsGoal(mapValue)) {
-					block = EntityCollection.CreateEntity("Goal");
+					block = ecsGroup.CreateEntity("Goal");
 				}
 
 				if (block == null) {
@@ -365,6 +369,8 @@ public class PuzzleStage : MonoBehavior {
 	}
 
 	private void UpdateEntityPosition() {
+		Debug.Log("----- UpdateEntityPosition. -----");
+
 		/// ====================================================
 		/// このパズルのエンティティの座標を更新する
 		/// ====================================================
@@ -400,6 +406,8 @@ public class PuzzleStage : MonoBehavior {
 				blockScript.UpdatePosition(blockPosOffset_);
 			}
 		}
+
+		Debug.Log("----- UpdateEntityPosition. ended -----");
 	}
 
 

@@ -31,7 +31,7 @@ public class Player : MonoBehavior {
 			Debug.LogError("Player Initialize called but entity is null.");
 		}
 
-		Entity block = EntityCollection.CreateEntity("ArmItem");
+		Entity block = ecsGroup.CreateEntity("ArmItem");
 		if (block != null) {
 			AttachObjectToJoint attachScript = entity.GetScript<AttachObjectToJoint>();
 			if (attachScript != null) {
@@ -43,7 +43,7 @@ public class Player : MonoBehavior {
 	}
 
 	public override void Update() {
-		camera = EntityCollection.FindEntity("Camera"); // カメラエンティティを取得
+		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
 		if (camera == null) {
 			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
 		}
