@@ -180,16 +180,7 @@ EDITOR_STATE ReloadAllScriptsCommand::Execute() {
 
 	/// シーンを読み直す
 	pSceneManager_->SetNextScene(pSceneManager_->GetCurrentSceneName());
-
 	GetMonoScriptEnginePtr()->HotReload();
-
-	for (auto& entity : pECSGroup_->GetEntities()) {
-		Script* script = entity->GetComponent<Script>();
-		if (script) {
-			script->ResetScripts();
-		}
-	}
-
 
 	return EDITOR_STATE_FINISH;
 }

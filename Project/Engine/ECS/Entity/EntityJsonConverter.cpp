@@ -48,10 +48,6 @@ void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _ent
 			if (componentType == "Variables") {
 				Variables* vars = static_cast<Variables*>(comp);
 				vars->LoadJson("./Assets/Jsons/" + _entity->GetName() + ".json");
-
-			} else if (componentType == "Script") {
-				Script* script = static_cast<Script*>(comp);
-				script->ResetScripts(); 
 			}
 
 		} else {

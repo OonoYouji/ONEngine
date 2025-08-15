@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 public class ECSGroup {
@@ -37,6 +38,13 @@ public class ECSGroup {
 	/// c/c++側から呼び出すエンティティの追加関数
 	/// </summary>
 	public void AddEntity(int _id) {
+		/// 引数の_idがすでに存在する場合はエラー
+		if (entities_.ContainsKey(_id)) {
+			Debug.LogError("ECSGroup.AddEntity - Entity with ID: " + _id + " already exists in group: " + groupName);
+			return;
+		}
+
+
 		Debug.LogInfo("ECSGroup.AddEntity - Adding entity with ID: " + _id + ", Group Name: " + groupName);
 
 		Entity entity = new Entity(_id, this);
@@ -45,6 +53,7 @@ public class ECSGroup {
 		/// 生成、初期化の呼び出し用リストに追加
 		awakeList_.Add(entity);
 		initList_.Add(entity);
+		Debug.Log("ECSGroup.CreateEntity - AwakeListCount: " + awakeList_.Count + ", InitListCount: " + initList_.Count);
 	}
 
 	/// <summary>
@@ -56,7 +65,6 @@ public class ECSGroup {
 			Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: " + _behavior.GetType().Name);
 			entity.AddScript(_behavior);
 			_behavior.CreateBehavior(_entityId, _behavior.GetType().Name, this);
-			Debug.Log("Script added to Entity ID: " + _entityId + ", Script Name: " + _behavior.GetType().Name);
 		} else {
 			Debug.LogError("Entity.AddScript - Entity not found with ID: " + _entityId);
 		}
@@ -73,8 +81,10 @@ public class ECSGroup {
 		Entity entity = new Entity(id, this);
 		entities_.Add(id, entity);
 
-		/// 生成、初期化の呼び出しを行う
-		CallAwakeAndInitialize(entity);
+		awakeList_.Add(entity); //!< 生成されたエンティティを生成リストに追加
+		initList_.Add(entity); //!< 初期化リストにも追加
+		Debug.Log("ECSGroup.CreateEntity - AwakeListCount: " + awakeList_.Count + ", InitListCount: " + initList_.Count);
+
 		return entity;
 	}
 
@@ -91,6 +101,11 @@ public class ECSGroup {
 			return;
 		}
 
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: " + entities_.Count);
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+
+
 		/// 生成、初期化の呼び出しを行う
 		CallAwake();
 		CallInitialize();
@@ -101,9 +116,6 @@ public class ECSGroup {
 			}
 			Debug.Log("EntityUpdate ScriptCount: " + entity.GetScripts().Count + ", Entity ID: " + entity.Id);
 		}
-
-		Debug.Log("ECSGroup: " + groupName + " updated. Entity count: " + entities_.Count);
-
 	}
 
 
@@ -111,14 +123,25 @@ public class ECSGroup {
 	/// 生成されたエンティティの生成関数の呼び出しを行う
 	/// </summary>
 	private void CallAwake() {
-		foreach (Entity entity in awakeList_) {
+		if (awakeList_.Count == 0) {
+			return;
+		}
+
+		Debug.Log("");
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("ECSGroup.CallAwake - Awakening entities in group: " + groupName + ", Count: " + awakeList_.Count);
+
+		List<Entity> entitiesToAwake = new List<Entity>(awakeList_);
+		awakeList_.Clear(); // 生成リストをクリア
+		foreach (Entity entity in entitiesToAwake) {
 			foreach (MonoBehavior script in entity.GetScripts()) {
 				script.Awake();
 				Debug.Log("Awake called for script: " + script.GetType().Name + " on Entity ID: " + entity.Id);
 			}
 		}
-		Debug.Log("All entities awakened in group: " + groupName + "  count=" + awakeList_.Count);
-		awakeList_.Clear();
+
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("");
 	}
 
 
@@ -126,14 +149,26 @@ public class ECSGroup {
 	/// 生成されたエンティティの初期化関数の呼び出しを行う
 	/// </summary>
 	private void CallInitialize() {
-		foreach (Entity entity in initList_) {
+		if (initList_.Count == 0) {
+			return;
+		}
+
+		Debug.Log("");
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("ECSGroup.CallInitialize - Initializing entities in group: " + groupName + ", Count: " + initList_.Count);
+
+		List<Entity> entitiesToInitialize = new List<Entity>(initList_);
+		initList_.Clear();
+		foreach (Entity entity in entitiesToInitialize) {
 			foreach (MonoBehavior script in entity.GetScripts()) {
 				script.Initialize();
 				Debug.Log("Initialize called for script: " + script.GetType().Name + " on Entity ID: " + entity.Id);
 			}
 		}
-		Debug.Log("All entities initialized in group: " + groupName + "  count=" + initList_.Count);
-		initList_.Clear();
+
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log("");
+
 	}
 
 
@@ -177,6 +212,8 @@ public class ECSGroup {
 	/// すべてのエンティティを削除
 	/// </summary>
 	public void DeleteEntityAll() {
+		Debug.Log("ECSGroup.DeleteEntityAll - Deleting all entities in group: " + groupName + ", EntityCount: " + entities_.Count);
+
 		foreach (var entity in entities_.Values) {
 			entity.Destroy();
 		}

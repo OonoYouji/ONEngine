@@ -16,20 +16,12 @@ Script::Script() {
 	SetIsAdded(false);
 }
 
-Script::~Script() {
-	ReleaseGCHandles();
-}
+Script::~Script() {}
 
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
 	for (auto& script : scriptDataList_) {
 		if (script.scriptName == _scriptName) {
-
-			/// 生成済みのGCHandleを解放
-			ReleaseGCHandle(&script);
-
-			/// アタッチされている場合は再生成する
-			//GetMonoScriptEnginePtr()->MakeScript(this, &script, _scriptName);
 			return;
 		}
 	}
@@ -68,26 +60,6 @@ void Script::RemoveScript(const std::string& _scriptName) {
 
 }
 
-void Script::ResetScripts() {
-	ReleaseGCHandles();
-	for (auto& script : scriptDataList_) {
-		//GetMonoScriptEnginePtr()->MakeScript(this, &script, script.scriptName);
-	}
-}
-
-void Script::ReleaseGCHandles() {
-	for (auto& script : scriptDataList_) {
-		ReleaseGCHandle(&script);
-	}
-}
-
-void Script::ReleaseGCHandle(ScriptData* _releaseScript) {
-	if (!_releaseScript) {
-		Console::LogError("ScriptData pointer is null in ReleaseGCHandle");
-		return;
-	}
-}
-
 const std::string& Script::GetScriptName(size_t _index) const {
 	if (_index < scriptDataList_.size()) {
 		return scriptDataList_[_index].scriptName;
@@ -112,6 +84,17 @@ const std::vector<Script::ScriptData>& Script::GetScriptDataList() const {
 
 std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 	return scriptDataList_;
+}
+
+Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
+	for(auto& data : scriptDataList_) {
+		if (data.scriptName == _scriptName) {
+			return &data;  ///< 一致するスクリプトデータを返す
+		}
+	}
+
+	Console::LogError("Script::GetScriptData - Script " + _scriptName + " not found in GetScriptData.");
+	return nullptr;
 }
 
 void Script::SetEnable(const std::string& _scriptName, bool _enable) {

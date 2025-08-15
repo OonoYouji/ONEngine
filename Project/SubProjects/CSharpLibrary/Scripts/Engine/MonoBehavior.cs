@@ -11,7 +11,7 @@ public class MonoBehavior {
 	/// Behaviorの生成
 	public void CreateBehavior(int _entityId, string _name, ECSGroup _ecsGroup) {
 		if(!_ecsGroup) {
-			Debug.LogError("ECSGroup is null. Cannot create MonoBehavior for Entity ID: " + _entityId);
+			Debug.LogError("MonoBehavior.CreateBehavior - ECSGroup is null. Cannot create MonoBehavior for Entity ID: " + _entityId);
 			return;
 		}
 

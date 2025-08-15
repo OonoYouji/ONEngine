@@ -290,6 +290,10 @@ void MONO_INTERNAL_METHOD::InternalAddScript(int32_t _entityId, MonoString* _scr
 	Script* script = entity->AddComponent<Script>();
 	if (!script->Contains(scriptName)) {
 		script->AddScript(scriptName);
+		Script::ScriptData* data = script->GetScriptData(scriptName);
+		if (data) {
+			data->isAdded = true;
+		}
 	}
 }
 

@@ -190,13 +190,8 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pSceneManager_->ReloadScene(true);
 		pInspector_->SetSelectedEntity(0);
 
-
-		ComponentArray<Script>* gameScripts = pECS_->GetCurrentGroup()->GetComponentArray<Script>();
-		ComponentArray<Script>* debugScripts = pECS_->GetECSGroup("Debug")->GetComponentArray<Script>();
-
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
 		GetMonoScriptEnginePtr()->HotReload();
-
 
 	} else {
 		//!< 更新処理を停止した場合の処理

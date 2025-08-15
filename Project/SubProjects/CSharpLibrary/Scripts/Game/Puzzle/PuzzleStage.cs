@@ -19,12 +19,19 @@ public class PuzzleStage : MonoBehavior {
 
 	PuzzleCommandStacker puzzleCommandStacker_;
 
+	int initCallCount_ = 0; // 初期化の呼び出し回数
+
 	/// <summary>
 	/// 移動パラメータ
 	/// </summary>
 	private Vector2Int moveDir_;
 
 	public override void Initialize() {
+		initCallCount_++;
+		Debug.Log("====================================================================");
+		Debug.Log("PuzzleStage Initialize called. Call count: " + initCallCount_);
+		Debug.Log("====================================================================");
+
 		puzzleCommandStacker_ = new PuzzleCommandStacker();
 
 		mapchip_ = ecsGroup.CreateEntity("Mapchip");

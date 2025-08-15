@@ -73,9 +73,9 @@ public class Entity {
 	public Entity parent {
 		get {
 			int parentId = InternalGetParentId(entityId_, ecsGroupName_);
-			ECSGroup ecsGroup = EntityComponentSystem.GetECSGroup(ecsGroupName_);
-			if (ecsGroup) {
-				return ecsGroup.GetEntity(parentId);
+			Entity parentEntity = ecsGroup_.GetEntity(parentId);
+			if (parentEntity) {
+				return parentEntity;
 			}
 
 			Debug.LogError("Entity.parent - ECSGroup not found for Entity ID: " + entityId_ + " Name: " + name);

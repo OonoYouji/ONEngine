@@ -56,7 +56,6 @@ static public class EntityComponentSystem {
 
 		groups.Clear();
 		Debug.LogInfo("All entities deleted from all ECSGroups.");
-
 	}
 
 }

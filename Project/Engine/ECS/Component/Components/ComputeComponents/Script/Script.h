@@ -23,6 +23,7 @@ public:
 		std::string scriptName;
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
 		bool enable = true;  ///< スクリプトの有効/無効フラグ
+		bool isAdded = false; ///< スクリプトが追加されたかどうか
 	};
 
 
@@ -38,15 +39,12 @@ public:
 	void AddScript(const std::string& _scriptName);
 	void RemoveScript(const std::string& _scriptName);
 
-	void ResetScripts();
-	void ReleaseGCHandles();
-	void ReleaseGCHandle(ScriptData* _releaseScript);
-
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+	ScriptData* GetScriptData(const std::string& _scriptName);
 
 	void SetEnable(const std::string& _scriptName, bool _enable);
 	bool GetEnable(const std::string& _scriptName);

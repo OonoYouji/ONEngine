@@ -146,6 +146,8 @@ void MonoScriptEngine::RegisterFunctions() {
 }
 
 void MonoScriptEngine::HotReload() {
+	ResetCS();
+
 	MonoDomain* oldDomain = domain_;
 	std::string oldDllPath = currentDllPath_; // 今読み込んでるDLLのパスを保存
 
@@ -191,11 +193,15 @@ std::optional<std::string> MonoScriptEngine::FindLatestDll(const std::string& _d
 	std::string latestTimestamp;
 
 	for (const auto& entry : std::filesystem::directory_iterator(_dirPath)) {
-		if (!entry.is_regular_file()) continue;
+		if (!entry.is_regular_file()) {
+			continue;
+		}
 
 		std::string filename = entry.path().filename().string();
 		std::smatch match;
-		if (!std::regex_match(filename, match, pattern)) continue;
+		if (!std::regex_match(filename, match, pattern)) {
+			continue;
+		}
 
 		// match[1] → 日付（YYYYMMDD）、match[2] → 時刻（HHMMSS）
 		std::string timestamp = match[1].str() + match[2].str(); // "yyyyMMddHHmmss"

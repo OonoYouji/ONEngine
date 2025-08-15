@@ -31,7 +31,7 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			return;
 		}
 
-		for(auto& script : scriptArray->GetUsedComponents()) {
+		for (auto& script : scriptArray->GetUsedComponents()) {
 			script->SetIsAdded(false);
 		}
 
@@ -58,20 +58,19 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 	for (auto& script : scriptArray->GetUsedComponents()) {
-		/// C#に対してエンティティが追加済みなら無視
-		if (script->GetIsAdded()) {
-			continue;
-		}
 
-		/// 追加した
-		script->SetIsAdded(true);
+		/// スクリプトが有効でない場合はスキップ
 		MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
 		if (!ecsGroupObj) {
 			Console::LogError("Failed to get target from gcHandle_");
 			return;
 		}
 
-		{	/// Entityの追加関数を呼び出す
+
+		/// Entityの追加関数を呼び出す
+		if (!script->GetIsAdded()) {
+			script->SetIsAdded(true);
+
 			void* args[1];
 			int32_t entityId = script->GetOwner()->GetId();
 			args[0] = &entityId;
@@ -87,42 +86,44 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			}
 		}
 
-		{	/// Scriptの追加関数を呼び出す
+		for (auto& data : script->GetScriptDataList()) {
+
+			/// すでに追加済みなら処理しない
+			if (data.isAdded) {
+				continue;
+			}
+			data.isAdded = true; 
+
+			/// スクリプト名からMonoObjectを生成する
+			MonoClass* behaviorClass = mono_class_from_name(pImage_, "", data.scriptName.c_str());
+			if (!behaviorClass) {
+				Console::LogError("Failed to find MonoBehavior class");
+				continue;
+			}
+
+			/// インスタンスを生成
+			MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
+			mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
+			if (!script) {
+				continue;
+			}
 
 			void* args[2];
 			int32_t entityId = script->GetOwner()->GetId();
+			args[0] = &entityId;
+			args[1] = scriptInstance;
 
-			for (auto& data : script->GetScriptDataList()) {
-				/// スクリプト名からMonoObjectを生成する
-				MonoClass* behaviorClass = mono_class_from_name(pImage_, "", data.scriptName.c_str());
-				if (!behaviorClass) {
-					Console::LogError("Failed to find MonoBehavior class");
-					continue;
-				}
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
 
-				/// インスタンスを生成
-				MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
-				mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
-				if (!script) {
-					continue;
-				}
-
-				args[0] = &entityId;
-				args[1] = scriptInstance;
-
-				MonoObject* exc = nullptr;
-				mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
-
-				if (exc) {
-					/// 例外の処理
-					char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-					Console::LogError(std::string("Exception thrown in AddScript: ") + err);
-					mono_free(err);
-				}
-
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
+				mono_free(err);
 			}
-
 		}
+
 	}
 
 
