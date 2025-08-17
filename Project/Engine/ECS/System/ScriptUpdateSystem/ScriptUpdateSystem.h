@@ -26,8 +26,14 @@ public:
 	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
+	/// エンティティとコンポーネントをC#に追加
+	void AddEntityAndComponent(class ECSGroup* _ecsGroup);
+
 	/// 生成
 	void MakeScriptMethod(MonoImage* _image, const std::string& _ecsGroupName);
+
+	/// 解放
+	void ReleaseGCHandle();
 
 private:
 	/// ===================================================

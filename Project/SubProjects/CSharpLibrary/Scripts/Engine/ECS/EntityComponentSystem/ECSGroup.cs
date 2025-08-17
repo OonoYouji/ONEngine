@@ -200,7 +200,6 @@ public class ECSGroup {
 	/// </summary>
 	public void DestroyEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
-			entity.Destroy();
 			entities_.Remove(_id);
 			Debug.Log("Entity destroyed with ID: " + _id);
 		} else {
@@ -214,11 +213,10 @@ public class ECSGroup {
 	public void DeleteEntityAll() {
 		Debug.Log("ECSGroup.DeleteEntityAll - Deleting all entities in group: " + groupName + ", EntityCount: " + entities_.Count);
 
-		foreach (var entity in entities_.Values) {
+		var entitiesToDestroy = new Dictionary<int, Entity>(entities_);
+		foreach (var entity in entitiesToDestroy.Values) {
 			entity.Destroy();
 		}
-
-		entities_.Clear();
 	}
 
 	/// <summary>

@@ -16,7 +16,9 @@ ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
 	MakeScriptMethod(pImage_, _ecs->GetGroupName());
 }
 
-ScriptUpdateSystem::~ScriptUpdateSystem() {}
+ScriptUpdateSystem::~ScriptUpdateSystem() {
+	ReleaseGCHandle();
+}
 
 void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
@@ -35,7 +37,7 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			script->SetIsAdded(false);
 		}
 
-
+		ReleaseGCHandle();
 		MakeScriptMethod(pImage_, _ecs->GetGroupName());
 	}
 }
@@ -51,8 +53,39 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 #endif // DEBUG_MODE
 
+	/// C#側に未追加にエンティティとコンポーネントを追加する
+	AddEntityAndComponent(_ecs);
+
+	/// 関数呼び出しの条件
+	if (gcHandle_ != 0) {
+		if (updateEntitiesMethod_) {
+
+			/// 更新関数を呼び出す
+			MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
+			if (!ecsGroupObj) {
+				Console::LogError("Failed to get target from gcHandle_");
+				return;
+			}
+
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(updateEntitiesMethod_, ecsGroupObj, nullptr, &exc);
+
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
+				mono_free(err);
+			}
+
+		}
+	}
+
+}
+
+void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
+
 	/// C#側のECSGroupを取得、更新関数を呼ぶ
-	ComponentArray<Script>* scriptArray = _ecs->GetComponentArray<Script>();
+	ComponentArray<Script>* scriptArray = _ecsGroup->GetComponentArray<Script>();
 	if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
 		return;
 	}
@@ -92,7 +125,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			if (data.isAdded) {
 				continue;
 			}
-			data.isAdded = true; 
+			data.isAdded = true;
 
 			/// スクリプト名からMonoObjectを生成する
 			MonoClass* behaviorClass = mono_class_from_name(pImage_, "", data.scriptName.c_str());
@@ -122,32 +155,6 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
 				mono_free(err);
 			}
-		}
-
-	}
-
-
-	/// 関数呼び出しの条件
-	if (gcHandle_ != 0) {
-		if (updateEntitiesMethod_) {
-
-			/// 更新関数を呼び出す
-			MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
-			if (!ecsGroupObj) {
-				Console::LogError("Failed to get target from gcHandle_");
-				return;
-			}
-
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(updateEntitiesMethod_, ecsGroupObj, nullptr, &exc);
-
-			if (exc) {
-				/// 例外の処理
-				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-				Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
-				mono_free(err);
-			}
-
 		}
 	}
 
@@ -202,4 +209,11 @@ void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& 
 	addEntityMethod_ = mono_class_get_method_from_name(monoClass_, "AddEntity", 1);
 	addScriptMethod_ = mono_class_get_method_from_name(monoClass_, "AddScript", 2);
 
+}
+
+void ScriptUpdateSystem::ReleaseGCHandle() {
+	if(gcHandle_ != 0) {
+		mono_gchandle_free(gcHandle_);
+		gcHandle_ = 0;
+	}
 }
