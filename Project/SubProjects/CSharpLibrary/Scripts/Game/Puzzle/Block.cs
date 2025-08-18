@@ -15,6 +15,7 @@ public class Block : MonoBehavior {
 	private float clearAnimationTime_;
 	private int clearEffectMode_;
 	[SerializeField] private float sinSpeed_ = 20.0f;
+	[SerializeField] private float sinMultiplier_ = 0.1f;
 
 	private enum Mode : int {
 		Up, Down
@@ -57,8 +58,13 @@ public class Block : MonoBehavior {
 		}
 	}
 
-	public void UpdatePosition() {
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
+	public void UpdatePosition(int _playerType) {
+		float height = 0f;
+		if (_playerType != this.blockData.type) {
+			height -= 0.05f;
+		}
+		
+		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, height,
 			blockData.address.y * blockData.blockSpace);
 
 		transform.position = newPos;
@@ -83,15 +89,13 @@ public class Block : MonoBehavior {
 		Vector3 position = transform.position;
 		
 		float sinValue = Mathf.Sin(clearAnimationTime_ * sinSpeed_) * 0.5f + 0.5f;
-		sinValue *= 0.1f; /// sin波の大きさを調整
+		sinValue *= sinMultiplier_; /// sin波の大きさを調整
 		if (clearEffectMode_ == (int)Mode.Down) {
 			position.y = -sinValue;
 		} else {
 			position.y = sinValue;
 		}
 		
-		position.y += blockData.height;
-		position -= positionOffset_;
 		transform.position = position;
 	}
 }

@@ -35,12 +35,9 @@ void ImGuiHierarchyWindow::ImGuiFunc() {
 		return;
 	}
 
-	/*/// ドラッグ先の領域を設定
-	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
-	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
-
 	PrefabDragAndDrop();
 
+	/// Menuの表示
 	DrawMenuBar();
 
 	/// ヒエラルキーの表示
@@ -152,7 +149,7 @@ void ImGuiHierarchyWindow::DrawMenuBar() {
 
 			DrawMenuEntity();
 			DrawMenuScene();
-			DrawMenuScript();
+			//DrawMenuScript();
 
 			ImGui::EndMenu();
 		}
@@ -379,18 +376,13 @@ void ImGuiNormalHierarchyWindow::ImGuiFunc() {
 
 	pECSGroup_ = pECS_->GetCurrentGroup();
 
-	/*/// ドラッグ先の領域を設定
-	ImGui::SetCursorScreenPos(ImGui::GetWindowPos());
-	ImGui::InvisibleButton("DropTargetArea", ImGui::GetWindowSize());*/
-
+	/// Prefabのドラッグ＆ドロップ
 	PrefabDragAndDrop();
-
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("+")) {
 			DrawMenuEntity();
 			DrawMenuScene();
-			DrawMenuScript();
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

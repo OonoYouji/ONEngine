@@ -36,7 +36,7 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void UpdatePosition() {
 		/// 座標更新
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
+		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
 			blockData.address.y * blockData.blockSpace);
 		transform.position = newPos;
 
@@ -44,7 +44,7 @@ public class PuzzlePlayer : MonoBehavior {
 		Debug.Log("id=" + entity.Id + "; name=" + entity.name);
 		Debug.Log("pos: .x+" + newPos.x + "; .y=" + newPos.y + "; .z=" + newPos.z);
 		Debug.Log("block data: space=" + blockData.blockSpace + "; address.x=" + blockData.address.x + "; address.y="
-		          + blockData.address.y + "; height=" + blockData.height);
+		          + blockData.address.y);
 		Debug.Log("/////////////////////////////////////////////////////////");
 	}
 

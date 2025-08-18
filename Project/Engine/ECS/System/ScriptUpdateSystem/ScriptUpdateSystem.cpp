@@ -12,8 +12,8 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
-	pImage_ = GetMonoScriptEnginePtr()->Image();
-	MakeScriptMethod(pImage_, _ecs->GetGroupName());
+	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+	MakeScriptMethod(monoEngine->Image(), _ecs->GetGroupName());
 }
 
 ScriptUpdateSystem::~ScriptUpdateSystem() {
@@ -41,7 +41,7 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		}
 
 		ReleaseGCHandle();
-		MakeScriptMethod(pImage_, _ecs->GetGroupName());
+		MakeScriptMethod(monoEngine->Image(), _ecs->GetGroupName());
 	}
 }
 
@@ -86,6 +86,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
+	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
 
 	/// C#側のECSGroupを取得、更新関数を呼ぶ
 	ComponentArray<Script>* scriptArray = _ecsGroup->GetComponentArray<Script>();
@@ -131,7 +132,7 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 			data.isAdded = true;
 
 			/// スクリプト名からMonoObjectを生成する
-			MonoClass* behaviorClass = mono_class_from_name(pImage_, "", data.scriptName.c_str());
+			MonoClass* behaviorClass = mono_class_from_name(monoEngine->Image(), "", data.scriptName.c_str());
 			if (!behaviorClass) {
 				Console::LogError("Failed to find MonoBehavior class");
 				continue;

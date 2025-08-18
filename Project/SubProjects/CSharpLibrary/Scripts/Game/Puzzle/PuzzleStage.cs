@@ -46,7 +46,6 @@ public class PuzzleStage : MonoBehavior {
 			mapData_ = mapchipScript.GetStartMapData();
 		}
 
-		blockData_.height = 2f; // ブロックの高さを設定
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
 
 		CreateBlockParent();
@@ -71,7 +70,7 @@ public class PuzzleStage : MonoBehavior {
 		if (mapData_ != null) {
 			int width = mapData_[0].Count;
 			int height = mapData_.Count;
-			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+			blockPosOffset_ = new Vector3(width / 2f, 2f, height / 2f) * blockData_.blockSpace;
 			blockPosOffset_ *= -1f;
 			blockParent_.transform.position = blockPosOffset_;
 		}
@@ -121,7 +120,6 @@ public class PuzzleStage : MonoBehavior {
 			PuzzlePlayer puzzlePlayer = player.GetScript<PuzzlePlayer>();
 			if (puzzlePlayer != null) {
 				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
-				puzzlePlayer.blockData.height = blockData_.height; // プレイヤーの高さを設定
 				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
 
 				if (stagePlayer.type == (int)BlockType.Black) {
@@ -167,7 +165,6 @@ public class PuzzleStage : MonoBehavior {
 				Block blockScript = block.GetScript<Block>();
 				if (blockScript) {
 					blockScript.blockData.address = new Vector2Int(c, r);
-					blockScript.blockData.height = blockData_.height;
 					blockScript.blockData.blockSpace = blockData_.blockSpace;
 					blockScript.blockData.mapValue = mapValue;
 				}
@@ -176,7 +173,7 @@ public class PuzzleStage : MonoBehavior {
 				Transform t = block.transform;
 
 				/// blockのindexで位置を決定
-				t.position = new Vector3(c, blockData_.height, r);
+				t.position = new Vector3(c, 0f, r);
 
 				MeshRenderer mr = block.GetComponent<MeshRenderer>();
 				if (mr != null) {
@@ -410,17 +407,8 @@ public class PuzzleStage : MonoBehavior {
 			Block blockScript = block.GetScript<Block>();
 			if (blockScript) {
 				Vector2Int address = blockScript.blockData.address;
-
 				blockScript.blockData.mapValue = mapData_[address.y][address.x];
-				if (activePlayer) {
-					if (blockScript.blockData.type == activePlayer.blockData.type) {
-						blockScript.blockData.height = blockData_.height;
-					} else {
-						blockScript.blockData.height = blockData_.height - 0.05f;
-					}
-				}
-
-				blockScript.UpdatePosition();
+				blockScript.UpdatePosition(activePlayer.blockData.type);
 			}
 		}
 
