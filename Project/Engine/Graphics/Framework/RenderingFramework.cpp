@@ -83,7 +83,8 @@ void RenderingFramework::Draw() {
 	releaseBuildSubWindow_->PostDraw();
 
 	pWindowManager_->MainWindowPreDraw();
-	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), pDxManager_->GetDxCommand());
+	ECSGroup* currentGroup = pEntityComponentSystem_->GetCurrentGroup();
+	copyImagePipeline_->Draw(currentGroup, {}, currentGroup->GetMainCamera2D(), pDxManager_->GetDxCommand());
 	pWindowManager_->MainWindowPostDraw();
 #endif // DEBUG_MODE
 
