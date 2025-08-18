@@ -9,6 +9,7 @@ public class PuzzleStage : MonoBehavior {
 
 	// マップの情報、ブロックリスト、プレイヤーリスト
 	private List<List<int>> mapData_;
+	private Entity blockParent_;
 	private List<Entity> blocks_;
 	private List<Entity> players_;
 
@@ -48,12 +49,7 @@ public class PuzzleStage : MonoBehavior {
 		blockData_.height = 2f; // ブロックの高さを設定
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
 
-		if (mapData_ != null) {
-			int width = mapData_[0].Count;
-			int height = mapData_.Count;
-			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
-		}
-
+		CreateBlockParent();
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
 		UpdateEntityPosition();
@@ -68,9 +64,21 @@ public class PuzzleStage : MonoBehavior {
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
 	/// 初期化に使用する関数
 	/// ///////////////////////////////////////////////////////////////////////////////////////////
+	private void CreateBlockParent() {
+		blockParent_ = ecsGroup.CreateEntity("GameEntity");
+		blockParent_.parent = entity;
+		
+		if (mapData_ != null) {
+			int width = mapData_[0].Count;
+			int height = mapData_.Count;
+			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+			blockPosOffset_ *= -1f;
+			blockParent_.transform.position = blockPosOffset_;
+		}
+	}
+	
 	private void PlayerDeploy() {
 		Debug.Log("----- PlayerDeploy. -----");
-
 		/* ----- プレイヤーの配置 ----- */
 
 		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
@@ -96,7 +104,7 @@ public class PuzzleStage : MonoBehavior {
 			Entity player = players_[i];
 			Stage.Player stagePlayer = stagePlayers[i];
 
-			player.parent = this.entity; // プレイヤーをPuzzleの子にする
+			player.parent = blockParent_;
 			if (player.parent != null) {
 				Debug.LogInfo("player parent setting");
 			} else {
@@ -135,7 +143,7 @@ public class PuzzleStage : MonoBehavior {
 
 		Debug.Log("----- BlockDeployed. -----");
 
-
+		
 		blocks_ = new List<Entity>();
 
 		for (int r = 0; r < mapData_.Count; r++) {
@@ -164,7 +172,7 @@ public class PuzzleStage : MonoBehavior {
 					blockScript.blockData.mapValue = mapValue;
 				}
 
-				block.parent = this.entity;
+				block.parent = blockParent_;
 				Transform t = block.transform;
 
 				/// blockのindexで位置を決定
@@ -195,6 +203,8 @@ public class PuzzleStage : MonoBehavior {
 			int width = mapData_[0].Count;
 			int height = mapData_.Count;
 			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
+			blockPosOffset_ *= -1f;
+			blockParent_.transform.position = blockPosOffset_;
 		}
 
 		/* パズルを行っているときの更新 */
@@ -386,7 +396,7 @@ public class PuzzleStage : MonoBehavior {
 			Entity player = players_[i];
 			PuzzlePlayer pp = player.GetScript<PuzzlePlayer>();
 			if (pp) {
-				pp.UpdatePosition(blockPosOffset_);
+				pp.UpdatePosition();
 			}
 		}
 
@@ -410,7 +420,7 @@ public class PuzzleStage : MonoBehavior {
 					}
 				}
 
-				blockScript.UpdatePosition(blockPosOffset_);
+				blockScript.UpdatePosition();
 			}
 		}
 

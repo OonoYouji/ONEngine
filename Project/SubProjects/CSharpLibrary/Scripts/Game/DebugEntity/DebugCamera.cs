@@ -108,8 +108,7 @@ public class DebugCamera : MonoBehavior {
 		}
 
 		Debug.Log("////////////////////////////////////////////////////////////");
-		Debug.Log("t pos.x=" + transform.position.x + ", pos.y=" + transform.position.y + ", pos.z="
-		          + transform.position.z);
+		Debug.Log("t pos.x=" + transform.position.x + ", pos.y=" + transform.position.y + ", pos.z=" + transform.position.z);
 		Debug.Log("////////////////////////////////////////////////////////////");
 	}
 }

@@ -34,11 +34,10 @@ public class PuzzlePlayer : MonoBehavior {
 		blockData.address += _moveDir;
 	}
 
-	public void UpdatePosition(Vector3 _offset) {
+	public void UpdatePosition() {
 		/// 座標更新
 		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
 			blockData.address.y * blockData.blockSpace);
-		newPos -= _offset;
 		transform.position = newPos;
 
 		Debug.Log("/////////////////////////////////////////////////////////");

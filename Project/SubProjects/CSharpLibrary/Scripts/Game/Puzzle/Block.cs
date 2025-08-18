@@ -8,9 +8,17 @@ using System.Threading.Tasks;
 public class Block : MonoBehavior {
 	public PuzzleBlockData blockData;
 
+	private Vector3 positionOffset_;
+
 	/* ----- clear vars ----- */
 	private bool isStartClearAnimation_;
 	private float clearAnimationTime_;
+	private int clearEffectMode_;
+	[SerializeField] private float sinSpeed_ = 20.0f;
+
+	private enum Mode : int {
+		Up, Down
+	}
 
 	public override void Initialize() {
 		transform.scale = Vector3.one * 0.1f;
@@ -49,16 +57,21 @@ public class Block : MonoBehavior {
 		}
 	}
 
-	public void UpdatePosition(Vector3 _offset) {
+	public void UpdatePosition() {
 		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, blockData.height,
 			blockData.address.y * blockData.blockSpace);
-		newPos -= _offset;
 
 		transform.position = newPos;
 	}
 
 	public void StartClearEffect(PuzzlePlayer _player) {
 		isStartClearAnimation_ = true;
+		int playerType = _player.blockData.type;
+		if (playerType != blockData.type) {
+			clearEffectMode_ = (int)Mode.Down;
+		} else {
+			clearEffectMode_ = (int)Mode.Up;
+		}
 	}
 
 	private void UpdateClearEffect() {
@@ -66,5 +79,19 @@ public class Block : MonoBehavior {
 		/// _playerの色と自身の色を比較、色次第で別々の演出をする
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		mr.color = new Vector4(1, 0, 0, 1);
+
+		Vector3 position = transform.position;
+		
+		float sinValue = Mathf.Sin(clearAnimationTime_ * sinSpeed_) * 0.5f + 0.5f;
+		sinValue *= 0.1f; /// sin波の大きさを調整
+		if (clearEffectMode_ == (int)Mode.Down) {
+			position.y = -sinValue;
+		} else {
+			position.y = sinValue;
+		}
+		
+		position.y += blockData.height;
+		position -= positionOffset_;
+		transform.position = position;
 	}
 }

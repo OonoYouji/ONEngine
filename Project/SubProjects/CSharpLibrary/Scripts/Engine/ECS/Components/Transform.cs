@@ -21,17 +21,6 @@ public class Transform : Component {
 		}
 	}
 
-	public Vector3 localPosition {
-		get {
-			float _x, _y, _z;
-			InternalGetLocalPosition(nativeHandle, out _x, out _y, out _z);
-			return new Vector3(_x, _y, _z);
-		}
-		set {
-			InternalSetLocalPosition(nativeHandle, value.x, value.y, value.z);
-		}
-	}
-
 	public Quaternion rotate {
 		get {
 			float _x, _y, _z, _w;

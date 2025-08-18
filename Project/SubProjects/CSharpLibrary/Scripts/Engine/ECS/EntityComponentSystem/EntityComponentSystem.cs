@@ -79,6 +79,8 @@ static public class EntityComponentSystem {
 
 	static public MonoBehavior GetMonoBehavior(string _groupName, int _entityId, string _scriptName) {
 		Debug.LogInfo("EntityComponentSystem.GetMonoBehavior - Getting MonoBehavior from group: " + _groupName + ", Entity ID: " + _entityId + ", Script Name: " + _scriptName);
+		Debug.LogInfo("EntityComponentSystem.GetEntity - GroupCount: " + groups.Count);
+		
 		if (groups.TryGetValue(_groupName, out ECSGroup group)) {
 			Entity entity = group.GetEntity(_entityId);
 			if (entity != null) {
