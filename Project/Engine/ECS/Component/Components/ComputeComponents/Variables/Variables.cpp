@@ -10,9 +10,12 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+#include "Engine/Script/MonoScriptEngine.h"
+
 
 using json = nlohmann::json;
 
@@ -267,10 +270,9 @@ void Variables::ReloadScriptVariables() {
 		Group& group = groups_[groupIndex];
 
 		{
-			MonoObject* safeObj = nullptr;
-			//if (data.gcHandle != 0) {
-			//	safeObj = mono_gchandle_get_target(data.gcHandle);
-			//}
+			MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+			GameEntity* entity = GetOwner();
+			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), data.scriptName);
 
 			if (!safeObj) {
 				continue; //!< 対象のスクリプトがない場合はスキップ
@@ -488,92 +490,14 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 		return;
 	}
 
-	static std::string variableName;
-
-	//{	/// 新規変数の追加
-	//	if (variableName.capacity() < 128) {
-	//		variableName.reserve(128);
-	//	}
-
-	//	ImGui::SetNextItemWidth(128.0f);
-	//	ImGuiInputText("##name", &variableName);
-
-	//	ImGui::SameLine();
-	//	ImGui::SetNextItemWidth(80.0f);
-	//	static int type = 0;
-	//	ImGui::Combo("##mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
-	//	ImGui::Spacing();
-
-
-	//	ImGui::SameLine();
-	//}
-
-	ImGui::SeparatorText("");
-
-	{	/// 既存の変数の表示
-
-		std::list<std::pair<std::string, std::string>> removeList;
-		std::vector<std::tuple<std::string, Variables::Var, std::string>> variables;
-		std::string ptrStr, label;
-
-		//for (const auto& [key, index] : _variables->GetKeyMap()) {
-		//	variables.emplace_back(key, _variables->GetVariables()[index], "##{:p}" + std::to_string(reinterpret_cast<uintptr_t>(&_variables->GetVariables()[index])));
-		//}
-
-		//if (variables.empty()) {
-		//	ImGui::Text("no variables...");
-		//}
-
-
-		for (auto& [name, variable, str] : variables) {
-			ptrStr = str;
-			label = name;
-
-			ImGui::SetNextItemWidth(64.0f);
-			if (ImGui::InputText((ptrStr + "string").c_str(), label.data(), label.capacity())) {
-				label.resize(strlen(label.c_str()));
-				removeList.push_back({ name, label });
-			}
-
-			ImGui::SameLine();
-
-			/// 変数の型によって処理を変える
-			//ValueImGui(_variables, ptrStr, name, variable.index());
-		}
-
-		//for (auto& [oldName, newName] : removeList) {
-		//	_variables->Rename(oldName, newName);
-		//}
-	}
-
-	ImGui::SeparatorText("");
-
 	if (ImGui::Button("export")) {
-		std::string ownerName = _variables->GetOwner()->GetName();
+		GameEntity* entity = _variables->GetOwner();
+		const std::string& ownerName = entity->GetName();
+		const std::string& groupName = entity->GetECSGroup()->GetGroupName();
+
 
 		_variables->ReloadScriptVariables();
-		_variables->SaveJson("Assets/Jsons/" + ownerName + ".json");
-	}
-
-	ImGui::SameLine();
-
-	// open Dialog Simple
-	if (ImGui::Button("import")) {
-		IGFD::FileDialogConfig config;
-		config.path = "./Assets/Jsons";
-		ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
-	}
-	// display
-	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
-		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-			// action
-			_variables->LoadJson(filePathName);
-		}
-
-		// close
-		ImGuiFileDialog::Instance()->Close();
+		_variables->SaveJson("Assets/Jsons/" + groupName + "/" + ownerName + ".json");
 	}
 }
 

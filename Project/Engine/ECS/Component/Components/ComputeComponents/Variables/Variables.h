@@ -15,7 +15,6 @@
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Tools/Log.h"
-//#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 /// ////////////////////////////////////////////
 /// 変数component
