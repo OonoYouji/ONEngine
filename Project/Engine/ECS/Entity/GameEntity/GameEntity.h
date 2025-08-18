@@ -132,6 +132,8 @@ public:
 
 	int32_t GetId() const;
 
+	ECSGroup* GetECSGroup() const;
+
 };
 
 template<class Comp>

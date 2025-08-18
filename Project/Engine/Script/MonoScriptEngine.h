@@ -45,6 +45,10 @@ public:
 	/// C#側のリセット
 	void ResetCS();
 
+	/// C#側のEntityを取得
+	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
+	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
+
 private:
 	/// ===================================================
 	/// private : objects

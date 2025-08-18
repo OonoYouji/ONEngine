@@ -29,7 +29,6 @@ void Script::AddScript(const std::string& _scriptName) {
 	ScriptData scriptData;
 	scriptData.scriptName = _scriptName;
 
-	//GetMonoScriptEnginePtr()->MakeScript(this, &scriptData, _scriptName);
 	scriptDataList_.push_back(std::move(scriptData));
 }
 
@@ -137,7 +136,6 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		return;
 	}
 
-
 	std::string ptrLable;
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
 	for (size_t i = 0; i < scriptList.size(); i++) {
@@ -159,38 +157,37 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 		}
 
 
-		//if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
+		if (ImGui::CollapsingHeader(script.scriptName.c_str())) {
 			/// ------------------------------------------------------------------
 			/// スクリプト内の[SerializeField]など表示
 			/// ------------------------------------------------------------------
 
-			//MonoObject* safeObj = nullptr;
-			//if (script.gcHandle != 0) {
-			//	safeObj = mono_gchandle_get_target(script.gcHandle);
-			//}
+			GameEntity* entity = _script->GetOwner();
+			MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
 
-			//if (safeObj) {
-			//	MonoClass* monoClass = mono_object_get_class(safeObj);
-			//	MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
-			//	MonoClassField* field = nullptr;
-			//	void* iter = nullptr;
 
-			//	while ((field = mono_class_get_fields(monoClass, &iter))) {
-			//		const char* fieldName = mono_field_get_name(field);
+			if (safeObj) {
+				MonoClass* monoClass = mono_object_get_class(safeObj);
+				MonoClass* serializeFieldClass = mono_class_from_name(mono_class_get_image(monoClass), "", "SerializeField");
+				MonoClassField* field = nullptr;
+				void* iter = nullptr;
 
-			//		MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
-			//		if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
-			//			// 値の取得
-			//			MonoType* fieldType = mono_field_get_type(field);
-			//			int type = mono_type_get_type(fieldType);
+				while ((field = mono_class_get_fields(monoClass, &iter))) {
+					const char* fieldName = mono_field_get_name(field);
 
-			//			ShowFiled(type, safeObj, field, fieldName);
-			//		}
+					MonoCustomAttrInfo* attrs = mono_custom_attrs_from_field(monoClass, field);
+					if (attrs && mono_custom_attrs_has_attr(attrs, serializeFieldClass)) {
+						// 値の取得
+						MonoType* fieldType = mono_field_get_type(field);
+						int type = mono_type_get_type(fieldType);
 
-			//	}
-			//}
+						ShowFiled(type, safeObj, field, fieldName);
+					}
+				}
+			}
 
-		//}
+		}
 
 		
 		/// スクリプトが2種類以上ないと入れ替える意味がない

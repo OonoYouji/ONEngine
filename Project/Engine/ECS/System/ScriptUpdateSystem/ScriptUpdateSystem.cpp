@@ -35,6 +35,9 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 		for (auto& script : scriptArray->GetUsedComponents()) {
 			script->SetIsAdded(false);
+			for(auto& data : script->GetScriptDataList()) {
+				data.isAdded = false;
+			}
 		}
 
 		ReleaseGCHandle();

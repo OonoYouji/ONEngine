@@ -241,6 +241,84 @@ void MonoScriptEngine::ResetCS() {
 
 }
 
+MonoObject* MonoScriptEngine::GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId) {
+	/// MonoClassを取得
+	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
+	if (!monoClass) {
+		Console::LogError("Failed to find class: EntityComponentSystem");
+		return nullptr;
+	}
+
+	/// MonoMethodを取得
+	MonoMethod* method = mono_class_get_method_from_name(monoClass, "GetEntity", 2);
+	if (!method) {
+		Console::LogError("Failed to find method: GetEntity");
+		return nullptr;
+	}
+
+	/// 引数を設定
+	MonoString* ecsGroupNameStr = mono_string_new(mono_domain_get(), _ecsGroupName.c_str());
+	void* args[2];
+	args[0] = ecsGroupNameStr;
+	args[1] = &_entityId;
+
+	/// MonoObjectを取得
+	MonoObject* exc = nullptr;
+	MonoObject* result = mono_runtime_invoke(method, nullptr, args, &exc);
+	if (exc) {
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown: ") + err);
+		mono_free(err);
+		return nullptr;
+	}
+
+	if (result) {
+		return result;
+	}
+
+	return nullptr;
+}
+
+MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName) {
+	/// MonoClassを取得
+	MonoClass* monoClass = mono_class_from_name(image_, "", "EntityComponentSystem");
+	if (!monoClass) {
+		Console::LogError("Failed to find class: EntityComponentSystem");
+		return nullptr;
+	}
+
+	/// MonoMethodを取得
+	MonoMethod* method = mono_class_get_method_from_name(monoClass, "GetMonoBehavior", 3);
+	if (!method) {
+		Console::LogError("Failed to find method: GetEntity");
+		return nullptr;
+	}
+
+	/// 引数を設定
+	MonoString* ecsGroupNameStr = mono_string_new(mono_domain_get(), _ecsGroupName.c_str());
+	MonoString* behaviorNameStr = mono_string_new(mono_domain_get(), _behaviorName.c_str());
+	void* args[3];
+	args[0] = ecsGroupNameStr;
+	args[1] = &_entityId;
+	args[2] = behaviorNameStr;
+
+	/// MonoObjectを取得
+	MonoObject* exc = nullptr;
+	MonoObject* result = mono_runtime_invoke(method, nullptr, args, &exc);
+	if (exc) {
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown: ") + err);
+		mono_free(err);
+		return nullptr;
+	}
+
+	if (result) {
+		return result;
+	}
+
+	return nullptr;
+}
+
 
 
 MonoDomain* MonoScriptEngine::Domain() const {

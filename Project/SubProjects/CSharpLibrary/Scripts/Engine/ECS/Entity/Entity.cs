@@ -175,7 +175,22 @@ public class Entity {
 			return AddScript<T>();
 		}
 
-		Debug.LogWarning("GetScript<" + typeof(T).Name + ">(); did not exist.");
+		Debug.LogWarning("Entity.GetScript<T> - GetScript<" + typeof(T).Name + ">(); did not exist.");
+		/// なかったのでnullを返す
+		return null;
+	}
+
+	public MonoBehavior GetScript(string _scriptName) {
+		Debug.LogInfo("Entity.GetScript - GetScript(" + _scriptName + ") called for Entity ID: " + entityId_);
+		Debug.LogInfo("Entity.GetScript - Current scripts count: " + scripts_.Count);
+		/// スクリプトを得る
+		if (scripts_.ContainsKey(_scriptName)) {
+			/// あったので返す
+			return scripts_[_scriptName];
+		}
+
+		Debug.LogWarning("Entity.GetScript - GetScript(" + _scriptName + ") did not exist.");
+
 		/// なかったのでnullを返す
 		return null;
 	}

@@ -287,4 +287,8 @@ int32_t GameEntity::GetId() const {
 	return id_;
 }
 
+ECSGroup* GameEntity::GetECSGroup() const {
+	return pECSGroup_;
+}
+
 

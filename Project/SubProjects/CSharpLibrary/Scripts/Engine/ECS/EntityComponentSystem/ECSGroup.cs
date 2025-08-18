@@ -63,8 +63,8 @@ public class ECSGroup {
 		Entity entity;
 		if (entities_.TryGetValue(_entityId, out entity)) {
 			Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: " + _behavior.GetType().Name);
-			entity.AddScript(_behavior);
 			_behavior.CreateBehavior(_entityId, _behavior.GetType().Name, this);
+			entity.AddScript(_behavior);
 		} else {
 			Debug.LogError("Entity.AddScript - Entity not found with ID: " + _entityId);
 		}
@@ -171,29 +171,17 @@ public class ECSGroup {
 
 	}
 
-
-	/// <summary>
-	/// 引数のエンティティのスクリプトのAwakeとInitializeを呼び出す
-	/// </summary>
-	private void CallAwakeAndInitialize(Entity _entity) {
-		foreach (MonoBehavior script in _entity.GetScripts()) {
-			script.Awake();
-			script.Initialize();
-		}
-	}
-
-
 	/// <summary>
 	/// Entityの取得
 	/// </summary>
 	public Entity GetEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
+			Debug.Log("ECSGroup.GetEntity - Entity found with ID: " + entity.Id + ", Entity Name: " + entity.name);
 			return entity;
 		}
-		Debug.LogError("Entity not found with ID: " + _id);
+		Debug.LogError("ECSGroup.GetEntity - Entity not found with ID: " + _id + ", Group Name: " + groupName);
 		return null;
 	}
-
 
 	/// <summary>
 	/// エンティティの削除
