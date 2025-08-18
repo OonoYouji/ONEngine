@@ -42,10 +42,28 @@ private:
 
 	MonoImage* pImage_;
 
-	MonoClass*  monoClass_;
+	MonoClass* monoClass_;
 	uint32_t    gcHandle_;
 	MonoMethod* updateEntitiesMethod_;
 	MonoMethod* addEntityMethod_;
 	MonoMethod* addScriptMethod_;
 
+};
+
+
+
+/// /////////////////////////////////////////////////
+/// デバッグ用のスクリプト更新システム
+/// /////////////////////////////////////////////////
+class DebugScriptUpdateSystem : public ScriptUpdateSystem {
+public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	DebugScriptUpdateSystem(class ECSGroup* _ecs);
+	~DebugScriptUpdateSystem() override;
+
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 };

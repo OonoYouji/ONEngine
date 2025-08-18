@@ -220,3 +220,20 @@ void ScriptUpdateSystem::ReleaseGCHandle() {
 		gcHandle_ = 0;
 	}
 }
+
+
+/// ///////////////////////////////////////////////
+/// デバッグ用のスクリプト更新システム
+/// ///////////////////////////////////////////////
+
+DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs) 
+	: ScriptUpdateSystem(_ecs) {}
+DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
+
+void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	/// デバッグのスクリプトは常時更新したいのでRuntimeの更新も呼び出すようにする
+	ScriptUpdateSystem::OutsideOfRuntimeUpdate(_ecs);
+	ScriptUpdateSystem::RuntimeUpdate(_ecs);
+}
+
+void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup*) {}

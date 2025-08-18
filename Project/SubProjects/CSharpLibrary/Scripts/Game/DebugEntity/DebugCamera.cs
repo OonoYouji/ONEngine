@@ -101,7 +101,7 @@ public class DebugCamera : MonoBehavior {
 			transform.position = position_;
 
 			Vector2 mouseMove = Input.MouseVelocity();
-			eulerAngles_.x -= mouseMove.y * 0.01f;
+			eulerAngles_.x += mouseMove.y * 0.01f;
 			eulerAngles_.y += mouseMove.x * 0.01f;
 
 			transform.rotate = Quaternion.FromEuler(eulerAngles_);
