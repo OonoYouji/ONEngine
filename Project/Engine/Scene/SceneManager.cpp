@@ -103,16 +103,18 @@ void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
 
 	currentScene_ = std::move(nextScene_);
 
-	std::string sceneName = currentScene_;
+	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(GetCurrentSceneName());
+	const std::string& sceneName = nextSceneGroup->GetGroupName();
+
+	pECS_->SetCurrentGroupName(sceneName);
+
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneName += "_temp";
+		sceneIO_->InputTemporary(currentScene_, nextSceneGroup);
+		return;
 	}
 
-	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(sceneName);
-
 	sceneIO_->Input(sceneName, nextSceneGroup);
-	pECS_->SetCurrentGroupName(sceneName);
 
 	Time::ResetTime();
 }

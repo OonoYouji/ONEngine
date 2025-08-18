@@ -31,18 +31,36 @@ void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 }
 
 void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
-	/* 一時的なシーンのjsonを保存する */
-	fileName_ = _sceneName + "_temp.json";
-	SaveScene(fileName_, _ecsGroup);
+	tempSceneJson_.clear();
+	SaveSceneToJson(tempSceneJson_, _ecsGroup);
 }
 
 void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
-	fileName_ = _sceneName + "_temp.json";
-	LoadScene(fileName_, _ecsGroup);
+	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
 }
 
 void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	nlohmann::json outputJson = nlohmann::json::object();
+	SaveSceneToJson(outputJson, _ecsGroup);
+	OutputJson(outputJson, _filename);
+}
+
+void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
+	std::ifstream inputFile(fileDirectory_ + _filename);
+	if (!inputFile.is_open()) {
+		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+		return;
+	}
+
+	/// json形式に変換
+	nlohmann::json inputJson;
+	inputFile >> inputJson;
+	inputFile.close();
+
+	LoadSceneFromJson(inputJson, _ecsGroup);
+}
+
+void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 
 	auto& entities = _ecsGroup->GetEntities();
 	for (auto& entity : entities) {
@@ -60,44 +78,16 @@ void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 			continue; // エンティティの情報が空ならスキップ
 		}
 
-		outputJson["entities"].push_back(entityJson);
+		_output["entities"].push_back(entityJson);
 	}
 
-
-	/// ファイルが無かったら生成する
-	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
-		std::filesystem::create_directories(fileDirectory_);
-	}
-
-
-	std::ofstream outputFile(fileDirectory_ + _filename);
-	if (!outputFile.is_open()) {
-		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
-	}
-
-	outputFile << outputJson.dump(4);
-	outputFile.close();
 }
 
-void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
-
-	std::ifstream inputFile(fileDirectory_ + _filename);
-	if (!inputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
-		return;
-	}
-
-	/// json形式に変換
-	nlohmann::json inputJson;
-	inputFile >> inputJson;
-	inputFile.close();
-
+void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGroup) {
 	std::unordered_map<uint32_t, GameEntity*> entityMap;
 
-	const std::string sceneName = Mathf::FileNameWithoutExtension(_filename);
-
 	/// 実際にシーンに変換する
-	for (const auto& entityJson : inputJson["entities"]) {
+	for (const auto& entityJson : _input["entities"]) {
 		const std::string& prefabName = entityJson.value("prefabName", "");
 		const std::string& entityName = entityJson.value("name", "");
 		const uint32_t entityId = entityJson.value("id", 0);
@@ -130,7 +120,7 @@ void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 
 
 	/// エンティティの親子関係を設定
-	for (const auto& entityJson : inputJson["entities"]) {
+	for (const auto& entityJson : _input["entities"]) {
 		int32_t entityId = entityJson["id"];
 		if (entityMap.find(entityId) == entityMap.end()) {
 			continue; // エンティティが見つからない場合はスキップ
@@ -144,5 +134,20 @@ void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 			}
 		}
 	}
+}
 
+void SceneIO::OutputJson(const nlohmann::json& _json, const std::string& _filename) {
+	/// ファイルが無かったら生成する
+	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
+		std::filesystem::create_directories(fileDirectory_);
+	}
+
+	/// ファイルに保存する
+	std::ofstream outputFile(fileDirectory_ + _filename);
+	if (!outputFile.is_open()) {
+		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+	}
+
+	outputFile << _json.dump(4);
+	outputFile.close();
 }
