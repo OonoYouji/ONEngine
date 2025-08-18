@@ -31,35 +31,18 @@ void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 }
 
 void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
+	tempSceneJson_.clear();
 	SaveSceneToJson(tempSceneJson_, _ecsGroup);
-	///* 一時的なシーンのjsonを保存する */
-	//fileName_ = _sceneName + "_temp.json";
-	//SaveScene(fileName_, _ecsGroup);
 }
 
 void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
-	//fileName_ = _sceneName + "_temp.json";
-	//LoadScene(fileName_, _ecsGroup);
 }
 
 void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	nlohmann::json outputJson = nlohmann::json::object();
 	SaveSceneToJson(outputJson, _ecsGroup);
-
-	/// ファイルが無かったら生成する
-	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
-		std::filesystem::create_directories(fileDirectory_);
-	}
-
-	/// ファイルに保存する
-	std::ofstream outputFile(fileDirectory_ + _filename);
-	if (!outputFile.is_open()) {
-		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
-	}
-
-	outputFile << outputJson.dump(4);
-	outputFile.close();
+	OutputJson(outputJson, _filename);
 }
 
 void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
@@ -151,4 +134,20 @@ void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGrou
 			}
 		}
 	}
+}
+
+void SceneIO::OutputJson(const nlohmann::json& _json, const std::string& _filename) {
+	/// ファイルが無かったら生成する
+	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
+		std::filesystem::create_directories(fileDirectory_);
+	}
+
+	/// ファイルに保存する
+	std::ofstream outputFile(fileDirectory_ + _filename);
+	if (!outputFile.is_open()) {
+		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+	}
+
+	outputFile << _json.dump(4);
+	outputFile.close();
 }

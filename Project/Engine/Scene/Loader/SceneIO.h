@@ -39,6 +39,8 @@ private:
 	void SaveSceneToJson(nlohmann::json& _output, class ECSGroup* _ecsGroup);
 	void LoadSceneFromJson(const nlohmann::json& _input, class ECSGroup* _ecsGroup);
 
+	void OutputJson(const nlohmann::json& _json, const std::string& _filename);
+
 private:
 	/// ==================================================
 	/// private : objects

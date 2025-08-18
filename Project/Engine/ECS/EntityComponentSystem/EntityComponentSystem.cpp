@@ -337,6 +337,11 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 		}
 	}
 
+	/// EntityのScriptのAddedをTrueにする
+	if (Script* script = entity->GetComponent<Script>()) {
+		script->SetIsAdded(true);
+	}
+
 	if (_entityId) {
 		*_entityId = entity->GetId();
 	}

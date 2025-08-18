@@ -93,6 +93,7 @@ void GameFramework::Run() {
 		editorManager_->Update(renderingFramework_->GetResourceCollection());
 		imGuiManager_->Update();
 		entityComponentSystem_->DebuggingUpdate();
+		entityComponentSystem_->OutsideOfUpdate();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
 		if (DebugConfig::isDebugging) {
@@ -100,7 +101,6 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 
-		entityComponentSystem_->OutsideOfUpdate();
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
