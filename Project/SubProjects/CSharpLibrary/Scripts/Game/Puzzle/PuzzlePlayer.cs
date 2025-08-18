@@ -18,7 +18,7 @@ public class PuzzlePlayer : MonoBehavior {
 		isGoaled.Update();
 
 		if (isGoaled.Trigger()) {
-			EntityCollection.CreateEntity("Block");
+			ecsGroup.CreateEntity("Block");
 		}
 
 		/// MAPDATAより、Playerは 100 or 101なので

@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Core/Utility/Utility.h"
 
 TerrainCollider::TerrainCollider() {
@@ -14,7 +14,7 @@ TerrainCollider::TerrainCollider() {
 }
 
 void TerrainCollider::AttachTerrain() {
-	if (IEntity* entity = GetOwner()) {
+	if (GameEntity* entity = GetOwner()) {
 		pTerrain_ = entity->GetComponent<Terrain>();
 	}
 }

@@ -17,7 +17,7 @@ namespace FileSystemf {
 
 }
 
-namespace MONO_INTENRAL_METHOD {
+namespace MONO_INTERNAL_METHOD {
 
 	MonoString* LoadFile(MonoString* _path);
 }

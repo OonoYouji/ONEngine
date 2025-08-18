@@ -9,7 +9,7 @@
 TerrainColliderVertexGenerator::TerrainColliderVertexGenerator(class DxManager* _dxManager)
 	: pDxManager_(_dxManager) {}
 
-void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>&) {
+void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<TerrainCollider>* colliderArray = _ecs->GetComponentArray<TerrainCollider>();
 	if (!colliderArray) {
@@ -36,6 +36,6 @@ void TerrainColliderVertexGenerator::OutsideOfRuntimeUpdate(EntityComponentSyste
 
 }
 
-void TerrainColliderVertexGenerator::RuntimeUpdate(EntityComponentSystem*, const std::vector<class IEntity*>&) {
+void TerrainColliderVertexGenerator::RuntimeUpdate(ECSGroup*) {
 
 }

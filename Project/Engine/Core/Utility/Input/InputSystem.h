@@ -26,8 +26,6 @@ public:
 	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
 	void Update();
 
-	void RegisterMonoFunctions();
-
 private:
 
 	/// ===================================================
@@ -39,7 +37,11 @@ private:
 	std::unique_ptr<Mouse>    mouse_;
 	std::unique_ptr<Gamepad>  gamepad_;
 
-	class WindowManager* windowManager_ = nullptr;
+	class WindowManager* pWindowManager_ = nullptr;
 };
 
-void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);
+namespace MONO_INTERNAL_METHOD {
+	void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y);
+	void InternalGetMouseVelocity(float* _x, float* _y);
+	void InternalGetMousePosition(float* _x, float* _y);
+}

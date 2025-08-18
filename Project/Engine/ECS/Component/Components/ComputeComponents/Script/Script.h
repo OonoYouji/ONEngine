@@ -11,7 +11,6 @@
 /// engine
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
 
-
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント
 /// ///////////////////////////////////////////////////
@@ -22,20 +21,9 @@ public:
 
 	struct ScriptData {
 		std::string scriptName;
-		MonoObject* instance = nullptr;
-		MonoClass* monoClass = nullptr;
-		uint32_t gcHandle = 0;
-		MonoMethod* internalInitMethod = nullptr;
-		MonoMethod* initMethod = nullptr;
-		MonoMethod* updateMethod = nullptr;
-
-		std::array<MonoMethod*, 3> collisionEventMethods = {};
-
 		bool enable = true;  ///< スクリプトの有効/無効フラグ
-
-		/// update system用
-		bool isCalledAwake = false;
-		bool isCalledInit = false;
+		bool isAdded = false; ///< スクリプトが追加されたかどうか
+		std::array<MonoMethod*, 3> collisionEventMethods = {};
 	};
 
 
@@ -51,22 +39,15 @@ public:
 	void AddScript(const std::string& _scriptName);
 	void RemoveScript(const std::string& _scriptName);
 
-	void ResetScripts();
-	void ReleaseGCHandles();
-	void ReleaseGCHandle(ScriptData* _releaseScript);
-
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+	ScriptData* GetScriptData(const std::string& _scriptName);
 
 	void SetEnable(const std::string& _scriptName, bool _enable);
 	bool GetEnable(const std::string& _scriptName);
-
-	void CallAwakeMethodAll();
-	void CallInitMethodAll();
-	void CallUpdateMethodAll();
 
 private:
 	/// ===================================================
@@ -74,6 +55,17 @@ private:
 	/// ===================================================
 
 	std::vector<ScriptData> scriptDataList_;
+	bool isAdded_;
+
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	/// エンティティが追加されたか
+	void SetIsAdded(bool _added);
+	bool GetIsAdded() const;
 
 };
 
@@ -85,9 +77,9 @@ namespace COMP_DEBUG {
 /// mono用　internal methods
 /// ///////////////////////////////////////////////////
 
-namespace MONO_INTENRAL_METHOD {
+namespace MONO_INTERNAL_METHOD {
 
-	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable);
-	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName);
+	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable, MonoString* _groupName);
+	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
 	
 }

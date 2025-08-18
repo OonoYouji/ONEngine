@@ -143,12 +143,13 @@ public struct Quaternion {
 		float sinRoll = Mathf.Sin(roll);
 		float cosRoll = Mathf.Cos(roll);
 
-		return new Quaternion(
-			cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll,
-			cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll,
-			sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll,
-			cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll
-		);
+		Quaternion q;
+		q.x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
+		q.y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
+		q.z = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
+		q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
+
+		return q;
 	}
 
 

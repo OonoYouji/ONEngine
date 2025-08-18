@@ -30,23 +30,24 @@ public:
 	MonoScriptEngine();
 	~MonoScriptEngine();
 
+	/// Monoの初期化
 	void Initialize();
 
-	void MakeScript(Script* _comp, Script::ScriptData* _script, const std::string& _scriptName);
-
-	//void RegisterEntity(class Script* _script, const std::string& _csName);
-
+	/// CSの関数を登録
 	void RegisterFunctions();
 
+	/// CSのHotReloadを行う
 	void HotReload();
 
+	/// DLLのパスを探す
 	std::optional<std::string> FindLatestDll(const std::string& _dirPath, const std::string& _baseName);
 
+	/// C#側のリセット
 	void ResetCS();
 
-private:
-
-	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount);
+	/// C#側のEntityを取得
+	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
+	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
 
 private:
 	/// ===================================================
@@ -59,6 +60,8 @@ private:
 	MonoImage* image_;
 	MonoAssembly* assembly_ = nullptr;
 
+	bool isHotReloadRequest_;
+
 public:
 	/// ===================================================
 	/// public : accessors
@@ -68,5 +71,12 @@ public:
 	MonoImage* Image() const;
 	MonoAssembly* Assembly() const;
 
+	void SetIsHotReloadRequest(bool _request);
+	bool GetIsHotReloadRequest() const;
+
 };
 
+
+namespace MonoScriptEngineUtils {
+	MonoMethod* FindMethodInClassOrParents(MonoClass* _class, const char* _methodName, int _paramCount);
+} // namespace MonoScriptEngineUtils

@@ -13,7 +13,7 @@ public:
 	SkinMeshUpdateSystem(class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
 	~SkinMeshUpdateSystem() override = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
 	void UpdateSkeleton(class SkinMeshRenderer* _smr);
 	void UpdateSkinCluster(class SkinMeshRenderer* _smr);

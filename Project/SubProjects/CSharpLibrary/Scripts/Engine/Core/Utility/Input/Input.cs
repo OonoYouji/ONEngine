@@ -2,6 +2,10 @@
 
 static public class Input {
 
+	// ===================================================================
+	// キーボード入力
+	// ===================================================================
+	
 	static public bool TriggerKey(KeyCode keyCode) {
 		return InternalTriggerKey((int)keyCode);
 	}
@@ -14,6 +18,9 @@ static public class Input {
 		return InternalReleaseKey((int)keyCode);
 	}
 
+	// ===================================================================
+	// ゲームパッド入力
+	// ===================================================================
 
 	static public bool TriggerGamepad(Gamepad gamepad) {
 		return InternalTriggerGamepad((int)gamepad);
@@ -35,6 +42,33 @@ static public class Input {
 		return output;
 	}
 
+	// ===================================================================
+	// マウス入力
+	// ===================================================================
+
+	static public bool TriggerMouse(Mouse _mouse) {
+		return InternalTriggerMouse((int)_mouse);
+	}
+
+	static public bool PressMouse(Mouse _mouse) {
+		return InternalPressMouse((int)_mouse);
+	}
+
+	static public bool ReleaseMouse(Mouse _mouse) {
+		return InternalReleaseMouse((int)_mouse);
+	}
+
+	static public Vector2 MouseVelocity() {
+		Vector2 output;
+		InternalGetMouseVelocity(out output.x, out output.y);
+		return output;
+	}
+
+	static public Vector2 MousePosition() {
+		Vector2 output;
+		InternalGetMousePosition(out output.x, out output.y);
+		return output;
+	}
 
 	/// ==================================
 	/// c++側で実装される関数
@@ -62,5 +96,19 @@ static public class Input {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalGetGamepadThumb(int axisIndex, out float _x, out float _y);
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalTriggerMouse(int _mouse);
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalPressMouse(int _mouse);
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalReleaseMouse(int _mouse);
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetMouseVelocity(out float _x, out float _y);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalGetMousePosition(out float _x, out float _y);
 
 }

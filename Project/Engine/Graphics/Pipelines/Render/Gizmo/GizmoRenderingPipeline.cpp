@@ -64,7 +64,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 }
 
-void GizmoRenderingPipeline::Draw(class EntityComponentSystem*, [[maybe_unused]] const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void GizmoRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// ---------------------------------------------------
 	/// wire描画を行う

@@ -7,9 +7,9 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 
 
-void TerrainCollision::OutsideOfRuntimeUpdate(EntityComponentSystem*, const std::vector<class IEntity*>&) {}
+void TerrainCollision::OutsideOfRuntimeUpdate(ECSGroup*) {}
 
-void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>&) {
+void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<TerrainCollider>* terrainColliderArray = _ecs->GetComponentArray<TerrainCollider>();
 	if (!terrainColliderArray) {
@@ -39,7 +39,7 @@ void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vec
 					continue;
 				}
 
-				if (IEntity* box = boxCollider->GetOwner()) {
+				if (GameEntity* box = boxCollider->GetOwner()) {
 					Vector3 boxPos = box->GetPosition();
 					if (terrainCollider->IsInsideTerrain(boxPos)) {
 						float height = terrainCollider->GetHeight(boxPos);
@@ -63,7 +63,7 @@ void TerrainCollision::RuntimeUpdate(EntityComponentSystem* _ecs, const std::vec
 					continue;
 				}
 
-				if (IEntity* sphere = sphereCollider->GetOwner()) {
+				if (GameEntity* sphere = sphereCollider->GetOwner()) {
 					Vector3 spherePos = sphere->GetPosition();
 					if (terrainCollider->IsInsideTerrain(spherePos)) {
 						float height = terrainCollider->GetHeight(spherePos);

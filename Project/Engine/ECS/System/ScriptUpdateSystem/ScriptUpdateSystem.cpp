@@ -9,11 +9,43 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
-ScriptUpdateSystem::ScriptUpdateSystem() {}
-ScriptUpdateSystem::~ScriptUpdateSystem() {}
+ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
+	pImage_ = GetMonoScriptEnginePtr()->Image();
+	MakeScriptMethod(pImage_, _ecs->GetGroupName());
+}
 
-void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+ScriptUpdateSystem::~ScriptUpdateSystem() {
+	ReleaseGCHandle();
+}
+
+void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+	if (!monoEngine) {
+		return;
+	}
+
+	if (monoEngine->GetIsHotReloadRequest()) {
+		/// C#側のECSGroupを取得、更新関数を呼ぶ
+		ComponentArray<Script>* scriptArray = _ecs->GetComponentArray<Script>();
+		if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
+			return;
+		}
+
+		for (auto& script : scriptArray->GetUsedComponents()) {
+			script->SetIsAdded(false);
+			for(auto& data : script->GetScriptDataList()) {
+				data.isAdded = false;
+			}
+		}
+
+		ReleaseGCHandle();
+		MakeScriptMethod(pImage_, _ecs->GetGroupName());
+	}
+}
+
+void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
@@ -24,59 +56,184 @@ void ScriptUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _
 	}
 #endif // DEBUG_MODE
 
-	
-	pScripts_.clear();
-	for (auto& entity : _entities) {
-		/// 親がいるなら無視(親から再帰的に処理するので
-		if (entity->GetParent()) {
-			continue;
-		}
+	/// C#側に未追加にエンティティとコンポーネントを追加する
+	AddEntityAndComponent(_ecs);
 
-		RecursivePushBackScript(entity);
-	}
+	/// 関数呼び出しの条件
+	if (gcHandle_ != 0) {
+		if (updateEntitiesMethod_) {
 
-	/// コンストラクタの呼びだし (内部のフラグで呼び出すか管理している)
-	for (auto& scriptComp : pScripts_) {
-		scriptComp->CallAwakeMethodAll();
-	}
+			/// 更新関数を呼び出す
+			MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
+			if (!ecsGroupObj) {
+				Console::LogError("Failed to get target from gcHandle_");
+				return;
+			}
 
-	/// 初期化関数の呼びだし (内部のフラグで呼び出すか管理している)
-	for (auto& scriptComp : pScripts_) {
-		scriptComp->CallInitMethodAll();
-	}
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(updateEntitiesMethod_, ecsGroupObj, nullptr, &exc);
 
-	/// 更新関数の呼びだし (内部で初期化などを行ったか確認して処理する)
-	for (auto& scriptComp : pScripts_) {
-		scriptComp->CallUpdateMethodAll();
-	}
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
+				mono_free(err);
+			}
 
-	/// 行列の更新
-	for (auto& script : pScripts_) {
-		IEntity* entity = script->GetOwner();
-		if (entity) {
-			entity->UpdateTransform();
 		}
 	}
+
 }
 
-void ScriptUpdateSystem::RecursivePushBackScript(IEntity* _entity) {
+void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 
-	if (_entity) {
+	/// C#側のECSGroupを取得、更新関数を呼ぶ
+	ComponentArray<Script>* scriptArray = _ecsGroup->GetComponentArray<Script>();
+	if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
+		return;
+	}
 
-		/// エンティティが非アクティブなら無視、(子オブジェクトも更新しない)
-		if (!_entity->GetActive()) {
+	for (auto& script : scriptArray->GetUsedComponents()) {
+
+		/// スクリプトが有効でない場合はスキップ
+		MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
+		if (!ecsGroupObj) {
+			Console::LogError("Failed to get target from gcHandle_");
 			return;
 		}
 
-		Script* script = _entity->GetComponent<Script>();
-		if (script && script->enable) {
-			pScripts_.push_back(script);
+
+		/// Entityの追加関数を呼び出す
+		if (!script->GetIsAdded()) {
+			script->SetIsAdded(true);
+
+			void* args[1];
+			int32_t entityId = script->GetOwner()->GetId();
+			args[0] = &entityId;
+
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(addEntityMethod_, ecsGroupObj, args, &exc);
+
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
+				mono_free(err);
+			}
 		}
 
-		/// 自身の子エンティティから再帰的に得る
-		for (auto& child : _entity->GetChildren()) {
-			RecursivePushBackScript(child);
+		for (auto& data : script->GetScriptDataList()) {
+
+			/// すでに追加済みなら処理しない
+			if (data.isAdded) {
+				continue;
+			}
+			data.isAdded = true;
+
+			/// スクリプト名からMonoObjectを生成する
+			MonoClass* behaviorClass = mono_class_from_name(pImage_, "", data.scriptName.c_str());
+			if (!behaviorClass) {
+				Console::LogError("Failed to find MonoBehavior class");
+				continue;
+			}
+
+			/// インスタンスを生成
+			MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
+			mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
+			if (!script) {
+				continue;
+			}
+
+			void* args[2];
+			int32_t entityId = script->GetOwner()->GetId();
+			args[0] = &entityId;
+			args[1] = scriptInstance;
+
+			MonoObject* exc = nullptr;
+			mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
+
+			if (exc) {
+				/// 例外の処理
+				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
+				mono_free(err);
+			}
 		}
 	}
 
 }
+
+
+void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& _ecsGroupName) {
+
+	/// --------------------------------------------------------------------------------
+	/// EntityComponentSystemの関数から新規にグループを追加する
+	/// --------------------------------------------------------------------------------
+
+	MonoClass* ecsClass = mono_class_from_name(_image, "", "EntityComponentSystem");
+	if (!ecsClass) {
+		Console::LogError("Failed to find class: EntityComponentSystem");
+		return;
+	}
+
+	/// EntityComponentSystemのAddECSGroup関数を取得
+	MonoMethod* addGroupMethod = MonoScriptEngineUtils::FindMethodInClassOrParents(ecsClass, "AddECSGroup", 1);
+
+	/// 関数の引数
+	void* args[1];
+	args[0] = mono_string_new(mono_domain_get(), _ecsGroupName.c_str());; /// ECSのGroup名
+
+	/// 関数を呼び出す
+	MonoObject* exc = nullptr;
+	MonoObject* ecsGroup = mono_runtime_invoke(addGroupMethod, nullptr, args, &exc);
+
+	if (exc) {
+		char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+		Console::LogError(std::string("Exception thrown: ") + err);
+		mono_free(err);
+	}
+
+
+	/// --------------------------------------------------------------------------------
+	/// C#側のECSGroupクラスを取得
+	/// --------------------------------------------------------------------------------
+
+	/// C#側のクラスを取得
+	monoClass_ = mono_object_get_class(ecsGroup);
+	if (!monoClass_) {
+		Console::LogError("Failed to find class: ECSGroup");
+		return;
+	}
+
+	gcHandle_ = mono_gchandle_new(ecsGroup, false);
+
+	/// 呼び出し対象の関数を取得
+	updateEntitiesMethod_ = mono_class_get_method_from_name(monoClass_, "UpdateEntities", 0);
+	addEntityMethod_ = mono_class_get_method_from_name(monoClass_, "AddEntity", 1);
+	addScriptMethod_ = mono_class_get_method_from_name(monoClass_, "AddScript", 2);
+
+}
+
+void ScriptUpdateSystem::ReleaseGCHandle() {
+	if(gcHandle_ != 0) {
+		mono_gchandle_free(gcHandle_);
+		gcHandle_ = 0;
+	}
+}
+
+
+/// ///////////////////////////////////////////////
+/// デバッグ用のスクリプト更新システム
+/// ///////////////////////////////////////////////
+
+DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs) 
+	: ScriptUpdateSystem(_ecs) {}
+DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
+
+void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+	/// デバッグのスクリプトは常時更新したいのでRuntimeの更新も呼び出すようにする
+	ScriptUpdateSystem::OutsideOfRuntimeUpdate(_ecs);
+	ScriptUpdateSystem::RuntimeUpdate(_ecs);
+}
+
+void DebugScriptUpdateSystem::RuntimeUpdate(ECSGroup*) {}

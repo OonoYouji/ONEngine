@@ -4,14 +4,37 @@ using System.Runtime.InteropServices;
 using System.IO;
 
 public class MonoBehavior {
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// objects
+	///////////////////////////////////////////////////////////////////////////////////////////
 
-	string name;
+	/// Behaviorの生成
+	public void CreateBehavior(int _entityId, string _name, ECSGroup _ecsGroup) {
+		if(!_ecsGroup) {
+			Debug.LogError("MonoBehavior.CreateBehavior - ECSGroup is null. Cannot create MonoBehavior for Entity ID: " + _entityId);
+			return;
+		}
+
+		name_    = _name;
+		ecsGroup = _ecsGroup;
+		entity   = ecsGroup.GetEntity(_entityId);
+
+		Debug.Log("MonoBehavior created for Entity ID: " + _entityId + ", Script Name: " + _name + ", Group Name: " + _ecsGroup.groupName);
+	}
+
+
+	/// この behavior が所属するECSGroup
+	public ECSGroup ecsGroup {
+		get; internal set;
+	}
+
+	private string name_;
 	public bool enable {
 		get {
-			return InternalGetEnable(entity.Id, name);
+			return InternalGetEnable(entity.Id, name_, ecsGroup.groupName);
 		}
 		set {
-			InternalSetEnable(entity.Id, name, value);
+			InternalSetEnable(entity.Id, name_, value, ecsGroup.groupName);
 		}
 	}
 
@@ -35,47 +58,39 @@ public class MonoBehavior {
 		}
 	}
 
+	
 
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// methods
+	///////////////////////////////////////////////////////////////////////////////////////////
 
-	private bool initialized = false;
-	public void InternalInitialize(int _entityId, string _name) {
-		if (initialized) {
-			Debug.LogError("MonoBehavior is already initialized for Entity ID: " + _entityId);
-			return;
-		}
-
-		if (!initialized) {
-			initialized = true;
-
-			name = _name;
-			Debug.Log("Initializing MonoBehavior: " + name + " for Entity ID: " + _entityId);
-
-			entity = EntityCollection.GetEntity(_entityId);
-
-			entity.AddScript(this);
-
-			Awake();
-		}
-	}
-
-	public virtual void Awake() { Debug.Log("called awake method. owner:" + entity.name + ", script name:" + name); }
-	public virtual void Initialize() { Debug.Log("called initialize method. owner:" + entity.name + ", script name:" + name); }
-	public virtual void Update() { Debug.Log("called update method. owner:" + entity.name + ", script name:" + name); }
+	public virtual void Awake() { Debug.Log("called awake method. owner:" + entity.name + ", script name:" + name_); }
+	public virtual void Initialize() { Debug.Log("called initialize method. owner:" + entity.name + ", script name:" + name_); }
+	public virtual void Update() { Debug.Log("called update method. owner:" + entity.name + ", script name:" + name_); }
 
 	public virtual void OnCollisionEnter(Entity collision) { }
 	public virtual void OnCollisionExit(Entity collision) { }
 	public virtual void OnCollisionStay(Entity collision) { }
 
-	
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// internal methods
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern bool InternalGetEnable(int _entityId, string _scriptName, string _ecsGroupName);
+
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable, string _ecsGroupName);
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// operators
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+
 	public static implicit operator bool(MonoBehavior _monoBehavior) {
 		return _monoBehavior != null;
 	}
-
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern bool InternalGetEnable(int _entityId, string _scriptName);
-
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable);
 
 }

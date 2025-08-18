@@ -14,11 +14,11 @@ InputSystem::InputSystem() {}
 InputSystem::~InputSystem() {}
 
 void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
+	pWindowManager_ = _windowManager;
 
-	windowManager_ = _windowManager;
 
 	HRESULT hr = DirectInput8Create(
-		_windowManager->GetMainWindow()->GetWNDCLASS().hInstance,
+		pWindowManager_->GetMainWindow()->GetWNDCLASS().hInstance,
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8,
 		(void**)(&directInput_),
@@ -28,35 +28,22 @@ void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGui
 
 
 	keyboard_ = std::make_unique<Keyboard>();
-	keyboard_->Initialize(directInput_.Get(), _windowManager);
+	keyboard_->Initialize(directInput_.Get(), pWindowManager_);
 
 	mouse_ = std::make_unique<Mouse>();
-	mouse_->Initialize(directInput_.Get(), _windowManager, _imGuiManager);
+	mouse_->Initialize(directInput_.Get(), pWindowManager_, _imGuiManager);
 
 	gamepad_ = std::make_unique<Gamepad>();
-	gamepad_->Initialize(directInput_.Get(), _windowManager);
+	gamepad_->Initialize(directInput_.Get(), pWindowManager_);
 }
 
 void InputSystem::Update() {
-
-	keyboard_->Update(windowManager_->GetActiveWindow());
-	mouse_->Update(windowManager_->GetActiveWindow());
-	gamepad_->Update(windowManager_->GetActiveWindow());
-
+	keyboard_->Update(pWindowManager_->GetActiveWindow());
+	mouse_->Update(pWindowManager_->GetActiveWindow());
+	gamepad_->Update(pWindowManager_->GetActiveWindow());
 }
 
-void InputSystem::RegisterMonoFunctions() {
-	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
-	mono_add_internal_call("Input::InternalPressKey", (void*)Input::PressKey);
-	mono_add_internal_call("Input::InternalReleaseKey", (void*)Input::ReleaseKey);
-
-	mono_add_internal_call("Input::InternalTriggerGamepad", (void*)Input::TriggerGamepad);
-	mono_add_internal_call("Input::InternalPressGamepad", (void*)Input::PressGamepad);
-	mono_add_internal_call("Input::InternalReleaseGamepad", (void*)Input::ReleaseGamepad);
-	mono_add_internal_call("Input::InternalGetGamepadThumb", (void*)InternalGetGamepadThumb);
-}
-
-void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
+void MONO_INTERNAL_METHOD::InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 	Vector2 v = {};
 	switch (_axisIndex) {
 	case 0: // Left
@@ -69,4 +56,16 @@ void InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 
 	*_x = v.x;
 	*_y = v.y;
+}
+
+void MONO_INTERNAL_METHOD::InternalGetMouseVelocity(float* _x, float* _y) {
+	const Vector2& velocity = Input::GetMouseVelocity();
+	*_x = velocity.x;
+	*_y = velocity.y;
+}
+
+void MONO_INTERNAL_METHOD::InternalGetMousePosition(float* _x, float* _y) {
+	const Vector2& position = Input::GetMousePosition();
+	*_x = position.x;
+	*_y = position.y;
 }

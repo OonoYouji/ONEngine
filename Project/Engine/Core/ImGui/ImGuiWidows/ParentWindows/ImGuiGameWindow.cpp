@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiGameSceneWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiSceneWindow.h"
@@ -27,7 +28,8 @@ ImGuiGameWindow::ImGuiGameWindow(
 	/// ここでwindowを生成する
 	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>(_ecs, _editorManager));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
-	AddChild(std::make_unique<ImGuiHierarchyWindow>(_ecs, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
+	AddChild(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
+	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _resourceCollection, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_resourceCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());

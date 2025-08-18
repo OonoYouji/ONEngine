@@ -14,11 +14,11 @@ public:
 
 	/// @brief このcomponentのownerを設定
 	/// @param _owner オーナーとなるentity
-	void SetOwner(class IEntity* _owner);
+	void SetOwner(class GameEntity* _owner);
 
 	/// @brief ownerの取得
 	/// @return ownerのentity
-	IEntity* GetOwner() const;
+	GameEntity* GetOwner() const;
 
 public:
 	/// ===========================================
@@ -33,7 +33,7 @@ protected:
 	/// protected : objects
 	/// ===========================================
 
-	class IEntity* owner_ = nullptr;
+	class GameEntity* owner_ = nullptr;
 };
 
 /// ===================================================

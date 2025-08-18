@@ -11,41 +11,22 @@
 
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
-	: pEntityComponentSystem_(entityComponentSystem_) {}
+	: pECS_(entityComponentSystem_) {}
 SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
-
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
 
-	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
-
+	sceneIO_ = std::make_unique<SceneIO>(pECS_);
 
 	SetNextScene(sceneFactory_->GetStartupSceneName());
 	MoveNextToCurrentScene(false);
 
-
-	/// カメラを設定する
-	ComponentArray<CameraComponent>* cameraArray = pEntityComponentSystem_->GetComponentArray<CameraComponent>();
-	if (cameraArray) {
-		for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
-			/// componentがnullptrでないことを確認、main cameraかどうかを確認
-			if (cameraComponent && cameraComponent->GetIsMainCamera()) {
-				int type = cameraComponent->GetCameraType();
-				if (type == static_cast<int>(CameraType::Type3D)) {
-					pEntityComponentSystem_->SetMainCamera(cameraComponent);
-				} else if (type == static_cast<int>(CameraType::Type2D)) {
-					pEntityComponentSystem_->SetMainCamera2D(cameraComponent);
-				}
-			}
-		}
-	}
-
-
+	pECS_->MainCameraSetting();
 }
 
 void SceneManager::Update() {
@@ -59,13 +40,22 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = _sceneName;
 }
 
+void SceneManager::SaveScene(const std::string& _name, ECSGroup* _ecsGroup) {
+	if (_name.empty() || !_ecsGroup) {
+		Console::LogError("Invalid scene name or ECS group.");
+		return;
+	}
+
+	sceneIO_->Output(_name, _ecsGroup);
+}
+
 void SceneManager::SaveCurrentScene() {
 	if (currentScene_.empty()) {
 		Console::LogError("No current scene to save.");
 		return;
 	}
 
-	sceneIO_->Output(currentScene_);
+	sceneIO_->Output(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
@@ -74,7 +64,7 @@ void SceneManager::SaveCurrentSceneTemporary() {
 		return;
 	}
 
-	sceneIO_->OutputTemporary(currentScene_);
+	sceneIO_->OutputTemporary(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -101,16 +91,28 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 	MoveNextToCurrentScene(_isTemporary);
 }
 
-void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
-	currentScene_ = std::move(nextScene_);
-	pEntityComponentSystem_->RemoveEntityAll();
+SceneIO* SceneManager::GetSceneIO() {
+	return sceneIO_.get();
+}
 
+void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
+	ECSGroup* prevSceneGroup = pECS_->GetCurrentGroup();
+	if (prevSceneGroup) {
+		prevSceneGroup->RemoveEntityAll();
+	}
+
+	currentScene_ = std::move(nextScene_);
+
+	std::string sceneName = currentScene_;
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_);
-	} else {
-		sceneIO_->Input(currentScene_);
+		sceneName += "_temp";
 	}
+
+	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(sceneName);
+
+	sceneIO_->Input(sceneName, nextSceneGroup);
+	pECS_->SetCurrentGroupName(sceneName);
 
 	Time::ResetTime();
 }

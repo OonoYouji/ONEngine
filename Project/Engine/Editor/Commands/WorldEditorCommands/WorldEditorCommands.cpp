@@ -10,7 +10,6 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
@@ -18,14 +17,14 @@
 /// ゲームオブジェクトの作成コマンド
 /// ///////////////////////////////////////////////////
 
-CreateGameObjectCommand::CreateGameObjectCommand(EntityComponentSystem* _ecs) {
-	pECS_ = _ecs;
+CreateGameObjectCommand::CreateGameObjectCommand(ECSGroup* _ecs) {
+	pECSGroup_ = _ecs;
 }
 
 CreateGameObjectCommand::~CreateGameObjectCommand() {}
 
 EDITOR_STATE CreateGameObjectCommand::Execute() {
-	generatedEntity_ = pECS_->GenerateEntity<EmptyEntity>();
+	generatedEntity_ = pECSGroup_->GenerateEntity(false);
 
 	EDITOR_STATE state = EDITOR_STATE_RUNNING;
 	if (generatedEntity_) {
@@ -36,7 +35,7 @@ EDITOR_STATE CreateGameObjectCommand::Execute() {
 }
 
 EDITOR_STATE CreateGameObjectCommand::Undo() {
-	pECS_->RemoveEntity(generatedEntity_);
+	pECSGroup_->RemoveEntity(generatedEntity_);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -45,7 +44,7 @@ EDITOR_STATE CreateGameObjectCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// オブジェクトの名前変更コマンド
 /// ///////////////////////////////////////////////////
-EntityRenameCommand::EntityRenameCommand(IEntity* _entity, const std::string& _newName)
+EntityRenameCommand::EntityRenameCommand(GameEntity* _entity, const std::string& _newName)
 	: pEntity_(_entity) {
 	oldName_ = pEntity_->GetName();
 	newName_ = _newName;
@@ -79,7 +78,7 @@ EDITOR_STATE EntityRenameCommand::Undo() {
 /// シーンにあるオブジェクトから新しいクラスを作る
 /// ///////////////////////////////////////////////////
 
-CreateNewEntityClassCommand::CreateNewEntityClassCommand(IEntity* _entity, const std::string& _outputFilePath)
+CreateNewEntityClassCommand::CreateNewEntityClassCommand(GameEntity* _entity, const std::string& _outputFilePath)
 	: pEntity_(_entity) {
 	pEntity_ = _entity;
 	sourceClassPath_ = "Engine/Editor/Commands/WorldEditorCommands/SourceEntity";
@@ -149,16 +148,16 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// エンティティを削除するコマンド
 /// ///////////////////////////////////////////////////
 
-DeleteEntityCommand::DeleteEntityCommand(EntityComponentSystem* _ecs, IEntity* _entity)
-	: pECS_(_ecs), pEntity_(_entity) {}
+DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
+	: pECSGroup_(_ecs), pEntity_(_entity) {}
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
-	if (!pECS_ || !pEntity_) {
+	if (!pECSGroup_ || !pEntity_) {
 		Console::Log("DeleteEntityCommand : ECS or Entity is nullptr");
 		return EDITOR_STATE_FAILED;
 	}
 
-	pECS_->RemoveEntity(pEntity_);
+	pECSGroup_->RemoveEntity(pEntity_);
 
 	return EDITOR_STATE_FINISH;
 }
@@ -169,130 +168,9 @@ EDITOR_STATE DeleteEntityCommand::Undo() {
 
 
 /// ///////////////////////////////////////////////////
-/// シーンをロードするコマンド
+/// プレハブを作成するコマンド
 /// ///////////////////////////////////////////////////
-LoadSceneCommand::LoadSceneCommand(EntityComponentSystem* _ecs, const std::string& _scenePath)
-	: pECS_(_ecs), scenePath_(_scenePath) {
-
-}
-
-EDITOR_STATE LoadSceneCommand::Execute() {
-	LoadScene(scenePath_);
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-EDITOR_STATE LoadSceneCommand::Undo() {
-	return EDITOR_STATE::EDITOR_STATE_FINISH;
-}
-
-void LoadSceneCommand::LoadScene(const std::string& _scenePath) {
-
-	/// ファイル名が空ならば終了
-	if (_scenePath.empty()) {
-		Console::Log("Level name is empty.");
-		return;
-	}
-
-	/// ファイル名が存在しないならば終了
-	if (!std::filesystem::exists(_scenePath)) {
-		Console::Log("Level file does not exist: " + _scenePath);
-		return;
-	}
-
-	/// fileを開く
-	std::ifstream file(_scenePath);
-	if (!file.is_open()) {
-		Console::Log("Failed to open level file: " + _scenePath);
-		return;
-	}
-
-
-	/// jsonを読み込む
-	nlohmann::json jsonData;
-	file >> jsonData;
-
-	for (const auto& objectData : jsonData["objects"]) {
-		LoadEntity(objectData);
-	}
-
-}
-
-IEntity* LoadSceneCommand::LoadEntity(const nlohmann::json& _entityData) {
-	/// エンティティの名前を取得
-	std::string objectName = _entityData["name"].get<std::string>();
-	/// エンティティのタイプを取得
-	std::string objectType = _entityData["type"].get<std::string>();
-
-	if (!_entityData.contains("transform") || _entityData["transform"].is_null()) {
-		Console::Log("transform not found");
-		return nullptr;
-	}
-
-	nlohmann::json transformData = _entityData["transform"];
-	Vec3 position = transformData["translation"].get<Vec3>();
-	Vec3 rotate = transformData["rotation"].get<Vec3>();
-	Vec3 scale = transformData["scale"].get<Vec3>();
-
-	/// 座標軸を変換する
-	float posY = position.z;
-	position.z = position.y;
-	position.y = posY;
-
-	/// 回転を変換する
-	rotate = -rotate;
-	float rotateY = rotate.z;
-	rotate.z = rotate.y;
-	rotate.y = rotateY;
-
-	/// スケールを変換する
-	float scaleY = scale.z;
-	scale.z = scale.y;
-	scale.y = scaleY;
-
-	IEntity* entity = nullptr;
-	/// エンティティを生成&SRTを設定
-	if (objectType == "CAMERA") {
-		//entity = pECS_->GenerateCamera();
-		//pECS_->SetMainCamera(static_cast<Camera*>(entity));
-		//// Blenderではx=0が真下を向くようになっているので自作エンジン側の0=正面に合わせて変換する
-		//rotate.x += 90.0f * std::numbers::pi_v<float> / 180.0f;
-	} else {
-		entity = pECS_->GenerateEntity<EmptyEntity>();
-	}
-
-	if (!entity) {
-		Console::Log("Failed to create entity for object: " + objectName);
-		return nullptr;
-	}
-
-	entity->SetPosition(position);
-	entity->SetRotate(rotate);
-	entity->SetScale(scale);
-	entity->UpdateTransform();
-	entity->SetName(objectName);
-
-	if (_entityData.contains("children")) {
-		for (auto& childData : _entityData["children"]) {
-			/// 子エンティティを再帰的に読み込む
-			if (IEntity* child = LoadEntity(childData)) {
-				child->SetParent(entity);
-			}
-		}
-	}
-
-	if (_entityData.contains("file_name")) {
-		MeshRenderer* meshRenderer = entity->AddComponent<MeshRenderer>();
-		meshRenderer->SetMeshPath(_entityData["file_name"].get<std::string>());
-	}
-
-	if (objectType == "LIGHT") {
-		entity->AddComponent<DirectionalLight>();
-	} 
-
-	return entity;
-}
-
-CreatePrefabCommand::CreatePrefabCommand(IEntity* _entity) 
+CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity) 
 	: pEntity_(_entity) {
 	if (pEntity_ == nullptr) {
 		Console::Log("CreatePrefabCommand : Entity is nullptr");

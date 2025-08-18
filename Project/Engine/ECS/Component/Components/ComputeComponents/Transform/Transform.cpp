@@ -83,7 +83,7 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// ===================================================
 
 void UpdateTransform(Transform* _transform) {
-	if (IEntity* entity = _transform->GetOwner()) {
+	if (GameEntity* entity = _transform->GetOwner()) {
 		entity->UpdateTransform();
 	}
 }

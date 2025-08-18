@@ -74,8 +74,8 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
-		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 		pipeline_->SetDepthStencilDesc(depthStencilDesc);
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
@@ -89,7 +89,7 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 	}
 }
 
-void TerrainProceduralRenderingPipeline::PreDraw(EntityComponentSystem* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
 	auto cmdList = _dxCommand->GetCommandList();
 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
@@ -120,7 +120,7 @@ void TerrainProceduralRenderingPipeline::PreDraw(EntityComponentSystem* _ecs, Ca
 	instanceDataAppendBuffer_.ResetCounter(_dxCommand); // カウンターをリセット
 }
 
-void TerrainProceduralRenderingPipeline::Draw(EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray) {

@@ -69,6 +69,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Input.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\KeyCode.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Input\Mouse.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Log\Debug.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Flag.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
@@ -78,15 +79,16 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector2Int.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector4.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
-    <Compile Include="Scripts\Engine\Entity\Components\Component.cs" />
-    <Compile Include="Scripts\Engine\Entity\Components\ComponentCollection.cs" />
-    <Compile Include="Scripts\Engine\Entity\Components\Renderer\MeshRenderer.cs" />
-    <Compile Include="Scripts\Engine\Entity\Components\Renderer\SkinMeshRenderer.cs" />
-    <Compile Include="Scripts\Engine\Entity\Entity\Entity.cs" />
-    <Compile Include="Scripts\Engine\Entity\Entity\EntityCollection.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Component.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\ComponentCollection.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Renderer\MeshRenderer.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Renderer\SkinMeshRenderer.cs" />
+    <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\ECSGroup.cs" />
+    <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\EntityComponentSystem.cs" />
+    <Compile Include="Scripts\Engine\ECS\Entity\Entity.cs" />
     <Compile Include="Scripts\Engine\Graphics\Material.cs" />
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
-    <Compile Include="Scripts\Engine\Entity\Components\Transform.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\Camera.cs">
@@ -96,6 +98,7 @@
     <Compile Include="Scripts\Game\Command\PuzzlePlayerCommands.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
     <Compile Include="Scripts\Game\GameMath\GameMathf.cs" />

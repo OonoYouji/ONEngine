@@ -38,7 +38,7 @@ void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
 }
 
 void MeshRenderer::SetMaterialEntityId() {
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (owner) {
 		material_.entityId = owner->GetId();
 	}

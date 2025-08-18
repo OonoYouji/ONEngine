@@ -32,7 +32,7 @@ void PostProcessGrayscale::Execute(const std::string& _textureName, DxCommand* _
 
 	/// 
 	ScreenPostEffectTag* tag = nullptr;
-	for (auto& entity : _entityComponentSystem->GetEntities()) {
+	for (auto& entity : _entityComponentSystem->GetCurrentGroup()->GetEntities()) {
 		tag = entity->GetComponent<ScreenPostEffectTag>();
 		if (tag) {
 			break;

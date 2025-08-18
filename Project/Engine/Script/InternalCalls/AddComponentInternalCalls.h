@@ -2,3 +2,6 @@
 
 void AddComponentInternalCalls();
 
+void AddEntityInternalCalls();
+
+void AddInputInternalCalls();

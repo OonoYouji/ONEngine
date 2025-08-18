@@ -69,7 +69,7 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 	}
 
 	SelectedType selectedType = kNone;
-	if (reinterpret_cast<IEntity*>(selectedPointer_)) {
+	if (reinterpret_cast<GameEntity*>(selectedPointer_)) {
 		selectedType = kEntity;
 	}
 
@@ -80,7 +80,7 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 
 
 void ImGuiInspectorWindow::EntityInspector() {
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
 	uint64_t pointerValue = reinterpret_cast<uint64_t>(entity->GetTransform());
 	if (pointerValue == 0xdddddddddddddddd) {
 		return;
@@ -106,7 +106,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 			if (!entity->GetPrefabName().empty()) {
 				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
-				pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
+				//pECS_->GetECSGroup()->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
 				//pEditorManager_->ExecuteCommand<ApplyPrefabCommand>(entity);
 			} else {
 				Console::LogError("This entity is not a prefab instance.");
@@ -239,13 +239,13 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 }
 
-IEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
+GameEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
 	if (selectedPointer_ == 0) {
 		return nullptr;
 	}
 
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (dynamic_cast<IEntity*>(entity)) {
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
+	if (dynamic_cast<GameEntity*>(entity)) {
 		return entity;
 	}
 

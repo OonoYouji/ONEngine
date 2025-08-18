@@ -53,8 +53,8 @@ void ImGuiPrefabFileWindow::ImGuiFunc() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
-			IEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
-			pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
+			//GameEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
+			//pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
 		}
 
 	}
@@ -76,7 +76,7 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
-			pECS_->ReloadPrefab(file.second);
+			//pECS_->ReloadPrefab(file.second);
 		}
 
 	}
@@ -102,16 +102,16 @@ void ImGuiPrefabFileWindow::AddPrefabButton() {
 				}
 
 				/// 先にPrefabをリロード
-				pECS_->ReloadPrefab(newPrefabName_);
+				//pECS_->ReloadPrefab(newPrefabName_);
 
 				/// Prefabを生成
-				IEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
-				if (entity) {
-					Console::Log("Prefab created: " + newPrefabName_);
-					pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
-				} else {
-					Console::LogError("Failed to create prefab: " + newPrefabName_);
-				}
+				//GameEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
+				//if (entity) {
+				//	Console::Log("Prefab created: " + newPrefabName_);
+				//	pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
+				//} else {
+				//	Console::LogError("Failed to create prefab: " + newPrefabName_);
+				//}
 				newPrefabName_.clear(); // 入力フィールドをクリア
 			}
 		}

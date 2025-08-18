@@ -2,6 +2,9 @@
 
 /// engine
 #include "../Interface/ECSISystem.h"
+#include "Engine/ECS/Component/Array/ComponentArray.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 
 /// ///////////////////////////////////////////////////////
 /// コライダーの可視化を行うシステム
@@ -15,10 +18,10 @@ public:
 	ColliderRenderQueueSystem();
 	~ColliderRenderQueueSystem() override = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) override;
+	void RuntimeUpdate(class ECSGroup* _ecs) override;
 
-	void UpdateSphereCollider(const std::vector<class IEntity*>& _entities);
-	void UpdateBoxCollider(const std::vector<class IEntity*>& _entities);
+	void UpdateSphereCollider(ComponentArray<SphereCollider>* _sphereColliderArray);
+	void UpdateBoxCollider(ComponentArray<BoxCollider>* _boxColliderArray);
 
 };
 

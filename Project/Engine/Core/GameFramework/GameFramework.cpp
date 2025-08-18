@@ -35,7 +35,6 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// ポインタを保持
 	SetMonoScriptEnginePtr(monoScriptEngine_.get());
-	SetEntityComponentSystemPtr(entityComponentSystem_.get());
 
 
 	/// 各クラスの初期化を行う
@@ -66,7 +65,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
-
+	LoadDebugJson();
 
 #ifdef DEBUG_MODE
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
@@ -75,6 +74,7 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 #endif // DEBUG_MODE
 
+	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
 }
 
@@ -100,11 +100,11 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
+		entityComponentSystem_->OutsideOfUpdate();
 #else
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
+		entityComponentSystem_->OutsideOfUpdate();
 #endif // DEBUG_MODE
 
 		/// 描画処理
@@ -116,4 +116,8 @@ void GameFramework::Run() {
 		}
 	}
 
+}
+
+void GameFramework::LoadDebugJson() {
+	sceneManager_->GetSceneIO()->Input("Debug", entityComponentSystem_->GetECSGroup("Debug"));
 }

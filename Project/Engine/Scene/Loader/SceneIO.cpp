@@ -12,40 +12,39 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
-SceneIO::SceneIO(EntityComponentSystem* _ecs)
-	: pECS_(_ecs) {
+SceneIO::SceneIO(EntityComponentSystem* _ecs) : pECS_(_ecs) {
 	fileName_ = "";
 	fileDirectory_ = "./Assets/Scene/";
 }
 SceneIO::~SceneIO() {}
 
-void SceneIO::Output(const std::string& _sceneName) {
+void SceneIO::Output(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* sceneをjsonに保存する */
 	fileName_ = _sceneName + ".json";
-	SaveScene(fileName_);
+	SaveScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::Input(const std::string& _sceneName) {
+void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* jsonを読み込んでsceneに変換する */
 	fileName_ = _sceneName + ".json";
-	LoadScene(fileName_);
+	LoadScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::OutputTemporary(const std::string& _sceneName) {
+void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* 一時的なシーンのjsonを保存する */
 	fileName_ = _sceneName + "_temp.json";
-	SaveScene(fileName_);
+	SaveScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::InputTemporary(const std::string& _sceneName) {
+void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	fileName_ = _sceneName + "_temp.json";
-	LoadScene(fileName_);
+	LoadScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::SaveScene(const std::string& _filename) {
+void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	nlohmann::json outputJson = nlohmann::json::object();
 
-	auto& entities = pECS_->GetEntities();
+	auto& entities = _ecsGroup->GetEntities();
 	for (auto& entity : entities) {
 		/// マイナスIDはruntimeに生成されたエンティティなのでスキップ
 		if (entity->GetId() < 0) {
@@ -80,7 +79,7 @@ void SceneIO::SaveScene(const std::string& _filename) {
 	outputFile.close();
 }
 
-void SceneIO::LoadScene(const std::string& _filename) {
+void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 
 	std::ifstream inputFile(fileDirectory_ + _filename);
 	if (!inputFile.is_open()) {
@@ -93,21 +92,22 @@ void SceneIO::LoadScene(const std::string& _filename) {
 	inputFile >> inputJson;
 	inputFile.close();
 
-	std::unordered_map<uint32_t, IEntity*> entityMap;
+	std::unordered_map<uint32_t, GameEntity*> entityMap;
+
+	const std::string sceneName = Mathf::FileNameWithoutExtension(_filename);
 
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : inputJson["entities"]) {
-		const std::string& prefabName = entityJson["prefabName"];
-		const std::string& entityClassName = entityJson["className"];
-		const std::string& entityName = entityJson["name"];
-		uint32_t entityId = entityJson["id"];
+		const std::string& prefabName = entityJson.value("prefabName", "");
+		const std::string& entityName = entityJson.value("name", "");
+		const uint32_t entityId = entityJson.value("id", 0);
 
-		IEntity* entity = nullptr;
+		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
-			entity = pECS_->GenerateEntity(entityClassName, false);
+			entity = _ecsGroup->GenerateEntity(false);
 		}
 
 		if (entity) {
@@ -136,7 +136,7 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			continue; // エンティティが見つからない場合はスキップ
 		}
 
-		IEntity* entity = entityMap[entityId];
+		GameEntity* entity = entityMap[entityId];
 		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
 			int32_t parentId = entityJson["parent"];
 			if (entityMap.find(parentId) != entityMap.end()) {
@@ -145,12 +145,4 @@ void SceneIO::LoadScene(const std::string& _filename) {
 		}
 	}
 
-
-	/// 全てのエンティティを初期化
-	for (const auto& entityPair : entityMap) {
-		IEntity* entity = entityPair.second;
-		if (entity) {
-			entity->Initialize();
-		}
-	}
 }
