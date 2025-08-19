@@ -137,7 +137,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	}
 
 	/// 見つかんなかったら return
-	if (!pTerrain_ || !pTerrain_->GetIsCreated()) {
+	if (!pTerrain_ || !pTerrain_->GetIsCreated() || !pTerrain_->enable) {
 		return;
 	}
 

@@ -14,6 +14,7 @@
 /// sprite描画クラス
 /// ===================================================
 class SpriteRenderer final : public IComponent {
+	friend class SpriteUpdateSystem;
 public:
 	/// ===================================================
 	/// public : methods
@@ -22,14 +23,12 @@ public:
 	SpriteRenderer();
 	~SpriteRenderer();
 
-
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	Material material_; ///< マテリアルデータ
-	std::string texturePath_; ///< テクスチャパス
+	Material material_;
 
 public:
 	/// ===================================================
@@ -37,15 +36,13 @@ public:
 	/// ===================================================
 
 	/// ----- setter ----- ///
-	void SetTexturePath(const std::string& _path);
 	void SetColor(const Vector4& _color);
 
 	/// ----- getter ----- ///
-	const std::string& GetTexturePath() const;
 	const Vector4& GetColor() const;
 
 	const Material& GetMaterial() const;
-	Material& GetMaterial(); 
+	Material& GetMaterial();
 
 };
 

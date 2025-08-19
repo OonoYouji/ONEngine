@@ -104,7 +104,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	}
 
 	/// terrainが生成されていないならreturn
-	if (!pTerrain_->GetIsCreated()) {
+	if (!pTerrain_->GetIsCreated() || !pTerrain_->enable) {
 		return;
 	}
 

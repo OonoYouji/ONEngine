@@ -173,6 +173,7 @@
     <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.cpp" />
     <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer\Data\Material.cpp" />
+    <ClCompile Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -342,6 +343,7 @@
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
     <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefabCollection.h" />
     <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h" />
+    <ClInclude Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

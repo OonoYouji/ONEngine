@@ -150,10 +150,6 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
-
-		size_t textureID = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
-		Material& material = renderer->GetMaterial();
-		material.baseTextureId = textures[textureID]->GetSRVDescriptorIndex();
 		materialsBuffer->SetMappedData(
 			transformIndex, renderer->GetMaterial()
 		);

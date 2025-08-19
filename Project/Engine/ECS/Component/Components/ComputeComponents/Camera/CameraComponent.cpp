@@ -40,8 +40,8 @@ void CameraComponent::UpdateViewProjection() {
 		/// 2Dカメラの場合
 
 		matProjection_ = CameraMath::MakeOrthographicMatrix(
-			(EngineConfig::kWindowSize.x / 2.0f), -(EngineConfig::kWindowSize.x / 2.0f),
-			(EngineConfig::kWindowSize.y / 2.0f), -(EngineConfig::kWindowSize.y / 2.0f),
+			-(EngineConfig::kWindowSize.x / 2.0f), (EngineConfig::kWindowSize.x / 2.0f),
+			-(EngineConfig::kWindowSize.y / 2.0f), (EngineConfig::kWindowSize.y / 2.0f),
 			nearClip_, farClip_
 		);
 
