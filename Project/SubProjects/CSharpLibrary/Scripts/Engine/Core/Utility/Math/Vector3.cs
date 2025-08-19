@@ -51,17 +51,6 @@ public struct Vector3 {
 		return "(" + _v.x + ", " + _v.y + ", " + _v.z + ")";
 	}
 
-
-
-	//public override string ToString() {
-	//	string result = "(";
-	//	result += x.ToString() + ", ";
-	//	result += y.ToString() + ", ";
-	//	result += z.ToString() + ")";
-
-	//	return result;
-	//}
-
 	static public Vector3 LookAt(Vector3 from, Vector3 to) {
 		Vector3 dir = to - from;
 		float yaw = Mathf.Atan2(dir.x, dir.z);

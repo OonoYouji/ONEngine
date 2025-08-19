@@ -123,6 +123,8 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 			}
 		}
 
+		Variables* vars = script->GetOwner()->GetComponent<Variables>();
+
 		for (auto& data : script->GetScriptDataList()) {
 
 			/// すでに追加済みなら処理しない
@@ -159,6 +161,13 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
 				mono_free(err);
 			}
+
+			/// variablesの設定
+			if (vars) {
+				vars->SetScriptVariables(data.scriptName);
+			}
+
+
 		}
 	}
 

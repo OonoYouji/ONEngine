@@ -39,6 +39,14 @@ public struct Vector4 {
 		return _v.Length();
 	}
 
+	static public Vector4 Lerp(Vector4 _v1, Vector4 _v2, float _t) {
+		Vector4 result = new Vector4();
+		result.x = Mathf.Lerp(_v1.x, _v2.x, _t);
+		result.y = Mathf.Lerp(_v1.y, _v2.y, _t);
+		result.z = Mathf.Lerp(_v1.z, _v2.z, _t);
+		result.w = Mathf.Lerp(_v1.w, _v2.w, _t);
+		return result;
+	}
 
 	/// -----------------------------------------------
 	/// 定数

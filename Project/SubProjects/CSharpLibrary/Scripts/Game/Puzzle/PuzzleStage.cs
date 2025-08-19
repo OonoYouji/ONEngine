@@ -66,16 +66,20 @@ public class PuzzleStage : MonoBehavior {
 	private void CreateBlockParent() {
 		blockParent_ = ecsGroup.CreateEntity("GameEntity");
 		blockParent_.parent = entity;
-		
+
 		if (mapData_ != null) {
 			int width = mapData_[0].Count;
 			int height = mapData_.Count;
-			blockPosOffset_ = new Vector3(width / 2f, 2f, height / 2f) * blockData_.blockSpace;
-			blockPosOffset_ *= -1f;
+			float space = blockData_.blockSpace;
+			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
+			blockPosOffset_ -= new Vector3(space / 2f, 0f, space / 2f);
+			blockPosOffset_ *= -1.0f;
+			blockPosOffset_.y = 2f;
+
 			blockParent_.transform.position = blockPosOffset_;
 		}
 	}
-	
+
 	private void PlayerDeploy() {
 		Debug.Log("----- PlayerDeploy. -----");
 		/* ----- プレイヤーの配置 ----- */
@@ -141,7 +145,7 @@ public class PuzzleStage : MonoBehavior {
 
 		Debug.Log("----- BlockDeployed. -----");
 
-		
+
 		blocks_ = new List<Entity>();
 
 		for (int r = 0; r < mapData_.Count; r++) {
@@ -199,8 +203,12 @@ public class PuzzleStage : MonoBehavior {
 		if (mapData_ != null) {
 			int width = mapData_[0].Count;
 			int height = mapData_.Count;
-			blockPosOffset_ = new Vector3(width / 2f, 0, height / 2f) * blockData_.blockSpace;
-			blockPosOffset_ *= -1f;
+			float space = blockData_.blockSpace;
+			blockPosOffset_ = new Vector3(width / 2f, 0f, height / 2f) * space;
+			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
+			blockPosOffset_ *= -1.0f;
+			blockPosOffset_.y = 2f;
+
 			blockParent_.transform.position = blockPosOffset_;
 		}
 

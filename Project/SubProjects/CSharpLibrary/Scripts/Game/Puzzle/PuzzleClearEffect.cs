@@ -37,7 +37,7 @@ public class PuzzleClearEffect : MonoBehavior {
 				if (block) {
 					Vector2Int address = block.blockData.address;
 					if (address.x + address.y == repeatCount_) {
-						block.StartClearEffect(puzzleStage_.GetActivePlayer());
+						block.StartClearEffect();
 					}
 				}
 

@@ -71,6 +71,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Input\KeyCode.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Mouse.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Log\Debug.cs" />
+    <Compile Include="Scripts\Engine\Core\Utility\Math\Ease.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Flag.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Mathf.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Math\Matrix4x4.cs" />

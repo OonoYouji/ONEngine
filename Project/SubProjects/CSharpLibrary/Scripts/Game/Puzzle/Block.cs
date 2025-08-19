@@ -8,17 +8,20 @@ using System.Threading.Tasks;
 public class Block : MonoBehavior {
 	public PuzzleBlockData blockData;
 
-	private Vector3 positionOffset_;
+	/* ----- color ----- */
+	private Vector4 currentColor_;
 
 	/* ----- clear vars ----- */
 	private bool isStartClearAnimation_;
 	private float clearAnimationTime_;
 	private int clearEffectMode_;
-	[SerializeField] private float sinSpeed_ = 20.0f;
-	[SerializeField] private float sinMultiplier_ = 0.1f;
+	private bool isEndClearAnimation_;
+	[SerializeField] private float sinValue_;
+
 
 	private enum Mode : int {
-		Up, Down
+		Up,
+		Down
 	}
 
 	public override void Initialize() {
@@ -46,13 +49,13 @@ public class Block : MonoBehavior {
 	public void UpdateColor() {
 		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
 		if (mr) {
-			Vector4 color = Vector4.one;
+			currentColor_ = Vector4.one;
 			if (blockData.type == (int)BlockType.Black) {
 				float value = 0.2f;
-				color = new Vector4(value, value, value, 1);
+				currentColor_ = new Vector4(value, value, value, 1);
 			}
 
-			mr.color = color;
+			mr.color = currentColor_;
 		} else {
 			Debug.LogWarning("-----: block color not setting");
 		}
@@ -63,39 +66,45 @@ public class Block : MonoBehavior {
 		if (_playerType != this.blockData.type) {
 			height -= 0.05f;
 		}
-		
+
 		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, height,
 			blockData.address.y * blockData.blockSpace);
 
 		transform.position = newPos;
 	}
 
-	public void StartClearEffect(PuzzlePlayer _player) {
+	public void StartClearEffect() {
 		isStartClearAnimation_ = true;
-		int playerType = _player.blockData.type;
-		if (playerType != blockData.type) {
-			clearEffectMode_ = (int)Mode.Down;
-		} else {
-			clearEffectMode_ = (int)Mode.Up;
-		}
+		clearEffectMode_ = (int)Mode.Up;
 	}
 
 	private void UpdateClearEffect() {
 		clearAnimationTime_ += Time.deltaTime;
-		/// _playerの色と自身の色を比較、色次第で別々の演出をする
-		MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-		mr.color = new Vector4(1, 0, 0, 1);
+		float clamp = Mathf.Clamp01(clearAnimationTime_);
+		float ease = Ease.InOut.Expo(clamp);
+		float value = ease * Mathf.PI;
+		float sin = Mathf.Sin(value);
 
-		Vector3 position = transform.position;
-		
-		float sinValue = Mathf.Sin(clearAnimationTime_ * sinSpeed_) * 0.5f + 0.5f;
-		sinValue *= sinMultiplier_; /// sin波の大きさを調整
-		if (clearEffectMode_ == (int)Mode.Down) {
-			position.y = -sinValue;
-		} else {
-			position.y = sinValue;
+		if (value >= Mathf.PI) {
+			isEndClearAnimation_ = true;
 		}
+
 		
-		transform.position = position;
+		if (!isEndClearAnimation_) {
+			/// 色を金色にする
+			MeshRenderer mr = entity.GetComponent<MeshRenderer>();
+			Vector4 color = Vector4.Lerp(currentColor_, Mathf.FromColorCode(0xffd608ff), ease);
+			mr.color = color;
+
+			/// 上下にアニメーションさせる(一回キリ)
+			Vector3 position = transform.position;
+			if (clearEffectMode_ == (int)Mode.Down) {
+				position.y = -sin * 0.2f;
+			} else {
+				position.y = sin * 0.2f;
+			}
+
+			transform.position = position;
+		}
 	}
 }

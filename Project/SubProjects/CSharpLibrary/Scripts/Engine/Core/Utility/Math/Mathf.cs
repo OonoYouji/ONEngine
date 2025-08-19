@@ -132,4 +132,26 @@ struct Mathf {
 	static public extern string LoadFile(string _path);
 
 
+
+	/// --------------------------------------------
+	/// 色
+	/// --------------------------------------------
+
+	static public Vector4 FromColorCode(uint _colorCode) {
+		Vector4 v = new Vector4();
+    
+		uint r = (_colorCode >> 24) & 0xFF;
+		uint g = (_colorCode >> 16) & 0xFF;
+		uint b = (_colorCode >> 8)  & 0xFF;
+		uint a = (_colorCode)       & 0xFF;
+
+		// 0.0f ～ 1.0f に変換
+		v.x = r / 255.0f;
+		v.y = g / 255.0f;
+		v.z = b / 255.0f;
+		v.w = a / 255.0f;
+
+		return v;
+	}
+	
 }

@@ -75,6 +75,16 @@ public class PuzzleClearChecker : MonoBehavior {
 			
 		}
 
+		
+		/// クリアしたときの処理を記載
+		if (isClear_) {
+			/// PuzzleStageの処理をとめる
+			PuzzleStage puzzleStage = entity.GetScript<PuzzleStage>();
+			if (puzzleStage) {
+				puzzleStage.enable = false;
+			}
+		}
+		
 
 		MeshRenderer mr = puzzleStage_.entity.GetComponent<MeshRenderer>();
 		if (mr) {
