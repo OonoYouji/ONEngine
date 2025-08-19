@@ -134,7 +134,11 @@ void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::uni
 
 void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
 	_texture->SetName(_filePath);
-	textureIndices_[_filePath] = textureIndices_.size();
+
+	size_t value = textureIndices_.size();
+	textureIndices_[_filePath] = value;
+	reverseTextureIndices_[value] = _filePath;
+
 	textures_[textureIndices_[_filePath]] = std::move(_texture);
 }
 
@@ -200,4 +204,13 @@ size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filePath)
 	}
 
 	return textureIndices_.at(_filePath);
+}
+
+const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) const {
+	if (reverseTextureIndices_.contains(_index)) {
+		return reverseTextureIndices_.at(_index);
+	}
+
+	Console::LogError("Texture not found: " + std::to_string(_index));
+	return "";
 }

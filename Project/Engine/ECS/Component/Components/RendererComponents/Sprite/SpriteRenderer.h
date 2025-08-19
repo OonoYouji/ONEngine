@@ -50,8 +50,9 @@ public:
 };
 
 
+class GraphicsResourceCollection;
 namespace COMP_DEBUG {
-	void SpriteDebug(SpriteRenderer* _sr);
+	void SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection);
 	void SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePath);
 }
 

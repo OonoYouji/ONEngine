@@ -16,6 +16,9 @@ PSOutput main(VSOutput input) {
 	float4 baseTexColor = textures[material.baseTextureId].Sample(textureSampler, uv);
 
 	output.color = baseTexColor * material.color;
+	output.worldPosition = input.position;
+	output.normal = float4(0, 0, 1, 1);
+	output.flags = float4(material.postEffectFlags, material.entityId, 0, 1); 
 	
 	return output;
 }

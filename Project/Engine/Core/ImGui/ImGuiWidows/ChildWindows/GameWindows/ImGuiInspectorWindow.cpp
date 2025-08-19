@@ -25,8 +25,8 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
-	: pECS_(_ecs), pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
+	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pEditorManager_(_editorManager) {
 
 
 	/// compute
@@ -43,7 +43,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorMa
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp)); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp)); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pResourceCollection_); });
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });

@@ -11,6 +11,7 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 namespace {
 
@@ -67,25 +68,96 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, Material* _material) {
+bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsResourceCollection* _resourceCollection) {
 	/// nullptr check
 	if (!_material) {
 		return false;
 	}
 
 	bool isEdit = false;
-
 	if (ImGui::CollapsingHeader(_label)) {
-		if (ImGuiColorEdit("Base Color", &_material->baseColor)) {
+		if (ImGuiColorEdit("BaseColor", &_material->baseColor)) {
 			isEdit = true;
 		}
 
-		if (UVTransformEdit("uvTransform", &_material->uvTransform)) {
+		if (UVTransformEdit("UVTransform", &_material->uvTransform)) {
 			isEdit = true;
+		}
+		
+		if(ImGui::CollapsingHeader("PostEffectFlags")) {
+			/// ポストエフェクトのフラグ
+			if (ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
+				isEdit = true;
+			}
+
+			if (ImGui::CheckboxFlags("Grayscale", &_material->postEffectFlags, PostEffectFlags_Grayscale)) {
+				isEdit = true;
+			}
+
+			if (ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
+				isEdit = true;
+			}
 		}
 
 
-	} // if ImGui::CollapsingHeader
+		if (ImGui::CollapsingHeader("Texture")) {
+
+			/// textureの変更
+			const std::string& texturePath = _resourceCollection->GetTexturePath(_material->baseTextureId);
+			ImMathf::InputText("Base Texture", const_cast<std::string*>(&texturePath), ImGuiInputTextFlags_ReadOnly);
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if (payload->Data) {
+						const char* droppedPath = static_cast<const char*>(payload->Data);
+						std::string path = std::string(droppedPath);
+						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
+							isEdit = true;
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			const Texture* baseTexture = _resourceCollection->GetTexture(texturePath);
+			if (baseTexture) {
+				ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
+				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			}
+
+
+			ImGui::Spacing();
+
+
+			/// 法線テクスチャの変更
+			const std::string& normalTexturePath = _resourceCollection->GetTexturePath(_material->normalTextureId);
+			ImMathf::InputText("Normal Texture", const_cast<std::string*>(&normalTexturePath), ImGuiInputTextFlags_ReadOnly);
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if (payload->Data) {
+						const char* droppedPath = static_cast<const char*>(payload->Data);
+						std::string path = std::string(droppedPath);
+						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							_material->normalTextureId = static_cast<int32_t>(droppedTextureIndex);
+							isEdit = true;
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+
+			const Texture* normalTexture = _resourceCollection->GetTexture(normalTexturePath);
+			if (normalTexture) {
+				ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
+				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			}
+		}
+
+
+	} 
 
 
 	return isEdit;

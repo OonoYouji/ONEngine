@@ -7,7 +7,7 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 SpriteRenderer::SpriteRenderer() {
 	material_.baseColor = Vector4::kWhite;
@@ -44,7 +44,7 @@ Material& SpriteRenderer::GetMaterial() {
 /// デバッグ用のSpriteRenderer
 /// /////////////////////////////////////////////////////////////
 
-void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr) {
+void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection) {
 	if (!_sr) {
 		return;
 	}
@@ -52,14 +52,11 @@ void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr) {
 	Material& material = _sr->GetMaterial();
 	std::string texturePath = _sr->GetTexturePath();
 
+	ImGui::Indent(0.9f);
 	/// colorの変更
-	if (ImMathf::MaterialEdit("material", &material)) {
+	if (ImMathf::MaterialEdit("material", &material, _resourceCollection)) {
 	}
-
-	/// textureの表示
-	SpriteTextureDebug(_sr, texturePath);
-
-
+	ImGui::Unindent(0.9f);
 }
 
 void COMP_DEBUG::SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePath) {

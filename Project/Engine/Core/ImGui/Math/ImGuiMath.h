@@ -10,6 +10,9 @@
 #include "Engine/Core/Utility/Math/Vector4.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
 
+/// 
+class GraphicsResourceCollection;
+
 namespace ImMathf {
 
 	ImVec4 ToImVec4(const Vector4& _vec);
@@ -22,7 +25,7 @@ namespace ImMathf {
 	bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 
 	/// マテリアルの編集
-	bool MaterialEdit(const char* _label, Material* _material);
+	bool MaterialEdit(const char* _label, Material* _material, GraphicsResourceCollection* _resourceCollection);
 
 	bool UVTransformEdit(const char* _label, UVTransform* _uvTransform);
 
