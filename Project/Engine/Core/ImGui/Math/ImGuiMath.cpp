@@ -29,6 +29,18 @@ ImVec2 ImMathf::ToImVec2(const Vector2& _vec) {
 	return ImVec2(_vec.x, _vec.y);
 }
 
+bool ImMathf::ColorEdit(const char* _label, Vector4* _color, ImGuiColorEditFlags _flags) {
+	if (!_color) {
+		return false;
+	}
+
+	if (ImGui::ColorEdit4(_label, &_color->x, _flags)) {
+		return true; // 色が変更された
+	}
+
+	return false;
+}
+
 bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {
 		return false; // nullptr check
@@ -66,7 +78,7 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 	struct CallbackUserData {
 		std::string* text;
 	};
-	
+
 	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			auto* user = static_cast<CallbackUserData*>(data->UserData);
@@ -74,7 +86,7 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 			data->Buf = user->text->data();
 		}
 		return 0;
-	};
+		};
 
 	CallbackUserData userData = { _text };
 	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,

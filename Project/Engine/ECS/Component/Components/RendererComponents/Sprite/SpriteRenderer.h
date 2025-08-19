@@ -5,13 +5,13 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
+#include "Engine/Core/Utility/Math/Vector4.h"
 
 /// ===================================================
 /// sprite描画クラス
 /// ===================================================
 class SpriteRenderer final : public IComponent {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -21,28 +21,35 @@ public:
 
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	Vector4 color_;
 	std::string texturePath_;
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief 描画するtextureの file pathを設定
-	/// @param _path .slnからの相対パス
-	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
+	/// ----- setter ----- ///
+	void SetTexturePath(const std::string& _path);
+	void SetColor(const Vector4& _color);
 
 
-	/// @brief 描画するtextureの file pathを取得
-	/// @return .slからの相対パス
-	const std::string& GetTexturePath() const { return texturePath_; }
+	/// ----- getter ----- ///
+	const std::string& GetTexturePath() const;
+	const Vector4& GetColor() const;
 
 };
 
+
+namespace COMP_DEBUG {
+
+	void SpriteDebug(SpriteRenderer* _sr);
+
+	void SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePath);
+
+}

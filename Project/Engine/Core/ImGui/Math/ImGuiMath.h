@@ -15,6 +15,10 @@ namespace ImMathf {
 	ImVec4 ToImVec4(const Vector4& _vec);
 	ImVec2 ToImVec2(const Vector2& _vec);
 
+	/// 色の編集
+	bool ColorEdit(const char* _label, Vector4* _color, ImGuiColorEditFlags _flags = 0);
+
+	/// テキストの入力
 	bool InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags = 0);
 }
 
