@@ -1,18 +1,21 @@
 #include "Sprite.hlsli"
 
-struct TextureID {
-	uint id;
-};
+#include "../../ConstantBufferData/Material.hlsli"
 
-StructuredBuffer<TextureID> textureIDs     : register(t0);
+StructuredBuffer<Material>  materials      : register(t0);
 Texture2D<float4>           textures[]     : register(t1);
 SamplerState                textureSampler : register(s0);
 
 PSOutput main(VSOutput input) {
 	PSOutput output;
+	Material material = materials[input.instanceId];
 	
-	float4 textureColor = textures[textureIDs[input.instanceId].id].Sample(textureSampler, input.uv);
-	output.color = textureColor;
+	/// TextureSampling
+	float3x3 matUV = MatUVTransformToMatrix(material.uvTransform);
+	float2 uv = mul(float3(input.uv, 1), matUV).xy;
+	float4 baseTexColor = textures[material.baseTextureId].Sample(textureSampler, uv);
+
+	output.color = baseTexColor * material.color;
 	
 	return output;
 }

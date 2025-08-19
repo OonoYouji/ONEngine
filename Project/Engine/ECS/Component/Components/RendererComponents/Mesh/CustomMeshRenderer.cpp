@@ -4,7 +4,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 CustomMeshRenderer::CustomMeshRenderer() {
-	material_.color = Vector4::kWhite;
+	material_.baseColor = Vector4::kWhite;
 	material_.postEffectFlags = PostEffectFlags_Lighting;
 }
 
@@ -33,7 +33,7 @@ void CustomMeshRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void CustomMeshRenderer::SetColor(const Vector4& _color) {
-	material_.color = _color;
+	material_.baseColor = _color;
 }
 
 void CustomMeshRenderer::SetIsVisible(bool _isVisible) {
@@ -49,7 +49,7 @@ const std::string& CustomMeshRenderer::GetTexturePath() const {
 }
 
 const Vector4& CustomMeshRenderer::GetColor() const {
-	return material_.color;
+	return material_.baseColor;
 }
 
 const Mesh* CustomMeshRenderer::GetMesh() const {

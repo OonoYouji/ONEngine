@@ -34,10 +34,11 @@ RenderingPipelineCollection::~RenderingPipelineCollection() {}
 
 void RenderingPipelineCollection::Initialize() {
 
-	/// generate rendering pipeline
+	/// 2D
 	Generate2DRenderingPipeline<Line2DRenderingPipeline>();
 	Generate2DRenderingPipeline<SpriteRenderingPipeline>(graphicsResourceCollection_);
 
+	/// 3D 
 	Generate3DRenderingPipeline<Line3DRenderingPipeline>();
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
@@ -81,7 +82,6 @@ void RenderingPipelineCollection::PreDrawEntities(CameraComponent* _3dCamera, Ca
 }
 
 void RenderingPipelineCollection::DrawEntities(CameraComponent* _3dCamera, CameraComponent* _2dCamera) {
-
 	ECSGroup* ecsGroup = pEntityComponentSystem_->GetCurrentGroup();
 
 	std::vector<GameEntity*> entities;

@@ -67,6 +67,61 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
+bool ImMathf::MaterialEdit(const char* _label, Material* _material) {
+	/// nullptr check
+	if (!_material) {
+		return false;
+	}
+
+	bool isEdit = false;
+
+	if (ImGui::CollapsingHeader(_label)) {
+		if (ImGuiColorEdit("Base Color", &_material->baseColor)) {
+			isEdit = true;
+		}
+
+		if (UVTransformEdit("uvTransform", &_material->uvTransform)) {
+			isEdit = true;
+		}
+
+
+	} // if ImGui::CollapsingHeader
+
+
+	return isEdit;
+}
+
+bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
+	/// nullptr check
+	if (!_uvTransform) {
+		return false;
+	}
+
+	bool isEdit = false;
+
+	ImGui::PushID(2);
+
+	if (ImGui::CollapsingHeader(_label)) {
+		/// UVのオフセット
+		if (ImGui::DragFloat2("offset", &_uvTransform->position.x, 0.01f)) {
+			isEdit = true;
+		}
+		/// UVのスケール
+		if (ImGui::DragFloat2("scale", &_uvTransform->scale.x, 0.01f, 0.0f, FLT_MAX)) {
+			isEdit = true;
+		}
+		/// UVの回転
+		if (ImGui::DragFloat("rotate", &_uvTransform->rotate, 0.01f, -std::numbers::pi_v<float>, std::numbers::pi_v<float>)) {
+			isEdit = true;
+		}
+
+	} // if ImGui::CollapsingHeader
+
+	ImGui::PopID();
+
+	return isEdit;
+}
+
 
 bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {

@@ -40,8 +40,8 @@ void CameraComponent::UpdateViewProjection() {
 		/// 2Dカメラの場合
 
 		matProjection_ = CameraMath::MakeOrthographicMatrix(
-			-(EngineConfig::kWindowSize.x / 2.0f), EngineConfig::kWindowSize.x / 2.0f,
-			-(EngineConfig::kWindowSize.y / 2.0f), EngineConfig::kWindowSize.y / 2.0f,
+			(EngineConfig::kWindowSize.x / 2.0f), -(EngineConfig::kWindowSize.x / 2.0f),
+			(EngineConfig::kWindowSize.y / 2.0f), -(EngineConfig::kWindowSize.y / 2.0f),
 			nearClip_, farClip_
 		);
 
@@ -153,6 +153,9 @@ void from_json(const nlohmann::json& _j, CameraComponent& _c) {
 	_c.SetFovY(_j.value("fovY", 0.7f));
 	_c.SetNearClip(_j.value("nearClip", 0.1f));
 	_c.SetFarClip(_j.value("farClip", 1000.0f));
+	_c.SetCameraType(
+		_j.value("cameraType", static_cast<int>(CameraType::Type3D))
+	);
 }
 
 void to_json(nlohmann::json& _j, const CameraComponent& _c) {

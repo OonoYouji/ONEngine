@@ -6,10 +6,12 @@
 /// engine
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
 
 SpriteRenderer::SpriteRenderer() {
-	texturePath_ = "Packages/Textures/white.png";
+	material_.baseColor = Vector4::kWhite;
+	texturePath_ = "./Packages/Textures/white.png";
 }
 SpriteRenderer::~SpriteRenderer() {}
 
@@ -19,7 +21,7 @@ void SpriteRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void SpriteRenderer::SetColor(const Vector4& _color) {
-	color_ = _color;
+	material_.baseColor = _color;
 }
 
 const std::string& SpriteRenderer::GetTexturePath() const {
@@ -27,7 +29,15 @@ const std::string& SpriteRenderer::GetTexturePath() const {
 }
 
 const Vector4& SpriteRenderer::GetColor() const {
-	return color_;
+	return material_.baseColor;
+}
+
+const Material& SpriteRenderer::GetMaterial() const {
+	return material_;
+}
+
+Material& SpriteRenderer::GetMaterial() {
+	return material_;
 }
 
 /// /////////////////////////////////////////////////////////////
@@ -35,21 +45,20 @@ const Vector4& SpriteRenderer::GetColor() const {
 /// /////////////////////////////////////////////////////////////
 
 void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr) {
-	if(!_sr) {
+	if (!_sr) {
 		return;
 	}
 
-	Vector4 color = _sr->GetColor();
+	Material& material = _sr->GetMaterial();
 	std::string texturePath = _sr->GetTexturePath();
 
 	/// colorの変更
-	if (ImMathf::ColorEdit("color", &color)) {
-		_sr->SetColor(color);
+	if (ImMathf::MaterialEdit("material", &material)) {
 	}
 
 	/// textureの表示
 	SpriteTextureDebug(_sr, texturePath);
-	
+
 
 }
 
@@ -80,4 +89,20 @@ void COMP_DEBUG::SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePa
 
 		ImGui::EndDragDropTarget();
 	}
+}
+
+
+void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
+	_j = nlohmann::json{
+		{ "type", "SpriteRenderer" },
+		{ "enable", _sr.enable },
+		{ "texturePath", _sr.GetTexturePath() },
+		{ "material", _sr.GetMaterial() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
+	_sr.enable = _j.value("enable", static_cast<int>(true));
+	_sr.SetTexturePath(_j.value("texturePath", "./Packages/Textures/white.png"));
+	Material material = _j.value("material", Material());
 }

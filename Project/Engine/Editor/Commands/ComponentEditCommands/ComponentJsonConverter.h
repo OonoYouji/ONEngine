@@ -84,10 +84,6 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e);
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m);
 void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m);
 
-// SpriteRenderer
-void from_json(const nlohmann::json& _j, SpriteRenderer& _s);
-void to_json(nlohmann::json& _j, const SpriteRenderer& _s);
-
 // Line2DRenderer
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line2DRenderer& _l);

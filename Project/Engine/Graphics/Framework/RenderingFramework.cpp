@@ -115,11 +115,6 @@ void RenderingFramework::DrawScene() {
 
 void RenderingFramework::DrawDebug() {
 	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
-	if (!camera) {
-		Console::Log("[error] RenderingFramework::DrawDebug: Debug Camera is null");
-		return;
-	}
-
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_DEBUG].get();
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());

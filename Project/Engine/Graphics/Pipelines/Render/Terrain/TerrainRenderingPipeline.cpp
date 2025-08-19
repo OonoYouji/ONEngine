@@ -115,7 +115,11 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);
 	materialBuffer_.SetMappedData(
-		Material(Vector4::kWhite, 1, pTerrain_->GetOwner()->GetId())
+		Material{
+			.baseColor = Vector4::kWhite, 
+			.postEffectFlags =  1,
+			.entityId = pTerrain_->GetOwner()->GetId()
+		}
 	);
 
 
@@ -152,8 +156,8 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	/// vbv setting
 	D3D12_VERTEX_BUFFER_VIEW vbv = {};
 	vbv.BufferLocation = vertexBuffer.Get()->GetGPUVirtualAddress();
-	vbv.StrideInBytes  = sizeof(TerrainVertex);
-	vbv.SizeInBytes    = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
+	vbv.StrideInBytes = sizeof(TerrainVertex);
+	vbv.SizeInBytes = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
 	cmdList->IASetVertexBuffers(0, 1, &vbv);
 
 
@@ -167,8 +171,8 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	/// ibv setting
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
 	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
-	ibv.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
-	ibv.Format         = DXGI_FORMAT_R32_UINT;
+	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
+	ibv.Format = DXGI_FORMAT_R32_UINT;
 	cmdList->IASetIndexBuffer(&ibv);
 
 	/// vbv ibv setting

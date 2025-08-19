@@ -347,19 +347,6 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
-}
-
-void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
-	_j = nlohmann::json{
-		{ "type", "SpriteRenderer" },
-		{ "enable", _s.enable },
-		{ "texturePath", _s.GetTexturePath() }
-	};
-}
-
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
 	_l.enable = _j.at("enable").get<int>();
 }

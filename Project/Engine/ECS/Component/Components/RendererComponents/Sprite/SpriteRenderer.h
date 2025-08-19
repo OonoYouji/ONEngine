@@ -3,9 +3,12 @@
 /// std
 #include <string>
 
+/// external
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Core/Utility/Math/Vector4.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// ===================================================
 /// sprite描画クラス
@@ -25,9 +28,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	Vector4 color_;
-	std::string texturePath_;
-
+	Material material_; ///< マテリアルデータ
+	std::string texturePath_; ///< テクスチャパス
 
 public:
 	/// ===================================================
@@ -38,18 +40,21 @@ public:
 	void SetTexturePath(const std::string& _path);
 	void SetColor(const Vector4& _color);
 
-
 	/// ----- getter ----- ///
 	const std::string& GetTexturePath() const;
 	const Vector4& GetColor() const;
+
+	const Material& GetMaterial() const;
+	Material& GetMaterial(); 
 
 };
 
 
 namespace COMP_DEBUG {
-
 	void SpriteDebug(SpriteRenderer* _sr);
-
 	void SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePath);
-
 }
+
+/// json serialize
+void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
+void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);

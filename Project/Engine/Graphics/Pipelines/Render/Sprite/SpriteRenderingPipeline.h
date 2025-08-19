@@ -12,6 +12,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
@@ -27,6 +28,13 @@ public:
 	struct VertexData {
 		Vector4 position;
 		Vector2 uv;
+	};
+
+	enum ROOT_PARAM {
+		ROOT_PARAM_VIEW_PROJECTION = 0, ///< ビュープロジェクション行列
+		ROOT_PARAM_MATERIAL,
+		ROOT_PARAM_TEXTURES,
+		ROOT_PARAM_TRANSFORM,
 	};
 
 
@@ -57,7 +65,7 @@ private:
 
 	class GraphicsResourceCollection*            resourceCollection_       = nullptr;
 
-	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIDsBuffer_;
+	std::unique_ptr<StructuredBuffer<Material>>  materialsBuffer;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformsBuffer_;
 	std::list<class SpriteRenderer*>             renderers_;
 	

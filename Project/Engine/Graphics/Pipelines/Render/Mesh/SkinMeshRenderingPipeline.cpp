@@ -137,7 +137,13 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 		transformBuffer_->SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_->SetMappedData(Material(comp->GetColor(), 1, comp->GetOwner()->GetId()));
+		materialBuffer_->SetMappedData(
+			Material{
+				.baseColor = comp->GetColor(),
+				.postEffectFlags = 1,
+				.entityId = comp->GetOwner()->GetId()
+			}
+		);
 
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
