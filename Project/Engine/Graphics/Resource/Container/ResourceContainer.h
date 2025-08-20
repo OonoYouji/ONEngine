@@ -12,7 +12,8 @@
 /// リソースのインターフェイスクラス
 /// ///////////////////////////////////////////////////
 class IResourceContainer {
-
+public:
+	virtual ~IResourceContainer() = default;
 };
 
 
@@ -26,11 +27,11 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ResourceContainer();
+	ResourceContainer(size_t _maxResourceSize);
 	~ResourceContainer();
 
 	/// 追加
-	T Add(const std::string& _key, T _t);
+	T* Add(const std::string& _key, T _t);
 
 	/// 削除
 	void Remove(const std::string& _key);
@@ -61,25 +62,27 @@ private:
 /// ///////////////////////////////////////////////////
 
 template<typename T>
-inline ResourceContainer<T>::ResourceContainer() {}
+inline ResourceContainer<T>::ResourceContainer(size_t _maxResourceSize) {
+	values_.resize(_maxResourceSize);
+}
 
 template<typename T>
 inline ResourceContainer<T>::~ResourceContainer() {}
 
 template<typename T>
-inline T ResourceContainer<T>::Add(const std::string& _key, T _t) {
+inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 	/// すでに同じキーが存在する場合は、値を更新
 	if (indexMap_.contains(_key)) {
 		size_t index = indexMap_[_key];
 		values_[index] = _t;
-		return values_[index];
+		return &values_[index];
 	}
 
 	/// 新しいキーの場合は、値を追加
 	indexMap_[_key] = values_.size();
 	reverseIndexMap_[values_.size()] = _key;
 	values_.emplace_back(_t);
-	return values_.back();
+	return &values_.back();
 }
 
 template<typename T>

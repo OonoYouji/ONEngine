@@ -11,6 +11,7 @@
 #include "Container/ResourceContainer.h"
 
 static const uint32_t MAX_TEXTURE_COUNT = 128; ///< 最大テクスチャ数
+static const uint32_t MAX_MODEL_COUNT   = 128;   ///< 最大モデル数
 
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのコレクション
@@ -76,6 +77,10 @@ public:
 
 	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
 
+
+	/// 登録
+	void RegisterResourceType();
+
 private:
 
 	/// ===================================================
@@ -92,8 +97,15 @@ private:
 	std::vector<std::unique_ptr<Texture>>   textures_;
 
 	/// container
-	ResourceContainer<Model>   modelsContainer_;
-	ResourceContainer<Texture> texturesContainer_;
+	using ModelContainer = ResourceContainer<Model>;
+	using TextureContainer = ResourceContainer<Texture>;
+
+	std::unique_ptr<ModelContainer> modelContainer_;
+	std::unique_ptr<TextureContainer> textureContainer_;
+
+
+	/// リソースを読む条件
+	std::unordered_map<std::string, Type> resourceTypes_;
 
 public:
 

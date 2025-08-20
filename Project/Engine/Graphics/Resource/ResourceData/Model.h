@@ -24,14 +24,9 @@ public:
 
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr
-	void AddMesh(std::unique_ptr<Mesh>&& _mesh) {
-		meshes_.push_back(std::move(_mesh));
-	}
+	void AddMesh(std::shared_ptr<Mesh>&& _mesh);
 
-	Mesh* CreateMesh() {
-		meshes_.emplace_back(std::make_unique<Mesh>());
-		return meshes_.back().get();
-	}
+	Mesh* CreateMesh();
 
 private:
 
@@ -39,11 +34,11 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::vector<std::unique_ptr<Mesh>> meshes_;
+	std::vector<std::shared_ptr<Mesh>> meshes_;
 	std::string                        path_;
 
 
-	/* ----- animation data ----- */
+	/// ----- animation data ----- ///
 	Node rootNode_;
 	std::unordered_map<std::string, JointWeightData> jointWeightData_;
 	std::unordered_map<std::string, NodeAnimation> nodeAnimationMap_;
@@ -57,12 +52,12 @@ public:
 	/// ===================================================
 
 	/// @brief mesh配列のセッタ
-	/// @param _meshes unique_ptrのmesh配列
-	void SetMeshes(std::vector<std::unique_ptr<Mesh>>&& _meshes);
+	/// @param _meshes shared_ptrのmesh配列
+	void SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes);
 
 	/// @brief パスのセッタ
 	/// @param _path ファイルパス
-	void SetPath(const std::string& _path) { path_ = _path; }
+	void SetPath(const std::string& _path);
 
 	void SetRootNode(const Node& _node);
 
@@ -71,12 +66,12 @@ public:
 
 	/// @brief meshの配列のゲッタ
 	/// @return meshの配列
-	const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const;
-	std::vector<std::unique_ptr<Mesh>>& GetMeshes();
+	const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
+	std::vector<std::shared_ptr<Mesh>>& GetMeshes();
 
 	/// @brief 読み込みに使用したファイルパスのゲッタ
 	/// @return pathの文字列
-	const std::string& GetPath() const { return path_; }
+	const std::string& GetPath() const;
 
 
 	const Node& GetRootNode() const;
