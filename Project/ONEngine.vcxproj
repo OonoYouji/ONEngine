@@ -26,6 +26,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\ECS\System\Audio\AudioPlaybackSystem.cpp" />
     <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -537,8 +538,10 @@
     </ClCompile>
     <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp" />
     <ClCompile Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\Container\ResourceContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\ECS\System\Audio\AudioPlaybackSystem.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
     <ClInclude Include="Engine\ECS\System\CameraUpdate\CameraUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Camera\CameraComponent.h" />
@@ -707,6 +710,7 @@
     <ClInclude Include="Engine\ECS\System\SystemCollection\SystemCollection.h" />
     <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.h" />
+    <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
