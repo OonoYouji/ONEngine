@@ -71,7 +71,7 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	DxDevice* dxDevice = dxManager_->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(texture->dxResource_.Get(), &srvDesc, texture->srvHandle_->cpuHandle);
 
-	Console::Log("[Load Resource] type:Texture, path:\"" + _filePath + "\"");
+	Console::Log("[Load] [Texture] - path:\"" + _filePath + "\"");
 	resourceCollection_->AddTexture(_filePath, std::move(texture));
 }
 
@@ -175,7 +175,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		model->AddMesh(std::move(meshData));
 	}
 
-	Console::Log("[Load Resource] type:Model, path:\"" + _filePath + "\"");
+	Console::Log("[Load] [Model] - path:\"" + _filePath + "\"");
 	resourceCollection_->AddModel(_filePath, std::move(model));
 
 }

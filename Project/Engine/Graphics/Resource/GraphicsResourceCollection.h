@@ -8,6 +8,7 @@
 #include "Loader/GraphicsResourceLoader.h"
 #include "ResourceData/Model.h"
 #include "ResourceData/Texture.h"
+#include "Container/ResourceContainer.h"
 
 static const uint32_t MAX_TEXTURE_COUNT = 128; ///< 最大テクスチャ数
 
@@ -81,7 +82,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	std::unique_ptr<GraphicsResourceLoader>                   resourceLoader_;
+	std::unique_ptr<GraphicsResourceLoader> resourceLoader_;
 
 	/// mesh
 	std::unordered_map<std::string, std::unique_ptr<Model>>   models_;
@@ -89,6 +90,10 @@ private:
 	std::unordered_map<std::string, size_t> textureIndices_;
 	std::unordered_map<size_t, std::string> reverseTextureIndices_;
 	std::vector<std::unique_ptr<Texture>>   textures_;
+
+	/// container
+	ResourceContainer<Model>   modelsContainer_;
+	ResourceContainer<Texture> texturesContainer_;
 
 public:
 
@@ -120,6 +125,6 @@ public:
 
 	/// @brief textureのコンテナを取得
 	/// @return texture container
-	const std::vector<std::unique_ptr<Texture>>& GetTextures() const { return textures_; }
+	const std::vector<std::unique_ptr<Texture>>& GetTextures() const;
 };
 

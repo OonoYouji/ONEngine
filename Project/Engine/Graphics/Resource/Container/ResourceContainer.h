@@ -20,7 +20,7 @@ class IResourceContainer {
 /// リソースのコンテナクラス
 /// ///////////////////////////////////////////////////
 template <typename T>
-class ResourceContainer {
+class ResourceContainer : public IResourceContainer {
 public:
 	/// ===================================================
 	/// public : methods
@@ -41,7 +41,8 @@ public:
 	T* Get(size_t _index);
 	T* GetFirst();
 	const std::string& GetKey(size_t _index) const;
-
+	const std::vector<T>& GetValues() const;
+	std::vector<T>& GetValues();
 
 private:
 	/// ===================================================
@@ -82,6 +83,28 @@ inline T ResourceContainer<T>::Add(const std::string& _key, T _t) {
 }
 
 template<typename T>
+inline void ResourceContainer<T>::Remove(const std::string& _key) {
+
+	/// 参照する方法を消して使えないようにする
+	if(indexMap_.contains(_key)) {
+		size_t index = indexMap_[_key];
+		indexMap_.erase(_key);
+		reverseIndexMap_.erase(index);
+	}
+}
+
+template<typename T>
+inline void ResourceContainer<T>::Remove(size_t _index) {
+
+	/// 参照する方法を消して使えないようにする
+	if(reverseIndexMap_.contains(_index)) {
+		std::string key = reverseIndexMap_[_index];
+		indexMap_.erase(key);
+		reverseIndexMap_.erase(_index);
+	}
+}
+
+template<typename T>
 inline T* ResourceContainer<T>::Get(const std::string& _key) {
 	if (indexMap_.contains(_key)) {
 		size_t index = indexMap_[_key];
@@ -113,4 +136,14 @@ inline const std::string& ResourceContainer<T>::GetKey(size_t _index) const {
 
 	/// 空文字を返す
 	return std::string();
+}
+
+template<typename T>
+inline const std::vector<T>& ResourceContainer<T>::GetValues() const {
+	return values_;
+}
+
+template<typename T>
+inline std::vector<T>& ResourceContainer<T>::GetValues() {
+	return values_;
 }

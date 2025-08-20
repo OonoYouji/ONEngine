@@ -214,3 +214,7 @@ const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) con
 	Console::LogError("Texture not found: " + std::to_string(_index));
 	return "";
 }
+
+const std::vector<std::unique_ptr<Texture>>& GraphicsResourceCollection::GetTextures() const {
+	return textures_;
+}
