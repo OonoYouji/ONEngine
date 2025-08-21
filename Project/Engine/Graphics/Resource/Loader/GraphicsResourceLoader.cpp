@@ -3,6 +3,12 @@
 /// directX
 #include <d3dx12.h>
 
+/// sound api
+#include <mfapi.h>
+#include <mfobjects.h>
+#include <mfidl.h>
+#include <mfreadwrite.h>
+
 /// externals
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -15,24 +21,39 @@
 #include "../GraphicsResourceCollection.h"
 
 
+/// comment
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "Mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
+
 GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection)
 	: dxManager_(_dxManager), resourceCollection_(_collection) {}
 
-GraphicsResourceLoader::~GraphicsResourceLoader() {}
+GraphicsResourceLoader::~GraphicsResourceLoader() {
+	HRESULT result = MFShutdown();
+	Assert(SUCCEEDED(result), "MFShutdown failed");
+}
 
 
 
 void GraphicsResourceLoader::Initialize() {
 
+	/// model 
 	/// assimpの読み込みフラグ
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 
+
+	/// sound
+	HRESULT result = MFStartup(MF_VERSION, MFSTARTUP_NOSOCKET);
+	Assert(SUCCEEDED(result), "MFStartup failed");
+
 }
 
-void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filePath) {
+void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 
 	Texture texture;
-	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filePath);
+	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
 	texture.dxResource_ = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
@@ -71,23 +92,23 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	DxDevice* dxDevice = dxManager_->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
-	Console::Log("[Load] [Texture] - path:\"" + _filePath + "\"");
-	resourceCollection_->AddTexture(_filePath, std::move(texture));
+	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
+	resourceCollection_->AddTexture(_filepath, std::move(texture));
 }
 
-void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
+void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
 
 	/// ファイルの拡張子を取得
-	std::string fileExtension = _filePath.substr(_filePath.find_last_of('.'));
+	std::string fileExtension = _filepath.substr(_filepath.find_last_of('.'));
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filePath, assimpLoadFlags_);
+	const aiScene* scene = importer.ReadFile(_filepath, assimpLoadFlags_);
 
 	if (!scene) {
 		return; ///< 読み込み失敗
 	}
 
 	Model model;
-	model.SetPath(_filePath);
+	model.SetPath(_filepath);
 
 	/// mesh 解析
 	for (uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
@@ -161,7 +182,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		if (fileExtension == ".gltf") {
 			/// nodeの解析
 			model.SetRootNode(ReadNode(scene->mRootNode));
-			LoadAnimation(&model, _filePath);
+			LoadAnimation(&model, _filepath);
 		}
 
 		/// mesh dataを作成
@@ -175,8 +196,8 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		model.AddMesh(std::move(meshData));
 	}
 
-	Console::Log("[Load] [Model] - path:\"" + _filePath + "\"");
-	resourceCollection_->AddModel(_filePath, std::move(model));
+	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
+	resourceCollection_->AddModel(_filepath, std::move(model));
 
 }
 
@@ -206,14 +227,14 @@ Node GraphicsResourceLoader::ReadNode(aiNode* _node) {
 	return result;
 }
 
-void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _filePath) {
+void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _filepath) {
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(_filePath.c_str(), 0);
+	const aiScene* scene = importer.ReadFile(_filepath.c_str(), 0);
 
 	///!< アニメーションが存在しない場合は何もしない
 	if (scene->mAnimations == 0) {
-		Console::Log("[warring] type:Animation, path:\"" + _filePath + "\"");
+		Console::Log("[warring] type:Animation, path:\"" + _filepath + "\"");
 		return; ///< アニメーションが存在しない場合は何もしない
 	}
 
@@ -281,6 +302,87 @@ void GraphicsResourceLoader::LoadAnimation(Model* _model, const std::string& _fi
 		}
 
 	}
+}
+
+void GraphicsResourceLoader::LoadAudioClip(const std::string& _filepath) {
+
+	/// wstringに変換
+	std::wstring filePathW = ConvertString(_filepath);
+	HRESULT result;
+
+	/// SourceReaderの作成
+	ComPtr<IMFSourceReader> sourceReader;
+	result = MFCreateSourceReaderFromURL(filePathW.c_str(), nullptr, &sourceReader);
+	Assert(SUCCEEDED(result), "MFCreateSourceReaderFromURL failed");
+
+	/// PCM形式にフォーマットを指定する
+	ComPtr<IMFMediaType> audioType;
+	MFCreateMediaType(&audioType);
+	audioType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+	audioType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+	result = sourceReader->SetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, nullptr, audioType.Get());
+	Assert(SUCCEEDED(result), "SetCurrentMediaType failed");
+
+	/// メディアタイプの取得
+	ComPtr<IMFMediaType> pOutType;
+	sourceReader->GetCurrentMediaType((DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM, &pOutType);
+
+	/// waveフォーマットの取得
+	WAVEFORMATEX* waveFormat = nullptr;
+	MFCreateWaveFormatExFromMFMediaType(pOutType.Get(), &waveFormat, nullptr);
+
+
+	/// コンテナに格納する用のデータを作成する
+	AudioStructs::SoundData soundData{};
+	soundData.wfex = *waveFormat;
+
+	/// 作成したwaveフォーマットを解放
+	CoTaskMemFree(waveFormat);
+
+	/// PCMデータのバッファを構築
+	while (true) {
+		ComPtr<IMFSample> pSample;
+		DWORD streamIndex = 0;
+		DWORD flags = 0;
+		LONGLONG llTimeStamp = 0;
+
+		/// サンプルを読み込む
+		result = sourceReader->ReadSample(
+			(DWORD)MF_SOURCE_READER_FIRST_AUDIO_STREAM,
+			0,
+			&streamIndex, &flags,
+			&llTimeStamp, &pSample
+		);
+
+		/// ストリームが終了したら抜ける
+		if (flags & MF_SOURCE_READERF_ENDOFSTREAM) {
+			break;
+		}
+
+		if (pSample) {
+			ComPtr<IMFMediaBuffer> pBuffer;
+			/// サンプルに含まれるサウンドデータのバッファを一繋ぎにして取得
+			pSample->ConvertToContiguousBuffer(&pBuffer);
+
+			BYTE* pData = nullptr;
+			DWORD maxLength = 0;
+			DWORD currentLength = 0;
+			/// バッファ読み込み用にロック
+			pBuffer->Lock(&pData, &maxLength, &currentLength);
+			/// バッファの末尾にデータを追加
+			soundData.buffer.insert(soundData.buffer.end(), pData, pData + currentLength);
+			pBuffer->Unlock();
+
+		}
+
+	}
+
+
+	AudioClip audioClip;
+	audioClip.soundData_ = std::move(soundData);
+	resourceCollection_->AddAudioClip(_filepath, std::move(audioClip));
+
+	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
 }
 
 DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string& _filePath) {
