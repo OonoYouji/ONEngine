@@ -72,13 +72,13 @@ template<typename T>
 inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 	/// すでに同じキーが存在する場合は、値を更新
 	if (indexMap_.contains(_key)) {
-		size_t index = indexMap_[_key];
+		uint32_t index = indexMap_[_key];
 		values_[index] = _t;
 		return &values_[index];
 	}
 
 	/// 新しいキーの場合は、値を追加
-	size_t index = indexMap_.size();
+	uint32_t index = static_cast<uint32_t>(indexMap_.size());
 	indexMap_[_key] = index;
 	reverseIndexMap_[index] = _key;
 	values_[index] = _t;
@@ -90,7 +90,7 @@ inline void ResourceContainer<T>::Remove(const std::string& _key) {
 
 	/// 参照する方法を消して使えないようにする
 	if(indexMap_.contains(_key)) {
-		size_t index = indexMap_[_key];
+		uint32_t index = indexMap_[_key];
 		indexMap_.erase(_key);
 		reverseIndexMap_.erase(index);
 	}
@@ -110,7 +110,7 @@ inline void ResourceContainer<T>::Remove(int32_t _index) {
 template<typename T>
 inline T* ResourceContainer<T>::Get(const std::string& _key) {
 	if (indexMap_.contains(_key)) {
-		size_t index = indexMap_[_key];
+		uint32_t index = indexMap_[_key];
 		return &values_[index];
 	}
 

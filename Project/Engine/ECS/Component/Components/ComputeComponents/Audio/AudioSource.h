@@ -3,6 +3,9 @@
 /// std
 #include <string>
 
+/// audio
+#include <xaudio2.h>
+
 /// external
 #include <nlohmann/json.hpp>
 
@@ -22,6 +25,7 @@ enum AudioState {
 /// Audio Source
 /// ////////////////////////////////////////////////////////////
 class AudioSource : public IComponent {
+	friend class AudioPlaybackSystem;
 public:
 	/// ===================================================
 	/// public : methods
@@ -32,6 +36,9 @@ public:
 
 	/// 再生
 	void Play();
+
+	/// 追加
+	void AddSourceVoice(IXAudio2SourceVoice* _sourceVoice);
 
 private:
 	/// ===================================================
@@ -46,6 +53,8 @@ private:
 	int state_;
 	bool isPlayingRequest_;
 
+	/// 再生中の音声ソースリスト
+	std::list<IXAudio2SourceVoice*> sourceVoices_;
 
 public:
 	/// ===================================================
@@ -56,12 +65,14 @@ public:
 	void SetVolume(float _volume);
 	void SetPitch(float _pitch);
 	void SetAudioPath(const std::string& _path);
-
+	void SetAudioClip(class AudioClip* _clip);
 
 	/// ----- getter ----- ///
 	float GetVolume() const;
 	float GetPitch() const;
 	const std::string& GetAudioPath() const;
+	class AudioClip* GetAudioClip() const;
+	int GetState() const;
 
 };
 

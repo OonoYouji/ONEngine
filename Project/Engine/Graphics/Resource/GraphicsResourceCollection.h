@@ -92,31 +92,20 @@ public:
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief modelの取得
-	/// @param _filepath .slnファイルからの相対パス
-	/// @return modelのポインタ
+	/// ゲッタ モデル
 	const Model* GetModel(const std::string& _filepath) const;
 	Model* GetModel(const std::string& _filepath);
 
-	/// @brief textureの取得
-	/// @param _filepath .slnファイルからの相対パス
-	/// @return textureのポインタ
+	/// ゲッタ テクスチャ
 	const Texture* GetTexture(const std::string& _filepath) const;
 	Texture* GetTexture(const std::string& _filepath);
-
-	/// @brief textureのインデックスを取得
-	/// @param _filepath .slnファイルからの相対パス
-	/// @return textureのインデックス
 	size_t GetTextureIndex(const std::string& _filepath) const;
-
-	/// @brief テクスチャのパスを取得
-	/// @param _index テクスチャのインデックス
-	/// @return 
 	const std::string& GetTexturePath(size_t _index) const;
-
-
-	/// @brief textureのコンテナを取得
-	/// @return texture container
 	const std::vector<Texture>& GetTextures() const;
+
+	/// ゲッタ オーディオクリップ
+	const AudioClip* GetAudioClip(const std::string& _filepath) const;
+	AudioClip* GetAudioClip(const std::string& _filepath);
+
 };
 

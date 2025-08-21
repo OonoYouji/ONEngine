@@ -203,3 +203,11 @@ const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) con
 const std::vector<Texture>& GraphicsResourceCollection::GetTextures() const {
 	return textureContainer_->GetValues();
 }
+
+const AudioClip* GraphicsResourceCollection::GetAudioClip(const std::string& _filepath) const {
+	return audioClipContainer_->Get(_filepath);
+}
+
+AudioClip* GraphicsResourceCollection::GetAudioClip(const std::string& _filepath) {
+	return audioClipContainer_->Get(_filepath);
+}

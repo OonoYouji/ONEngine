@@ -46,6 +46,12 @@ public:
 	AudioClip() = default;
 	~AudioClip();
 
+	/// サウンドデータの作成
+	IXAudio2SourceVoice* CreateSourceVoice(IXAudio2* _audio);
+
+	/// サウンドデータの取得
+	const AudioStructs::SoundData& GetSoundData();
+
 private:
 	/// ===================================================
 	/// private : objects

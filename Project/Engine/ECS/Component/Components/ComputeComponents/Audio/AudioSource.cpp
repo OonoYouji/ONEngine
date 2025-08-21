@@ -1,5 +1,14 @@
 #include "AudioSource.h"
 
+/// external
+#include <imgui.h>
+
+/// engine
+#include "Engine/Graphics/Resource/ResourceData/AudioClip.h"
+#include "Engine/Core/Utility/Math/Mathf.h"
+#include "Engine/Core/Utility/Tools/Log.h"
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
+
 AudioSource::AudioSource() {
 	volume_ = 1.0f;
 	pitch_ = 1.0f;
@@ -9,6 +18,10 @@ AudioSource::~AudioSource() {}
 
 void AudioSource::Play() {
 	isPlayingRequest_ = true;
+}
+
+void AudioSource::AddSourceVoice(IXAudio2SourceVoice* _sourceVoice) {
+	sourceVoices_.push_back(_sourceVoice);
 }
 
 void AudioSource::SetVolume(float _volume) {
@@ -23,6 +36,10 @@ void AudioSource::SetAudioPath(const std::string& _path) {
 	path_ = _path;
 }
 
+void AudioSource::SetAudioClip(AudioClip* _clip) {
+	pAudioClip_ = _clip;
+}
+
 float AudioSource::GetVolume() const {
 	return volume_;
 }
@@ -35,14 +52,74 @@ const std::string& AudioSource::GetAudioPath() const {
 	return path_;
 }
 
+AudioClip* AudioSource::GetAudioClip() const {
+	return pAudioClip_;
+}
+
+int AudioSource::GetState() const {
+	return state_;
+}
+
 
 /// 
 
 void COMP_DEBUG::AudioSourceDebug(AudioSource* _as) {
-	if(!_as) {
+	if (!_as) {
 		return;
 	}
 
+	std::string audioPath = _as->GetAudioPath();
+
+	/// audio clipの編集
+	ImGui::Text("Audio Source");
+	ImMathf::InputText("Audio Path", &audioPath, ImGuiInputTextFlags_ReadOnly);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+			if (payload->Data) {
+				const char* droppedPath = static_cast<const char*>(payload->Data);
+				const std::string&& path = std::string(droppedPath);
+				const std::string&& extension = Mathf::FileExtension(path);
+
+				/// Audioのパスが有効な形式か確認
+				if (extension == ".mp3" ||
+					extension == ".wav") {
+					_as->SetAudioPath(path);
+
+					Console::Log(std::format("Audio path set to: {}", path));
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::Spacing();
+
+	/// 音量の編集
+	float volume = _as->GetVolume();
+	ImGui::Text("Volume");
+	if (ImGui::SliderFloat("##Volume", &volume, 0.0f, 1.0f, "%.2f")) {
+		_as->SetVolume(volume);
+	}
+
+	/// ピッチの編集
+	float pitch = _as->GetPitch();
+	ImGui::Text("Pitch");
+	if (ImGui::SliderFloat("##Pitch", &pitch, 0.0f, 3.0f, "%.2f")) {
+		_as->SetPitch(pitch);
+	}
+
+	ImGui::Spacing();
+
+	/// 再生ボタン
+	if (ImGui::Button("Play")) {
+		_as->Play();
+	}
+
+	ImGui::Spacing();
+
+	/// 再生状態の表示
+	int state = _as->GetState();
+	ImGui::Text("State: %s", state == AudioState_Playing ? "Playing" : "Stopped");
 
 
 
