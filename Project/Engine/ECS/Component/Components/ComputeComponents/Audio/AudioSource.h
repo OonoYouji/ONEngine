@@ -38,14 +38,14 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	class AudioClip* pAudioClip_;
 	std::string path_;
 	float volume_;
 	float pitch_;
 
 	int state_;
-
 	bool isPlayingRequest_;
-	
+
 
 public:
 	/// ===================================================
@@ -67,6 +67,9 @@ public:
 
 
 
-/// json serialize
-void to_json(nlohmann::json& _j, const AudioSource& _as);
-void from_json(const nlohmann::json& _j, AudioSource& _as);
+namespace COMP_DEBUG {
+	void AudioSourceDebug(AudioSource* _as);
+}
+
+void from_json(const nlohmann::json& _j, AudioSource& _a);
+void to_json(nlohmann::json& _j, const AudioSource& _a);

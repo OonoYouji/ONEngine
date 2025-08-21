@@ -28,7 +28,7 @@
 
 
 GraphicsResourceLoader::GraphicsResourceLoader(DxManager* _dxManager, GraphicsResourceCollection* _collection)
-	: dxManager_(_dxManager), resourceCollection_(_collection) {}
+	: pDxManager_(_dxManager), pResourceCollection_(_collection) {}
 
 GraphicsResourceLoader::~GraphicsResourceLoader() {
 	HRESULT result = MFShutdown();
@@ -56,11 +56,11 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filepath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
-	texture.dxResource_ = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
+	texture.dxResource_ = std::move(CreateTextureResource(pDxManager_->GetDxDevice(), metadata));
 	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
-	dxManager_->GetDxCommand()->CommandExecute();
-	dxManager_->GetDxCommand()->CommandReset();
+	pDxManager_->GetDxCommand()->CommandExecute();
+	pDxManager_->GetDxCommand()->CommandReset();
 
 	/// metadataを基に srv の設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
@@ -81,7 +81,7 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 
 
 	/// srv handleの取得
-	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
+	DxSRVHeap* dxSRVHeap = pDxManager_->GetDxSRVHeap();
 
 	texture.CreateEmptySRVHandle();
 	texture.srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
@@ -89,11 +89,11 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	texture.srvHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
 
 	/// srvの生成
-	DxDevice* dxDevice = dxManager_->GetDxDevice();
+	DxDevice* dxDevice = pDxManager_->GetDxDevice();
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
 	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
-	resourceCollection_->AddTexture(_filepath, std::move(texture));
+	pResourceCollection_->AddTexture(_filepath, std::move(texture));
 }
 
 void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
@@ -191,13 +191,13 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
 		meshData->SetIndices(indices);
 
 		/// bufferの作成
-		meshData->CreateBuffer(dxManager_->GetDxDevice());
+		meshData->CreateBuffer(pDxManager_->GetDxDevice());
 
 		model.AddMesh(std::move(meshData));
 	}
 
 	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
-	resourceCollection_->AddModel(_filepath, std::move(model));
+	pResourceCollection_->AddModel(_filepath, std::move(model));
 
 }
 
@@ -380,7 +380,7 @@ void GraphicsResourceLoader::LoadAudioClip(const std::string& _filepath) {
 
 	AudioClip audioClip;
 	audioClip.soundData_ = std::move(soundData);
-	resourceCollection_->AddAudioClip(_filepath, std::move(audioClip));
+	pResourceCollection_->AddAudioClip(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
 }
@@ -452,8 +452,8 @@ DxResource GraphicsResourceLoader::CreateTextureResource(DxDevice* _dxDevice, co
 }
 
 DxResource GraphicsResourceLoader::UploadTextureData(ID3D12Resource* _texture, const DirectX::ScratchImage& _mipScratchImage) {
-	DxDevice* dxDevice = dxManager_->GetDxDevice();
-	DxCommand* dxCommand = dxManager_->GetDxCommand();
+	DxDevice* dxDevice = pDxManager_->GetDxDevice();
+	DxCommand* dxCommand = pDxManager_->GetDxCommand();
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
 	DirectX::PrepareUpload(dxDevice->GetDevice(), _mipScratchImage.GetImages(), _mipScratchImage.GetImageCount(), _mipScratchImage.GetMetadata(), subresources);

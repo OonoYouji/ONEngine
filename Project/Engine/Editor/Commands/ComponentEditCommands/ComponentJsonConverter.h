@@ -52,10 +52,6 @@ void to_json(nlohmann::json& _j, const Color& _c);
 void from_json(const nlohmann::json& _j, DirectionalLight& _l);
 void to_json(nlohmann::json& _j, const DirectionalLight& _l);
 
-// AudioSource
-void from_json(const nlohmann::json& _j, AudioSource& _a);
-void to_json(nlohmann::json& _j, const AudioSource& _a);
-
 // Variables
 void from_json(const nlohmann::json& _j, Variables& _v);
 void to_json(nlohmann::json& _j, const Variables& _v);
