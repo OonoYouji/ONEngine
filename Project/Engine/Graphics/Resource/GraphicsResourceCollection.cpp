@@ -22,8 +22,6 @@ void GraphicsResourceCollection::Initialize(DxManager* _dxManager) {
 
 	RegisterResourceType();
 
-	textures_.resize(MAX_TEXTURE_COUNT);
-
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));
 	LoadResources(GetResourceFilePaths("./Assets/"));
@@ -67,7 +65,7 @@ void GraphicsResourceCollection::UnloadResources(const std::vector<std::string>&
 			break;
 		case GraphicsResourceCollection::Type::model:
 			/// meshの解放
-			models_.erase(path);
+			modelContainer_->Remove(path);
 			break;
 		}
 
@@ -124,32 +122,26 @@ void GraphicsResourceCollection::HotReload(const std::string& _filePath) {
 }
 
 void GraphicsResourceCollection::HotReloadAll() {
-	for (const auto& model : models_) {
+	for (const auto& model : modelContainer_->GetIndexMap()) {
 		resourceLoader_->LoadModelObj(model.first);
 	}
 
-	for (const auto& texture : textureIndices_) {
+	for (const auto& texture : textureContainer_->GetIndexMap()) {
 		resourceLoader_->LoadTexture(texture.first);
 	}
 }
 
-void GraphicsResourceCollection::AddModel(const std::string& _filePath, std::unique_ptr<Model> _model) {
-	models_[_filePath] = std::move(_model);
+void GraphicsResourceCollection::AddModel(const std::string& _filePath, Model&& _model) {
+	modelContainer_->Add(_filePath, _model);
 }
 
-void GraphicsResourceCollection::AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture) {
-	_texture->SetName(_filePath);
-
-	size_t value = textureIndices_.size();
-	textureIndices_[_filePath] = value;
-	reverseTextureIndices_[value] = _filePath;
-
-	textures_[textureIndices_[_filePath]] = std::move(_texture);
+void GraphicsResourceCollection::AddTexture(const std::string& _filePath, Texture&& _texture) {
+	_texture.SetName(_filePath);
+	textureContainer_->Add(_filePath, _texture);
 }
 
 std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const std::string& _directoryPath) const {
 	std::vector<std::string> resourcePaths;
-
 
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(_directoryPath)) {
 		if (entry.is_regular_file()) {
@@ -162,14 +154,6 @@ std::vector<std::string> GraphicsResourceCollection::GetResourceFilePaths(const 
 				resourcePaths.push_back(path);
 			}
 
-
-			//if (path.find(".png") != std::string::npos
-			//	|| path.find(".jpg") != std::string::npos
-			//	|| path.find(".dds") != std::string::npos
-			//	|| path.find(".obj") != std::string::npos
-			//	|| path.find(".gltf") != std::string::npos) {
-			//	resourcePaths.push_back(path);
-			//}
 		}
 	}
 
@@ -186,54 +170,29 @@ void GraphicsResourceCollection::RegisterResourceType() {
 }
 
 const Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) const {
-	auto itr = models_.find(_filePath);
-	if (itr != models_.end()) {
-		return itr->second.get();
-	}
-
-	return nullptr;
+	return modelContainer_->Get(_filePath);
 }
 
 Model* GraphicsResourceCollection::GetModel(const std::string& _filePath) {
-	auto itr = models_.find(_filePath);
-	if (itr != models_.end()) {
-		return itr->second.get();
-	}
-
-	return nullptr;
+	return modelContainer_->Get(_filePath);
 }
 
 const Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePath) const {
-	auto itr = textureIndices_.find(_filePath);
-	if (itr != textureIndices_.end()) {
-		return textures_[itr->second].get();
-	}
+	return textureContainer_->Get(_filePath);
+}
 
-	return nullptr;
+Texture* GraphicsResourceCollection::GetTexture(const std::string& _filePath) {
+	return textureContainer_->Get(_filePath);
 }
 
 size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filePath) const {
-	if (_filePath == "") {
-		return 0;
-	}
-
-	if (textureIndices_.contains(_filePath) == false) {
-		Console::Log("Texture not found: " + _filePath);
-		return 0; // デフォルトのインデックスを返す
-	}
-
-	return textureIndices_.at(_filePath);
+	return textureContainer_->GetIndex(_filePath);
 }
 
 const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) const {
-	if (reverseTextureIndices_.contains(_index)) {
-		return reverseTextureIndices_.at(_index);
-	}
-
-	Console::LogError("Texture not found: " + std::to_string(_index));
-	return "";
+	return textureContainer_->GetKey(_index);
 }
 
-const std::vector<std::unique_ptr<Texture>>& GraphicsResourceCollection::GetTextures() const {
-	return textures_;
+const std::vector<Texture>& GraphicsResourceCollection::GetTextures() const {
+	return textureContainer_->GetValues();
 }

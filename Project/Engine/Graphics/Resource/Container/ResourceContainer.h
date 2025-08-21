@@ -35,23 +35,25 @@ public:
 
 	/// 削除
 	void Remove(const std::string& _key);
-	void Remove(size_t _index);
+	void Remove(int32_t _index);
 
 	/// 取得
 	T* Get(const std::string& _key);
-	T* Get(size_t _index);
+	T* Get(int32_t _index);
 	T* GetFirst();
-	const std::string& GetKey(size_t _index) const;
+	const std::string& GetKey(int32_t _index) const;
+	int32_t GetIndex(const std::string& _key) const;
 	const std::vector<T>& GetValues() const;
 	std::vector<T>& GetValues();
+	const std::unordered_map<std::string, int32_t>& GetIndexMap() const;
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::unordered_map<std::string, size_t> indexMap_;
-	std::unordered_map<size_t, std::string> reverseIndexMap_;
+	std::unordered_map<std::string, int32_t> indexMap_;
+	std::unordered_map<int32_t, std::string> reverseIndexMap_;
 	std::vector<T> values_;
 
 };
@@ -79,10 +81,11 @@ inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 	}
 
 	/// 新しいキーの場合は、値を追加
-	indexMap_[_key] = values_.size();
-	reverseIndexMap_[values_.size()] = _key;
-	values_.emplace_back(_t);
-	return &values_.back();
+	size_t index = indexMap_.size();
+	indexMap_[_key] = index;
+	reverseIndexMap_[index] = _key;
+	values_[index] = _t;
+	return &values_[index];
 }
 
 template<typename T>
@@ -97,7 +100,7 @@ inline void ResourceContainer<T>::Remove(const std::string& _key) {
 }
 
 template<typename T>
-inline void ResourceContainer<T>::Remove(size_t _index) {
+inline void ResourceContainer<T>::Remove(int32_t _index) {
 
 	/// 参照する方法を消して使えないようにする
 	if(reverseIndexMap_.contains(_index)) {
@@ -118,7 +121,7 @@ inline T* ResourceContainer<T>::Get(const std::string& _key) {
 }
 
 template<typename T>
-inline T* ResourceContainer<T>::Get(size_t _index) {
+inline T* ResourceContainer<T>::Get(int32_t _index) {
 	if( _index < values_.size()) {
 		return &values_[_index];
 	}
@@ -132,13 +135,23 @@ inline T* ResourceContainer<T>::GetFirst() {
 }
 
 template<typename T>
-inline const std::string& ResourceContainer<T>::GetKey(size_t _index) const {
+inline const std::string& ResourceContainer<T>::GetKey(int32_t _index) const {
 	if(reverseIndexMap_.contains(_index)) {
 		return reverseIndexMap_.at(_index);
 	}
 
 	/// 空文字を返す
 	return std::string();
+}
+
+template<typename T>
+inline int32_t ResourceContainer<T>::GetIndex(const std::string& _key) const {
+	if(indexMap_.contains(_key)) {
+		return indexMap_.at(_key);
+	}
+
+	/// 存在しない場合は無効なインデックスを返す
+	return -1;
 }
 
 template<typename T>
@@ -149,4 +162,9 @@ inline const std::vector<T>& ResourceContainer<T>::GetValues() const {
 template<typename T>
 inline std::vector<T>& ResourceContainer<T>::GetValues() {
 	return values_;
+}
+
+template<typename T>
+inline const std::unordered_map<std::string, int32_t>& ResourceContainer<T>::GetIndexMap() const {
+	return indexMap_;
 }

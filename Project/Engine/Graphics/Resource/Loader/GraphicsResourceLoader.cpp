@@ -31,12 +31,12 @@ void GraphicsResourceLoader::Initialize() {
 
 void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filePath) {
 
-	std::unique_ptr<Texture>    texture = std::make_unique<Texture>();
+	Texture texture;
 	DirectX::ScratchImage       scratchImage = LoadScratchImage(_filePath);
 	const DirectX::TexMetadata& metadata = scratchImage.GetMetadata();
 
-	texture->dxResource_ = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
-	DxResource intermediateResource = UploadTextureData(texture->dxResource_.Get(), scratchImage);
+	texture.dxResource_ = std::move(CreateTextureResource(dxManager_->GetDxDevice(), metadata));
+	DxResource intermediateResource = UploadTextureData(texture.dxResource_.Get(), scratchImage);
 
 	dxManager_->GetDxCommand()->CommandExecute();
 	dxManager_->GetDxCommand()->CommandReset();
@@ -62,14 +62,14 @@ void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _fi
 	/// srv handleの取得
 	DxSRVHeap* dxSRVHeap = dxManager_->GetDxSRVHeap();
 
-	texture->CreateEmptySRVHandle();
-	texture->srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
-	texture->srvHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture->srvHandle_->descriptorIndex);
-	texture->srvHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture->srvHandle_->descriptorIndex);
+	texture.CreateEmptySRVHandle();
+	texture.srvHandle_->descriptorIndex = dxSRVHeap->AllocateTexture();
+	texture.srvHandle_->cpuHandle = dxSRVHeap->GetCPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
+	texture.srvHandle_->gpuHandle = dxSRVHeap->GetGPUDescriptorHandel(texture.srvHandle_->descriptorIndex);
 
 	/// srvの生成
 	DxDevice* dxDevice = dxManager_->GetDxDevice();
-	dxDevice->GetDevice()->CreateShaderResourceView(texture->dxResource_.Get(), &srvDesc, texture->srvHandle_->cpuHandle);
+	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
 	Console::Log("[Load] [Texture] - path:\"" + _filePath + "\"");
 	resourceCollection_->AddTexture(_filePath, std::move(texture));
@@ -86,8 +86,8 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		return; ///< 読み込み失敗
 	}
 
-	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->SetPath(_filePath);
+	Model model;
+	model.SetPath(_filePath);
 
 	/// mesh 解析
 	for (uint32_t meshIndex = 0u; meshIndex < scene->mNumMeshes; ++meshIndex) {
@@ -132,7 +132,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 			/// 格納領域の作成
 			aiBone* bone = mesh->mBones[boneIndex];
 			std::string      jointName = bone->mName.C_Str();
-			JointWeightData& jointWeightData = model->GetJointWeightData()[jointName];
+			JointWeightData& jointWeightData = model.GetJointWeightData()[jointName];
 
 			/// mat bind pose inverseの計算
 			aiMatrix4x4  matBindPoseAssimp = bone->mOffsetMatrix.Inverse();
@@ -160,8 +160,8 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 
 		if (fileExtension == ".gltf") {
 			/// nodeの解析
-			model->SetRootNode(ReadNode(scene->mRootNode));
-			LoadAnimation(model.get(), _filePath);
+			model.SetRootNode(ReadNode(scene->mRootNode));
+			LoadAnimation(&model, _filePath);
 		}
 
 		/// mesh dataを作成
@@ -172,7 +172,7 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filePath) {
 		/// bufferの作成
 		meshData->CreateBuffer(dxManager_->GetDxDevice());
 
-		model->AddMesh(std::move(meshData));
+		model.AddMesh(std::move(meshData));
 	}
 
 	Console::Log("[Load] [Model] - path:\"" + _filePath + "\"");

@@ -154,7 +154,7 @@ void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameE
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 	transformMatrix_.BindForGraphicsCommandList(commandList, 1);
 	texIndex_.BindForGraphicsCommandList(commandList, 2);
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	commandList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),

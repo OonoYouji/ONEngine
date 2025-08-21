@@ -185,7 +185,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	textureIdBuffer_.SetMappedData({ texId });
 	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド
-	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin())->GetSRVGPUHandle());
+	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin()).GetSRVGPUHandle());
 
 	// 描画実行
 	cmdList->DrawIndexedInstanced(static_cast<UINT>(model->GetMeshes().front()->GetIndices().size()), instanceCount_, 0, 0, 0);

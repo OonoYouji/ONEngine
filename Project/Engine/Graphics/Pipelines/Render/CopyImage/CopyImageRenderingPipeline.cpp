@@ -57,7 +57,7 @@ void CopyImageRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnt
 	auto& textures = pResourceCollection_->GetTextures();
 	size_t index = pResourceCollection_->GetTextureIndex("sceneScene");
 
-	commandList->SetGraphicsRootDescriptorTable(0, textures[index]->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 

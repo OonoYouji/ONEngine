@@ -67,12 +67,12 @@ public:
 	/// @brief 新しい model の追加
 	/// @param _filePath unordered_mapのキー
 	/// @param _model 追加する model
-	void AddModel(const std::string& _filePath, std::unique_ptr<Model> _model);
+	void AddModel(const std::string& _filePath, Model&& _model);
 
 	/// @brief 新しい texture の追加
 	/// @param _filePath unordered_mapのキー
 	/// @param _texture 追加する texture
-	void AddTexture(const std::string& _filePath, std::unique_ptr<Texture> _texture);
+	void AddTexture(const std::string& _filePath, Texture&& _texture);
 
 
 	std::vector<std::string> GetResourceFilePaths(const std::string& _directoryPath) const;
@@ -89,12 +89,12 @@ private:
 
 	std::unique_ptr<GraphicsResourceLoader> resourceLoader_;
 
-	/// mesh
-	std::unordered_map<std::string, std::unique_ptr<Model>>   models_;
-	/// texture
-	std::unordered_map<std::string, size_t> textureIndices_;
-	std::unordered_map<size_t, std::string> reverseTextureIndices_;
-	std::vector<std::unique_ptr<Texture>>   textures_;
+	///// mesh
+	//std::unordered_map<std::string, std::unique_ptr<Model>>   models_;
+	///// texture
+	//std::unordered_map<std::string, size_t> textureIndices_;
+	//std::unordered_map<size_t, std::string> reverseTextureIndices_;
+	//std::vector<std::unique_ptr<Texture>>   textures_;
 
 	/// container
 	using ModelContainer = ResourceContainer<Model>;
@@ -123,6 +123,7 @@ public:
 	/// @param _filePath .slnファイルからの相対パス
 	/// @return textureのポインタ
 	const Texture* GetTexture(const std::string& _filePath) const;
+	Texture* GetTexture(const std::string& _filePath);
 
 	/// @brief textureのインデックスを取得
 	/// @param _filePath .slnファイルからの相対パス
@@ -137,6 +138,6 @@ public:
 
 	/// @brief textureのコンテナを取得
 	/// @return texture container
-	const std::vector<std::unique_ptr<Texture>>& GetTextures() const;
+	const std::vector<Texture>& GetTextures() const;
 };
 

@@ -139,7 +139,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 		size_t index = pResourceCollection_->GetTextureIndex(path);
 		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
-			textures[index]->GetSRVGPUHandle()
+			textures[index].GetSRVGPUHandle()
 		);
 	}
 

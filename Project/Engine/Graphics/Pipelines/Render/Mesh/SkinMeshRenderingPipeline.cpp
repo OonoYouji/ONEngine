@@ -115,7 +115,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, ViewProjectionCBV);
 	/// Textures Bind
 	auto& textures = pGraphicsResourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin())->GetSRVGPUHandle()); ///< Texture
+	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
 
 
 	/// インスタンスごとの設定
@@ -147,7 +147,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
-		textureIdBuffer_->SetMappedData(textures[textureIndex]->GetSRVDescriptorIndex());
+		textureIdBuffer_->SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
 
 		transformBuffer_->BindForGraphicsCommandList(commandList, TransformCBV);
 		materialBuffer_->BindForGraphicsCommandList(commandList, MaterialCBV);

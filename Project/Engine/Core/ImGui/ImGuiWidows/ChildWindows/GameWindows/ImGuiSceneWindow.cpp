@@ -36,16 +36,15 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	}
 
 	const auto& textures = resourceCollection_->GetTextures();
-	Texture* texture = textures[resourceCollection_->GetTextureIndex("debugScene")].get();
+	const Texture* texture = &textures[resourceCollection_->GetTextureIndex("debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
 	/// ----------------------------------------
 
-	std::array<Texture*, 3> buttons = {
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/skip.png")].get()
+	std::array<const Texture*, 2> buttons = {
+		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
+		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
