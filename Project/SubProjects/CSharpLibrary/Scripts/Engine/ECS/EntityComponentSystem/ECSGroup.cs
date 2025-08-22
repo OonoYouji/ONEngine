@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System;
 
 public class ECSGroup {
 	///////////////////////////////////////////////////////////////////////////////////////////
@@ -108,12 +109,19 @@ public class ECSGroup {
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: "
 		          + entities_.Count);
-		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
+		Debug.Log($"gen0:{GC.CollectionCount(0)} gen1:{GC.CollectionCount(1)} gen2:{GC.CollectionCount(2)}");
 
+		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 
 		/// 生成、初期化の呼び出しを行う
 		CallAwake();
 		CallInitialize();
+
+		foreach (Entity entity in entities_.Values) {
+			foreach (Component comp in entity.GetComponents()) {
+				comp.Begin();
+			}
+		}
 
 		foreach (Entity entity in entities_.Values) {
 			foreach (MonoBehavior script in entity.GetScripts()) {
@@ -121,8 +129,12 @@ public class ECSGroup {
 					script.Update();
 				}
 			}
+		}
 
-			Debug.Log("EntityUpdate ScriptCount: " + entity.GetScripts().Count + ", Entity ID: " + entity.Id);
+		foreach (Entity entity in entities_.Values) {
+			foreach (Component comp in entity.GetComponents()) {
+				comp.End();
+			}
 		}
 	}
 
@@ -135,21 +147,24 @@ public class ECSGroup {
 			return;
 		}
 
+#if DEBUG
 		Debug.Log("");
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("ECSGroup.CallAwake - Awakening entities in group: " + groupName + ", Count: " + awakeList_.Count);
+#endif
 
 		List<Entity> entitiesToAwake = new List<Entity>(awakeList_);
 		awakeList_.Clear(); // 生成リストをクリア
 		foreach (Entity entity in entitiesToAwake) {
 			foreach (MonoBehavior script in entity.GetScripts()) {
 				script.Awake();
-				Debug.Log("Awake called for script: " + script.GetType().Name + " on Entity ID: " + entity.Id);
 			}
 		}
 
+#if DEBUG
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("");
+#endif
 	}
 
 
@@ -161,22 +176,25 @@ public class ECSGroup {
 			return;
 		}
 
+#if DEBUG
 		Debug.Log("");
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("ECSGroup.CallInitialize - Initializing entities in group: " + groupName + ", Count: "
 		          + initList_.Count);
+#endif
 
 		List<Entity> entitiesToInitialize = new List<Entity>(initList_);
 		initList_.Clear();
 		foreach (Entity entity in entitiesToInitialize) {
 			foreach (MonoBehavior script in entity.GetScripts()) {
 				script.Initialize();
-				Debug.Log("Initialize called for script: " + script.GetType().Name + " on Entity ID: " + entity.Id);
 			}
 		}
 
+#if DEBUG
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 		Debug.Log("");
+#endif
 	}
 
 	/// <summary>
@@ -184,11 +202,15 @@ public class ECSGroup {
 	/// </summary>
 	public Entity GetEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
+#if DEBUG
 			Debug.Log("ECSGroup.GetEntity - Entity found with ID: " + entity.Id + ", Entity Name: " + entity.name);
+#endif
 			return entity;
 		}
 
+#if DEBUG
 		Debug.LogError("ECSGroup.GetEntity - Entity not found with ID: " + _id + ", Group Name: " + groupName);
+#endif
 		return null;
 	}
 
@@ -198,9 +220,11 @@ public class ECSGroup {
 	public void DestroyEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
 			entities_.Remove(_id);
+#if DEBUG
 			Debug.Log("Entity destroyed with ID: " + _id);
 		} else {
 			Debug.LogError("Entity not found with ID: " + _id);
+#endif
 		}
 	}
 
@@ -208,8 +232,10 @@ public class ECSGroup {
 	/// すべてのエンティティを削除
 	/// </summary>
 	public void DeleteEntityAll() {
+#if DEBUG
 		Debug.Log("ECSGroup.DeleteEntityAll - Deleting all entities in group: " + groupName + ", EntityCount: "
 		          + entities_.Count);
+#endif
 
 		var entitiesToDestroy = new Dictionary<int, Entity>(entities_);
 		foreach (var entity in entitiesToDestroy.Values) {
@@ -227,7 +253,9 @@ public class ECSGroup {
 			}
 		}
 
+#if DEBUG
 		Debug.LogError("Entity not found with name: " + _name);
+#endif
 		return null;
 	}
 

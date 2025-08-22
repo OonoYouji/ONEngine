@@ -26,8 +26,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Graphics\Resource\ResourceData\AudioClip.cpp" />
-    <ClCompile Include="Engine\ECS\System\Audio\AudioPlaybackSystem.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\AudioClip.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Audio\AudioPlaybackSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
     <ClCompile Include="Engine\ECS\EntityComponentSystem\AddECSSystemFunction.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -58,7 +62,9 @@
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
-    <ClCompile Include="Engine\Graphics\Buffer\Data\Material.cpp" />
+    <ClCompile Include="Engine\Graphics\Buffer\Data\Material.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -537,9 +543,15 @@
     <ClCompile Include="Engine\ECS\System\SystemCollection\SystemCollection.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
-    <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp" />
-    <ClCompile Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.cpp" />
-    <ClCompile Include="Engine\Graphics\Resource\Container\ResourceContainer.cpp" />
+    <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
+    <ClCompile Include="Engine\Graphics\Resource\Container\ResourceContainer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\AudioClip.h" />

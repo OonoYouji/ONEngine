@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+public class AudioSource : Component {
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// objects
+	///////////////////////////////////////////////////////////////////////////////////////////
+	public float volume;
+	public float pitch;
+	public string path;
+	private bool isPlayRequest_;
+
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// method
+	///////////////////////////////////////////////////////////////////////////////////////////
+
+	public void Play() {
+		isPlayRequest_ = true;
+	}
+
+	public void OneShotPlay(string _path) {
+		Debug.Log("AudioSource.OneShotPlay - Playing " + _path);
+		InternalOneShotPlay(nativeHandle, _path);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////
+	/// internal methods
+	///////////////////////////////////////////////////////////////////////////////////////////
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static private extern void InternalPlayAudio(ulong _nativeHandle);
+	
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static private extern void InternalOneShotPlay(ulong _nativeHandle, string _path);
+	
+}

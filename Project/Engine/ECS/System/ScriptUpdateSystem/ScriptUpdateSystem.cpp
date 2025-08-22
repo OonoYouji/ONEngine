@@ -2,6 +2,7 @@
 
 /// std
 #include <list>
+#include <chrono>
 
 /// external
 #include <mono/metadata/mono-gc.h>
@@ -46,6 +47,10 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+	/// この関数の処理にかかっている時間を計算する
+	auto startTime = std::chrono::high_resolution_clock::now();
+
+
 #ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
@@ -83,6 +88,12 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		}
 	}
 
+
+	auto endTime = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
+#ifdef DEBUG_MODE
+	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
+#endif // DEBUG_MODE
 }
 
 void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {

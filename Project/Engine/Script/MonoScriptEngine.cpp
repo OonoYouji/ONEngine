@@ -67,7 +67,7 @@ void MonoScriptEngine::Initialize() {
 	SetEnvironmentVariableA("PATH", "Packages\\mono\\bin;C:\\Windows\\System32");
 	SetEnvironmentVariableA("MONO_PATH", "Packages\\mono\\lib\\4.5");
 
-	_putenv("MONO_ENV_OPTIONS=--debug");
+	//_putenv("MONO_ENV_OPTIONS=--debug");
 
 	// デバッグオプションを設定
 	//const char* options[] = {

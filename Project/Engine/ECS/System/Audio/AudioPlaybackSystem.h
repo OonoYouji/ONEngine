@@ -54,7 +54,5 @@ private:
 
 	float masterVolume_;
 
-	std::list<IXAudio2SourceVoice*> sourceVoices_;
-
 };
 

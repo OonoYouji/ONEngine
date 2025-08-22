@@ -2,7 +2,9 @@
 
 static public class Debug {
 	static public void Log(string message) {
+#if DEBUG
 		InternalConsoleLog("[script] " + message);
+#endif
 	}
 
 	static public void LogInfo(string message) {

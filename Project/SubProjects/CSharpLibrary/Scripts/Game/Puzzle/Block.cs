@@ -29,11 +29,11 @@ public class Block : MonoBehavior {
 	}
 
 	public override void Update() {
+		transform.scale = Vector3.one * 0.1f;
 		// MAPDATAから、ブロックは 10 or 11なので一桁目だけ見て色を判断
 		if (blockData.mapValue != 0) {
 			blockData.type = blockData.mapValue % 10;
 		}
-
 
 		/// クリア演出
 		if (isStartClearAnimation_) {
@@ -71,6 +71,7 @@ public class Block : MonoBehavior {
 			blockData.address.y * blockData.blockSpace);
 
 		transform.position = newPos;
+		Debug.Log("Block.UpdatePosition - setting new position");
 	}
 
 	public void StartClearEffect() {

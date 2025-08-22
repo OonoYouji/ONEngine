@@ -159,6 +159,13 @@ public class Entity {
 		return comp;
 	}
 
+	public List<Component> GetComponents() {
+		List<Component> result = new List<Component>();
+		foreach (var keyValuePair in components_) {
+			result.Add(keyValuePair.Value);
+		}
+		return result;
+	}
 
 	public T GetScript<T>() where T : MonoBehavior {
 		Debug.LogInfo("GetScript<" + typeof(T).Name + ">() called for Entity ID: " + entityId_);

@@ -9,6 +9,9 @@ public class Component {
 	/// 0 = disabled, 1 = enabled
 	public ulong nativeHandle;
 	public Entity entity;
+	
+	public virtual void Begin() {}
+	public virtual void End() {}
 
 	public static implicit operator bool(Component _component) {
 		return _component != null;

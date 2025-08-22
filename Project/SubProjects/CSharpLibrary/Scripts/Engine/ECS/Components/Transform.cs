@@ -9,7 +9,7 @@ public class TransformData {
 }
 
 public class Transform : Component {
-
+	
 	public Vector3 position {
 		get {
 			float _x, _y, _z;
@@ -20,7 +20,7 @@ public class Transform : Component {
 			InternalSetPosition(nativeHandle, value.x, value.y, value.z);
 		}
 	}
-
+	
 	public Quaternion rotate {
 		get {
 			float _x, _y, _z, _w;
@@ -31,7 +31,7 @@ public class Transform : Component {
 			InternalSetRotate(nativeHandle, value.x, value.y, value.z, value.w);
 		}
 	}
-
+	
 	public Vector3 scale {
 		get {
 			float _x, _y, _z;
@@ -42,6 +42,7 @@ public class Transform : Component {
 			InternalSetScale(nativeHandle, value.x, value.y, value.z);
 		}
 	}
+
 
 	/// ========================================
 	/// c++ internal methods

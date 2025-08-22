@@ -95,7 +95,6 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 
 	/// 音声ソースをAudioSourceに追加
 	_audioSource->sourceVoices_.push_back(sourceVoice);
-	sourceVoices_.push_back(sourceVoice);
 }
 
 int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {

@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Engine\Attribute\SerializeField.cs" />
+    <Compile Include="Scripts\Engine\Core\ObjectPool\ObejctPools.cs" />
+    <Compile Include="Scripts\Engine\Core\ObjectPool\ObjectPool.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\File\FileSystem.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Input.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Scripts\Engine\Core\Utility\Time\Time.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Component.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\ComponentCollection.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Compute\AudioSource.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\SkinMeshRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\ECSGroup.cs" />
