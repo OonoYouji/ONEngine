@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 static public class ObjectPools {
-	static public Pool<Vector3> vector3Pool = new Pool<Vector3>();
+	// static public Pool<Vector3> vector3Pool = new Pool<Vector3>();
 
 
 	public class Pool<T> {
