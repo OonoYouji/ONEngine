@@ -208,7 +208,7 @@ public class PuzzleStage : MonoBehavior {
 			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
 			blockPosOffset_ *= -1.0f;
 			blockPosOffset_.y = 2f;
-
+		
 			blockParent_.transform.position = blockPosOffset_;
 		}
 

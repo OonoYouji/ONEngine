@@ -35,8 +35,9 @@ public class PuzzlePlayer : MonoBehavior {
 	}
 
 	public void UpdatePosition() {
+		Vector3 newPos = ObjectPool.vector3.Get();
 		/// 座標更新
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
+		newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
 			blockData.address.y * blockData.blockSpace);
 		transform.position = newPos;
 
@@ -46,6 +47,8 @@ public class PuzzlePlayer : MonoBehavior {
 		Debug.Log("block data: space=" + blockData.blockSpace + "; address.x=" + blockData.address.x + "; address.y="
 		          + blockData.address.y);
 		Debug.Log("/////////////////////////////////////////////////////////");
+		
+		ObjectPool.vector3.Release(newPos);
 	}
 
 	public void UpdateColor() {

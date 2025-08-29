@@ -107,8 +107,5 @@ public class DebugCamera : MonoBehavior {
 			transform.rotate = Quaternion.FromEuler(eulerAngles_);
 		}
 
-		Debug.Log("////////////////////////////////////////////////////////////");
-		Debug.Log("t pos.x=" + transform.position.x + ", pos.y=" + transform.position.y + ", pos.z=" + transform.position.z);
-		Debug.Log("////////////////////////////////////////////////////////////");
 	}
 }

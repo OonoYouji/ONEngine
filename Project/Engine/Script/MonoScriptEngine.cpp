@@ -143,6 +143,8 @@ void MonoScriptEngine::RegisterFunctions() {
 
 	/// 他のクラスの関数も登録
 	AddInputInternalCalls();
+
+	AddSceneInternalCalls();
 }
 
 void MonoScriptEngine::HotReload() {

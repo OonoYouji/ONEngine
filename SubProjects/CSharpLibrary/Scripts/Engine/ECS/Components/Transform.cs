@@ -10,38 +10,54 @@ public class TransformData {
 
 public class Transform : Component {
 	
-	public Vector3 position {
-		get {
-			float _x, _y, _z;
-			InternalGetPosition(nativeHandle, out _x, out _y, out _z);
-			return new Vector3(_x, _y, _z);
-		}
-		set {
-			InternalSetPosition(nativeHandle, value.x, value.y, value.z);
-		}
+	public Vector3 position = new Vector3(0f, 0f, 0f);
+	public Quaternion rotate = Quaternion.identity;
+	public Vector3 scale = new Vector3(1f, 1f, 1f);
+
+	public override void Begin() {
+		InternalGetPosition(nativeHandle, out position.x, out position.y, out position.z);
+		InternalGetRotate(nativeHandle, out  rotate.x, out rotate.y, out rotate.z, out rotate.w);
+		InternalGetScale(nativeHandle, out scale.x, out scale.y, out scale.z);
+	}
+
+	public override void End() {
+		InternalSetPosition(nativeHandle, position.x, position.y, position.z);
+		InternalSetRotate(nativeHandle, rotate.x, rotate.y, rotate.z, rotate.w);
+		InternalSetScale(nativeHandle, scale.x, scale.y, scale.z);
 	}
 	
-	public Quaternion rotate {
-		get {
-			float _x, _y, _z, _w;
-			InternalGetRotate(nativeHandle, out _x, out _y, out _z, out _w);
-			return new Quaternion(_x, _y, _z, _w);
-		}
-		set {
-			InternalSetRotate(nativeHandle, value.x, value.y, value.z, value.w);
-		}
-	}
-	
-	public Vector3 scale {
-		get {
-			float _x, _y, _z;
-			InternalGetScale(nativeHandle, out _x, out _y, out _z);
-			return new Vector3(_x, _y, _z);
-		}
-		set {
-			InternalSetScale(nativeHandle, value.x, value.y, value.z);
-		}
-	}
+	// public Vector3 position {
+	// 	get {
+	// 		float _x, _y, _z;
+	// 		InternalGetPosition(nativeHandle, out _x, out _y, out _z);
+	// 		return new Vector3(_x, _y, _z);
+	// 	}
+	// 	set {
+	// 		InternalSetPosition(nativeHandle, value.x, value.y, value.z);
+	// 	}
+	// }
+	//
+	// public Quaternion rotate {
+	// 	get {
+	// 		float _x, _y, _z, _w;
+	// 		InternalGetRotate(nativeHandle, out _x, out _y, out _z, out _w);
+	// 		return new Quaternion(_x, _y, _z, _w);
+	// 	}
+	// 	set {
+	// 		InternalSetRotate(nativeHandle, value.x, value.y, value.z, value.w);
+	// 	}
+	// }
+	//
+	// public Vector3 scale {
+	// 	get {
+	// 		float _x, _y, _z;
+	// 		InternalGetScale(nativeHandle, out _x, out _y, out _z);
+	// 		return new Vector3(_x, _y, _z);
+	// 	}
+	// 	set {
+	// 		InternalSetScale(nativeHandle, value.x, value.y, value.z);
+	// 	}
+	// }
 
 
 	/// ========================================

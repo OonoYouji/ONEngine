@@ -47,11 +47,10 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
+#ifdef DEBUG_MODE
 	/// この関数の処理にかかっている時間を計算する
 	auto startTime = std::chrono::high_resolution_clock::now();
 
-
-#ifdef DEBUG_MODE
 	{	/// debug monoのヒープの状態を出力
 		size_t heapSize = mono_gc_get_heap_size();
 		size_t usedSize = mono_gc_get_used_size();

@@ -12,35 +12,14 @@
 	}
 
 
-	static public Vector2Int zero {
-		get { return new Vector2Int(0, 0); }
-	}
-
-	static public Vector2Int one {
-		get { return new Vector2Int(1, 1); }
-	}
-
-	static public Vector2Int up {
-		get { return new Vector2Int(0, 1); }
-	}
-
-	static public Vector2Int down {
-		get { return new Vector2Int(0, -1); }
-	}
-
-	static public Vector2Int left {
-		get { return new Vector2Int(-1, 0); }
-	}
-
-	static public Vector2Int right {
-		get { return new Vector2Int(1, 0); }
-	}
-
-	static public Vector2Int infinity {
-		get { return new Vector2Int(int.MaxValue, int.MaxValue); }
-	}
-
-
+	static public readonly Vector2Int zero = new Vector2Int(0, 0);
+	static public readonly Vector2Int one = new Vector2Int(1, 1);
+	static public readonly Vector2Int up = new Vector2Int(0, 1);
+	static public readonly Vector2Int down = new Vector2Int(0, -1);
+	static public readonly Vector2Int left = new Vector2Int(1, -1);
+	static public readonly Vector2Int right = new Vector2Int(1, 1);
+	static public readonly Vector2Int infinity = new Vector2Int(int.MaxValue, int.MaxValue);
+	
 	public float Length() {
 		return Mathf.Sqrt(x * x + y * y);
 	}

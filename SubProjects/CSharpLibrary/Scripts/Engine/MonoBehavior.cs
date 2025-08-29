@@ -45,12 +45,12 @@ public class MonoBehavior {
 	public Transform transform {
 		get {
 			if (entity == null) {
-				Debug.Log("[error] Entity is not initialized. Please call InternalInitialize first.");
+				Debug.LogError("MonoBehavior.transform - Entity is not initialized. Please call InternalInitialize first.");
 				return null;
 			}
 
 			if (entity.transform == null) {
-				Debug.Log("[error] Transform component is not initialized for Entity ID: " + entity.Id);
+				Debug.LogError("MonoBehavior.transform - Transform component is not initialized for Entity ID: " + entity.Id);
 				return null;
 			}
 
@@ -64,9 +64,9 @@ public class MonoBehavior {
 	/// methods
 	///////////////////////////////////////////////////////////////////////////////////////////
 
-	public virtual void Awake() { Debug.Log("called awake method. owner:" + entity.name + ", script name:" + name_); }
-	public virtual void Initialize() { Debug.Log("called initialize method. owner:" + entity.name + ", script name:" + name_); }
-	public virtual void Update() { Debug.Log("called update method. owner:" + entity.name + ", script name:" + name_); }
+	public virtual void Awake() {}
+	public virtual void Initialize() { }
+	public virtual void Update() {}
 
 	public virtual void OnCollisionEnter(Entity collision) { }
 	public virtual void OnCollisionExit(Entity collision) { }

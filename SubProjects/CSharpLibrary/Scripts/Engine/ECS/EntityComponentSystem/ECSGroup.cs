@@ -110,7 +110,6 @@ public class ECSGroup {
 		Debug.Log("ECSGroup.UpdateEntities - Updating entities in group: " + groupName + ", EntityCount: "
 		          + entities_.Count);
 		Debug.Log($"gen0:{GC.CollectionCount(0)} gen1:{GC.CollectionCount(1)} gen2:{GC.CollectionCount(2)}");
-
 		Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////");
 
 		/// 生成、初期化の呼び出しを行う

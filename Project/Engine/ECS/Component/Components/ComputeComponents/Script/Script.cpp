@@ -20,43 +20,42 @@ Script::~Script() {}
 
 void Script::AddScript(const std::string& _scriptName) {
 	/// すでにアタッチされているかチェック
-	for (auto& script : scriptDataList_) {
-		if (script.scriptName == _scriptName) {
-			return;
-		}
+	if (scriptIndexMap_.contains(_scriptName)) {
+		return;
 	}
 
-	ScriptData scriptData;
-	scriptData.scriptName = _scriptName;
+	ScriptData newScriptData;
+	newScriptData.scriptName = _scriptName;
 
-	scriptDataList_.push_back(std::move(scriptData));
+	/// インデックスを登録
+	scriptIndexMap_[_scriptName] = scriptDataList_.size();
+	scriptDataList_.push_back(std::move(newScriptData));
 }
 
 bool Script::Contains(const std::string& _scriptName) const {
-	for (const auto& sdata : scriptDataList_) {
-		if (sdata.scriptName == _scriptName) {
-			/// 同一のものを見つけた
-			return true;
-		}
+	if (scriptIndexMap_.contains(_scriptName)) {
+		return true;
 	}
 
 	return false;
 }
 
 void Script::RemoveScript(const std::string& _scriptName) {
-	/// スクリプト名が一致するものを探す
-	for (auto itr = scriptDataList_.begin(); itr != scriptDataList_.end(); ) {
+	if (!scriptIndexMap_.contains(_scriptName)) {
+		Console::LogWarning("Script " + _scriptName + " not found, cannot remove.");
+		return;
+	}
 
-		ScriptData* data = &(*itr);
-		if (data->scriptName == _scriptName) {
-			Console::Log("Script removed: " + _scriptName);
-
-			itr = scriptDataList_.erase(itr);  ///< 削除してイテレータを更新
-		} else {
-			++itr;  ///< 次の要素へ
+	size_t index = scriptIndexMap_[_scriptName];
+	/// vectorの要素を削除するのに合わせてmapのインデックスも更新
+	scriptIndexMap_.erase(_scriptName);
+	for (auto& [name, value] : scriptIndexMap_) {
+		if (value > index) {
+			--value;  ///< 削除した分インデックスをずらす
 		}
 	}
 
+	scriptDataList_.erase(scriptDataList_.begin() + index);
 }
 
 const std::string& Script::GetScriptName(size_t _index) const {
@@ -86,7 +85,7 @@ std::vector<Script::ScriptData>& Script::GetScriptDataList() {
 }
 
 Script::ScriptData* Script::GetScriptData(const std::string& _scriptName) {
-	for(auto& data : scriptDataList_) {
+	for (auto& data : scriptDataList_) {
 		if (data.scriptName == _scriptName) {
 			return &data;  ///< 一致するスクリプトデータを返す
 		}
@@ -189,7 +188,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		}
 
-		
+
 		/// スクリプトが2種類以上ないと入れ替える意味がない
 		if (scriptList.size() > 2) {
 

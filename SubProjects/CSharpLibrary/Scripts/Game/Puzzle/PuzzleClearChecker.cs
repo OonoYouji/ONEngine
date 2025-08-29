@@ -43,11 +43,7 @@ public class PuzzleClearChecker : MonoBehavior {
 		if (!puzzleStage_) {
 			return;
 		}
-
-		Debug.LogWarning("=========================================================");
-		Debug.LogWarning("call update puzzle clear checker");
-		Debug.LogWarning("=========================================================");
-
+		
 		List<Entity> players = puzzleStage_.GetPlayers();
 		for (int goalIndex = 0; goalIndex < goalAddresses_.Count; goalIndex++) {
 			Vector2Int goalAddress = goalAddresses_[goalIndex];
@@ -89,12 +85,9 @@ public class PuzzleClearChecker : MonoBehavior {
 		MeshRenderer mr = puzzleStage_.entity.GetComponent<MeshRenderer>();
 		if (mr) {
 			if (isClear_) {
-				mr.color = new Vector4(1, 1, 1, 1);
-				Debug.LogWarning("=========================================================");
-				Debug.LogWarning("puzzle stage cleared");
-				Debug.LogWarning("=========================================================");
+				mr.color = Vector4.one;
 			} else {
-				mr.color = new Vector4(1, 0, 0, 1);
+				mr.color = Vector4.red;
 			}
 		}
 	}

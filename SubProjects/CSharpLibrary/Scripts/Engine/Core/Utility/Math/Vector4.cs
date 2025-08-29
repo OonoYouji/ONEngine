@@ -52,21 +52,13 @@ public struct Vector4 {
 	/// 定数
 	/// -----------------------------------------------
 
-	static public Vector4 zero {
-		get { return new Vector4(0.0f, 0.0f, 0.0f, 0.0f); }
-	}
-	static public Vector4 one {
-		get { return new Vector4(1.0f, 1.0f, 1.0f, 1.0f); }
-	}
-
-	static public Vector4 negativeInfinity {
-		get { return new Vector4(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity); }
-	}
-
-	static public Vector4 positiveInfinity {
-		get { return new Vector4(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity); }
-	}
-
+	static public readonly Vector4 zero = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+	static public readonly Vector4 one = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	static public readonly Vector4 red = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	static public readonly Vector4 green = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+	static public readonly Vector4 blue = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+	static public readonly Vector4 negativeInfinity = new Vector4(float.NegativeInfinity,  float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+	static public readonly Vector4 positiveInfinity = new Vector4(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
 
 	/// ------------------------------------------------
 	/// operators

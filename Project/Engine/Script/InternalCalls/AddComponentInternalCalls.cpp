@@ -8,6 +8,7 @@
 #include "Engine/Core/Utility/Input/InputSystem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/Scene/SceneManager.h"
 
 using namespace MONO_INTERNAL_METHOD;
 
@@ -84,4 +85,8 @@ void AddInputInternalCalls() {
 	mono_add_internal_call("Input::InternalReleaseMouse", (void*)Input::ReleaseMouse);
 	mono_add_internal_call("Input::InternalGetMousePosition", (void*)InternalGetMousePosition);
 	mono_add_internal_call("Input::InternalGetMouseVelocity", (void*)InternalGetMouseVelocity);
+}
+
+void AddSceneInternalCalls() {
+	mono_add_internal_call("SceneManager::InternalLoadScene", (void*)InternalLoadScene);
 }

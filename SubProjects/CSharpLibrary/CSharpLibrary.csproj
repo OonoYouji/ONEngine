@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\Engine\Attribute\SerializeField.cs" />
-    <Compile Include="Scripts\Engine\Core\ObjectPool\ObejctPools.cs" />
     <Compile Include="Scripts\Engine\Core\ObjectPool\ObjectPool.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\File\FileSystem.cs" />
     <Compile Include="Scripts\Engine\Core\Utility\Input\Gamepad.cs" />
@@ -81,10 +80,6 @@
     <Compile Include="Scripts\Game\Camera.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Scripts\Game\Command\PuzzleCommand.cs" />
-    <Compile Include="Scripts\Game\Command\PuzzlePlayerCommands.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />
@@ -93,6 +88,8 @@
     <Compile Include="Scripts\Engine\Core\Utility\Math\Vector3.cs" />
     <Compile Include="Scripts\Game\PrefabTest.cs" />
     <Compile Include="Scripts\Game\Puzzle\Block.cs" />
+    <Compile Include="Scripts\Game\Puzzle\Command\PuzzleCommand.cs" />
+    <Compile Include="Scripts\Game\Puzzle\Command\PuzzlePlayerCommands.cs" />
     <Compile Include="Scripts\Game\Puzzle\Mapchip.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -104,6 +101,7 @@
     <Compile Include="Scripts\Game\Puzzle\PuzzlePlayer.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStartController.cs" />
+    <Compile Include="Scripts\Game\Scene\SceneLoader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\Engine\Collision\" />

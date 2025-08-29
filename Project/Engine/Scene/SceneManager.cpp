@@ -10,12 +10,19 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
+namespace {
+	/// @brief monoに登録する関数で使用するために
+	SceneManager* gSceneManager = nullptr;
+}
+
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
 	: pECS_(entityComponentSystem_) {}
 SceneManager::~SceneManager() {}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+	gSceneManager = this;
+
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
@@ -129,3 +136,12 @@ const std::string& SceneManager::GetCurrentSceneName() const {
 }
 
 
+
+void MONO_INTERNAL_METHOD::InternalLoadScene(MonoString* _sceneName) {
+	char* cstr = mono_string_to_utf8(_sceneName);
+	if (gSceneManager) {
+		gSceneManager->LoadScene(cstr);
+	}
+
+	mono_free(cstr);
+}

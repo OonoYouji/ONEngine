@@ -67,11 +67,13 @@ public class Block : MonoBehavior {
 			height -= 0.05f;
 		}
 
-		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, height,
-			blockData.address.y * blockData.blockSpace);
-
+		Vector3 newPos = ObjectPool.vector3.Get();
+		newPos.x = blockData.address.x * blockData.blockSpace;
+		newPos.y = height;
+		newPos.z = blockData.address.y * blockData.blockSpace;
 		transform.position = newPos;
-		Debug.Log("Block.UpdatePosition - setting new position");
+		
+		ObjectPool.vector3.Release(newPos);
 	}
 
 	public void StartClearEffect() {
@@ -90,7 +92,7 @@ public class Block : MonoBehavior {
 			isEndClearAnimation_ = true;
 		}
 
-		
+
 		if (!isEndClearAnimation_) {
 			/// 色を金色にする
 			MeshRenderer mr = entity.GetComponent<MeshRenderer>();
