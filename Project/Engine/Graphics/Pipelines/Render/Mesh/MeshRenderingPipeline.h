@@ -57,8 +57,8 @@ private:
 	/// private : methods
 	/// ===================================================
 	
-	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture);
-	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<class CustomMeshRenderer*>* _pCustomRenderers, const std::vector<std::unique_ptr<Texture>>& _pTexture);
+	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<class MeshRenderer*>>* _pMeshRendererPerMesh, const std::vector<Texture>& _pTexture);
+	void RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<class CustomMeshRenderer*>* _pCustomRenderers, const std::vector<Texture>& _pTexture);
 
 private:
 

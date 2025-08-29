@@ -29,16 +29,28 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		cameraComponent->UpdateViewProjection();
 
 		/// main camera かどうか
-		if (cameraComponent->GetIsMainCamera()) {
-			/// 新しくmain cameraに設定された
-			if (pMainCamera_ != cameraComponent) {
-				/// 古い方をfalseに戻す
-				if (pMainCamera_) {
-					pMainCamera_->SetIsMainCamera(false);
-				}
+		if (cameraComponent->GetIsMainCameraRequest()) {
 
-				pMainCamera_ = cameraComponent; ///< main cameraを設定
+			int type = cameraComponent->GetCameraType();
+			if (type == static_cast<int>(CameraType::Type3D)) {
+				/// 新しくmain cameraに設定された
+				if (pMainCamera_ != cameraComponent) {
+					/// 古い方をfalseに戻す
+					if (pMainCamera_) {
+						pMainCamera_->SetIsMainCameraRequest(false);
+					}
+					pMainCamera_ = cameraComponent; ///< main cameraを設定
+				}
+			} else if (type == static_cast<int>(CameraType::Type2D)) {
+				if (pMainCamera2D_ != cameraComponent) {
+					/// 古い方をfalseに戻す
+					if (pMainCamera2D_) {
+						pMainCamera2D_->SetIsMainCameraRequest(false);
+					}
+					pMainCamera2D_ = cameraComponent; ///< main camera 2Dを設定
+				}
 			}
+
 		}
 	}
 
@@ -47,8 +59,12 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 		_ecs->SetMainCamera(pMainCamera_);
 	}
 
+	if (pMainCamera2D_) {
+		_ecs->SetMainCamera2D(pMainCamera2D_);
+	}
+
 }
 
 void CameraUpdateSystem::RuntimeUpdate(ECSGroup*) {
-	
+
 }

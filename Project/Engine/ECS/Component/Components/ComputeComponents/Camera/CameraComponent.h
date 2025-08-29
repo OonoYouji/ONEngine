@@ -9,7 +9,6 @@
 #include "Engine/Graphics/Buffer/Data/ViewProjection.h"
 
 enum class CameraType {
-	None,
 	Type3D, ///< 3Dカメラ
 	Type2D, ///< 2Dカメラ
 };
@@ -45,15 +44,15 @@ private:
 
 	ConstantBuffer<ViewProjection> viewProjection_;
 
-	float fovY_ = 0.0f;
-	float nearClip_ = 0.0f;
-	float farClip_ = 0.0f;
+	float fovY_;
+	float nearClip_;
+	float farClip_;
 
 	Matrix4x4 matView_;
 	Matrix4x4 matProjection_;
 
 	int cameraType_;
-	bool isMainCamera_;
+	bool isMainCameraRequest_;
 
 
 public:
@@ -61,14 +60,14 @@ public:
 	/// public : accessor
 	/// ====================================================
 
-	void SetIsMainCamera(bool _isMainCamera);
+	void SetIsMainCameraRequest(bool _isMainCamera);
 	void SetFovY(float _fovY);
 	void SetNearClip(float _nearClip);
 	void SetFarClip(float _farClip);
 	void SetCameraType(int _cameraType);
 
 
-	bool GetIsMainCamera() const;
+	bool GetIsMainCameraRequest() const;
 	float GetFovY() const;
 	float GetNearClip() const;
 	float GetFarClip() const;

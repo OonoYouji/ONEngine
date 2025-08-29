@@ -391,10 +391,9 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 
 
 		/// C#側のオブジェクトを取得
-		MonoObject* safeObj = nullptr;
-		//if (data.gcHandle != 0) {
-		//	safeObj = mono_gchandle_get_target(data.gcHandle);
-		//}
+		MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+		std::string ecsGroupName = owner->GetECSGroup()->GetGroupName();
+		MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(ecsGroupName, owner->GetId(), data.scriptName);
 
 		if (!safeObj) {
 			continue;

@@ -40,8 +40,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	MonoImage* pImage_;
-
 	MonoClass* monoClass_;
 	uint32_t    gcHandle_;
 	MonoMethod* updateEntitiesMethod_;

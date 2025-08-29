@@ -25,6 +25,7 @@ private:
 	
 	class DxDevice* pDxDevice_;
 	class CameraComponent* pMainCamera_;
+	class CameraComponent* pMainCamera2D_;
 
 };
 

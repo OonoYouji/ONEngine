@@ -25,34 +25,34 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
-	: pECS_(_ecs), pEditorManager_(_editorManager) {
+ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
+	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pEditorManager_(_editorManager) {
 
 
 	/// compute
-	RegisterComponent<Transform>([&](IComponent* _component) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_component)); });
-	RegisterComponent<DirectionalLight>([&](IComponent* _component) { DirectionalLightDebug(static_cast<DirectionalLight*>(_component)); });
-	RegisterComponent<AudioSource>([&](IComponent* _component) { AudioSourceDebug(static_cast<AudioSource*>(_component)); });
-	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
-	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
-	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
-	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component)); });
-	RegisterComponent<TerrainCollider>([&](IComponent* _component) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_component)); });
-	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
+	RegisterComponent<Transform>([&](IComponent* _comp) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_comp)); });
+	RegisterComponent<DirectionalLight>([&](IComponent* _comp) { DirectionalLightDebug(static_cast<DirectionalLight*>(_comp)); });
+	RegisterComponent<AudioSource>([&](IComponent* _comp) { COMP_DEBUG::AudioSourceDebug(static_cast<AudioSource*>(_comp)); });
+	RegisterComponent<Variables>([&](IComponent* _comp) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_comp)); });
+	RegisterComponent<Effect>([&](IComponent* _comp) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_comp)); });
+	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
+	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp)); });
+	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
+	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
-	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
-	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _component) {});
-	RegisterComponent<SkinMeshRenderer>([&](IComponent* _component) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_component)); });
-	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _component) { COMP_DEBUG::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_component)); });
-	RegisterComponent<Skybox>([&](IComponent* _component) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_component)); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp)); });
+	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pResourceCollection_); });
+	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
+	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
+	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
+	RegisterComponent<ScreenPostEffectTag>([&](IComponent* _comp) { COMP_DEBUG::ScreenPostEffectTagDebug(static_cast<ScreenPostEffectTag*>(_comp)); });
+	RegisterComponent<Skybox>([&](IComponent* _comp) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_comp)); });
 
 	/// collider
-	RegisterComponent<SphereCollider>([&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component)); });
-	RegisterComponent<BoxCollider>([&](IComponent* _component) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_component)); });
+	RegisterComponent<SphereCollider>([&](IComponent* _comp) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_comp)); });
+	RegisterComponent<BoxCollider>([&](IComponent* _comp) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_comp)); });
 
 
 	/// 関数を登録

@@ -130,10 +130,10 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 		textureIndices_[5] = _resourceCollection->GetTextureIndex("postProcessResult");
 
 		for (uint32_t index = 0; index < 5; ++index) {
-			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]]->GetSRVGPUHandle());
+			command->SetComputeRootDescriptorTable(index + 2, textures[textureIndices_[index]].GetSRVGPUHandle());
 		}
 
-		command->SetComputeRootDescriptorTable(7, textures[textureIndices_[POST_PROCESS_RESULT]]->GetUAVGPUHandle());
+		command->SetComputeRootDescriptorTable(7, textures[textureIndices_[POST_PROCESS_RESULT]].GetUAVGPUHandle());
 	}
 
 
@@ -147,13 +147,13 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 	/// resource barrier
 	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_SOURCE
 	);
 
 	CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
+		textures[textureIndices_[SCENE]].GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
@@ -164,20 +164,20 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 
 	/// copy
 	command->CopyResource(
-		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
-		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get()
+		textures[textureIndices_[SCENE]].GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get()
 	);
 
 
 	/// resource barrier
 	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[POST_PROCESS_RESULT]]->GetDxResource().Get(),
+		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_COPY_SOURCE,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
 
 	sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[SCENE]]->GetDxResource().Get(),
+		textures[textureIndices_[SCENE]].GetDxResource().Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 	);

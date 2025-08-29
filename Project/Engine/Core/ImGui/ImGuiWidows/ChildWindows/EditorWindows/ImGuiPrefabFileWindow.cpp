@@ -26,11 +26,11 @@ void ImGuiPrefabFileWindow::ImGuiFunc() {
 
 
 	const auto& textures = pResourceCollection_->GetTextures();
-	const Texture* button = textures[pResourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")].get();
+	const Texture& button = textures[pResourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
 	//AddPrefabButton();
 	//ImGui::SameLine();
-	ReloadPrefabFiles(button);
+	ReloadPrefabFiles(&button);
 
 
 	ImGui::Separator();

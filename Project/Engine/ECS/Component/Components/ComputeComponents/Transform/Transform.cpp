@@ -95,7 +95,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 		return;
 	}
 
-	Vector3 position = Matrix4x4::Transform({}, transform->matWorld);
+	const Vector3& position = transform->position;
 
 	if (_x) { *_x = position.x; }
 	if (_y) { *_y = position.y; }

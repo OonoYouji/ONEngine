@@ -41,7 +41,7 @@ void PrimitiveMeshCreator::CreateTorus() {
 }
 
 void PrimitiveMeshCreator::CreatePlane() {
-	std::unique_ptr<Mesh> mesh = std::make_unique<Mesh>();
+	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>();
 	mesh->SetVertices(
 		{
 			Mesh::VertexData({ -0.5f, 0.0f, +0.5f, 1.0f }, { 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }),
@@ -59,8 +59,8 @@ void PrimitiveMeshCreator::CreatePlane() {
 	);
 
 	mesh->CreateBuffer(pDxDevice_);
-	std::unique_ptr<Model> model = std::make_unique<Model>();
-	model->AddMesh(std::move(mesh));
+	Model model;
+	model.AddMesh(std::move(mesh));
 
 	pGraphicsResourceCollection_->AddModel("plane", std::move(model));
 }

@@ -5,6 +5,9 @@
 #include <vector>
 #include <string>
 
+/// externals
+#include <mono/jit/jit.h>
+
 /// engine
 #include "IScene.h"
 #include "ISceneFactory.h"
@@ -77,3 +80,10 @@ public:
 	const std::string& GetCurrentSceneName() const;
 };
 
+
+
+namespace MONO_INTERNAL_METHOD {
+
+	void InternalLoadScene(MonoString* _sceneName);
+
+}

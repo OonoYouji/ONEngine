@@ -116,7 +116,7 @@ void EntityComponentSystem::MainCameraSetting() {
 			if (cameraArray) {
 				for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
 					/// componentがnullptrでないことを確認、main cameraかどうかを確認
-					if (cameraComponent && cameraComponent->GetIsMainCamera()) {
+					if (cameraComponent && cameraComponent->GetIsMainCameraRequest()) {
 
 						int type = cameraComponent->GetCameraType();
 						if (type == static_cast<int>(CameraType::Type3D)) {

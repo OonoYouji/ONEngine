@@ -52,8 +52,8 @@ void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* 
 	textureIndices_[0] = _resourceCollection->GetTextureIndex(_textureName + "Scene");
 	textureIndices_[1] = _resourceCollection->GetTextureIndex("postProcessResult");
 
-	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]]->GetSRVGPUHandle());
-	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetUAVGPUHandle());
+	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]].GetSRVGPUHandle());
+	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]].GetUAVGPUHandle());
 
 	command->Dispatch(
 		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
@@ -62,8 +62,8 @@ void PostProcessRadialBlur::Execute(const std::string& _textureName, DxCommand* 
 	);
 
 	CopyResource(
-		textures[textureIndices_[1]]->GetDxResource().Get(),
-		textures[textureIndices_[0]]->GetDxResource().Get(),
+		textures[textureIndices_[1]].GetDxResource().Get(),
+		textures[textureIndices_[0]].GetDxResource().Get(),
 		command
 	);
 }

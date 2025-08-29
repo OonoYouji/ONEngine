@@ -3,15 +3,19 @@
 /// std
 #include <string>
 
+/// external
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// ===================================================
 /// sprite描画クラス
 /// ===================================================
 class SpriteRenderer final : public IComponent {
+	friend class SpriteUpdateSystem;
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -19,30 +23,36 @@ public:
 	SpriteRenderer();
 	~SpriteRenderer();
 
-
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	std::string texturePath_;
-
+	Material material_;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// @brief 描画するtextureの file pathを設定
-	/// @param _path .slnからの相対パス
-	void SetTexturePath(const std::string& _path) { texturePath_ = _path; }
+	/// ----- setter ----- ///
+	void SetColor(const Vector4& _color);
 
+	/// ----- getter ----- ///
+	const Vector4& GetColor() const;
 
-	/// @brief 描画するtextureの file pathを取得
-	/// @return .slからの相対パス
-	const std::string& GetTexturePath() const { return texturePath_; }
+	const Material& GetMaterial() const;
+	Material& GetMaterial();
 
 };
 
+
+class GraphicsResourceCollection;
+namespace COMP_DEBUG {
+	void SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection);
+	void SpriteTextureDebug(SpriteRenderer* _sr, std::string& _texturePath);
+}
+
+/// json serialize
+void to_json(nlohmann::json& _j, const SpriteRenderer& _sr);
+void from_json(const nlohmann::json& _j, SpriteRenderer& _sr);

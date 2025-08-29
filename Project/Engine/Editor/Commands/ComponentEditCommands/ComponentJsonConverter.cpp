@@ -165,22 +165,6 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, AudioSource& _a) {
-	_a.SetVolume(_j.at("volume").get<float>());
-	_a.SetPitch(_j.at("pitch").get<float>());
-	_a.SetAudioPath(_j.at("path").get<std::string>());
-}
-
-void to_json(nlohmann::json& _j, const AudioSource& _a) {
-	_j = nlohmann::json{
-		{ "type", "AudioSource" },
-		{ "enable", _a.enable },
-		{ "volume", _a.GetVolume() },
-		{ "pitch", _a.GetPitch() },
-		{ "path", _a.GetAudioPath() }
-	};
-}
-
 void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
 	
 }
@@ -344,19 +328,6 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 		{ "enable", _m.enable },
 		{ "texturePath", _m.GetTexturePath() },
 		{ "color", _m.GetColor() }
-	};
-}
-
-void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
-}
-
-void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
-	_j = nlohmann::json{
-		{ "type", "SpriteRenderer" },
-		{ "enable", _s.enable },
-		{ "texturePath", _s.GetTexturePath() }
 	};
 }
 

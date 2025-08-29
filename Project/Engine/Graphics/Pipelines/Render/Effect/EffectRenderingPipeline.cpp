@@ -125,7 +125,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 
 		/// buffer dataのセット、先頭の texture gpu handle をセットする
 		auto& textures = pResourceCollection_->GetTextures();
-		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 
 		for (auto& [meshPath, effects] : meshPerComp) {
@@ -154,7 +154,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 					size_t textureIndex = pResourceCollection_->GetTextureIndex(effect->GetTexturePath());
 					textureIdBuffer_->SetMappedData(
 						transformIndex_,
-						textures[textureIndex]->GetSRVDescriptorIndex()
+						textures[textureIndex].GetSRVDescriptorIndex()
 					);
 
 					/// transform のセット

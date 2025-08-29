@@ -15,7 +15,7 @@ CameraComponent::CameraComponent() {
 	SetFovY(0.7f);
 	SetNearClip(0.1f);
 	SetFarClip(1000.0f);
-	SetIsMainCamera(false);
+	SetIsMainCameraRequest(false);
 	SetCameraType(static_cast<int>(CameraType::Type3D));
 }
 CameraComponent::~CameraComponent() {}
@@ -38,6 +38,12 @@ void CameraComponent::UpdateViewProjection() {
 
 	} else {
 		/// 2Dカメラの場合
+
+		matProjection_ = CameraMath::MakeOrthographicMatrix(
+			-(EngineConfig::kWindowSize.x / 2.0f), (EngineConfig::kWindowSize.x / 2.0f),
+			-(EngineConfig::kWindowSize.y / 2.0f), (EngineConfig::kWindowSize.y / 2.0f),
+			nearClip_, farClip_
+		);
 
 	}
 
@@ -80,8 +86,8 @@ Matrix4x4 CameraMath::MakeOrthographicMatrix(float _left, float _right, float _b
 	return result;
 }
 
-void CameraComponent::SetIsMainCamera(bool _isMainCamera) {
-	isMainCamera_ = _isMainCamera;
+void CameraComponent::SetIsMainCameraRequest(bool _isMainCamera) {
+	isMainCameraRequest_ = _isMainCamera;
 }
 
 void CameraComponent::SetFovY(float _fovY) {
@@ -100,8 +106,8 @@ void CameraComponent::SetCameraType(int _cameraType) {
 	cameraType_ = _cameraType;
 }
 
-bool CameraComponent::GetIsMainCamera() const {
-	return isMainCamera_;
+bool CameraComponent::GetIsMainCameraRequest() const {
+	return isMainCameraRequest_;
 }
 
 float CameraComponent::GetFovY() const {
@@ -143,10 +149,13 @@ const Matrix4x4& CameraComponent::GetProjectionMatrix() const {
 
 
 void from_json(const nlohmann::json& _j, CameraComponent& _c) {
-	_c.SetIsMainCamera(_j.value("isMainCamera", false));
+	_c.SetIsMainCameraRequest(_j.value("isMainCamera", false));
 	_c.SetFovY(_j.value("fovY", 0.7f));
 	_c.SetNearClip(_j.value("nearClip", 0.1f));
 	_c.SetFarClip(_j.value("farClip", 1000.0f));
+	_c.SetCameraType(
+		_j.value("cameraType", static_cast<int>(CameraType::Type3D))
+	);
 }
 
 void to_json(nlohmann::json& _j, const CameraComponent& _c) {
@@ -157,7 +166,7 @@ void to_json(nlohmann::json& _j, const CameraComponent& _c) {
 		{ "nearClip", _c.GetNearClip() },
 		{ "farClip", _c.GetFarClip() },
 		{ "cameraType", _c.GetCameraType() },
-		{ "isMainCamera", _c.GetIsMainCamera() }
+		{ "isMainCamera", _c.GetIsMainCameraRequest() }
 	};
 }
 
@@ -185,8 +194,16 @@ void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
 
 	ImGui::Spacing();
 
+	/// type debug
+	int cameraType = _camera->GetCameraType();
+	if(ImGui::Combo("camera type", &cameraType, "3D\0 2D\0")) {
+		_camera->SetCameraType(cameraType);
+	}
+
+	ImGui::Spacing();
+
 	if (ImGui::Button("main camera setting")) {
-		_camera->SetIsMainCamera(true);
+		_camera->SetIsMainCameraRequest(true);
 	}
 
 }

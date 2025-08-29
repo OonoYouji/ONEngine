@@ -6,6 +6,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 
 SpriteRenderingPipeline::SpriteRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
@@ -34,14 +35,14 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
 
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< view projection : 0
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);                  ///< ROOT_PARAM_VIEW_PROJECTION : 0
 
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
-		pipeline_->AddDescriptorRange(1, 32, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< texture
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< transform
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< textureID : 1
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< texture   : 2
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 2);      ///< transform : 3
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< ROOT_PARAM_MATERIAL
+		pipeline_->AddDescriptorRange(1, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); ///< ROOT_PARAM_TEXTURES
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);  ///< ROOT_PARAM_TRANSFORM
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);       ///< ROOT_PARAM_MATERIAL : 1
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1);       ///< ROOT_PARAM_TEXTURES   : 2
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_VERTEX, 2);      ///< ROOT_PARAM_TRANSFORM : 3
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);         ///< texture sampler
 
@@ -55,9 +56,6 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		pipeline_->SetBlendDesc(blendDesc);
-
-		pipeline_->SetRTVNum(1);
-		pipeline_->SetRTVFormats({ DXGI_FORMAT_R8G8B8A8_UNORM });
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 
@@ -113,63 +111,47 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
-		textureIDsBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();
-		textureIDsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
+		materialsBuffer = std::make_unique<StructuredBuffer<Material>>();
+		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 	}
 
 
 }
 
-void SpriteRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	/// entityから sprite renderer を集める
-	for (auto& entity : _entities) {
-		SpriteRenderer*&& spriteRenderer = entity->GetComponent<SpriteRenderer>();
-		if (spriteRenderer) {
-			renderers_.push_back(spriteRenderer);
-		}
-	}
-
-	///< rendererがなければ 早期リターン
-	if (renderers_.empty()) {
+	ComponentArray<SpriteRenderer>* spriteRendererArray = _ecsGroup->GetComponentArray<SpriteRenderer>();
+	if (!spriteRendererArray || spriteRendererArray->GetUsedComponents().empty()) {
 		return;
 	}
 
 
-
-	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
-
-	//Camera2D* camera = nullptr; ///< TODO: 仮のカメラ取得
-	//if (_pEntityComponentSystem->GetCamera2Ds().size() == 0) {
-	//	return;
-	//} else {
-	//	camera = _pEntityComponentSystem->GetCamera2Ds()[0];
-	//}
+	ID3D12GraphicsCommandList* cmdList = _dxCommand->GetCommandList();
 
 	/// settings
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
 	/// vbv, ivb setting
-	commandList->IASetVertexBuffers(0, 1, &vbv_);
-	commandList->IASetIndexBuffer(&ibv_);
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	cmdList->IASetVertexBuffers(0, 1, &vbv_);
+	cmdList->IASetIndexBuffer(&ibv_);
+	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0); ///< view projection
+
+	/// ROOT_PARAM_VIEW_PROJECTION : 0
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 
 	/// 先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(2, (*textures.begin())->GetSRVGPUHandle()); ///< texture
+	const Texture* firstTexture = &textures.front();
+	cmdList->SetGraphicsRootDescriptorTable(ROOT_PARAM_TEXTURES, firstTexture->GetSRVGPUHandle());
 
 
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
-	for (auto& renderer : renderers_) {
-
-		size_t textureID = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
-		textureIDsBuffer_->SetMappedData(
-			transformIndex,
-			textures[textureID]->GetSRVDescriptorIndex()
+	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
+		materialsBuffer->SetMappedData(
+			transformIndex, renderer->GetMaterial()
 		);
 
 		transformsBuffer_->SetMappedData(
@@ -180,17 +162,15 @@ void SpriteRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 		++transformIndex;
 	}
 
-	textureIDsBuffer_->SRVBindForGraphicsCommandList(1, commandList); ///< textureID
-	transformsBuffer_->SRVBindForGraphicsCommandList(3, commandList); ///< transform
+	materialsBuffer->SRVBindForGraphicsCommandList(ROOT_PARAM_MATERIAL, cmdList);
+	transformsBuffer_->SRVBindForGraphicsCommandList(ROOT_PARAM_TRANSFORM, cmdList);
 
 
 	/// 描画
-	commandList->DrawIndexedInstanced(
+	cmdList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
-		static_cast<UINT>(renderers_.size()),
+		static_cast<UINT>(spriteRendererArray->GetUsedComponents().size()),
 		0, 0, 0
 	);
 
-
-	renderers_.clear();
 }

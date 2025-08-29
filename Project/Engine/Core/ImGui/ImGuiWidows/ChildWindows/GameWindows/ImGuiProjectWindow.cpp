@@ -78,14 +78,10 @@ void ImGuiProjectWindow::ReloadProject() {
 
 	scriptRootFolder_ = std::make_shared<Folder>();
 	scriptRootFolder_->name = "Scripts";
-	LoadFolder("./SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
+	LoadFolder("../SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
 
 	selectedFolder_ = assetsRootFolder_;
 	isGameFolder_ = true;
-
-	/// フォルダ内のリソースを読み込む
-	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Assets/"));
-	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Packages/"));
 }
 
 

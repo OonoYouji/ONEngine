@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <unordered_map>
 
 /// externals
 #include <jit/jit.h>
@@ -54,6 +55,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	std::unordered_map< std::string, size_t> scriptIndexMap_;
 	std::vector<ScriptData> scriptDataList_;
 	bool isAdded_;
 
@@ -81,5 +83,5 @@ namespace MONO_INTERNAL_METHOD {
 
 	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable, MonoString* _groupName);
 	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
-	
+
 }

@@ -39,9 +39,9 @@ void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxC
 	textureIndices_[1] = _resourceCollection->GetTextureIndex(_textureName + "Flags");
 	textureIndices_[2] = _resourceCollection->GetTextureIndex("postProcessResult");
 
-	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]]->GetSRVGPUHandle());
-	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]]->GetSRVGPUHandle());
-	command->SetComputeRootDescriptorTable(2, textures[textureIndices_[2]]->GetUAVGPUHandle());
+	command->SetComputeRootDescriptorTable(0, textures[textureIndices_[0]].GetSRVGPUHandle());
+	command->SetComputeRootDescriptorTable(1, textures[textureIndices_[1]].GetSRVGPUHandle());
+	command->SetComputeRootDescriptorTable(2, textures[textureIndices_[2]].GetUAVGPUHandle());
 
 	command->Dispatch(
 		static_cast<UINT>(EngineConfig::kWindowSize.x) / 16,
@@ -52,8 +52,8 @@ void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxC
 
 	/// 大本のsceneテクスチャに結果をコピー
 	CopyResource(
-		textures[textureIndices_[2]]->GetDxResource().Get(),
-		textures[textureIndices_[0]]->GetDxResource().Get(),
+		textures[textureIndices_[2]].GetDxResource().Get(),
+		textures[textureIndices_[0]].GetDxResource().Get(),
 		command
 	);
 }

@@ -40,7 +40,7 @@ float3 EnvironmentReflection(float3 _position, float3 _normal) {
 [numthreads(16, 16, 1)]
 void main(uint3 dispatchId : SV_DispatchThreadID) {
 
-	float2 texCoord = float2(dispatchId.x / 1920.0f, dispatchId.y / 1080.0f);
+	float2 texCoord = float2(dispatchId.xy + 0.5f) / float2(1920.0f, 1080.0f);
 	float4 color = colorTex.Sample(textureSampler, texCoord);
 	float4 position = positionTex.Sample(textureSampler, texCoord);
 	float4 normal = normalTex.Sample(textureSampler, texCoord);
@@ -61,18 +61,6 @@ void main(uint3 dispatchId : SV_DispatchThreadID) {
 	/// lighting
 	float3 outputColor = float3(1, 1, 1);
 	
-	//float3 toEye = float3(normalize(camera.position - position).xyz);
-	//float3 halfVector = normalize(-light.direction + toEye);
-	//float3 reflectLight = reflect(light.direction, normalize(normal.xyz));
-	//float NdotH = dot(normalize(normal.xyz), halfVector);
-	//float specularPow = pow(saturate(NdotH), 32.0f);
-
-	//float NdotL = dot(normalize(normal.xyz), -light.direction);
-	//float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-	//float3 diffuse = (color * light.color * cos * light.intensity).rgb;
-	//float3 specular = light.color.rgb * light.intensity * specularPow;
-
-	//outputColor = diffuse + specular;
 	outputColor = HalfLambertReflectance(color.rgb, normal.xyz);
 	
 

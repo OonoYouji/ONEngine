@@ -115,7 +115,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, ViewProjectionCBV);
 	/// Textures Bind
 	auto& textures = pGraphicsResourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin())->GetSRVGPUHandle()); ///< Texture
+	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
 
 
 	/// インスタンスごとの設定
@@ -137,11 +137,17 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 		transformBuffer_->SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_->SetMappedData(Material(comp->GetColor(), 1, comp->GetOwner()->GetId()));
+		materialBuffer_->SetMappedData(
+			Material{
+				.baseColor = comp->GetColor(),
+				.postEffectFlags = 1,
+				.entityId = comp->GetOwner()->GetId()
+			}
+		);
 
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
-		textureIdBuffer_->SetMappedData(textures[textureIndex]->GetSRVDescriptorIndex());
+		textureIdBuffer_->SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
 
 		transformBuffer_->BindForGraphicsCommandList(commandList, TransformCBV);
 		materialBuffer_->BindForGraphicsCommandList(commandList, MaterialCBV);

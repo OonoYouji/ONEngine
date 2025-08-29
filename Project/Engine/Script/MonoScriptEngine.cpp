@@ -54,7 +54,7 @@ MonoScriptEngine* GetMonoScriptEnginePtr() {
 }
 
 
-MonoScriptEngine::MonoScriptEngine() {}
+MonoScriptEngine::MonoScriptEngine() : domainReloadCounter_(0) {}
 MonoScriptEngine::~MonoScriptEngine() {
 	if (domain_) {
 		mono_jit_cleanup(domain_);
@@ -67,7 +67,7 @@ void MonoScriptEngine::Initialize() {
 	SetEnvironmentVariableA("PATH", "Packages\\mono\\bin;C:\\Windows\\System32");
 	SetEnvironmentVariableA("MONO_PATH", "Packages\\mono\\lib\\4.5");
 
-	_putenv("MONO_ENV_OPTIONS=--debug");
+	//_putenv("MONO_ENV_OPTIONS=--debug");
 
 	// デバッグオプションを設定
 	//const char* options[] = {
@@ -143,16 +143,22 @@ void MonoScriptEngine::RegisterFunctions() {
 
 	/// 他のクラスの関数も登録
 	AddInputInternalCalls();
+
+	AddSceneInternalCalls();
 }
 
 void MonoScriptEngine::HotReload() {
-	ResetCS();
-
 	MonoDomain* oldDomain = domain_;
 	std::string oldDllPath = currentDllPath_; // 今読み込んでるDLLのパスを保存
 
-	domain_ = mono_domain_create_appdomain((char*)"ReloadedDomain", nullptr);
+	domain_ = CreateReloadDomain();
 	mono_domain_set(domain_, true);
+
+	if(domain_ != oldDomain) {
+		Console::Log("Created new Mono domain for hot reload.");
+	} else {
+		Console::Log("Reusing existing Mono domain for hot reload.");
+	}
 
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
@@ -317,6 +323,18 @@ MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroup
 	}
 
 	return nullptr;
+}
+
+MonoDomain* MonoScriptEngine::CreateReloadDomain() {
+	std::string domainName = "ReloadedDomain_" + std::to_string(domainReloadCounter_);
+
+	MonoDomain* domain = mono_domain_create_appdomain((char*)domainName.c_str(), nullptr);
+	if (!domain) {
+		Console::LogError("Failed to create Mono domain for hot reload: " + domainName);
+		return nullptr;
+	}
+
+	return domain;
 }
 
 

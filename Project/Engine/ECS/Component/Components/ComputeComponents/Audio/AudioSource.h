@@ -3,60 +3,84 @@
 /// std
 #include <string>
 
+/// audio
+#include <xaudio2.h>
+
+/// external
+#include <nlohmann/json.hpp>
+
 /// engine
 #include "../../Interface/IComponent.h"
+
+
+/// @brief 音の再生状態
+enum AudioState {
+	AudioState_Stopped,
+	AudioState_Playing,
+	AudioState_Paused,
+};
+
 
 /// ////////////////////////////////////////////////////////////
 /// Audio Source
 /// ////////////////////////////////////////////////////////////
 class AudioSource : public IComponent {
+	friend class AudioPlaybackSystem;
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	AudioSource() {}
-	~AudioSource() {}
+
+	AudioSource();
+	~AudioSource();
+
+	/// 再生
+	void Play();
+
+	/// 追加
+	void AddSourceVoice(IXAudio2SourceVoice* _sourceVoice);
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	float volume_ = 1.0f;
-	float pitch_ = 1.0f;
-
+	class AudioClip* pAudioClip_;
 	std::string path_;
+	float volume_;
+	float pitch_;
+
+	int state_;
+	bool isPlayingRequest_;
+
+	/// 再生中の音声ソースリスト
+	std::list<IXAudio2SourceVoice*> sourceVoices_;
 
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	/// @brief 音量の設定
-	/// @param _volume 音量
-	void SetVolume(float _volume) { volume_ = _volume; }
+	/// ----- setter ----- ///
+	void SetVolume(float _volume);
+	void SetPitch(float _pitch);
+	void SetAudioPath(const std::string& _path);
+	void SetAudioClip(class AudioClip* _clip);
 
-	/// @brief 音の高さの設定
-	/// @param _pitch 音の高さ
-	void SetPitch(float _pitch) { pitch_ = _pitch; }
-
-	/// @brief 音源のパスの設定
-	/// @param _path 音源のパス
-	void SetAudioPath(const std::string& _path) { path_ = _path; }
-
-
-
-	/// @brief 音量の取得
-	/// @return 音量
-	float GetVolume() const { return volume_; }
-
-	/// @brief 音の高さの取得
-	/// @return 音の高さ
-	float GetPitch() const { return pitch_; }
-
-	/// @brief 音源のパスの取得
-	/// @return 音源のパス
-	const std::string& GetAudioPath() const { return path_; }
+	/// ----- getter ----- ///
+	float GetVolume() const;
+	float GetPitch() const;
+	const std::string& GetAudioPath() const;
+	class AudioClip* GetAudioClip() const;
+	int GetState() const;
 
 };
 
+
+
+namespace COMP_DEBUG {
+	void AudioSourceDebug(AudioSource* _as);
+}
+
+void from_json(const nlohmann::json& _j, AudioSource& _a);
+void to_json(nlohmann::json& _j, const AudioSource& _a);

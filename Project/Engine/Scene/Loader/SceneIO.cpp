@@ -86,6 +86,10 @@ void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
 void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGroup) {
 	std::unordered_map<uint32_t, GameEntity*> entityMap;
 
+	if (!_input.contains("entities")) {
+		return;
+	}
+
 	/// 実際にシーンに変換する
 	for (const auto& entityJson : _input["entities"]) {
 		const std::string& prefabName = entityJson.value("prefabName", "");

@@ -49,6 +49,9 @@ public:
 	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
 	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
 
+	/// 
+	MonoDomain* CreateReloadDomain();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -61,6 +64,7 @@ private:
 	MonoAssembly* assembly_ = nullptr;
 
 	bool isHotReloadRequest_;
+	int32_t domainReloadCounter_; /// domainのリロード回数
 
 public:
 	/// ===================================================

@@ -5,6 +5,7 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 
 /// systems
+#include "../System/Audio/AudioPlaybackSystem.h"
 #include "../System/MeshBufferRecreate/MeshBufferRecreate.h"
 #include "../System/EffectUpdateSystem/EffectUpdateSystem.h"
 #include "../System/ScriptUpdateSystem/ScriptUpdateSystem.h"
@@ -25,6 +26,7 @@ void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graphi
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
 	_ecs->AddSystem<ScriptUpdateSystem>(_ecs);
+	_ecs->AddSystem<AudioPlaybackSystem>(_resourceCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 
@@ -46,6 +48,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graph
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
 	_ecs->AddSystem<SkinMeshUpdateSystem>(_dxManager, _resourceCollection);
 	_ecs->AddSystem<DebugScriptUpdateSystem>(_ecs);
+	_ecs->AddSystem<AudioPlaybackSystem>(_resourceCollection);
 	_ecs->AddSystem<EffectUpdateSystem>();
 	_ecs->AddSystem<TransformUpdateSystem>();
 
