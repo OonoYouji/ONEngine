@@ -9,11 +9,6 @@ public class PrefabTest : MonoBehavior {
 	}
 
 	public override void Update() {
-		Vector3 pos = new Vector3();
-		for (int i = 0; i < 1000000; i++) {
-			pos += Vector3.up;
-		}
-
 		time += Time.deltaTime;
 		transform.scale = Vector3.one * Mathf.Sin(time);
 	}

@@ -2,6 +2,7 @@
 
 /// std
 #include <list>
+#include <string>
 
 /// audio
 #include <xaudio2.h>
@@ -36,6 +37,7 @@ private:
 
 	/// 再生
 	void PlayAudio(class AudioSource* _audioSource);
+	void PlayOneShot(class AudioClip* _audioClip, float _volume, float _pitch, const std::string& _path);
 
 	/// 状態の取得
 	int GetAudioState(class AudioSource* _audioSource);
@@ -51,6 +53,9 @@ private:
 	/// xAudio
 	ComPtr<IXAudio2> xAudio2_ = nullptr;
 	IXAudio2MasteringVoice* masterVoice_ = nullptr;
+
+	/// one shot audios
+	std::list<IXAudio2SourceVoice*> oneShotAudios_;
 
 	float masterVolume_;
 

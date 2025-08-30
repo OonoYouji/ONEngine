@@ -58,6 +58,17 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 			as->state_ = state;
 		}
 
+
+		/// OneShotAudioの再生リクエストチェック
+		for(auto& req : as->oneShotAudioRequests_) {
+			/// ワンショット再生
+			AudioClip* clip = pResourceCollection_->GetAudioClip(req.path);
+			PlayOneShot(clip, req.volume, req.pitch, req.path);
+		}
+
+		/// ワンショット再生が終わった音声ソースを削除
+		as->oneShotAudioRequests_.clear();
+
 	}
 
 }
@@ -95,6 +106,27 @@ void AudioPlaybackSystem::PlayAudio(AudioSource* _audioSource) {
 
 	/// 音声ソースをAudioSourceに追加
 	_audioSource->sourceVoices_.push_back(sourceVoice);
+}
+
+void AudioPlaybackSystem::PlayOneShot(AudioClip* _audioClip, float _volume, float _pitch, const std::string& _path) {
+	IXAudio2SourceVoice* sourceVoice = nullptr;
+	sourceVoice = _audioClip->CreateSourceVoice(xAudio2_.Get());
+
+	/// 再生する波形データの設定
+	const SoundData& soundData = _audioClip->GetSoundData();
+	XAUDIO2_BUFFER buffer{};
+	buffer.pAudioData = soundData.buffer.data();
+	buffer.AudioBytes = static_cast<UINT32>(soundData.buffer.size());
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+
+	/// 波形データの再生
+	sourceVoice->SubmitSourceBuffer(&buffer);
+	sourceVoice->SetVolume(_volume);
+	sourceVoice->SetFrequencyRatio(_pitch);
+	sourceVoice->Start();
+
+	/// 音声ソースをAudioSourceに追加
+	oneShotAudios_.push_back(sourceVoice);
 }
 
 int AudioPlaybackSystem::GetAudioState(AudioSource* _audioSource) {
