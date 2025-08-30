@@ -55,7 +55,5 @@ private:
 
 	std::unique_ptr<RenderingFramework>    renderingFramework_;
 
-	std::unique_ptr<MonoScriptEngine>      monoScriptEngine_ = nullptr;
-
 };
 

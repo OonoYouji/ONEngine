@@ -28,13 +28,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
 	renderingFramework_ = std::make_unique<RenderingFramework>();
 	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
-	monoScriptEngine_ = std::make_unique<MonoScriptEngine>();
 
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
 	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
-
-	/// ポインタを保持
-	SetMonoScriptEnginePtr(monoScriptEngine_.get());
 
 
 	/// 各クラスの初期化を行う
@@ -52,7 +48,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // DEBUG_MODE
 
-	monoScriptEngine_->Initialize();
+	MonoScriptEngine* monoScriptEngine = MonoScriptEngine::GetInstance();
+	monoScriptEngine->Initialize();
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
@@ -100,11 +97,10 @@ void GameFramework::Run() {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
-
 #else
 		sceneManager_->Update();
-		entityComponentSystem_->Update();
 		entityComponentSystem_->OutsideOfUpdate();
+		entityComponentSystem_->Update();
 #endif // DEBUG_MODE
 
 		/// 描画処理

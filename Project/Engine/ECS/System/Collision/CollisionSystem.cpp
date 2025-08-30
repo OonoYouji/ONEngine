@@ -8,6 +8,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/Script/MonoScriptEngine.h"
 
 
 namespace std {
@@ -215,6 +216,8 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void CollisionSystem::CallEnterFunc() {
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+
 	for (auto& pair : enterPairs_) {
 		GameEntity* entityA = pair.first;
 		GameEntity* entityB = pair.second;
@@ -226,7 +229,7 @@ void CollisionSystem::CallEnterFunc() {
 
 		/// 衝突イベントの実行
 		std::array<GameEntity*, 2> entities = { entityA, entityB };
-		std::array<Script*, 2>     scripts = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
+		std::array<Script*, 2>     scripts  = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
 
 		for (size_t i = 0; i < 2; i++) {
 			if (!scripts[i]) {

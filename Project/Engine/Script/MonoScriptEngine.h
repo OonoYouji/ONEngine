@@ -11,24 +11,30 @@
 #include <metadata/debug-helpers.h>
 #include <utils/mono-logger.h>
 
-void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
-MonoScriptEngine* GetMonoScriptEnginePtr();
-
-
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
 class MonoScriptEngine {
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	MonoScriptEngine();
+	~MonoScriptEngine();
+
+
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	MonoScriptEngine();
-	~MonoScriptEngine();
+	/// インスタンスの取得
+	static MonoScriptEngine* GetInstance();
 
 	/// Monoの初期化
 	void Initialize();

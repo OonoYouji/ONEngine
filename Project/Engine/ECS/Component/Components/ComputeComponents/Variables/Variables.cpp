@@ -270,7 +270,7 @@ void Variables::ReloadScriptVariables() {
 		Group& group = groups_[groupIndex];
 
 		{
-			MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+			MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 			GameEntity* entity = GetOwner();
 			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), data.scriptName);
 
@@ -391,7 +391,7 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 
 
 		/// C#側のオブジェクトを取得
-		MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+		MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 		std::string ecsGroupName = owner->GetECSGroup()->GetGroupName();
 		MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(ecsGroupName, owner->GetId(), data.scriptName);
 

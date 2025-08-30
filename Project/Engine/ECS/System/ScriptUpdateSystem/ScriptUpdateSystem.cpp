@@ -13,7 +13,7 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 ScriptUpdateSystem::ScriptUpdateSystem(ECSGroup* _ecs) {
-	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 	MakeScriptMethod(monoEngine->Image(), _ecs->GetGroupName());
 }
 
@@ -22,7 +22,7 @@ ScriptUpdateSystem::~ScriptUpdateSystem() {
 }
 
 void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
-	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 	if (!monoEngine) {
 		return;
 	}
@@ -96,7 +96,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
-	MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 
 	/// C#側のECSGroupを取得、更新関数を呼ぶ
 	ComponentArray<Script>* scriptArray = _ecsGroup->GetComponentArray<Script>();
