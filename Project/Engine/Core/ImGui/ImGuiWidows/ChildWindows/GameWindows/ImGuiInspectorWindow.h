@@ -18,7 +18,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
+	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
@@ -37,7 +37,7 @@ private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-	
+
 	/// ----- other class ----- ///
 	class EntityComponentSystem* pECS_;
 	class EditorManager* pEditorManager_;
@@ -46,11 +46,10 @@ private:
 	/// ----- edit target ----- ///
 	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ
 
-	std::vector<std::function<void()>> inspectorFunctions_; ///< inspectorに表示する関数のポインタ
-	class IComponent* selectedComponent_ = nullptr; ///< 選択したComponentのポインタ
-
+	std::string windowName_;
+	class IComponent* selectedComponent_ = nullptr;
+	std::vector<std::function<void()>> inspectorFunctions_;
 	std::unordered_map<size_t, std::function<void(class IComponent*)>> componentDebugFuncs_;
-
 
 	/* ----- add component ----- */
 	std::map<size_t, std::string> componentNames_;

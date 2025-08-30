@@ -8,6 +8,7 @@
 #include "../ChildWindows/EditorWindows/ImGuiPrefabViewWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabInspectorWindow.h"
 #include "../ChildWindows/EditorWindows/ImGuiPrefabFileWindow.h"
+#include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 
 ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager) {
@@ -17,8 +18,8 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResour
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	/// 子windowの追加
-	ImGuiPrefabInspectorWindow* inspector = static_cast<ImGuiPrefabInspectorWindow*>(
-		AddChild(std::make_unique<ImGuiPrefabInspectorWindow>(_ecs, _editorManager)));
+	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(
+		AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Prefab", _ecs, _resourceCollection, _editorManager)));
 
 	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _resourceCollection, inspector));
 	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _resourceCollection));
