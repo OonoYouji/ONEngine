@@ -59,10 +59,10 @@ CollisionSystem::CollisionSystem() {
 void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
-	ComponentArray<BoxCollider>*    boxColliderArray    = _ecs->GetComponentArray<BoxCollider>();
+	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
 
 	/// コライダーの配列
-	std::vector<ICollider*> colliders; 
+	std::vector<ICollider*> colliders;
 
 	/// sphere colliderを配列に格納する、インスタンスのnullチェックと有効フラグのチェックを行う
 	if (sphereColliderArray) {
@@ -83,106 +83,251 @@ void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 
-	using EntityPair = std::pair<int, int>;
-	std::unordered_map<EntityPair, int> collisionFrameMap; ///< 衝突計算をしたフレームを記録するマップ
+	using EntityIdPair = std::pair<int, int>;
+	std::unordered_map<EntityIdPair, int> collisionFrameMap; ///< 衝突計算をしたフレームを記録するマップ
 
 	/// 衝突判定
+	std::string collisionType = "";
 	for (auto& a : colliders) {
 		for (auto& b : colliders) {
-
 			/// 同じオブジェクト同士の衝突は無視
 			if (a == b) {
 				continue;
 			}
 
 			/// このフレームないで衝突計算をしているかチェック
-			std::string collisionType = typeid(*a).name() + std::string("Vs") + typeid(*b).name();
-			EntityPair pairKey = std::make_pair(a->GetOwner()->GetId(), b->GetOwner()->GetId());
+			collisionType = typeid(*a).name() + std::string("Vs") + typeid(*b).name();
+			EntityIdPair pairKey = std::make_pair(a->GetOwner()->GetId(), b->GetOwner()->GetId());
 
-			bool notContains = false; /// mapがペアを持っていないかどうか
+			/*
+			* --- 衝突判定の流れ ---
+			* 1, このフレームですでに衝突判定をとっているかチェック
+			* 2, まだなら衝突判定を計算
+			* 3, 衝突しているなら collisionPairs_ にペアを追加
+			* 4, 衝突していないなら前 collisionPairs_ にペアがあれば削除し、releasePairs_にペアを追加
+			* 5, call back関数の実行
+			*/
+
+
+			/// mapがペアを持っていないかどうか
+			bool collisionFrameMapContains = false;
 			if (!collisionFrameMap.contains(pairKey)) {
-				/// 逆順のないかチェック
+				/// 逆順でないかチェック
 				pairKey = std::make_pair(b->GetOwner()->GetId(), a->GetOwner()->GetId());
 				if (!collisionFrameMap.contains(pairKey)) {
-					notContains = true;
+					collisionFrameMapContains = true;
 				}
 			}
 
-			if (notContains) {
-				++collisionFrameMap[pairKey]; // 衝突計算をしたフレームを記録
+			/// このフレームで衝突判定をしている場合はスキップする
+			if (!collisionFrameMapContains) {
+				continue;
+			}
 
-				/// 衝突計算を行う
-				CollisionPair pair(a->GetOwner(), b->GetOwner());
-				auto it = collisionCheckMap_.find(collisionType);
-				if (it != collisionCheckMap_.end()) {
-					bool isCollided = it->second(pair);
-					if (isCollided) {
-						/// 衝突している場合はペアを記録
-						collisionPairs_.emplace_back(pair);
-					}
+			/// 衝突計算をしたフレームを記録
+			++collisionFrameMap[pairKey];
+
+
+			/// 衝突計算の関数を取得
+			CollisionPair pair(a->GetOwner(), b->GetOwner());
+			auto collisionCheckItr = collisionCheckMap_.find(collisionType);
+			if (collisionCheckItr == collisionCheckMap_.end()) {
+				continue;
+			}
+
+			/// 衝突計算を行う
+			bool isCollided = collisionCheckItr->second(pair);
+			if (isCollided) {
+				/// 衝突している場合はペアを記録
+				collidedPairs_.emplace_back(pair);
+
+
+				/// collidedPairs_にペアがすでに存在しているかチェック
+				auto collisionPairItr = std::find_if(collidedPairs_.begin(), collidedPairs_.end(), [&pair](const CollisionPair& _p) {
+					return (_p.first == pair.first && _p.second == pair.second)
+						|| (_p.first == pair.second && _p.second == pair.first);
+					});
+
+				if (collisionPairItr != collidedPairs_.end()) {
+					/// すでにペアが存在している場合は stayPairs_ に追加
+					stayPairs_.emplace_back(pair);
 				} else {
-					// 衝突計算が登録されていない場合の処理（必要に応じて）
+					/// 新たにペアが追加された場合は enterPairs_ に追加
+					enterPairs_.emplace_back(pair);
 				}
+
+
+			} else {
+
+				/// collisionPairs_からペアを削除
+				auto collisionPairItr = std::remove_if(collidedPairs_.begin(), collidedPairs_.end(), [&pair](const CollisionPair& _p) {
+					return (_p.first == pair.first && _p.second == pair.second)
+						|| (_p.first == pair.second && _p.second == pair.first);
+					});
+
+				/// 削除するペアがあった場合は exitPairs_ に追加
+				if (collisionPairItr != collidedPairs_.end()) {
+					exitPairs_.emplace_back(pair);
+				}
+
+				collidedPairs_.erase(collisionPairItr, collidedPairs_.end());
 			}
 
 		}
 	}
 
 
+	CallEnterFunc();
+	CallStayFunc();
+	CallExitFunc();
 
-	/// call back関数の実行
-	for (auto& pair : collisionPairs_) {
+}
+
+void CollisionSystem::CallEnterFunc() {
+	for (auto& pair : enterPairs_) {
 		GameEntity* entityA = pair.first;
 		GameEntity* entityB = pair.second;
-		/// 衝突している場合の処理
-		if (entityA && entityB) {
-			/// 衝突イベントの実行
-			std::array<Script*, 2> scripts;
-			std::array<GameEntity*, 2> entities = { entityA, entityB };
-			scripts[0] = entityA->GetComponent<Script>();
-			scripts[1] = entityB->GetComponent<Script>();
 
-			for (size_t i = 0; i < 2; i++) {
-				if (!scripts[i]) {
-					continue; // スクリプトがない場合はスキップ
-				}
+		/// ポインタが有効でないならスキップ
+		if (!entityA || !entityB) {
+			continue;
+		}
 
-				auto& data = scripts[i]->GetScriptDataList();
-				for (auto& script : data) {
+		/// 衝突イベントの実行
+		std::array<GameEntity*, 2> entities = { entityA, entityB };
+		std::array<Script*, 2>     scripts = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
 
-					MonoObject* exc = nullptr;
-
-					/// 引数の準備
-					void* params[1];
-					params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
-
-					///// 関数の実行
-					//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
-					//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
-
-					/// 例外が発生した場合の処理
-					if (exc) {
-						MonoString* monoStr = mono_object_to_string(exc, nullptr);
-						if (monoStr) {
-							char* message = mono_string_to_utf8(monoStr);
-							Console::Log(std::string("Mono Exception: ") + message);
-							mono_free(message);
-						} else {
-							Console::Log("Mono Exception occurred, but message is null.");
-						}
-					}
-
-				}
+		for (size_t i = 0; i < 2; i++) {
+			if (!scripts[i]) {
+				continue;
 			}
 
+			auto& data = scripts[i]->GetScriptDataList();
+			for (auto& script : data) {
+				MonoObject* exc = nullptr;
 
+				/// 引数の準備
+				void* params[1];
+				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
 
+				///// 関数の実行
+				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
+
+				/// 例外が発生した場合の処理
+				if (exc) {
+					MonoString* monoStr = mono_object_to_string(exc, nullptr);
+					if (monoStr) {
+						char* message = mono_string_to_utf8(monoStr);
+						Console::Log(std::string("Mono Exception: ") + message);
+						mono_free(message);
+					} else {
+						Console::Log("Mono Exception occurred, but message is null.");
+					}
+				}
+
+			}
 		}
+
 	}
+}
 
+void CollisionSystem::CallStayFunc() {
+	for (auto& pair : stayPairs_) {
+		GameEntity* entityA = pair.first;
+		GameEntity* entityB = pair.second;
 
+		/// ポインタが有効でないならスキップ
+		if (!entityA || !entityB) {
+			continue;
+		}
 
-	collisionPairs_.clear(); ///< 衝突ペアをクリア
+		/// 衝突イベントの実行
+		std::array<GameEntity*, 2> entities = { entityA, entityB };
+		std::array<Script*, 2>     scripts = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
+
+		for (size_t i = 0; i < 2; i++) {
+			if (!scripts[i]) {
+				continue;
+			}
+
+			auto& data = scripts[i]->GetScriptDataList();
+			for (auto& script : data) {
+				MonoObject* exc = nullptr;
+
+				/// 引数の準備
+				void* params[1];
+				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
+
+				///// 関数の実行
+				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
+
+				/// 例外が発生した場合の処理
+				if (exc) {
+					MonoString* monoStr = mono_object_to_string(exc, nullptr);
+					if (monoStr) {
+						char* message = mono_string_to_utf8(monoStr);
+						Console::Log(std::string("Mono Exception: ") + message);
+						mono_free(message);
+					} else {
+						Console::Log("Mono Exception occurred, but message is null.");
+					}
+				}
+
+			}
+		}
+
+	}
+}
+
+void CollisionSystem::CallExitFunc() {
+	for (auto& pair : exitPairs_) {
+		GameEntity* entityA = pair.first;
+		GameEntity* entityB = pair.second;
+
+		/// ポインタが有効でないならスキップ
+		if (!entityA || !entityB) {
+			continue;
+		}
+
+		/// 衝突イベントの実行
+		std::array<GameEntity*, 2> entities = { entityA, entityB };
+		std::array<Script*, 2>     scripts  = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
+
+		for (size_t i = 0; i < 2; i++) {
+			if (!scripts[i]) {
+				continue;
+			}
+
+			auto& data = scripts[i]->GetScriptDataList();
+			for (auto& script : data) {
+				MonoObject* exc = nullptr;
+
+				/// 引数の準備
+				void* params[1];
+				params[0] = entities[(i + 1) % 2]; /// 衝突しているもう一方のオブジェクトを渡す
+
+				///// 関数の実行
+				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
+				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
+
+				/// 例外が発生した場合の処理
+				if (exc) {
+					MonoString* monoStr = mono_object_to_string(exc, nullptr);
+					if (monoStr) {
+						char* message = mono_string_to_utf8(monoStr);
+						Console::Log(std::string("Mono Exception: ") + message);
+						mono_free(message);
+					} else {
+						Console::Log("Mono Exception occurred, but message is null.");
+					}
+				}
+
+			}
+		}
+
+	}
 }
 
 

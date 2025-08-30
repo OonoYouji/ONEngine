@@ -20,6 +20,10 @@ public:
 
 	void RuntimeUpdate(class ECSGroup* _ecs);
 
+	void CallEnterFunc();
+	void CallStayFunc();
+	void CallExitFunc();
+
 private:
 	/// =======================================
 	/// private : objects
@@ -27,7 +31,13 @@ private:
 
 	using CollisionPair = std::pair<class GameEntity*, class GameEntity*>;
 
-	std::deque<CollisionPair> collisionPairs_; ///< Store pairs of colliding entities
+	std::deque<CollisionPair> collidedPairs_;
+
+	/// ----- call back ----- ///
+	std::deque<CollisionPair> enterPairs_; /// 衝突が開始したペア
+	std::deque<CollisionPair> stayPairs_;  /// 衝突が継続しているペア
+	std::deque<CollisionPair> exitPairs_;  /// 衝突が終了したペア
+
 
 	/// collision check 
 	using CollisionCheckFunc = std::function<bool(const CollisionPair&)>;
