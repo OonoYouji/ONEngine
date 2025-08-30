@@ -29,7 +29,9 @@ public class PuzzlePlayer : MonoBehavior {
 
 	public void Move(Vector2Int _moveDir) {
 		blockData.address += _moveDir;
-		/// SEをならす
+	}
+
+	public void PlayMoveSE() {
 		audioSource_.OneShotPlay(1f, 1f, "./Assets/Sounds/Game/se/blackMove.mp3");
 	}
 
@@ -38,7 +40,6 @@ public class PuzzlePlayer : MonoBehavior {
 		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
 			blockData.address.y * blockData.blockSpace);
 		transform.position = newPos;
-
 	}
 
 	public void UpdateColor() {

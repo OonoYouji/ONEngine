@@ -1,5 +1,4 @@
 {
-    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
@@ -33,8 +32,16 @@
             },
             "enable": 1,
             "meshPath": "./Assets/Models/entity/puzzle/PuzzlePlayer.obj",
+            "postEffectFlags": 1,
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scriptName": [
+                "PuzzlePlayer"
+            ],
+            "type": "Script"
         },
         {
             "blendMode": 0,
@@ -136,13 +143,13 @@
         },
         {
             "enable": 1,
-            "scriptName": [
-                "PuzzlePlayer"
-            ],
-            "type": "Script"
+            "path": "",
+            "pitch": 1.0,
+            "type": "AudioSource",
+            "volume": 1.0
         }
     ],
-    "id": -1,
+    "id": 3,
     "name": "PuzzlePlayer",
     "parent": null,
     "prefabName": "PuzzlePlayer.prefab"

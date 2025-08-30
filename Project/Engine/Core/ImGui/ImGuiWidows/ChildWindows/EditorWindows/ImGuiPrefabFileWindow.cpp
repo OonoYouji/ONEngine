@@ -24,21 +24,15 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		return;
 	}
 
-
 	const auto& textures = pResourceCollection_->GetTextures();
 	const Texture& button = textures[pResourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
-	//AddPrefabButton();
-	//ImGui::SameLine();
 	ReloadPrefabFiles(&button);
-
 
 	ImGui::Separator();
 
-
 	/// fileの表示
 	ImGuiInputText("search prefab", &searchText_, ImGuiInputTextFlags_EnterReturnsTrue);
-
 
 	for (auto& file : files_) {
 		/// 検索ボックスに入力されたテキストがファイル名に含まれているかチェック
