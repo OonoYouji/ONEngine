@@ -102,6 +102,7 @@
     <Compile Include="Scripts\Game\Puzzle\PuzzleStage.cs" />
     <Compile Include="Scripts\Game\Puzzle\PuzzleStartController.cs" />
     <Compile Include="Scripts\Game\Scene\SceneLoader.cs" />
+    <Compile Include="Scripts\Game\Title\TitleScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\Engine\Collision\" />
