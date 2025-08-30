@@ -88,9 +88,9 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 
+#ifdef DEBUG_MODE
 	auto endTime = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime).count();
-#ifdef DEBUG_MODE
 	Console::LogInfo("[ScriptUpdateSystem] RuntimeUpdate took " + std::to_string(duration) + " microseconds");
 #endif // DEBUG_MODE
 }
