@@ -52,6 +52,7 @@ public:
 	~Transform();
 
 	void Update();
+	void Reset() override;
 
 public:
 

@@ -56,7 +56,38 @@ CollisionSystem::CollisionSystem() {
 
 }
 
+void CollisionSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
+
+	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
+	if (sphereColliderArray) {
+		for (auto& sphereCollider : sphereColliderArray->GetUsedComponents()) {
+			if (sphereCollider) {
+				if (GameEntity* owner = sphereCollider->GetOwner()) {
+					Gizmo::DrawWireSphere(owner->GetPosition(), sphereCollider->GetRadius(), Color::kRed);
+				}
+			}
+		}
+	}
+
+	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
+	if (boxColliderArray) {
+		for (auto& boxCollider : boxColliderArray->GetUsedComponents()) {
+			if (boxCollider) {
+				if (GameEntity* owner = boxCollider->GetOwner()) {
+					Gizmo::DrawWireCube(owner->GetPosition(), boxCollider->GetSize(), Color::kRed);
+				}
+			}
+		}
+	}
+
+}
+
 void CollisionSystem::RuntimeUpdate(ECSGroup* _ecs) {
+
+	enterPairs_.clear();
+	stayPairs_.clear();
+	exitPairs_.clear();
+
 
 	ComponentArray<SphereCollider>* sphereColliderArray = _ecs->GetComponentArray<SphereCollider>();
 	ComponentArray<BoxCollider>* boxColliderArray = _ecs->GetComponentArray<BoxCollider>();
@@ -214,6 +245,8 @@ void CollisionSystem::CallEnterFunc() {
 				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
 
+				Console::Log("Collision Enter Event Invoked");
+
 				/// 例外が発生した場合の処理
 				if (exc) {
 					MonoString* monoStr = mono_object_to_string(exc, nullptr);
@@ -263,6 +296,8 @@ void CollisionSystem::CallStayFunc() {
 				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
 
+				Console::Log("Collision Stay Event Invoked");
+
 				/// 例外が発生した場合の処理
 				if (exc) {
 					MonoString* monoStr = mono_object_to_string(exc, nullptr);
@@ -293,7 +328,7 @@ void CollisionSystem::CallExitFunc() {
 
 		/// 衝突イベントの実行
 		std::array<GameEntity*, 2> entities = { entityA, entityB };
-		std::array<Script*, 2>     scripts  = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
+		std::array<Script*, 2>     scripts = { entityA->GetComponent<Script>(), entityB->GetComponent<Script>() };
 
 		for (size_t i = 0; i < 2; i++) {
 			if (!scripts[i]) {
@@ -311,6 +346,8 @@ void CollisionSystem::CallExitFunc() {
 				///// 関数の実行
 				//MonoObject* safeObj = mono_gchandle_get_target(script.gcHandle);
 				//mono_runtime_invoke(script.collisionEventMethods[0], safeObj, params, &exc);
+
+				Console::Log("Collision Exit Event Invoked");
 
 				/// 例外が発生した場合の処理
 				if (exc) {

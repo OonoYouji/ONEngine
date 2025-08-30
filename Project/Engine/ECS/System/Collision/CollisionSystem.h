@@ -18,6 +18,7 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs);
 
 	void CallEnterFunc();

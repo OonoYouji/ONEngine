@@ -32,7 +32,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		pipeline->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline->SetCullMode(D3D12_CULL_MODE_NONE);
-		pipeline->SetBlendDesc(BlendMode::Normal());
+		pipeline->SetBlendDesc(BlendMode::None());
 		pipeline->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 
 		pipeline->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0); ///< view projection

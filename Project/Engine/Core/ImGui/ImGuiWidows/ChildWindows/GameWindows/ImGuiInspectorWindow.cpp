@@ -191,8 +191,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 			}
 
-			if (ImGui::MenuItem("reload")) {
-				//pEditorManager_->ExecuteCommand<ReloadComponentCommand>(entity, componentName);
+			if (ImGui::MenuItem("reset")) {
+				IComponent* comp = selectedEntity_->GetComponent(componentName);
+				comp->Reset();
 			}
 
 			ImGui::EndPopup();
