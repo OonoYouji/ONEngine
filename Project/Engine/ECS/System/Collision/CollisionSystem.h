@@ -21,9 +21,9 @@ public:
 	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
 	void RuntimeUpdate(class ECSGroup* _ecs);
 
-	void CallEnterFunc();
-	void CallStayFunc();
-	void CallExitFunc();
+	void CallEnterFunc(const std::string& _ecsGroupName);
+	void CallStayFunc(const std::string& _ecsGroupName);
+	void CallExitFunc(const std::string& _ecsGroupName);
 
 private:
 	/// =======================================

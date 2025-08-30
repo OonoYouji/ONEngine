@@ -55,6 +55,8 @@ public:
 	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
 	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
 
+	MonoMethod* GetMethodFromCS(const std::string& _className, const std::string& _methodName, int _argsCount);
+
 	/// 
 	MonoDomain* CreateReloadDomain();
 

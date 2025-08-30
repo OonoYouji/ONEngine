@@ -1,24 +1,38 @@
-﻿
-public class PrefabTest : MonoBehavior {
+﻿using System.Diagnostics;
 
-	Vector3 oneRotateValue = new Vector3(0.0f, 0.01f, 0.0f);
+public class PrefabTest : MonoBehavior {
+	private float time = 0f;
+	private MeshRenderer renderer;
 
 	public override void Initialize() {
-		Debug.Log("PrefabTest initialized.");
-
-		//MeshRenderer mr = entity.GetComponent<MeshRenderer>();
-
+		renderer = entity.GetComponent<MeshRenderer>();
 	}
 
 	public override void Update() {
-		Debug.Log("PrefabTest Update called.");
-			
-		if(transform == null) {
-			Debug.Log("Transform is null in PrefabTest.");
-			return;
+		Vector3 pos = new Vector3();
+		for (int i = 0; i < 1000000; i++) {
+			pos += Vector3.up;
 		}
 
-		Transform t = transform;
-		t.scale = Vector3.one * Mathf.Sin(Time.time);
+		time += Time.deltaTime;
+		transform.scale = Vector3.one * Mathf.Sin(time);
+	}
+
+	public override void OnCollisionEnter(Entity collision) {
+		if (renderer) {
+			renderer.color = Vector4.green;
+		}
+	}
+
+	public override void OnCollisionStay(Entity collision) {
+		if (renderer) {
+			renderer.color = Vector4.red;
+		}
+	}
+
+	public override void OnCollisionExit(Entity collision) {
+		if (renderer) {
+			renderer.color = Vector4.blue;
+		}
 	}
 }

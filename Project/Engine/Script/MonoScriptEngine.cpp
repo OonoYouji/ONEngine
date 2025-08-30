@@ -315,6 +315,26 @@ MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroup
 	return nullptr;
 }
 
+MonoMethod* MonoScriptEngine::GetMethodFromCS(const std::string& _className, const std::string& _methodName, int _argsCount) {
+	/// MonoClassを取得
+	MonoClass* monoClass = mono_class_from_name(image_, "", _className.c_str());
+	if (!monoClass) {
+		Console::LogError("Failed to find class: " + _className);
+		return nullptr;
+	}
+	
+	/// クラス階層を親まで辿って検索
+	for (MonoClass* current = monoClass; current != nullptr; current = mono_class_get_parent(current)) {
+		MonoMethod* method = mono_class_get_method_from_name(current, _methodName.c_str(), _argsCount);
+		if (method) {
+			return method; // 見つかったら即返す
+		}
+	}
+
+	Console::LogError("Failed to find method: " + _className + "::" + _methodName);
+	return nullptr;
+}
+
 MonoDomain* MonoScriptEngine::CreateReloadDomain() {
 	std::string domainName = "ReloadedDomain_" + std::to_string(domainReloadCounter_);
 
