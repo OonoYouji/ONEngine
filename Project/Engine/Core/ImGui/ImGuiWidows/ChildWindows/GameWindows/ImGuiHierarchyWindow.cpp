@@ -239,7 +239,7 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		}
 
 		if (hasValidSelection) {
-			pInspectorWindow_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(selectedEntity_));
+			pInspectorWindow_->SetSelectedEntity(selectedEntity_);
 		}
 	}
 

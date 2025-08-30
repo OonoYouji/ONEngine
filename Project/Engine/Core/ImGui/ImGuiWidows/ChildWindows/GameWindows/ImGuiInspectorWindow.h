@@ -7,6 +7,7 @@
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
@@ -23,16 +24,13 @@ public:
 	/// @brief imgui windowの描画処理
 	void ImGuiFunc() override;
 
-	/// @brief inspector に表示する情報のポインタを設定する
-	/// @param _pointer 表示したい物のポインタ(整数型)
-	void SetSelectedEntity(std::uintptr_t _pointer) { selectedPointer_ = _pointer; }
-
 	template<typename T>
 	void RegisterComponent(std::function<void(class IComponent*)> _func);
 
-
 	void EntityInspector();
 
+	/// edit target entity の setter getter
+	void SetSelectedEntity(GameEntity* _entity);
 	class GameEntity* GetSelectedEntity() const;
 
 private:
@@ -45,15 +43,16 @@ private:
 	class EditorManager* pEditorManager_;
 	class GraphicsResourceCollection* pResourceCollection_;
 
-	std::uintptr_t selectedPointer_; ///< 選択したポインタ
+	/// ----- edit target ----- ///
+	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ
 
 	std::vector<std::function<void()>> inspectorFunctions_; ///< inspectorに表示する関数のポインタ
-	class IComponent* selectedComponent_ = nullptr; ///< 選択したcomponentのポインタ
+	class IComponent* selectedComponent_ = nullptr; ///< 選択したComponentのポインタ
 
 	std::unordered_map<size_t, std::function<void(class IComponent*)>> componentDebugFuncs_;
 
-	/* ----- add component ----- */
 
+	/* ----- add component ----- */
 	std::map<size_t, std::string> componentNames_;
 
 };

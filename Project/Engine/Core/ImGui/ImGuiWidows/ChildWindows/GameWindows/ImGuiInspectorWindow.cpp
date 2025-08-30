@@ -69,7 +69,7 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 	}
 
 	SelectedType selectedType = kNone;
-	if (reinterpret_cast<GameEntity*>(selectedPointer_)) {
+	if (selectedEntity_) {
 		selectedType = kEntity;
 	}
 
@@ -78,10 +78,13 @@ void ImGuiInspectorWindow::ImGuiFunc() {
 	ImGui::End();
 }
 
+void ImGuiInspectorWindow::SetSelectedEntity(GameEntity* _entity) {
+	selectedEntity_ = _entity;
+}
+
 
 void ImGuiInspectorWindow::EntityInspector() {
-	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
-	uint64_t pointerValue = reinterpret_cast<uint64_t>(entity->GetTransform());
+	uint64_t pointerValue = reinterpret_cast<uint64_t>(selectedEntity_->GetTransform());
 	if (pointerValue == 0xdddddddddddddddd) {
 		return;
 	}
@@ -92,11 +95,11 @@ void ImGuiInspectorWindow::EntityInspector() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
 			if (ImGui::MenuItem("Save")) {
-				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(entity);
+				pEditorManager_->ExecuteCommand<EntityDataOutputCommand>(selectedEntity_);
 			}
 
 			if (ImGui::MenuItem("Load")) {
-				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(entity);
+				pEditorManager_->ExecuteCommand<EntityDataInputCommand>(selectedEntity_);
 			}
 
 			ImGui::EndMenu();
@@ -104,10 +107,8 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		if (ImGui::MenuItem("Apply Prefab")) {
 
-			if (!entity->GetPrefabName().empty()) {
-				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
-				//pECS_->GetECSGroup()->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
-				//pEditorManager_->ExecuteCommand<ApplyPrefabCommand>(entity);
+			if (!selectedEntity_->GetPrefabName().empty()) {
+				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(selectedEntity_);
 			} else {
 				Console::LogError("This entity is not a prefab instance.");
 			}
@@ -117,20 +118,20 @@ void ImGuiInspectorWindow::EntityInspector() {
 		ImGui::EndMenuBar();
 	}
 
-	if (!entity->GetPrefabName().empty()) {
+	if (!selectedEntity_->GetPrefabName().empty()) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.75f, 0, 0, 1));
-		ImGuiInputTextReadOnly("entity prefab name", entity->GetPrefabName());
+		ImGuiInputTextReadOnly("entity prefab name", selectedEntity_->GetPrefabName());
 		ImGui::PopStyleColor();
 	}
 
-	ImGuiInputTextReadOnly("entity name", entity->GetName());
-	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(entity->GetId()));
+	ImGuiInputTextReadOnly("entity name", selectedEntity_->GetName());
+	ImGuiInputTextReadOnly("entity id", "Entity ID: " + std::to_string(selectedEntity_->GetId()));
 
 	ImGui::Separator();
 	/// ----------------------------
 	/// componentのデバッグ
 	/// ----------------------------
-	for (auto itr = entity->GetComponents().begin(); itr != entity->GetComponents().end(); ) {
+	for (auto itr = selectedEntity_->GetComponents().begin(); itr != selectedEntity_->GetComponents().end(); ) {
 		std::pair<size_t, IComponent*> component = *itr;
 		std::string componentName = typeid(*component.second).name();
 		if (componentName.find("class ") == 0) {
@@ -178,12 +179,12 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		if (ImGui::BeginPopupContextItem(label.c_str())) {
 			if (ImGui::MenuItem("delete")) {
-				auto resultItr = entity->GetComponents().begin();
-				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(entity, componentName, &resultItr);
+				auto resultItr = selectedEntity_->GetComponents().begin();
+				pEditorManager_->ExecuteCommand<RemoveComponentCommand>(selectedEntity_, componentName, &resultItr);
 				itr = resultItr; // イテレータを更新
 
 				/// endじゃないかチェック
-				if (itr == entity->GetComponents().end()) {
+				if (itr == selectedEntity_->GetComponents().end()) {
 					ImGui::EndPopup();
 					break; // もしendに到達したらループを抜ける
 				}
@@ -227,7 +228,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 		for (const auto& name : componentNames_) {
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 			if (ImGui::Button(name.second.c_str(), buttonSize)) {
-				pEditorManager_->ExecuteCommand<AddComponentCommand>(entity, name.second);
+				pEditorManager_->ExecuteCommand<AddComponentCommand>(selectedEntity_, name.second);
 			}
 
 			ImGui::PopStyleColor();
@@ -240,14 +241,5 @@ void ImGuiInspectorWindow::EntityInspector() {
 }
 
 GameEntity* ImGuiInspectorWindow::GetSelectedEntity() const {
-	if (selectedPointer_ == 0) {
-		return nullptr;
-	}
-
-	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
-	if (dynamic_cast<GameEntity*>(entity)) {
-		return entity;
-	}
-
-	return nullptr;
+	return selectedEntity_;
 }
