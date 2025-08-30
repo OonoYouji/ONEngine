@@ -18,7 +18,7 @@ ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, Graphi
 }
 
 
-void ImGuiPrefabFileWindow::ImGuiFunc() {
+void ImGuiPrefabFileWindow::ShowImGui() {
 	if (!ImGui::Begin("Prefab File")) {
 		ImGui::End();
 		return;

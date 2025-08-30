@@ -13,7 +13,7 @@
 ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection)
 	: pECS_(_ecs), pResourceCollection_(_resourceCollection) {}
 
-void ImGuiPrefabViewWindow::ImGuiFunc() {
+void ImGuiPrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {
 		ImGui::End();
 		return;

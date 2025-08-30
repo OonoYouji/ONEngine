@@ -13,7 +13,7 @@
 
 ImGuiFile::ImGuiFile() {}
 
-void ImGuiFile::ImGuiFunc() {
+void ImGuiFile::ShowImGui() {
 	if (!ImGui::Begin("ImGui")) {
 		ImGui::End();
 		return;

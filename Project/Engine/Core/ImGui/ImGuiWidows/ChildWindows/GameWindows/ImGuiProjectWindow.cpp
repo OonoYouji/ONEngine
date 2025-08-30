@@ -22,7 +22,7 @@ ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _graphicsReso
 }
 
 
-void ImGuiProjectWindow::ImGuiFunc() {
+void ImGuiProjectWindow::ShowImGui() {
 	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;

@@ -16,7 +16,7 @@ public:
 	~ImGuiMainWindow() {}
 
 	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 private:
 	/// ===================================================

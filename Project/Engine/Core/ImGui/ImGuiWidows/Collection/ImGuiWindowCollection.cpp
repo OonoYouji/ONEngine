@@ -37,7 +37,7 @@ void ImGuiWindowCollection::Update() {
 
 	MainMenuUpdate();
 
-	parentWindows_[selectedMenuIndex_]->ImGuiFunc();
+	parentWindows_[selectedMenuIndex_]->ShowImGui();
 	DebugConfig::selectedMode_ = selectedMenuIndex_;
 
 }
@@ -87,7 +87,7 @@ void ImGuiWindowCollection::MainMenuUpdate() {
 
 void IImGuiParentWindow::UpdateChildren() {
 	for (auto& child : children_) {
-		child->ImGuiFunc();
+		child->ShowImGui();
 	}
 }
 

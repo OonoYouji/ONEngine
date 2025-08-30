@@ -37,7 +37,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 
 
 
-void ImGuiGameWindow::ImGuiFunc() {
+void ImGuiGameWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y));

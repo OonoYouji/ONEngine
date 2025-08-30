@@ -30,7 +30,7 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResour
 }
 
 
-void ImGuiEditorWindow::ImGuiFunc() {
+void ImGuiEditorWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y), ImGuiCond_Appearing);

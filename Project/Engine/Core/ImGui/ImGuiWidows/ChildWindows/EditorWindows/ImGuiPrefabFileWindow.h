@@ -16,7 +16,7 @@ public:
 	ImGuiPrefabFileWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class ImGuiPrefabInspectorWindow* _inspector);
 	~ImGuiPrefabFileWindow() override = default;
 
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	void ReloadPrefabFiles(const class Texture* _tex);
 	void AddPrefabButton();

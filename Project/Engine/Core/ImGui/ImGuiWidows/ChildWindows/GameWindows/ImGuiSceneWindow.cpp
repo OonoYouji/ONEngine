@@ -29,7 +29,7 @@ ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, GraphicsResource
 }
 
 
-void ImGuiSceneWindow::ImGuiFunc() {
+void ImGuiSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("Scene")) {
 		ImGui::End();
 		return;

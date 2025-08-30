@@ -62,7 +62,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, Graphics
 }
 
 
-void ImGuiInspectorWindow::ImGuiFunc() {
+void ImGuiInspectorWindow::ShowImGui() {
 	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;

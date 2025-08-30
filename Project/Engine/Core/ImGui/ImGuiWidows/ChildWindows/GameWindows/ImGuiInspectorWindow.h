@@ -22,7 +22,7 @@ public:
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	template<typename T>
 	void RegisterComponent(std::function<void(class IComponent*)> _func);

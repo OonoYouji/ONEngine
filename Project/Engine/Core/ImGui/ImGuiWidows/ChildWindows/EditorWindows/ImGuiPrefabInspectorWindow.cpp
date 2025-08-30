@@ -57,7 +57,7 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 
 }
 
-void ImGuiPrefabInspectorWindow::ImGuiFunc() {
+void ImGuiPrefabInspectorWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;

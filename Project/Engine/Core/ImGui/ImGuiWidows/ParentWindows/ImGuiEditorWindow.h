@@ -15,7 +15,7 @@ public:
 	ImGuiEditorWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiEditorWindow() {}
 
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 private:
 	/// ===================================================
