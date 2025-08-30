@@ -19,7 +19,7 @@ public:
 	ImGuiHierarchyWindow(const std::string& _imGuiWindowName, class ECSGroup*, class EditorManager*, class SceneManager*, class ImGuiInspectorWindow*);
 	~ImGuiHierarchyWindow() override = default;
 
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 protected:
 	/// ===================================================
@@ -88,7 +88,7 @@ public:
 	ImGuiNormalHierarchyWindow(const std::string& _imGuiWindowName, class EntityComponentSystem* _ecs, class EditorManager* _editorManager, class SceneManager* _sceneManager, class ImGuiInspectorWindow* _imguiInspectorWindow);
 	~ImGuiNormalHierarchyWindow() override = default;
 	
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	/// ----- dialog ----- ///
 	void DrawSceneDialog();

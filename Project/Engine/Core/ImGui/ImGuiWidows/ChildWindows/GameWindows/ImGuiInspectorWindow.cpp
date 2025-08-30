@@ -25,9 +25,9 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
+ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
 	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pEditorManager_(_editorManager) {
-
+	windowName_ = _windowName;
 
 	/// compute
 	RegisterComponent<Transform>([&](IComponent* _comp) { COMP_DEBUG::TransformDebug(static_cast<Transform*>(_comp)); });
@@ -62,8 +62,8 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(EntityComponentSystem* _ecs, Graphics
 }
 
 
-void ImGuiInspectorWindow::ImGuiFunc() {
-	if (!ImGui::Begin("Inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
+void ImGuiInspectorWindow::ShowImGui() {
+	if (!ImGui::Begin(windowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
@@ -191,8 +191,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 			}
 
-			if (ImGui::MenuItem("reload")) {
-				//pEditorManager_->ExecuteCommand<ReloadComponentCommand>(entity, componentName);
+			if (ImGui::MenuItem("reset")) {
+				IComponent* comp = selectedEntity_->GetComponent(componentName);
+				comp->Reset();
 			}
 
 			ImGui::EndPopup();

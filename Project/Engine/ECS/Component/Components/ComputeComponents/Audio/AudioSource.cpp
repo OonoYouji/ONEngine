@@ -20,6 +20,10 @@ void AudioSource::Play() {
 	isPlayingRequest_ = true;
 }
 
+void AudioSource::PlayOneShot(float _volume, float _pitch, const std::string& _path) {
+	oneShotAudioRequests_.push_back({ _path, _volume, _pitch });
+}
+
 void AudioSource::AddSourceVoice(IXAudio2SourceVoice* _sourceVoice) {
 	sourceVoices_.push_back(_sourceVoice);
 }
@@ -143,4 +147,43 @@ void to_json(nlohmann::json& _j, const AudioSource& _a) {
 		{ "pitch", _a.GetPitch() },
 		{ "path", _a.GetAudioPath() }
 	};
+}
+
+void MONO_INTERNAL_METHOD::InternalGetParams(uint64_t _nativeHandle, float* _volume, float* _pitch) {
+	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
+	if (!audioSource) {
+		Console::LogError("AudioSource pointer is null");
+		return;
+	}
+
+	*_volume = audioSource->GetVolume();
+	*_pitch = audioSource->GetPitch();
+
+}
+
+void MONO_INTERNAL_METHOD::InternalSetParams(uint64_t _nativeHandle, float _volume, float _pitch) {
+	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
+	if (!audioSource) {
+		Console::LogError("AudioSource pointer is null");
+		return;
+	}
+
+	audioSource->SetVolume(_volume);
+	audioSource->SetPitch(_pitch);
+}
+
+void MONO_INTERNAL_METHOD::InternalPlayOneShot(uint64_t _nativeHandle, float _volume, float _pitch, MonoString* _path) {
+	/// 音の再生
+	AudioSource* audioSource = reinterpret_cast<AudioSource*>(_nativeHandle);
+	if (!audioSource) {
+		Console::LogError("AudioSource pointer is null");
+		return;
+	}
+
+	/// pathの変換
+	char* path = mono_string_to_utf8(_path);
+
+	audioSource->PlayOneShot(_volume, _pitch, std::string(path));
+
+	mono_free(path);
 }

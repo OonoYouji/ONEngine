@@ -22,7 +22,7 @@ public:
 
 	struct ScriptData {
 		std::string scriptName;
-		bool enable = true;  ///< スクリプトの有効/無効フラグ
+		bool enable = true;   ///< スクリプトの有効/無効フラグ
 		bool isAdded = false; ///< スクリプトが追加されたかどうか
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
 	};

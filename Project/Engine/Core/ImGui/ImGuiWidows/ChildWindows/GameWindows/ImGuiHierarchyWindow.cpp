@@ -29,7 +29,7 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 	isNodeOpen_ = false;
 }
 
-void ImGuiHierarchyWindow::ImGuiFunc() {
+void ImGuiHierarchyWindow::ShowImGui() {
 	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
@@ -368,7 +368,7 @@ ImGuiNormalHierarchyWindow::ImGuiNormalHierarchyWindow(const std::string& _imGui
 	pECS_ = _ecs;
 }
 
-void ImGuiNormalHierarchyWindow::ImGuiFunc() {
+void ImGuiNormalHierarchyWindow::ShowImGui() {
 	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;

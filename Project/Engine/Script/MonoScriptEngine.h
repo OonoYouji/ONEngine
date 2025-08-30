@@ -11,24 +11,30 @@
 #include <metadata/debug-helpers.h>
 #include <utils/mono-logger.h>
 
-void SetMonoScriptEnginePtr(class MonoScriptEngine* _engine);
-MonoScriptEngine* GetMonoScriptEnginePtr();
-
-
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+
 
 /// ///////////////////////////////////////////////////
 /// monoを使ったC#スクリプトエンジン
 /// ///////////////////////////////////////////////////
 class MonoScriptEngine {
+private:
+	/// ===================================================
+	/// private : methods
+	/// ===================================================
+
+	MonoScriptEngine();
+	~MonoScriptEngine();
+
+
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	MonoScriptEngine();
-	~MonoScriptEngine();
+	/// インスタンスの取得
+	static MonoScriptEngine* GetInstance();
 
 	/// Monoの初期化
 	void Initialize();
@@ -48,6 +54,8 @@ public:
 	/// C#側のEntityを取得
 	MonoObject* GetEntityFromCS(const std::string& _ecsGroupName, int32_t _entityId);
 	MonoObject* GetMonoBehaviorFromCS(const std::string& _ecsGroupName, int32_t _entityId, const std::string& _behaviorName);
+
+	MonoMethod* GetMethodFromCS(const std::string& _className, const std::string& _methodName, int _argsCount);
 
 	/// 
 	MonoDomain* CreateReloadDomain();

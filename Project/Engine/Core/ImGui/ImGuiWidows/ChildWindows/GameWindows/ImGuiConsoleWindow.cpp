@@ -10,7 +10,7 @@
 #include "Engine/Core/Utility/Time/Time.h"
 #include "Engine/Core/Utility/Tools/Log.h"
 
-void ImGuiConsoleWindow::ImGuiFunc() {
+void ImGuiConsoleWindow::ShowImGui() {
 
 	if (!ImGui::Begin("Console")) {
 		ImGui::End();

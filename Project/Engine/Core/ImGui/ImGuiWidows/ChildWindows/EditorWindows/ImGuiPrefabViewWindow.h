@@ -15,7 +15,7 @@ public:
 	ImGuiPrefabViewWindow(class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection);
 	~ImGuiPrefabViewWindow() {}
 
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	void RenderView();
 

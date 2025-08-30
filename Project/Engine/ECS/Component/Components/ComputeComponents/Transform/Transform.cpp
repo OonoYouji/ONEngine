@@ -21,6 +21,13 @@ void Transform::Update() {
 	matWorld = Matrix4x4::MakeScale(scale) * Matrix4x4::MakeRotate(Quaternion::Normalize(rotate)) * Matrix4x4::MakeTranslate(position);
 }
 
+void Transform::Reset() {
+	position = Vector3::kZero;
+	rotate = Quaternion::kIdentity;
+	scale = Vector3::kOne;
+	matWorld = Matrix4x4::kIdentity;
+}
+
 void Transform::SetPosition(const Vector3& _v) {
 	position = _v;
 }

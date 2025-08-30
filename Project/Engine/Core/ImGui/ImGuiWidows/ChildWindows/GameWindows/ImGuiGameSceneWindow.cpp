@@ -8,7 +8,7 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 
 
-void ImGuiGameSceneWindow::ImGuiFunc() {
+void ImGuiGameSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("GameScene")) {
 		ImGui::End();
 		return;

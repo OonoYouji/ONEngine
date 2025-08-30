@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 public class PuzzlePlayer : MonoBehavior {
 	public PuzzleBlockData blockData; // ブロックデータ
 	public Flag isGoaled;
-
+	private AudioSource audioSource_;
 
 	public override void Initialize() {
 		// 初期化処理
 		isGoaled.Set(false);
+		audioSource_ = entity.GetComponent<AudioSource>();
 	}
 
 	public override void Update() {
@@ -23,10 +24,6 @@ public class PuzzlePlayer : MonoBehavior {
 
 		/// MAPDATAより、Playerは 100 or 101なので
 		blockData.type = blockData.mapValue % 100 % 10;
-		Debug.Log("//////////////////////////////////////////////////////");
-		Debug.Log("type: " + blockData.type);
-		Debug.Log("//////////////////////////////////////////////////////");
-
 		UpdateColor();
 	}
 
@@ -34,21 +31,15 @@ public class PuzzlePlayer : MonoBehavior {
 		blockData.address += _moveDir;
 	}
 
+	public void PlayMoveSE() {
+		audioSource_.OneShotPlay(1f, 1f, "./Assets/Sounds/Game/se/blackMove.mp3");
+	}
+
 	public void UpdatePosition() {
-		Vector3 newPos = ObjectPool.vector3.Get();
 		/// 座標更新
-		newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
+		Vector3 newPos = new Vector3(blockData.address.x * blockData.blockSpace, 0f,
 			blockData.address.y * blockData.blockSpace);
 		transform.position = newPos;
-
-		Debug.Log("/////////////////////////////////////////////////////////");
-		Debug.Log("id=" + entity.Id + "; name=" + entity.name);
-		Debug.Log("pos: .x+" + newPos.x + "; .y=" + newPos.y + "; .z=" + newPos.z);
-		Debug.Log("block data: space=" + blockData.blockSpace + "; address.x=" + blockData.address.x + "; address.y="
-		          + blockData.address.y);
-		Debug.Log("/////////////////////////////////////////////////////////");
-		
-		ObjectPool.vector3.Release(newPos);
 	}
 
 	public void UpdateColor() {

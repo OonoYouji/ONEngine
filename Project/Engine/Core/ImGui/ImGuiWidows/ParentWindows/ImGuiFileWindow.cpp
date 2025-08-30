@@ -20,7 +20,7 @@ ImGuiFileWindow::ImGuiFileWindow() {
 
 }
 
-void ImGuiFileWindow::ImGuiFunc() {
+void ImGuiFileWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20), ImGuiCond_Appearing);
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x , EngineConfig::kWindowSize.y), ImGuiCond_Appearing);

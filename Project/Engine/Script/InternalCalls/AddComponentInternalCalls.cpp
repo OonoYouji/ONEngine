@@ -51,6 +51,10 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("MonoBehavior::InternalSetEnable", (void*)InternalSetEnable);
 	mono_add_internal_call("MonoBehavior::InternalGetEnable", (void*)InternalGetEnable);
 
+	/// audio source
+	mono_add_internal_call("AudioSource::InternalGetParams", (void*)InternalGetParams);
+	mono_add_internal_call("AudioSource::InternalSetParams", (void*)InternalSetParams);
+	mono_add_internal_call("AudioSource::InternalPlayOneShot", (void*)InternalPlayOneShot);
 
 }
 

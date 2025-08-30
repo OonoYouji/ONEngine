@@ -8,37 +8,31 @@
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
-#include "ImGuiPrefabInspectorWindow.h"
+#include "../GameWindows/ImGuiInspectorWindow.h"
 #include "Engine/Script/MonoScriptEngine.h"
 
-ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiPrefabInspectorWindow* _inspector)
+ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
 	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 }
 
 
-void ImGuiPrefabFileWindow::ImGuiFunc() {
+void ImGuiPrefabFileWindow::ShowImGui() {
 	if (!ImGui::Begin("Prefab File")) {
 		ImGui::End();
 		return;
 	}
 
-
 	const auto& textures = pResourceCollection_->GetTextures();
 	const Texture& button = textures[pResourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
-	//AddPrefabButton();
-	//ImGui::SameLine();
 	ReloadPrefabFiles(&button);
-
 
 	ImGui::Separator();
 
-
 	/// fileの表示
 	ImGuiInputText("search prefab", &searchText_, ImGuiInputTextFlags_EnterReturnsTrue);
-
 
 	for (auto& file : files_) {
 		/// 検索ボックスに入力されたテキストがファイル名に含まれているかチェック
@@ -53,8 +47,9 @@ void ImGuiPrefabFileWindow::ImGuiFunc() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
-			//GameEntity* entity = pECS_->GeneratePrefabEntity(file.second); // Prefabを生成する関数を呼び出す
-			//pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
+			ECSGroup* debugGroup = pECS_->GetECSGroup("Debug");
+			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, false);
+			pInspector_->SetSelectedEntity(entity);
 		}
 
 	}

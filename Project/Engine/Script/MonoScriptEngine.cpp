@@ -20,8 +20,6 @@
 //#pragma comment(lib, "./Packages/Scripts/lib/libmono-dbg.a")
 
 namespace {
-	MonoScriptEngine* gMonoScriptEngine = nullptr;
-
 	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void*) {
 		const char* domain = _log_domain ? _log_domain : "null";
 		const char* level = _log_level ? _log_level : "null";
@@ -42,17 +40,6 @@ namespace {
 
 }
 
-void SetMonoScriptEnginePtr(MonoScriptEngine* _engine) {
-	gMonoScriptEngine = _engine;
-	if (!gMonoScriptEngine) {
-		Console::LogWarning("MonoScriptEngine pointer is null");
-	}
-}
-
-MonoScriptEngine* GetMonoScriptEnginePtr() {
-	return gMonoScriptEngine;
-}
-
 
 MonoScriptEngine::MonoScriptEngine() : domainReloadCounter_(0) {}
 MonoScriptEngine::~MonoScriptEngine() {
@@ -62,13 +49,17 @@ MonoScriptEngine::~MonoScriptEngine() {
 	}
 }
 
+MonoScriptEngine* MonoScriptEngine::GetInstance() {
+	static MonoScriptEngine instance;
+	return &instance;
+}
+
 void MonoScriptEngine::Initialize() {
 
-	SetEnvironmentVariableA("PATH", "Packages\\mono\\bin;C:\\Windows\\System32");
-	SetEnvironmentVariableA("MONO_PATH", "Packages\\mono\\lib\\4.5");
+	SetEnvironmentVariableA("PATH", "Packages/mono/bin;C:/Windows/System32");
+	SetEnvironmentVariableA("MONO_PATH", "Packages/mono/lib/4.5");
 
 	//_putenv("MONO_ENV_OPTIONS=--debug");
-
 	// デバッグオプションを設定
 	//const char* options[] = {
 	//	"--debug", // デバッグ用
@@ -80,16 +71,16 @@ void MonoScriptEngine::Initialize() {
 	mono_trace_set_level_string("debug");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
-	// versionの出力
+	/// versionの出力
 	Console::Log("Mono version: " + std::string(mono_get_runtime_build_info()));
 
-	// Mono の検索パス設定（必ず先）
+	/// Mono の検索パス設定（必ず先）
 	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 	mono_config_parse(nullptr);
 
 
 	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-	// JIT初期化
+	/// JIT初期化
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::LogError("Failed to initialize Mono JIT");
@@ -114,7 +105,6 @@ void MonoScriptEngine::Initialize() {
 	}
 
 	image_ = mono_assembly_get_image(assembly_);
-	//mono_debug_open_image();
 	if (!image_) {
 		Console::LogError("Failed to get image from assembly");
 		return;
@@ -322,6 +312,26 @@ MonoObject* MonoScriptEngine::GetMonoBehaviorFromCS(const std::string& _ecsGroup
 		return result;
 	}
 
+	return nullptr;
+}
+
+MonoMethod* MonoScriptEngine::GetMethodFromCS(const std::string& _className, const std::string& _methodName, int _argsCount) {
+	/// MonoClassを取得
+	MonoClass* monoClass = mono_class_from_name(image_, "", _className.c_str());
+	if (!monoClass) {
+		Console::LogError("Failed to find class: " + _className);
+		return nullptr;
+	}
+	
+	/// クラス階層を親まで辿って検索
+	for (MonoClass* current = monoClass; current != nullptr; current = mono_class_get_parent(current)) {
+		MonoMethod* method = mono_class_get_method_from_name(current, _methodName.c_str(), _argsCount);
+		if (method) {
+			return method; // 見つかったら即返す
+		}
+	}
+
+	Console::LogError("Failed to find method: " + _className + "::" + _methodName);
 	return nullptr;
 }
 

@@ -162,7 +162,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 			/// ------------------------------------------------------------------
 
 			GameEntity* entity = _script->GetOwner();
-			MonoScriptEngine* monoEngine = GetMonoScriptEnginePtr();
+			MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), script.scriptName);
 
 

@@ -273,6 +273,7 @@ public class PuzzleStage : MonoBehavior {
 			Moved(beforeAddress, puzzlePlayer.blockData.address);
 
 			puzzlePlayer.UpdateRotateY(moveDir_);
+			puzzlePlayer.PlayMoveSE();
 		} else {
 			/// 移動できない場合の処理を追加
 			moveDir_ = Vector2Int.zero;

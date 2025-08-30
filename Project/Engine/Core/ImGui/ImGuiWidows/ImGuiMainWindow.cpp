@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 
-void ImGuiMainWindow::ImGuiFunc() {
+void ImGuiMainWindow::ShowImGui() {
 
 	/// main menuの処理
 	MainMenu();
