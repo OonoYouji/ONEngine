@@ -199,11 +199,8 @@ void ImGuiInspectorWindow::EntityInspector() {
 			ImGui::EndPopup();
 		}
 
-
 		++itr;
-
 	}
-
 
 	/// ----------------------------
 	/// componentの追加

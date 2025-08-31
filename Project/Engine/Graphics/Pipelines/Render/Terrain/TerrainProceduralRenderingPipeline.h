@@ -63,6 +63,7 @@ private:
 	ConstantBuffer<TextureId> textureIdBuffer_;
 
 	uint32_t instanceCount_;
+	bool isFirstPreDraw_ = true;
 
 };
 

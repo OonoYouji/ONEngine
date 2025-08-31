@@ -58,7 +58,7 @@ public class Mapchip : MonoBehavior {
 	}
 
 	public List<List<int>> GetStartMapData() {
-		return root_.map.tiles;
+		return new List<List<int>>(root_.map.tiles);
 	}
 
 	public Stage.Player GetPlayer() {

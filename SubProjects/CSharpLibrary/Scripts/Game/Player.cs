@@ -16,29 +16,10 @@ public class Player : MonoBehavior {
 	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
 	Entity camera;
 
-	[SerializeField] private int life;
-	[SerializeField] private float hp;
-
 	public override void Awake() {
-		Debug.LogInfo("===============================================");
-		Debug.LogInfo("life: " + life);
-		Debug.LogInfo("===============================================");
 	}
 
 	public override void Initialize() {
-
-		if(entity == null) {
-			Debug.LogError("Player Initialize called but entity is null.");
-		}
-
-		Entity block = ecsGroup.CreateEntity("ArmItem");
-		if (block != null) {
-			AttachObjectToJoint attachScript = entity.GetScript<AttachObjectToJoint>();
-			if (attachScript != null) {
-				attachScript.attachedEntity = block;
-				attachScript.jointName = "mixamorig:LeftHand"; // アタッチするジョイント名を指定
-			}
-		}
 
 	}
 
@@ -51,7 +32,7 @@ public class Player : MonoBehavior {
 		Move();
 		//Jump();
 
-		// CameraFollow();
+		CameraFollow();
 		transform.scale = Vector3.one / 100f; // スケールを小さくする
 
 		float fallSpeed = 1.0f;

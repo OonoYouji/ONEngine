@@ -18,10 +18,8 @@ public class Block : MonoBehavior {
 	private bool isEndClearAnimation_;
 	[SerializeField] private float sinValue_;
 
-
 	private enum Mode : int {
-		Up,
-		Down
+		Up, Down
 	}
 
 	public override void Initialize() {
@@ -56,8 +54,6 @@ public class Block : MonoBehavior {
 			}
 
 			mr.color = currentColor_;
-		} else {
-			Debug.LogWarning("-----: block color not setting");
 		}
 	}
 
@@ -67,13 +63,11 @@ public class Block : MonoBehavior {
 			height -= 0.05f;
 		}
 
-		Vector3 newPos = ObjectPool.vector3.Get();
+		Vector3 newPos = new Vector3();
 		newPos.x = blockData.address.x * blockData.blockSpace;
 		newPos.y = height;
 		newPos.z = blockData.address.y * blockData.blockSpace;
 		transform.position = newPos;
-		
-		ObjectPool.vector3.Release(newPos);
 	}
 
 	public void StartClearEffect() {

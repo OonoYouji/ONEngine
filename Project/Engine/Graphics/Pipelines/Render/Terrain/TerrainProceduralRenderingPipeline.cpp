@@ -90,6 +90,11 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 }
 
 void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
+	if (!isFirstPreDraw_) {
+		isFirstPreDraw_ = true;
+		return;
+	}
+
 	auto cmdList = _dxCommand->GetCommandList();
 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);

@@ -71,6 +71,7 @@ void AddEntityInternalCalls() {
 	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
 
 	mono_add_internal_call("ECSGroup::InternalCreateEntity", (void*)InternalCreateEntity);
+	mono_add_internal_call("ECSGroup::InternalDestroyEntity", (void*)InternalDestroyEntity);
 
 }
 

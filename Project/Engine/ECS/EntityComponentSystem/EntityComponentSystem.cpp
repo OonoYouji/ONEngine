@@ -346,3 +346,19 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 		*_entityId = entity->GetId();
 	}
 }
+
+void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId) {
+	char* cstr = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* group = gECS->GetECSGroup(cstr);
+
+	if (!group) {
+		Console::LogError("ECSGroup not found: " + std::string(cstr));
+		return;
+	}
+
+	GameEntity* entity = group->GetEntity(_entityId);
+	group->RemoveEntity(entity);
+
+
+	mono_free(cstr);
+}

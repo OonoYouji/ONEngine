@@ -219,6 +219,7 @@ public class ECSGroup {
 	public void DestroyEntity(int _id) {
 		if (entities_.TryGetValue(_id, out Entity entity)) {
 			entities_.Remove(_id);
+			InternalDestroyEntity(groupName, _id);
 #if DEBUG
 			Debug.Log("Entity destroyed with ID: " + _id);
 		} else {
@@ -267,11 +268,12 @@ public class ECSGroup {
 	static extern void InternalCreateEntity(out int _id, string _prefabName, string _groupName);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalDestroyEntity(int _id);
+	static extern void InternalDestroyEntity(string _ecsGroupName, int _id);
 
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetEnable();
 
+	
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// operators
 	///////////////////////////////////////////////////////////////////////////////////////////

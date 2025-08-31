@@ -98,4 +98,6 @@ namespace MONO_INTERNAL_METHOD {
 
 	void InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName);
 
+	void InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId);
+
 } // namespace MONO_INTERNAL_METHOD
