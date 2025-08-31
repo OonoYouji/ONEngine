@@ -11,6 +11,10 @@
 
 SpriteRenderer::SpriteRenderer() {
 	material_.baseColor = Vector4::kWhite;
+	material_.entityId = 0;
+	material_.baseTextureId = -1;
+	material_.uvTransform = UVTransform();
+	material_.postEffectFlags = 0;
 }
 SpriteRenderer::~SpriteRenderer() {}
 

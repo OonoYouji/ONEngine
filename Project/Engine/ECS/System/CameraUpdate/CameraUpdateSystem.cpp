@@ -4,7 +4,9 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {}
+CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {
+	pMainCamera_ = nullptr;
+}
 
 void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// カメラのcomponentを集める
@@ -33,10 +35,9 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 			int type = cameraComponent->GetCameraType();
 			if (type == static_cast<int>(CameraType::Type3D)) {
-				/// 新しくmain cameraに設定された
 				if (pMainCamera_ != cameraComponent) {
 					/// 古い方をfalseに戻す
-					if (pMainCamera_) {
+					if (pMainCamera_ && pMainCamera_->cameraType_ == static_cast<int>(CameraType::Type3D)) {
 						pMainCamera_->SetIsMainCameraRequest(false);
 					}
 					pMainCamera_ = cameraComponent; ///< main cameraを設定
@@ -44,7 +45,7 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			} else if (type == static_cast<int>(CameraType::Type2D)) {
 				if (pMainCamera2D_ != cameraComponent) {
 					/// 古い方をfalseに戻す
-					if (pMainCamera2D_) {
+					if (pMainCamera2D_ && pMainCamera_->cameraType_ == static_cast<int>(CameraType::Type2D)) {
 						pMainCamera2D_->SetIsMainCameraRequest(false);
 					}
 					pMainCamera2D_ = cameraComponent; ///< main camera 2Dを設定

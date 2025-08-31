@@ -1,0 +1,36 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 500.0,
+                "y": 0.0,
+                "z": 500.0
+            },
+            "rotate": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": -0.0,
+                "z": 0.0
+            },
+            "scale": {
+                "x": 1000.0,
+                "y": 1000.0,
+                "z": 1000.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "enable": 1,
+            "texturePath": "./Packages/Textures/kloofendal_48d_partly_cloudy_puresky_2k.dds",
+            "type": "Skybox"
+        }
+    ],
+    "id": 5,
+    "name": "Skybox",
+    "parent": null,
+    "prefabName": ""
+}

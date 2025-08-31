@@ -14,7 +14,10 @@ void SpriteUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// texture idの更新を行う
 	for(auto& spriteRenderer : spriteRendererArray->GetUsedComponents()) {
 		/// texture idからtextureを得る
-
+		Material& material = spriteRenderer->GetMaterial();
+		material.entityId = spriteRenderer->GetOwner()->GetId();
+		material.postEffectFlags = 0;
+		material.normalTextureId = -1;
 	}
 
 

@@ -15,7 +15,7 @@ CameraComponent::CameraComponent() {
 	SetFovY(0.7f);
 	SetNearClip(0.1f);
 	SetFarClip(1000.0f);
-	SetIsMainCameraRequest(false);
+	SetIsMainCameraRequest(true);
 	SetCameraType(static_cast<int>(CameraType::Type3D));
 }
 CameraComponent::~CameraComponent() {}
@@ -149,7 +149,7 @@ const Matrix4x4& CameraComponent::GetProjectionMatrix() const {
 
 
 void from_json(const nlohmann::json& _j, CameraComponent& _c) {
-	_c.SetIsMainCameraRequest(_j.value("isMainCamera", false));
+	_c.SetIsMainCameraRequest(_j.value("isMainCamera", true));
 	_c.SetFovY(_j.value("fovY", 0.7f));
 	_c.SetNearClip(_j.value("nearClip", 0.1f));
 	_c.SetFarClip(_j.value("farClip", 1000.0f));
