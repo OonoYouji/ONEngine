@@ -16,8 +16,8 @@
 	static public readonly Vector2Int one = new Vector2Int(1, 1);
 	static public readonly Vector2Int up = new Vector2Int(0, 1);
 	static public readonly Vector2Int down = new Vector2Int(0, -1);
-	static public readonly Vector2Int left = new Vector2Int(1, -1);
-	static public readonly Vector2Int right = new Vector2Int(1, 1);
+	static public readonly Vector2Int left = new Vector2Int(-1, 0);
+	static public readonly Vector2Int right = new Vector2Int(1, 0);
 	static public readonly Vector2Int infinity = new Vector2Int(int.MaxValue, int.MaxValue);
 	
 	public float Length() {

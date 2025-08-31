@@ -208,7 +208,7 @@ public class PuzzleStage : MonoBehavior {
 			blockPosOffset_ += new Vector3(space / 2f, 0f, space / 2f);
 			blockPosOffset_ *= -1.0f;
 			blockPosOffset_.y = 2f;
-		
+
 			blockParent_.transform.position = blockPosOffset_;
 		}
 
@@ -266,7 +266,10 @@ public class PuzzleStage : MonoBehavior {
 
 		Vector2Int beforeAddress = puzzlePlayer.blockData.address;
 		/// 新しいアドレスが移動出来る場所か確認
-		Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
+		if (moveDir_ != Vector2Int.zero) {
+			Debug.Log("-----: puzzle player move direction .x" + moveDir_.x + ": .y" + moveDir_.y);
+		}
+
 		if (CheckPlayerMoving(puzzlePlayer.blockData.address, moveDir_)) {
 			/* ----- プレイヤーの移動を行う ----- */
 			puzzlePlayer.blockData.address = puzzlePlayer.blockData.address + moveDir_;
