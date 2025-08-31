@@ -90,10 +90,10 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 }
 
 void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
-	if (!isFirstPreDraw_) {
-		isFirstPreDraw_ = true;
-		return;
-	}
+	//if (!isFirstPreDraw_) {
+	//	isFirstPreDraw_ = true;
+	//	return;
+	//}
 
 	auto cmdList = _dxCommand->GetCommandList();
 
@@ -156,9 +156,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	/// -----------------------------------------------
 
 	/// model
-	const Model* model = pResourceCollection_->GetModel("./Packages/Models/Terrain/grass.obj");
-	const D3D12_VERTEX_BUFFER_VIEW& vbv = model->GetMeshes().front()->GetVBV();
-	const D3D12_INDEX_BUFFER_VIEW&  ibv = model->GetMeshes().front()->GetIBV();
+	const Model* model = pResourceCollection_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
 
 	/// textures
 	auto& textures = pResourceCollection_->GetTextures();
@@ -171,12 +169,9 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	/// pipelineの設定
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	/// vbv, ibvの設定
-	cmdList->IASetVertexBuffers(0, 1, &vbv);
-	cmdList->IASetIndexBuffer(&ibv);
-
 	/// 形状の設定
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 
 	/* ----- bufferの設定 ----- */
 
@@ -186,13 +181,20 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(GP_SRV_INSNTANCE_DATA, cmdList); // GP_SRV_INSNTANCE_DATA
 
 	/// pixel: texture id
-	uint32_t texId = pResourceCollection_->GetTextureIndex("./Packages/Textures/Terrain/grass.png");
+	uint32_t texId = pResourceCollection_->GetTextureIndex("./Packages/Textures/white.png");
 	textureIdBuffer_.SetMappedData({ texId });
 	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド
 	cmdList->SetGraphicsRootDescriptorTable(GP_SRV_TEXTURES, (*textures.begin()).GetSRVGPUHandle());
 
-	// 描画実行
-	cmdList->DrawIndexedInstanced(static_cast<UINT>(model->GetMeshes().front()->GetIndices().size()), instanceCount_, 0, 0, 0);
+	for (auto& mesh : model->GetMeshes()) {
+
+		/// vbv, ibvの設定
+		cmdList->IASetVertexBuffers(0, 1, &mesh->GetVBV());
+		cmdList->IASetIndexBuffer(&mesh->GetIBV());
+
+		// 描画実行
+		cmdList->DrawIndexedInstanced(static_cast<UINT>(mesh->GetIndices().size()), instanceCount_, 0, 0, 0);
+	}
 
 }
