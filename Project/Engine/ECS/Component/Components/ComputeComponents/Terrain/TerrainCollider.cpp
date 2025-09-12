@@ -95,30 +95,6 @@ float TerrainCollider::GetHeight(const Vector3& _position) {
 	}
 
 
-	///* ----- 座標をuvに変換→indexに変換→頂点座標をworld座標に変換→高さを取得 ----- */
-
-	///// 地形のローカル座標に変換
-	//const Matrix4x4&& kMatInverse = pTerrain_->GetOwner()->GetTransform()->matWorld.Inverse();
-	//Vector3 localPosition = Matrix4x4::Transform(_position, kMatInverse);
-
-	///// uv値に変換
-	//Vector2 uv = Vector2(localPosition.x, localPosition.z) / pTerrain_->GetSize();
-
-	///// indexに変換
-	//size_t row = static_cast<size_t>(uv.y * pTerrain_->GetSize().y);
-	//size_t col = static_cast<size_t>(uv.x * pTerrain_->GetSize().x);
-
-	//TerrainVertex& vertex = vertices_[row][col];
-
-	///// ローカル座標からワールド座標に変換
-	//Vector3 vertexPosition = Matrix4x4::Transform(
-	//	Vector3(vertex.position.x, vertex.position.y, vertex.position.z),
-	//	pTerrain_->GetOwner()->GetTransform()->matWorld
-	//);
-
-	//return vertexPosition.y; // 高さを返す
-
-
 	/* ----- 座標をuvに変換→近傍頂点を取得→バイリニア補間→高さを返す ----- */
 
 	// 地形のローカル座標に変換
