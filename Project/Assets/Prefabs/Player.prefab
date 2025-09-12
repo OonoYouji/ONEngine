@@ -1,5 +1,4 @@
 {
-    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
@@ -11,7 +10,7 @@
             "rotate": {
                 "w": 1.0,
                 "x": 0.0,
-                "y": 0.0,
+                "y": -0.0,
                 "z": 0.0
             },
             "scale": {
@@ -24,7 +23,7 @@
         {
             "animationScale": 1.0,
             "enable": 1,
-            "isPlaying": false,
+            "isPlaying": true,
             "meshPath": "./Packages/Models/Human/walk.gltf",
             "texturePath": "./Packages/Textures/white.png",
             "type": "SkinMeshRenderer"
@@ -40,13 +39,12 @@
         {
             "enable": 1,
             "scriptName": [
-                "Player",
-                "AttachObjectToJoint"
+                "Player"
             ],
             "type": "Script"
         }
     ],
-    "id": -5,
+    "id": 4,
     "name": "Player",
     "parent": null,
     "prefabName": "Player.prefab"
