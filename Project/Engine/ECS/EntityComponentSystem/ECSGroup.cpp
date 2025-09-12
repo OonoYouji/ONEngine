@@ -99,6 +99,10 @@ void ECSGroup::SetMainCamera2D(CameraComponent* _camera) {
 	entityCollection_->SetMainCamera2D(_camera);
 }
 
+EntityCollection* ECSGroup::GetEntityCollection() {
+	return entityCollection_.get();
+}
+
 const std::vector<std::unique_ptr<GameEntity>>& ECSGroup::GetEntities() const {
 	return entityCollection_->GetEntities();
 }

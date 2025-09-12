@@ -3,9 +3,9 @@
         {
             "enable": 1,
             "position": {
-                "x": -0.3755590319633484,
-                "y": 0.0,
-                "z": -7.283702850341797
+                "x": 177.95835876464844,
+                "y": 2.199601888656616,
+                "z": 385.2784729003906
             },
             "rotate": {
                 "w": 1.0,
@@ -21,14 +21,6 @@
             "type": "Transform"
         },
         {
-            "animationScale": 1.0,
-            "enable": 1,
-            "isPlaying": true,
-            "meshPath": "./Packages/Models/Human/walk.gltf",
-            "texturePath": "./Packages/Textures/white.png",
-            "type": "SkinMeshRenderer"
-        },
-        {
             "type": "Variables"
         },
         {
@@ -42,6 +34,19 @@
                 "Player"
             ],
             "type": "Script"
+        },
+        {
+            "color": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "enable": 1,
+            "meshPath": "./Packages/Models/primitive/sphere.obj",
+            "postEffectFlags": 5,
+            "texturePath": "./Packages/Textures/white.png",
+            "type": "MeshRenderer"
         }
     ],
     "id": 4,

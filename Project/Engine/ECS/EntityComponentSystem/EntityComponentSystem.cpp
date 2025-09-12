@@ -34,7 +34,7 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
 
 	gECS = this;
-	prefabCollection_ = std::make_unique<EntityPrefabCollection>();
+	//prefabCollection_ = std::make_unique<EntityPrefabCollection>();
 }
 
 EntityComponentSystem::~EntityComponentSystem() {}
@@ -141,6 +141,13 @@ void EntityComponentSystem::SetCurrentGroupName(const std::string& _name) {
 
 const std::string& EntityComponentSystem::GetCurrentGroupName() const {
 	return currentGroupName_;
+}
+
+void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
+	for(auto& group : ecsGroups_) {
+		auto entityCollection = group.second->GetEntityCollection();
+		entityCollection->ReloadPrefab(_prefabName);
+	}
 }
 
 

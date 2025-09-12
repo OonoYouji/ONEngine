@@ -56,6 +56,11 @@ public:
 	void SetCurrentGroupName(const std::string& _name);
 	const std::string& GetCurrentGroupName() const;
 
+
+	/// ----- prefab ----- ///
+
+	void ReloadPrefab(const std::string& _prefabName);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -71,8 +76,8 @@ private:
 	ECSGroup* debugGroup_ = nullptr;
 	std::string currentGroupName_;
 
-	/// ----- prefab ----- ///
-	std::unique_ptr<EntityPrefabCollection> prefabCollection_;
+	///// ----- prefab ----- ///
+	//std::unique_ptr<EntityPrefabCollection> prefabCollection_;
 
 };
 

@@ -20,20 +20,20 @@ public class Player : MonoBehavior {
 	}
 
 	public override void Initialize() {
-
-	}
-
-	public override void Update() {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
 		if (camera == null) {
 			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
 		}
 
+		camera.parent = this.entity;
+	}
+
+	public override void Update() {
+
 		Move();
-		//Jump();
+		Jump();
 
 		CameraFollow();
-		transform.scale = Vector3.one / 100f; // スケールを小さくする
 
 		float fallSpeed = 1.0f;
 		Vector3 pos = transform.position;
@@ -107,7 +107,7 @@ public class Player : MonoBehavior {
 			return; // 子エンティティがない場合は何もしない
 		}
 
-		Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
+		// Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);

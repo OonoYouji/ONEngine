@@ -109,6 +109,7 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 			if (!selectedEntity_->GetPrefabName().empty()) {
 				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(selectedEntity_);
+				pECS_->ReloadPrefab(selectedEntity_->GetPrefabName());
 			} else {
 				Console::LogError("This entity is not a prefab instance.");
 			}
