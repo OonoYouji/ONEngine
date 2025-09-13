@@ -43,6 +43,9 @@ Terrain::Terrain() {
 	brushRadius_ = 10.0f;
 	brushStrength_ = 1.0f;
 
+	/*---- - flags---- - */
+	isRenderingProcedural_ = false;
+
 }
 Terrain::~Terrain() {}
 
@@ -98,6 +101,14 @@ void Terrain::SetBrushStrength(float _strength) {
 	brushStrength_ = _strength;
 }
 
+bool Terrain::GetIsRenderingProcedural() const {
+	return isRenderingProcedural_;
+}
+
+void Terrain::SetIsRenderingProcedural(bool _isRenderingProcedural) {
+	isRenderingProcedural_ = _isRenderingProcedural;
+}
+
 
 
 void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
@@ -118,14 +129,18 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
 }
 
 void from_json(const nlohmann::json& _j, Terrain& _t) {
-	if (_j.contains("enable")) {
-		_t.enable = _j.at("enable").get<int>();
-	}
+	_t.enable = _j.value("enable", 1);
+	_t.SetBrushRadius(_j.value("brushRadius", 10.0f));
+	_t.SetBrushStrength(_j.value("brushStrength", 1.0f));
+	_t.SetIsRenderingProcedural(_j.value("isRenderingProcedural", false));
 }
 
 void to_json(nlohmann::json& _j, const Terrain& _t) {
 	_j = nlohmann::json{
 		{ "type", "Terrain" },
 		{ "enable", _t.enable },
+		{ "brushRadius", _t.GetBrushRadius() },
+		{ "brushStrength", _t.GetBrushStrength() },
+		{ "isRenderingProcedural", _t.GetIsRenderingProcedural() }
 	};
 }

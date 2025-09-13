@@ -273,6 +273,9 @@ public class ECSGroup {
 	[MethodImpl(MethodImplOptions.InternalCall)]
 	static extern void InternalSetEnable();
 
+	[MethodImpl(MethodImplOptions.InternalCall)]
+	static extern void InternalFindEntity(string _ecsGroupName, string _entityName);
+
 	
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// operators

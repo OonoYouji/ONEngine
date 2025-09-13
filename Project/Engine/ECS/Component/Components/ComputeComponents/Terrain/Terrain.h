@@ -67,6 +67,10 @@ private:
 	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
 
 
+	/* ----- flags ----- */
+
+	bool isRenderingProcedural_;
+
 public:
 	/// ===================================================
 	/// public : accessor
@@ -96,6 +100,11 @@ public:
 
 	float GetBrushStrength() const;
 	void SetBrushStrength(float _strength);
+
+
+	/* ----- flags ----- */
+	bool GetIsRenderingProcedural() const;
+	void SetIsRenderingProcedural(bool _isRenderingProcedural);
 
 };
 

@@ -147,6 +147,13 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	}
 
 
+	/// Procedural Rendering でなければ return
+	if (!pTerrain_->GetIsRenderingProcedural()) {
+		return;
+	}
+
+
+
 	/* ----- pipeline の設定 & 起動 ----- */
 
 	auto cmdList = _dxCommand->GetCommandList();

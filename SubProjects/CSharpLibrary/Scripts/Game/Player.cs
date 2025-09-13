@@ -23,6 +23,7 @@ public class Player : MonoBehavior {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
 		if (camera == null) {
 			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
+			return;
 		}
 
 		camera.parent = this.entity;
