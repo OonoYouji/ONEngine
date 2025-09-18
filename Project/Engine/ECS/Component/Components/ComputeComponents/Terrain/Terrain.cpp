@@ -126,6 +126,13 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
 	if (ImGui::SliderFloat("brush strength", &brushStrength, 0.0f, 5.0f)) {
 		_terrain->SetBrushStrength(brushStrength);
 	}
+
+	/// flags
+	bool isRenderingProcedural = _terrain->GetIsRenderingProcedural();
+	if (ImGui::Checkbox("is rendering procedural", &isRenderingProcedural)) {
+		_terrain->SetIsRenderingProcedural(isRenderingProcedural);
+	}
+
 }
 
 void from_json(const nlohmann::json& _j, Terrain& _t) {

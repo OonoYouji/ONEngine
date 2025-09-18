@@ -43,7 +43,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		return;
 	}
 
-	float2 seed = uv * 16.0f; // 周波数を上げると密度の塊が細かくなる
+	float2 seed = uv * 16.0f;
 	float noiseValue = PerlinNoise(seed); // [-1,1]
 	noiseValue = noiseValue * 0.5f + 0.5f; // [0,1]
 
@@ -67,33 +67,33 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float3 offset = float3(randX - 0.5, 0.0f, randZ - 0.5) * 0.5;
 
 	float3 worldPosition = float3(
-        uv.x * 1000.0f,
-        DenormalizeHeight(normalizeHeight),
-        uv.y * 1000.0f
-    );
+		uv.x * 1000.0f,
+		DenormalizeHeight(normalizeHeight),
+		uv.y * 1000.0f
+	);
 	worldPosition += offset;
 
 
 	float4x4 matRotateY = float4x4(
-        cosA, 0, sinA, 0,
-        0, 1, 0, 0,
-        -sinA, 0, cosA, 0,
-        0, 0, 0, 1
-    );
+		cosA, 0, sinA, 0,
+		0, 1, 0, 0,
+		-sinA, 0, cosA, 0,
+		0, 0, 0, 1
+	);
 
 	float4x4 matScale = float4x4(
-        scale, 0, 0, 0,
-        0, scale, 0, 0,
-        0, 0, scale, 0,
-        0, 0, 0, 1
-    );
+		scale, 0, 0, 0,
+		0, scale, 0, 0,
+		0, 0, scale, 0,
+		0, 0, 0, 1
+	);
 
 	float4x4 matTranslate = float4x4(
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        worldPosition.x, worldPosition.y, worldPosition.z, 1
-    );
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		worldPosition.x, worldPosition.y, worldPosition.z, 1
+	);
 
 	InstanceData output;
 	output.matWorld = mul(mul(matScale, matRotateY), matTranslate);
