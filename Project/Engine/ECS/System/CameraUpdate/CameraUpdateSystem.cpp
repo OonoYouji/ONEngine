@@ -56,13 +56,8 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	}
 
 	/// ecsにmain cameraを設定
-	if (pMainCamera_) {
-		_ecs->SetMainCamera(pMainCamera_);
-	}
-
-	if (pMainCamera2D_) {
-		_ecs->SetMainCamera2D(pMainCamera2D_);
-	}
+	_ecs->SetMainCamera(pMainCamera_);
+	_ecs->SetMainCamera2D(pMainCamera2D_);
 
 }
 

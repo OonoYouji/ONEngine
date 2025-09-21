@@ -215,6 +215,10 @@ public class PuzzleStage : MonoBehavior {
 		/* パズルを行っているときの更新 */
 		UpdatePlayer();
 		UpdateEntityPosition();
+
+		if (Input.TriggerGamepad(Gamepad.Y)) {
+			Reset();
+		}
 	}
 
 
@@ -385,18 +389,24 @@ public class PuzzleStage : MonoBehavior {
 
 
 	private void Reset() {
-		activePlayer_.Destroy();
+		activePlayer_ = null;
+		for (int i = 0; i < players_.Count; ++i) {
+			players_[i].Destroy();
+		}
+
 		for (int i = 0; i < blocks_.Count; i++) {
 			blocks_[i].Destroy();
 		}
-
+		
+		mapData_.Clear();
+		Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
+		mapData_ = mapchipScript.GetStartMapData();
+		
 		BlockDeploy();
 		PlayerDeploy();
 	}
 
 	private void UpdateEntityPosition() {
-		Debug.Log("----- UpdateEntityPosition. -----");
-
 		/// ====================================================
 		/// このパズルのエンティティの座標を更新する
 		/// ====================================================
@@ -423,8 +433,6 @@ public class PuzzleStage : MonoBehavior {
 				blockScript.UpdatePosition(activePlayer.blockData.type);
 			}
 		}
-
-		Debug.Log("----- UpdateEntityPosition. ended -----");
 	}
 
 

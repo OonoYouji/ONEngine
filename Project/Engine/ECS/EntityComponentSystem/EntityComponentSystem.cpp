@@ -34,7 +34,7 @@ EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
 	: pDxManager_(_pDxManager) {
 
 	gECS = this;
-	prefabCollection_ = std::make_unique<EntityPrefabCollection>();
+	//prefabCollection_ = std::make_unique<EntityPrefabCollection>();
 }
 
 EntityComponentSystem::~EntityComponentSystem() {}
@@ -141,6 +141,13 @@ void EntityComponentSystem::SetCurrentGroupName(const std::string& _name) {
 
 const std::string& EntityComponentSystem::GetCurrentGroupName() const {
 	return currentGroupName_;
+}
+
+void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
+	for(auto& group : ecsGroups_) {
+		auto entityCollection = group.second->GetEntityCollection();
+		entityCollection->ReloadPrefab(_prefabName);
+	}
 }
 
 
@@ -345,4 +352,20 @@ void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* 
 	if (_entityId) {
 		*_entityId = entity->GetId();
 	}
+}
+
+void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId) {
+	char* cstr = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* group = gECS->GetECSGroup(cstr);
+
+	if (!group) {
+		Console::LogError("ECSGroup not found: " + std::string(cstr));
+		return;
+	}
+
+	GameEntity* entity = group->GetEntity(_entityId);
+	group->RemoveEntity(entity);
+
+
+	mono_free(cstr);
 }

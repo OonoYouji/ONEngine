@@ -84,6 +84,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
+
 	/// 地形を取得
 	pTerrain_ = nullptr;
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
@@ -104,7 +105,13 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	}
 
 	/// terrainが生成されていないならreturn
-	if (!pTerrain_->GetIsCreated() || !pTerrain_->enable) {
+	if (!pTerrain_->GetIsCreated()) {
+		Console::LogInfo("TerrainRenderingPipeline::Draw: Terrain is not created");
+		return;
+	}
+
+	if (!pTerrain_->enable) {
+		Console::LogInfo("TerrainRenderingPipeline::Draw: Terrain is disabled");
 		return;
 	}
 
@@ -175,16 +182,13 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	ibv.Format = DXGI_FORMAT_R32_UINT;
 	cmdList->IASetIndexBuffer(&ibv);
 
-	/// vbv ibv setting
-	//indexBuffer_.BindForCommandList(cmdList);
-
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	Console::LogInfo("TerrainRenderingPipeline::Draw");
 	cmdList->DrawIndexedInstanced(
 		static_cast<UINT>(pTerrain_->GetMaxIndexNum()),
 		1, 0, 0, 0
 	);
-
 
 
 	/// 元の状態に戻す

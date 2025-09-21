@@ -112,6 +112,7 @@ public:
 
 	/// ----- getter ----- ///
 
+	EntityCollection* GetEntityCollection();
 	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
 
 	GameEntity* GetEntity(size_t _id) const;

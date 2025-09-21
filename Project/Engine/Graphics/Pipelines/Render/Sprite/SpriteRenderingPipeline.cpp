@@ -150,6 +150,10 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 	/// bufferにデータをセット
 	size_t transformIndex = 0;
 	for (auto& renderer : spriteRendererArray->GetUsedComponents()) {
+		if (!renderer->enable) {
+			continue;
+		}
+
 		materialsBuffer->SetMappedData(
 			transformIndex, renderer->GetMaterial()
 		);
@@ -169,7 +173,7 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 	/// 描画
 	cmdList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),
-		static_cast<UINT>(spriteRendererArray->GetUsedComponents().size()),
+		static_cast<UINT>(transformIndex),
 		0, 0, 0
 	);
 

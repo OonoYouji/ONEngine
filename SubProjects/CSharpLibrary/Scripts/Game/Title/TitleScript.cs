@@ -11,9 +11,12 @@ public class TitleScript : MonoBehavior {
 	}
 
 	public override void Update() {
-		if (Input.TriggerKey(KeyCode.Space)) {
+		Debug.Log("TitleScript.Update - call update");
+		
+		if (Input.TriggerKey(KeyCode.Space) || Input.TriggerGamepad(Gamepad.A)) {
 			SceneLoader sceneLoader = entity.GetScript<SceneLoader>();
 			if (sceneLoader) {
+				Debug.Log("TitleScript.Update - SceneLoading");
 				sceneLoader.Load("GameScene");
 			}
 		}

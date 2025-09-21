@@ -68,12 +68,14 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 
 	/// terrain がないなら終わり
 	if (!pTerrain) {
+		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component is null");
 		return;
 	}
 
 	/// 未生成の時だけ処理する
 	if (!pTerrain->GetIsCreated()) {
 		pTerrain->SetIsCreated(true);
+		Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
 
 		pTerrain->GetRwVertices().CreateUAV(
 			pTerrain->GetMaxVertexNum(),

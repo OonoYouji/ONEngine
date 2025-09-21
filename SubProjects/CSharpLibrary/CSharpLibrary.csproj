@@ -77,9 +77,6 @@
     <Compile Include="Scripts\Engine\ECS\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
-    <Compile Include="Scripts\Game\Camera.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
     <Compile Include="Scripts\Engine\MonoBehavior.cs" />

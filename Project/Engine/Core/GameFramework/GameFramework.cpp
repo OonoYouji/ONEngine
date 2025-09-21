@@ -68,11 +68,12 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
-	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 #endif // DEBUG_MODE
 
+	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
+	//DebugConfig::isDebugging = true;
 }
 
 void GameFramework::Run() {
@@ -98,8 +99,10 @@ void GameFramework::Run() {
 			entityComponentSystem_->Update();
 		}
 #else
-		sceneManager_->Update();
+		editorManager_->Update(renderingFramework_->GetResourceCollection());
+		entityComponentSystem_->DebuggingUpdate();
 		entityComponentSystem_->OutsideOfUpdate();
+		sceneManager_->Update();
 		entityComponentSystem_->Update();
 #endif // DEBUG_MODE
 

@@ -16,43 +16,25 @@ public class Player : MonoBehavior {
 	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
 	Entity camera;
 
-	[SerializeField] private int life;
-	[SerializeField] private float hp;
-
 	public override void Awake() {
-		Debug.LogInfo("===============================================");
-		Debug.LogInfo("life: " + life);
-		Debug.LogInfo("===============================================");
 	}
 
 	public override void Initialize() {
-
-		if(entity == null) {
-			Debug.LogError("Player Initialize called but entity is null.");
-		}
-
-		Entity block = ecsGroup.CreateEntity("ArmItem");
-		if (block != null) {
-			AttachObjectToJoint attachScript = entity.GetScript<AttachObjectToJoint>();
-			if (attachScript != null) {
-				attachScript.attachedEntity = block;
-				attachScript.jointName = "mixamorig:LeftHand"; // アタッチするジョイント名を指定
-			}
-		}
-
-	}
-
-	public override void Update() {
 		camera = ecsGroup.FindEntity("Camera"); // カメラエンティティを取得
 		if (camera == null) {
 			Debug.LogError("Camera entity not found. Please ensure the camera is initialized before the player.");
+			return;
 		}
 
-		Move();
-		//Jump();
+		camera.parent = this.entity;
+	}
 
-		// CameraFollow();
-		transform.scale = Vector3.one / 100f; // スケールを小さくする
+	public override void Update() {
+
+		Move();
+		Jump();
+
+		CameraFollow();
 
 		float fallSpeed = 1.0f;
 		Vector3 pos = transform.position;
@@ -126,7 +108,7 @@ public class Player : MonoBehavior {
 			return; // 子エンティティがない場合は何もしない
 		}
 
-		Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
+		// Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);

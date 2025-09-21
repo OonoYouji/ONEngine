@@ -65,6 +65,7 @@ void TerrainCollision::RuntimeUpdate(ECSGroup* _ecs) {
 
 				if (GameEntity* sphere = sphereCollider->GetOwner()) {
 					Vector3 spherePos = sphere->GetPosition();
+					spherePos.y -= sphereCollider->GetRadius(); // 球の底面の位置を取得
 					if (terrainCollider->IsInsideTerrain(spherePos)) {
 						float height = terrainCollider->GetHeight(spherePos);
 						/// 地形の下にいるなら押し上げる
