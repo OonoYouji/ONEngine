@@ -177,6 +177,8 @@
     <ClCompile Include="Engine\ECS\System\Audio\AudioPlaybackSystem.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Container\ResourceContainer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\AudioClip.cpp" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\TextGlyph.cpp" />
+    <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -350,6 +352,8 @@
     <ClInclude Include="Engine\ECS\System\Audio\AudioPlaybackSystem.h" />
     <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\AudioClip.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
+    <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

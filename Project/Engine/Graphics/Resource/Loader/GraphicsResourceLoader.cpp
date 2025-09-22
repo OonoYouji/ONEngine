@@ -3,13 +3,20 @@
 /// directX
 #include <d3dx12.h>
 
+/// std
+#include <fstream>
+
 /// sound api
 #include <mfapi.h>
 #include <mfobjects.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 
-/// externals
+/// externals/stb_truetype
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_truetype/stb_truetype.h>
+
+/// externals/asssimp
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -38,16 +45,13 @@ GraphicsResourceLoader::~GraphicsResourceLoader() {
 
 
 void GraphicsResourceLoader::Initialize() {
-
 	/// model 
 	/// assimpの読み込みフラグ
 	assimpLoadFlags_ = aiProcess_FlipWindingOrder | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 
-
 	/// sound
 	HRESULT result = MFStartup(MF_VERSION, MFSTARTUP_NOSOCKET);
 	Assert(SUCCEEDED(result), "MFStartup failed");
-
 }
 
 void GraphicsResourceLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
@@ -383,6 +387,34 @@ void GraphicsResourceLoader::LoadAudioClip(const std::string& _filepath) {
 	pResourceCollection_->AddAudioClip(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
+}
+
+void GraphicsResourceLoader::LoadFont(const std::string& _filepath) {
+
+	/// ファイルを開く
+	std::ifstream ifs(_filepath, std::ios::binary | std::ios::ate);
+	if(!ifs) {
+		Assert(false, ("failed to open file: " + _filepath).c_str());
+		return;
+	}
+
+	std::streamsize size = ifs.tellg();
+	ifs.seekg(0, std::ios::beg);
+
+	/// .ttfのバッファ
+	std::vector<unsigned char> buffer(size);
+	if(!ifs.read((char*)buffer.data(), size)) {
+		Assert(false, ("failed to read file: " + _filepath).c_str());
+		return;
+	}
+
+	/// フォント情報を初期化
+	stbtt_fontinfo fontInfo;
+	if(!stbtt_InitFont(&fontInfo, buffer.data(), 0)) {
+		Assert(false, ("failed to initialize font: " + _filepath).c_str());
+		return;
+	}
+
 }
 
 DirectX::ScratchImage GraphicsResourceLoader::LoadScratchImage(const std::string& _filePath) {
