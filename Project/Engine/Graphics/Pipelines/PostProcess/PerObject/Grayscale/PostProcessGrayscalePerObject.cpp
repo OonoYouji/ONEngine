@@ -49,7 +49,6 @@ void PostProcessGrayscalePerObject::Execute(const std::string& _textureName, DxC
 		1
 	);
 
-
 	/// 大本のsceneテクスチャに結果をコピー
 	CopyResource(
 		textures[textureIndices_[2]].GetDxResource().Get(),
