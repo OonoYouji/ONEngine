@@ -13,7 +13,7 @@
 #include <mfreadwrite.h>
 
 /// externals/stb_truetype
-#define STB_IMAGE_IMPLEMENTATION
+#define STB_TRUETYPE_IMPLEMENTATION
 #include <stb_truetype/stb_truetype.h>
 
 /// externals/asssimp
