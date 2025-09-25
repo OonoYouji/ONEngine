@@ -24,7 +24,6 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
-
 		pipeline_->SetShader(&shader);
 
 		/// input element
@@ -42,16 +41,17 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// ROOT_PARAM_TRANSFORM
 
 		/// ps
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// ROOT_PARAM_MATERIAL
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// grass
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// dirt
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// rock
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// snow
+		pipeline_->AddDescriptorRange(4, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// ROOT_PARAM_MATERIAL
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); /// textures
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 4); /// ROOT_PARAM_MATERIAL
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -76,7 +76,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 	{	/// buffer
 		transformBuffer_.Create(_dxManager->GetDxDevice());
-		materialBuffer_.Create(_dxManager->GetDxDevice());
+		materialBuffer_.Create(1, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 	}
 
 	pTerrain_ = nullptr;
@@ -119,13 +119,18 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
 
+	GameEntity* entity = pTerrain_->GetOwner();
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);
-	materialBuffer_.SetMappedData(
+	materialBuffer_.SetMappedData( 
+		0, 
 		Material{
-			.baseColor = Vector4::kWhite, 
-			.postEffectFlags =  1,
-			.entityId = pTerrain_->GetOwner()->GetId()
+			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
+			.baseColor = Vector4(1, 2, 3, 4),
+			.postEffectFlags = 1,
+			.entityId = entity->GetId(),
+			.baseTextureId = 0,
+			.normalTextureId = 0,
 		}
 	);
 
@@ -136,11 +141,10 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 	transformBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
-	materialBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
+	materialBuffer_.SRVBindForGraphicsCommandList(ROOT_PARAM_MATERIAL, cmdList);
 
 	/// texs
 	const auto& textures = pResourceCollection_->GetTextures();
-
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
 		size_t index = pResourceCollection_->GetTextureIndex(path);
@@ -152,7 +156,6 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 
 
 	/// vbvとibvのリソースバリアーを変える
-
 	DxResource& vertexBuffer = pTerrain_->GetRwVertices().GetResource();
 	vertexBuffer.CreateBarrier(
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
