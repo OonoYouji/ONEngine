@@ -4,6 +4,8 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 PostProcessTerrainBrush::PostProcessTerrainBrush() = default;
 PostProcessTerrainBrush::~PostProcessTerrainBrush() = default;
@@ -47,19 +49,35 @@ void PostProcessTerrainBrush::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 void PostProcessTerrainBrush::Execute(
 	const std::string& _textureName, DxCommand* _dxCommand,
-	GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _pEntityComponentSystem) {
+	GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	/// brush data
 	const Vector2 mousePos = Input::GetImGuiImageMousePosition("Scene");
-	brushBuffer_.SetMappedData(
-		Brush{ mousePos, 100.0f }
-	);
-
 	/// 範囲外なら処理しない
-	//if (mousePos.x < 0 || mousePos.x > EngineConfig::kWindowSize.x ||
-	//	mousePos.y < 0 || mousePos.y > EngineConfig::kWindowSize.y) {
-	//	return;
-	//}
+	if (mousePos.x < 0.0f || mousePos.x > 1280.0f ||
+		mousePos.y < 0.0f || mousePos.y > 720.0f) {
+		return;
+	}
+
+	Console::Log("PostProcessTerrainBrush::Execute");
+	Console::Log("Mouse Pos: " + std::to_string(mousePos.x) + ", " + std::to_string(mousePos.y));
+
+	/// Terrainの取得
+	Terrain* terrain = nullptr;
+	ComponentArray<Terrain>* terrainArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<Terrain>();
+	if (terrainArray) {
+		for (auto& t : terrainArray->GetUsedComponents()) {
+			if (!t) {
+				continue;
+			}
+			terrain = t;
+			break;
+		}
+	}
+
+	brushBuffer_.SetMappedData(
+		Brush{ mousePos, terrain->GetBrushRadius() }
+	);
 
 	/// texture index
 	auto& textures = _resourceCollection->GetTextures();

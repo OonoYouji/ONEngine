@@ -82,6 +82,10 @@ Vector2 Input::GetGamepadRightThumb() {
 	return Vector2::kZero;
 }
 
+float Input::GetMouseWheel() {
+	return gInputSystem_->mouse_->wheel_;
+}
+
 const Vector2& Input::GetMousePosition() {
 	return gInputSystem_->mouse_->position_;
 }
