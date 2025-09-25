@@ -167,9 +167,9 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 				}
 
 				/// 上でセットしたデータをバインド
-				materialBuffer->SRVBindForGraphicsCommandList(1, commandList);
-				textureIdBuffer_->SRVBindForGraphicsCommandList(2, commandList);
-				transformBuffer_->SRVBindForGraphicsCommandList(4, commandList);
+				materialBuffer->SRVBindForGraphicsCommandList(commandList, 1);
+				textureIdBuffer_->SRVBindForGraphicsCommandList(commandList, 2);
+				transformBuffer_->SRVBindForGraphicsCommandList(commandList, 4);
 
 				/// 現在のinstance idをセット
 				commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);

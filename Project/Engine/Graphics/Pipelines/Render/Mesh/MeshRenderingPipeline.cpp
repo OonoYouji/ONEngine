@@ -171,9 +171,9 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		}
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->SRVBindForGraphicsCommandList(1, _commandList);
-		textureIdBuffer_->SRVBindForGraphicsCommandList(2, _commandList);
-		transformBuffer_->SRVBindForGraphicsCommandList(4, _commandList);
+		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
+		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
+		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
 
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
@@ -229,9 +229,9 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		++transformIndex_;
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->SRVBindForGraphicsCommandList(1, _commandList);
-		textureIdBuffer_->SRVBindForGraphicsCommandList(2, _commandList);
-		transformBuffer_->SRVBindForGraphicsCommandList(4, _commandList);
+		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
+		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
+		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
 
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);

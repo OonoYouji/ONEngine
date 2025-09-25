@@ -141,7 +141,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 	transformBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
-	materialBuffer_.SRVBindForGraphicsCommandList(ROOT_PARAM_MATERIAL, cmdList);
+	materialBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 
 	/// texs
 	const auto& textures = pResourceCollection_->GetTextures();
