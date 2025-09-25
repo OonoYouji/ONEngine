@@ -16,14 +16,14 @@
 class TerrainProceduralRenderingPipeline : public IRenderingPipeline {
 
 	/// @brief compute shader用root param index
-	enum CP_ROOT_PARAM {
+	enum CP_ROOT_PARAM : UINT {
 		CP_INSNTANCE_DATA,
 		CP_SRV_VERTEX_TEXTURE,
 		CP_SRV_SPLAT_BLEND_TEXTURE
 	};
 
 	/// @brief 
-	enum GP_ROOT_PARAM {
+	enum GP_ROOT_PARAM : UINT {
 		GP_CBV_VIEW_PROJECTION,
 		GP_CBV_TEXTURE_ID,
 		GP_SRV_INSNTANCE_DATA,

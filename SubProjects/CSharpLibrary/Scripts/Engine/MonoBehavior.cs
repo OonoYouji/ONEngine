@@ -1,96 +1,99 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 public class MonoBehavior {
-	///////////////////////////////////////////////////////////////////////////////////////////
-	/// objects
-	///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    /// objects
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-	/// Behaviorの生成
-	public void CreateBehavior(int _entityId, string _name, ECSGroup _ecsGroup) {
-		if(!_ecsGroup) {
-			Debug.LogError("MonoBehavior.CreateBehavior - ECSGroup is null. Cannot create MonoBehavior for Entity ID: " + _entityId);
-			return;
-		}
+    /// Behaviorの生成
+    public void CreateBehavior(int _entityId, string _name, ECSGroup _ecsGroup) {
+        if (!_ecsGroup) {
+            Debug.LogError("MonoBehavior.CreateBehavior - ECSGroup is null. Cannot create MonoBehavior for Entity ID: " + _entityId);
+            return;
+        }
 
-		name_    = _name;
-		ecsGroup = _ecsGroup;
-		entity   = ecsGroup.GetEntity(_entityId);
+        name_ = _name;
+        ecsGroup = _ecsGroup;
+        entity = ecsGroup.GetEntity(_entityId);
 
-		Debug.Log("MonoBehavior created for Entity ID: " + _entityId + ", Script Name: " + _name + ", Group Name: " + _ecsGroup.groupName);
-	}
+        Debug.Log("MonoBehavior created for Entity ID: " + _entityId + ", Script Name: " + _name + ", Group Name: " + _ecsGroup.groupName);
+    }
 
 
-	/// この behavior が所属するECSGroup
-	public ECSGroup ecsGroup {
-		get; internal set;
-	}
+    /// この behavior が所属するECSGroup
+    public ECSGroup ecsGroup {
+        get; internal set;
+    }
 
-	private string name_;
-	public bool enable {
-		get {
-			return InternalGetEnable(entity.Id, name_, ecsGroup.groupName);
-		}
-		set {
-			InternalSetEnable(entity.Id, name_, value, ecsGroup.groupName);
-		}
-	}
+    private string name_;
+    public bool enable;
 
-	public Entity entity {
-		get; internal set;
-	}
+    public Entity entity {
+        get; internal set;
+    }
 
-	public Transform transform {
-		get {
-			if (entity == null) {
-				Debug.LogError("MonoBehavior.transform - Entity is not initialized. Please call InternalInitialize first.");
-				return null;
-			}
+    public Transform transform {
+        get {
+            if (entity == null) {
+                Debug.LogError("MonoBehavior.transform - Entity is not initialized. Please call InternalInitialize first.");
+                return null;
+            }
 
-			if (entity.transform == null) {
-				Debug.LogError("MonoBehavior.transform - Transform component is not initialized for Entity ID: " + entity.Id);
-				return null;
-			}
+            if (entity.transform == null) {
+                Debug.LogError("MonoBehavior.transform - Transform component is not initialized for Entity ID: " + entity.Id);
+                return null;
+            }
 
-			return entity.transform;
-		}
-	}
-
-	
-
-	///////////////////////////////////////////////////////////////////////////////////////////
-	/// methods
-	///////////////////////////////////////////////////////////////////////////////////////////
-
-	public virtual void Awake() {}
-	public virtual void Initialize() { }
-	public virtual void Update() {}
-
-	public virtual void OnCollisionEnter(Entity collision) { }
-	public virtual void OnCollisionExit(Entity collision) { }
-	public virtual void OnCollisionStay(Entity collision) { }
+            return entity.transform;
+        }
+    }
 
 
 
-	///////////////////////////////////////////////////////////////////////////////////////////
-	/// internal methods
-	///////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    /// methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern bool InternalGetEnable(int _entityId, string _scriptName, string _ecsGroupName);
+    public void Begin() {
+        enable = InternalGetEnable(entity.Id, name_, ecsGroup.groupName);
+    }
 
-	[MethodImpl(MethodImplOptions.InternalCall)]
-	static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable, string _ecsGroupName);
-
-	///////////////////////////////////////////////////////////////////////////////////////////
-	/// operators
-	///////////////////////////////////////////////////////////////////////////////////////////
+    public void End() {
+        InternalSetEnable(entity.Id, name_, enable, ecsGroup.groupName);
+    }
 
 
-	public static implicit operator bool(MonoBehavior _monoBehavior) {
-		return _monoBehavior != null;
-	}
+    public virtual void Awake() { }
+    public virtual void Initialize() { }
+    public virtual void Update() { }
+
+    public virtual void OnCollisionEnter(Entity collision) { }
+    public virtual void OnCollisionExit(Entity collision) { }
+    public virtual void OnCollisionStay(Entity collision) { }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    /// internal methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    [MethodImpl(MethodImplOptions.InternalCall)]
+    static extern bool InternalGetEnable(int _entityId, string _scriptName, string _ecsGroupName);
+
+    [MethodImpl(MethodImplOptions.InternalCall)]
+    static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable, string _ecsGroupName);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    /// operators
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public static implicit operator bool(MonoBehavior _monoBehavior) {
+        return _monoBehavior != null;
+    }
 
 }

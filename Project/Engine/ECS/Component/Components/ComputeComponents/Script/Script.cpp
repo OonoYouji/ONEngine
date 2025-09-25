@@ -293,32 +293,34 @@ void MONO_INTERNAL_METHOD::InternalSetEnable(int32_t _entityId, MonoString* _scr
 }
 
 bool MONO_INTERNAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+	return true;
+	//char* gcstr = mono_string_to_utf8(_groupName);
+	//std::string groupName(gcstr);
+	//mono_free(gcstr);
 
-	std::string groupName = mono_string_to_utf8(_groupName);
+	///// Entityを取得
+	//GameEntity* entity = GetEntityById(_entityId, groupName);
+	//if (!entity) {
+	//	Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+	//	return false;
+	//}
 
-	/// Entityを取得
-	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
-		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
-		return false;
-	}
+	///// EntityからScriptコンポーネントを取得
+	//Script* script = entity->GetComponent<Script>();
+	//if (!script) {
+	//	Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
+	//	return false;
+	//}
 
-	/// EntityからScriptコンポーネントを取得
-	Script* script = entity->GetComponent<Script>();
-	if (!script) {
-		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
-		return false;
-	}
+	///// スクリプト名をUTF-8に変換
+	//char* cstr = mono_string_to_utf8(_scriptName);
+	//std::string scriptName(cstr);
+	///// スクリプトの有効/無効を取得
+	//bool isEnabled = script->GetEnable(scriptName);
+	//Console::Log(std::format("Script {} is {} for Entity ID: {}", scriptName, isEnabled ? "enabled" : "disabled", _entityId));
 
-	/// スクリプト名をUTF-8に変換
-	char* cstr = mono_string_to_utf8(_scriptName);
-	std::string scriptName(cstr);
-	/// スクリプトの有効/無効を取得
-	bool isEnabled = script->GetEnable(scriptName);
-	Console::Log(std::format("Script {} is {} for Entity ID: {}", scriptName, isEnabled ? "enabled" : "disabled", _entityId));
+	//mono_free(cstr);
 
-	mono_free(cstr);
-
-	return isEnabled;
+	//return isEnabled;
 }
 

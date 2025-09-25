@@ -52,6 +52,7 @@ private:
 
 	Vector2 position_;
 	Vector2 velocity_;
+	float wheel_;
 
 	Vector2 imageMousePosition;
 };

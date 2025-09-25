@@ -26,6 +26,7 @@
 #include "../PostProcess/PerObject/Blur/PostProcessGaussianBlurPerObject.h"
 #include "../PostProcess/Screen/Grayscale/PostProcessGrayscale.h"
 #include "../PostProcess/Screen/RadialBlur/PostProcessRadialBlur.h"
+#include "../PostProcess/PerObject/TerrainBrush/PostProcessTerrainBrush.h"
 
 RenderingPipelineCollection::RenderingPipelineCollection(ShaderCompiler* _shaderCompiler, DxManager* _dxManager, EntityComponentSystem* _pEntityComponentSystem, GraphicsResourceCollection* _graphicsResourceCollection)
 	: shaderCompiler_(_shaderCompiler), dxManager_(_dxManager), pEntityComponentSystem_(_pEntityComponentSystem), graphicsResourceCollection_(_graphicsResourceCollection) {}
@@ -54,6 +55,7 @@ void RenderingPipelineCollection::Initialize() {
 	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
 	GeneratePostProcessPipeline<PostProcessGrayscalePerObject>();
+	GeneratePostProcessPipeline<PostProcessTerrainBrush>();
 	//GeneratePostProcessPipeline<PostProcessGaussianBlurPerObject>();
 
 	/// post process - screen

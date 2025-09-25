@@ -90,15 +90,10 @@ void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompi
 }
 
 void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, DxCommand* _dxCommand) {
-	//if (!isFirstPreDraw_) {
-	//	isFirstPreDraw_ = true;
-	//	return;
-	//}
-
 	auto cmdList = _dxCommand->GetCommandList();
 
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
-	instanceDataAppendBuffer_.AppendBindForComputeCommandList(CP_INSNTANCE_DATA, cmdList); // UAV_INSTANCE_DATA
+	instanceDataAppendBuffer_.AppendBindForComputeCommandList(cmdList, CP_INSNTANCE_DATA); // UAV_INSTANCE_DATA
 
 	const Texture* vertexTexture = pResourceCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 	const Texture* splatBlendTexture = pResourceCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
@@ -185,7 +180,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	/// vertex: camera
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, GP_CBV_VIEW_PROJECTION);
 	/// vertex: instance data
-	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(GP_SRV_INSNTANCE_DATA, cmdList); // GP_SRV_INSNTANCE_DATA
+	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(cmdList, GP_SRV_INSNTANCE_DATA); // GP_SRV_INSNTANCE_DATA
 
 	/// pixel: texture id
 	uint32_t texId = pResourceCollection_->GetTextureIndex("./Packages/Textures/white.png");

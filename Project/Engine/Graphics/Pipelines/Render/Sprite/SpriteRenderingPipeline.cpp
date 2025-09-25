@@ -166,8 +166,8 @@ void SpriteRenderingPipeline::Draw(class ECSGroup* _ecsGroup, const std::vector<
 		++transformIndex;
 	}
 
-	materialsBuffer->SRVBindForGraphicsCommandList(ROOT_PARAM_MATERIAL, cmdList);
-	transformsBuffer_->SRVBindForGraphicsCommandList(ROOT_PARAM_TRANSFORM, cmdList);
+	materialsBuffer->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
+	transformsBuffer_->SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
 
 
 	/// 描画

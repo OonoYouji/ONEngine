@@ -26,6 +26,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\AudioClip.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -69,6 +71,7 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.h" />
+    <ClCompile Include="Engine\Graphics\Resource\ResourceData\TextGlyph.cpp" />
     <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -554,6 +557,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\AudioClip.h" />
     <ClInclude Include="Engine\ECS\System\Audio\AudioPlaybackSystem.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\ECSGroup.h" />
@@ -725,6 +730,7 @@
     <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h" />
     <ClInclude Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.h" />
     <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
+    <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

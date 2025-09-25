@@ -59,16 +59,16 @@ void MonoScriptEngine::Initialize() {
 	SetEnvironmentVariableA("PATH", "Packages/mono/bin;C:/Windows/System32");
 	SetEnvironmentVariableA("MONO_PATH", "Packages/mono/lib/4.5");
 
-	//_putenv("MONO_ENV_OPTIONS=--debug");
-	// デバッグオプションを設定
-	//const char* options[] = {
-	//	"--debug", // デバッグ用
-	//	"--soft-breakpoints", // ブレークポイントを効かせる
-	//	"--debugger-agent=transport=dt_socket,address=127.0.0.1:55555,server=y,suspend=n"
-	//};
-	//mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
+	// ===== 高速化用オプション =====
+	const char* options[] = {
+		"--optimize=all",   // JIT最適化フル
+		//"--gc=sgen",        // Generational GC
+		//"--llvm"            // LLVMバックエンド (ビルド時有効なら)
+	};
+	mono_jit_parse_options(sizeof(options) / sizeof(char*), (char**)options);
 
-	mono_trace_set_level_string("debug");
+	// ===== ログ出力（任意、デバッグ時だけでもOK） =====
+	mono_trace_set_level_string("info");
 	mono_trace_set_log_handler(LogCallback, nullptr);
 
 	/// versionの出力
@@ -78,17 +78,19 @@ void MonoScriptEngine::Initialize() {
 	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 	mono_config_parse(nullptr);
 
+	// ===== デバッグ無効化（本番用） =====
+	// ※デバッグ時だけ有効にしたいならフラグで切り替える
+	//mono_debug_init(MONO_DEBUG_FORMAT_MONO);
 
-	mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-	/// JIT初期化
+	/// JIT初期化 (v4.x CLRターゲット)
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
 		Console::LogError("Failed to initialize Mono JIT");
 		return;
 	}
 
-	mono_debug_domain_create(domain_);
-
+	// ===== デバッグ用ドメイン作成（本番では不要） =====
+	//mono_debug_domain_create(domain_);
 
 	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");

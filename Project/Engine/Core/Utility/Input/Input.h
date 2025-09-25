@@ -33,6 +33,7 @@ public:
 	static bool TriggerMouse(int _button);
 	static bool ReleaseMouse(int _button);
 
+	static float GetMouseWheel();
 	static const Vector2& GetMousePosition();
 	static const Vector2& GetMouseVelocity();
 	static Vector2 GetImGuiImageMousePosition(const std::string& _imageName);
