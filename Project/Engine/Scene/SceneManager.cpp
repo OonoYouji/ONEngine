@@ -2,9 +2,14 @@
 
 /// std
 #include <numbers>
+#include <fstream>
+
+/// external
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "Scene/Factory/SceneFactory.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
@@ -16,8 +21,21 @@ namespace {
 }
 
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
-	: pECS_(entityComponentSystem_) {}
-SceneManager::~SceneManager() {}
+	: pECS_(entityComponentSystem_) {
+}
+SceneManager::~SceneManager() {
+	/// 最後に開いていたシーンを保存
+	if (!currentScene_.empty()) {
+		nlohmann::json json;
+		json["Scene"] = currentScene_;
+		const std::string& filepath = "./Packages/Config/LastOpenScene.json";
+		std::ofstream ofs(filepath);
+		if (ofs.is_open()) {
+			ofs << json.dump(4);
+			ofs.close();
+		}
+	}
+}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
@@ -30,7 +48,12 @@ void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceColle
 
 	sceneIO_ = std::make_unique<SceneIO>(pECS_);
 
+#ifdef DEBUG_MODE
+	SetNextScene(LastOpenSceneName());
+#else
 	SetNextScene(sceneFactory_->GetStartupSceneName());
+#endif
+
 	MoveNextToCurrentScene(false);
 
 	pECS_->MainCameraSetting();
@@ -100,6 +123,25 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 
 SceneIO* SceneManager::GetSceneIO() {
 	return sceneIO_.get();
+}
+
+std::string SceneManager::LastOpenSceneName() {
+	const std::string& filepath = "./Packages/Config/LastOpenScene.json";
+
+	std::ifstream ifs(filepath);
+	if (!ifs.is_open()) {
+		return "";
+	}
+
+	nlohmann::json json;
+	ifs >> json;
+
+	ifs.close();
+	if (json.contains("Scene") && json["Scene"].is_string()) {
+		return json["Scene"];
+	}
+
+	return "";
 }
 
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {

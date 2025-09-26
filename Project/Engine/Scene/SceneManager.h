@@ -45,6 +45,8 @@ public:
 
 	SceneIO* GetSceneIO();
 
+	std::string LastOpenSceneName();
+
 private:
 	/// ===================================================
 	/// private : methods
