@@ -50,7 +50,7 @@ void TerrainVertexCreator::Initialize(ShaderCompiler* _shaderCompiler, DxManager
 }
 
 void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
-	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;
@@ -68,20 +68,22 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 
 	/// terrain がないなら終わり
 	if (!pTerrain) {
+		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component is null");
 		return;
 	}
 
 	/// 未生成の時だけ処理する
 	if (!pTerrain->GetIsCreated()) {
 		pTerrain->SetIsCreated(true);
+		Console::LogInfo("TerrainVertexEditorCompute::Execute: Creating terrain vertices and indices");
 
 		pTerrain->GetRwVertices().CreateUAV(
-			sizeof(TerrainVertex) * pTerrain->GetMaxVertexNum(),
+			pTerrain->GetMaxVertexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
 		);
 
 		pTerrain->GetRwIndices().CreateUAV(
-			sizeof(uint32_t) * pTerrain->GetMaxIndexNum(),
+			pTerrain->GetMaxIndexNum(),
 			pDxManager_->GetDxDevice(), _dxCommand, pDxManager_->GetDxSRVHeap()
 		);
 
@@ -96,8 +98,8 @@ void TerrainVertexCreator::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCo
 		terrainSize_.SetMappedData(TerrainSize{ width, depth });
 		terrainSize_.BindForComputeCommandList(cmdList, CBV_TERRAIN_SIZE);
 
-		pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
-		pTerrain->GetRwIndices().BindForComputeCommandList(UAV_INDICES, cmdList);
+		pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
+		pTerrain->GetRwIndices().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
 		const Texture* vertexTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
 		const Texture* blendTexture = _resourceCollection->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");

@@ -1,7 +1,9 @@
 #include "DxManager.h"
 
-DxManager::DxManager() {}
+/// engine
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
+DxManager::DxManager() {}
 DxManager::~DxManager() {}
 
 void DxManager::Initialize() {
@@ -28,7 +30,7 @@ void DxManager::Initialize() {
 	/// descriptor heapの初期化
 	dxDescriptorHeaps_[DescriptorHeapType_RTV].reset(new DxRTVHeap(dxDevice_.get(), 16));
 	dxDescriptorHeaps_[DescriptorHeapType_DSV].reset(new DxDSVHeap(dxDevice_.get(), 1));
-	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].reset(new DxSRVHeap(dxDevice_.get(), 128, 32));
+	dxDescriptorHeaps_[DescriptorHeapType_CBV_SRV_UAV].reset(new DxSRVHeap(dxDevice_.get(), MAX_TEXTURE_COUNT + 128, MAX_TEXTURE_COUNT));
 	
 	for(auto& heap : dxDescriptorHeaps_) {
 		heap->Initialize();
@@ -42,6 +44,12 @@ void DxManager::Initialize() {
 }
 
 void DxManager::Finalize() {}
+
+void DxManager::HeapBindToCommandList() {
+	GetDxSRVHeap()->BindToCommandList(
+		GetDxCommand()->GetCommandList()
+	);
+}
 
 
 

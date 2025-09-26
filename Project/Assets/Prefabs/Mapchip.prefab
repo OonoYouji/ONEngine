@@ -1,5 +1,4 @@
 {
-    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
@@ -26,13 +25,16 @@
         },
         {
             "enable": 1,
-            "scriptName": [
-                "Mapchip"
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Mapchip"
+                }
             ],
             "type": "Script"
         }
     ],
-    "id": -17,
+    "id": 2,
     "name": "Mapchip",
     "parent": null,
     "prefabName": "Mapchip.prefab"

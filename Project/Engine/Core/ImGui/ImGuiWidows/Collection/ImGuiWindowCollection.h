@@ -65,7 +65,7 @@ public:
 	/// ===================================================
 
 	virtual ~IImGuiParentWindow() = default;
-	virtual void ImGuiFunc() = 0;
+	virtual void ShowImGui() = 0;
 
 	/// @brief 子windowの更新
 	void UpdateChildren();
@@ -95,7 +95,7 @@ public:
 	/// ===================================================
 
 	virtual ~IImGuiChildWindow() = default;
-	virtual void ImGuiFunc() = 0;
+	virtual void ShowImGui() = 0;
 
 protected:
 	/// ===================================================

@@ -57,15 +57,16 @@ void RenderingFramework::Initialize(DxManager* _dxManager, WindowManager* _windo
 }
 
 void RenderingFramework::Draw() {
+
+	PreDraw();
+
 #ifdef DEBUG_MODE /// imguiの描画
 	pImGuiManager_->GetDebugGameWindow()->PreDraw();
 
 
 	if (DebugConfig::selectedMode_ == DebugConfig::SELECTED_MODE_EDITOR) {
-
 		DrawPrefab();
 	} else {
-
 		DrawDebug();
 		DrawScene();
 	}
@@ -82,15 +83,21 @@ void RenderingFramework::Draw() {
 	releaseBuildSubWindow_->PostDraw();
 
 	pWindowManager_->MainWindowPreDraw();
-	copyImagePipeline_->Draw(pEntityComponentSystem_, pEntityComponentSystem_->GetActiveEntities(), pEntityComponentSystem_->GetMainCamera2D(), pDxManager_->GetDxCommand());
+	ECSGroup* currentGroup = pEntityComponentSystem_->GetCurrentGroup();
+	copyImagePipeline_->Draw(currentGroup, {}, currentGroup->GetMainCamera2D(), pDxManager_->GetDxCommand());
 	pWindowManager_->MainWindowPostDraw();
 #endif // DEBUG_MODE
 
 	DxCommandExeAndReset();
 }
 
+void RenderingFramework::PreDraw() {
+	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
+	renderingPipelineCollection_->PreDrawEntities(camera, pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D());
+}
+
 void RenderingFramework::DrawScene() {
-	CameraComponent* camera = pEntityComponentSystem_->GetMainCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera();
 	if (!camera) {
 		Console::Log("[error] RenderingFramework::DrawScene: Main Camera is null");
 		return;
@@ -100,37 +107,32 @@ void RenderingFramework::DrawScene() {
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetMainCamera2D());
+	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera2D());
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
 }
 
 void RenderingFramework::DrawDebug() {
-	CameraComponent* camera = pEntityComponentSystem_->GetDebugCamera();
-	if (!camera) {
-		Console::Log("[error] RenderingFramework::DrawDebug: Debug Camera is null");
-		return;
-	}
-
+	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_DEBUG].get();
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetMainCamera2D());
+	renderingPipelineCollection_->DrawEntities(camera, pEntityComponentSystem_->GetCurrentGroup()->GetMainCamera2D());
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());
 }
 
 void RenderingFramework::DrawPrefab() {
-	CameraComponent* camera = pEntityComponentSystem_->GetDebugCamera();
+	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
 
 	SceneRenderTexture* renderTex = renderTextures_[RENDER_TEXTURE_PREFAB].get();
 
 	renderTex->CreateBarrierRenderTarget(pDxManager_->GetDxCommand());
 	renderTex->SetRenderTarget(pDxManager_->GetDxCommand(), pDxManager_->GetDxDSVHeap());
-	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetMainCamera2D());
+	renderingPipelineCollection_->DrawSelectedPrefab(camera, pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D());
 	renderTex->CreateBarrierPixelShaderResource(pDxManager_->GetDxCommand());
 
 	renderingPipelineCollection_->ExecutePostProcess(renderTex->GetName());

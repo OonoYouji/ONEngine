@@ -18,16 +18,27 @@ public:
 	CollisionSystem();
 	virtual ~CollisionSystem() = default;
 
-	void RuntimeUpdate(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities);
+	void OutsideOfRuntimeUpdate(class ECSGroup* _ecs) override;
+	void RuntimeUpdate(class ECSGroup* _ecs);
+
+	void CallEnterFunc(const std::string& _ecsGroupName);
+	void CallStayFunc(const std::string& _ecsGroupName);
+	void CallExitFunc(const std::string& _ecsGroupName);
 
 private:
 	/// =======================================
 	/// private : objects
 	/// =======================================
 
-	using CollisionPair = std::pair<class IEntity*, class IEntity*>;
+	using CollisionPair = std::pair<class GameEntity*, class GameEntity*>;
 
-	std::deque<CollisionPair> collisionPairs_; ///< Store pairs of colliding entities
+	std::deque<CollisionPair> collidedPairs_;
+
+	/// ----- call back ----- ///
+	std::deque<CollisionPair> enterPairs_; /// 衝突が開始したペア
+	std::deque<CollisionPair> stayPairs_;  /// 衝突が継続しているペア
+	std::deque<CollisionPair> exitPairs_;  /// 衝突が終了したペア
+
 
 	/// collision check 
 	using CollisionCheckFunc = std::function<bool(const CollisionPair&)>;

@@ -82,7 +82,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 
 }
 
-void MeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void MeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// mesh と transform の対応付け
 	std::unordered_map<std::string, std::list<MeshRenderer*>> rendererPerMesh;
@@ -124,7 +124,7 @@ void MeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector
 
 	/// buffer dataのセット、先頭の texture gpu handle をセットする
 	auto& textures = resourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	transformIndex_ = 0;
 	instanceIndex_ = 0;
@@ -133,7 +133,7 @@ void MeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector
 	RenderingMesh(commandList, &rendererPerMesh, textures);
 }
 
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::unordered_map<std::string, std::list<MeshRenderer*>>* _meshRendererPerMesh, const std::vector<Texture>& _pTexture) {
 
 	for (auto& [meshPath, renderers] : (*_meshRendererPerMesh)) {
 
@@ -157,7 +157,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 			size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 			textureIdBuffer_->SetMappedData(
 				transformIndex_,
-				_pTexture[textureIndex]->GetSRVDescriptorIndex()
+				_pTexture[textureIndex].GetSRVDescriptorIndex()
 			);
 
 			/// transform のセット
@@ -171,9 +171,9 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		}
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->BindToCommandList(1, _commandList);
-		textureIdBuffer_->BindToCommandList(2, _commandList);
-		transformBuffer_->BindToCommandList(4, _commandList);
+		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
+		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
+		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
 
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);
@@ -197,7 +197,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 }
 
 
-void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<CustomMeshRenderer*>* _pCustomRenderers, const std::vector<std::unique_ptr<Texture>>& _pTexture) {
+void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandList, std::list<CustomMeshRenderer*>* _pCustomRenderers, const std::vector<Texture>& _pTexture) {
 	for (auto& renderer : (*_pCustomRenderers)) {
 
 		/// modelの取得、なければ次へ
@@ -216,7 +216,7 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		size_t textureIndex = resourceCollection_->GetTextureIndex(renderer->GetTexturePath());
 		textureIdBuffer_->SetMappedData(
 			transformIndex_,
-			_pTexture[textureIndex]->GetSRVDescriptorIndex()
+			_pTexture[textureIndex].GetSRVDescriptorIndex()
 		);
 
 		/// transform のセット
@@ -229,9 +229,9 @@ void MeshRenderingPipeline::RenderingMesh(ID3D12GraphicsCommandList* _commandLis
 		++transformIndex_;
 
 		/// 上でセットしたデータをバインド
-		materialBuffer->BindToCommandList(1, _commandList);
-		textureIdBuffer_->BindToCommandList(2, _commandList);
-		transformBuffer_->BindToCommandList(4, _commandList);
+		materialBuffer->SRVBindForGraphicsCommandList(_commandList, 1);
+		textureIdBuffer_->SRVBindForGraphicsCommandList(_commandList, 2);
+		transformBuffer_->SRVBindForGraphicsCommandList(_commandList, 4);
 
 		/// 現在のinstance idをセット
 		_commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);

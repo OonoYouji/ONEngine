@@ -24,7 +24,11 @@ namespace Mathf {
 	
 	void ReplaceAll(std::string* _str, const std::string& _from, const std::string& _to);
 
+	/// 拡張子を除いたファイル名を取得
 	std::string FileNameWithoutExtension(const std::string& _filename);
+
+	/// 拡張子を取得
+	std::string FileExtension(const std::string& _filename);
 
 	std::vector<std::vector<int>> LoadCSV(const std::string& _filePath);
 

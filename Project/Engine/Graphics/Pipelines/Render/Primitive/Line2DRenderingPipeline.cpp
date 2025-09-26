@@ -73,7 +73,7 @@ void Line2DRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 
 }
 
-void Line2DRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void Line2DRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	/// entityから描画データを取得
 	for (auto& entity : _entities) {

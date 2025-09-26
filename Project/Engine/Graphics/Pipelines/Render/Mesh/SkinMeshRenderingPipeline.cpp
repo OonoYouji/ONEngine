@@ -91,7 +91,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 }
 
-void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::vector<SkinMeshRenderer*> skinMeshRenderers;
 	for (auto& entity : _entities) {
@@ -115,7 +115,7 @@ void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::ve
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, ViewProjectionCBV);
 	/// Textures Bind
 	auto& textures = pGraphicsResourceCollection_->GetTextures();
-	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin())->GetSRVGPUHandle()); ///< Texture
+	commandList->SetGraphicsRootDescriptorTable(TextureSRV, (*textures.begin()).GetSRVGPUHandle()); ///< Texture
 
 
 	/// インスタンスごとの設定
@@ -128,7 +128,7 @@ void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::ve
 			continue; ///< スキンクラスターが存在しない場合はスキップ
 		}
 
-		IEntity* entity = comp->GetOwner();
+		GameEntity* entity = comp->GetOwner();
 		if (!entity) {
 			continue; /// エンティティが無効な場合はスキップ
 		}
@@ -137,11 +137,17 @@ void SkinMeshRenderingPipeline::Draw(class EntityComponentSystem*, const std::ve
 		transformBuffer_->SetMappedData(entity->GetTransform()->GetMatWorld());
 
 		/// Material Bind
-		materialBuffer_->SetMappedData(Material(comp->GetColor(), 1, comp->GetOwner()->GetId()));
+		materialBuffer_->SetMappedData(
+			Material{
+				.baseColor = comp->GetColor(),
+				.postEffectFlags = 1,
+				.entityId = comp->GetOwner()->GetId()
+			}
+		);
 
 		/// TextureId Bind
 		size_t textureIndex = pGraphicsResourceCollection_->GetTextureIndex(comp->GetTexturePath());
-		textureIdBuffer_->SetMappedData(textures[textureIndex]->GetSRVDescriptorIndex());
+		textureIdBuffer_->SetMappedData(textures[textureIndex].GetSRVDescriptorIndex());
 
 		transformBuffer_->BindForGraphicsCommandList(commandList, TransformCBV);
 		materialBuffer_->BindForGraphicsCommandList(commandList, MaterialCBV);

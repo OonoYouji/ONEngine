@@ -7,13 +7,19 @@
 #include <string>
 #include <deque>
 
-#include "../Factory/EntityFactory.h"
+#include "../GameEntity/GameEntity.h"
 #include "../Prefab/EntityPrefab.h"
 
 class CameraComponent;
 
-
+/// ///////////////////////////////////////////
+/// Entityのコレクションクラス
+/// ///////////////////////////////////////////
 class EntityCollection final {
+private:
+	/// =========================================
+	/// private : sub classes
+	/// =========================================
 
 	/// @brief EntityIdの管理用コンテナ
 	struct IdContainer {
@@ -21,73 +27,61 @@ class EntityCollection final {
 		std::deque<int32_t> removedIds; ///< 削除されたID
 	};
 
-
 public:
+	/// =========================================
+	/// public : methods
+	/// =========================================
 
-	EntityCollection(class EntityComponentSystem* _ecs, class DxManager* _dxManager);
+	EntityCollection(class ECSGroup* _ecsGroup, class DxManager* _dxManager);
 	~EntityCollection();
 
-	template<typename T>
-	T* GenerateEntity(bool _isRuntime = false) requires std::is_base_of_v<IEntity, T>;
-	IEntity* GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime = false);
-
-	void RemoveEntity(IEntity* _entity, bool _deleteChildren = true);
-	void RemoveEntityId(int32_t _id);
-
-	void RemoveEntityAll();
-
-	template <typename T>
-	T* FindEntity() requires std::is_base_of_v<IEntity, T>;
-
-	template <typename T>
-	std::vector<T*> FindEntities() requires std::is_base_of_v<IEntity, T>;
-
-	/// @brief 全エンティティを更新
-	void UpdateEntities();
-
-	/// @brief 引数のエンティティの更新(子も同時に
-	/// @param _entity 更新したいエンティティ
-	void UpdateEntity(IEntity* _entity);
-
-	void AddDoNotDestroyEntity(IEntity* _entity);
-	void RemoveDoNotDestroyEntity(IEntity* _entity);
-
-	void SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func);
-
+	/// 生成
+	GameEntity* GenerateEntity(bool _isRuntime = false);
 	int32_t NewEntityID(bool _isRuntime);
 
+	/// 取得
 	uint32_t GetEntityId(const std::string& _name);
+	GameEntity* GetEntity(size_t _entityId);
+
+	/// 削除
+	void RemoveEntity(GameEntity* _entity, bool _deleteChildren = true);
+	void RemoveEntityId(int32_t _id);
+	void RemoveEntityAll();
+
+	/// 非破棄エンティティの追加と削除
+	void AddDoNotDestroyEntity(GameEntity* _entity);
+	void RemoveDoNotDestroyEntity(GameEntity* _entity);
+
+
+
 
 	/* ----- prefab ----- */
 
 	void LoadPrefabAll();
 	void ReloadPrefab(const std::string& _prefabName);
 
-	IEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
+	GameEntity* GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime = true);
 	EntityPrefab* GetPrefab(const std::string& _fileName);
 
 private:
+	/// =========================================
+	/// private : objects
+	/// =========================================
 
-	class EntityComponentSystem* pECS_;
+	class ECSGroup* pECSGroup_;
 	class DxManager* pDxManager_;
 	class DxDevice* pDxDevice_;
-
-	std::unique_ptr<EntityFactory> factory_;
 
 	/// entityのIDを管理するためのdeque
 	IdContainer initEntityIDs_;
 	IdContainer runtimeEntityIDs_;
 
 	/// entityの本体を持つ配列
-	std::vector<std::unique_ptr<IEntity>> entities_;
-	std::vector<IEntity*> doNotDestroyEntities_;
+	std::vector<std::unique_ptr<GameEntity>> entities_;
+	std::vector<GameEntity*> doNotDestroyEntities_;
 
-	CameraComponent* debugCamera_ = nullptr;
 	CameraComponent* mainCamera_ = nullptr;
 	CameraComponent* mainCamera2D_ = nullptr;
-
-	std::function<void(EntityFactory*)> factoryRegisterFunc_;
-
 
 	/// prefab
 	std::unordered_map<std::string, std::unique_ptr<EntityPrefab>> prefabs_;
@@ -96,60 +90,10 @@ public:
 
 	void SetMainCamera(CameraComponent* _CameraComponent);
 	void SetMainCamera2D(CameraComponent* _CameraComponent);
-	void SetDebugCamera(CameraComponent* _CameraComponent);
 
 	CameraComponent* GetMainCamera();
 	CameraComponent* GetMainCamera2D();
 
-
-	const std::vector<std::unique_ptr<IEntity>>& GetEntities() const;
-
-	const CameraComponent* GetDebugCamera() const;
-	CameraComponent* GetDebugCamera();
-
-	EntityFactory* GetFactory();
+	const std::vector<std::unique_ptr<GameEntity>>& GetEntities() const;
 
 };
-
-
-template<typename T>
-inline T* EntityCollection::GenerateEntity(bool _isRuntime) requires std::is_base_of_v<IEntity, T> {
-
-	std::string name = typeid(T).name();
-	if (name.find("class ") == 0) {
-		name = name.substr(6); // Remove "class " prefix
-	}
-
-	IEntity* entity = GenerateEntity(name, true, _isRuntime);
-	if (!entity) {
-		factory_->Register(name, []() { return std::make_unique<T>(); });
-		entity = GenerateEntity(name, true, _isRuntime);
-		if (!entity) {
-			Console::Log(std::format("Failed to generate entity of type: {}", name));
-		}
-	}
-
-	return static_cast<T*>(entity);
-}
-
-template<typename T>
-inline T* EntityCollection::FindEntity() requires std::is_base_of_v<IEntity, T> {
-	for (const auto& entity : entities_) {
-		if (T* found = dynamic_cast<T*>(entity.get())) {
-			return found;
-		}
-	}
-	return nullptr;
-}
-
-template<typename T>
-inline std::vector<T*> EntityCollection::FindEntities() requires std::is_base_of_v<IEntity, T> {
-	std::vector<T*> foundEntities;
-	for (const auto& entity : entities_) {
-		if (T* found = dynamic_cast<T*>(entity.get())) {
-			foundEntities.push_back(found);
-		}
-	}
-
-	return foundEntities;
-}

@@ -29,7 +29,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1);
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
-		pipeline_->AddDescriptorRange(0, 128, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
+		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV);
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
@@ -115,7 +115,7 @@ void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 	}
 }
 
-void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	Skybox* pSkybox = nullptr;
 	ComponentArray<Skybox>* skyboxArray = _ecs->GetComponentArray<Skybox>();
@@ -154,7 +154,7 @@ void SkyboxRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std:
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 	transformMatrix_.BindForGraphicsCommandList(commandList, 1);
 	texIndex_.BindForGraphicsCommandList(commandList, 2);
-	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 	commandList->DrawIndexedInstanced(
 		static_cast<UINT>(indices_.size()),

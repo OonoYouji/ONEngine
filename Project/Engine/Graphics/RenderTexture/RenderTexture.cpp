@@ -12,9 +12,9 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 
 	{	/// textureの作成
-		std::unique_ptr<Texture> rtvTexture = std::make_unique<Texture>();
-		texture_ = rtvTexture.get();
+		Texture rtvTexture;
 		_resourceCollection->AddTexture(_name, std::move(rtvTexture)); /// textureの管理を GraphicsResourceCollection に任せる
+		texture_ = _resourceCollection->GetTexture(_name);
 	}
 
 	/// 必要なオブジェクトの取得
@@ -119,9 +119,9 @@ UAVTexture::UAVTexture() {}
 UAVTexture::~UAVTexture() {}
 
 void UAVTexture::Initialize(const std::string& _textureName, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
-	std::unique_ptr<Texture> uavTexture = std::make_unique<Texture>();
-	texture_ = uavTexture.get();
+	Texture uavTexture;
 	_resourceCollection->AddTexture(_textureName, std::move(uavTexture));
+	texture_ = _resourceCollection->GetTexture(_textureName);
 
 	/// 必要なオブジェクトの取得
 	DxDevice* dxDevice = _dxManager->GetDxDevice();

@@ -1,7 +1,7 @@
 #include "ComponentCollection.h"
 
 /// engine
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "../Component.h"
 
 ComponentCollection::ComponentCollection() {
@@ -30,7 +30,7 @@ void ComponentCollection::RemoveComponent(size_t _hash, size_t _id) {
 	}
 }
 
-void ComponentCollection::RemoveComponentAll(IEntity* _entity) {
+void ComponentCollection::RemoveComponentAll(GameEntity* _entity) {
 	for (auto& component : _entity->GetComponents()) {
 		auto it = arrayMap_.find(component.first);
 		if (it != arrayMap_.end()) {

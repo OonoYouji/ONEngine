@@ -14,6 +14,7 @@
 /// 地形のコライダーコンポーネント
 /// ///////////////////////////////////////////////////
 class TerrainCollider : public IComponent {
+	friend class TerrainColliderVertexGenerator;
 public:
 	/// =========================================
 	/// public : methods
@@ -22,8 +23,20 @@ public:
 	TerrainCollider();
 	~TerrainCollider() override = default;
 
+	void AttachTerrain();
+
 	/// @brief 地形の頂点情報をコピーする
-	void CopyVertices();
+	void CopyVertices(class DxManager* _dxManager);
+
+	float GetHeight(const Vector3& _position);
+
+	/// @brief 引数座標の勾配を取得する
+	/// @param _position ワールド座標
+	/// @return 
+	Vector3 GetGradient(const Vector3& _position);
+
+	bool IsInsideTerrain(const Vector3& _position);
+
 
 private:
 	/// =========================================
@@ -34,7 +47,29 @@ private:
 
 	std::vector<std::vector<TerrainVertex>> vertices_;
 
+	bool isVertexGenerationRequested_;
+
+	bool isCreated_;
+
+
+public:
+	/// =========================================
+	/// public : accessor
+	/// =========================================
+
+	Terrain* GetTerrain() const;
+
+	const std::vector<std::vector<TerrainVertex>>& GetVertices() const;
+	std::vector<std::vector<TerrainVertex>>& GetVertices();
+
+	bool GetIsCreated() const;
+
+
+	void SetIsVertexGenerationRequested(bool _isRequested);
+
 };
+
+
 
 namespace COMP_DEBUG {
 	void TerrainColliderDebug(TerrainCollider* _collider);

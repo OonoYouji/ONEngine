@@ -4,8 +4,10 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <unordered_map>
 
 /// externals
+#include <nlohmann/json.hpp>
 #include <jit/jit.h>
 
 /// engine
@@ -22,22 +24,13 @@ public:
 
 	struct ScriptData {
 		std::string scriptName;
-		MonoObject* instance = nullptr;
-		MonoClass* monoClass = nullptr;
-		uint32_t gcHandle = 0;
-		MonoMethod* internalInitMethod = nullptr;
-		MonoMethod* initMethod = nullptr;
-		MonoMethod* updateMethod = nullptr;
-
+		bool isAdded = false; ///< スクリプトが追加されたかどうか
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
 
-		bool enable = true;  ///< スクリプトの有効/無効フラグ
-
-		/// update system用
-		bool isCalledAwake = false;
-		bool isCalledInit = false;
+		bool enable;
+		bool GetEnable(GameEntity* _entity);
+		void SetEnable(GameEntity* _entity, bool _enable);
 	};
-
 
 public:
 	/// ===================================================
@@ -51,29 +44,34 @@ public:
 	void AddScript(const std::string& _scriptName);
 	void RemoveScript(const std::string& _scriptName);
 
-	void ResetScripts();
-	void ReleaseGCHandles();
-	void ReleaseGCHandle(ScriptData* _releaseScript);
-
 	const std::string& GetScriptName(size_t _index) const;
 	std::vector<std::string> GetScriptNames() const;
 
 	const std::vector<ScriptData>& GetScriptDataList() const;
 	std::vector<ScriptData>& GetScriptDataList();
+	ScriptData* GetScriptData(const std::string& _scriptName);
 
 	void SetEnable(const std::string& _scriptName, bool _enable);
 	bool GetEnable(const std::string& _scriptName);
-
-	void CallAwakeMethodAll();
-	void CallInitMethodAll();
-	void CallUpdateMethodAll();
 
 private:
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
+	std::unordered_map< std::string, size_t> scriptIndexMap_;
 	std::vector<ScriptData> scriptDataList_;
+	bool isAdded_;
+
+
+public:
+	/// ===================================================
+	/// public : accessors
+	/// ===================================================
+
+	/// エンティティが追加されたか
+	void SetIsAdded(bool _added);
+	bool GetIsAdded() const;
 
 };
 
@@ -82,12 +80,7 @@ namespace COMP_DEBUG {
 }
 
 /// ///////////////////////////////////////////////////
-/// mono用　internal methods
+/// json用の関数
 /// ///////////////////////////////////////////////////
-
-namespace MONO_INTENRAL_METHOD {
-
-	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable);
-	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName);
-	
-}
+void from_json(const nlohmann::json& _j, Script& _s);
+void to_json(nlohmann::json& _j, const Script& _s);

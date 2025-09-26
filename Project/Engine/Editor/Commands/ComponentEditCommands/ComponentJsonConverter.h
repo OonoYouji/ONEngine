@@ -52,10 +52,6 @@ void to_json(nlohmann::json& _j, const Color& _c);
 void from_json(const nlohmann::json& _j, DirectionalLight& _l);
 void to_json(nlohmann::json& _j, const DirectionalLight& _l);
 
-// AudioSource
-void from_json(const nlohmann::json& _j, AudioSource& _a);
-void to_json(nlohmann::json& _j, const AudioSource& _a);
-
 // Variables
 void from_json(const nlohmann::json& _j, Variables& _v);
 void to_json(nlohmann::json& _j, const Variables& _v);
@@ -84,10 +80,6 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cone& _e);
 void from_json(const nlohmann::json& _j, CustomMeshRenderer& _m);
 void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m);
 
-// SpriteRenderer
-void from_json(const nlohmann::json& _j, SpriteRenderer& _s);
-void to_json(nlohmann::json& _j, const SpriteRenderer& _s);
-
 // Line2DRenderer
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line2DRenderer& _l);
@@ -95,14 +87,6 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l);
 // Line3DRenderer
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l);
-
-// ToTerrainCollider
-void from_json(const nlohmann::json& _j, ToTerrainCollider& _c);
-void to_json(nlohmann::json& _j, const ToTerrainCollider& _c);
-
-// Script
-void from_json(const nlohmann::json& _j, Script& _s);
-void to_json(nlohmann::json& _j, const Script& _s);
 
 // SphereCollider
 void from_json(const nlohmann::json& _j, SphereCollider& _s);

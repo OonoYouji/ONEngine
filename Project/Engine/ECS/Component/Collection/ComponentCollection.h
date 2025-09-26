@@ -48,7 +48,7 @@ public:
 
 	void RemoveComponent(size_t _hash, size_t _id);
 
-	void RemoveComponentAll(class IEntity* _entity);
+	void RemoveComponentAll(class GameEntity* _entity);
 
 
 	template <typename Comp>

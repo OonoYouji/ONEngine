@@ -10,9 +10,12 @@
 
 /// engine
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+#include "Engine/Script/MonoScriptEngine.h"
+
 
 using json = nlohmann::json;
 
@@ -74,6 +77,14 @@ void Variables::LoadJson(const std::string& _path) {
 		}
 	}
 
+
+	/// スクリプトの変数を登録
+	if (Script* script = GetOwner()->GetComponent<Script>()) {
+		for (const auto& data : script->GetScriptDataList()) {
+			SetScriptVariables(data.scriptName);
+		}
+	}
+
 }
 
 
@@ -81,7 +92,7 @@ void Variables::SaveJson(const std::string& _path) {
 	nlohmann::json json;
 
 	/// スクリプトごとにgroupを生成する
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (!owner) {
 		Console::LogError("Variables::SaveJson();  owner is nullptr...");
 		return;
@@ -147,9 +158,121 @@ void Variables::RegisterScriptVariables() {
 
 		{
 			MonoObject* safeObj = nullptr;
-			if (data.gcHandle != 0) {
-				safeObj = mono_gchandle_get_target(data.gcHandle);
+			//if (data.gcHandle != 0) {
+			//	safeObj = mono_gchandle_get_target(data.gcHandle);
+			//}
+
+			if (!safeObj) {
+				continue; //!< 対象のスクリプトがない場合はスキップ
 			}
+
+			MonoClass* monoClass = mono_object_get_class(safeObj);
+			MonoClassField* field = nullptr;
+			void* iter = nullptr;
+
+			while ((field = mono_class_get_fields(monoClass, &iter))) {
+				const char* fieldName = mono_field_get_name(field);
+
+				// SerializeFieldチェックを削除
+				MonoType* fieldType = mono_field_get_type(field);
+				int type = mono_type_get_type(fieldType);
+
+				/// 持っている変数ならスキップ
+				if (group.Has(fieldName)) {
+					continue;
+				}
+
+				switch (type) {
+				case MONO_TYPE_I4: /// int
+				{
+					int value = 0;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_R4: /// float
+				{
+					float value = 0.0f;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_BOOLEAN: /// bool
+				{
+					bool value = false;
+					mono_field_get_value(safeObj, field, &value);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_STRING: /// string
+				{
+					MonoString* monoStr = nullptr;
+					mono_field_get_value(safeObj, field, &monoStr);
+					std::string value = mono_string_to_utf8(monoStr);
+					group.Add(fieldName, value);
+				}
+				break;
+				case MONO_TYPE_VALUETYPE: /// 構造体
+				{
+					MonoClass* fieldClass = mono_class_from_mono_type(fieldType);
+					const char* className = mono_class_get_name(fieldClass);
+
+					if (strcmp(className, "Vector2") == 0) {
+						// Vector2
+						Vector2 vec2;
+						mono_field_get_value(safeObj, field, &vec2);
+						group.Add(fieldName, vec2);
+
+					} else if (strcmp(className, "Vector3") == 0) {
+						// Vector3
+						Vector3 vec3;
+						mono_field_get_value(safeObj, field, &vec3);
+						group.Add(fieldName, vec3);
+
+					} else if (strcmp(className, "Vector4") == 0) {
+						// Vector4
+						Vector4 vec4;
+						mono_field_get_value(safeObj, field, &vec4);
+						group.Add(fieldName, vec4);
+
+					}
+				}
+				break;
+				}
+
+			}
+		}
+
+
+	}
+}
+
+void Variables::ReloadScriptVariables() {
+	Script* script = GetOwner()->GetComponent<Script>();
+	if (!script) {
+		return;
+	}
+
+	groupKeyMap_.clear();
+	groups_.clear();
+
+	for (const auto& data : script->GetScriptDataList()) {
+		size_t groupIndex = 0;
+
+		/// 新規のグループを追加するか、既存のグループを取得する
+		if (!HasGroup(data.scriptName)) {
+			groupIndex = AddGroup(data.scriptName);
+		} else {
+			groupIndex = groupKeyMap_.at(data.scriptName);
+		}
+
+		/// スクリプトの変数をグループに追加
+		Group& group = groups_[groupIndex];
+
+		{
+			MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+			GameEntity* entity = GetOwner();
+			MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(entity->GetECSGroup()->GetGroupName(), entity->GetId(), data.scriptName);
 
 			if (!safeObj) {
 				continue; //!< 対象のスクリプトがない場合はスキップ
@@ -229,12 +352,13 @@ void Variables::RegisterScriptVariables() {
 
 
 	}
+
 }
 
 void Variables::SetScriptVariables(const std::string& _scriptName) {
 	/* ----- スクリプトに対して変数の値を適用する ----- */
 
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (!owner) {
 		Console::LogError("Variables::SetScriptVariables();  owner is nullptr...");
 		return;
@@ -267,9 +391,12 @@ void Variables::SetScriptVariables(const std::string& _scriptName) {
 
 
 		/// C#側のオブジェクトを取得
-		MonoObject* safeObj = nullptr;
-		if (data.gcHandle != 0) {
-			safeObj = mono_gchandle_get_target(data.gcHandle);
+		MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+		std::string ecsGroupName = owner->GetECSGroup()->GetGroupName();
+		MonoObject* safeObj = monoEngine->GetMonoBehaviorFromCS(ecsGroupName, owner->GetId(), data.scriptName);
+
+		if (!safeObj) {
+			continue;
 		}
 
 		MonoClass* monoClass = mono_object_get_class(safeObj);
@@ -362,92 +489,14 @@ void COMP_DEBUG::VariablesDebug(Variables* _variables) {
 		return;
 	}
 
-	static std::string variableName;
-
-	//{	/// 新規変数の追加
-	//	if (variableName.capacity() < 128) {
-	//		variableName.reserve(128);
-	//	}
-
-	//	ImGui::SetNextItemWidth(128.0f);
-	//	ImGuiInputText("##name", &variableName);
-
-	//	ImGui::SameLine();
-	//	ImGui::SetNextItemWidth(80.0f);
-	//	static int type = 0;
-	//	ImGui::Combo("##mold", &type, "int\0float\0bool\0string\0Vector2\0Vector3\0Vector4\0");
-	//	ImGui::Spacing();
-
-
-	//	ImGui::SameLine();
-	//}
-
-	ImGui::SeparatorText("");
-
-	{	/// 既存の変数の表示
-
-		std::list<std::pair<std::string, std::string>> removeList;
-		std::vector<std::tuple<std::string, Variables::Var, std::string>> variables;
-		std::string ptrStr, label;
-
-		//for (const auto& [key, index] : _variables->GetKeyMap()) {
-		//	variables.emplace_back(key, _variables->GetVariables()[index], "##{:p}" + std::to_string(reinterpret_cast<uintptr_t>(&_variables->GetVariables()[index])));
-		//}
-
-		//if (variables.empty()) {
-		//	ImGui::Text("no variables...");
-		//}
-
-
-		for (auto& [name, variable, str] : variables) {
-			ptrStr = str;
-			label = name;
-
-			ImGui::SetNextItemWidth(64.0f);
-			if (ImGui::InputText((ptrStr + "string").c_str(), label.data(), label.capacity())) {
-				label.resize(strlen(label.c_str()));
-				removeList.push_back({ name, label });
-			}
-
-			ImGui::SameLine();
-
-			/// 変数の型によって処理を変える
-			//ValueImGui(_variables, ptrStr, name, variable.index());
-		}
-
-		//for (auto& [oldName, newName] : removeList) {
-		//	_variables->Rename(oldName, newName);
-		//}
-	}
-
-	ImGui::SeparatorText("");
-
 	if (ImGui::Button("export")) {
-		std::string ownerName = _variables->GetOwner()->GetName();
+		GameEntity* entity = _variables->GetOwner();
+		const std::string& ownerName = entity->GetName();
+		const std::string& groupName = entity->GetECSGroup()->GetGroupName();
 
-		_variables->RegisterScriptVariables();
-		_variables->SaveJson("Assets/Jsons/" + ownerName + ".json");
-	}
 
-	ImGui::SameLine();
-
-	// open Dialog Simple
-	if (ImGui::Button("import")) {
-		IGFD::FileDialogConfig config;
-		config.path = "./Assets/Jsons";
-		ImGuiFileDialog::Instance()->OpenDialog("Dialog", "Choose File", ".json", config);
-	}
-	// display
-	if (ImGuiFileDialog::Instance()->Display("Dialog", ImGuiWindowFlags_NoDocking)) {
-		if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
-			// action
-			_variables->LoadJson(filePathName);
-		}
-
-		// close
-		ImGuiFileDialog::Instance()->Close();
+		_variables->ReloadScriptVariables();
+		_variables->SaveJson("Assets/Jsons/" + groupName + "/" + ownerName + ".json");
 	}
 }
 

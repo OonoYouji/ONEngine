@@ -14,282 +14,161 @@
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
 
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/Entities/Grid/Grid.h"
-#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-
 namespace {
+	ECSGroup* gGameGroup = nullptr;
+	ECSGroup* gDebugGroup = nullptr;
 	EntityComponentSystem* gECS = nullptr;
 }
 
-void SetEntityComponentSystemPtr(EntityComponentSystem* _ecs) {
-	gECS = _ecs;
+void SetEntityComponentSystemPtr(ECSGroup* _gameGroup, ECSGroup* _debugGroup) {
+	gGameGroup = _gameGroup;
+	gDebugGroup = _debugGroup;
 }
 
-EntityComponentSystem* GetEntityComponentSystemPtr() {
-	return gECS;
+ECSGroup* GetEntityComponentSystemPtr() {
+	return gGameGroup;
 }
 
 
 EntityComponentSystem::EntityComponentSystem(DxManager* _pDxManager)
-	: pDxManager_(_pDxManager) {}
+	: pDxManager_(_pDxManager) {
+
+	gECS = this;
+	//prefabCollection_ = std::make_unique<EntityPrefabCollection>();
+}
+
 EntityComponentSystem::~EntityComponentSystem() {}
 
 void EntityComponentSystem::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
 
+	/// ポインタの確保
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 
-	entityCollection_ = std::make_unique<EntityCollection>(this, pDxManager_);
-	componentCollection_ = std::make_unique<ComponentCollection>();
-
-
-	AddECSSystemFunction(this, pDxManager_, pGraphicsResourceCollection_);
-	AddComponentFactoryFunction(componentCollection_.get());
-
-
-	debugCamera_ = entityCollection_->GetFactory()->Generate("DebugCamera");
-	debugCamera_->pEntityComponentSystem_ = this;
-	debugCamera_->CommonInitialize();
-	debugCamera_->Initialize();
-
-	/// gridの初期化
-	gridEntity_ = entityCollection_->GetFactory()->Generate("Grid");
-	gridEntity_->pEntityComponentSystem_ = this;
-	gridEntity_->CommonInitialize();
-	gridEntity_->Initialize();
-
+	{	/// デバッグ用のECSGroupを作成、 追加するシステムが違うのでAddGroupは使わない
+		currentGroupName_ = "Debug";
+		std::unique_ptr<ECSGroup> debugGroup = std::make_unique<ECSGroup>(pDxManager_);
+		debugGroup->Initialize(currentGroupName_);
+		DebugECSGroupAddSystemFunction(debugGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+		ecsGroups_[currentGroupName_] = std::move(debugGroup);
+		debugGroup_ = ecsGroups_[currentGroupName_].get();
+	}
 
 }
 
 
 void EntityComponentSystem::Update() {
-	entityCollection_->UpdateEntities();
+	debugGroup_->RuntimeUpdateSystems();
+	GetCurrentGroup()->RuntimeUpdateSystems();
+}
 
-	auto entities = GetActiveEntities();
-	RuntimeUpdateSystems(entities);
+void EntityComponentSystem::OutsideOfUpdate() {
+	debugGroup_->OutsideOfRuntimeUpdateSystems();
+	GetCurrentGroup()->OutsideOfRuntimeUpdateSystems();
 }
 
 void EntityComponentSystem::DebuggingUpdate() {
-	debugCamera_->Update();
-	debugCamera_->UpdateTransform();
-
-	gridEntity_->Update();
-	gridEntity_->UpdateTransform();
+	SetEntityComponentSystemPtr(GetCurrentGroup(), debugGroup_);
 }
 
-IEntity* EntityComponentSystem::GenerateEntity(const std::string& _name, bool _isInit) {
-	return entityCollection_->GenerateEntity(_name, _isInit);
-}
-
-IEntity* EntityComponentSystem::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
-	return entityCollection_->GenerateEntityFromPrefab(_prefabName, _isRuntime);
-}
-
-void EntityComponentSystem::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
-	return entityCollection_->RemoveEntity(_entity, _deleteChildren);
-}
-
-void EntityComponentSystem::RemoveEntityAll() {
-	entityCollection_->RemoveEntityAll();
-}
-
-void EntityComponentSystem::AddDoNotDestroyEntity(IEntity* _entity) {
-	entityCollection_->AddDoNotDestroyEntity(_entity);
-}
-
-void EntityComponentSystem::RemoveDoNotDestroyEntity(IEntity* _entity) {
-	entityCollection_->RemoveDoNotDestroyEntity(_entity);
-}
-
-void EntityComponentSystem::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
-	entityCollection_->SetFactoryRegisterFunc(_func);
-}
-
-uint32_t EntityComponentSystem::GetEntityId(const std::string& _name) {
-	return entityCollection_->GetEntityId(_name);
-}
-
-std::vector<IEntity*> EntityComponentSystem::GetActiveEntities() const {
-	std::vector<IEntity*> result;
-	result.reserve(entityCollection_->GetEntities().size());
-
-	for (const auto& entity : entityCollection_->GetEntities()) {
-		if (entity->GetActive()) {
-			result.push_back(entity.get());
-		}
+ECSGroup* EntityComponentSystem::AddECSGroup(const std::string& _name) {
+	/// すでに存在する場合は何もしない
+	auto itr = ecsGroups_.find(_name);
+	if (itr != ecsGroups_.end()) {
+		Console::LogWarning("ECSGroup with name '" + _name + "' already exists.");
+		return itr->second.get();
 	}
 
-	return result;
+	/// 新しいECSグループを作成
+	std::unique_ptr<ECSGroup> newGroup = std::make_unique<ECSGroup>(pDxManager_);
+	newGroup->Initialize(_name);
+	GameECSGroupAddSystemFunction(newGroup.get(), pDxManager_, pGraphicsResourceCollection_);
+	ecsGroups_[_name] = std::move(newGroup);
+	return ecsGroups_[_name].get();
 }
 
-IComponent* EntityComponentSystem::AddComponent(const std::string& _name) {
-	return componentCollection_->AddComponent(_name);
-}
-
-void EntityComponentSystem::RemoveComponent(size_t _hash, size_t _id) {
-	componentCollection_->RemoveComponent(_hash, _id);
-}
-
-void EntityComponentSystem::LoadComponent(IEntity* _entity) {
-	componentInputCommand_.SetEntity(_entity);
-	componentInputCommand_.Execute();
-}
-
-void EntityComponentSystem::RemoveComponentAll(IEntity* _entity) {
-	componentCollection_->RemoveComponentAll(_entity);
-}
-
-void EntityComponentSystem::RuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
-	for (auto& system : systems_) {
-		system->RuntimeUpdate(this, _entities);
-	}
-}
-
-void EntityComponentSystem::OutsideOfRuntimeUpdateSystems(const std::vector<IEntity*>& _entities) {
-	for (auto& system : systems_) {
-		system->OutsideOfRuntimeUpdate(this, _entities);
-	}
-}
-
-void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
-	entityCollection_->ReloadPrefab(_prefabName);
-}
-
-IEntity* EntityComponentSystem::GetGridEntity() const {
-	return gridEntity_.get();
-}
-
-IEntity* EntityComponentSystem::GetPrefabEntity() const {
-	return prefabEntity_.get();
-}
-
-IEntity* EntityComponentSystem::GeneratePrefabEntity(const std::string& _name) {
-
-	/// 同じエンティティが生成されているかチェック
-	if (prefabEntity_ && prefabEntity_->GetName() == _name) {
-		return prefabEntity_.get();
+ECSGroup* EntityComponentSystem::GetECSGroup(const std::string& _name) const {
+	/// 指定された名前のECSグループが存在するかチェック
+	auto it = ecsGroups_.find(_name);
+	if (it != ecsGroups_.end()) {
+		return it->second.get();
 	}
 
-
-
-	std::string prefabName = Mathf::FileNameWithoutExtension(_name);
-
-	/// prefabが存在するかチェック
-	EntityPrefab* prefab = entityCollection_->GetPrefab(_name);
-	if (!prefab) {
-		return nullptr;
-	}
-
-	/// entityを生成する
-	std::unique_ptr<IEntity> entity = entityCollection_->GetFactory()->Generate("EmptyEntity");
-
-	/// 違うエンティティが生成されている場合は削除して生成
-	if (prefabEntity_) {
-		prefabEntity_->RemoveComponentAll();
-		entityCollection_->RemoveEntityId(prefabEntity_->GetId());
-	}
-
-	prefabEntity_ = std::move(entity);
-
-
-	if (prefabEntity_) {
-		prefabEntity_->pEntityComponentSystem_ = this;
-		prefabEntity_->id_ = entityCollection_->NewEntityID(true);
-		prefabEntity_->CommonInitialize();
-
-		prefabEntity_->SetName(prefabName);
-		prefabEntity_->SetPrefabName(_name);
-
-		EntityJsonConverter::FromJson(prefab->GetJson(), prefabEntity_.get());
-
-		prefabEntity_->Initialize();
-	}
-
-
-	return prefabEntity_.get();
-}
-
-void EntityComponentSystem::SetMainCamera(CameraComponent* _camera) {
-	entityCollection_->SetMainCamera(_camera);
-}
-
-void EntityComponentSystem::SetMainCamera2D(CameraComponent* _camera) {
-	entityCollection_->SetMainCamera2D(_camera);
-}
-
-
-const std::vector<std::unique_ptr<IEntity>>& EntityComponentSystem::GetEntities() {
-	return entityCollection_->GetEntities();
-}
-
-IEntity* EntityComponentSystem::GetEntity(size_t _id) {
-	/// idを検索
-	auto itr = std::find_if(
-		entityCollection_->GetEntities().begin(), entityCollection_->GetEntities().end(),
-		[_id](const std::unique_ptr<IEntity>& entity) {
-			return entity->GetId() == _id;
-		}
-	);
-
-	if (itr != entityCollection_->GetEntities().end()) {
-		return (*itr).get();
-	}
-
+	Console::LogWarning("ECSGroup with name '" + _name + "' not found.");
 	return nullptr;
 }
 
-const CameraComponent* EntityComponentSystem::GetMainCamera() const {
-	return entityCollection_->GetMainCamera();
+ECSGroup* EntityComponentSystem::GetCurrentGroup() const {
+	/// 現在のグループを取得する
+	if (ecsGroups_.empty()) {
+		Console::LogWarning("No ECSGroup available.");
+		return nullptr;
+	}
+
+	return ecsGroups_.at(currentGroupName_).get();
 }
 
-CameraComponent* EntityComponentSystem::GetMainCamera() {
-	return entityCollection_->GetMainCamera();
+void EntityComponentSystem::MainCameraSetting() {
+	auto Setting = [&](ECSGroup* _group)
+		{
+			/// 初期化時のmain cameraを設定する
+			ComponentArray<CameraComponent>* cameraArray = _group->GetComponentArray<CameraComponent>();
+			if (cameraArray) {
+				for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
+					/// componentがnullptrでないことを確認、main cameraかどうかを確認
+					if (cameraComponent && cameraComponent->GetIsMainCameraRequest()) {
+
+						int type = cameraComponent->GetCameraType();
+						if (type == static_cast<int>(CameraType::Type3D)) {
+							_group->SetMainCamera(cameraComponent);
+						} else if (type == static_cast<int>(CameraType::Type2D)) {
+							_group->SetMainCamera2D(cameraComponent);
+						}
+					}
+				}
+			}
+		};
+
+
+	for (auto& group : ecsGroups_) {
+		Setting(group.second.get());
+	}
 }
 
-const CameraComponent* EntityComponentSystem::GetMainCamera2D() const {
-	return entityCollection_->GetMainCamera2D();
+void EntityComponentSystem::SetCurrentGroupName(const std::string& _name) {
+	currentGroupName_ = _name;
 }
 
-CameraComponent* EntityComponentSystem::GetMainCamera2D() {
-	return entityCollection_->GetMainCamera2D();
+const std::string& EntityComponentSystem::GetCurrentGroupName() const {
+	return currentGroupName_;
 }
 
-const CameraComponent* EntityComponentSystem::GetDebugCamera() const {
-	return debugCamera_->GetComponent<CameraComponent>();
+void EntityComponentSystem::ReloadPrefab(const std::string& _prefabName) {
+	for(auto& group : ecsGroups_) {
+		auto entityCollection = group.second->GetEntityCollection();
+		entityCollection->ReloadPrefab(_prefabName);
+	}
 }
-
-CameraComponent* EntityComponentSystem::GetDebugCamera() {
-	return debugCamera_->GetComponent<CameraComponent>();
-}
-
 
 
 /// ====================================================
 /// internal methods
 /// ====================================================
 
-IEntity* GetEntityById(int32_t _entityId) {
-	IEntity* entity = gECS->GetEntity(_entityId);
-	if (!entity) {
-		/// prefab entityじゃないかチェック
-		if (gECS->GetPrefabEntity() && gECS->GetPrefabEntity()->GetId() == _entityId) {
-			entity = gECS->GetPrefabEntity();
-		}
-
-		/// それでも違ったらエラーを出力
-		if (!entity) {
-			Console::Log("Entity not found for ID: " + std::to_string(_entityId));
-			return nullptr;
-		}
+GameEntity* MONO_INTERNAL_METHOD::GetEntityById(int32_t _entityId, const std::string& _groupName) {
+	ECSGroup* ecsGroup = gECS->GetECSGroup(_groupName);
+	if (ecsGroup) {
+		return ecsGroup->GetEntity(_entityId);
 	}
 
-	return entity;
+	return nullptr;
 }
 
-uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
+uint64_t MONO_INTERNAL_METHOD::InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+
 	std::string typeName = mono_string_to_utf8(_monoTypeName);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -304,9 +183,11 @@ uint64_t InternalAddComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
+uint64_t MONO_INTERNAL_METHOD::InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+
 	/// idからentityを取得
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -319,8 +200,9 @@ uint64_t InternalGetComponent(int32_t _entityId, MonoString* _monoTypeName) {
 	return reinterpret_cast<uint64_t>(component);
 }
 
-const char* InternalGetName(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+const char* MONO_INTERNAL_METHOD::InternalGetName(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return nullptr;
@@ -329,9 +211,10 @@ const char* InternalGetName(int32_t _entityId) {
 	return entity->GetName().c_str();
 }
 
-void InternalSetName(int32_t _entityId, MonoString* _name) {
+void MONO_INTERNAL_METHOD::InternalSetName(int32_t _entityId, MonoString* _name, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
@@ -341,8 +224,9 @@ void InternalSetName(int32_t _entityId, MonoString* _name) {
 	entity->SetName(name);
 }
 
-int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
-	IEntity* entity = GetEntityById(_entityId);
+int32_t MONO_INTERNAL_METHOD::InternalGetChildId(int32_t _entityId, uint32_t _childIndex, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
@@ -354,18 +238,19 @@ int32_t InternalGetChildId(int32_t _entityId, uint32_t _childIndex) {
 		return 0;
 	}
 
-	IEntity* child = children[_childIndex];
+	GameEntity* child = children[_childIndex];
 	return child->GetId();
 }
 
-int32_t InternalGetParentId(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
+int32_t MONO_INTERNAL_METHOD::InternalGetParentId(int32_t _entityId, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return 0;
 	}
 
-	IEntity* parent = entity->GetParent();
+	GameEntity* parent = entity->GetParent();
 	if (parent) {
 		return parent->GetId();
 	}
@@ -373,9 +258,10 @@ int32_t InternalGetParentId(int32_t _entityId) {
 	return 0;
 }
 
-void InternalSetParent(int32_t _entityId, int32_t _parentId) {
-	IEntity* entity = GetEntityById(_entityId);
-	IEntity* parent = GetEntityById(_parentId);
+void MONO_INTERNAL_METHOD::InternalSetParent(int32_t _entityId, int32_t _parentId, MonoString* _groupName) {
+	const std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
+	GameEntity* parent = GetEntityById(_parentId, groupName);
 
 	/// nullptr チェック
 	if (!entity || !parent) {
@@ -398,9 +284,10 @@ void InternalSetParent(int32_t _entityId, int32_t _parentId) {
 	entity->SetParent(parent);
 }
 
-void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
+void MONO_INTERNAL_METHOD::InternalAddScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
 	std::string scriptName = mono_string_to_utf8(_scriptName);
-	IEntity* entity = GetEntityById(_entityId);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::Log("Entity not found for ID: " + std::to_string(_entityId));
 		return;
@@ -410,12 +297,16 @@ void InternalAddScript(int32_t _entityId, MonoString* _scriptName) {
 	Script* script = entity->AddComponent<Script>();
 	if (!script->Contains(scriptName)) {
 		script->AddScript(scriptName);
+		Script::ScriptData* data = script->GetScriptData(scriptName);
+		if (data) {
+			data->isAdded = true;
+		}
 	}
 }
 
-
-bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
-	IEntity* entity = GetEntityById(_entityId);
+bool MONO_INTERNAL_METHOD::InternalGetScript(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	GameEntity* entity = GetEntityById(_entityId, groupName);
 	if (!entity) {
 		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
 		return false;
@@ -439,61 +330,42 @@ bool InternalGetScript(int32_t _entityId, MonoString* _scriptName) {
 	return false;
 }
 
-bool InternalContainsEntity(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
-	if (entity) {
-		return true;
-	}
+void MONO_INTERNAL_METHOD::InternalCreateEntity(int32_t* _entityId, MonoString* _prefabName, MonoString* _groupName) {
+	std::string groupName = mono_string_to_utf8(_groupName);
+	ECSGroup* group = gECS->GetECSGroup(groupName);
 
-	return false;
-}
-
-int32_t InternalGetEntityId(MonoString* _name) {
-	std::string name = mono_string_to_utf8(_name);
-	return gECS->GetEntityId(name);
-}
-
-int32_t InternalCreateEntity(MonoString* _name) {
 	/// prefabを検索
-	std::string name = mono_string_to_utf8(_name);
-	IEntity* entity = gECS->GenerateEntityFromPrefab(name + ".prefab");
+	std::string prefabName = mono_string_to_utf8(_prefabName);
+	GameEntity* entity = group->GenerateEntityFromPrefab(prefabName + ".prefab");
 	if (!entity) {
-		entity = gECS->GenerateEntity(name);
+		entity = group->GenerateEntity(true);
 		if (!entity) {
-			return 0;
+			return;
 		}
 	}
 
-	Script* script = entity->GetComponent<Script>();
-	if (script) {
-		/// スクリプトの初期化を行う
-		script->CallAwakeMethodAll();
-		script->CallInitMethodAll();
+	/// EntityのScriptのAddedをTrueにする
+	if (Script* script = entity->GetComponent<Script>()) {
+		script->SetIsAdded(true);
 	}
 
-	return entity->GetId();
-}
-
-bool InternalContainsPrefabEntity(int32_t _entityId) {
-	IEntity* entity = gECS->GetPrefabEntity();
-	if (entity) {
-		if (entity->GetId() == _entityId) {
-			return true;
-		}
+	if (_entityId) {
+		*_entityId = entity->GetId();
 	}
-
-	return false;
 }
 
-void InternalDestroyEntity(int32_t _entityId) {
-	IEntity* entity = GetEntityById(_entityId);
-	if (!entity) {
-		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
+void MONO_INTERNAL_METHOD::InternalDestroyEntity(MonoString* _ecsGroupName, int32_t _entityId) {
+	char* cstr = mono_string_to_utf8(_ecsGroupName);
+	ECSGroup* group = gECS->GetECSGroup(cstr);
+
+	if (!group) {
+		Console::LogError("ECSGroup not found: " + std::string(cstr));
 		return;
 	}
 
-	gECS->RemoveEntity(entity, true);
-	Console::Log("Entity destroyed: " + entity->GetName() + " (ID: " + std::to_string(_entityId) + ")");
+	GameEntity* entity = group->GetEntity(_entityId);
+	group->RemoveEntity(entity);
 
+
+	mono_free(cstr);
 }
-

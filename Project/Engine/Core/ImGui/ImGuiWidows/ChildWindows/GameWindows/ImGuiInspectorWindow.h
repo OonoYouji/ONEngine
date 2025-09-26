@@ -7,6 +7,7 @@
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 
 /// ///////////////////////////////////////////////////
 /// ImGuiInspectorWindow
@@ -17,41 +18,40 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiInspectorWindow(class EntityComponentSystem* _ecs, class EditorManager* _editorManager);
+	ImGuiInspectorWindow(const std::string& _windowName, class EntityComponentSystem* _ecs, class GraphicsResourceCollection* _resourceCollection, class EditorManager* _editorManager);
 	~ImGuiInspectorWindow() {}
 
 	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
-
-	/// @brief inspector に表示する情報のポインタを設定する
-	/// @param _pointer 表示したい物のポインタ(整数型)
-	void SetSelectedEntity(std::uintptr_t _pointer) { selectedPointer_ = _pointer; }
+	void ShowImGui() override;
 
 	template<typename T>
 	void RegisterComponent(std::function<void(class IComponent*)> _func);
 
-
 	void EntityInspector();
 
-	class IEntity* GetSelectedEntity() const;
+	/// edit target entity の setter getter
+	void SetSelectedEntity(GameEntity* _entity);
+	class GameEntity* GetSelectedEntity() const;
 
 private:
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
-	
+
+	/// ----- other class ----- ///
 	class EntityComponentSystem* pECS_;
 	class EditorManager* pEditorManager_;
+	class GraphicsResourceCollection* pResourceCollection_;
 
-	std::uintptr_t selectedPointer_; ///< 選択したポインタ
+	/// ----- edit target ----- ///
+	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ
 
-	std::vector<std::function<void()>> inspectorFunctions_; ///< inspectorに表示する関数のポインタ
-	class IComponent* selectedComponent_ = nullptr; ///< 選択したcomponentのポインタ
-
+	std::string windowName_;
+	class IComponent* selectedComponent_ = nullptr;
+	std::vector<std::function<void()>> inspectorFunctions_;
 	std::unordered_map<size_t, std::function<void(class IComponent*)>> componentDebugFuncs_;
 
 	/* ----- add component ----- */
-
 	std::map<size_t, std::string> componentNames_;
 
 };

@@ -20,11 +20,6 @@ void Input::Finalize() {
 	gInputSystem_.reset();
 }
 
-void Input::RegisterMonoFunctions() {
-	gInputSystem_->RegisterMonoFunctions();
-}
-
-
 bool Input::PressKey(int _key) {
 	return gInputSystem_->keyboard_->keys_[_key];
 }
@@ -85,6 +80,10 @@ Vector2 Input::GetGamepadRightThumb() {
 	}
 
 	return Vector2::kZero;
+}
+
+float Input::GetMouseWheel() {
+	return gInputSystem_->mouse_->wheel_;
 }
 
 const Vector2& Input::GetMousePosition() {

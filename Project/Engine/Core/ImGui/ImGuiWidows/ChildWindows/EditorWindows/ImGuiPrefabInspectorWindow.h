@@ -20,7 +20,7 @@ public:
 	~ImGuiPrefabInspectorWindow() override = default;
 
 	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	/// @brief inspector に表示する情報のポインタを設定する
 	/// @param _pointer 表示したい物のポインタ(整数型)
@@ -32,7 +32,7 @@ public:
 
 	void EntityInspector();
 
-	class IEntity* GetSelectedEntity() const;
+	class GameEntity* GetSelectedEntity() const;
 
 private:
 	/// ===================================================

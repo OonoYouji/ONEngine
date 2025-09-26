@@ -12,7 +12,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
@@ -29,23 +29,22 @@ ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, GraphicsResource
 }
 
 
-void ImGuiSceneWindow::ImGuiFunc() {
+void ImGuiSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("Scene")) {
 		ImGui::End();
 		return;
 	}
 
 	const auto& textures = resourceCollection_->GetTextures();
-	Texture* texture = textures[resourceCollection_->GetTextureIndex("debugScene")].get();
+	const Texture* texture = &textures[resourceCollection_->GetTextureIndex("debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
 	/// ----------------------------------------
 
-	std::array<Texture*, 3> buttons = {
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")].get(),
-		textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/skip.png")].get()
+	std::array<const Texture*, 2> buttons = {
+		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
+		&textures[resourceCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);
@@ -55,6 +54,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.125f, 0.263f, 0.388f, 1.0f));
 	}
 
+	MonoScriptEngine::GetInstance()->SetIsHotReloadRequest(false);
 	if (ImGui::ImageButton("##play", ImTextureID(buttons[0]->GetSRVGPUHandle().ptr), buttonSize)) {
 		SetGamePlay(!isGameDebug); // ゲームプレイの開始/停止
 	}
@@ -69,12 +69,6 @@ void ImGuiSceneWindow::ImGuiFunc() {
 		// デバッグモードを停止
 		DebugConfig::isDebugging = false;
 	}
-	//ImGui::SameLine();
-
-	///// 1frameスキップボタン
-	//if (ImGui::ImageButton("##skip", ImTextureID(buttons[2]->GetSRVGPUHandle().ptr), buttonSize)) {
-
-	//}
 
 
 
@@ -118,7 +112,7 @@ void ImGuiSceneWindow::ImGuiFunc() {
 	/// ----------------------------------------
 
 	// 操作対象のゲット
-	IEntity* entity = pInspector_->GetSelectedEntity();
+	GameEntity* entity = pInspector_->GetSelectedEntity();
 	if (entity) {
 
 		ImGuizmo::SetOrthographic(false); // 透視投影
@@ -134,6 +128,8 @@ void ImGuiSceneWindow::ImGuiFunc() {
 			manipulateOperation_ = ImGuizmo::OPERATION::ROTATE; // 回転
 		} else if (Input::TriggerKey(DIK_R)) {
 			manipulateOperation_ = ImGuizmo::OPERATION::SCALE; // 拡縮
+		} else if (Input::TriggerKey(DIK_Q)) {
+			manipulateOperation_ = 0; // 操作なし
 		}
 
 		/// モードの選択
@@ -143,32 +139,42 @@ void ImGuiSceneWindow::ImGuiFunc() {
 			manipulateMode_ = ImGuizmo::MODE::LOCAL; // ローカル座標
 		}
 
+		if (manipulateOperation_ != 0) {
 
-		Transform* transform = entity->GetTransform();
-		/// 操作対象の行列
-		Matrix4x4 entityMatrix = transform->matWorld;
+			Transform* transform = entity->GetTransform();
+			/// 操作対象の行列
+			Matrix4x4 entityMatrix = transform->matWorld;
 
-		/// カメラの取得
-		CameraComponent* camera = pECS_->GetDebugCamera();
+			/// カメラの取得
+			CameraComponent* camera = pECS_->GetECSGroup("Debug")->GetMainCamera();
+			if (camera) {
+				ImGuizmo::Manipulate(
+					&camera->GetViewMatrix().m[0][0],
+					&camera->GetProjectionMatrix().m[0][0],
+					ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
+					ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
+					&entityMatrix.m[0][0]
+				);
 
-		ImGuizmo::Manipulate(
-			&camera->GetViewMatrix().m[0][0],
-			&camera->GetProjectionMatrix().m[0][0],
-			ImGuizmo::OPERATION(manipulateOperation_), // TRANSLATE, ROTATE, SCALE
-			ImGuizmo::MODE(manipulateMode_), // WORLD or LOCAL
-			&entityMatrix.m[0][0]
-		);
+				/// 行列をSRTに分解、エンティティに適応
+				float translation[3], rotation[3], scale[3];
+				ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
-		/// 行列をSRTに分解、エンティティに適応
-		float translation[3], rotation[3], scale[3];
-		ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
-		transform->SetPosition(Vector3(translation[0], translation[1], translation[2]));
+				Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
+				if (GameEntity* owner = transform->GetOwner()) {
+					if (GameEntity* parent = owner->GetParent()) {
+						translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+					}
+				}
+				transform->SetPosition(translationV);
 
-		Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
-		transform->SetRotate(eulerRotation);
-		transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
+				Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
+				transform->SetRotate(eulerRotation);
+				transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
 
-		transform->Update();
+				transform->Update();
+			}
+		}
 
 	}
 
@@ -187,21 +193,8 @@ void ImGuiSceneWindow::SetGamePlay(bool _isGamePlay) {
 		pSceneManager_->ReloadScene(true);
 		pInspector_->SetSelectedEntity(0);
 
-
-		std::list<Script*> scripts;
-		for (auto& entity : pECS_->GetEntities()) {
-			if (Script* script = entity->GetComponent<Script>()) {
-				scripts.push_back(script);
-			}
-		}
-
 		/// Monoスクリプトエンジンのホットリロードでスクリプトの初期化を行う
-		GetMonoScriptEnginePtr()->HotReload();
-
-		/// スクリプトの初期化
-		for (auto& script : scripts) {
-			script->ResetScripts();
-		}
+		MonoScriptEngine::GetInstance()->HotReload();
 
 	} else {
 		//!< 更新処理を停止した場合の処理

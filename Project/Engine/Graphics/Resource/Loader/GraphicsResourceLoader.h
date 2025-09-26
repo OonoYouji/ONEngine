@@ -16,12 +16,12 @@
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 #include "../ResourceData/Skinning.h"
 
-/// ===================================================
+
+/// ///////////////////////////////////////////////////
 /// グラフィクスリソースのローダー
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class GraphicsResourceLoader final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -31,20 +31,21 @@ public:
 
 	void Initialize();
 
-	/// @brief textureの読み込み (.png, .jpg)
-	/// @param _filePath .slnファイルからの相対パス
-	void LoadTexture(const std::string& _filePath);
+	/// テクスチャ
+	void LoadTexture(const std::string& _filepath);
 
-	/// @brief modelの読み込み (.obj)
-	/// @param _filePath .slnファイルからの相対パス
-	void LoadModelObj(const std::string& _filePath);
-
+	/// モデル
+	void LoadModelObj(const std::string& _filepath);
 	Node ReadNode(struct aiNode* _node);
+	void LoadAnimation(Model* _model, const std::string& _filepath);
 
-	void LoadAnimation(Model* _model, const std::string& _filePath);
+	/// サウンド
+	void LoadAudioClip(const std::string& _filepath);
+
+	/// フォント
+	void LoadFont(const std::string& _filepath);
 
 private:
-
 	/// ===================================================
 	/// private : methods
 	/// ===================================================
@@ -52,7 +53,7 @@ private:
 	/// @brief scratchImageを読み込む
 	/// @param _filePath .slnファイルからの相対パス
 	/// @return DirectX::ScratchImage
-	DirectX::ScratchImage LoadScratchImage(const std::string& _filePath);
+	DirectX::ScratchImage LoadScratchImage(const std::string& _filepath);
 
 	/// @brief texture resourceを生成する
 	/// @param _dxDevice DxDeviceのポインタ
@@ -75,8 +76,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class DxManager*                  dxManager_;
-	class GraphicsResourceCollection* resourceCollection_;
+	class DxManager*                  pDxManager_;
+	class GraphicsResourceCollection* pResourceCollection_;
 
 	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
 

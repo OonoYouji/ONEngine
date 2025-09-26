@@ -71,7 +71,7 @@ std::string FileSystemf::LoadFile(const std::string& _path) {
 	return buffer.str();
 }
 
-MonoString* MONO_INTENRAL_METHOD::LoadFile(MonoString* _path) {
+MonoString* MONO_INTERNAL_METHOD::LoadFile(MonoString* _path) {
 
 	/// スクリプト名をUTF-8に変換
 	char* cstr = mono_string_to_utf8(_path);

@@ -15,7 +15,6 @@
 #include "Engine/Core/Utility/Math/Vector3.h"
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Tools/Log.h"
-//#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
 /// ////////////////////////////////////////////
 /// 変数component
@@ -48,6 +47,10 @@ public:
 
 		template <typename T = Var>
 		void Add(const std::string& _name, const T& _value) {
+			if (keyMap_.contains(_name)) {
+				variables[keyMap_[_name]] = _value;
+			}
+
 			keyMap_[_name] = variables.size();
 			variables.emplace_back(_value);
 		}
@@ -84,6 +87,8 @@ public:
 	void SaveJson(const std::string& _path);
 
 	void RegisterScriptVariables();
+
+	void ReloadScriptVariables();
 
 	void SetScriptVariables(const std::string& _scriptName);
 

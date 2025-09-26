@@ -12,7 +12,7 @@
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
-	material_.color = Vector4::kWhite;
+	material_.baseColor = Vector4::kWhite;
 	material_.postEffectFlags = PostEffectFlags_Lighting;
 	if (GetOwner()) {
 		material_.entityId = GetOwner()->GetId();
@@ -30,7 +30,7 @@ void MeshRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void MeshRenderer::SetColor(const Vector4& _color) {
-	material_.color = _color;
+	material_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
@@ -38,7 +38,7 @@ void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
 }
 
 void MeshRenderer::SetMaterialEntityId() {
-	IEntity* owner = GetOwner();
+	GameEntity* owner = GetOwner();
 	if (owner) {
 		material_.entityId = owner->GetId();
 	}
@@ -53,7 +53,7 @@ const std::string& MeshRenderer::GetTexturePath() const {
 }
 
 const Vector4& MeshRenderer::GetColor() const {
-	return material_.color;
+	return material_.baseColor;
 }
 
 const Material& MeshRenderer::GetMaterial() const {

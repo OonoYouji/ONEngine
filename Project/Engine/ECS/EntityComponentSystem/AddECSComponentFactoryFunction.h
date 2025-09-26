@@ -30,7 +30,6 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<Skybox>();
 
 	/// collider
-	_compCollection->RegisterComponentFactory<ToTerrainCollider>();
 	_compCollection->RegisterComponentFactory<SphereCollider>();
 	_compCollection->RegisterComponentFactory<BoxCollider>();
 }

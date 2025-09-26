@@ -46,7 +46,7 @@ void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxM
 }
 
 
-void CopyImageRenderingPipeline::Draw(class EntityComponentSystem*, [[maybe_unused]] const std::vector<IEntity*>& _entities, [[maybe_unused]] CameraComponent* _camera, DxCommand* _dxCommand) {
+void CopyImageRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>&, CameraComponent*, DxCommand* _dxCommand) {
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	ID3D12GraphicsCommandList* commandList = _dxCommand->GetCommandList();
@@ -57,7 +57,7 @@ void CopyImageRenderingPipeline::Draw(class EntityComponentSystem*, [[maybe_unus
 	auto& textures = pResourceCollection_->GetTextures();
 	size_t index = pResourceCollection_->GetTextureIndex("sceneScene");
 
-	commandList->SetGraphicsRootDescriptorTable(0, textures[index]->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 
 	commandList->DrawInstanced(3, 1, 0, 0);
 

@@ -11,6 +11,7 @@
 /// engine
 #include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 namespace {
 
@@ -27,6 +28,18 @@ ImVec4 ImMathf::ToImVec4(const Vector4& _vec) {
 
 ImVec2 ImMathf::ToImVec2(const Vector2& _vec) {
 	return ImVec2(_vec.x, _vec.y);
+}
+
+bool ImMathf::ColorEdit(const char* _label, Vector4* _color, ImGuiColorEditFlags _flags) {
+	if (!_color) {
+		return false;
+	}
+
+	if (ImGui::ColorEdit4(_label, &_color->x, _flags)) {
+		return true; // 色が変更された
+	}
+
+	return false;
 }
 
 bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
@@ -55,6 +68,132 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
+bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsResourceCollection* _resourceCollection) {
+	/// nullptr check
+	if (!_material) {
+		return false;
+	}
+
+	bool isEdit = false;
+	if (ImGui::CollapsingHeader(_label)) {
+		if (ImGuiColorEdit("BaseColor", &_material->baseColor)) {
+			isEdit = true;
+		}
+
+		if (UVTransformEdit("UVTransform", &_material->uvTransform)) {
+			isEdit = true;
+		}
+		
+		if(ImGui::CollapsingHeader("PostEffectFlags")) {
+			/// ポストエフェクトのフラグ
+			if (ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
+				isEdit = true;
+			}
+
+			if (ImGui::CheckboxFlags("Grayscale", &_material->postEffectFlags, PostEffectFlags_Grayscale)) {
+				isEdit = true;
+			}
+
+			if (ImGui::CheckboxFlags("EnvironmentReflection", &_material->postEffectFlags, PostEffectFlags_EnvironmentReflection)) {
+				isEdit = true;
+			}
+		}
+
+
+		if (ImGui::CollapsingHeader("Texture")) {
+
+			/// textureの変更
+			const std::string& texturePath = _resourceCollection->GetTexturePath(_material->baseTextureId);
+			ImMathf::InputText("Base Texture", const_cast<std::string*>(&texturePath), ImGuiInputTextFlags_ReadOnly);
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if (payload->Data) {
+						const char* droppedPath = static_cast<const char*>(payload->Data);
+						std::string path = std::string(droppedPath);
+						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							_material->baseTextureId = static_cast<int32_t>(droppedTextureIndex);
+							isEdit = true;
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			const Texture* baseTexture = _resourceCollection->GetTexture(texturePath);
+			if (baseTexture) {
+				ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
+				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			}
+
+
+			ImGui::Spacing();
+
+
+			/// 法線テクスチャの変更
+			const std::string& normalTexturePath = _resourceCollection->GetTexturePath(_material->normalTextureId);
+			ImMathf::InputText("Normal Texture", const_cast<std::string*>(&normalTexturePath), ImGuiInputTextFlags_ReadOnly);
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("AssetData")) {
+					if (payload->Data) {
+						const char* droppedPath = static_cast<const char*>(payload->Data);
+						std::string path = std::string(droppedPath);
+						if (path.find(".png") != std::string::npos || path.find(".jpg") != std::string::npos) {
+							size_t droppedTextureIndex = _resourceCollection->GetTextureIndex(path);
+							_material->normalTextureId = static_cast<int32_t>(droppedTextureIndex);
+							isEdit = true;
+						}
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+
+			const Texture* normalTexture = _resourceCollection->GetTexture(normalTexturePath);
+			if (normalTexture) {
+				ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
+				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			}
+		}
+
+
+	} 
+
+
+	return isEdit;
+}
+
+bool ImMathf::UVTransformEdit(const char* _label, UVTransform* _uvTransform) {
+	/// nullptr check
+	if (!_uvTransform) {
+		return false;
+	}
+
+	bool isEdit = false;
+
+	ImGui::PushID(2);
+
+	if (ImGui::CollapsingHeader(_label)) {
+		/// UVのオフセット
+		if (ImGui::DragFloat2("offset", &_uvTransform->position.x, 0.01f)) {
+			isEdit = true;
+		}
+		/// UVのスケール
+		if (ImGui::DragFloat2("scale", &_uvTransform->scale.x, 0.01f, 0.0f, FLT_MAX)) {
+			isEdit = true;
+		}
+		/// UVの回転
+		if (ImGui::DragFloat("rotate", &_uvTransform->rotate, 0.01f, -std::numbers::pi_v<float>, std::numbers::pi_v<float>)) {
+			isEdit = true;
+		}
+
+	} // if ImGui::CollapsingHeader
+
+	ImGui::PopID();
+
+	return isEdit;
+}
+
 
 bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags _flags) {
 	if (!_text) {
@@ -66,7 +205,7 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 	struct CallbackUserData {
 		std::string* text;
 	};
-	
+
 	auto callback = [](ImGuiInputTextCallbackData* data) -> int {
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
 			auto* user = static_cast<CallbackUserData*>(data->UserData);
@@ -74,7 +213,7 @@ bool ImGuiInputText(const char* _label, std::string* _text, ImGuiInputTextFlags 
 			data->Buf = user->text->data();
 		}
 		return 0;
-	};
+		};
 
 	CallbackUserData userData = { _text };
 	return ImGui::InputText(_label, _text->data(), _text->capacity(), _flags,

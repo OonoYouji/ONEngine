@@ -8,7 +8,7 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 
 
-void ImGuiGameSceneWindow::ImGuiFunc() {
+void ImGuiGameSceneWindow::ShowImGui() {
 	if (!ImGui::Begin("GameScene")) {
 		ImGui::End();
 		return;
@@ -19,7 +19,7 @@ void ImGuiGameSceneWindow::ImGuiFunc() {
 	/// ---------------------------------------
 
 	const auto& textures = resourceCollection_->GetTextures();
-	auto texture = textures[resourceCollection_->GetTextureIndex("sceneScene")].get();
+	auto& texture = textures[resourceCollection_->GetTextureIndex("sceneScene")];
 
 	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	float aspectRatio = 16.0f / 9.0f;
@@ -35,7 +35,7 @@ void ImGuiGameSceneWindow::ImGuiFunc() {
 	imagePos.y += (ImGui::GetContentRegionAvail().y - windowSize.y) * 0.5f;
 
 	ImGui::SetCursorScreenPos(imagePos);
-	ImGui::Image(ImTextureID(texture->GetSRVGPUHandle().ptr), windowSize);
+	ImGui::Image(ImTextureID(texture.GetSRVGPUHandle().ptr), windowSize);
 
 	pImGuiManager_->AddSceneImageInfo("GameScene", ImGuiSceneImageInfo{ imagePos, windowSize });
 

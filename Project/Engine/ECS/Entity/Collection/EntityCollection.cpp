@@ -9,19 +9,13 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
-/// entity
-#include "Engine/ECS/Entity/Entities/Camera/DebugCamera.h"
-#include "Engine/ECS/Entity/Entities/EmptyEntity/EmptyEntity.h"
-
 /// ecs
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxManager)
-	: pECS_(_ecs), pDxManager_(_dxManager) {
+EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxManager)
+	: pECSGroup_(_ecsGroup), pDxManager_(_dxManager) {
 
 	pDxDevice_ = pDxManager_->GetDxDevice();
-
-	factory_ = std::make_unique<EntityFactory>(pDxDevice_);
 	entities_.reserve(256);
 
 	LoadPrefabAll();
@@ -29,26 +23,23 @@ EntityCollection::EntityCollection(EntityComponentSystem* _ecs, DxManager* _dxMa
 
 EntityCollection::~EntityCollection() {}
 
-IEntity* EntityCollection::GenerateEntity(const std::string& _name, bool _isInit, bool _isRuntime) {
-	auto entity = factory_->Generate(_name);
+GameEntity* EntityCollection::GenerateEntity(bool _isRuntime) {
+	auto entity = std::make_unique<GameEntity>();
 	if (entity) {
 		entities_.emplace_back(std::move(entity));
 
 		/// 初期化
-		IEntity* entityPtr = entities_.back().get();
-		entityPtr->pEntityComponentSystem_ = pECS_;
+		GameEntity* entityPtr = entities_.back().get();
+		entityPtr->pECSGroup_ = pECSGroup_;
 		entityPtr->id_ = NewEntityID(_isRuntime);
-		entityPtr->CommonInitialize();
-		if (_isInit) {
-			entityPtr->Initialize();
-		}
+		entityPtr->Awake();
 
 		return entities_.back().get();
 	}
 	return nullptr;
 }
 
-void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
+void EntityCollection::RemoveEntity(GameEntity* _entity, bool _deleteChildren) {
 
 	if (_entity == nullptr) {
 		return;
@@ -58,7 +49,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 	/// 破棄可能かチェック
 	/// ------------------------------
 	auto doNotDestroyEntityItr = std::find_if(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(),
-		[&_entity](IEntity* entity) {
+		[&_entity](GameEntity* entity) {
 			return entity == _entity;
 		}
 	);
@@ -96,7 +87,7 @@ void EntityCollection::RemoveEntity(IEntity* _entity, bool _deleteChildren) {
 
 	/// entityの削除
 	auto entityItr = std::remove_if(entities_.begin(), entities_.end(),
-		[_entity](const std::unique_ptr<IEntity>& entity) {
+		[_entity](const std::unique_ptr<GameEntity>& entity) {
 			return entity.get() == _entity;
 		}
 	);
@@ -123,7 +114,7 @@ void EntityCollection::RemoveEntityId(int32_t _id) {
 }
 
 void EntityCollection::RemoveEntityAll() {
-	std::vector<IEntity*> toRemove;
+	std::vector<GameEntity*> toRemove;
 	toRemove.reserve(entities_.size()); // 最適化
 
 	for (const auto& entity : entities_) {
@@ -141,35 +132,7 @@ void EntityCollection::RemoveEntityAll() {
 
 }
 
-
-void EntityCollection::UpdateEntities() {
-	for (auto& entity : entities_) {
-		if (entity->GetParent()) {
-			continue;
-		}
-
-		UpdateEntity(entity.get());
-	}
-}
-
-void EntityCollection::UpdateEntity(IEntity* _entity) {
-	if (!_entity) {
-		return;
-	}
-
-	if (!_entity->GetActive()) {
-		return;
-	}
-
-	_entity->Update();
-	_entity->UpdateTransform();
-
-	for (auto& child : _entity->GetChildren()) {
-		UpdateEntity(child);
-	}
-}
-
-void EntityCollection::AddDoNotDestroyEntity(IEntity* _entity) {
+void EntityCollection::AddDoNotDestroyEntity(GameEntity* _entity) {
 	if (_entity == nullptr) {
 		return;
 	}
@@ -182,17 +145,10 @@ void EntityCollection::AddDoNotDestroyEntity(IEntity* _entity) {
 	doNotDestroyEntities_.push_back(_entity);
 }
 
-void EntityCollection::RemoveDoNotDestroyEntity(IEntity* _entity) {
+void EntityCollection::RemoveDoNotDestroyEntity(GameEntity* _entity) {
 	auto itr = std::remove(doNotDestroyEntities_.begin(), doNotDestroyEntities_.end(), _entity);
 	if (itr != doNotDestroyEntities_.end()) {
 		doNotDestroyEntities_.erase(itr);
-	}
-}
-
-void EntityCollection::SetFactoryRegisterFunc(std::function<void(EntityFactory*)> _func) {
-	factoryRegisterFunc_ = _func;
-	if (factoryRegisterFunc_) {
-		factoryRegisterFunc_(factory_.get());
 	}
 }
 
@@ -239,6 +195,23 @@ uint32_t EntityCollection::GetEntityId(const std::string& _name) {
 	return 0;
 }
 
+GameEntity* EntityCollection::GetEntity(size_t _entityId) {
+	/// idを検索
+	auto itr = std::find_if(
+		entities_.begin(), entities_.end(),
+		[_entityId](const std::unique_ptr<GameEntity>& entity) {
+			return entity->GetId() == _entityId;
+		}
+	);
+	
+	if (itr != entities_.end()) {
+		return (*itr).get();
+	}
+
+	Console::LogWarning("Entity not found for ID: " + std::to_string(_entityId));
+	return nullptr;
+}
+
 void EntityCollection::LoadPrefabAll() {
 	/// Assets/Prefabs フォルダから全てのプレハブを読み込む
 	std::string prefabPath = "./Assets/Prefabs/";
@@ -277,7 +250,7 @@ void EntityCollection::ReloadPrefab(const std::string& _prefabName) {
 	itr->second->Reload();
 }
 
-IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
+GameEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabName, bool _isRuntime) {
 	/// prefabが存在するかチェック
 	auto prefabItr = prefabs_.find(_prefabName);
 	if (prefabItr == prefabs_.end()) {
@@ -289,7 +262,7 @@ IEntity* EntityCollection::GenerateEntityFromPrefab(const std::string& _prefabNa
 	EntityPrefab* prefab = prefabItr->second.get();
 
 	/// entityを生成する
-	EmptyEntity* entity = GenerateEntity<EmptyEntity>(_isRuntime);
+	GameEntity* entity = GenerateEntity(_isRuntime);
 	if (entity) {
 		const std::string name = Mathf::FileNameWithoutExtension(_prefabName);
 
@@ -326,10 +299,6 @@ void EntityCollection::SetMainCamera2D(CameraComponent* _camera) {
 	mainCamera2D_ = _camera;
 }
 
-void EntityCollection::SetDebugCamera(CameraComponent* _camera) {
-	debugCamera_ = _camera;
-}
-
 CameraComponent* EntityCollection::GetMainCamera() {
 	return mainCamera_;
 }
@@ -338,19 +307,9 @@ CameraComponent* EntityCollection::GetMainCamera2D() {
 	return mainCamera2D_;
 }
 
-const std::vector<std::unique_ptr<IEntity>>& EntityCollection::GetEntities() const {
+const std::vector<std::unique_ptr<GameEntity>>& EntityCollection::GetEntities() const {
 	return entities_;
 }
 
-const CameraComponent* EntityCollection::GetDebugCamera() const {
-	return debugCamera_;
-}
 
-CameraComponent* EntityCollection::GetDebugCamera() {
-	return debugCamera_;
-}
-
-EntityFactory* EntityCollection::GetFactory() {
-	return factory_.get();
-}
 

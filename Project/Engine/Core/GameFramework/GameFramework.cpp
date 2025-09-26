@@ -28,14 +28,9 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	entityComponentSystem_ = std::make_unique<EntityComponentSystem>(dxManager_.get());
 	renderingFramework_ = std::make_unique<RenderingFramework>();
 	sceneManager_ = std::make_unique<SceneManager>(entityComponentSystem_.get());
-	monoScriptEngine_ = std::make_unique<MonoScriptEngine>();
 
 	editorManager_ = std::make_unique<EditorManager>(entityComponentSystem_.get());
 	imGuiManager_ = std::make_unique<ImGuiManager>(dxManager_.get(), windowManager_.get(), entityComponentSystem_.get(), editorManager_.get(), sceneManager_.get());
-
-	/// ポインタを保持
-	SetMonoScriptEnginePtr(monoScriptEngine_.get());
-	SetEntityComponentSystemPtr(entityComponentSystem_.get());
 
 
 	/// 各クラスの初期化を行う
@@ -53,7 +48,8 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 	windowManager_->GenerateWindow(_startSetting.windowName, _startSetting.windowSize, WindowManager::WindowType::Main);
 #endif // DEBUG_MODE
 
-	monoScriptEngine_->Initialize();
+	MonoScriptEngine* monoScriptEngine = MonoScriptEngine::GetInstance();
+	monoScriptEngine->Initialize();
 
 	/// input systemの初期化
 	Input::Initialize(windowManager_.get(), imGuiManager_.get());
@@ -66,16 +62,18 @@ void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
 
 	/// scene managerの初期化
 	sceneManager_->Initialize(renderingFramework_->GetResourceCollection());
-
+	LoadDebugJson();
 
 #ifdef DEBUG_MODE
 	imGuiManager_->Initialize(renderingFramework_->GetResourceCollection());
 	imGuiManager_->SetImGuiWindow(windowManager_->GetMainWindow());
 	renderingFramework_->SetImGuiManager(imGuiManager_.get());
-	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
 #endif // DEBUG_MODE
 
+	editorManager_->Initialize(dxManager_.get(), renderingFramework_->GetShaderCompiler());
+	SetEntityComponentSystemPtr(entityComponentSystem_->GetECSGroup("GameScene"), entityComponentSystem_->GetECSGroup("Debug"));
 
+	//DebugConfig::isDebugging = true;
 }
 
 void GameFramework::Run() {
@@ -93,18 +91,19 @@ void GameFramework::Run() {
 		editorManager_->Update(renderingFramework_->GetResourceCollection());
 		imGuiManager_->Update();
 		entityComponentSystem_->DebuggingUpdate();
+		entityComponentSystem_->OutsideOfUpdate();
 
 		///!< ゲームデバッグモードの場合は更新処理を行う
 		if (DebugConfig::isDebugging) {
 			sceneManager_->Update();
 			entityComponentSystem_->Update();
 		}
-
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
 #else
+		editorManager_->Update(renderingFramework_->GetResourceCollection());
+		entityComponentSystem_->DebuggingUpdate();
+		entityComponentSystem_->OutsideOfUpdate();
 		sceneManager_->Update();
 		entityComponentSystem_->Update();
-		entityComponentSystem_->OutsideOfRuntimeUpdateSystems(entityComponentSystem_->GetActiveEntities());
 #endif // DEBUG_MODE
 
 		/// 描画処理
@@ -116,4 +115,8 @@ void GameFramework::Run() {
 		}
 	}
 
+}
+
+void GameFramework::LoadDebugJson() {
+	sceneManager_->GetSceneIO()->Input("Debug", entityComponentSystem_->GetECSGroup("Debug"));
 }

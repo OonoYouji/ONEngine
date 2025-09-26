@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Core/Config/EngineConfig.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiGameSceneWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiSceneWindow.h"
@@ -13,10 +14,8 @@
 #include "../ChildWindows/GameWindows/ImGuiConsoleWindow.h"
 
 ImGuiGameWindow::ImGuiGameWindow(
-	EntityComponentSystem* _ecs,
-	GraphicsResourceCollection* _resourceCollection,
-	EditorManager* _editorManager,
-	SceneManager* _sceneManager) {
+	EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection,
+	EditorManager* _editorManager, SceneManager* _sceneManager) {
 
 	/// windowの設定
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
@@ -24,18 +23,19 @@ ImGuiGameWindow::ImGuiGameWindow(
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
 	imGuiFlags_ |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
-	/// ここでwindowを生成する
-	IImGuiChildWindow* inspector = AddChild(std::make_unique<ImGuiInspectorWindow>(_ecs, _editorManager));
+	/// 子windowの追加
+	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Game", _ecs, _resourceCollection, _editorManager)));
 	AddChild(std::make_unique<ImGuiGameSceneWindow>(_resourceCollection));
-	AddChild(std::make_unique<ImGuiHierarchyWindow>(_ecs, _editorManager, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
-	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _resourceCollection, _sceneManager, static_cast<ImGuiInspectorWindow*>(inspector)));
+	AddChild(std::make_unique<ImGuiNormalHierarchyWindow>("Hierarchy", _ecs, _editorManager, _sceneManager, inspector));
+	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager, inspector));
+	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _resourceCollection, _sceneManager, inspector));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_resourceCollection, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }
 
 
 
-void ImGuiGameWindow::ImGuiFunc() {
+void ImGuiGameWindow::ShowImGui() {
 
 	ImGui::SetNextWindowPos(ImVec2(0, 20));
 	ImGui::SetNextWindowSize(ImVec2(EngineConfig::kWindowSize.x, EngineConfig::kWindowSize.y));

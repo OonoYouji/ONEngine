@@ -56,6 +56,8 @@ void Mouse::Update(Window* _window) {
 		static_cast<float>(state_.lX),
 		static_cast<float>(state_.lY)
 	);
+
+	wheel_ = static_cast<float>(state_.lZ);
 }
 
 const Vector2& Mouse::GetImGuiImageMousePosition(const std::string& _name) {

@@ -4,10 +4,13 @@
 #include <mono/jit/jit.h>
 
 /// engine
+#include "Engine/Core/Utility/Input/Input.h"
+#include "Engine/Core/Utility/Input/InputSystem.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Component.h"
+#include "Engine/Scene/SceneManager.h"
 
-
-using namespace MONO_INTENRAL_METHOD;
+using namespace MONO_INTERNAL_METHOD;
 
 void AddComponentInternalCalls() {
 
@@ -44,9 +47,47 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
 
-	/// script (MonoBehavior)
-	mono_add_internal_call("MonoBehavior::InternalSetEnable", (void*)InternalSetEnable);
-	mono_add_internal_call("MonoBehavior::InternalGetEnable", (void*)InternalGetEnable);
+	/// audio source
+	mono_add_internal_call("AudioSource::InternalGetParams", (void*)InternalGetParams);
+	mono_add_internal_call("AudioSource::InternalSetParams", (void*)InternalSetParams);
+	mono_add_internal_call("AudioSource::InternalPlayOneShot", (void*)InternalPlayOneShot);
 
+}
 
+void AddEntityInternalCalls() {
+	/// entity
+	mono_add_internal_call("Entity::InternalAddComponent", (void*)InternalAddComponent);
+	mono_add_internal_call("Entity::InternalGetComponent", (void*)InternalGetComponent);
+	mono_add_internal_call("Entity::InternalGetName", (void*)InternalGetName);
+	mono_add_internal_call("Entity::InternalSetName", (void*)InternalSetName);
+	mono_add_internal_call("Entity::InternalGetChildId", (void*)InternalGetChildId);
+	mono_add_internal_call("Entity::InternalGetParentId", (void*)InternalGetParentId);
+	mono_add_internal_call("Entity::InternalSetParent", (void*)InternalSetParent);
+	mono_add_internal_call("Entity::InternalAddScript", (void*)InternalAddScript);
+	mono_add_internal_call("Entity::InternalGetScript", (void*)InternalGetScript);
+
+	mono_add_internal_call("ECSGroup::InternalCreateEntity", (void*)InternalCreateEntity);
+	mono_add_internal_call("ECSGroup::InternalDestroyEntity", (void*)InternalDestroyEntity);
+
+}
+
+void AddInputInternalCalls() {
+	mono_add_internal_call("Input::InternalTriggerKey", (void*)Input::TriggerKey);
+	mono_add_internal_call("Input::InternalPressKey", (void*)Input::PressKey);
+	mono_add_internal_call("Input::InternalReleaseKey", (void*)Input::ReleaseKey);
+
+	mono_add_internal_call("Input::InternalTriggerGamepad", (void*)Input::TriggerGamepad);
+	mono_add_internal_call("Input::InternalPressGamepad", (void*)Input::PressGamepad);
+	mono_add_internal_call("Input::InternalReleaseGamepad", (void*)Input::ReleaseGamepad);
+	mono_add_internal_call("Input::InternalGetGamepadThumb", (void*)InternalGetGamepadThumb);
+
+	mono_add_internal_call("Input::InternalTriggerMouse", (void*)Input::TriggerMouse);
+	mono_add_internal_call("Input::InternalPressMouse", (void*)Input::PressMouse);
+	mono_add_internal_call("Input::InternalReleaseMouse", (void*)Input::ReleaseMouse);
+	mono_add_internal_call("Input::InternalGetMousePosition", (void*)InternalGetMousePosition);
+	mono_add_internal_call("Input::InternalGetMouseVelocity", (void*)InternalGetMouseVelocity);
+}
+
+void AddSceneInternalCalls() {
+	mono_add_internal_call("SceneManager::InternalLoadScene", (void*)InternalLoadScene);
 }

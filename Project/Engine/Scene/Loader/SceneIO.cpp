@@ -12,40 +12,57 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
-SceneIO::SceneIO(EntityComponentSystem* _ecs)
-	: pECS_(_ecs) {
+SceneIO::SceneIO(EntityComponentSystem* _ecs) : pECS_(_ecs) {
 	fileName_ = "";
 	fileDirectory_ = "./Assets/Scene/";
 }
 SceneIO::~SceneIO() {}
 
-void SceneIO::Output(const std::string& _sceneName) {
+void SceneIO::Output(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* sceneをjsonに保存する */
 	fileName_ = _sceneName + ".json";
-	SaveScene(fileName_);
+	SaveScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::Input(const std::string& _sceneName) {
+void SceneIO::Input(const std::string& _sceneName, ECSGroup* _ecsGroup) {
 	/* jsonを読み込んでsceneに変換する */
 	fileName_ = _sceneName + ".json";
-	LoadScene(fileName_);
+	LoadScene(fileName_, _ecsGroup);
 }
 
-void SceneIO::OutputTemporary(const std::string& _sceneName) {
-	/* 一時的なシーンのjsonを保存する */
-	fileName_ = _sceneName + "_temp.json";
-	SaveScene(fileName_);
+void SceneIO::OutputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
+	tempSceneJson_.clear();
+	SaveSceneToJson(tempSceneJson_, _ecsGroup);
 }
 
-void SceneIO::InputTemporary(const std::string& _sceneName) {
-	fileName_ = _sceneName + "_temp.json";
-	LoadScene(fileName_);
+void SceneIO::InputTemporary(const std::string& _sceneName, ECSGroup* _ecsGroup) {
+	LoadSceneFromJson(tempSceneJson_, _ecsGroup);
 }
 
-void SceneIO::SaveScene(const std::string& _filename) {
+void SceneIO::SaveScene(const std::string& _filename, ECSGroup* _ecsGroup) {
 	nlohmann::json outputJson = nlohmann::json::object();
+	SaveSceneToJson(outputJson, _ecsGroup);
+	OutputJson(outputJson, _filename);
+}
 
-	auto& entities = pECS_->GetEntities();
+void SceneIO::LoadScene(const std::string& _filename, ECSGroup* _ecsGroup) {
+	std::ifstream inputFile(fileDirectory_ + _filename);
+	if (!inputFile.is_open()) {
+		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+		return;
+	}
+
+	/// json形式に変換
+	nlohmann::json inputJson;
+	inputFile >> inputJson;
+	inputFile.close();
+
+	LoadSceneFromJson(inputJson, _ecsGroup);
+}
+
+void SceneIO::SaveSceneToJson(nlohmann::json& _output, ECSGroup* _ecsGroup) {
+
+	auto& entities = _ecsGroup->GetEntities();
 	for (auto& entity : entities) {
 		/// マイナスIDはruntimeに生成されたエンティティなのでスキップ
 		if (entity->GetId() < 0) {
@@ -61,53 +78,30 @@ void SceneIO::SaveScene(const std::string& _filename) {
 			continue; // エンティティの情報が空ならスキップ
 		}
 
-		outputJson["entities"].push_back(entityJson);
+		_output["entities"].push_back(entityJson);
 	}
 
-
-	/// ファイルが無かったら生成する
-	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
-		std::filesystem::create_directories(fileDirectory_);
-	}
-
-
-	std::ofstream outputFile(fileDirectory_ + _filename);
-	if (!outputFile.is_open()) {
-		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
-	}
-
-	outputFile << outputJson.dump(4);
-	outputFile.close();
 }
 
-void SceneIO::LoadScene(const std::string& _filename) {
+void SceneIO::LoadSceneFromJson(const nlohmann::json& _input, ECSGroup* _ecsGroup) {
+	std::unordered_map<uint32_t, GameEntity*> entityMap;
 
-	std::ifstream inputFile(fileDirectory_ + _filename);
-	if (!inputFile.is_open()) {
-		Console::Log("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+	if (!_input.contains("entities")) {
 		return;
 	}
 
-	/// json形式に変換
-	nlohmann::json inputJson;
-	inputFile >> inputJson;
-	inputFile.close();
-
-	std::unordered_map<uint32_t, IEntity*> entityMap;
-
 	/// 実際にシーンに変換する
-	for (const auto& entityJson : inputJson["entities"]) {
-		const std::string& prefabName = entityJson["prefabName"];
-		const std::string& entityClassName = entityJson["className"];
-		const std::string& entityName = entityJson["name"];
-		uint32_t entityId = entityJson["id"];
+	for (const auto& entityJson : _input["entities"]) {
+		const std::string& prefabName = entityJson.value("prefabName", "");
+		const std::string& entityName = entityJson.value("name", "");
+		const uint32_t entityId = entityJson.value("id", 0);
 
-		IEntity* entity = nullptr;
+		GameEntity* entity = nullptr;
 		if (!prefabName.empty()) {
 			std::string jsonPrefabName = entityJson["prefabName"];
-			entity = pECS_->GenerateEntityFromPrefab(jsonPrefabName, false);
+			entity = _ecsGroup->GenerateEntityFromPrefab(jsonPrefabName, false);
 		} else {
-			entity = pECS_->GenerateEntity(entityClassName, false);
+			entity = _ecsGroup->GenerateEntity(false);
 		}
 
 		if (entity) {
@@ -117,20 +111,26 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			/// prefabがないならシーンに保存されたjsonからエンティティを復元
 			if (prefabName.empty()) {
 				EntityJsonConverter::FromJson(entityJson, entity);
+			} else {
+				EntityJsonConverter::TransformFromJson(entityJson, entity);
+				if (Variables* vars = entity->GetComponent<Variables>()) {
+					vars->LoadJson("./Assets/Jsons/" + entityName + ".json");
+				}
 			}
+
 			entityMap[entityId] = entity;
 		}
 	}
 
 
 	/// エンティティの親子関係を設定
-	for (const auto& entityJson : inputJson["entities"]) {
+	for (const auto& entityJson : _input["entities"]) {
 		int32_t entityId = entityJson["id"];
 		if (entityMap.find(entityId) == entityMap.end()) {
 			continue; // エンティティが見つからない場合はスキップ
 		}
 
-		IEntity* entity = entityMap[entityId];
+		GameEntity* entity = entityMap[entityId];
 		if (entityJson.contains("parent") && !entityJson["parent"].is_null()) {
 			int32_t parentId = entityJson["parent"];
 			if (entityMap.find(parentId) != entityMap.end()) {
@@ -138,13 +138,20 @@ void SceneIO::LoadScene(const std::string& _filename) {
 			}
 		}
 	}
+}
 
-
-	/// 全てのエンティティを初期化
-	for (const auto& entityPair : entityMap) {
-		IEntity* entity = entityPair.second;
-		if (entity) {
-			entity->Initialize();
-		}
+void SceneIO::OutputJson(const nlohmann::json& _json, const std::string& _filename) {
+	/// ファイルが無かったら生成する
+	if (!std::filesystem::exists(fileDirectory_ + _filename)) {
+		std::filesystem::create_directories(fileDirectory_);
 	}
+
+	/// ファイルに保存する
+	std::ofstream outputFile(fileDirectory_ + _filename);
+	if (!outputFile.is_open()) {
+		Console::LogError("SceneIO: ファイルのオープンに失敗しました: " + fileDirectory_ + _filename);
+	}
+
+	outputFile << _json.dump(4);
+	outputFile.close();
 }

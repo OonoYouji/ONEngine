@@ -10,7 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
-#include "Engine/ECS/Entity/Interface/IEntity.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentEditCommands.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
@@ -47,7 +47,6 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<Skybox>([&](IComponent* _component) { COMP_DEBUG::SkyboxDebug(static_cast<Skybox*>(_component)); });
 
 	/// collider
-	RegisterComponent<ToTerrainCollider>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<SphereCollider>([&](IComponent* _component) { COMP_DEBUG::SphereColliderDebug(static_cast<SphereCollider*>(_component)); });
 	RegisterComponent<BoxCollider>([&](IComponent* _component) { COMP_DEBUG::BoxColliderDebug(static_cast<BoxCollider*>(_component)); });
 
@@ -58,14 +57,14 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 
 }
 
-void ImGuiPrefabInspectorWindow::ImGuiFunc() {
+void ImGuiPrefabInspectorWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab inspector", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
 	}
 
 	SelectedType selectedType = kNone;
-	if (reinterpret_cast<IEntity*>(selectedPointer_)) {
+	if (reinterpret_cast<GameEntity*>(selectedPointer_)) {
 		selectedType = kEntity;
 	}
 
@@ -76,8 +75,8 @@ void ImGuiPrefabInspectorWindow::ImGuiFunc() {
 
 
 void ImGuiPrefabInspectorWindow::EntityInspector() {
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (!dynamic_cast<IEntity*>(entity)) {
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
+	if (!dynamic_cast<GameEntity*>(entity)) {
 		return;
 	}
 
@@ -87,7 +86,7 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::MenuItem("Apply")) {
 			pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
-			pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
+			//pECS_->ReloadPrefab(entity->GetPrefabName()); // Prefabを再読み込み
 		}
 
 		ImGui::EndMenuBar();
@@ -216,9 +215,9 @@ void ImGuiPrefabInspectorWindow::EntityInspector() {
 
 }
 
-IEntity* ImGuiPrefabInspectorWindow::GetSelectedEntity() const {
-	IEntity* entity = reinterpret_cast<IEntity*>(selectedPointer_);
-	if (dynamic_cast<IEntity*>(entity)) {
+GameEntity* ImGuiPrefabInspectorWindow::GetSelectedEntity() const {
+	GameEntity* entity = reinterpret_cast<GameEntity*>(selectedPointer_);
+	if (dynamic_cast<GameEntity*>(entity)) {
 		return entity;
 	}
 

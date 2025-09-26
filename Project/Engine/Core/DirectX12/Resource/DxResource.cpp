@@ -48,24 +48,18 @@ void DxResource::CreateUAVResource(DxDevice* _dxDevice, class DxCommand* _dxComm
 	);
 
 
-	// 1. Create on DEFAULT heap
+	currentState_ = D3D12_RESOURCE_STATE_COMMON;
 	_dxDevice->GetDevice()->CreateCommittedResource(
 		&heapProps,
 		D3D12_HEAP_FLAG_NONE,
 		&desc,
-		D3D12_RESOURCE_STATE_COMMON, // ← 初期状態は素直にCOMMON
+		currentState_,
 		nullptr,
 		IID_PPV_ARGS(&resource_)
 	);
 
-	// 2. Barrier to UNORDERED_ACCESS before dispatch
-	CD3DX12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		resource_.Get(),
-		D3D12_RESOURCE_STATE_COMMON,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
 
-	_dxCommand->GetCommandList()->ResourceBarrier(1, &uavBarrier);
+	CreateBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS, _dxCommand);
 
 	Assert(SUCCEEDED(result), "UAV Resource creation failed.");
 }
@@ -151,6 +145,10 @@ void DxResource::CreateBarrier(D3D12_RESOURCE_STATES _after, DxCommand* _dxComma
 
 ID3D12Resource* DxResource::Get() const {
 	return resource_.Get();
+}
+
+ComPtr<ID3D12Resource>& DxResource::GetComPtr() {
+	return resource_;
 }
 
 D3D12_RESOURCE_STATES DxResource::GetCurrentState() const {

@@ -35,7 +35,7 @@ public:
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理
-	void ImGuiFunc() override;
+	void ShowImGui() override;
 
 	void SetWindowName(const std::string& _name);
 

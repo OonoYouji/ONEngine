@@ -16,8 +16,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ConstantBuffer() {}
-	~ConstantBuffer() {}
+	ConstantBuffer() = default;
+	~ConstantBuffer() = default;
 
 	/// @brief バッファの生成
 	/// @param _dxDevice DxDeviceへのポインタ

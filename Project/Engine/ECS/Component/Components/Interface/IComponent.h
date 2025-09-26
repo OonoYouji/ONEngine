@@ -12,13 +12,12 @@ class IComponent {
 public:
 	virtual ~IComponent() = default;
 
-	/// @brief このcomponentのownerを設定
-	/// @param _owner オーナーとなるentity
-	void SetOwner(class IEntity* _owner);
+	/// componentの状態を初期化する
+	virtual void Reset();
 
-	/// @brief ownerの取得
-	/// @return ownerのentity
-	IEntity* GetOwner() const;
+	void SetOwner(class GameEntity* _owner);
+	GameEntity* GetOwner() const;
+
 
 public:
 	/// ===========================================
@@ -33,7 +32,7 @@ protected:
 	/// protected : objects
 	/// ===========================================
 
-	class IEntity* owner_ = nullptr;
+	class GameEntity* owner_ = nullptr;
 };
 
 /// ===================================================

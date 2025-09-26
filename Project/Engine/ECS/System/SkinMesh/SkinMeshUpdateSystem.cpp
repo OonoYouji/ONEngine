@@ -8,22 +8,18 @@
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
 	: pDxManager_(_dxManager), pResourceCollection_(_resourceCollection) {}
 
-void SkinMeshUpdateSystem::RuntimeUpdate([[maybe_unused]] EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities) {
+void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
-	std::vector<SkinMeshRenderer*> skinMeshRenderers;
-	for (auto& entity : _entities) {
-		SkinMeshRenderer* skinMesh = entity->GetComponent<SkinMeshRenderer>();
-		if (skinMesh && skinMesh->enable) {
-			skinMeshRenderers.push_back(skinMesh);
+	ComponentArray<SkinMeshRenderer>* skinMeshArray = _ecs->GetComponentArray<SkinMeshRenderer>();
+	if (!skinMeshArray || skinMeshArray->GetUsedComponents().empty()) {
+		return; ///< スキンメッシュのコンポーネントが存在しない場合は何もしない
+	}
+
+	for (auto& skinMesh : skinMeshArray->GetUsedComponents()) {
+		/// 以降の処理を無視する条件
+		if (!skinMesh || skinMesh->enable || !skinMesh->GetOwner()->GetActive()) {
+			continue;
 		}
-	}
-
-	if (skinMeshRenderers.empty()) {
-		return; ///< 描画するスキンメッシュがない場合は何もしない
-	}
-
-
-	for (auto& skinMesh : skinMeshRenderers) {
 
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {

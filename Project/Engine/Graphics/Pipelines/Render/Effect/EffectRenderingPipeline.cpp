@@ -91,7 +91,7 @@ void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 }
 
 
-void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vector<IEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
+void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
 	std::unordered_map<size_t, std::unordered_map<std::string, std::list<Effect*>>> blendMeshEffectMap;
 
@@ -125,7 +125,7 @@ void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vect
 
 		/// buffer dataのセット、先頭の texture gpu handle をセットする
 		auto& textures = pResourceCollection_->GetTextures();
-		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin())->GetSRVGPUHandle());
+		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 
 		for (auto& [meshPath, effects] : meshPerComp) {
@@ -154,7 +154,7 @@ void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vect
 					size_t textureIndex = pResourceCollection_->GetTextureIndex(effect->GetTexturePath());
 					textureIdBuffer_->SetMappedData(
 						transformIndex_,
-						textures[textureIndex]->GetSRVDescriptorIndex()
+						textures[textureIndex].GetSRVDescriptorIndex()
 					);
 
 					/// transform のセット
@@ -167,9 +167,9 @@ void EffectRenderingPipeline::Draw(class EntityComponentSystem*, const std::vect
 				}
 
 				/// 上でセットしたデータをバインド
-				materialBuffer->BindToCommandList(1, commandList);
-				textureIdBuffer_->BindToCommandList(2, commandList);
-				transformBuffer_->BindToCommandList(4, commandList);
+				materialBuffer->SRVBindForGraphicsCommandList(commandList, 1);
+				textureIdBuffer_->SRVBindForGraphicsCommandList(commandList, 2);
+				transformBuffer_->SRVBindForGraphicsCommandList(commandList, 4);
 
 				/// 現在のinstance idをセット
 				commandList->SetGraphicsRoot32BitConstant(5, instanceIndex_, 0);

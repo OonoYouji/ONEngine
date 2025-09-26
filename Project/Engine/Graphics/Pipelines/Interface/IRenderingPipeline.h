@@ -26,10 +26,12 @@ public:
 	/// @param _shaderCompiler シェーダーのコンパイラーへのポインタ
 	virtual void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) = 0;
 
+	virtual void PreDraw(class ECSGroup* _ecs, class CameraComponent* _camera, DxCommand* _dxCommand);
+
 	/// @brief 描画処理を行う
 	/// @param _dxCommand DxCommandへのポインタ
 	/// @param _entityCollection EntityCollectionへのポインタ
-	virtual void Draw(class EntityComponentSystem* _ecs, const std::vector<class IEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) = 0;
+	virtual void Draw(class ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) = 0;
 
 protected:
 

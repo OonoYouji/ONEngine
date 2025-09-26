@@ -36,6 +36,9 @@ public:
 	/// @brief ゲームのメインループ
 	void Run();
 
+	/// debug用のシーン.jsonを読み込む
+	void LoadDebugJson();
+
 private:
 
 	/// ===================================================
@@ -51,8 +54,6 @@ private:
 	std::unique_ptr<EditorManager>         editorManager_ = nullptr;
 
 	std::unique_ptr<RenderingFramework>    renderingFramework_;
-
-	std::unique_ptr<MonoScriptEngine>      monoScriptEngine_ = nullptr;
 
 };
 

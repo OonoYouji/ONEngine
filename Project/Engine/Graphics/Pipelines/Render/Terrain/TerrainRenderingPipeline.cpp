@@ -24,7 +24,6 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 
 		pipeline_ = std::make_unique<GraphicsPipeline>();
-
 		pipeline_->SetShader(&shader);
 
 		/// input element
@@ -42,16 +41,17 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 1); /// ROOT_PARAM_TRANSFORM
 
 		/// ps
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// ROOT_PARAM_MATERIAL
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// grass
 		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// dirt
 		pipeline_->AddDescriptorRange(2, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// rock
 		pipeline_->AddDescriptorRange(3, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// snow
+		pipeline_->AddDescriptorRange(4, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// ROOT_PARAM_MATERIAL
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 1); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// textures
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); /// textures
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 4); /// ROOT_PARAM_MATERIAL
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -61,7 +61,7 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 
 		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 		depthStencilDesc.DepthEnable = TRUE;
@@ -76,18 +76,17 @@ void TerrainRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 	{	/// buffer
 		transformBuffer_.Create(_dxManager->GetDxDevice());
-		materialBuffer_.Create(_dxManager->GetDxDevice());
+		materialBuffer_.Create(1, _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 	}
 
 	pTerrain_ = nullptr;
 }
 
-void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>&, CameraComponent* _camera, DxCommand* _dxCommand) {
+
 
 	/// 地形を取得
-	Terrain* prevTerrain_ = pTerrain_;
 	pTerrain_ = nullptr;
-
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		return;
@@ -100,7 +99,6 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 		}
 	}
 
-
 	/// 見つかんなかったらreturn
 	if (pTerrain_ == nullptr) {
 		return;
@@ -108,6 +106,12 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 
 	/// terrainが生成されていないならreturn
 	if (!pTerrain_->GetIsCreated()) {
+		Console::LogInfo("TerrainRenderingPipeline::Draw: Terrain is not created");
+		return;
+	}
+
+	if (!pTerrain_->enable) {
+		Console::LogInfo("TerrainRenderingPipeline::Draw: Terrain is disabled");
 		return;
 	}
 
@@ -115,10 +119,19 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	const Matrix4x4& matWorld = pTerrain_->GetOwner()->GetTransform()->GetMatWorld();
 	transformBuffer_.SetMappedData(matWorld);
 
+	GameEntity* entity = pTerrain_->GetOwner();
 	/// bufferの値を更新
 	transformBuffer_.SetMappedData(matWorld);
-	materialBuffer_.SetMappedData(
-		Material(Vector4::kWhite, 1, pTerrain_->GetOwner()->GetId())
+	materialBuffer_.SetMappedData( 
+		0, 
+		Material{
+			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
+			.baseColor = Vector4(1, 2, 3, 4),
+			.postEffectFlags = 1,
+			.entityId = entity->GetId(),
+			.baseTextureId = 0,
+			.normalTextureId = 0,
+		}
 	);
 
 
@@ -128,23 +141,21 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
 	transformBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TRANSFORM);
-	materialBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
+	materialBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 
 	/// texs
 	const auto& textures = pResourceCollection_->GetTextures();
-
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
 		size_t index = pResourceCollection_->GetTextureIndex(path);
 		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
-			textures[index]->GetSRVGPUHandle()
+			textures[index].GetSRVGPUHandle()
 		);
 	}
 
 
 	/// vbvとibvのリソースバリアーを変える
-
 	DxResource& vertexBuffer = pTerrain_->GetRwVertices().GetResource();
 	vertexBuffer.CreateBarrier(
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
@@ -155,8 +166,8 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	/// vbv setting
 	D3D12_VERTEX_BUFFER_VIEW vbv = {};
 	vbv.BufferLocation = vertexBuffer.Get()->GetGPUVirtualAddress();
-	vbv.StrideInBytes  = sizeof(TerrainVertex);
-	vbv.SizeInBytes    = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
+	vbv.StrideInBytes = sizeof(TerrainVertex);
+	vbv.SizeInBytes = sizeof(TerrainVertex) * pTerrain_->GetMaxVertexNum();
 	cmdList->IASetVertexBuffers(0, 1, &vbv);
 
 
@@ -170,20 +181,17 @@ void TerrainRenderingPipeline::Draw(class EntityComponentSystem* _ecs, const std
 	/// ibv setting
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
 	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
-	ibv.SizeInBytes    = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
-	ibv.Format         = DXGI_FORMAT_R32_UINT;
+	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * pTerrain_->GetMaxIndexNum());
+	ibv.Format = DXGI_FORMAT_R32_UINT;
 	cmdList->IASetIndexBuffer(&ibv);
-
-	/// vbv ibv setting
-	//indexBuffer_.BindForCommandList(cmdList);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	Console::LogInfo("TerrainRenderingPipeline::Draw");
 	cmdList->DrawIndexedInstanced(
 		static_cast<UINT>(pTerrain_->GetMaxIndexNum()),
 		1, 0, 0, 0
 	);
-
 
 
 	/// 元の状態に戻す

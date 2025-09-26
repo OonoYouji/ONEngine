@@ -4,9 +4,11 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 
-CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {}
+CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {
+	pMainCamera_ = nullptr;
+}
 
-void CameraUpdateSystem::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs, const std::vector<class IEntity*>&) {
+void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// カメラのcomponentを集める
 
 	ComponentArray<CameraComponent>* cameraArray = _ecs->GetComponentArray<CameraComponent>();
@@ -29,26 +31,36 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(EntityComponentSystem* _ecs, con
 		cameraComponent->UpdateViewProjection();
 
 		/// main camera かどうか
-		if (cameraComponent->GetIsMainCamera()) {
-			/// 新しくmain cameraに設定された
-			if (pMainCamera_ != cameraComponent) {
-				/// 古い方をfalseに戻す
-				if (pMainCamera_) {
-					pMainCamera_->SetIsMainCamera(false);
-				}
+		if (cameraComponent->GetIsMainCameraRequest()) {
 
-				pMainCamera_ = cameraComponent; ///< main cameraを設定
+			int type = cameraComponent->GetCameraType();
+			if (type == static_cast<int>(CameraType::Type3D)) {
+				if (pMainCamera_ != cameraComponent) {
+					/// 古い方をfalseに戻す
+					if (pMainCamera_ && pMainCamera_->cameraType_ == static_cast<int>(CameraType::Type3D)) {
+						pMainCamera_->SetIsMainCameraRequest(false);
+					}
+					pMainCamera_ = cameraComponent; ///< main cameraを設定
+				}
+			} else if (type == static_cast<int>(CameraType::Type2D)) {
+				if (pMainCamera2D_ != cameraComponent) {
+					/// 古い方をfalseに戻す
+					if (pMainCamera2D_ && pMainCamera_->cameraType_ == static_cast<int>(CameraType::Type2D)) {
+						pMainCamera2D_->SetIsMainCameraRequest(false);
+					}
+					pMainCamera2D_ = cameraComponent; ///< main camera 2Dを設定
+				}
 			}
+
 		}
 	}
 
 	/// ecsにmain cameraを設定
-	if (pMainCamera_) {
-		_ecs->SetMainCamera(pMainCamera_);
-	}
+	_ecs->SetMainCamera(pMainCamera_);
+	_ecs->SetMainCamera2D(pMainCamera2D_);
 
 }
 
-void CameraUpdateSystem::RuntimeUpdate(EntityComponentSystem*, const std::vector<class IEntity*>&) {
-	
+void CameraUpdateSystem::RuntimeUpdate(ECSGroup*) {
+
 }

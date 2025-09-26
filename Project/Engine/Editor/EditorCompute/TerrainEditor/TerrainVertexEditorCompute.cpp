@@ -48,12 +48,11 @@ void TerrainVertexEditorCompute::Initialize(ShaderCompiler* _shaderCompiler, DxM
 
 void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _resourceCollection) {
 
-	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		Console::LogError("TerrainVertexEditorCompute::Execute: Terrain component array is null");
 		return;
 	}
-
 
 	Terrain* pTerrain = nullptr;
 	for (auto& terrain : terrainArray->GetUsedComponents()) {
@@ -73,10 +72,8 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 		return;
 	}
 
-	/// 押していないときは処理をしない
-	if (!Input::TriggerMouse(Mouse::Left)) {
-		return;
-	}
+
+
 
 	/// マウスが範囲外なら処理しない
 	const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
@@ -97,8 +94,9 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	if (Input::PressKey(DIK_LCONTROL) && !Input::PressKey(DIK_LSHIFT)) {
 
 		/// 編集モードの変更
-		if (Input::TriggerKey(DIK_V)) { editMode_ = 0; }
-		if (Input::TriggerKey(DIK_B)) { editMode_ = 1; }
+		if (Input::TriggerKey(DIK_N)) { editMode_ = 0; }
+		if (Input::TriggerKey(DIK_V)) { editMode_ = 1; }
+		if (Input::TriggerKey(DIK_B)) { editMode_ = 2; }
 
 		/// 編集するテクスチャのインデックスの変更
 		if (Input::TriggerKey(DIK_1)) { editTextureIndex_ = 0; }
@@ -112,8 +110,15 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	);
 
 
-	/// pipelineの設定&実行
+	
+	/// 押していないときは処理をしない
+	if (!Input::TriggerMouse(Mouse::Left)) {
+		return;
+	}
 
+
+
+	/// pipelineの設定&実行
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 	auto cmdList = _dxCommand->GetCommandList();
 
@@ -122,7 +127,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 	inputInfo_.BindForComputeCommandList(cmdList, CBV_INPUT_INFO);
 
 	/// UAV
-	pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
+	pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 
 	/// SRV
 	const Texture* positionTexture = _resourceCollection->GetTexture("debugWorldPosition");

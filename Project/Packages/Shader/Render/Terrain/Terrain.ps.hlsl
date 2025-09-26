@@ -2,29 +2,23 @@
 
 #include "../../ConstantBufferData/Material.hlsli"
 
-ConstantBuffer<Material> material : register(b0);
 
 Texture2D<float4> texGrass : register(t0);
 Texture2D<float4> texDirt : register(t1);
 Texture2D<float4> texRock : register(t2);
 Texture2D<float4> texSnow : register(t3);
+StructuredBuffer<Material> material : register(t4);
 
 SamplerState textureSampler : register(s0);
-
-static const float3x3 uvTransform = float3x3(
-	100, 0, 0,
-	0, 100, 0,
-	0, 0, 1
-);
-
-
 
 PSOutput main(VSOutput input) {
 	PSOutput output;
 	
+	float3x3 matUVTransform = MatUVTransformToMatrix(material[0].uvTransform);
+
 	float4 blend = input.splatBlend;
-	float2 uv = mul(float3(input.uv, 1), uvTransform).xy;
-	
+	float2 uv = mul(float3(input.uv, 1), matUVTransform).xy;
+
 	float4 grass = texGrass.Sample(textureSampler, uv);
 	float4 dirt = texDirt.Sample(textureSampler, uv);
 	float4 rock = texRock.Sample(textureSampler, uv);
@@ -38,7 +32,7 @@ PSOutput main(VSOutput input) {
 	
 	output.normal = float4(input.normal, 1);
 	output.wPosition = input.wPosition;
-	output.flags = float4(material.postEffectFlags, material.entityId, input.index, 1);
+	output.flags = float4(material[0].postEffectFlags, material[0].entityId, input.index, 1);
 	
 	return output;
 }

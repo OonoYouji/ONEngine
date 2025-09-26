@@ -21,20 +21,15 @@ void Transform::Update() {
 	matWorld = Matrix4x4::MakeScale(scale) * Matrix4x4::MakeRotate(Quaternion::Normalize(rotate)) * Matrix4x4::MakeTranslate(position);
 }
 
+void Transform::Reset() {
+	position = Vector3::kZero;
+	rotate = Quaternion::kIdentity;
+	scale = Vector3::kOne;
+	matWorld = Matrix4x4::kIdentity;
+}
+
 void Transform::SetPosition(const Vector3& _v) {
 	position = _v;
-}
-
-void Transform::SetPositionX(float _x) {
-	position.x = _x;
-}
-
-void Transform::SetPositionY(float _y) {
-	position.y = _y;
-}
-
-void Transform::SetPositionZ(float _z) {
-	position.z = _z;
 }
 
 void Transform::SetRotate(const Vector3& _v) {
@@ -47,18 +42,6 @@ void Transform::SetRotate(const Quaternion& _q) {
 
 void Transform::SetScale(const Vector3& _v) {
 	scale = _v;
-}
-
-void Transform::SetScaleX(float _x) {
-	scale.x = _x;
-}
-
-void Transform::SetScaleY(float _y) {
-	scale.y = _y;
-}
-
-void Transform::SetScaleZ(float _z) {
-	scale.z = _z;
 }
 
 const Vector3& Transform::GetPosition() const {
@@ -82,6 +65,12 @@ const Matrix4x4& Transform::GetMatWorld() const {
 /// mono からのTransform取得用関数
 /// ===================================================
 
+void UpdateTransform(Transform* _transform) {
+	if (GameEntity* entity = _transform->GetOwner()) {
+		entity->UpdateTransform();
+	}
+}
+
 void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z) {
 	Transform* transform = reinterpret_cast<Transform*>(_nativeHandle);
 	if (!transform) {
@@ -89,7 +78,7 @@ void InternalGetPosition(uint64_t _nativeHandle, float* _x, float* _y, float* _z
 		return;
 	}
 
-	Vector3 position = Matrix4x4::Transform({}, transform->matWorld);
+	const Vector3& position = transform->position;
 
 	if (_x) { *_x = position.x; }
 	if (_y) { *_y = position.y; }
@@ -143,7 +132,7 @@ void InternalSetPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	transform->position.x = _x;
 	transform->position.y = _y;
 	transform->position.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float _z) {
@@ -156,7 +145,7 @@ void InternalSetLocalPosition(uint64_t _nativeHandle, float _x, float _y, float 
 	transform->position.x = _x;
 	transform->position.y = _y;
 	transform->position.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, float _w) {
@@ -170,7 +159,7 @@ void InternalSetRotate(uint64_t _nativeHandle, float _x, float _y, float _z, flo
 	transform->rotate.y = _y;
 	transform->rotate.z = _z;
 	transform->rotate.w = _w;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
@@ -183,7 +172,7 @@ void InternalSetScale(uint64_t _nativeHandle, float _x, float _y, float _z) {
 	transform->scale.x = _x;
 	transform->scale.y = _y;
 	transform->scale.z = _z;
-	transform->Update(); // 更新を呼び出す
+	UpdateTransform(transform); // 更新を呼び出す
 }
 
 void COMP_DEBUG::TransformDebug(Transform* _transform) {

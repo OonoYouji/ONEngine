@@ -9,8 +9,8 @@
 class SceneFactory final : public ISceneFactory {
 public:
 
-	SceneFactory();
-	~SceneFactory();
+	SceneFactory() = default;
+	~SceneFactory() = default;
 
 	/// <summary>
 	/// 初期化

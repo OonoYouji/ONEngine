@@ -1,17 +1,16 @@
 {
-    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
             "position": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 72.69215393066406,
+                "y": 3.9130032062530518,
+                "z": 192.8489227294922
             },
             "rotate": {
                 "w": 1.0,
                 "x": 0.0,
-                "y": 0.0,
+                "y": -0.0,
                 "z": 0.0
             },
             "scale": {
@@ -27,19 +26,35 @@
         {
             "color": {
                 "w": 1.0,
-                "x": 0.9824945330619812,
+                "x": 1.0,
                 "y": 0.0,
                 "z": 0.0
             },
             "enable": 1,
             "meshPath": "./Assets/Models/objects/PuzzleStand/PuzzleStand.obj",
+            "postEffectFlags": 1,
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
         {
             "enable": 1,
-            "scriptName": [
-                "PuzzleStage"
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "PuzzleStartController"
+                },
+                {
+                    "enable": true,
+                    "name": "PuzzleStage"
+                },
+                {
+                    "enable": true,
+                    "name": "PuzzleClearChecker"
+                },
+                {
+                    "enable": true,
+                    "name": "PuzzleClearEffect"
+                }
             ],
             "type": "Script"
         },
@@ -49,7 +64,7 @@
             "type": "SphereCollider"
         }
     ],
-    "id": -1,
+    "id": 1,
     "name": "PuzzleStand",
     "parent": null,
     "prefabName": "PuzzleStand.prefab"

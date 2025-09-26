@@ -1,5 +1,4 @@
 {
-    "className": "EmptyEntity",
     "components": [
         {
             "enable": 1,
@@ -15,9 +14,9 @@
                 "z": 0.0
             },
             "scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
+                "x": 0.10000000149011612,
+                "y": 0.10000000149011612,
+                "z": 0.10000000149011612
             },
             "type": "Transform"
         },
@@ -33,18 +32,22 @@
             },
             "enable": 1,
             "meshPath": "./Assets/Models/entity/puzzle/GoalBlock.obj",
+            "postEffectFlags": 1,
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         },
         {
             "enable": 1,
-            "scriptName": [
-                "Block"
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Block"
+                }
             ],
             "type": "Script"
         }
     ],
-    "id": -9,
+    "id": 3,
     "name": "Goal",
     "parent": null,
     "prefabName": "Goal.prefab"

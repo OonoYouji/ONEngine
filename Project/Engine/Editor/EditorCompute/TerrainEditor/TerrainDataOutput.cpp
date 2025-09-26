@@ -50,7 +50,7 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 	}
 
 	/// 地形の component があるのかチェック
-	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
+	ComponentArray<Terrain>* terrainArray = _ecs->GetCurrentGroup()->GetComponentArray<Terrain>();
 	if (!terrainArray) {
 		return;
 	}
@@ -79,14 +79,14 @@ void TerrainDataOutput::Execute(EntityComponentSystem* _ecs, DxCommand* _dxComma
 	auto cmdList = _dxCommand->GetCommandList();
 
 	terrainSize_.BindForComputeCommandList(cmdList, CBV_TERRAIN_SIZE);
-	pTerrain->GetRwVertices().BindForComputeCommandList(UAV_VERTICES, cmdList);
+	pTerrain->GetRwVertices().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
 	cmdList->SetComputeRootDescriptorTable(UAV_OUTPUT_VERTEX_TEXTURE, outputVertexTexture_.GetUAVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(UAV_OUTPUT_SPLAT_BLEND_TEXTURE, outputSplatBlendTexture_.GetUAVGPUHandle());
 
 	const size_t threadGroupSize = 16;
 	cmdList->Dispatch(
-		(width + threadGroupSize - 1) / threadGroupSize, 
-		(height + threadGroupSize - 1) / threadGroupSize, 
+		(width + threadGroupSize - 1) / threadGroupSize,
+		(height + threadGroupSize - 1) / threadGroupSize,
 		1
 	);
 

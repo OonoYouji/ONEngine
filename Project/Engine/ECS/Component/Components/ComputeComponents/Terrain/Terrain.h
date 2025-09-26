@@ -16,10 +16,19 @@
 #include "TerrainVertex.h"
 
 
+class Terrain;
+namespace COMP_DEBUG {
+	void TerrainDebug(Terrain* _terrain);
+} // namespace COMP_DEBUG
+
+
 /// ///////////////////////////////////////////////////
 /// 地形のコンポーネント
 /// ///////////////////////////////////////////////////
 class Terrain : public IComponent {
+	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain);
+	friend void from_json(const nlohmann::json& _j, Terrain& _t);
+	friend void to_json(nlohmann::json& _j, const Terrain& _t);
 public:
 	/// =========================================
 	/// public : sub class
@@ -57,8 +66,6 @@ private:
 	float brushStrength_;
 
 	/* ----- terrain ----- */
-	std::vector<uint32_t> indices_; ///< インデックスデータ
-
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 	uint32_t maxVertexNum_;
 	uint32_t maxIndexNum_;
@@ -67,12 +74,14 @@ private:
 	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
 
 
+	/* ----- flags ----- */
+
+	bool isRenderingProcedural_;
+
 public:
 	/// ===================================================
 	/// public : accessor
 	/// ====================================================
-
-	const std::vector<uint32_t>& GetIndices() const;
 
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
@@ -97,12 +106,12 @@ public:
 	float GetBrushStrength() const;
 	void SetBrushStrength(float _strength);
 
+
+	/* ----- flags ----- */
+	bool GetIsRenderingProcedural() const;
+	void SetIsRenderingProcedural(bool _isRenderingProcedural);
+
 };
-
-
-namespace COMP_DEBUG {
-	void TerrainDebug(Terrain* _terrain);
-} // namespace COMP_DEBUG
 
 
 

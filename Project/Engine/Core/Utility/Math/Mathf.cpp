@@ -98,6 +98,14 @@ std::string Mathf::FileNameWithoutExtension(const std::string& _filename) {
 	return _filename.substr(0, lastDot);
 }
 
+std::string Mathf::FileExtension(const std::string& _filename) {
+	size_t lastDot = _filename.find_last_of('.');
+	if (lastDot == std::string::npos) {
+		return "";  // 拡張子がなければ空文字を返す
+	}
+	return _filename.substr(lastDot); // 拡張子を返す
+}
+
 std::vector<std::vector<int>> Mathf::LoadCSV(const std::string& _filePath) {
 	std::vector<std::vector<int>> data;
 

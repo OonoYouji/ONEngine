@@ -3,7 +3,16 @@
 Model::Model() {}
 Model::~Model() {}
 
-void Model::SetMeshes(std::vector<std::unique_ptr<Mesh>>&& _meshes) {
+void Model::AddMesh(std::shared_ptr<Mesh>&& _mesh) {
+	meshes_.push_back(std::move(_mesh));
+}
+
+Mesh* Model::CreateMesh() {
+	meshes_.emplace_back(std::make_shared<Mesh>());
+	return meshes_.back().get();
+}
+
+void Model::SetMeshes(std::vector<std::shared_ptr<Mesh>>&& _meshes) {
 	if (_meshes.size() > meshes_.size()) {
 		meshes_.resize(_meshes.size());
 	}
@@ -13,12 +22,16 @@ void Model::SetMeshes(std::vector<std::unique_ptr<Mesh>>&& _meshes) {
 	}
 }
 
-const std::vector<std::unique_ptr<Mesh>>& Model::GetMeshes() const {
+const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const {
 	return meshes_;
 }
 
-std::vector<std::unique_ptr<Mesh>>& Model::GetMeshes() {
+std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() {
 	return meshes_;
+}
+
+void Model::SetPath(const std::string& _path) {
+	path_ = _path;
 }
 
 void Model::SetRootNode(const Node& _node) {
@@ -27,6 +40,10 @@ void Model::SetRootNode(const Node& _node) {
 
 void Model::SetAnimationDuration(float _duration) {
 	duration_ = _duration;
+}
+
+const std::string& Model::GetPath() const {
+	return path_;
 }
 
 const Node& Model::GetRootNode() const {

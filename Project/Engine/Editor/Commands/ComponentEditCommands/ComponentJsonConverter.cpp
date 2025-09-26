@@ -10,6 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 
 /// //////////////////////////////////////////////////
@@ -44,7 +45,6 @@ namespace {
 			Register<Skybox>();
 
 			/// collision
-			Register<ToTerrainCollider>();
 			Register<SphereCollider>();
 			Register<BoxCollider>();
 		}
@@ -163,22 +163,6 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 		{ "intensity", _l.GetIntensity() },
 		{ "direction", _l.GetDirection() },
 		{ "color", _l.GetColor() }
-	};
-}
-
-void from_json(const nlohmann::json& _j, AudioSource& _a) {
-	_a.SetVolume(_j.at("volume").get<float>());
-	_a.SetPitch(_j.at("pitch").get<float>());
-	_a.SetAudioPath(_j.at("path").get<std::string>());
-}
-
-void to_json(nlohmann::json& _j, const AudioSource& _a) {
-	_j = nlohmann::json{
-		{ "type", "AudioSource" },
-		{ "enable", _a.enable },
-		{ "volume", _a.GetVolume() },
-		{ "pitch", _a.GetPitch() },
-		{ "path", _a.GetAudioPath() }
 	};
 }
 
@@ -348,19 +332,6 @@ void to_json(nlohmann::json& _j, const CustomMeshRenderer& _m) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, SpriteRenderer& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	_s.SetTexturePath(_j.at("texturePath").get<std::string>());
-}
-
-void to_json(nlohmann::json& _j, const SpriteRenderer& _s) {
-	_j = nlohmann::json{
-		{ "type", "SpriteRenderer" },
-		{ "enable", _s.enable },
-		{ "texturePath", _s.GetTexturePath() }
-	};
-}
-
 void from_json(const nlohmann::json& _j, Line2DRenderer& _l) {
 	_l.enable = _j.at("enable").get<int>();
 }
@@ -385,44 +356,7 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, ToTerrainCollider& _c) {
-	_c.enable = _j.at("enable").get<int>();
-}
 
-void to_json(nlohmann::json& _j, const ToTerrainCollider& _c) {
-	_j = nlohmann::json{
-		{ "type", "ToTerrainCollider" },
-		{ "enable", _c.enable }
-	};
-}
-
-void from_json(const nlohmann::json& _j, Script& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	if (_j.contains("scriptName")) {
-
-		/// スクリプト名が文字列または配列であることを確認
-		if (_j["scriptName"].is_string()) {
-			_s.AddScript(_j.at("scriptName").get<std::string>());
-		} else if (_j["scriptName"].is_array()) {
-
-			/// 配列の場合、各スクリプト名を追加
-			for (const auto& name : _j.at("scriptName")) {
-				_s.AddScript(name.get<std::string>());
-			}
-		}
-
-	} else {
-		Console::Log("Script component JSON does not contain 'scriptName'.");
-	}
-}
-
-void to_json(nlohmann::json& _j, const Script& _s) {
-	_j = nlohmann::json{
-		{ "type", "Script" },
-		{ "enable", _s.enable },
-		{ "scriptName", _s.GetScriptNames() }
-	};
-}
 
 void from_json(const nlohmann::json& _j, SphereCollider& _s) {
 	_s.enable = _j.at("enable").get<int>();

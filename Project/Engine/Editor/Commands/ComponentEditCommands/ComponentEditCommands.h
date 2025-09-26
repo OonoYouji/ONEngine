@@ -40,7 +40,7 @@ public:
 	/// public : methods
 	/// ================================================
 
-	EntityDataOutputCommand(class IEntity* _entity);
+	EntityDataOutputCommand(class GameEntity* _entity);
 	~EntityDataOutputCommand() override = default;
 
 	/// @brief コマンドの実行
@@ -52,7 +52,7 @@ private:
 	/// private : objects
 	/// ================================================
 
-	class IEntity* pEntity_ = nullptr;
+	class GameEntity* pEntity_ = nullptr;
 	std::string outputFilePath_;
 
 };
@@ -67,20 +67,20 @@ public:
 	/// ================================================
 	
 	EntityDataInputCommand() = default;
-	EntityDataInputCommand(class IEntity* _entity);
+	EntityDataInputCommand(class GameEntity* _entity);
 	~EntityDataInputCommand() override = default;
 	
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
 	EDITOR_STATE Undo() override;
 
-	void SetEntity(IEntity* _entity);
+	void SetEntity(GameEntity* _entity);
 
 private:
 	/// ================================================
 	/// private : objects
 	/// ================================================
-	class IEntity* pEntity_ = nullptr;
+	class GameEntity* pEntity_ = nullptr;
 	std::string inputFilePath_;
 	//nlohmann::json inputData_;
 };
@@ -95,7 +95,7 @@ public:
 	/// public : methods
 	/// ================================================
 	
-	AddComponentCommand(class IEntity* _entity, const std::string& _componentName);
+	AddComponentCommand(class GameEntity* _entity, const std::string& _componentName);
 	~AddComponentCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
@@ -106,7 +106,7 @@ private:
 	/// private : objects
 	/// ================================================
 
-	class IEntity* pEntity_ = nullptr;
+	class GameEntity* pEntity_ = nullptr;
 	std::string componentName_;
 	//std::type_index componentTypeIndex_; ///< コンポーネントの型情報
 
@@ -119,7 +119,7 @@ private:
 class RemoveComponentCommand : public IEditorCommand {
 public:
 
-	RemoveComponentCommand(class IEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
+	RemoveComponentCommand(class GameEntity* _entity, const std::string& _componentName, std::unordered_map<size_t, class IComponent*>::iterator* _resultItr);
 	~RemoveComponentCommand() override = default;
 
 	/// @brief コマンドの実行
@@ -129,7 +129,7 @@ public:
 private:
 
 	std::unordered_map<size_t, class IComponent*>::iterator* pIterator_;
-	class IEntity* pEntity_ = nullptr;
+	class GameEntity* pEntity_ = nullptr;
 	std::string componentName_;
 
 };
@@ -144,7 +144,7 @@ public:
 	/// public : methods
 	/// ================================================
 
-	ReloadAllScriptsCommand(class EntityComponentSystem* _ecs, class SceneManager* _sceneManager);
+	ReloadAllScriptsCommand(class ECSGroup* _ecs, class SceneManager* _sceneManager);
 	~ReloadAllScriptsCommand() override = default;
 	/// @brief コマンドの実行
 	EDITOR_STATE Execute() override;
@@ -154,6 +154,6 @@ private:
 	/// ================================================
 	/// private : objects
 	/// ================================================
-	class EntityComponentSystem* pECS_ = nullptr;
+	class ECSGroup* pECSGroup_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 };

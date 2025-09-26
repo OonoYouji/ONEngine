@@ -22,11 +22,11 @@ public:
 	enum ROOT_PARAM {
 		ROOT_PARAM_VIEW_PROJECTION,
 		ROOT_PARAM_TRANSFORM,
-		ROOT_PARAM_MATERIAL,
 		ROOT_PARAM_TEX_GRASS,
 		ROOT_PARAM_TEX_DIRT,
 		ROOT_PARAM_TEX_ROCK,
 		ROOT_PARAM_TEX_SNOW,
+		ROOT_PARAM_MATERIAL,
 	};
 
 
@@ -40,7 +40,7 @@ public:
 	~TerrainRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
-	void Draw(class EntityComponentSystem* _ecs, const std::vector<IEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
+	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
 	/// ====================================
@@ -51,7 +51,7 @@ private:
 	Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
-	ConstantBuffer<Material> materialBuffer_;
+	StructuredBuffer<Material> materialBuffer_;
 
 };
 

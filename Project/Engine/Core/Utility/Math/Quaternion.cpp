@@ -200,10 +200,10 @@ Quaternion Quaternion::FromEuler(const Vector3& _euler) {
 	float cosRoll = std::cos(roll);
 
 	Quaternion q;
-	q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
 	q.x = cosYaw * sinPitch * cosRoll + sinYaw * cosPitch * sinRoll;
 	q.y = sinYaw * cosPitch * cosRoll - cosYaw * sinPitch * sinRoll;
 	q.z = cosYaw * cosPitch * sinRoll - sinYaw * sinPitch * cosRoll;
+	q.w = cosYaw * cosPitch * cosRoll + sinYaw * sinPitch * sinRoll;
 
 	return q;
 }

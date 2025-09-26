@@ -22,7 +22,7 @@ ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _graphicsReso
 }
 
 
-void ImGuiProjectWindow::ImGuiFunc() {
+void ImGuiProjectWindow::ShowImGui() {
 	if (!ImGui::Begin(winName_.c_str())) {
 		ImGui::End();
 		return;
@@ -78,14 +78,10 @@ void ImGuiProjectWindow::ReloadProject() {
 
 	scriptRootFolder_ = std::make_shared<Folder>();
 	scriptRootFolder_->name = "Scripts";
-	LoadFolder("./SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
+	LoadFolder("../SubProjects/CSharpLibrary/Scripts/Game", scriptRootFolder_);
 
 	selectedFolder_ = assetsRootFolder_;
 	isGameFolder_ = true;
-
-	/// フォルダ内のリソースを読み込む
-	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Assets/"));
-	pGraphicsResourceCollection_->LoadResources(pGraphicsResourceCollection_->GetResourceFilePaths("./Packages/"));
 }
 
 
@@ -116,7 +112,7 @@ void ImGuiProjectWindow::SelectFileView() {
 		if (isGameFolder_) {
 			const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_HIERARCHY");
 			if (payload) {
-				IEntity* entity = static_cast<IEntity*>(payload->Data);
+				GameEntity* entity = static_cast<GameEntity*>(payload->Data);
 				pEditorManager_->ExecuteCommand<CreatePrefabCommand>(entity);
 			}
 		} else {

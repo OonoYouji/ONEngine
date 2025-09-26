@@ -2,50 +2,61 @@
 
 /// std
 #include <numbers>
+#include <fstream>
+
+/// external
+#include <nlohmann/json.hpp>
 
 /// engine
 #include "Scene/Factory/SceneFactory.h"
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 
+namespace {
+	/// @brief monoに登録する関数で使用するために
+	SceneManager* gSceneManager = nullptr;
+}
+
 SceneManager::SceneManager(EntityComponentSystem* entityComponentSystem_)
-	: pEntityComponentSystem_(entityComponentSystem_) {}
-SceneManager::~SceneManager() {}
+	: pECS_(entityComponentSystem_) {
+}
+SceneManager::~SceneManager() {
+	/// 最後に開いていたシーンを保存
+	if (!currentScene_.empty()) {
+		nlohmann::json json;
+		json["Scene"] = currentScene_;
+		const std::string& filepath = "./Packages/Config/LastOpenScene.json";
+		std::ofstream ofs(filepath);
+		if (ofs.is_open()) {
+			ofs << json.dump(4);
+			ofs.close();
+		}
+	}
+}
 
 
 void SceneManager::Initialize(GraphicsResourceCollection* _graphicsResourceCollection) {
+	gSceneManager = this;
 
 	pGraphicsResourceCollection_ = _graphicsResourceCollection;
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneFactory_->Initialize();
 
-	sceneIO_ = std::make_unique<SceneIO>(pEntityComponentSystem_);
+	sceneIO_ = std::make_unique<SceneIO>(pECS_);
 
-
+#ifdef DEBUG_MODE
+	SetNextScene(LastOpenSceneName());
+#else
 	SetNextScene(sceneFactory_->GetStartupSceneName());
+#endif
+
 	MoveNextToCurrentScene(false);
 
-
-	/// カメラを設定する
-	ComponentArray<CameraComponent>* cameraArray = pEntityComponentSystem_->GetComponentArray<CameraComponent>();
-	if (cameraArray) {
-		for (auto& cameraComponent : cameraArray->GetUsedComponents()) {
-			/// componentがnullptrでないことを確認、main cameraかどうかを確認
-			if (cameraComponent && cameraComponent->GetIsMainCamera()) {
-				int type = cameraComponent->GetCameraType();
-				if (type == static_cast<int>(CameraType::Type3D)) {
-					pEntityComponentSystem_->SetMainCamera(cameraComponent);
-				} else if (type == static_cast<int>(CameraType::Type2D)) {
-					pEntityComponentSystem_->SetMainCamera2D(cameraComponent);
-				}
-			}
-		}
-	}
-
-
+	pECS_->MainCameraSetting();
 }
 
 void SceneManager::Update() {
@@ -59,13 +70,22 @@ void SceneManager::SetNextScene(const std::string& _sceneName) {
 	nextScene_ = _sceneName;
 }
 
+void SceneManager::SaveScene(const std::string& _name, ECSGroup* _ecsGroup) {
+	if (_name.empty() || !_ecsGroup) {
+		Console::LogError("Invalid scene name or ECS group.");
+		return;
+	}
+
+	sceneIO_->Output(_name, _ecsGroup);
+}
+
 void SceneManager::SaveCurrentScene() {
 	if (currentScene_.empty()) {
 		Console::LogError("No current scene to save.");
 		return;
 	}
 
-	sceneIO_->Output(currentScene_);
+	sceneIO_->Output(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::SaveCurrentSceneTemporary() {
@@ -74,7 +94,7 @@ void SceneManager::SaveCurrentSceneTemporary() {
 		return;
 	}
 
-	sceneIO_->OutputTemporary(currentScene_);
+	sceneIO_->OutputTemporary(currentScene_, pECS_->GetCurrentGroup());
 }
 
 void SceneManager::LoadScene(const std::string& _sceneName) {
@@ -101,16 +121,49 @@ void SceneManager::ReloadScene(bool _isTemporary) {
 	MoveNextToCurrentScene(_isTemporary);
 }
 
+SceneIO* SceneManager::GetSceneIO() {
+	return sceneIO_.get();
+}
+
+std::string SceneManager::LastOpenSceneName() {
+	const std::string& filepath = "./Packages/Config/LastOpenScene.json";
+
+	std::ifstream ifs(filepath);
+	if (!ifs.is_open()) {
+		return "";
+	}
+
+	nlohmann::json json;
+	ifs >> json;
+
+	ifs.close();
+	if (json.contains("Scene") && json["Scene"].is_string()) {
+		return json["Scene"];
+	}
+
+	return "";
+}
+
 void SceneManager::MoveNextToCurrentScene(bool _isTemporary) {
+	ECSGroup* prevSceneGroup = pECS_->GetCurrentGroup();
+	if (prevSceneGroup) {
+		prevSceneGroup->RemoveEntityAll();
+	}
+
 	currentScene_ = std::move(nextScene_);
-	pEntityComponentSystem_->RemoveEntityAll();
+
+	ECSGroup* nextSceneGroup = pECS_->AddECSGroup(GetCurrentSceneName());
+	const std::string& sceneName = nextSceneGroup->GetGroupName();
+
+	pECS_->SetCurrentGroupName(sceneName);
 
 	/// sceneに必要な情報を渡して初期化
 	if (_isTemporary) {
-		sceneIO_->InputTemporary(currentScene_);
-	} else {
-		sceneIO_->Input(currentScene_);
+		sceneIO_->InputTemporary(currentScene_, nextSceneGroup);
+		return;
 	}
+
+	sceneIO_->Input(sceneName, nextSceneGroup);
 
 	Time::ResetTime();
 }
@@ -125,3 +178,12 @@ const std::string& SceneManager::GetCurrentSceneName() const {
 }
 
 
+
+void MONO_INTERNAL_METHOD::InternalLoadScene(MonoString* _sceneName) {
+	char* cstr = mono_string_to_utf8(_sceneName);
+	if (gSceneManager) {
+		gSceneManager->LoadScene(cstr);
+	}
+
+	mono_free(cstr);
+}
