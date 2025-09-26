@@ -31,7 +31,6 @@ public class PuzzleStage : MonoBehavior {
 		initCallCount_++;
 		Debug.Log("====================================================================");
 		Debug.Log("PuzzleStage Initialize called. Call count: " + initCallCount_);
-		Debug.Log("====================================================================");
 
 		puzzleCommandStacker_ = new PuzzleCommandStacker();
 
@@ -47,11 +46,13 @@ public class PuzzleStage : MonoBehavior {
 		}
 
 		blockData_.blockSpace = 0.22f; // ブロックのアドレスを初期化
+		Debug.Log("created mapchip");
 
 		CreateBlockParent();
 		BlockDeploy(); // ブロック配置
 		PlayerDeploy(); // プレイヤー配置
 		UpdateEntityPosition();
+		Debug.Log("====================================================================");
 	}
 
 

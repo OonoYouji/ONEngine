@@ -52,6 +52,7 @@ public class Mapchip : MonoBehavior {
 	}
 
 	public void LoadMap(string directory, string filename) {
+		Debug.Log(filename);
 		loadedText_ = Mathf.LoadFile(directory + filename);
 		root_ = JsonConvert.DeserializeObject<Stage.Root>(loadedText_);
 		root_.map.tiles.Reverse();

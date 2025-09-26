@@ -327,12 +327,12 @@ void from_json(const nlohmann::json& _j, Script& _s) {
 					}
 				}
 			} else {
-				Console::Log("Script component JSON does not contain 'scriptName' in one of the scripts.");
+				Console::LogError("Script component JSON does not contain 'name' in one of the scripts.");
 			}
 		}
 
 	} else {
-		Console::Log("Script component JSON does not contain 'scriptName'.");
+		Console::LogError("Script component JSON does not contain 'scripts'.");
 	}
 }
 
