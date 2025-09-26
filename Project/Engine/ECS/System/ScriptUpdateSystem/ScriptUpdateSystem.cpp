@@ -110,12 +110,12 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 		/// --------------------------------------------------------------------------------
 		/// Entityの追加関数を呼び出す
 		/// --------------------------------------------------------------------------------
-		void* args[1];
+		void* addEntityArgs[1];
 		int32_t entityId = entity->GetId();
-		args[0] = &entityId;
+		addEntityArgs[0] = &entityId;
 
 		MonoObject* exc = nullptr;
-		mono_runtime_invoke(addEntityMethod_, ecsGroupObj, args, &exc);
+		mono_runtime_invoke(addEntityMethod_, ecsGroupObj, addEntityArgs, &exc);
 
 		if (exc) {
 			/// 例外の処理
@@ -153,14 +153,13 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 					continue;
 				}
 
-				void* args[3];
-				int32_t entityId = script->GetOwner()->GetId();
-				args[0] = &entityId;
-				args[1] = scriptInstance;
-				args[2] = &data.enable;
+				void* addScriptArgs[3];
+				addScriptArgs[0] = &entityId;
+				addScriptArgs[1] = scriptInstance;
+				addScriptArgs[2] = &data.enable;
 
-				MonoObject* exc = nullptr;
-				mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
+				exc = nullptr;
+				mono_runtime_invoke(addScriptMethod_, ecsGroupObj, addScriptArgs, &exc);
 
 				if (exc) {
 					/// 例外の処理
