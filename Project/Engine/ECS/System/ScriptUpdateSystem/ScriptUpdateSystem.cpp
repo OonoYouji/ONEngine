@@ -36,7 +36,7 @@ void ScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 
 		for (auto& script : scriptArray->GetUsedComponents()) {
 			script->SetIsAdded(false);
-			for(auto& data : script->GetScriptDataList()) {
+			for (auto& data : script->GetScriptDataList()) {
 				data.isAdded = false;
 			}
 		}
@@ -113,8 +113,9 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 			return;
 		}
 
-
+		/// --------------------------------------------------------------------------------
 		/// Entityの追加関数を呼び出す
+		/// --------------------------------------------------------------------------------
 		if (!script->GetIsAdded()) {
 			script->SetIsAdded(true);
 
@@ -135,6 +136,9 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 
 		Variables* vars = script->GetOwner()->GetComponent<Variables>();
 
+		/// --------------------------------------------------------------------------------
+		/// スクリプトの追加
+		/// --------------------------------------------------------------------------------
 		for (auto& data : script->GetScriptDataList()) {
 
 			/// すでに追加済みなら処理しない
@@ -236,7 +240,7 @@ void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& 
 }
 
 void ScriptUpdateSystem::ReleaseGCHandle() {
-	if(gcHandle_ != 0) {
+	if (gcHandle_ != 0) {
 		mono_gchandle_free(gcHandle_);
 		gcHandle_ = 0;
 	}
@@ -247,8 +251,9 @@ void ScriptUpdateSystem::ReleaseGCHandle() {
 /// デバッグ用のスクリプト更新システム
 /// ///////////////////////////////////////////////
 
-DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs) 
-	: ScriptUpdateSystem(_ecs) {}
+DebugScriptUpdateSystem::DebugScriptUpdateSystem(ECSGroup* _ecs)
+	: ScriptUpdateSystem(_ecs) {
+}
 DebugScriptUpdateSystem::~DebugScriptUpdateSystem() {}
 
 void DebugScriptUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {

@@ -78,10 +78,6 @@ void MonoScriptEngine::Initialize() {
 	mono_set_dirs("./Packages/Scripts/lib", "./Externals/mono/etc");
 	mono_config_parse(nullptr);
 
-	// ===== デバッグ無効化（本番用） =====
-	// ※デバッグ時だけ有効にしたいならフラグで切り替える
-	//mono_debug_init(MONO_DEBUG_FORMAT_MONO);
-
 	/// JIT初期化 (v4.x CLRターゲット)
 	domain_ = mono_jit_init_version("MyDomain", "v4.0.30319");
 	if (!domain_) {
@@ -89,10 +85,6 @@ void MonoScriptEngine::Initialize() {
 		return;
 	}
 
-	// ===== デバッグ用ドメイン作成（本番では不要） =====
-	//mono_debug_domain_create(domain_);
-
-	// DLLを開く
 	auto latestDll = FindLatestDll("./Packages/Scripts", "CSharpLibrary");
 	if (!latestDll.has_value()) {
 		Console::LogError("Failed to find latest assembly DLL.");

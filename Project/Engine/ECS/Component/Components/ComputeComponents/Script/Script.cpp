@@ -173,6 +173,8 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 	std::string ptrLable;
 	std::vector<Script::ScriptData>& scriptList = _script->GetScriptDataList();
+	std::string selectedScriptName;
+
 	for (size_t i = 0; i < scriptList.size(); i++) {
 		auto& script = scriptList[i];
 
@@ -226,10 +228,23 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		}
 
+		/// popupでスクリプトの削除などの操作を行う
+		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+			ImGui::OpenPopup(ptrLable.c_str());
+			selectedScriptName = script.scriptName;
+		}
+
+		/// itemを左クリックしたときに出るメニュー
+		if (ImGui::BeginPopup(ptrLable.c_str())) {
+			if (ImGui::MenuItem("delete")) {
+				_script->RemoveScript(script.scriptName);
+			}
+			ImGui::EndPopup();
+		}
+
 
 		/// スクリプトが2種類以上ないと入れ替える意味がない
 		if (scriptList.size() > 2) {
-
 			/// スクリプトの順番を入れ替える処理
 			// ---- ドラッグソース ----
 			if (ImGui::BeginDragDropSource()) {
@@ -250,27 +265,17 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 			}
 		}
 
-		/// popupでスクリプトの削除などの操作を行う
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-			ImGui::OpenPopup("##open");
-		}
-
-		/// 右クリックしたときのメニューの表示
-		if (ImGui::BeginPopupContextItem("##popup")) {
-			if (ImGui::MenuItem("delete")) {
-				_script->RemoveScript(script.scriptName);
-			}
-
-			ImGui::EndPopup();
-		}
-
 
 
 		if (!enable) {
 			ImGui::PopStyleColor(1);
 		}
-
 	}
+
+
+
+
+
 
 	/// 現在のwindowのサイズを得る
 	ImVec2 windowSize = ImGui::GetWindowSize();

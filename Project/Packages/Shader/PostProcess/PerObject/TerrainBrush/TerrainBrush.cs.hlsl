@@ -35,8 +35,8 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// ブラシの影響範囲内かどうか
     float  dist     = distance(position.xyz, mousePos.xyz);
     if (dist < brush.radius) {
-        // outputTex[DTid.xy] = color * float4(1.5f, 1.0f, 1.0f, 1.0f); /// 赤色で塗りつぶす
-        outputTex[DTid.xy] = float4(1,0,0,1); 
+        outputTex[DTid.xy] = color * float4(1.0f, 0.6f, 0.6f, 1.0f); /// 赤色で塗りつぶす
+        // outputTex[DTid.xy] = float4(1,0,0,1); 
     } else {
         outputTex[DTid.xy] = color; /// 元の色をそのまま出力
     }
