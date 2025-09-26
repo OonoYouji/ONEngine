@@ -10,6 +10,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 
 /// //////////////////////////////////////////////////
@@ -355,33 +356,7 @@ void to_json(nlohmann::json& _j, const Line3DRenderer& _l) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Script& _s) {
-	_s.enable = _j.at("enable").get<int>();
-	if (_j.contains("scriptName")) {
 
-		/// スクリプト名が文字列または配列であることを確認
-		if (_j["scriptName"].is_string()) {
-			_s.AddScript(_j.at("scriptName").get<std::string>());
-		} else if (_j["scriptName"].is_array()) {
-
-			/// 配列の場合、各スクリプト名を追加
-			for (const auto& name : _j.at("scriptName")) {
-				_s.AddScript(name.get<std::string>());
-			}
-		}
-
-	} else {
-		Console::Log("Script component JSON does not contain 'scriptName'.");
-	}
-}
-
-void to_json(nlohmann::json& _j, const Script& _s) {
-	_j = nlohmann::json{
-		{ "type", "Script" },
-		{ "enable", _s.enable },
-		{ "scriptName", _s.GetScriptNames() }
-	};
-}
 
 void from_json(const nlohmann::json& _j, SphereCollider& _s) {
 	_s.enable = _j.at("enable").get<int>();

@@ -88,10 +88,6 @@ void to_json(nlohmann::json& _j, const Line2DRenderer& _l);
 void from_json(const nlohmann::json& _j, Line3DRenderer& _l);
 void to_json(nlohmann::json& _j, const Line3DRenderer& _l);
 
-// Script
-void from_json(const nlohmann::json& _j, Script& _s);
-void to_json(nlohmann::json& _j, const Script& _s);
-
 // SphereCollider
 void from_json(const nlohmann::json& _j, SphereCollider& _s);
 void to_json(nlohmann::json& _j, const SphereCollider& _s);

@@ -7,10 +7,12 @@
 #include <unordered_map>
 
 /// externals
+#include <nlohmann/json.hpp>
 #include <jit/jit.h>
 
 /// engine
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
+
 
 /// ///////////////////////////////////////////////////
 /// スクリプトコンポーネント
@@ -22,11 +24,13 @@ public:
 
 	struct ScriptData {
 		std::string scriptName;
-		bool enable = true;   ///< スクリプトの有効/無効フラグ
 		bool isAdded = false; ///< スクリプトが追加されたかどうか
 		std::array<MonoMethod*, 3> collisionEventMethods = {};
-	};
 
+		bool enable;
+		bool GetEnable(GameEntity* _entity);
+		void SetEnable(GameEntity* _entity, bool _enable);
+	};
 
 public:
 	/// ===================================================
@@ -76,12 +80,7 @@ namespace COMP_DEBUG {
 }
 
 /// ///////////////////////////////////////////////////
-/// mono用　internal methods
+/// json用の関数
 /// ///////////////////////////////////////////////////
-
-namespace MONO_INTERNAL_METHOD {
-
-	void InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable, MonoString* _groupName);
-	bool InternalGetEnable(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName);
-
-}
+void from_json(const nlohmann::json& _j, Script& _s);
+void to_json(nlohmann::json& _j, const Script& _s);

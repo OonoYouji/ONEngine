@@ -11,6 +11,42 @@
 using namespace CSGui;
 
 
+bool Script::ScriptData::GetEnable(GameEntity* _entity) {
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoObject* obj = monoEngine->GetMonoBehaviorFromCS(
+		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
+	);
+
+	if (!obj) {
+		return false;
+	}
+
+	MonoClass* monoBehaviorClass = mono_object_get_class(obj);
+	MonoClassField* field = mono_class_get_field_from_name(monoBehaviorClass, "enable");
+
+	mono_field_get_value(obj, field, &enable);
+	return enable;
+}
+
+void Script::ScriptData::SetEnable(GameEntity* _entity, bool _enable) {
+	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
+	MonoObject* obj = monoEngine->GetMonoBehaviorFromCS(
+		_entity->GetECSGroup()->GetGroupName(), _entity->GetId(), scriptName
+	);
+
+	if (!obj) {
+		return;
+	}
+
+	MonoClass* monoBehaviorClass = mono_object_get_class(obj);
+	MonoClassField* field = mono_class_get_field_from_name(monoBehaviorClass, "enable");
+
+	// 値を設定
+	mono_field_set_value(obj, field, &_enable);
+	enable = _enable;
+}
+
+
 
 Script::Script() {
 	SetIsAdded(false);
@@ -99,7 +135,7 @@ void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 	/// スクリプト名が一致するものを探す
 	for (auto& script : scriptDataList_) {
 		if (script.scriptName == _scriptName) {
-			script.enable = _enable;
+			script.SetEnable(GetOwner(), _enable);
 			Console::Log("Script " + _scriptName + " enable set to " + std::to_string(_enable));
 			return;
 		}
@@ -112,9 +148,9 @@ void Script::SetEnable(const std::string& _scriptName, bool _enable) {
 
 bool Script::GetEnable(const std::string& _scriptName) {
 	/// スクリプト名が一致するものを探す
-	for (const auto& script : scriptDataList_) {
+	for (auto& script : scriptDataList_) {
 		if (script.scriptName == _scriptName) {
-			return script.enable;
+			return script.GetEnable(GetOwner());
 		}
 	}
 
@@ -142,16 +178,18 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
 
+		bool enable = script.GetEnable(_script->GetOwner());
 		/// 有効/無効のチェックボックス
-		ImGui::Checkbox(ptrLable.c_str(), &script.enable);
+		if (ImGui::Checkbox(ptrLable.c_str(), &enable)) {
+			script.SetEnable(_script->GetOwner(), enable);
+		}
 
 		ImGui::SameLine();
 		ImGui::Spacing();
 		ImGui::SameLine();
 
-
 		/// 有効/無効に応じてテキストの色を変える
-		if (!script.enable) {
+		if (!enable) {
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
 		}
 
@@ -228,7 +266,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 
 
-		if (!script.enable) {
+		if (!enable) {
 			ImGui::PopStyleColor(1);
 		}
 
@@ -269,58 +307,43 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 }
 
-void MONO_INTERNAL_METHOD::InternalSetEnable(int32_t _entityId, MonoString* _scriptName, bool _enable, MonoString* _groupName) {
-	/// Entityを取得
-	std::string groupName = mono_string_to_utf8(_groupName);
-	GameEntity* entity = GetEntityById(_entityId, groupName);
-	if (!entity) {
-		Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
-		return;
+void from_json(const nlohmann::json& _j, Script& _s) {
+	_s.enable = _j.at("enable").get<int>();
+	if (_j.contains("scripts")) {
+		nlohmann::json scriptJsons = _j.at("scripts");
+		for (auto& data : scriptJsons) {
+			if (data.contains("name")) {
+				std::string scriptName = data.at("name").get<std::string>();
+				_s.AddScript(scriptName);
+				Script::ScriptData* scriptData = _s.GetScriptData(scriptName);
+				if (scriptData) {
+					if (data.contains("enable")) {
+						scriptData->enable = data.at("enable").get<int>();
+					}
+				}
+			} else {
+				Console::Log("Script component JSON does not contain 'scriptName' in one of the scripts.");
+			}
+		}
+
+	} else {
+		Console::Log("Script component JSON does not contain 'scriptName'.");
 	}
-
-	/// EntityからScriptコンポーネントを取得
-	Script* script = entity->GetComponent<Script>();
-	if (!script) {
-		Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
-	}
-
-	/// スクリプト名をUTF-8に変換
-	std::string scriptName = mono_string_to_utf8(_scriptName);
-	/// スクリプトを有効/無効に設定
-	script->SetEnable(scriptName, _enable);
-	Console::Log(std::format("Script {} set to {} for Entity ID: {}", scriptName, _enable ? "enabled" : "disabled", _entityId));
-
 }
 
-bool MONO_INTERNAL_METHOD::InternalGetEnable(int32_t _entityId, MonoString* _scriptName, MonoString* _groupName) {
-	return true;
-	//char* gcstr = mono_string_to_utf8(_groupName);
-	//std::string groupName(gcstr);
-	//mono_free(gcstr);
+void to_json(nlohmann::json& _j, const Script& _s) {
+	nlohmann::json scriptJsons;
+	for (auto& scriptData : _s.GetScriptDataList()) {
+		nlohmann::json data{
+			{ "enable", scriptData.enable },
+			{ "name", scriptData.scriptName }
+		};
+		scriptJsons.push_back(data);
+	}
 
-	///// Entityを取得
-	//GameEntity* entity = GetEntityById(_entityId, groupName);
-	//if (!entity) {
-	//	Console::LogError("Entity not found for ID: " + std::to_string(_entityId));
-	//	return false;
-	//}
-
-	///// EntityからScriptコンポーネントを取得
-	//Script* script = entity->GetComponent<Script>();
-	//if (!script) {
-	//	Console::LogError("Script component not found for Entity ID: " + std::to_string(_entityId));
-	//	return false;
-	//}
-
-	///// スクリプト名をUTF-8に変換
-	//char* cstr = mono_string_to_utf8(_scriptName);
-	//std::string scriptName(cstr);
-	///// スクリプトの有効/無効を取得
-	//bool isEnabled = script->GetEnable(scriptName);
-	//Console::Log(std::format("Script {} is {} for Entity ID: {}", scriptName, isEnabled ? "enabled" : "disabled", _entityId));
-
-	//mono_free(cstr);
-
-	//return isEnabled;
+	_j = nlohmann::json{
+		{ "type", "Script" },
+		{ "enable", _s.enable },
+		{ "scripts", scriptJsons }
+	};
 }
-

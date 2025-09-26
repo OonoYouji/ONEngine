@@ -47,10 +47,6 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
 
-	/// script (MonoBehavior)
-	mono_add_internal_call("MonoBehavior::InternalSetEnable", (void*)InternalSetEnable);
-	mono_add_internal_call("MonoBehavior::InternalGetEnable", (void*)InternalGetEnable);
-
 	/// audio source
 	mono_add_internal_call("AudioSource::InternalGetParams", (void*)InternalGetParams);
 	mono_add_internal_call("AudioSource::InternalSetParams", (void*)InternalSetParams);

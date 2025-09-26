@@ -117,12 +117,6 @@ public class ECSGroup {
         CallInitialize();
 
         foreach (Entity entity in entities_.Values) {
-            foreach (MonoBehavior script in entity.GetScripts()) {
-                script.Begin();
-            }
-        }
-
-        foreach (Entity entity in entities_.Values) {
             foreach (Component comp in entity.GetComponents()) {
                 comp.Begin();
             }
@@ -139,12 +133,6 @@ public class ECSGroup {
         foreach (Entity entity in entities_.Values) {
             foreach (Component comp in entity.GetComponents()) {
                 comp.End();
-            }
-        }
-
-        foreach (Entity entity in entities_.Values) {
-            foreach (MonoBehavior script in entity.GetScripts()) {
-                script.End();
             }
         }
     }

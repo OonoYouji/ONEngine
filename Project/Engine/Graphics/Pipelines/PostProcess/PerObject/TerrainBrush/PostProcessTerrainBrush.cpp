@@ -59,9 +59,6 @@ void PostProcessTerrainBrush::Execute(
 		return;
 	}
 
-	Console::Log("PostProcessTerrainBrush::Execute");
-	Console::Log("Mouse Pos: " + std::to_string(mousePos.x) + ", " + std::to_string(mousePos.y));
-
 	/// Terrainの取得
 	Terrain* terrain = nullptr;
 	ComponentArray<Terrain>* terrainArray = _entityComponentSystem->GetCurrentGroup()->GetComponentArray<Terrain>();

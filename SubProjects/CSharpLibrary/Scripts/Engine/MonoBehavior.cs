@@ -58,15 +58,6 @@ public class MonoBehavior {
     /// methods
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    public void Begin() {
-        enable = InternalGetEnable(entity.Id, name_, ecsGroup.groupName);
-    }
-
-    public void End() {
-        InternalSetEnable(entity.Id, name_, enable, ecsGroup.groupName);
-    }
-
-
     public virtual void Awake() { }
     public virtual void Initialize() { }
     public virtual void Update() { }
@@ -75,23 +66,9 @@ public class MonoBehavior {
     public virtual void OnCollisionExit(Entity collision) { }
     public virtual void OnCollisionStay(Entity collision) { }
 
-
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    /// internal methods
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    static extern bool InternalGetEnable(int _entityId, string _scriptName, string _ecsGroupName);
-
-    [MethodImpl(MethodImplOptions.InternalCall)]
-    static extern void InternalSetEnable(int _entityId, string _scriptName, bool _enable, string _ecsGroupName);
-
     ///////////////////////////////////////////////////////////////////////////////////////////
     /// operators
     ///////////////////////////////////////////////////////////////////////////////////////////
-
-
     public static implicit operator bool(MonoBehavior _monoBehavior) {
         return _monoBehavior != null;
     }
