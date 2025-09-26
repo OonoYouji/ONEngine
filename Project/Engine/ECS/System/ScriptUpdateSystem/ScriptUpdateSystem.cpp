@@ -98,13 +98,7 @@ void ScriptUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 	MonoScriptEngine* monoEngine = MonoScriptEngine::GetInstance();
 
-	/// C#側のECSGroupを取得、更新関数を呼ぶ
-	ComponentArray<Script>* scriptArray = _ecsGroup->GetComponentArray<Script>();
-	if (!scriptArray || scriptArray->GetUsedComponents().empty()) {
-		return;
-	}
-
-	for (auto& script : scriptArray->GetUsedComponents()) {
+	for (auto& entity : _ecsGroup->GetEntities()) {
 
 		/// スクリプトが有効でない場合はスキップ
 		MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
@@ -116,74 +110,75 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 		/// --------------------------------------------------------------------------------
 		/// Entityの追加関数を呼び出す
 		/// --------------------------------------------------------------------------------
-		if (!script->GetIsAdded()) {
-			script->SetIsAdded(true);
+		void* args[1];
+		int32_t entityId = entity->GetId();
+		args[0] = &entityId;
 
-			void* args[1];
-			int32_t entityId = script->GetOwner()->GetId();
-			args[0] = &entityId;
+		MonoObject* exc = nullptr;
+		mono_runtime_invoke(addEntityMethod_, ecsGroupObj, args, &exc);
 
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(addEntityMethod_, ecsGroupObj, args, &exc);
+		if (exc) {
+			/// 例外の処理
+			char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+			Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
+			mono_free(err);
+		}
 
-			if (exc) {
-				/// 例外の処理
-				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-				Console::LogError(std::string("Exception thrown in UpdateEntities: ") + err);
-				mono_free(err);
+		Variables* vars = entity->GetComponent<Variables>();
+		Script* script = entity->GetComponent<Script>();
+
+		if (script) {
+			/// --------------------------------------------------------------------------------
+			/// スクリプトの追加
+			/// --------------------------------------------------------------------------------
+			for (auto& data : script->GetScriptDataList()) {
+
+				/// すでに追加済みなら処理しない
+				if (data.isAdded) {
+					continue;
+				}
+				data.isAdded = true;
+
+				/// スクリプト名からMonoObjectを生成する
+				MonoClass* behaviorClass = mono_class_from_name(monoEngine->Image(), "", data.scriptName.c_str());
+				if (!behaviorClass) {
+					Console::LogError("Failed to find MonoBehavior class");
+					continue;
+				}
+
+				/// インスタンスを生成
+				MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
+				mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
+				if (!script) {
+					continue;
+				}
+
+				void* args[3];
+				int32_t entityId = script->GetOwner()->GetId();
+				args[0] = &entityId;
+				args[1] = scriptInstance;
+				args[2] = &data.enable;
+
+				MonoObject* exc = nullptr;
+				mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
+
+				if (exc) {
+					/// 例外の処理
+					char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
+					Console::LogError(std::string("Exception thrown in AddScript: ") + err);
+					mono_free(err);
+				}
+
+				/// variablesの設定
+				if (vars) {
+					vars->SetScriptVariables(data.scriptName);
+				}
+
+
 			}
 		}
 
-		Variables* vars = script->GetOwner()->GetComponent<Variables>();
 
-		/// --------------------------------------------------------------------------------
-		/// スクリプトの追加
-		/// --------------------------------------------------------------------------------
-		for (auto& data : script->GetScriptDataList()) {
-
-			/// すでに追加済みなら処理しない
-			if (data.isAdded) {
-				continue;
-			}
-			data.isAdded = true;
-
-			/// スクリプト名からMonoObjectを生成する
-			MonoClass* behaviorClass = mono_class_from_name(monoEngine->Image(), "", data.scriptName.c_str());
-			if (!behaviorClass) {
-				Console::LogError("Failed to find MonoBehavior class");
-				continue;
-			}
-
-			/// インスタンスを生成
-			MonoObject* scriptInstance = mono_object_new(mono_domain_get(), behaviorClass);
-			mono_runtime_object_init(scriptInstance); /// クラスの初期化、コンストラクタをイメージ
-			if (!script) {
-				continue;
-			}
-
-			void* args[3];
-			int32_t entityId = script->GetOwner()->GetId();
-			args[0] = &entityId;
-			args[1] = scriptInstance;
-			args[2] = &data.enable;
-
-			MonoObject* exc = nullptr;
-			mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
-
-			if (exc) {
-				/// 例外の処理
-				char* err = mono_string_to_utf8(mono_object_to_string(exc, nullptr));
-				Console::LogError(std::string("Exception thrown in AddScript: ") + err);
-				mono_free(err);
-			}
-
-			/// variablesの設定
-			if (vars) {
-				vars->SetScriptVariables(data.scriptName);
-			}
-
-
-		}
 	}
 
 }
