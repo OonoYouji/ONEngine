@@ -74,57 +74,14 @@ public:
 	/// public : accessor
 	/// ===============================================
 
-	/// @brief positionのセット
-	/// @param _v position
 	void SetPosition(const Vector3& _v);
-
-	/// @brief position x のセット
-	/// @param _x x座標
-	void SetPositionX(float _x);
-
-	/// @brief position y のセット
-	/// @param _y y座標
-	void SetPositionY(float _y);
-
-	/// @brief position z のセット
-	/// @param _z z座標
-	void SetPositionZ(float _z);
-
-	/// @brief rotateのセット
-	/// @param _v rotate
 	void SetRotate(const Vector3& _v);
 	void SetRotate(const Quaternion& _q);
-
-	/// @brief scaleのセット
-	/// @param _v scale
 	void SetScale(const Vector3& _v);
 
-	/// @brief scale x のセット
-	/// @param _x x軸拡縮
-	void SetScaleX(float _x);
-
-	/// @brief scale y のセット
-	/// @param _y y軸拡縮
-	void SetScaleY(float _y);
-
-	/// @brief scale z のセット
-	/// @param _z z軸拡縮
-	void SetScaleZ(float _z);
-
-	/// @brief positionを得る
-	/// @return position 
 	const Vector3& GetPosition() const;
-
-	/// @brief rotateを得る
-	/// @return rotate
 	const Quaternion& GetRotate() const;
-
-	/// @brief scaleを得る
-	/// @return scale
 	const Vector3& GetScale() const;
-
-	/// @brief world 行列を得る
-	/// @return world 行列
 	const Matrix4x4& GetMatWorld() const;
 
 };

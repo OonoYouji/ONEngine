@@ -157,10 +157,11 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 				continue;
 			}
 
-			void* args[2];
+			void* args[3];
 			int32_t entityId = script->GetOwner()->GetId();
 			args[0] = &entityId;
 			args[1] = scriptInstance;
+			args[2] = &data.enable;
 
 			MonoObject* exc = nullptr;
 			mono_runtime_invoke(addScriptMethod_, ecsGroupObj, args, &exc);
@@ -230,7 +231,7 @@ void ScriptUpdateSystem::MakeScriptMethod(MonoImage* _image, const std::string& 
 	/// 呼び出し対象の関数を取得
 	updateEntitiesMethod_ = mono_class_get_method_from_name(monoClass_, "UpdateEntities", 0);
 	addEntityMethod_ = mono_class_get_method_from_name(monoClass_, "AddEntity", 1);
-	addScriptMethod_ = mono_class_get_method_from_name(monoClass_, "AddScript", 2);
+	addScriptMethod_ = mono_class_get_method_from_name(monoClass_, "AddScript", 3);
 
 }
 

@@ -178,7 +178,7 @@ void COMP_DEBUG::ScriptDebug(Script* _script) {
 
 		ptrLable = "##" + std::to_string(reinterpret_cast<uintptr_t>(&script));
 
-		bool enable = script.GetEnable(_script->GetOwner());
+		bool enable = script.enable;
 		/// 有効/無効のチェックボックス
 		if (ImGui::Checkbox(ptrLable.c_str(), &enable)) {
 			script.SetEnable(_script->GetOwner(), enable);

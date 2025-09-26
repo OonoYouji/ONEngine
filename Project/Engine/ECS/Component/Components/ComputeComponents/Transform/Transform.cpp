@@ -32,18 +32,6 @@ void Transform::SetPosition(const Vector3& _v) {
 	position = _v;
 }
 
-void Transform::SetPositionX(float _x) {
-	position.x = _x;
-}
-
-void Transform::SetPositionY(float _y) {
-	position.y = _y;
-}
-
-void Transform::SetPositionZ(float _z) {
-	position.z = _z;
-}
-
 void Transform::SetRotate(const Vector3& _v) {
 	rotate = Quaternion::FromEuler(_v);
 }
@@ -54,18 +42,6 @@ void Transform::SetRotate(const Quaternion& _q) {
 
 void Transform::SetScale(const Vector3& _v) {
 	scale = _v;
-}
-
-void Transform::SetScaleX(float _x) {
-	scale.x = _x;
-}
-
-void Transform::SetScaleY(float _y) {
-	scale.y = _y;
-}
-
-void Transform::SetScaleZ(float _z) {
-	scale.z = _z;
 }
 
 const Vector3& Transform::GetPosition() const {

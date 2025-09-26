@@ -54,19 +54,18 @@ public class ECSGroup {
         /// 生成、初期化の呼び出し用リストに追加
         awakeList_.Add(entity);
         initList_.Add(entity);
-        Debug.Log("ECSGroup.CreateEntity - AwakeListCount: " + awakeList_.Count + ", InitListCount: "
-                  + initList_.Count);
     }
 
     /// <summary>
     /// C/C++側から呼び出すコンポーネントの追加関数
     /// </summary>
-    public void AddScript(int _entityId, MonoBehavior _behavior) {
+    public void AddScript(int _entityId, MonoBehavior _behavior, bool _enable) {
         Entity entity;
         if (entities_.TryGetValue(_entityId, out entity)) {
             Debug.LogInfo("ECSGroup.AddScript - Adding script to Entity ID: " + _entityId + ", Script Name: "
                           + _behavior.GetType().Name);
             _behavior.CreateBehavior(_entityId, _behavior.GetType().Name, this);
+            _behavior.enable = _enable;
             entity.AddScript(_behavior);
         } else {
             Debug.LogError("Entity.AddScript - Entity not found with ID: " + _entityId);
