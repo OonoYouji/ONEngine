@@ -7,8 +7,25 @@
 #include "Engine/Core/Utility/Input/Input.h"
 #include "Engine/Core/Utility/Input/InputSystem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Component/Component.h"
 #include "Engine/Scene/SceneManager.h"
+
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
+
 
 using namespace MONO_INTERNAL_METHOD;
 

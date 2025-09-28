@@ -10,7 +10,7 @@
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
 
 /// ecs
-#include "../Component/Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "AddECSSystemFunction.h"
 #include "AddECSComponentFactoryFunction.h"
 

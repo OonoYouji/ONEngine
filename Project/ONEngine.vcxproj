@@ -603,7 +603,6 @@
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Mesh\CustomMeshRenderer.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Audio\AudioSource.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
-    <ClInclude Include="Engine\ECS\Component\Component.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\ECS\EntityComponentSystem\EntityComponentSystem.h" />
     <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />

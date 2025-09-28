@@ -4,7 +4,6 @@
 #include <regex>
 
 /// externals
-//#include <metadata/debug-mono-symfile.h>
 #include <metadata/mono-config.h>
 #include <mono/metadata/debug-helpers.h>
 
@@ -13,11 +12,8 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/FileSystem/FileSsytem.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Component/Component.h"
-
 #include "InternalCalls/AddComponentInternalCalls.h"
 
-//#pragma comment(lib, "./Packages/Scripts/lib/libmono-dbg.a")
 
 namespace {
 	void LogCallback(const char* _log_domain, const char* _log_level, const char* _message, mono_bool _fatal, void*) {
