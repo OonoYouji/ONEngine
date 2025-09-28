@@ -237,7 +237,6 @@
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
     <ClInclude Include="Engine\Core\ImGui\Math\ImGuiMath.h" />
-    <ClInclude Include="Engine\ECS\Component\Component.h" />
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />

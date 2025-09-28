@@ -7,8 +7,10 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/ECS/Component/Component.h"
 #include "Engine/Script/MonoScriptEngine.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/CollisionCheck/CollisionCheck.h"
 
 
 namespace std {
