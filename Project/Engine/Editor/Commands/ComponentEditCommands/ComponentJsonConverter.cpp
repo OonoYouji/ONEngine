@@ -8,9 +8,15 @@
 /// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
-#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/ScreenPostEffectTag/ScreenPostEffectTag.h"
 
 
 /// //////////////////////////////////////////////////

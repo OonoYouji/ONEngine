@@ -2,7 +2,7 @@
 
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
-#include "../Component.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 
 ComponentCollection::ComponentCollection() {
 	RegisterComponentFactory<Script>();

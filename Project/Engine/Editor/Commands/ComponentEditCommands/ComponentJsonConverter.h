@@ -4,9 +4,16 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "Engine/ECS/Component/Component.h"
 #include "Engine/Core/Utility/Utility.h"
 
+#include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line2DRenderer.h"
+#include "Engine/ECS/Component/Components/RendererComponents/Primitive/Line3DRenderer.h"
 
 
 /// /////////////////////////////////////////////////////
