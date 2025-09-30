@@ -127,6 +127,7 @@ void River::Edit(EntityComponentSystem* _ecs) {
 		}
 	}
 
+
 	/// imgui edit
 	if (ImGui::Button("Add")) {
 		RiverControlPoint add = { Vector3::kZero, 2.0f };
@@ -247,7 +248,23 @@ void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand*
 	paramBuf_.Create(_dxDevice);
 	controlPointBuf_.Create(100, _dxDevice, _dxSRVHeap);
 	rwVertices_.CreateUAV(1280, _dxDevice, _dxCommand, _dxSRVHeap);
+	rwIndices_.CreateUAV(1280, _dxDevice, _dxCommand, _dxSRVHeap);
 	isCreatedBuffers_ = true;
+}
+
+void River::SetBufferData() {
+	for (size_t i = 0; i < controlPoints_.size(); i++) {
+		controlPointBuf_.SetMappedData(i, controlPoints_[i]);
+	}
+
+	uint32_t totalSegments = static_cast<uint32_t>(controlPoints_.size() - 3);
+	uint32_t totalSamples = static_cast<uint32_t>(totalSegments * samplePerSegment_);
+	uint32_t totalVertices = totalSamples * 2; /// 頂点数はサンプル数の2倍
+	paramBuf_.SetMappedData({
+		.totalSegments = totalSegments,
+		.totalVertices = totalVertices,
+		.totalSamples = totalSamples
+		});
 }
 
 int River::GetSamplePerSegment() const {
@@ -272,6 +289,10 @@ ConstantBuffer<River::Param>& River::GetParamBufRef() {
 
 StructuredBuffer<RiverVertex>& River::GetRwVerticesRef() {
 	return rwVertices_;
+}
+
+StructuredBuffer<uint32_t>& River::GetRwIndicesRef() {
+	return rwIndices_;
 }
 
 StructuredBuffer<RiverControlPoint>& River::GetControlPointBufRef() {

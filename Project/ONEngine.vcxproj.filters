@@ -182,6 +182,7 @@
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -359,6 +360,7 @@
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

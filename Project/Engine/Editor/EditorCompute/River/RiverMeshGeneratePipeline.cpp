@@ -26,9 +26,11 @@ void RiverMeshGeneratePipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// SRV_CONTROL_POINTS
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); /// UAV_VERTICES
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); /// UAV_INDICES
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); /// SRV_CONTROL_POINTS
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); /// UAV_VERTICES
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); /// UAV_INDICES
 
 		pipeline_->CreatePipeline(_dxManager->GetDxDevice());
 	}
@@ -70,6 +72,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	/// 各リソースが生成されているかチェック
 	if (!river->GetIsCreatedBuffers()) {
 		river->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _dxCommand);
+		river->SetBufferData();
 	}
 
 
@@ -80,6 +83,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	river->GetParamBufRef().BindForComputeCommandList(cmdList, CBV_PARAMS);
 	river->GetControlPointBufRef().SRVBindForComputeCommandList(cmdList, SRV_CONTROL_POINTS);
 	river->GetRwVerticesRef().UAVBindForComputeCommandList(cmdList, UAV_VERTICES);
+	river->GetRwIndicesRef().UAVBindForComputeCommandList(cmdList, UAV_INDICES);
 
 	/// 
 	UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;

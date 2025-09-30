@@ -61,7 +61,9 @@ class River {
 public:
 
 	struct Param {
-		uint32_t segments;
+		uint32_t totalSegments;
+		uint32_t totalVertices;
+		uint32_t totalSamples;
 	};
 
 public:
@@ -80,6 +82,7 @@ public:
 	void DrawSplineCurve();
 
 	void CreateBuffers(class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, class DxCommand* _dxCommand);
+	void SetBufferData();
 
 private:
 	/// ===================================================
@@ -94,6 +97,7 @@ private:
 	ConstantBuffer<Param> paramBuf_;
 	StructuredBuffer<RiverControlPoint> controlPointBuf_;
 	StructuredBuffer<RiverVertex> rwVertices_;
+	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreatedBuffers_;
 
 	/// edit
@@ -111,6 +115,7 @@ public:
 
 	ConstantBuffer<Param>& GetParamBufRef();
 	StructuredBuffer<RiverVertex>& GetRwVerticesRef();
+	StructuredBuffer<uint32_t>& GetRwIndicesRef();
 	StructuredBuffer<RiverControlPoint>& GetControlPointBufRef();
 	bool GetIsCreatedBuffers() const;
 };

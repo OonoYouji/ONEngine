@@ -19,6 +19,7 @@
 #include "../Render/Skybox/SkyboxRenderingPipeline.h"
 #include "../Render/Terrain/TerrainRenderingPipeline.h"
 #include "../Render/Terrain/TerrainProceduralRenderingPipeline.h"
+#include "../Render/River/RiverRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -44,6 +45,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(graphicsResourceCollection_);
+	Generate3DRenderingPipeline<RiverRenderingPipeline>();
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 #ifdef DEBUG_MODE

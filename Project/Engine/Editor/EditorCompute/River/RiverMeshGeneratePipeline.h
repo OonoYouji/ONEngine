@@ -11,6 +11,7 @@ class RiverMeshGeneratePipeline : public IEditorCompute {
 		CBV_PARAMS,
 		SRV_CONTROL_POINTS,
 		UAV_VERTICES,
+		UAV_INDICES,
 	};
 
 public:
