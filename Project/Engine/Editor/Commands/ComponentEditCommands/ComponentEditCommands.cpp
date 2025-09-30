@@ -9,7 +9,6 @@
 
 /// engine
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/ECS/Component/Component.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Script/MonoScriptEngine.h"
