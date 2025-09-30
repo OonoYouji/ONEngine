@@ -61,7 +61,7 @@ std::vector<RiverControlPoint> SampleRiverSpline(const std::vector<RiverControlP
 
 
 
-River::River() = default;
+River::River() : samplePerSegment_(10), isCreatedBuffers_(false) {};
 River::~River() = default;
 
 void River::Edit(EntityComponentSystem* _ecs) {
@@ -133,6 +133,10 @@ void River::Edit(EntityComponentSystem* _ecs) {
 		controlPoints_.push_back(add);
 	}
 
+	if (ImGui::Button("Generate Mesh")) {
+		isGenerateMeshRequest_ = true;
+	}
+
 	if (ImGui::Button("SaveToFile")) {
 		SaveToJson("river");
 	}
@@ -140,6 +144,7 @@ void River::Edit(EntityComponentSystem* _ecs) {
 	if (ImGui::Button("LoadFromJson")) {
 		LoadFromJson("river");
 	}
+
 
 
 	DrawSplineCurve();
@@ -227,13 +232,52 @@ void River::LoadFromJson(const std::string& _name) {
 
 void River::DrawSplineCurve() {
 	/// spline曲線をGizmoで描画する
-	auto riverPoints = SampleRiverSpline(controlPoints_, 10);
+	auto riverPoints = SampleRiverSpline(controlPoints_, samplePerSegment_);
 	if (riverPoints.empty()) {
 		return;
 	}
 	for (size_t i = 0; i < riverPoints.size() - 1; i++) {
 		RiverControlPoint& front = riverPoints[i + 0];
-		RiverControlPoint& back  = riverPoints[i + 1];
+		RiverControlPoint& back = riverPoints[i + 1];
 		Gizmo::DrawLine(front.position, back.position, Vector4(0.98f, 1.0f, 0.1f, 1.0f));
 	}
+}
+
+void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand* _dxCommand) {
+	paramBuf_.Create(_dxDevice);
+	controlPointBuf_.Create(100, _dxDevice, _dxSRVHeap);
+	rwVertices_.CreateUAV(1280, _dxDevice, _dxCommand, _dxSRVHeap);
+	isCreatedBuffers_ = true;
+}
+
+int River::GetSamplePerSegment() const {
+	return samplePerSegment_;
+}
+
+int River::GetNumControlPoint() const {
+	return static_cast<int>(controlPoints_.size());
+}
+
+bool River::GetIsGenerateMeshRequest() const {
+	return isGenerateMeshRequest_;
+}
+
+void River::SetIsGenerateMeshRequest(bool _request) {
+	isGenerateMeshRequest_ = _request;
+}
+
+ConstantBuffer<River::Param>& River::GetParamBufRef() {
+	return paramBuf_;
+}
+
+StructuredBuffer<RiverVertex>& River::GetRwVerticesRef() {
+	return rwVertices_;
+}
+
+StructuredBuffer<RiverControlPoint>& River::GetControlPointBufRef() {
+	return controlPointBuf_;
+}
+
+bool River::GetIsCreatedBuffers() const {
+	return isCreatedBuffers_;
 }
