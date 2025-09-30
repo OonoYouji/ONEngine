@@ -52,7 +52,7 @@ void PostProcessTerrainBrush::Execute(
 	GraphicsResourceCollection* _resourceCollection, EntityComponentSystem* _entityComponentSystem) {
 
 	/// brush data
-	const Vector2 mousePos = Input::GetImGuiImageMousePosition("Scene");
+	const Vector2 mousePos = Input::GetImGuiImageMousePosNormalized("Scene");
 	/// 範囲外なら処理しない
 	if (mousePos.x < 0.0f || mousePos.x > 1280.0f ||
 		mousePos.y < 0.0f || mousePos.y > 720.0f) {

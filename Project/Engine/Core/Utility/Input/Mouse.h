@@ -36,7 +36,9 @@ public:
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
 	void Update(class Window* _window);
 
-	const Vector2& GetImGuiImageMousePosition(const std::string& _name);
+	const Vector2& GetImGuiImageMousePosNormalized(const std::string& _name);
+	const Vector2& GetImGuiImagePos(const std::string& _name);
+	const Vector2& GetImGuiImageSize(const std::string& _name);
 
 private:
 	/// =========================================
@@ -55,5 +57,6 @@ private:
 	float wheel_;
 
 	Vector2 imageMousePosition;
+	Vector2 imageSize_;
 };
 

@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\AudioClip.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
@@ -558,6 +559,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\AudioClip.h" />
     <ClInclude Include="Engine\ECS\System\Audio\AudioPlaybackSystem.h" />

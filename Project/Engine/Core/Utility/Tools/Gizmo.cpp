@@ -11,10 +11,6 @@ namespace {
 	class GizmoSystem {
 		friend class Gizmo;
 	public:
-		/*##########################################################
-			TODO : COMMENT
-			仮に１つの値ですべてのreserveを行うがこれを別々の引数にする
-		##########################################################*/
 		GizmoSystem(const size_t _maxDrawInstanceCount)
 			: maxInstanceCount_(_maxDrawInstanceCount) {
 

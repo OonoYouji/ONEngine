@@ -60,7 +60,7 @@ void Mouse::Update(Window* _window) {
 	wheel_ = static_cast<float>(state_.lZ);
 }
 
-const Vector2& Mouse::GetImGuiImageMousePosition(const std::string& _name) {
+const Vector2& Mouse::GetImGuiImageMousePosNormalized(const std::string& _name) {
 	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
 	/// imageInfoが見つからない場合は、デフォルトの位置を返す
 	if (!imageInfo) {
@@ -68,25 +68,51 @@ const Vector2& Mouse::GetImGuiImageMousePosition(const std::string& _name) {
 		return defaultPosition;
 	}
 
-	// 2. 現在のマウス位置を取得  
+	/// 現在のマウス位置を取得  
 	ImVec2 mousePos = ImGui::GetMousePos();
 
-	// 3. 画像の左上の位置 (imageInfo.pos) と画像のサイズ (imageInfo.size) を取得  
+	/// 画像の左上の位置 (imageInfo.pos) と画像のサイズ (imageInfo.size) を取得  
 	ImVec2 imageMin = imageInfo->position;
 	ImVec2 imageMax = ImVec2(
 		imageMin.x + imageInfo->size.x,
 		imageMin.y + imageInfo->size.y
 	);
 
-	// 4. 画像内での相対位置を計算 (画像の左上を基準にした位置)  
+	/// 画像内での相対位置を計算 (画像の左上を基準にした位置)  
 	ImVec2 mousePosInImage = ImVec2(
 		mousePos.x - imageMin.x,
 		mousePos.y - imageMin.y
 	);
 
-	// 6. 1280x720のRTVサイズに合わせて正規化  
+	/// 1280x720のRTVサイズに合わせて正規化  
 	imageMousePosition.x = (mousePosInImage.x / imageInfo->size.x) * 1280.0f;
 	imageMousePosition.y = (mousePosInImage.y / imageInfo->size.y) * 720.0f;
 
 	return imageMousePosition;
+}
+
+const Vector2& Mouse::GetImGuiImagePos(const std::string& _name) {
+	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
+	/// imageInfoが見つからない場合は、デフォルトの位置を返す
+	if (!imageInfo) {
+		static Vector2 defaultPosition(0.0f, 0.0f);
+		return defaultPosition;
+	}
+
+	imageMousePosition.x = imageInfo->position.x;
+	imageMousePosition.y = imageInfo->position.y;
+
+	return imageMousePosition;
+}
+
+const Vector2& Mouse::GetImGuiImageSize(const std::string& _name) {
+	const ImGuiSceneImageInfo* imageInfo = pImGuiManager_->GetSceneImageInfo(_name);
+	/// imageInfoが見つからない場合は、デフォルトのサイズを返す
+	if (!imageInfo) {
+		static Vector2 defaultSize(0.0f, 0.0f);
+		return defaultSize;
+	}
+
+	imageSize_ = Vector2(imageInfo->size.x, imageInfo->size.y);
+	return imageSize_;
 }
