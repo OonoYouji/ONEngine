@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +35,7 @@ namespace Stage {
 
 	public class Partition {
 		public int max;
-		public JArray array;
+		public List<List<int>> date;
 	}
 }
 
@@ -56,6 +57,12 @@ public class Mapchip : MonoBehavior {
 		loadedText_ = Mathf.LoadFile(directory + filename);
 		root_ = JsonConvert.DeserializeObject<Stage.Root>(loadedText_);
 		root_.map.tiles.Reverse();
+		
+		/// partitionのデバッグ出力
+		foreach (var d in root_.partition.date) {
+				Debug.Log(string.Join(",", d));
+		}
+		
 	}
 
 	public List<List<int>> GetStartMapData() {

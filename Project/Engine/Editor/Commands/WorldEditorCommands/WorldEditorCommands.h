@@ -118,3 +118,19 @@ private:
 
 
 };
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティをコピーするコマンド
+/// ///////////////////////////////////////////////////
+class CopyEntityCommand : public IEditorCommand {
+public:
+	CopyEntityCommand(class GameEntity* _entity);
+	~CopyEntityCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+private:
+	class GameEntity* pEntity_;
+	nlohmann::json entityJson_;
+};

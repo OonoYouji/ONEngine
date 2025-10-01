@@ -144,48 +144,11 @@ void PostProcessLighting::Execute(const std::string& _textureName, DxCommand* _d
 	);
 
 	/// 大本のsceneテクスチャに結果をコピー
-
-	/// resource barrier
-	CD3DX12_RESOURCE_BARRIER uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
+	CopyResource(
 		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get(),
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_COPY_SOURCE
-	);
-
-	CD3DX12_RESOURCE_BARRIER sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		textures[textureIndices_[SCENE]].GetDxResource().Get(),
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		D3D12_RESOURCE_STATE_COPY_DEST
+		command
 	);
-
-	command->ResourceBarrier(1, &uavTexBarrier);
-	command->ResourceBarrier(1, &sceneTexBarrier);
-
-
-	/// copy
-	command->CopyResource(
-		textures[textureIndices_[SCENE]].GetDxResource().Get(),
-		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get()
-	);
-
-
-	/// resource barrier
-	uavTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[POST_PROCESS_RESULT]].GetDxResource().Get(),
-		D3D12_RESOURCE_STATE_COPY_SOURCE,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
-
-	sceneTexBarrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		textures[textureIndices_[SCENE]].GetDxResource().Get(),
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-	);
-
-
-	command->ResourceBarrier(1, &uavTexBarrier);
-	command->ResourceBarrier(1, &sceneTexBarrier);
-
 
 
 
