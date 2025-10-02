@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,8 @@ using Newtonsoft.Json.Linq;
 public enum MAPDATA : int {
 	BLOCK_WHTIE = 10,
 	BLOCK_BLACK = 11,
+	CONSTANT_BLOCK_WHITE = 30,
+	CONSTANT_BLOCK_BLACK = 31,
 	GOAL_WHITE = 40,
 	GOAL_BLACK = 41,
 	PLAYER_WHITE = 100,
@@ -18,7 +21,7 @@ namespace Stage {
 		public Map map;
 		public Player player;
 		public Player subPlayer;
-		public Partition partition;
+		public PartitionList partitionList;
 	}
 
 	public class Map {
@@ -32,9 +35,19 @@ namespace Stage {
 		public int goalType;
 	}
 
-	public class Partition {
+	public class PartitionList {
 		public int max;
-		public JArray array;
+		public List<Partition> date;
+	}
+
+
+	/// <summary>
+	/// address1とaddress1の間に配置する
+	/// </summary>
+	public class Partition {
+		public Vector2Int address1;
+		public Vector2Int address2;
+		public int type;
 	}
 }
 
@@ -56,6 +69,17 @@ public class Mapchip : MonoBehavior {
 		loadedText_ = Mathf.LoadFile(directory + filename);
 		root_ = JsonConvert.DeserializeObject<Stage.Root>(loadedText_);
 		root_.map.tiles.Reverse();
+
+		/// partitionのデバッグ出力
+		Debug.Log("---------------------------------------------------------------");
+		if (root_.partitionList != null) {
+			foreach (var d in root_.partitionList.date) {
+				Debug.Log("address1: x=" + d.address1.x + "  y=" + d.address1.y);
+				Debug.Log("address1: x=" + d.address2.x + "  y=" + d.address2.y);
+				Debug.Log("type=" + d.type);
+			}
+		}
+		Debug.Log("---------------------------------------------------------------");
 	}
 
 	public List<List<int>> GetStartMapData() {

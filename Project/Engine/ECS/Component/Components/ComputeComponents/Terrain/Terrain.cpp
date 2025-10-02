@@ -19,6 +19,8 @@ Terrain::Terrain() {
 	const size_t faceVerts = 6;
 	maxIndexNum_ = static_cast<uint32_t>((terrainWidth - 1) * (terrainHeight - 1) * faceVerts);
 
+	/// river
+	
 
 	splattingTexPaths_[GRASS] = "./Packages/Textures/Grass.jpg";
 	splattingTexPaths_[DIRT] = "./Packages/Textures/Dirt.jpg";
@@ -79,6 +81,10 @@ void Terrain::SetBrushStrength(float _strength) {
 	brushStrength_ = _strength;
 }
 
+River* Terrain::GetRiver() {
+	return &river_;
+}
+
 bool Terrain::GetIsRenderingProcedural() const {
 	return isRenderingProcedural_;
 }
@@ -89,7 +95,7 @@ void Terrain::SetIsRenderingProcedural(bool _isRenderingProcedural) {
 
 
 
-void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
+void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs) {
 	if (!_terrain) {
 		return;
 	}
@@ -108,6 +114,8 @@ void COMP_DEBUG::TerrainDebug(Terrain* _terrain) {
 	/// flags
 	ImGui::Checkbox("is rendering procedural", &_terrain->isRenderingProcedural_);
 
+	/// river
+	_terrain->river_.Edit(_ecs);
 }
 
 void from_json(const nlohmann::json& _j, Terrain& _t) {

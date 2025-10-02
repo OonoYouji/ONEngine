@@ -217,3 +217,16 @@ EDITOR_STATE CreatePrefabCommand::Execute() {
 EDITOR_STATE CreatePrefabCommand::Undo() {
 	return EDITOR_STATE_FINISH;
 }
+
+CopyEntityCommand::CopyEntityCommand(GameEntity* _entity) : pEntity_(_entity) {}
+
+EDITOR_STATE CopyEntityCommand::Execute() {
+	/// jsonに変換
+	entityJson_ = EntityJsonConverter::ToJson(pEntity_);
+
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE CopyEntityCommand::Undo() {
+	return EDITOR_STATE();
+}

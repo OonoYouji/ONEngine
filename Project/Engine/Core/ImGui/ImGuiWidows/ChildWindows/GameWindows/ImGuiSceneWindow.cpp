@@ -155,23 +155,26 @@ void ImGuiSceneWindow::ShowImGui() {
 					&entityMatrix.m[0][0]
 				);
 
-				/// 行列をSRTに分解、エンティティに適応
-				float translation[3], rotation[3], scale[3];
-				ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
+				if (ImGuizmo::IsUsing() && ImGuizmo::IsOver()) {
+					/// 行列をSRTに分解、エンティティに適応
+					float translation[3], rotation[3], scale[3];
+					ImGuizmo::DecomposeMatrixToComponents(&entityMatrix.m[0][0], translation, rotation, scale);
 
-				Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
-				if (GameEntity* owner = transform->GetOwner()) {
-					if (GameEntity* parent = owner->GetParent()) {
-						translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+					Vector3 translationV = Vector3(translation[0], translation[1], translation[2]);
+					if (GameEntity* owner = transform->GetOwner()) {
+						if (GameEntity* parent = owner->GetParent()) {
+							translationV = Matrix4x4::Transform(translationV, parent->GetTransform()->GetMatWorld().Inverse());
+						}
 					}
+					transform->SetPosition(translationV);
+
+					Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
+					transform->SetRotate(eulerRotation);
+					transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
+
+					transform->Update();
 				}
-				transform->SetPosition(translationV);
 
-				Vector3 eulerRotation = Vector3(rotation[0] * Mathf::Deg2Rad, rotation[1] * Mathf::Deg2Rad, rotation[2] * Mathf::Deg2Rad);
-				transform->SetRotate(eulerRotation);
-				transform->SetScale(Vector3(scale[0], scale[1], scale[2]));
-
-				transform->Update();
 			}
 		}
 

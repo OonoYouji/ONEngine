@@ -5,7 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cc9215a-c0ee-4ab4-9b7d-4d25a26218d5" name="変更" comment="">
-      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Graphics/Buffer/StructuredBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Graphics/Buffer/StructuredBuffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/Gizmo/GizmoRenderingPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/Gizmo/GizmoRenderingPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/River/RiverRenderingPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/River/RiverRenderingPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Jsons/Terrain/river.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Jsons/Terrain/river.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_134944.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_153707.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_134944.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_153707.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/imgui.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleClearEffect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleClearEffect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,18 +45,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "game/feature/partition",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/river&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="デフォルトタスク">
       <changelist id="6cc9215a-c0ee-4ab4-9b7d-4d25a26218d5" name="変更" comment="" />
@@ -53,6 +73,9 @@
       <workItem from="1757680115527" duration="2422000" />
       <workItem from="1758854953734" duration="1220000" />
       <workItem from="1758864486452" duration="8306000" />
+      <workItem from="1759296737071" duration="3386000" />
+      <workItem from="1759372938930" duration="6843000" />
+      <workItem from="1759386799349" duration="938000" />
     </task>
     <servers />
   </component>

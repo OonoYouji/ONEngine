@@ -50,7 +50,7 @@ void GizmoRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 	{
 		/// verticesを最大数分メモリを確保
-		maxVertexNum_ = static_cast<size_t>(std::pow(2, 16));
+		maxVertexNum_ = static_cast<size_t>(std::pow(2, 18));
 		vertices_.reserve(maxVertexNum_);
 
 		/// vertex bufferの作成

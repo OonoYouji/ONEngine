@@ -5,8 +5,6 @@ struct Index {
 	uint value;
 };
 
-
-
 ConstantBuffer<TerrainSize> terrainSize : register(b0);
 RWStructuredBuffer<TerrainVertex> vertices : register(u0);
 RWStructuredBuffer<Index> indices : register(u1);

@@ -180,6 +180,10 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\TextGlyph.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.cpp" />
+    <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.cpp" />
+    <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
+    <ClCompile Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.cpp" />
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -355,6 +359,10 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\TerrainBrush\PostProcessTerrainBrush.h" />
+    <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.h" />
+    <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
+    <ClInclude Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.h" />
+    <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

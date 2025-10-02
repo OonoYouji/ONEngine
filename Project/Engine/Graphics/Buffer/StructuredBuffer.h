@@ -124,6 +124,11 @@ inline StructuredBuffer<T>::~StructuredBuffer() {
 template<typename T>
 inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap) {
 
+	/// 生成済みならこのhandleを解放する
+	if (srvHandle_.has_value()) {
+		_dxSRVHeap->Free(srvHandle_->heapIndex);
+	}
+
 	/// bufferのサイズを計算
 	structureSize_ = sizeof(T);
 	bufferSize_ = _size;
@@ -159,6 +164,12 @@ inline void StructuredBuffer<T>::Create(uint32_t _size, DxDevice* _dxDevice, DxS
 
 template<typename T>
 inline void StructuredBuffer<T>::CreateUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
+
+	/// 生成済みならこのhandleを解放する
+	if (uavHandle_.has_value()) {
+		_dxSRVHeap->Free(uavHandle_->heapIndex);
+	}
+
 
 	/// bufferのサイズを計算
 	structureSize_ = sizeof(T);
