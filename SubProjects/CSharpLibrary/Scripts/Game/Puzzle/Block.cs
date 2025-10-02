@@ -24,6 +24,7 @@ public class Block : MonoBehavior {
 
 	public override void Initialize() {
 		transform.scale = Vector3.one * 0.1f;
+		this.enable = true;
 	}
 
 	public override void Update() {

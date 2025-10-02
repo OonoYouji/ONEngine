@@ -37,13 +37,6 @@
             "type": "MeshRenderer"
         },
         {
-            "enable": 1,
-            "scriptName": [
-                "PuzzlePlayer"
-            ],
-            "type": "Script"
-        },
-        {
             "blendMode": 0,
             "distanceEmitData": {
                 "emitDistance": -431602080.0,
@@ -143,13 +136,23 @@
         },
         {
             "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "PuzzlePlayer"
+                }
+            ],
+            "type": "Script"
+        },
+        {
+            "enable": 1,
             "path": "",
             "pitch": 1.0,
             "type": "AudioSource",
             "volume": 1.0
         }
     ],
-    "id": 3,
+    "id": 2,
     "name": "PuzzlePlayer",
     "parent": null,
     "prefabName": "PuzzlePlayer.prefab"

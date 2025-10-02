@@ -41,7 +41,7 @@ public class ECSGroup {
     public void AddEntity(int _id) {
         /// 引数の_idがすでに存在する場合はエラー
         if (entities_.ContainsKey(_id)) {
-            Debug.LogError("ECSGroup.AddEntity - Entity with ID: " + _id + " already exists in group: " + groupName);
+            // Debug.LogError("ECSGroup.AddEntity - Entity with ID: " + _id + " already exists in group: " + groupName);
             return;
         }
 

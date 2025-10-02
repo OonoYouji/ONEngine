@@ -59,9 +59,11 @@ public class Mapchip : MonoBehavior {
 		root_.map.tiles.Reverse();
 		
 		/// partitionのデバッグ出力
+		Debug.Log("---------------------------------------------------------------");
 		foreach (var d in root_.partition.date) {
 				Debug.Log(string.Join(",", d));
 		}
+		Debug.Log("---------------------------------------------------------------");
 		
 	}
 
