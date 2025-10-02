@@ -252,6 +252,7 @@ void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand*
 	totalIndices_ = totalVertices_ * 6 / 2 - 6;
 
 	paramBuf_.Create(_dxDevice);
+	materialBuffer_.Create(_dxDevice);
 	controlPointBuf_.Create(100, _dxDevice, _dxSRVHeap);
 	rwVertices_.CreateUAV(totalVertices_, _dxDevice, _dxCommand, _dxSRVHeap);
 	rwIndices_.CreateUAV(totalIndices_, _dxDevice, _dxCommand, _dxSRVHeap);
@@ -274,6 +275,22 @@ void River::SetBufferData() {
 		});
 }
 
+void River::SetMaterialData(int32_t _entityId, int32_t _texIndex) {
+	materialBuffer_.SetMappedData({
+		.uvTransform = {
+			.position = Vector2(Time::GetTime(), 0.0f),
+			.scale = Vector2::kOne,
+			.rotate = 0.0f,
+		},
+		.baseColor = Vector4::kWhite,
+		.postEffectFlags = 0,
+		.entityId = _entityId,
+		.baseTextureId = _texIndex,
+		.normalTextureId = -1
+		}
+	);
+}
+
 int River::GetSamplePerSegment() const {
 	return samplePerSegment_;
 }
@@ -292,6 +309,10 @@ void River::SetIsGenerateMeshRequest(bool _request) {
 
 ConstantBuffer<River::Param>& River::GetParamBufRef() {
 	return paramBuf_;
+}
+
+ConstantBuffer<Material>& River::GetMaterialBufRef() {
+	return materialBuffer_;
 }
 
 StructuredBuffer<RiverVertex>& River::GetRwVerticesRef() {

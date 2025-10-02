@@ -10,6 +10,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// ///////////////////////////////////////////////////
 /// 川のコントロールポイント
@@ -85,6 +86,8 @@ public:
 	void CreateBuffers(class DxDevice* _dxDevice, class DxSRVHeap* _dxSRVHeap, class DxCommand* _dxCommand);
 	void SetBufferData();
 
+	void SetMaterialData(int32_t _entityId, int32_t _texIndex);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -97,6 +100,7 @@ private:
 
 	/// buffer
 	ConstantBuffer<Param> paramBuf_;
+	ConstantBuffer<Material> materialBuffer_;
 	StructuredBuffer<RiverControlPoint> controlPointBuf_;
 	StructuredBuffer<RiverVertex> rwVertices_;
 	StructuredBuffer<uint32_t> rwIndices_;
@@ -118,6 +122,7 @@ public:
 	void SetIsGenerateMeshRequest(bool _request);
 
 	ConstantBuffer<Param>& GetParamBufRef();
+	ConstantBuffer<Material>& GetMaterialBufRef();
 	StructuredBuffer<RiverVertex>& GetRwVerticesRef();
 	StructuredBuffer<uint32_t>& GetRwIndicesRef();
 	StructuredBuffer<RiverControlPoint>& GetControlPointBufRef();

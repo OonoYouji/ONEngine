@@ -39,7 +39,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     uint tvIndex = DTid.x;
     float maxFactor = 0.0f;
     float chosenHeight = terrainVertices[tvIndex].position.y; // デフォルトは現在の高さ
-    float falloffRadius = 0.1f; /// paramsに入れるように変更する
+    float falloffRadius = 12; /// paramsに入れるように変更する
      
     /// 地形の頂点の座標を取得
     float3 tvPos = terrainVertices[tvIndex].position.xyz;
@@ -105,6 +105,15 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
     // 高さを補間（川の高さに合わせて押し下げる）
     tvPos.y = lerp(tvPos.y, chosenHeight - 1.0f, maxFactor);
+    // 川の高さとの差
+    float delta = tvPos.y - chosenHeight;
+    
+    // delta > 0 の場合だけ押し下げる
+    if (delta > 0.0f) {
+        tvPos.y -= delta * maxFactor;
+        // これで川の中の頂点はピッタリ下がる
+        // 川の外でも falloff に沿って徐々に下がる
+    }
 
     terrainVertices[tvIndex].position.xyz = tvPos;
 }

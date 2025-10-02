@@ -15,7 +15,7 @@ PSOutput main(VSOutput input) {
 	PSOutput output;
 	
 	float4 textureColor = textures[textureId.id].Sample(textureSampler, input.uv);
-	float4 materialColor = material.color;
+	float4 materialColor = material.baseColor;
 	
 	output.color = textureColor * materialColor;
 	output.worldPosition = input.worldPosition;

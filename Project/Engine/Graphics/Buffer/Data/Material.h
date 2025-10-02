@@ -21,7 +21,7 @@ struct UVTransform {
 	Vector2 position; /// オフセット
 	Vector2 scale = Vector2::kOne; /// スケール
 	float   rotate;   /// 回転
-	float   pad1;
+	float   pad1[3];
 };
 
 struct Material {

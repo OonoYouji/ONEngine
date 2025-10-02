@@ -6,8 +6,9 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-RiverRenderingPipeline::RiverRenderingPipeline() = default;
+RiverRenderingPipeline::RiverRenderingPipeline(GraphicsResourceCollection* _grc) : pGRC_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;
 
 void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -29,8 +30,14 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddInputElement("NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT);
 
 
-
+		/// buffer
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 1);
+
+		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); /// texture
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 0);
+
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
@@ -50,6 +57,10 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
+	/// --------------------------------------------------------------------
+	/// 早期リターンチェック
+	/// --------------------------------------------------------------------
+
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
 	if(!terrainArray) {
 		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
@@ -67,12 +78,26 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	}
 
 
+	/// --------------------------------------------------------------------
+	/// bufferの設定
+	/// --------------------------------------------------------------------
+
 	auto cmdList = _dxCommand->GetCommandList();
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, 0);
+
+	/// CBV_VIEW_PROJECTION
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
+
+	/// SRV_TEXTURE
+	auto frontTex = pGRC_->GetTextures().begin();
+	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, (*frontTex).GetSRVGPUHandle());
+
+	/// CBV_MATERIAL
+	river->SetMaterialData(terrain->GetOwner()->GetId(), pGRC_->GetTextureIndex("./Packages/Textures/uvChecker.png"));
+	river->GetMaterialBufRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
+
 	/// vbvとibvのリソースバリアーを変える
 	DxResource& vertexBuffer = river->GetRwVerticesRef().GetResource();
 	vertexBuffer.CreateBarrier(

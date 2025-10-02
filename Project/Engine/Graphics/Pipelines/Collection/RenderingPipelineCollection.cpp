@@ -45,7 +45,7 @@ void RenderingPipelineCollection::Initialize() {
 	Generate3DRenderingPipeline<SkyboxRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<TerrainProceduralRenderingPipeline>(graphicsResourceCollection_);
-	Generate3DRenderingPipeline<RiverRenderingPipeline>();
+	Generate3DRenderingPipeline<RiverRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<MeshRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<SkinMeshRenderingPipeline>(graphicsResourceCollection_);
 #ifdef DEBUG_MODE
