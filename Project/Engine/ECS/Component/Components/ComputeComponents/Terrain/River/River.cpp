@@ -134,6 +134,7 @@ void River::Edit(EntityComponentSystem* _ecs) {
 		controlPoints_.push_back(add);
 	}
 
+	isGenerateMeshRequest_ = false;
 	if (ImGui::Button("Generate Mesh")) {
 		isGenerateMeshRequest_ = true;
 	}

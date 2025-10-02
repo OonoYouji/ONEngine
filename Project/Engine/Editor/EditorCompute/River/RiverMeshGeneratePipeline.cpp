@@ -67,7 +67,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	if (!river->GetIsGenerateMeshRequest()) {
 		return;
 	}
-	river->SetIsGenerateMeshRequest(false);
+	//river->SetIsGenerateMeshRequest(false);
 
 	/// バッファは生成時に毎回作る
 	river->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _dxCommand);

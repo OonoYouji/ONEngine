@@ -4,9 +4,8 @@
 /// buffer
 ConstantBuffer<RiverParams> params : register(b0);
 RWStructuredBuffer<TerrainVertex> terrainVertices : register(u0);
-StructuredBuffer<RiverVertex> riverVertices : register(u1);
-StructuredBuffer<uint> riverIndices : register(u2);
-
+RWStructuredBuffer<RiverVertex> riverVertices : register(u1);
+RWStructuredBuffer<uint> riverIndices : register(u2);
 
 float2 closestPointOnTriangle(float2 _p, float2 _a, float2 _b, float2 _c) {
     // 2D三角形の最近接点を計算
@@ -34,20 +33,24 @@ float2 closestPointOnTriangle(float2 _p, float2 _a, float2 _b, float2 _c) {
     return closest;
 }
 
-
 [numthreads(32, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
     /// 地形の頂点index
     uint tvIndex = DTid.x;
     float maxFactor = 0.0f;
-    float falloffRadius = 1.0f; /// paramsに入れるように変更する
+    float chosenHeight = terrainVertices[tvIndex].position.y; // デフォルトは現在の高さ
+    float falloffRadius = 0.1f; /// paramsに入れるように変更する
      
     /// 地形の頂点の座標を取得
     float3 tvPos = terrainVertices[tvIndex].position.xyz;
 
     int totalRiverTriangles = params.totalVertices * 6 / 2 - 6;
     for(int i = 0; i < totalRiverTriangles; ++i) {
-        uint3 tri = riverIndices[i];
+        uint3 tri = uint3(
+            riverIndices[i * 3+ 0],
+            riverIndices[i * 3+ 1],
+            riverIndices[i * 3+ 2]
+        );
 
         /// x,z座標で三角形を構築
         float2 a = float2(riverVertices[tri.x].position.x, riverVertices[tri.x].position.z);
@@ -75,14 +78,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
         /// 内外の判定をとる
         bool inside = (u >= 0.0) && (v >= 0.0) && (u + v <= 1.0);
 
-          float factor = 0.0;
+        float factor = 0.0;
 
-        if(inside)
-        {
+        if(inside) {
             factor = 1.0; // 三角形内なら完全に川の高さ
-        }
-        else
-        {
+        } else {
             // 三角形外でもfalloffRadius以内なら徐々に押す
             float dist = min(
                 length(p - closestPointOnTriangle(p, a, b, c)), 
@@ -91,7 +91,20 @@ void main(uint3 DTid : SV_DispatchThreadID) {
             factor = saturate(1.0 - dist / falloffRadius);
         }
 
-        maxFactor = max(maxFactor, factor);
-    }
-}
+        // 三角形の平均高さを計算
+        float riverHeight = (riverVertices[tri.x].position.y +
+                             riverVertices[tri.y].position.y +
+                             riverVertices[tri.z].position.y) / 3.0f;
 
+        // より強く影響する三角形を優先
+        if(factor > maxFactor) {
+            maxFactor = factor;
+            chosenHeight = riverHeight;
+        }
+    }
+
+    // 高さを補間（川の高さに合わせて押し下げる）
+    tvPos.y = lerp(tvPos.y, chosenHeight - 1.0f, maxFactor);
+
+    terrainVertices[tvIndex].position.xyz = tvPos;
+}

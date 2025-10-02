@@ -558,6 +558,7 @@
     <ClCompile Include="Engine\Graphics\Resource\Container\ResourceContainer.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
@@ -736,6 +737,7 @@
     <ClInclude Include="Engine\ECS\System\Sprite\SpriteUpdateSystem.h" />
     <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
+    <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
