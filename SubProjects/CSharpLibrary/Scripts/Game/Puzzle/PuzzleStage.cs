@@ -160,6 +160,8 @@ public class PuzzleStage : MonoBehavior {
 					block = ecsGroup.CreateEntity("Block");
 				} else if (CheckIsGoal(mapValue)) {
 					block = ecsGroup.CreateEntity("Goal");
+				} else if (CheckIsConstantBlock(mapValue)) {
+					block = ecsGroup.CreateEntity("ConstantBlock");
 				}
 
 				if (block == null) {
@@ -217,9 +219,9 @@ public class PuzzleStage : MonoBehavior {
 		UpdatePlayer();
 		UpdateEntityPosition();
 
-		if (Input.TriggerGamepad(Gamepad.Y)) {
-			Reset();
-		}
+		// if (Input.TriggerGamepad(Gamepad.Y)) {
+		// 	Reset();
+		// }
 	}
 
 
@@ -363,6 +365,13 @@ public class PuzzleStage : MonoBehavior {
 			return true;
 		}
 
+		return false;
+	}
+
+	private bool CheckIsConstantBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
+			return true;
+		}
 		return false;
 	}
 

@@ -5,19 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6cc9215a-c0ee-4ab4-9b7d-4d25a26218d5" name="変更" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Prefabs/PuzzlePlayer.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Prefabs/PuzzlePlayer.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Script/Script.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Script/Script.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/System/ScriptUpdateSystem/ScriptUpdateSystem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/System/ScriptUpdateSystem/ScriptUpdateSystem.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251001_175114.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251001_175114.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_114940.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_114940.pdb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/imgui.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Engine/ECS/EntityComponentSystem/ECSGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Engine/ECS/EntityComponentSystem/ECSGroup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStartController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStartController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" afterDir="false" />
     </list>
@@ -68,7 +66,7 @@
       <workItem from="1758854953734" duration="1220000" />
       <workItem from="1758864486452" duration="8306000" />
       <workItem from="1759296737071" duration="3386000" />
-      <workItem from="1759372938930" duration="301000" />
+      <workItem from="1759372938930" duration="5618000" />
     </task>
     <servers />
   </component>
