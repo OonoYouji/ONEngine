@@ -1,27 +1,10 @@
-struct ControlPoint {
-    float3 position;
-    float width;
-};
-
-struct Vertex {
-    float4 position;
-    float2 uv;
-    float3 normal;
-};
-
-struct Params {
-    uint totalSegments;
-    uint totalVertices;
-    uint totalSamples;
-    uint samplePerSegment;
-};
+#include "River.hlsli"
 
 /// ----- buffer ----- ///
-ConstantBuffer<Params> params : register(b0);
+ConstantBuffer<RiverParams> params : register(b0);
 StructuredBuffer<ControlPoint> controlPoints : register(t0);
-RWStructuredBuffer<Vertex> vertices : register(u0);
+RWStructuredBuffer<RiverVertex> vertices : register(u0);
 RWStructuredBuffer<uint> indices : register(u1);
-
 
 /// ----- methods ----- ///
 float3 CatmullRom(float3 p0, float3 p1, float3 p2, float3 p3, float t) {
@@ -32,8 +15,6 @@ float3 CatmullRom(float3 p0, float3 p1, float3 p2, float3 p3, float t) {
                   (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2 +
                   (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3);
 }
-
-
 
 [numthreads(16, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
@@ -71,7 +52,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
         right = normalize(right);
 
         float width = lerp(controlPoints[segIndex+1].width, controlPoints[segIndex+2].width, localT);
-        pos += right * width * (side==0 ? -0.5 : 0.5);
+        pos += right * width * (side==0 ? -1 : 1);
 
         vertices[index].position = float4(pos,1.0);
         vertices[index].uv       = float2((float)sampleNum/params.totalSegments, (float)side);

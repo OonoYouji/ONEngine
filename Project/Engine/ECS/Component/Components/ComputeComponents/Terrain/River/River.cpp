@@ -248,7 +248,7 @@ void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand*
 	uint32_t totalSegments = static_cast<uint32_t>(createdPoints_.size() - 3);
 	uint32_t totalSamples = static_cast<uint32_t>(totalSegments * samplePerSegment_);
 	totalVertices_ = totalSamples * 2; /// 頂点数はサンプル数の2倍
-	totalIndices_ = totalVertices_ * 6 / 2;
+	totalIndices_ = totalVertices_ * 6 / 2 - 6;
 
 	paramBuf_.Create(_dxDevice);
 	controlPointBuf_.Create(100, _dxDevice, _dxSRVHeap);
@@ -271,9 +271,6 @@ void River::SetBufferData() {
 		.totalSamples = totalSamples,
 		.samplePerSegment = static_cast<uint32_t>(samplePerSegment_)
 		});
-
-
-	totalIndices_ = totalVertices_ * 6 / 2;
 }
 
 int River::GetSamplePerSegment() const {
