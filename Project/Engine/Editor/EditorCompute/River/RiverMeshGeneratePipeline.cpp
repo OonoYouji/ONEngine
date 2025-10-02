@@ -67,13 +67,11 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	if (!river->GetIsGenerateMeshRequest()) {
 		return;
 	}
-
 	river->SetIsGenerateMeshRequest(false);
-	/// 各リソースが生成されているかチェック
-	if (!river->GetIsCreatedBuffers()) {
-		river->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _dxCommand);
-		river->SetBufferData();
-	}
+
+	/// バッファは生成時に毎回作る
+	river->CreateBuffers(pDxManager_->GetDxDevice(), pDxManager_->GetDxSRVHeap(), _dxCommand);
+	river->SetBufferData();
 
 
 	auto cmdList = _dxCommand->GetCommandList();
@@ -87,7 +85,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 
 	/// 
 	UINT totalVertices = river->GetSamplePerSegment() * (river->GetNumControlPoint() - 3) * 2;
-	UINT threadsPerGroup = 64;
+	UINT threadsPerGroup = 16;
 	UINT dispatchX = (totalVertices + threadsPerGroup - 1) / threadsPerGroup;
 	cmdList->Dispatch(dispatchX, 1, 1);
 }

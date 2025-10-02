@@ -33,7 +33,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_VERTEX, 0);
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
-		pipeline_->SetCullMode(D3D12_CULL_MODE_NONE);
+		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
@@ -85,7 +85,7 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	D3D12_VERTEX_BUFFER_VIEW vbv = {};
 	vbv.BufferLocation = vertexBuffer.Get()->GetGPUVirtualAddress();
 	vbv.StrideInBytes = sizeof(RiverVertex);
-	vbv.SizeInBytes = sizeof(RiverVertex) * 1024;
+	vbv.SizeInBytes = sizeof(RiverVertex) * river->GetTotalVertices();
 	cmdList->IASetVertexBuffers(0, 1, &vbv);
 
 
@@ -99,16 +99,15 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	/// ibv setting
 	D3D12_INDEX_BUFFER_VIEW ibv = {};
 	ibv.BufferLocation = indexBuffer.Get()->GetGPUVirtualAddress();
-	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t) * 1024);
+	ibv.SizeInBytes = static_cast<UINT>(sizeof(uint32_t)) * river->GetTotalIndices();
 	ibv.Format = DXGI_FORMAT_R32_UINT;
 	cmdList->IASetIndexBuffer(&ibv);
 
 
-	cmdList->DrawInstanced(
-		static_cast<UINT>(1024),
-		1, 0, 0
+	cmdList->DrawIndexedInstanced(
+		river->GetTotalIndices(),
+		1, 0, 0, 0
 	);
-
 
 	/// 元の状態に戻す
 	vertexBuffer.CreateBarrier(

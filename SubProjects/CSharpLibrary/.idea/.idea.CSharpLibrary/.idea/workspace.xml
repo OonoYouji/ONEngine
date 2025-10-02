@@ -8,14 +8,21 @@
       <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/PuzzleStand.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Jsons/TestScene/PuzzleStand.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Assets/Scene/TestScene.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/ECS/Component/Components/ComputeComponents/Terrain/River/River.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorCompute/River/RiverMeshGeneratePipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Editor/EditorManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/Gizmo/GizmoRenderingPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/Gizmo/GizmoRenderingPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/River/RiverRenderingPipeline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Engine/Graphics/Pipelines/Render/River/RiverRenderingPipeline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Jsons/Terrain/river.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Jsons/Terrain/river.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_114940.dll" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_114940.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_134944.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Scripts/CSharpLibrary_20251002_134944.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Project/Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/Packages/Shader/Editor/RiverMeshGenerator.cs.hlsl" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../Project/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../../Project/imgui.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CSharpLibrary/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/Mapchip.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleStage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleClearEffect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Scripts/Game/Puzzle/PuzzleClearEffect.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/obj/x64/Debug/CSharpLibrary.pdb" afterDir="false" />
     </list>
@@ -66,7 +73,8 @@
       <workItem from="1758854953734" duration="1220000" />
       <workItem from="1758864486452" duration="8306000" />
       <workItem from="1759296737071" duration="3386000" />
-      <workItem from="1759372938930" duration="5618000" />
+      <workItem from="1759372938930" duration="6843000" />
+      <workItem from="1759386799349" duration="343000" />
     </task>
     <servers />
   </component>

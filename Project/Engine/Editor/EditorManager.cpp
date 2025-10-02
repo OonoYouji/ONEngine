@@ -40,7 +40,7 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
-	//AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
 }
 
 void EditorManager::Update(GraphicsResourceCollection* _grc) {

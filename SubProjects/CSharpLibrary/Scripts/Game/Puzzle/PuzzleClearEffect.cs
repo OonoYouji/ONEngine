@@ -8,9 +8,9 @@ public class PuzzleClearEffect : MonoBehavior {
 	
 	private PuzzleStage puzzleStage_;
 	private PuzzleClearChecker puzzleClearChecker_;
-	private float time_;
-	private float repeatTime_;
-	private int repeatCount_ = 0;
+	[SerializeField] private float time_;
+	[SerializeField] private float repeatTime_;
+	[SerializeField] private int repeatCount_ = 0;
 	
 	public override void Initialize() {
 		puzzleStage_ = entity.GetScript<PuzzleStage>();

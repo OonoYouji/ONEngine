@@ -64,6 +64,7 @@ public:
 		uint32_t totalSegments;
 		uint32_t totalVertices;
 		uint32_t totalSamples;
+		uint32_t samplePerSegment;
 	};
 
 public:
@@ -91,6 +92,7 @@ private:
 
 	/// splineのコントロールポイント
 	std::vector<RiverControlPoint> controlPoints_;
+	std::vector<RiverControlPoint> createdPoints_;
 	int samplePerSegment_;
 
 	/// buffer
@@ -99,6 +101,8 @@ private:
 	StructuredBuffer<RiverVertex> rwVertices_;
 	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreatedBuffers_;
+	UINT totalVertices_;
+	UINT totalIndices_;
 
 	/// edit
 	bool isGenerateMeshRequest_;
@@ -118,4 +122,6 @@ public:
 	StructuredBuffer<uint32_t>& GetRwIndicesRef();
 	StructuredBuffer<RiverControlPoint>& GetControlPointBufRef();
 	bool GetIsCreatedBuffers() const;
+	UINT GetTotalIndices() const;
+	UINT GetTotalVertices() const;
 };

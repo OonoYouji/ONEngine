@@ -77,7 +77,7 @@ void River::Edit(EntityComponentSystem* _ecs) {
 		for (size_t i = 0; i < controlPoints_.size(); i++) {
 			ImGui::PushID(i);
 			auto& point = controlPoints_[i];
-			ImGui::DragFloat3("##point", &point.position.x);
+			ImGui::DragFloat4("##point", &point.position.x);
 			ImGui::PopID();
 		}
 	}
@@ -233,22 +233,27 @@ void River::LoadFromJson(const std::string& _name) {
 
 void River::DrawSplineCurve() {
 	/// spline曲線をGizmoで描画する
-	auto riverPoints = SampleRiverSpline(controlPoints_, samplePerSegment_);
-	if (riverPoints.empty()) {
+	createdPoints_ = SampleRiverSpline(controlPoints_, samplePerSegment_);
+	if (createdPoints_.empty()) {
 		return;
 	}
-	for (size_t i = 0; i < riverPoints.size() - 1; i++) {
-		RiverControlPoint& front = riverPoints[i + 0];
-		RiverControlPoint& back = riverPoints[i + 1];
+	for (size_t i = 0; i < createdPoints_.size() - 1; i++) {
+		RiverControlPoint& front = createdPoints_[i + 0];
+		RiverControlPoint& back = createdPoints_[i + 1];
 		Gizmo::DrawLine(front.position, back.position, Vector4(0.98f, 1.0f, 0.1f, 1.0f));
 	}
 }
 
 void River::CreateBuffers(DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap, DxCommand* _dxCommand) {
+	uint32_t totalSegments = static_cast<uint32_t>(createdPoints_.size() - 3);
+	uint32_t totalSamples = static_cast<uint32_t>(totalSegments * samplePerSegment_);
+	totalVertices_ = totalSamples * 2; /// 頂点数はサンプル数の2倍
+	totalIndices_ = totalVertices_ * 6 / 2;
+
 	paramBuf_.Create(_dxDevice);
 	controlPointBuf_.Create(100, _dxDevice, _dxSRVHeap);
-	rwVertices_.CreateUAV(1280, _dxDevice, _dxCommand, _dxSRVHeap);
-	rwIndices_.CreateUAV(1280, _dxDevice, _dxCommand, _dxSRVHeap);
+	rwVertices_.CreateUAV(totalVertices_, _dxDevice, _dxCommand, _dxSRVHeap);
+	rwIndices_.CreateUAV(totalIndices_, _dxDevice, _dxCommand, _dxSRVHeap);
 	isCreatedBuffers_ = true;
 }
 
@@ -259,12 +264,16 @@ void River::SetBufferData() {
 
 	uint32_t totalSegments = static_cast<uint32_t>(controlPoints_.size() - 3);
 	uint32_t totalSamples = static_cast<uint32_t>(totalSegments * samplePerSegment_);
-	uint32_t totalVertices = totalSamples * 2; /// 頂点数はサンプル数の2倍
+	totalVertices_ = totalSamples * 2; /// 頂点数はサンプル数の2倍
 	paramBuf_.SetMappedData({
 		.totalSegments = totalSegments,
-		.totalVertices = totalVertices,
-		.totalSamples = totalSamples
+		.totalVertices = totalVertices_,
+		.totalSamples = totalSamples,
+		.samplePerSegment = static_cast<uint32_t>(samplePerSegment_)
 		});
+
+
+	totalIndices_ = totalVertices_ * 6 / 2;
 }
 
 int River::GetSamplePerSegment() const {
@@ -301,4 +310,12 @@ StructuredBuffer<RiverControlPoint>& River::GetControlPointBufRef() {
 
 bool River::GetIsCreatedBuffers() const {
 	return isCreatedBuffers_;
+}
+
+UINT River::GetTotalIndices() const {
+	return totalIndices_;
+}
+
+UINT River::GetTotalVertices() const {
+	return totalVertices_;
 }
