@@ -95,7 +95,7 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURE, (*frontTex).GetSRVGPUHandle());
 
 	/// CBV_MATERIAL
-	river->SetMaterialData(terrain->GetOwner()->GetId(), pGRC_->GetTextureIndex("./Packages/Textures/uvChecker.png"));
+	river->SetMaterialData(terrain->GetOwner()->GetId(), static_cast<int32_t>(pGRC_->GetTextureIndex("./Packages/Textures/uvChecker.png")));
 	river->GetMaterialBufRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
 	/// vbvとibvのリソースバリアーを変える
