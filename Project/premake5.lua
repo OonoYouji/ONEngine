@@ -90,7 +90,7 @@ project "ONEngine"
 
     links {
         "assimp-vc143-mtd.lib",
-        "mono-2.0-sgen.lib",
+        "$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib",
         "DirectXTex",  -- Premake で追加したプロジェクト
         "ImGui"        -- Premake で追加したプロジェクト
     }
