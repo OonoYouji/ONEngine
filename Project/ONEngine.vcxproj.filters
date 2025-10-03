@@ -2,18 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
-    <ClCompile Include="Engine\Core\Window\Window.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector3.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Device\DxDevice.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Log.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Command\DxCommand.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp" />
-    <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
@@ -25,7 +16,6 @@
     <ClCompile Include="Engine\Graphics\Framework\RenderingFramework.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector4.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Matrix4x4.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\MeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Collection\RenderingPipelineCollection.cpp" />
@@ -37,31 +27,17 @@
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Mesh.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Model.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Texture.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Input.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Keyboard.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\InputSystem.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp" />
-    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp" />
     <ClCompile Include="Engine\Core\Utility\Time\Time.cpp" />
     <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\RenderTexture.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Shader\ComputePipeline.cpp" />
@@ -74,7 +50,6 @@
     <ClCompile Include="Engine\ECS\System\MeshBufferRecreate\MeshBufferRecreate.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.cpp" />
     <ClCompile Include="Externals\imgui\dialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.cpp" />
@@ -86,7 +61,6 @@
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Input\Mouse.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
@@ -133,24 +107,16 @@
     <ClCompile Include="Engine\ECS\System\Collision\CollisionSystem.cpp" />
     <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
     <ClCompile Include="Engine\ECS\Entity\Prefab\EntityPrefab.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp" />
     <ClCompile Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.cpp" />
-    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.cpp" />
     <ClCompile Include="Engine\Graphics\Resource\ResourceData\Skinning.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.cpp" />
     <ClCompile Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp" />
     <ClCompile Include="Engine\Graphics\RenderTexture\SceneRenderTexture.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp" />
-    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Mathf.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.h" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoPrimitiveVertices.cpp" />
-    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\RendererComponents\ScreenPostEffectTag\ScreenPostEffectTag.cpp" />
@@ -184,23 +150,114 @@
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
+    <ClCompile Include="Engine\Core\Config\EngineConfig.cpp">
+      <Filter>Engine\Core\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Command\DxCommand.cpp">
+      <Filter>Engine\Core\DirectX12\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Debug\DxDebug.cpp">
+      <Filter>Engine\Core\DirectX12\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.cpp">
+      <Filter>Engine\Core\DirectX12\DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.cpp">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.cpp">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.cpp">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.cpp">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Device\DxDevice.cpp">
+      <Filter>Engine\Core\DirectX12\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Manager\DxManager.cpp">
+      <Filter>Engine\Core\DirectX12\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\Resource\DxResource.cpp">
+      <Filter>Engine\Core\DirectX12\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.cpp">
+      <Filter>Engine\Core\DirectX12\SwapChain</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\GameFramework\GameFramework.cpp">
+      <Filter>Engine\Core\GameFramework</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiManager.cpp">
+      <Filter>Engine\Core\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiMath.cpp">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.cpp">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\Math\ImGuiShowField.cpp">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\FileWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.cpp">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Window\Window.cpp">
+      <Filter>Engine\Core\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Window\WindowManager.cpp">
+      <Filter>Engine\Core\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Utility\FileSystem\FileSsytem.cpp">
+      <Filter>Engine\Core\Utility\FileSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Core\Window\WindowManager.h" />
-    <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector2.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector3.h" />
-    <ClInclude Include="Engine\Core\DirectX12\Manager\DxManager.h" />
-    <ClInclude Include="Engine\Core\DirectX12\Device\DxDevice.h" />
-    <ClInclude Include="Engine\Core\DirectX12\ComPtr\ComPtr.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Assert.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Log.h" />
-    <ClInclude Include="Engine\Core\DirectX12\Command\DxCommand.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.h" />
-    <ClInclude Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.h" />
-    <ClInclude Include="Engine\Core\DirectX12\Debug\DxDebug.h" />
-    <ClInclude Include="Engine\Core\GameFramework\GameFramework.h" />
-    <ClInclude Include="Engine\Core\GameFramework\GameFrameworkConfig.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="Engine\Scene\IScene.h" />
     <ClInclude Include="Engine\Scene\ISceneFactory.h" />
@@ -212,7 +269,6 @@
     <ClInclude Include="Engine\Graphics\Framework\RenderingFramework.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line2DRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector4.h" />
-    <ClInclude Include="Engine\Core\DirectX12\Resource\DxResource.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\ViewProjection.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Matrix4x4.h" />
     <ClInclude Include="Engine\Graphics\Buffer\ConstantBuffer.h" />
@@ -227,31 +283,17 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Mesh.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Transform\Transform.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Model.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Primitive\Line3DRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Primitive\Line3DRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Texture.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Input.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Keyboard.h" />
     <ClInclude Include="Engine\Core\Utility\Input\InputSystem.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h" />
-    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\Sprite\SpriteRenderer.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Sprite\SpriteRenderingPipeline.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h" />
-    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiMath.h" />
     <ClInclude Include="Engine\Core\Utility\Time\Time.h" />
     <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ImGuiMainWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\RenderTexture.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Light\PostProcessLighting.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Interface\IPostProcessPipeline.h" />
     <ClInclude Include="Engine\Graphics\Shader\ComputePipeline.h" />
@@ -266,20 +308,17 @@
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Variables\Variables.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialog.h" />
     <ClInclude Include="Externals\imgui\dialog\ImGuiFileDialogConfig.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.h" />
     <ClInclude Include="Engine\Graphics\Resource\Creator\PrimitiveMeshCreator.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Quaternion.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\Effect.h" />
     <ClInclude Include="Engine\ECS\System\EffectUpdateSystem\EffectUpdateSystem.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Effect\EffectRenderingPipeline.h" />
-    <ClInclude Include="Engine\Core\Utility\Utility.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\EmitShape\EffectEmitShape.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Color.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Effect\MainModule\EffectMainModule.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Terrain\TerrainRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Input\Mouse.h" />
-    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Collision\CollisionCheck\CollisionCheck.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Gizmo\GizmoRenderingPipeline.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Gizmo.h" />
@@ -313,22 +352,14 @@
     <ClInclude Include="Engine\ECS\System\Collision\CollisionSystem.h" />
     <ClInclude Include="Engine\Script\InternalCalls\AddComponentInternalCalls.h" />
     <ClInclude Include="Engine\ECS\Entity\Prefab\EntityPrefab.h" />
-    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h" />
     <ClInclude Include="Engine\ECS\System\Collision\ColliderRenderQueueSystem.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Mathf.h" />
-    <ClInclude Include="Engine\Core\Config\EngineConfig.h" />
     <ClInclude Include="Engine\ECS\Component\Components\RendererComponents\SkinMesh\SkinMeshRenderer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\Skinning.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshRenderingPipeline.h" />
     <ClInclude Include="Engine\ECS\System\SkinMesh\SkinMeshUpdateSystem.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.h" />
     <ClInclude Include="Engine\Graphics\RenderTexture\SceneRenderTexture.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h" />
-    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\Mesh\SkinMeshSkeletonRenderingPipeline.h" />
-    <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h" />
     <ClInclude Include="Engine\Graphics\Buffer\Data\Material.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\PerObject\Grayscale\PostProcessGrayscalePerObject.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\PostProcess\Screen\RadialBlur\PostProcessRadialBlur.h" />
@@ -363,8 +394,211 @@
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
+    <ClInclude Include="Engine\Core\Config\EngineConfig.h">
+      <Filter>Engine\Core\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\Command\DxCommand.h">
+      <Filter>Engine\Core\DirectX12\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\ComPtr\ComPtr.h">
+      <Filter>Engine\Core\DirectX12\ComPtr</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\Debug\DxDebug.h">
+      <Filter>Engine\Core\DirectX12\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\DepthStencil\DxDepthStencil.h">
+      <Filter>Engine\Core\DirectX12\DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxDSVHeap.h">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxRTVHeap.h">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\DxSRVHeap.h">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\DescriptorHeap\IDxDescriptorHeap.h">
+      <Filter>Engine\Core\DirectX12\DescriptorHeap</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\Device\DxDevice.h">
+      <Filter>Engine\Core\DirectX12\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\Manager\DxManager.h">
+      <Filter>Engine\Core\DirectX12\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\Resource\DxResource.h">
+      <Filter>Engine\Core\DirectX12\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\DirectX12\SwapChain\DxSwapChain.h">
+      <Filter>Engine\Core\DirectX12\SwapChain</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\GameFramework\GameFrameworkConfig.h">
+      <Filter>Engine\Core\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\GameFramework\GameFramework.h">
+      <Filter>Engine\Core\GameFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiManager.h">
+      <Filter>Engine\Core\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiMath.h">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiSceneImageInfo.h">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\Math\ImGuiShowField.h">
+      <Filter>Engine\Core\ImGui\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabFileWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabInspectorWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\EditorWindows\ImGuiPrefabViewWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\FileWindows\ImGuiFile.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\FileWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiConsoleWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiGameSceneWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiHierarchyWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiInspectorWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiProjectWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ChildWindows\GameWindows\ImGuiSceneWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\Collection\ImGuiWindowCollection.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\Collection</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiEditorWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiFileWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ImGui\ImGuiWidows\ParentWindows\ImGuiGameWindow.h">
+      <Filter>Engine\Core\ImGui\ImGuiWindows\ParentWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Window\Window.h">
+      <Filter>Engine\Core\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Window\WindowManager.h">
+      <Filter>Engine\Core\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Utility\Utility.h">
+      <Filter>Engine\Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Utility\FileSystem\FileSsytem.h">
+      <Filter>Engine\Core\Utility\FileSystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{f73ad5e4-e403-4808-9375-f02d6278936e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core">
+      <UniqueIdentifier>{fa958c55-41c3-49e6-9360-d738fb952cfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Config">
+      <UniqueIdentifier>{e32ed69e-ca72-4086-9265-c0fbb864e641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12">
+      <UniqueIdentifier>{e6e2811c-ae00-426f-bb49-4e2341560f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\Command">
+      <UniqueIdentifier>{14803a12-14ae-45ed-ae73-0ce36bc3d436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\ComPtr">
+      <UniqueIdentifier>{7959e3b3-3018-496b-8820-b781c12c92bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\Debug">
+      <UniqueIdentifier>{7572b097-3b2b-402e-aa87-4fe3db3cc98d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\DepthStencil">
+      <UniqueIdentifier>{16a6edd3-a470-40a7-acf7-6b6a66fff3cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\DescriptorHeap">
+      <UniqueIdentifier>{b30644a2-2dc4-40da-8fcb-52a0a3252ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\Device">
+      <UniqueIdentifier>{0d9c8b2f-6f04-40c2-af99-f39f035f62d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\Manager">
+      <UniqueIdentifier>{bc26e142-5c5a-4994-872f-7bf2a7dd961b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\Resource">
+      <UniqueIdentifier>{38c1bde1-2a9a-472d-8933-ddfe8b745f29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\DirectX12\SwapChain">
+      <UniqueIdentifier>{172d443a-12ea-4c85-b118-eccd5a5ea9eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\GameFramework">
+      <UniqueIdentifier>{56468ea9-6862-4b72-9861-e827f62d6962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui">
+      <UniqueIdentifier>{40f8e600-2cc7-44e8-884c-05018e2b225a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows">
+      <UniqueIdentifier>{d0c4a1d4-b766-478e-8817-085920428175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\Math">
+      <UniqueIdentifier>{9b65fce0-c57c-41a2-8de0-dafe307e5018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\ChildWindows">
+      <UniqueIdentifier>{42c848f3-ec82-4a17-966a-52b9cdcf3b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\Collection">
+      <UniqueIdentifier>{9c642312-f9fe-4e7d-821d-5c7d31b1db18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\ParentWindows">
+      <UniqueIdentifier>{e1f6086a-7c1a-41e8-b1c5-84438bf0e95f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\ChildWindows\EditorWindows">
+      <UniqueIdentifier>{6feacda5-9bf0-462c-b09e-34da44da494b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\ChildWindows\FileWindows">
+      <UniqueIdentifier>{103f9e28-6e7c-4dae-b80f-dadbdc3ace1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\ImGui\ImGuiWindows\ChildWindows\GameWindows">
+      <UniqueIdentifier>{34db600a-5529-463e-8805-37987ee5b666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility">
+      <UniqueIdentifier>{29c3b22d-86bd-43ee-b2e5-c2767b096232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Window">
+      <UniqueIdentifier>{fc067495-6d49-4384-90c6-8ba173504bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility\FileSystem">
+      <UniqueIdentifier>{a6dc5bc9-9f17-41dc-83ba-c3a82f791e3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility\Input">
+      <UniqueIdentifier>{4f53ebdf-725a-466e-89a5-351eff483574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility\Math">
+      <UniqueIdentifier>{d5f41bbc-c7b2-48af-a5d5-225e8188d36c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility\Time">
+      <UniqueIdentifier>{9eddccdc-ddbb-4fa7-adb1-2f8950e1f412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Core\Utility\Tools">
+      <UniqueIdentifier>{59ffa3af-792b-47ba-b46e-f67adeac3213}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
