@@ -507,9 +507,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="Engine">
       <UniqueIdentifier>{f73ad5e4-e403-4808-9375-f02d6278936e}</UniqueIdentifier>
     </Filter>

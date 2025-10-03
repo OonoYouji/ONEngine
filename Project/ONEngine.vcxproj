@@ -739,9 +739,6 @@
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="subprojects\csharplibrary\scripts\game\player.cs" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
