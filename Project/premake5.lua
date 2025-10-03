@@ -3,36 +3,78 @@ workspace "ONEngine"
     startproject "ONEngine"
     configurations { "Debug", "Release", "Development" }
 
+    
+project "DirectXTex"
+    kind "StaticLib"
+    language "C++"
+
+    location "Externals/DirectXTex/"
+    targetdir "../Generated/Outputs/%{cfg.buildcfg}/"
+    objdir "../Generated/Obj/%{cfg.buildcfg}/DirectXTex/"
+    targetname "DirectXTex"
+    files { "Externals/DirectXTex/**.h", "Externals/DirectXTex/**.cpp" }
+    includedirs { "$(ProjectDir)","$(ProjectDir)Shaders/Compiled" }
+
+    filter "system:windows"
+        cppdialect "C++20"
+        systemversion "latest"
+    filter "configurations:Debug"
+         runtime "Debug"       -- Debug ランタイム (MTd) を使用
+         symbols "On"
+         staticruntime "On"
+    filter "configurations:Develop"
+        runtime "Release" -- 開発用のリリースビルド
+        symbols "On"
+        staticruntime "On"
+    filter "configurations:Release"
+         runtime "Release"     -- Release ランタイム (MT) を使用
+         optimize "Full"
+         staticruntime "On"
+
+project "ImGui"
+    kind "StaticLib"
+    language "C++"
+    location "Externals/ImGui/"
+    targetdir "../Generated/Outputs/%{cfg.buildcfg}/"
+    objdir "../Generated/Obj/%{cfg.buildcfg}/ImGui/"
+
+    includedirs {
+        "$(ProjectDir)",
+        "$(ProjectDir)/ImGui"
+    }
+
+    files { "Externals/ImGui/**.h", "Externals/ImGui/**.cpp" }
+
+    filter "system:windows"
+        cppdialect "C++20"
+        systemversion "latest"
+    filter "configurations:Debug"
+        staticruntime "On"
+    filter "configurations:Develop"
+        staticruntime "On"
+    filter "configurations:Release"
+        staticruntime "On"
+
+
 project "ONEngine"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
-    staticruntime "off"
+    staticruntime "On"
 
     targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
     objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
-
-    files {
-        "Engine/**.cpp",
-        "Engine/**.h",
-        "Game/**.cpp",
-        "Game/**.h",
-        "subprojects/csharplibrary/scripts/game/*.cs",
-        "Externals/**.h",
-        "Externals/**.cpp"
-    }
+    debugdir "%{wks.location}"
+    files { "**.h", "**.cpp"}
 
     includedirs {
-        "Game",
-        "Resources",
-        "Lib",
-        "ONEngine",
-        "Externals/assimp/include",
-        "Externals/imgui",
-        "Externals/glib",
-        "Externals/mono",
-        "Externals/DirectXTex",
-        "Externals"
+        "$(ProjectDir)",
+        "$(ProjectDir)Externals/assimp/include",
+        "$(ProjectDir)Externals/imgui",
+        "$(ProjectDir)Externals/glib",
+        "$(ProjectDir)Externals/mono",
+        "$(ProjectDir)Externals/DirectXTex",
+        "$(ProjectDir)Externals"
     }
 
     libdirs {
