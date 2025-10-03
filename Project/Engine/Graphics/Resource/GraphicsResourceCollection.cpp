@@ -197,7 +197,7 @@ size_t GraphicsResourceCollection::GetTextureIndex(const std::string& _filepath)
 }
 
 const std::string& GraphicsResourceCollection::GetTexturePath(size_t _index) const {
-	return textureContainer_->GetKey(_index);
+	return textureContainer_->GetKey(static_cast<int32_t>(_index));
 }
 
 const std::vector<Texture>& GraphicsResourceCollection::GetTextures() const {

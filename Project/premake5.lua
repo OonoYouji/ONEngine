@@ -65,7 +65,13 @@ project "ONEngine"
     targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
     objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
     debugdir "%{wks.location}"
-    files { "**.h", "**.cpp"}
+    files {
+        "Engine/**.h",
+        "Engine/**.cpp",
+        "Game/**.h",
+        "Game/**.cpp"
+    }
+
 
     includedirs {
         "$(ProjectDir)",

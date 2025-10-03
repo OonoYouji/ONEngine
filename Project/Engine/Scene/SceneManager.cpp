@@ -8,11 +8,13 @@
 #include <nlohmann/json.hpp>
 
 /// engine
-#include "Scene/Factory/SceneFactory.h"
+//#include "Scene/Factory/SceneFactory.h"
 #include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/Scene/ISceneFactory.h"
+#include "Game/Scene/Factory/SceneFactory.h"
 
 
 namespace {
