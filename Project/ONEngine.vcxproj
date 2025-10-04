@@ -89,10 +89,10 @@
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>assimp-vc143-mtd.lib;$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\assimp\lib\Debug;Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -120,13 +120,13 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalDependencies>assimp-vc143-mtd.lib;$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\assimp\lib\Debug;Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -150,11 +150,11 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <AdditionalDependencies>assimp-vc143-mtd.lib;$(ProjectDir)Packages\Scripts\lib\mono-2.0-sgen.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\assimp\lib\Debug;Externals\assimp\lib;Packages\Scripts\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -219,7 +219,6 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <ClInclude Include="Engine\Core\Utility\Tools\Gizmo.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Log.h" />
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h" />
-    <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h" />
     <ClInclude Include="Engine\Core\Utility\Utility.h" />
     <ClInclude Include="Engine\Core\Window\Window.h" />
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -394,7 +393,6 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <ClCompile Include="Engine\Core\Utility\Tools\Gizmo.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Log.cpp" />
     <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp" />
-    <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp" />
     <ClCompile Include="Engine\Core\Window\Window.cpp" />
     <ClCompile Include="Engine\Core\Window\WindowManager.cpp" />
     <ClCompile Include="Engine\ECS\Component\Array\ComponentArray.cpp" />
@@ -507,6 +505,7 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <ClCompile Include="Engine\Script\InternalCalls\AddComponentInternalCalls.cpp" />
     <ClCompile Include="Engine\Script\MonoScriptEngine.cpp" />
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Externals\DirectXTex\DirectXTex.vcxproj">

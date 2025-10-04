@@ -537,9 +537,6 @@
     <ClInclude Include="Engine\Core\Utility\Tools\Random.h">
       <Filter>Engine\Core\Utility\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Utility\Tools\VectorJsonConverter.h">
-      <Filter>Engine\Core\Utility\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Core\Utility\Utility.h">
       <Filter>Engine\Core\Utility</Filter>
     </ClInclude>
@@ -1058,9 +1055,6 @@
     <ClCompile Include="Engine\Core\Utility\Tools\Random.cpp">
       <Filter>Engine\Core\Utility\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Utility\Tools\VectorJsonConverter.cpp">
-      <Filter>Engine\Core\Utility\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Window\Window.cpp">
       <Filter>Engine\Core\Window</Filter>
     </ClCompile>
@@ -1397,5 +1391,6 @@
     <ClCompile Include="Game\Scene\Factory\SceneFactory.cpp">
       <Filter>Game\Scene\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
 </Project>

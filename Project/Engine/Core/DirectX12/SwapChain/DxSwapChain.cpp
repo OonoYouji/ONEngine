@@ -1,5 +1,7 @@
 #include "DxSwapChain.h"
 
+#include <comdef.h>
+
 /// engine
 #include "../Manager/DxManager.h"
 #include "Engine/Core/Window/Window.h"
@@ -49,7 +51,10 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		result = pDxManager_->GetDxDevice()->GetFactory()->CreateSwapChainForHwnd(
 			pDxManager_->GetDxCommand()->GetCommandQueue(), pWindow_->GetHwnd(), &desc, nullptr, nullptr, &swapChain1
 		);
-		Assert(SUCCEEDED(result), "Failed to create swap chain1");
+		if (FAILED(result)) {
+			_com_error err(result);
+			Assert(false, ConvertTCHARToString(err.ErrorMessage()).c_str());
+		}
 
 		/// SwapChain4に引き渡す
 		result = swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain_));

@@ -49,15 +49,21 @@ project "ImGui"
         cppdialect "C++20"
         systemversion "latest"
     filter "configurations:Debug"
-        staticruntime "On"
+         runtime "Debug"       -- Debug ランタイム (MTd) を使用
+         symbols "On"
+         staticruntime "On"
     filter "configurations:Develop"
+        runtime "Release" -- 開発用のリリースビルド
+        symbols "On"
         staticruntime "On"
     filter "configurations:Release"
-        staticruntime "On"
+         runtime "Release"     -- Release ランタイム (MT) を使用
+         optimize "Full"
+         staticruntime "On"
 
 
 project "ONEngine"
-    kind "ConsoleApp"
+    kind "WindowedApp"
     language "C++"
     cppdialect "C++20"
     staticruntime "On"
@@ -69,7 +75,8 @@ project "ONEngine"
         "Engine/**.h",
         "Engine/**.cpp",
         "Game/**.h",
-        "Game/**.cpp"
+        "Game/**.cpp",
+        "main.cpp"
     }
 
 
@@ -84,6 +91,7 @@ project "ONEngine"
     }
 
     libdirs {
+        "$(ProjectDir)Externals/assimp/lib/Debug",
         "Externals/assimp/lib",
         "Packages/Scripts/lib"
     }
