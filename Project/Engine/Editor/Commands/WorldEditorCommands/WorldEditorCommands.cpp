@@ -256,12 +256,28 @@ EDITOR_STATE PasteEntityCommand::Execute() {
 	}
 
 	/// jsonからエンティティを生成
+	std::string originalName = (*copiedEntity)["name"].get<std::string>();
+
+	uint32_t count = pECSGroup_->CountEntity(originalName);
 	pastedEntity_ = pECSGroup_->GenerateEntity(DebugConfig::isDebugging);
 	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_);
 	if (!pastedEntity_) {
 		Console::Log("PasteEntityCommand : Failed to create entity from JSON");
 		return EDITOR_STATE_FAILED;
 	}
+
+	/// 新しい名前を設定
+	std::string newName = originalName;
+	if (count > 0) {
+		newName += "_" + std::to_string(count);
+	}
+
+	if (DebugConfig::isDebugging) {
+		newName += "(Clone)";
+	}
+
+	pastedEntity_->SetName(newName);
+
 	return EDITOR_STATE_FINISH;
 }
 
@@ -269,6 +285,7 @@ EDITOR_STATE PasteEntityCommand::Undo() {
 	if (pastedEntity_) {
 		pECSGroup_->RemoveEntity(pastedEntity_);
 		pastedEntity_ = nullptr;
+		return EDITOR_STATE_FINISH;
 	}
-	return EDITOR_STATE_FINISH;
+	return EDITOR_STATE_FAILED;
 }

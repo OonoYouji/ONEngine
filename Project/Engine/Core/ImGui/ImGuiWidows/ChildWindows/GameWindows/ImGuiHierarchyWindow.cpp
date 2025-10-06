@@ -258,17 +258,6 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 	}
 
 
-	/// 上のHeaderを選択している場合
-	if ((ImGui::IsItemClicked() || ImGui::IsItemHovered()) /*&& ImGui::IsItemToggledOpen()*/) {
-
-		/// エンティティのペーストコマンドの実行
-		if(Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
-			if (Input::TriggerKey(DIK_V)) {
-				EditCommand::Execute<PasteEntityCommand>(pECSGroup_);
-			}
-		}
-
-	}
 }
 
 
@@ -398,6 +387,16 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
+	}
+
+	/// beginで生成されたウィンドウのアクティブ状態をチェック
+	if (ImGui::IsWindowFocused()) {
+		/// エンティティのペーストコマンドの実行
+		if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+			if (Input::TriggerKey(DIK_V)) {
+				EditCommand::Execute<PasteEntityCommand>(pECSGroup_);
+			}
+		}
 	}
 
 	pECSGroup_ = pECS_->GetCurrentGroup();

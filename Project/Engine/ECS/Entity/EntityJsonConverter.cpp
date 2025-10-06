@@ -30,6 +30,18 @@ nlohmann::json EntityJsonConverter::ToJson(const GameEntity* _entity) {
 
 void EntityJsonConverter::FromJson(const nlohmann::json& _json, GameEntity* _entity) {
 
+	/// name, prefabNameを設定
+	if (_json.contains("name")) {
+		_entity->SetName(_json.at("name").get<std::string>());
+	}
+
+	if (_json.contains("prefabName")) {
+		const std::string& prefabName = _json.at("prefabName").get<std::string>();
+		if (prefabName != "") {
+			_entity->SetPrefabName(prefabName);
+		}
+	}
+
 	/// コンポーネントを追加
 	for (const auto& componentJson : _json["components"]) {
 

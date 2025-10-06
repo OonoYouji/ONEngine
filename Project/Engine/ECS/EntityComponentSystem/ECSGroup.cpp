@@ -62,6 +62,21 @@ uint32_t ECSGroup::GetEntityId(const std::string& _name) {
 	return entityCollection_->GetEntityId(_name);
 }
 
+uint32_t ECSGroup::CountEntity(const std::string& _name) {
+	const auto& entities = entityCollection_->GetEntities();
+	return static_cast<uint32_t>(std::count_if(entities.begin(), entities.end(),
+		[&_name](const std::unique_ptr<GameEntity>& entity) {
+			std::string name = entity->GetName();
+			/// 後ろから"_"を検索、"_"を含む場合はその前までを比較する
+			if(name.find_last_of('_') != std::string::npos) {
+				return name.substr(0, name.find_last_of('_')) == _name;
+			}
+
+			return name == _name;
+		}
+	));
+}
+
 IComponent* ECSGroup::AddComponent(const std::string& _compName) {
 	return componentCollection_->AddComponent(_compName);
 }
