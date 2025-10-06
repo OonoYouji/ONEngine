@@ -16,15 +16,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\Project\Packages\Scripts\</OutputPath>
+    <IntermediateOutputPath>..\..\Generated\CSharpScripts\Debug\</IntermediateOutputPath>
+    <BaseIntermediateOutputPath>..\..\Generated\CSharpScripts\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <DebugType>portable</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
+  </PropertyGroup>  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\..\Project\Packages\Scripts\</OutputPath>
+    <IntermediateOutputPath>..\..\Generated\CSharpScripts\Release\</IntermediateOutputPath>
+    <BaseIntermediateOutputPath>..\..\Generated\CSharpScripts\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
