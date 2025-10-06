@@ -29,6 +29,7 @@ concept IsEditorCommand = std::is_base_of_v<IEditorCommand, T>;
 /// エディタの管理クラス
 /// /////////////////////////////////////////////////
 class EditorManager final {
+	friend class EditCommand;
 public:
 	/// =========================================
 	/// public : methods
@@ -41,13 +42,14 @@ public:
 
 	void Update(class GraphicsResourceCollection* _grc);
 
-	/* ----- factory ----- */
+
+	/// ----- factory ----- ///
 
 	template<IsEditorCommand T, typename... Args>
 	std::unique_ptr<T> CloneCommand(Args&&... _args);
 
 
-	/* ----- command ----- */
+	/// ----- command ----- ///
 
 	template<IsEditorCommand T, typename... Args>
 	void ExecuteCommand(Args&& ..._args);
@@ -55,7 +57,7 @@ public:
 	void Undo();
 	void Redo();
 
-	/* ----- editor compute ----- */
+	/// ----- editor compute ----- ///
 
 	void AddEditorCompute(class DxManager* _dxManager, class ShaderCompiler* _shaderCompiler, std::unique_ptr<IEditorCompute> _compute);
 

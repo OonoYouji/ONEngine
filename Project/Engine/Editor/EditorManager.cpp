@@ -43,9 +43,6 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	/// EditCommandへEditorManagerのポインタを渡す
 	EditCommand::pEditorManager_ = this;
 
-	clipboard_.Set(Vector3{1, 2, 3});
-	clipboard_.Get<Vector3>();
-
 	/// editor compute の登録
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());

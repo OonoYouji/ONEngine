@@ -28,8 +28,18 @@ public:
 	template <IsEditorCommand T, typename ...Args>
 	static void Execute(Args&& ..._args);
 
-	void Redo();
-	void Undo();
+	static void Redo();
+	static void Undo();
+
+	template <typename T>
+	static void SetClipboardData(const T& _data) {
+		pEditorManager_->clipboard_.Set(_data);
+	}
+
+	template <typename T>
+	static T* GetClipboardData() {
+		return pEditorManager_->clipboard_.Get<T>();
+	}
 
 private:
 	/// ==============================================
@@ -43,6 +53,6 @@ private:
 
 template<IsEditorCommand T, typename ...Args>
 inline void EditCommand::Execute(Args&& ..._args) {
-	pEditorManager_->ExecuteCommand<T>(_args);
+	pEditorManager_->ExecuteCommand<T>(_args...);
 }
 

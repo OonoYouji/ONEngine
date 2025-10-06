@@ -7,11 +7,14 @@
 #include <numbers>
 
 /// engine
+#include "Engine/Core/Config/EngineConfig.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
-#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/ECS/Entity/EntityJsonConverter.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+#include "Engine/Editor/Clipboard.h"
+#include "Engine/Editor/EditCommand.h"
 
 /// ///////////////////////////////////////////////////
 /// ゲームオブジェクトの作成コマンド
@@ -149,7 +152,8 @@ EDITOR_STATE CreateNewEntityClassCommand::CreateNewClassFile(const std::string& 
 /// ///////////////////////////////////////////////////
 
 DeleteEntityCommand::DeleteEntityCommand(ECSGroup* _ecs, GameEntity* _entity)
-	: pECSGroup_(_ecs), pEntity_(_entity) {}
+	: pECSGroup_(_ecs), pEntity_(_entity) {
+}
 
 EDITOR_STATE DeleteEntityCommand::Execute() {
 	if (!pECSGroup_ || !pEntity_) {
@@ -170,7 +174,7 @@ EDITOR_STATE DeleteEntityCommand::Undo() {
 /// ///////////////////////////////////////////////////
 /// プレハブを作成するコマンド
 /// ///////////////////////////////////////////////////
-CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity) 
+CreatePrefabCommand::CreatePrefabCommand(GameEntity* _entity)
 	: pEntity_(_entity) {
 	if (pEntity_ == nullptr) {
 		Console::Log("CreatePrefabCommand : Entity is nullptr");
@@ -223,10 +227,48 @@ CopyEntityCommand::CopyEntityCommand(GameEntity* _entity) : pEntity_(_entity) {}
 EDITOR_STATE CopyEntityCommand::Execute() {
 	/// jsonに変換
 	entityJson_ = EntityJsonConverter::ToJson(pEntity_);
+	EditCommand::SetClipboardData(entityJson_);
+
+	/// チェック
+	nlohmann::json* copiedEntity = EditCommand::GetClipboardData<nlohmann::json>();
+	if (copiedEntity) {
+		/// stringに変換してログに出す
+		std::string jsonString = copiedEntity->dump(4);
+		Console::Log("Copied Entity JSON:\n" + jsonString);
+	}
+
 
 	return EDITOR_STATE::EDITOR_STATE_FINISH;
 }
 
 EDITOR_STATE CopyEntityCommand::Undo() {
-	return EDITOR_STATE();
+	return EDITOR_STATE::EDITOR_STATE_FINISH;
+}
+
+PasteEntityCommand::PasteEntityCommand(ECSGroup* _ecs) : pECSGroup_(_ecs) {}
+
+EDITOR_STATE PasteEntityCommand::Execute() {
+	/// クリップボードからデータを取得
+	nlohmann::json* copiedEntity = EditCommand::GetClipboardData<nlohmann::json>();
+	if (!copiedEntity || copiedEntity->empty()) {
+		Console::Log("PasteEntityCommand : Clipboard is empty or invalid");
+		return EDITOR_STATE_FAILED;
+	}
+
+	/// jsonからエンティティを生成
+	pastedEntity_ = pECSGroup_->GenerateEntity(DebugConfig::isDebugging);
+	EntityJsonConverter::FromJson(*copiedEntity, pastedEntity_);
+	if (!pastedEntity_) {
+		Console::Log("PasteEntityCommand : Failed to create entity from JSON");
+		return EDITOR_STATE_FAILED;
+	}
+	return EDITOR_STATE_FINISH;
+}
+
+EDITOR_STATE PasteEntityCommand::Undo() {
+	if (pastedEntity_) {
+		pECSGroup_->RemoveEntity(pastedEntity_);
+		pastedEntity_ = nullptr;
+	}
+	return EDITOR_STATE_FINISH;
 }
