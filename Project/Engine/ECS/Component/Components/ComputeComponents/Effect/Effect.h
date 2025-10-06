@@ -51,8 +51,8 @@ public:
 	/// 出現するまでの距離を指定する場合のデータ
 	/// /////////////////////////////////////////////
 	struct DistanceEmitData final {
-		Vec3 currentPosition;
-		Vec3 nextPosition;
+		Vector3 currentPosition;
+		Vector3 nextPosition;
 		float moveLength;
 		float emitDistance;
 		float emitInterval;

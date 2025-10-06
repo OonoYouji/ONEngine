@@ -29,7 +29,9 @@ public:
 	/// public : methods
 	/// ==============================================
 
-	ClipboardData(const T& _data) : value(_data) {}
+	ClipboardData(const T& _data) {
+		jsonData = _data;
+	}
 
 	/// type_infoを取得
 	const std::type_info& GetType() const override {
@@ -38,7 +40,13 @@ public:
 
 	/// クローンを作成
 	std::unique_ptr<IClipboardData> Clone() const override {
-		return std::make_unique<ClipboardData<T>>(value);
+		T v = jsonData.get<T>();
+		return std::make_unique<ClipboardData<T>>(v);
+	}
+
+	T* GetValue() {
+		value = jsonData.get<T>();
+		return &value;
 	}
 
 	/// ==============================================
@@ -46,6 +54,7 @@ public:
 	/// ==============================================
 
 	T value;
+	nlohmann::json jsonData;
 };
 
 /// /////////////////////////////////////////////////
@@ -68,7 +77,7 @@ public:
 	T* Get() {
 		if (data_ && data_->GetType() == typeid(T)) {
 			ClipboardData<T>* typedData = static_cast<ClipboardData<T>*>(data_.get());
-			return &typedData->value;
+			return typedData->GetValue();
 		}
 		return nullptr;
 	}

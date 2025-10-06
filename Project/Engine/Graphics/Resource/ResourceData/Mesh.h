@@ -22,9 +22,9 @@ public:
 
 	/// @brief 頂点データ
 	struct VertexData final {
-		Vec4 position;
-		Vec2 uv;
-		Vec3 normal;
+		Vector4 position;
+		Vector2 uv;
+		Vector3 normal;
 	};
 
 public:

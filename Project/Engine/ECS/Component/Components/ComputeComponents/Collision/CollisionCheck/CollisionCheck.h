@@ -84,7 +84,7 @@ namespace CollisionCheck {
 
 namespace CollisionMath {
 
-	Vec3 ClosestPointOnAABB(const Vector3& point, const Vector3& _aabbMin, const Vector3& _aabbMax);
+	Vector3 ClosestPointOnAABB(const Vector3& point, const Vector3& _aabbMin, const Vector3& _aabbMax);
 
 	void ClosestPointsSegmentAABB(
 		const Vector3& _lineStart, const Vector3& _lineEnd,

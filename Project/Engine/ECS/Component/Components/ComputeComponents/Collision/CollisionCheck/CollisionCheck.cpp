@@ -170,7 +170,7 @@ bool CollisionCheck::SphereVsCapsule(const Vector3& _sphereCenter, float _sphere
 	return distance < (_sphereRadius + _capsuleRadius);
 }
 
-Vec3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& _aabbMin, const Vector3& _aabbMax) {
+Vector3 CollisionMath::ClosestPointOnAABB(const Vector3& _point, const Vector3& _aabbMin, const Vector3& _aabbMax) {
 	return {
 		std::max(_aabbMin.x, std::min(_point.x, _aabbMax.x)),
 		std::max(_aabbMin.y, std::min(_point.y, _aabbMax.y)),

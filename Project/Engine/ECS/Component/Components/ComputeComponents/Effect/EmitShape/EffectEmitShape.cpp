@@ -77,7 +77,7 @@ Vector3 EffectEmitShape::GetEmitPosition() {
 }
 
 Vector3 EffectEmitShape::GetEmitDirection(const Vector3& _emitedPosition) {
-	Vector3 direction = Vec3::kZero;
+	Vector3 direction = Vector3::kZero;
 	/// 形状ごとに発生方向を取得する
 	switch (shapeType_) {
 	case ShapeType::Sphere:

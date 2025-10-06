@@ -131,9 +131,9 @@ void GraphicsResourceLoader::LoadModelObj(const std::string& _filepath) {
 		/// vertex 解析
 		for (uint32_t i = 0; i < mesh->mNumVertices; ++i) {
 			Mesh::VertexData&& vertex = {
-				Vec4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
-				Vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
-				Vec3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
+				Vector4(-mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z, 1.0f),
+				Vector2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y),
+				Vector3(-mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z)
 			};
 
 			vertices.push_back(vertex);

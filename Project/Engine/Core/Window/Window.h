@@ -33,7 +33,7 @@ public:
 	/// <param name="_windowName"> : ウィンドウの名前       </param>
 	/// <param name="_windowSize"> : ウィンドウのサイズ     </param>
 	/// <param name="_dxManager">  : DxManagerのポインター </param>
-	void Initialize(const std::wstring& _windowName, const Vec2& _windowSize, class DxManager* _dxManager);
+	void Initialize(const std::wstring& _windowName, const Vector2& _windowSize, class DxManager* _dxManager);
 
 	/// <summary>
 	/// 描画前の処理
@@ -67,7 +67,7 @@ private:
 	/// ===================================================
 
 	std::wstring                 windowName_;
-	Vec2                         windowSize_;
+	Vector2                      windowSize_;
 
 	WNDCLASS                     windowClass_;
 	RECT                         wrc_;
@@ -109,7 +109,7 @@ public:
 	/// ウィンドウのサイズを取得
 	/// </summary>
 	/// <returns></returns>
-	const Vec2& GetWindowSize() const { return windowSize_; }
+	const Vector2& GetWindowSize() const { return windowSize_; }
 
 private:
 	Window(const Window&) = delete;

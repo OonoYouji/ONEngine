@@ -310,8 +310,8 @@ void COMP_DEBUG::EffectDebug(Effect* _effect) {
 
 			/// param get
 			std::pair<float, float> speed = mainModule->GetSpeedStartData();
-			std::pair<Vec3, Vec3> size = mainModule->GetSizeStartData();
-			std::pair<Vec3, Vec3> rotate = mainModule->GetRotateStartData();
+			std::pair<Vector3, Vector3> size = mainModule->GetSizeStartData();
+			std::pair<Vector3, Vector3> rotate = mainModule->GetRotateStartData();
 			std::pair<Color, Color> color = mainModule->GetColorStartData();
 
 			/// スピードの編集

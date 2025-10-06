@@ -9,12 +9,13 @@
 #include <string>
 #include <functional>
 #include <any>
-#include <type_traits>
 
 /// editor
+#include "Engine/Core/Utility/Utility.h"
+
+#include "Clipboard.h"
 #include "Commands/Interface/IEditorCommand.h"
 #include "EditorCompute/Interface/IEditorCompute.h"
-#include "Engine/Core/Utility/Utility.h"
 
 /// @brief コマンドの生成関数
 using Creator = std::function<std::unique_ptr<IEditorCommand>(const std::vector<std::any>&)>;
@@ -64,12 +65,14 @@ private:
 	/// private : objects
 	/// ==========================================
 
-	/* ----- other class ----- */
+	/// ----- other class ----- ///
 	class EntityComponentSystem* pECS_;
 	class DxManager* pDxManager_;
 
-	/* ----- container ----- */
+	/// ----- clipboard ----- ///
+	Clipboard clipboard_;
 
+	/// ----- container -----///
 	std::unordered_map<std::string, std::unique_ptr<IEditorCommand>> prototypeCommands_; ///< コマンドのコレクション
 
 	IEditorCommand* runningCommand_; ///< 現在実行中のコマンド
@@ -77,13 +80,11 @@ private:
 	std::deque<std::unique_ptr<IEditorCommand>> redoStack_; ///< コマンドのリドゥスタック
 
 
-	/* ----- editor compute ----- */
-
+	/// ----- editor compute ----- ///
 	std::vector<std::unique_ptr<IEditorCompute>> editorComputes_;
 
 
-
-	/* ----- temp object ----- */
+	/// ----- temp object ----- ///
 	std::string className_;
 };
 

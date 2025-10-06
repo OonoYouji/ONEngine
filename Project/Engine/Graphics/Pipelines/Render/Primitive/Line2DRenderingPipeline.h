@@ -20,8 +20,8 @@ public:
 	/// ===================================================
 
 	struct VertexData {
-		Vec4 position;
-		Vec4 color;
+		Vector4 position;
+		Vector4 color;
 	};
 
 	struct RenderingData final {

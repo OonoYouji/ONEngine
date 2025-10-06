@@ -22,7 +22,7 @@ Window::~Window() {
 }
 
 
-void Window::Initialize(const std::wstring& _windowName, const Vec2& _windowSize, DxManager* _dxManager) {
+void Window::Initialize(const std::wstring& _windowName, const Vector2& _windowSize, DxManager* _dxManager) {
 
 	pDxManager_ = _dxManager;
 
