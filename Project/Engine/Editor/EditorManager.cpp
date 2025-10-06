@@ -3,7 +3,9 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+
+#include "EditCommand.h"
+#include "Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 /// editor compute
 #include "EditorCompute/TerrainEditor/TerrainDataOutput.h"
@@ -32,12 +34,16 @@ public:
 
 EditorManager::EditorManager(EntityComponentSystem* _ecs)
 	: pECS_(_ecs) {}
-EditorManager::~EditorManager() {}
+EditorManager::~EditorManager() = default;
 
 void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	pDxManager_ = _dxm;
 	runningCommand_ = nullptr;
 
+	/// EditCommandへEditorManagerのポインタを渡す
+	EditCommand::pEditorManager_ = this;
+
+	/// editor compute の登録
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainDataOutput>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexCreator>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());

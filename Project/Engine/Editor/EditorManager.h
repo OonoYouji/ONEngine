@@ -42,14 +42,14 @@ public:
 
 	/* ----- factory ----- */
 
-	template<typename T, typename... Args>
-	std::unique_ptr<T> CloneCommand(Args&&... _args) requires IsEditorCommand<T>;
+	template<IsEditorCommand T, typename... Args>
+	std::unique_ptr<T> CloneCommand(Args&&... _args);
 
 
 	/* ----- command ----- */
 
-	template<typename T, typename... Args>
-	void ExecuteCommand(Args&& ..._args) requires IsEditorCommand<T>;
+	template<IsEditorCommand T, typename... Args>
+	void ExecuteCommand(Args&& ..._args);
 
 	void Undo();
 	void Redo();
@@ -88,8 +88,8 @@ private:
 };
 
 
-template<typename T, typename ...Args>
-inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires IsEditorCommand<T> {
+template<IsEditorCommand T, typename ...Args>
+inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) {
 	className_ = typeid(T).name();
 	auto it = prototypeCommands_.find(className_);
 	if (it == prototypeCommands_.end()) {
@@ -101,8 +101,8 @@ inline std::unique_ptr<T> EditorManager::CloneCommand(Args&&... _args) requires 
 	return std::make_unique<T>(*prototype);
 }
 
-template<typename T, typename ...Args>
-inline void EditorManager::ExecuteCommand(Args && ..._args) requires IsEditorCommand<T> {
+template<IsEditorCommand T, typename ...Args>
+inline void EditorManager::ExecuteCommand(Args && ..._args) {
 	std::unique_ptr<T> command = std::make_unique<T>(_args...);
 	EDITOR_STATE state = command->Execute();
 	if (state == EDITOR_STATE_RUNNING) {

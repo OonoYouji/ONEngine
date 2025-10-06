@@ -26,6 +26,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Editor\EditCommand.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
@@ -561,6 +562,8 @@
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Editor\Clipboard.h" />
+    <ClInclude Include="Engine\Editor\EditCommand.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
