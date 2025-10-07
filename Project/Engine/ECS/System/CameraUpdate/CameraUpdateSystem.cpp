@@ -6,6 +6,7 @@
 
 CameraUpdateSystem::CameraUpdateSystem(DxDevice* _dxDevice) : pDxDevice_(_dxDevice) {
 	pMainCamera_ = nullptr;
+	pMainCamera2D_ = nullptr;
 }
 
 void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {

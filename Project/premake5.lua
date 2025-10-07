@@ -22,7 +22,7 @@ project "DirectXTex"
          runtime "Debug"       -- Debug ランタイム (MTd) を使用
          symbols "On"
          staticruntime "On"
-    filter "configurations:Develop"
+    filter "configurations:Development"
         runtime "Release" -- 開発用のリリースビルド
         symbols "On"
         staticruntime "On"
@@ -52,7 +52,7 @@ project "ImGui"
          runtime "Debug"       -- Debug ランタイム (MTd) を使用
          symbols "On"
          staticruntime "On"
-    filter "configurations:Develop"
+    filter "configurations:Development"
         runtime "Release" -- 開発用のリリースビルド
         symbols "On"
         staticruntime "On"
@@ -66,7 +66,6 @@ project "ONEngine"
     kind "WindowedApp"
     language "C++"
     cppdialect "C++20"
-    staticruntime "On"
 
     targetdir ("../Generated/Outputs/%{cfg.buildcfg}")
     objdir ("../Generated/Obj/%{prj.name}/%{cfg.buildcfg}")
@@ -96,8 +95,8 @@ project "ONEngine"
         "Packages/Scripts/lib"
     }
 
+    dependson { "DirectXTex", "ImGui" }
     links {
-        "assimp-vc143-mtd.lib",
         "$(ProjectDir)Packages/Scripts/lib/mono-2.0-sgen.lib",
         "DirectXTex",  -- Premake で追加したプロジェクト
         "ImGui"        -- Premake で追加したプロジェクト
@@ -111,12 +110,18 @@ project "ONEngine"
         "xcopy /E /Y /I \"$(ProjectDir)Packages\" \"$(TargetDir)Packages\""
     }
 
+    warnings "Extra"
+    buildoptions { "/utf-8","/bigobj", "/MP" }
+
     filter "configurations:Debug"
         runtime "Debug"
         symbols "On"
         optimize "Off"
         defines { "_DEBUG", "_WINDOWS" }
         buildoptions { "/utf-8" }
+        staticruntime "On"
+        links { "assimp-vc143-mtd" }
+
 
     filter "configurations:Release"
         runtime "Release"
@@ -125,6 +130,8 @@ project "ONEngine"
         defines { "NDEBUG", "_WINDOWS" }
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
+        staticruntime "On"
+        links { "assimp-vc143-mt" }
 
     filter "configurations:Development"
         runtime "Release"
@@ -133,4 +140,6 @@ project "ONEngine"
         defines { "DEBUG_BUILD", "_WINDOWS" }
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
+        staticruntime "On"
+        links { "assimp-vc143-mt" }
 

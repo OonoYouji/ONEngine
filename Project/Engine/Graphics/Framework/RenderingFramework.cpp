@@ -93,7 +93,8 @@ void RenderingFramework::Draw() {
 
 void RenderingFramework::PreDraw() {
 	CameraComponent* camera = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera();
-	renderingPipelineCollection_->PreDrawEntities(camera, pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D());
+	CameraComponent* camera2d = pEntityComponentSystem_->GetECSGroup("Debug")->GetMainCamera2D();
+	renderingPipelineCollection_->PreDrawEntities(camera, camera2d);
 }
 
 void RenderingFramework::DrawScene() {

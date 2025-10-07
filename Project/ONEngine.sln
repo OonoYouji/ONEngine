@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ONEngine", "ONEngine.vcxproj", "{58413781-440E-928C-6D27-80345953C71A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A90EE592-95C6-26E0-FECD-FF3BEAA4C1D0} = {A90EE592-95C6-26E0-FECD-FF3BEAA4C1D0}
+		{C0FF640D-2C14-8DBE-F595-301E616989EF} = {C0FF640D-2C14-8DBE-F595-301E616989EF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTex", "Externals\DirectXTex\DirectXTex.vcxproj", "{A90EE592-95C6-26E0-FECD-FF3BEAA4C1D0}"
 EndProject
