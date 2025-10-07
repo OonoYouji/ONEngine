@@ -60,7 +60,7 @@ void EffectUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 				data.currentPosition = data.nextPosition;
 				data.nextPosition = effect->owner_->GetPosition();
 
-				data.moveLength = Vec3::Length(data.nextPosition - data.currentPosition);
+				data.moveLength = Vector3::Length(data.nextPosition - data.currentPosition);
 				data.emitInterval -= data.moveLength;
 
 				if (data.emitInterval <= 0.0f) {

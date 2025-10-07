@@ -15,5 +15,5 @@
 struct GameFrameworkConfig final {
 	/// window
 	std::wstring   windowName;
-	Vec2           windowSize;
+	Vector2        windowSize;
 };

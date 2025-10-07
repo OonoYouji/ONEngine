@@ -79,7 +79,7 @@ public:
 	/// @param _windowSize windowのサイズ
 	/// @param _windowType windowの種類
 	/// @return 生成したwindowのポインタ
-	Window* GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType = WindowType::Sub, UINT _windowStyle = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME));
+	Window* GenerateWindow(const std::wstring& _windowName, const Vector2& _windowSize, WindowType _windowType = WindowType::Sub, UINT _windowStyle = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME));
 
 	/// @brief game windowを非表示
 	/// @param _windowPtr 隠したいwindowのポインタ
@@ -101,7 +101,7 @@ private:
 	/// @param _windowStyle windowのスタイル
 	/// @param _windowPtr windowのポインタ
 	/// @param _windowType windowの種類
-	void CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType);
+	void CreateGameWindow(const wchar_t* _title, const Vector2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType);
 
 	/// @brief main windowの更新
 	void UpdateMainWindow();

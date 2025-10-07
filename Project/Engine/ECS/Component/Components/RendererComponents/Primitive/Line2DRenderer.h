@@ -22,7 +22,7 @@ public:
 	/// @param _start 初期値
 	/// @param _end   終了値
 	/// @param _color 色
-	void SetLine(const Vec2& _start, const Vec2& _end, const Vec4& _color);
+	void SetLine(const Vector2& _start, const Vector2& _end, const Vector4& _color);
 
 private:
 

@@ -1,8 +1,10 @@
 #include "GameEntity.h"
 
+/// engine
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+#include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
 GameEntity::GameEntity() {
 	parent_ = nullptr;
@@ -292,3 +294,37 @@ ECSGroup* GameEntity::GetECSGroup() const {
 }
 
 
+
+void to_json(nlohmann::json& _j, const GameEntity& _entity) {
+	/// ----- GameEntityからJsonを生成 ----- ///
+
+	nlohmann::json entityJson = nlohmann::json::object();
+	entityJson["prefabName"] = _entity.GetPrefabName();
+	entityJson["name"] = _entity.GetName();
+	entityJson["id"] = _entity.GetId();
+
+	// コンポーネントの情報を追加
+	auto& components = _entity.GetComponents();
+	for (const auto& component : components) {
+		entityJson["components"].push_back(ComponentJsonConverter::ToJson(component.second));
+	}
+
+	/// 親子関係の情報を追加
+	if (_entity.GetParent()) {
+		entityJson["parent"] = _entity.GetParent()->GetId();
+	} else {
+		entityJson["parent"] = nullptr;
+	}
+
+	_j = nlohmann::json{
+		{ "name", _entity.GetName() },
+		{ "prefabName", _entity.GetPrefabName() },
+		{ "active", _entity.GetActive() },
+		{ "components", nlohmann::json::array() }
+	};
+}
+
+void from_json(const nlohmann::json& _j, GameEntity& _entity) {
+	/// ----- JsonからGameEntityを生成 ----- ///
+
+}

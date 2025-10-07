@@ -10,7 +10,7 @@ Line2DRenderer::Line2DRenderer() {
 Line2DRenderer::~Line2DRenderer() {}
 
 
-void Line2DRenderer::SetLine(const Vec2& _start, const Vec2& _end, const Vec4& _color) {
+void Line2DRenderer::SetLine(const Vector2& _start, const Vector2& _end, const Vector4& _color) {
 
 	///< 今回追加するラインの頂点数が、現在の頂点数を超える場合は、頂点数を増やす
 	if (renderingData_.vertices.size() < refCount_ * 2 + 2) {

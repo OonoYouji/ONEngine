@@ -1,5 +1,6 @@
 #pragma once
 
+/// engine
 #include "Engine/ECS/Component/Components/ComputeComponents/Transform/Transform.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
 #include "Engine/ECS/Component/Collection/ComponentHash.h"
@@ -163,3 +164,7 @@ inline void GameEntity::RemoveComponent() requires std::is_base_of_v<IComponent,
 
 	RemoveComponent(name);
 }
+
+/// json 変換
+void to_json(nlohmann::json& _j, const GameEntity& _entity);
+void from_json(const nlohmann::json& _j, GameEntity& _entity);

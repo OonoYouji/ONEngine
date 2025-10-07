@@ -2,13 +2,6 @@
 
 #include <cmath>
 
-//#include "Objects/Camera/Manager/CameraManager.h"
-//#include "Objects/Camera/Manager/CameraManager.h"
-//#include "WindowManager/WinApp.h"
-//
-//#include "Math/Vector3.h"
-//#include "Math/Matrix4x4.h"
-
 /// ===================================================
 /// static objects initialize
 /// ===================================================
@@ -25,9 +18,9 @@ Vector2::Vector2() {
 	this->y = 0.0f;
 }
 
-Vector2::Vector2(float x, float y) {
-	this->x = x;
-	this->y = y;
+Vector2::Vector2(float _x, float _y) {
+	this->x = _x;
+	this->y = _y;
 }
 
 float Vector2::Length() const {
@@ -42,13 +35,22 @@ Vector2 Vector2::Normalize() const {
 	return *this;
 }
 
-float Vector2::Dot(const Vector2& v1, const Vector2& v2) {
-	return (v1.x * v2.x) + (v1.y * v2.y);
+float Vector2::Dot(const Vector2& _v1, const Vector2& _v2) {
+	return (_v1.x * _v2.x) + (_v1.y * _v2.y);
 }
 
-Vector2 Vector2::Lerp(const Vector2& v1, const Vector2& v2, float t) {
+Vector2 Vector2::Lerp(const Vector2& _v1, const Vector2& _v2, float _t) {
 	return Vector2(
-		std::lerp(v1.x, v2.x, t),
-		std::lerp(v1.y, v2.y, t)
+		std::lerp(_v1.x, _v2.x, _t),
+		std::lerp(_v1.y, _v2.y, _t)
 	);
+}
+
+void from_json(const nlohmann::json& _j, Vector2& _v) {
+	_v.x = _j.at("x").get<float>();
+	_v.y = _j.at("y").get<float>();
+}
+
+void to_json(nlohmann::json& _j, const Vector2& _v) {
+	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y } };
 }

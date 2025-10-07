@@ -26,6 +26,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Editor\EditCommand.cpp" />
     <ClCompile Include="Engine\Core\Utility\Math\Vector2Int.cpp" />
     <ClCompile Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
@@ -396,6 +397,7 @@
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.cpp" />
     <ClCompile Include="main.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -561,6 +563,8 @@
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Editor\Clipboard.h" />
+    <ClInclude Include="Engine\Editor\EditCommand.h" />
     <ClInclude Include="Engine\Core\Utility\Math\Vector2Int.h" />
     <ClInclude Include="Engine\ECS\Component\Components\ComputeComponents\Terrain\River\River.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
@@ -738,6 +742,7 @@
     <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
+    <ClInclude Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

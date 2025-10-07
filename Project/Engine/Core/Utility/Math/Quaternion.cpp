@@ -65,7 +65,7 @@ Quaternion Quaternion::Lerp(const Quaternion& _start, const Quaternion& _end, fl
 	);
 }
 
-Quaternion Quaternion::MakeFromAxis(const Vec3& _axis, float _theta) {
+Quaternion Quaternion::MakeFromAxis(const Vector3& _axis, float _theta) {
 	float halfAngle = _theta * 0.5f;
 	float sinHalfAngle = std::sin(halfAngle);
 
@@ -79,11 +79,11 @@ Quaternion Quaternion::MakeFromAxis(const Vec3& _axis, float _theta) {
 	return Quaternion(x, y, z, w);
 }
 
-Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vec3& _axis, float _theta) {
+Matrix4x4 Quaternion::MakeRotateAxisAngle(const Vector3& _axis, float _theta) {
 	return Matrix4x4::MakeRotate(MakeFromAxis(_axis, _theta));
 }
 
-Quaternion Quaternion::LockAt(const Vec3& _position, const Vec3& _target, const Vec3& _up) {
+Quaternion Quaternion::LockAt(const Vector3& _position, const Vector3& _target, const Vector3& _up) {
 	XMFLOAT3 xmPosition, xmTarget, xmUp;
 	xmPosition = { _position.x, _position.y, _position.z };
 	xmTarget = { _target.x, _target.y, _target.z };
@@ -111,7 +111,7 @@ Quaternion Quaternion::LockAt(const Vec3& _position, const Vec3& _target, const 
 	return { result.x, result.y, result.z, result.w };
 }
 
-Quaternion Quaternion::LockAt(const Vec3& _position, const Vec3& _target) {
+Quaternion Quaternion::LockAt(const Vector3& _position, const Vector3& _target) {
 	XMFLOAT3 xmPosition, xmTarget;
 	xmPosition = { _position.x, _position.y, _position.z };
 	xmTarget = { _target.x, _target.y, _target.z };

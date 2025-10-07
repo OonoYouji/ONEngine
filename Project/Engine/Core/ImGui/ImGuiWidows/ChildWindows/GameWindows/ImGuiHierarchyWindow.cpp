@@ -11,9 +11,11 @@
 #include "Engine/Core/Utility/Math/Mathf.h"
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
-#include "Engine/Scene/SceneManager.h"
-#include "ImGuiInspectorWindow.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
+#include "Engine/Editor/EditCommand.h"
+#include "Engine/Scene/SceneManager.h"
+
+#include "ImGuiInspectorWindow.h"
 
 
 ImGuiHierarchyWindow::ImGuiHierarchyWindow(
@@ -93,6 +95,17 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 
 			if (ImGui::Selectable(entityName_.c_str(), _entity == selectedEntity_)) {
 				selectedEntity_ = _entity;
+			}
+
+			/// コピーの処理、 アイテムを選択している場合のみコピー可能にする
+			if (_entity == selectedEntity_) {
+
+				/// 入力の処理
+				if(Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+					if (Input::TriggerKey(DIK_C)) {
+						EditCommand::Execute<CopyEntityCommand>(_entity);
+					}
+				}
 			}
 		}
 
@@ -243,6 +256,7 @@ void ImGuiHierarchyWindow::DrawHierarchy() {
 		}
 	}
 
+
 }
 
 
@@ -372,6 +386,16 @@ void ImGuiNormalHierarchyWindow::ShowImGui() {
 	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
+	}
+
+	/// beginで生成されたウィンドウのアクティブ状態をチェック
+	if (ImGui::IsWindowFocused()) {
+		/// エンティティのペーストコマンドの実行
+		if (Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
+			if (Input::TriggerKey(DIK_V)) {
+				EditCommand::Execute<PasteEntityCommand>(pECSGroup_);
+			}
+		}
 	}
 
 	pECSGroup_ = pECS_->GetCurrentGroup();

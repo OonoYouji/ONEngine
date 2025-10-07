@@ -1,13 +1,11 @@
 #include "Vector3.h"
 
+/// std
 #include <cmath>
 #include <algorithm>
 
+/// engine
 #include "Vector2.h"
-//#include "Objects/Camera/Manager/CameraManager.h"
-//#include "WindowManager/WinApp.h"
-//
-//#include "Matrix4x4.h"
 
 
 /// ===================================================
@@ -82,8 +80,8 @@ Vector3 Vector3::Lerp(const Vector3& _start, const Vector3& _end, float _t) {
 }
 
 Vector3 Vector3::Slerp(const Vector3& _start, const Vector3& _end, float _t) {
-	Vec3 nv1 = Normalize(_start);
-	Vec3 nv2 = Normalize(_end);
+	Vector3 nv1 = Normalize(_start);
+	Vector3 nv2 = Normalize(_end);
 
 	float dot = Dot(nv1, nv2);
 
@@ -93,7 +91,7 @@ Vector3 Vector3::Slerp(const Vector3& _start, const Vector3& _end, float _t) {
 	float sinThetaFrom = std::sin((1.0f - _t) * theta);
 	float sinThetaTo = std::sin(_t * theta);
 
-	Vec3 nLerpVector = nv1 * (sinThetaFrom / sinTheta) + nv2 * (sinThetaTo / sinTheta);
+	Vector3 nLerpVector = nv1 * (sinThetaFrom / sinTheta) + nv2 * (sinThetaTo / sinTheta);
 	if(sinTheta < 1.0e-5) {
 		nLerpVector = nv1;
 	} else {
@@ -121,7 +119,7 @@ float Vector3::Dot(const Vector3& _v1, const Vector3& _v2) {
 
 Vector3 Vector3::MaxDotVector(const Vector3& _direction, const std::vector<Vector3>& _vertices) {
 	float maxDot = Dot(_vertices.front(), _direction);
-	Vec3 maxVertex = _vertices.front();
+	Vector3 maxVertex = _vertices.front();
 	for(auto& vertex : _vertices) {
 		float dot = Dot(vertex, _direction);
 		if(dot > maxDot) {
@@ -135,7 +133,7 @@ Vector3 Vector3::MaxDotVector(const Vector3& _direction, const std::vector<Vecto
 
 Vector3 Vector3::MinDotVector(const Vector3& _direction, const std::vector<Vector3>& _vertices) {
 	float minDot = Dot(_vertices.front(), _direction);
-	Vec3 minVertex = _vertices.front();
+	Vector3 minVertex = _vertices.front();
 	for(auto& vertex : _vertices) {
 		float dot = Dot(vertex, _direction);
 		if(dot < minDot) {
@@ -145,4 +143,14 @@ Vector3 Vector3::MinDotVector(const Vector3& _direction, const std::vector<Vecto
 	}
 
 	return minVertex;
+}
+
+void from_json(const nlohmann::json& _j, Vector3& _v) {
+	_v.x = _j.at("x").get<float>();
+	_v.y = _j.at("y").get<float>();
+	_v.z = _j.at("z").get<float>();
+}
+
+void to_json(nlohmann::json& _j, const Vector3& _v) {
+	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y }, { "z", _v.z } };
 }

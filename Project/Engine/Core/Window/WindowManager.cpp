@@ -136,7 +136,7 @@ void WindowManager::PresentAll() {
 
 
 
-Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType, UINT _windowStyle) {
+Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vector2& _windowSize, WindowType _windowType, UINT _windowStyle) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
 
 	/// game windowを作成して表示する
@@ -154,7 +154,7 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	return resultPtr;
 }
 
-void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
+void WindowManager::CreateGameWindow(const wchar_t* _title, const Vector2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
 
 	timeBeginPeriod(1);
 

@@ -138,7 +138,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 	}
 
 	/// param get
-	Vec4 color = _mr->GetColor();
+	Vector4 color = _mr->GetColor();
 	std::string meshPath = _mr->GetMeshPath();
 	std::string texturePath = _mr->GetTexturePath();
 
@@ -236,7 +236,7 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 
 	_m.SetMeshPath(_j.at("meshPath").get<std::string>());
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
-	_m.SetColor(_j.at("color").get<Vec4>());
+	_m.SetColor(_j.at("color").get<Vector4>());
 
 	if (_j.contains("postEffectFlags")) {
 		_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());

@@ -1,6 +1,10 @@
 #pragma once
 
+/// std
 #include <format>
+
+/// externals
+#include <nlohmann/json.hpp>
 
 class Vector3;
 
@@ -11,7 +15,7 @@ class Vector2 final {
 public:
 
 	Vector2();
-	Vector2(float x, float y);
+	Vector2(float _x, float _y);
 	Vector2(const Vector2&) = default;
 	Vector2(Vector2&&) = default;
 
@@ -44,9 +48,9 @@ public:
 	/// public : static methos
 	/// ===================================================
 
-	static float Dot(const Vector2& v1, const Vector2& v2);
+	static float Dot(const Vector2& _v1, const Vector2& _v2);
 
-	static Vector2 Lerp(const Vector2& v1, const Vector2& v2, float t);
+	static Vector2 Lerp(const Vector2& _v1, const Vector2& _v2, float _t);
 
 public:
 
@@ -54,14 +58,14 @@ public:
 	/// public : operator overload
 	/// ===================================================
 
-	inline Vector2& operator= (const Vector2& other);
-	inline Vector2& operator+= (const Vector2& other);
-	inline Vector2& operator-= (const Vector2& other);
-	inline Vector2& operator/= (const Vector2& other);
-	inline Vector2& operator*= (const Vector2& other);
+	inline Vector2& operator= (const Vector2& _other);
+	inline Vector2& operator+= (const Vector2& _other);
+	inline Vector2& operator-= (const Vector2& _other);
+	inline Vector2& operator/= (const Vector2& _other);
+	inline Vector2& operator*= (const Vector2& _other);
 
-	inline Vector2& operator/=(float scaler);
-	inline Vector2& operator*=(float scaler);
+	inline Vector2& operator/=(float _scaler);
+	inline Vector2& operator*=(float _scaler);
 
 	inline Vector2 operator-();
 	inline Vector2 operator+();
@@ -74,66 +78,66 @@ public:
 /// ===================================================
 #pragma region operator overload
 
-inline Vector2 operator+(const Vector2& v1, const Vector2& v2) {
+inline Vector2 operator+(const Vector2& _v1, const Vector2& _v2) {
 	return {
-		v1.x + v2.x,
-		v1.y + v2.y
+		_v1.x + _v2.x,
+		_v1.y + _v2.y
 	};
 }
 
 
-inline Vector2 operator-(const Vector2& v1, const Vector2& v2) {
+inline Vector2 operator-(const Vector2& _v1, const Vector2& _v2) {
 	return {
-		v1.x - v2.x,
-		v1.y - v2.y
+		_v1.x - _v2.x,
+		_v1.y - _v2.y
 	};
 }
 
 
-inline Vector2 operator/(const Vector2& v1, const Vector2& v2) {
+inline Vector2 operator/(const Vector2& _v1, const Vector2& _v2) {
 	return {
-		v1.x / v2.x,
-		v1.y / v2.y
+		_v1.x / _v2.x,
+		_v1.y / _v2.y
 	};
 }
 
 
-inline Vector2 operator/(const Vector2& v, float scaler) {
+inline Vector2 operator/(const Vector2& _v, float _scaler) {
 	return {
-		v.x / scaler,
-		v.y / scaler
+		_v.x / _scaler,
+		_v.y / _scaler
 	};
 }
 
 
-inline Vector2 operator*(const Vector2& v1, const Vector2& v2) {
+inline Vector2 operator*(const Vector2& _v1, const Vector2& _v2) {
 	return {
-		v1.x * v2.x,
-		v1.y * v2.y
+		_v1.x * _v2.x,
+		_v1.y * _v2.y
 	};
 }
 
 
-inline Vector2 operator*(const Vector2& v, float scaler) {
+inline Vector2 operator*(const Vector2& _v, float _scaler) {
 	return {
-		v.x * scaler,
-		v.y * scaler
+		_v.x * _scaler,
+		_v.y * _scaler
 	};
 }
 
 
-inline Vector2 operator*(float scaler, const Vector2& v) {
-	return v * scaler;
+inline Vector2 operator*(float _scaler, const Vector2& _v) {
+	return _v * _scaler;
 }
 
 
-inline bool operator!=(const Vector2& v1, const Vector2& v2) {
-	return v1.x != v2.x || v1.y != v2.y;
+inline bool operator!=(const Vector2& _v1, const Vector2& _v2) {
+	return _v1.x != _v2.x || _v1.y != _v2.y;
 }
 
 
-inline bool operator==(const Vector2& v1, const Vector2& v2) {
-	return  v1.x == v2.x && v1.y == v2.y;
+inline bool operator==(const Vector2& _v1, const Vector2& _v2) {
+	return  _v1.x == _v2.x && _v1.y == _v2.y;
 }
 
 
@@ -141,45 +145,45 @@ inline bool operator==(const Vector2& v1, const Vector2& v2) {
 /// Vector2 : operator overload
 /// ===================================================
 
-inline Vector2& Vector2::operator=(const Vector2& other) {
-	this->x = other.x;
-	this->y = other.y;
+inline Vector2& Vector2::operator=(const Vector2& _other) {
+	this->x = _other.x;
+	this->y = _other.y;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator+=(const Vector2& other) {
-	(*this) = (*this) + other;
+inline Vector2& Vector2::operator+=(const Vector2& _other) {
+	(*this) = (*this) + _other;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator-=(const Vector2& other) {
-	(*this) = (*this) - other;
+inline Vector2& Vector2::operator-=(const Vector2& _other) {
+	(*this) = (*this) - _other;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator/=(const Vector2& other) {
-	(*this) = (*this) / other;
+inline Vector2& Vector2::operator/=(const Vector2& _other) {
+	(*this) = (*this) / _other;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator*=(const Vector2& other) {
-	(*this) = (*this) * other;
+inline Vector2& Vector2::operator*=(const Vector2& _other) {
+	(*this) = (*this) * _other;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator/=(float scale) {
-	(*this) = (*this) / scale;
+inline Vector2& Vector2::operator/=(float _scale) {
+	(*this) = (*this) / _scale;
 	return *this;
 }
 
 
-inline Vector2& Vector2::operator*=(float scale) {
-	(*this) = (*this) * scale;
+inline Vector2& Vector2::operator*=(float _scale) {
+	(*this) = (*this) * _scale;
 	return *this;
 }
 
@@ -210,4 +214,6 @@ struct std::formatter<Vector2> {
 
 
 
-using Vec2 = Vector2;
+/// json 変換
+void from_json(const nlohmann::json& _j, Vector2& _v);
+void to_json(nlohmann::json& _j, const Vector2& _v);

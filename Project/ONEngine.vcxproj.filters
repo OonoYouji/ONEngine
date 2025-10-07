@@ -184,6 +184,8 @@
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
     <ClCompile Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
+    <ClCompile Include="Engine\Editor\EditCommand.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Window\WindowManager.h" />
@@ -363,6 +365,9 @@
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
     <ClInclude Include="Engine\Graphics\Pipelines\Render\River\RiverRenderingPipeline.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
+    <ClInclude Include="Engine\Editor\EditCommand.h" />
+    <ClInclude Include="Engine\Editor\Clipboard.h" />
+    <ClInclude Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

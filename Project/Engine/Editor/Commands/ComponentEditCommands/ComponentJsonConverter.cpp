@@ -102,37 +102,6 @@ void ComponentJsonConverter::FromJson(const nlohmann::json& _j, IComponent* _com
 	it->second(_component, _j);
 }
 
-
-void from_json(const nlohmann::json& _j, Vec2& _v) {
-	_v.x = _j.at("x").get<float>();
-	_v.y = _j.at("y").get<float>();
-}
-
-void to_json(nlohmann::json& _j, const Vec2& _v) {
-	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y } };
-}
-
-void from_json(const nlohmann::json& _j, Vec3& _v) {
-	_v.x = _j.at("x").get<float>();
-	_v.y = _j.at("y").get<float>();
-	_v.z = _j.at("z").get<float>();
-}
-
-void to_json(nlohmann::json& _j, const Vec3& _v) {
-	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y }, { "z", _v.z } };
-}
-
-void from_json(const nlohmann::json& _j, Vec4& _v) {
-	_v.x = _j.at("x").get<float>();
-	_v.y = _j.at("y").get<float>();
-	_v.z = _j.at("z").get<float>();
-	_v.w = _j.at("w").get<float>();
-}
-
-void to_json(nlohmann::json& _j, const Vec4& _v) {
-	_j = nlohmann::json{ { "x", _v.x }, { "y", _v.y }, { "z", _v.z }, { "w", _v.w } };
-}
-
 void from_json(const nlohmann::json& _j, Quaternion& _q) {
 	_q.x = _j.at("x").get<float>();
 	_q.y = _j.at("y").get<float>();
@@ -158,8 +127,8 @@ void to_json(nlohmann::json& _j, const Color& _c) {
 
 void from_json(const nlohmann::json& _j, DirectionalLight& _l) {
 	_l.SetIntensity(_j.at("intensity").get<float>());
-	_l.SetDirection(_j.at("direction").get<Vec3>());
-	_l.SetColor(_j.at("color").get<Vec4>());
+	_l.SetDirection(_j.at("direction").get<Vector3>());
+	_l.SetColor(_j.at("color").get<Vector4>());
 }
 
 void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
@@ -175,7 +144,7 @@ void to_json(nlohmann::json& _j, const DirectionalLight& _l) {
 void from_json([[maybe_unused]] const nlohmann::json& _j, [[maybe_unused]] Variables& _v) {
 	
 }
-void to_json(nlohmann::json& _j, const Variables& _v) {
+void to_json(nlohmann::json& _j, const Variables& /*_v*/) {
 	_j = nlohmann::json{
 		{ "type", "Variables" },
 		// 変数の内容はここで定義する必要があります
@@ -242,8 +211,8 @@ void to_json(nlohmann::json& _j, const Effect::TimeEmitData& _e) {
 void from_json(const nlohmann::json& _j, EffectMainModule& _e) {
 	_e.SetLifeLeftTime(_j.at("lifeLeftTime").get<float>());
 	_e.SetSpeedStartData(_j.at("startSpeed").get<std::pair<float, float>>());
-	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vec3, Vec3>>());
-	_e.SetRotateStartData(_j.at("startRotate").get<std::pair<Vec3, Vec3>>());
+	_e.SetSizeStartData(_j.at("startSize").get<std::pair<Vector3, Vector3>>());
+	_e.SetRotateStartData(_j.at("startRotate").get<std::pair<Vector3, Vector3>>());
 	_e.SetColorStartData(_j.at("startColor").get<std::pair<Color, Color>>());
 	_e.SetGravityModifier(_j.at("gravityModifier").get<float>());
 }
@@ -286,7 +255,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape& _e) {
 }
 
 void from_json(const nlohmann::json& _j, EffectEmitShape::Sphere& _e) {
-	_e.center = _j.at("center").get<Vec3>();
+	_e.center = _j.at("center").get<Vector3>();
 	_e.radius = _j.at("radius").get<float>();
 }
 void to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
@@ -297,8 +266,8 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Sphere& _e) {
 }
 
 void from_json(const nlohmann::json& _j, EffectEmitShape::Cube& _e) {
-	_e.center = _j.at("center").get<Vec3>();
-	_e.size = _j.at("size").get<Vec3>();
+	_e.center = _j.at("center").get<Vector3>();
+	_e.size = _j.at("size").get<Vector3>();
 }
 void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
 	_j = nlohmann::json{
@@ -308,7 +277,7 @@ void to_json(nlohmann::json& _j, const EffectEmitShape::Cube& _e) {
 }
 
 void from_json(const nlohmann::json& _j, EffectEmitShape::Cone& _e) {
-	_e.center = _j.at("center").get<Vec3>();
+	_e.center = _j.at("center").get<Vector3>();
 	_e.angle = _j.at("angle").get<float>();
 	_e.radius = _j.at("radius").get<float>();
 	_e.height = _j.at("height").get<float>();
@@ -379,7 +348,7 @@ void to_json(nlohmann::json& _j, const SphereCollider& _s) {
 
 void from_json(const nlohmann::json& _j, BoxCollider& _b) {
 	_b.enable = _j.at("enable").get<int>();
-	_b.SetSize(_j.at("size").get<Vec3>());
+	_b.SetSize(_j.at("size").get<Vector3>());
 }
 
 void to_json(nlohmann::json& _j, const BoxCollider& _b) {

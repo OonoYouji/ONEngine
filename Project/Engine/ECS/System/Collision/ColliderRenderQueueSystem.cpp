@@ -27,10 +27,10 @@ void ColliderRenderQueueSystem::UpdateSphereCollider(ComponentArray<SphereCollid
 			continue; // オーナーが無効な場合はスキップ
 		}
 
-		Vec3 position = owner->GetPosition();
+		Vector3 position = owner->GetPosition();
 		float radius = sphereCollider->GetRadius();
 		// Gizmoを使って球体を描画する
-		Gizmo::DrawWireSphere(position, radius, Vec4(1.0f, 0.0f, 0.0f, 1.0f)); // 赤色で描画
+		Gizmo::DrawWireSphere(position, radius, Vector4(1.0f, 0.0f, 0.0f, 1.0f)); // 赤色で描画
 	}
 
 }
@@ -49,10 +49,10 @@ void ColliderRenderQueueSystem::UpdateBoxCollider(ComponentArray<BoxCollider>* _
 		if (!owner) {
 			continue; // オーナーが無効な場合はスキップ
 		}
-		Vec3 position = owner->GetPosition();
-		Vec3 size = boxCollider->GetSize();
+		Vector3 position = owner->GetPosition();
+		Vector3 size = boxCollider->GetSize();
 		// Gizmoを使って立方体を描画する
-		Gizmo::DrawWireCube(position, size, Vec4(0.0f, 1.0f, 0.0f, 1.0f)); // 緑色で描画
+		Gizmo::DrawWireCube(position, size, Vector4(0.0f, 1.0f, 0.0f, 1.0f)); // 緑色で描画
 	}
 
 }
