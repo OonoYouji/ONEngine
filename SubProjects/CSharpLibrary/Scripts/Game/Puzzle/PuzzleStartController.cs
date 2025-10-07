@@ -39,6 +39,7 @@ public class PuzzleStartController : MonoBehavior {
 
 		/// パラメータの初期化
 		isStartedPuzzle_ = false;
+		player_.enable = true;
 	}
 
 	public override void Update() {
@@ -62,6 +63,9 @@ public class PuzzleStartController : MonoBehavior {
 		for (int i = 0; i < thisScripts_.Count; i++) {
 			thisScripts_[i].enable = !thisScripts_[i].enable;
 		}
+
+		/// パズルの状態に合わせてプレイヤーの状態を変更する
+		player_.enable = !isStartedPuzzle_;
 	}
 
 }
