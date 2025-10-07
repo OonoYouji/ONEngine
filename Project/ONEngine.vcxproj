@@ -397,6 +397,7 @@
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.cpp" />
     <ClCompile Include="main.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MaxSpeed</Optimization>
     </ClCompile>
@@ -741,6 +742,7 @@
     <ClInclude Include="Engine\Graphics\Resource\Container\ResourceContainer.h" />
     <ClInclude Include="Engine\Graphics\Resource\ResourceData\TextGlyph.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
+    <ClInclude Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="subprojects\csharplibrary\scripts\game\player.cs" />

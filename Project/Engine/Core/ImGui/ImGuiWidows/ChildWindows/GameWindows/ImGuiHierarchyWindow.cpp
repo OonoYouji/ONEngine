@@ -97,8 +97,8 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 				selectedEntity_ = _entity;
 			}
 
-			/// コピーの処理
-			if (ImGui::IsItemHovered()) {
+			/// コピーの処理、 アイテムを選択している場合のみコピー可能にする
+			if (_entity == selectedEntity_) {
 
 				/// 入力の処理
 				if(Input::PressKey(DIK_LCONTROL) || Input::PressKey(DIK_RCONTROL)) {
@@ -106,7 +106,6 @@ void ImGuiHierarchyWindow::DrawEntityHierarchy(GameEntity* _entity) {
 						EditCommand::Execute<CopyEntityCommand>(_entity);
 					}
 				}
-
 			}
 		}
 
