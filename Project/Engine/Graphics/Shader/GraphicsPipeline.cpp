@@ -17,6 +17,24 @@ GraphicsPipeline::GraphicsPipeline() {
 	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_WorldPosition), 1);
 	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Normal), 2);
 	SetRTVFormat(static_cast<DXGI_FORMAT>(RTVFormat_Flags), 3);
+
+
+	/// メンバ変数の初期化
+	rootSignature_ = nullptr;
+	pipelineState_ = nullptr;
+
+	inputElements_ = {};
+	semanticNames_ = {};
+
+	rasterizerDesc_ = {};
+	primitiveTopologyType_ = {};
+	blendDesc_ = {};
+
+	rootParameters_ = {};
+	staticSamplers_ = {};
+	descriptorRanges_ = {};
+
+	pShader_ = nullptr;
 }
 GraphicsPipeline::~GraphicsPipeline() {}
 

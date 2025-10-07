@@ -14,7 +14,8 @@
 
 EntityCollection::EntityCollection(ECSGroup* _ecsGroup, DxManager* _dxManager)
 	: pECSGroup_(_ecsGroup), pDxManager_(_dxManager) {
-
+	mainCamera_ = nullptr;
+	mainCamera2D_ = nullptr;
 	pDxDevice_ = pDxManager_->GetDxDevice();
 	entities_.reserve(256);
 

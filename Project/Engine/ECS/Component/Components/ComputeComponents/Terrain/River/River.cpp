@@ -61,7 +61,7 @@ std::vector<RiverControlPoint> SampleRiverSpline(const std::vector<RiverControlP
 
 
 
-River::River() : samplePerSegment_(10), isCreatedBuffers_(false) {};
+River::River() : samplePerSegment_(10), isCreatedBuffers_(false) , isGenerateMeshRequest_(false) {};
 River::~River() = default;
 
 void River::Edit(EntityComponentSystem* _ecs) {
@@ -74,7 +74,7 @@ void River::Edit(EntityComponentSystem* _ecs) {
 		ImGui::Text("Control Points:");
 		ImGui::Separator();
 
-		for (size_t i = 0; i < controlPoints_.size(); i++) {
+		for (int i = 0; i < controlPoints_.size(); i++) {
 			ImGui::PushID(i);
 			auto& point = controlPoints_[i];
 			ImGui::DragFloat4("##point", &point.position.x);
