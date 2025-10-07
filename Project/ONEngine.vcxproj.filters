@@ -235,6 +235,9 @@
     <Filter Include="Engine\Editor\Commands\ComponentEditCommands">
       <UniqueIdentifier>{8CA7564E-78BA-56A7-21A4-33940D96F3F4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Editor\Commands\ImGuiCommand">
+      <UniqueIdentifier>{FB4504A2-67FF-6E4C-F05E-89265C1725BC}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Engine\Editor\Commands\Interface">
       <UniqueIdentifier>{7219C5B4-5E6A-B0F6-87CE-9EB8737E4360}</UniqueIdentifier>
     </Filter>
@@ -702,17 +705,26 @@
     <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h">
       <Filter>Engine\ECS\System\Transform</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Editor\Clipboard.h">
+      <Filter>Engine\Editor</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h">
       <Filter>Engine\Editor\Commands\ComponentEditCommands</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h">
       <Filter>Engine\Editor\Commands\ComponentEditCommands</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.h">
+      <Filter>Engine\Editor\Commands\ImGuiCommand</Filter>
+    </ClInclude>
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h">
       <Filter>Engine\Editor\Commands\Interface</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h">
       <Filter>Engine\Editor\Commands\WorldEditorCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Editor\EditCommand.h">
+      <Filter>Engine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h">
       <Filter>Engine\Editor\EditorCompute\Interface</Filter>
@@ -1214,11 +1226,17 @@
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp">
       <Filter>Engine\Editor\Commands\ComponentEditCommands</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.cpp">
+      <Filter>Engine\Editor\Commands\ImGuiCommand</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp">
       <Filter>Engine\Editor\Commands\Interface</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp">
       <Filter>Engine\Editor\Commands\WorldEditorCommands</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\EditCommand.cpp">
+      <Filter>Engine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp">
       <Filter>Engine\Editor\EditorCompute\Interface</Filter>

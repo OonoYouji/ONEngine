@@ -267,10 +267,13 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <ClInclude Include="Engine\ECS\System\Terrain\TerrainColliderVertexGenerator.h" />
     <ClInclude Include="Engine\ECS\System\Terrain\TerrainCollision.h" />
     <ClInclude Include="Engine\ECS\System\Transform\TransformUpdateSystem.h" />
+    <ClInclude Include="Engine\Editor\Clipboard.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.h" />
     <ClInclude Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.h" />
+    <ClInclude Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\Interface\IEditorCommand.h" />
     <ClInclude Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.h" />
+    <ClInclude Include="Engine\Editor\EditCommand.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.h" />
     <ClInclude Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.h" />
@@ -439,8 +442,10 @@ xcopy /E /Y /I "$(ProjectDir)Packages" "$(TargetDir)Packages"</Command>
     <ClCompile Include="Engine\ECS\System\Transform\TransformUpdateSystem.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentEditCommands.cpp" />
     <ClCompile Include="Engine\Editor\Commands\ComponentEditCommands\ComponentJsonConverter.cpp" />
+    <ClCompile Include="Engine\Editor\Commands\ImGuiCommand\ImGuiCommand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\Interface\IEditorCommand.cpp" />
     <ClCompile Include="Engine\Editor\Commands\WorldEditorCommands\WorldEditorCommands.cpp" />
+    <ClCompile Include="Engine\Editor\EditCommand.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\Interface\IEditorCompute.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\River\RiverMeshGeneratePipeline.cpp" />
     <ClCompile Include="Engine\Editor\EditorCompute\TerrainEditor\RiverTerrainAbjustPipeline.cpp" />
