@@ -36,8 +36,9 @@ public:
 	static float GetMouseWheel();
 	static const Vector2& GetMousePosition();
 	static const Vector2& GetMouseVelocity();
-	static Vector2 GetImGuiImageMousePosition(const std::string& _imageName);
-
+	static Vector2 GetImGuiImageMousePosNormalized(const std::string& _imageName);
+	static const Vector2& GetImGuiImagePos(const std::string& _imageName);
+	static const Vector2& GetImGuiImageSize(const std::string& _imageName);
 
 	/* --- gamepad --- */
 	static bool PressGamepad(int _button);

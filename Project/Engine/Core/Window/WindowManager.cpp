@@ -7,6 +7,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/Core/Utility/Tools/Assert.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 
@@ -136,7 +137,7 @@ void WindowManager::PresentAll() {
 
 
 
-Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec2& _windowSize, WindowType _windowType, UINT _windowStyle) {
+Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vector2& _windowSize, WindowType _windowType, UINT _windowStyle) {
 	std::unique_ptr<Window> newWindow = std::make_unique<Window>();
 
 	/// game windowを作成して表示する
@@ -154,10 +155,11 @@ Window* WindowManager::GenerateWindow(const std::wstring& _windowName, const Vec
 	return resultPtr;
 }
 
-void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
+void WindowManager::CreateGameWindow(const wchar_t* _title, const Vector2& _size, UINT _windowStyle, Window* _windowPtr, WindowType _windowType) {
 
 	timeBeginPeriod(1);
 
+	_windowPtr->windowClass_ = {};
 	_windowPtr->windowStyle_ = _windowStyle;
 
 	/// windowの設定
@@ -190,6 +192,13 @@ void WindowManager::CreateGameWindow(const wchar_t* _title, const Vec2& _size, U
 		_windowPtr->windowClass_.hInstance,
 		nullptr
 	);
+
+	/// windowの生成できたかチェック
+	if (!_windowPtr->hwnd_) {
+		DWORD err = GetLastError();
+		Console::Log("CreateWindowEx failed. Error code: " + std::to_string(err));
+		Assert(false, "Failed CreateWindowEx");
+	}
 
 
 	/// window表示

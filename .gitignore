@@ -19,6 +19,10 @@
 Generated/
 FileShelter/
 imgui.ini
+Project/ONEngine.sln
+Project/ONEngine.vcxproj
+Project/ONEngine.vcxproj.filters
+Project/ONEngine.vcxproj.user
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

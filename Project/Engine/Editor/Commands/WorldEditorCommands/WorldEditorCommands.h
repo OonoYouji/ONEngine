@@ -118,3 +118,34 @@ private:
 
 
 };
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティをコピーするコマンド
+/// ///////////////////////////////////////////////////
+class CopyEntityCommand : public IEditorCommand {
+public:
+	CopyEntityCommand(class GameEntity* _entity);
+	~CopyEntityCommand() = default;
+
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+private:
+	class GameEntity* pEntity_;
+	nlohmann::json entityJson_;
+};
+
+
+/// ///////////////////////////////////////////////////
+/// エンティティをペーストするコマンド
+/// ///////////////////////////////////////////////////
+class PasteEntityCommand : public IEditorCommand {
+	public:
+	PasteEntityCommand(class ECSGroup* _ecs);
+	~PasteEntityCommand() = default;
+	EDITOR_STATE Execute() override;
+	EDITOR_STATE Undo() override;
+private:
+	class ECSGroup* pECSGroup_;
+	class GameEntity* pastedEntity_ = nullptr;
+};

@@ -54,7 +54,7 @@ void RenderTexture::Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, 
 
 	renderTextureResource.CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 		_dxManager->GetDxCommand()
 	);
 
@@ -91,7 +91,7 @@ void RenderTexture::SetRenderTarget(DxCommand* _dxCommand, DxDSVHeap* _dxDSVHeap
 
 void RenderTexture::CreateBarrierRenderTarget(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
 		_dxCommand
 	);
@@ -100,7 +100,7 @@ void RenderTexture::CreateBarrierRenderTarget(DxCommand* _dxCommand) {
 void RenderTexture::CreateBarrierPixelShaderResource(DxCommand* _dxCommand) {
 	texture_->GetDxResource().CreateBarrier(
 		D3D12_RESOURCE_STATE_RENDER_TARGET,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
 		_dxCommand
 	);
 }

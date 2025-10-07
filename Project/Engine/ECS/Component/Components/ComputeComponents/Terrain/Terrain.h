@@ -14,11 +14,13 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 #include "TerrainVertex.h"
+#include "River/River.h"
 
 
 class Terrain;
+class EntityComponentSystem;
 namespace COMP_DEBUG {
-	void TerrainDebug(Terrain* _terrain);
+	void TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs);
 } // namespace COMP_DEBUG
 
 
@@ -26,7 +28,7 @@ namespace COMP_DEBUG {
 /// 地形のコンポーネント
 /// ///////////////////////////////////////////////////
 class Terrain : public IComponent {
-	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain);
+	friend void COMP_DEBUG::TerrainDebug(Terrain* _terrain, EntityComponentSystem* _ecs);
 	friend void from_json(const nlohmann::json& _j, Terrain& _t);
 	friend void to_json(nlohmann::json& _j, const Terrain& _t);
 public:
@@ -56,27 +58,29 @@ private:
 	/// private : objects
 	/// =========================================
 
-	/* ----- buffer ----- */
+	/// ----- buffer ----- ///
 	StructuredBuffer<TerrainVertex> rwVertices_;
 	StructuredBuffer<uint32_t> rwIndices_;
 	bool isCreated_;
 
-	/* ----- edit ----- */
+	/// ----- edit ----- ///
 	float brushRadius_;
 	float brushStrength_;
 
-	/* ----- terrain ----- */
+	/// ----- terrain ----- ///
 	Vector2 terrainSize_ = Vector2(1000.0f, 1000.0f); ///< 地形のサイズ
 	uint32_t maxVertexNum_;
 	uint32_t maxIndexNum_;
 
-	/* ----- splatting ----- */
+	/// ----- river ----- ///
+	River river_;
+
+	/// ----- splatting ----- ///
 	std::array<std::string, SPLAT_TEX_COUNT> splattingTexPaths_;
 
-
-	/* ----- flags ----- */
-
+	/// ----- flags ----- ///
 	bool isRenderingProcedural_;
+
 
 public:
 	/// ===================================================
@@ -85,8 +89,7 @@ public:
 
 	const std::array<std::string, SPLAT_TEX_COUNT>& GetSplatTexPaths() const;
 
-	/* ----- buffer ----- */
-
+	/// ----- buffer ----- ///
 	StructuredBuffer<TerrainVertex>& GetRwVertices();
 	StructuredBuffer<uint32_t>& GetRwIndices();
 
@@ -98,8 +101,7 @@ public:
 
 	const Vector2& GetSize() const;
 
-	/* ----- edit ----- */
-
+	/// ----- edit ----- ///
 	float GetBrushRadius() const;
 	void SetBrushRadius(float _radius);
 
@@ -107,7 +109,10 @@ public:
 	void SetBrushStrength(float _strength);
 
 
-	/* ----- flags ----- */
+	/// ----- river ----- ///
+	River* GetRiver();
+
+	/// ----- flags ----- ///
 	bool GetIsRenderingProcedural() const;
 	void SetIsRenderingProcedural(bool _isRenderingProcedural);
 

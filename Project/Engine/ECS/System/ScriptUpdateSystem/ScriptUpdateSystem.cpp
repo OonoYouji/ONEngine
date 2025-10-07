@@ -100,6 +100,11 @@ void ScriptUpdateSystem::AddEntityAndComponent(ECSGroup* _ecsGroup) {
 
 	for (auto& entity : _ecsGroup->GetEntities()) {
 
+		/// runtime中に生成したオブジェクトは無視
+		if (entity->GetId() < 0) {
+			continue;
+		}
+
 		/// スクリプトが有効でない場合はスキップ
 		MonoObject* ecsGroupObj = mono_gchandle_get_target(gcHandle_);
 		if (!ecsGroupObj) {

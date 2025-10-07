@@ -65,26 +65,26 @@ public:
 	/// @param _axis 回転の軸となるベクトル
 	/// @param _theta 回転角度
 	/// @return 軸を基に回転させたクォータニオン
-	static Quaternion MakeFromAxis(const Vec3& _axis, float _theta);
+	static Quaternion MakeFromAxis(const Vector3& _axis, float _theta);
 
 	/// @brief 回転行列を生成する
 	/// @param axis 回転軸
 	/// @param theta 回転角度
 	/// @return 回転行列
-	static Matrix4x4 MakeRotateAxisAngle(const Vec3& axis, float theta);
+	static Matrix4x4 MakeRotateAxisAngle(const Vector3& axis, float theta);
 
 	/// @brief 特定の方向を見るクォータニオンを生成する
 	/// @param _position 現在の位置
 	/// @param _target 目標位置
 	/// @param _up 上方向ベクトル
 	/// @return 生成されたクォータニオン
-	static Quaternion LockAt(const Vec3& _position, const Vec3& _target, const Vec3& _up);
+	static Quaternion LockAt(const Vector3& _position, const Vector3& _target, const Vector3& _up);
 
 	/// @brief 特定の方向を見るクォータニオンを生成する
 	/// @param _position 現在の位置
 	/// @param _target 目標位置
 	/// @return 生成されたクォータニオン
-	static Quaternion LockAt(const Vec3& _position, const Vec3& _target);
+	static Quaternion LockAt(const Vector3& _position, const Vector3& _target);
 
 	/// @brief クォータニオンを球面線形補間する
 	/// @param _start 開始クォータニオン

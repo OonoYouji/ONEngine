@@ -17,7 +17,7 @@ Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrame
 
 		if (_keyFrames[index].time <= _time && _time <= _keyFrames[nextIndex].time) {
 			float t = (_time - _keyFrames[index].time) / (_keyFrames[nextIndex].time - _keyFrames[index].time);
-			return Vec3::Lerp(_keyFrames[index].value, _keyFrames[nextIndex].value, t);
+			return Vector3::Lerp(_keyFrames[index].value, _keyFrames[nextIndex].value, t);
 		}
 	}
 

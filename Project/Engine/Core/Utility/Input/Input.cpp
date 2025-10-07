@@ -94,6 +94,14 @@ const Vector2& Input::GetMouseVelocity() {
 	return gInputSystem_->mouse_->velocity_;
 }
 
-Vector2 Input::GetImGuiImageMousePosition(const std::string& _imageName) {
-	return gInputSystem_->mouse_->GetImGuiImageMousePosition(_imageName);
+Vector2 Input::GetImGuiImageMousePosNormalized(const std::string& _imageName) {
+	return gInputSystem_->mouse_->GetImGuiImageMousePosNormalized(_imageName);
+}
+
+const Vector2& Input::GetImGuiImagePos(const std::string& _imageName) {
+	return gInputSystem_->mouse_->GetImGuiImagePos(_imageName);
+}
+
+const Vector2& Input::GetImGuiImageSize(const std::string& _imageName) {
+	return gInputSystem_->mouse_->GetImGuiImageSize(_imageName);
 }

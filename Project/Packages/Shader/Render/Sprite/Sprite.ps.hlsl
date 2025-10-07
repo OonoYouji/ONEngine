@@ -15,7 +15,7 @@ PSOutput main(VSOutput input) {
 	float2 uv = mul(float3(input.uv, 1), matUV).xy;
 	float4 baseTexColor = textures[material.baseTextureId].Sample(textureSampler, uv);
 
-	float4 outputColor = baseTexColor * material.color;
+	float4 outputColor = baseTexColor * material.baseColor;
 
 	if (outputColor.a < 0.01) {
 		discard;

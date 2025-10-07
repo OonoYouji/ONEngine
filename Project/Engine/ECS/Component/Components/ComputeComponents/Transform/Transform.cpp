@@ -7,14 +7,14 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Script/MonoScriptEngine.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-
+#include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 
 Transform::Transform() {
 	position = Vector3::kZero;
 	rotate = Quaternion::kIdentity;
 	scale = Vector3::kOne;
 }
-Transform::~Transform() {}
+Transform::~Transform() = default;
 
 
 void Transform::Update() {
@@ -182,9 +182,10 @@ void COMP_DEBUG::TransformDebug(Transform* _transform) {
 
 	bool isEdit = false;
 
-	isEdit |= ImGui::DragFloat3("position", &_transform->position.x, 0.1f);
-	isEdit |= ImGui::DragFloat3("rotate", &_transform->rotate.x, Mathf::PI / 12.0f);
-	isEdit |= ImGui::DragFloat3("scale", &_transform->scale.x, 0.1f);
+
+	isEdit |= ImMath::DragFloat3("position", &_transform->position, 0.1f);
+	isEdit |= ImMath::DragQuaternion("rotate", &_transform->rotate, Mathf::PI / 12.0f);
+	isEdit |= ImMath::DragFloat3("scale", &_transform->scale, 0.1f);
 
 	if (isEdit) {
 		_transform->Update();

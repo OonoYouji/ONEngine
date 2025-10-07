@@ -1,5 +1,9 @@
 #pragma once
 
+/// externals
+#include <nlohmann/json.hpp>
+
+/// engine
 #include "Vector3.h"
 
 /// ===================================================
@@ -224,5 +228,6 @@ inline Vector4 Vector4::operator+() {
 
 #pragma endregion
 
-
-using Vec4 = Vector4;
+/// json 変換
+void from_json(const nlohmann::json& _j, Vector4& _v);
+void to_json(nlohmann::json& _j, const Vector4& _v);

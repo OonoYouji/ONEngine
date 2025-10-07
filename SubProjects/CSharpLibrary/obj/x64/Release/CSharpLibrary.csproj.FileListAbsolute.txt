@@ -1,7 +1,0 @@
-C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\CSharpLibrary.dll
-C:\Users\k023g\source\repos\ONEngine\Project\Packages\Scripts\CSharpLibrary.pdb
-C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Release\CSharpLibrary.csproj.AssemblyReference.cache
-C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Release\CSharpLibrary.csproj.CoreCompileInputs.cache
-C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Release\CSharpLi.D9646148.Up2Date
-C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Release\CSharpLibrary.dll
-C:\Users\k023g\source\repos\ONEngine\Project\SubProjects\CSharpLibrary\obj\x64\Release\CSharpLibrary.pdb

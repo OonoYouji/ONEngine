@@ -76,7 +76,7 @@ void TerrainVertexEditorCompute::Execute(class EntityComponentSystem* _ecs, DxCo
 
 
 	/// マウスが範囲外なら処理しない
-	const Vector2& mousePosition = Input::GetImGuiImageMousePosition("Scene");
+	const Vector2& mousePosition = Input::GetImGuiImageMousePosNormalized("Scene");
 	if (mousePosition.x < 0.0f || mousePosition.x > 1280.0f
 		|| mousePosition.y < 0.0f || mousePosition.y > 720.0f) {
 		return;

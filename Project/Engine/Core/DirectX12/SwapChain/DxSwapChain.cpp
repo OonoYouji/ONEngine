@@ -1,5 +1,7 @@
 #include "DxSwapChain.h"
 
+#include <comdef.h>
+
 /// engine
 #include "../Manager/DxManager.h"
 #include "Engine/Core/Window/Window.h"
@@ -9,6 +11,18 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/Config/EngineConfig.h"
 
+
+inline std::string HrToString(HRESULT hr) {
+	_com_error err(hr);
+	const wchar_t* wmsg = err.ErrorMessage();
+
+	// UTF-16 → UTF-8 変換
+	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
+	std::string msg(sizeNeeded - 1, 0); // 終端を除く
+	WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
+
+	return msg;
+}
 
 DxSwapChain::DxSwapChain() {}
 DxSwapChain::~DxSwapChain() {
@@ -49,7 +63,9 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		result = pDxManager_->GetDxDevice()->GetFactory()->CreateSwapChainForHwnd(
 			pDxManager_->GetDxCommand()->GetCommandQueue(), pWindow_->GetHwnd(), &desc, nullptr, nullptr, &swapChain1
 		);
-		Assert(SUCCEEDED(result), "Failed to create swap chain1");
+		if (FAILED(result)) {
+			Assert(false, HrToString(result).c_str());
+		}
 
 		/// SwapChain4に引き渡す
 		result = swapChain1->QueryInterface(IID_PPV_ARGS(&swapChain_));

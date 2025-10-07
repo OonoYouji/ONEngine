@@ -30,7 +30,7 @@ public class MonoBehavior {
     }
 
     private string name_;
-    public bool enable;
+    public bool enable = true;
 
     public Entity entity {
         get; internal set;

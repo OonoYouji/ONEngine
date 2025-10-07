@@ -16,7 +16,7 @@ public class PuzzleStage : MonoBehavior {
 	private Vector3 blockPosOffset_; // ブロックの位置オフセット
 	private Entity activePlayer_; // 
 	private Entity mapchip_;
-	[SerializeField] private string stageFilepath_ = "stage1.json";
+	[SerializeField] private string stageFilepath_ = "stage18.json";
 
 	PuzzleCommandStacker puzzleCommandStacker_;
 
@@ -39,7 +39,8 @@ public class PuzzleStage : MonoBehavior {
 			mapchip_.parent = entity;
 			Mapchip mapchipScript = mapchip_.GetScript<Mapchip>();
 			if (mapchipScript != null) {
-				mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
+				//mapchipScript.LoadMap("./Assets/Game/StageData/", stageFilepath_);
+				mapchipScript.LoadMap("./Assets/Game/StageData/", "stage18.json");
 			}
 
 			mapData_ = mapchipScript.GetStartMapData();
@@ -126,7 +127,7 @@ public class PuzzleStage : MonoBehavior {
 			if (puzzlePlayer != null) {
 				puzzlePlayer.blockData.address = playerAddress; // プレイヤーのアドレスを設定
 				puzzlePlayer.blockData.blockSpace = blockData_.blockSpace; // プレイヤーの高さを設定
-
+				
 				if (stagePlayer.type == (int)BlockType.Black) {
 					puzzlePlayer.blockData.mapValue = (int)MAPDATA.PLAYER_BLACK;
 				} else {
@@ -160,6 +161,8 @@ public class PuzzleStage : MonoBehavior {
 					block = ecsGroup.CreateEntity("Block");
 				} else if (CheckIsGoal(mapValue)) {
 					block = ecsGroup.CreateEntity("Goal");
+				} else if (CheckIsConstantBlock(mapValue)) {
+					block = ecsGroup.CreateEntity("ConstantBlock");
 				}
 
 				if (block == null) {
@@ -217,9 +220,9 @@ public class PuzzleStage : MonoBehavior {
 		UpdatePlayer();
 		UpdateEntityPosition();
 
-		if (Input.TriggerGamepad(Gamepad.Y)) {
-			Reset();
-		}
+		// if (Input.TriggerGamepad(Gamepad.Y)) {
+		// 	Reset();
+		// }
 	}
 
 
@@ -363,6 +366,13 @@ public class PuzzleStage : MonoBehavior {
 			return true;
 		}
 
+		return false;
+	}
+
+	private bool CheckIsConstantBlock(int _mapValue) {
+		if (_mapValue == (int)MAPDATA.CONSTANT_BLOCK_BLACK || _mapValue == (int)MAPDATA.CONSTANT_BLOCK_WHITE) {
+			return true;
+		}
 		return false;
 	}
 

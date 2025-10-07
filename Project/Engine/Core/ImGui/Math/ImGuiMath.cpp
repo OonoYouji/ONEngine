@@ -297,8 +297,8 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 
 	/// param get
 	float intensity = _light->GetIntensity();
-	Vec4  color = _light->GetColor();
-	Vec3  direction = _light->GetDirection();
+	Vector4  color = _light->GetColor();
+	Vector3  direction = _light->GetDirection();
 
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
@@ -306,7 +306,7 @@ void DirectionalLightDebug(DirectionalLight* _light) {
 	}
 
 	if (ImGui::DragFloat3("direction", &direction.x, 0.1f)) {
-		_light->SetDirection(Vec3::Normalize(direction));
+		_light->SetDirection(Vector3::Normalize(direction));
 	}
 
 	if (ImGui::DragFloat("intensity", &intensity, 0.1f)) {
@@ -348,7 +348,7 @@ void MeshRendererDebug(MeshRenderer* _meshRenderer) {
 	}
 
 	/// param get
-	Vec4 color = _meshRenderer->GetColor();
+	Vector4 color = _meshRenderer->GetColor();
 	std::string meshPath = _meshRenderer->GetMeshPath();
 	std::string texturePath = _meshRenderer->GetTexturePath();
 
@@ -416,8 +416,7 @@ void CustomMeshRendererDebug(CustomMeshRenderer* _customMeshRenderer) {
 	}
 
 	/// param get
-	Vec4 color = _customMeshRenderer->GetColor();
-	//ImGuiColorEdit("colorあ", &color);
+	Vector4 color = _customMeshRenderer->GetColor();
 	/// edit
 	if (ImGuiColorEdit("color", &color)) {
 		_customMeshRenderer->SetColor(color);
@@ -438,9 +437,9 @@ void EffectDebug(Effect* _effect) {
 
 			/// param get
 			std::pair<float, float> speed = mainModule->GetSpeedStartData();
-			std::pair<Vec3, Vec3> size = mainModule->GetSizeStartData();
-			std::pair<Vec3, Vec3> rotate = mainModule->GetRotateStartData();
-			std::pair<Vec4, Vec4> color = mainModule->GetColorStartData();
+			std::pair<Vector3, Vector3> size = mainModule->GetSizeStartData();
+			std::pair<Vector3, Vector3> rotate = mainModule->GetRotateStartData();
+			std::pair<Vector4, Vector4> color = mainModule->GetColorStartData();
 
 			/// スピードの編集
 			ImGui::DragFloat("first speed", &speed.first, 0.1f, 0.0f, FLT_MAX);

@@ -47,6 +47,9 @@ public:
 	/// Id
 	uint32_t GetEntityId(const std::string& _name);
 
+	/// _nameのEntityが何体いるのかチェックする
+	uint32_t CountEntity(const std::string& _name);
+
 
 	/// ----- component ----- ///
 

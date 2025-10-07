@@ -30,18 +30,6 @@ namespace ComponentJsonConverter {
 /// utilities
 /// //////////////////////////////////////////////////
 
-// vector2
-void from_json(const nlohmann::json& _j, Vec2& _v);
-void to_json(nlohmann::json& _j, const Vec2& _v);
-
-// vector3
-void from_json(const nlohmann::json& _j, Vec3& _v);
-void to_json(nlohmann::json& _j, const Vec3& _v);
-
-// vector4
-void from_json(const nlohmann::json& _j, Vec4& _v);
-void to_json(nlohmann::json& _j, const Vec4& _v);
-
 // quaternion
 void from_json(const nlohmann::json& _j, Quaternion& _q);
 void to_json(nlohmann::json& _j, const Quaternion& _q);

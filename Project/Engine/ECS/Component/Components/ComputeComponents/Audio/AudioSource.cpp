@@ -9,9 +9,11 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 
-AudioSource::AudioSource() {
-	volume_ = 1.0f;
-	pitch_ = 1.0f;
+AudioSource::AudioSource()
+	: volume_(1.0f),
+	pitch_(1.0f),
+	state_(0),
+	isPlayingRequest_(false){
 }
 
 AudioSource::~AudioSource() {}
