@@ -112,7 +112,7 @@ project "ONEngine"
         defines { "_DEBUG", "_WINDOWS" }
         buildoptions { "/utf-8" }
         staticruntime "On"
-        links { "assimp-vc143-mtd" }
+        links { "assimp-vc143-mtd.lib" }
 
 
     filter "configurations:Release"
@@ -123,7 +123,7 @@ project "ONEngine"
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
         staticruntime "On"
-        links { "assimp-vc143-mt" }
+        links { "assimp-vc143-mt.lib" }
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
@@ -140,7 +140,7 @@ project "ONEngine"
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
         staticruntime "On"
-        links { "assimp-vc143-mt" }
+        links { "assimp-vc143-mt.lib" }
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxil.dll\" \"$(TargetDir)dxil.dll\"",
