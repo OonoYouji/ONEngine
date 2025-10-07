@@ -90,7 +90,6 @@ project "ONEngine"
     }
 
     libdirs {
-        "$(ProjectDir)Externals/assimp/lib/Debug",
         "Externals/assimp/lib",
         "Packages/Scripts/lib"
     }
@@ -112,6 +111,7 @@ project "ONEngine"
         defines { "_DEBUG", "_WINDOWS" }
         buildoptions { "/utf-8" }
         staticruntime "On"
+        libdirs { "$(ProjectDir)Externals/assimp/lib/Debug" }
         links { "assimp-vc143-mtd.lib" }
 
 
@@ -123,6 +123,7 @@ project "ONEngine"
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
         staticruntime "On"
+        libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
         links { "assimp-vc143-mt.lib" }
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
@@ -140,6 +141,7 @@ project "ONEngine"
         buildoptions { "/utf-8" }
         linktimeoptimization "On"
         staticruntime "On"
+        libdirs { "$(ProjectDir)Externals/assimp/lib/Release" }
         links { "assimp-vc143-mt.lib" }
         postbuildcommands {
             "copy \"$(WindowsSdkDir)bin\\$(TargetPlatformVersion)\\x64\\dxcompiler.dll\" \"$(TargetDir)dxcompiler.dll\"",
