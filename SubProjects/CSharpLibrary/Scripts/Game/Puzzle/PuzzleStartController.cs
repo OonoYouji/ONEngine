@@ -11,6 +11,8 @@ public class PuzzleStartController : MonoBehavior {
 	[SerializeField] float toPlayerDistance_ = 0.0f; /// プレイヤーとの距離
 	[SerializeField] float startPuzzleDistance_ = 4.0f; /// パズルを開始する距離
 
+	private bool isStartedPuzzle_ = false; /// パズルが開始しているか
+
 	public override void Initialize() {
 		/// playerを検索
 		Entity ePlayer = ecsGroup.FindEntity("Player");
@@ -34,15 +36,20 @@ public class PuzzleStartController : MonoBehavior {
 		thisScripts_.Remove(thisScripts_[thisIndex]);
 
 		ToggleScriptEnable();
+
+		/// パラメータの初期化
+		isStartedPuzzle_ = false;
 	}
 
 	public override void Update() {
 
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
+
+		/// 開始出来る状態かチェック
 		if (startPuzzleDistance_ > toPlayerDistance_) {
 
-			/// 開始出来る
+			/// 入力によってパズルを始める
 			if (Input.TriggerKey(KeyCode.Space) ||
 				Input.TriggerGamepad(Gamepad.A)) {
 				ToggleScriptEnable();
@@ -51,11 +58,10 @@ public class PuzzleStartController : MonoBehavior {
 	}
 
 	private void ToggleScriptEnable() {
+		isStartedPuzzle_ = !isStartedPuzzle_;
 		for (int i = 0; i < thisScripts_.Count; i++) {
 			thisScripts_[i].enable = !thisScripts_[i].enable;
 		}
-
-		Debug.Log("[ToggleScriptEnable] ToggleScriptEnable");
 	}
 
 }
