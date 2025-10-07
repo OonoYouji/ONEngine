@@ -22,3 +22,8 @@ public enum GamepadAxis {
 	LeftThumb = 0,
 	RightThumb = 1,
 }
+
+public enum KeyboardAxis {
+	WASD,
+	Arrow
+}

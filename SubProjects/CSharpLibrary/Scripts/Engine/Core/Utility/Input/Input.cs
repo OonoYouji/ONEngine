@@ -42,6 +42,28 @@ static public class Input {
 		return output;
 	}
 
+	static public Vector2 KeyboardAxis(KeyboardAxis axis) {
+		Vector2 output = new Vector2(0.0f, 0.0f);
+		if (axis == global::KeyboardAxis.WASD) {
+			if (PressKey(KeyCode.W)) output.y += 1.0f;
+			if (PressKey(KeyCode.S)) output.y -= 1.0f;
+			if (PressKey(KeyCode.A)) output.x -= 1.0f;
+			if (PressKey(KeyCode.D)) output.x += 1.0f;
+		} else if (axis == global::KeyboardAxis.Arrow) {
+			if (PressKey(KeyCode.UpArrow)) output.y += 1.0f;
+			if (PressKey(KeyCode.DownArrow)) output.y -= 1.0f;
+			if (PressKey(KeyCode.LeftArrow)) output.x -= 1.0f;
+			if (PressKey(KeyCode.RightArrow)) output.x += 1.0f;
+		}
+		// 正規化
+		if (output.x != 0.0f || output.y != 0.0f) {
+			float length = Mathf.Sqrt(output.x * output.x + output.y * output.y);
+			output.x /= length;
+			output.y /= length;
+		}
+		return output;
+	}
+
 	// ===================================================================
 	// マウス入力
 	// ===================================================================

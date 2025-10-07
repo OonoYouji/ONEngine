@@ -3,9 +3,9 @@
         {
             "enable": 1,
             "position": {
-                "x": 173.56808471679688,
-                "y": 14.600001335144043,
-                "z": 380.97772216796875
+                "x": 163.89659118652344,
+                "y": 0.9961090087890625,
+                "z": 422.27886962890625
             },
             "rotate": {
                 "w": 1.0,
@@ -41,13 +41,13 @@
         {
             "color": {
                 "w": 1.0,
-                "x": 0.0,
+                "x": 1.0,
                 "y": 1.0,
                 "z": 1.0
             },
             "enable": 1,
-            "meshPath": "./Packages/Models/primitive/sphere.obj",
-            "postEffectFlags": 5,
+            "meshPath": "./Assets/Models/Entity/Animal/Wolf.obj",
+            "postEffectFlags": 1,
             "texturePath": "./Packages/Textures/white.png",
             "type": "MeshRenderer"
         }
