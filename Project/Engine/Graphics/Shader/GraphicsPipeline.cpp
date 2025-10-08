@@ -42,11 +42,11 @@ void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 	/// root signatureとpipeline state objectを生成する
 	CreateRootSignature(_dxDevice);
 
-	//if (pShader_->GetMS() != nullptr) {
-		//CreateMeshPipelineStateObject(_dxDevice);
-	//} else {
+	if (pShader_->GetMS() != nullptr) {
+		CreateMeshPipelineStateObject(_dxDevice);
+	} else {
 		CreatePipelineStateObject(_dxDevice);
-	//}
+	}
 }
 
 
@@ -412,3 +412,10 @@ D3D12_BLEND_DESC BlendMode::None() {
 	return blendDesc;
 }
 
+D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc() {
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	return depthStencilDesc;
+}

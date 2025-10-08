@@ -158,6 +158,7 @@ private:
 	std::vector<DXGI_FORMAT>                rtvFormats_;
 };
 
+D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc();
 
 namespace BlendMode {
 	D3D12_BLEND_DESC Normal();
