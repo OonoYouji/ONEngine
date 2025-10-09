@@ -13,6 +13,7 @@
 #include "EditorCompute/TerrainEditor/TerrainVertexEditorCompute.h"
 #include "EditorCompute/TerrainEditor/RiverTerrainAbjustPipeline.h"
 #include "EditorCompute/River/RiverMeshGeneratePipeline.h"
+#include "EditorCompute/Grass/GrassArrangementPipeline.h"
 
 class LogCommand : public IEditorCommand {
 public:
@@ -49,6 +50,7 @@ void EditorManager::Initialize(DxManager* _dxm, ShaderCompiler* _sc) {
 	AddEditorCompute(_dxm, _sc, std::make_unique<TerrainVertexEditorCompute>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<RiverMeshGeneratePipeline>());
 	AddEditorCompute(_dxm, _sc, std::make_unique<RiverTerrainAbjustPipeline>());
+	AddEditorCompute(_dxm, _sc, std::make_unique<GrassArrangementPipeline>());
 }
 
 void EditorManager::Update(GraphicsResourceCollection* _grc) {
