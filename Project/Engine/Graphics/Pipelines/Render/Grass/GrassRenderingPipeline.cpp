@@ -25,7 +25,7 @@ Vector3 EvaluateCubicBezierTangent(const Vector3& p0, const Vector3& p1, const V
 }
 
 void GenerateBladesAlongBezier(
-	StructuredBuffer<GrassRenderingPipeline::BladeInstance>& g_blades,
+	StructuredBuffer<BladeInstance>& _blades,
 	const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
 	size_t bladeCount, float jitter = 0.0f) {
 
@@ -38,12 +38,12 @@ void GenerateBladesAlongBezier(
 		float t = base + (jitter > 0.0f ? (dist(rng) - 0.5f) * jitter : 0.0f);
 		t = std::clamp(t, 0.0f, 1.0f);
 
-		GrassRenderingPipeline::BladeInstance b{};
+		BladeInstance b{};
 		b.position = EvaluateCubicBezier(p0, p1, p2, p3, t);
 		b.tangent = EvaluateCubicBezierTangent(p0, p1, p2, p3, t).Normalize();
 		b.scale = 0.8f + 0.4f * dist(rng);
 		b.random01 = dist(rng);
-		g_blades.SetMappedData(i, b);
+		_blades.SetMappedData(i, b);
 	}
 }
 
@@ -122,16 +122,8 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	//time_ += 1.0f / 60.0f;
-	//timeBuffer_.SetMappedData({
-	//	.windDirection = Vector3::kFront,
-	//	.time = time_,
-	//	.windStrength = 1.0f
-	//	});
-
 	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
-	//timeBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
-
+	
 	for (int i = 0; i < 128; ++i) {
 		float time = timeBuffer_.GetMappedData(i);
 		timeBuffer_.SetMappedData(i, time + 1.0f / 60.0f);

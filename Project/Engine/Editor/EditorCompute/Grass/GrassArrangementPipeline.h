@@ -28,6 +28,7 @@ public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
+
 	GrassArrangementPipeline();
 	~GrassArrangementPipeline();
 

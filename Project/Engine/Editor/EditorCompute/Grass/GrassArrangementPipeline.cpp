@@ -46,6 +46,7 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 	/// bufferの設定
 	auto cmdList = _dxCommand->GetCommandList();
 
+	uint32_t grassArrangementTexId = _grc->GetTextureIndex("./Packages/Textures/Terrain/GrassArrangement.png");
 	usedTexIdBuffer_.BindForComputeCommandList(cmdList, CBV_USED_TEXTURED_IDS);
 
 	const auto& textures = _grc->GetTextures();

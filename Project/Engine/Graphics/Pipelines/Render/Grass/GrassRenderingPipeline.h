@@ -7,6 +7,8 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/Grass.h"
+
 /// /////////////////////////////////////////////////
 /// 草を描画するパイプライン
 /// /////////////////////////////////////////////////
@@ -16,15 +18,6 @@ class GrassRenderingPipeline : public IRenderingPipeline {
 		ROOT_PARAM_VIEW_PROJECTION,
 		ROOT_PARAM_BLADES,
 		ROOT_PARAM_TIME,
-	};
-
-public:
-
-	struct BladeInstance {
-		Vector3 position;
-		Vector3 tangent;
-		float scale;
-		float random01;
 	};
 
 public:
