@@ -23,9 +23,9 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_ = std::make_unique<GraphicsPipeline>();
 		pipeline_->SetShader(&shader);
 
-		/// buffer
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// ROOT_PARAM_VIEW_PROJECTION
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); /// ROOT_PARAM_TIME
+		///// buffer
+		//pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// ROOT_PARAM_VIEW_PROJECTION
+		//pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 1); /// ROOT_PARAM_TIME
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
@@ -56,15 +56,15 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	time_ += 1.0f / 60.0f;
-	timeBuffer_.SetMappedData({
-		.windDirection = Vector3::kFront,
-		.time = time_,
-		.windStrength = 1.0f
-		});
+	//time_ += 1.0f / 60.0f;
+	//timeBuffer_.SetMappedData({
+	//	.windDirection = Vector3::kFront,
+	//	.time = time_,
+	//	.windStrength = 1.0f
+	//	});
 
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
-	timeBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
+	//_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
+	//timeBuffer_.BindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
 	cmdList->DispatchMesh(2, 1, 1);
 
