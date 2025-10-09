@@ -57,6 +57,7 @@ public:
 	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 
 	void SetMappedData(size_t _index, const T& _setValue);
+	const T& GetMappedData(size_t _index) const;
 
 	DxResource& GetResource();
 
@@ -358,6 +359,11 @@ template<typename T>
 inline void StructuredBuffer<T>::SetMappedData(size_t _index, const T& _setValue) {
 	Assert(_index < bufferSize_, "out of range");
 	mappedDataArray_[_index] = _setValue;
+}
+
+template<typename T>
+inline const T& StructuredBuffer<T>::GetMappedData(size_t _index) const {
+	return mappedDataArray_[_index];
 }
 
 template<typename T>

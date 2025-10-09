@@ -11,3 +11,11 @@ static const float3 bladeVertices[3] = {
 	float3(-0.05, 0.5, 0), // 左上
 	float3(0.05, 0.5, 0) // 右上
 };
+
+
+struct BladeInstance {
+	float3 position;
+	float3 tangent;
+	float scale;
+	float random01;
+};

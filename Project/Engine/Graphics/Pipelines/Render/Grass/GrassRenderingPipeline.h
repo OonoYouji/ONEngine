@@ -5,6 +5,7 @@
 
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 /// /////////////////////////////////////////////////
 /// 草を描画するパイプライン
@@ -13,7 +14,17 @@ class GrassRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
 		ROOT_PARAM_VIEW_PROJECTION,
+		ROOT_PARAM_BLADES,
 		ROOT_PARAM_TIME,
+	};
+
+public:
+
+	struct BladeInstance {
+		Vector3 position;
+		Vector3 tangent;
+		float scale;
+		float random01;
 	};
 
 public:
@@ -32,14 +43,8 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	struct TimeCB {
-		Vector3 windDirection;
-		float time;
-		float windStrength;
-	};
-
-	ConstantBuffer<TimeCB> timeBuffer_;
-	float time_;
+	StructuredBuffer<BladeInstance> bladesBuffer_;
+	StructuredBuffer<float> timeBuffer_;
 
 };
 

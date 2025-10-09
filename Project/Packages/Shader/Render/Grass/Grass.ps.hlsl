@@ -1,10 +1,6 @@
 #include "Grass.hlsli"
 
-//struct PSInput {
-//	float4 position : SV_POSITION;
-//	float3 normal : NORMAL;
-//	float2 uv : TEXCOORD0;
-//};
+#include "../../ConstantBufferData/Material.hlsli"
 
 struct PSOutput {
 	float4 color : SV_TARGET0;
@@ -20,7 +16,7 @@ PSOutput PSMain(VertexOut input) {
 	output.color = float4(0, 1, 0, 1); // 緑色で草を描画
 	output.wPosition = input.position; // ワールド位置を出力
 	output.normal = float4(normalize(input.normal), 1); // 法線を出力
-	output.flags = float4(1, 0, 0, 1); // 草フラグを立てる
+	output.flags = float4(PostEffectFlags_Lighting, 1, 0, 1); // 草フラグを立てる
 
 	// 緑色で草を描画
 	return output;
