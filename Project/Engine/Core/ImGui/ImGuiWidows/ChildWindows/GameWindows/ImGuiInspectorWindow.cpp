@@ -18,15 +18,18 @@
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+/// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+/// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
@@ -56,6 +59,7 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
 	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pECS_); });
 	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
+	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp)); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 
 	/// renderer
