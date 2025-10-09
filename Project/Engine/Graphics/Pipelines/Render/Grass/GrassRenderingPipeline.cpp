@@ -25,7 +25,7 @@ Vector3 EvaluateCubicBezierTangent(const Vector3& p0, const Vector3& p1, const V
 }
 
 void GenerateBladesAlongBezier(
-	StructuredBuffer<BladeInstance>& _blades,
+	StructuredBuffer<GrassInstance>& _blades,
 	const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3,
 	size_t bladeCount, float jitter = 0.0f) {
 
@@ -38,7 +38,7 @@ void GenerateBladesAlongBezier(
 		float t = base + (jitter > 0.0f ? (dist(rng) - 0.5f) * jitter : 0.0f);
 		t = std::clamp(t, 0.0f, 1.0f);
 
-		BladeInstance b{};
+		GrassInstance b{};
 		b.position = EvaluateCubicBezier(p0, p1, p2, p3, t);
 		b.tangent = EvaluateCubicBezierTangent(p0, p1, p2, p3, t).Normalize();
 		b.scale = 0.8f + 0.4f * dist(rng);

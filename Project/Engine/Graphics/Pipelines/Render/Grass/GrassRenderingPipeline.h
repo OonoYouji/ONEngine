@@ -7,7 +7,7 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/Grass.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 
 /// /////////////////////////////////////////////////
 /// 草を描画するパイプライン
@@ -36,7 +36,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	StructuredBuffer<BladeInstance> bladesBuffer_;
+	StructuredBuffer<GrassInstance> bladesBuffer_;
 	StructuredBuffer<float> timeBuffer_;
 
 };
