@@ -5,6 +5,7 @@
 
 /// engine
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 /// ////////////////////////////////////////////////////////
 /// Json Serialization
@@ -39,14 +40,21 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
 	ImGui::Text("Distribution Texture Path : %s", _grassField->distributionTexturePath_.c_str());
 
 	/// 配置対象のTerrainComponentのDrag&Drop
-	ImGui::Text("Drag & Drop Terrain Component here");
-	ImGui::Dummy(ImVec2(0.0f, 10.0f));
+	ImGui::CollapsingHeader("Drag & Drop Terrain Component here");
 	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TerrainComponent")) {
-			const uintptr_t terrainCompPtr = *(const uintptr_t*)payload->Data;
-			// ここでterrainCompPtrを使って必要な処理を行う
-			// 例: _grassField->SetTerrainComponent(reinterpret_cast<TerrainComponent*>(terrainCompPtr));
+		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Component")) {
+			/// payloadからコンポーネントを取得
+			IComponent* component = *(IComponent**)payload->Data;
+			if (component) {
+				/// TerrainComponentかどうかをチェック
+				if (Terrain* terrain = dynamic_cast<Terrain*>(component)) {
+					Console::Log(std::format("GrassField : Drag & Drop Terrain Component (id : {})", terrain->id));
+				}
+			}
+
 		}
+
+
 		ImGui::EndDragDropTarget();
 	}
 
