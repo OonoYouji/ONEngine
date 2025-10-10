@@ -46,6 +46,9 @@ namespace COMP_DEBUG {
 /// Terrainに生やすための草の群クラス
 /// ////////////////////////////////////////////////////////
 class GrassField : public IComponent {
+	/// friendクラス
+	friend class GrassArrangementPipeline;
+
 	/// privateメンバ変数の参照のためにフレンド宣言
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
@@ -64,6 +67,9 @@ public:
 		DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap
 	);
 
+	/// _deltaTimeを足す
+	void UpdateTimeBuffer(float _deltaTime);
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -71,10 +77,13 @@ private:
 
 	/// ----- buffer ----- ///
 	StructuredBuffer<GrassInstance> rwGrassInstanceBuffer_;
+	StructuredBuffer<float> timeBuffer_;
 
 	/// ----- parameters ----- ///
 	uint32_t maxGrassCount_; ///< 最大草の本数
 	std::string distributionTexturePath_; ///< 草の配置に使うテクスチャのパス
+	bool isCreated_;
+	bool isArranged_; ///< 配置済みかどうか
 
 public:
 	/// ===================================================
@@ -83,10 +92,11 @@ public:
 
 	/// 草のインスタンスバッファの取得
 	StructuredBuffer<GrassInstance>& GetRwGrassInstanceBuffer();
+	StructuredBuffer<float>& GetTimeBuffer();
 
 	/// 最大草の本数の取得
 	uint32_t GetMaxGrassCount() const;
-
+	bool GetIsCreated() const;
 };
 
 

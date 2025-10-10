@@ -65,22 +65,52 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
 /// GrassField
 /// ////////////////////////////////////////////////////////
 
-GrassField::GrassField() : maxGrassCount_(128), distributionTexturePath_("") {};
+GrassField::GrassField() : maxGrassCount_(1280), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {};
 GrassField::~GrassField() = default;
 
 void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
+
+	/// すでに生成されていたら何もしない
+	if (isCreated_) {
+		return;
+	} else {
+		isCreated_ = true;
+	}
+
 	maxGrassCount_ = _maxBladeCount;
 	/// 草のインスタンスバッファの作成
-	rwGrassInstanceBuffer_.CreateUAV(
+	rwGrassInstanceBuffer_.CreateSRVAndUAV(
 		maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap
 	);
+
+	/// 描画用にSRVも作成
+	//rwGrassInstanceBuffer_.Create(
+	//	maxGrassCount_, _dxDevice, _dxSRVHeap
+	//);
+
+	timeBuffer_.Create(maxGrassCount_, _dxDevice, _dxSRVHeap);
+}
+
+void GrassField::UpdateTimeBuffer(float _deltaTime) {
+	/// timeBuffer_の各要素に_deltaTimeを足す
+	for (uint32_t i = 0; i < maxGrassCount_; i++) {
+		timeBuffer_.SetMappedData(i, timeBuffer_.GetMappedData(i) + _deltaTime);
+	}
 }
 
 StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {
 	return rwGrassInstanceBuffer_;
 }
 
+StructuredBuffer<float>& GrassField::GetTimeBuffer() {
+	return timeBuffer_;
+}
+
 uint32_t GrassField::GetMaxGrassCount() const {
 	return maxGrassCount_;
+}
+
+bool GrassField::GetIsCreated() const {
+	return isCreated_;
 }
 

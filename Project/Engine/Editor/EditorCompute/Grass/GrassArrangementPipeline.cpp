@@ -2,6 +2,9 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
+#include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
+#include "Engine/ECS/Component/Array/ComponentArray.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 GrassArrangementPipeline::GrassArrangementPipeline() = default;
@@ -40,6 +43,14 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 
 void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _dxCommand, GraphicsResourceCollection* _grc) {
 
+	/// ==================================================
+	/// 早期リターン条件のチェック
+	/// ==================================================
+	ComponentArray<GrassField>* grassArray = _ecs->GetCurrentGroup()->GetComponentArray<GrassField>();
+	if (!grassArray || grassArray->GetUsedComponents().empty()) {
+		return;
+	}
+
 	/// Pipelineの設定
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
@@ -47,11 +58,33 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 	auto cmdList = _dxCommand->GetCommandList();
 
 	uint32_t grassArrangementTexId = _grc->GetTextureIndex("./Packages/Textures/Terrain/GrassArrangement.png");
+	usedTexIdBuffer_.SetMappedData(UsedTextureIDs{ grassArrangementTexId });
 	usedTexIdBuffer_.BindForComputeCommandList(cmdList, CBV_USED_TEXTURED_IDS);
 
 	const auto& textures = _grc->GetTextures();
 	cmdList->SetComputeRootDescriptorTable(SRV_TEXTURES, textures[0].GetSRVHandle().gpuHandle);
 
+	for (auto& grass : grassArray->GetUsedComponents()) {
+		if (!grass || !grass->enable) {
+			continue;
+		}
+
+		if (!grass->GetIsCreated() || grass->isArranged_) {
+			continue;
+		}
+
+		/// 配置済みにフラグを変える
+		grass->isArranged_ = true;
+
+		/// Bufferの設定
+		grass->GetRwGrassInstanceBuffer().UAVBindForComputeCommandList(cmdList, UAV_BLADE_INSTANCES);
+
+
+		/// Dispatch数を計算してシェーダーを起動
+		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
+		UINT threadGroupSize = 64;
+		cmdList->Dispatch((instanceCount + threadGroupSize - 1) / threadGroupSize, 1, 1);
+	}
 
 }
 

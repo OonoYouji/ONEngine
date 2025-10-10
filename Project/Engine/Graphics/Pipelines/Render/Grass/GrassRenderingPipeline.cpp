@@ -3,7 +3,10 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
+#include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
+#include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 
 Vector3 EvaluateCubicBezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
 	float u = 1.0f - t;
@@ -84,55 +87,52 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 	}
 
-	{
-
-		size_t bladeCount = 128;
-
-		bladesBuffer_.Create(
-			bladeCount,
-			_dxManager->GetDxDevice(),
-			_dxManager->GetDxSRVHeap()
-		);
-
-		// --- ベジェ上にブレードをサンプリングして用意する例 ---
-		Vector3 cp0 = Vector3(0.0f, 0.0f, 0.0f);
-		Vector3 cp1 = Vector3(-2.0f, 2.0f, 10.0f);
-		Vector3 cp2 = Vector3(20.0f, 4.0f, 50.0f);
-		Vector3 cp3 = Vector3(40.0f, 8.0f, 100.0f);
-
-		GenerateBladesAlongBezier(bladesBuffer_, cp0, cp1, cp2, cp3, bladeCount, 0.2f); // 128本生成、ジッタ0.2
-
-		timeBuffer_.Create(
-			bladeCount,
-			_dxManager->GetDxDevice(),
-			_dxManager->GetDxSRVHeap()
-		);
-
-		for (int i = 0; i < bladeCount; ++i) {
-			timeBuffer_.SetMappedData(i, Random::Float(0.0f, 1.0f));
-		}
-	}
-
 }
 
 void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEntity*>& _entities, CameraComponent* _camera, DxCommand* _dxCommand) {
 
-	/// 描画コマンドをセット
-	auto cmdList = _dxCommand->GetCommandList();
-
-	pipeline_->SetPipelineStateForCommandList(_dxCommand);
-
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
-	
-	for (int i = 0; i < 128; ++i) {
-		float time = timeBuffer_.GetMappedData(i);
-		timeBuffer_.SetMappedData(i, time + 1.0f / 60.0f);
+	/// ================================================
+	/// 早期リターンの条件チェック
+	/// ================================================
+	ComponentArray<GrassField>* grassArray = _ecs->GetComponentArray<GrassField>();
+	if (!grassArray) {
+		return;
 	}
 
-	timeBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
-	bladesBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
+	/// 空チェック
+	if (grassArray->GetUsedComponents().empty()) {
+		return;
+	}
 
-	cmdList->DispatchMesh(128, 1, 1);
+
+	/// ================================================
+	/// 描画に必要なデータの準備
+	/// ================================================
+
+	/// 描画コマンドをセット
+	auto cmdList = _dxCommand->GetCommandList();
+	pipeline_->SetPipelineStateForCommandList(_dxCommand);
+
+	/// カメラのBufferを設定
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
+
+
+	for (auto& grass : grassArray->GetUsedComponents()) {
+		/// 草が無効化されている場合はスキップ
+		if (!grass->enable) {
+			continue;
+		}
+
+		grass->UpdateTimeBuffer(1.0 / 60.0f);
+
+		/// 草のBufferを設定
+		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
+		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
+
+		/// インスタンス数に合わせてシェーダーを起動
+		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
+		cmdList->DispatchMesh(instanceCount, 1, 1);
+	}
 
 }
 

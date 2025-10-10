@@ -36,8 +36,5 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	StructuredBuffer<GrassInstance> bladesBuffer_;
-	StructuredBuffer<float> timeBuffer_;
-
 };
 
