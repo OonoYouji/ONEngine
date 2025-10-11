@@ -129,9 +129,24 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
-		/// インスタンス数に合わせてシェーダーを起動
+		UINT maxInstancesPerBuffer = 65535; // 1つのバッファで処理可能な最大インスタンス数
 		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
-		cmdList->DispatchMesh(instanceCount, 1, 1);
+		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
+
+		for (UINT i = 0; i < bufferCount; ++i) {
+			UINT startIndex = i * maxInstancesPerBuffer;
+			UINT currentInstanceCount = (std::min)(maxInstancesPerBuffer, instanceCount - startIndex);
+
+			// インスタンスバッファを設定
+			grass->SetInstanceBuffer(startIndex, currentInstanceCount);
+
+			// DispatchMeshを呼び出す
+			cmdList->DispatchMesh(currentInstanceCount, 1, 1);
+		}
+
+		///// インスタンス数に合わせてシェーダーを起動
+		//UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
+		//cmdList->DispatchMesh(instanceCount, 1, 1);
 	}
 
 }

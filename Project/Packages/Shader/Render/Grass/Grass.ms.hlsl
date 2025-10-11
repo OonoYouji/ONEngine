@@ -13,15 +13,15 @@ StructuredBuffer<Time> time : register(t1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(1, 1, 1)]
+[numthreads(8, 8, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
 			out vertices VertexOut verts[5],
 			out indices uint3 indis[2]) {
 	
 	SetMeshOutputCounts(5, 2);
 	
-	uint index = DTid.x;
-
+	uint index = DTid.x + DTid.y * 8; // 8x8のスレッドグループを想定
+	
 	BladeInstance instance = bladeInstances[index];
 	
 	float3 t = normalize(instance.tangent);

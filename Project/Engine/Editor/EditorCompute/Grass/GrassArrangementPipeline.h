@@ -22,6 +22,7 @@ public:
 
 	struct UsedTextureIDs {
 		uint32_t grassArrangementTexId;
+		uint32_t terrainVertexTexId;
 	};
 
 public:

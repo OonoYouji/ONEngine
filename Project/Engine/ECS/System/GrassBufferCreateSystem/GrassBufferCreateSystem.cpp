@@ -30,7 +30,8 @@ void GrassBufferCreateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 	/// 実際に処理する
 	/// =================================================
 
-	uint32_t maxBladeCount = static_cast<uint32_t>(std::pow(2, 16) - 1);
+	uint32_t maxBladeCount = 1000 * 1000;
+	//uint32_t maxBladeCount = static_cast<uint32_t>(std::pow(2, 32) - 1);
 	for (auto& grass : grassArray->GetUsedComponents()) {
 		grass->Initialize(
 			maxBladeCount,

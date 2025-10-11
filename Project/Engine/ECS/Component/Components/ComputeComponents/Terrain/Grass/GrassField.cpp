@@ -65,7 +65,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
 /// GrassField
 /// ////////////////////////////////////////////////////////
 
-GrassField::GrassField() : maxGrassCount_(1280), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {};
+GrassField::GrassField() : maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {};
 GrassField::~GrassField() = default;
 
 void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
@@ -82,11 +82,6 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 	rwGrassInstanceBuffer_.CreateSRVAndUAV(
 		maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap
 	);
-
-	/// 描画用にSRVも作成
-	//rwGrassInstanceBuffer_.Create(
-	//	maxGrassCount_, _dxDevice, _dxSRVHeap
-	//);
 
 	timeBuffer_.Create(maxGrassCount_, _dxDevice, _dxSRVHeap);
 }

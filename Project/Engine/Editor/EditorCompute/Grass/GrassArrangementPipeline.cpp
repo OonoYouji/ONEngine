@@ -58,7 +58,8 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 	auto cmdList = _dxCommand->GetCommandList();
 
 	uint32_t grassArrangementTexId = _grc->GetTextureIndex("./Packages/Textures/Terrain/GrassArrangement.png");
-	usedTexIdBuffer_.SetMappedData(UsedTextureIDs{ grassArrangementTexId });
+	uint32_t terrainVertexTexId = _grc->GetTextureIndex("./Packages/Textures/Terrain/TerrainVertex.png");
+	usedTexIdBuffer_.SetMappedData(UsedTextureIDs{ grassArrangementTexId, terrainVertexTexId });
 	usedTexIdBuffer_.BindForComputeCommandList(cmdList, CBV_USED_TEXTURED_IDS);
 
 	const auto& textures = _grc->GetTextures();
@@ -81,9 +82,22 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 
 
 		/// Dispatch数を計算してシェーダーを起動
-		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
-		UINT threadGroupSize = 64;
-		cmdList->Dispatch((instanceCount + threadGroupSize - 1) / threadGroupSize, 1, 1);
+		//UINT instanceCount = static_cast<UINT>(std::pow(2, 16) - 1);
+		//UINT threadGroupSize = 32;
+		//UINT dispatchSize = ((instanceCount + threadGroupSize - 1) / threadGroupSize) - 1;
+		//cmdList->Dispatch(
+		//	dispatchSize, 
+		//	dispatchSize, 
+		//	1
+		//);
+
+		UINT terrainResolution = 1000; // 地形の解像度
+		UINT threadGroupSize = 32;
+
+		UINT dispatchSizeX = (terrainResolution + threadGroupSize - 1) / threadGroupSize;
+		UINT dispatchSizeY = (terrainResolution + threadGroupSize - 1) / threadGroupSize;
+
+		cmdList->Dispatch(dispatchSizeX, dispatchSizeY, 1);
 	}
 
 }
