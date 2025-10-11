@@ -71,7 +71,7 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 			continue;
 		}
 
-		if (!grass->GetIsCreated() /*|| grass->isArranged_*/) {
+		if (!grass->GetIsCreated() || grass->isArranged_) {
 			continue;
 		}
 

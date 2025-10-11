@@ -60,16 +60,16 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float4 texColor = textures[usedTexId.grassArrangementTexId].Sample(textureSampler, uv);
 
 	/// 輝度を計算して、一定以下なら草を生やさない
-	float luminance = CalculateLuminance(texColor);
-	if (luminance < 0.1f) {
-		// 輝度が低い場所には草を生やさない
-		newInstance.position = float3(0, -1000, 0); // 地面の下に配置して見えなくする
-		newInstance.tangent = float3(0, 1, 0);
-		newInstance.scale = 0;
-		newInstance.random01 = 0;
-		bladeInstances[index] = newInstance;
-		return;
-	}
+	//float luminance = CalculateLuminance(texColor);
+	//if (luminance < 0.1f) {
+	//	// 輝度が低い場所には草を生やさない
+	//	newInstance.position = float3(0, -1000, 0); // 地面の下に配置して見えなくする
+	//	newInstance.tangent = float3(0, 1, 0);
+	//	newInstance.scale = 0;
+	//	newInstance.random01 = 0;
+	//	bladeInstances[index] = newInstance;
+	//	return;
+	//}
 	
 	
 	float4 terrainVertex = textures[usedTexId.terrainVertexTexId].Sample(textureSampler, uv);
