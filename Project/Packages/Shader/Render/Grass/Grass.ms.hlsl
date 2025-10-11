@@ -6,21 +6,25 @@ struct Time {
 	float value;
 };
 
-
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
+cbuffer constants : register(b1) {
+	uint startIndex;
+	uint currentInstanceCount;
+};
+
 StructuredBuffer<BladeInstance> bladeInstances : register(t0);
 StructuredBuffer<Time> time : register(t1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(8, 8, 1)]
+[numthreads(1, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
 			out vertices VertexOut verts[5],
 			out indices uint3 indis[2]) {
-	
 	SetMeshOutputCounts(5, 2);
 	
-	uint index = DTid.x + DTid.y * 8; // 8x8のスレッドグループを想定
+	uint globalIndex = DTid.x;
+	uint index = startIndex + globalIndex;
 	
 	BladeInstance instance = bladeInstances[index];
 	

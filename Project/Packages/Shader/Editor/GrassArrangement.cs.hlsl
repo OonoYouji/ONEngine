@@ -8,6 +8,11 @@ struct UsedTexId {
 };
 
 ConstantBuffer<UsedTexId> usedTexId : register(b0);
+cbuffer constants : register(b1) {
+	uint startIndex;
+	uint instanceCount;
+};
+
 RWStructuredBuffer<BladeInstance> bladeInstances : register(u0);
 
 /// テクスチャ配列
@@ -21,15 +26,11 @@ float CalculateLuminance(float4 color) {
 }
 
 /// 草の配置を行うためのshader
-[numthreads(32, 32, 1)]
+[numthreads(32, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 
-	// スレッドIDを間引く（例: 2x2の間隔で草を配置）
-	if ((DTid.x % 2 != 0) || (DTid.y % 2 != 0)) {
-		return; // 草を配置しない
-	}
-
-	uint index = DTid.x + DTid.y * 32; // 32x32のスレッドグループを想定
+	uint globalIndex = DTid.x;
+	uint index = startIndex + globalIndex;
 
     /// 草のBufferサイズを取得して、範囲外アクセスを防止
 	uint numStructs;
@@ -44,26 +45,31 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// 草の配置する場所のテクスチャを参照
 	/// 地形のサイズ 1000x1000 に対して、テクスチャのUVを計算
 	float terrainSize = 1000.0f; // 地形のサイズ
-	float2 uv = float2(
-		(DTid.x + 0.5) / terrainSize, // 横方向のUV計算
-		(DTid.y + 0.5) / terrainSize  // 縦方向のUV計算
-	);
+	//float2 uv = float2(
+	//	(DTid.x + 0.5) / terrainSize, // 横方向のUV計算
+	//	(DTid.y + 0.5) / terrainSize // 縦方向のUV計算
+	//);
 
+	float2 uv = float2(
+		((globalIndex % (uint)terrainSize) + 0.5) / terrainSize, // 横方向のUV計算
+		((globalIndex / (uint)terrainSize) + 0.5) / terrainSize // 縦方向のUV計算
+	);
 
 	
 	/// 草の配置テクスチャをサンプリング
 	float4 texColor = textures[usedTexId.grassArrangementTexId].Sample(textureSampler, uv);
-	/// 
+
+	/// 輝度を計算して、一定以下なら草を生やさない
 	float luminance = CalculateLuminance(texColor);
-	//if (luminance < 0.1f) {
-	//	// 輝度が低い場所には草を生やさない
-	//	newInstance.position = float3(0, -1000, 0); // 地面の下に配置して見えなくする
-	//	newInstance.tangent = float3(0, 1, 0);
-	//	newInstance.scale = 0;
-	//	newInstance.random01 = 0;
-	//	bladeInstances[index] = newInstance;
-	//	return;
-	//}
+	if (luminance < 0.1f) {
+		// 輝度が低い場所には草を生やさない
+		newInstance.position = float3(0, -1000, 0); // 地面の下に配置して見えなくする
+		newInstance.tangent = float3(0, 1, 0);
+		newInstance.scale = 0;
+		newInstance.random01 = 0;
+		bladeInstances[index] = newInstance;
+		return;
+	}
 	
 	
 	float4 terrainVertex = textures[usedTexId.terrainVertexTexId].Sample(textureSampler, uv);
@@ -81,6 +87,4 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	newInstance.random01 = texColor.w; // 0~1のランダム値を保存
 
 	bladeInstances[index] = newInstance;
-
-
 }

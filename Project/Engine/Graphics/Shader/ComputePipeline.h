@@ -42,7 +42,7 @@ public:
 	/// @brief 32bit constantを追加する
 	/// @param _shaderVisibility shaderの種類
 	/// @param _shaderRegister   register(b0)の0の部分
-	void Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister);
+	void Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue = 1u);
 
 	/// @brief descriptor rangeを追加する
 	/// @param _baseShaderRegister register(b0)の0の部分

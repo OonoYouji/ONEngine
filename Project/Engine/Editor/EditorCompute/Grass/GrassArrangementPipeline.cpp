@@ -22,6 +22,7 @@ void GrassArrangementPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMan
 		pipeline_->SetShader(&shader);
 
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); // CBV_PARAMS
+		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 2); // ROOT_PARAM_START_INDEX
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // UAV_VERTICES
 		pipeline_->AddDescriptorRange(0, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // SRV_CONTROL_POINTS
@@ -70,7 +71,7 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 			continue;
 		}
 
-		if (!grass->GetIsCreated() || grass->isArranged_) {
+		if (!grass->GetIsCreated() /*|| grass->isArranged_*/) {
 			continue;
 		}
 
@@ -78,26 +79,29 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 		grass->isArranged_ = true;
 
 		/// Bufferの設定
-		grass->GetRwGrassInstanceBuffer().UAVBindForComputeCommandList(cmdList, UAV_BLADE_INSTANCES);
+		grass->GetRwGrassInstanceBuffer().UAVBindForComputeCommandList(
+			cmdList, UAV_BLADE_INSTANCES
+		);
 
-
-		/// Dispatch数を計算してシェーダーを起動
-		//UINT instanceCount = static_cast<UINT>(std::pow(2, 16) - 1);
-		//UINT threadGroupSize = 32;
-		//UINT dispatchSize = ((instanceCount + threadGroupSize - 1) / threadGroupSize) - 1;
-		//cmdList->Dispatch(
-		//	dispatchSize, 
-		//	dispatchSize, 
-		//	1
-		//);
-
-		UINT terrainResolution = 1000; // 地形の解像度
+		UINT maxInstanceNum = grass->GetMaxGrassCount();
 		UINT threadGroupSize = 32;
+		UINT maxDispatchCount = 65535; // DirectX 12の1回のDispatchで処理可能な最大スレッド数
 
-		UINT dispatchSizeX = (terrainResolution + threadGroupSize - 1) / threadGroupSize;
-		UINT dispatchSizeY = (terrainResolution + threadGroupSize - 1) / threadGroupSize;
+		// Dispatchを分割して実行
+		for (UINT startIndex = 0; startIndex < maxInstanceNum; startIndex += maxDispatchCount * threadGroupSize) {
+			UINT remainingInstances = maxInstanceNum - startIndex;
+			UINT currentInstanceCount = (std::min)(remainingInstances, maxDispatchCount * threadGroupSize);
 
-		cmdList->Dispatch(dispatchSizeX, dispatchSizeY, 1);
+			UINT dispatchSizeX = (currentInstanceCount + threadGroupSize - 1) / threadGroupSize;
+
+			// startIndexとcurrentInstanceCountをシェーダーに渡す
+			UINT constants[2] = { startIndex, currentInstanceCount };
+			cmdList->SetComputeRoot32BitConstants(C32BIT_CONSTANTS, 2, constants, 0);
+
+			// Dispatchを実行
+			cmdList->Dispatch(dispatchSizeX, 1, 1);
+		}
+
 	}
 
 }

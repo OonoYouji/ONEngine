@@ -6,6 +6,7 @@
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/ByteAddressBuffer.h"
 
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 
@@ -16,6 +17,7 @@ class GrassRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
 		ROOT_PARAM_VIEW_PROJECTION,
+		ROOT_PARAM_CONSTANTS,
 		ROOT_PARAM_BLADES,
 		ROOT_PARAM_TIME,
 	};
@@ -36,5 +38,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	//ByteAddressBuffer byteAddressBuffer_;
 };
 
