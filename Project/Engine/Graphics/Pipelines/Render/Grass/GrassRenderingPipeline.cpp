@@ -88,14 +88,6 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 	}
 
-	{	/// Buffer
-
-		//byteAddressBuffer_.Create(
-		//	sizeof(uint32_t) * 2,
-		//	_dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap()
-		//);
-
-	}
 }
 
 void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
@@ -132,13 +124,13 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			continue;
 		}
 
-		grass->UpdateTimeBuffer(1.0 / 60.0f);
+		grass->UpdateTimeBuffer(1.0f / 60.0f);
 
 		/// 草のBufferを設定
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
-		UINT numThreadsX = 16; // numthreads.x の値
+		UINT numThreadsX = 32; // numthreads.x の値
 		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
 		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
 		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;

@@ -1,3 +1,3 @@
 #include "Grass.hlsli"
 
-StructuredBuffer<BladeInstance> bladeInstances : register(t0);
+//StructuredBuffer<BladeInstance> bladeInstances : register(t0);

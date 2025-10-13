@@ -27,5 +27,5 @@ struct GrassData {
 };
 
 struct Payload {
-	GrassData grassData[16];
+	GrassData grassData;
 };
