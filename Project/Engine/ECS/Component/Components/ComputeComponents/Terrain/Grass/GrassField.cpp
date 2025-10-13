@@ -88,9 +88,9 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 
 void GrassField::UpdateTimeBuffer(float _deltaTime) {
 	/// timeBuffer_の各要素に_deltaTimeを足す
-	for (uint32_t i = 0; i < maxGrassCount_; i++) {
-		timeBuffer_.SetMappedData(i, timeBuffer_.GetMappedData(i) + _deltaTime);
-	}
+	//for (uint32_t i = 0; i < maxGrassCount_; i++) {
+	//	timeBuffer_.SetMappedData(i, timeBuffer_.GetMappedData(i) + _deltaTime);
+	//}
 }
 
 StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {

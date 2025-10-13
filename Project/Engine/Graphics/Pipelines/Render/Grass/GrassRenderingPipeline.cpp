@@ -130,12 +130,12 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
-		UINT numThreadsX = 32; // numthreads.x の値
+		//UINT numThreadsX = 32; // numthreads.x の値
 		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
 		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
-		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
+		//UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
 
-		for (UINT i = 0; i < bufferCount; ++i) {
+		for (UINT i = 0; i < 1/*bufferCount*/; ++i) {
 			UINT startIndex = i * maxInstancesPerBuffer;
 			UINT currentInstanceCount = (std::min)(maxInstancesPerBuffer, instanceCount - startIndex);
 
@@ -143,10 +143,10 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 
 			// スレッドグループ数を計算
-			UINT threadGroupCountX = (currentInstanceCount + numThreadsX - 1) / numThreadsX; // ceil(currentInstanceCount / numThreadsX)
+			//UINT threadGroupCountX = (currentInstanceCount + numThreadsX - 1) / numThreadsX; // ceil(currentInstanceCount / numThreadsX)
 
 			// DispatchMeshを呼び出す
-			cmdList->DispatchMesh(threadGroupCountX, 1, 1);
+			//cmdList->DispatchMesh(1, 1, 1);
 		}
 
 	}

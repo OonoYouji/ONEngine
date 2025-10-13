@@ -26,6 +26,8 @@ struct GrassData {
 	bool isCulled;
 };
 
+static const uint kMaxGrassDataSize = 16;
 struct Payload {
 	GrassData grassData;
+	//GrassData grassData[kMaxGrassDataSize];
 };
