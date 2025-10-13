@@ -13,14 +13,15 @@ StructuredBuffer<Time> time : register(t1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(1, 1, 1)]
+[numthreads(32, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
+			uint3 Gid : SV_GroupID,
 			in payload Payload asPayload,
 			out vertices VertexOut verts[5],
 			out indices uint3 indis[2]) {
 	SetMeshOutputCounts(5, 2);
 	
-	uint index = asPayload.grassData.index;
+	uint index = asPayload.grassData[Gid.x].index;
 	BladeInstance instance = bladeInstances[index];
 	
 	//float3 t = normalize(instance.tangent);
