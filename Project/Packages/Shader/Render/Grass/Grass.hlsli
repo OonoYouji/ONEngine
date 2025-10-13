@@ -19,3 +19,13 @@ struct BladeInstance {
 	float scale;
 	float random01;
 };
+
+
+struct GrassData {
+	uint index;
+	bool isCulled;
+};
+
+struct Payload {
+	GrassData grassData[16];
+};

@@ -12,18 +12,6 @@
 #include "Engine/Core/Config/EngineConfig.h"
 
 
-inline std::string HrToString(HRESULT hr) {
-	_com_error err(hr);
-	const wchar_t* wmsg = err.ErrorMessage();
-
-	// UTF-16 → UTF-8 変換
-	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
-	std::string msg(sizeNeeded - 1, 0); // 終端を除く
-	WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
-
-	return msg;
-}
-
 DxSwapChain::DxSwapChain() {}
 DxSwapChain::~DxSwapChain() {
 	DxRTVHeap* dxRTVHeap = pDxManager_->GetDxRTVHeap();

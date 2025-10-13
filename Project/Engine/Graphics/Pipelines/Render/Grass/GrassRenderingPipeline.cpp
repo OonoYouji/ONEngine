@@ -61,7 +61,7 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		shader.Initialize(_shaderCompiler);
 
 		/// mesh shader
-		//shader.CompileShader(L"./Packages/Shader/Render/Grass/Grass.as.hlsl", L"as_6_5", Shader::Type::as);
+		shader.CompileShader(L"./Packages/Shader/Render/Grass/Grass.as.hlsl", L"as_6_5", Shader::Type::as, L"ASMain");
 		shader.CompileShader(L"./Packages/Shader/Render/Grass/Grass.ms.hlsl", L"ms_6_5", Shader::Type::ms, L"MSMain");
 		shader.CompileShader(L"./Packages/Shader/Render/Grass/Grass.ps.hlsl", L"ps_6_0", Shader::Type::ps, L"PSMain");
 
@@ -138,6 +138,7 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
+		UINT numThreadsX = 16; // numthreads.x の値
 		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
 		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
 		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
@@ -149,8 +150,11 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			UINT constants[2] = { startIndex, currentInstanceCount };
 			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 
+			// スレッドグループ数を計算
+			UINT threadGroupCountX = (currentInstanceCount + numThreadsX - 1) / numThreadsX; // ceil(currentInstanceCount / numThreadsX)
+
 			// DispatchMeshを呼び出す
-			cmdList->DispatchMesh(currentInstanceCount, 1, 1);
+			cmdList->DispatchMesh(threadGroupCountX, 1, 1);
 		}
 
 	}

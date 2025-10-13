@@ -317,7 +317,7 @@ void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
 		&streamDesc, IID_PPV_ARGS(&pipelineState_)
 	);
 
-	Assert(SUCCEEDED(result), "error...");
+	Assert(SUCCEEDED(result), HrToString(result).c_str());
 }
 
 D3D12_BLEND_DESC BlendMode::Normal() {

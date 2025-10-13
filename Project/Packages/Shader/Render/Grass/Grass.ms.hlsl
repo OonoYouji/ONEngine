@@ -1,4 +1,4 @@
-#include "Grass.hlsli"
+#include "BladeInstance.hlsli"
 
 #include "../../ConstantBufferData/ViewProjection.hlsli"
 
@@ -7,24 +7,27 @@ struct Time {
 };
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
-cbuffer constants : register(b1) {
-	uint startIndex;
-	uint currentInstanceCount;
-};
-
-StructuredBuffer<BladeInstance> bladeInstances : register(t0);
 StructuredBuffer<Time> time : register(t1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
 [numthreads(1, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
+			in payload Payload asPayload,
 			out vertices VertexOut verts[5],
 			out indices uint3 indis[2]) {
-	SetMeshOutputCounts(5, 2);
+
+	GrassData grassData = asPayload.grassData[DTid.x];
+
+	if (grassData.isCulled) {
+		//// カリングされている場合は何も出力しない
+		//SetMeshOutputCounts(0, 0);
+		//return;
+	} else {
+	}
 	
-	uint globalIndex = DTid.x;
-	uint index = startIndex + globalIndex;
+	SetMeshOutputCounts(5, 2);
+	uint index = grassData.index;
 	
 	BladeInstance instance = bladeInstances[index];
 	
