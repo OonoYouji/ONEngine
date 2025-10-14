@@ -79,7 +79,7 @@ void GrassArrangementPipeline::Execute(EntityComponentSystem* _ecs, DxCommand* _
 		grass->isArranged_ = true;
 
 		/// Bufferの設定
-		grass->GetRwGrassInstanceBuffer().UAVBindForComputeCommandList(
+		grass->GetRwGrassInstanceBuffer().AppendBindForComputeCommandList(
 			cmdList, UAV_BLADE_INSTANCES
 		);
 

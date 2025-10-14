@@ -4,6 +4,7 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
@@ -80,7 +81,6 @@ GrassField::GrassField() :
 GrassField::~GrassField() = default;
 
 void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
-
 	/// すでに生成されていたら何もしない
 	if (isCreated_) {
 		return;
@@ -90,9 +90,11 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 
 	maxGrassCount_ = _maxBladeCount;
 	/// 草のインスタンスバッファの作成
-	rwGrassInstanceBuffer_.CreateSRVAndUAV(
+	rwGrassInstanceBuffer_.CreateAppendBuffer(
 		maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap
 	);
+
+	startIndexBuffer_.Create(2000, _dxDevice, _dxSRVHeap);
 
 	timeBuffer_.CreateUAV(maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap);
 	materialBuffer_.Create(_dxDevice);
@@ -102,8 +104,44 @@ void GrassField::MaterialMapping() {
 	materialBuffer_.SetMappedData(material_);
 }
 
+void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {
+	//
+	
+	UINT forLoopCount = (maxGrassCount_ + _oneDrawInstanceCount - 1) / _oneDrawInstanceCount;
+	for(UINT i = 0; i < forLoopCount; i++) {
+		uint32_t mappedData = i * _oneDrawInstanceCount;
+		startIndexBuffer_.SetMappedData(i, mappedData);
+	}
+	
+}
+
+void GrassField::AppendBufferReadCounter(DxManager* _dxm, DxCommand* _dxCommand) {
+	/// ----- GrassInstanceBufferのカウンターを呼んでインスタンス数を数える ----- ///
+
+	auto cmdList = _dxCommand->GetCommandList();
+
+	D3D12_RESOURCE_BARRIER uavBarrier = CD3DX12_RESOURCE_BARRIER::UAV(rwGrassInstanceBuffer_.GetResource().Get());
+	cmdList->ResourceBarrier(1, &uavBarrier);
+	rwGrassInstanceBuffer_.GetCounterResource().CreateBarrier(D3D12_RESOURCE_STATE_COPY_SOURCE, _dxCommand);
+
+	_dxCommand->CommandExecute();
+	_dxCommand->CommandReset();
+	_dxCommand->WaitForGpuComplete();
+
+	instanceCount_ = rwGrassInstanceBuffer_.ReadCounter(_dxCommand);
+
+	_dxm->HeapBindToCommandList();
+
+	/// 配置は一回しか行わないのでカウンターのリセットはしない(今後複数回配置するようになったらリセットする)
+
+}
+
 StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {
 	return rwGrassInstanceBuffer_;
+}
+
+StructuredBuffer<uint32_t>& GrassField::GetStartIndexBufferRef() {
+	return startIndexBuffer_;
 }
 
 StructuredBuffer<float>& GrassField::GetTimeBuffer() {
@@ -122,3 +160,6 @@ bool GrassField::GetIsCreated() const {
 	return isCreated_;
 }
 
+uint32_t GrassField::GetInstanceCount() const {
+	return instanceCount_;
+}

@@ -30,7 +30,8 @@ cbuffer constants : register(b1) {
 	uint instanceCount;
 };
 
-RWStructuredBuffer<BladeInstance> bladeInstances : register(u0);
+AppendStructuredBuffer<BladeInstance> bladeInstances : register(u0);
+//RWStructuredBuffer<BladeInstance> bladeInstances : register(u0);
 
 /// テクスチャ配列
 Texture2D<float4> textures[] : register(t0);
@@ -50,12 +51,12 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	uint index = startIndex + globalIndex;
 
     /// 草のBufferサイズを取得して、範囲外アクセスを防止
-	uint numStructs;
-	uint structSize;
-	bladeInstances.GetDimensions(numStructs, structSize);
-	if (index >= numStructs) {
-		return;
-	}
+	//uint numStructs;
+	//uint structSize;
+	//bladeInstances.GetDimensions(numStructs, structSize);
+	//if (index >= numStructs) {
+	//	return;
+	//}
 
 	BladeInstance newInstance;
 
@@ -74,15 +75,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	/// 輝度を計算して、一定以下なら草を生やさない
 	float luminance = CalculateLuminance(texColor);
-	if (luminance < 0.1f) {
-		// 輝度が低い場所には草を生やさない
-		newInstance.position = float3(0, -1000, 0); // 地面の下に配置して見えなくする
-		newInstance.tangent = float3(0, 1, 0);
-		newInstance.scale = 0;
-		newInstance.random01 = 0;
-		bladeInstances[index] = newInstance;
-		return;
-	}
+	//if (luminance < 0.1f) {
+	//	return;
+	//}
 	
 	
 	float4 terrainVertex = textures[usedTexId.terrainVertexTexId].Sample(textureSampler, uv);
@@ -101,8 +96,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// 草の向きをランダムに決定
 	float angle = Random(uv); // 0~1の値を0~2πに変換
 	newInstance.tangent = float3(cos(angle), 0, sin(angle));
-	newInstance.scale = (0.5 + Random(uv)) * luminance;
+	newInstance.scale = (0.5 + Random(uv)) /** luminance*/;
 	newInstance.random01 = texColor.w; // 0~1のランダム値を保存
 
-	bladeInstances[index] = newInstance;
+	bladeInstances.Append(newInstance);
+	//bladeInstances[index] = newInstance;
 }

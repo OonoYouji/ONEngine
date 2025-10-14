@@ -72,6 +72,11 @@ public:
 
 	/// material_をBufferにMapする
 	void MaterialMapping();
+	/// rwGrassInstanceBuffer_の開始インデックスを設定する
+	void StartIndexMapping(UINT _oneDrawInstanceCount);
+
+	/// rwGrassInstanceBuffer_のインスタンス数を読む
+	void AppendBufferReadCounter(class DxManager* _dxm, class DxCommand* _dxCommand);
 
 private:
 	/// ===================================================
@@ -80,6 +85,7 @@ private:
 
 	/// ----- buffer ----- ///
 	StructuredBuffer<GrassInstance> rwGrassInstanceBuffer_;
+	StructuredBuffer<uint32_t> startIndexBuffer_;
 	StructuredBuffer<float> timeBuffer_;
 	ConstantBuffer<Material> materialBuffer_;
 
@@ -88,6 +94,7 @@ private:
 	std::string distributionTexturePath_; ///< 草の配置に使うテクスチャのパス
 	bool isCreated_;
 	bool isArranged_; ///< 配置済みかどうか
+	uint32_t instanceCount_; ///< 実際に配置された草の本数
 
 	Material material_;
 
@@ -98,12 +105,14 @@ public:
 
 	/// 草のインスタンスバッファの取得
 	StructuredBuffer<GrassInstance>& GetRwGrassInstanceBuffer();
+	StructuredBuffer<uint32_t>& GetStartIndexBufferRef();
 	StructuredBuffer<float>& GetTimeBuffer();
 	ConstantBuffer<Material>& GetMaterialBufferRef();
 
 	/// 最大草の本数の取得
 	uint32_t GetMaxGrassCount() const;
 	bool GetIsCreated() const;
+	uint32_t GetInstanceCount() const;
 };
 
 

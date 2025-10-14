@@ -56,6 +56,7 @@ GrassRenderingPipeline::GrassRenderingPipeline(GraphicsResourceCollection* _grc)
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
 void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
+	pDxManager_ = _dxManager;
 
 	{	/// Shader
 		Shader shader;
@@ -75,12 +76,14 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// CBV_MATERIAL
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: BladeInstance
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // t1: Time
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t1: StartIndex
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_UAV); // u0: Time
 		pipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: Texture
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // ROOT_PARAM_BLADES
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // ROOT_PARAM_TIME
-		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); // SRV_TEXTURE
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // SRV_START_INDEX
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 2); // ROOT_PARAM_TIME
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 3); // SRV_TEXTURE
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
@@ -95,6 +98,35 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 	}
 
 }
+
+
+void GrassRenderingPipeline::PreDraw(ECSGroup* _ecs, CameraComponent* _camera, DxCommand* _dxCommand) {
+	/// ================================================
+	/// 早期リターンの条件チェック
+	/// ================================================
+	ComponentArray<GrassField>* grassArray = _ecs->GetComponentArray<GrassField>();
+	if (!grassArray) {
+		return;
+	}
+
+	/// 空チェック
+	if (grassArray->GetUsedComponents().empty()) {
+		return;
+	}
+
+
+	auto cmdList = _dxCommand->GetCommandList();
+
+	for (auto& grass : grassArray->GetUsedComponents()) {
+		/// 草が無効化されている場合はスキップ
+		if (!grass->enable || !grass->GetIsCreated()) {
+			continue;
+		}
+
+		grass->AppendBufferReadCounter(pDxManager_, _dxCommand);
+	}
+}
+
 
 void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEntity*>& /*_entities*/, CameraComponent* _camera, DxCommand* _dxCommand) {
 
@@ -134,22 +166,31 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			continue;
 		}
 
+		UINT instanceCount = static_cast<UINT>(grass->GetInstanceCount());
+		if (instanceCount == 0) {
+			continue;
+		}
+
+		UINT oneDrawInstanceCount = 51 * 32; // 1回のDispatchMeshで描画するインスタンス数
+
 		grass->MaterialMapping();
-		//grass->UpdateTimeBuffer(1.0f / 60.0f);
+		grass->StartIndexMapping(oneDrawInstanceCount); // 1 DispatchMeshで描画するインスタンス数に合わせる
 
 		/// 草のBufferを設定
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
+		grass->GetStartIndexBufferRef().SRVBindForGraphicsCommandList(cmdList, SRV_START_INDEX);
 		grass->GetTimeBuffer().UAVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
 		UINT numThreadsX = 1; // numthreads.x の値
 		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
-		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
 		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
 
-		for (UINT i = 0; i < bufferCount; ++i) {
-			//for (UINT i = 0; i < 1; ++i) {
-			UINT startIndex = i * maxInstancesPerBuffer;
+		//for (UINT i = 0; i < bufferCount; ++i) {
+		for (UINT i = 0; i < 1; ++i) {
+			UINT startIndex = i * oneDrawInstanceCount;
 			UINT currentInstanceCount = (std::min)(maxInstancesPerBuffer, instanceCount - startIndex);
+			// スレッドグループ数を計算
+			UINT threadGroupCountX = (currentInstanceCount + oneDrawInstanceCount - 1) / oneDrawInstanceCount; // ceil(currentInstanceCount / numThreadsX)
 
 			/// materialのデータをセット
 			grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
@@ -158,9 +199,6 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			UINT constants[2] = { startIndex, currentInstanceCount };
 			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 
-			// スレッドグループ数を計算
-			UINT threadGroupCountX = (currentInstanceCount + numThreadsX - 1) / numThreadsX; // ceil(currentInstanceCount / numThreadsX)
-
 			// DispatchMeshを呼び出す
 			cmdList->DispatchMesh(threadGroupCountX, 1, 1);
 		}
@@ -168,4 +206,5 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 	}
 
 }
+
 

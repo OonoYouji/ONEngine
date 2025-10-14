@@ -39,6 +39,7 @@ struct GrassData {
 };
 
 static const uint kMaxGrassDataSize = 32;
+static const uint kMaxRenderingGrassSize = 51;
 struct Payload {
-	GrassData grassData[kMaxGrassDataSize];
+	GrassData grassData[kMaxRenderingGrassSize];
 };
