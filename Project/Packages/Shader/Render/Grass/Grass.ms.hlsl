@@ -8,7 +8,7 @@ struct Time {
 };
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
-StructuredBuffer<Time> time : register(t1);
+RWStructuredBuffer<Time> time : register(u0);
 
 [shader("mesh")]
 [outputtopology("triangle")]
@@ -28,12 +28,9 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 	float3 up = float3(0, 1, 0);
 	float3 b = normalize(cross(t, up)); // 横方向のベクトル
 	float3 b2 = normalize(cross(b, up)); // 横方向のベクトル
-	//float3 b = float3(1, 0, 0); // 横方向のベクトル
-	//float3 b2 = float3(0, 0, 1); // 横方向のベクトル
 	float width = instance.scale;
 	float height = 2.0f * instance.scale;
 	
-	float sinValue = sin(time[0].value + instance.random01 * 6.28);
 	
 	//float3(instance.position + float3(0, height, 0) + (normalize(instance.tangent) * sinValue)),
 	
@@ -47,6 +44,17 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 		float3(instance.position + b2 * width + float3(0, height, 0))
 	};
 	
+
+	/// 揺らす (根本以外)
+	time[index].value += 1.0f / 60.0f;
+	float sinValue = sin(time[index].value + instance.random01 * 6.28);
+	for (int i = 1; i < kMaxBladeVertexNum; ++i) {
+		float3 newPos = bladePoss[i];
+		newPos += (normalize(instance.tangent) * sinValue * 0.1);
+		bladePoss[i] = newPos;
+	}
+
+
 	float4 clipPoss[kMaxBladeVertexNum];
 	for (int i = 0; i < kMaxBladeVertexNum; ++i) {
 		clipPoss[i] = mul(float4(bladePoss[i], 1.0), viewProjection.matVP);

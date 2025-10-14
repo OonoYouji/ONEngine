@@ -50,11 +50,6 @@ void main(uint3 DTid : SV_DispatchThreadID) {
     /// 草の配置する場所のテクスチャを参照
 	/// 地形のサイズ 1000x1000 に対して、テクスチャのUVを計算
 	float terrainSize = 1000.0f; // 地形のサイズ
-	//float2 uv = float2(
-	//	(DTid.x + 0.5) / terrainSize, // 横方向のUV計算
-	//	(DTid.y + 0.5) / terrainSize // 縦方向のUV計算
-	//);
-
 	float2 uv = float2(
 		((globalIndex % (uint)terrainSize) + 0.5) / terrainSize, // 横方向のUV計算
 		((globalIndex / (uint)terrainSize) + 0.5) / terrainSize // 縦方向のUV計算

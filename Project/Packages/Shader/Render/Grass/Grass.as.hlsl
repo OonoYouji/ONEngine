@@ -7,7 +7,6 @@
 void ASMain(uint3 DTid : SV_DispatchThreadID,
 			uint3 Gid : SV_GroupID) {
 	uint index = startIndex + DTid.x;
-
 	Payload payload;
 
 	// 草のデータを取得
@@ -17,15 +16,6 @@ void ASMain(uint3 DTid : SV_DispatchThreadID,
 		payload.grassData[i].isCulled = false;
 		payload.grassData[i].index = index + i;
 	}
-
-	// カリング条件を設定（例: x座標が500以上の場合はカリング）
-	//if (instance.position.x > 500.0f) {
-	//	payload.grassData[Gid.x].isCulled = true;
-	//	payload.grassData[Gid.x].index = index;
-	//} else {
-	//	payload.grassData[Gid.x].isCulled = false;
-	//	payload.grassData[Gid.x].index = index;
-	//}
 
 	// DispatchMeshを呼び出す
 	DispatchMesh(1, 1, 1, payload);

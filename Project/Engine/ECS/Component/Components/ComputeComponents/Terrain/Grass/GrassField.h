@@ -70,9 +70,6 @@ public:
 		DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap
 	);
 
-	/// _deltaTimeを足す
-	void UpdateTimeBuffer(float _deltaTime);
-
 	/// material_をBufferにMapする
 	void MaterialMapping();
 

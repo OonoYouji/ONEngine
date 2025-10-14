@@ -94,23 +94,8 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 		maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap
 	);
 
-	timeBuffer_.Create(maxGrassCount_, _dxDevice, _dxSRVHeap);
+	timeBuffer_.CreateUAV(maxGrassCount_, _dxDevice, _dxCommand, _dxSRVHeap);
 	materialBuffer_.Create(_dxDevice);
-	materialBuffer_.SetMappedData({
-		.baseColor = Color(1, 1, 1, 1),
-		.postEffectFlags = PostEffectFlags_Lighting,
-		.entityId = GetOwner()->GetId(),
-		.baseTextureId = 0
-		});
-}
-
-void GrassField::UpdateTimeBuffer(float _deltaTime) {
-	///<<< この処理は要素数が多いと重いのでやめる
-
-	/// timeBuffer_の各要素に_deltaTimeを足す
-	//for (uint32_t i = 0; i < maxGrassCount_; i++) {
-	//	timeBuffer_.SetMappedData(i, timeBuffer_.GetMappedData(i) + _deltaTime);
-	//}
 }
 
 void GrassField::MaterialMapping() {
