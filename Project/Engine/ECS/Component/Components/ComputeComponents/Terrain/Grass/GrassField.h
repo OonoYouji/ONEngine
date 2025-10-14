@@ -9,6 +9,8 @@
 /// engine
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
+#include "Engine/Graphics/Buffer/ConstantBuffer.h"
+#include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// interface
 #include "Engine/ECS/Component/Components/Interface/IComponent.h"
@@ -26,6 +28,7 @@ struct GrassInstance {
 
 /// 下の関数で使うための前方宣言
 class GrassField;
+class GraphicsResourceCollection;
 
 /// ////////////////////////////////////////////////////////
 /// json変換
@@ -38,7 +41,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p);
 /// Editor
 /// ////////////////////////////////////////////////////////
 namespace COMP_DEBUG {
-	void GrassFieldDebug(GrassField* _grassField);
+	void GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc);
 }
 
 
@@ -52,7 +55,7 @@ class GrassField : public IComponent {
 	/// privateメンバ変数の参照のためにフレンド宣言
 	friend void to_json(nlohmann::json& _j, const GrassField& _p);
 	friend void from_json(const nlohmann::json& _j, GrassField& _p);
-	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField);
+	friend void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc);
 public:
 	/// ===================================================
 	/// public : methods
@@ -70,6 +73,9 @@ public:
 	/// _deltaTimeを足す
 	void UpdateTimeBuffer(float _deltaTime);
 
+	/// material_をBufferにMapする
+	void MaterialMapping();
+
 private:
 	/// ===================================================
 	/// private : objects
@@ -78,12 +84,15 @@ private:
 	/// ----- buffer ----- ///
 	StructuredBuffer<GrassInstance> rwGrassInstanceBuffer_;
 	StructuredBuffer<float> timeBuffer_;
+	ConstantBuffer<Material> materialBuffer_;
 
 	/// ----- parameters ----- ///
 	uint32_t maxGrassCount_; ///< 最大草の本数
 	std::string distributionTexturePath_; ///< 草の配置に使うテクスチャのパス
 	bool isCreated_;
 	bool isArranged_; ///< 配置済みかどうか
+
+	Material material_;
 
 public:
 	/// ===================================================
@@ -93,6 +102,7 @@ public:
 	/// 草のインスタンスバッファの取得
 	StructuredBuffer<GrassInstance>& GetRwGrassInstanceBuffer();
 	StructuredBuffer<float>& GetTimeBuffer();
+	ConstantBuffer<Material>& GetMaterialBufferRef();
 
 	/// 最大草の本数の取得
 	uint32_t GetMaxGrassCount() const;

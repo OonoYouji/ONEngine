@@ -3,7 +3,7 @@
 
 
 [shader("amplification")]
-[numthreads(32, 1, 1)]
+[numthreads(1, 1, 1)]
 void ASMain(uint3 DTid : SV_DispatchThreadID,
 			uint3 Gid : SV_GroupID) {
 	uint index = startIndex + DTid.x;
@@ -11,21 +11,21 @@ void ASMain(uint3 DTid : SV_DispatchThreadID,
 	Payload payload;
 
 	// 草のデータを取得
-	BladeInstance instance = bladeInstances[index];
+	//BladeInstance instance = bladeInstances[index];
 	
 	for (int i = 0; i < kMaxGrassDataSize; ++i) {
 		payload.grassData[i].isCulled = false;
-		payload.grassData[i].index = startIndex + i;
+		payload.grassData[i].index = index + i;
 	}
 
 	// カリング条件を設定（例: x座標が500以上の場合はカリング）
-	if (instance.position.x > 500.0f) {
-		payload.grassData[Gid.x].isCulled = true;
-		payload.grassData[Gid.x].index = index;
-	} else {
-		payload.grassData[Gid.x].isCulled = false;
-		payload.grassData[Gid.x].index = index;
-	}
+	//if (instance.position.x > 500.0f) {
+	//	payload.grassData[Gid.x].isCulled = true;
+	//	payload.grassData[Gid.x].index = index;
+	//} else {
+	//	payload.grassData[Gid.x].isCulled = false;
+	//	payload.grassData[Gid.x].index = index;
+	//}
 
 	// DispatchMeshを呼び出す
 	DispatchMesh(1, 1, 1, payload);

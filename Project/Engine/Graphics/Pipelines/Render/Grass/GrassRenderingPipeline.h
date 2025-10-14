@@ -16,10 +16,12 @@
 class GrassRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
-		ROOT_PARAM_VIEW_PROJECTION,
+		CBV_VIEW_PROJECTION,
 		ROOT_PARAM_CONSTANTS,
+		CBV_MATERIAL,
 		ROOT_PARAM_BLADES,
 		ROOT_PARAM_TIME,
+		SRV_TEXTURES,
 	};
 
 public:
@@ -27,7 +29,7 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	GrassRenderingPipeline();
+	GrassRenderingPipeline(class GraphicsResourceCollection* _grc);
 	~GrassRenderingPipeline();
 
 	void Initialize(ShaderCompiler* _shaderCompiler, class DxManager* _dxManager) override;
@@ -38,6 +40,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	//ByteAddressBuffer byteAddressBuffer_;
+	class GraphicsResourceCollection* pGrc_ = nullptr;
 };
 

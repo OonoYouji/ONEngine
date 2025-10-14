@@ -7,6 +7,7 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 Vector3 EvaluateCubicBezier(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) {
 	float u = 1.0f - t;
@@ -51,7 +52,7 @@ void GenerateBladesAlongBezier(
 }
 
 
-GrassRenderingPipeline::GrassRenderingPipeline() = default;
+GrassRenderingPipeline::GrassRenderingPipeline(GraphicsResourceCollection* _grc) : pGrc_(_grc) {};
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
 void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -69,14 +70,19 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 		pipeline_->SetShader(&shader);
 
 		/// buffer
-		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// ROOT_PARAM_VIEW_PROJECTION
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// CBV_VIEW_PROJECTION
 		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 2); // ROOT_PARAM_START_INDEX
+		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// CBV_MATERIAL
 
-		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0
-		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t1
+		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: BladeInstance
+		pipeline_->AddDescriptorRange(1, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t1: Time
+		pipeline_->AddDescriptorRange(2, MAX_TEXTURE_COUNT, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: Texture
 
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 0); // ROOT_PARAM_BLADES
 		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_ALL, 1); // ROOT_PARAM_TIME
+		pipeline_->AddDescriptorTable(D3D12_SHADER_VISIBILITY_PIXEL, 2); // SRV_TEXTURE
+
+		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
 
 		pipeline_->SetBlendDesc(BlendMode::Normal());
@@ -114,31 +120,41 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 	auto cmdList = _dxCommand->GetCommandList();
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
+	const auto& textures = pGrc_->GetTextures();
+	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, textures[0].GetSRVHandle().gpuHandle);
+
+
 	/// カメラのBufferを設定
-	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, ROOT_PARAM_VIEW_PROJECTION);
+	_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(cmdList, CBV_VIEW_PROJECTION);
 
 
 	for (auto& grass : grassArray->GetUsedComponents()) {
 		/// 草が無効化されている場合はスキップ
-		if (!grass->enable) {
+		if (!grass->enable || !grass->GetIsCreated()) {
 			continue;
 		}
 
-		grass->UpdateTimeBuffer(1.0f / 60.0f);
+		grass->MaterialMapping();
+		//grass->UpdateTimeBuffer(1.0f / 60.0f);
 
 		/// 草のBufferを設定
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetTimeBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
-		UINT numThreadsX = 32; // numthreads.x の値
+		UINT numThreadsX = 1; // numthreads.x の値
 		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
 		UINT instanceCount = static_cast<UINT>(grass->GetMaxGrassCount());
 		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
 
-		for (UINT i = 0; i < 1/*bufferCount*/; ++i) {
+		for (UINT i = 0; i < bufferCount; ++i) {
+			//for (UINT i = 0; i < 1; ++i) {
 			UINT startIndex = i * maxInstancesPerBuffer;
 			UINT currentInstanceCount = (std::min)(maxInstancesPerBuffer, instanceCount - startIndex);
 
+			/// materialのデータをセット
+			grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
+
+			/// 32bit単位での値をセット
 			UINT constants[2] = { startIndex, currentInstanceCount };
 			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 

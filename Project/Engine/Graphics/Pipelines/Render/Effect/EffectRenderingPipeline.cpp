@@ -12,7 +12,7 @@
 
 
 EffectRenderingPipeline::EffectRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
-	: pResourceCollection_(_resourceCollection) {}
+	: pGrc_(_resourceCollection) {}
 EffectRenderingPipeline::~EffectRenderingPipeline() {}
 
 void EffectRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -124,14 +124,14 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 		_camera->GetViewProjectionBuffer().BindForGraphicsCommandList(commandList, 0);
 
 		/// buffer dataのセット、先頭の texture gpu handle をセットする
-		auto& textures = pResourceCollection_->GetTextures();
+		auto& textures = pGrc_->GetTextures();
 		commandList->SetGraphicsRootDescriptorTable(3, (*textures.begin()).GetSRVGPUHandle());
 
 
 		for (auto& [meshPath, effects] : meshPerComp) {
 
 			/// modelの取得、なければ次へ
-			const Model*&& model = pResourceCollection_->GetModel(meshPath);
+			const Model*&& model = pGrc_->GetModel(meshPath);
 			if (!model) {
 				continue;
 			}
@@ -151,7 +151,7 @@ void EffectRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEntity
 					);
 
 					/// texture id のセット
-					size_t textureIndex = pResourceCollection_->GetTextureIndex(effect->GetTexturePath());
+					size_t textureIndex = pGrc_->GetTextureIndex(effect->GetTexturePath());
 					textureIdBuffer_->SetMappedData(
 						transformIndex_,
 						textures[textureIndex].GetSRVDescriptorIndex()

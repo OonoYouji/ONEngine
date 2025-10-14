@@ -28,6 +28,5 @@ struct GrassData {
 
 static const uint kMaxGrassDataSize = 32;
 struct Payload {
-	//GrassData grassData;
 	GrassData grassData[kMaxGrassDataSize];
 };

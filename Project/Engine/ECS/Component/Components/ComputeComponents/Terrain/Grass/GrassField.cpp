@@ -4,8 +4,11 @@
 #include <imgui.h>
 
 /// engine
+#include "Engine/Core/ImGui/Math/ImGuiMath.h"
 #include "Engine/Editor/Commands/ImGuiCommand/ImGuiCommand.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 /// ////////////////////////////////////////////////////////
 /// Json Serialization
@@ -17,6 +20,7 @@ void to_json(nlohmann::json& _j, const GrassField& _p) {
 		{ "type", "GrassField" },
 		{ "maxGrassCount", _p.maxGrassCount_ },
 		{ "distributionTexturePath", _p.distributionTexturePath_ },
+		{ "material", _p.material_ }
 	};
 }
 
@@ -24,6 +28,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");
+	_p.material_ = _j.value("material", Material{});
 }
 
 
@@ -31,7 +36,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 /// ImGuiデバッグ関数
 /// ////////////////////////////////////////////////////////
 
-void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
+void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollection* _grc) {
 
 	/// 草の最大本数
 	ImGui::Text("Max Blade Count : %d", _grassField->GetMaxGrassCount());
@@ -58,6 +63,10 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
 		ImGui::EndDragDropTarget();
 	}
 
+
+	/// material debug
+	ImMathf::MaterialEdit("material", &_grassField->material_, _grc);
+
 }
 
 
@@ -65,7 +74,9 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField) {
 /// GrassField
 /// ////////////////////////////////////////////////////////
 
-GrassField::GrassField() : maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false) {};
+GrassField::GrassField() :
+	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false), material_({}) {
+};
 GrassField::~GrassField() = default;
 
 void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
@@ -84,15 +95,26 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 	);
 
 	timeBuffer_.Create(maxGrassCount_, _dxDevice, _dxSRVHeap);
+	materialBuffer_.Create(_dxDevice);
+	materialBuffer_.SetMappedData({
+		.baseColor = Color(1, 1, 1, 1),
+		.postEffectFlags = PostEffectFlags_Lighting,
+		.entityId = GetOwner()->GetId(),
+		.baseTextureId = 0
+		});
 }
 
 void GrassField::UpdateTimeBuffer(float _deltaTime) {
 	///<<< この処理は要素数が多いと重いのでやめる
-	
+
 	/// timeBuffer_の各要素に_deltaTimeを足す
 	//for (uint32_t i = 0; i < maxGrassCount_; i++) {
 	//	timeBuffer_.SetMappedData(i, timeBuffer_.GetMappedData(i) + _deltaTime);
 	//}
+}
+
+void GrassField::MaterialMapping() {
+	materialBuffer_.SetMappedData(material_);
 }
 
 StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {
@@ -101,6 +123,10 @@ StructuredBuffer<GrassInstance>& GrassField::GetRwGrassInstanceBuffer() {
 
 StructuredBuffer<float>& GrassField::GetTimeBuffer() {
 	return timeBuffer_;
+}
+
+ConstantBuffer<Material>& GrassField::GetMaterialBufferRef() {
+	return materialBuffer_;
 }
 
 uint32_t GrassField::GetMaxGrassCount() const {

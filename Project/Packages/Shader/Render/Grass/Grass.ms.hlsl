@@ -8,20 +8,20 @@ struct Time {
 };
 
 ConstantBuffer<ViewProjection> viewProjection : register(b0);
-//StructuredBuffer<BladeInstance> bladeInstances : register(t0);
 StructuredBuffer<Time> time : register(t1);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(32, 1, 1)]
+[numthreads(kMaxGrassDataSize, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
-			uint3 Gid : SV_GroupID,
+			uint3 Gid : SV_GroupThreadID,
+			uint gIndex : SV_GroupIndex,
 			in payload Payload asPayload,
 			out vertices VertexOut verts[5],
 			out indices uint3 indis[2]) {
 	SetMeshOutputCounts(5, 2);
 	
-	uint index = asPayload.grassData[Gid.x].index;
+	uint index = asPayload.grassData[gIndex].index;
 	BladeInstance instance = bladeInstances[index];
 	
 	//float3 t = normalize(instance.tangent);

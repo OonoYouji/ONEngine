@@ -54,7 +54,7 @@ void RenderingPipelineCollection::Initialize() {
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
-	Generate3DRenderingPipeline<GrassRenderingPipeline>();
+	Generate3DRenderingPipeline<GrassRenderingPipeline>(graphicsResourceCollection_);
 
 	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();
