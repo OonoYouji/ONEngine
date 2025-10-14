@@ -26,6 +26,11 @@ PSOutput PSMain(VertexOut input) {
 	output.normal = float4(normalize(input.normal), 1); // 法線を出力
 	output.flags = float4(material.intValues.x, material.intValues.y, 0, 1); // 草フラグを立てる
 
+	/// ピクセルの破棄条件
+	if (output.color.a <= 0.1f) {
+		discard;
+	}
+	
 	// 緑色で草を描画
 	return output;
 }

@@ -2,6 +2,11 @@
 
 #include "Terrain.hlsli"
 
+float Random(float2 seed) {
+	return frac(sin(dot(seed, float2(12.9898, 78.233))) * 43758.5453123);
+}
+
+
 struct UsedTexId {
 	uint grassArrangementTexId; /// 草の配置する場所のテクスチャID
 	uint terrainVertexTexId; /// 地形の頂点情報を持つテクスチャID
@@ -81,7 +86,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	newInstance.position = pos;
 
     /// 草の向きをランダムに決定
-	float angle = texColor.w * 6.28; // 0~1の値を0~2πに変換
+	float angle = Random(uv); // 0~1の値を0~2πに変換
 	newInstance.tangent = float3(cos(angle), 0, sin(angle));
 	newInstance.scale = 0.5 + (texColor.w * 0.5); // 0.5~1.0の範囲でスケールを決定
 	newInstance.random01 = texColor.w; // 0~1のランダム値を保存

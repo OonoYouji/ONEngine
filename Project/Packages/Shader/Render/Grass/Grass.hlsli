@@ -5,11 +5,23 @@ struct VertexOut {
 	float2 uv : TEXCOORD; // UV
 };
 
+
+static const uint kMaxBladeVertexNum = 5;
 // 草の三角形1本分の頂点
-static const float3 bladeVertices[3] = {
-	float3(0, 0, 0), // 根元
-	float3(-0.05, 0.5, 0), // 左上
-	float3(0.05, 0.5, 0) // 右上
+static const float3 bladeVertices[kMaxBladeVertexNum] = {
+	float3(0, 0, 0),       /// 根元
+	float3(-0.05, 0.5, 0), /// 左上
+	float3(0.05, 0.5, 0),  /// 右上
+	float3(0, 0.5, 0.05),  /// 奥上
+	float3(0, 0.5, -0.05)  /// 手前上
+};
+
+static const float2 bladeUVs[kMaxBladeVertexNum] = {
+	float2(0.5f, 1.0f), /// 根本
+	float2(0.0f, 0.0f), /// 左上
+	float2(1.0f, 0.0f), /// 右上
+	float2(1.0f, 0.0f), /// 奥上
+	float2(0.0f, 0.0f)  /// 手前上
 };
 
 
