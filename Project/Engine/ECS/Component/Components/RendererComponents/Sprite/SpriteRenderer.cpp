@@ -48,7 +48,7 @@ void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
 SpriteRenderer::SpriteRenderer() {
 	material_.baseColor = Vector4::kWhite;
 	material_.entityId = 0;
-	material_.baseTextureId = -1;
+	material_.baseTextureId = 0;
 	material_.uvTransform = UVTransform();
 	material_.postEffectFlags = 0;
 }
