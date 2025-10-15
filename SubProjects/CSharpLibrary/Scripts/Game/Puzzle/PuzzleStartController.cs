@@ -12,14 +12,28 @@ public class PuzzleStartController : MonoBehavior {
 	[SerializeField] float startPuzzleDistance_ = 4.0f; /// パズルを開始する距離
 
 	private bool isStartedPuzzle_ = false; /// パズルが開始しているか
+	private Entity startUI_;
 
 	public override void Initialize() {
+
+		/// ----------------------------------
+		/// startUIを生成
+		/// ----------------------------------
+		startUI_ = ecsGroup.CreateEntity("PuzzleStartUI");
+		startUI_.parent = entity;
+
+
 		/// playerを検索
 		Entity ePlayer = ecsGroup.FindEntity("Player");
 		player_ = ePlayer.GetScript<Player>();
 		if (!player_) {
 			/// 見つからなかったログを出力する
 			Debug.LogError("PuzzleStartController.Initialize - Player script not found.");
+		}
+
+		Billboard uiBillboard = startUI_.GetScript<Billboard>();
+		if (uiBillboard) {
+			uiBillboard.target = ePlayer;
 		}
 
 

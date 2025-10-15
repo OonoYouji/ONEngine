@@ -24,7 +24,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>..\..\Project\Packages\Scripts\</OutputPath>
     <IntermediateOutputPath>..\..\Generated\CSharpScripts\Release\</IntermediateOutputPath>
@@ -80,6 +80,7 @@
     <Compile Include="Scripts\Engine\Scene\SceneManager.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Transform.cs" />
     <Compile Include="Scripts\Game\AttachObjectToJoint.cs" />
+    <Compile Include="Scripts\Game\Billboard.cs" />
     <Compile Include="Scripts\Game\Breathe.cs" />
     <Compile Include="Scripts\Game\DebugEntity\DebugCamera.cs" />
     <Compile Include="Scripts\Game\Enemy.cs" />
