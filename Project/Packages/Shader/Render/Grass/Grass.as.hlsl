@@ -24,12 +24,20 @@ bool IsVisible(float3 min, float3 max) {
 
 
 [shader("amplification")]
-[numthreads(1, 1, 1)]
+[numthreads(32, 1, 1)]
 void ASMain(uint3 DTid : SV_DispatchThreadID,
 			uint gIndex : SV_GroupIndex,
-			uint3 Gid : SV_GroupID) {
-	uint index = startIndices[gIndex].value /*+ DTid.x*/;
+			uint3 Gid : SV_GroupThreadID) {
+
+	uint grassPerMS = 32 * 51; // 1 MSあたりの草数
+	uint groupIndex = Gid.x; // DispatchMesh(x,y,z)のxに対応
+
+	//payloadOut.startIndex = groupIndex * grassPerMS;
+
+	uint index = groupIndex * grassPerMS;
+	//uint index = startIndices[DTid.x].value /*+ DTid.x*/;
 	Payload payload;
+	payload.startIndex = index;
 	
 	BladeInstance frontInstance = bladeInstances[index];
 	float3 min = frontInstance.position;
@@ -54,5 +62,5 @@ void ASMain(uint3 DTid : SV_DispatchThreadID,
 
 
 	// DispatchMeshを呼び出す
-	DispatchMesh(1, 1, 1, payload);
+	DispatchMesh(32, 1, 1, payload);
 }

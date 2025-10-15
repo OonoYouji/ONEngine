@@ -25,7 +25,7 @@ RWStructuredBuffer<Time> time : register(u0);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(1, 1, 1)]
+[numthreads(32, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
 			uint3 Gid : SV_GroupThreadID,
 			uint gIndex : SV_GroupIndex,
@@ -36,14 +36,23 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 	/// 出来る限り多くの頂点を出力する
 	SetMeshOutputCounts(51 * 5, 51 * 2);
 	
+	uint threadIndex = Gid.x;
+
+    // 各スレッドが描く草数
+	uint grassPerThread = 51;
+
+    // このスレッドが描く草の開始インデックス
+	uint baseIndex = asPayload.startIndex + threadIndex * grassPerThread;
+	
 	/// 草の数分だけ処理する
 	for (int gi = 0; gi < kMaxRenderingGrassSize; ++gi) {
 		
 		uint startVertIndex = gi * kMaxBladeVertexNum;
 		uint startIndiIndex = gi * 2;
 		
-		uint bladeIndex = asPayload.grassData[gi].index;
-		BladeInstance instance = bladeInstances[bladeIndex];
+		//uint bladeIndex = asPayload.grassData[gi].index;
+		uint grassIndex = baseIndex + gi;
+		BladeInstance instance = bladeInstances[grassIndex];
 		
 		
 		float3 t = normalize(instance.tangent);
@@ -66,8 +75,8 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 	
 
 		/// 揺らす (根本以外)
-		time[bladeIndex].value += 1.0f / 60.0f;
-		float sinValue = sin(time[bladeIndex].value + instance.random01 * 6.28);
+		time[grassIndex].value += 1.0f / 60.0f;
+		float sinValue = sin(time[grassIndex].value + instance.random01 * 6.28);
 		for (int i = 1; i < kMaxBladeVertexNum; ++i) {
 			float3 newPos = bladePoss[i];
 			newPos += (normalize(instance.tangent) * sinValue * 0.1);

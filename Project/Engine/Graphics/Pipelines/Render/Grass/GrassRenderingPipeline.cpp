@@ -167,41 +167,46 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		}
 
 		UINT instanceCount = static_cast<UINT>(grass->GetInstanceCount());
-		if (instanceCount == 0) {
-			continue;
-		}
+		if (instanceCount == 0) continue;
 
-		UINT oneDrawInstanceCount = 51 * 32; // 1回のDispatchMeshで描画するインスタンス数
+		const UINT threadsPerGroup = 32;              // MS の [numthreads(32,1,1)]
+		const UINT grassPerThread = 51;
+		const UINT oneDrawInstanceCount = grassPerThread * threadsPerGroup; // 1632
 
 		grass->MaterialMapping();
-		grass->StartIndexMapping(oneDrawInstanceCount); // 1 DispatchMeshで描画するインスタンス数に合わせる
+		grass->StartIndexMapping(oneDrawInstanceCount);
 
-		/// 草のBufferを設定
+		// SRV/UAVバインド...
 		grass->GetRwGrassInstanceBuffer().SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_BLADES);
 		grass->GetStartIndexBufferRef().SRVBindForGraphicsCommandList(cmdList, SRV_START_INDEX);
 		grass->GetTimeBuffer().UAVBindForGraphicsCommandList(cmdList, ROOT_PARAM_TIME);
 
-		UINT numThreadsX = 1; // numthreads.x の値
-		UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 1つのバッファで処理可能な最大インスタンス数
-		UINT bufferCount = (instanceCount + maxInstancesPerBuffer - 1) / maxInstancesPerBuffer;
+		const UINT maxInstancesPerBuffer = static_cast<UINT>(std::pow(2, 16) - 1); // 65535
+		// バッファを分割する単位（chunkSize）は maxInstancesPerBuffer に合わせる
+		const UINT chunkSize = maxInstancesPerBuffer;
 
-		//for (UINT i = 0; i < bufferCount; ++i) {
-		for (UINT i = 0; i < 1; ++i) {
-			UINT startIndex = i * oneDrawInstanceCount;
-			UINT currentInstanceCount = (std::min)(maxInstancesPerBuffer, instanceCount - startIndex);
-			// スレッドグループ数を計算
-			UINT threadGroupCountX = (currentInstanceCount + oneDrawInstanceCount - 1) / oneDrawInstanceCount; // ceil(currentInstanceCount / numThreadsX)
+		// バッファの個数（chunkSize 単位）
+		UINT bufferCount = (instanceCount + chunkSize - 1) / chunkSize;
 
-			/// materialのデータをセット
+		for (UINT i = 0; i < bufferCount; ++i) {
+			// startIndex は chunkSize 単位で進める（ここが元コードと違う点）
+			UINT startIndex = i * chunkSize;
+			UINT currentInstanceCount = (std::min)(chunkSize, instanceCount - startIndex);
+
+			// 1 DispatchMesh でカバーするグループ数（ceil）
+			UINT threadGroupCountX = (currentInstanceCount + oneDrawInstanceCount - 1) / oneDrawInstanceCount;
+
+			// material のデータをセット
 			grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
-			/// 32bit単位での値をセット
+			// 32bit 単位での値をセット（startIndex, currentInstanceCount）
 			UINT constants[2] = { startIndex, currentInstanceCount };
 			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 
-			// DispatchMeshを呼び出す
+			// DispatchMesh を呼ぶ（MS 側が threadsPerGroup = 32 を使う前提）
 			cmdList->DispatchMesh(threadGroupCountX, 1, 1);
 		}
+
 
 	}
 
