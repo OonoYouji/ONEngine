@@ -70,3 +70,29 @@ const Material& SpriteRenderer::GetMaterial() const {
 Material& SpriteRenderer::GetMaterial() {
 	return material_;
 }
+
+
+/// ===================================================
+/// csで使用するための関数群
+/// ===================================================
+
+Vector4 InternalSpriteMethods::InternalGetColor(uint64_t _nativeHandle) {
+	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
+	if (sr) {
+		return sr->GetColor();
+	}
+
+	Console::LogError("InternalSpriteMethods::InternalGetColor() | native handle is invalid");
+
+	return Vector4();
+}
+
+void InternalSpriteMethods::InternalSetColor(uint64_t _nativeHandle, Vector4 _color) {
+	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
+	if (sr) {
+		sr->SetColor(_color);
+		return;
+	}
+
+	Console::LogError("InternalSpriteMethods::InternalSetColor() | native handle is invalid");
+}

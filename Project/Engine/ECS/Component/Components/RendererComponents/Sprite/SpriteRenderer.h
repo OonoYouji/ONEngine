@@ -61,3 +61,16 @@ public:
 
 };
 
+
+/// ===================================================
+/// csで使用するための関数群
+/// ===================================================
+
+namespace InternalSpriteMethods {
+	/// ここでコメントアウトしているのは今後実装する
+	//MonoString* InternalGetTexturePath(uint64_t _nativeHandle);
+	//void InternalSetTexturePath(uint64_t _nativeHandle, MonoString* _path);
+
+	Vector4 InternalGetColor(uint64_t _nativeHandle);
+	void InternalSetColor(uint64_t _nativeHandle, Vector4 _color);
+}

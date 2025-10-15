@@ -8,9 +8,9 @@
                 "z": 0.0
             },
             "rotate": {
-                "w": 1.0,
+                "w": 0.4876927137374878,
                 "x": 0.0,
-                "y": 0.0,
+                "y": -0.8730153441429138,
                 "z": 0.0
             },
             "scale": {
@@ -47,8 +47,8 @@
             "type": "Script"
         }
     ],
-    "id": 7,
+    "id": -1,
     "name": "PuzzleStartUI",
-    "parent": null,
+    "parent": 1,
     "prefabName": "PuzzleStartUI.prefab"
 }

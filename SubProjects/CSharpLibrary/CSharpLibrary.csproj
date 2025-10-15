@@ -73,6 +73,7 @@
     <Compile Include="Scripts\Engine\ECS\Components\Compute\AudioSource.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\MeshRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\Components\Renderer\SkinMeshRenderer.cs" />
+    <Compile Include="Scripts\Engine\ECS\Components\Renderer\SpriteRenderer.cs" />
     <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\ECSGroup.cs" />
     <Compile Include="Scripts\Engine\ECS\EntityComponentSystem\EntityComponentSystem.cs" />
     <Compile Include="Scripts\Engine\ECS\Entity\Entity.cs" />

@@ -1,12 +1,13 @@
-﻿
-public class Billboard : MonoBehavior {
+﻿public class Billboard : MonoBehavior {
 
 	Entity camera_;
 	public Entity target; /// 注視対象
 
-	/// billboard axis
+						  /// billboard axis
 	[SerializeField] public bool isBillboardAxisX = true;
 	[SerializeField] public bool isBillboardAxisY = true;
+	[SerializeField] public Vector3 euler;
+	[SerializeField] public Vector3 startRotate_ = Vector3.zero;
 
 	public override void Initialize() {
 		camera_ = ecsGroup.FindEntity("Camera");
@@ -18,14 +19,15 @@ public class Billboard : MonoBehavior {
 			return;
 		}
 
-		Vector3 dir = transform.position - camera_.transform.position;
-		//Vector3 dir = camera_.transform.position - target.transform.position;
-		Vector3 euler = Vector3.zero;
+		// カメラの位置からオブジェクトの位置への方向ベクトルを計算
+		Vector3 dir = camera_.transform.position - transform.position;
+		dir = Vector3.Normalize(dir);
 
+		euler = Vector3.zero;
 
 		/// Y軸回転（ヨー）
 		if (isBillboardAxisY) {
-			float yaw = Mathf.Atan2(dir.x, dir.z);
+			float yaw = Mathf.Atan2(-dir.x, dir.z); // 修正: 符号を反転
 			euler.y = yaw * Mathf.Rad2Deg;
 		}
 
@@ -35,8 +37,31 @@ public class Billboard : MonoBehavior {
 			euler.x = pitch * Mathf.Rad2Deg;
 		}
 
-		transform.rotate = Quaternion.FromEuler(euler);
+		transform.rotate = CreateFromYawPitchRoll(euler.y, euler.x, 0.0f);
 
+	}
+
+
+	Quaternion CreateFromYawPitchRoll(float yaw, float pitch, float roll) {
+		float halfRoll = roll * 0.5f;
+		float halfPitch = pitch * 0.5f;
+		float halfYaw = yaw * 0.5f;
+
+		float sinRoll = Mathf.Sin(halfRoll);
+		float cosRoll = Mathf.Cos(halfRoll);
+		float sinPitch = Mathf.Sin(halfPitch);
+		float cosPitch = Mathf.Cos(halfPitch);
+		float sinYaw = Mathf.Sin(halfYaw);
+		float cosYaw = Mathf.Cos(halfYaw);
+
+		Quaternion result;
+
+		result.x = (cosYaw * sinPitch * cosRoll) + (sinYaw * cosPitch * sinRoll);
+		result.y = (sinYaw * cosPitch * cosRoll) - (cosYaw * sinPitch * sinRoll);
+		result.z = (cosYaw * cosPitch * sinRoll) - (sinYaw * sinPitch * cosRoll);
+		result.w = (cosYaw * cosPitch * cosRoll) + (sinYaw * sinPitch * sinRoll);
+
+		return result;
 	}
 
 }

@@ -1,3 +1,4 @@
+using Stage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,12 @@ public class PuzzleStartController : MonoBehavior {
 
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
+
+		SpriteRenderer sr = startUI_.GetComponent<SpriteRenderer>();
+		if (sr) {
+			bool enable = (startPuzzleDistance_ > toPlayerDistance_);
+			sr.enable = enable ? 1 : 0;
+		}
 
 		/// 開始出来る状態かチェック
 		if (startPuzzleDistance_ > toPlayerDistance_) {

@@ -32,7 +32,7 @@ public class Player : MonoBehavior {
 	public override void Update() {
 
 		Move();
-		Jump();
+		//Jump();
 
 		CameraFollow();
 
@@ -107,6 +107,7 @@ public class Player : MonoBehavior {
 	}
 
 
+	[SerializeField] Vector3 lastPlayerPosition = new Vector3();
 	void CameraFollow() {
 		if (camera == null) {
 			return; // 子エンティティがない場合は何もしない
@@ -134,6 +135,7 @@ public class Player : MonoBehavior {
 		//cRot = LookAt(transform.position - cPos); // カメラの向きをプレイヤーに向ける
 
 		cT.position = this.transform.position + cameraOffset; // プレイヤーの位置にオフセットを加える
+		lastPlayerPosition = this.transform.position;
 		//cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
