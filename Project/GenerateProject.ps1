@@ -1,10 +1,9 @@
 # プロジェクトのルートをスクリプトの位置に固定
 $PSScriptRoot | Set-Location
 
-# =========================
-# DirectXTex 公式プロジェクトをビルドして .inc ファイル生成
-# =========================
-$dxtexProj = Join-Path $PSScriptRoot "Externals\DirectXTex\DirectXTex_Desktop_2022.vcxproj"
+# premake5.exe が同じフォルダにある前提
+Write-Host "Running Premake..."
+.\premake5.exe vs2022
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Premake finished. Opening ONEngine.sln..."
