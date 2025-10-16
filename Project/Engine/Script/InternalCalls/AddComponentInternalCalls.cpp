@@ -28,6 +28,7 @@
 
 
 using namespace MONO_INTERNAL_METHOD;
+using namespace InternalSpriteMethods;
 
 void AddComponentInternalCalls() {
 
@@ -63,6 +64,9 @@ void AddComponentInternalCalls() {
 	mono_add_internal_call("SkinMeshRenderer::InternalSetAnimationScale", (void*)InternalSetAnimationScale);
 	mono_add_internal_call("SkinMeshRenderer::InternalGetJointTransform", (void*)InternalGetJointTransform);
 
+	/// sprite renderer
+	mono_add_internal_call("SpriteRenderer::InternalGetColor", (void*)InternalGetColor);
+	mono_add_internal_call("SpriteRenderer::InternalSetColor", (void*)InternalSetColor);
 
 	/// audio source
 	mono_add_internal_call("AudioSource::InternalGetParams", (void*)InternalGetParams);

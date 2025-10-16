@@ -13,7 +13,7 @@ public class Player : MonoBehavior {
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
 	[SerializeField] Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
-	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
+	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 4.0f, -11f); // カメラのオフセット（球面座標）
 	Entity camera;
 
 	public override void Awake() {
@@ -26,13 +26,13 @@ public class Player : MonoBehavior {
 			return;
 		}
 
-		camera.parent = this.entity;
+		//camera.parent = this.entity;
 	}
 
 	public override void Update() {
 
 		Move();
-		Jump();
+		//Jump();
 
 		CameraFollow();
 
@@ -107,6 +107,7 @@ public class Player : MonoBehavior {
 	}
 
 
+	[SerializeField] Vector3 lastPlayerPosition = new Vector3();
 	void CameraFollow() {
 		if (camera == null) {
 			return; // 子エンティティがない場合は何もしない
@@ -125,7 +126,7 @@ public class Player : MonoBehavior {
 		/// カメラの位置を計算
 		Transform cT = camera.transform;
 		Vector3 cPos = cT.position;
-		Vector3 cRot = cT.rotate.ToEuler();
+		//Vector3 cRot = cT.rotate.ToEuler();
 
 		cPos.x = distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
@@ -134,6 +135,7 @@ public class Player : MonoBehavior {
 		//cRot = LookAt(transform.position - cPos); // カメラの向きをプレイヤーに向ける
 
 		cT.position = this.transform.position + cameraOffset; // プレイヤーの位置にオフセットを加える
+		lastPlayerPosition = this.transform.position;
 		//cT.rotate = Quaternion.FromEuler(cRot);
 	}
 

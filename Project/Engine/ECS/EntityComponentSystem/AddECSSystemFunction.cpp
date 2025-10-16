@@ -17,11 +17,13 @@
 #include "../System/Terrain/TerrainColliderVertexGenerator.h"
 #include "../System/Terrain/TerrainCollision.h"
 #include "../System/Transform/TransformUpdateSystem.h"
+#include "../System/GrassBufferCreateSystem/GrassBufferCreateSystem.h"
 
 void GameECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection) {
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
+	_ecs->AddSystem<GrassBufferCreateSystem>(_dxManager);
 
 	/// 更新に使うsystem
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());
@@ -45,6 +47,7 @@ void DebugECSGroupAddSystemFunction(ECSGroup* _ecs, DxManager* _dxManager, Graph
 
 	/// 初期化に使うsystem
 	_ecs->AddSystem<TerrainColliderVertexGenerator>(_dxManager);
+	_ecs->AddSystem<GrassBufferCreateSystem>(_dxManager);
 
 	/// 更新に使うsystem
 	_ecs->AddSystem<CameraUpdateSystem>(_dxManager->GetDxDevice());

@@ -1,5 +1,8 @@
 #pragma once
 
+/// directX
+#include <d3d11.h>
+
 /// std
 #include <vector>
 #include <format>
@@ -30,11 +33,7 @@ public:
 };
 
 
-/*##########################################################
-	TODO : COMMENT
-	この関数を移動する先の.hを考える
-##########################################################*/
-
 std::string ConvertString(const std::wstring& _wstr);
 std::wstring ConvertString(const std::string& _str);
 std::string ConvertTCHARToString(const TCHAR* _tstr);
+std::string HrToString(HRESULT _hr);

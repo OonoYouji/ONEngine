@@ -42,11 +42,11 @@ void GraphicsPipeline::CreatePipeline(DxDevice* _dxDevice) {
 	/// root signatureとpipeline state objectを生成する
 	CreateRootSignature(_dxDevice);
 
-	//if (pShader_->GetMS() != nullptr) {
-		//CreateMeshPipelineStateObject(_dxDevice);
-	//} else {
+	if (pShader_->GetMS() != nullptr) {
+		CreateMeshPipelineStateObject(_dxDevice);
+	} else {
 		CreatePipelineStateObject(_dxDevice);
-	//}
+	}
 }
 
 
@@ -75,12 +75,12 @@ void GraphicsPipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_
 	rootParameters_.push_back(parameter);
 }
 
-void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+void GraphicsPipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	parameter.ShaderVisibility = _shaderVisibility;
 	parameter.Descriptor.ShaderRegister = _shaderRegister;
-	parameter.Constants.Num32BitValues = 1;
+	parameter.Constants.Num32BitValues = _num32bitValue;
 
 	rootParameters_.push_back(parameter);
 }
@@ -317,7 +317,7 @@ void GraphicsPipeline::CreateMeshPipelineStateObject(DxDevice* _dxDevice) {
 		&streamDesc, IID_PPV_ARGS(&pipelineState_)
 	);
 
-	Assert(SUCCEEDED(result), "error...");
+	Assert(SUCCEEDED(result), HrToString(result).c_str());
 }
 
 D3D12_BLEND_DESC BlendMode::Normal() {
@@ -412,3 +412,10 @@ D3D12_BLEND_DESC BlendMode::None() {
 	return blendDesc;
 }
 
+D3D12_DEPTH_STENCIL_DESC DefaultDepthStencilDesc() {
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+	return depthStencilDesc;
+}

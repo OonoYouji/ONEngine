@@ -322,4 +322,5 @@ DirectXGame/DirectXGame.exe
 DirectXGame/imgui.ini
 
 # DirectXTex Compiled Shaders
-**/DirectXTex/Shaders/Compiled/
+# **/DirectXTex/Shaders/Compiled/
+**/DirectXTex/Bin/

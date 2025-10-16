@@ -40,6 +40,7 @@ public:
 	void Create(uint32_t _size, DxDevice* _dxDevice, DxSRVHeap* _dxSRVHeap);
 	void CreateUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
 	void CreateAppendBuffer(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
+	void CreateSRVAndUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap);
 
 	/* ----- append structure buffer methods ----- */
 
@@ -57,6 +58,7 @@ public:
 	void AppendBindForComputeCommandList(ID3D12GraphicsCommandList* _cmdList, UINT _rootParameterIndex);
 
 	void SetMappedData(size_t _index, const T& _setValue);
+	const T& GetMappedData(size_t _index) const;
 
 	DxResource& GetResource();
 
@@ -284,6 +286,72 @@ inline void StructuredBuffer<T>::CreateAppendBuffer(uint32_t _size, DxDevice* _d
 
 }
 
+
+template<typename T>
+inline void StructuredBuffer<T>::CreateSRVAndUAV(uint32_t _size, DxDevice* _dxDevice, DxCommand* _dxCommand, DxSRVHeap* _dxSRVHeap) {
+	// リソースのサイズを計算
+	structureSize_ = sizeof(T);
+	bufferSize_ = _size;
+	totalSize_ = structureSize_ * bufferSize_;
+
+	// リソースの作成
+	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(
+		totalSize_,
+		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS // UAVを許可
+	);
+	CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
+	bufferResource_.CreateCommittedResource(
+		_dxDevice,
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_COMMON, // 初期状態
+		nullptr
+	);
+
+	// SRVの作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.NumElements = static_cast<UINT>(bufferSize_);
+	srvDesc.Buffer.StructureByteStride = static_cast<UINT>(structureSize_);
+	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+
+	srvHandle_ = std::make_optional<Handle>();
+	srvHandle_->heapIndex = _dxSRVHeap->AllocateBuffer();
+	srvHandle_->cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(srvHandle_->heapIndex);
+	srvHandle_->gpuHandle = _dxSRVHeap->GetGPUDescriptorHandel(srvHandle_->heapIndex);
+
+	_dxDevice->GetDevice()->CreateShaderResourceView(bufferResource_.Get(), &srvDesc, srvHandle_->cpuHandle);
+
+	// UAVの作成
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = static_cast<UINT>(bufferSize_);
+	uavDesc.Buffer.StructureByteStride = static_cast<UINT>(structureSize_);
+	uavDesc.Buffer.CounterOffsetInBytes = 0;
+	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+	uavHandle_ = std::make_optional<Handle>();
+	uavHandle_->heapIndex = _dxSRVHeap->AllocateBuffer();
+	uavHandle_->cpuHandle = _dxSRVHeap->GetCPUDescriptorHandel(uavHandle_->heapIndex);
+	uavHandle_->gpuHandle = _dxSRVHeap->GetGPUDescriptorHandel(uavHandle_->heapIndex);
+
+	_dxDevice->GetDevice()->CreateUnorderedAccessView(bufferResource_.Get(), nullptr, &uavDesc, uavHandle_->cpuHandle);
+
+	// マッピング
+	//bufferResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
+	//mappedDataArray_ = { mappedData_, bufferSize_ };
+
+	// デスクリプタヒープのポインタを保存
+	pDxSRVHeap_ = _dxSRVHeap;
+}
+
+
 template<typename T>
 inline void StructuredBuffer<T>::ResetCounter(DxCommand* _dxCommand) {
 	auto cmdList = _dxCommand->GetCommandList();
@@ -358,6 +426,11 @@ template<typename T>
 inline void StructuredBuffer<T>::SetMappedData(size_t _index, const T& _setValue) {
 	Assert(_index < bufferSize_, "out of range");
 	mappedDataArray_[_index] = _setValue;
+}
+
+template<typename T>
+inline const T& StructuredBuffer<T>::GetMappedData(size_t _index) const {
+	return mappedDataArray_[_index];
 }
 
 template<typename T>

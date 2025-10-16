@@ -5,13 +5,15 @@
 #include <typeindex>
 #include <functional>
 
-/// engine
+/// engine/compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Variables/Variables.h"
+/// engine/renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Sprite/SpriteRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
@@ -37,6 +39,7 @@ namespace {
 			Register<Effect>();
 			Register<Script>();
 			Register<Terrain>();
+			Register<GrassField>();
 			Register<TerrainCollider>();
 			Register<CameraComponent>();
 

@@ -77,7 +77,7 @@ private:
 	/// ===================================================
 
 	class DxManager*                  pDxManager_;
-	class GraphicsResourceCollection* pResourceCollection_;
+	class GraphicsResourceCollection* pGrc_;
 
 	unsigned int assimpLoadFlags_; /// assimpで.objを読み込むときに使用するフラグ
 

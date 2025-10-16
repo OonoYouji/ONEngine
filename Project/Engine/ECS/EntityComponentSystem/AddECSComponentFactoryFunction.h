@@ -3,14 +3,18 @@
 #include "EntityComponentSystem.h"
 #include "Engine/ECS/Component/Collection/ComponentCollection.h"
 
+/// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
+
+/// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
@@ -28,6 +32,7 @@ inline void AddComponentFactoryFunction(ComponentCollection* _compCollection) {
 	_compCollection->RegisterComponentFactory<Variables>();
 	_compCollection->RegisterComponentFactory<Effect>();
 	_compCollection->RegisterComponentFactory<Terrain>();
+	_compCollection->RegisterComponentFactory<GrassField>();
 	_compCollection->RegisterComponentFactory<TerrainCollider>();
 	_compCollection->RegisterComponentFactory<CameraComponent>();
 

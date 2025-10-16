@@ -23,6 +23,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class GraphicsResourceCollection* pResourceCollection_ = nullptr;
+	class GraphicsResourceCollection* pGrc_ = nullptr;
 };
 

@@ -18,15 +18,18 @@
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 
 
-#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
+/// compute
 #include "Engine/ECS/Component/Components/ComputeComponents/Light/Light.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Effect/Effect.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/TerrainCollider.h"
+#include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Grass/GrassField.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/BoxCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Collision/SphereCollider.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Script/Script.h"
+/// renderer
 #include "Engine/ECS/Component/Components/RendererComponents/Skybox/Skybox.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/MeshRenderer.h"
 #include "Engine/ECS/Component/Components/RendererComponents/Mesh/CustomMeshRenderer.h"
@@ -44,7 +47,7 @@ enum SelectedType {
 };
 
 ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager)
-	: pECS_(_ecs), pResourceCollection_(_resourceCollection), pEditorManager_(_editorManager) {
+	: pECS_(_ecs), pGrc_(_resourceCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
 	/// compute
@@ -56,12 +59,13 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
 	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pECS_); });
 	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
+	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pGrc_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 
 	/// renderer
 	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp)); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pResourceCollection_); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pGrc_); });
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
@@ -159,6 +163,8 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 		std::string label = componentName + "##" + std::to_string(reinterpret_cast<uintptr_t>(component.second));
 
+		/// Idの追加(string)
+		ImGui::PushID(label.c_str());
 
 		/// チェックボックスでenable/disableを切り替え
 		bool enabled = component.second->enable;
@@ -178,7 +184,26 @@ void ImGuiInspectorWindow::EntityInspector() {
 		/// component debug
 		ImGui::Separator();
 		ImGui::SameLine();
-		if (ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+
+
+		/// ==============================================
+		/// Componentのデバッグ表示ヘッダー
+		/// ==============================================
+		bool isHeaderOpen = ImGui::CollapsingHeader(label.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+
+		/// ==============================================
+		/// ドラッグソースの開始
+		/// ==============================================
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+			ImGui::SetDragDropPayload("Component", &component.second, sizeof(IComponent*));
+			ImGui::Text("%s", componentName.c_str());
+			ImGui::EndDragDropSource();
+		}
+
+		/// ==============================================
+		/// 実際のComponentごとのデバッグ表示
+		/// ==============================================
+		if(isHeaderOpen) {
 			/// 右クリックでポップアップメニューを開く
 			if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 				ImGui::OpenPopup(label.c_str());
@@ -190,6 +215,8 @@ void ImGuiInspectorWindow::EntityInspector() {
 			}
 			ImGui::Unindent(34.0f);
 		}
+
+
 
 		if (!enabled) {
 			ImGui::PopStyleColor();
@@ -217,6 +244,9 @@ void ImGuiInspectorWindow::EntityInspector() {
 
 			ImGui::EndPopup();
 		}
+
+		/// Idの削除
+		ImGui::PopID();
 
 		++itr;
 	}

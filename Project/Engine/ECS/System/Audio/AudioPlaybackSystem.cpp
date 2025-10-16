@@ -9,7 +9,7 @@
 using namespace AudioStructs;
 
 AudioPlaybackSystem::AudioPlaybackSystem(GraphicsResourceCollection* _resourceCollection)
-	: pResourceCollection_(_resourceCollection) {
+	: pGrc_(_resourceCollection) {
 
 	HRESULT hr = S_FALSE;
 
@@ -62,7 +62,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 		/// OneShotAudioの再生リクエストチェック
 		for(auto& req : as->oneShotAudioRequests_) {
 			/// ワンショット再生
-			AudioClip* clip = pResourceCollection_->GetAudioClip(req.path);
+			AudioClip* clip = pGrc_->GetAudioClip(req.path);
 			PlayOneShot(clip, req.volume, req.pitch, req.path);
 		}
 
@@ -74,7 +74,7 @@ void AudioPlaybackSystem::RuntimeUpdate(ECSGroup* _ecs) {
 }
 
 void AudioPlaybackSystem::SetAudioClip(AudioSource* _audioSource) {
-	AudioClip* clip = pResourceCollection_->GetAudioClip(_audioSource->path_);
+	AudioClip* clip = pGrc_->GetAudioClip(_audioSource->path_);
 	if (clip) {
 		_audioSource->pAudioClip_ = clip;
 	}

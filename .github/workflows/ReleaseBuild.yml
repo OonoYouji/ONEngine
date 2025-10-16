@@ -1,28 +1,38 @@
 name: ReleaseBuild
+
 on:
-  push: 
+  push:
     branches:
       - master
+
 env:
-  # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
   SOLUTION_FILE_PATH: Project/ONEngine.sln
-  # visual studio の構成(Debug/Release)
   CONFIGURATION: Release
+  PREMAKE_SCRIPT_PATH: ./Project/GenerateProject.ps1
 
 jobs:
   build:
     runs-on: windows-2022
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-        with:
-          msbuild-architecture: x64
-     
-      - name: Build
-        run: |
-          msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
-    
+    # 1. ソース取得
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # 2. MSBuild セットアップ
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: 'latest'
+        msbuild-architecture: x64
+
+    # 3. Premake 実行（プロジェクト生成）
+    - name: Generate project with Premake
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        ./Project/GenerateProject.ps1
+
+    # 4. ONEngine ビルド（Release）
+    - name: Build ONEngine
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
