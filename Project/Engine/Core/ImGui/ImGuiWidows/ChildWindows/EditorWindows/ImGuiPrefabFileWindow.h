@@ -19,7 +19,6 @@ public:
 	void ShowImGui() override;
 
 	void ReloadPrefabFiles(const class Texture* _tex);
-	void AddPrefabButton();
 
 private:
 	/// =====================================================
