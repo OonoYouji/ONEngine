@@ -3,4 +3,4 @@
 2, 立ち上がったvisual studioをデバッグビルド
 
 [![DebugBuild](https://github.com/OonoYouji/ONEngine/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/OonoYouji/ONEngine/actions/workflows/DebugBuild.yml)
-[![ReleaseBuild](https://github.com/OonoYouji/ONEngine/actions/workflows/ReleaseBuild.yml/badge.svg)](https://github.com/OonoYouji/ONEngine/actions/workflows/ReleaseBuild.yml)
+[![.github/workflows/ReleaseBuild.yml](https://github.com/OonoYouji/ONEngine/actions/workflows/ReleaseBuild.yml/badge.svg?branch=master)](https://github.com/OonoYouji/ONEngine/actions/workflows/ReleaseBuild.yml)
