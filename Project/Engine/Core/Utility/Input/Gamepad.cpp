@@ -39,15 +39,7 @@ void Gamepad::Update(Window* ) {
 	/// 前フレームの状態を保存
 	prevState_ = state_;
 
-	///// ゲームパッド情報の取得開始
-	//gamepadDevice_->SetCooperativeLevel(
-	//	_window->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY
-	//);
-
-	//gamepadDevice_->Acquire();
-	//gamepadDevice_->GetDeviceState(sizeof(XINPUT_STATE), &state_);
-
-	// 現在の状態を取得
+	/// 現在の状態を取得
 	ZeroMemory(&state_, sizeof(XINPUT_STATE));
 	XInputGetState(0, &state_);
 }
