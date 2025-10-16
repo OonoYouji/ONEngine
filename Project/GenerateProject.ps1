@@ -69,3 +69,5 @@ if ($LASTEXITCODE -eq 0) {
 else {
     Write-Host "Premake failed with exit code $LASTEXITCODE"
 }
+スクリプトのあるフォルダをプロジェクトルートに固定
+
