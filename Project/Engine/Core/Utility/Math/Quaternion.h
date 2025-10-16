@@ -78,13 +78,13 @@ public:
 	/// @param _target 目標位置
 	/// @param _up 上方向ベクトル
 	/// @return 生成されたクォータニオン
-	static Quaternion LockAt(const Vector3& _position, const Vector3& _target, const Vector3& _up);
+	static Quaternion LookAt(const Vector3& _position, const Vector3& _target, const Vector3& _up);
 
 	/// @brief 特定の方向を見るクォータニオンを生成する
 	/// @param _position 現在の位置
 	/// @param _target 目標位置
 	/// @return 生成されたクォータニオン
-	static Quaternion LockAt(const Vector3& _position, const Vector3& _target);
+	static Quaternion LookAt(const Vector3& _position, const Vector3& _target);
 
 	/// @brief クォータニオンを球面線形補間する
 	/// @param _start 開始クォータニオン
