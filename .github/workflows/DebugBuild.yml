@@ -59,7 +59,8 @@ jobs:
       shell: pwsh
       run: |
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-        pwsh ${{ env.PREMAKE_SCRIPT_PATH }}
+        ./Project/GenerateProject.ps1
+
 
     # 4. Visual StudioのMSBuildをPATHに追加
     - name: Add MSBuild to PATH
