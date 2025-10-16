@@ -66,15 +66,16 @@ jobs:
         echo "Using built-in Windows SDK for fxc"
 
 
-    - name: Generate DirectXTex shader includes
-      working-directory: ./Project/Externals/DirectXTex
+    - name: Build DirectXTex compute shaders
       shell: cmd
       run: |
+        cd Project\Externals\DirectXTex
         if not exist Shaders\Compile mkdir Shaders\Compile
         call MakeBC4EncodeCS.bat
         call MakeBC5EncodeCS.bat
         call MakeBC6HEncodeCS.bat
         call MakeBC7EncodeCS.bat
+    
 
     # 4. Visual StudioのMSBuildをPATHに追加
     - name: Add MSBuild to PATH
