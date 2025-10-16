@@ -22,6 +22,10 @@ public class PuzzleStartController : MonoBehavior {
 		/// ----------------------------------
 		startUI_ = ecsGroup.CreateEntity("PuzzleStartUI");
 		startUI_.parent = entity;
+		MeshRenderer mr = startUI_.AddComponent<MeshRenderer>();
+		if (mr) {
+			mr.enable = 0;
+		}
 
 
 		/// playerを検索
@@ -62,10 +66,15 @@ public class PuzzleStartController : MonoBehavior {
 		/// プレイヤーとパズルの距離を計算
 		toPlayerDistance_ = Vector3.Distance(transform.position, player_.transform.position);
 
-		SpriteRenderer sr = startUI_.GetComponent<SpriteRenderer>();
-		if (sr) {
+		MeshRenderer mr = startUI_.GetComponent<MeshRenderer>();
+		if (mr) {
 			bool enable = (startPuzzleDistance_ > toPlayerDistance_);
-			sr.enable = enable ? 1 : 0;
+			if(enable) {
+				mr.color = new Vector4(1, 1, 1, 1);
+			} else {
+				mr.color = new Vector4(1, 1, 1, 0);
+			}
+			//mr.enable = enable ? 1 : 0;
 		}
 
 		/// 開始出来る状態かチェック
