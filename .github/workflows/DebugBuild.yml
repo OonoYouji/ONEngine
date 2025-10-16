@@ -60,11 +60,6 @@ jobs:
       with:
         vs-version: 'latest'
 
-    # 4. Mainプロジェクト生成（Premake再実行）
-    - name: Generate main project
-      shell: pwsh
-      run: ./Project/GenerateProject.ps1
-
     # 5. ONEngineビルド
     - name: Build ONEngine
       run: msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=Debug
