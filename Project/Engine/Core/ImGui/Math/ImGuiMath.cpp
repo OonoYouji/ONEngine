@@ -87,8 +87,8 @@ bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsReso
 		if (UVTransformEdit("UVTransform", &_material->uvTransform)) {
 			isEdit = true;
 		}
-		
-		if(ImGui::CollapsingHeader("PostEffectFlags")) {
+
+		if (ImGui::CollapsingHeader("PostEffectFlags")) {
 			/// ポストエフェクトのフラグ
 			if (ImGui::CheckboxFlags("Lighting", &_material->postEffectFlags, PostEffectFlags_Lighting)) {
 				isEdit = true;
@@ -124,10 +124,13 @@ bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsReso
 				ImGui::EndDragDropTarget();
 			}
 
-			const Texture* baseTexture = _resourceCollection->GetTexture(texturePath);
-			if (baseTexture) {
-				ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
-				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			/// texture idが有効値じゃなければ無視
+			if (_material->baseTextureId >= 0) {
+				const Texture* baseTexture = _resourceCollection->GetTexture(_resourceCollection->GetTexturePath(_material->baseTextureId));
+				if (baseTexture) {
+					ImTextureID textureId = reinterpret_cast<ImTextureID>(baseTexture->GetSRVGPUHandle().ptr);
+					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+				}
 			}
 
 
@@ -153,15 +156,20 @@ bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsReso
 			}
 
 
-			const Texture* normalTexture = _resourceCollection->GetTexture(normalTexturePath);
-			if (normalTexture) {
-				ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
-				ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+			/// normal texture idが有効値じゃなければ無視
+			if (_material->normalTextureId >= 0) {
+				const Texture* normalTexture = _resourceCollection->GetTexture(_resourceCollection->GetTexturePath(_material->normalTextureId));
+				if (normalTexture) {
+					ImTextureID textureId = reinterpret_cast<ImTextureID>(normalTexture->GetSRVGPUHandle().ptr);
+					ImGui::Image(textureId, ImVec2(100, 100), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(0, 0, 0, 0));
+				}
 			}
+
+
 		}
 
 
-	} 
+	}
 
 
 	return isEdit;

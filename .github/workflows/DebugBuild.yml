@@ -1,28 +1,73 @@
+# name: DebugBuild
+# on:
+#   push: 
+#     branches:
+#       - master
+# env:
+#   # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
+#   SOLUTION_FILE_PATH: Project/ONEngine.sln
+#   # visual studio の構成(Debug/Release)
+#   CONFIGURATION: Debug
+  
+# jobs:
+#   build:
+#     runs-on: windows-2022
+
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v4
+      
+#     - name: Add MSBuild to PATH
+#       uses: microsoft/setup-msbuild@v2
+#       with:
+#         msbuild-architecture: x64
+    
+#     - name: Build
+#       run: |
+#         msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
 name: DebugBuild
+
 on:
-  push: 
+  push:
     branches:
       - master
+
 env:
-  # リポジトリのルートディレクトリを基点としたソリューションファイルのパス
+  # ソリューションファイルの出力先（Premakeが出力する予定の場所）
   SOLUTION_FILE_PATH: Project/ONEngine.sln
-  # visual studio の構成(Debug/Release)
   CONFIGURATION: Debug
-  
+  PREMAKE_SCRIPT_PATH: ./GenerateProject.ps1  # Premake実行スクリプト
+
 jobs:
   build:
     runs-on: windows-2022
 
     steps:
+    # 1. ソース取得
     - name: Checkout
       uses: actions/checkout@v4
-      
+
+    # 2. Premakeのダウンロード
+    - name: Install Premake5
+      run: |
+        curl -L -o premake5.zip https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip
+        powershell -Command "Expand-Archive premake5.zip -DestinationPath ."
+        dir
+
+    # 3. PowerShellスクリプトを使ってプロジェクト生成
+    - name: Generate project with Premake
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        pwsh ${{ env.PREMAKE_SCRIPT_PATH }}
+
+    # 4. Visual StudioのMSBuildをPATHに追加
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
       with:
         msbuild-architecture: x64
-    
-    - name: Build
+
+    # 5. Debugビルド
+    - name: Build Debug
       run: |
-        msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
-    
+        msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}

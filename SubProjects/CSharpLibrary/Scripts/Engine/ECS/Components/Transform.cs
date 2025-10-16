@@ -11,11 +11,13 @@ public class TransformData {
 public class Transform : Component {
 	
 	public Vector3 position = new Vector3(0f, 0f, 0f);
+	public Vector3 worldPosition = Vector3.zero;
 	public Quaternion rotate = Quaternion.identity;
 	public Vector3 scale = new Vector3(1f, 1f, 1f);
 
 	public override void Begin() {
-		InternalGetPosition(nativeHandle, out position.x, out position.y, out position.z);
+		InternalGetPosition(nativeHandle, out worldPosition.x, out worldPosition.y, out worldPosition.z);
+		InternalGetLocalPosition(nativeHandle, out position.x, out position.y, out position.z);
 		InternalGetRotate(nativeHandle, out  rotate.x, out rotate.y, out rotate.z, out rotate.w);
 		InternalGetScale(nativeHandle, out scale.x, out scale.y, out scale.z);
 	}

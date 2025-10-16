@@ -46,7 +46,7 @@ void CameraUpdateSystem::OutsideOfRuntimeUpdate(ECSGroup* _ecs) {
 			} else if (type == static_cast<int>(CameraType::Type2D)) {
 				if (pMainCamera2D_ != cameraComponent) {
 					/// 古い方をfalseに戻す
-					if (pMainCamera2D_ && pMainCamera_->cameraType_ == static_cast<int>(CameraType::Type2D)) {
+					if (pMainCamera2D_ && pMainCamera2D_->cameraType_ == static_cast<int>(CameraType::Type2D)) {
 						pMainCamera2D_->SetIsMainCameraRequest(false);
 					}
 					pMainCamera2D_ = cameraComponent; ///< main camera 2Dを設定

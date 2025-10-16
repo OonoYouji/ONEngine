@@ -1,0 +1,54 @@
+{
+    "components": [
+        {
+            "enable": 1,
+            "position": {
+                "x": 0.0,
+                "y": 3.799999952316284,
+                "z": 0.0
+            },
+            "rotate": {
+                "w": 0.06189817190170288,
+                "x": 0.06189817190170288,
+                "y": 0.7043923139572144,
+                "z": -0.7043923139572144
+            },
+            "scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "type": "Transform"
+        },
+        {
+            "type": "Variables"
+        },
+        {
+            "color": {
+                "w": 1.0,
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "enable": 1,
+            "meshPath": "./Packages/Models/primitive/plane.obj",
+            "postEffectFlags": 0,
+            "texturePath": "./Assets/Textures/XBoxControllerUI/xbox_button_a.png",
+            "type": "MeshRenderer"
+        },
+        {
+            "enable": 1,
+            "scripts": [
+                {
+                    "enable": true,
+                    "name": "Billboard"
+                }
+            ],
+            "type": "Script"
+        }
+    ],
+    "id": -1,
+    "name": "PuzzleStartUI",
+    "parent": 1,
+    "prefabName": "PuzzleStartUI.prefab"
+}
