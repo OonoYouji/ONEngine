@@ -4,14 +4,14 @@
             "enable": 1,
             "position": {
                 "x": 0.0,
-                "y": 3.799999952316284,
+                "y": 2.9000000953674316,
                 "z": 0.0
             },
             "rotate": {
-                "w": 0.06189817190170288,
-                "x": 0.06189817190170288,
-                "y": 0.7043923139572144,
-                "z": -0.7043923139572144
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
             },
             "scale": {
                 "x": 1.0,
@@ -42,13 +42,17 @@
                 {
                     "enable": true,
                     "name": "Billboard"
+                },
+                {
+                    "enable": true,
+                    "name": "Breathe"
                 }
             ],
             "type": "Script"
         }
     ],
-    "id": -1,
+    "id": 11,
     "name": "PuzzleStartUI",
-    "parent": 1,
+    "parent": null,
     "prefabName": "PuzzleStartUI.prefab"
 }
