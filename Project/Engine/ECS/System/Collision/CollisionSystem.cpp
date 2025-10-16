@@ -45,8 +45,8 @@ CollisionSystem::CollisionSystem() {
 
 	collisionCheckMap_[boxCompName + "Vs" + sphereCompName] = [](const CollisionPair& _pair) -> bool {
 		return CheckMethod::CollisionCheckSphereVsBox(
-			_pair.first->GetComponent<SphereCollider>(),
-			_pair.second->GetComponent<BoxCollider>()
+			_pair.second->GetComponent<SphereCollider>(),
+			_pair.first->GetComponent<BoxCollider>()
 		);
 		};
 
