@@ -61,6 +61,15 @@ jobs:
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         ./Project/GenerateProject.ps1
 
+    - name: Generate DirectXTex shader includes
+      working-directory: ./Project/Externals/DirectXTex
+      shell: cmd
+      run: |
+        if not exist Shaders\Compile mkdir Shaders\Compile
+        call MakeBC4EncodeCS.bat
+        call MakeBC5EncodeCS.bat
+        call MakeBC6HEncodeCS.bat
+        call MakeBC7EncodeCS.bat
 
     # 4. Visual StudioのMSBuildをPATHに追加
     - name: Add MSBuild to PATH
