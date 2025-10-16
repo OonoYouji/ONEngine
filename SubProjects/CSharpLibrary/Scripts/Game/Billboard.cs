@@ -8,9 +8,12 @@
 	[SerializeField] public bool isBillboardAxisY = true;
 	[SerializeField] public Vector3 euler;
 	[SerializeField] public Vector3 startRotate_ = Vector3.zero;
+	[SerializeField] public Vector3 cameraWPos = Vector3.zero;
+	[SerializeField] public Vector3 thisWPos = Vector3.zero;
 
 	public override void Initialize() {
 		camera_ = ecsGroup.FindEntity("Camera");
+		startRotate_.x = Mathf.PI / 2;
 	}
 
 	public override void Update() {
@@ -20,24 +23,30 @@
 		}
 
 		// カメラの位置からオブジェクトの位置への方向ベクトルを計算
-		Vector3 dir = camera_.transform.position - transform.position;
+		cameraWPos = camera_.transform.worldPosition;
+		thisWPos = transform.worldPosition;
+
+		Vector3 dir = camera_.transform.worldPosition - transform.worldPosition;
+		dir.y = 0f;
 		dir = Vector3.Normalize(dir);
 
 		euler = Vector3.zero;
 
 		/// Y軸回転（ヨー）
 		if (isBillboardAxisY) {
-			float yaw = Mathf.Atan2(-dir.x, dir.z); // 修正: 符号を反転
-			euler.y = yaw * Mathf.Rad2Deg;
+			float yaw = Mathf.Atan2(dir.x, dir.z);
+			euler.y = yaw;
 		}
 
 		/// X軸回転（ピッチ）
 		if (isBillboardAxisX) {
 			float pitch = Mathf.Atan2(-dir.y, Mathf.Sqrt(dir.x * dir.x + dir.z * dir.z));
-			euler.x = pitch * Mathf.Rad2Deg;
+			euler.x = pitch;
 		}
 
-		transform.rotate = CreateFromYawPitchRoll(euler.y, euler.x, 0.0f);
+		transform.rotate = CreateFromYawPitchRoll(
+			euler.y + startRotate_.y,
+			euler.x + startRotate_.x, 0.0f);
 
 	}
 
