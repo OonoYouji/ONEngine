@@ -36,7 +36,7 @@ private:
 	/// private : objects
 	/// ====================================================
 
-	class GraphicsResourceCollection* pResourceCollection_ = nullptr;
+	class GraphicsResourceCollection* pGrc_ = nullptr;
 
 	const size_t kMaxRenderingMeshCount_ = size_t(std::pow(2, 20));
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;

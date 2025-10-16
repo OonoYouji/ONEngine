@@ -8,7 +8,7 @@
 
 
 TerrainRenderingPipeline::TerrainRenderingPipeline(GraphicsResourceCollection* _resourceCollection)
-	: pResourceCollection_(_resourceCollection) {}
+	: pGrc_(_resourceCollection) {}
 TerrainRenderingPipeline::~TerrainRenderingPipeline() {}
 
 
@@ -144,10 +144,10 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	materialBuffer_.SRVBindForGraphicsCommandList(cmdList, ROOT_PARAM_MATERIAL);
 
 	/// texs
-	const auto& textures = pResourceCollection_->GetTextures();
+	const auto& textures = pGrc_->GetTextures();
 	for (uint32_t i = 0; i < pTerrain_->GetSplatTexPaths().size(); i++) {
 		const std::string& path = pTerrain_->GetSplatTexPaths()[i];
-		size_t index = pResourceCollection_->GetTextureIndex(path);
+		size_t index = pGrc_->GetTextureIndex(path);
 		cmdList->SetGraphicsRootDescriptorTable(
 			static_cast<UINT>(ROOT_PARAM_TEX_GRASS + i),
 			textures[index].GetSRVGPUHandle()

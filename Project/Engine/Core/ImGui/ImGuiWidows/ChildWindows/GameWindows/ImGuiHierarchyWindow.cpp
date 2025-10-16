@@ -32,15 +32,10 @@ ImGuiHierarchyWindow::ImGuiHierarchyWindow(
 }
 
 void ImGuiHierarchyWindow::ShowImGui() {
-	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr, ImGuiWindowFlags_MenuBar)) {
+	if (!ImGui::Begin(imGuiWindowName_.c_str(), nullptr)) {
 		ImGui::End();
 		return;
 	}
-
-	PrefabDragAndDrop();
-
-	/// Menuの表示
-	DrawMenuBar();
 
 	/// ヒエラルキーの表示
 	DrawHierarchy();

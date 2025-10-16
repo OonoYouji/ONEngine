@@ -30,12 +30,12 @@ void ComputePipeline::AddCBV(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t
 	rootParameters_.push_back(parameter);
 }
 
-void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister) {
+void ComputePipeline::Add32BitConstant(D3D12_SHADER_VISIBILITY _shaderVisibility, uint32_t _shaderRegister, uint32_t _num32bitValue) {
 	D3D12_ROOT_PARAMETER parameter{};
 	parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
 	parameter.ShaderVisibility = _shaderVisibility;
 	parameter.Descriptor.ShaderRegister = _shaderRegister;
-	parameter.Constants.Num32BitValues = 1;
+	parameter.Constants.Num32BitValues = _num32bitValue;
 
 	rootParameters_.push_back(parameter);
 }

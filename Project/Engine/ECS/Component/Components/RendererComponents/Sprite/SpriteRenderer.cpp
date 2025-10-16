@@ -9,10 +9,46 @@
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
+
+/// /////////////////////////////////////////////////////////////
+/// デバッグ用のSpriteRenderer
+/// /////////////////////////////////////////////////////////////
+
+void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection) {
+	if (!_sr) {
+		return;
+	}
+
+	float indentValue = 1.2f;
+	ImGui::Indent(indentValue);
+	/// colorの変更
+	if (ImMathf::MaterialEdit("material", &_sr->material_, _resourceCollection)) {}
+	ImGui::Unindent(indentValue);
+}
+
+
+void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
+	_j = nlohmann::json{
+		{ "type", "SpriteRenderer" },
+		{ "enable", _sr.enable },
+		{ "material", _sr.material_ }
+	};
+}
+
+void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
+	_sr.enable = _j.value("enable", static_cast<int>(true));
+	_sr.material_ = _j.value("material", Material{});
+}
+
+
+/// /////////////////////////////////////////////////////////////
+/// SpriteRenderer
+/// /////////////////////////////////////////////////////////////
+
 SpriteRenderer::SpriteRenderer() {
 	material_.baseColor = Vector4::kWhite;
 	material_.entityId = 0;
-	material_.baseTextureId = -1;
+	material_.baseTextureId = 0;
 	material_.uvTransform = UVTransform();
 	material_.postEffectFlags = 0;
 }
@@ -35,33 +71,28 @@ Material& SpriteRenderer::GetMaterial() {
 	return material_;
 }
 
-/// /////////////////////////////////////////////////////////////
-/// デバッグ用のSpriteRenderer
-/// /////////////////////////////////////////////////////////////
 
-void COMP_DEBUG::SpriteDebug(SpriteRenderer* _sr, GraphicsResourceCollection* _resourceCollection) {
-	if (!_sr) {
+/// ===================================================
+/// csで使用するための関数群
+/// ===================================================
+
+Vector4 InternalSpriteMethods::InternalGetColor(uint64_t _nativeHandle) {
+	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
+	if (sr) {
+		return sr->GetColor();
+	}
+
+	Console::LogError("InternalSpriteMethods::InternalGetColor() | native handle is invalid");
+
+	return Vector4();
+}
+
+void InternalSpriteMethods::InternalSetColor(uint64_t _nativeHandle, Vector4 _color) {
+	SpriteRenderer* sr = reinterpret_cast<SpriteRenderer*>(_nativeHandle);
+	if (sr) {
+		sr->SetColor(_color);
 		return;
 	}
-	Material& material = _sr->GetMaterial();
-	ImGui::Indent(0.9f);
-	/// colorの変更
-	if (ImMathf::MaterialEdit("material", &material, _resourceCollection)) {
-	}
-	ImGui::Unindent(0.9f);
-}
 
-
-void to_json(nlohmann::json& _j, const SpriteRenderer& _sr) {
-	_j = nlohmann::json{
-		{ "type", "SpriteRenderer" },
-		{ "enable", _sr.enable },
-		{ "material", _sr.GetMaterial() }
-	};
-}
-
-void from_json(const nlohmann::json& _j, SpriteRenderer& _sr) {
-	_sr.enable = _j.value("enable", static_cast<int>(true));
-	Material material = _j.value("material", Material());
-	_sr.GetMaterial() = material;
+	Console::LogError("InternalSpriteMethods::InternalSetColor() | native handle is invalid");
 }

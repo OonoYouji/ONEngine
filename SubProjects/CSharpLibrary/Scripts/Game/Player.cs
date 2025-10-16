@@ -13,7 +13,7 @@ public class Player : MonoBehavior {
 	[SerializeField] float dushSpeed = 32f; // ダッシュ速度
 
 	[SerializeField] Vector3 sphericalCoord = new Vector3(0.0f, 0f, -8f); // カメラのオフセット
-	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 2.0f, 0f); // カメラのオフセット（球面座標）
+	[SerializeField] Vector3 cameraOffset = new Vector3(0.0f, 4.0f, -11f); // カメラのオフセット（球面座標）
 	Entity camera;
 
 	public override void Awake() {
@@ -26,13 +26,13 @@ public class Player : MonoBehavior {
 			return;
 		}
 
-		camera.parent = this.entity;
+		//camera.parent = this.entity;
 	}
 
 	public override void Update() {
 
 		Move();
-		Jump();
+		//Jump();
 
 		CameraFollow();
 
@@ -49,8 +49,11 @@ public class Player : MonoBehavior {
 		/// 位置を更新
 		Vector3 velocity = new Vector3();
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.LeftThumb);
-		velocity.x = gamepadAxis.x;
-		velocity.z = gamepadAxis.y;
+		Vector2 keyboardAxis = Input.KeyboardAxis(KeyboardAxis.WASD);
+
+		/// 後で正規化するので大丈夫
+		velocity.x = gamepadAxis.x + keyboardAxis.x;
+		velocity.z = gamepadAxis.y + keyboardAxis.y;
 
 		if (Input.TriggerGamepad(Gamepad.LeftThumb)) {
 			isDushing = !isDushing; // ダッシュのトグル
@@ -72,6 +75,7 @@ public class Player : MonoBehavior {
 		}
 
 		t.position += velocity;
+		RotateFromMoveDirection(velocity.Normalized());
 
 
 		/// animationさせるかどうか
@@ -103,12 +107,11 @@ public class Player : MonoBehavior {
 	}
 
 
+	[SerializeField] Vector3 lastPlayerPosition = new Vector3();
 	void CameraFollow() {
 		if (camera == null) {
 			return; // 子エンティティがない場合は何もしない
 		}
-
-		// Debug.LogInfo("CameraFollow called. Camera: " + camera.name);
 
 		/// 入力
 		Vector2 gamepadAxis = Input.GamepadThumb(GamepadAxis.RightThumb);
@@ -123,7 +126,7 @@ public class Player : MonoBehavior {
 		/// カメラの位置を計算
 		Transform cT = camera.transform;
 		Vector3 cPos = cT.position;
-		Vector3 cRot = cT.rotate.ToEuler();
+		//Vector3 cRot = cT.rotate.ToEuler();
 
 		cPos.x = distance * Mathf.Sin(sphericalCoord.y) * Mathf.Cos(sphericalCoord.x);
 		cPos.y = distance * Mathf.Sin(sphericalCoord.x);
@@ -131,7 +134,8 @@ public class Player : MonoBehavior {
 
 		//cRot = LookAt(transform.position - cPos); // カメラの向きをプレイヤーに向ける
 
-		cT.position = this.transform.position + new Vector3(0, 1.0f, -2.0f); // プレイヤーの位置にオフセットを加える
+		cT.position = this.transform.position + cameraOffset; // プレイヤーの位置にオフセットを加える
+		lastPlayerPosition = this.transform.position;
 		//cT.rotate = Quaternion.FromEuler(cRot);
 	}
 
@@ -156,6 +160,15 @@ public class Player : MonoBehavior {
 		float yaw = Mathf.Atan2(dir.x, dir.z);
 
 		return new Vector3(pitch, yaw, 0f);
+	}
+
+
+	/// 進行方向に回転する
+	private void RotateFromMoveDirection(Vector3 _dir) {
+		float rotateY = Mathf.Atan2(_dir.z, _dir.x);
+		Vector3 euler = transform.rotate.ToEuler();
+		euler.y = -rotateY + Mathf.PI / 2.0f; // Z軸が前方向なので90度ずらす
+		transform.rotate = Quaternion.FromEuler(euler);
 	}
 
 }

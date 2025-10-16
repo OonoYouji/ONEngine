@@ -41,7 +41,7 @@ private:
 	/// ----- other class ----- ///
 	class EntityComponentSystem* pECS_;
 	class EditorManager* pEditorManager_;
-	class GraphicsResourceCollection* pResourceCollection_;
+	class GraphicsResourceCollection* pGrc_;
 
 	/// ----- edit target ----- ///
 	GameEntity* selectedEntity_ = nullptr; ///< 選択したエンティティのポインタ

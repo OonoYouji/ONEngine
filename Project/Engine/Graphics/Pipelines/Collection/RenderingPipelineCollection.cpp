@@ -20,6 +20,7 @@
 #include "../Render/Terrain/TerrainRenderingPipeline.h"
 #include "../Render/Terrain/TerrainProceduralRenderingPipeline.h"
 #include "../Render/River/RiverRenderingPipeline.h"
+#include "../Render/Grass/GrassRenderingPipeline.h"
 
 /// post process
 #include "../PostProcess/PerObject/Light/PostProcessLighting.h"
@@ -53,6 +54,7 @@ void RenderingPipelineCollection::Initialize() {
 #endif // DEBUG_MODE
 	Generate3DRenderingPipeline<EffectRenderingPipeline>(graphicsResourceCollection_);
 	Generate3DRenderingPipeline<GizmoRenderingPipeline>();
+	Generate3DRenderingPipeline<GrassRenderingPipeline>(graphicsResourceCollection_);
 
 	/// post process - per object
 	GeneratePostProcessPipeline<PostProcessLighting>();

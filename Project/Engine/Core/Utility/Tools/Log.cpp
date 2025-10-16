@@ -1,6 +1,7 @@
 #include "Log.h"
 
 
+#include <comdef.h>
 #include <Windows.h>
 
 /// std
@@ -113,6 +114,18 @@ std::string ConvertTCHARToString(const TCHAR* tstr) {
 #else
 	return std::string(tstr); // もともと char* ならそのまま
 #endif
+}
+
+std::string HrToString(HRESULT _hr) {
+	_com_error err(_hr);
+	const wchar_t* wmsg = err.ErrorMessage();
+
+	// UTF-16 → UTF-8 変換
+	int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, nullptr, 0, nullptr, nullptr);
+	std::string msg(sizeNeeded - 1, 0); // 終端を除く
+	WideCharToMultiByte(CP_UTF8, 0, wmsg, -1, msg.data(), sizeNeeded, nullptr, nullptr);
+
+	return msg;
 }
 
 

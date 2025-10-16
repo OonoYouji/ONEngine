@@ -60,6 +60,11 @@ public struct Vector3 {
 		return new Vector3(pitch * Mathf.Rad2Deg, yaw * Mathf.Rad2Deg, 0f);
 	}
 
+	static public float Distance(Vector3 _start, Vector3 _end) {
+		Vector3 dist = _end - _start;
+		return dist.Length();
+	}
+
 
 	/// =================================
 	/// 定数

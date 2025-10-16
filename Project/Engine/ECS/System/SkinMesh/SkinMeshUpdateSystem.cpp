@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 SkinMeshUpdateSystem::SkinMeshUpdateSystem(DxManager* _dxManager, GraphicsResourceCollection* _resourceCollection)
-	: pDxManager_(_dxManager), pResourceCollection_(_resourceCollection) {}
+	: pDxManager_(_dxManager), pGrc_(_resourceCollection) {}
 
 void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
@@ -23,7 +23,7 @@ void SkinMeshUpdateSystem::RuntimeUpdate(ECSGroup* _ecs) {
 
 		/// skin clusterが存在しないなら生成する
 		if (skinMesh->isChangingMesh_) {
-			Model* model = pResourceCollection_->GetModel(skinMesh->GetMeshPath());
+			Model* model = pGrc_->GetModel(skinMesh->GetMeshPath());
 			if (!model) {
 				//!< nullの場合は適当なメッセージを出力してスキップ
 				Console::Log("[error] SkinMeshUpdateSystem::Update: Model not found for path: " + skinMesh->GetMeshPath());

@@ -23,7 +23,7 @@ private:
 	/// private : objects
 	/// =========================================
 
-	class GraphicsResourceCollection* pResourceCollection_; ///< グラフィックスリソースコレクション
+	class GraphicsResourceCollection* pGrc_; ///< グラフィックスリソースコレクション
 	class DxManager* pDxManager_; ///< DirectXマネージャー
 
 };
