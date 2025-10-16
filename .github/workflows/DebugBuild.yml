@@ -25,43 +25,51 @@
 #     - name: Build
 #       run: |
 #         msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
-    
-name: Build Test
+
+
+name: DebugBuild
 
 on:
   push:
-  pull_request:
+    branches:
+      - master
+
+env:
+  # ソリューションファイルの出力先（Premakeが出力する予定の場所）
+  SOLUTION_FILE_PATH: Project/ONEngine.sln
+  CONFIGURATION: Debug
+  PREMAKE_SCRIPT_PATH: ./GenerateProject.ps1  # Premake実行スクリプト
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
-      # 1. ソース取得
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    # 1. ソース取得
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      # 2. Premake5のダウンロード
-      - name: Install Premake5
-        run: |
-          curl -L -o premake5.zip https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip
-          powershell -Command "Expand-Archive premake5.zip -DestinationPath ."
-          dir
+    # 2. Premakeのダウンロード
+    - name: Install Premake5
+      run: |
+        curl -L -o premake5.zip https://github.com/premake/premake-core/releases/download/v5.0.0-beta2/premake-5.0.0-beta2-windows.zip
+        powershell -Command "Expand-Archive premake5.zip -DestinationPath ."
+        dir
 
-      # 3. PowerShellスクリプトを使ってプロジェクト生成
-      - name: Generate project with Premake (via PowerShell)
-        shell: pwsh
-        run: |
-          Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-          ./Project/GenerateProject.ps1
+    # 3. PowerShellスクリプトを使ってプロジェクト生成
+    - name: Generate project with Premake
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+        pwsh ${{ env.PREMAKE_SCRIPT_PATH }}
 
-      # 4. Debugビルド
-      - name: Build Debug
-        run: |
-          msbuild MyProject.sln /p:Configuration=Debug /m
+    # 4. Visual StudioのMSBuildをPATHに追加
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+      with:
+        msbuild-architecture: x64
 
-      # 5. Releaseビルド
-      # - name: Build Release
-      #   run: |
-      #     msbuild MyProject.sln /p:Configuration=Release /m
-
+    # 5. Debugビルド
+    - name: Build Debug
+      run: |
+        msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
