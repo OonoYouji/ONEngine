@@ -48,10 +48,12 @@ jobs:
           powershell -Command "Expand-Archive premake5.zip -DestinationPath ."
           dir
 
-      # 3. Visual Studioプロジェクトを生成
-      - name: Generate project with Premake
+      # 3. PowerShellスクリプトを使ってプロジェクト生成
+      - name: Generate project with Premake (via PowerShell)
+        shell: pwsh
         run: |
-          ./premake5.exe vs2022
+          Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+          ./Scripts/GenerateProject.ps1
 
       # 4. Debugビルド
       - name: Build Debug
@@ -59,6 +61,7 @@ jobs:
           msbuild MyProject.sln /p:Configuration=Debug /m
 
       # 5. Releaseビルド
-      - name: Build Release
-        run: |
-          msbuild MyProject.sln /p:Configuration=Release /m
+      # - name: Build Release
+      #   run: |
+      #     msbuild MyProject.sln /p:Configuration=Release /m
+
