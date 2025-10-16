@@ -33,10 +33,9 @@ on:
       - master
 
 env:
-  # ソリューションファイルの出力先（Premakeが出力する予定の場所）
   SOLUTION_FILE_PATH: Project/ONEngine.sln
   CONFIGURATION: Debug
-  PREMAKE_SCRIPT_PATH: ./GenerateProject.ps1  # Premake実行スクリプト
+  PREMAKE_SCRIPT_PATH: ./Project/GenerateProject.ps1
 
 jobs:
   build:
@@ -47,35 +46,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 2. PowerShellスクリプトを使ってプロジェクト生成
+    # 2. MSBuild セットアップ
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: 'latest'
+        msbuild-architecture: x64
+
+    # 3. Premake 実行（プロジェクト生成）
     - name: Generate project with Premake
       shell: pwsh
       run: |
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         ./Project/GenerateProject.ps1
 
-    # 3. MSBuildのセットアップ
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
-      with:
-        vs-version: 'latest'
-
-    # 4. Mainプロジェクト生成（Premake再実行）
-    - name: Generate main project
-      shell: pwsh
-      run: ./Project/GenerateProject.ps1
-
-    # 5. ONEngineビルド
+    # 4. ONEngine ビルド
     - name: Build ONEngine
-      run: msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=Debug
-
-    # 6. MSBuildをPATHに追加（必要に応じて）
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
-      with:
-        msbuild-architecture: x64
-
-    # 7. Debugビルド（最後の確認用）
-    - name: Build Debug
-      run: |
-        msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
