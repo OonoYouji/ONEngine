@@ -32,6 +32,10 @@ public:
 		Y = XINPUT_GAMEPAD_Y
 	};
 
+	enum Axis {
+		Left, Right
+	};
+
 public:
 	/// ===================================================
 	/// public : methods

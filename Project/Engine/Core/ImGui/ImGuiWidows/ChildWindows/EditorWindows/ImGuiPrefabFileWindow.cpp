@@ -71,48 +71,10 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
-			//pECS_->ReloadPrefab(file.second);
+			pECS_->ReloadPrefab(file.second);
 		}
 
 	}
 
 }
 
-void ImGuiPrefabFileWindow::AddPrefabButton() {
-
-	if (ImGui::Button("+")) {
-		ImGui::OpenPopup("add prefab popup");
-	}
-
-
-	if (ImGui::BeginPopup("add prefab popup")) {
-
-		/// 新規Prefabの名前入力
-		if (ImMathf::InputText("new prefab name", &newPrefabName_, ImGuiInputTextFlags_EnterReturnsTrue)) {
-
-			if (!newPrefabName_.empty()) {
-				/// 拡張子を追加
-				if (newPrefabName_.find(".prefab") == std::string::npos) {
-					newPrefabName_ += ".prefab";
-				}
-
-				/// 先にPrefabをリロード
-				//pECS_->ReloadPrefab(newPrefabName_);
-
-				/// Prefabを生成
-				//GameEntity* entity = pECS_->GeneratePrefabEntity(newPrefabName_);
-				//if (entity) {
-				//	Console::Log("Prefab created: " + newPrefabName_);
-				//	pInspector_->SetSelectedEntity(reinterpret_cast<std::uintptr_t>(entity));
-				//} else {
-				//	Console::LogError("Failed to create prefab: " + newPrefabName_);
-				//}
-				newPrefabName_.clear(); // 入力フィールドをクリア
-			}
-		}
-
-		ImGui::EndPopup();
-
-	}
-
-}

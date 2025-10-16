@@ -53,10 +53,11 @@ int32_t ANIME_MATH::CreateJoint(const Node& _node, const std::optional<int32_t>&
 	joint.parent = _parent;
 	_joints.push_back(joint);
 
-	for (const Node& child : _node.children) {
-		int32_t childIndex = CreateJoint(child, joint.index, _joints);
-		joint.children.push_back(childIndex);
-	}
+	/// push_backした後に子のJointを処理してしまっているので一旦コメントアウト、処理に影響がないのか確認する
+	//for (const Node& child : _node.children) {
+	//	int32_t childIndex = CreateJoint(child, joint.index, _joints);
+	//	joint.children.push_back(childIndex);
+	//}
 
 	return joint.index;
 }

@@ -24,8 +24,8 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	RenderTexture() = default;
-	~RenderTexture() = default;
+	RenderTexture();
+	~RenderTexture();
 
 	void Initialize(DXGI_FORMAT _format, const Vector4& _clearColor, const std::string& _name, class DxManager* _dxManager, class GraphicsResourceCollection* _resourceCollection);
 

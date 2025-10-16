@@ -46,10 +46,10 @@ void InputSystem::Update() {
 void MONO_INTERNAL_METHOD::InternalGetGamepadThumb(int _axisIndex, float* _x, float* _y) {
 	Vector2 v = {};
 	switch (_axisIndex) {
-	case 0: // Left
+	case Gamepad::Axis::Left: // Left
 		v = Input::GetGamepadLeftThumb();
 		break;
-	case 1: // Right
+	case Gamepad::Axis::Right: // Right
 		v = Input::GetGamepadRightThumb();
 		break;
 	}
