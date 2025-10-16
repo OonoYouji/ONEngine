@@ -61,21 +61,15 @@ jobs:
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         ./Project/GenerateProject.ps1
 
-    - name: Setup Windows SDK (for fxc)
-      run: |
-        echo "Using built-in Windows SDK for fxc"
+    - name: Build DirectXTex helper project
+      run: msbuild Project/Externals/DirectXTex/DirectXTex_Desktop_2022.vcxproj /p:Configuration=Debug /m
 
+    - name: Generate main project
+      shell: pwsh
+      run: ./Project/GenerateProject.ps1
 
-    - name: Build DirectXTex compute shaders
-      shell: cmd
-      run: |
-        cd Project\Externals\DirectXTex
-        if not exist Shaders\Compile mkdir Shaders\Compile
-        call MakeBC4EncodeCS.bat
-        call MakeBC5EncodeCS.bat
-        call MakeBC6HEncodeCS.bat
-        call MakeBC7EncodeCS.bat
-    
+    - name: Build ONEngine
+      run: msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=Debug
 
     # 4. Visual StudioのMSBuildをPATHに追加
     - name: Add MSBuild to PATH
