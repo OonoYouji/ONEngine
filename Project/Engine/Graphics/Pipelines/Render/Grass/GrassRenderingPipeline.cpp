@@ -72,7 +72,6 @@ void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		/// buffer
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_ALL, 0); /// CBV_VIEW_PROJECTION
-		pipeline_->Add32BitConstant(D3D12_SHADER_VISIBILITY_ALL, 1, 2); // ROOT_PARAM_START_INDEX
 		pipeline_->AddCBV(D3D12_SHADER_VISIBILITY_PIXEL, 2); /// CBV_MATERIAL
 
 		pipeline_->AddDescriptorRange(0, 1, D3D12_DESCRIPTOR_RANGE_TYPE_SRV); // t0: BladeInstance
@@ -198,10 +197,6 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 
 			// material のデータをセット
 			grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
-
-			// 32bit 単位での値をセット（startIndex, currentInstanceCount）
-			UINT constants[2] = { startIndex, currentInstanceCount };
-			cmdList->SetGraphicsRoot32BitConstants(ROOT_PARAM_CONSTANTS, 2, constants, 0);
 
 			// DispatchMesh を呼ぶ（MS 側が threadsPerGroup = 32 を使う前提）
 			cmdList->DispatchMesh(threadGroupCountX, 1, 1);

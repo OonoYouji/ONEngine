@@ -17,7 +17,6 @@ class GrassRenderingPipeline : public IRenderingPipeline {
 
 	enum ROOT_PARAM {
 		CBV_VIEW_PROJECTION,
-		ROOT_PARAM_CONSTANTS,
 		CBV_MATERIAL,
 		ROOT_PARAM_BLADES,
 		SRV_START_INDEX,
