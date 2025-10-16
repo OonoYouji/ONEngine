@@ -61,6 +61,12 @@ jobs:
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         ./Project/GenerateProject.ps1
 
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: 'latest'
+
     - name: Build DirectXTex helper project
       run: msbuild Project/Externals/DirectXTex/DirectXTex_Desktop_2022.vcxproj /p:Configuration=Debug /m
 
