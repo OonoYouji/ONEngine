@@ -1,0 +1,33 @@
+name: DevelopmentBuild
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  SOLUTION_FILE_PATH: Project/ONEngine.sln
+  CONFIGURATION: Development
+  PREMAKE_SCRIPT_PATH: ./GenerateProject.ps1
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Generate project with Premake
+      shell: pwsh
+      run: |
+        Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
+        ./Project/GenerateProject.ps1
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+      with:
+        vs-version: 'latest'
+
+    - name: Build ONEngine Development
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /p:Platform=x64,Configuration=${{ env.CONFIGURATION }}
