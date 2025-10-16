@@ -61,6 +61,11 @@ jobs:
         Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
         ./Project/GenerateProject.ps1
 
+    - name: Setup Windows SDK (for fxc)
+      run: |
+        echo "Using built-in Windows SDK for fxc"
+
+
     - name: Generate DirectXTex shader includes
       working-directory: ./Project/Externals/DirectXTex
       shell: cmd
