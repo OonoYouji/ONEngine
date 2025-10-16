@@ -11,7 +11,8 @@ env:
 
 jobs:
   build:
-    runs-on: windows-2022name: ReleaseBuild
+    runs-on: windows-2022
+    name: ReleaseBuild
 
 on:
   push:
