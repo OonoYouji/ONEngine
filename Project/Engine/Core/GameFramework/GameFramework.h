@@ -15,13 +15,11 @@
 #include "GameFrameworkConfig.h"
 
 
-
 /// ///////////////////////////////////////////////////
 /// game framework class
 /// ///////////////////////////////////////////////////
 class GameFramework final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -40,7 +38,6 @@ public:
 	void LoadDebugJson();
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
@@ -50,8 +47,8 @@ private:
 	std::unique_ptr<SceneManager>          sceneManager_          = nullptr;
 	std::unique_ptr<EntityComponentSystem> entityComponentSystem_ = nullptr;
 
-	std::unique_ptr<ImGuiManager>          imGuiManager_     = nullptr;
-	std::unique_ptr<EditorManager>         editorManager_ = nullptr;
+	std::unique_ptr<ImGuiManager>          imGuiManager_          = nullptr;
+	std::unique_ptr<EditorManager>         editorManager_         = nullptr;
 
 	std::unique_ptr<RenderingFramework>    renderingFramework_;
 
