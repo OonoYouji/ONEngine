@@ -17,7 +17,6 @@ GameFramework::~GameFramework() {
 
 	/// engineの終了処理
 	windowManager_->Finalize();
-	dxManager_->Finalize();
 }
 
 void GameFramework::Initialize(const GameFrameworkConfig& _startSetting) {
