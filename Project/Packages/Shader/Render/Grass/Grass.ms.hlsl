@@ -25,7 +25,7 @@ RWStructuredBuffer<Time> time : register(u0);
 
 [shader("mesh")]
 [outputtopology("triangle")]
-[numthreads(32, 1, 1)]
+[numthreads(1, 1, 1)]
 void MSMain(uint3 DTid : SV_DispatchThreadID,
 			uint3 Gid : SV_GroupThreadID,
 			uint gIndex : SV_GroupIndex,
@@ -36,13 +36,13 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 	/// 出来る限り多くの頂点を出力する
 	SetMeshOutputCounts(51 * 5, 51 * 2);
 	
-	uint threadIndex = Gid.x;
+	uint threadIndex = DTid.x;
 
     // 各スレッドが描く草数
 	uint grassPerThread = 51;
 
     // このスレッドが描く草の開始インデックス
-	uint baseIndex = asPayload.startIndex + threadIndex * grassPerThread;
+	uint baseIndex = asPayload.startIndices[threadIndex];
 	
 	/// 草の数分だけ処理する
 	for (int gi = 0; gi < kMaxRenderingGrassSize; ++gi) {

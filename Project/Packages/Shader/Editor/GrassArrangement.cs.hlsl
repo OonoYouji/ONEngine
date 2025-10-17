@@ -100,5 +100,4 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	newInstance.random01 = texColor.w; // 0~1のランダム値を保存
 
 	bladeInstances.Append(newInstance);
-	//bladeInstances[index] = newInstance;
 }

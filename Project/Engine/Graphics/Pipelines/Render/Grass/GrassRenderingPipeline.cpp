@@ -168,7 +168,7 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		UINT instanceCount = static_cast<UINT>(grass->GetInstanceCount());
 		if (instanceCount == 0) continue;
 
-		const UINT threadsPerGroup = 32;              // MS の [numthreads(32,1,1)]
+		const UINT threadsPerGroup = 64;
 		const UINT grassPerThread = 51;
 		const UINT oneDrawInstanceCount = grassPerThread * threadsPerGroup; // 1632
 
@@ -187,7 +187,8 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 		// バッファの個数（chunkSize 単位）
 		UINT bufferCount = (instanceCount + chunkSize - 1) / chunkSize;
 
-		for (UINT i = 0; i < bufferCount; ++i) {
+		//for (UINT i = 0; i < bufferCount; ++i) {
+		for (UINT i = 0; i < 1; ++i) {
 			// startIndex は chunkSize 単位で進める（ここが元コードと違う点）
 			UINT startIndex = i * chunkSize;
 			UINT currentInstanceCount = (std::min)(chunkSize, instanceCount - startIndex);
@@ -199,7 +200,7 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 			grass->GetMaterialBufferRef().BindForGraphicsCommandList(cmdList, CBV_MATERIAL);
 
 			// DispatchMesh を呼ぶ（MS 側が threadsPerGroup = 32 を使う前提）
-			cmdList->DispatchMesh(threadGroupCountX, 1, 1);
+			cmdList->DispatchMesh(64, 1, 1);
 		}
 
 

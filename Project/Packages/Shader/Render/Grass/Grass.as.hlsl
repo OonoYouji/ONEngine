@@ -29,30 +29,38 @@ void ASMain(uint3 DTid : SV_DispatchThreadID,
 			uint gIndex : SV_GroupIndex,
 			uint3 Gid : SV_GroupThreadID) {
 
-	uint grassPerMS = 32 * 51; // 1 MSあたりの草数
-	uint groupIndex = Gid.x; // DispatchMesh(x,y,z)のxに対応
+	uint meshShaderDipatchCount = 32;
+
+	uint grassPerMS = meshShaderDipatchCount * 51; // 1 MSあたりの草数
+	uint groupIndex = DTid.x; // DispatchMesh(x,y,z)のxに対応
 
 	//payloadOut.startIndex = groupIndex * grassPerMS;
 
 	uint index = groupIndex * grassPerMS;
 	//uint index = startIndices[DTid.x].value /*+ DTid.x*/;
 	Payload payload;
-	payload.startIndex = index;
 	
-	BladeInstance frontInstance = bladeInstances[index];
-	float3 min = frontInstance.position;
-	float3 max = frontInstance.position;
+	/// 51本分の開始インデックスをセット
+	for (int i = 0; i < meshShaderDipatchCount; ++i) {
+		payload.startIndices[i] = index + i * 51;
+	}
+
+
+	
+	//BladeInstance frontInstance = bladeInstances[index];
+	//float3 min = frontInstance.position;
+	//float3 max = frontInstance.position;
 
 	// 草のデータを取得
-	for (int i = 0; i < kMaxRenderingGrassSize; ++i) {
-		payload.grassData[i].isCulled = false;
-		payload.grassData[i].index = index + i;
+	//for (int i = 0; i < kMaxRenderingGrassSize; ++i) {
+	//	payload.grassData[i].isCulled = false;
+	//	payload.grassData[i].index = index + i;
 		
-		BladeInstance instance = bladeInstances[index + i];
-		///min maxの更新
-		min = Min3(min, instance.position);
-		max = Max3(max, instance.position);
-	}
+	//	BladeInstance instance = bladeInstances[index + i];
+	//	///min maxの更新
+	//	min = Min3(min, instance.position);
+	//	max = Max3(max, instance.position);
+	//}
 	
 	
 	//uint grassCount = 1;
@@ -62,5 +70,5 @@ void ASMain(uint3 DTid : SV_DispatchThreadID,
 
 
 	// DispatchMeshを呼び出す
-	DispatchMesh(32, 1, 1, payload);
+	DispatchMesh(meshShaderDipatchCount, 1, 1, payload);
 }
