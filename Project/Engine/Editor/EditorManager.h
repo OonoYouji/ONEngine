@@ -68,7 +68,7 @@ private:
 	/// ==========================================
 
 	/// ----- other class ----- ///
-	class EntityComponentSystem* pECS_;
+	class EntityComponentSystem* pEcs_;
 	class DxManager* pDxManager_;
 
 	/// ----- clipboard ----- ///

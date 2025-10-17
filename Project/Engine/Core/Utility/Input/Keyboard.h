@@ -14,7 +14,6 @@
 class Keyboard final {
 	friend class Input;
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -22,10 +21,19 @@ public:
 	Keyboard();
 	~Keyboard();
 
+	/// @brief 初期化
+	/// @param _directInput DirectInputのポインタ
+	/// @param _windowManager WindowManagerのポインタ
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager);
+
+	/// @brief 更新処理
+	/// @param _window Windowのポインタ
 	void Update(class Window* _window);
 
 private:
+	/// ===================================================
+	/// private : objects
+	/// ===================================================
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_;
 

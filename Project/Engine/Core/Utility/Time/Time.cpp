@@ -69,6 +69,8 @@ namespace {
 } /// namespace
 
 
+Time::Time() = default;
+Time::~Time() = default;
 
 void Time::Initialize() {
 	gTimeController = std::make_unique<TimeController>();

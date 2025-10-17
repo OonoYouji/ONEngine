@@ -24,9 +24,13 @@ public:
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
+	/// @brief Componentのデバッグ関数を登録する
+	/// @tparam T Componentの型
+	/// @param _func Componentのデバッグ関数
 	template<typename T>
 	void RegisterComponent(std::function<void(class IComponent*)> _func);
 
+	/// @brief EntityのInspector表示処理
 	void EntityInspector();
 
 	/// edit target entity の setter getter
@@ -39,7 +43,7 @@ private:
 	/// ===================================================
 
 	/// ----- other class ----- ///
-	class EntityComponentSystem* pECS_;
+	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
 	class GraphicsResourceCollection* pGrc_;
 

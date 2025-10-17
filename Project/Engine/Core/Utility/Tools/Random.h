@@ -11,6 +11,10 @@
 #include "../Math/Vector3.h"  
 #include "../Math/Vector4.h"  
 
+
+/// ///////////////////////////////////////////////////
+/// Randomな値を生成するクラス
+/// ///////////////////////////////////////////////////
 class Random final {
 	Random() = default;
 	~Random() = default;
@@ -50,6 +54,10 @@ public:
 		return Float((std::numeric_limits<float>::min)(), (std::numeric_limits<float>::max)());
 	}
 
+	/// @brief Vector2型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector2値
 	static Vector2 Vector2(const Vector2& _min, const Vector2& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -57,6 +65,10 @@ public:
 		};
 	}
 
+	/// @brief Vector3型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector3値
 	static Vector3 Vector3(const Vector3& _min, const Vector3& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -65,6 +77,10 @@ public:
 		};
 	}
 
+	/// @brief Vector4型のランダムな値を得る
+	/// @param _min 最小値
+	/// @param _max 最大値
+	/// @return ランダムなVector4値
 	static Vector4 Vector4(const Vector4& _min, const Vector4& _max) {
 		return {
 			Float(_min.x, _max.x),
@@ -75,6 +91,9 @@ public:
 	}
 
 private:
+	/// ==================================================
+	/// private : static objects
+	/// ==================================================
 
 	static std::mt19937 generator_;
 

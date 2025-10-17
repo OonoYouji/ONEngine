@@ -12,7 +12,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
 
-SceneIO::SceneIO(EntityComponentSystem* _ecs) : pECS_(_ecs) {
+SceneIO::SceneIO(EntityComponentSystem* _ecs) : pEcs_(_ecs) {
 	fileName_ = "";
 	fileDirectory_ = "./Assets/Scene/";
 }

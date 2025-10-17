@@ -15,7 +15,6 @@
 class InputSystem final {
 	friend class Input;
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -23,21 +22,27 @@ public:
 	InputSystem();
 	~InputSystem();
 
+	/// @brief 初期化
+	/// @param _windowManager WindowManagerのポインタ
+	/// @param _imGuiManager  ImGuiManagerのポインタ
 	void Initialize(class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
+
+	/// @brief 更新処理
 	void Update();
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
+
+	/// ----- other class ----- ///
+	class WindowManager* pWindowManager_ = nullptr;
 
 	ComPtr<IDirectInput8>     directInput_;
 	std::unique_ptr<Keyboard> keyboard_;
 	std::unique_ptr<Mouse>    mouse_;
 	std::unique_ptr<Gamepad>  gamepad_;
 
-	class WindowManager* pWindowManager_ = nullptr;
 };
 
 namespace MONO_INTERNAL_METHOD {

@@ -12,7 +12,7 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
-	: pECS_(_ecs), pGrc_(_resourceCollection), pInspector_(_inspector) {
+	: pEcs_(_ecs), pGrc_(_resourceCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 }
@@ -47,7 +47,7 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
 			Console::Log("Double clicked prefab file: " + file.second);
 
-			ECSGroup* debugGroup = pECS_->GetECSGroup("Debug");
+			ECSGroup* debugGroup = pEcs_->GetECSGroup("Debug");
 			GameEntity* entity = debugGroup->GenerateEntityFromPrefab(file.second, false);
 			pInspector_->SetSelectedEntity(entity);
 		}
@@ -71,7 +71,7 @@ void ImGuiPrefabFileWindow::ReloadPrefabFiles(const Texture* _tex) {
 
 		for (auto& file : files_) {
 			/// ファイル名の置換
-			pECS_->ReloadPrefab(file.second);
+			pEcs_->ReloadPrefab(file.second);
 		}
 
 	}

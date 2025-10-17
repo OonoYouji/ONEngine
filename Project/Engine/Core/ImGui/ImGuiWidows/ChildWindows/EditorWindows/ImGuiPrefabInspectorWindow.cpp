@@ -41,7 +41,7 @@ enum SelectedType {
 };
 
 ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
-	: pECS_(_ecs), pEditorManager_(_editorManager) {
+	: pEcs_(_ecs), pEditorManager_(_editorManager) {
 
 
 	/// compute
@@ -51,7 +51,7 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<Variables>([&](IComponent* _component) { COMP_DEBUG::VariablesDebug(static_cast<Variables*>(_component)); });
 	RegisterComponent<Effect>([&](IComponent* _component) { COMP_DEBUG::EffectDebug(static_cast<Effect*>(_component)); });
 	RegisterComponent<Script>([&](IComponent* _component) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_component)); });
-	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component), pECS_); });
+	RegisterComponent<Terrain>([&](IComponent* _component) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_component), pEcs_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
 
 	/// renderer

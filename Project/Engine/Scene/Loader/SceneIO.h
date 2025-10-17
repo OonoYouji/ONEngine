@@ -46,7 +46,7 @@ private:
 	/// private : objects
 	/// ==================================================
 
-	EntityComponentSystem* pECS_; 
+	EntityComponentSystem* pEcs_; 
 	IScene* scene_;
 
 	std::string fileName_; // ioに使うファイル名

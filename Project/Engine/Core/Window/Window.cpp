@@ -8,12 +8,12 @@
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Input/Input.h"
 
+
+/// pragma comment
 #pragma comment(lib, "winmm.lib")
 
 
-
-
-Window::Window() {}
+Window::Window() = default;
 
 Window::~Window() {
 	/// windowクラスの登録解除
@@ -51,13 +51,11 @@ void Window::PostDraw() {
 }
 
 void Window::Update() {
-
 	if (Input::PressKey(DIK_RALT) || Input::PressKey(DIK_LALT)) {
 		if (Input::TriggerKey(DIK_RETURN)) {
 			ToggleFullScreen();
 		}
 	}
-
 }
 
 void Window::Present() {
@@ -117,3 +115,18 @@ void Window::ToggleFullScreen() {
 	isFullScreen_ = !isFullScreen_;
 }
 
+HWND Window::GetHwnd() const {
+	return hwnd_;
+}
+
+const WNDCLASS& Window::GetWNDCLASS() const {
+	return windowClass_;
+}
+
+UINT Window::GetProcessMessage() const {
+	return processMessage_;
+}
+
+const Vector2& Window::GetWindowSize() const {
+	return windowSize_;
+}

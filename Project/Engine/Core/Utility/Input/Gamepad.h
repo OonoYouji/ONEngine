@@ -44,7 +44,13 @@ public:
 	Gamepad();
 	~Gamepad();
 
+	/// @brief 初期化
+	/// @param _directInput DirectInputのポインタ
+	/// @param _windowManager WindowManagerのポインタ
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager);
+
+	/// @brief 更新処理
+	/// @param _window 現在のWindowのポインタ
 	void Update(class Window* _window);
 
 

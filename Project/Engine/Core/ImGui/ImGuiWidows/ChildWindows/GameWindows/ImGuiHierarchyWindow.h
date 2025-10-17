@@ -26,23 +26,34 @@ protected:
 	/// protected : methods
 	/// ===================================================
 
+	/// @brief Prefabのドラッグアンドドロップ処理
 	void PrefabDragAndDrop();
 	
+	/// @brief １つのEntityの階層構造を描画する
+	/// @param _entity 表示するEntity
 	void DrawEntityHierarchy(class GameEntity* _entity);
 
 	/// ----- menu methods----- ///
-	void DrawMenuBar();
-	void DrawMenuEntity();
-	void DrawMenuScene();
-	void DrawMenuScript();
 
+	/// @brief MenuBarの描画
+	void DrawMenuBar();
+	/// @brief Entityメニューの描画
+	void DrawMenuEntity();
+	/// @brief Sceneメニューの描画
+	void DrawMenuScene();
+
+	/// @brief Hierarchyの描画
 	void DrawHierarchy();
 
+	/// @brief Entityの名前変更処理
+	/// @param _entity 変更対象のEntity
 	void EntityRename(class GameEntity* _entity);
 
+	/// @brief Entityのデバッグ表示処理
+	/// @param _entity 対象のEntity
 	void EntityDebug(class GameEntity* _entity);
 
-	/// dialog
+	/// Dialogの表示
 	void DrawDialog();
 	void DrawSceneSaveDialog();
 
@@ -51,24 +62,25 @@ protected:
 	/// protected : objects
 	/// ===================================================
 
-	std::string imGuiWindowName_ = "Hierarchy";
-	std::string entityName_ = "empty";
-	const std::string kClassPrefix = "class ";
+	/// ----- other class ----- ///
+	class ECSGroup*             pECSGroup_        = nullptr;
+	class EditorManager*        pEditorManager_   = nullptr;
+	class SceneManager*         pSceneManager_    = nullptr;
+	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
+
+
+	std::string       imGuiWindowName_ = "Hierarchy";
+	std::string       entityName_      = "empty";
+	const std::string kClassPrefix     = "class ";
 
 	std::list<class GameEntity*> entityList_;
-
-
-	class ECSGroup* pECSGroup_ = nullptr;
-	class EditorManager* pEditorManager_ = nullptr;
-	class SceneManager* pSceneManager_ = nullptr;
-	class ImGuiInspectorWindow* pInspectorWindow_ = nullptr;
 	class GameEntity* selectedEntity_ = nullptr;
 
-	/* ----- hierarchy ----- */
+	/// ----- hierarchy ----- ///
 	bool isNodeOpen_;
 	std::string selectedEntityName_ = "empty"; ///< 選択しているエンティティの名前
 
-	/* ----- rename ----- */
+	/// ----- rename ----- ///
 	std::string newName_ = "";
 	GameEntity* renameEntity_;
 
@@ -77,7 +89,7 @@ protected:
 
 
 /// ///////////////////////////////////////////////////
-/// 通常のシーンのhierarchyウィンドウ
+/// 通常のシーンのHierarchyウィンドウ
 /// ///////////////////////////////////////////////////
 class ImGuiNormalHierarchyWindow : public ImGuiHierarchyWindow {
 public:
@@ -98,5 +110,5 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pECS_ = nullptr;
+	class EntityComponentSystem* pEcs_ = nullptr;
 };

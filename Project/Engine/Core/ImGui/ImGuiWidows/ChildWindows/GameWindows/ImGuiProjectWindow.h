@@ -31,14 +31,16 @@ public:
 	/// public : methods
 	/// ===================================================
 
-	ImGuiProjectWindow(class GraphicsResourceCollection* _graphicsResourceCollection, class EditorManager* _editorManager);
+	ImGuiProjectWindow(class GraphicsResourceCollection* _grc, class EditorManager* _editorManager);
 	~ImGuiProjectWindow() {}
 
 	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
+	/// @brief ウィンドウ名の設定
 	void SetWindowName(const std::string& _name);
 
+	/// @brief Projectの再読み込み
 	void ReloadProject();
 
 private:
@@ -52,6 +54,9 @@ private:
 	/// @brief プロジェクトのファイル表示
 	void SelectFileView();
 
+	/// @brief WindowsのパスをUnixスタイルに変換する
+	/// @param _path 変換するパス
+	/// @return 変換後のパス
 	std::string NormalizePath(const std::string& _path) const;
 
 	/// @brief フォルダの読み込み
@@ -73,7 +78,7 @@ private:
 	/// private : objects
 	/// ===================================================
 	
-	class GraphicsResourceCollection* pGraphicsResourceCollection_; ///< グラフィックスリソースコレクションへのポインタ
+	class GraphicsResourceCollection* pGrc_; ///< グラフィックスリソースコレクションへのポインタ
 	class EditorManager* pEditorManager_; ///< エディターマネージャーへのポインタ
 
 	std::shared_ptr<Folder> assetsRootFolder_;

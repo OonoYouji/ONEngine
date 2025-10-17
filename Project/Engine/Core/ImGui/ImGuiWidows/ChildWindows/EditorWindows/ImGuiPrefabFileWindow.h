@@ -5,7 +5,7 @@
 #include "Engine/Core/Utility/Math/Mathf.h"
 
 /// //////////////////////////////////////////////////////
-/// Prefab編集用のimgui window
+/// PrefabFileを表示するためのImGuiWindow
 /// //////////////////////////////////////////////////////
 class ImGuiPrefabFileWindow : public IImGuiChildWindow {
 public:
@@ -18,6 +18,8 @@ public:
 
 	void ShowImGui() override;
 
+	/// @brief Prefabファイルを再読み込みする
+	/// @param _tex ImageButtonに使うテクスチャ
 	void ReloadPrefabFiles(const class Texture* _tex);
 
 private:
@@ -25,7 +27,7 @@ private:
 	/// private : objects
 	/// =====================================================
 
-	class EntityComponentSystem* pECS_;
+	class EntityComponentSystem* pEcs_;
 	class ImGuiInspectorWindow* pInspector_;
 	class GraphicsResourceCollection* pGrc_;
 

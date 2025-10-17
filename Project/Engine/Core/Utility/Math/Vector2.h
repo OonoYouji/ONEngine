@@ -6,11 +6,9 @@
 /// externals
 #include <nlohmann/json.hpp>
 
-class Vector3;
-
-/// ===================================================
+/// //////////////////////////////////////////////////
 /// 2次元ベクトル
-/// ===================================================
+/// //////////////////////////////////////////////////
 class Vector2 final {
 public:
 
@@ -26,11 +24,15 @@ public:
 
 public:
 
+	/// @brief ベクトルの長さを返す
+	/// @return ベクトルの長さ
 	float Length() const;
+
+	/// @brief 正規化ベクトルを返す
+	/// @return 正規化ベクトル
 	Vector2 Normalize() const;
 
 public:
-
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -42,18 +44,27 @@ public:
 	static const Vector2 kOne;		//- ( 1,  1 )
 	static const Vector2 kZero;		//- ( 0,  0 )
 
-public:
 
+public:
 	/// ===================================================
 	/// public : static methos
 	/// ===================================================
 
+	/// @brief 内積の計算
+	/// @param _v1 ベクトル1
+	/// @param _v2 ベクトル2
+	/// @return 内積の値
 	static float Dot(const Vector2& _v1, const Vector2& _v2);
 
+	/// @brief ベクトルの線形補完
+	/// @param _v1 ベクトル1
+	/// @param _v2 ベクトル2
+	/// @param _t 媒介変数
+	/// @return _tで補完されたベクトル
 	static Vector2 Lerp(const Vector2& _v1, const Vector2& _v2, float _t);
 
-public:
 
+public:
 	/// ===================================================
 	/// public : operator overload
 	/// ===================================================
