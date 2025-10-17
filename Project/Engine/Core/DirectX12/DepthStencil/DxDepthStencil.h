@@ -7,12 +7,11 @@
 #include "../ComPtr/ComPtr.h"
 
 
-/// ===================================================
+/// /////////////////////////////////////////////////
 /// depth stencil class
-/// ===================================================
+/// /////////////////////////////////////////////////
 class DxDepthStencil final {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
@@ -21,18 +20,16 @@ public:
 	~DxDepthStencil();
 
 	/// @brief 初期化処理
-	/// @param _dxDevice DxDeviceへのポインタ 
+	/// @param _dxDevice  DxDeviceのインスタンス
+	/// @param _dxDsvHeap DxDSVHeapのインスタンス
 	void Initialize(class DxDevice* _dxDevice, class DxDSVHeap* _dxDsvHeap);
 
 
 private:
-	
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
 	ComPtr<ID3D12Resource> depthStencilResource_;
-
-
 };
 

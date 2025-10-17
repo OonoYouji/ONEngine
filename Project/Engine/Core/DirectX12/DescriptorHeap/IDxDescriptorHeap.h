@@ -13,9 +13,9 @@
 
 
 
-/// ===================================================
-/// DesacriptorHeapの種類
-/// ===================================================
+/// /////////////////////////////////////////////////
+/// DescriptorHeapの種類
+/// /////////////////////////////////////////////////
 enum DescriptorHeapType {
 	DescriptorHeapType_RTV,                        /// render target view用
 	DescriptorHeapType_CBV_SRV_UAV,                /// cbv, srv, uav用
@@ -25,18 +25,17 @@ enum DescriptorHeapType {
 
 
 
-/// ===================================================
+/// /////////////////////////////////////////////////
 /// DescriptorHeapの基底クラス
-/// ===================================================
+/// /////////////////////////////////////////////////
 class IDxDescriptorHeap {
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize) : pDxDevice_(_dxDevice), kMaxHeapSize_(_maxHeapSize) {}
-	virtual ~IDxDescriptorHeap() {}
+	IDxDescriptorHeap(DxDevice* _dxDevice, uint32_t _maxHeapSize);
+	virtual ~IDxDescriptorHeap() = default;
 
 	/// @brief 初期化
 	virtual void Initialize() = 0;
@@ -55,7 +54,6 @@ public:
 
 
 protected:
-
 	/// ===================================================
 	/// protected : objects
 	/// ===================================================
@@ -72,7 +70,6 @@ protected:
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
@@ -89,15 +86,15 @@ public:
 
 	/// @brief descriptor heapのゲッタ
 	/// @return descriptor heapへのポインタ
-	ID3D12DescriptorHeap* GetHeap() const { return descriptorHeap_.Get(); }
+	ID3D12DescriptorHeap* GetHeap() const;
 
 	/// @brief descriptor heapの最大サイズのゲッタ
 	/// @return descriptor heapの最大サイズ
-	uint32_t GetMaxHeapSize() const { return kMaxHeapSize_; }
+	uint32_t GetMaxHeapSize() const;
 
 	/// @brief 使用済みのindexの数を取得する
 	/// @return 使用済みのindexの数
-	uint32_t GetUsedIndexCount() const { return useIndex_ - static_cast<uint32_t>(spaceIndex_.size()); }
+	uint32_t GetUsedIndexCount() const;
 
 
 private:

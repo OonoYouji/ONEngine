@@ -10,76 +10,58 @@
 #include "../ComPtr/ComPtr.h"
 
 
-/// ===================================================
+/// /////////////////////////////////////////////////
 /// dx12のコマンドを管理するクラス
-/// ===================================================
+/// /////////////////////////////////////////////////
 class DxCommand {
 public:
-
 	/// ===================================================
 	/// public : method
 	/// ===================================================
-	
+
 	DxCommand();
 	~DxCommand();
 
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
-	/// <param name="_dxDevice"> : DxDeviceへのpointer </param>
+	/// @brief DxCommandの初期化
+	/// @param _dxDevice DxDeviceのインスタンス
 	void Initialize(class DxDevice* _dxDevice);
 
-	/// <summary>
-	/// commandを実行する
-	/// </summary>
+	/// @brief CommandListを実行、GPUの処理を待つ
 	void CommandExecute();
 
-	/// <summary>
-	/// commandをリセットする
-	/// </summary>
+	/// @brief CommandAllocatorとCommandListをリセットする
 	void CommandReset();
 
-	/// <summary>
-	/// gpuの処理が完了するまで待つ
-	/// </summary>
+	/// @brief GPUの処理が完了するまで待機する
 	void WaitForGpuComplete();
 
 
 private:
-
 	/// ===================================================
 	/// private : objects
 	/// ===================================================
 
-	ComPtr<ID3D12CommandQueue>        commandQueue_     = nullptr;
-	ComPtr<ID3D12CommandAllocator>    commandAllocator_ = nullptr;
-	ComPtr<ID3D12GraphicsCommandList6> commandList_      = nullptr;
+	ComPtr<ID3D12CommandQueue>         commandQueue_;
+	ComPtr<ID3D12CommandAllocator>     commandAllocator_;
+	ComPtr<ID3D12GraphicsCommandList6> commandList_;
 
-	ComPtr<ID3D12Fence>               fence_            = nullptr;
-	uint64_t                          fenceValue_       = 0;
+	ComPtr<ID3D12Fence>                fence_;
+	uint64_t                           fenceValue_;
 
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// command queueを取得
-	/// </summary>
-	/// <returns></returns>
-	ID3D12CommandQueue* GetCommandQueue() const { return commandQueue_.Get(); }
+	/// @brief CommandQueueの取得
+	ID3D12CommandQueue* GetCommandQueue() const;
 
-	/// <summary>
-	/// command listを取得
-	/// </summary>
-	/// <returns> return : command list pointer </returns>
-	ID3D12GraphicsCommandList6* GetCommandList() const { return commandList_.Get(); }
+	/// @brief CommandListの取得
+	ID3D12GraphicsCommandList6* GetCommandList() const;
 
 
 private:
-
 	/// ===================================================
 	/// private : copy delete
 	/// ===================================================
