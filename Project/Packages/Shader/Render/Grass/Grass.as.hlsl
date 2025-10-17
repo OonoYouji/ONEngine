@@ -22,22 +22,23 @@ bool IsVisible(float3 min, float3 max) {
 }
 
 
+cbuffer constants : register(b3) {
+	uint asDispatchCount; /// asの起動回数
+	uint asDispatchSize; /// asのdispatchSize
+};
+
 
 [shader("amplification")]
-[numthreads(32, 1, 1)]
+[numthreads(1, 1, 1)]
 void ASMain(uint3 DTid : SV_DispatchThreadID,
 			uint gIndex : SV_GroupIndex,
 			uint3 Gid : SV_GroupThreadID) {
 
 	uint meshShaderDipatchCount = 32;
-
 	uint grassPerMS = meshShaderDipatchCount * 51; // 1 MSあたりの草数
 	uint groupIndex = DTid.x; // DispatchMesh(x,y,z)のxに対応
 
-	//payloadOut.startIndex = groupIndex * grassPerMS;
-
 	uint index = groupIndex * grassPerMS;
-	//uint index = startIndices[DTid.x].value /*+ DTid.x*/;
 	Payload payload;
 	
 	/// 51本分の開始インデックスをセット
