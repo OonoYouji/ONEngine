@@ -47,7 +47,7 @@ void CameraComponent::UpdateViewProjection() {
 
 	}
 
-	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_));
+	viewProjection_.SetMappedData(ViewProjection(matView_ * matProjection_, matView_, matProjection_));
 
 }
 
@@ -196,7 +196,7 @@ void COMP_DEBUG::CameraDebug(CameraComponent* _camera) {
 
 	/// type debug
 	int cameraType = _camera->GetCameraType();
-	if(ImGui::Combo("camera type", &cameraType, "3D\0 2D\0")) {
+	if (ImGui::Combo("camera type", &cameraType, "3D\0 2D\0")) {
 		_camera->SetCameraType(cameraType);
 	}
 

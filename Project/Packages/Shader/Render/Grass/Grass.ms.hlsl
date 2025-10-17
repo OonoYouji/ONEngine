@@ -1,13 +1,11 @@
 //#include "Grass.hlsli"
 #include "BladeInstance.hlsli"
 
-#include "../../ConstantBufferData/ViewProjection.hlsli"
 
 struct Time {
 	float value;
 };
 
-ConstantBuffer<ViewProjection> viewProjection : register(b0);
 RWStructuredBuffer<Time> time : register(u0);
 
 /*
@@ -32,100 +30,6 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 			in payload Payload asPayload,
 			out vertices VertexOut verts[51 * 5],
 			out indices uint3 indis[51 * 2]) {
-
-	///// 出来る限り多くの頂点を出力する
-	////SetMeshOutputCounts(51 * 5, 51 * 2);
-	
-	//uint threadIndex = DTid.x;
-
- //   // 各スレッドが描く草数
-	//uint grassPerThread = 51;
-
- //   // このスレッドが描く草の開始インデックス
-	//uint baseIndex = asPayload.startIndices[threadIndex];
-	
-	//uint renderGrassCount = 0;
-	
-	///// 草の数分だけ処理する
-	//for (int gi = 0; gi < kMaxRenderingGrassSize; ++gi) {
-		
-	//	uint startVertIndex = renderGrassCount * kMaxBladeVertexNum;
-	//	uint startIndiIndex = renderGrassCount * 2;
-		
-	//	//uint bladeIndex = asPayload.grassData[gi].index;
-	//	uint grassIndex = baseIndex + gi;
-	//	BladeInstance instance = bladeInstances[grassIndex];
-		
-		
-	//	float3 t = normalize(instance.tangent);
-	//	float3 up = float3(0, 1, 0);
-	//	float3 b = normalize(cross(t, up)); // 横方向のベクトル
-	//	float3 b2 = normalize(cross(b, up)); // 横方向のベクトル
-	//	float width = instance.scale;
-	//	float height = 2.0f * instance.scale;
-	
-	
-	//	float3 bladePoss[kMaxBladeVertexNum] = {
-	//		/// 根本頂点
-	//		float3(instance.position - float3(0, height, 0)),
-	//		/// 他、上部の頂点
-	//		float3(instance.position + b * -width + float3(0, height, 0)),
-	//		float3(instance.position + b * width + float3(0, height, 0)),
-	//		float3(instance.position + b2 * -width + float3(0, height, 0)),
-	//		float3(instance.position + b2 * width + float3(0, height, 0))
-	//	};
-	
-
-	//	/// 揺らす (根本以外)
-	//	time[grassIndex].value += 1.0f / 60.0f;
-	//	float sinValue = sin(time[grassIndex].value + instance.random01 * 6.28);
-	//	for (int i = 1; i < kMaxBladeVertexNum; ++i) {
-	//		float3 newPos = bladePoss[i];
-	//		newPos += (normalize(instance.tangent) * sinValue * 0.1);
-	//		bladePoss[i] = newPos;
-	//	}
-
-
-	//	float4 clipPoss[kMaxBladeVertexNum];
-	//	for (int i = 0; i < kMaxBladeVertexNum; ++i) {
-	//		clipPoss[i] = mul(float4(bladePoss[i], 1.0), viewProjection.matVP);
-	//	}
-
-	//	for (int i = 0; i < 5; ++i) {
-	//		verts[startVertIndex + i].position = clipPoss[i];
-	//		verts[startVertIndex + i].normal = float3(0, 1, 0);
-	//		verts[startVertIndex + i].uv = bladeUVs[i];
-	//	}
-		
-	//	indis[startIndiIndex + 0] = uint3(startVertIndex + 0, startVertIndex + 1, startVertIndex + 2);
-	//	indis[startIndiIndex + 1] = uint3(startVertIndex + 0, startVertIndex + 3, startVertIndex + 4);
-
-
-		
-	//	bool isInside = true;
-	//	for (int i = 0; i < kMaxBladeVertexNum; ++i) {
-	//		float3 ndcPos = clipPoss[i].xyz / clipPoss[i].w;
-
-	//		/// NDC座標が-1~1の範囲内にあるかチェック
-	//		if (ndcPos.x < -1.0f || ndcPos.x > 1.0f ||
-	//		   ndcPos.y < -1.0f || ndcPos.y > 1.0f ||
-	//		   ndcPos.z < 0.0f || ndcPos.z > 1.0f) {
-	//			isInside = false;
-	//			break;
-	//		}
-	//	}
-
-	//	if (isInside) {
-	//		/// 描画する草の数を増やす
-	//		renderGrassCount++;
-	//	}
-
-	//}
-	
-	
-	
-	///// 出来る限り多くの頂点を出力する
-	//SetMeshOutputCounts(renderGrassCount * 5, renderGrassCount * 2);
 
 	uint threadIndex = DTid.x;
 	uint baseIndex = asPayload.startIndices[threadIndex];
