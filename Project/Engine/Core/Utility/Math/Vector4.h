@@ -6,9 +6,9 @@
 /// engine
 #include "Vector3.h"
 
-/// ===================================================
+/// //////////////////////////////////////////////////
 /// 4次元ベクトル
-/// ===================================================
+/// //////////////////////////////////////////////////
 class Vector4 final {
 public:
 
@@ -25,7 +25,6 @@ public:
 
 
 public:
-
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -60,12 +59,18 @@ public:
 	/// @return 
 	static Vector4 Normalize(const Vector4& _v);
 
+
+	/// @brief Vector3からVector4へ変換
+	/// @param _v Vector3の値
+	/// @param _w W成分の値(デフォルト1.0f)
+	/// @return Vector4の値
 	static Vector4 Convert(const Vector3& _v, float _w = 1.0f);
 
+	/// @brief Vector4からVector3へ変換
 	static Vector3 Convert(const Vector4& _v);
 
-public:
 
+public:
 	/// ===================================================
 	/// public : operator overload
 	/// ===================================================

@@ -3,8 +3,8 @@
 /// engine
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-DxManager::DxManager() {}
-DxManager::~DxManager() {}
+DxManager::DxManager() = default;
+DxManager::~DxManager() = default;
 
 void DxManager::Initialize() {
 
@@ -42,8 +42,6 @@ void DxManager::Initialize() {
 	dxDepthStencil_->Initialize(dxDevice_.get(), GetDxDSVHeap());
 
 }
-
-void DxManager::Finalize() {}
 
 void DxManager::HeapBindToCommandList() {
 	GetDxSRVHeap()->BindToCommandList(

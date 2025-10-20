@@ -9,6 +9,9 @@
 using File = std::pair<std::string, std::string>;
 
 
+/// //////////////////////////////////////////////////
+/// よく使う関数やちょっと便利な関数をまとめた名前空間
+/// //////////////////////////////////////////////////
 namespace Mathf {
 
 	static const float Deg2Rad = std::numbers::pi_v<float> / 180.0f;

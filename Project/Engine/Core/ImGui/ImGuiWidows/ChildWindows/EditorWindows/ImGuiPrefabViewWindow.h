@@ -17,6 +17,7 @@ public:
 
 	void ShowImGui() override;
 
+	/// @brief 選択されているPrefabの表示
 	void RenderView();
 
 private:
@@ -24,7 +25,7 @@ private:
 	/// private : objects
 	/// =====================================================
 
-	class EntityComponentSystem* pECS_;
+	class EntityComponentSystem* pEcs_;
 	class GraphicsResourceCollection* pGrc_;
 
 

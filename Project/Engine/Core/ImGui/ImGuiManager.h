@@ -28,15 +28,34 @@ public:
 	ImGuiManager(class DxManager*, class WindowManager*, class EntityComponentSystem*, class EditorManager*, class SceneManager*);
 	~ImGuiManager();
 
-	void Initialize(class GraphicsResourceCollection* _graphicsResourceCollection);
+	/// @brief 初期化
+	/// @param _grc GraphicsResourceCollection 
+	void Initialize(class GraphicsResourceCollection* _grc);
+
+	/// @brief 更新
 	void Update();
+
+	/// @brief 描画
 	void Draw();
 
+
+	/// @brief SceneImageInfoを追加する
+	/// @param _name SceneImageInfoの名前
+	/// @param _info 追加するSceneImageInfo
 	void AddSceneImageInfo(const std::string& _name, const ImGuiSceneImageInfo& _info);
 
+	/// @brief ImGuiのマウス位置を更新する
+	/// @param _winHwnd ImGuiを描画しているWindowのHWND
+	/// @param _renderTargetSize RenderTargetのサイズ(px)
 	void UpdateMousePosition(HWND _winHwnd, const Vector2& _renderTargetSize);
 
+
+	/// @brief ImGuiのスタイルを出力する
+	/// @param _fileName ファイル名
 	void OutputImGuiStyle(const std::string& _fileName) const;
+
+	/// @brief ImGuiのスタイルを入力する
+	/// @param _fileName ファイル名
 	void InputImGuiStyle(const std::string& _fileName) const;
 
 private:
@@ -44,14 +63,15 @@ private:
 	/// private : objects
 	/// ===================================================
 
+	/// ----- other class ----- ///
 	class DxManager* dxManager_;
-	class WindowManager* windowManager_;
-	class GraphicsResourceCollection* resourceCollection_;
+	class WindowManager* pWindowManager_;
+	class GraphicsResourceCollection* pGrc_;
 	class EntityComponentSystem* pEntityComponentSystem_;
 	class EditorManager* pEditorManager_;
 	class SceneManager* pSceneManager_;
-	class Window* imGuiWindow_;
-	class Window* debugGameWindow_;
+	class Window* pImGuiWindow_;
+	class Window* pDebugGameWindow_;
 
 	std::unique_ptr<ImGuiWindowCollection> imGuiWindowCollection_ = nullptr;
 
@@ -70,6 +90,9 @@ public:
 	/// @return　Window
 	class Window* GetDebugGameWindow() const;
 
+	/// @brief ImageInfoを取得する
+	/// @param _name ImageInfoの名前
+	/// @return 見つかったImageInfoのポインタ、見つからなかった場合はnullptr
 	const ImGuiSceneImageInfo* GetSceneImageInfo(const std::string& _name) const;
 };
 

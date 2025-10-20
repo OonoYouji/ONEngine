@@ -8,8 +8,11 @@
 #include "Engine/Core/Utility/Tools/Log.h"
 
 
-DxCommand::DxCommand() {}
-DxCommand::~DxCommand() {}
+DxCommand::DxCommand() 
+	: commandQueue_(nullptr), commandAllocator_(nullptr), commandList_(nullptr),
+	fence_(nullptr), fenceValue_(0) {};
+
+DxCommand::~DxCommand() = default;
 
 
 void DxCommand::Initialize(DxDevice* _dxDevice) {
@@ -59,6 +62,8 @@ void DxCommand::Initialize(DxDevice* _dxDevice) {
 }
 
 void DxCommand::CommandExecute() {
+	/// ----- CommandListのClose、Execute、Wait ----- ///
+
 	HRESULT hr = commandList_->Close();
 	Assert(SUCCEEDED(hr), "Failed to close command list.");
 
@@ -69,6 +74,8 @@ void DxCommand::CommandExecute() {
 }
 
 void DxCommand::CommandReset() {
+	/// ----- CommandAllocatorとCommandListのReset ----- ///
+
 	HRESULT hr = commandAllocator_->Reset();
 	Assert(SUCCEEDED(hr), "command allocator reset failed.");
 
@@ -77,14 +84,24 @@ void DxCommand::CommandReset() {
 }
 
 void DxCommand::WaitForGpuComplete() {
+	/// ----- GPUの処理を待つ ----- ///
+
 	++fenceValue_;
 	commandQueue_->Signal(fence_.Get(), fenceValue_);
 
-	if(fence_->GetCompletedValue() < fenceValue_) {
+	if (fence_->GetCompletedValue() < fenceValue_) {
 		HANDLE event = CreateEvent(nullptr, false, false, nullptr);
 		fence_->SetEventOnCompletion(fenceValue_, event);
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+}
+
+ID3D12CommandQueue* DxCommand::GetCommandQueue() const {
+	return commandQueue_.Get();
+}
+
+ID3D12GraphicsCommandList6* DxCommand::GetCommandList() const {
+	return commandList_.Get();
 }
 

@@ -10,8 +10,8 @@
 #include "Input.h"
 
 
-InputSystem::InputSystem() {}
-InputSystem::~InputSystem() {}
+InputSystem::InputSystem() = default;
+InputSystem::~InputSystem() = default;
 
 void InputSystem::Initialize(WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
 	pWindowManager_ = _windowManager;

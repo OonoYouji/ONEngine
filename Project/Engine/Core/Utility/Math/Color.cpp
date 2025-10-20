@@ -10,6 +10,10 @@ const Color Color::kGreen = Color(0.0f, 1.0f, 0.0f, 1.0f); ///< 緑
 const Color Color::kBlue  = Color(0.0f, 0.0f, 1.0f, 1.0f); ///< 青
 
 
+Color::Color(uint32_t _colorCode) {
+	SetColorCode(_colorCode);
+}
+
 Vector4 Color::HSVtoRGB(float _h, float _s, float _v) {
 	float c = _v * _s;
 	float x = c * (1 - std::fabsf(std::fmodf(_h / 60.0f, 2) - 1));
@@ -31,4 +35,19 @@ Vector4 Color::HSVtoRGB(float _h, float _s, float _v) {
 	}
 
 	return Vector4(r + m, g + m, b + m, 1.0f);
+}
+
+void Color::SetHSVtoRGB(float _h, float _s, float _v) {
+	Vector4 color = HSVtoRGB(_h, _s, _v);
+	r = color.x;
+	g = color.y;
+	b = color.z;
+	a = color.w;
+}
+
+void Color::SetColorCode(uint32_t _colorCode) {
+	r = static_cast<float>((_colorCode >> 24) & 0xFF) / 255.0f;
+	g = static_cast<float>((_colorCode >> 16) & 0xFF) / 255.0f;
+	b = static_cast<float>((_colorCode >> 8) & 0xFF) / 255.0f;
+	a = static_cast<float>((_colorCode >> 0) & 0xFF) / 255.0f;
 }

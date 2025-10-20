@@ -3,7 +3,7 @@
 #include "../../Collection/ImGuiWindowCollection.h"
 
 /// //////////////////////////////////////////////////////
-/// imguiのファイル操作window
+/// ImGuiのスタイル操作Window
 /// //////////////////////////////////////////////////////
 class ImGuiFile : public IImGuiChildWindow {
 public:
@@ -14,7 +14,6 @@ public:
 	ImGuiFile();
 	~ImGuiFile() {}
 
-	/// @brief imgui windowの描画処理
 	void ShowImGui() override;
 
 private:

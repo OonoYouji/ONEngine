@@ -4,14 +4,14 @@
 #include "../../Collection/ImGuiWindowCollection.h"
 
 /// ///////////////////////////////////////////////////
-/// ImGuiGameWindow
+/// GameSceneTextureを表示するためのImGuiWindow
 /// ///////////////////////////////////////////////////
 class ImGuiGameSceneWindow : public IImGuiChildWindow {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
-	ImGuiGameSceneWindow(class GraphicsResourceCollection* _graphicsResourceCollection) : resourceCollection_(_graphicsResourceCollection) {}
+	ImGuiGameSceneWindow(class GraphicsResourceCollection* _grc) : pGrc_(_grc) {}
 	~ImGuiGameSceneWindow() {}
 	
 	/// @brief imgui windowの描画処理
@@ -22,7 +22,7 @@ private:
 	/// private : methods
 	/// ===================================================
 
-	class GraphicsResourceCollection* resourceCollection_ = nullptr;
+	class GraphicsResourceCollection* pGrc_ = nullptr;
 
 };
 

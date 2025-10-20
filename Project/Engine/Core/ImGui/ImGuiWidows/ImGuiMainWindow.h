@@ -23,10 +23,8 @@ private:
 	/// private : methods
 	/// ===================================================
 
+	/// @brief MainMenuの描画
 	void MainMenu();
-
-	void EffectMenu();
-
 
 private:
 	/// ===================================================

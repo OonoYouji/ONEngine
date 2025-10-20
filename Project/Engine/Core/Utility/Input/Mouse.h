@@ -13,6 +13,9 @@
 class Mouse final {
 	friend class Input;
 public:
+	/// =========================================
+	/// public : enum
+	/// =========================================
 
 	enum {
 		Left,
@@ -30,22 +33,42 @@ public:
 	/// public : methods
 	/// =========================================
 
-	Mouse() = default;
-	~Mouse() = default;
+	Mouse();
+	~Mouse();
 
+	/// @brief 初期化
+	/// @param _directInput DirectInput8へのポインタ
+	/// @param _windowManager WindowManagerへのポインタ
+	/// @param _imGuiManager ImGuiManagerへのポインタ
 	void Initialize(IDirectInput8* _directInput, class WindowManager* _windowManager, class ImGuiManager* _imGuiManager);
+
+	/// @brief 更新
+	/// @param _window 現在のウィンドウへのポインタ
 	void Update(class Window* _window);
 
+
+	/// @brief Image内でのマウス位置を1280x720に正規化した座標で取得
+	/// @param _name Imageの名前
+	/// @return 1280x720内でのマウス位置 
 	const Vector2& GetImGuiImageMousePosNormalized(const std::string& _name);
+
+	/// @brief Imageの位置を取得
+	/// @param _name Imageの名前
 	const Vector2& GetImGuiImagePos(const std::string& _name);
+
+	/// @brief Imageのサイズを取得
+	/// @param _name Imageの名前
 	const Vector2& GetImGuiImageSize(const std::string& _name);
+
 
 private:
 	/// =========================================
 	/// private : objects
 	/// =========================================
 
+	/// ----- other class ----- ///
 	class ImGuiManager* pImGuiManager_ = nullptr; ///< ImGuiManagerへのポインタ
+
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse_;
 

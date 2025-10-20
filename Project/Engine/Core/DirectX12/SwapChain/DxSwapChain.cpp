@@ -94,25 +94,25 @@ void DxSwapChain::Initialize(DxManager* _dxManager, Window* _window) {
 		/// view port, sicssor rect の初期化
 		/// ---------------------------------------------------
 
-		viewprot_.Width     = size.x;
-		viewprot_.Height    = size.y;
-		viewprot_.TopLeftX  = 0.0f;
-		viewprot_.TopLeftY  = 0.0f;
-		viewprot_.MinDepth  = 0.0f;
-		viewprot_.MaxDepth  = 1.0f;
+		viewport_.Width     = size.x;
+		viewport_.Height    = size.y;
+		viewport_.TopLeftX  = 0.0f;
+		viewport_.TopLeftY  = 0.0f;
+		viewport_.MinDepth  = 0.0f;
+		viewport_.MaxDepth  = 1.0f;
 
-		sicssorRect_.left   = 0;
-		sicssorRect_.right  = static_cast<LONG>(size.x);
-		sicssorRect_.top    = 0;
-		sicssorRect_.bottom = static_cast<LONG>(size.y);
+		scissorRect_.left   = 0;
+		scissorRect_.right  = static_cast<LONG>(size.x);
+		scissorRect_.top    = 0;
+		scissorRect_.bottom = static_cast<LONG>(size.y);
 	}
 
 	Console::Log("dx swap chain create success!!");
 }
 
 void DxSwapChain::BindViewportAndScissorRectForCommandList(ID3D12GraphicsCommandList* _commandList) const {
-	_commandList->RSSetViewports(1, &viewprot_);
-	_commandList->RSSetScissorRects(1, &sicssorRect_);
+	_commandList->RSSetViewports(1, &viewport_);
+	_commandList->RSSetScissorRects(1, &scissorRect_);
 }
 
 void DxSwapChain::CreateBarrier(ID3D12GraphicsCommandList* _commandList, D3D12_RESOURCE_STATES _before, D3D12_RESOURCE_STATES _after) {

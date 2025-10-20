@@ -39,14 +39,14 @@ public:
 	~Color() = default;
 
 
-	void SetHSVtoRGB(float _h, float _s, float _v) {
-		Vector4 color = HSVtoRGB(_h, _s, _v);
-		r = color.x;
-		g = color.y;
-		b = color.z;
-		a = color.w;
-	}
+	/// @brief HSVからRGBに変換してセットする
+	/// @param _h 色相
+	/// @param _s 彩度
+	/// @param _v 明度
+	void SetHSVtoRGB(float _h, float _s, float _v);
 
+	/// @brief カラーコードからRGBAに変換してセットする
+	/// @param _colorCode カラーコード 
 	void SetColorCode(uint32_t _colorCode);
 
 public:
@@ -71,18 +71,6 @@ public:
 	inline Color& operator=(const Color& _color);
 
 };
-
-
-inline Color::Color(uint32_t _colorCode) {
-	SetColorCode(_colorCode);
-}
-
-inline void Color::SetColorCode(uint32_t _colorCode) {
-	r = static_cast<float>((_colorCode >> 24) & 0xFF) / 255.0f;
-	g = static_cast<float>((_colorCode >> 16) & 0xFF) / 255.0f;
-	b = static_cast<float>((_colorCode >> 8)  & 0xFF) / 255.0f;
-	a = static_cast<float>((_colorCode >> 0)  & 0xFF) / 255.0f;
-}
 
 inline Color& Color::operator=(const Vector4& _color) {
 	r = _color.x;

@@ -132,7 +132,7 @@ void InternalSetPostEffectFlags(uint64_t _nativeHandle, uint32_t _flags) {
 	}
 }
 
-void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
+void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, GraphicsResourceCollection* _grc) {
 	if (!_mr) {
 		return;
 	}
@@ -225,6 +225,8 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr) {
 		}
 	}
 
+	/// Material Debug
+	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->material_, _grc);
 
 }
 

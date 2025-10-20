@@ -11,7 +11,7 @@
 #include "../ChildWindows/GameWindows/ImGuiInspectorWindow.h"
 #include "../ChildWindows/GameWindows/ImGuiProjectWindow.h"
 
-ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection, EditorManager* _editorManager) {
+ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _grc, EditorManager* _editorManager) {
 	imGuiFlags_ |= ImGuiWindowFlags_NoMove;
 	imGuiFlags_ |= ImGuiWindowFlags_NoResize;
 	imGuiFlags_ |= ImGuiWindowFlags_NoTitleBar;
@@ -19,12 +19,12 @@ ImGuiEditorWindow::ImGuiEditorWindow(EntityComponentSystem* _ecs, GraphicsResour
 
 	/// 子windowの追加
 	ImGuiInspectorWindow* inspector = static_cast<ImGuiInspectorWindow*>(
-		AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Prefab", _ecs, _resourceCollection, _editorManager)));
+		AddChild(std::make_unique<ImGuiInspectorWindow>("Inspector##Prefab", _ecs, _grc, _editorManager)));
 
-	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _resourceCollection, inspector));
-	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _resourceCollection));
+	AddChild(std::make_unique<ImGuiPrefabFileWindow>(_ecs, _grc, inspector));
+	AddChild(std::make_unique<ImGuiPrefabViewWindow>(_ecs, _grc));
 	ImGuiProjectWindow* project = static_cast<ImGuiProjectWindow*>(
-		AddChild(std::make_unique<ImGuiProjectWindow>(_resourceCollection, _editorManager)));
+		AddChild(std::make_unique<ImGuiProjectWindow>(_grc, _editorManager)));
 
 	project->SetWindowName("Prefab Project");
 

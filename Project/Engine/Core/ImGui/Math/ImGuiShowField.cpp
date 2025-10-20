@@ -26,7 +26,7 @@ namespace {
 		Console::Log("Field drawers registered.");
 	}
 
-}
+} /// namespace
 
 
 void CSGui::ShowFiled(int _type, MonoObject* _obj, MonoClassField* _field, const char* _name) {

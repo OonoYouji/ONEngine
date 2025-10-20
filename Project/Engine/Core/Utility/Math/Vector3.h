@@ -9,9 +9,9 @@
 /// engine
 #include "Vector2.h"
 
-/// ===================================================
+/// //////////////////////////////////////////////////
 /// 3次元ベクトル
-/// ===================================================
+/// //////////////////////////////////////////////////
 class Vector3 final {
 public:
 
@@ -26,7 +26,6 @@ public:
 	float x, y, z;
 
 public:
-
 	/// ===================================================
 	/// public : static objects
 	/// ===================================================
@@ -42,14 +41,17 @@ public:
 	static const Vector3 kZero;		// ( 0,  0,  0 )
 
 public:
-
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
+	/// @brief ベクトルの長さを返す
 	float Len() const;
+
+	/// @brief ベクトルの長さの二乗を返す
 	float LengthSquared() const;
 
+	/// @brief 正規化ベクトルを返す
 	Vector3 Normalize() const;
 
 
@@ -57,18 +59,27 @@ public:
 	/// public : static methods
 	/// ===================================================
 
+	/// @brief ベクトルの長さを返す
 	static float Length(const Vector3& _v);
+	/// @brief ベクトルの長さの二乗を返す
 	static float LengthSquared(const Vector3& _v);
 
+	/// @brief 正規化ベクトルを返す
 	static Vector3 Normalize(const Vector3& _v);
 
+	/// @brief ベクトルの線形補完
 	static Vector3 Lerp(const Vector3& _start, const Vector3& _end, float _t);
+	/// @brief 球面線形補完
 	static Vector3 Slerp(const Vector3& _start, const Vector3& _end, float _t);
 
+	/// @brief 外積の計算
 	static Vector3 Cross(const Vector3& _v1, const Vector3& _v2);
+	/// @brief 内積の計算
 	static float Dot(const Vector3& _v1, const Vector3& _v2);
 
+	/// @brief 指定した方向に一番遠い頂点を返す
 	static Vector3 MaxDotVector(const Vector3& _direction, const std::vector<Vector3>& _vertices);
+	/// @brief 指定した方向に一番近い頂点を返す
 	static Vector3 MinDotVector(const Vector3& _direction, const std::vector<Vector3>& _vertices);
 
 public:

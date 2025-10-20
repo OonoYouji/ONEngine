@@ -13,13 +13,12 @@
 
 
 
-/// ===================================================
+/// ///////////////////////////////////////////////////
 /// windowクラス
-/// ===================================================
+/// ///////////////////////////////////////////////////
 class Window {
 	friend class WindowManager;
 public:
-
 	/// ===================================================
 	/// public : method
 	/// ===================================================
@@ -27,44 +26,38 @@ public:
 	Window();
 	~Window();
 
-	/// <summary>
-	/// 初期化処理
-	/// </summary>
-	/// <param name="_windowName"> : ウィンドウの名前       </param>
-	/// <param name="_windowSize"> : ウィンドウのサイズ     </param>
-	/// <param name="_dxManager">  : DxManagerのポインター </param>
+	/// @brief 初期化
+	/// @param _windowName Windowの名前
+	/// @param _windowSize Windowのサイズ
+	/// @param _dxManager DxManagerのポインタ
 	void Initialize(const std::wstring& _windowName, const Vector2& _windowSize, class DxManager* _dxManager);
 
-	/// <summary>
-	/// 描画前の処理
-	/// </summary>
+	/// @brief 描画前に行う処理
 	void PreDraw();
-
-	/// <summary>
-	/// 描画後の処理
-	/// </summary>
+	/// @brief 描画後に行う処理
 	void PostDraw();
 
+	/// @brief 更新
 	void Update();
 
-	/// <summary>
-	/// front bufferとback bufferの交換
-	/// </summary>
+	/// @brief FrontBufferとBackBufferの交換
 	void Present();
 
-	/// <summary>
-	/// windowを開いているか
-	/// </summary>
-	/// <returns></returns>
+	/// @brief Windowが開いているか
+	/// @return true:開いている false:閉じている
 	bool IsOpenWindow();
 
+	/// @brief フルスクリーンの切り替え
 	void ToggleFullScreen();
 
 private:
-
 	/// ===================================================
 	/// public : objects
 	/// ===================================================
+
+	/// ----- other class ----- ///
+	class DxManager* pDxManager_;
+
 
 	std::wstring                 windowName_;
 	Vector2                      windowSize_;
@@ -79,37 +72,26 @@ private:
 	UINT                         processMessage_;
 
 	std::unique_ptr<DxSwapChain> dxSwapChain_;
-	class DxManager* pDxManager_;
 
 	bool isFullScreen_ = false;
 
 public:
-
 	/// ===================================================
 	/// public : accessor
 	/// ===================================================
 
-	/// <summary>
-	/// windowのハンドルを取得
-	/// </summary>
-	/// <returns></returns>
-	HWND GetHwnd() const { return hwnd_; }
+	/// @brief HWNDの取得
+	HWND GetHwnd() const;
 
 	/// @brief WNDCLASSの取得
-	/// @return 
-	const WNDCLASS& GetWNDCLASS() const { return windowClass_; }
+	const WNDCLASS& GetWNDCLASS() const;
 
-	/// <summary>
-	/// プロセスメッセージを取得
-	/// </summary>
-	/// <returns></returns>
-	UINT GetProcessMessage() const { return processMessage_; }
+	/// @brief プロセスメッセージの取得
+	UINT GetProcessMessage() const;
 
-	/// <summary>
-	/// ウィンドウのサイズを取得
-	/// </summary>
-	/// <returns></returns>
-	const Vector2& GetWindowSize() const { return windowSize_; }
+	/// @brief Windowサイズの取得
+	const Vector2& GetWindowSize() const;
+
 
 private:
 	Window(const Window&) = delete;

@@ -5,6 +5,19 @@
 #include "Engine/Core/ImGui/ImGuiManager.h"
 #include "Engine/Core/Window/WindowManager.h"
 
+Mouse::Mouse() 
+	: state_{}
+	, preState_{}
+	, position_(0.0f, 0.0f)
+	, velocity_(0.0f, 0.0f)
+	, wheel_(0.0f)
+	, imageMousePosition(0.0f, 0.0f)
+	, imageSize_(0.0f, 0.0f)
+{}
+
+Mouse::~Mouse() = default;
+
+
 void Mouse::Initialize(IDirectInput8* _directInput, WindowManager* _windowManager, ImGuiManager* _imGuiManager) {
 	pImGuiManager_ = _imGuiManager;
 	Assert(pImGuiManager_ != nullptr, "pImGuiManager_ == nullptr");

@@ -12,8 +12,8 @@
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
 #include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
-ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _graphicsResourceCollection, EditorManager* _editorManager)
-	: pGraphicsResourceCollection_(_graphicsResourceCollection), pEditorManager_(_editorManager) {
+ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _grc, EditorManager* _editorManager)
+	: pGrc_(_grc), pEditorManager_(_editorManager) {
 
 	// reloadといいつつも普通に読み込み
 	ReloadProject();
@@ -122,10 +122,6 @@ void ImGuiProjectWindow::SelectFileView() {
 
 		ImGui::EndDragDropTarget();
 	}
-
-
-
-
 
 	ImGui::EndChild();
 }

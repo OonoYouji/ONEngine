@@ -60,7 +60,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class EntityComponentSystem* pECS_ = nullptr;
+	class EntityComponentSystem* pEcs_ = nullptr;
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::string currentScene_;

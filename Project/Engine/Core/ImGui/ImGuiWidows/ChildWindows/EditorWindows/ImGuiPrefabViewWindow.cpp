@@ -11,7 +11,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, GraphicsResourceCollection* _resourceCollection)
-	: pECS_(_ecs), pGrc_(_resourceCollection) {}
+	: pEcs_(_ecs), pGrc_(_resourceCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {
@@ -21,7 +21,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 
 
 	/// カメラの更新
-	CameraComponent* debugCamera = pECS_->GetECSGroup("Debug")->GetMainCamera();
+	CameraComponent* debugCamera = pEcs_->GetECSGroup("Debug")->GetMainCamera();
 	if (debugCamera) {
 		//debugCamera->Update();
 	}

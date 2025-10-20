@@ -4,7 +4,7 @@
 #include "../Collection/ImGuiWindowCollection.h"
 
 /// ///////////////////////////////////////////////////
-/// ImGuiGameWindow
+/// GameWindow
 /// ///////////////////////////////////////////////////
 class ImGuiGameWindow : public IImGuiParentWindow {
 public:

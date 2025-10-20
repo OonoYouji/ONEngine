@@ -9,12 +9,11 @@
 using namespace DirectX;
 
 
-/// ===================================================
+/// //////////////////////////////////////////////////
 /// 4x4行列クラス
-/// ===================================================
+/// //////////////////////////////////////////////////
 class Matrix4x4 final {
 public:
-
 	/// ===================================================
 	/// public : constructer
 	/// ===================================================
@@ -59,7 +58,6 @@ public:
 	/// @param _v 回転率
 	/// @return 回転行列
 	static Matrix4x4 MakeRotate(const Vector3& _v);
-
 	static Matrix4x4 MakeRotate(const class Quaternion& _q);
 
 	/// @brief 平行移動行列の作成
@@ -103,9 +101,15 @@ public:
 	/// @return 逆行列
 	Matrix4x4 Inverse() const;
 
-	Vector3 ExtractScale() const; ///< スケール成分の抽出
-	Quaternion ExtractRotation() const; ///< 回転成分の抽出
-	Vector3 ExtractTranslation() const; ///< 平行移動成分の抽出
+	/// @brief 行列から拡縮成分を抽出する
+	Vector3 ExtractScale() const;
+
+	/// @brief 行列から回転成分を抽出する
+	Quaternion ExtractRotation() const;
+
+	/// @brief 行列から平行移動成分を抽出する
+	Vector3 ExtractTranslation() const;
+
 
 	/// ===================================================
 	/// public : static objects

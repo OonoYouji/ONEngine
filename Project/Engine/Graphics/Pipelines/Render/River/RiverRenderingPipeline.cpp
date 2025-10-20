@@ -39,7 +39,7 @@ void RiverRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManag
 
 		pipeline_->AddStaticSampler(D3D12_SHADER_VISIBILITY_PIXEL, 0);
 
-		pipeline_->SetBlendDesc(BlendMode::Normal());
+		pipeline_->SetBlendDesc(BlendMode::None());
 		pipeline_->SetCullMode(D3D12_CULL_MODE_BACK);
 		pipeline_->SetFillMode(D3D12_FILL_MODE_SOLID);
 		pipeline_->SetTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
