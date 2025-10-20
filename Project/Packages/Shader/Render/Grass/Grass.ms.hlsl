@@ -67,12 +67,17 @@ void MSMain(uint3 DTid : SV_DispatchThreadID,
 		}
 
         // クリップ判定
-		bool isInside = true;
+		bool isInside = false;
 		for (int i = 0; i < kMaxBladeVertexNum; ++i) {
 			float4 clip = mul(float4(bladePoss[i], 1.0), viewProjection.matVP);
 			float3 ndc = clip.xyz / clip.w;
-			if (ndc.x < -1 || ndc.x > 1 || ndc.y < -1 || ndc.y > 1 || ndc.z < 0 || ndc.z > 1) {
-				isInside = false;
+
+			/// 一つでも範囲内にあれば表示する
+			if ((ndc.x > -1 && ndc.x < 1) &&
+				(ndc.y > -1 && ndc.y < 1) &&
+				(ndc.z > 0 && ndc.z < 1)) {
+			//if (ndc.x < -1 || ndc.x > 1 || ndc.y < -1 || ndc.y > 1 || ndc.z < 0 || ndc.z > 1) {
+				isInside = true;
 				break;
 			}
 		}

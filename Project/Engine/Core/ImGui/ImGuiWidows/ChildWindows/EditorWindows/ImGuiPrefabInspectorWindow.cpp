@@ -40,8 +40,8 @@ enum SelectedType {
 	kResource
 };
 
-ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager)
-	: pEcs_(_ecs), pEditorManager_(_editorManager) {
+ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _ecs, EditorManager* _editorManager, GraphicsResourceCollection* _grc)
+	: pEcs_(_ecs), pEditorManager_(_editorManager), pGrc_(_grc) {
 
 
 	/// compute
@@ -55,7 +55,7 @@ ImGuiPrefabInspectorWindow::ImGuiPrefabInspectorWindow(EntityComponentSystem* _e
 	RegisterComponent<CameraComponent>([&](IComponent* _component) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_component)); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component)); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _component) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_component), pGrc_); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _component) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_component)); });
 	RegisterComponent<SpriteRenderer>([&]([[maybe_unused]] IComponent* _component) {});
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _component) {});

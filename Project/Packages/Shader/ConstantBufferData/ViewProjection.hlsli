@@ -46,53 +46,59 @@ struct AABB {
 
 //	return f;
 //}
-
+// LH座標系、World空間でのAABBと直接比較可能
 Frustum CreateFrustumFromMatrix(float4x4 matVP) {
 	Frustum f;
 
-	f.planes[0].plane = matVP[3] + matVP[0]; // Left
-	f.planes[1].plane = matVP[3] - matVP[0]; // Right
-	f.planes[2].plane = matVP[3] + matVP[1]; // Bottom
-	f.planes[3].plane = matVP[3] - matVP[1]; // Top
-	f.planes[4].plane = matVP[3] + matVP[2]; // Near  ✅ 修正
-	f.planes[5].plane = matVP[3] - matVP[2]; // Far
+    // Left plane
+	f.planes[0].plane = matVP[3] + matVP[0];
+    // Right plane
+	f.planes[1].plane = matVP[3] - matVP[0];
+    // Bottom plane
+	f.planes[2].plane = matVP[3] + matVP[1];
+    // Top plane
+	f.planes[3].plane = matVP[3] - matVP[1];
+    // Near plane
+	f.planes[4].plane = matVP[3] + matVP[2];
+    // Far plane
+	f.planes[5].plane = matVP[3] - matVP[2];
 
-    // Normalize planes
+    // 法線と距離を正規化
     [unroll]
 	for (int i = 0; i < 6; ++i) {
 		float3 n = f.planes[i].plane.xyz;
 		float len = length(n);
-		f.planes[i].plane /= len;
+		f.planes[i].plane /= len; // xyz と w を同じ比率で割る
 	}
 
 	return f;
 }
 
-
 bool IsVisible(AABB box, Frustum frustum) {
+	float3 vertices[8] = {
+		box.min,
+        float3(box.max.x, box.min.y, box.min.z),
+        float3(box.min.x, box.max.y, box.min.z),
+        float3(box.max.x, box.max.y, box.min.z),
+        float3(box.min.x, box.min.y, box.max.z),
+        float3(box.max.x, box.min.y, box.max.z),
+        float3(box.min.x, box.max.y, box.max.z),
+        box.max
+	};
+
+    [unroll]
 	for (int i = 0; i < 6; ++i) {
-		float3 normal = frustum.planes[i].plane.xyz;
-		float dist = frustum.planes[i].plane.w;
-
-		float3 vPos = box.min;
-		if (normal.x >= 0) {
-			vPos.x = box.max.x;
+		bool allOutside = true;
+        [unroll]
+		for (int v = 0; v < 8; ++v) {
+			float d = dot(frustum.planes[i].plane.xyz, vertices[v]) + frustum.planes[i].plane.w;
+			if (d >= 0) {
+				allOutside = false;
+				break;
+			}
 		}
-
-		if (normal.y >= 0) {
-			vPos.y = box.max.y;
-		}
-
-		if (normal.z >= 0) {
-			vPos.z = box.max.z;
-		}
-
-		float d = dot(normal, vPos) + dist;
-
-		if (d < 0) {
+		if (allOutside)
 			return false;
-		}
 	}
-
 	return true;
 }

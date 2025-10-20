@@ -75,9 +75,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	/// 輝度を計算して、一定以下なら草を生やさない
 	float luminance = CalculateLuminance(texColor);
-	//if (luminance < 0.1f) {
-	//	return;
-	//}
+	if (luminance < 0.1f) {
+		return;
+	}
 	
 	
 	float4 terrainVertex = textures[usedTexId.terrainVertexTexId].Sample(textureSampler, uv);
