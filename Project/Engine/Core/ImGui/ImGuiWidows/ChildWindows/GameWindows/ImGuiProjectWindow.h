@@ -78,7 +78,7 @@ private:
 	/// private : objects
 	/// ===================================================
 	
-	class AssetCollection* pGrc_; ///< グラフィックスリソースコレクションへのポインタ
+	class AssetCollection* pAssetCollection_; ///< グラフィックスリソースコレクションへのポインタ
 	class EditorManager* pEditorManager_; ///< エディターマネージャーへのポインタ
 
 	std::shared_ptr<Folder> assetsRootFolder_;

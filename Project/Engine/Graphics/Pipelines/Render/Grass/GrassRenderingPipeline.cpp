@@ -52,7 +52,7 @@ void GenerateBladesAlongBezier(
 }
 
 
-GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _grc) : pGrc_(_grc) {};
+GrassRenderingPipeline::GrassRenderingPipeline(AssetCollection* _grc) : pAssetCollection_(_grc) {};
 GrassRenderingPipeline::~GrassRenderingPipeline() = default;
 
 void GrassRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -152,7 +152,7 @@ void GrassRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<class GameEn
 	auto cmdList = _dxCommand->GetCommandList();
 	pipeline_->SetPipelineStateForCommandList(_dxCommand);
 
-	const auto& textures = pGrc_->GetTextures();
+	const auto& textures = pAssetCollection_->GetTextures();
 	cmdList->SetGraphicsRootDescriptorTable(SRV_TEXTURES, textures[0].GetSRVHandle().gpuHandle);
 
 

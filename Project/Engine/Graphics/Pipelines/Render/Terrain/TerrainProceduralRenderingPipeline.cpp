@@ -8,7 +8,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 TerrainProceduralRenderingPipeline::TerrainProceduralRenderingPipeline(AssetCollection* _resourceCollection)
-	: pGrc_(_resourceCollection) {}
+	: pAssetCollection_(_resourceCollection) {}
 TerrainProceduralRenderingPipeline::~TerrainProceduralRenderingPipeline() {}
 
 void TerrainProceduralRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -95,8 +95,8 @@ void TerrainProceduralRenderingPipeline::PreDraw(ECSGroup*, CameraComponent*, Dx
 	computePipeline_->SetPipelineStateForCommandList(_dxCommand);
 	instanceDataAppendBuffer_.AppendBindForComputeCommandList(cmdList, CP_INSNTANCE_DATA); // UAV_INSTANCE_DATA
 
-	const Texture* vertexTexture = pGrc_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
-	const Texture* splatBlendTexture = pGrc_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
+	const Texture* vertexTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainVertex.png");
+	const Texture* splatBlendTexture = pAssetCollection_->GetTexture("./Packages/Textures/Terrain/TerrainSplatBlend.png");
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_VERTEX_TEXTURE, vertexTexture->GetSRVGPUHandle());
 	cmdList->SetComputeRootDescriptorTable(CP_SRV_SPLAT_BLEND_TEXTURE, splatBlendTexture->GetSRVGPUHandle());
 
@@ -158,10 +158,10 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	/// -----------------------------------------------
 
 	/// model
-	const Model* model = pGrc_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
+	const Model* model = pAssetCollection_->GetModel("./Packages/Models/BackgroundObjects/Tree3.obj");
 
 	/// textures
-	auto& textures = pGrc_->GetTextures();
+	auto& textures = pAssetCollection_->GetTextures();
 
 
 	/// -----------------------------------------------
@@ -183,7 +183,7 @@ void TerrainProceduralRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<
 	instanceDataAppendBuffer_.SRVBindForGraphicsCommandList(cmdList, GP_SRV_INSNTANCE_DATA); // GP_SRV_INSNTANCE_DATA
 
 	/// pixel: texture id
-	uint32_t texId = static_cast<uint32_t>(pGrc_->GetTextureIndex("./Packages/Textures/white.png"));
+	uint32_t texId = static_cast<uint32_t>(pAssetCollection_->GetTextureIndex("./Packages/Textures/white.png"));
 	textureIdBuffer_.SetMappedData({ texId });
 	textureIdBuffer_.BindForGraphicsCommandList(cmdList, GP_CBV_TEXTURE_ID);
 	/// pixel: テクスチャをバインド

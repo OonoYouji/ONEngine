@@ -28,7 +28,7 @@ private:
 	/// ===================================================
 
 	class EntityComponentSystem* pEcs_;
-	class AssetCollection* pGrc_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 	class SceneManager* pSceneManager_ = nullptr;
 	class ImGuiInspectorWindow* pInspector_ = nullptr;
 

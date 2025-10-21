@@ -47,22 +47,22 @@ void from_json(const nlohmann::json& _j, GPUMaterial& _material);
 
 
 /// Material Json変換
-class Material;
-void to_json(nlohmann::json& _j, const Material& _material);
-void from_json(const nlohmann::json& _j, Material& _material);
+class CPUMaterial;
+void to_json(nlohmann::json& _j, const CPUMaterial& _material);
+void from_json(const nlohmann::json& _j, CPUMaterial& _material);
 
 
 /// @brief CPU側のマテリアルクラス
-class Material {
-	friend void to_json(nlohmann::json& _j, const Material& _material);
-	friend void from_json(const nlohmann::json& _j, Material& _material);
+class CPUMaterial {
+	friend void to_json(nlohmann::json& _j, const CPUMaterial& _material);
+	friend void from_json(const nlohmann::json& _j, CPUMaterial& _material);
 public:
 	/// ==================================================
 	/// public : methods
 	/// ==================================================
 
-	Material();
-	~Material();
+	CPUMaterial();
+	~CPUMaterial();
 
 	/// @brief ThisからGPU用のマテリアルデータを生成する
 	GPUMaterial ToGPUMaterial();

@@ -11,7 +11,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
 
 ImGuiPrefabViewWindow::ImGuiPrefabViewWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection)
-	: pEcs_(_ecs), pGrc_(_resourceCollection) {}
+	: pEcs_(_ecs), pAssetCollection_(_resourceCollection) {}
 
 void ImGuiPrefabViewWindow::ShowImGui() {
 	if (!ImGui::Begin("prefab view")) {
@@ -62,7 +62,7 @@ void ImGuiPrefabViewWindow::ShowImGui() {
 void ImGuiPrefabViewWindow::RenderView() {
 
 	/// 描画する画像の取得
-	const Texture* texture = pGrc_->GetTexture("prefabScene");
+	const Texture* texture = pAssetCollection_->GetTexture("prefabScene");
 
 	// 最初に空き領域を取得
 	ImVec2 availRegion = ImGui::GetContentRegionAvail();

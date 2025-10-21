@@ -7,7 +7,7 @@
 
 
 CopyImageRenderingPipeline::CopyImageRenderingPipeline(AssetCollection* _graphicsResourceCollection)
-	: pGrc_(_graphicsResourceCollection) {}
+	: pAssetCollection_(_graphicsResourceCollection) {}
 
 void CopyImageRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
 
@@ -54,8 +54,8 @@ void CopyImageRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnt
 	/// settings
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	auto& textures = pGrc_->GetTextures();
-	size_t index = pGrc_->GetTextureIndex("sceneScene");
+	auto& textures = pAssetCollection_->GetTextures();
+	size_t index = pAssetCollection_->GetTextureIndex("sceneScene");
 
 	commandList->SetGraphicsRootDescriptorTable(0, textures[index].GetSRVGPUHandle());
 

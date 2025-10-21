@@ -40,7 +40,7 @@ void from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.normalTextureId = _j.value("normalTextureId", -1);
 }
 
-void to_json(nlohmann::json& _j, const Material& _material) {
+void to_json(nlohmann::json& _j, const CPUMaterial& _material) {
 	_j = nlohmann::json{
 		{ "uvTransform", _material.uvTransform },
 		{ "baseColor", _material.baseColor },
@@ -50,13 +50,13 @@ void to_json(nlohmann::json& _j, const Material& _material) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Material& _material) {
+void from_json(const nlohmann::json& _j, CPUMaterial& _material) {
 }
 
-Material::Material() = default;
-Material::~Material() = default;
+CPUMaterial::CPUMaterial() = default;
+CPUMaterial::~CPUMaterial() = default;
 
-GPUMaterial Material::ToGPUMaterial() {
+GPUMaterial CPUMaterial::ToGPUMaterial() {
 	return GPUMaterial{
 		.uvTransform     = UVTransform{},
 		.baseColor       = Vector4::kWhite,
@@ -67,6 +67,6 @@ GPUMaterial Material::ToGPUMaterial() {
 	};
 }
 
-void Material::SetOwnerEntity(GameEntity* _pEntity) {
+void CPUMaterial::SetOwnerEntity(GameEntity* _pEntity) {
 	pOwnerEntity_ = _pEntity;
 }

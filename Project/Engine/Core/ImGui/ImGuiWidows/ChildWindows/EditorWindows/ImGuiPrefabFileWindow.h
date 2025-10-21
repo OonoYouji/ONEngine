@@ -29,7 +29,7 @@ private:
 
 	class EntityComponentSystem* pEcs_;
 	class ImGuiInspectorWindow* pInspector_;
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 
 	std::string searchText_; ///< 検索テキスト
 	std::vector<File> files_;

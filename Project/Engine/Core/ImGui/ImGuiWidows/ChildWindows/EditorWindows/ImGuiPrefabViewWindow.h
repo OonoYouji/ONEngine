@@ -26,7 +26,7 @@ private:
 	/// =====================================================
 
 	class EntityComponentSystem* pEcs_;
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 
 
 };

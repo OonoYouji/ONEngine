@@ -13,7 +13,7 @@
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 ImGuiProjectWindow::ImGuiProjectWindow(AssetCollection* _grc, EditorManager* _editorManager)
-	: pGrc_(_grc), pEditorManager_(_editorManager) {
+	: pAssetCollection_(_grc), pEditorManager_(_editorManager) {
 
 	// reloadといいつつも普通に読み込み
 	ReloadProject();

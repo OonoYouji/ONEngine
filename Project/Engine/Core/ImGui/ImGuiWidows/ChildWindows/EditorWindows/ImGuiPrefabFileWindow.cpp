@@ -12,7 +12,7 @@
 #include "Engine/Script/MonoScriptEngine.h"
 
 ImGuiPrefabFileWindow::ImGuiPrefabFileWindow(EntityComponentSystem* _ecs, AssetCollection* _resourceCollection, ImGuiInspectorWindow* _inspector)
-	: pEcs_(_ecs), pGrc_(_resourceCollection), pInspector_(_inspector) {
+	: pEcs_(_ecs), pAssetCollection_(_resourceCollection), pInspector_(_inspector) {
 
 	files_ = Mathf::FindFiles("Assets/Prefabs", ".prefab");
 }
@@ -24,8 +24,8 @@ void ImGuiPrefabFileWindow::ShowImGui() {
 		return;
 	}
 
-	const auto& textures = pGrc_->GetTextures();
-	const Texture& button = textures[pGrc_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	const Texture& button = textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/reload.png")];
 
 	ReloadPrefabFiles(&button);
 

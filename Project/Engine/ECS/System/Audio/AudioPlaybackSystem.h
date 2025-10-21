@@ -48,7 +48,7 @@ private:
 	/// ===================================================
 	
 	/// other classes
-	class AssetCollection* pGrc_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 
 	/// xAudio
 	ComPtr<IXAudio2> xAudio2_ = nullptr;

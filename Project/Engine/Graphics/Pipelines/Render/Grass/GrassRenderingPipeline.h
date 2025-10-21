@@ -43,6 +43,6 @@ private:
 	/// ===================================================
 
 	class DxManager* pDxManager_ = nullptr;
-	class AssetCollection* pGrc_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 };
 

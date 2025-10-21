@@ -18,8 +18,8 @@ void ImGuiGameSceneWindow::ShowImGui() {
 	/// Sceneを描画する
 	/// ---------------------------------------
 
-	const auto& textures = pGrc_->GetTextures();
-	auto& texture = textures[pGrc_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	auto& texture = textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/sceneScene")];
 
 	ImVec2 windowSize = ImGui::GetContentRegionAvail();
 	float aspectRatio = 16.0f / 9.0f;

@@ -55,7 +55,7 @@ private:
 	/// private : objects
 	/// =====================================
 
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 	class DxManager* pDxManager_;
 
 	std::unique_ptr<ComputePipeline> computePipeline_;

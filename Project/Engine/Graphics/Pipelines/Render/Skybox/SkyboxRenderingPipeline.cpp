@@ -9,7 +9,7 @@
 
 
 SkyboxRenderingPipeline::SkyboxRenderingPipeline(AssetCollection* _resourceCollection)
-	: pGrc_(_resourceCollection) {}
+	: pAssetCollection_(_resourceCollection) {}
 SkyboxRenderingPipeline::~SkyboxRenderingPipeline() {}
 
 void SkyboxRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManager* _dxManager) {
@@ -137,8 +137,8 @@ void SkyboxRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<GameE
 
 	//pSkybox->GetOwner()->UpdateTransform();
 
-	auto& textures = pGrc_->GetTextures();
-	size_t texIndex = pGrc_->GetTextureIndex(pSkybox->GetDDSTexturePath());
+	auto& textures = pAssetCollection_->GetTextures();
+	size_t texIndex = pAssetCollection_->GetTextureIndex(pSkybox->GetDDSTexturePath());
 
 	texIndex_.SetMappedData(texIndex);
 	transformMatrix_.SetMappedData(pSkybox->GetOwner()->GetTransform()->GetMatWorld());

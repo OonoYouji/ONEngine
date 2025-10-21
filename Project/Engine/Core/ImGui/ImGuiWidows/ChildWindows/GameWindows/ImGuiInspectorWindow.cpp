@@ -47,7 +47,7 @@ enum SelectedType {
 };
 
 ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, EntityComponentSystem* _ecs, AssetCollection* _resourceCollection, EditorManager* _editorManager)
-	: pEcs_(_ecs), pGrc_(_resourceCollection), pEditorManager_(_editorManager) {
+	: pEcs_(_ecs), pAssetCollection_(_resourceCollection), pEditorManager_(_editorManager) {
 	windowName_ = _windowName;
 
 	/// compute
@@ -59,13 +59,13 @@ ImGuiInspectorWindow::ImGuiInspectorWindow(const std::string& _windowName, Entit
 	RegisterComponent<Script>([&](IComponent* _comp) { COMP_DEBUG::ScriptDebug(static_cast<Script*>(_comp)); });
 	RegisterComponent<Terrain>([&](IComponent* _comp) { COMP_DEBUG::TerrainDebug(static_cast<Terrain*>(_comp), pEcs_); });
 	RegisterComponent<TerrainCollider>([&](IComponent* _comp) { COMP_DEBUG::TerrainColliderDebug(static_cast<TerrainCollider*>(_comp)); });
-	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pGrc_); });
+	RegisterComponent<GrassField>([&](IComponent* _comp) { COMP_DEBUG::GrassFieldDebug(static_cast<GrassField*>(_comp), pAssetCollection_); });
 	RegisterComponent<CameraComponent>([&](IComponent* _comp) { COMP_DEBUG::CameraDebug(static_cast<CameraComponent*>(_comp)); });
 
 	/// renderer
-	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pGrc_); });
+	RegisterComponent<MeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::MeshRendererDebug(static_cast<MeshRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<CustomMeshRenderer>([&](IComponent* _comp) { CustomMeshRendererDebug(static_cast<CustomMeshRenderer*>(_comp)); });
-	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pGrc_); });
+	RegisterComponent<SpriteRenderer>([&](IComponent* _comp) { COMP_DEBUG::SpriteDebug(static_cast<SpriteRenderer*>(_comp), pAssetCollection_); });
 	RegisterComponent<Line2DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<Line3DRenderer>([&]([[maybe_unused]] IComponent* _comp) {});
 	RegisterComponent<SkinMeshRenderer>([&](IComponent* _comp) { COMP_DEBUG::SkinMeshRendererDebug(static_cast<SkinMeshRenderer*>(_comp)); });
@@ -284,6 +284,10 @@ void ImGuiInspectorWindow::EntityInspector() {
 		ImGui::EndPopup();
 	}
 
+
+}
+
+void ImGuiInspectorWindow::AssetInspector() {
 
 }
 

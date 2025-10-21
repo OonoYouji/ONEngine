@@ -66,7 +66,7 @@ private:
 	/// ----- other class ----- ///
 	class DxManager* dxManager_;
 	class WindowManager* pWindowManager_;
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 	class EntityComponentSystem* pEntityComponentSystem_;
 	class EditorManager* pEditorManager_;
 	class SceneManager* pSceneManager_;

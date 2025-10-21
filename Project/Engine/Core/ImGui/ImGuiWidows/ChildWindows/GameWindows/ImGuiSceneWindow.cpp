@@ -21,7 +21,7 @@
 #include "ImGuiInspectorWindow.h"
 
 ImGuiSceneWindow::ImGuiSceneWindow(EntityComponentSystem* _ecs, AssetCollection* _grc, SceneManager* _sceneManager, ImGuiInspectorWindow* _inspector)
-	: pEcs_(_ecs), pGrc_(_grc), pSceneManager_(_sceneManager), pInspector_(_inspector) {
+	: pEcs_(_ecs), pAssetCollection_(_grc), pSceneManager_(_sceneManager), pInspector_(_inspector) {
 
 	manipulateOperation_ = ImGuizmo::OPERATION::TRANSLATE; // 初期操作モードは移動
 	manipulateMode_ = ImGuizmo::MODE::WORLD; // 初期モードはワールド座標
@@ -34,16 +34,16 @@ void ImGuiSceneWindow::ShowImGui() {
 		return;
 	}
 
-	const auto& textures = pGrc_->GetTextures();
-	const Texture* texture = &textures[pGrc_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
+	const auto& textures = pAssetCollection_->GetTextures();
+	const Texture* texture = &textures[pAssetCollection_->GetTextureIndex("./Assets/Scene/RenderTexture/debugScene")];
 
 	/// ----------------------------------------
 	/// ゲームの開始、停止、ポーズボタンの描画
 	/// ----------------------------------------
 
 	std::array<const Texture*, 2> buttons = {
-		&textures[pGrc_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
-		&textures[pGrc_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
+		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/play.png")],
+		&textures[pAssetCollection_->GetTextureIndex("./Packages/Textures/ImGui/pause.png")]
 	};
 
 	ImVec2 buttonSize = ImVec2(12.0f, 12.0f);

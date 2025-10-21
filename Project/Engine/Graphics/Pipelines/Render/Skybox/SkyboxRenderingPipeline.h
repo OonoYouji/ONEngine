@@ -27,7 +27,7 @@ public:
 	void Draw(class ECSGroup* _ecs, const std::vector<GameEntity*>& _entities, class CameraComponent* _camera, DxCommand* _dxCommand) override;
 
 private:
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 	ConstantBuffer<size_t> texIndex_;
 	ConstantBuffer<Matrix4x4> transformMatrix_;
 	

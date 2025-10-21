@@ -5,12 +5,13 @@
 #include <string>
 
 /// engine
+#include "../Asset.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
 
 /// ///////////////////////////////////////////////////
 /// texture
 /// ///////////////////////////////////////////////////
-class Texture final {
+class Texture final : public IAsset {
 	friend class AssetLoader;
 public:
 	/// ===================================================

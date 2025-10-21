@@ -47,7 +47,7 @@ private:
 	/// private : objects
 	/// ====================================
 
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 	Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;

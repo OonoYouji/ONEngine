@@ -47,7 +47,7 @@ private:
 	/// ----- other class pointer ----- ///
 	class EntityComponentSystem* pEcs_;
 	class EditorManager* pEditorManager_;
-	class AssetCollection* pGrc_;
+	class AssetCollection* pAssetCollection_;
 
 
 	std::uintptr_t selectedPointer_; ///< 選択したポインタ

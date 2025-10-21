@@ -35,7 +35,7 @@
 
 
 AssetLoader::AssetLoader(DxManager* _dxManager, AssetCollection* _collection)
-	: pDxManager_(_dxManager), pGrc_(_collection) {}
+	: pDxManager_(_dxManager), pAssetCollection_(_collection) {}
 
 AssetLoader::~AssetLoader() {
 	HRESULT result = MFShutdown();
@@ -97,7 +97,7 @@ void AssetLoader::LoadTexture([[maybe_unused]] const std::string& _filepath) {
 	dxDevice->GetDevice()->CreateShaderResourceView(texture.dxResource_.Get(), &srvDesc, texture.srvHandle_->cpuHandle);
 
 	Console::Log("[Load] [Texture] - path:\"" + _filepath + "\"");
-	pGrc_->AddTexture(_filepath, std::move(texture));
+	pAssetCollection_->AddTexture(_filepath, std::move(texture));
 }
 
 void AssetLoader::LoadModelObj(const std::string& _filepath) {
@@ -201,7 +201,7 @@ void AssetLoader::LoadModelObj(const std::string& _filepath) {
 	}
 
 	Console::Log("[Load] [Model] - path:\"" + _filepath + "\"");
-	pGrc_->AddModel(_filepath, std::move(model));
+	pAssetCollection_->AddModel(_filepath, std::move(model));
 
 }
 
@@ -384,7 +384,7 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 
 	AudioClip audioClip;
 	audioClip.soundData_ = std::move(soundData);
-	pGrc_->AddAudioClip(_filepath, std::move(audioClip));
+	pAssetCollection_->AddAudioClip(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
 }

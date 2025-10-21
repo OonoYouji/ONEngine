@@ -23,6 +23,6 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	class AssetCollection* pGrc_ = nullptr;
+	class AssetCollection* pAssetCollection_ = nullptr;
 };
 

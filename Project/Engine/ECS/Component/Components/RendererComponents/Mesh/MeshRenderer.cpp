@@ -80,7 +80,7 @@ const GPUMaterial& MeshRenderer::GetMaterial() const {
 	return gpuMaterial_;
 }
 
-const Material& MeshRenderer::GetCPUMaterial() const {
+const CPUMaterial& MeshRenderer::GetCPUMaterial() const {
 	return cpuMaterial_;
 }
 
@@ -264,7 +264,7 @@ void from_json(const nlohmann::json& _j, MeshRenderer& _m) {
 	_m.SetTexturePath(_j.at("texturePath").get<std::string>());
 	_m.SetColor(_j.at("color").get<Vector4>());
 
-	_m.cpuMaterial_ = _j.value("material", Material{});
+	_m.cpuMaterial_ = _j.value("material", CPUMaterial{});
 	//if (_j.contains("postEffectFlags")) {
 	//	_m.SetPostEffectFlags(_j.at("postEffectFlags").get<uint32_t>());
 	//}
