@@ -6,7 +6,7 @@
 
 /// engine
 #include "Engine/Asset/AssetType.h"
-#include "Engine/Asset/Collection/Container/ResourceContainer.h"
+#include "Engine/Asset/Collection/Container/AssetContainer.h"
 #include "Engine/Asset/Collection/Loader/AssetLoader.h"
 
 #include "Engine/Asset/Assets/Mesh/Model.h"
@@ -70,9 +70,9 @@ private:
 	std::unique_ptr<AssetLoader> resourceLoader_;
 
 	/// リソースのコンテナ
-	std::unique_ptr<ResourceContainer<Model>>     modelContainer_;
-	std::unique_ptr<ResourceContainer<Texture>>   textureContainer_;
-	std::unique_ptr<ResourceContainer<AudioClip>> audioClipContainer_;
+	std::unique_ptr<AssetContainer<Model>>     modelContainer_;
+	std::unique_ptr<AssetContainer<Texture>>   textureContainer_;
+	std::unique_ptr<AssetContainer<AudioClip>> audioClipContainer_;
 
 	/// リソースを読む条件
 	std::unordered_map<std::string, AssetType> resourceTypes_;

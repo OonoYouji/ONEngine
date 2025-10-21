@@ -16,9 +16,9 @@ void AssetCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<AssetLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
-	modelContainer_ = std::make_unique<ResourceContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
-	textureContainer_ = std::make_unique<ResourceContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
-	audioClipContainer_ = std::make_unique<ResourceContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
+	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
+	textureContainer_ = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
+	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
 
 	RegisterResourceType();
 

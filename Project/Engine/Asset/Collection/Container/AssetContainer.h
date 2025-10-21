@@ -12,11 +12,11 @@
 #include "Engine/Asset/Meta/MetaFile.h"
 
 /// ///////////////////////////////////////////////////
-/// リソースのインターフェイスクラス
+/// アセットのインターフェイスクラス
 /// ///////////////////////////////////////////////////
-class IResourceContainer {
+class IAssetContainer {
 public:
-	virtual ~IResourceContainer() = default;
+	virtual ~IAssetContainer() = default;
 };
 
 
@@ -24,14 +24,14 @@ public:
 /// リソースのコンテナクラス
 /// ///////////////////////////////////////////////////
 template <typename T>
-class ResourceContainer : public IResourceContainer {
+class AssetContainer : public IAssetContainer {
 public:
 	/// ===================================================
 	/// public : methods
 	/// ===================================================
 
-	ResourceContainer(size_t _maxResourceSize);
-	~ResourceContainer();
+	AssetContainer(size_t _maxResourceSize);
+	~AssetContainer();
 
 	/// 追加
 	T* Add(const std::string& _key, T _t);
@@ -72,15 +72,15 @@ private:
 /// ///////////////////////////////////////////////////
 
 template<typename T>
-inline ResourceContainer<T>::ResourceContainer(size_t _maxResourceSize) {
+inline AssetContainer<T>::AssetContainer(size_t _maxResourceSize) {
 	values_.resize(_maxResourceSize);
 }
 
 template<typename T>
-inline ResourceContainer<T>::~ResourceContainer() {}
+inline AssetContainer<T>::~AssetContainer() {}
 
 template<typename T>
-inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
+inline T* AssetContainer<T>::Add(const std::string& _key, T _t) {
 	/// すでに同じキーが存在する場合は、値を更新
 	if (indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
@@ -114,7 +114,7 @@ inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 }
 
 template<typename T>
-inline void ResourceContainer<T>::Remove(const std::string& _key) {
+inline void AssetContainer<T>::Remove(const std::string& _key) {
 
 	/// 参照する方法を消して使えないようにする
 	if(indexMap_.contains(_key)) {
@@ -125,7 +125,7 @@ inline void ResourceContainer<T>::Remove(const std::string& _key) {
 }
 
 template<typename T>
-inline void ResourceContainer<T>::Remove(int32_t _index) {
+inline void AssetContainer<T>::Remove(int32_t _index) {
 
 	/// 参照する方法を消して使えないようにする
 	if(reverseIndexMap_.contains(_index)) {
@@ -136,7 +136,7 @@ inline void ResourceContainer<T>::Remove(int32_t _index) {
 }
 
 template<typename T>
-inline T* ResourceContainer<T>::Get(const std::string& _key) {
+inline T* AssetContainer<T>::Get(const std::string& _key) {
 	if (indexMap_.contains(_key)) {
 		uint32_t index = indexMap_[_key];
 		return &values_[index];
@@ -146,7 +146,7 @@ inline T* ResourceContainer<T>::Get(const std::string& _key) {
 }
 
 template<typename T>
-inline T* ResourceContainer<T>::Get(int32_t _index) {
+inline T* AssetContainer<T>::Get(int32_t _index) {
 	if( _index < values_.size()) {
 		return &values_[_index];
 	}
@@ -155,12 +155,12 @@ inline T* ResourceContainer<T>::Get(int32_t _index) {
 }
 
 template<typename T>
-inline T* ResourceContainer<T>::GetFirst() {
+inline T* AssetContainer<T>::GetFirst() {
 	return &values_.front();
 }
 
 template<typename T>
-inline const std::string& ResourceContainer<T>::GetKey(int32_t _index) const {
+inline const std::string& AssetContainer<T>::GetKey(int32_t _index) const {
 	if(reverseIndexMap_.contains(_index)) {
 		return reverseIndexMap_.at(_index);
 	}
@@ -170,7 +170,7 @@ inline const std::string& ResourceContainer<T>::GetKey(int32_t _index) const {
 }
 
 template<typename T>
-inline int32_t ResourceContainer<T>::GetIndex(const std::string& _key) const {
+inline int32_t AssetContainer<T>::GetIndex(const std::string& _key) const {
 	if(indexMap_.contains(_key)) {
 		return indexMap_.at(_key);
 	}
@@ -180,7 +180,7 @@ inline int32_t ResourceContainer<T>::GetIndex(const std::string& _key) const {
 }
 
 template<typename T>
-inline int32_t ResourceContainer<T>::GetIndex(const Guid& _guid) const {
+inline int32_t AssetContainer<T>::GetIndex(const Guid& _guid) const {
 	if(guidToIndexMap_.contains(_guid)) {
 		return guidToIndexMap_.at(_guid);
 	}
@@ -189,16 +189,16 @@ inline int32_t ResourceContainer<T>::GetIndex(const Guid& _guid) const {
 }
 
 template<typename T>
-inline const std::vector<T>& ResourceContainer<T>::GetValues() const {
+inline const std::vector<T>& AssetContainer<T>::GetValues() const {
 	return values_;
 }
 
 template<typename T>
-inline std::vector<T>& ResourceContainer<T>::GetValues() {
+inline std::vector<T>& AssetContainer<T>::GetValues() {
 	return values_;
 }
 
 template<typename T>
-inline const std::unordered_map<std::string, int32_t>& ResourceContainer<T>::GetIndexMap() const {
+inline const std::unordered_map<std::string, int32_t>& AssetContainer<T>::GetIndexMap() const {
 	return indexMap_;
 }
