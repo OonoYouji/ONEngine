@@ -10,7 +10,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// ///////////////////////////////////////////////////
 /// 川のコントロールポイント

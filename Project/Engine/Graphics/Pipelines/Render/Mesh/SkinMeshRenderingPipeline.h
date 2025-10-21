@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
 #include "Engine/Asset/Assets/Mesh/Skinning.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// //////////////////////////////////////////////////////
 /// スキンアニメーションの描画パイプライン

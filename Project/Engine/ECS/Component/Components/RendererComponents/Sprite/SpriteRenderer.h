@@ -8,7 +8,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 
 class AssetCollection;

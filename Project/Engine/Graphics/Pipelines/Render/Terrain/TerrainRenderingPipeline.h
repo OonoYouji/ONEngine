@@ -7,7 +7,7 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/VertexBuffer.h"
 #include "Engine/Graphics/Buffer/IndexBuffer.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 /// ////////////////////////////////////

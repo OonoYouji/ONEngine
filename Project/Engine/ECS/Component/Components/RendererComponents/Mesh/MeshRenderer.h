@@ -7,7 +7,7 @@
 /// engine
 #include "../../Interface/IComponent.h"
 #include "Engine/Graphics/Pipelines/Render/Mesh/MeshRenderingPipeline.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 
 /// 前方宣言

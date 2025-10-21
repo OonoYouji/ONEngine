@@ -8,7 +8,7 @@
 
 /// engine
 #include "Engine/Core/Utility/Math/Vector4.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// 前方宣言
 class AssetCollection;

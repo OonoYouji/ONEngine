@@ -12,7 +12,7 @@
 #include "Engine/Core/Utility/Math/Vector2.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
-#include "Engine/Graphics/Buffer/Data/Material.h"
+#include "Engine/Graphics/Buffer/Data/GPUMaterial.h"
 
 /// ===================================================d
 /// sprite描画のパイプライン
