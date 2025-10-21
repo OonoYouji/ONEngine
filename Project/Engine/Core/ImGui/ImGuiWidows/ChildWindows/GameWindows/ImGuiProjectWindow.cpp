@@ -2,6 +2,8 @@
 
 /// std
 #include <filesystem>
+#include <iostream>
+#include <format>
 
 /// external
 #include <imgui.h>
@@ -307,3 +309,176 @@ void ImGuiProjectWindow::ShowContextMenu(const std::string& _contextMenuName, co
 		ImGui::EndPopup();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+ImGuiProjectExplorer::ImGuiProjectExplorer(AssetCollection* _assetCollection, EditorManager* _editorManager) 
+	: pAssetCollection_(_assetCollection) {
+	rootPath_ = "./Assets";
+	currentPath_ = rootPath_;
+}
+
+void ImGuiProjectExplorer::ShowImGui() {
+	ImGui::Begin("ImGuiProjectExplorer");
+
+	{	/// ProjectWindowの左上に出すMenuの内容
+		if (ImGui::Button("Menu", ImVec2(120, 25))) {
+			ImGui::OpenPopup("MenuPopup");
+		}
+
+		if (ImGui::BeginPopup("MenuPopup")) {
+			ImGui::SetNextWindowSize(ImVec2(200, 150)); // ポップアップサイズ
+			ImGui::MenuItem("Item 1");
+			ImGui::MenuItem("Item 2");
+			ImGui::EndPopup();
+		}
+	}
+
+	ImGui::SameLine();
+
+	ImGui::Text("search");
+
+	ImGui::Separator();
+
+	if (ImGui::BeginTable("ProjectTable", 2, ImGuiTableFlags_Resizable)) {
+		// 左ペイン（ツリー）
+		ImGui::TableSetupColumn("Tree", ImGuiTableColumnFlags_WidthFixed, 250.0f);
+		ImGui::TableSetupColumn("View", ImGuiTableColumnFlags_WidthStretch);
+
+		ImGui::TableNextRow();
+
+		// --- 左カラム ---
+		ImGui::TableSetColumnIndex(0);
+		ImGui::BeginChild("TreeRegion");
+		DrawDirectoryTree(rootPath_);
+		ImGui::EndChild();
+
+		// --- 右カラム ---
+		ImGui::TableSetColumnIndex(1);
+		ImGui::BeginChild("ViewRegion");
+		DrawFileView(currentPath_);
+		ImGui::EndChild();
+
+		ImGui::EndTable();
+	}
+	ImGui::End();
+}
+
+void ImGuiProjectExplorer::DrawDirectoryTree(const std::filesystem::path& dir) {
+	for (auto& entry : std::filesystem::directory_iterator(dir)) {
+		if (!entry.is_directory()) {
+			continue;
+		}
+
+		const std::string name = entry.path().filename().string();
+		bool open = dirOpenState_[entry.path().string()];
+
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
+		if (entry.path() == currentPath_) {
+			flags |= ImGuiTreeNodeFlags_Selected;
+		}
+
+		bool nodeOpen = ImGui::TreeNodeEx(name.c_str(), flags);
+		if (ImGui::IsItemClicked()) {
+			currentPath_ = entry.path();
+		}
+
+		if (nodeOpen) {
+			DrawDirectoryTree(entry.path());
+			ImGui::TreePop();
+		}
+	}
+}
+
+void ImGuiProjectExplorer::DrawFileView(const std::filesystem::path& dir) {
+	if (!std::filesystem::exists(dir)) {
+		return;
+	}
+
+
+	/// 現在選択しているパスの表示
+	ImGui::Text("Current Path: %s", dir.string().c_str());
+
+
+	ImGui::Separator();
+	ImGui::Spacing();
+
+
+	float iconSize = 64.0f;
+	int columnCount = (std::max)(1, (int)(ImGui::GetContentRegionAvail().x / (iconSize + 16.0f)));
+	ImGui::Columns(columnCount, nullptr, false);
+
+	for (auto& entry : std::filesystem::directory_iterator(dir)) {
+		const auto& path = entry.path();
+		std::string name = path.filename().string();
+
+		ImGui::PushID(name.c_str());
+
+		ImGui::BeginGroup();
+
+		// 仮アイコン（本来はテクスチャIDなどを使う）
+		if (entry.is_directory()) {
+			Texture* texture = pAssetCollection_->GetTexture("./Packages/Textures/ImGui/Folder.png");
+			ImGui::ImageButton("", (ImTextureID)(uintptr_t)texture->GetSRVGPUHandle().ptr, { iconSize, iconSize });
+		} else {
+			ImGui::Button("[FILE]", { iconSize, iconSize });
+		}
+
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+			if (entry.is_directory()) {
+				currentPath_ = path;
+			} else {
+				std::cout << "Selected file: " << path << std::endl;
+			}
+		}
+
+		ImGui::TextWrapped("%s", name.c_str());
+		ImGui::EndGroup();
+
+		ImGui::NextColumn();
+
+		ImGui::PopID();
+	}
+
+	ImGui::Columns(1);
+}
+
+
+
+
+//
+//void ImGuiProjectExplorer::BuildTree(Entry& _entry) {
+//	_entry.children.clear();
+//
+//	for (auto& p : std::filesystem::directory_iterator(_entry.path)) {
+//		Entry child;
+//		child.path = p.path();
+//		child.isDirectory = p.is_directory();
+//
+//		if (child.isDirectory) {
+//			BuildTree(child);
+//		}
+//
+//		_entry.children.push_back(std::move(child));
+//	}
+//}
+//
+//void ImGuiProjectExplorer::DrawEntry(const Entry& _entry) {
+//	if (_entry.isDirectory) {
+//		if (ImGui::TreeNode(_entry.path.filename().string().c_str())) {
+//			for (auto& c : _entry.children) {
+//				DrawEntry(c);
+//			}
+//			ImGui::TreePop();
+//		}
+//	} else {
+//		ImGui::BulletText("%s", _entry.path.filename().string().c_str());
+//	}
+//}

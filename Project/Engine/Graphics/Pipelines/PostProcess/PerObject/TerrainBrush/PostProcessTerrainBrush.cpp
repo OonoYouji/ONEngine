@@ -72,6 +72,10 @@ void PostProcessTerrainBrush::Execute(
 		}
 	}
 
+	if (!terrain) {
+		return;
+	}
+
 	brushBuffer_.SetMappedData(
 		Brush{ mousePos, terrain->GetBrushRadius() }
 	);

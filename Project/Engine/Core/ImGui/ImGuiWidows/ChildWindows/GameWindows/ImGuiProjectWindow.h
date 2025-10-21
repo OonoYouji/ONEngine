@@ -1,6 +1,9 @@
 #pragma once
 
+/// std
 #include <string>
+#include <filesystem>
+#include <unordered_map>
 
 /// engine
 #include "../../Collection/ImGuiWindowCollection.h"
@@ -100,3 +103,41 @@ private:
 
 
 
+
+
+class ImGuiProjectExplorer : public IImGuiChildWindow {
+public:
+
+	struct Entry {
+		std::filesystem::path path;
+		bool isDirectory;
+		std::vector<Entry> children;
+	};
+
+public:
+	/// ===================================================
+	/// public : methods
+	/// ===================================================
+
+	ImGuiProjectExplorer(class AssetCollection* _assetCollection, class EditorManager* _editorManager);
+	~ImGuiProjectExplorer() {}
+
+	/// @brief imgui windowの描画処理
+	void ShowImGui() override;
+
+	void Update();      // ディレクトリ変更を検知
+	void Draw();        // ImGui描画
+	const std::filesystem::path& GetSelectedPath() const { return currentPath_; }
+
+private:
+	void DrawDirectoryTree(const std::filesystem::path& dir);
+	void DrawFileView(const std::filesystem::path& dir);
+
+private:
+	class AssetCollection* pAssetCollection_;
+
+	std::filesystem::path rootPath_;
+	std::filesystem::path currentPath_;   // 今見ているフォルダ
+	std::unordered_map<std::string, bool> dirOpenState_; // ツリーの開閉状態
+	std::filesystem::file_time_type lastWriteTime_;
+};

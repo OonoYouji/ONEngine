@@ -50,7 +50,7 @@ void RiverMeshGeneratePipeline::Execute(EntityComponentSystem* _ecs, DxCommand* 
 	}
 
 	ComponentArray<Terrain>* terrainArray = ecsGroup->GetComponentArray<Terrain>();
-	if (!terrainArray) {
+	if (!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverMeshGeneratePipeline::Execute: Terrain component array is null");
 		return;
 	}

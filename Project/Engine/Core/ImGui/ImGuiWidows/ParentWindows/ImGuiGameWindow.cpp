@@ -30,6 +30,7 @@ ImGuiGameWindow::ImGuiGameWindow(
 	AddChild(std::make_unique<ImGuiHierarchyWindow>("DebugHierarchy", _ecs->GetECSGroup("Debug"), _editorManager, _sceneManager, inspector));
 	AddChild(std::make_unique<ImGuiSceneWindow>(_ecs, _grc, _sceneManager, inspector));
 	AddChild(std::make_unique<ImGuiProjectWindow>(_grc, _editorManager));
+	AddChild(std::make_unique<ImGuiProjectExplorer>(_grc, _editorManager));
 	AddChild(std::make_unique<ImGuiConsoleWindow>());
 }
 

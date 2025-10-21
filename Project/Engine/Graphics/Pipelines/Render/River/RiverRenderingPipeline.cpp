@@ -62,7 +62,7 @@ void RiverRenderingPipeline::Draw(ECSGroup* _ecs, const std::vector<GameEntity*>
 	/// --------------------------------------------------------------------
 
 	ComponentArray<Terrain>* terrainArray = _ecs->GetComponentArray<Terrain>();
-	if(!terrainArray) {
+	if(!terrainArray || terrainArray->GetUsedComponents().empty()) {
 		Console::LogError("RiverRenderingPipeline::Draw: Terrain component array is null");
 		return;
 	}
