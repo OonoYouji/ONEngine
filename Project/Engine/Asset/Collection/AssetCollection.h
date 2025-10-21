@@ -6,15 +6,10 @@
 
 /// engine
 #include "Engine/Graphics/Resource/Loader/GraphicsResourceLoader.h"
-#include "Engine/Graphics/Resource/ResourceData/Model.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
-#include "Engine/Graphics/Resource/ResourceData/AudioClip.h"
+#include "Engine/Asset/Assets/Mesh/Model.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
+#include "Engine/Asset/Assets/AudioClip/AudioClip.h"
 #include "Engine/Graphics/Resource/Container/ResourceContainer.h"
-//#include "Loader/GraphicsResourceLoader.h"
-//#include "ResourceData/Model.h"
-//#include "ResourceData/Texture.h"
-//#include "ResourceData/AudioClip.h"
-//#include "Container/ResourceContainer.h"
 
 static const uint32_t MAX_TEXTURE_COUNT   = 256; ///< 最大テクスチャ数
 static const uint32_t MAX_MODEL_COUNT     = 128; ///< 最大モデル数

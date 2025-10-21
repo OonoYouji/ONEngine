@@ -8,7 +8,7 @@
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 
-#include "Engine/Graphics/Resource/ResourceData/Skinning.h"
+#include "Engine/Asset/Assets/Mesh/Skinning.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// //////////////////////////////////////////////////////

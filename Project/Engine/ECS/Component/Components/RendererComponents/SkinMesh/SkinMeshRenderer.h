@@ -11,7 +11,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Graphics/Resource/ResourceData/Skinning.h"
+#include "Engine/Asset/Assets/Mesh/Skinning.h"
 
 /// /////////////////////////////////////////////
 /// スキニングアニメーションのRender Component

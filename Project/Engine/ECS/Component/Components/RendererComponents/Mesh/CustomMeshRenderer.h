@@ -6,7 +6,7 @@
 
 /// engine
 #include "../../Interface/IComponent.h"
-#include "Engine/Graphics/Resource/ResourceData/Model.h"
+#include "Engine/Asset/Assets/Mesh/Model.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
 
 /// /////////////////////////////////////////////////

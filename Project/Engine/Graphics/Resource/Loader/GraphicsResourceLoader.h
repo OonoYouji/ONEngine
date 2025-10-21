@@ -14,7 +14,7 @@
 /// engine
 #include "Engine/Core/DirectX12/ComPtr/ComPtr.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
-#include "../ResourceData/Skinning.h"
+#include "Engine/Asset/Assets/Mesh/Skinning.h"
 
 
 /// ///////////////////////////////////////////////////

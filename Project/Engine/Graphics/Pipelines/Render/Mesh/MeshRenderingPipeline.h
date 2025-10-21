@@ -8,10 +8,10 @@
 
 /// engine
 #include "../../Interface/IRenderingPipeline.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Graphics/Buffer/ConstantBuffer.h"
 #include "Engine/Graphics/Buffer/StructuredBuffer.h"
 #include "Engine/Core/DirectX12/Resource/DxResource.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
 #include "Engine/Graphics/Buffer/Data/Material.h"
 #include "Engine/Core/Utility/Math/Matrix4x4.h"
 #include "Engine/Core/Utility/Math/Vector4.h"

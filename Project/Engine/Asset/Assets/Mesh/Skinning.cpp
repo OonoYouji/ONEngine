@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
 #include "Engine/Core/Utility/Utility.h"
-#include "Engine/Graphics/Resource/ResourceData/Model.h"
+#include "Model.h"
 
 Vector3 ANIME_MATH::CalculateValue(const std::vector<KeyFrameVector3>& _keyFrames, float _time) {
 	Assert(!_keyFrames.empty(), "keyframe empty...");

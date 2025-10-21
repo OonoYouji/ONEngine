@@ -7,7 +7,7 @@
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 
 #include "Engine/Asset/Collection/AssetCollection.h"
-#include "Engine/Graphics/Resource/ResourceData/Texture.h"
+#include "Engine/Asset/Assets/Texture/Texture.h"
 
 TerrainVertexCreator::TerrainVertexCreator() {}
 TerrainVertexCreator::~TerrainVertexCreator() {}
