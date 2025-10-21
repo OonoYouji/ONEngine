@@ -5,7 +5,6 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Graphics/Resource/Creator/PrimitiveMeshCreator.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 
@@ -26,9 +25,6 @@ void AssetCollection::Initialize(DxManager* _dxManager) {
 	/// Packages内のファイルがすべて読み込む
 	LoadResources(GetResourceFilePaths("./Packages/"));
 	LoadResources(GetResourceFilePaths("./Assets/"));
-
-	/// primitive meshを作成
-	PrimitiveMeshCreator primitiveMeshCreator(this, _dxManager->GetDxDevice());
 }
 
 void AssetCollection::LoadResources(const std::vector<std::string>& _filePaths) {
