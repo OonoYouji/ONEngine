@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <fstream>
-
+#include <filesystem>
 
 /// engine
 #include "Engine/Resource/Guid/Guid.h"
@@ -95,10 +95,10 @@ inline T* ResourceContainer<T>::Add(const std::string& _key, T _t) {
 
 	
 	/// _keyのファイルがあるなら.metaファイルを読み込んでGuidを登録する
-	std::ifstream ifs(_key + ".meta");
-	if (ifs) {
-		Guid guid;
-		ifs >> guid.high >> guid.low;
+	if (std::filesystem::exists(_key + ".meta")) {
+		MetaFile metaFile;
+		metaFile.LoadFromFile(_key + ".meta");
+		Guid& guid = metaFile.guid;
 		guidToIndexMap_[guid] = index;
 		indexToGuidMap_[index] = guid;
 	} else {
