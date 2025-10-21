@@ -35,6 +35,17 @@ public:
 		return Int((std::numeric_limits<int>::min)(), (std::numeric_limits<int>::max)());
 	}
 
+	/// @brief uint64_t型のランダムな値を得る
+	static uint64_t UInt64(uint64_t _min, uint64_t _max) {
+		std::uniform_int_distribution<uint64_t> distribution(_min, _max);
+		return distribution(generator_);
+	}
+
+	/// @brief uint64_t型の最小値、最大値からランダムな値を得る
+	static uint64_t UInt64() {
+		return UInt64((std::numeric_limits<uint64_t>::min)(), (std::numeric_limits<uint64_t>::max)());
+	}
+
 	/// @brief float型のランダムな値を得る  
 	/// @param _min 最小値  
 	/// @param _max 最大値  
