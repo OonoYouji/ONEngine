@@ -6,13 +6,14 @@
 #include <string>
 
 /// engine
+#include "../Asset.h"
 #include "Mesh.h"
 #include "Skinning.h"
 
 /// ===================================================
 /// mesh描画クラス
 /// ===================================================
-class Model final {
+class Model final : public IAsset {
 public:
 
 	/// ===================================================
@@ -20,7 +21,7 @@ public:
 	/// ===================================================
 
 	Model();
-	~Model();
+	~Model() override;
 
 	/// @brief mesh の新規追加
 	/// @param _mesh meshのunique_ptr

@@ -4,6 +4,7 @@
 #include <optional>
 
 /// engine
+#include "../Asset.h"
 #include "Engine/Asset/Guid/Guid.h"
 #include "Engine/Core/Utility/Utility.h"
 
@@ -18,7 +19,7 @@ void ShowGuiMaterial(const std::string& _label, Material* _material);
 /// ////////////////////////////////////////////////////////
 /// マテリアル
 /// ////////////////////////////////////////////////////////
-class Material final {
+class Material final : public IAsset {
 	/// friend functions
 	friend void ShowGuiMaterial(const std::string& _label, Material* _material);
 
