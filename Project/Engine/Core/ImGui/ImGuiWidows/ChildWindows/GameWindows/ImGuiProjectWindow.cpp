@@ -226,15 +226,7 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 		}
 
 		/// ポップアップメニューの表示
-		if (ImGui::BeginPopupContextWindow(subFolder->name.c_str())) {
-
-			if (ImGui::MenuItem("エクスプローラーで開く")) {
-				std::string folder = std::filesystem::absolute(subFolder->path).string();
-				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
-			}
-
-			ImGui::EndPopup();
-		}
+		ShowContextMenu(subFolder->name, subFolder->path);
 	}
 
 	for (auto& file : _folder->files) {
@@ -268,15 +260,50 @@ void ImGuiProjectWindow::DrawFolder(std::shared_ptr<Folder> _folder) {
 			ImGui::OpenPopup(file.name.c_str());
 		}
 
-		if (ImGui::BeginPopupContextItem(file.name.c_str())) {
+		{	/// ポップアップメニューの表示
+			std::string folder = std::filesystem::absolute(file.path).string();
+			/// folderからファイル名を除いたパスを取得
+			folder = folder.substr(0, folder.find_last_of("/\\"));
 
-			if (ImGui::MenuItem("エクスプローラーで開く")) {
-				std::string folder = std::filesystem::absolute(file.path).parent_path().string();
-				ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
-			}
-
-			ImGui::EndPopup();
+			ShowContextMenu(file.name, folder);
 		}
 	}
 
+}
+
+void ImGuiProjectWindow::ShowContextMenu(const std::string& _contextMenuName, const std::string& _currentFolderName) {
+	if (ImGui::BeginPopupContextWindow(_contextMenuName.c_str())) {
+
+		/// Create系
+		if (ImGui::BeginMenu("Create")) {
+
+			if (ImGui::MenuItem("Folder")) {
+				// 新規フォルダ作成の処理
+			}
+
+			ImGui::Separator();
+
+			/// ゲームで使用するアセット系
+			if (ImGui::MenuItem("C# Script")) {
+				// C#スクリプト作成の処理
+			}
+
+			if (ImGui::MenuItem("Material")) {
+				// マテリアル作成の処理
+				GenerateMaterialFile(_currentFolderName + "/New Material.mat", nullptr);
+			}
+
+
+			ImGui::EndMenu();
+		}
+
+
+
+		if (ImGui::MenuItem("Show in Explorer")) {
+			std::string folder = std::filesystem::absolute(_currentFolderName).parent_path().string();
+			ShellExecuteA(nullptr, "open", "explorer", folder.c_str(), nullptr, SW_SHOWNORMAL);
+		}
+
+		ImGui::EndPopup();
+	}
 }

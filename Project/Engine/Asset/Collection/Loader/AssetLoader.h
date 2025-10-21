@@ -42,6 +42,9 @@ public:
 	/// サウンド
 	void LoadAudioClip(const std::string& _filepath);
 
+	/// マテリアル
+	void LoadMaterial(const std::string& _filepath);
+
 	/// フォント
 	void LoadFont(const std::string& _filepath);
 

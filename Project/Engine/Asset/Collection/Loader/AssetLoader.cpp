@@ -23,8 +23,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Engine/Core/Utility/Tools/Assert.h"
-#include "Engine/Core/Utility/Tools/Log.h"
+#include "Engine/Core/Utility/Utility.h"
 #include "Engine/Asset/Collection/AssetCollection.h"
 
 
@@ -387,6 +386,39 @@ void AssetLoader::LoadAudioClip(const std::string& _filepath) {
 	pAssetCollection_->AddAudioClip(_filepath, std::move(audioClip));
 
 	Console::Log("[Load] [AudioClip] - path:\"" + _filepath + "\"");
+}
+
+void AssetLoader::LoadMaterial(const std::string& _filepath) {
+
+	/// ファイル拡張子を確認 Materialファイル以外は処理しない
+	const std::string ext = Mathf::FileExtension(_filepath);
+	if (ext != ".mat") {
+		return;
+	}
+
+	/// ファイルを開く
+	std::ifstream ifs(_filepath);
+	if (!ifs) {
+		Assert(false, ("failed to open file: " + _filepath).c_str());
+		return;
+	}
+
+
+	/// ----------------------------------------------
+	/// ファイルの読み込み
+	/// ----------------------------------------------
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		/// ----- 各文字列ごとに対応した処理を行う ----- ///
+
+		if(Mathf::StartsWith(line, "version: ")) {
+
+		}
+		
+	}
+
+
 }
 
 void AssetLoader::LoadFont(const std::string& _filepath) {

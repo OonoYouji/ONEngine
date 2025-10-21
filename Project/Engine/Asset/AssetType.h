@@ -8,4 +8,5 @@ enum class AssetType {
 	Texture,
 	Mesh,
 	Audio,
+	Material
 };

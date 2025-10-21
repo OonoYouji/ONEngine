@@ -33,7 +33,16 @@ namespace Mathf {
 	/// 拡張子を取得
 	std::string FileExtension(const std::string& _filename);
 
+	/// @brief 指定されたファイルパスからCSVファイルを読み込み、2次元の整数ベクターとして返します。
+	/// @param _filePath 読み込むCSVファイルのパス。
+	/// @return CSVファイルの内容を表す2次元のint型std::vector。各内部ベクターはCSVの1行に対応します。
 	std::vector<std::vector<int>> LoadCSV(const std::string& _filePath);
+
+	/// @brief 指定した文字列が特定の接頭辞で始まっているかどうかを判定します。
+	/// @param _str 判定対象となる文字列。
+	/// @param _prefix 接頭辞として調べる文字列。
+	/// @return 文字列が指定した接頭辞で始まっていれば true、そうでなければ false を返します。
+	bool StartsWith(const std::string& _str, const std::string& _prefix);
 
 }
 

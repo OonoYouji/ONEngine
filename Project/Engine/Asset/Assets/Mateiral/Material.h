@@ -15,6 +15,15 @@ class Material;
 /// @brief Material用のGUI表示
 void ShowGuiMaterial(const std::string& _label, Material* _material);
 
+/// @brief デフォルトのマテリアルを生成
+Material GenerateMaterial();
+
+/// @brief Materialファイルを生成
+/// @param _filepath 生成先のファイルパス
+/// @param _material 参照するマテリアル nullptrならデフォルト値で生成
+void GenerateMaterialFile(const std::string& _filepath, Material* _material);
+
+
 
 /// ////////////////////////////////////////////////////////
 /// マテリアル
@@ -38,12 +47,16 @@ private:
 	/// private : objects
 	/// ==================================================
 
-	Guid guid_; /// 自身のGuid
-
-	Vector4             baseColor_;
-	uint32_t            postEffectFlags_;
 	std::optional<Guid> baseTextureGuid_;   /// ベーステクスチャのGUID
 	std::optional<Guid> normalTextureGuid_; /// 法線テクスチャのGUID
 
+
+public:
+	/// ==================================================
+	/// public : objects
+	/// ==================================================
+
+	Vector4             baseColor;
+	uint32_t            postEffectFlags;
 };
 

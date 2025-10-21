@@ -12,12 +12,14 @@
 #include "Engine/Asset/Assets/Mesh/Model.h"
 #include "Engine/Asset/Assets/Texture/Texture.h"
 #include "Engine/Asset/Assets/AudioClip/AudioClip.h"
+#include "Engine/Asset/Assets/Mateiral/Material.h"
 
 
 
 static const uint32_t MAX_TEXTURE_COUNT   = 256; ///< 最大テクスチャ数
 static const uint32_t MAX_MODEL_COUNT     = 128; ///< 最大モデル数
 static const uint32_t MAX_AUDIOCLIP_COUNT = 128; ///< 最大オーディオクリップ数
+static const uint32_t MAX_MATERIAL_COUNT  = 128; ///< 最大マテリアル数
 
 /// ///////////////////////////////////////////////////
 /// グラフィクスリソースのコレクション
@@ -73,6 +75,7 @@ private:
 	std::unique_ptr<AssetContainer<Model>>     modelContainer_;
 	std::unique_ptr<AssetContainer<Texture>>   textureContainer_;
 	std::unique_ptr<AssetContainer<AudioClip>> audioClipContainer_;
+	std::unique_ptr<AssetContainer<Material>>  materialContainer_;
 
 	/// リソースを読む条件
 	std::unordered_map<std::string, AssetType> resourceTypes_;

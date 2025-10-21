@@ -73,6 +73,11 @@ private:
 	/// @param _folder 表示するフォルダ
 	void DrawFolder(std::shared_ptr<Folder> _folder);
 
+	
+	/// 右クリックメニューの表示
+	void ShowContextMenu(const std::string& _contextMenuName, const std::string& _currentFolderName);
+
+
 private:
 	/// ===================================================
 	/// private : objects

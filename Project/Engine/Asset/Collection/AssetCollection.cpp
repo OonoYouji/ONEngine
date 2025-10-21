@@ -16,9 +16,10 @@ void AssetCollection::Initialize(DxManager* _dxManager) {
 	resourceLoader_ = std::make_unique<AssetLoader>(_dxManager, this);
 	resourceLoader_->Initialize();
 
-	modelContainer_ = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
-	textureContainer_ = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
+	modelContainer_     = std::make_unique<AssetContainer<Model>>(static_cast<size_t>(MAX_MODEL_COUNT));
+	textureContainer_   = std::make_unique<AssetContainer<Texture>>(static_cast<size_t>(MAX_TEXTURE_COUNT));
 	audioClipContainer_ = std::make_unique<AssetContainer<AudioClip>>(static_cast<size_t>(MAX_AUDIOCLIP_COUNT));
+	materialContainer_  = std::make_unique<AssetContainer<Material>>(static_cast<size_t>(MAX_MATERIAL_COUNT));
 
 	RegisterResourceType();
 
@@ -88,6 +89,9 @@ void AssetCollection::Load(const std::string& _filepath, AssetType _type) {
 		break;
 	case AssetType::Audio:
 		resourceLoader_->LoadAudioClip(_filepath);
+		break;
+	case AssetType::Material:
+		resourceLoader_->LoadFont(_filepath);
 		break;
 	}
 

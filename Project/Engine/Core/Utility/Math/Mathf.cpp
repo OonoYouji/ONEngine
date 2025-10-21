@@ -137,3 +137,7 @@ std::vector<std::vector<int>> Mathf::LoadCSV(const std::string& _filePath) {
 	file.close();
 	return data;
 }
+
+bool Mathf::StartsWith(const std::string& _str, const std::string& _prefix) {
+	return _str.rfind(_prefix, 0) == 0;
+}
