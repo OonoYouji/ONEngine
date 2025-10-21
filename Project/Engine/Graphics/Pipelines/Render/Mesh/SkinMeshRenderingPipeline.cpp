@@ -79,7 +79,7 @@ void SkinMeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMa
 		/// Buffer
 
 		transformBuffer_ = std::make_unique<ConstantBuffer<Matrix4x4>>();
-		materialBuffer_ = std::make_unique<ConstantBuffer<Material>>();
+		materialBuffer_ = std::make_unique<ConstantBuffer<GPUMaterial>>();
 		textureIdBuffer_ = std::make_unique<ConstantBuffer<uint32_t>>();
 
 		transformBuffer_->Create(_dxManager->GetDxDevice());
@@ -138,7 +138,7 @@ void SkinMeshRenderingPipeline::Draw(class ECSGroup*, const std::vector<GameEnti
 
 		/// Material Bind
 		materialBuffer_->SetMappedData(
-			Material{
+			GPUMaterial{
 				.baseColor = comp->GetColor(),
 				.postEffectFlags = 1,
 				.entityId = comp->GetOwner()->GetId()

@@ -114,7 +114,7 @@ void SpriteRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxMana
 		transformsBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformsBuffer_->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
-		materialsBuffer = std::make_unique<StructuredBuffer<Material>>();
+		materialsBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
 		materialsBuffer->Create(static_cast<uint32_t>(kMaxRenderingSpriteCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 	}

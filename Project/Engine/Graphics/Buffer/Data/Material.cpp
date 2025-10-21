@@ -1,7 +1,9 @@
 #include "Material.h"
 
 /// engine
+#include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
+#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
 
 void to_json(nlohmann::json& _j, const UVTransform& _uvTransform) {
 	_j = nlohmann::json{
@@ -18,7 +20,7 @@ void from_json(const nlohmann::json& _j, UVTransform& _uvTransform) {
 }
 
 
-void to_json(nlohmann::json& _j, const Material& _material) {
+void to_json(nlohmann::json& _j, const GPUMaterial& _material) {
 	_j = nlohmann::json{
 		{ "uvTransform", _material.uvTransform },
 		{ "baseColor", _material.baseColor },
@@ -29,11 +31,29 @@ void to_json(nlohmann::json& _j, const Material& _material) {
 	};
 }
 
-void from_json(const nlohmann::json& _j, Material& _material) {
+void from_json(const nlohmann::json& _j, GPUMaterial& _material) {
 	_material.uvTransform     = _j.value("uvTransform", UVTransform{});
 	_material.baseColor       = _j.value("baseColor", Vector4::kWhite);
 	_material.postEffectFlags = _j.value("postEffectFlags", PostEffectFlags_None);
 	_material.entityId        = _j.value("entityId", 0);
 	_material.baseTextureId   = _j.value("baseTextureId", -1);
 	_material.normalTextureId = _j.value("normalTextureId", -1);
+}
+
+Material::Material() = default;
+Material::~Material() = default;
+
+GPUMaterial Material::ToGPUMaterial() {
+	return GPUMaterial{
+		.uvTransform     = UVTransform{},
+		.baseColor       = Vector4::kWhite,
+		.postEffectFlags = PostEffectFlags_None,
+		.entityId        = pOwnerEntity_ ? pOwnerEntity_->GetId() : 0,
+		.baseTextureId   = textureIdPair.second,
+		.normalTextureId = normalTextureIdPair.second,
+	};
+}
+
+void Material::SetOwnerEntity(GameEntity* _pEntity) {
+	pOwnerEntity_ = _pEntity;
 }

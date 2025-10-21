@@ -41,6 +41,8 @@ public:
 	MeshRenderer();
 	~MeshRenderer();
 
+	/// @brief マテリアルをGPU用に変換します。
+	void ConvertMaterialToGPU();
 
 private:
 	/// ===================================================
@@ -50,7 +52,8 @@ private:
 	std::string meshPath_;
 	std::string texturePath_;
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
+	Material    cpuMaterial_;
 
 public:
 
@@ -88,7 +91,7 @@ public:
 	/// @return RGBA 0.0f ~ 1.0f
 	const Vector4& GetColor() const;
 
-	const Material& GetMaterial() const;
+	const GPUMaterial& GetMaterial() const;
 
 	/// @brief ポストエフェクトのフラグを取得
 	/// @return ポストエフェクトのフラグ

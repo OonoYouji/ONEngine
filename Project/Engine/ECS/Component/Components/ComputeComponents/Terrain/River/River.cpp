@@ -311,7 +311,7 @@ ConstantBuffer<River::Param>& River::GetParamBufRef() {
 	return paramBuf_;
 }
 
-ConstantBuffer<Material>& River::GetMaterialBufRef() {
+ConstantBuffer<GPUMaterial>& River::GetMaterialBufRef() {
 	return materialBuffer_;
 }
 

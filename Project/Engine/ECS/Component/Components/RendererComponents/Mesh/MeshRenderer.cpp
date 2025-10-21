@@ -12,14 +12,18 @@
 MeshRenderer::MeshRenderer() {
 	SetMeshPath("./Packages/Models/primitive/cube.obj");
 	SetTexturePath("./Packages/Textures/white.png");
-	material_.baseColor = Vector4::kWhite;
-	material_.postEffectFlags = PostEffectFlags_Lighting;
+	gpuMaterial_.baseColor = Vector4::kWhite;
+	gpuMaterial_.postEffectFlags = PostEffectFlags_Lighting;
 	if (GetOwner()) {
-		material_.entityId = GetOwner()->GetId();
+		gpuMaterial_.entityId = GetOwner()->GetId();
 	}
 }
 
-MeshRenderer::~MeshRenderer() {}
+MeshRenderer::~MeshRenderer() = default;
+
+void MeshRenderer::ConvertMaterialToGPU() {
+	gpuMaterial_ = cpuMaterial_.ToGPUMaterial();
+}
 
 void MeshRenderer::SetMeshPath(const std::string& _path) {
 	meshPath_ = _path;
@@ -30,17 +34,17 @@ void MeshRenderer::SetTexturePath(const std::string& _path) {
 }
 
 void MeshRenderer::SetColor(const Vector4& _color) {
-	material_.baseColor = _color;
+	gpuMaterial_.baseColor = _color;
 }
 
 void MeshRenderer::SetPostEffectFlags(uint32_t _flags) {
-	material_.postEffectFlags = _flags;
+	gpuMaterial_.postEffectFlags = _flags;
 }
 
 void MeshRenderer::SetMaterialEntityId() {
 	GameEntity* owner = GetOwner();
 	if (owner) {
-		material_.entityId = owner->GetId();
+		gpuMaterial_.entityId = owner->GetId();
 	}
 }
 
@@ -53,15 +57,15 @@ const std::string& MeshRenderer::GetTexturePath() const {
 }
 
 const Vector4& MeshRenderer::GetColor() const {
-	return material_.baseColor;
+	return gpuMaterial_.baseColor;
 }
 
-const Material& MeshRenderer::GetMaterial() const {
-	return material_;
+const GPUMaterial& MeshRenderer::GetMaterial() const {
+	return gpuMaterial_;
 }
 
 uint32_t MeshRenderer::GetPostEffectFlags() const {
-	return material_.postEffectFlags;
+	return gpuMaterial_.postEffectFlags;
 }
 
 
@@ -226,7 +230,7 @@ void COMP_DEBUG::MeshRendererDebug(MeshRenderer* _mr, GraphicsResourceCollection
 	}
 
 	/// Material Debug
-	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->material_, _grc);
+	ImMathf::MaterialEdit("Material##MeshRenderer", &_mr->gpuMaterial_, _grc);
 
 }
 

@@ -37,7 +37,7 @@ private:
 	bool isVisible_ = true; ///< 描画するかどうか
 	bool isBufferRecreate_ = false; ///< バッファを再作成するかどうか
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
 
 public:
 	/// ====================================================
@@ -90,7 +90,7 @@ public:
 	/// @return bufferを再作成するフラグ
 	bool GetIsBufferRecreate() const;
 
-	const Material& GetMaterial();
+	const GPUMaterial& GetMaterial();
 
 };
 

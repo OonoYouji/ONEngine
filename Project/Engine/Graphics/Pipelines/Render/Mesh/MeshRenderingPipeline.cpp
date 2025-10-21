@@ -72,7 +72,7 @@ void MeshRenderingPipeline::Initialize(ShaderCompiler* _shaderCompiler, DxManage
 		transformBuffer_ = std::make_unique<StructuredBuffer<Matrix4x4>>();
 		transformBuffer_->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
-		materialBuffer = std::make_unique<StructuredBuffer<Material>>();
+		materialBuffer = std::make_unique<StructuredBuffer<GPUMaterial>>();
 		materialBuffer->Create(static_cast<uint32_t>(kMaxRenderingMeshCount_), _dxManager->GetDxDevice(), _dxManager->GetDxSRVHeap());
 
 		textureIdBuffer_ = std::make_unique<StructuredBuffer<uint32_t>>();

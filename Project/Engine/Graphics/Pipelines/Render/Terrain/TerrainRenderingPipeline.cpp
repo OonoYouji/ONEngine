@@ -124,7 +124,7 @@ void TerrainRenderingPipeline::Draw(class ECSGroup* _ecs, const std::vector<Game
 	transformBuffer_.SetMappedData(matWorld);
 	materialBuffer_.SetMappedData( 
 		0, 
-		Material{
+		GPUMaterial{
 			.uvTransform = UVTransform{ Vector2(0, 0), Vector2(100, 100), 0.0f },
 			.baseColor = Vector4(1, 2, 3, 4),
 			.postEffectFlags = 1,

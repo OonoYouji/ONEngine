@@ -87,7 +87,7 @@ private:
 	StructuredBuffer<GrassInstance> rwGrassInstanceBuffer_;
 	StructuredBuffer<uint32_t> startIndexBuffer_;
 	StructuredBuffer<float> timeBuffer_;
-	ConstantBuffer<Material> materialBuffer_;
+	ConstantBuffer<GPUMaterial> materialBuffer_;
 
 	/// ----- parameters ----- ///
 	uint32_t maxGrassCount_; ///< 最大草の本数
@@ -96,7 +96,7 @@ private:
 	bool isArranged_; ///< 配置済みかどうか
 	uint32_t instanceCount_; ///< 実際に配置された草の本数
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
 
 public:
 	/// ===================================================
@@ -107,7 +107,7 @@ public:
 	StructuredBuffer<GrassInstance>& GetRwGrassInstanceBuffer();
 	StructuredBuffer<uint32_t>& GetStartIndexBufferRef();
 	StructuredBuffer<float>& GetTimeBuffer();
-	ConstantBuffer<Material>& GetMaterialBufferRef();
+	ConstantBuffer<GPUMaterial>& GetMaterialBufferRef();
 
 	/// 最大草の本数の取得
 	uint32_t GetMaxGrassCount() const;

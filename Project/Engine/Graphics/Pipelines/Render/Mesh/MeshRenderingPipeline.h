@@ -70,7 +70,7 @@ private:
 
 	class GraphicsResourceCollection*            resourceCollection_;
 	std::unique_ptr<StructuredBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<StructuredBuffer<Material>>  materialBuffer;
+	std::unique_ptr<StructuredBuffer<GPUMaterial>>  materialBuffer;
 	std::unique_ptr<StructuredBuffer<uint32_t>>  textureIdBuffer_;
 	
 	size_t transformIndex_;

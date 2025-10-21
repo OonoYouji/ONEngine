@@ -45,7 +45,7 @@ private:
 	class GraphicsResourceCollection* pGraphicsResourceCollection_ = nullptr;
 
 	std::unique_ptr<ConstantBuffer<Matrix4x4>> transformBuffer_;
-	std::unique_ptr<ConstantBuffer<Material>> materialBuffer_;
+	std::unique_ptr<ConstantBuffer<GPUMaterial>> materialBuffer_;
 	std::unique_ptr<ConstantBuffer<uint32_t>> textureIdBuffer_;
 
 };

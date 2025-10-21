@@ -72,7 +72,7 @@ bool ImMathf::InputText(const char* _label, std::string* _text, ImGuiInputTextFl
 	);
 }
 
-bool ImMathf::MaterialEdit(const char* _label, Material* _material, GraphicsResourceCollection* _resourceCollection) {
+bool ImMathf::MaterialEdit(const char* _label, GPUMaterial* _material, GraphicsResourceCollection* _resourceCollection) {
 	/// nullptr check
 	if (!_material) {
 		return false;

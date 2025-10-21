@@ -51,7 +51,7 @@ private:
 	Terrain* pTerrain_;
 
 	ConstantBuffer<Matrix4x4> transformBuffer_;
-	StructuredBuffer<Material> materialBuffer_;
+	StructuredBuffer<GPUMaterial> materialBuffer_;
 
 };
 

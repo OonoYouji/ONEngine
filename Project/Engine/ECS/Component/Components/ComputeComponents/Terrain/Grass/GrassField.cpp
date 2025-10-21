@@ -21,7 +21,7 @@ void to_json(nlohmann::json& _j, const GrassField& _p) {
 		{ "type", "GrassField" },
 		{ "maxGrassCount", _p.maxGrassCount_ },
 		{ "distributionTexturePath", _p.distributionTexturePath_ },
-		{ "material", _p.material_ }
+		{ "material", _p.gpuMaterial_ }
 	};
 }
 
@@ -29,7 +29,7 @@ void from_json(const nlohmann::json& _j, GrassField& _p) {
 	/// Json -> GrassField
 	_p.maxGrassCount_ = _j.value("maxGrassCount", 128);
 	_p.distributionTexturePath_ = _j.value("distributionTexturePath", "");
-	_p.material_ = _j.value("material", Material{});
+	_p.gpuMaterial_ = _j.value("material", GPUMaterial{});
 }
 
 
@@ -66,7 +66,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollec
 
 
 	/// material debug
-	ImMathf::MaterialEdit("material", &_grassField->material_, _grc);
+	ImMathf::MaterialEdit("material", &_grassField->gpuMaterial_, _grc);
 
 }
 
@@ -76,7 +76,7 @@ void COMP_DEBUG::GrassFieldDebug(GrassField* _grassField, GraphicsResourceCollec
 /// ////////////////////////////////////////////////////////
 
 GrassField::GrassField() :
-	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false), material_({}) {
+	maxGrassCount_(static_cast<uint32_t>(std::pow(2, 32) - 1)), distributionTexturePath_(""), isCreated_(false), isArranged_(false), gpuMaterial_({}) {
 };
 GrassField::~GrassField() = default;
 
@@ -101,7 +101,7 @@ void GrassField::Initialize(uint32_t _maxBladeCount, DxDevice* _dxDevice, DxComm
 }
 
 void GrassField::MaterialMapping() {
-	materialBuffer_.SetMappedData(material_);
+	materialBuffer_.SetMappedData(gpuMaterial_);
 }
 
 void GrassField::StartIndexMapping(UINT _oneDrawInstanceCount) {
@@ -148,7 +148,7 @@ StructuredBuffer<float>& GrassField::GetTimeBuffer() {
 	return timeBuffer_;
 }
 
-ConstantBuffer<Material>& GrassField::GetMaterialBufferRef() {
+ConstantBuffer<GPUMaterial>& GrassField::GetMaterialBufferRef() {
 	return materialBuffer_;
 }
 

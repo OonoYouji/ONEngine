@@ -43,7 +43,7 @@ private:
 	/// private : objects
 	/// ===================================================
 
-	Material material_;
+	GPUMaterial gpuMaterial_;
 
 public:
 	/// ===================================================
@@ -56,8 +56,8 @@ public:
 	/// ----- getter ----- ///
 	const Vector4& GetColor() const;
 
-	const Material& GetMaterial() const;
-	Material& GetMaterial();
+	const GPUMaterial& GetMaterial() const;
+	GPUMaterial& GetMaterial();
 
 };
 
