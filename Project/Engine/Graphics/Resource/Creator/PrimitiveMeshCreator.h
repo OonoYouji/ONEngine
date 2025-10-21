@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "../GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 /// ////////////////////////////////////////////
 /// primitive mesh creator

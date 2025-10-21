@@ -7,7 +7,7 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/RendererComponents/SkinMesh/SkinMeshRenderer.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 
 SkinMeshRenderingPipeline::SkinMeshRenderingPipeline(GraphicsResourceCollection* _graphicsResourceCollection)

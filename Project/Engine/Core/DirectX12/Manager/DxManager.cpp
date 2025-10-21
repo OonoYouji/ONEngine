@@ -1,7 +1,7 @@
 #include "DxManager.h"
 
 /// engine
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 DxManager::DxManager() = default;
 DxManager::~DxManager() = default;

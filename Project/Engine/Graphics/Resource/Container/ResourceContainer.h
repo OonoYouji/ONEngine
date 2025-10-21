@@ -8,8 +8,8 @@
 #include <filesystem>
 
 /// engine
-#include "Engine/Resource/Guid/Guid.h"
-#include "Engine/Resource/Meta/MetaFile.h"
+#include "Engine/Asset/Guid/Guid.h"
+#include "Engine/Asset/Meta/MetaFile.h"
 
 /// ///////////////////////////////////////////////////
 /// リソースのインターフェイスクラス

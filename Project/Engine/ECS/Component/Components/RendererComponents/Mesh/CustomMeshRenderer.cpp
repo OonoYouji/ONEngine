@@ -1,7 +1,7 @@
 #include "CustomMeshRenderer.h"
 
 /// engine
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 CustomMeshRenderer::CustomMeshRenderer() {
 	gpuMaterial_.baseColor = Vector4::kWhite;

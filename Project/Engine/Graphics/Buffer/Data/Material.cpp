@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/ECS/Entity/GameEntity/GameEntity.h"
 #include "Engine/Editor/Commands/ComponentEditCommands/ComponentJsonConverter.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 void to_json(nlohmann::json& _j, const UVTransform& _uvTransform) {
 	_j = nlohmann::json{

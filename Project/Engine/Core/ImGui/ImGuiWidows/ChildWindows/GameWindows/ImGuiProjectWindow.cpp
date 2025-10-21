@@ -10,7 +10,7 @@
 #include "Engine/ECS/EntityComponentSystem/EntityComponentSystem.h"
 #include "Engine/Editor/EditorManager.h"
 #include "Engine/Editor/Commands/WorldEditorCommands/WorldEditorCommands.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 ImGuiProjectWindow::ImGuiProjectWindow(GraphicsResourceCollection* _grc, EditorManager* _editorManager)
 	: pGrc_(_grc), pEditorManager_(_editorManager) {

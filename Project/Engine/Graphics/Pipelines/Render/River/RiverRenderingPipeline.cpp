@@ -6,7 +6,7 @@
 #include "Engine/ECS/Component/Array/ComponentArray.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Terrain/Terrain.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Camera/CameraComponent.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 
 RiverRenderingPipeline::RiverRenderingPipeline(GraphicsResourceCollection* _grc) : pGRC_(_grc) {}
 RiverRenderingPipeline::~RiverRenderingPipeline() = default;

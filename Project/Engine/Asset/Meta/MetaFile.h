@@ -1,7 +1,7 @@
 #pragma once
 
 /// engine
-#include "Engine/Resource/Guid/Guid.h"
+#include "Engine/Asset/Guid/Guid.h"
 
 
 /// ////////////////////////////////////////////////////

@@ -5,7 +5,7 @@
 
 /// engine
 #include "Engine/Core/DirectX12/Manager/DxManager.h"
-#include "Creator/PrimitiveMeshCreator.h"
+#include "Engine/Graphics/Resource/Creator/PrimitiveMeshCreator.h"
 #include "Engine/Core/Utility/Utility.h"
 #include "Engine/Core/Utility/Math/Mathf.h"
 

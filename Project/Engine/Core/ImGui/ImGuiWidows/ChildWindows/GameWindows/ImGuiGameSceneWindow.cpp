@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 /// engine
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 #include "Engine/Core/ImGui/ImGuiManager.h"
 
 

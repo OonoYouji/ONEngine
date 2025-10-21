@@ -3,7 +3,7 @@
 /// engine
 #include "Engine/ECS/EntityComponentSystem/ECSGroup.h"
 #include "Engine/ECS/Component/Components/ComputeComponents/Audio/AudioSource.h"
-#include "Engine/Graphics/Resource/GraphicsResourceCollection.h"
+#include "Engine/Asset/Collection/GraphicsResourceCollection.h"
 #include "Engine/Graphics/Resource/ResourceData/AudioClip.h"
 
 using namespace AudioStructs;
